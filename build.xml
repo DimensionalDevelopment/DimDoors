@@ -67,7 +67,7 @@
 	</condition>
 
 	<target name="install" depends="build">
-		<copy todir="${classes.dir}" overwrite="true">
+		 <copy todir="${classes.dir}/schematics" overwrite="true">
 			<fileset dir="schematics" />
 		</copy>
 		<zip destfile="${dist.dir}/DimensionalDoors-${grep.out}-${build.number}.zip" basedir="${classes.dir}"/>
