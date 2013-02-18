@@ -843,8 +843,10 @@ public class SchematicLoader
 			 }
 			 for(Point3D point : this.exitLinks)
 			 {
-				 if(world.getBlockId(point.getX(), point.getY(), point.getZ())==mod_pocketDim.ExitDoorID&&world.getBlockId(point.getX(), point.getY()-1, point.getZ())==mod_pocketDim.ExitDoorID&&world.getBlockId(point.getX(), point.getY()-2, point.getZ())==Block.sandStone.blockID)
+				 try
 				 {
+					 if(world.getBlockId(point.getX(), point.getY(), point.getZ())==mod_pocketDim.ExitDoorID&&world.getBlockId(point.getX(), point.getY()-1, point.getZ())==mod_pocketDim.ExitDoorID&&world.getBlockId(point.getX(), point.getY()-2, point.getZ())==Block.sandStone.blockID)
+					 {
 					 	
 					 	World exitWorld = dimHelper.getWorld(dimHelper.dimList.get(world.provider.dimensionId).exitDimLink.destDimID);
 					 	
@@ -862,11 +864,21 @@ public class SchematicLoader
 					//	setBlockDirectly(world,point.getX(), point.getY()-1, point.getZ(),mod_pocketDim.ExitDoorID,sideLink.linkOrientation);
 					//	setBlockDirectly(world,point.getX(), point.getY(), point.getZ(),mod_pocketDim.ExitDoorID,8);
 
+					 }
+					 else if ((world.getBlockId(point.getX(), point.getY(), point.getZ())==mod_pocketDim.ExitDoorID&&world.getBlockId(point.getX(), point.getY()-1, point.getZ())==mod_pocketDim.ExitDoorID&&world.getBlockId(point.getX(), point.getY()-2, point.getZ())!=Block.sandStone.blockID))
+					 {
+						 this.incomingLink = point;
+					 }
 				 }
-				 else if ((world.getBlockId(point.getX(), point.getY(), point.getZ())==mod_pocketDim.ExitDoorID&&world.getBlockId(point.getX(), point.getY()-1, point.getZ())==mod_pocketDim.ExitDoorID&&world.getBlockId(point.getX(), point.getY()-2, point.getZ())!=Block.sandStone.blockID))
-				 {
-					 this.incomingLink = point;
-				 }
+				 
+					 
+				catch(Exception E)
+				{
+					E.printStackTrace();
+				}
+				 
+					 
+				 
 			 }
 			 
 			 
