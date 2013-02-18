@@ -44,7 +44,7 @@
 		<copy todir="${mcpsrc.dir}/Steven" overwrite="true">
 			<fileset dir="Steven" />
 		</copy>	
-		<!-- <copy todir="${mcpsrc.dir}" file="mcmod.info" overwrite="true"/> -->
+		
 		
 		<exec dir="${verclass.dir}" executable="sh" osfamily="unix" outputproperty="grep.out">
 			<arg value="-c"/>
@@ -55,6 +55,7 @@
 			<arg value="${grep.out}" />
 		</exec>
 		<echo message="Grepped version: ${grep.out}"/>
+		<copy todir="${classes.dir}" file="mcmod.info" overwrite="true"/> 
 	</target>
 
 	<available property="forge-exists" file="${download.dir}/minecraftforge-src-${forge.version}.zip" />
