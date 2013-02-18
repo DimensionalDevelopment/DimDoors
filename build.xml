@@ -70,7 +70,7 @@
 		<copy todir="${classes.dir}" overwrite="true">
 			<fileset dir="schematics" />
 		</copy>
-		<jar destfile="${dist.dir}/DimensionalDoors-${grep.out}-${build.number}.jar" basedir="${classes.dir}"/>
+		<zip destfile="${dist.dir}/DimensionalDoors-${grep.out}-${build.number}.zip" basedir="${classes.dir}"/>
 		<delete dir="${classes.dir}" />
 		<delete dir="${mcp.dir}/reobf"/>
 		<delete dir="${mcpsrc}/StevenDimDoors" />
