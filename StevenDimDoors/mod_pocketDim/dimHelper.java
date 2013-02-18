@@ -221,6 +221,7 @@ public class dimHelper extends DimensionManager
 						}
 					}
 				}
+			    player.addExperience(1);
 			}
 		}
 		if(!world.isRemote)
