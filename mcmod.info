@@ -1,0 +1,19 @@
+[
+{
+"modid": "DimensionalDoors",
+"name": "Dimensional Doors",
+"description": "Bend and twist reality itelf, creating pocket dimensions, rifts, and much more",
+"version": "1.2.0",
+"credits": "Created by StevenRS11, logo by Jaitsu",
+"logoFile": "/dimdoors_logo.png",
+"mcversion": "",
+"url": "http://www.minecraftforum.net/topic/1650007-147smpssplan-dimensional-doors-v110-physics-what-physics-updated-with-fancy-opengl/",
+"updateUrl": "",
+"authors": [ "StevenRS11" ],
+"parent":"",
+"screenshots": [],
+"dependencies": [
+"mod_MinecraftForge"
+]
+}
+]
