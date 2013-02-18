@@ -1,3 +1,5 @@
+
+
 <project name="DimensionalDoors" default="install" basedir=".">
 
 	<property environment="env" />
@@ -26,7 +28,7 @@
 		<equals arg1="${forge.build.number}" arg2="497" />
 	</condition>
 
-	<property name="verclass.dir" value="${mcpsrc.dir}/mod_pocketDim/" />
+	<property name="verclass.dir" value="${mcpsrc.dir}/StevenDimDoors/mod_pocketDim/" />
 	<property name="verclass.name" value="mod_pocketDim.java"/>
 
 
@@ -35,14 +37,13 @@
 
 	<target name="get-version" depends="setup-forge">
 		<mkdir dir="${mcpsrc.dir}/StevenDimDoors" />
-		<mkdir dir="${mcpsrc.dir}/StevenDimDoors/mod_pocketDim" />
-		<copy todir="${mcpsrc.dir}/StevenDimDoors/mod_pocketDim" overwrite="true">
-			<fileset dir="mod_pocketDim" />
+		<copy todir="${mcpsrc.dir}/StevenDimDoors" overwrite="true">
+			<fileset dir="StevenDimDoors" />
 		</copy>	
-		<mkdir dir="${mcpsrc.dir}/StevenDimDoors/mod_pocketDimClient" />
-		<copy todir="${mcpsrc.dir}/StevenDimDoors/mod_pocketDimClient" overwrite="true">
-			<fileset dir="mod_pocketDimClient" />
-		</copy>
+		<mkdir dir="${mcpsrc.dir}/Steven" />
+		<copy todir="${mcpsrc.dir}/Steven" overwrite="true">
+			<fileset dir="Steven" />
+		</copy>	
 		<!-- <copy todir="${mcpsrc.dir}" file="mcmod.info" overwrite="true"/> -->
 		
 		<exec dir="${verclass.dir}" executable="sh" osfamily="unix" outputproperty="grep.out">
@@ -72,8 +73,8 @@
 		<jar destfile="${dist.dir}/DimensionalDoors-${grep.out}-${build.number}.jar" basedir="${classes.dir}"/>
 		<delete dir="${classes.dir}" />
 		<delete dir="${mcp.dir}/reobf"/>
-		<delete dir="${mcpsrc}/mod_pocketDim" />
-		<delete dir="${mcpsrc}/mod_pocketDimClient" />
+		<delete dir="${mcpsrc}/StevenDimDoors" />
+		<delete dir="${mcpsrc}/Steven" />
 	</target>
 
 	<target name="build" depends="get-version" unless="already-compiled">
@@ -198,3 +199,4 @@
 
 
 </project>
+

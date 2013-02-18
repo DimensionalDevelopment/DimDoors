@@ -41,7 +41,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "DimensionalDoors", name = "Dimensional Doors", version = "1.2.0")
+@Mod(modid = "DimensionalDoors", name = "Dimensional Doors", version = mod_pocketDim.version)
 
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         clientPacketHandlerSpec =
@@ -52,6 +52,8 @@ import cpw.mods.fml.relauncher.Side;
 
 public class mod_pocketDim
 {
+	
+	public static final String version = "1.4.6R1.2.0RC1";
 	//need to clean up 
     @SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
     public static CommonProxy proxy;
