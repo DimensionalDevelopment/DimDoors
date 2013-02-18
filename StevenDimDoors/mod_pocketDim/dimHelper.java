@@ -877,11 +877,11 @@ public class dimHelper extends DimensionManager
 			}
 	      
 	        
-	   //     File oldSave=new File( world.getSaveHandler().getMapFileFromName("idcounts").getParent()+"/PocketDimData"); //checks to see if old save data is present
-		//	if(oldSave.exists())
-		//	{
-		//		OldSaveHandler.handleOldSaveData(oldSave);	
-		//	}
+	        File oldSave=new File( world.getSaveHandler().getMapFileFromName("idcounts").getParent()+"/PocketDimData"); //checks to see if old save data is present
+			if(oldSave.exists())
+			{
+				OldSaveHandler.handleOldSaveData(oldSave);	
+			}
 	         
 	         
 	         saveFile = new FileInputStream(dataStore);
