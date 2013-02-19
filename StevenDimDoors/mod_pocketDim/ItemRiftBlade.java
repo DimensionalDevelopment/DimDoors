@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -198,7 +199,16 @@ public class ItemRiftBlade extends itemDimDoor
 	 {
 		 return "/PocketBlockTextures.png";
 	 }
-
+    public int getItemEnchantability()
+    {
+        return EnumToolMaterial.GOLD.getEnchantability();
+    }
+    
+    public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
+    {
+        return true;
+    }
+    
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
     {
         if (par7 != 1)

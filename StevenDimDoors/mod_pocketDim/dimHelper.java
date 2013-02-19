@@ -158,6 +158,7 @@ public class dimHelper extends DimensionManager
 		
 		if(linkData!=null)
 		{
+			
 			int destinationID=linkData.destDimID;
 			int x=linkData.destXCoord;
 			int y=linkData.destYCoord;
@@ -221,12 +222,20 @@ public class dimHelper extends DimensionManager
 						}
 					}
 				}
-			    player.addExperience(1);
+				if(rand.nextBoolean())
+				{
+					player.addExperience(1);
+				}
+				else
+				{
+					player.addExperience(-1);
+				}
+			   
 			}
 		}
 		if(!world.isRemote)
 		{
-			
+		    
 		}
 	}
 	/**
