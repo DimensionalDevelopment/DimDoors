@@ -417,7 +417,7 @@ public class mod_pocketDim
     	
     	 GameRegistry.addRecipe(new ItemStack(itemRiftBlade, 1), new Object[]
                  {
-                     " x ", " x ", " y ", 'x', this.itemRiftRemover,  'y', Item.ingotGold
+                     " x ", " x ", " y ", 'x', Item.enderPearl,  'y',this.itemRiftRemover
                  });
         }
     	 

@@ -264,10 +264,9 @@ public class ItemRiftBlade extends itemDimDoor
     	
     
     	
-    		par3List.add("Opens a temporary door");
-    		par3List.add ("when used on a rift");
-    		par3List.add ("Also rotates existing doors");
-
+    		par3List.add("Opens a temporary doors,");
+    		par3List.add ("special teleport attack,");
+    		par3List.add ("and rotates existing doors");
 
 
     	
