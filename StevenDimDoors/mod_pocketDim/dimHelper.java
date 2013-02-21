@@ -683,7 +683,10 @@ public class dimHelper extends DimensionManager
 	 */
 	public LinkData createPocket(LinkData link , boolean isGoingDown, boolean isRandomRift)
 	{
-		
+		if(this.getWorld(link.locDimID)==null)
+		{
+			this.initDimension(link.locDimID);
+		}
 		
 		int dimensionID;
 		int depth = this.getDimDepth(link.locDimID);
