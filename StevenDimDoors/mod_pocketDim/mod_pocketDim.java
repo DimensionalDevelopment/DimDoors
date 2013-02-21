@@ -53,7 +53,7 @@ import cpw.mods.fml.relauncher.Side;
 public class mod_pocketDim
 {
 	
-	public static final String version = "1.4.6R1.2.0RC1";
+	public static final String version = "1.4.6R1.2.1RC1";
 	//need to clean up 
     @SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
     public static CommonProxy proxy;
