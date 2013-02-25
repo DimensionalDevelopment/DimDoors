@@ -226,9 +226,13 @@ public class dimHelper extends DimensionManager
 				{
 					player.addExperience(1);
 				}
-				else
+				else if(player.experience>2)
 				{
 					player.addExperience(-1);
+				}
+				else
+				{
+					player.addExperience(1);
 				}
 			   
 			}
