@@ -139,7 +139,7 @@ public class RiftGenerator implements IWorldGenerator
     		}
     	
     	}
-    		if(random.nextInt(120)==0&&world.provider.getDimensionName()!="PocketDim"&&!world.isRemote)
+    		if(random.nextInt(120)==0&&world.provider.getDimensionName()!="PocketDim"&&!world.isRemote&&mod_pocketDim.riftsInWorldGen)
     		{
     		//	System.out.println("tryingToGen");
     			int blockID=Block.stoneBrick.blockID;
