@@ -233,7 +233,7 @@ public class mod_pocketDim
  
          itemChaosDoorID=config.getItem("Chaos Door", 5173).getInt();
          itemRiftRemoverID=config.getItem("Rift Remover", 5171).getInt();
-         itemStableFabricID=config.getItem("Unstable Fabric", 5172).getInt();
+         itemStableFabricID=config.getItem("Stable Fabric", 5172).getInt();
          itemExitDoorID=config.getItem("Warp Door Item", 5173).getInt();
          itemDimDoorID=config.getItem("Dimensional Door Item", 5174).getInt();
          itemLinkSignatureID=config.getItem("Rift Signature Item", 5175).getInt();
@@ -243,7 +243,7 @@ public class mod_pocketDim
 
    
          blockLimboID=config.get("Int", "Block ID for Limbo- must be below 256", 217).getInt();
-         blockDimWallPermID=config.get("Int", "Block ID for blockDimWallPermID- must be below 256", 218).getInt();
+         blockDimWallPermID=config.get("Int", "Block ID for blockDimWallPermID- must be below 256", 220).getInt();
          this.limboDimID=config.get("Int", "Limbo Dimension ID", -23).getInt();
 
          providerID=config.get("Int", "ProviderID", 12).getInt();
