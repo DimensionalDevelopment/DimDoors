@@ -53,7 +53,7 @@ import cpw.mods.fml.relauncher.Side;
 public class mod_pocketDim
 {
 	
-	public static final String version = "1.4.6R1.2.1RC1";
+	public static final String version = "1.4.6R1.2.2RC1";
 	//need to clean up 
     @SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
     public static CommonProxy proxy;
@@ -229,14 +229,14 @@ public class mod_pocketDim
          blockRiftID = config.getBlock("Rift", 1977).getInt();
          transientDoorID = config.getBlock("transientDoorID", 1979).getInt();
 
-         itemRiftBladeID=config.getItem("Rift Blade", 5176).getInt();
+         itemRiftBladeID=config.getItem("Rift Blade", 5676).getInt();
  
-         itemChaosDoorID=config.getItem("Chaos Door", 5173).getInt();
-         itemRiftRemoverID=config.getItem("Rift Remover", 5171).getInt();
-         itemStableFabricID=config.getItem("Stable Fabric", 5172).getInt();
-         itemExitDoorID=config.getItem("Warp Door Item", 5173).getInt();
-         itemDimDoorID=config.getItem("Dimensional Door Item", 5174).getInt();
-         itemLinkSignatureID=config.getItem("Rift Signature Item", 5175).getInt();
+         itemChaosDoorID=config.getItem("Chaos Door", 5673).getInt();
+         itemRiftRemoverID=config.getItem("Rift Remover", 5671).getInt();
+         itemStableFabricID=config.getItem("Stable Fabric", 5672).getInt();
+         itemExitDoorID=config.getItem("Warp Door Item", 5673).getInt();
+         itemDimDoorID=config.getItem("Dimensional Door Item", 5674).getInt();
+         itemLinkSignatureID=config.getItem("Rift Signature Item", 5675).getInt();
          
          TNFREAKINGT = config.get("BOOLEAN", "EXPLOSIONS!!???!!!?!?!!", false).getBoolean(false);
          HOW_MUCH_TNT=config.get("Int", "Chance that a block will not be TNT. must be greater than 1. Explosions!?!?? must be set to true, and you figure out what it does. ", 25).getInt(25);
