@@ -196,7 +196,6 @@ public class dimHelper extends DimensionManager
 		}
 		
 	    
-	    entity.worldObj.updateEntityWithOptionalForce(entity, false);
 	    
 	    if ((entity instanceof EntityPlayerMP)) 
 	    {
@@ -244,7 +243,6 @@ public class dimHelper extends DimensionManager
 
 	    WorldServer.class.cast(newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
 	    
-	    new pocketTeleporter((WorldServer) newWorld, link).placeInPortal(entity, 0, 0, 0, 0);
 	 
 
 
@@ -276,8 +274,7 @@ public class dimHelper extends DimensionManager
 	    }
 	    
 	    
-	    new pocketTeleporter((WorldServer) newWorld, link).placeInPortal(entity, 0, 0, 0, 0);
-	    entity.worldObj.updateEntityWithOptionalForce(entity, false);
+	 
 	    
 	    if ((entity instanceof EntityPlayerMP))
 	    {
@@ -287,12 +284,9 @@ public class dimHelper extends DimensionManager
 	    		{
 	    			player.mcServer.getConfigurationManager().func_72375_a(player, (WorldServer)newWorld);
 	    			
-	    		    new pocketTeleporter((WorldServer) newWorld, link).placeInPortal(entity, 0, 0, 0, 0);
 
 	    		}
 	    }
-	    entity.worldObj.updateEntityWithOptionalForce(entity, false);
-
 	    
 	    
 	    if (((entity instanceof EntityPlayerMP)) && (difDest)) 
@@ -314,7 +308,8 @@ public class dimHelper extends DimensionManager
 	    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
 	    }
 	    
-	   
+	    entity.worldObj.updateEntityWithOptionalForce(entity, false);
+
 	    new pocketTeleporter((WorldServer) newWorld, link).placeInPortal(entity, 0, 0, 0, 0);
 	 
 	    
