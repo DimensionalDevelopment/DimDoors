@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
@@ -31,22 +32,24 @@ public class pocketTeleporter extends Teleporter
 	     * Create a new portal near an entity.
 	     */
 	 @Override
-	    public void placeInPortal(Entity par1Entity, double par2, double par4, double par6, float par8)
-	    {
-	    	EntityPlayer player = (EntityPlayer) par1Entity;
+	 public void placeInPortal(Entity par1Entity, double par2, double par4, double par6, float par8)
+	 {
+		 if(par1Entity instanceof EntityPlayer)
+		 {
+		 	EntityPlayer player = (EntityPlayer) par1Entity;
 	    
 	    	
-            int id;
+		 	int id;
          
             	
-            		id=dimHelper.instance.getDestOrientation(sendingLink);
+           	id=dimHelper.instance.getDestOrientation(sendingLink);
             		//System.out.println("Teleporting with link oreintation "+id);
 
-         //   System.out.println(id);
-            player.rotationYaw=(id*90)+90;
-                if(id==2||id==6)
-                {
-                	player.setPositionAndUpdate( x+1.5, y-1, z+.5 );
+       
+           	player.rotationYaw=(id*90)+90;
+            if(id==2||id==6)
+            {
+            	player.setPositionAndUpdate( x+1.5, y-1, z+.5 );
                 	
 
                 }
@@ -77,8 +80,109 @@ public class pocketTeleporter extends Teleporter
                 
                 
                 
-                
+		 }
+		 else if(par1Entity instanceof   EntityMinecart)
+		 {
+			 int id;
+         
+			 id=dimHelper.instance.getDestOrientation(sendingLink);
+
+
+			 par1Entity.rotationYaw=(id*90)+90;
+   
+			 if(id==2||id==6)
+			 {
+				 this.setEntityPosition(par1Entity, x+1.5, y, z+.5 );
+				 par1Entity.motionX =2;   
+			 }
+			 else if(id==3||id==7)
+			 {
+     	
+				 this.setEntityPosition(par1Entity, x+.5, y, z+1.5 );
+				 par1Entity.motionZ =2;
+				 
+			 }
+			 else if(id==0||id==4)
+			 {
+     	
+				 this.setEntityPosition(par1Entity,x-.5, y, z+.5);
+				 par1Entity.motionX =-2;
+			 }
+			 else if(id==1||id==5)
+			 {
+				 this.setEntityPosition(par1Entity,x+.5, y, z-.5);	
+				 par1Entity.motionZ =-2;
+			 }
+			 else
+			 {
+				 this.setEntityPosition(par1Entity,x, y, z);	
+
+			 }
+ 		
+
+     
+     
+		}
+		 
+		 
+		 else if(par1Entity instanceof   Entity)
+		 {
+			 int id;
+         
+     	
+			 id=dimHelper.instance.getDestOrientation(sendingLink);
+			 //System.out.println("Teleporting with link oreintation "+id);
+
+
+			 par1Entity.rotationYaw=(id*90)+90;
+   
+			 if(id==2||id==6)
+			 {
+				 this.setEntityPosition(par1Entity, x+1.5, y, z+.5 );
+     	
+
+			 }
+			 else if(id==3||id==7)
+			 {
+     	
+				 this.setEntityPosition(par1Entity, x+.5, y, z+1.5 );
+     
+
+			 }
+			 else if(id==0||id==4)
+			 {
+     	
+				 this.setEntityPosition(par1Entity,x-.5, y, z+.5);
+     
+			 }
+			 else if(id==1||id==5)
+			 {
+				 this.setEntityPosition(par1Entity,x+.5, y, z-.5);	
+     	
+
+			 }
+			 else
+			 {
+				 this.setEntityPosition(par1Entity,x, y, z);	
+
+			 }
+ 		
+     
+     
+     
+		}
+		   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
 	    }
+
+	 public void setEntityPosition(Entity entity, double x, double y, double z)
+	 {
+		 entity.lastTickPosX = entity.prevPosX = entity.posX = x;
+		 entity.lastTickPosY = entity.prevPosY = entity.posY = y + (double)entity.yOffset;
+		 entity.lastTickPosZ = entity.prevPosZ = entity.posZ = z;
+		 entity.setPosition(x, y, z);
+	 }
+		 
+			
 
 	    @Override
 	    public boolean func_85188_a(Entity par1Entity)

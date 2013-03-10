@@ -102,13 +102,9 @@ public class ExitDoor extends dimDoor
         int var12 = (int) (MathHelper.floor_double((double)((par5Entity.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
        
     	int num = par1World.getBlockMetadata(par2, par3-1, par4);
-    	if(!par1World.isRemote&&(num==5||num==4||num==6||num==7)&&(num-4)==var12&&par1World.getBlockId(par2, par3-1, par4)==mod_pocketDim.ExitDoorID)
+    	if(!par1World.isRemote&&(num==5||num==4||num==6||num==7)&&(num-4)==var12&&par1World.getBlockId(par2, par3-1, par4)==mod_pocketDim.ExitDoorID||!par1World.isRemote&&(num==5||num==4||num==6||num==7)&&par1World.getBlockId(par2, par3-1, par4)==mod_pocketDim.ExitDoorID&&!(par5Entity instanceof EntityPlayer) )
 			{
-    	EntityPlayer player;
-		if(par5Entity instanceof EntityPlayerMP)
-    	{
-    		
-    		 player= (EntityPlayer) par5Entity;
+    
     		 //int destinationID= dimHelper.instance.getDestIDFromCoords(par2, par3, par4, par1World);
     		 
     		 this.onPoweredBlockChange(par1World, par2, par3, par4, false);
@@ -117,11 +113,11 @@ public class ExitDoor extends dimDoor
     		 if(linkData!=null)
     		 {
     			 if(dimHelper.dimList.containsKey(linkData.destDimID))
-    			 dimHelper.instance.teleportToPocket(par1World, linkData, player);
+    			 dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
     		 }
      			
     		
-    	}
+    	
 		}
     }
 	

@@ -48,14 +48,9 @@ public class TransientDoor extends ExitDoor
         int num = par1World.getBlockMetadata(par2, par3, par4);
      //   System.out.println("metadata "+num+" orientation "+var12);
     	
-    	if(!par1World.isRemote&&(num)==var12)
+    	if(!par1World.isRemote&&(num)==var12||!par1World.isRemote&&!(par5Entity instanceof EntityPlayer))
 			{
-    	EntityPlayer player;
-		if(par5Entity instanceof EntityPlayerMP)
-    	{
-    		
-    		 player= (EntityPlayer) par5Entity;
-    		 //int destinationID= dimHelper.instance.getDestIDFromCoords(par2, par3, par4, par1World);
+    
     		 
     		
 
@@ -64,7 +59,7 @@ public class TransientDoor extends ExitDoor
     		 {
     			 if(dimHelper.dimList.containsKey(linkData.destDimID))
     			 {
-    				 dimHelper.instance.teleportToPocket(par1World, linkData, player);
+    				 dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
     				 par1World.setBlockWithNotify(par2, par3, par4, 0);
     			 }
     		 }
@@ -76,7 +71,7 @@ public class TransientDoor extends ExitDoor
              		 {
              			 if(dimHelper.dimList.containsKey(linkData.destDimID))
              			 {
-             				 dimHelper.instance.teleportToPocket(par1World, linkData, player);
+             				 dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
              				 par1World.setBlockWithNotify(par2, par3, par4, 0);
              			 }
              		 } 
@@ -87,7 +82,7 @@ public class TransientDoor extends ExitDoor
     		
     	}
 		
-    }
+    
 	public void onPoweredBlockChange(World par1World, int par2, int par3, int par4, boolean par5)
     {
       

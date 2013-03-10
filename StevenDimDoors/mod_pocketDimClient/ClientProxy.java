@@ -19,6 +19,7 @@ public class ClientProxy extends CommonProxy
 		MinecraftForgeClient.preloadTexture(RIFT_PNG);
 
 		MinecraftForgeClient.preloadTexture(RIFT2_PNG);
+		
 
 		
 	}
@@ -43,6 +44,7 @@ public class ClientProxy extends CommonProxy
 		mod_pocketDim.blockDimWallPerm.blockIndexInTexture=0;
 		mod_pocketDim.blockRift.blockIndexInTexture=200;
 		mod_pocketDim.dimDoor.blockIndexInTexture=18;
+	//	mod_pocketDim.dimRail.blockIndexInTexture=13;
 		mod_pocketDim.ExitDoor.blockIndexInTexture=19;
 		mod_pocketDim.chaosDoor.blockIndexInTexture=30;
 		mod_pocketDim.transientDoor.blockIndexInTexture=200;

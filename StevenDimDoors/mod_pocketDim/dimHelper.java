@@ -16,11 +16,21 @@ import java.util.Random;
 import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet41EntityEffect;
+import net.minecraft.network.packet.Packet43Experience;
+import net.minecraft.network.packet.Packet9Respawn;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
@@ -141,7 +151,148 @@ public class dimHelper extends DimensionManager
 		playerMP.mcServer.getConfigurationManager().transferPlayerToDimension(playerMP, mod_pocketDim.limboDimID, new pocketTeleporter((WorldServer) this.getWorld(mod_pocketDim.limboDimID), linkData));
 		
 	}
+	private  void teleportEntity(World oldWorld, Entity entity, LinkData link) 
+	{
+		
+		if(this.getWorld(link.destDimID)==null)
+		{
+			this.initDimension(link.destDimID);
+		}
+		World newWorld = this.getWorld(link.destDimID);
+	    Entity mount = entity.ridingEntity;
+	    Entity rider = entity.riddenByEntity;
+	    if (entity.ridingEntity != null) 
+	    {
+	      entity.mountEntity(null);
+	      mount.riddenByEntity = null;
+	      teleportEntity(oldWorld, mount, link);
+	    }
+	    
+	    if (entity.riddenByEntity != null) 
+	    {
+	      rider.mountEntity(null);
+	      entity.riddenByEntity = null;
+	      teleportEntity(oldWorld, rider, link);
+	    }
+	    
+	    boolean changingworlds = entity.worldObj != newWorld;
+	    
+	    entity.worldObj.updateEntityWithOptionalForce(entity, false);
+	    if ((entity instanceof EntityPlayerMP)) 
+	    {
+	    	EntityPlayerMP player = (EntityPlayerMP)entity;
+	    	player.closeScreen();
+	    	if (changingworlds) 
+	    	{
+	    		player.dimension = link.destDimID;
+	    		player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
+	    	
+	    		((WorldServer)entity.worldObj).getPlayerManager().removePlayer(player);
+	    	}
+	    }
+	    if(changingworlds)
+	    {
+	    	if ((entity instanceof EntityPlayer))
+		    {
+		   		EntityPlayer player = (EntityPlayer)entity;
+		   		player.closeScreen();
+		   		oldWorld.playerEntities.remove(player);
+		   		oldWorld.updateAllPlayersSleepingFlag();
+	        }
+		    int i = entity.chunkCoordX;
+		    int j = entity.chunkCoordZ;
+		    if ((entity.addedToChunk) && (oldWorld.getChunkProvider().chunkExists(i, j)))
+		    {
+		    	oldWorld.getChunkFromChunkCoords(i, j).removeEntity(entity);
+		    	oldWorld.getChunkFromChunkCoords(i, j).isModified = true;
+		    }
+		    oldWorld.loadedEntityList.remove(entity);
+		    oldWorld.releaseEntitySkin(entity);
+		    entity.isDead = false;
+	    }
 
+	    ((WorldServer)newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
+	   
+	 
+
+
+	    if (changingworlds) 
+	    {
+	    	if (!(entity instanceof EntityPlayer)) 
+	    	{
+	    		NBTTagCompound entityNBT = new NBTTagCompound();
+	    		entity.isDead = false;
+	    		entity.addEntityID(entityNBT);
+	    		entity.isDead = true;
+	    		entity = EntityList.createEntityFromNBT(entityNBT, newWorld);
+	    		if (entity == null) 
+	    		{
+	    			 return;
+	    		}
+	    	}
+	    	
+	    
+	    
+	    	newWorld.spawnEntityInWorld(entity);
+	    	entity.setWorld(newWorld);
+
+	    }
+	    
+	    
+	
+	    
+	    
+	    if ((entity instanceof EntityPlayerMP))
+	    {
+	    	EntityPlayerMP player = (EntityPlayerMP)entity;
+	    	
+	    	if (changingworlds)
+	    		{
+	    			player.mcServer.getConfigurationManager().func_72375_a(player, (WorldServer)newWorld);
+	    		}
+	    }
+	    
+	    
+	    
+	    if (((entity instanceof EntityPlayerMP)) && (changingworlds)) 
+	    {
+	    	EntityPlayerMP player = (EntityPlayerMP)entity;
+	    	player.theItemInWorldManager.setWorld((WorldServer)newWorld);
+	    	player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, (WorldServer)newWorld);
+	    	player.mcServer.getConfigurationManager().syncPlayerInventory(player);
+	    	Iterator var14 = player.getActivePotionEffects().iterator();
+
+	    	while (var14.hasNext())
+	    	{
+	    		PotionEffect var13 = (PotionEffect)var14.next();
+	    		player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, var13));
+	    	}
+	    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
+	    }
+	    
+	   
+	    new pocketTeleporter((WorldServer) newWorld, link).placeInPortal(entity, 0, 0, 0, 0);
+	 
+	    
+	    if ((entity != null) && (mount != null)) 
+	    {
+	      entity.mountEntity(mount);
+	      mount.updateRiderPosition();
+	      if ((entity instanceof EntityPlayerMP))
+	      {
+	        FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().serverUpdateMountedMovingPlayer((EntityPlayerMP)entity);
+	      }
+	    }
+	    if ((entity != null) && (rider != null)) 
+	    {
+	      rider.mountEntity(entity);
+	      entity.updateRiderPosition();
+	      if ((rider instanceof EntityPlayerMP))
+	      {
+	    	  FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().serverUpdateMountedMovingPlayer((EntityPlayerMP)rider);
+	      }
+	    }
+	}
 	/**
 	 * Primary function used to teleport the player using doors. Performes numerous null checks, and also generates the destination door/pocket if it has not done so already. 
 	 * Also ensures correct orientation relative to the door using the pocketTeleporter.
@@ -151,7 +302,7 @@ public class dimHelper extends DimensionManager
 	 * @param orientation- the orientation of the door used to teleport, determines player orientation and door placement on arrival
 	 * @Return
 	 */
-	public void teleportToPocket(World world,LinkData linkData, EntityPlayer player)
+	public void teleportToPocket(World world,LinkData linkData, Entity entity)
 	{
 		
 		
@@ -164,9 +315,9 @@ public class dimHelper extends DimensionManager
 			int y=linkData.destYCoord;
 			int z=linkData.destZCoord;
 		
-			if(linkData.destDimID==mod_pocketDim.limboDimID)
+			if(linkData.destDimID==mod_pocketDim.limboDimID&&entity instanceof EntityPlayerMP)
 			{
-				this.teleportToLimbo(world, linkData, player);
+				this.teleportToLimbo(world, linkData, EntityPlayerMP.class.cast(entity));
 			}
 
 	        
@@ -178,61 +329,38 @@ public class dimHelper extends DimensionManager
 				this.generateDoor(world,linkData);
 			 
 			
-				if(player instanceof EntityPlayerMP)
-				{
+					
+					
+				
+					
+					
 
-					EntityPlayerMP playerMP = (EntityPlayerMP) player;
-					
-					if(linkData.destDimID==world.provider.dimensionId)
-					{
-						(new pocketTeleporter((WorldServer) world,linkData)).placeInPortal(playerMP, x, y, z, 0);
-						//tele.placeInPortal(playerMP, x, y, z, 0);
-						player.worldObj.playSoundEffect(player.posX, player.posY, player.posZ, "mob.endermen.portal", 1.0F, 1.0F);
-
-					}
-					else
-					{
-					
-					
-					
+						this.teleportEntity(world, entity, linkData);							    
 						
-							playerMP.mcServer.getConfigurationManager().transferPlayerToDimension(playerMP, destinationID, new pocketTeleporter((WorldServer) world, linkData));
+						entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
 						
-						player.worldObj.playSoundEffect(player.posX, player.posY, player.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+						int playerXCoord=MathHelper.floor_double(entity.posX);
+						int playerYCoord=MathHelper.floor_double(entity.posY);
+						int playerZCoord=MathHelper.floor_double(entity.posZ);
 						
-						int playerXCoord=MathHelper.floor_double(player.posX);
-						int playerYCoord=MathHelper.floor_double(player.posY);
-						int playerZCoord=MathHelper.floor_double(player.posZ);
-						
-						if(Block.blocksList.length>player.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)&&!player.worldObj.isAirBlock(playerXCoord,playerYCoord,playerZCoord))
+						if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord+1,playerZCoord))
 						{
-							if(Block.blocksList[player.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)].isOpaqueCube())
+							if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube())
 							{
-								player.worldObj.setBlockWithNotify(playerXCoord,playerYCoord+1,playerZCoord,0);
+								entity.worldObj.setBlockWithNotify(playerXCoord,playerYCoord+1,playerZCoord,0);
 							}
 						}
-						if(player.worldObj.getBlockId(x, y, z)==mod_pocketDim.dimDoorID||player.worldObj.getBlockId(x, y, z)==mod_pocketDim.ExitDoorID)
+						if(entity.worldObj.getBlockId(x, y, z)==mod_pocketDim.dimDoorID||entity.worldObj.getBlockId(x, y, z)==mod_pocketDim.ExitDoorID)
 						{
-							if(this.getLinkDataFromCoords(x, y, z, player.worldObj)!=null)
+							if(this.getLinkDataFromCoords(x, y, z, entity.worldObj)!=null)
 							{
 								//System.out.println("updated link orientation");
-								this.getLinkDataFromCoords(x, y, z, player.worldObj).linkOrientation= player.worldObj.getBlockMetadata(x, y -1, z);
+								this.getLinkDataFromCoords(x, y, z, entity.worldObj).linkOrientation= entity.worldObj.getBlockMetadata(x, y -1, z);
 								
 							}
-						}
-					}
-				}
-				if(rand.nextBoolean())
-				{
-					player.addExperience(1);
-				}
-				else if(player.experience>2)
-				{
-					player.addExperience(-1);
-				}
-				else
-				{
-					player.addExperience(1);
+						
+
+					
 				}
 			   
 			}
@@ -242,6 +370,9 @@ public class dimHelper extends DimensionManager
 		    
 		}
 	}
+	
+	
+	
 	/**
 	 * Creates a link at the location, pointing to the destination. Does NOT create a pair, so must be called twice.
 	 * @param locationDimID

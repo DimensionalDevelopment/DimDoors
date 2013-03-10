@@ -45,19 +45,16 @@ public class dimHatch extends BlockTrapDoor
 	    
 	   	if(!par1World.isRemote&&(num>3&&num<8||num>11)&&par1World.provider instanceof pocketProvider)
 		{
-	    	EntityPlayerMP playerMP;
-	    	if(par5Entity instanceof EntityPlayerMP)
-	    	{
-	    		playerMP= (EntityPlayerMP) par5Entity;
+	    	
 	    		this.onPoweredBlockChange(par1World, par2, par3, par4, false);
 	    		 
 	   			DimData dimData = (DimData) dimHelper.instance.dimList.get(par1World.provider.dimensionId);
 	    			
 	    		LinkData exitLink=dimData.exitDimLink;
 	    		 
-	    		dimHelper.instance.teleportToPocket(par1World, exitLink, playerMP);
+	    		dimHelper.instance.teleportToPocket(par1World, exitLink, par5Entity);
 	
-	    	}
+	    	
 		}
 	 }
 

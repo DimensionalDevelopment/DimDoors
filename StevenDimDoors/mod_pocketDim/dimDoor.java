@@ -30,6 +30,7 @@ public class dimDoor extends BlockContainer
 
 	}
 	
+	
 	 @Override
 	 public String getTextureFile()
 	 {
@@ -73,24 +74,41 @@ public class dimDoor extends BlockContainer
     	{
     		int var12 = (int) (MathHelper.floor_double((double)((par5Entity.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
        
-    		int num = par1World.getBlockMetadata(par2, par3-1, par4);
-    		if(!par1World.isRemote&&(num==5||num==4||num==6||num==7)&&(num-4)==var12&&par1World.getBlockId(par2, par3-1, par4)==mod_pocketDim.dimDoorID)
+    		int num=0;
+    		LinkData linkData=null;
+    		
+    		if(par1World.getBlockId(par2, par3-1, par4)==this.blockID)
     		{
-    			EntityPlayer player;
+    			num=par1World.getBlockMetadata(par2, par3-1, par4);
+    			linkData= dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World);
+    		}
     		
-    			if(par5Entity instanceof EntityPlayerMP)
-    			{
+    		if(par1World.getBlockId(par2, par3+1, par4)==this.blockID)
+    		{
+    			num=par1World.getBlockMetadata(par2, par3, par4);
+    			linkData= dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World);
+    		}
     		
-    				player= (EntityPlayer) par5Entity;
+    		if(!par1World.isRemote&&(num==5||num==4||num==6||num==7)&&(num-4)==var12)
+    		{
+    			
     				//int destinationID= dimHelper.instance.getDestIDFromCoords(par2, par3, par4, par1World);
     		 
-    				this.onPoweredBlockChange(par1World, par2, par3, par4, false);
+    			
 
-    				LinkData linkData= dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World);
-    				dimHelper.instance.teleportToPocket(par1World, linkData, player);
-     			
+    				
+    				
+    				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
+    				this.onPoweredBlockChange(par1World, par2, par3, par4, false);
     		
-    			}
+    			
+    		}
+    		else if (!(par5Entity instanceof EntityPlayer)&&num>3)
+    		{
+    			this.onPoweredBlockChange(par1World, par2, par3, par4, false);
+
+			
+				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
     		}
     	}
     }
@@ -125,7 +143,7 @@ public class dimDoor extends BlockContainer
 				{
 					int var12 = (int) (MathHelper.floor_double((double)((par5EntityPlayer.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
 					if(par1World.getBlockMetadata(par2, par3, par4)==var12)
-					{
+					{ 
 						var12=dimHelper.instance.flipDoorMetadata(var12);
 					}
 					par1World.setBlockMetadataWithNotify(par2, par3, par4, var12);
@@ -458,11 +476,11 @@ public class dimDoor extends BlockContainer
             {
                 if (!var5)
                 {
-                    this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, var2);
+                    this.setBlockBounds(0.001F, 0.0F, 0.0F, 1.0F, 1.0F, var2);
                 }
                 else
                 {
-                    this.setBlockBounds(0.0F, 0.0F, 1.0F - var2, 1.0F, 1.0F, 1.0F);
+                    this.setBlockBounds(0.001F, 0.0F, 1.0F - var2, 1.0F, 1.0F, 1.0F);
                 }
             }
             else
@@ -476,11 +494,11 @@ public class dimDoor extends BlockContainer
             {
                 if (!var5)
                 {
-                    this.setBlockBounds(1.0F - var2, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+                    this.setBlockBounds(1.0F - var2, 0.0F, 0.001F, 1.0F, 1.0F, 1.0F);
                 }
                 else
                 {
-                    this.setBlockBounds(0.0F, 0.0F, 0.0F, var2, 1.0F, 1.0F);
+                    this.setBlockBounds(0.0F, 0.0F, 0.001F, var2, 1.0F, 1.0F);
                 }
             }
             else
@@ -494,11 +512,11 @@ public class dimDoor extends BlockContainer
             {
                 if (!var5)
                 {
-                    this.setBlockBounds(0.0F, 0.0F, 1.0F - var2, 1.0F, 1.0F, 1.0F);
+                    this.setBlockBounds(0.0F, 0.0F, 1.0F - var2, .99F, 1.0F, 1.0F);
                 }
                 else
                 {
-                    this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, var2);
+                    this.setBlockBounds(0.0F, 0.0F, 0.0F, .99F, 1.0F, var2);
                 }
             }
             else
@@ -512,11 +530,11 @@ public class dimDoor extends BlockContainer
             {
                 if (!var5)
                 {
-                    this.setBlockBounds(0.0F, 0.0F, 0.0F, var2, 1.0F, 1.0F);
+                    this.setBlockBounds(0.0F, 0.0F, 0.0F, var2, 1.0F, 0.99F);
                 }
                 else
                 {
-                    this.setBlockBounds(1.0F - var2, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+                    this.setBlockBounds(1.0F - var2, 0.0F, 0.0F, 1.0F, 1.0F, 0.99F);
                 }
             }
             else
@@ -634,7 +652,7 @@ public class dimDoor extends BlockContainer
      */
     public int getMobilityFlag()
     {
-        return 1;
+        return 2;
     }
 
     /**

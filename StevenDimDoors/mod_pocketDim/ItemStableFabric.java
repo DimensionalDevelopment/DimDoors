@@ -24,11 +24,7 @@ public class ItemStableFabric extends Item
     
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
     {
-    	if(!par3World.isRemote)
-    	{
-    		LinkData link = new LinkData(par3World.provider.dimensionId, 0,  par4, par5+2, par6, par4, par5+2, par6, true);
-			link =dimHelper.instance.createPocket(link,true, true);
-    	}
+    
     	System.out.println("Block metadata is "+par3World.getBlockMetadata(par4, par5, par6));
     	return true;
     }
@@ -43,9 +39,7 @@ public class ItemStableFabric extends Item
     	
     
     	
-    		par3List.add("DEBUG/ADMIN ONLY ITEM");
-    		par3List.add ("on use creates a ");
-    		par3List.add ("random dungeon rift");
+    
 
 
 

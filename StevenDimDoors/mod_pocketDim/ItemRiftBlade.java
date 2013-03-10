@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,6 +24,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemRiftBlade extends itemDimDoor
 {
+	private int weaponDamage;
+	private final EnumToolMaterial toolMaterial= EnumToolMaterial.GOLD;
     private Material doorMaterial;
     Random rand = new Random();
     public ItemRiftBlade(int par1, Material par2Material)
@@ -31,6 +34,7 @@ public class ItemRiftBlade extends itemDimDoor
     	 this.setMaxStackSize(1);
     	// this.setTextureFile("/PocketBlockTextures.png");
          this.setCreativeTab(CreativeTabs.tabTransport);
+         this.weaponDamage =8;
       
 
       //   this.iconIndex=5;
@@ -55,7 +59,7 @@ public class ItemRiftBlade extends itemDimDoor
     }
     public int getDamageVsEntity(Entity par1Entity)
     {
-        return 6;
+        return 8;
     }
     
     
@@ -119,10 +123,95 @@ public class ItemRiftBlade extends itemDimDoor
     
         return true;
     }
+    public ItemStack onFoodEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+    {
+        return par1ItemStack;
+    }
 
+    /**
+     * How long it takes to use or consume an item
+     */
+    public int getMaxItemUseDuration(ItemStack par1ItemStack)
+    {
+        return 72000;
+    }
     
+    public EnumAction getItemUseAction(ItemStack par1ItemStack)
+    {
+        return EnumAction.bow;
+    }
+
+    public void onPlayerStoppedUsing(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer, int par4)
+    {
+    	System.out.println(par4);
+    	
+    	if(dimHelper.dimList.get(par2World.provider.dimensionId)!=null&&!par2World.isRemote)
+		{
+			
+    		System.out.println("stopped");
+			if(par3EntityPlayer.getItemInUseDuration()>15)
+			{
+			
+				Vec3 var2 = par3EntityPlayer.getLook(1.0F);
+			
+				double cooef = -2;
+		        var2.xCoord*=cooef;
+		        var2.yCoord*=cooef;
+		        var2.zCoord*=cooef;
+		        double var5 = par3EntityPlayer.posX  - var2.xCoord;
+		        double var9 = par3EntityPlayer.posZ - var2.zCoord;
+		        double var7 =par3EntityPlayer.posY-var2.yCoord+2;
+			
+		        int x = MathHelper.floor_double(var5);
+		        int y = MathHelper.floor_double(var7);
+		        int z = MathHelper.floor_double(var9);
+			
+		        System.out.println(x+" "+y+" "+z);
+		        int rotation = (int) (MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
+		        LinkData link = new LinkData(par2World.provider.dimensionId, 0, x, y, z, x, y, z, true);
+
+		        if(dimHelper.dimList.get(par2World.provider.dimensionId).depth==0)
+		        {
+		        	link.linkOrientation= rotation;
+		        	dimHelper.instance.createPocket(link,true, false);
+		        	System.out.println("doingDown");
+
+		        }
+		        else if(dimHelper.dimList.get(par2World.provider.dimensionId).depth==1)
+		        {
+		        	link.linkOrientation= rotation;
+		        	dimHelper.instance.createLink(link);
+		        	System.out.println("doingup");
+		        	int ExitDimID= dimHelper.dimList.get(par2World.provider.dimensionId).exitDimLink.destDimID;
+				
+		        	dimHelper.instance.createLink(link.locDimID, ExitDimID, x, y, z, x, y, z,rotation);
+		        	dimHelper.instance.createLink(ExitDimID, link.locDimID, x, y, z, x, y, z,dimHelper.instance.flipDoorMetadata(rotation));
+
+
+		        }
+				else if(dimHelper.dimList.get(par2World.provider.dimensionId).isPocket)
+				{
+				link.linkOrientation= rotation;
+				dimHelper.instance.createPocket(link,false, false);
+				}
+			
+		
+			
+			
+			
+		        placeDoorBlock(par2World, x, y, z, rotation,  mod_pocketDim.transientDoor);
+			}
+			else 
+			{
+				
+			}
+		}
+	
+		
+    }
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {
+    	Boolean didFindThing=false;
     	MovingObjectPosition hit = 	this.getMovingObjectPositionFromPlayer(par3EntityPlayer.worldObj, par3EntityPlayer, false );
 		if(hit!=null)
 		{
@@ -153,6 +242,7 @@ public class ItemRiftBlade extends itemDimDoor
 	                {
 	              
 	                    placeDoorBlock(par2World, par4, par5, par6, var12, var11);
+	                    didFindThing=true;
 
 	                   
 	                   par1ItemStack.damageItem(10, par3EntityPlayer);
@@ -161,20 +251,26 @@ public class ItemRiftBlade extends itemDimDoor
 	            }
 				}
 			}
+			else if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ)==mod_pocketDim.transientDoorID)
+			{
+				didFindThing=true;
+			}
 			
 		}
 		
 		
+		
+		
 		if(!par3EntityPlayer.worldObj.isRemote)
 		{
-		List<EntityLiving> list =  par3EntityPlayer.worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox( par3EntityPlayer.posX-7,par3EntityPlayer.posY-7, par3EntityPlayer.posZ-7, par3EntityPlayer.posX+7,par3EntityPlayer.posY+7, par3EntityPlayer.posZ+7));
-		list.remove(par3EntityPlayer);
+			List<EntityLiving> list =  par3EntityPlayer.worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox( par3EntityPlayer.posX-8,par3EntityPlayer.posY-8, par3EntityPlayer.posZ-8, par3EntityPlayer.posX+8,par3EntityPlayer.posY+8, par3EntityPlayer.posZ+8));
+			list.remove(par3EntityPlayer);
 		  
 		
-		for(EntityLiving ent : list)
-		{
-			
-			  Vec3 var3 = par3EntityPlayer.getLook(1.0F).normalize();
+			for(EntityLiving ent : list)
+			{
+				
+				Vec3 var3 = par3EntityPlayer.getLook(1.0F).normalize();
 	            Vec3 var4 =  par3EntityPlayer.worldObj.getWorldVec3Pool().getVecFromPool(ent.posX -  par3EntityPlayer.posX, ent.boundingBox.minY + (double)((ent.height) / 2.0F) - ( par3EntityPlayer.posY + (double) par3EntityPlayer.getEyeHeight()), ent.posZ -  par3EntityPlayer.posZ);
 	            double var5 = var4.lengthVector();
 	            var4 = var4.normalize();
@@ -183,15 +279,26 @@ public class ItemRiftBlade extends itemDimDoor
 	            {
 	            	 System.out.println(list.size());
 	            	ItemRiftBlade.class.cast(par1ItemStack.getItem()).teleportToEntity(par1ItemStack,ent, par3EntityPlayer);
+	            	didFindThing=true;
 	            	break;
 
 	            	//ItemRiftBlade.class.cast(item.getItem()).teleportTo(event.entityPlayer, ent.posX, ent.posY, ent.posZ);
 	            }
-		}
+			}
 	
    
 		}
-		return par1ItemStack;
+	//	if(dimHelper.dimList.get(par2World.provider.dimensionId)!=null&&!par2World.isRemote&&!didFindThing)
+		{
+			System.out.println("using");
+            par3EntityPlayer.setItemInUse(par1ItemStack, this.getMaxItemUseDuration(par1ItemStack));
+
+		}
+		
+	
+		
+		
+			return par1ItemStack;
     
     }
     @Override
@@ -203,7 +310,10 @@ public class ItemRiftBlade extends itemDimDoor
     {
         return EnumToolMaterial.GOLD.getEnchantability();
     }
-    
+    public String func_77825_f()
+    {
+    	 return EnumToolMaterial.GOLD.toString();
+    }
     public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
     {
         return true;
@@ -223,6 +333,8 @@ public class ItemRiftBlade extends itemDimDoor
           
             
                 var11 = mod_pocketDim.transientDoor;
+                
+                
             
             
             

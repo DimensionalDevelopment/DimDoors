@@ -73,12 +73,7 @@ public class ChaosDoor extends dimDoor
     	int num = par1World.getBlockMetadata(par2, par3-1, par4);
     	if(!par1World.isRemote&&(num==5||num==4||num==6||num==7)&&(num-4)==var12&&par1World.getBlockId(par2, par3-1, par4)==mod_pocketDim.chaosDoorID)
   		{
-    		EntityPlayer player;
-    		if(par5Entity instanceof EntityPlayer)
-    		{
     		
-    			player= (EntityPlayer) par5Entity;
-    		 
     			this.onPoweredBlockChange(par1World, par2, par3, par4, false);
     			
     			boolean foundRandomDest=false;
@@ -102,7 +97,7 @@ public class ChaosDoor extends dimDoor
 	    				{
 	    					foundRandomDest=true;
 	    					
-	    					dimHelper.instance.teleportToPocket(par1World, new LinkData(link.destDimID,link.locDimID,link.destXCoord,link.destYCoord,link.destZCoord,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket), player);
+	    					dimHelper.instance.teleportToPocket(par1World, new LinkData(link.destDimID,link.locDimID,link.destXCoord,link.destYCoord,link.destZCoord,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket), par5Entity);
 	    					
 	    					if(dimHelper.getWorld(link.locDimID)!=null)
 	    					{
@@ -116,6 +111,6 @@ public class ChaosDoor extends dimDoor
 	    		}   			   		
     		}
 		}
-    }
+    
 
 }

@@ -53,7 +53,7 @@ import cpw.mods.fml.relauncher.Side;
 public class mod_pocketDim
 {
 	
-	public static final String version = "1.4.6R1.2.2RC1";
+	public static final String version = "1.4.6R1.3.0D1";
 	//need to clean up 
     @SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
     public static CommonProxy proxy;
@@ -71,6 +71,7 @@ public class mod_pocketDim
     public static int blockRiftID;
     public static int transientDoorID;
     public static int itemRiftBladeID;
+  //  public static int railRenderID;
 
     public static int itemStableFabricID;
     public static int itemExitDoorID;
@@ -80,6 +81,8 @@ public class mod_pocketDim
     public static int chaosDoorID;
 	public static int blockLimboID;
     public static int dimHatchID;
+ //   public static int dimRailID;
+
 	public static int riftSpreadFactor;
 	public static int DoorRenderID=55;
 	public static int HOW_MUCH_TNT;
@@ -98,6 +101,8 @@ public class mod_pocketDim
     public static Block blockRift;
     public static Block blockLimbo;
     public static  Block dimDoor;    
+//    public static  Block dimRail;    
+
     public static  Block blockDimWall;   
     public static  Block dimHatch;
     public static Block blockDimWallPerm;
@@ -164,6 +169,8 @@ public class mod_pocketDim
 			public static boolean enableUnstableDoor;
 
 			public static boolean enableRiftBlade;
+			
+		//	public static boolean enableDimRail;
 
 			public static boolean enableDimTrapDoor;
 
@@ -210,6 +217,7 @@ public class mod_pocketDim
          
          
          config.load();
+       //  this.enableDimRail = config.get("BOOLEAN", "true to enable dim rail crafting", true).getBoolean(true);
          this.enableDimTrapDoor = config.get("BOOLEAN", "true to enable trap door crafting", true).getBoolean(true);
          this.enableIronDimDoor = config.get("BOOLEAN", "true to enable iron dim door crafting", true).getBoolean(true);
          this.enableRiftBlade = config.get("BOOLEAN", "true to enable rift blade crafting", true).getBoolean(true);
@@ -218,10 +226,12 @@ public class mod_pocketDim
          this.enableUnstableDoor = config.get("BOOLEAN", "true to enable unstable door crafting", true).getBoolean(true);
          this.enableWoodenDimDoor = config.get("BOOLEAN", "true to enable wooden door crafting", true).getBoolean(true);
          this.enableDoorOpenGL = config.get("BOOLEAN", "Toggles the door render effect", true).getBoolean(true);
+         
+     //    dimRailID = config.getBlock("Dimensional Rail", 1980).getInt();
 
          chaosDoorID = config.getBlock("Chaos Door", 1978).getInt();
          dimDoorID = config.getBlock("Dimensional Door", 1970).getInt();
-         dimHatchID = config.getBlock("Transdimensional Hatch", 1971).getInt();
+         dimHatchID = config.getBlock("Transdimensional Trapdoor", 1971).getInt();
          linkDimDoorID= config.getBlock("Dimensional Door Link", 1972).getInt();
          blockDimWallID=config.getBlock("Fabric of Reality", 1973).getInt();
          ExitDoorID = config.getBlock("Warp Door", 1975).getInt();
@@ -230,7 +240,6 @@ public class mod_pocketDim
          transientDoorID = config.getBlock("transientDoorID", 1979).getInt();
 
          itemRiftBladeID=config.getItem("Rift Blade", 5676).getInt();
- 
          itemChaosDoorID=config.getItem("Chaos Door", 5673).getInt();
          itemRiftRemoverID=config.getItem("Rift Remover", 5671).getInt();
          itemStableFabricID=config.getItem("Stable Fabric", 5672).getInt();
@@ -277,7 +286,8 @@ public class mod_pocketDim
         chaosDoor = (new ChaosDoor(chaosDoorID, Material.iron).setHardness(.2F).setBlockName("chaosDoor").setLightValue(.0F).setRequiresSelfNotify());
         dimDoor = (new dimDoor(dimDoorID, Material.iron)).setHardness(1.0F).setRequiresSelfNotify().setBlockName("dimDoor");
         dimHatch = (new dimHatch(dimHatchID,   84, Material.iron)).setHardness(1.0F).setRequiresSelfNotify().setBlockName("dimHatch");
-        
+      //  dimRail = (new DimRail(dimRailID, 88, false)).setHardness(.5F).setRequiresSelfNotify().setBlockName("dimRail");
+ 
         itemDimDoor = (new itemDimDoor(itemDimDoorID, Material.iron)).setItemName("itemDimDoor");
         itemExitDoor = (new itemExitDoor(itemExitDoorID, Material.wood)).setItemName("itemDimDoorexit");
         itemLinkSignature = (new itemLinkSignature(itemLinkSignatureID, Material.wood)).setItemName("itemLinkSignature");
@@ -290,7 +300,8 @@ public class mod_pocketDim
         proxy.loadTextures();
     	proxy.registerRenderers();
     	GameRegistry.registerWorldGenerator(this.riftGen);
-        
+    	
+        //GameRegistry.registerBlock(dimRail, "Dimensional Rail");
         GameRegistry.registerBlock(chaosDoor, "Unstable Door");
         GameRegistry.registerBlock(ExitDoor, "Warp Door");
         GameRegistry.registerBlock(linkExitDoor, "Warp Door link");
@@ -329,7 +340,7 @@ public class mod_pocketDim
         LanguageRegistry.addName(itemExitDoor	, "Warp Door");
         LanguageRegistry.addName(itemLinkSignature	, "Rift Signature");
         LanguageRegistry.addName(itemRiftRemover	, "Rift Remover");
-        LanguageRegistry.addName(itemStableFabric	, "Unstable Fabric");
+        LanguageRegistry.addName(itemStableFabric	, "Stable Fabric");
         LanguageRegistry.addName(itemChaosDoor	, "Unstable Door");
         LanguageRegistry.addName(itemDimDoor, "Dimensional Door");
         LanguageRegistry.addName(itemRiftBlade	, "Rift Blade");
@@ -337,6 +348,8 @@ public class mod_pocketDim
 
         TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
         TickRegistry.registerTickHandler(new CommonTickHandler(), Side.SERVER);
+
+      //  GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimRail");
 
         GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
         GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
@@ -353,6 +366,21 @@ public class mod_pocketDim
                      "   ", "yxy", "   ", 'x', this.itemStableFabric,  'y', Item.doorSteel 
                  });
         }
+        
+        /**
+       if(this.enableDimRail)
+        {
+    	 GameRegistry.addRecipe(new ItemStack(dimRail, 1), new Object[]
+                 {
+                     "   ", "yxy", "   ", 'x', this.itemDimDoor,  'y', Block.rail 
+                 });
+    	 
+    	 GameRegistry.addRecipe(new ItemStack(dimRail, 1), new Object[]
+                 {
+                     "   ", "yxy", "   ", 'x', this.itemExitDoor,  'y', Block.rail 
+                 });
+        }
+        **/
     	 
         if(this.enableUnstableDoor)
         {
