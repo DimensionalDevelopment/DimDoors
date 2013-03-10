@@ -81,6 +81,7 @@ public class pocketTeleporter extends Teleporter
                 
                 
 		 }
+		 
 		 else if(par1Entity instanceof   EntityMinecart)
 		 {
 			 par1Entity.motionX=0;
@@ -91,33 +92,41 @@ public class pocketTeleporter extends Teleporter
 			 id=dimHelper.instance.getDestOrientation(sendingLink);
 
 
-			
+			 par1Entity.rotationYaw=(id*90)+90;
    
 			 if(id==2||id==6)
 			 {
 				
-				 par1Entity.motionX =2;
+			
 				 this.setEntityPosition(par1Entity, x+1.5, y, z+.5 );
+				   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+				 par1Entity.motionX =.39;
 			 }
 			 else if(id==3||id==7)
 			 {
      	
-				 par1Entity.motionZ =2;
+				
 				 this.setEntityPosition(par1Entity, x+.5, y, z+1.5 );
+				   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+				 par1Entity.motionZ =.39;
 
 				 
 			 }
 			 else if(id==0||id==4)
 			 {
      	
-				 par1Entity.motionX =-2;
+				
 				 this.setEntityPosition(par1Entity,x-.5, y, z+.5);
+				   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+				 par1Entity.motionX =-.39;
 
 			 }
 			 else if(id==1||id==5)
 			 {
-				 par1Entity.motionZ =-2;
+				
 				 this.setEntityPosition(par1Entity,x+.5, y, z-.5);	
+				   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+				 par1Entity.motionZ =-.39;
 
 			 }
 			 else
@@ -126,7 +135,7 @@ public class pocketTeleporter extends Teleporter
 
 			 }
  		
-			 par1Entity.rotationYaw=(id*90)+90;
+		
      
      
 		}
@@ -178,7 +187,7 @@ public class pocketTeleporter extends Teleporter
      
      
 		}
-		   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+		
 	    }
 
 	 public void setEntityPosition(Entity entity, double x, double y, double z)

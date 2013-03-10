@@ -34,7 +34,7 @@ public class LimboProvider extends WorldProvider
 	  public boolean canRespawnHere()
 	    {
 		  
-	        return mod_pocketDim.hardcoreLimbo;
+	        return mod_pocketDim.hardcoreLimbo&&mod_pocketDim.isLimboActive;
 	    }
 	  public boolean isBlockHighHumidity(int x, int y, int z)
 	    {

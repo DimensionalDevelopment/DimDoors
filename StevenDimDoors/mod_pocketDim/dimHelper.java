@@ -24,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet39AttachEntity;
 import net.minecraft.network.packet.Packet41EntityEffect;
 import net.minecraft.network.packet.Packet43Experience;
 import net.minecraft.network.packet.Packet9Respawn;
@@ -37,6 +38,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
 
 public class dimHelper extends DimensionManager
@@ -151,83 +153,118 @@ public class dimHelper extends DimensionManager
 		playerMP.mcServer.getConfigurationManager().transferPlayerToDimension(playerMP, mod_pocketDim.limboDimID, new pocketTeleporter((WorldServer) this.getWorld(mod_pocketDim.limboDimID), linkData));
 		
 	}
-	private  void teleportEntity(World oldWorld, Entity entity, LinkData link) 
+	private Entity teleportEntity(World oldWorld, Entity entity, LinkData link) //this beautiful teleport method is based off of xCompWiz's teleport function. 
 	{
+		Entity cart;
+		if(entity.riddenByEntity!=null)
+		{
+			cart= entity;
+			entity=entity.riddenByEntity;
+		}
+		else
+		{
+		
+			cart = entity.ridingEntity;
+		}
+		 if (entity.ridingEntity != null) 
+		    {
+		
+		    	entity.mountEntity(entity.ridingEntity);
+		    	
+		    	cart = teleportEntity(oldWorld, cart, link);
+		    	
+		    }
+		    
+		    
+
+
+		World newWorld;
 		
 		if(this.getWorld(link.destDimID)==null)
 		{
 			this.initDimension(link.destDimID);
 		}
-		World newWorld = this.getWorld(link.destDimID);
-	    Entity mount = entity.ridingEntity;
-	    Entity rider = entity.riddenByEntity;
-	    if (entity.ridingEntity != null) 
-	    {
-	      entity.mountEntity(null);
-	      mount.riddenByEntity = null;
-	      teleportEntity(oldWorld, mount, link);
-	    }
-	    
-	    if (entity.riddenByEntity != null) 
-	    {
-	      rider.mountEntity(null);
-	      entity.riddenByEntity = null;
-	      teleportEntity(oldWorld, rider, link);
-	    }
-	    
-	    boolean changingworlds = entity.worldObj != newWorld;
+		boolean difDest = link.destDimID != link.locDimID;
+		
+		if(difDest)
+		{
+			newWorld = this.getWorld(link.destDimID);
+		}
+		else
+		{
+			newWorld=oldWorld;
+		}
+		
 	    
 	    entity.worldObj.updateEntityWithOptionalForce(entity, false);
+	    
 	    if ((entity instanceof EntityPlayerMP)) 
 	    {
+	    	
 	    	EntityPlayerMP player = (EntityPlayerMP)entity;
-	    	player.closeScreen();
-	    	if (changingworlds) 
+	    	//player.closeScreen();
+	    	
+	    	
+	    	if (difDest) 
 	    	{
 	    		player.dimension = link.destDimID;
 	    		player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
 	    	
-	    		((WorldServer)entity.worldObj).getPlayerManager().removePlayer(player);
+	    		WorldServer.class.cast(entity.worldObj).getPlayerManager().removePlayer(player);
 	    	}
 	    }
-	    if(changingworlds)
+	    
+	    
+	    if(difDest)
 	    {
+	        int entX = entity.chunkCoordX;
+		    int entZ = entity.chunkCoordZ;
+		    
 	    	if ((entity instanceof EntityPlayer))
 		    {
 		   		EntityPlayer player = (EntityPlayer)entity;
-		   		player.closeScreen();
+		   		
+		   		//player.closeScreen();
+		   		
 		   		oldWorld.playerEntities.remove(player);
-		   		oldWorld.updateAllPlayersSleepingFlag();
+		   		//oldWorld.updateAllPlayersSleepingFlag();
 	        }
-		    int i = entity.chunkCoordX;
-		    int j = entity.chunkCoordZ;
-		    if ((entity.addedToChunk) && (oldWorld.getChunkProvider().chunkExists(i, j)))
+		
+		    if ((entity.addedToChunk) && (oldWorld.getChunkProvider().chunkExists(entX, entZ)))
 		    {
-		    	oldWorld.getChunkFromChunkCoords(i, j).removeEntity(entity);
-		    	oldWorld.getChunkFromChunkCoords(i, j).isModified = true;
+		    	oldWorld.getChunkFromChunkCoords(entX, entZ).removeEntity(entity);
+		    	oldWorld.getChunkFromChunkCoords(entX, entZ).isModified = true;
 		    }
+		    
 		    oldWorld.loadedEntityList.remove(entity);
 		    oldWorld.releaseEntitySkin(entity);
+		    
 		    entity.isDead = false;
 	    }
 
-	    ((WorldServer)newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
-	   
+	    WorldServer.class.cast(newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
+	    
+	    new pocketTeleporter((WorldServer) newWorld, link).placeInPortal(entity, 0, 0, 0, 0);
 	 
 
 
-	    if (changingworlds) 
+	    if (difDest) 
 	    {
 	    	if (!(entity instanceof EntityPlayer)) 
 	    	{
 	    		NBTTagCompound entityNBT = new NBTTagCompound();
+	    		
 	    		entity.isDead = false;
+	    		
 	    		entity.addEntityID(entityNBT);
+	    		
 	    		entity.isDead = true;
+	    		
 	    		entity = EntityList.createEntityFromNBT(entityNBT, newWorld);
+	    		
 	    		if (entity == null) 
 	    		{
-	    			 return;
+	    			 
 	    		}
 	    	}
 	    	
@@ -239,34 +276,41 @@ public class dimHelper extends DimensionManager
 	    }
 	    
 	    
-	
-	    
+	    new pocketTeleporter((WorldServer) newWorld, link).placeInPortal(entity, 0, 0, 0, 0);
+	    entity.worldObj.updateEntityWithOptionalForce(entity, false);
 	    
 	    if ((entity instanceof EntityPlayerMP))
 	    {
 	    	EntityPlayerMP player = (EntityPlayerMP)entity;
 	    	
-	    	if (changingworlds)
+	    	if (difDest)
 	    		{
 	    			player.mcServer.getConfigurationManager().func_72375_a(player, (WorldServer)newWorld);
+	    			
+	    		    new pocketTeleporter((WorldServer) newWorld, link).placeInPortal(entity, 0, 0, 0, 0);
+
 	    		}
 	    }
+	    entity.worldObj.updateEntityWithOptionalForce(entity, false);
+
 	    
 	    
-	    
-	    if (((entity instanceof EntityPlayerMP)) && (changingworlds)) 
+	    if (((entity instanceof EntityPlayerMP)) && (difDest)) 
 	    {
 	    	EntityPlayerMP player = (EntityPlayerMP)entity;
+	    	
 	    	player.theItemInWorldManager.setWorld((WorldServer)newWorld);
+	    	
 	    	player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, (WorldServer)newWorld);
 	    	player.mcServer.getConfigurationManager().syncPlayerInventory(player);
-	    	Iterator var14 = player.getActivePotionEffects().iterator();
-
-	    	while (var14.hasNext())
+	      	
+	    	for(Object potionEffect : player.getActivePotionEffects())
 	    	{
-	    		PotionEffect var13 = (PotionEffect)var14.next();
-	    		player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, var13));
+	    		PotionEffect effect = (PotionEffect)potionEffect;
+	    		player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, effect));
+
 	    	}
+	    	
 	    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
 	    }
 	    
@@ -274,24 +318,24 @@ public class dimHelper extends DimensionManager
 	    new pocketTeleporter((WorldServer) newWorld, link).placeInPortal(entity, 0, 0, 0, 0);
 	 
 	    
-	    if ((entity != null) && (mount != null)) 
+	    if ((entity != null) && (cart != null)) 
 	    {
-	      entity.mountEntity(mount);
-	      mount.updateRiderPosition();
+
 	      if ((entity instanceof EntityPlayerMP))
 	      {
-	        FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().serverUpdateMountedMovingPlayer((EntityPlayerMP)entity);
+	    	  EntityPlayerMP playerMP = (EntityPlayerMP)entity;
+	    	  entity.worldObj.updateEntityWithOptionalForce(entity, true);	    	
+	        
 	      }
+	      entity.mountEntity(cart);
 	    }
-	    if ((entity != null) && (rider != null)) 
-	    {
-	      rider.mountEntity(entity);
-	      entity.updateRiderPosition();
-	      if ((rider instanceof EntityPlayerMP))
-	      {
-	    	  FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().serverUpdateMountedMovingPlayer((EntityPlayerMP)rider);
-	      }
-	    }
+	  
+	    
+	    
+	  return entity;
+	   
+	   
+	    
 	}
 	/**
 	 * Primary function used to teleport the player using doors. Performes numerous null checks, and also generates the destination door/pocket if it has not done so already. 
@@ -365,10 +409,7 @@ public class dimHelper extends DimensionManager
 			   
 			}
 		}
-		if(!world.isRemote)
-		{
-		    
-		}
+		
 	}
 	
 	

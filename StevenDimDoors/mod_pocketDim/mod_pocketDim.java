@@ -263,7 +263,7 @@ public class mod_pocketDim
       
          
          this.riftsInWorldGen = config.get("BOOLEAN", "Should rifts generate natrually in the world? ", true).getBoolean(true);
-         this.isLimboActive = false;//config.get("BOOLEAN", "Toggles limbo", true).getBoolean(true);
+         this.isLimboActive = config.get("BOOLEAN", "Toggles limbo", true).getBoolean(true);
 
          this.riftSpreadFactor =  config.get("Int", "How many times a rift can spread- 0 prevents rifts from spreading at all. I dont recommend putting it highter than 5, because its rather exponential. ", 3).getInt();
 

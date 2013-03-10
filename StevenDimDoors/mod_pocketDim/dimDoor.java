@@ -89,6 +89,8 @@ public class dimDoor extends BlockContainer
     			linkData= dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World);
     		}
     		
+    		
+    		
     		if(!par1World.isRemote&&(num==5||num==4||num==6||num==7)&&(num-4)==var12)
     		{
     			
