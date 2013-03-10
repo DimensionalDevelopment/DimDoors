@@ -40,10 +40,7 @@
 		<copy todir="${mcpsrc.dir}/StevenDimDoors" overwrite="true">
 			<fileset dir="StevenDimDoors" />
 		</copy>	
-		<mkdir dir="${mcpsrc.dir}/Steven" />
-		<copy todir="${mcpsrc.dir}/Steven" overwrite="true">
-			<fileset dir="Steven" />
-		</copy>	
+	
 		
 		
 		<exec dir="${verclass.dir}" executable="sh" osfamily="unix" outputproperty="grep.out">
