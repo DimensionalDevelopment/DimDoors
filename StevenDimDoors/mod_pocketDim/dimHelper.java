@@ -393,7 +393,10 @@ public class dimHelper extends DimensionManager
 			return this.createLink(locationDimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord, destinationZCoord, this.getLinkDataFromCoords(locationXCoord, locationYCoord, locationZCoord, locationDimID).linkOrientation);
 
 		}
-		return this.createLink(locationDimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord, destinationZCoord, -10);
+		else
+		{
+			return this.createLink(locationDimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord, destinationZCoord, -10);
+		}
 	}
 
 	
@@ -676,7 +679,7 @@ public class dimHelper extends DimensionManager
 						 while(zCount<=searchRadius)
 						 {
 						 
-							 if((Math.abs(xCount)>=15||Math.abs(yCount)>=15||Math.abs(zCount)>=15)&&this.getWorld(incomingLink.destDimID).isAirBlock( x+xCount,  y+yCount,  z+zCount))
+							 if((Math.abs(xCount)>=15||Math.abs(yCount)>=15||Math.abs(zCount)>=15)&&this.getWorld(incomingLink.destDimID).isAirBlock( x+xCount,  y+yCount,  z+zCount)&&((yCount+y)>0))
 							 {
 								 if(Math.abs(xCount)>=19||Math.abs(yCount)>=19||Math.abs(zCount)>=19)
 									 {
@@ -1025,11 +1028,7 @@ public class dimHelper extends DimensionManager
 			}
 	      
 	        
-	        File oldSave=new File( world.getSaveHandler().getMapFileFromName("idcounts").getParent()+"/PocketDimData"); //checks to see if old save data is present
-			if(oldSave.exists())
-			{
-				OldSaveHandler.handleOldSaveData(oldSave);	
-			}
+	      
 	         
 	         
 	         saveFile = new FileInputStream(dataStore);

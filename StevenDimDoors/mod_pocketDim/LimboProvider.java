@@ -33,9 +33,13 @@ public class LimboProvider extends WorldProvider
 	}
 	  public boolean canRespawnHere()
 	    {
-	        return true;
+		  
+	        return mod_pocketDim.hardcoreLimbo;
 	    }
-	
+	  public boolean isBlockHighHumidity(int x, int y, int z)
+	    {
+	        return false;
+	    }
 	
 	
 	  @Override
@@ -139,7 +143,7 @@ public class LimboProvider extends WorldProvider
     {
         ChunkCoordinates var5 = new ChunkCoordinates(this.worldObj.getSpawnPoint());
 
-        boolean isAdventure = worldObj.getWorldInfo().getGameType() == EnumGameType.ADVENTURE;
+     
         int spawnFuzz = 10000;
         int spawnFuzzHalf = spawnFuzz / 2;
 

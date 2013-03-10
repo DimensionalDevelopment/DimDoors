@@ -176,6 +176,7 @@ public class mod_pocketDim
 
 			public static boolean enableDoorOpenGL;
 
+			public static boolean hardcoreLimbo;
 
 
 	public static boolean hasInitDims=false;
@@ -218,6 +219,7 @@ public class mod_pocketDim
          
          config.load();
        //  this.enableDimRail = config.get("BOOLEAN", "true to enable dim rail crafting", true).getBoolean(true);
+         this.hardcoreLimbo = config.get("BOOLEAN", "true to cause player to respawn in Limbo", false).getBoolean(false);
          this.enableDimTrapDoor = config.get("BOOLEAN", "true to enable trap door crafting", true).getBoolean(true);
          this.enableIronDimDoor = config.get("BOOLEAN", "true to enable iron dim door crafting", true).getBoolean(true);
          this.enableRiftBlade = config.get("BOOLEAN", "true to enable rift blade crafting", true).getBoolean(true);
@@ -261,7 +263,7 @@ public class mod_pocketDim
       
          
          this.riftsInWorldGen = config.get("BOOLEAN", "Should rifts generate natrually in the world? ", true).getBoolean(true);
-         this.isLimboActive = config.get("BOOLEAN", "Toggles limbo", true).getBoolean(true);
+         this.isLimboActive = false;//config.get("BOOLEAN", "Toggles limbo", true).getBoolean(true);
 
          this.riftSpreadFactor =  config.get("Int", "How many times a rift can spread- 0 prevents rifts from spreading at all. I dont recommend putting it highter than 5, because its rather exponential. ", 3).getInt();
 
