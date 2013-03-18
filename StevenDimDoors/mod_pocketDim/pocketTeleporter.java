@@ -91,7 +91,7 @@ public class pocketTeleporter extends Teleporter
          
 			 id=dimHelper.instance.getDestOrientation(sendingLink);
 
-
+			
 			 par1Entity.rotationYaw=(id*90)+90;
    
 			 if(id==2||id==6)
@@ -152,6 +152,7 @@ public class pocketTeleporter extends Teleporter
 
 			 par1Entity.rotationYaw=(id*90)+90;
    
+	//		 EntityMinecart.class.cast(par1Entity).isinreverse=false;
 			 if(id==2||id==6)
 			 {
 				 this.setEntityPosition(par1Entity, x+1.5, y, z+.5 );

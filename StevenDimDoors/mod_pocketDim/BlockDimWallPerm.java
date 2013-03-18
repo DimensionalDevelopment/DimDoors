@@ -57,8 +57,8 @@ public class BlockDimWallPerm extends Block
     		{
     			World world = dimHelper.getWorld(0);
     			
-    			int x = (link.destXCoord + rand.nextInt(100000)-50000);
-    			int z = (link.destZCoord + rand.nextInt(100000)-50000);
+    			int x = (link.destXCoord + rand.nextInt(mod_pocketDim.limboExitRange)-mod_pocketDim.limboExitRange/2);
+    			int z = (link.destZCoord + rand.nextInt(mod_pocketDim.limboExitRange)-mod_pocketDim.limboExitRange/2);
     			
     			x=x+(x>> 4)+1; //make sure I am in the middle of a chunk, andnot on a boundry, so it doesnt load the chunk next to me
     			z=z+(z>> 4)+1;

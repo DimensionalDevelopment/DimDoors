@@ -7,7 +7,7 @@
 	<property name="build.dir" value="build" />
 	<property name="classes.dir" value="${build.dir}/packaging" />
 	<property name="src.dir" value="src" />
-	<property name="forge.version" value="1.4.7-6.6.0.497" />
+	<property name="forge.version" value="1.4.7-6.6.2.534" />
 	<property name="forge.url" value="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${forge.version}.zip" />
 	<property name="mcp.version" value="723" />
 	<property name="forge.dir" value="${build.dir}/forge" />

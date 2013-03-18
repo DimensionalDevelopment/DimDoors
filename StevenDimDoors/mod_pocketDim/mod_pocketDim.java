@@ -53,7 +53,7 @@ import cpw.mods.fml.relauncher.Side;
 public class mod_pocketDim
 {
 	
-	public static final String version = "1.4.6R1.3.0D1";
+	public static final String version = "1.4.7R1.3.0B2";
 	//need to clean up 
     @SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
     public static CommonProxy proxy;
@@ -71,6 +71,7 @@ public class mod_pocketDim
     public static int blockRiftID;
     public static int transientDoorID;
     public static int itemRiftBladeID;
+    public static int limboExitRange;
   //  public static int railRenderID;
 
     public static int itemStableFabricID;
@@ -195,6 +196,7 @@ public class mod_pocketDim
     public static World limbo= null;
 
     public static long genTime;
+	public static boolean enableRiftGrief;
 
     
 
@@ -249,13 +251,16 @@ public class mod_pocketDim
          itemDimDoorID=config.getItem("Dimensional Door Item", 5674).getInt();
          itemLinkSignatureID=config.getItem("Rift Signature Item", 5675).getInt();
          
+       
          TNFREAKINGT = config.get("BOOLEAN", "EXPLOSIONS!!???!!!?!?!!", false).getBoolean(false);
+         this.enableRiftGrief = config.get("BOOLEAN", "toggles whether rifts eat blocks around them or not", true).getBoolean(true);
          HOW_MUCH_TNT=config.get("Int", "Chance that a block will not be TNT. must be greater than 1. Explosions!?!?? must be set to true, and you figure out what it does. ", 25).getInt(25);
 
    
          blockLimboID=config.get("Int", "Block ID for Limbo- must be below 256", 217).getInt();
          blockDimWallPermID=config.get("Int", "Block ID for blockDimWallPermID- must be below 256", 220).getInt();
          this.limboDimID=config.get("Int", "Limbo Dimension ID", -23).getInt();
+         this.limboExitRange=config.get("Int", "The farthest possible distance that limbo can send you upon return to the overworld.", 100000).getInt();
 
          providerID=config.get("Int", "ProviderID", 12).getInt();
          this.limboProviderID=config.get("Int", "Limbo Provider ID", 13).getInt();

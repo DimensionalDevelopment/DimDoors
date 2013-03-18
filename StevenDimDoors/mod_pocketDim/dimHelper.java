@@ -987,7 +987,7 @@ public class dimHelper extends DimensionManager
 	{
 		if(!this.isSaving)
 		{
-			System.out.println("saving");
+		//	System.out.println("saving");
 
 		this.isSaving=true;
 		HashMap comboSave=new HashMap();
@@ -1324,6 +1324,11 @@ public class dimHelper extends DimensionManager
 	public void addDimData(DimData dimData)
 	{
 		this.dimList.put(dimData.dimID, dimData);
+	}
+	
+	public void createDimData(World world)
+	{
+		this.dimList.put(world.provider.dimensionId, new DimData(world.provider.dimensionId, false, 0,0,world.provider.getSpawnPoint().posX,world.provider.getSpawnPoint().posY,world.provider.getSpawnPoint().posZ));
 	}
 	
 	

@@ -110,7 +110,7 @@ public class BlockRift extends BlockContainer
     //function that regulates how many blocks it eats/ how fast it eates them. 
     public void updateTick(World world, int x, int y, int z, Random random)
     {
-    	if(!world.isRemote&&dimHelper.instance.getLinkDataFromCoords(x, y, z, world.provider.dimensionId)!=null)
+    	if(!world.isRemote&&dimHelper.instance.getLinkDataFromCoords(x, y, z, world.provider.dimensionId)!=null&&mod_pocketDim.enableRiftGrief)
     	{
     		TileEntityRift rift = (TileEntityRift) world.getBlockTileEntity(x, y, z);
     		if(rift.isNearRift)

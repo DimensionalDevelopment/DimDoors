@@ -143,13 +143,13 @@ public class ItemRiftBlade extends itemDimDoor
 
     public void onPlayerStoppedUsing(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer, int par4)
     {
-    	System.out.println(par4);
+    	
     	
     	if(dimHelper.dimList.get(par2World.provider.dimensionId)!=null&&!par2World.isRemote)
 		{
-			
-    		System.out.println("stopped");
-			if(par3EntityPlayer.getItemInUseDuration()>15)
+			System.out.println(par4);
+    	
+			if(this.getMaxItemUseDuration(par1ItemStack)-par4>12)
 			{
 			
 				Vec3 var2 = par3EntityPlayer.getLook(1.0F);
@@ -166,15 +166,16 @@ public class ItemRiftBlade extends itemDimDoor
 		        int y = MathHelper.floor_double(var7);
 		        int z = MathHelper.floor_double(var9);
 			
-		        System.out.println(x+" "+y+" "+z);
+		      
 		        int rotation = (int) (MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
 		        LinkData link = new LinkData(par2World.provider.dimensionId, 0, x, y, z, x, y, z, true);
 
+		       
 		        if(dimHelper.dimList.get(par2World.provider.dimensionId).depth==0)
 		        {
 		        	link.linkOrientation= rotation;
 		        	dimHelper.instance.createPocket(link,true, false);
-		        	System.out.println("doingDown");
+		        
 
 		        }
 		        else if(dimHelper.dimList.get(par2World.provider.dimensionId).depth==1)
@@ -290,7 +291,7 @@ public class ItemRiftBlade extends itemDimDoor
 		}
 	//	if(dimHelper.dimList.get(par2World.provider.dimensionId)!=null&&!par2World.isRemote&&!didFindThing)
 		{
-			System.out.println("using");
+			
             par3EntityPlayer.setItemInUse(par1ItemStack, this.getMaxItemUseDuration(par1ItemStack));
 
 		}
