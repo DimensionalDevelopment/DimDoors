@@ -25,7 +25,7 @@
 
 	<property file="${forge.dir}/forgeversion.properties" />
 	<condition property="forge.already.installed">
-		<equals arg1="${forge.build.number}" arg2="497" />
+		<equals arg1="${forge.build.number}" arg2="534" />
 	</condition>
 
 	<property name="verclass.dir" value="${mcpsrc.dir}/StevenDimDoors/mod_pocketDim/" />
