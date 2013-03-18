@@ -147,7 +147,6 @@ public class ItemRiftBlade extends itemDimDoor
     	
     	if(dimHelper.dimList.get(par2World.provider.dimensionId)!=null&&!par2World.isRemote)
 		{
-			System.out.println(par4);
     	
 			if(this.getMaxItemUseDuration(par1ItemStack)-par4>12)
 			{
