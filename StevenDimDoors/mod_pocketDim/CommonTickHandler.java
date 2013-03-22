@@ -77,7 +77,7 @@ public class CommonTickHandler implements ITickHandler
     						else
     						{
     							dimHelper.getWorld(link.locDimID).setBlockWithNotify(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
-
+    							TileEntityRift.class.cast(dimHelper.getWorld(link.locDimID).getBlockTileEntity(link.locXCoord, link.locYCoord, link.locZCoord)).hasGrownRifts=true;
     						}
     					}
     				}

@@ -25,7 +25,7 @@ public class TransientDoor extends ExitDoor
 	
 	protected TransientDoor(int par1, Material material) 
 	{
-		super(par1, Material.air);
+		super(par1, Material.grass);
 	//	this.blockIndexInTexture = 18;
         this.setTextureFile("/PocketBlockTextures.png");
 
@@ -35,9 +35,14 @@ public class TransientDoor extends ExitDoor
 	        return false;
 	 }
 	 
-	    public void onBlockAdded(World par1World, int par2, int par3, int par4) 
-	    {
+	 public void onBlockAdded(World par1World, int par2, int par3, int par4) 
+	 {
 	    	this.updateAttatchedTile(par1World, par2, par3, par4);
+	 }
+	 
+	 public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4)
+	    {
+	        return null;
 	    }
 
 	@Override
@@ -83,17 +88,9 @@ public class TransientDoor extends ExitDoor
     	}
 		
     
-	public void onPoweredBlockChange(World par1World, int par2, int par3, int par4, boolean par5)
-    {
-      
-    }
 	
 	
-	 
-	  public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4)
-	    {
-	        return super.getCollisionBoundingBoxFromPool(par1World, 0, 0, 0);
-	    }
+	
 
 		
 	 public int idPicked(World par1World, int par2, int par3, int par4)
@@ -107,12 +104,7 @@ public class TransientDoor extends ExitDoor
 	    }
 	    
 	    
-	    public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
-	    {
-	        
-	    	return false;
-	       
-	    }
+	    
 
 	    /**
 	     * A function to open a door.

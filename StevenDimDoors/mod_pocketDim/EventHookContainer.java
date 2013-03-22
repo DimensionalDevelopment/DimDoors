@@ -1,9 +1,14 @@
 package StevenDimDoors.mod_pocketDim;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +20,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
@@ -24,6 +30,19 @@ import net.minecraftforge.event.world.WorldEvent;
 public class EventHookContainer
 {
 	Random rand= new Random();
+	
+	@SideOnly(Side.CLIENT)
+	@ForgeSubscribe
+	public void onSoundLoad(SoundLoadEvent event) 
+	{
+		File dataDir = Minecraft.getMinecraft().mcDataDir;
+
+	//	event.manager.soundPoolSounds.addSound("mod/test/sound.ogg", new File(
+	//	dataDir, "resources/mod/test/sound.ogg"));
+	}
+
+	
+	
     @ForgeSubscribe
     public void onWorldLoad(WorldEvent.Load event)
     {

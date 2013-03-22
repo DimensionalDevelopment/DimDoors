@@ -30,21 +30,22 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
     public void renderDimDoorTileEntity(TileEntityDimDoor tile, double x, double y, double z, float par8)
     {
     	try
-    {
-    	dimDoor.class.cast(Block.blocksList[mod_pocketDim.dimDoorID]).updateAttatchedTile(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord).getFullMetadata(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord);
+    	{
+    		dimDoor.class.cast(Block.blocksList[mod_pocketDim.dimDoorID]).updateAttatchedTile(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord).getFullMetadata(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord);
 
-    }
-    catch(Exception e)
-    {
-    	e.printStackTrace();
-    }
+    	}
+    	catch(Exception e)
+    	{
+    
+    		e.printStackTrace();
+    	}
     	
     	
-        float playerX = (float)this.tileEntityRenderer.playerX;
-        float playerY = (float)this.tileEntityRenderer.playerY;
-        float playerZ = (float)this.tileEntityRenderer.playerZ;
+       // float playerX = (float)this.tileEntityRenderer.playerX;
+       // float playerY = (float)this.tileEntityRenderer.playerY;
+       // float playerZ = (float)this.tileEntityRenderer.playerZ;
         
-        float distance = (float) tile.getDistanceFrom(playerX, playerY, playerZ);
+        //float distance = (float) tile.getDistanceFrom(playerX, playerY, playerZ);
         GL11.glDisable(GL11.GL_LIGHTING);
         Random rand = new Random(31100L);
         float var13 = 0.75F;
@@ -156,6 +157,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
         
             Tessellator var24 = Tessellator.instance;
             var24.startDrawingQuads();
+           
             
             
             
@@ -172,7 +174,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
             var24.setColorRGBA_F(var21 * var17, var22 * var17, var23 * var17, 1.0F);
             if(tile.openOrClosed)
             {
-
+            	
             switch (tile.orientation)
             {
             case 0:
@@ -268,6 +270,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
     {
     	if(mod_pocketDim.enableDoorOpenGL)
     	{
+    		System.out.println("rendering");
     		this.renderDimDoorTileEntity((TileEntityDimDoor)par1TileEntity, par2, par4, par6, par8);
     	}
     }

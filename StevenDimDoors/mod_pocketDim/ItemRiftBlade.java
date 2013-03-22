@@ -181,7 +181,7 @@ public class ItemRiftBlade extends itemDimDoor
 		        {
 		        	link.linkOrientation= rotation;
 		        	dimHelper.instance.createLink(link);
-		        	System.out.println("doingup");
+		        	//System.out.println("doingup");
 		        	int ExitDimID= dimHelper.dimList.get(par2World.provider.dimensionId).exitDimLink.destDimID;
 				
 		        	dimHelper.instance.createLink(link.locDimID, ExitDimID, x, y, z, x, y, z,rotation);
@@ -199,7 +199,8 @@ public class ItemRiftBlade extends itemDimDoor
 			
 			
 			
-		        placeDoorBlock(par2World, x, y, z, rotation,  mod_pocketDim.transientDoor);
+		        placeDoorBlock(par2World, x, y-1, z, rotation,  mod_pocketDim.transientDoor);
+		        
 			}
 			else 
 			{
@@ -213,7 +214,7 @@ public class ItemRiftBlade extends itemDimDoor
     {
     	Boolean didFindThing=false;
     	MovingObjectPosition hit = 	this.getMovingObjectPositionFromPlayer(par3EntityPlayer.worldObj, par3EntityPlayer, false );
-		if(hit!=null)
+		if(hit!=null&&!par2World.isRemote)
 		{
 			if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ)==mod_pocketDim.blockRiftID)
 			{
