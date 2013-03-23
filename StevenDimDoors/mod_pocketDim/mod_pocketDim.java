@@ -34,6 +34,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
+import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
 
@@ -60,6 +61,7 @@ public class mod_pocketDim
  
     public static final ICommand removeRiftsCommand = new CommandDeleteRifts();
     public static final ICommand pruneDimsCommand = new CommandPruneDims();
+    public static final ICommand removeAllLinksCommand = new CommandDeleteAllLinks();
 
     
     public static int providerID;
@@ -614,6 +616,7 @@ public class mod_pocketDim
     {
     	event.registerServerCommand(removeRiftsCommand);
     	event.registerServerCommand(pruneDimsCommand);
+    	event.registerServerCommand(removeAllLinksCommand);
 
     	dimHelper.instance.load();
    

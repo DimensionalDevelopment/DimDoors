@@ -12,11 +12,11 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
 
-public class CommandDeleteRifts extends CommandBase
+public class CommandDeleteAllLinks extends CommandBase
 {
 	public String getCommandName()//the name of our command
 	{
-		return "delete_rifts";
+		return "delete_all_links";
 	}
 
 
@@ -48,7 +48,7 @@ public class CommandDeleteRifts extends CommandBase
 		{
 			targetDim=0;
 			shouldGo=false;
-			this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Error-Invalid argument, delete_links <targetDimID> or blank for current dim");
+			this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Error-Invalid argument, delete_all_links <targetDimID> or blank for current dim");
 
 		
 		}
@@ -75,11 +75,11 @@ public class CommandDeleteRifts extends CommandBase
 					else if(targetWorld.provider==null)
 					{
 						dimHelper.initDimension(targetDim);
-						
 					}
-					 targetWorld = dimHelper.getWorld(targetDim);
 					
-					if(targetWorld.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord)==mod_pocketDim.blockRiftID)
+					
+					targetWorld = dimHelper.getWorld(targetDim);
+					
 					{
 						dimHelper.instance.linksForRendering.remove(link);
 						dim.removeLinkAtCoords(link);
@@ -95,7 +95,7 @@ public class CommandDeleteRifts extends CommandBase
 				}
 				
 				//dim.linksInThisDim.clear();
-				this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Removed "+linksRemoved+" rifts.");
+				this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Removed "+linksRemoved+" links.");
 				
 			}
 			

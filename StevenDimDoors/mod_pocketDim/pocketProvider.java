@@ -69,7 +69,7 @@ public class pocketProvider extends WorldProvider
 	public String getDimensionName() 
 	{
 		// TODO Auto-generated method stub
-		return "PocketDim";
+		return "PocketDim "+this.dimensionId;
 	}
 	
 	
