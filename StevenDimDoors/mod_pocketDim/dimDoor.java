@@ -371,11 +371,6 @@ public class dimDoor extends BlockContainer
      */
     public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) 
     {
-    	
-    	
-    		
-    		
-    	
     		
     	TileEntityDimDoor tile = (TileEntityDimDoor) par1World.getBlockTileEntity(par2, par3, par4);
     	tile.openOrClosed=this.isDoorOpen( par1World,  par2,  par3,  par4);  	
@@ -383,14 +378,7 @@ public class dimDoor extends BlockContainer
     	tile.orientation=metaData%8 ;
     		
     		
-    		
-    		
-    		
-    		
-    		
-    	
-    	
-    	
+
     	
     	
     	

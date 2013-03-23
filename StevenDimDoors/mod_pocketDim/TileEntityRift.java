@@ -67,7 +67,7 @@ public class TileEntityRift extends TileEntity
 					
 					List list =  worldObj.getEntitiesWithinAABB(EntityEnderman.class, AxisAlignedBB.getBoundingBox( this.xCoord-9, this.yCoord-3, this.zCoord-9, this.xCoord+9, this.yCoord+3, this.zCoord+9));
 					
-					if(list.size()<5)
+					if(list.size()<1)
 					{
 					 
 					 

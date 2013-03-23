@@ -4,6 +4,7 @@ package StevenDimDoors.mod_pocketDim;
  * @Return
  */
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -224,8 +225,9 @@ public class DimData implements Serializable
 	
 	
 	
-	public void printAllLinkData()
+	public ArrayList<LinkData> printAllLinkData()
 	{
+		ArrayList links = new ArrayList();
 		Iterator itr= this.linksInThisDim.keySet().iterator();
 		
 		while (itr.hasNext())
@@ -247,12 +249,14 @@ public class DimData implements Serializable
 					
 					LinkData link = (LinkData) second.get((Integer)itrsecond.next());
 						
-					link.printLinkData();
+					links.add(link);
 					
 					
 					
 				}
 			}				
 		}
+		return links;
 	}
+	
 }

@@ -2,25 +2,19 @@ package StevenDimDoors.mod_pocketDim;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.tileentity.RenderEndPortal;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.command.ICommand;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityEndPortal;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import StevenDimDoors.mod_pocketDimClient.ClientPacketHandler;
 import StevenDimDoors.mod_pocketDimClient.ClientTickHandler;
-import StevenDimDoors.mod_pocketDimClient.RenderDimDoor;
-import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -40,6 +34,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
+import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
+import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
 
 @Mod(modid = "DimensionalDoors", name = "Dimensional Doors", version = mod_pocketDim.version)
 
@@ -62,6 +58,9 @@ public class mod_pocketDim
     public static mod_pocketDim instance = new mod_pocketDim();
     public static SchematicLoader loader = new SchematicLoader();
  
+    public static final ICommand removeRiftsCommand = new CommandDeleteRifts();
+    public static final ICommand pruneDimsCommand = new CommandPruneDims();
+
     
     public static int providerID;
     public static int dimDoorID;
@@ -280,6 +279,9 @@ public class mod_pocketDim
     @Init
     public void Init(FMLInitializationEvent event)
     {
+    	
+    	
+    	
     
         transientDoor = (new TransientDoor(transientDoorID, Material.iron)).setHardness(1.0F).setRequiresSelfNotify().setBlockName("transientDoor");
 
@@ -610,6 +612,9 @@ public class mod_pocketDim
     @ServerStarting
     public void serverStarting(FMLServerStartingEvent event)
     {
+    	event.registerServerCommand(removeRiftsCommand);
+    	event.registerServerCommand(pruneDimsCommand);
+
     	dimHelper.instance.load();
    
     

@@ -270,7 +270,6 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
     {
     	if(mod_pocketDim.enableDoorOpenGL)
     	{
-    		System.out.println("rendering");
     		this.renderDimDoorTileEntity((TileEntityDimDoor)par1TileEntity, par2, par4, par6, par8);
     	}
     }
