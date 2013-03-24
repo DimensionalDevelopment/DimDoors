@@ -61,26 +61,34 @@ public class CommandDeleteDimData extends CommandBase
 		{
 			if(dimHelper.dimList.containsKey(targetDim))
 			{
-				for(DimData dimData :dimHelper.dimList.values())
+				try
 				{
-					Collection<LinkData> links= new ArrayList();
-					links.addAll( dimData.printAllLinkData());
-					
-					for(LinkData link : links)
+					for(DimData dimData :dimHelper.dimList.values())
 					{
-						if(link.destDimID==targetDim)
-						{
-							dimHelper.dimList.get(link.locDimID).removeLinkAtCoords(link);
-							dimHelper.instance.linksForRendering.remove(link);
-							linksRemoved++;
-						}
-						if(dimData.dimID==targetDim)
-						{
-							dimHelper.instance.linksForRendering.remove(link);
-							linksRemoved++;
-						}
-					}
+						Collection<LinkData> links= new ArrayList();
+						links.addAll( dimData.printAllLinkData());
 					
+						for(LinkData link : links)
+						{
+							if(link.destDimID==targetDim)
+							{
+								dimHelper.dimList.get(link.locDimID).removeLinkAtCoords(link);
+								dimHelper.instance.linksForRendering.remove(link);
+								linksRemoved++;
+							}
+							if(dimData.dimID==targetDim)
+							{
+								dimHelper.instance.linksForRendering.remove(link);
+								linksRemoved++;
+							}
+						}
+					
+					
+					}
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
 					
 				}
 				
