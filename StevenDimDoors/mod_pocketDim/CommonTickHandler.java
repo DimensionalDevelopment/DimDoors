@@ -98,7 +98,7 @@ public class CommonTickHandler implements ITickHandler
     	if(tickCount2>10&&dimHelper.blocksToDecay!=null)
     	{
     		tickCount2=0;
-    		if(!dimHelper.blocksToDecay.isEmpty()&&mod_pocketDim.limbo!=null)
+    		if(!dimHelper.blocksToDecay.isEmpty()&&dimHelper.getWorld(mod_pocketDim.limboDimID)!=null)
     		{
     		
     		
@@ -107,7 +107,7 @@ public class CommonTickHandler implements ITickHandler
     				int index = rand.nextInt(dimHelper.blocksToDecay.size());
     				Point3D point = (Point3D) dimHelper.blocksToDecay.get(index);
 
-    				int blockID = mod_pocketDim.limbo.getBlockId(point.getX(), point.getY(), point.getZ());
+    				int blockID = dimHelper.getWorld(mod_pocketDim.limboDimID).getBlockId(point.getX(), point.getY(), point.getZ());
     				int idToSet=Block.stone.blockID;
     				
     				if(blockID==0||blockID==mod_pocketDim.blockLimboID)
@@ -133,7 +133,7 @@ public class CommonTickHandler implements ITickHandler
     						idToSet=Block.cobblestone.blockID;
 
     					}
-    					if(blockID==Block.gravel.blockID&&!mod_pocketDim.limbo.isAirBlock(point.getX(), point.getY()-1, point.getZ()))
+    					if(blockID==Block.gravel.blockID&&!dimHelper.getWorld(mod_pocketDim.limboDimID).isAirBlock(point.getX(), point.getY()-1, point.getZ()))
     					{
     						idToSet=mod_pocketDim.blockLimboID;
     					}
@@ -147,7 +147,7 @@ public class CommonTickHandler implements ITickHandler
     					if(idToSet!=-1)
     					{
     					
-    						mod_pocketDim.limbo.setBlockWithNotify(point.getX(), point.getY(), point.getZ(), idToSet);
+    						dimHelper.getWorld(mod_pocketDim.limboDimID).setBlockWithNotify(point.getX(), point.getY(), point.getZ(), idToSet);
 
     					}    		
     				}   		    		

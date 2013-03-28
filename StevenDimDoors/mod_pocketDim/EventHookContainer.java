@@ -55,7 +55,7 @@ public class EventHookContainer
         	dimHelper.instance.linksForRendering.clear();
         	dimHelper.instance.initPockets();
         	
-        	mod_pocketDim.limbo= dimHelper.instance.getWorld(mod_pocketDim.limboDimID);
+        	
         	
     	}
     	

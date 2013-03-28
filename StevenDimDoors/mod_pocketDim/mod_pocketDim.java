@@ -196,7 +196,7 @@ public class mod_pocketDim
     public static RiftGenerator riftGen = new RiftGenerator();
     
     
-    public static World limbo= null;
+   // public static World limbo= null;
 
     public static long genTime;
 	public static boolean enableRiftGrief;
@@ -599,7 +599,7 @@ public class mod_pocketDim
     {
     	try
     	{
-    	this.limbo=null;
+    	
     	dimHelper.instance.save();
     	dimHelper.instance.unregsisterDims();
     	dimHelper.dimList.clear();

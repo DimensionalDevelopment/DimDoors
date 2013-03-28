@@ -132,6 +132,7 @@ public class dimHelper extends DimensionManager
 	
 	public void teleportToLimbo(World world,LinkData linkData, EntityPlayer player)
 	{
+		/**
 		
 		EntityPlayerMP playerMP = (EntityPlayerMP) player;
 		player.fallDistance=-700;
@@ -151,7 +152,7 @@ public class dimHelper extends DimensionManager
 
 		//System.out.println(worldLimbo.getHeightValue( MathHelper.floor_double(player.posX),  MathHelper.floor_double(player.posZ)));
 		playerMP.mcServer.getConfigurationManager().transferPlayerToDimension(playerMP, mod_pocketDim.limboDimID, new pocketTeleporter((WorldServer) this.getWorld(mod_pocketDim.limboDimID), linkData));
-		
+		**/
 	}
 	private Entity teleportEntity(World oldWorld, Entity entity, LinkData link) //this beautiful teleport method is based off of xCompWiz's teleport function. 
 	{
