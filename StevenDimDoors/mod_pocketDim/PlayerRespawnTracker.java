@@ -44,7 +44,7 @@ public class PlayerRespawnTracker implements IPlayerTracker
 				for(EntityItem drop :  mod_pocketDim.limboSpawnInventory)
 				{
 					
-				//	player.inventory.addItemStackToInventory(drop.getEntityItem());
+					player.inventory.addItemStackToInventory(drop.getEntityItem());
 				
 				
 				}

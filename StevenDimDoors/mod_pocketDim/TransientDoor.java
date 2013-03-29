@@ -65,7 +65,7 @@ public class TransientDoor extends ExitDoor
     			 if(dimHelper.dimList.containsKey(linkData.destDimID))
     			 {
     				 dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
-    				 par1World.setBlockWithNotify(par2, par3, par4, 0);
+    				 par1World.setBlockWithNotify(par2, par3-1, par4, 0);
     			 }
     		 }
     		

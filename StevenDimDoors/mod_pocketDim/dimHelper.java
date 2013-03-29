@@ -355,14 +355,10 @@ public class dimHelper extends DimensionManager
 			int y=linkData.destYCoord;
 			int z=linkData.destZCoord;
 		
-			if(linkData.destDimID==mod_pocketDim.limboDimID&&entity instanceof EntityPlayerMP)
-			{
-				this.teleportToLimbo(world, linkData, EntityPlayerMP.class.cast(entity));
-			}
-
+			
 	        
 			int depth= this.getDimDepth(world.provider.dimensionId);
-		
+			
 			if(this.dimList.containsKey(destinationID))
 			{
 				this.generatePocket(linkData);
@@ -371,7 +367,7 @@ public class dimHelper extends DimensionManager
 			
 					
 					
-				
+			
 					
 					
 
@@ -473,6 +469,11 @@ public class dimHelper extends DimensionManager
 			DimData locationDimData= new DimData(link.locDimID, false, 0, link.locDimID,link.locXCoord,link.locYCoord,link.locZCoord);
 			this.dimList.put(link.locDimID, locationDimData);
 			link.isLocPocket=false;
+
+		}
+		if(!dimList.containsKey(link.destDimID))
+		{
+			dimHelper.dimList.put(link.destDimID, new DimData(link.destDimID, false, 0, link.locDimID,link.locXCoord,link.locYCoord,link.locZCoord));
 
 		}
 		
@@ -766,8 +767,12 @@ public class dimHelper extends DimensionManager
 		this.load();
 		if(!this.dimList.isEmpty())
 		{
+        
+
 			Set allDimIds=dimList.keySet();
-			
+
+        
+
 			Iterator itr =allDimIds.iterator();
 			while(itr.hasNext())
 			{
@@ -784,6 +789,10 @@ public class dimHelper extends DimensionManager
 						if(dimData.isPocket)
 						{
 							System.out.println("Warning- could not register dim "+dimData.depth+" . Probably caused by a version update/save data corruption/other mods. ");
+						}
+						else
+						{
+							e.printStackTrace();
 						}
 					}
 				}							

@@ -848,13 +848,17 @@ public class SchematicLoader
 					 if(world.getBlockId(point.getX(), point.getY(), point.getZ())==mod_pocketDim.ExitDoorID&&world.getBlockId(point.getX(), point.getY()-1, point.getZ())==mod_pocketDim.ExitDoorID&&world.getBlockId(point.getX(), point.getY()-2, point.getZ())==Block.sandStone.blockID)
 					 {
 					 	
-					 	World exitWorld = dimHelper.getWorld(dimHelper.dimList.get(world.provider.dimensionId).exitDimLink.destDimID);
+					 
+					 	if(dimHelper.getWorld(dimHelper.dimList.get(world.provider.dimensionId).exitDimLink.destDimID)==null)
+					 	{
+					 		dimHelper.initDimension((dimHelper.dimList.get(world.provider.dimensionId).exitDimLink.destDimID));
+					 	}
 					 	
 					 	
 
-					 	exitWorld.getChunkProvider().loadChunk(point.getX() >> 4, point.getZ() >> 4);
+					 	dimHelper.getWorld(dimHelper.dimList.get(world.provider.dimensionId).exitDimLink.destDimID).getChunkProvider().loadChunk(point.getX() >> 4, point.getZ() >> 4);
 					 	
-						LinkData sideLink = new LinkData(link.destDimID,dimHelper.dimList.get(link.locDimID).exitDimLink.destDimID,point.getX(), point.getY(), point.getZ(),point.getX(), exitWorld.getHeightValue(point.getX(), point.getZ())+1, point.getZ(),true);
+						LinkData sideLink = new LinkData(link.destDimID,dimHelper.dimList.get(link.locDimID).exitDimLink.destDimID,point.getX(), point.getY(), point.getZ(),point.getX(), dimHelper.getWorld(dimHelper.dimList.get(world.provider.dimensionId).exitDimLink.destDimID).getHeightValue(point.getX(), point.getZ())+1, point.getZ(),true);
 					 	sideLink.linkOrientation=world.getBlockMetadata(point.getX(), point.getY()-1, point.getZ());
 						dimHelper.instance.createLink(sideLink);
 						dimHelper.instance.createLink(sideLink.destDimID , sideLink.locDimID, sideLink.destXCoord, sideLink.destYCoord, sideLink.destZCoord, sideLink.locXCoord, sideLink.locYCoord, sideLink.locZCoord, dimHelper.instance.flipDoorMetadata(sideLink.linkOrientation));

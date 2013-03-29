@@ -49,12 +49,15 @@ public class EventHookContainer
     	
     	if(!mod_pocketDim.hasInitDims&&event.world.provider.dimensionId==0&&!event.world.isRemote)
     	{
+    		System.out.println("Registering Pocket Dims");
+    		mod_pocketDim.hasInitDims=true;
     		dimHelper.instance.unregsisterDims();
         	dimHelper.dimList.clear();
         	dimHelper.instance.interDimLinkList.clear();
         	dimHelper.instance.linksForRendering.clear();
+
         	dimHelper.instance.initPockets();
-        	
+
         	
         	
     	}
