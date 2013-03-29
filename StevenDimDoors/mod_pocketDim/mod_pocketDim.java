@@ -51,7 +51,7 @@ import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
 public class mod_pocketDim
 {
 	
-	public static final String version = "1.4.7R1.3.0B2";
+	public static final String version = "1.4.7R1.3.3B2";
 	public static final String modid = "Dimensional_Doors";
 	//need to clean up 
     @SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
