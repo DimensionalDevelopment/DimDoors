@@ -383,7 +383,7 @@ public class dimHelper extends DimensionManager
 						{
 							if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube())
 							{
-								entity.worldObj.setBlockWithNotify(playerXCoord,playerYCoord+1,playerZCoord,0);
+								entity.worldObj.setBlock(playerXCoord,playerYCoord+1,playerZCoord,0);
 							}
 						}
 						if(entity.worldObj.getBlockId(x, y, z)==mod_pocketDim.dimDoorID||entity.worldObj.getBlockId(x, y, z)==mod_pocketDim.ExitDoorID)
@@ -493,7 +493,7 @@ public class dimHelper extends DimensionManager
 			
 			if(!mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))
 			{
-				dimHelper.getWorld(link.locDimID).setBlockWithNotify(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
+				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
 				
 			}
 		
@@ -625,15 +625,15 @@ public class dimHelper extends DimensionManager
 				int blockToReplace= this.getWorld(destinationID).getBlockId(destX, destY, destZ);
 				if(blockToReplace!=mod_pocketDim.dimDoorID&&blockToReplace!=mod_pocketDim.linkExitDoorID&&blockToReplace!=mod_pocketDim.linkDimDoorID&&blockToReplace!=mod_pocketDim.ExitDoorID&&blockToReplace!=mod_pocketDim.transientDoorID)
 				{
-					this.getWorld(destinationID).setBlockAndMetadata(destX, destY-1, destZ, doorTypeToPlace,dimHelper.instance.flipDoorMetadata(world.getBlockMetadata(locX, locY-1, locZ)));
-					this.getWorld(destinationID).setBlockAndMetadata(destX, destY, destZ, doorTypeToPlace,world.getBlockMetadata(locX, locY, locZ));
+					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, doorTypeToPlace,dimHelper.instance.flipDoorMetadata(world.getBlockMetadata(locX, locY-1, locZ)),0);
+					this.getWorld(destinationID).setBlock(destX, destY, destZ, doorTypeToPlace,world.getBlockMetadata(locX, locY, locZ),0);
 				//	System.out.println("Genned door");
 				}
 				
 				if(id==mod_pocketDim.transientDoorID&&!dimHelper.dimList.get((destinationID)).hasBeenFilled)
 				{
-					this.getWorld(destinationID).setBlockAndMetadata(destX, destY-1, destZ, id,dimHelper.instance.flipDoorMetadata(world.getBlockMetadata(locX, locY-1, locZ)));
-					this.getWorld(destinationID).setBlockAndMetadata(destX, destY, destZ, id,world.getBlockMetadata(locX, locY, locZ));
+					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, id,dimHelper.instance.flipDoorMetadata(world.getBlockMetadata(locX, locY-1, locZ)),0);
+					this.getWorld(destinationID).setBlock(destX, destY, destZ, id,world.getBlockMetadata(locX, locY, locZ),0);
 				}
 			
 				linkData.hasGennedDoor=true;

@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDimClient;
 import StevenDimDoors.mod_pocketDim.dimHelper;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.EntityFireworkSparkFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -10,7 +11,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RiftFX extends EntityFX
+public class RiftFX extends EntityFireworkSparkFX
 {
     private int field_92049_a = 160;
     private boolean field_92054_ax;
@@ -24,7 +25,7 @@ public class RiftFX extends EntityFX
     public RiftFX(World par1World, double par2, double par4, double par6, double par8, double par10, double par12, EffectRenderer par14EffectRenderer)
     {
     	
-        super(par1World, par2, par4, par6);
+        super(par1World, par2, par4, par6, par12, par12, par12, par14EffectRenderer);
         this.motionX = par8;
         this.motionY = par10;
         this.motionZ = par12;
@@ -84,12 +85,11 @@ public class RiftFX extends EntityFX
             this.doRenderParticle(par1Tessellator, par2, par3, par4, par5, par6, par7);
         }
     }
-    
     public void doRenderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
     {
-        float var8 = (float)(super.getParticleTextureIndex() % 16) / 16.0F;
+        float var8 = (float)(super.particleTextureIndexX % 16) / 16.0F;
         float var9 = var8 + 0.0624375F;
-        float var10 = (float)(this.getParticleTextureIndex() / 16) / 16.0F;
+        float var10 = (float)(this.particleTextureIndexX / 16) / 16.0F;
         float var11 = var10 + 0.0624375F;
         float var12 = 0.1F * this.particleScale;
         float var13 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)par2 - interpPosX);
@@ -98,18 +98,18 @@ public class RiftFX extends EntityFX
         float var16 = .0F;
         try
         {
-        	if(dimHelper.dimList.get(this.worldObj.provider.dimensionId).isPocket)
-        	{
-        		var16=.7F;
-        	}
-        	else
-        	{
-        	
-        	}
+         if(dimHelper.dimList.get(this.worldObj.provider.dimensionId).isPocket)
+         {
+         var16=.7F;
+         }
+         else
+         {
+        
+         }
         }
         catch(Exception E)
         {
-        	
+        
         }
         par1Tessellator.setColorRGBA_F(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7);
 
@@ -118,6 +118,7 @@ public class RiftFX extends EntityFX
         par1Tessellator.addVertexWithUV((double)(var13 + par3 * var12 + par6 * var12), (double)(var14 + par4 * var12), (double)(var15 + par5 * var12 + par7 * var12), (double)var8, (double)var10);
         par1Tessellator.addVertexWithUV((double)(var13 + par3 * var12 - par6 * var12), (double)(var14 - par4 * var12), (double)(var15 + par5 * var12 - par7 * var12), (double)var8, (double)var11);
     }
+
 
     /**
      * Called to update the entity's position/logic.

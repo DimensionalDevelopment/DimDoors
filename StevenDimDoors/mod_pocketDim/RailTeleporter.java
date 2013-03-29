@@ -92,11 +92,7 @@ public class RailTeleporter extends Teleporter
 	         entity.lastTickPosZ = entity.prevPosZ = entity.posZ = z;
 	         entity.setPosition(x, y, z);
 	 	}
-	    @Override
-	    public boolean func_85188_a(Entity par1Entity)
-	    {
-	    	return true;
-	    }
+	  
 	    @Override
 	    public void func_85189_a(long par1)
 	    {

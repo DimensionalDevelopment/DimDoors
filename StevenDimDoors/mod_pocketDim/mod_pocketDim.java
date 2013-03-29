@@ -39,7 +39,7 @@ import StevenDimDoors.mod_pocketDim.commands.CommandDeleteDimData;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
 
-@Mod(modid = "DimensionalDoors", name = "Dimensional Doors", version = mod_pocketDim.version)
+@Mod(modid = mod_pocketDim.modid, name = "Dimensional Doors", version = mod_pocketDim.version)
 
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         clientPacketHandlerSpec =
@@ -52,6 +52,7 @@ public class mod_pocketDim
 {
 	
 	public static final String version = "1.4.7R1.3.0B2";
+	public static final String modid = "Dimensional_Doors";
 	//need to clean up 
     @SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
     public static CommonProxy proxy;
@@ -287,27 +288,27 @@ public class mod_pocketDim
     	
     	
     
-        transientDoor = (new TransientDoor(transientDoorID, Material.iron)).setHardness(1.0F).setRequiresSelfNotify().setBlockName("transientDoor");
+        transientDoor = (new TransientDoor(transientDoorID, Material.iron)).setHardness(1.0F) .setUnlocalizedName("transientDoor");
 
-        linkDimDoor = (new linkDimDoor(linkDimDoorID, Material.iron)).setHardness(1.0F).setRequiresSelfNotify().setBlockName("dimDoor");
-        blockDimWall = (new BlockDimWall(blockDimWallID, 0, Material.iron)).setLightValue(1.0F).setHardness(0.1F).setBlockName("blockDimWall");
-        blockDimWallPerm = (new BlockDimWallPerm(blockDimWallPermID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setHardness(100000.0F).setBlockName("blockDimWallPerm");
-        ExitDoor = (new ExitDoor(ExitDoorID, Material.wood)).setHardness(1.0F).setRequiresSelfNotify().setBlockName("dimDoorexit");
-        linkExitDoor = (new linkExitDoor(linkExitDoorID, Material.wood)).setHardness(1.0F).setRequiresSelfNotify().setBlockName("dimDoorexitlink");
-        blockRift = (new BlockRift(blockRiftID, 0, Material.air).setHardness(1.0F).setRequiresSelfNotify().setBlockName("rift"));
-        blockLimbo = (new BlockLimbo(blockLimboID, 15, Material.iron).setHardness(.2F).setBlockName("limob").setLightValue(.0F));
-        chaosDoor = (new ChaosDoor(chaosDoorID, Material.iron).setHardness(.2F).setBlockName("chaosDoor").setLightValue(.0F).setRequiresSelfNotify());
-        dimDoor = (new dimDoor(dimDoorID, Material.iron)).setHardness(1.0F).setRequiresSelfNotify().setBlockName("dimDoor");
-        dimHatch = (new dimHatch(dimHatchID,   84, Material.iron)).setHardness(1.0F).setRequiresSelfNotify().setBlockName("dimHatch");
-      //  dimRail = (new DimRail(dimRailID, 88, false)).setHardness(.5F).setRequiresSelfNotify().setBlockName("dimRail");
+        linkDimDoor = (new linkDimDoor(linkDimDoorID, Material.iron)).setHardness(1.0F) .setUnlocalizedName("dimDoorLink");
+        blockDimWall = (new BlockDimWall(blockDimWallID, 0, Material.iron)).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("blockDimWall");
+        blockDimWallPerm = (new BlockDimWallPerm(blockDimWallPermID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setHardness(100000.0F).setUnlocalizedName("blockDimWallPerm");
+        ExitDoor = (new ExitDoor(ExitDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
+        linkExitDoor = (new linkExitDoor(linkExitDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorexitlink");
+        blockRift = (new BlockRift(blockRiftID, 0, Material.air).setHardness(1.0F) .setUnlocalizedName("rift"));
+        blockLimbo = (new BlockLimbo(blockLimboID, 15, Material.iron).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F));
+        chaosDoor = (new ChaosDoor(chaosDoorID, Material.iron).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
+        dimDoor = (new dimDoor(dimDoorID, Material.iron)).setHardness(1.0F) .setUnlocalizedName("dimDoor");
+        dimHatch = (new dimHatch(dimHatchID,   84, Material.iron)).setHardness(1.0F) .setUnlocalizedName("dimHatch");
+      //  dimRail = (new DimRail(dimRailID, 88, false)).setHardness(.5F) .setUnlocalizedName("dimRail");
  
-        itemDimDoor = (new itemDimDoor(itemDimDoorID, Material.iron)).setItemName("itemDimDoor");
-        itemExitDoor = (new itemExitDoor(itemExitDoorID, Material.wood)).setItemName("itemDimDoorexit");
-        itemLinkSignature = (new itemLinkSignature(itemLinkSignatureID, Material.wood)).setItemName("itemLinkSignature");
-        itemRiftRemover = (new itemRiftRemover(itemRiftRemoverID, Material.wood)).setItemName("itemRiftRemover");
-        itemStableFabric = (new ItemStableFabric(itemStableFabricID, 0)).setItemName("itemStableFabric");
-        itemChaosDoor = (new ItemChaosDoor(itemChaosDoorID, Material.iron)).setItemName("itemChaosDoor");
-        itemRiftBlade = (new ItemRiftBlade(itemRiftBladeID, Material.iron)).setItemName("ItemRiftBlade");
+        itemDimDoor = (new itemDimDoor(itemDimDoorID, Material.iron)).setUnlocalizedName("itemDimDoor");
+        itemExitDoor = (new itemExitDoor(itemExitDoorID, Material.wood)).setUnlocalizedName("itemDimDoorWarp");
+        itemLinkSignature = (new itemLinkSignature(itemLinkSignatureID, Material.wood)).setUnlocalizedName("itemLinkSignature");
+        itemRiftRemover = (new itemRiftRemover(itemRiftRemoverID, Material.wood)).setUnlocalizedName("itemRiftRemover");
+        itemStableFabric = (new ItemStableFabric(itemStableFabricID, 0)).setUnlocalizedName("itemStableFabric");
+        itemChaosDoor = (new ItemChaosDoor(itemChaosDoorID, Material.iron)).setUnlocalizedName("itemChaosDoor");
+        itemRiftBlade = (new ItemRiftBlade(itemRiftBladeID, Material.iron)).setUnlocalizedName("ItemRiftBlade");
 
         
         proxy.loadTextures();
@@ -568,7 +569,7 @@ public class mod_pocketDim
     	 	
 
     		this.metadataFlipList.add(Block.dispenser.blockID);
-    		this.metadataFlipList.add(Block.stairsStoneBrickSmooth.blockID);
+    		this.metadataFlipList.add(Block.stairsStoneBrick.blockID);
     		this.metadataFlipList.add(Block.lever.blockID);
     		this.metadataFlipList.add(Block.stoneButton.blockID);
     		this.metadataFlipList.add(Block.redstoneRepeaterIdle.blockID);

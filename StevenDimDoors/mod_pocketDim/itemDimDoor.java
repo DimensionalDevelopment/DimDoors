@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDoor;
@@ -21,12 +22,11 @@ public class itemDimDoor extends ItemDoor
           this.doorMaterial = par2Material;
           this.setCreativeTab(CreativeTabs.tabTransport);
     }
-    @Override
-	 public String getTextureFile()
-	 {
-		 return "/PocketBlockTextures.png";
-	 }
-   
+    public void registerIcons(IconRegister par1IconRegister)
+    {
+        this.iconIndex = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+
+    }
     
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)

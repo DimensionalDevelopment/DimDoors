@@ -5,12 +5,14 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -21,7 +23,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class dimDoor extends BlockContainer
 {
-	
+	private static Icon blockIconBottom;
 	protected dimDoor(int par1, Material material) 
 	{
 		super(par1, Material.iron);
@@ -31,11 +33,13 @@ public class dimDoor extends BlockContainer
 	}
 	
 	
-	 @Override
-	 public String getTextureFile()
-	 {
-		 return "/PocketBlockTextures.png";
-	 }
+
+	public void registerIcons(IconRegister par1IconRegister)
+    {
+        this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2()+"_top");
+        this.blockIconBottom = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2()+"_bottom");
+
+    }
 	 
 	//spawns the rift attatched to the block. Doesnt work in creative mode for some reason
 	 //TODO make work in creative
@@ -46,19 +50,19 @@ public class dimDoor extends BlockContainer
     		if(dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World)!=null)
     		{
     			LinkData link= dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World);
-    			par1World.setBlockWithNotify(par2, par3, par4, mod_pocketDim.blockRiftID);
+    			par1World.setBlock(par2, par3, par4, mod_pocketDim.blockRiftID);
     		
     		}
     		 if(dimHelper.instance.getLinkDataFromCoords(par2, par3-1, par4, par1World)!=null)
     		{
     			LinkData link= dimHelper.instance.getLinkDataFromCoords(par2, par3-1, par4, par1World);
-    			par1World.setBlockWithNotify(par2, par3-1, par4, mod_pocketDim.blockRiftID);
+    			par1World.setBlock(par2, par3-1, par4, mod_pocketDim.blockRiftID);
     		
     		}
     		 if(dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World)!=null)
     		{
     			LinkData link= dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World);
-    			par1World.setBlockWithNotify(par2, par3+1, par4, mod_pocketDim.blockRiftID);
+    			par1World.setBlock(par2, par3+1, par4, mod_pocketDim.blockRiftID);
     		
     		}
     					
@@ -99,7 +103,7 @@ public class dimDoor extends BlockContainer
     			
 
     				
-    			System.out.println(linkData.destDimID);
+
     				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
     				this.onPoweredBlockChange(par1World, par2, par3, par4, false);
     		
@@ -134,7 +138,7 @@ public class dimDoor extends BlockContainer
 					{
 						var12=dimHelper.instance.flipDoorMetadata(var12);
 					}
-					par1World.setBlockMetadataWithNotify(par2, par3-1, par4, var12);
+					par1World.setBlockMetadataWithNotify(par2, par3-1, par4, var12,1);
 					if(	dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World)!=null)
 					{
 						dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World).linkOrientation= par1World.getBlockMetadata(par2, par3-1, par4);
@@ -148,7 +152,7 @@ public class dimDoor extends BlockContainer
 					{ 
 						var12=dimHelper.instance.flipDoorMetadata(var12);
 					}
-					par1World.setBlockMetadataWithNotify(par2, par3, par4, var12);
+					par1World.setBlockMetadataWithNotify(par2, par3, par4, var12,1);
 					if(	dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World)!=null)
 					{
 						dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World).linkOrientation= par1World.getBlockMetadata(par2, par3, par4);
@@ -179,12 +183,12 @@ public class dimDoor extends BlockContainer
 
             if ((var10 & 8) == 0)
             {
-                par1World.setBlockMetadataWithNotify(par2, par3, par4, var11);
+                par1World.setBlockMetadataWithNotify(par2, par3, par4, var11,1);
                 par1World.markBlockRangeForRenderUpdate(par2, par3, par4, par2, par3, par4);
             }
             else
             {
-                par1World.setBlockMetadataWithNotify(par2, par3 - 1, par4, var11);
+                par1World.setBlockMetadataWithNotify(par2, par3 - 1, par4, var11,1);
                 par1World.markBlockRangeForRenderUpdate(par2, par3 - 1, par4, par2, par3, par4);
             }
 
@@ -217,12 +221,12 @@ public class dimDoor extends BlockContainer
 
             if ((var6 & 8) == 0)
             {
-                par1World.setBlockMetadataWithNotify(par2, par3, par4, var8);
+                par1World.setBlockMetadataWithNotify(par2, par3, par4, var8,2);
                 par1World.markBlockRangeForRenderUpdate(par2, par3, par4, par2, par3, par4);
             }
             else
             {
-                par1World.setBlockMetadataWithNotify(par2, par3 - 1, par4, var8);
+                par1World.setBlockMetadataWithNotify(par2, par3 - 1, par4, var8,2);
                 par1World.markBlockRangeForRenderUpdate(par2, par3 - 1, par4, par2, par3, par4);
             }
 
@@ -268,73 +272,16 @@ public class dimDoor extends BlockContainer
     /**
      * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
      */
-    public int getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    public Icon getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
-        if (par5 != 0 && par5 != 1)
-        {
-            int var6 = this.getFullMetadata(par1IBlockAccess, par2, par3, par4);
-            int var7 = this.blockIndexInTexture;
-
-            if ((var6 & 8) != 0)
-            {
-                var7 -= 16;
-            }
-
-            int var8 = var6 & 3;
-            boolean var9 = (var6 & 4) != 0;
-
-            if (var9)
-            {
-                if (var8 == 0 && par5 == 2)
-                {
-                    var7 = -var7;
-                }
-                else if (var8 == 1 && par5 == 5)
-                {
-                    var7 = -var7;
-                }
-                else if (var8 == 2 && par5 == 3)
-                {
-                    var7 = -var7;
-                }
-                else if (var8 == 3 && par5 == 4)
-                {
-                    var7 = -var7;
-                }
-            }
-            else
-            {
-                if (var8 == 0 && par5 == 5)
-                {
-                    var7 = -var7;
-                }
-                else if (var8 == 1 && par5 == 3)
-                {
-                    var7 = -var7;
-                }
-                else if (var8 == 2 && par5 == 4)
-                {
-                    var7 = -var7;
-                }
-                else if (var8 == 3 && par5 == 2)
-                {
-                    var7 = -var7;
-                }
-
-                if ((var6 & 16) != 0)
-                {
-                    var7 = -var7;
-                }
-            }
-            
-
-            return Math.abs(var7);
-            
-        }
-        else
-        {
-            return this.blockIndexInTexture;
-        }
+       if(par1IBlockAccess.getBlockId(par2, par3-1, par4)==this.blockID)
+       {
+    	   return this.blockIcon;
+       }
+       else
+       {
+    	   return this.blockIconBottom;
+       }
     }
 
 	//Called to update the render information on the tile entity. Could probably implement a data watcher, but this works fine and is more versatile I think. 
@@ -565,7 +512,7 @@ public class dimDoor extends BlockContainer
 
             if (par1World.getBlockId(par2, par3 + 1, par4) != this.blockID)
             {
-                par1World.setBlockWithNotify(par2, par3, par4, 0);
+                par1World.setBlock(par2, par3, par4, 0);
                 var7 = true;
             }
 
@@ -603,7 +550,7 @@ public class dimDoor extends BlockContainer
         {
             if (par1World.getBlockId(par2, par3 - 1, par4) != this.blockID)
             {
-                par1World.setBlockWithNotify(par2, par3, par4, 0);
+                par1World.setBlock(par2, par3, par4, 0);
             }
 
             if (par5 > 0 && par5 != this.blockID)
@@ -692,7 +639,7 @@ public class dimDoor extends BlockContainer
     {
         if (par6EntityPlayer.capabilities.isCreativeMode && (par5 & 8) != 0 && par1World.getBlockId(par2, par3 - 1, par4) == this.blockID)
         {
-            par1World.setBlockWithNotify(par2, par3 - 1, par4, 0);
+            par1World.setBlock(par2, par3 - 1, par4, 0);
         }
     }
 

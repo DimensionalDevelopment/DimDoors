@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim;
 
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,19 +21,18 @@ public class dimHatch extends BlockTrapDoor
 	//	 this.blockIndexInTexture =  16;
 	}
 
+	public void registerIcons(IconRegister par1IconRegister)
+    {
+        this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2());
+
+    }
 	
-	 @Override
-	 public String getTextureFile()
-	 {
-		 this.blockIndexInTexture =  16;
-		 return "/PocketBlockTextures.png";
-	 }
 	 public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
 	    {
 	       
 	        {
 	            int var10 = par1World.getBlockMetadata(par2, par3, par4);
-	            par1World.setBlockMetadataWithNotify(par2, par3, par4, var10 ^ 4);
+	            par1World.setBlockMetadataWithNotify(par2, par3, par4, var10 ^ 4,1);
 	            par1World.playAuxSFXAtEntity(par5EntityPlayer, 1003, par2, par3, par4, 0);
 	            return true;
 	        }
@@ -65,7 +65,7 @@ public class dimHatch extends BlockTrapDoor
 
 	        if (var7 != par5)
 	        {
-	            par1World.setBlockMetadataWithNotify(par2, par3, par4, var6 ^ 4);
+	            par1World.setBlockMetadataWithNotify(par2, par3, par4, var6 ^ 4,1);
 	            par1World.playAuxSFXAtEntity((EntityPlayer)null, 1003, par2, par3, par4, 0);
 	        }
 	    }

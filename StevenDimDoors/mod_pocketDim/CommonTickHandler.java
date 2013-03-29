@@ -76,7 +76,7 @@ public class CommonTickHandler implements ITickHandler
     						}
     						else
     						{
-    							dimHelper.getWorld(link.locDimID).setBlockWithNotify(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
+    							dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
     							TileEntityRift.class.cast(dimHelper.getWorld(link.locDimID).getBlockTileEntity(link.locXCoord, link.locYCoord, link.locZCoord)).hasGrownRifts=true;
     						}
     					}
@@ -147,7 +147,7 @@ public class CommonTickHandler implements ITickHandler
     					if(idToSet!=-1)
     					{
     					
-    						dimHelper.getWorld(mod_pocketDim.limboDimID).setBlockWithNotify(point.getX(), point.getY(), point.getZ(), idToSet);
+    						dimHelper.getWorld(mod_pocketDim.limboDimID).setBlock(point.getX(), point.getY(), point.getZ(), idToSet);
 
     					}    		
     				}   		    		

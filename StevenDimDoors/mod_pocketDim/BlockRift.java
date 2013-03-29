@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -22,10 +23,9 @@ public class BlockRift extends BlockContainer
 	
 	protected BlockRift(int i, int j, Material par2Material) 
 	{
-		 super(i, j, Material.snow);
+		 super(i, Material.snow);
 	        setTickRandomly(true);
 	      //  this.setCreativeTab(CreativeTabs.tabBlock);
-	        this.setTextureFile("/PocketBlockTextures.png");
 	        this.setLightOpacity(14);
 	        
 
@@ -33,6 +33,10 @@ public class BlockRift extends BlockContainer
 	       
 	        
 	}
+	public void registerIcons(IconRegister par1IconRegister)
+    {
+        this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2());
+    }
 	//sends a packet informing the client that there is a link present so it renders properly. (when placed)
 	public void onBlockAdded(World par1World, int par2, int par3, int par4) 
 	{
@@ -133,7 +137,7 @@ public class BlockRift extends BlockContainer
     					{
     						if(MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)!=0&&random.nextInt(2)==0)
     						{
-    							world.setBlockWithNotify(x+i, y+j, z+k,0);
+    							world.setBlock(x+i, y+j, z+k,0);
     							flag=random.nextBoolean()||random.nextBoolean();
     						}
     						

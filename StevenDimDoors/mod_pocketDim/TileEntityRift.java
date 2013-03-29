@@ -107,7 +107,7 @@ public class TileEntityRift extends TileEntity
 			 if(count2>40)
 			 {
 				 this.invalidate();
-				 this.worldObj.setBlockWithNotify(this.xCoord, this.yCoord, this.zCoord,0);
+				 this.worldObj.setBlock(this.xCoord, this.yCoord, this.zCoord,0);
 				if(dimHelper.instance.getLinkDataFromCoords(this.xCoord, this.yCoord, this.zCoord, this.worldObj.provider.dimensionId)!=null)
 				{
 				 dimHelper.instance.removeLink(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord);
