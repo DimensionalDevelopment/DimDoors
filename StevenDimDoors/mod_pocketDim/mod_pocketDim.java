@@ -39,7 +39,7 @@ import StevenDimDoors.mod_pocketDim.commands.CommandDeleteDimData;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
 
-@Mod(modid = "Dimensional_Doors", name = "Dimensional Doors", version = mod_pocketDim.version)
+@Mod(modid = "DimensionalDoors", name = "Dimensional Doors", version = mod_pocketDim.version)
 
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         clientPacketHandlerSpec =

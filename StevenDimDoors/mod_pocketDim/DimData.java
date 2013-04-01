@@ -228,35 +228,30 @@ public class DimData implements Serializable
 	public ArrayList<LinkData> printAllLinkData()
 	{
 		ArrayList links = new ArrayList();
-		Iterator itr= this.linksInThisDim.keySet().iterator();
-		
-		while (itr.hasNext())
+		if(this.linksInThisDim==null)
 		{
-			HashMap first = this.linksInThisDim.get((Integer)itr.next());
-			
-			Iterator itrfirst= first.keySet().iterator();
-			
-			while (itrfirst.hasNext())
-			{
-				HashMap second = (HashMap) first.get((Integer)itrfirst.next());
-				
-				Iterator itrsecond= second.keySet().iterator();
-				
-				while (itrsecond.hasNext())
-				{
-					
-//TODO make a for(each : in) loops, and make it so that it returns the links instead of printing them 			
-					
-					LinkData link = (LinkData) second.get((Integer)itrsecond.next());
-						
-					links.add(link);
-					
-					
-					
-				}
-			}				
+			return links;
 		}
+		for(HashMap<Integer, HashMap<Integer, LinkData>> first : this.linksInThisDim.values())
+		{
+			
+			
+			for(HashMap<Integer, LinkData> second : first.values())
+			{
+				
+				
+				for(LinkData linkData :second.values())
+				{
+					links.add(linkData);
+				}
+			}
+		}
+				
+						
+		
 		return links;
 	}
+	
+
 	
 }

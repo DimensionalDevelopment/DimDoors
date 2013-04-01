@@ -1182,13 +1182,30 @@ public class dimHelper extends DimensionManager
 		while (!foundRandomDest&&size>0&&i<100)
 		{
 			i++;
+			DimData dimData;
+			ArrayList linksInDim=new ArrayList();
+			for(size--;size>=0;)
+			{
+				dimData = dimHelper.dimList.get(rand.nextInt(dimList.size()));
+				if(dimData==null)
+				{
+					break;
+				}
+				linksInDim = dimData.printAllLinkData();
+				if(!linksInDim.isEmpty())
+				{
+					break;
+				}
+			}
 			
-			DimData dimData = dimHelper.dimList.get(rand.nextInt(size));
-			
-			ArrayList linksInDim = dimData.printAllLinkData();
 			
 			
 			
+			
+			if(linksInDim.isEmpty())
+			{
+				break;
+			}
 			
 			LinkData link1 = (LinkData) linksInDim.get(rand.nextInt(linksInDim.size()));
 			
@@ -1206,6 +1223,7 @@ public class dimHelper extends DimensionManager
 			return null;
 		
 	}
+	
 		
 		
 		
