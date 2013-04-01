@@ -5,6 +5,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -302,11 +303,11 @@ public class ItemRiftBlade extends itemDimDoor
 			return par1ItemStack;
     
     }
-    @Override
-	 public String getTextureFile()
-	 {
-		 return "/PocketBlockTextures.png";
-	 }
+    public void registerIcons(IconRegister par1IconRegister)
+    {
+        this.iconIndex = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+
+    }
     public int getItemEnchantability()
     {
         return EnumToolMaterial.GOLD.getEnchantability();

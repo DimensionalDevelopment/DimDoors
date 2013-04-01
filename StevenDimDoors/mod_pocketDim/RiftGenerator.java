@@ -185,7 +185,7 @@ public class RiftGenerator implements IWorldGenerator
         									else if(Math.abs(xc)+Math.abs(zc)<rand.nextInt(3)+3)
 
         									{
-        										world.setBlockAndMetadata(i+xc, j-1+yc, k+zc, blockID,2);
+        										world.setBlock(i+xc, j-1+yc, k+zc, blockID,2,1);
 
         									}
         								}
@@ -198,12 +198,12 @@ public class RiftGenerator implements IWorldGenerator
     						ItemRiftBlade.placeDoorBlock(world, i, j+1, k, 0, mod_pocketDim.transientDoor);
 
     						{
-							world.setBlockAndMetadata(i, j+1, k-1, blockID,0);
-							world.setBlockAndMetadata(i, j+1, k+1, blockID,0);
-							world.setBlockAndMetadata(i, j, k-1, blockID,0);
-							world.setBlockAndMetadata(i, j, k+1, blockID,0);
-							world.setBlockAndMetadata(i, j+2, k+1, blockID,3);
-							world.setBlockAndMetadata(i, j+2, k-1, blockID,3);
+							world.setBlock(i, j+1, k-1, blockID,0,1);
+							world.setBlock(i, j+1, k+1, blockID,0,1);
+							world.setBlock(i, j, k-1, blockID,0,1);
+							world.setBlock(i, j, k+1, blockID,0,1);
+							world.setBlock(i, j+2, k+1, blockID,3,1);
+							world.setBlock(i, j+2, k-1, blockID,3,1);
     						}
     						
 

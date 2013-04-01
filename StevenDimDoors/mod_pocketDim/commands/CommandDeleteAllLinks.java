@@ -85,7 +85,7 @@ public class CommandDeleteAllLinks extends CommandBase
 					
 					
 					
-						targetWorld.setBlockWithNotify(link.locXCoord, link.locYCoord, link.locZCoord, 0);
+						targetWorld.setBlock(link.locXCoord, link.locYCoord, link.locZCoord, 0);
 					
 					
 						linksRemoved++;

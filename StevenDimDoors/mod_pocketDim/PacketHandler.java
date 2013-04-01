@@ -35,11 +35,12 @@ public class PacketHandler implements IPacketHandler
         public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) 
         {
                
-                if (packet.channel.equals("GenericRandom")) 
+                if (packet.channel.equals("DimDoorPackets")) 
                 { 
                 	handleRandom(packet,player);      
                       
                 }
+                
                 
         }
        
@@ -231,7 +232,7 @@ public class PacketHandler implements IPacketHandler
 			    }
 			 
 			 	Packet250CustomPayload packet= new Packet250CustomPayload();
-			 	packet.channel="GenericRandom";
+			 	packet.channel="DimDoorPackets";
 			 	packet.data = bos.toByteArray();
 			 	packet.length = bos.size();;
 			 	PacketDispatcher.sendPacketToAllPlayers(packet);
@@ -267,7 +268,7 @@ public class PacketHandler implements IPacketHandler
 			    }
 			 
 			 	Packet250CustomPayload packet= new Packet250CustomPayload();
-			 	packet.channel="GenericRandom";
+			 	packet.channel="DimDoorPackets";
 			 	packet.data = bos.toByteArray();
 			 	packet.length = bos.size();;
 			 	PacketDispatcher.sendPacketToAllPlayers(packet);
@@ -307,7 +308,7 @@ public class PacketHandler implements IPacketHandler
 			    }
 			 
 			 	Packet250CustomPayload packet= new Packet250CustomPayload();
-			 	packet.channel="GenericRandom";
+			 	packet.channel="DimDoorPackets";
 			 	packet.data = bos.toByteArray();
 			 	packet.length = bos.size();;
 			 	PacketDispatcher.sendPacketToAllPlayers(packet);
@@ -348,7 +349,7 @@ public class PacketHandler implements IPacketHandler
 			    }
 			 
 			 	Packet250CustomPayload packet= new Packet250CustomPayload();
-			 	packet.channel="GenericRandom";
+			 	packet.channel="DimDoorPackets";
 			 	packet.data = bos.toByteArray();
 			 	packet.length = bos.size();
 			 	
@@ -396,7 +397,7 @@ public class PacketHandler implements IPacketHandler
 				 dataOut.writeObject(dim);
 				 
 					Packet250CustomPayload packet= new Packet250CustomPayload();
-				 	packet.channel="GenericRandom";
+				 	packet.channel="DimDoorPackets";
 				 	packet.data = bos.toByteArray();
 				 	packet.length = bos.size();;
 				 	PacketDispatcher.sendPacketToAllPlayers(packet);

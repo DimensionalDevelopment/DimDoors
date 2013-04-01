@@ -65,6 +65,8 @@ public class EventHookContainer
     	
     	
     	
+
+
     	for(WorldServer world : dimHelper.getWorlds())
     	{
     		int linkCount=0;
@@ -84,7 +86,8 @@ public class EventHookContainer
     				{
     					break;
     				}
-    				dimHelper.getWorld(link.locDimID).setBlockWithNotify(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
+    				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
+
 
     			}
     			

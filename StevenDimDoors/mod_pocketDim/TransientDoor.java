@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -27,9 +29,27 @@ public class TransientDoor extends ExitDoor
 	{
 		super(par1, Material.grass);
 	//	this.blockIndexInTexture = 18;
-        this.setTextureFile("/PocketBlockTextures.png");
+      
 
 	}
+	
+	public void registerIcons(IconRegister par1IconRegister)
+    {
+        this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2()+"_top");
+
+    }
+	@SideOnly(Side.CLIENT)
+
+    /**
+     * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
+     */
+    public Icon getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    {
+       
+    	   return this.blockIcon;
+       
+       
+    }
 	 public boolean isCollidable()
 	 {
 	        return false;
@@ -65,7 +85,7 @@ public class TransientDoor extends ExitDoor
     			 if(dimHelper.dimList.containsKey(linkData.destDimID))
     			 {
     				 dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
-    				 par1World.setBlockWithNotify(par2, par3-1, par4, 0);
+    				 par1World.setBlock(par2, par3-1, par4, 0);
     			 }
     		 }
     		
@@ -77,7 +97,7 @@ public class TransientDoor extends ExitDoor
              			 if(dimHelper.dimList.containsKey(linkData.destDimID))
              			 {
              				 dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
-             				 par1World.setBlockWithNotify(par2, par3, par4, 0);
+             				 par1World.setBlock(par2, par3, par4, 0);
              			 }
              		 } 
         		  }

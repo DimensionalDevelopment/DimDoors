@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
@@ -14,14 +15,20 @@ public class BlockDimWall extends Block
 	
 	protected BlockDimWall(int i, int j, Material par2Material) 
 	{
-		 super(i, j, Material.ground);
+		 super(i, Material.ground);
 	        setTickRandomly(true);
 	        this.setCreativeTab(CreativeTabs.tabBlock);
-	        this.setTextureFile("/PocketBlockTextures.png");
+	    
 	       
 	       
 	        
 	}
+	
+	public void registerIcons(IconRegister par1IconRegister)
+    {
+        this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2());
+    }
+	
     public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {}
     
     public int quantityDropped(Random par1Random)
@@ -46,7 +53,7 @@ public class BlockDimWall extends Block
         		{
         			entityPlayer.getCurrentEquippedItem().stackSize--;
         		}
-        		par1World.setBlockAndMetadataWithNotify(par2, par3, par4,  entityPlayer.getCurrentEquippedItem().itemID, entityPlayer.getCurrentEquippedItem().getItemDamage());
+        		par1World.setBlock(par2, par3, par4,  entityPlayer.getCurrentEquippedItem().itemID, entityPlayer.getCurrentEquippedItem().getItemDamage(),0);
         		return true;
         	}
         	

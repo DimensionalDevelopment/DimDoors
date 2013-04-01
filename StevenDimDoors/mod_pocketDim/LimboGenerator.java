@@ -393,12 +393,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
         }
     }
 
-	@Override
-	public boolean unload100OldestChunks() {
-		// TODO Auto-generated method stub
-		return super.unload100OldestChunks();
-	}
-
+	
 	@Override
 	public boolean canSave() {
 		// TODO Auto-generated method stub

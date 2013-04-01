@@ -23,7 +23,7 @@ public class ClosingRiftFX extends EntityFX
 
     public ClosingRiftFX(World par1World, double par2, double par4, double par6, double par8, double par10, double par12, EffectRenderer par14EffectRenderer)
     {
-    	
+    
         super(par1World, par2, par4, par6);
         this.motionX = par8;
         this.motionY = par10;
@@ -62,16 +62,16 @@ public class ClosingRiftFX extends EntityFX
     }
 
     /**
-     * returns the bounding box for this entity
-     */
+* returns the bounding box for this entity
+*/
     public AxisAlignedBB getBoundingBox()
     {
         return null;
     }
 
     /**
-     * Returns true if this entity should push and be pushed by other entities when colliding.
-     */
+* Returns true if this entity should push and be pushed by other entities when colliding.
+*/
     public boolean canBePushed()
     {
         return false;
@@ -87,9 +87,9 @@ public class ClosingRiftFX extends EntityFX
     
     public void doRenderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
     {
-        float var8 = (float)(super.getParticleTextureIndex() % 16) / 16.0F;
+        float var8 = (float)(super.particleTextureIndexX % 16) / 16.0F;
         float var9 = var8 + 0.0624375F;
-        float var10 = (float)(this.getParticleTextureIndex() / 16) / 16.0F;
+        float var10 = (float)(this.particleTextureIndexX / 16) / 16.0F;
         float var11 = var10 + 0.0624375F;
         float var12 = 0.1F * this.particleScale;
         float var13 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)par2 - interpPosX);
@@ -98,18 +98,18 @@ public class ClosingRiftFX extends EntityFX
         float var16 = .8F;
         try
         {
-        	if(dimHelper.dimList.get(this.worldObj.provider.dimensionId).isPocket)
-        	{
-        		var16=.4F;
-        	}
-        	else
-        	{
-        	
-        	}
+         if(dimHelper.dimList.get(this.worldObj.provider.dimensionId).isPocket)
+         {
+         var16=.4F;
+         }
+         else
+         {
+        
+         }
         }
         catch(Exception E)
         {
-        	
+        
         }
         par1Tessellator.setColorRGBA_F(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7);
 
@@ -120,8 +120,8 @@ public class ClosingRiftFX extends EntityFX
     }
 
     /**
-     * Called to update the entity's position/logic.
-     */
+* Called to update the entity's position/logic.
+*/
     public void onUpdate()
     {
         this.prevPosX = this.posX;
@@ -183,8 +183,8 @@ public class ClosingRiftFX extends EntityFX
     }
 
     /**
-     * Gets how bright this entity is.
-     */
+* Gets how bright this entity is.
+*/
     public float getBrightness(float par1)
     {
         return 1.0F;

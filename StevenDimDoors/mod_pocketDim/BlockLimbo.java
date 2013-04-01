@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -15,15 +16,18 @@ public class BlockLimbo extends Block
 	
 	protected BlockLimbo(int i, int j, Material par2Material) 
 	{
-		 super(i, j, Material.ground);
+		 super(i, Material.ground);
 	        setTickRandomly(false);
 	        this.setCreativeTab(CreativeTabs.tabBlock);
-	        this.setTextureFile("/PocketBlockTextures.png");
 	       
 	       
 	        
 	}
-	
+	 public void registerIcons(IconRegister par1IconRegister)
+	    {
+	        this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2());
+
+	    }
 	
     public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {}
     
