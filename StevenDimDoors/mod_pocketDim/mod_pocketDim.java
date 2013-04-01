@@ -605,7 +605,6 @@ public class mod_pocketDim
     	dimHelper.dimList.clear();
     	dimHelper.blocksToDecay.clear();
     	dimHelper.instance.interDimLinkList.clear();
-    	dimHelper.instance.linksForRendering.clear();
     	this.hasInitDims=false;
     	}
     	catch(Exception e)

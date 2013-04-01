@@ -40,6 +40,7 @@ public class CommonTickHandler implements ITickHandler
     //replaces rifts in game that have been destroyed/have blocks placed over them. 
     private void onTickInGame()
     {
+    	/**
     	try
     	{
     	
@@ -156,5 +157,7 @@ public class CommonTickHandler implements ITickHandler
     	}
     	
     	tickCount2++;
+    	**/
     }
+    
 }

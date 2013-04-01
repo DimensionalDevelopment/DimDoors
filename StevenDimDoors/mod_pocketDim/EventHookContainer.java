@@ -8,6 +8,7 @@ import java.util.Random;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityEnderman;
@@ -20,6 +21,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -54,7 +56,6 @@ public class EventHookContainer
     		dimHelper.instance.unregsisterDims();
         	dimHelper.dimList.clear();
         	dimHelper.instance.interDimLinkList.clear();
-        	dimHelper.instance.linksForRendering.clear();
 
         	dimHelper.instance.initPockets();
 
@@ -64,40 +65,34 @@ public class EventHookContainer
     	
     	
     	
-    	
-    	
-		Iterator itr = ((ArrayList) dimHelper.instance.linksForRendering.clone()).listIterator();
-  
-		while (itr.hasNext())
-		{
-			
-			
-			LinkData link = (LinkData) itr.next();
-			
-			if(link!=null)
-			{
-			
-			if(dimHelper.getWorld(link.locDimID)!=null)
-			{
-			//	link.printLinkData();
-				World world=dimHelper.getWorld(link.locDimID);
-				int blocktoReplace = world.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord);
-				if(!mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))
-				{
-					if(dimHelper.instance.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID)==null)
-					{
-						dimHelper.instance.linksForRendering.remove(link);
-					}
-					else
-					{
-						dimHelper.getWorld(link.locDimID).setBlockWithNotify(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
+    	for(WorldServer world : dimHelper.getWorlds())
+    	{
+    		int linkCount=0;
+    		
+    		if(dimHelper.dimList.containsKey(world.provider.dimensionId))
+    		{
+    		
+    			for(LinkData link:dimHelper.dimList.get(world.provider.dimensionId).printAllLinkData())
+    			{
+    				if(linkCount>100)
+    				{
+    					break;
+    				}
+    				linkCount++;
+    				int blocktoReplace = world.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord);
+    				if(mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))
+    				{
+    					break;
+    				}
+    				dimHelper.getWorld(link.locDimID).setBlockWithNotify(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
 
-					}
-				}
-			}
-			}
-	   
-		}
+    			}
+    			
+    		}
+    	}
+    	
+		
+		
     	
     	
        

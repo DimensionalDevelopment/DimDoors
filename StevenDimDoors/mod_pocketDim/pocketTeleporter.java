@@ -99,16 +99,18 @@ public class pocketTeleporter extends Teleporter
 				
 			
 				 this.setEntityPosition(par1Entity, x+1.5, y, z+.5 );
-				   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
 				 par1Entity.motionX =.39;
+				   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+
 			 }
 			 else if(id==3||id==7)
 			 {
      	
 				
 				 this.setEntityPosition(par1Entity, x+.5, y, z+1.5 );
-				   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
 				 par1Entity.motionZ =.39;
+				   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+
 
 				 
 			 }
@@ -117,16 +119,18 @@ public class pocketTeleporter extends Teleporter
      	
 				
 				 this.setEntityPosition(par1Entity,x-.5, y, z+.5);
-				   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
 				 par1Entity.motionX =-.39;
+				   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+
 
 			 }
 			 else if(id==1||id==5)
 			 {
 				
 				 this.setEntityPosition(par1Entity,x+.5, y, z-.5);	
-				   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
 				 par1Entity.motionZ =-.39;
+				   par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+
 
 			 }
 			 else

@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
@@ -73,7 +74,7 @@ public class dimHelper extends DimensionManager
 	 * See the common tick manager and the Chaos door for details on useage
 	 * @Return
 	 */
-	public ArrayList<LinkData> linksForRendering =new ArrayList<LinkData>();
+	//public ArrayList<LinkData> linksForRendering =new ArrayList<LinkData>();
 	Random rand= new Random();
 	
 	//Stupid function I use because I dont understand bitwise operations yet. Used in door orientation
@@ -481,7 +482,7 @@ public class dimHelper extends DimensionManager
 		link.isLocPocket=locationDimData.isPocket;
 		
 		locationDimData.addLinkToDim(link);
-		this.linksForRendering.add(link);
+		//this.linksForRendering.add(link);
 		
 		if(dimHelper.getWorld(link.locDimID)!=null)
 		{
@@ -564,7 +565,7 @@ public class dimHelper extends DimensionManager
 
 		}
 		LinkData link = this.getLinkDataFromCoords(locationXCoord, locationYCoord, locationZCoord, locationDimID);
-		this.linksForRendering.remove(link);
+	//	this.linksForRendering.remove(link);
 		
 		this.dimList.get(locationDimID).removeLinkAtCoords(link);
 		
@@ -898,28 +899,14 @@ public class dimHelper extends DimensionManager
 				}
 				if(rand.nextInt(13-depth)==0)
 				{
+					LinkData link1=getRandomLinkData(false);
 					
-					boolean foundRandomDest=false;
-					int i=0;
-		    		int size = dimHelper.instance.linksForRendering.size();
-		      
-		    		while (!foundRandomDest&&size>0&&i<100)
-		    		{
-		    			i++;
+		    				
+		    					if(link1!=null)
+		    					{
+		    						locationDimData.exitDimLink=new LinkData(link1.locDimID, link1.locDimID, link1.locXCoord, link1.locYCoord, link1.locZCoord, link1.locXCoord, link1.locYCoord, link1.locZCoord, false);
+		    					}
 		    			
-		    			LinkData link1 = (LinkData) dimHelper.instance.linksForRendering.get(rand.nextInt(size));
-		    			
-		    			if(link1!=null)
-		    			{
-		    			
-		    				if(!link1.isLocPocket)
-		    				{
-		    					foundRandomDest=true;
-		    					locationDimData.exitDimLink=new LinkData(link1.locDimID, link1.locDimID, link1.locXCoord, link1.locYCoord, link1.locZCoord, link1.locXCoord, link1.locYCoord, link1.locZCoord, false);
-		    					 			
-		    				}
-		    			}
-		    		}		
 				}
 			}
 			
@@ -1003,7 +990,6 @@ public class dimHelper extends DimensionManager
 		HashMap comboSave=new HashMap();
 		comboSave.put("dimList", this.dimList);
 		comboSave.put("interDimLinkList", this.interDimLinkList);
-		comboSave.put("linksForRendering", this.linksForRendering);
 		comboSave.put("blocksToDecay", this.blocksToDecay);
 
 
@@ -1099,14 +1085,7 @@ public class dimHelper extends DimensionManager
 	        	 System.out.println("Could not load pocket dim list. Saves probably lost, but repairable. Move the files from indivual pocket dim files to active ones. See MC thread for details.");
 	         }
 	         
-	         try
-	         {
-	        	 this.linksForRendering=(ArrayList) comboSave.get("linksForRendering");
-	         }
-	         catch(Exception e)
-	         {
-	        	 System.out.println("Could not load link rendering list. Not really a big deal.");
-	         }
+	        
 	         
 	         try
 	         {
@@ -1157,14 +1136,7 @@ public class dimHelper extends DimensionManager
 		        	 System.out.println("Could not load pocket dim list. Saves probably lost, but repairable. Move the files from indivual pocket dim files to active ones. See MC thread for details.");
 		         }
 		         
-		         try
-		         {
-		        	 this.linksForRendering=(ArrayList) comboSave.get("linksForRendering");
-		         }
-		         catch(Exception e)
-		         {
-		        	 System.out.println("Could not load link rendering list. Not really a big deal.");
-		         }
+		        
 		         
 		         try
 		         {
@@ -1196,11 +1168,44 @@ public class dimHelper extends DimensionManager
 			
 			
 		}
+		
 	}
 	
 	
 		
+	public LinkData getRandomLinkData(boolean allowInPocket)
+	{
+		boolean foundRandomDest=false;
+		int i=0;
+		int size = dimHelper.dimList.size();
+  
+		while (!foundRandomDest&&size>0&&i<100)
+		{
+			i++;
+			
+			DimData dimData = dimHelper.dimList.get(rand.nextInt(size));
+			
+			ArrayList linksInDim = dimData.printAllLinkData();
+			
+			
+			
+			
+			LinkData link1 = (LinkData) linksInDim.get(rand.nextInt(linksInDim.size()));
+			
+			if(link1!=null)
+			{
+			
+				if(!link1.isLocPocket||allowInPocket)
+				{
+					foundRandomDest=true;
+					return link1;					 			
+				}
+			}
+		}
 		
+			return null;
+		
+	}
 		
 		
 		

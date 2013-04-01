@@ -80,15 +80,14 @@ public class ChaosDoor extends dimDoor
     			
     			int i=0;
     			
-	    		int size = dimHelper.instance.linksForRendering.size();
 	    		
 	    		Random rand= new Random();
 	    		
-	    		while (!foundRandomDest&&size>0&&i<100)
+	    		while (!foundRandomDest&&i<100)
 	    		{
 	    			i++;
 	    			
-	    			LinkData link = (LinkData) dimHelper.instance.linksForRendering.get(rand.nextInt(size));
+	    			LinkData link = (LinkData) dimHelper.instance.getRandomLinkData(false);
 	    			
 	    			if(link!=null)
 	    			{
