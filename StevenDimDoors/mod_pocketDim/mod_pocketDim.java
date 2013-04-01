@@ -48,14 +48,14 @@ import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
                 @SidedPacketHandler(channels = {"pocketDim" }, packetHandler = ClientPacketHandler.class),
         serverPacketHandlerSpec =
                 @SidedPacketHandler(channels = {"pocketDim" }, packetHandler = ServerPacketHandler.class),
-                channels={"GenericRandom"}, packetHandler = PacketHandler.class, connectionHandler=ConnectionHandler.class)
+                channels={"DimDoorPackets"}, packetHandler = PacketHandler.class, connectionHandler=ConnectionHandler.class)
 
 public class mod_pocketDim
 {
 	
 
-	public static final String version = "1.4.7R1.3.3B2";
-	public static final String modid = "Dimensional_Doors";
+	public static final String version = "1.5.1R1.3.3B2";
+	public static final String modid = "DimensionalDoors";
 
 	//need to clean up 
     @SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
@@ -218,11 +218,13 @@ public class mod_pocketDim
     	
         MinecraftForge.EVENT_BUS.register(new EventHookContainer());
 
-    
+        
 
         
 
          Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+         
+         
          
 
          
@@ -302,7 +304,7 @@ public class mod_pocketDim
         blockRift = (new BlockRift(blockRiftID, 0, Material.air).setHardness(1.0F) .setUnlocalizedName("rift"));
         blockLimbo = (new BlockLimbo(blockLimboID, 15, Material.iron).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F));
         chaosDoor = (new ChaosDoor(chaosDoorID, Material.iron).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
-        dimDoor = (new dimDoor(dimDoorID, Material.iron)).setHardness(1.0F) .setUnlocalizedName("dimDoor");
+        dimDoor = (new dimDoor(dimDoorID, Material.iron)).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor");
         dimHatch = (new dimHatch(dimHatchID,   84, Material.iron)).setHardness(1.0F) .setUnlocalizedName("dimHatch");
       //  dimRail = (new DimRail(dimRailID, 88, false)).setHardness(.5F) .setUnlocalizedName("dimRail");
  

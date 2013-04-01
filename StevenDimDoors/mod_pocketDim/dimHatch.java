@@ -32,7 +32,7 @@ public class dimHatch extends BlockTrapDoor
 	       
 	        {
 	            int var10 = par1World.getBlockMetadata(par2, par3, par4);
-	            par1World.setBlockMetadataWithNotify(par2, par3, par4, var10 ^ 4,1);
+	            par1World.setBlockMetadataWithNotify(par2, par3, par4, var10 ^ 4,2);
 	            par1World.playAuxSFXAtEntity(par5EntityPlayer, 1003, par2, par3, par4, 0);
 	            return true;
 	        }
@@ -65,7 +65,7 @@ public class dimHatch extends BlockTrapDoor
 
 	        if (var7 != par5)
 	        {
-	            par1World.setBlockMetadataWithNotify(par2, par3, par4, var6 ^ 4,1);
+	            par1World.setBlockMetadataWithNotify(par2, par3, par4, var6 ^ 4,2);
 	            par1World.playAuxSFXAtEntity((EntityPlayer)null, 1003, par2, par3, par4, 0);
 	        }
 	    }

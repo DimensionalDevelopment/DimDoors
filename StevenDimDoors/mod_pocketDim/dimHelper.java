@@ -626,15 +626,15 @@ public class dimHelper extends DimensionManager
 				int blockToReplace= this.getWorld(destinationID).getBlockId(destX, destY, destZ);
 				if(blockToReplace!=mod_pocketDim.dimDoorID&&blockToReplace!=mod_pocketDim.linkExitDoorID&&blockToReplace!=mod_pocketDim.linkDimDoorID&&blockToReplace!=mod_pocketDim.ExitDoorID&&blockToReplace!=mod_pocketDim.transientDoorID)
 				{
-					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, doorTypeToPlace,dimHelper.instance.flipDoorMetadata(world.getBlockMetadata(locX, locY-1, locZ)),0);
-					this.getWorld(destinationID).setBlock(destX, destY, destZ, doorTypeToPlace,world.getBlockMetadata(locX, locY, locZ),0);
+					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, doorTypeToPlace,dimHelper.instance.flipDoorMetadata(world.getBlockMetadata(locX, locY-1, locZ)),2);
+					this.getWorld(destinationID).setBlock(destX, destY, destZ, doorTypeToPlace,world.getBlockMetadata(locX, locY, locZ),2);
 				//	System.out.println("Genned door");
 				}
 				
 				if(id==mod_pocketDim.transientDoorID&&!dimHelper.dimList.get((destinationID)).hasBeenFilled)
 				{
-					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, id,dimHelper.instance.flipDoorMetadata(world.getBlockMetadata(locX, locY-1, locZ)),0);
-					this.getWorld(destinationID).setBlock(destX, destY, destZ, id,world.getBlockMetadata(locX, locY, locZ),0);
+					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, id,dimHelper.instance.flipDoorMetadata(world.getBlockMetadata(locX, locY-1, locZ)),2);
+					this.getWorld(destinationID).setBlock(destX, destY, destZ, id,world.getBlockMetadata(locX, locY, locZ),2);
 				}
 			
 				linkData.hasGennedDoor=true;
@@ -1182,13 +1182,30 @@ public class dimHelper extends DimensionManager
 		while (!foundRandomDest&&size>0&&i<100)
 		{
 			i++;
+			DimData dimData;
+			ArrayList linksInDim=new ArrayList();
+			for(size--;size>=0;)
+			{
+				dimData = dimHelper.dimList.get(rand.nextInt(dimList.size()));
+				if(dimData==null)
+				{
+					break;
+				}
+				linksInDim = dimData.printAllLinkData();
+				if(!linksInDim.isEmpty())
+				{
+					break;
+				}
+			}
 			
-			DimData dimData = dimHelper.dimList.get(rand.nextInt(size));
-			
-			ArrayList linksInDim = dimData.printAllLinkData();
 			
 			
 			
+			
+			if(linksInDim.isEmpty())
+			{
+				break;
+			}
 			
 			LinkData link1 = (LinkData) linksInDim.get(rand.nextInt(linksInDim.size()));
 			
