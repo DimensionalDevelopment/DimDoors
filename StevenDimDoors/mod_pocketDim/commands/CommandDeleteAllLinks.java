@@ -81,7 +81,6 @@ public class CommandDeleteAllLinks extends CommandBase
 					targetWorld = dimHelper.getWorld(targetDim);
 					
 					{
-						dimHelper.instance.linksForRendering.remove(link);
 						dim.removeLinkAtCoords(link);
 					
 					

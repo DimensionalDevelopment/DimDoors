@@ -61,7 +61,9 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
 
 	@Override
 	public List getPossibleCreatures(EnumCreatureType var1, int var2, int var3,
-			int var4) {
+			int var4) 
+	{
+		
 		// TODO Auto-generated method stub
 		return null;
 	}

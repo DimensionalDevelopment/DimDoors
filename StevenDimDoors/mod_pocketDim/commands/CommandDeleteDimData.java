@@ -73,12 +73,10 @@ public class CommandDeleteDimData extends CommandBase
 							if(link.destDimID==targetDim)
 							{
 								dimHelper.dimList.get(link.locDimID).removeLinkAtCoords(link);
-								dimHelper.instance.linksForRendering.remove(link);
 								linksRemoved++;
 							}
 							if(dimData.dimID==targetDim)
 							{
-								dimHelper.instance.linksForRendering.remove(link);
 								linksRemoved++;
 							}
 						}

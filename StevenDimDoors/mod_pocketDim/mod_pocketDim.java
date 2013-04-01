@@ -39,7 +39,9 @@ import StevenDimDoors.mod_pocketDim.commands.CommandDeleteDimData;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
 
+
 @Mod(modid = mod_pocketDim.modid, name = "Dimensional Doors", version = mod_pocketDim.version)
+
 
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         clientPacketHandlerSpec =
@@ -51,8 +53,10 @@ import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
 public class mod_pocketDim
 {
 	
+
 	public static final String version = "1.4.7R1.3.3B2";
 	public static final String modid = "Dimensional_Doors";
+
 	//need to clean up 
     @SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
     public static CommonProxy proxy;
@@ -606,7 +610,6 @@ public class mod_pocketDim
     	dimHelper.dimList.clear();
     	dimHelper.blocksToDecay.clear();
     	dimHelper.instance.interDimLinkList.clear();
-    	dimHelper.instance.linksForRendering.clear();
     	this.hasInitDims=false;
     	}
     	catch(Exception e)

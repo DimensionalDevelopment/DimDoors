@@ -81,7 +81,6 @@ public class CommandDeleteRifts extends CommandBase
 					
 					if(targetWorld.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord)==mod_pocketDim.blockRiftID)
 					{
-						dimHelper.instance.linksForRendering.remove(link);
 						dim.removeLinkAtCoords(link);
 					
 					

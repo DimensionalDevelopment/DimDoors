@@ -127,7 +127,6 @@ public class PacketHandler implements IPacketHandler
                 			LinkData linkToAdd = new LinkData(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean());
                 			dimDataToRemoveFrom.removeLinkAtCoords(linkToAdd.locDimID, linkToAdd.locXCoord,linkToAdd.locYCoord, linkToAdd.locZCoord);
                 			
-                			dimHelper.instance.linksForRendering.remove(linkToAdd);
                 		}
                 		catch (Exception e)
                 		{

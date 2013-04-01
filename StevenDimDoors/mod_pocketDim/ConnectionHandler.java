@@ -50,7 +50,6 @@ public class ConnectionHandler
 			dimHelper.instance.save();
 			dimHelper.instance.unregsisterDims();
 			dimHelper.dimList.clear();
-			dimHelper.instance.linksForRendering.clear();
 		    
 		}
 		connected = false;

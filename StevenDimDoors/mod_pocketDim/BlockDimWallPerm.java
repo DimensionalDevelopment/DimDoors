@@ -46,16 +46,12 @@ public class BlockDimWallPerm extends Block
     	{
 			 Random rand = new Random();
     	
-    		int size = dimHelper.instance.linksForRendering.size();
-    		LinkData link;
-    		if(size!=0)
+    		LinkData link=dimHelper.instance.getRandomLinkData(false);
+    		if(link==null)
     		{
-    			 link = (LinkData) dimHelper.instance.linksForRendering.get(rand.nextInt(size));
+    			 link =new LinkData(0,0,0,0);    		
     		}
-    		else
-    		{
-    			 link =new LinkData(0,0,0,0);
-    		}
+    		
 
     		if(dimHelper.getWorld(0)==null)
     		{
