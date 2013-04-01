@@ -34,10 +34,10 @@ public class pocketProvider extends WorldProvider
 
 	}
 	
-	 public void setAllowedSpawnTypes(boolean allowHostile, boolean allowPeaceful)
-	 {
-	       super.setAllowedSpawnTypes(false, false);
-	 }
+	// public void setAllowedSpawnTypes(boolean allowHostile, boolean allowPeaceful)
+	// {
+	 //      super.setAllowedSpawnTypes(false, false);
+	 //}
     @SideOnly(Side.CLIENT)
 	@Override
 	public Vec3 getFogColor(float par1, float par2)

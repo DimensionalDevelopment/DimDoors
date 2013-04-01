@@ -411,12 +411,12 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 		return super.makeString();
 	}
 
-	@Override
-	public List getPossibleCreatures(EnumCreatureType var1, int var2, int var3,
-			int var4) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public List getPossibleCreatures(EnumCreatureType var1, int var2, int var3,
+//			int var4) {
+	//	// TODO Auto-generated method stub
+	//	return null;
+	//}
 
 	@Override
 	public ChunkPosition findClosestStructure(World var1, String var2,

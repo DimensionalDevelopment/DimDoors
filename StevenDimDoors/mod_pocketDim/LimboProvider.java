@@ -60,11 +60,11 @@ public class LimboProvider extends WorldProvider
 	        }
 	    }
 	 
-	public void setAllowedSpawnTypes(boolean allowHostile, boolean allowPeaceful)
-    {
-        super.setAllowedSpawnTypes(false, false);
+	//public void setAllowedSpawnTypes(boolean allowHostile, boolean allowPeaceful)
+    //{
+     //   super.setAllowedSpawnTypes(false, false);
       
-    }
+    //}
 
 	 public float calculateCelestialAngle(long par1, float par3)
 	    {
