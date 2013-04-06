@@ -169,18 +169,18 @@ public class dimHelper extends DimensionManager
 			cart = entity.ridingEntity;
 		}
 		 if (entity.ridingEntity != null) 
-		    {
+		 {
 		
-		    	entity.mountEntity(entity.ridingEntity);
+		   	entity.mountEntity(entity.ridingEntity);
 		    	
-		    	cart = teleportEntity(oldWorld, cart, link);
+	    	cart = teleportEntity(oldWorld, cart, link);
 		    	
-		    }
+		 }
 		    
 		    
 
 
-		World newWorld;
+		WorldServer newWorld;
 		
 		if(this.getWorld(link.destDimID)==null)
 		{
@@ -194,7 +194,7 @@ public class dimHelper extends DimensionManager
 		}
 		else
 		{
-			newWorld=oldWorld;
+			newWorld=(WorldServer)oldWorld;
 		}
 		
 	    
@@ -211,8 +211,32 @@ public class dimHelper extends DimensionManager
 	    		player.dimension = link.destDimID;
 	    		player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
 	    	
-	    		WorldServer.class.cast(entity.worldObj).getPlayerManager().removePlayer(player);
+	    		WorldServer.class.cast(oldWorld).removeEntity(player);
+	    		player.isDead=false;
+	    		
+	    		oldWorld.playerEntities.remove(player);
+	    		WorldServer.class.cast(oldWorld).getPlayerManager().removePlayer(player);
+	    		newWorld.getPlayerManager().addPlayer(player);
+	    		player.theItemInWorldManager.setWorld(newWorld);
+	    		
+	    		player.theItemInWorldManager.setWorld((WorldServer)newWorld);
+		    	
+		    	player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, (WorldServer)newWorld);
+		    	player.mcServer.getConfigurationManager().syncPlayerInventory(player);
+		      	
+		    	for(Object potionEffect : player.getActivePotionEffects())
+		    	{
+		    		PotionEffect effect = (PotionEffect)potionEffect;
+		    		player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, effect));
+
+		    	}
+		    	
+		    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
+		    	
+		    	
+
 	    	}
+	    	 WorldServer.class.cast(newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
 	    }
 	    
 	    
@@ -221,15 +245,7 @@ public class dimHelper extends DimensionManager
 	        int entX = entity.chunkCoordX;
 		    int entZ = entity.chunkCoordZ;
 		    
-	    	if ((entity instanceof EntityPlayer))
-		    {
-		   		EntityPlayer player = (EntityPlayer)entity;
-		   		
-		   		//player.closeScreen();
-		   		
-		   		oldWorld.playerEntities.remove(player);
-		   		//oldWorld.updateAllPlayersSleepingFlag();
-	        }
+	    	
 		
 		    if ((entity.addedToChunk) && (oldWorld.getChunkProvider().chunkExists(entX, entZ)))
 		    {
@@ -241,15 +257,7 @@ public class dimHelper extends DimensionManager
 		    oldWorld.releaseEntitySkin(entity);
 		    
 		    entity.isDead = false;
-	    }
-
-	    WorldServer.class.cast(newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
-	    
-	 
-
-
-	    if (difDest) 
-	    {
+	   
 	    	if (!(entity instanceof EntityPlayer)) 
 	    	{
 	    		NBTTagCompound entityNBT = new NBTTagCompound();
@@ -273,41 +281,6 @@ public class dimHelper extends DimensionManager
 	    	newWorld.spawnEntityInWorld(entity);
 	    	entity.setWorld(newWorld);
 
-	    }
-	    
-	    
-	 
-	    
-	    if ((entity instanceof EntityPlayerMP))
-	    {
-	    	EntityPlayerMP player = (EntityPlayerMP)entity;
-	    	
-	    	if (difDest)
-	    		{
-	    			player.mcServer.getConfigurationManager().func_72375_a(player, (WorldServer)newWorld);
-	    			
-
-	    		}
-	    }
-	    
-	    
-	    if (((entity instanceof EntityPlayerMP)) && (difDest)) 
-	    {
-	    	EntityPlayerMP player = (EntityPlayerMP)entity;
-	    	
-	    	player.theItemInWorldManager.setWorld((WorldServer)newWorld);
-	    	
-	    	player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, (WorldServer)newWorld);
-	    	player.mcServer.getConfigurationManager().syncPlayerInventory(player);
-	      	
-	    	for(Object potionEffect : player.getActivePotionEffects())
-	    	{
-	    		PotionEffect effect = (PotionEffect)potionEffect;
-	    		player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, effect));
-
-	    	}
-	    	
-	    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
 	    }
 	    
 	    entity.worldObj.updateEntityWithOptionalForce(entity, false);
@@ -1186,7 +1159,7 @@ public class dimHelper extends DimensionManager
 			ArrayList linksInDim=new ArrayList();
 			for(size--;size>=0;)
 			{
-				dimData = dimHelper.dimList.get(rand.nextInt(dimList.size()));
+				dimData = dimHelper.dimList.get(dimList.keySet().toArray()[rand.nextInt(dimList.keySet().size())]);
 				if(dimData==null)
 				{
 					break;

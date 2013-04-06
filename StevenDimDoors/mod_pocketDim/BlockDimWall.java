@@ -3,11 +3,14 @@ package StevenDimDoors.mod_pocketDim;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class BlockDimWall extends Block
@@ -46,9 +49,30 @@ public class BlockDimWall extends Block
     {
         if(!par1World.isRemote&&entityPlayer.getCurrentEquippedItem()!=null)
         {
+        	Item playerEquip = entityPlayer.getCurrentEquippedItem().getItem();
+        	
+        	if(!(playerEquip instanceof ItemBlock))
+        	{
+        		return false;
+        	}
+        	else
+        	{
+        		Block block=  Block.blocksList[playerEquip.itemID];
+        		if(!Block.isNormalCube(playerEquip.itemID))
+        		{
+        			return false;
+        		}
+        		if(block instanceof BlockContainer)
+        		{
+        			return false;
+        		}
+        	}
+        
         
         	if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock)
         	{
+        		
+        	
         		if(!entityPlayer.capabilities.isCreativeMode)
         		{
         			entityPlayer.getCurrentEquippedItem().stackSize--;
@@ -58,14 +82,9 @@ public class BlockDimWall extends Block
         	}
         	
         }
-        if(par1World.isRemote&&entityPlayer.getCurrentEquippedItem()!=null)
+        else
         {
-        
-        	if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock)
-        	{      		
-        		return true;
-        	}
-        	
+        	return false;
         }
 	
 	return false;
