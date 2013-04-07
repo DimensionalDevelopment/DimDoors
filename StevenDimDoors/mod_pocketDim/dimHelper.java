@@ -349,7 +349,7 @@ public class dimHelper extends DimensionManager
 					
 
 						this.teleportEntity(world, entity, linkData);		
-						if(entity instanceof EntityPlayerMP)
+						if(entity instanceof EntityPlayerMP&&world.provider.dimensionId!=linkData.destDimID)
 						{
 							      GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
 						}

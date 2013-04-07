@@ -7,8 +7,8 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -40,6 +40,7 @@ public class dimDoor extends BlockContainer
         this.blockIconBottom = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2()+"_bottom");
 
     }
+	
 	 
 	//spawns the rift attatched to the block. Doesnt work in creative mode for some reason
 	 //TODO make work in creative
@@ -105,13 +106,20 @@ public class dimDoor extends BlockContainer
     				
 
     				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
-    				this.onPoweredBlockChange(par1World, par2, par3, par4, false);
+    				
+    				if(par5Entity instanceof EntityLiving)
+    				{
+    					this.onPoweredBlockChange(par1World, par2, par3, par4, false);
+    				}
     		
     			
     		}
     		else if (!(par5Entity instanceof EntityPlayer)&&num>3)
     		{
-    			this.onPoweredBlockChange(par1World, par2, par3, par4, false);
+    			if(par5Entity instanceof EntityLiving)
+				{
+					this.onPoweredBlockChange(par1World, par2, par3, par4, false);
+				}
     			
 			
 				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
@@ -138,7 +146,7 @@ public class dimDoor extends BlockContainer
 					{
 						var12=dimHelper.instance.flipDoorMetadata(var12);
 					}
-					par1World.setBlockMetadataWithNotify(par2, par3-1, par4, var12,1);
+					par1World.setBlockMetadataWithNotify(par2, par3-1, par4, var12,2);
 					if(	dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World)!=null)
 					{
 						dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World).linkOrientation= par1World.getBlockMetadata(par2, par3-1, par4);
@@ -152,7 +160,7 @@ public class dimDoor extends BlockContainer
 					{ 
 						var12=dimHelper.instance.flipDoorMetadata(var12);
 					}
-					par1World.setBlockMetadataWithNotify(par2, par3, par4, var12,1);
+					par1World.setBlockMetadataWithNotify(par2, par3, par4, var12,2);
 					if(	dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World)!=null)
 					{
 						dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World).linkOrientation= par1World.getBlockMetadata(par2, par3, par4);
@@ -183,12 +191,12 @@ public class dimDoor extends BlockContainer
 
             if ((var10 & 8) == 0)
             {
-                par1World.setBlockMetadataWithNotify(par2, par3, par4, var11,1);
+                par1World.setBlockMetadataWithNotify(par2, par3, par4, var11,2);
                 par1World.markBlockRangeForRenderUpdate(par2, par3, par4, par2, par3, par4);
             }
             else
             {
-                par1World.setBlockMetadataWithNotify(par2, par3 - 1, par4, var11,1);
+                par1World.setBlockMetadataWithNotify(par2, par3 - 1, par4, var11,2);
                 par1World.markBlockRangeForRenderUpdate(par2, par3 - 1, par4, par2, par3, par4);
             }
 
