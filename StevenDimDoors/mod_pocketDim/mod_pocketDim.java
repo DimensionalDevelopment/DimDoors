@@ -636,4 +636,6 @@ public class mod_pocketDim
     }
     
     
+    public static int teleTimer=0;
+    
 }

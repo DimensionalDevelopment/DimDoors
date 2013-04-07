@@ -341,6 +341,15 @@ public class dimHelper extends DimensionManager
 				this.generatePocket(linkData);
 				this.generateDoor(world,linkData);
 			 
+
+				if(mod_pocketDim.teleTimer==0||entity instanceof EntityPlayer)
+				{
+					mod_pocketDim.teleTimer=2+rand.nextInt(2);
+				}
+				else
+				{
+					return;
+				}
 			
 					
 					
@@ -354,7 +363,8 @@ public class dimHelper extends DimensionManager
 							      GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
 						}
 						
-						entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+							entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+						
 						
 						int playerXCoord=MathHelper.floor_double(entity.posX);
 						int playerYCoord=MathHelper.floor_double(entity.posY);

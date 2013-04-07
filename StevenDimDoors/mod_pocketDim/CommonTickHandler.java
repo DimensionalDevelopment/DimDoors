@@ -14,6 +14,7 @@ public class CommonTickHandler implements ITickHandler
 	 Random rand= new Random();
     public int tickCount=0;
     public int tickCount2=0;
+   
 
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {}
@@ -40,7 +41,7 @@ public class CommonTickHandler implements ITickHandler
     //replaces rifts in game that have been destroyed/have blocks placed over them. 
     private void onTickInGame()
     {
-    	/**
+    	
     	try
     	{
     	
@@ -50,13 +51,13 @@ public class CommonTickHandler implements ITickHandler
     		int i=0;
     		
       
-    		while (i<15&&dimHelper.instance.linksForRendering.size()>0&&FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+    		while (i<15&&FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
     		{
     			i++;
     			LinkData link;
     			
     			//actually gets the random rift based on the size of the list
-        		link = (LinkData) dimHelper.instance.linksForRendering.get(rand.nextInt(dimHelper.instance.linksForRendering.size()));
+        		link = (LinkData) dimHelper.instance.getRandomLinkData(true);
 
     			
     			
@@ -73,7 +74,6 @@ public class CommonTickHandler implements ITickHandler
     					{
     						if(dimHelper.instance.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID)==null)
     						{
-    							dimHelper.instance.linksForRendering.remove(link);
     						}
     						else
     						{
@@ -157,7 +157,12 @@ public class CommonTickHandler implements ITickHandler
     	}
     	
     	tickCount2++;
-    	**/
+    	
+    	if(mod_pocketDim.teleTimer>0)
+    	{
+    		mod_pocketDim.teleTimer--;
+    	}
+    	
     }
     
 }
