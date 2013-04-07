@@ -7,33 +7,37 @@ import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
-public class pocketTeleporter extends Teleporter
+public class pocketTeleporter
 {
 	int x,y,z;
-	World world;
+	
 	LinkData sendingLink;
 	
 
- public pocketTeleporter(WorldServer par1WorldServer, LinkData link) 
+ public pocketTeleporter() 
 	 
 	 {
 		
 		 
-		super(par1WorldServer);
-		this.x=link.destXCoord;
-		this.y=link.destYCoord;
-		this.z=link.destZCoord;
-		this.sendingLink=link;
-		 world = par1WorldServer;
+		
 	 }
 	
 
 	    /**
 	     * Create a new portal near an entity.
 	     */
-	 @Override
-	 public void placeInPortal(Entity par1Entity, double par2, double par4, double par6, float par8)
+	
+	 public void placeInPortal(Entity par1Entity, WorldServer world, LinkData link)
 	 {
+		 
+		
+			this.x=link.destXCoord;
+			this.y=link.destYCoord;
+			this.z=link.destZCoord;
+			this.sendingLink=link;
+			
+			 
+			 
 		 if(par1Entity instanceof EntityPlayer)
 		 {
 		 	EntityPlayer player = (EntityPlayer) par1Entity;
@@ -206,9 +210,5 @@ public class pocketTeleporter extends Teleporter
 			
 
 	   
-	    @Override
-	    public void func_85189_a(long par1)
-	    {
-	    
-	    }
+
 }

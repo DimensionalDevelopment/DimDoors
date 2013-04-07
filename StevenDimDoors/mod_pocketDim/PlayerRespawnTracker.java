@@ -41,7 +41,7 @@ public class PlayerRespawnTracker implements IPlayerTracker
 			if(!player.worldObj.isRemote)
 			{
 
-				for(EntityItem drop :  mod_pocketDim.limboSpawnInventory)
+				for(EntityItem drop :  mod_pocketDim.limboSpawnInventory.get(player.username))
 				{
 					
 					player.inventory.addItemStackToInventory(drop.getEntityItem());

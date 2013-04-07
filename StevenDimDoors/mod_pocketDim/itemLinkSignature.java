@@ -9,6 +9,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -35,11 +36,14 @@ public class itemLinkSignature extends Item
     public boolean hasEffect(ItemStack par1ItemStack)
     {
     	// adds effect if item has a link stored
-    	int key=par1ItemStack.getItemDamage();
-		LinkData linkData= dimHelper.instance.interDimLinkList.get(key);
-    	if(linkData!=null)
+    	
+    	
+    	if(par1ItemStack.hasTagCompound())
     	{
+    		if(par1ItemStack.stackTagCompound.getBoolean("isCreated"))
+    		{
     		return true;
+    		}
     	}
        return false;
     }
@@ -65,33 +69,27 @@ public class itemLinkSignature extends Item
     	{		
     		
 			//par1ItemStack= par2EntityPlayer.getCurrentEquippedItem();
-			
+			Integer[] linkCoords =this.readFromNBT(par1ItemStack);
     		
     		
-    		key=par1ItemStack.getItemDamage();
-    		linkData = dimHelper.instance.interDimLinkList.get(key);
+    	
     		//System.out.println(key);
     		int offset = 2;
-    		if(linkData!=null&&key!=0)
+    		if(par1ItemStack.getTagCompound()!=null)
+    		{
+    		if(par1ItemStack.getTagCompound().getBoolean("isCreated"))
     		{
     		// checks to see if the item has a link stored, if so, it creates it
     			if(par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
     			{
     				offset = 1;
     			}
-    				dimHelper.instance.createLink(par3World.provider.dimensionId, linkData.destDimID, par4, par5+offset, par6, linkData.destXCoord, linkData.destYCoord, linkData.destZCoord);		
-    				dimHelper.instance.createLink(linkData.destDimID, par3World.provider.dimensionId, linkData.destXCoord, linkData.destYCoord, linkData.destZCoord,par4, par5+offset, par6);		
+    				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2]);		
+    				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6);		
 
     				--par1ItemStack.stackSize;
 	    			par2EntityPlayer.sendChatToPlayer("Rift Created");
-	    			if(par2EntityPlayer.capabilities.isCreativeMode)
-	    			{
-		    			par2EntityPlayer.sendChatToPlayer("Rift Signature Cleared");
-
-	            		par2EntityPlayer.inventory.mainInventory[par2EntityPlayer.inventory.currentItem] = new ItemStack(this, 1, 0);
-
-	    			
-    			}
+	    		par1ItemStack.stackTagCompound=null;
     			/**
     			else
     			{
@@ -99,6 +97,7 @@ public class itemLinkSignature extends Item
 
     			}
     			**/
+    		}
     		}
     		else 
         	{
@@ -108,16 +107,12 @@ public class itemLinkSignature extends Item
     			}
     			//otherwise, it creates the first half of the link. Next click will complete it. 
     			key= dimHelper.instance.createUniqueInterDimLinkKey();
-        		linkData= new LinkData(par3World.provider.dimensionId,par4, par5+offset, par6);
+        		this.writeToNBT(par1ItemStack, par4, par5+offset, par6,par3World.provider.dimensionId);
         		
 
-        		dimHelper.instance.interDimLinkList.put(key, linkData);
-        		par1ItemStack.setItemDamage(key);
         		
-        		PacketHandler.linkKeyPacket(linkData, key);
     			par2EntityPlayer.sendChatToPlayer("Rift Signature Stored");
 
-        		par2EntityPlayer.inventory.mainInventory[par2EntityPlayer.inventory.currentItem] = new ItemStack(this, 1, key);
 
         	}
     		
@@ -138,10 +133,15 @@ public class itemLinkSignature extends Item
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
     {
     	
-    	LinkData linkData = dimHelper.instance.interDimLinkList.get(par1ItemStack.getItemDamage());
-    	if(linkData!=null)
+    	if(par1ItemStack.hasTagCompound())
     	{
-    		par3List.add(String.valueOf("Leads to dim "+linkData.destDimID +" at depth "+dimHelper.instance.getDimDepth(linkData.destDimID)));
+    		if(par1ItemStack.stackTagCompound.getBoolean("isCreated"))
+    		{
+    			Integer[] coords = this.readFromNBT(par1ItemStack);
+    			par3List.add(String.valueOf("Leads to dim "+coords[3] +" with depth "+dimHelper.instance.getDimDepth(dimHelper.instance.getDimDepth(coords[3]))));
+        		par3List.add("at x="+coords[0]+" y="+coords[1]+" z="+coords[3]);
+
+    		}
     
     	}
     	else
@@ -154,6 +154,59 @@ public class itemLinkSignature extends Item
 
     	}
     }
+    
+    public void writeToNBT(ItemStack itemStack,int x, int y, int z, int dimID)
+    {
+    	  NBTTagCompound tag;
+
+       if(itemStack.hasTagCompound())
+       {
+    	   tag = itemStack.getTagCompound();
+    	   
+       }
+       else
+       {
+    	   tag= new NBTTagCompound();
+       }
+       
+       tag.setInteger("linkX", x);
+       tag.setInteger("linkY", y);
+       tag.setInteger("linkZ", z);
+       tag.setInteger("linkDimID", dimID);
+       tag.setBoolean("isCreated", true);
+
+       itemStack.setTagCompound(tag);
+
+    }
+
+    /**
+     * Read the stack fields from a NBT object.
+     */
+    public Integer[] readFromNBT(ItemStack itemStack)
+    {
+    	
+    	NBTTagCompound tag;
+    	Integer[] linkCoords = new Integer[5];
+    	if(itemStack.hasTagCompound())
+    	{
+    		tag = itemStack.getTagCompound();
+
+    		if(!tag.getBoolean("isCreated"))
+    		{
+    			return null;
+    		}
+    		linkCoords[0]=tag.getInteger("linkX");
+    		linkCoords[1]=tag.getInteger("linkY");
+    		linkCoords[2]=tag.getInteger("linkZ");
+    		linkCoords[3]=tag.getInteger("linkDimID");
+  
+       	   
+        }
+    	return linkCoords;
+          
+    }
+    
+    
     @Override
     public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) 
     {

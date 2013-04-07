@@ -67,8 +67,9 @@ public class EventHookContainer
     	
 
 
-    	for(WorldServer world : dimHelper.getWorlds())
+    	for(Integer ids : dimHelper.getIDs())
     	{
+    		World world = dimHelper.getWorld(ids);
     		int linkCount=0;
     		
     		if(dimHelper.dimList.containsKey(world.provider.dimensionId))
@@ -130,57 +131,40 @@ public class EventHookContainer
     		
     	
     	
-     if(event.entityPlayer.worldObj.provider.dimensionId==mod_pocketDim.limboDimID&&event.action==PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
-     {
+    	if(event.entityPlayer.worldObj.provider.dimensionId==mod_pocketDim.limboDimID&&event.action==PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+    	{
         
 
-         int x = event.x;
-         int y = event.y;
-         
-         int z = event.z;
-         
-         
-         
-//need to propely separate client/server
-         int face = event.face;
-         switch (face) {
-             case 0:  y = y-1;
-                      break;
-             case 1: y=y+1;
-                      break;
-             case 2:  z=z-1;
-                      break;
-             case 3:  z=z+1;
-                      break;
-             case 4:  x=x-1;
-                      break;
-             case 5:  x=x+1 ;
-                      break;
-             default:
-                      break;
-         }
-         
-         if(event.entityPlayer.getHeldItem()!=null)
-         {
-         if(event.entityPlayer.getHeldItem().getItem() instanceof ItemBlock)
-         {
-        //	if(event.entityPlayer instanceof EntityPlayerMP)
-        	{
-        	
-        		Point3D point = new Point3D(x,y,z);
-        		dimHelper.blocksToDecay.add(point);
-        	}
-         }
-         else
-         {
-        	 event.setCanceled(true);
-         }
+    		int x = event.x;
+    		int y = event.y;
+    		
+    		int z = event.z;
          
          
-         }
-     }
-     
+         
+         
+         
+    		if(event.entityPlayer.getHeldItem()!=null)
+    		{
+    			if(event.entityPlayer.getHeldItem().getItem() instanceof ItemBlock)
+    			{
+    				//	if(event.entityPlayer instanceof EntityPlayerMP)
+    				{
+    					
+    					Point3D point = new Point3D(x,y,z);
+    					dimHelper.blocksToDecay.add(point);
+    				}
+    			}
+    			else
+    			{
+    				event.setCanceled(true);
+    			}
+         
+         
+    		}
     	}
+     
+    }
      
      
     
@@ -226,7 +210,7 @@ public class EventHookContainer
     @ForgeSubscribe
     public void onPlayerDrops(PlayerDropsEvent event)
     {
-    	mod_pocketDim.limboSpawnInventory=event.drops;
+    	mod_pocketDim.limboSpawnInventory.put(event.entityPlayer.username, event.drops);
     }
 
     @ForgeSubscribe

@@ -23,7 +23,7 @@ public class BlockRift extends BlockContainer
 	
 	protected BlockRift(int i, int j, Material par2Material) 
 	{
-		 super(i, Material.snow);
+		 super(i, Material.air);
 	        setTickRandomly(true);
 	      //  this.setCreativeTab(CreativeTabs.tabBlock);
 	        this.setLightOpacity(14);

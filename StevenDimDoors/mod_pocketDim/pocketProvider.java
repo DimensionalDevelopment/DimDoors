@@ -34,6 +34,7 @@ public class pocketProvider extends WorldProvider
 
 	}
 	
+	
 	 public void setAllowedSpawnTypes(boolean allowHostile, boolean allowPeaceful)
 	 {
 	       super.setAllowedSpawnTypes(false, false);

@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -55,7 +56,7 @@ public class mod_pocketDim
 {
 	
 
-	public static final String version = "1.5.1R1.3.3B2";
+	public static final String version = "1.5.1R1.3.3RC2";
 	public static final String modid = "DimensionalDoors";
 
 	//need to clean up 
@@ -65,6 +66,7 @@ public class mod_pocketDim
     @Instance("PocketDimensions")
     public static mod_pocketDim instance = new mod_pocketDim();
     public static SchematicLoader loader = new SchematicLoader();
+    public static pocketTeleporter teleporter = new pocketTeleporter();
  
     public static final ICommand removeRiftsCommand = new CommandDeleteRifts();
     public static final ICommand pruneDimsCommand = new CommandPruneDims();
@@ -129,7 +131,7 @@ public class mod_pocketDim
     
     public static PlayerRespawnTracker tracker= new PlayerRespawnTracker();
     
-    public static ArrayList<EntityItem> limboSpawnInventory=new ArrayList<EntityItem>();
+    public static HashMap<String,ArrayList<EntityItem>> limboSpawnInventory=new HashMap<String,ArrayList<EntityItem>>();
     
     public static ArrayList blocksImmuneToRift= new ArrayList();
 	public static ArrayList<DungeonGenerator> registeredDungeons = new ArrayList<DungeonGenerator>();

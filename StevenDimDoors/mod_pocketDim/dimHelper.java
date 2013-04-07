@@ -40,6 +40,7 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 
 public class dimHelper extends DimensionManager
@@ -228,15 +229,16 @@ public class dimHelper extends DimensionManager
 		    	{
 		    		PotionEffect effect = (PotionEffect)potionEffect;
 		    		player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, effect));
+			    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
+
 
 		    	}
 		    	
-		    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
-		    	
+		    	 WorldServer.class.cast(newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
+
 		    	
 
 	    	}
-	    	 WorldServer.class.cast(newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
 	    }
 	    
 	    
@@ -251,12 +253,13 @@ public class dimHelper extends DimensionManager
 		    {
 		    	oldWorld.getChunkFromChunkCoords(entX, entZ).removeEntity(entity);
 		    	oldWorld.getChunkFromChunkCoords(entX, entZ).isModified = true;
+		    	
 		    }
 		    
-		    oldWorld.loadedEntityList.remove(entity);
+		  
 		    oldWorld.releaseEntitySkin(entity);
 		    
-		    entity.isDead = false;
+		   // entity.isDead = false;
 	   
 	    	if (!(entity instanceof EntityPlayer)) 
 	    	{
@@ -285,7 +288,7 @@ public class dimHelper extends DimensionManager
 	    
 	    entity.worldObj.updateEntityWithOptionalForce(entity, false);
 
-	    new pocketTeleporter((WorldServer) newWorld, link).placeInPortal(entity, 0, 0, 0, 0);
+	    mod_pocketDim.teleporter.placeInPortal(entity, newWorld, link);
 	 
 	    
 	    if ((entity != null) && (cart != null)) 
@@ -345,7 +348,11 @@ public class dimHelper extends DimensionManager
 					
 					
 
-						this.teleportEntity(world, entity, linkData);							    
+						this.teleportEntity(world, entity, linkData);		
+						if(entity instanceof EntityPlayerMP)
+						{
+							      GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
+						}
 						
 						entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
 						
