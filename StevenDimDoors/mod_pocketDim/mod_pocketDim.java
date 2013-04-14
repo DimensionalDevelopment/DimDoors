@@ -56,7 +56,7 @@ public class mod_pocketDim
 {
 	
 
-	public static final String version = "1.5.1R1.3.3RC2";
+	public static final String version = "1.5.1R1.3.3RC3";
 	public static final String modid = "DimensionalDoors";
 
 	//need to clean up 
@@ -190,6 +190,7 @@ public class mod_pocketDim
 
 			public static boolean hardcoreLimbo;
 
+			public static boolean returnInventory;
 
 	public static boolean hasInitDims=false;
 
@@ -243,6 +244,8 @@ public class mod_pocketDim
          this.enableUnstableDoor = config.get("BOOLEAN", "true to enable unstable door crafting", true).getBoolean(true);
          this.enableWoodenDimDoor = config.get("BOOLEAN", "true to enable wooden door crafting", true).getBoolean(true);
          this.enableDoorOpenGL = config.get("BOOLEAN", "Toggles the door render effect", true).getBoolean(true);
+         this.returnInventory = config.get("BOOLEAN", "Toggles whether or not your inventory is returned upon dying and respawning in limbo", true).getBoolean(true);
+
          
      //    dimRailID = config.getBlock("Dimensional Rail", 1980).getInt();
 

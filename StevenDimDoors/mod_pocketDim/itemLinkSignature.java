@@ -139,7 +139,7 @@ public class itemLinkSignature extends Item
     		{
     			Integer[] coords = this.readFromNBT(par1ItemStack);
     			par3List.add(String.valueOf("Leads to dim "+coords[3] +" with depth "+dimHelper.instance.getDimDepth(dimHelper.instance.getDimDepth(coords[3]))));
-        		par3List.add("at x="+coords[0]+" y="+coords[1]+" z="+coords[3]);
+        		par3List.add("at x="+coords[0]+" y="+coords[1]+" z="+coords[2]);
 
     		}
     

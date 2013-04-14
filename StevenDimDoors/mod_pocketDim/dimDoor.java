@@ -247,22 +247,22 @@ public class dimDoor extends BlockContainer
 	{
 		if(!par1World.isRemote&&par1World.getBlockId(par2, par3-1, par4)==this.blockID)
 		{		
-			boolean newDim=false;
+			
 			
 			if(dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World)==null)
 			{
-				newDim=true;
-			}
+			
 		
-			if(newDim)
-			{
-				LinkData link = new LinkData(par1World.provider.dimensionId, 0, par2, par3, par4, par2, par3, par4, true);
-				link.linkOrientation= par1World.getBlockMetadata(par2, par3-1, par4);
-				dimHelper.instance.createPocket(link,true, false);
-			//	System.out.println(link.linkOrientation);
+				
+					LinkData link = new LinkData(par1World.provider.dimensionId, 0, par2, par3, par4, par2, par3, par4, true);
+					link.linkOrientation= par1World.getBlockMetadata(par2, par3-1, par4);
+					dimHelper.instance.createPocket(link,true, false);
+					//	System.out.println(link.linkOrientation);
 
 				
+				
 			}
+			
 
 			
 			if(dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World)!=null)
