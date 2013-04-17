@@ -98,8 +98,12 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
     			}
     			if(hasEnder&&!par3World.isRemote)
     			{
+    				if(dimHelper.instance.getLinkDataFromCoords(linkCoords[0], linkCoords[1], linkCoords[2], par3World)==null)
+    				{
+        				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6);	
+
+    				}
     				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2]);		
-    				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6);	
     				par2EntityPlayer.sendChatToPlayer("Rift Created");
     			}
     			else if(!par3World.isRemote)

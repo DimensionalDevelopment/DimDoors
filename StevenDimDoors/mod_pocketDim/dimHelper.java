@@ -179,7 +179,7 @@ public class dimHelper extends DimensionManager
 		 }
 		    
 		    
-
+		
 
 		WorldServer newWorld;
 		
@@ -235,7 +235,6 @@ public class dimHelper extends DimensionManager
 		    	}
 		    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
 
-		    	 WorldServer.class.cast(newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
 
 		    	
 
@@ -305,7 +304,10 @@ public class dimHelper extends DimensionManager
 	    }
 	  
 	    
-	    
+	    if(entity instanceof EntityPlayerMP)
+		  {
+			  WorldServer.class.cast(newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
+		  }
 	  return entity;
 	   
 	   
@@ -329,6 +331,7 @@ public class dimHelper extends DimensionManager
 		{
 			
 			int destinationID=linkData.destDimID;
+		
 			int x=linkData.destXCoord;
 			int y=linkData.destYCoord;
 			int z=linkData.destZCoord;
@@ -895,7 +898,7 @@ public class dimHelper extends DimensionManager
 		    				
 		    					if(link1!=null)
 		    					{
-		    						locationDimData.exitDimLink=new LinkData(link1.locDimID, link1.locDimID, link1.locXCoord, link1.locYCoord, link1.locZCoord, link1.locXCoord, link1.locYCoord, link1.locZCoord, false);
+		    				//		locationDimData.exitDimLink=new LinkData(link1.locDimID, link1.locDimID, link1.locXCoord, link1.locYCoord, link1.locZCoord, link1.locXCoord, link1.locYCoord, link1.locZCoord, false);
 		    					}
 		    			
 				}

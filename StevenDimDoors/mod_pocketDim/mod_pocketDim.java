@@ -297,7 +297,7 @@ public class mod_pocketDim
          blockLimboID=config.get("Int", "Block ID for Limbo- must be below 256", 217).getInt();
          blockDimWallPermID=config.get("Int", "Block ID for blockDimWallPermID- must be below 256", 220).getInt();
          this.limboDimID=config.get("Int", "Limbo Dimension ID", -23).getInt();
-         this.limboExitRange=config.get("Int", "The farthest possible distance that limbo can send you upon return to the overworld.", 100000).getInt();
+         this.limboExitRange=config.get("Int", "The farthest possible distance that limbo can send you upon return to the overworld.", 500).getInt();
 
          providerID=config.get("Int", "ProviderID", 12).getInt();
          this.limboProviderID=config.get("Int", "Limbo Provider ID", 13).getInt();
@@ -342,7 +342,7 @@ public class mod_pocketDim
         itemStableFabric = (new ItemStableFabric(itemStableFabricID, 0)).setUnlocalizedName("itemStableFabric");
         itemChaosDoor = (new ItemChaosDoor(itemChaosDoorID, Material.iron)).setUnlocalizedName("itemChaosDoor");
         itemRiftBlade = (new ItemRiftBlade(itemRiftBladeID, Material.iron)).setUnlocalizedName("ItemRiftBlade");
-        itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(itemStabilizedLinkSignatureID)).setUnlocalizedName("itemStabilizedRiftSig");
+       // itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(itemStabilizedLinkSignatureID)).setUnlocalizedName("itemStabilizedRiftSig");
 
         
         proxy.loadTextures();
@@ -387,7 +387,7 @@ public class mod_pocketDim
         
         LanguageRegistry.addName(itemExitDoor	, "Warp Door");
         LanguageRegistry.addName(itemLinkSignature	, "Rift Signature");
-        LanguageRegistry.addName(itemStabilizedLinkSignature, "Stabilized Rift Signature");
+       // LanguageRegistry.addName(itemStabilizedLinkSignature, "Stabilized Rift Signature");
         LanguageRegistry.addName(itemRiftRemover	, "Rift Remover");
         LanguageRegistry.addName(itemStableFabric	, "Stable Fabric");
         LanguageRegistry.addName(itemChaosDoor	, "Unstable Door");
@@ -584,6 +584,8 @@ public class mod_pocketDim
  	 		this.pistonTraps.add(new DungeonGenerator(0, "simpleDropHall.schematic", null));
  	 		this.pistonTraps.add(new DungeonGenerator(0, "wallFallcomboPistonHall.schematic", null));
  	 		this.pistonTraps.add(new DungeonGenerator(0, "wallFallcomboPistonHall.schematic", null));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "lavaPyramid.schematic", null));
+
  	 	
 	
  	 		this.mazes.add(new DungeonGenerator(0, "smallMaze1.schematic", null));

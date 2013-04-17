@@ -56,6 +56,8 @@ public class dimHatch extends BlockTrapDoor
 	   			DimData dimData = (DimData) dimHelper.instance.dimList.get(par1World.provider.dimensionId);
 	    			
 	    		LinkData exitLink=dimData.exitDimLink;
+	    		exitLink.locDimID=par1World.provider.dimensionId;
+	    		
 	    		 
 	    		dimHelper.instance.teleportToPocket(par1World, exitLink, par5Entity);
 	
