@@ -35,10 +35,27 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
+import StevenDimDoors.mod_pocketDim.blocks.BlockDimWall;
+import StevenDimDoors.mod_pocketDim.blocks.BlockDimWallPerm;
+import StevenDimDoors.mod_pocketDim.blocks.BlockLimbo;
+import StevenDimDoors.mod_pocketDim.blocks.BlockRift;
+import StevenDimDoors.mod_pocketDim.blocks.ExitDoor;
+import StevenDimDoors.mod_pocketDim.blocks.dimDoor;
+import StevenDimDoors.mod_pocketDim.blocks.dimHatch;
+import StevenDimDoors.mod_pocketDim.blocks.linkDimDoor;
+import StevenDimDoors.mod_pocketDim.blocks.linkExitDoor;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteDimData;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
+import StevenDimDoors.mod_pocketDim.items.ItemChaosDoor;
+import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
+import StevenDimDoors.mod_pocketDim.items.ItemStabilizedRiftSignature;
+import StevenDimDoors.mod_pocketDim.items.ItemStableFabric;
+import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
+import StevenDimDoors.mod_pocketDim.items.itemExitDoor;
+import StevenDimDoors.mod_pocketDim.items.itemLinkSignature;
+import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 
 
 @Mod(modid = mod_pocketDim.modid, name = "Dimensional Doors", version = mod_pocketDim.version)
@@ -84,8 +101,10 @@ public class mod_pocketDim
     public static int itemRiftBladeID;
     public static int limboExitRange;
   //  public static int railRenderID;
-
+    
     public static int itemStableFabricID;
+
+    public static int itemStabilizedLinkSignatureID;
     public static int itemExitDoorID;
     public static int limboDimID;
     public static int limboProviderID;
@@ -126,7 +145,8 @@ public class mod_pocketDim
     public static  Item itemLinkSignature;
     public static  Item itemStableFabric;
     public static  Item itemChaosDoor;
-    
+    public static  Item itemStabilizedLinkSignature;
+
     
     
     public static PlayerRespawnTracker tracker= new PlayerRespawnTracker();
@@ -259,6 +279,7 @@ public class mod_pocketDim
          blockRiftID = config.getBlock("Rift", 1977).getInt();
          transientDoorID = config.getBlock("transientDoorID", 1979).getInt();
 
+         itemStabilizedLinkSignatureID=config.getItem("Stabilized Rift Signature", 5677).getInt();
          itemRiftBladeID=config.getItem("Rift Blade", 5676).getInt();
          itemChaosDoorID=config.getItem("Chaos Door", 5673).getInt();
          itemRiftRemoverID=config.getItem("Rift Remover", 5671).getInt();
@@ -316,11 +337,12 @@ public class mod_pocketDim
  
         itemDimDoor = (new itemDimDoor(itemDimDoorID, Material.iron)).setUnlocalizedName("itemDimDoor");
         itemExitDoor = (new itemExitDoor(itemExitDoorID, Material.wood)).setUnlocalizedName("itemDimDoorWarp");
-        itemLinkSignature = (new itemLinkSignature(itemLinkSignatureID, Material.wood)).setUnlocalizedName("itemLinkSignature");
+        itemLinkSignature = (new itemLinkSignature(itemLinkSignatureID )).setUnlocalizedName("itemLinkSignature");
         itemRiftRemover = (new itemRiftRemover(itemRiftRemoverID, Material.wood)).setUnlocalizedName("itemRiftRemover");
         itemStableFabric = (new ItemStableFabric(itemStableFabricID, 0)).setUnlocalizedName("itemStableFabric");
         itemChaosDoor = (new ItemChaosDoor(itemChaosDoorID, Material.iron)).setUnlocalizedName("itemChaosDoor");
         itemRiftBlade = (new ItemRiftBlade(itemRiftBladeID, Material.iron)).setUnlocalizedName("ItemRiftBlade");
+        itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(itemStabilizedLinkSignatureID)).setUnlocalizedName("itemStabilizedRiftSig");
 
         
         proxy.loadTextures();
@@ -365,6 +387,7 @@ public class mod_pocketDim
         
         LanguageRegistry.addName(itemExitDoor	, "Warp Door");
         LanguageRegistry.addName(itemLinkSignature	, "Rift Signature");
+        LanguageRegistry.addName(itemStabilizedLinkSignature, "Stabilized Rift Signature");
         LanguageRegistry.addName(itemRiftRemover	, "Rift Remover");
         LanguageRegistry.addName(itemStableFabric	, "Stable Fabric");
         LanguageRegistry.addName(itemChaosDoor	, "Unstable Door");
@@ -459,7 +482,7 @@ public class mod_pocketDim
                  });
     	 GameRegistry.addRecipe(new ItemStack(itemRiftRemover, 1), new Object[]
                  {
-                     " y ", "yxy", " y ", 'x', this.itemStableFabric,  'y', Item.ingotGold
+                     "yyy", "yxy", "yyy", 'x', this.itemStableFabric,  'y', Item.ingotGold
                  });
         }
      
@@ -474,6 +497,11 @@ public class mod_pocketDim
                      " x ", " x ", " y ", 'x', Item.enderPearl,  'y',this.itemRiftRemover
                  });
         }
+        
+        GameRegistry.addRecipe(new ItemStack(itemStableFabric, 4), new Object[]
+                {
+                    " y ", "yxy", " y ", 'x', Item.enderPearl,  'y', this.blockDimWall
+                });
     	 
         /**
     	 GameRegistry.addRecipe(new ItemStack(itemStableFabric, 4), new Object[]

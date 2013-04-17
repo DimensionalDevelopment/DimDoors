@@ -1,5 +1,10 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.blocks;
 
+import StevenDimDoors.mod_pocketDim.DimData;
+import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.pocketProvider;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -13,7 +18,7 @@ import net.minecraft.world.World;
 public class dimHatch extends BlockTrapDoor
 {
 
-	protected dimHatch(int par1,int par2, Material par2Material) 
+	public dimHatch(int par1,int par2, Material par2Material) 
 	{
 		super(par1, Material.iron);
         this.setCreativeTab(CreativeTabs.tabTransport);

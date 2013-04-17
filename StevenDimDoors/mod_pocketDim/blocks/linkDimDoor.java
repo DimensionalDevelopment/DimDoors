@@ -1,6 +1,8 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
+
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -20,7 +22,7 @@ import net.minecraft.world.World;
 public class linkDimDoor extends dimDoor
 {
 	private Icon blockIconBottom;
-	protected linkDimDoor(int par1, Material material) {
+	public linkDimDoor(int par1, Material material) {
 		super(par1, material);
 		// TODO Auto-generated constructor stub
 	}

@@ -1,6 +1,10 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
+
+import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -14,7 +18,7 @@ import net.minecraft.world.World;
 public class BlockLimbo extends Block
 {
 	
-	protected BlockLimbo(int i, int j, Material par2Material) 
+	public BlockLimbo(int i, int j, Material par2Material) 
 	{
 		 super(i, Material.ground);
 	        setTickRandomly(false);

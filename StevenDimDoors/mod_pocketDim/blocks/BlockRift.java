@@ -1,4 +1,4 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
 
@@ -11,6 +11,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.PacketHandler;
+import StevenDimDoors.mod_pocketDim.TileEntityRift;
+import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDimClient.ClosingRiftFX;
 import StevenDimDoors.mod_pocketDimClient.GoggleRiftFX;
 import StevenDimDoors.mod_pocketDimClient.RiftFX;
@@ -21,7 +25,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockRift extends BlockContainer
 {
 	
-	protected BlockRift(int i, int j, Material par2Material) 
+	public BlockRift(int i, int j, Material par2Material) 
 	{
 		 super(i, Material.air);
 	        setTickRandomly(true);

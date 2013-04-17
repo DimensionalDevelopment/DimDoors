@@ -1,6 +1,10 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
+
+import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -12,7 +16,7 @@ import net.minecraft.world.World;
 public class BlockDimWallPerm extends Block
 {
 	
-	protected BlockDimWallPerm(int i, int j, Material par2Material) 
+	public BlockDimWallPerm(int i, int j, Material par2Material) 
 	{
 		 super(i, Material.ground);
 	        setTickRandomly(true);

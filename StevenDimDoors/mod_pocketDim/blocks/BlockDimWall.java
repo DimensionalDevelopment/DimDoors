@@ -1,6 +1,8 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
+
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -16,7 +18,7 @@ import net.minecraft.world.World;
 public class BlockDimWall extends Block
 {
 	
-	protected BlockDimWall(int i, int j, Material par2Material) 
+	public BlockDimWall(int i, int j, Material par2Material) 
 	{
 		 super(i, Material.ground);
 	        setTickRandomly(true);
@@ -33,6 +35,11 @@ public class BlockDimWall extends Block
     }
 	
     public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {}
+    
+    protected boolean canSilkHarvest()
+    {
+        return true;
+    }
     
     public int quantityDropped(Random par1Random)
     {

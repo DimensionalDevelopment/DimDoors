@@ -1,6 +1,11 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
+
+import StevenDimDoors.mod_pocketDim.DimData;
+import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -23,7 +28,7 @@ public class ExitDoor extends dimDoor
 {
 
 	private Icon blockIconBottom;
-	protected ExitDoor(int par1, Material par2Material) 
+	public ExitDoor(int par1, Material par2Material) 
 	{
 		
 		super(par1, Material.wood);

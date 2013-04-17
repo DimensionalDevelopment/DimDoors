@@ -1,6 +1,8 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
+
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,7 +21,7 @@ import net.minecraft.world.World;
 public class linkExitDoor extends ExitDoor
 {
 	private Icon blockIconBottom;
-	protected linkExitDoor(int par1,Material par2Material) 
+	public linkExitDoor(int par1,Material par2Material) 
 	{
 		
 		super(par1,  Material.wood);

@@ -2,6 +2,8 @@ package StevenDimDoors.mod_pocketDim;
 
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
+
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;

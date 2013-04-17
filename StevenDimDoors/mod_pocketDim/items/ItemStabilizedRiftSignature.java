@@ -1,6 +1,10 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
+
+import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -14,13 +18,13 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class itemLinkSignature extends Item
+public class ItemStabilizedRiftSignature extends itemLinkSignature
 {
     private Material doorMaterial;
 
-    public itemLinkSignature(int par1, Material par2Material)
+    public ItemStabilizedRiftSignature(int par)
     {
-    	 super(par1);
+    	 super(par);
     	 this.setMaxStackSize(1);
     	// this.setTextureFile("/PocketBlockTextures.png");
          this.setCreativeTab(CreativeTabs.tabTransport);
@@ -65,8 +69,7 @@ public class itemLinkSignature extends Item
 		
 
     	
-    	if(!par3World.isRemote)
-    	{		
+    			
     		
 			//par1ItemStack= par2EntityPlayer.getCurrentEquippedItem();
 			Integer[] linkCoords =this.readFromNBT(par1ItemStack);
@@ -79,27 +82,38 @@ public class itemLinkSignature extends Item
     		{
     		if(par1ItemStack.getTagCompound().getBoolean("isCreated"))
     		{
+    			boolean hasEnder = false;
     		// checks to see if the item has a link stored, if so, it creates it
+    		
+    			if(par2EntityPlayer.inventory.hasItem(Item.enderPearl.itemID))
+    			{
+    				par2EntityPlayer.inventory.consumeInventoryItem(Item.enderPearl.itemID);
+    				hasEnder=true;
+    			}
+    			
+    			
     			if(par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
     			{
     				offset = 1;
     			}
-    				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2]);		
-    				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6);		
-
-    				--par1ItemStack.stackSize;
-	    			par2EntityPlayer.sendChatToPlayer("Rift Created");
-	    		par1ItemStack.stackTagCompound=null;
-    			/**
-    			else
+    			if(hasEnder&&!par3World.isRemote)
     			{
-	    			par2EntityPlayer.sendChatToPlayer("Both ends of a single rift cannot exist in the same dimension.");
-
+    				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2]);		
+    				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6);	
+    				par2EntityPlayer.sendChatToPlayer("Rift Created");
     			}
-    			**/
+    			else if(!par3World.isRemote)
+    			{
+    				par2EntityPlayer.sendChatToPlayer("No Ender Pearls!");
+    			}
+
+    			
+	    		
+    			
+    		
+    			}
     		}
-    		}
-    		else 
+    		else if(!par3World.isRemote)
         	{
     			if(par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
     			{
@@ -117,7 +131,7 @@ public class itemLinkSignature extends Item
         	}
     		
     		//dimHelper.instance.save();
-    	}
+    	
     	
     	
     	return true;

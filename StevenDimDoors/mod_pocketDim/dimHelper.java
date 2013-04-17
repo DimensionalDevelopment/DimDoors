@@ -209,6 +209,7 @@ public class dimHelper extends DimensionManager
 	    	
 	    	if (difDest) 
 	    	{
+	    	
 	    		player.dimension = link.destDimID;
 	    		player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
 	    	
@@ -229,11 +230,11 @@ public class dimHelper extends DimensionManager
 		    	{
 		    		PotionEffect effect = (PotionEffect)potionEffect;
 		    		player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, effect));
-			    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
 
 
 		    	}
-		    	
+		    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
+
 		    	 WorldServer.class.cast(newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
 
 		    	

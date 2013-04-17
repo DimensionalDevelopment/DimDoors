@@ -14,8 +14,8 @@ import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 
 import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
-import StevenDimDoors.mod_pocketDim.dimDoor;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.blocks.dimDoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

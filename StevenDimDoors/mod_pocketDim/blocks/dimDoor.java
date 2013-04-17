@@ -1,6 +1,11 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
+
+import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
+import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -24,7 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class dimDoor extends BlockContainer
 {
 	private static Icon blockIconBottom;
-	protected dimDoor(int par1, Material material) 
+	public dimDoor(int par1, Material material) 
 	{
 		super(par1, Material.iron);
 	//	this.blockIndexInTexture = 18;
@@ -107,7 +112,7 @@ public class dimDoor extends BlockContainer
 
     				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
     				
-    				if(par5Entity instanceof EntityLiving)
+    				//if(par5Entity instanceof EntityLiving)
     				{
     					this.onPoweredBlockChange(par1World, par2, par3, par4, false);
     				}
