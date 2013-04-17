@@ -845,10 +845,15 @@ public class SchematicLoader
 			 {
 				 try
 				 {
+					 
 					 if(world.getBlockId(point.getX(), point.getY(), point.getZ())==mod_pocketDim.ExitDoorID&&world.getBlockId(point.getX(), point.getY()-1, point.getZ())==mod_pocketDim.ExitDoorID&&world.getBlockId(point.getX(), point.getY()-2, point.getZ())==Block.sandStone.blockID)
 					 {
 					 	
-					 
+						 LinkData randomLink=dimHelper.instance.getRandomLinkData(false);
+						 	if(randomLink!=null&&dimHelper.instance.getDimDepth(world.provider.dimensionId)>4)
+						 	{
+						 		dimHelper.dimList.get(world.provider.dimensionId).exitDimLink.destDimID=randomLink.locDimID;
+						 	}
 					 	if(dimHelper.getWorld(dimHelper.dimList.get(world.provider.dimensionId).exitDimLink.destDimID)==null)
 					 	{
 					 		dimHelper.initDimension((dimHelper.dimList.get(world.provider.dimensionId).exitDimLink.destDimID));
@@ -859,12 +864,12 @@ public class SchematicLoader
 					 	dimHelper.getWorld(dimHelper.dimList.get(world.provider.dimensionId).exitDimLink.destDimID).getChunkProvider().loadChunk(point.getX() >> 4, point.getZ() >> 4);
 					 	
 						LinkData sideLink = new LinkData(link.destDimID,dimHelper.dimList.get(link.locDimID).exitDimLink.destDimID,point.getX(), point.getY(), point.getZ(),point.getX(), dimHelper.getWorld(dimHelper.dimList.get(world.provider.dimensionId).exitDimLink.destDimID).getHeightValue(point.getX(), point.getZ())+1, point.getZ(),true);
-					 	sideLink.linkOrientation=world.getBlockMetadata(point.getX(), point.getY()-1, point.getZ());
+					 	
+						sideLink.linkOrientation=world.getBlockMetadata(point.getX(), point.getY()-1, point.getZ());
 						dimHelper.instance.createLink(sideLink);
 						dimHelper.instance.createLink(sideLink.destDimID , sideLink.locDimID, sideLink.destXCoord, sideLink.destYCoord, sideLink.destZCoord, sideLink.locXCoord, sideLink.locYCoord, sideLink.locZCoord, dimHelper.instance.flipDoorMetadata(sideLink.linkOrientation));
 						
 						
-						setBlockDirectly(world,point.getX(), point.getY()-2, point.getZ(), Block.stone.blockID,0);
 					//	setBlockDirectly(world,point.getX(), point.getY()-1, point.getZ(),mod_pocketDim.ExitDoorID,sideLink.linkOrientation);
 					//	setBlockDirectly(world,point.getX(), point.getY(), point.getZ(),mod_pocketDim.ExitDoorID,8);
 

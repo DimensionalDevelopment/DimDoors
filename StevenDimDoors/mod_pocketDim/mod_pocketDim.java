@@ -342,7 +342,7 @@ public class mod_pocketDim
         itemStableFabric = (new ItemStableFabric(itemStableFabricID, 0)).setUnlocalizedName("itemStableFabric");
         itemChaosDoor = (new ItemChaosDoor(itemChaosDoorID, Material.iron)).setUnlocalizedName("itemChaosDoor");
         itemRiftBlade = (new ItemRiftBlade(itemRiftBladeID, Material.iron)).setUnlocalizedName("ItemRiftBlade");
-       // itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(itemStabilizedLinkSignatureID)).setUnlocalizedName("itemStabilizedRiftSig");
+        itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(itemStabilizedLinkSignatureID)).setUnlocalizedName("itemStabilizedRiftSig");
 
         
         proxy.loadTextures();
@@ -387,7 +387,7 @@ public class mod_pocketDim
         
         LanguageRegistry.addName(itemExitDoor	, "Warp Door");
         LanguageRegistry.addName(itemLinkSignature	, "Rift Signature");
-       // LanguageRegistry.addName(itemStabilizedLinkSignature, "Stabilized Rift Signature");
+        LanguageRegistry.addName(itemStabilizedLinkSignature, "Stabilized Rift Signature");
         LanguageRegistry.addName(itemRiftRemover	, "Rift Remover");
         LanguageRegistry.addName(itemStableFabric	, "Stable Fabric");
         LanguageRegistry.addName(itemChaosDoor	, "Unstable Door");
