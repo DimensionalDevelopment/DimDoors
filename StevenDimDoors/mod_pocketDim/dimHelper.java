@@ -374,6 +374,15 @@ public class dimHelper extends DimensionManager
 						int playerYCoord=MathHelper.floor_double(entity.posY);
 						int playerZCoord=MathHelper.floor_double(entity.posZ);
 						
+						
+    								if(!entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1,playerZCoord ))
+    								{
+    									
+    									
+    									entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, mod_pocketDim.blockDimWallID);
+    								}
+    				
+						
 						if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord+1,playerZCoord))
 						{
 							if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube())
