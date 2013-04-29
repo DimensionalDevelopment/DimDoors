@@ -132,30 +132,7 @@ public class dimHelper extends DimensionManager
 	}
 	
 	
-	public void teleportToLimbo(World world,LinkData linkData, EntityPlayer player)
-	{
-		/**
-		
-		EntityPlayerMP playerMP = (EntityPlayerMP) player;
-		player.fallDistance=-700;
-		
-		
-		//World worldLimbo= this.getWorld(mod_pocketDim.limboDimID);
-		mod_pocketDim.limbo=this.getWorld(mod_pocketDim.limboDimID);
-		if(mod_pocketDim.limbo==null)
-		{
-			this.initDimension(mod_pocketDim.limboDimID);
-		}
-		else if (mod_pocketDim.limbo.provider==null)
-		{
-			this.initDimension(mod_pocketDim.limboDimID);
-
-		}
-
-		//System.out.println(worldLimbo.getHeightValue( MathHelper.floor_double(player.posX),  MathHelper.floor_double(player.posZ)));
-		playerMP.mcServer.getConfigurationManager().transferPlayerToDimension(playerMP, mod_pocketDim.limboDimID, new pocketTeleporter((WorldServer) this.getWorld(mod_pocketDim.limboDimID), linkData));
-		**/
-	}
+	
 	private Entity teleportEntity(World oldWorld, Entity entity, LinkData link) //this beautiful teleport method is based off of xCompWiz's teleport function. 
 	{
 		Entity cart;
@@ -219,7 +196,6 @@ public class dimHelper extends DimensionManager
 	    		oldWorld.playerEntities.remove(player);
 	    		WorldServer.class.cast(oldWorld).getPlayerManager().removePlayer(player);
 	    		newWorld.getPlayerManager().addPlayer(player);
-	    		player.theItemInWorldManager.setWorld(newWorld);
 	    		
 	    		player.theItemInWorldManager.setWorld((WorldServer)newWorld);
 		    	
@@ -343,7 +319,6 @@ public class dimHelper extends DimensionManager
 			if(this.dimList.containsKey(destinationID))
 			{
 				this.generatePocket(linkData);
-				this.generateDoor(world,linkData);
 			 
 
 				if(mod_pocketDim.teleTimer==0||entity instanceof EntityPlayer)
@@ -366,6 +341,8 @@ public class dimHelper extends DimensionManager
 						{
 							      GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
 						}
+						System.out.println(entity.worldObj.getWorldInfo().getDimension());
+						System.out.println(entity.worldObj.provider.dimensionId);
 						
 							entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
 						
@@ -374,20 +351,41 @@ public class dimHelper extends DimensionManager
 						int playerYCoord=MathHelper.floor_double(entity.posY);
 						int playerZCoord=MathHelper.floor_double(entity.posZ);
 						
-						
-    								if(!entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1,playerZCoord ))
+    								if(!entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1,playerZCoord )&&this.dimList.get(linkData.locDimID).isDimRandomRift&&!linkData.hasGennedDoor)
     								{
     									
+    									for(int count=0;count<20;count++)
+    									{
+    										if(entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1-count,playerZCoord))
+    										{
+    											break;
+    										}
+    										if(count==19)
+    										{
+    	    									entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, mod_pocketDim.blockDimWallID);
+
+    										}
+    									}
     									
-    									entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, mod_pocketDim.blockDimWallID);
+    									
     								}
-    				
+    								this.generateDoor(world,linkData);
+
 						
 						if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord+1,playerZCoord))
 						{
 							if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube())
 							{
 								entity.worldObj.setBlock(playerXCoord,playerYCoord+1,playerZCoord,0);
+
+							}
+						}
+						if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord,playerZCoord))
+						{
+							if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)].isOpaqueCube())
+							{
+								entity.worldObj.setBlock(playerXCoord,playerYCoord,playerZCoord,0);
+
 							}
 						}
 						if(entity.worldObj.getBlockId(x, y, z)==mod_pocketDim.dimDoorID||entity.worldObj.getBlockId(x, y, z)==mod_pocketDim.ExitDoorID)

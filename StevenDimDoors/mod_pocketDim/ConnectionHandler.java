@@ -11,10 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.Player;
 
-public class ConnectionHandler
-
-
-  implements IConnectionHandler
+public class ConnectionHandler  implements IConnectionHandler
 {
 	private static boolean connected = false;
 

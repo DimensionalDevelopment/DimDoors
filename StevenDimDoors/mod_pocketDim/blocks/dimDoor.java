@@ -110,24 +110,25 @@ public class dimDoor extends BlockContainer
 
     				
 
-    				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
     				
     				//if(par5Entity instanceof EntityLiving)
     				{
     					this.onPoweredBlockChange(par1World, par2, par3, par4, false);
     				}
-    		
+    				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
+
     			
     		}
     		else if (!(par5Entity instanceof EntityPlayer)&&num>3)
     		{
+    			
     			if(par5Entity instanceof EntityLiving)
 				{
 					this.onPoweredBlockChange(par1World, par2, par3, par4, false);
 				}
-    			
-			
 				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
+
+			
     		}
     	}
     }

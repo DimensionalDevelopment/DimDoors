@@ -44,6 +44,7 @@ import StevenDimDoors.mod_pocketDim.blocks.dimDoor;
 import StevenDimDoors.mod_pocketDim.blocks.dimHatch;
 import StevenDimDoors.mod_pocketDim.blocks.linkDimDoor;
 import StevenDimDoors.mod_pocketDim.blocks.linkExitDoor;
+import StevenDimDoors.mod_pocketDim.commands.CommandAddDungeonRift;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteDimData;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
@@ -89,6 +90,7 @@ public class mod_pocketDim
     public static final ICommand pruneDimsCommand = new CommandPruneDims();
     public static final ICommand removeAllLinksCommand = new CommandDeleteAllLinks();
     public static final ICommand deleteDimDataCommand = new CommandDeleteDimData();
+    public static final ICommand addDungeonRift = new CommandAddDungeonRift();
 
     
     public static int providerID;
@@ -503,13 +505,16 @@ public class mod_pocketDim
                     " y ", "yxy", " y ", 'x', Item.enderPearl,  'y', this.blockDimWall
                 });
     	 
-        /**
+       
     	 GameRegistry.addRecipe(new ItemStack(itemStableFabric, 4), new Object[]
                  {
-                     " y ", "yxy", " y ", 'x', Item.eyeOfEnder,  'y', this.blockLimbo
+                     " y ", "yxy", " y ", 'x', Item.enderPearl,  'y', this.blockLimbo
                  });
                  
-                 **/
+    	 GameRegistry.addRecipe(new ItemStack(this.itemStabilizedLinkSignature,1), new Object[]
+                 {
+                     " y ", "yxy", " y ", 'x', this.itemLinkSignature,  'y', this.itemStableFabric
+                 });
     	 
     	 this.blocksImmuneToRift.add(this.blockDimWallID);
     	 this.blocksImmuneToRift.add(this.blockDimWallPermID);
@@ -662,6 +667,7 @@ public class mod_pocketDim
     	event.registerServerCommand(pruneDimsCommand);
     	event.registerServerCommand(removeAllLinksCommand);
     	event.registerServerCommand(deleteDimDataCommand);
+    	event.registerServerCommand(addDungeonRift);
 
     	dimHelper.instance.load();
    
