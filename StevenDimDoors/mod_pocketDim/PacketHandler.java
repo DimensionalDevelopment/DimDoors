@@ -30,7 +30,6 @@ public class PacketHandler implements IPacketHandler
 	public static int removeLinkPacketID = 5;
 	public static int linkKeyPacketID = 7;
 	public static int dimPacketID = 6;
-	public static int updateRiderPacketID = 8;
 
 
 	public static int dimUpdatePacketID = 1;
@@ -149,22 +148,7 @@ public class PacketHandler implements IPacketHandler
                 	dimHelper.instance.interDimLinkList.put(data.readInt(), link);
                 }
                 
-                if(id==this.updateRiderPacketID)
-                {
-                	int mountID=data.readInt();
-                	EntityPlayer playerSP = FMLClientHandler.instance().getClient().thePlayer;
-                	World world = playerSP.worldObj;
-                	Entity mount = world.getEntityByID(mountID);
-                	
-                	//playerSP.mountEntity(mount);
-                	//playerSP.ridingEntity=mount;
-                	//mount.riddenByEntity=playerSP;
-                	
-                	playerSP.updateRiderPosition();
-                	
-                	//mount.updateRidden();
-                	
-                }
+               
                
               
                
@@ -433,37 +417,7 @@ public class PacketHandler implements IPacketHandler
 			 }
 		}
 		
-		public static Packet250CustomPayload sendUpdateRiderPacket(int id)
-		{
-
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			DataOutputStream  dataOut = new DataOutputStream(bos);
-			 
-			 try
-			    {
-				 	
-				 	dataOut.writeByte(PacketHandler.updateRiderPacketID);
-			    	
-			    	dataOut.writeInt(id);
-			    
-			    	
-			    }
-			    
-			    
-			    
-			    catch (IOException e) 
-			    {
-			        e.printStackTrace();
-			    }
-			 
-			 	Packet250CustomPayload packet= new Packet250CustomPayload();
-			 	packet.channel="DimDoorPackets";
-			 	packet.data = bos.toByteArray();
-			 	packet.length = bos.size();;
-			 	PacketDispatcher.sendPacketToAllPlayers(packet);
-			 	return packet;
-		}
-
+		
 
 
 }

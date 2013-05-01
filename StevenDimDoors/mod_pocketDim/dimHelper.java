@@ -347,11 +347,7 @@ public class dimHelper extends DimensionManager
 						if(entity instanceof EntityPlayerMP)
 						{
 							
-							  if(entity.ridingEntity!=null)
-						      {
-						    	  EntityPlayerMP.class.cast(entity).playerNetServerHandler.sendPacketToPlayer(PacketHandler.sendUpdateRiderPacket(entity.ridingEntity.entityId));
-
-						      }
+							
 							  if(world.provider.dimensionId!=linkData.destDimID)
 							  {
 							      GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
