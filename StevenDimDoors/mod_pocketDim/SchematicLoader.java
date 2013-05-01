@@ -757,12 +757,16 @@ public class SchematicLoader
 		                    		if(world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe) instanceof TileEntityChest)
 		                    		{
 		                    			TileEntityChest chest = (TileEntityChest) world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe);
-		                    			chest.setInventorySlotContents(rand.nextInt(30+1), new ItemStack(mod_pocketDim.blockDimWall, 64));
 		                    			
 		                    		   ChestGenHooks info = ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST);
-                                       WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand),(TileEntityChest)world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe)  , info.getCount(rand));
-		                    			chest.setInventorySlotContents(rand.nextInt(30+1), new ItemStack(mod_pocketDim.blockDimWall, 64));
- 
+		                    			chest.setInventorySlotContents(rand.nextInt(27), new ItemStack(mod_pocketDim.itemDimDoor, 1));
+		                    			chest.setInventorySlotContents(rand.nextInt(27), new ItemStack(mod_pocketDim.itemLinkSignature, 1));
+		                    			chest.setInventorySlotContents(rand.nextInt(27), new ItemStack(mod_pocketDim.itemRiftRemover, 1));
+		                    			chest.setInventorySlotContents(rand.nextInt(27), new ItemStack(mod_pocketDim.itemRiftBlade, 1));
+		                    			chest.setInventorySlotContents(rand.nextInt(27), new ItemStack(mod_pocketDim.blockDimWall, rand.nextInt(20)+5));
+
+	                                    WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand),(TileEntityChest)world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe)  , info.getCount(rand));
+
                                     
 
 		                    		}
