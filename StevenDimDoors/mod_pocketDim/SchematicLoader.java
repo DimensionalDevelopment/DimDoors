@@ -853,14 +853,19 @@ public class SchematicLoader
 						 	
 						LinkData sideLink = new LinkData(link.destDimID,dimHelper.dimList.get(link.locDimID).exitDimLink.destDimID,point.getX(), point.getY(), point.getZ(),point.getX(), 0, point.getZ(),true);
 
-						 if(rand.nextBoolean()&&randomLink!=null)
+						if(sideLink.destDimID==mod_pocketDim.limboDimID)
+						{
+							sideLink.destDimID=0;
+						}
+						else if((rand.nextBoolean()&&randomLink!=null))
 						 {
 							 sideLink.destDimID=randomLink.locDimID;
-							 System.out.println("randomLink");
+							// System.out.println("randomLink");
 						 }
+					
 					 	
 						 	dimHelper.getWorld((sideLink.destDimID)).getChunkProvider().loadChunk(point.getX() >> 4, point.getZ() >> 4);
-						 	sideLink.destYCoord=dimHelper.getWorld(dimHelper.dimList.get(world.provider.dimensionId).exitDimLink.destDimID).getHeightValue(point.getX(), point.getZ())+1;
+						 	sideLink.destYCoord=dimHelper.getWorld(sideLink.destDimID).getHeightValue(point.getX(), point.getZ())+1;
 
 						sideLink.linkOrientation=world.getBlockMetadata(point.getX(), point.getY()-1, point.getZ());
 						dimHelper.instance.createLink(sideLink);

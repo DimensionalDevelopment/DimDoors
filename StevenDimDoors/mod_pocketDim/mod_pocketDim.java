@@ -181,7 +181,7 @@ public class mod_pocketDim
 	public static ArrayList metadataFlipList = new ArrayList();
 	public static ArrayList metadataNextList = new ArrayList();
 	
-	public static DungeonGenerator defaultUp = new DungeonGenerator(0, "smallStairsUp.schematic", null);
+	public static DungeonGenerator defaultUp = new DungeonGenerator(0, "simpleStairsUp.schematic", null);
 
 
 

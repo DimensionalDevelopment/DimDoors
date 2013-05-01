@@ -43,7 +43,7 @@ public class DungeonGenerator
 		boolean flag = true;
 		int count=10;
 		
-		if(incoming.destYCoord>10)
+		if(incoming.destYCoord>15)
 		{
 		do
 		{
