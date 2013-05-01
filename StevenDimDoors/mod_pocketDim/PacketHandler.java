@@ -8,12 +8,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.world.World;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.network.FMLNetworkHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
@@ -25,6 +30,7 @@ public class PacketHandler implements IPacketHandler
 	public static int removeLinkPacketID = 5;
 	public static int linkKeyPacketID = 7;
 	public static int dimPacketID = 6;
+	public static int updateRiderPacketID = 8;
 
 
 	public static int dimUpdatePacketID = 1;
@@ -141,6 +147,23 @@ public class PacketHandler implements IPacketHandler
                 {
                 	LinkData link = new LinkData(data.readInt(), data.readInt(), data.readInt(), data.readInt());
                 	dimHelper.instance.interDimLinkList.put(data.readInt(), link);
+                }
+                
+                if(id==this.updateRiderPacketID)
+                {
+                	int mountID=data.readInt();
+                	EntityPlayer playerSP = FMLClientHandler.instance().getClient().thePlayer;
+                	World world = playerSP.worldObj;
+                	Entity mount = world.getEntityByID(mountID);
+                	
+                	//playerSP.mountEntity(mount);
+                	//playerSP.ridingEntity=mount;
+                	//mount.riddenByEntity=playerSP;
+                	
+                	playerSP.updateRiderPosition();
+                	
+                	//mount.updateRidden();
+                	
                 }
                
               
@@ -408,6 +431,37 @@ public class PacketHandler implements IPacketHandler
 			 {
 				e.printStackTrace();
 			 }
+		}
+		
+		public static Packet250CustomPayload sendUpdateRiderPacket(int id)
+		{
+
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			DataOutputStream  dataOut = new DataOutputStream(bos);
+			 
+			 try
+			    {
+				 	
+				 	dataOut.writeByte(PacketHandler.updateRiderPacketID);
+			    	
+			    	dataOut.writeInt(id);
+			    
+			    	
+			    }
+			    
+			    
+			    
+			    catch (IOException e) 
+			    {
+			        e.printStackTrace();
+			    }
+			 
+			 	Packet250CustomPayload packet= new Packet250CustomPayload();
+			 	packet.channel="DimDoorPackets";
+			 	packet.data = bos.toByteArray();
+			 	packet.length = bos.size();;
+			 	PacketDispatcher.sendPacketToAllPlayers(packet);
+			 	return packet;
 		}
 
 

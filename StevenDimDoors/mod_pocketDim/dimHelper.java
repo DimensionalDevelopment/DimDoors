@@ -25,6 +25,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet10Flying;
 import net.minecraft.network.packet.Packet39AttachEntity;
 import net.minecraft.network.packet.Packet41EntityEffect;
 import net.minecraft.network.packet.Packet43Experience;
@@ -135,25 +136,22 @@ public class dimHelper extends DimensionManager
 	
 	private Entity teleportEntity(World oldWorld, Entity entity, LinkData link) //this beautiful teleport method is based off of xCompWiz's teleport function. 
 	{
-		Entity cart;
+		Entity cart=entity.ridingEntity;
 		if(entity.riddenByEntity!=null)
 		{
-			cart= entity;
-			entity=entity.riddenByEntity;
+			return this.teleportEntity(oldWorld,entity.riddenByEntity, link);
 		}
-		else
+		
+		if (entity.ridingEntity != null)
 		{
-		
-			cart = entity.ridingEntity;
+			entity.mountEntity(null);
+			cart = teleportEntity(oldWorld, cart, link);
+
+	
+
 		}
-		 if (entity.ridingEntity != null) 
-		 {
 		
-		   	entity.mountEntity(entity.ridingEntity);
-		    	
-	    	cart = teleportEntity(oldWorld, cart, link);
-		    	
-		 }
+		
 		    
 		    
 		
@@ -176,7 +174,8 @@ public class dimHelper extends DimensionManager
 		}
 		
 	    
-	    
+		 mod_pocketDim.teleporter.placeInPortal(entity, newWorld, link);
+
 	    if ((entity instanceof EntityPlayerMP)) 
 	    {
 	    	
@@ -264,28 +263,32 @@ public class dimHelper extends DimensionManager
 	    
 	    entity.worldObj.updateEntityWithOptionalForce(entity, false);
 
-	    mod_pocketDim.teleporter.placeInPortal(entity, newWorld, link);
+	   
 	 
 	    
-	    if ((entity != null) && (cart != null)) 
-	    {
+		if ((entity != null) && (cart != null))
+		{
 
-	      if ((entity instanceof EntityPlayerMP))
-	      {
-	    	  EntityPlayerMP playerMP = (EntityPlayerMP)entity;
-	    	  entity.worldObj.updateEntityWithOptionalForce(entity, true);	    	
-	        
-	      }
-	      entity.mountEntity(cart);
-	    }
+		if ((entity instanceof EntityPlayerMP))
+		{
+		EntityPlayerMP playerMP = (EntityPlayerMP)entity;
+		entity.worldObj.updateEntityWithOptionalForce(entity, true);	
+
+		}
+		entity.mountEntity(cart);
+		}
+
+
+		if(entity instanceof EntityPlayerMP)
+		{
+			WorldServer.class.cast(newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
+		}
+		 mod_pocketDim.teleporter.placeInPortal(entity, newWorld, link);
+		return entity;
+	    
 	  
 	    
-	    if(entity instanceof EntityPlayerMP)
-		  {
-			  WorldServer.class.cast(newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
-		  }
-	  return entity;
-	   
+	 
 	   
 	    
 	}
@@ -305,6 +308,8 @@ public class dimHelper extends DimensionManager
 		
 		if(linkData!=null)
 		{
+			
+			
 			
 			int destinationID=linkData.destDimID;
 		
@@ -334,15 +339,27 @@ public class dimHelper extends DimensionManager
 					
 			
 					
-					
+						entity = this.teleportEntity(world, entity, linkData);		
 
-						this.teleportEntity(world, entity, linkData);		
-						if(entity instanceof EntityPlayerMP&&world.provider.dimensionId!=linkData.destDimID)
+					
+					
+						
+						if(entity instanceof EntityPlayerMP)
 						{
+							
+							  if(entity.ridingEntity!=null)
+						      {
+						    	  EntityPlayerMP.class.cast(entity).playerNetServerHandler.sendPacketToPlayer(PacketHandler.sendUpdateRiderPacket(entity.ridingEntity.entityId));
+
+						      }
+							  if(world.provider.dimensionId!=linkData.destDimID)
+							  {
 							      GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
+							  } 
+
 						}
-						System.out.println(entity.worldObj.getWorldInfo().getDimension());
-						System.out.println(entity.worldObj.provider.dimensionId);
+						
+					
 						
 							entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
 						
@@ -403,6 +420,7 @@ public class dimHelper extends DimensionManager
 			   
 			}
 		}
+		return;
 		
 	}
 	

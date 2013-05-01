@@ -99,35 +99,32 @@ public class dimDoor extends BlockContainer
     			linkData= dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World);
     		}
     		
+    		if(!(par5Entity instanceof EntityPlayer)&&num>3)
+    		{
+    			this.onPoweredBlockChange(par1World, par2, par3, par4, false);
+				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
+    		}
     		
-    		
-    		if(!par1World.isRemote&&(num==5||num==4||num==6||num==7)&&(num-4)==var12)
+    		else if(!par1World.isRemote&&(num==5||num==4||num==6||num==7)&&(num-4)==var12)
     		{
     			
     				//int destinationID= dimHelper.instance.getDestIDFromCoords(par2, par3, par4, par1World);
     		 
     			
-
-    				
-
-    				
-    				//if(par5Entity instanceof EntityLiving)
-    				{
-    					this.onPoweredBlockChange(par1World, par2, par3, par4, false);
-    				}
-    				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
-
-    			
-    		}
-    		else if (!(par5Entity instanceof EntityPlayer)&&num>3)
-    		{
-    			
-    			if(par5Entity instanceof EntityLiving)
-				{
-					this.onPoweredBlockChange(par1World, par2, par3, par4, false);
-				}
+    			this.onPoweredBlockChange(par1World, par2, par3, par4, false);
+				
 				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
 
+    				
+
+    				
+    				
+
+    			
+    	
+    			
+    			
+				
 			
     		}
     	}
