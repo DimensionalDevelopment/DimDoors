@@ -148,70 +148,51 @@ public class ItemRiftBlade extends itemDimDoor
 
     public void onPlayerStoppedUsing(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer, int par4)
     {
-    	
-    	
-    	if(dimHelper.dimList.get(par2World.provider.dimensionId)!=null&&!par2World.isRemote)
-		{
-    	
-			if(this.getMaxItemUseDuration(par1ItemStack)-par4>12)
-			{
-			
-				Vec3 var2 = par3EntityPlayer.getLook(1.0F);
-			
-				double cooef = -2;
-		        var2.xCoord*=cooef;
-		        var2.yCoord*=cooef;
-		        var2.zCoord*=cooef;
-		        double var5 = par3EntityPlayer.posX  - var2.xCoord;
-		        double var9 = par3EntityPlayer.posZ - var2.zCoord;
-		        double var7 =par3EntityPlayer.posY-var2.yCoord+2;
-			
-		        int x = MathHelper.floor_double(var5);
-		        int y = MathHelper.floor_double(var7);
-		        int z = MathHelper.floor_double(var9);
-			
-		      
-		        int rotation = (int) (MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
-		        LinkData link = new LinkData(par2World.provider.dimensionId, 0, x, y, z, x, y, z, true);
-
-		       
-		        if(dimHelper.dimList.get(par2World.provider.dimensionId).depth==0)
-		        {
-		        	link.linkOrientation= rotation;
-		        	dimHelper.instance.createPocket(link,true, false);
-		        
-
-		        }
-		        else if(dimHelper.dimList.get(par2World.provider.dimensionId).depth==1)
-		        {
-		        	link.linkOrientation= rotation;
-		        	dimHelper.instance.createLink(link);
-		        	//System.out.println("doingup");
-		        	int ExitDimID= dimHelper.dimList.get(par2World.provider.dimensionId).exitDimLink.destDimID;
-				
-		        	dimHelper.instance.createLink(link.locDimID, ExitDimID, x, y, z, x, y, z,rotation);
-		        	dimHelper.instance.createLink(ExitDimID, link.locDimID, x, y, z, x, y, z,dimHelper.instance.flipDoorMetadata(rotation));
-
-
-		        }
-				else if(dimHelper.dimList.get(par2World.provider.dimensionId).isPocket)
-				{
-				link.linkOrientation= rotation;
-				dimHelper.instance.createPocket(link,false, false);
-				}
-			
+    	Vec3 var2 = par3EntityPlayer.getLook(1.0F);
 		
-			
-			
-			
-		        placeDoorBlock(par2World, x, y-1, z, rotation,  mod_pocketDim.transientDoor);
-		        
-			}
-			else 
-			{
-				
-			}
+		double cooef = -2;
+        var2.xCoord*=cooef;
+        var2.yCoord*=cooef;
+        var2.zCoord*=cooef;
+        double var5 = par3EntityPlayer.posX  - var2.xCoord;
+        double var9 = par3EntityPlayer.posZ - var2.zCoord;
+        double var7 =par3EntityPlayer.posY-var2.yCoord+2;
+	
+        int x = MathHelper.floor_double(var5);
+        int y = MathHelper.floor_double(var7);
+        int z = MathHelper.floor_double(var9);
+	
+      
+        int rotation = (int) (MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
+        LinkData link = new LinkData(par2World.provider.dimensionId, 0, x, y, z, x, y, z, true,rotation);
+    	
+    	if(this.getMaxItemUseDuration(par1ItemStack)-par4>12&&!par2World.isRemote&&this.canPlace(par2World, x, y, z, rotation))
+		{
+		
+    		if(dimHelper.dimList.get(par2World.provider.dimensionId)!=null)
+    		{
+    			 if(dimHelper.dimList.get(par2World.provider.dimensionId).depth==0)
+    		     {
+    				 dimHelper.instance.createPocket(link,true, false);
+
+    		     }
+    			
+    		}
+    		else
+    		{
+				 dimHelper.instance.createPocket(link,true, false);
+
+    		}
+    		
+    		
+	        placeDoorBlock(par2World, x, y-1, z, rotation,  mod_pocketDim.transientDoor);
+	        
 		}
+		else 
+		{
+			
+		}
+    	
 	
 		
     }
@@ -242,7 +223,7 @@ public class ItemRiftBlade extends itemDimDoor
 
 	                if (!this.canPlace(par2World, par4, par5, par6, var12)||dimHelper.instance.getLinkDataFromCoords(par4, par5+1, par6, par2World)==null)
 	                {
-	                	
+	                	return par1ItemStack;
 	                }
 	               else 
 	                {
@@ -370,6 +351,8 @@ public class ItemRiftBlade extends itemDimDoor
             }
         }
     }
+    
+    
     
     @SideOnly(Side.CLIENT)
 

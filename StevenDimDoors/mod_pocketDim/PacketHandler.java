@@ -104,9 +104,8 @@ public class PacketHandler implements IPacketHandler
                 		{
                 			DimData dimDataToAddLink= dimHelper.dimList.get(dimId);
 
-                			LinkData linkToAdd = new LinkData(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean());
+                			LinkData linkToAdd = new LinkData(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean(),data.readInt());
                 			linkToAdd.hasGennedDoor=data.readBoolean();
-                			linkToAdd.linkOrientation=data.readInt();
                 			
                 			dimHelper.instance.createLink(linkToAdd);
                 			
@@ -130,7 +129,7 @@ public class PacketHandler implements IPacketHandler
                 		{
                 			DimData dimDataToRemoveFrom= dimHelper.dimList.get(dimId);
 
-                			LinkData linkToAdd = new LinkData(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean());
+                			LinkData linkToAdd = new LinkData(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean(),data.readInt());
                 			dimDataToRemoveFrom.removeLinkAtCoords(linkToAdd.locDimID, linkToAdd.locXCoord,linkToAdd.locYCoord, linkToAdd.locZCoord);
                 			
                 		}
@@ -224,9 +223,9 @@ public class PacketHandler implements IPacketHandler
 			    	dataOut.writeInt(link.destYCoord);
 			    	dataOut.writeInt(link.destZCoord);
 			    	dataOut.writeBoolean(link.isLocPocket);
-			    	dataOut.writeBoolean(link.hasGennedDoor);
+			    
 			    	dataOut.writeInt(link.linkOrientation);
-
+			    	dataOut.writeBoolean(link.hasGennedDoor);
 			    	
 			    	
 			    }

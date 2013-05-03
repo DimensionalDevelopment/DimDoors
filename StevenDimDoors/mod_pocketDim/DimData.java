@@ -127,9 +127,9 @@ public class DimData implements Serializable
 		
 	
 		
-		LinkData linkData= new LinkData(this.dimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord,destinationZCoord,this.isPocket);
+		LinkData linkData= new LinkData(this.dimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord,destinationZCoord,this.isPocket,linkOrientation);
 		
-		linkData.linkOrientation=linkOrientation;
+		
 		
 		return this.addLinkToDim(linkData);
 		

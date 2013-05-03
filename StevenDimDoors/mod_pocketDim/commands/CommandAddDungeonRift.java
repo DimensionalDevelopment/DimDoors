@@ -35,7 +35,7 @@ public class CommandAddDungeonRift extends CommandBase
 				MathHelper.floor_double(this.getCommandSenderAsPlayer(var1).posZ),
 				MathHelper.floor_double(this.getCommandSenderAsPlayer(var1).posX),
 				MathHelper.floor_double(this.getCommandSenderAsPlayer(var1).posY)+1,
-				MathHelper.floor_double(this.getCommandSenderAsPlayer(var1).posZ),true);
+				MathHelper.floor_double(this.getCommandSenderAsPlayer(var1).posZ),true,3);
 		
 		link = dimHelper.instance.createPocket(link,true, true);
 		

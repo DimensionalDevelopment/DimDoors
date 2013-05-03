@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockStairs;
@@ -834,8 +836,7 @@ public class SchematicLoader
 					
 					
 					
-				 	LinkData sideLink = new LinkData(link.destDimID,0,point.getX(), point.getY(), point.getZ(),xNoise+point.getX(), point.getY()+1, zNoise+point.getZ(),true);
-				 	sideLink.linkOrientation=world.getBlockMetadata(point.getX(), point.getY()-1, point.getZ());
+				 	LinkData sideLink = new LinkData(link.destDimID,0,point.getX(), point.getY(), point.getZ(),xNoise+point.getX(), point.getY()+1, zNoise+point.getZ(),true,world.getBlockMetadata(point.getX(), point.getY()-1, point.getZ()));
 					dimHelper.instance.createPocket(sideLink, true, true);
 					
 
@@ -855,7 +856,7 @@ public class SchematicLoader
 					 	
 						 LinkData randomLink=dimHelper.instance.getRandomLinkData(false);
 						 	
-						LinkData sideLink = new LinkData(link.destDimID,dimHelper.dimList.get(link.locDimID).exitDimLink.destDimID,point.getX(), point.getY(), point.getZ(),point.getX(), 0, point.getZ(),true);
+						LinkData sideLink = new LinkData(link.destDimID,dimHelper.dimList.get(link.locDimID).exitDimLink.destDimID,point.getX(), point.getY(), point.getZ(),point.getX(), 0, point.getZ(),true,-10);
 
 						if(sideLink.destDimID==mod_pocketDim.limboDimID)
 						{
@@ -868,8 +869,13 @@ public class SchematicLoader
 						 }
 					
 					 	
-						 	dimHelper.getWorld((sideLink.destDimID)).getChunkProvider().loadChunk(point.getX() >> 4, point.getZ() >> 4);
-						 	sideLink.destYCoord=dimHelper.getWorld(sideLink.destDimID).getHeightValue(point.getX(), point.getZ())+1;
+						 	
+						 	sideLink.destYCoord=yCoordHelper.getFirstUncovered(sideLink.destDimID, point.getX(),10,point.getZ());
+						 	
+						 	if(sideLink.destYCoord<5)
+						 	{
+						 		sideLink.destYCoord=70;
+						 	}
 
 						sideLink.linkOrientation=world.getBlockMetadata(point.getX(), point.getY()-1, point.getZ());
 						dimHelper.instance.createLink(sideLink);

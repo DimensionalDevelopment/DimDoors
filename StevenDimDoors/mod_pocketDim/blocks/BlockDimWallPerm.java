@@ -78,7 +78,7 @@ public class BlockDimWallPerm extends Block
     		   	int y = dimHelper.getWorld(0).getHeightValue(x, z);
     		   	
     		   	//this complicated chunk teleports the player back to the overworld at some random location. Looks funky becaue it has to load the chunk
-        		dimHelper.instance.teleportToPocket(par1World, new LinkData(par1World.provider.dimensionId,0,x,y,z,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket), 
+        		dimHelper.instance.teleportToPocket(par1World, new LinkData(par1World.provider.dimensionId,0,x,y,z,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket,0), 
         				EntityPlayer.class.cast(par5Entity));
 
     		    			

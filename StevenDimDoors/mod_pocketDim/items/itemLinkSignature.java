@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -88,8 +89,12 @@ public class itemLinkSignature extends Item
     			{
     				offset = 1;
     			}
-    				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2]);		
-    				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6);		
+				int orientation = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+
+    				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2],linkCoords[4]);		
+    				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6,orientation);	
+    				
+    				
 
     				--par1ItemStack.stackSize;
 	    			par2EntityPlayer.sendChatToPlayer("Rift Created");
@@ -105,13 +110,15 @@ public class itemLinkSignature extends Item
     		}
     		else 
         	{
+				int orientation = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+
     			if(par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
     			{
     				offset = 1;
     			}
     			//otherwise, it creates the first half of the link. Next click will complete it. 
     			key= dimHelper.instance.createUniqueInterDimLinkKey();
-        		this.writeToNBT(par1ItemStack, par4, par5+offset, par6,par3World.provider.dimensionId);
+        		this.writeToNBT(par1ItemStack, par4, par5+offset, par6,par3World.provider.dimensionId,orientation);
         		
 
         		
@@ -159,7 +166,7 @@ public class itemLinkSignature extends Item
     	}
     }
     
-    public void writeToNBT(ItemStack itemStack,int x, int y, int z, int dimID)
+    public void writeToNBT(ItemStack itemStack,int x, int y, int z, int dimID,int orientation)
     {
     	  NBTTagCompound tag;
 
@@ -178,6 +185,7 @@ public class itemLinkSignature extends Item
        tag.setInteger("linkZ", z);
        tag.setInteger("linkDimID", dimID);
        tag.setBoolean("isCreated", true);
+       tag.setInteger("orientation", orientation);
 
        itemStack.setTagCompound(tag);
 
@@ -203,6 +211,8 @@ public class itemLinkSignature extends Item
     		linkCoords[1]=tag.getInteger("linkY");
     		linkCoords[2]=tag.getInteger("linkZ");
     		linkCoords[3]=tag.getInteger("linkDimID");
+    		linkCoords[4]=tag.getInteger("orientation");
+
   
        	   
         }

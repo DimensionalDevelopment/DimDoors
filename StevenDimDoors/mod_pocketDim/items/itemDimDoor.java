@@ -84,7 +84,7 @@ public class itemDimDoor extends ItemDoor
             {
                 int var12 = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
-                if (!var11.canPlaceBlockAt(par3World, par4, par5, par6)||!this.canPlace(par3World, par4, par5, par6, var12))
+                if (!this.canPlace(par3World, par4, par5, par6, var12)||!this.canPlace(par3World, par4, par5+1, par6, var12))
                 {
                     return false;
                 }
@@ -167,9 +167,9 @@ public class itemDimDoor extends ItemDoor
 	            {
 	                int var12 = MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
-	                if (!this.canPlace(par2World, par4, par5, par6, var12)||dimHelper.instance.getLinkDataFromCoords(par4, par5+1, par6, par2World)==null)
+	                if (!this.canPlace(par2World, par4, par5, par6, var12)||!this.canPlace(par2World, par4-1, par5, par6, var12)||dimHelper.instance.getLinkDataFromCoords(par4, par5+1, par6, par2World)==null)
 	                {
-	                	
+	                	return par1ItemStack;
 	                }
 	               else 
 	                {
@@ -192,8 +192,27 @@ public class itemDimDoor extends ItemDoor
     
     public boolean canPlace(World world,int i, int j, int k, int p)
     {
+    	int id = world.getBlockId(i, j, k);
     	
-    	return true;
+    	boolean flag = true;
+    	if(id==mod_pocketDim.blockDimWallID||id==mod_pocketDim.blockRiftID||id==mod_pocketDim.blockDimWallPermID)
+    	{
+    		return true;
+    	}
+
+    	if(id!=0)
+		{
+			if(!Block.blocksList[id].blockMaterial.isReplaceable())
+			{
+				
+					flag=false;
+				
+			}
+		}
+		
+		
+    		
+    	return flag;
          
     }
 

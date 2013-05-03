@@ -56,7 +56,7 @@ public class RiftGenerator implements IWorldGenerator
     			{
 		//			System.out.println(String.valueOf(i)+"x "+String.valueOf(j)+"y "+String.valueOf(k)+"z"+"Large gen");
 				
-    				link = new LinkData(world.provider.dimensionId, 0,  i, j+1, k, i, j+1, k, true);
+    				link = new LinkData(world.provider.dimensionId, 0,  i, j+1, k, i, j+1, k, true,rand.nextInt(4));
     				link = dimHelper.instance.createPocket(link,true, true);
     				this.shouldSave=true;
     		
@@ -104,7 +104,7 @@ public class RiftGenerator implements IWorldGenerator
     			{
     				//System.out.println(String.valueOf(i)+"x "+String.valueOf(j)+"y "+String.valueOf(k)+"z"+"med gen");
 
-    				link = new LinkData(world.provider.dimensionId, 0,  i, j+1, k, i, j+1, k, true);
+    				link = new LinkData(world.provider.dimensionId, 0,  i, j+1, k, i, j+1, k, true,rand.nextInt(4));
     				link = dimHelper.instance.createPocket(link,true, true);
     				this.shouldSave=true;
 			
@@ -168,7 +168,7 @@ public class RiftGenerator implements IWorldGenerator
     					
     					if(world.isBlockOpaqueCube(i, j-2, k)||world.isBlockOpaqueCube(i, j-1, k))
     					{
-    						link = new LinkData(world.provider.dimensionId, 0,  i, j+1, k, i, j+1, k, true);
+    						link = new LinkData(world.provider.dimensionId, 0,  i, j+1, k, i, j+1, k, true,rand.nextInt(4));
         					link =dimHelper.instance.createPocket(link,true, true);
     						
     						for(int xc=-3;xc<4;xc++)

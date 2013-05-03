@@ -6,6 +6,7 @@ import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -67,11 +68,11 @@ public class ExitDoor extends dimDoor
 	   			{
 	   				//System.out.println("exitToOverowrld from "+String.valueOf(locDimID));
 	   				
-				   	
-				   		
+				   	int yCoord=yCoordHelper.getFirstUncovered(ExitDimID, par2, par3, par4);
+				  
 						
-					dimHelper.instance.createLink(locDimID, ExitDimID, par2, par3, par4, par2, par3, par4,par1World.getBlockMetadata(par2, par3-1, par4));
-					dimHelper.instance.createLink(ExitDimID, locDimID, par2, par3, par4, par2, par3, par4,dimHelper.instance.flipDoorMetadata(par1World.getBlockMetadata(par2, par3-1, par4)));
+					dimHelper.instance.createLink(locDimID, ExitDimID, par2, par3, par4, par2, yCoord, par4,par1World.getBlockMetadata(par2, par3-1, par4));
+					dimHelper.instance.createLink(ExitDimID, locDimID, par2, yCoord, par4, par2, par3, par4,dimHelper.instance.flipDoorMetadata(par1World.getBlockMetadata(par2, par3-1, par4)));
 
 					
 
@@ -81,8 +82,7 @@ public class ExitDoor extends dimDoor
 	   			{
 	   				//System.out.println("Created new dim from "+String.valueOf(par1World.provider.dimensionId));
 
-	   				LinkData link = new LinkData(par1World.provider.dimensionId, 0, par2, par3, par4, par2, par3, par4, true);
-					link.linkOrientation= par1World.getBlockMetadata(par2, par3-1, par4);
+	   				LinkData link = new LinkData(par1World.provider.dimensionId, 0, par2, par3, par4, par2, par3, par4, true, par1World.getBlockMetadata(par2, par3-1, par4));
 					dimHelper.instance.createPocket(link,false, false);
 
 				

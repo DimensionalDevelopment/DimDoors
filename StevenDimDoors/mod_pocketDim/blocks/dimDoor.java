@@ -257,8 +257,7 @@ public class dimDoor extends BlockContainer
 			
 		
 				
-					LinkData link = new LinkData(par1World.provider.dimensionId, 0, par2, par3, par4, par2, par3, par4, true);
-					link.linkOrientation= par1World.getBlockMetadata(par2, par3-1, par4);
+					LinkData link = new LinkData(par1World.provider.dimensionId, 0, par2, par3, par4, par2, par3, par4, true,par1World.getBlockMetadata(par2, par3-1, par4));
 					dimHelper.instance.createPocket(link,true, false);
 					//	System.out.println(link.linkOrientation);
 

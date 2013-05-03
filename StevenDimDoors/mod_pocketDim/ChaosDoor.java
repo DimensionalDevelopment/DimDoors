@@ -72,7 +72,7 @@ public class ChaosDoor extends dimDoor
 		
 			if(newDim)
 			{
-				LinkData link = new LinkData(par1World.provider.dimensionId, mod_pocketDim.limboDimID, par2, par3, par4, par2, par3+500, par4, false);
+				LinkData link = new LinkData(par1World.provider.dimensionId, mod_pocketDim.limboDimID, par2, par3, par4, par2, par3+500, par4, false,0);
 				link.linkOrientation= par1World.getBlockMetadata(par2, par3-1, par4);
 				dimHelper.instance.createLink(link);
 			//	System.out.println(link.linkOrientation);
@@ -124,7 +124,7 @@ public class ChaosDoor extends dimDoor
 	    				{
 	    					foundRandomDest=true;
 	    					
-	    					dimHelper.instance.teleportToPocket(par1World, new LinkData(link.destDimID,link.locDimID,link.destXCoord,link.destYCoord,link.destZCoord,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket), par5Entity);
+	    					dimHelper.instance.teleportToPocket(par1World, new LinkData(link.destDimID,link.locDimID,link.destXCoord,link.destYCoord,link.destZCoord,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket,0), par5Entity);
 	    					
 	    					if(dimHelper.getWorld(link.locDimID)!=null)
 	    					{

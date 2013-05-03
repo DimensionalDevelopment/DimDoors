@@ -467,8 +467,7 @@ public class dimHelper extends DimensionManager
 
 		
 		
-		LinkData linkData =new LinkData( locationDimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord ,destinationZCoord,false);
-		linkData.linkOrientation=linkOrientation;
+		LinkData linkData =new LinkData( locationDimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord ,destinationZCoord,false,linkOrientation);
 		return this.createLink(linkData);
 		
 		
@@ -637,18 +636,20 @@ public class dimHelper extends DimensionManager
 				{
 					this.initDimension(destinationID);
 				}
-				
+				int locOrientation = linkData.linkOrientation;
+				int destOrientation = this.getLinkDataFromCoords(destX, destY, destZ, destinationID).linkOrientation;
+
 				int blockToReplace= this.getWorld(destinationID).getBlockId(destX, destY, destZ);
 				if(blockToReplace!=mod_pocketDim.dimDoorID&&blockToReplace!=mod_pocketDim.linkExitDoorID&&blockToReplace!=mod_pocketDim.linkDimDoorID&&blockToReplace!=mod_pocketDim.ExitDoorID&&blockToReplace!=mod_pocketDim.transientDoorID)
 				{
-					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, doorTypeToPlace,dimHelper.instance.flipDoorMetadata(world.getBlockMetadata(locX, locY-1, locZ)),2);
+					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, doorTypeToPlace,destOrientation,2);
 					this.getWorld(destinationID).setBlock(destX, destY, destZ, doorTypeToPlace,world.getBlockMetadata(locX, locY, locZ),2);
 				//	System.out.println("Genned door");
 				}
 				
 				if(id==mod_pocketDim.transientDoorID&&!dimHelper.dimList.get((destinationID)).hasBeenFilled)
 				{
-					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, id,dimHelper.instance.flipDoorMetadata(world.getBlockMetadata(locX, locY-1, locZ)),2);
+					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, id,destOrientation,2);
 					this.getWorld(destinationID).setBlock(destX, destY, destZ, id,world.getBlockMetadata(locX, locY, locZ),2);
 				}
 			

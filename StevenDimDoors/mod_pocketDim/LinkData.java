@@ -40,7 +40,7 @@ public class LinkData implements Serializable
 		 this.destZCoord=exitZ;
 	 }
 
-	public LinkData(int locationDimID, int destinationDimID,   int locationXCoord, int locationYCoord, int locationZCoord, int destinationXCoord, int destinationYCoord, int destinationZCoord, boolean isPocket)
+	public LinkData(int locationDimID, int destinationDimID,   int locationXCoord, int locationYCoord, int locationZCoord, int destinationXCoord, int destinationYCoord, int destinationZCoord, boolean isPocket,int orientation)
 	{
 		
 		this.exists=true;
@@ -55,6 +55,7 @@ public class LinkData implements Serializable
 		this.destDimID=destinationDimID;
 		this.locDimID=locationDimID;
 		this.isLocPocket=isPocket;
+		this.linkOrientation=orientation;
 		
 		
 

@@ -54,7 +54,7 @@ public class BlockDimWall extends Block
      */
     public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer entityPlayer, int par6, float par7, float par8, float par9)
     {
-        if(!par1World.isRemote&&entityPlayer.getCurrentEquippedItem()!=null)
+        if(entityPlayer.getCurrentEquippedItem()!=null)
         {
         	Item playerEquip = entityPlayer.getCurrentEquippedItem().getItem();
         	
@@ -78,7 +78,10 @@ public class BlockDimWall extends Block
         
         	if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock)
         	{
-        		
+        		if(par1World.isRemote)
+        		{
+        			return true;
+        		}
         	
         		if(!entityPlayer.capabilities.isCreativeMode)
         		{
