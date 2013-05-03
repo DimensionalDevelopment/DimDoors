@@ -63,7 +63,7 @@ public class BlockDimWallPerm extends Block
     		}
     		
     		
-    		if(dimHelper.getWorld(0)!=null)
+    		if(dimHelper.getWorld(0)!=null&&par5Entity instanceof EntityPlayer)
     		{
     			
     			
