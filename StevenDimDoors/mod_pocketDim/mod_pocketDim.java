@@ -74,7 +74,7 @@ public class mod_pocketDim
 {
 	
 
-	public static final String version = "1.5.1R1.3.4RC3";
+	public static final String version = "1.5.1R1.3.5RC3";
 	public static final String modid = "DimensionalDoors";
 
 	//need to clean up 

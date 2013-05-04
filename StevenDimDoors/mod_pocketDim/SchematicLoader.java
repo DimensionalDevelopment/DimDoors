@@ -854,8 +854,7 @@ public class SchematicLoader
 					dimHelper.instance.createPocket(sideLink, true, true);
 					
 
-					//setBlockDirectly(world,point.getX(), point.getY()-1, point.getZ(),mod_pocketDim.dimDoorID,sideLink.linkOrientation);
-				//	setBlockDirectly(world,point.getX(), point.getY(), point.getZ(),mod_pocketDim.dimDoorID,8);
+				
 
 				
 				 }
@@ -870,7 +869,7 @@ public class SchematicLoader
 					 	
 						 LinkData randomLink=dimHelper.instance.getRandomLinkData(false);
 						 	
-						LinkData sideLink = new LinkData(link.destDimID,dimHelper.dimList.get(link.locDimID).exitDimLink.destDimID,point.getX(), point.getY(), point.getZ(),point.getX(), 0, point.getZ(),true,-10);
+						LinkData sideLink = new LinkData(link.destDimID,dimHelper.dimList.get(link.locDimID).exitDimLink.destDimID,point.getX(), point.getY(), point.getZ(),point.getX(), 0, point.getZ(),true,world.getBlockMetadata(point.getX(), point.getY()-1, point.getZ()));
 
 						if(sideLink.destDimID==mod_pocketDim.limboDimID)
 						{
