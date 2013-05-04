@@ -80,16 +80,35 @@ public class itemLinkSignature extends Item
     	
     		//System.out.println(key);
     		int offset = 2;
+    		
+    		if(par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
+			{
+				offset = 1;
+			}
+			if(par3World.getBlockId(par4, par5, par6)==mod_pocketDim.dimDoorID&&par3World.getBlockId(par4, par5+1, par6)==mod_pocketDim.dimDoorID)
+			{
+				offset = 1;
+			}
+			if(par3World.getBlockId(par4, par5, par6)==mod_pocketDim.ExitDoorID&&par3World.getBlockId(par4, par5+1, par6)==mod_pocketDim.ExitDoorID)
+			{
+				offset = 1;
+			}
+			if(par3World.getBlockId(par4, par5, par6)==mod_pocketDim.dimDoorID&&par3World.getBlockId(par4, par5-1, par6)==mod_pocketDim.dimDoorID)
+			{
+				offset = 0;
+			}
+			if(par3World.getBlockId(par4, par5, par6)==mod_pocketDim.ExitDoorID&&par3World.getBlockId(par4, par5-1, par6)==mod_pocketDim.ExitDoorID)
+			{
+				offset = 0;
+			}
+			
     		if(par1ItemStack.getTagCompound()!=null)
     		{
-    		if(par1ItemStack.getTagCompound().getBoolean("isCreated"))
-    		{
-    		// checks to see if the item has a link stored, if so, it creates it
-    			if(par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
+    			if(par1ItemStack.getTagCompound().getBoolean("isCreated"))
     			{
-    				offset = 1;
-    			}
-				int orientation = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+    				// checks to see if the item has a link stored, if so, it creates it
+    				
+    				int orientation = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
     				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2],linkCoords[4]);		
     				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6,orientation);	
@@ -112,10 +131,7 @@ public class itemLinkSignature extends Item
         	{
 				int orientation = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
-    			if(par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
-    			{
-    				offset = 1;
-    			}
+    		
     			//otherwise, it creates the first half of the link. Next click will complete it. 
     			key= dimHelper.instance.createUniqueInterDimLinkKey();
         		this.writeToNBT(par1ItemStack, par4, par5+offset, par6,par3World.provider.dimensionId,orientation);

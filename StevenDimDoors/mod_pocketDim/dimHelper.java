@@ -47,6 +47,11 @@ import cpw.mods.fml.relauncher.Side;
 public class dimHelper extends DimensionManager
 {
 	/**
+	 * hashMap for the private pocket dimensions
+	 */
+	
+	public static HashMap<String, DimData> privatePockets = new HashMap<String, DimData>();
+	/**
 	 * HashMap containing all the dims registered with DimDoors, sorted by dim ID. loaded on startup
 	 * @Return
 	 */
