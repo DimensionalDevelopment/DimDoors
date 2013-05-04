@@ -602,28 +602,28 @@ public class dimHelper extends DimensionManager
 	/**
 	 * generates a door based on what door was used to teleport. Only funtions once per linking. 
 	 * @param world- door 
-	 * @param linkData
+	 * @param incLink
 	 */
-	public void generateDoor(World world,  LinkData linkData)
+	public void generateDoor(World world,  LinkData incLink)
 	{
-		int locX = linkData.locXCoord;
-		int locY = linkData.locYCoord;
-		int locZ = linkData.locZCoord;
+		int locX = incLink.locXCoord;
+		int locY = incLink.locYCoord;
+		int locZ = incLink.locZCoord;
 	
-		int destX = linkData.destXCoord;
-		int destY = linkData.destYCoord;
-		int destZ = linkData.destZCoord;
+		int destX = incLink.destXCoord;
+		int destY = incLink.destYCoord;
+		int destZ = incLink.destZCoord;
 		
-		if(!linkData.hasGennedDoor)
+		if(!incLink.hasGennedDoor)
 		{
 			
 
-			int destinationID = linkData.destDimID;
+			int destinationID = incLink.destDimID;
 
 			DimData data = this.dimList.get(destinationID);
 
 			int id =world.getBlockId(locX, locY, locZ);
-			if(id==mod_pocketDim.ExitDoorID||id==mod_pocketDim.dimDoorID)
+			if(id==mod_pocketDim.ExitDoorID||id==mod_pocketDim.dimDoorID||id==mod_pocketDim.transientDoorID)
 			{
 				int doorTypeToPlace=id;
 		
@@ -636,8 +636,15 @@ public class dimHelper extends DimensionManager
 				{
 					this.initDimension(destinationID);
 				}
-				int locOrientation = linkData.linkOrientation;
-				int destOrientation = this.getLinkDataFromCoords(destX, destY, destZ, destinationID).linkOrientation;
+				int locOrientation = incLink.linkOrientation;
+				LinkData destLink =  this.getLinkDataFromCoords(destX, destY, destZ, destinationID);
+				int destOrientation=0 ;
+				if(destLink!=null)
+				{
+					destOrientation = destLink.linkOrientation;
+					destLink.hasGennedDoor=true;
+				}
+				
 
 				int blockToReplace= this.getWorld(destinationID).getBlockId(destX, destY, destZ);
 				if(blockToReplace!=mod_pocketDim.dimDoorID&&blockToReplace!=mod_pocketDim.linkExitDoorID&&blockToReplace!=mod_pocketDim.linkDimDoorID&&blockToReplace!=mod_pocketDim.ExitDoorID&&blockToReplace!=mod_pocketDim.transientDoorID)
@@ -647,13 +654,9 @@ public class dimHelper extends DimensionManager
 				//	System.out.println("Genned door");
 				}
 				
-				if(id==mod_pocketDim.transientDoorID&&!dimHelper.dimList.get((destinationID)).hasBeenFilled)
-				{
-					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, id,destOrientation,2);
-					this.getWorld(destinationID).setBlock(destX, destY, destZ, id,world.getBlockMetadata(locX, locY, locZ),2);
-				}
+				
 			
-				linkData.hasGennedDoor=true;
+				incLink.hasGennedDoor=true;
 			}
 		}
 	}

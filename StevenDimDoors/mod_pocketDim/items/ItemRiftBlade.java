@@ -221,7 +221,7 @@ public class ItemRiftBlade extends itemDimDoor
 	            {
 	                int var12 = MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
-	                if (!this.canPlace(par2World, par4, par5, par6, var12)||dimHelper.instance.getLinkDataFromCoords(par4, par5+1, par6, par2World)==null)
+	                if (!this.canPlace(par2World, par4, par5, par6, var12)||!this.canPlace(par2World, par4+1, par5, par6, var12)||dimHelper.instance.getLinkDataFromCoords(par4, par5+1, par6, par2World)==null)
 	                {
 	                	return par1ItemStack;
 	                }

@@ -195,7 +195,7 @@ public class itemDimDoor extends ItemDoor
     	int id = world.getBlockId(i, j, k);
     	
     	boolean flag = true;
-    	if(id==mod_pocketDim.blockDimWallID||id==mod_pocketDim.blockRiftID||id==mod_pocketDim.blockDimWallPermID)
+    	if(id==mod_pocketDim.blockDimWallID||id==mod_pocketDim.blockRiftID||id==mod_pocketDim.blockDimWallPermID||id==0)
     	{
     		return true;
     	}
