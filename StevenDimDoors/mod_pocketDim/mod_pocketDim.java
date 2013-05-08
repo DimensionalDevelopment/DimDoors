@@ -409,12 +409,12 @@ public class mod_pocketDim
         {
     	 GameRegistry.addRecipe(new ItemStack(itemDimDoor, 1), new Object[]
                  {
-                     "   ", "yxy", "   ", 'x', Item.enderPearl,  'y', Item.doorSteel 
+                     "   ", "yxy", "   ", 'x', Item.enderPearl,  'y', Item.doorIron 
                  });
     	 
     	 GameRegistry.addRecipe(new ItemStack(itemDimDoor, 1), new Object[]
                  {
-                     "   ", "yxy", "   ", 'x', this.itemStableFabric,  'y', Item.doorSteel 
+                     "   ", "yxy", "   ", 'x', this.itemStableFabric,  'y', Item.doorIron 
                  });
         }
         
@@ -526,7 +526,7 @@ public class mod_pocketDim
     	 this.blocksImmuneToRift.add(this.chaosDoorID);
     	 this.blocksImmuneToRift.add(this.blockRiftID);
     	 this.blocksImmuneToRift.add(this.transientDoorID);
-    	 this.blocksImmuneToRift.add(Block.blockSteel.blockID);
+    	 this.blocksImmuneToRift.add(Block.blockIron.blockID);
     	 this.blocksImmuneToRift.add(Block.blockDiamond.blockID);
     	 this.blocksImmuneToRift.add(Block.blockEmerald.blockID);
     	 this.blocksImmuneToRift.add(Block.blockGold.blockID);
@@ -625,7 +625,7 @@ public class mod_pocketDim
     		this.metadataFlipList.add(Block.torchWood.blockID);
     		this.metadataFlipList.add(Block.torchRedstoneIdle.blockID);
     		this.metadataFlipList.add(Block.torchRedstoneActive.blockID);
-    		this.metadataFlipList.add(Block.doorSteel.blockID);
+    		this.metadataFlipList.add(Block.doorIron.blockID);
     		this.metadataFlipList.add(Block.doorWood.blockID);
     		this.metadataFlipList.add(Block.pistonBase.blockID);
     		this.metadataFlipList.add(Block.pistonStickyBase.blockID);

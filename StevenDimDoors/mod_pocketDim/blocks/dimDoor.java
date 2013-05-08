@@ -634,12 +634,12 @@ public class dimDoor extends BlockContainer
      */
     public int idPicked(World par1World, int par2, int par3, int par4)
     {
-        return Item.doorSteel.itemID;
+        return Item.doorIron.itemID;
     }
     
     public int idDropped(int par1, Random par2Random, int par3)
     {
-        return (par1 & 8) != 0 ? 0 : (Item.doorSteel.itemID);
+        return (par1 & 8) != 0 ? 0 : (Item.doorIron.itemID);
     }
 
     /**
