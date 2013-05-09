@@ -30,7 +30,7 @@ public class itemLinkSignature extends Item
     	// this.setTextureFile("/PocketBlockTextures.png");
          this.setCreativeTab(CreativeTabs.tabTransport);
 
-      //   this.iconIndex=5;
+      //   this.itemIcon=5;
          this.setMaxDamage(0);
          this.hasSubtypes=true;
     	 //TODO move to proxy
@@ -56,7 +56,7 @@ public class itemLinkSignature extends Item
     
     public void registerIcons(IconRegister par1IconRegister)
     {
-        this.iconIndex = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
 
     }
 

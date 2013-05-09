@@ -24,12 +24,12 @@ public class itemExitDoor extends itemDimDoor
           this.doorMaterial = par2Material;
           this.setCreativeTab(CreativeTabs.tabTransport);
 
-          //  this.setIconIndex(Item.doorWood.getIconFromDamage(0));
+          //  this.setitemIcon(Item.doorWood.getIconFromDamage(0));
     }
     
     public void registerIcons(IconRegister par1IconRegister)
     {
-        this.iconIndex = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
 
     }
     

@@ -94,7 +94,7 @@ public class RailTeleporter extends Teleporter
 	 	}
 	  
 	    @Override
-	    public void func_85189_a(long par1)
+	    public void removeStalePortalLocations(long par1)
 	    {
 	    
 	    }

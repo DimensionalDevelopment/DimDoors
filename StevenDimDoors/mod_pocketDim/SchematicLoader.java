@@ -207,7 +207,7 @@ public class SchematicLoader
 					
 	    			}
 					
-					if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorSteel.blockID||blockID==Block.doorWood.blockID)
+					if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorIron.blockID||blockID==Block.doorWood.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -377,7 +377,7 @@ public class SchematicLoader
 					
 	    			}
 					
-					if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorSteel.blockID||blockID==Block.doorWood.blockID)
+					if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorIron.blockID||blockID==Block.doorWood.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -543,7 +543,7 @@ public class SchematicLoader
 					
 	    			}
 					
-					if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorSteel.blockID||blockID==Block.doorWood.blockID)
+					if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorIron.blockID||blockID==Block.doorWood.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -707,7 +707,7 @@ public class SchematicLoader
 		                    int size = tileEntity.tagCount();
 		                    
 		                    
-		                    if(blockToReplace==Block.doorSteel.blockID)
+		                    if(blockToReplace==Block.doorIron.blockID)
 		                    {
 		                    	this.sideLinks.add(new Point3D(i+xCooe, j+yCooe, k+zCooe));
 		                    }
@@ -737,7 +737,7 @@ public class SchematicLoader
 		                    	
 		                    	this.transMeta=this.transformMetadata(blockMetaData, link.linkOrientation, blockToReplace);
 
-		                    	if(blockToReplace==Block.doorSteel.blockID)
+		                    	if(blockToReplace==Block.doorIron.blockID)
 				                {
 		                    		setBlockDirectly(world,i+xCooe,j+yCooe,k+zCooe,mod_pocketDim.dimDoorID, transMeta );
 				                }

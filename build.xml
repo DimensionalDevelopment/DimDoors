@@ -87,11 +87,11 @@
 
 		<!-- Reobf -->
 		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
-			<arg line="/c reobfuscate.bat"/>
+			<arg line="/c reobfuscate_srg.bat"/>
 		</exec>
 
 		<exec dir="${mcp.dir}" executable="sh" osfamily="unix">
-			<arg value="reobfuscate.sh" />
+			<arg value="reobfuscate_srg.sh" />
 		</exec>
 
 		<copy todir="${classes.dir}">
@@ -144,7 +144,7 @@
 
 		<chmod file="${mcp.dir}/updatemd5.sh" perm="+x"/>
 		<chmod file="${mcp.dir}/recompile.sh" perm="+x"/>
-		<chmod file="${mcp.dir}/reobfuscate.sh" perm="+x"/>
+		<chmod file="${mcp.dir}/reobfuscate_srg.sh" perm="+x"/>
 		<chmod file="${mcp.dir}/runtime/bin/astyle-osx" perm="+x" />
 		<chmod file="${mcp.dir}/runtime/bin/jad-osx" perm="+x" />
 		<!-- Copy libraries -->

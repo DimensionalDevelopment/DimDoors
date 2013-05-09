@@ -30,7 +30,7 @@ public class itemRiftRemover extends Item
     	// this.setTextureFile("/PocketBlockTextures.png");
          this.setCreativeTab(CreativeTabs.tabTransport);
 
-        // this.iconIndex=6;
+        // this.itemIcon=6;
          this.setMaxDamage(5);
          this.hasSubtypes=true;
     	 //TODO move to proxy
@@ -39,7 +39,7 @@ public class itemRiftRemover extends Item
     
     public void registerIcons(IconRegister par1IconRegister)
     {
-        this.iconIndex = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
 
     }
    
