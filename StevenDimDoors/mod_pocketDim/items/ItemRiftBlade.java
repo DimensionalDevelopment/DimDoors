@@ -42,7 +42,7 @@ public class ItemRiftBlade extends itemDimDoor
          this.weaponDamage =8;
       
 
-      //   this.iconIndex=5;
+      //   this.itemIcon=5;
          this.setMaxDamage(500);
          this.hasSubtypes=false;
     	 //TODO move to proxy
@@ -290,7 +290,7 @@ public class ItemRiftBlade extends itemDimDoor
     }
     public void registerIcons(IconRegister par1IconRegister)
     {
-        this.iconIndex = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
 
     }
     public int getItemEnchantability()

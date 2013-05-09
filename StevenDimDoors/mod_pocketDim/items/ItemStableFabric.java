@@ -26,13 +26,13 @@ public class ItemStableFabric extends Item
     public ItemStableFabric(int par1, int par2)
     {
     	  super(par1);
-        //  this.setIconIndex(Item.doorWood.getIconFromDamage(0));
+        //  this.setitemIcon(Item.doorWood.getIconFromDamage(0));
           this.setCreativeTab(CreativeTabs.tabTransport);
 
     }
     public void registerIcons(IconRegister par1IconRegister)
     {
-        this.iconIndex = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
 
     }
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
