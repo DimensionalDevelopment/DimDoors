@@ -89,17 +89,31 @@ public class itemLinkSignature extends Item
 			{
 				offset = 1;
 			}
+			else
 			if(par3World.getBlockId(par4, par5, par6)==mod_pocketDim.ExitDoorID&&par3World.getBlockId(par4, par5+1, par6)==mod_pocketDim.ExitDoorID)
 			{
 				offset = 1;
 			}
+			else
 			if(par3World.getBlockId(par4, par5, par6)==mod_pocketDim.dimDoorID&&par3World.getBlockId(par4, par5-1, par6)==mod_pocketDim.dimDoorID)
 			{
 				offset = 0;
 			}
+			else
 			if(par3World.getBlockId(par4, par5, par6)==mod_pocketDim.ExitDoorID&&par3World.getBlockId(par4, par5-1, par6)==mod_pocketDim.ExitDoorID)
 			{
 				offset = 0;
+			}
+			
+			int orientation = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+			
+			for(int count = 0;count<3;count++)
+			{
+				if(dimHelper.instance.getLinkDataFromCoords(par4, par5+count, par6,par3World)!=null)
+				{
+					 orientation = dimHelper.instance.getLinkDataFromCoords(par4, par5+count, par6,par3World).linkOrientation;
+				}
+
 			}
 			
     		if(par1ItemStack.getTagCompound()!=null)
@@ -108,7 +122,7 @@ public class itemLinkSignature extends Item
     			{
     				// checks to see if the item has a link stored, if so, it creates it
     				
-    				int orientation = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+    				
 
     				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2],linkCoords[4]);		
     				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6,orientation);	
@@ -117,7 +131,7 @@ public class itemLinkSignature extends Item
 
     				--par1ItemStack.stackSize;
 	    			par2EntityPlayer.sendChatToPlayer("Rift Created");
-	    		par1ItemStack.stackTagCompound=null;
+	    			par1ItemStack.stackTagCompound=null;
     			/**
     			else
     			{
@@ -125,11 +139,10 @@ public class itemLinkSignature extends Item
 
     			}
     			**/
-    		}
+    			}
     		}
     		else 
         	{
-				int orientation = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
     		
     			//otherwise, it creates the first half of the link. Next click will complete it. 

@@ -5,6 +5,7 @@ import java.util.Random;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -73,9 +74,9 @@ public class BlockDimWallPerm extends Block
     			x=x+(x>> 4)+1; //make sure I am in the middle of a chunk, andnot on a boundry, so it doesnt load the chunk next to me
     			z=z+(z>> 4)+1;
 
-    			dimHelper.getWorld(0).getChunkProvider().loadChunk(x >> 4, z >> 4);
     			
-    		   	int y = dimHelper.getWorld(0).getHeightValue(x, z);
+    			
+    		   	int y = yCoordHelper.getFirstUncovered(0, x, 63, z);
     		   	
     		   	//this complicated chunk teleports the player back to the overworld at some random location. Looks funky becaue it has to load the chunk
         		dimHelper.instance.teleportToPocket(par1World, new LinkData(par1World.provider.dimensionId,0,x,y,z,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket,0), 

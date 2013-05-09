@@ -274,12 +274,12 @@ public class dimHelper extends DimensionManager
 		if ((entity != null) && (cart != null))
 		{
 
-		if ((entity instanceof EntityPlayerMP))
-		{
-		EntityPlayerMP playerMP = (EntityPlayerMP)entity;
-		entity.worldObj.updateEntityWithOptionalForce(entity, true);	
+			if ((entity instanceof EntityPlayerMP))
+			{
+				EntityPlayerMP playerMP = (EntityPlayerMP)entity;
+				entity.worldObj.updateEntityWithOptionalForce(entity, true);	
 
-		}
+			}
 		entity.mountEntity(cart);
 		}
 
@@ -351,8 +351,7 @@ public class dimHelper extends DimensionManager
 						
 						if(entity instanceof EntityPlayerMP)
 						{
-							
-							
+								
 							  if(world.provider.dimensionId!=linkData.destDimID)
 							  {
 							      GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
@@ -386,6 +385,12 @@ public class dimHelper extends DimensionManager
     									}
     									
     									
+    								}
+    								
+    								if(entity.worldObj.getBlockId(playerXCoord, playerYCoord-1,playerZCoord )==Block.lavaStill.blockID)
+    								{
+    									entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, mod_pocketDim.blockDimWallID);
+
     								}
     								this.generateDoor(world,linkData);
 
