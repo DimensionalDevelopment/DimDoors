@@ -107,7 +107,7 @@ public class RiftFX extends EntityFX
         float f11 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)par2 - interpPosX);
         float f12 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)par2 - interpPosY);
         float f13 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)par2 - interpPosZ);
-        float f14 = 1.0F;
+        float f14 = 0F;
 
         
         try
