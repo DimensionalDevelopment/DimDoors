@@ -150,6 +150,7 @@ public class dimDoor extends BlockContainer
 						var12=dimHelper.instance.flipDoorMetadata(var12);
 					}
 					par1World.setBlockMetadataWithNotify(par2, par3-1, par4, var12,2);
+					
 					if(	dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World)!=null)
 					{
 						dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World).linkOrientation= par1World.getBlockMetadata(par2, par3-1, par4);
@@ -164,10 +165,12 @@ public class dimDoor extends BlockContainer
 						var12=dimHelper.instance.flipDoorMetadata(var12);
 					}
 					par1World.setBlockMetadataWithNotify(par2, par3, par4, var12,2);
+					
 					if(	dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World)!=null)
 					{
 						dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World).linkOrientation= par1World.getBlockMetadata(par2, par3, par4);
 					}
+					
 				}
 	            par1World.playAuxSFXAtEntity(par5EntityPlayer, 1001, par2, par3, par4, 0);
 

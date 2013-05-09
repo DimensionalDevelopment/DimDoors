@@ -34,19 +34,22 @@ public class pocketTeleporter
 			this.x=link.destXCoord;
 			this.y=link.destYCoord;
 			this.z=link.destZCoord;
+			
 			this.sendingLink=link;
 			
-			 
-			 
+			int id;
+	         
+        	
+           	id=dimHelper.instance.getDestOrientation(sendingLink);
+           	
+       
 		 if(par1Entity instanceof EntityPlayer)
 		 {
 		 	EntityPlayer player = (EntityPlayer) par1Entity;
 	    
 	    	
-		 	int id;
-         
-            	
-           	id=dimHelper.instance.getDestOrientation(sendingLink);
+		 
+           
             		//System.out.println("Teleporting with link oreintation "+id);
 
        
@@ -91,9 +94,7 @@ public class pocketTeleporter
 			 par1Entity.motionX=0;
 			 par1Entity.motionZ=0;
 			 par1Entity.motionY=0;
-			 int id;
-         
-			 id=dimHelper.instance.getDestOrientation(sendingLink);
+			
 
 			
 			 par1Entity.rotationYaw=(id*90)+90;
@@ -151,10 +152,7 @@ public class pocketTeleporter
 		 
 		 else if(par1Entity instanceof   Entity)
 		 {
-			 int id;
-         
-     	
-			 id=dimHelper.instance.getDestOrientation(sendingLink);
+			
 			 //System.out.println("Teleporting with link oreintation "+id);
 
 

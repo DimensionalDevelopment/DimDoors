@@ -310,7 +310,7 @@ public class dimHelper extends DimensionManager
 	{
 		
 		
-		
+
 		if(linkData!=null)
 		{
 			
@@ -330,7 +330,7 @@ public class dimHelper extends DimensionManager
 			{
 				this.generatePocket(linkData);
 			 
-
+				
 				if(mod_pocketDim.teleTimer==0||entity instanceof EntityPlayer)
 				{
 					mod_pocketDim.teleTimer=2+rand.nextInt(2);
@@ -341,12 +341,10 @@ public class dimHelper extends DimensionManager
 				}
 			
 					
-					
 			
 					
 						entity = this.teleportEntity(world, entity, linkData);		
 
-					
 					
 						
 						if(entity instanceof EntityPlayerMP)
@@ -392,6 +390,7 @@ public class dimHelper extends DimensionManager
     									entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, mod_pocketDim.blockDimWallID);
 
     								}
+
     								this.generateDoor(world,linkData);
 
 						
@@ -411,6 +410,7 @@ public class dimHelper extends DimensionManager
 
 							}
 						}
+						/**
 						if(entity.worldObj.getBlockId(x, y, z)==mod_pocketDim.dimDoorID||entity.worldObj.getBlockId(x, y, z)==mod_pocketDim.ExitDoorID)
 						{
 							if(this.getLinkDataFromCoords(x, y, z, entity.worldObj)!=null)
@@ -422,7 +422,8 @@ public class dimHelper extends DimensionManager
 						
 
 					
-				}
+						}
+						**/
 			   
 			}
 		}
@@ -660,7 +661,7 @@ public class dimHelper extends DimensionManager
 				if(blockToReplace!=mod_pocketDim.dimDoorID&&blockToReplace!=mod_pocketDim.linkExitDoorID&&blockToReplace!=mod_pocketDim.linkDimDoorID&&blockToReplace!=mod_pocketDim.ExitDoorID&&blockToReplace!=mod_pocketDim.transientDoorID)
 				{
 					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, doorTypeToPlace,destOrientation,2);
-					this.getWorld(destinationID).setBlock(destX, destY, destZ, doorTypeToPlace,world.getBlockMetadata(locX, locY, locZ),2);
+					this.getWorld(destinationID).setBlock(destX, destY, destZ, doorTypeToPlace,8,2);
 				//	System.out.println("Genned door");
 				}
 				

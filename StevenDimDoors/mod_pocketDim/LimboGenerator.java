@@ -323,7 +323,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
     {
         byte var4 = 4;
         byte var5 = 16;
-        byte var6 = 16;
+        byte var6 = 19;
         int var7 = var4 + 1;
         byte var8 = 17;
         int var9 = var4 + 1;
@@ -373,6 +373,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
                                 {
                                     par3ArrayOfByte[var43 += var44] = (byte)mod_pocketDim.blockDimWallPermID;
                                 }
+                                
                                 else
                                 {
                                     par3ArrayOfByte[var43 += var44] = 0;

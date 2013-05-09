@@ -71,8 +71,8 @@ public class BlockDimWallPerm extends Block
     			int x = (link.destXCoord + rand.nextInt(mod_pocketDim.limboExitRange)-mod_pocketDim.limboExitRange/2);
     			int z = (link.destZCoord + rand.nextInt(mod_pocketDim.limboExitRange)-mod_pocketDim.limboExitRange/2);
     			
-    			x=x+(x>> 4)+1; //make sure I am in the middle of a chunk, andnot on a boundry, so it doesnt load the chunk next to me
-    			z=z+(z>> 4)+1;
+    			x=x+(x>> 4); //make sure I am in the middle of a chunk, andnot on a boundry, so it doesnt load the chunk next to me
+    			z=z+(z>> 4);
 
     			
     			
@@ -98,7 +98,7 @@ public class BlockDimWallPerm extends Block
 					{
 						for(int yc=0;yc<200;yc++)
 						{
-							if(yc==0&&dimHelper.getWorld(0).isBlockOpaqueCube(i+xc, j-2,k +zc))
+							if(yc==0)
 							{
 								
 								if(Math.abs(xc)+Math.abs(zc)<rand.nextInt(3)+2)

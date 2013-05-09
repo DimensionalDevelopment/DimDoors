@@ -32,13 +32,17 @@ public class ItemStableFabric extends Item
     }
     public void registerIcons(IconRegister par1IconRegister)
     {
-        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
 
     }
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
     {
     
-    	System.out.println("Block metadata is "+par3World.getBlockMetadata(par4, par5, par6));
+    	if(!par3World.isRemote)
+    	{
+    		System.out.println("Block metadata is "+par3World.getBlockMetadata(par4, par5, par6));
+    		this.onItemRightClick(par1ItemStack, par3World, par2EntityPlayer);
+    	}
     	//System.out.println("Block texture data is "+Block.blocksList[par3World.getBlockId(par4, par5, par6)].getBlockTexture(par3World,par4, par5, par6,par7).getIconName());
     	//System.out.println("Block name is is "+Block.blocksList[par3World.getBlockId(par4, par5, par6)].getUnlocalizedName2());
 
@@ -76,7 +80,7 @@ public class ItemStableFabric extends Item
     	MovingObjectPosition hit = 	this.getMovingObjectPositionFromPlayer(par3EntityPlayer.worldObj, par3EntityPlayer, false );
 		if(hit!=null&&!par2World.isRemote)
 		{
-			if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ)==mod_pocketDim.blockRiftID)
+			//if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ)==mod_pocketDim.blockRiftID)
 			{
 				LinkData link = dimHelper.instance.getLinkDataFromCoords(hit.blockX, hit.blockY, hit.blockZ, par2World);
 				if(link!=null)
@@ -104,12 +108,24 @@ public class ItemStableFabric extends Item
 	            
 	            
 
-	            if (par3EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack) && par3EntityPlayer.canPlayerEdit(par4, par5 + 1, par6, par7, par1ItemStack)&&!par2World.isRemote)
-	            {
-	                int var12 = MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+	               if (par3EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack) && par3EntityPlayer.canPlayerEdit(par4, par5 + 1, par6, par7, par1ItemStack)&&!par2World.isRemote)
+	               {
+	            	   int var12 = MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+	            	   String cardinal= "default";
 
-	              System.out.println("Link orientation is " + link.linkOrientation);
-	            }
+	            	   switch(link.linkOrientation)
+	            	   {
+	            	   	case 0:  cardinal = "East";
+	            	   		break;
+	            	   	case 1:  cardinal = "South";
+	            	   		break;
+	            	   	case 2:  cardinal = "West";
+	            	   		break;
+	            	   	case 3:  cardinal = "North";
+	            	   		break;
+	            	   }
+	            	   System.out.println("Link orientation is " + link.linkOrientation + "- "+cardinal);
+	               }
 				}
 			}
 		}

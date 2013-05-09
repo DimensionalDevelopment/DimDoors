@@ -129,7 +129,7 @@ public class EventHookContainer
      
     
     		
-    	
+    	/**
     	
     	if(event.entityPlayer.worldObj.provider.dimensionId==mod_pocketDim.limboDimID&&event.action==PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
     	{
@@ -162,7 +162,9 @@ public class EventHookContainer
          
          
     		}
+    		
     	}
+    	**/
      
     }
      

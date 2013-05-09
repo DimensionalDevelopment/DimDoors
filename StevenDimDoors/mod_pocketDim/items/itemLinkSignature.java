@@ -111,8 +111,14 @@ public class itemLinkSignature extends Item
 			{
 				if(dimHelper.instance.getLinkDataFromCoords(par4, par5+count, par6,par3World)!=null)
 				{
-					 orientation = dimHelper.instance.getLinkDataFromCoords(par4, par5+count, par6,par3World).linkOrientation;
+					int id= (par3World.getBlockId(par4, par5+count, par6));
+					
+					if(id == mod_pocketDim.dimDoorID||id==mod_pocketDim.ExitDoorID||id==mod_pocketDim.chaosDoorID)
+					{
+						orientation = dimHelper.instance.getLinkDataFromCoords(par4, par5+count, par6,par3World).linkOrientation;
+					}
 				}
+				
 
 			}
 			
