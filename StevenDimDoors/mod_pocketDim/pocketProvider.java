@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,6 +20,8 @@ public class pocketProvider extends WorldProvider
 	public pocketProvider()
 	{
 		this.hasNoSky=true;
+		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.pocketBiome, 0.0F, 0.0F);
+
 		
 	}
   //  @SideOnly(Side.CLIENT)

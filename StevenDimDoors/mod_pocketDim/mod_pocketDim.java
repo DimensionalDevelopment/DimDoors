@@ -11,6 +11,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
@@ -150,6 +151,11 @@ public class mod_pocketDim
     public static  Item itemStabilizedLinkSignature;
 
     
+    public static BiomeGenBase limboBiome;
+    public static BiomeGenBase pocketBiome;
+
+    public static int limboBiomeID;
+    public static int pocketBiomeID;
     
     public static PlayerRespawnTracker tracker= new PlayerRespawnTracker();
     
@@ -311,6 +317,8 @@ public class mod_pocketDim
 
          this.riftSpreadFactor =  config.get("Int", "How many times a rift can spread- 0 prevents rifts from spreading at all. I dont recommend putting it highter than 5, because its rather exponential. ", 3).getInt();
 
+         this.limboBiomeID=config.get("Int", "Biome ID for Limbo-", 217).getInt();
+         this.pocketBiomeID=config.get("Int", "Biome ID for Pockets-", 218).getInt();
          
          config.save();
 	
@@ -346,6 +354,8 @@ public class mod_pocketDim
         itemRiftBlade = (new ItemRiftBlade(itemRiftBladeID, Material.iron)).setUnlocalizedName("ItemRiftBlade");
         itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(itemStabilizedLinkSignatureID)).setUnlocalizedName("itemStabilizedRiftSig");
 
+        this.limboBiome= (new BiomeGenLimbo(this.limboBiomeID) );
+        this.pocketBiome= (new BiomeGenPocket(this.pocketBiomeID));
         
         proxy.loadTextures();
     	proxy.registerRenderers();
@@ -404,6 +414,10 @@ public class mod_pocketDim
 
         GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
         GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
+
+        
+        //GameRegistry.addBiome(this.limboBiome);
+        //GameRegistry.addBiome(this.pocketBiome);
 
         if(this.enableIronDimDoor)
         {

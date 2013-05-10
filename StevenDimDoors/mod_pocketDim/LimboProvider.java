@@ -4,9 +4,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.EnumGameType;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -28,9 +28,20 @@ public class LimboProvider extends WorldProvider
 	public LimboProvider()
 	{
 		this.hasNoSky=true;
+		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.limboBiome, 0.0F, 0.0F);
+	
+	
+
 		//  super.setAllowedSpawnTypes(false, false);
 		
 	}
+	
+	@Override
+	  public BiomeGenBase getBiomeGenForCoords(int x, int z)
+		{
+			return mod_pocketDim.limboBiome;
+		}
+	
 	  public boolean canRespawnHere()
 	    {
 		  
