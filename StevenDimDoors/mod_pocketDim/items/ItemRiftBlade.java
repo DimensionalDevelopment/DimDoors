@@ -32,15 +32,16 @@ public class ItemRiftBlade extends itemDimDoor
 	private int weaponDamage;
 	private final EnumToolMaterial toolMaterial= EnumToolMaterial.GOLD;
     private Material doorMaterial;
+    
     Random rand = new Random();
     public ItemRiftBlade(int par1, Material par2Material)
     {
     	 super(par1, par2Material);
-    	 this.setMaxStackSize(1);
+    	
     	// this.setTextureFile("/PocketBlockTextures.png");
          this.setCreativeTab(CreativeTabs.tabTransport);
          this.weaponDamage =8;
-      
+         this.setMaxStackSize(1);
 
       //   this.itemIcon=5;
          this.setMaxDamage(500);
@@ -221,7 +222,7 @@ public class ItemRiftBlade extends itemDimDoor
 	            {
 	                int var12 = MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
-	                if (!this.canPlace(par2World, par4, par5, par6, var12)||!this.canPlace(par2World, par4+1, par5, par6, var12)||dimHelper.instance.getLinkDataFromCoords(par4, par5+1, par6, par2World)==null)
+	                if (!this.canPlace(par2World, par4, par5, par6, var12)||!this.canPlace(par2World, par4, par5+1, par6, var12)||dimHelper.instance.getLinkDataFromCoords(par4, par5+1, par6, par2World)==null)
 	                {
 	                	return par1ItemStack;
 	                }

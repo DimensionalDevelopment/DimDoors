@@ -24,7 +24,6 @@ public class itemExitDoor extends itemDimDoor
           this.doorMaterial = par2Material;
           this.setCreativeTab(CreativeTabs.tabTransport);
 
-          //  this.setitemIcon(Item.doorWood.getIconFromDamage(0));
     }
     
     public void registerIcons(IconRegister par1IconRegister)

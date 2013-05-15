@@ -28,6 +28,7 @@ public class itemDimDoor extends ItemDoor
     public itemDimDoor(int par1, Material par2Material)
     {
     	  super(par1, par2Material);
+    	  this.setMaxStackSize(64);
           this.doorMaterial = par2Material;
           this.setCreativeTab(CreativeTabs.tabTransport);
     }
@@ -167,7 +168,7 @@ public class itemDimDoor extends ItemDoor
 	            {
 	                int var12 = MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
-	                if (!this.canPlace(par2World, par4, par5, par6, var12)||!this.canPlace(par2World, par4-1, par5, par6, var12)||dimHelper.instance.getLinkDataFromCoords(par4, par5+1, par6, par2World)==null)
+	                if (!this.canPlace(par2World, par4, par5, par6, var12)||!this.canPlace(par2World, par4, par5-1, par6, var12)||dimHelper.instance.getLinkDataFromCoords(par4, par5+1, par6, par2World)==null)
 	                {
 	                	return par1ItemStack;
 	                }
