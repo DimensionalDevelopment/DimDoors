@@ -7,6 +7,8 @@ import java.util.HashMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.ICommand;
+import net.minecraft.entity.EntityEggInfo;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -32,6 +34,7 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -58,6 +61,7 @@ import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
 import StevenDimDoors.mod_pocketDim.items.itemExitDoor;
 import StevenDimDoors.mod_pocketDim.items.itemLinkSignature;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
+import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 
 
 @Mod(modid = mod_pocketDim.modid, name = "Dimensional Doors", version = mod_pocketDim.version)
@@ -127,6 +131,7 @@ public class mod_pocketDim
     public static int blockDimWallID;
     public static int itemRiftRemoverID;
     public static int blockDimWallPermID;
+    public static int obeliskID;
     public static Block linkDimDoor;
     public static Block transientDoor;
     public static Block ExitDoor;
@@ -300,6 +305,7 @@ public class mod_pocketDim
          TNFREAKINGT = config.get("BOOLEAN", "EXPLOSIONS!!???!!!?!?!!", false).getBoolean(false);
          this.enableRiftGrief = config.get("BOOLEAN", "toggles whether rifts eat blocks around them or not", true).getBoolean(true);
          HOW_MUCH_TNT=config.get("Int", "Chance that a block will not be TNT. must be greater than 1. Explosions!?!?? must be set to true, and you figure out what it does. ", 25).getInt(25);
+         this.obeliskID=config.get("Int", "MobObeliskID", 125).getInt(125);
 
    
          blockLimboID=config.get("Int", "Block ID for Limbo- must be below 256", 217).getInt();
@@ -357,8 +363,7 @@ public class mod_pocketDim
         this.limboBiome= (new BiomeGenLimbo(this.limboBiomeID) );
         this.pocketBiome= (new BiomeGenPocket(this.pocketBiomeID));
         
-        proxy.loadTextures();
-    	proxy.registerRenderers();
+     
     	GameRegistry.registerWorldGenerator(this.riftGen);
     	
         //GameRegistry.registerBlock(dimRail, "Dimensional Rail");
@@ -414,6 +419,12 @@ public class mod_pocketDim
 
         GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
         GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
+        
+        EntityRegistry.registerModEntity(MobObelisk.class, "Obelisk", this.obeliskID, this,40, 1, true);
+        EntityList.IDtoClassMapping.put(this.obeliskID, MobObelisk.class);
+     	EntityList.entityEggs.put(this.obeliskID, new EntityEggInfo(this.obeliskID, 0, 0xffffff));
+    	LanguageRegistry.instance().addStringLocalization("entity.MobObelisk.Obelisk.name", "Obelisk");
+
 
         
         //GameRegistry.addBiome(this.limboBiome);
@@ -646,6 +657,11 @@ public class mod_pocketDim
     		
     		this.metadataNextList.add(Block.redstoneRepeaterIdle.blockID);
     		this.metadataNextList.add(Block.redstoneRepeaterActive.blockID);
+    		
+    		
+    		
+    		   proxy.loadTextures();
+    		   proxy.registerRenderers();
 
 
     }

@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
 
+import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -184,7 +185,8 @@ public class itemLinkSignature extends Item
     		if(par1ItemStack.stackTagCompound.getBoolean("isCreated"))
     		{
     			Integer[] coords = this.readFromNBT(par1ItemStack);
-    			par3List.add(String.valueOf("Leads to dim "+coords[3] +" with depth "+dimHelper.instance.getDimDepth(dimHelper.instance.getDimDepth(coords[3]))));
+    		
+    			par3List.add(String.valueOf("Leads to dim "+coords[3] +" with depth "+(dimHelper.instance.getDimDepth(coords[3]))));
         		par3List.add("at x="+coords[0]+" y="+coords[1]+" z="+coords[2]);
 
     		}
