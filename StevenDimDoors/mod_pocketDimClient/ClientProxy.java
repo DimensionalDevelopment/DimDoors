@@ -6,6 +6,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import StevenDimDoors.mod_pocketDim.CommonProxy;
 import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 
 
 public class ClientProxy extends CommonProxy
@@ -15,10 +16,12 @@ public class ClientProxy extends CommonProxy
 	{
 
 		//MinecraftForgeClient.preloadTexture(BLOCK_PNG);
-		MinecraftForgeClient.preloadTexture(WARP_PNG);
-		MinecraftForgeClient.preloadTexture(RIFT_PNG);
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDimDoor.class, new RenderDimDoor());
+
 
 		//MinecraftForgeClient.preloadTexture(RIFT2_PNG);
+        RenderingRegistry.registerEntityRenderingHandler(MobObelisk.class, new RenderMobObelisk(.5F));
+		
 		
 
 		
@@ -32,9 +35,9 @@ public class ClientProxy extends CommonProxy
 		
 
 
-
+		MinecraftForgeClient.preloadTexture(WARP_PNG);
+		MinecraftForgeClient.preloadTexture(RIFT_PNG);
 		
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDimDoor.class, new RenderDimDoor());
 
 		    
 	    

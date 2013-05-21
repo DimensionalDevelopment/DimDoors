@@ -10,6 +10,7 @@ public class MobObelisk extends EntityMob
 	{
 		super(par1World);
 		this.texture="/mods/DimensionalDoors/textures/mobs/Monolith.png";
+		this.setSize(4.0F, 4.0F);
 		// TODO Auto-generated constructor stub
 	}
 

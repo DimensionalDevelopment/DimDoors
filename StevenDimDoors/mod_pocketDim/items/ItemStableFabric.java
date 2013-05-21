@@ -41,6 +41,7 @@ public class ItemStableFabric extends Item
     	if(!par3World.isRemote)
     	{
     		System.out.println("Block metadata is "+par3World.getBlockMetadata(par4, par5, par6));
+    		System.out.println(par3World.getBiomeGenForCoords(par4, par6).biomeName);
     		this.onItemRightClick(par1ItemStack, par3World, par2EntityPlayer);
     	}
     	//System.out.println("Block texture data is "+Block.blocksList[par3World.getBlockId(par4, par5, par6)].getBlockTexture(par3World,par4, par5, par6,par7).getIconName());

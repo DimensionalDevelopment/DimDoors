@@ -28,7 +28,7 @@ public class LimboProvider extends WorldProvider
 	public LimboProvider()
 	{
 		this.hasNoSky=true;
-		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.limboBiome, 0.0F, 0.0F);
+		super.worldChunkMgr = new WorldChunkManagerLimbo();
 	
 	
 

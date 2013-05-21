@@ -19,7 +19,32 @@ import net.minecraftforge.event.terraingen.*;
 import static net.minecraft.world.biome.BiomeGenBase.*;
 
 public class WorldChunkManagerLimbo extends WorldChunkManager
+
+
 {
-    public static ArrayList<BiomeGenBase> allowedBiomes = new ArrayList<BiomeGenBase>(Arrays.asList(forest, plains, taiga, taigaHills, forestHills, jungle. jungleHills));
+	
+	BiomeGenBase biomeGenerator = mod_pocketDim.limboBiome;
+	 public BiomeGenBase[] getBiomesForGeneration(BiomeGenBase[] par1ArrayOfBiomeGenBase, int par2, int par3, int par4, int par5)
+	    {
+	       return new BiomeGenBase[] {mod_pocketDim.limboBiome};
+	    }
+	 
+	 public BiomeGenBase[] getBiomeGenAt(BiomeGenBase[] par1ArrayOfBiomeGenBase, int par2, int par3, int par4, int par5, boolean par6)
+	    {
+		  return new BiomeGenBase[] {mod_pocketDim.limboBiome};
+	        
+	    }
+	 
+	 public BiomeGenBase getBiomeGenAt(int par1, int par2)
+	    {
+		  return  mod_pocketDim.limboBiome;
+	    }
+	 
+	 public boolean areBiomesViable(int par1, int par2, int par3, List par4List)
+	    {
+	        return par4List.contains(this.biomeGenerator);
+	    }
+
+
 
 }
