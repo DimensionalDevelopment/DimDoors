@@ -27,13 +27,14 @@ public class ModelMobObelisk extends ModelBase
     textureWidth = 256;
     textureHeight = 256;
     
+    	
       wholemonolith = new ModelRenderer(this, 0, 0);
-      wholemonolith.addBox(-32F, -72F, -8F, 32, 72, 8);
+      wholemonolith.addBox(-48/2F,-108F/1.3F, -12/2F, 48, 108, 12);
       wholemonolith.setTextureSize(256, 256);
       wholemonolith.mirror = true;
-      this.wholemonolith.rotationPointY=16;
-      this.wholemonolith.rotationPointX=16;
-      this.wholemonolith.rotationPointZ=4;
+      this.wholemonolith.rotationPointY=0;
+      this.wholemonolith.rotationPointX=0;
+      this.wholemonolith.rotationPointZ=0;
      
      
   }

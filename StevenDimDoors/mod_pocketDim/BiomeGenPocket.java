@@ -1,6 +1,8 @@
 package StevenDimDoors.mod_pocketDim;
 
+import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.SpawnListEntry;
 
 public class BiomeGenPocket extends BiomeGenBase
 {
@@ -17,5 +19,11 @@ public class BiomeGenPocket extends BiomeGenBase
         this.spawnableCreatureList.clear();
         this.spawnableWaterCreatureList.clear();
         this.spawnableCaveCreatureList.clear();
+        this.spawnableMonsterList.add(new SpawnListEntry(MobObelisk.class, 1, 1, 1));
+        this.spawnableCreatureList.add(new SpawnListEntry(MobObelisk.class, 1, 1, 1));
+
+        this.spawnableCaveCreatureList.add(new SpawnListEntry(MobObelisk.class, 1, 1, 1));
+
+
     }
 }

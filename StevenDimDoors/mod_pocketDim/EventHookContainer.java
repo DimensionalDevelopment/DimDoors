@@ -42,7 +42,7 @@ public class EventHookContainer
 		File dataDir = Minecraft.getMinecraft().mcDataDir;
 
 		event.manager.soundPoolSounds.addSound("mods/DimensionalDoors/sounds/Monolith.ogg", (mod_pocketDim.class.getResource("/mods/DimensionalDoors/sounds/Monolith.ogg")));
-		event.manager.soundPoolSounds.addSound("mods/DimensionalDoors/sounds/wylkermaxcrack.wav", (mod_pocketDim.class.getResource("/mods/DimensionalDoors/sounds/wylkermaxcrack.wav")));
+		event.manager.soundPoolSounds.addSound("mods/DimensionalDoors/sounds/wylkermaxcrack.ogg", (mod_pocketDim.class.getResource("/mods/DimensionalDoors/sounds/wylkermaxcrack.ogg")));
 
 
 	}

@@ -38,8 +38,7 @@ public class ClientProxy extends CommonProxy
 		
 
 
-		MinecraftForgeClient.preloadTexture(WARP_PNG);
-		MinecraftForgeClient.preloadTexture(RIFT_PNG);
+	
 		
 
 		    

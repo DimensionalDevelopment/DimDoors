@@ -1,22 +1,25 @@
 package StevenDimDoors.mod_pocketDim.ticking;
 
-import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.dimHelper;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import cpw.mods.fml.client.FMLClientHandler;
-import net.minecraft.block.Block;
-import net.minecraft.client.audio.SoundManager;
+import java.util.List;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.Packet34EntityTeleport;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.pocketProvider;
+
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class MobObelisk extends EntityFlying implements IMob
 {
@@ -24,6 +27,7 @@ public class MobObelisk extends EntityFlying implements IMob
 	float soundTime = 0;
 	int aggro = 0;
 	byte textureState = 0;
+	boolean hasJumped= false;
 	
 	int destX=0;
 	int destY=0;
@@ -32,7 +36,9 @@ public class MobObelisk extends EntityFlying implements IMob
 	{
 		super(par1World);
 		this.texture="/mods/DimensionalDoors/textures/mobs/Monolith0.png";
-		this.setSize(2F, 4.0F);
+		this.setSize(2F, 8.0F);
+		this.noClip=true;
+		
 		
 		
 		// TODO Auto-generated constructor stub
@@ -45,21 +51,67 @@ public class MobObelisk extends EntityFlying implements IMob
 		return 20;
 	}
 	
+	 public void setEntityPosition(Entity entity, double x, double y, double z)
+	 {
+		 entity.lastTickPosX = entity.prevPosX = entity.posX = x;
+		 entity.lastTickPosY = entity.prevPosY = entity.posY = y + (double)entity.yOffset;
+		 entity.lastTickPosZ = entity.prevPosZ = entity.posZ = z;
+		 entity.setPosition(x, y, z);
+	 }
+	 
 	  protected void entityInit()
 	  {
 		  super.entityInit();
 	      this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
+	      
+	    
 	  }
+	  
+	  @SideOnly(Side.CLIENT)
+
+	    /**
+	     * Returns render size modifier
+	     */
+	   
 	  
 	@Override
 	public void onEntityUpdate()
 	{
 		 byte b0 = this.dataWatcher.getWatchableObjectByte(16);
+		
 
-	        this.texture="/mods/DimensionalDoors/textures/mobs/Monolith"+b0+".png";
+	     	this.texture="/mods/DimensionalDoors/textures/mobs/Monolith"+b0+".png";
+	     	  if(!this.hasJumped&&!this.worldObj.isRemote)
+			  {
+	     		 int sanity=0;
+	     		 double jumpHeight=0;
+	     		  do
+	     		  {
+	     			 jumpHeight = this.posY+rand.nextInt(25);
+	     			 sanity++;
+	     		  }
+	     		  while(!this.worldObj.isAirBlock((int)this.posX,(int)jumpHeight+6 , (int)this.posZ)&&sanity<20);
+				  this.hasJumped=true;
+				  
+				  this.setLocationAndAngles(this.posX,jumpHeight , this.posZ, this.rotationPitch, this.rotationYaw);
+				  PacketDispatcher.sendPacketToAllInDimension(new Packet34EntityTeleport(this), this.worldObj.provider.dimensionId);
+				  this.worldObj.updateEntity(this);
+			  }
 	        
 		super.onEntityUpdate();
-		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 20);
+		
+		 if (this.isEntityAlive() && this.isEntityInsideOpaqueBlock())
+	        {
+	        	this.pushOutOfBlocks(this.posX - (double)this.width * 0.35D, this.boundingBox.minY + 0.5D, this.posZ + (double)this.width * 0.35D);
+	            this.pushOutOfBlocks(this.posX - (double)this.width * 0.35D, this.boundingBox.minY + 0.5D, this.posZ - (double)this.width * 0.35D);
+	            this.pushOutOfBlocks(this.posX + (double)this.width * 0.35D, this.boundingBox.minY + 0.5D, this.posZ - (double)this.width * 0.35D);
+	            this.pushOutOfBlocks(this.posX + (double)this.width * 0.35D, this.boundingBox.minY + 0.5D, this.posZ + (double)this.width * 0.35D);
+	        }
+		 
+
+		
+		  
+		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 25);
 
 		if(entityPlayer != null)		
 		{
@@ -75,19 +127,48 @@ public class MobObelisk extends EntityFlying implements IMob
 				{	
 					if(this.worldObj.isRemote)
 					{
-						FMLClientHandler.instance().getClient().sndManager.playEntitySound("mods.DimensionalDoors.sounds.Monolith", entityPlayer, 1+this.textureState/2, 1, false);
+						FMLClientHandler.instance().getClient().sndManager.playEntitySound("mods.DimensionalDoors.sounds.Monolith", this, 1, 1, false);
 					}
-					soundTime=1000;
+					soundTime=100;
 				}
-				if(aggro<516)
+				if(aggro<470)
 				{
-					aggro++;
-					
-					if(aggro==500)
+					if(rand.nextBoolean())
 					{
-						FMLClientHandler.instance().getClient().sndManager.playSoundFX("mods.DimensionalDoors.sounds.wylkermaxcrack", 10, 1);
+						aggro++;
+					}
+					else if (rand.nextBoolean())
+					{
+						aggro++;
+						aggro++;
+					}
+					else if (rand.nextBoolean())
+					{
+						aggro++;
+					}
+					
+					if(this.worldObj.provider instanceof pocketProvider)
+					{
+						aggro++;
+						if(aggro==455)
+						{
+							FMLClientHandler.instance().getClient().sndManager.playSoundFX("mods.DimensionalDoors.sounds.wylkermaxcrack", 12, 1);
+
+						}
+						aggro++;
+						if(aggro==455)
+						{
+							FMLClientHandler.instance().getClient().sndManager.playSoundFX("mods.DimensionalDoors.sounds.wylkermaxcrack", 12, 1);
+
+						}
+					}
+					if(aggro>455&&aggro<460)
+					{
+						FMLClientHandler.instance().getClient().sndManager.playSoundFX("mods.DimensionalDoors.sounds.wylkermaxcrack", 12, 1);
 
 					}
+					
+					
 				}
 				else
 				{
@@ -105,9 +186,16 @@ public class MobObelisk extends EntityFlying implements IMob
 			
 			
 		}
-		else if(aggro>0)
+		else 
 		{
-			aggro--;
+			if(this.worldObj.isRemote)
+			{
+				FMLClientHandler.instance().getClient().sndManager.stopEntitySound(this);
+			}
+			if(aggro>0)
+			{
+				aggro--;
+			}
 		}
 		if(soundTime>0)
 		{
@@ -150,7 +238,7 @@ public class MobObelisk extends EntityFlying implements IMob
 		}
 		
 		
-		this.textureState= (byte) (this.aggro/50);
+		this.textureState= (byte) (this.aggro/25);
 		 if(!this.worldObj.isRemote)
 		 {
 
@@ -163,6 +251,16 @@ public class MobObelisk extends EntityFlying implements IMob
 		
 
 	}
+	  public boolean getCanSpawnHere()
+	    {
+		  	List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this,AxisAlignedBB.getBoundingBox( this.posX-15, posY-4, this.posZ-15, this.posX+15, this.posY+15, this.posZ+15));
+	      
+		  	if(list.size()>2)
+		  	{
+		  		return false;
+		  	}
+		  	return this.worldObj.checkNoEntityCollision(this.boundingBox) && this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() && !this.worldObj.isAnyLiquid(this.boundingBox);
+	    }
 	
 	 private boolean shouldAttackPlayer(EntityPlayer par1EntityPlayer)
 	    {

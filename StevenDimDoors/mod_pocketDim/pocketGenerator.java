@@ -1,6 +1,9 @@
 package StevenDimDoors.mod_pocketDim;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.world.ChunkPosition;
@@ -11,14 +14,14 @@ import net.minecraft.world.gen.ChunkProviderGenerate;
 
 public class pocketGenerator extends ChunkProviderGenerate implements IChunkProvider
 {
-	 private World world;
+	 private World worldObj;
 
 	public pocketGenerator(World par1World, long par2, boolean par4) 
 	{
 		
 		super(par1World, par2, par4);
 		// TODO Auto-generated constructor stub
-		this.world=par1World;
+		this.worldObj=par1World;
 	}
 	@Override
 	public void generateTerrain(int par1, int par2, byte[] par3ArrayOfByte)
@@ -34,7 +37,7 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
        
 		 byte[] var3 = new byte[32768];
         
-        Chunk var4 = new Chunk(this.world, var3, par1, par2);
+        Chunk var4 = new Chunk(this.worldObj, var3, par1, par2);
        
         return var4;
     }
@@ -63,7 +66,16 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
 	public List getPossibleCreatures(EnumCreatureType var1, int var2, int var3,
 			int var4) 
 	{
-		
+		DimData data = dimHelper.dimList.get(this.worldObj.provider.dimensionId);
+		if(data!=null)
+		{
+			if(data.isDimRandomRift&&data.isPocket)
+			{
+				ArrayList list = new ArrayList();
+				
+				return this.worldObj.getBiomeGenForCoords(var2, var3).getSpawnableList(var1);
+			}
+		}
 		// TODO Auto-generated method stub
 		return null;
 	}
