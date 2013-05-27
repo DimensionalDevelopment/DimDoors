@@ -21,20 +21,22 @@ public class LimboProvider extends WorldProvider
 		return "Limbo";
 	}
 
-	public int exitXCoord;
-	public int exitYCoord;
-	public int exitZCoord;
-	public int exitDimID;
+	
 	public LimboProvider()
 	{
 		this.hasNoSky=true;
-		super.worldChunkMgr = new WorldChunkManagerLimbo();
 	
 	
 
-		//  super.setAllowedSpawnTypes(false, false);
 		
 	}
+	
+	 @Override
+	    protected void registerWorldChunkManager()
+	    {
+			super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.limboBiome,1,1);
+	        //this.dimensionId = ConfigAtum.dimensionID;
+	    }
 	
 	@Override
 	  public BiomeGenBase getBiomeGenForCoords(int x, int z)
@@ -71,11 +73,7 @@ public class LimboProvider extends WorldProvider
 	        }
 	    }
 	 
-	public void setAllowedSpawnTypes(boolean allowHostile, boolean allowPeaceful)
-    {
-        super.setAllowedSpawnTypes(false, false);
-      
-    }
+	
 
 	 public float calculateCelestialAngle(long par1, float par3)
 	    {

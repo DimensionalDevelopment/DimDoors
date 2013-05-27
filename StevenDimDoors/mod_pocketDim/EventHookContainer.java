@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -34,17 +35,22 @@ public class EventHookContainer
 	Random rand= new Random();
 	
 	@SideOnly(Side.CLIENT)
+	
 	@ForgeSubscribe
 	public void onSoundLoad(SoundLoadEvent event) 
 	{
 		File dataDir = Minecraft.getMinecraft().mcDataDir;
 
-	//	event.manager.soundPoolSounds.addSound("mod/test/sound.ogg", new File(
-	//	dataDir, "resources/mod/test/sound.ogg"));
+		event.manager.soundPoolSounds.addSound("mods/DimensionalDoors/sounds/Monolith.ogg", (mod_pocketDim.class.getResource("/mods/DimensionalDoors/sounds/Monolith.ogg")));
+		event.manager.soundPoolSounds.addSound("mods/DimensionalDoors/sounds/wylkermaxcrack.wav", (mod_pocketDim.class.getResource("/mods/DimensionalDoors/sounds/wylkermaxcrack.wav")));
+
+
 	}
 
 	
 	
+	        
+	        
     @ForgeSubscribe
     public void onWorldLoad(WorldEvent.Load event)
     {

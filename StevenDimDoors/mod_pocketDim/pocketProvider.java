@@ -20,11 +20,16 @@ public class pocketProvider extends WorldProvider
 	public pocketProvider()
 	{
 		this.hasNoSky=true;
-		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.pocketBiome, 0.0F, 0.0F);
 
 		
 	}
-  //  @SideOnly(Side.CLIENT)
+	
+	@Override
+    protected void registerWorldChunkManager()
+    {
+		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.pocketBiome,1,1);
+        //this.dimensionId = ConfigAtum.dimensionID;
+    }
 	@Override
 	public String getSaveFolder()
     {
@@ -38,10 +43,7 @@ public class pocketProvider extends WorldProvider
 	}
 	
 	
-	 public void setAllowedSpawnTypes(boolean allowHostile, boolean allowPeaceful)
-	 {
-	       super.setAllowedSpawnTypes(false, false);
-	 }
+	 
     @SideOnly(Side.CLIENT)
 	@Override
 	public Vec3 getFogColor(float par1, float par2)

@@ -16,23 +16,9 @@ protected ModelMobObelisk obeliskModel;
     {
         super(new ModelMobObelisk(), f);
         this.obeliskModel = (ModelMobObelisk)this.mainModel;
+        
+    
     }
     
-    public void renderMobObelisk(MobObelisk mobObelisk, double d, double d1, double d2,
-            float f, float f1)
-    {
-        super.doRenderLiving( mobObelisk, d, d1, d2, f, f1);
-    }
-
-    public void doRenderLiving(EntityLiving entityliving, double d, double d1, double d2,
-            float f, float f1)
-    {
-    	renderMobObelisk((MobObelisk)entityliving, d, d1, d2, f, f1);
-    }
-
-    public void doRender(Entity entity, double d, double d1, double d2,
-            float f, float f1)
-    {
-    	renderMobObelisk((MobObelisk)entity, d, d1, d2, f, f1);
-    }
+   
 }

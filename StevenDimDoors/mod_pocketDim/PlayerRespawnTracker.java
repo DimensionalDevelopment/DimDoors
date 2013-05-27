@@ -2,11 +2,11 @@
 
 package StevenDimDoors.mod_pocketDim;
 
-import net.minecraft.entity.EntityLiving;
+
 import net.minecraft.entity.item.EntityItem;
+
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.item.ItemArmor;
 import cpw.mods.fml.common.IPlayerTracker;
 
 
@@ -48,7 +48,11 @@ public class PlayerRespawnTracker implements IPlayerTracker
 					{
 						for(EntityItem drop :  mod_pocketDim.limboSpawnInventory.get(player.username))
 						{
-					
+							if(drop.getEntityItem().getItem() instanceof ItemArmor)
+							{
+								
+							
+							}
 							player.inventory.addItemStackToInventory(drop.getEntityItem());
 				
 				

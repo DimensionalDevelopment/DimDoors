@@ -420,10 +420,10 @@ public class mod_pocketDim
         GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
         GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
         
-     //   EntityRegistry.registerModEntity(MobObelisk.class, "Obelisk", this.obeliskID, this,40, 1, true);
-      //  EntityList.IDtoClassMapping.put(this.obeliskID, MobObelisk.class);
- //    	EntityList.entityEggs.put(this.obeliskID, new EntityEggInfo(this.obeliskID, 0, 0xffffff));
-    //	LanguageRegistry.instance().addStringLocalization("entity.MobObelisk.Obelisk.name", "Obelisk");
+        EntityRegistry.registerModEntity(MobObelisk.class, "Obelisk", this.obeliskID, this,50, 1, true);
+        EntityList.IDtoClassMapping.put(this.obeliskID, MobObelisk.class);
+     	EntityList.entityEggs.put(this.obeliskID, new EntityEggInfo(this.obeliskID, 0, 0xffffff));
+    	LanguageRegistry.instance().addStringLocalization("entity.MobObelisk.Obelisk.name", "Obelisk");
 
 
         
@@ -666,10 +666,10 @@ public class mod_pocketDim
 
     }
     
+    
     @PostInit
     public void PostInit(FMLPostInitializationEvent event)
     {
-    	//dimHelper.instance.dimList.put(this.limboDimID, new DimData( this.limboDimID,  false,  0,  new LinkData()));
     }
     
     @ServerStopping
@@ -690,9 +690,12 @@ public class mod_pocketDim
     		e.printStackTrace();
     	}
     }
+    
+    
     @ServerStarting
     public void serverStarting(FMLServerStartingEvent event)
     {
+    
     	event.registerServerCommand(removeRiftsCommand);
     	event.registerServerCommand(pruneDimsCommand);
     	event.registerServerCommand(removeAllLinksCommand);
@@ -700,6 +703,11 @@ public class mod_pocketDim
     	event.registerServerCommand(addDungeonRift);
 
     	dimHelper.instance.load();
+    	if(!dimHelper.dimList.containsKey(this.limboDimID))
+		{
+    		dimHelper.instance.dimList.put(mod_pocketDim.limboDimID, new DimData( mod_pocketDim.limboDimID,  false,  0,  new LinkData()));
+
+		}
    
     
     }

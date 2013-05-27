@@ -341,12 +341,14 @@ public class dimHelper extends DimensionManager
 				}
 			
 					
-			
+				if(entity instanceof EntityPlayerMP)
+				{
 					
 						entity = this.teleportEntity(world, entity, linkData);		
 
 					
 						
+				}
 						if(entity instanceof EntityPlayerMP)
 						{
 								
@@ -1215,7 +1217,7 @@ public class dimHelper extends DimensionManager
 			i++;
 			DimData dimData;
 			ArrayList linksInDim=new ArrayList();
-			for(size--;size>=0;)
+			for(size--;size>0;)
 			{
 				dimData = dimHelper.dimList.get(dimList.keySet().toArray()[rand.nextInt(dimList.keySet().size())]);
 				if(dimData==null)

@@ -17,14 +17,19 @@ public class CommonTickHandler implements ITickHandler
    
 
     @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData) {}
+    public void tickStart(EnumSet<TickType> type, Object... tickData) 
+    {
+    	 if (type.equals(EnumSet.of(TickType.SERVER)))
+         {
+             onTickInGame();
+         }
+    }
 
     @Override
     public void tickEnd(EnumSet<TickType> type, Object... tickData)
     {
         if (type.equals(EnumSet.of(TickType.SERVER)))
         {
-            onTickInGame();
         }
     }
 

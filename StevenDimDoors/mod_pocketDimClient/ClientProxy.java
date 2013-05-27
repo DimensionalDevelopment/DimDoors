@@ -1,4 +1,7 @@
 package StevenDimDoors.mod_pocketDimClient;
+import java.io.File;
+
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import net.minecraft.src.ModLoader;
@@ -20,7 +23,7 @@ public class ClientProxy extends CommonProxy
 
 
 		//MinecraftForgeClient.preloadTexture(RIFT2_PNG);
-        RenderingRegistry.registerEntityRenderingHandler(MobObelisk.class, new RenderMobObelisk(.5F));
+       RenderingRegistry.registerEntityRenderingHandler(MobObelisk.class, new RenderMobObelisk(.5F));
 		
 		
 
