@@ -145,7 +145,7 @@ public class MobObelisk extends EntityFlying implements IMob
 			
 		
 		
-			this.moveEntity(this.posX=this.posX+(posX-destX)/200, 	this.posY=this.posY+(posY+destY)/200, 	this.posZ=this.posZ+(posZ+destZ)/200);
+		//	this.moveEntity(this.posX=this.posX+(posX-destX)/200, 	this.posY=this.posY+(posY+destY)/200, 	this.posZ=this.posZ+(posZ+destZ)/200);
 
 		}
 		
