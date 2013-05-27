@@ -392,6 +392,7 @@ public class dimHelper extends DimensionManager
     								}
 
     								this.generateDoor(world,linkData);
+    								
 
 						
 						if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord+1,playerZCoord))

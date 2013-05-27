@@ -45,7 +45,7 @@ public class CommonTickHandler implements ITickHandler
     	try
     	{
     	
-    	if(tickCount>200)
+    	if(tickCount>100)
     	{
     		tickCount=0;
     		int i=0;
