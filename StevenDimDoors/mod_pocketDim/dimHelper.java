@@ -344,7 +344,7 @@ public class dimHelper extends DimensionManager
 				if(entity instanceof EntityPlayerMP)
 				{
 					
-						entity = this.teleportEntity(world, entity, linkData);		
+					entity = this.teleportEntity(world, entity, linkData);		
 
 					
 						

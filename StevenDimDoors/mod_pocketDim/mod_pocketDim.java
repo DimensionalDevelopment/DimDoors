@@ -420,10 +420,10 @@ public class mod_pocketDim
         GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
         GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
         
-        EntityRegistry.registerModEntity(MobObelisk.class, "Obelisk", this.obeliskID, this,50, 1, true);
+        EntityRegistry.registerModEntity(MobObelisk.class, "Obelisk", this.obeliskID, this,70, 1, true);
         EntityList.IDtoClassMapping.put(this.obeliskID, MobObelisk.class);
      	EntityList.entityEggs.put(this.obeliskID, new EntityEggInfo(this.obeliskID, 0, 0xffffff));
-    	LanguageRegistry.instance().addStringLocalization("entity.MobObelisk.Obelisk.name", "Obelisk");
+    	LanguageRegistry.instance().addStringLocalization("entity.DimensionalDoors.Obelisk.name", "Monolith");
 
 
         

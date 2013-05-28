@@ -119,7 +119,7 @@ public class MobObelisk extends EntityFlying implements IMob
 
 		
 		  
-		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 25);
+		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 30);
 
 		if(entityPlayer != null)		
 		{
@@ -133,10 +133,8 @@ public class MobObelisk extends EntityFlying implements IMob
 			{
 				if(soundTime<=0)
 				{	
-					if(this.worldObj.isRemote)
-					{
-						FMLClientHandler.instance().getClient().sndManager.playEntitySound("mods.DimensionalDoors.sounds.Monolith", this, 1, 1, false);
-					}
+					this.playSound("mods.DimensionalDoors.sounds.Monolith",  1F, 1F);
+					
 					soundTime=100;
 				}
 				if(aggro<470)
@@ -157,46 +155,62 @@ public class MobObelisk extends EntityFlying implements IMob
 					
 					if(this.worldObj.provider instanceof pocketProvider)
 					{
-						aggro++;
-						if(aggro==455)
+						
+						
+						if(rand.nextBoolean())
 						{
-							FMLClientHandler.instance().getClient().sndManager.playSoundFX("mods.DimensionalDoors.sounds.wylkermaxcrack", 12, 1);
-
+							aggro++;
 						}
-						aggro++;
-						if(aggro==455)
+						else if(rand.nextBoolean())
 						{
-							FMLClientHandler.instance().getClient().sndManager.playSoundFX("mods.DimensionalDoors.sounds.wylkermaxcrack", 12, 1);
-
+							aggro++;
 						}
+						
 					}
-					if(aggro>455&&aggro<460)
+					if(aggro>445)
 					{
-						FMLClientHandler.instance().getClient().sndManager.playSoundFX("mods.DimensionalDoors.sounds.wylkermaxcrack", 12, 1);
+						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.tearing",6, 1);
 
 					}
+					
 					
 					
 				}
 				else
 				{
-					if(this.worldObj.isRemote)
-					{
-						FMLClientHandler.instance().getClient().sndManager.stopEntitySound(this);
-					}
+					
+					this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.wylkermaxcrack",13, 1);
+
+
+
+					
 					LinkData link = new LinkData(this.worldObj.provider.dimensionId, mod_pocketDim.limboDimID, (int)this.posX, (int)this.posY, (int)this.posZ, (int)this.posX+rand.nextInt(500)-250, (int)this.posY+500, (int)this.posZ+rand.nextInt(500)-250, false,0);
+					
 					dimHelper.instance.teleportToPocket(worldObj, link, entityPlayer);
+					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.wylkermaxcrack",13, 1);
+
 					
 					
 				}
 				
-				 for (int i = 0; i < -1+this.textureState/2; ++i)
+				 for (int i = 0; i < -1+this.textureState/3; ++i)
 			        {
 					 entityPlayer.worldObj.spawnParticle("portal", entityPlayer.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, entityPlayer.posY + this.rand.nextDouble() * (double)entityPlayer.height - 0.75D, entityPlayer.posZ + (this.rand.nextDouble() - 0.5D) * (double)entityPlayer.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
 			        }
 				 
 				 
 				
+			}
+			else
+			{
+				if(aggro>0)
+				{
+					if(rand.nextInt(10)==0)
+					{
+						aggro--;
+					}
+					
+				}
 			}
 			
 			
@@ -210,6 +224,11 @@ public class MobObelisk extends EntityFlying implements IMob
 			if(aggro>0)
 			{
 				aggro--;
+				
+				if(rand.nextBoolean())
+				{
+					aggro--;
+				}
 			}
 		}
 		if(soundTime>0)

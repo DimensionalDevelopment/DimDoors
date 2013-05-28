@@ -80,6 +80,7 @@ public class TileEntityRift extends TileEntity
 	                  worldObj.spawnEntityInWorld(creeper);
 					}
 					
+					/**
 					if(dimHelper.dimList.get(this.worldObj.provider.dimensionId)!=null)
 					{
 						ArrayList rifts = dimHelper.dimList.get(this.worldObj.provider.dimensionId).findRiftsInRange(worldObj, 6, this.xCoord, this.yCoord, this.zCoord);
@@ -89,7 +90,9 @@ public class TileEntityRift extends TileEntity
 			                  creeper.setLocationAndAngles(this.xCoord+.5, yCoordHelper.getFirstUncovered(this.worldObj, this.xCoord, this.yCoord, this.zCoord), this.zCoord+.5, 5, 6);
 			                  worldObj.spawnEntityInWorld(creeper);
 						}
+						
 					}
+					**/
 				 }
 		 
 		 
