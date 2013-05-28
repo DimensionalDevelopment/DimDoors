@@ -69,7 +69,7 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
 		DimData data = dimHelper.dimList.get(this.worldObj.provider.dimensionId);
 		if(data!=null)
 		{
-			if(data.isDimRandomRift&&data.isPocket)
+			if(data.isDimRandomRift&&data.isPocket&&!data.dungeonGenerator.isOpen)
 			{
 				ArrayList list = new ArrayList();
 				

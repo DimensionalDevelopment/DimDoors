@@ -56,7 +56,7 @@ public class SchematicLoader
     }
         
     
-    public void init(String filePath, LinkData link, int x, int y , int z)
+    public void init(String filePath, LinkData link)
     {
     	
     	this.schematic="/schematics/"+filePath;

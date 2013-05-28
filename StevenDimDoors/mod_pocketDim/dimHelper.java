@@ -326,7 +326,7 @@ public class dimHelper extends DimensionManager
 	        
 			int depth= this.getDimDepth(world.provider.dimensionId);
 			
-			if(this.dimList.containsKey(destinationID))
+			if(this.dimList.containsKey(destinationID)&&this.dimList.containsKey(world.provider.dimensionId))
 			{
 				this.generatePocket(linkData);
 			 
@@ -428,6 +428,13 @@ public class dimHelper extends DimensionManager
 						}
 						**/
 			   
+			}
+		}
+		else if(!this.dimList.containsKey(world.provider.dimensionId))
+		{
+			if(!(world.provider instanceof pocketProvider ||world.provider instanceof LimboProvider))
+			{
+				DimData data = new DimData(world.provider.dimensionId, false, 0, 0, world.getSpawnPoint().posX, world.getSpawnPoint().posY, world.getSpawnPoint().posZ);
 			}
 		}
 		return;
@@ -721,18 +728,26 @@ public class dimHelper extends DimensionManager
 		if(orientation==0)
 		{
 			x=x+15;
+			this.getWorld(incomingLink.destDimID).setSpawnLocation(x-1, y, z);
+			
 		}
 		else if(orientation==1)
 		{
 			z=z+15;
+			this.getWorld(incomingLink.destDimID).setSpawnLocation(x, y, z-1);
+
 		}
 		else if(orientation==2)
 		{
 			x=x-15;
+			this.getWorld(incomingLink.destDimID).setSpawnLocation(x+1, y, z);
+
 		}
 		else if(orientation==3)
 		{
 			z=z-15;
+			this.getWorld(incomingLink.destDimID).setSpawnLocation(x, y, z+1);
+
 		}
 			int searchRadius=19;
 			 

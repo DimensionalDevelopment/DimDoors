@@ -16,14 +16,20 @@ public class DungeonGenerator
 	public ArrayList<HashMap> sideRifts = new ArrayList<HashMap>();
 	public LinkData exitLink; 
 	public static Random rand = new Random();
+	public boolean isOpen;
+	public int sideDoorsSoFar=0;
+	public int exitDoorsSoFar=0;
+	public int deadEndsSoFar=0;
 	
 	
 	
-	public DungeonGenerator(int weight, String schematicPath, ArrayList<HashMap> sideRifts)
+	
+	
+	public DungeonGenerator(int weight, String schematicPath, Boolean isOpen)
 	{
 		this.weight=weight;
 		this.schematicPath=schematicPath;
-		this.sideRifts=sideRifts;
+		this.isOpen=isOpen;
 		
 	}
 	
@@ -173,7 +179,8 @@ public class DungeonGenerator
 		}
 		
 		
-		mod_pocketDim.loader.init(dungeon.schematicPath, incoming, 0,0,0);
+		mod_pocketDim.loader.init(dungeon.schematicPath, incoming);
+		dimHelper.dimList.get(incoming.destDimID).dungeonGenerator=dungeon;
 		//mod_pocketDim.loader.generateSchematic(incoming,0,0,0);
 	
 		
