@@ -7,8 +7,10 @@ import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet34EntityTeleport;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.LinkData;
@@ -41,6 +43,7 @@ public class MobObelisk extends EntityFlying implements IMob
 		
 		
 		
+		
 		// TODO Auto-generated constructor stub
 	}
 
@@ -49,6 +52,11 @@ public class MobObelisk extends EntityFlying implements IMob
 	{
 		// TODO Auto-generated method stub
 		return 20;
+	}
+	
+	public boolean canBePushed()
+	{
+		return false;
 	}
 	
 	 public void setEntityPosition(Entity entity, double x, double y, double z)
@@ -182,6 +190,13 @@ public class MobObelisk extends EntityFlying implements IMob
 					
 				}
 				
+				 for (int i = 0; i < -1+this.textureState/2; ++i)
+			        {
+					 entityPlayer.worldObj.spawnParticle("portal", entityPlayer.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, entityPlayer.posY + this.rand.nextDouble() * (double)entityPlayer.height - 0.75D, entityPlayer.posZ + (this.rand.nextDouble() - 0.5D) * (double)entityPlayer.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
+			        }
+				 
+				 
+				
 			}
 			
 			
@@ -289,6 +304,10 @@ public class MobObelisk extends EntityFlying implements IMob
 
 	        return true;
 	    }
+	  public boolean attackEntityFrom(DamageSource par1DamageSource, int par2)
+	    {
+		  return false;
+	    }
 	  public void faceEntity(Entity par1Entity, float par2, float par3)
 	    {
 	        double d0 = par1Entity.posX - this.posX;
@@ -334,6 +353,30 @@ public class MobObelisk extends EntityFlying implements IMob
 	  public float getRotationYawHead()
 	    {
 	        return 0.0F;
+	    }
+	  
+	 
+	  
+	   public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound)
+	    {
+	        super.writeEntityToNBT(par1NBTTagCompound);
+	        par1NBTTagCompound.setFloat("soundTime", this.soundTime);
+	        par1NBTTagCompound.setInteger("aggro", this.aggro);
+	        par1NBTTagCompound.setByte("textureState", this.textureState);
+	        par1NBTTagCompound.setBoolean("hasJumped", this.hasJumped);
+
+	    }
+
+	    /**
+	     * (abstract) Protected helper method to read subclass entity data from NBT.
+	     */
+	    public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound)
+	    {
+	        super.readEntityFromNBT(par1NBTTagCompound);
+	        this.soundTime=par1NBTTagCompound.getFloat("soundTime");
+	        this.aggro=par1NBTTagCompound.getInteger("aggro");
+	        this.textureState=par1NBTTagCompound.getByte("textureState");
+	        this.hasJumped=par1NBTTagCompound.getBoolean("hasJumped");
 	    }
 
 	

@@ -91,6 +91,50 @@ public class DimData implements Serializable
 		
 	}
 	
+	public ArrayList findRiftsInRange(World world, int range, int x, int y, int z)
+	{
+		LinkData nearest=null;
+		ArrayList rifts = new ArrayList();
+		int i=-range;
+		int j=-range;
+		int k=-range;
+		
+		while (i<range)
+		{
+			while (j<range)
+			{
+				while (k<range)
+				{
+					if(world.getBlockId(x+i, y+j, z+k)==mod_pocketDim.blockRiftID)
+					{
+						if(MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)!=0)
+						{
+							nearest=this.findLinkAtCoords(x+i, y+j, z+k);
+							if(nearest!=null)
+							{
+								rifts.add(nearest);
+							}
+						}
+						
+					}
+					k++;
+				}
+				k=-range;
+				j++;
+				
+			}
+			j=-range;
+			i++;		
+			
+		}
+		
+		
+		return rifts;
+		
+	}
+	
+	
+	
 	public LinkData addLinkToDim(LinkData link)
 	{
 		if(this.linksInThisDim.containsKey(link.locZCoord))

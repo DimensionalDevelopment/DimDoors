@@ -2,8 +2,12 @@ package StevenDimDoors.mod_pocketDim;
 
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -74,6 +78,17 @@ public class TileEntityRift extends TileEntity
 					  EntityEnderman creeper = new EntityEnderman(worldObj);
 	                  creeper.setLocationAndAngles(this.xCoord+.5, this.yCoord-1, this.zCoord+.5, 5, 6);
 	                  worldObj.spawnEntityInWorld(creeper);
+					}
+					
+					if(dimHelper.dimList.get(this.worldObj.provider.dimensionId)!=null)
+					{
+						ArrayList rifts = dimHelper.dimList.get(this.worldObj.provider.dimensionId).findRiftsInRange(worldObj, 6, this.xCoord, this.yCoord, this.zCoord);
+						if(rifts.size()>15)
+						{
+							 MobObelisk creeper = new MobObelisk(worldObj);
+			                  creeper.setLocationAndAngles(this.xCoord+.5, yCoordHelper.getFirstUncovered(this.worldObj, this.xCoord, this.yCoord, this.zCoord), this.zCoord+.5, 5, 6);
+			                  worldObj.spawnEntityInWorld(creeper);
+						}
 					}
 				 }
 		 
