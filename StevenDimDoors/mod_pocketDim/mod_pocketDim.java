@@ -415,7 +415,7 @@ public class mod_pocketDim
         TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
         TickRegistry.registerTickHandler(new CommonTickHandler(), Side.SERVER);
 
-      //  GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimRail");
+      //GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimRail");
 
         GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
         GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");

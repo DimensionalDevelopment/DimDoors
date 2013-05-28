@@ -133,7 +133,7 @@ public class MobObelisk extends EntityFlying implements IMob
 			{
 				if(soundTime<=0)
 				{	
-					this.playSound("mods.DimensionalDoors.sounds.Monolith",  1F, 1F);
+					//this.playSound("mods.DimensionalDoors.sounds.Monolith",  1F, 1F);
 					
 					soundTime=100;
 				}
@@ -169,12 +169,12 @@ public class MobObelisk extends EntityFlying implements IMob
 					}
 					if(aggro>430)
 					{
-						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.tearing",2, 1);
+					//	this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.tearing",2, 1);
 
 					}
 					if(aggro>445)
 					{
-						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.tearing",6, 1);
+						//this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.tearing",6, 1);
 
 					}
 					
@@ -191,9 +191,9 @@ public class MobObelisk extends EntityFlying implements IMob
 					LinkData link = new LinkData(this.worldObj.provider.dimensionId, mod_pocketDim.limboDimID, (int)this.posX, (int)this.posY, (int)this.posZ, (int)this.posX+rand.nextInt(500)-250, (int)this.posY+500, (int)this.posZ+rand.nextInt(500)-250, false,0);
 
 					dimHelper.instance.teleportToPocket(worldObj, link, entityPlayer);
-					this.worldObj.playSound(link.destXCoord,link.destYCoord,link.destZCoord, "mods.DimensionalDoors.sounds.wylkermaxcrack", 13, 1, true);
+				//	this.worldObj.playSound(link.destXCoord,link.destYCoord,link.destZCoord, "mods.DimensionalDoors.sounds.wylkermaxcrack", 13, 1, true);
 
-					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.wylkermaxcrack",13, 1);
+				//	entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.wylkermaxcrack",13, 1);
 
 					
 					
@@ -225,7 +225,7 @@ public class MobObelisk extends EntityFlying implements IMob
 		{
 			if(this.worldObj.isRemote)
 			{
-				FMLClientHandler.instance().getClient().sndManager.stopEntitySound(this);
+				//FMLClientHandler.instance().getClient().sndManager.stopEntitySound(this);
 			}
 			if(aggro>0)
 			{
