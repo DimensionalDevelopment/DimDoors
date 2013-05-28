@@ -167,6 +167,11 @@ public class MobObelisk extends EntityFlying implements IMob
 						}
 						
 					}
+					if(aggro>430)
+					{
+						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.tearing",2, 1);
+
+					}
 					if(aggro>445)
 					{
 						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.tearing",6, 1);
@@ -179,14 +184,15 @@ public class MobObelisk extends EntityFlying implements IMob
 				else
 				{
 					
-					this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.wylkermaxcrack",13, 1);
 
 
 
 					
 					LinkData link = new LinkData(this.worldObj.provider.dimensionId, mod_pocketDim.limboDimID, (int)this.posX, (int)this.posY, (int)this.posZ, (int)this.posX+rand.nextInt(500)-250, (int)this.posY+500, (int)this.posZ+rand.nextInt(500)-250, false,0);
-					
+
 					dimHelper.instance.teleportToPocket(worldObj, link, entityPlayer);
+					this.worldObj.playSound(link.destXCoord,link.destYCoord,link.destZCoord, "mods.DimensionalDoors.sounds.wylkermaxcrack", 13, 1, true);
+
 					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.wylkermaxcrack",13, 1);
 
 					
