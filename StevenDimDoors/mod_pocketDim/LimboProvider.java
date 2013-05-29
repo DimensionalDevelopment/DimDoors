@@ -8,6 +8,7 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.client.IRenderHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -21,15 +22,24 @@ public class LimboProvider extends WorldProvider
 		return "Limbo";
 	}
 
+    private IRenderHandler skyRenderer;
 	
 	public LimboProvider()
 	{
-		this.hasNoSky=true;
-	
-	
+		this.hasNoSky=false;
+		
+		
+		this.skyRenderer =new limboSkyProvider();
 
 		
 	}
+	
+	@SideOnly(Side.CLIENT)
+    public IRenderHandler getSkyRenderer()
+    {
+        return this.skyRenderer;
+    }
+	
 	
 	 @Override
 	    protected void registerWorldChunkManager()

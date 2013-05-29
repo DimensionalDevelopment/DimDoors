@@ -87,16 +87,20 @@ public class MobObelisk extends EntityFlying implements IMob
 	public void onEntityUpdate()
 	{
 		 byte b0 = this.dataWatcher.getWatchableObjectByte(16);
-		
 
 	     	this.texture="/mods/DimensionalDoors/textures/mobs/Monolith"+b0+".png";
 	     	  if(!this.hasJumped&&!this.worldObj.isRemote)
 			  {
+	     		  
 	     		 int sanity=0;
 	     		 double jumpHeight=0;
 	     		  do
 	     		  {
 	     			 jumpHeight = this.posY+rand.nextInt(25);
+	     			 if(this.worldObj.provider instanceof pocketProvider)
+	     			 {
+	     				 jumpHeight = jumpHeight- rand.nextInt(10);
+	     			 }
 	     			 sanity++;
 	     		  }
 	     		  while(!this.worldObj.isAirBlock((int)this.posX,(int)jumpHeight+6 , (int)this.posZ)&&sanity<20);

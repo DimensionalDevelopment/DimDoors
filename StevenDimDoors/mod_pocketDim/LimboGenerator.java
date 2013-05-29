@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.MathHelper;
@@ -137,6 +138,11 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 		// TODO Auto-generated method stub
 		return super.chunkExists(var1, var2);
 	}
+	@Override
+	public void replaceBlocksForBiome(int par1, int par2, byte[] par3ArrayOfByte, BiomeGenBase[] par4ArrayOfBiomeGenBase)
+    {
+		
+    }
 
 	@Override
 	public Chunk provideChunk(int par1, int par2)
@@ -162,7 +168,8 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 	}
 
 	@Override
-	public void populate(IChunkProvider var1, int var2, int var3) {
+	public void populate(IChunkProvider var1, int var2, int var3) 
+	{
 		// TODO Auto-generated method stub
 		
 	}
@@ -373,7 +380,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
                                 {
                                     par3ArrayOfByte[var43 += var44] = (byte)mod_pocketDim.blockDimWallPermID;
                                 }
-                                
+                              
                                 else
                                 {
                                     par3ArrayOfByte[var43 += var44] = 0;

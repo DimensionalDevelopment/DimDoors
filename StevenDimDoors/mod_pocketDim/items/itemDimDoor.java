@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
+import java.util.Random;
 
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.dimHelper;
@@ -132,6 +133,8 @@ public class itemDimDoor extends ItemDoor
     
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {
+
+    	
     	Boolean didFindThing=false;
     	MovingObjectPosition hit = 	this.getMovingObjectPositionFromPlayer(par3EntityPlayer.worldObj, par3EntityPlayer, false );
 		if(hit!=null&&!par2World.isRemote)
