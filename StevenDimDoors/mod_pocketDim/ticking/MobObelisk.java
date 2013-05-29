@@ -120,7 +120,7 @@ public class MobObelisk extends EntityFlying implements IMob
 
 		
 		  
-		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 30);
+		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 35);
 
 		if(entityPlayer != null)		
 		{
@@ -141,13 +141,13 @@ public class MobObelisk extends EntityFlying implements IMob
 				}
 				if(aggro<470)
 				{
-					if(rand.nextInt(11)>this.textureState)
+					if(rand.nextInt(11)>this.textureState||this.aggro>=300||rand.nextInt(13)>this.textureState)
 					{
 						aggro++;
 					}
 					
 					
-					if(this.worldObj.provider instanceof pocketProvider)
+					if(this.worldObj.provider instanceof pocketProvider||this.worldObj.getClosestPlayerToEntity(this, 5)!=null)
 					{
 						
 						aggro++;
@@ -185,14 +185,18 @@ public class MobObelisk extends EntityFlying implements IMob
 					dimHelper.instance.teleportToPocket(worldObj, link, entityPlayer);
 
 					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.wylkermaxcrack",13, 1);
+					if(!(this.worldObj.provider instanceof LimboProvider ||this.worldObj.provider instanceof pocketProvider))
+					{
+						this.setDead();
+					}
 
 					
 					
 				}
-				if(!(this.worldObj.provider instanceof LimboProvider))
+				if(!(this.worldObj.provider instanceof LimboProvider || this.worldObj.getClosestPlayerToEntity(this, 5)!=null)||this.aggro>300)
 				{
 				
-				 for (int i = 0; i < -1+this.textureState/3; ++i)
+				 for (int i = 0; i < -1+this.textureState/2; ++i)
 			        {
 					 entityPlayer.worldObj.spawnParticle("portal", entityPlayer.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, entityPlayer.posY + this.rand.nextDouble() * (double)entityPlayer.height - 0.75D, entityPlayer.posZ + (this.rand.nextDouble() - 0.5D) * (double)entityPlayer.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
 			        }
@@ -321,7 +325,11 @@ public class MobObelisk extends EntityFlying implements IMob
 	    }
 	  public boolean attackEntityFrom(DamageSource par1DamageSource, int par2)
 	    {
-		  return false;
+		  if(!(par1DamageSource==DamageSource.inWall))
+		  {
+			  this.aggro=400;
+		  }
+			  return false;
 	    }
 	  public void faceEntity(Entity par1Entity, float par2, float par3)
 	    {

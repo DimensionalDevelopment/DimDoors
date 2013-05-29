@@ -583,7 +583,7 @@ public class mod_pocketDim
  	 		this.complexHalls.add(new DungeonGenerator(0, "brokenPillarsO.schematic", true));
  	 		this.complexHalls.add(new DungeonGenerator(0, "buggyTopEntry1.schematic", true));
  	 		this.complexHalls.add(new DungeonGenerator(0, "exitRuinsWithHiddenDoor.schematic", true));
- 	 		this.complexHalls.add(new DungeonGenerator(0, "hallwayHiddenTreasure.schematic", true));
+ 	 		this.complexHalls.add(new DungeonGenerator(0, "hallwayHiddenTreasure.schematic", false));
  	 		this.complexHalls.add(new DungeonGenerator(0, "mediumPillarStairs.schematic", true));
  	 		this.complexHalls.add(new DungeonGenerator(0, "ruinsO.schematic", true));
  	 		this.complexHalls.add(new DungeonGenerator(0, "pitStairs.schematic", true));

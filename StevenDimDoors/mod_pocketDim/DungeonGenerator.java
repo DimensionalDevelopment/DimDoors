@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -8,7 +9,7 @@ import net.minecraft.world.World;
 
 
 
-public class DungeonGenerator
+public class DungeonGenerator implements Serializable
 {
 
 	public int weight;
