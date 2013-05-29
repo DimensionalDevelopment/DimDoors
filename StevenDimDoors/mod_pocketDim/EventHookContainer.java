@@ -63,17 +63,10 @@ public class EventHookContainer
     		dimHelper.instance.unregsisterDims();
         	dimHelper.dimList.clear();
         	dimHelper.instance.interDimLinkList.clear();
-
         	dimHelper.instance.initPockets();
-
-        	
         	
     	}
     	
-    	
-    	
-
-
     	for(Integer ids : dimHelper.getIDs())
     	{
     		World world = dimHelper.getWorld(ids);
@@ -90,11 +83,10 @@ public class EventHookContainer
     				}
     				linkCount++;
     				int blocktoReplace = world.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord);
-    				if(mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))
+    				if(!mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))
     				{
-    					break;
+        				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
     				}
-    				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
 
 
     			}

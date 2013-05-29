@@ -48,7 +48,7 @@ public class BlockLimbo extends Block
 	    }
 	 public void registerIcons(IconRegister par1IconRegister)
 	    {
-	        this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2()+0);
+	        this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2());
 	        this.blockIcon0 = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2()+0);
 	        this.blockIcon1 = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2()+1);
 	        this.blockIcon2 = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2()+2);
