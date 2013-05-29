@@ -13,6 +13,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.LimboProvider;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -140,29 +141,19 @@ public class MobObelisk extends EntityFlying implements IMob
 				}
 				if(aggro<470)
 				{
-					if(rand.nextBoolean())
-					{
-						aggro++;
-					}
-					else if (rand.nextBoolean())
-					{
-						aggro++;
-						aggro++;
-					}
-					else if (rand.nextBoolean())
+					if(rand.nextInt(11)>this.textureState)
 					{
 						aggro++;
 					}
 					
+					
 					if(this.worldObj.provider instanceof pocketProvider)
 					{
 						
-						
+						aggro++;
+						aggro++;
+					
 						if(rand.nextBoolean())
-						{
-							aggro++;
-						}
-						else if(rand.nextBoolean())
 						{
 							aggro++;
 						}
@@ -198,11 +189,14 @@ public class MobObelisk extends EntityFlying implements IMob
 					
 					
 				}
+				if(!(this.worldObj.provider instanceof LimboProvider))
+				{
 				
 				 for (int i = 0; i < -1+this.textureState/3; ++i)
 			        {
 					 entityPlayer.worldObj.spawnParticle("portal", entityPlayer.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, entityPlayer.posY + this.rand.nextDouble() * (double)entityPlayer.height - 0.75D, entityPlayer.posZ + (this.rand.nextDouble() - 0.5D) * (double)entityPlayer.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
 			        }
+				}
 				 
 				 
 				
@@ -291,7 +285,7 @@ public class MobObelisk extends EntityFlying implements IMob
 	    {
 		  	List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this,AxisAlignedBB.getBoundingBox( this.posX-15, posY-4, this.posZ-15, this.posX+15, this.posY+15, this.posZ+15));
 	      
-		  	if(list.size()>0)
+		  	if(list.size()>0&&this.worldObj.provider.dimensionId==mod_pocketDim.limboDimID)
 		  	{
 		  		return false;
 		  	}
@@ -348,6 +342,9 @@ public class MobObelisk extends EntityFlying implements IMob
 	        double d3 = (double)MathHelper.sqrt_double(d0 * d0 + d1 * d1);
 	        float f2 = (float)(Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
 	        float f3 = (float)(-(Math.atan2(d2, d3) * 180.0D / Math.PI));
+	        this.rotationPitch =  f3;
+	        this.rotationYaw =  f2;
+	        
 	        this.rotationYaw =  f2;
 	        this.rotationYawHead=f2;
 			this.renderYawOffset=this.rotationYaw;

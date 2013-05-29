@@ -142,6 +142,8 @@ public class CommonTickHandler implements ITickHandler
     					if(blockID==Block.gravel.blockID&&!dimHelper.getWorld(mod_pocketDim.limboDimID).isAirBlock(point.getX(), point.getY()-1, point.getZ()))
     					{
     						idToSet=mod_pocketDim.blockLimboID;
+    						dimHelper.getWorld(mod_pocketDim.limboDimID).scheduleBlockUpdate(point.getX(), point.getY(), point.getZ(),10, idToSet);
+    						
     					}
     					else if(blockID==Block.gravel.blockID)
     					{

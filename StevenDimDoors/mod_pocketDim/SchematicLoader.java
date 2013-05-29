@@ -137,7 +137,7 @@ public class SchematicLoader
 	    				}
 	    			}
 					
-					if(blockID== Block.lever.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
+					else if(blockID== Block.lever.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -171,7 +171,7 @@ public class SchematicLoader
 
 	    			}
 			
-					if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID)
+					else	if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -207,7 +207,7 @@ public class SchematicLoader
 					
 	    			}
 					
-					if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorIron.blockID||blockID==Block.doorWood.blockID)
+					else	if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorIron.blockID||blockID==Block.doorWood.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -308,7 +308,7 @@ public class SchematicLoader
 	    				}
 	    			}
 					
-					if(blockID== Block.lever.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
+					else if(blockID== Block.lever.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -342,7 +342,7 @@ public class SchematicLoader
 
 	    			}
 			
-					if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID)
+					else	if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -377,7 +377,7 @@ public class SchematicLoader
 					
 	    			}
 					
-					if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorIron.blockID||blockID==Block.doorWood.blockID)
+					else	if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorIron.blockID||blockID==Block.doorWood.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -473,7 +473,7 @@ public class SchematicLoader
 	    				}
 	    			}
 					
-					if(blockID== Block.lever.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
+					else	if(blockID== Block.lever.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -507,7 +507,7 @@ public class SchematicLoader
 
 	    			}
 			
-					if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID)
+					else	if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -543,7 +543,7 @@ public class SchematicLoader
 					
 	    			}
 					
-					if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorIron.blockID||blockID==Block.doorWood.blockID)
+					else	if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorIron.blockID||blockID==Block.doorWood.blockID)
 	    			{
 	    				switch (metadata)
 	    				{

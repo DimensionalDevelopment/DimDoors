@@ -69,11 +69,14 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
 		DimData data = dimHelper.dimList.get(this.worldObj.provider.dimensionId);
 		if(data!=null)
 		{
-			if(data.isDimRandomRift&&data.isPocket&&!data.dungeonGenerator.isOpen)
+			if(data.dungeonGenerator!=null)
 			{
-				ArrayList list = new ArrayList();
+				if(data.isDimRandomRift&&data.isPocket&&!data.dungeonGenerator.isOpen)
+				{
+					ArrayList list = new ArrayList();
 				
-				return this.worldObj.getBiomeGenForCoords(var2, var3).getSpawnableList(var1);
+					return this.worldObj.getBiomeGenForCoords(var2, var3).getSpawnableList(var1);
+				}
 			}
 		}
 		// TODO Auto-generated method stub
