@@ -2,9 +2,12 @@ package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
 
+import StevenDimDoors.mod_pocketDim.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.Spells;
 import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDimClient.ClientTickHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -77,6 +80,17 @@ public class ItemStableFabric extends Item
     
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {
+    	
+    	
+    	if(this.isSteven(par3EntityPlayer))
+    	{
+    		new Spells(par3EntityPlayer, par1ItemStack.stackSize).cast();
+    		//mod_pocketDim.proxy.startCasting(par3EntityPlayer, par1ItemStack.stackSize);
+
+    	
+    		
+    	
+    	}
     	Boolean didFindThing=false;
     	MovingObjectPosition hit = 	this.getMovingObjectPositionFromPlayer(par3EntityPlayer.worldObj, par3EntityPlayer, false );
 		if(hit!=null&&!par2World.isRemote)
@@ -135,6 +149,15 @@ public class ItemStableFabric extends Item
     
     }
     
+    
+    public boolean isSteven(EntityPlayer player)
+    {
+    	if(player.username=="stevenrs11"||player.username=="Stevenrs11"||player.username=="StevenRS11")
+    	{
+    		return true;
+    	}
+    	return false;
+    }
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
     {
     	

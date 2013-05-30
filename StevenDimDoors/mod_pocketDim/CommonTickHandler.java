@@ -14,6 +14,11 @@ public class CommonTickHandler implements ITickHandler
 	 Random rand= new Random();
     public int tickCount=0;
     public int tickCount2=0;
+    
+    
+   
+    
+    
    
 
     @Override
@@ -169,6 +174,11 @@ public class CommonTickHandler implements ITickHandler
     	{
     		mod_pocketDim.teleTimer--;
     	}
+    	
+    	
+    	
+    		
+    	
     	
     }
     

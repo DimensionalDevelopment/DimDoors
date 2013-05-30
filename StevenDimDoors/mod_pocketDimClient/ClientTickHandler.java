@@ -1,6 +1,9 @@
 package StevenDimDoors.mod_pocketDimClient;
 import java.util.EnumSet;
 
+import StevenDimDoors.mod_pocketDim.Spells;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import cpw.mods.fml.common.ITickHandler;
@@ -8,6 +11,7 @@ import cpw.mods.fml.common.TickType;
 
 public class ClientTickHandler implements ITickHandler
 {
+	
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {}
 

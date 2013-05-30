@@ -246,6 +246,8 @@ public class mod_pocketDim
     
 
 
+	
+	//public Spells spells = null;
 
 
 

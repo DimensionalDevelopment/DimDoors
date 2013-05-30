@@ -4,9 +4,12 @@ import java.io.File;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.src.ModLoader;
 import net.minecraftforge.client.MinecraftForgeClient;
 import StevenDimDoors.mod_pocketDim.CommonProxy;
+import StevenDimDoors.mod_pocketDim.CommonTickHandler;
+import StevenDimDoors.mod_pocketDim.Spells;
 import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
@@ -14,6 +17,7 @@ import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 
 public class ClientProxy extends CommonProxy
 {
+	
 	@Override
 	public void registerRenderers()
 	{
@@ -30,6 +34,8 @@ public class ClientProxy extends CommonProxy
 		
 	}
 	
+	
+  
 	
 	@Override
 	public void loadTextures()
