@@ -604,7 +604,7 @@ public class mod_pocketDim
  	 		this.deadEnds.add(new DungeonGenerator(0, "smallPond.schematic", true));
  	 		
  	 		
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "fakeTNTTrap.schematic", false));
+ 	 	//	this.pistonTraps.add(new DungeonGenerator(0, "fakeTNTTrap.schematic", false));
  	 		this.pistonTraps.add(new DungeonGenerator(0, "hallwayPitFallTrap.schematic", false));
  	 		this.pistonTraps.add(new DungeonGenerator(0, "hallwayPitFallTrap.schematic", false));
  	 		this.pistonTraps.add(new DungeonGenerator(0, "pistonFallRuins.schematic", false));
