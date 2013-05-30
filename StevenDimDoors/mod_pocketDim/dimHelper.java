@@ -727,25 +727,25 @@ public class dimHelper extends DimensionManager
 		if(orientation==0)
 		{
 			x=x+15;
-			//this.getWorld(incomingLink.destDimID).setSpawnLocation(x-1, y, z);
+			this.getWorld(incomingLink.destDimID).provider.setSpawnPoint(x-1, y, z);
 			
 		}
 		else if(orientation==1)
 		{
 			z=z+15;
-		//	this.getWorld(incomingLink.destDimID).setSpawnLocation(x, y, z-1);
+			this.getWorld(incomingLink.destDimID).provider.setSpawnPoint(x, y, z-1);
 
 		}
 		else if(orientation==2)
 		{
 			x=x-15;
-		//	this.getWorld(incomingLink.destDimID).setSpawnLocation(x+1, y, z);
+			this.getWorld(incomingLink.destDimID).provider.setSpawnPoint(x+1, y, z);
 
 		}
 		else if(orientation==3)
 		{
 			z=z-15;
-		//	this.getWorld(incomingLink.destDimID).setSpawnLocation(x, y, z+1);
+			this.getWorld(incomingLink.destDimID).provider.setSpawnPoint(x, y, z+1);
 
 		}
 			int searchRadius=19;
