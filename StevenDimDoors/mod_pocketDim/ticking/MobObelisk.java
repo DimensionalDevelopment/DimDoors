@@ -31,21 +31,29 @@ public class MobObelisk extends EntityFlying implements IMob
 	int aggro = 0;
 	byte textureState = 0;
 	boolean hasJumped= false;
+	float scaleFactor = 0;
 	
 	int destX=0;
 	int destY=0;
 	int destZ=0;
 	public MobObelisk(World par1World) 
 	{
+		
 		super(par1World);
 		this.texture="/mods/DimensionalDoors/textures/mobs/Monolith0.png";
 		this.setSize(2F, 8.0F);
 		this.noClip=true;
+		this.scaleFactor= (float) (rand.nextDouble()+1);
 		
 		
 		
 		
 		// TODO Auto-generated constructor stub
+	}
+	@Override
+	public boolean canDespawn()
+	{
+		return false;
 	}
 
 	@Override
@@ -59,6 +67,11 @@ public class MobObelisk extends EntityFlying implements IMob
 	{
 		return false;
 	}
+	
+	public float getRenderSizeModifier()
+    {
+        return this.scaleFactor;
+    }
 	
 	 public void setEntityPosition(Entity entity, double x, double y, double z)
 	 {
@@ -394,6 +407,7 @@ public class MobObelisk extends EntityFlying implements IMob
 	        par1NBTTagCompound.setInteger("aggro", this.aggro);
 	        par1NBTTagCompound.setByte("textureState", this.textureState);
 	        par1NBTTagCompound.setBoolean("hasJumped", this.hasJumped);
+	        par1NBTTagCompound.setFloat("scaleFactor", this.scaleFactor);
 
 	    }
 
@@ -407,6 +421,8 @@ public class MobObelisk extends EntityFlying implements IMob
 	        this.aggro=par1NBTTagCompound.getInteger("aggro");
 	        this.textureState=par1NBTTagCompound.getByte("textureState");
 	        this.hasJumped=par1NBTTagCompound.getBoolean("hasJumped");
+	        this.scaleFactor=par1NBTTagCompound.getFloat("scaleFactor");
+
 	    }
 
 	

@@ -233,7 +233,6 @@ public class dimHelper extends DimensionManager
 		    {
 		    	oldWorld.getChunkFromChunkCoords(entX, entZ).removeEntity(entity);
 		    	oldWorld.getChunkFromChunkCoords(entX, entZ).isModified = true;
-		    	
 		    }
 		    
 		  
