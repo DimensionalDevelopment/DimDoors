@@ -237,6 +237,7 @@ public class DimDoorsConfig
 		mod_pocketDim.returnInventory=bLimboReturnInventory.getBoolean(true);
 		mod_pocketDim.HOW_MUCH_TNT=HOWMUCHTNT.getInt();
 		mod_pocketDim.limboDimID = limboDimID.getInt();
+		mod_pocketDim.isLimboActive= bLimboActive.getBoolean(true);
 		
 		
 }
