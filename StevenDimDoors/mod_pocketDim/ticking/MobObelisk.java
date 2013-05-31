@@ -40,7 +40,7 @@ public class MobObelisk extends EntityFlying implements IMob
 	{
 		
 		super(par1World);
-		this.texture="/mods/DimensionalDoors/textures/mobs/Monolith0.png";
+		this.texture="/mods/DimDoors/textures/mobs/Monolith0.png";
 		this.setSize(2F, 8.0F);
 		this.noClip=true;
 		this.scaleFactor= (float) (rand.nextDouble()+1);
@@ -89,11 +89,9 @@ public class MobObelisk extends EntityFlying implements IMob
 	    
 	  }
 	  
-	  @SideOnly(Side.CLIENT)
+	
 
-	    /**
-	     * Returns render size modifier
-	     */
+	
 	   
 	  
 	@Override
@@ -101,7 +99,7 @@ public class MobObelisk extends EntityFlying implements IMob
 	{
 		 byte b0 = this.dataWatcher.getWatchableObjectByte(16);
 
-	     	this.texture="/mods/DimensionalDoors/textures/mobs/Monolith"+b0+".png";
+	     	this.texture="/mods/DimDoors/textures/mobs/Monolith"+b0+".png";
 	     	  if(!this.hasJumped&&!this.worldObj.isRemote)
 			  {
 	     		  
@@ -143,7 +141,7 @@ public class MobObelisk extends EntityFlying implements IMob
 		{
 			if(this.soundTime<=0)
 			{
-				this.playSound("mods.DimensionalDoors.sounds.Monolith",  1F, 1F);
+				this.playSound("mods.DimDoors.sfx.monk",  1F, 1F);
 				this.soundTime=100;
 			}
 			
@@ -178,12 +176,12 @@ public class MobObelisk extends EntityFlying implements IMob
 					}
 					if(aggro>430)
 					{
-						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.tearing",2, 1);
+						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.tearing",2, 1);
 
 					}
 					if(aggro>445)
 					{
-						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.tearing",6, 1);
+						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.tearing",6, 1);
 
 					}
 					
@@ -201,7 +199,7 @@ public class MobObelisk extends EntityFlying implements IMob
 
 					dimHelper.instance.teleportToPocket(worldObj, link, entityPlayer);
 
-					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimensionalDoors.sounds.wylkermaxcrack",13, 1);
+					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.crack",13, 1);
 					if(!(this.worldObj.provider instanceof LimboProvider ||this.worldObj.provider instanceof pocketProvider))
 					{
 						this.setDead();

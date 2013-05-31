@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -80,7 +81,7 @@ public class mod_pocketDim
 	
 
 	public static final String version = "1.5.2R1.3.6RC1";
-	public static final String modid = "DimensionalDoors";
+	public static final String modid = "DimDoors";
 
 	//need to clean up 
     @SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
@@ -132,11 +133,11 @@ public class mod_pocketDim
     public static int itemRiftRemoverID;
     public static int blockDimWallPermID;
     public static int obeliskID;
-    public static Block linkDimDoor;
+    //public static Block linkDimDoor;
     public static Block transientDoor;
     public static Block ExitDoor;
     public static Block chaosDoor;
-    public static Block linkExitDoor;
+   // public static Block linkExitDoor;
     public static Block blockRift;
     public static Block blockLimbo;
     public static  Block dimDoor;    
@@ -255,80 +256,23 @@ public class mod_pocketDim
     public void PreInit(FMLPreInitializationEvent event)
     {
     	
+    	
         MinecraftForge.EVENT_BUS.register(new EventHookContainer());
+        File configFile = event.getSuggestedConfigurationFile();
+        
+        Configuration config = new Configuration(configFile);
 
         
+        DimDoorsConfig.loadConfig(configFile);
 
-        
-
-         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-         
-         
-         
 
          
          
-         config.load();
-       //  this.enableDimRail = config.get("BOOLEAN", "true to enable dim rail crafting", true).getBoolean(true);
-         this.hardcoreLimbo = config.get("BOOLEAN", "true to cause player to respawn in Limbo", false).getBoolean(false);
-         this.enableDimTrapDoor = config.get("BOOLEAN", "true to enable trap door crafting", true).getBoolean(true);
-         this.enableIronDimDoor = config.get("BOOLEAN", "true to enable iron dim door crafting", true).getBoolean(true);
-         this.enableRiftBlade = config.get("BOOLEAN", "true to enable rift blade crafting", true).getBoolean(true);
-         this.enableRiftRemover = config.get("BOOLEAN", "true to enable rift remover crafting", true).getBoolean(true);
-         this.enableRiftSignature = config.get("BOOLEAN", "true to enable rift signature crafting", true).getBoolean(true);
-         this.enableUnstableDoor = config.get("BOOLEAN", "true to enable unstable door crafting", true).getBoolean(true);
-         this.enableWoodenDimDoor = config.get("BOOLEAN", "true to enable wooden door crafting", true).getBoolean(true);
-         this.enableDoorOpenGL = config.get("BOOLEAN", "Toggles the door render effect", true).getBoolean(true);
-         this.returnInventory = config.get("BOOLEAN", "Toggles whether or not your inventory is returned upon dying and respawning in limbo", true).getBoolean(true);
+         
 
          
-     //    dimRailID = config.getBlock("Dimensional Rail", 1980).getInt();
-
-         chaosDoorID = config.getBlock("Chaos Door", 1978).getInt();
-         dimDoorID = config.getBlock("Dimensional Door", 1970).getInt();
-         dimHatchID = config.getBlock("Transdimensional Trapdoor", 1971).getInt();
-         linkDimDoorID= config.getBlock("Dimensional Door Link", 1972).getInt();
-         blockDimWallID=config.getBlock("Fabric of Reality", 1973).getInt();
-         ExitDoorID = config.getBlock("Warp Door", 1975).getInt();
-         linkExitDoorID = config.getBlock("Warp Door Link", 1976).getInt();
-         blockRiftID = config.getBlock("Rift", 1977).getInt();
-         transientDoorID = config.getBlock("transientDoorID", 1979).getInt();
-
-         itemStabilizedLinkSignatureID=config.getItem("Stabilized Rift Signature", 5677).getInt();
-         itemRiftBladeID=config.getItem("Rift Blade", 5676).getInt();
-         itemChaosDoorID=config.getItem("Chaos Door", 5673).getInt();
-         itemRiftRemoverID=config.getItem("Rift Remover", 5671).getInt();
-         itemStableFabricID=config.getItem("Stable Fabric", 5672).getInt();
-         itemExitDoorID=config.getItem("Warp Door Item", 5673).getInt();
-         itemDimDoorID=config.getItem("Dimensional Door Item", 5674).getInt();
-         itemLinkSignatureID=config.getItem("Rift Signature Item", 5675).getInt();
          
-       
-         TNFREAKINGT = config.get("BOOLEAN", "EXPLOSIONS!!???!!!?!?!!", false).getBoolean(false);
-         this.enableRiftGrief = config.get("BOOLEAN", "toggles whether rifts eat blocks around them or not", true).getBoolean(true);
-         HOW_MUCH_TNT=config.get("Int", "Chance that a block will not be TNT. must be greater than 1. Explosions!?!?? must be set to true, and you figure out what it does. ", 25).getInt(25);
-         this.obeliskID=config.get("Int", "MobObeliskID", 125).getInt(125);
-
-   
-         blockLimboID=config.get("Int", "Block ID for Limbo- must be below 256", 217).getInt();
-         blockDimWallPermID=config.get("Int", "Block ID for blockDimWallPermID- must be below 256", 220).getInt();
-         this.limboDimID=config.get("Int", "Limbo Dimension ID", -23).getInt();
-         this.limboExitRange=config.get("Int", "The farthest possible distance that limbo can send you upon return to the overworld.", 500).getInt();
-
-         providerID=config.get("Int", "ProviderID", 12).getInt();
-         this.limboProviderID=config.get("Int", "Limbo Provider ID", 13).getInt();
-
-      
-         
-         this.riftsInWorldGen = config.get("BOOLEAN", "Should rifts generate natrually in the world? ", true).getBoolean(true);
-         this.isLimboActive = config.get("BOOLEAN", "Toggles limbo", true).getBoolean(true);
-
-         this.riftSpreadFactor =  config.get("Int", "How many times a rift can spread- 0 prevents rifts from spreading at all. I dont recommend putting it highter than 5, because its rather exponential. ", 3).getInt();
-
-         this.limboBiomeID=config.get("Int", "Biome ID for Limbo-", 217).getInt();
-         this.pocketBiomeID=config.get("Int", "Biome ID for Pockets-", 218).getInt();
-         
-         config.save();
+    
 	
     }
     
@@ -341,11 +285,11 @@ public class mod_pocketDim
     
         transientDoor = (new TransientDoor(transientDoorID, Material.iron)).setHardness(1.0F) .setUnlocalizedName("transientDoor");
 
-        linkDimDoor = (new linkDimDoor(linkDimDoorID, Material.iron)).setHardness(1.0F) .setUnlocalizedName("dimDoorLink");
+     //   linkDimDoor = (new linkDimDoor(linkDimDoorID, Material.iron)).setHardness(1.0F) .setUnlocalizedName("dimDoorLink");
         blockDimWall = (new BlockDimWall(blockDimWallID, 0, Material.iron)).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("blockDimWall");
         blockDimWallPerm = (new BlockDimWallPerm(blockDimWallPermID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setHardness(100000.0F).setUnlocalizedName("blockDimWallPerm");
         ExitDoor = (new ExitDoor(ExitDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
-        linkExitDoor = (new linkExitDoor(linkExitDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorexitlink");
+     //   linkExitDoor = (new linkExitDoor(linkExitDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorexitlink");
         blockRift = (new BlockRift(blockRiftID, 0, Material.air).setHardness(1.0F) .setUnlocalizedName("rift"));
         blockLimbo = (new BlockLimbo(blockLimboID, 15, Material.iron).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F));
         chaosDoor = (new ChaosDoor(chaosDoorID, Material.iron).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
@@ -371,10 +315,10 @@ public class mod_pocketDim
         //GameRegistry.registerBlock(dimRail, "Dimensional Rail");
         GameRegistry.registerBlock(chaosDoor, "Unstable Door");
         GameRegistry.registerBlock(ExitDoor, "Warp Door");
-        GameRegistry.registerBlock(linkExitDoor, "Warp Door link");
+        //GameRegistry.registerBlock(linkExitDoor, "Warp Door link");
         GameRegistry.registerBlock(blockRift, "Rift");
         GameRegistry.registerBlock(blockLimbo, "Unraveled Fabric");
-        GameRegistry.registerBlock(linkDimDoor, "Dimensional Door link");
+        //GameRegistry.registerBlock(linkDimDoor, "Dimensional Door link");
         GameRegistry.registerBlock(dimDoor, "Dimensional Door");
         GameRegistry.registerBlock(dimHatch,"Transdimensional Trapdoor");
         GameRegistry.registerBlock(blockDimWall, "Fabric of Reality");
@@ -398,7 +342,7 @@ public class mod_pocketDim
         LanguageRegistry.addName(blockLimbo	, "Unraveled Fabric");
         LanguageRegistry.addName(ExitDoor	, "Warp Door");
         LanguageRegistry.addName(chaosDoor	, "Unstable Door");
-        LanguageRegistry.addName(linkDimDoor, "Dimensional Door");
+        //LanguageRegistry.addName(linkDimDoor, "Dimensional Door");
         LanguageRegistry.addName(blockDimWall	, "Fabric of Reality");
         LanguageRegistry.addName(blockDimWallPerm	, "Fabric of Reality");
         LanguageRegistry.addName(dimDoor, "Dimensional Door");
@@ -425,7 +369,7 @@ public class mod_pocketDim
         EntityRegistry.registerModEntity(MobObelisk.class, "Obelisk", this.obeliskID, this,70, 1, true);
         EntityList.IDtoClassMapping.put(this.obeliskID, MobObelisk.class);
      	EntityList.entityEggs.put(this.obeliskID, new EntityEggInfo(this.obeliskID, 0, 0xffffff));
-    	LanguageRegistry.instance().addStringLocalization("entity.DimensionalDoors.Obelisk.name", "Monolith");
+    	LanguageRegistry.instance().addStringLocalization("entity.DimDoors.Obelisk.name", "Monolith");
 
 
         

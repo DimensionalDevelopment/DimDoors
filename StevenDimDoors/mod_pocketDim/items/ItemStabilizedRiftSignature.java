@@ -85,9 +85,14 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
     			boolean hasEnder = false;
     		// checks to see if the item has a link stored, if so, it creates it
     		
-    			if(par2EntityPlayer.inventory.hasItem(Item.enderPearl.itemID))
+    			if(par2EntityPlayer.inventory.hasItem(Item.enderPearl.itemID)||par2EntityPlayer.inventory.hasItem(mod_pocketDim.itemStableFabricID))
     			{
-    				par2EntityPlayer.inventory.consumeInventoryItem(Item.enderPearl.itemID);
+    				if(!par2EntityPlayer.inventory.consumeInventoryItem(mod_pocketDim.itemStableFabricID))
+
+    				{
+        				par2EntityPlayer.inventory.consumeInventoryItem(Item.enderPearl.itemID);
+
+    				}
     				hasEnder=true;
     			}
     			

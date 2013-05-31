@@ -41,9 +41,9 @@ public class EventHookContainer
 	{
 		File dataDir = Minecraft.getMinecraft().mcDataDir;
 
-		event.manager.soundPoolSounds.addSound("mods/DimensionalDoors/sounds/Monolith.ogg", (mod_pocketDim.class.getResource("/mods/DimensionalDoors/sounds/Monolith.ogg")));
-		event.manager.soundPoolSounds.addSound("mods/DimensionalDoors/sounds/wylkermaxcrack.ogg", (mod_pocketDim.class.getResource("/mods/DimensionalDoors/sounds/wylkermaxcrack.ogg")));
-		event.manager.soundPoolSounds.addSound("mods/DimensionalDoors/sounds/tearing.ogg", (mod_pocketDim.class.getResource("/mods/DimensionalDoors/sounds/tearing.ogg")));
+		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/monk.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/monk.ogg")));
+		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/crack.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/crack.ogg")));
+		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/tearing.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/tearing.ogg")));
 
 
 	}

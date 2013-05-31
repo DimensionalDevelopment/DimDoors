@@ -697,13 +697,21 @@ public class dimHelper extends DimensionManager
 	 */
 	public void generatePocket(LinkData incomingLink)
 	{
-		if(this.getWorld(incomingLink.destDimID)==null)
+		try
 		{
-			this.initDimension(incomingLink.destDimID);
+			if(this.getWorld(incomingLink.destDimID)==null)
+			{
+				this.initDimension(incomingLink.destDimID);
+			}
+			if(this.getWorld(incomingLink.destDimID).provider==null)
+			{
+				this.initDimension(incomingLink.destDimID);
+			}
 		}
-		if(this.getWorld(incomingLink.destDimID).provider==null)
+		catch(Exception E)
 		{
-			this.initDimension(incomingLink.destDimID);
+			E.printStackTrace();
+			return;
 		}
 	//	World world = this.getWorld(incomingLink.destDimID);
 		DimData data = this.dimList.get(incomingLink.destDimID);

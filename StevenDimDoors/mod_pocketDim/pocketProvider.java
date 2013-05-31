@@ -6,6 +6,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.common.DimensionManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -81,14 +82,22 @@ public class pocketProvider extends WorldProvider
 	
 	public int getRespawnDimension(EntityPlayerMP player)
 	{
+		int respawnDim;
+		
 		if(mod_pocketDim.isLimboActive)
 		{
-	       return mod_pocketDim.limboDimID;
+			respawnDim= mod_pocketDim.limboDimID;
 		}
 		else
 		{
-			return dimHelper.dimList.get(this.dimensionId).exitDimLink.destDimID;
+			respawnDim= dimHelper.dimList.get(this.dimensionId).exitDimLink.destDimID;
 		}
+		
+		if(dimHelper.getWorld(respawnDim)==null)
+		{
+			dimHelper.initDimension(respawnDim);
+		}
+		return respawnDim;
 	}
 	
 	 public boolean canRespawnHere()

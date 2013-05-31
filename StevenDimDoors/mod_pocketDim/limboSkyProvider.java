@@ -125,7 +125,7 @@ public class limboSkyProvider extends IRenderHandler
          GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
          GL11.glRotatef(world.getCelestialAngle(par1) * 360.0F, 1.0F, 0.0F, 0.0F);
          f10 = 30.0F;
-         mc.renderEngine.bindTexture("/mods/DimensionalDoors/textures/other/limboSun.png");
+         mc.renderEngine.bindTexture("/mods/DimDoors/textures/other/limboSun.png");
          tessellator1.startDrawingQuads();
          tessellator1.addVertexWithUV((double)(-f10), 100.0D, (double)(-f10), 0.0D, 0.0D);
          tessellator1.addVertexWithUV((double)f10, 100.0D, (double)(-f10), 1.0D, 0.0D);
@@ -133,7 +133,7 @@ public class limboSkyProvider extends IRenderHandler
          tessellator1.addVertexWithUV((double)(-f10), 100.0D, (double)f10, 0.0D, 1.0D);
          tessellator1.draw();
          f10 = 20.0F;
-         mc.renderEngine.bindTexture("/mods/DimensionalDoors/textures/other/limboMoon.png");
+         mc.renderEngine.bindTexture("/mods/DimDoors/textures/other/limboMoon.png");
          int k = world.getMoonPhase();
          int l = k % 4;
          int i1 = k / 4 % 2;
