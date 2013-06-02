@@ -98,7 +98,10 @@ public class SchematicLoader
              
              blocks=new short[blockId.length];
              
-              this.addId = nbtdata.getByteArray("AddBlocks");
+             if(nbtdata.getByteArray("AddBlocks")!=null)
+             {
+            	 this.addId = nbtdata.getByteArray("AddBlocks");
+             }
              
               entities = nbtdata.getTagList("Entities");
               tileentities = nbtdata.getTagList("TileEntities");
@@ -106,13 +109,20 @@ public class SchematicLoader
               input.close();
               
               
-              for (int index = 0; index < blockId.length; index++) {
-                  if ((index >> 1) >= addId.length) { // No corresponding AddBlocks index
+              for (int index = 0; index < blockId.length; index++) 
+              {
+                  if ((index >> 1) >= addId.length) 
+                  { 
                       blocks[index] = (short) (blockId[index] & 0xFF);
-                  } else {
-                      if ((index & 1) == 0) {
+                  }
+                  else 
+                  {
+                      if ((index & 1) == 0) 
+                      {
                           blocks[index] = (short) (((addId[index >> 1] & 0x0F) << 8) + (blockId[index] & 0xFF));
-                      } else {
+                          
+                      } else 
+                      {
                           blocks[index] = (short) (((addId[index >> 1] & 0xF0) << 4) + (blockId[index] & 0xFF));
                       }
                   }
@@ -759,7 +769,7 @@ public class SchematicLoader
 		                    
 		                    if(Block.blocksList[blockToReplace]==null&&blockToReplace!=0||blockToReplace>158)
 		                    		{
-		                    			blockToReplace=mod_pocketDim.blockDimWall.blockID;
+		                    		//	blockToReplace=mod_pocketDim.blockDimWall.blockID;
 		                    		}
 		                 
 		                    if(blockToReplace>0)

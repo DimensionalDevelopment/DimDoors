@@ -438,7 +438,7 @@ public class mod_pocketDim
         
         
         DimensionManager.registerProviderType(this.providerID, pocketProvider.class, false);
-        DimensionManager.registerProviderType(this.limboProviderID, LimboProvider.class, true);
+        DimensionManager.registerProviderType(this.limboProviderID, LimboProvider.class, false);
         
         
       

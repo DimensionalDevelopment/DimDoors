@@ -343,7 +343,7 @@ public class dimHelper extends DimensionManager
 				}
 			
 					
-				if(entity instanceof EntityPlayerMP)
+				if(!world.isRemote)
 				{
 					
 					entity = this.teleportEntity(world, entity, linkData);		
