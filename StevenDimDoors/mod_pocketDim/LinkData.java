@@ -61,12 +61,14 @@ public class LinkData implements Serializable
 
 	}
 	 
-	public void printLinkData()
+	public String printLinkData()
 	{
 		
-		
-		System.out.println(String.valueOf(this.locDimID)+"locDimID "+String.valueOf(this.locXCoord)+"-locXCoord "+String.valueOf(this.locYCoord)+"-locYCoord "+String.valueOf(this.locZCoord)+"-locZCoord ");
-		System.out.println(String.valueOf(this.destDimID)+"DestDimID "+String.valueOf(this.destXCoord)+"-destXCoord "+String.valueOf(this.destYCoord)+"-destYCoord "+String.valueOf(this.destZCoord)+"-destZCoord ");
+		String linkInfo;
+		linkInfo=String.valueOf(this.locDimID)+"locDimID "+String.valueOf(this.locXCoord)+":locXCoord "+String.valueOf(this.locYCoord)+":locYCoord "+String.valueOf(this.locZCoord)+":locZCoord ";
+		linkInfo.concat("\n"+ String.valueOf(this.destDimID)+"DestDimID "+String.valueOf(this.destXCoord)+":destXCoord "+String.valueOf(this.destYCoord)+":destYCoord "+String.valueOf(this.destZCoord)+":destZCoord ");
+		return linkInfo;
+
 		
 
 	}

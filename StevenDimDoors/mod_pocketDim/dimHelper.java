@@ -16,6 +16,9 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
+import StevenDimDoors.mod_pocketDim.world.LimboProvider;
+import StevenDimDoors.mod_pocketDim.world.pocketProvider;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -667,7 +670,7 @@ public class dimHelper extends DimensionManager
 				
 
 				int blockToReplace= this.getWorld(destinationID).getBlockId(destX, destY, destZ);
-				if(blockToReplace!=mod_pocketDim.dimDoorID&&blockToReplace!=mod_pocketDim.linkExitDoorID&&blockToReplace!=mod_pocketDim.linkDimDoorID&&blockToReplace!=mod_pocketDim.ExitDoorID&&blockToReplace!=mod_pocketDim.transientDoorID)
+				if(blockToReplace!=mod_pocketDim.dimDoorID&&blockToReplace!=mod_pocketDim.ExitDoorID&&blockToReplace!=mod_pocketDim.transientDoorID)
 				{
 					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, doorTypeToPlace,destOrientation,2);
 					this.getWorld(destinationID).setBlock(destX, destY, destZ, doorTypeToPlace,8,2);
@@ -1023,7 +1026,7 @@ public class dimHelper extends DimensionManager
 			
 		
 		
-		return link;
+		return linkData;
 		
 
 	}
@@ -1052,8 +1055,8 @@ public class dimHelper extends DimensionManager
 			FileOutputStream saveFile = null;
 			try
 			{
-				World world=FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
-				String saveFileName=world.getSaveHandler().getMapFileFromName("idcounts").getParentFile().getParent()+"/DimensionalDoorsDataTEMP";
+				//World world=FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
+				String saveFileName=this.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataTEMP";
 				saveFile = new FileOutputStream(saveFileName);
 		         
 		         ObjectOutputStream save = new ObjectOutputStream(saveFile);
@@ -1061,13 +1064,13 @@ public class dimHelper extends DimensionManager
 		         save.close();
 		         saveFile.close();
 		         
-		         if(new File(world.getSaveHandler().getMapFileFromName("idcounts").getParentFile().getParent()+"/DimensionalDoorsDataOLD").exists())
+		         if(new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD").exists())
 		         {
-		        	 new File(world.getSaveHandler().getMapFileFromName("idcounts").getParentFile().getParent()+"/DimensionalDoorsDataOLD").delete(); 
+		        	 new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD").delete(); 
 		         }
-		         new File(world.getSaveHandler().getMapFileFromName("idcounts").getParentFile().getParent()+"/DimensionalDoorsData").renameTo(new File(world.getSaveHandler().getMapFileFromName("idcounts").getParentFile().getParent()+"/DimensionalDoorsDataOLD"));
+		         new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsData").renameTo(new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD"));
 		         
-		        new File(saveFileName).renameTo( new File(world.getSaveHandler().getMapFileFromName("idcounts").getParentFile().getParent()+"/DimensionalDoorsData"));
+		        new File(saveFileName).renameTo( new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsData"));
 		        // System.out.println(String.valueOf(this.dimensionList));
 			}
 			catch(Exception e)
@@ -1102,13 +1105,13 @@ public class dimHelper extends DimensionManager
 			
 			
 			World world=FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
-			File dataStore =new File( world.getSaveHandler().getMapFileFromName("idcounts").getParentFile().getParent()+"/DimensionalDoorsData");
+			File dataStore =new File( this.getCurrentSaveRootDirectory()+"/DimensionalDoorsData");
 			
 			if(!dataStore.exists())
 			{
 				
 				
-				if(!new File( world.getSaveHandler().getMapFileFromName("idcounts").getParentFile().getParent()+"/DimensionalDoorsDataOLD").exists())
+				if(!new File( this.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD").exists())
 				{
 					firstRun=true;
 				}

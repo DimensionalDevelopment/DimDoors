@@ -2,6 +2,8 @@ package StevenDimDoors.mod_pocketDim;
 
 
 import java.io.File;
+import java.net.URL;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -44,6 +46,7 @@ import StevenDimDoors.mod_pocketDim.blocks.BlockDimWall;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWallPerm;
 import StevenDimDoors.mod_pocketDim.blocks.BlockLimbo;
 import StevenDimDoors.mod_pocketDim.blocks.BlockRift;
+import StevenDimDoors.mod_pocketDim.blocks.ChaosDoor;
 import StevenDimDoors.mod_pocketDim.blocks.ExitDoor;
 import StevenDimDoors.mod_pocketDim.blocks.dimDoor;
 import StevenDimDoors.mod_pocketDim.blocks.dimHatch;
@@ -53,7 +56,11 @@ import StevenDimDoors.mod_pocketDim.commands.CommandAddDungeonRift;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteDimData;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
+import StevenDimDoors.mod_pocketDim.commands.CommandEndDungeonCreation;
+import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimData;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
+import StevenDimDoors.mod_pocketDim.commands.CommandStartDungeonCreation;
+import StevenDimDoors.mod_pocketDim.helpers.copyfile;
 import StevenDimDoors.mod_pocketDim.items.ItemChaosDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
 import StevenDimDoors.mod_pocketDim.items.ItemStabilizedRiftSignature;
@@ -63,6 +70,10 @@ import StevenDimDoors.mod_pocketDim.items.itemExitDoor;
 import StevenDimDoors.mod_pocketDim.items.itemLinkSignature;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
+import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
+import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
+import StevenDimDoors.mod_pocketDim.world.LimboProvider;
+import StevenDimDoors.mod_pocketDim.world.pocketProvider;
 
 
 @Mod(modid = mod_pocketDim.modid, name = "Dimensional Doors", version = mod_pocketDim.version)
@@ -91,18 +102,23 @@ public class mod_pocketDim
     public static mod_pocketDim instance = new mod_pocketDim();
     public static SchematicLoader loader = new SchematicLoader();
     public static pocketTeleporter teleporter = new pocketTeleporter();
+    
  
+ 
+    public static final ICommand printDimData = new CommandPrintDimData();
     public static final ICommand removeRiftsCommand = new CommandDeleteRifts();
     public static final ICommand pruneDimsCommand = new CommandPruneDims();
     public static final ICommand removeAllLinksCommand = new CommandDeleteAllLinks();
     public static final ICommand deleteDimDataCommand = new CommandDeleteDimData();
     public static final ICommand addDungeonRift = new CommandAddDungeonRift();
+    //public static final ICommand endDungeonCreation = new CommandEndDungeonCreation();
+    public static final ICommand startDungeonCreation = new CommandStartDungeonCreation();
 
     
     public static int providerID;
     public static int dimDoorID;
     public static int ExitDoorID;
-    public static int linkExitDoorID;
+  //  public static int linkExitDoorID;
     public static int itemLinkSignatureID;
     public static int blockRiftID;
     public static int transientDoorID;
@@ -128,7 +144,7 @@ public class mod_pocketDim
 
 	
     public static int itemDimDoorID;
-    public static int linkDimDoorID;
+    ///public static int linkDimDoorID;
     public static int blockDimWallID;
     public static int itemRiftRemoverID;
     public static int blockDimWallPermID;
@@ -193,7 +209,7 @@ public class mod_pocketDim
 	public static ArrayList metadataFlipList = new ArrayList();
 	public static ArrayList metadataNextList = new ArrayList();
 	
-	public static DungeonGenerator defaultUp = new DungeonGenerator(0, "simpleStairsUp.schematic", true);
+	public static DungeonGenerator defaultUp = new DungeonGenerator(0, "/schematic/simpleStairsUp.schematic", true);
 
 
 
@@ -264,6 +280,98 @@ public class mod_pocketDim
 
         
         DimDoorsConfig.loadConfig(configFile);
+        
+        
+        String schematicDir = configFile.getParent()+"/DimDoors_Custom_schematics";
+        File file= new File(schematicDir);
+    	file.mkdir();
+
+    	String helpFile = "/mods/DimDoors/How_to_add_dungeons.txt";
+    	copyfile.copyFile(helpFile, file+"/How_to_add_dungeons.txt");
+    
+        
+        File[] schematicNames=file.listFiles();
+        
+        if(schematicNames!=null)
+        {
+        
+        
+        		for(File schematicFile: schematicNames)
+        		{
+        			
+        			try
+                	{
+        	
+        			if(schematicFile.getName().contains("schematic"))
+        			{
+        				String[] name = schematicFile.getName().split("_");
+        				
+        		
+        				boolean open= name[2].equals("open");
+        	
+        				int weight = Integer.parseInt(name[3].replace(".schematic", ""));
+        				
+        				String path = schematicFile.getAbsolutePath();
+        	
+        				if(name[0].equals("hub"))
+        				{
+        					this.hubs.add(new DungeonGenerator(weight,path,open));
+        				}
+        				else if(name[0].equals("simpleHall"))
+		        		{
+		        			this.simpleHalls.add(new DungeonGenerator(weight,path,open));
+		
+		        		}
+		        		else if(name[0].equals("complexHall"))
+		        		{
+		        			this.complexHalls.add(new DungeonGenerator(weight,path,open));
+		
+		        		}
+		        		else if(name[0].equals("pistonTrap"))
+		        		{
+		        			this.pistonTraps.add(new DungeonGenerator(weight,path,open));
+		
+		        		}
+		        		else if(name[0].equals("deadEnd"))
+		        		{
+		        			this.deadEnds.add(new DungeonGenerator(weight,path,open));
+		
+		        		}
+		        		else if(name[0].equals("exit"))
+		        		{
+		        			this.exits.add(new DungeonGenerator(weight,path,open));
+		
+		        		}
+		        		else if(name[0].equals("mazes"))
+		        		{
+		        			this.mazes.add(new DungeonGenerator(weight,path,open));
+		        		
+		        		}
+		        	
+        				this.registeredDungeons.add(new DungeonGenerator(weight,path,open));
+        				
+        				System.out.println("Imported "+schematicFile.getName());
+        			}
+        			
+        			
+        			
+        			
+                	}
+                	catch(Exception e)
+                	{
+                		e.printStackTrace();
+                		System.out.println("Importing custom dungeon failed");
+                	}
+        			
+        			
+        		}
+        	
+        	
+        	
+        }
+        
+        
+        
 
 
          
@@ -491,8 +599,8 @@ public class mod_pocketDim
     	 this.blocksImmuneToRift.add(this.blockDimWallPermID);
     	 this.blocksImmuneToRift.add(this.dimDoorID);
     	 this.blocksImmuneToRift.add(this.ExitDoorID);
-    	 this.blocksImmuneToRift.add(this.linkDimDoorID);
-    	 this.blocksImmuneToRift.add(this.linkExitDoorID);
+  //  	 this.blocksImmuneToRift.add(this.linkDimDoorID);
+   // 	 this.blocksImmuneToRift.add(this.linkExitDoorID);
     	 this.blocksImmuneToRift.add(this.dimHatchID);
     	 this.blocksImmuneToRift.add(this.chaosDoorID);
     	 this.blocksImmuneToRift.add(this.blockRiftID);
@@ -505,73 +613,73 @@ public class mod_pocketDim
     	 this.blocksImmuneToRift.add(Block.bedrock.blockID);
 
     
-	 		this.hubs.add(new DungeonGenerator(0, "4WayBasicHall.schematic", false));
- 	 		this.hubs.add(new DungeonGenerator(0, "4WayBasicHall.schematic", false));
- 	 		this.hubs.add(new DungeonGenerator(0, "doorTotemRuins.schematic", true));
- 	 		this.hubs.add(new DungeonGenerator(0, "hallwayTrapRooms1.schematic", false));
- 	 		this.hubs.add(new DungeonGenerator(0, "longDoorHallway.schematic", false));
-    	 	this.hubs.add(new DungeonGenerator(0, "smallRotundaWithExit.schematic", false));
- 	 		this.hubs.add(new DungeonGenerator(0, "fortRuins.schematic", true));
- 	 		this.hubs.add(new DungeonGenerator(0, "4WayHallExit.schematic", false));
- 	 		this.hubs.add(new DungeonGenerator(0, "4WayHallExit.schematic", false));
+	 		this.hubs.add(new DungeonGenerator(0, "/schematics/4WayBasicHall.schematic", false));
+ 	 		this.hubs.add(new DungeonGenerator(0, "/schematics/4WayBasicHall.schematic", false));
+ 	 		this.hubs.add(new DungeonGenerator(0, "/schematics/doorTotemRuins.schematic", true));
+ 	 		this.hubs.add(new DungeonGenerator(0, "/schematics/hallwayTrapRooms1.schematic", false));
+ 	 		this.hubs.add(new DungeonGenerator(0, "/schematics/longDoorHallway.schematic", false));
+    	 	this.hubs.add(new DungeonGenerator(0, "/schematics/smallRotundaWithExit.schematic", false));
+ 	 		this.hubs.add(new DungeonGenerator(0, "/schematics/fortRuins.schematic", true));
+ 	 		this.hubs.add(new DungeonGenerator(0, "/schematics/4WayHallExit.schematic", false));
+ 	 		this.hubs.add(new DungeonGenerator(0, "/schematics/4WayHallExit.schematic", false));
 
 
- 	 		this.simpleHalls.add(new DungeonGenerator(0, "collapsedSingleTunnel1.schematic", false));
- 	 		this.simpleHalls.add(new DungeonGenerator(0, "singleStraightHall1.schematic", false));
- 	 		this.simpleHalls.add(new DungeonGenerator(0, "smallBranchWithExit.schematic", false));
- 	 		this.simpleHalls.add(new DungeonGenerator(0, "smallSimpleLeft.schematic", false));
- 	 		this.simpleHalls.add(new DungeonGenerator(0, "smallSimpleRight.schematic", false));
- 	 		this.simpleHalls.add(new DungeonGenerator(0, "simpleStairsUp.schematic", false));
- 	 		this.simpleHalls.add(new DungeonGenerator(0, "simpleStairsDown.schematic", false));
- 	 		this.simpleHalls.add(new DungeonGenerator(0, "simpleSmallT1.schematic", false));
+ 	 		this.simpleHalls.add(new DungeonGenerator(0, "/schematics/collapsedSingleTunnel1.schematic", false));
+ 	 		this.simpleHalls.add(new DungeonGenerator(0, "/schematics/singleStraightHall1.schematic", false));
+ 	 		this.simpleHalls.add(new DungeonGenerator(0, "/schematics/smallBranchWithExit.schematic", false));
+ 	 		this.simpleHalls.add(new DungeonGenerator(0, "/schematics/smallSimpleLeft.schematic", false));
+ 	 		this.simpleHalls.add(new DungeonGenerator(0, "/schematics/smallSimpleRight.schematic", false));
+ 	 		this.simpleHalls.add(new DungeonGenerator(0, "/schematics/simpleStairsUp.schematic", false));
+ 	 		this.simpleHalls.add(new DungeonGenerator(0, "/schematics/simpleStairsDown.schematic", false));
+ 	 		this.simpleHalls.add(new DungeonGenerator(0, "/schematics/simpleSmallT1.schematic", false));
 
 
- 	 		this.complexHalls.add(new DungeonGenerator(0, "brokenPillarsO.schematic", true));
- 	 		this.complexHalls.add(new DungeonGenerator(0, "buggyTopEntry1.schematic", true));
- 	 		this.complexHalls.add(new DungeonGenerator(0, "exitRuinsWithHiddenDoor.schematic", true));
- 	 		this.complexHalls.add(new DungeonGenerator(0, "hallwayHiddenTreasure.schematic", false));
- 	 		this.complexHalls.add(new DungeonGenerator(0, "mediumPillarStairs.schematic", true));
- 	 		this.complexHalls.add(new DungeonGenerator(0, "ruinsO.schematic", true));
- 	 		this.complexHalls.add(new DungeonGenerator(0, "pitStairs.schematic", true));
+ 	 		this.complexHalls.add(new DungeonGenerator(0, "/schematics/brokenPillarsO.schematic", true));
+ 	 		this.complexHalls.add(new DungeonGenerator(0, "/schematics/buggyTopEntry1.schematic", true));
+ 	 		this.complexHalls.add(new DungeonGenerator(0, "/schematics/exitRuinsWithHiddenDoor.schematic", true));
+ 	 		this.complexHalls.add(new DungeonGenerator(0, "/schematics/hallwayHiddenTreasure.schematic", false));
+ 	 		this.complexHalls.add(new DungeonGenerator(0, "/schematics/mediumPillarStairs.schematic", true));
+ 	 		this.complexHalls.add(new DungeonGenerator(0, "/schematics/ruinsO.schematic", true));
+ 	 		this.complexHalls.add(new DungeonGenerator(0, "/schematics/pitStairs.schematic", true));
 
  	 		
- 	 		this.deadEnds.add(new DungeonGenerator(0, "azersDungeonO.schematic", false));
- 	 		this.deadEnds.add(new DungeonGenerator(0, "diamondTowerTemple1.schematic", true));
- 	 		this.deadEnds.add(new DungeonGenerator(0, "fallingTrapO.schematic", false));
- 	 		this.deadEnds.add(new DungeonGenerator(0, "hiddenStaircaseO.schematic", true));
- 	 		this.deadEnds.add(new DungeonGenerator(0, "lavaTrapO.schematic", true));
- 	 		this.deadEnds.add(new DungeonGenerator(0, "randomTree.schematic", true));
- 	 		this.deadEnds.add(new DungeonGenerator(0, "smallHiddenTowerO.schematic", true));
- 	 		this.deadEnds.add(new DungeonGenerator(0, "smallSilverfishRoom.schematic", false));
- 	 		this.deadEnds.add(new DungeonGenerator(0, "tntTrapO.schematic", false));
- 			this.deadEnds.add(new DungeonGenerator(0, "smallDesert.schematic", true));
- 	 		this.deadEnds.add(new DungeonGenerator(0, "smallPond.schematic", true));
+ 	 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/azersDungeonO.schematic", false));
+ 	 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/diamondTowerTemple1.schematic", true));
+ 	 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/fallingTrapO.schematic", false));
+ 	 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/hiddenStaircaseO.schematic", true));
+ 	 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/lavaTrapO.schematic", true));
+ 	 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/randomTree.schematic", true));
+ 	 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallHiddenTowerO.schematic", true));
+ 	 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallSilverfishRoom.schematic", false));
+ 	 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/tntTrapO.schematic", false));
+ 			this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallDesert.schematic", true));
+ 	 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallPond.schematic", true));
  	 		
  	 		
- 	 	//	this.pistonTraps.add(new DungeonGenerator(0, "fakeTNTTrap.schematic", false));
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "hallwayPitFallTrap.schematic", false));
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "hallwayPitFallTrap.schematic", false));
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "pistonFallRuins.schematic", false));
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "pistonFloorHall.schematic", false));
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "pistonFloorHall.schematic", false));
- 	 //		this.pistonTraps.add(new DungeonGenerator(0, "pistonHallway.schematic", null));
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "pistonSmasherHall.schematic", false));
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "raceTheTNTHall.schematic", false));
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "simpleDropHall.schematic", false));
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "wallFallcomboPistonHall.schematic", false));
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "wallFallcomboPistonHall.schematic", false));
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "lavaPyramid.schematic", true));
+ 	 	//	this.pistonTraps.add(new DungeonGenerator(0, "/schematics/fakeTNTTrap.schematic", false));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/hallwayPitFallTrap.schematic", false));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/hallwayPitFallTrap.schematic", false));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/pistonFallRuins.schematic", false));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/pistonFloorHall.schematic", false));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/pistonFloorHall.schematic", false));
+ 	 //		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/pistonHallway.schematic", null));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/pistonSmasherHall.schematic", false));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/raceTheTNTHall.schematic", false));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/simpleDropHall.schematic", false));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/wallFallcomboPistonHall.schematic", false));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/wallFallcomboPistonHall.schematic", false));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/lavaPyramid.schematic", true));
 
  	 	
 	
- 	 		this.mazes.add(new DungeonGenerator(0, "smallMaze1.schematic", false));
- 	 		this.mazes.add(new DungeonGenerator(0, "smallMultilevelMaze.schematic", false));
+ 	 		this.mazes.add(new DungeonGenerator(0, "/schematics/smallMaze1.schematic", false));
+ 	 		this.mazes.add(new DungeonGenerator(0, "/schematics/smallMultilevelMaze.schematic", false));
  	 	
 
- 	 		this.exits.add(new DungeonGenerator(0, "exitCube.schematic", true));
- 	 		this.exits.add(new DungeonGenerator(0, "lockingExitHall.schematic", false));
- 	 		this.exits.add(new DungeonGenerator(0, "smallExitPrison.schematic", true));
- 	 		this.exits.add(new DungeonGenerator(0, "lockingExitHall.schematic", false));
+ 	 		this.exits.add(new DungeonGenerator(0, "/schematics/exitCube.schematic", true));
+ 	 		this.exits.add(new DungeonGenerator(0, "/schematics/lockingExitHall.schematic", false));
+ 	 		this.exits.add(new DungeonGenerator(0, "/schematics/smallExitPrison.schematic", true));
+ 	 		this.exits.add(new DungeonGenerator(0, "/schematics/lockingExitHall.schematic", false));
 
  	 		this.registeredDungeons.addAll(this.simpleHalls);
  	 	 	this.registeredDungeons.addAll(this.exits);
@@ -656,6 +764,8 @@ public class mod_pocketDim
     	event.registerServerCommand(removeAllLinksCommand);
     	event.registerServerCommand(deleteDimDataCommand);
     	event.registerServerCommand(addDungeonRift);
+    	event.registerServerCommand(this.startDungeonCreation);
+    	event.registerServerCommand(this.printDimData);
 
     	dimHelper.instance.load();
     	if(!dimHelper.dimList.containsKey(this.limboDimID))

@@ -1,0 +1,40 @@
+Adding dungeons is pretty simple, but you have to know the various flags and stuff I use to read them in and build them. Ill walk you through the process here, and provide all the flags and a breif description of what they mean here.
+
+You will also need a copy of mcEdit to export your custom dungeons.
+
+To get started, run minecraft with DimDoors installed and type the following command-
+
+/start_dungeon_creation
+
+This will generate an empty pocket dim for you to build with that is in the proper orientation (north). If you do not use this command, you WILL run into issues later.
+
+So on to the building- You can ONLY use vanilla blocks in the dungeons. Everything that is not vanilla MC will be turned into fabric of reality when I gen them, or it will crash horribly. The only exceptions to this are DimDoors blocks, which will always be turned into fabric of reality. 
+
+The first step is to make your entrance door. This is where the player will appear when they teleport in for the first time. It is marked by a vanilla wooden door. It will be replaced by a wooden warp door on generation. 
+
+As you build your dungeon, there are a few restrictions. Any chests you place will get filled with random loot, and not what you place in them. Any dispensers will get a few stacks of arrows. Other than that, any vanilla mechanics should work fine, except rails. Im working on that now. 
+
+Any vanilla iron doors you place will become iron dim doors, and link to more dungeon pockets, so use these to make your dungeon lead farther into a dungeon chain.
+
+If you want your dungeon to link back the overworld, place a vanilla wooden door on top of a sandstone block. This will mark it as an exit door, and it will gen as a wooden Dim door leading to the overworld (or whatever dim this chain started in)
+
+Once you have finished creating your dungeon, close minecraft Close minecraft while you are STILL IN THE POCKET and open your pocketDimension save folder. Inside, find the pocket dimension you where building in by its ID. Copy this folder up one level (into your main world data save folder and rename it to DIM<id>.
+
+
+Now using mcEdit, open the main world save and use the find player function to warp to that dimension. Select your pocket with mcEdit, and export this as an .schematic file.
+
+Congratulations! You have finished the hard part. Now all you need to do is name you .schematic and drop it into the DimDoors_Custom_schematics folder that’s in the same directory as all your config files. 
+
+To name it, use the following format-
+
+<dungeonType>_<yourDungeonName>_<isOpen>_<spawnWeight>.schematic
+
+The dungeon types are ‘hub’, ‘simpleHall’, ‘complexHall’, ‘pistonTrap’, ‘maze’, ‘exit’, and ‘deadEnd’.
+
+isOpen determines if the dungeon is an open-air style pocket, or a closed in/walled it pocket that will spawn Monoliths. 
+
+Spawn weight determines how frequently you want it to appear. The default is one, and it will have the same relative weight as all the others. 
+
+For example- hub_hallWith5Doors_1.schematic
+
+

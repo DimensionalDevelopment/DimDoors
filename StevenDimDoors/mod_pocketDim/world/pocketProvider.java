@@ -1,5 +1,8 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.world;
 
+import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
+import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.Vec3;
@@ -18,6 +21,9 @@ public class pocketProvider extends WorldProvider
 	public int exitZCoord;
 	public int exitDimID;
 	public boolean hasNoSky = true;
+	
+	public boolean isSavingSchematic= false;
+	public int dimToSave;
 	public pocketProvider()
 	{
 		this.hasNoSky=true;
@@ -36,6 +42,14 @@ public class pocketProvider extends WorldProvider
     {
         return (dimensionId == 0 ? null : "DimensionalDoors/pocketDimID" + dimensionId);
     }
+	
+	public void saveAsSchematic(int id)
+	{
+		this.isSavingSchematic=true;
+		this.dimensionId=id;
+		
+	}
+	
 	public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
 	{
     	setCloudRenderer( new CloudRenderBlank());
@@ -84,13 +98,13 @@ public class pocketProvider extends WorldProvider
 	{
 		int respawnDim;
 		
-		if(mod_pocketDim.isLimboActive)
+	//	if(mod_pocketDim.isLimboActive)
 		{
 			respawnDim= mod_pocketDim.limboDimID;
 		}
-		else
+	//	else
 		{
-			respawnDim= dimHelper.dimList.get(this.dimensionId).exitDimLink.destDimID;
+	//		respawnDim= dimHelper.dimList.get(this.dimensionId).exitDimLink.destDimID;
 		}
 		
 		if(dimHelper.getWorld(respawnDim)==null)

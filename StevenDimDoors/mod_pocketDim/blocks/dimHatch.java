@@ -4,7 +4,7 @@ import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.pocketProvider;
+import StevenDimDoors.mod_pocketDim.world.pocketProvider;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;

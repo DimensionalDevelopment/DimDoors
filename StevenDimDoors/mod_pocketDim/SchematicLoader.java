@@ -1,4 +1,6 @@
 package StevenDimDoors.mod_pocketDim;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,15 +61,25 @@ public class SchematicLoader
     public void init(String filePath, LinkData link)
     {
     	
-    	this.schematic="/schematics/"+filePath;
+    	this.schematic=filePath;
         try 
         {
         	
-       
+        	InputStream input;
         	String fname= schematic ;
         	
-        	InputStream input = this.getClass().getResourceAsStream(fname);
-        	//FileInputStream fileinputstream = new FileInputStream(file);
+        	if(!(new File(fname).exists()))
+        	{
+        		
+
+        		input = this.getClass().getResourceAsStream(fname);
+        	}
+        	else
+        	{
+        		System.out.println(new File(fname).exists());
+        		input = new FileInputStream(fname);
+        	}
+        		//FileInputStream fileinputstream = new FileInputStream(file);
         	NBTTagCompound nbtdata = CompressedStreamTools.readCompressed(input);
 
 
@@ -100,6 +112,11 @@ public class SchematicLoader
     	{
     		if(mod_pocketDim.metadataFlipList.contains(blockID))
     		{
+    			
+    			
+    			
+    			
+    			
     			switch (orientation)
 				{
 				case 0:
@@ -137,7 +154,7 @@ public class SchematicLoader
 	    				}
 	    			}
 					
-					else if(blockID== Block.lever.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
+					else if(blockID== Block.lever.blockID||blockID== Block.stoneButton.blockID||blockID== Block.woodenButton.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
 	    			{
 	    				switch (metadata)
 	    				{

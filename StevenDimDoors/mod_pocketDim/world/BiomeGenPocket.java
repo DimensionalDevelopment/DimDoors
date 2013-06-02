@@ -1,19 +1,18 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.world;
 
 import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
-import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.SpawnListEntry;
 
-public class BiomeGenLimbo extends BiomeGenBase
+public class BiomeGenPocket extends BiomeGenBase
 {
-    protected BiomeGenLimbo(int par1)
+	public BiomeGenPocket(int par1)
     {
         super(par1);
         this.theBiomeDecorator.treesPerChunk = 0;
         this.theBiomeDecorator.flowersPerChunk = 0;
         this.theBiomeDecorator.grassPerChunk = 0;
-        this.setBiomeName("Limbo");
+        this.setBiomeName("Pocket Dimension");
         this.setDisableRain();
         
         this.spawnableMonsterList.clear();
@@ -21,21 +20,10 @@ public class BiomeGenLimbo extends BiomeGenBase
         this.spawnableWaterCreatureList.clear();
         this.spawnableCaveCreatureList.clear();
         this.spawnableMonsterList.add(new SpawnListEntry(MobObelisk.class, 1, 1, 1));
-        this.spawnableMonsterList.add(new SpawnListEntry(MobObelisk.class, 300, 0, 0));
-
         this.spawnableCreatureList.add(new SpawnListEntry(MobObelisk.class, 1, 1, 1));
-        this.spawnableCreatureList.add(new SpawnListEntry(MobObelisk.class, 300, 0, 0));
 
         this.spawnableCaveCreatureList.add(new SpawnListEntry(MobObelisk.class, 1, 1, 1));
-        this.spawnableCaveCreatureList.add(new SpawnListEntry(MobObelisk.class, 300, 0, 0));
 
 
-
-
-    }
-    
-    public float getSpawningChance()
-    {
-        return 0.00001F;
     }
 }

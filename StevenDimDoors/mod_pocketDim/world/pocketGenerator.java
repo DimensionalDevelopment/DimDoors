@@ -1,8 +1,10 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.world;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import StevenDimDoors.mod_pocketDim.DimData;
+import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 
 import net.minecraft.entity.EnumCreatureType;

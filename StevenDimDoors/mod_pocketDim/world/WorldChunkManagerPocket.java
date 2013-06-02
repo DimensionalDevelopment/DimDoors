@@ -1,4 +1,4 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.world;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

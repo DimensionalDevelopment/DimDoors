@@ -1,7 +1,10 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.world;
 
 import java.util.List;
 import java.util.Random;
+
+import StevenDimDoors.mod_pocketDim.CustomCaveGen;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;

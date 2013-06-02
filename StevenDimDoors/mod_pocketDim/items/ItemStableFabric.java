@@ -4,6 +4,7 @@ import java.util.List;
 
 import StevenDimDoors.mod_pocketDim.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.SchematicLoader;
 import StevenDimDoors.mod_pocketDim.Spells;
 import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -21,6 +22,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.RotationHelper;
 
 public class ItemStableFabric extends Item
 {
@@ -38,6 +41,7 @@ public class ItemStableFabric extends Item
         this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
 
     }
+    
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
     {
     
@@ -46,6 +50,13 @@ public class ItemStableFabric extends Item
     		System.out.println("Block metadata is "+par3World.getBlockMetadata(par4, par5, par6));
     		System.out.println(par3World.getBiomeGenForCoords(par4, par6).biomeName);
     		this.onItemRightClick(par1ItemStack, par3World, par2EntityPlayer);
+    		
+    		Block block = Block.blocksList[par3World.getBlockId(par4, par5, par6)];
+    		
+    			
+    			
+    		
+    		
     	}
     	//System.out.println("Block texture data is "+Block.blocksList[par3World.getBlockId(par4, par5, par6)].getBlockTexture(par3World,par4, par5, par6,par7).getIconName());
     	//System.out.println("Block name is is "+Block.blocksList[par3World.getBlockId(par4, par5, par6)].getUnlocalizedName2());

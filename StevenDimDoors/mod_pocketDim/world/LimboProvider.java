@@ -1,5 +1,8 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.world;
 
+import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
+import StevenDimDoors.mod_pocketDim.limboSkyProvider;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;

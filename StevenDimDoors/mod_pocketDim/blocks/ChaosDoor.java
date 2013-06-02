@@ -1,8 +1,10 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
 
-import StevenDimDoors.mod_pocketDim.blocks.dimDoor;
+import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -26,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ChaosDoor extends dimDoor
 {
 	private Icon blockIconBottom;
-	protected ChaosDoor(int par1, Material material) 
+	public ChaosDoor(int par1, Material material) 
 	{
 		super(par1, Material.iron);
 	//	this.blockIndexInTexture = 18;

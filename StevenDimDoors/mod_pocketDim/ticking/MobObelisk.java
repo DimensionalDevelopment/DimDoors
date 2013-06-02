@@ -13,11 +13,11 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import StevenDimDoors.mod_pocketDim.LimboProvider;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.pocketProvider;
+import StevenDimDoors.mod_pocketDim.world.LimboProvider;
+import StevenDimDoors.mod_pocketDim.world.pocketProvider;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;

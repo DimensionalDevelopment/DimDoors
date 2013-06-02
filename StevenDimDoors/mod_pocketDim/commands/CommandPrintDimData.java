@@ -61,34 +61,24 @@ public class CommandPrintDimData extends CommandBase
 		{
 			if(dimHelper.dimList.containsKey(targetDim))
 			{
-				for(DimData dimData :dimHelper.dimList.values())
-				{
+				DimData dimData = dimHelper.dimList.get(targetDim);
 					Collection<LinkData> links= new ArrayList();
 					links.addAll( dimData.printAllLinkData());
 					
 					for(LinkData link : links)
 					{
-						if(link.destDimID==targetDim)
-						{
-							dimHelper.dimList.get(link.locDimID).removeLinkAtCoords(link);
-							linksRemoved++;
-						}
-						if(dimData.dimID==targetDim)
-						{
-							linksRemoved++;
-						}
+					
+						this.getCommandSenderAsPlayer(var1).sendChatToPlayer(	link.printLinkData());
 					}
 					
-					
+					this.getCommandSenderAsPlayer(var1).sendChatToPlayer("DimID= "+dimData.dimID+"Dim depth = "+dimData.depth);
+
 				}
 				
-				dimHelper.dimList.remove(targetDim);
-				this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Removed dimension "+targetDim+" from DimDoors and deleted "+linksRemoved+" links");
 				
 			}
 			else
 			{
-				this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Error- dimension "+targetDim+" not registered with dimDoors");
 			}
 			
 		}
@@ -101,4 +91,3 @@ public class CommandPrintDimData extends CommandBase
 	// TODO Auto-generated method stub
 	
 	}
-}
