@@ -46,7 +46,8 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
 
 
 	@Override
-	public Chunk loadChunk(int var1, int var2) {
+	public Chunk loadChunk(int var1, int var2) 
+	{
 		// TODO Auto-generated method stub
 		return super.loadChunk(var1, var2);
 	}

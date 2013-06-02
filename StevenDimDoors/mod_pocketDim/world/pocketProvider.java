@@ -98,13 +98,13 @@ public class pocketProvider extends WorldProvider
 	{
 		int respawnDim;
 		
-	//	if(mod_pocketDim.isLimboActive)
+		if(mod_pocketDim.isLimboActive)
 		{
 			respawnDim= mod_pocketDim.limboDimID;
 		}
-	//	else
+		else
 		{
-	//		respawnDim= dimHelper.dimList.get(this.dimensionId).exitDimLink.destDimID;
+			respawnDim= dimHelper.dimList.get(this.dimensionId).exitDimLink.destDimID;
 		}
 		
 		if(dimHelper.getWorld(respawnDim)==null)

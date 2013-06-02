@@ -38,6 +38,9 @@ public class CommandStartDungeonCreation extends CommandBase
 		
 		dimHelper.instance.teleportToPocket(player.worldObj, link, player);
 		
+		this.getCommandSenderAsPlayer(var1).sendChatToPlayer("DimID = "+ link.destDimID);
+
+		
 		
 		
 		

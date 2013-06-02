@@ -49,7 +49,8 @@ public class DungeonGenerator implements Serializable
 	//	DungeonGenerator
 		boolean flag = true;
 		int count=10;
-		
+		try
+		{
 		if(incoming.destYCoord>15)
 		{
 		do
@@ -177,6 +178,11 @@ public class DungeonGenerator implements Serializable
 		else
 		{
 			dungeon= mod_pocketDim.defaultUp;
+		}
+		}
+		catch(Exception e)
+		{
+			dungeon = mod_pocketDim.registeredDungeons.get(rand.nextInt(mod_pocketDim.registeredDungeons.size()));
 		}
 		
 		

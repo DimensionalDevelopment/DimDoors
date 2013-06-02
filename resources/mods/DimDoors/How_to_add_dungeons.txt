@@ -29,7 +29,7 @@ To name it, use the following format-
 
 <dungeonType>_<yourDungeonName>_<isOpen>_<spawnWeight>.schematic
 
-The dungeon types are ‘hub’, ‘simpleHall’, ‘complexHall’, ‘pistonTrap’, ‘maze’, ‘exit’, and ‘deadEnd’.
+The dungeon types are ‘hub’, ‘simpleHall’, ‘complexHall’, ‘trap', ‘maze’, ‘exit’, and ‘deadEnd’.
 
 isOpen determines if the dungeon is an open-air style pocket, or a closed in/walled it pocket that will spawn Monoliths. 
 

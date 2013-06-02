@@ -180,7 +180,7 @@ public class DimDoorsConfig
 	      
 	         
 	         bWorldGenRifts = config.get(Configuration.CATEGORY_GENERAL, "bWorldGenRifts", true);
-	         bWorldGenRifts.comment = "Toggles the natrual generation of dungeon rifts other dimensions";
+	         bWorldGenRifts.comment = "Toggles the natrual generation of dungeon rifts in other dimensions";
 	         
 	         bLimboActive = config.get(Configuration.CATEGORY_GENERAL, "bLimboActive", true);
 	         bLimboActive.comment="Toggles if dying in a pocket dim respawns the player in limbo";
@@ -188,8 +188,8 @@ public class DimDoorsConfig
 	         riftSpreadModifier =  config.get(Configuration.CATEGORY_GENERAL, "riftSpreadModifier", 3);
 	         riftSpreadModifier.comment = "How many times a rift can spread- 0 prevents rifts from spreading at all. I dont recommend putting it highter than 5, because its rather exponential. ";
 	         
-	         limboBiomeID=config.get(Configuration.CATEGORY_GENERAL, "limboBiomeID", 217);
-	         pocketBiomeID=config.get(Configuration.CATEGORY_GENERAL, "pocketBiomeID", 218);
+	         limboBiomeID=config.get(Configuration.CATEGORY_GENERAL, "limboBiomeID", 251);
+	         pocketBiomeID=config.get(Configuration.CATEGORY_GENERAL, "pocketBiomeID", 250);
 	         
 	         
 	         config.save();

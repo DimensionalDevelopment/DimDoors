@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockComparator;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockDoor;
+import net.minecraft.block.BlockRedstoneRepeater;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,9 +22,9 @@ import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.EmptyChunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.ChestGenHooks;
+import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
  
 public class SchematicLoader 
 
@@ -32,8 +33,11 @@ public class SchematicLoader
     public short height;
     public short length;
     
-    public byte[] blocks;
-    public byte[] data;
+    public short[] blocks;
+    public byte[] blockData;
+    public byte[] addId = new byte[0];
+    public byte[] blockId;
+
     public NBTTagList entities;
     public NBTTagList tileentities;
     private Random rand = new Random();
@@ -88,13 +92,33 @@ public class SchematicLoader
              height = nbtdata.getShort("Height");
              length = nbtdata.getShort("Length");
  
-             blocks = nbtdata.getByteArray("Blocks");
-             data = nbtdata.getByteArray("Data");
              
-             entities = nbtdata.getTagList("Entities");
-             tileentities = nbtdata.getTagList("TileEntities");
-             this.didRead=true;
-             input.close();
+             blockId = nbtdata.getByteArray("Blocks");
+             blockData = nbtdata.getByteArray("Data");
+             
+             blocks=new short[blockId.length];
+             
+              this.addId = nbtdata.getByteArray("AddBlocks");
+             
+              entities = nbtdata.getTagList("Entities");
+              tileentities = nbtdata.getTagList("TileEntities");
+              this.didRead=true;
+              input.close();
+              
+              
+              for (int index = 0; index < blockId.length; index++) {
+                  if ((index >> 1) >= addId.length) { // No corresponding AddBlocks index
+                      blocks[index] = (short) (blockId[index] & 0xFF);
+                  } else {
+                      if ((index & 1) == 0) {
+                          blocks[index] = (short) (((addId[index >> 1] & 0x0F) << 8) + (blockId[index] & 0xFF));
+                      } else {
+                          blocks[index] = (short) (((addId[index >> 1] & 0xF0) << 4) + (blockId[index] & 0xFF));
+                      }
+                  }
+              }
+             
+           
           
         }
         catch (Exception e) 
@@ -188,7 +212,7 @@ public class SchematicLoader
 
 	    			}
 			
-					else	if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID)
+					else	if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID||blockID==Block.dropper.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -224,7 +248,7 @@ public class SchematicLoader
 					
 	    			}
 					
-					else	if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorIron.blockID||blockID==Block.doorWood.blockID)
+					else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor ||blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -359,7 +383,7 @@ public class SchematicLoader
 
 	    			}
 			
-					else	if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID)
+					else	if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID||blockID==Block.dropper.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -394,7 +418,7 @@ public class SchematicLoader
 					
 	    			}
 					
-					else	if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorIron.blockID||blockID==Block.doorWood.blockID)
+					else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor ||blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -524,7 +548,7 @@ public class SchematicLoader
 
 	    			}
 			
-					else	if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID)
+					else	if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID||blockID==Block.dropper.blockID)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -560,7 +584,7 @@ public class SchematicLoader
 					
 	    			}
 					
-					else	if(blockID== Block.redstoneRepeaterActive.blockID||blockID==Block.redstoneRepeaterIdle.blockID||blockID== Block.tripWireSource.blockID||blockID== Block.doorIron.blockID||blockID==Block.doorWood.blockID)
+					else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor ||blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
 	    			{
 	    				switch (metadata)
 	    				{
@@ -715,10 +739,10 @@ public class SchematicLoader
 		                		zCooe=z-35;
 		                	}
 		                		
-		                    int index = y * loader.width * loader.length + z * loader.width + x;
-		                    
+		                	int index = y * width * length + z * width + x;
+		                	  
 		                    int blockToReplace=loader.blocks[index];
-		                    int blockMetaData=loader.data[index];
+		                    int blockMetaData=loader.blockData[index];
 		                    NBTTagList tileEntity = loader.tileentities;
 		                    HashMap tileEntityMap= new HashMap();
 		                    int size = tileEntity.tagCount();
@@ -732,23 +756,12 @@ public class SchematicLoader
 		                    {
 		                    	this.exitLinks.add(new Point3D(i+xCooe, j+yCooe, k+zCooe));
 		                    }
-		                    if(blockToReplace==-124)
-		                    {
-		                    	blockToReplace=Block.tripWire.blockID;
-		                    }
-		                    if(blockToReplace==-125)
-		                    {
-		                    	blockToReplace=Block.tripWireSource.blockID;
-		                    }
-		                    if(blockToReplace<0&&blockToReplace!=-39)
-		                    {
-		                    }
 		                    
-		                    if(blockToReplace<0)
-		                    {
-		                    	blockToReplace=mod_pocketDim.blockDimWallID;
-		                    }
-		                    
+		                    if(Block.blocksList[blockToReplace]==null&&blockToReplace!=0||blockToReplace>158)
+		                    		{
+		                    			blockToReplace=mod_pocketDim.blockDimWall.blockID;
+		                    		}
+		                 
 		                    if(blockToReplace>0)
 		                    {
 		                    	
@@ -951,6 +964,10 @@ public class SchematicLoader
 		
 		public void setBlockDirectly(World world, int x, int y, int z,int id, int metadata)
 		{
+			if(Block.blocksList[id]==null)
+			{
+				return;
+			}
 			Chunk chunk;
 			this.cX=x >>4;
 			this.cZ=z >>4;
@@ -965,7 +982,8 @@ public class SchematicLoader
 			try
 			{
 			chunk=world.getChunkFromChunkCoords(cX, cZ);
-				 if (chunk.getBlockStorageArray()[cY] == null) {
+				 if (chunk.getBlockStorageArray()[cY] == null) 
+				 {
 					 chunk.getBlockStorageArray()[cY] = new ExtendedBlockStorage(cY << 4, !world.provider.hasNoSky);
              }
     		
