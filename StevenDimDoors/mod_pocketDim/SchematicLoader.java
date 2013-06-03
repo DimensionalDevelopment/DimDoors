@@ -33,20 +33,25 @@ public class SchematicLoader
     public short height;
     public short length;
     
-    public short[] blocks;
-    public byte[] blockData;
+    public short[] blocks= new short[0];
+    public byte[] blockData= new byte[0];
+    public byte[] blockId =new byte[0];
+    
     public byte[] addId = new byte[0];
-    public byte[] blockId;
+
 
     public NBTTagList entities;
     public NBTTagList tileentities;
+    
     private Random rand = new Random();
-  //  public World world;
+    
     public Point3D incomingLink= new Point3D(0,0,0);
+    
     public ArrayList<Point3D> sideLinks = new ArrayList<Point3D>();
     public ArrayList<Point3D> exitLinks = new ArrayList<Point3D>();
+    
     public int transMeta;
-  //  public Chunk chunk;
+    
     public int cX;
     public int cZ;
     public int cY;
@@ -58,7 +63,6 @@ public class SchematicLoader
     
     public SchematicLoader()
     {
-    //	this.schematic="/schematics/"+filePath;
     }
         
     
@@ -85,28 +89,25 @@ public class SchematicLoader
         	}
         		//FileInputStream fileinputstream = new FileInputStream(file);
         	NBTTagCompound nbtdata = CompressedStreamTools.readCompressed(input);
-
-
-            
-             width = nbtdata.getShort("Width");
-             height = nbtdata.getShort("Height");
-             length = nbtdata.getShort("Length");
- 
-             
-             blockId = nbtdata.getByteArray("Blocks");
-             blockData = nbtdata.getByteArray("Data");
+          
+        	width = nbtdata.getShort("Width");
+        	height = nbtdata.getShort("Height");
+        	length = nbtdata.getShort("Length");
+  
+        	blockId = nbtdata.getByteArray("Blocks");
+        	blockData = nbtdata.getByteArray("Data");
              
              blocks=new short[blockId.length];
              
-             if(nbtdata.getByteArray("AddBlocks")!=null)
-             {
-            	 this.addId = nbtdata.getByteArray("AddBlocks");
-             }
+             addId = nbtdata.getByteArray("AddBlocks");
              
-              entities = nbtdata.getTagList("Entities");
-              tileentities = nbtdata.getTagList("TileEntities");
-              this.didRead=true;
-              input.close();
+             entities = nbtdata.getTagList("Entities");
+             tileentities = nbtdata.getTagList("TileEntities");
+             
+             
+             
+             this.didRead=true;
+             input.close();
               
               
               for (int index = 0; index < blockId.length; index++) 
@@ -114,14 +115,14 @@ public class SchematicLoader
                   if ((index >> 1) >= addId.length) 
                   { 
                       blocks[index] = (short) (blockId[index] & 0xFF);
-                  }
-                  else 
+                  } 
+                  	else 
                   {
                       if ((index & 1) == 0) 
                       {
                           blocks[index] = (short) (((addId[index >> 1] & 0x0F) << 8) + (blockId[index] & 0xFF));
-                          
-                      } else 
+                      } 
+                      else 
                       {
                           blocks[index] = (short) (((addId[index >> 1] & 0xF0) << 4) + (blockId[index] & 0xFF));
                       }
@@ -769,7 +770,7 @@ public class SchematicLoader
 		                    
 		                    if(Block.blocksList[blockToReplace]==null&&blockToReplace!=0||blockToReplace>158)
 		                    		{
-		                    		//	blockToReplace=mod_pocketDim.blockDimWall.blockID;
+		                    			blockToReplace=mod_pocketDim.blockDimWall.blockID;
 		                    		}
 		                 
 		                    if(blockToReplace>0)

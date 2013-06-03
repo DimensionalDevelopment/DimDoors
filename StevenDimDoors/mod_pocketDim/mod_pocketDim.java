@@ -612,7 +612,7 @@ public class mod_pocketDim
     	 this.blocksImmuneToRift.add(Block.blockLapis.blockID);
     	 this.blocksImmuneToRift.add(Block.bedrock.blockID);
 
-    /**
+    
 	 		this.hubs.add(new DungeonGenerator(0, "/schematics/4WayBasicHall.schematic", false));
  	 		this.hubs.add(new DungeonGenerator(0, "/schematics/4WayBasicHall.schematic", false));
  	 		this.hubs.add(new DungeonGenerator(0, "/schematics/doorTotemRuins.schematic", true));
@@ -690,7 +690,7 @@ public class mod_pocketDim
  	 		this.registeredDungeons.addAll(this.hubs);
 
 
-**/
+
  	 		
     	 	
 

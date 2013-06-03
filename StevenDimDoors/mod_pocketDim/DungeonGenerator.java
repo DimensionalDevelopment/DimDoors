@@ -182,7 +182,15 @@ public class DungeonGenerator implements Serializable
 		}
 		catch(Exception e)
 		{
-			dungeon = mod_pocketDim.registeredDungeons.get(rand.nextInt(mod_pocketDim.registeredDungeons.size()));
+			if(mod_pocketDim.registeredDungeons.size()>0)
+			{
+				dungeon = mod_pocketDim.registeredDungeons.get(rand.nextInt(mod_pocketDim.registeredDungeons.size()));
+			}
+			else
+			{
+				e.printStackTrace();
+				return;
+			}
 		}
 		
 		
