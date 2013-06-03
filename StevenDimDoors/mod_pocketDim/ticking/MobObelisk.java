@@ -188,7 +188,7 @@ public class MobObelisk extends EntityFlying implements IMob
 					
 					
 				}
-				else if(!this.worldObj.isRemote)
+				else if(!this.worldObj.isRemote&&!entityPlayer.capabilities.isCreativeMode)
 				{
 					
 
@@ -198,6 +198,7 @@ public class MobObelisk extends EntityFlying implements IMob
 					LinkData link = new LinkData(this.worldObj.provider.dimensionId, mod_pocketDim.limboDimID, (int)this.posX, (int)this.posY, (int)this.posZ, (int)this.posX+rand.nextInt(500)-250, (int)this.posY+500, (int)this.posZ+rand.nextInt(500)-250, false,0);
 
 					dimHelper.instance.teleportToPocket(worldObj, link, entityPlayer);
+					this.aggro=0;
 
 					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.crack",13, 1);
 					if(!(this.worldObj.provider instanceof LimboProvider ||this.worldObj.provider instanceof pocketProvider))
