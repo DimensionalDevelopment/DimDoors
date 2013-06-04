@@ -273,7 +273,7 @@ public class dimDoor extends BlockContainer
 			if(dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World)!=null)
 			{
 				dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World).linkOrientation=par1World.getBlockMetadata(par2, par3-1, par4);
-				
+				dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World).hasGennedDoor=false;
 
 			}
 		}

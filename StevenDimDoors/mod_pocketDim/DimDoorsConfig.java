@@ -173,7 +173,7 @@ public class DimDoorsConfig
 	         limboReturnRange=config.get(Configuration.CATEGORY_GENERAL, "limboReturnRange", 500);
 	         limboReturnRange.comment = "The farthest possible distance that limbo can send you upon return to the overworld.";
 	         
-	         pocketProviderID=config.get(Configuration.CATEGORY_GENERAL, "pocketProviderID", 12);
+	         pocketProviderID=config.get(Configuration.CATEGORY_GENERAL, "pocketProviderID", 14);
 	         
 	         limboProviderID=config.get(Configuration.CATEGORY_GENERAL, "limboProvider ID", 13);
 

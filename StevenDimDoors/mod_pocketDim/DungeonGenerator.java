@@ -51,6 +51,13 @@ public class DungeonGenerator implements Serializable
 		int count=10;
 		try
 		{
+			
+			if(dimHelper.dimList.get(incoming.destDimID)!=null&&dimHelper.dimList.get(incoming.destDimID).dungeonGenerator!=null)
+			{
+				mod_pocketDim.loader.init(incoming);
+				dimHelper.dimList.get(incoming.destDimID).dungeonGenerator=dimHelper.dimList.get(incoming.destDimID).dungeonGenerator;
+				return;
+			}
 		if(incoming.destYCoord>15)
 		{
 		do
@@ -194,7 +201,7 @@ public class DungeonGenerator implements Serializable
 		}
 		
 		
-		mod_pocketDim.loader.init(dungeon.schematicPath, incoming);
+	
 		dimHelper.dimList.get(incoming.destDimID).dungeonGenerator=dungeon;
 		//mod_pocketDim.loader.generateSchematic(incoming,0,0,0);
 	

@@ -92,8 +92,19 @@ public class itemDimDoor extends ItemDoor
                 }
                 else 
                 {
+                	int offset = 0;
+            		int idBlock = par3World.getBlockId(par4, par5-1, par6);
+            		
+            		if(Block.blocksList.length>idBlock&&idBlock!=0)
+            		{
+            			if(Block.blocksList[idBlock].isBlockReplaceable(par3World, par4, par5-1, par6))
+            			{
+            				offset = 1;
+            			}
+            		}
                 
-                    placeDoorBlock(par3World, par4, par5, par6, var12, var11);
+                    placeDoorBlock(par3World, par4, par5-offset, par6, var12, var11);
+                    
 
                    
                     --par1ItemStack.stackSize;
@@ -177,6 +188,8 @@ public class itemDimDoor extends ItemDoor
 	                }
 	               else 
 	                {
+	            	   
+	            	
 	              
 	                    placeDoorBlock(par2World, par4, par5-1, par6, var12, var11);
 	                   

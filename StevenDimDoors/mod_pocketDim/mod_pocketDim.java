@@ -114,6 +114,7 @@ public class mod_pocketDim
     //public static final ICommand endDungeonCreation = new CommandEndDungeonCreation();
     public static final ICommand startDungeonCreation = new CommandStartDungeonCreation();
 
+
     
     public static int providerID;
     public static int dimDoorID;
@@ -247,6 +248,7 @@ public class mod_pocketDim
     public static boolean TNFREAKINGT;
 
 	public static boolean isPlayerWearingGoogles=false;
+	
     
 
 
@@ -287,7 +289,10 @@ public class mod_pocketDim
     	file.mkdir();
 
     	String helpFile = "/mods/DimDoors/How_to_add_dungeons.txt";
-    	copyfile.copyFile(helpFile, file+"/How_to_add_dungeons.txt");
+    	if(new File(helpFile).exists())
+    	{
+    		copyfile.copyFile(helpFile, file+"/How_to_add_dungeons.txt");
+    	}
     
         
         File[] schematicNames=file.listFiles();
@@ -348,7 +353,6 @@ public class mod_pocketDim
 		        		
 		        		}
 		        	
-        				this.registeredDungeons.add(new DungeonGenerator(weight,path,open));
         				
         				System.out.println("Imported "+schematicFile.getName());
         			}
@@ -656,7 +660,7 @@ public class mod_pocketDim
  	 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallPond.schematic", true));
  	 		
  	 		
- 	 	//	this.pistonTraps.add(new DungeonGenerator(0, "/schematics/fakeTNTTrap.schematic", false));
+ 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/fakeTNTTrap.schematic", false));
  	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/hallwayPitFallTrap.schematic", false));
  	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/hallwayPitFallTrap.schematic", false));
  	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/pistonFallRuins.schematic", false));
@@ -664,7 +668,7 @@ public class mod_pocketDim
  	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/pistonFloorHall.schematic", false));
  	 //		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/pistonHallway.schematic", null));
  	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/pistonSmasherHall.schematic", false));
- 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/raceTheTNTHall.schematic", false));
+ 	 	//	this.pistonTraps.add(new DungeonGenerator(0, "/schematics/raceTheTNTHall.schematic", false));
  	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/simpleDropHall.schematic", false));
  	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/wallFallcomboPistonHall.schematic", false));
  	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/wallFallcomboPistonHall.schematic", false));

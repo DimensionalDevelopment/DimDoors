@@ -66,8 +66,9 @@ public class SchematicLoader
     }
         
     
-    public void init(String filePath, LinkData link)
+    public void init(LinkData link)
     {
+    	String filePath = dimHelper.dimList.get(link.destDimID).dungeonGenerator.schematicPath;
     	
     	this.schematic=filePath;
         try 
@@ -968,6 +969,8 @@ public class SchematicLoader
 			 		link.destXCoord=this.incomingLink.getX();
 			 		link.destYCoord=this.incomingLink.getY();
 			 		link.destZCoord=this.incomingLink.getZ();
+				 	dimHelper.instance.createLink(link);
+
 			 	}
 
 		}

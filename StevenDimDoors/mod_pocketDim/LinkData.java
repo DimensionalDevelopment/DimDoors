@@ -16,6 +16,7 @@ public class LinkData implements Serializable
 	public boolean isLocPocket;
 	public int linkOrientation;
 	
+	
 
 	
 	public int destDimID;

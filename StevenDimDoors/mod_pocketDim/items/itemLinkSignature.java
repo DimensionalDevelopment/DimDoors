@@ -81,11 +81,15 @@ public class itemLinkSignature extends Item
     	
     		//System.out.println(key);
     		int offset = 2;
+    		int idBlock = par3World.getBlockId(par4, par5, par6);
     		
-    		if(par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
-			{
-				offset = 1;
-			}
+    		if(Block.blocksList.length>idBlock&&idBlock!=0)
+    		{
+    			if(Block.blocksList[idBlock].isBlockReplaceable(par3World, par4, par5, par6))
+    			{
+    				offset = 1;
+    			}
+    		}
 			if(par3World.getBlockId(par4, par5, par6)==mod_pocketDim.dimDoorID&&par3World.getBlockId(par4, par5+1, par6)==mod_pocketDim.dimDoorID)
 			{
 				offset = 1;

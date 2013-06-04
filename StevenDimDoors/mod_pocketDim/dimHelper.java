@@ -702,6 +702,7 @@ public class dimHelper extends DimensionManager
 	{
 		try
 		{
+			
 			if(this.getWorld(incomingLink.destDimID)==null)
 			{
 				this.initDimension(incomingLink.destDimID);
@@ -810,7 +811,8 @@ public class dimHelper extends DimensionManager
 		{
 			//System.out.println("genning dungeon pocket");
 			
-			DungeonGenerator.generateDungeonlink(incomingLink);
+			
+			mod_pocketDim.loader.init(incomingLink);
 			data.hasBeenFilled=true;
 
 		}
@@ -1006,6 +1008,7 @@ public class dimHelper extends DimensionManager
 
 		destDimData.isDimRandomRift=isRandomRift;
 		
+		
 		this.dimList.put(this.getWorld(link.locDimID).provider.dimensionId, locationDimData);
 		this.dimList.put(dimensionID, destDimData);
 		
@@ -1017,16 +1020,20 @@ public class dimHelper extends DimensionManager
 			PacketHandler.onDimCreatedPacket(destDimData);
 		}
 		
-		LinkData linkData = this.createLink(this.getWorld(link.locDimID).provider.dimensionId,dimensionID,link.locXCoord,link.locYCoord,link.locZCoord, link.destXCoord,link.destYCoord,link.destZCoord,link.linkOrientation); //creates and registers the two rifts that link the parent and pocket dim. 
+		link = this.createLink(this.getWorld(link.locDimID).provider.dimensionId,dimensionID,link.locXCoord,link.locYCoord,link.locZCoord, link.destXCoord,link.destYCoord,link.destZCoord,link.linkOrientation); //creates and registers the two rifts that link the parent and pocket dim. 
 		this.createLink(dimensionID,this.getWorld(link.locDimID).provider.dimensionId, link.destXCoord,link.destYCoord,link.destZCoord, link.locXCoord,link.locYCoord,link.locZCoord, this.flipDoorMetadata(link.linkOrientation));
 	
+		if(isRandomRift)
+		{
+			DungeonGenerator.generateDungeonlink(link);
+		}
+	
 
-		
 		
 			
 		
 		
-		return linkData;
+		return link;
 		
 
 	}
@@ -1040,7 +1047,7 @@ public class dimHelper extends DimensionManager
 	//TODO change from saving serialized objects to just saving data for compatabilies sake. 
 	public void save() 
 	{
-		if(!this.isSaving)
+		if(!this.isSaving&&!DimensionManager.getWorld(0).isRemote&&this.getCurrentSaveRootDirectory()!=null)
 		{
 		//	System.out.println("saving");
 
@@ -1097,7 +1104,9 @@ public class dimHelper extends DimensionManager
 		System.out.println("Loading DimDoors data");
 		FileInputStream saveFile = null;
 	
-		
+		if(!DimensionManager.getWorld(0).isRemote&&this.getCurrentSaveRootDirectory()!=null)
+		{
+	
 		try
 		{
 			
@@ -1224,7 +1233,7 @@ public class dimHelper extends DimensionManager
 			
 		
 			
-			
+		}
 		}
 		
 	}
