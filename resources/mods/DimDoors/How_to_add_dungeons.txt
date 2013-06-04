@@ -1,6 +1,6 @@
 Adding dungeons is pretty simple, but you have to know the various flags and stuff I use to read them in and build them. Ill walk you through the process here, and provide all the flags and a breif description of what they mean here.
 
-You will also need a copy of mcEdit to export your custom dungeons.
+You will also need WorldEdit installed and running to export your dungeon. 
 
 To get started, run minecraft with DimDoors installed and type the following command-
 
@@ -18,10 +18,8 @@ Any vanilla iron doors you place will become iron dim doors, and link to more du
 
 If you want your dungeon to link back the overworld, place a vanilla wooden door on top of a sandstone block. This will mark it as an exit door, and it will gen as a wooden Dim door leading to the overworld (or whatever dim this chain started in)
 
-Once you have finished creating your dungeon, close minecraft Close minecraft while you are STILL IN THE POCKET and open your pocketDimension save folder. Inside, find the pocket dimension you where building in by its ID. Copy this folder up one level (into your main world data save folder and rename it to DIM<id>.
+Once you have finished creating your dungeon, use the world edit //wand command to give yourself a wand and select the pocket dimension for export. Copy this selection using //copy, and export it with //schematic mcedit <NameHere>.
 
-
-Now using mcEdit, open the main world save and use the find player function to warp to that dimension. Select your pocket with mcEdit, and export this as an .schematic file.
 
 Congratulations! You have finished the hard part. Now all you need to do is name you .schematic and drop it into the DimDoors_Custom_schematics folder that’s in the same directory as all your config files. 
 

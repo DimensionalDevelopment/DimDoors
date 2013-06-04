@@ -1,25 +1,9 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.customDungeonImporter;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.copyfile;
-import StevenDimDoors.mod_pocketDim.world.pocketProvider;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.MinecraftException;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 
 public class CommandEndDungeonCreation extends CommandBase
 {
@@ -35,8 +19,20 @@ public class CommandEndDungeonCreation extends CommandBase
 	public void processCommand(ICommandSender var1, String[] var2) 
 
 	{
+		int x = (int) this.getCommandSenderAsPlayer(var1).posX;
+		int y = (int) this.getCommandSenderAsPlayer(var1).posY;
+		int z = (int) this.getCommandSenderAsPlayer(var1).posZ;
 		
-		
+		if(var2.length==0)
+		{
+			System.out.println("Must name file");
+		}
+		else
+		{
+			customDungeonImporter.exportDungeon(this.getCommandSenderAsPlayer(var1).worldObj, x, y, z, mod_pocketDim.schematicContainer+"/"+var2[0]);
+			this.getCommandSenderAsPlayer(var1).sendChatToPlayer("created dungeon schematic in " +mod_pocketDim.schematicContainer+"/"+var2[0]);
+
+		}
 
 		
 	// TODO Auto-generated method stub

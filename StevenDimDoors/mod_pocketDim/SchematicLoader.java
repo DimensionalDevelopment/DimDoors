@@ -102,8 +102,8 @@ public class SchematicLoader
              
              addId = nbtdata.getByteArray("AddBlocks");
              
-             entities = nbtdata.getTagList("Entities");
-             tileentities = nbtdata.getTagList("TileEntities");
+            // entities = nbtdata.getTagList("Entities");
+             //tileentities = nbtdata.getTagList("TileEntities");
              
              
              

@@ -111,7 +111,7 @@ public class mod_pocketDim
     public static final ICommand removeAllLinksCommand = new CommandDeleteAllLinks();
     public static final ICommand deleteDimDataCommand = new CommandDeleteDimData();
     public static final ICommand addDungeonRift = new CommandAddDungeonRift();
-    //public static final ICommand endDungeonCreation = new CommandEndDungeonCreation();
+    public static final ICommand endDungeonCreation = new CommandEndDungeonCreation();
     public static final ICommand startDungeonCreation = new CommandStartDungeonCreation();
 
 
@@ -126,6 +126,8 @@ public class mod_pocketDim
     public static int itemRiftBladeID;
     public static int limboExitRange;
   //  public static int railRenderID;
+    
+    public static String schematicContainer;
     
     public static int itemStableFabricID;
 
@@ -285,6 +287,7 @@ public class mod_pocketDim
         
         
         String schematicDir = configFile.getParent()+"/DimDoors_Custom_schematics";
+        this.schematicContainer=schematicDir;
         File file= new File(schematicDir);
     	file.mkdir();
 
@@ -772,6 +775,7 @@ public class mod_pocketDim
     	event.registerServerCommand(addDungeonRift);
     	event.registerServerCommand(this.startDungeonCreation);
     	event.registerServerCommand(this.printDimData);
+    	event.registerServerCommand(this.endDungeonCreation);
 
     	dimHelper.instance.load();
     	if(!dimHelper.dimList.containsKey(this.limboDimID))
