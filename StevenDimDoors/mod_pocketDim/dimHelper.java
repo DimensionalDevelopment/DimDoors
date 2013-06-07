@@ -1047,15 +1047,18 @@ public class dimHelper extends DimensionManager
 	//TODO change from saving serialized objects to just saving data for compatabilies sake. 
 	public void save() 
 	{
-		if(!this.isSaving&&!DimensionManager.getWorld(0).isRemote&&this.getCurrentSaveRootDirectory()!=null)
+		if(this.isSaving) return;
+		World world = DimensionManager.getWorld(0);
+		if(world==null || world.isRemote) return;
+		if(this.getCurrentSaveRootDirectory()!=null)
 		{
-		//	System.out.println("saving");
+			//System.out.println("saving");
 
-		this.isSaving=true;
-		HashMap comboSave=new HashMap();
-		comboSave.put("dimList", this.dimList);
-		comboSave.put("interDimLinkList", this.interDimLinkList);
-		comboSave.put("blocksToDecay", this.blocksToDecay);
+			this.isSaving=true;
+			HashMap comboSave=new HashMap();
+			comboSave.put("dimList", this.dimList);
+			comboSave.put("interDimLinkList", this.interDimLinkList);
+			comboSave.put("blocksToDecay", this.blocksToDecay);
 
 
 			
