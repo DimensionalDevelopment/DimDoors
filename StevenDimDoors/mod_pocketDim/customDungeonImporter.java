@@ -29,14 +29,16 @@ import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.ByteArrayTag;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.CompoundTag;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.NBTOutputStream;
+import StevenDimDoors.mod_pocketDim.helpers.jnbt.ShortTag;
  
 public class customDungeonImporter 
 {
 	NBTTagCompound nbtdata= new NBTTagCompound();
 	
+	public static HashMap<Integer, LinkData> customDungeonStatus = new HashMap<Integer, LinkData>();
 	
 	
-	public static void exportDungeon(World world, int xI, int yI, int zI, String file)
+	public static DungeonGenerator exportDungeon(World world, int xI, int yI, int zI, String file)
 	{
 		int xMin;
 		int yMin;
@@ -49,8 +51,8 @@ public class customDungeonImporter
 		xMin=xMax=xI;
 		yMin=yMax=yI;
 		zMin=zMax=zI;
-		/**
-		for(int count=0;xI<50;xI++)
+		
+		for(int count=0;count<50;count++)
 		{
 		
 			if(world.getBlockId(xMin, yI, zI)!=mod_pocketDim.blockDimWallPermID)
@@ -67,21 +69,21 @@ public class customDungeonImporter
 			}
 			if(world.getBlockId(xMax, yI, zI)!=mod_pocketDim.blockDimWallPermID)
 			{
-				xMin++;
+				xMax++;
 			}
 			if(world.getBlockId(xI, yMax, zI)!=mod_pocketDim.blockDimWallPermID)
 			{
-				yMin++;
+				yMax++;
 			}
 			if(world.getBlockId(xI, yI, zMax)!=mod_pocketDim.blockDimWallPermID)
 			{
-				zMin++;
+				zMax++;
 			}
 		}
-		**/
-		short width = 100;//(short) (xMax-xMin);
-		short height= 100;//(short) (yMax-yMin);
-		short length= 100;//(short) (zMax=zMin);
+		
+		short width =(short) (xMax-xMin);
+		short height= (short) (yMax-yMin);
+		short length= (short) (zMax-zMin);
 		
 	
 		
@@ -89,12 +91,13 @@ public class customDungeonImporter
 	        byte[] addBlocks = null;
 	        byte[] blockData = new byte[width * height * length];
 
-	        for (int x = 0; x < width; ++x) {
+	        for (int x = 0; x < width; ++x) 
+	        {
 	            for (int y = 0; y < height; ++y) {
 	                for (int z = 0; z < length; ++z) {
 	                    int index = y * width * length + z * width + x;
-	                    int blockID = world.getBlockId(x, y, z);
-	                    int meta= world.getBlockMetadata(x, y, z);
+	                    int blockID = world.getBlockId(x+xMin, y+yMin, z+zMin);
+	                    int meta= world.getBlockMetadata(x+xMin, y+yMin, z+zMin);
 	                    // Save 4096 IDs in an AddBlocks section
 	                    if (blockID > 255) {
 	                        if (addBlocks == null) { // Lazily create section
@@ -124,6 +127,10 @@ public class customDungeonImporter
 	        HashMap schematic = new HashMap();
 	        schematic.put("Blocks", new ByteArrayTag("Blocks", blocks));
 	        schematic.put("Data", new ByteArrayTag("Data", blockData));
+	        
+	        schematic.put("Width", new ShortTag("Width", (short) width));
+	        schematic.put("Length", new ShortTag("Length", (short) length));
+	        schematic.put("Height", new ShortTag("Height", (short) height));
 	        if (addBlocks != null) {
 	            schematic.put("AddBlocks", new ByteArrayTag("AddBlocks", addBlocks));
 	        }
@@ -140,6 +147,7 @@ public class customDungeonImporter
 	        {
 	        	e.printStackTrace();
 	        }
+	        return new DungeonGenerator(0,file,true);
 	}
 	
 }

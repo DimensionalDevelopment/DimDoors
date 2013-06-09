@@ -757,7 +757,7 @@ public class SchematicLoader
 		                    int blockMetaData=loader.blockData[index];
 		                    NBTTagList tileEntity = loader.tileentities;
 		                    HashMap tileEntityMap= new HashMap();
-		                    int size = tileEntity.tagCount();
+		                    //int size = tileEntity.tagCount();
 		                    
 		                    
 		                    if(blockToReplace==Block.doorIron.blockID)

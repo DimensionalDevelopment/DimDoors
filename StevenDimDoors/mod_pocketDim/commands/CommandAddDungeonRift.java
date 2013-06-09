@@ -68,12 +68,28 @@ public class CommandAddDungeonRift extends CommandBase
 				this.getCommandSenderAsPlayer(var1).sendChatToPlayer(dungeonName);
 
 			}
+			
+			for(DungeonGenerator dungeonGen : mod_pocketDim.customDungeons)
+			{
+				String dungeonName =dungeonGen.schematicPath;
+				if(dungeonName.contains("DimDoors_Custom_schematics"))
+				{
+					dungeonName=	dungeonName.substring(dungeonName.indexOf("DimDoors_Custom_schematics")+26);
+				}
+					
+				dungeonName =dungeonName.replace("/", "").replace(".", "").replace("schematics", "").replace("schematic", "");
+				
+				
+				this.getCommandSenderAsPlayer(var1).sendChatToPlayer(dungeonName);
+
+			}
+			
+			
 		}
 		
 		else if(var2.length!=0)
 		{
-			for(DungeonGenerator dungeonGen : mod_pocketDim.registeredDungeons)
-				
+			for(DungeonGenerator dungeonGen : mod_pocketDim.registeredDungeons)	
 			{
 				String dungeonName =dungeonGen.schematicPath.toLowerCase();
 				
@@ -93,7 +109,37 @@ public class CommandAddDungeonRift extends CommandBase
 
 				}
 				
+				
+				
 			}
+			
+			for(DungeonGenerator dungeonGen : mod_pocketDim.customDungeons)	
+			{
+				String dungeonName =dungeonGen.schematicPath.toLowerCase();
+				
+				
+				
+				if(dungeonName.contains(var2[0].toLowerCase()))
+				{
+
+					link = dimHelper.instance.createPocket(link,true, true);
+					
+					dimHelper.dimList.get(link.destDimID).dungeonGenerator=dungeonGen;
+				
+					this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Genned dungeon " +dungeonName);
+
+
+					return;
+
+				}
+				
+				
+				
+			}
+			
+			
+			
+			
 			if(var2!=null&&!var2[0].equals("random"))
 			{
 				this.getCommandSenderAsPlayer(var1).sendChatToPlayer("could not find dungeon, 'list' for list of dungeons");

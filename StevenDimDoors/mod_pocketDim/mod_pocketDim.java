@@ -209,6 +209,9 @@ public class mod_pocketDim
 	
 	public static ArrayList<DungeonGenerator> exits = new ArrayList<DungeonGenerator>();
 
+	public static ArrayList<DungeonGenerator> customDungeons = new ArrayList<DungeonGenerator>();
+
+	
 	public static ArrayList metadataFlipList = new ArrayList();
 	public static ArrayList metadataNextList = new ArrayList();
 	
@@ -314,50 +317,63 @@ public class mod_pocketDim
         			{
         				String[] name = schematicFile.getName().split("_");
         				
-        		
-        				boolean open= name[2].equals("open");
-        	
-        				int weight = Integer.parseInt(name[3].replace(".schematic", ""));
-        				
-        				String path = schematicFile.getAbsolutePath();
-        	
-        				if(name[0].equals("hub"))
+        				if(name.length<4)
         				{
-        					this.hubs.add(new DungeonGenerator(weight,path,open));
+                    		System.out.println("Importing custom dungeon gen mechanics failed, adding to secondary list");
+		        			this.customDungeons.add(new DungeonGenerator(0,schematicFile.getAbsolutePath(),true));
+            				System.out.println("Imported "+schematicFile.getName());
+
+                    
         				}
-        				else if(name[0].equals("simpleHall"))
-		        		{
-		        			this.simpleHalls.add(new DungeonGenerator(weight,path,open));
-		
-		        		}
-		        		else if(name[0].equals("complexHall"))
-		        		{
-		        			this.complexHalls.add(new DungeonGenerator(weight,path,open));
-		
-		        		}
-		        		else if(name[0].equals("trap"))
-		        		{
-		        			this.pistonTraps.add(new DungeonGenerator(weight,path,open));
-		
-		        		}
-		        		else if(name[0].equals("deadEnd"))
-		        		{
-		        			this.deadEnds.add(new DungeonGenerator(weight,path,open));
-		
-		        		}
-		        		else if(name[0].equals("exit"))
-		        		{
-		        			this.exits.add(new DungeonGenerator(weight,path,open));
-		
-		        		}
-		        		else if(name[0].equals("mazes"))
-		        		{
-		        			this.mazes.add(new DungeonGenerator(weight,path,open));
-		        		
-		        		}
-		        	
+        				else
+        				{
+        					boolean open= name[2].equals("open");
+        		        	
+            				int weight = Integer.parseInt(name[3].replace(".schematic", ""));
+            				
+            				String path = schematicFile.getAbsolutePath();
+            	
+            				if(name[0].equals("hub"))
+            				{
+            					this.hubs.add(new DungeonGenerator(weight,path,open));
+            				}
+            				else if(name[0].equals("simpleHall"))
+    		        		{
+    		        			this.simpleHalls.add(new DungeonGenerator(weight,path,open));
+    		
+    		        		}
+    		        		else if(name[0].equals("complexHall"))
+    		        		{
+    		        			this.complexHalls.add(new DungeonGenerator(weight,path,open));
+    		
+    		        		}
+    		        		else if(name[0].equals("trap"))
+    		        		{
+    		        			this.pistonTraps.add(new DungeonGenerator(weight,path,open));
+    		
+    		        		}
+    		        		else if(name[0].equals("deadEnd"))
+    		        		{
+    		        			this.deadEnds.add(new DungeonGenerator(weight,path,open));
+    		
+    		        		}
+    		        		else if(name[0].equals("exit"))
+    		        		{
+    		        			this.exits.add(new DungeonGenerator(weight,path,open));
+    		
+    		        		}
+    		        		else if(name[0].equals("mazes"))
+    		        		{
+    		        			this.mazes.add(new DungeonGenerator(weight,path,open));
+    		        		
+    		        		}
+    		        	
+            				
+            				System.out.println("Imported "+schematicFile.getName());
+        				}
         				
-        				System.out.println("Imported "+schematicFile.getName());
+        		
+        			
         			}
         			
         			

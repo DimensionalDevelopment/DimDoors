@@ -6,6 +6,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.customDungeonImporter;
 import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import net.minecraft.command.CommandBase;
@@ -37,6 +38,7 @@ public class CommandStartDungeonCreation extends CommandBase
 		link = dimHelper.instance.createPocket(link,true, false);
 		
 		dimHelper.instance.teleportToPocket(player.worldObj, link, player);
+		customDungeonImporter.customDungeonStatus.put(player.worldObj.provider.dimensionId, dimHelper.instance.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID));
 		
 		this.getCommandSenderAsPlayer(var1).sendChatToPlayer("DimID = "+ link.destDimID);
 
