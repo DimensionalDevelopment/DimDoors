@@ -1081,7 +1081,6 @@ public class dimHelper extends DimensionManager
 		         new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsData").renameTo(new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD"));
 		         
 		        new File(saveFileName).renameTo( new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsData"));
-		        // System.out.println(String.valueOf(this.dimensionList));
 			}
 			catch(Exception e)
 			{
