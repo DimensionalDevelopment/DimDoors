@@ -18,14 +18,11 @@ Any vanilla iron doors you place will become iron dim doors, and link to more du
 
 If you want your dungeon to link back the overworld, place a vanilla wooden door on top of a sandstone block. This will mark it as an exit door, and it will gen as a wooden Dim door leading to the overworld (or whatever dim this chain started in)
 
-Once you have finished creating your dungeon, use the world edit //wand command to give yourself a wand and select the pocket dimension for export. Copy this selection using //copy, and export it with //schematic mcedit <NameHere>.
-
-
-Congratulations! You have finished the hard part. Now all you need to do is name you .schematic and drop it into the DimDoors_Custom_schematics folder that’s in the same directory as all your config files. 
+Once you have finished creating your dungeon, you need to use the command /end_dungeon_creation <fileName>. 
 
 To name it, use the following format-
 
-<dungeonType>_<yourDungeonName>_<isOpen>_<spawnWeight>.schematic
+<dungeonType>_<yourDungeonName>_<isOpen>_<spawnWeight>
 
 The dungeon types are ‘hub’, ‘simpleHall’, ‘complexHall’, ‘trap', ‘maze’, ‘exit’, and ‘deadEnd’.
 
@@ -34,5 +31,8 @@ isOpen determines if the dungeon is an open-air style pocket, or a closed in/wal
 Spawn weight determines how frequently you want it to appear. The default is one, and it will have the same relative weight as all the others. 
 
 For example- hub_hallWith5Doors_1.schematic
+
+
+Congratulations! You have added your own dungeon. You can use the command /add_dungeon_rift <dungeonName> to gen it, or use /add_dungeon_rift list to list all avalible dungeons. 
 
 
