@@ -7,8 +7,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 
 import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;

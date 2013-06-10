@@ -1,8 +1,8 @@
 package StevenDimDoors.mod_pocketDim.world;
 
 import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
-import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.Vec3;

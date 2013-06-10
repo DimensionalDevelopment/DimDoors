@@ -1,4 +1,4 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.helpers;
 /**
  * This class regulates all the operations involving the storage and manipulation of dimensions. It handles saving dim data, teleporting the player, and 
  * creating/registering new dimensions as well as loading old dimensions on startup
@@ -16,6 +16,12 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
+import StevenDimDoors.mod_pocketDim.DimData;
+import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.ObjectSaveInputStream;
+import StevenDimDoors.mod_pocketDim.PacketHandler;
+import StevenDimDoors.mod_pocketDim.TileEntityRift;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.pocketProvider;
 
@@ -214,7 +220,6 @@ public class dimHelper extends DimensionManager
 		    		PotionEffect effect = (PotionEffect)potionEffect;
 		    		player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, effect));
 
-
 		    	}
 		    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
 
@@ -347,92 +352,67 @@ public class dimHelper extends DimensionManager
 			
 					
 				if(!world.isRemote)
-				{
-					
+				{	
 					entity = this.teleportEntity(world, entity, linkData);		
-
-					
-						
 				}
-						if(entity instanceof EntityPlayerMP)
-						{
+				if(entity instanceof EntityPlayerMP)
+				{
 								
-							  if(world.provider.dimensionId!=linkData.destDimID)
-							  {
-							      GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
-							  } 
+					if(world.provider.dimensionId!=linkData.destDimID)
+					{
+						GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
+					} 
 
-						}
-						
+				}
+				
 					
 						
-							entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+				entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+							
 						
-						
-						int playerXCoord=MathHelper.floor_double(entity.posX);
-						int playerYCoord=MathHelper.floor_double(entity.posY);
-						int playerZCoord=MathHelper.floor_double(entity.posZ);
-						
-    								if(!entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1,playerZCoord )&&this.dimList.get(linkData.locDimID).isDimRandomRift&&!linkData.hasGennedDoor)
-    								{
-    									
-    									for(int count=0;count<20;count++)
-    									{
-    										if(entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1-count,playerZCoord))
-    										{
-    											break;
-    										}
-    										if(count==19)
-    										{
-    	    									entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, mod_pocketDim.blockDimWallID);
-
-    										}
-    									}
-    									
-    									
-    								}
-    								
-    								if(entity.worldObj.getBlockId(playerXCoord, playerYCoord-1,playerZCoord )==Block.lavaStill.blockID)
-    								{
-    									entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, mod_pocketDim.blockDimWallID);
-
-    								}
-
-    								this.generateDoor(world,linkData);
-    								
-
-						
-						if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord+1,playerZCoord))
-						{
-							if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube())
-							{
-								entity.worldObj.setBlock(playerXCoord,playerYCoord+1,playerZCoord,0);
-
-							}
-						}
-						if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord,playerZCoord))
-						{
-							if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)].isOpaqueCube())
-							{
-								entity.worldObj.setBlock(playerXCoord,playerYCoord,playerZCoord,0);
-
-							}
-						}
-						/**
-						if(entity.worldObj.getBlockId(x, y, z)==mod_pocketDim.dimDoorID||entity.worldObj.getBlockId(x, y, z)==mod_pocketDim.ExitDoorID)
-						{
-							if(this.getLinkDataFromCoords(x, y, z, entity.worldObj)!=null)
-							{
-								//System.out.println("updated link orientation");
-								this.getLinkDataFromCoords(x, y, z, entity.worldObj).linkOrientation= entity.worldObj.getBlockMetadata(x, y -1, z);
-								
-							}
-						
-
-					
-						}
-						**/
-			   
+				int playerXCoord=MathHelper.floor_double(entity.posX);
+				int playerYCoord=MathHelper.floor_double(entity.posY);
+				int playerZCoord=MathHelper.floor_double(entity.posZ);
+							
+		    	if(!entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1,playerZCoord )&&this.dimList.get(linkData.locDimID).isDimRandomRift&&!linkData.hasGennedDoor)
+		    	{						
+		    		for(int count=0;count<20;count++)
+		    		{
+		    			if(entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1-count,playerZCoord))
+		    			{
+		    				break;
+		    			}
+		    			if(count==19)
+		    			{
+		    				entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, mod_pocketDim.blockDimWallID);
+		    			}
+		    		}	    																	
+		    	}
+	    								
+		    	if(entity.worldObj.getBlockId(playerXCoord, playerYCoord-1,playerZCoord )==Block.lavaStill.blockID)
+		    	{
+		    		entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, mod_pocketDim.blockDimWallID);
+		    	}
+	
+		    	this.generateDoor(world,linkData);
+	    								
+	
+							
+		    	if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord+1,playerZCoord))
+		    	{
+		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube())
+		    		{
+		    			entity.worldObj.setBlock(playerXCoord,playerYCoord+1,playerZCoord,0);
+		    		}
+		    	}
+		    	if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord,playerZCoord))
+		    	{
+		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)].isOpaqueCube())
+		    		{
+		    			entity.worldObj.setBlock(playerXCoord,playerYCoord,playerZCoord,0);
+		
+		    		}
+		    	}
 			}
 		}
 		else if(!this.dimList.containsKey(world.provider.dimensionId))
@@ -1028,7 +1008,7 @@ public class dimHelper extends DimensionManager
 	
 		if(isRandomRift)
 		{
-			DungeonGenerator.generateDungeonlink(link);
+			mod_pocketDim.dungeonHelper.generateDungeonlink(link);
 		}
 	
 

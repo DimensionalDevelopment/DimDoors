@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim;
 
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;

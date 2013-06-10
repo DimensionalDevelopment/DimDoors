@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim;
 import java.util.Random;
 
 import StevenDimDoors.mod_pocketDim.blocks.ExitDoor;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;

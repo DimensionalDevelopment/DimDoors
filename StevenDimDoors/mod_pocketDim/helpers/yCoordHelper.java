@@ -1,7 +1,6 @@
 package StevenDimDoors.mod_pocketDim.helpers;
 
 import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.dimHelper;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;

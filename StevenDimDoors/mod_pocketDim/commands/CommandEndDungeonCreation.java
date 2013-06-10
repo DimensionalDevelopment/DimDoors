@@ -1,9 +1,9 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
-import StevenDimDoors.mod_pocketDim.DungeonGenerator;
-import StevenDimDoors.mod_pocketDim.customDungeonImporter;
-import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.DungeonData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,7 +25,7 @@ public class CommandEndDungeonCreation extends CommandBase
 		
 		EntityPlayer player =this.getCommandSenderAsPlayer(var1);
 		
-		if(!customDungeonImporter.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId))
+		if(!mod_pocketDim.dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId))
 		{
 			if(var2.length<2)
 			{
@@ -53,13 +53,13 @@ public class CommandEndDungeonCreation extends CommandBase
 		}
 		else
 		{
-			DungeonGenerator newDungeon = customDungeonImporter.exportDungeon(player.worldObj, x, y, z, mod_pocketDim.schematicContainer+"/"+var2[0]+".schematic");
+			DungeonData newDungeon = mod_pocketDim.dungeonHelper.exportDungeon(player.worldObj, x, y, z, mod_pocketDim.schematicContainer+"/"+var2[0]+".schematic");
 			player.sendChatToPlayer("created dungeon schematic in " +mod_pocketDim.schematicContainer+"/"+var2[0]+".schematic");
-			mod_pocketDim.customDungeons.add(newDungeon);
+			mod_pocketDim.dungeonHelper.customDungeons.add(newDungeon);
 			
-			if(customDungeonImporter.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId)&&!player.worldObj.isRemote)
+			if(mod_pocketDim.dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId)&&!player.worldObj.isRemote)
 			{
-				dimHelper.instance.teleportToPocket(player.worldObj, customDungeonImporter.customDungeonStatus.get(player.worldObj.provider.dimensionId), player);
+				dimHelper.instance.teleportToPocket(player.worldObj, mod_pocketDim.dungeonHelper.customDungeonStatus.get(player.worldObj.provider.dimensionId), player);
 
 			}
 		}

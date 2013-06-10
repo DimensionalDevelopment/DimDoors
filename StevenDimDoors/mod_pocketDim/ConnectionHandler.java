@@ -3,6 +3,8 @@ package StevenDimDoors.mod_pocketDim;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;
 import net.minecraft.network.packet.NetHandler;

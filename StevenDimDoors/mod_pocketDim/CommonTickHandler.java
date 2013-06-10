@@ -2,6 +2,8 @@ package StevenDimDoors.mod_pocketDim;
 import java.util.EnumSet;
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.world.World;

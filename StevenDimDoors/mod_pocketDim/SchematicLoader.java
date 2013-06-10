@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.ChestGenHooks;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
  
 public class SchematicLoader 
@@ -146,7 +147,7 @@ public class SchematicLoader
     }
     	public int transformMetadata(int metadata, int orientation, int blockID)
     	{
-    		if(mod_pocketDim.metadataFlipList.contains(blockID))
+    		if(mod_pocketDim.dungeonHelper.metadataFlipList.contains(blockID))
     		{
     			
     			

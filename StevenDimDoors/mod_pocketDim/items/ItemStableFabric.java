@@ -6,8 +6,8 @@ import StevenDimDoors.mod_pocketDim.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.SchematicLoader;
 import StevenDimDoors.mod_pocketDim.Spells;
-import StevenDimDoors.mod_pocketDim.dimHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDimClient.ClientTickHandler;
 
 import net.minecraft.block.Block;

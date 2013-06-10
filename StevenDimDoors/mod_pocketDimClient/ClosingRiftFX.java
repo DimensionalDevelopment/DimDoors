@@ -1,6 +1,6 @@
 package StevenDimDoors.mod_pocketDimClient;
 
-import StevenDimDoors.mod_pocketDim.dimHelper;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
