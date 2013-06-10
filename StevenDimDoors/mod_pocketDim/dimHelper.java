@@ -288,7 +288,7 @@ public class dimHelper extends DimensionManager
 
 		if(entity instanceof EntityPlayerMP)
 		{
-			WorldServer.class.cast(newWorld).theChunkProviderServer.loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
+			WorldServer.class.cast(newWorld).getChunkProvider().loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
 		}
 		 mod_pocketDim.teleporter.placeInPortal(entity, newWorld, link);
 		return entity;

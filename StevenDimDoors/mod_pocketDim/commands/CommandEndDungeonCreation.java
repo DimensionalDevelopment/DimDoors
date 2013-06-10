@@ -57,7 +57,7 @@ public class CommandEndDungeonCreation extends CommandBase
 			player.sendChatToPlayer("created dungeon schematic in " +mod_pocketDim.schematicContainer+"/"+var2[0]+".schematic");
 			mod_pocketDim.customDungeons.add(newDungeon);
 			
-			if(customDungeonImporter.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId))
+			if(customDungeonImporter.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId)&&!player.worldObj.isRemote)
 			{
 				dimHelper.instance.teleportToPocket(player.worldObj, customDungeonImporter.customDungeonStatus.get(player.worldObj.provider.dimensionId), player);
 

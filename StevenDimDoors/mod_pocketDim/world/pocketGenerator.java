@@ -31,6 +31,11 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
     
     }
 	
+	 public boolean unloadQueuedChunks()
+	    {
+	        return true;
+	    }
+	
 	
 
 	@Override
