@@ -30,16 +30,20 @@ public class CommandStartDungeonCreation extends CommandBase
 		int x = (int) player.posX;
 		int y = (int) player.posY;
 		int z = (int) player.posZ;
+		
+		if(!player.worldObj.isRemote)
+		{
 
-		LinkData link = new LinkData(player.worldObj.provider.dimensionId, 0, x, y+1, z, x, y+1, z, true, 3);
+			LinkData link = new LinkData(player.worldObj.provider.dimensionId, 0, x, y+1, z, x, y+1, z, true, 3);
 		
-		link = dimHelper.instance.createPocket(link,true, false);
+			link = dimHelper.instance.createPocket(link,true, false);
 		
-		dimHelper.instance.teleportToPocket(player.worldObj, link, player);
+			dimHelper.instance.teleportToPocket(player.worldObj, link, player);
 		
-		customDungeonImporter.customDungeonStatus.put(player.worldObj.provider.dimensionId, dimHelper.instance.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID));
+			customDungeonImporter.customDungeonStatus.put(player.worldObj.provider.dimensionId, dimHelper.instance.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID));
 		
-		this.getCommandSenderAsPlayer(var1).sendChatToPlayer("DimID = "+ link.destDimID);
+			this.getCommandSenderAsPlayer(var1).sendChatToPlayer("DimID = "+ link.destDimID);
+		}
 	
 	}
 }

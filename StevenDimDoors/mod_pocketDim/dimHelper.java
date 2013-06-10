@@ -310,7 +310,10 @@ public class dimHelper extends DimensionManager
 	 */
 	public void teleportToPocket(World world,LinkData linkData, Entity entity)
 	{
-		
+		if(world.isRemote)
+		{
+			return;
+		}
 		
 
 		if(linkData!=null)
