@@ -367,6 +367,17 @@ public class DungeonHelper
 	                    int index = y * width * length + z * width + x;
 	                    int blockID = world.getBlockId(x+xMin, y+yMin, z+zMin);
 	                    int meta= world.getBlockMetadata(x+xMin, y+yMin, z+zMin);
+	                    
+	                    if(blockID==mod_pocketDim.dimDoorID)
+	                    {
+	                    	blockID=Block.doorIron.blockID;
+	                    }
+	                    if(blockID==mod_pocketDim.ExitDoorID)
+	                    {
+	                    	blockID=Block.doorWood.blockID;
+
+	                    }
+	                   
 	                    // Save 4096 IDs in an AddBlocks section
 	                    if (blockID > 255) {
 	                        if (addBlocks == null) { // Lazily create section

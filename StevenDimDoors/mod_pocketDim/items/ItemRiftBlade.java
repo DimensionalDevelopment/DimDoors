@@ -49,6 +49,29 @@ public class ItemRiftBlade extends itemDimDoor
     	 //TODO move to proxy
     }
     
+  
+    @SideOnly(Side.CLIENT)
+
+    public boolean isFull3D()
+    {
+        return true;
+    }
+
+    public float getStrVsBlock(ItemStack par1ItemStack, Block par2Block)
+    {
+        if (par2Block.blockID == Block.web.blockID)
+        {
+            return 15.0F;
+        }
+        else
+        {
+            Material material = par2Block.blockMaterial;
+            return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.pumpkin ? 1.0F : 1.5F;
+        }
+    }
+    
+    
+    
     @SideOnly(Side.CLIENT)
     @Override
     public boolean hasEffect(ItemStack par1ItemStack)

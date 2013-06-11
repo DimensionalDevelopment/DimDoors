@@ -51,7 +51,7 @@ public class CommandEndDungeonCreation extends CommandBase
 		{
 			player.sendChatToPlayer("Must name file");
 		}
-		else
+		else if(!player.worldObj.isRemote)
 		{
 			DungeonData newDungeon = mod_pocketDim.dungeonHelper.exportDungeon(player.worldObj, x, y, z, mod_pocketDim.schematicContainer+"/"+var2[0]+".schematic");
 			player.sendChatToPlayer("created dungeon schematic in " +mod_pocketDim.schematicContainer+"/"+var2[0]+".schematic");
@@ -59,7 +59,8 @@ public class CommandEndDungeonCreation extends CommandBase
 			
 			if(mod_pocketDim.dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId)&&!player.worldObj.isRemote)
 			{
-				dimHelper.instance.teleportToPocket(player.worldObj, mod_pocketDim.dungeonHelper.customDungeonStatus.get(player.worldObj.provider.dimensionId), player);
+			//	mod_pocketDim.dungeonHelper.customDungeonStatus.remove(player.worldObj.provider.dimensionId);
+			//	dimHelper.instance.teleportToPocket(player.worldObj, mod_pocketDim.dungeonHelper.customDungeonStatus.get(player.worldObj.provider.dimensionId), player);
 
 			}
 		}

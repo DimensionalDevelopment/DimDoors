@@ -10,6 +10,7 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.client.IRenderHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -85,7 +86,11 @@ public class LimboProvider extends WorldProvider
 	        }
 	    }
 	 
-	
+	 public ChunkCoordinates getSpawnPoint()
+	    {
+	      
+	        return this.getRandomizedSpawnPoint();
+	    }
 
 	 public float calculateCelestialAngle(long par1, float par3)
 	    {
@@ -162,7 +167,7 @@ public class LimboProvider extends WorldProvider
 	@Override
 	 public ChunkCoordinates getRandomizedSpawnPoint()
     {
-        ChunkCoordinates var5 = new ChunkCoordinates(this.worldObj.getSpawnPoint());
+        ChunkCoordinates var5 = new ChunkCoordinates(0,0,0);
 
      
         int spawnFuzz = 10000;
