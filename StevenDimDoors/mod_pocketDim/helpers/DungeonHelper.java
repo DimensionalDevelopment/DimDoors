@@ -198,7 +198,16 @@ public class DungeonHelper
 		this.metadataFlipList.add(Block.doorWood.blockID);
 		this.metadataFlipList.add(Block.pistonBase.blockID);
 		this.metadataFlipList.add(Block.pistonStickyBase.blockID);
-		this.metadataFlipList.add(Block.redstoneComparatorActive);
+		
+		this.metadataFlipList.add(Block.redstoneComparatorIdle.blockID);
+		this.metadataFlipList.add(Block.redstoneComparatorActive.blockID);
+		this.metadataFlipList.add(Block.signPost.blockID);
+		this.metadataFlipList.add(Block.signWall.blockID);
+		this.metadataFlipList.add(Block.skull.blockID);
+		this.metadataFlipList.add(Block.ladder.blockID);
+		this.metadataFlipList.add(Block.redstoneComparatorIdle);
+		this.metadataFlipList.add(Block.redstoneComparatorIdle);
+		this.metadataFlipList.add(Block.redstoneComparatorIdle);
 		this.metadataFlipList.add(Block.redstoneComparatorIdle);
 		
 		this.metadataFlipList.add(Block.stairsNetherBrick.blockID);
