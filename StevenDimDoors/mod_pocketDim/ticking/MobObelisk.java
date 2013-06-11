@@ -32,7 +32,7 @@ public class MobObelisk extends EntityFlying implements IMob
 	byte textureState = 0;
 	boolean hasJumped= false;
 	float scaleFactor = 0;
-	
+	int aggroMax;
 	int destX=0;
 	int destY=0;
 	int destZ=0;
@@ -44,6 +44,7 @@ public class MobObelisk extends EntityFlying implements IMob
 		this.setSize(2F, 8.0F);
 		this.noClip=true;
 		this.scaleFactor= (float) (rand.nextDouble()+1);
+		this.aggroMax=rand.nextInt(245)+200;
 		
 		
 		
@@ -141,7 +142,7 @@ public class MobObelisk extends EntityFlying implements IMob
 		{
 			if(this.soundTime<=0)
 			{
-				this.playSound("mods.DimDoors.sfx.monk",  1F, 1F);
+				this.playSound("mods.DimDoors.sfx.monk",  1.5F, 1F);
 				this.soundTime=100;
 			}
 			
@@ -156,7 +157,7 @@ public class MobObelisk extends EntityFlying implements IMob
 				}
 				if(aggro<470)
 				{
-					if(rand.nextInt(11)>this.textureState||this.aggro>=300||rand.nextInt(13)>this.textureState)
+					if(rand.nextInt(11)>this.textureState||this.aggro>=300||rand.nextInt(13)>this.textureState&&this.aggroMax>this.aggro)
 					{
 						aggro++;
 					}
@@ -181,7 +182,7 @@ public class MobObelisk extends EntityFlying implements IMob
 					}
 					if(aggro>445)
 					{
-						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.tearing",6, 1);
+						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.tearing",5, 1);
 
 					}
 					
@@ -404,6 +405,7 @@ public class MobObelisk extends EntityFlying implements IMob
 	        super.writeEntityToNBT(par1NBTTagCompound);
 	        par1NBTTagCompound.setFloat("soundTime", this.soundTime);
 	        par1NBTTagCompound.setInteger("aggro", this.aggro);
+	        par1NBTTagCompound.setInteger("aggroMax", this.aggroMax);
 	        par1NBTTagCompound.setByte("textureState", this.textureState);
 	        par1NBTTagCompound.setBoolean("hasJumped", this.hasJumped);
 	        par1NBTTagCompound.setFloat("scaleFactor", this.scaleFactor);
@@ -418,6 +420,7 @@ public class MobObelisk extends EntityFlying implements IMob
 	        super.readEntityFromNBT(par1NBTTagCompound);
 	        this.soundTime=par1NBTTagCompound.getFloat("soundTime");
 	        this.aggro=par1NBTTagCompound.getInteger("aggro");
+	        this.aggroMax=par1NBTTagCompound.getInteger("aggroMax");
 	        this.textureState=par1NBTTagCompound.getByte("textureState");
 	        this.hasJumped=par1NBTTagCompound.getBoolean("hasJumped");
 	        this.scaleFactor=par1NBTTagCompound.getFloat("scaleFactor");
