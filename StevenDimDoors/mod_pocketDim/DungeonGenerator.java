@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 
 
 
-public class DungeonData implements Serializable
+public class DungeonGenerator implements Serializable
 {
 
 	public int weight;
@@ -26,7 +26,7 @@ public class DungeonData implements Serializable
 	
 	
 	
-	public DungeonData(int weight, String schematicPath, Boolean isOpen)
+	public DungeonGenerator(int weight, String schematicPath, Boolean isOpen)
 	{
 		this.weight=weight;
 		this.schematicPath=schematicPath;

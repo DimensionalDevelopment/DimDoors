@@ -41,9 +41,9 @@ public class MobObelisk extends EntityFlying implements IMob
 		
 		super(par1World);
 		this.texture="/mods/DimDoors/textures/mobs/Monolith0.png";
-		this.setSize(2F, 8.0F);
+		this.setSize(3F, 9.0F);
 		this.noClip=true;
-		this.scaleFactor= (float) (rand.nextDouble()+1);
+		this.scaleFactor= (float) ((rand.nextDouble()/2)+1);
 		this.aggroMax=rand.nextInt(245)+200;
 		
 		

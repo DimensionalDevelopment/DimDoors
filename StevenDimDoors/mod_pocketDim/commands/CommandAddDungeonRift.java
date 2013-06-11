@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.DungeonData;
+import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -54,7 +54,7 @@ public class CommandAddDungeonRift extends CommandBase
 		}
 		else if(var2.length!=0&&var2[0].equals("list"))
 		{
-			for(DungeonData dungeonGen : mod_pocketDim.dungeonHelper.registeredDungeons)
+			for(DungeonGenerator dungeonGen : mod_pocketDim.dungeonHelper.registeredDungeons)
 			{
 				String dungeonName =dungeonGen.schematicPath;
 				if(dungeonName.contains("DimDoors_Custom_schematics"))
@@ -69,7 +69,7 @@ public class CommandAddDungeonRift extends CommandBase
 
 			}
 			
-			for(DungeonData dungeonGen : mod_pocketDim.dungeonHelper.customDungeons)
+			for(DungeonGenerator dungeonGen : mod_pocketDim.dungeonHelper.customDungeons)
 			{
 				String dungeonName =dungeonGen.schematicPath;
 				if(dungeonName.contains("DimDoors_Custom_schematics"))
@@ -89,7 +89,7 @@ public class CommandAddDungeonRift extends CommandBase
 		
 		else if(var2.length!=0)
 		{
-			for(DungeonData dungeonGen : mod_pocketDim.dungeonHelper.registeredDungeons)	
+			for(DungeonGenerator dungeonGen : mod_pocketDim.dungeonHelper.registeredDungeons)	
 			{
 				String dungeonName =dungeonGen.schematicPath.toLowerCase();
 				
@@ -113,7 +113,7 @@ public class CommandAddDungeonRift extends CommandBase
 				
 			}
 			
-			for(DungeonData dungeonGen : mod_pocketDim.dungeonHelper.customDungeons)	
+			for(DungeonGenerator dungeonGen : mod_pocketDim.dungeonHelper.customDungeons)	
 			{
 				String dungeonName =dungeonGen.schematicPath.toLowerCase();
 				
