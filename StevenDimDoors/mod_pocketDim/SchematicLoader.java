@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.util.WeightedRandomChestContent;
@@ -39,10 +40,12 @@ public class SchematicLoader
     public byte[] blockId =new byte[0];
     
     public byte[] addId = new byte[0];
+    
+    public NBTTagCompound[] tileEntityList;
 
 
     public NBTTagList entities;
-    public NBTTagList tileentities;
+    public NBTTagList tileEntities;
     
     private Random rand = new Random();
     
@@ -102,6 +105,15 @@ public class SchematicLoader
              blocks=new short[blockId.length];
              
              addId = nbtdata.getByteArray("AddBlocks");
+             
+             tileEntities = nbtdata.getTagList("TileEntities");
+            tileEntityList = new NBTTagCompound[width*height*length];
+            
+             for(int count = 0; count<tileEntities.tagCount(); count++)
+             {
+            	 NBTTagCompound tag = (NBTTagCompound)tileEntities.tagAt(count);
+            	 tileEntityList[tag.getInteger("y")*width*length+tag.getInteger("z")*width+tag.getInteger("x")]=tag;
+             }
              
             // entities = nbtdata.getTagList("Entities");
              //tileentities = nbtdata.getTagList("TileEntities");
@@ -263,6 +275,8 @@ public class SchematicLoader
 					
 					else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor ||blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
 	    			{
+					
+						
 	    				switch (metadata)
 	    				{
 	    				case 0:
@@ -756,8 +770,7 @@ public class SchematicLoader
 		                	  
 		                    int blockToReplace=loader.blocks[index];
 		                    int blockMetaData=loader.blockData[index];
-		                    NBTTagList tileEntity = loader.tileentities;
-		                    HashMap tileEntityMap= new HashMap();
+		                    NBTTagList tileEntity = loader.tileEntities;
 		                    //int size = tileEntity.tagCount();
 		                    
 		                    
@@ -797,6 +810,16 @@ public class SchematicLoader
 	                    		
 		                    	if(Block.blocksList[blockToReplace] instanceof BlockContainer)
 		                    	{
+		                    		TileEntity tile = world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe);
+		                    		NBTTagCompound tag = this.tileEntityList[index];
+		                    		if(tag!=null)
+		                    		{
+		                    			tile.readFromNBT(tag);
+		                    		}
+		                    		
+		                    		
+		                    	
+		                    		/**
 		                    	//	System.out.println("found container");
 		                    		Random rand= new Random();
 		                    		if(world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe) instanceof TileEntityChest)
@@ -835,6 +858,7 @@ public class SchematicLoader
 		                    			dispenser.addItem(new ItemStack(Item.arrow, 64));
 		                    	
 		                    		}
+		                    		**/
 		                    		
 		                    	}
 		                    }

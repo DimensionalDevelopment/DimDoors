@@ -4,17 +4,26 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.ByteArrayTag;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.CompoundTag;
+import StevenDimDoors.mod_pocketDim.helpers.jnbt.IntTag;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.NBTOutputStream;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.ShortTag;
+import StevenDimDoors.mod_pocketDim.helpers.jnbt.StringTag;
+import StevenDimDoors.mod_pocketDim.helpers.jnbt.Tag;
 
 /**
 
@@ -205,11 +214,12 @@ public class DungeonHelper
 		this.metadataFlipList.add(Block.signWall.blockID);
 		this.metadataFlipList.add(Block.skull.blockID);
 		this.metadataFlipList.add(Block.ladder.blockID);
-		this.metadataFlipList.add(Block.redstoneComparatorIdle);
-		this.metadataFlipList.add(Block.redstoneComparatorIdle);
-		this.metadataFlipList.add(Block.redstoneComparatorIdle);
-		this.metadataFlipList.add(Block.redstoneComparatorIdle);
-		
+		this.metadataFlipList.add(Block.vine.blockID);
+		this.metadataFlipList.add(Block.anvil.blockID);
+		this.metadataFlipList.add(Block.chest.blockID);
+		this.metadataFlipList.add(Block.chestTrapped.blockID);
+		this.metadataFlipList.add(Block.hopperBlock.blockID);
+
 		this.metadataFlipList.add(Block.stairsNetherBrick.blockID);
 		this.metadataFlipList.add(Block.stairsCobblestone.blockID);
 		this.metadataFlipList.add(Block.stairsNetherBrick.blockID);
@@ -363,16 +373,20 @@ public class DungeonHelper
 		short height= (short) (yMax-yMin);
 		short length= (short) (zMax-zMin);
 		
-	
+		 //ArrayList<NBTTagCompound> tileEntities = new ArrayList<NBTTagCompound>();
 		
-		 byte[] blocks = new byte[width * height * length];
+	
+		 	NBTTagList tileEntites = new NBTTagList();
+		 	byte[] blocks = new byte[width * height * length];
 	        byte[] addBlocks = null;
 	        byte[] blockData = new byte[width * height * length];
 
 	        for (int x = 0; x < width; ++x) 
 	        {
-	            for (int y = 0; y < height; ++y) {
-	                for (int z = 0; z < length; ++z) {
+	            for (int y = 0; y < height; ++y) 
+	            {
+	                for (int z = 0; z < length; ++z) 
+	                {
 	                    int index = y * width * length + z * width + x;
 	                    int blockID = world.getBlockId(x+xMin, y+yMin, z+zMin);
 	                    int meta= world.getBlockMetadata(x+xMin, y+yMin, z+zMin);
@@ -388,8 +402,10 @@ public class DungeonHelper
 	                    }
 	                   
 	                    // Save 4096 IDs in an AddBlocks section
-	                    if (blockID > 255) {
-	                        if (addBlocks == null) { // Lazily create section
+	                    if (blockID > 255) 
+	                    {
+	                        if (addBlocks == null) 
+	                        { // Lazily create section
 	                            addBlocks = new byte[(blocks.length >> 1) + 1];
 	                        }
 
@@ -400,6 +416,23 @@ public class DungeonHelper
 
 	                    blocks[index] = (byte) blockID;
 	                    blockData[index] = (byte) meta;
+	                    
+	                    if (Block.blocksList[blockID] instanceof BlockContainer) 
+	                    {
+	                        TileEntity tileEntityBlock = world.getBlockTileEntity(x+xMin, y+yMin, z+zMin);
+	                        NBTTagCompound tag = new NBTTagCompound();
+	                        tileEntityBlock.writeToNBT(tag);
+	                        
+	                        
+	                        // Get the list of key/values from the block
+	                       
+	                        if (tag != null) 
+	                        {
+	                        	tileEntites.appendTag(tag);
+	                        }
+	                    }
+
+
 	                }
 	            }
 	        }
@@ -420,6 +453,7 @@ public class DungeonHelper
 	        schematic.put("Width", new ShortTag("Width", (short) width));
 	        schematic.put("Length", new ShortTag("Length", (short) length));
 	        schematic.put("Height", new ShortTag("Height", (short) height));
+	        schematic.put("TileEntites", tileEntites);
 	        if (addBlocks != null) {
 	            schematic.put("AddBlocks", new ByteArrayTag("AddBlocks", addBlocks));
 	        }
