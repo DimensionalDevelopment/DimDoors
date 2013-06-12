@@ -2,10 +2,7 @@ package StevenDimDoors.mod_pocketDim;
 
 
 import java.io.File;
-<<<<<<< HEAD
-import java.net.URL;
-=======
->>>>>>> 9a8510a705bbcfedccea599fa90fea3c98734253
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
