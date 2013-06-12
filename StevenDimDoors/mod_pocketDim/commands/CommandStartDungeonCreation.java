@@ -20,7 +20,7 @@ public class CommandStartDungeonCreation extends CommandBase
 {
 	public String getCommandName()//the name of our command
 	{
-		return "start_dungeon_creation";
+		return "dimdoors-startDungeonCreation";
 	}
 
 	@Override

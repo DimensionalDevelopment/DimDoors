@@ -13,7 +13,7 @@ public class CommandPruneDims extends CommandBase
 {
 	public String getCommandName()//the name of our command
 	{
-		return "prune_pocket_dims";
+		return "dimdoors-prunePockets";
 	}
 
 

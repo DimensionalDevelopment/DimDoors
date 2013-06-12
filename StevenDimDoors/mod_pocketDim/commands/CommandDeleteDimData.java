@@ -17,7 +17,7 @@ public class CommandDeleteDimData extends CommandBase
 {
 	public String getCommandName()//the name of our command
 	{
-		return "delete_dim_data";
+		return "dimdoors-deleteDimData";
 	}
 
 

@@ -11,7 +11,6 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
@@ -20,6 +19,7 @@ import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.ByteArrayTag;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.CompoundTag;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.IntTag;
+import StevenDimDoors.mod_pocketDim.helpers.jnbt.ListTag;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.NBTOutputStream;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.ShortTag;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.StringTag;
@@ -70,6 +70,8 @@ public class DungeonHelper
 
 	
 	public  ArrayList<DungeonGenerator> exits = new ArrayList<DungeonGenerator>();
+	
+	public ArrayList<String> tagList = new ArrayList<String>();
 
 
 	
@@ -90,11 +92,18 @@ public class DungeonHelper
 			
 			if(name.length<4)
 			{
-        		System.out.println("Importing custom dungeon gen mechanics failed, adding to secondary list");
+        		System.out.println("Could not parse filename tags, not adding dungeon to generation lists");
     			this.customDungeons.add(new DungeonGenerator(0,schematicFile.getAbsolutePath(),true));
 				System.out.println("Imported "+schematicFile.getName());
 
         
+			}
+			else if(!(name[2].equals("open")||name[2].equals("closed"))||!this.tagList.contains(name[0]))
+			{
+				System.out.println("Could not parse filename tags, not adding dungeon to generation lists");
+    			this.customDungeons.add(new DungeonGenerator(0,schematicFile.getAbsolutePath(),true));
+				System.out.println("Imported "+schematicFile.getName());
+				
 			}
 			else
 			{
@@ -137,7 +146,7 @@ public class DungeonHelper
 	        			this.exits.add(new DungeonGenerator(weight,path,open));
 	
 	        		}
-	        		else if(name[0].equals("mazes"))
+	        		else if(name[0].equals("maze"))
 	        		{
 	        			this.mazes.add(new DungeonGenerator(weight,path,open));
 	        		
@@ -231,7 +240,16 @@ public class DungeonHelper
 		this.metadataNextList.add(Block.redstoneRepeaterActive.blockID);
 		
 	}
-	
+	public void registerDungeonTypeTags()
+	{
+		tagList.add("hub");
+		tagList.add("trap");
+		tagList.add("simpleHall");
+		tagList.add("complexHall");
+		tagList.add("exit");
+		tagList.add("deadEnd");
+		tagList.add("maze");
+	}
 	public void registerBaseDungeons()
 	{
 			this.hubs.add(new DungeonGenerator(0, "/schematics/4WayBasicHall.schematic", false));
@@ -376,7 +394,7 @@ public class DungeonHelper
 		 //ArrayList<NBTTagCompound> tileEntities = new ArrayList<NBTTagCompound>();
 		
 	
-		 	NBTTagList tileEntites = new NBTTagList();
+		 	ArrayList<Tag> tileEntites= new ArrayList<Tag>();
 		 	byte[] blocks = new byte[width * height * length];
 	        byte[] addBlocks = null;
 	        byte[] blockData = new byte[width * height * length];
@@ -419,17 +437,23 @@ public class DungeonHelper
 	                    
 	                    if (Block.blocksList[blockID] instanceof BlockContainer) 
 	                    {
+	                    	//TODO fix this
+	                    	/**
 	                        TileEntity tileEntityBlock = world.getBlockTileEntity(x+xMin, y+yMin, z+zMin);
 	                        NBTTagCompound tag = new NBTTagCompound();
 	                        tileEntityBlock.writeToNBT(tag);
 	                        
+	                        CompoundTag tagC = new CompoundTag("TileEntity",Map.class.cast(tag.getTags()));
+
+	                        
 	                        
 	                        // Get the list of key/values from the block
 	                       
-	                        if (tag != null) 
+	                        if (tagC != null) 
 	                        {
-	                        	tileEntites.appendTag(tag);
+	                        	tileEntites.add(tagC);
 	                        }
+	                        **/
 	                    }
 
 
@@ -453,7 +477,7 @@ public class DungeonHelper
 	        schematic.put("Width", new ShortTag("Width", (short) width));
 	        schematic.put("Length", new ShortTag("Length", (short) length));
 	        schematic.put("Height", new ShortTag("Height", (short) height));
-	        schematic.put("TileEntites", tileEntites);
+	        schematic.put("TileEntites", new ListTag("TileEntities",CompoundTag.class,tileEntites));
 	        if (addBlocks != null) {
 	            schematic.put("AddBlocks", new ByteArrayTag("AddBlocks", addBlocks));
 	        }

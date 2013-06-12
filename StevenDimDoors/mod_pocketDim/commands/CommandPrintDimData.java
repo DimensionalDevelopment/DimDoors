@@ -17,7 +17,7 @@ public class CommandPrintDimData extends CommandBase
 {
 	public String getCommandName()//the name of our command
 	{
-		return "print_dim_data";
+		return "dimdoors-printDimData";
 	}
 
 
