@@ -25,6 +25,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.ChestGenHooks;
+import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
  
@@ -77,8 +78,17 @@ public class SchematicLoader
     
     public void init(LinkData link)
     {
-    	String filePath = dimHelper.dimList.get(link.destDimID).dungeonGenerator.schematicPath;
-    	
+    	String filePath;
+    
+    	if(dimHelper.dimList.get(link.destDimID).dungeonGenerator!=null)
+    	{
+    		filePath = dimHelper.dimList.get(link.destDimID).dungeonGenerator.schematicPath;
+    	}
+    	else
+    	{
+    		dimHelper.dimList.get(link.destDimID).dungeonGenerator=mod_pocketDim.dungeonHelper.weightedDungeonGenList.get(this.rand.nextInt(mod_pocketDim.dungeonHelper.weightedDungeonGenList.size()));
+    		filePath = dimHelper.dimList.get(link.destDimID).dungeonGenerator.schematicPath;
+    	}
     	this.schematic=filePath;
         try 
         {
