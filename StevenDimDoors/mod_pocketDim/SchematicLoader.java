@@ -978,7 +978,7 @@ public class SchematicLoader
 		                    		
 		                    		
 		                    	
-		                    		/**
+		                    		
 		                    	//	System.out.println("found container");
 		                    		Random rand= new Random();
 		                    		if(world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe) instanceof TileEntityChest)
@@ -1017,7 +1017,7 @@ public class SchematicLoader
 		                    			dispenser.addItem(new ItemStack(Item.arrow, 64));
 		                    	
 		                    		}
-		                    		**/
+		                    		
 		                    		
 		                    	}
 		                    }

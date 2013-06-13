@@ -273,6 +273,7 @@ public class DungeonHelper
 	 		this.simpleHalls.add(new DungeonGenerator(0, "/schematics/simpleSmallT1.schematic", false));
 
 
+	 		this.complexHalls.add(new DungeonGenerator(0, "/schematics/tntPuzzleTrap.schematic", false));
 	 		this.complexHalls.add(new DungeonGenerator(0, "/schematics/brokenPillarsO.schematic", true));
 	 		this.complexHalls.add(new DungeonGenerator(0, "/schematics/buggyTopEntry1.schematic", true));
 	 		this.complexHalls.add(new DungeonGenerator(0, "/schematics/exitRuinsWithHiddenDoor.schematic", true));
@@ -307,6 +308,7 @@ public class DungeonHelper
 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/simpleDropHall.schematic", false));
 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/wallFallcomboPistonHall.schematic", false));
 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/wallFallcomboPistonHall.schematic", false));
+	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/fallingTNThall.schematic", false));
 	 		this.pistonTraps.add(new DungeonGenerator(0, "/schematics/lavaPyramid.schematic", true));
 
 	 	

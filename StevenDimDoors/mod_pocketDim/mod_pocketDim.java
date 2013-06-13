@@ -301,8 +301,8 @@ public class mod_pocketDim
 		transientDoor = (new TransientDoor(transientDoorID, Material.iron)).setHardness(1.0F) .setUnlocalizedName("transientDoor");
 
 		//   linkDimDoor = (new linkDimDoor(linkDimDoorID, Material.iron)).setHardness(1.0F) .setUnlocalizedName("dimDoorLink");
-		blockDimWall = (new BlockDimWall(blockDimWallID, 0, Material.iron)).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("blockDimWall");
-		blockDimWallPerm = (new BlockDimWallPerm(blockDimWallPermID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setHardness(100000.0F).setUnlocalizedName("blockDimWallPerm");
+		blockDimWall = (new BlockDimWall(blockDimWallID, 0, Material.iron)).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("blockDimWall").setResistance(50F);
+		blockDimWallPerm = (new BlockDimWallPerm(blockDimWallPermID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setResistance(100000.0F).setUnlocalizedName("blockDimWallPerm");
 		ExitDoor = (new ExitDoor(ExitDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
 		//   linkExitDoor = (new linkExitDoor(linkExitDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorexitlink");
 		blockRift = (new BlockRift(blockRiftID, 0, Material.air).setHardness(1.0F) .setUnlocalizedName("rift"));
