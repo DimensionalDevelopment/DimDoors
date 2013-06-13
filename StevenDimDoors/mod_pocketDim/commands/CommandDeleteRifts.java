@@ -16,7 +16,7 @@ public class CommandDeleteRifts extends CommandBase
 {
 	public String getCommandName()//the name of our command
 	{
-		return "delete_rifts";
+		return "dimdoors-cleanupRifts";
 	}
 
 

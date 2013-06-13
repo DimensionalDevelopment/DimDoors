@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim;
 
 
 import java.io.File;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -269,6 +270,7 @@ public class mod_pocketDim
     	
     	dungeonHelper.importCustomDungeons(schematicDir);
     	dungeonHelper.registerBaseDungeons();
+    	dungeonHelper.registerDungeonTypeTags();
 
     
         

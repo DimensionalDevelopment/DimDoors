@@ -16,7 +16,7 @@ public class CommandDeleteAllLinks extends CommandBase
 {
 	public String getCommandName()//the name of our command
 	{
-		return "delete_all_links";
+		return "dimdoors-deleteLinksInDim";
 	}
 
 

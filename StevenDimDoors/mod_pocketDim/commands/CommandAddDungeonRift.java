@@ -19,7 +19,7 @@ public class CommandAddDungeonRift extends CommandBase
 {
 	public String getCommandName()//the name of our command
 	{
-		return "add_dungeon_rift";
+		return "dimdoors-genDungeonRift";
 	}
 
 
