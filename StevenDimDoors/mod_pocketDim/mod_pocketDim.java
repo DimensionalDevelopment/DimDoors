@@ -256,7 +256,7 @@ public class mod_pocketDim
 		Configuration config = new Configuration(configFile);
 
 
-		DimDoorsConfig.loadConfig(configFile);
+		DDProperties.loadConfig(configFile);
 
 
 		String schematicDir = configFile.getParent()+"/DimDoors_Custom_schematics";
