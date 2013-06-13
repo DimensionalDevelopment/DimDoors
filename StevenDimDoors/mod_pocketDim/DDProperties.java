@@ -3,222 +3,202 @@ package StevenDimDoors.mod_pocketDim;
 import java.io.File;
 
 import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
 
 public class DDProperties
 {
 	/**
-	 * BlockIDs
+	 * Block IDs
 	 */
 
-	public static Property UnstableDoorID;
-	public static Property DimensionalDoorID;
-	public static Property WarpDoorID;
-	public static Property TransTrapdoorID;
-	public static Property TransientDoorID;
-
-	public static Property FabricBlockID;
-	public static Property RiftBlockID;
+	public final int UnstableDoorID;
+	public final int DimensionalDoorID;
+	public final int WarpDoorID;
+	public final int TransTrapdoorID;
+	public final int TransientDoorID;
+	public final int FabricBlockID;
+	public final int RiftBlockID;
 
 	/**
-	 * WorldGenBlockIDs
+	 * World Generation Block IDs
 	 */
 
-	public static Property LimboBlockID;
-	public static Property PermaFabricBlockID;
-
+	public final int LimboBlockID;
+	public final int PermaFabricBlockID;
 
 	/**
-	 * ItemIDs
+	 * Item IDs
 	 */
 
-	public static Property RiftBladeItemID;
-	public static Property RiftSignatureItemID;
-	public static Property RiftRemoverItemID;
-	public static Property StableFabricItemID;
-	public static Property StabilizedRiftSignatureItemID;
-
-	public static Property DimensionalDoorItemID;
-	public static Property UnstableDoorItemID;
-	public static Property WarpDoorItemID;
+	public final int RiftBladeItemID;
+	public final int RiftSignatureItemID;
+	public final int RiftRemoverItemID;
+	public final int StableFabricItemID;
+	public final int StabilizedRiftSignatureItemID;
+	public final int DimensionalDoorItemID;
+	public final int UnstableDoorItemID;
+	public final int WarpDoorItemID;
 
 	/**
 	 * Other IDs
 	 */
 
-	public static Property LimboBiomeID;
-	public static Property PocketBiomeID;
-	public static Property LimboDimensionID;
-	public static Property limboProviderID;
-	public static Property PocketProviderID;
-	public static Property DoorRenderEntityID;
-	public static Property MonolithEntityID;
+	public final int LimboBiomeID;
+	public final int PocketBiomeID;
+	public final int LimboDimensionID;
+	public final int LimboProviderID;
+	public final int PocketProviderID;
+	public final int DoorRenderEntityID;
+	public final int MonolithEntityID;
 
 	/**
-	 * CraftingFlags
+	 * Crafting Flags
 	 */
-	public static Property CraftingDimensionaDoorAllowed;
-	public static Property CraftingWarpDoorAllowed;
-	public static Property CraftingRiftSignatureAllowed;
-	public static Property CraftingRiftRemoverAllowed;
-	public static Property CraftingUnstableDoorAllowed;
-	public static Property CraftingRiftBladeAllowed;
-	public static Property CraftingTransTrapdoorAllowed;
-	public static Property CraftingStabilizedRiftSignatureAllowed;
+	
+	public final boolean CraftingDimensionaDoorAllowed;
+	public final boolean CraftingWarpDoorAllowed;
+	public final boolean CraftingRiftSignatureAllowed;
+	public final boolean CraftingRiftRemoverAllowed;
+	public final boolean CraftingUnstableDoorAllowed;
+	public final boolean CraftingRiftBladeAllowed;
+	public final boolean CraftingTransTrapdoorAllowed;
+	public final boolean CraftingStabilizedRiftSignatureAllowed;
+	public final boolean CraftingStableFabricAllowed;
 
 	/**
-	 * OtherFlags
+	 * Other Flags
 	 */
 
-	public static Property WorldRiftGenerationEnabled;
-	public static Property RiftSpreadEnabled;
-	public static Property RiftGriefingEnabled;
-	public static Property RiftsSpawnEndermenEnabled;
-	public static Property LimboEnabled;
-	public static Property LimboRespawningEnabled;
-	public static Property LimboReturnsInventoryEnabled;
-	public static Property DoorRenderingEnabled;
-	public static Property TNFREAKINGT_Enabled;
+	public final boolean WorldRiftGenerationEnabled;
+	public final boolean RiftSpreadEnabled;
+	public final boolean RiftGriefingEnabled;
+	public final boolean RiftsSpawnEndermenEnabled;
+	public final boolean LimboEnabled;
+	public final boolean HardcoreLimboEnabled;
+	public final boolean LimboReturnsInventoryEnabled;
+	public final boolean DoorRenderingEnabled;
+	public final boolean TNFREAKINGT_Enabled;
 
 	/**
 	 * Other
 	 */
 
-	public static Property NonTntWeight;
-	public static Property RiftSpreadModifier;
-	public static Property LimboReturnRange;
-
-	public static void loadConfig(File configFile)
+	public final int NonTntWeight;
+	public final int RiftSpreadModifier;
+	public final int LimboReturnRange;
+	public final String CustomSchematicDirectory;
+	
+	//Singleton instance
+	private static DDProperties instance = null;
+	//Path for custom dungeons within configuration directory
+	private final String CUSTOM_SCHEMATIC_SUBDIRECTORY = "/DimDoors_Custom_schematics";
+	//Names of categories
+	private final String CATEGORY_CRAFTING = "crafting";
+	private final String CATEGORY_ENTITY = "entity";
+	private final String CATEGORY_DIMENSION = "dimension";
+	private final String CATEGORY_PROVIDER = "provider";
+	private final String CATEGORY_BIOME = "biome";
+	
+	private DDProperties(File configFile)
 	{
+		//Load the configuration. This must be done in the constructor, even though I'd rather have a separate
+		//function, because "blank final" variables must be initialized within the constructor.
+		
+		CustomSchematicDirectory = configFile.getParent() + CUSTOM_SCHEMATIC_SUBDIRECTORY;
 		Configuration config = new Configuration(configFile);
-
 		config.load();
 
-		CraftingDimensionaDoorAllowed = config.get("Crafting control", "bCraftDimDoor", true);
-		CraftingWarpDoorAllowed = config.get("Crafting control", "bCraftExitDoor", true);
-		CraftingUnstableDoorAllowed = config.get("Crafting control", "bCraftChaosDoor", true);
-		CraftingTransTrapdoorAllowed = config.get("Crafting control", "bCraftDimHatch", true);
-		CraftingRiftSignatureAllowed = config.get("Crafting control", "bCraftRiftSig", true);
-		CraftingRiftRemoverAllowed = config.get("Crafting control", "bCraftRiftRemover", true);
-		CraftingStabilizedRiftSignatureAllowed = config.get("Crafting control", "bCraftStabilizedRiftSig", true);
-		CraftingRiftBladeAllowed = config.get("Crafting control", "bCraftRiftBlade", true);
+		CraftingDimensionaDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Dimesional Door", true).getBoolean(true);
+		CraftingWarpDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Warp Door", true).getBoolean(true);
+		CraftingUnstableDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crating Unstable Door", true).getBoolean(true);
+		CraftingTransTrapdoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Transdimensional Trapdoor", true).getBoolean(true);
+		CraftingRiftSignatureAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Rift Signature", true).getBoolean(true);
+		CraftingRiftRemoverAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Rift Remover", true).getBoolean(true);
+		CraftingStabilizedRiftSignatureAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Stabilized Rift Signature", true).getBoolean(true);
+		CraftingRiftBladeAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Rift Blade", true).getBoolean(true);
+		CraftingStableFabricAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Stable Fabric", true).getBoolean(true);
 
-		LimboRespawningEnabled = config.get(Configuration.CATEGORY_GENERAL, "bHardcoreLimbo", false);
-		LimboRespawningEnabled.comment = "True causes the player to respawn in limbo if they die in limbo";
+		RiftGriefingEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Griefing", true,
+				"Sets whether rifts destroy blocks around them or not").getBoolean(true);
+		RiftSpreadEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Spread", true,
+				"Sets whether rifts create more rifts when they are near other rifts").getBoolean(true);
+		RiftsSpawnEndermenEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Endermen Spawning from Rifts", true,
+				"Sets whether groups of connected rifts will spawn Endermen").getBoolean(true);
+		
+		LimboEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Limbo", true,
+				"Sets whether the Limbo dimension is activated").getBoolean(true);
+		LimboReturnsInventoryEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Limbo Returns Inventory", true,
+				"Sets whether players keep their inventories upon dying and respawning in Limbo").getBoolean(true);
+		HardcoreLimboEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Hardcore Limbo", false,
+				"Sets whether players that die in Limbo will respawn there").getBoolean(false);
+		LimboReturnRange = config.get(Configuration.CATEGORY_GENERAL, "Limbo Return Range", 500,
+				"Sets the farthest distance that Limbo can send you upon returning to the Overworld").getInt();
+		DoorRenderingEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Door Rendering", true).getBoolean(true);
 
-		TNFREAKINGT_Enabled = config.get("Configuration.CATEGORY_GENERAL", "EXPLOSIONS!!???!!!?!?!!", false);
+		TNFREAKINGT_Enabled = config.get(Configuration.CATEGORY_GENERAL, "EXPLOSIONS!!???!!!?!?!!", false).getBoolean(false);
+		NonTntWeight = config.get(Configuration.CATEGORY_GENERAL, "HOWMUCHTNT", 25, 
+				"Weighs the chance that a block will not be TNT. Must be greater than or equal to 0. " +
+				"EXPLOSIONS must be set to true for this to have any effect.").getInt();
 
-		RiftGriefingEnabled = config.get(Configuration.CATEGORY_GENERAL, "bRiftGreif", true);
-		RiftGriefingEnabled.comment = "toggles whether rifts eat blocks around them or not";
+		DoorRenderEntityID=config.get(CATEGORY_ENTITY, "Door Render Entity ID", 89).getInt();
+		MonolithEntityID = config.get(CATEGORY_ENTITY, "Monolith Entity ID", 125).getInt();
 
-		DoorRenderingEnabled = config.get(Configuration.CATEGORY_GENERAL, "bEnableDoorRender", true);
+		DimensionalDoorID = config.getBlock("Dimensional Door Block ID", 1970).getInt();
+		TransTrapdoorID = config.getBlock("Transdimensional Trapdoor Block ID", 1971).getInt();
+		FabricBlockID =config.getBlock("Fabric Of Reality Block ID", 1973).getInt();
+		WarpDoorID = config.getBlock("Warp Door Block ID", 1975).getInt();
+		RiftBlockID = config.getBlock("Rift Block ID", 1977).getInt();
+		UnstableDoorID = config.getBlock("Unstable Door Block ID", 1978).getInt();
+		TransientDoorID = config.getBlock("Transient Door Block ID", 1979).getInt();
 
-		LimboReturnsInventoryEnabled = config.get(Configuration.CATEGORY_GENERAL, "bLimboReturnInventory", true);
-		LimboReturnsInventoryEnabled.comment="Toggles whether or not your inventory is returned upon dying and respawning in limbo";
+		WarpDoorItemID = config.getItem("Warp Door Item ID", 5670).getInt();
+		RiftRemoverItemID = config.getItem("Rift Remover Item ID", 5671).getInt();
+		StableFabricItemID = config.getItem("Stable Fabric Item ID", 5672).getInt();
+		UnstableDoorItemID = config.getItem("Unstable Door Item ID", 5673).getInt();
+		DimensionalDoorItemID = config.getItem("Dimensional Door Item ID", 5674).getInt();
+		RiftSignatureItemID = config.getItem("Rift Signature Item ID", 5675).getInt();
+		RiftBladeItemID = config.getItem("Rift Blade Item ID", 5676).getInt();
+		StabilizedRiftSignatureItemID = config.getItem("Stabilized Rift Signature Item ID", 5677).getInt();
 
-		NonTntWeight=config.get(Configuration.CATEGORY_GENERAL, "HOWMUCHTNT", 25);
-		NonTntWeight.comment="Chance that a block will not be TNT. must be greater than or equal to 0. Explosions!?!?? must be set to true, and you figure out what it does. ";
+		LimboBlockID = config.getTerrainBlock("World Generation Block IDs - must be less than 256", "Limbo Block ID", 217,
+				"Blocks used for the terrain in Limbo").getInt();
+		PermaFabricBlockID = config.getTerrainBlock("World Generation Block IDs - must be less than 256",
+				"Perma Fabric Block ID", 220, "Blocks used for enclosing pocket dimensions").getInt();
 
-		MonolithEntityID=config.get(Configuration.CATEGORY_GENERAL, "monolithID", 125);
+		LimboDimensionID = config.get(CATEGORY_DIMENSION, "Limbo Dimension ID", -23).getInt();
+		PocketProviderID = config.get(CATEGORY_PROVIDER, "Pocket Provider ID", 24).getInt();
+		LimboProviderID = config.get(CATEGORY_PROVIDER, "Limbo Provider ID", 13).getInt();
 
-		DimensionalDoorID = config.getBlock("DimensionalDoorID", 1970);
-		WarpDoorID = config.getBlock("WarpDoorID", 1975);
-		UnstableDoorID = config.getBlock("UnstableDoorID", 1978);
-		TransTrapdoorID = config.getBlock("TransdimensionalTrapdoorID", 1971);
-		TransientDoorID = config.getBlock("TransientDoorID", 1979);
-		FabricBlockID =config.getBlock("FabricOfRealityBlockID", 1973);
-		RiftBlockID = config.getBlock("RiftBlockID", 1977);
+		WorldRiftGenerationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift World Generation", true,
+				"Sets whether dungeon rifts generate in dimensions other than Limbo").getBoolean(true);
 
-		StabilizedRiftSignatureItemID=config.getItem("Stabilized Rift Signature", 5677);
-		RiftBladeItemID=config.getItem("Rift Blade", 5676);
-		UnstableDoorItemID=config.getItem("Chaos Door", 5673);
-		RiftRemoverItemID=config.getItem("Rift Remover", 5671);
-		StableFabricItemID=config.getItem("Stable Fabric", 5672);
-		WarpDoorItemID=config.getItem("Warp Door Item", 5673);
-		DimensionalDoorItemID=config.getItem("Dimensional Door Item", 5674);
-		RiftSignatureItemID=config.getItem("Rift Signature Item", 5675);
+		RiftSpreadModifier = config.get(Configuration.CATEGORY_GENERAL, "Rift Spread Modifier", 3,
+				"Sets the number of times a rift can spread. 0 prevents rifts from spreading at all. " +
+				"A value greater than 5 is not recommended as the growth is exponential.").getInt();
 
-		LimboEnabled=config.get(Configuration.CATEGORY_GENERAL, "bLimboActive", true);
-
-
-
-		LimboBlockID=config.get("Worldgen Block IDs - must be less than 256", "blockLimbo", 217);
-		PermaFabricBlockID=config.get("Worldgen Block IDs - must be less than 256", "blockFabricPerm", 220);
-
-
-		LimboDimensionID=config.get(Configuration.CATEGORY_GENERAL, "limboDimID", -23);
-		DoorRenderEntityID=config.get(Configuration.CATEGORY_GENERAL, "doorRenderID", 89);
-
-		LimboReturnRange=config.get(Configuration.CATEGORY_GENERAL, "limboReturnRange", 500);
-		LimboReturnRange.comment = "The farthest possible distance that limbo can send you upon return to the overworld.";
-
-		PocketProviderID=config.get(Configuration.CATEGORY_GENERAL, "pocketProviderID", 24);
-
-		limboProviderID=config.get(Configuration.CATEGORY_GENERAL, "limboProvider ID", 13);
-
-
-
-		WorldRiftGenerationEnabled = config.get(Configuration.CATEGORY_GENERAL, "bWorldGenRifts", true);
-		WorldRiftGenerationEnabled.comment = "Toggles the natrual generation of dungeon rifts in other dimensions";
-
-		LimboEnabled = config.get(Configuration.CATEGORY_GENERAL, "bLimboActive", true);
-		LimboEnabled.comment="Toggles if dying in a pocket dim respawns the player in limbo";
-
-		RiftSpreadModifier =  config.get(Configuration.CATEGORY_GENERAL, "riftSpreadModifier", 3);
-		RiftSpreadModifier.comment = "How many times a rift can spread- 0 prevents rifts from spreading at all. I dont recommend putting it highter than 5, because its rather exponential. ";
-
-		LimboBiomeID=config.get(Configuration.CATEGORY_GENERAL, "limboBiomeID", 251);
-		PocketBiomeID=config.get(Configuration.CATEGORY_GENERAL, "pocketBiomeID", 250);
-
+		LimboBiomeID = config.get(CATEGORY_BIOME, "Limbo Biome ID", 251).getInt();
+		PocketBiomeID = config.get(CATEGORY_BIOME, "Pocket Biome ID", 250).getInt();
 
 		config.save();
-
-		mod_pocketDim.blockDimWallID=FabricBlockID.getInt();
-		mod_pocketDim.blockDimWallPermID=PermaFabricBlockID.getInt();
-		mod_pocketDim.blockLimboID=LimboBlockID.getInt();
-		mod_pocketDim.blockRiftID=LimboBlockID.getInt();
-		mod_pocketDim.dimDoorID=DimensionalDoorID.getInt();
-		mod_pocketDim.chaosDoorID=UnstableDoorID.getInt();
-		mod_pocketDim.transientDoorID=TransientDoorID.getInt();
-		mod_pocketDim.dimHatchID=TransTrapdoorID.getInt();
-		mod_pocketDim.ExitDoorID=WarpDoorID.getInt();
-		mod_pocketDim.blockRiftID=RiftBlockID.getInt();
-		mod_pocketDim.DoorRenderID=DoorRenderEntityID.getInt();
-		mod_pocketDim.hardcoreLimbo=LimboRespawningEnabled.getBoolean(false);
-		mod_pocketDim.enableDimTrapDoor=CraftingTransTrapdoorAllowed.getBoolean(true);
-		mod_pocketDim.enableDoorOpenGL=DoorRenderingEnabled.getBoolean(true);
-		mod_pocketDim.enableIronDimDoor=CraftingDimensionaDoorAllowed.getBoolean(true);
-		mod_pocketDim.enableRiftBlade=CraftingRiftBladeAllowed.getBoolean(true);
-		mod_pocketDim.enableRiftRemover=CraftingRiftBladeAllowed.getBoolean(true);
-		mod_pocketDim.enableRiftSignature=CraftingRiftSignatureAllowed.getBoolean(true);
-		mod_pocketDim.enableUnstableDoor=CraftingUnstableDoorAllowed.getBoolean(true);
-		mod_pocketDim.enableWoodenDimDoor=CraftingWarpDoorAllowed.getBoolean(true);
-		mod_pocketDim.enableStabilizedRiftSignature=CraftingStabilizedRiftSignatureAllowed.getBoolean(true);
-		mod_pocketDim.itemChaosDoorID=UnstableDoorItemID.getInt();
-		mod_pocketDim.itemDimDoorID=DimensionalDoorItemID.getInt();
-		mod_pocketDim.itemExitDoorID=WarpDoorItemID.getInt();
-		mod_pocketDim.itemLinkSignatureID=RiftSignatureItemID.getInt();
-		mod_pocketDim.itemRiftBladeID=RiftBladeItemID.getInt();
-		mod_pocketDim.itemRiftRemoverID=RiftRemoverItemID.getInt();
-		mod_pocketDim.itemStabilizedLinkSignatureID=StabilizedRiftSignatureItemID.getInt();
-		mod_pocketDim.itemStableFabricID=StableFabricItemID.getInt();
-		mod_pocketDim.obeliskID=MonolithEntityID.getInt();
-		mod_pocketDim.limboBiomeID=LimboBiomeID.getInt();
-		mod_pocketDim.pocketBiomeID=PocketBiomeID.getInt();
-		mod_pocketDim.providerID=PocketProviderID.getInt();
-		mod_pocketDim.limboProviderID=limboProviderID.getInt();
-		mod_pocketDim.limboExitRange=LimboReturnRange.getInt();
-		mod_pocketDim.TNFREAKINGT=TNFREAKINGT_Enabled.getBoolean(false);
-		mod_pocketDim.riftsInWorldGen=WorldRiftGenerationEnabled.getBoolean(true);
-		mod_pocketDim.riftSpreadFactor=RiftSpreadModifier.getInt();
-		mod_pocketDim.returnInventory=LimboReturnsInventoryEnabled.getBoolean(true);
-		mod_pocketDim.HOW_MUCH_TNT=NonTntWeight.getInt() + 1; //workaround so the generator code doesn't have to be changed
-		mod_pocketDim.limboDimID = LimboDimensionID.getInt();
-		mod_pocketDim.isLimboActive= LimboEnabled.getBoolean(true);
-
-
 	}
-
-
-
+	
+	public static DDProperties create(File configFile)
+	{
+		if (instance == null)
+			instance = new DDProperties(configFile);
+		else
+			throw new IllegalStateException("Cannot create DDProperties twice");
+		
+		return instance;
+	}
+	
+	public static DDProperties instance()
+	{
+		if (instance == null)
+		{
+			//This is to prevent some frustrating bugs that could arise when classes
+			//are loaded in the wrong order. Trust me, I had to squash a few...
+			throw new IllegalStateException("Instance of DDProperties requested before properties have been loaded");
+		}
+		return instance;
+	}
 }

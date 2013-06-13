@@ -32,9 +32,12 @@ public class TransientDoor extends ExitDoor
 	{
 		super(par1, Material.grass);
 	//	this.blockIndexInTexture = 18;
-      
 
+		if (properties == null)
+			properties = DDProperties.instance();
 	}
+	
+	private static DDProperties properties = null;
 	
 	public void registerIcons(IconRegister par1IconRegister)
     {
@@ -90,7 +93,7 @@ public class TransientDoor extends ExitDoor
     			 {
     				 dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
     				 par1World.setBlock(par2, par3-1, par4, 0);
-    				 par1World.setBlock(par2, par3, par4, mod_pocketDim.blockRiftID);
+    				 par1World.setBlock(par2, par3, par4, properties.RiftBlockID);
 
     			 }
     		 }
@@ -104,7 +107,7 @@ public class TransientDoor extends ExitDoor
              			 {
              				 dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
              				 par1World.setBlock(par2, par3, par4, 0);
-             				 par1World.setBlock(par2, par3+1, par4, mod_pocketDim.blockRiftID);
+             				 par1World.setBlock(par2, par3+1, par4, properties.RiftBlockID);
 
              			 }
              		 } 

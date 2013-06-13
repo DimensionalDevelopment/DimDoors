@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.items;
 import java.util.List;
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -24,34 +25,31 @@ import net.minecraft.world.World;
 
 public class itemDimDoor extends ItemDoor
 {
-    private Material doorMaterial;
-
+	private static DDProperties properties = null;
+	
     public itemDimDoor(int par1, Material par2Material)
     {
     	  super(par1, par2Material);
     	  this.setMaxStackSize(64);
-          this.doorMaterial = par2Material;
           this.setCreativeTab(CreativeTabs.tabTransport);
+          if (properties == null)
+        	  properties = DDProperties.instance();
     }
+    
     public void registerIcons(IconRegister par1IconRegister)
     {
         this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
-
     }
     
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
     {
-    	
-    
     		par3List.add("Place on the block under a rift");
     		par3List.add ("to activate that rift,");
     		par3List.add("or place anywhere else");
     		par3List.add("to create a pocket dim");
-
-
-    	
     }
+    
     @Override
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
     {
@@ -78,9 +76,6 @@ public class itemDimDoor extends ItemDoor
             {
                 var11 = mod_pocketDim.dimDoor;
             }
-            
-            
-            
 
             if (par2EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack) && par2EntityPlayer.canPlayerEdit(par4, par5 + 1, par6, par7, par1ItemStack)&&!par3World.isRemote)
             {
@@ -105,8 +100,6 @@ public class itemDimDoor extends ItemDoor
                 
                     placeDoorBlock(par3World, par4, par5-offset, par6, var12, var11);
                     
-
-                   
                     --par1ItemStack.stackSize;
                     return true;
                 }
@@ -144,13 +137,11 @@ public class itemDimDoor extends ItemDoor
     
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {
-
-    	
-    	Boolean didFindThing=false;
+    	boolean didFindThing = false;
     	MovingObjectPosition hit = 	this.getMovingObjectPositionFromPlayer(par3EntityPlayer.worldObj, par3EntityPlayer, false );
 		if(hit!=null&&!par2World.isRemote)
 		{
-			if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ)==mod_pocketDim.blockRiftID)
+			if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ) == properties.RiftBlockID)
 			{
 				LinkData link = dimHelper.instance.getLinkDataFromCoords(hit.blockX, hit.blockY, hit.blockZ, par2World);
 				if(link!=null)
@@ -212,25 +203,15 @@ public class itemDimDoor extends ItemDoor
     	int id = world.getBlockId(i, j, k);
     	
     	boolean flag = true;
-    	if(id==mod_pocketDim.blockDimWallID||id==mod_pocketDim.blockRiftID||id==mod_pocketDim.blockDimWallPermID||id==0)
+    	if (id==properties.FabricBlockID || id==properties.RiftBlockID || id==properties.PermaFabricBlockID || id == 0)
     	{
     		return true;
     	}
 
-    	if(id!=0)
+    	if (id != 0 && !Block.blocksList[id].blockMaterial.isReplaceable())
 		{
-			if(!Block.blocksList[id].blockMaterial.isReplaceable())
-			{
-				
-					flag=false;
-				
-			}
+			flag = false;
 		}
-		
-		
-    		
-    	return flag;
-         
+    	return flag;         
     }
-
 }

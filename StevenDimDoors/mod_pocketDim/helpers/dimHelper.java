@@ -10,12 +10,30 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet41EntityEffect;
+import net.minecraft.network.packet.Packet43Experience;
+import net.minecraft.network.packet.Packet9Respawn;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
+import net.minecraftforge.common.DimensionManager;
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.ObjectSaveInputStream;
@@ -24,32 +42,7 @@ import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.pocketProvider;
-
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet10Flying;
-import net.minecraft.network.packet.Packet39AttachEntity;
-import net.minecraft.network.packet.Packet41EntityEffect;
-import net.minecraft.network.packet.Packet43Experience;
-import net.minecraft.network.packet.Packet9Respawn;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.Teleporter;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
-import net.minecraftforge.common.DimensionManager;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 
@@ -80,20 +73,20 @@ public class dimHelper extends DimensionManager
 	public static dimHelper instance = new dimHelper();
 	
 	/**
-	 * HashMap for temporary storage of Link Singnature damage hash values. See itemLinkSignature for more details
+	 * HashMap for temporary storage of Link Signature damage hash values. See itemLinkSignature for more details
 	 * @Return
 	 */
 	public HashMap<Integer, LinkData> interDimLinkList= new HashMap<Integer,LinkData>();
 	
 	/**
 	 * ArrayList containing all link data not sorted for easy random access, used for random doors and for recreating rifts if they have a block placed over them. 
-	 * See the common tick manager and the Chaos door for details on useage
+	 * See the common tick manager and the Chaos door for details on usage
 	 * @Return
 	 */
 	//public ArrayList<LinkData> linksForRendering =new ArrayList<LinkData>();
 	Random rand= new Random();
 	
-	//Stupid function I use because I dont understand bitwise operations yet. Used in door orientation
+	//Stupid function I use because I don't understand bitwise operations yet. Used in door orientation
 	//TODO get rid of this
 	public int flipDoorMetadata(int data)
 	{
@@ -113,9 +106,6 @@ public class dimHelper extends DimensionManager
 		{
 			return 1;
 		}
-		
-		
-		
 		if(data==4)
 		{
 			return 6;
@@ -160,16 +150,8 @@ public class dimHelper extends DimensionManager
 		{
 			entity.mountEntity(null);
 			cart = teleportEntity(oldWorld, cart, link);
-
-	
-
 		}
 		
-		
-		    
-		    
-		
-
 		WorldServer newWorld;
 		
 		if(this.getWorld(link.destDimID)==null)
@@ -296,16 +278,11 @@ public class dimHelper extends DimensionManager
 			WorldServer.class.cast(newWorld).getChunkProvider().loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
 		}
 		 mod_pocketDim.teleporter.placeInPortal(entity, newWorld, link);
-		return entity;
-	    
-	  
-	    
-	 
-	   
-	    
+		return entity;    
 	}
+
 	/**
-	 * Primary function used to teleport the player using doors. Performes numerous null checks, and also generates the destination door/pocket if it has not done so already. 
+	 * Primary function used to teleport the player using doors. Performs numerous null checks, and also generates the destination door/pocket if it has not done so already. 
 	 * Also ensures correct orientation relative to the door using the pocketTeleporter.
 	 * @param world- world the player is currently in
 	 * @param linkData- the link the player is using to teleport, sends the player to its dest information. 
@@ -315,28 +292,23 @@ public class dimHelper extends DimensionManager
 	 */
 	public void teleportToPocket(World world,LinkData linkData, Entity entity)
 	{
-		if(world.isRemote)
+		DDProperties properties = DDProperties.instance();
+		
+		if (world.isRemote)
 		{
 			return;
 		}
-		
-
-		if(linkData!=null)
+		if (linkData != null)
 		{
-			
-			
-			
 			int destinationID=linkData.destDimID;
 		
 			int x=linkData.destXCoord;
 			int y=linkData.destYCoord;
 			int z=linkData.destZCoord;
 		
-			
-	        
 			int depth= this.getDimDepth(world.provider.dimensionId);
 			
-			if(this.dimList.containsKey(destinationID)&&this.dimList.containsKey(world.provider.dimensionId))
+			if(this.dimList.containsKey(destinationID) && this.dimList.containsKey(world.provider.dimensionId))
 			{
 				this.generatePocket(linkData);
 			 
@@ -384,14 +356,14 @@ public class dimHelper extends DimensionManager
 		    			}
 		    			if(count==19)
 		    			{
-		    				entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, mod_pocketDim.blockDimWallID);
+		    				entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, properties.FabricBlockID);
 		    			}
 		    		}	    																	
 		    	}
 	    								
 		    	if(entity.worldObj.getBlockId(playerXCoord, playerYCoord-1,playerZCoord )==Block.lavaStill.blockID)
 		    	{
-		    		entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, mod_pocketDim.blockDimWallID);
+		    		entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, properties.FabricBlockID);
 		    	}
 	
 		    	this.generateDoor(world,linkData);
@@ -470,21 +442,15 @@ public class dimHelper extends DimensionManager
 	 */
 	public LinkData createLink( int locationDimID, int destinationDimID, int locationXCoord, int locationYCoord, int locationZCoord, int destinationXCoord, int destinationYCoord, int destinationZCoord,int linkOrientation)
 	{
-
-		
-		
 		LinkData linkData =new LinkData( locationDimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord ,destinationZCoord,false,linkOrientation);
 		return this.createLink(linkData);
-		
-		
-		
 	}
 	
 	
 	public LinkData createLink(LinkData link)
 	{
-	
-
+		DDProperties properties = DDProperties.instance();
+		
 		if(!this.dimList.containsKey(link.locDimID))
 		{
 			DimData locationDimData= new DimData(link.locDimID, false, 0, link.locDimID,link.locXCoord,link.locYCoord,link.locZCoord);
@@ -514,7 +480,7 @@ public class dimHelper extends DimensionManager
 			
 			if(!mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))
 			{
-				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
+				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
 				
 			}
 		
@@ -620,6 +586,8 @@ public class dimHelper extends DimensionManager
 		int destY = incLink.destYCoord;
 		int destZ = incLink.destZCoord;
 		
+		DDProperties properties = DDProperties.instance();
+		
 		if(!incLink.hasGennedDoor)
 		{
 			
@@ -629,7 +597,7 @@ public class dimHelper extends DimensionManager
 			DimData data = this.dimList.get(destinationID);
 
 			int id =world.getBlockId(locX, locY, locZ);
-			if(id==mod_pocketDim.ExitDoorID||id==mod_pocketDim.dimDoorID||id==mod_pocketDim.transientDoorID)
+			if(id==properties.WarpDoorID||id==properties.DimensionalDoorID||id==properties.TransientDoorID)
 			{
 				int doorTypeToPlace=id;
 		
@@ -653,7 +621,7 @@ public class dimHelper extends DimensionManager
 				
 
 				int blockToReplace= this.getWorld(destinationID).getBlockId(destX, destY, destZ);
-				if(blockToReplace!=mod_pocketDim.dimDoorID&&blockToReplace!=mod_pocketDim.ExitDoorID&&blockToReplace!=mod_pocketDim.transientDoorID)
+				if(blockToReplace!=properties.DimensionalDoorID&&blockToReplace!=properties.WarpDoorID&&blockToReplace != properties.TransientDoorID)
 				{
 					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, doorTypeToPlace,destOrientation,2);
 					this.getWorld(destinationID).setBlock(destX, destY, destZ, doorTypeToPlace,8,2);
@@ -683,6 +651,8 @@ public class dimHelper extends DimensionManager
 	 */
 	public void generatePocket(LinkData incomingLink)
 	{
+		DDProperties properties = DDProperties.instance();
+		
 		try
 		{
 			
@@ -764,15 +734,15 @@ public class dimHelper extends DimensionManager
 							 {
 								 if(Math.abs(xCount)>=19||Math.abs(yCount)>=19||Math.abs(zCount)>=19)
 									 {
-									 	this.setBlockDirectly(this.getWorld(incomingLink.destDimID), x+xCount,  y+yCount,  z+zCount,mod_pocketDim.blockDimWallPermID,0);
+									 	this.setBlockDirectly(this.getWorld(incomingLink.destDimID), x+xCount,  y+yCount,  z+zCount,properties.PermaFabricBlockID,0);
 									
 									 }
 								 else
 								 {
-									this.setBlockDirectly(this.getWorld(incomingLink.destDimID), x+xCount,  y+yCount,  z+zCount,mod_pocketDim.blockDimWallID,0);
-								 	if(mod_pocketDim.TNFREAKINGT)
+									this.setBlockDirectly(this.getWorld(incomingLink.destDimID), x+xCount,  y+yCount,  z+zCount,properties.FabricBlockID,0);
+								 	if(properties.TNFREAKINGT_Enabled)
 								 	{
-								 		if((Math.abs(xCount)>=16||Math.abs(yCount)>=16||Math.abs(zCount)>=16)&&rand.nextInt(mod_pocketDim.HOW_MUCH_TNT)==1)
+								 		if((Math.abs(xCount)>=16||Math.abs(yCount)>=16||Math.abs(zCount)>=16) && rand.nextInt(properties.NonTntWeight + 1) == 0)
 								 		{
 								 			this.getWorld(incomingLink.destDimID).setBlock( x+xCount,  y+yCount,  z+zCount,Block.tnt.blockID);
 								 		}
@@ -807,6 +777,8 @@ public class dimHelper extends DimensionManager
 	 */
 	public void initPockets()
 	{
+		DDProperties properties = DDProperties.instance();
+		
 		mod_pocketDim.hasInitDims=true;
 		this.load();
 		if(!this.dimList.isEmpty())
@@ -826,7 +798,7 @@ public class dimHelper extends DimensionManager
 					try
 					{	
 						this.getNextFreeDimId();
-						registerDimension(dimData.dimID,mod_pocketDim.providerID);
+						registerDimension(dimData.dimID,properties.PocketProviderID);
 					}
 					catch (Exception e)
 					{
@@ -911,9 +883,11 @@ public class dimHelper extends DimensionManager
 	 */
 	public LinkData createPocket(LinkData link , boolean isGoingDown, boolean isRandomRift)
 	{
-		if(this.getWorld(link.locDimID)==null)
+		DDProperties properties = DDProperties.instance();
+		
+		if (dimHelper.getWorld(link.locDimID) == null)
 		{
-			this.initDimension(link.locDimID);
+			dimHelper.initDimension(link.locDimID);
 		}
 		
 		int dimensionID;
@@ -921,11 +895,7 @@ public class dimHelper extends DimensionManager
 	//	World world = this.getWorld(link.locDimID);
 		
 		dimensionID = getNextFreeDimId();
-		registerDimension(dimensionID,mod_pocketDim.providerID);
-		
-		
-		
-
+		registerDimension(dimensionID, properties.PocketProviderID);
 		DimData locationDimData;
 		DimData destDimData;
 		
@@ -1324,6 +1294,7 @@ public class dimHelper extends DimensionManager
 	 */
 	public static boolean removeRift(World world, int x, int y, int z, int range, EntityPlayer player, ItemStack item)
     {
+    	DDProperties properties = DDProperties.instance();
     	
     	LinkData nearest=null;
 		float distance=range+1;
@@ -1337,7 +1308,7 @@ public class dimHelper extends DimensionManager
 			{
 				while (k<range)
 				{
-					if(world.getBlockId(x+i, y+j, z+k)==mod_pocketDim.blockRiftID&&MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)<distance)
+					if(world.getBlockId(x+i, y+j, z+k)==properties.RiftBlockID&&MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)<distance)
 					{
 						if(MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)!=0||range==1)
 						{

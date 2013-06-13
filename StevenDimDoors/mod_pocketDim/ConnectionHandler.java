@@ -16,15 +16,19 @@ import cpw.mods.fml.common.network.Player;
 public class ConnectionHandler  implements IConnectionHandler
 {
 	private static boolean connected = false;
-
+	private static DDProperties properties = null;
+		
 	//sends a packet to clients containing all the information about the dims and links. Lots of packets, actually. 
 	@Override
 	public String connectionReceived(NetLoginHandler netHandler, INetworkManager manager) 
 	{
+		if (properties == null)
+			properties = DDProperties.instance();
+		
 		Collection set = new ArrayList();
 		set.addAll(dimHelper.dimList.keySet());	
 		PacketHandler.onClientJoinPacket(manager, dimHelper.dimList);
-		PacketHandler.onDimCreatedPacket(new DimData(mod_pocketDim.limboDimID, false, 0, 0, 0, 0, 0));
+		PacketHandler.onDimCreatedPacket(new DimData(properties.LimboDimensionID, false, 0, 0, 0, 0, 0));
 		return null;
 	}
 

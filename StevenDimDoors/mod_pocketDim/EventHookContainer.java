@@ -1,4 +1,5 @@
 package StevenDimDoors.mod_pocketDim;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,9 +33,17 @@ import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
+
 public class EventHookContainer
 {
-	Random rand= new Random();
+	private static Random rand = new Random();
+	private static DDProperties properties = null;
+	
+	public EventHookContainer()
+	{
+		if (properties == null)
+			properties = DDProperties.instance();
+	}
 	
 	@SideOnly(Side.CLIENT)
 	
@@ -46,14 +55,8 @@ public class EventHookContainer
 		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/monk.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/monk.ogg")));
 		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/crack.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/crack.ogg")));
 		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/tearing.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/tearing.ogg")));
-
-
 	}
 
-	
-	
-	        
-	        
     @ForgeSubscribe
     public void onWorldLoad(WorldEvent.Load event)
     {
@@ -87,7 +90,7 @@ public class EventHookContainer
     				int blocktoReplace = world.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord);
     				if(!mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))
     				{
-        				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, mod_pocketDim.blockRiftID);
+        				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
     				}
 
 
@@ -120,7 +123,7 @@ public class EventHookContainer
     public void onPlayerFall(LivingFallEvent event)
     {
     	
-    		event.setCanceled(event.entity.worldObj.provider.dimensionId==mod_pocketDim.limboDimID);
+    		event.setCanceled(event.entity.worldObj.provider.dimensionId==properties.LimboDimensionID);
     	
     }
     
@@ -132,7 +135,7 @@ public class EventHookContainer
     		
     	/**
     	
-    	if(event.entityPlayer.worldObj.provider.dimensionId==mod_pocketDim.limboDimID&&event.action==PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+    	if(event.entityPlayer.worldObj.provider.dimensionId==properties.LimboDimensionID&&event.action==PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
     	{
         
 

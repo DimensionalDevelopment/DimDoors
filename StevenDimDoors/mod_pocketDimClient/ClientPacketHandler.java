@@ -14,13 +14,10 @@ import cpw.mods.fml.common.network.Player;
 // This just handles the data packets in the server
 public class ClientPacketHandler implements IPacketHandler{
 
+	@Override
+	public void onPacketData(INetworkManager manager,
+			Packet250CustomPayload packet, Player player) {
+		// TODO Auto-generated method stub
 
-
-
-@Override
-public void onPacketData(INetworkManager manager,
-		Packet250CustomPayload packet, Player player) {
-	// TODO Auto-generated method stub
-	
-}
+	}
 }

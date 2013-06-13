@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -14,13 +15,18 @@ import net.minecraft.world.World;
 
 public class CommandDeleteRifts extends CommandBase
 {
+	public CommandDeleteRifts()
+	{
+		if (properties == null)
+			properties = DDProperties.instance();
+	}
+	
+	private static DDProperties properties = null;
+	
 	public String getCommandName()//the name of our command
 	{
 		return "dimdoors-cleanupRifts";
 	}
-
-
-
 
 	@Override
 	public void processCommand(ICommandSender var1, String[] var2) 
@@ -79,7 +85,7 @@ public class CommandDeleteRifts extends CommandBase
 					}
 					 targetWorld = dimHelper.getWorld(targetDim);
 					
-					if(targetWorld.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord)==mod_pocketDim.blockRiftID)
+					if(targetWorld.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord)==properties.RiftBlockID)
 					{
 						dim.removeLinkAtCoords(link);
 					

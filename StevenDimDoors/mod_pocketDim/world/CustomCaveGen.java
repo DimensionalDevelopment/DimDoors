@@ -2,15 +2,22 @@ package StevenDimDoors.mod_pocketDim.world;
 
 import java.util.Random;
 
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-
 import net.minecraft.block.Block;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.MapGenBase;
+import StevenDimDoors.mod_pocketDim.DDProperties;
 
 public class CustomCaveGen extends MapGenBase
 {
+	private static DDProperties properties = null;
+	
+	public CustomCaveGen()
+	{
+		if (properties == null)
+			properties = DDProperties.instance();
+	}
+	
     /**
      * Generates a larger initial cave node than usual. Called 25% of the time.
      */
@@ -185,7 +192,7 @@ public class CustomCaveGen extends MapGenBase
                                                 var49 = true;
                                             }
 
-                                            if (var53 == mod_pocketDim.blockLimboID|| var53 == Block.dirt.blockID || var53 == Block.grass.blockID)
+                                            if (var53 == properties.LimboBlockID || var53 == Block.dirt.blockID || var53 == Block.grass.blockID)
                                             {
                                                 if (var50 < 10)
                                                 {

@@ -7,9 +7,9 @@ import cpw.mods.fml.common.network.Player;
 
 public class ServerPacketHandler implements IPacketHandler
 {
-    @Override
-    public void onPacketData(INetworkManager manager,
-            Packet250CustomPayload packet, Player player)
-    {
-    }
+	@Override
+	public void onPacketData(INetworkManager manager,
+			Packet250CustomPayload packet, Player player)
+	{
+	}
 }

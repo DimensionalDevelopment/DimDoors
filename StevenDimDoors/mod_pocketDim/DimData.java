@@ -33,6 +33,8 @@ public class DimData implements Serializable
 	
 	static final long serialVersionUID = 454342L;
 	
+	private static DDProperties properties = null;
+	
 	public DimData(int dimID, boolean isPocket, int depth, LinkData exitLinkData)
 	{
 		this.dimID=dimID;
@@ -40,17 +42,14 @@ public class DimData implements Serializable
 		this.isPocket=isPocket;
 		
 		this.exitDimLink= exitLinkData;
-		
+
+		if (properties == null)
+			properties = DDProperties.instance();
 	}
 	
 	public DimData(int dimID, boolean isPocket, int depth, int exitLinkDimID, int exitX, int exitY, int exitZ)
 	{
-		this.dimID=dimID;
-		this.depth=depth;
-		this.isPocket=isPocket;
-
-		this.exitDimLink= new LinkData(exitLinkDimID,  exitX, exitY, exitZ);
-		
+		this(dimID, isPocket, depth, new LinkData(exitLinkDimID,  exitX, exitY, exitZ));
 	}
 	
 	public LinkData findNearestRift(World world, int range, int x, int y, int z)
@@ -67,7 +66,7 @@ public class DimData implements Serializable
 			{
 				while (k<range)
 				{
-					if(world.getBlockId(x+i, y+j, z+k)==mod_pocketDim.blockRiftID&&MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)<distance)
+					if(world.getBlockId(x+i, y+j, z+k)==properties.RiftBlockID&&MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)<distance)
 					{
 						if(MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)!=0)
 						{
@@ -106,7 +105,7 @@ public class DimData implements Serializable
 			{
 				while (k<range)
 				{
-					if(world.getBlockId(x+i, y+j, z+k)==mod_pocketDim.blockRiftID)
+					if(world.getBlockId(x+i, y+j, z+k)==properties.RiftBlockID)
 					{
 						if(MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)!=0)
 						{
@@ -187,7 +186,7 @@ public class DimData implements Serializable
 	
 	public boolean isLimbo()
 	{
-		if(this.dimID==mod_pocketDim.limboDimID)
+		if(this.dimID==properties.LimboDimensionID)
 		{
 			return true;
 			

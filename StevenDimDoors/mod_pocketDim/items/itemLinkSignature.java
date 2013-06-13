@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
 
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -22,7 +23,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class itemLinkSignature extends Item
 {
-    private Material doorMaterial;
 
     public itemLinkSignature(int par1)
     {
@@ -35,7 +35,11 @@ public class itemLinkSignature extends Item
          this.setMaxDamage(0);
          this.hasSubtypes=true;
     	 //TODO move to proxy
-    }
+		if (properties == null)
+			properties = DDProperties.instance();
+	}
+	
+	private static DDProperties properties = null;
     
     @SideOnly(Side.CLIENT)
     @Override
@@ -90,22 +94,22 @@ public class itemLinkSignature extends Item
     				offset = 1;
     			}
     		}
-			if(par3World.getBlockId(par4, par5, par6)==mod_pocketDim.dimDoorID&&par3World.getBlockId(par4, par5+1, par6)==mod_pocketDim.dimDoorID)
+			if(par3World.getBlockId(par4, par5, par6) == properties.DimensionalDoorID && par3World.getBlockId(par4, par5 + 1, par6) == properties.DimensionalDoorID)
 			{
 				offset = 1;
 			}
 			else
-			if(par3World.getBlockId(par4, par5, par6)==mod_pocketDim.ExitDoorID&&par3World.getBlockId(par4, par5+1, par6)==mod_pocketDim.ExitDoorID)
+			if(par3World.getBlockId(par4, par5, par6)==properties.WarpDoorID&&par3World.getBlockId(par4, par5+1, par6)==properties.WarpDoorID)
 			{
 				offset = 1;
 			}
 			else
-			if(par3World.getBlockId(par4, par5, par6)==mod_pocketDim.dimDoorID&&par3World.getBlockId(par4, par5-1, par6)==mod_pocketDim.dimDoorID)
+			if (par3World.getBlockId(par4, par5, par6)==properties.DimensionalDoorID&&par3World.getBlockId(par4, par5-1, par6)==properties.DimensionalDoorID)
 			{
 				offset = 0;
 			}
 			else
-			if(par3World.getBlockId(par4, par5, par6)==mod_pocketDim.ExitDoorID&&par3World.getBlockId(par4, par5-1, par6)==mod_pocketDim.ExitDoorID)
+			if (par3World.getBlockId(par4, par5, par6) == properties.WarpDoorID && par3World.getBlockId(par4, par5-1, par6)==properties.WarpDoorID)
 			{
 				offset = 0;
 			}
@@ -118,7 +122,7 @@ public class itemLinkSignature extends Item
 				{
 					int id= (par3World.getBlockId(par4, par5+count, par6));
 					
-					if(id == mod_pocketDim.dimDoorID||id==mod_pocketDim.ExitDoorID||id==mod_pocketDim.chaosDoorID)
+					if(id == properties.DimensionalDoorID||id==properties.WarpDoorID||id== properties.UnstableDoorID)
 					{
 						orientation = dimHelper.instance.getLinkDataFromCoords(par4, par5+count, par6,par3World).linkOrientation;
 					}

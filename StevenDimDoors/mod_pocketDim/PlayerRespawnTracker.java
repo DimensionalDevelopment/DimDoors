@@ -12,7 +12,13 @@ import cpw.mods.fml.common.IPlayerTracker;
 
 public class PlayerRespawnTracker implements IPlayerTracker
 {
+	public PlayerRespawnTracker()
+	{
+		if (properties == null)
+			properties = DDProperties.instance();
+	}
 	
+	private static DDProperties properties = null;
 
 	@Override
 	public void onPlayerLogin(EntityPlayer player) {
@@ -35,10 +41,10 @@ public class PlayerRespawnTracker implements IPlayerTracker
 	@Override
 	public void onPlayerRespawn(EntityPlayer player) 
 	{
-		if(player.worldObj.provider.dimensionId==mod_pocketDim.limboDimID)
+		if(player.worldObj.provider.dimensionId==properties.LimboDimensionID)
 			{
 			
-			if(!player.worldObj.isRemote&&mod_pocketDim.returnInventory)
+			if(!player.worldObj.isRemote && properties.LimboReturnsInventoryEnabled)
 			{
 
 				if(player.username!=null)

@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -34,9 +35,11 @@ public class dimDoor extends BlockContainer
 		super(par1, Material.iron);
 	//	this.blockIndexInTexture = 18;
 
-
+		if (properties == null)
+			properties = DDProperties.instance();
 	}
 	
+	private static DDProperties properties = null;
 	
 
 	public void registerIcons(IconRegister par1IconRegister)
@@ -56,19 +59,19 @@ public class dimDoor extends BlockContainer
     		if(dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World)!=null)
     		{
     			LinkData link= dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World);
-    			par1World.setBlock(par2, par3, par4, mod_pocketDim.blockRiftID);
+    			par1World.setBlock(par2, par3, par4, properties.RiftBlockID);
     		
     		}
     		 if(dimHelper.instance.getLinkDataFromCoords(par2, par3-1, par4, par1World)!=null)
     		{
     			LinkData link= dimHelper.instance.getLinkDataFromCoords(par2, par3-1, par4, par1World);
-    			par1World.setBlock(par2, par3-1, par4, mod_pocketDim.blockRiftID);
+    			par1World.setBlock(par2, par3-1, par4, properties.RiftBlockID);
     		
     		}
     		 if(dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World)!=null)
     		{
     			LinkData link= dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World);
-    			par1World.setBlock(par2, par3+1, par4, mod_pocketDim.blockRiftID);
+    			par1World.setBlock(par2, par3+1, par4, properties.RiftBlockID);
     		
     		}
     					
@@ -546,7 +549,7 @@ public class dimDoor extends BlockContainer
             {
                 if (!par1World.isRemote)
                 {
-                    this.dropBlockAsItem(par1World, par2, par3, par4, mod_pocketDim.dimDoorID, 0);
+                    this.dropBlockAsItem(par1World, par2, par3, par4, properties.DimensionalDoorID, 0);
                 }
             }
             else
