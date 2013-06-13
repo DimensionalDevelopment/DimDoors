@@ -84,7 +84,7 @@ public class DimDoorsConfig
 	 * Other
 	 */
 
-	public static Property NonTntRatio;
+	public static Property NonTntWeight;
 	public static Property RiftSpreadModifier;
 	public static Property LimboReturnRange;
 
@@ -116,18 +116,18 @@ public class DimDoorsConfig
 		LimboReturnsInventoryEnabled = config.get(Configuration.CATEGORY_GENERAL, "bLimboReturnInventory", true);
 		LimboReturnsInventoryEnabled.comment="Toggles whether or not your inventory is returned upon dying and respawning in limbo";
 
-		NonTntRatio=config.get(Configuration.CATEGORY_GENERAL, "HOWMUCHTNT", 25);
-		NonTntRatio.comment="Chance that a block will not be TNT. must be greater than 1. Explosions!?!?? must be set to true, and you figure out what it does. ";
+		NonTntWeight=config.get(Configuration.CATEGORY_GENERAL, "HOWMUCHTNT", 25);
+		NonTntWeight.comment="Chance that a block will not be TNT. must be greater than or equal to 0. Explosions!?!?? must be set to true, and you figure out what it does. ";
 
 		MonolithEntityID=config.get(Configuration.CATEGORY_GENERAL, "monolithID", 125);
 
-		UnstableDoorID = config.getBlock("Chaos Door", 1978);
-		DimensionalDoorID = config.getBlock("Dimensional Door", 1970);
-		TransTrapdoorID = config.getBlock("Transdimensional Trapdoor", 1971);
-		FabricBlockID=config.getBlock("Fabric of Reality", 1973);
-		WarpDoorID = config.getBlock("Warp Door", 1975);
-		RiftBlockID = config.getBlock("Rift", 1977);
-		TransientDoorID = config.getBlock("transientDoorID", 1979);
+		DimensionalDoorID = config.getBlock("DimensionalDoorID", 1970);
+		WarpDoorID = config.getBlock("WarpDoorID", 1975);
+		UnstableDoorID = config.getBlock("UnstableDoorID", 1978);
+		TransTrapdoorID = config.getBlock("TransdimensionalTrapdoorID", 1971);
+		TransientDoorID = config.getBlock("TransientDoorID", 1979);
+		FabricBlockID =config.getBlock("FabricOfRealityBlockID", 1973);
+		RiftBlockID = config.getBlock("RiftBlockID", 1977);
 
 		StabilizedRiftSignatureItemID=config.getItem("Stabilized Rift Signature", 5677);
 		RiftBladeItemID=config.getItem("Rift Blade", 5676);
@@ -191,8 +191,9 @@ public class DimDoorsConfig
 		mod_pocketDim.enableRiftBlade=CraftingRiftBladeAllowed.getBoolean(true);
 		mod_pocketDim.enableRiftRemover=CraftingRiftBladeAllowed.getBoolean(true);
 		mod_pocketDim.enableRiftSignature=CraftingRiftSignatureAllowed.getBoolean(true);
-		mod_pocketDim.enableUnstableDoor=CraftingRiftSignatureAllowed.getBoolean(true);
+		mod_pocketDim.enableUnstableDoor=CraftingUnstableDoorAllowed.getBoolean(true);
 		mod_pocketDim.enableWoodenDimDoor=CraftingWarpDoorAllowed.getBoolean(true);
+		mod_pocketDim.enableStabilizedRiftSignature=CraftingStabilizedRiftSignatureAllowed.getBoolean(true);
 		mod_pocketDim.itemChaosDoorID=UnstableDoorItemID.getInt();
 		mod_pocketDim.itemDimDoorID=DimensionalDoorItemID.getInt();
 		mod_pocketDim.itemExitDoorID=WarpDoorItemID.getInt();
@@ -211,7 +212,7 @@ public class DimDoorsConfig
 		mod_pocketDim.riftsInWorldGen=WorldRiftGenerationEnabled.getBoolean(true);
 		mod_pocketDim.riftSpreadFactor=RiftSpreadModifier.getInt();
 		mod_pocketDim.returnInventory=LimboReturnsInventoryEnabled.getBoolean(true);
-		mod_pocketDim.HOW_MUCH_TNT=NonTntRatio.getInt();
+		mod_pocketDim.HOW_MUCH_TNT=NonTntWeight.getInt() + 1; //workaround so the generator code doesn't have to be changed
 		mod_pocketDim.limboDimID = LimboDimensionID.getInt();
 		mod_pocketDim.isLimboActive= LimboEnabled.getBoolean(true);
 
