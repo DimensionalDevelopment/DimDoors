@@ -310,6 +310,10 @@ public class MobObelisk extends EntityFlying implements IMob
 		  	{
 		  		return false;
 		  	}
+		  	else if(list.size()>5&&this.worldObj.provider instanceof pocketProvider)
+		  	{
+		  		return false;
+		  	}
 		  	return this.worldObj.checkNoEntityCollision(this.boundingBox) && this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() && !this.worldObj.isAnyLiquid(this.boundingBox);
 	    }
 	
