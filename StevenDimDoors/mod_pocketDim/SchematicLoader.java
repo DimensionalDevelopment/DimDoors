@@ -955,13 +955,14 @@ public class SchematicLoader
 
 						if(Block.blocksList[blockToReplace] instanceof BlockContainer)
 						{
+							/**
 							TileEntity tile = world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe);
 							NBTTagCompound tag = this.tileEntityList[index];
 							if(tag!=null)
 							{
 								tile.readFromNBT(tag);
 							}
-
+							**/
 
 
 							

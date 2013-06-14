@@ -372,14 +372,14 @@ public class dimHelper extends DimensionManager
 							
 		    	if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord+1,playerZCoord))
 		    	{
-		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube())
+		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube()&&!mod_pocketDim.blocksImmuneToRift.contains(entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)))
 		    		{
 		    			entity.worldObj.setBlock(playerXCoord,playerYCoord+1,playerZCoord,0);
 		    		}
 		    	}
 		    	if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord,playerZCoord))
 		    	{
-		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)].isOpaqueCube())
+		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)].isOpaqueCube()&&!mod_pocketDim.blocksImmuneToRift.contains(entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)))
 		    		{
 		    			entity.worldObj.setBlock(playerXCoord,playerYCoord,playerZCoord,0);
 		

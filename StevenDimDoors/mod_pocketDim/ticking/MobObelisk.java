@@ -106,7 +106,7 @@ public class MobObelisk extends EntityFlying implements IMob
 				jumpHeight = this.posY+rand.nextInt(25);
 				if(this.worldObj.provider instanceof pocketProvider)
 				{
-					jumpHeight = jumpHeight- rand.nextInt(10);
+					jumpHeight = this.posY+rand.nextInt(10);
 				}
 				sanity++;
 			}
