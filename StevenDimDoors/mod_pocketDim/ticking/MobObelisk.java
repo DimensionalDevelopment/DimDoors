@@ -131,7 +131,7 @@ public class MobObelisk extends EntityFlying implements IMob
 
 
 
-		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 35);
+		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 30);
 
 		if(entityPlayer != null)		
 		{
@@ -170,15 +170,16 @@ public class MobObelisk extends EntityFlying implements IMob
 						}
 
 					}
-					if(aggro>430)
+					if(aggro>430&&this.soundTime<100)
 					{
 						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.tearing",2, 1);
+						this.soundTime=100;
 
 					}
-					if(aggro>445)
+					if(aggro>445&&this.soundTime<200)
 					{
 						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.tearing",5, 1);
-
+						this.soundTime=200;
 					}
 
 
@@ -249,32 +250,7 @@ public class MobObelisk extends EntityFlying implements IMob
 			soundTime--;
 		}
 
-		if(this.prevPosX==this.posX||this.prevPosY==this.posY||this.prevPosZ==this.posZ)
-		{
-			do
-			{
-				destX= rand.nextInt(40)-20;
-				destY= rand.nextInt(40)-20;
-				destZ= rand.nextInt(40)-20;
-
-
-			}
-			while(!this.isCourseTraversable(destX, destY, destZ, 1));
-		}
-
-
-		if(Math.abs(this.posX)-Math.abs(this.destX)+Math.abs(this.posY)-Math.abs(this.destY)+Math.abs(this.posZ)-Math.abs(this.destZ)<5)
-		{
-			do
-			{
-				destX= rand.nextInt(40)-20;
-				destY= rand.nextInt(40)-20;
-				destZ= rand.nextInt(40)-20;
-
-
-			}
-			while(!this.isCourseTraversable(destX, destY, destZ, 1));
-		}
+		
 
 		{
 
@@ -401,13 +377,20 @@ public class MobObelisk extends EntityFlying implements IMob
 	    {
 		  	List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this,AxisAlignedBB.getBoundingBox( this.posX-15, posY-4, this.posZ-15, this.posX+15, this.posY+15, this.posZ+15));
 	      
-		  	if(list.size()>0&&this.worldObj.provider.dimensionId==DDProperties.instance().LimboDimensionID)
+		  	if(this.worldObj.provider.dimensionId==DDProperties.instance().LimboDimensionID)
 		  	{
-		  		return false;
+		  		if(list.size()>0)
+		  		{
+		  			return false;
+		  		}
+		  		
 		  	}
-		  	else if(list.size()>5&&this.worldObj.provider instanceof pocketProvider)
+		  	else if(this.worldObj.provider instanceof pocketProvider)	
 		  	{
-		  		return false;
+		  		if(list.size()>5||this.worldObj.canBlockSeeTheSky((int)this.posX, (int)this.posY, (int)this.posZ))
+		  		{
+		  			return false;
+		  		}
 		  	}
 		  	return this.worldObj.checkNoEntityCollision(this.boundingBox) && this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() && !this.worldObj.isAnyLiquid(this.boundingBox);
 	    }
