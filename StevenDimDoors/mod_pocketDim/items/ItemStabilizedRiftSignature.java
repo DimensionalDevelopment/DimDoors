@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
 
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -20,8 +21,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemStabilizedRiftSignature extends itemLinkSignature
 {
-    private Material doorMaterial;
-
+	private static DDProperties properties = null;
+	
     public ItemStabilizedRiftSignature(int par)
     {
     	 super(par);
@@ -33,6 +34,9 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
          this.setMaxDamage(0);
          this.hasSubtypes=true;
     	 //TODO move to proxy
+         
+         if (properties == null)
+        	 properties = DDProperties.instance();
     }
     
     @SideOnly(Side.CLIENT)
@@ -85,9 +89,9 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
     			boolean hasEnder = false;
     		// checks to see if the item has a link stored, if so, it creates it
     		
-    			if(par2EntityPlayer.inventory.hasItem(Item.enderPearl.itemID)||par2EntityPlayer.inventory.hasItem(mod_pocketDim.itemStableFabricID))
+    			if(par2EntityPlayer.inventory.hasItem(Item.enderPearl.itemID)||par2EntityPlayer.inventory.hasItem(properties.StableFabricItemID))
     			{
-    				if(!par2EntityPlayer.inventory.consumeInventoryItem(mod_pocketDim.itemStableFabricID))
+    				if(!par2EntityPlayer.inventory.consumeInventoryItem(properties.StableFabricItemID))
 
     				{
         				par2EntityPlayer.inventory.consumeInventoryItem(Item.enderPearl.itemID);

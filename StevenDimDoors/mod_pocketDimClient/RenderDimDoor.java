@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.blocks.dimDoor;
@@ -24,6 +25,14 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 {
     FloatBuffer field_76908_a = GLAllocation.createDirectFloatBuffer(16);
 
+    public RenderDimDoor()
+    {
+		if (properties == null)
+			properties = DDProperties.instance();
+	}
+	
+	private static DDProperties properties = null;
+    
     /**
      * Renders the dimdoor.
      */
@@ -31,7 +40,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
     {
     	try
     	{
-    		dimDoor.class.cast(Block.blocksList[mod_pocketDim.dimDoorID]).updateAttatchedTile(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord).getFullMetadata(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord);
+    		dimDoor.class.cast(Block.blocksList[properties.DimensionalDoorID]).updateAttatchedTile(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord).getFullMetadata(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord);
 
     	}
     	catch(Exception e)
@@ -268,7 +277,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 
     public void renderTileEntityAt(TileEntity par1TileEntity, double par2, double par4, double par6, float par8)
     {
-    	if(mod_pocketDim.enableDoorOpenGL)
+    	if (properties.DoorRenderingEnabled)
     	{
     		this.renderDimDoorTileEntity((TileEntityDimDoor)par1TileEntity, par2, par4, par6, par8);
     	}

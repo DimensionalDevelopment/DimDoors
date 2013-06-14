@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
@@ -10,13 +11,18 @@ import net.minecraft.entity.player.EntityPlayer;
 
 public class CommandEndDungeonCreation extends CommandBase
 {
+	private static DDProperties properties = null;
+	
+	public CommandEndDungeonCreation()
+	{
+		if (properties == null)
+			properties = DDProperties.instance();
+	}
+	
 	public String getCommandName()//the name of our command
 	{
 		return "dimdoors-endDungeonCreation";
 	}
-
-
-
 
 	@Override
 	public void processCommand(ICommandSender var1, String[] var2) 
@@ -53,8 +59,8 @@ public class CommandEndDungeonCreation extends CommandBase
 		}
 		else if(!player.worldObj.isRemote)
 		{
-			DungeonGenerator newDungeon = mod_pocketDim.dungeonHelper.exportDungeon(player.worldObj, x, y, z, mod_pocketDim.schematicContainer+"/"+var2[0]+".schematic");
-			player.sendChatToPlayer("created dungeon schematic in " +mod_pocketDim.schematicContainer+"/"+var2[0]+".schematic");
+			DungeonGenerator newDungeon = mod_pocketDim.dungeonHelper.exportDungeon(player.worldObj, x, y, z, properties.CustomSchematicDirectory + "/" + var2[0] + ".schematic");
+			player.sendChatToPlayer("created dungeon schematic in " + properties.CustomSchematicDirectory +"/"+var2[0]+".schematic");
 			mod_pocketDim.dungeonHelper.customDungeons.add(newDungeon);
 			
 			if(mod_pocketDim.dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId)&&!player.worldObj.isRemote)

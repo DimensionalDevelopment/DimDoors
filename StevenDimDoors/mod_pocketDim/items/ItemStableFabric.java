@@ -106,7 +106,7 @@ public class ItemStableFabric extends Item
     	MovingObjectPosition hit = 	this.getMovingObjectPositionFromPlayer(par3EntityPlayer.worldObj, par3EntityPlayer, false );
 		if(hit!=null&&!par2World.isRemote)
 		{
-			//if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ)==mod_pocketDim.blockRiftID)
+			//if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ)==properties.RiftBlockID)
 			{
 				LinkData link = dimHelper.instance.getLinkDataFromCoords(hit.blockX, hit.blockY, hit.blockZ, par2World);
 				if(link!=null)

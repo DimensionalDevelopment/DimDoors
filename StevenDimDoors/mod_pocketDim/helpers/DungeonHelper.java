@@ -13,6 +13,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -37,8 +38,11 @@ public class DungeonHelper
 	
 	public DungeonHelper()
 	{
-		
+		if (properties == null)
+			properties = DDProperties.instance();
 	}
+	
+	private static DDProperties properties = null;
 	
 	private Random rand = new Random();
 	
@@ -363,27 +367,27 @@ public class DungeonHelper
 		for(int count=0;count<50;count++)
 		{
 		
-			if(world.getBlockId(xMin, yI, zI)!=mod_pocketDim.blockDimWallPermID)
+			if(world.getBlockId(xMin, yI, zI)!=properties.PermaFabricBlockID)
 			{
 				xMin--;
 			}
-			if(world.getBlockId(xI, yMin, zI)!=mod_pocketDim.blockDimWallPermID)
+			if(world.getBlockId(xI, yMin, zI)!=properties.PermaFabricBlockID)
 			{
 				yMin--;
 			}
-			if(world.getBlockId(xI, yI, zMin)!=mod_pocketDim.blockDimWallPermID)
+			if(world.getBlockId(xI, yI, zMin)!=properties.PermaFabricBlockID)
 			{
 				zMin--;
 			}
-			if(world.getBlockId(xMax, yI, zI)!=mod_pocketDim.blockDimWallPermID)
+			if(world.getBlockId(xMax, yI, zI)!=properties.PermaFabricBlockID)
 			{
 				xMax++;
 			}
-			if(world.getBlockId(xI, yMax, zI)!=mod_pocketDim.blockDimWallPermID)
+			if(world.getBlockId(xI, yMax, zI)!=properties.PermaFabricBlockID)
 			{
 				yMax++;
 			}
-			if(world.getBlockId(xI, yI, zMax)!=mod_pocketDim.blockDimWallPermID)
+			if(world.getBlockId(xI, yI, zMax)!=properties.PermaFabricBlockID)
 			{
 				zMax++;
 			}
@@ -411,11 +415,11 @@ public class DungeonHelper
 	                    int blockID = world.getBlockId(x+xMin, y+yMin, z+zMin);
 	                    int meta= world.getBlockMetadata(x+xMin, y+yMin, z+zMin);
 	                    
-	                    if(blockID==mod_pocketDim.dimDoorID)
+	                    if(blockID==properties.DimensionalDoorID)
 	                    {
 	                    	blockID=Block.doorIron.blockID;
 	                    }
-	                    if(blockID==mod_pocketDim.ExitDoorID)
+	                    if(blockID==properties.WarpDoorID)
 	                    {
 	                    	blockID=Block.doorWood.blockID;
 

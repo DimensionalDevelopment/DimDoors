@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.items;
 import java.util.List;
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -29,26 +30,23 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemRiftBlade extends itemDimDoor
 {
-	private int weaponDamage;
-	private final EnumToolMaterial toolMaterial= EnumToolMaterial.GOLD;
-    private Material doorMaterial;
-    
-    Random rand = new Random();
-    public ItemRiftBlade(int par1, Material par2Material)
+	public ItemRiftBlade(int par1, Material par2Material)
     {
     	 super(par1, par2Material);
     	
     	// this.setTextureFile("/PocketBlockTextures.png");
          this.setCreativeTab(CreativeTabs.tabTransport);
-         this.weaponDamage =8;
          this.setMaxStackSize(1);
 
       //   this.itemIcon=5;
          this.setMaxDamage(500);
          this.hasSubtypes=false;
     	 //TODO move to proxy
+         if (properties == null)
+        	 properties = DDProperties.instance();
     }
     
+    private static DDProperties properties = null;
   
     @SideOnly(Side.CLIENT)
 
@@ -69,8 +67,6 @@ public class ItemRiftBlade extends itemDimDoor
             return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.pumpkin ? 1.0F : 1.5F;
         }
     }
-    
-    
     
     @SideOnly(Side.CLIENT)
     @Override
@@ -226,7 +222,7 @@ public class ItemRiftBlade extends itemDimDoor
     	MovingObjectPosition hit = 	this.getMovingObjectPositionFromPlayer(par3EntityPlayer.worldObj, par3EntityPlayer, false );
 		if(hit!=null&&!par2World.isRemote)
 		{
-			if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ)==mod_pocketDim.blockRiftID)
+			if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ)==properties.RiftBlockID)
 			{
 				LinkData link = dimHelper.instance.getLinkDataFromCoords(hit.blockX, hit.blockY, hit.blockZ, par2World);
 				if(link!=null)
@@ -262,7 +258,7 @@ public class ItemRiftBlade extends itemDimDoor
 	            }
 				}
 			}
-			else if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ)==mod_pocketDim.transientDoorID)
+			else if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ) == properties.TransientDoorID)
 			{
 				didFindThing=true;
 			}
@@ -385,17 +381,11 @@ public class ItemRiftBlade extends itemDimDoor
      */
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
     {
-    	
-    	
-    
-    	
     		par3List.add("Opens a temporary doors,");
     		par3List.add ("special teleport attack,");
     		par3List.add ("and rotates existing doors");
-
-
-    	
     }
+
     @Override
     public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) 
     {

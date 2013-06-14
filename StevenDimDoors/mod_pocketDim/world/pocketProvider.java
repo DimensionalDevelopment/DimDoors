@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim.world;
 
 import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import net.minecraft.entity.Entity;
@@ -24,11 +25,13 @@ public class pocketProvider extends WorldProvider
 	
 	public boolean isSavingSchematic= false;
 	public int dimToSave;
+	private static DDProperties properties = null;
+	
 	public pocketProvider()
 	{
 		this.hasNoSky=true;
-
-		
+		if (properties == null)
+			properties = DDProperties.instance();
 	}
 	
 	@Override
@@ -89,8 +92,7 @@ public class pocketProvider extends WorldProvider
 	@Override
 	public String getDimensionName() 
 	{
-		// TODO Auto-generated method stub
-		return "PocketDim "+this.dimensionId;
+		return "PocketDim " + this.dimensionId;
 	}
 	
 	
@@ -98,16 +100,16 @@ public class pocketProvider extends WorldProvider
 	{
 		int respawnDim;
 		
-		if(mod_pocketDim.isLimboActive)
+		if (properties.LimboEnabled)
 		{
-			respawnDim= mod_pocketDim.limboDimID;
+			respawnDim = properties.LimboDimensionID;
 		}
 		else
 		{
 			respawnDim= dimHelper.dimList.get(this.dimensionId).exitDimLink.destDimID;
 		}
 		
-		if(dimHelper.getWorld(respawnDim)==null)
+		if (dimHelper.getWorld(respawnDim)==null)
 		{
 			dimHelper.initDimension(respawnDim);
 		}

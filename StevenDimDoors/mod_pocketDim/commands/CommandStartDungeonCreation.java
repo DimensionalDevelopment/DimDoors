@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -18,6 +19,14 @@ import net.minecraft.world.World;
 
 public class CommandStartDungeonCreation extends CommandBase
 {
+	public CommandStartDungeonCreation()
+	{
+		if (properties == null)
+			properties = DDProperties.instance();
+	}
+	
+	private static DDProperties properties = null;
+	
 	public String getCommandName()//the name of our command
 	{
 		return "dimdoors-startDungeonCreation";
@@ -40,7 +49,7 @@ public class CommandStartDungeonCreation extends CommandBase
 		
 			link = dimHelper.instance.createPocket(link,true, false);
 			
-			itemDimDoor.placeDoorBlock(player.worldObj, x, y, z, 3, Block.blocksList[mod_pocketDim.ExitDoorID]);
+			itemDimDoor.placeDoorBlock(player.worldObj, x, y, z, 3, Block.blocksList[properties.WarpDoorID]);
 		
 		//	dimHelper.instance.teleportToPocket(player.worldObj, link, player);
 		

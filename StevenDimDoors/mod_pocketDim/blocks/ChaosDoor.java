@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -28,12 +29,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ChaosDoor extends dimDoor
 {
 	private Icon blockIconBottom;
+	private static DDProperties properties = null;
+	
 	public ChaosDoor(int par1, Material material) 
 	{
 		super(par1, Material.iron);
-	//	this.blockIndexInTexture = 18;
-     
-
+		if (properties == null)
+			properties = DDProperties.instance();
 	}
 	
 	public void registerIcons(IconRegister par1IconRegister)
@@ -74,7 +76,7 @@ public class ChaosDoor extends dimDoor
 		
 			if(newDim)
 			{
-				LinkData link = new LinkData(par1World.provider.dimensionId, mod_pocketDim.limboDimID, par2, par3, par4, par2, par3+500, par4, false,0);
+				LinkData link = new LinkData(par1World.provider.dimensionId, properties.LimboDimensionID, par2, par3, par4, par2, par3+500, par4, false,0);
 				link.linkOrientation= par1World.getBlockMetadata(par2, par3-1, par4);
 				dimHelper.instance.createLink(link);
 			//	System.out.println(link.linkOrientation);
@@ -101,9 +103,8 @@ public class ChaosDoor extends dimDoor
         int var12 = (int) (MathHelper.floor_double((double)((par5Entity.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
        
     	int num = par1World.getBlockMetadata(par2, par3-1, par4);
-    	if(!par1World.isRemote&&(num==5||num==4||num==6||num==7)&&(num-4)==var12&&par1World.getBlockId(par2, par3-1, par4)==mod_pocketDim.chaosDoorID)
+    	if(!par1World.isRemote&&(num==5||num==4||num==6||num==7)&&(num-4)==var12&&par1World.getBlockId(par2, par3-1, par4)==properties.UnstableDoorID)
   		{
-    		
     			this.onPoweredBlockChange(par1World, par2, par3, par4, false);
     			
     			boolean foundRandomDest=false;
@@ -122,7 +123,7 @@ public class ChaosDoor extends dimDoor
 	    			if(link!=null)
 	    			{
 	    			
-	    				if(!link.isLocPocket&&link.linkOrientation!=-10&&link.destDimID!=mod_pocketDim.limboDimID)
+	    				if(!link.isLocPocket&&link.linkOrientation!=-10&&link.destDimID!=properties.LimboDimensionID)
 	    				{
 	    					foundRandomDest=true;
 	    					
@@ -132,7 +133,7 @@ public class ChaosDoor extends dimDoor
 	    					{
 	    						if(dimHelper.getWorld(link.locDimID).isAirBlock(link.locXCoord,link.locYCoord,link.locZCoord))
 	    						{
-	    							dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord,link.locYCoord,link.locZCoord, mod_pocketDim.blockRiftID);
+	    							dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord,link.locYCoord,link.locZCoord, properties.RiftBlockID);
 	    						}
 	    					}	    				    			
 	    				}
