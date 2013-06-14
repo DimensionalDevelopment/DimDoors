@@ -84,7 +84,7 @@ channels={"DimDoorPackets"}, packetHandler = PacketHandler.class, connectionHand
 
 public class mod_pocketDim
 {
-	public static final String version = "1.5.2R1.3.6RC1";
+	public static final String version = "1.5.2R1.4.0RC1";
 	public static final String modid = "DimDoors";
 
 	//need to clean up 
