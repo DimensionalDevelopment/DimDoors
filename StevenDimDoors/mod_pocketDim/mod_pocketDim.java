@@ -395,6 +395,9 @@ public class mod_pocketDim
 
 		proxy.loadTextures();
 		proxy.registerRenderers();
+		
+		//Register loot chests
+		DDLoot.registerInfo();
 	}
 
 

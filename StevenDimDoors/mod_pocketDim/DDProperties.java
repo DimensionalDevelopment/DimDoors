@@ -63,6 +63,21 @@ public class DDProperties
 	public final boolean CraftingTransTrapdoorAllowed;
 	public final boolean CraftingStabilizedRiftSignatureAllowed;
 	public final boolean CraftingStableFabricAllowed;
+	
+	/**
+	 * Loot Flags
+	 */
+	
+	public final boolean DimensionalDoorLootEnabled;
+	public final boolean WarpDoorLootEnabled;
+	public final boolean UnstableDoorLootEnabled;
+	public final boolean TransTrapdoorLootEnabled;
+	public final boolean RiftSignatureLootEnabled;
+	public final boolean RiftRemoverLootEnabled;
+	public final boolean StabilizedRiftSignatureLootEnabled;
+	public final boolean RiftBladeLootEnabled;
+	public final boolean StableFabricLootEnabled;
+	public final boolean FabricOfRealityLootEnabled;
 
 	/**
 	 * Other Flags
@@ -107,15 +122,26 @@ public class DDProperties
 		Configuration config = new Configuration(configFile);
 		config.load();
 
-		CraftingDimensionaDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Dimesional Door", true).getBoolean(true);
+		CraftingDimensionaDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Dimensional Door", true).getBoolean(true);
 		CraftingWarpDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Warp Door", true).getBoolean(true);
-		CraftingUnstableDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crating Unstable Door", true).getBoolean(true);
+		CraftingUnstableDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Unstable Door", true).getBoolean(true);
 		CraftingTransTrapdoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Transdimensional Trapdoor", true).getBoolean(true);
 		CraftingRiftSignatureAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Rift Signature", true).getBoolean(true);
 		CraftingRiftRemoverAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Rift Remover", true).getBoolean(true);
 		CraftingStabilizedRiftSignatureAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Stabilized Rift Signature", true).getBoolean(true);
 		CraftingRiftBladeAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Rift Blade", true).getBoolean(true);
 		CraftingStableFabricAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Stable Fabric", true).getBoolean(true);
+		
+		DimensionalDoorLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Dimensional Door Loot", true).getBoolean(true);
+		WarpDoorLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Warp Door Loot", false).getBoolean(false);
+		UnstableDoorLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Unstable Door Loot", false).getBoolean(false);
+		TransTrapdoorLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Transdimensional Trapdoor Loot", false).getBoolean(false);
+		RiftSignatureLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Signature Loot", true).getBoolean(true);
+		RiftRemoverLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Remover Loot", true).getBoolean(true);
+		StabilizedRiftSignatureLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Stabilized Rift Signature Loot", false).getBoolean(false);
+		RiftBladeLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Blade Loot", true).getBoolean(true);
+		StableFabricLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Stable Fabric Loot", false).getBoolean(false);
+		FabricOfRealityLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Fabric of Reality Loot", true).getBoolean(true);
 
 		RiftGriefingEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Griefing", true,
 				"Sets whether rifts destroy blocks around them or not").getBoolean(true);
