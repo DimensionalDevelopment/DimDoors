@@ -967,36 +967,12 @@ public class SchematicLoader
 
 							
 		                    	//	System.out.println("found container");
-		                    		Random rand= new Random();
 		                    		if(world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe) instanceof TileEntityChest)
 		                    		{
 		                    			TileEntityChest chest = (TileEntityChest) world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe);
 
-		                    		   ChestGenHooks info = ChestGenHooks.getInfo(ChestGenHooks.DUNGEON_CHEST);
-		                    		   if(rand.nextBoolean())
-		                    		   {
-		                    			   chest.setInventorySlotContents(rand.nextInt(27), new ItemStack(mod_pocketDim.itemDimDoor, 1));
-		                    		   }
-		                    		   if(rand.nextBoolean())
-		                    		   {
-		                    			   chest.setInventorySlotContents(rand.nextInt(27), new ItemStack(mod_pocketDim.itemLinkSignature, 1));
-		                    		   }
-		                    		   if(rand.nextBoolean())
-		                    		   {
-		                    			   chest.setInventorySlotContents(rand.nextInt(27), new ItemStack(mod_pocketDim.itemRiftRemover, 1));
-		                    		   }
-		                    		   if(rand.nextBoolean())
-		                    		   {
-		                    			   chest.setInventorySlotContents(rand.nextInt(27), new ItemStack(mod_pocketDim.itemRiftBlade, 1));
-		                    		   }
-		                    		   if(rand.nextBoolean())
-		                    		   {
-		                    			   chest.setInventorySlotContents(rand.nextInt(27), new ItemStack(mod_pocketDim.blockDimWall, rand.nextInt(20)+5));
-		                    		   }
-	                                    WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand),(TileEntityChest)world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe)  , info.getCount(rand));
-
-
-
+		                    			ChestGenHooks info = ChestGenHooks.getInfo(DDLoot.DIMENSIONAL_DUNGEON_CHEST);
+		                    			WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand), (TileEntityChest)world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe), info.getCount(rand));
 		                    		}
 		                    		if(world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe) instanceof TileEntityDispenser)
 		                    		{
@@ -1004,8 +980,6 @@ public class SchematicLoader
 		                    			dispenser.addItem(new ItemStack(Item.arrow, 64));
 
 		                    		}
-
-
 						}
 					}
 				}

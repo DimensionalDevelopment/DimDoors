@@ -73,7 +73,7 @@ public class DDProperties
 	public final boolean UnstableDoorLootEnabled;
 	public final boolean TransTrapdoorLootEnabled;
 	public final boolean RiftSignatureLootEnabled;
-	public final boolean RiftRemovedLootEnabled;
+	public final boolean RiftRemoverLootEnabled;
 	public final boolean StabilizedRiftSignatureLootEnabled;
 	public final boolean RiftBladeLootEnabled;
 	public final boolean StableFabricLootEnabled;
@@ -137,7 +137,7 @@ public class DDProperties
 		UnstableDoorLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Unstable Door Loot", false).getBoolean(false);
 		TransTrapdoorLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Transdimensional Trapdoor Loot", false).getBoolean(false);
 		RiftSignatureLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Signature Loot", true).getBoolean(true);
-		RiftRemovedLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Remover Loot", true).getBoolean(true);
+		RiftRemoverLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Remover Loot", true).getBoolean(true);
 		StabilizedRiftSignatureLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Stabilized Rift Signature Loot", false).getBoolean(false);
 		RiftBladeLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Blade Loot", true).getBoolean(true);
 		StableFabricLootEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Stable Fabric Loot", false).getBoolean(false);
