@@ -30,14 +30,15 @@ public class DungeonHelper
 
 	public ArrayList<DungeonGenerator> customDungeons = new ArrayList<DungeonGenerator>();
 	public ArrayList<DungeonGenerator> registeredDungeons = new ArrayList<DungeonGenerator>();
-	public ArrayList<DungeonGenerator> weightedDungeonGenList = new ArrayList<DungeonGenerator>();
-	public ArrayList<DungeonGenerator> simpleHalls = new ArrayList<DungeonGenerator>();
-	public ArrayList<DungeonGenerator> complexHalls = new ArrayList<DungeonGenerator>();
-	public ArrayList<DungeonGenerator> deadEnds = new ArrayList<DungeonGenerator>();
-	public ArrayList<DungeonGenerator> hubs = new ArrayList<DungeonGenerator>();
-	public ArrayList<DungeonGenerator> mazes = new ArrayList<DungeonGenerator>();
-	public ArrayList<DungeonGenerator> pistonTraps = new ArrayList<DungeonGenerator>();
-	public ArrayList<DungeonGenerator> exits = new ArrayList<DungeonGenerator>();
+	
+	private ArrayList<DungeonGenerator> weightedDungeonGenList = new ArrayList<DungeonGenerator>();
+	private ArrayList<DungeonGenerator> simpleHalls = new ArrayList<DungeonGenerator>();
+	private ArrayList<DungeonGenerator> complexHalls = new ArrayList<DungeonGenerator>();
+	private ArrayList<DungeonGenerator> deadEnds = new ArrayList<DungeonGenerator>();
+	private ArrayList<DungeonGenerator> hubs = new ArrayList<DungeonGenerator>();
+	private ArrayList<DungeonGenerator> mazes = new ArrayList<DungeonGenerator>();
+	private ArrayList<DungeonGenerator> pistonTraps = new ArrayList<DungeonGenerator>();
+	private ArrayList<DungeonGenerator> exits = new ArrayList<DungeonGenerator>();
 
 	public ArrayList<String> tagList = new ArrayList<String>();
 
@@ -46,6 +47,12 @@ public class DungeonHelper
 
 	public DungeonGenerator defaultUp = new DungeonGenerator(0, "/schematic/simpleStairsUp.schematic", true);
 
+	public DungeonHelper()
+	{
+		if (properties == null)
+			properties = DDProperties.instance();
+	}
+	
 	public void registerCustomDungeon(File schematicFile)
 	{
 		try
