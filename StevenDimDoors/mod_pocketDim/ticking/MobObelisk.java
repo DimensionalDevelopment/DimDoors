@@ -172,13 +172,17 @@ public class MobObelisk extends EntityFlying implements IMob
 					}
 					if(aggro>430&&this.soundTime<100)
 					{
-						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.tearing",2, 1);
+						//this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.tearing",2, 1);
+						this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,"mods.DimDoors.sfx.tearing",2F, 1F);
+
 						this.soundTime=100;
 
 					}
 					if(aggro>445&&this.soundTime<200)
 					{
-						this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.tearing",5, 1);
+						//this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.tearing",5, 1);
+						this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,"mods.DimDoors.sfx.tearing",5F, 1F);
+
 						this.soundTime=200;
 					}
 
