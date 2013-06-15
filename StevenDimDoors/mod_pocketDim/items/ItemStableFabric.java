@@ -49,6 +49,8 @@ public class ItemStableFabric extends Item
     	{
     		System.out.println("Block metadata is "+par3World.getBlockMetadata(par4, par5, par6));
     		System.out.println(par3World.getBiomeGenForCoords(par4, par6).biomeName);
+    	
+
     		this.onItemRightClick(par1ItemStack, par3World, par2EntityPlayer);
     		
     		Block block = Block.blocksList[par3World.getBlockId(par4, par5, par6)];

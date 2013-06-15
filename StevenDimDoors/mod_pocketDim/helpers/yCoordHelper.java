@@ -37,7 +37,7 @@ public class yCoordHelper
 			do
 			{
 				flag=false;
-				if(chunk.getBlockID(xC, yC-1, zC)!=0)
+				if(yC>0&&chunk.getBlockID(xC, yC-1, zC)!=0)
 				{
 					if(!Block.blocksList[chunk.getBlockID(xC, yC-1, zC)].blockMaterial.isReplaceable()||Block.blocksList[chunk.getBlockID(xC, yC-1, zC)].blockMaterial.isLiquid())
 					{
@@ -47,7 +47,7 @@ public class yCoordHelper
 					}
 				}
 				
-				 if(chunk.getBlockID(xC, yC, zC)!=0)
+				 if(yC>0&&chunk.getBlockID(xC, yC, zC)!=0)
 				{
 					if(!Block.blocksList[chunk.getBlockID(xC, yC, zC)].blockMaterial.isReplaceable()||Block.blocksList[chunk.getBlockID(xC, yC, zC)].blockMaterial.isLiquid())
 					{

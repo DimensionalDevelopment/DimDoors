@@ -20,14 +20,14 @@ public class BiomeGenLimbo extends BiomeGenBase
         this.spawnableCreatureList.clear();
         this.spawnableWaterCreatureList.clear();
         this.spawnableCaveCreatureList.clear();
-        this.spawnableMonsterList.add(new SpawnListEntry(MobObelisk.class, 1, 1, 1));
-        this.spawnableMonsterList.add(new SpawnListEntry(MobObelisk.class, 300, 0, 0));
+      //  this.spawnableMonsterList.add(new SpawnListEntry(MobObelisk.class, 1, 1, 1));
+       // this.spawnableMonsterList.add(new SpawnListEntry(MobObelisk.class, 300, 0, 0));
 
-        this.spawnableCreatureList.add(new SpawnListEntry(MobObelisk.class, 1, 1, 1));
-        this.spawnableCreatureList.add(new SpawnListEntry(MobObelisk.class, 300, 0, 0));
+      //  this.spawnableCreatureList.add(new SpawnListEntry(MobObelisk.class, 1, 1, 1));
+      //  this.spawnableCreatureList.add(new SpawnListEntry(MobObelisk.class, 300, 0, 0));
 
-        this.spawnableCaveCreatureList.add(new SpawnListEntry(MobObelisk.class, 1, 1, 1));
-        this.spawnableCaveCreatureList.add(new SpawnListEntry(MobObelisk.class, 300, 0, 0));
+      //  this.spawnableCaveCreatureList.add(new SpawnListEntry(MobObelisk.class, 1, 1, 1));
+     //   this.spawnableCaveCreatureList.add(new SpawnListEntry(MobObelisk.class, 300, 0, 0));
 
 
 
