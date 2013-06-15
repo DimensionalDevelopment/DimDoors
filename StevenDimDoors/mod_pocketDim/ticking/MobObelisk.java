@@ -137,7 +137,7 @@ public class MobObelisk extends EntityFlying implements IMob
 		{
 			if(this.soundTime<=0)
 			{
-				this.playSound("mods.DimDoors.sfx.monk",  1.5F, 1F);
+				this.playSound("mods.DimDoors.sfx.monk",  1.7F, 1F);
 				this.soundTime=100;
 			}
 

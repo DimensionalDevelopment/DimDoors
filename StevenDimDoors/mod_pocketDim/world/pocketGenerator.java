@@ -2,11 +2,15 @@ package StevenDimDoors.mod_pocketDim.world;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import StevenDimDoors.mod_pocketDim.DimData;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
@@ -17,6 +21,7 @@ import net.minecraft.world.gen.ChunkProviderGenerate;
 public class pocketGenerator extends ChunkProviderGenerate implements IChunkProvider
 {
 	 private World worldObj;
+	 private Random rand = new Random();
 
 	public pocketGenerator(World par1World, long par2, boolean par4) 
 	{
@@ -58,7 +63,45 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
 	}
 
 	@Override
-	public void populate(IChunkProvider var1, int var2, int var3) {
+	public void populate(IChunkProvider var1, int var2, int var3) 
+	{
+		if(dimHelper.dimList.containsKey(worldObj.provider.dimensionId))
+		{
+			if(!dimHelper.dimList.get(worldObj.provider.dimensionId).isDimRandomRift)
+			{
+			//	return;
+			}
+		}
+		int y =0;
+		int x = var2*16 + rand.nextInt(32)-8;
+		int z = var3*16 + rand.nextInt(32)-8;
+		do
+		{
+			
+			x = var2*16 + rand.nextInt(32-8);
+			z = var3*16 + rand.nextInt(32)-8;
+			
+			while(this.worldObj.getBlockId(x, y, z)==0&&y<255)
+			{
+				y++;
+			}
+			y = yCoordHelper.getFirstUncovered(this.worldObj,x , y+2, z);
+			
+			Entity mob = new MobObelisk(this.worldObj);
+			mob.setLocationAndAngles(x, y+rand.nextInt(4), z, 1, 1);
+			this.worldObj.spawnEntityInWorld(mob);
+			
+		}
+		while( yCoordHelper.getFirstUncovered(this.worldObj,x , y, z)>y);
+		
+		if(rand.nextBoolean())
+		{
+			this.populate(var1, var2, var3);
+		}
+		
+		
+		
+		
 		// TODO Auto-generated method stub
 		
 	}
