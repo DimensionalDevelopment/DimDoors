@@ -69,7 +69,7 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
 		{
 			if(!dimHelper.dimList.get(worldObj.provider.dimensionId).isDimRandomRift)
 			{
-			//	return;
+				return;
 			}
 		}
 		int y =0;

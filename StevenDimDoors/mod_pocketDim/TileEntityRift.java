@@ -106,6 +106,11 @@ public class TileEntityRift extends TileEntity
 			 }
 			 count=0;
 		 }
+		else if(dimHelper.instance.getLinkDataFromCoords(xCoord, yCoord, zCoord, this.worldObj.provider.dimensionId)==null)
+		{
+			this.invalidate();
+			this.worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+		}
 		 count++;
 		 
 		 if(this.shouldClose)
