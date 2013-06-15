@@ -31,6 +31,7 @@ public class DungeonHelper
 
 	private static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	private static final int DEFAULT_DUNGEON_WEIGHT = 100;
+	private static final int MAX_DUNGEON_WEIGHT = 10000; //Used to prevent overflows and math breaking down
 	
 	private static final String HUB_DUNGEON_TYPE = "Hub";
 	private static final String TRAP_DUNGEON_TYPE = "Trap";
@@ -125,7 +126,7 @@ public class DungeonHelper
 			try
 			{
 				int weight = Integer.parseInt(dungeonData[3]);
-				if (weight < 0)
+				if (weight < 0 || weight > MAX_DUNGEON_WEIGHT)
 					return false;
 			}
 			catch (NumberFormatException e)
@@ -158,6 +159,7 @@ public class DungeonHelper
 				dungeonTypeMapping.get(dungeonType).add(generator);
 				weightedDungeonGenList.add(generator);
 				registeredDungeons.add(generator);
+				customDungeons.add(generator);
 				System.out.println("Imported " + name);
 			}
 			else
