@@ -970,8 +970,7 @@ public class SchematicLoader
 		                    		if(world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe) instanceof TileEntityChest)
 		                    		{
 		                    			TileEntityChest chest = (TileEntityChest) world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe);
-
-		                    			ChestGenHooks info = ChestGenHooks.getInfo(DDLoot.DIMENSIONAL_DUNGEON_CHEST);
+		                    			ChestGenHooks info = DDLoot.DungeonChestInfo;
 		                    			WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand), (TileEntityChest)world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe), info.getCount(rand));
 		                    		}
 		                    		if(world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe) instanceof TileEntityDispenser)
