@@ -395,15 +395,14 @@ public class mod_pocketDim
 
 		proxy.loadTextures();
 		proxy.registerRenderers();
-		
-		//Register loot chests
-		DDLoot.registerInfo();
 	}
 
 
 	@PostInit
 	public void PostInit(FMLPostInitializationEvent event)
-	{
+	{	
+		//Register loot chests
+		DDLoot.registerInfo();
 	}
 
 	@ServerStopping
