@@ -221,6 +221,9 @@ public class DungeonHelper
 		this.metadataFlipList.add(Block.pistonBase.blockID);
 		this.metadataFlipList.add(Block.pistonStickyBase.blockID);
 		
+		this.metadataFlipList.add(Block.pistonExtension.blockID);
+		
+		
 		this.metadataFlipList.add(Block.redstoneComparatorIdle.blockID);
 		this.metadataFlipList.add(Block.redstoneComparatorActive.blockID);
 		this.metadataFlipList.add(Block.signPost.blockID);
