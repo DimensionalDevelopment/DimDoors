@@ -122,10 +122,7 @@ public class MobObelisk extends EntityFlying implements IMob
 
 		if (this.isEntityAlive() && this.isEntityInsideOpaqueBlock())
 		{
-			this.pushOutOfBlocks(this.posX - (double)this.width * 0.35D, this.boundingBox.minY + 0.5D, this.posZ + (double)this.width * 0.35D);
-			this.pushOutOfBlocks(this.posX - (double)this.width * 0.35D, this.boundingBox.minY + 0.5D, this.posZ - (double)this.width * 0.35D);
-			this.pushOutOfBlocks(this.posX + (double)this.width * 0.35D, this.boundingBox.minY + 0.5D, this.posZ - (double)this.width * 0.35D);
-			this.pushOutOfBlocks(this.posX + (double)this.width * 0.35D, this.boundingBox.minY + 0.5D, this.posZ + (double)this.width * 0.35D);
+			this.setDead();
 		}
 
 
@@ -137,7 +134,7 @@ public class MobObelisk extends EntityFlying implements IMob
 		{
 			if(this.soundTime<=0)
 			{
-				this.playSound("mods.DimDoors.sfx.monk",  1.5F, 1F);
+				this.playSound("mods.DimDoors.sfx.monk",  1F, 1F);
 				this.soundTime=100;
 			}
 
