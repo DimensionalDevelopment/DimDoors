@@ -180,7 +180,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 	
 		
 			
-			if(true)
+			if(rand.nextInt(4)>1)
 			{
 				return;
 			}
