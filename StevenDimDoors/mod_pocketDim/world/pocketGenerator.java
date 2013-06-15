@@ -80,8 +80,8 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
 			}
 		}
 		int y =0;
-		int x = var2*16 + rand.nextInt(32)-8;
-		int z = var3*16 + rand.nextInt(32)-8;
+		int x = var2*16 + rand.nextInt(16);
+		int z = var3*16 + rand.nextInt(16);
 		int yTest;
 		do
 		{
