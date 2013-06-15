@@ -119,6 +119,7 @@ public class BlockDimWallPerm extends Block
 
 				{
 					EntityPlayer.class.cast(par5Entity).setPositionAndUpdate( x, y, z );
+					EntityPlayer.class.cast(par5Entity).fallDistance=0;
 				}
 
 

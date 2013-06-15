@@ -97,7 +97,7 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
 			
 			if(this.worldObj.getBlockId(x, y-1, z)!=mod_pocketDim.blockDimWall.blockID)
 			{
-				y= yCoordHelper.getFirstUncovered(this.worldObj,x , y+4+rand.nextInt(4), z);
+				y= y+rand.nextInt(4)+2;
 			}
 			
 			if(y>245)
