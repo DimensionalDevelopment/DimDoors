@@ -182,7 +182,6 @@ public class mod_pocketDim
 
 		dungeonHelper.importCustomDungeons(properties.CustomSchematicDirectory);
 		dungeonHelper.registerBaseDungeons();
-		dungeonHelper.registerDungeonTypeTags();
 	}
 
 	@Init

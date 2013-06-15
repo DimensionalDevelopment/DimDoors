@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -25,11 +27,32 @@ public class DungeonHelper
 {
 	private static DDProperties properties = null;
 
-	private Random rand = new Random();
+	public static final Pattern NamePattern = Pattern.compile("[A-Za-z0-9_]+");
+
 	private static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	private static final int DEFAULT_DUNGEON_WEIGHT = 100;
-
-	public static Pattern NamePattern = Pattern.compile("[A-Za-z0-9_]+");
+	
+	private static final String HUB_DUNGEON_TYPE = "Hub";
+	private static final String TRAP_DUNGEON_TYPE = "Trap";
+	private static final String SIMPLE_HALL_DUNGEON_TYPE = "SimpleHall";
+	private static final String COMPLEX_HALL_DUNGEON_TYPE = "ComplexHall";
+	private static final String EXIT_DUNGEON_TYPE = "Exit";
+	private static final String DEAD_END_DUNGEON_TYPE = "DeadEnd";
+	private static final String MAZE_DUNGEON_TYPE = "Maze";
+	
+	//The list of dungeon types will be kept as an array for now. If we allow new
+	//dungeon types in the future, then this can be changed to an ArrayList.
+	private static final String[] DUNGEON_TYPES = new String[] {
+		HUB_DUNGEON_TYPE,
+		TRAP_DUNGEON_TYPE,
+		SIMPLE_HALL_DUNGEON_TYPE,
+		COMPLEX_HALL_DUNGEON_TYPE,
+		EXIT_DUNGEON_TYPE,
+		DEAD_END_DUNGEON_TYPE,
+		MAZE_DUNGEON_TYPE
+	};
+	
+	private Random rand = new Random();
 	
 	public HashMap<Integer, LinkData> customDungeonStatus = new HashMap<Integer, LinkData>();
 
@@ -45,15 +68,33 @@ public class DungeonHelper
 	private ArrayList<DungeonGenerator> pistonTraps = new ArrayList<DungeonGenerator>();
 	private ArrayList<DungeonGenerator> exits = new ArrayList<DungeonGenerator>();
 
-	public ArrayList<String> tagList = new ArrayList<String>();
-
 	public ArrayList<Integer> metadataFlipList = new ArrayList<Integer>();
 	public ArrayList<Integer> metadataNextList = new ArrayList<Integer>();
 
 	public DungeonGenerator defaultUp = new DungeonGenerator(0, "/schematic/simpleStairsUp.schematic", true);
-
+	private HashSet<String> dungeonTypeChecker;
+	private Hashtable<String, ArrayList<DungeonGenerator>> dungeonTypeMapping;
+	
 	public DungeonHelper()
 	{
+		//Load the dungeon type checker with the list of all types in lowercase.
+		//Capitalization matters for matching in a hash set.
+		dungeonTypeChecker = new HashSet<String>();
+		for (String dungeonType : DUNGEON_TYPES)
+		{
+			dungeonTypeChecker.add(dungeonType.toLowerCase());
+		}
+		
+		//Add all the basic dungeon types to dungeonTypeMapping
+		dungeonTypeMapping.put(SIMPLE_HALL_DUNGEON_TYPE, simpleHalls);
+		dungeonTypeMapping.put(COMPLEX_HALL_DUNGEON_TYPE, complexHalls);
+		dungeonTypeMapping.put(HUB_DUNGEON_TYPE, hubs);
+		dungeonTypeMapping.put(EXIT_DUNGEON_TYPE, exits);
+		dungeonTypeMapping.put(DEAD_END_DUNGEON_TYPE, deadEnds);
+		dungeonTypeMapping.put(MAZE_DUNGEON_TYPE, mazes);
+		dungeonTypeMapping.put(TRAP_DUNGEON_TYPE, pistonTraps);
+		
+		//Load our reference to the DDProperties singleton
 		if (properties == null)
 			properties = DDProperties.instance();
 	}
@@ -66,8 +107,8 @@ public class DungeonHelper
 		if (dungeonData.length < 3 || dungeonData.length > 4)
 			return false;
 
-		//Check if the category is valid
-		if (!tagList.contains(dungeonData[0]))
+		//Check if the dungeon type is valid
+		if (!dungeonTypeChecker.contains(dungeonData[0].toLowerCase()))
 			return false;
 		
 		//Check if the name is valid
@@ -99,6 +140,7 @@ public class DungeonHelper
 	public void registerCustomDungeon(File schematicFile)
 	{
 		String name = schematicFile.getName();
+		String path = schematicFile.getAbsolutePath();
 		try
 		{
 			if (name.endsWith(SCHEMATIC_FILE_EXTENSION) && validateSchematicName(name))
@@ -106,58 +148,22 @@ public class DungeonHelper
 				//Strip off the file extension while splitting the file name
 				String[] dungeonData = name.substring(0, name.length() - SCHEMATIC_FILE_EXTENSION.length()).split("_");
 				
-				String path = schematicFile.getAbsolutePath();
+				String dungeonType = dungeonData[0].toLowerCase();
 				boolean open = dungeonData[2].equals("open");
 				int weight = (dungeonData.length == 4) ? Integer.parseInt(dungeonData[3]) : DEFAULT_DUNGEON_WEIGHT;
+				
+				//Add this custom dungeon to the list corresponding to its type
+				DungeonGenerator generator = new DungeonGenerator(weight, path, open);
 
-				//Change this code so that instead of using IFs, we use a hash table mapping (category) -> (list)
-				/*while(count<weight)
-				{
-					if(name[0].equals("hub"))
-					{
-						this.hubs.add(new DungeonGenerator(weight,path,open));
-					}
-					else if(name[0].equals("simpleHall"))
-					{
-						this.simpleHalls.add(new DungeonGenerator(weight,path,open));
-
-					}
-					else if(name[0].equals("complexHall"))
-					{
-						this.complexHalls.add(new DungeonGenerator(weight,path,open));
-
-					}
-					else if(name[0].equals("trap"))
-					{
-						this.pistonTraps.add(new DungeonGenerator(weight,path,open));
-
-					}
-					else if(name[0].equals("deadEnd"))
-					{
-						this.deadEnds.add(new DungeonGenerator(weight,path,open));
-
-					}
-					else if(name[0].equals("exit"))
-					{
-						this.exits.add(new DungeonGenerator(weight,path,open));
-
-					}
-					else if(name[0].equals("maze"))
-					{
-						this.mazes.add(new DungeonGenerator(weight,path,open));
-
-					}
-					count++;
-					this.weightedDungeonGenList.add(new DungeonGenerator(weight,path,open));
-				}*/
-
-				registeredDungeons.add(new DungeonGenerator(weight, path, open));
+				dungeonTypeMapping.get(dungeonType).add(generator);
+				weightedDungeonGenList.add(generator);
+				registeredDungeons.add(generator);
 				System.out.println("Imported " + name);
 			}
 			else
 			{
 				System.out.println("Could not parse dungeon filename, not adding dungeon to generation lists");
-				customDungeons.add(new DungeonGenerator(0, schematicFile.getAbsolutePath(), true));
+				customDungeons.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, path, true));
 				System.out.println("Imported " + name);
 			}
 		}
@@ -218,17 +224,6 @@ public class DungeonHelper
 		
 		this.metadataNextList.add(Block.redstoneRepeaterIdle.blockID);
 		this.metadataNextList.add(Block.redstoneRepeaterActive.blockID);
-	}
-	
-	public void registerDungeonTypeTags()
-	{
-		tagList.add("hub");
-		tagList.add("trap");
-		tagList.add("simpleHall");
-		tagList.add("complexHall");
-		tagList.add("exit");
-		tagList.add("deadEnd");
-		tagList.add("maze");
 	}
 	
 	public void registerBaseDungeons()
