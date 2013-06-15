@@ -395,23 +395,24 @@ public class DungeonHelper
         	 this.nbtdata.setByteArray("Data", blockData);
 		 */
 
-		HashMap schematic = new HashMap();
+		HashMap<String, Tag> schematic = new HashMap<String, Tag>();
+
 		schematic.put("Blocks", new ByteArrayTag("Blocks", blocks));
 		schematic.put("Data", new ByteArrayTag("Data", blockData));
-
+		
 		schematic.put("Width", new ShortTag("Width", (short) width));
 		schematic.put("Length", new ShortTag("Length", (short) length));
 		schematic.put("Height", new ShortTag("Height", (short) height));
-		schematic.put("TileEntites", new ListTag("TileEntities",CompoundTag.class,tileEntites));
-		if (addBlocks != null) {
+		schematic.put("TileEntites", new ListTag("TileEntities", CompoundTag.class,tileEntites));
+		
+		if (addBlocks != null)
+		{
 			schematic.put("AddBlocks", new ByteArrayTag("AddBlocks", addBlocks));
 		}
 
 		CompoundTag schematicTag = new CompoundTag("Schematic", schematic);
 		try
 		{
-
-
 			NBTOutputStream stream = new NBTOutputStream(new FileOutputStream(file));
 			stream.writeTag(schematicTag);
 			stream.close();
