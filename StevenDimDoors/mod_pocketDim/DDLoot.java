@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Random;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 
@@ -27,7 +25,7 @@ public class DDLoot {
 	
 	public static final String DIMENSIONAL_DUNGEON_CHEST = "dimensionalDungeonChest";
 	public static ChestGenHooks DungeonChestInfo = null;
-	private static final int CHEST_SIZE = 8;
+	private static final int CHEST_SIZE = 5;
 	
 	private static final int COMMON_LOOT_WEIGHT = 10; //As common as iron ingots
 	private static final int UNCOMMON_LOOT_WEIGHT = 5; //As common as iron armor loot
@@ -50,18 +48,18 @@ public class DDLoot {
 		ArrayList<WeightedRandomChestContent> items = mergeCategories(chestSources);
 		
 		//Add any enabled DD loot to the list of items
-		addContent(properties.FabricOfRealityLootEnabled, items, properties.FabricBlockID, 8, 32, COMMON_LOOT_WEIGHT);
+		addContent(properties.FabricOfRealityLootEnabled, items, mod_pocketDim.blockDimWall.blockID, 8, 32, COMMON_LOOT_WEIGHT);
 
-		addContent(properties.DimensionalDoorLootEnabled, items, properties.DimensionalDoorItemID, UNCOMMON_LOOT_WEIGHT);
-		addContent(properties.WarpDoorLootEnabled, items, properties.WarpDoorItemID, UNCOMMON_LOOT_WEIGHT);
-		addContent(properties.TransTrapdoorLootEnabled, items, properties.TransTrapdoorID, UNCOMMON_LOOT_WEIGHT);
-		addContent(properties.RiftSignatureLootEnabled, items, properties.RiftSignatureItemID, UNCOMMON_LOOT_WEIGHT);
-		addContent(properties.StableFabricLootEnabled, items, properties.StableFabricItemID, UNCOMMON_LOOT_WEIGHT);
-		addContent(properties.RiftRemoverLootEnabled, items, properties.RiftRemoverItemID, UNCOMMON_LOOT_WEIGHT);
+		addContent(properties.DimensionalDoorLootEnabled, items, mod_pocketDim.itemDimDoor.itemID, UNCOMMON_LOOT_WEIGHT);
+		addContent(properties.WarpDoorLootEnabled, items, mod_pocketDim.itemExitDoor.itemID, UNCOMMON_LOOT_WEIGHT);
+		addContent(properties.TransTrapdoorLootEnabled, items, mod_pocketDim.dimHatch.blockID, UNCOMMON_LOOT_WEIGHT);
+		addContent(properties.RiftSignatureLootEnabled, items, mod_pocketDim.itemLinkSignature.itemID, UNCOMMON_LOOT_WEIGHT);
+		addContent(properties.StableFabricLootEnabled, items, mod_pocketDim.itemStableFabric.itemID, UNCOMMON_LOOT_WEIGHT);
+		addContent(properties.RiftRemoverLootEnabled, items, mod_pocketDim.itemRiftRemover.itemID, UNCOMMON_LOOT_WEIGHT);
 
-		addContent(properties.UnstableDoorLootEnabled, items, properties.UnstableDoorItemID, RARE_LOOT_WEIGHT);
-		addContent(properties.StabilizedRiftSignatureLootEnabled, items, properties.StabilizedRiftSignatureItemID, RARE_LOOT_WEIGHT);
-		addContent(properties.RiftBladeLootEnabled, items, properties.RiftBladeItemID, RARE_LOOT_WEIGHT);
+		addContent(properties.UnstableDoorLootEnabled, items, mod_pocketDim.itemChaosDoor.itemID, RARE_LOOT_WEIGHT);
+		addContent(properties.StabilizedRiftSignatureLootEnabled, items, mod_pocketDim.itemStabilizedLinkSignature.itemID, RARE_LOOT_WEIGHT);
+		addContent(properties.RiftBladeLootEnabled, items, mod_pocketDim.itemRiftBlade.itemID, RARE_LOOT_WEIGHT);
 
 		//Add all the items to our dungeon chest
 		addItemsToContainer(DungeonChestInfo, items);
@@ -135,9 +133,13 @@ public class DDLoot {
 	
 	private static void addItemsToContainer(ChestGenHooks container, ArrayList<WeightedRandomChestContent> items)
 	{
+		//System.out.println("Preparing Chest Stuff");
+		
 		for (WeightedRandomChestContent item : items)
 		{
 			container.addItem(item);
+			//Uncomment this code to print out loot and weight pairs
+			//System.out.println(item.theItemId.getDisplayName() + "\t" + item.itemWeight);
 		}
 	}
 }
