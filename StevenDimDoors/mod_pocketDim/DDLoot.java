@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Random;
 
+import net.minecraft.item.Item;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 
@@ -27,9 +28,9 @@ public class DDLoot {
 	public static ChestGenHooks DungeonChestInfo = null;
 	private static final int CHEST_SIZE = 5;
 	
-	private static final int COMMON_LOOT_WEIGHT = 10; //As common as iron ingots
-	private static final int UNCOMMON_LOOT_WEIGHT = 5; //As common as iron armor loot
-	private static final int RARE_LOOT_WEIGHT = 3; //As common as diamonds
+	private static final int COMMON_LOOT_WEIGHT = 9; //1 less than weight of iron ingots
+	private static final int UNCOMMON_LOOT_WEIGHT = 4; //1 less than weight of iron armor
+	private static final int RARE_LOOT_WEIGHT = 1; //Same weight as music discs, golden apple
 	private static final int DUNGEON_CHEST_WEIGHT_INFLATION = 10; // (weight of iron ingots in dungeon) / (weight of iron ingots in other chests)
 	
 	public static void registerInfo()
@@ -110,6 +111,19 @@ public class DDLoot {
 						container.put(id, item);
 					}
 				}
+			}
+		}
+		
+		//I've added a minor hack here to make enchanted books more common
+		//If this is necessary for more items, create an override table and use that
+		//rather than hardcoding the changes below
+		final int enchantedBookID = Item.enchantedBook.itemID;
+		for (WeightedRandomChestContent item : container.values())
+		{
+			if (item.theItemId.itemID == enchantedBookID)
+			{
+				item.itemWeight = 3;
+				break;
 			}
 		}
 		
