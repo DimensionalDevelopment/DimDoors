@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -25,7 +26,11 @@ public class DungeonHelper
 	private static DDProperties properties = null;
 
 	private Random rand = new Random();
+	private static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
+	private static final int DEFAULT_DUNGEON_WEIGHT = 100;
 
+	public static Pattern NamePattern = Pattern.compile("[A-Za-z0-9_]+");
+	
 	public HashMap<Integer, LinkData> customDungeonStatus = new HashMap<Integer, LinkData>();
 
 	public ArrayList<DungeonGenerator> customDungeons = new ArrayList<DungeonGenerator>();
@@ -53,96 +58,122 @@ public class DungeonHelper
 			properties = DDProperties.instance();
 	}
 	
+	public boolean validateSchematicName(String name)
+	{
+		String[] dungeonData = name.split("_");
+
+		//Check for a valid number of parts
+		if (dungeonData.length < 3 || dungeonData.length > 4)
+			return false;
+
+		//Check if the category is valid
+		if (!tagList.contains(dungeonData[0]))
+			return false;
+		
+		//Check if the name is valid
+		if (!NamePattern.matcher(dungeonData[1]).matches())
+			return false;
+		
+		//Check if the open/closed flag is present
+		if (!dungeonData[2].equalsIgnoreCase("open") && !dungeonData[2].equalsIgnoreCase("closed"))
+			return false;
+		
+		//If the weight is present, check that it is valid
+		if (dungeonData.length == 4)
+		{
+			try
+			{
+				int weight = Integer.parseInt(dungeonData[3]);
+				if (weight < 0)
+					return false;
+			}
+			catch (NumberFormatException e)
+			{
+				//Not a number
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public void registerCustomDungeon(File schematicFile)
 	{
+		String name = schematicFile.getName();
 		try
 		{
-			if(schematicFile.getName().contains(".schematic"))
+			if (name.endsWith(SCHEMATIC_FILE_EXTENSION) && validateSchematicName(name))
 			{
-				String[] name = schematicFile.getName().split("_");
+				//Strip off the file extension while splitting the file name
+				String[] dungeonData = name.substring(0, name.length() - SCHEMATIC_FILE_EXTENSION.length()).split("_");
+				
+				String path = schematicFile.getAbsolutePath();
+				boolean open = dungeonData[2].equals("open");
+				int weight = (dungeonData.length == 4) ? Integer.parseInt(dungeonData[3]) : DEFAULT_DUNGEON_WEIGHT;
 
-				if(name.length<4)
+				//Change this code so that instead of using IFs, we use a hash table mapping (category) -> (list)
+				/*while(count<weight)
 				{
-					System.out.println("Could not parse filename tags, not adding dungeon to generation lists");
-					this.customDungeons.add(new DungeonGenerator(0,schematicFile.getAbsolutePath(),true));
-					System.out.println("Imported "+schematicFile.getName());
-
-
-				}
-				else if(!(name[2].equals("open")||name[2].equals("closed"))||!this.tagList.contains(name[0]))
-				{
-					System.out.println("Could not parse filename tags, not adding dungeon to generation lists");
-					this.customDungeons.add(new DungeonGenerator(0,schematicFile.getAbsolutePath(),true));
-					System.out.println("Imported "+schematicFile.getName());
-
-				}
-				else
-				{
-					int count=0;
-
-					boolean open= name[2].equals("open");
-
-					int weight = Integer.parseInt(name[3].replace(".schematic", ""));
-
-					String path = schematicFile.getAbsolutePath();
-
-					while(count<weight)
+					if(name[0].equals("hub"))
 					{
-						if(name[0].equals("hub"))
-						{
-							this.hubs.add(new DungeonGenerator(weight,path,open));
-						}
-						else if(name[0].equals("simpleHall"))
-						{
-							this.simpleHalls.add(new DungeonGenerator(weight,path,open));
-
-						}
-						else if(name[0].equals("complexHall"))
-						{
-							this.complexHalls.add(new DungeonGenerator(weight,path,open));
-
-						}
-						else if(name[0].equals("trap"))
-						{
-							this.pistonTraps.add(new DungeonGenerator(weight,path,open));
-
-						}
-						else if(name[0].equals("deadEnd"))
-						{
-							this.deadEnds.add(new DungeonGenerator(weight,path,open));
-
-						}
-						else if(name[0].equals("exit"))
-						{
-							this.exits.add(new DungeonGenerator(weight,path,open));
-
-						}
-						else if(name[0].equals("maze"))
-						{
-							this.mazes.add(new DungeonGenerator(weight,path,open));
-
-						}
-						count++;
-						this.weightedDungeonGenList.add(new DungeonGenerator(weight,path,open));
+						this.hubs.add(new DungeonGenerator(weight,path,open));
 					}
-					this.registeredDungeons.add(new DungeonGenerator(weight,path,open));
-					System.out.println("Imported "+schematicFile.getName());
-				}
+					else if(name[0].equals("simpleHall"))
+					{
+						this.simpleHalls.add(new DungeonGenerator(weight,path,open));
+
+					}
+					else if(name[0].equals("complexHall"))
+					{
+						this.complexHalls.add(new DungeonGenerator(weight,path,open));
+
+					}
+					else if(name[0].equals("trap"))
+					{
+						this.pistonTraps.add(new DungeonGenerator(weight,path,open));
+
+					}
+					else if(name[0].equals("deadEnd"))
+					{
+						this.deadEnds.add(new DungeonGenerator(weight,path,open));
+
+					}
+					else if(name[0].equals("exit"))
+					{
+						this.exits.add(new DungeonGenerator(weight,path,open));
+
+					}
+					else if(name[0].equals("maze"))
+					{
+						this.mazes.add(new DungeonGenerator(weight,path,open));
+
+					}
+					count++;
+					this.weightedDungeonGenList.add(new DungeonGenerator(weight,path,open));
+				}*/
+
+				registeredDungeons.add(new DungeonGenerator(weight, path, open));
+				System.out.println("Imported " + name);
+			}
+			else
+			{
+				System.out.println("Could not parse dungeon filename, not adding dungeon to generation lists");
+				customDungeons.add(new DungeonGenerator(0, schematicFile.getAbsolutePath(), true));
+				System.out.println("Imported " + name);
 			}
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
-			System.out.println("Importing custom dungeon failed");
+			System.out.println("Failed to import " + name);
 		}
 	}
 
 	public  void importCustomDungeons(String dir)
 	{
 		File file = new File(dir);
-		File[] schematicNames=file.listFiles();
+		File[] schematicNames = file.listFiles();
 
-		if(schematicNames!=null)
+		if (schematicNames!=null)
 		{
 			for(File schematicFile: schematicNames)
 			{

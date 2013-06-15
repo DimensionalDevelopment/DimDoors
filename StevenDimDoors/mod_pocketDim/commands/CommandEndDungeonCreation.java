@@ -8,11 +8,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 
 public class CommandEndDungeonCreation extends CommandBase
 {
 	private static DDProperties properties = null;
-	private static Pattern nameFilter = Pattern.compile("[A-Za-z0-9_]+");
 	
 	public CommandEndDungeonCreation()
 	{
@@ -59,13 +59,13 @@ public class CommandEndDungeonCreation extends CommandBase
 		else if(!player.worldObj.isRemote)
 		{
 			//Check that the dungeon name is valid to prevent directory traversal and other forms of abuse
-			if (nameFilter.matcher(var2[0]).matches())
+			if (DungeonHelper.NamePattern.matcher(var2[0]).matches())
 			{
 				DungeonGenerator newDungeon = mod_pocketDim.dungeonHelper.exportDungeon(player.worldObj, x, y, z, properties.CustomSchematicDirectory + "/" + var2[0] + ".schematic");
-				player.sendChatToPlayer("created dungeon schematic in " + properties.CustomSchematicDirectory +"/"+var2[0]+".schematic");
+				player.sendChatToPlayer("created dungeon schematic in " + properties.CustomSchematicDirectory + "/" + var2[0]+".schematic");
 				mod_pocketDim.dungeonHelper.customDungeons.add(newDungeon);
 				
-				if(mod_pocketDim.dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId)&&!player.worldObj.isRemote)
+				if (mod_pocketDim.dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId) && !player.worldObj.isRemote)
 				{
 				//	mod_pocketDim.dungeonHelper.customDungeonStatus.remove(player.worldObj.provider.dimensionId);
 				//	dimHelper.instance.teleportToPocket(player.worldObj, mod_pocketDim.dungeonHelper.customDungeonStatus.get(player.worldObj.provider.dimensionId), player);

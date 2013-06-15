@@ -177,7 +177,7 @@ public class mod_pocketDim
 		String helpFile = "/mods/DimDoors/How_to_add_dungeons.txt";
 		if(new File(helpFile).exists())
 		{
-			copyfile.copyFile(helpFile, file+"/How_to_add_dungeons.txt");
+			copyfile.copyFile(helpFile, file + "/How_to_add_dungeons.txt");
 		}
 
 		dungeonHelper.importCustomDungeons(properties.CustomSchematicDirectory);
