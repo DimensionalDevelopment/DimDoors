@@ -67,18 +67,26 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
 	{
 		if(dimHelper.dimList.containsKey(worldObj.provider.dimensionId))
 		{
-			if(!dimHelper.dimList.get(worldObj.provider.dimensionId).isDimRandomRift)
+			if(dimHelper.dimList.get(worldObj.provider.dimensionId).dungeonGenerator==null)
 			{
 				return;
+			}
+			else
+			{
+				if(dimHelper.dimList.get(worldObj.provider.dimensionId).dungeonGenerator.isOpen)
+				{
+					return;
+				}
 			}
 		}
 		int y =0;
 		int x = var2*16 + rand.nextInt(32)-8;
 		int z = var3*16 + rand.nextInt(32)-8;
+		int yTest;
 		do
 		{
 			
-			x = var2*16 + rand.nextInt(32-8);
+			x = var2*16 + rand.nextInt(32)-8;
 			z = var3*16 + rand.nextInt(32)-8;
 			
 			while(this.worldObj.getBlockId(x, y, z)==0&&y<255)
@@ -87,8 +95,18 @@ public class pocketGenerator extends ChunkProviderGenerate implements IChunkProv
 			}
 			y = yCoordHelper.getFirstUncovered(this.worldObj,x , y+2, z);
 			
+			if(this.worldObj.getBlockId(x, y-1, z)!=mod_pocketDim.blockDimWall.blockID)
+			{
+				y= yCoordHelper.getFirstUncovered(this.worldObj,x , y+4+rand.nextInt(4), z);
+			}
+			
+			if(y>245)
+			{
+				return;
+			}
+			
 			Entity mob = new MobObelisk(this.worldObj);
-			mob.setLocationAndAngles(x, y+rand.nextInt(4), z, 1, 1);
+			mob.setLocationAndAngles(x, y, z, 1, 1);
 			this.worldObj.spawnEntityInWorld(mob);
 			
 		}
