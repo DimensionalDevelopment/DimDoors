@@ -33,6 +33,7 @@ import net.minecraftforge.event.terraingen.ChunkProviderEvent;
 
 public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvider
 {
+	public static final int MAX_MONOLITH_SPAWNING_CHANCE = 100;
 	private static Random rand;
 
 	/** A NoiseGeneratorOctaves used in generating terrain */
@@ -108,7 +109,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 	{
 		//     caveGenerator = TerrainGen.getModdedMapGen(caveGenerator, CAVE);
 	}
-	
+
 	private static DDProperties properties = null;
 
 	public LimboGenerator(World par1World, long par2) 
@@ -135,7 +136,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 		this.mobSpawnerNoise = noiseGens[6];
 		// TODO Auto-generated constructor stub
 		this.worldObj=par1World;
-		
+
 		if (properties == null)
 			properties = DDProperties.instance();
 	}
@@ -177,49 +178,37 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 	@Override
 	public void populate(IChunkProvider var1, int var2, int var3) 
 	{
-	
-		
-			
-			if(rand.nextInt(properties.MonolithSpawnDensity)>1)
-			{
-				return;
-			}
+		if (rand.nextInt(MAX_MONOLITH_SPAWNING_CHANCE) < properties.MonolithSpawningChance)
+		{
 			int y =0;
 			int x = var2*16 + rand.nextInt(16);
 			int z = var3*16 + rand.nextInt(16);
 			int yTest;
 			do
 			{
-				
+	
 				x = var2*16 + rand.nextInt(16);
 				z = var3*16 + rand.nextInt(16);
-				
+	
 				while(this.worldObj.getBlockId(x, y, z)==0&&y<255)
 				{
 					y++;
 				}
 				y = yCoordHelper.getFirstUncovered(this.worldObj,x , y+2, z);
-				
+	
 				Entity mob = new MobObelisk(this.worldObj);
 				mob.setLocationAndAngles(x, y, z, 1, 1);
-			
+	
 				yTest=yCoordHelper.getFirstUncovered(this.worldObj,x , y+5, z);
 				if(yTest>245)
 				{
 					return;
 				}
 				this.worldObj.spawnEntityInWorld(mob);
-				
+	
 			}
-			while(yTest >y);
-			
-			
-			
-			
-			// TODO Auto-generated method stub
-			
-		
-
+			while (yTest > y);
+		}
 	}
 
 	@Override
