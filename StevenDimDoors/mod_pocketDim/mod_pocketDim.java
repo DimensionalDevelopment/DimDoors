@@ -1,7 +1,6 @@
 package StevenDimDoors.mod_pocketDim;
 
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -33,7 +32,6 @@ import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimData;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
 import StevenDimDoors.mod_pocketDim.commands.CommandStartDungeonCreation;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
-import StevenDimDoors.mod_pocketDim.helpers.copyfile;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemChaosDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
