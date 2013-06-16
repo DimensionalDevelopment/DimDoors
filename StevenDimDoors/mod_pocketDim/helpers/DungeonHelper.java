@@ -352,7 +352,7 @@ public class DungeonHelper
 		}
 	}
 
-	public  DungeonGenerator exportDungeon(World world, int xI, int yI, int zI, String file)
+	public boolean exportDungeon(World world, int xI, int yI, int zI, String exportPath)
 	{
 		int xMin;
 		int yMin;
@@ -366,9 +366,8 @@ public class DungeonHelper
 		yMin=yMax=yI;
 		zMin=zMax=zI;
 
-		for(int count=0;count<50;count++)
+		for (int count = 0; count < 50; count++)
 		{
-
 			if(world.getBlockId(xMin, yI, zI)!=properties.PermaFabricBlockID)
 			{
 				xMin--;
@@ -492,17 +491,16 @@ public class DungeonHelper
 		CompoundTag schematicTag = new CompoundTag("Schematic", schematic);
 		try
 		{
-			NBTOutputStream stream = new NBTOutputStream(new FileOutputStream(file));
+			NBTOutputStream stream = new NBTOutputStream(new FileOutputStream(exportPath));
 			stream.writeTag(schematicTag);
 			stream.close();
+			return true;
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			return false;
 		}
-		this.registerCustomDungeon(new File(file));
-
-		return new DungeonGenerator(0, file, true);
 	}
 
 	public void generateDungeonlink(LinkData incoming)
