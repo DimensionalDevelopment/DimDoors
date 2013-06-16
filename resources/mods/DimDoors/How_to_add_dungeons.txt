@@ -24,11 +24,11 @@ To name it, use the following format-
 
 The dungeon types are ‘hub’, ‘simpleHall’, ‘complexHall’, ‘trap', ‘maze’, ‘exit’, and ‘deadEnd', see explanation further down. 
 
-isOpen determines if the dungeon is an open-air style pocket, or a closed in/walled it pocket that will spawn Monoliths. Correct arguments are 'open' or 'closed'.
+isOpen determines if the dungeon is an open-air style pocket, or a closed in / walled in pocket that will spawn Monoliths. Correct arguments are 'open' or 'closed'.
 
-Spawn weight determines how frequently you want it to appear. The default is one, and it will have the same relative weight as all the others. 
+Spawn weight determines how frequently you want it to appear. The default is 100, and it will have the same relative weight as all the others. 
 
-For example- hub_hallWith5Doors_1.schematic
+For example- hub_hallWith5Doors_open_1.schematic
 
 
 Congratulations! You have added your own dungeon. You can use the command /dimdoors-genDungeonRift <dungeonName> to gen it, or use /dimdoors-genDungeonRift list to list all avalible dungeons. 
@@ -37,9 +37,9 @@ Congratulations! You have added your own dungeon. You can use the command /dimdo
 These tags are just guidelines, feel free to do whatever you feel like, but the generation algorithm is set up with these in mind-
 
 
-hub- Dungeons that have 4 or more iron doors in them should be labled as hubs, so they dont gen one after another. 
+hub- Dungeons that have 4 or more iron doors in them should be labeled as hubs, so they don't generate one after another. 
 
-simpleHall- this dungeons contain a single iron door, (possibly two, but not three) and dont contain redstone traps/etc. These are the halls that separate rooms, and should generally be tagged with 'closed' as well.
+simpleHall - this dungeons contain a single iron door, (possibly two, but not three) and don't contain redstone traps/etc. These are the halls that separate rooms, and should generally be tagged with 'closed' as well.
 
 complexHall- these dungeons are more like rooms, and can be open. They can have piston puzzles/locks, and up to three iron doors. In addition, they can contain wooden doors to link to the surface. 
 
@@ -49,5 +49,5 @@ maze- can contain up to 3 iron dim doors. They can be simple labryinths, or full
 
 exit- primary purpose is to link back to overworld with a wooden door. Should never contain iron doors. 
 
-deadEnd- no doors, except enterace door. Usually contain some sort of treasure. 
+deadEnd - no doors, except entrance door. Usually contain some sort of treasure. 
 
