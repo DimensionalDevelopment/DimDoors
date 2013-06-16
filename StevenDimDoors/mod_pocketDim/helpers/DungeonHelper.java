@@ -71,8 +71,9 @@ public class DungeonHelper
 
 	public ArrayList<Integer> metadataFlipList = new ArrayList<Integer>();
 	public ArrayList<Integer> metadataNextList = new ArrayList<Integer>();
-	public static DungeonGenerator defaultBreak = new DungeonGenerator(0, "/schematic/somethingBroke.schematic", true);
+	public DungeonGenerator defaultBreak = new DungeonGenerator(0, "/schematic/somethingBroke.schematic", true);
 	public DungeonGenerator defaultUp = new DungeonGenerator(0, "/schematic/simpleStairsUp.schematic", true);
+	
 	private HashSet<String> dungeonTypeChecker;
 	private Hashtable<String, ArrayList<DungeonGenerator>> dungeonTypeMapping;
 	
@@ -309,7 +310,7 @@ public class DungeonHelper
 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/randomTree.schematic", true));
 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallHiddenTowerO.schematic", true));
 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallSilverfishRoom.schematic", false));
-		this.deadEnds.add(new DungeonGenerator(0, "/schematics/tntTrapO.schematic", false));
+		this.deadEnds.add(new DungeonGenerator(0, "/schematics/tntTrapO.schematic", true));
 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallDesert.schematic", true));
 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallPond.schematic", true));
 

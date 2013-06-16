@@ -93,6 +93,11 @@ public class MobObelisk extends EntityFlying implements IMob
 	@Override
 	public void onEntityUpdate()
 	{
+		if(!(this.worldObj.provider instanceof LimboProvider ||this.worldObj.provider instanceof pocketProvider))
+		{
+			this.setDead();
+		}
+		
 		byte b0 = this.dataWatcher.getWatchableObjectByte(16);
 
 		this.texture="/mods/DimDoors/textures/mobs/Monolith"+b0+".png";
@@ -199,10 +204,7 @@ public class MobObelisk extends EntityFlying implements IMob
 					this.aggro=0;
 
 					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.crack",13, 1);
-					if(!(this.worldObj.provider instanceof LimboProvider ||this.worldObj.provider instanceof pocketProvider))
-					{
-						this.setDead();
-					}
+					
 
 
 

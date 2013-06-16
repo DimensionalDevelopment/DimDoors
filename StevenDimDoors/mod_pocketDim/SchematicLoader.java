@@ -73,7 +73,7 @@ public class SchematicLoader
 	public void init(LinkData link)
 	{
 		//adding default pocket
-		String filePath=DungeonHelper.defaultBreak.schematicPath;
+		String filePath=DungeonHelper.instance().defaultBreak.schematicPath;
 		if(dimHelper.dimList.containsKey(link.destDimID))
 		{
 			if(dimHelper.dimList.get(link.destDimID).dungeonGenerator!=null)
