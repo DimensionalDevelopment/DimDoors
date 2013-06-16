@@ -99,14 +99,35 @@ public class DungeonHelper
 		//Load our reference to the DDProperties singleton
 		if (properties == null)
 			properties = DDProperties.instance();
+		
+		initializeDungeons();
+	}
+	
+	private void initializeDungeons()
+	{
+		File file = new File(properties.CustomSchematicDirectory);
+		String helpFile = "/mods/DimDoors/How_to_add_dungeons.txt";
+		if (new File(helpFile).exists())
+		{
+			copyfile.copyFile(helpFile, file + "/How_to_add_dungeons.txt");
+		}
+		file.mkdir();
+		
+		registerFlipBlocks();
+		importCustomDungeons(properties.CustomSchematicDirectory);
+		registerBaseDungeons();
 	}
 	
 	public static DungeonHelper create()
 	{
 		if (instance == null)
+		{
 			instance = new DungeonHelper();
+		}
 		else
+		{
 			throw new IllegalStateException("Cannot create DungeonHelper twice");
+		}
 		
 		return instance;
 	}
