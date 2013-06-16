@@ -507,15 +507,16 @@ public class DungeonHelper
 
 		int depthWeight = rand.nextInt(depth)+rand.nextInt(depth)-2;
 
-		depth=depth-2;
-		//	DungeonGenerator
+		depth = depth - 2;
 		boolean flag = true;
-		int count=10;
+		int count = 10;
 		try
 		{
-			if(dimHelper.dimList.get(incoming.destDimID)!=null&&dimHelper.dimList.get(incoming.destDimID).dungeonGenerator!=null)
+			if (dimHelper.dimList.get(incoming.destDimID) != null&&dimHelper.dimList.get(incoming.destDimID).dungeonGenerator!=null)
 			{
 				mod_pocketDim.loader.init(incoming);
+				//TODO: Check this!
+				//What the hell? Isn't this line saying X = X..? ~SenseiKiwi 
 				dimHelper.dimList.get(incoming.destDimID).dungeonGenerator=dimHelper.dimList.get(incoming.destDimID).dungeonGenerator;
 				return;
 			}
@@ -644,13 +645,13 @@ public class DungeonHelper
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			if (weightedDungeonGenList.size() > 0)
 			{
 				dungeon = weightedDungeonGenList.get(rand.nextInt(weightedDungeonGenList.size()));
 			}
 			else
 			{
-				e.printStackTrace();
 				return;
 			}
 		}
