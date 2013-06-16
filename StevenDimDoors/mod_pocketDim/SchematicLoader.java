@@ -72,7 +72,21 @@ public class SchematicLoader
 
 	public void init(LinkData link)
 	{
-		String filePath = dimHelper.dimList.get(link.destDimID).dungeonGenerator.schematicPath;
+		//adding default pocket
+		String filePath="";
+		if(!dimHelper.dimList.containsKey(link.destDimID))
+		{
+			
+		}
+		else if(dimHelper.dimList.get(link.destDimID).dungeonGenerator==null)
+		{
+			
+		}
+		else
+		{
+			filePath = dimHelper.dimList.get(link.destDimID).dungeonGenerator.schematicPath;
+		}
+		
 
 		this.schematic=filePath;
 		try 
