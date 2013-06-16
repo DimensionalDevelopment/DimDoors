@@ -2,6 +2,8 @@ package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -13,7 +15,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 public class BlockDimWallPerm extends Block
 {
@@ -62,7 +67,7 @@ public class BlockDimWallPerm extends Block
 			}
 
 
-			if(dimHelper.getWorld(0)!=null&&par5Entity instanceof EntityPlayer)
+			if(dimHelper.getWorld(0)!=null&&par5Entity instanceof EntityPlayerMP)
 			{
 
 
@@ -74,10 +79,13 @@ public class BlockDimWallPerm extends Block
 				z = z + (z >> 4);
 
 				int y = yCoordHelper.getFirstUncovered(0, x, 63, z);
-
+				
+				EntityPlayer.class.cast(par5Entity).setPositionAndUpdate( x, y, z );
 				//this complicated chunk teleports the player back to the overworld at some random location. Looks funky becaue it has to load the chunk
-				dimHelper.instance.teleportToPocket(par1World, new LinkData(par1World.provider.dimensionId,0,x,y,z,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket,0), 
-						EntityPlayer.class.cast(par5Entity));
+				
+				FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP) par5Entity, 0);
+				//dimHelper.instance.teleportToPocket(par1World, new LinkData(par1World.provider.dimensionId,0,x,y,z,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket,0), 
+				//		EntityPlayer.class.cast(par5Entity));
 
 
 				EntityPlayer.class.cast(par5Entity).setPositionAndUpdate( x, y, z );
@@ -121,6 +129,8 @@ public class BlockDimWallPerm extends Block
 					EntityPlayer.class.cast(par5Entity).setPositionAndUpdate( x, y, z );
 					EntityPlayer.class.cast(par5Entity).fallDistance=0;
 				}
+				
+				
 
 
 			}

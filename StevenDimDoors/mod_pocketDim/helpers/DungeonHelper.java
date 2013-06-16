@@ -83,8 +83,8 @@ public class DungeonHelper
 	
 	public  ArrayList metadataNextList = new ArrayList();
 	
-	public  DungeonGenerator defaultUp = new DungeonGenerator(0, "/schematic/simpleStairsUp.schematic", true);
-	
+	public static DungeonGenerator defaultUp = new DungeonGenerator(0, "/schematic/simpleStairsUp.schematic", true);
+	public static DungeonGenerator defaultBreak = new DungeonGenerator(0, "/schematic/somethingBroke.schematic", true);
 	public void registerCustomDungeon(File schematicFile)
 	{
 		try
