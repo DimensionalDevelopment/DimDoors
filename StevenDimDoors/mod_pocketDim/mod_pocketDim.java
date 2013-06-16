@@ -145,7 +145,7 @@ public class mod_pocketDim
 	public void PreInit(FMLPreInitializationEvent event)
 	{
 		//This should be the FIRST thing that gets done.
-		properties = DDProperties.create(event.getSuggestedConfigurationFile());
+		properties = DDProperties.initialize(event.getSuggestedConfigurationFile());
 
 		//Now do other stuff
 		MinecraftForge.EVENT_BUS.register(new EventHookContainer());
@@ -373,7 +373,7 @@ public class mod_pocketDim
 		mod_pocketDim.blocksImmuneToRift.add(Block.blockLapis.blockID);
 		mod_pocketDim.blocksImmuneToRift.add(Block.bedrock.blockID);
 
-		DungeonHelper.create();
+		DungeonHelper.initialize();
 		
 		proxy.loadTextures();
 		proxy.registerRenderers();

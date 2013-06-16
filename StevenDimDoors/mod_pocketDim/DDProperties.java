@@ -225,12 +225,12 @@ public class DDProperties
 		config.save();
 	}
 	
-	public static DDProperties create(File configFile)
+	public static DDProperties initialize(File configFile)
 	{
 		if (instance == null)
 			instance = new DDProperties(configFile);
 		else
-			throw new IllegalStateException("Cannot create DDProperties twice");
+			throw new IllegalStateException("Cannot initialize DDProperties twice");
 		
 		return instance;
 	}
@@ -241,7 +241,7 @@ public class DDProperties
 		{
 			//This is to prevent some frustrating bugs that could arise when classes
 			//are loaded in the wrong order. Trust me, I had to squash a few...
-			throw new IllegalStateException("Instance of DDProperties requested before properties have been loaded");
+			throw new IllegalStateException("Instance of DDProperties requested before initialization");
 		}
 		return instance;
 	}

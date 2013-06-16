@@ -115,7 +115,7 @@ public class DungeonHelper
 		registerBaseDungeons();
 	}
 	
-	public static DungeonHelper create()
+	public static DungeonHelper initialize()
 	{
 		if (instance == null)
 		{
@@ -123,7 +123,7 @@ public class DungeonHelper
 		}
 		else
 		{
-			throw new IllegalStateException("Cannot create DungeonHelper twice");
+			throw new IllegalStateException("Cannot initialize DungeonHelper twice");
 		}
 		
 		return instance;
@@ -135,7 +135,7 @@ public class DungeonHelper
 		{
 			//This is to prevent some frustrating bugs that could arise when classes
 			//are loaded in the wrong order. Trust me, I had to squash a few...
-			throw new IllegalStateException("Instance of DungeonHelper requested before creation");
+			throw new IllegalStateException("Instance of DungeonHelper requested before initialization");
 		}
 		return instance;
 	}
