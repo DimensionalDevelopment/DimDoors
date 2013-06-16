@@ -19,7 +19,7 @@ public class RiftGenerator implements IWorldGenerator
 	private static final int MIN_RIFT_Y = 21;
 	private static final int MAX_RIFT_Y = 250;
 	private static final int CHUNK_LENGTH = 16;
-	private static final int GATEWAY_RADIUS = 3;
+	private static final int GATEWAY_RADIUS = 4;
 	private static DDProperties properties = null;
 
 	public RiftGenerator()
@@ -109,7 +109,7 @@ public class RiftGenerator implements IWorldGenerator
 							{
 								//Randomly choose whether to place bricks or not. The math is designed so that the
 								//chances of placing a block decrease as we get farther from the gateway's center.
-								if (Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 2)
+								if (Math.abs(xc) + Math.abs(zc) < random.nextInt(2) + 3)
 								{
 									//Place Stone Bricks
 									world.setBlock(x + xc, y - 1, z + zc, blockID);
