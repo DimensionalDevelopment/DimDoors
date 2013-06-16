@@ -27,7 +27,6 @@ public class DungeonHelper
 {
 	private static DungeonHelper instance = null;
 	private static DDProperties properties = null;
-
 	public static final Pattern NamePattern = Pattern.compile("[A-Za-z0-9_]+");
 
 	private static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
@@ -72,7 +71,7 @@ public class DungeonHelper
 
 	public ArrayList<Integer> metadataFlipList = new ArrayList<Integer>();
 	public ArrayList<Integer> metadataNextList = new ArrayList<Integer>();
-
+	public static DungeonGenerator defaultBreak = new DungeonGenerator(0, "/schematic/somethingBroke.schematic", true);
 	public DungeonGenerator defaultUp = new DungeonGenerator(0, "/schematic/simpleStairsUp.schematic", true);
 	private HashSet<String> dungeonTypeChecker;
 	private Hashtable<String, ArrayList<DungeonGenerator>> dungeonTypeMapping;
