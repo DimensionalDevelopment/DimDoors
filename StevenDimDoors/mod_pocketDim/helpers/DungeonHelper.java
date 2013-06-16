@@ -88,6 +88,7 @@ public class DungeonHelper
 		}
 		
 		//Add all the basic dungeon types to dungeonTypeMapping
+		dungeonTypeMapping = new Hashtable<String, ArrayList<DungeonGenerator>>();
 		dungeonTypeMapping.put(SIMPLE_HALL_DUNGEON_TYPE, simpleHalls);
 		dungeonTypeMapping.put(COMPLEX_HALL_DUNGEON_TYPE, complexHalls);
 		dungeonTypeMapping.put(HUB_DUNGEON_TYPE, hubs);
