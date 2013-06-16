@@ -2,6 +2,8 @@ package StevenDimDoors.mod_pocketDim;
 
 import java.io.File;
 
+import StevenDimDoors.mod_pocketDim.world.LimboGenerator;
+
 import net.minecraftforge.common.Configuration;
 
 public class DDProperties
@@ -99,8 +101,9 @@ public class DDProperties
 
 	public final int NonTntWeight;
 	public final int RiftSpreadModifier;
-	public final int DungeonRiftGenDensity;
-	public final int MonolithSpawnDensity;
+	public final int ClusterGenerationChance;
+	public final int GatewayGenerationChance;
+	public final int MonolithSpawningChance;
 	public final int LimboReturnRange;
 	public final String CustomSchematicDirectory;
 	
@@ -200,12 +203,18 @@ public class DDProperties
 		WorldRiftGenerationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift World Generation", true,
 				"Sets whether dungeon rifts generate in dimensions other than Limbo").getBoolean(true);
 		
-		MonolithSpawnDensity = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift World Generation", 7,
-				"Sets the chance that monoliths will not spawn in a give Limbo chunk- higher values mean fewer monoliths, must be greater than 0, default is 7.").getInt();
+		MonolithSpawningChance = config.get(Configuration.CATEGORY_GENERAL, "Monolith Spawning Chance", 28,
+				"Sets the chance (out of " + LimboGenerator.MAX_MONOLITH_SPAWNING_CHANCE + ") that Monoliths will " +
+				"spawn in a given Limbo chunk. The default chance is 28.").getInt();
 		
-		DungeonRiftGenDensity = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift World Generation", 250,
-				"Sets the dungeon rift density in the overworld, higher values mean less rifts, must be greater than 0. Default is 250.").getInt();
+		ClusterGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Cluster Generation Chance", 3,
+				"Sets the chance (out of " + RiftGenerator.MAX_CLUSTER_GENERATION_CHANCE + ") that a cluster of rifts will " +
+				"generate in a given chunk. The default chance is 3.").getInt();
 
+		GatewayGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Gateway Generation Chance", 40,
+				"Sets the chance (out of " + RiftGenerator.MAX_GATEWAY_GENERATION_CHANCE + ") that a Rift Gateway will " +
+				"generate in a given chunk. The default chance is 40.").getInt();
+		
 		RiftSpreadModifier = config.get(Configuration.CATEGORY_GENERAL, "Rift Spread Modifier", 3,
 				"Sets the number of times a rift can spread. 0 prevents rifts from spreading at all. " +
 				"A value greater than 5 is not recommended as the growth is exponential.").getInt();
@@ -216,12 +225,12 @@ public class DDProperties
 		config.save();
 	}
 	
-	public static DDProperties create(File configFile)
+	public static DDProperties initialize(File configFile)
 	{
 		if (instance == null)
 			instance = new DDProperties(configFile);
 		else
-			throw new IllegalStateException("Cannot create DDProperties twice");
+			throw new IllegalStateException("Cannot initialize DDProperties twice");
 		
 		return instance;
 	}
@@ -232,7 +241,7 @@ public class DDProperties
 		{
 			//This is to prevent some frustrating bugs that could arise when classes
 			//are loaded in the wrong order. Trust me, I had to squash a few...
-			throw new IllegalStateException("Instance of DDProperties requested before properties have been loaded");
+			throw new IllegalStateException("Instance of DDProperties requested before initialization");
 		}
 		return instance;
 	}

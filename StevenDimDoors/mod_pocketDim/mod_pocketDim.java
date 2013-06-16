@@ -1,7 +1,6 @@
 package StevenDimDoors.mod_pocketDim;
 
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -33,7 +32,6 @@ import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimData;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
 import StevenDimDoors.mod_pocketDim.commands.CommandStartDungeonCreation;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
-import StevenDimDoors.mod_pocketDim.helpers.copyfile;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemChaosDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
@@ -147,7 +145,7 @@ public class mod_pocketDim
 	public void PreInit(FMLPreInitializationEvent event)
 	{
 		//This should be the FIRST thing that gets done.
-		properties = DDProperties.create(event.getSuggestedConfigurationFile());
+		properties = DDProperties.initialize(event.getSuggestedConfigurationFile());
 
 		//Now do other stuff
 		MinecraftForge.EVENT_BUS.register(new EventHookContainer());
@@ -375,7 +373,7 @@ public class mod_pocketDim
 		mod_pocketDim.blocksImmuneToRift.add(Block.blockLapis.blockID);
 		mod_pocketDim.blocksImmuneToRift.add(Block.bedrock.blockID);
 
-		DungeonHelper.create();
+		DungeonHelper.initialize();
 		
 		proxy.loadTextures();
 		proxy.registerRenderers();

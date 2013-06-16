@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -27,7 +26,6 @@ public class DungeonHelper
 {
 	private static DungeonHelper instance = null;
 	private static DDProperties properties = null;
-
 	public static final Pattern NamePattern = Pattern.compile("[A-Za-z0-9_]+");
 
 	private static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
@@ -72,12 +70,11 @@ public class DungeonHelper
 
 	public ArrayList<Integer> metadataFlipList = new ArrayList<Integer>();
 	public ArrayList<Integer> metadataNextList = new ArrayList<Integer>();
-	
 	public DungeonGenerator defaultBreak = new DungeonGenerator(0, "/schematic/somethingBroke.schematic", true);
 	public DungeonGenerator defaultUp = new DungeonGenerator(0, "/schematic/simpleStairsUp.schematic", true);
 	
 	private HashSet<String> dungeonTypeChecker;
-	private Hashtable<String, ArrayList<DungeonGenerator>> dungeonTypeMapping;
+	private HashMap<String, ArrayList<DungeonGenerator>> dungeonTypeMapping;
 	
 	private DungeonHelper()
 	{
@@ -90,7 +87,7 @@ public class DungeonHelper
 		}
 		
 		//Add all the basic dungeon types to dungeonTypeMapping
-		dungeonTypeMapping = new Hashtable<String, ArrayList<DungeonGenerator>>();
+		dungeonTypeMapping = new HashMap<String, ArrayList<DungeonGenerator>>();
 		dungeonTypeMapping.put(SIMPLE_HALL_DUNGEON_TYPE, simpleHalls);
 		dungeonTypeMapping.put(COMPLEX_HALL_DUNGEON_TYPE, complexHalls);
 		dungeonTypeMapping.put(HUB_DUNGEON_TYPE, hubs);
@@ -109,19 +106,16 @@ public class DungeonHelper
 	private void initializeDungeons()
 	{
 		File file = new File(properties.CustomSchematicDirectory);
-		String helpFile = "/mods/DimDoors/How_to_add_dungeons.txt";
-		if (new File(helpFile).exists())
+		if (file.exists() || file.mkdir())
 		{
-			copyfile.copyFile(helpFile, file + "/How_to_add_dungeons.txt");
+			copyfile.copyFile("/mods/DimDoors/How_to_add_dungeons.txt", file.getAbsolutePath() + "/How_to_add_dungeons.txt");
 		}
-		file.mkdir();
-		
 		registerFlipBlocks();
 		importCustomDungeons(properties.CustomSchematicDirectory);
 		registerBaseDungeons();
 	}
 	
-	public static DungeonHelper create()
+	public static DungeonHelper initialize()
 	{
 		if (instance == null)
 		{
@@ -129,7 +123,7 @@ public class DungeonHelper
 		}
 		else
 		{
-			throw new IllegalStateException("Cannot create DungeonHelper twice");
+			throw new IllegalStateException("Cannot initialize DungeonHelper twice");
 		}
 		
 		return instance;
@@ -141,7 +135,7 @@ public class DungeonHelper
 		{
 			//This is to prevent some frustrating bugs that could arise when classes
 			//are loaded in the wrong order. Trust me, I had to squash a few...
-			throw new IllegalStateException("Instance of DungeonHelper requested before creation");
+			throw new IllegalStateException("Instance of DungeonHelper requested before initialization");
 		}
 		return instance;
 	}
@@ -153,7 +147,6 @@ public class DungeonHelper
 		//Check for a valid number of parts
 		if (dungeonData.length < 3 || dungeonData.length > 4)
 			return false;
-
 
 		//Check if the dungeon type is valid
 		if (!dungeonTypeChecker.contains(dungeonData[0].toLowerCase()))
@@ -355,7 +348,7 @@ public class DungeonHelper
 		}
 	}
 
-	public  DungeonGenerator exportDungeon(World world, int xI, int yI, int zI, String file)
+	public boolean exportDungeon(World world, int xI, int yI, int zI, String exportPath)
 	{
 		int xMin;
 		int yMin;
@@ -369,9 +362,8 @@ public class DungeonHelper
 		yMin=yMax=yI;
 		zMin=zMax=zI;
 
-		for(int count=0;count<50;count++)
+		for (int count = 0; count < 50; count++)
 		{
-
 			if(world.getBlockId(xMin, yI, zI)!=properties.PermaFabricBlockID)
 			{
 				xMin--;
@@ -495,17 +487,16 @@ public class DungeonHelper
 		CompoundTag schematicTag = new CompoundTag("Schematic", schematic);
 		try
 		{
-			NBTOutputStream stream = new NBTOutputStream(new FileOutputStream(file));
+			NBTOutputStream stream = new NBTOutputStream(new FileOutputStream(exportPath));
 			stream.writeTag(schematicTag);
 			stream.close();
+			return true;
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			return false;
 		}
-		this.registerCustomDungeon(new File(file));
-
-		return new DungeonGenerator(0, file, true);
 	}
 
 	public void generateDungeonlink(LinkData incoming)
@@ -516,15 +507,16 @@ public class DungeonHelper
 
 		int depthWeight = rand.nextInt(depth)+rand.nextInt(depth)-2;
 
-		depth=depth-2;
-		//	DungeonGenerator
+		depth = depth - 2;
 		boolean flag = true;
-		int count=10;
+		int count = 10;
 		try
 		{
-			if(dimHelper.dimList.get(incoming.destDimID)!=null&&dimHelper.dimList.get(incoming.destDimID).dungeonGenerator!=null)
+			if (dimHelper.dimList.get(incoming.destDimID) != null&&dimHelper.dimList.get(incoming.destDimID).dungeonGenerator!=null)
 			{
 				mod_pocketDim.loader.init(incoming);
+				//TODO: Check this!
+				//What the hell? Isn't this line saying X = X..? ~SenseiKiwi 
 				dimHelper.dimList.get(incoming.destDimID).dungeonGenerator=dimHelper.dimList.get(incoming.destDimID).dungeonGenerator;
 				return;
 			}
@@ -653,13 +645,13 @@ public class DungeonHelper
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			if (weightedDungeonGenList.size() > 0)
 			{
 				dungeon = weightedDungeonGenList.get(rand.nextInt(weightedDungeonGenList.size()));
 			}
 			else
 			{
-				e.printStackTrace();
 				return;
 			}
 		}

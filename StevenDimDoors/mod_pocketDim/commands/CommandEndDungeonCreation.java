@@ -1,13 +1,11 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
-import java.util.regex.Pattern;
+import java.io.File;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.DungeonGenerator;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 
 public class CommandEndDungeonCreation extends CommandBase
@@ -34,14 +32,14 @@ public class CommandEndDungeonCreation extends CommandBase
 		
 		if (!dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId))
 		{
-			if(var2.length<2)
+			if (var2.length < 2)
 			{
 				player.sendChatToPlayer("Must have started dungeon creation, use argument OVERRIDE to export anyway");
 				return;
 
 			}
 		
-			else if(!var2[1].contains("OVERRIDE"))
+			else if (!var2[1].contains("OVERRIDE"))
 			{
 				player.sendChatToPlayer("Must have started dungeon creation, use argument OVERRIDE to export anyway");
 				return;
@@ -63,14 +61,22 @@ public class CommandEndDungeonCreation extends CommandBase
 			//Check that the dungeon name is valid to prevent directory traversal and other forms of abuse
 			if (DungeonHelper.NamePattern.matcher(var2[0]).matches())
 			{
-				DungeonGenerator newDungeon = dungeonHelper.exportDungeon(player.worldObj, x, y, z, properties.CustomSchematicDirectory + "/" + var2[0] + ".schematic");
-				player.sendChatToPlayer("created dungeon schematic in " + properties.CustomSchematicDirectory + "/" + var2[0]+".schematic");
-				
-				if (dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId) && !player.worldObj.isRemote)
+				String exportPath = properties.CustomSchematicDirectory + "/" + var2[0] + ".schematic";
+				if (dungeonHelper.exportDungeon(player.worldObj, x, y, z, exportPath))
 				{
-				//	mod_pocketDim.dungeonHelper.customDungeonStatus.remove(player.worldObj.provider.dimensionId);
-				//	dimHelper.instance.teleportToPocket(player.worldObj, mod_pocketDim.dungeonHelper.customDungeonStatus.get(player.worldObj.provider.dimensionId), player);
-	
+					player.sendChatToPlayer("Saved dungeon schematic in " + exportPath);
+					dungeonHelper.registerCustomDungeon(new File(exportPath));
+					
+					if (dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId) && !player.worldObj.isRemote)
+					{
+					//	mod_pocketDim.dungeonHelper.customDungeonStatus.remove(player.worldObj.provider.dimensionId);
+					//	dimHelper.instance.teleportToPocket(player.worldObj, mod_pocketDim.dungeonHelper.customDungeonStatus.get(player.worldObj.provider.dimensionId), player);
+		
+					}
+				}
+				else
+				{
+					player.sendChatToPlayer("Failed to save dungeon schematic!");
 				}
 			}
 			else

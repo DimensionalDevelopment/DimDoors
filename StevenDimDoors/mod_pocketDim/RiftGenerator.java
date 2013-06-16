@@ -2,31 +2,26 @@ package StevenDimDoors.mod_pocketDim;
 
 import java.util.Random;
 
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
-
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
+import StevenDimDoors.mod_pocketDim.world.pocketProvider;
 import cpw.mods.fml.common.IWorldGenerator;
 
 public class RiftGenerator implements IWorldGenerator
 {
-	private int minableBlockId;
-	private int numberOfBlocks;
-	int cycles=40;
-	boolean shouldSave = false;
-	int count = 0;
-	int i;
-	int k;
-	int j;
-	Random rand = new Random();
-	boolean shouldGenHere=true;
-	LinkData link;
-	DimData dimData;
-
+	public static final int MAX_GATEWAY_GENERATION_CHANCE = 10000;
+	public static final int MAX_CLUSTER_GENERATION_CHANCE = 10000;
+	private static final int CLUSTER_GROWTH_CHANCE = 80;
+	private static final int MAX_CLUSTER_GROWTH_CHANCE = 100;
+	private static final int MIN_RIFT_Y = 21;
+	private static final int MAX_RIFT_Y = 250;
+	private static final int CHUNK_LENGTH = 16;
+	private static final int GATEWAY_RADIUS = 3;
 	private static DDProperties properties = null;
-	
+
 	public RiftGenerator()
 	{
 		if (properties == null)
@@ -36,227 +31,120 @@ public class RiftGenerator implements IWorldGenerator
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
-		//Long ntime = System.nanoTime();
-		shouldGenHere=true;
-
-		if (world.provider.getDimensionName()=="PocketDim"|| !properties.WorldRiftGenerationEnabled || world.isRemote)
+		//Don't generate rifts or gateways if the rift generation flag is disabled,
+		//the current world is a pocket dimension, or the world is remote.
+		if (!properties.WorldRiftGenerationEnabled || world.provider instanceof pocketProvider || world.isRemote)
 		{
-
-			this.shouldGenHere=false;
-
-
+			return;
 		}
 
+		int x, y, z;
+		int blockID;
+		LinkData link;
 
-		if(this.shouldGenHere)
+		//Randomly decide whether to place a cluster of rifts here
+		if (random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < properties.ClusterGenerationChance)
 		{
-
-			//TODO give this a clamp int type functionality
-			if(random.nextInt(3000+properties.DungeonRiftGenDensity*4)==0)
+			link = null;
+			do
 			{
-				i=chunkX*16-random.nextInt(16);
-				k=chunkZ*16-random.nextInt(16);
+				//Pick a random point on the surface of the chunk
+				x = chunkX * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
+				z = chunkZ * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
+				y = world.getHeightValue(x, z);
 
-				j= world.getHeightValue(i, k);
-
-				if(j>20&&world.getBlockId(i, j, k)==0)
+				//If the point is within the acceptable altitude range and the block above is empty, then place a rift
+				if (y >= MIN_RIFT_Y && y <= MAX_RIFT_Y && world.isAirBlock(x, y + 1, z))
 				{
-					//			System.out.println(String.valueOf(i)+"x "+String.valueOf(j)+"y "+String.valueOf(k)+"z"+"Large gen");
-
-					link = new LinkData(world.provider.dimensionId, 0,  i, j+1, k, i, j+1, k, true,rand.nextInt(4));
-					link = dimHelper.instance.createPocket(link,true, true);
-					this.shouldSave=true;
-
-
-					//	SchematicLoader loader = new SchematicLoader();
-					//	loader.init(link);
-					//	loader.generateSchematic(link);
-
-
-					count=0;
-					while(random.nextInt(4)!=1)
+					//Create a link. If this is the first time, create a dungeon pocket and create a two-way link.
+					//Otherwise, create a one-way link and connect to the destination of the first link.
+					if (link == null)
 					{
-						i=chunkX*16-random.nextInt(16);
-						k=chunkZ*16-random.nextInt(16);
-
-						j= world.getHeightValue(i, k);
-
-						if(world.isAirBlock(i, j+1, k))
-						{
-
-
-
-							link = dimHelper.instance.createLink(link.locDimID,link.destDimID, i, j+1, k,link.destXCoord,link.destYCoord,link.destZCoord);
-
-
-
-
-
-
-
-						}
-
+						link = new LinkData(world.provider.dimensionId, 0,  x, y + 1, z, x, y + 1, z, true, random.nextInt(4));
+						link = dimHelper.instance.createPocket(link, true, true);
 					}
-
+					else
+					{
+						link = dimHelper.instance.createLink(link.locDimID, link.destDimID, x, y + 1, z, link.destXCoord, link.destYCoord, link.destZCoord);
+					}
 				}
 			}
-			/**
-    		if(random.nextInt(540)==0)
-    		{
-    			i=chunkX*16-random.nextInt(16);
-    			k=chunkZ*16-random.nextInt(16);
-
-    			j= world.getHeightValue(i, k);
-    			if(j>20&&world.getBlockId(i, j, k)==0)
-    			{
-    				//System.out.println(String.valueOf(i)+"x "+String.valueOf(j)+"y "+String.valueOf(k)+"z"+"med gen");
-
-    				link = new LinkData(world.provider.dimensionId, 0,  i, j+1, k, i, j+1, k, true,rand.nextInt(4));
-    				link = dimHelper.instance.createPocket(link,true, true);
-    				this.shouldSave=true;
-
-
-    				//	SchematicLoader loader = new SchematicLoader();
-    				//	loader.init(link);
-    				//	loader.generateSchematic(link);
-    				count=0;
-
-
-    				while(random.nextInt(3)!=1)
-    				{
-    					i=chunkX*16-random.nextInt(16);
-    					k=chunkZ*16-random.nextInt(16);
-
-    					j= world.getHeightValue(i, k);
-
-    					if(world.isAirBlock(i, j+1, k))
-    					{
-
-
-
-    						link = dimHelper.instance.createLink(link.locDimID,link.destDimID, i, j+1, k,link.destXCoord,link.destYCoord,link.destZCoord);
-
-
-
-
-
-    					}
-
-    				}
-
-    			}
-    		}
-			 **/
-
+			//Randomly decide whether to repeat the process and add another rift to the cluster
+			while (random.nextInt(MAX_CLUSTER_GROWTH_CHANCE) < CLUSTER_GROWTH_CHANCE);
 		}
 
-		if(random.nextInt(properties.DungeonRiftGenDensity)==0&&world.provider.getDimensionName()!="PocketDim"&&!world.isRemote && properties.WorldRiftGenerationEnabled)
+		//Randomly decide whether to place a Rift Gateway here.
+		//This only happens if a rift cluster was NOT generated.
+		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance)
 		{
-			//	System.out.println("tryingToGen");
-			int blockID=Block.stoneBrick.blockID;
-			if(world.provider.dimensionId==properties.LimboDimensionID)
+			//Pick a random point on the surface of the chunk
+			x = chunkX * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
+			z = chunkZ * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
+			y = world.getHeightValue(x, z);
+
+			//Check if the point is within the acceptable altitude range, the block above that point is empty,
+			//and at least one of the two blocks under that point are opaque
+			if (y >= MIN_RIFT_Y && y <= MAX_RIFT_Y && world.isAirBlock(x, y + 1, z) &&
+					world.isBlockOpaqueCube(x, y - 2, z) || world.isBlockOpaqueCube(x, y - 1, z))
 			{
-				blockID= properties.LimboBlockID;
-			}
-			i=chunkX*16-random.nextInt(16);
-			k=chunkZ*16-random.nextInt(16);
+				//Create a two-way link between the upper block of the gateway and a pocket dimension
+				//That pocket dimension is where we'll start a dungeon!
+				link = new LinkData(world.provider.dimensionId, 0,  x, y + 1, z, x, y + 1, z, true, random.nextInt(4));
+				link = dimHelper.instance.createPocket(link, true, true);
 
-			j= world.getHeightValue(i, k);
-			if(j>20&&world.getBlockId(i, j, k)==0)
-			{
-				//System.out.println(String.valueOf(i)+"x "+String.valueOf(j)+"y "+String.valueOf(k)+"z"+"small gen");
-
-				count=0; 
-
-
-				if(world.isAirBlock(i, j+1, k))
+				//If the current dimension isn't Limbo, build a Rift Gateway out of Stone Bricks
+				if (world.provider.dimensionId != properties.LimboDimensionID)
 				{
-
-
-
-
-					if(world.isBlockOpaqueCube(i, j-2, k)||world.isBlockOpaqueCube(i, j-1, k))
+					blockID = Block.stoneBrick.blockID;
+					
+					//Replace some of the ground around the gateway with bricks
+					for (int xc = -GATEWAY_RADIUS; xc <= GATEWAY_RADIUS; xc++)
 					{
-						link = new LinkData(world.provider.dimensionId, 0,  i, j+1, k, i, j+1, k, true,rand.nextInt(4));
-						link =dimHelper.instance.createPocket(link,true, true);
-
-						for(int xc=-3;xc<4;xc++)
+						for (int zc= -GATEWAY_RADIUS; zc <= GATEWAY_RADIUS; zc++)
 						{
-							for(int zc=-3;zc<4;zc++)
+							//Check that the block is supported by an opaque block.
+							//This prevents us from building over a cliff, on the peak of a mountain,
+							//or the surface of the ocean or a frozen lake.
+							if (world.isBlockOpaqueCube(x + xc, y - 2, z + zc))
 							{
-								for(int yc=0;yc<200;yc++)
+								//Randomly choose whether to place bricks or not. The math is designed so that the
+								//chances of placing a block decrease as we get farther from the gateway's center.
+								if (Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 2)
 								{
-									if(yc==0&&world.isBlockOpaqueCube(i+xc, j-2,k +zc))
-									{
-
-										if(Math.abs(xc)+Math.abs(zc)<rand.nextInt(3)+2)
-										{
-											world.setBlock(i+xc, j-1+yc, k+zc, blockID);
-										}
-										else if(Math.abs(xc)+Math.abs(zc)<rand.nextInt(3)+3)
-
-										{
-											world.setBlock(i+xc, j-1+yc, k+zc, blockID,2,1);
-
-										}
-									}
-
+									//Place Stone Bricks
+									world.setBlock(x + xc, y - 1, z + zc, blockID);
 								}
-
+								else if (Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 3)
+								{
+									//Place Cracked Stone Bricks
+									world.setBlock(x + xc, y - 1, z + zc, blockID, 2, 1);
+								}
 							}
 						}
-
-						ItemRiftBlade.placeDoorBlock(world, i, j+1, k, 0, mod_pocketDim.transientDoor);
-
-						{
-							world.setBlock(i, j+1, k-1, blockID,0,1);
-							world.setBlock(i, j+1, k+1, blockID,0,1);
-							world.setBlock(i, j, k-1, blockID,0,1);
-							world.setBlock(i, j, k+1, blockID,0,1);
-							world.setBlock(i, j+2, k+1, blockID,3,1);
-							world.setBlock(i, j+2, k-1, blockID,3,1);
-						}
-
-
-
-
-
-
-
-						this.shouldSave=true;
-
 					}
-
-					//	 dimData = dimHelper.instance.dimList.get(link.destDimID);
-
-
-					//	SchematicLoader loader = new SchematicLoader();
-					//	loader.init(link);
-					//	loader.generateSchematic(link);
-
-
-
-
-
-
-
-
+					
+					//Use Chiseled Stone Bricks to top off the pillars around the door
+					world.setBlock(x, y + 2, z + 1, blockID, 3, 1);
+					world.setBlock(x, y + 2, z - 1, blockID, 3, 1);					
 				}
-
+				else
+				{
+					//Build the gateway out of Unraveled Fabric. Since nearly all the blocks in Limbo are of
+					//that type, there is no point replacing the ground. Just build the tops of the columns here.
+					blockID = properties.LimboBlockID;
+					world.setBlock(x, y + 2, z + 1, blockID, 0, 1);
+					world.setBlock(x, y + 2, z - 1, blockID, 0, 1);
+				}
+				
+				//Place the shiny transient door into a dungeon
+				ItemRiftBlade.placeDoorBlock(world, x, y + 1, z, 0, mod_pocketDim.transientDoor);
+				
+				//Build the columns around the door
+				world.setBlock(x, y + 1, z - 1, blockID, 0, 1);
+				world.setBlock(x, y + 1, z + 1, blockID, 0, 1);
+				world.setBlock(x, y, z - 1, blockID, 0, 1);
+				world.setBlock(x, y, z + 1, blockID, 0, 1);				
 			}
 		}
-		if(this.shouldSave)
-		{
-			//	dimHelper.instance.save();
-		}
-
-		//	mod_pocketDim.genTime=((System.nanoTime()-ntime)+mod_pocketDim.genTime);
-		//	System.out.println(	mod_pocketDim.genTime);
-		//	System.out.println(	(System.nanoTime()-ntime));
-
-		//	ntime=0L;
-
 	}
-
-
 }
