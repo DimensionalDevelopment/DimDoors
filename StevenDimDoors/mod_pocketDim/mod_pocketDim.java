@@ -96,7 +96,6 @@ public class mod_pocketDim
 	
 	public static SchematicLoader loader;
 	public static pocketTeleporter teleporter;
-	public static DungeonHelper dungeonHelper;
 
 	public static ICommand printDimData;
 	public static ICommand removeRiftsCommand;
@@ -158,7 +157,6 @@ public class mod_pocketDim
 		
 		loader = new SchematicLoader();
 		teleporter = new pocketTeleporter();
-		dungeonHelper= new DungeonHelper();
 
 		printDimData = new CommandPrintDimData();
 		removeRiftsCommand = new CommandDeleteRifts();
@@ -170,18 +168,6 @@ public class mod_pocketDim
 		startDungeonCreation = new CommandStartDungeonCreation();
 		tracker = new PlayerRespawnTracker();
 		riftGen = new RiftGenerator();
-		
-		File file= new File(properties.CustomSchematicDirectory);
-		file.mkdir();
-
-		String helpFile = "/mods/DimDoors/How_to_add_dungeons.txt";
-		if(new File(helpFile).exists())
-		{
-			copyfile.copyFile(helpFile, file + "/How_to_add_dungeons.txt");
-		}
-
-		dungeonHelper.importCustomDungeons(properties.CustomSchematicDirectory);
-		dungeonHelper.registerBaseDungeons();
 	}
 
 	@Init
@@ -248,7 +234,6 @@ public class mod_pocketDim
 		LanguageRegistry.addName(itemChaosDoor	, "Unstable Door");
 		LanguageRegistry.addName(itemDimDoor, "Dimensional Door");
 		LanguageRegistry.addName(itemRiftBlade	, "Rift Blade");
-
 
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
 		TickRegistry.registerTickHandler(new CommonTickHandler(), Side.SERVER);
@@ -390,8 +375,8 @@ public class mod_pocketDim
 		mod_pocketDim.blocksImmuneToRift.add(Block.blockLapis.blockID);
 		mod_pocketDim.blocksImmuneToRift.add(Block.bedrock.blockID);
 
-		dungeonHelper.registerFlipBlocks();
-
+		DungeonHelper.create();
+		
 		proxy.loadTextures();
 		proxy.registerRenderers();
 	}

@@ -159,7 +159,7 @@ public class SchematicLoader
 	}
 	public int transformMetadata(int metadata, int orientation, int blockID)
 	{
-		if(mod_pocketDim.dungeonHelper.metadataFlipList.contains(blockID))
+		if (DungeonHelper.instance().metadataFlipList.contains(blockID))
 		{
 
 

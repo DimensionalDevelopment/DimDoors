@@ -53,7 +53,7 @@ public class CommandStartDungeonCreation extends CommandBase
 		
 		//	dimHelper.instance.teleportToPocket(player.worldObj, link, player);
 		
-			mod_pocketDim.dungeonHelper.customDungeonStatus.put(link.destDimID, dimHelper.instance.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID));
+			DungeonHelper.instance().customDungeonStatus.put(link.destDimID, dimHelper.instance.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID));
 		
 			this.getCommandSenderAsPlayer(var1).sendChatToPlayer("DimID = "+ link.destDimID);
 		}

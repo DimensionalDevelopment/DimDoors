@@ -8,6 +8,7 @@ import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -27,8 +28,9 @@ public class CommandAddDungeonRift extends CommandBase
 
 	@Override
 	public void processCommand(ICommandSender var1, String[] var2) 
-
 	{
+		DungeonHelper dungeonHelper = DungeonHelper.instance();
+		
 		if(var2==null||this.getCommandSenderAsPlayer(var1).worldObj.isRemote)
 		{
 			return;
@@ -54,7 +56,7 @@ public class CommandAddDungeonRift extends CommandBase
 		}
 		else if(var2.length!=0&&var2[0].equals("list"))
 		{
-			for(DungeonGenerator dungeonGen : mod_pocketDim.dungeonHelper.registeredDungeons)
+			for(DungeonGenerator dungeonGen : dungeonHelper.registeredDungeons)
 			{
 				String dungeonName =dungeonGen.schematicPath;
 				if(dungeonName.contains("DimDoors_Custom_schematics"))
@@ -69,7 +71,7 @@ public class CommandAddDungeonRift extends CommandBase
 
 			}
 			
-			for(DungeonGenerator dungeonGen : mod_pocketDim.dungeonHelper.customDungeons)
+			for(DungeonGenerator dungeonGen : dungeonHelper.customDungeons)
 			{
 				String dungeonName =dungeonGen.schematicPath;
 				if(dungeonName.contains("DimDoors_Custom_schematics"))
@@ -89,7 +91,7 @@ public class CommandAddDungeonRift extends CommandBase
 		
 		else if(var2.length!=0)
 		{
-			for(DungeonGenerator dungeonGen : mod_pocketDim.dungeonHelper.registeredDungeons)	
+			for(DungeonGenerator dungeonGen : dungeonHelper.registeredDungeons)	
 			{
 				String dungeonName =dungeonGen.schematicPath.toLowerCase();
 				
@@ -113,7 +115,7 @@ public class CommandAddDungeonRift extends CommandBase
 				
 			}
 			
-			for(DungeonGenerator dungeonGen : mod_pocketDim.dungeonHelper.customDungeons)	
+			for(DungeonGenerator dungeonGen : dungeonHelper.customDungeons)	
 			{
 				String dungeonName =dungeonGen.schematicPath.toLowerCase();
 				

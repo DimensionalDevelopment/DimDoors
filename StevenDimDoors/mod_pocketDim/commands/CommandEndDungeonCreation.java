@@ -28,9 +28,11 @@ public class CommandEndDungeonCreation extends CommandBase
 	@Override
 	public void processCommand(ICommandSender var1, String[] var2) 
 	{
+		DungeonHelper dungeonHelper = DungeonHelper.instance();
+		
 		EntityPlayer player = this.getCommandSenderAsPlayer(var1);
 		
-		if(!mod_pocketDim.dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId))
+		if (!dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId))
 		{
 			if(var2.length<2)
 			{
@@ -61,10 +63,10 @@ public class CommandEndDungeonCreation extends CommandBase
 			//Check that the dungeon name is valid to prevent directory traversal and other forms of abuse
 			if (DungeonHelper.NamePattern.matcher(var2[0]).matches())
 			{
-				DungeonGenerator newDungeon = mod_pocketDim.dungeonHelper.exportDungeon(player.worldObj, x, y, z, properties.CustomSchematicDirectory + "/" + var2[0] + ".schematic");
+				DungeonGenerator newDungeon = dungeonHelper.exportDungeon(player.worldObj, x, y, z, properties.CustomSchematicDirectory + "/" + var2[0] + ".schematic");
 				player.sendChatToPlayer("created dungeon schematic in " + properties.CustomSchematicDirectory + "/" + var2[0]+".schematic");
 				
-				if (mod_pocketDim.dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId) && !player.worldObj.isRemote)
+				if (dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId) && !player.worldObj.isRemote)
 				{
 				//	mod_pocketDim.dungeonHelper.customDungeonStatus.remove(player.worldObj.provider.dimensionId);
 				//	dimHelper.instance.teleportToPocket(player.worldObj, mod_pocketDim.dungeonHelper.customDungeonStatus.get(player.worldObj.provider.dimensionId), player);

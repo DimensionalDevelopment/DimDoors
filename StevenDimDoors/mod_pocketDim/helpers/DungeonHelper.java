@@ -25,6 +25,7 @@ import StevenDimDoors.mod_pocketDim.helpers.jnbt.Tag;
 
 public class DungeonHelper
 {
+	private static DungeonHelper instance = null;
 	private static DDProperties properties = null;
 
 	public static final Pattern NamePattern = Pattern.compile("[A-Za-z0-9_]+");
@@ -76,7 +77,7 @@ public class DungeonHelper
 	private HashSet<String> dungeonTypeChecker;
 	private Hashtable<String, ArrayList<DungeonGenerator>> dungeonTypeMapping;
 	
-	public DungeonHelper()
+	private DungeonHelper()
 	{
 		//Load the dungeon type checker with the list of all types in lowercase.
 		//Capitalization matters for matching in a hash set.
@@ -98,6 +99,27 @@ public class DungeonHelper
 		//Load our reference to the DDProperties singleton
 		if (properties == null)
 			properties = DDProperties.instance();
+	}
+	
+	public static DungeonHelper create()
+	{
+		if (instance == null)
+			instance = new DungeonHelper();
+		else
+			throw new IllegalStateException("Cannot create DungeonHelper twice");
+		
+		return instance;
+	}
+	
+	public static DungeonHelper instance()
+	{
+		if (instance == null)
+		{
+			//This is to prevent some frustrating bugs that could arise when classes
+			//are loaded in the wrong order. Trust me, I had to squash a few...
+			throw new IllegalStateException("Instance of DungeonHelper requested before creation");
+		}
+		return instance;
 	}
 	
 	public boolean validateSchematicName(String name)
