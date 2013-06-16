@@ -313,7 +313,7 @@ public class DungeonHelper
 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/randomTree.schematic", true));
 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallHiddenTowerO.schematic", true));
 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallSilverfishRoom.schematic", false));
-		this.deadEnds.add(new DungeonGenerator(0, "/schematics/tntTrapO.schematic", false));
+		this.deadEnds.add(new DungeonGenerator(0, "/schematics/tntTrapO.schematic", true));
 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallDesert.schematic", true));
 		this.deadEnds.add(new DungeonGenerator(0, "/schematics/smallPond.schematic", true));
 

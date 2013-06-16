@@ -4,6 +4,7 @@ import java.util.Random;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
+import StevenDimDoors.mod_pocketDim.BlankTeleporter;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -83,7 +84,7 @@ public class BlockDimWallPerm extends Block
 				EntityPlayer.class.cast(par5Entity).setPositionAndUpdate( x, y, z );
 				//this complicated chunk teleports the player back to the overworld at some random location. Looks funky becaue it has to load the chunk
 				
-				FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP) par5Entity, 0);
+				FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP) par5Entity, 0,new BlankTeleporter((WorldServer)par5Entity.worldObj));
 				//dimHelper.instance.teleportToPocket(par1World, new LinkData(par1World.provider.dimensionId,0,x,y,z,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket,0), 
 				//		EntityPlayer.class.cast(par5Entity));
 
