@@ -51,8 +51,8 @@ public class RiftGenerator implements IWorldGenerator
 		if(this.shouldGenHere)
 		{
 
-
-			if(random.nextInt(3500)==0)
+			//TODO give this a clamp int type functionality
+			if(random.nextInt(3000+properties.DungeonRiftGenDensity*4)==0)
 			{
 				i=chunkX*16-random.nextInt(16);
 				k=chunkZ*16-random.nextInt(16);
@@ -150,7 +150,7 @@ public class RiftGenerator implements IWorldGenerator
 
 		}
 
-		if(random.nextInt(250)==0&&world.provider.getDimensionName()!="PocketDim"&&!world.isRemote && properties.WorldRiftGenerationEnabled)
+		if(random.nextInt(properties.DungeonRiftGenDensity)==0&&world.provider.getDimensionName()!="PocketDim"&&!world.isRemote && properties.WorldRiftGenerationEnabled)
 		{
 			//	System.out.println("tryingToGen");
 			int blockID=Block.stoneBrick.blockID;

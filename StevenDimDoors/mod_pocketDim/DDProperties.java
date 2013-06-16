@@ -99,6 +99,8 @@ public class DDProperties
 
 	public final int NonTntWeight;
 	public final int RiftSpreadModifier;
+	public final int DungeonRiftGenDensity;
+	public final int MonolithSpawnDensity;
 	public final int LimboReturnRange;
 	public final String CustomSchematicDirectory;
 	
@@ -197,6 +199,12 @@ public class DDProperties
 
 		WorldRiftGenerationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift World Generation", true,
 				"Sets whether dungeon rifts generate in dimensions other than Limbo").getBoolean(true);
+		
+		MonolithSpawnDensity = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift World Generation", 7,
+				"Sets the chance that monoliths will not spawn in a give Limbo chunk- higher values mean fewer monoliths, must be greater than 0, default is 7.").getInt();
+		
+		DungeonRiftGenDensity = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift World Generation", 250,
+				"Sets the dungeon rift density in the overworld, higher values mean less rifts, must be greater than 0. Default is 250.").getInt();
 
 		RiftSpreadModifier = config.get(Configuration.CATEGORY_GENERAL, "Rift Spread Modifier", 3,
 				"Sets the number of times a rift can spread. 0 prevents rifts from spreading at all. " +
