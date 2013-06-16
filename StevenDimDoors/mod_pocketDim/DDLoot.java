@@ -1,7 +1,7 @@
 package StevenDimDoors.mod_pocketDim;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Random;
 
 import net.minecraft.item.Item;
@@ -77,7 +77,7 @@ public class DDLoot {
 		//the same item. For instance, it cannot distinguish between different types of wood. That shouldn't
 		//matter for most chest loot, though. This could be fixed if we cared enough.
 		Random random = new Random();
-		Hashtable<Integer, WeightedRandomChestContent> container = new Hashtable<Integer, WeightedRandomChestContent>();
+		HashMap<Integer, WeightedRandomChestContent> container = new HashMap<Integer, WeightedRandomChestContent>();
 		
 		for (String category : categories)
 		{

@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -75,7 +74,7 @@ public class DungeonHelper
 	public DungeonGenerator defaultUp = new DungeonGenerator(0, "/schematic/simpleStairsUp.schematic", true);
 	
 	private HashSet<String> dungeonTypeChecker;
-	private Hashtable<String, ArrayList<DungeonGenerator>> dungeonTypeMapping;
+	private HashMap<String, ArrayList<DungeonGenerator>> dungeonTypeMapping;
 	
 	private DungeonHelper()
 	{
@@ -88,7 +87,7 @@ public class DungeonHelper
 		}
 		
 		//Add all the basic dungeon types to dungeonTypeMapping
-		dungeonTypeMapping = new Hashtable<String, ArrayList<DungeonGenerator>>();
+		dungeonTypeMapping = new HashMap<String, ArrayList<DungeonGenerator>>();
 		dungeonTypeMapping.put(SIMPLE_HALL_DUNGEON_TYPE, simpleHalls);
 		dungeonTypeMapping.put(COMPLEX_HALL_DUNGEON_TYPE, complexHalls);
 		dungeonTypeMapping.put(HUB_DUNGEON_TYPE, hubs);
