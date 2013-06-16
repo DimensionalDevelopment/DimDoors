@@ -978,7 +978,7 @@ public class dimHelper extends DimensionManager
 	
 		if(isRandomRift)
 		{
-			mod_pocketDim.dungeonHelper.generateDungeonlink(link);
+			DungeonHelper.instance().generateDungeonlink(link);
 		}
 	
 
