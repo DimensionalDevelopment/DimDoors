@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -217,16 +218,19 @@ public class DungeonHelper
 		}
 	}
 
-	public  void importCustomDungeons(String dir)
+	public void importCustomDungeons(String path)
 	{
-		File file = new File(dir);
-		File[] schematicNames = file.listFiles();
+		File directory = new File(path);
+		File[] schematicNames = directory.listFiles();
 
-		if (schematicNames!=null)
+		if (schematicNames != null)
 		{
-			for(File schematicFile: schematicNames)
+			for (File schematicFile: schematicNames)
 			{
-				this.registerCustomDungeon(schematicFile);
+				if (schematicFile.getName().endsWith(SCHEMATIC_FILE_EXTENSION))
+				{
+					registerCustomDungeon(schematicFile);
+				}
 			}
 		}
 	}
@@ -660,13 +664,18 @@ public class DungeonHelper
 	}
 
 	public Collection<String> getDungeonNames() {
+
 		//Use a HashSet to guarantee that all dungeon names will be distinct.
 		//This shouldn't be necessary if we keep proper lists without repetitions,
 		//but it's a fool-proof workaround.
 		HashSet<String> dungeonNames = new HashSet<String>();
 		dungeonNames.addAll( parseDungeonNames(registeredDungeons) );
 		dungeonNames.addAll( parseDungeonNames(customDungeons) );
-		return dungeonNames;
+		
+		//Sort dungeon names alphabetically
+		ArrayList<String> sortedNames = new ArrayList<String>(dungeonNames);
+		Collections.sort(sortedNames);
+		return sortedNames;
 	}
 	
 	private static ArrayList<String> parseDungeonNames(ArrayList<DungeonGenerator> dungeons)
