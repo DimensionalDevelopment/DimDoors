@@ -12,6 +12,6 @@
 "authors": [ "StevenRS11", "SenseiKiwi" ],
 "parent":"",
 "screenshots": [],
-"dependencies": [ "mod_MinecraftForge" ]
+"dependencies": [ "Forge"]
 }
 ]
