@@ -52,8 +52,8 @@ public class RiftGenerator implements IWorldGenerator
 			do
 			{
 				//Pick a random point on the surface of the chunk
-				x = chunkX * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
-				z = chunkZ * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
+				x = chunkX * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
+				z = chunkZ * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
 				y = world.getHeightValue(x, z);
 
 				//If the point is within the acceptable altitude range and the block above is empty, then place a rift
@@ -86,8 +86,8 @@ public class RiftGenerator implements IWorldGenerator
 			do
 			{
 				//Pick a random point on the surface of the chunk
-				x = chunkX * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
-				z = chunkZ * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
+				x = chunkX * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
+				z = chunkZ * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
 				y = world.getHeightValue(x, z);
 				valid = checkGatewayLocation(world, x, y, z);
 				attempts++;
@@ -122,38 +122,38 @@ public class RiftGenerator implements IWorldGenerator
 								if (Math.abs(xc) + Math.abs(zc) < random.nextInt(2) + 3)
 								{
 									//Place Stone Bricks
-									world.setBlock(x + xc, y - 1, z + zc, blockID,0,2);
+									world.setBlock(x + xc, y - 1, z + zc, blockID, 0, 3);
 								}
 								else if (Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 3)
 								{
 									//Place Cracked Stone Bricks
-									world.setBlock(x + xc, y - 1, z + zc, blockID, 2, 2);
+									world.setBlock(x + xc, y - 1, z + zc, blockID, 2, 3);
 								}
 							}
 						}
 					}
 					
 					//Use Chiseled Stone Bricks to top off the pillars around the door
-					world.setBlock(x, y + 2, z + 1, blockID, 3, 2);
-					world.setBlock(x, y + 2, z - 1, blockID, 3, 2);					
+					world.setBlock(x, y + 2, z + 1, blockID, 3, 3);
+					world.setBlock(x, y + 2, z - 1, blockID, 3, 3);					
 				}
 				else
 				{
 					//Build the gateway out of Unraveled Fabric. Since nearly all the blocks in Limbo are of
 					//that type, there is no point replacing the ground. Just build the tops of the columns here.
 					blockID = properties.LimboBlockID;
-					world.setBlock(x, y + 2, z + 1, blockID, 0, 2);
-					world.setBlock(x, y + 2, z - 1, blockID, 0, 2);
+					world.setBlock(x, y + 2, z + 1, blockID, 0, 3);
+					world.setBlock(x, y + 2, z - 1, blockID, 0, 3);
 				}
 				
 				//Place the shiny transient door into a dungeon
 				ItemRiftBlade.placeDoorBlock(world, x, y + 1, z, 0, mod_pocketDim.transientDoor);
 				
 				//Build the columns around the door
-				world.setBlock(x, y + 1, z - 1, blockID, 0, 2);
-				world.setBlock(x, y + 1, z + 1, blockID, 0, 2);
-				world.setBlock(x, y, z - 1, blockID, 0, 2);
-				world.setBlock(x, y, z + 1, blockID, 0, 2);				
+				world.setBlock(x, y + 1, z - 1, blockID, 0, 3);
+				world.setBlock(x, y + 1, z + 1, blockID, 0, 3);
+				world.setBlock(x, y, z - 1, blockID, 0, 3);
+				world.setBlock(x, y, z + 1, blockID, 0, 3);				
 			}
 		}
 	}
