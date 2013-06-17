@@ -686,6 +686,7 @@ public class DungeonHelper
 		
 		for (DungeonGenerator dungeon : dungeons)
 		{
+			//Retrieve the file name and strip off the file extension
 			schematic = new File(dungeon.schematicPath);
 			name = schematic.getName();
 			name = name.substring(0, name.length() - SCHEMATIC_FILE_EXTENSION.length());
