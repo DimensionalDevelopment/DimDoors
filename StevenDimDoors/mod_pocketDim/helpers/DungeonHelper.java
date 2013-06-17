@@ -3,6 +3,8 @@ package StevenDimDoors.mod_pocketDim.helpers;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -216,16 +218,19 @@ public class DungeonHelper
 		}
 	}
 
-	public  void importCustomDungeons(String dir)
+	public void importCustomDungeons(String path)
 	{
-		File file = new File(dir);
-		File[] schematicNames = file.listFiles();
+		File directory = new File(path);
+		File[] schematicNames = directory.listFiles();
 
-		if (schematicNames!=null)
+		if (schematicNames != null)
 		{
-			for(File schematicFile: schematicNames)
+			for (File schematicFile: schematicNames)
 			{
-				this.registerCustomDungeon(schematicFile);
+				if (schematicFile.getName().endsWith(SCHEMATIC_FILE_EXTENSION))
+				{
+					registerCustomDungeon(schematicFile);
+				}
 			}
 		}
 	}
@@ -656,5 +661,37 @@ public class DungeonHelper
 			}
 		}
 		dimHelper.dimList.get(incoming.destDimID).dungeonGenerator = dungeon;
+	}
+
+	public Collection<String> getDungeonNames() {
+
+		//Use a HashSet to guarantee that all dungeon names will be distinct.
+		//This shouldn't be necessary if we keep proper lists without repetitions,
+		//but it's a fool-proof workaround.
+		HashSet<String> dungeonNames = new HashSet<String>();
+		dungeonNames.addAll( parseDungeonNames(registeredDungeons) );
+		dungeonNames.addAll( parseDungeonNames(customDungeons) );
+		
+		//Sort dungeon names alphabetically
+		ArrayList<String> sortedNames = new ArrayList<String>(dungeonNames);
+		Collections.sort(sortedNames);
+		return sortedNames;
+	}
+	
+	private static ArrayList<String> parseDungeonNames(ArrayList<DungeonGenerator> dungeons)
+	{
+		String name;
+		File schematic;
+		ArrayList<String> names = new ArrayList<String>(dungeons.size());
+		
+		for (DungeonGenerator dungeon : dungeons)
+		{
+			//Retrieve the file name and strip off the file extension
+			schematic = new File(dungeon.schematicPath);
+			name = schematic.getName();
+			name = name.substring(0, name.length() - SCHEMATIC_FILE_EXTENSION.length());
+			names.add(name);
+		}
+		return names;
 	}
 }

@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -20,6 +21,7 @@ public class RiftGenerator implements IWorldGenerator
 	private static final int MAX_RIFT_Y = 250;
 	private static final int CHUNK_LENGTH = 16;
 	private static final int GATEWAY_RADIUS = 4;
+	private static final int MAX_GATEWAY_GENERATION_ATTEMPTS = 10;
 	private static DDProperties properties = null;
 
 	public RiftGenerator()
@@ -39,7 +41,9 @@ public class RiftGenerator implements IWorldGenerator
 		}
 
 		int x, y, z;
+		int attempts;
 		int blockID;
+		boolean valid;
 		LinkData link;
 
 		//Randomly decide whether to place a cluster of rifts here
@@ -49,12 +53,16 @@ public class RiftGenerator implements IWorldGenerator
 			do
 			{
 				//Pick a random point on the surface of the chunk
-				x = chunkX * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
-				z = chunkZ * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
+				x = chunkX * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
+				z = chunkZ * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
 				y = world.getHeightValue(x, z);
 
-				//If the point is within the acceptable altitude range and the block above is empty, then place a rift
-				if (y >= MIN_RIFT_Y && y <= MAX_RIFT_Y && world.isAirBlock(x, y + 1, z))
+				//If the point is within the acceptable altitude range, the block above is empty, and we're
+				//not building on bedrock, then generate a rift there
+				if (y >= MIN_RIFT_Y && y <= MAX_RIFT_Y && world.isAirBlock(x, y + 1, z) &&
+					world.getBlockId(x, y, z) != Block.bedrock.blockID &&	//<-- Stops Nether roof spawning. DO NOT REMOVE!
+					world.getBlockId(x, y - 1, z) != Block.bedrock.blockID &&
+					world.getBlockId(x, y - 2, z) != Block.bedrock.blockID)
 				{
 					//Create a link. If this is the first time, create a dungeon pocket and create a two-way link.
 					//Otherwise, create a one-way link and connect to the destination of the first link.
@@ -77,15 +85,21 @@ public class RiftGenerator implements IWorldGenerator
 		//This only happens if a rift cluster was NOT generated.
 		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance)
 		{
-			//Pick a random point on the surface of the chunk
-			x = chunkX * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
-			z = chunkZ * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
-			y = world.getHeightValue(x, z);
+			valid = false;
+			x = y = z = 0; //Stop the compiler from freaking out
+			
+			//Check locations for the gateway until we are satisfied or run out of attempts.
+			for (attempts = 0; attempts < MAX_GATEWAY_GENERATION_ATTEMPTS && !valid; attempts++)
+			{
+				//Pick a random point on the surface of the chunk and check its materials
+				x = chunkX * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
+				z = chunkZ * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
+				y = world.getHeightValue(x, z);
+				valid = checkGatewayLocation(world, x, y, z);
+			}
 
-			//Check if the point is within the acceptable altitude range, the block above that point is empty,
-			//and at least one of the two blocks under that point are opaque
-			if (y >= MIN_RIFT_Y && y <= MAX_RIFT_Y && world.isAirBlock(x, y + 1, z) &&
-					world.isBlockOpaqueCube(x, y - 2, z) || world.isBlockOpaqueCube(x, y - 1, z))
+			//Build the gateway if we found a valid location
+			if (valid)
 			{
 				//Create a two-way link between the upper block of the gateway and a pocket dimension
 				//That pocket dimension is where we'll start a dungeon!
@@ -112,39 +126,62 @@ public class RiftGenerator implements IWorldGenerator
 								if (Math.abs(xc) + Math.abs(zc) < random.nextInt(2) + 3)
 								{
 									//Place Stone Bricks
-									world.setBlock(x + xc, y - 1, z + zc, blockID,0,2);
+									world.setBlock(x + xc, y - 1, z + zc, blockID, 0, 3);
 								}
 								else if (Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 3)
 								{
 									//Place Cracked Stone Bricks
-									world.setBlock(x + xc, y - 1, z + zc, blockID, 2, 2);
+									world.setBlock(x + xc, y - 1, z + zc, blockID, 2, 3);
 								}
 							}
 						}
 					}
 					
 					//Use Chiseled Stone Bricks to top off the pillars around the door
-					world.setBlock(x, y + 2, z + 1, blockID, 3, 2);
-					world.setBlock(x, y + 2, z - 1, blockID, 3, 2);					
+					world.setBlock(x, y + 2, z + 1, blockID, 3, 3);
+					world.setBlock(x, y + 2, z - 1, blockID, 3, 3);					
 				}
 				else
 				{
 					//Build the gateway out of Unraveled Fabric. Since nearly all the blocks in Limbo are of
 					//that type, there is no point replacing the ground. Just build the tops of the columns here.
 					blockID = properties.LimboBlockID;
-					world.setBlock(x, y + 2, z + 1, blockID, 0, 2);
-					world.setBlock(x, y + 2, z - 1, blockID, 0, 2);
+					world.setBlock(x, y + 2, z + 1, blockID, 0, 3);
+					world.setBlock(x, y + 2, z - 1, blockID, 0, 3);
 				}
 				
 				//Place the shiny transient door into a dungeon
 				ItemRiftBlade.placeDoorBlock(world, x, y + 1, z, 0, mod_pocketDim.transientDoor);
 				
 				//Build the columns around the door
-				world.setBlock(x, y + 1, z - 1, blockID, 0, 2);
-				world.setBlock(x, y + 1, z + 1, blockID, 0, 2);
-				world.setBlock(x, y, z - 1, blockID, 0, 2);
-				world.setBlock(x, y, z + 1, blockID, 0, 2);				
+				world.setBlock(x, y + 1, z - 1, blockID, 0, 3);
+				world.setBlock(x, y + 1, z + 1, blockID, 0, 3);
+				world.setBlock(x, y, z - 1, blockID, 0, 3);
+				world.setBlock(x, y, z + 1, blockID, 0, 3);				
 			}
 		}
+	}
+	
+	private static boolean checkGatewayLocation(World world, int x, int y, int z)
+	{
+		//Check if the point is within the acceptable altitude range, the block above that point is empty,
+		//and the block two levels down is opaque and has a reasonable material. Plus that we're not building
+		//on top of bedrock.
+		return (y >= MIN_RIFT_Y &&
+				y <= MAX_RIFT_Y &&
+				world.isAirBlock(x, y + 1, z) &&
+				world.getBlockId(x, y, z) != Block.bedrock.blockID &&	//<-- Stops Nether roof spawning. DO NOT REMOVE!
+				world.getBlockId(x, y - 1, z) != Block.bedrock.blockID &&
+				checkFoundationMaterial(world, x, y - 2, z));
+	}
+	
+	private static boolean checkFoundationMaterial(World world, int x, int y, int z)
+	{
+		//We check the material and opacity to prevent generating gateways on top of trees or houses,
+		//or on top of strange things like tall grass, water, slabs, or torches.
+		//We also want to avoid generating things on top of the Nether's bedrock!
+		Material material = world.getBlockMaterial(x, y, z);
+		return (material != Material.leaves && material != Material.wood && material != Material.pumpkin
+				&& world.isBlockOpaqueCube(x, y, z) && world.getBlockId(x, y, z) != Block.bedrock.blockID);
 	}
 }
