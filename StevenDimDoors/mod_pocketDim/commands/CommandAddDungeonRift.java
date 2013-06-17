@@ -1,20 +1,14 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
-import java.util.ArrayList;
+import java.util.Collection;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.DungeonGenerator;
-import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.MinecraftException;
-import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.DungeonGenerator;
+import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 public class CommandAddDungeonRift extends CommandBase
 {
@@ -54,39 +48,13 @@ public class CommandAddDungeonRift extends CommandBase
 			link = dimHelper.instance.createPocket(link,true, true);
 
 		}
-		else if(var2.length!=0&&var2[0].equals("list"))
+		else if (var2.length != 0 && var2[0].equals("list"))
 		{
-			for(DungeonGenerator dungeonGen : dungeonHelper.registeredDungeons)
+			Collection<String> dungeonNames = dungeonHelper.getDungeonNames();
+			for (String name : dungeonNames)
 			{
-				String dungeonName =dungeonGen.schematicPath;
-				if(dungeonName.contains("DimDoors_Custom_schematics"))
-				{
-					dungeonName=	dungeonName.substring(dungeonName.indexOf("DimDoors_Custom_schematics")+26);
-				}
-					
-				dungeonName =dungeonName.replace("/", "").replace(".", "").replace("schematics", "").replace("schematic", "");
-				
-				
-				this.getCommandSenderAsPlayer(var1).sendChatToPlayer(dungeonName);
-
+				getCommandSenderAsPlayer(var1).sendChatToPlayer(name);
 			}
-			
-			for(DungeonGenerator dungeonGen : dungeonHelper.customDungeons)
-			{
-				String dungeonName =dungeonGen.schematicPath;
-				if(dungeonName.contains("DimDoors_Custom_schematics"))
-				{
-					dungeonName=	dungeonName.substring(dungeonName.indexOf("DimDoors_Custom_schematics")+26);
-				}
-					
-				dungeonName =dungeonName.replace("/", "").replace(".", "").replace("schematics", "").replace("schematic", "");
-				
-				
-				this.getCommandSenderAsPlayer(var1).sendChatToPlayer(dungeonName);
-
-			}
-			
-			
 		}
 		
 		else if(var2.length!=0)

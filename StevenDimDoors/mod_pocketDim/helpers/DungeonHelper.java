@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.helpers;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -656,5 +657,31 @@ public class DungeonHelper
 			}
 		}
 		dimHelper.dimList.get(incoming.destDimID).dungeonGenerator = dungeon;
+	}
+
+	public Collection<String> getDungeonNames() {
+		//Use a HashSet to guarantee that all dungeon names will be distinct.
+		//This shouldn't be necessary if we keep proper lists without repetitions,
+		//but it's a fool-proof workaround.
+		HashSet<String> dungeonNames = new HashSet<String>();
+		dungeonNames.addAll( parseDungeonNames(registeredDungeons) );
+		dungeonNames.addAll( parseDungeonNames(customDungeons) );
+		return dungeonNames;
+	}
+	
+	private static ArrayList<String> parseDungeonNames(ArrayList<DungeonGenerator> dungeons)
+	{
+		String name;
+		File schematic;
+		ArrayList<String> names = new ArrayList<String>(dungeons.size());
+		
+		for (DungeonGenerator dungeon : dungeons)
+		{
+			schematic = new File(dungeon.schematicPath);
+			name = schematic.getName();
+			name = name.substring(0, name.length() - SCHEMATIC_FILE_EXTENSION.length());
+			names.add(name);
+		}
+		return names;
 	}
 }
