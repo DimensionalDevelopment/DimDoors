@@ -20,6 +20,7 @@ public class RiftGenerator implements IWorldGenerator
 	private static final int MAX_RIFT_Y = 250;
 	private static final int CHUNK_LENGTH = 16;
 	private static final int GATEWAY_RADIUS = 4;
+	private static final int MAX_GATEWAY_GENERATION_ATTEMPTS = 6;
 	private static DDProperties properties = null;
 
 	public RiftGenerator()
@@ -39,7 +40,9 @@ public class RiftGenerator implements IWorldGenerator
 		}
 
 		int x, y, z;
+		int attempts;
 		int blockID;
+		boolean valid;
 		LinkData link;
 
 		//Randomly decide whether to place a cluster of rifts here
@@ -77,15 +80,22 @@ public class RiftGenerator implements IWorldGenerator
 		//This only happens if a rift cluster was NOT generated.
 		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance)
 		{
-			//Pick a random point on the surface of the chunk
-			x = chunkX * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
-			z = chunkZ * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
-			y = world.getHeightValue(x, z);
+			//Check locations for the gateway until we are satisfied or run out of attempts.
+			attempts = 0;
+			valid = false;
+			do
+			{
+				//Pick a random point on the surface of the chunk
+				x = chunkX * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
+				z = chunkZ * CHUNK_LENGTH - random.nextInt(CHUNK_LENGTH);
+				y = world.getHeightValue(x, z);
+				valid = checkGatewayLocation(world, x, y, z);
+				attempts++;
+			}
+			while (attempts < MAX_GATEWAY_GENERATION_ATTEMPTS && valid);
 
-			//Check if the point is within the acceptable altitude range, the block above that point is empty,
-			//and at least one of the two blocks under that point are opaque
-			if (y >= MIN_RIFT_Y && y <= MAX_RIFT_Y && world.isAirBlock(x, y + 1, z) &&
-					world.isBlockOpaqueCube(x, y - 2, z) || world.isBlockOpaqueCube(x, y - 1, z))
+			//Build the gateway if we found a valid location
+			if (valid)
 			{
 				//Create a two-way link between the upper block of the gateway and a pocket dimension
 				//That pocket dimension is where we'll start a dungeon!
@@ -146,5 +156,13 @@ public class RiftGenerator implements IWorldGenerator
 				world.setBlock(x, y, z + 1, blockID, 0, 2);				
 			}
 		}
+	}
+	
+	private static boolean checkGatewayLocation(World world, int x, int y, int z)
+	{
+		//Check if the point is within the acceptable altitude range, the block above that point is empty,
+		//and at least one of the two blocks under that point are opaque
+		return (y >= MIN_RIFT_Y && y <= MAX_RIFT_Y && world.isAirBlock(x, y + 1, z) &&
+				world.isBlockOpaqueCube(x, y - 2, z) || world.isBlockOpaqueCube(x, y - 1, z));
 	}
 }
