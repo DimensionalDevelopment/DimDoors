@@ -1,62 +1,40 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
-import java.util.ArrayList;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-
-import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
-import net.minecraft.block.Block;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 
-public class CommandStartDungeonCreation extends CommandBase
+public class CommandStartDungeonCreation extends DDCommandBase
 {
-	public CommandStartDungeonCreation()
+	private static CommandStartDungeonCreation instance = null;
+	
+	private CommandStartDungeonCreation()
 	{
-		if (properties == null)
-			properties = DDProperties.instance();
+		super("dd-create");
 	}
 	
-	private static DDProperties properties = null;
-	
-	public String getCommandName()//the name of our command
+	public static CommandStartDungeonCreation instance()
 	{
-		return "dimdoors-startDungeonCreation";
+		if (instance == null)
+			instance = new CommandStartDungeonCreation();
+		
+		return instance;
 	}
 
 	@Override
-	public void processCommand(ICommandSender var1, String[] var2) 
+	protected void processCommand(EntityPlayer sender, String[] command)
 	{
-
-		EntityPlayer player = this.getCommandSenderAsPlayer(var1);
-		
-		int x = (int) player.posX;
-		int y = (int) player.posY;
-		int z = (int) player.posZ;
-		
-		if(!player.worldObj.isRemote)
+		if (!sender.worldObj.isRemote)
 		{
-
-			LinkData link = new LinkData(player.worldObj.provider.dimensionId, 0, x, y+1, z, x, y+1, z, true, 3);
-		
-			link = dimHelper.instance.createPocket(link,true, false);
+			//Place a door leading to a pocket dimension where the player is standing.
+			//The pocket dimension will be serve as a room for the player to build a dungeon.
+			int x = (int) sender.posX;
+			int y = (int) sender.posY;
+			int z = (int) sender.posZ;
+			LinkData link = DungeonHelper.instance().createCustomDungeonDoor(sender.worldObj, x, y, z);
 			
-			itemDimDoor.placeDoorBlock(player.worldObj, x, y, z, 3, Block.blocksList[properties.WarpDoorID]);
-		
-		//	dimHelper.instance.teleportToPocket(player.worldObj, link, player);
-		
-			DungeonHelper.instance().customDungeonStatus.put(link.destDimID, dimHelper.instance.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID));
-		
-			this.getCommandSenderAsPlayer(var1).sendChatToPlayer("DimID = "+ link.destDimID);
+			//Notify the player
+			sender.sendChatToPlayer("Created a door to a pocket dimension (ID = " + link.destDimID + "). Please build your dungeon there.");
 		}
-	
 	}
 }

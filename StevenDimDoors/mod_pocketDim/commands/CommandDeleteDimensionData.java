@@ -3,59 +3,54 @@ package StevenDimDoors.mod_pocketDim.commands;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
+import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.world.World;
 
-public class CommandDeleteDimData extends CommandBase
+public class CommandDeleteDimensionData extends DDCommandBase
 {
-	public String getCommandName()//the name of our command
+	private static CommandDeleteDimensionData instance = null;
+	
+	private CommandDeleteDimensionData()
 	{
-		return "dimdoors-deleteDimData";
+		super("dd-deletedimension");
+	}
+	
+	public static CommandDeleteDimensionData instance()
+	{
+		if (instance == null)
+			instance = new CommandDeleteDimensionData();
+		
+		return instance;
 	}
 
-
-
-
 	@Override
-	public void processCommand(ICommandSender var1, String[] var2) 
-
+	protected void processCommand(EntityPlayer sender, String[] command)
 	{
 		int linksRemoved=0;
 		int targetDim;
 		boolean shouldGo= true;
 		
-		if(var2.length==0)
+		if (command.length==0)
 		{
-			targetDim= this.getCommandSenderAsPlayer(var1).worldObj.provider.dimensionId;
+			targetDim= sender.worldObj.provider.dimensionId;
 		}
-		else if(var2.length==1)
+		else if (command.length==1)
 		{
-			targetDim= this.parseInt(var1, var2[0]);
+			targetDim = parseInt(sender, command[0]);
 			if(!dimHelper.dimList.containsKey(targetDim))
 			{
-				this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Error- dim "+targetDim+" not registered");
+				sender.sendChatToPlayer("Error- dim "+targetDim+" not registered");
 				shouldGo=false;
-
 			}
 		}
 		else
 		{
 			targetDim=0;
 			shouldGo=false;
-			this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Error-Invalid argument, delete_dim_data <targetDimID> or blank for current dim");
-
-		
+			sender.sendChatToPlayer("Error-Invalid argument, delete_dim_data <targetDimID> or blank for current dim");
 		}
-		
-		
-		
 		
 		if(shouldGo)
 		{
@@ -65,7 +60,7 @@ public class CommandDeleteDimData extends CommandBase
 				{
 					for(DimData dimData :dimHelper.dimList.values())
 					{
-						Collection<LinkData> links= new ArrayList();
+						Collection<LinkData> links= new ArrayList<LinkData>();
 						links.addAll( dimData.printAllLinkData());
 					
 						for(LinkData link : links)
@@ -80,33 +75,20 @@ public class CommandDeleteDimData extends CommandBase
 								linksRemoved++;
 							}
 						}
-					
-					
 					}
 				}
 				catch(Exception e)
 				{
 					e.printStackTrace();
-					
 				}
 				
 				dimHelper.dimList.remove(targetDim);
-				this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Removed dimension "+targetDim+" from DimDoors and deleted "+linksRemoved+" links");
-				
+				sender.sendChatToPlayer("Removed dimension " + targetDim + " from DimDoors and deleted " + linksRemoved + " links");
 			}
 			else
 			{
-				this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Error- dimension "+targetDim+" not registered with dimDoors");
-			}
-			
+				sender.sendChatToPlayer("Error- dimension "+targetDim+" not registered with dimDoors");
+			}	
 		}
-		
-	//	this.getCommandSenderAsPlayer(var1).sendChatToPlayer(String.valueOf(var2));
-	//	this.getCommandSenderAsPlayer(var1).sendChatToPlayer(String.valueOf(var2.length));
-	//	this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Removed "+linksRemoved+" rifts.");
-
-		
-	// TODO Auto-generated method stub
-	
 	}
 }

@@ -2,91 +2,79 @@ package StevenDimDoors.mod_pocketDim.commands;
 
 import java.io.File;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 
-public class CommandEndDungeonCreation extends CommandBase
-{
-	private static DDProperties properties = null;
+public class CommandEndDungeonCreation extends DDCommandBase
+{	
+	private static CommandEndDungeonCreation instance = null;
 	
-	public CommandEndDungeonCreation()
+	private CommandEndDungeonCreation()
 	{
-		if (properties == null)
-			properties = DDProperties.instance();
+		super("dd-export");
 	}
 	
-	public String getCommandName()//the name of our command
+	public static CommandEndDungeonCreation instance()
 	{
-		return "dimdoors-endDungeonCreation";
+		if (instance == null)
+			instance = new CommandEndDungeonCreation();
+		
+		return instance;
 	}
 
 	@Override
-	public void processCommand(ICommandSender var1, String[] var2) 
+	protected void processCommand(EntityPlayer sender, String[] command)
 	{
 		DungeonHelper dungeonHelper = DungeonHelper.instance();
+		DDProperties properties = DDProperties.instance();
 		
-		EntityPlayer player = this.getCommandSenderAsPlayer(var1);
-		
-		if (!dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId))
+		if (!dungeonHelper.isCustomDungeon(sender.worldObj.provider.dimensionId))
 		{
-			if (var2.length < 2)
+			if (command.length < 2)
 			{
-				player.sendChatToPlayer("Must have started dungeon creation, use argument OVERRIDE to export anyway");
+				sender.sendChatToPlayer("Must have started dungeon creation, use argument OVERRIDE to export anyway");
 				return;
 
 			}
 		
-			else if (!var2[1].contains("OVERRIDE"))
+			else if (!command[1].contains("OVERRIDE"))
 			{
-				player.sendChatToPlayer("Must have started dungeon creation, use argument OVERRIDE to export anyway");
+				sender.sendChatToPlayer("Must have started dungeon creation, use argument OVERRIDE to export anyway");
 				return;
 	
 			}
 
 		}
 		
-		int x = (int) player.posX;
-		int y = (int) player.posY;
-		int z = (int) player.posZ;
+		int x = (int) sender.posX;
+		int y = (int) sender.posY;
+		int z = (int) sender.posZ;
 		
-		if(var2.length==0)
+		if (command.length == 0)
 		{
-			player.sendChatToPlayer("Must name file");
+			sender.sendChatToPlayer("Must name file");
 		}
-		else if(!player.worldObj.isRemote)
+		else if(!sender.worldObj.isRemote)
 		{
 			//Check that the dungeon name is valid to prevent directory traversal and other forms of abuse
-			if (DungeonHelper.NamePattern.matcher(var2[0]).matches())
+			if (DungeonHelper.NamePattern.matcher(command[0]).matches())
 			{
-				String exportPath = properties.CustomSchematicDirectory + "/" + var2[0] + ".schematic";
-				if (dungeonHelper.exportDungeon(player.worldObj, x, y, z, exportPath))
+				String exportPath = properties.CustomSchematicDirectory + "/" + command[0] + ".schematic";
+				if (dungeonHelper.exportDungeon(sender.worldObj, x, y, z, exportPath))
 				{
-					player.sendChatToPlayer("Saved dungeon schematic in " + exportPath);
+					sender.sendChatToPlayer("Saved dungeon schematic in " + exportPath);
 					dungeonHelper.registerCustomDungeon(new File(exportPath));
-					
-					if (dungeonHelper.customDungeonStatus.containsKey(player.worldObj.provider.dimensionId) && !player.worldObj.isRemote)
-					{
-					//	mod_pocketDim.dungeonHelper.customDungeonStatus.remove(player.worldObj.provider.dimensionId);
-					//	dimHelper.instance.teleportToPocket(player.worldObj, mod_pocketDim.dungeonHelper.customDungeonStatus.get(player.worldObj.provider.dimensionId), player);
-		
-					}
 				}
 				else
 				{
-					player.sendChatToPlayer("Failed to save dungeon schematic!");
+					sender.sendChatToPlayer("Failed to save dungeon schematic!");
 				}
 			}
 			else
 			{
-				player.sendChatToPlayer("Invalid schematic name. Please use only letters, numbers, and underscores.");
+				sender.sendChatToPlayer("Invalid schematic name. Please use only letters, numbers, and underscores.");
 			}
 		}
-
-		
-	// TODO Auto-generated method stub
-	
 	}
 }
