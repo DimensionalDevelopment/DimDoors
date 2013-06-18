@@ -16,12 +16,8 @@ public class CommandPruneDims extends CommandBase
 		return "dimdoors-prunePockets";
 	}
 
-
-
-
 	@Override
 	public void processCommand(ICommandSender var1, String[] var2) 
-
 	{
 		int numRemoved=0;
 		ArrayList dimsWithLinks=new ArrayList();
@@ -56,14 +52,6 @@ public class CommandPruneDims extends CommandBase
 			}
 		}
 		dimHelper.instance.save();
-		this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Removed "+numRemoved+" unreachable pocket dims.");
-
-		
-			
-		
-		
-			
-		
-	
+		getCommandSenderAsPlayer(var1).sendChatToPlayer("Removed "+numRemoved+" unreachable pocket dims.");
 	}
 }

@@ -23,7 +23,7 @@ public class CommandDeleteRifts extends CommandBase
 	
 	private static DDProperties properties = null;
 	
-	public String getCommandName()//the name of our command
+	public String getCommandName()
 	{
 		return "dimdoors-cleanupRifts";
 	}
