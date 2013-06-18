@@ -125,18 +125,14 @@ public class dimHelper extends DimensionManager
 		else return -10;
 	}
 	
-	
-	
 	public int getDimDepth(int DimID)
 	{
-		if(this.dimList.containsKey(DimID))
+		if (dimList.containsKey(DimID))
 		{
-			return (int)this.dimList.get(DimID).depth;
+			return dimList.get(DimID).depth;
 		}
 		else return 1;
 	}
-	
-	
 	
 	private Entity teleportEntity(World oldWorld, Entity entity, LinkData link) //this beautiful teleport method is based off of xCompWiz's teleport function. 
 	{
@@ -976,21 +972,13 @@ public class dimHelper extends DimensionManager
 		link = this.createLink(this.getWorld(link.locDimID).provider.dimensionId,dimensionID,link.locXCoord,link.locYCoord,link.locZCoord, link.destXCoord,link.destYCoord,link.destZCoord,link.linkOrientation); //creates and registers the two rifts that link the parent and pocket dim. 
 		this.createLink(dimensionID,this.getWorld(link.locDimID).provider.dimensionId, link.destXCoord,link.destYCoord,link.destZCoord, link.locXCoord,link.locYCoord,link.locZCoord, this.flipDoorMetadata(link.linkOrientation));
 	
-		if(isRandomRift)
+		if (isRandomRift)
 		{
-			DungeonHelper.instance().generateDungeonlink(link);
+			DungeonHelper.instance().generateDungeonLink(link);
 		}
-	
-
-		
-			
-		
 		
 		return link;
-		
-
 	}
-	
 	
 	
 	/**
@@ -998,6 +986,7 @@ public class dimHelper extends DimensionManager
 	 * @return
 	 */
 	//TODO change from saving serialized objects to just saving data for compatabilies sake. 
+	//TODO If saving is multithreaded as the concurrent modification exception implies, you should be synchronizing access. ~SenseiKiwi
 	public void save() 
 	{
 		if(this.isSaving) return;
