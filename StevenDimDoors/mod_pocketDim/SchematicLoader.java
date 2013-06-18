@@ -76,12 +76,17 @@ public class SchematicLoader
 		String filePath=DungeonHelper.instance().defaultBreak.schematicPath;
 		if(dimHelper.dimList.containsKey(link.destDimID))
 		{
-			if(dimHelper.dimList.get(link.destDimID).dungeonGenerator!=null)
+			if(dimHelper.dimList.get(link.destDimID).dungeonGenerator==null)
 			{
-				filePath = dimHelper.dimList.get(link.destDimID).dungeonGenerator.schematicPath;
-
+				
+				DungeonHelper.instance().generateDungeonLink(link);
+				
 			}
+			
+			filePath = dimHelper.dimList.get(link.destDimID).dungeonGenerator.schematicPath;	
+			
 		}
+		
 
 
 		

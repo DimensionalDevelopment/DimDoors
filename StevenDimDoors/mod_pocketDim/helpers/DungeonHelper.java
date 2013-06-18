@@ -523,12 +523,6 @@ public class DungeonHelper
 		boolean flag = true;
 		try
 		{
-			if (dimHelper.dimList.get(incoming.destDimID) != null &&
-				dimHelper.dimList.get(incoming.destDimID).dungeonGenerator != null)
-			{
-				mod_pocketDim.loader.init(incoming);
-				return;
-			}
 			
 			if (incoming.destYCoord > 15)
 			{
