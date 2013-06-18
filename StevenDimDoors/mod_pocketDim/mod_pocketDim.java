@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.command.ICommand;
 import net.minecraft.entity.EntityEggInfo;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityItem;
@@ -23,13 +22,13 @@ import StevenDimDoors.mod_pocketDim.blocks.ChaosDoor;
 import StevenDimDoors.mod_pocketDim.blocks.ExitDoor;
 import StevenDimDoors.mod_pocketDim.blocks.dimDoor;
 import StevenDimDoors.mod_pocketDim.blocks.dimHatch;
-import StevenDimDoors.mod_pocketDim.commands.CommandAddDungeonRift;
+import StevenDimDoors.mod_pocketDim.commands.CommandCreateDungeonRift;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
-import StevenDimDoors.mod_pocketDim.commands.CommandDeleteDimData;
+import StevenDimDoors.mod_pocketDim.commands.CommandDeleteDimensionData;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
 import StevenDimDoors.mod_pocketDim.commands.CommandEndDungeonCreation;
-import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimData;
-import StevenDimDoors.mod_pocketDim.commands.CommandPruneDims;
+import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimensionData;
+import StevenDimDoors.mod_pocketDim.commands.CommandPruneDimensions;
 import StevenDimDoors.mod_pocketDim.commands.CommandStartDungeonCreation;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -95,15 +94,6 @@ public class mod_pocketDim
 	public static SchematicLoader loader;
 	public static pocketTeleporter teleporter;
 
-	public static ICommand printDimData;
-	public static ICommand removeRiftsCommand;
-	public static ICommand pruneDimsCommand;
-	public static ICommand removeAllLinksCommand;
-	public static ICommand deleteDimDataCommand;
-	public static ICommand addDungeonRift;
-	public static ICommand endDungeonCreation;
-	public static ICommand startDungeonCreation;
-
 	public static Block transientDoor;
 	public static Block ExitDoor;
 	public static Block chaosDoor;
@@ -155,15 +145,6 @@ public class mod_pocketDim
 		
 		loader = new SchematicLoader();
 		teleporter = new pocketTeleporter();
-
-		printDimData = new CommandPrintDimData();
-		removeRiftsCommand = new CommandDeleteRifts();
-		pruneDimsCommand = new CommandPruneDims();
-		removeAllLinksCommand = new CommandDeleteAllLinks();
-		deleteDimDataCommand = new CommandDeleteDimData();
-		addDungeonRift = new CommandAddDungeonRift();
-		endDungeonCreation = new CommandEndDungeonCreation();
-		startDungeonCreation = new CommandStartDungeonCreation();
 		tracker = new PlayerRespawnTracker();
 		riftGen = new RiftGenerator();
 	}
@@ -409,14 +390,14 @@ public class mod_pocketDim
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent event)
 	{
-		event.registerServerCommand(removeRiftsCommand);
-		event.registerServerCommand(pruneDimsCommand);
-		event.registerServerCommand(removeAllLinksCommand);
-		event.registerServerCommand(deleteDimDataCommand);
-		event.registerServerCommand(addDungeonRift);
-		event.registerServerCommand(mod_pocketDim.startDungeonCreation);
-		event.registerServerCommand(mod_pocketDim.printDimData);
-		event.registerServerCommand(mod_pocketDim.endDungeonCreation);
+		CommandCreateDungeonRift.instance().register(event);
+		CommandDeleteAllLinks.instance().register(event);
+		CommandDeleteDimensionData.instance().register(event);
+		CommandDeleteRifts.instance().register(event);
+		CommandEndDungeonCreation.instance().register(event);
+		CommandPrintDimensionData.instance().register(event);
+		CommandPruneDimensions.instance().register(event);
+		CommandStartDungeonCreation.instance().register(event);
 
 		dimHelper.instance.load();
 		if(!dimHelper.dimList.containsKey(properties.LimboDimensionID))

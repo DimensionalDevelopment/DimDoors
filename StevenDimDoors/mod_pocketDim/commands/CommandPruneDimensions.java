@@ -3,33 +3,37 @@ package StevenDimDoors.mod_pocketDim.commands;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
-public class CommandPruneDims extends CommandBase
+public class CommandPruneDimensions extends DDCommandBase
 {
-	public String getCommandName()//the name of our command
+	private static CommandPruneDimensions instance = null;
+	
+	private CommandPruneDimensions()
 	{
-		return "dimdoors-prunePockets";
+		super("dd-prune");
+	}
+	
+	public static CommandPruneDimensions instance()
+	{
+		if (instance == null)
+			instance = new CommandPruneDimensions();
+		
+		return instance;
 	}
 
-
-
-
 	@Override
-	public void processCommand(ICommandSender var1, String[] var2) 
-
+	protected void processCommand(EntityPlayer sender, String[] command)
 	{
 		int numRemoved=0;
-		ArrayList dimsWithLinks=new ArrayList();
-		Collection<DimData> allDims = new ArrayList(); 
+		ArrayList<Integer> dimsWithLinks = new ArrayList<Integer>();
+		Collection<DimData> allDims = new ArrayList<DimData>(); 
 		allDims.addAll(dimHelper.dimList.values());
 		for(DimData data: allDims)
 		{
-			
 			for(LinkData link:data.printAllLinkData())
 			{
 				if(!dimsWithLinks.contains(link.destDimID))
@@ -38,7 +42,6 @@ public class CommandPruneDims extends CommandBase
 				}
 			}
 		}
-		
 		for(LinkData link : dimHelper.instance.interDimLinkList.values())
 		{
 			if(!dimsWithLinks.contains(link.destDimID))
@@ -46,7 +49,6 @@ public class CommandPruneDims extends CommandBase
 				dimsWithLinks.add(link.destDimID);
 			}
 		}
-		
 		for(DimData data : allDims)
 		{
 			if(!dimsWithLinks.contains(data.dimID))
@@ -56,14 +58,6 @@ public class CommandPruneDims extends CommandBase
 			}
 		}
 		dimHelper.instance.save();
-		this.getCommandSenderAsPlayer(var1).sendChatToPlayer("Removed "+numRemoved+" unreachable pocket dims.");
-
-		
-			
-		
-		
-			
-		
-	
+		sender.sendChatToPlayer("Removed " + numRemoved + " unreachable pocket dims.");
 	}
 }

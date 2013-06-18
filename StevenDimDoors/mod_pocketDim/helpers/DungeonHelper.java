@@ -24,6 +24,7 @@ import StevenDimDoors.mod_pocketDim.helpers.jnbt.ListTag;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.NBTOutputStream;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.ShortTag;
 import StevenDimDoors.mod_pocketDim.helpers.jnbt.Tag;
+import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
 import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
 public class DungeonHelper
@@ -58,7 +59,7 @@ public class DungeonHelper
 	
 	private Random rand = new Random();
 	
-	public HashMap<Integer, LinkData> customDungeonStatus = new HashMap<Integer, LinkData>();
+	private HashMap<Integer, LinkData> customDungeonStatus = new HashMap<Integer, LinkData>();
 
 	public ArrayList<DungeonGenerator> customDungeons = new ArrayList<DungeonGenerator>();
 	public ArrayList<DungeonGenerator> registeredDungeons = new ArrayList<DungeonGenerator>();
@@ -103,10 +104,10 @@ public class DungeonHelper
 		if (properties == null)
 			properties = DDProperties.instance();
 		
-		initializeDungeons();
+		registerCustomDungeons();
 	}
 	
-	private void initializeDungeons()
+	private void registerCustomDungeons()
 	{
 		File file = new File(properties.CustomSchematicDirectory);
 		if (file.exists() || file.mkdir())
@@ -141,6 +142,28 @@ public class DungeonHelper
 			throw new IllegalStateException("Instance of DungeonHelper requested before initialization");
 		}
 		return instance;
+	}
+	
+	public LinkData createCustomDungeonDoor(World world, int x, int y, int z)
+	{
+		//Create a link above the specified position. Link to a new pocket dimension.
+		LinkData link = new LinkData(world.provider.dimensionId, 0, x, y + 1, z, x, y + 1, z, true, 3);
+		link = dimHelper.instance.createPocket(link, true, false);
+		
+		//Place a Warp Door linked to that pocket
+		itemDimDoor.placeDoorBlock(world, x, y, z, 3, mod_pocketDim.ExitDoor);
+		
+		//Register the pocket as a custom dungeon
+		customDungeonStatus.put(link.destDimID,
+				dimHelper.instance.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID));
+		
+		return link;
+	}
+	
+	public boolean isCustomDungeon(int dimensionID)
+	{
+		//TODO: Should we simply treat all pocket dimensions as valid custom dungeons? ~SenseiKiwi
+		return customDungeonStatus.containsKey(dimensionID);
 	}
 	
 	public boolean validateSchematicName(String name)
