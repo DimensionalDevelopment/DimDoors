@@ -94,6 +94,7 @@ public class DDProperties
 	public final boolean LimboReturnsInventoryEnabled;
 	public final boolean DoorRenderingEnabled;
 	public final boolean TNFREAKINGT_Enabled;
+	public final boolean RiftBladeRiftCreationEnabled;
 
 	/**
 	 * Other
@@ -165,6 +166,9 @@ public class DDProperties
 		LimboReturnRange = config.get(Configuration.CATEGORY_GENERAL, "Limbo Return Range", 500,
 				"Sets the farthest distance that Limbo can send you upon returning to the Overworld").getInt();
 		DoorRenderingEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Door Rendering", true).getBoolean(true);
+		RiftBladeRiftCreationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Creation with Rift Blade", true,
+				"Sets whether Rift Blades can create new rifts. If set to false, " +
+				"they will only be able to create transient doors on existing rifts.").getBoolean(true);
 
 		TNFREAKINGT_Enabled = config.get(Configuration.CATEGORY_GENERAL, "EXPLOSIONS!!???!!!?!?!!", false).getBoolean(false);
 		NonTntWeight = config.get(Configuration.CATEGORY_GENERAL, "HOWMUCHTNT", 25, 

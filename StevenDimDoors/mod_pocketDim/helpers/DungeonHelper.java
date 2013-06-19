@@ -74,8 +74,8 @@ public class DungeonHelper
 
 	public ArrayList<Integer> metadataFlipList = new ArrayList<Integer>();
 	public ArrayList<Integer> metadataNextList = new ArrayList<Integer>();
-	public DungeonGenerator defaultBreak = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematic/somethingBroke.schematic", true);
-	public DungeonGenerator defaultUp = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematic/simpleStairsUp.schematic", true);
+	public DungeonGenerator defaultBreak = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/somethingBroke.schematic", true);
+	public DungeonGenerator defaultUp = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/simpleStairsUp.schematic", true);
 	
 	private HashSet<String> dungeonTypeChecker;
 	private HashMap<String, ArrayList<DungeonGenerator>> dungeonTypeMapping;
