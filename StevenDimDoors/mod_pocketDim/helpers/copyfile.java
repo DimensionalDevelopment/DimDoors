@@ -12,6 +12,9 @@ public class copyfile
 	{
 		try
 		{
+			System.out.println("DIMDOORS COPYING FILE TIME");
+			System.out.println("src: " + ori);
+			System.out.println("dest: " + dest);
 			InputStream in = (mod_pocketDim.class.getClass().getResourceAsStream(ori));
 			OutputStream out = new FileOutputStream(dest);
 			byte[] buf = new byte[1024];
@@ -24,6 +27,7 @@ public class copyfile
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			return false;
 		}
 		return true;
