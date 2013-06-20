@@ -12,10 +12,10 @@ public class copyfile
 	{
 		try
 		{
-			System.out.println("DIMDOORS COPYING FILE TIME");
-			System.out.println("src: " + ori);
-			System.out.println("dest: " + dest);
-			InputStream in = (mod_pocketDim.class.getClass().getResourceAsStream(ori));
+			//Note: For this to work properly, you must use getClass() on an instance of the class,
+			//not on the value obtained from .class. That was what caused this code to fail before.
+			//SchematicLoader didn't have this problem because we used instances of it.
+			InputStream in = mod_pocketDim.instance.getClass().getResourceAsStream(ori);
 			OutputStream out = new FileOutputStream(dest);
 			byte[] buf = new byte[1024];
 			int len;
@@ -25,9 +25,9 @@ public class copyfile
 			in.close();
 			out.close(); 
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
-			e.printStackTrace();
+			System.out.println("Unable to get resource: " + ori);
 			return false;
 		}
 		return true;
