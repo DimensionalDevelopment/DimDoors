@@ -112,7 +112,7 @@ public class DungeonHelper
 		File file = new File(properties.CustomSchematicDirectory);
 		if (file.exists() || file.mkdir())
 		{
-			copyfile.copyFile("/mods/DimDoors/How_to_add_dungeons.txt", file.getAbsolutePath() + "/How_to_add_dungeons.txt");
+			copyfile.copyFile("/mods/DimDoors/text/How_to_add_dungeons.txt", file.getAbsolutePath() + "/How_to_add_dungeons.txt");
 		}
 		registerFlipBlocks();
 		importCustomDungeons(properties.CustomSchematicDirectory);
