@@ -31,7 +31,7 @@ public class DungeonHelper
 {
 	private static DungeonHelper instance = null;
 	private static DDProperties properties = null;
-	public static final Pattern NamePattern = Pattern.compile("[A-Za-z0-9_]+");
+	public static final Pattern NamePattern = Pattern.compile("[A-Za-z0-9_\\-]+");
 
 	private static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	private static final int DEFAULT_DUNGEON_WEIGHT = 100;
