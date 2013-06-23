@@ -1,14 +1,7 @@
 package StevenDimDoors.mod_pocketDim.world;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
@@ -17,150 +10,127 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
+import StevenDimDoors.mod_pocketDim.DimData;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 
 public class pocketGenerator extends ChunkProviderGenerate implements IChunkProvider
 {
-	 private World worldObj;
-	 private Random rand = new Random();
+	private World worldObj;
 
 	public pocketGenerator(World par1World, long par2, boolean par4) 
 	{
-		
 		super(par1World, par2, par4);
-		// TODO Auto-generated constructor stub
-		this.worldObj=par1World;
+		this.worldObj = par1World;
 	}
+	
 	@Override
 	public void generateTerrain(int par1, int par2, byte[] par3ArrayOfByte)
-    {
-    
-    }
-	
-	 public boolean unloadQueuedChunks()
-	    {
-	        return true;
-	    }
-	
-	
+	{
+
+	}
+
+	public boolean unloadQueuedChunks()
+	{
+		return true;
+	}
 
 	@Override
-	public Chunk provideChunk(int par1, int par2)
-    {
-       
-		 byte[] var3 = new byte[32768];
-        
-        Chunk var4 = new Chunk(this.worldObj, var3, par1, par2);
-       
-        return var4;
-    }
+	public Chunk provideChunk(int chunkX, int chunkZ)
+	{
+		byte[] var3 = new byte[32768];
 
+		Chunk chunk = new Chunk(worldObj, var3, chunkX, chunkZ);
+
+		return chunk;
+	}
 
 	@Override
 	public Chunk loadChunk(int var1, int var2) 
 	{
-		// TODO Auto-generated method stub
 		return super.loadChunk(var1, var2);
 	}
 
 	@Override
-	public void populate(IChunkProvider var1, int var2, int var3) 
+	public void populate(IChunkProvider chunkProvider, int chunkX, int chunkZ) 
 	{
-		if(dimHelper.dimList.containsKey(worldObj.provider.dimensionId))
-		{
-			if(dimHelper.dimList.get(worldObj.provider.dimensionId).dungeonGenerator==null)
-			{
-				return;
-			}
-			else
-			{
-				if(dimHelper.dimList.get(worldObj.provider.dimensionId).dungeonGenerator.isOpen)
-				{
-					return;
-				}
-			}
-		}
-		int y =0;
-		int x = var2*16 + rand.nextInt(16);
-		int z = var3*16 + rand.nextInt(16);
-		int yTest;
+		//Check whether we want to populate this chunk with Monoliths.
+        DimData dimData = dimHelper.dimList.get(worldObj.provider.dimensionId);
+        
+        if (dimData == null ||
+        	dimData.dungeonGenerator == null ||
+        	dimData.dungeonGenerator.isOpen)
+        {
+        	return;
+        }
+        
+		//The following initialization code is based on code from ChunkProviderGenerate.
+		//It makes our generation depend on the world seed.
+		Random random = new Random(worldObj.getSeed());
+        long factorA = random.nextLong() / 2L * 2L + 1L;
+        long factorB = random.nextLong() / 2L * 2L + 1L;
+        random.setSeed((long)chunkX * factorA + (long)chunkZ * factorB ^ worldObj.getSeed());
+	        
+		int y = 0;
+		int x = chunkX * 16 + random.nextInt(16);
+		int z = chunkZ * 16 + random.nextInt(16);
 		do
 		{
-			
-			x = var2*16 + rand.nextInt(32)-8;
-			z = var3*16 + rand.nextInt(32)-8;
-			
-			while(this.worldObj.getBlockId(x, y, z)==0&&y<255)
+			x = chunkX * 16 + random.nextInt(32) - 8;
+			z = chunkZ * 16 + random.nextInt(32) - 8;
+			while (worldObj.getBlockId(x, y, z) == 0 && y < 255)
 			{
 				y++;
 			}
-			y = yCoordHelper.getFirstUncovered(this.worldObj,x , y+2, z);
-			
-			if(this.worldObj.getBlockId(x, y-1, z)!=mod_pocketDim.blockDimWall.blockID)
+			y = yCoordHelper.getFirstUncovered(worldObj,x , y+2, z);
+
+			if (worldObj.getBlockId(x, y-1, z) != mod_pocketDim.blockDimWall.blockID)
 			{
-				y= y+rand.nextInt(4)+2;
+				y = y + random.nextInt(4)+2;
 			}
-			
-			if(y>245)
+			if (y > 245)
 			{
 				return;
 			}
-			
-			Entity mob = new MobObelisk(this.worldObj);
+			Entity mob = new MobObelisk(worldObj);
 			mob.setLocationAndAngles(x, y, z, 1, 1);
-			this.worldObj.spawnEntityInWorld(mob);
-			
+			worldObj.spawnEntityInWorld(mob);
 		}
-		while( yCoordHelper.getFirstUncovered(this.worldObj,x , y, z)>y);
-		
-		if(rand.nextBoolean())
+		while (yCoordHelper.getFirstUncovered(worldObj,x , y, z) > y);
+
+		if (random.nextBoolean())
 		{
-			this.populate(var1, var2, var3);
+			populate(chunkProvider, chunkX, chunkZ);
 		}
-		
-		
-		
-		
-		// TODO Auto-generated method stub
-		
 	}
 
-	
-	
-	
-	
-
-	
-
 	@Override
-	public List getPossibleCreatures(EnumCreatureType var1, int var2, int var3,
-			int var4) 
+	public List getPossibleCreatures(EnumCreatureType var1, int var2, int var3, int var4) 
 	{
 		DimData data = dimHelper.dimList.get(this.worldObj.provider.dimensionId);
-		if(data!=null)
+		if (data != null)
 		{
-			if(data.dungeonGenerator!=null)
+			if (data.dungeonGenerator != null)
 			{
-				if(data.isDimRandomRift&&data.isPocket&&!data.dungeonGenerator.isOpen)
+				if (data.isDimRandomRift && data.isPocket && !data.dungeonGenerator.isOpen)
 				{
-					ArrayList list = new ArrayList();
-				
 					return this.worldObj.getBiomeGenForCoords(var2, var3).getSpawnableList(var1);
 				}
 			}
 		}
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ChunkPosition findClosestStructure(World var1, String var2,
-			int var3, int var4, int var5) {
-		// TODO Auto-generated method stub
+	public ChunkPosition findClosestStructure(World var1, String var2, int var3, int var4, int var5)
+	{
 		return null;
 	}
 
 
 
-	
+
 
 }
