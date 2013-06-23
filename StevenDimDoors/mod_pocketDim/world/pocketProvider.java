@@ -79,7 +79,7 @@ public class pocketProvider extends WorldProvider
 	@Override
 	public IChunkProvider createChunkGenerator()
 	{
-		return new pocketGenerator(worldObj, dimensionId, false);
+		return new PocketGenerator(worldObj, dimensionId, false);
 	}
 
 	@Override

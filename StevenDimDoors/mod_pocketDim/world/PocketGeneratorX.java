@@ -16,11 +16,11 @@ import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 
-public class pocketGenerator extends ChunkProviderGenerate implements IChunkProvider
+public class PocketGenerator extends ChunkProviderGenerate implements IChunkProvider
 {
 	private World worldObj;
 
-	public pocketGenerator(World par1World, long par2, boolean par4) 
+	public PocketGenerator(World par1World, long par2, boolean par4) 
 	{
 		super(par1World, par2, par4);
 		this.worldObj = par1World;
