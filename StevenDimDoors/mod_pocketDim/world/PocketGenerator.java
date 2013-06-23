@@ -73,18 +73,18 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
         long factorB = random.nextLong() / 2L * 2L + 1L;
         random.setSeed((long)chunkX * factorA + (long)chunkZ * factorB ^ worldObj.getSeed());
 	        
-		int y = 0;
-		int x = chunkX * 16 + random.nextInt(16);
-		int z = chunkZ * 16 + random.nextInt(16);
+		int x, y, z;
 		do
 		{
 			x = chunkX * 16 + random.nextInt(32) - 8;
 			z = chunkZ * 16 + random.nextInt(32) - 8;
+			y = 0;
+			
 			while (worldObj.getBlockId(x, y, z) == 0 && y < 255)
 			{
 				y++;
 			}
-			y = yCoordHelper.getFirstUncovered(worldObj,x , y+2, z);
+			y = yCoordHelper.getFirstUncovered(worldObj,x , y + 2, z);
 
 			if (worldObj.getBlockId(x, y-1, z) != mod_pocketDim.blockDimWall.blockID)
 			{
@@ -98,12 +98,7 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 			mob.setLocationAndAngles(x, y, z, 1, 1);
 			worldObj.spawnEntityInWorld(mob);
 		}
-		while (yCoordHelper.getFirstUncovered(worldObj,x , y, z) > y);
-
-		if (random.nextBoolean())
-		{
-			populate(chunkProvider, chunkX, chunkZ);
-		}
+		while (yCoordHelper.getFirstUncovered(worldObj, x , y, z) > y || random.nextBoolean());
 	}
 
 	@Override
@@ -128,9 +123,4 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 	{
 		return null;
 	}
-
-
-
-
-
 }
