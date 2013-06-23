@@ -20,6 +20,9 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 {
 	private World worldObj;
 
+	private static final int MAX_MONOLITH_SPAWN_Y = 245;
+	private static final int CHUNK_SIZE = 16;
+	
 	public PocketGenerator(World par1World, long par2, boolean par4) 
 	{
 		super(par1World, par2, par4);
@@ -72,12 +75,13 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
         long factorA = random.nextLong() / 2L * 2L + 1L;
         long factorB = random.nextLong() / 2L * 2L + 1L;
         random.setSeed((long)chunkX * factorA + (long)chunkZ * factorB ^ worldObj.getSeed());
-	        
+	    
 		int x, y, z;
 		do
 		{
-			x = chunkX * 16 + random.nextInt(32) - 8;
-			z = chunkZ * 16 + random.nextInt(32) - 8;
+			//Select a random column within the chunk
+			x = chunkX * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
+			z = chunkZ * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
 			y = 0;
 			
 			while (worldObj.getBlockId(x, y, z) == 0 && y < 255)
@@ -86,17 +90,16 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 			}
 			y = yCoordHelper.getFirstUncovered(worldObj,x , y + 2, z);
 
-			if (worldObj.getBlockId(x, y-1, z) != mod_pocketDim.blockDimWall.blockID)
+			if (worldObj.getBlockId(x, y - 1, z) != mod_pocketDim.blockDimWall.blockID)
 			{
-				y = y + random.nextInt(4)+2;
+				y += random.nextInt(4) + 2;
 			}
-			if (y > 245)
+			if (y <= MAX_MONOLITH_SPAWN_Y)
 			{
-				return;
+				Entity mob = new MobObelisk(worldObj);
+				mob.setLocationAndAngles(x, y, z, 1, 1);
+				worldObj.spawnEntityInWorld(mob);
 			}
-			Entity mob = new MobObelisk(worldObj);
-			mob.setLocationAndAngles(x, y, z, 1, 1);
-			worldObj.spawnEntityInWorld(mob);
 		}
 		while (yCoordHelper.getFirstUncovered(worldObj, x , y, z) > y || random.nextBoolean());
 	}
