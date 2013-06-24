@@ -15,6 +15,7 @@ public class DungeonGenerator implements Serializable
 	public LinkData exitLink; 
 	public static Random rand = new Random();
 	public boolean isOpen;
+	public boolean hasMarks=false;
 	public int sideDoorsSoFar=0;
 	public int exitDoorsSoFar=0;
 	public int deadEndsSoFar=0;

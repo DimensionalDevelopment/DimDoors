@@ -12,6 +12,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockRedstoneRepeater;
 import net.minecraft.block.BlockStairs;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -28,6 +29,7 @@ import net.minecraftforge.common.ChestGenHooks;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 
 public class SchematicLoader 
 
@@ -54,6 +56,7 @@ public class SchematicLoader
 
 	public ArrayList<Point3D> sideLinks = new ArrayList<Point3D>();
 	public ArrayList<Point3D> exitLinks = new ArrayList<Point3D>();
+	public ArrayList<Point3D> monolithSpawns = new ArrayList<Point3D>();
 
 	public HashMap<Integer,HashMap<Integer, HashMap<Integer,Integer>>> rotationMap = new HashMap<Integer,HashMap<Integer, HashMap<Integer,Integer>>>();
 
@@ -942,12 +945,16 @@ public class SchematicLoader
 					{
 						this.sideLinks.add(new Point3D(i+xCooe, j+yCooe, k+zCooe));
 					}
-					if(blockToReplace==Block.doorWood.blockID)
+					else if(blockToReplace==Block.doorWood.blockID)
 					{
 						this.exitLinks.add(new Point3D(i+xCooe, j+yCooe, k+zCooe));
 					}
-
-					if(Block.blocksList[blockToReplace]==null&&blockToReplace!=0||blockToReplace>158)
+					else if(blockToReplace==Block.endPortalFrame.blockID)
+					{
+						this.monolithSpawns.add(new Point3D(i+xCooe, j+yCooe, k+zCooe));
+						blockToReplace=0;
+					}
+					else if(Block.blocksList[blockToReplace]==null&&blockToReplace!=0||blockToReplace>158)
 					{
 						blockToReplace=mod_pocketDim.blockDimWall.blockID;
 					}
@@ -1121,9 +1128,19 @@ public class SchematicLoader
 			{
 				E.printStackTrace();
 			}
+			
+			
 
 
 
+		}
+		
+		for(Point3D point : this.monolithSpawns)
+		{
+			Entity mob = new MobObelisk(world);
+			mob.setLocationAndAngles(point.getX(),point.getY(), point.getZ(), 1, 1);
+			world.spawnEntityInWorld(mob);
+			dimHelper.dimList.get(link.destDimID).dungeonGenerator.hasMarks=true;
 		}
 
 
