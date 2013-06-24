@@ -31,7 +31,7 @@ public class DungeonHelper
 {
 	private static DungeonHelper instance = null;
 	private static DDProperties properties = null;
-	public static final Pattern NamePattern = Pattern.compile("[A-Za-z0-9_]+");
+	public static final Pattern NamePattern = Pattern.compile("[A-Za-z0-9_\\-]+");
 
 	private static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	private static final int DEFAULT_DUNGEON_WEIGHT = 100;
@@ -91,14 +91,15 @@ public class DungeonHelper
 		}
 		
 		//Add all the basic dungeon types to dungeonTypeMapping
+		//Dungeon type names must be passed in lowercase to make matching easier.
 		dungeonTypeMapping = new HashMap<String, ArrayList<DungeonGenerator>>();
-		dungeonTypeMapping.put(SIMPLE_HALL_DUNGEON_TYPE, simpleHalls);
-		dungeonTypeMapping.put(COMPLEX_HALL_DUNGEON_TYPE, complexHalls);
-		dungeonTypeMapping.put(HUB_DUNGEON_TYPE, hubs);
-		dungeonTypeMapping.put(EXIT_DUNGEON_TYPE, exits);
-		dungeonTypeMapping.put(DEAD_END_DUNGEON_TYPE, deadEnds);
-		dungeonTypeMapping.put(MAZE_DUNGEON_TYPE, mazes);
-		dungeonTypeMapping.put(TRAP_DUNGEON_TYPE, pistonTraps);
+		dungeonTypeMapping.put(SIMPLE_HALL_DUNGEON_TYPE.toLowerCase(), simpleHalls);
+		dungeonTypeMapping.put(COMPLEX_HALL_DUNGEON_TYPE.toLowerCase(), complexHalls);
+		dungeonTypeMapping.put(HUB_DUNGEON_TYPE.toLowerCase(), hubs);
+		dungeonTypeMapping.put(EXIT_DUNGEON_TYPE.toLowerCase(), exits);
+		dungeonTypeMapping.put(DEAD_END_DUNGEON_TYPE.toLowerCase(), deadEnds);
+		dungeonTypeMapping.put(MAZE_DUNGEON_TYPE.toLowerCase(), mazes);
+		dungeonTypeMapping.put(TRAP_DUNGEON_TYPE.toLowerCase(), pistonTraps);
 		
 		//Load our reference to the DDProperties singleton
 		if (properties == null)
@@ -162,13 +163,17 @@ public class DungeonHelper
 	
 	public boolean isCustomDungeon(int dimensionID)
 	{
-		//TODO: Should we simply treat all pocket dimensions as valid custom dungeons? ~SenseiKiwi
 		return customDungeonStatus.containsKey(dimensionID);
 	}
 	
 	public boolean validateSchematicName(String name)
 	{
-		String[] dungeonData = name.split("_");
+		String[] dungeonData;
+		
+		if (!name.endsWith(SCHEMATIC_FILE_EXTENSION))
+			return false;
+		
+		dungeonData = name.substring(0, name.length() - SCHEMATIC_FILE_EXTENSION.length()).split("_");
 
 		//Check for a valid number of parts
 		if (dungeonData.length < 3 || dungeonData.length > 4)
@@ -210,17 +215,17 @@ public class DungeonHelper
 		String path = schematicFile.getAbsolutePath();
 		try
 		{
-			if (name.endsWith(SCHEMATIC_FILE_EXTENSION) && validateSchematicName(name))
+			if (validateSchematicName(name))
 			{
 				//Strip off the file extension while splitting the file name
 				String[] dungeonData = name.substring(0, name.length() - SCHEMATIC_FILE_EXTENSION.length()).split("_");
 				
 				String dungeonType = dungeonData[0].toLowerCase();
-				boolean open = dungeonData[2].equals("open");
+				boolean isOpen = dungeonData[2].equalsIgnoreCase("open");
 				int weight = (dungeonData.length == 4) ? Integer.parseInt(dungeonData[3]) : DEFAULT_DUNGEON_WEIGHT;
 				
 				//Add this custom dungeon to the list corresponding to its type
-				DungeonGenerator generator = new DungeonGenerator(weight, path, open);
+				DungeonGenerator generator = new DungeonGenerator(weight, path, isOpen);
 
 				dungeonTypeMapping.get(dungeonType).add(generator);
 				registeredDungeons.add(generator);
