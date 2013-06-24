@@ -811,6 +811,32 @@ public class dimHelper extends DimensionManager
 			}			
 		}
 	}
+	
+	public void regenPocket(DimData dimData)
+	{
+		if(this.getWorld(dimData.dimID)!=null ||!dimData.isPocket)
+		{
+			return;
+		}
+		File save = new File( this.getCurrentSaveRootDirectory()+"/DimensionalDoors/pocketDimID" + dimData.dimID);
+		DeleteFolder.deleteFolder(save);
+		dimData.hasBeenFilled=false;
+		dimData.hasDoor=false;
+		for(LinkData link : dimData.printAllLinkData())
+		{
+			link.hasGennedDoor=false;
+			LinkData linkOut =this.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID);
+			if(linkOut!=null)
+			{
+				linkOut.hasGennedDoor=false;
+	
+			}
+		}
+		
+		
+		
+		
+	}
 	/**
 	 * method called when the client disconects/server stops to unregister dims. 
 	 * @Return

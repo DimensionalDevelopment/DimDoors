@@ -70,8 +70,7 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
         
         if (dimData == null ||
         	dimData.dungeonGenerator == null ||
-        	dimData.dungeonGenerator.isOpen||
-        	dimData.hasMarks)
+        	dimData.dungeonGenerator.isOpen)
         {
         	return;
         }
