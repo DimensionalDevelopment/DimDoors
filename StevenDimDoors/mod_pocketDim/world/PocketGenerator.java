@@ -61,6 +61,9 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 	{
 		//Check whether we want to populate this chunk with Monoliths.
         DimData dimData = dimHelper.dimList.get(worldObj.provider.dimensionId);
+        int sanity = 0;
+        int blockID = 0;
+        boolean didSpawn=false;
         
         if (dimData == null ||
         	dimData.dungeonGenerator == null ||
@@ -82,26 +85,39 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 			//Select a random column within the chunk
 			x = chunkX * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
 			z = chunkZ * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
-			y = 0;
+			y = MAX_MONOLITH_SPAWN_Y;
+			blockID = worldObj.getBlockId(x, y, z);
 			
-			while (worldObj.getBlockId(x, y, z) == 0 && y < 255)
+			while (blockID == 0 &&y>0)
 			{
-				y++;
+				y--;
+				blockID = worldObj.getBlockId(x, y, z);
+ 
 			}
-			y = yCoordHelper.getFirstUncovered(worldObj,x , y + 2, z);
+			while(blockID == mod_pocketDim.blockDimWall.blockID&&y>0)
+			{
+				y--;
+				blockID = worldObj.getBlockId(x, y, z);
+			}
+			while (blockID == 0 &&y>0)
+			{
+				y--;
+				blockID = worldObj.getBlockId(x, y, z);
+ 
+			}
+			if(y > 0)
+			{
 
-			if (worldObj.getBlockId(x, y - 1, z) != mod_pocketDim.blockDimWall.blockID)
-			{
-				y += random.nextInt(4) + 2;
-			}
-			if (y <= MAX_MONOLITH_SPAWN_Y)
-			{
 				Entity mob = new MobObelisk(worldObj);
-				mob.setLocationAndAngles(x, y, z, 1, 1);
+				mob.setLocationAndAngles(x, y+2+random.nextInt(5), z, 1, 1);
 				worldObj.spawnEntityInWorld(mob);
+				didSpawn=true;
 			}
+
+			sanity++;
+			
 		}
-		while (yCoordHelper.getFirstUncovered(worldObj, x , y, z) > y || random.nextBoolean());
+		while (sanity<15&&!didSpawn);
 	}
 
 	@Override
