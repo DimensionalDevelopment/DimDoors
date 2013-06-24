@@ -1140,7 +1140,7 @@ public class SchematicLoader
 			Entity mob = new MobObelisk(world);
 			mob.setLocationAndAngles(point.getX(),point.getY(), point.getZ(), 1, 1);
 			world.spawnEntityInWorld(mob);
-			dimHelper.dimList.get(link.destDimID).dungeonGenerator.hasMarks=true;
+			dimHelper.dimList.get(link.destDimID).hasMarks=true;
 		}
 
 

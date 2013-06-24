@@ -26,6 +26,7 @@ public class DimData implements Serializable
 	public boolean hasDoor=false;
 	public boolean isDimRandomRift=false;
 	public DungeonGenerator dungeonGenerator = null;
+	public boolean hasMarks=false;
 	//public boolean isPrivatePocket = false;
 	public HashMap<Integer, HashMap<Integer, HashMap<Integer,  LinkData>>> linksInThisDim=new HashMap();
 	HashMap<Integer, LinkData> dimX;
