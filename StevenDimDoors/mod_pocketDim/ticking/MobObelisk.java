@@ -31,7 +31,7 @@ public class MobObelisk extends EntityFlying implements IMob
 	float soundTime = 0;
 	int aggro = 0;
 	byte textureState = 0;
-	boolean hasJumped= false;
+	
 	float scaleFactor = 0;
 	int aggroMax;
 	int destX=0;
@@ -101,27 +101,7 @@ public class MobObelisk extends EntityFlying implements IMob
 		byte b0 = this.dataWatcher.getWatchableObjectByte(16);
 
 		this.texture="/mods/DimDoors/textures/mobs/Monolith"+b0+".png";
-		if(!this.hasJumped&&!this.worldObj.isRemote)
-		{
-
-			int sanity=0;
-			double jumpHeight=0;
-			do
-			{
-				jumpHeight = this.posY+rand.nextInt(25);
-				if(this.worldObj.provider instanceof pocketProvider)
-				{
-					jumpHeight = this.posY+rand.nextInt(10);
-				}
-				sanity++;
-			}
-			while(!this.worldObj.isAirBlock((int)this.posX,(int)jumpHeight+6 , (int)this.posZ)&&sanity<20);
-			this.hasJumped=true;
-
-			this.setLocationAndAngles(this.posX,jumpHeight , this.posZ, this.rotationPitch, this.rotationYaw);
-			PacketDispatcher.sendPacketToAllInDimension(new Packet34EntityTeleport(this), this.worldObj.provider.dimensionId);
-			this.worldObj.updateEntity(this);
-		}
+	
 
 		super.onEntityUpdate();
 
@@ -372,8 +352,19 @@ public class MobObelisk extends EntityFlying implements IMob
 		par1NBTTagCompound.setInteger("aggro", this.aggro);
 		par1NBTTagCompound.setInteger("aggroMax", this.aggroMax);
 		par1NBTTagCompound.setByte("textureState", this.textureState);
-		par1NBTTagCompound.setBoolean("hasJumped", this.hasJumped);
 		par1NBTTagCompound.setFloat("scaleFactor", this.scaleFactor);
+
+	}
+	
+	@Override
+	public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound)
+	{
+		super.readEntityFromNBT(par1NBTTagCompound);
+		this.soundTime = par1NBTTagCompound.getFloat("soundTime");
+		this.aggro = par1NBTTagCompound.getInteger("aggro");
+		this.aggroMax = par1NBTTagCompound.getInteger("aggroMax");
+		this.textureState = par1NBTTagCompound.getByte("textureState");
+		this.scaleFactor = par1NBTTagCompound.getFloat("scaleFactor");
 
 	}
 	  public boolean getCanSpawnHere()

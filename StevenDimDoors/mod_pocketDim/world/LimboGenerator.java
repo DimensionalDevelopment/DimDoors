@@ -196,14 +196,27 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 				}
 				y = yCoordHelper.getFirstUncovered(this.worldObj,x , y+2, z);
 	
-				Entity mob = new MobObelisk(this.worldObj);
-				mob.setLocationAndAngles(x, y, z, 1, 1);
-	
 				yTest=yCoordHelper.getFirstUncovered(this.worldObj,x , y+5, z);
 				if(yTest>245)
 				{
 					return;
 				}
+				
+				int jumpSanity=0;
+				int jumpHeight=0;
+				do
+				{
+					jumpHeight = y+rand.nextInt(25);
+					
+					jumpSanity++;
+				}
+				while(!this.worldObj.isAirBlock(x,jumpHeight+6 , z)&&jumpSanity<20);
+				
+				
+				Entity mob = new MobObelisk(this.worldObj);
+				mob.setLocationAndAngles(x, jumpHeight, z, 1, 1);
+	
+				
 				this.worldObj.spawnEntityInWorld(mob);
 	
 			}

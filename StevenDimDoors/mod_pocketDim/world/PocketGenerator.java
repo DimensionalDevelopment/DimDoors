@@ -3,8 +3,11 @@ package StevenDimDoors.mod_pocketDim.world;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.common.network.PacketDispatcher;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.network.packet.Packet34EntityTeleport;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -108,9 +111,25 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 			}
 			if(y > 0)
 			{
+				
+				
+
+				int jumpSanity=0;
+				int jumpHeight=0;
+				do
+				{
+				
+					jumpHeight = y+random.nextInt(10);
+					
+					jumpSanity++;
+				}
+				while(!this.worldObj.isAirBlock(x,jumpHeight+6 , z)&&jumpSanity<20);
+				
+				
+				
 
 				Entity mob = new MobObelisk(worldObj);
-				mob.setLocationAndAngles(x, y+2+random.nextInt(5), z, 1, 1);
+				mob.setLocationAndAngles(x, jumpHeight, z, 1, 1);
 				worldObj.spawnEntityInWorld(mob);
 				didSpawn=true;
 			}
