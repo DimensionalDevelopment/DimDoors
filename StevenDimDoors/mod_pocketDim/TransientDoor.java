@@ -91,9 +91,10 @@ public class TransientDoor extends ExitDoor
     		 {
     			 if(dimHelper.dimList.containsKey(linkData.destDimID))
     			 {
-    				 dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
     				 par1World.setBlock(par2, par3-1, par4, 0);
     				 par1World.setBlock(par2, par3, par4, properties.RiftBlockID);
+    				 dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
+
 
     			 }
     		 }
@@ -105,9 +106,10 @@ public class TransientDoor extends ExitDoor
              		 {
              			 if(dimHelper.dimList.containsKey(linkData.destDimID))
              			 {
-             				 dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
              				 par1World.setBlock(par2, par3, par4, 0);
              				 par1World.setBlock(par2, par3+1, par4, properties.RiftBlockID);
+             				 dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
+
 
              			 }
              		 } 
