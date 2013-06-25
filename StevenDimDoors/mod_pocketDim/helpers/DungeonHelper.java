@@ -31,11 +31,12 @@ public class DungeonHelper
 {
 	private static DungeonHelper instance = null;
 	private static DDProperties properties = null;
-	public static final Pattern NamePattern = Pattern.compile("[A-Za-z0-9_\\-]+");
+	public static final Pattern SchematicNamePattern = Pattern.compile("[A-Za-z0-9_\\-]+");
+	public static final Pattern DungeonNamePattern = Pattern.compile("[A-Za-z0-9\\-]+");
 
-	private static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
+	public static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	private static final int DEFAULT_DUNGEON_WEIGHT = 100;
-	private static final int MAX_DUNGEON_WEIGHT = 10000; //Used to prevent overflows and math breaking down
+	public static final int MAX_DUNGEON_WEIGHT = 10000; //Used to prevent overflows and math breaking down
 	
 	private static final String HUB_DUNGEON_TYPE = "Hub";
 	private static final String TRAP_DUNGEON_TYPE = "Trap";
@@ -166,6 +167,12 @@ public class DungeonHelper
 		return customDungeonStatus.containsKey(dimensionID);
 	}
 	
+	public boolean validateDungeonType(String type)
+	{
+		//Check if the dungeon type is valid
+		return dungeonTypeChecker.contains(type.toLowerCase());
+	}
+	
 	public boolean validateSchematicName(String name)
 	{
 		String[] dungeonData;
@@ -184,7 +191,7 @@ public class DungeonHelper
 			return false;
 		
 		//Check if the name is valid
-		if (!NamePattern.matcher(dungeonData[1]).matches())
+		if (!SchematicNamePattern.matcher(dungeonData[1]).matches())
 			return false;
 		
 		//Check if the open/closed flag is present

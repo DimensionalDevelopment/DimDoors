@@ -26,7 +26,7 @@ public class CommandPruneDimensions extends DDCommandBase
 	}
 
 	@Override
-	protected void processCommand(EntityPlayer sender, String[] command)
+	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		int numRemoved=0;
 		ArrayList<Integer> dimsWithLinks = new ArrayList<Integer>();

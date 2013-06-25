@@ -26,7 +26,7 @@ public class CommandDeleteAllLinks extends DDCommandBase
 	}
 
 	@Override
-	protected void processCommand(EntityPlayer sender, String[] command)
+	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		int linksRemoved=0;
 		int targetDim;
