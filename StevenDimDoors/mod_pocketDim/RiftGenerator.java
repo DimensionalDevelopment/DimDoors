@@ -18,7 +18,7 @@ public class RiftGenerator implements IWorldGenerator
 	public static final int MAX_CLUSTER_GENERATION_CHANCE = 10000;
 	private static final int CLUSTER_GROWTH_CHANCE = 80;
 	private static final int MAX_CLUSTER_GROWTH_CHANCE = 100;
-	private static final int MIN_RIFT_Y = 21;
+	private static final int MIN_RIFT_Y = 4;
 	private static final int MAX_RIFT_Y = 250;
 	private static final int CHUNK_LENGTH = 16;
 	private static final int GATEWAY_RADIUS = 4;
@@ -38,6 +38,11 @@ public class RiftGenerator implements IWorldGenerator
 		//the current world is a pocket dimension, or the world is remote.
 		if ((!properties.WorldRiftGenerationEnabled && !(world.provider instanceof LimboProvider)) ||
 			world.provider instanceof pocketProvider || world.isRemote)
+		{
+			return;
+		}
+		
+		if(dimHelper.getWorld(0)==null)
 		{
 			return;
 		}

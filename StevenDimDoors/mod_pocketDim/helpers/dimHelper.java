@@ -906,6 +906,10 @@ public class dimHelper extends DimensionManager
 	public LinkData createPocket(LinkData link , boolean isGoingDown, boolean isRandomRift)
 	{
 		DDProperties properties = DDProperties.instance();
+		if(dimHelper.getWorld(0)==null)
+		{
+			return link;
+		}
 		
 		if (dimHelper.getWorld(link.locDimID) == null)
 		{
