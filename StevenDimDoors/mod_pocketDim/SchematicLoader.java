@@ -758,7 +758,7 @@ public class SchematicLoader
 
 
 		//the wooden door leading into the pocket
-		Point3D incomingLink= new Point3D(0,0,0);
+		Point3D entrance= new Point3D(0,0,0);
 
 		//the iron dim doors leading to more pockets
 		ArrayList<Point3D> sideLinks = new ArrayList<Point3D>();
@@ -889,7 +889,7 @@ public class SchematicLoader
 						}
 						else if(((y-1) * width * length + z * width + x)>=0&&blocks[ (y-1) * width * length + z * width + x]==Block.doorWood.blockID)
 						{
-							incomingLink=(new Point3D(x,y,z));
+							entrance=(new Point3D(x,y,z));
 
 						}
 					}
@@ -904,7 +904,7 @@ public class SchematicLoader
 		}
 
 		//Compute the Y-axis translation that places our structure correctly
-		offsetY = riftY - incomingLink.getY();
+		offsetY = riftY - entrance.getY();
 		
 		//Loop to actually place the blocks
 		for ( x = 0; x < width; x++) 
@@ -916,20 +916,20 @@ public class SchematicLoader
 				switch (orientation)
 				{
 					case 0: //South
-						offsetX = incomingLink.getZ() + riftX;
-						offsetZ = -incomingLink.getX() + riftZ;
+						offsetX = entrance.getZ() + riftX;
+						offsetZ = -entrance.getX() + riftZ;
 						break;
 					case 1: //West
-						offsetX = incomingLink.getX() + riftX;
-						offsetZ = incomingLink.getZ() + riftZ;
+						offsetX = entrance.getX() + riftX;
+						offsetZ = entrance.getZ() + riftZ;
 						break;
 					case 2: //North
-						offsetX = -incomingLink.getZ() + riftX;
-						offsetZ = incomingLink.getX() + riftZ;
+						offsetX = -entrance.getZ() + riftX;
+						offsetZ = entrance.getX() + riftZ;
 						break;
 					case 3: //East
-						offsetX = -incomingLink.getX() + riftX;
-						offsetZ = -incomingLink.getZ() + riftZ;
+						offsetX = -entrance.getX() + riftX;
+						offsetZ = -entrance.getZ() + riftZ;
 						break;
 				}
 				
