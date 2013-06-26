@@ -15,7 +15,7 @@ public class CommandDeleteRifts extends DDCommandBase
 
 	private CommandDeleteRifts()
 	{
-		super("dd-???");
+		super("dd-???", "FIXME");
 	}
 
 	public static CommandDeleteRifts instance()
@@ -27,7 +27,7 @@ public class CommandDeleteRifts extends DDCommandBase
 	}
 
 	@Override
-	protected void processCommand(EntityPlayer sender, String[] command)
+	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		int linksRemoved=0;
 		int targetDim;
@@ -84,5 +84,6 @@ public class CommandDeleteRifts extends DDCommandBase
 				sender.sendChatToPlayer("Removed "+linksRemoved+" rifts.");	
 			}	
 		}
+		return DDCommandResult.SUCCESS; //TEMPORARY HACK
 	}
 }

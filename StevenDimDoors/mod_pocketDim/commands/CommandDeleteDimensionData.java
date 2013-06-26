@@ -14,7 +14,7 @@ public class CommandDeleteDimensionData extends DDCommandBase
 	
 	private CommandDeleteDimensionData()
 	{
-		super("dd-deletedimension");
+		super("dd-deletedimension", "FIXME");
 	}
 	
 	public static CommandDeleteDimensionData instance()
@@ -26,7 +26,7 @@ public class CommandDeleteDimensionData extends DDCommandBase
 	}
 
 	@Override
-	protected void processCommand(EntityPlayer sender, String[] command)
+	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		int linksRemoved=0;
 		int targetDim;
@@ -90,5 +90,6 @@ public class CommandDeleteDimensionData extends DDCommandBase
 				sender.sendChatToPlayer("Error- dimension "+targetDim+" not registered with dimDoors");
 			}	
 		}
+		return DDCommandResult.SUCCESS; //TEMPORARY HACK
 	}
 }

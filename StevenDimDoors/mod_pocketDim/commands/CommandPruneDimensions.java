@@ -2,6 +2,8 @@ package StevenDimDoors.mod_pocketDim.commands;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DimData;
@@ -14,7 +16,7 @@ public class CommandPruneDimensions extends DDCommandBase
 	
 	private CommandPruneDimensions()
 	{
-		super("dd-prune");
+		super("dd-prune", "['delete']");
 	}
 	
 	public static CommandPruneDimensions instance()
@@ -26,38 +28,46 @@ public class CommandPruneDimensions extends DDCommandBase
 	}
 
 	@Override
-	protected void processCommand(EntityPlayer sender, String[] command)
+	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
-		int numRemoved=0;
-		ArrayList<Integer> dimsWithLinks = new ArrayList<Integer>();
+		if (command.length > 1)
+		{
+			return DDCommandResult.TOO_MANY_ARGUMENTS;
+		}
+		if (command.length == 1 && !command[0].equalsIgnoreCase("delete"))
+		{
+			return DDCommandResult.INVALID_ARGUMENTS;
+		}
+		
+		int removedCount = 0;
+		boolean deleteFolders = (command.length == 1);
+		Set<Integer> linkedDimensions = new HashSet<Integer>();
 		Collection<DimData> allDims = new ArrayList<DimData>(); 
 		allDims.addAll(dimHelper.dimList.values());
-		for(DimData data: allDims)
+		
+		for (DimData data : allDims)
 		{
-			for(LinkData link:data.printAllLinkData())
+			for (LinkData link : data.printAllLinkData())
 			{
-				if(!dimsWithLinks.contains(link.destDimID))
+				linkedDimensions.add(link.destDimID);
+			}
+		}
+		for (LinkData link : dimHelper.instance.interDimLinkList.values())
+		{
+			linkedDimensions.add(link.destDimID);
+		}
+		for (DimData data : allDims)
+		{
+			if (!linkedDimensions.contains(data.dimID))
+			{
+				if (dimHelper.instance.pruneDimension(data, deleteFolders))
 				{
-					dimsWithLinks.add(link.destDimID);
+					removedCount++;
 				}
 			}
 		}
-		for(LinkData link : dimHelper.instance.interDimLinkList.values())
-		{
-			if(!dimsWithLinks.contains(link.destDimID))
-			{
-				dimsWithLinks.add(link.destDimID);
-			}
-		}
-		for(DimData data : allDims)
-		{
-			if(!dimsWithLinks.contains(data.dimID))
-			{
-				dimHelper.dimList.remove(data.dimID);
-				numRemoved++;
-			}
-		}
 		dimHelper.instance.save();
-		sender.sendChatToPlayer("Removed " + numRemoved + " unreachable pocket dims.");
+		sender.sendChatToPlayer("Removed " + removedCount + " unreachable pocket dims.");
+		return DDCommandResult.SUCCESS;
 	}
 }

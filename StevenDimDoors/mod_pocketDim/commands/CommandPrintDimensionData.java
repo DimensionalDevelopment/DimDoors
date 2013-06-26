@@ -1,7 +1,6 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DimData;
@@ -14,7 +13,7 @@ public class CommandPrintDimensionData extends DDCommandBase
 
 	private CommandPrintDimensionData()
 	{
-		super("dd-dimensiondata");
+		super("dd-dimensiondata", "[dimension number]");
 	}
 
 	public static CommandPrintDimensionData instance()
@@ -26,45 +25,45 @@ public class CommandPrintDimensionData extends DDCommandBase
 	}
 
 	@Override
-	protected void processCommand(EntityPlayer sender, String[] command)
+	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		int targetDim;
-		boolean shouldGo= true;
+		DimData dimData;
 
-		if(command.length==0)
+		if (command.length == 0)
 		{
-			targetDim= sender.worldObj.provider.dimensionId;
+			targetDim = sender.worldObj.provider.dimensionId;
 		}
-		else if(command.length==1)
+		else if (command.length == 1)
 		{
-			targetDim = parseInt(sender, command[0]);
-			if(!dimHelper.dimList.containsKey(targetDim))
+			try
 			{
-				sender.sendChatToPlayer("Error- dim "+targetDim+" not registered");
-				shouldGo=false;
+				targetDim = Integer.parseInt(command[0]);
+			}
+			catch (Exception ex)
+			{
+				return DDCommandResult.INVALID_DIMENSION_ID;
 			}
 		}
 		else
 		{
-			targetDim=0;
-			shouldGo=false;
-			sender.sendChatToPlayer("Error-Invalid argument, print_dim_data <targetDimID> or blank for current dim");
+			return DDCommandResult.TOO_MANY_ARGUMENTS;
+		}
+		
+		dimData = dimHelper.dimList.get(targetDim);
+		if (dimData == null)
+		{
+			return DDCommandResult.UNREGISTERED_DIMENSION;
 		}
 
-		if(shouldGo)
-		{
-			if(dimHelper.dimList.containsKey(targetDim))
-			{
-				DimData dimData = dimHelper.dimList.get(targetDim);
-				Collection<LinkData> links = new ArrayList<LinkData>();
-				links.addAll( dimData.printAllLinkData());
+		ArrayList<LinkData> links = dimData.printAllLinkData();
 
-				for (LinkData link : links)
-				{
-					sender.sendChatToPlayer(link.printLinkData());
-				}
-				sender.sendChatToPlayer("DimID= "+dimData.dimID+"Dim depth = "+dimData.depth);
-			}	
-		}	
+		sender.sendChatToPlayer("Dimension ID = " + dimData.dimID);
+		sender.sendChatToPlayer("Dimension Depth = " + dimData.depth);
+		for (LinkData link : links)
+		{
+			sender.sendChatToPlayer(link.printLinkData());
+		}
+		return DDCommandResult.SUCCESS;
 	}
 }
