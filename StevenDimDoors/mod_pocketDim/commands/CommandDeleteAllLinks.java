@@ -14,7 +14,7 @@ public class CommandDeleteAllLinks extends DDCommandBase
 
 	private CommandDeleteAllLinks()
 	{
-		super("dd-deletelinks");
+		super("dd-deletelinks", "FIXME");
 	}
 
 	public static CommandDeleteAllLinks instance()
@@ -80,5 +80,6 @@ public class CommandDeleteAllLinks extends DDCommandBase
 				sender.sendChatToPlayer("Removed " + linksRemoved + " links.");
 			}
 		}
+		return DDCommandResult.SUCCESS; //TEMPORARY HACK
 	}
 }
