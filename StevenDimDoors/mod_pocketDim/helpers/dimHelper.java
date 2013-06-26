@@ -762,7 +762,7 @@ public class dimHelper extends DimensionManager
 			//System.out.println("genning dungeon pocket");
 			
 			
-			mod_pocketDim.loader.init(incomingLink);
+			mod_pocketDim.loader.generateDungeonPocket(incomingLink);
 			data.hasBeenFilled=true;
 
 		}
