@@ -731,7 +731,7 @@ public class SchematicLoader
 		return metadata;
 	}
 
-	public void generateSchematic(int incX, int incY, int incZ, int orientation, int destDimID, int originDimID, String schematicPath)
+	public void generateSchematic(int riftX, int riftY, int riftZ, int orientation, int destDimID, int originDimID, String schematicPath)
 	{
 
 		short width=0;
@@ -758,7 +758,7 @@ public class SchematicLoader
 
 
 		//the wooden door leading into the pocket
-		Point3D incomingLink= new Point3D(0,0,0);
+		Point3D entrance= new Point3D(0,0,0);
 
 		//the iron dim doors leading to more pockets
 		ArrayList<Point3D> sideLinks = new ArrayList<Point3D>();
@@ -854,15 +854,11 @@ public class SchematicLoader
 		world=dimHelper.getWorld(destDimID);
 
 		//coords relative to the schematic, start at 0 and increase up to max height/width/length
-		int x;
-		int y;
-		int z;
+		int x, y, z;
 
 		//relative offset between the schematic coords and world coords
-		int xCooe=0;
-		int yCooe=0;
-		int zCooe=0;
-
+		int offsetX, offsetY, offsetZ;
+		
 		//first loop through the .schematic to load in all rift locations, and monolith spawn locations.
 		//also finds the incomingLink location, which determines the final position of the generated .schematic
 		for ( x = 0; x < width; ++x) 
@@ -893,7 +889,7 @@ public class SchematicLoader
 						}
 						else if(((y-1) * width * length + z * width + x)>=0&&blocks[ (y-1) * width * length + z * width + x]==Block.doorWood.blockID)
 						{
-							incomingLink=(new Point3D(x,y,z));
+							entrance=(new Point3D(x,y,z));
 
 						}
 					}
@@ -908,7 +904,7 @@ public class SchematicLoader
 		}
 
 		//Compute the Y-axis translation that places our structure correctly
-		yCooe = incY - incomingLink.getY();
+		offsetY = riftY - entrance.getY();
 		
 		//Loop to actually place the blocks
 		for ( x = 0; x < width; x++) 
@@ -919,21 +915,21 @@ public class SchematicLoader
 				//and rotate our structure properly.
 				switch (orientation)
 				{
-					case 0: 
-						xCooe = -incomingLink.getX() + incX;
-						zCooe = -incomingLink.getZ() + incZ;
+					case 0: //South
+						offsetX = entrance.getZ() + riftX;
+						offsetZ = -entrance.getX() + riftZ;
 						break;
-					case 1:
-						xCooe = -incomingLink.getX() + incX;
-						zCooe = -incomingLink.getZ() + incZ;
+					case 1: //West
+						offsetX = entrance.getX() + riftX;
+						offsetZ = entrance.getZ() + riftZ;
 						break;
-					case 2:
-						xCooe = -incomingLink.getX() + incX;
-						zCooe = -incomingLink.getZ() + incZ;
+					case 2: //North
+						offsetX = -entrance.getZ() + riftX;
+						offsetZ = entrance.getX() + riftZ;
 						break;
-					case 3:
-						xCooe = -incomingLink.getX() + incX;
-						zCooe = -incomingLink.getZ() + incZ;
+					case 3: //East
+						offsetX = -entrance.getX() + riftX;
+						offsetZ = -entrance.getZ() + riftZ;
 						break;
 				}
 				
@@ -965,15 +961,15 @@ public class SchematicLoader
 						//convert vanilla doors to dim doors, then place vanilla blocks
 						if(blockToReplace==Block.doorIron.blockID)
 						{
-							setBlockDirectly(world,x+xCooe,y+yCooe,z+zCooe,properties.DimensionalDoorID, transMeta );
+							setBlockDirectly(world,x+offsetX,y+offsetY,z+offsetZ,properties.DimensionalDoorID, transMeta );
 						}
 						else if(blockToReplace==Block.doorWood.blockID)
 						{
-							setBlockDirectly(world,x+xCooe,y+yCooe,z+zCooe,properties.WarpDoorID, transMeta );
+							setBlockDirectly(world,x+offsetX,y+offsetY,z+offsetZ,properties.WarpDoorID, transMeta );
 						}
 						else
 						{							
-							setBlockDirectly(world,x+xCooe,y+yCooe,z+zCooe,blockToReplace, transMeta );
+							setBlockDirectly(world,x+offsetX,y+offsetY,z+offsetZ,blockToReplace, transMeta );
 						}
 
 						//generate container inventories
@@ -989,17 +985,17 @@ public class SchematicLoader
 							 **/
 
 							//fill chests
-							if(world.getBlockTileEntity(x+xCooe, y+yCooe, z+zCooe) instanceof TileEntityChest)
+							if(world.getBlockTileEntity(x+offsetX, y+offsetY, z+offsetZ) instanceof TileEntityChest)
 							{
-								TileEntityChest chest = (TileEntityChest) world.getBlockTileEntity(x+xCooe, y+yCooe, z+zCooe);
+								TileEntityChest chest = (TileEntityChest) world.getBlockTileEntity(x+offsetX, y+offsetY, z+offsetZ);
 								ChestGenHooks info = DDLoot.DungeonChestInfo;
-								WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand), (TileEntityChest)world.getBlockTileEntity(x+xCooe, y+yCooe, z+zCooe), info.getCount(rand));
+								WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand), (TileEntityChest)world.getBlockTileEntity(x+offsetX, y+offsetY, z+offsetZ), info.getCount(rand));
 							}
 
 							//fill dispensers
-							if(world.getBlockTileEntity(x+xCooe, y+yCooe, z+zCooe) instanceof TileEntityDispenser)
+							if(world.getBlockTileEntity(x+offsetX, y+offsetY, z+offsetZ) instanceof TileEntityDispenser)
 							{
-								TileEntityDispenser dispenser = (TileEntityDispenser) world.getBlockTileEntity(x+xCooe, y+yCooe, z+zCooe);
+								TileEntityDispenser dispenser = (TileEntityDispenser) world.getBlockTileEntity(x+offsetX, y+offsetY, z+offsetZ);
 								dispenser.addItem(new ItemStack(Item.arrow, 64));
 
 							}
@@ -1017,7 +1013,7 @@ public class SchematicLoader
 			int depth = dimHelper.instance.getDimDepth(originDimID);
 			int xNoise = 0;
 			int zNoise =0;
-			switch(world.getBlockMetadata(point.getX()+xCooe, point.getY()+yCooe-1, point.getZ()+zCooe))
+			switch(world.getBlockMetadata(point.getX()+offsetX, point.getY()+offsetY-1, point.getZ()+offsetZ))
 			{
 			case 0:
 				xNoise = (int)rand.nextInt(depth+1*200)+depth*50;
@@ -1041,7 +1037,7 @@ public class SchematicLoader
 				break;
 			}
 
-			LinkData sideLink = new LinkData(destDimID,0,point.getX()+xCooe, point.getY()+yCooe, point.getZ()+zCooe,xNoise+point.getX()+xCooe, point.getY()+yCooe+1, zNoise+point.getZ()+zCooe,true,world.getBlockMetadata(point.getX()+xCooe, point.getY()+yCooe-1, point.getZ()+zCooe));
+			LinkData sideLink = new LinkData(destDimID,0,point.getX()+offsetX, point.getY()+offsetY, point.getZ()+offsetZ,xNoise+point.getX()+offsetX, point.getY()+offsetY+1, zNoise+point.getZ()+offsetZ,true,world.getBlockMetadata(point.getX()+offsetX, point.getY()+offsetY-1, point.getZ()+offsetZ));
 			dimHelper.instance.createPocket(sideLink, true, true);
 		}
 
@@ -1051,7 +1047,7 @@ public class SchematicLoader
 			try
 			{
 				LinkData randomLink=dimHelper.instance.getRandomLinkData(false);
-				LinkData sideLink = new LinkData(destDimID,dimHelper.dimList.get(originDimID).exitDimLink.destDimID,point.getX()+xCooe, point.getY()+yCooe, point.getZ()+zCooe,point.getX()+xCooe, 0, point.getZ()+zCooe,true,world.getBlockMetadata(point.getX()+xCooe, point.getY()+yCooe-1, point.getZ()+zCooe));
+				LinkData sideLink = new LinkData(destDimID,dimHelper.dimList.get(originDimID).exitDimLink.destDimID,point.getX()+offsetX, point.getY()+offsetY, point.getZ()+offsetZ,point.getX()+offsetX, 0, point.getZ()+offsetZ,true,world.getBlockMetadata(point.getX()+offsetX, point.getY()+offsetY-1, point.getZ()+offsetZ));
 
 				if(sideLink.destDimID==properties.LimboDimensionID)
 				{
@@ -1063,25 +1059,25 @@ public class SchematicLoader
 					// System.out.println("randomLink");
 				}
 
-				sideLink.destYCoord=yCoordHelper.getFirstUncovered(sideLink.destDimID, point.getX()+xCooe,10,point.getZ()+zCooe);
+				sideLink.destYCoord=yCoordHelper.getFirstUncovered(sideLink.destDimID, point.getX()+offsetX,10,point.getZ()+offsetZ);
 
 				if(sideLink.destYCoord<5)
 				{
 					sideLink.destYCoord=70;
 				}
 
-				sideLink.linkOrientation=world.getBlockMetadata(point.getX()+xCooe, point.getY()+yCooe-1, point.getZ()+zCooe);
+				sideLink.linkOrientation=world.getBlockMetadata(point.getX()+offsetX, point.getY()+offsetY-1, point.getZ()+offsetZ);
 
 				dimHelper.instance.createLink(sideLink);
 				dimHelper.instance.createLink(sideLink.destDimID , sideLink.locDimID, sideLink.destXCoord, sideLink.destYCoord, sideLink.destZCoord, sideLink.locXCoord, sideLink.locYCoord, sideLink.locZCoord, dimHelper.instance.flipDoorMetadata(sideLink.linkOrientation));
 
-				if(world.getBlockId(point.getX()+xCooe, point.getY()+yCooe-3, point.getZ()+zCooe) == properties.FabricBlockID)
+				if(world.getBlockId(point.getX()+offsetX, point.getY()+offsetY-3, point.getZ()+offsetZ) == properties.FabricBlockID)
 				{
-					setBlockDirectly(world,point.getX()+xCooe, point.getY()+yCooe-2, point.getZ()+zCooe,Block.stoneBrick.blockID,0);
+					setBlockDirectly(world,point.getX()+offsetX, point.getY()+offsetY-2, point.getZ()+offsetZ,Block.stoneBrick.blockID,0);
 				}
 				else
 				{
-					setBlockDirectly(world,point.getX()+xCooe, point.getY()+yCooe-2, point.getZ()+zCooe,world.getBlockId(point.getX()+xCooe, point.getY()+yCooe-3, point.getZ()+zCooe),world.getBlockMetadata(point.getX()+xCooe, point.getY()+yCooe-3, point.getZ()+zCooe));
+					setBlockDirectly(world,point.getX()+offsetX, point.getY()+offsetY-2, point.getZ()+offsetZ,world.getBlockId(point.getX()+offsetX, point.getY()+offsetY-3, point.getZ()+offsetZ),world.getBlockMetadata(point.getX()+offsetX, point.getY()+offsetY-3, point.getZ()+offsetZ));
 				}
 			}
 			catch(Exception E)
@@ -1094,7 +1090,7 @@ public class SchematicLoader
 		for(Point3D point : monolithSpawns)
 		{
 			Entity mob = new MobObelisk(world);
-			mob.setLocationAndAngles(point.getX()+xCooe,point.getY()+yCooe, point.getZ()+zCooe, 1, 1);
+			mob.setLocationAndAngles(point.getX()+offsetX,point.getY()+offsetY, point.getZ()+offsetZ, 1, 1);
 			world.spawnEntityInWorld(mob);
 		}
 	}
