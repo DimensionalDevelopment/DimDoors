@@ -29,7 +29,7 @@ import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
 import StevenDimDoors.mod_pocketDim.commands.CommandEndDungeonCreation;
 import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimensionData;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDimensions;
-import StevenDimDoors.mod_pocketDim.commands.CommandRegenPocket;
+import StevenDimDoors.mod_pocketDim.commands.CommandResetDungeons;
 import StevenDimDoors.mod_pocketDim.commands.CommandStartDungeonCreation;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -391,7 +391,7 @@ public class mod_pocketDim
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent event)
 	{
-		 CommandRegenPocket.instance().register(event);
+		CommandResetDungeons.instance().register(event);
 		CommandCreateDungeonRift.instance().register(event);
 		CommandDeleteAllLinks.instance().register(event);
 		CommandDeleteDimensionData.instance().register(event);

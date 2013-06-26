@@ -8,6 +8,7 @@ public class DDCommandResult {
 	public static final DDCommandResult TOO_MANY_ARGUMENTS = new DDCommandResult(2, "Error: Too many arguments passed to the command", true);
 	public static final DDCommandResult INVALID_DIMENSION_ID = new DDCommandResult(3, "Error: Invalid dimension ID", true);
 	public static final DDCommandResult UNREGISTERED_DIMENSION = new DDCommandResult(4, "Error: Dimension is not registered", false);
+	public static final DDCommandResult INVALID_ARGUMENTS = new DDCommandResult(5, "Error: Invalid arguments passed to the command.", true);
 	
 	public static final int CUSTOM_ERROR_CODE = -1;
 	

@@ -38,6 +38,7 @@ import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.ObjectSaveInputStream;
 import StevenDimDoors.mod_pocketDim.PacketHandler;
+import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
@@ -64,7 +65,7 @@ public class dimHelper extends DimensionManager
 	 * ArrayList containing any blocks in limbo that have been placed by the player. Cycled through in the common tick manager
 	 * @Return
 	 */
-	public static ArrayList blocksToDecay= new ArrayList();
+	public static ArrayList<Point3D> blocksToDecay = new ArrayList<Point3D>();
 	
 	/**
 	 * instance of the dimHelper
@@ -812,33 +813,48 @@ public class dimHelper extends DimensionManager
 		}
 	}
 	
-	public void regenPocket(DimData dimData)
+	public boolean resetPocket(DimData dimData)
 	{
-		if(this.getWorld(dimData.dimID)!=null ||!dimData.isPocket)
+		//TODO: Should we add a check to see if the dimension is currently loaded? How could we check that? ~SenseiKiwi
+		if (!dimData.isPocket || getWorld(dimData.dimID) != null)
 		{
-			return;
+			return false;
 		}
-		File save = new File( this.getCurrentSaveRootDirectory()+"/DimensionalDoors/pocketDimID" + dimData.dimID);
+		File save = new File(getCurrentSaveRootDirectory() + "/DimensionalDoors/pocketDimID" + dimData.dimID);
 		DeleteFolder.deleteFolder(save);
-		dimData.hasBeenFilled=false;
-		dimData.hasDoor=false;
+		dimData.hasBeenFilled = false;
+		dimData.hasDoor = false;
 		for(LinkData link : dimData.printAllLinkData())
 		{
-			link.hasGennedDoor=false;
-			LinkData linkOut =this.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID);
-			if(linkOut!=null)
+			link.hasGennedDoor = false;
+			LinkData linkOut = this.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID);
+			if (linkOut != null)
 			{
-				linkOut.hasGennedDoor=false;
-	
+				linkOut.hasGennedDoor = false;
 			}
 		}
-		
-		
-		
-		
+		return true;
 	}
+	
+	public boolean pruneDimension(DimData dimData, boolean deleteFolder)
+	{
+		//TODO: Should we add a check to see if the dimension is currently loaded? How could we check that? ~SenseiKiwi
+		//TODO: All the logic for checking that this is an isolated pocket should be moved in here.
+		if (!dimData.isPocket || getWorld(dimData.dimID) != null)
+		{
+			return false;
+		}
+		dimList.remove(dimData.dimID);
+		if (deleteFolder)
+		{
+			File save = new File(getCurrentSaveRootDirectory() + "/DimensionalDoors/pocketDimID" + dimData.dimID);
+			DeleteFolder.deleteFolder(save);
+		}
+		return true;
+	}
+	
 	/**
-	 * method called when the client disconects/server stops to unregister dims. 
+	 * method called when the client disconnects/server stops to unregister dims. 
 	 * @Return
 	 */
 	public void unregsisterDims()
