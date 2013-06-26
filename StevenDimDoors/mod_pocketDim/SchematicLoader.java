@@ -733,7 +733,6 @@ public class SchematicLoader
 
 	public void generateSchematic(int riftX, int riftY, int riftZ, int orientation, int destDimID, int originDimID, String schematicPath)
 	{
-
 		short width=0;
 		short height=0;
 		short length=0;
@@ -857,7 +856,9 @@ public class SchematicLoader
 		int x, y, z;
 
 		//relative offset between the schematic coords and world coords
-		int offsetX, offsetY, offsetZ;
+		int offsetX = 0;
+		int offsetY = 0;
+		int offsetZ = 0;
 		
 		//first loop through the .schematic to load in all rift locations, and monolith spawn locations.
 		//also finds the incomingLink location, which determines the final position of the generated .schematic
