@@ -816,7 +816,7 @@ public class dimHelper extends DimensionManager
 	public boolean resetPocket(DimData dimData)
 	{
 		//TODO: Should we add a check to see if the dimension is currently loaded? How could we check that? ~SenseiKiwi
-		if (getWorld(dimData.dimID) != null || !dimData.isPocket)
+		if (!dimData.isPocket || getWorld(dimData.dimID) != null)
 		{
 			return false;
 		}
@@ -832,6 +832,23 @@ public class dimHelper extends DimensionManager
 			{
 				linkOut.hasGennedDoor = false;
 			}
+		}
+		return true;
+	}
+	
+	public boolean pruneDimension(DimData dimData, boolean deleteFolder)
+	{
+		//TODO: Should we add a check to see if the dimension is currently loaded? How could we check that? ~SenseiKiwi
+		//TODO: All the logic for checking that this is an isolated pocket should be moved in here.
+		if (!dimData.isPocket || getWorld(dimData.dimID) != null)
+		{
+			return false;
+		}
+		dimList.remove(dimData.dimID);
+		if (deleteFolder)
+		{
+			File save = new File(getCurrentSaveRootDirectory() + "/DimensionalDoors/pocketDimID" + dimData.dimID);
+			DeleteFolder.deleteFolder(save);
 		}
 		return true;
 	}
