@@ -391,7 +391,7 @@ public class mod_pocketDim
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent event)
 	{
-		 CommandRegenPocket.instance().register(event);
+		CommandResetDungeons.instance().register(event);
 		CommandCreateDungeonRift.instance().register(event);
 		CommandDeleteAllLinks.instance().register(event);
 		CommandDeleteDimensionData.instance().register(event);
