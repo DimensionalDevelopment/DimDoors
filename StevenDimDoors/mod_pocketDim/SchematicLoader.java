@@ -34,151 +34,20 @@ import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 public class SchematicLoader 
 
 {
-	public short width;
-	public short height;
-	public short length;
-
-	public short[] blocks = new short[0];
-	public byte[] blockData = new byte[0];
-	public byte[] blockId = new byte[0];
-
-	public byte[] addId = new byte[0];
-
-	public NBTTagCompound[] tileEntityList;
-
-
-	public NBTTagList entities;
-	public NBTTagList tileEntities;
-
 	private Random rand = new Random();
-
-	public Point3D incomingLink= new Point3D(0,0,0);
-
-	public ArrayList<Point3D> sideLinks = new ArrayList<Point3D>();
-	public ArrayList<Point3D> exitLinks = new ArrayList<Point3D>();
-	public ArrayList<Point3D> monolithSpawns = new ArrayList<Point3D>();
-
 	public HashMap<Integer,HashMap<Integer, HashMap<Integer,Integer>>> rotationMap = new HashMap<Integer,HashMap<Integer, HashMap<Integer,Integer>>>();
-
 	public int transMeta;
+	
+	
 
-	public int cX;
-	public int cZ;
-	public int cY;
+	
 
-	public boolean didRead = false;
-	public String schematic;
+	
 
 	private DDProperties properties = DDProperties.instance();
 	
 	public SchematicLoader() { }
 
-	public void init(LinkData link)
-	{
-		//adding default pocket
-		String filePath=DungeonHelper.instance().defaultBreak.schematicPath;
-		if(dimHelper.dimList.containsKey(link.destDimID))
-		{
-			if(dimHelper.dimList.get(link.destDimID).dungeonGenerator==null)
-			{
-				
-				DungeonHelper.instance().generateDungeonLink(link);
-				
-			}
-			
-			filePath = dimHelper.dimList.get(link.destDimID).dungeonGenerator.schematicPath;	
-			
-		}
-		
-
-
-		
-		
-		
-
-		this.schematic=filePath;
-		try 
-		{
-
-			InputStream input;
-			String fname= schematic ;
-
-			if(!(new File(fname).exists()))
-			{
-
-
-				input = this.getClass().getResourceAsStream(fname);
-			}
-			else
-			{
-				System.out.println(new File(fname).exists());
-				input = new FileInputStream(fname);
-			}
-			//FileInputStream fileinputstream = new FileInputStream(file);
-			NBTTagCompound nbtdata = CompressedStreamTools.readCompressed(input);
-
-			width = nbtdata.getShort("Width");
-			height = nbtdata.getShort("Height");
-			length = nbtdata.getShort("Length");
-
-			blockId = nbtdata.getByteArray("Blocks");
-			blockData = nbtdata.getByteArray("Data");
-
-			blocks=new short[blockId.length];
-
-			addId = nbtdata.getByteArray("AddBlocks");
-
-			tileEntities = nbtdata.getTagList("TileEntities");
-			tileEntityList = new NBTTagCompound[width*height*length];
-
-			for(int count = 0; count<tileEntities.tagCount(); count++)
-			{
-				NBTTagCompound tag = (NBTTagCompound)tileEntities.tagAt(count);
-				tileEntityList[tag.getInteger("y")*width*length+tag.getInteger("z")*width+tag.getInteger("x")]=tag;
-			}
-
-			// entities = nbtdata.getTagList("Entities");
-			//tileentities = nbtdata.getTagList("TileEntities");
-
-
-
-			this.didRead=true;
-			input.close();
-
-
-			for (int index = 0; index < blockId.length; index++) 
-			{
-				if ((index >> 1) >= addId.length) 
-				{ 
-					blocks[index] = (short) (blockId[index] & 0xFF);
-				} 
-				else 
-				{
-					if ((index & 1) == 0) 
-					{
-						blocks[index] = (short) (((addId[index >> 1] & 0x0F) << 8) + (blockId[index] & 0xFF));
-					} 
-					else 
-					{
-						blocks[index] = (short) (((addId[index >> 1] & 0xF0) << 4) + (blockId[index] & 0xFF));
-					}
-				}
-			}
-
-
-
-		}
-		catch (Exception e) 
-		{
-			this.didRead=false;
-			System.out.println("Error- could not find file "+schematic);
-			e.printStackTrace();
-
-		}
-
-		this.generateSchematic(link, 0, 0, 0);
-
-	}
 	public int transformMetadata(int metadata, int orientation, int blockID)
 	{
 		if (DungeonHelper.instance().metadataFlipList.contains(blockID))
@@ -862,123 +731,256 @@ public class SchematicLoader
 		return metadata;
 	}
 
-	public void generateSchematic(LinkData link, int xOffset, int yOffset, int zOffset)
+	public void generateSchematic(int incX, int incY, int incZ, int orientation, int destDimID, int originDimID, String schematicPath)
 	{
+		
+		short width=0;
+		short height=0;
+		short length=0;
+
+		//list of combined blockIds
+		short[] blocks = new short[0];
+		
+		//block metaData
+		byte[] blockData = new byte[0];
+		
+		//first 4 bytes of the block ID
+		byte[] blockId = new byte[0];
+
+		//second 4 bytes of the block ID
+		byte[] addId = new byte[0];
+
+		NBTTagCompound[] tileEntityList;
+
+
+		NBTTagList entities;
+		NBTTagList tileEntities=null;
+
+		
+		//the wooden door leading into the pocket
+		Point3D incomingLink= new Point3D(0,0,0);
+		
+		//the iron dim doors leading to more pockets
+		ArrayList<Point3D> sideLinks = new ArrayList<Point3D>();
+		
+		//the wooden dim doors leading to the surface
+		ArrayList<Point3D> exitLinks = new ArrayList<Point3D>();
+		
+		//the locations to spawn monoliths
+		ArrayList<Point3D> monolithSpawns = new ArrayList<Point3D>();
+		
+		//load the schematic from disk
+		try 
+		{
+
+			InputStream input;
+			String fname= schematicPath ;
+
+			if(!(new File(fname).exists()))
+			{
+				//get file if its in the Jar
+				input = this.getClass().getResourceAsStream(fname);
+			}
+			else
+			{
+				//get file if in external library
+				System.out.println(new File(fname).exists());
+				input = new FileInputStream(fname);
+			}
+			NBTTagCompound nbtdata = CompressedStreamTools.readCompressed(input);
+
+			//load size of schematic to generate
+			width = nbtdata.getShort("Width");
+			height = nbtdata.getShort("Height");
+			length = nbtdata.getShort("Length");
+			
+			//load block info
+			blockId = nbtdata.getByteArray("Blocks");
+			blockData = nbtdata.getByteArray("Data");
+			addId = nbtdata.getByteArray("AddBlocks");
+
+			//create combined block list
+			blocks=new short[blockId.length];
+
+			//load ticking things
+			tileEntities = nbtdata.getTagList("TileEntities");
+			tileEntityList = new NBTTagCompound[width*height*length];
+			/**
+			for(int count = 0; count<tileEntities.tagCount(); count++)
+			{
+				NBTTagCompound tag = (NBTTagCompound)tileEntities.tagAt(count);
+				tileEntityList[tag.getInteger("y")*width*length+tag.getInteger("z")*width+tag.getInteger("x")]=tag;
+			}
+
+			entities = nbtdata.getTagList("Entities");
+			tileentities = nbtdata.getTagList("TileEntities");
+			**/
+			input.close();
+
+			//combine the split block IDs into a single short[]
+			for (int index = 0; index < blockId.length; index++) 
+			{
+				if ((index >> 1) >= addId.length) 
+				{ 
+					blocks[index] = (short) (blockId[index] & 0xFF);
+				} 
+				else 
+				{
+					if ((index & 1) == 0) 
+					{
+						blocks[index] = (short) (((addId[index >> 1] & 0x0F) << 8) + (blockId[index] & 0xFF));
+					} 
+					else 
+					{
+						blocks[index] = (short) (((addId[index >> 1] & 0xF0) << 4) + (blockId[index] & 0xFF));
+					}
+				}
+			}
+		}
+		catch (Exception e) 
+		{
+			System.out.println("Error- could not find file "+schematicPath);
+			e.printStackTrace();
+		}
 
 		World world;
 		Chunk chunk;
-		dimHelper.dimList.get(link.destDimID).hasBeenFilled=this.didRead;
-		SchematicLoader loader=this;
+		dimHelper.dimList.get(destDimID).hasBeenFilled=true;
 
-		int i = link.destXCoord;
-		int j = link.destYCoord-1;
-		int k = link.destZCoord;
-
-
-
-
-
-
-		if(dimHelper.getWorld(link.destDimID)==null)
+		if(dimHelper.getWorld(destDimID)==null)
 		{
-			dimHelper.initDimension(link.destDimID);
+			dimHelper.initDimension(destDimID);
 		}
-		world=dimHelper.getWorld(link.destDimID);
+		world=dimHelper.getWorld(destDimID);
 
+		//coords relative to the schematic, start at 0 and increase up to max height/width/length
 		int x;
 		int y;
 		int z;
 
-
+		//relative offset between the schematic coords and world coords
 		int xCooe=0;
 		int yCooe=0;
 		int zCooe=0;
 
-
-
-
-
-
-
-
-		for ( x = 0; x < loader.width; ++x) 
+		//first loop through the .schematic to load in all rift locations, and monolith spawn locations.
+		//also finds the incomingLink location, which determines the final position of the generated .schematic
+		for ( x = 0; x < width; ++x) 
 		{
-			for ( y = 0; y < loader.height; ++y) 
+			for ( y = 0; y < height; ++y) 
 			{
-				for ( z = 0; z < loader.length; ++z) 
+				for ( z = 0; z < length; ++z) 
 				{
-					if(link.linkOrientation==0)
-					{
-						zCooe=x-20;
-						yCooe=y-6;
-						xCooe=-z+35;
-
-					}
-					if(link.linkOrientation==1)
-					{
-						xCooe=-x+20;
-						yCooe=y-6;
-						zCooe=-z+35;
-					}
-					if(link.linkOrientation==2)
-					{
-						zCooe=-x+20;
-						yCooe=y-6;
-						xCooe=+z-35;
-					}
-					if(link.linkOrientation==3)
-					{
-						xCooe=x-20;
-						yCooe=y-6;
-						zCooe=z-35;
-					}
-
+					
 					int index = y * width * length + z * width + x;
 
-					int blockToReplace=loader.blocks[index];
-					int blockMetaData=loader.blockData[index];
-					NBTTagList tileEntity = loader.tileEntities;
+					int blockToReplace=blocks[index];
+					int blockMetaData=blockData[index];
+					
+					//NBTTagList tileEntity = tileEntities;
 					//int size = tileEntity.tagCount();
 
-
-					if(blockToReplace==Block.doorIron.blockID)
+					
+					if(blockToReplace==Block.doorIron.blockID&&blocks[ (y-1) * width * length + z * width + x]==Block.doorIron.blockID)
 					{
-						this.sideLinks.add(new Point3D(i+xCooe, j+yCooe, k+zCooe));
+						sideLinks.add(new Point3D(x,y,z));
 					}
 					else if(blockToReplace==Block.doorWood.blockID)
 					{
-						this.exitLinks.add(new Point3D(i+xCooe, j+yCooe, k+zCooe));
+						if( ((y-2) * width * length + z * width + x)>=0&&blocks[ (y-2) * width * length + z * width + x]==Block.sandStone.blockID&&blocks[ (y-1) * width * length + z * width + x]==Block.doorWood.blockID)
+						{
+							exitLinks.add(new Point3D(x,y,z));
+						}
+						else if(((y-1) * width * length + z * width + x)>=0&&blocks[ (y-1) * width * length + z * width + x]==Block.doorWood.blockID)
+						{
+							incomingLink=(new Point3D(x,y,z));
+
+						}
 					}
 					else if(blockToReplace==Block.endPortalFrame.blockID)
 					{
-						this.monolithSpawns.add(new Point3D(i+xCooe, j+yCooe, k+zCooe));
+						monolithSpawns.add(new Point3D(x,y,z));
+					
+					}
+					 
+				}
+			}
+		}
+		
+		//determines necessary rotation, reflection, and translation to build the .schematic by finding the difference between the
+		//.schematic incomingLink location which is relative to the .schematic only, and comparing it with the world incoming link coordinates
+		//must also factor in the orientation of the incoming door. 
+		if(orientation==0) //TODO currently broken, only orientation 3 works atm 
+		{
+			xCooe=-incomingLink.getX()+incX;
+			yCooe=-incomingLink.getY()+incY;
+			zCooe=-incomingLink.getZ()+incZ;
+
+		}
+		if(orientation==1)//TODO currently broken, only orientation 3 works atm 
+		{
+			xCooe=-incomingLink.getX()+incX;
+			yCooe=-incomingLink.getY()+incY;
+			zCooe=-incomingLink.getZ()+incZ;
+		}
+		if(orientation==2)//TODO currently broken, only orientation 3 works atm 
+		{
+			xCooe=-incomingLink.getX()+incX;
+			yCooe=-incomingLink.getY()+incY;
+			zCooe=-incomingLink.getZ()+incZ;
+		}
+		if(orientation==3)//TODO this only works because it is the default orientation of the pocket dim
+		{
+			xCooe=-incomingLink.getX()+incX;
+			yCooe=-incomingLink.getY()+incY;
+			zCooe=-incomingLink.getZ()+incZ;
+		}
+		
+		//loop to actually place the blocks
+		for ( x = 0; x < width; ++x) 
+		{
+			for ( y = 0; y < height; ++y) 
+			{
+				for ( z = 0; z < length; ++z) 
+				{
+					
+					int index = y * width * length + z * width + x;
+
+					int blockToReplace=blocks[index];
+					int blockMetaData=blockData[index];
+					NBTTagList tileEntity = tileEntities;
+					
+					//replace tagging blocks with air, and mob blocks with FoR
+					if(blockToReplace==Block.endPortalFrame.blockID)
+					{
 						blockToReplace=0;
 					}
-					else if(Block.blocksList[blockToReplace]==null&&blockToReplace!=0||blockToReplace>158)
+					else if(Block.blocksList[blockToReplace]==null&&blockToReplace!=0||blockToReplace>158) //TODO- replace 158 with max vanilla block ID
 					{
 						blockToReplace=mod_pocketDim.blockDimWall.blockID;
 					}
-
+					
+					//place blocks and metaData
 					if(blockToReplace>0)
 					{
+						//rotate the metaData blocks
+						this.transMeta=this.transformMetadata(blockMetaData, orientation, blockToReplace);
 
-						this.transMeta=this.transformMetadata(blockMetaData, link.linkOrientation, blockToReplace);
-
+						//convert vanilla doors to dim doors, then place vanilla blocks
 						if(blockToReplace==Block.doorIron.blockID)
 						{
-							setBlockDirectly(world,i+xCooe,j+yCooe,k+zCooe,properties.DimensionalDoorID, transMeta );
+							setBlockDirectly(world,x+xCooe,y+yCooe,z+zCooe,properties.DimensionalDoorID, transMeta );
+						}
+						else if(blockToReplace==Block.doorWood.blockID)
+						{
+							setBlockDirectly(world,x+xCooe,y+yCooe,z+zCooe,properties.WarpDoorID, transMeta );
 						}
 						else
-							if(blockToReplace==Block.doorWood.blockID)
-							{
-								setBlockDirectly(world,i+xCooe,j+yCooe,k+zCooe,properties.WarpDoorID, transMeta );
-							}
-							else
-							{
+						{							
+							setBlockDirectly(world,x+xCooe,y+yCooe,z+zCooe,blockToReplace, transMeta );
+						}
 
-								setBlockDirectly(world,i+xCooe,j+yCooe,k+zCooe,blockToReplace, transMeta );
-							}
-
+						//generate container inventories
 						if(Block.blocksList[blockToReplace] instanceof BlockContainer)
 						{
 							/**
@@ -989,49 +991,37 @@ public class SchematicLoader
 								tile.readFromNBT(tag);
 							}
 							**/
-
-
 							
-		                    	//	System.out.println("found container");
-		                    		if(world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe) instanceof TileEntityChest)
-		                    		{
-		                    			TileEntityChest chest = (TileEntityChest) world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe);
-		                    			ChestGenHooks info = DDLoot.DungeonChestInfo;
-		                    			WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand), (TileEntityChest)world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe), info.getCount(rand));
-		                    		}
-		                    		if(world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe) instanceof TileEntityDispenser)
-		                    		{
-		                    			TileEntityDispenser dispenser = (TileEntityDispenser) world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe);
-		                    			dispenser.addItem(new ItemStack(Item.arrow, 64));
+							//fill chests
+		                    if(world.getBlockTileEntity(x+xCooe, y+yCooe, z+zCooe) instanceof TileEntityChest)
+		                    {
+		                    	TileEntityChest chest = (TileEntityChest) world.getBlockTileEntity(x+xCooe, y+yCooe, z+zCooe);
+		                    	ChestGenHooks info = DDLoot.DungeonChestInfo;
+		                    	WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand), (TileEntityChest)world.getBlockTileEntity(x+xCooe, y+yCooe, z+zCooe), info.getCount(rand));
+		                    }
+		                    
+		                    //fill dispensers
+		                    if(world.getBlockTileEntity(x+xCooe, y+yCooe, z+zCooe) instanceof TileEntityDispenser)
+		                    {
+		                    	TileEntityDispenser dispenser = (TileEntityDispenser) world.getBlockTileEntity(x+xCooe, y+yCooe, z+zCooe);
+		                    	dispenser.addItem(new ItemStack(Item.arrow, 64));
 
-		                    		}
+		                    }
 						}
 					}
 				}
 			}
-
-
 		}
 
-
-
-		LinkData outgoingLink = dimHelper.instance.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID);
-
-
-
-
-
-
-
-		for(Point3D point : this.sideLinks)
+		//generate the LinkData defined by the door placement, Iron Dim doors first
+		for(Point3D point : sideLinks)
 		{
-			if(world.getBlockId(point.getX(), point.getY(), point.getZ())==properties.DimensionalDoorID&&world.getBlockId(point.getX(), point.getY()-1, point.getZ())==properties.DimensionalDoorID)
-			{
+			
 
-				int depth = dimHelper.instance.getDimDepth(link.locDimID);
+				int depth = dimHelper.instance.getDimDepth(originDimID);
 				int xNoise = 0;
 				int zNoise =0;
-				switch(world.getBlockMetadata(point.getX(), point.getY()-1, point.getZ()))
+				switch(world.getBlockMetadata(point.getX()+xCooe, point.getY()+yCooe-1, point.getZ()+zCooe))
 				{
 				case 0:
 					xNoise = (int)rand.nextInt(depth+1*200)+depth*50;
@@ -1053,111 +1043,78 @@ public class SchematicLoader
 					zNoise = -(rand.nextInt(depth+1*200)+depth*50);
 
 					break;
-
 				}
 
-
-
-
-
-
-
-				LinkData sideLink = new LinkData(link.destDimID,0,point.getX(), point.getY(), point.getZ(),xNoise+point.getX(), point.getY()+1, zNoise+point.getZ(),true,world.getBlockMetadata(point.getX(), point.getY()-1, point.getZ()));
+				LinkData sideLink = new LinkData(destDimID,0,point.getX()+xCooe, point.getY()+yCooe, point.getZ()+zCooe,xNoise+point.getX()+xCooe, point.getY()+yCooe+1, zNoise+point.getZ()+zCooe,true,world.getBlockMetadata(point.getX()+xCooe, point.getY()+yCooe-1, point.getZ()+zCooe));
 				dimHelper.instance.createPocket(sideLink, true, true);
-
-
-
-
-
-			}
 		}
-		for(Point3D point : this.exitLinks)
+		
+		//generate linkData for wooden dim doors leading to the overworld
+		for(Point3D point : exitLinks)
 		{
 			try
 			{
+				LinkData randomLink=dimHelper.instance.getRandomLinkData(false);
+				LinkData sideLink = new LinkData(destDimID,dimHelper.dimList.get(originDimID).exitDimLink.destDimID,point.getX()+xCooe, point.getY()+yCooe, point.getZ()+zCooe,point.getX()+xCooe, 0, point.getZ()+zCooe,true,world.getBlockMetadata(point.getX()+xCooe, point.getY()+yCooe-1, point.getZ()+zCooe));
 
-				if(world.getBlockId(point.getX(), point.getY(), point.getZ())==properties.WarpDoorID&&world.getBlockId(point.getX(), point.getY()-1, point.getZ())==properties.WarpDoorID&&world.getBlockId(point.getX(), point.getY()-2, point.getZ())==Block.sandStone.blockID)
+				if(sideLink.destDimID==properties.LimboDimensionID)
 				{
-
-					LinkData randomLink=dimHelper.instance.getRandomLinkData(false);
-
-					LinkData sideLink = new LinkData(link.destDimID,dimHelper.dimList.get(link.locDimID).exitDimLink.destDimID,point.getX(), point.getY(), point.getZ(),point.getX(), 0, point.getZ(),true,world.getBlockMetadata(point.getX(), point.getY()-1, point.getZ()));
-
-					if(sideLink.destDimID==properties.LimboDimensionID)
-					{
-						sideLink.destDimID=0;
-					}
-					else if((rand.nextBoolean()&&randomLink!=null))
-					{
-						sideLink.destDimID=randomLink.locDimID;
-						// System.out.println("randomLink");
-					}
-
-
-
-					sideLink.destYCoord=yCoordHelper.getFirstUncovered(sideLink.destDimID, point.getX(),10,point.getZ());
-
-					if(sideLink.destYCoord<5)
-					{
-						sideLink.destYCoord=70;
-					}
-
-					sideLink.linkOrientation=world.getBlockMetadata(point.getX(), point.getY()-1, point.getZ());
-					dimHelper.instance.createLink(sideLink);
-					dimHelper.instance.createLink(sideLink.destDimID , sideLink.locDimID, sideLink.destXCoord, sideLink.destYCoord, sideLink.destZCoord, sideLink.locXCoord, sideLink.locYCoord, sideLink.locZCoord, dimHelper.instance.flipDoorMetadata(sideLink.linkOrientation));
-
-					if(world.getBlockId(point.getX(), point.getY()-3, point.getZ()) == properties.FabricBlockID)
-					{
-						setBlockDirectly(world,point.getX(), point.getY()-2, point.getZ(),Block.stoneBrick.blockID,0);
-
-					}
-					else
-					{
-						setBlockDirectly(world,point.getX(), point.getY()-2, point.getZ(),world.getBlockId(point.getX(), point.getY()-3, point.getZ()),world.getBlockMetadata(point.getX(), point.getY()-3, point.getZ()));
-
-					}
+					sideLink.destDimID=0;
 				}
-				else if ((world.getBlockId(point.getX(), point.getY(), point.getZ()) == properties.WarpDoorID&&world.getBlockId(point.getX(), point.getY()-1, point.getZ())==properties.WarpDoorID&&world.getBlockId(point.getX(), point.getY()-2, point.getZ())!=Block.sandStone.blockID))
+				else if((rand.nextBoolean()&&randomLink!=null))
 				{
-					this.incomingLink = point;
+					sideLink.destDimID=randomLink.locDimID;
+						// System.out.println("randomLink");
+				}
+
+				sideLink.destYCoord=yCoordHelper.getFirstUncovered(sideLink.destDimID, point.getX()+xCooe,10,point.getZ()+zCooe);
+
+				if(sideLink.destYCoord<5)
+				{
+					sideLink.destYCoord=70;
+				}
+
+				sideLink.linkOrientation=world.getBlockMetadata(point.getX()+xCooe, point.getY()+yCooe-1, point.getZ()+zCooe);
+					
+				dimHelper.instance.createLink(sideLink);
+				dimHelper.instance.createLink(sideLink.destDimID , sideLink.locDimID, sideLink.destXCoord, sideLink.destYCoord, sideLink.destZCoord, sideLink.locXCoord, sideLink.locYCoord, sideLink.locZCoord, dimHelper.instance.flipDoorMetadata(sideLink.linkOrientation));
+
+				if(world.getBlockId(point.getX()+xCooe, point.getY()+yCooe-3, point.getZ()+zCooe) == properties.FabricBlockID)
+				{
+					setBlockDirectly(world,point.getX()+xCooe, point.getY()+yCooe-2, point.getZ()+zCooe,Block.stoneBrick.blockID,0);
+				}
+				else
+				{
+					setBlockDirectly(world,point.getX()+xCooe, point.getY()+yCooe-2, point.getZ()+zCooe,world.getBlockId(point.getX()+xCooe, point.getY()+yCooe-3, point.getZ()+zCooe),world.getBlockMetadata(point.getX()+xCooe, point.getY()+yCooe-3, point.getZ()+zCooe));
 				}
 			}
-
-
 			catch(Exception E)
 			{
 				E.printStackTrace();
 			}
-			
-			
-
-
-
 		}
 		
-		for(Point3D point : this.monolithSpawns)
+		//spawn monoliths
+		for(Point3D point : monolithSpawns)
 		{
 			Entity mob = new MobObelisk(world);
-			mob.setLocationAndAngles(point.getX(),point.getY(), point.getZ(), 1, 1);
+			mob.setLocationAndAngles(point.getX()+xCooe,point.getY()+yCooe, point.getZ()+zCooe, 1, 1);
 			world.spawnEntityInWorld(mob);
 		}
-
-
-		if(!this.incomingLink.equals(new Point3D(0,0,0)))
+	}
+	
+	public void generateDungeonPocket(LinkData link)
+	{
+		String filePath=DungeonHelper.instance().defaultBreak.schematicPath;
+		if(dimHelper.dimList.containsKey(link.destDimID))
 		{
-			outgoingLink.locXCoord=this.incomingLink.getX();
-			outgoingLink.locYCoord=this.incomingLink.getY();
-			outgoingLink.locZCoord=this.incomingLink.getZ();
-			outgoingLink.linkOrientation=world.getBlockMetadata(incomingLink.getX(), incomingLink.getY()-1, incomingLink.getZ());
-			dimHelper.instance.createLink(outgoingLink);
-
-			link.destXCoord=this.incomingLink.getX();
-			link.destYCoord=this.incomingLink.getY();
-			link.destZCoord=this.incomingLink.getZ();
-			dimHelper.instance.createLink(link);
-
+			if(dimHelper.dimList.get(link.destDimID).dungeonGenerator==null)
+			{
+				DungeonHelper.instance().generateDungeonLink(link);
+			}
+			filePath = dimHelper.dimList.get(link.destDimID).dungeonGenerator.schematicPath;	
 		}
-
+		this.generateSchematic(link.destXCoord, link.destYCoord, link.destZCoord, link.linkOrientation, link.destDimID, link.locDimID, filePath);
 	}
 
 
@@ -1167,10 +1124,15 @@ public class SchematicLoader
 		{
 			return;
 		}
+		
+		int cX;
+		int cZ;
+		int cY;
+		
 		Chunk chunk;
-		this.cX = x >> 4;
-					this.cZ = z >> 4;
-						this.cY=y >>4;
+		cX = x >> 4;
+					cZ = z >> 4;
+						cY=y >>4;
 
 						int chunkX=(x % 16)< 0 ? ((x) % 16)+16 : ((x) % 16);
 						int chunkZ=((z) % 16)< 0 ? ((z) % 16)+16 : ((z) % 16);
