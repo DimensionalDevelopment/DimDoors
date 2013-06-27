@@ -903,16 +903,16 @@ public class SchematicLoader
 						realZ = (z - entrance.getZ()) + riftZ;
 						break;
 					case (REFERENCE_DOOR_ORIENTATION + 1) % 4: //270 degree CCW rotation
-						realX = (z - entrance.getZ()) + riftX;
-						realZ = -(x - entrance.getX()) + riftZ;
+						realX = -(z - entrance.getZ()) + riftX;
+						realZ = (x - entrance.getX()) + riftZ;	
 						break;
 					case (REFERENCE_DOOR_ORIENTATION + 2) % 4: //180 degree rotation
 						realX = -(x - entrance.getX()) + riftX;
 						realZ = -(z - entrance.getZ()) + riftZ;
 						break;
 					case (REFERENCE_DOOR_ORIENTATION + 3) % 4: //90 degree CCW rotation
-						realX = -(z - entrance.getZ()) + riftX;
-						realZ = (x - entrance.getX()) + riftZ;
+						realX = (z - entrance.getZ()) + riftX;
+						realZ = -(x - entrance.getX()) + riftZ;
 						break;
 				}
 				
@@ -1025,7 +1025,7 @@ public class SchematicLoader
 		//generate linkData for wooden dim doors leading to the overworld
 		for(Point3D point : exitLinks)
 		{
-			//DISABLED FOR TESTING
+			//TODO DISABLED FOR TESTING
 			/*try
 			{
 				LinkData randomLink=dimHelper.instance.getRandomLinkData(false);
@@ -1122,18 +1122,19 @@ public class SchematicLoader
 				rz = tz;
 				break;
 			case 1: //270 degrees counterclockwise
-				rx = tz;
-				rz = -tx;
+				rx = -tz;
+				rz = tx;
 				break;
 			case 2: //180 degrees
 				rx = -tx;
 				rz = -tz;
 				break;
 			case 3: //90 degrees counterclockwise
-				rx = -tz;
-				rz = tx;
+				rx = tz;
+				rz = -tx;
+				
 				break;
-			default: //This should never happen.
+			default: //This should never happen
 				throw new IllegalStateException("Invalid angle value. This should never happen!");
 		}
 		
