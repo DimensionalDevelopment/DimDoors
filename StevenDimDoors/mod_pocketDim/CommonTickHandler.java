@@ -106,7 +106,8 @@ public class CommonTickHandler implements ITickHandler
 		catch (Exception e)
 		{
 			tickCount++;
-			System.out.println("something on tick went wrong");
+			System.out.println("something on tick went wrong: " + e);
+			e.printStackTrace();
 		}
 		tickCount++;
 
