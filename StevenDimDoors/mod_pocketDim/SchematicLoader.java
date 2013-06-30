@@ -1025,11 +1025,31 @@ public class SchematicLoader
 		//generate linkData for wooden dim doors leading to the overworld
 		for(Point3D point : exitLinks)
 		{
-			//TODO DISABLED FOR TESTING
-			/*try
+			try
 			{
+				
+				//Transform doorLocation to the pocket coordinate system.
+				Point3D doorLocation = point.clone();
+				transformPoint(doorLocation, entrance, orientation - REFERENCE_DOOR_ORIENTATION, pocketOrigin);
+				int blockDirection = world.getBlockMetadata(doorLocation.getX(), doorLocation.getY() - 1, doorLocation.getZ());
+
+				//Rotate the link destination noise to point in the same direction as the door exit
+				//and add it to the door's location. Use EAST as the reference orientation since linkDestination
+				//is constructed as if pointing East.
+				Point3D linkDestination = new Point3D(0, 0, 0);
+				transformPoint(linkDestination, zeroPoint, blockDirection - EAST_DOOR_METADATA, doorLocation);
+				
+				
 				LinkData randomLink=dimHelper.instance.getRandomLinkData(false);
-				LinkData sideLink = new LinkData(destDimID,dimHelper.dimList.get(originDimID).exitDimLink.destDimID,point.getX()+offsetX, point.getY()+offsetY, point.getZ()+offsetZ,point.getX()+offsetX, 0, point.getZ()+offsetZ,true,world.getBlockMetadata(point.getX()+offsetX, point.getY()+offsetY-1, point.getZ()+offsetZ));
+				LinkData sideLink = new LinkData(destDimID,
+						dimHelper.dimList.get(originDimID).exitDimLink.destDimID,
+						doorLocation.getX(),
+						doorLocation.getY(),
+						doorLocation.getZ(),
+						linkDestination.getX(),
+						linkDestination.getY() + 1,
+						linkDestination.getZ(),
+						true, blockDirection);
 
 				if(sideLink.destDimID==properties.LimboDimensionID)
 				{
@@ -1041,31 +1061,47 @@ public class SchematicLoader
 					// System.out.println("randomLink");
 				}
 
-				sideLink.destYCoord=yCoordHelper.getFirstUncovered(sideLink.destDimID, point.getX()+offsetX,10,point.getZ()+offsetZ);
+				sideLink.destYCoord=yCoordHelper.getFirstUncovered(sideLink.destDimID, 	linkDestination.getX(),10,linkDestination.getZ());
 
 				if(sideLink.destYCoord<5)
 				{
 					sideLink.destYCoord=70;
 				}
 
-				sideLink.linkOrientation=world.getBlockMetadata(point.getX()+offsetX, point.getY()+offsetY-1, point.getZ()+offsetZ);
+				sideLink.linkOrientation=world.getBlockMetadata(linkDestination.getX(),linkDestination.getY()- 1,linkDestination.getZ());
 
 				dimHelper.instance.createLink(sideLink);
-				dimHelper.instance.createLink(sideLink.destDimID , sideLink.locDimID, sideLink.destXCoord, sideLink.destYCoord, sideLink.destZCoord, sideLink.locXCoord, sideLink.locYCoord, sideLink.locZCoord, dimHelper.instance.flipDoorMetadata(sideLink.linkOrientation));
+				dimHelper.instance.createLink(sideLink.destDimID , 
+						sideLink.locDimID, 
+						sideLink.destXCoord, 
+						sideLink.destYCoord, 
+						sideLink.destZCoord, 
+						sideLink.locXCoord, 
+						sideLink.locYCoord, 
+						sideLink.locZCoord, 
+						dimHelper.instance.flipDoorMetadata(sideLink.linkOrientation));
 
-				if(world.getBlockId(point.getX()+offsetX, point.getY()+offsetY-3, point.getZ()+offsetZ) == properties.FabricBlockID)
+				if(world.getBlockId(linkDestination.getX(),linkDestination.getY() -3,linkDestination.getZ()) == properties.FabricBlockID)
 				{
-					setBlockDirectly(world,point.getX()+offsetX, point.getY()+offsetY-2, point.getZ()+offsetZ,Block.stoneBrick.blockID,0);
+					setBlockDirectly(world,linkDestination.getX(),linkDestination.getY()-2,linkDestination.getZ(),Block.stoneBrick.blockID,0);
 				}
 				else
 				{
-					setBlockDirectly(world,point.getX()+offsetX, point.getY()+offsetY-2, point.getZ()+offsetZ,world.getBlockId(point.getX()+offsetX, point.getY()+offsetY-3, point.getZ()+offsetZ),world.getBlockMetadata(point.getX()+offsetX, point.getY()+offsetY-3, point.getZ()+offsetZ));
-				}
+					setBlockDirectly(world,linkDestination.getX(),
+							linkDestination.getY() - 2,
+							linkDestination.getZ(),
+							world.getBlockId(linkDestination.getX(),
+							linkDestination.getY() -3,
+							linkDestination.getZ()),
+							world.getBlockMetadata(linkDestination.getX(),
+							linkDestination.getY() -3,
+							linkDestination.getZ()));
+				}	
 			}
 			catch(Exception E)
 			{
 				E.printStackTrace();
-			}*/
+			}
 		}
 
 		//spawn monoliths
@@ -1079,6 +1115,11 @@ public class SchematicLoader
 			mob.setLocationAndAngles(frameLocation.getX(), frameLocation.getY(), frameLocation.getZ(), 1, 1); //TODO: Why not set the angles to 0? @.@ ~SenseiKiwi
 			world.spawnEntityInWorld(mob);
 		}
+		
+		Point3D entranceRiftLocation = entrance.clone();
+		transformPoint(entranceRiftLocation, entrance, orientation - REFERENCE_DOOR_ORIENTATION, pocketOrigin);
+		dimHelper.instance.getLinkDataFromCoords(entranceRiftLocation.getX(), entranceRiftLocation.getY(), entranceRiftLocation.getZ(), world).linkOrientation=world.getBlockMetadata(entranceRiftLocation.getX(), entranceRiftLocation.getY()-1, entranceRiftLocation.getZ());
+		setBlockDirectly(world, entranceRiftLocation.getX(), entranceRiftLocation.getY()+1, entranceRiftLocation.getZ(),Block.glowStone.blockID, 0 );
 	}
 	
 	private void transformPoint(Point3D position, Point3D srcOrigin, int angle, Point3D destOrigin)
