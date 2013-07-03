@@ -1039,7 +1039,6 @@ public class SchematicLoader
 				Point3D linkDestination = new Point3D(0, 0, 0);
 				transformPoint(linkDestination, zeroPoint, blockDirection - EAST_DOOR_METADATA, doorLocation);
 				
-				
 				LinkData randomLink=dimHelper.instance.getRandomLinkData(false);
 				LinkData sideLink = new LinkData(destDimID,
 						dimHelper.dimList.get(originDimID).exitDimLink.destDimID,
@@ -1060,14 +1059,12 @@ public class SchematicLoader
 					sideLink.destDimID=randomLink.locDimID;
 					// System.out.println("randomLink");
 				}
-
 				sideLink.destYCoord=yCoordHelper.getFirstUncovered(sideLink.destDimID, 	linkDestination.getX(),10,linkDestination.getZ());
 
 				if(sideLink.destYCoord<5)
 				{
 					sideLink.destYCoord=70;
 				}
-
 				sideLink.linkOrientation=world.getBlockMetadata(linkDestination.getX(),linkDestination.getY()- 1,linkDestination.getZ());
 
 				dimHelper.instance.createLink(sideLink);
@@ -1119,7 +1116,6 @@ public class SchematicLoader
 		Point3D entranceRiftLocation = entrance.clone();
 		transformPoint(entranceRiftLocation, entrance, orientation - REFERENCE_DOOR_ORIENTATION, pocketOrigin);
 		dimHelper.instance.getLinkDataFromCoords(entranceRiftLocation.getX(), entranceRiftLocation.getY(), entranceRiftLocation.getZ(), world).linkOrientation=world.getBlockMetadata(entranceRiftLocation.getX(), entranceRiftLocation.getY()-1, entranceRiftLocation.getZ());
-		setBlockDirectly(world, entranceRiftLocation.getX(), entranceRiftLocation.getY()+1, entranceRiftLocation.getZ(),Block.glowStone.blockID, 0 );
 	}
 	
 	private void transformPoint(Point3D position, Point3D srcOrigin, int angle, Point3D destOrigin)
