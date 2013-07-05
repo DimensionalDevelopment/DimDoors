@@ -36,7 +36,6 @@ public class SchematicLoader
 	private final static int SOUTH_DOOR_METADATA = 1;
 	private final static int WEST_DOOR_METADATA = 2;
 	private final static int NORTH_DOOR_METADATA = 3;
-	private final static int REFERENCE_DOOR_ORIENTATION = NORTH_DOOR_METADATA;
 
 	public int transMeta;
 
@@ -845,6 +844,9 @@ public class SchematicLoader
 		int realY = 0;
 		int realZ = 0;
 		
+		int schematicDoorMeta=0;
+
+		
 		//first loop through the .schematic to load in all rift locations, and monolith spawn locations.
 		//also finds the incomingLink location, which determines the final position of the generated .schematic
 		for ( x = 0; x < width; ++x) 
@@ -857,6 +859,7 @@ public class SchematicLoader
 
 					int blockToReplace=blocks[index];
 					int blockMetaData=blockData[index];
+					
 
 					//NBTTagList tileEntity = tileEntities;
 					//int size = tileEntity.tagCount();
@@ -875,6 +878,7 @@ public class SchematicLoader
 						else if(((y-1) * width * length + z * width + x)>=0&&blocks[ (y-1) * width * length + z * width + x]==Block.doorWood.blockID)
 						{
 							entrance=(new Point3D(x,y,z));
+							schematicDoorMeta=Math.abs(blockData[(y-1) * width * length + z * width + x]+2)%4;
 
 						}
 					}
@@ -896,25 +900,32 @@ public class SchematicLoader
 			{
 				//Compute the X-axis and Z-axis translations that will shift
 				//and rotate our structure properly.
-				switch (orientation)
+			
+				if(orientation == schematicDoorMeta)
 				{
-					case REFERENCE_DOOR_ORIENTATION:
-						realX = (x - entrance.getX()) + riftX;
-						realZ = (z - entrance.getZ()) + riftZ;
-						break;
-					case (REFERENCE_DOOR_ORIENTATION + 1) % 4: //270 degree CCW rotation
-						realX = -(z - entrance.getZ()) + riftX;
-						realZ = (x - entrance.getX()) + riftZ;	
-						break;
-					case (REFERENCE_DOOR_ORIENTATION + 2) % 4: //180 degree rotation
-						realX = -(x - entrance.getX()) + riftX;
-						realZ = -(z - entrance.getZ()) + riftZ;
-						break;
-					case (REFERENCE_DOOR_ORIENTATION + 3) % 4: //90 degree CCW rotation
-						realX = (z - entrance.getZ()) + riftX;
-						realZ = -(x - entrance.getX()) + riftZ;
-						break;
+					realX = (x - entrance.getX()) + riftX;
+					realZ = (z - entrance.getZ()) + riftZ;
+						
 				}
+				else if(orientation==(schematicDoorMeta + 1) % 4)
+				{
+					//270 degree CCW rotation
+					realX = -(z - entrance.getZ()) + riftX;
+					realZ = (x - entrance.getX()) + riftZ;	
+				}
+				else if(orientation== (schematicDoorMeta + 2) % 4)
+				{	
+					//180 degree rotation
+					realX = -(x - entrance.getX()) + riftX;
+					realZ = -(z - entrance.getZ()) + riftZ;
+				}
+				else if(orientation==(schematicDoorMeta + 3) % 4)
+				{
+					//90 degree CCW rotation
+					realX = (z - entrance.getZ()) + riftX;
+					realZ = -(x - entrance.getX()) + riftZ;
+				}
+			
 				
 				for (y = 0; y < height; y++) 
 				{
@@ -1001,7 +1012,7 @@ public class SchematicLoader
 
 			//Transform doorLocation to the pocket coordinate system.
 			Point3D doorLocation = point.clone();
-			transformPoint(doorLocation, entrance, orientation - REFERENCE_DOOR_ORIENTATION, pocketOrigin);
+			transformPoint(doorLocation, entrance, orientation - schematicDoorMeta, pocketOrigin);
 			int blockDirection = world.getBlockMetadata(doorLocation.getX(), doorLocation.getY() - 1, doorLocation.getZ());
 
 			//Rotate the link destination noise to point in the same direction as the door exit
@@ -1030,7 +1041,7 @@ public class SchematicLoader
 				
 				//Transform doorLocation to the pocket coordinate system.
 				Point3D doorLocation = point.clone();
-				transformPoint(doorLocation, entrance, orientation - REFERENCE_DOOR_ORIENTATION, pocketOrigin);
+				transformPoint(doorLocation, entrance, orientation - schematicDoorMeta, pocketOrigin);
 				int blockDirection = world.getBlockMetadata(doorLocation.getX(), doorLocation.getY() - 1, doorLocation.getZ());
 
 				//Rotate the link destination noise to point in the same direction as the door exit
@@ -1106,7 +1117,7 @@ public class SchematicLoader
 		{
 			//Transform the frame block's location to the pocket coordinate system
 			Point3D frameLocation = point.clone();
-			transformPoint(frameLocation, entrance, orientation - REFERENCE_DOOR_ORIENTATION, pocketOrigin);
+			transformPoint(frameLocation, entrance, orientation - schematicDoorMeta, pocketOrigin);
 			
 			Entity mob = new MobObelisk(world);
 			mob.setLocationAndAngles(frameLocation.getX(), frameLocation.getY(), frameLocation.getZ(), 1, 1); //TODO: Why not set the angles to 0? @.@ ~SenseiKiwi
@@ -1114,7 +1125,7 @@ public class SchematicLoader
 		}
 		
 		Point3D entranceRiftLocation = entrance.clone();
-		transformPoint(entranceRiftLocation, entrance, orientation - REFERENCE_DOOR_ORIENTATION, pocketOrigin);
+		transformPoint(entranceRiftLocation, entrance, orientation - schematicDoorMeta, pocketOrigin);
 		dimHelper.instance.getLinkDataFromCoords(entranceRiftLocation.getX(), entranceRiftLocation.getY(), entranceRiftLocation.getZ(), world).linkOrientation=world.getBlockMetadata(entranceRiftLocation.getX(), entranceRiftLocation.getY()-1, entranceRiftLocation.getZ());
 	}
 	

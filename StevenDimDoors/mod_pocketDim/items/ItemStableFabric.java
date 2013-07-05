@@ -55,6 +55,18 @@ public class ItemStableFabric extends Item
 
 			Block block = Block.blocksList[par3World.getBlockId(par4, par5, par6)];
 
+			if(dimHelper.dimList.containsKey(par3World.provider.dimensionId))
+			{
+				if(dimHelper.dimList.get(par3World.provider.dimensionId).isPocket)
+				{
+					if(dimHelper.dimList.get(par3World.provider.dimensionId).dungeonGenerator!=null)
+					{
+						System.out.println("Dungeon name "+dimHelper.dimList.get(par3World.provider.dimensionId).dungeonGenerator.schematicPath);
+
+					}
+				}
+
+			}
 
 
 
