@@ -101,13 +101,10 @@ public class SchematicLoader
 					case 5:
 						metadata = 3;
 						break;
-
-
-
 					}
 
 				}
-				else if(blockID==Block.vine.blockID)
+				else if (blockID==Block.vine.blockID)
 				{
 					switch (metadata)
 					{
@@ -184,18 +181,10 @@ public class SchematicLoader
 					case 10:
 						metadata = 13;
 						break;
-
-
 					}
-
-
-
 				}
-
-				else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor ||blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
+				else if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor ||blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
 				{
-
-
 					switch (metadata)
 					{
 					case 0:
@@ -246,25 +235,12 @@ public class SchematicLoader
 					case 15:
 						metadata = 12;
 						break;
-
-
 					}
-
-
-
 				}
-
-
-
-
-
 				break;
 			case 1:
-
-
 				if(Block.blocksList[blockID] instanceof BlockStairs)
 				{
-
 					switch (metadata)
 					{
 					case 0:
@@ -291,15 +267,13 @@ public class SchematicLoader
 					case 4:
 						metadata = 5;
 						break;
-
 					}
 				}
 
-				else	if(blockID== Block.chest.blockID||blockID== Block.chestTrapped.blockID||blockID==Block.ladder.blockID)
+				else if(blockID== Block.chest.blockID||blockID== Block.chestTrapped.blockID||blockID==Block.ladder.blockID)
 				{
 					switch (metadata)
 					{
-
 					case 2:
 						metadata = 3;
 						break;
@@ -312,9 +286,6 @@ public class SchematicLoader
 					case 5:
 						metadata = 4;
 						break;
-
-
-
 					}
 
 				}
@@ -727,15 +698,12 @@ public class SchematicLoader
 		//second 4 bytes of the block ID
 		byte[] addId = new byte[0];
 
+		NBTTagList tileEntities = null;
 		NBTTagCompound[] tileEntityList;
-
-
 		NBTTagList entities;
-		NBTTagList tileEntities=null;
-
 
 		//the wooden door leading into the pocket
-		Point3D entrance= new Point3D(0,0,0);
+		Point3D entrance = new Point3D(0,0,0);
 
 		//the iron dim doors leading to more pockets
 		ArrayList<Point3D> sideLinks = new ArrayList<Point3D>();
@@ -781,7 +749,7 @@ public class SchematicLoader
 
 			//load ticking things
 			tileEntities = nbtdata.getTagList("TileEntities");
-			tileEntityList = new NBTTagCompound[width*height*length];
+			//tileEntityList = new NBTTagCompound[width*height*length];
 			/**
 			for(int count = 0; count<tileEntities.tagCount(); count++)
 			{
@@ -845,46 +813,45 @@ public class SchematicLoader
 		int realZ = 0;
 		
 		int schematicDoorMeta=0;
-
 		
 		//first loop through the .schematic to load in all rift locations, and monolith spawn locations.
-		//also finds the incomingLink location, which determines the final position of the generated .schematic
-		for ( x = 0; x < width; ++x) 
+		//also finds the incomingLink location, which determines the final position and orientation of the dungeon
+		for ( x = 0; x < width; ++x)
 		{
 			for ( y = 0; y < height; ++y) 
 			{
 				for ( z = 0; z < length; ++z) 
 				{
 					int index = y * width * length + z * width + x;
-
-					int blockToReplace=blocks[index];
-					int blockMetaData=blockData[index];
+					int indexBelow = (y - 1) * width * length + z * width + x;
+					int indexDoubleBelow = (y - 2) * width * length + z * width + x;
 					
+					int currentBlock = blocks[index];
 
 					//NBTTagList tileEntity = tileEntities;
 					//int size = tileEntity.tagCount();
 
 
-					if(blockToReplace==Block.doorIron.blockID&&blocks[ (y-1) * width * length + z * width + x]==Block.doorIron.blockID)
+					if (currentBlock == Block.doorIron.blockID && indexBelow >= 0 && blocks[indexBelow] == Block.doorIron.blockID)
 					{
-						sideLinks.add(new Point3D(x,y,z));
+						sideLinks.add(new Point3D(x, y, z));
 					}
-					else if(blockToReplace==Block.doorWood.blockID)
+					else if (currentBlock == Block.doorWood.blockID)
 					{
-						if( ((y-2) * width * length + z * width + x)>=0&&blocks[ (y-2) * width * length + z * width + x]==Block.sandStone.blockID&&blocks[ (y-1) * width * length + z * width + x]==Block.doorWood.blockID)
+						if (indexDoubleBelow >= 0 && blocks[indexDoubleBelow] == Block.sandStone.blockID &&
+							blocks[indexBelow] == Block.doorWood.blockID)
 						{
-							exitLinks.add(new Point3D(x,y,z));
+							exitLinks.add(new Point3D(x, y, z));
 						}
-						else if(((y-1) * width * length + z * width + x)>=0&&blocks[ (y-1) * width * length + z * width + x]==Block.doorWood.blockID)
+						else if (indexBelow >= 0 && blocks[indexBelow] == Block.doorWood.blockID)
 						{
-							entrance=(new Point3D(x,y,z));
-							schematicDoorMeta=Math.abs(blockData[(y-1) * width * length + z * width + x]+2)%4;
-
+							entrance = new Point3D(x, y, z);
+							schematicDoorMeta = Math.abs(blockData[indexBelow] + 2) % 4;	//TODO: Write a function for extracting a door's orientation from its metadata or at least change this to use bitwise operations.
 						}
 					}
-					else if (blockToReplace == Block.endPortalFrame.blockID)
+					else if (currentBlock == Block.endPortalFrame.blockID)
 					{
-						monolithSpawns.add(new Point3D(x,y,z));
+						monolithSpawns.add(new Point3D(x, y, z));
 					}
 				}
 			}
@@ -892,6 +859,26 @@ public class SchematicLoader
 
 		//Compute the Y-axis translation that places our structure correctly
 		int offsetY = riftY - entrance.getY();
+		
+		//TODO: HAX REMOVE THIS!
+		schematicDoorMeta = NORTH_DOOR_METADATA;
+		
+		if (orientation == schematicDoorMeta)
+		{
+			System.out.println("Intended Orientation: NORTH");
+		}
+		else if (orientation == (schematicDoorMeta + 1) % 4)
+		{
+			System.out.println("Intended Orientation: EAST");
+		}
+		else if (orientation == (schematicDoorMeta + 2) % 4)
+		{
+			System.out.println("Intended Orientation: SOUTH");
+		}
+		else if (orientation == (schematicDoorMeta + 3) % 4)
+		{
+			System.out.println("Intended Orientation: WEST");
+		}
 		
 		//Loop to actually place the blocks
 		for (x = 0; x < width; x++) 
@@ -901,25 +888,24 @@ public class SchematicLoader
 				//Compute the X-axis and Z-axis translations that will shift
 				//and rotate our structure properly.
 			
-				if(orientation == schematicDoorMeta)
+				if (orientation == schematicDoorMeta)
 				{
 					realX = (x - entrance.getX()) + riftX;
 					realZ = (z - entrance.getZ()) + riftZ;
-						
 				}
-				else if(orientation==(schematicDoorMeta + 1) % 4)
+				else if (orientation == (schematicDoorMeta + 1) % 4)
 				{
 					//270 degree CCW rotation
 					realX = -(z - entrance.getZ()) + riftX;
 					realZ = (x - entrance.getX()) + riftZ;	
 				}
-				else if(orientation== (schematicDoorMeta + 2) % 4)
-				{	
+				else if (orientation == (schematicDoorMeta + 2) % 4)
+				{
 					//180 degree rotation
 					realX = -(x - entrance.getX()) + riftX;
 					realZ = -(z - entrance.getZ()) + riftZ;
 				}
-				else if(orientation==(schematicDoorMeta + 3) % 4)
+				else if (orientation == (schematicDoorMeta + 3) % 4)
 				{
 					//90 degree CCW rotation
 					realX = (z - entrance.getZ()) + riftX;
@@ -1196,7 +1182,7 @@ public class SchematicLoader
 		String filePath=DungeonHelper.instance().defaultBreak.schematicPath;
 		if(dimHelper.dimList.containsKey(link.destDimID))
 		{
-			if(dimHelper.dimList.get(link.destDimID).dungeonGenerator==null)
+			if(dimHelper.dimList.get(link.destDimID).dungeonGenerator == null)
 			{
 				DungeonHelper.instance().generateDungeonLink(link);
 			}
