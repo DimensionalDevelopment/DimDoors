@@ -33,8 +33,6 @@ import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 public class SchematicLoader 
 {
 	private final static int EAST_DOOR_METADATA = 0;
-	private final static int SOUTH_DOOR_METADATA = 1;
-	private final static int WEST_DOOR_METADATA = 2;
 	private final static int NORTH_DOOR_METADATA = 3;
 
 	private DDProperties properties = DDProperties.instance();
@@ -812,10 +810,12 @@ public class SchematicLoader
 		Point3D pocketCenter = new Point3D(riftX, riftY, riftZ);
 		Point3D zeroPoint = new Point3D(0, 0, 0);
 		
-		int schematicDoorMeta = 0;
+		//The direction in which the player will enter. Will be set below. The direction is encoded using
+		//the same values as door metadata. Those values are not the same as Minecraft's cardinal directions.
+		int entryDirection = 0;
 		
-		//first loop through the .schematic to load in all rift locations, and monolith spawn locations.
-		//also finds the incomingLink location, which determines the final position and orientation of the dungeon
+		//First loop through the schematic to load in all rift locations and Monolith spawn locations.
+		//Also find the entry door, which determines the final position and orientation of the dungeon.
 		for ( x = 0; x < width; ++x)
 		{
 			for ( y = 0; y < height; ++y) 
@@ -845,7 +845,7 @@ public class SchematicLoader
 						else if (indexBelow >= 0 && blocks[indexBelow] == Block.doorWood.blockID)
 						{
 							schematicEntrance = new Point3D(x, y, z);
-							schematicDoorMeta = Math.abs(blockData[indexBelow] + 2) % 4;	//TODO: Write a function for extracting a door's orientation from its metadata or at least change this to use bitwise operations.
+							entryDirection = Math.abs(blockData[indexBelow] + 2) % 4;	//TODO: Write a function for extracting a door's orientation from its metadata or at least change this to use bitwise operations.
 						}
 					}
 					else if (currentBlock == Block.endPortalFrame.blockID)
@@ -855,9 +855,6 @@ public class SchematicLoader
 				}
 			}
 		}
-		
-		//TODO: HAX REMOVE THIS!
-		schematicDoorMeta = NORTH_DOOR_METADATA;
 		
 		//Loop to actually place the blocks
 		for (x = 0; x < width; x++) 
@@ -871,7 +868,7 @@ public class SchematicLoader
 					pocketPoint.setY(y);
 					pocketPoint.setZ(z);
 					//Transform pocketPoint into the pocket coordinate system
-					transformPoint(pocketPoint, schematicEntrance, orientation - schematicDoorMeta, pocketCenter);
+					transformPoint(pocketPoint, schematicEntrance, orientation - entryDirection, pocketCenter);
 					//Store the transformed coordinates
 					realX = pocketPoint.getX();
 					realY = pocketPoint.getY();
@@ -897,7 +894,8 @@ public class SchematicLoader
 					if (currentBlock > 0)
 					{
 						//Calculate new metadata for blocks that have orientations (e.g. doors, pistons)
-						int fixedMetadata = transformMetadata(blockMetadata, orientation, currentBlock);
+						//We're using a workaround to get the desired rotation relative to the schematic's entrance
+						int fixedMetadata = transformMetadata(blockMetadata, (orientation + NORTH_DOOR_METADATA - entryDirection + 16) % 4, currentBlock);
 
 						//Convert vanilla doors to dim doors or place blocks
 						if (currentBlock == Block.doorIron.blockID)
@@ -946,11 +944,11 @@ public class SchematicLoader
 		}
 		
 		//We'll use an extra block here to restrict the scope of these variables to just inside the block
-		//This is to avoid conflicts with the loops below
+		//This is to avoid declaration conflicts with the loops below
 		{
 			//Set the orientation of the rift exit
 			Point3D entranceRiftLocation = schematicEntrance.clone();
-			transformPoint(entranceRiftLocation, schematicEntrance, orientation - schematicDoorMeta, pocketCenter);
+			transformPoint(entranceRiftLocation, schematicEntrance, orientation - entryDirection, pocketCenter);
 			LinkData sideLink = dimHelper.instance.getLinkDataFromCoords(
 					entranceRiftLocation.getX(),
 					entranceRiftLocation.getY(),
@@ -960,6 +958,7 @@ public class SchematicLoader
 					entranceRiftLocation.getX(),
 					entranceRiftLocation.getY() - 1,
 					entranceRiftLocation.getZ());
+			System.out.println("Metadata Orientation: " + sideLink.linkOrientation);
 		}
 		
 		//Generate the LinkData defined by the door placement, Iron Dim doors first
@@ -971,7 +970,7 @@ public class SchematicLoader
 
 			//Transform doorLocation to the pocket coordinate system
 			Point3D doorLocation = point.clone();
-			transformPoint(doorLocation, schematicEntrance, orientation - schematicDoorMeta, pocketCenter);
+			transformPoint(doorLocation, schematicEntrance, orientation - entryDirection, pocketCenter);
 			int blockDirection = world.getBlockMetadata(doorLocation.getX(), doorLocation.getY() - 1, doorLocation.getZ());
 			
 			//Rotate the link destination noise to point in the same direction as the door exit
@@ -999,7 +998,7 @@ public class SchematicLoader
 			{
 				//Transform doorLocation to the pocket coordinate system.
 				Point3D doorLocation = point.clone();
-				transformPoint(doorLocation, schematicEntrance, orientation - schematicDoorMeta, pocketCenter);
+				transformPoint(doorLocation, schematicEntrance, orientation - entryDirection, pocketCenter);
 				int blockDirection = world.getBlockMetadata(doorLocation.getX(), doorLocation.getY() - 1, doorLocation.getZ());
 				Point3D linkDestination = doorLocation.clone();
 				
@@ -1069,7 +1068,7 @@ public class SchematicLoader
 		{
 			//Transform the frame block's location to the pocket coordinate system
 			Point3D frameLocation = point.clone();
-			transformPoint(frameLocation, schematicEntrance, orientation - schematicDoorMeta, pocketCenter);
+			transformPoint(frameLocation, schematicEntrance, orientation - entryDirection, pocketCenter);
 			
 			Entity mob = new MobObelisk(world);
 			mob.setLocationAndAngles(frameLocation.getX(), frameLocation.getY(), frameLocation.getZ(), 1, 1); //TODO: Why not set the angles to 0? @.@ ~SenseiKiwi
