@@ -958,6 +958,7 @@ public class SchematicLoader
 					entranceRiftLocation.getX(),
 					entranceRiftLocation.getY() - 1,
 					entranceRiftLocation.getZ());
+			//TODO: Remove this debug print
 			System.out.println("Metadata Orientation: " + sideLink.linkOrientation);
 		}
 		
