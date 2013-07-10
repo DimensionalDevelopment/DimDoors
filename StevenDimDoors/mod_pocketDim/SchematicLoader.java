@@ -33,11 +33,7 @@ import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 public class SchematicLoader 
 {
 	private final static int EAST_DOOR_METADATA = 0;
-	private final static int SOUTH_DOOR_METADATA = 1;
-	private final static int WEST_DOOR_METADATA = 2;
 	private final static int NORTH_DOOR_METADATA = 3;
-
-	public int transMeta;
 
 	private DDProperties properties = DDProperties.instance();
 	
@@ -101,13 +97,10 @@ public class SchematicLoader
 					case 5:
 						metadata = 3;
 						break;
-
-
-
 					}
 
 				}
-				else if(blockID==Block.vine.blockID)
+				else if (blockID==Block.vine.blockID)
 				{
 					switch (metadata)
 					{
@@ -184,18 +177,10 @@ public class SchematicLoader
 					case 10:
 						metadata = 13;
 						break;
-
-
 					}
-
-
-
 				}
-
-				else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor ||blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
+				else if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor ||blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
 				{
-
-
 					switch (metadata)
 					{
 					case 0:
@@ -246,25 +231,12 @@ public class SchematicLoader
 					case 15:
 						metadata = 12;
 						break;
-
-
 					}
-
-
-
 				}
-
-
-
-
-
 				break;
 			case 1:
-
-
 				if(Block.blocksList[blockID] instanceof BlockStairs)
 				{
-
 					switch (metadata)
 					{
 					case 0:
@@ -291,15 +263,13 @@ public class SchematicLoader
 					case 4:
 						metadata = 5;
 						break;
-
 					}
 				}
 
-				else	if(blockID== Block.chest.blockID||blockID== Block.chestTrapped.blockID||blockID==Block.ladder.blockID)
+				else if(blockID== Block.chest.blockID||blockID== Block.chestTrapped.blockID||blockID==Block.ladder.blockID)
 				{
 					switch (metadata)
 					{
-
 					case 2:
 						metadata = 3;
 						break;
@@ -312,9 +282,6 @@ public class SchematicLoader
 					case 5:
 						metadata = 4;
 						break;
-
-
-
 					}
 
 				}
@@ -711,9 +678,9 @@ public class SchematicLoader
 
 	public void generateSchematic(int riftX, int riftY, int riftZ, int orientation, int destDimID, int originDimID, String schematicPath)
 	{
-		short width=0;
-		short height=0;
-		short length=0;
+		short width = 0;
+		short height = 0;
+		short length = 0;
 
 		//list of combined blockIds
 		short[] blocks = new short[0];
@@ -727,15 +694,12 @@ public class SchematicLoader
 		//second 4 bytes of the block ID
 		byte[] addId = new byte[0];
 
+		NBTTagList tileEntities = null;
 		NBTTagCompound[] tileEntityList;
-
-
 		NBTTagList entities;
-		NBTTagList tileEntities=null;
-
 
 		//the wooden door leading into the pocket
-		Point3D entrance= new Point3D(0,0,0);
+		Point3D schematicEntrance = new Point3D(0,0,0);
 
 		//the iron dim doors leading to more pockets
 		ArrayList<Point3D> sideLinks = new ArrayList<Point3D>();
@@ -749,9 +713,8 @@ public class SchematicLoader
 		//load the schematic from disk
 		try 
 		{
-
 			InputStream input;
-			String fname= schematicPath ;
+			String fname = schematicPath ;
 
 			if(!(new File(fname).exists()))
 			{
@@ -777,11 +740,11 @@ public class SchematicLoader
 			addId = nbtdata.getByteArray("AddBlocks");
 
 			//create combined block list
-			blocks=new short[blockId.length];
+			blocks = new short[blockId.length];
 
 			//load ticking things
 			tileEntities = nbtdata.getTagList("TileEntities");
-			tileEntityList = new NBTTagCompound[width*height*length];
+			//tileEntityList = new NBTTagCompound[width*height*length];
 			/**
 			for(int count = 0; count<tileEntities.tagCount(); count++)
 			{
@@ -836,138 +799,120 @@ public class SchematicLoader
         long factorB = rand.nextLong() / 2L * 2L + 1L;
         rand.setSeed((riftX >> 4) * factorA + (riftZ >> 4) * factorB ^ world.getSeed());
 
-		//coords relative to the schematic, start at 0 and increase up to max height/width/length
+		//Coordinates relative to the schematic, start at 0 and increase up to max width/height/length
 		int x, y, z;
 
-		//The real coordinates where a block will be placed
-		int realX = 0;
-		int realY = 0;
-		int realZ = 0;
+		//The real point where a block will be placed
+		int realX, realY, realZ;
+		Point3D pocketPoint = new Point3D(0, 0, 0);
 		
-		int schematicDoorMeta=0;
-
+		//The central point of the pocket where we'll be placing the schematic
+		Point3D pocketCenter = new Point3D(riftX, riftY, riftZ);
+		Point3D zeroPoint = new Point3D(0, 0, 0);
 		
-		//first loop through the .schematic to load in all rift locations, and monolith spawn locations.
-		//also finds the incomingLink location, which determines the final position of the generated .schematic
-		for ( x = 0; x < width; ++x) 
+		//The direction in which the player will enter. Will be set below. The direction is encoded using
+		//the same values as door metadata. Those values are not the same as Minecraft's cardinal directions.
+		int entryDirection = 0;
+		
+		//First loop through the schematic to load in all rift locations and Monolith spawn locations.
+		//Also find the entry door, which determines the final position and orientation of the dungeon.
+		for ( x = 0; x < width; ++x)
 		{
 			for ( y = 0; y < height; ++y) 
 			{
 				for ( z = 0; z < length; ++z) 
 				{
 					int index = y * width * length + z * width + x;
-
-					int blockToReplace=blocks[index];
-					int blockMetaData=blockData[index];
+					int indexBelow = (y - 1) * width * length + z * width + x;
+					int indexDoubleBelow = (y - 2) * width * length + z * width + x;
 					
+					int currentBlock = blocks[index];
 
 					//NBTTagList tileEntity = tileEntities;
 					//int size = tileEntity.tagCount();
 
-
-					if(blockToReplace==Block.doorIron.blockID&&blocks[ (y-1) * width * length + z * width + x]==Block.doorIron.blockID)
+					if (currentBlock == Block.doorIron.blockID && indexBelow >= 0 && blocks[indexBelow] == Block.doorIron.blockID)
 					{
-						sideLinks.add(new Point3D(x,y,z));
+						sideLinks.add(new Point3D(x, y, z));
 					}
-					else if(blockToReplace==Block.doorWood.blockID)
+					else if (currentBlock == Block.doorWood.blockID)
 					{
-						if( ((y-2) * width * length + z * width + x)>=0&&blocks[ (y-2) * width * length + z * width + x]==Block.sandStone.blockID&&blocks[ (y-1) * width * length + z * width + x]==Block.doorWood.blockID)
+						if (indexDoubleBelow >= 0 && blocks[indexDoubleBelow] == Block.sandStone.blockID &&
+							blocks[indexBelow] == Block.doorWood.blockID)
 						{
-							exitLinks.add(new Point3D(x,y,z));
+							exitLinks.add(new Point3D(x, y, z));
 						}
-						else if(((y-1) * width * length + z * width + x)>=0&&blocks[ (y-1) * width * length + z * width + x]==Block.doorWood.blockID)
+						else if (indexBelow >= 0 && blocks[indexBelow] == Block.doorWood.blockID)
 						{
-							entrance=(new Point3D(x,y,z));
-							schematicDoorMeta=Math.abs(blockData[(y-1) * width * length + z * width + x]+2)%4;
-
+							schematicEntrance = new Point3D(x, y, z);
+							entryDirection = Math.abs(blockData[indexBelow] + 2) % 4;	//TODO: Write a function for extracting a door's orientation from its metadata or at least change this to use bitwise operations.
 						}
 					}
-					else if (blockToReplace == Block.endPortalFrame.blockID)
+					else if (currentBlock == Block.endPortalFrame.blockID)
 					{
-						monolithSpawns.add(new Point3D(x,y,z));
+						monolithSpawns.add(new Point3D(x, y, z));
 					}
 				}
 			}
 		}
-
-		//Compute the Y-axis translation that places our structure correctly
-		int offsetY = riftY - entrance.getY();
 		
 		//Loop to actually place the blocks
 		for (x = 0; x < width; x++) 
 		{
 			for (z = 0; z < length; z++) 
 			{
-				//Compute the X-axis and Z-axis translations that will shift
-				//and rotate our structure properly.
-			
-				if(orientation == schematicDoorMeta)
-				{
-					realX = (x - entrance.getX()) + riftX;
-					realZ = (z - entrance.getZ()) + riftZ;
-						
-				}
-				else if(orientation==(schematicDoorMeta + 1) % 4)
-				{
-					//270 degree CCW rotation
-					realX = -(z - entrance.getZ()) + riftX;
-					realZ = (x - entrance.getX()) + riftZ;	
-				}
-				else if(orientation== (schematicDoorMeta + 2) % 4)
-				{	
-					//180 degree rotation
-					realX = -(x - entrance.getX()) + riftX;
-					realZ = -(z - entrance.getZ()) + riftZ;
-				}
-				else if(orientation==(schematicDoorMeta + 3) % 4)
-				{
-					//90 degree CCW rotation
-					realX = (z - entrance.getZ()) + riftX;
-					realZ = -(x - entrance.getX()) + riftZ;
-				}
-			
-				
 				for (y = 0; y < height; y++) 
 				{
-					int index = y * width * length + z * width + x;
-					realY = y + offsetY;
+					//Reinitialize pocketPoint with the current schematic coordinate system
+					pocketPoint.setX(x);
+					pocketPoint.setY(y);
+					pocketPoint.setZ(z);
+					//Transform pocketPoint into the pocket coordinate system
+					transformPoint(pocketPoint, schematicEntrance, orientation - entryDirection, pocketCenter);
+					//Store the transformed coordinates
+					realX = pocketPoint.getX();
+					realY = pocketPoint.getY();
+					realZ = pocketPoint.getZ();
 
-					int blockToReplace=blocks[index];
-					int blockMetaData=blockData[index];
+					int index = y * width * length + z * width + x;
+					int currentBlock = blocks[index];
+					int blockMetadata = blockData[index];
 					NBTTagList tileEntity = tileEntities;
 
-					//replace tagging blocks with air, and mob blocks with FoR
-					if(blockToReplace==Block.endPortalFrame.blockID)
+					//replace tagging blocks with air, and mod blocks with FoR
+					if (currentBlock == Block.endPortalFrame.blockID)
 					{
-						blockToReplace=0;
+						currentBlock = 0;
 					}
-					else if(Block.blocksList[blockToReplace]==null&&blockToReplace!=0||blockToReplace>158) //TODO- replace 158 with max vanilla block ID
+					else if ((Block.blocksList[currentBlock] == null && currentBlock != 0) ||
+							(currentBlock > 158 && currentBlock != mod_pocketDim.blockDimWallPerm.blockID)) //TODO- replace 158 with max vanilla block ID
 					{
-						blockToReplace=mod_pocketDim.blockDimWall.blockID;
+						currentBlock = mod_pocketDim.blockDimWall.blockID;
 					}
 
-					//place blocks and metaData
-					if(blockToReplace>0)
+					//Place blocks and set metadata
+					if (currentBlock > 0)
 					{
-						//rotate the metaData blocks
-						this.transMeta=this.transformMetadata(blockMetaData, orientation, blockToReplace);
+						//Calculate new metadata for blocks that have orientations (e.g. doors, pistons)
+						//We're using a workaround to get the desired rotation relative to the schematic's entrance
+						int fixedMetadata = transformMetadata(blockMetadata, (orientation + NORTH_DOOR_METADATA - entryDirection + 16) % 4, currentBlock);
 
-						//convert vanilla doors to dim doors, then place vanilla blocks
-						if(blockToReplace==Block.doorIron.blockID)
+						//Convert vanilla doors to dim doors or place blocks
+						if (currentBlock == Block.doorIron.blockID)
 						{
-							setBlockDirectly(world,realX, realY, realZ,properties.DimensionalDoorID, transMeta );
+							setBlockDirectly(world, realX, realY, realZ, properties.DimensionalDoorID, fixedMetadata);
 						}
-						else if(blockToReplace==Block.doorWood.blockID)
+						else if (currentBlock == Block.doorWood.blockID)
 						{
-							setBlockDirectly(world,realX, realY, realZ,properties.WarpDoorID, transMeta );
+							setBlockDirectly(world, realX, realY, realZ, properties.WarpDoorID, fixedMetadata);
 						}
 						else
 						{							
-							setBlockDirectly(world,realX, realY, realZ,blockToReplace, transMeta );
+							setBlockDirectly(world, realX, realY, realZ, currentBlock, fixedMetadata);
 						}
 
-						//generate container inventories
-						if(Block.blocksList[blockToReplace] instanceof BlockContainer)
+						//Fill containers (e.g. chests, dispensers)
+						if(Block.blocksList[currentBlock] instanceof BlockContainer)
 						{
 							/**
 							TileEntity tile = world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe);
@@ -978,43 +923,56 @@ public class SchematicLoader
 							}
 							 **/
 
-							//fill chests
-							if(world.getBlockTileEntity(realX, realY, realZ) instanceof TileEntityChest)
+							//Fill chests
+							if (world.getBlockTileEntity(realX, realY, realZ) instanceof TileEntityChest)
 							{
 								TileEntityChest chest = (TileEntityChest) world.getBlockTileEntity(realX, realY, realZ);
 								ChestGenHooks info = DDLoot.DungeonChestInfo;
-								WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand), (TileEntityChest)world.getBlockTileEntity(realX, realY, realZ), info.getCount(rand));
+								WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand), chest, info.getCount(rand));
 							}
 
-							//fill dispensers
-							if(world.getBlockTileEntity(realX, realY, realZ) instanceof TileEntityDispenser)
+							//Fill dispensers
+							if (world.getBlockTileEntity(realX, realY, realZ) instanceof TileEntityDispenser)
 							{
 								TileEntityDispenser dispenser = (TileEntityDispenser) world.getBlockTileEntity(realX, realY, realZ);
 								dispenser.addItem(new ItemStack(Item.arrow, 64));
-
 							}
 						}
 					}
 				}
 			}
 		}
-
-		//Set up variables to use transformPoint()
-		Point3D pocketOrigin = new Point3D(riftX, riftY, riftZ);
-		Point3D zeroPoint = new Point3D(0, 0, 0);
+		
+		//We'll use an extra block here to restrict the scope of these variables to just inside the block
+		//This is to avoid declaration conflicts with the loops below
+		{
+			//Set the orientation of the rift exit
+			Point3D entranceRiftLocation = schematicEntrance.clone();
+			transformPoint(entranceRiftLocation, schematicEntrance, orientation - entryDirection, pocketCenter);
+			LinkData sideLink = dimHelper.instance.getLinkDataFromCoords(
+					entranceRiftLocation.getX(),
+					entranceRiftLocation.getY(),
+					entranceRiftLocation.getZ(),
+					world);
+			sideLink.linkOrientation = world.getBlockMetadata(
+					entranceRiftLocation.getX(),
+					entranceRiftLocation.getY() - 1,
+					entranceRiftLocation.getZ());
+			System.out.println("Metadata Orientation: " + sideLink.linkOrientation);
+		}
 		
 		//Generate the LinkData defined by the door placement, Iron Dim doors first
 		for(Point3D point : sideLinks)
 		{
-			int depth = dimHelper.instance.getDimDepth(originDimID);
-			int forwardNoise = MathHelper.getRandomIntegerInRange(rand, -50 * (depth + 1), 150 * (depth + 1));
-			int sidewaysNoise = MathHelper.getRandomIntegerInRange(rand, -10 * (depth + 1), 10 * (depth + 1));
+			int depth = dimHelper.instance.getDimDepth(originDimID) + 1;
+			int forwardNoise = MathHelper.getRandomIntegerInRange(rand, -50 * depth, 150 * depth);
+			int sidewaysNoise = MathHelper.getRandomIntegerInRange(rand, -10 * depth, 10 * depth);
 
-			//Transform doorLocation to the pocket coordinate system.
+			//Transform doorLocation to the pocket coordinate system
 			Point3D doorLocation = point.clone();
-			transformPoint(doorLocation, entrance, orientation - schematicDoorMeta, pocketOrigin);
+			transformPoint(doorLocation, schematicEntrance, orientation - entryDirection, pocketCenter);
 			int blockDirection = world.getBlockMetadata(doorLocation.getX(), doorLocation.getY() - 1, doorLocation.getZ());
-
+			
 			//Rotate the link destination noise to point in the same direction as the door exit
 			//and add it to the door's location. Use EAST as the reference orientation since linkDestination
 			//is constructed as if pointing East.
@@ -1033,24 +991,18 @@ public class SchematicLoader
 			dimHelper.instance.createPocket(sideLink, true, true);
 		}
 
-		//generate linkData for wooden dim doors leading to the overworld
+		//Generate linkData for wooden dim doors leading to the overworld
 		for(Point3D point : exitLinks)
 		{
 			try
 			{
-				
 				//Transform doorLocation to the pocket coordinate system.
 				Point3D doorLocation = point.clone();
-				transformPoint(doorLocation, entrance, orientation - schematicDoorMeta, pocketOrigin);
+				transformPoint(doorLocation, schematicEntrance, orientation - entryDirection, pocketCenter);
 				int blockDirection = world.getBlockMetadata(doorLocation.getX(), doorLocation.getY() - 1, doorLocation.getZ());
-
-				//Rotate the link destination noise to point in the same direction as the door exit
-				//and add it to the door's location. Use EAST as the reference orientation since linkDestination
-				//is constructed as if pointing East.
-				Point3D linkDestination = new Point3D(0, 0, 0);
-				transformPoint(linkDestination, zeroPoint, blockDirection - EAST_DOOR_METADATA, doorLocation);
+				Point3D linkDestination = doorLocation.clone();
 				
-				LinkData randomLink=dimHelper.instance.getRandomLinkData(false);
+				LinkData randomLink = dimHelper.instance.getRandomLinkData(false);
 				LinkData sideLink = new LinkData(destDimID,
 						dimHelper.dimList.get(originDimID).exitDimLink.destDimID,
 						doorLocation.getX(),
@@ -1061,22 +1013,21 @@ public class SchematicLoader
 						linkDestination.getZ(),
 						true, blockDirection);
 
-				if(sideLink.destDimID==properties.LimboDimensionID)
+				if (sideLink.destDimID == properties.LimboDimensionID)
 				{
-					sideLink.destDimID=0;
+					sideLink.destDimID = 0;
 				}
-				else if((rand.nextBoolean()&&randomLink!=null))
+				else if ((rand.nextBoolean() && randomLink != null))
 				{
-					sideLink.destDimID=randomLink.locDimID;
-					// System.out.println("randomLink");
+					sideLink.destDimID = randomLink.locDimID;
 				}
-				sideLink.destYCoord=yCoordHelper.getFirstUncovered(sideLink.destDimID, 	linkDestination.getX(),10,linkDestination.getZ());
+				sideLink.destYCoord = yCoordHelper.getFirstUncovered(sideLink.destDimID, linkDestination.getX(), 10, linkDestination.getZ());
 
-				if(sideLink.destYCoord<5)
+				if (sideLink.destYCoord < 5)
 				{
-					sideLink.destYCoord=70;
+					sideLink.destYCoord = 70;
 				}
-				sideLink.linkOrientation=world.getBlockMetadata(linkDestination.getX(),linkDestination.getY()- 1,linkDestination.getZ());
+				sideLink.linkOrientation = world.getBlockMetadata(linkDestination.getX(), linkDestination.getY() - 1, linkDestination.getZ());
 
 				dimHelper.instance.createLink(sideLink);
 				dimHelper.instance.createLink(sideLink.destDimID , 
@@ -1089,7 +1040,7 @@ public class SchematicLoader
 						sideLink.locZCoord, 
 						dimHelper.instance.flipDoorMetadata(sideLink.linkOrientation));
 
-				if(world.getBlockId(linkDestination.getX(),linkDestination.getY() -3,linkDestination.getZ()) == properties.FabricBlockID)
+				if (world.getBlockId(linkDestination.getX(),linkDestination.getY() -3,linkDestination.getZ()) == properties.FabricBlockID)
 				{
 					setBlockDirectly(world,linkDestination.getX(),linkDestination.getY()-2,linkDestination.getZ(),Block.stoneBrick.blockID,0);
 				}
@@ -1106,27 +1057,23 @@ public class SchematicLoader
 							linkDestination.getZ()));
 				}	
 			}
-			catch(Exception E)
+			catch (Exception E)
 			{
 				E.printStackTrace();
 			}
 		}
 
-		//spawn monoliths
+		//Spawn monoliths
 		for(Point3D point : monolithSpawns)
 		{
 			//Transform the frame block's location to the pocket coordinate system
 			Point3D frameLocation = point.clone();
-			transformPoint(frameLocation, entrance, orientation - schematicDoorMeta, pocketOrigin);
+			transformPoint(frameLocation, schematicEntrance, orientation - entryDirection, pocketCenter);
 			
 			Entity mob = new MobObelisk(world);
 			mob.setLocationAndAngles(frameLocation.getX(), frameLocation.getY(), frameLocation.getZ(), 1, 1); //TODO: Why not set the angles to 0? @.@ ~SenseiKiwi
 			world.spawnEntityInWorld(mob);
 		}
-		
-		Point3D entranceRiftLocation = entrance.clone();
-		transformPoint(entranceRiftLocation, entrance, orientation - schematicDoorMeta, pocketOrigin);
-		dimHelper.instance.getLinkDataFromCoords(entranceRiftLocation.getX(), entranceRiftLocation.getY(), entranceRiftLocation.getZ(), world).linkOrientation=world.getBlockMetadata(entranceRiftLocation.getX(), entranceRiftLocation.getY()-1, entranceRiftLocation.getZ());
 	}
 	
 	private void transformPoint(Point3D position, Point3D srcOrigin, int angle, Point3D destOrigin)
@@ -1169,7 +1116,7 @@ public class SchematicLoader
 				rx = tx;
 				rz = tz;
 				break;
-			case 1: //270 degrees counterclockwise
+			case 1: //90 degrees clockwise
 				rx = -tz;
 				rz = tx;
 				break;
@@ -1177,7 +1124,7 @@ public class SchematicLoader
 				rx = -tx;
 				rz = -tz;
 				break;
-			case 3: //90 degrees counterclockwise
+			case 3: //270 degrees clockwise
 				rx = tz;
 				rz = -tx;
 				
@@ -1196,7 +1143,7 @@ public class SchematicLoader
 		String filePath=DungeonHelper.instance().defaultBreak.schematicPath;
 		if(dimHelper.dimList.containsKey(link.destDimID))
 		{
-			if(dimHelper.dimList.get(link.destDimID).dungeonGenerator==null)
+			if(dimHelper.dimList.get(link.destDimID).dungeonGenerator == null)
 			{
 				DungeonHelper.instance().generateDungeonLink(link);
 			}
