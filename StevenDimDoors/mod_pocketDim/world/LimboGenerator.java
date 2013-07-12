@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.world;
 import java.util.List;
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -33,7 +34,6 @@ import net.minecraftforge.event.terraingen.ChunkProviderEvent;
 
 public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvider
 {
-	public static final int MAX_MONOLITH_SPAWNING_CHANCE = 100;
 	private static Random rand;
 
 	/** A NoiseGeneratorOctaves used in generating terrain */
@@ -158,15 +158,17 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 		this.rand.setSeed((long)par1 * 341873128712L + (long)par2 * 132897987541L);
 		byte[] var3 = new byte[32768];
 		this.generateTerrain(par1, par2, var3);
-		this.caveGenerator.generate(this, this.worldObj, par1, par2, var3);
-
-
-
-
 		Chunk var4 = new Chunk(this.worldObj, var3, par1, par2);
-
-
 		var4.generateSkylightMap();
+		
+		if(!var4.isTerrainPopulated)
+		{
+			var4.isTerrainPopulated=true;
+			CommonTickHandler.chunksToPopulate.add(new int[] {properties.LimboDimensionID,par1,par2});
+		}
+			
+		
+	
 		return var4;
 	}
 	@Override
@@ -178,50 +180,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 	@Override
 	public void populate(IChunkProvider var1, int var2, int var3) 
 	{
-		if (rand.nextInt(MAX_MONOLITH_SPAWNING_CHANCE) < properties.MonolithSpawningChance)
-		{
-			int y =0;
-			int x = var2*16 + rand.nextInt(16);
-			int z = var3*16 + rand.nextInt(16);
-			int yTest;
-			do
-			{
-	
-				x = var2*16 + rand.nextInt(16);
-				z = var3*16 + rand.nextInt(16);
-	
-				while(this.worldObj.getBlockId(x, y, z)==0&&y<255)
-				{
-					y++;
-				}
-				y = yCoordHelper.getFirstUncovered(this.worldObj,x , y+2, z);
-	
-				yTest=yCoordHelper.getFirstUncovered(this.worldObj,x , y+5, z);
-				if(yTest>245)
-				{
-					return;
-				}
-				
-				int jumpSanity=0;
-				int jumpHeight=0;
-				do
-				{
-					jumpHeight = y+rand.nextInt(25);
-					
-					jumpSanity++;
-				}
-				while(!this.worldObj.isAirBlock(x,jumpHeight+6 , z)&&jumpSanity<20);
-				
-				
-				Entity mob = new MobObelisk(this.worldObj);
-				mob.setLocationAndAngles(x, jumpHeight, z, 1, 1);
-	
-				
-				this.worldObj.spawnEntityInWorld(mob);
-	
-			}
-			while (yTest > y);
-		}
+		
 	}
 
 	@Override
