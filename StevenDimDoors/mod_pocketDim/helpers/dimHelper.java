@@ -824,7 +824,7 @@ public class dimHelper extends DimensionManager
 		DeleteFolder.deleteFolder(save);
 		dimData.hasBeenFilled = false;
 		dimData.hasDoor = false;
-		for(LinkData link : dimData.printAllLinkData())
+		for(LinkData link : dimData.getLinksInDim())
 		{
 			link.hasGennedDoor = false;
 			LinkData linkOut = this.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID);
@@ -1248,7 +1248,7 @@ public class dimHelper extends DimensionManager
 				{
 					break;
 				}
-				linksInDim = dimData.printAllLinkData();
+				linksInDim = dimData.getLinksInDim();
 				if(!linksInDim.isEmpty())
 				{
 					break;

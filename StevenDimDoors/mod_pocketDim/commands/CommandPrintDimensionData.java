@@ -56,7 +56,7 @@ public class CommandPrintDimensionData extends DDCommandBase
 			return DDCommandResult.UNREGISTERED_DIMENSION;
 		}
 
-		ArrayList<LinkData> links = dimData.printAllLinkData();
+		ArrayList<LinkData> links = dimData.getLinksInDim();
 
 		sender.sendChatToPlayer("Dimension ID = " + dimData.dimID);
 		sender.sendChatToPlayer("Dimension Depth = " + dimData.depth);

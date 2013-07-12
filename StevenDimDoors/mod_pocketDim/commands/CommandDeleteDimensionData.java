@@ -61,7 +61,7 @@ public class CommandDeleteDimensionData extends DDCommandBase
 					for(DimData dimData :dimHelper.dimList.values())
 					{
 						Collection<LinkData> links= new ArrayList<LinkData>();
-						links.addAll( dimData.printAllLinkData());
+						links.addAll( dimData.getLinksInDim());
 					
 						for(LinkData link : links)
 						{

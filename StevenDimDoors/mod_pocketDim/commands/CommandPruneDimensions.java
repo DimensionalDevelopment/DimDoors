@@ -47,7 +47,7 @@ public class CommandPruneDimensions extends DDCommandBase
 		
 		for (DimData data : allDims)
 		{
-			for (LinkData link : data.printAllLinkData())
+			for (LinkData link : data.getLinksInDim())
 			{
 				linkedDimensions.add(link.destDimID);
 			}
