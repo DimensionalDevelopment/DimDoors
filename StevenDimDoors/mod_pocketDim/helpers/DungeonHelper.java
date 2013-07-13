@@ -15,6 +15,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -531,6 +532,8 @@ public class DungeonHelper
 		int depth = dimHelper.instance.getDimDepth(incoming.locDimID);
 		int depthWeight = rand.nextInt(depth + 2) + rand.nextInt(depth + 2) - 2;
 
+		ArrayList array = getDungeonDataBelow(dimHelper.dimList.get(incoming.destDimID));
+		array.hashCode();
 		int count = 10;
 		boolean flag = true;
 		try
@@ -717,5 +720,37 @@ public class DungeonHelper
 		@SuppressWarnings("unchecked")
 		WeightedContainer<DungeonGenerator> resultContainer = (WeightedContainer<DungeonGenerator>) WeightedRandom.getRandomItem(random, weights);
 		return 	(resultContainer != null) ? resultContainer.getData() : null;
+	}
+	public static ArrayList<DungeonGenerator> getDungeonDataBelow(DimData dimData)
+	{
+		DimData startingDim = dimHelper.dimList.get(dimHelper.instance.getLinkDataFromCoords(dimData.exitDimLink.destXCoord, dimData.exitDimLink.destYCoord, dimData.exitDimLink.destZCoord, dimData.exitDimLink.destDimID).destDimID);
+
+		return getDungeonDataAbove(startingDim);
+	}
+	private static ArrayList<DungeonGenerator> getDungeonDataAbove(DimData dimData)
+	{
+		ArrayList<DungeonGenerator> dungeonData = new ArrayList<DungeonGenerator>();
+		if(dimData.dungeonGenerator!=null)
+		{
+			dungeonData.add(dimData.dungeonGenerator);
+			
+			for(LinkData link : dimData.getLinksInDim())
+			{
+				if(dimHelper.dimList.containsKey(link.destDimID))
+				{
+					if(dimHelper.dimList.get(link.destDimID).dungeonGenerator!=null&&dimHelper.instance.getDimDepth(link.destDimID)==dimData.depth+1)
+					{
+						for(DungeonGenerator dungeonGen :getDungeonDataAbove(dimHelper.dimList.get(link.destDimID)) )
+						{
+							if(!dungeonData.contains(dungeonGen))
+							{
+								dungeonData.add(dungeonGen);
+							}
+						}
+					}
+				}
+			}
+		}
+		return dungeonData;
 	}
 }
