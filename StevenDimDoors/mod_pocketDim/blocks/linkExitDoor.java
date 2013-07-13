@@ -26,6 +26,7 @@ public class linkExitDoor extends ExitDoor
 		
 		super(par1,  Material.wood);
 		//this.blockIndexInTexture = 20;
+
 		
 		
 		// TODO Auto-generated constructor stub

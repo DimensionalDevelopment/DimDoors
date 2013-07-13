@@ -32,7 +32,7 @@ public class ItemRiftBlade extends itemDimDoor
 		super(par1, par2Material);
 
 		// this.setTextureFile("/PocketBlockTextures.png");
-		this.setCreativeTab(CreativeTabs.tabTransport);
+        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 		this.setMaxStackSize(1);
 
 		//   this.itemIcon=5;

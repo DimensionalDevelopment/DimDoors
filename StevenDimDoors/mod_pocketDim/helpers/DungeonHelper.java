@@ -532,8 +532,7 @@ public class DungeonHelper
 		int depth = dimHelper.instance.getDimDepth(incoming.locDimID);
 		int depthWeight = rand.nextInt(depth + 2) + rand.nextInt(depth + 2) - 2;
 
-		ArrayList array = getDungeonDataBelow(dimHelper.dimList.get(incoming.destDimID));
-		array.hashCode();
+		
 		int count = 10;
 		boolean flag = true;
 		try
@@ -651,6 +650,11 @@ public class DungeonHelper
 					{
 						flag = false;
 					}
+					
+					if(getDungeonDataInChain(dimHelper.dimList.get(incoming.locDimID)).contains(dungeon))
+					{
+						flag=false;
+					}
 				}
 				while (!flag && count > 0);
 			}
@@ -721,13 +725,13 @@ public class DungeonHelper
 		WeightedContainer<DungeonGenerator> resultContainer = (WeightedContainer<DungeonGenerator>) WeightedRandom.getRandomItem(random, weights);
 		return 	(resultContainer != null) ? resultContainer.getData() : null;
 	}
-	public static ArrayList<DungeonGenerator> getDungeonDataBelow(DimData dimData)
+	public static ArrayList<DungeonGenerator> getDungeonDataInChain(DimData dimData)
 	{
 		DimData startingDim = dimHelper.dimList.get(dimHelper.instance.getLinkDataFromCoords(dimData.exitDimLink.destXCoord, dimData.exitDimLink.destYCoord, dimData.exitDimLink.destZCoord, dimData.exitDimLink.destDimID).destDimID);
 
-		return getDungeonDataAbove(startingDim);
+		return getDungeonDataBelow(startingDim);
 	}
-	private static ArrayList<DungeonGenerator> getDungeonDataAbove(DimData dimData)
+	private static ArrayList<DungeonGenerator> getDungeonDataBelow(DimData dimData)
 	{
 		ArrayList<DungeonGenerator> dungeonData = new ArrayList<DungeonGenerator>();
 		if(dimData.dungeonGenerator!=null)
@@ -740,7 +744,7 @@ public class DungeonHelper
 				{
 					if(dimHelper.dimList.get(link.destDimID).dungeonGenerator!=null&&dimHelper.instance.getDimDepth(link.destDimID)==dimData.depth+1)
 					{
-						for(DungeonGenerator dungeonGen :getDungeonDataAbove(dimHelper.dimList.get(link.destDimID)) )
+						for(DungeonGenerator dungeonGen :getDungeonDataBelow(dimHelper.dimList.get(link.destDimID)) )
 						{
 							if(!dungeonData.contains(dungeonGen))
 							{

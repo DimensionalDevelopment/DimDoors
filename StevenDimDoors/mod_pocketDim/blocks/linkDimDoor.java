@@ -23,8 +23,10 @@ public class linkDimDoor extends dimDoor
 {
 	private Icon blockIconBottom;
 	public linkDimDoor(int par1, Material material) {
+		
 		super(par1, material);
 		// TODO Auto-generated constructor stub
+
 	}
 
 	

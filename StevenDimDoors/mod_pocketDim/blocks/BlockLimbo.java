@@ -32,7 +32,7 @@ public class BlockLimbo extends Block
 	{
 		 super(i, Material.ground);
 	        setTickRandomly(false);
-	        this.setCreativeTab(CreativeTabs.tabBlock);
+	         this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 	       
 	       
 	        
