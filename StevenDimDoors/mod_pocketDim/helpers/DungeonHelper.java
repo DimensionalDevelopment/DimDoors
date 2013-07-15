@@ -12,7 +12,9 @@ import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
@@ -392,7 +394,7 @@ public class DungeonHelper
 		
 		xEnd = centerX + MAX_EXPORT_RADIUS;
 		zEnd = centerZ + MAX_EXPORT_RADIUS;
-		yEnd = Math.min(centerY - MAX_EXPORT_RADIUS, world.getActualHeight());
+		yEnd = Math.min(centerY + MAX_EXPORT_RADIUS, world.getActualHeight());
 		
 		//This could be done more efficiently, but honestly, this is the simplest approach and it
 		//makes it easy for us to verify that the code is correct.
@@ -421,7 +423,7 @@ public class DungeonHelper
 		short height = (short) (yMax - yMin + 1);
 		short length = (short) (zMax - zMin + 1);
 
-		ArrayList<NBTCompoundTag> tileEntities = new ArrayList<NBTCompoundTag>();
+		//ArrayList<NBTCompoundTag> tileEntities = new ArrayList<NBTCompoundTag>();
 		byte[] blocks = new byte[width * height * length];
 		byte[] addBlocks = null;
 		byte[] blockData = new byte[width * height * length];
@@ -474,10 +476,10 @@ public class DungeonHelper
 					if (Block.blocksList[blockID] instanceof BlockContainer) 
 					{
 						//Export container information
-						TileEntity container = world.getBlockTileEntity(x + xMin, y + yMin, z + zMin);
+						/*TileEntity container = world.getBlockTileEntity(x + xMin, y + yMin, z + zMin);
 						NBTTagCompound entityData = new NBTTagCompound();
 						
-						container.writeToNBT(entityData);
+						container.writeToNBT(entityData);*/
 						
 						
 						//TODO fix this
@@ -502,27 +504,31 @@ public class DungeonHelper
 			}
 		}
 		
-		HashMap<String, Tag> schematic = new HashMap<String, Tag>();
+		NBTTagCompound schematicTag = new NBTTagCompound("Schematic");
 
-		schematic.put("Blocks", new ByteArrayTag("Blocks", blocks));
-		schematic.put("Data", new ByteArrayTag("Data", blockData));
+		schematicTag.setShort("Width", width);
+		schematicTag.setShort("Length", length);
+		schematicTag.setShort("Height", height);
 		
-		schematic.put("Width", new ShortTag("Width", (short) width));
-		schematic.put("Length", new ShortTag("Length", (short) length));
-		schematic.put("Height", new ShortTag("Height", (short) height));
-		schematic.put("TileEntites", new ListTag("TileEntities", CompoundTag.class, tileEntities));
+		schematicTag.setByteArray("Blocks", blocks);
+		schematicTag.setByteArray("Data", blockData);
+		
+		schematicTag.setTag("Entities", new NBTTagList());
+		schematicTag.setTag("TileEntities", new NBTTagList());
+		schematicTag.setString("Material", "Alpha");
 		
 		if (addBlocks != null)
 		{
-			schematic.put("AddBlocks", new ByteArrayTag("AddBlocks", addBlocks));
+			schematicTag.setByteArray("AddBlocks", addBlocks);
 		}
 
-		CompoundTag schematicTag = new CompoundTag("Schematic", schematic);
 		try
 		{
-			NBTOutputStream stream = new NBTOutputStream(new FileOutputStream(exportPath));
-			stream.writeTag(schematicTag);
-			stream.close();
+			FileOutputStream outputStream = new FileOutputStream(new File(exportPath));
+			CompressedStreamTools.writeCompressed(schematicTag, outputStream);
+			//writeCompressed() probably closes the stream on its own - call close again just in case.
+			//Closing twice will not throw an exception.
+			outputStream.close();
 			return true;
 		}
 		catch(Exception e)
