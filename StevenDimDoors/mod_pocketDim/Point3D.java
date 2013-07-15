@@ -77,8 +77,6 @@ public class Point3D implements Serializable {
 		//For instance, points that are within the same chunk or within a few neighboring chunks. Only the low-order
 		//bits of each component would differ. I'll use 8 bits from Y and the 12 bits from X and Z. ~SenseiKiwi
 		
-		//The result of this could be cached but that would break serialization for this class! >_<
-		
 		int bit;
 		int hash;
 		int index;
