@@ -423,10 +423,10 @@ public class DungeonHelper
 		short height = (short) (yMax - yMin + 1);
 		short length = (short) (zMax - zMin + 1);
 
-		//ArrayList<NBTCompoundTag> tileEntities = new ArrayList<NBTCompoundTag>();
 		byte[] blocks = new byte[width * height * length];
 		byte[] addBlocks = null;
 		byte[] blockData = new byte[width * height * length];
+		NBTTagList tileEntities = new NBTTagList();
 
 		for (int x = 0; x < width; x++) 
 		{
@@ -437,23 +437,28 @@ public class DungeonHelper
 					int index = y * width * length + z * width + x;
 					int blockID = world.getBlockId(x + xMin, y + yMin, z + zMin);
 					int metadata = world.getBlockMetadata(x + xMin, y + yMin, z + zMin);
+					boolean changed = false;
 
 					if (blockID == properties.DimensionalDoorID)
 					{
 						blockID = Block.doorIron.blockID;
+						changed = true;
 					}
 					if (blockID == properties.WarpDoorID)
 					{
 						blockID = Block.doorWood.blockID;
+						changed = true;
 					}
 					//Map fabric of reality and permafabric blocks to standard export IDs
 					if (blockID == properties.FabricBlockID)
 					{
 						blockID = FABRIC_OF_REALITY_EXPORT_ID;
+						changed = true;
 					}
 					if (blockID == properties.PermaFabricBlockID)
 					{
 						blockID = PERMAFABRIC_EXPORT_ID;
+						changed = true;
 					}
 
 					// Save 4096 IDs in an AddBlocks section
@@ -473,37 +478,27 @@ public class DungeonHelper
 					blocks[index] = (byte) blockID;
 					blockData[index] = (byte) metadata;
 
-					if (Block.blocksList[blockID] instanceof BlockContainer) 
+					//Obtain and export the tile entity of the current block, if any.
+					//Do not obtain a tile entity if the block was changed from its original ID.
+					//I'm not sure if this approach is the most efficient but it works. ~SenseiKiwi
+					TileEntity tileEntity = !changed ? world.getBlockTileEntity(x + xMin, y + yMin, z + zMin) : null;
+					
+					if (tileEntity != null)
 					{
-						//Export container information
-						/*TileEntity container = world.getBlockTileEntity(x + xMin, y + yMin, z + zMin);
+						//Get the tile entity's description as a compound NBT tag
 						NBTTagCompound entityData = new NBTTagCompound();
-						
-						container.writeToNBT(entityData);*/
-						
-						
-						//TODO fix this
-						/**
-	                        TileEntity tileEntityBlock = world.getBlockTileEntity(x+xMin, y+yMin, z+zMin);
-	                        NBTTagCompound tag = new NBTTagCompound();
-	                        tileEntityBlock.writeToNBT(tag);
-
-	                        CompoundTag tagC = new CompoundTag("TileEntity",Map.class.cast(tag.getTags()));
-
-
-
-	                        // Get the list of key/values from the block
-
-	                        if (tagC != null) 
-	                        {
-	                        	tileEntites.add(tagC);
-	                        }
-						 **/
+						tileEntity.writeToNBT(entityData);
+						//Change the tile entity's location to be relative to (xMin, yMin, zMin)
+						entityData.setInteger("x", entityData.getInteger("x") - xMin);
+						entityData.setInteger("y", entityData.getInteger("y") - yMin);
+						entityData.setInteger("z", entityData.getInteger("z") - zMin);
+						tileEntities.appendTag(entityData);
 					}
 				}
 			}
 		}
 		
+		//Write NBT tags for schematic file
 		NBTTagCompound schematicTag = new NBTTagCompound("Schematic");
 
 		schematicTag.setShort("Width", width);
@@ -514,14 +509,15 @@ public class DungeonHelper
 		schematicTag.setByteArray("Data", blockData);
 		
 		schematicTag.setTag("Entities", new NBTTagList());
-		schematicTag.setTag("TileEntities", new NBTTagList());
-		schematicTag.setString("Material", "Alpha");
+		schematicTag.setTag("TileEntities", tileEntities);
+		schematicTag.setString("Materials", "Alpha");
 		
 		if (addBlocks != null)
 		{
 			schematicTag.setByteArray("AddBlocks", addBlocks);
 		}
 
+		//Write schematic data to a file
 		try
 		{
 			FileOutputStream outputStream = new FileOutputStream(new File(exportPath));
