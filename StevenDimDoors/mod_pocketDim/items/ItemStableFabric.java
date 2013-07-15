@@ -33,7 +33,7 @@ public class ItemStableFabric extends Item
 	{
 		super(par1);
 		//  this.setitemIcon(Item.doorWood.getIconFromDamage(0));
-		this.setCreativeTab(CreativeTabs.tabTransport);
+        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 
 	}
 	public void registerIcons(IconRegister par1IconRegister)

@@ -28,7 +28,7 @@ public class itemRiftRemover extends Item
     	 super(par1);
     	 this.setMaxStackSize(1);
     	// this.setTextureFile("/PocketBlockTextures.png");
-         this.setCreativeTab(CreativeTabs.tabTransport);
+         this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 
         // this.itemIcon=6;
          this.setMaxDamage(5);

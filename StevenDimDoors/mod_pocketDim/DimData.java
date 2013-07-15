@@ -232,7 +232,7 @@ public class DimData implements Serializable
 		return null;		
 	}
 
-	public ArrayList<LinkData> printAllLinkData()
+	public ArrayList<LinkData> getLinksInDim()
 	{
 		//TODO: We might want to modify this function, but I'm afraid of breaking something right now.
 		//To begin with, the name is wrong. This doesn't print anything! >_o  ~SenseiKiwi

@@ -21,7 +21,7 @@ public class dimHatch extends BlockTrapDoor
 	public dimHatch(int par1,int par2, Material par2Material) 
 	{
 		super(par1, Material.iron);
-        this.setCreativeTab(CreativeTabs.tabTransport);
+        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
        // this.setTextureFile("/PocketBlockTextures.png");
 	//	 this.blockIndexInTexture =  16;
 	}

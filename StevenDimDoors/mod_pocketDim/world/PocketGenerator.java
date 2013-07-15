@@ -13,6 +13,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
+import StevenDimDoors.mod_pocketDim.CommonTickHandler;
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -23,13 +25,17 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 {
 	private World worldObj;
 
-	private static final int MAX_MONOLITH_SPAWN_Y = 245;
-	private static final int CHUNK_SIZE = 16;
+	private DDProperties properties = null;
+
+
 	
 	public PocketGenerator(World par1World, long par2, boolean par4) 
 	{
 		super(par1World, par2, par4);
 		this.worldObj = par1World;
+		
+		if (properties  == null)
+			properties = DDProperties.instance();
 	}
 	
 	@Override
@@ -49,6 +55,12 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 		byte[] var3 = new byte[32768];
 
 		Chunk chunk = new Chunk(worldObj, var3, chunkX, chunkZ);
+		
+		if(!chunk.isTerrainPopulated)
+		{
+			chunk.isTerrainPopulated=true;
+			CommonTickHandler.chunksToPopulate.add(new int[] {chunk.worldObj.provider.dimensionId,chunkX,chunkZ});
+		}
 
 		return chunk;
 	}
@@ -62,81 +74,7 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 	@Override
 	public void populate(IChunkProvider chunkProvider, int chunkX, int chunkZ) 
 	{
-		//Check whether we want to populate this chunk with Monoliths.
-        DimData dimData = dimHelper.dimList.get(worldObj.provider.dimensionId);
-        int sanity = 0;
-        int blockID = 0;
-        boolean didSpawn=false;
         
-        if (dimData == null ||
-        	dimData.dungeonGenerator == null ||
-        	dimData.dungeonGenerator.isOpen)
-        {
-        	return;
-        }
-        
-		//The following initialization code is based on code from ChunkProviderGenerate.
-		//It makes our generation depend on the world seed.
-		Random random = new Random(worldObj.getSeed());
-        long factorA = random.nextLong() / 2L * 2L + 1L;
-        long factorB = random.nextLong() / 2L * 2L + 1L;
-        random.setSeed((long)chunkX * factorA + (long)chunkZ * factorB ^ worldObj.getSeed());
-	    
-		int x, y, z;
-		do
-		{
-			//Select a random column within the chunk
-			x = chunkX * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
-			z = chunkZ * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
-			y = MAX_MONOLITH_SPAWN_Y;
-			blockID = worldObj.getBlockId(x, y, z);
-			
-			while (blockID == 0 &&y>0)
-			{
-				y--;
-				blockID = worldObj.getBlockId(x, y, z);
- 
-			}
-			while(blockID == mod_pocketDim.blockDimWall.blockID&&y>0)
-			{
-				y--;
-				blockID = worldObj.getBlockId(x, y, z);
-			}
-			while (blockID == 0 &&y>0)
-			{
-				y--;
-				blockID = worldObj.getBlockId(x, y, z);
- 
-			}
-			if(y > 0)
-			{
-				
-				
-
-				int jumpSanity=0;
-				int jumpHeight=0;
-				do
-				{
-				
-					jumpHeight = y+random.nextInt(10);
-					
-					jumpSanity++;
-				}
-				while(!this.worldObj.isAirBlock(x,jumpHeight+6 , z)&&jumpSanity<20);
-				
-				
-				
-
-				Entity mob = new MobObelisk(worldObj);
-				mob.setLocationAndAngles(x, jumpHeight, z, 1, 1);
-				worldObj.spawnEntityInWorld(mob);
-				didSpawn=true;
-			}
-
-			sanity++;
-			
-		}
-		while (sanity<5&&!didSpawn);
 	}
 
 	@Override

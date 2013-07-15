@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Random;
 
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
+import StevenDimDoors.mod_pocketDim.world.LimboGenerator;
+import StevenDimDoors.mod_pocketDim.world.LimboProvider;
+import StevenDimDoors.mod_pocketDim.world.PocketGenerator;
+import StevenDimDoors.mod_pocketDim.world.pocketProvider;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -17,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -27,11 +33,13 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
+import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 public class EventHookContainer
@@ -46,7 +54,6 @@ public class EventHookContainer
 	}
 	
 	@SideOnly(Side.CLIENT)
-	
 	@ForgeSubscribe
 	public void onSoundLoad(SoundLoadEvent event) 
 	{
@@ -60,7 +67,6 @@ public class EventHookContainer
     @ForgeSubscribe
     public void onWorldLoad(WorldEvent.Load event)
     {
-    	
     	if(!mod_pocketDim.hasInitDims&&event.world.provider.dimensionId==0&&!event.world.isRemote)
     	{
     		System.out.println("Registering Pocket Dims");
@@ -69,9 +75,7 @@ public class EventHookContainer
         	dimHelper.dimList.clear();
         	dimHelper.instance.interDimLinkList.clear();
         	dimHelper.instance.initPockets();
-        	
     	}
-    	
     	for(Integer ids : dimHelper.getIDs())
     	{
     		World world = dimHelper.getWorld(ids);
@@ -79,140 +83,72 @@ public class EventHookContainer
     		
     		if(dimHelper.dimList.containsKey(world.provider.dimensionId))
     		{
-    		
-    			for(LinkData link:dimHelper.dimList.get(world.provider.dimensionId).printAllLinkData())
-    			{
-    				if(linkCount>100)
-    				{
-    					break;
-    				}
-    				linkCount++;
-    				int blocktoReplace = world.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord);
-    				if(!mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))
-    				{
-        				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
-    				}
-
-
+    			//TODO added temporary Try/catch block to prevent a crash here, getLinksInDim needs to be looked at
+    			try
+    			{    			
+	    			for(LinkData link:dimHelper.dimList.get(world.provider.dimensionId).getLinksInDim())
+	    			{
+	    				if(linkCount>100)
+	    				{
+	    					break;
+	    				}
+	    				linkCount++;
+	    				int blocktoReplace = world.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord);
+	    				if(!mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))
+	    				{
+	        				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
+	    				}
+	    			}
     			}
-    			
+    			catch(Exception e)
+    			{
+    				e.printStackTrace();
+    			}
     		}
-    	}
-    	
-		
-		
-    	
-    	
-       
+    	}   
     }
+    
+
+  
     @ForgeSubscribe
 	public void EntityJoinWorldEvent(net.minecraftforge.event.entity.EntityJoinWorldEvent event)
     {
-    if(event.entity instanceof EntityPlayer)
+    	if(event.entity instanceof EntityPlayer)
     	{
-    //	System.out.println(event.entity.worldObj.provider.dimensionId);
-
+    	//	System.out.println(event.entity.worldObj.provider.dimensionId);
     	//	PacketDispatcher.sendPacketToPlayer(DimUpdatePacket.sendPacket(event.world.provider.dimensionId,1),(Player) event.entity);
-    		
-    		
-    		
     	}
-        
     }
     @ForgeSubscribe
     public void onPlayerFall(LivingFallEvent event)
     {
-    	
-    		event.setCanceled(event.entity.worldObj.provider.dimensionId==properties.LimboDimensionID);
-    	
+    	event.setCanceled(event.entity.worldObj.provider.dimensionId==properties.LimboDimensionID);
     }
     
     @ForgeSubscribe
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-     
-    
-    		
-    	/**
-    	
     	if(event.entityPlayer.worldObj.provider.dimensionId==properties.LimboDimensionID&&event.action==PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
     	{
-        
-
     		int x = event.x;
-    		int y = event.y;
-    		
+    		int y = event.y;	
     		int z = event.z;
-         
-         
-         
-         
-         
+    		
     		if(event.entityPlayer.getHeldItem()!=null)
     		{
     			if(event.entityPlayer.getHeldItem().getItem() instanceof ItemBlock)
     			{
-    				//	if(event.entityPlayer instanceof EntityPlayerMP)
+    				if(event.entityPlayer instanceof EntityPlayerMP)
     				{
-    					
     					Point3D point = new Point3D(x,y,z);
     					dimHelper.blocksToDecay.add(point);
     				}
-    			}
-    			else
-    			{
-    				event.setCanceled(true);
-    			}
-         
-         
-    		}
-    		
-    	}
-    	**/
-     
+    			}        
+    		}   		
+    	}        
     }
-     
-     
-    
-    
- //   @ForgeSubscribe
-    public void onPlayerEvent(PlayerEvent event)
-    {
-    	/**
-       if(!event.entity.worldObj.isRemote)
-       {
-    	   ItemStack item =  event.entityPlayer.inventory.getCurrentItem();
-    	   if(item!=null)
-    	   {
-    		   if(item.getItem() instanceof ItemRiftBlade)
-    		   {
-					List<EntityLiving> list =  event.entity.worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox( event.entityPlayer.posX-7,event.entityPlayer.posY-7, event.entityPlayer.posZ-7, event.entityPlayer.posX+7,event.entityPlayer.posY+7, event.entityPlayer.posZ+7));
-					list.remove(event.entity);
-	    			  
 
-					for(EntityLiving ent : list)
-					{
-						
-						  Vec3 var3 = event.entityPlayer.getLook(1.0F).normalize();
-				            Vec3 var4 =  event.entityPlayer.worldObj.getWorldVec3Pool().getVecFromPool(ent.posX -  event.entityPlayer.posX, ent.boundingBox.minY + (double)((ent.height) / 2.0F) - ( event.entityPlayer.posY + (double) event.entityPlayer.getEyeHeight()), ent.posZ -  event.entityPlayer.posZ);
-				            double var5 = var4.lengthVector();
-				            var4 = var4.normalize();
-				            double var7 = var3.dotProduct(var4);
-				            if( (var7+.1) > 1.0D - 0.025D / var5 ?  event.entityPlayer.canEntityBeSeen(ent) : false)
-				            {
-				            	 System.out.println(list.size());
-				            	ItemRiftBlade.class.cast(item.getItem()).teleportToEntity(item,ent, event.entityPlayer);
-				            	break;
-
-				            	//ItemRiftBlade.class.cast(item.getItem()).teleportTo(event.entityPlayer, ent.posX, ent.posY, ent.posZ);
-				            }
-					}
-    			
-    		   }
-    	   }
-       }
-       **/
-    }
+   
     @ForgeSubscribe
     public void onPlayerDrops(PlayerDropsEvent event)
     {

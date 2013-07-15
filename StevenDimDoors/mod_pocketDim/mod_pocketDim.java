@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityEggInfo;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityItem;
@@ -133,6 +134,23 @@ public class mod_pocketDim
 
 	public static long genTime;
 	public static int teleTimer = 0;
+	
+	 public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") 
+	 {
+		 @Override
+		 public ItemStack getIconItemStack() 
+		 {
+			 return new ItemStack(mod_pocketDim.itemDimDoor, 1, 0);
+         }
+		 
+		 @Override
+		 public String getTranslatedTabLabel()
+		 {
+			 return "Dimensional Doors";
+		 }
+	 };
+	 
+	 
 
 	@PreInit
 	public void PreInit(FMLPreInitializationEvent event)
@@ -217,6 +235,8 @@ public class mod_pocketDim
 		LanguageRegistry.addName(itemChaosDoor	, "Unstable Door");
 		LanguageRegistry.addName(itemDimDoor, "Dimensional Door");
 		LanguageRegistry.addName(itemRiftBlade	, "Rift Blade");
+		
+		LanguageRegistry.instance().addStringLocalization("itemGroup.dimDoorsCustomTab", "en_US", "Dimensional Doors Items");
 
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
 		TickRegistry.registerTickHandler(new CommonTickHandler(), Side.SERVER);
@@ -403,13 +423,13 @@ public class mod_pocketDim
 		CommandPrintDimensionData.instance().register(event);
 		CommandPruneDimensions.instance().register(event);
 		CommandStartDungeonCreation.instance().register(event);
-
 		dimHelper.instance.load();
+		
 		if(!dimHelper.dimList.containsKey(properties.LimboDimensionID))
 		{
 			dimHelper.dimList.put(properties.LimboDimensionID, new DimData( properties.LimboDimensionID,  false,  0,  new LinkData()));
 		}
-
-
 	}
+	
+	
 }

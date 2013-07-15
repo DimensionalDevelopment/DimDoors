@@ -33,7 +33,6 @@ public class ExitDoor extends dimDoor
 	{
 		
 		super(par1, Material.wood);
-	//	this.blockIndexInTexture = 19;
        
 
 		// TODO Auto-generated constructor stub

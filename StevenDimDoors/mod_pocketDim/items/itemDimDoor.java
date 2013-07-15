@@ -31,7 +31,7 @@ public class itemDimDoor extends ItemDoor
     {
     	  super(par1, par2Material);
     	  this.setMaxStackSize(64);
-          this.setCreativeTab(CreativeTabs.tabTransport);
+          this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
           if (properties == null)
         	  properties = DDProperties.instance();
     }

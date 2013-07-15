@@ -29,7 +29,7 @@ public class itemLinkSignature extends Item
     	 super(par1);
     	 this.setMaxStackSize(1);
     	// this.setTextureFile("/PocketBlockTextures.png");
-         this.setCreativeTab(CreativeTabs.tabTransport);
+         this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 
       //   this.itemIcon=5;
          this.setMaxDamage(0);

@@ -22,7 +22,7 @@ public class ItemChaosDoor extends itemDimDoor
     {
     	  super(par1, par2Material);
           this.doorMaterial = par2Material;
-          this.setCreativeTab(CreativeTabs.tabTransport);
+          this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
     }
     public void registerIcons(IconRegister par1IconRegister)
     {
