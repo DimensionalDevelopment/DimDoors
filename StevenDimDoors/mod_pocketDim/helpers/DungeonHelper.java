@@ -11,7 +11,10 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
@@ -19,12 +22,6 @@ import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.jnbt.ByteArrayTag;
-import StevenDimDoors.mod_pocketDim.helpers.jnbt.CompoundTag;
-import StevenDimDoors.mod_pocketDim.helpers.jnbt.ListTag;
-import StevenDimDoors.mod_pocketDim.helpers.jnbt.NBTOutputStream;
-import StevenDimDoors.mod_pocketDim.helpers.jnbt.ShortTag;
-import StevenDimDoors.mod_pocketDim.helpers.jnbt.Tag;
 import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
 import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
@@ -38,6 +35,10 @@ public class DungeonHelper
 	public static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	private static final int DEFAULT_DUNGEON_WEIGHT = 100;
 	public static final int MAX_DUNGEON_WEIGHT = 10000; //Used to prevent overflows and math breaking down
+	private static final int MAX_EXPORT_RADIUS = 50;
+	
+	public static final int FABRIC_OF_REALITY_EXPORT_ID = 1973;
+	public static final int PERMAFABRIC_EXPORT_ID = 220;
 	
 	private static final String HUB_DUNGEON_TYPE = "Hub";
 	private static final String TRAP_DUNGEON_TYPE = "Trap";
@@ -375,83 +376,96 @@ public class DungeonHelper
 		registeredDungeons.addAll(hubs);
 	}
 
-	public boolean exportDungeon(World world, int xI, int yI, int zI, String exportPath)
+	public boolean exportDungeon(World world, int centerX, int centerY, int centerZ, String exportPath)
 	{
-		int xMin;
-		int yMin;
-		int zMin;
-
-		int xMax;
-		int yMax;
-		int zMax;
-
-		xMin=xMax=xI;
-		yMin=yMax=yI;
-		zMin=zMax=zI;
-
-		for (int count = 0; count < 50; count++)
+		int xMin, yMin, zMin;
+		int xMax, yMax, zMax;
+		int xStart, yStart, zStart;
+		int xEnd, yEnd, zEnd;
+		
+		//Find the smallest bounding box that contains all non-air blocks within a max radius around the player.
+		xMax = yMax = zMax = Integer.MIN_VALUE;
+		xMin = yMin = zMin = Integer.MAX_VALUE;
+		
+		xStart = centerX - MAX_EXPORT_RADIUS;
+		zStart = centerZ - MAX_EXPORT_RADIUS;
+		yStart = Math.max(centerY - MAX_EXPORT_RADIUS, 0); 
+		
+		xEnd = centerX + MAX_EXPORT_RADIUS;
+		zEnd = centerZ + MAX_EXPORT_RADIUS;
+		yEnd = Math.min(centerY + MAX_EXPORT_RADIUS, world.getActualHeight());
+		
+		//This could be done more efficiently, but honestly, this is the simplest approach and it
+		//makes it easy for us to verify that the code is correct.
+		for (int y = yStart; y <= yEnd; y++)
 		{
-			if(world.getBlockId(xMin, yI, zI)!=properties.PermaFabricBlockID)
+			for (int z = zStart; z <= zEnd; z++)
 			{
-				xMin--;
-			}
-			if(world.getBlockId(xI, yMin, zI)!=properties.PermaFabricBlockID)
-			{
-				yMin--;
-			}
-			if(world.getBlockId(xI, yI, zMin)!=properties.PermaFabricBlockID)
-			{
-				zMin--;
-			}
-			if(world.getBlockId(xMax, yI, zI)!=properties.PermaFabricBlockID)
-			{
-				xMax++;
-			}
-			if(world.getBlockId(xI, yMax, zI)!=properties.PermaFabricBlockID)
-			{
-				yMax++;
-			}
-			if(world.getBlockId(xI, yI, zMax)!=properties.PermaFabricBlockID)
-			{
-				zMax++;
+				for (int x = xStart; x <= xEnd; x++)
+				{
+					if (!world.isAirBlock(x, y, z))
+					{
+						xMax = x > xMax ? x : xMax;
+						zMax = z > zMax ? z : zMax;
+						yMax = y > yMax ? y : yMax;
+
+						xMin = x < xMin ? x : xMin;
+						zMin = z < zMin ? z : zMin;
+						yMin = y < yMin ? y : yMin;						
+					}
+				}
 			}
 		}
+		
+		//Export all the blocks within our selected bounding box
+		short width = (short) (xMax - xMin + 1);
+		short height = (short) (yMax - yMin + 1);
+		short length = (short) (zMax - zMin + 1);
 
-		short width =(short) (xMax-xMin);
-		short height= (short) (yMax-yMin);
-		short length= (short) (zMax-zMin);
-
-		//ArrayList<NBTTagCompound> tileEntities = new ArrayList<NBTTagCompound>();
-		ArrayList<Tag> tileEntites = new ArrayList<Tag>();
 		byte[] blocks = new byte[width * height * length];
 		byte[] addBlocks = null;
 		byte[] blockData = new byte[width * height * length];
+		NBTTagList tileEntities = new NBTTagList();
 
-		for (int x = 0; x < width; ++x) 
+		for (int y = 0; y < height; y++) 
 		{
-			for (int y = 0; y < height; ++y) 
+			for (int z = 0; z < length; z++) 
 			{
-				for (int z = 0; z < length; ++z) 
+				for (int x = 0; x < width; x++) 
 				{
 					int index = y * width * length + z * width + x;
-					int blockID = world.getBlockId(x+xMin, y+yMin, z+zMin);
-					int meta= world.getBlockMetadata(x+xMin, y+yMin, z+zMin);
+					int blockID = world.getBlockId(x + xMin, y + yMin, z + zMin);
+					int metadata = world.getBlockMetadata(x + xMin, y + yMin, z + zMin);
+					boolean changed = false;
 
-					if(blockID==properties.DimensionalDoorID)
+					if (blockID == properties.DimensionalDoorID)
 					{
-						blockID=Block.doorIron.blockID;
+						blockID = Block.doorIron.blockID;
+						changed = true;
 					}
-					if(blockID==properties.WarpDoorID)
+					if (blockID == properties.WarpDoorID)
 					{
-						blockID=Block.doorWood.blockID;
-
+						blockID = Block.doorWood.blockID;
+						changed = true;
+					}
+					//Map fabric of reality and permafabric blocks to standard export IDs
+					if (blockID == properties.FabricBlockID)
+					{
+						blockID = FABRIC_OF_REALITY_EXPORT_ID;
+						changed = true;
+					}
+					if (blockID == properties.PermaFabricBlockID)
+					{
+						blockID = PERMAFABRIC_EXPORT_ID;
+						changed = true;
 					}
 
 					// Save 4096 IDs in an AddBlocks section
 					if (blockID > 255) 
 					{
 						if (addBlocks == null) 
-						{ // Lazily create section
+						{
+							//Lazily create section
 							addBlocks = new byte[(blocks.length >> 1) + 1];
 						}
 
@@ -461,62 +475,56 @@ public class DungeonHelper
 					}
 
 					blocks[index] = (byte) blockID;
-					blockData[index] = (byte) meta;
+					blockData[index] = (byte) metadata;
 
-					if (Block.blocksList[blockID] instanceof BlockContainer) 
+					//Obtain and export the tile entity of the current block, if any.
+					//Do not obtain a tile entity if the block was changed from its original ID.
+					//I'm not sure if this approach is the most efficient but it works. ~SenseiKiwi
+					TileEntity tileEntity = !changed ? world.getBlockTileEntity(x + xMin, y + yMin, z + zMin) : null;
+					
+					if (tileEntity != null)
 					{
-						//TODO fix this
-						/**
-	                        TileEntity tileEntityBlock = world.getBlockTileEntity(x+xMin, y+yMin, z+zMin);
-	                        NBTTagCompound tag = new NBTTagCompound();
-	                        tileEntityBlock.writeToNBT(tag);
-
-	                        CompoundTag tagC = new CompoundTag("TileEntity",Map.class.cast(tag.getTags()));
-
-
-
-	                        // Get the list of key/values from the block
-
-	                        if (tagC != null) 
-	                        {
-	                        	tileEntites.add(tagC);
-	                        }
-						 **/
+						//Get the tile entity's description as a compound NBT tag
+						NBTTagCompound entityData = new NBTTagCompound();
+						tileEntity.writeToNBT(entityData);
+						//Change the tile entity's location to the schematic coordinate system
+						entityData.setInteger("x", x);
+						entityData.setInteger("y", y);
+						entityData.setInteger("z", z);
+						
+						tileEntities.appendTag(entityData);
 					}
 				}
 			}
 		}
-		/**
-		 *   
-		 *   nbtdata.setShort("Width", width);
-	        nbtdata.setShort("Height", height);
-	        nbtdata.setShort("Length", length);
-
-	    	 nbtdata.setByteArray("Blocks", blocks);
-        	 nbtdata.setByteArray("Data", blockData);
-		 */
-
-		HashMap<String, Tag> schematic = new HashMap<String, Tag>();
-
-		schematic.put("Blocks", new ByteArrayTag("Blocks", blocks));
-		schematic.put("Data", new ByteArrayTag("Data", blockData));
 		
-		schematic.put("Width", new ShortTag("Width", (short) width));
-		schematic.put("Length", new ShortTag("Length", (short) length));
-		schematic.put("Height", new ShortTag("Height", (short) height));
-		schematic.put("TileEntites", new ListTag("TileEntities", CompoundTag.class,tileEntites));
+		//Write NBT tags for schematic file
+		NBTTagCompound schematicTag = new NBTTagCompound("Schematic");
+
+		schematicTag.setShort("Width", width);
+		schematicTag.setShort("Length", length);
+		schematicTag.setShort("Height", height);
+		
+		schematicTag.setByteArray("Blocks", blocks);
+		schematicTag.setByteArray("Data", blockData);
+		
+		schematicTag.setTag("Entities", new NBTTagList());
+		schematicTag.setTag("TileEntities", tileEntities);
+		schematicTag.setString("Materials", "Alpha");
 		
 		if (addBlocks != null)
 		{
-			schematic.put("AddBlocks", new ByteArrayTag("AddBlocks", addBlocks));
+			schematicTag.setByteArray("AddBlocks", addBlocks);
 		}
 
-		CompoundTag schematicTag = new CompoundTag("Schematic", schematic);
+		//Write schematic data to a file
 		try
 		{
-			NBTOutputStream stream = new NBTOutputStream(new FileOutputStream(exportPath));
-			stream.writeTag(schematicTag);
-			stream.close();
+			FileOutputStream outputStream = new FileOutputStream(new File(exportPath));
+			CompressedStreamTools.writeCompressed(schematicTag, outputStream);
+			//writeCompressed() probably closes the stream on its own - call close again just in case.
+			//Closing twice will not throw an exception.
+			outputStream.close();
 			return true;
 		}
 		catch(Exception e)
