@@ -21,12 +21,6 @@ import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.jnbt.ByteArrayTag;
-import StevenDimDoors.mod_pocketDim.helpers.jnbt.CompoundTag;
-import StevenDimDoors.mod_pocketDim.helpers.jnbt.ListTag;
-import StevenDimDoors.mod_pocketDim.helpers.jnbt.NBTOutputStream;
-import StevenDimDoors.mod_pocketDim.helpers.jnbt.ShortTag;
-import StevenDimDoors.mod_pocketDim.helpers.jnbt.Tag;
 import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
 import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
@@ -427,7 +421,7 @@ public class DungeonHelper
 		short height = (short) (yMax - yMin + 1);
 		short length = (short) (zMax - zMin + 1);
 
-		ArrayList<CompoundTag> tileEntities = new ArrayList<CompoundTag>();
+		ArrayList<NBTCompoundTag> tileEntities = new ArrayList<NBTCompoundTag>();
 		byte[] blocks = new byte[width * height * length];
 		byte[] addBlocks = null;
 		byte[] blockData = new byte[width * height * length];
