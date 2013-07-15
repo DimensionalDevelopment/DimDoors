@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
+import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.pocketProvider;
 import cpw.mods.fml.common.IWorldGenerator;
@@ -158,7 +159,7 @@ public class RiftGenerator implements IWorldGenerator
 				}
 				
 				//Place the shiny transient door into a dungeon
-				ItemRiftBlade.placeDoorBlock(world, x, y + 1, z, 0, mod_pocketDim.transientDoor);
+				itemDimDoor.placeDoorBlock(world, x, y + 1, z, 0, mod_pocketDim.transientDoor);
 				
 				//Build the columns around the door
 				world.setBlock(x, y + 1, z - 1, blockID, 0, 3);

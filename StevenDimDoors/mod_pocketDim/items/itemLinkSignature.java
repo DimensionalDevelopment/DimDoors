@@ -147,13 +147,7 @@ public class itemLinkSignature extends Item
     				--par1ItemStack.stackSize;
 	    			par2EntityPlayer.sendChatToPlayer("Rift Created");
 	    			par1ItemStack.stackTagCompound=null;
-    			/**
-    			else
-    			{
-	    			par2EntityPlayer.sendChatToPlayer("Both ends of a single rift cannot exist in the same dimension.");
-
-    			}
-    			**/
+					par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.riftEnd", (float) .6, 1);
     			}
     		}
     		else 
@@ -163,14 +157,9 @@ public class itemLinkSignature extends Item
     			//otherwise, it creates the first half of the link. Next click will complete it. 
     			key= dimHelper.instance.createUniqueInterDimLinkKey();
         		this.writeToNBT(par1ItemStack, par4, par5+offset, par6,par3World.provider.dimensionId,orientation);
-        		
-
-        		
     			par2EntityPlayer.sendChatToPlayer("Rift Signature Stored");
-
-
-        	}
-    		
+				par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.riftStart", (float) .6, 1);
+        	}	
     		//dimHelper.instance.save();
     	}
     	

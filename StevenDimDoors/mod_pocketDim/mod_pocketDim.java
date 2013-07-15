@@ -193,7 +193,7 @@ public class mod_pocketDim
 		itemRiftRemover = (new itemRiftRemover(properties.RiftRemoverItemID, Material.wood)).setUnlocalizedName("itemRiftRemover");
 		itemStableFabric = (new ItemStableFabric(properties.StableFabricItemID, 0)).setUnlocalizedName("itemStableFabric");
 		itemChaosDoor = (new ItemChaosDoor(properties.UnstableDoorItemID, Material.iron)).setUnlocalizedName("itemChaosDoor");
-		itemRiftBlade = (new ItemRiftBlade(properties.RiftBladeItemID, Material.iron)).setUnlocalizedName("ItemRiftBlade");
+		itemRiftBlade = (new ItemRiftBlade(properties.RiftBladeItemID)).setUnlocalizedName("ItemRiftBlade");
 		itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(properties.StabilizedRiftSignatureItemID)).setUnlocalizedName("itemStabilizedRiftSig");
 
 		mod_pocketDim.limboBiome= (new BiomeGenLimbo(properties.LimboBiomeID));
