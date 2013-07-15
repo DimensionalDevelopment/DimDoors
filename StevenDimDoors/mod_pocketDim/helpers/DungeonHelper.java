@@ -38,6 +38,7 @@ public class DungeonHelper
 	public static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	private static final int DEFAULT_DUNGEON_WEIGHT = 100;
 	public static final int MAX_DUNGEON_WEIGHT = 10000; //Used to prevent overflows and math breaking down
+	private static final int MAX_EXPORT_RADIUS = 50;
 	
 	private static final String HUB_DUNGEON_TYPE = "Hub";
 	private static final String TRAP_DUNGEON_TYPE = "Trap";
@@ -375,75 +376,74 @@ public class DungeonHelper
 		registeredDungeons.addAll(hubs);
 	}
 
-	public boolean exportDungeon(World world, int xI, int yI, int zI, String exportPath)
+	public boolean exportDungeonX(World world, int centerX, int centerY, int centerZ, String exportPath)
 	{
-		int xMin;
-		int yMin;
-		int zMin;
-
-		int xMax;
-		int yMax;
-		int zMax;
-
-		xMin=xMax=xI;
-		yMin=yMax=yI;
-		zMin=zMax=zI;
-
-		for (int count = 0; count < 50; count++)
+		int xMin, yMin, zMin;
+		int xMax, yMax, zMax;
+		int xStart, yStart, zStart;
+		int xEnd, yEnd, zEnd;
+		
+		//Find the smallest bounding box that contains all non-air blocks within a max radius around the player.
+		xMax = yMax = zMax = Integer.MIN_VALUE;
+		xMin = yMin = zMin = Integer.MAX_VALUE;
+		
+		xStart = centerX - MAX_EXPORT_RADIUS;
+		zStart = centerZ - MAX_EXPORT_RADIUS;
+		yStart = Math.max(centerY - MAX_EXPORT_RADIUS, 0); 
+		
+		xEnd = centerX + MAX_EXPORT_RADIUS;
+		zEnd = centerZ + MAX_EXPORT_RADIUS;
+		yEnd = Math.min(centerY - MAX_EXPORT_RADIUS, world.getActualHeight());
+		
+		//This could be done more efficiently, but honestly, this is the simplest approach and it
+		//makes it easy for us to verify that the code is correct.
+		for (int x = xStart; x <= xEnd; x++)
 		{
-			if(world.getBlockId(xMin, yI, zI)!=properties.PermaFabricBlockID)
+			for (int z = zStart; z <= zEnd; z++)
 			{
-				xMin--;
-			}
-			if(world.getBlockId(xI, yMin, zI)!=properties.PermaFabricBlockID)
-			{
-				yMin--;
-			}
-			if(world.getBlockId(xI, yI, zMin)!=properties.PermaFabricBlockID)
-			{
-				zMin--;
-			}
-			if(world.getBlockId(xMax, yI, zI)!=properties.PermaFabricBlockID)
-			{
-				xMax++;
-			}
-			if(world.getBlockId(xI, yMax, zI)!=properties.PermaFabricBlockID)
-			{
-				yMax++;
-			}
-			if(world.getBlockId(xI, yI, zMax)!=properties.PermaFabricBlockID)
-			{
-				zMax++;
+				for (int y = yStart; y <= yEnd; y++)
+				{
+					if (!world.isAirBlock(x, y, z))
+					{
+						xMax = x > xMax ? x : xMax;
+						zMax = z > zMax ? z : zMax;
+						yMax = y > yMax ? y : yMax;
+						
+						xMin = x < xMin ? x : xMin;
+						zMin = z < zMin ? z : zMin;
+						yMin = y < yMin ? y : yMin;						
+					}
+				}
 			}
 		}
+		
+		//Export all the blocks within our selected bounding box
+		short width = (short) (xMax - xMin + 1);
+		short height = (short) (yMax - yMin + 1);
+		short length = (short) (zMax - zMin + 1);
 
-		short width =(short) (xMax-xMin);
-		short height= (short) (yMax-yMin);
-		short length= (short) (zMax-zMin);
-
-		//ArrayList<NBTTagCompound> tileEntities = new ArrayList<NBTTagCompound>();
-		ArrayList<Tag> tileEntites = new ArrayList<Tag>();
+		ArrayList<CompoundTag> tileEntities = new ArrayList<CompoundTag>();
 		byte[] blocks = new byte[width * height * length];
 		byte[] addBlocks = null;
 		byte[] blockData = new byte[width * height * length];
 
-		for (int x = 0; x < width; ++x) 
+		for (int x = 0; x < width; x++) 
 		{
-			for (int y = 0; y < height; ++y) 
+			for (int z = 0; z < length; z++) 
 			{
-				for (int z = 0; z < length; ++z) 
+				for (int y = 0; y < height; y++) 
 				{
 					int index = y * width * length + z * width + x;
-					int blockID = world.getBlockId(x+xMin, y+yMin, z+zMin);
-					int meta= world.getBlockMetadata(x+xMin, y+yMin, z+zMin);
+					int blockID = world.getBlockId(x + xMin, y + yMin, z + zMin);
+					int metadata = world.getBlockMetadata(x + xMin, y + yMin, z + zMin);
 
-					if(blockID==properties.DimensionalDoorID)
+					if (blockID == properties.DimensionalDoorID)
 					{
-						blockID=Block.doorIron.blockID;
+						blockID = Block.doorIron.blockID;
 					}
-					if(blockID==properties.WarpDoorID)
+					if (blockID == properties.WarpDoorID)
 					{
-						blockID=Block.doorWood.blockID;
+						blockID = Block.doorWood.blockID;
 
 					}
 
@@ -461,7 +461,7 @@ public class DungeonHelper
 					}
 
 					blocks[index] = (byte) blockID;
-					blockData[index] = (byte) meta;
+					blockData[index] = (byte) metadata;
 
 					if (Block.blocksList[blockID] instanceof BlockContainer) 
 					{
@@ -486,16 +486,7 @@ public class DungeonHelper
 				}
 			}
 		}
-		/**
-		 *   
-		 *   nbtdata.setShort("Width", width);
-	        nbtdata.setShort("Height", height);
-	        nbtdata.setShort("Length", length);
-
-	    	 nbtdata.setByteArray("Blocks", blocks);
-        	 nbtdata.setByteArray("Data", blockData);
-		 */
-
+		
 		HashMap<String, Tag> schematic = new HashMap<String, Tag>();
 
 		schematic.put("Blocks", new ByteArrayTag("Blocks", blocks));
@@ -504,7 +495,7 @@ public class DungeonHelper
 		schematic.put("Width", new ShortTag("Width", (short) width));
 		schematic.put("Length", new ShortTag("Length", (short) length));
 		schematic.put("Height", new ShortTag("Height", (short) height));
-		schematic.put("TileEntites", new ListTag("TileEntities", CompoundTag.class,tileEntites));
+		schematic.put("TileEntites", new ListTag("TileEntities", CompoundTag.class, tileEntities));
 		
 		if (addBlocks != null)
 		{
