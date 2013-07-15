@@ -397,18 +397,18 @@ public class DungeonHelper
 		
 		//This could be done more efficiently, but honestly, this is the simplest approach and it
 		//makes it easy for us to verify that the code is correct.
-		for (int x = xStart; x <= xEnd; x++)
+		for (int y = yStart; y <= yEnd; y++)
 		{
 			for (int z = zStart; z <= zEnd; z++)
 			{
-				for (int y = yStart; y <= yEnd; y++)
+				for (int x = xStart; x <= xEnd; x++)
 				{
 					if (!world.isAirBlock(x, y, z))
 					{
 						xMax = x > xMax ? x : xMax;
 						zMax = z > zMax ? z : zMax;
 						yMax = y > yMax ? y : yMax;
-						
+
 						xMin = x < xMin ? x : xMin;
 						zMin = z < zMin ? z : zMin;
 						yMin = y < yMin ? y : yMin;						
@@ -427,11 +427,11 @@ public class DungeonHelper
 		byte[] blockData = new byte[width * height * length];
 		NBTTagList tileEntities = new NBTTagList();
 
-		for (int x = 0; x < width; x++) 
+		for (int y = 0; y < height; y++) 
 		{
 			for (int z = 0; z < length; z++) 
 			{
-				for (int y = 0; y < height; y++) 
+				for (int x = 0; x < width; x++) 
 				{
 					int index = y * width * length + z * width + x;
 					int blockID = world.getBlockId(x + xMin, y + yMin, z + zMin);
