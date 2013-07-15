@@ -47,10 +47,11 @@ public class TileEntityRift extends TileEntity
 		
 		if(count>200&&dimHelper.dimList.get(this.worldObj.provider.dimensionId)!=null)
 		 {
+			/**
 			if(rand.nextBoolean())
 			{
-				this.worldObj.playSound(xCoord, yCoord, zCoord, "mods.DimDoors.sfx.rift", (float) .7, 1,true);
 			}
+			**/
 			 nearestRiftData = dimHelper.dimList.get(this.worldObj.provider.dimensionId).findNearestRift(worldObj, 5, xCoord, yCoord, zCoord);
 			 if(nearestRiftData!=null)
 			 {
@@ -140,6 +141,8 @@ public class TileEntityRift extends TileEntity
 				if(dimHelper.instance.getLinkDataFromCoords(this.xCoord, this.yCoord, this.zCoord, this.worldObj.provider.dimensionId)!=null)
 				{
 				 dimHelper.instance.removeLink(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord);
+				 this.worldObj.playSound(xCoord, yCoord, zCoord, "mods.DimDoors.sfx.riftClose", (float) .7, 1,true);
+
 				}
 				
 			 }
@@ -181,6 +184,7 @@ public class TileEntityRift extends TileEntity
 					link.numberofChildren++;
 					dimHelper.instance.createLink(this.worldObj.provider.dimensionId, link.destDimID, x, y, z, link.destXCoord, link.destYCoord, link.destZCoord).numberofChildren=link.numberofChildren+1;
 					this.hasGrownRifts=true;
+
 					}
 				}
 			 }
