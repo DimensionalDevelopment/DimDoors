@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
@@ -477,6 +479,13 @@ public class DungeonHelper
 
 					if (Block.blocksList[blockID] instanceof BlockContainer) 
 					{
+						//Export container information
+						TileEntity container = world.getBlockTileEntity(x + xMin, y + yMin, z + zMin);
+						NBTTagCompound entityData = new NBTTagCompound();
+						
+						container.writeToNBT(entityData);
+						
+						
 						//TODO fix this
 						/**
 	                        TileEntity tileEntityBlock = world.getBlockTileEntity(x+xMin, y+yMin, z+zMin);
