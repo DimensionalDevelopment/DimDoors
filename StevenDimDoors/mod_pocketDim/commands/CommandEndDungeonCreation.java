@@ -78,7 +78,7 @@ public class CommandEndDungeonCreation extends DDCommandBase
 		
 		//The user must have used the 3-argument version of this command
 		//Check if the current dimension is a pocket for building custom dungeons or if the override argument was used.
-		if (!dungeonHelper.isCustomDungeon(sender.worldObj.provider.dimensionId) ||
+		if (!dungeonHelper.isCustomDungeon(sender.worldObj.provider.dimensionId) &&
 			!command[command.length - 1].equalsIgnoreCase("override"))
 		{
 			//This dimension may not be exported without overriding!

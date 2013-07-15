@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -12,11 +13,13 @@ import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockRedstoneRepeater;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.entity.Entity;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.util.MathHelper;
@@ -34,6 +37,7 @@ public class SchematicLoader
 {
 	private final static int EAST_DOOR_METADATA = 0;
 	private final static int NORTH_DOOR_METADATA = 3;
+	private final static int MAX_VANILLA_BLOCK_ID = 158;
 
 	private DDProperties properties = DDProperties.instance();
 	
@@ -688,15 +692,16 @@ public class SchematicLoader
 		//block metaData
 		byte[] blockData = new byte[0];
 
-		//first 4 bytes of the block ID
+		//first 8 bits of the block ID
 		byte[] blockId = new byte[0];
 
-		//second 4 bytes of the block ID
+		//additional 4 bits of the block ID
 		byte[] addId = new byte[0];
 
+		//Variables for loading tile entities
+		boolean blockChanged = false;
 		NBTTagList tileEntities = null;
-		NBTTagCompound[] tileEntityList;
-		NBTTagList entities;
+		HashMap<Point3D, NBTTagCompound> pointToTileEntityMap = new HashMap<Point3D, NBTTagCompound>();
 
 		//the wooden door leading into the pocket
 		Point3D schematicEntrance = new Point3D(0,0,0);
@@ -727,37 +732,24 @@ public class SchematicLoader
 				System.out.println(new File(fname).exists());
 				input = new FileInputStream(fname);
 			}
-			NBTTagCompound nbtdata = CompressedStreamTools.readCompressed(input);
+			
+			NBTTagCompound schematicTag = CompressedStreamTools.readCompressed(input);
+			input.close(); //readCompressed() probably closes the stream anyway, but close again to be sure.
 
 			//load size of schematic to generate
-			width = nbtdata.getShort("Width");
-			height = nbtdata.getShort("Height");
-			length = nbtdata.getShort("Length");
+			width = schematicTag.getShort("Width");
+			height = schematicTag.getShort("Height");
+			length = schematicTag.getShort("Length");
 
 			//load block info
-			blockId = nbtdata.getByteArray("Blocks");
-			blockData = nbtdata.getByteArray("Data");
-			addId = nbtdata.getByteArray("AddBlocks");
+			blockId = schematicTag.getByteArray("Blocks");
+			blockData = schematicTag.getByteArray("Data");
+			addId = schematicTag.getByteArray("AddBlocks");
 
 			//create combined block list
 			blocks = new short[blockId.length];
 
-			//load ticking things
-			tileEntities = nbtdata.getTagList("TileEntities");
-			//tileEntityList = new NBTTagCompound[width*height*length];
-			/**
-			for(int count = 0; count<tileEntities.tagCount(); count++)
-			{
-				NBTTagCompound tag = (NBTTagCompound)tileEntities.tagAt(count);
-				tileEntityList[tag.getInteger("y")*width*length+tag.getInteger("z")*width+tag.getInteger("x")]=tag;
-			}
-
-			entities = nbtdata.getTagList("Entities");
-			tileentities = nbtdata.getTagList("TileEntities");
-			 **/
-			input.close();
-
-			//combine the split block IDs into a single short[]
+			//Combine the split block IDs into a single short[]
 			for (int index = 0; index < blockId.length; index++) 
 			{
 				if ((index >> 1) >= addId.length) 
@@ -775,6 +767,21 @@ public class SchematicLoader
 						blocks[index] = (short) (((addId[index >> 1] & 0xF0) << 4) + (blockId[index] & 0xFF));
 					}
 				}
+			}
+			
+			//Get the list of tile entities
+			tileEntities = schematicTag.getTagList("TileEntities");
+			
+			//Map tile entity positions to the tile entity itself using a hash map
+			int count = tileEntities.tagCount();
+			for (int index = 0; index < count; index++)
+			{
+				NBTTagCompound tileEntityData = (NBTTagCompound) tileEntities.tagAt(index);
+				Point3D location = new Point3D(
+					tileEntityData.getInteger("x"),
+					tileEntityData.getInteger("y"),
+					tileEntityData.getInteger("z"));
+				pointToTileEntityMap.put(location, tileEntityData);
 			}
 		}
 		catch (Exception e) 
@@ -801,6 +808,7 @@ public class SchematicLoader
 
 		//Coordinates relative to the schematic, start at 0 and increase up to max width/height/length
 		int x, y, z;
+		Point3D schematicPoint = new Point3D(0, 0, 0);
 
 		//The real point where a block will be placed
 		int realX, realY, realZ;
@@ -816,11 +824,11 @@ public class SchematicLoader
 		
 		//First loop through the schematic to load in all rift locations and Monolith spawn locations.
 		//Also find the entry door, which determines the final position and orientation of the dungeon.
-		for ( x = 0; x < width; ++x)
+		for (y = 0; y < height; y++)
 		{
-			for ( y = 0; y < height; ++y) 
+			for (z = 0; z < length; z++) 
 			{
-				for ( z = 0; z < length; ++z) 
+				for (x = 0; x < width; x++)
 				{
 					int index = y * width * length + z * width + x;
 					int indexBelow = (y - 1) * width * length + z * width + x;
@@ -857,12 +865,16 @@ public class SchematicLoader
 		}
 		
 		//Loop to actually place the blocks
-		for (x = 0; x < width; x++) 
+		for (y = 0; y < height; y++)
 		{
+			schematicPoint.setY(y);
 			for (z = 0; z < length; z++) 
 			{
-				for (y = 0; y < height; y++) 
+				schematicPoint.setZ(z);
+				for (x = 0; x < width; x++)
 				{
+					schematicPoint.setX(x);
+					
 					//Reinitialize pocketPoint with the current schematic coordinate system
 					pocketPoint.setX(x);
 					pocketPoint.setY(y);
@@ -877,17 +889,28 @@ public class SchematicLoader
 					int index = y * width * length + z * width + x;
 					int currentBlock = blocks[index];
 					int blockMetadata = blockData[index];
-					NBTTagList tileEntity = tileEntities;
+					blockChanged = false;
 
 					//replace tagging blocks with air, and mod blocks with FoR
 					if (currentBlock == Block.endPortalFrame.blockID)
 					{
 						currentBlock = 0;
+						blockChanged = true;
 					}
-					else if ((Block.blocksList[currentBlock] == null && currentBlock != 0) ||
-							(currentBlock > 158 && currentBlock != mod_pocketDim.blockDimWallPerm.blockID)) //TODO- replace 158 with max vanilla block ID
+					else if (currentBlock == DungeonHelper.FABRIC_OF_REALITY_EXPORT_ID)
 					{
 						currentBlock = mod_pocketDim.blockDimWall.blockID;
+						blockChanged = true;
+					}
+					else if (currentBlock == DungeonHelper.PERMAFABRIC_EXPORT_ID)
+					{
+						currentBlock = mod_pocketDim.blockDimWallPerm.blockID;
+						blockChanged = true;
+					}
+					else if ((Block.blocksList[currentBlock] == null && currentBlock != 0) || currentBlock > MAX_VANILLA_BLOCK_ID)
+					{
+						currentBlock = mod_pocketDim.blockDimWall.blockID;
+						blockChanged = true;
 					}
 
 					//Place blocks and set metadata
@@ -901,41 +924,58 @@ public class SchematicLoader
 						if (currentBlock == Block.doorIron.blockID)
 						{
 							setBlockDirectly(world, realX, realY, realZ, properties.DimensionalDoorID, fixedMetadata);
+							blockChanged = true;
 						}
 						else if (currentBlock == Block.doorWood.blockID)
 						{
 							setBlockDirectly(world, realX, realY, realZ, properties.WarpDoorID, fixedMetadata);
+							blockChanged = true;
 						}
 						else
 						{							
 							setBlockDirectly(world, realX, realY, realZ, currentBlock, fixedMetadata);
 						}
-
-						//Fill containers (e.g. chests, dispensers)
-						if(Block.blocksList[currentBlock] instanceof BlockContainer)
+						
+						//Load the tile entity at this location if any exists, but only if the block wasn't changed
+						if (!blockChanged)
 						{
-							/**
-							TileEntity tile = world.getBlockTileEntity(i+xCooe, j+yCooe, k+zCooe);
-							NBTTagCompound tag = this.tileEntityList[index];
-							if(tag!=null)
+							NBTTagCompound tileEntityData = pointToTileEntityMap.get(schematicPoint);
+
+							if (tileEntityData != null)
 							{
-								tile.readFromNBT(tag);
+								//Change the tile entity's position
+								tileEntityData.setInteger("x", realX);
+								tileEntityData.setInteger("y", realY);
+								tileEntityData.setInteger("z", realZ);
+								//Load the tile entity into the world
+								world.setBlockTileEntity(realX, realY, realZ, TileEntity.createAndLoadEntity(tileEntityData));
 							}
-							 **/
+						}
+						
+						//Fill empty chests and dispensers
+						if (Block.blocksList[currentBlock] instanceof BlockContainer)
+						{
+							TileEntity tileEntity = world.getBlockTileEntity(realX, realY, realZ);
 
 							//Fill chests
-							if (world.getBlockTileEntity(realX, realY, realZ) instanceof TileEntityChest)
+							if (tileEntity instanceof TileEntityChest)
 							{
-								TileEntityChest chest = (TileEntityChest) world.getBlockTileEntity(realX, realY, realZ);
-								ChestGenHooks info = DDLoot.DungeonChestInfo;
-								WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand), chest, info.getCount(rand));
+								TileEntityChest chest = (TileEntityChest) tileEntity;
+								if (isInventoryEmpty(chest))
+								{
+									ChestGenHooks info = DDLoot.DungeonChestInfo;
+									WeightedRandomChestContent.generateChestContents(rand, info.getItems(rand), chest, info.getCount(rand));
+								}
 							}
-
+							
 							//Fill dispensers
-							if (world.getBlockTileEntity(realX, realY, realZ) instanceof TileEntityDispenser)
+							if (tileEntity instanceof TileEntityDispenser)
 							{
-								TileEntityDispenser dispenser = (TileEntityDispenser) world.getBlockTileEntity(realX, realY, realZ);
-								dispenser.addItem(new ItemStack(Item.arrow, 64));
+								TileEntityDispenser dispenser = (TileEntityDispenser) tileEntity;
+								if (isInventoryEmpty(dispenser))
+								{
+									dispenser.addItem(new ItemStack(Item.arrow, 64));
+								}
 							}
 						}
 					}
@@ -958,7 +998,6 @@ public class SchematicLoader
 					entranceRiftLocation.getX(),
 					entranceRiftLocation.getY() - 1,
 					entranceRiftLocation.getZ());
-			System.out.println("Metadata Orientation: " + sideLink.linkOrientation);
 		}
 		
 		//Generate the LinkData defined by the door placement, Iron Dim doors first
@@ -1076,7 +1115,20 @@ public class SchematicLoader
 		}
 	}
 	
-	private void transformPoint(Point3D position, Point3D srcOrigin, int angle, Point3D destOrigin)
+	private static boolean isInventoryEmpty(IInventory inventory)
+	{
+		int size = inventory.getSizeInventory();
+		for (int index = 0; index < size; index++)
+		{
+			if (inventory.getStackInSlot(index) != null)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private static void transformPoint(Point3D position, Point3D srcOrigin, int angle, Point3D destOrigin)
 	{
 		//This function receives a position (e.g. point in schematic space), translates it relative
 		//to a source coordinate system (e.g. the point that will be the center of a schematic),
