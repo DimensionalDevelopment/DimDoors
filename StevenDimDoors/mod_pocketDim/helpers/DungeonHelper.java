@@ -488,10 +488,11 @@ public class DungeonHelper
 						//Get the tile entity's description as a compound NBT tag
 						NBTTagCompound entityData = new NBTTagCompound();
 						tileEntity.writeToNBT(entityData);
-						//Change the tile entity's location to be relative to (xMin, yMin, zMin)
-						entityData.setInteger("x", entityData.getInteger("x") - xMin);
-						entityData.setInteger("y", entityData.getInteger("y") - yMin);
-						entityData.setInteger("z", entityData.getInteger("z") - zMin);
+						//Change the tile entity's location to the schematic coordinate system
+						entityData.setInteger("x", x);
+						entityData.setInteger("y", y);
+						entityData.setInteger("z", z);
+						
 						tileEntities.appendTag(entityData);
 					}
 				}
