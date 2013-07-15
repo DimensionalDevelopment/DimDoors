@@ -31,6 +31,7 @@ public class TileEntityRift extends TileEntity
 	public boolean isNearRift=false;
 	private int count=200;
 	private int count2 = 0;
+	private int soundCount = 0;
 	public LinkData nearestRiftData;
 	Random rand = new Random();
 	
@@ -46,6 +47,10 @@ public class TileEntityRift extends TileEntity
 		
 		if(count>200&&dimHelper.dimList.get(this.worldObj.provider.dimensionId)!=null)
 		 {
+			if(rand.nextBoolean())
+			{
+				this.worldObj.playSound(xCoord, yCoord, zCoord, "mods.DimDoors.sfx.rift", (float) .7, 1,true);
+			}
 			 nearestRiftData = dimHelper.dimList.get(this.worldObj.provider.dimensionId).findNearestRift(worldObj, 5, xCoord, yCoord, zCoord);
 			 if(nearestRiftData!=null)
 			 {

@@ -87,7 +87,9 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
     				{
         				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6);	
     				}
-    				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2]);		
+    				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2]);	
+					par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.riftEnd", (float) .6, 1);
+
     				par2EntityPlayer.sendChatToPlayer("Rift Created");
     			}
     			else if(!par3World.isRemote)
@@ -105,6 +107,8 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
     		//otherwise, it creates the first half of the link. Next click will complete it. 
     		key= dimHelper.instance.createUniqueInterDimLinkKey();
         	this.writeToNBT(par1ItemStack, par4, par5+offset, par6,par3World.provider.dimensionId);
+			par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.riftStart", (float) .6, 1);
+
     		par2EntityPlayer.sendChatToPlayer("Rift Signature Stored");
         }
     	return true;	

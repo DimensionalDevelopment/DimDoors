@@ -198,7 +198,7 @@ public class itemDimDoor extends ItemDoor
     
     }
     
-    public boolean canPlace(World world,int i, int j, int k, int p)
+    public static boolean canPlace(World world,int i, int j, int k, int p)
     {
     	int id = world.getBlockId(i, j, k);
     	
