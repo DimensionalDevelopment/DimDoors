@@ -40,6 +40,9 @@ public class DungeonHelper
 	public static final int MAX_DUNGEON_WEIGHT = 10000; //Used to prevent overflows and math breaking down
 	private static final int MAX_EXPORT_RADIUS = 50;
 	
+	public static final int FABRIC_OF_REALITY_EXPORT_ID = 1973;
+	public static final int PERMAFABRIC_EXPORT_ID = 220;
+	
 	private static final String HUB_DUNGEON_TYPE = "Hub";
 	private static final String TRAP_DUNGEON_TYPE = "Trap";
 	private static final String SIMPLE_HALL_DUNGEON_TYPE = "SimpleHall";
@@ -444,14 +447,23 @@ public class DungeonHelper
 					if (blockID == properties.WarpDoorID)
 					{
 						blockID = Block.doorWood.blockID;
-
+					}
+					//Map fabric of reality and permafabric blocks to standard export IDs
+					if (blockID == properties.FabricBlockID)
+					{
+						blockID = FABRIC_OF_REALITY_EXPORT_ID;
+					}
+					if (blockID == properties.PermaFabricBlockID)
+					{
+						blockID = PERMAFABRIC_EXPORT_ID;
 					}
 
 					// Save 4096 IDs in an AddBlocks section
 					if (blockID > 255) 
 					{
 						if (addBlocks == null) 
-						{ // Lazily create section
+						{
+							//Lazily create section
 							addBlocks = new byte[(blocks.length >> 1) + 1];
 						}
 
