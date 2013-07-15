@@ -379,7 +379,7 @@ public class DungeonHelper
 		registeredDungeons.addAll(hubs);
 	}
 
-	public boolean exportDungeonX(World world, int centerX, int centerY, int centerZ, String exportPath)
+	public boolean exportDungeon(World world, int centerX, int centerY, int centerZ, String exportPath)
 	{
 		int xMin, yMin, zMin;
 		int xMax, yMax, zMax;
