@@ -2,24 +2,21 @@ package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
-import StevenDimDoors.mod_pocketDim.BlankTeleporter;
-import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import StevenDimDoors.mod_pocketDim.BlankTeleporter;
+import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class BlockDimWallPerm extends Block
 {

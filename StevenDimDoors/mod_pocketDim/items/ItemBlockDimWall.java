@@ -7,7 +7,7 @@ import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 public class ItemBlockDimWall extends ItemBlock
 {
-	private final static String[] subNames = {"Fabric of Reality", "Fabric of Reality Permanent"};
+	private final static String[] subNames = {"Fabric of Reality", "Ancient Fabric"};
 	
     public ItemBlockDimWall(int par1)
     {
