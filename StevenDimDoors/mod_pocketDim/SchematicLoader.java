@@ -43,7 +43,7 @@ public class SchematicLoader
 	
 	public SchematicLoader() { }
 
-	public int transformMetadata(int metadata, int orientation, int blockID)
+	private static int transformMetadata(int metadata, int orientation, int blockID)
 	{
 		if (DungeonHelper.instance().metadataFlipList.contains(blockID))
 		{
