@@ -52,7 +52,14 @@ public class BlockDimWall extends Block
 	@Override
 	public Icon getIcon(int par1, int par2)
 	{
-		return blockIcon[par2];
+		if(par2==1)
+		{
+			return blockIcon[par2];
+		}
+		else
+		{
+			return blockIcon[0];
+		}
 	}
 	
 	@Override

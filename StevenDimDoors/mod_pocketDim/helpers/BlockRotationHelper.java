@@ -83,6 +83,22 @@ public class BlockRotationHelper
 		repeaterComparatorDoorTripwire0.put(14, 15);
 		repeaterComparatorDoorTripwire0.put(15, 12);
 		
+		HashMap<Integer,Integer> rails0 = new HashMap<Integer,Integer>();
+		rails0.put(0, 1);
+		rails0.put(1, 0);
+		rails0.put(8, 9);
+		rails0.put(9, 6);
+		rails0.put(6, 7);
+		rails0.put(7, 8);
+		
+		
+		HashMap<Integer,Integer> railsSpecial0 = new HashMap<Integer,Integer>();
+		railsSpecial0.put(0, 1);
+		railsSpecial0.put(1, 0);
+		railsSpecial0.put(8, 9);
+		railsSpecial0.put(9, 8);
+
+
 		HashMap<Integer,HashMap<Integer, Integer>> orientation1 = new HashMap<Integer,HashMap<Integer, Integer>>();
 		
 		HashMap<Integer,Integer> stairs1 = new HashMap<Integer,Integer>();
@@ -152,6 +168,21 @@ public class BlockRotationHelper
 		repeaterComparatorDoorTripwire1.put(14, 12);
 		repeaterComparatorDoorTripwire1.put(15, 13);
 		
+		HashMap<Integer,Integer> rails1 = new HashMap<Integer,Integer>();
+		rails1.put(0, 0);
+		rails1.put(1, 1);
+		rails1.put(8, 6);
+		rails1.put(9, 7);
+		rails1.put(6, 8);
+		rails1.put(7, 9);
+		
+		
+		HashMap<Integer,Integer> railsSpecial1 = new HashMap<Integer,Integer>();
+		railsSpecial1.put(1, 1);
+		railsSpecial1.put(0, 0);
+		railsSpecial1.put(8, 8);
+		railsSpecial1.put(9, 9);
+		
 		HashMap<Integer,HashMap<Integer, Integer>> orientation2 = new HashMap<Integer,HashMap<Integer, Integer>>();
 		
 		HashMap<Integer,Integer> stairs2 = new HashMap<Integer,Integer>();
@@ -220,6 +251,21 @@ public class BlockRotationHelper
 		repeaterComparatorDoorTripwire2.put(14, 13);
 		repeaterComparatorDoorTripwire2.put(15, 14);
 		repeaterComparatorDoorTripwire2.put(12, 15);
+		
+		HashMap<Integer,Integer> rails2 = new HashMap<Integer,Integer>();
+		rails2.put(0, 1);
+		rails2.put(1, 0);
+		rails2.put(8, 7);
+		rails2.put(9, 8);
+		rails2.put(6, 9);
+		rails2.put(7, 6);
+		
+		
+		HashMap<Integer,Integer> railsSpecial2 = new HashMap<Integer,Integer>();
+		railsSpecial2.put(0, 1);
+		railsSpecial2.put(1, 0);
+		railsSpecial2.put(8, 9);
+		railsSpecial2.put(9, 8);
 
 	
 
@@ -258,6 +304,10 @@ public class BlockRotationHelper
 		orientation0.put(Block.doorWood.blockID,pistonDropperDispenser0);
 		orientation0.put(Block.doorIron.blockID,pistonDropperDispenser0);
 		orientation0.put(Block.tripWireSource.blockID,pistonDropperDispenser0);
+		orientation0.put(Block.railDetector.blockID,railsSpecial0);
+		orientation0.put(Block.railActivator.blockID,railsSpecial0);
+		orientation0.put(Block.railPowered.blockID,railsSpecial0);
+		orientation0.put(Block.rail.blockID,rails0);
 		
 		orientation1.put(Block.stairsBrick.blockID, stairs1);
 		orientation1.put(Block.stairsCobblestone.blockID, stairs1);
@@ -293,7 +343,10 @@ public class BlockRotationHelper
 		orientation1.put(Block.doorWood.blockID,pistonDropperDispenser1);
 		orientation1.put(Block.doorIron.blockID,pistonDropperDispenser1);
 		orientation1.put(Block.tripWireSource.blockID,pistonDropperDispenser1);
-		
+		orientation1.put(Block.railDetector.blockID,railsSpecial1);
+		orientation1.put(Block.railActivator.blockID,railsSpecial1);
+		orientation1.put(Block.railPowered.blockID,railsSpecial1);
+		orientation1.put(Block.rail.blockID,rails1);
 
 		orientation2.put(Block.stairsBrick.blockID, stairs2);
 		orientation2.put(Block.stairsCobblestone.blockID, stairs2);
@@ -329,6 +382,10 @@ public class BlockRotationHelper
 		orientation2.put(Block.doorWood.blockID,pistonDropperDispenser2);
 		orientation2.put(Block.doorIron.blockID,pistonDropperDispenser2);
 		orientation2.put(Block.tripWireSource.blockID,pistonDropperDispenser2);
+		orientation2.put(Block.railDetector.blockID,railsSpecial2);
+		orientation2.put(Block.railActivator.blockID,railsSpecial2);
+		orientation2.put(Block.railPowered.blockID,railsSpecial2);
+		orientation2.put(Block.rail.blockID,rails2);
 		
 		this.rotationMappings.put(2, orientation2);
 		this.rotationMappings.put(1, orientation1);
@@ -347,7 +404,7 @@ public class BlockRotationHelper
 				}
 			}
 		}
-		return 0 ;	
+		return metaData ;	
 	}
 	
 	
