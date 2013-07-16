@@ -35,6 +35,7 @@ import StevenDimDoors.mod_pocketDim.commands.CommandStartDungeonCreation;
 import StevenDimDoors.mod_pocketDim.helpers.BlockRotationHelper;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.items.ItemBlockDimWall;
 import StevenDimDoors.mod_pocketDim.items.ItemChaosDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
 import StevenDimDoors.mod_pocketDim.items.ItemStabilizedRiftSignature;
@@ -178,7 +179,7 @@ public class mod_pocketDim
 		transientDoor = (new TransientDoor(properties.TransientDoorID, Material.iron)).setHardness(1.0F) .setUnlocalizedName("transientDoor");
 
 		blockDimWall = (new BlockDimWall(properties.FabricBlockID, 0, Material.iron)).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("blockDimWall");
-		blockDimWallPerm = (new BlockDimWallPerm(properties.PermaFabricBlockID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setHardness(100000.0F).setUnlocalizedName("blockDimWallPerm");
+		blockDimWallPerm = (new BlockDimWallPerm(properties.PermaFabricBlockID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setUnlocalizedName("blockDimWallPerm");
 		ExitDoor = (new ExitDoor(properties.WarpDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
 		blockRift = (new BlockRift(properties.RiftBlockID, 0, Material.air).setHardness(1.0F) .setUnlocalizedName("rift"));
 		blockLimbo = (new BlockLimbo(properties.LimboBlockID, 15, Material.iron).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F));
@@ -207,9 +208,10 @@ public class mod_pocketDim
 		GameRegistry.registerBlock(blockLimbo, "Unraveled Fabric");
 		GameRegistry.registerBlock(dimDoor, "Dimensional Door");
 		GameRegistry.registerBlock(dimHatch,"Transdimensional Trapdoor");
-		GameRegistry.registerBlock(blockDimWall, "Fabric of Reality");
 		GameRegistry.registerBlock(blockDimWallPerm, "Fabric of RealityPerm");
 		GameRegistry.registerBlock(transientDoor, "transientDoor");
+		
+		GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, "Fablic of Reality");
 
 		GameRegistry.registerPlayerTracker(tracker);
 
@@ -226,7 +228,7 @@ public class mod_pocketDim
 		LanguageRegistry.addName(blockDimWallPerm	, "Fabric of Reality");
 		LanguageRegistry.addName(dimDoor, "Dimensional Door");
 		LanguageRegistry.addName(dimHatch, "Transdimensional Trapdoor");
-
+	
 		LanguageRegistry.addName(itemExitDoor, "Warp Door");
 		LanguageRegistry.addName(itemLinkSignature	, "Rift Signature");
 		LanguageRegistry.addName(itemStabilizedLinkSignature, "Stabilized Rift Signature");
@@ -235,6 +237,13 @@ public class mod_pocketDim
 		LanguageRegistry.addName(itemChaosDoor	, "Unstable Door");
 		LanguageRegistry.addName(itemDimDoor, "Dimensional Door");
 		LanguageRegistry.addName(itemRiftBlade	, "Rift Blade");
+		
+		/**
+		 * Add names for multiblock inventory item
+		 */
+		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 0), "Fabric of Reality");
+		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 1), "Fabric of Reality Permanent");
+
 		
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dimDoorsCustomTab", "en_US", "Dimensional Doors Items");
 

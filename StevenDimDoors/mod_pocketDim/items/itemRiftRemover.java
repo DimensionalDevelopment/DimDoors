@@ -85,7 +85,7 @@ public class itemRiftRemover extends Item
     			//System.out.println(hit.hitVec);
     			if(dimHelper.instance.removeRift(par2World, hit.blockX, hit.blockY, hit.blockZ, 1, par3EntityPlayer, par1ItemStack))
     			{
-    				par3EntityPlayer.worldObj.playSoundAtEntity(par3EntityPlayer,"mods.DimDoors.sfx.riftClose", (float) .7, 1);
+    				par3EntityPlayer.worldObj.playSoundAtEntity(par3EntityPlayer,"mods.DimDoors.sfx.riftClose", (float) .8, 1);
 
     			}
     			
