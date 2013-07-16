@@ -14,7 +14,7 @@ public class CommandDeleteAllLinks extends DDCommandBase
 
 	private CommandDeleteAllLinks()
 	{
-		super("dd-deletelinks", "FIXME");
+		super("dd-deletelinks", "???");
 	}
 
 	public static CommandDeleteAllLinks instance()

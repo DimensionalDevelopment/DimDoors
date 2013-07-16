@@ -2,8 +2,6 @@ package StevenDimDoors.mod_pocketDim;
 
 import java.io.File;
 
-import StevenDimDoors.mod_pocketDim.world.LimboGenerator;
-
 import net.minecraftforge.common.Configuration;
 
 public class DDProperties
