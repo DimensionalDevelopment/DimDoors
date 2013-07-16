@@ -1156,10 +1156,6 @@ public class SchematicLoader
 		}
 		angle = angle % 4;
 		
-		//Rotations are considered in counterclockwise form because coordinate systems are
-		//often assumed to be right-handed and convenient formulas are available for
-		//common counterclockwise rotations.
-		//Reference: http://en.wikipedia.org/wiki/Rotation_matrix#Common_rotations
 		int rx;
 		int rz;
 		switch (angle)
