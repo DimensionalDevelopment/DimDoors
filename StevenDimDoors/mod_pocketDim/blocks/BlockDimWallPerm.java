@@ -29,21 +29,21 @@ public class BlockDimWallPerm extends Block
 	{
 		super(i, Material.ground);
 		setTickRandomly(true);
-		//  this.setCreativeTab(CreativeTabs.tabBlock);
+        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 		if (properties == null)
 			properties = DDProperties.instance();
 	}
 
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2().replace("perm", ""));
+		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2());
 	}
 
 	public int quantityDropped(Random par1Random)
 	{
 		return 0;
 	}
-	
+
 	public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {}
 
 	/**
@@ -70,8 +70,6 @@ public class BlockDimWallPerm extends Block
 
 			if(dimHelper.getWorld(0)!=null&&par5Entity instanceof EntityPlayerMP)
 			{
-
-
 				int x = (link.destXCoord + rand.nextInt(properties.LimboReturnRange)-properties.LimboReturnRange/2);
 				int z = (link.destZCoord + rand.nextInt(properties.LimboReturnRange)-properties.LimboReturnRange/2);
 
