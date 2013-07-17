@@ -28,7 +28,6 @@ public class BlockDimWall extends Block
 	public BlockDimWall(int blockID, int j, Material par2Material) 
 	{
 		super(blockID, Material.ground);
-		setTickRandomly(true);
 		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);      
 	}
 	

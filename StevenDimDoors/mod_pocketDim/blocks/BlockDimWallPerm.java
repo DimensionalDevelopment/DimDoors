@@ -25,7 +25,6 @@ public class BlockDimWallPerm extends Block
 	public BlockDimWallPerm(int i, int j, Material par2Material) 
 	{
 		super(i, Material.ground);
-		setTickRandomly(true);
         this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 		if (properties == null)
 			properties = DDProperties.instance();
