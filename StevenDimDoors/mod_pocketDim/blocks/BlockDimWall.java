@@ -65,9 +65,10 @@ public class BlockDimWall extends Block
 	}
 	
 	@Override
-	public int damageDropped (int metadata) 
+	public int damageDropped(int metadata) 
 	{
-		return metadata;
+		//Return 0 to avoid dropping Ancient Fabric even if the player somehow manages to break it
+		return 0;
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -96,7 +97,8 @@ public class BlockDimWall extends Block
      */
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int par6, float par7, float par8, float par9)
     {
-        if (entityPlayer.getCurrentEquippedItem() != null)
+    	//Check if the metadata value is 0 -- we don't want the user to replace Ancient Fabric
+        if (entityPlayer.getCurrentEquippedItem() != null && world.getBlockMetadata(x, y, z) == 0)
         {
         	Item playerEquip = entityPlayer.getCurrentEquippedItem().getItem();
         	
