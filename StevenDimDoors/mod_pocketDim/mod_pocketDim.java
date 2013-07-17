@@ -211,7 +211,7 @@ public class mod_pocketDim
 		GameRegistry.registerBlock(blockDimWallPerm, "Fabric of RealityPerm");
 		GameRegistry.registerBlock(transientDoor, "transientDoor");
 		
-		GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, "Fablic of Reality");
+		GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, "Fabric of Reality");
 
 		GameRegistry.registerPlayerTracker(tracker);
 
