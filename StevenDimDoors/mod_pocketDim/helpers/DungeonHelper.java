@@ -319,6 +319,8 @@ public class DungeonHelper
 		hubs.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/longDoorHallway.schematic", false));
 		hubs.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallRotundaWithExit.schematic", false));
 		hubs.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/fortRuins.schematic", true));
+		hubs.add(new DungeonGenerator(10, "/schematics/Hub_SK-Claustrophobia_Open_10.schematic", true));
+		hubs.add(new DungeonGenerator(50, "/schematics/Hub_SK-HeartOfDisorder_Open_50.schematic", true));
 
 		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/collapsedSingleTunnel1.schematic", false));
 		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/singleStraightHall1.schematic", false));
@@ -328,7 +330,12 @@ public class DungeonHelper
 		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/simpleStairsUp.schematic", false));
 		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/simpleStairsDown.schematic", false));
 		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/simpleSmallT1.schematic", false));
-
+		simpleHalls.add(new DungeonGenerator(50, "/schematics/SimpleHall_SK-LeftDownStairs_Open_50.schematic", true));
+		simpleHalls.add(new DungeonGenerator(50, "/schematics/SimpleHall_SK-LeftUpPath_Open_50.schematic", true));
+		simpleHalls.add(new DungeonGenerator(50, "/schematics/SimpleHall_SK-RightDownStairs_Open_50.schematic", true));
+		simpleHalls.add(new DungeonGenerator(50, "/schematics/SimpleHall_SK-RightUpPath_Open_50.schematic", true));
+		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/SimpleHall_SK-SpiralHallway_Open_100.schematic", true));
+		
 		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/tntPuzzleTrap.schematic", false));
 		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/brokenPillarsO.schematic", true));
 		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/buggyTopEntry1.schematic", true));
@@ -337,6 +344,8 @@ public class DungeonHelper
 		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/mediumPillarStairs.schematic", true));
 		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/ruinsO.schematic", true));
 		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/pitStairs.schematic", true));
+		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/ComplexHall_SK-HiddenStairs_Open_100.schematic", true));
+		complexHalls.add(new DungeonGenerator(10, "/schematics/ComplexHall_SK-LostGarden_Open_10.schematic", true));
 
 		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/azersDungeonO.schematic", false));
 		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/diamondTowerTemple1.schematic", true));
@@ -349,6 +358,8 @@ public class DungeonHelper
 		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/tntTrapO.schematic", true));
 		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallDesert.schematic", true));
 		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallPond.schematic", true));
+		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/DeadEnd_SK-FarAwayInTheDark_Open_100.schematic", true));
+		deadEnds.add(new DungeonGenerator(50, "/schematics/DeadEnd_SK-UnstableDesert_Open_50.schematic", true));
 
 		pistonTraps.add(new DungeonGenerator(2 * DEFAULT_DUNGEON_WEIGHT, "/schematics/hallwayPitFallTrap.schematic", false));
 		pistonTraps.add(new DungeonGenerator(2 * DEFAULT_DUNGEON_WEIGHT, "/schematics/pistonFloorHall.schematic", false));
@@ -359,6 +370,7 @@ public class DungeonHelper
 		pistonTraps.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/simpleDropHall.schematic", false));
 		pistonTraps.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/fallingTNThall.schematic", false));
 		pistonTraps.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/lavaPyramid.schematic", true));
+		pistonTraps.add(new DungeonGenerator(10, "/schematics/Trap_SK-RestlessCorridor_Open_10.schematic", true));
 
 		mazes.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallMaze1.schematic", false));
 		mazes.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallMultilevelMaze.schematic", false));
