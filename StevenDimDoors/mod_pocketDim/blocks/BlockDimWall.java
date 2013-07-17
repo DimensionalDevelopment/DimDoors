@@ -22,37 +22,38 @@ import net.minecraft.world.World;
 
 public class BlockDimWall extends Block
 {
-	private Icon[] blockIcon= new Icon[2];
-	public BlockDimWall(int i, int j, Material par2Material) 
+	private static final float SUPER_HIGH_HARDNESS = 10000000000000F;
+	private Icon[] blockIcon = new Icon[2];
+	
+	public BlockDimWall(int blockID, int j, Material par2Material) 
 	{
-		super(i, Material.ground);
-		setTickRandomly(true);
+		super(blockID, Material.ground);
 		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);      
 	}
 	
 	public float getBlockHardness(World par1World, int par2, int par3, int par4)
 	{
-		if(par1World.getBlockMetadata(par2, par3, par4)==0)
+		if (par1World.getBlockMetadata(par2, par3, par4) == 0)
 		{
 			return this.blockHardness;
 		}
 		else
 		{
-			return 10000000000000F;
+			return SUPER_HIGH_HARDNESS;
 		}
 	}	
 	
 	public void registerIcons(IconRegister par1IconRegister)
     {
         this.blockIcon[0] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2());
-        this.blockIcon[1] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2()+"perm");
+        this.blockIcon[1] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2() + "perm");
     }
 	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public Icon getIcon(int par1, int par2)
 	{
-		if(par2==1)
+		if (par2 == 1)
 		{
 			return blockIcon[par2];
 		}
@@ -63,11 +64,13 @@ public class BlockDimWall extends Block
 	}
 	
 	@Override
-	public int damageDropped (int metadata) 
+	public int damageDropped(int metadata) 
 	{
-		return metadata;
+		//Return 0 to avoid dropping Ancient Fabric even if the player somehow manages to break it
+		return 0;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int unknown, CreativeTabs tab, List subItems) 
 	{
@@ -91,50 +94,31 @@ public class BlockDimWall extends Block
     /**
      * replaces the block clicked with the held block, instead of placing the block on top of it. Shift click to disable. 
      */
-    public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer entityPlayer, int par6, float par7, float par8, float par9)
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int par6, float par7, float par8, float par9)
     {
-        if(entityPlayer.getCurrentEquippedItem()!=null)
+    	//Check if the metadata value is 0 -- we don't want the user to replace Ancient Fabric
+        if (entityPlayer.getCurrentEquippedItem() != null && world.getBlockMetadata(x, y, z) == 0)
         {
         	Item playerEquip = entityPlayer.getCurrentEquippedItem().getItem();
         	
-        	if(!(playerEquip instanceof ItemBlock))
+        	if (playerEquip instanceof ItemBlock)
         	{
-        		return false;
-        	}
-        	else
-        	{
-        		Block block=  Block.blocksList[playerEquip.itemID];
-        		if(!Block.isNormalCube(playerEquip.itemID))
+        		Block block = Block.blocksList[playerEquip.itemID];
+        		if (!Block.isNormalCube(playerEquip.itemID) || block instanceof BlockContainer || block.blockID == this.blockID)
         		{
         			return false;
         		}
-        		if(block instanceof BlockContainer)
+        		if (!world.isRemote)
         		{
-        			return false;
+            		if (!entityPlayer.capabilities.isCreativeMode)
+            		{
+            			entityPlayer.getCurrentEquippedItem().stackSize--;
+            		}
+            		world.setBlock(x, y, z, entityPlayer.getCurrentEquippedItem().itemID, entityPlayer.getCurrentEquippedItem().getItemDamage(), 0);
         		}
-        	}
-        
-        
-        	if(entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemBlock)
-        	{
-        		if(par1World.isRemote)
-        		{
-        			return true;
-        		}
-        	
-        		if(!entityPlayer.capabilities.isCreativeMode)
-        		{
-        			entityPlayer.getCurrentEquippedItem().stackSize--;
-        		}
-        		par1World.setBlock(par2, par3, par4,  entityPlayer.getCurrentEquippedItem().itemID, entityPlayer.getCurrentEquippedItem().getItemDamage(),0);
         		return true;
         	}
-        	
         }
-        else
-        {
-        	return false;
-        }
-	return false;
+        return false;
     }
 }

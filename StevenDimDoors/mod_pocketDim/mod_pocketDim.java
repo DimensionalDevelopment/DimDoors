@@ -225,7 +225,7 @@ public class mod_pocketDim
 		LanguageRegistry.addName(ExitDoor	, "Warp Door");
 		LanguageRegistry.addName(chaosDoor	, "Unstable Door");
 		LanguageRegistry.addName(blockDimWall	, "Fabric of Reality");
-		LanguageRegistry.addName(blockDimWallPerm	, "Fabric of Reality Permanent/Unpushable");
+		LanguageRegistry.addName(blockDimWallPerm	, "Eternal Fabric");
 		LanguageRegistry.addName(dimDoor, "Dimensional Door");
 		LanguageRegistry.addName(dimHatch, "Transdimensional Trapdoor");
 	
@@ -242,7 +242,7 @@ public class mod_pocketDim
 		 * Add names for multiblock inventory item
 		 */
 		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 0), "Fabric of Reality");
-		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 1), "Fabric of Reality Permanent/Pushable");
+		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 1), "Ancient Fabric");
 
 		
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dimDoorsCustomTab", "en_US", "Dimensional Doors Items");

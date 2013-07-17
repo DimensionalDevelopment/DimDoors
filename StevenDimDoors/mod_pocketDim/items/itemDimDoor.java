@@ -1,27 +1,22 @@
 package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
-import java.util.Random;
-
-import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 public class itemDimDoor extends ItemDoor
 {
@@ -41,13 +36,14 @@ public class itemDimDoor extends ItemDoor
         this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
     }
     
-    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
     {
     		par3List.add("Place on the block under a rift");
-    		par3List.add ("to activate that rift,");
-    		par3List.add("or place anywhere else");
-    		par3List.add("to create a pocket dim");
+    		par3List.add("to activate that rift or place");
+    		par3List.add("anywhere else to create a");
+    		par3List.add("pocket dimension.");
     }
     
     @Override
@@ -81,7 +77,7 @@ public class itemDimDoor extends ItemDoor
             {
                 int var12 = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
-                if (!this.canPlace(par3World, par4, par5, par6, var12)||!this.canPlace(par3World, par4, par5+1, par6, var12))
+                if (!canPlace(par3World, par4, par5, par6, var12) || !canPlace(par3World, par4, par5+1, par6, var12))
                 {
                     return false;
                 }
@@ -137,7 +133,6 @@ public class itemDimDoor extends ItemDoor
     
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {
-    	boolean didFindThing = false;
     	MovingObjectPosition hit = 	this.getMovingObjectPositionFromPlayer(par3EntityPlayer.worldObj, par3EntityPlayer, false );
 		if(hit!=null&&!par2World.isRemote)
 		{
@@ -173,19 +168,15 @@ public class itemDimDoor extends ItemDoor
 	            {
 	                int var12 = MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
-	                if (!this.canPlace(par2World, par4, par5, par6, var12)||!this.canPlace(par2World, par4, par5-1, par6, var12)||dimHelper.instance.getLinkDataFromCoords(par4, par5, par6, par2World)==null)
+	                if (!canPlace(par2World, par4, par5, par6, var12) || !canPlace(par2World, par4, par5-1, par6, var12) ||
+	                		dimHelper.instance.getLinkDataFromCoords(par4, par5, par6, par2World) == null)
 	                {
 	                	return par1ItemStack;
 	                }
 	               else 
 	                {
-	            	   
-	            	
-	              
 	                    placeDoorBlock(par2World, par4, par5-1, par6, var12, var11);
-	                   
-
-	                   
+	                 	                   
 	                    --par1ItemStack.stackSize;
 	                
 	                }

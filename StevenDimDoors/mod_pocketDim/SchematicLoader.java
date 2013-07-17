@@ -43,7 +43,7 @@ public class SchematicLoader
 	
 	public SchematicLoader() { }
 
-	public int transformMetadata(int metadata, int orientation, int blockID)
+	private static int transformMetadata(int metadata, int orientation, int blockID)
 	{
 		if (DungeonHelper.instance().metadataFlipList.contains(blockID))
 		{
@@ -900,12 +900,10 @@ public class SchematicLoader
 					else if (currentBlock == DungeonHelper.FABRIC_OF_REALITY_EXPORT_ID)
 					{
 						currentBlock = mod_pocketDim.blockDimWall.blockID;
-						blockChanged = true;
 					}
 					else if (currentBlock == DungeonHelper.PERMAFABRIC_EXPORT_ID)
 					{
 						currentBlock = mod_pocketDim.blockDimWallPerm.blockID;
-						blockChanged = true;
 					}
 					else if ((Block.blocksList[currentBlock] == null && currentBlock != 0) || currentBlock > MAX_VANILLA_BLOCK_ID)
 					{
@@ -916,23 +914,32 @@ public class SchematicLoader
 					//Place blocks and set metadata
 					if (currentBlock > 0)
 					{
-						//Calculate new metadata for blocks that have orientations (e.g. doors, pistons)
-						//We're using a workaround to get the desired rotation relative to the schematic's entrance
-						int fixedMetadata = transformMetadata(blockMetadata, (orientation + NORTH_DOOR_METADATA - entryDirection + 16) % 4, currentBlock);
+						int fixedMetadata;
+						
+						if (!blockChanged)
+						{
+							//Calculate new metadata for blocks that have orientations (e.g. doors, pistons)
+							//We're using a workaround to get the desired rotation relative to the schematic's entrance
+							fixedMetadata = transformMetadata(blockMetadata, (orientation + NORTH_DOOR_METADATA - entryDirection + 16) % 4, currentBlock);
+						}
+						else
+						{
+							//Don't include metadata for changed blocks. It's possible that the metadata belonged to a mod block.
+							//If we include it now, it could cause our Fabric of Reality to change into permafabric.
+							fixedMetadata = 0;
+						}
 
 						//Convert vanilla doors to dim doors or place blocks
 						if (currentBlock == Block.doorIron.blockID)
 						{
 							setBlockDirectly(world, realX, realY, realZ, properties.DimensionalDoorID, fixedMetadata);
-							blockChanged = true;
 						}
 						else if (currentBlock == Block.doorWood.blockID)
 						{
 							setBlockDirectly(world, realX, realY, realZ, properties.WarpDoorID, fixedMetadata);
-							blockChanged = true;
 						}
 						else
-						{							
+						{
 							setBlockDirectly(world, realX, realY, realZ, currentBlock, fixedMetadata);
 						}
 						
@@ -1156,10 +1163,6 @@ public class SchematicLoader
 		}
 		angle = angle % 4;
 		
-		//Rotations are considered in counterclockwise form because coordinate systems are
-		//often assumed to be right-handed and convenient formulas are available for
-		//common counterclockwise rotations.
-		//Reference: http://en.wikipedia.org/wiki/Rotation_matrix#Common_rotations
 		int rx;
 		int rz;
 		switch (angle)

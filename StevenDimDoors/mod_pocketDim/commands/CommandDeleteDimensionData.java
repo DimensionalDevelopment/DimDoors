@@ -14,7 +14,7 @@ public class CommandDeleteDimensionData extends DDCommandBase
 	
 	private CommandDeleteDimensionData()
 	{
-		super("dd-deletedimension", "FIXME");
+		super("dd-deletedimension", "???");
 	}
 	
 	public static CommandDeleteDimensionData instance()

@@ -15,7 +15,7 @@ public class CommandDeleteRifts extends DDCommandBase
 
 	private CommandDeleteRifts()
 	{
-		super("dd-???", "FIXME");
+		super("dd-???", "???");
 	}
 
 	public static CommandDeleteRifts instance()
