@@ -155,21 +155,20 @@
 		</copy> -->
 	</target>
 
-	<target name="download-forge" depends="download-ant-contrib" unless="forge-exists">
-		<taskdef resource="net/sf/antcontrib/antlib.xml">
-			<classpath>
-				<pathelement location="${download.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
-				<fileset dir="${download.dir}/ant-contrib/lib">
-					<include name="*.jar"/>
-				</fileset>
-			</classpath>
-		</taskdef>
-		<echo message="Downloading forge... " />
-		<getMethod url="http://files.minecraftforge.net/minecraftforge-src-${forge.version}.zip"
-							 responseDataFile="${download.dir}/minecraftforge-src-${forge.version}.zip">
-			<header name="User-Agent" value="Ant-${ant.version}/${ant.java.version}"/>
-		</getMethod>
+		<target name="download-forge" depends="download-ant-contrib" unless="forge-exists">
+			<taskdef resource="net/sf/antcontrib/antlib.xml">
+				<classpath>
+					<pathelement location="${download.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
+					<fileset dir="${download.dir}/ant-contrib/lib">
+						<include name="*.jar"/>
+					</fileset>
+				</classpath>
+			</taskdef>
+			<echo message="Downloading forge... " />
+			<get src="${forge.url}" dest="${download.dir}/minecraftforge-src-${forge.version}.zip" />
 	</target>
+
+
 
 	<target name="download-ant-contrib" unless="should-download-ant-contrib">
 		<echo message="Getting: ant-contrib"/>
