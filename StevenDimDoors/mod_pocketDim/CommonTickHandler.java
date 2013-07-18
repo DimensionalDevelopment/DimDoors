@@ -115,7 +115,7 @@ public class CommonTickHandler implements ITickHandler
 				blockID = worldObj.getBlockId(x, y, z);
  
 			}
-			while(blockID == mod_pocketDim.blockDimWall.blockID&&y>0)
+			while((blockID == mod_pocketDim.blockDimWall.blockID||blockID == mod_pocketDim.blockDimWallPerm.blockID)&&y>0)
 			{
 				y--;
 				blockID = worldObj.getBlockId(x, y, z);
