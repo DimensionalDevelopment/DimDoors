@@ -85,7 +85,7 @@ channels={"DimDoorPackets"}, packetHandler = PacketHandler.class, connectionHand
 
 public class mod_pocketDim
 {
-	public static final String version = "1.5.2R1.4.0RC1";
+	public static final String version = "1.5.2R1.4.1RC1";
 	public static final String modid = "DimDoors";
 
 	//need to clean up 
@@ -211,7 +211,7 @@ public class mod_pocketDim
 		GameRegistry.registerBlock(blockDimWallPerm, "Fabric of RealityPerm");
 		GameRegistry.registerBlock(transientDoor, "transientDoor");
 		
-		GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, "Fablic of Reality");
+		GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, "Fabric of Reality");
 
 		GameRegistry.registerPlayerTracker(tracker);
 
