@@ -36,6 +36,8 @@ import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 public class SchematicLoader 
 {
 	private final static int EAST_DOOR_METADATA = 0;
+	private final static int SOUTH_DOOR_METADATA = 1;
+	private final static int WEST_DOOR_METADATA = 2;
 	private final static int NORTH_DOOR_METADATA = 3;
 	private final static int MAX_VANILLA_BLOCK_ID = 158;
 
@@ -49,8 +51,26 @@ public class SchematicLoader
 		{
 			switch (orientation)
 			{
-			case 0:
+			case EAST_DOOR_METADATA:
 
+				if (blockID == Block.hopperBlock.blockID)
+				{
+					switch (metadata)
+					{
+					case 2:
+						metadata = 5;
+						break;
+					case 3:
+						metadata = 4;
+						break;
+					case 4:
+						metadata = 2;
+						break;
+					case 5:
+						metadata = 3;
+						break;
+					}
+				}
 				if(Block.blocksList[blockID] instanceof BlockStairs)
 				{
 
@@ -238,7 +258,27 @@ public class SchematicLoader
 					}
 				}
 				break;
-			case 1:
+			case SOUTH_DOOR_METADATA:
+
+				if (blockID == Block.hopperBlock.blockID)
+				{
+					switch (metadata)
+					{
+					case 2:
+						metadata = 3;
+						break;
+					case 3:
+						metadata = 2;
+						break;
+					case 4:
+						metadata = 5;
+						break;
+					case 5:
+						metadata = 4;
+						break;
+					}
+				}
+				
 				if(Block.blocksList[blockID] instanceof BlockStairs)
 				{
 					switch (metadata)
@@ -443,8 +483,27 @@ public class SchematicLoader
 				}
 
 				break;
-			case 2:
+			case WEST_DOOR_METADATA:
 
+				if (blockID == Block.hopperBlock.blockID)
+				{
+					switch (metadata)
+					{
+					case 2:
+						metadata = 4;
+						break;
+					case 3:
+						metadata = 5;
+						break;
+					case 4:
+						metadata = 3;
+						break;
+					case 5:
+						metadata = 2;
+						break;
+					}
+				}
+				
 				if(Block.blocksList[blockID] instanceof BlockStairs)
 				{
 
@@ -588,14 +647,8 @@ public class SchematicLoader
 					case 13:
 						metadata = 10;
 						break;
-
-
 					}
-
-
-
 				}
-
 				else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor ||blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
 				{
 					switch (metadata)
@@ -648,34 +701,16 @@ public class SchematicLoader
 					case 12:
 						metadata = 15;
 						break;
-
-
 					}
-
-
-
 				}
-
-
-
-
-
-
 				break;
-			case 3:
+			case NORTH_DOOR_METADATA:
 				/**
 				 * this is the default case- never need to change anything here
 				 * 
 				 */
-
-
-
-
 				break;
-
 			}
-
-
 		}
 		return metadata;
 	}
