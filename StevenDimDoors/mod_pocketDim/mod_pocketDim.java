@@ -182,7 +182,7 @@ public class mod_pocketDim
 		blockDimWallPerm = (new BlockDimWallPerm(properties.PermaFabricBlockID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setUnlocalizedName("blockDimWallPerm");
 		ExitDoor = (new ExitDoor(properties.WarpDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
 		blockRift = (new BlockRift(properties.RiftBlockID, 0, Material.air).setHardness(1.0F) .setUnlocalizedName("rift"));
-		blockLimbo = (new BlockLimbo(properties.LimboBlockID, 15, Material.iron).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F));
+		blockLimbo = (new BlockLimbo(properties.LimboBlockID, 15, Material.iron, properties.LimboDimensionID).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F));
 		chaosDoor = (new ChaosDoor(properties.UnstableDoorID, Material.iron).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
 		dimDoor = (new dimDoor(properties.DimensionalDoorID, Material.iron)).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor");
 		dimHatch = (new dimHatch(properties.TransTrapdoorID, 84, Material.iron)).setHardness(1.0F) .setUnlocalizedName("dimHatch");

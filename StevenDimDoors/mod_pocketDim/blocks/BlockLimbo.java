@@ -1,20 +1,28 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
+import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.LimboDecay;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockLimbo extends Block
 {
-	public BlockLimbo(int i, int j, Material par2Material) 
+	private final int limboDimensionID;
+	
+	public BlockLimbo(int i, int j, Material par2Material, int limboDimensionID) 
 	{
 		super(i, Material.ground);
-		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);       
+		this.limboDimensionID = limboDimensionID;
+		this.setTickRandomly(true);
+		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 	}
 
 	/**
@@ -38,4 +46,17 @@ public class BlockLimbo extends Block
 	{
 		return this.blockIcon;
 	}
+	
+	/**
+	 * If the block is in Limbo, attempt to decay surrounding blocks upon receiving a random update tick.
+	 */
+    @Override
+    public void updateTick(World world, int x, int y, int z, Random random)
+    {
+    	//Make sure this block is in Limbo
+    	if (world.provider.dimensionId == limboDimensionID)
+    	{
+    		LimboDecay.ApplySpreadDecay(world, x, y, z);
+    	}
+    }
 }

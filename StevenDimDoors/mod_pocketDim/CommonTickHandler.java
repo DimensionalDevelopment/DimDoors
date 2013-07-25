@@ -23,6 +23,7 @@ public class CommonTickHandler implements ITickHandler
 	private static final Random rand = new Random();
 
 	public static final int MAX_MONOLITH_SPAWNING_CHANCE = 100;
+	private static final String label = "Dimensional Doors: Common Tick";
 	private static final int MAX_MONOLITH_SPAWN_Y = 245;
 	private static final int CHUNK_SIZE = 16;
 	private static final int RIFT_REGENERATION_INTERVAL = 100; //Regenerate random rifts every 100 ticks
@@ -78,7 +79,7 @@ public class CommonTickHandler implements ITickHandler
 	@Override
 	public String getLabel()
 	{
-		return null;
+		return label; //Used for profiling!
 	}
 
 	private void placeMonolithsInPockets(int worldID, int chunkX, int chunkZ)
@@ -212,13 +213,14 @@ public class CommonTickHandler implements ITickHandler
 
 	private void onServerTick()
 	{
-		tickCount++; //There is no need to reset the counter. Let it overflow.
+		tickCount++; //There is no need to reset the counter. Let it overflow. Really.
 		
 		if (tickCount % RIFT_REGENERATION_INTERVAL == 0)
 		{
 			regenerateRifts();
 		}
-
+		
+		LimboDecay.ApplyRandomFastDecay();
 
 		if (mod_pocketDim.teleTimer > 0)
 		{
@@ -230,7 +232,7 @@ public class CommonTickHandler implements ITickHandler
 	{
 		try
 		{
-			//Replace rifts that have been replaced (not permanently removed) by players
+			//Regenerate rifts that have been replaced (not permanently removed) by players
 
 			int i = 0;
 
