@@ -409,7 +409,7 @@ public class DungeonHelper
 		
 		xEnd = centerX + MAX_EXPORT_RADIUS;
 		zEnd = centerZ + MAX_EXPORT_RADIUS;
-		yEnd = Math.min(centerY + MAX_EXPORT_RADIUS, world.getActualHeight());
+		yEnd = Math.min(centerY + MAX_EXPORT_RADIUS, world.getHeight());
 		
 		//This could be done more efficiently, but honestly, this is the simplest approach and it
 		//makes it easy for us to verify that the code is correct.
