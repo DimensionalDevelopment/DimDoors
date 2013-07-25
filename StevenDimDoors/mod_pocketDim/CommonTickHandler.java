@@ -206,28 +206,24 @@ public class CommonTickHandler implements ITickHandler
 			while (yTest > y);
 		}
 	}
-	//replaces rifts in game that have been destroyed/have blocks placed over them. 
+
 	private void onTickInGame()
 	{
-
 		try
 		{
-
-			if(tickCount>100)
+			//Replace rifts that have been replaced (not permanently removed) by players
+			if (tickCount > 100)
 			{
-				tickCount=0;
-				int i=0;
+				tickCount = 0;
+				int i = 0;
 
-
-				while (i<15&&FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+				while (i < 15 && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 				{
 					i++;
 					LinkData link;
 
 					//actually gets the random rift based on the size of the list
 					link = (LinkData) dimHelper.instance.getRandomLinkData(true);
-
-
 
 					if(link!=null)
 					{
@@ -240,10 +236,7 @@ public class CommonTickHandler implements ITickHandler
 
 							if(!mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))//makes sure the rift doesn't replace a door or something
 							{
-								if(dimHelper.instance.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID)==null)
-								{
-								}
-								else
+								if(dimHelper.instance.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID) != null)
 								{
 									dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
 									TileEntityRift.class.cast(dimHelper.getWorld(link.locDimID).getBlockTileEntity(link.locXCoord, link.locYCoord, link.locZCoord)).hasGrownRifts=true;
@@ -253,92 +246,21 @@ public class CommonTickHandler implements ITickHandler
 					}
 				}
 			}
-
-
 		}
 		catch (Exception e)
 		{
-			tickCount++;
-			System.out.println("something on tick went wrong: " + e);
+			System.out.println("An exception occurred in CommonTickHandler.onGameTick():");
 			e.printStackTrace();
 		}
-		tickCount++;
-
-		//this section regulates decay in Limbo- it records any blocks placed by the player and later progresss them through the decay cycle
-		if(tickCount2>10&&dimHelper.blocksToDecay!=null)
+		finally
 		{
-			tickCount2=0;
-			if(!dimHelper.blocksToDecay.isEmpty()&&dimHelper.getWorld(properties.LimboDimensionID)!=null)
-			{
-
-
-				if(dimHelper.blocksToDecay.size()>rand.nextInt(400))
-				{
-					int index = rand.nextInt(dimHelper.blocksToDecay.size());
-					Point3D point = (Point3D) dimHelper.blocksToDecay.get(index);
-
-					int blockID = dimHelper.getWorld(properties.LimboDimensionID).getBlockId(point.getX(), point.getY(), point.getZ());
-					int idToSet=Block.stone.blockID;
-
-					if(blockID==0||blockID==properties.LimboBlockID)
-					{
-						dimHelper.blocksToDecay.remove(index);
-					}
-					else
-					{
-						if(Block.blocksList[idToSet] instanceof BlockContainer)
-						{
-							idToSet=-1;
-							dimHelper.blocksToDecay.remove(index); 
-						}
-
-
-
-						if(blockID==Block.cobblestone.blockID)
-						{
-							idToSet=Block.gravel.blockID;
-						}
-						if(blockID==Block.stone.blockID)
-						{
-							idToSet=Block.cobblestone.blockID;
-
-						}
-						if(blockID==Block.gravel.blockID&&!dimHelper.getWorld(properties.LimboDimensionID).isAirBlock(point.getX(), point.getY()-1, point.getZ()))
-						{
-							idToSet=properties.LimboBlockID;
-							dimHelper.getWorld(properties.LimboDimensionID).scheduleBlockUpdate(point.getX(), point.getY(), point.getZ(),10, idToSet);
-
-						}
-						else if(blockID==Block.gravel.blockID)
-						{
-							dimHelper.blocksToDecay.remove(index);
-							idToSet=-1;
-
-						}
-
-						if(idToSet!=-1)
-						{
-
-							dimHelper.getWorld(properties.LimboDimensionID).setBlock(point.getX(), point.getY(), point.getZ(), idToSet);
-
-						}    		
-					}   		    		
-				}   		
-			}
+			tickCount++;
 		}
 
-		tickCount2++;
-
-		if(mod_pocketDim.teleTimer>0)
+		if (mod_pocketDim.teleTimer > 0)
 		{
 			mod_pocketDim.teleTimer--;
 		}
-
-
-
-
-
-
 	}
 
 }
