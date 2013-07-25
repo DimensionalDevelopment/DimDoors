@@ -94,7 +94,7 @@ public class EventHookContainer
     			{    			
 	    			for(LinkData link:dimHelper.dimList.get(world.provider.dimensionId).getLinksInDim())
 	    			{
-	    				if(linkCount>100)
+	    				if(linkCount>100) //TODO: Wtf? wouldn't this cause some links to not load on servers with several links? Not sure what's going on here. ~SenseiKiwi
 	    				{
 	    					break;
 	    				}
