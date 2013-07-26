@@ -5,6 +5,8 @@ import java.util.EnumSet;
 import java.util.Random;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
@@ -23,7 +25,8 @@ public class CommonTickHandler implements ITickHandler
 	private static final Random rand = new Random();
 
 	public static final int MAX_MONOLITH_SPAWNING_CHANCE = 100;
-	private static final String label = "Dimensional Doors: Common Tick";
+	private static final String PROFILING_LABEL = "Dimensional Doors: Common Tick";
+	private static final String MOB_SPAWNING_RULE = "doMobSpawning";
 	private static final int MAX_MONOLITH_SPAWN_Y = 245;
 	private static final int CHUNK_SIZE = 16;
 	private static final int RIFT_REGENERATION_INTERVAL = 100; //Regenerate random rifts every 100 ticks
@@ -49,7 +52,7 @@ public class CommonTickHandler implements ITickHandler
 	{
 		if (type.equals(EnumSet.of(TickType.SERVER)))
 		{
-			if(!CommonTickHandler.chunksToPopulate.isEmpty())
+			if(!CommonTickHandler.chunksToPopulate.isEmpty() && IsMobSpawningAllowed())
 			{
 				//TODO: This is bad. =/ We should not be passing around arrays of magic numbers.
 				//We should have an object that contains this information. ~SenseiKiwi
@@ -80,7 +83,7 @@ public class CommonTickHandler implements ITickHandler
 	@Override
 	public String getLabel()
 	{
-		return label; //Used for profiling!
+		return PROFILING_LABEL; //Used for profiling!
 	}
 
 	private void placeMonolithsInPockets(int worldID, int chunkX, int chunkZ)
@@ -210,6 +213,15 @@ public class CommonTickHandler implements ITickHandler
 			}
 			while (yTest > y);
 		}
+	}
+	
+	private static boolean IsMobSpawningAllowed()
+	{
+		//This function is used to retrieve the value of doMobSpawning. The code is the same
+		//as the code used by Minecraft. Jaitsu requested this to make testing easier. ~SenseiKiwi
+		
+		GameRules rules = MinecraftServer.getServer().worldServerForDimension(0).getGameRules();
+		return rules.getGameRuleBooleanValue(MOB_SPAWNING_RULE);
 	}
 
 	private void onServerTick()
