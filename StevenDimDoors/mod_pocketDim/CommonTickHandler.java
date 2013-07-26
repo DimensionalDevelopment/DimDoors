@@ -27,6 +27,7 @@ public class CommonTickHandler implements ITickHandler
 	private static final int MAX_MONOLITH_SPAWN_Y = 245;
 	private static final int CHUNK_SIZE = 16;
 	private static final int RIFT_REGENERATION_INTERVAL = 100; //Regenerate random rifts every 100 ticks
+	private static final int LIMBO_DECAY_INTERVAL = 10; //Apply spread decay every 10 ticks
 
 	public CommonTickHandler()
 	{
@@ -220,7 +221,10 @@ public class CommonTickHandler implements ITickHandler
 			regenerateRifts();
 		}
 		
-		LimboDecay.ApplyRandomFastDecay();
+		if (tickCount % LIMBO_DECAY_INTERVAL == 0)
+		{
+			LimboDecay.ApplyRandomFastDecay();
+		}
 
 		if (mod_pocketDim.teleTimer > 0)
 		{
