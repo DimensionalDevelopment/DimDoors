@@ -1,20 +1,20 @@
 package StevenDimDoors.mod_pocketDim.world;
 
-import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
-import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraftforge.common.DimensionManager;
+import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
+import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class pocketProvider extends WorldProvider
+public class PocketProvider extends WorldProvider
 {
 	public int exitXCoord;
 	public int exitYCoord;
@@ -24,13 +24,14 @@ public class pocketProvider extends WorldProvider
 
 	public boolean isSavingSchematic= false;
 	public int dimToSave;
-	private static DDProperties properties = null;
+	private DDProperties properties;
+	private MonolithSpawner spawner;
 
-	public pocketProvider()
+	public PocketProvider()
 	{
-		this.hasNoSky=true;
-		if (properties == null)
-			properties = DDProperties.instance();
+		this.hasNoSky = true;
+		this.spawner = mod_pocketDim.spawner;
+		this.properties = mod_pocketDim.properties;
 	}
 
 	@Override
@@ -79,7 +80,7 @@ public class pocketProvider extends WorldProvider
 	@Override
 	public IChunkProvider createChunkGenerator()
 	{
-		return new PocketGenerator(worldObj, dimensionId, false);
+		return new PocketGenerator(worldObj, dimensionId, false, spawner);
 	}
 
 	@Override

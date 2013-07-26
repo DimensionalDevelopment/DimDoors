@@ -3,15 +3,6 @@ package StevenDimDoors.mod_pocketDim.world;
 import java.util.List;
 import java.util.Random;
 
-import StevenDimDoors.mod_pocketDim.CommonTickHandler;
-import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
-
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.MathHelper;
@@ -31,6 +22,9 @@ import net.minecraft.world.gen.structure.MapGenVillage;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.terraingen.ChunkProviderEvent;
+import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
+import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 
 public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvider
 {
@@ -110,20 +104,21 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 		//     caveGenerator = TerrainGen.getModdedMapGen(caveGenerator, CAVE);
 	}
 
-	private static DDProperties properties = null;
+	private DDProperties properties;
+	private MonolithSpawner spawner;
 
-	public LimboGenerator(World par1World, long par2) 
+	public LimboGenerator(World world, long seed, MonolithSpawner spawner, DDProperties properties) 
 	{
-		super(par1World, par2, false);
-		//par2 = 90899090;
-		this.rand = new Random(par2);
-		this.noiseGen1 = new NoiseGeneratorOctaves(this.rand, 16); //base terrain
-		this.noiseGen2 = new NoiseGeneratorOctaves(this.rand, 16); //hillyness
-		this.noiseGen3 = new NoiseGeneratorOctaves(this.rand, 80);  //seems to adjust the size of features, how stretched things are -default 8
-		this.noiseGen4 = new NoiseGeneratorOctaves(this.rand, 4);
-		this.noiseGen5 = new NoiseGeneratorOctaves(this.rand, 10);
-		this.noiseGen6 = new NoiseGeneratorOctaves(this.rand, 16);
-		this.mobSpawnerNoise = new NoiseGeneratorOctaves(this.rand, 8);
+		super(world, seed, false);
+
+		LimboGenerator.rand = new Random(seed);
+		this.noiseGen1 = new NoiseGeneratorOctaves(LimboGenerator.rand, 16); //base terrain
+		this.noiseGen2 = new NoiseGeneratorOctaves(LimboGenerator.rand, 16); //hillyness
+		this.noiseGen3 = new NoiseGeneratorOctaves(LimboGenerator.rand, 80);  //seems to adjust the size of features, how stretched things are -default 8
+		this.noiseGen4 = new NoiseGeneratorOctaves(LimboGenerator.rand, 4);
+		this.noiseGen5 = new NoiseGeneratorOctaves(LimboGenerator.rand, 10);
+		this.noiseGen6 = new NoiseGeneratorOctaves(LimboGenerator.rand, 16);
+		this.mobSpawnerNoise = new NoiseGeneratorOctaves(LimboGenerator.rand, 8);
 
 		NoiseGeneratorOctaves[] noiseGens = {noiseGen1, noiseGen2, noiseGen3, noiseGen4, noiseGen5, noiseGen6, mobSpawnerNoise};
 		//     noiseGens = TerrainGen.getModdedNoiseGenerators(par1World, this.rand, noiseGens);
@@ -134,11 +129,11 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 		this.noiseGen5 = noiseGens[4];
 		this.noiseGen6 = noiseGens[5];
 		this.mobSpawnerNoise = noiseGens[6];
-		// TODO Auto-generated constructor stub
-		this.worldObj=par1World;
+		
+		this.worldObj = world; 
 
-		if (properties == null)
-			properties = DDProperties.instance();
+		this.spawner = spawner;
+		this.properties = properties;
 	}
 
 	@Override
@@ -153,24 +148,23 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 	}
 
 	@Override
-	public Chunk provideChunk(int par1, int par2)
+	public Chunk provideChunk(int chunkX, int chunkZ)
 	{
-		this.rand.setSeed((long)par1 * 341873128712L + (long)par2 * 132897987541L);
+		//TODO: Wtf? Why do you reinitialize the seed when we already initialized it in the constructor?! ~SenseiKiwi
+		LimboGenerator.rand.setSeed((long) chunkX * 341873128712L + (long) chunkZ * 132897987541L);
 		byte[] var3 = new byte[32768];
-		this.generateTerrain(par1, par2, var3);
-		Chunk var4 = new Chunk(this.worldObj, var3, par1, par2);
+		this.generateTerrain(chunkX, chunkZ, var3);
+		Chunk var4 = new Chunk(this.worldObj, var3, chunkX, chunkZ);
 		var4.generateSkylightMap();
 		
-		if(!var4.isTerrainPopulated)
+		if (!var4.isTerrainPopulated)
 		{
 			var4.isTerrainPopulated=true;
-			CommonTickHandler.chunksToPopulate.add(new int[] {properties.LimboDimensionID,par1,par2});
+			spawner.registerChunkForPopulation(properties.LimboDimensionID, chunkX, chunkZ);
 		}
-			
-		
-	
 		return var4;
 	}
+	
 	@Override
 	public Chunk loadChunk(int var1, int var2) {
 		// TODO Auto-generated method stub

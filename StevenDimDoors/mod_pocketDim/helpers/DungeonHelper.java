@@ -61,8 +61,6 @@ public class DungeonHelper
 	};
 	
 	private Random rand = new Random();
-	
-	private HashMap<Integer, LinkData> customDungeonStatus = new HashMap<Integer, LinkData>();
 
 	public ArrayList<DungeonGenerator> customDungeons = new ArrayList<DungeonGenerator>();
 	public ArrayList<DungeonGenerator> registeredDungeons = new ArrayList<DungeonGenerator>();
@@ -157,16 +155,7 @@ public class DungeonHelper
 		//Place a Warp Door linked to that pocket
 		itemDimDoor.placeDoorBlock(world, x, y, z, 3, mod_pocketDim.ExitDoor);
 		
-		//Register the pocket as a custom dungeon
-		customDungeonStatus.put(link.destDimID,
-				dimHelper.instance.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID));
-		
 		return link;
-	}
-	
-	public boolean isCustomDungeon(int dimensionID)
-	{
-		return customDungeonStatus.containsKey(dimensionID);
 	}
 	
 	public boolean validateDungeonType(String type)

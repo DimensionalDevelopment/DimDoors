@@ -1,41 +1,29 @@
 package StevenDimDoors.mod_pocketDim.world;
 
 import java.util.List;
-import java.util.Random;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
-
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.network.packet.Packet34EntityTeleport;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
-import StevenDimDoors.mod_pocketDim.CommonTickHandler;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
+import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 
 public class PocketGenerator extends ChunkProviderGenerate implements IChunkProvider
 {
 	private World worldObj;
 
-	private DDProperties properties = null;
-
-
+	private MonolithSpawner spawner;
 	
-	public PocketGenerator(World par1World, long par2, boolean par4) 
+	public PocketGenerator(World par1World, long par2, boolean par4, MonolithSpawner spawner) 
 	{
 		super(par1World, par2, par4);
 		this.worldObj = par1World;
 		
-		if (properties  == null)
-			properties = DDProperties.instance();
+		this.spawner = spawner;
 	}
 	
 	@Override
@@ -58,8 +46,8 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 		
 		if(!chunk.isTerrainPopulated)
 		{
-			chunk.isTerrainPopulated=true;
-			CommonTickHandler.chunksToPopulate.add(new int[] {chunk.worldObj.provider.dimensionId,chunkX,chunkZ});
+			chunk.isTerrainPopulated = true;
+			spawner.registerChunkForPopulation(worldObj.provider.dimensionId, chunkX, chunkZ);
 		}
 
 		return chunk;
@@ -77,6 +65,7 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
         
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public List getPossibleCreatures(EnumCreatureType var1, int var2, int var3, int var4) 
 	{

@@ -8,11 +8,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.src.ModLoader;
 import net.minecraftforge.client.MinecraftForgeClient;
 import StevenDimDoors.mod_pocketDim.CommonProxy;
-import StevenDimDoors.mod_pocketDim.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.Spells;
 import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
+import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
+import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 
 
 public class ClientProxy extends CommonProxy
@@ -27,7 +27,7 @@ public class ClientProxy extends CommonProxy
 
 
 		//MinecraftForgeClient.preloadTexture(RIFT2_PNG);
-       RenderingRegistry.registerEntityRenderingHandler(MobObelisk.class, new RenderMobObelisk(.5F));
+       RenderingRegistry.registerEntityRenderingHandler(MobMonolith.class, new RenderMobObelisk(.5F));
 		
 		
 

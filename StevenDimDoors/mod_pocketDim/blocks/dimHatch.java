@@ -4,7 +4,7 @@ import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import StevenDimDoors.mod_pocketDim.world.pocketProvider;
+import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -48,7 +48,7 @@ public class dimHatch extends BlockTrapDoor
 	    
 	    int num = par1World.getBlockMetadata(par2, par3, par4);
 	    
-	   	if(!par1World.isRemote&&(num>3&&num<8||num>11)&&par1World.provider instanceof pocketProvider)
+	   	if(!par1World.isRemote&&(num>3&&num<8||num>11)&&par1World.provider instanceof PocketProvider)
 		{
 	    	
 	    		this.onPoweredBlockChange(par1World, par2, par3, par4, false);

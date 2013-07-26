@@ -10,7 +10,7 @@ import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
 import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
-import StevenDimDoors.mod_pocketDim.world.pocketProvider;
+import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import cpw.mods.fml.common.IWorldGenerator;
 
 public class RiftGenerator implements IWorldGenerator
@@ -38,7 +38,7 @@ public class RiftGenerator implements IWorldGenerator
 		//Don't generate rifts or gateways if the rift generation flag is disabled,
 		//the current world is a pocket dimension, or the world is remote.
 		if ((!properties.WorldRiftGenerationEnabled && !(world.provider instanceof LimboProvider)) ||
-			world.provider instanceof pocketProvider || world.isRemote)
+			world.provider instanceof PocketProvider || world.isRemote)
 		{
 			return;
 		}

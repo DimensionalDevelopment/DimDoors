@@ -12,6 +12,7 @@ import net.minecraftforge.client.IRenderHandler;
 import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -23,14 +24,15 @@ public class LimboProvider extends WorldProvider
 	}
 
 	private IRenderHandler skyRenderer;
-	private DDProperties properties = null;
+	private DDProperties properties;
+	private MonolithSpawner spawner;
 
 	public LimboProvider()
 	{
 		this.hasNoSky = false;
-		this.skyRenderer = new limboSkyProvider();
-		if (properties == null)
-			properties = DDProperties.instance();
+		this.skyRenderer = new LimboSkyProvider();
+		this.spawner = mod_pocketDim.spawner;
+		this.properties = mod_pocketDim.properties;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -39,12 +41,10 @@ public class LimboProvider extends WorldProvider
 		return this.skyRenderer;
 	}
 
-
 	@Override
 	protected void registerWorldChunkManager()
 	{
 		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.limboBiome,1,1);
-		//this.dimensionId = ConfigAtum.dimensionID;
 	}
 
 	@Override
@@ -154,7 +154,8 @@ public class LimboProvider extends WorldProvider
 	@Override
 	public IChunkProvider createChunkGenerator()
 	{
-		return new LimboGenerator(worldObj, 45);
+		//TODO: ...We're passing the LimboGenerator a fixed seed. We should be passing the world seed! @_@ ~SenseiKiwi
+		return new LimboGenerator(worldObj, 45, spawner, properties);
 	}
 	
 	public boolean canBlockFreeze(int x, int y, int z, boolean byWater)

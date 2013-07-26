@@ -8,24 +8,17 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet34EntityTeleport;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
-import StevenDimDoors.mod_pocketDim.world.pocketProvider;
+import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-public class MobObelisk extends EntityFlying implements IMob
+public class MobMonolith extends EntityFlying implements IMob
 {
 
 	float soundTime = 0;
@@ -38,7 +31,7 @@ public class MobObelisk extends EntityFlying implements IMob
 	int destY=0;
 	int destZ=0;
 
-	public MobObelisk(World par1World) 
+	public MobMonolith(World par1World) 
 	{
 		super(par1World);
 		this.texture="/mods/DimDoors/textures/mobs/Monolith0.png";
@@ -93,7 +86,7 @@ public class MobObelisk extends EntityFlying implements IMob
 	@Override
 	public void onEntityUpdate()
 	{
-		if(!(this.worldObj.provider instanceof LimboProvider ||this.worldObj.provider instanceof pocketProvider))
+		if(!(this.worldObj.provider instanceof LimboProvider ||this.worldObj.provider instanceof PocketProvider))
 		{
 			this.setDead();
 		}
@@ -140,7 +133,7 @@ public class MobObelisk extends EntityFlying implements IMob
 					}
 
 
-					if(this.worldObj.provider instanceof pocketProvider||this.worldObj.getClosestPlayerToEntity(this, 5)!=null)
+					if(this.worldObj.provider instanceof PocketProvider||this.worldObj.getClosestPlayerToEntity(this, 5)!=null)
 					{
 
 						aggro++;
@@ -379,7 +372,7 @@ public class MobObelisk extends EntityFlying implements IMob
 		  		}
 		  		
 		  	}
-		  	else if(this.worldObj.provider instanceof pocketProvider)	
+		  	else if(this.worldObj.provider instanceof PocketProvider)	
 		  	{
 		  		if(list.size()>5||this.worldObj.canBlockSeeTheSky((int)this.posX, (int)this.posY, (int)this.posZ))
 		  		{

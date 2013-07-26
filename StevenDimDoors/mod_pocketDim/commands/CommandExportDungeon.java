@@ -6,21 +6,21 @@ import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 
-public class CommandEndDungeonCreation extends DDCommandBase
+public class CommandExportDungeon extends DDCommandBase
 {	
-	private static CommandEndDungeonCreation instance = null;
+	private static CommandExportDungeon instance = null;
 	
-	private CommandEndDungeonCreation()
+	private CommandExportDungeon()
 	{
 		super("dd-export", new String[] {
-				"<dungeon type> <dungeon name> <'open' | 'closed'> [weight] ['override']",
+				"<dungeon type> <dungeon name> <'open' | 'closed'> [weight]",
 				"<schematic name> override" } );
 	}
 	
-	public static CommandEndDungeonCreation instance()
+	public static CommandExportDungeon instance()
 	{
 		if (instance == null)
-			instance = new CommandEndDungeonCreation();
+			instance = new CommandExportDungeon();
 		
 		return instance;
 	}
@@ -29,11 +29,8 @@ public class CommandEndDungeonCreation extends DDCommandBase
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		/*
-		 * There are two versions of this command. One version takes 3 to 5 arguments consisting
-		 * of the information needed for a proper schematic name and an optional override argument.
-		 * The override argument only allows the user to export any dimension, even if it wasn't
-		 * meant for custom dungeon creation. It does not allow the user to export a dungeon with
-		 * invalid tags.
+		 * There are two versions of this command. One version takes 3 to 4 arguments consisting
+		 * of the information needed for a proper schematic name.
 		 * 
 		 * If the user wishes to name his schematic in a different format, then he will have to use
 		 * the 2-argument version of this command, which accepts a schematic name and a mandatory
@@ -46,7 +43,7 @@ public class CommandEndDungeonCreation extends DDCommandBase
 		{
 			return DDCommandResult.TOO_FEW_ARGUMENTS;
 		}
-		if (command.length > 5)
+		if (command.length > 4)
 		{
 			return DDCommandResult.TOO_MANY_ARGUMENTS;
 		}
@@ -77,21 +74,12 @@ public class CommandEndDungeonCreation extends DDCommandBase
 		}
 		
 		//The user must have used the 3-argument version of this command
-		//Check if the current dimension is a pocket for building custom dungeons or if the override argument was used.
-		if (!dungeonHelper.isCustomDungeon(sender.worldObj.provider.dimensionId) &&
-			!command[command.length - 1].equalsIgnoreCase("override"))
-		{
-			//This dimension may not be exported without overriding!
-			return new DDCommandResult("Error: The current dimension was not made for dungeon creation. Use the 'override' argument to export anyway.");				
-		}
-		
 		//TODO: Why do we check remoteness here but not before? And why not for the other export case?
 		//Something feels wrong... ~SenseiKiwi
-		
 		if (!sender.worldObj.isRemote)
 		{
 			//TODO: This validation should be in DungeonHelper or in another class. We should move it
-			//once the during the save file format rewrite. ~SenseiKiwi
+			//during the save file format rewrite. ~SenseiKiwi
 			
 			if (!dungeonHelper.validateDungeonType(command[0]))
 			{
@@ -106,29 +94,23 @@ public class CommandEndDungeonCreation extends DDCommandBase
 				return new DDCommandResult("Error: Please specify whether the dungeon is 'open' or 'closed'.");
 			}
 			
-			//If there are no more argument, export the dungeon.
+			//If there are no more arguments, export the dungeon.
 			if (command.length == 3)
 			{
 				return exportDungeon(sender, join(command, "_", 0, 3));
 			}
-			
-			//Validate the 4th argument, which might be the weight or might be "override".
-			try
+			else
 			{
-				int weight = Integer.parseInt(command[3]);
-				if (weight >= 0 && weight <= DungeonHelper.MAX_DUNGEON_WEIGHT)
+				//Validate the weight argument
+				try
 				{
-					return exportDungeon(sender, join(command, "_", 0, 4));
+					int weight = Integer.parseInt(command[3]);
+					if (weight >= 0 && weight <= DungeonHelper.MAX_DUNGEON_WEIGHT)
+					{
+						return exportDungeon(sender, join(command, "_", 0, 4));
+					}
 				}
-			}
-			catch (Exception e)
-			{
-				//The 4th argument could be "override", but only if it's the last argument.
-				//In that case, we assume the default dungeon weight.
-				if (command.length == 4 && command[3].equalsIgnoreCase("override"))
-				{
-					return exportDungeon(sender, join(command, "_", 0, 3));
-				}
+				catch (Exception e) { }
 			}
 			
 			//If we've reached this point, then we must have an invalid weight.

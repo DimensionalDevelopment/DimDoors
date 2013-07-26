@@ -42,7 +42,7 @@ import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
-import StevenDimDoors.mod_pocketDim.world.pocketProvider;
+import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -386,7 +386,7 @@ public class dimHelper extends DimensionManager
 		}
 		else if(!this.dimList.containsKey(world.provider.dimensionId))
 		{
-			if(!(world.provider instanceof pocketProvider ||world.provider instanceof LimboProvider))
+			if(!(world.provider instanceof PocketProvider ||world.provider instanceof LimboProvider))
 			{
 				DimData data = new DimData(world.provider.dimensionId, false, 0, 0, world.getSpawnPoint().posX, world.getSpawnPoint().posY, world.getSpawnPoint().posZ);
 			}

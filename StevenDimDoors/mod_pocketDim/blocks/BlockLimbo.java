@@ -16,11 +16,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockLimbo extends Block
 {
 	private final int limboDimensionID;
+	private final LimboDecay decay;
 	
-	public BlockLimbo(int i, int j, Material par2Material, int limboDimensionID) 
+	public BlockLimbo(int i, int j, Material par2Material, int limboDimensionID, LimboDecay decay) 
 	{
 		super(i, Material.ground);
 		this.limboDimensionID = limboDimensionID;
+		this.decay = decay;
 		this.setTickRandomly(true);
 		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 	}
@@ -56,7 +58,7 @@ public class BlockLimbo extends Block
     	//Make sure this block is in Limbo
     	if (world.provider.dimensionId == limboDimensionID)
     	{
-    		LimboDecay.ApplySpreadDecay(world, x, y, z);
+    		decay.applySpreadDecay(world, x, y, z);
     	}
     }
 }

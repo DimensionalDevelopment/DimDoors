@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim;
 import java.io.File;
 
 import net.minecraftforge.common.Configuration;
+import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 
 public class DDProperties
 {
@@ -206,7 +207,7 @@ public class DDProperties
 				"Sets whether dungeon rifts generate in dimensions other than Limbo").getBoolean(true);
 		
 		MonolithSpawningChance = config.get(Configuration.CATEGORY_GENERAL, "Monolith Spawning Chance", 28,
-				"Sets the chance (out of " + CommonTickHandler.MAX_MONOLITH_SPAWNING_CHANCE + ") that Monoliths will " +
+				"Sets the chance (out of " + MonolithSpawner.MAX_MONOLITH_SPAWNING_CHANCE + ") that Monoliths will " +
 				"spawn in a given Limbo chunk. The default chance is 28.").getInt();
 		
 		ClusterGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Cluster Generation Chance", 3,

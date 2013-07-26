@@ -31,7 +31,7 @@ import net.minecraftforge.common.ChestGenHooks;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
+import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 
 public class SchematicLoader 
 {
@@ -1151,7 +1151,7 @@ public class SchematicLoader
 			Point3D frameLocation = point.clone();
 			transformPoint(frameLocation, schematicEntrance, orientation - entryDirection, pocketCenter);
 			
-			Entity mob = new MobObelisk(world);
+			Entity mob = new MobMonolith(world);
 			mob.setLocationAndAngles(frameLocation.getX(), frameLocation.getY(), frameLocation.getZ(), 1, 1); //TODO: Why not set the angles to 0? @.@ ~SenseiKiwi
 			world.spawnEntityInWorld(mob);
 		}
