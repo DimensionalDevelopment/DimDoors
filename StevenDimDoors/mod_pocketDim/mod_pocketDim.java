@@ -27,11 +27,11 @@ import StevenDimDoors.mod_pocketDim.commands.CommandCreateDungeonRift;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteDimensionData;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
-import StevenDimDoors.mod_pocketDim.commands.CommandEndDungeonCreation;
+import StevenDimDoors.mod_pocketDim.commands.CommandExportDungeon;
 import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimensionData;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDimensions;
 import StevenDimDoors.mod_pocketDim.commands.CommandResetDungeons;
-import StevenDimDoors.mod_pocketDim.commands.CommandStartDungeonCreation;
+import StevenDimDoors.mod_pocketDim.commands.CommandCreatePocket;
 import StevenDimDoors.mod_pocketDim.helpers.BlockRotationHelper;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -44,6 +44,7 @@ import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
 import StevenDimDoors.mod_pocketDim.items.itemExitDoor;
 import StevenDimDoors.mod_pocketDim.items.itemLinkSignature;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
+import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
@@ -428,10 +429,10 @@ public class mod_pocketDim
 		CommandDeleteAllLinks.instance().register(event);
 		CommandDeleteDimensionData.instance().register(event);
 		CommandDeleteRifts.instance().register(event);
-		CommandEndDungeonCreation.instance().register(event);
+		CommandExportDungeon.instance().register(event);
 		CommandPrintDimensionData.instance().register(event);
 		CommandPruneDimensions.instance().register(event);
-		CommandStartDungeonCreation.instance().register(event);
+		CommandCreatePocket.instance().register(event);
 		dimHelper.instance.load();
 		
 		if(!dimHelper.dimList.containsKey(properties.LimboDimensionID))

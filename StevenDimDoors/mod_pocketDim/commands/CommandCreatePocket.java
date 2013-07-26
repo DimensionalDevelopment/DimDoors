@@ -4,19 +4,19 @@ import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 
-public class CommandStartDungeonCreation extends DDCommandBase
+public class CommandCreatePocket extends DDCommandBase
 {
-	private static CommandStartDungeonCreation instance = null;
+	private static CommandCreatePocket instance = null;
 	
-	private CommandStartDungeonCreation()
+	private CommandCreatePocket()
 	{
 		super("dd-create", "");
 	}
 	
-	public static CommandStartDungeonCreation instance()
+	public static CommandCreatePocket instance()
 	{
 		if (instance == null)
-			instance = new CommandStartDungeonCreation();
+			instance = new CommandCreatePocket();
 		
 		return instance;
 	}

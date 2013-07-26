@@ -2,6 +2,8 @@ package StevenDimDoors.mod_pocketDim;
 
 import java.io.File;
 
+import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
+
 import net.minecraftforge.common.Configuration;
 
 public class DDProperties

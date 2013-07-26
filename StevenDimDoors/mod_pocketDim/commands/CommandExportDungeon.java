@@ -6,21 +6,21 @@ import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 
-public class CommandEndDungeonCreation extends DDCommandBase
+public class CommandExportDungeon extends DDCommandBase
 {	
-	private static CommandEndDungeonCreation instance = null;
+	private static CommandExportDungeon instance = null;
 	
-	private CommandEndDungeonCreation()
+	private CommandExportDungeon()
 	{
 		super("dd-export", new String[] {
 				"<dungeon type> <dungeon name> <'open' | 'closed'> [weight]",
 				"<schematic name> override" } );
 	}
 	
-	public static CommandEndDungeonCreation instance()
+	public static CommandExportDungeon instance()
 	{
 		if (instance == null)
-			instance = new CommandEndDungeonCreation();
+			instance = new CommandExportDungeon();
 		
 		return instance;
 	}

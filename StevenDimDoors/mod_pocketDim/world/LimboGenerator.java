@@ -3,11 +3,11 @@ package StevenDimDoors.mod_pocketDim.world;
 import java.util.List;
 import java.util.Random;
 
-import StevenDimDoors.mod_pocketDim.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
 
 import net.minecraft.block.Block;
