@@ -51,7 +51,7 @@ import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
-import StevenDimDoors.mod_pocketDim.world.PocketProviderX;
+import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import StevenDimDoors.mod_pocketDimClient.ClientPacketHandler;
 import StevenDimDoors.mod_pocketDimClient.ClientTickHandler;
 import cpw.mods.fml.common.Mod;
@@ -228,7 +228,7 @@ public class mod_pocketDim
 
 		GameRegistry.registerPlayerTracker(tracker);
 
-		DimensionManager.registerProviderType(properties.PocketProviderID, PocketProviderX.class, false);
+		DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false);
 		DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false);
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
 

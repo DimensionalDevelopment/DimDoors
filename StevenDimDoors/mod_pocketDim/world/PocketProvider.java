@@ -14,7 +14,7 @@ import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class PocketProviderX extends WorldProvider
+public class PocketProvider extends WorldProvider
 {
 	public int exitXCoord;
 	public int exitYCoord;
@@ -27,7 +27,7 @@ public class PocketProviderX extends WorldProvider
 	private DDProperties properties;
 	private MonolithSpawner spawner;
 
-	public PocketProviderX()
+	public PocketProvider()
 	{
 		this.hasNoSky = true;
 		this.spawner = mod_pocketDim.spawner;

@@ -16,7 +16,7 @@ import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
-import StevenDimDoors.mod_pocketDim.world.PocketProviderX;
+import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 
 public class MobMonolith extends EntityFlying implements IMob
 {
@@ -86,7 +86,7 @@ public class MobMonolith extends EntityFlying implements IMob
 	@Override
 	public void onEntityUpdate()
 	{
-		if(!(this.worldObj.provider instanceof LimboProvider ||this.worldObj.provider instanceof PocketProviderX))
+		if(!(this.worldObj.provider instanceof LimboProvider ||this.worldObj.provider instanceof PocketProvider))
 		{
 			this.setDead();
 		}
@@ -133,7 +133,7 @@ public class MobMonolith extends EntityFlying implements IMob
 					}
 
 
-					if(this.worldObj.provider instanceof PocketProviderX||this.worldObj.getClosestPlayerToEntity(this, 5)!=null)
+					if(this.worldObj.provider instanceof PocketProvider||this.worldObj.getClosestPlayerToEntity(this, 5)!=null)
 					{
 
 						aggro++;
@@ -372,7 +372,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		  		}
 		  		
 		  	}
-		  	else if(this.worldObj.provider instanceof PocketProviderX)	
+		  	else if(this.worldObj.provider instanceof PocketProvider)	
 		  	{
 		  		if(list.size()>5||this.worldObj.canBlockSeeTheSky((int)this.posX, (int)this.posY, (int)this.posZ))
 		  		{

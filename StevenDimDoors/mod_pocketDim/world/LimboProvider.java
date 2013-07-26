@@ -30,7 +30,7 @@ public class LimboProvider extends WorldProvider
 	public LimboProvider()
 	{
 		this.hasNoSky = false;
-		this.skyRenderer = new LimboSkyProviderX();
+		this.skyRenderer = new LimboSkyProvider();
 		this.spawner = mod_pocketDim.spawner;
 		this.properties = mod_pocketDim.properties;
 	}
