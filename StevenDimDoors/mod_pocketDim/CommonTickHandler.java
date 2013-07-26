@@ -235,7 +235,7 @@ public class CommonTickHandler implements ITickHandler
 		
 		if (tickCount % LIMBO_DECAY_INTERVAL == 0)
 		{
-			LimboDecay.ApplyRandomFastDecay();
+			LimboDecay.applyRandomFastDecay();
 		}
 
 		if (mod_pocketDim.teleTimer > 0)

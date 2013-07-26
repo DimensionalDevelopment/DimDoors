@@ -31,7 +31,7 @@ public class LimboDecay {
 	/**
 	 * Initializes the array containing the reversed sequence of block IDs that blocks cycle through during decay.
 	 */
-	private static void InitializeDecaySequence()
+	private static void initializeDecaySequence()
 	{
 		if (decaySequence == null)
 		{
@@ -51,7 +51,7 @@ public class LimboDecay {
 	 * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
 	 * and applies Limbo decay to them. This gives the impression that decay spreads outward from Unraveled Fabric.
 	 */
-	public static void ApplySpreadDecay(World world, int x, int y, int z)
+	public static void applySpreadDecay(World world, int x, int y, int z)
 	{
 		if (properties == null)
 			properties = DDProperties.instance();
@@ -62,12 +62,12 @@ public class LimboDecay {
 		{
 			//Apply decay to the blocks above, below, and on all four sides.
 			//World.getBlockId() implements bounds checking, so we don't have to worry about reaching out of the world
-			DecayBlock(world, x - 1, y, z);
-			DecayBlock(world, x + 1, y, z);
-			DecayBlock(world, x, y, z - 1);
-			DecayBlock(world, x, y, z + 1);
-			DecayBlock(world, x, y - 1, z);
-			DecayBlock(world, x, y + 1, z);
+			decayBlock(world, x - 1, y, z);
+			decayBlock(world, x + 1, y, z);
+			decayBlock(world, x, y, z - 1);
+			decayBlock(world, x, y, z + 1);
+			decayBlock(world, x, y - 1, z);
+			decayBlock(world, x, y + 1, z);
 		}
 	}
 	
@@ -75,7 +75,7 @@ public class LimboDecay {
 	 * Picks random blocks from each active chunk in Limbo and, if decay is applicable, converts them directly to Unraveled Fabric.
 	 * This decay method is designed to stop players from avoiding Limbo decay by building floating structures.
 	 */
-	public static void ApplyRandomFastDecay()
+	public static void applyRandomFastDecay()
 	{
 		if (properties == null)
 			properties = DDProperties.instance();
@@ -102,7 +102,7 @@ public class LimboDecay {
 					x = chunkCoord.chunkXPos * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
 					z = chunkCoord.chunkZPos * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
 					y = sectionY + random.nextInt(SECTION_HEIGHT);
-					DecayBlockFast(limbo, x, y, z);
+					decayBlockFast(limbo, x, y, z);
 				}
 			}
 		}
@@ -111,10 +111,10 @@ public class LimboDecay {
 	/**
 	 * Checks if a block can be decayed and, if so, changes it directly into Unraveled Fabric.
 	 */
-	private static boolean DecayBlockFast(World world, int x, int y, int z)
+	private static boolean decayBlockFast(World world, int x, int y, int z)
 	{
 		int blockID = world.getBlockId(x, y, z);
-		if (CanDecayBlock(blockID))
+		if (canDecayBlock(blockID))
 		{
 			world.setBlock(x, y, z, properties.LimboBlockID);
 			return true;
@@ -125,14 +125,14 @@ public class LimboDecay {
 	/**
 	 * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
 	 */
-	private static boolean DecayBlock(World world, int x, int y, int z)
+	private static boolean decayBlock(World world, int x, int y, int z)
 	{
 		//Make sure the decay sequence is initialized
-		InitializeDecaySequence();
+		initializeDecaySequence();
 		
 		int index;
 		int blockID = world.getBlockId(x, y, z);
-		if (CanDecayBlock(blockID))
+		if (canDecayBlock(blockID))
 		{
 			//Loop over the block IDs that decay can go through.
 			//Find an index matching the current blockID, if any.
@@ -159,7 +159,7 @@ public class LimboDecay {
 	/**
 	 * Checks if a block can decay. We will not decay air, Unraveled Fabric, Eternal Fabric, or containers.
 	 */
-	private static boolean CanDecayBlock(int blockID)
+	private static boolean canDecayBlock(int blockID)
 	{
 		if (blockID == 0 || blockID == properties.LimboBlockID || blockID == properties.PermaFabricBlockID)
 			return false;

@@ -56,7 +56,7 @@ public class BlockLimbo extends Block
     	//Make sure this block is in Limbo
     	if (world.provider.dimensionId == limboDimensionID)
     	{
-    		LimboDecay.ApplySpreadDecay(world, x, y, z);
+    		LimboDecay.applySpreadDecay(world, x, y, z);
     	}
     }
 }
