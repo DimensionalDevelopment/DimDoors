@@ -17,7 +17,7 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
-import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
+import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -55,7 +55,7 @@ public class ModelMobObelisk extends ModelBase
 	    this.setRotationAngles(0,  0,  0,  0,  0,0,  par1Entity);
 	   
 	    
-	    GL11.glScalef(((MobObelisk) par1Entity).getRenderSizeModifier(), ((MobObelisk) par1Entity).getRenderSizeModifier(), ((MobObelisk) par1Entity).getRenderSizeModifier());
+	    GL11.glScalef(((MobMonolith) par1Entity).getRenderSizeModifier(), ((MobMonolith) par1Entity).getRenderSizeModifier(), ((MobMonolith) par1Entity).getRenderSizeModifier());
 	    wholemonolith.render(par7);
   }
   

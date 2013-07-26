@@ -45,13 +45,13 @@ import StevenDimDoors.mod_pocketDim.items.itemExitDoor;
 import StevenDimDoors.mod_pocketDim.items.itemLinkSignature;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
-import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
+import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
-import StevenDimDoors.mod_pocketDim.world.pocketProvider;
+import StevenDimDoors.mod_pocketDim.world.PocketProviderX;
 import StevenDimDoors.mod_pocketDimClient.ClientPacketHandler;
 import StevenDimDoors.mod_pocketDimClient.ClientTickHandler;
 import cpw.mods.fml.common.Mod;
@@ -228,7 +228,7 @@ public class mod_pocketDim
 
 		GameRegistry.registerPlayerTracker(tracker);
 
-		DimensionManager.registerProviderType(properties.PocketProviderID, pocketProvider.class, false);
+		DimensionManager.registerProviderType(properties.PocketProviderID, PocketProviderX.class, false);
 		DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false);
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
 
@@ -265,8 +265,8 @@ public class mod_pocketDim
 		GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
 		GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
 
-		EntityRegistry.registerModEntity(MobObelisk.class, "Monolith", properties.MonolithEntityID, this, 70, 1, true);
-		EntityList.IDtoClassMapping.put(properties.MonolithEntityID, MobObelisk.class);
+		EntityRegistry.registerModEntity(MobMonolith.class, "Monolith", properties.MonolithEntityID, this, 70, 1, true);
+		EntityList.IDtoClassMapping.put(properties.MonolithEntityID, MobMonolith.class);
 		EntityList.entityEggs.put(properties.MonolithEntityID, new EntityEggInfo(properties.MonolithEntityID, 0, 0xffffff));
 		LanguageRegistry.instance().addStringLocalization("entity.DimDoors.Obelisk.name", "Monolith");
 

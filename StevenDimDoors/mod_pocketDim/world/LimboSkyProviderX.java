@@ -11,7 +11,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.IRenderHandler;
 
-public class limboSkyProvider extends IRenderHandler
+public class LimboSkyProviderX extends IRenderHandler
 {
 	
 	int starGLCallList;

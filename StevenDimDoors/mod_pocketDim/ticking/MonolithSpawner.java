@@ -127,7 +127,7 @@ public class MonolithSpawner implements IRegularTickReceiver {
 				}
 				while (!pocket.isAirBlock(x,jumpHeight+6 , z)&&jumpSanity<20);
 
-				Entity monolith = new MobObelisk(pocket);
+				Entity monolith = new MobMonolith(pocket);
 				monolith.setLocationAndAngles(x, jumpHeight, z, 1, 1);
 				pocket.spawnEntityInWorld(monolith);
 				didSpawn = true;
@@ -184,7 +184,7 @@ public class MonolithSpawner implements IRegularTickReceiver {
 				while (!limbo.isAirBlock(x, jumpHeight + 6, z) && jumpSanity < 20);
 
 
-				Entity monolith = new MobObelisk(limbo);
+				Entity monolith = new MobMonolith(limbo);
 				monolith.setLocationAndAngles(x, jumpHeight, z, 1, 1);
 				limbo.spawnEntityInWorld(monolith);
 			}

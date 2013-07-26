@@ -8,7 +8,7 @@ import java.util.Random;
 
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
+import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;

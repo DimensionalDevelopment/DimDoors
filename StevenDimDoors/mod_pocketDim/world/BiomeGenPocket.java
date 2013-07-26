@@ -1,6 +1,6 @@
 package StevenDimDoors.mod_pocketDim.world;
 
-import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
+import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.biome.SpawnListEntry;
 
