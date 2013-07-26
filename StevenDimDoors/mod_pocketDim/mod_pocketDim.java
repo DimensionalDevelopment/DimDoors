@@ -24,6 +24,7 @@ import StevenDimDoors.mod_pocketDim.blocks.ExitDoor;
 import StevenDimDoors.mod_pocketDim.blocks.dimDoor;
 import StevenDimDoors.mod_pocketDim.blocks.dimHatch;
 import StevenDimDoors.mod_pocketDim.commands.CommandCreateDungeonRift;
+import StevenDimDoors.mod_pocketDim.commands.CommandCreatePocket;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteDimensionData;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
@@ -31,7 +32,6 @@ import StevenDimDoors.mod_pocketDim.commands.CommandExportDungeon;
 import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimensionData;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDimensions;
 import StevenDimDoors.mod_pocketDim.commands.CommandResetDungeons;
-import StevenDimDoors.mod_pocketDim.commands.CommandCreatePocket;
 import StevenDimDoors.mod_pocketDim.helpers.BlockRotationHelper;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -46,6 +46,8 @@ import StevenDimDoors.mod_pocketDim.items.itemLinkSignature;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.ticking.MobObelisk;
+import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
+import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
@@ -131,7 +133,8 @@ public class mod_pocketDim
 	public static boolean hasInitDims = false;
 	public static boolean isPlayerWearingGoogles = false;
 
-	private static DDProperties properties;
+	public static DDProperties properties;
+	public static MonolithSpawner spawner; //Added this field temporarily. Will be refactored out later.
 	public static RiftGenerator riftGen;
 
 	public static long genTime;
@@ -176,6 +179,15 @@ public class mod_pocketDim
 	@Init
 	public void Init(FMLInitializationEvent event)
 	{
+		CommonTickHandler commonTickHandler = new CommonTickHandler();
+		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
+		TickRegistry.registerTickHandler(commonTickHandler, Side.SERVER);
+		
+		//MonolithSpawner should be initialized before any provider instances are created
+		//Register the other regular tick receivers as well
+		spawner = new MonolithSpawner(commonTickHandler, properties);
+		new RiftRegenerator(commonTickHandler); //No need to store the reference
+		LimboDecay decay = new LimboDecay(commonTickHandler, properties);
 
 		transientDoor = (new TransientDoor(properties.TransientDoorID, Material.iron)).setHardness(1.0F) .setUnlocalizedName("transientDoor");
 
@@ -183,7 +195,7 @@ public class mod_pocketDim
 		blockDimWallPerm = (new BlockDimWallPerm(properties.PermaFabricBlockID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setUnlocalizedName("blockDimWallPerm");
 		ExitDoor = (new ExitDoor(properties.WarpDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
 		blockRift = (new BlockRift(properties.RiftBlockID, 0, Material.air).setHardness(1.0F) .setUnlocalizedName("rift"));
-		blockLimbo = (new BlockLimbo(properties.LimboBlockID, 15, Material.iron, properties.LimboDimensionID).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F));
+		blockLimbo = (new BlockLimbo(properties.LimboBlockID, 15, Material.iron, properties.LimboDimensionID, decay).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F));
 		chaosDoor = (new ChaosDoor(properties.UnstableDoorID, Material.iron).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
 		dimDoor = (new dimDoor(properties.DimensionalDoorID, Material.iron)).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor");
 		dimHatch = (new dimHatch(properties.TransTrapdoorID, 84, Material.iron)).setHardness(1.0F) .setUnlocalizedName("dimHatch");
@@ -247,10 +259,7 @@ public class mod_pocketDim
 
 		
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dimDoorsCustomTab", "en_US", "Dimensional Doors Items");
-
-		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
-		TickRegistry.registerTickHandler(new CommonTickHandler(), Side.SERVER);
-
+		
 		//GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimRail");
 
 		GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
