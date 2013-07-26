@@ -8,8 +8,8 @@ import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
-/*
- * Provides methods for applying the Limbo decay. Limbo decay refers to the effect that most blocks placed in Limbo
+/**
+ * Provides methods for applying Limbo decay. Limbo decay refers to the effect that most blocks placed in Limbo
  * naturally change into stone, then cobble, then gravel, and finally Unraveled Fabric as time passes.
  */
 public class LimboDecay {
@@ -28,7 +28,7 @@ public class LimboDecay {
 	
 	private LimboDecay() { }
 
-	/*
+	/**
 	 * Initializes the array containing the reversed sequence of block IDs that blocks cycle through during decay.
 	 */
 	private static void InitializeDecaySequence()
@@ -47,7 +47,7 @@ public class LimboDecay {
 		}
 	}
 	
-	/*
+	/**
 	 * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
 	 * and applies Limbo decay to them. This gives the impression that decay spreads outward from Unraveled Fabric.
 	 */
@@ -71,7 +71,7 @@ public class LimboDecay {
 		}
 	}
 	
-	/*
+	/**
 	 * Picks random blocks from each active chunk in Limbo and, if decay is applicable, converts them directly to Unraveled Fabric.
 	 * This decay method is designed to stop players from avoiding Limbo decay by building floating structures.
 	 */
@@ -108,7 +108,7 @@ public class LimboDecay {
 		}
 	}
 	
-	/*
+	/**
 	 * Checks if a block can be decayed and, if so, changes it directly into Unraveled Fabric.
 	 */
 	private static boolean DecayBlockFast(World world, int x, int y, int z)
@@ -122,7 +122,7 @@ public class LimboDecay {
 		return false;
 	}
 	
-	/*
+	/**
 	 * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
 	 */
 	private static boolean DecayBlock(World world, int x, int y, int z)
@@ -156,7 +156,7 @@ public class LimboDecay {
 		return false;
 	}
 	
-	/*
+	/**
 	 * Checks if a block can decay. We will not decay air, Unraveled Fabric, Eternal Fabric, or containers.
 	 */
 	private static boolean CanDecayBlock(int blockID)
