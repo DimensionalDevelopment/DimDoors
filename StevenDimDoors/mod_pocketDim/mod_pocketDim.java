@@ -186,7 +186,7 @@ public class mod_pocketDim
 		//MonolithSpawner should be initialized before any provider instances are created
 		//Register the other regular tick receivers as well
 		spawner = new MonolithSpawner(commonTickHandler, properties);
-		new RiftRegenerator(commonTickHandler); //No need to store the reference
+		new RiftRegenerator(commonTickHandler, properties); //No need to store the reference
 		LimboDecay decay = new LimboDecay(commonTickHandler, properties);
 
 		transientDoor = (new TransientDoor(properties.TransientDoorID, Material.iron)).setHardness(1.0F) .setUnlocalizedName("transientDoor");
