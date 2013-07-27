@@ -1,21 +1,29 @@
 package StevenDimDoors.mod_pocketDim.schematic;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.Point3D;
 
+/**
+ * Represents an MC schematic and provides functions for loading, storing, and manipulating schematics.
+ * This functionality has no dependencies to Dimensional Doors.
+ */
 public class Schematic {
-	
+
 	protected short width;
 	protected short height;
 	protected short length;
-	
+
 	protected short[] blocks;
 	protected byte[] metadata;
 	protected NBTTagList tileEntities = new NBTTagList();
@@ -29,7 +37,7 @@ public class Schematic {
 		this.metadata = metadata;
 		this.tileEntities = tileEntities;
 	}
-	
+
 	private int calculateIndex(int x, int y, int z)
 	{
 		if (x < 0 || x >= width)
@@ -38,30 +46,136 @@ public class Schematic {
 			throw new IndexOutOfBoundsException("y must be non-negative and less than height");
 		if (z < 0 || z >= length)
 			throw new IndexOutOfBoundsException("z must be non-negative and less than length");
-		
+
 		return (y * width * length + z * width + x);
 	}
-	
+
 	public short getBlockID(int x, int y, int z)
 	{
 		return blocks[calculateIndex(x, y, z)];
 	}
-	
+
 	public byte getBlockMetadata(int x, int y, int z)
 	{
 		return metadata[calculateIndex(x, y, z)];
 	}
-	
+
 	public NBTTagList getTileEntities()
 	{
 		return (NBTTagList) tileEntities.copy();
 	}
-	
-	public static Schematic readFromFile()
+
+	public static Schematic readFromFile(String schematicPath) throws FileNotFoundException, InvalidSchematicException
 	{
-		throw new UnsupportedOperationException();
+		return readFromFile(new File(schematicPath));
 	}
-	
+
+	public static Schematic readFromFile(File schematicFile) throws FileNotFoundException, InvalidSchematicException
+	{
+		return readFromStream(new FileInputStream(schematicFile));
+	}
+
+	public static Schematic readFromResource(String resourcePath) throws InvalidSchematicException
+	{
+		//We need an instance of a class in the mod to retrieve a resource
+		Schematic empty = new Schematic((short) 0, (short) 0, (short) 0, null, null, null);
+		InputStream schematicStream = empty.getClass().getResourceAsStream(resourcePath);
+		return readFromStream(schematicStream);
+	}
+
+	private static Schematic readFromStream(InputStream schematicStream) throws InvalidSchematicException
+	{
+		short width;
+		short height;
+		short length;
+		int volume;
+		int pairs;
+
+		byte[] metadata = null;			//block metadata
+		byte[] lowBits = null;			//first 8 bits of the block IDs
+		byte[] highBits = null;			//additional 4 bits of the block IDs
+		short[] blocks = null;			//list of combined block IDs
+		NBTTagList tileEntities = null;	//storage for tile entities in NBT form
+		NBTTagCompound schematicTag;	//the NBT data extracted from the schematic file
+		boolean hasExtendedBlockIDs;	//indicates whether the schematic contains extended block IDs
+
+		try
+		{
+			try
+			{
+				schematicTag = CompressedStreamTools.readCompressed(schematicStream);
+				schematicStream.close(); //readCompressed() probably closes the stream anyway, but close again to be sure.
+			}
+			catch (Exception ex)
+			{
+				throw new InvalidSchematicException("The schematic could not be decoded.");
+			}
+
+			//load size of schematic to generate
+			width = schematicTag.getShort("Width");
+			height = schematicTag.getShort("Height");
+			length = schematicTag.getShort("Length");
+			volume = width * length * height;
+
+			if (width < 0)
+				throw new InvalidSchematicException("The schematic cannot have a negative width.");
+			if (height < 0)
+				throw new InvalidSchematicException("The schematic cannot have a negative height.");
+			if (length < 0)
+				throw new InvalidSchematicException("The schematic cannot have a negative length.");
+
+			//load block info
+			lowBits = schematicTag.getByteArray("Blocks");
+			highBits = schematicTag.getByteArray("AddBlocks");
+			metadata = schematicTag.getByteArray("Data");
+			hasExtendedBlockIDs = (highBits.length != 0);
+
+			if (volume != lowBits.length)
+				throw new InvalidSchematicException("The schematic has data for fewer blocks than its dimensions indicate.");
+			if (volume != metadata.length)
+				throw new InvalidSchematicException("The schematic has metadata for fewer blocks than its dimensions indicate.");
+			if (volume > 2 * highBits.length && highBits.length != 0)
+				throw new InvalidSchematicException("The schematic has extended block IDs for fewer blocks than its dimensions indicate.");
+
+			blocks = new short[volume];
+			if (hasExtendedBlockIDs)
+			{
+				//Combine the split block IDs into a single value
+				pairs = volume - (volume & 1);
+				int index;
+				for (index = 0; index < pairs; index += 2) 
+				{
+					blocks[index] = (short) (((highBits[index >> 1] & 0x0F) << 8) + lowBits[index]);
+					blocks[index + 1] = (short) (((highBits[index >> 1] & 0xF0) << 4) + lowBits[index + 1]);
+				}
+				if (index < volume)
+				{
+					blocks[index] = lowBits[index >> 1];
+				}
+			}
+			else
+			{
+				//Copy the blockIDs
+				for (int index = 0; index < volume; index++)
+					blocks[index] = lowBits[index];
+			}
+
+			//Get the list of tile entities
+			tileEntities = schematicTag.getTagList("TileEntities");
+			
+			return new Schematic(width, height, length, blocks, metadata, tileEntities);
+		}
+		catch (InvalidSchematicException ex)
+		{
+			//Throw the exception again to pass it to the caller.
+			throw ex;
+		}
+		catch (Exception ex)
+		{
+			throw new InvalidSchematicException("An unexpected error occurred while trying to decode the schematic.", ex);
+		}
+	}
+
 	public static Schematic copyFromWorld(World world, int x, int y, int z, short width, short height, short length, boolean doCompactBounds)
 	{
 		if (doCompactBounds)
@@ -75,17 +189,17 @@ public class Schematic {
 			{
 				fixedHeight = worldHeight - fixedY;
 			}
-			
+
 			//Compact the area to be copied to remove empty borders
 			CompactBoundsOperation compactor = new CompactBoundsOperation();
 			compactor.apply(world, x, fixedY, z, width, fixedHeight, length);
 			Point3D minCorner = compactor.getMinCorner();
 			Point3D maxCorner = compactor.getMaxCorner();
-			
+
 			short compactWidth = (short) (maxCorner.getX() - minCorner.getX() + 1);
 			short compactHeight = (short) (maxCorner.getY() - minCorner.getY() + 1);
 			short compactLength = (short) (maxCorner.getZ() - minCorner.getZ() + 1);
-			
+
 			return copyFromWorld(world, minCorner.getX(), minCorner.getY(), minCorner.getZ(),
 					compactWidth, compactHeight, compactLength);
 		}
@@ -94,7 +208,7 @@ public class Schematic {
 			return copyFromWorld(world, x, y, z, width, height, length);
 		}
 	}
-	
+
 	private static Schematic copyFromWorld(World world, int x, int y, int z, short width, short height, short length)
 	{
 		//Short and sweet ^_^
@@ -102,7 +216,7 @@ public class Schematic {
 		copier.apply(world, x, y, z, width, height, length);
 		return new Schematic(width, height, length, copier.getBlockIDs(), copier.getMetadata(), copier.getTileEntities());
 	}
-	
+
 	private static boolean encodeBlockIDs(short[] blocks, byte[] lowBits, byte[] highBits)
 	{
 		int index;
@@ -118,40 +232,44 @@ public class Schematic {
 			highBits[index >> 1] = (byte) ((blocks[index] >> 8) & 0x0F);
 			hasHighBits |= (highBits[index >> 1] != 0);
 		}
+		for (index = 0; index < blocks.length; index++)
+		{
+			lowBits[index] = (byte) (blocks[index] & 0xFF);
+		}
 		return hasHighBits;
 	}
-	
+
 	public NBTTagCompound writeToNBT()
 	{
 		return writeToNBT(true);
 	}
-	
+
 	private NBTTagCompound writeToNBT(boolean copyTileEntities)
 	{
 		//This is the main storage function. Schematics are really compressed NBT tags, so if we can generate
 		//the tags, most of the work is done. All the other storage functions will rely on this one.
-		
+
 		NBTTagCompound schematicTag = new NBTTagCompound("Schematic");
 
 		schematicTag.setShort("Width", width);
 		schematicTag.setShort("Length", length);
 		schematicTag.setShort("Height", height);
-		
+
 		schematicTag.setTag("Entities", new NBTTagList());
 		schematicTag.setString("Materials", "Alpha");
-		
-		byte[] lowBytes = new byte[blocks.length];
-		byte[] highBytes = new byte[(blocks.length >> 1) + 1];
-		boolean hasExtendedIDs = encodeBlockIDs(blocks, lowBytes, highBytes);
-		
-		schematicTag.setByteArray("Blocks", lowBytes);
+
+		byte[] lowBits = new byte[blocks.length];
+		byte[] highBits = new byte[(blocks.length >> 1) + 1];
+		boolean hasExtendedIDs = encodeBlockIDs(blocks, lowBits, highBits);
+
+		schematicTag.setByteArray("Blocks", lowBits);
 		schematicTag.setByteArray("Data", metadata);
-		
+
 		if (hasExtendedIDs)
 		{
-			schematicTag.setByteArray("AddBlocks", highBytes);
+			schematicTag.setByteArray("AddBlocks", highBits);
 		}
-		
+
 		if (copyTileEntities)
 		{
 			//Used when the result of this function will be passed outside this class.
@@ -166,12 +284,12 @@ public class Schematic {
 		}
 		return schematicTag;
 	}
-	
+
 	public void writeToFile(String schematicPath) throws IOException
 	{
 		writeToFile(new File(schematicPath));
 	}
-	
+
 	public void writeToFile(File schematicFile) throws IOException
 	{
 		FileOutputStream outputStream = new FileOutputStream(schematicFile);
@@ -179,5 +297,41 @@ public class Schematic {
 		//writeCompressed() probably closes the stream on its own - call close again just in case.
 		//Closing twice will not throw an exception.
 		outputStream.close();
+	}
+	
+	public void copyToWorld(World world, int x, int y, int z)
+	{
+		int index;
+		int count;
+		int dx, dy, dz;
+		
+		//Copy blocks and metadata into the world
+		index = 0;
+		for (dy = 0; dy < height; dy++)
+		{
+			for (dz = 0; dz < length; dz++)
+			{
+				for (dx = 0; dx < width; dx++)
+				{
+					world.setBlock(x + dx, y + dy, z + dz, blocks[index], metadata[index], 3);
+					index++;
+				}
+			}
+		}
+		//Copy tile entities into the world
+		count = tileEntities.tagCount();
+		for (index = 0; index < count; index++)
+		{
+			NBTTagCompound tileTag = (NBTTagCompound) tileEntities.tagAt(index);
+			//Rewrite its location to be in world coordinates
+			dx = tileTag.getInteger("x") + x;
+			dy = tileTag.getInteger("y") + y;
+			dz = tileTag.getInteger("z") + z;
+			tileTag.setInteger("x", dx);
+			tileTag.setInteger("y", dy);
+			tileTag.setInteger("z", dz);
+			//Load the tile entity and put it in the world
+			world.setBlockTileEntity(dx, dy, dz, TileEntity.createAndLoadEntity(tileTag));
+		}
 	}
 }

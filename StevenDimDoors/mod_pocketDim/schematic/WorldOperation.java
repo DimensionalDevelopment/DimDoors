@@ -11,7 +11,7 @@ public abstract class WorldOperation {
 		this.name = name;
 	}
 
-	protected boolean start(World world, int x, int y, int z, int width, int height, int length)
+	protected boolean initialize(World world, int x, int y, int z, int width, int height, int length)
 	{
 		return true;
 	}
@@ -25,7 +25,7 @@ public abstract class WorldOperation {
 
 	public boolean apply(World world, int x, int y, int z, int width, int height, int length)
 	{
-		if (!start(world, x, y, z, width, height, length))
+		if (!initialize(world, x, y, z, width, height, length))
 			return false;
 		
 		int cx, cy, cz;

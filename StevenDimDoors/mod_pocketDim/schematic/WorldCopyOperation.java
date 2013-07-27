@@ -20,11 +20,11 @@ public class WorldCopyOperation extends WorldOperation
 		super("WorldCopyOperation");
 		blockIDs = null;
 		metadata = null;
-		tileEntities = new NBTTagList();
+		tileEntities = null;
 	}
 	
 	@Override
-	protected boolean start(World world, int x, int y, int z, int width, int height, int length)
+	protected boolean initialize(World world, int x, int y, int z, int width, int height, int length)
 	{
 		index = 0;
 		originX = x;
@@ -32,6 +32,7 @@ public class WorldCopyOperation extends WorldOperation
 		originZ = z;
 		blockIDs = new short[width * height * length];
 		metadata = new byte[width * height * length];
+		tileEntities = new NBTTagList();
 		return true;
 	}
 

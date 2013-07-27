@@ -18,7 +18,7 @@ public class CompactBoundsOperation extends WorldOperation
 	}
 	
 	@Override
-	protected boolean start(World world, int x, int y, int z, int width, int height, int length)
+	protected boolean initialize(World world, int x, int y, int z, int width, int height, int length)
 	{
 		minX = Integer.MAX_VALUE;
 		minY = Integer.MAX_VALUE;
