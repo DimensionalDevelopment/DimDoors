@@ -1,7 +1,6 @@
 package StevenDimDoors.mod_pocketDim.helpers;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,10 +10,6 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 import net.minecraft.block.Block;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
@@ -23,6 +18,7 @@ import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
+import StevenDimDoors.mod_pocketDim.schematic.Schematic;
 import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
 public class DungeonHelper
@@ -383,153 +379,13 @@ public class DungeonHelper
 
 	public boolean exportDungeon(World world, int centerX, int centerY, int centerZ, String exportPath)
 	{
-		int xMin, yMin, zMin;
-		int xMax, yMax, zMax;
-		int xStart, yStart, zStart;
-		int xEnd, yEnd, zEnd;
-		
-		//Find the smallest bounding box that contains all non-air blocks within a max radius around the player.
-		xMax = yMax = zMax = Integer.MIN_VALUE;
-		xMin = yMin = zMin = Integer.MAX_VALUE;
-		
-		xStart = centerX - MAX_EXPORT_RADIUS;
-		zStart = centerZ - MAX_EXPORT_RADIUS;
-		yStart = Math.max(centerY - MAX_EXPORT_RADIUS, 0); 
-		
-		xEnd = centerX + MAX_EXPORT_RADIUS;
-		zEnd = centerZ + MAX_EXPORT_RADIUS;
-		yEnd = Math.min(centerY + MAX_EXPORT_RADIUS, world.getHeight());
-		
-		//This could be done more efficiently, but honestly, this is the simplest approach and it
-		//makes it easy for us to verify that the code is correct.
-		for (int y = yStart; y <= yEnd; y++)
-		{
-			for (int z = zStart; z <= zEnd; z++)
-			{
-				for (int x = xStart; x <= xEnd; x++)
-				{
-					if (!world.isAirBlock(x, y, z))
-					{
-						xMax = x > xMax ? x : xMax;
-						zMax = z > zMax ? z : zMax;
-						yMax = y > yMax ? y : yMax;
-
-						xMin = x < xMin ? x : xMin;
-						zMin = z < zMin ? z : zMin;
-						yMin = y < yMin ? y : yMin;						
-					}
-				}
-			}
-		}
-		
-		//Export all the blocks within our selected bounding box
-		short width = (short) (xMax - xMin + 1);
-		short height = (short) (yMax - yMin + 1);
-		short length = (short) (zMax - zMin + 1);
-
-		byte[] blocks = new byte[width * height * length];
-		byte[] addBlocks = null;
-		byte[] blockData = new byte[width * height * length];
-		NBTTagList tileEntities = new NBTTagList();
-
-		for (int y = 0; y < height; y++) 
-		{
-			for (int z = 0; z < length; z++) 
-			{
-				for (int x = 0; x < width; x++) 
-				{
-					int index = y * width * length + z * width + x;
-					int blockID = world.getBlockId(x + xMin, y + yMin, z + zMin);
-					int metadata = world.getBlockMetadata(x + xMin, y + yMin, z + zMin);
-					boolean changed = false;
-
-					if (blockID == properties.DimensionalDoorID)
-					{
-						blockID = Block.doorIron.blockID;
-						changed = true;
-					}
-					if (blockID == properties.WarpDoorID)
-					{
-						blockID = Block.doorWood.blockID;
-						changed = true;
-					}
-					//Map fabric of reality and permafabric blocks to standard export IDs
-					if (blockID == properties.FabricBlockID)
-					{
-						blockID = FABRIC_OF_REALITY_EXPORT_ID;
-						changed = true;
-					}
-					if (blockID == properties.PermaFabricBlockID)
-					{
-						blockID = PERMAFABRIC_EXPORT_ID;
-						changed = true;
-					}
-
-					// Save 4096 IDs in an AddBlocks section
-					if (blockID > 255) 
-					{
-						if (addBlocks == null) 
-						{
-							//Lazily create section
-							addBlocks = new byte[(blocks.length >> 1) + 1];
-						}
-
-						addBlocks[index >> 1] = (byte) (((index & 1) == 0) ?
-								addBlocks[index >> 1] & 0xF0 | (blockID >> 8) & 0xF
-								: addBlocks[index >> 1] & 0xF | ((blockID >> 8) & 0xF) << 4);
-					}
-
-					blocks[index] = (byte) blockID;
-					blockData[index] = (byte) metadata;
-
-					//Obtain and export the tile entity of the current block, if any.
-					//Do not obtain a tile entity if the block was changed from its original ID.
-					//I'm not sure if this approach is the most efficient but it works. ~SenseiKiwi
-					TileEntity tileEntity = !changed ? world.getBlockTileEntity(x + xMin, y + yMin, z + zMin) : null;
-					
-					if (tileEntity != null)
-					{
-						//Get the tile entity's description as a compound NBT tag
-						NBTTagCompound entityData = new NBTTagCompound();
-						tileEntity.writeToNBT(entityData);
-						//Change the tile entity's location to the schematic coordinate system
-						entityData.setInteger("x", x);
-						entityData.setInteger("y", y);
-						entityData.setInteger("z", z);
-						
-						tileEntities.appendTag(entityData);
-					}
-				}
-			}
-		}
-		
-		//Write NBT tags for schematic file
-		NBTTagCompound schematicTag = new NBTTagCompound("Schematic");
-
-		schematicTag.setShort("Width", width);
-		schematicTag.setShort("Length", length);
-		schematicTag.setShort("Height", height);
-		
-		schematicTag.setByteArray("Blocks", blocks);
-		schematicTag.setByteArray("Data", blockData);
-		
-		schematicTag.setTag("Entities", new NBTTagList());
-		schematicTag.setTag("TileEntities", tileEntities);
-		schematicTag.setString("Materials", "Alpha");
-		
-		if (addBlocks != null)
-		{
-			schematicTag.setByteArray("AddBlocks", addBlocks);
-		}
-
 		//Write schematic data to a file
 		try
 		{
-			FileOutputStream outputStream = new FileOutputStream(new File(exportPath));
-			CompressedStreamTools.writeCompressed(schematicTag, outputStream);
-			//writeCompressed() probably closes the stream on its own - call close again just in case.
-			//Closing twice will not throw an exception.
-			outputStream.close();
+			short size = (short) 2 * MAX_EXPORT_RADIUS + 1;
+			Schematic schematic = Schematic.copyFromWorld(world,
+					centerX - MAX_EXPORT_RADIUS, centerY - MAX_EXPORT_RADIUS, centerZ - MAX_EXPORT_RADIUS, size, size, size, true);
+			schematic.writeToFile(exportPath);
 			return true;
 		}
 		catch(Exception e)
