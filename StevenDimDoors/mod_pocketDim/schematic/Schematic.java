@@ -134,7 +134,7 @@ public class Schematic {
 				throw new InvalidSchematicException("The schematic has data for fewer blocks than its dimensions indicate.");
 			if (volume != metadata.length)
 				throw new InvalidSchematicException("The schematic has metadata for fewer blocks than its dimensions indicate.");
-			if (volume > 2 * highBits.length && highBits.length != 0)
+			if (volume > 2 * highBits.length && hasExtendedBlockIDs)
 				throw new InvalidSchematicException("The schematic has extended block IDs for fewer blocks than its dimensions indicate.");
 
 			blocks = new short[volume];
@@ -145,8 +145,8 @@ public class Schematic {
 				int index;
 				for (index = 0; index < pairs; index += 2) 
 				{
-					blocks[index] = (short) (((highBits[index >> 1] & 0x0F) << 8) + lowBits[index]);
-					blocks[index + 1] = (short) (((highBits[index >> 1] & 0xF0) << 4) + lowBits[index + 1]);
+					blocks[index] = (short) (((highBits[index >> 1] & 0x0F) << 8) + (lowBits[index] & 0xFF));
+					blocks[index + 1] = (short) (((highBits[index >> 1] & 0xF0) << 4) + (lowBits[index + 1] & 0xFF));
 				}
 				if (index < volume)
 				{
@@ -157,7 +157,9 @@ public class Schematic {
 			{
 				//Copy the blockIDs
 				for (int index = 0; index < volume; index++)
-					blocks[index] = lowBits[index];
+				{
+					blocks[index] = (short) (lowBits[index] & 0xFF);
+				}
 			}
 
 			//Get the list of tile entities
@@ -301,6 +303,8 @@ public class Schematic {
 	
 	public void copyToWorld(World world, int x, int y, int z)
 	{
+		//This isn't implemented as a WorldOperation because it doesn't quite fit the structure of those operations.
+		//It's not worth the trouble in this case.
 		int index;
 		int count;
 		int dx, dy, dz;
@@ -313,7 +317,8 @@ public class Schematic {
 			{
 				for (dx = 0; dx < width; dx++)
 				{
-					world.setBlock(x + dx, y + dy, z + dz, blocks[index], metadata[index], 3);
+					//Don't cause block updates!
+					world.setBlock(x + dx, y + dy, z + dz, blocks[index], metadata[index], 2);
 					index++;
 				}
 			}
