@@ -7,11 +7,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import StevenDimDoors.mod_pocketDim.Point3D;
 
 /**
@@ -26,7 +29,7 @@ public class Schematic {
 
 	protected short[] blocks;
 	protected byte[] metadata;
-	protected NBTTagList tileEntities = new NBTTagList();
+	protected NBTTagList tileEntities;
 
 	protected Schematic(short width, short height, short length, short[] blocks, byte[] metadata, NBTTagList tileEntities)
 	{
@@ -37,8 +40,20 @@ public class Schematic {
 		this.metadata = metadata;
 		this.tileEntities = tileEntities;
 	}
+	
+	protected Schematic(Schematic source)
+	{
+		//Shallow copy constructor - critical for code reuse in derived classes since
+		//source's fields will be inaccessible if the derived class is in another package.
+		this.width = source.width;
+		this.height = source.height;
+		this.length = source.length;
+		this.blocks = source.blocks;
+		this.metadata = source.metadata;
+		this.tileEntities = source.tileEntities;
+	}
 
-	private int calculateIndex(int x, int y, int z)
+	protected int calculateIndex(int x, int y, int z)
 	{
 		if (x < 0 || x >= width)
 			throw new IndexOutOfBoundsException("x must be non-negative and less than width");
@@ -83,7 +98,7 @@ public class Schematic {
 		return readFromStream(schematicStream);
 	}
 
-	private static Schematic readFromStream(InputStream schematicStream) throws InvalidSchematicException
+	public static Schematic readFromStream(InputStream schematicStream) throws InvalidSchematicException
 	{
 		short width;
 		short height;
@@ -165,7 +180,8 @@ public class Schematic {
 			//Get the list of tile entities
 			tileEntities = schematicTag.getTagList("TileEntities");
 			
-			return new Schematic(width, height, length, blocks, metadata, tileEntities);
+			Schematic result = new Schematic(width, height, length, blocks, metadata, tileEntities);
+			return result;
 		}
 		catch (InvalidSchematicException ex)
 		{
@@ -246,7 +262,13 @@ public class Schematic {
 		return writeToNBT(true);
 	}
 
-	private NBTTagCompound writeToNBT(boolean copyTileEntities)
+	protected NBTTagCompound writeToNBT(boolean copyTileEntities)
+	{
+		return writeToNBT(width, height, length, blocks, metadata, tileEntities, copyTileEntities);
+	}
+	
+	protected static NBTTagCompound writeToNBT(short width, short height, short length, short[] blocks, byte[] metadata,
+			NBTTagList tileEntities, boolean copyTileEntities)
 	{
 		//This is the main storage function. Schematics are really compressed NBT tags, so if we can generate
 		//the tags, most of the work is done. All the other storage functions will rely on this one.
@@ -301,6 +323,11 @@ public class Schematic {
 		outputStream.close();
 	}
 	
+	public boolean applyFilter(SchematicFilter filter)
+	{
+		return filter.apply(this, this.blocks, this.metadata);
+	}
+	
 	public void copyToWorld(World world, int x, int y, int z)
 	{
 		//This isn't implemented as a WorldOperation because it doesn't quite fit the structure of those operations.
@@ -317,8 +344,8 @@ public class Schematic {
 			{
 				for (dx = 0; dx < width; dx++)
 				{
-					//Don't cause block updates!
-					world.setBlock(x + dx, y + dy, z + dz, blocks[index], metadata[index], 2);
+					//In the future, we might want to make this more efficient by building whole chunks at a time
+					setBlockDirectly(world, x + dx, y + dy, z + dz, blocks[index], metadata[index]);
 					index++;
 				}
 			}
@@ -337,6 +364,40 @@ public class Schematic {
 			tileTag.setInteger("z", dz);
 			//Load the tile entity and put it in the world
 			world.setBlockTileEntity(dx, dy, dz, TileEntity.createAndLoadEntity(tileTag));
+		}
+	}
+	
+	protected static void setBlockDirectly(World world, int x, int y, int z, int blockID, int metadata)
+	{
+		if (blockID != 0 && Block.blocksList[blockID] == null)
+		{
+			return;
+		}
+
+		int cX = x >> 4;
+		int cZ = z >> 4;
+		int cY = y >> 4;
+		Chunk chunk;
+
+		int localX = (x % 16) < 0 ? (x % 16) + 16 : (x % 16);
+		int localZ = (z % 16) < 0 ? (z % 16) + 16 : (z % 16);
+		ExtendedBlockStorage extBlockStorage;
+
+		try
+		{
+			chunk = world.getChunkFromChunkCoords(cX, cZ);
+			extBlockStorage = chunk.getBlockStorageArray()[cY];
+			if (extBlockStorage == null) 
+			{
+				extBlockStorage = new ExtendedBlockStorage(cY << 4, !world.provider.hasNoSky);
+				chunk.getBlockStorageArray()[cY] = extBlockStorage;
+			}
+			extBlockStorage.setExtBlockID(localX, y & 15, localZ, blockID);
+			extBlockStorage.setExtBlockMetadata(localX, y & 15, localZ, metadata);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 }

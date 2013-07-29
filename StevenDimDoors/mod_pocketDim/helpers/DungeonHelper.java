@@ -17,8 +17,8 @@ import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
-import StevenDimDoors.mod_pocketDim.schematic.Schematic;
 import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
 public class DungeonHelper
@@ -383,9 +383,10 @@ public class DungeonHelper
 		try
 		{
 			short size = (short) 2 * MAX_EXPORT_RADIUS + 1;
-			Schematic schematic = Schematic.copyFromWorld(world,
+			DungeonSchematic dungeon = DungeonSchematic.copyFromWorld(world,
 					centerX - MAX_EXPORT_RADIUS, centerY - MAX_EXPORT_RADIUS, centerZ - MAX_EXPORT_RADIUS, size, size, size, true);
-			schematic.writeToFile(exportPath);
+			dungeon.ApplyExportFilters(properties);
+			dungeon.writeToFile(exportPath);
 			return true;
 		}
 		catch(Exception e)
