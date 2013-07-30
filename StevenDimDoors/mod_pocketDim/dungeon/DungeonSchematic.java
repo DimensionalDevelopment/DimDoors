@@ -144,8 +144,7 @@ public class DungeonSchematic extends Schematic {
 		//Filter out mod blocks except some of our own
 		//This comes after ID standardization because the mod block filter relies on standardized IDs
 		standardizer.addFilter(new ModBlockFilter(MAX_VANILLA_BLOCK_ID, MOD_BLOCK_FILTER_EXCEPTIONS,
-				(short) properties.FabricBlockID, (byte) 0));
-
+				STANDARD_FABRIC_OF_REALITY_ID, (byte) 0));
 		
 		applyFilter(standardizer);
 	}
