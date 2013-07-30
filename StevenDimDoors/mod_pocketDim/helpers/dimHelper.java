@@ -39,6 +39,7 @@ import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.ObjectSaveInputStream;
 import StevenDimDoors.mod_pocketDim.PacketHandler;
 import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.SchematicLoader;
 import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
@@ -751,12 +752,8 @@ public class dimHelper extends DimensionManager
 		}
 		else if(!data.hasBeenFilled&&data.isPocket&&data.isDimRandomRift)
 		{
-			//System.out.println("genning dungeon pocket");
-			
-			
-			mod_pocketDim.loader.generateDungeonPocket(incomingLink);
+			SchematicLoader.generateDungeonPocket(incomingLink, properties);
 			data.hasBeenFilled=true;
-
 		}
 	}
 
@@ -770,7 +767,7 @@ public class dimHelper extends DimensionManager
 		
 		mod_pocketDim.hasInitDims=true;
 		this.load();
-		if(!this.dimList.isEmpty())
+		if(!dimHelper.dimList.isEmpty())
 		{
         
 

@@ -101,4 +101,10 @@ public class Point3D implements Serializable {
 		}
 		return hash;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "(" + x + ", " + "y" + ", " + z + ")";
+	}
 }
