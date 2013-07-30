@@ -15,9 +15,10 @@ public class RiftRegenerator implements IRegularTickReceiver {
 
 	private DDProperties properties;
 	
-	public RiftRegenerator(IRegularTickSender sender)
+	public RiftRegenerator(IRegularTickSender sender, DDProperties properties)
 	{
 		sender.registerForTicking(this, RIFT_REGENERATION_INTERVAL, false);
+		this.properties = properties;
 	}
 	
 	@Override
