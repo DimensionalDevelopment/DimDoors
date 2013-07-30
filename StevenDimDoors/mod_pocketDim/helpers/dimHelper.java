@@ -173,12 +173,14 @@ public class dimHelper extends DimensionManager
 	    {
 	    	
 	    	EntityPlayerMP player = (EntityPlayerMP)entity;
+
 	    	//player.closeScreen();
 	    	
 	    	
 	    	if (difDest) 
 	    	{
-	    	
+				GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
+
 	    		player.dimension = link.destDimID;
 	    		player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
 	    	
@@ -308,8 +310,6 @@ public class dimHelper extends DimensionManager
 			if(this.dimList.containsKey(destinationID) && this.dimList.containsKey(world.provider.dimensionId))
 			{
 				this.generatePocket(linkData);
-			 
-				
 				if(mod_pocketDim.teleTimer==0||entity instanceof EntityPlayer)
 				{
 					mod_pocketDim.teleTimer=2+rand.nextInt(2);
@@ -324,15 +324,7 @@ public class dimHelper extends DimensionManager
 				{	
 					entity = this.teleportEntity(world, entity, linkData);		
 				}
-				if(entity instanceof EntityPlayerMP)
-				{
-								
-					if(world.provider.dimensionId!=linkData.destDimID)
-					{
-						GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
-					} 
-
-				}
+				
 				
 					
 						
@@ -689,25 +681,25 @@ public class dimHelper extends DimensionManager
 		if(orientation==0)
 		{
 			x=x+15;
-			this.getWorld(incomingLink.destDimID).provider.setSpawnPoint(x-1, y, z);
+			//this.getWorld(incomingLink.destDimID).provider.setSpawnPoint(x-1, y, z);
 			
 		}
 		else if(orientation==1)
 		{
 			z=z+15;
-			this.getWorld(incomingLink.destDimID).provider.setSpawnPoint(x, y, z-1);
+			//this.getWorld(incomingLink.destDimID).provider.setSpawnPoint(x, y, z-1);
 
 		}
 		else if(orientation==2)
 		{
 			x=x-15;
-			this.getWorld(incomingLink.destDimID).provider.setSpawnPoint(x+1, y, z);
+			//this.getWorld(incomingLink.destDimID).provider.setSpawnPoint(x+1, y, z);
 
 		}
 		else if(orientation==3)
 		{
 			z=z-15;
-			this.getWorld(incomingLink.destDimID).provider.setSpawnPoint(x, y, z+1);
+			//this.getWorld(incomingLink.destDimID).provider.setSpawnPoint(x, y, z+1);
 
 		}
 			int searchRadius=19;
@@ -1018,10 +1010,6 @@ public class dimHelper extends DimensionManager
 		link = this.createLink(this.getWorld(link.locDimID).provider.dimensionId,dimensionID,link.locXCoord,link.locYCoord,link.locZCoord, link.destXCoord,link.destYCoord,link.destZCoord,link.linkOrientation); //creates and registers the two rifts that link the parent and pocket dim. 
 		this.createLink(dimensionID,this.getWorld(link.locDimID).provider.dimensionId, link.destXCoord,link.destYCoord,link.destZCoord, link.locXCoord,link.locYCoord,link.locZCoord, this.flipDoorMetadata(link.linkOrientation));
 	
-		if (isRandomRift)
-		{
-			DungeonHelper.instance().generateDungeonLink(link);
-		}
 		
 		return link;
 	}

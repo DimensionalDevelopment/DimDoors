@@ -32,6 +32,7 @@ import StevenDimDoors.mod_pocketDim.commands.CommandExportDungeon;
 import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimensionData;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDimensions;
 import StevenDimDoors.mod_pocketDim.commands.CommandResetDungeons;
+import StevenDimDoors.mod_pocketDim.commands.CommandTeleportPlayer;
 import StevenDimDoors.mod_pocketDim.helpers.BlockRotationHelper;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -442,6 +443,7 @@ public class mod_pocketDim
 		CommandPrintDimensionData.instance().register(event);
 		CommandPruneDimensions.instance().register(event);
 		CommandCreatePocket.instance().register(event);
+		CommandTeleportPlayer.instance().register(event);
 		dimHelper.instance.load();
 		
 		if(!dimHelper.dimList.containsKey(properties.LimboDimensionID))
