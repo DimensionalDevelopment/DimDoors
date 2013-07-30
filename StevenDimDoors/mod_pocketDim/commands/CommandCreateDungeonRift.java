@@ -1,17 +1,13 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.Collection;
 
 import net.minecraft.entity.player.EntityPlayer;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
 
 public class CommandCreateDungeonRift extends DDCommandBase
 {
@@ -96,7 +92,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 						{
 							dungeon = DungeonSchematic.readFromResource(result.schematicPath);
 						}
-						dungeon.ApplyImportFilters(DDProperties.instance());
+						dungeon.applyImportFilters(DDProperties.instance());
 						dungeon.copyToWorld(sender.worldObj, x, y, z);
 					} catch (InvalidSchematicException e) {
 						e.printStackTrace();

@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim.schematic;
 
+import StevenDimDoors.mod_pocketDim.Point3D;
 import net.minecraft.world.World;
 
 public abstract class WorldOperation {
@@ -23,6 +24,17 @@ public abstract class WorldOperation {
 		return true;
 	}
 
+	public boolean apply(World world, Point3D minCorner, Point3D maxCorner)
+	{
+		int x = minCorner.getX();
+		int y = minCorner.getY();
+		int z = minCorner.getZ();
+		int width = maxCorner.getX() - x + 1;
+		int height = maxCorner.getY() - y + 1;
+		int length = maxCorner.getZ() - z + 1;
+		return apply(world, x, y, z, width, height, length);
+	}
+	
 	public boolean apply(World world, int x, int y, int z, int width, int height, int length)
 	{
 		if (!initialize(world, x, y, z, width, height, length))

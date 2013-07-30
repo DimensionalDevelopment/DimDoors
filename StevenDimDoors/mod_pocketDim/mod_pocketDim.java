@@ -32,7 +32,6 @@ import StevenDimDoors.mod_pocketDim.commands.CommandExportDungeon;
 import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimensionData;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDimensions;
 import StevenDimDoors.mod_pocketDim.commands.CommandResetDungeons;
-import StevenDimDoors.mod_pocketDim.helpers.BlockRotationHelper;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemBlockDimWall;
@@ -98,9 +97,7 @@ public class mod_pocketDim
 	@Instance("PocketDimensions")
 	public static mod_pocketDim instance = new mod_pocketDim();
 	
-	public static SchematicLoader loader;
 	public static pocketTeleporter teleporter;
-	public static BlockRotationHelper rotationHelper;
 
 	public static Block transientDoor;
 	public static Block ExitDoor;
@@ -169,11 +166,9 @@ public class mod_pocketDim
 		//These fields MUST be initialized after properties are loaded to prevent
 		//instances from holding onto null references to the properties.
 		
-		loader = new SchematicLoader();
 		teleporter = new pocketTeleporter();
 		tracker = new PlayerRespawnTracker();
 		riftGen = new RiftGenerator();
-		rotationHelper = new BlockRotationHelper();
 	}
 
 	@Init

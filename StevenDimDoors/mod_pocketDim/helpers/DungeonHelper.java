@@ -385,7 +385,7 @@ public class DungeonHelper
 			short size = (short) 2 * MAX_EXPORT_RADIUS + 1;
 			DungeonSchematic dungeon = DungeonSchematic.copyFromWorld(world,
 					centerX - MAX_EXPORT_RADIUS, centerY - MAX_EXPORT_RADIUS, centerZ - MAX_EXPORT_RADIUS, size, size, size, true);
-			dungeon.ApplyExportFilters(properties);
+			dungeon.applyExportFilters(properties);
 			dungeon.writeToFile(exportPath);
 			return true;
 		}

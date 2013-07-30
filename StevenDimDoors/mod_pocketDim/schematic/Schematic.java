@@ -53,7 +53,7 @@ public class Schematic {
 		this.tileEntities = source.tileEntities;
 	}
 
-	protected int calculateIndex(int x, int y, int z)
+	public int calculateIndex(int x, int y, int z)
 	{
 		if (x < 0 || x >= width)
 			throw new IndexOutOfBoundsException("x must be non-negative and less than width");
@@ -64,7 +64,38 @@ public class Schematic {
 
 		return (y * width * length + z * width + x);
 	}
+	
+	public Point3D calculatePoint(int index)
+	{
+		int y = index / (width * length);
+		index -= y * width * length;
+		int z = index / width;
+		index -= z * width;
+		int x = index;
+		
+		return new Point3D(x, y, z);
+	}
+	
+	public int calculateIndexBelow(int index)
+	{
+		return index - (width * length);
+	}
 
+	public short getWidth()
+	{
+		return width;
+	}
+	
+	public short getHeight()
+	{
+		return height;
+	}
+	
+	public short getLength()
+	{
+		return length;
+	}
+	
 	public short getBlockID(int x, int y, int z)
 	{
 		return blocks[calculateIndex(x, y, z)];
