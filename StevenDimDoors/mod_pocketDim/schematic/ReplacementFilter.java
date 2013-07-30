@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim.schematic;
 
+
 public class ReplacementFilter extends SchematicFilter {
 
 	private short targetBlock;

@@ -46,7 +46,7 @@ public class DungeonSchematic extends Schematic {
 	
 	private static final short[] MOD_BLOCK_FILTER_EXCEPTIONS = new short[] {
 		STANDARD_FABRIC_OF_REALITY_ID,
-		STANDARD_ETERNAL_FABRIC_ID//,
+		STANDARD_ETERNAL_FABRIC_ID
 		//STANDARD_WARP_DOOR_ID,
 		//STANDARD_DIMENSIONAL_DOOR_ID
 	};
@@ -107,12 +107,6 @@ public class DungeonSchematic extends Schematic {
 		exitDoorLocations = finder.getExitDoorLocations();
 		dimensionalDoorLocations = finder.getDimensionalDoorLocations();
 		monolithSpawnLocations = finder.getMonolithSpawnLocations();
-		
-		//TODO: Debug prints below. Please remove them before the next release!
-		System.out.println(entranceDoorLocation != null ? "Entrance was found" : "Entrance was not found");
-		System.out.printf("There are %d exit doors in this room\n", exitDoorLocations.size());
-		System.out.printf("There are %d dim doors in this room\n", dimensionalDoorLocations.size());
-		System.out.printf("There are %d monolith spawn points in this room\n", monolithSpawnLocations.size());
 		
 		//Filter out mod blocks except some of our own
 		CompoundFilter standardizer = new CompoundFilter();

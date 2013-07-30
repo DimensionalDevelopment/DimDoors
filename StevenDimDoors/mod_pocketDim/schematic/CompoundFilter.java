@@ -48,11 +48,11 @@ public class CompoundFilter extends SchematicFilter {
 	{
 		for (SchematicFilter filter : filters)
 		{
-			if (!filter.applyToBlock(index, blocks, metadata))
+			if (filter.applyToBlock(index, blocks, metadata))
 			{
-				return !filter.terminates();
+				return filter.terminates();
 			}
 		}
-		return true;
+		return false;
 	}
 }

@@ -1,12 +1,15 @@
 package StevenDimDoors.mod_pocketDim.schematic;
 
+import java.util.ArrayList;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockComparator;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockRedstoneRepeater;
 import net.minecraft.block.BlockStairs;
 import StevenDimDoors.mod_pocketDim.Point3D;
-import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.blocks.dimDoor;
 
 public class BlockRotator
 {
@@ -17,17 +20,56 @@ public class BlockRotator
 	private final static int SOUTH_DOOR_METADATA = 1;
 	private final static int WEST_DOOR_METADATA = 2;
 	public final static int NORTH_DOOR_METADATA = 3;
+	
+	private final static ArrayList<Integer> metadataFlipList = new ArrayList<Integer>();
+	
+	static
+	{
+		metadataFlipList.add(Block.dispenser.blockID);
+		metadataFlipList.add(Block.stairsStoneBrick.blockID);
+		metadataFlipList.add(Block.lever.blockID);
+		metadataFlipList.add(Block.stoneButton.blockID);
+		metadataFlipList.add(Block.redstoneRepeaterIdle.blockID);
+		metadataFlipList.add(Block.redstoneRepeaterActive.blockID);
+		metadataFlipList.add(Block.tripWireSource.blockID);
+		metadataFlipList.add(Block.torchWood.blockID);
+		metadataFlipList.add(Block.torchRedstoneIdle.blockID);
+		metadataFlipList.add(Block.torchRedstoneActive.blockID);
+		metadataFlipList.add(Block.doorIron.blockID);
+		metadataFlipList.add(Block.doorWood.blockID);
+		metadataFlipList.add(Block.pistonBase.blockID);
+		metadataFlipList.add(Block.pistonStickyBase.blockID);
+		metadataFlipList.add(Block.pistonExtension.blockID);
+		metadataFlipList.add(Block.redstoneComparatorIdle.blockID);
+		metadataFlipList.add(Block.redstoneComparatorActive.blockID);
+		metadataFlipList.add(Block.signPost.blockID);
+		metadataFlipList.add(Block.signWall.blockID);
+		metadataFlipList.add(Block.skull.blockID);
+		metadataFlipList.add(Block.ladder.blockID);
+		metadataFlipList.add(Block.vine.blockID);
+		metadataFlipList.add(Block.anvil.blockID);
+		metadataFlipList.add(Block.chest.blockID);
+		metadataFlipList.add(Block.chestTrapped.blockID);
+		metadataFlipList.add(Block.hopperBlock.blockID);
+		metadataFlipList.add(Block.stairsNetherBrick.blockID);
+		metadataFlipList.add(Block.stairsCobblestone.blockID);
+		metadataFlipList.add(Block.stairsNetherBrick.blockID);
+		metadataFlipList.add(Block.stairsNetherQuartz.blockID);
+		metadataFlipList.add(Block.stairsSandStone.blockID);
+		metadataFlipList.add(mod_pocketDim.dimDoor.blockID);
+		metadataFlipList.add(mod_pocketDim.ExitDoor.blockID);
+	}
 
 	public static int transformMetadata(int metadata, int orientation, int blockID)
 	{
 		//TODO: Replace this horrible function with something prettier. We promise we will for the next version,
-		//after switching to MC 1.6.
+		//after switching to MC 1.6. PADRE, PLEASE FORGIVE ME.
 		
 		//Hax to fix negative orientations
 		orientation += 1 << 16;
 		orientation %= 4;
 		
-		if (DungeonHelper.instance().metadataFlipList.contains(blockID))
+		if (metadataFlipList.contains(blockID))
 		{
 			switch (orientation)
 			{
@@ -183,7 +225,7 @@ public class BlockRotator
 						break;
 					}
 				}
-				else if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor ||blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
+				else if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater || Block.blocksList[blockID] instanceof BlockDoor || Block.blocksList[blockID] instanceof dimDoor || blockID== Block.tripWireSource.blockID || Block.blocksList[blockID] instanceof BlockComparator)
 				{
 					switch (metadata)
 					{
@@ -402,7 +444,7 @@ public class BlockRotator
 
 				}
 
-				else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor ||blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
+				else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor || Block.blocksList[blockID] instanceof dimDoor || blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
 				{
 					switch (metadata)
 					{
@@ -629,7 +671,7 @@ public class BlockRotator
 						break;
 					}
 				}
-				else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor ||blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
+				else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor || Block.blocksList[blockID] instanceof dimDoor || blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
 				{
 					switch (metadata)
 					{

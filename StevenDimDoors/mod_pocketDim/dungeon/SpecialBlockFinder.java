@@ -70,16 +70,22 @@ public class SpecialBlockFinder extends SchematicFilter {
 		if (blocks[index] == monolithSpawnMarkerID)
 		{
 			monolithSpawnLocations.add(schematic.calculatePoint(index));
+			return true;
 		}
-		else if (blocks[index] == dimensionalDoorID)
+		if (blocks[index] == dimensionalDoorID)
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
 			if (indexBelow >= 0 && blocks[indexBelow] == dimensionalDoorID)
 			{
 				dimensionalDoorLocations.add(schematic.calculatePoint(index));
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
-		else if (blocks[index] == warpDoorID)
+		if (blocks[index] == warpDoorID)
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
 			if (indexBelow >= 0 && blocks[indexBelow] == warpDoorID)
@@ -88,15 +94,17 @@ public class SpecialBlockFinder extends SchematicFilter {
 				if (indexDoubleBelow >= 0 && blocks[indexDoubleBelow] == exitMarkerID)
 				{
 					exitDoorLocations.add(schematic.calculatePoint(index));
+					return true;
 				}
 				else if (entranceDoorLocation == null)
 				{
 					entranceDoorLocation = schematic.calculatePoint(index);
 					entranceOrientation = (metadata[indexBelow] & 3);
+					return true;
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	@Override

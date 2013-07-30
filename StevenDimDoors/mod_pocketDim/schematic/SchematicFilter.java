@@ -21,7 +21,7 @@ public class SchematicFilter {
 		
 		for (int index = 0; index < blocks.length; index++)
 		{
-			if (!applyToBlock(index, blocks, metadata) && terminates())
+			if (applyToBlock(index, blocks, metadata) && terminates())
 				return false;
 		}
 		

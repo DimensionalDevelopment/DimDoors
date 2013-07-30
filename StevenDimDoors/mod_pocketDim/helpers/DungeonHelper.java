@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-import net.minecraft.block.Block;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
@@ -69,8 +68,6 @@ public class DungeonHelper
 	private ArrayList<DungeonGenerator> pistonTraps = new ArrayList<DungeonGenerator>();
 	private ArrayList<DungeonGenerator> exits = new ArrayList<DungeonGenerator>();
 
-	public ArrayList<Integer> metadataFlipList = new ArrayList<Integer>();
-	public ArrayList<Integer> metadataNextList = new ArrayList<Integer>();
 	public DungeonGenerator defaultBreak = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/somethingBroke.schematic", true);
 	public DungeonGenerator defaultUp = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/simpleStairsUp.schematic", true);
 	
@@ -112,7 +109,6 @@ public class DungeonHelper
 		{
 			copyfile.copyFile("/mods/DimDoors/text/How_to_add_dungeons.txt", file.getAbsolutePath() + "/How_to_add_dungeons.txt");
 		}
-		registerFlipBlocks();
 		importCustomDungeons(properties.CustomSchematicDirectory);
 		registerBaseDungeons();
 	}
@@ -257,44 +253,6 @@ public class DungeonHelper
 		}
 	}
 
-	public void registerFlipBlocks()
-	{
-		metadataFlipList.add(Block.dispenser.blockID);
-		metadataFlipList.add(Block.stairsStoneBrick.blockID);
-		metadataFlipList.add(Block.lever.blockID);
-		metadataFlipList.add(Block.stoneButton.blockID);
-		metadataFlipList.add(Block.redstoneRepeaterIdle.blockID);
-		metadataFlipList.add(Block.redstoneRepeaterActive.blockID);
-		metadataFlipList.add(Block.tripWireSource.blockID);
-		metadataFlipList.add(Block.torchWood.blockID);
-		metadataFlipList.add(Block.torchRedstoneIdle.blockID);
-		metadataFlipList.add(Block.torchRedstoneActive.blockID);
-		metadataFlipList.add(Block.doorIron.blockID);
-		metadataFlipList.add(Block.doorWood.blockID);
-		metadataFlipList.add(Block.pistonBase.blockID);
-		metadataFlipList.add(Block.pistonStickyBase.blockID);
-		metadataFlipList.add(Block.pistonExtension.blockID);
-		metadataFlipList.add(Block.redstoneComparatorIdle.blockID);
-		metadataFlipList.add(Block.redstoneComparatorActive.blockID);
-		metadataFlipList.add(Block.signPost.blockID);
-		metadataFlipList.add(Block.signWall.blockID);
-		metadataFlipList.add(Block.skull.blockID);
-		metadataFlipList.add(Block.ladder.blockID);
-		metadataFlipList.add(Block.vine.blockID);
-		metadataFlipList.add(Block.anvil.blockID);
-		metadataFlipList.add(Block.chest.blockID);
-		metadataFlipList.add(Block.chestTrapped.blockID);
-		metadataFlipList.add(Block.hopperBlock.blockID);
-		metadataFlipList.add(Block.stairsNetherBrick.blockID);
-		metadataFlipList.add(Block.stairsCobblestone.blockID);
-		metadataFlipList.add(Block.stairsNetherBrick.blockID);
-		metadataFlipList.add(Block.stairsNetherQuartz.blockID);
-		metadataFlipList.add(Block.stairsSandStone.blockID);
-		
-		metadataNextList.add(Block.redstoneRepeaterIdle.blockID);
-		metadataNextList.add(Block.redstoneRepeaterActive.blockID);
-	}
-	
 	public void registerBaseDungeons()
 	{
 		hubs.add(new DungeonGenerator(2 * DEFAULT_DUNGEON_WEIGHT, "/schematics/4WayBasicHall.schematic", false));
