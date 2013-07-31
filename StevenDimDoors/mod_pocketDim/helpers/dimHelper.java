@@ -167,17 +167,11 @@ public class dimHelper extends DimensionManager
 			newWorld=(WorldServer)oldWorld;
 		}
 		
-	    
-		 mod_pocketDim.teleporter.placeInPortal(entity, newWorld, link);
+		mod_pocketDim.teleporter.placeInPortal(entity, newWorld, link);
 
 	    if ((entity instanceof EntityPlayerMP)) 
 	    {
-	    	
 	    	EntityPlayerMP player = (EntityPlayerMP)entity;
-
-	    	//player.closeScreen();
-	    	
-	    	
 	    	if (difDest) 
 	    	{
 				GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
@@ -201,45 +195,26 @@ public class dimHelper extends DimensionManager
 		    	{
 		    		PotionEffect effect = (PotionEffect)potionEffect;
 		    		player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, effect));
-
 		    	}
 		    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
-
-
-		    	
-
 	    	}
-	    }
-	    
-	    
+	    }	    	
 	    if(difDest)
 	    {
 	        int entX = entity.chunkCoordX;
 		    int entZ = entity.chunkCoordZ;
-		    
-	    	
-		
 		    if ((entity.addedToChunk) && (oldWorld.getChunkProvider().chunkExists(entX, entZ)))
 		    {
 		    	oldWorld.getChunkFromChunkCoords(entX, entZ).removeEntity(entity);
 		    	oldWorld.getChunkFromChunkCoords(entX, entZ).isModified = true;
 		    }
-		    
-		  
 		    oldWorld.releaseEntitySkin(entity);
-		    
-		   // entity.isDead = false;
-	   
 	    	if (!(entity instanceof EntityPlayer)) 
 	    	{
 	    		NBTTagCompound entityNBT = new NBTTagCompound();
-	    		
 	    		entity.isDead = false;
-	    		
 	    		entity.addEntityID(entityNBT);
-	    		
 	    		entity.isDead = true;
-	    		
 	    		entity = EntityList.createEntityFromNBT(entityNBT, newWorld);
 	    		
 	    		if (entity == null) 
@@ -247,37 +222,24 @@ public class dimHelper extends DimensionManager
 	    			 
 	    		}
 	    	}
-	    	
-	    
-	    
 	    	newWorld.spawnEntityInWorld(entity);
 	    	entity.setWorld(newWorld);
-
 	    }
-	    
 	    entity.worldObj.updateEntityWithOptionalForce(entity, false);
-
-	   
-	 
-	    
 		if ((entity != null) && (cart != null))
 		{
-
 			if ((entity instanceof EntityPlayerMP))
 			{
 				EntityPlayerMP playerMP = (EntityPlayerMP)entity;
 				entity.worldObj.updateEntityWithOptionalForce(entity, true);	
-
 			}
-		entity.mountEntity(cart);
+			entity.mountEntity(cart);
 		}
-
-
 		if(entity instanceof EntityPlayerMP)
 		{
 			WorldServer.class.cast(newWorld).getChunkProvider().loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
 		}
-		 mod_pocketDim.teleporter.placeInPortal(entity, newWorld, link);
+		mod_pocketDim.teleporter.placeInPortal(entity, newWorld, link);
 		return entity;    
 	}
 
@@ -311,6 +273,7 @@ public class dimHelper extends DimensionManager
 			if(this.dimList.containsKey(destinationID) && this.dimList.containsKey(world.provider.dimensionId))
 			{
 				this.generatePocket(linkData);
+				
 				if(mod_pocketDim.teleTimer==0||entity instanceof EntityPlayer)
 				{
 					mod_pocketDim.teleTimer=2+rand.nextInt(2);
@@ -318,20 +281,13 @@ public class dimHelper extends DimensionManager
 				else
 				{
 					return;
-				}
-			
-					
+				}			
 				if(!world.isRemote)
 				{	
 					entity = this.teleportEntity(world, entity, linkData);		
-				}
-				
-				
-					
-						
+				}	
 				entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
-							
-						
+		
 				int playerXCoord=MathHelper.floor_double(entity.posX);
 				int playerYCoord=MathHelper.floor_double(entity.posY);
 				int playerZCoord=MathHelper.floor_double(entity.posZ);
@@ -349,17 +305,13 @@ public class dimHelper extends DimensionManager
 		    				entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, properties.FabricBlockID);
 		    			}
 		    		}	    																	
-		    	}
-	    								
+		    	}						
 		    	if(entity.worldObj.getBlockId(playerXCoord, playerYCoord-1,playerZCoord )==Block.lavaStill.blockID)
 		    	{
 		    		entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, properties.FabricBlockID);
 		    	}
-	
 		    	this.generateDoor(world,linkData);
-	    								
-	
-							
+		
 		    	if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord+1,playerZCoord))
 		    	{
 		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube()&&!mod_pocketDim.blocksImmuneToRift.contains(entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)))
@@ -372,7 +324,6 @@ public class dimHelper extends DimensionManager
 		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)].isOpaqueCube()&&!mod_pocketDim.blocksImmuneToRift.contains(entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)))
 		    		{
 		    			entity.worldObj.setBlock(playerXCoord,playerYCoord,playerZCoord,0);
-		
 		    		}
 		    	}
 			}
@@ -385,11 +336,8 @@ public class dimHelper extends DimensionManager
 			}
 		}
 		return;
-		
 	}
-	
-	
-	
+
 	/**
 	 * Creates a link at the location, pointing to the destination. Does NOT create a pair, so must be called twice.
 	 * @param locationDimID
@@ -408,7 +356,6 @@ public class dimHelper extends DimensionManager
 		if(this.getLinkDataFromCoords(locationXCoord, locationYCoord, locationZCoord, locationDimID)!=null)
 		{
 			return this.createLink(locationDimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord, destinationZCoord, this.getLinkDataFromCoords(locationXCoord, locationYCoord, locationZCoord, locationDimID).linkOrientation);
-
 		}
 		else
 		{
@@ -434,8 +381,7 @@ public class dimHelper extends DimensionManager
 	{
 		LinkData linkData =new LinkData( locationDimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord ,destinationZCoord,false,linkOrientation);
 		return this.createLink(linkData);
-	}
-	
+	}	
 	
 	public LinkData createLink(LinkData link)
 	{
@@ -446,52 +392,29 @@ public class dimHelper extends DimensionManager
 			DimData locationDimData= new DimData(link.locDimID, false, 0, link.locDimID,link.locXCoord,link.locYCoord,link.locZCoord);
 			this.dimList.put(link.locDimID, locationDimData);
 			link.isLocPocket=false;
-
 		}
 		if(!dimList.containsKey(link.destDimID))
 		{
 			dimHelper.dimList.put(link.destDimID, new DimData(link.destDimID, false, 0, link.locDimID,link.locXCoord,link.locYCoord,link.locZCoord));
-
 		}
-		
 		DimData locationDimData=	this.dimList.get(link.locDimID);
 		link.isLocPocket=locationDimData.isPocket;
-		
 		locationDimData.addLinkToDim(link);
-		//this.linksForRendering.add(link);
 		
 		if(dimHelper.getWorld(link.locDimID)!=null)
 		{
-		
-			//World world =dimHelper.getWorld(link.locDimID);
-		
-		
 			int blocktoReplace = dimHelper.getWorld(link.locDimID).getBlockId(link.locXCoord, link.locYCoord, link.locZCoord);
-			
 			if(!mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))
 			{
-				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
-				
+				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);	
 			}
-		
 		}
-		
-		
 		//Notifies other players that a link has been created. 
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
-		{
-			
-		//	System.out.println("Sending link creation packet with orientation "+link.linkOrientation);
+		{		
 			PacketHandler.onLinkCreatedPacket(link);
-			
-		
-		}
-	
-	
+		}	
 		return link;
-		
-		
-		
 	}
 	
 	public int getDestOrientation(LinkData link)
@@ -506,7 +429,6 @@ public class dimHelper extends DimensionManager
 			else
 			{
 				//System.out.println("Cant find destination link");
-
 				return 0;
 			}
 		}
@@ -517,10 +439,8 @@ public class dimHelper extends DimensionManager
 		}
 	}
 	
-	
 	public void removeLink(LinkData link)
 	{
-		
 		this.removeLink(link.locDimID, link.locXCoord, link.locYCoord, link.locZCoord);
 	}
 	
@@ -533,34 +453,24 @@ public class dimHelper extends DimensionManager
 	 */
 	public void removeLink( int locationDimID, int locationXCoord, int locationYCoord, int locationZCoord)
 	{
-		
 		if(!this.dimList.containsKey(locationDimID))
 		{
 			DimData locationDimData= new DimData(locationDimID, false, 0, locationDimID,locationXCoord,locationYCoord,locationZCoord);
 			this.dimList.put(locationDimID, locationDimData);
-
 		}
 		LinkData link = this.getLinkDataFromCoords(locationXCoord, locationYCoord, locationZCoord, locationDimID);
-	//	this.linksForRendering.remove(link);
-		
 		this.dimList.get(locationDimID).removeLinkAtCoords(link);
-		
 		//updates clients that a rift has been removed
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			PacketHandler.onLinkRemovedPacket(link);
 			this.save();
-		}
-		
-		
-	
+		}	
 	}
-	
 	public LinkData findNearestRift(World world, int x, int y, int z, int range)
 	{
 		return this.dimList.get(world).findNearestRift(world, range, x, y, z);
 	}
-	
 	/**
 	 * generates a door based on what door was used to teleport. Only funtions once per linking. 
 	 * @param world- door 
@@ -580,22 +490,13 @@ public class dimHelper extends DimensionManager
 		
 		if(!incLink.hasGennedDoor)
 		{
-			
-
 			int destinationID = incLink.destDimID;
-
 			DimData data = this.dimList.get(destinationID);
 
 			int id =world.getBlockId(locX, locY, locZ);
 			if(id==properties.WarpDoorID||id==properties.DimensionalDoorID||id==properties.TransientDoorID)
 			{
 				int doorTypeToPlace=id;
-		
-				
-			//	World destWorld = this.getWorld(destinationID);
-		
-		
-		
 				if(this.getWorld(destinationID)==null)
 				{
 					this.initDimension(destinationID);
@@ -608,8 +509,6 @@ public class dimHelper extends DimensionManager
 					destOrientation = destLink.linkOrientation;
 					destLink.hasGennedDoor=true;
 				}
-				
-
 				int blockToReplace= this.getWorld(destinationID).getBlockId(destX, destY, destZ);
 				if(blockToReplace!=properties.DimensionalDoorID&&blockToReplace!=properties.WarpDoorID&&blockToReplace != properties.TransientDoorID)
 				{
@@ -617,9 +516,6 @@ public class dimHelper extends DimensionManager
 					this.getWorld(destinationID).setBlock(destX, destY, destZ, doorTypeToPlace,8,2);
 				//	System.out.println("Genned door");
 				}
-				
-				
-			
 				incLink.hasGennedDoor=true;
 			}
 		}
@@ -642,10 +538,8 @@ public class dimHelper extends DimensionManager
 	public void generatePocket(LinkData incomingLink)
 	{
 		DDProperties properties = DDProperties.instance();
-		
 		try
 		{
-			
 			if(this.getWorld(incomingLink.destDimID)==null)
 			{
 				this.initDimension(incomingLink.destDimID);
@@ -707,8 +601,6 @@ public class dimHelper extends DimensionManager
 			 
 			 if(!this.getWorld(incomingLink.destDimID).isRemote)
 			 {
-			
-			 
 				 int xCount=-searchRadius;
 				 int yCount=-searchRadius;
 				 int zCount=-searchRadius;
@@ -719,13 +611,11 @@ public class dimHelper extends DimensionManager
 					 {
 						 while(zCount<=searchRadius)
 						 {
-						 
 							 if((Math.abs(xCount)>=15||Math.abs(yCount)>=15||Math.abs(zCount)>=15)&&this.getWorld(incomingLink.destDimID).isAirBlock( x+xCount,  y+yCount,  z+zCount)&&((yCount+y)>0))
 							 {
 								 if(Math.abs(xCount)>=19||Math.abs(yCount)>=19||Math.abs(zCount)>=19)
 									 {
 									 	this.setBlockDirectly(this.getWorld(incomingLink.destDimID), x+xCount,  y+yCount,  z+zCount,properties.PermaFabricBlockID,0);
-									
 									 }
 								 else
 								 {
@@ -739,7 +629,6 @@ public class dimHelper extends DimensionManager
 								 	}
 								 }
 							 }
-
 							 zCount++;
 						 }
 						 zCount=-searchRadius;
@@ -764,17 +653,11 @@ public class dimHelper extends DimensionManager
 	public void initPockets()
 	{
 		DDProperties properties = DDProperties.instance();
-		
 		mod_pocketDim.hasInitDims=true;
 		this.load();
 		if(!dimHelper.dimList.isEmpty())
 		{
-        
-
 			Set allDimIds=dimList.keySet();
-
-        
-
 			Iterator itr =allDimIds.iterator();
 			while(itr.hasNext())
 			{
@@ -804,7 +687,6 @@ public class dimHelper extends DimensionManager
 	
 	public boolean resetPocket(DimData dimData)
 	{
-		//TODO: Should we add a check to see if the dimension is currently loaded? How could we check that? ~SenseiKiwi
 		if (!dimData.isPocket || getWorld(dimData.dimID) != null)
 		{
 			return false;
@@ -827,9 +709,9 @@ public class dimHelper extends DimensionManager
 	
 	public boolean pruneDimension(DimData dimData, boolean deleteFolder)
 	{
-		//TODO: Should we add a check to see if the dimension is currently loaded? How could we check that? ~SenseiKiwi
+		
 		//TODO: All the logic for checking that this is an isolated pocket should be moved in here.
-		if (!dimData.isPocket || getWorld(dimData.dimID) != null)
+		if (!dimData.isPocket || getWorld(dimData.dimID) != null)//Checks to see if the pocket is loaded or isnt actually a pocket. 
 		{
 			return false;
 		}
@@ -852,7 +734,6 @@ public class dimHelper extends DimensionManager
 		if(!this.dimList.isEmpty())
 		{
 			Set allDimIds=dimList.keySet();
-			
 			Iterator itr =allDimIds.iterator();
 			while(itr.hasNext())
 			{
@@ -868,12 +749,9 @@ public class dimHelper extends DimensionManager
 						System.out.println("Dim-"+String.valueOf(dimData.dimID)+"is already unregistered, ok? Enough with it already.");
 					}
 					//	initDimension(dimData.dimID);
-				}
-				
+				}	
 			}	
-			
 		}
-		
 	}
 	
 	/**
@@ -1405,6 +1283,29 @@ public class dimHelper extends DimensionManager
 	public void createDimData(World world)
 	{
 		this.dimList.put(world.provider.dimensionId, new DimData(world.provider.dimensionId, false, 0,0,world.provider.getSpawnPoint().posX,world.provider.getSpawnPoint().posY,world.provider.getSpawnPoint().posZ));
+	}
+	
+	public DimData getDimData(World world)
+	{
+		if(this.dimList.containsKey(world.provider.dimensionId))
+		{
+			return this.dimList.get(world.provider.dimensionId);
+		}
+		else
+		{
+			return null;
+		}
+	}
+	public DimData getDimData(int dimID)
+	{
+		if(this.dimList.containsKey(dimID))
+		{
+			return this.dimList.get(dimID);
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	

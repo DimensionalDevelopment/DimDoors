@@ -40,8 +40,20 @@ public class pocketTeleporter
 			
 			int id;
 	         
-        	
+        	//TODO Temporary workaround for mismatched door/rift metadata cases. Gives priority to the door. 
            	id=dimHelper.instance.getDestOrientation(sendingLink);
+           	int receivingDoorMeta=world.getBlockMetadata(link.destXCoord, link.destYCoord-1, link.destZCoord);
+           	int recevingDoorID=world.getBlockId(link.destXCoord, link.destYCoord, link.destZCoord);
+           	if(receivingDoorMeta!=id)
+           	{
+           		if(recevingDoorID==mod_pocketDim.dimDoor.blockID||recevingDoorID==mod_pocketDim.ExitDoor.blockID)
+           		{
+               		dimHelper.instance.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, world).linkOrientation=receivingDoorMeta;
+               		id=receivingDoorMeta;
+
+           		}
+           	}
+           
            	
        
 		 if(par1Entity instanceof EntityPlayer)
