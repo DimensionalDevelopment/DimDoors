@@ -105,7 +105,7 @@ public class dimDoor extends BlockContainer
     		if(!(par5Entity instanceof EntityPlayer)&&num>3)
     		{
     			this.onPoweredBlockChange(par1World, par2, par3, par4, false);
-				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
+				dimHelper.instance.traverseDimDoor(par1World, linkData, par5Entity);
     		}
     		
     		else if(!par1World.isRemote&&(num==5||num==4||num==6||num==7)&&(num-4)==var12)
@@ -116,7 +116,7 @@ public class dimDoor extends BlockContainer
     			
     			this.onPoweredBlockChange(par1World, par2, par3, par4, false);
 				
-				dimHelper.instance.teleportToPocket(par1World, linkData, par5Entity);
+				dimHelper.instance.traverseDimDoor(par1World, linkData, par5Entity);
 
     				
 

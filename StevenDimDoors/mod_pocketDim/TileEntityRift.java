@@ -45,14 +45,14 @@ public class TileEntityRift extends TileEntity
 	 public void updateEntity() 
 	 {
 		
-		if(count>200&&dimHelper.dimList.get(this.worldObj.provider.dimensionId)!=null)
+		if(count>200&&dimHelper.instance.getDimData(this.worldObj.provider.dimensionId)!=null)
 		 {
 			/**
 			if(rand.nextBoolean())
 			{
 			}
 			**/
-			 nearestRiftData = dimHelper.dimList.get(this.worldObj.provider.dimensionId).findNearestRift(worldObj, 5, xCoord, yCoord, zCoord);
+			 nearestRiftData = dimHelper.instance.getDimData(this.worldObj.provider.dimensionId).findNearestRift(worldObj, 5, xCoord, yCoord, zCoord);
 			 if(nearestRiftData!=null)
 			 {
 				 this.xOffset=this.xCoord-nearestRiftData.locXCoord;
@@ -88,9 +88,9 @@ public class TileEntityRift extends TileEntity
 					}
 					
 					/**
-					if(dimHelper.dimList.get(this.worldObj.provider.dimensionId)!=null)
+					if(dimHelper.instance.getDimData(this.worldObj.provider.dimensionId)!=null)
 					{
-						ArrayList rifts = dimHelper.dimList.get(this.worldObj.provider.dimensionId).findRiftsInRange(worldObj, 6, this.xCoord, this.yCoord, this.zCoord);
+						ArrayList rifts = dimHelper.instance.getDimData(this.worldObj.provider.dimensionId).findRiftsInRange(worldObj, 6, this.xCoord, this.yCoord, this.zCoord);
 						if(rifts.size()>15)
 						{
 							 MobObelisk creeper = new MobObelisk(worldObj);
@@ -124,7 +124,7 @@ public class TileEntityRift extends TileEntity
 			// System.out.println(count2);
 			 if(count2>20&&count2<22)
 			 {			 
-				 nearestRiftData = dimHelper.dimList.get(this.worldObj.provider.dimensionId).findNearestRift(worldObj, 10, xCoord, yCoord, zCoord);
+				 nearestRiftData = dimHelper.instance.getDimData(this.worldObj.provider.dimensionId).findNearestRift(worldObj, 10, xCoord, yCoord, zCoord);
 				 if(this.nearestRiftData!=null)
 				 {
 				 TileEntityRift rift = (TileEntityRift) this.worldObj.getBlockTileEntity(nearestRiftData.locXCoord, nearestRiftData.locYCoord, nearestRiftData.locZCoord);

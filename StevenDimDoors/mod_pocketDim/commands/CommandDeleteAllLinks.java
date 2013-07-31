@@ -56,7 +56,7 @@ public class CommandDeleteAllLinks extends DDCommandBase
 		{
 			if(dimHelper.dimList.containsKey(targetDim))
 			{
-				DimData dim = dimHelper.dimList.get(targetDim);
+				DimData dim = dimHelper.instance.getDimData(targetDim);
 				ArrayList<LinkData> linksInDim = dim.getLinksInDim();
 
 				for (LinkData link : linksInDim)

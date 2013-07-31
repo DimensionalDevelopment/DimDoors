@@ -70,7 +70,7 @@ public class MonolithSpawner implements IRegularTickReceiver {
 	private void placeMonolithsInPocket(int dimensionID, int chunkX, int chunkZ)
 	{
 		World pocket = dimHelper.getWorld(dimensionID);
-		DimData dimData = dimHelper.dimList.get(dimensionID);
+		DimData dimData = dimHelper.instance.getDimData(dimensionID);
 		int sanity = 0;
 		int blockID = 0;
 		boolean didSpawn = false;

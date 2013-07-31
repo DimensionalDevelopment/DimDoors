@@ -481,7 +481,7 @@ public class DungeonHelper
 						flag = false;
 					}
 					
-					if(getDungeonDataInChain(dimHelper.dimList.get(incoming.locDimID)).contains(dungeon))
+					if(getDungeonDataInChain(dimHelper.instance.getDimData(incoming.locDimID)).contains(dungeon))
 					{
 						flag=false;
 					}
@@ -506,8 +506,8 @@ public class DungeonHelper
 				return;
 			}
 		}
-		dimHelper.dimList.get(incoming.destDimID).dungeonGenerator = dungeon;
-		//dimHelper.dimList.get(incoming.destDimID).dungeonGenerator = defaultUp;
+		dimHelper.instance.getDimData(incoming.destDimID).dungeonGenerator = dungeon;
+		//dimHelper.instance.getDimData(incoming.destDimID).dungeonGenerator = defaultUp;
 	}
 
 	public Collection<String> getDungeonNames() {
@@ -558,7 +558,7 @@ public class DungeonHelper
 	}
 	public static ArrayList<DungeonGenerator> getDungeonDataInChain(DimData dimData)
 	{
-		DimData startingDim = dimHelper.dimList.get(dimHelper.instance.getLinkDataFromCoords(dimData.exitDimLink.destXCoord, dimData.exitDimLink.destYCoord, dimData.exitDimLink.destZCoord, dimData.exitDimLink.destDimID).destDimID);
+		DimData startingDim = dimHelper.instance.getDimData(dimHelper.instance.getLinkDataFromCoords(dimData.exitDimLink.destXCoord, dimData.exitDimLink.destYCoord, dimData.exitDimLink.destZCoord, dimData.exitDimLink.destDimID).destDimID);
 
 		return getDungeonDataBelow(startingDim);
 	}
@@ -573,9 +573,9 @@ public class DungeonHelper
 			{
 				if(dimHelper.dimList.containsKey(link.destDimID))
 				{
-					if(dimHelper.dimList.get(link.destDimID).dungeonGenerator!=null&&dimHelper.instance.getDimDepth(link.destDimID)==dimData.depth+1)
+					if(dimHelper.instance.getDimData(link.destDimID).dungeonGenerator!=null&&dimHelper.instance.getDimDepth(link.destDimID)==dimData.depth+1)
 					{
-						for(DungeonGenerator dungeonGen :getDungeonDataBelow(dimHelper.dimList.get(link.destDimID)) )
+						for(DungeonGenerator dungeonGen :getDungeonDataBelow(dimHelper.instance.getDimData(link.destDimID)) )
 						{
 							if(!dungeonData.contains(dungeonGen))
 							{

@@ -69,7 +69,7 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 	@Override
 	public List getPossibleCreatures(EnumCreatureType var1, int var2, int var3, int var4) 
 	{
-		DimData data = dimHelper.dimList.get(this.worldObj.provider.dimensionId);
+		DimData data = dimHelper.instance.getDimData(this.worldObj.provider.dimensionId);
 		if (data != null)
 		{
 			if (data.dungeonGenerator != null)

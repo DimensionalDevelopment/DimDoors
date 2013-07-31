@@ -98,7 +98,7 @@ public class ClosingRiftFX extends EntityFX
         float var16 = .8F;
         try
         {
-         if(dimHelper.dimList.get(this.worldObj.provider.dimensionId).isPocket)
+         if(dimHelper.instance.getDimData(this.worldObj.provider.dimensionId).isPocket)
          {
          var16=.4F;
          }

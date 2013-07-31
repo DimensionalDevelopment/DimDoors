@@ -188,9 +188,9 @@ public class ItemRiftBlade extends ItemSword
 		if(this.getMaxItemUseDuration(par1ItemStack)-par4>12&&!par2World.isRemote&&itemDimDoor.canPlace(par2World, x, y, z, rotation))
 		{
 
-			if(dimHelper.dimList.get(par2World.provider.dimensionId)!=null)
+			if(dimHelper.instance.getDimData(par2World.provider.dimensionId)!=null)
 			{
-				if(dimHelper.dimList.get(par2World.provider.dimensionId).depth==0)
+				if(dimHelper.instance.getDimData(par2World.provider.dimensionId).depth==0)
 				{
 					dimHelper.instance.createPocket(link,true, false);
 				}
@@ -285,7 +285,7 @@ public class ItemRiftBlade extends ItemSword
 
 
 		}
-		//	if(dimHelper.dimList.get(par2World.provider.dimensionId)!=null&&!par2World.isRemote&&!didFindThing)
+		//	if(dimHelper.instance.getDimData(par2World.provider.dimensionId)!=null&&!par2World.isRemote&&!didFindThing)
 		{
 
 			par3EntityPlayer.setItemInUse(par1ItemStack, this.getMaxItemUseDuration(par1ItemStack));
