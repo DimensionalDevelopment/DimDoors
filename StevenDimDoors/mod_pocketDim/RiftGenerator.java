@@ -6,8 +6,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
 import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
@@ -42,8 +42,8 @@ public class RiftGenerator implements IWorldGenerator
 		{
 			return;
 		}
-		
-		if(dimHelper.getWorld(0)==null)
+		//FIXME: Why is this here? Comment your code! =/ ~SenseiKiwi
+		if (dimHelper.getWorld(0) == null)
 		{
 			return;
 		}
@@ -88,10 +88,10 @@ public class RiftGenerator implements IWorldGenerator
 			//Randomly decide whether to repeat the process and add another rift to the cluster
 			while (random.nextInt(MAX_CLUSTER_GROWTH_CHANCE) < CLUSTER_GROWTH_CHANCE);
 		}
-
-		//Randomly decide whether to place a Rift Gateway here.
+		
+		//Check if generating structures is enabled and randomly decide whether to place a Rift Gateway here.
 		//This only happens if a rift cluster was NOT generated.
-		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance)
+		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance && isStructureGenerationAllowed())
 		{
 			valid = false;
 			x = y = z = 0; //Stop the compiler from freaking out
@@ -191,5 +191,10 @@ public class RiftGenerator implements IWorldGenerator
 		Material material = world.getBlockMaterial(x, y, z);
 		return (material != Material.leaves && material != Material.wood && material != Material.pumpkin
 				&& world.isBlockOpaqueCube(x, y, z) && world.getBlockId(x, y, z) != Block.bedrock.blockID);
+	}
+	
+	private static boolean isStructureGenerationAllowed()
+	{
+		return DimensionManager.getWorld(0).getWorldInfo().isMapFeaturesEnabled();
 	}
 }
