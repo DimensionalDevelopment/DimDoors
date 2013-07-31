@@ -363,7 +363,6 @@ public class DungeonHelper
 		int depth = dimHelper.instance.getDimDepth(incoming.locDimID);
 		int depthWeight = rand.nextInt(depth + 2) + rand.nextInt(depth + 2) - 2;
 
-		
 		int count = 10;
 		boolean flag = true;
 		try
@@ -508,6 +507,7 @@ public class DungeonHelper
 			}
 		}
 		dimHelper.dimList.get(incoming.destDimID).dungeonGenerator = dungeon;
+		//dimHelper.dimList.get(incoming.destDimID).dungeonGenerator = defaultUp;
 	}
 
 	public Collection<String> getDungeonNames() {
