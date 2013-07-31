@@ -31,6 +31,9 @@ public class DungeonHelper
 	private static final int DEFAULT_DUNGEON_WEIGHT = 100;
 	public static final int MAX_DUNGEON_WEIGHT = 10000; //Used to prevent overflows and math breaking down
 	private static final int MAX_EXPORT_RADIUS = 50;
+	public static final short MAX_DUNGEON_WIDTH = 2 * MAX_EXPORT_RADIUS + 1;
+	public static final short MAX_DUNGEON_HEIGHT = 2 * MAX_EXPORT_RADIUS + 1;
+	public static final short MAX_DUNGEON_LENGTH = 2 * MAX_EXPORT_RADIUS + 1;
 	
 	public static final int FABRIC_OF_REALITY_EXPORT_ID = 1973;
 	public static final int PERMAFABRIC_EXPORT_ID = 220;
@@ -340,9 +343,9 @@ public class DungeonHelper
 		//Write schematic data to a file
 		try
 		{
-			short size = (short) 2 * MAX_EXPORT_RADIUS + 1;
 			DungeonSchematic dungeon = DungeonSchematic.copyFromWorld(world,
-					centerX - MAX_EXPORT_RADIUS, centerY - MAX_EXPORT_RADIUS, centerZ - MAX_EXPORT_RADIUS, size, size, size, true);
+					centerX - MAX_EXPORT_RADIUS, centerY - MAX_EXPORT_RADIUS, centerZ - MAX_EXPORT_RADIUS,
+					MAX_DUNGEON_WIDTH, MAX_DUNGEON_HEIGHT, MAX_DUNGEON_LENGTH, true);
 			dungeon.applyExportFilters(properties);
 			dungeon.writeToFile(exportPath);
 			return true;

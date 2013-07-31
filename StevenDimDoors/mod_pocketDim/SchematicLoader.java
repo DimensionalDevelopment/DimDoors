@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
@@ -9,41 +10,52 @@ import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
 
 public class SchematicLoader 
-{	
+{
 	private SchematicLoader() { }
 	
-	public static void generateDungeonPocket(LinkData link, DDProperties properties)
+	public static boolean generateDungeonPocket(LinkData link, DDProperties properties)
 	{
 		//TODO: Phase this function out in the next update. ~SenseiKiwi
 		
-		String filePath=DungeonHelper.instance().defaultBreak.schematicPath;
-		if(dimHelper.dimList.containsKey(link.destDimID))
+		if (link == null || properties == null)
 		{
-			if(dimHelper.dimList.get(link.destDimID).dungeonGenerator == null)
-			{
-				DungeonHelper.instance().generateDungeonLink(link);
-			}
-			filePath = dimHelper.dimList.get(link.destDimID).dungeonGenerator.schematicPath;	
+			return false;
 		}
-		
-		//this.generateSchematic(link.destXCoord, link.destYCoord, link.destZCoord, link.linkOrientation, link.destDimID, link.locDimID, filePath);
-		
 		try
 		{
+			String schematicPath;
 			int originDimID = link.locDimID;
 			int destDimID = link.destDimID;
-			DungeonSchematic dungeon;
-			if ((new File(filePath)).exists())
+			HashMap<Integer, DimData> dimList = dimHelper.dimList;
+			
+			if (dimList.containsKey(destDimID))
 			{
-				dungeon = DungeonSchematic.readFromFile(filePath);
+				if (dimList.get(destDimID).dungeonGenerator == null)
+				{
+					DungeonHelper.instance().generateDungeonLink(link);
+				}
+				schematicPath = dimList.get(destDimID).dungeonGenerator.schematicPath;	
 			}
 			else
 			{
-				dungeon = DungeonSchematic.readFromResource(filePath);
+				return false;
 			}
-			dungeon.applyImportFilters(properties);
 			
-			dimHelper.dimList.get(destDimID).hasBeenFilled = true;
+			DungeonSchematic dungeon = checkSourceAndLoad(schematicPath);
+			
+			//Validate the dungeon's dimensions
+			if (!hasValidDimensions(dungeon))
+			{
+				//TODO: In the future, remove this dungeon from the generation lists altogether.
+				//That will have to wait until our code is updated to support that more easily.
+				System.err.println("The following schematic file has dimensions that exceed the maximum permitted dimensions for dungeons: " + schematicPath);
+				System.err.println("The dungeon will not be loaded.");
+
+				dungeon = checkSourceAndLoad(DungeonHelper.instance().defaultBreak.schematicPath);
+			}
+			
+			dungeon.applyImportFilters(properties);
+			dimList.get(destDimID).hasBeenFilled = true;
 			if (dimHelper.getWorld(destDimID) == null)
 			{
 				dimHelper.initDimension(destDimID);
@@ -51,14 +63,34 @@ public class SchematicLoader
 			World world = dimHelper.getWorld(destDimID);
 			
 			dungeon.copyToWorld(world, new Point3D(link.destXCoord, link.destYCoord, link.destZCoord), link.linkOrientation, originDimID, destDimID);
+			return true;
 		}
-		catch (FileNotFoundException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
+			return false;
 		}
-		catch (InvalidSchematicException e)
+	}
+	
+	private static boolean hasValidDimensions(DungeonSchematic dungeon)
+	{
+		return (dungeon.getWidth() <= DungeonHelper.MAX_DUNGEON_WIDTH &&
+				dungeon.getHeight() <= DungeonHelper.MAX_DUNGEON_HEIGHT &&
+				dungeon.getLength() <= DungeonHelper.MAX_DUNGEON_LENGTH);
+	}
+	
+	private static DungeonSchematic checkSourceAndLoad(String schematicPath) throws FileNotFoundException, InvalidSchematicException
+	{
+		//TODO: Change this code once we introduce an isInternal flag in dungeon data
+		DungeonSchematic dungeon;
+		if ((new File(schematicPath)).exists())
 		{
-			e.printStackTrace();
+			dungeon = DungeonSchematic.readFromFile(schematicPath);
 		}
+		else
+		{
+			dungeon = DungeonSchematic.readFromResource(schematicPath);
+		}
+		return dungeon;
 	}
 }
