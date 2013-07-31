@@ -66,6 +66,7 @@ public class BlockDimWallPerm extends Block
 
 			if(dimHelper.getWorld(0)!=null&&par5Entity instanceof EntityPlayerMP)
 			{
+				par5Entity.fallDistance=0;
 				int x = (link.destXCoord + rand.nextInt(properties.LimboReturnRange)-properties.LimboReturnRange/2);
 				int z = (link.destZCoord + rand.nextInt(properties.LimboReturnRange)-properties.LimboReturnRange/2);
 
