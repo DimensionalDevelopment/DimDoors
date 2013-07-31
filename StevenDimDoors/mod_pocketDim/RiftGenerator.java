@@ -42,7 +42,7 @@ public class RiftGenerator implements IWorldGenerator
 		{
 			return;
 		}
-		//FIXME: Why is this here? Comment your code! =/ ~SenseiKiwi
+		//This check prevents a crash related to superflat worlds not loading World 0
 		if (dimHelper.getWorld(0) == null)
 		{
 			return;

@@ -314,7 +314,7 @@ public class Schematic {
 		schematicTag.setString("Materials", "Alpha");
 
 		byte[] lowBits = new byte[blocks.length];
-		byte[] highBits = new byte[(blocks.length >> 1) + 1];
+		byte[] highBits = new byte[(blocks.length >> 1) + (blocks.length & 1)];
 		boolean hasExtendedIDs = encodeBlockIDs(blocks, lowBits, highBits);
 
 		schematicTag.setByteArray("Blocks", lowBits);
