@@ -226,6 +226,14 @@ public class DDProperties
 		PocketBiomeID = config.get(CATEGORY_BIOME, "Pocket Biome ID", 250).getInt();
 
 		config.save();
+		
+		//Unfortunately, there are users out there who have been misconfiguring the worldgen blocks to have IDs above 255.
+		//This leads to disastrous and cryptic errors in other areas of Minecraft. To prevent headaches, we'll throw
+		//an exception here if the blocks have invalid IDs.
+		if (LimboBlockID > 255 || PermaFabricBlockID > 255)
+		{
+			throw new IllegalStateException("World generation blocks MUST have block IDs less than 256. Fix your configuration!");
+		}
 	}
 	
 	public static DDProperties initialize(File configFile)

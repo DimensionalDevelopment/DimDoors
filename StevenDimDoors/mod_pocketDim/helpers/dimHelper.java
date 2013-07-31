@@ -152,15 +152,15 @@ public class dimHelper extends DimensionManager
 		
 		WorldServer newWorld;
 		
-		if(this.getWorld(link.destDimID)==null)
+		if(DimensionManager.getWorld(link.destDimID)==null)
 		{
-			this.initDimension(link.destDimID);
+			DimensionManager.initDimension(link.destDimID);
 		}
 		boolean difDest = link.destDimID != link.locDimID;
 		
 		if(difDest)
 		{
-			newWorld = this.getWorld(link.destDimID);
+			newWorld = DimensionManager.getWorld(link.destDimID);
 		}
 		else
 		{
@@ -230,7 +230,6 @@ public class dimHelper extends DimensionManager
 		{
 			if ((entity instanceof EntityPlayerMP))
 			{
-				EntityPlayerMP playerMP = (EntityPlayerMP)entity;
 				entity.worldObj.updateEntityWithOptionalForce(entity, true);	
 			}
 			entity.mountEntity(cart);
@@ -263,14 +262,8 @@ public class dimHelper extends DimensionManager
 		if (linkData != null)
 		{
 			int destinationID=linkData.destDimID;
-		
-			int x=linkData.destXCoord;
-			int y=linkData.destYCoord;
-			int z=linkData.destZCoord;
-		
-			int depth= this.getDimDepth(world.provider.dimensionId);
 			
-			if(this.dimList.containsKey(destinationID) && this.dimList.containsKey(world.provider.dimensionId))
+			if(dimHelper.dimList.containsKey(destinationID) && dimHelper.dimList.containsKey(world.provider.dimensionId))
 			{
 				this.generatePocket(linkData);
 				
@@ -292,7 +285,7 @@ public class dimHelper extends DimensionManager
 				int playerYCoord=MathHelper.floor_double(entity.posY);
 				int playerZCoord=MathHelper.floor_double(entity.posZ);
 							
-		    	if(!entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1,playerZCoord )&&this.dimList.get(linkData.locDimID).isDimRandomRift&&!linkData.hasGennedDoor)
+		    	if(!entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1,playerZCoord )&&dimHelper.dimList.get(linkData.locDimID).isDimRandomRift&&!linkData.hasGennedDoor)
 		    	{						
 		    		for(int count=0;count<20;count++)
 		    		{
@@ -328,7 +321,8 @@ public class dimHelper extends DimensionManager
 		    	}
 			}
 		}
-		else if(!this.dimList.containsKey(world.provider.dimensionId))
+		//FIXME: Wtf? This code is useless. It doesn't seem to do anything! If that's the case, it should be removed. ~SenseiKiwi
+		else if(!dimHelper.dimList.containsKey(world.provider.dimensionId))
 		{
 			if(!(world.provider instanceof PocketProvider ||world.provider instanceof LimboProvider))
 			{
@@ -387,17 +381,17 @@ public class dimHelper extends DimensionManager
 	{
 		DDProperties properties = DDProperties.instance();
 		
-		if(!this.dimList.containsKey(link.locDimID))
+		if(!dimHelper.dimList.containsKey(link.locDimID))
 		{
 			DimData locationDimData= new DimData(link.locDimID, false, 0, link.locDimID,link.locXCoord,link.locYCoord,link.locZCoord);
-			this.dimList.put(link.locDimID, locationDimData);
+			dimHelper.dimList.put(link.locDimID, locationDimData);
 			link.isLocPocket=false;
 		}
 		if(!dimList.containsKey(link.destDimID))
 		{
 			dimHelper.dimList.put(link.destDimID, new DimData(link.destDimID, false, 0, link.locDimID,link.locXCoord,link.locYCoord,link.locZCoord));
 		}
-		DimData locationDimData=	this.dimList.get(link.locDimID);
+		DimData locationDimData=	dimHelper.dimList.get(link.locDimID);
 		link.isLocPocket=locationDimData.isPocket;
 		locationDimData.addLinkToDim(link);
 		
@@ -453,13 +447,13 @@ public class dimHelper extends DimensionManager
 	 */
 	public void removeLink( int locationDimID, int locationXCoord, int locationYCoord, int locationZCoord)
 	{
-		if(!this.dimList.containsKey(locationDimID))
+		if(!dimHelper.dimList.containsKey(locationDimID))
 		{
 			DimData locationDimData= new DimData(locationDimID, false, 0, locationDimID,locationXCoord,locationYCoord,locationZCoord);
-			this.dimList.put(locationDimID, locationDimData);
+			dimHelper.dimList.put(locationDimID, locationDimData);
 		}
 		LinkData link = this.getLinkDataFromCoords(locationXCoord, locationYCoord, locationZCoord, locationDimID);
-		this.dimList.get(locationDimID).removeLinkAtCoords(link);
+		dimHelper.dimList.get(locationDimID).removeLinkAtCoords(link);
 		//updates clients that a rift has been removed
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
@@ -469,7 +463,7 @@ public class dimHelper extends DimensionManager
 	}
 	public LinkData findNearestRift(World world, int x, int y, int z, int range)
 	{
-		return this.dimList.get(world).findNearestRift(world, range, x, y, z);
+		return dimHelper.dimList.get(world).findNearestRift(world, range, x, y, z);
 	}
 	/**
 	 * generates a door based on what door was used to teleport. Only funtions once per linking. 
@@ -491,30 +485,27 @@ public class dimHelper extends DimensionManager
 		if(!incLink.hasGennedDoor)
 		{
 			int destinationID = incLink.destDimID;
-			DimData data = this.dimList.get(destinationID);
 
 			int id =world.getBlockId(locX, locY, locZ);
 			if(id==properties.WarpDoorID||id==properties.DimensionalDoorID||id==properties.TransientDoorID)
 			{
 				int doorTypeToPlace=id;
-				if(this.getWorld(destinationID)==null)
+				if(DimensionManager.getWorld(destinationID)==null)
 				{
-					this.initDimension(destinationID);
+					DimensionManager.initDimension(destinationID);
 				}
-				int locOrientation = incLink.linkOrientation;
 				LinkData destLink =  this.getLinkDataFromCoords(destX, destY, destZ, destinationID);
-				int destOrientation=0 ;
+				int destOrientation = 0;
 				if(destLink!=null)
 				{
 					destOrientation = destLink.linkOrientation;
 					destLink.hasGennedDoor=true;
 				}
-				int blockToReplace= this.getWorld(destinationID).getBlockId(destX, destY, destZ);
+				int blockToReplace= DimensionManager.getWorld(destinationID).getBlockId(destX, destY, destZ);
 				if(blockToReplace!=properties.DimensionalDoorID&&blockToReplace!=properties.WarpDoorID&&blockToReplace != properties.TransientDoorID)
 				{
-					this.getWorld(destinationID).setBlock(destX, destY-1, destZ, doorTypeToPlace,destOrientation,2);
-					this.getWorld(destinationID).setBlock(destX, destY, destZ, doorTypeToPlace,8,2);
-				//	System.out.println("Genned door");
+					DimensionManager.getWorld(destinationID).setBlock(destX, destY-1, destZ, doorTypeToPlace,destOrientation,2);
+					DimensionManager.getWorld(destinationID).setBlock(destX, destY, destZ, doorTypeToPlace,8,2);
 				}
 				incLink.hasGennedDoor=true;
 			}
@@ -526,7 +517,7 @@ public class dimHelper extends DimensionManager
 	
 	/**
 	 * Generates the black pocket out of fabric of reality blocks. Placement of the pocket is based off of the orignial doors orientation. Kind of a clunky method, 
-	 * but is nessesarry to maintain a one to one relationship with the overworld. Is called every teleport, but checks if the dim has been filled first and is a pocket .
+	 * but is necessary to maintain a one to one relationship with the overworld. Is called every teleport, but checks if the dim has been filled first and is a pocket .
 	 * Also responsible for generation the random dungeons. 
 	 * @param world- id of the world TO BE FILLED
 	 * @param x 
@@ -540,13 +531,13 @@ public class dimHelper extends DimensionManager
 		DDProperties properties = DDProperties.instance();
 		try
 		{
-			if(this.getWorld(incomingLink.destDimID)==null)
+			if (DimensionManager.getWorld(incomingLink.destDimID) == null)
 			{
-				this.initDimension(incomingLink.destDimID);
+				DimensionManager.initDimension(incomingLink.destDimID);
 			}
-			if(this.getWorld(incomingLink.destDimID).provider==null)
+			if (DimensionManager.getWorld(incomingLink.destDimID).provider == null)
 			{
-				this.initDimension(incomingLink.destDimID);
+				DimensionManager.initDimension(incomingLink.destDimID);
 			}
 		}
 		catch(Exception E)
@@ -555,7 +546,7 @@ public class dimHelper extends DimensionManager
 			return;
 		}
 	//	World world = this.getWorld(incomingLink.destDimID);
-		DimData data = this.dimList.get(incomingLink.destDimID);
+		DimData data = dimHelper.dimList.get(incomingLink.destDimID);
 		
 		if(!data.hasBeenFilled&&data.isPocket&&!data.isDimRandomRift)
 		{
@@ -599,7 +590,7 @@ public class dimHelper extends DimensionManager
 		}
 			int searchRadius=19;
 			 
-			 if(!this.getWorld(incomingLink.destDimID).isRemote)
+			 if(!DimensionManager.getWorld(incomingLink.destDimID).isRemote)
 			 {
 				 int xCount=-searchRadius;
 				 int yCount=-searchRadius;
@@ -611,20 +602,20 @@ public class dimHelper extends DimensionManager
 					 {
 						 while(zCount<=searchRadius)
 						 {
-							 if((Math.abs(xCount)>=15||Math.abs(yCount)>=15||Math.abs(zCount)>=15)&&this.getWorld(incomingLink.destDimID).isAirBlock( x+xCount,  y+yCount,  z+zCount)&&((yCount+y)>0))
+							 if((Math.abs(xCount)>=15||Math.abs(yCount)>=15||Math.abs(zCount)>=15)&&DimensionManager.getWorld(incomingLink.destDimID).isAirBlock( x+xCount,  y+yCount,  z+zCount)&&((yCount+y)>0))
 							 {
 								 if(Math.abs(xCount)>=19||Math.abs(yCount)>=19||Math.abs(zCount)>=19)
 									 {
-									 	this.setBlockDirectly(this.getWorld(incomingLink.destDimID), x+xCount,  y+yCount,  z+zCount,properties.PermaFabricBlockID,0);
+									 	dimHelper.setBlockDirectly(DimensionManager.getWorld(incomingLink.destDimID), x+xCount,  y+yCount,  z+zCount,properties.PermaFabricBlockID,0);
 									 }
 								 else
 								 {
-									this.setBlockDirectly(this.getWorld(incomingLink.destDimID), x+xCount,  y+yCount,  z+zCount,properties.FabricBlockID,0);
+									dimHelper.setBlockDirectly(DimensionManager.getWorld(incomingLink.destDimID), x+xCount,  y+yCount,  z+zCount,properties.FabricBlockID,0);
 								 	if(properties.TNFREAKINGT_Enabled)
 								 	{
 								 		if((Math.abs(xCount)>=16||Math.abs(yCount)>=16||Math.abs(zCount)>=16) && rand.nextInt(properties.NonTntWeight + 1) == 0)
 								 		{
-								 			this.getWorld(incomingLink.destDimID).setBlock( x+xCount,  y+yCount,  z+zCount,Block.tnt.blockID);
+								 			DimensionManager.getWorld(incomingLink.destDimID).setBlock( x+xCount,  y+yCount,  z+zCount,Block.tnt.blockID);
 								 		}
 								 	}
 								 }
@@ -639,7 +630,7 @@ public class dimHelper extends DimensionManager
 				 }
 			 }
 		}
-		else if(!data.hasBeenFilled&&data.isPocket&&data.isDimRandomRift)
+		else if (!data.hasBeenFilled && data.isPocket && data.isDimRandomRift)
 		{
 			SchematicLoader.generateDungeonPocket(incomingLink, properties);
 			data.hasBeenFilled=true;
@@ -657,8 +648,9 @@ public class dimHelper extends DimensionManager
 		this.load();
 		if(!dimHelper.dimList.isEmpty())
 		{
-			Set allDimIds=dimList.keySet();
-			Iterator itr =allDimIds.iterator();
+			Set<Integer> allDimIds=dimList.keySet();
+			//FIXME: ...Wat. Why aren't we using a foreach loop here instead of manipulating an explicit iterator? ;-; ~SenseiKiwi
+			Iterator<Integer> itr = allDimIds.iterator();
 			while(itr.hasNext())
 			{
 				DimData dimData = (DimData) dimList.get(itr.next());
@@ -666,7 +658,7 @@ public class dimHelper extends DimensionManager
 				{
 					try
 					{	
-						this.getNextFreeDimId();
+						DimensionManager.getNextFreeDimId();
 						registerDimension(dimData.dimID,properties.PocketProviderID);
 					}
 					catch (Exception e)
@@ -731,7 +723,7 @@ public class dimHelper extends DimensionManager
 	public void unregsisterDims()
 	{
 		
-		if(!this.dimList.isEmpty())
+		if(!dimHelper.dimList.isEmpty())
 		{
 			Set allDimIds=dimList.keySet();
 			Iterator itr =allDimIds.iterator();
@@ -742,7 +734,7 @@ public class dimHelper extends DimensionManager
 				{
 					try
 					{		
-						this.unregisterDimension(dimData.dimID);
+						DimensionManager.unregisterDimension(dimData.dimID);
 					}
 					catch(Exception e)
 					{
@@ -808,10 +800,10 @@ public class dimHelper extends DimensionManager
 		DimData locationDimData;
 		DimData destDimData;
 		
-		if(this.dimList.containsKey(link.locDimID)&&!this.getWorld(link.locDimID).isRemote) //checks to see if dim is already registered. If not, it creates a DimData entry for it later
+		if(dimHelper.dimList.containsKey(link.locDimID)&&!DimensionManager.getWorld(link.locDimID).isRemote) //checks to see if dim is already registered. If not, it creates a DimData entry for it later
 		{
 			//randomizes exit if deep enough
-			locationDimData= dimList.get(this.getWorld(link.locDimID).provider.dimensionId);
+			locationDimData= dimList.get(DimensionManager.getWorld(link.locDimID).provider.dimensionId);
 		
 			if(depth>5)
 			{
@@ -871,8 +863,8 @@ public class dimHelper extends DimensionManager
 		destDimData.isDimRandomRift=isRandomRift;
 		
 		
-		this.dimList.put(this.getWorld(link.locDimID).provider.dimensionId, locationDimData);
-		this.dimList.put(dimensionID, destDimData);
+		dimHelper.dimList.put(DimensionManager.getWorld(link.locDimID).provider.dimensionId, locationDimData);
+		dimHelper.dimList.put(dimensionID, destDimData);
 		
 		
 		
@@ -882,8 +874,8 @@ public class dimHelper extends DimensionManager
 			PacketHandler.onDimCreatedPacket(destDimData);
 		}
 		
-		link = this.createLink(this.getWorld(link.locDimID).provider.dimensionId,dimensionID,link.locXCoord,link.locYCoord,link.locZCoord, link.destXCoord,link.destYCoord,link.destZCoord,link.linkOrientation); //creates and registers the two rifts that link the parent and pocket dim. 
-		this.createLink(dimensionID,this.getWorld(link.locDimID).provider.dimensionId, link.destXCoord,link.destYCoord,link.destZCoord, link.locXCoord,link.locYCoord,link.locZCoord, this.flipDoorMetadata(link.linkOrientation));
+		link = this.createLink(DimensionManager.getWorld(link.locDimID).provider.dimensionId,dimensionID,link.locXCoord,link.locYCoord,link.locZCoord, link.destXCoord,link.destYCoord,link.destZCoord,link.linkOrientation); //creates and registers the two rifts that link the parent and pocket dim. 
+		this.createLink(dimensionID,DimensionManager.getWorld(link.locDimID).provider.dimensionId, link.destXCoord,link.destYCoord,link.destZCoord, link.locXCoord,link.locYCoord,link.locZCoord, this.flipDoorMetadata(link.linkOrientation));
 	
 		
 		return link;
@@ -898,18 +890,18 @@ public class dimHelper extends DimensionManager
 	//TODO If saving is multithreaded as the concurrent modification exception implies, you should be synchronizing access. ~SenseiKiwi
 	public void save() 
 	{
-		if(this.isSaving) return;
+		if(dimHelper.isSaving) return;
 		World world = DimensionManager.getWorld(0);
 		if(world==null || world.isRemote) return;
-		if(this.getCurrentSaveRootDirectory()!=null)
+		if(DimensionManager.getCurrentSaveRootDirectory()!=null)
 		{
 			//System.out.println("saving");
 
-			this.isSaving=true;
+			dimHelper.isSaving=true;
 			HashMap comboSave=new HashMap();
-			comboSave.put("dimList", this.dimList);
+			comboSave.put("dimList", dimHelper.dimList);
 			comboSave.put("interDimLinkList", this.interDimLinkList);
-			comboSave.put("blocksToDecay", this.blocksToDecay);
+			comboSave.put("blocksToDecay", dimHelper.blocksToDecay);
 
 
 			
@@ -917,7 +909,7 @@ public class dimHelper extends DimensionManager
 			try
 			{
 				//World world=FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
-				String saveFileName=this.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataTEMP";
+				String saveFileName=DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataTEMP";
 				saveFile = new FileOutputStream(saveFileName);
 		         
 		         ObjectOutputStream save = new ObjectOutputStream(saveFile);
@@ -925,13 +917,13 @@ public class dimHelper extends DimensionManager
 		         save.close();
 		         saveFile.close();
 		         
-		         if(new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD").exists())
+		         if(new File(DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD").exists())
 		         {
-		        	 new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD").delete(); 
+		        	 new File(DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD").delete(); 
 		         }
-		         new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsData").renameTo(new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD"));
+		         new File(DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsData").renameTo(new File(DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD"));
 		         
-		        new File(saveFileName).renameTo( new File(this.getCurrentSaveRootDirectory()+"/DimensionalDoorsData"));
+		        new File(saveFileName).renameTo( new File(DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsData"));
 			}
 			catch(Exception e)
 			{
@@ -942,7 +934,7 @@ public class dimHelper extends DimensionManager
 		         
 			
 			
-			this.isSaving=false;
+			dimHelper.isSaving=false;
 		}
 	}
 	
@@ -951,29 +943,25 @@ public class dimHelper extends DimensionManager
 	 * @return
 	 */
 	//TODO change to loading vars instead of objects
+	@SuppressWarnings("unchecked")
 	public void load()
 	{
 		boolean firstRun=false;
 		System.out.println("Loading DimDoors data");
 		FileInputStream saveFile = null;
 	
-		if(!DimensionManager.getWorld(0).isRemote&&this.getCurrentSaveRootDirectory()!=null)
+		if(!DimensionManager.getWorld(0).isRemote&&DimensionManager.getCurrentSaveRootDirectory()!=null)
 		{
 	
 		try
 		{
-			
-			
-			
-			
-			World world=FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
-			File dataStore =new File( this.getCurrentSaveRootDirectory()+"/DimensionalDoorsData");
+			File dataStore = new File( DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsData");
 			
 			if(!dataStore.exists())
 			{
 				
 				
-				if(!new File( this.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD").exists())
+				if(!new File( DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD").exists())
 				{
 					firstRun=true;
 				}
@@ -985,11 +973,11 @@ public class dimHelper extends DimensionManager
 	         
 	         saveFile = new FileInputStream(dataStore);
 	         ObjectSaveInputStream save = new ObjectSaveInputStream(saveFile);
-	         HashMap comboSave =((HashMap)save.readObject());
+	         HashMap comboSave =((HashMap) save.readObject());
 	         
 	         try
 	         {
-	        	 this.interDimLinkList=(HashMap) comboSave.get("interDimLinkList");
+	        	 this.interDimLinkList = (HashMap<Integer, LinkData>) comboSave.get("interDimLinkList");
 	         }
 	         catch(Exception e)
 	         {
@@ -998,7 +986,7 @@ public class dimHelper extends DimensionManager
 	         
 	         try
 	         {
-	        	 this.dimList=(HashMap) comboSave.get("dimList");
+	        	 dimHelper.dimList = (HashMap<Integer, DimData>) comboSave.get("dimList");
 	         } 
 	         catch(Exception e)
 	         {
@@ -1009,7 +997,7 @@ public class dimHelper extends DimensionManager
 	         
 	         try
 	         {
-	        	 this.blocksToDecay=(ArrayList) comboSave.get("blocksToDecay");
+	        	 dimHelper.blocksToDecay= (ArrayList<Point3D>) comboSave.get("blocksToDecay");
 	         }
 	         catch(Exception e)
 	         {
@@ -1040,7 +1028,7 @@ public class dimHelper extends DimensionManager
 		         
 		         try
 		         {
-		        	 this.interDimLinkList=(HashMap) comboSave.get("interDimLinkList");
+		        	 this.interDimLinkList=(HashMap<Integer, LinkData>) comboSave.get("interDimLinkList");
 		         }
 		         catch(Exception e)
 		         {
@@ -1049,7 +1037,7 @@ public class dimHelper extends DimensionManager
 		         
 		         try
 		         {
-		        	 this.dimList=(HashMap) comboSave.get("dimList");
+		        	 dimHelper.dimList=(HashMap<Integer, DimData>) comboSave.get("dimList");
 		         } 
 		         catch(Exception e)
 		         {
@@ -1060,7 +1048,7 @@ public class dimHelper extends DimensionManager
 		         
 		         try
 		         {
-		        	 this.blocksToDecay=(ArrayList) comboSave.get("blocksToDecay");
+		        	 dimHelper.blocksToDecay=(ArrayList<Point3D>) comboSave.get("blocksToDecay");
 		         }
 		         catch(Exception e)
 		         {
@@ -1103,7 +1091,7 @@ public class dimHelper extends DimensionManager
 		{
 			i++;
 			DimData dimData;
-			ArrayList linksInDim=new ArrayList();
+			ArrayList<LinkData> linksInDim = new ArrayList<LinkData>();
 			for(size--;size>0;)
 			{
 				dimData = dimHelper.dimList.get(dimList.keySet().toArray()[rand.nextInt(dimList.keySet().size())]);
@@ -1117,10 +1105,6 @@ public class dimHelper extends DimensionManager
 					break;
 				}
 			}
-			
-			
-			
-			
 			
 			if(linksInDim.isEmpty())
 			{
@@ -1169,9 +1153,9 @@ public class dimHelper extends DimensionManager
 	 */
 	public LinkData getLinkDataFromCoords(int x, int y, int z, int worldID) 
 	{
-		if(this.dimList.containsKey(worldID))
+		if(dimHelper.dimList.containsKey(worldID))
 		{
-			DimData dimData=this.dimList.get(worldID);
+			DimData dimData=dimHelper.dimList.get(worldID);
 			
 			return dimData.findLinkAtCoords(x, y, z);
 			
@@ -1277,19 +1261,19 @@ public class dimHelper extends DimensionManager
 	
 	public void addDimData(DimData dimData)
 	{
-		this.dimList.put(dimData.dimID, dimData);
+		dimHelper.dimList.put(dimData.dimID, dimData);
 	}
 	
 	public void createDimData(World world)
 	{
-		this.dimList.put(world.provider.dimensionId, new DimData(world.provider.dimensionId, false, 0,0,world.provider.getSpawnPoint().posX,world.provider.getSpawnPoint().posY,world.provider.getSpawnPoint().posZ));
+		dimHelper.dimList.put(world.provider.dimensionId, new DimData(world.provider.dimensionId, false, 0,0,world.provider.getSpawnPoint().posX,world.provider.getSpawnPoint().posY,world.provider.getSpawnPoint().posZ));
 	}
 	
 	public DimData getDimData(World world)
 	{
-		if(this.dimList.containsKey(world.provider.dimensionId))
+		if(dimHelper.dimList.containsKey(world.provider.dimensionId))
 		{
-			return this.dimList.get(world.provider.dimensionId);
+			return dimHelper.dimList.get(world.provider.dimensionId);
 		}
 		else
 		{
@@ -1298,9 +1282,9 @@ public class dimHelper extends DimensionManager
 	}
 	public DimData getDimData(int dimID)
 	{
-		if(this.dimList.containsKey(dimID))
+		if(dimHelper.dimList.containsKey(dimID))
 		{
-			return this.dimList.get(dimID);
+			return dimHelper.dimList.get(dimID);
 		}
 		else
 		{
