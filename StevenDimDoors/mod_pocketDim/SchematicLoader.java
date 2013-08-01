@@ -85,11 +85,13 @@ public class SchematicLoader
 			World world = dimHelper.getWorld(destDimID);
 			
 			//Adjust the height at which the dungeon is placed to prevent vertical clipping
-			//link.destYCoord = adjustDestinationY(world, link.destYCoord, dungeon);
-			
-			//Adjust the data for the destination link to prevent crashes
-			//TODO: I really have no idea how to do this. =/ The LinkData/dimHelper implementation causes me sadness. ~SenseiKiwi
-			
+			int fixedY = adjustDestinationY(world, link.destYCoord, dungeon);
+			if (fixedY != link.destYCoord)
+			{
+				dimHelper helperInstance = dimHelper.instance;
+				LinkData reverseLink = helperInstance.getLinkDataAtDestination(link);
+				helperInstance.moveLinkDataLocation(reverseLink, reverseLink.locXCoord, fixedY, reverseLink.locZCoord, reverseLink.locDimID, true);
+			}			
 			dungeon.copyToWorld(world, new Point3D(link.destXCoord, link.destYCoord, link.destZCoord), link.linkOrientation, originDimID, destDimID);
 			return true;
 		}
