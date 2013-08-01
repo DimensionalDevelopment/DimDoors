@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -60,8 +61,8 @@ public class DungeonHelper
 	
 	private Random rand = new Random();
 
-	public ArrayList<DungeonGenerator> untaggedDungeons = new ArrayList<DungeonGenerator>();
-	public ArrayList<DungeonGenerator> registeredDungeons = new ArrayList<DungeonGenerator>();
+	private ArrayList<DungeonGenerator> untaggedDungeons = new ArrayList<DungeonGenerator>();
+	private ArrayList<DungeonGenerator> registeredDungeons = new ArrayList<DungeonGenerator>();
 	
 	private ArrayList<DungeonGenerator> simpleHalls = new ArrayList<DungeonGenerator>();
 	private ArrayList<DungeonGenerator> complexHalls = new ArrayList<DungeonGenerator>();
@@ -105,17 +106,6 @@ public class DungeonHelper
 		registerCustomDungeons();
 	}
 	
-	private void registerCustomDungeons()
-	{
-		File file = new File(properties.CustomSchematicDirectory);
-		if (file.exists() || file.mkdir())
-		{
-			copyfile.copyFile("/mods/DimDoors/text/How_to_add_dungeons.txt", file.getAbsolutePath() + "/How_to_add_dungeons.txt");
-		}
-		importCustomDungeons(properties.CustomSchematicDirectory);
-		registerBaseDungeons();
-	}
-	
 	public static DungeonHelper initialize()
 	{
 		if (instance == null)
@@ -139,6 +129,27 @@ public class DungeonHelper
 			throw new IllegalStateException("Instance of DungeonHelper requested before initialization");
 		}
 		return instance;
+	}
+	
+	private void registerCustomDungeons()
+	{
+		File file = new File(properties.CustomSchematicDirectory);
+		if (file.exists() || file.mkdir())
+		{
+			copyfile.copyFile("/mods/DimDoors/text/How_to_add_dungeons.txt", file.getAbsolutePath() + "/How_to_add_dungeons.txt");
+		}
+		importCustomDungeons(properties.CustomSchematicDirectory);
+		registerBaseDungeons();
+	}
+	
+	public List<DungeonGenerator> getRegisteredDungeons()
+	{
+		return Collections.unmodifiableList(this.registeredDungeons);
+	}
+	
+	public List<DungeonGenerator> getUntaggedDungeons()
+	{
+		return Collections.unmodifiableList(this.untaggedDungeons);
 	}
 	
 	public LinkData createCustomDungeonDoor(World world, int x, int y, int z)
