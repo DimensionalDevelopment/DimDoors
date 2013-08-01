@@ -132,7 +132,7 @@ public class CommandExportDungeon extends DDCommandBase
 		if (dungeonHelper.exportDungeon(player.worldObj, x, y, z, exportPath))
 		{
 			player.sendChatToPlayer("Saved dungeon schematic in " + exportPath);
-			dungeonHelper.registerCustomDungeon(new File(exportPath));
+			dungeonHelper.registerDungeon(exportPath, false, true);
 			return DDCommandResult.SUCCESS;
 		}
 		else

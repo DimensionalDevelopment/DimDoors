@@ -1,6 +1,9 @@
 package StevenDimDoors.mod_pocketDim.helpers;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,6 +30,11 @@ public class DungeonHelper
 	private static DDProperties properties = null;
 	public static final Pattern SchematicNamePattern = Pattern.compile("[A-Za-z0-9_\\-]+");
 	public static final Pattern DungeonNamePattern = Pattern.compile("[A-Za-z0-9\\-]+");
+	
+	private static final String DEFAULT_UP_SCHEMATIC_PATH = "/schematics/core/simpleStairsUp.schematic";
+	private static final String DEFAULT_DOWN_SCHEMATIC_PATH = "/schematics/core/simpleStairsDown.schematic";
+	private static final String DEFAULT_ERROR_SCHEMATIC_PATH = "/schematics/core/somethingBroke.schematic";
+	private static final String BUNDLED_DUNGEONS_LIST_PATH = "/schematics/schematics.txt";
 
 	public static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	private static final int DEFAULT_DUNGEON_WEIGHT = 100;
@@ -71,9 +79,10 @@ public class DungeonHelper
 	private ArrayList<DungeonGenerator> mazes = new ArrayList<DungeonGenerator>();
 	private ArrayList<DungeonGenerator> pistonTraps = new ArrayList<DungeonGenerator>();
 	private ArrayList<DungeonGenerator> exits = new ArrayList<DungeonGenerator>();
-
-	public DungeonGenerator defaultBreak = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/somethingBroke.schematic", true);
-	public DungeonGenerator defaultUp = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/simpleStairsUp.schematic", true);
+ 
+	private DungeonGenerator defaultUp;
+	private DungeonGenerator defaultDown;
+	private DungeonGenerator defaultError;
 	
 	private HashSet<String> dungeonTypeChecker;
 	private HashMap<String, ArrayList<DungeonGenerator>> dungeonTypeMapping;
@@ -138,8 +147,8 @@ public class DungeonHelper
 		{
 			copyfile.copyFile("/mods/DimDoors/text/How_to_add_dungeons.txt", file.getAbsolutePath() + "/How_to_add_dungeons.txt");
 		}
+		registerBundledDungeons();
 		importCustomDungeons(properties.CustomSchematicDirectory);
-		registerBaseDungeons();
 	}
 	
 	public List<DungeonGenerator> getRegisteredDungeons()
@@ -150,6 +159,21 @@ public class DungeonHelper
 	public List<DungeonGenerator> getUntaggedDungeons()
 	{
 		return Collections.unmodifiableList(this.untaggedDungeons);
+	}
+	
+	public DungeonGenerator getDefaultErrorDungeon()
+	{
+		return defaultError;
+	}
+	
+	public DungeonGenerator getDefaultUpDungeon()
+	{
+		return defaultUp;
+	}
+	
+	public DungeonGenerator getDefaultDownDungeon()
+	{
+		return defaultDown;
 	}
 	
 	public LinkData createCustomDungeonDoor(World world, int x, int y, int z)
@@ -213,10 +237,13 @@ public class DungeonHelper
 		return true;
 	}
 	
-	public void registerCustomDungeon(File schematicFile)
+	public void registerDungeon(String schematicPath, boolean isInternal, boolean verbose)
 	{
+		//We use schematicPath as the real path for internal files (inside our JAR) because it seems
+		//that File tries to interpret it as a local drive path and mangles it.
+		File schematicFile = new File(schematicPath);
 		String name = schematicFile.getName();
-		String path = schematicFile.getAbsolutePath();
+		String path = isInternal ? schematicPath : schematicFile.getAbsolutePath();
 		try
 		{
 			if (validateSchematicName(name))
@@ -233,23 +260,29 @@ public class DungeonHelper
 
 				dungeonTypeMapping.get(dungeonType).add(generator);
 				registeredDungeons.add(generator);
-				System.out.println("Imported " + name);
+				if (verbose)
+				{
+					System.out.println("Registered dungeon: " + name);
+				}
 			}
 			else
 			{
-				System.out.println("Could not parse dungeon filename, not adding dungeon to generation lists");
+				if (verbose)
+				{
+					System.out.println("Could not parse dungeon filename, not adding dungeon to generation lists");
+				}
 				untaggedDungeons.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, path, true));
-				System.out.println("Imported " + name);
+				System.out.println("Registered untagged dungeon: " + name);
 			}
 		}
 		catch(Exception e)
 		{
+			System.err.println("Failed to register dungeon: " + name);
 			e.printStackTrace();
-			System.out.println("Failed to import " + name);
 		}
 	}
 
-	public void importCustomDungeons(String path)
+	private void importCustomDungeons(String path)
 	{
 		File directory = new File(path);
 		File[] schematicNames = directory.listFiles();
@@ -260,15 +293,48 @@ public class DungeonHelper
 			{
 				if (schematicFile.getName().endsWith(SCHEMATIC_FILE_EXTENSION))
 				{
-					registerCustomDungeon(schematicFile);
+					registerDungeon(schematicFile.getPath(), false, true);
 				}
 			}
 		}
 	}
 
-	public void registerBaseDungeons()
+	private void registerBundledDungeons()
 	{
+		//Register the core schematics
+		//These are used for debugging and in case of unusual errors while loading dungeons
+		defaultUp = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, DEFAULT_UP_SCHEMATIC_PATH, true);
+		defaultDown = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, DEFAULT_DOWN_SCHEMATIC_PATH, true);
+		defaultError = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, DEFAULT_ERROR_SCHEMATIC_PATH, true);
 		
+		//Open the list of dungeons packaged with our mod and register their schematics
+		InputStream listStream = this.getClass().getResourceAsStream(BUNDLED_DUNGEONS_LIST_PATH);
+		if (listStream == null)
+		{
+			System.err.println("Unable to open list of bundled dungeon schematics.");
+			return;
+		}
+		
+		try
+		{
+			BufferedReader listReader = new BufferedReader(new InputStreamReader(listStream));
+			String schematicPath = listReader.readLine();
+			while (schematicPath != null)
+			{
+				schematicPath = schematicPath.trim();
+				if (!schematicPath.isEmpty())
+				{
+					registerDungeon(schematicPath, true, false);
+				}
+				schematicPath = listReader.readLine();
+			}
+			listReader.close();
+		}
+		catch (Exception e)
+		{
+			System.err.println("An exception occurred while reading the list of bundled dungeon schematics.");
+			e.printStackTrace();
+		}
 	}
 
 	public boolean exportDungeon(World world, int centerX, int centerY, int centerZ, String exportPath)
