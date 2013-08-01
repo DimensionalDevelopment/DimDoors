@@ -46,7 +46,7 @@ public class BlockRift extends BlockContainer
 	{
 		try
 		{
-			PacketHandler.onLinkCreatedPacket(dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World));
+		//	PacketHandler.onLinkCreatedPacket(dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World));
 		}
 		catch(Exception e)
 		{
