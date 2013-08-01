@@ -71,7 +71,9 @@ public class SchematicLoader
 				//TODO: In the future, remove this dungeon from the generation lists altogether.
 				//That will have to wait until our code is updated to support that more easily.
 				System.err.println("The dungeon will not be loaded.");
-				dungeon = checkSourceAndLoad(DungeonHelper.instance().defaultBreak.schematicPath);
+				DungeonGenerator defaultError = DungeonHelper.instance().getDefaultErrorDungeon();
+				dimList.get(destDimID).dungeonGenerator = defaultError;
+				dungeon = checkSourceAndLoad(defaultError.schematicPath);
 				dungeon.applyImportFilters(properties);
 			}
 			

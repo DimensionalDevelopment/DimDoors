@@ -69,10 +69,10 @@ public class CommandCreateDungeonRift extends DDCommandBase
 			}
 			else
 			{
-				result = findDungeonByPartialName(command[0], dungeonHelper.registeredDungeons);
+				result = findDungeonByPartialName(command[0], dungeonHelper.getRegisteredDungeons());
 				if (result == null)
 				{
-					result = findDungeonByPartialName(command[0], dungeonHelper.customDungeons);
+					result = findDungeonByPartialName(command[0], dungeonHelper.getUntaggedDungeons());
 				}
 				//Check if we found any matches
 				if (result != null)
