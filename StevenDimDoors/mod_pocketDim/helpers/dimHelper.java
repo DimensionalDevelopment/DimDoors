@@ -42,6 +42,7 @@ import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.SchematicLoader;
 import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -88,6 +89,9 @@ public class dimHelper extends DimensionManager
 	//public ArrayList<LinkData> linksForRendering =new ArrayList<LinkData>();
 	Random rand= new Random();
 	
+	public static final int DEFAULT_POCKET_SIZE = 39;
+	public static final int DEFAULT_POCKET_WALL_THICKNESS = 5;
+	public static final int MAX_WORLD_HEIGHT = 254;
 	//Stupid function I use because I don't understand bitwise operations yet. Used in door orientation
 	//TODO get rid of this
 	public int flipDoorMetadata(int data)
@@ -785,20 +789,18 @@ public class dimHelper extends DimensionManager
 		{
 			return link;
 		}
-		
 		if (dimHelper.getWorld(link.locDimID) == null)
 		{
 			dimHelper.initDimension(link.locDimID);
 		}
-		
 		int dimensionID;
 		int depth = this.getDimDepth(link.locDimID);
-	//	World world = this.getWorld(link.locDimID);
-		
 		dimensionID = getNextFreeDimId();
 		registerDimension(dimensionID, properties.PocketProviderID);
 		DimData locationDimData;
 		DimData destDimData;
+		
+	
 		
 		if(dimHelper.dimList.containsKey(link.locDimID)&&!DimensionManager.getWorld(link.locDimID).isRemote) //checks to see if dim is already registered. If not, it creates a DimData entry for it later
 		{
@@ -813,75 +815,59 @@ public class dimHelper extends DimensionManager
 				}
 				if(rand.nextInt(13-depth)==0)
 				{
-					LinkData link1=getRandomLinkData(false);
-					
-		    				
-		    					if(link1!=null)
-		    					{
-		    				//		locationDimData.exitDimLink=new LinkData(link1.locDimID, link1.locDimID, link1.locXCoord, link1.locYCoord, link1.locZCoord, link1.locXCoord, link1.locYCoord, link1.locZCoord, false);
-		    					}
-		    			
+					LinkData link1=getRandomLinkData(false);		
 				}
 			}
-			
-			
-			
-			
 			if(locationDimData.isPocket) //determines the qualites of the pocket dim being created, based on parent dim. 
 			{
 				if(isGoingDown)
 				{
 					destDimData= new DimData(dimensionID, true, locationDimData.depth+1, locationDimData.exitDimLink);
-			
 				}
 				else
 				{
 					destDimData= new DimData(dimensionID, true, locationDimData.depth-1, locationDimData.exitDimLink);
-
 				}
 			}
 			else
 			{
 				destDimData= new DimData(dimensionID, true, 1, link.locDimID,link.locXCoord,link.locYCoord,link.locZCoord);
-
 			}
 			
 		}
 		else
 		{
-			
 			locationDimData= new DimData(link.locDimID, false, 0, link.locDimID,link.locXCoord,link.locYCoord,link.locZCoord);
 			destDimData= new DimData(dimensionID, true, 1, link.locDimID,link.locXCoord,link.locYCoord,link.locZCoord);
-
 		}
-		
-		
-		
-	
-		
-
 		destDimData.isDimRandomRift=isRandomRift;
-		
-		
 		dimHelper.dimList.put(DimensionManager.getWorld(link.locDimID).provider.dimensionId, locationDimData);
 		dimHelper.dimList.put(dimensionID, destDimData);
-		
-		
-		
 		
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)//sends packet to clients notifying them that a new dim has been created. 
 		{
 			PacketHandler.onDimCreatedPacket(destDimData);
 		}
-		
-		link = this.createLink(DimensionManager.getWorld(link.locDimID).provider.dimensionId,dimensionID,link.locXCoord,link.locYCoord,link.locZCoord, link.destXCoord,link.destYCoord,link.destZCoord,link.linkOrientation); //creates and registers the two rifts that link the parent and pocket dim. 
-		this.createLink(dimensionID,DimensionManager.getWorld(link.locDimID).provider.dimensionId, link.destXCoord,link.destYCoord,link.destZCoord, link.locXCoord,link.locYCoord,link.locZCoord, this.flipDoorMetadata(link.linkOrientation));
-	
-		
+		link = this.createLink(DimensionManager.getWorld(link.locDimID).provider.dimensionId,dimensionID,link.locXCoord,link.locYCoord,link.locZCoord, link.destXCoord,constrainPocketY(link.destYCoord),link.destZCoord,link.linkOrientation); //creates and registers the two rifts that link the parent and pocket dim. 
+		this.createLink(dimensionID,DimensionManager.getWorld(link.locDimID).provider.dimensionId, link.destXCoord,constrainPocketY(link.destYCoord),link.destZCoord, link.locXCoord,link.locYCoord,link.locZCoord, this.flipDoorMetadata(link.linkOrientation));
 		return link;
 	}
 	
+	public static int constrainPocketY(int entranceDoorYPos)
+	{
+		
+		if(entranceDoorYPos+DEFAULT_POCKET_SIZE-DEFAULT_POCKET_WALL_THICKNESS>= MAX_WORLD_HEIGHT)
+		{
+			return entranceDoorYPos-DEFAULT_POCKET_SIZE+DEFAULT_POCKET_WALL_THICKNESS;
+		}
+		if(entranceDoorYPos-1-DEFAULT_POCKET_WALL_THICKNESS<=0)
+		{
+			return entranceDoorYPos+DEFAULT_POCKET_WALL_THICKNESS;
+
+		}
+		else return entranceDoorYPos;
 	
+	}
 	/**
 	 * function that saves all dim data in a hashMap. Calling too often can cause Concurrent modification exceptions, so be careful.
 	 * @return
@@ -1157,6 +1143,11 @@ public class dimHelper extends DimensionManager
 		LinkData linkToMove = this.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID);
 		if(linkToMove!=null)
 		{
+			int oldX = linkToMove.locXCoord;
+			int oldY = linkToMove.locYCoord;
+			int oldZ = linkToMove.locZCoord;
+			int oldDimID = linkToMove.locDimID;
+			
 			if(updateLinksPointingHere)
 			{
 				ArrayList<LinkData> incomingLinks = new ArrayList<LinkData>();
@@ -1175,6 +1166,13 @@ public class dimHelper extends DimensionManager
 			linkToMove.locXCoord=x;
 			linkToMove.locYCoord=y;
 			linkToMove.locZCoord=z;
+			if(this.getLinkDataFromCoords(oldX,oldY,oldZ,oldDimID)!=null)
+			{
+			//	this.removeLink(this.getLinkDataFromCoords(oldX,oldY,oldZ,oldDimID));
+			}
+			this.createLink(linkToMove);
+			LinkData linkTest = dimHelper.instance.getLinkDataFromCoords(x, y, z, dimID);
+			linkTest.printLinkData();
 			return true;
 		}
 		return false;
@@ -1206,7 +1204,9 @@ public class dimHelper extends DimensionManager
 			linkToMove.destXCoord=x;
 			linkToMove.destYCoord=y;
 			linkToMove.destZCoord=z;
-			
+			this.createLink(linkToMove);
+			LinkData testLink = this.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID);
+
 			return true;
 		}
 		return false;
