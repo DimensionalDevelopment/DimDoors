@@ -60,7 +60,7 @@ public class DungeonHelper
 	
 	private Random rand = new Random();
 
-	public ArrayList<DungeonGenerator> customDungeons = new ArrayList<DungeonGenerator>();
+	public ArrayList<DungeonGenerator> untaggedDungeons = new ArrayList<DungeonGenerator>();
 	public ArrayList<DungeonGenerator> registeredDungeons = new ArrayList<DungeonGenerator>();
 	
 	private ArrayList<DungeonGenerator> simpleHalls = new ArrayList<DungeonGenerator>();
@@ -222,13 +222,12 @@ public class DungeonHelper
 
 				dungeonTypeMapping.get(dungeonType).add(generator);
 				registeredDungeons.add(generator);
-				customDungeons.add(generator);
 				System.out.println("Imported " + name);
 			}
 			else
 			{
 				System.out.println("Could not parse dungeon filename, not adding dungeon to generation lists");
-				customDungeons.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, path, true));
+				untaggedDungeons.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, path, true));
 				System.out.println("Imported " + name);
 			}
 		}
@@ -258,84 +257,7 @@ public class DungeonHelper
 
 	public void registerBaseDungeons()
 	{
-		hubs.add(new DungeonGenerator(2 * DEFAULT_DUNGEON_WEIGHT, "/schematics/4WayBasicHall.schematic", false));
-		hubs.add(new DungeonGenerator(2 * DEFAULT_DUNGEON_WEIGHT, "/schematics/4WayHallExit.schematic", false));
-		hubs.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/doorTotemRuins.schematic", true));
-		hubs.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/hallwayTrapRooms1.schematic", false));
-		hubs.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/longDoorHallway.schematic", false));
-		hubs.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallRotundaWithExit.schematic", false));
-		hubs.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/fortRuins.schematic", true));
-		hubs.add(new DungeonGenerator(10, "/schematics/Hub_SK-Claustrophobia_Open_10.schematic", true));
-		hubs.add(new DungeonGenerator(50, "/schematics/Hub_SK-HeartOfDisorder_Open_50.schematic", true));
-
-		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/collapsedSingleTunnel1.schematic", false));
-		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/singleStraightHall1.schematic", false));
-		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallBranchWithExit.schematic", false));
-		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallSimpleLeft.schematic", false));
-		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallSimpleRight.schematic", false));
-		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/simpleStairsUp.schematic", false));
-		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/simpleStairsDown.schematic", false));
-		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/simpleSmallT1.schematic", false));
-		simpleHalls.add(new DungeonGenerator(50, "/schematics/SimpleHall_SK-LeftDownStairs_Open_50.schematic", true));
-		simpleHalls.add(new DungeonGenerator(50, "/schematics/SimpleHall_SK-LeftUpPath_Open_50.schematic", true));
-		simpleHalls.add(new DungeonGenerator(50, "/schematics/SimpleHall_SK-RightDownStairs_Open_50.schematic", true));
-		simpleHalls.add(new DungeonGenerator(50, "/schematics/SimpleHall_SK-RightUpPath_Open_50.schematic", true));
-		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/SimpleHall_SK-SpiralHallway_Open_100.schematic", true));
-		simpleHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/complexHall_largeBrokenHall_closed_100.schematic", false));
-
 		
-		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/tntPuzzleTrap.schematic", false));
-		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/brokenPillarsO.schematic", true));
-		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/buggyTopEntry1.schematic", true));
-		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/exitRuinsWithHiddenDoor.schematic", true));
-		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/hallwayHiddenTreasure.schematic", false));
-		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/mediumPillarStairs.schematic", true));
-		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/ruinsO.schematic", true));
-		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/pitStairs.schematic", true));
-		complexHalls.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/ComplexHall_SK-HiddenStairs_Open_100.schematic", true));
-		complexHalls.add(new DungeonGenerator(10, "/schematics/ComplexHall_SK-LostGarden_Open_10.schematic", true));
-
-		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/azersDungeonO.schematic", false));
-		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/diamondTowerTemple1.schematic", true));
-		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/fallingTrapO.schematic", true));
-		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/hiddenStaircaseO.schematic", true));
-		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/lavaTrapO.schematic", true));
-		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/randomTree.schematic", true));
-		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallHiddenTowerO.schematic", true));
-		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallSilverfishRoom.schematic", false));
-		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/tntTrapO.schematic", true));
-		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallDesert.schematic", true));
-		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallPond.schematic", true));
-		deadEnds.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/DeadEnd_SK-FarAwayInTheDark_Open_100.schematic", true));
-		deadEnds.add(new DungeonGenerator(50, "/schematics/DeadEnd_SK-UnstableDesert_Open_50.schematic", true));
-
-		pistonTraps.add(new DungeonGenerator(2 * DEFAULT_DUNGEON_WEIGHT, "/schematics/hallwayPitFallTrap.schematic", false));
-		pistonTraps.add(new DungeonGenerator(2 * DEFAULT_DUNGEON_WEIGHT, "/schematics/pistonFloorHall.schematic", false));
-		pistonTraps.add(new DungeonGenerator(2 * DEFAULT_DUNGEON_WEIGHT, "/schematics/wallFallcomboPistonHall.schematic", false));
-		pistonTraps.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/fakeTNTTrap.schematic", false));
-		pistonTraps.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/pistonFallRuins.schematic", true));
-		pistonTraps.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/pistonSmasherHall.schematic", false));
-		pistonTraps.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/simpleDropHall.schematic", false));
-		pistonTraps.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/fallingTNThall.schematic", false));
-		pistonTraps.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/lavaPyramid.schematic", true));
-		pistonTraps.add(new DungeonGenerator(10, "/schematics/Trap_SK-RestlessCorridor_Open_10.schematic", true));
-		pistonTraps.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/trap_pistonFloorPlatform_closed_100.schematic", false));
-		pistonTraps.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT/2, "/schematics/trap_pistonFloorPlatform2_closed_100.schematic", false));
-
-		mazes.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallMaze1.schematic", false));
-		mazes.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallMultilevelMaze.schematic", false));
-
-		exits.add(new DungeonGenerator(2 * DEFAULT_DUNGEON_WEIGHT, "/schematics/lockingExitHall.schematic", false));
-		exits.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/exitCube.schematic", true));
-		exits.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, "/schematics/smallExitPrison.schematic", true));
-		
-		registeredDungeons.addAll(simpleHalls);
-		registeredDungeons.addAll(exits);
-		registeredDungeons.addAll(pistonTraps);
-		registeredDungeons.addAll(mazes);
-		registeredDungeons.addAll(deadEnds);
-		registeredDungeons.addAll(complexHalls);
-		registeredDungeons.addAll(hubs);
 	}
 
 	public boolean exportDungeon(World world, int centerX, int centerY, int centerZ, String exportPath)
@@ -517,11 +439,11 @@ public class DungeonHelper
 		//but it's a fool-proof workaround.
 		HashSet<String> dungeonNames = new HashSet<String>();
 		dungeonNames.addAll( parseDungeonNames(registeredDungeons) );
-		dungeonNames.addAll( parseDungeonNames(customDungeons) );
+		dungeonNames.addAll( parseDungeonNames(untaggedDungeons) );
 		
 		//Sort dungeon names alphabetically
 		ArrayList<String> sortedNames = new ArrayList<String>(dungeonNames);
-		Collections.sort(sortedNames);
+		Collections.sort(sortedNames, String.CASE_INSENSITIVE_ORDER);
 		return sortedNames;
 	}
 	
