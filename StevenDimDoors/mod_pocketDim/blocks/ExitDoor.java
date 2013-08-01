@@ -59,9 +59,9 @@ public class ExitDoor extends dimDoor
 			
 			if(dimHelper.instance.dimList.containsKey(locDimID)&&dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World)==null)
 			{
-				DimData dimData = dimHelper.dimList.get(locDimID);
+				DimData dimData = dimHelper.instance.getDimData(locDimID);
 				int ExitDimID = dimData.exitDimLink.destDimID;
-	   			if(dimHelper.dimList.get(par1World.provider.dimensionId).isPocket)
+	   			if(dimHelper.instance.getDimData(par1World.provider.dimensionId).isPocket)
 	   			{
 	   				int yCoord=yCoordHelper.getFirstUncovered(ExitDimID, par2, par3, par4);
 					  
@@ -88,7 +88,7 @@ public class ExitDoor extends dimDoor
 
 
 	   			}
-	   			else if(dimHelper.dimList.get(par1World.provider.dimensionId).isPocket)
+	   			else if(dimHelper.instance.getDimData(par1World.provider.dimensionId).isPocket)
 	   			{
 	   				//System.out.println("Created new dim from "+String.valueOf(par1World.provider.dimensionId));
 

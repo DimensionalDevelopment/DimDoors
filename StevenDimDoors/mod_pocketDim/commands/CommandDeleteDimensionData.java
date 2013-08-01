@@ -67,7 +67,7 @@ public class CommandDeleteDimensionData extends DDCommandBase
 						{
 							if(link.destDimID==targetDim)
 							{
-								dimHelper.dimList.get(link.locDimID).removeLinkAtCoords(link);
+								dimHelper.instance.getDimData(link.locDimID).removeLinkAtCoords(link);
 								linksRemoved++;
 							}
 							if(dimData.dimID==targetDim)

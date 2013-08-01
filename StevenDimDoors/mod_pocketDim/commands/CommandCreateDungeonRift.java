@@ -79,7 +79,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 				{
 					//Create a rift to our selected dungeon and notify the player
 					link = dimHelper.instance.createPocket(link, true, true);
-					dimHelper.dimList.get(link.destDimID).dungeonGenerator = result;
+					dimHelper.instance.getDimData(link.destDimID).dungeonGenerator = result;
 					sender.sendChatToPlayer("Created a rift to \"" + getSchematicName(result) + "\" dungeon (Dimension ID = " + link.destDimID + ").");
 				}
 				else

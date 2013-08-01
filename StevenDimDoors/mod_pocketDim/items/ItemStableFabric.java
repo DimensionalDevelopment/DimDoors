@@ -57,11 +57,11 @@ public class ItemStableFabric extends Item
 
 			if(dimHelper.dimList.containsKey(par3World.provider.dimensionId))
 			{
-				if(dimHelper.dimList.get(par3World.provider.dimensionId).isPocket)
+				if(dimHelper.instance.getDimData(par3World.provider.dimensionId).isPocket)
 				{
-					if(dimHelper.dimList.get(par3World.provider.dimensionId).dungeonGenerator!=null)
+					if(dimHelper.instance.getDimData(par3World.provider.dimensionId).dungeonGenerator!=null)
 					{
-						System.out.println("Dungeon name "+dimHelper.dimList.get(par3World.provider.dimensionId).dungeonGenerator.schematicPath);
+						System.out.println("Dungeon name "+dimHelper.instance.getDimData(par3World.provider.dimensionId).dungeonGenerator.schematicPath);
 
 					}
 				}

@@ -251,7 +251,7 @@ public class dimHelper extends DimensionManager
 	 * @param orientation- the orientation of the door used to teleport, determines player orientation and door placement on arrival
 	 * @Return
 	 */
-	public void teleportToPocket(World world,LinkData linkData, Entity entity)
+	public void traverseDimDoor(World world,LinkData linkData, Entity entity)
 	{
 		DDProperties properties = DDProperties.instance();
 		
@@ -285,7 +285,7 @@ public class dimHelper extends DimensionManager
 				int playerYCoord=MathHelper.floor_double(entity.posY);
 				int playerZCoord=MathHelper.floor_double(entity.posZ);
 							
-		    	if(!entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1,playerZCoord )&&dimHelper.dimList.get(linkData.locDimID).isDimRandomRift&&!linkData.hasGennedDoor)
+		    	if(!entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1,playerZCoord )&&dimHelper.instance.getDimData(linkData.locDimID).isDimRandomRift&&!linkData.hasGennedDoor)
 		    	{						
 		    		for(int count=0;count<20;count++)
 		    		{
@@ -391,7 +391,7 @@ public class dimHelper extends DimensionManager
 		{
 			dimHelper.dimList.put(link.destDimID, new DimData(link.destDimID, false, 0, link.locDimID,link.locXCoord,link.locYCoord,link.locZCoord));
 		}
-		DimData locationDimData=	dimHelper.dimList.get(link.locDimID);
+		DimData locationDimData=	dimHelper.instance.getDimData(link.locDimID);
 		link.isLocPocket=locationDimData.isPocket;
 		locationDimData.addLinkToDim(link);
 		
@@ -453,7 +453,7 @@ public class dimHelper extends DimensionManager
 			dimHelper.dimList.put(locationDimID, locationDimData);
 		}
 		LinkData link = this.getLinkDataFromCoords(locationXCoord, locationYCoord, locationZCoord, locationDimID);
-		dimHelper.dimList.get(locationDimID).removeLinkAtCoords(link);
+		dimHelper.instance.getDimData(locationDimID).removeLinkAtCoords(link);
 		//updates clients that a rift has been removed
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
@@ -463,7 +463,7 @@ public class dimHelper extends DimensionManager
 	}
 	public LinkData findNearestRift(World world, int x, int y, int z, int range)
 	{
-		return dimHelper.dimList.get(world).findNearestRift(world, range, x, y, z);
+		return dimHelper.instance.getDimData(world).findNearestRift(world, range, x, y, z);
 	}
 	/**
 	 * generates a door based on what door was used to teleport. Only funtions once per linking. 
@@ -546,7 +546,7 @@ public class dimHelper extends DimensionManager
 			return;
 		}
 	//	World world = this.getWorld(incomingLink.destDimID);
-		DimData data = dimHelper.dimList.get(incomingLink.destDimID);
+		DimData data = dimHelper.instance.getDimData(incomingLink.destDimID);
 		
 		if(!data.hasBeenFilled&&data.isPocket&&!data.isDimRandomRift)
 		{
@@ -1094,7 +1094,7 @@ public class dimHelper extends DimensionManager
 			ArrayList<LinkData> linksInDim = new ArrayList<LinkData>();
 			for(size--;size>0;)
 			{
-				dimData = dimHelper.dimList.get(dimList.keySet().toArray()[rand.nextInt(dimList.keySet().size())]);
+				dimData = dimHelper.instance.getDimData((Integer)dimList.keySet().toArray()[rand.nextInt(dimList.keySet().size())]);
 				if(dimData==null)
 				{
 					break;
@@ -1128,8 +1128,89 @@ public class dimHelper extends DimensionManager
 		
 	}
 	
-		
-		
+	/**
+	 * Gets a link at the destination of the link provided. Returns null if none exists. 
+	 * @param link
+	 * @return
+	 */
+	public LinkData getLinkDataAtDestination(LinkData link)
+	{
+		return this.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID);
+	}
+	/**
+	 * Moves the location of the link passed in to the provided coords. Does not change the links destination coords.
+	 * The boolean flag determines whether or not to update other links that point to this link- true causes all links that pointed to this link to be updated
+	 * to point to the new link location.
+	 * 
+	 * Return true if there was an actual link to be moved.
+	 * 
+	 * @param link
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param dimID
+	 * @param updateLinksPointingHere
+	 * @return
+	 */
+	public boolean moveLinkDataLocation(LinkData link, int x,int y, int z, int dimID, boolean updateLinksPointingHere)
+	{
+		LinkData linkToMove = this.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID);
+		if(linkToMove!=null)
+		{
+			if(updateLinksPointingHere)
+			{
+				ArrayList<LinkData> incomingLinks = new ArrayList<LinkData>();
+				for(DimData dimData : dimHelper.dimList.values())
+				{
+					for(LinkData allLink : dimData.getLinksInDim())
+					{
+						if(this.getLinkDataAtDestination(allLink)==linkToMove)
+						{
+							this.moveLinkDataDestination(allLink, x, y, z, dimID, false);							
+						}
+					}
+				}
+			}
+			linkToMove.locDimID=dimID;
+			linkToMove.locXCoord=x;
+			linkToMove.locYCoord=y;
+			linkToMove.locZCoord=z;
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Changes the destination coords of the link passed in if it exists to the provided coords. 
+	 * @param link
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param dimID
+	 * @param updateLinksAtDestination
+	 * @return
+	 */
+	public boolean moveLinkDataDestination(LinkData link, int x, int y, int z, int dimID, boolean updateLinksAtDestination)
+	{
+		LinkData linkToMove = this.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID);
+		if(linkToMove!=null)
+		{
+			if(updateLinksAtDestination)
+			{
+				LinkData linkAtDestination = this.getLinkDataAtDestination(linkToMove);
+				if(linkAtDestination!=null)
+				{
+					this.moveLinkDataLocation(linkAtDestination, x, y, z, dimID, false);
+				}
+			}
+			linkToMove.destDimID=dimID;
+			linkToMove.destXCoord=x;
+			linkToMove.destYCoord=y;
+			linkToMove.destZCoord=z;
+			
+			return true;
+		}
+		return false;
+	}
 		
 	/**
 	 * gets a link based on coords and a world object
@@ -1155,7 +1236,7 @@ public class dimHelper extends DimensionManager
 	{
 		if(dimHelper.dimList.containsKey(worldID))
 		{
-			DimData dimData=dimHelper.dimList.get(worldID);
+			DimData dimData=dimHelper.instance.getDimData(worldID);
 			
 			return dimData.findLinkAtCoords(x, y, z);
 			
@@ -1270,15 +1351,8 @@ public class dimHelper extends DimensionManager
 	}
 	
 	public DimData getDimData(World world)
-	{
-		if(dimHelper.dimList.containsKey(world.provider.dimensionId))
-		{
-			return dimHelper.dimList.get(world.provider.dimensionId);
-		}
-		else
-		{
-			return null;
-		}
+	{	
+		return dimHelper.instance.getDimData(world.provider.dimensionId);
 	}
 	public DimData getDimData(int dimID)
 	{

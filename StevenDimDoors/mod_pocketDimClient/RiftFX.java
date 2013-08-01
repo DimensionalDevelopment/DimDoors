@@ -112,7 +112,7 @@ public class RiftFX extends EntityFX
         
         try
         {
-        	if(dimHelper.dimList.get(this.worldObj.provider.dimensionId).isPocket)
+        	if(dimHelper.instance.getDimData(this.worldObj.provider.dimensionId).isPocket)
         	{
         		f14=.7F;
         	}

@@ -55,7 +55,7 @@ public class GoggleRiftFX extends EntityFireworkSparkFX
         float var16 = .0F;
         try
         {
-         if(dimHelper.dimList.get(this.worldObj.provider.dimensionId).isPocket)
+         if(dimHelper.instance.getDimData(this.worldObj.provider.dimensionId).isPocket)
          {
          var16=.7F;
          }

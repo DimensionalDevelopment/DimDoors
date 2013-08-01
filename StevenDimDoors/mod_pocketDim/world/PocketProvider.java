@@ -113,7 +113,7 @@ public class PocketProvider extends WorldProvider
 		}
 		else
 		{
-			respawnDim = dimHelper.dimList.get(this.dimensionId).exitDimLink.destDimID;
+			respawnDim = dimHelper.instance.getDimData(this.dimensionId).exitDimLink.destDimID;
 		}
 
 		if (dimHelper.getWorld(respawnDim) == null)

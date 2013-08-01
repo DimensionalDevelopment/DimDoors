@@ -173,7 +173,7 @@ public class MobMonolith extends EntityFlying implements IMob
 
 					LinkData link = new LinkData(this.worldObj.provider.dimensionId, properties.LimboDimensionID, (int)this.posX, (int)this.posY, (int)this.posZ, (int)this.posX+rand.nextInt(500)-250, (int)this.posY+500, (int)this.posZ+rand.nextInt(500)-250, false,0);
 
-					dimHelper.instance.teleportToPocket(worldObj, link, entityPlayer);
+					dimHelper.instance.traverseDimDoor(worldObj, link, entityPlayer);
 					this.aggro=0;
 
 					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.crack",13, 1);

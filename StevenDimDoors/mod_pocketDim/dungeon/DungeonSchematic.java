@@ -319,7 +319,7 @@ public class DungeonSchematic extends Schematic {
 			
 			LinkData randomLink = dimHelper.instance.getRandomLinkData(false);
 			LinkData sideLink = new LinkData(destDimID,
-					dimHelper.dimList.get(originDimID).exitDimLink.destDimID,
+					dimHelper.instance.getDimData(originDimID).exitDimLink.destDimID,
 					location.getX(),
 					location.getY(),
 					location.getZ(),

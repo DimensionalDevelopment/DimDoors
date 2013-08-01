@@ -127,7 +127,7 @@ public class ChaosDoor extends dimDoor
 	    				{
 	    					foundRandomDest=true;
 	    					
-	    					dimHelper.instance.teleportToPocket(par1World, new LinkData(link.destDimID,link.locDimID,link.destXCoord,link.destYCoord,link.destZCoord,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket,0), par5Entity);
+	    					dimHelper.instance.traverseDimDoor(par1World, new LinkData(link.destDimID,link.locDimID,link.destXCoord,link.destYCoord,link.destZCoord,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket,0), par5Entity);
 	    					
 	    					if(dimHelper.getWorld(link.locDimID)!=null)
 	    					{

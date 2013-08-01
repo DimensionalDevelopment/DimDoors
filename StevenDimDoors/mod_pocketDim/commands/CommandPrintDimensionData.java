@@ -50,7 +50,7 @@ public class CommandPrintDimensionData extends DDCommandBase
 			return DDCommandResult.TOO_MANY_ARGUMENTS;
 		}
 		
-		dimData = dimHelper.dimList.get(targetDim);
+		dimData = dimHelper.instance.getDimData(targetDim);
 		if (dimData == null)
 		{
 			return DDCommandResult.UNREGISTERED_DIMENSION;

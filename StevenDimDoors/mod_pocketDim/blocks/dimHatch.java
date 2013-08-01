@@ -59,7 +59,7 @@ public class dimHatch extends BlockTrapDoor
 	    		exitLink.locDimID=par1World.provider.dimensionId;
 	    		
 	    		 
-	    		dimHelper.instance.teleportToPocket(par1World, exitLink, par5Entity);
+	    		dimHelper.instance.traverseDimDoor(par1World, exitLink, par5Entity);
 	
 	    	
 		}

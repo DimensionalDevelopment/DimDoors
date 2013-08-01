@@ -56,7 +56,7 @@ public class EventHookContainer
     			//TODO added temporary Try/catch block to prevent a crash here, getLinksInDim needs to be looked at
     			try
     			{    			
-	    			for (LinkData link:dimHelper.dimList.get(world.provider.dimensionId).getLinksInDim())
+	    			for (LinkData link:dimHelper.instance.getDimData(world.provider.dimensionId).getLinksInDim())
 	    			{
 	    				if(linkCount>100) //TODO: Wtf? wouldn't this cause some links to not load on servers with several links? Not sure what's going on here. ~SenseiKiwi
 	    				{
