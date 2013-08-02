@@ -89,8 +89,7 @@ public class SchematicLoader
 			if (fixedY != link.destYCoord)
 			{
 				dimHelper helperInstance = dimHelper.instance;
-				LinkData reverseLink = helperInstance.getLinkDataAtDestination(link);
-				helperInstance.moveLinkDataLocation(reverseLink, reverseLink.locXCoord, fixedY, reverseLink.locZCoord, reverseLink.locDimID, true);
+				helperInstance.moveLinkDataDestination(link, link.destXCoord, fixedY, link.destZCoord, link.destDimID, true);
 			}			
 			dungeon.copyToWorld(world, new Point3D(link.destXCoord, link.destYCoord, link.destZCoord), link.linkOrientation, originDimID, destDimID);
 			return true;

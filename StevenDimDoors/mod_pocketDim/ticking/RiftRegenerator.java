@@ -57,7 +57,12 @@ public class RiftRegenerator implements IRegularTickReceiver {
 							if(dimHelper.instance.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID) != null)
 							{
 								dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
-								TileEntityRift.class.cast(dimHelper.getWorld(link.locDimID).getBlockTileEntity(link.locXCoord, link.locYCoord, link.locZCoord)).hasGrownRifts=true;
+								TileEntityRift rift = TileEntityRift.class.cast(dimHelper.getWorld(link.locDimID).getBlockTileEntity(link.locXCoord, link.locYCoord, link.locZCoord));
+								if(rift == null)
+								{
+									dimHelper.getWorld(link.locDimID).setBlockTileEntity(link.locXCoord, link.locYCoord, link.locZCoord, new TileEntityRift());
+								}
+								rift.hasGrownRifts=true;
 							}
 						}
 					}
