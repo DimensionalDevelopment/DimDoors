@@ -59,6 +59,9 @@ public class BlockRotator
 		hasOrientations[Block.stairsWoodSpruce.blockID] = true;
 		hasOrientations[Block.wood.blockID] = true;
 		hasOrientations[Block.blockNetherQuartz.blockID] = true;
+		hasOrientations[Block.railPowered.blockID] = true;
+		hasOrientations[Block.railDetector.blockID] = true;
+		
 		hasOrientations[mod_pocketDim.dimDoor.blockID] = true;
 		hasOrientations[mod_pocketDim.ExitDoor.blockID] = true;
 		
@@ -93,14 +96,59 @@ public class BlockRotator
 		{
 			if (metadata >= 4 && metadata < 12)
 			{
-				return (metadata % 8) + 4;
+				metadata = (metadata % 8) + 4;
 			}
 		}
 		else if (blockID == Block.blockNetherQuartz.blockID)
 		{
 			if (metadata == 3 || metadata == 4)
 			{
-				return (metadata - 2) % 2 + 3;
+				metadata = (metadata - 2) % 2 + 3;
+			}
+		}
+		else if (blockID == Block.railPowered.blockID || blockID == Block.railDetector.blockID)
+		{
+			switch (metadata)
+			{
+			//Powered Track/Detector Track (off)
+			case 0:
+				metadata = 1;
+				break;
+			case 1:
+				metadata = 0;
+				break;
+			case 2:
+				metadata = 5;
+				break;
+			case 3:
+				metadata = 4;
+				break;
+			case 4:
+				metadata = 2;
+				break;
+			case 5:
+				metadata = 3;
+				break;
+				
+			//Powered Track/Detector Track (on)
+			case 8:
+				metadata = 9;
+				break;
+			case 9:
+				metadata = 8;
+				break;
+			case 10:
+				metadata = 13;
+				break;
+			case 11:
+				metadata = 12;
+				break;
+			case 12:
+				metadata = 10;
+				break;
+			case 13:
+				metadata = 11;
+				break;
 			}
 		}
 		else if (Block.blocksList[blockID] instanceof BlockStairs)
