@@ -33,8 +33,8 @@ public class DungeonSchematic extends Schematic {
 	private static final short MAX_VANILLA_BLOCK_ID = 158;
 	private static final short STANDARD_FABRIC_OF_REALITY_ID = 1973;
 	private static final short STANDARD_ETERNAL_FABRIC_ID = 220;
-	private static final short STANDARD_WARP_DOOR_ID = (short) Block.doorWood.blockID;//1975;
-	private static final short STANDARD_DIMENSIONAL_DOOR_ID = (short) Block.doorIron.blockID;//1970;
+	private static final short STANDARD_WARP_DOOR_ID = 1975;
+	private static final short STANDARD_DIMENSIONAL_DOOR_ID = 1970;
 	private static final short MONOLITH_SPAWN_MARKER_ID = (short) Block.endPortalFrame.blockID;
 	private static final short EXIT_DOOR_MARKER_ID = (short) Block.sandStone.blockID;
 	
@@ -46,9 +46,9 @@ public class DungeonSchematic extends Schematic {
 	
 	private static final short[] MOD_BLOCK_FILTER_EXCEPTIONS = new short[] {
 		STANDARD_FABRIC_OF_REALITY_ID,
-		STANDARD_ETERNAL_FABRIC_ID
-		//STANDARD_WARP_DOOR_ID,
-		//STANDARD_DIMENSIONAL_DOOR_ID
+		STANDARD_ETERNAL_FABRIC_ID,
+		STANDARD_WARP_DOOR_ID,
+		STANDARD_DIMENSIONAL_DOOR_ID
 	};
 	
 	private DungeonSchematic(Schematic source)
