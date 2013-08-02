@@ -50,13 +50,18 @@ public class BlockRotator
 		hasOrientations[Block.hopperBlock.blockID] = true;
 		hasOrientations[Block.stairsNetherBrick.blockID] = true;
 		hasOrientations[Block.stairsCobblestone.blockID] = true;
-		hasOrientations[Block.stairsNetherBrick.blockID] = true;
 		hasOrientations[Block.stairsNetherQuartz.blockID] = true;
 		hasOrientations[Block.stairsSandStone.blockID] = true;
+		hasOrientations[Block.stairsBrick.blockID] = true;
+		hasOrientations[Block.stairsWoodBirch.blockID] = true;
+		hasOrientations[Block.stairsWoodOak.blockID] = true;
+		hasOrientations[Block.stairsWoodJungle.blockID] = true;
+		hasOrientations[Block.stairsWoodSpruce.blockID] = true;
 		hasOrientations[Block.wood.blockID] = true;
 		hasOrientations[Block.blockNetherQuartz.blockID] = true;
 		hasOrientations[mod_pocketDim.dimDoor.blockID] = true;
 		hasOrientations[mod_pocketDim.ExitDoor.blockID] = true;
+		
 	}
 
 	public static int transformMetadata(int metadata, int turns, int blockID)
