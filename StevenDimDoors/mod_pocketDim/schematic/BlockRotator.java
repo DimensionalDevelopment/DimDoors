@@ -61,6 +61,7 @@ public class BlockRotator
 		hasOrientations[Block.blockNetherQuartz.blockID] = true;
 		hasOrientations[Block.railPowered.blockID] = true;
 		hasOrientations[Block.railDetector.blockID] = true;
+		hasOrientations[Block.railActivator.blockID] = true;
 		
 		hasOrientations[mod_pocketDim.dimDoor.blockID] = true;
 		hasOrientations[mod_pocketDim.ExitDoor.blockID] = true;
@@ -106,11 +107,11 @@ public class BlockRotator
 				metadata = (metadata - 2) % 2 + 3;
 			}
 		}
-		else if (blockID == Block.railPowered.blockID || blockID == Block.railDetector.blockID)
+		else if (blockID == Block.railPowered.blockID || blockID == Block.railDetector.blockID || blockID == Block.railActivator.blockID)
 		{
 			switch (metadata)
 			{
-			//Powered Track/Detector Track (off)
+			//Powered Track/Detector Track/Activator Track (off)
 			case 0:
 				metadata = 1;
 				break;
@@ -130,7 +131,7 @@ public class BlockRotator
 				metadata = 3;
 				break;
 				
-			//Powered Track/Detector Track (on)
+			//Powered Track/Detector Track/Activator Track (on)
 			case 8:
 				metadata = 9;
 				break;
