@@ -43,6 +43,7 @@ import StevenDimDoors.mod_pocketDim.SchematicLoader;
 import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
+import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -92,44 +93,6 @@ public class dimHelper extends DimensionManager
 	public static final int DEFAULT_POCKET_SIZE = 39;
 	public static final int DEFAULT_POCKET_WALL_THICKNESS = 5;
 	public static final int MAX_WORLD_HEIGHT = 254;
-	//Stupid function I use because I don't understand bitwise operations yet. Used in door orientation
-	//TODO get rid of this
-	public int flipDoorMetadata(int data)
-	{
-		if(data==0)
-		{
-			return 2;
-		}
-		if(data==1)
-		{
-			return 3;
-		}
-		if(data==2)
-		{
-			return 0;
-		}
-		if(data==3)
-		{
-			return 1;
-		}
-		if(data==4)
-		{
-			return 6;
-		}
-		if(data==5)
-		{
-			return 7;
-		}
-		if(data==6)
-		{
-			return 4;
-		}
-		if(data==7)
-		{
-			return 5;
-		}
-		else return -10;
-	}
 	
 	public int getDimDepth(int DimID)
 	{
@@ -849,7 +812,7 @@ public class dimHelper extends DimensionManager
 			PacketHandler.onDimCreatedPacket(destDimData);
 		}
 		link = this.createLink(DimensionManager.getWorld(link.locDimID).provider.dimensionId,dimensionID,link.locXCoord,link.locYCoord,link.locZCoord, link.destXCoord,constrainPocketY(link.destYCoord),link.destZCoord,link.linkOrientation); //creates and registers the two rifts that link the parent and pocket dim. 
-		this.createLink(dimensionID,DimensionManager.getWorld(link.locDimID).provider.dimensionId, link.destXCoord,constrainPocketY(link.destYCoord),link.destZCoord, link.locXCoord,link.locYCoord,link.locZCoord, this.flipDoorMetadata(link.linkOrientation));
+		this.createLink(dimensionID,DimensionManager.getWorld(link.locDimID).provider.dimensionId, link.destXCoord,constrainPocketY(link.destYCoord),link.destZCoord, link.locXCoord,link.locYCoord,link.locZCoord, BlockRotator.transformMetadata(link.linkOrientation, 2, Block.doorWood.blockID));
 		return link;
 	}
 	

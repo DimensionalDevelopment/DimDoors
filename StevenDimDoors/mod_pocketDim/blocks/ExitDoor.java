@@ -7,12 +7,14 @@ import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -67,7 +69,8 @@ public class ExitDoor extends dimDoor
 					  
 					
 					dimHelper.instance.createLink(locDimID, ExitDimID, par2, par3, par4, par2, yCoord, par4,par1World.getBlockMetadata(par2, par3-1, par4));
-					dimHelper.instance.createLink(ExitDimID, locDimID, par2, yCoord, par4, par2, par3, par4,dimHelper.instance.flipDoorMetadata(par1World.getBlockMetadata(par2, par3-1, par4)));
+					dimHelper.instance.createLink(ExitDimID, locDimID, par2, yCoord, par4, par2, par3, par4,
+							BlockRotator.transformMetadata(par1World.getBlockMetadata(par2, par3 - 1, par4), 2, Block.doorWood.blockID));
 	   			}
 
 	   				

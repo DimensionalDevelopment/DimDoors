@@ -7,6 +7,7 @@ import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -150,7 +151,7 @@ public class dimDoor extends BlockContainer
 	    		
 					if(par1World.getBlockMetadata(par2, par3-1, par4)==var12)
 					{
-						var12=dimHelper.instance.flipDoorMetadata(var12);
+						var12 = BlockRotator.transformMetadata(var12, 2, Block.doorWood.blockID);
 					}
 					par1World.setBlockMetadataWithNotify(par2, par3-1, par4, var12,2);
 					
@@ -165,7 +166,7 @@ public class dimDoor extends BlockContainer
 					int var12 = (int) (MathHelper.floor_double((double)((par5EntityPlayer.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
 					if(par1World.getBlockMetadata(par2, par3, par4)==var12)
 					{ 
-						var12=dimHelper.instance.flipDoorMetadata(var12);
+						var12 = BlockRotator.transformMetadata(var12, 2, Block.doorWood.blockID);
 					}
 					par1World.setBlockMetadataWithNotify(par2, par3, par4, var12,2);
 					
