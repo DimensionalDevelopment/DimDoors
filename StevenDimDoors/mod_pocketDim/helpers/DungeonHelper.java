@@ -35,17 +35,15 @@ public class DungeonHelper
 	private static final String DEFAULT_DOWN_SCHEMATIC_PATH = "/schematics/core/simpleStairsDown.schematic";
 	private static final String DEFAULT_ERROR_SCHEMATIC_PATH = "/schematics/core/somethingBroke.schematic";
 	private static final String BUNDLED_DUNGEONS_LIST_PATH = "/schematics/schematics.txt";
+	private static final String DUNGEON_CREATION_GUIDE_SOURCE_PATH = "/mods/DimDoors/text/How_to_add_dungeons.txt";
 
 	public static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	private static final int DEFAULT_DUNGEON_WEIGHT = 100;
 	public static final int MAX_DUNGEON_WEIGHT = 10000; //Used to prevent overflows and math breaking down
 	private static final int MAX_EXPORT_RADIUS = 50;
 	public static final short MAX_DUNGEON_WIDTH = 2 * MAX_EXPORT_RADIUS + 1;
-	public static final short MAX_DUNGEON_HEIGHT = 2 * MAX_EXPORT_RADIUS + 1;
-	public static final short MAX_DUNGEON_LENGTH = 2 * MAX_EXPORT_RADIUS + 1;
-	
-	public static final int FABRIC_OF_REALITY_EXPORT_ID = 1973;
-	public static final int PERMAFABRIC_EXPORT_ID = 220;
+	public static final short MAX_DUNGEON_HEIGHT = MAX_DUNGEON_WIDTH;
+	public static final short MAX_DUNGEON_LENGTH = MAX_DUNGEON_WIDTH;
 	
 	private static final String HUB_DUNGEON_TYPE = "Hub";
 	private static final String TRAP_DUNGEON_TYPE = "Trap";
@@ -145,7 +143,7 @@ public class DungeonHelper
 		File file = new File(properties.CustomSchematicDirectory);
 		if (file.exists() || file.mkdir())
 		{
-			copyfile.copyFile("/mods/DimDoors/text/How_to_add_dungeons.txt", file.getAbsolutePath() + "/How_to_add_dungeons.txt");
+			copyfile.copyFile(DUNGEON_CREATION_GUIDE_SOURCE_PATH, file.getAbsolutePath() + "/How_to_add_dungeons.txt");
 		}
 		registerBundledDungeons();
 		importCustomDungeons(properties.CustomSchematicDirectory);
