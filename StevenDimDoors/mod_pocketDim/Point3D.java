@@ -105,6 +105,6 @@ public class Point3D implements Serializable {
 	@Override
 	public String toString()
 	{
-		return "(" + x + ", " + "y" + ", " + z + ")";
+		return "(" + x + ", " + y + ", " + z + ")";
 	}
 }

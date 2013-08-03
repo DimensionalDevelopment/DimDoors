@@ -1,6 +1,9 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -9,10 +12,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -26,13 +29,19 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BlockRift extends BlockContainer
 {
 	private static final float MIN_IMMUNE_HARDNESS = 200.0F;
+	private static final int BLOCK_DESTRUCTION_RANGE = 4;
+	private static final int BLOCK_DESTRUCTION_VOLUME = (int) Math.pow(2 * BLOCK_DESTRUCTION_RANGE + 1, 3);
+	private static final int MAX_BLOCK_SEARCH_CHANCE = 100;
+	private static final int BLOCK_SEARCH_CHANCE = 50;
+	private static final int MAX_BLOCK_DESTRUCTION_CHANCE = 100;
+	private static final int BLOCK_DESTRUCTION_CHANCE = 50;
 	
 	private final DDProperties properties;
 	private final ArrayList<Integer> blocksImmuneToRift;
 	
 	public BlockRift(int i, int j, Material par2Material, DDProperties properties) 
 	{
-		super(i, Material.air);
+		super(i, par2Material);
 		this.setTickRandomly(true);
 		this.setLightOpacity(14);
 		this.properties = properties;
@@ -50,6 +59,7 @@ public class BlockRift extends BlockContainer
 		this.blocksImmuneToRift.add(Block.blockEmerald.blockID);
 		this.blocksImmuneToRift.add(Block.blockGold.blockID);
 		this.blocksImmuneToRift.add(Block.blockLapis.blockID);
+		this.blocksImmuneToRift.add(Block.glass.blockID);
 	}
 	
 	@Override
@@ -141,47 +151,75 @@ public class BlockRift extends BlockContainer
 		return null;
 	}
 	
-	//function that regulates how many blocks it eats/ how fast it eates them. 
+	//function that regulates how many blocks it eats/ how fast it eats them. 
 	@Override
 	public void updateTick(World world, int x, int y, int z, Random random)
 	{
-		if(!world.isRemote&&dimHelper.instance.getLinkDataFromCoords(x, y, z, world.provider.dimensionId)!=null && properties.RiftGriefingEnabled)
+		if (properties.RiftGriefingEnabled && !world.isRemote &&
+				dimHelper.instance.getLinkDataFromCoords(x, y, z, world.provider.dimensionId) != null)
 		{
-			TileEntityRift rift = (TileEntityRift) world.getBlockTileEntity(x, y, z);
-			if (rift.isNearRift)
+			//Randomly decide whether to search for blocks to destroy. This reduces the frequency of search operations,
+			//moderates performance impact, and controls the apparent speed of block destruction.
+			if (random.nextInt(MAX_BLOCK_SEARCH_CHANCE) < BLOCK_SEARCH_CHANCE &&
+					((TileEntityRift) world.getBlockTileEntity(x, y, z)).isNearRift )
 			{
-				//TODO: Fix this. Make it pretty. õ_õ ~SenseiKiwi
-				int range=4;
-				float distance=range+range/4;
-				int i=-range;
-				int j=-range;
-				int k=-range;
-				boolean flag=true;
-				while (i<range&&flag)
+				DestroyNearbyBlocks(world, x, y, z, random);
+			}
+		}
+	}
+	
+	private void DestroyNearbyBlocks(World world, int x, int y, int z, Random random)
+	{
+		HashMap<Point3D, Integer> pointDistances = new HashMap<Point3D, Integer>(BLOCK_DESTRUCTION_VOLUME);
+		Queue<Point3D> points = new LinkedList<Point3D>();
+		
+		//Perform a breadth-first search outwards from the point at which the rift is located. Record the distances
+		//of the points we visit to stop the search at its maximum range.
+		pointDistances.put(new Point3D(x, y, z), 0);
+		AddSurroundingBlocks(x, y, z, 1, pointDistances, points);
+		while (!points.isEmpty())
+		{
+			Point3D current = points.remove();
+			int distance = pointDistances.get(current);
+			
+			//If the current block is air, continue searching. Otherwise, try destroying the block.
+			if (world.isAirBlock(current.getX(), current.getY(), current.getZ()))
+			{
+				//Make sure we stay within the search range
+				if (distance < BLOCK_DESTRUCTION_RANGE)
 				{
-					while (j<range&&flag)
-					{
-						while (k<range&&flag)
-						{
-							if (!isBlockImmune(world, x+i, y+j, z+k) &&
-									MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)<distance&&!world.isAirBlock(x+i, y+j, z+k))
-							{
-								if(MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)!=0&&random.nextInt(2)==0)
-								{
-									world.setBlock(x+i, y+j, z+k,0);
-									flag=random.nextBoolean()||random.nextBoolean();
-								}
-
-							}
-							k++;
-						}
-						k=-range;
-						j++;
-
-					}
-					j=-range;
-					i++;
+					AddSurroundingBlocks(current.getX(), current.getY(), current.getZ(), distance + 1, pointDistances, points);
 				}
+			}
+			else
+			{
+				//Check if the current block is immune to destruction by rifts. If not, randomly decide whether to destroy it.
+				//The randomness makes it so the destroyed area appears "noisy" if the rift is exposed to a large surface.
+				if (!isBlockImmune(world, current.getX(), current.getY(), current.getZ()) &&
+						random.nextInt(MAX_BLOCK_DESTRUCTION_CHANCE) < BLOCK_DESTRUCTION_CHANCE)
+				{
+					world.setBlockToAir(current.getX(), current.getY(), current.getZ());
+				}
+			}
+		}
+	}
+	
+	private void AddSurroundingBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
+	{
+		Point3D[] neighbors = new Point3D[] {
+				new Point3D(x - 1, y, z),
+				new Point3D(x + 1, y, z),
+				new Point3D(x, y - 1, z),
+				new Point3D(x, y + 1, z),
+				new Point3D(x, y, z - 1),
+				new Point3D(x, y, z + 1)
+		};
+		for (int index = 0; index < neighbors.length; index++)
+		{
+			if (!pointDistances.containsKey(neighbors[index]))
+			{
+				pointDistances.put(neighbors[index], distance);
+				points.add(neighbors[index]);
 			}
 		}
 	}
