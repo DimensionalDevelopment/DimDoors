@@ -175,7 +175,7 @@ public class BlockRift extends BlockContainer
 		//Perform a breadth-first search outwards from the point at which the rift is located. Record the distances
 		//of the points we visit to stop the search at its maximum range.
 		pointDistances.put(new Point3D(x, y, z), 0);
-		AddSurroundingBlocks(x, y, z, 0, pointDistances, points);
+		addAdjacentBlocks(x, y, z, 0, pointDistances, points);
 		while (!points.isEmpty())
 		{
 			Point3D current = points.remove();
@@ -187,7 +187,7 @@ public class BlockRift extends BlockContainer
 				//Make sure we stay within the search range
 				if (distance < BLOCK_DESTRUCTION_RANGE)
 				{
-					addSurroundingBlocks(current.getX(), current.getY(), current.getZ(), distance, pointDistances, points);
+					addAdjacentBlocks(current.getX(), current.getY(), current.getZ(), distance, pointDistances, points);
 				}
 			}
 			else
@@ -203,7 +203,7 @@ public class BlockRift extends BlockContainer
 		}
 	}
 	
-	private void addSurroundingBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
+	private void addAdjacentBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
 	{
 		Point3D[] neighbors = new Point3D[] {
 				new Point3D(x - 1, y, z),
