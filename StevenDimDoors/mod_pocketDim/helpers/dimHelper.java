@@ -42,7 +42,6 @@ import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.SchematicLoader;
 import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
@@ -272,16 +271,20 @@ public class dimHelper extends DimensionManager
 		    	}
 		    	this.generateDoor(world,linkData);
 		
+		    	//FIXME: Why are we checking blockList.length? Not necessary. getBlockId() can't return an ID past the end of the block list.
+		    	//Plus even if the check is necessary, it's still wrong since it should be less than, not less than or equal to.
 		    	if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord+1,playerZCoord))
 		    	{
-		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube()&&!mod_pocketDim.blocksImmuneToRift.contains(entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)))
+		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube() &&
+		    				!mod_pocketDim.blockRift.isBlockImmune(entity.worldObj, playerXCoord+1,playerYCoord,playerZCoord))
 		    		{
 		    			entity.worldObj.setBlock(playerXCoord,playerYCoord+1,playerZCoord,0);
 		    		}
 		    	}
-		    	if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord,playerZCoord))
+		    	if (Block.blocksList.length >= entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord,playerZCoord))
 		    	{
-		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)].isOpaqueCube()&&!mod_pocketDim.blocksImmuneToRift.contains(entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)))
+		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)].isOpaqueCube() &&
+		    				!mod_pocketDim.blockRift.isBlockImmune(entity.worldObj, playerXCoord,playerYCoord,playerZCoord))
 		    		{
 		    			entity.worldObj.setBlock(playerXCoord,playerYCoord,playerZCoord,0);
 		    		}
@@ -362,12 +365,12 @@ public class dimHelper extends DimensionManager
 		link.isLocPocket=locationDimData.isPocket;
 		locationDimData.addLinkToDim(link);
 		
-		if(dimHelper.getWorld(link.locDimID)!=null)
+		World world = dimHelper.getWorld(link.locDimID);
+		if (world != null)
 		{
-			int blocktoReplace = dimHelper.getWorld(link.locDimID).getBlockId(link.locXCoord, link.locYCoord, link.locZCoord);
-			if(!mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))
+			if (!mod_pocketDim.blockRift.isBlockImmune(world, link.locXCoord, link.locYCoord, link.locZCoord))
 			{
-				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);	
+				world.setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);	
 			}
 		}
 		//Notifies other players that a link has been created. 

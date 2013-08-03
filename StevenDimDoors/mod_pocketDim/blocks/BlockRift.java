@@ -1,7 +1,9 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
+import java.util.ArrayList;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -11,7 +13,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.PacketHandler;
 import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -24,24 +25,41 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockRift extends BlockContainer
 {
-	private static DDProperties properties = null;
+	private static final float MIN_IMMUNE_HARDNESS = 200.0F;
 	
-	public BlockRift(int i, int j, Material par2Material) 
+	private final DDProperties properties;
+	private final ArrayList<Integer> blocksImmuneToRift;
+	
+	public BlockRift(int i, int j, Material par2Material, DDProperties properties) 
 	{
 		super(i, Material.air);
-		setTickRandomly(true);
-		//  this.setCreativeTab(CreativeTabs.tabBlock);
+		this.setTickRandomly(true);
 		this.setLightOpacity(14);
-		if (properties == null)
-			properties = DDProperties.instance();
+		this.properties = properties;
+		this.blocksImmuneToRift = new ArrayList<Integer>();
+		this.blocksImmuneToRift.add(properties.FabricBlockID);
+		this.blocksImmuneToRift.add(properties.PermaFabricBlockID);
+		this.blocksImmuneToRift.add(properties.DimensionalDoorID);
+		this.blocksImmuneToRift.add(properties.WarpDoorID);
+		this.blocksImmuneToRift.add(properties.TransTrapdoorID);
+		this.blocksImmuneToRift.add(properties.UnstableDoorID);
+		this.blocksImmuneToRift.add(properties.RiftBlockID);
+		this.blocksImmuneToRift.add(properties.TransientDoorID);
+		this.blocksImmuneToRift.add(Block.blockIron.blockID);
+		this.blocksImmuneToRift.add(Block.blockDiamond.blockID);
+		this.blocksImmuneToRift.add(Block.blockEmerald.blockID);
+		this.blocksImmuneToRift.add(Block.blockGold.blockID);
+		this.blocksImmuneToRift.add(Block.blockLapis.blockID);
 	}
 	
+	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
 		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2());
 	}
 	
 	//sends a packet informing the client that there is a link present so it renders properly. (when placed)
+	@Override
 	public void onBlockAdded(World par1World, int par2, int par3, int par4) 
 	{
 		try
@@ -53,16 +71,18 @@ public class BlockRift extends BlockContainer
 			e.printStackTrace();
 		}
 		//	this.updateTick(par1World, par2, par3, par4, new Random());
-
 	}
+	
+	@Override
 	public boolean isCollidable()
 	{
 		return false;
 	}
-
+	
+	@Override
 	public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {}
 
-
+	@Override
 	public boolean isOpaqueCube()
 	{
 		return false;
@@ -71,6 +91,7 @@ public class BlockRift extends BlockContainer
 	/**
 	 * Returns whether this block is collideable based on the arguments passed in Args: blockMetaData, unknownFlag
 	 */
+	@Override
 	public boolean canCollideCheck(int par1, boolean par2)
 	{
 
@@ -81,11 +102,14 @@ public class BlockRift extends BlockContainer
 	 * Returns Returns true if the given side of this block type should be rendered (if it's solid or not), if the
 	 * adjacent block is at the given coordinates. Args: blockAccess, x, y, z, side
 	 */
+	@Override
 	public boolean isBlockSolid(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
 	{
 		return true;
 	}
+	
 	//this doesnt do anything yet.
+	@Override
 	public int getRenderType()
 	{
 		if(mod_pocketDim.isPlayerWearingGoogles)
@@ -96,12 +120,12 @@ public class BlockRift extends BlockContainer
 		return 8;
 	}
 
-	@SideOnly(Side.CLIENT)
-
 	/**
 	 * Returns true if the given side of this block type should be rendered, if the adjacent block is at the given
 	 * coordinates.  Args: blockAccess, x, y, z, side
 	 */
+	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
 	{
 		return true;
@@ -111,21 +135,23 @@ public class BlockRift extends BlockContainer
 	 * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
 	 * cleared to be reused)
 	 */
+	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4)
 	{
 		return null;
 	}
+	
 	//function that regulates how many blocks it eats/ how fast it eates them. 
+	@Override
 	public void updateTick(World world, int x, int y, int z, Random random)
 	{
 		if(!world.isRemote&&dimHelper.instance.getLinkDataFromCoords(x, y, z, world.provider.dimensionId)!=null && properties.RiftGriefingEnabled)
 		{
 			TileEntityRift rift = (TileEntityRift) world.getBlockTileEntity(x, y, z);
-			if(rift.isNearRift)
+			if (rift.isNearRift)
 			{
-
+				//TODO: Fix this. Make it pretty. õ_õ ~SenseiKiwi
 				int range=4;
-
 				float distance=range+range/4;
 				int i=-range;
 				int j=-range;
@@ -137,7 +163,8 @@ public class BlockRift extends BlockContainer
 					{
 						while (k<range&&flag)
 						{
-							if(!mod_pocketDim.blocksImmuneToRift.contains(world.getBlockId(x+i, y+j, z+k))&&MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)<distance&&!world.isAirBlock(x+i, y+j, z+k))
+							if (!isBlockImmune(world, x+i, y+j, z+k) &&
+									MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)<distance&&!world.isAirBlock(x+i, y+j, z+k))
 							{
 								if(MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)!=0&&random.nextInt(2)==0)
 								{
@@ -153,19 +180,16 @@ public class BlockRift extends BlockContainer
 
 					}
 					j=-range;
-					i++;		
-
+					i++;
 				}
-
-
-
 			}
-
 		}
 	}
+	
 	/**
 	 * regulates the render effect, especially when multiple rifts start to link up. Has 3 main parts- Grows toward and away from nearest rft, bends toward it, and a randomization function
 	 */
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random rand)
 	{
@@ -186,8 +210,6 @@ public class BlockRift extends BlockContainer
 
 		TileEntityRift tile = (TileEntityRift)par1World.getBlockTileEntity(par2, par3, par4);
 
-		//the noise, ie, how far the rift particles are away from the intended location. 
-		float offset=0;
 		float Xoffset=0;
 		float Yoffset=0;
 		float Zoffset=0;
@@ -250,7 +272,6 @@ public class BlockRift extends BlockContainer
 			yChange=(float) ((yGrowth+yGrowthn)+rand.nextGaussian()*.05F);
 			zChange=(float) ((zGrowth+zGrowthn)+rand.nextGaussian()*.05F);
 
-			offset=  (float) ((0.2F/(1+Math.abs(xChange)+Math.abs(yChange)+Math.abs(zChange))));
 			Xoffset=  (float) ((0.25F/(1+Math.abs(xChange))));
 
 			Yoffset=  (float) ((0.25F/(1+Math.abs(yChange))));
@@ -274,15 +295,27 @@ public class BlockRift extends BlockContainer
 				FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(par1World,par2+.5, par3+.5, par4+.5, rand.nextGaussian() * 0.01D, rand.nextGaussian()  * 0.01D, rand.nextGaussian() * 0.01D, FMLClientHandler.instance().getClient().effectRenderer));
 
 			}
-
 		}
-
 	}
+	
+	public boolean isBlockImmune(World world, int x, int y, int z)
+	{
+		Block block = Block.blocksList[world.getBlockId(x, y, z)];
+		if (block != null)
+		{
+			float hardness = block.getBlockHardness(world, x, y, z);
+			return (hardness < 0 || hardness >= MIN_IMMUNE_HARDNESS || blocksImmuneToRift.contains(block.blockID));
+		}
+		return false;
+	}
+
+	@Override
 	public int idPicked(World par1World, int par2, int par3, int par4)
 	{
 		return 0;
 	}
 
+	@Override
 	public int idDropped(int par1, Random par2Random, int par3)
 	{
 		return 0;
@@ -290,12 +323,7 @@ public class BlockRift extends BlockContainer
 
 	@Override
 	public TileEntity createNewTileEntity(World var1) 
-
 	{
-		// TODO Auto-generated method stub
 		return new TileEntityRift();
 	}
-
-
-
 }

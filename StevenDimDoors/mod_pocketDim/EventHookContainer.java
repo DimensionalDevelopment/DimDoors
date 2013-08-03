@@ -58,15 +58,14 @@ public class EventHookContainer
     			{    			
 	    			for (LinkData link:dimHelper.instance.getDimData(world.provider.dimensionId).getLinksInDim())
 	    			{
-	    				if(linkCount>100) //TODO: Wtf? wouldn't this cause some links to not load on servers with several links? Not sure what's going on here. ~SenseiKiwi
-	    				{
-	    					break;
-	    				}
-	    				linkCount++;
-	    				int blocktoReplace = world.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord);
-	    				if (!mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))
+	    				if (!mod_pocketDim.blockRift.isBlockImmune(world, link.locXCoord, link.locYCoord, link.locZCoord))
 	    				{
 	        				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
+	    				}
+	    				linkCount++;
+	    				if (linkCount >= 100)
+	    				{
+	    					break;
 	    				}
 	    			}
     			}
