@@ -59,7 +59,6 @@ public class BlockRift extends BlockContainer
 		this.blocksImmuneToRift.add(Block.blockEmerald.blockID);
 		this.blocksImmuneToRift.add(Block.blockGold.blockID);
 		this.blocksImmuneToRift.add(Block.blockLapis.blockID);
-		this.blocksImmuneToRift.add(Block.glass.blockID);
 	}
 	
 	@Override
