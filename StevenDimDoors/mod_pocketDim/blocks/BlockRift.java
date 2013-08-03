@@ -162,12 +162,12 @@ public class BlockRift extends BlockContainer
 			if (random.nextInt(MAX_BLOCK_SEARCH_CHANCE) < BLOCK_SEARCH_CHANCE &&
 					((TileEntityRift) world.getBlockTileEntity(x, y, z)).isNearRift )
 			{
-				DestroyNearbyBlocks(world, x, y, z, random);
+				destroyNearbyBlocks(world, x, y, z, random);
 			}
 		}
 	}
 	
-	private void DestroyNearbyBlocks(World world, int x, int y, int z, Random random)
+	private void destroyNearbyBlocks(World world, int x, int y, int z, Random random)
 	{
 		HashMap<Point3D, Integer> pointDistances = new HashMap<Point3D, Integer>(BLOCK_DESTRUCTION_VOLUME);
 		Queue<Point3D> points = new LinkedList<Point3D>();
@@ -175,7 +175,7 @@ public class BlockRift extends BlockContainer
 		//Perform a breadth-first search outwards from the point at which the rift is located. Record the distances
 		//of the points we visit to stop the search at its maximum range.
 		pointDistances.put(new Point3D(x, y, z), 0);
-		AddSurroundingBlocks(x, y, z, 1, pointDistances, points);
+		AddSurroundingBlocks(x, y, z, 0, pointDistances, points);
 		while (!points.isEmpty())
 		{
 			Point3D current = points.remove();
@@ -187,7 +187,7 @@ public class BlockRift extends BlockContainer
 				//Make sure we stay within the search range
 				if (distance < BLOCK_DESTRUCTION_RANGE)
 				{
-					AddSurroundingBlocks(current.getX(), current.getY(), current.getZ(), distance + 1, pointDistances, points);
+					addSurroundingBlocks(current.getX(), current.getY(), current.getZ(), distance, pointDistances, points);
 				}
 			}
 			else
@@ -203,7 +203,7 @@ public class BlockRift extends BlockContainer
 		}
 	}
 	
-	private void AddSurroundingBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
+	private void addSurroundingBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
 	{
 		Point3D[] neighbors = new Point3D[] {
 				new Point3D(x - 1, y, z),
@@ -217,7 +217,7 @@ public class BlockRift extends BlockContainer
 		{
 			if (!pointDistances.containsKey(neighbors[index]))
 			{
-				pointDistances.put(neighbors[index], distance);
+				pointDistances.put(neighbors[index], distance + 1);
 				points.add(neighbors[index]);
 			}
 		}
