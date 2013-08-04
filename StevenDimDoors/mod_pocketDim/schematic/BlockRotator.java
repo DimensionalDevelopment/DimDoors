@@ -1,7 +1,5 @@
 package StevenDimDoors.mod_pocketDim.schematic;
 
-import java.util.ArrayList;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockComparator;
 import net.minecraft.block.BlockDoor;
@@ -17,720 +15,323 @@ public class BlockRotator
 	//until we can rewrite it.
 	
 	public final static int EAST_DOOR_METADATA = 0;
-	private final static int SOUTH_DOOR_METADATA = 1;
-	private final static int WEST_DOOR_METADATA = 2;
-	public final static int NORTH_DOOR_METADATA = 3;
+	private final static int BLOCK_ID_COUNT = 4096;
 	
-	private final static ArrayList<Integer> metadataFlipList = new ArrayList<Integer>();
+	//Provides a fast lookup table for whether blocks have orientations
+	private final static boolean[] hasOrientations = new boolean[BLOCK_ID_COUNT];
 	
 	static
 	{
-		metadataFlipList.add(Block.dispenser.blockID);
-		metadataFlipList.add(Block.stairsStoneBrick.blockID);
-		metadataFlipList.add(Block.lever.blockID);
-		metadataFlipList.add(Block.stoneButton.blockID);
-		metadataFlipList.add(Block.redstoneRepeaterIdle.blockID);
-		metadataFlipList.add(Block.redstoneRepeaterActive.blockID);
-		metadataFlipList.add(Block.tripWireSource.blockID);
-		metadataFlipList.add(Block.torchWood.blockID);
-		metadataFlipList.add(Block.torchRedstoneIdle.blockID);
-		metadataFlipList.add(Block.torchRedstoneActive.blockID);
-		metadataFlipList.add(Block.doorIron.blockID);
-		metadataFlipList.add(Block.doorWood.blockID);
-		metadataFlipList.add(Block.pistonBase.blockID);
-		metadataFlipList.add(Block.pistonStickyBase.blockID);
-		metadataFlipList.add(Block.pistonExtension.blockID);
-		metadataFlipList.add(Block.redstoneComparatorIdle.blockID);
-		metadataFlipList.add(Block.redstoneComparatorActive.blockID);
-		metadataFlipList.add(Block.signPost.blockID);
-		metadataFlipList.add(Block.signWall.blockID);
-		metadataFlipList.add(Block.skull.blockID);
-		metadataFlipList.add(Block.ladder.blockID);
-		metadataFlipList.add(Block.vine.blockID);
-		metadataFlipList.add(Block.anvil.blockID);
-		metadataFlipList.add(Block.chest.blockID);
-		metadataFlipList.add(Block.chestTrapped.blockID);
-		metadataFlipList.add(Block.hopperBlock.blockID);
-		metadataFlipList.add(Block.stairsNetherBrick.blockID);
-		metadataFlipList.add(Block.stairsCobblestone.blockID);
-		metadataFlipList.add(Block.stairsNetherBrick.blockID);
-		metadataFlipList.add(Block.stairsNetherQuartz.blockID);
-		metadataFlipList.add(Block.stairsSandStone.blockID);
-		metadataFlipList.add(mod_pocketDim.dimDoor.blockID);
-		metadataFlipList.add(mod_pocketDim.ExitDoor.blockID);
+		hasOrientations[Block.dispenser.blockID] = true;
+		hasOrientations[Block.stairsStoneBrick.blockID] = true;
+		hasOrientations[Block.lever.blockID] = true;
+		hasOrientations[Block.stoneButton.blockID] = true;
+		hasOrientations[Block.redstoneRepeaterIdle.blockID] = true;
+		hasOrientations[Block.redstoneRepeaterActive.blockID] = true;
+		hasOrientations[Block.tripWireSource.blockID] = true;
+		hasOrientations[Block.torchWood.blockID] = true;
+		hasOrientations[Block.torchRedstoneIdle.blockID] = true;
+		hasOrientations[Block.torchRedstoneActive.blockID] = true;
+		hasOrientations[Block.doorIron.blockID] = true;
+		hasOrientations[Block.doorWood.blockID] = true;
+		hasOrientations[Block.pistonBase.blockID] = true;
+		hasOrientations[Block.pistonStickyBase.blockID] = true;
+		hasOrientations[Block.pistonExtension.blockID] = true;
+		hasOrientations[Block.redstoneComparatorIdle.blockID] = true;
+		hasOrientations[Block.redstoneComparatorActive.blockID] = true;
+		hasOrientations[Block.signPost.blockID] = true;
+		hasOrientations[Block.signWall.blockID] = true;
+		hasOrientations[Block.skull.blockID] = true;
+		hasOrientations[Block.ladder.blockID] = true;
+		hasOrientations[Block.vine.blockID] = true;
+		hasOrientations[Block.anvil.blockID] = true;
+		hasOrientations[Block.chest.blockID] = true;
+		hasOrientations[Block.chestTrapped.blockID] = true;
+		hasOrientations[Block.hopperBlock.blockID] = true;
+		hasOrientations[Block.stairsNetherBrick.blockID] = true;
+		hasOrientations[Block.stairsCobblestone.blockID] = true;
+		hasOrientations[Block.stairsNetherQuartz.blockID] = true;
+		hasOrientations[Block.stairsSandStone.blockID] = true;
+		hasOrientations[Block.stairsBrick.blockID] = true;
+		hasOrientations[Block.stairsWoodBirch.blockID] = true;
+		hasOrientations[Block.stairsWoodOak.blockID] = true;
+		hasOrientations[Block.stairsWoodJungle.blockID] = true;
+		hasOrientations[Block.stairsWoodSpruce.blockID] = true;
+		hasOrientations[Block.wood.blockID] = true;
+		hasOrientations[Block.blockNetherQuartz.blockID] = true;
+		hasOrientations[Block.railPowered.blockID] = true;
+		hasOrientations[Block.railDetector.blockID] = true;
+		hasOrientations[Block.railActivator.blockID] = true;
+		
+		hasOrientations[mod_pocketDim.dimDoor.blockID] = true;
+		hasOrientations[mod_pocketDim.ExitDoor.blockID] = true;
+		
 	}
 
-	public static int transformMetadata(int metadata, int orientation, int blockID)
+	public static int transformMetadata(int metadata, int turns, int blockID)
+	{
+		//I changed rotations to reduce the monstrous code we had. It might be
+		//slightly less efficient, but it's easier to maintain for now. ~SenseiKiwi
+		
+		//Correct negative turns and get the minimum number of rotations needed
+		turns += 1 << 16;
+		turns %= 4;
+		
+		if (hasOrientations[blockID])
+		{
+			while (turns > 0)
+			{
+				metadata = rotateMetadataBy90(metadata, blockID);
+				turns--;
+			}
+		}
+		return metadata;
+	}
+	
+	private static int rotateMetadataBy90(int metadata, int blockID)
 	{
 		//TODO: Replace this horrible function with something prettier. We promise we will for the next version,
-		//after switching to MC 1.6. PADRE, PLEASE FORGIVE ME.
-		
-		//Hax to fix negative orientations
-		orientation += 1 << 16;
-		orientation %= 4;
-		
-		if (metadataFlipList.contains(blockID))
+		//after switching to MC 1.6. PADRE, PLEASE FORGIVE OUR SINS.
+
+		if (blockID == Block.wood.blockID)
 		{
-			switch (orientation)
+			if (metadata >= 4 && metadata < 12)
 			{
-			case EAST_DOOR_METADATA:
-
-				if (blockID == Block.hopperBlock.blockID)
-				{
-					switch (metadata)
-					{
-					case 2:
-						metadata = 5;
-						break;
-					case 3:
-						metadata = 4;
-						break;
-					case 4:
-						metadata = 2;
-						break;
-					case 5:
-						metadata = 3;
-						break;
-					}
-				}
-				if(Block.blocksList[blockID] instanceof BlockStairs)
-				{
-
-					switch (metadata)
-					{
-					case 0:
-						metadata = 2;
-						break;
-					case 1:
-						metadata = 3;
-						break;
-					case 2:
-						metadata = 1;
-						break;
-					case 3:
-						metadata = 0;
-						break;
-					case 7:
-						metadata = 4;
-						break;
-					case 6:
-						metadata = 5;
-						break;
-					case 5:
-						metadata = 7;
-						break;
-					case 4:
-						metadata = 6;
-						break;
-
-					}
-				}
-
-				else if(blockID== Block.chest.blockID||blockID== Block.chestTrapped.blockID||blockID== Block.ladder.blockID)
-				{
-					switch (metadata)
-					{
-
-					case 2:
-						metadata = 5;
-						break;
-					case 3:
-						metadata = 4;
-						break;					
-					case 4:
-						metadata = 2;
-						break;
-					case 5:
-						metadata = 3;
-						break;
-					}
-
-				}
-				else if (blockID==Block.vine.blockID)
-				{
-					switch (metadata)
-					{
-
-					case 1:
-						metadata = 2;
-						break;
-					case 2:
-						metadata = 4;
-						break;					
-					case 4:
-						metadata = 8;
-						break;
-					case 8:
-						metadata = 1;
-						break;
-					}
-				}
-				else if(blockID== Block.lever.blockID||blockID== Block.stoneButton.blockID||blockID== Block.woodenButton.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
-				{
-					switch (metadata)
-					{
-					case 12:
-						metadata = 9;
-						break;
-					case 11:
-						metadata = 10;
-						break;
-					case 10:
-						metadata = 12;
-						break;
-					case 9:
-						metadata = 11;
-						break;					
-					case 2:
-						metadata = 4;
-						break;
-					case 3:
-						metadata = 2;
-						break;
-					case 1:
-						metadata = 3;
-						break;
-					case 4:
-						metadata = 1;
-						break;
-					}
-				}
-				else if(blockID== Block.pistonBase.blockID||blockID==Block.pistonExtension.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID||blockID==Block.dropper.blockID)
-				{
-					switch (metadata)
-					{
-					case 4:
-						metadata = 2;
-						break;
-					case 5:
-						metadata = 3;
-						break;
-					case 13:
-						metadata = 11;
-						break;
-					case 12:
-						metadata = 10;
-						break;
-					case 3:
-						metadata = 4;
-						break;
-					case 2:
-						metadata = 5;
-						break;
-					case 11:
-						metadata = 12;
-						break;
-					case 10:
-						metadata = 13;
-						break;
-					}
-				}
-				else if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater || Block.blocksList[blockID] instanceof BlockDoor || Block.blocksList[blockID] instanceof dimDoor || blockID== Block.tripWireSource.blockID || Block.blocksList[blockID] instanceof BlockComparator)
-				{
-					switch (metadata)
-					{
-					case 0:
-						metadata = 1;
-						break;
-					case 1:
-						metadata = 2;
-						break;
-					case 2:
-						metadata = 3;
-						break;
-					case 3:
-						metadata = 0;
-						break;
-					case 4:
-						metadata = 5;
-						break;
-					case 5:
-						metadata = 6;
-						break;
-					case 6:
-						metadata = 7;
-						break;
-					case 7:
-						metadata = 4;
-						break;
-					case 8:
-						metadata = 9;
-						break;
-					case 9:
-						metadata = 10;
-						break;
-					case 10:
-						metadata = 11;
-						break;
-					case 11:
-						metadata = 8;
-						break;
-					case 12:
-						metadata = 13;
-						break;
-					case 13:
-						metadata = 14;
-						break;
-					case 14:
-						metadata = 15;
-						break;
-					case 15:
-						metadata = 12;
-						break;
-					}
-				}
+				metadata = (metadata % 8) + 4;
+			}
+		}
+		else if (blockID == Block.blockNetherQuartz.blockID)
+		{
+			if (metadata == 3 || metadata == 4)
+			{
+				metadata = (metadata - 2) % 2 + 3;
+			}
+		}
+		else if (blockID == Block.railPowered.blockID || blockID == Block.railDetector.blockID || blockID == Block.railActivator.blockID)
+		{
+			switch (metadata)
+			{
+			//Powered Track/Detector Track/Activator Track (off)
+			case 0:
+				metadata = 1;
 				break;
-			case SOUTH_DOOR_METADATA:
-
-				if (blockID == Block.hopperBlock.blockID)
-				{
-					switch (metadata)
-					{
-					case 2:
-						metadata = 3;
-						break;
-					case 3:
-						metadata = 2;
-						break;
-					case 4:
-						metadata = 5;
-						break;
-					case 5:
-						metadata = 4;
-						break;
-					}
-				}
+			case 1:
+				metadata = 0;
+				break;
+			case 2:
+				metadata = 5;
+				break;
+			case 3:
+				metadata = 4;
+				break;
+			case 4:
+				metadata = 2;
+				break;
+			case 5:
+				metadata = 3;
+				break;
 				
-				if(Block.blocksList[blockID] instanceof BlockStairs)
-				{
-					switch (metadata)
-					{
-					case 0:
-						metadata = 1;
-						break;
-					case 1:
-						metadata = 0;
-						break;
-					case 2:
-						metadata = 3;
-						break;
-					case 3:
-						metadata = 2;
-						break;
-					case 7:
-						metadata = 6;
-						break;
-					case 6:
-						metadata = 7;
-						break;
-					case 5:
-						metadata = 4;
-						break;
-					case 4:
-						metadata = 5;
-						break;
-					}
-				}
-
-				else if(blockID== Block.chest.blockID||blockID== Block.chestTrapped.blockID||blockID==Block.ladder.blockID)
-				{
-					switch (metadata)
-					{
-					case 2:
-						metadata = 3;
-						break;
-					case 3:
-						metadata = 2;
-						break;					
-					case 4:
-						metadata = 5;
-						break;
-					case 5:
-						metadata = 4;
-						break;
-					}
-
-				}
-
-				else	if(blockID==Block.vine.blockID)
-				{
-					switch (metadata)
-					{
-
-					case 1:
-						metadata = 4;
-						break;
-					case 2:
-						metadata = 8;
-						break;					
-					case 4:
-						metadata = 1;
-						break;
-					case 8:
-						metadata = 2;
-						break;
-					}
-				}
-
-
-
-
-				else if(blockID== Block.lever.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
-				{
-					switch (metadata)
-					{
-					case 12:
-						metadata = 11;
-						break;
-					case 11:
-						metadata = 12;
-						break;
-					case 10:
-						metadata = 9;
-						break;
-					case 9:
-						metadata = 10;
-						break;					
-					case 2:
-						metadata = 1;
-						break;
-					case 3:
-						metadata = 4;
-						break;
-					case 1:
-						metadata = 2;
-						break;
-					case 4:
-						metadata = 3;
-
-						break;
-
-					}
-
-				}
-
-				else	if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID||blockID==Block.dropper.blockID)
-				{
-					switch (metadata)
-					{
-					case 4:
-						metadata = 5;
-						break;
-					case 5:
-						metadata = 4;
-						break;
-					case 13:
-						metadata = 12;
-						break;
-					case 12:
-						metadata = 13;
-						break;
-					case 3:
-						metadata = 2;
-						break;
-					case 2:
-						metadata = 3;
-						break;
-					case 11:
-						metadata = 10;
-						break;
-					case 10:
-						metadata = 11;
-						break;
-
-					}
-
-
-
-				}
-
-				else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor || Block.blocksList[blockID] instanceof dimDoor || blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
-				{
-					switch (metadata)
-					{
-					case 0:
-						metadata = 2;
-						break;
-					case 1:
-						metadata = 3;
-						break;
-					case 2:
-						metadata = 0;
-						break;
-					case 3:
-						metadata = 1;
-						break;
-					case 4:
-						metadata = 6;
-						break;
-					case 5:
-						metadata = 7;
-						break;
-					case 6:
-						metadata = 4;
-						break;
-					case 7:
-						metadata = 5;
-						break;
-					case 8:
-						metadata = 10;
-						break;
-					case 9:
-						metadata = 11;
-						break;
-					case 10:
-						metadata = 8;
-						break;
-					case 11:
-						metadata = 9;
-						break;
-					case 12:
-						metadata = 14;
-						break;
-					case 13:
-						metadata = 15;
-						break;
-					case 14:
-						metadata = 12;
-						break;
-					case 15:
-						metadata = 13;
-						break;
-
-
-					}
-
-
-
-				}
-
+			//Powered Track/Detector Track/Activator Track (on)
+			case 8:
+				metadata = 9;
 				break;
-			case WEST_DOOR_METADATA:
-
-				if (blockID == Block.hopperBlock.blockID)
-				{
-					switch (metadata)
-					{
-					case 2:
-						metadata = 4;
-						break;
-					case 3:
-						metadata = 5;
-						break;
-					case 4:
-						metadata = 3;
-						break;
-					case 5:
-						metadata = 2;
-						break;
-					}
-				}
-				
-				if(Block.blocksList[blockID] instanceof BlockStairs)
-				{
-
-					switch (metadata)
-					{
-					case 2:
-						metadata = 0;
-						break;
-					case 3:
-						metadata = 1;
-						break;
-					case 1:
-						metadata = 2;
-						break;
-					case 0:
-						metadata = 3;
-						break;
-					case 4:
-						metadata = 7;
-						break;
-					case 5:
-						metadata = 6;
-						break;
-					case 7:
-						metadata = 5;
-						break;
-					case 6:
-						metadata = 4;
-						break;
-
-					}
-				}
-
-				else	if(blockID== Block.chest.blockID||blockID== Block.chestTrapped.blockID||blockID==Block.ladder.blockID)
-				{
-					switch (metadata)
-					{
-
-					case 2:
-						metadata = 4;
-						break;
-					case 3:
-						metadata = 5;
-						break;					
-					case 4:
-						metadata = 3;
-						break;
-					case 5:
-						metadata = 2;
-						break;
-
-
-
-					}
-
-				}
-
-				else	if(blockID==Block.vine.blockID)
-				{
-					switch (metadata)
-					{
-
-					case 1:
-						metadata = 8;
-						break;
-					case 2:
-						metadata = 1;
-						break;					
-					case 4:
-						metadata = 2;
-						break;
-					case 8:
-						metadata = 4;
-						break;
-					}
-				}
-
-
-
-
-				else	if(blockID== Block.lever.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
-				{
-					switch (metadata)
-					{
-					case 9:
-						metadata = 12;
-						break;
-					case 10:
-						metadata = 11;
-						break;
-					case 12:
-						metadata = 10;
-						break;
-					case 11:
-						metadata = 9;
-						break;					
-					case 4:
-						metadata = 2;
-						break;
-					case 2:
-						metadata = 3;
-						break;
-					case 3:
-						metadata = 1;
-						break;
-					case 1:
-						metadata = 4;
-
-						break;
-
-					}
-
-				}
-
-				else	if(blockID== Block.pistonBase.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID||blockID==Block.dropper.blockID)
-
-				{
-					switch (metadata)
-					{
-					case 2:
-						metadata = 4;
-						break;
-					case 3:
-						metadata = 5;
-						break;
-					case 11:
-						metadata = 13;
-						break;
-					case 10:
-						metadata = 12;
-						break;
-					case 4:
-						metadata = 3;
-						break;
-					case 5:
-						metadata = 2;
-						break;
-					case 12:
-						metadata = 11;
-						break;
-					case 13:
-						metadata = 10;
-						break;
-					}
-				}
-				else	if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater ||Block.blocksList[blockID] instanceof BlockDoor || Block.blocksList[blockID] instanceof dimDoor || blockID== Block.tripWireSource.blockID||Block.blocksList[blockID] instanceof BlockComparator)
-				{
-					switch (metadata)
-					{
-					case 1:
-						metadata = 0;
-						break;
-					case 2:
-						metadata = 1;
-						break;
-					case 3:
-						metadata = 2;
-						break;
-					case 0:
-						metadata = 3;
-						break;
-					case 5:
-						metadata = 4;
-						break;
-					case 6:
-						metadata = 5;
-						break;
-					case 7:
-						metadata = 6;
-						break;
-					case 4:
-						metadata = 7;
-						break;
-					case 9:
-						metadata = 8;
-						break;
-					case 10:
-						metadata = 9;
-						break;
-					case 11:
-						metadata = 10;
-						break;
-					case 8:
-						metadata = 11;
-						break;
-					case 13:
-						metadata = 12;
-						break;
-					case 14:
-						metadata = 13;
-						break;
-					case 15:
-						metadata = 14;
-						break;
-					case 12:
-						metadata = 15;
-						break;
-					}
-				}
+			case 9:
+				metadata = 8;
 				break;
-			case NORTH_DOOR_METADATA:
-				/**
-				 * this is the default case- never need to change anything here
-				 * 
-				 */
+			case 10:
+				metadata = 13;
+				break;
+			case 11:
+				metadata = 12;
+				break;
+			case 12:
+				metadata = 10;
+				break;
+			case 13:
+				metadata = 11;
+				break;
+			}
+		}
+		else if (Block.blocksList[blockID] instanceof BlockStairs)
+		{
+
+			switch (metadata)
+			{
+			case 0:
+				metadata = 2;
+				break;
+			case 1:
+				metadata = 3;
+				break;
+			case 2:
+				metadata = 1;
+				break;
+			case 3:
+				metadata = 0;
+				break;
+			case 7:
+				metadata = 4;
+				break;
+			case 6:
+				metadata = 5;
+				break;
+			case 5:
+				metadata = 7;
+				break;
+			case 4:
+				metadata = 6;
+				break;
+			}
+		}
+		else if (blockID == Block.chest.blockID || blockID == Block.chestTrapped.blockID || blockID == Block.ladder.blockID || blockID == Block.hopperBlock.blockID)
+		{
+			switch (metadata)
+			{
+			case 2:
+				metadata = 5;
+				break;
+			case 3:
+				metadata = 4;
+				break;					
+			case 4:
+				metadata = 2;
+				break;
+			case 5:
+				metadata = 3;
+				break;
+			}
+
+		}
+		else if (blockID==Block.vine.blockID)
+		{
+			switch (metadata)
+			{
+
+			case 1:
+				metadata = 2;
+				break;
+			case 2:
+				metadata = 4;
+				break;					
+			case 4:
+				metadata = 8;
+				break;
+			case 8:
+				metadata = 1;
+				break;
+			}
+		}
+		else if(blockID== Block.lever.blockID||blockID== Block.stoneButton.blockID||blockID== Block.woodenButton.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
+		{
+			switch (metadata)
+			{
+			case 12:
+				metadata = 9;
+				break;
+			case 11:
+				metadata = 10;
+				break;
+			case 10:
+				metadata = 12;
+				break;
+			case 9:
+				metadata = 11;
+				break;					
+			case 2:
+				metadata = 4;
+				break;
+			case 3:
+				metadata = 2;
+				break;
+			case 1:
+				metadata = 3;
+				break;
+			case 4:
+				metadata = 1;
+				break;
+			}
+		}
+		else if(blockID== Block.pistonBase.blockID||blockID==Block.pistonExtension.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID||blockID==Block.dropper.blockID)
+		{
+			switch (metadata)
+			{
+			case 4:
+				metadata = 2;
+				break;
+			case 5:
+				metadata = 3;
+				break;
+			case 13:
+				metadata = 11;
+				break;
+			case 12:
+				metadata = 10;
+				break;
+			case 3:
+				metadata = 4;
+				break;
+			case 2:
+				metadata = 5;
+				break;
+			case 11:
+				metadata = 12;
+				break;
+			case 10:
+				metadata = 13;
+				break;
+			}
+		}
+		else if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater || Block.blocksList[blockID] instanceof BlockDoor || Block.blocksList[blockID] instanceof dimDoor || blockID== Block.tripWireSource.blockID || Block.blocksList[blockID] instanceof BlockComparator)
+		{
+			switch (metadata)
+			{
+			case 0:
+				metadata = 1;
+				break;
+			case 1:
+				metadata = 2;
+				break;
+			case 2:
+				metadata = 3;
+				break;
+			case 3:
+				metadata = 0;
+				break;
+			case 4:
+				metadata = 5;
+				break;
+			case 5:
+				metadata = 6;
+				break;
+			case 6:
+				metadata = 7;
+				break;
+			case 7:
+				metadata = 4;
+				break;
+			case 8:
+				metadata = 9;
+				break;
+			case 9:
+				metadata = 10;
+				break;
+			case 10:
+				metadata = 11;
+				break;
+			case 11:
+				metadata = 8;
+				break;
+			case 12:
+				metadata = 13;
+				break;
+			case 13:
+				metadata = 14;
+				break;
+			case 14:
+				metadata = 15;
+				break;
+			case 15:
+				metadata = 12;
 				break;
 			}
 		}

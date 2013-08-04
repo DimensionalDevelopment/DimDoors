@@ -63,7 +63,7 @@ public class DungeonSchematic extends Schematic {
 	
 	public Point3D getEntranceDoorLocation()
 	{
-		return entranceDoorLocation;
+		return entranceDoorLocation.clone();
 	}
 	
 	private DungeonSchematic()
@@ -102,7 +102,9 @@ public class DungeonSchematic extends Schematic {
 				MONOLITH_SPAWN_MARKER_ID, EXIT_DOOR_MARKER_ID);
 		applyFilter(finder);
 		
-		orientation = (finder.getEntranceOrientation() + 2) & 3; //Flip the entrance's orientation to get the dungeon's orientation
+		//Flip the entrance's orientation to get the dungeon's orientation
+		orientation = BlockRotator.transformMetadata(finder.getEntranceOrientation(), 2, Block.doorWood.blockID);
+
 		entranceDoorLocation = finder.getEntranceDoorLocation();
 		exitDoorLocations = finder.getExitDoorLocations();
 		dimensionalDoorLocations = finder.getDimensionalDoorLocations();
@@ -195,7 +197,7 @@ public class DungeonSchematic extends Schematic {
 					pocketPoint.setZ(dz);
 					blockID = blocks[index];
 					BlockRotator.transformPoint(pocketPoint, entranceDoorLocation, turnAngle, pocketCenter);
-					blockMeta = BlockRotator.transformMetadata(metadata[index], turnAngle + BlockRotator.NORTH_DOOR_METADATA, blockID);
+					blockMeta = BlockRotator.transformMetadata(metadata[index], turnAngle, blockID);
 
 					//In the future, we might want to make this more efficient by building whole chunks at a time
 					setBlockDirectly(world, pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), blockID, blockMeta);
@@ -353,7 +355,7 @@ public class DungeonSchematic extends Schematic {
 					sideLink.locXCoord, 
 					sideLink.locYCoord, 
 					sideLink.locZCoord, 
-					dimHelper.instance.flipDoorMetadata(sideLink.linkOrientation));
+					BlockRotator.transformMetadata(sideLink.linkOrientation, 2, Block.doorWood.blockID));
 
 			if (world.getBlockId(linkDestination.getX(), linkDestination.getY() - 3, linkDestination.getZ()) == properties.FabricBlockID)
 			{

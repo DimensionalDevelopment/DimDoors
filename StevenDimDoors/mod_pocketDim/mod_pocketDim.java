@@ -33,7 +33,6 @@ import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimensionData;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDimensions;
 import StevenDimDoors.mod_pocketDim.commands.CommandResetDungeons;
 import StevenDimDoors.mod_pocketDim.commands.CommandTeleportPlayer;
-import StevenDimDoors.mod_pocketDim.helpers.BlockRotationHelper;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemBlockDimWall;
@@ -104,12 +103,12 @@ public class mod_pocketDim
 	public static Block transientDoor;
 	public static Block ExitDoor;
 	public static Block chaosDoor;
-	public static Block blockRift;
 	public static Block blockLimbo;
 	public static Block dimDoor;    
 	public static Block blockDimWall;   
 	public static Block dimHatch;
 	public static Block blockDimWallPerm;
+	public static BlockRift blockRift;
 
 	public static Item itemRiftBlade;
 	public static Item itemDimDoor;
@@ -126,9 +125,7 @@ public class mod_pocketDim
 	public static PlayerRespawnTracker tracker;
 
 	public static HashMap<String,ArrayList<EntityItem>> limboSpawnInventory = new HashMap<String,ArrayList<EntityItem>>();
-
-	public static ArrayList<Integer> blocksImmuneToRift = new ArrayList<Integer>();
-
+	
 	public static boolean hasInitDims = false;
 	public static boolean isPlayerWearingGoogles = false;
 
@@ -191,7 +188,7 @@ public class mod_pocketDim
 		blockDimWall = (new BlockDimWall(properties.FabricBlockID, 0, Material.iron)).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("blockDimWall");
 		blockDimWallPerm = (new BlockDimWallPerm(properties.PermaFabricBlockID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setUnlocalizedName("blockDimWallPerm");
 		ExitDoor = (new ExitDoor(properties.WarpDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
-		blockRift = (new BlockRift(properties.RiftBlockID, 0, Material.air).setHardness(1.0F) .setUnlocalizedName("rift"));
+		blockRift = (BlockRift) (new BlockRift(properties.RiftBlockID, 0, Material.air, properties).setHardness(1.0F) .setUnlocalizedName("rift"));
 		blockLimbo = (new BlockLimbo(properties.LimboBlockID, 15, Material.iron, properties.LimboDimensionID, decay).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F));
 		chaosDoor = (new ChaosDoor(properties.UnstableDoorID, Material.iron).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
 		dimDoor = (new dimDoor(properties.DimensionalDoorID, Material.iron)).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor");
@@ -378,22 +375,7 @@ public class mod_pocketDim
 				" y ", "yxy", " y ", 'x', mod_pocketDim.itemLinkSignature,  'y', mod_pocketDim.itemStableFabric
 					});
 		}
-
-		mod_pocketDim.blocksImmuneToRift.add(properties.FabricBlockID);
-		mod_pocketDim.blocksImmuneToRift.add(properties.PermaFabricBlockID);
-		mod_pocketDim.blocksImmuneToRift.add(properties.DimensionalDoorID);
-		mod_pocketDim.blocksImmuneToRift.add(properties.WarpDoorID);
-		mod_pocketDim.blocksImmuneToRift.add(properties.TransTrapdoorID);
-		mod_pocketDim.blocksImmuneToRift.add(properties.UnstableDoorID);
-		mod_pocketDim.blocksImmuneToRift.add(properties.RiftBlockID);
-		mod_pocketDim.blocksImmuneToRift.add(properties.TransientDoorID);
-		mod_pocketDim.blocksImmuneToRift.add(Block.blockIron.blockID);
-		mod_pocketDim.blocksImmuneToRift.add(Block.blockDiamond.blockID);
-		mod_pocketDim.blocksImmuneToRift.add(Block.blockEmerald.blockID);
-		mod_pocketDim.blocksImmuneToRift.add(Block.blockGold.blockID);
-		mod_pocketDim.blocksImmuneToRift.add(Block.blockLapis.blockID);
-		mod_pocketDim.blocksImmuneToRift.add(Block.bedrock.blockID);
-
+		
 		DungeonHelper.initialize();
 		
 		proxy.loadTextures();

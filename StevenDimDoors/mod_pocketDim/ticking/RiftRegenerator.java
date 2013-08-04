@@ -43,27 +43,21 @@ public class RiftRegenerator implements IRegularTickReceiver {
 				//actually gets the random rift based on the size of the list
 				link = (LinkData) dimHelper.instance.getRandomLinkData(true);
 
-				if(link!=null)
+				if (link != null)
 				{
+					World world = dimHelper.getWorld(link.locDimID);
 
-					if (dimHelper.getWorld(link.locDimID)!=null)
+					if (world != null && !mod_pocketDim.blockRift.isBlockImmune(world, link.locXCoord, link.locYCoord, link.locZCoord))
 					{
-						World world = dimHelper.getWorld(link.locDimID);
-
-						int blocktoReplace = world.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord);
-
-						if(!mod_pocketDim.blocksImmuneToRift.contains(blocktoReplace))//makes sure the rift doesn't replace a door or something
+						if (dimHelper.instance.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID) != null)
 						{
-							if(dimHelper.instance.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID) != null)
+							world.setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
+							TileEntityRift rift = (TileEntityRift) world.getBlockTileEntity(link.locXCoord, link.locYCoord, link.locZCoord);
+							if (rift == null)
 							{
-								dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
-								TileEntityRift rift = TileEntityRift.class.cast(dimHelper.getWorld(link.locDimID).getBlockTileEntity(link.locXCoord, link.locYCoord, link.locZCoord));
-								if(rift == null)
-								{
-									dimHelper.getWorld(link.locDimID).setBlockTileEntity(link.locXCoord, link.locYCoord, link.locZCoord, new TileEntityRift());
-								}
-								rift.hasGrownRifts=true;
+								dimHelper.getWorld(link.locDimID).setBlockTileEntity(link.locXCoord, link.locYCoord, link.locZCoord, new TileEntityRift());
 							}
+							rift.hasGrownRifts = true;
 						}
 					}
 				}
@@ -71,7 +65,7 @@ public class RiftRegenerator implements IRegularTickReceiver {
 		}
 		catch (Exception e)
 		{
-			System.out.println("An exception occurred in RiftRegenerator.regenerate():");
+			System.err.println("An exception occurred in RiftRegenerator.regenerate():");
 			e.printStackTrace();
 		}
 	}
