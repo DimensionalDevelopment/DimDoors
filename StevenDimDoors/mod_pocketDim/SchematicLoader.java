@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Random;
 
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
@@ -27,14 +28,32 @@ public class SchematicLoader
 			int originDimID = link.locDimID;
 			int destDimID = link.destDimID;
 			HashMap<Integer, DimData> dimList = dimHelper.dimList;
+			World world;
 			
 			if (dimList.containsKey(destDimID))
 			{
+				dimList.get(destDimID).hasBeenFilled = true;
+				if (dimHelper.getWorld(destDimID) == null)
+				{
+					dimHelper.initDimension(destDimID);
+				}
+				world = dimHelper.getWorld(destDimID);
+				
 				if (dimList.get(destDimID).dungeonGenerator == null)
 				{
-					DungeonHelper.instance().generateDungeonLink(link);
+					//The following initialization code is based on code from ChunkProviderGenerate.
+					//It makes our generation depend on the world seed.
+					
+					Random random = new Random(world.getSeed());
+					long factorA = random.nextLong() / 2L * 2L + 1L;
+					long factorB = random.nextLong() / 2L * 2L + 1L;
+					random.setSeed((link.destXCoord >> 4) * factorA + (link.destZCoord >> 4) * factorB ^ world.getSeed());
+					
+					//TODO: FIX THIS LINE OR SADNESS WILL FOLLOW. Add a reference to the dungeon pack.
+					//DungeonHelper.instance().generateDungeonLink(link, ???, random);
 				}
 				schematicPath = dimList.get(destDimID).dungeonGenerator.schematicPath;	
+				
 			}
 			else
 			{
@@ -76,13 +95,6 @@ public class SchematicLoader
 				dungeon = checkSourceAndLoad(defaultError.schematicPath);
 				dungeon.applyImportFilters(properties);
 			}
-			
-			dimList.get(destDimID).hasBeenFilled = true;
-			if (dimHelper.getWorld(destDimID) == null)
-			{
-				dimHelper.initDimension(destDimID);
-			}
-			World world = dimHelper.getWorld(destDimID);
 			
 			//Adjust the height at which the dungeon is placed to prevent vertical clipping
 			int fixedY = adjustDestinationY(world, link.destYCoord, dungeon);

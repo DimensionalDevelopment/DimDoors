@@ -12,15 +12,12 @@ public class DungeonGenerator implements Serializable
 	public int weight;
 	public String schematicPath;
 	public ArrayList<HashMap> sideRifts = new ArrayList<HashMap>();
-	public LinkData exitLink; 
-	public static Random rand = new Random();
+	public LinkData exitLink;
 	public boolean isOpen;
 	
 	public int sideDoorsSoFar=0;
 	public int exitDoorsSoFar=0;
 	public int deadEndsSoFar=0;
-	
-	
 	
 	public DungeonGenerator(int weight, String schematicPath, Boolean isOpen)
 	{

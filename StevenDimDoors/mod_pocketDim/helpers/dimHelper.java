@@ -1320,17 +1320,9 @@ public class dimHelper extends DimensionManager
 	{	
 		return dimHelper.instance.getDimData(world.provider.dimensionId);
 	}
+	
 	public DimData getDimData(int dimID)
 	{
-		if(dimHelper.dimList.containsKey(dimID))
-		{
-			return dimHelper.dimList.get(dimID);
-		}
-		else
-		{
-			return null;
-		}
+		return dimHelper.dimList.get(dimID);
 	}
-	
-	
 }

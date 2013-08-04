@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DimData;
@@ -21,8 +20,8 @@ import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
+import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
-import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
 public class DungeonHelper
 {
@@ -65,8 +64,6 @@ public class DungeonHelper
 		MAZE_DUNGEON_TYPE
 	};
 	
-	private Random rand = new Random();
-
 	private ArrayList<DungeonGenerator> untaggedDungeons = new ArrayList<DungeonGenerator>();
 	private ArrayList<DungeonGenerator> registeredDungeons = new ArrayList<DungeonGenerator>();
 	
@@ -354,157 +351,29 @@ public class DungeonHelper
 		}
 	}
 
-	public void generateDungeonLink(LinkData incoming)
+	public void generateDungeonLink(LinkData inbound, DungeonPack pack, Random random)
 	{
-		DungeonGenerator dungeon;
-		int depth = dimHelper.instance.getDimDepth(incoming.locDimID);
-		int depthWeight = rand.nextInt(depth + 2) + rand.nextInt(depth + 2) - 2;
-
-		int count = 10;
-		boolean flag = true;
+		DungeonGenerator selection;
+		
 		try
-		{
-			
-			if (incoming.destYCoord > 15)
-			{
-				do
-				{
-					count--;
-					flag = true;
-					//Select a dungeon at random, taking into account its weight
-					dungeon = getRandomDungeon(rand, registeredDungeons);
-
-					if (depth <= 1)
-					{
-						if(rand.nextBoolean())
-						{
-							dungeon = complexHalls.get(rand.nextInt(complexHalls.size()));
-
-						}
-						else if(rand.nextBoolean())
-						{
-							dungeon = hubs.get(rand.nextInt(hubs.size()));
-
-						}
-						else  if(rand.nextBoolean())
-						{
-							dungeon = hubs.get(rand.nextInt(hubs.size()));
-
-						}
-						else if(deadEnds.contains(dungeon)||exits.contains(dungeon))
-						{
-							flag=false;
-						}
-					}
-					else if (depth <= 3 && (deadEnds.contains(dungeon) || exits.contains(dungeon) || rand.nextBoolean()))
-					{
-						if(rand.nextBoolean())
-						{
-							dungeon = hubs.get(rand.nextInt(hubs.size()));
-
-						}
-						else if(rand.nextBoolean())
-						{
-							dungeon = mazes.get(rand.nextInt(mazes.size()));
-						}
-						else if(rand.nextBoolean())
-						{
-							dungeon = pistonTraps.get(rand.nextInt(pistonTraps.size()));
-
-						}
-						else
-						{
-							flag = false;
-						}
-					}
-					else if (rand.nextInt(3) == 0 && !complexHalls.contains(dungeon))
-					{
-						if (rand.nextInt(3) == 0)
-						{
-							dungeon = simpleHalls.get(rand.nextInt(simpleHalls.size()));
-						}
-						else if(rand.nextBoolean())
-						{
-							dungeon = pistonTraps.get(rand.nextInt(pistonTraps.size()));
-						}
-						else if (depth < 4)
-						{
-							dungeon = hubs.get(rand.nextInt(hubs.size()));
-						}
-					}
-					else if (depthWeight - depthWeight / 2 > depth -4 && (deadEnds.contains(dungeon) || exits.contains(dungeon)))
-					{
-						if(rand.nextBoolean())
-						{
-							dungeon = simpleHalls.get(rand.nextInt(simpleHalls.size()));
-						}
-						else if(rand.nextBoolean())
-						{
-							dungeon = complexHalls.get(rand.nextInt(complexHalls.size()));
-						}
-						else if(rand.nextBoolean())
-						{
-							dungeon = pistonTraps.get(rand.nextInt(pistonTraps.size()));
-						}
-						else	
-						{
-							flag = false;
-						}
-					}
-					else if (depthWeight > 7 && hubs.contains(dungeon))
-					{
-						if(rand.nextInt(12)+5<depthWeight)
-						{
-							if(rand.nextBoolean())
-							{
-								dungeon = exits.get(rand.nextInt(exits.size()));
-							}
-							else if(rand.nextBoolean())
-							{
-								dungeon = deadEnds.get(rand.nextInt(deadEnds.size()));
-							}
-							else
-							{
-								dungeon = pistonTraps.get(rand.nextInt(pistonTraps.size()));
-							}
-						}
-						else
-						{
-							flag = false;
-						}
-					}
-					else if (depth > 10 && hubs.contains(dungeon))
-					{
-						flag = false;
-					}
-					
-					if(getDungeonDataInChain(dimHelper.instance.getDimData(incoming.locDimID)).contains(dungeon))
-					{
-						flag=false;
-					}
-				}
-				while (!flag && count > 0);
-			}
-			else
-			{
-				dungeon = defaultUp;
-			}
+		{			
+			selection = pack.getNextDungeon(inbound, random);
 		}
 		catch (Exception e)
 		{
+			System.err.println("An exception occurred while selecting a dungeon:");
 			e.printStackTrace();
-			if (registeredDungeons.size() > 0)
+			
+			if (!pack.isEmpty())
 			{
-				//Select a random dungeon
-				dungeon = getRandomDungeon(rand, registeredDungeons);
+				selection = pack.getRandomDungeon(random);
 			}
 			else
 			{
-				return;
+				selection = defaultError;
 			}
 		}
-		dimHelper.instance.getDimData(incoming.destDimID).dungeonGenerator = dungeon;
-		//dimHelper.instance.getDimData(incoming.destDimID).dungeonGenerator = defaultUp;
+		dimHelper.instance.getDimData(inbound.destDimID).dungeonGenerator = selection;
 	}
 
 	public Collection<String> getDungeonNames() {
@@ -539,50 +408,33 @@ public class DungeonHelper
 		return names;
 	}
 	
-	private static DungeonGenerator getRandomDungeon(Random random, Collection<DungeonGenerator> dungeons)
+	public static ArrayList<DungeonGenerator> getDungeonChainHistory(DimData dimData, int maxSize)
 	{
-		//Use Minecraft's WeightedRandom to select our dungeon. =D
-		ArrayList<WeightedContainer<DungeonGenerator>> weights =
-				new ArrayList<WeightedContainer<DungeonGenerator>>(dungeons.size());
-		for (DungeonGenerator dungeon : dungeons)
-		{
-			weights.add(new WeightedContainer<DungeonGenerator>(dungeon, dungeon.weight));
-		}
+		//TODO: I've improved this code for the time being. However, searching across links is a flawed approach. A player could
+		//manipulate the output of this function by setting up links to mislead our algorithm or by removing links.
+		//Dimensions MUST have built-in records of their parent dimensions in the future. ~SenseiKiwi
 		
-		@SuppressWarnings("unchecked")
-		WeightedContainer<DungeonGenerator> resultContainer = (WeightedContainer<DungeonGenerator>) WeightedRandom.getRandomItem(random, weights);
-		return 	(resultContainer != null) ? resultContainer.getData() : null;
-	}
-	public static ArrayList<DungeonGenerator> getDungeonDataInChain(DimData dimData)
-	{
-		DimData startingDim = dimHelper.instance.getDimData(dimHelper.instance.getLinkDataFromCoords(dimData.exitDimLink.destXCoord, dimData.exitDimLink.destYCoord, dimData.exitDimLink.destZCoord, dimData.exitDimLink.destDimID).destDimID);
-
-		return getDungeonDataBelow(startingDim);
-	}
-	private static ArrayList<DungeonGenerator> getDungeonDataBelow(DimData dimData)
-	{
-		ArrayList<DungeonGenerator> dungeonData = new ArrayList<DungeonGenerator>();
-		if(dimData.dungeonGenerator!=null)
+		dimHelper helper = dimHelper.instance;
+		ArrayList<DungeonGenerator> history = new ArrayList<DungeonGenerator>();
+		DimData tailDim = helper.getDimData(helper.getLinkDataFromCoords(dimData.exitDimLink.destXCoord, dimData.exitDimLink.destYCoord, dimData.exitDimLink.destZCoord, dimData.exitDimLink.destDimID).destDimID);
+		
+		for (int count = 0; count < maxSize && tailDim.dungeonGenerator != null; count++)
 		{
-			dungeonData.add(dimData.dungeonGenerator);
+			history.add(tailDim.dungeonGenerator);
 			
-			for(LinkData link : dimData.getLinksInDim())
+			if (count + 1 < maxSize)
 			{
-				if(dimHelper.dimList.containsKey(link.destDimID))
+				for (LinkData link : tailDim.getLinksInDim())
 				{
-					if(dimHelper.instance.getDimData(link.destDimID).dungeonGenerator!=null&&dimHelper.instance.getDimDepth(link.destDimID)==dimData.depth+1)
+					DimData nextDim = dimHelper.instance.getDimData(link.destDimID);
+					if (helper.getDimDepth(link.destDimID) == tailDim.depth + 1)
 					{
-						for(DungeonGenerator dungeonGen :getDungeonDataBelow(dimHelper.instance.getDimData(link.destDimID)) )
-						{
-							if(!dungeonData.contains(dungeonGen))
-							{
-								dungeonData.add(dungeonGen);
-							}
-						}
+						tailDim = nextDim;
+						break;
 					}
 				}
 			}
 		}
-		return dungeonData;
+		return history;
 	}
 }
