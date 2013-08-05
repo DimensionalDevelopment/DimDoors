@@ -62,6 +62,7 @@ public class BlockRotator
 		hasOrientations[Block.railPowered.blockID] = true;
 		hasOrientations[Block.railDetector.blockID] = true;
 		hasOrientations[Block.railActivator.blockID] = true;
+		hasOrientations[Block.rail.blockID] = true;
 		
 		hasOrientations[mod_pocketDim.dimDoor.blockID] = true;
 		hasOrientations[mod_pocketDim.ExitDoor.blockID] = true;
@@ -150,6 +151,30 @@ public class BlockRotator
 			case 13:
 				metadata = 11;
 				break;
+			}
+		}
+		else if (blockID==Block.rail.blockID)
+		{
+			switch (metadata)
+			{
+			case 0:
+				metadata = 1;
+				break;
+			case 1:
+				metadata = 0;
+				break;					
+			case 8:
+				metadata = 9;
+				break;
+			case 9:
+				metadata = 6;
+				break;
+			case 6:
+				metadata = 7;
+				break;
+			case 7:
+				metadata = 8;
+				break;					
 			}
 		}
 		else if (Block.blocksList[blockID] instanceof BlockStairs)
