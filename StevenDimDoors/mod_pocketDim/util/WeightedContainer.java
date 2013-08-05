@@ -17,11 +17,15 @@ public class WeightedContainer<T> extends WeightedRandomItem {
 	{
 		super(weight);
 		this.data = data;
-		super.itemWeight = weight;
 	}
 	
 	public T getData()
 	{
 		return data;
+	}
+	
+	public WeightedContainer<T> clone()
+	{
+		return new WeightedContainer<T>(data, itemWeight);
 	}
 }

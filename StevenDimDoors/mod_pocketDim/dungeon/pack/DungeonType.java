@@ -2,6 +2,9 @@ package StevenDimDoors.mod_pocketDim.dungeon.pack;
 
 public class DungeonType implements Comparable<DungeonType>
 {
+	public static final DungeonType WILDCARD_TYPE = new DungeonType(null, "?", 0);
+	public static final DungeonType UNKNOWN_TYPE = new DungeonType(null, "!", -1);
+	
 	public final DungeonPack Owner;
 	public final String Name;
 	public final int ID;

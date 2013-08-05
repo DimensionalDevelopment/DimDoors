@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -20,15 +20,20 @@ import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
+import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonChainRuleDefinition;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
+import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
+import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
+import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
 public class DungeonHelper
 {
 	private static DungeonHelper instance = null;
 	private static DDProperties properties = null;
-	public static final Pattern SchematicNamePattern = Pattern.compile("[A-Za-z0-9_\\-]+");
-	public static final Pattern DungeonNamePattern = Pattern.compile("[A-Za-z0-9\\-]+");
+	
+	public static final Pattern SCHEMATIC_NAME_PATTERN = Pattern.compile("[A-Za-z0-9_\\-]+");
+	public static final Pattern DUNGEON_NAME_PATTERN = Pattern.compile("[A-Za-z0-9\\-]+");
 	
 	private static final String DEFAULT_UP_SCHEMATIC_PATH = "/schematics/core/simpleStairsUp.schematic";
 	private static final String DEFAULT_DOWN_SCHEMATIC_PATH = "/schematics/core/simpleStairsDown.schematic";
@@ -44,70 +49,22 @@ public class DungeonHelper
 	public static final short MAX_DUNGEON_HEIGHT = MAX_DUNGEON_WIDTH;
 	public static final short MAX_DUNGEON_LENGTH = MAX_DUNGEON_WIDTH;
 	
-	private static final String HUB_DUNGEON_TYPE = "Hub";
-	private static final String TRAP_DUNGEON_TYPE = "Trap";
-	private static final String SIMPLE_HALL_DUNGEON_TYPE = "SimpleHall";
-	private static final String COMPLEX_HALL_DUNGEON_TYPE = "ComplexHall";
-	private static final String EXIT_DUNGEON_TYPE = "Exit";
-	private static final String DEAD_END_DUNGEON_TYPE = "DeadEnd";
-	private static final String MAZE_DUNGEON_TYPE = "Maze";
-	
-	//The list of dungeon types will be kept as an array for now. If we allow new
-	//dungeon types in the future, then this can be changed to an ArrayList.
-	private static final String[] DUNGEON_TYPES = new String[] {
-		HUB_DUNGEON_TYPE,
-		TRAP_DUNGEON_TYPE,
-		SIMPLE_HALL_DUNGEON_TYPE,
-		COMPLEX_HALL_DUNGEON_TYPE,
-		EXIT_DUNGEON_TYPE,
-		DEAD_END_DUNGEON_TYPE,
-		MAZE_DUNGEON_TYPE
-	};
-	
 	private ArrayList<DungeonGenerator> untaggedDungeons = new ArrayList<DungeonGenerator>();
 	private ArrayList<DungeonGenerator> registeredDungeons = new ArrayList<DungeonGenerator>();
-	
-	private ArrayList<DungeonGenerator> simpleHalls = new ArrayList<DungeonGenerator>();
-	private ArrayList<DungeonGenerator> complexHalls = new ArrayList<DungeonGenerator>();
-	private ArrayList<DungeonGenerator> deadEnds = new ArrayList<DungeonGenerator>();
-	private ArrayList<DungeonGenerator> hubs = new ArrayList<DungeonGenerator>();
-	private ArrayList<DungeonGenerator> mazes = new ArrayList<DungeonGenerator>();
-	private ArrayList<DungeonGenerator> pistonTraps = new ArrayList<DungeonGenerator>();
-	private ArrayList<DungeonGenerator> exits = new ArrayList<DungeonGenerator>();
  
+	public DungeonPack RuinsPack;
+	
 	private DungeonGenerator defaultUp;
 	private DungeonGenerator defaultDown;
 	private DungeonGenerator defaultError;
 	
-	private HashSet<String> dungeonTypeChecker;
-	private HashMap<String, ArrayList<DungeonGenerator>> dungeonTypeMapping;
-	
 	private DungeonHelper()
 	{
-		//Load the dungeon type checker with the list of all types in lowercase.
-		//Capitalization matters for matching in a hash set.
-		dungeonTypeChecker = new HashSet<String>();
-		for (String dungeonType : DUNGEON_TYPES)
-		{
-			dungeonTypeChecker.add(dungeonType.toLowerCase());
-		}
-		
-		//Add all the basic dungeon types to dungeonTypeMapping
-		//Dungeon type names must be passed in lowercase to make matching easier.
-		dungeonTypeMapping = new HashMap<String, ArrayList<DungeonGenerator>>();
-		dungeonTypeMapping.put(SIMPLE_HALL_DUNGEON_TYPE.toLowerCase(), simpleHalls);
-		dungeonTypeMapping.put(COMPLEX_HALL_DUNGEON_TYPE.toLowerCase(), complexHalls);
-		dungeonTypeMapping.put(HUB_DUNGEON_TYPE.toLowerCase(), hubs);
-		dungeonTypeMapping.put(EXIT_DUNGEON_TYPE.toLowerCase(), exits);
-		dungeonTypeMapping.put(DEAD_END_DUNGEON_TYPE.toLowerCase(), deadEnds);
-		dungeonTypeMapping.put(MAZE_DUNGEON_TYPE.toLowerCase(), mazes);
-		dungeonTypeMapping.put(TRAP_DUNGEON_TYPE.toLowerCase(), pistonTraps);
-		
 		//Load our reference to the DDProperties singleton
 		if (properties == null)
 			properties = DDProperties.instance();
 		
-		registerCustomDungeons();
+		registerDungeons();
 	}
 	
 	public static DungeonHelper initialize()
@@ -135,15 +92,67 @@ public class DungeonHelper
 		return instance;
 	}
 	
-	private void registerCustomDungeons()
+	private void registerDungeons()
 	{
 		File file = new File(properties.CustomSchematicDirectory);
 		if (file.exists() || file.mkdir())
 		{
 			copyfile.copyFile(DUNGEON_CREATION_GUIDE_SOURCE_PATH, file.getAbsolutePath() + "/How_to_add_dungeons.txt");
 		}
+		
+		RuinsPack = new DungeonPack(createRuinsConfig());
+		
 		registerBundledDungeons();
-		importCustomDungeons(properties.CustomSchematicDirectory);
+		registerCustomDungeons(properties.CustomSchematicDirectory);
+	}
+	
+	private static DungeonPackConfig createRuinsConfig()
+	{
+		//This is a temporarily function for testing dungeon packs.
+		//It'll be removed later when we read dungeon configurations from files.
+
+		ArrayList<DungeonChainRuleDefinition> rules = new ArrayList<DungeonChainRuleDefinition>();
+		rules.add(parseDefinitionUnsafe("? ? ?  -> DeadEnd Exit"));
+		rules.add(parseDefinitionUnsafe("Trap -> ?"));
+		rules.add(parseDefinitionUnsafe("Hub -> Trap"));
+		rules.add(parseDefinitionUnsafe("? -> Hub"));
+		rules.add(parseDefinitionUnsafe("-> ComplexHall#40 Hub#30 Trap#10 SimpleHall#10 Maze#10"));
+		
+		String[] typeNames = "Hub Trap Maze Exit DeadEnd SimpleHall ComplexHall".toUpperCase().split(" ");
+		
+		DungeonPackConfig config = new DungeonPackConfig();
+		config.setName("ruins");
+		config.setAllowDuplicatesInChain(false);
+		config.setRules(rules);
+		config.setTypeNames(new ArrayList<String>(Arrays.asList(typeNames)));
+		return config;
+	}
+	
+	private static DungeonChainRuleDefinition parseDefinitionUnsafe(String definition)
+	{
+		//This is an improvised parsing function for rule definitions. Only for testing!!!
+		definition = definition.toUpperCase();
+		String[] parts = definition.split("->");
+		ArrayList<String> condition = new ArrayList<String>();
+		ArrayList<WeightedContainer<String>> products = new ArrayList<WeightedContainer<String>>();
+		
+		for (String conditionPart : parts[0].split(" "))
+		{
+			if (!conditionPart.isEmpty())
+				condition.add(conditionPart);
+		}
+		
+		for (String product : parts[1].split(" "))
+		{
+			if (!product.isEmpty())
+			{
+				String[] productParts = product.split("#");
+				String productType = productParts[0];
+				int weight = (productParts.length > 1) ? Integer.parseInt(productParts[1]) : 100;
+				products.add(new WeightedContainer<String>(productType, weight));
+			}
+		}
+		return new DungeonChainRuleDefinition(condition, products);
 	}
 	
 	public List<DungeonGenerator> getRegisteredDungeons()
@@ -186,7 +195,7 @@ public class DungeonHelper
 	public boolean validateDungeonType(String type)
 	{
 		//Check if the dungeon type is valid
-		return dungeonTypeChecker.contains(type.toLowerCase());
+		return RuinsPack.isKnownType(type);
 	}
 	
 	public boolean validateSchematicName(String name)
@@ -203,11 +212,11 @@ public class DungeonHelper
 			return false;
 
 		//Check if the dungeon type is valid
-		if (!dungeonTypeChecker.contains(dungeonData[0].toLowerCase()))
+		if (!validateDungeonType(dungeonData[0]))
 			return false;
 		
 		//Check if the name is valid
-		if (!SchematicNamePattern.matcher(dungeonData[1]).matches())
+		if (!SCHEMATIC_NAME_PATTERN.matcher(dungeonData[1]).matches())
 			return false;
 		
 		//Check if the open/closed flag is present
@@ -246,14 +255,14 @@ public class DungeonHelper
 				//Strip off the file extension while splitting the file name
 				String[] dungeonData = name.substring(0, name.length() - SCHEMATIC_FILE_EXTENSION.length()).split("_");
 				
-				String dungeonType = dungeonData[0].toLowerCase();
+				DungeonType dungeonType = RuinsPack.getType(dungeonData[0]);
 				boolean isOpen = dungeonData[2].equalsIgnoreCase("open");
 				int weight = (dungeonData.length == 4) ? Integer.parseInt(dungeonData[3]) : DEFAULT_DUNGEON_WEIGHT;
 				
 				//Add this custom dungeon to the list corresponding to its type
-				DungeonGenerator generator = new DungeonGenerator(weight, path, isOpen);
+				DungeonGenerator generator = new DungeonGenerator(weight, path, isOpen, dungeonType);
 
-				dungeonTypeMapping.get(dungeonType).add(generator);
+				RuinsPack.addDungeon(generator);
 				registeredDungeons.add(generator);
 				if (verbose)
 				{
@@ -266,7 +275,7 @@ public class DungeonHelper
 				{
 					System.out.println("Could not parse dungeon filename, not adding dungeon to generation lists");
 				}
-				untaggedDungeons.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, path, true));
+				untaggedDungeons.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, path, true, DungeonType.UNKNOWN_TYPE));
 				System.out.println("Registered untagged dungeon: " + name);
 			}
 		}
@@ -277,7 +286,7 @@ public class DungeonHelper
 		}
 	}
 
-	private void importCustomDungeons(String path)
+	private void registerCustomDungeons(String path)
 	{
 		File directory = new File(path);
 		File[] schematicNames = directory.listFiles();
@@ -298,9 +307,9 @@ public class DungeonHelper
 	{
 		//Register the core schematics
 		//These are used for debugging and in case of unusual errors while loading dungeons
-		defaultUp = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, DEFAULT_UP_SCHEMATIC_PATH, true);
-		defaultDown = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, DEFAULT_DOWN_SCHEMATIC_PATH, true);
-		defaultError = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, DEFAULT_ERROR_SCHEMATIC_PATH, true);
+		defaultUp = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, DEFAULT_UP_SCHEMATIC_PATH, true, DungeonType.UNKNOWN_TYPE);
+		defaultDown = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, DEFAULT_DOWN_SCHEMATIC_PATH, true, DungeonType.UNKNOWN_TYPE);
+		defaultError = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, DEFAULT_ERROR_SCHEMATIC_PATH, true, DungeonType.UNKNOWN_TYPE);
 		
 		//Open the list of dungeons packaged with our mod and register their schematics
 		InputStream listStream = this.getClass().getResourceAsStream(BUNDLED_DUNGEONS_LIST_PATH);
@@ -408,7 +417,7 @@ public class DungeonHelper
 		return names;
 	}
 	
-	public static ArrayList<DungeonGenerator> getDungeonChainHistory(DimData dimData, int maxSize)
+	public static ArrayList<DungeonGenerator> getDungeonChainHistory(DimData dimData, DungeonPack pack, int maxSize)
 	{
 		//TODO: I've improved this code for the time being. However, searching across links is a flawed approach. A player could
 		//manipulate the output of this function by setting up links to mislead our algorithm or by removing links.
@@ -418,10 +427,15 @@ public class DungeonHelper
 		ArrayList<DungeonGenerator> history = new ArrayList<DungeonGenerator>();
 		DimData tailDim = helper.getDimData(helper.getLinkDataFromCoords(dimData.exitDimLink.destXCoord, dimData.exitDimLink.destYCoord, dimData.exitDimLink.destZCoord, dimData.exitDimLink.destDimID).destDimID);
 		
-		for (int count = 0; count < maxSize && tailDim.dungeonGenerator != null; count++)
+		for (int count = 0; count < maxSize; count++)
 		{
-			history.add(tailDim.dungeonGenerator);
+			if (tailDim.dungeonGenerator == null || tailDim.dungeonGenerator.getDungeonType().Owner != pack)
+			{
+				//We've reached a dimension that doesn't belong to our pack. Stop the search here.
+				break;
+			}
 			
+			history.add(tailDim.dungeonGenerator);
 			if (count + 1 < maxSize)
 			{
 				for (LinkData link : tailDim.getLinksInDim())

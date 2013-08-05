@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 
 import net.minecraft.util.WeightedRandom;
@@ -16,9 +15,11 @@ import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
 public class DungeonPack
 {
-	//Why final? I just felt like it, honestly. ~SenseiKiwi
-	
-	private static final DungeonType WILDCARD_TYPE = new DungeonType(null, "?", 0);
+	//There is no precaution against having a dungeon type removed from a config file after dungeons of that type
+	//have been generated. That would likely cause one or two problems. It's hard to guard against when I don't know
+	//what the save format will be like completely. How should this class behave if it finds a "disowned" type?
+	//The ID numbers would be a problem since it couldn't have a valid number, since it wasn't initialized by the pack instance.
+	//FIXME: Do not release this code as an update without dealing with disowned types!
 	
 	private final String name;
 	private final HashMap<String, DungeonType> nameToTypeMapping;
@@ -26,7 +27,7 @@ public class DungeonPack
 	private final ArrayList<DungeonGenerator> allDungeons;
 	private final DungeonPackConfig config;
 	private final int maxRuleLength;
-	private final ArrayList<OptimizedRule> rules;
+	private final ArrayList<DungeonChainRule> rules;
 	
 	public DungeonPack(DungeonPackConfig config)
 	{
@@ -42,7 +43,7 @@ public class DungeonPack
 		this.groupedDungeons = new ArrayList<ArrayList<DungeonGenerator>>(typeCount);
 		
 		this.groupedDungeons.add(allDungeons); //Make sure the list of all dungeons is placed at index 0
-		this.nameToTypeMapping.put(WILDCARD_TYPE.Name, WILDCARD_TYPE);
+		this.nameToTypeMapping.put(DungeonType.WILDCARD_TYPE.Name, DungeonType.WILDCARD_TYPE);
 		
 		index = 1;
 		for (String typeName : config.getTypeNames())
@@ -53,22 +54,23 @@ public class DungeonPack
 			index++;
 		}
 		
-		//Construct optimized rules from config rules
-		ArrayList<DungeonChainRule> chainRules = config.getRules();
-		this.rules = new ArrayList<OptimizedRule>(chainRules.size());
-		for (DungeonChainRule rule : chainRules)
+		//Construct optimized rules from definitions
+		ArrayList<DungeonChainRuleDefinition> definitions = config.getRules();
+		this.rules = new ArrayList<DungeonChainRule>(definitions.size());
+		for (DungeonChainRuleDefinition definition : definitions)
 		{
-			OptimizedRule optimized = rule.optimize(nameToTypeMapping);
-			this.rules.add(optimized);
-			if (maxLength < optimized.length())
+			DungeonChainRule rule = new DungeonChainRule(definition, nameToTypeMapping);
+			this.rules.add(rule);
+			if (maxLength < rule.length())
 			{
-				maxLength = optimized.length();
+				maxLength = rule.length();
 			}
 		}
 		this.maxRuleLength = maxLength;
 		
-		//Remove the reference to the non-optimized rules to free up memory - we won't need them here
+		//Remove unnecessary references to save a little memory - we won't need them here
 		this.config.setRules(null);
+		this.config.setTypeNames(null);
 	}
 	
 	public String getName()
@@ -84,7 +86,7 @@ public class DungeonPack
 	public DungeonType getType(String typeName)
 	{
 		DungeonType result = nameToTypeMapping.get(typeName.toUpperCase());
-		if (result != WILDCARD_TYPE)
+		if (result.Owner == this) //Filter out the wildcard dungeon type
 		{
 			return result;
 		}
@@ -99,6 +101,21 @@ public class DungeonPack
 		return (this.getType(typeName) != null);
 	}
 
+	public void addDungeon(DungeonGenerator generator)
+	{
+		//Make sure this dungeon really belongs in this pack
+		DungeonType type = generator.getDungeonType();
+		if (type.Owner == this)
+		{
+			allDungeons.add(generator);
+			groupedDungeons.get(type.ID).add(generator);
+		}
+		else
+		{
+			throw new IllegalArgumentException("The dungeon type of generator must belong to this instance of DungeonPack.");
+		}
+	}
+
 	public DungeonGenerator getNextDungeon(LinkData inbound, Random random)
 	{
 		if (allDungeons.isEmpty())
@@ -106,12 +123,14 @@ public class DungeonPack
 			return null;
 		}
 		
-		//Retrieve a list of the previous dungeons in this chain. Restrict the length of the
-		//search to the length of the longest rule. Getting more data is useless.
-		dimHelper helper = dimHelper.instance;
+		//Retrieve a list of the previous dungeons in this chain.
+		//If we're not going to check for duplicates in chains, restrict the length of the history to the length
+		//of the longest rule we have. Getting any more data would be useless. This optimization could be significant
+		//for dungeon packs that can extend arbitrarily deep. We should probably set a reasonable limit anyway.
 		
-		//TODO: Add dungeon pack parameter! We can't use dungeon types from other packs.
-		ArrayList<DungeonGenerator> history = DungeonHelper.getDungeonChainHistory(helper.getDimData(inbound.locDimID), maxRuleLength);
+		int maxSearchLength = config.allowDuplicatesInChain() ? maxRuleLength : 1337;
+		ArrayList<DungeonGenerator> history = DungeonHelper.getDungeonChainHistory(
+				dimHelper.instance.getDimData(inbound.locDimID), this, maxSearchLength);
 		return getNextDungeon(history, random);
 	}
 	
@@ -123,10 +142,10 @@ public class DungeonPack
 		HashSet<DungeonGenerator> excludedDungeons = null;
 		for (index = 0; index < typeHistory.length; index++)
 		{
-			typeHistory[index] = getDungeonType(history.get(index)).ID;
+			typeHistory[index] = history.get(index).getDungeonType().ID;
 		}
 		
-		for (OptimizedRule rule : rules)
+		for (DungeonChainRule rule : rules)
 		{
 			if (rule.evaluate(typeHistory))
 			{
@@ -139,9 +158,9 @@ public class DungeonPack
 					if (nextType != null)
 					{
 						//Initialize the set of excluded dungeons if needed
-						if (excludedDungeons == null && config.allowDuplicatesInChain())
+						if (excludedDungeons == null && !config.allowDuplicatesInChain())
 						{
-							//TODO: Finish implementing this!
+							excludedDungeons = new HashSet<DungeonGenerator>(history);
 						}
 					
 						//List which dungeons are allowed
@@ -166,6 +185,8 @@ public class DungeonPack
 						{
 							return getRandomDungeon(random, candidates);
 						}
+						//If we've reached this point, then a dungeon was not selected. Discard the type and try again.
+						products.remove(nextType);
 					}
 				}
 				while (nextType != null);
@@ -174,16 +195,6 @@ public class DungeonPack
 		
 		//None of the rules were applicable. Simply return a random dungeon.
 		return getRandomDungeon(random);
-	}
-	
-	private DungeonType getDungeonType(DungeonGenerator generator)
-	{
-		//This function is a workaround for DungeonGenerator not having a dungeon type or pack field.
-		//I really don't want to go messing around with that serializable type.
-		//TODO: Remove this function once we transition to using the new save format. ~SenseiKiwi
-		
-		//TODO: Finish implementing this!
-		return null;
 	}
 
 	public DungeonGenerator getRandomDungeon(Random random)
@@ -202,7 +213,7 @@ public class DungeonPack
 			ArrayList<ArrayList<DungeonGenerator>> groupedDungeons)
 	{
 		//TODO: Make this faster? This algorithm runs in quadratic time in the worst case because of the random-selection
-		//process and the removal search. Should be okay for normal use, though. ~SenseiKiwi
+		//process and the removal search. Might be okay for normal use, though. ~SenseiKiwi
 		
 		//Pick a random dungeon type based on weights. Repeat this process until a non-empty group is found or all groups are checked.
 		while (!types.isEmpty())

@@ -28,6 +28,7 @@ public class SchematicLoader
 			int originDimID = link.locDimID;
 			int destDimID = link.destDimID;
 			HashMap<Integer, DimData> dimList = dimHelper.dimList;
+			DungeonHelper dungeonHelper = DungeonHelper.instance();
 			World world;
 			
 			if (dimList.containsKey(destDimID))
@@ -49,8 +50,7 @@ public class SchematicLoader
 					long factorB = random.nextLong() / 2L * 2L + 1L;
 					random.setSeed((link.destXCoord >> 4) * factorA + (link.destZCoord >> 4) * factorB ^ world.getSeed());
 					
-					//TODO: FIX THIS LINE OR SADNESS WILL FOLLOW. Add a reference to the dungeon pack.
-					//DungeonHelper.instance().generateDungeonLink(link, ???, random);
+					dungeonHelper.generateDungeonLink(link, dungeonHelper.RuinsPack, random);
 				}
 				schematicPath = dimList.get(destDimID).dungeonGenerator.schematicPath;	
 				
@@ -90,7 +90,7 @@ public class SchematicLoader
 				//TODO: In the future, remove this dungeon from the generation lists altogether.
 				//That will have to wait until our code is updated to support that more easily.
 				System.err.println("The dungeon will not be loaded.");
-				DungeonGenerator defaultError = DungeonHelper.instance().getDefaultErrorDungeon();
+				DungeonGenerator defaultError = dungeonHelper.getDefaultErrorDungeon();
 				dimList.get(destDimID).dungeonGenerator = defaultError;
 				dungeon = checkSourceAndLoad(defaultError.schematicPath);
 				dungeon.applyImportFilters(properties);
