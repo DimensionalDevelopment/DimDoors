@@ -250,11 +250,20 @@ public class dimHelper extends DimensionManager
 				int playerXCoord=MathHelper.floor_double(entity.posX);
 				int playerYCoord=MathHelper.floor_double(entity.posY);
 				int playerZCoord=MathHelper.floor_double(entity.posZ);
-							
+				
 		    	if(!entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1,playerZCoord )&&dimHelper.instance.getDimData(linkData.locDimID).isDimRandomRift&&!linkData.hasGennedDoor)
 		    	{						
 		    		for(int count=0;count<20;count++)
 		    		{
+		    			if(!entity.worldObj.isAirBlock(playerXCoord, playerYCoord-2-count,playerZCoord))
+						{
+							if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord, playerYCoord-2-count,playerZCoord)].blockMaterial.isLiquid())
+					    	{
+					    		entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, properties.FabricBlockID);
+					    		break;
+					    	}
+						}
+		    			
 		    			if(entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1-count,playerZCoord))
 		    			{
 		    				break;
@@ -265,15 +274,11 @@ public class dimHelper extends DimensionManager
 		    			}
 		    		}	    																	
 		    	}						
-		    	if(entity.worldObj.getBlockId(playerXCoord, playerYCoord-1,playerZCoord )==Block.lavaStill.blockID)
-		    	{
-		    		entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, properties.FabricBlockID);
-		    	}
+		    	
 		    	this.generateDoor(world,linkData);
 		
-		    	//FIXME: Why are we checking blockList.length? Not necessary. getBlockId() can't return an ID past the end of the block list.
-		    	//Plus even if the check is necessary, it's still wrong since it should be less than, not less than or equal to.
-		    	if(Block.blocksList.length>=entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord+1,playerZCoord))
+		    	
+		    	if(!entity.worldObj.isAirBlock(playerXCoord,playerYCoord+1,playerZCoord))
 		    	{
 		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube() &&
 		    				!mod_pocketDim.blockRift.isBlockImmune(entity.worldObj, playerXCoord+1,playerYCoord,playerZCoord))
@@ -281,7 +286,7 @@ public class dimHelper extends DimensionManager
 		    			entity.worldObj.setBlock(playerXCoord,playerYCoord+1,playerZCoord,0);
 		    		}
 		    	}
-		    	if (Block.blocksList.length >= entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)&&!entity.worldObj.isAirBlock(playerXCoord,playerYCoord,playerZCoord))
+		    	if (!entity.worldObj.isAirBlock(playerXCoord,playerYCoord,playerZCoord))
 		    	{
 		    		if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)].isOpaqueCube() &&
 		    				!mod_pocketDim.blockRift.isBlockImmune(entity.worldObj, playerXCoord,playerYCoord,playerZCoord))
@@ -289,14 +294,6 @@ public class dimHelper extends DimensionManager
 		    			entity.worldObj.setBlock(playerXCoord,playerYCoord,playerZCoord,0);
 		    		}
 		    	}
-			}
-		}
-		//FIXME: Wtf? This code is useless. It doesn't seem to do anything! If that's the case, it should be removed. ~SenseiKiwi
-		else if(!dimHelper.dimList.containsKey(world.provider.dimensionId))
-		{
-			if(!(world.provider instanceof PocketProvider ||world.provider instanceof LimboProvider))
-			{
-				DimData data = new DimData(world.provider.dimensionId, false, 0, 0, world.getSpawnPoint().posX, world.getSpawnPoint().posY, world.getSpawnPoint().posZ);
 			}
 		}
 		return;
