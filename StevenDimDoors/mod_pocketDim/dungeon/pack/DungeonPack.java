@@ -162,11 +162,11 @@ public class DungeonPack
 						{
 							excludedDungeons = new HashSet<DungeonGenerator>(history);
 						}
-					
+						
 						//List which dungeons are allowed
 						ArrayList<DungeonGenerator> candidates;
 						ArrayList<DungeonGenerator> group = groupedDungeons.get(nextType.ID);
-						if (excludedDungeons != null)
+						if (excludedDungeons != null && !excludedDungeons.isEmpty())
 						{
 							 candidates = new ArrayList<DungeonGenerator>(group.size());
 							 for (DungeonGenerator dungeon : group)

@@ -15,12 +15,13 @@ public class DungeonChainRule
 		ArrayList<String> conditionNames = source.getCondition();
 		ArrayList<WeightedContainer<String>> productNames = source.getProducts();
 
+		//Obtain the IDs of dungeon types in reverse order. Reverse order makes comparing against chain histories easy.
 		condition = new int[conditionNames.size()];
-		for (int k = 0; k < condition.length; k++)
+		for (int src = 0, dst = condition.length - 1; src < condition.length; src++, dst--)
 		{
-			condition[k] = nameToTypeMapping.get(conditionNames.get(k)).ID;
+			condition[dst] = nameToTypeMapping.get(conditionNames.get(src)).ID;
 		}
-		products = new ArrayList<WeightedContainer<DungeonType>>();
+		products = new ArrayList<WeightedContainer<DungeonType>>(productNames.size());
 		for (WeightedContainer<String> product : productNames)
 		{
 			products.add(new WeightedContainer<DungeonType>(nameToTypeMapping.get(product.getData()), product.itemWeight ));

@@ -9,7 +9,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -423,32 +425,72 @@ public class DungeonHelper
 		//manipulate the output of this function by setting up links to mislead our algorithm or by removing links.
 		//Dimensions MUST have built-in records of their parent dimensions in the future. ~SenseiKiwi
 		
-		dimHelper helper = dimHelper.instance;
 		ArrayList<DungeonGenerator> history = new ArrayList<DungeonGenerator>();
-		DimData tailDim = helper.getDimData(helper.getLinkDataFromCoords(dimData.exitDimLink.destXCoord, dimData.exitDimLink.destYCoord, dimData.exitDimLink.destZCoord, dimData.exitDimLink.destDimID).destDimID);
+		DimData tailDim = dimData;
+		boolean found = true;
 		
-		for (int count = 0; count < maxSize; count++)
+		if (dimData.dungeonGenerator == null || dimData.dungeonGenerator.getDungeonType().Owner != pack || maxSize < 1)
 		{
-			if (tailDim.dungeonGenerator == null || tailDim.dungeonGenerator.getDungeonType().Owner != pack)
+			//The initial dimension is already outside our pack. Return an empty list.
+			return history;
+		}
+		history.add(dimData.dungeonGenerator);
+		
+		for (int count = 1; count < maxSize && found; count++)
+		{
+			found = false;
+			for (LinkData link : tailDim.getLinksInDim())
 			{
-				//We've reached a dimension that doesn't belong to our pack. Stop the search here.
-				break;
-			}
-			
-			history.add(tailDim.dungeonGenerator);
-			if (count + 1 < maxSize)
-			{
-				for (LinkData link : tailDim.getLinksInDim())
+				DimData neighbor = dimHelper.instance.getDimData(link.destDimID);
+				if (neighbor.depth == tailDim.depth - 1 && neighbor.dungeonGenerator != null &&
+						neighbor.dungeonGenerator.getDungeonType().Owner == pack)
 				{
-					DimData nextDim = dimHelper.instance.getDimData(link.destDimID);
-					if (helper.getDimDepth(link.destDimID) == tailDim.depth + 1)
-					{
-						tailDim = nextDim;
-						break;
-					}
+					tailDim = neighbor;
+					history.add(tailDim.dungeonGenerator);
+					found = true;
+					break;
 				}
 			}
 		}
 		return history;
+	}
+	
+	public static ArrayList<DungeonGenerator> getFlatDungeonTree(DimData dimData, int maxSize)
+	{
+		//TODO: I've improved this code for the time being. However, searching across links is a flawed approach. A player could
+		//manipulate the output of this function by setting up links to mislead our algorithm or by removing links.
+		//Dimensions MUST have built-in records of their parent dimensions in the future. ~SenseiKiwi
+		
+		dimHelper helper = dimHelper.instance;
+		ArrayList<DungeonGenerator> dungeons = new ArrayList<DungeonGenerator>();
+		DimData root = helper.getDimData(helper.getLinkDataFromCoords(dimData.exitDimLink.destXCoord, dimData.exitDimLink.destYCoord, dimData.exitDimLink.destZCoord, dimData.exitDimLink.destDimID).destDimID);
+		HashSet<DimData> checked = new HashSet<DimData>();
+		Queue<DimData> pendingDimensions = new LinkedList<DimData>();
+		
+		if (root.dungeonGenerator == null)
+		{
+			return dungeons;
+		}
+		pendingDimensions.add(root);
+		checked.add(root);
+		
+		while (dungeons.size() < maxSize && !pendingDimensions.isEmpty())
+		{
+			DimData current = pendingDimensions.remove();
+			for (LinkData link : current.getLinksInDim())
+			{
+				DimData child = helper.getDimData(link.destDimID);
+				if (child.depth == current.depth + 1 && child.dungeonGenerator != null && checked.add(child))
+				{
+					dungeons.add(child.dungeonGenerator);
+					pendingDimensions.add(child);
+				}
+				if (dungeons.size() == maxSize)
+				{
+					break;
+				}
+			}
+		}
+		return dungeons;
 	}
 }

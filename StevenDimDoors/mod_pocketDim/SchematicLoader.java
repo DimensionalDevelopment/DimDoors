@@ -43,12 +43,15 @@ public class SchematicLoader
 				if (dimList.get(destDimID).dungeonGenerator == null)
 				{
 					//The following initialization code is based on code from ChunkProviderGenerate.
-					//It makes our generation depend on the world seed.
+					//It makes our generation depend on the world seed. We have an additional seed here
+					//to prevent correlations between the selected dungeons and the locations of gateways.
+					//TODO: We should centralize RNG initialization and world-seed modifiers for each specific application.
 					
-					Random random = new Random(world.getSeed());
-					long factorA = random.nextLong() / 2L * 2L + 1L;
-					long factorB = random.nextLong() / 2L * 2L + 1L;
-					random.setSeed((link.destXCoord >> 4) * factorA + (link.destZCoord >> 4) * factorB ^ world.getSeed());
+					final long localSeed = world.getSeed() ^ 0x2F50DB9B4A8057E4L;
+					final Random random = new Random();
+					final long factorA = random.nextLong() / 2L * 2L + 1L;
+					final long factorB = random.nextLong() / 2L * 2L + 1L;
+					random.setSeed((link.destXCoord >> 4) * factorA + (link.destZCoord >> 4) * factorB ^ localSeed);
 					
 					dungeonHelper.generateDungeonLink(link, dungeonHelper.RuinsPack, random);
 				}

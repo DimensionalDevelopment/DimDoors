@@ -1,0 +1,33 @@
+Version 1
+Types:
+Hub
+Trap
+SimpleHall
+ComplexHall
+Exit
+DeadEnd
+Maze
+
+Settings:
+AllowRepetitionsInBranch = false
+AllowPackChangeOut = true
+AllowPackChangeIn = true
+PackWeight = 100
+
+Rules:
+
+Exit -> DeadEnd Exit
+
+DeadEnd -> DeadEnd Exit
+
+? ? ? ? ? ? ? ? -> Trap#20 SimpleHall#40 ComplexHall#10 Exit#20 DeadEnd#10
+
+? ? ? ? -> Trap#18 SimpleHall#40 ComplexHall#10 Exit#18 DeadEnd#10 Hub#4
+
+? ? ? -> ComplexHall Hub Trap SimpleHall Maze
+
+? ?	-> ComplexHall Hub Trap SimpleHall Maze
+
+? -> ComplexHall#40 Hub#30 Trap#10 SimpleHall#10 Maze#10
+
+-> ComplexHall#40 Hub#30 Trap#10 SimpleHall#10 Maze#10
