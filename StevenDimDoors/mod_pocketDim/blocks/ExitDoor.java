@@ -65,7 +65,7 @@ public class ExitDoor extends dimDoor
 				int ExitDimID = dimData.exitDimLink.destDimID;
 	   			if(dimHelper.instance.getDimData(par1World.provider.dimensionId).isPocket)
 	   			{
-	   				int yCoord=yCoordHelper.getFirstUncovered(ExitDimID, par2, par3, par4);
+	   				int yCoord=yCoordHelper.getFirstUncovered(ExitDimID, par2, par3, par4)-1;
 					  
 					
 					dimHelper.instance.createLink(locDimID, ExitDimID, par2, par3, par4, par2, yCoord, par4,par1World.getBlockMetadata(par2, par3-1, par4));

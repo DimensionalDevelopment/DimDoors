@@ -67,6 +67,6 @@ public class yCoordHelper
 			return false;
 		
 		material = block.blockMaterial;
-		return (!material.isLiquid() && !material.isReplaceable());
+		return (material.isLiquid() || !material.isReplaceable());
 	}
 }
