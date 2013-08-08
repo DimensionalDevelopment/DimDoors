@@ -24,6 +24,9 @@ public class RiftGenerator implements IWorldGenerator
 	private static final int CHUNK_LENGTH = 16;
 	private static final int GATEWAY_RADIUS = 4;
 	private static final int MAX_GATEWAY_GENERATION_ATTEMPTS = 10;
+	private static final int NETHER_CHANCE_CORRECTION = 4;
+	private static final int OVERWORLD_DIMENSION_ID = 0;
+	private static final int NETHER_DIMENSION_ID = -1;
 	private static DDProperties properties = null;
 
 	public RiftGenerator()
@@ -43,16 +46,30 @@ public class RiftGenerator implements IWorldGenerator
 			return;
 		}
 		//This check prevents a crash related to superflat worlds not loading World 0
-		if (dimHelper.getWorld(0) == null)
+		if (dimHelper.getWorld(OVERWORLD_DIMENSION_ID) == null)
 		{
 			return;
 		}
 
 		int x, y, z;
 		int attempts;
-		int blockID;
+		int correction;
 		boolean valid;
 		LinkData link;
+		
+		//Check if we're generating things in the Nether
+		if (world.provider.dimensionId == NETHER_DIMENSION_ID)
+		{
+			//The terrain in the Nether makes it much harder for our gateway spawning algorithm to find a spot to place a gateway.
+			//Tests show that only about 15% of attempts succeed. Compensate for this by multiplying the chance of generation
+			//by a correction factor.
+			correction = NETHER_CHANCE_CORRECTION;
+		}
+		else
+		{
+			//No correction
+			correction = 1;
+		}
 
 		//Randomly decide whether to place a cluster of rifts here
 		if (random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < properties.ClusterGenerationChance)
@@ -91,7 +108,8 @@ public class RiftGenerator implements IWorldGenerator
 		
 		//Check if generating structures is enabled and randomly decide whether to place a Rift Gateway here.
 		//This only happens if a rift cluster was NOT generated.
-		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance && isStructureGenerationAllowed())
+		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance * correction &&
+				isStructureGenerationAllowed())
 		{
 			valid = false;
 			x = y = z = 0; //Stop the compiler from freaking out
@@ -117,57 +135,72 @@ public class RiftGenerator implements IWorldGenerator
 				//If the current dimension isn't Limbo, build a Rift Gateway out of Stone Bricks
 				if (world.provider.dimensionId != properties.LimboDimensionID)
 				{
-					blockID = Block.stoneBrick.blockID;
-					
-					//Replace some of the ground around the gateway with bricks
-					for (int xc = -GATEWAY_RADIUS; xc <= GATEWAY_RADIUS; xc++)
-					{
-						for (int zc= -GATEWAY_RADIUS; zc <= GATEWAY_RADIUS; zc++)
-						{
-							//Check that the block is supported by an opaque block.
-							//This prevents us from building over a cliff, on the peak of a mountain,
-							//or the surface of the ocean or a frozen lake.
-							if (world.isBlockOpaqueCube(x + xc, y - 2, z + zc))
-							{
-								//Randomly choose whether to place bricks or not. The math is designed so that the
-								//chances of placing a block decrease as we get farther from the gateway's center.
-								if (Math.abs(xc) + Math.abs(zc) < random.nextInt(2) + 3)
-								{
-									//Place Stone Bricks
-									world.setBlock(x + xc, y - 1, z + zc, blockID, 0, 3);
-								}
-								else if (Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 3)
-								{
-									//Place Cracked Stone Bricks
-									world.setBlock(x + xc, y - 1, z + zc, blockID, 2, 3);
-								}
-							}
-						}
-					}
-					
-					//Use Chiseled Stone Bricks to top off the pillars around the door
-					world.setBlock(x, y + 2, z + 1, blockID, 3, 3);
-					world.setBlock(x, y + 2, z - 1, blockID, 3, 3);					
+					createStoneGateway(world, x, y, z, random);
 				}
 				else
 				{
-					//Build the gateway out of Unraveled Fabric. Since nearly all the blocks in Limbo are of
-					//that type, there is no point replacing the ground. Just build the tops of the columns here.
-					blockID = properties.LimboBlockID;
-					world.setBlock(x, y + 2, z + 1, blockID, 0, 3);
-					world.setBlock(x, y + 2, z - 1, blockID, 0, 3);
+					createLimboGateway(world, x, y, z);
 				}
 				
 				//Place the shiny transient door into a dungeon
 				itemDimDoor.placeDoorBlock(world, x, y + 1, z, 0, mod_pocketDim.transientDoor);
-				
-				//Build the columns around the door
-				world.setBlock(x, y + 1, z - 1, blockID, 0, 3);
-				world.setBlock(x, y + 1, z + 1, blockID, 0, 3);
-				world.setBlock(x, y, z - 1, blockID, 0, 3);
-				world.setBlock(x, y, z + 1, blockID, 0, 3);				
 			}
 		}
+	}
+	
+	private static void createStoneGateway(World world, int x, int y, int z, Random random)
+	{
+		final int blockID = Block.stoneBrick.blockID;
+		
+		//Replace some of the ground around the gateway with bricks
+		for (int xc = -GATEWAY_RADIUS; xc <= GATEWAY_RADIUS; xc++)
+		{
+			for (int zc= -GATEWAY_RADIUS; zc <= GATEWAY_RADIUS; zc++)
+			{
+				//Check that the block is supported by an opaque block.
+				//This prevents us from building over a cliff, on the peak of a mountain,
+				//or the surface of the ocean or a frozen lake.
+				if (world.isBlockOpaqueCube(x + xc, y - 2, z + zc))
+				{
+					//Randomly choose whether to place bricks or not. The math is designed so that the
+					//chances of placing a block decrease as we get farther from the gateway's center.
+					if (Math.abs(xc) + Math.abs(zc) < random.nextInt(2) + 3)
+					{
+						//Place Stone Bricks
+						world.setBlock(x + xc, y - 1, z + zc, blockID, 0, 3);
+					}
+					else if (Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 3)
+					{
+						//Place Cracked Stone Bricks
+						world.setBlock(x + xc, y - 1, z + zc, blockID, 2, 3);
+					}
+				}
+			}
+		}
+		
+		//Use Chiseled Stone Bricks to top off the pillars around the door
+		world.setBlock(x, y + 2, z + 1, blockID, 3, 3);
+		world.setBlock(x, y + 2, z - 1, blockID, 3, 3);
+		//Build the columns around the door
+		world.setBlock(x, y + 1, z - 1, blockID, 0, 3);
+		world.setBlock(x, y + 1, z + 1, blockID, 0, 3);
+		world.setBlock(x, y, z - 1, blockID, 0, 3);
+		world.setBlock(x, y, z + 1, blockID, 0, 3);
+	}
+	
+	private static void createLimboGateway(World world, int x, int y, int z)
+	{
+		//Build the gateway out of Unraveled Fabric. Since nearly all the blocks in Limbo are of
+		//that type, there is no point replacing the ground.
+		final int blockID = properties.LimboBlockID;
+		world.setBlock(x, y + 2, z + 1, blockID, 0, 3);
+		world.setBlock(x, y + 2, z - 1, blockID, 0, 3);
+		
+		//Build the columns around the door
+		world.setBlock(x, y + 1, z - 1, blockID, 0, 3);
+		world.setBlock(x, y + 1, z + 1, blockID, 0, 3);
+		world.setBlock(x, y, z - 1, blockID, 0, 3);
+		world.setBlock(x, y, z + 1, blockID, 0, 3);
 	}
 	
 	private static boolean checkGatewayLocation(World world, int x, int y, int z)
@@ -195,6 +228,6 @@ public class RiftGenerator implements IWorldGenerator
 	
 	private static boolean isStructureGenerationAllowed()
 	{
-		return DimensionManager.getWorld(0).getWorldInfo().isMapFeaturesEnabled();
+		return DimensionManager.getWorld(OVERWORLD_DIMENSION_ID).getWorldInfo().isMapFeaturesEnabled();
 	}
 }
