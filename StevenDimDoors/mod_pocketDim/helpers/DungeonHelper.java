@@ -114,10 +114,17 @@ public class DungeonHelper
 		//It'll be removed later when we read dungeon configurations from files.
 
 		ArrayList<DungeonChainRuleDefinition> rules = new ArrayList<DungeonChainRuleDefinition>();
-		rules.add(parseDefinitionUnsafe("? ? ?  -> DeadEnd Exit"));
-		rules.add(parseDefinitionUnsafe("Trap -> ?"));
-		rules.add(parseDefinitionUnsafe("Hub -> Trap"));
-		rules.add(parseDefinitionUnsafe("? -> Hub"));
+
+		rules.add(parseDefinitionUnsafe("? ? ? ? ? ? ? ? -> Trap#20 SimpleHall#40 ComplexHall#10 Exit#20 DeadEnd#10"));
+
+		rules.add(parseDefinitionUnsafe("? ? ? ? -> Trap#18 SimpleHall#40 ComplexHall#10 Exit#18 DeadEnd#10 Hub#4"));
+
+		rules.add(parseDefinitionUnsafe("? ? ? -> ComplexHall Hub Trap SimpleHall Maze"));
+
+		rules.add(parseDefinitionUnsafe("? ? -> ComplexHall Hub Trap SimpleHall Maze"));
+
+		rules.add(parseDefinitionUnsafe("? -> ComplexHall#40 Hub#30 Trap#10 SimpleHall#10 Maze#10"));
+
 		rules.add(parseDefinitionUnsafe("-> ComplexHall#40 Hub#30 Trap#10 SimpleHall#10 Maze#10"));
 		
 		String[] typeNames = "Hub Trap Maze Exit DeadEnd SimpleHall ComplexHall".toUpperCase().split(" ");

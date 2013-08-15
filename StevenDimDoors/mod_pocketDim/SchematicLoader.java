@@ -42,16 +42,9 @@ public class SchematicLoader
 				
 				if (dimList.get(destDimID).dungeonGenerator == null)
 				{
-					//The following initialization code is based on code from ChunkProviderGenerate.
-					//It makes our generation depend on the world seed. We have an additional seed here
-					//to prevent correlations between the selected dungeons and the locations of gateways.
 					//TODO: We should centralize RNG initialization and world-seed modifiers for each specific application.
-					
-					final long localSeed = world.getSeed() ^ 0x2F50DB9B4A8057E4L;
-					final Random random = new Random();
-					final long factorA = random.nextLong() / 2L * 2L + 1L;
-					final long factorB = random.nextLong() / 2L * 2L + 1L;
-					random.setSeed((link.destXCoord >> 4) * factorA + (link.destZCoord >> 4) * factorB ^ localSeed);
+					final long localSeed = world.getSeed() ^ 0x2F50DB9B4A8057E4L ^ computeDestinationHash(link);
+					final Random random = new Random(localSeed);
 					
 					dungeonHelper.generateDungeonLink(link, dungeonHelper.RuinsPack, random);
 				}
@@ -159,5 +152,45 @@ public class SchematicLoader
 			dungeon = DungeonSchematic.readFromResource(schematicPath);
 		}
 		return dungeon;
+	}
+	
+	private static long computeDestinationHash(LinkData link)
+	{
+		//Time for some witchcraft.
+		//The code here is inspired by a discussion on Stack Overflow regarding hash codes for 3D.
+		//Source: http://stackoverflow.com/questions/9858376/hashcode-for-3d-integer-coordinates-with-high-spatial-coherence
+		
+		//Use 8 bits from Y and 24 bits from X and Z. Mix in 8 bits from the destination dim ID too - that means
+		//even if you aligned two doors perfectly between two pockets, it's unlikely they would lead to the same dungeon.
+		
+		int bit;
+		int index;
+		long hash;
+		int w = link.destDimID;
+		int x = link.destXCoord;
+		int y = link.destYCoord;
+		int z = link.destZCoord;
+		
+		hash = 0;
+		index = 0;
+		for (bit = 0; bit < 8; bit++)
+		{
+			hash |= ((w >> bit) & 1) << index;
+			index++;
+			hash |= ((x >> bit) & 1) << index;
+			index++;
+			hash |= ((y >> bit) & 1) << index;
+			index++;
+			hash |= ((z >> bit) & 1) << index;
+			index++;
+		}
+		for (; bit < 24; bit++)
+		{
+			hash |= ((x >> bit) & 1) << index;
+			index++;
+			hash |= ((z >> bit) & 1) << index;
+			index++;
+		}
+		return hash;
 	}
 }
