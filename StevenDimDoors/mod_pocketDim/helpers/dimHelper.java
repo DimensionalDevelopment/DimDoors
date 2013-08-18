@@ -103,17 +103,28 @@ public class dimHelper extends DimensionManager
 	}
 	
 	// GreyMaria: My god, what a mess. Here, let me clean it up a bit.
-	private Entity teleportEntity(World world, Entity entity, LinkData link) //this beautiful teleport method is based off of xCompWiz's teleport function. 
-	{		
-		// GreyMaria: Added to simplify some code further in.
+	public Entity teleportEntity(World world, Entity entity, LinkData link) //this beautiful teleport method is based off of xCompWiz's teleport function. 
+	{	
 		WorldServer oldWorld = (WorldServer)world;
+		WorldServer newWorld;
+		EntityPlayerMP player = (entity instanceof EntityPlayerMP) ? (EntityPlayerMP)entity : null;
 		
-		// Is something riding? Handle it first.
+		/*// SPECIAL CASE: Is our link null? If so, we've likely come from Limbo. Ensure this is the case.
+		if(link == null)
+		{
+			if(world.provider.dimensionId == DDProperties.instance().LimboDimensionID)
+			{
+				link = new LinkData(0, 0, 0, 0);
+				// Find destination point.
+			}
+		}*/
+	    
+		
+ 		// Is something riding? Handle it first.
 		if(entity.riddenByEntity != null)
 		{
 			return this.teleportEntity(oldWorld,entity.riddenByEntity, link);
 		}
-		
 		// Are we riding something? Dismount and tell the mount to go first.
 		Entity cart = entity.ridingEntity;
 		if (cart != null)
@@ -122,8 +133,6 @@ public class dimHelper extends DimensionManager
 			cart = teleportEntity(oldWorld, cart, link);
 			// We keep track of both so we can remount them on the other side.
 		}
-		
-		WorldServer newWorld;
 		
 		// Destination doesn't exist? We need to make it.
 		if(DimensionManager.getWorld(link.destDimID)==null)
@@ -146,12 +155,7 @@ public class dimHelper extends DimensionManager
 		// TODO Check to see if this is actually vital.
 		mod_pocketDim.teleporter.placeInPortal(entity, newWorld, link);
 
-		// We'll need to know if we're teleporting a player entity.
-		// If this value is NULL, then we're not teleporting a player entity.
-		EntityPlayerMP player = null;
-	    if (entity instanceof EntityPlayerMP) player = (EntityPlayerMP)entity;
-	    
-    	if (difDest) // Are we moving our target to a new dimension?
+		if (difDest) // Are we moving our target to a new dimension?
     	{
     		if(player != null) // Are we working with a player?
     		{
