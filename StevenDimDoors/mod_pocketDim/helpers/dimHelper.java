@@ -184,8 +184,7 @@ public class dimHelper extends DimensionManager
 		    		player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, effect));
 		    	}
 		    	
-		    	// GreyMaria: Can someone tell me why we need this? I'm commenting it out for now. We'll see if it causes problems.
-		    	//player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
+		    	player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
     		}  	
     		
     		// Creates sanity by removing the entity from its old location's chunk entity list, if applicable.
