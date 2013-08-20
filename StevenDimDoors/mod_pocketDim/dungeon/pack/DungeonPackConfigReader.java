@@ -378,9 +378,8 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 	}
 
 	@Override
-	public void writeToStream(OutputStream outputStream, DungeonPackConfig data)
-			throws ConfigurationProcessingException
-			{
+	public void writeToStream(OutputStream outputStream, DungeonPackConfig data) throws ConfigurationProcessingException
+	{
 		throw new UnsupportedOperationException("DungeonPackConfigReader does not support writing.");
-			}
+	}
 }
