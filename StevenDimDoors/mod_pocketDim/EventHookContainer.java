@@ -46,32 +46,26 @@ public class EventHookContainer
         	dimHelper.instance.interDimLinkList.clear();
         	dimHelper.instance.initPockets();
     	}
-    	for (Integer ids : dimHelper.getIDs())
-    	{
-    		World world = dimHelper.getWorld(ids);
+    	
+    	//TODO: In the future, we should iterate over DimHelper's dimension list. We ignore other dimensions anyway.
+    	for (int dimensionID : dimHelper.getIDs())
+    	{    		
+    		World world = dimHelper.getWorld(dimensionID);
     		int linkCount = 0;
     		
-    		if (dimHelper.dimList.containsKey(world.provider.dimensionId))
+    		if (dimHelper.dimList.containsKey(dimensionID))
     		{
-    			//TODO added temporary Try/catch block to prevent a crash here, getLinksInDim needs to be looked at
-    			try
-    			{    			
-	    			for (LinkData link:dimHelper.instance.getDimData(world.provider.dimensionId).getLinksInDim())
-	    			{
-	    				if (!mod_pocketDim.blockRift.isBlockImmune(world, link.locXCoord, link.locYCoord, link.locZCoord))
-	    				{
-	        				dimHelper.getWorld(link.locDimID).setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
-	    				}
-	    				linkCount++;
-	    				if (linkCount >= 100)
-	    				{
-	    					break;
-	    				}
-	    			}
-    			}
-    			catch(Exception e)
+    			for (LinkData link : dimHelper.instance.getDimData(dimensionID).getLinksInDim())
     			{
-    				e.printStackTrace();
+    				if (!mod_pocketDim.blockRift.isBlockImmune(world, link.locXCoord, link.locYCoord, link.locZCoord))
+    				{
+        				world.setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
+    				}
+    				linkCount++;
+    				if (linkCount >= 100)
+    				{
+    					break;
+    				}
     			}
     		}
     	}   

@@ -214,9 +214,9 @@ public class DDProperties
 				"Sets the chance (out of " + RiftGenerator.MAX_CLUSTER_GENERATION_CHANCE + ") that a cluster of rifts will " +
 				"generate in a given chunk. The default chance is 3.").getInt();
 
-		GatewayGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Gateway Generation Chance", 40,
+		GatewayGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Gateway Generation Chance", 10,
 				"Sets the chance (out of " + RiftGenerator.MAX_GATEWAY_GENERATION_CHANCE + ") that a Rift Gateway will " +
-				"generate in a given chunk. The default chance is 40.").getInt();
+				"generate in a given chunk. The default chance is 10.").getInt();
 		
 		RiftSpreadModifier = config.get(Configuration.CATEGORY_GENERAL, "Rift Spread Modifier", 3,
 				"Sets the number of times a rift can spread. 0 prevents rifts from spreading at all. " +

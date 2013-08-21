@@ -54,7 +54,7 @@ public class CommandExportDungeon extends DDCommandBase
 			if (command[1].equalsIgnoreCase("override"))
 			{
 				//Check that the schematic name is a legal name
-				if (DungeonHelper.SchematicNamePattern.matcher(command[0]).matches())
+				if (DungeonHelper.SCHEMATIC_NAME_PATTERN.matcher(command[0]).matches())
 				{
 					//Export the schematic
 					return exportDungeon(sender, command[0]);
@@ -85,7 +85,7 @@ public class CommandExportDungeon extends DDCommandBase
 			{
 				return new DDCommandResult("Error: Invalid dungeon type. Please use one of the existing types.");
 			}
-			if (!DungeonHelper.DungeonNamePattern.matcher(command[1]).matches())
+			if (!DungeonHelper.DUNGEON_NAME_PATTERN.matcher(command[1]).matches())
 			{
 				return new DDCommandResult("Error: Invalid dungeon name. Please use only letters, numbers, and dashes.");
 			}
