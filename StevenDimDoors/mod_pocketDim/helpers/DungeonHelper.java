@@ -50,7 +50,6 @@ public class DungeonHelper
 	
 	public static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	
-	
 	private static final int MIN_PACK_SWITCH_CHANCE = 0;
 	private static final int PACK_SWITCH_CHANCE_PER_LEVEL = 1;
 	private static final int MAX_PACK_SWITCH_CHANCE = 500;
@@ -67,7 +66,7 @@ public class DungeonHelper
 	private ArrayList<DungeonGenerator> untaggedDungeons = new ArrayList<DungeonGenerator>();
 	private ArrayList<DungeonGenerator> registeredDungeons = new ArrayList<DungeonGenerator>();
  
-	public DungeonPack RuinsPack;
+	private DungeonPack RuinsPack;
 	private HashMap<String, DungeonPack> dungeonPackMapping = new HashMap<String, DungeonPack>();
 	private ArrayList<DungeonPack> dungeonPackList = new ArrayList<DungeonPack>();
 	
@@ -181,6 +180,30 @@ public class DungeonHelper
 	public DungeonGenerator getDefaultDownDungeon()
 	{
 		return defaultDown;
+	}
+	
+	public DungeonPack getDimDungeonPack(int dimensionID)
+	{
+		//FIXME: This function is a workaround to our current dungeon data limitations. Modify later.
+		//The upcoming save format change and code overhaul will make this obsolete.
+		
+		DungeonPack pack;
+		DungeonGenerator generator = dimHelper.dimList.get(dimensionID).dungeonGenerator;
+		if (generator != null)
+		{
+			pack = generator.getDungeonType().Owner;
+			
+			//Make sure the pack isn't null. This can happen for dungeons with the special UNKNOWN type.
+			if (pack == null)
+			{
+				pack = RuinsPack;
+			}
+		}
+		else
+		{
+			pack = RuinsPack;
+		}
+		return pack;
 	}
 	
 	public LinkData createCustomDungeonDoor(World world, int x, int y, int z)

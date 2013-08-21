@@ -6,7 +6,6 @@ import java.util.Random;
 
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
-import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
@@ -46,7 +45,7 @@ public class SchematicLoader
 					final long localSeed = world.getSeed() ^ 0x2F50DB9B4A8057E4L ^ computeDestinationHash(link);
 					final Random random = new Random(localSeed);
 					
-					dungeonHelper.generateDungeonLink(link, getDimDungeonPack(originDimID), random);
+					dungeonHelper.generateDungeonLink(link, dungeonHelper.getDimDungeonPack(originDimID), random);
 				}
 				schematicPath = dimList.get(destDimID).dungeonGenerator.schematicPath;	
 				
@@ -99,7 +98,7 @@ public class SchematicLoader
 				dimHelper helperInstance = dimHelper.instance;
 				helperInstance.moveLinkDataDestination(link, link.destXCoord, fixedY, link.destZCoord, link.destDimID, true);
 			}
-			DungeonPackConfig packConfig = getDimDungeonPack(destDimID).getConfig();
+			DungeonPackConfig packConfig = dungeonHelper.getDimDungeonPack(destDimID).getConfig();
 			
 			dungeon.copyToWorld(world, new Point3D(link.destXCoord, link.destYCoord, link.destZCoord),
 					link.linkOrientation, originDimID, destDimID, packConfig.doDistortDoorCoordinates());
@@ -110,30 +109,6 @@ public class SchematicLoader
 			e.printStackTrace();
 			return false;
 		}
-	}
-	
-	private static DungeonPack getDimDungeonPack(int dimensionID)
-	{
-		//FIXME: This function is a workaround to our current dungeon data limitations. Modify later.
-		//The upcoming save format change and code overhaul will make this obsolete.
-		
-		DungeonPack pack;
-		DungeonGenerator generator = dimHelper.dimList.get(dimensionID).dungeonGenerator;
-		if (generator != null)
-		{
-			pack = generator.getDungeonType().Owner;
-			
-			//Make sure the pack isn't null. This can happen for dungeons with the special UNKNOWN type.
-			if (pack == null)
-			{
-				pack = DungeonHelper.instance().RuinsPack;
-			}
-		}
-		else
-		{
-			pack = DungeonHelper.instance().RuinsPack;
-		}
-		return pack;
 	}
 
 	private static int adjustDestinationY(World world, int y, DungeonSchematic dungeon)
