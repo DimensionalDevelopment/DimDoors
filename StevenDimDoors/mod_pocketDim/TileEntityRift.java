@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.blocks.BlockRift;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
@@ -53,9 +54,16 @@ public class TileEntityRift extends TileEntity
 			 int x = MathHelper.floor_double(coord[0]+.5);
 			 int y = MathHelper.floor_double(coord[1]+.5);
 			 int z = MathHelper.floor_double(coord[2]+.5);
-			 this.worldObj.setBlockToAir(this.xCoord+x, this.yCoord+y, this.zCoord+z);
+			 
+			 if(!BlockRift.isBlockImmune(worldObj,this.xCoord+x, this.yCoord+y, this.zCoord+z))
+			 {
+				 this.worldObj.setBlockToAir(this.xCoord+x, this.yCoord+y, this.zCoord+z);
+			 }
 			
-			 this.worldObj.setBlockToAir(this.xCoord-x, this.yCoord+y, this.zCoord-z);
+			 if(!BlockRift.isBlockImmune(worldObj,this.xCoord-x, this.yCoord-y, this.zCoord-z))
+			 {
+			 this.worldObj.setBlockToAir(this.xCoord-x, this.yCoord-y, this.zCoord-z);
+			 }
 
 		 }
 	 }
@@ -77,9 +85,9 @@ public class TileEntityRift extends TileEntity
 					{
 					 
 					 
-					  EntityEnderman enderman = new EntityEnderman(worldObj);
-	                  enderman.setLocationAndAngles(this.xCoord+.5, this.yCoord-1, this.zCoord+.5, 5, 6);
-	                  worldObj.spawnEntityInWorld(enderman);
+					  EntityEnderman creeper = new EntityEnderman(worldObj);
+	                  creeper.setLocationAndAngles(this.xCoord+.5, this.yCoord-1, this.zCoord+.5, 5, 6);
+	                  worldObj.spawnEntityInWorld(creeper);
 					}				
 				 }
 			 }
@@ -153,21 +161,21 @@ public class TileEntityRift extends TileEntity
 		 int iteration =  MathHelper.floor_double((Math.log(Math.pow(age+1,1.5))));
 		 double fl =Math.log(iteration+1)/(iteration);
 		 double[] coords= new double[4];
-		 double noise = ((rand.nextGaussian())/(10)*(iteration+1));
+		 double noise = ((rand.nextGaussian())/(2+iteration/3+1));
 		 
 		 if(!this.renderingCenters.containsKey(iteration-1))
 		 {
 			 if(rand.nextBoolean())
 			 {
 				coords[0] = fl*1.5;
-				coords[1] = rand.nextGaussian()/10;
+				coords[1] = rand.nextGaussian()/5;
 				coords[2] = 0;
 				coords[3] = 1;
 			 }
 			 else
 			 {
 				coords[0] = 0;
-				coords[1] = rand.nextGaussian()/10;
+				coords[1] = rand.nextGaussian()/5;
 				coords[2] = fl*1.5;
 				coords[3] = 0;
 
@@ -181,7 +189,7 @@ public class TileEntityRift extends TileEntity
 			if(this.renderingCenters.get(iteration-1)[3]==0)
 			{
 				coords[0]=noise/2+this.renderingCenters.get(iteration-1)[0];
-				coords[1]=noise+this.renderingCenters.get(iteration-1)[1];
+				coords[1]=noise/2+this.renderingCenters.get(iteration-1)[1];
 				coords[2]= this.renderingCenters.get(iteration-1)[2]+fl;
 				coords[3] = 0;
 
@@ -189,7 +197,7 @@ public class TileEntityRift extends TileEntity
 			else
 			{
 				coords[0]=this.renderingCenters.get(iteration-1)[0]+fl;
-				coords[1]=noise+this.renderingCenters.get(iteration-1)[1];
+				coords[1]=noise/2+this.renderingCenters.get(iteration-1)[1];
 				coords[2]=noise/2+this.renderingCenters.get(iteration-1)[2];
 				coords[3] = 1;
 
@@ -210,7 +218,7 @@ public class TileEntityRift extends TileEntity
 	 @Override
 	    public void readFromNBT(NBTTagCompound nbt)
 	    {
-	        super.readFromNBT(nbt);
+	     
 	        int i = nbt.getInteger(("Size"));
 
 	        try
@@ -239,13 +247,14 @@ public class TileEntityRift extends TileEntity
 	        {
 	            e.printStackTrace();
 	        }
+	        super.readFromNBT(nbt);
 	    }
 
 	    @Override
 	    public void writeToNBT(NBTTagCompound nbt)
 	    {
 	        int i = 0;
-	        super.writeToNBT(nbt);
+	       
 	      
 	        for(Integer key:this.renderingCenters.keySet())
 	        {
@@ -260,6 +269,6 @@ public class TileEntityRift extends TileEntity
 	        nbt.setFloat("age", this.age);
 
 	        nbt.setBoolean("shouldClose", this.shouldClose);
-	       
+	        super.writeToNBT(nbt);
 	    }
 }
