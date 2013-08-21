@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,12 +21,12 @@ import StevenDimDoors.mod_pocketDim.DungeonGenerator;
 import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
-import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonChainRuleDefinition;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
+import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfigReader;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
-import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
+import StevenDimDoors.mod_pocketDim.util.ConfigurationProcessingException;
 
 public class DungeonHelper
 {
@@ -112,56 +111,21 @@ public class DungeonHelper
 	{
 		//This is a temporarily function for testing dungeon packs.
 		//It'll be removed later when we read dungeon configurations from files.
-
-		ArrayList<DungeonChainRuleDefinition> rules = new ArrayList<DungeonChainRuleDefinition>();
-
-		rules.add(parseDefinitionUnsafe("? ? ? ? ? ? ? ? -> Trap#20 SimpleHall#40 ComplexHall#10 Exit#20 DeadEnd#10"));
-
-		rules.add(parseDefinitionUnsafe("? ? ? ? -> Trap#18 SimpleHall#40 ComplexHall#10 Exit#18 DeadEnd#10 Hub#4"));
-
-		rules.add(parseDefinitionUnsafe("? ? ? -> ComplexHall Hub Trap SimpleHall Maze"));
-
-		rules.add(parseDefinitionUnsafe("? ? -> ComplexHall Hub Trap SimpleHall Maze"));
-
-		rules.add(parseDefinitionUnsafe("? -> ComplexHall#40 Hub#30 Trap#10 SimpleHall#10 Maze#10"));
-
-		rules.add(parseDefinitionUnsafe("-> ComplexHall#40 Hub#30 Trap#10 SimpleHall#10 Maze#10"));
-		
-		String[] typeNames = "Hub Trap Maze Exit DeadEnd SimpleHall ComplexHall".toUpperCase().split(" ");
-		
-		DungeonPackConfig config = new DungeonPackConfig();
-		config.setName("ruins");
-		config.setAllowDuplicatesInChain(false);
-		config.setRules(rules);
-		config.setTypeNames(new ArrayList<String>(Arrays.asList(typeNames)));
-		return config;
-	}
-	
-	private static DungeonChainRuleDefinition parseDefinitionUnsafe(String definition)
-	{
-		//This is an improvised parsing function for rule definitions. Only for testing!!!
-		definition = definition.toUpperCase();
-		String[] parts = definition.split("->");
-		ArrayList<String> condition = new ArrayList<String>();
-		ArrayList<WeightedContainer<String>> products = new ArrayList<WeightedContainer<String>>();
-		
-		for (String conditionPart : parts[0].split(" "))
+				
+		DungeonPackConfig config;
+		try
 		{
-			if (!conditionPart.isEmpty())
-				condition.add(conditionPart);
+			config = (new DungeonPackConfigReader()).readFromResource("/schematics/ruins/rules.txt");
+			config.setName("ruins");
+			return config;
 		}
-		
-		for (String product : parts[1].split(" "))
+		catch (ConfigurationProcessingException e)
 		{
-			if (!product.isEmpty())
-			{
-				String[] productParts = product.split("#");
-				String productType = productParts[0];
-				int weight = (productParts.length > 1) ? Integer.parseInt(productParts[1]) : 100;
-				products.add(new WeightedContainer<String>(productType, weight));
-			}
+			//FIXME TEMPORARY DEBUG PRINT, DO SOMETHING BETTER HERE
+			System.err.println("OH GOD SOMETHING WENT WRONG WITH THE DEFAULT DUNGEON PACK CONFIG");
+			e.printStackTrace();
+			return null;
 		}
-		return new DungeonChainRuleDefinition(condition, products);
 	}
 	
 	public List<DungeonGenerator> getRegisteredDungeons()

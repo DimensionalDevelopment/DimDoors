@@ -9,10 +9,12 @@ DeadEnd
 Maze
 
 Settings:
-AllowRepetitionsInBranch = false
+AllowDuplicatesInChain = false
 AllowPackChangeOut = true
-AllowPackChangeIn = true
-PackWeight = 100
+DistortDoorCoordinates = true
+
+## Prevent this pack from being selected for transitioning in once we've transitioned out
+AllowPackChangeIn = false
 
 Rules:
 

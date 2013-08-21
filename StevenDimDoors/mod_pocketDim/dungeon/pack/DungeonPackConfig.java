@@ -7,6 +7,10 @@ public class DungeonPackConfig
 	private String name;
 	private ArrayList<String> typeNames;
 	private boolean allowDuplicatesInChain;
+	private boolean allowPackChangeIn;
+	private boolean allowPackChangeOut;
+	private boolean distortDoorCoordinates;
+	private int packWeight;
 	private ArrayList<DungeonChainRuleDefinition> rules;
 	
 	public DungeonPackConfig() { }
@@ -17,6 +21,10 @@ public class DungeonPackConfig
 		this.name = source.name;
 		this.typeNames = (ArrayList<String>) source.typeNames.clone();
 		this.allowDuplicatesInChain = source.allowDuplicatesInChain;
+		this.allowPackChangeIn = source.allowPackChangeIn;
+		this.allowPackChangeOut = source.allowPackChangeOut;
+		this.distortDoorCoordinates = source.distortDoorCoordinates;
+		this.packWeight = source.packWeight;
 		this.rules = (ArrayList<DungeonChainRuleDefinition>) source.rules.clone();
 	}
 	
@@ -74,5 +82,45 @@ public class DungeonPackConfig
 	public ArrayList<DungeonChainRuleDefinition> getRules()
 	{
 		return rules;
+	}
+
+	public boolean allowPackChangeIn()
+	{
+		return allowPackChangeIn;
+	}
+
+	public void setAllowPackChangeIn(boolean value)
+	{
+		this.allowPackChangeIn = value;
+	}
+
+	public boolean allowPackChangeOut()
+	{
+		return allowPackChangeOut;
+	}
+
+	public void setAllowPackChangeOut(boolean value)
+	{
+		this.allowPackChangeOut = value;
+	}
+
+	public int getPackWeight()
+	{
+		return packWeight;
+	}
+
+	public void setPackWeight(int packWeight)
+	{
+		this.packWeight = packWeight;
+	}
+	
+	public boolean getDistortDoorCoordinates()
+	{
+		return distortDoorCoordinates;
+	}
+
+	public void setDistortDoorCoordinates(boolean value)
+	{
+		this.distortDoorCoordinates = value;
 	}
 }
