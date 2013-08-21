@@ -105,7 +105,7 @@ public class CommandExportDungeon extends DDCommandBase
 				try
 				{
 					int weight = Integer.parseInt(command[3]);
-					if (weight >= 0 && weight <= DungeonHelper.MAX_DUNGEON_WEIGHT)
+					if (weight >= DungeonHelper.MIN_DUNGEON_WEIGHT && weight <= DungeonHelper.MAX_DUNGEON_WEIGHT)
 					{
 						return exportDungeon(sender, join(command, "_", 0, 4));
 					}
@@ -114,7 +114,8 @@ public class CommandExportDungeon extends DDCommandBase
 			}
 			
 			//If we've reached this point, then we must have an invalid weight.
-			return new DDCommandResult("Invalid dungeon weight. Please specify a weight between 0 and " + DungeonHelper.MAX_DUNGEON_WEIGHT + ", inclusive.");
+			return new DDCommandResult("Invalid dungeon weight. Please specify a weight between "
+					+ DungeonHelper.MIN_DUNGEON_WEIGHT + " and " + DungeonHelper.MAX_DUNGEON_WEIGHT + ", inclusive.");
 		}
 		
 		return DDCommandResult.SUCCESS;

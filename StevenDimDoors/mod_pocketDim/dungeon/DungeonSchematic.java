@@ -167,7 +167,7 @@ public class DungeonSchematic extends Schematic {
 		return new DungeonSchematic(Schematic.copyFromWorld(world, x, y, z, width, height, length, doCompactBounds));
 	}
 
-	public void copyToWorld(World world, Point3D pocketCenter, int dungeonOrientation, int originDimID, int destDimID)
+	public void copyToWorld(World world, Point3D pocketCenter, int dungeonOrientation, int originDimID, int destDimID, boolean doDistortCoordinates)
 	{
 		//TODO: This function is an improvised solution so we can get the release moving. In the future,
 		//we should generalize block tranformations and implement support for them at the level of Schematic,
@@ -222,17 +222,17 @@ public class DungeonSchematic extends Schematic {
 			world.setBlockTileEntity(pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), TileEntity.createAndLoadEntity(tileTag));
 		}
 		
-		setUpDungeon(world, pocketCenter, turnAngle, originDimID, destDimID);
+		setUpDungeon(world, pocketCenter, turnAngle, originDimID, destDimID, doDistortCoordinates);
 	}
 	
-	private void setUpDungeon(World world, Point3D pocketCenter, int turnAngle, int originDimID, int destDimID)
+	private void setUpDungeon(World world, Point3D pocketCenter, int turnAngle, int originDimID, int destDimID, boolean doDistortCoordinates)
 	{
 		//The following Random initialization code is based on code from ChunkProviderGenerate.
 		//It makes our generation depend on the world seed.
 		Random random = new Random(world.getSeed());
         long factorA = random.nextLong() / 2L * 2L + 1L;
         long factorB = random.nextLong() / 2L * 2L + 1L;
-        random.setSeed((pocketCenter.getX() >> 4) * factorA + (pocketCenter.getZ() >> 4) * factorB ^ world.getSeed());
+        random.setSeed(pocketCenter.getX() * factorB + pocketCenter.getZ() * factorA ^ world.getSeed());
 		
         //Transform dungeon corners
         Point3D minCorner = new Point3D(0, 0, 0);
@@ -249,7 +249,7 @@ public class DungeonSchematic extends Schematic {
 		//Set up link data for dimensional doors
 		for (Point3D location : dimensionalDoorLocations)
 		{
-			setUpDimensionalDoorLink(world, location, entranceDoorLocation, turnAngle, pocketCenter, originDimID, destDimID, random);
+			setUpDimensionalDoorLink(world, location, entranceDoorLocation, turnAngle, pocketCenter, originDimID, destDimID, doDistortCoordinates, random);
 		}
 		
 		//Set up link data for exit door
@@ -374,11 +374,22 @@ public class DungeonSchematic extends Schematic {
 		}
 	}
 	
-	private static void setUpDimensionalDoorLink(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter, int originDimID, int destDimID, Random random)
+	private static void setUpDimensionalDoorLink(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter, int originDimID, int destDimID, boolean applyNoise, Random random)
 	{
 		int depth = dimHelper.instance.getDimDepth(originDimID) + 1;
-		int forwardNoise = MathHelper.getRandomIntegerInRange(random, -50 * depth, 150 * depth);
-		int sidewaysNoise = MathHelper.getRandomIntegerInRange(random, -10 * depth, 10 * depth);
+		int forwardNoise;
+		int sidewaysNoise;
+		
+		if (applyNoise)
+		{
+			forwardNoise = MathHelper.getRandomIntegerInRange(random, -50 * depth, 150 * depth);
+			sidewaysNoise = MathHelper.getRandomIntegerInRange(random, -10 * depth, 10 * depth);
+		}
+		else
+		{
+			forwardNoise = 0;
+			sidewaysNoise = 0;
+		}
 		
 		//Transform doorLocation to the pocket coordinate system
 		Point3D location = point.clone();

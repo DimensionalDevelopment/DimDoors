@@ -2,11 +2,13 @@ package StevenDimDoors.mod_pocketDim.helpers;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DimData;
@@ -27,6 +30,7 @@ import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfigReader;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
 import StevenDimDoors.mod_pocketDim.util.ConfigurationProcessingException;
+import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
 public class DungeonHelper
 {
@@ -42,8 +46,18 @@ public class DungeonHelper
 	private static final String BUNDLED_DUNGEONS_LIST_PATH = "/schematics/schematics.txt";
 	private static final String DUNGEON_CREATION_GUIDE_SOURCE_PATH = "/mods/DimDoors/text/How_to_add_dungeons.txt";
 
+	private static final String RUINS_PACK_PATH = "/schematics/ruins/rules.txt";
+	
 	public static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
+	
+	
+	private static final int MIN_PACK_SWITCH_CHANCE = 0;
+	private static final int PACK_SWITCH_CHANCE_PER_LEVEL = 1;
+	private static final int MAX_PACK_SWITCH_CHANCE = 500;
+	private static final int START_PACK_SWITCH_CHANCE = MAX_PACK_SWITCH_CHANCE / 9;
+	
 	private static final int DEFAULT_DUNGEON_WEIGHT = 100;
+	public static final int MIN_DUNGEON_WEIGHT = 1; //Prevents MC's random selection algorithm from throwing an exception
 	public static final int MAX_DUNGEON_WEIGHT = 10000; //Used to prevent overflows and math breaking down
 	private static final int MAX_EXPORT_RADIUS = 50;
 	public static final short MAX_DUNGEON_WIDTH = 2 * MAX_EXPORT_RADIUS + 1;
@@ -54,6 +68,8 @@ public class DungeonHelper
 	private ArrayList<DungeonGenerator> registeredDungeons = new ArrayList<DungeonGenerator>();
  
 	public DungeonPack RuinsPack;
+	private HashMap<String, DungeonPack> dungeonPackMapping = new HashMap<String, DungeonPack>();
+	private ArrayList<DungeonPack> dungeonPackList = new ArrayList<DungeonPack>();
 	
 	private DungeonGenerator defaultUp;
 	private DungeonGenerator defaultDown;
@@ -101,31 +117,45 @@ public class DungeonHelper
 			copyfile.copyFile(DUNGEON_CREATION_GUIDE_SOURCE_PATH, file.getAbsolutePath() + "/How_to_add_dungeons.txt");
 		}
 		
-		RuinsPack = new DungeonPack(createRuinsConfig());
+		//TODO: Write up a dungeon pack loading function that loads the whole pack and infers its name from the path
+		DungeonPackConfigReader reader = new DungeonPackConfigReader();
+		RuinsPack = new DungeonPack(loadDungeonPackConfig(reader, RUINS_PACK_PATH, "ruins", true));
+		dungeonPackMapping.put("ruins", RuinsPack);
+		dungeonPackList.add(RuinsPack);
 		
 		registerBundledDungeons();
 		registerCustomDungeons(properties.CustomSchematicDirectory);
 	}
 	
-	private static DungeonPackConfig createRuinsConfig()
+	private static DungeonPackConfig loadDungeonPackConfig(DungeonPackConfigReader reader, String configPath, String name, boolean isInternal)
 	{
-		//This is a temporarily function for testing dungeon packs.
-		//It'll be removed later when we read dungeon configurations from files.
-				
-		DungeonPackConfig config;
 		try
 		{
-			config = (new DungeonPackConfigReader()).readFromResource("/schematics/ruins/rules.txt");
-			config.setName("ruins");
+			DungeonPackConfig config;
+			if (isInternal)
+			{
+				config = reader.readFromResource(configPath);
+			}
+			else
+			{
+				config = reader.readFromFile(configPath);
+			}
+			config.setName(name);
 			return config;
 		}
 		catch (ConfigurationProcessingException e)
 		{
-			//FIXME TEMPORARY DEBUG PRINT, DO SOMETHING BETTER HERE
-			System.err.println("OH GOD SOMETHING WENT WRONG WITH THE DEFAULT DUNGEON PACK CONFIG");
-			e.printStackTrace();
-			return null;
+			System.err.println(e.getMessage());
+			if (e.getCause() != null)
+			{
+				System.err.println(e.getCause());
+			}
 		}
+		catch (FileNotFoundException e)
+		{
+			System.err.println("Could not find a dungeon pack config file: " + configPath);
+		}
+		return null;
 	}
 	
 	public List<DungeonGenerator> getRegisteredDungeons()
@@ -202,7 +232,7 @@ public class DungeonHelper
 			try
 			{
 				int weight = Integer.parseInt(dungeonData[3]);
-				if (weight < 0 || weight > MAX_DUNGEON_WEIGHT)
+				if (weight < MIN_DUNGEON_WEIGHT || weight > MAX_DUNGEON_WEIGHT)
 					return false;
 			}
 			catch (NumberFormatException e)
@@ -336,10 +366,36 @@ public class DungeonHelper
 	public void generateDungeonLink(LinkData inbound, DungeonPack pack, Random random)
 	{
 		DungeonGenerator selection;
+		DungeonPackConfig config;
+		DungeonPack selectedPack;
 		
 		try
-		{			
-			selection = pack.getNextDungeon(inbound, random);
+		{
+			config = pack.getConfig();
+			selectedPack = pack;
+			
+			//Do we want to switch to another dungeon pack?
+			if (config.allowPackChangeOut())
+			{
+				//Calculate the chance of switching to a different pack type
+				int packSwitchChance;
+				if (dimHelper.dimList.get(inbound.locDimID).depth == 0)
+				{
+					packSwitchChance = START_PACK_SWITCH_CHANCE;
+				}
+				else
+				{
+					packSwitchChance = MIN_PACK_SWITCH_CHANCE + (getPackDepth(inbound, pack) - 1) * PACK_SWITCH_CHANCE_PER_LEVEL;
+				}
+
+				//Decide randomly whether to switch packs or not
+				if (random.nextInt(MAX_PACK_SWITCH_CHANCE) < packSwitchChance)
+				{
+					//Find another pack
+					selectedPack = getRandomDungeonPack(pack, random);
+				}
+			}
+			selection = selectedPack.getNextDungeon(inbound, random);
 		}
 		catch (Exception e)
 		{
@@ -356,6 +412,29 @@ public class DungeonHelper
 			}
 		}
 		dimHelper.instance.getDimData(inbound.destDimID).dungeonGenerator = selection;
+	}
+
+	@SuppressWarnings("unchecked")
+	private DungeonPack getRandomDungeonPack(DungeonPack current, Random random)
+	{
+		DungeonPack selection = current;
+		ArrayList<WeightedContainer<DungeonPack>> packs = new ArrayList<WeightedContainer<DungeonPack>>(dungeonPackList.size());
+
+		//Load up a list of weighted items with any usable dungeon packs that is not the current pack
+		for (DungeonPack pack : dungeonPackList)
+		{
+			DungeonPackConfig config = pack.getConfig();
+			if (pack != current && config.allowPackChangeIn() && !pack.isEmpty())
+			{
+				packs.add(new WeightedContainer<DungeonPack>(pack, config.getPackWeight()));
+			}
+		}
+		if (!packs.isEmpty())
+		{
+			//Pick a random dungeon pack
+			selection = ((WeightedContainer<DungeonPack>) WeightedRandom.getRandomItem(random, packs)).getData();
+		}
+		return selection;
 	}
 
 	public Collection<String> getDungeonNames() {
@@ -424,6 +503,38 @@ public class DungeonHelper
 			}
 		}
 		return history;
+	}
+	
+	private static int getPackDepth(LinkData inbound, DungeonPack pack)
+	{
+		//TODO: I've improved this code for the time being. However, searching across links is a flawed approach. A player could
+		//manipulate the output of this function by setting up links to mislead our algorithm or by removing links.
+		//Dimensions MUST have built-in records of their parent dimensions in the future. ~SenseiKiwi
+		//Dimensions should also just keep track of pack depth internally.
+		
+		int packDepth = 1;
+		DimData tailDim = dimHelper.dimList.get(inbound.destDimID);
+		boolean found;
+		
+		do
+		{
+			found = false;
+			for (LinkData link : tailDim.getLinksInDim())
+			{
+				DimData neighbor = dimHelper.instance.getDimData(link.destDimID);
+				if (neighbor.depth == tailDim.depth - 1 && neighbor.dungeonGenerator != null &&
+						neighbor.dungeonGenerator.getDungeonType().Owner == pack)
+				{
+					tailDim = neighbor;
+					found = true;
+					packDepth++;
+					break;
+				}
+			}
+		}
+		while (found);
+		
+		return packDepth;
 	}
 	
 	public static ArrayList<DungeonGenerator> getFlatDungeonTree(DimData dimData, int maxSize)
