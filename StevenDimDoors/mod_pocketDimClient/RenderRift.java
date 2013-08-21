@@ -1,0 +1,224 @@
+package StevenDimDoors.mod_pocketDimClient;
+
+import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.Random;
+
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.tileentity.TileEntity;
+
+import org.lwjgl.opengl.GL11;
+import static org.lwjgl.opengl.GL11.*;
+
+import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
+import StevenDimDoors.mod_pocketDim.TileEntityRift;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.blocks.dimDoor;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
+public class RenderRift extends TileEntitySpecialRenderer
+{
+	
+	@Override
+	public void renderTileEntityAt(TileEntity te, double xWorld, double yWorld,
+			double zWorld, float f) 
+	{
+		yWorld = yWorld+.75;
+		GL11.glPushMatrix();
+		
+		GL11.glDisable(GL11.GL_CULL_FACE);
+	    GL11.glDisable(GL_TEXTURE_2D);
+	    GL11.glDisable(GL_LIGHTING);
+
+	    //GL11.glLogicOp(GL11.GL_INVERT);
+	   // GL11.glEnable(GL11.GL_COLOR_LOGIC_OP); 
+	    
+	    GL11.glColor4f(.3F, .3F, .3F, .2F);
+	    
+	    GL11.glEnable(GL_BLEND);
+	    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+
+	    /**
+	     * just draws the verticies
+	     */
+	    //testDraw(TileEntityRift.class.cast(te).renderingCenters, xWorld, yWorld, zWorld);
+		this.drawCrack(TileEntityRift.class.cast(te).renderingCenters, xWorld, yWorld, zWorld);
+		this.drawCrackRotated(TileEntityRift.class.cast(te).renderingCenters, xWorld, yWorld, zWorld);
+	
+		
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glEnable(GL11.GL_LIGHTING);
+	    GL11.glEnable(GL_TEXTURE_2D);
+
+	    GL11.glDisable(GL11.GL_COLOR_LOGIC_OP);
+		GL11.glPopMatrix();
+
+	}
+	
+	public void drawCrack(HashMap<Integer, double[]> quads,double xWorld,double yWorld,double zWorld)
+	{
+	    GL11.glBegin(GL11.GL_QUAD_STRIP);
+
+	    drawVertex(xWorld+.5, yWorld-Math.log(quads.size()+1)/8, zWorld+.5);
+	    drawVertex(xWorld+.5, yWorld+Math.log(quads.size()+1)/8, zWorld+.5);
+        for(int i = 0;;i++)
+        {
+        	if(!quads.containsKey(i))
+        	{
+        		break;
+        	}
+        	double[] coords = quads.get(i);
+        	double width=Math.log(quads.size()-i+1)/8;
+        	if(coords[3]==0)
+        	{
+        		
+              if(quads.containsKey(i+1))
+              {
+            	  
+            	  drawVertex(xWorld+coords[0]+.5, yWorld+coords[1]-width/2 , zWorld+coords[2]);
+         		 drawVertex(xWorld+coords[0]+.5 , yWorld+coords[1]+width/2 , zWorld+coords[2]);
+         		 
+            	 
+        		 
+              }
+              else
+              {
+            	  drawVertex(xWorld+coords[0]+.5, yWorld+coords[1]-width/200 , zWorld+coords[2]);
+        		  drawVertex(xWorld+coords[0]+.5 , yWorld+coords[1]+width/200 , zWorld+coords[2]); 
+              }
+        	}
+        	else
+        	{
+        		
+        		
+        		
+        		 if(quads.containsKey(i+1))
+                 {
+        			 drawVertex(xWorld+coords[0], yWorld+coords[1]-width/2 , zWorld+coords[2]+.5);
+                     drawVertex(xWorld+coords[0], yWorld+coords[1]+width/2 , zWorld+coords[2]+.5);
+        			
+             		
+                 }
+        		 else
+        		 {
+        			 drawVertex(xWorld+coords[0], yWorld+coords[1]+width/200 , zWorld+coords[2]+.5);
+               		drawVertex(xWorld+coords[0], yWorld+coords[1]-width/200, zWorld+coords[2]+.5);
+        		 }
+
+                
+        	}
+        	
+        }
+
+       
+       GL11.glEnd();
+   
+    
+	}
+	
+	public void drawCrackRotated(HashMap<Integer, double[]> quads,double xWorld,double yWorld,double zWorld)
+	{
+	    GL11.glBegin(GL11.GL_QUAD_STRIP);
+
+	    drawVertex(xWorld+.5, yWorld+Math.log(quads.size()+1)/8, zWorld+.5);
+	    drawVertex(xWorld+.5, yWorld-Math.log(quads.size()+1)/8, zWorld+.5);
+        for(int i = 0;;i++)
+        {
+        	if(!quads.containsKey(i))
+        	{
+        		break;
+        	}
+        	double[] coords = quads.get(i);
+        	double width=Math.log(quads.size()-i+1)/8;
+        	if(coords[3]==0)
+        	{
+     
+        		
+              if(quads.containsKey(i+1))
+              {
+            	  drawVertex(xWorld+coords[0]+.5, yWorld-(coords[1]-width/2) , zWorld-coords[2]+1);
+          		 drawVertex(xWorld+coords[0]+.5 , yWorld-(coords[1]+width/2) , zWorld-coords[2]+1);  
+        		
+              }
+              else
+              {
+            	
+         		  drawVertex(xWorld+coords[0]+.5, yWorld-(coords[1]-width/200) , zWorld-coords[2]+1);
+        		  drawVertex(xWorld+coords[0]+.5 , yWorld-(coords[1]+width/200) , zWorld-coords[2]+1);
+              }
+
+        	}
+        	else
+        	{		
+        		
+        		
+        		 if(quads.containsKey(i+1))
+                 {
+        			
+        			 drawVertex(xWorld-coords[0]+1, yWorld-(coords[1]-width/2) , zWorld+coords[2]+.5);
+                     drawVertex(xWorld-coords[0]+1, yWorld-(coords[1]+width/2) , zWorld+coords[2]+.5);	
+             		
+                 }
+        		  else
+                  {
+        			  drawVertex(xWorld-coords[0]+1, yWorld-(coords[1]+width/200) , zWorld+coords[2]+.5);
+        			  drawVertex(xWorld-coords[0]+1, yWorld-(coords[1]-width/200), zWorld+coords[2]+.5);
+                  }
+ 
+        	}  	
+        }
+
+       GL11.glEnd();
+	}
+	
+	public void testDraw(HashMap<Integer, double[]> quads,double xWorld,double yWorld,double zWorld)
+	{
+		GL11.glBegin(GL11.GL_QUADS);
+	    for(int i = 0;;i++)
+        {	
+	    	
+	    	if(!quads.containsKey(i))
+        	{
+        		break;
+        	}
+        	double[] coords = quads.get(i);
+			drawVertex(xWorld-coords[0], yWorld , zWorld+.1);
+			drawVertex(xWorld-coords[0], yWorld+.1 , zWorld+.1);
+			drawVertex(xWorld-coords[0], yWorld +.1, zWorld);
+			drawVertex(xWorld-coords[0], yWorld , zWorld);
+			
+
+        }
+	    GL11.glEnd();
+
+	}
+	public void drawVertex(double x, double y, double z)
+	{
+  		GL11.glVertex3f((float)x,(float)y,(float)z);
+	}
+	public double[] rotateCoords(int rotation, double[] coords)
+	{
+		double[] rotatedCoords = new double[4];
+		if(rotation == 180)
+		{
+
+			
+			rotatedCoords[0]=-coords[0];
+			rotatedCoords[1]=-coords[1];
+
+			rotatedCoords[2]=-coords[2];
+			rotatedCoords[3]=-coords[3];
+			//return rotatedCoords;
+		}
+		return coords;
+	
+	}
+}

@@ -164,8 +164,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
             GL11.glRotatef((float)(count * count * 4321 + count * 9) * 2.0F, 0.0F, 0.0F, 1.0F);
             GL11.glTranslatef(0.5F, 0.5F, 0.5F);
         
-            Tessellator var24 = Tessellator.instance;
-            var24.startDrawingQuads();
+            GL11.glBegin(GL11.GL_QUADS);
            
             
             
@@ -180,7 +179,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
                 var22 = 1.0F;
                 yConverted = 1.0F;
             }
-            var24.setColorRGBA_F(var21 * var17, var22 * var17, var23 * var17, 1.0F);
+            GL11.glColor4d(var21 * var17, var22 * var17, var23 * var17, 1.0F);
             if(tile.openOrClosed)
             {
             	
@@ -188,60 +187,60 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
             {
             case 0:
             	
-            	var24.addVertex(x+.01F, y-1 , z);
-            	var24.addVertex(x+.01, y-1, z+1.0D);
-            	var24.addVertex(x+.01 , y+1 , z + 1.0D);
-            	var24.addVertex(x+.01 , y+1 , z);
+            	GL11.glVertex3d(x+.01F, y-1 , z);
+            	GL11.glVertex3d(x+.01, y-1, z+1.0D);
+            	GL11.glVertex3d(x+.01 , y+1 , z + 1.0D);
+            	GL11.glVertex3d(x+.01 , y+1 , z);
             	break;
             case 1:
-            	var24.addVertex(x , y+1 , z+.01);
-            	var24.addVertex(x+1 , y+1 , z+.01);
-            	var24.addVertex(x+1, y-1,  z+.01);
-            	var24.addVertex(x, y-1, z+.01);
+            	GL11.glVertex3d(x , y+1 , z+.01);
+            	GL11.glVertex3d(x+1 , y+1 , z+.01);
+            	GL11.glVertex3d(x+1, y-1,  z+.01);
+            	GL11.glVertex3d(x, y-1, z+.01);
 
 
 
             	break;
             case 2:     //      
-                var24.addVertex(x+.99 , y+1 , z);
-                var24.addVertex(x+.99 , y+1 , z + 1.0D);
-                var24.addVertex(x+.99, y-1, z+1.0D);
-                var24.addVertex(x+.99, y-1, z);
+                GL11.glVertex3d(x+.99 , y+1 , z);
+                GL11.glVertex3d(x+.99 , y+1 , z + 1.0D);
+                GL11.glVertex3d(x+.99, y-1, z+1.0D);
+                GL11.glVertex3d(x+.99, y-1, z);
                 break;
             case 3:
-            	var24.addVertex(x, y-1, z+.99);
-            	var24.addVertex(x+1, y-1,  z+.99);
-            	var24.addVertex(x+1 , y+1 , z+.99);
-            	var24.addVertex(x , y+1 , z+.99);
+            	GL11.glVertex3d(x, y-1, z+.99);
+            	GL11.glVertex3d(x+1, y-1,  z+.99);
+            	GL11.glVertex3d(x+1 , y+1 , z+.99);
+            	GL11.glVertex3d(x , y+1 , z+.99);
                 break;
             case 4://
              //   GL11.glTranslatef();
 
-            	var24.addVertex(x+.15F, y-1 , z);
-            	var24.addVertex(x+.15, y-1, z+1.0D);
-            	var24.addVertex(x+.15 , y+1 , z + 1.0D);
-            	var24.addVertex(x+.15 , y+1 , z);
+            	GL11.glVertex3d(x+.15F, y-1 , z);
+            	GL11.glVertex3d(x+.15, y-1, z+1.0D);
+            	GL11.glVertex3d(x+.15 , y+1 , z + 1.0D);
+            	GL11.glVertex3d(x+.15 , y+1 , z);
             	break;
             case 5:
-            	var24.addVertex(x , y+1 , z+.15);
-            	var24.addVertex(x+1 , y+1 , z+.15);
-            	var24.addVertex(x+1, y-1,  z+.15);
-            	var24.addVertex(x, y-1, z+.15);
+            	GL11.glVertex3d(x , y+1 , z+.15);
+            	GL11.glVertex3d(x+1 , y+1 , z+.15);
+            	GL11.glVertex3d(x+1, y-1,  z+.15);
+            	GL11.glVertex3d(x, y-1, z+.15);
 
 
 
             	break;
             case 6:     //      
-                var24.addVertex(x+.85 , y+1 , z);
-                var24.addVertex(x+.85 , y+1 , z + 1.0D);
-                var24.addVertex(x+.85, y-1, z+1.0D);
-                var24.addVertex(x+.85, y-1, z);
+                GL11.glVertex3d(x+.85 , y+1 , z);
+                GL11.glVertex3d(x+.85 , y+1 , z + 1.0D);
+                GL11.glVertex3d(x+.85, y-1, z+1.0D);
+                GL11.glVertex3d(x+.85, y-1, z);
                 break;
             case 7:
-            	var24.addVertex(x, y-1, z+.85);
-            	var24.addVertex(x+1, y-1,  z+.85);
-            	var24.addVertex(x+1 , y+1 , z+.85);
-            	var24.addVertex(x , y+1 , z+.85);
+            	GL11.glVertex3d(x, y-1, z+.85);
+            	GL11.glVertex3d(x+1, y-1,  z+.85);
+            	GL11.glVertex3d(x+1 , y+1 , z+.85);
+            	GL11.glVertex3d(x , y+1 , z+.85);
                 break;
             default:
             	break;
@@ -253,7 +252,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
             
           
             
-            var24.draw();
+            GL11.glEnd();
            
             GL11.glPopMatrix();
             GL11.glMatrixMode(GL11.GL_MODELVIEW);

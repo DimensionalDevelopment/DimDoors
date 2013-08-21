@@ -10,6 +10,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import StevenDimDoors.mod_pocketDim.CommonProxy;
 import StevenDimDoors.mod_pocketDim.Spells;
 import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
+import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
@@ -24,6 +25,7 @@ public class ClientProxy extends CommonProxy
 
 		//MinecraftForgeClient.preloadTexture(BLOCK_PNG);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDimDoor.class, new RenderDimDoor());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRift.class, new RenderRift());
 
 
 		//MinecraftForgeClient.preloadTexture(RIFT2_PNG);

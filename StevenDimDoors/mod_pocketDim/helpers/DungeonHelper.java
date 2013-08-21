@@ -309,7 +309,7 @@ public class DungeonHelper
 		InputStream listStream = this.getClass().getResourceAsStream(BUNDLED_DUNGEONS_LIST_PATH);
 		if (listStream == null)
 		{
-			System.err.println("Unable to open list of bundled dungeon schematics.");
+			System.err.println("Unable to open list of bundled dungeon  schematics.");
 			return;
 		}
 		

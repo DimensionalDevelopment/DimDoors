@@ -37,13 +37,12 @@ public class BlockRift extends BlockContainer
 	private static final int BLOCK_DESTRUCTION_CHANCE = 50;
 	
 	private final DDProperties properties;
-	private final ArrayList<Integer> blocksImmuneToRift;
+	private static ArrayList<Integer> blocksImmuneToRift;
 	
 	public BlockRift(int i, int j, Material par2Material, DDProperties properties) 
 	{
 		super(i, par2Material);
 		this.setTickRandomly(true);
-		this.setLightOpacity(14);
 		this.properties = properties;
 		this.blocksImmuneToRift = new ArrayList<Integer>();
 		this.blocksImmuneToRift.add(properties.FabricBlockID);
@@ -223,11 +222,14 @@ public class BlockRift extends BlockContainer
 		}
 	}
 	
+	
 	/**
 	 * regulates the render effect, especially when multiple rifts start to link up. Has 3 main parts- Grows toward and away from nearest rft, bends toward it, and a randomization function
 	 */
+	/**
 	@Override
 	@SideOnly(Side.CLIENT)
+	
 	public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random rand)
 	{
 
@@ -334,8 +336,8 @@ public class BlockRift extends BlockContainer
 			}
 		}
 	}
-	
-	public boolean isBlockImmune(World world, int x, int y, int z)
+	**/
+	public static boolean isBlockImmune(World world, int x, int y, int z)
 	{
 		Block block = Block.blocksList[world.getBlockId(x, y, z)];
 		if (block != null)
