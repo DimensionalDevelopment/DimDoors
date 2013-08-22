@@ -161,7 +161,7 @@ public class BlockRift extends BlockContainer
 			if (random.nextInt(MAX_BLOCK_SEARCH_CHANCE) < BLOCK_SEARCH_CHANCE &&
 					((TileEntityRift) world.getBlockTileEntity(x, y, z)).isNearRift )
 			{
-				destroyNearbyBlocks(world, x, y, z, random);
+			//	destroyNearbyBlocks(world, x, y, z, random);
 			}
 		}
 	}

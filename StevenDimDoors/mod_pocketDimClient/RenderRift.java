@@ -41,7 +41,7 @@ public class RenderRift extends TileEntitySpecialRenderer
 	    //GL11.glLogicOp(GL11.GL_INVERT);
 	   // GL11.glEnable(GL11.GL_COLOR_LOGIC_OP); 
 	    
-	    GL11.glColor4f(.15F, .15F, .15F, 1F);
+	    GL11.glColor4f(.3F, .3F, .3F, 1F);
 	    
 	    GL11.glEnable(GL_BLEND);
 	    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
@@ -76,7 +76,7 @@ public class RenderRift extends TileEntitySpecialRenderer
         		break;
         	}
         	double[] coords = quads.get(i);
-        	double width=Math.log(Math.pow(quads.size(),2-i/2)+1)/14;
+        	double width=Math.log(Math.pow(quads.size(),2-Math.log(i+1))+1)/14;
         	if(coords[3]==0)
         	{
         		
@@ -137,7 +137,7 @@ public class RenderRift extends TileEntitySpecialRenderer
         		break;
         	}
         	double[] coords = quads.get(i);
-        	double width=Math.log(Math.pow(quads.size(),2-i/2)+1)/14;
+        	double width=Math.log(Math.pow(quads.size(),2-Math.log(i+1))+1)/14;
         	if(coords[3]==0)
         	{
      

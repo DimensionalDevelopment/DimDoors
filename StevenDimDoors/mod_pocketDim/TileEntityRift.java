@@ -12,10 +12,15 @@ import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 
+import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet130UpdateSign;
+import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
@@ -36,10 +41,11 @@ public class TileEntityRift extends TileEntity
 	
 	public HashMap<Integer, double[]> renderingCenters = new HashMap<Integer, double[]>();
 	public LinkData nearestRiftData;
-	Random rand  = new Random();
+	Random rand;
+	DataWatcher watcher = new DataWatcher();
 	
 	
-	public float age = 0;
+	public int age = 0;
 	
 	
 	
@@ -128,11 +134,18 @@ public class TileEntityRift extends TileEntity
 	 }
 	 public void updateEntity() 
 	 {
-		 
-		 if(rand.nextInt(10)==0)
+		 if(rand == null)
 		 {
+			  rand   = new Random();
+			  rand.setSeed(this.xCoord+this.yCoord+this.zCoord);
+			
+		 }
+		 if(rand.nextInt(15) == 1)
+		 {
+			
 			 age = age + 1;
 			 this.calculateNextRenderQuad(age, rand);
+			
 			 
 		 }
 		this.clearBlocksOnRift();
@@ -158,7 +171,13 @@ public class TileEntityRift extends TileEntity
 	 }
 	 public void calculateNextRenderQuad(float age, Random rand)
 	 {
-		 int iteration =  MathHelper.floor_double((Math.log(Math.pow(age+1,1.5))));
+		 int maxSize = MathHelper.floor_double((Math.log(Math.pow(age+1,2))));
+		 int iteration=0;
+		 while(iteration< maxSize)
+		 {
+		 iteration++;
+		 
+		 
 		 double fl =Math.log(iteration+1)/(iteration);
 		 double[] coords= new double[4];
 		 double noise = ((rand.nextGaussian())/(2+iteration/3+1));
@@ -181,7 +200,7 @@ public class TileEntityRift extends TileEntity
 
 			 }
 			 this.renderingCenters.put(iteration-1,coords);
-			
+			 iteration--;
 
 		 }
 		 else if(!this.renderingCenters.containsKey(iteration))
@@ -205,8 +224,10 @@ public class TileEntityRift extends TileEntity
 			
 			 
 			this.renderingCenters.put(iteration,coords);
-			
+		
+		 }	
 		 }
+		 
 
 	 }
 	 
@@ -218,57 +239,47 @@ public class TileEntityRift extends TileEntity
 	 @Override
 	    public void readFromNBT(NBTTagCompound nbt)
 	    {
-	     
-	        int i = nbt.getInteger(("Size"));
-
-	        try
-	        { 
+		  super.readFromNBT(nbt);
+		  this.renderingCenters= new HashMap<Integer, double[]>();
 	            this.count=nbt.getInteger("count");
 	            this.count2=nbt.getInteger("count2");
+	            this.age=nbt.getInteger("age");
 	            this.shouldClose=nbt.getBoolean("shouldClose");
-	            this.age=nbt.getFloat("age");
-	            for(int key=0; key<=nbt.getInteger("hashMapSize");key++)
-	            {
-	            	double[] coords = new double[4];
-	            	
-	            	coords[0]= nbt.getDouble(key+"+0");
-	            	coords[1]= nbt.getDouble(key+"+1");
-	            	coords[2]= nbt.getDouble(key+"+2");
-	            	coords[3]= nbt.getDouble(key+"+3");
 
-	            	this.renderingCenters.put(key, coords);
-	            }
-
-	         
-	           
-
-	        }
-	        catch (Exception e)
-	        {
-	            e.printStackTrace();
-	        }
-	        super.readFromNBT(nbt);
+	      
 	    }
 
 	    @Override
 	    public void writeToNBT(NBTTagCompound nbt)
 	    {
-	        int i = 0;
-	       
-	      
-	        for(Integer key:this.renderingCenters.keySet())
-	        {
-	        	nbt.setDouble(key+"+0", this.renderingCenters.get(key)[0]);
-	        	nbt.setDouble(key+"+1", this.renderingCenters.get(key)[1]);
-	        	nbt.setDouble(key+"+2", this.renderingCenters.get(key)[2]);
-	        	nbt.setDouble(key+"+3", this.renderingCenters.get(key)[3]);
-	        }
+	    	super.writeToNBT(nbt);
+	        
 	        nbt.setInteger("hashMapSize", this.renderingCenters.size());
+	        nbt.setInteger("age", this.age);
 	        nbt.setInteger("count", this.count);
 	        nbt.setInteger("count2", this.count2);
-	        nbt.setFloat("age", this.age);
 
 	        nbt.setBoolean("shouldClose", this.shouldClose);
-	        super.writeToNBT(nbt);
+	        
 	    }
+	    
+		@Override
+		public Packet getDescriptionPacket() {
+		Packet132TileEntityData packet = new Packet132TileEntityData();
+		packet.actionType = 0;
+		packet.xPosition = xCoord;
+		packet.yPosition = yCoord;
+		packet.zPosition = zCoord;
+		
+		NBTTagCompound nbt = new NBTTagCompound();
+		writeToNBT(nbt);
+		packet.customParam1 = nbt;
+		return packet;
+		}
+
+		@Override
+		public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {
+		readFromNBT(pkt.customParam1);
+		}
+		
 }
