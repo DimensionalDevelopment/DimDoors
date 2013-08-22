@@ -55,7 +55,6 @@ public class TileEntityRift extends TileEntity
 	 }
 	 public void clearBlocksOnRift()
 	 {
-		System.out.println(this.worldObj.getBlockId(xCoord, yCoord,zCoord));
 			
 		 for(double[] coord: this.renderingCenters.values())
 		 {
