@@ -18,14 +18,14 @@ public class DungeonPackConfig
 	@SuppressWarnings("unchecked")
 	private DungeonPackConfig(DungeonPackConfig source)
 	{
-		this.name = source.name;
-		this.typeNames = (ArrayList<String>) source.typeNames.clone();
+		this.name = (source.name != null) ? source.name : null;
+		this.typeNames = (source.typeNames != null) ? (ArrayList<String>) source.typeNames.clone() : null;
 		this.allowDuplicatesInChain = source.allowDuplicatesInChain;
 		this.allowPackChangeIn = source.allowPackChangeIn;
 		this.allowPackChangeOut = source.allowPackChangeOut;
 		this.distortDoorCoordinates = source.distortDoorCoordinates;
 		this.packWeight = source.packWeight;
-		this.rules = (ArrayList<DungeonChainRuleDefinition>) source.rules.clone();
+		this.rules = (source.rules != null) ? (ArrayList<DungeonChainRuleDefinition>) source.rules.clone() : null;
 	}
 	
 	public void validate()
@@ -114,7 +114,7 @@ public class DungeonPackConfig
 		this.packWeight = packWeight;
 	}
 	
-	public boolean getDistortDoorCoordinates()
+	public boolean doDistortDoorCoordinates()
 	{
 		return distortDoorCoordinates;
 	}
