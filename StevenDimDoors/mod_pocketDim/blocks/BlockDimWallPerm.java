@@ -56,6 +56,8 @@ public class BlockDimWallPerm extends Block
 			{
 				link =new LinkData(0,0,0,0);    		
 			}
+			link.destDimID = 0;
+			link.locDimID = par1World.provider.dimensionId;
 
 
 			if(dimHelper.getWorld(0)==null)
@@ -74,22 +76,27 @@ public class BlockDimWallPerm extends Block
 				x = x + (x >> 4);
 				z = z + (z >> 4);
 
-				int y = yCoordHelper.getFirstUncovered(0, x, 63, z);
+				int y = yCoordHelper.getFirstUncovered(0, x, 63, z, true);
 				
 				EntityPlayer.class.cast(par5Entity).setPositionAndUpdate( x, y, z );
 				//this complicated chunk teleports the player back to the overworld at some random location. Looks funky becaue it has to load the chunk
-				
-				FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP) par5Entity, 0,new BlankTeleporter((WorldServer)par5Entity.worldObj));
+				link.destXCoord = x;
+				link.destYCoord = y;
+				link.destZCoord = z;
+				dimHelper.instance.teleportEntity(par1World, par5Entity, link);
+				//FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP) par5Entity, 0,new BlankTeleporter((WorldServer)par5Entity.worldObj));
 				//dimHelper.instance.teleportToPocket(par1World, new LinkData(par1World.provider.dimensionId,0,x,y,z,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket,0), 
 				//		EntityPlayer.class.cast(par5Entity));
 
 
 				EntityPlayer.class.cast(par5Entity).setPositionAndUpdate( x, y, z );
 
-				//makes sure they can breath when they teleport
+				// Make absolutely sure the player doesn't spawn inside blocks, though to be honest this shouldn't ever have to be a problem...
 				dimHelper.getWorld(0).setBlock(x, y, z, 0);
+				dimHelper.getWorld(0).setBlock(x, y+1, z, 0);
+				
 				int i=x;
-				int j=y-1;
+				int j=y;
 				int k=z;
 
 
