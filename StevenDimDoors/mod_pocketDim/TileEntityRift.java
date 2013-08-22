@@ -55,6 +55,8 @@ public class TileEntityRift extends TileEntity
 	 }
 	 public void clearBlocksOnRift()
 	 {
+		System.out.println(this.worldObj.getBlockId(xCoord, yCoord,zCoord));
+			
 		 for(double[] coord: this.renderingCenters.values())
 		 {
 			 int x = MathHelper.floor_double(coord[0]+.5);
@@ -164,6 +166,11 @@ public class TileEntityRift extends TileEntity
 			 this.invalidate();
 			 this.worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 		 }
+		 if(this.worldObj.getBlockId(xCoord, yCoord, zCoord)!=mod_pocketDim.blockRift.blockID)
+		 {
+			 this.invalidate();
+		 }
+		 
 	 }
 	 public void grow(int distance)
 	 {

@@ -125,7 +125,7 @@ public class ExitDoor extends dimDoor
 		
 		}
 		
-		//this.onPoweredBlockChange(par1World, par2, par3, par4, false);
+		par1World.setBlockTileEntity(par2, par3, par4, this.createNewTileEntity(par1World));
 		
 	}
 	@SideOnly(Side.CLIENT)

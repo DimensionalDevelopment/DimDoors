@@ -26,6 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderRift extends TileEntitySpecialRenderer
 {
+	private Random rand = new Random();
 	
 	@Override
 	public void renderTileEntityAt(TileEntity te, double xWorld, double yWorld,
@@ -41,7 +42,7 @@ public class RenderRift extends TileEntitySpecialRenderer
 	    //GL11.glLogicOp(GL11.GL_INVERT);
 	   // GL11.glEnable(GL11.GL_COLOR_LOGIC_OP); 
 	    
-	    GL11.glColor4f(.3F, .3F, .3F, 1F);
+	    GL11.glColor4f(.2F, .2F, .2F, 1F);
 	    
 	    GL11.glEnable(GL_BLEND);
 	    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
@@ -71,11 +72,16 @@ public class RenderRift extends TileEntitySpecialRenderer
 	    drawVertex(xWorld+.5, yWorld+Math.log(Math.pow(quads.size(),2)+1)/14, zWorld+.5);
         for(int i = 0;;i++)
         {
+        	
         	if(!quads.containsKey(i))
         	{
         		break;
         	}
         	double[] coords = quads.get(i);
+        	float driftX = (float)(Minecraft.getSystemTime() % 200000L) / 200000.0F;
+        	float driftY =(float)(Minecraft.getSystemTime() % 200000L) / 200000.0F;
+        	float driftZ = (float) (float)(Minecraft.getSystemTime() % 200000L) / 200000.0F;
+        	
         	double width=Math.log(Math.pow(quads.size(),2-Math.log(i+1))+1)/14;
         	if(coords[3]==0)
         	{
@@ -83,16 +89,16 @@ public class RenderRift extends TileEntitySpecialRenderer
               if(quads.containsKey(i+1))
               {
             	  
-            	  drawVertex(xWorld+coords[0]+.5, yWorld+coords[1]-width/2 , zWorld+coords[2]);
-         		 drawVertex(xWorld+coords[0]+.5 , yWorld+coords[1]+width/2 , zWorld+coords[2]);
+            	  drawVertex(xWorld+coords[0]+driftX+.5, yWorld+coords[1]+driftY-width/2 , zWorld+coords[2]+driftZ);
+         		 drawVertex(xWorld+coords[0]+driftX+.5 , yWorld+coords[1]+driftY+width/2 , zWorld+coords[2]+driftZ);
          		 
             	 
         		 
               }
               else
               {
-            	  drawVertex(xWorld+coords[0]+.5, yWorld+coords[1]-width/200 , zWorld+coords[2]);
-        		  drawVertex(xWorld+coords[0]+.5 , yWorld+coords[1]+width/200 , zWorld+coords[2]); 
+            	  drawVertex(xWorld+coords[0]+driftX+.5, yWorld+coords[1]+driftY-width/200 , zWorld+coords[2]+driftZ);
+        		  drawVertex(xWorld+coords[0]+driftX+.5 , yWorld+coords[1]+driftY+width/200 , zWorld+coords[2]+driftZ); 
               }
         	}
         	else
@@ -102,15 +108,15 @@ public class RenderRift extends TileEntitySpecialRenderer
         		
         		 if(quads.containsKey(i+1))
                  {
-        			 drawVertex(xWorld+coords[0], yWorld+coords[1]-width/2 , zWorld+coords[2]+.5);
-                     drawVertex(xWorld+coords[0], yWorld+coords[1]+width/2 , zWorld+coords[2]+.5);
+        			 drawVertex(xWorld+coords[0]+driftX, yWorld+coords[1]+driftY-width/2 , zWorld+coords[2]+driftZ+.5);
+                     drawVertex(xWorld+coords[0]+driftX, yWorld+coords[1]+driftY+width/2 , zWorld+coords[2]+driftZ+.5);
         			
              		
                  }
         		 else
         		 {
-        			 drawVertex(xWorld+coords[0], yWorld+coords[1]+width/200 , zWorld+coords[2]+.5);
-               		drawVertex(xWorld+coords[0], yWorld+coords[1]-width/200, zWorld+coords[2]+.5);
+        			 drawVertex(xWorld+coords[0]+driftX, yWorld+coords[1]+driftY+width/200 , zWorld+coords[2]+driftZ+.5);
+               		drawVertex(xWorld+coords[0]+driftX, yWorld+coords[1]+driftY-width/200, zWorld+coords[2]+driftZ+.5);
         		 }
 
                 
@@ -137,6 +143,12 @@ public class RenderRift extends TileEntitySpecialRenderer
         		break;
         	}
         	double[] coords = quads.get(i);
+        	
+        	float driftX = (float) (rand.nextGaussian()/100)*i;
+        	float driftY = (float) (rand.nextGaussian()/100)*i;
+        	float driftZ = (float) (rand.nextGaussian()/100)*i;
+        	
+        	
         	double width=Math.log(Math.pow(quads.size(),2-Math.log(i+1))+1)/14;
         	if(coords[3]==0)
         	{
@@ -144,15 +156,15 @@ public class RenderRift extends TileEntitySpecialRenderer
         		
               if(quads.containsKey(i+1))
               {
-            	  drawVertex(xWorld+coords[0]+.5, yWorld-(coords[1]-width/2) , zWorld-coords[2]+1);
-          		 drawVertex(xWorld+coords[0]+.5 , yWorld-(coords[1]+width/2) , zWorld-coords[2]+1);  
+            	  drawVertex(xWorld+coords[0]+driftX+.5, yWorld-(coords[1]-width/2) , zWorld-coords[2]+1);
+          		 drawVertex(xWorld+coords[0]+driftX+.5 , yWorld-(coords[1]+width/2) , zWorld-coords[2]+1);  
         		
               }
               else
               {
             	
-         		  drawVertex(xWorld+coords[0]+.5, yWorld-(coords[1]-width/200) , zWorld-coords[2]+1);
-        		  drawVertex(xWorld+coords[0]+.5 , yWorld-(coords[1]+width/200) , zWorld-coords[2]+1);
+         		  drawVertex(xWorld+coords[0]+driftX+.5, yWorld-(coords[1]-width/200) , zWorld-coords[2]+1);
+        		  drawVertex(xWorld+coords[0]+driftX+.5 , yWorld-(coords[1]+width/200) , zWorld-coords[2]+1);
               }
 
         	}
@@ -163,14 +175,14 @@ public class RenderRift extends TileEntitySpecialRenderer
         		 if(quads.containsKey(i+1))
                  {
         			
-        			 drawVertex(xWorld-coords[0]+1, yWorld-(coords[1]-width/2) , zWorld+coords[2]+.5);
-                     drawVertex(xWorld-coords[0]+1, yWorld-(coords[1]+width/2) , zWorld+coords[2]+.5);	
+        			 drawVertex(xWorld-coords[0]+1, yWorld-(coords[1]-width/2) , zWorld+coords[2]+driftZ+.5);
+                     drawVertex(xWorld-coords[0]+1, yWorld-(coords[1]+width/2) , zWorld+coords[2]+driftZ+.5);	
              		
                  }
         		  else
                   {
-        			  drawVertex(xWorld-coords[0]+1, yWorld-(coords[1]+width/200) , zWorld+coords[2]+.5);
-        			  drawVertex(xWorld-coords[0]+1, yWorld-(coords[1]-width/200), zWorld+coords[2]+.5);
+        			  drawVertex(xWorld-coords[0]+1, yWorld-(coords[1]+width/200) , zWorld+coords[2]+driftZ+.5);
+        			  drawVertex(xWorld-coords[0]+1, yWorld-(coords[1]-width/200), zWorld+coords[2]+driftZ+.5);
                   }
  
         	}  	
