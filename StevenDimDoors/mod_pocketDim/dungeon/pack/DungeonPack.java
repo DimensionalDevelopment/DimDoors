@@ -52,7 +52,7 @@ public class DungeonPack
 		{
 			String standardName = typeName.toUpperCase();
 			this.nameToTypeMapping.put(standardName, new DungeonType(this, standardName, index));
-			this.groupedDungeons.add(new ArrayList<DungeonGenerator>());
+			this.groupedDungeons.add(new ArrayList<DungeonGenerator>());  
 			index++;
 		}
 		

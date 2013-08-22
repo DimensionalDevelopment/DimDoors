@@ -281,6 +281,8 @@ public class dimDoor extends BlockContainer
 
 			}
 		}
+		par1World.setBlockTileEntity(par2, par3, par4, this.createNewTileEntity(par1World));
+
 		
 	}
 	

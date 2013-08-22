@@ -41,7 +41,7 @@ public class RenderRift extends TileEntitySpecialRenderer
 	    //GL11.glLogicOp(GL11.GL_INVERT);
 	   // GL11.glEnable(GL11.GL_COLOR_LOGIC_OP); 
 	    
-	    GL11.glColor4f(.3F, .3F, .3F, 1F);
+	    GL11.glColor4f(.2F, .2F, .2F, 1F);
 	    
 	    GL11.glEnable(GL_BLEND);
 	    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);

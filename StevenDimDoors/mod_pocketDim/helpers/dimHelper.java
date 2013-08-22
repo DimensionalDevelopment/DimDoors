@@ -1168,17 +1168,13 @@ public class dimHelper extends DimensionManager
 					}
 				}
 			}
-			linkToMove.locDimID=dimID;
-			linkToMove.locXCoord=x;
-			linkToMove.locYCoord=y;
-			linkToMove.locZCoord=z;
+			this.createLink(new LinkData(dimID,linkToMove.destDimID,x,y,z,linkToMove.destXCoord,linkToMove.destYCoord,linkToMove.destZCoord,linkToMove.isLocPocket,linkToMove.linkOrientation));
+
 			if(this.getLinkDataFromCoords(oldX,oldY,oldZ,oldDimID)!=null)
 			{
-			//	this.removeLink(this.getLinkDataFromCoords(oldX,oldY,oldZ,oldDimID));
+				this.removeLink(this.getLinkDataFromCoords(oldX,oldY,oldZ,oldDimID));
 			}
-			this.createLink(linkToMove);
-			LinkData linkTest = dimHelper.instance.getLinkDataFromCoords(x, y, z, dimID);
-			linkTest.printLinkData();
+		
 			return true;
 		}
 		return false;
