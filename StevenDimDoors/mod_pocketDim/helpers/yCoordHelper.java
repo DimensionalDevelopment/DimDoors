@@ -21,6 +21,9 @@ public class yCoordHelper
 	}
 	
 	public static int getFirstUncovered(int worldID, int x, int yStart, int z)
+	{ return getFirstUncovered(worldID, x, yStart, z, false); }
+	
+	public static int getFirstUncovered(int worldID, int x, int yStart, int z, boolean fromTop)
 	{
 		if (dimHelper.getWorld(worldID) == null ||
 			dimHelper.getWorld(worldID).provider == null)
@@ -28,10 +31,13 @@ public class yCoordHelper
 	   		dimHelper.initDimension(worldID);
 	   	}
 		
-		return yCoordHelper.getFirstUncovered(dimHelper.getWorld(worldID), x, yStart, z);
+		return yCoordHelper.getFirstUncovered(dimHelper.getWorld(worldID), x, yStart, z, fromTop);
 	}
 	
 	public static int getFirstUncovered(World world, int x, int yStart, int z)
+	{ return getFirstUncovered(world, x, yStart, z, false); }
+	
+	public static int getFirstUncovered(World world, int x, int yStart, int z, boolean fromTop)
 	{
 		Chunk chunk = world.getChunkProvider().loadChunk(x >> 4, z >> 4);
 
@@ -40,10 +46,21 @@ public class yCoordHelper
 		int height = MAXIMUM_UNCOVERED_Y;  //world.getHeight();
 		int y;
 		
-		boolean covered = true;
-		for (y = yStart; y < height && covered; y++)
+		if(!fromTop)
 		{
-			covered = IsCoveredBlock(chunk, localX, y - 1, localZ) || IsCoveredBlock(chunk, localX, y, localZ);
+			boolean covered = true;
+			for (y = yStart; y < height && covered; y++)
+			{
+				covered = IsCoveredBlock(chunk, localX, y - 1, localZ) || IsCoveredBlock(chunk, localX, y, localZ);
+			}
+		} else {
+			boolean covered = false;
+			for (y = MAXIMUM_UNCOVERED_Y; y > 1 && !covered; y--)
+			{
+				covered = IsCoveredBlock(chunk, localX, y - 1, localZ);
+			}
+			if (!covered) y = 63;
+			y++;
 		}
 
 		return y;
