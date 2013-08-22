@@ -81,7 +81,7 @@ public class CommandExportDungeon extends DDCommandBase
 			//TODO: This validation should be in DungeonHelper or in another class. We should move it
 			//during the save file format rewrite. ~SenseiKiwi
 			
-			if (!dungeonHelper.validateDungeonType(command[0]))
+			if (!dungeonHelper.validateDungeonType(command[0], dungeonHelper.getDungeonPack("ruins")))
 			{
 				return new DDCommandResult("Error: Invalid dungeon type. Please use one of the existing types.");
 			}
@@ -133,7 +133,7 @@ public class CommandExportDungeon extends DDCommandBase
 		if (dungeonHelper.exportDungeon(player.worldObj, x, y, z, exportPath))
 		{
 			player.sendChatToPlayer("Saved dungeon schematic in " + exportPath);
-			dungeonHelper.registerDungeon(exportPath, false, true);
+			dungeonHelper.registerDungeon(exportPath, dungeonHelper.getDungeonPack("ruins"), false, true);
 			return DDCommandResult.SUCCESS;
 		}
 		else

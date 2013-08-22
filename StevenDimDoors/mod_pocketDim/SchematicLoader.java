@@ -47,8 +47,7 @@ public class SchematicLoader
 					
 					dungeonHelper.generateDungeonLink(link, dungeonHelper.getDimDungeonPack(originDimID), random);
 				}
-				schematicPath = dimList.get(destDimID).dungeonGenerator.schematicPath;	
-				
+				schematicPath = dimList.get(destDimID).dungeonGenerator.schematicPath;
 			}
 			else
 			{
