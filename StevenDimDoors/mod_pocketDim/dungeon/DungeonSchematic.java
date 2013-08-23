@@ -338,7 +338,7 @@ public class DungeonSchematic extends Schematic {
 			{
 				sideLink.destDimID = randomLink.locDimID;
 			}
-			sideLink.destYCoord = yCoordHelper.getFirstUncovered(sideLink.destDimID, linkDestination.getX(), 10, linkDestination.getZ());
+			sideLink.destYCoord = yCoordHelper.getFirstUncovered(sideLink.destDimID, linkDestination.getX(), linkDestination.getY(), linkDestination.getZ())-1;
 
 			if (sideLink.destYCoord < 5)
 			{
@@ -347,7 +347,7 @@ public class DungeonSchematic extends Schematic {
 			sideLink.linkOrientation = world.getBlockMetadata(linkDestination.getX(), linkDestination.getY() - 1, linkDestination.getZ());
 
 			dimHelper.instance.createLink(sideLink);
-			dimHelper.instance.createLink(sideLink.destDimID , 
+			/**dimHelper.instance.createLink(sideLink.destDimID , 
 					sideLink.locDimID, 
 					sideLink.destXCoord, 
 					sideLink.destYCoord, 
@@ -356,6 +356,7 @@ public class DungeonSchematic extends Schematic {
 					sideLink.locYCoord, 
 					sideLink.locZCoord, 
 					BlockRotator.transformMetadata(sideLink.linkOrientation, 2, Block.doorWood.blockID));
+					**/
 
 			if (world.getBlockId(linkDestination.getX(), linkDestination.getY() - 3, linkDestination.getZ()) == properties.FabricBlockID)
 			{

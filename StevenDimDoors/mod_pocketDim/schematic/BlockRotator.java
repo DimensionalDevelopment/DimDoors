@@ -246,6 +246,79 @@ public class BlockRotator
 				break;
 			}
 		}
+		else if (blockID==Block.signWall.blockID)
+		{
+			switch (metadata)
+			{
+
+			case 3:
+				metadata = 4;
+				break;
+			case 2:
+				metadata = 5;
+				break;					
+			case 4:
+				metadata = 2;
+				break;
+			case 5:
+				metadata = 3;
+				break;
+			}
+		}
+		else if (blockID==Block.signPost.blockID)
+		{
+			switch (metadata)
+			{
+			case 0:
+				metadata = 4;
+				break;
+			case 1:
+				metadata = 5;
+				break;
+			case 2:
+				metadata = 6;
+				break;
+			case 3:
+				metadata = 7;
+				break;
+			case 4:
+				metadata = 8;
+				break;
+			case 5:
+				metadata = 9;
+				break;
+			case 6:
+				metadata = 10;
+				break;
+			case 7:
+				metadata = 11;
+				break;
+			case 8:
+				metadata = 12;
+				break;
+			case 9:
+				metadata = 13;
+				break;
+			case 10:
+				metadata = 14;
+				break;
+			case 11:
+				metadata = 15;
+				break;
+			case 12:
+				metadata = 0;
+				break;
+			case 13:
+				metadata = 1;
+				break;
+			case 14:
+				metadata = 2;
+				break;
+			case 15:
+				metadata = 3;
+				break;
+			}
+		}
 		else if(blockID== Block.lever.blockID||blockID== Block.stoneButton.blockID||blockID== Block.woodenButton.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
 		{
 			switch (metadata)
