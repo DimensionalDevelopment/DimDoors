@@ -161,7 +161,7 @@ public class BlockRift extends BlockContainer
 			if (random.nextInt(MAX_BLOCK_SEARCH_CHANCE) < BLOCK_SEARCH_CHANCE &&
 					((TileEntityRift) world.getBlockTileEntity(x, y, z)).isNearRift )
 			{
-			//	destroyNearbyBlocks(world, x, y, z, random);
+				destroyNearbyBlocks(world, x, y, z, random);
 			}
 		}
 	}
@@ -226,7 +226,6 @@ public class BlockRift extends BlockContainer
 	/**
 	 * regulates the render effect, especially when multiple rifts start to link up. Has 3 main parts- Grows toward and away from nearest rft, bends toward it, and a randomization function
 	 */
-	/**
 	@Override
 	@SideOnly(Side.CLIENT)
 	
@@ -336,7 +335,6 @@ public class BlockRift extends BlockContainer
 			}
 		}
 	}
-	**/
 	public static boolean isBlockImmune(World world, int x, int y, int z)
 	{
 		Block block = Block.blocksList[world.getBlockId(x, y, z)];

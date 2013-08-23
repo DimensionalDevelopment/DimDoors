@@ -49,7 +49,6 @@ public class RenderRift extends TileEntitySpecialRenderer
 	    /**
 	     * just draws the verticies
 	     */
-	    //testDraw(TileEntityRift.class.cast(te).renderingCenters, xWorld, yWorld, zWorld);
 		this.drawCrack(TileEntityRift.class.cast(te).renderingCenters, xWorld, yWorld, zWorld);
 		this.drawCrackRotated(TileEntityRift.class.cast(te).renderingCenters, xWorld, yWorld, zWorld);
 	
