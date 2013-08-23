@@ -190,7 +190,16 @@ public class DungeonHelper
 		if (pack == null)
 		{
 			//Load the pack's configuration file
-			String configPath = directory + File.separator + STANDARD_CONFIG_FILE_NAME;
+			
+			String configPath;
+			if (isInternal)
+			{
+				configPath = directory + "/" + STANDARD_CONFIG_FILE_NAME;
+			}
+			else
+			{
+				configPath = directory + File.separator + STANDARD_CONFIG_FILE_NAME;
+			}
 			DungeonPackConfig config = loadDungeonPackConfig(configPath, name, isInternal, reader);
 			if (config == null)
 			{
