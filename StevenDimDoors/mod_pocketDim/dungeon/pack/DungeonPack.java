@@ -21,6 +21,8 @@ public class DungeonPack
 	//The ID numbers would be a problem since it couldn't have a valid number, since it wasn't initialized by the pack instance.
 	//FIXME: Do not release this code as an update without dealing with disowned types!
 	
+	private static final int MAX_HISTORY_LENGTH = 1337;
+	
 	private final String name;
 	private final HashMap<String, DungeonType> nameToTypeMapping;
 	private final ArrayList<ArrayList<DungeonGenerator>> groupedDungeons;
@@ -78,6 +80,11 @@ public class DungeonPack
 		return name;
 	}
 
+	public DungeonPackConfig getConfig()
+	{
+		return config.clone();
+	}
+
 	public boolean isEmpty()
 	{
 		return allDungeons.isEmpty();
@@ -128,7 +135,7 @@ public class DungeonPack
 		//of the longest rule we have. Getting any more data would be useless. This optimization could be significant
 		//for dungeon packs that can extend arbitrarily deep. We should probably set a reasonable limit anyway.
 		
-		int maxSearchLength = config.allowDuplicatesInChain() ? maxRuleLength : 1337;
+		int maxSearchLength = config.allowDuplicatesInChain() ? maxRuleLength : MAX_HISTORY_LENGTH;
 		ArrayList<DungeonGenerator> history = DungeonHelper.getDungeonChainHistory(
 				dimHelper.instance.getDimData(inbound.locDimID), this, maxSearchLength);
 		return getNextDungeon(history, random);

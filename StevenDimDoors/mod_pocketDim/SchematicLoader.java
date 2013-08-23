@@ -6,6 +6,7 @@ import java.util.Random;
 
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
+import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
@@ -16,8 +17,6 @@ public class SchematicLoader
 	
 	public static boolean generateDungeonPocket(LinkData link, DDProperties properties)
 	{
-		//TODO: Phase this function out in the next update. ~SenseiKiwi
-		
 		if (link == null || properties == null)
 		{
 			return false;
@@ -46,10 +45,9 @@ public class SchematicLoader
 					final long localSeed = world.getSeed() ^ 0x2F50DB9B4A8057E4L ^ computeDestinationHash(link);
 					final Random random = new Random(localSeed);
 					
-					dungeonHelper.generateDungeonLink(link, dungeonHelper.RuinsPack, random);
+					dungeonHelper.generateDungeonLink(link, dungeonHelper.getDimDungeonPack(originDimID), random);
 				}
-				schematicPath = dimList.get(destDimID).dungeonGenerator.schematicPath;	
-				
+				schematicPath = dimList.get(destDimID).dungeonGenerator.schematicPath;
 			}
 			else
 			{
@@ -98,8 +96,11 @@ public class SchematicLoader
 			{
 				dimHelper helperInstance = dimHelper.instance;
 				helperInstance.moveLinkDataDestination(link, link.destXCoord, fixedY, link.destZCoord, link.destDimID, true);
-			}			
-			dungeon.copyToWorld(world, new Point3D(link.destXCoord, link.destYCoord, link.destZCoord), link.linkOrientation, originDimID, destDimID);
+			}
+			DungeonPackConfig packConfig = dungeonHelper.getDimDungeonPack(destDimID).getConfig();
+			
+			dungeon.copyToWorld(world, new Point3D(link.destXCoord, link.destYCoord, link.destZCoord),
+					link.linkOrientation, originDimID, destDimID, packConfig.doDistortDoorCoordinates());
 			return true;
 		}
 		catch (Exception e)
@@ -108,7 +109,7 @@ public class SchematicLoader
 			return false;
 		}
 	}
-	
+
 	private static int adjustDestinationY(World world, int y, DungeonSchematic dungeon)
 	{
 		//The goal here is to guarantee that the dungeon fits within the vertical bounds
@@ -141,7 +142,7 @@ public class SchematicLoader
 	
 	private static DungeonSchematic checkSourceAndLoad(String schematicPath) throws FileNotFoundException, InvalidSchematicException
 	{
-		//TODO: Change this code once we introduce an isInternal flag in dungeon data
+		//FIXME: Change this code once we introduce an isInternal flag in dungeon data
 		DungeonSchematic dungeon;
 		if ((new File(schematicPath)).exists())
 		{
