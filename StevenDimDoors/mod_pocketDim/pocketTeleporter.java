@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim;
 
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
@@ -12,7 +13,7 @@ public class pocketTeleporter
 {
 	int x,y,z;
 	
-	LinkData sendingLink;
+	NewLinkData sendingLink;
 	
 
  public pocketTeleporter() 
@@ -28,7 +29,7 @@ public class pocketTeleporter
 	     * Create a new portal near an entity.
 	     */
 	
-	 public void placeInPortal(Entity par1Entity, WorldServer world, LinkData link)
+	 public void placeInPortal(Entity par1Entity, WorldServer world, NewLinkData link)
 	 {
 		 
 		

@@ -8,7 +8,7 @@ import java.util.Random;
 
 import net.minecraft.util.WeightedRandom;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
-import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
@@ -123,7 +123,7 @@ public class DungeonPack
 		}
 	}
 
-	public DungeonGenerator getNextDungeon(LinkData inbound, Random random)
+	public DungeonGenerator getNextDungeon(NewLinkData inbound, Random random)
 	{
 		if (allDungeons.isEmpty())
 		{

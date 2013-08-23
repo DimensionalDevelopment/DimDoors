@@ -14,8 +14,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 public class itemDimDoor extends ItemDoor
@@ -138,7 +138,7 @@ public class itemDimDoor extends ItemDoor
 		{
 			if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ) == properties.RiftBlockID)
 			{
-				LinkData link = dimHelper.instance.getLinkDataFromCoords(hit.blockX, hit.blockY, hit.blockZ, par2World);
+				NewLinkData link = dimHelper.instance.getLinkDataFromCoords(hit.blockX, hit.blockY, hit.blockZ, par2World);
 				if(link!=null)
 				{
 				    Block var11;

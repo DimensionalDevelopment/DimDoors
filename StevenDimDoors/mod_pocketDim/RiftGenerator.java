@@ -7,6 +7,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.DimensionManager;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
@@ -55,7 +56,7 @@ public class RiftGenerator implements IWorldGenerator
 		int attempts;
 		int correction;
 		boolean valid;
-		LinkData link;
+		NewLinkData link;
 		
 		//Check if we're generating things in the Nether
 		if (world.provider.dimensionId == NETHER_DIMENSION_ID)
@@ -93,7 +94,7 @@ public class RiftGenerator implements IWorldGenerator
 					//Otherwise, create a one-way link and connect to the destination of the first link.
 					if (link == null)
 					{
-						link = new LinkData(world.provider.dimensionId, 0,  x, y + 1, z, x, y + 1, z, true, 0);
+						link = new NewLinkData(world.provider.dimensionId, 0,  x, y + 1, z, x, y + 1, z, true, 0);
 						link = dimHelper.instance.createPocket(link, true, true);
 					}
 					else
@@ -129,7 +130,7 @@ public class RiftGenerator implements IWorldGenerator
 			{
 				//Create a two-way link between the upper block of the gateway and a pocket dimension
 				//That pocket dimension is where we'll start a dungeon!
-				link = new LinkData(world.provider.dimensionId, 0,  x, y + 1, z, x, y + 1, z, true, 0);
+				link = new NewLinkData(world.provider.dimensionId, 0,  x, y + 1, z, x, y + 1, z, true, 0);
 				link = dimHelper.instance.createPocket(link, true, true);
 
 				//If the current dimension isn't Limbo, build a Rift Gateway out of Stone Bricks

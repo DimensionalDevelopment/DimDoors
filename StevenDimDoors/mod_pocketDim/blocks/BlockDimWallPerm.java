@@ -12,8 +12,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import StevenDimDoors.mod_pocketDim.BlankTeleporter;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -51,10 +51,10 @@ public class BlockDimWallPerm extends Block
 		{
 			Random rand = new Random();
 
-			LinkData link=dimHelper.instance.getRandomLinkData(false);
+			NewLinkData link=dimHelper.instance.getRandomLinkData(false);
 			if(link==null)
 			{
-				link =new LinkData(0,0,0,0);    		
+				link =new NewLinkData(0,0,0,0);    		
 			}
 			link.destDimID = 0;
 			link.locDimID = par1World.provider.dimensionId;

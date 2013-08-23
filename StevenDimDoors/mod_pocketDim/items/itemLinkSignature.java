@@ -4,8 +4,8 @@ import java.util.List;
 
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 import net.minecraft.block.Block;
@@ -69,7 +69,7 @@ public class itemLinkSignature extends Item
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
     {
     	int key;
-    	LinkData linkData;
+    	NewLinkData linkData;
 		int thisWorldID=par3World.provider.dimensionId;
 		
 		

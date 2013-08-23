@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import StevenDimDoors.mod_pocketDim.blocks.BlockRift;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
@@ -41,7 +42,7 @@ public class TileEntityRift extends TileEntity
 	public int age = 0;
 
 	public HashMap<Integer, double[]> renderingCenters = new HashMap<Integer, double[]>();
-	public LinkData nearestRiftData;
+	public NewLinkData nearestRiftData;
 	public int spawnedEndermenID=0;
 	Random rand;
 	DataWatcher watcher = new DataWatcher();
@@ -243,7 +244,7 @@ public class TileEntityRift extends TileEntity
 			if (growCount<100)
 			{
 
-				LinkData link = dimHelper.instance.getLinkDataFromCoords(this.xCoord, this.yCoord, this.zCoord, worldObj);
+				NewLinkData link = dimHelper.instance.getLinkDataFromCoords(this.xCoord, this.yCoord, this.zCoord, worldObj);
 				if(link!=null)
 				{
 					if(!this.hasGrownRifts&&rand.nextInt(3)==0)

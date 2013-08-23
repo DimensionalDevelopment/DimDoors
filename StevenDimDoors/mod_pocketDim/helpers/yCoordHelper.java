@@ -1,6 +1,6 @@
 package StevenDimDoors.mod_pocketDim.helpers;
 
-import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
@@ -11,7 +11,7 @@ public class yCoordHelper
 {
 	private static final int MAXIMUM_UNCOVERED_Y = 245;
 	
-	public static int getFirstUncovered(LinkData pointerLink)
+	public static int getFirstUncovered(NewLinkData pointerLink)
 	{
 		return yCoordHelper.getFirstUncovered(
 				pointerLink.destDimID,

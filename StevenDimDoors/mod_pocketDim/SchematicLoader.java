@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
@@ -15,7 +16,7 @@ public class SchematicLoader
 {
 	private SchematicLoader() { }
 	
-	public static boolean generateDungeonPocket(LinkData link, DDProperties properties)
+	public static boolean generateDungeonPocket(NewLinkData link, DDProperties properties)
 	{
 		if (link == null || properties == null)
 		{
@@ -155,7 +156,7 @@ public class SchematicLoader
 		return dungeon;
 	}
 	
-	private static long computeDestinationHash(LinkData link)
+	private static long computeDestinationHash(NewLinkData link)
 	{
 		//Time for some witchcraft.
 		//The code here is inspired by a discussion on Stack Overflow regarding hash codes for 3D.

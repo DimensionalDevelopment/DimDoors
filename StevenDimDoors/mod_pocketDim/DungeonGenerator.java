@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
@@ -18,7 +19,7 @@ public class DungeonGenerator implements Serializable
 	public int weight;
 	public String schematicPath;
 	public ArrayList<HashMap> sideRifts = new ArrayList<HashMap>();
-	public LinkData exitLink;
+	public NewLinkData exitLink;
 	public boolean isOpen;
 	
 	public int sideDoorsSoFar=0;

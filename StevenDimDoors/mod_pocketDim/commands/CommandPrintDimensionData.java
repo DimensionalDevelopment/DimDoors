@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 public class CommandPrintDimensionData extends DDCommandBase
@@ -56,11 +56,11 @@ public class CommandPrintDimensionData extends DDCommandBase
 			return DDCommandResult.UNREGISTERED_DIMENSION;
 		}
 
-		ArrayList<LinkData> links = dimData.getLinksInDim();
+		ArrayList<NewLinkData> links = dimData.getLinksInDim();
 
 		sender.sendChatToPlayer("Dimension ID = " + dimData.dimID);
 		sender.sendChatToPlayer("Dimension Depth = " + dimData.depth);
-		for (LinkData link : links)
+		for (NewLinkData link : links)
 		{
 			sender.sendChatToPlayer(link.printLinkData());
 		}

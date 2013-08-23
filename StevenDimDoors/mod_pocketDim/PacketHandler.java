@@ -14,6 +14,7 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
 
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -105,7 +106,7 @@ public class PacketHandler implements IPacketHandler
 			{
 				DimData dimDataToAddLink= dimHelper.instance.getDimData(dimId);
 
-				LinkData linkToAdd = new LinkData(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean(),data.readInt());
+				NewLinkData linkToAdd = new NewLinkData(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean(),data.readInt());
 				linkToAdd.hasGennedDoor=data.readBoolean();
 
 				dimHelper.instance.createLink(linkToAdd);
@@ -130,7 +131,7 @@ public class PacketHandler implements IPacketHandler
 			{
 				DimData dimDataToRemoveFrom= dimHelper.instance.getDimData(dimId);
 
-				LinkData linkToAdd = new LinkData(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean(),data.readInt());
+				NewLinkData linkToAdd = new NewLinkData(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean(),data.readInt());
 				dimDataToRemoveFrom.removeLinkAtCoords(linkToAdd.locDimID, linkToAdd.locXCoord,linkToAdd.locYCoord, linkToAdd.locZCoord);
 
 			}
@@ -144,7 +145,7 @@ public class PacketHandler implements IPacketHandler
 		}
 		if(id==this.linkKeyPacketID)
 		{
-			LinkData link = new LinkData(data.readInt(), data.readInt(), data.readInt(), data.readInt());
+			NewLinkData link = new NewLinkData(data.readInt(), data.readInt(), data.readInt(), data.readInt());
 			dimHelper.instance.interDimLinkList.put(data.readInt(), link);
 		}
 
@@ -168,18 +169,18 @@ public class PacketHandler implements IPacketHandler
 
 			manager.addToSendQueue(PacketHandler.onDimCreatedPacket(data));
 
-			Collection <HashMap<Integer, HashMap<Integer,  LinkData>>> linkList = data.linksInThisDim.values();
+			Collection <HashMap<Integer, HashMap<Integer,  NewLinkData>>> linkList = data.linksInThisDim.values();
 
 			for(HashMap map :  linkList )
 			{
 
-				Collection <HashMap<Integer,  LinkData>> linkList2 = map.values();
+				Collection <HashMap<Integer,  NewLinkData>> linkList2 = map.values();
 
 				for(HashMap map2 : linkList2)
 				{
-					Collection <LinkData> linkList3 = map2.values();
+					Collection <NewLinkData> linkList3 = map2.values();
 
-					for(LinkData link : linkList3)
+					for(NewLinkData link : linkList3)
 					{
 
 						packetsToSend.add(( PacketHandler.onLinkCreatedPacket(link)));
@@ -206,7 +207,7 @@ public class PacketHandler implements IPacketHandler
 	}
 
 
-	public static Packet250CustomPayload onLinkCreatedPacket(LinkData link)
+	public static Packet250CustomPayload onLinkCreatedPacket(NewLinkData link)
 	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream  dataOut = new DataOutputStream(bos);
@@ -247,7 +248,7 @@ public class PacketHandler implements IPacketHandler
 	}
 
 
-	public static Packet250CustomPayload linkKeyPacket(LinkData link, int key)
+	public static Packet250CustomPayload linkKeyPacket(NewLinkData link, int key)
 	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream  dataOut = new DataOutputStream(bos);
@@ -283,7 +284,7 @@ public class PacketHandler implements IPacketHandler
 	}
 
 
-	public static void onLinkRemovedPacket(LinkData link)
+	public static void onLinkRemovedPacket(NewLinkData link)
 	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream  dataOut = new DataOutputStream(bos);

@@ -22,8 +22,8 @@ import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
@@ -290,10 +290,10 @@ public class DungeonHelper
 		return pack;
 	}
 	
-	public LinkData createCustomDungeonDoor(World world, int x, int y, int z)
+	public NewLinkData createCustomDungeonDoor(World world, int x, int y, int z)
 	{
 		//Create a link above the specified position. Link to a new pocket dimension.
-		LinkData link = new LinkData(world.provider.dimensionId, 0, x, y + 1, z, x, y + 1, z, true, 3);
+		NewLinkData link = new NewLinkData(world.provider.dimensionId, 0, x, y + 1, z, x, y + 1, z, true, 3);
 		link = dimHelper.instance.createPocket(link, true, false);
 		
 		//Place a Warp Door linked to that pocket
@@ -530,7 +530,7 @@ public class DungeonHelper
 		}
 	}
 
-	public void generateDungeonLink(LinkData inbound, DungeonPack pack, Random random)
+	public void generateDungeonLink(NewLinkData inbound, DungeonPack pack, Random random)
 	{
 		DungeonGenerator selection;
 		DungeonPackConfig config;
@@ -658,7 +658,7 @@ public class DungeonHelper
 		for (int count = 1; count < maxSize && found; count++)
 		{
 			found = false;
-			for (LinkData link : tailDim.getLinksInDim())
+			for (NewLinkData link : tailDim.getLinksInDim())
 			{
 				DimData neighbor = dimHelper.instance.getDimData(link.destDimID);
 				if (neighbor.depth == tailDim.depth - 1 && neighbor.dungeonGenerator != null &&
@@ -674,7 +674,7 @@ public class DungeonHelper
 		return history;
 	}
 	
-	private static int getPackDepth(LinkData inbound, DungeonPack pack)
+	private static int getPackDepth(NewLinkData inbound, DungeonPack pack)
 	{
 		//TODO: I've improved this code for the time being. However, searching across links is a flawed approach. A player could
 		//manipulate the output of this function by setting up links to mislead our algorithm or by removing links.
@@ -688,7 +688,7 @@ public class DungeonHelper
 		do
 		{
 			found = false;
-			for (LinkData link : tailDim.getLinksInDim())
+			for (NewLinkData link : tailDim.getLinksInDim())
 			{
 				DimData neighbor = dimHelper.instance.getDimData(link.destDimID);
 				if (neighbor.depth == tailDim.depth - 1 && neighbor.dungeonGenerator != null &&
@@ -728,7 +728,7 @@ public class DungeonHelper
 		while (dungeons.size() < maxSize && !pendingDimensions.isEmpty())
 		{
 			DimData current = pendingDimensions.remove();
-			for (LinkData link : current.getLinksInDim())
+			for (NewLinkData link : current.getLinksInDim())
 			{
 				DimData child = helper.getDimData(link.destDimID);
 				if (child.depth == current.depth + 1 && child.dungeonGenerator != null && checked.add(child))

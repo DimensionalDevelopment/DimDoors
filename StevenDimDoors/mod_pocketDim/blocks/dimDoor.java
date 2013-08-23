@@ -3,9 +3,9 @@ package StevenDimDoors.mod_pocketDim.blocks;
 import java.util.Random;
 
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 
@@ -59,19 +59,19 @@ public class dimDoor extends BlockContainer
     	{
     		if(dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World)!=null)
     		{
-    			LinkData link= dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World);
+    			NewLinkData link= dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World);
     			par1World.setBlock(par2, par3, par4, properties.RiftBlockID);
     		
     		}
     		 if(dimHelper.instance.getLinkDataFromCoords(par2, par3-1, par4, par1World)!=null)
     		{
-    			LinkData link= dimHelper.instance.getLinkDataFromCoords(par2, par3-1, par4, par1World);
+    			NewLinkData link= dimHelper.instance.getLinkDataFromCoords(par2, par3-1, par4, par1World);
     			par1World.setBlock(par2, par3-1, par4, properties.RiftBlockID);
     		
     		}
     		 if(dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World)!=null)
     		{
-    			LinkData link= dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World);
+    			NewLinkData link= dimHelper.instance.getLinkDataFromCoords(par2, par3+1, par4, par1World);
     			par1World.setBlock(par2, par3+1, par4, properties.RiftBlockID);
     		
     		}
@@ -89,7 +89,7 @@ public class dimDoor extends BlockContainer
     		int var12 = (int) (MathHelper.floor_double((double)((par5Entity.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
        
     		int num=0;
-    		LinkData linkData=null;
+    		NewLinkData linkData=null;
     		
     		if(par1World.getBlockId(par2, par3-1, par4)==this.blockID)
     		{
@@ -264,7 +264,7 @@ public class dimDoor extends BlockContainer
 			
 		
 				
-					LinkData link = new LinkData(par1World.provider.dimensionId, 0, par2, par3, par4, par2, par3, par4, true,par1World.getBlockMetadata(par2, par3-1, par4));
+					NewLinkData link = new NewLinkData(par1World.provider.dimensionId, 0, par2, par3, par4, par2, par3, par4, true,par1World.getBlockMetadata(par2, par3-1, par4));
 					dimHelper.instance.createPocket(link,true, false);
 					//	System.out.println(link.linkOrientation);
 

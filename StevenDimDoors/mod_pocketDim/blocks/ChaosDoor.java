@@ -3,8 +3,8 @@ package StevenDimDoors.mod_pocketDim.blocks;
 import java.util.Random;
 
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 import net.minecraft.block.Block;
@@ -76,7 +76,7 @@ public class ChaosDoor extends dimDoor
 		
 			if(newDim)
 			{
-				LinkData link = new LinkData(par1World.provider.dimensionId, properties.LimboDimensionID, par2, par3, par4, par2, par3+500, par4, false,0);
+				NewLinkData link = new NewLinkData(par1World.provider.dimensionId, properties.LimboDimensionID, par2, par3, par4, par2, par3+500, par4, false,0);
 				link.linkOrientation= par1World.getBlockMetadata(par2, par3-1, par4);
 				dimHelper.instance.createLink(link);
 			//	System.out.println(link.linkOrientation);
@@ -118,7 +118,7 @@ public class ChaosDoor extends dimDoor
 	    		{
 	    			i++;
 	    			
-	    			LinkData link = (LinkData) dimHelper.instance.getRandomLinkData(false);
+	    			NewLinkData link = (NewLinkData) dimHelper.instance.getRandomLinkData(false);
 	    			
 	    			if(link!=null)
 	    			{
@@ -127,7 +127,7 @@ public class ChaosDoor extends dimDoor
 	    				{
 	    					foundRandomDest=true;
 	    					
-	    					dimHelper.instance.traverseDimDoor(par1World, new LinkData(link.destDimID,link.locDimID,link.destXCoord,link.destYCoord,link.destZCoord,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket,0), par5Entity);
+	    					dimHelper.instance.traverseDimDoor(par1World, new NewLinkData(link.destDimID,link.locDimID,link.destXCoord,link.destYCoord,link.destZCoord,link.locXCoord,link.locYCoord,link.locZCoord,link.isLocPocket,0), par5Entity);
 	    					
 	    					if(dimHelper.getWorld(link.locDimID)!=null)
 	    					{

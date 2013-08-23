@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
+
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -19,7 +21,7 @@ public class DimData implements Serializable
 
 	public World world;
 
-	public LinkData exitDimLink;
+	public NewLinkData exitDimLink;
 
 	public boolean isPocket;
 	public boolean hasBeenFilled=false;
@@ -27,13 +29,13 @@ public class DimData implements Serializable
 	public boolean isDimRandomRift=false;
 	public DungeonGenerator dungeonGenerator = null;
 	//public boolean isPrivatePocket = false;
-	public HashMap<Integer, HashMap<Integer, HashMap<Integer,  LinkData>>> linksInThisDim = new HashMap();
-	HashMap<Integer, LinkData> dimX;
-	HashMap<Integer, HashMap<Integer, LinkData>> dimY ;
+	public HashMap<Integer, HashMap<Integer, HashMap<Integer,  NewLinkData>>> linksInThisDim = new HashMap();
+	HashMap<Integer, NewLinkData> dimX;
+	HashMap<Integer, HashMap<Integer, NewLinkData>> dimY ;
 
 	static final long serialVersionUID = 454342L;
 
-	public DimData(int dimID, boolean isPocket, int depth, LinkData exitLinkData)
+	public DimData(int dimID, boolean isPocket, int depth, NewLinkData exitLinkData)
 	{
 		this.dimID=dimID;
 		this.depth=depth;
@@ -44,12 +46,12 @@ public class DimData implements Serializable
 
 	public DimData(int dimID, boolean isPocket, int depth, int exitLinkDimID, int exitX, int exitY, int exitZ)
 	{
-		this(dimID, isPocket, depth, new LinkData(exitLinkDimID,  exitX, exitY, exitZ));
+		this(dimID, isPocket, depth, new NewLinkData(exitLinkDimID,  exitX, exitY, exitZ));
 	}
 
-	public LinkData findNearestRift(World world, int range, int x, int y, int z)
+	public NewLinkData findNearestRift(World world, int range, int x, int y, int z)
 	{
-		LinkData nearest=null;
+		NewLinkData nearest=null;
 		float distance=range+1;
 		int i=-range;
 		int j=-range;
@@ -89,7 +91,7 @@ public class DimData implements Serializable
 
 	public ArrayList findRiftsInRange(World world, int range, int x, int y, int z)
 	{
-		LinkData nearest=null;
+		NewLinkData nearest=null;
 		ArrayList rifts = new ArrayList();
 		int i=-range;
 		int j=-range;
@@ -132,7 +134,7 @@ public class DimData implements Serializable
 
 
 
-	public LinkData addLinkToDim(LinkData link)
+	public NewLinkData addLinkToDim(NewLinkData link)
 	{
 		if(this.linksInThisDim.containsKey(link.locZCoord))
 		{
@@ -144,13 +146,13 @@ public class DimData implements Serializable
 			}
 			else
 			{
-				this.dimX=new HashMap<Integer, LinkData>();
+				this.dimX=new HashMap<Integer, NewLinkData>();
 			}
 		}
 		else
 		{
-			this.dimX=new HashMap<Integer, LinkData>();
-			this.dimY=new HashMap<Integer, HashMap<Integer, LinkData>>();
+			this.dimX=new HashMap<Integer, NewLinkData>();
+			this.dimY=new HashMap<Integer, HashMap<Integer, NewLinkData>>();
 		}
 
 		this.dimX.put(link.locXCoord, link);
@@ -162,9 +164,9 @@ public class DimData implements Serializable
 
 	}
 
-	public LinkData addLinkToDim( int destinationDimID, int locationXCoord, int locationYCoord, int locationZCoord, int destinationXCoord, int destinationYCoord, int destinationZCoord, int linkOrientation)
+	public NewLinkData addLinkToDim( int destinationDimID, int locationXCoord, int locationYCoord, int locationZCoord, int destinationXCoord, int destinationYCoord, int destinationZCoord, int linkOrientation)
 	{
-		LinkData linkData= new LinkData(this.dimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord,destinationZCoord,this.isPocket,linkOrientation);
+		NewLinkData linkData= new NewLinkData(this.dimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord,destinationZCoord,this.isPocket,linkOrientation);
 
 		return this.addLinkToDim(linkData);
 	}
@@ -174,7 +176,7 @@ public class DimData implements Serializable
 		return (this.dimID == DDProperties.instance().LimboDimensionID);
 	}
 
-	public void removeLinkAtCoords(LinkData link)
+	public void removeLinkAtCoords(NewLinkData link)
 	{
 		this.removeLinkAtCoords(link.locDimID, link.locXCoord, link.locYCoord, link.locZCoord);
 	}
@@ -191,13 +193,13 @@ public class DimData implements Serializable
 			}
 			else
 			{
-				this.dimX=new HashMap<Integer, LinkData>();
+				this.dimX=new HashMap<Integer, NewLinkData>();
 			}
 		}
 		else
 		{
-			this.dimX=new HashMap<Integer, LinkData>();
-			this.dimY=new HashMap<Integer, HashMap<Integer, LinkData>>();
+			this.dimX=new HashMap<Integer, NewLinkData>();
+			this.dimY=new HashMap<Integer, HashMap<Integer, NewLinkData>>();
 		}
 
 		this.dimX.remove(locationXCoord);
@@ -205,7 +207,7 @@ public class DimData implements Serializable
 		this.linksInThisDim.put(locationZCoord, dimY);
 	}
 
-	public LinkData findLinkAtCoords(int locationXCoord, int locationYCoord, int locationZCoord)
+	public NewLinkData findLinkAtCoords(int locationXCoord, int locationYCoord, int locationZCoord)
 	{
 		try
 		{
@@ -232,21 +234,21 @@ public class DimData implements Serializable
 		return null;		
 	}
 
-	public ArrayList<LinkData> getLinksInDim()
+	public ArrayList<NewLinkData> getLinksInDim()
 	{
 		//TODO: We might want to modify this function, but I'm afraid of breaking something right now.
 		//To begin with, the name is wrong. This doesn't print anything! >_o  ~SenseiKiwi
 		
-		ArrayList<LinkData> links = new ArrayList<LinkData>();
+		ArrayList<NewLinkData> links = new ArrayList<NewLinkData>();
 		if (this.linksInThisDim == null)
 		{
 			return links;
 		}
-		for (HashMap<Integer, HashMap<Integer, LinkData>> first : this.linksInThisDim.values())
+		for (HashMap<Integer, HashMap<Integer, NewLinkData>> first : this.linksInThisDim.values())
 		{
-			for (HashMap<Integer, LinkData> second : first.values())
+			for (HashMap<Integer, NewLinkData> second : first.values())
 			{
-				for (LinkData linkData : second.values())
+				for (NewLinkData linkData : second.values())
 				{
 					links.add(linkData);
 				}

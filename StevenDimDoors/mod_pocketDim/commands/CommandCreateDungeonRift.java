@@ -6,7 +6,7 @@ import java.util.Collection;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import StevenDimDoors.mod_pocketDim.DungeonGenerator;
-import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
@@ -60,7 +60,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 			int x = MathHelper.floor_double(sender.posX);
 			int y = MathHelper.floor_double(sender.posY);
 			int z = MathHelper.floor_double (sender.posZ);
-			LinkData link = new LinkData(sender.worldObj.provider.dimensionId, 0, x, y + 1, z, x, y + 1, z, true, 3);
+			NewLinkData link = new NewLinkData(sender.worldObj.provider.dimensionId, 0, x, y + 1, z, x, y + 1, z, true, 3);
 			
 			if (command[0].equals("random"))
 			{

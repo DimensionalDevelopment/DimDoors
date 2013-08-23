@@ -7,7 +7,7 @@ import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 public class CommandPruneDimensions extends DDCommandBase
@@ -47,12 +47,12 @@ public class CommandPruneDimensions extends DDCommandBase
 		
 		for (DimData data : allDims)
 		{
-			for (LinkData link : data.getLinksInDim())
+			for (NewLinkData link : data.getLinksInDim())
 			{
 				linkedDimensions.add(link.destDimID);
 			}
 		}
-		for (LinkData link : dimHelper.instance.interDimLinkList.values())
+		for (NewLinkData link : dimHelper.instance.interDimLinkList.values())
 		{
 			linkedDimensions.add(link.destDimID);
 		}

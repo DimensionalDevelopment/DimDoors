@@ -35,13 +35,13 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.ObjectSaveInputStream;
 import StevenDimDoors.mod_pocketDim.PacketHandler;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.SchematicLoader;
 import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
@@ -79,7 +79,7 @@ public class dimHelper extends DimensionManager
 	 * HashMap for temporary storage of Link Signature damage hash values. See itemLinkSignature for more details
 	 * @Return
 	 */
-	public HashMap<Integer, LinkData> interDimLinkList= new HashMap<Integer,LinkData>();
+	public HashMap<Integer, NewLinkData> interDimLinkList= new HashMap<Integer,NewLinkData>();
 	
 	/**
 	 * ArrayList containing all link data not sorted for easy random access, used for random doors and for recreating rifts if they have a block placed over them. 
@@ -103,7 +103,7 @@ public class dimHelper extends DimensionManager
 	}
 	
 	// GreyMaria: My god, what a mess. Here, let me clean it up a bit.
-	public Entity teleportEntity(World world, Entity entity, LinkData link) //this beautiful teleport method is based off of xCompWiz's teleport function. 
+	public Entity teleportEntity(World world, Entity entity, NewLinkData link) //this beautiful teleport method is based off of xCompWiz's teleport function. 
 	{	
 		WorldServer oldWorld = (WorldServer)world;
 		WorldServer newWorld;
@@ -260,7 +260,7 @@ public class dimHelper extends DimensionManager
 	 * @param orientation- the orientation of the door used to teleport, determines player orientation and door placement on arrival
 	 * @Return
 	 */
-	public void traverseDimDoor(World world,LinkData linkData, Entity entity)
+	public void traverseDimDoor(World world,NewLinkData linkData, Entity entity)
 	{
 		DDProperties properties = DDProperties.instance();
 		
@@ -355,7 +355,7 @@ public class dimHelper extends DimensionManager
 	 
 	 * @return
 	 */
-	public LinkData createLink( int locationDimID, int destinationDimID, int locationXCoord, int locationYCoord, int locationZCoord, int destinationXCoord, int destinationYCoord, int destinationZCoord)
+	public NewLinkData createLink( int locationDimID, int destinationDimID, int locationXCoord, int locationYCoord, int locationZCoord, int destinationXCoord, int destinationYCoord, int destinationZCoord)
 	{
 		if(this.getLinkDataFromCoords(locationXCoord, locationYCoord, locationZCoord, locationDimID)!=null)
 		{
@@ -381,13 +381,13 @@ public class dimHelper extends DimensionManager
 	 * @param linkOrientation
 	 * @return
 	 */
-	public LinkData createLink( int locationDimID, int destinationDimID, int locationXCoord, int locationYCoord, int locationZCoord, int destinationXCoord, int destinationYCoord, int destinationZCoord,int linkOrientation)
+	public NewLinkData createLink( int locationDimID, int destinationDimID, int locationXCoord, int locationYCoord, int locationZCoord, int destinationXCoord, int destinationYCoord, int destinationZCoord,int linkOrientation)
 	{
-		LinkData linkData =new LinkData( locationDimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord ,destinationZCoord,false,linkOrientation);
+		NewLinkData linkData =new NewLinkData( locationDimID, destinationDimID, locationXCoord, locationYCoord, locationZCoord, destinationXCoord, destinationYCoord ,destinationZCoord,false,linkOrientation);
 		return this.createLink(linkData);
 	}	
 	
-	public LinkData createLink(LinkData link)
+	public NewLinkData createLink(NewLinkData link)
 	{
 		DDProperties properties = DDProperties.instance();
 		
@@ -421,11 +421,11 @@ public class dimHelper extends DimensionManager
 		return link;
 	}
 	
-	public int getDestOrientation(LinkData link)
+	public int getDestOrientation(NewLinkData link)
 	{
 		if(link !=null)
 		{
-			LinkData destLink = this.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID);
+			NewLinkData destLink = this.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID);
 			if(destLink!=null)
 			{
 				return destLink.linkOrientation;
@@ -443,7 +443,7 @@ public class dimHelper extends DimensionManager
 		}
 	}
 	
-	public void removeLink(LinkData link)
+	public void removeLink(NewLinkData link)
 	{
 		this.removeLink(link.locDimID, link.locXCoord, link.locYCoord, link.locZCoord);
 	}
@@ -462,7 +462,7 @@ public class dimHelper extends DimensionManager
 			DimData locationDimData= new DimData(locationDimID, false, 0, locationDimID,locationXCoord,locationYCoord,locationZCoord);
 			dimHelper.dimList.put(locationDimID, locationDimData);
 		}
-		LinkData link = this.getLinkDataFromCoords(locationXCoord, locationYCoord, locationZCoord, locationDimID);
+		NewLinkData link = this.getLinkDataFromCoords(locationXCoord, locationYCoord, locationZCoord, locationDimID);
 		dimHelper.instance.getDimData(locationDimID).removeLinkAtCoords(link);
 		//updates clients that a rift has been removed
 		if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
@@ -471,7 +471,7 @@ public class dimHelper extends DimensionManager
 			this.save();
 		}	
 	}
-	public LinkData findNearestRift(World world, int x, int y, int z, int range)
+	public NewLinkData findNearestRift(World world, int x, int y, int z, int range)
 	{
 		return dimHelper.instance.getDimData(world).findNearestRift(world, range, x, y, z);
 	}
@@ -480,7 +480,7 @@ public class dimHelper extends DimensionManager
 	 * @param world- door 
 	 * @param incLink
 	 */
-	public void generateDoor(World world,  LinkData incLink)
+	public void generateDoor(World world,  NewLinkData incLink)
 	{
 		int locX = incLink.locXCoord;
 		int locY = incLink.locYCoord;
@@ -504,7 +504,7 @@ public class dimHelper extends DimensionManager
 				{
 					DimensionManager.initDimension(destinationID);
 				}
-				LinkData destLink =  this.getLinkDataFromCoords(destX, destY, destZ, destinationID);
+				NewLinkData destLink =  this.getLinkDataFromCoords(destX, destY, destZ, destinationID);
 				int destOrientation = 0;
 				if(destLink!=null)
 				{
@@ -536,7 +536,7 @@ public class dimHelper extends DimensionManager
 	 * @param orientation
 	 * @return
 	 */
-	public void generatePocket(LinkData incomingLink)
+	public void generatePocket(NewLinkData incomingLink)
 	{
 		DDProperties properties = DDProperties.instance();
 		try
@@ -697,10 +697,10 @@ public class dimHelper extends DimensionManager
 		DeleteFolder.deleteFolder(save);
 		dimData.hasBeenFilled = false;
 		dimData.hasDoor = false;
-		for(LinkData link : dimData.getLinksInDim())
+		for(NewLinkData link : dimData.getLinksInDim())
 		{
 			link.hasGennedDoor = false;
-			LinkData linkOut = this.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID);
+			NewLinkData linkOut = this.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID);
 			if (linkOut != null)
 			{
 				linkOut.hasGennedDoor = false;
@@ -788,7 +788,7 @@ public class dimHelper extends DimensionManager
 	 * @param orientation- determines the orientation of the entrance link to this dim. Should be the metaData of the door occupying the rift. -1 if no door. 
 	 * @return
 	 */
-	public LinkData createPocket(LinkData link , boolean isGoingDown, boolean isRandomRift)
+	public NewLinkData createPocket(NewLinkData link , boolean isGoingDown, boolean isRandomRift)
 	{
 		DDProperties properties = DDProperties.instance();
 		if(dimHelper.getWorld(0)==null)
@@ -821,7 +821,7 @@ public class dimHelper extends DimensionManager
 				}
 				if(rand.nextInt(13-depth)==0)
 				{
-					LinkData link1=getRandomLinkData(false);		
+					NewLinkData link1=getRandomLinkData(false);		
 				}
 			}
 			if(locationDimData.isPocket) //determines the qualites of the pocket dim being created, based on parent dim. 
@@ -969,7 +969,7 @@ public class dimHelper extends DimensionManager
 	         
 	         try
 	         {
-	        	 this.interDimLinkList = (HashMap<Integer, LinkData>) comboSave.get("interDimLinkList");
+	        	 this.interDimLinkList = (HashMap<Integer, NewLinkData>) comboSave.get("interDimLinkList");
 	         }
 	         catch(Exception e)
 	         {
@@ -1020,7 +1020,7 @@ public class dimHelper extends DimensionManager
 		         
 		         try
 		         {
-		        	 this.interDimLinkList=(HashMap<Integer, LinkData>) comboSave.get("interDimLinkList");
+		        	 this.interDimLinkList=(HashMap<Integer, NewLinkData>) comboSave.get("interDimLinkList");
 		         }
 		         catch(Exception e)
 		         {
@@ -1073,7 +1073,7 @@ public class dimHelper extends DimensionManager
 	
 	
 		
-	public LinkData getRandomLinkData(boolean allowInPocket)
+	public NewLinkData getRandomLinkData(boolean allowInPocket)
 	{
 		boolean foundRandomDest=false;
 		int i=0;
@@ -1083,7 +1083,7 @@ public class dimHelper extends DimensionManager
 		{
 			i++;
 			DimData dimData;
-			ArrayList<LinkData> linksInDim = new ArrayList<LinkData>();
+			ArrayList<NewLinkData> linksInDim = new ArrayList<NewLinkData>();
 			for(size--;size>0;)
 			{
 				dimData = dimHelper.instance.getDimData((Integer)dimList.keySet().toArray()[rand.nextInt(dimList.keySet().size())]);
@@ -1103,7 +1103,7 @@ public class dimHelper extends DimensionManager
 				break;
 			}
 			
-			LinkData link1 = (LinkData) linksInDim.get(rand.nextInt(linksInDim.size()));
+			NewLinkData link1 = (NewLinkData) linksInDim.get(rand.nextInt(linksInDim.size()));
 			
 			if(link1!=null)
 			{
@@ -1125,7 +1125,7 @@ public class dimHelper extends DimensionManager
 	 * @param link
 	 * @return
 	 */
-	public LinkData getLinkDataAtDestination(LinkData link)
+	public NewLinkData getLinkDataAtDestination(NewLinkData link)
 	{
 		return this.getLinkDataFromCoords(link.destXCoord, link.destYCoord, link.destZCoord, link.destDimID);
 	}
@@ -1144,9 +1144,9 @@ public class dimHelper extends DimensionManager
 	 * @param updateLinksPointingHere
 	 * @return
 	 */
-	public boolean moveLinkDataLocation(LinkData link, int x,int y, int z, int dimID, boolean updateLinksPointingHere)
+	public boolean moveLinkDataLocation(NewLinkData link, int x,int y, int z, int dimID, boolean updateLinksPointingHere)
 	{
-		LinkData linkToMove = this.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID);
+		NewLinkData linkToMove = this.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID);
 		if(linkToMove!=null)
 		{
 			int oldX = linkToMove.locXCoord;
@@ -1156,10 +1156,10 @@ public class dimHelper extends DimensionManager
 			
 			if(updateLinksPointingHere)
 			{
-				ArrayList<LinkData> incomingLinks = new ArrayList<LinkData>();
+				ArrayList<NewLinkData> incomingLinks = new ArrayList<NewLinkData>();
 				for(DimData dimData : dimHelper.dimList.values())
 				{
-					for(LinkData allLink : dimData.getLinksInDim())
+					for(NewLinkData allLink : dimData.getLinksInDim())
 					{
 						if(this.getLinkDataAtDestination(allLink)==linkToMove)
 						{
@@ -1168,7 +1168,7 @@ public class dimHelper extends DimensionManager
 					}
 				}
 			}
-			this.createLink(new LinkData(dimID,linkToMove.destDimID,x,y,z,linkToMove.destXCoord,linkToMove.destYCoord,linkToMove.destZCoord,linkToMove.isLocPocket,linkToMove.linkOrientation));
+			this.createLink(new NewLinkData(dimID,linkToMove.destDimID,x,y,z,linkToMove.destXCoord,linkToMove.destYCoord,linkToMove.destZCoord,linkToMove.isLocPocket,linkToMove.linkOrientation));
 
 			if(this.getLinkDataFromCoords(oldX,oldY,oldZ,oldDimID)!=null)
 			{
@@ -1189,14 +1189,14 @@ public class dimHelper extends DimensionManager
 	 * @param updateLinksAtDestination
 	 * @return
 	 */
-	public boolean moveLinkDataDestination(LinkData link, int x, int y, int z, int dimID, boolean updateLinksAtDestination)
+	public boolean moveLinkDataDestination(NewLinkData link, int x, int y, int z, int dimID, boolean updateLinksAtDestination)
 	{
-		LinkData linkToMove = this.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID);
+		NewLinkData linkToMove = this.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID);
 		if(linkToMove!=null)
 		{
 			if(updateLinksAtDestination)
 			{
-				LinkData linkAtDestination = this.getLinkDataAtDestination(linkToMove);
+				NewLinkData linkAtDestination = this.getLinkDataAtDestination(linkToMove);
 				if(linkAtDestination!=null)
 				{
 					this.moveLinkDataLocation(linkAtDestination, x, y, z, dimID, false);
@@ -1207,7 +1207,7 @@ public class dimHelper extends DimensionManager
 			linkToMove.destYCoord=y;
 			linkToMove.destZCoord=z;
 			this.createLink(linkToMove);
-			LinkData testLink = this.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID);
+			NewLinkData testLink = this.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID);
 
 			return true;
 		}
@@ -1222,7 +1222,7 @@ public class dimHelper extends DimensionManager
 	 * @param par1World
 	 * @return
 	 */
-	public LinkData getLinkDataFromCoords(int x, int y, int z, World par1World) 
+	public NewLinkData getLinkDataFromCoords(int x, int y, int z, World par1World) 
 	{
 		return this.getLinkDataFromCoords(x, y, z, par1World.provider.dimensionId);
 	}
@@ -1234,7 +1234,7 @@ public class dimHelper extends DimensionManager
 	 * @param worldID
 	 * @return
 	 */
-	public LinkData getLinkDataFromCoords(int x, int y, int z, int worldID) 
+	public NewLinkData getLinkDataFromCoords(int x, int y, int z, int worldID) 
 	{
 		if(dimHelper.dimList.containsKey(worldID))
 		{
@@ -1261,7 +1261,7 @@ public class dimHelper extends DimensionManager
     {
     	DDProperties properties = DDProperties.instance();
     	
-    	LinkData nearest=null;
+    	NewLinkData nearest=null;
 		float distance=range+1;
 		int i=-range;
 		int j=-range;

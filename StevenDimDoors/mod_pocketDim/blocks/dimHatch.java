@@ -1,8 +1,8 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
 import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import net.minecraft.block.BlockTrapDoor;
@@ -55,7 +55,7 @@ public class dimHatch extends BlockTrapDoor
 	    		 
 	   			DimData dimData = (DimData) dimHelper.instance.dimList.get(par1World.provider.dimensionId);
 	    			
-	    		LinkData exitLink=dimData.exitDimLink;
+	    		NewLinkData exitLink=dimData.exitDimLink;
 	    		exitLink.locDimID=par1World.provider.dimensionId;
 	    		
 	    		 

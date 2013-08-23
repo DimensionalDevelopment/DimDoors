@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 public class CommandDeleteRifts extends DDCommandBase
@@ -58,9 +58,9 @@ public class CommandDeleteRifts extends DDCommandBase
 			if(dimHelper.dimList.containsKey(targetDim))
 			{
 				DimData dim = dimHelper.instance.getDimData(targetDim);
-				ArrayList<LinkData> linksInDim = dim.getLinksInDim();
+				ArrayList<NewLinkData> linksInDim = dim.getLinksInDim();
 
-				for(LinkData link : linksInDim)
+				for(NewLinkData link : linksInDim)
 				{
 					World targetWorld = dimHelper.getWorld(targetDim);
 

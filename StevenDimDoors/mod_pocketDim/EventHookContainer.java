@@ -6,6 +6,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -55,7 +56,7 @@ public class EventHookContainer
     		
     		if (dimHelper.dimList.containsKey(dimensionID))
     		{
-    			for (LinkData link : dimHelper.instance.getDimData(dimensionID).getLinksInDim())
+    			for (NewLinkData link : dimHelper.instance.getDimData(dimensionID).getLinksInDim())
     			{
     				if (!mod_pocketDim.blockRift.isBlockImmune(world, link.locXCoord, link.locYCoord, link.locZCoord))
     				{

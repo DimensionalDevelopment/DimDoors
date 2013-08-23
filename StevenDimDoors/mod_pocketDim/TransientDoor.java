@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim;
 import java.util.Random;
 
 import StevenDimDoors.mod_pocketDim.blocks.ExitDoor;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 import net.minecraft.block.Block;
@@ -86,7 +87,7 @@ public class TransientDoor extends ExitDoor
     		 
     		
 
-    		 LinkData linkData= dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World);
+    		 NewLinkData linkData= dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World);
     		 if(linkData!=null)
     		 {
     			 if(dimHelper.dimList.containsKey(linkData.destDimID))

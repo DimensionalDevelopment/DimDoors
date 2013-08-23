@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 
 public class CommandDeleteDimensionData extends DDCommandBase
@@ -60,10 +60,10 @@ public class CommandDeleteDimensionData extends DDCommandBase
 				{
 					for(DimData dimData :dimHelper.dimList.values())
 					{
-						Collection<LinkData> links= new ArrayList<LinkData>();
+						Collection<NewLinkData> links= new ArrayList<NewLinkData>();
 						links.addAll( dimData.getLinksInDim());
 					
-						for(LinkData link : links)
+						for(NewLinkData link : links)
 						{
 							if(link.destDimID==targetDim)
 							{

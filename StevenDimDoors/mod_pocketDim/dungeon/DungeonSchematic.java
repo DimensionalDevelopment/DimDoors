@@ -17,8 +17,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
@@ -295,7 +295,7 @@ public class DungeonSchematic extends Schematic {
 		//Set the orientation of the rift exit
 		Point3D entranceRiftLocation = entrance.clone();
 		BlockRotator.transformPoint(entranceRiftLocation, entrance, rotation, pocketCenter);
-		LinkData sideLink = dimHelper.instance.getLinkDataFromCoords(
+		NewLinkData sideLink = dimHelper.instance.getLinkDataFromCoords(
 				entranceRiftLocation.getX(),
 				entranceRiftLocation.getY(),
 				entranceRiftLocation.getZ(),
@@ -319,8 +319,8 @@ public class DungeonSchematic extends Schematic {
 			int blockDirection = world.getBlockMetadata(location.getX(), location.getY() - 1, location.getZ());
 			Point3D linkDestination = location.clone();
 			
-			LinkData randomLink = dimHelper.instance.getRandomLinkData(false);
-			LinkData sideLink = new LinkData(destDimID,
+			NewLinkData randomLink = dimHelper.instance.getRandomLinkData(false);
+			NewLinkData sideLink = new NewLinkData(destDimID,
 					dimHelper.instance.getDimData(originDimID).exitDimLink.destDimID,
 					location.getX(),
 					location.getY(),
@@ -405,7 +405,7 @@ public class DungeonSchematic extends Schematic {
 		BlockRotator.transformPoint(linkDestination, zeroPoint, blockDirection - BlockRotator.EAST_DOOR_METADATA, location);
 		
 		//Create the link between our current door and its intended exit in destination pocket
-		LinkData sideLink = new LinkData(destDimID, 0,
+		NewLinkData sideLink = new NewLinkData(destDimID, 0,
 				location.getX(),
 				location.getY(),
 				location.getZ(),

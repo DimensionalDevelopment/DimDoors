@@ -2,9 +2,9 @@ package StevenDimDoors.mod_pocketDim.ticking;
 
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
 import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -38,10 +38,10 @@ public class RiftRegenerator implements IRegularTickReceiver {
 			while (i < 15 && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			{
 				i++;
-				LinkData link;
+				NewLinkData link;
 
 				//actually gets the random rift based on the size of the list
-				link = (LinkData) dimHelper.instance.getRandomLinkData(true);
+				link = (NewLinkData) dimHelper.instance.getRandomLinkData(true);
 
 				if (link != null)
 				{
