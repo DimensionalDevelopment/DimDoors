@@ -31,9 +31,13 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 	private final int CONFIG_VERSION = 1;
 	private final int LOOKAHEAD_LIMIT = 1024;
 	private final int MAX_PRODUCT_WEIGHT = 10000;
+	private final int MIN_PRODUCT_WEIGHT = 1;
 	private final int DEFAULT_PRODUCT_WEIGHT = 100;
 	private final int MAX_DUNGEON_PACK_WEIGHT = 10000;
+	private final int MIN_DUNGEON_PACK_WEIGHT = 1;
 	private final int DEFAULT_DUNGEON_PACK_WEIGHT = 100;
+	private final int MAX_CONDITION_LENGTH = 20;
+	private final int MAX_PRODUCT_COUNT = MAX_CONDITION_LENGTH;
 	private final String COMMENT_MARKER = "##";
 
 	private final Pattern DUNGEON_TYPE_PATTERN = Pattern.compile("[A-Za-z0-9_\\-]{1,20}");
@@ -237,8 +241,8 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 			{
 				try
 				{
-					String name = settingParts[0];
-					String value = settingParts[1];
+					String name = settingParts[0].trim();
+					String value = settingParts[1].trim();
 					if (name.equalsIgnoreCase("AllowDuplicatesInChain"))
 					{
 						config.setAllowDuplicatesInChain(parseBoolean(value));
@@ -258,7 +262,7 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 					else if (name.equalsIgnoreCase("PackWeight"))
 					{
 						int weight = Integer.parseInt(value);
-						if (weight >= 0 && weight <= MAX_DUNGEON_PACK_WEIGHT)
+						if (weight >= MIN_DUNGEON_PACK_WEIGHT && weight <= MAX_DUNGEON_PACK_WEIGHT)
 						{
 							config.setPackWeight(weight);
 						}
@@ -266,6 +270,10 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 						{
 							valid = false;
 						}
+					}
+					else
+					{
+						valid = false;
 					}
 				}
 				catch (Exception e)
@@ -318,6 +326,11 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 				{
 					throw new ConfigurationProcessingException("The dungeon pack config has a rule condition with an unknown dungeon type: " + typeName);
 				}
+
+				if (condition.size() > MAX_CONDITION_LENGTH)
+				{
+					throw new ConfigurationProcessingException("The dungeon pack config has a rule condition that is too long: " + definition);
+				}
 			}
 
 			for (String product : WHITESPACE_SPLITTER.split(ruleProduct))
@@ -337,7 +350,7 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 					if (productParts.length > 1)
 					{
 						weight = Ints.tryParse(productParts[1]);
-						if (weight == null  || (weight > MAX_PRODUCT_WEIGHT) || (weight < 0))
+						if (weight == null  || (weight > MAX_PRODUCT_WEIGHT) || (weight < MIN_PRODUCT_WEIGHT))
 						{
 							throw new ConfigurationProcessingException("The dungeon pack config has a rule with an invalid product weight: " + product);
 						}
@@ -352,7 +365,17 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 				{
 					throw new ConfigurationProcessingException("The dungeon pack config has an unknown dungeon type in a rule: " + typeName);
 				}
+
+				if (products.size() > MAX_PRODUCT_COUNT)
+				{
+					throw new ConfigurationProcessingException("The dungeon pack config has a rule with too many products: " + definition);
+				}
 			}
+			if (products.isEmpty())
+			{
+				throw new ConfigurationProcessingException("The dungeon pack config has a rule with no products: " + definition);
+			}
+			
 			config.getRules().add( new DungeonChainRuleDefinition(condition, products) );
 		}
 	}

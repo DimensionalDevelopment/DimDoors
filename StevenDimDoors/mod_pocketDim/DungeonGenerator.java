@@ -4,12 +4,10 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
-
-import net.minecraft.world.World;
 
 public class DungeonGenerator implements Serializable
 {
@@ -48,7 +46,13 @@ public class DungeonGenerator implements Serializable
 			{
 				File file = new File(schematicPath);
 				String typeName = file.getName().split("_")[0];
-				type = DungeonHelper.instance().RuinsPack.getType(typeName);
+				String packName = file.getParentFile().getName();
+				DungeonPack pack = DungeonHelper.instance().getDungeonPack(packName);
+				if (pack == null)
+				{
+					pack = DungeonHelper.instance().getDungeonPack("ruins");
+				}
+				type = pack.getType(typeName);
 			}
 			catch (Exception e) { }
 			if (type == null)
