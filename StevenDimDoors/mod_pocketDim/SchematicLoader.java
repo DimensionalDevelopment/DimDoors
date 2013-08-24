@@ -42,7 +42,7 @@ public class SchematicLoader
 				if (dimList.get(destDimID).dungeonGenerator == null)
 				{
 					//TODO: We should centralize RNG initialization and world-seed modifiers for each specific application.
-					final long localSeed = world.getSeed() ^ 0x2F50DB9B4A8057E4L ^ computeDestinationHash(link);
+					final long localSeed = world.getSeed() ^ 0x2F50DB9B4A8057E4L ^ calculateDestinationSeed(link);
 					final Random random = new Random(localSeed);
 					
 					dungeonHelper.generateDungeonLink(link, dungeonHelper.getDimDungeonPack(originDimID), random);
@@ -155,43 +155,50 @@ public class SchematicLoader
 		return dungeon;
 	}
 	
-	private static long computeDestinationHash(LinkData link)
+	private static long calculateDestinationSeed(LinkData link)
 	{
 		//Time for some witchcraft.
 		//The code here is inspired by a discussion on Stack Overflow regarding hash codes for 3D.
 		//Source: http://stackoverflow.com/questions/9858376/hashcode-for-3d-integer-coordinates-with-high-spatial-coherence
 		
-		//Use 8 bits from Y and 24 bits from X and Z. Mix in 8 bits from the destination dim ID too - that means
+		//Use 8 bits from Y and 16 bits from X and Z. Mix in 8 bits from the destination dim ID too - that means
 		//even if you aligned two doors perfectly between two pockets, it's unlikely they would lead to the same dungeon.
+		//We map bits in reverse order to produce more varied RNG output for nearly-identical points. The reason is
+		//that Java's Random outputs the 32 MSBs of its internal state to produce its output. If the differences
+		//between two seeds are small (i.e. in the LSBs), then they will tend to produce similar random outputs anyway!
+		
+		//Only bother to assign the 48 least-significant bits since Random only takes those bits from its seed.
+		//NOTE: The casts to long are necessary to get the right results from the bit shifts!!!
 		
 		int bit;
 		int index;
 		long hash;
-		int w = link.destDimID;
-		int x = link.destXCoord;
-		int y = link.destYCoord;
-		int z = link.destZCoord;
+		final int w = link.destDimID;
+		final int x = link.destXCoord;
+		final int y = link.destYCoord;
+		final int z = link.destZCoord;
 		
 		hash = 0;
-		index = 0;
+		index = 48;
 		for (bit = 0; bit < 8; bit++)
 		{
-			hash |= ((w >> bit) & 1) << index;
-			index++;
-			hash |= ((x >> bit) & 1) << index;
-			index++;
-			hash |= ((y >> bit) & 1) << index;
-			index++;
-			hash |= ((z >> bit) & 1) << index;
-			index++;
+			hash |= (long) ((w >> bit) & 1) << index;
+			index--;
+			hash |= (long) ((x >> bit) & 1) << index;
+			index--;
+			hash |= (long) ((y >> bit) & 1) << index;
+			index--;
+			hash |= (long) ((z >> bit) & 1) << index;
+			index--;
 		}
-		for (; bit < 24; bit++)
+		for (; bit < 16; bit++)
 		{
-			hash |= ((x >> bit) & 1) << index;
-			index++;
-			hash |= ((z >> bit) & 1) << index;
-			index++;
+			hash |= (long) ((x >> bit) & 1) << index;
+			index--;
+			hash |= (long) ((z >> bit) & 1) << index;
+			index--;
 		}
+		
 		return hash;
 	}
 }

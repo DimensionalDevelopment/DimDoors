@@ -22,14 +22,22 @@ Exit -> DeadEnd Exit
 
 DeadEnd -> DeadEnd Exit
 
-? ? ? ? ? ? ? ? -> Trap#20 SimpleHall#40 ComplexHall#10 Exit#20 DeadEnd#10
+? ? ? ? ? ? ? ? ? -> DeadEnd#10 Exit#11 SimpleHall#24 ComplexHall#16 Trap#23 Maze#11
 
-? ? ? ? -> Trap#18 SimpleHall#40 ComplexHall#10 Exit#18 DeadEnd#10 Hub#4
+? ? ? ? ? ? ? ? -> DeadEnd#9 Exit#10 SimpleHall#24 ComplexHall#16 Trap#23 Maze#11 Hub#6
 
-? ? ? -> ComplexHall Hub Trap SimpleHall Maze
+? ? ? ? ? ? ? -> DeadEnd#8 Exit#9 SimpleHall#25 ComplexHall#17 Trap#23 Maze#11 Hub#7
 
-? ?	-> ComplexHall Hub Trap SimpleHall Maze
+? ? ? ? ? ? -> DeadEnd#7 Exit#8 SimpleHall#26 ComplexHall#17 Trap#23 Maze#11 Hub#8
 
-? -> ComplexHall#40 Hub#30 Trap#10 SimpleHall#10 Maze#10
+? ? ? ? ? -> DeadEnd#6 Exit#6 SimpleHall#27 ComplexHall#18 Trap#23 Maze#11 Hub#9
 
--> ComplexHall#40 Hub#30 Trap#10 SimpleHall#10 Maze#10
+? ? ? ? -> DeadEnd#5 Exit#5 SimpleHall#28 ComplexHall#18 Trap#23 Maze#11 Hub#10
+
+? ? ? -> DeadEnd#3 Exit#3 SimpleHall#29 ComplexHall#19 Trap#23 Maze#11 Hub#11
+
+? ? -> SimpleHall#9 ComplexHall#8 Trap#17 Maze#23 Hub#44
+
+? -> SimpleHall#9 ComplexHall#8 Trap#17 Maze#23 Hub#44
+
+-> SimpleHall#2 ComplexHall#54 Trap#2 Maze#2 Hub#41

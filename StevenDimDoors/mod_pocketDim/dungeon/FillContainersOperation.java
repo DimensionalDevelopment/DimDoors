@@ -10,9 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityDispenser;
-import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ChestGenHooks;
 import StevenDimDoors.mod_pocketDim.DDLoot;
 import StevenDimDoors.mod_pocketDim.schematic.WorldOperation;
 
@@ -42,8 +40,7 @@ public class FillContainersOperation extends WorldOperation
 				TileEntityChest chest = (TileEntityChest) tileEntity;
 				if (isInventoryEmpty(chest))
 				{
-					ChestGenHooks info = DDLoot.DungeonChestInfo;
-					WeightedRandomChestContent.generateChestContents(random, info.getItems(random), chest, info.getCount(random));
+					DDLoot.generateChestContents(DDLoot.DungeonChestInfo, chest, random);
 				}
 			}
 			
