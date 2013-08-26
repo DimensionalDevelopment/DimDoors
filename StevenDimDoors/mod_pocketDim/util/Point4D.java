@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim.util;
 
+
 public final class Point4D
 {
 	private final int x;
@@ -71,42 +72,53 @@ public final class Point4D
 		return hash;
 	}
 	
-	public long longHashCode()
+	public long toSeed()
 	{
 		//Time for some witchcraft.
 		//The code here is inspired by a discussion on Stack Overflow regarding hash codes for 3D.
 		//Source: http://stackoverflow.com/questions/9858376/hashcode-for-3d-integer-coordinates-with-high-spatial-coherence
 		
-		//Use 8 bits from Y and 24 bits from X and Z. Mix in 8 bits from the destination dim ID too - that means
+		//Use 8 bits from Y and 16 bits from X and Z. Mix in 8 bits from the destination dim ID too - that means
 		//even if you aligned two doors perfectly between two pockets, it's unlikely they would lead to the same dungeon.
+		//We map bits in reverse order to produce more varied RNG output for nearly-identical points. The reason is
+		//that Java's Random outputs the 32 MSBs of its internal state to produce its output. If the differences
+		//between two seeds are small (i.e. in the LSBs), then they will tend to produce similar random outputs anyway!
+		
+		//Only bother to assign the 48 least-significant bits since Random only takes those bits from its seed.
+		//NOTE: The casts to long are necessary to get the right results from the bit shifts!!!
 		
 		int bit;
 		int index;
 		long hash;
+		final int w = this.dimension;
+		final int x = this.x;
+		final int y = this.y;
+		final int z = this.z;
 		
 		hash = 0;
-		index = 0;
+		index = 48;
 		for (bit = 0; bit < 8; bit++)
 		{
-			hash |= ((dimension >> bit) & 1) << index;
-			index++;
-			hash |= ((x >> bit) & 1) << index;
-			index++;
-			hash |= ((y >> bit) & 1) << index;
-			index++;
-			hash |= ((z >> bit) & 1) << index;
-			index++;
+			hash |= (long) ((w >> bit) & 1) << index;
+			index--;
+			hash |= (long) ((x >> bit) & 1) << index;
+			index--;
+			hash |= (long) ((y >> bit) & 1) << index;
+			index--;
+			hash |= (long) ((z >> bit) & 1) << index;
+			index--;
 		}
-		for (; bit < 24; bit++)
+		for (; bit < 16; bit++)
 		{
-			hash |= ((x >> bit) & 1) << index;
-			index++;
-			hash |= ((z >> bit) & 1) << index;
-			index++;
+			hash |= (long) ((x >> bit) & 1) << index;
+			index--;
+			hash |= (long) ((z >> bit) & 1) << index;
+			index--;
 		}
+		
 		return hash;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj)
 	{

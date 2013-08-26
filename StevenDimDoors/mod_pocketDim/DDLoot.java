@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.WeightedRandom;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
 
@@ -32,6 +35,8 @@ public class DDLoot {
 	private static final int UNCOMMON_LOOT_WEIGHT = 4; //1 less than weight of iron armor
 	private static final int RARE_LOOT_WEIGHT = 1; //Same weight as music discs, golden apple
 	private static final int DUNGEON_CHEST_WEIGHT_INFLATION = 10; // (weight of iron ingots in dungeon) / (weight of iron ingots in other chests)
+	
+	private DDLoot() { }
 	
 	public static void registerInfo()
 	{
@@ -156,4 +161,48 @@ public class DDLoot {
 			//System.out.println(item.theItemId.getDisplayName() + "\t" + item.itemWeight);
 		}
 	}
+	
+	public static void generateChestContents(ChestGenHooks chestInfo, IInventory inventory, Random random)
+    {
+		//This is a custom version of net.minecraft.util.WeightedRandomChestContent.generateChestContents()
+		//It's designed to avoid the following bugs in MC 1.5:
+		//1. The randomized filling algorithm will sometimes overwrite item stacks with other stacks
+		//2. If multiple enchanted books appear, then they will have the same enchantment
+		
+		//The prime number below is used for choosing chest slots in a seemingly-random pattern. Its value
+		//was selected specifically to achieve a spread-out distribution for chests with up to 104 slots.
+		//Choosing a prime number ensures that our increments are relatively-prime to the chest size, which
+		//means we'll cover all the slots before repeating any. This is mathematically guaranteed.
+		final int primeOffset = 239333;
+		
+		int count = chestInfo.getCount(random);
+		int size = inventory.getSizeInventory();
+		WeightedRandomChestContent[] content = chestInfo.getItems(random);
+		
+        for (int k = 0; k < count; k++)
+        {
+            WeightedRandomChestContent selection = (WeightedRandomChestContent)WeightedRandom.getRandomItem(random, content);
+            
+            //Call getChestGenBase() to make sure we generate a different enchantment for books.
+            //Don't just use a condition to check if the item is an instance of ItemEnchantedBook because
+            //we don't know if other mods might add items that also need to be regenerated.
+            selection = selection.theItemId.getItem().getChestGenBase(chestInfo, random, selection);
+            
+            ItemStack[] stacks = ChestGenHooks.generateStacks(random, selection.theItemId, selection.theMinimumChanceToGenerateItem, selection.theMaximumChanceToGenerateItem);
+
+            for (ItemStack item : stacks)
+            {
+            	int limit = size;
+            	int index = random.nextInt(size);
+
+            	while (limit > 0 && inventory.getStackInSlot(index) != null)
+            	{
+            		limit--;
+            		index = (index + primeOffset) % size;
+            	}
+            	
+                inventory.setInventorySlotContents(index, item);
+            }
+        }
+    }
 }
