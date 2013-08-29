@@ -1,7 +1,7 @@
 package StevenDimDoors.mod_pocketDim.util;
 
 
-public final class Point4D
+public final class Point4D implements Comparable<Point4D>
 {
 	private final int x;
 	private final int y;
@@ -133,6 +133,21 @@ public final class Point4D
 			return false;
 		
 		return (x == other.x && y == other.y && z == other.z && dimension == other.dimension);
+	}
+
+	@Override
+	public int compareTo(Point4D other)
+	{
+		int diff = x - other.x;
+		if (diff != 0)
+			return diff;
+		diff = y - other.y;
+		if (diff != 0)
+			return diff;
+		diff = z - other.z;
+		if (diff != 0)
+			return diff;
+		return dimension - other.dimension;
 	}
 
 	@Override

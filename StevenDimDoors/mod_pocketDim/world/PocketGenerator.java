@@ -8,8 +8,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 
 public class PocketGenerator extends ChunkProviderGenerate implements IChunkProvider
@@ -69,16 +69,10 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 	@Override
 	public List getPossibleCreatures(EnumCreatureType var1, int var2, int var3, int var4) 
 	{
-		DimData data = dimHelper.instance.getDimData(this.worldObj.provider.dimensionId);
-		if (data != null)
+		NewDimData dimension = PocketManager.getDimensionData(this.worldObj);
+		if (dimension != null && dimension.dungeon() != null && !dimension.dungeon().isOpen())
 		{
-			if (data.dungeonGenerator != null)
-			{
-				if (data.isDimRandomRift && data.isPocket && !data.dungeonGenerator.isOpen)
-				{
-					return this.worldObj.getBiomeGenForCoords(var2, var3).getSpawnableList(var1);
-				}
-			}
+			return this.worldObj.getBiomeGenForCoords(var2, var3).getSpawnableList(var1);
 		}
 		return null;
 	}

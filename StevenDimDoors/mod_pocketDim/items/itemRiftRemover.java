@@ -3,7 +3,7 @@ package StevenDimDoors.mod_pocketDim.items;
 import java.util.List;
 
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -83,7 +83,7 @@ public class itemRiftRemover extends Item
     		if(hit!=null)
     		{
     			//System.out.println(hit.hitVec);
-    			if(dimHelper.instance.removeRift(par2World, hit.blockX, hit.blockY, hit.blockZ, 1, par3EntityPlayer, par1ItemStack))
+    			if(PocketManager.instance.removeRift(par2World, hit.blockX, hit.blockY, hit.blockZ, 1, par3EntityPlayer, par1ItemStack))
     			{
     				par3EntityPlayer.worldObj.playSoundAtEntity(par3EntityPlayer,"mods.DimDoors.sfx.riftClose", (float) .8, 1);
 

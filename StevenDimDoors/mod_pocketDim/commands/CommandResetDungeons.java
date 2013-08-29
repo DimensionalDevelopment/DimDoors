@@ -1,8 +1,8 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
 import net.minecraft.entity.player.EntityPlayer;
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public class CommandResetDungeons extends DDCommandBase
 {	
@@ -32,12 +32,12 @@ public class CommandResetDungeons extends DDCommandBase
 		int dungeonCount = 0;
 		int resetCount = 0;
 		
-		for (DimData data : dimHelper.dimList.values())
+		for (NewDimData data : PocketManager.dimList.values())
 		{
 			if (data.isDimRandomRift)
 			{
 				dungeonCount++;
-				if (dimHelper.instance.resetPocket(data))
+				if (PocketManager.instance.resetPocket(data))
 				{
 					resetCount++;
 				}

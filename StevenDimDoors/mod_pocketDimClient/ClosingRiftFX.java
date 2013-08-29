@@ -1,6 +1,6 @@
 package StevenDimDoors.mod_pocketDimClient;
 
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
@@ -98,7 +98,7 @@ public class ClosingRiftFX extends EntityFX
         float var16 = .8F;
         try
         {
-         if(dimHelper.instance.getDimData(this.worldObj.provider.dimensionId).isPocket)
+         if(PocketManager.instance.getDimData(this.worldObj.provider.dimensionId).isPocket)
          {
          var16=.4F;
          }

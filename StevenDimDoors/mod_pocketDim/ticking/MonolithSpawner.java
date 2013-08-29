@@ -7,9 +7,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.util.ChunkLocation;
 
@@ -69,23 +70,24 @@ public class MonolithSpawner implements IRegularTickReceiver {
 	
 	private void placeMonolithsInPocket(int dimensionID, int chunkX, int chunkZ)
 	{
-		World pocket = dimHelper.getWorld(dimensionID);
-		DimData dimData = dimHelper.instance.getDimData(dimensionID);
+		NewDimData dimension = PocketManager.getDimensionData(dimensionID);
+		World pocket = DimensionManager.getWorld(dimensionID);
+
+		if (pocket == null ||
+			dimension == null ||
+			dimension.dungeon() == null ||
+			dimension.dungeon().isOpen())
+		{
+			return;
+		}
+		
 		int sanity = 0;
 		int blockID = 0;
 		boolean didSpawn = false;
 
-		if (pocket == null ||
-				dimData == null ||
-				dimData.dungeonGenerator == null ||
-				dimData.dungeonGenerator.isOpen)
-		{
-			return;
-		}
-
 		//The following initialization code is based on code from ChunkProviderGenerate.
 		//It makes our generation depend on the world seed.
-		Random random = new Random(pocket.getSeed());
+		Random random = new Random(pocket.getSeed() ^ 0xA210FE65F20017D6L);
 		long factorA = random.nextLong() / 2L * 2L + 1L;
 		long factorB = random.nextLong() / 2L * 2L + 1L;
 		random.setSeed(chunkX * factorA + chunkZ * factorB ^ pocket.getSeed());
@@ -139,7 +141,7 @@ public class MonolithSpawner implements IRegularTickReceiver {
 
 	private void placeMonolithsInLimbo(int dimensionID, int chunkX, int chunkZ)
 	{
-		World limbo = dimHelper.getWorld(dimensionID);
+		World limbo = DimensionManager.getWorld(dimensionID);
 		
 		if (limbo == null)
 		{
@@ -148,7 +150,7 @@ public class MonolithSpawner implements IRegularTickReceiver {
 		
 		//The following initialization code is based on code from ChunkProviderGenerate.
 		//It makes our generation depend on the world seed.
-		Random random = new Random(limbo.getSeed());
+		Random random = new Random(limbo.getSeed() ^ 0xB5130C4ACC71A822L);
 		long factorA = random.nextLong() / 2L * 2L + 1L;
 		long factorB = random.nextLong() / 2L * 2L + 1L;
 		random.setSeed(chunkX * factorA + chunkZ * factorB ^ limbo.getSeed());

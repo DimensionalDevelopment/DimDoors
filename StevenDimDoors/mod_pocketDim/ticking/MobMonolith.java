@@ -14,7 +14,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.NewLinkData;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 
@@ -173,7 +173,7 @@ public class MobMonolith extends EntityFlying implements IMob
 
 					NewLinkData link = new NewLinkData(this.worldObj.provider.dimensionId, properties.LimboDimensionID, (int)this.posX, (int)this.posY, (int)this.posZ, (int)this.posX+rand.nextInt(500)-250, (int)this.posY+500, (int)this.posZ+rand.nextInt(500)-250, false,0);
 
-					dimHelper.instance.traverseDimDoor(worldObj, link, entityPlayer);
+					PocketManager.instance.traverseDimDoor(worldObj, link, entityPlayer);
 					this.aggro=0;
 
 					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.crack",13, 1);
