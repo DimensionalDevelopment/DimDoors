@@ -20,10 +20,11 @@ import java.util.regex.Pattern;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.DungeonGenerator;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
@@ -62,8 +63,6 @@ public class DungeonHelper
 	
 	public static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	
-	private static final String DEFAULT_UP_SCHEMATIC_PATH = "/schematics/core/simpleStairsUp.schematic";
-	private static final String DEFAULT_DOWN_SCHEMATIC_PATH = "/schematics/core/simpleStairsDown.schematic";
 	private static final String DEFAULT_ERROR_SCHEMATIC_PATH = "/schematics/core/somethingBroke.schematic";
 	private static final String DUNGEON_CREATION_GUIDE_SOURCE_PATH = "/mods/DimDoors/text/How_to_add_dungeons.txt";
 	private static final String RUINS_PACK_PATH = "/schematics/ruins";
@@ -86,16 +85,14 @@ public class DungeonHelper
 	public static final short MAX_DUNGEON_HEIGHT = MAX_DUNGEON_WIDTH;
 	public static final short MAX_DUNGEON_LENGTH = MAX_DUNGEON_WIDTH;
 	
-	private ArrayList<DungeonGenerator> untaggedDungeons = new ArrayList<DungeonGenerator>();
-	private ArrayList<DungeonGenerator> registeredDungeons = new ArrayList<DungeonGenerator>();
+	private ArrayList<DungeonData> untaggedDungeons = new ArrayList<DungeonData>();
+	private ArrayList<DungeonData> registeredDungeons = new ArrayList<DungeonData>();
  
 	private DungeonPack RuinsPack;
 	private HashMap<String, DungeonPack> dungeonPackMapping = new HashMap<String, DungeonPack>();
 	private ArrayList<DungeonPack> dungeonPackList = new ArrayList<DungeonPack>();
 	
-	private DungeonGenerator defaultUp;
-	private DungeonGenerator defaultDown;
-	private DungeonGenerator defaultError;
+	private DungeonData defaultError;
 	
 	private DungeonHelper()
 	{
@@ -227,29 +224,19 @@ public class DungeonHelper
 		}
 	}
 	
-	public List<DungeonGenerator> getRegisteredDungeons()
+	public List<DungeonData> getRegisteredDungeons()
 	{
 		return Collections.unmodifiableList(this.registeredDungeons);
 	}
 	
-	public List<DungeonGenerator> getUntaggedDungeons()
+	public List<DungeonData> getUntaggedDungeons()
 	{
 		return Collections.unmodifiableList(this.untaggedDungeons);
 	}
 	
-	public DungeonGenerator getDefaultErrorDungeon()
+	public DungeonData getDefaultErrorDungeon()
 	{
 		return defaultError;
-	}
-	
-	public DungeonGenerator getDefaultUpDungeon()
-	{
-		return defaultUp;
-	}
-	
-	public DungeonGenerator getDefaultDownDungeon()
-	{
-		return defaultDown;
 	}
 	
 	public DungeonPack getDungeonPack(String name)
@@ -258,16 +245,13 @@ public class DungeonHelper
 		return dungeonPackMapping.get(name.toUpperCase());
 	}
 	
-	public DungeonPack getDimDungeonPack(int dimensionID)
+	private DungeonPack getDimDungeonPack(NewDimData data)
 	{
-		//FIXME: This function is a workaround to our current dungeon data limitations. Modify later.
-		//The upcoming save format change and code overhaul will make this obsolete.
-		
 		DungeonPack pack;
-		DungeonGenerator generator = dimHelper.dimList.get(dimensionID).dungeonGenerator;
-		if (generator != null)
+		DungeonData dungeon = data.dungeon();
+		if (dungeon != null)
 		{
-			pack = generator.getDungeonType().Owner;
+			pack = dungeon.dungeonType().Owner;
 			
 			//Make sure the pack isn't null. This can happen for dungeons with the special UNKNOWN type.
 			if (pack == null)
@@ -277,7 +261,7 @@ public class DungeonHelper
 		}
 		else
 		{
-			if (dimensionID == NETHER_DIMENSION_ID)
+			if (data.id() == NETHER_DIMENSION_ID)
 			{
 				//TODO: Change this to the nether-side pack later ^_^
 				pack = RuinsPack;
@@ -290,11 +274,11 @@ public class DungeonHelper
 		return pack;
 	}
 	
-	public LinkData createCustomDungeonDoor(World world, int x, int y, int z)
+	public IDimLink createCustomDungeonDoor(World world, int x, int y, int z)
 	{
 		//Create a link above the specified position. Link to a new pocket dimension.
-		LinkData link = new LinkData(world.provider.dimensionId, 0, x, y + 1, z, x, y + 1, z, true, 3);
-		link = dimHelper.instance.createPocket(link, true, false);
+		NewDimData dimension = PocketManager.getDimensionData(world);
+		IDimLink link = dimension.createLink(x, y + 1, z).setLinkType(IDimLink.TYPE_POCKET);
 		
 		//Place a Warp Door linked to that pocket
 		itemDimDoor.placeDoorBlock(world, x, y, z, 3, mod_pocketDim.ExitDoor);
@@ -304,7 +288,6 @@ public class DungeonHelper
 	
 	public boolean validateDungeonType(String type, DungeonPack pack)
 	{
-		//Check if the dungeon type is valid
 		return pack.isKnownType(type);
 	}
 	
@@ -370,10 +353,10 @@ public class DungeonHelper
 				int weight = (dungeonData.length == 4) ? Integer.parseInt(dungeonData[3]) : DEFAULT_DUNGEON_WEIGHT;
 				
 				//Add this custom dungeon to the list corresponding to its type
-				DungeonGenerator generator = new DungeonGenerator(weight, path, isOpen, dungeonType);
+				DungeonData dungeon = new DungeonData(path, isInternal, dungeonType, isOpen, weight);
 
-				pack.addDungeon(generator);
-				registeredDungeons.add(generator);
+				pack.addDungeon(dungeon);
+				registeredDungeons.add(dungeon);
 				if (verbose)
 				{
 					System.out.println("Registered dungeon: " + name);
@@ -385,7 +368,7 @@ public class DungeonHelper
 				{
 					System.out.println("The following dungeon name is invalid for its given pack. It will not be generated naturally: " + schematicPath);
 				}
-				untaggedDungeons.add(new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, path, true, DungeonType.UNKNOWN_TYPE));
+				untaggedDungeons.add(new DungeonData(path, isInternal, DungeonType.UNKNOWN_TYPE, true, DEFAULT_DUNGEON_WEIGHT));
 				System.out.println("Registered untagged dungeon: " + name);
 			}
 		}
@@ -462,9 +445,7 @@ public class DungeonHelper
 	{
 		//Register the core schematics
 		//These are used for debugging and in case of unusual errors while loading dungeons
-		defaultUp = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, DEFAULT_UP_SCHEMATIC_PATH, true, DungeonType.UNKNOWN_TYPE);
-		defaultDown = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, DEFAULT_DOWN_SCHEMATIC_PATH, true, DungeonType.UNKNOWN_TYPE);
-		defaultError = new DungeonGenerator(DEFAULT_DUNGEON_WEIGHT, DEFAULT_ERROR_SCHEMATIC_PATH, true, DungeonType.UNKNOWN_TYPE);
+		defaultError = new DungeonData(DEFAULT_ERROR_SCHEMATIC_PATH, true, DungeonType.UNKNOWN_TYPE, true, DEFAULT_DUNGEON_WEIGHT);
 		
 		//Open the list of dungeons packaged with our mod and register their schematics
 		registerBundledPack(BUNDLED_RUINS_LIST_PATH, RUINS_PACK_PATH, "Ruins", reader);
@@ -530,9 +511,10 @@ public class DungeonHelper
 		}
 	}
 
-	public void generateDungeonLink(LinkData inbound, DungeonPack pack, Random random)
+	public DungeonData selectDungeon(NewDimData dimension, Random random)
 	{
-		DungeonGenerator selection;
+		DungeonPack pack = getDimDungeonPack(dimension);
+		DungeonData selection;
 		DungeonPackConfig config;
 		DungeonPack selectedPack;
 		
@@ -546,13 +528,13 @@ public class DungeonHelper
 			{
 				//Calculate the chance of switching to a different pack type
 				int packSwitchChance;
-				if (dimHelper.dimList.get(inbound.locDimID).depth == 0)
+				if (dimension.depth() == 1)
 				{
 					packSwitchChance = START_PACK_SWITCH_CHANCE;
 				}
 				else
 				{
-					packSwitchChance = MIN_PACK_SWITCH_CHANCE + (getPackDepth(inbound, pack) - 1) * PACK_SWITCH_CHANCE_PER_LEVEL;
+					packSwitchChance = MIN_PACK_SWITCH_CHANCE + dimension.parent().packDepth() * PACK_SWITCH_CHANCE_PER_LEVEL;
 				}
 
 				//Decide randomly whether to switch packs or not
@@ -564,7 +546,7 @@ public class DungeonHelper
 			}
 			
 			//Pick the next dungeon
-			selection = selectedPack.getNextDungeon(inbound, random);
+			selection = selectedPack.getNextDungeon(dimension, random);
 		}
 		catch (Exception e)
 		{
@@ -580,7 +562,7 @@ public class DungeonHelper
 				selection = defaultError;
 			}
 		}
-		dimHelper.instance.getDimData(inbound.destDimID).dungeonGenerator = selection;
+		return selection;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -621,16 +603,16 @@ public class DungeonHelper
 		return sortedNames;
 	}
 	
-	private static ArrayList<String> parseDungeonNames(ArrayList<DungeonGenerator> dungeons)
+	private static ArrayList<String> parseDungeonNames(ArrayList<DungeonData> dungeons)
 	{
 		String name;
 		File schematic;
 		ArrayList<String> names = new ArrayList<String>(dungeons.size());
 		
-		for (DungeonGenerator dungeon : dungeons)
+		for (DungeonData dungeon : dungeons)
 		{
 			//Retrieve the file name and strip off the file extension
-			schematic = new File(dungeon.schematicPath);
+			schematic = new File(dungeon.schematicPath());
 			name = schematic.getName();
 			name = name.substring(0, name.length() - SCHEMATIC_FILE_EXTENSION.length());
 			names.add(name);
@@ -638,102 +620,48 @@ public class DungeonHelper
 		return names;
 	}
 	
-	public static ArrayList<DungeonGenerator> getDungeonChainHistory(DimData dimData, DungeonPack pack, int maxSize)
+	public static ArrayList<DungeonData> getDungeonChainHistory(NewDimData dimension, DungeonPack pack, int maxSize)
 	{
-		//TODO: I've improved this code for the time being. However, searching across links is a flawed approach. A player could
-		//manipulate the output of this function by setting up links to mislead our algorithm or by removing links.
-		//Dimensions MUST have built-in records of their parent dimensions in the future. ~SenseiKiwi
-		
-		ArrayList<DungeonGenerator> history = new ArrayList<DungeonGenerator>();
-		DimData tailDim = dimData;
-		boolean found = true;
-		
-		if (dimData.dungeonGenerator == null || dimData.dungeonGenerator.getDungeonType().Owner != pack || maxSize < 1)
+		if (dimension == null)
 		{
-			//The initial dimension is already outside our pack. Return an empty list.
-			return history;
+			throw new IllegalArgumentException("dimension cannot be null.");
 		}
-		history.add(dimData.dungeonGenerator);
 		
-		for (int count = 1; count < maxSize && found; count++)
+		int count = 0;
+		NewDimData tail = dimension;
+		DungeonData dungeon = tail.dungeon();
+		ArrayList<DungeonData> history = new ArrayList<DungeonData>();
+		
+		while (count < maxSize && dungeon != null && dungeon.dungeonType().Owner == pack)
 		{
-			found = false;
-			for (LinkData link : tailDim.getLinksInDim())
-			{
-				DimData neighbor = dimHelper.instance.getDimData(link.destDimID);
-				if (neighbor.depth == tailDim.depth - 1 && neighbor.dungeonGenerator != null &&
-						neighbor.dungeonGenerator.getDungeonType().Owner == pack)
-				{
-					tailDim = neighbor;
-					history.add(tailDim.dungeonGenerator);
-					found = true;
-					break;
-				}
-			}
+			history.add(dungeon);
+			tail = tail.parent();
+			dungeon = tail.dungeon();
+			count++;
 		}
 		return history;
 	}
 	
-	private static int getPackDepth(LinkData inbound, DungeonPack pack)
+	public static ArrayList<DungeonData> getFlatDungeonTree(NewDimData dimension, int maxSize)
 	{
-		//TODO: I've improved this code for the time being. However, searching across links is a flawed approach. A player could
-		//manipulate the output of this function by setting up links to mislead our algorithm or by removing links.
-		//Dimensions MUST have built-in records of their parent dimensions in the future. ~SenseiKiwi
-		//Dimensions should also just keep track of pack depth internally.
+		NewDimData root = dimension;
+		ArrayList<DungeonData> dungeons = new ArrayList<DungeonData>();
+		Queue<NewDimData> pendingDimensions = new LinkedList<NewDimData>();
 		
-		int packDepth = 1;
-		DimData tailDim = dimHelper.dimList.get(inbound.destDimID);
-		boolean found;
-		
-		do
-		{
-			found = false;
-			for (LinkData link : tailDim.getLinksInDim())
-			{
-				DimData neighbor = dimHelper.instance.getDimData(link.destDimID);
-				if (neighbor.depth == tailDim.depth - 1 && neighbor.dungeonGenerator != null &&
-						neighbor.dungeonGenerator.getDungeonType().Owner == pack)
-				{
-					tailDim = neighbor;
-					found = true;
-					packDepth++;
-					break;
-				}
-			}
-		}
-		while (found);
-		
-		return packDepth;
-	}
-	
-	public static ArrayList<DungeonGenerator> getFlatDungeonTree(DimData dimData, int maxSize)
-	{
-		//TODO: I've improved this code for the time being. However, searching across links is a flawed approach. A player could
-		//manipulate the output of this function by setting up links to mislead our algorithm or by removing links.
-		//Dimensions MUST have built-in records of their parent dimensions in the future. ~SenseiKiwi
-		
-		dimHelper helper = dimHelper.instance;
-		ArrayList<DungeonGenerator> dungeons = new ArrayList<DungeonGenerator>();
-		DimData root = helper.getDimData(helper.getLinkDataFromCoords(dimData.exitDimLink.destXCoord, dimData.exitDimLink.destYCoord, dimData.exitDimLink.destZCoord, dimData.exitDimLink.destDimID).destDimID);
-		HashSet<DimData> checked = new HashSet<DimData>();
-		Queue<DimData> pendingDimensions = new LinkedList<DimData>();
-		
-		if (root.dungeonGenerator == null)
+		if (root.dungeon() == null)
 		{
 			return dungeons;
 		}
 		pendingDimensions.add(root);
-		checked.add(root);
 		
 		while (dungeons.size() < maxSize && !pendingDimensions.isEmpty())
 		{
-			DimData current = pendingDimensions.remove();
-			for (LinkData link : current.getLinksInDim())
+			NewDimData current = pendingDimensions.remove();
+			for (NewDimData child : current.children())
 			{
-				DimData child = helper.getDimData(link.destDimID);
-				if (child.depth == current.depth + 1 && child.dungeonGenerator != null && checked.add(child))
+				if (child.dungeon() != null)
 				{
-					dungeons.add(child.dungeonGenerator);
+					dungeons.add(child.dungeon());
 					pendingDimensions.add(child);
 				}
 				if (dungeons.size() == maxSize)

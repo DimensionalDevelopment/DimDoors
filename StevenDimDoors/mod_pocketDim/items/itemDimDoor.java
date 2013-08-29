@@ -14,9 +14,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public class itemDimDoor extends ItemDoor
 {
@@ -138,7 +138,7 @@ public class itemDimDoor extends ItemDoor
 		{
 			if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ) == properties.RiftBlockID)
 			{
-				LinkData link = dimHelper.instance.getLinkDataFromCoords(hit.blockX, hit.blockY, hit.blockZ, par2World);
+				NewLinkData link = PocketManager.instance.getLinkDataFromCoords(hit.blockX, hit.blockY, hit.blockZ, par2World);
 				if(link!=null)
 				{
 				    Block var11;
@@ -169,7 +169,7 @@ public class itemDimDoor extends ItemDoor
 	                int var12 = MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
 	                if (!canPlace(par2World, par4, par5, par6, var12) || !canPlace(par2World, par4, par5-1, par6, var12) ||
-	                		dimHelper.instance.getLinkDataFromCoords(par4, par5, par6, par2World) == null)
+	                		PocketManager.instance.getLinkDataFromCoords(par4, par5, par6, par2World) == null)
 	                {
 	                	return par1ItemStack;
 	                }

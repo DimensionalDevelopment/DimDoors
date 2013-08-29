@@ -3,10 +3,10 @@ package StevenDimDoors.mod_pocketDim.items;
 import java.util.List;
 
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.ILinkData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -69,7 +69,7 @@ public class itemLinkSignature extends Item
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
     {
     	int key;
-    	LinkData linkData;
+    	ILinkData linkData;
 		int thisWorldID=par3World.provider.dimensionId;
 		
 		
@@ -118,13 +118,13 @@ public class itemLinkSignature extends Item
 			
 			for(int count = 0;count<3;count++)
 			{
-				if(dimHelper.instance.getLinkDataFromCoords(par4, par5+count, par6,par3World)!=null)
+				if(PocketManager.instance.getLinkDataFromCoords(par4, par5+count, par6,par3World)!=null)
 				{
 					int id= (par3World.getBlockId(par4, par5+count, par6));
 					
 					if(id == properties.DimensionalDoorID||id==properties.WarpDoorID||id== properties.UnstableDoorID)
 					{
-						orientation = dimHelper.instance.getLinkDataFromCoords(par4, par5+count, par6,par3World).linkOrientation;
+						orientation = PocketManager.instance.getLinkDataFromCoords(par4, par5+count, par6,par3World).linkOrientation;
 					}
 				}
 				
@@ -139,8 +139,8 @@ public class itemLinkSignature extends Item
     				
     				
 
-    				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2],orientation);		
-    				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6,linkCoords[4]);	
+    				PocketManager.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2],orientation);		
+    				PocketManager.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6,linkCoords[4]);	
     				
     				
 
@@ -155,7 +155,7 @@ public class itemLinkSignature extends Item
 
     		
     			//otherwise, it creates the first half of the link. Next click will complete it. 
-    			key= dimHelper.instance.createUniqueInterDimLinkKey();
+    			key= PocketManager.instance.createUniqueInterDimLinkKey();
         		this.writeToNBT(par1ItemStack, par4, par5+offset, par6,par3World.provider.dimensionId,orientation);
     			par2EntityPlayer.sendChatToPlayer("Rift Signature Stored");
 				par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.riftStart", (float) .6, 1);
@@ -183,7 +183,7 @@ public class itemLinkSignature extends Item
     		{
     			Integer[] coords = this.readFromNBT(par1ItemStack);
     		
-    			par3List.add(String.valueOf("Leads to dim "+coords[3] +" with depth "+(dimHelper.instance.getDimDepth(coords[3]))));
+    			par3List.add(String.valueOf("Leads to dim "+coords[3] +" with depth "+(PocketManager.instance.getDimDepth(coords[3]))));
         		par3List.add("at x="+coords[0]+" y="+coords[1]+" z="+coords[2]);
 
     		}

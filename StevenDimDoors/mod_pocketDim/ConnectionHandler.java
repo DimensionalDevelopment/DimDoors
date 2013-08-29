@@ -3,7 +3,8 @@ package StevenDimDoors.mod_pocketDim;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;
@@ -25,10 +26,8 @@ public class ConnectionHandler  implements IConnectionHandler
 		if (properties == null)
 			properties = DDProperties.instance();
 		
-		Collection set = new ArrayList();
-		set.addAll(dimHelper.dimList.keySet());	
-		PacketHandler.onClientJoinPacket(manager, dimHelper.dimList);
-		PacketHandler.onDimCreatedPacket(new DimData(properties.LimboDimensionID, false, 0, 0, 0, 0, 0));
+		PacketHandler.onClientJoinPacket(manager, PocketManager.dimList);
+		PacketHandler.onDimCreatedPacket(new NewDimData(properties.LimboDimensionID, false, 0, 0, 0, 0, 0));
 		return null;
 	}
 
@@ -39,10 +38,7 @@ public class ConnectionHandler  implements IConnectionHandler
 	}
 
 	@Override
-	public void connectionOpened(NetHandler netClientHandler,MinecraftServer server, INetworkManager manager) 
-	{
-	
-	}
+	public void connectionOpened(NetHandler netClientHandler,MinecraftServer server, INetworkManager manager) { }
 
 	@Override
 	public void connectionClosed(INetworkManager manager) 
@@ -50,32 +46,17 @@ public class ConnectionHandler  implements IConnectionHandler
 		if (connected)
 		{
 			System.out.println("Clearing dim cache");
-			dimHelper.instance.save();
-			dimHelper.instance.unregsisterDims();
-			dimHelper.dimList.clear();
+			PocketManager.instance.save();
+			PocketManager.instance.unregsisterDims();
+			PocketManager.dimList.clear();
 		    
 		}
 		connected = false;
-	
 	}
 
 	@Override
-	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager,
-		Packet1Login login) 
-	{
-		
-	
-	
-	}
+	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login) { }
 
 	@Override
-	public void playerLoggedIn(Player player, NetHandler netHandler,
-		INetworkManager manager) 
-	{
-		
-		
-
-	
-	
-	}
+	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager) { }
 }

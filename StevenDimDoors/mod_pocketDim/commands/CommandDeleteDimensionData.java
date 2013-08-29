@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.minecraft.entity.player.EntityPlayer;
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.ILinkData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public class CommandDeleteDimensionData extends DDCommandBase
 {
@@ -39,7 +39,7 @@ public class CommandDeleteDimensionData extends DDCommandBase
 		else if (command.length==1)
 		{
 			targetDim = parseInt(sender, command[0]);
-			if(!dimHelper.dimList.containsKey(targetDim))
+			if(!PocketManager.dimList.containsKey(targetDim))
 			{
 				sender.sendChatToPlayer("Error- dim "+targetDim+" not registered");
 				shouldGo=false;
@@ -54,23 +54,23 @@ public class CommandDeleteDimensionData extends DDCommandBase
 		
 		if(shouldGo)
 		{
-			if(dimHelper.dimList.containsKey(targetDim))
+			if(PocketManager.dimList.containsKey(targetDim))
 			{
 				try
 				{
-					for(DimData dimData :dimHelper.dimList.values())
+					for(NewDimData newDimData :PocketManager.dimList.values())
 					{
-						Collection<LinkData> links= new ArrayList<LinkData>();
-						links.addAll( dimData.getLinksInDim());
+						Collection<ILinkData> links= new ArrayList<ILinkData>();
+						links.addAll( newDimData.getLinksInDim());
 					
-						for(LinkData link : links)
+						for(ILinkData link : links)
 						{
 							if(link.destDimID==targetDim)
 							{
-								dimHelper.instance.getDimData(link.locDimID).removeLinkAtCoords(link);
+								PocketManager.instance.getDimData(link.locDimID).removeLinkAtCoords(link);
 								linksRemoved++;
 							}
-							if(dimData.dimID==targetDim)
+							if(newDimData.dimID==targetDim)
 							{
 								linksRemoved++;
 							}
@@ -82,7 +82,7 @@ public class CommandDeleteDimensionData extends DDCommandBase
 					e.printStackTrace();
 				}
 				
-				dimHelper.dimList.remove(targetDim);
+				PocketManager.dimList.remove(targetDim);
 				sender.sendChatToPlayer("Removed dimension " + targetDim + " from DimDoors and deleted " + linksRemoved + " links");
 			}
 			else

@@ -1,4 +1,4 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.ticking;
 
 import java.util.Random;
 
@@ -6,9 +6,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import StevenDimDoors.mod_pocketDim.ticking.IRegularTickReceiver;
-import StevenDimDoors.mod_pocketDim.ticking.IRegularTickSender;
+import net.minecraftforge.common.DimensionManager;
+import StevenDimDoors.mod_pocketDim.DDProperties;
 
 /**
  * Provides methods for applying Limbo decay. Limbo decay refers to the effect that most blocks placed in Limbo
@@ -81,7 +80,7 @@ public class LimboDecay implements IRegularTickReceiver {
 		int x, y, z;
 		int sectionY;
 		int limboHeight;
-		World limbo = dimHelper.getWorld(properties.LimboDimensionID);
+		World limbo = DimensionManager.getWorld(properties.LimboDimensionID);
 		
 		if (limbo != null)
 		{

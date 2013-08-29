@@ -1,12 +1,12 @@
 package StevenDimDoors.mod_pocketDim;
 
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -37,38 +37,7 @@ public class EventHookContainer
     @ForgeSubscribe
     public void onWorldLoad(WorldEvent.Load event)
     {
-    	if (!mod_pocketDim.hasInitDims && event.world.provider.dimensionId == 0 && !event.world.isRemote)
-    	{
-    		System.out.println("Registering Pocket Dims");
-    		mod_pocketDim.hasInitDims = true;
-    		dimHelper.instance.unregsisterDims();
-        	dimHelper.dimList.clear();
-        	dimHelper.instance.interDimLinkList.clear();
-        	dimHelper.instance.initPockets();
-    	}
-    	
-    	//TODO: In the future, we should iterate over DimHelper's dimension list. We ignore other dimensions anyway.
-    	for (int dimensionID : dimHelper.getIDs())
-    	{    		
-    		World world = dimHelper.getWorld(dimensionID);
-    		int linkCount = 0;
-    		
-    		if (dimHelper.dimList.containsKey(dimensionID))
-    		{
-    			for (LinkData link : dimHelper.instance.getDimData(dimensionID).getLinksInDim())
-    			{
-    				if (!mod_pocketDim.blockRift.isBlockImmune(world, link.locXCoord, link.locYCoord, link.locZCoord))
-    				{
-        				world.setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
-    				}
-    				linkCount++;
-    				if (linkCount >= 100)
-    				{
-    					break;
-    				}
-    			}
-    		}
-    	}   
+    	RiftRegenerator.regenerateRiftsInAllWorlds();
     }
     
     @ForgeSubscribe
@@ -87,10 +56,9 @@ public class EventHookContainer
     @ForgeSubscribe
     public void onWorldsave(WorldEvent.Save event)
     {
-    
-    	if (mod_pocketDim.hasInitDims && event.world.provider.dimensionId == 0)
+    	if (PocketManager.isInitialized() && event.world.provider.dimensionId == 0)
     	{
-    		dimHelper.instance.save();
+    		PocketManager.save();
     	}
     }
 }

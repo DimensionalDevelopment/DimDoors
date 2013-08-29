@@ -21,9 +21,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -183,21 +183,21 @@ public class ItemRiftBlade extends ItemSword
 		int z = MathHelper.floor_double(var9);
 
 		int rotation = (int) (MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
-		LinkData link = new LinkData(par2World.provider.dimensionId, 0, x, y, z, x, y, z, true,rotation);
+		NewLinkData link = new NewLinkData(par2World.provider.dimensionId, 0, x, y, z, x, y, z, true,rotation);
 
 		if(this.getMaxItemUseDuration(par1ItemStack)-par4>12&&!par2World.isRemote&&itemDimDoor.canPlace(par2World, x, y, z, rotation))
 		{
 
-			if(dimHelper.instance.getDimData(par2World.provider.dimensionId)!=null)
+			if(PocketManager.instance.getDimData(par2World.provider.dimensionId)!=null)
 			{
-				if(dimHelper.instance.getDimData(par2World.provider.dimensionId).depth==0)
+				if(PocketManager.instance.getDimData(par2World.provider.dimensionId).depth==0)
 				{
-					dimHelper.instance.createPocket(link,true, false);
+					PocketManager.instance.createPocket(link,true, false);
 				}
 			}
 			else
 			{
-				dimHelper.instance.createPocket(link,true, false);
+				PocketManager.instance.createPocket(link,true, false);
 			}
 			par3EntityPlayer.worldObj.playSoundAtEntity(par3EntityPlayer,"mods.DimDoors.sfx.riftDoor", (float) .6, 1);
 			itemDimDoor.placeDoorBlock(par2World, x, y-1, z, rotation,  mod_pocketDim.transientDoor);   
@@ -212,7 +212,7 @@ public class ItemRiftBlade extends ItemSword
 		{
 			if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ)==properties.RiftBlockID)
 			{
-				LinkData link = dimHelper.instance.getLinkDataFromCoords(hit.blockX, hit.blockY, hit.blockZ, par2World);
+				NewLinkData link = PocketManager.instance.getLinkDataFromCoords(hit.blockX, hit.blockY, hit.blockZ, par2World);
 				if(link!=null)
 				{
 
@@ -229,7 +229,7 @@ public class ItemRiftBlade extends ItemSword
 					{
 						int var12 = MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
-						if (!itemDimDoor.canPlace(par2World, par4, par5, par6, var12)||!itemDimDoor.canPlace(par2World, par4, par5-1, par6, var12)||dimHelper.instance.getLinkDataFromCoords(par4, par5, par6, par2World)==null)
+						if (!itemDimDoor.canPlace(par2World, par4, par5, par6, var12)||!itemDimDoor.canPlace(par2World, par4, par5-1, par6, var12)||PocketManager.instance.getLinkDataFromCoords(par4, par5, par6, par2World)==null)
 						{
 							return par1ItemStack;
 						}
@@ -342,7 +342,7 @@ public class ItemRiftBlade extends ItemSword
 			{
 				int var12 = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
-				if (!itemDimDoor.canPlace(par3World, par4, par5, par6, var12)||dimHelper.instance.getLinkDataFromCoords(par4, par5+1, par6, par3World)==null)
+				if (!itemDimDoor.canPlace(par3World, par4, par5, par6, var12)||PocketManager.instance.getLinkDataFromCoords(par4, par5+1, par6, par3World)==null)
 				{
 					return false;
 				}

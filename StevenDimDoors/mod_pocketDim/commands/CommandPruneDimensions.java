@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.ILinkData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public class CommandPruneDimensions extends DDCommandBase
 {
@@ -42,31 +42,31 @@ public class CommandPruneDimensions extends DDCommandBase
 		int removedCount = 0;
 		boolean deleteFolders = (command.length == 1);
 		Set<Integer> linkedDimensions = new HashSet<Integer>();
-		Collection<DimData> allDims = new ArrayList<DimData>(); 
-		allDims.addAll(dimHelper.dimList.values());
+		Collection<NewDimData> allDims = new ArrayList<NewDimData>(); 
+		allDims.addAll(PocketManager.dimList.values());
 		
-		for (DimData data : allDims)
+		for (NewDimData data : allDims)
 		{
-			for (LinkData link : data.getLinksInDim())
+			for (ILinkData link : data.getLinksInDim())
 			{
 				linkedDimensions.add(link.destDimID);
 			}
 		}
-		for (LinkData link : dimHelper.instance.interDimLinkList.values())
+		for (ILinkData link : dimHelper.PocketManager.interDimLinkList.values())
 		{
 			linkedDimensions.add(link.destDimID);
 		}
-		for (DimData data : allDims)
+		for (NewDimData data : allDims)
 		{
 			if (!linkedDimensions.contains(data.dimID))
 			{
-				if (dimHelper.instance.pruneDimension(data, deleteFolders))
+				if (PocketManager.instance.pruneDimension(data, deleteFolders))
 				{
 					removedCount++;
 				}
 			}
 		}
-		dimHelper.instance.save();
+		PocketManager.instance.save();
 		sender.sendChatToPlayer("Removed " + removedCount + " unreachable pocket dims.");
 		return DDCommandResult.SUCCESS;
 	}

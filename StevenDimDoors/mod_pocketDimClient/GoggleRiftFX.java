@@ -1,6 +1,6 @@
 package StevenDimDoors.mod_pocketDimClient;
 
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.particle.EntityFireworkSparkFX;
@@ -55,7 +55,7 @@ public class GoggleRiftFX extends EntityFireworkSparkFX
         float var16 = .0F;
         try
         {
-         if(dimHelper.instance.getDimData(this.worldObj.provider.dimensionId).isPocket)
+         if(PocketManager.instance.getDimData(this.worldObj.provider.dimensionId).isPocket)
          {
          var16=.7F;
          }

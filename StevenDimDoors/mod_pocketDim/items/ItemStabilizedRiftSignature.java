@@ -3,9 +3,9 @@ package StevenDimDoors.mod_pocketDim.items;
 import java.util.List;
 
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.NewLinkData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -58,7 +58,7 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
     public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
     {
     	int key;
-    	LinkData linkData;
+    	NewLinkData linkData;
 		int thisWorldID=par3World.provider.dimensionId;
 		Integer[] linkCoords =this.readFromNBT(par1ItemStack);
 
@@ -83,11 +83,11 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
     			}
     			if(hasEnder&&!par3World.isRemote)
     			{
-    				if(dimHelper.instance.getLinkDataFromCoords(linkCoords[0], linkCoords[1], linkCoords[2], par3World)==null)
+    				if(PocketManager.instance.getLinkDataFromCoords(linkCoords[0], linkCoords[1], linkCoords[2], par3World)==null)
     				{
-        				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6);	
+        				PocketManager.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6);	
     				}
-    				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2]);	
+    				PocketManager.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2]);	
 					par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.riftEnd", (float) .6, 1);
 
     				par2EntityPlayer.sendChatToPlayer("Rift Created");
@@ -105,7 +105,7 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
     			offset = 1;
     		}
     		//otherwise, it creates the first half of the link. Next click will complete it. 
-    		key= dimHelper.instance.createUniqueInterDimLinkKey();
+    		key= PocketManager.instance.createUniqueInterDimLinkKey();
         	this.writeToNBT(par1ItemStack, par4, par5+offset, par6,par3World.provider.dimensionId);
 			par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.riftStart", (float) .6, 1);
 
@@ -126,7 +126,7 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
     		if(par1ItemStack.stackTagCompound.getBoolean("isCreated"))
     		{
     			Integer[] coords = this.readFromNBT(par1ItemStack);
-    			par3List.add(String.valueOf("Leads to dim "+coords[3] +" with depth "+dimHelper.instance.getDimDepth(dimHelper.instance.getDimDepth(coords[3]))));
+    			par3List.add(String.valueOf("Leads to dim "+coords[3] +" with depth "+PocketManager.instance.getDimDepth(PocketManager.instance.getDimDepth(coords[3]))));
         		par3List.add("at x="+coords[0]+" y="+coords[1]+" z="+coords[2]);
     		}
     	}

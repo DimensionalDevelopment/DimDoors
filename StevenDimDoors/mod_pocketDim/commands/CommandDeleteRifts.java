@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.ILinkData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public class CommandDeleteRifts extends DDCommandBase
 {
@@ -40,7 +40,7 @@ public class CommandDeleteRifts extends DDCommandBase
 		else if(command.length==1)
 		{
 			targetDim = parseInt(sender, command[0]);
-			if(!dimHelper.dimList.containsKey(targetDim))
+			if(!PocketManager.dimList.containsKey(targetDim))
 			{
 				sender.sendChatToPlayer("Error- dim "+targetDim+" not registered");
 				shouldGo=false;
@@ -55,24 +55,24 @@ public class CommandDeleteRifts extends DDCommandBase
 
 		if(shouldGo)
 		{
-			if(dimHelper.dimList.containsKey(targetDim))
+			if(PocketManager.dimList.containsKey(targetDim))
 			{
-				DimData dim = dimHelper.instance.getDimData(targetDim);
-				ArrayList<LinkData> linksInDim = dim.getLinksInDim();
+				NewDimData dim = PocketManager.instance.getDimData(targetDim);
+				ArrayList<ILinkData> linksInDim = dim.getLinksInDim();
 
-				for(LinkData link : linksInDim)
+				for(ILinkData link : linksInDim)
 				{
-					World targetWorld = dimHelper.getWorld(targetDim);
+					World targetWorld = PocketManager.getWorld(targetDim);
 
 					if(targetWorld==null)
 					{
-						dimHelper.initDimension(targetDim);
+						PocketManager.initDimension(targetDim);
 					}
 					else if(targetWorld.provider==null)
 					{
-						dimHelper.initDimension(targetDim);
+						PocketManager.initDimension(targetDim);
 					}
-					targetWorld = dimHelper.getWorld(targetDim);
+					targetWorld = PocketManager.getWorld(targetDim);
 
 					if (targetWorld.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord) == mod_pocketDim.blockRift.blockID)
 					{

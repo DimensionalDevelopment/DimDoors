@@ -3,9 +3,9 @@ package StevenDimDoors.mod_pocketDim.commands;
 import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.ILinkData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public class CommandPrintDimensionData extends DDCommandBase
 {
@@ -28,7 +28,7 @@ public class CommandPrintDimensionData extends DDCommandBase
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		int targetDim;
-		DimData dimData;
+		NewDimData newDimData;
 
 		if (command.length == 0)
 		{
@@ -50,17 +50,17 @@ public class CommandPrintDimensionData extends DDCommandBase
 			return DDCommandResult.TOO_MANY_ARGUMENTS;
 		}
 		
-		dimData = dimHelper.instance.getDimData(targetDim);
-		if (dimData == null)
+		newDimData = PocketManager.instance.getDimData(targetDim);
+		if (newDimData == null)
 		{
 			return DDCommandResult.UNREGISTERED_DIMENSION;
 		}
 
-		ArrayList<LinkData> links = dimData.getLinksInDim();
+		ArrayList<ILinkData> links = newDimData.getLinksInDim();
 
-		sender.sendChatToPlayer("Dimension ID = " + dimData.dimID);
-		sender.sendChatToPlayer("Dimension Depth = " + dimData.depth);
-		for (LinkData link : links)
+		sender.sendChatToPlayer("Dimension ID = " + newDimData.dimID);
+		sender.sendChatToPlayer("Dimension Depth = " + newDimData.depth);
+		for (ILinkData link : links)
 		{
 			sender.sendChatToPlayer(link.printLinkData());
 		}

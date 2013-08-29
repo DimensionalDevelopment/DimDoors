@@ -33,8 +33,8 @@ import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimensionData;
 import StevenDimDoors.mod_pocketDim.commands.CommandPruneDimensions;
 import StevenDimDoors.mod_pocketDim.commands.CommandResetDungeons;
 import StevenDimDoors.mod_pocketDim.commands.CommandTeleportPlayer;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemBlockDimWall;
 import StevenDimDoors.mod_pocketDim.items.ItemChaosDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
@@ -45,11 +45,13 @@ import StevenDimDoors.mod_pocketDim.items.itemExitDoor;
 import StevenDimDoors.mod_pocketDim.items.itemLinkSignature;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
+import StevenDimDoors.mod_pocketDim.ticking.LimboDecay;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
+import StevenDimDoors.mod_pocketDim.world.GatewayGenerator;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import StevenDimDoors.mod_pocketDimClient.ClientPacketHandler;
@@ -98,8 +100,6 @@ public class mod_pocketDim
 	@Instance("PocketDimensions")
 	public static mod_pocketDim instance = new mod_pocketDim();
 	
-	public static pocketTeleporter teleporter;
-
 	public static Block transientDoor;
 	public static Block ExitDoor;
 	public static Block chaosDoor;
@@ -126,12 +126,11 @@ public class mod_pocketDim
 
 	public static HashMap<String,ArrayList<EntityItem>> limboSpawnInventory = new HashMap<String,ArrayList<EntityItem>>();
 	
-	public static boolean hasInitDims = false;
 	public static boolean isPlayerWearingGoogles = false;
 
 	public static DDProperties properties;
 	public static MonolithSpawner spawner; //Added this field temporarily. Will be refactored out later.
-	public static RiftGenerator riftGen;
+	public static GatewayGenerator riftGen;
 
 	public static long genTime;
 	public static int teleTimer = 0;
@@ -164,10 +163,8 @@ public class mod_pocketDim
 		
 		//These fields MUST be initialized after properties are loaded to prevent
 		//instances from holding onto null references to the properties.
-		
-		teleporter = new pocketTeleporter();
 		tracker = new PlayerRespawnTracker();
-		riftGen = new RiftGenerator();
+		riftGen = new GatewayGenerator();
 	}
 
 	@Init
@@ -395,19 +392,13 @@ public class mod_pocketDim
 	{
 		try
 		{
-			dimHelper.instance.save();
-			dimHelper.instance.unregsisterDims();
-			dimHelper.dimList.clear();
-			dimHelper.blocksToDecay.clear();
-			dimHelper.instance.interDimLinkList.clear();
-			mod_pocketDim.hasInitDims=false;
+			PocketManager.unload();
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
-
 
 	@ServerStarting
 	public void serverStarting(FMLServerStartingEvent event)
@@ -422,13 +413,6 @@ public class mod_pocketDim
 		CommandPruneDimensions.instance().register(event);
 		CommandCreatePocket.instance().register(event);
 		CommandTeleportPlayer.instance().register(event);
-		dimHelper.instance.load();
-		
-		if(!dimHelper.dimList.containsKey(properties.LimboDimensionID))
-		{
-			dimHelper.dimList.put(properties.LimboDimensionID, new DimData( properties.LimboDimensionID,  false,  0,  new LinkData()));
-		}
+		PocketManager.load();
 	}
-	
-	
 }

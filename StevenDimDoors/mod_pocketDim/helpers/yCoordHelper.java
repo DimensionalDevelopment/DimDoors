@@ -1,41 +1,20 @@
 package StevenDimDoors.mod_pocketDim.helpers;
 
-import StevenDimDoors.mod_pocketDim.LinkData;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
-
 public class yCoordHelper 
 {
 	private static final int MAXIMUM_UNCOVERED_Y = 245;
 	
-	public static int getFirstUncovered(LinkData pointerLink)
-	{
-		return yCoordHelper.getFirstUncovered(
-				pointerLink.destDimID,
-				pointerLink.destXCoord,
-				pointerLink.destYCoord,
-				pointerLink.destZCoord);
-	}
-	
-	public static int getFirstUncovered(int worldID, int x, int yStart, int z)
-	{ return getFirstUncovered(worldID, x, yStart, z, false); }
-	
-	public static int getFirstUncovered(int worldID, int x, int yStart, int z, boolean fromTop)
-	{
-		if (dimHelper.getWorld(worldID) == null ||
-			dimHelper.getWorld(worldID).provider == null)
-	   	{
-	   		dimHelper.initDimension(worldID);
-	   	}
-		
-		return yCoordHelper.getFirstUncovered(dimHelper.getWorld(worldID), x, yStart, z, fromTop);
-	}
+	private yCoordHelper() { }
 	
 	public static int getFirstUncovered(World world, int x, int yStart, int z)
-	{ return getFirstUncovered(world, x, yStart, z, false); }
+	{
+		return getFirstUncovered(world, x, yStart, z, false);
+	}
 	
 	public static int getFirstUncovered(World world, int x, int yStart, int z, boolean fromTop)
 	{
@@ -46,18 +25,20 @@ public class yCoordHelper
 		int height = MAXIMUM_UNCOVERED_Y;  //world.getHeight();
 		int y;
 		
-		if(!fromTop)
+		if (!fromTop)
 		{
 			boolean covered = true;
 			for (y = yStart; y < height && covered; y++)
 			{
-				covered = IsCoveredBlock(chunk, localX, y - 1, localZ) || IsCoveredBlock(chunk, localX, y, localZ);
+				covered = isCoveredBlock(chunk, localX, y - 1, localZ) || isCoveredBlock(chunk, localX, y, localZ);
 			}
-		} else {
+		}
+		else
+		{
 			boolean covered = false;
 			for (y = MAXIMUM_UNCOVERED_Y; y > 1 && !covered; y--)
 			{
-				covered = IsCoveredBlock(chunk, localX, y - 1, localZ);
+				covered = isCoveredBlock(chunk, localX, y - 1, localZ);
 			}
 			if (!covered) y = 63;
 			y++;
@@ -66,7 +47,7 @@ public class yCoordHelper
 		return y;
 	}
 	
-	public static boolean IsCoveredBlock(Chunk chunk, int localX, int y, int localZ)
+	public static boolean isCoveredBlock(Chunk chunk, int localX, int y, int localZ)
 	{
 		int blockID;
 		Block block;
@@ -85,5 +66,26 @@ public class yCoordHelper
 		
 		material = block.blockMaterial;
 		return (material.isLiquid() || !material.isReplaceable());
+	}
+
+	public static int adjustDestinationY(int y, int worldHeight, int entranceY, int dungeonHeight)
+	{
+		//The goal here is to guarantee that the dungeon fits within the vertical bounds
+		//of the world while shifting it as little as possible.
+		int destY = y;
+		
+		//Is the top of the dungeon going to be at Y < worldHeight?
+		int pocketTop = (dungeonHeight - 1) + destY - entranceY;
+		if (pocketTop >= worldHeight)
+		{
+			destY = (worldHeight - 1) - (dungeonHeight - 1) + entranceY;
+		}
+		
+		//Is the bottom of the dungeon at Y >= 0?
+		if (destY < entranceY)
+		{
+			destY = entranceY;
+		}
+		return destY;
 	}
 }
