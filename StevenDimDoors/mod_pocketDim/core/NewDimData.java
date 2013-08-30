@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
+import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public abstract class NewDimData implements Serializable
@@ -460,6 +461,39 @@ public abstract class NewDimData implements Serializable
 		this.origin = link.destination();
 		this.orientation = orientation;
 		this.dungeon = dungeon;
+		this.packDepth = calculatePackDepth(parent, dungeon);
+	}
+	
+	private static int calculatePackDepth(NewDimData parent, DungeonData current)
+	{
+		DungeonData predecessor = parent.dungeon();
+		if (current == null)
+		{
+			throw new IllegalArgumentException("current cannot be null.");
+		}
+		if (predecessor == null)
+		{
+			return 1;
+		}
+		
+		DungeonPack predOwner = predecessor.dungeonType().Owner;
+		DungeonPack currentOwner = current.dungeonType().Owner;
+		if (currentOwner == null)
+		{
+			return 1;
+		}
+		if (predOwner == null)
+		{
+			return 1;
+		}
+		if (predOwner == currentOwner)
+		{
+			return parent.packDepth + 1;
+		}
+		else
+		{
+			return 1;
+		}
 	}
 
 	public void initializePocket(int originX, int originY, int originZ, int orientation, IDimLink link)

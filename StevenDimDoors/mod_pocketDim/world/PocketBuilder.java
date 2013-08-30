@@ -1,9 +1,9 @@
 package StevenDimDoors.mod_pocketDim.world;
 
-import java.util.HashMap;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -19,6 +19,7 @@ import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
+import StevenDimDoors.mod_pocketDim.util.Pair;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class PocketBuilder
@@ -34,25 +35,6 @@ public class PocketBuilder
 	private static final Random random = new Random();
 
 	private PocketBuilder() { }
-
-	public static boolean initializeDestination(IDimLink link, DDProperties properties)
-	{
-		if (link.hasDestination())
-		{
-			return true;
-		}
-
-		//Check the destination type and respond accordingly
-		switch (link.linkType())
-		{
-			case IDimLink.TYPE_DUNGEON:
-				return generateNewDungeonPocket(link, properties);
-			case IDimLink.TYPE_POCKET:
-				return generateNewPocket(link, properties);
-			default:
-				throw new IllegalArgumentException("link has an unrecognized link type.");
-		}
-	}
 
 	public static boolean generateNewDungeonPocket(IDimLink link, DDProperties properties)
 	{
@@ -93,31 +75,35 @@ public class PocketBuilder
 				return false;
 			}
 			
-			/* This code is currently wrong. It's missing the following things:
-			 * 1. Calculate the destination point for real. That includes adding door noise if needed.
-			 * 2. Receive the DungeonData from selectDungeon()
-			 * 3. The function signature for DungeonSchematic.copyToWorld() has to be rewritten.
-			 */
-			
 			//Choose a dungeon to generate
-			DungeonSchematic schematic = selectDungeon(dimension, random, properties);
-			
-			if (schematic == null)
+			Pair<DungeonData, DungeonSchematic> pair = selectDungeon(dimension, random, properties);
+			if (pair == null)
 			{
 				System.err.println("Could not select a dungeon for generation!");
 				return false;
 			}
+			DungeonData dungeon = pair.getFirst();
+			DungeonSchematic schematic = pair.getSecond();
 			
 			//Calculate the destination point
+			DungeonPackConfig packConfig = dungeon.dungeonType().Owner != null ? dungeon.dungeonType().Owner.getConfig() : null;
 			Point4D source = link.source();
-			int destinationY = yCoordHelper.adjustDestinationY(destination, world.getHeight(), schematic.getEntranceDoorLocation().getY(), schematic.getHeight());
-			int orientation = getDestinationOrientation(source);
-			destination.setY(destinationY);
+			int orientation = getDoorOrientation(source, properties);
+			Point3D destination;
+			
+			if (packConfig != null && packConfig.doDistortDoorCoordinates())
+			{
+				destination = calculateNoisyDestination(source, dimension, orientation);
+			}
+			else
+			{
+				destination = new Point3D(source.getX(), source.getY(), source.getZ());
+			}
+			
+			destination.setY( yCoordHelper.adjustDestinationY(destination.getY(), world.getHeight(), schematic.getEntranceDoorLocation().getY(), schematic.getHeight()) );
 			
 			//Generate the dungeon
-			DungeonPackConfig packConfig = dungeon.dungeonType().Owner != null ? dungeon.dungeonType().Owner.getConfig() : null;
-
-			schematic.copyToWorld(world, link, packConfig.doDistortDoorCoordinates());
+			schematic.copyToWorld(world, destination, orientation, link, random);
 			
 			//Finish up destination initialization
 			dimension.initializePocket(destination.getX(), destination.getY(), destination.getZ(), orientation, link);
@@ -131,7 +117,23 @@ public class PocketBuilder
 		}
 	}
 	
-	private static DungeonSchematic selectDungeon(NewDimData dimension, Random random, DDProperties properties)
+	private static Point3D calculateNoisyDestination(Point4D source, NewDimData dimension, int orientation)
+	{
+		int depth = dimension.packDepth();
+		int forwardNoise = MathHelper.getRandomIntegerInRange(random, -50 * depth, 150 * depth);
+		int sidewaysNoise = MathHelper.getRandomIntegerInRange(random, -10 * depth, 10 * depth);
+
+		//Rotate the link destination noise to point in the same direction as the door exit
+		//and add it to the door's location. Use EAST as the reference orientation since linkDestination
+		//is constructed as if pointing East.
+		Point3D linkDestination = new Point3D(forwardNoise, 0, sidewaysNoise);
+		Point3D sourcePoint = new Point3D(source.getX(), source.getY(), source.getZ());
+		Point3D zeroPoint = new Point3D(0, 0, 0);
+		BlockRotator.transformPoint(linkDestination, zeroPoint, orientation - BlockRotator.EAST_DOOR_METADATA, sourcePoint);
+		return linkDestination;
+	}
+
+	private static Pair<DungeonData, DungeonSchematic> selectDungeon(NewDimData dimension, Random random, DDProperties properties)
 	{
 		//We assume the dimension doesn't have a dungeon assigned
 		if (dimension.dungeon() != null)
@@ -157,7 +159,6 @@ public class PocketBuilder
 		{
 			//TODO: In the future, remove this dungeon from the generation lists altogether.
 			//That will have to wait until our code is updated to support that more easily.
-
 			try
 			{
 				System.err.println("Loading the default error dungeon instead...");
@@ -170,7 +171,7 @@ public class PocketBuilder
 				return null;
 			}
 		}
-		return schematic;
+		return new Pair<DungeonData, DungeonSchematic>(dungeon, schematic);
 	}
 	
 	private static DungeonSchematic loadAndValidateDungeon(DungeonData dungeon, DDProperties properties)
@@ -218,10 +219,25 @@ public class PocketBuilder
 		return generateNewPocket(link, DEFAULT_POCKET_SIZE, DEFAULT_POCKET_WALL_THICKNESS, properties);
 	}
 	
-	private static int getDestinationOrientation(Point4D source)
+	private static int getDoorOrientation(Point4D source, DDProperties properties)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		World world = DimensionManager.getWorld(source.getDimension());
+		if (world == null)
+		{
+			throw new IllegalStateException("The link's source world should be loaded!");
+		}
+
+		//Check if the block at that point is actually a door
+		int blockID = world.getBlockId(source.getX(), source.getY(), source.getZ());
+		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
+			blockID != properties.TransientDoorID)
+		{
+			throw new IllegalStateException("The link's source is not a door block. It should be impossible to traverse a rift without a door!");
+		}
+		
+		//Return the orientation portion of its metadata
+		int orientation = world.getBlockMetadata(source.getX(), source.getY(), source.getZ()) & 3;
+		return orientation;
 	}
 
 	public static boolean generateNewPocket(IDimLink link, int size, int wallThickness, DDProperties properties)
@@ -283,7 +299,7 @@ public class PocketBuilder
 			//Calculate the destination point
 			Point4D source = link.source();
 			int destinationY = yCoordHelper.adjustDestinationY(source.getY(), world.getHeight(), wallThickness + 1, size);
-			int orientation = getDestinationOrientation(source);
+			int orientation = getDoorOrientation(source, properties);
 			
 			//Build the actual pocket area
 			buildPocket(world, source.getX(), destinationY, source.getZ(), orientation, size, wallThickness, properties);

@@ -167,15 +167,14 @@ public class DungeonSchematic extends Schematic {
 		return new DungeonSchematic(Schematic.copyFromWorld(world, x, y, z, width, height, length, doCompactBounds));
 	}
 
-	public void copyToWorld(World world, Point3D pocketCenter, int dungeonOrientation, IDimLink entryLink)
+	public void copyToWorld(World world, Point3D pocketCenter, int dungeonOrientation, IDimLink entryLink, Random random)
 	{
 		//TODO: This function is an improvised solution so we can get the release moving. In the future,
 		//we should generalize block transformations and implement support for them at the level of Schematic,
 		//then just use that support from DungeonSchematic instead of making this local fix.
 		//It might be easiest to support transformations using a WorldOperation
 		
-		final int turnAngle = dungeonOrientation - orientation;
-		
+		final int turnAngle = dungeonOrientation - orientation;		
 		
 		int index;
 		int count;
@@ -222,18 +221,11 @@ public class DungeonSchematic extends Schematic {
 			world.setBlockTileEntity(pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), TileEntity.createAndLoadEntity(tileTag));
 		}
 		
-		setUpDungeon(PocketManager.getDimensionData(world), world, pocketCenter, turnAngle, entryLink);
+		setUpDungeon(PocketManager.getDimensionData(world), world, pocketCenter, turnAngle, entryLink, random);
 	}
 	
-	private void setUpDungeon(NewDimData dimension, World world, Point3D pocketCenter, int turnAngle, IDimLink entryLink)
+	private void setUpDungeon(NewDimData dimension, World world, Point3D pocketCenter, int turnAngle, IDimLink entryLink, Random random)
 	{
-		//The following Random initialization code is based on code from ChunkProviderGenerate.
-		//It makes our generation depend on the world seed.
-		Random random = new Random(world.getSeed());
-        long factorA = random.nextLong() / 2L * 2L + 1L;
-        long factorB = random.nextLong() / 2L * 2L + 1L;
-        random.setSeed(pocketCenter.getX() * factorB + pocketCenter.getZ() * factorA ^ world.getSeed());
-		
         //Transform dungeon corners
         Point3D minCorner = new Point3D(0, 0, 0);
         Point3D maxCorner = new Point3D(width - 1, height - 1, length - 1);
