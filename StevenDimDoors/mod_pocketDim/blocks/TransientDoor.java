@@ -1,4 +1,4 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
 
@@ -10,43 +10,34 @@ import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import StevenDimDoors.mod_pocketDim.blocks.ExitDoor;
+import StevenDimDoors.mod_pocketDim.DDTeleporter;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.IDimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TransientDoor extends ExitDoor
+public class TransientDoor extends WarpDoor
 {
-
-	protected TransientDoor(int par1, Material material) 
+	public TransientDoor(int blockID, Material material) 
 	{
-		super(par1, Material.grass);
-		//	this.blockIndexInTexture = 18;
-
-		if (properties == null)
-			properties = DDProperties.instance();
+		super(blockID, material);
 	}
-
-	private static DDProperties properties = null;
 
 	public void registerIcons(IconRegister par1IconRegister)
 	{
 		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2()+"_top");
-
 	}
-	@SideOnly(Side.CLIENT)
 
 	/**
 	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
 	 */
+	@SideOnly(Side.CLIENT)
 	public Icon getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
 	{
-
 		return this.blockIcon;
-
-
 	}
+	
 	public boolean isCollidable()
 	{
 		return false;

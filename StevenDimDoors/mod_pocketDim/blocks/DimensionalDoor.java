@@ -19,21 +19,21 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DDTeleporter;
-import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.IDimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class dimDoor extends BlockContainer
+public class DimensionalDoor extends BlockContainer
 {
-	private static DDProperties properties = null;
+	protected static DDProperties properties = null;
 	private Icon blockIconBottom;
 	
-	public dimDoor(int par1, Material material) 
+	public DimensionalDoor(int par1, Material material) 
 	{
 		super(par1, material);
 
@@ -197,7 +197,7 @@ public class dimDoor extends BlockContainer
 
 	//Called to update the render information on the tile entity. Could probably implement a data watcher,
 	//but this works fine and is more versatile I think. 
-	public dimDoor updateAttachedTile(World world, int x, int y, int z)
+	public DimensionalDoor updateAttachedTile(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 		if (tile instanceof TileEntityDimDoor)

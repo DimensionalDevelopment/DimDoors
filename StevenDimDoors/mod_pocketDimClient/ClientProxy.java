@@ -9,11 +9,11 @@ import net.minecraft.src.ModLoader;
 import net.minecraftforge.client.MinecraftForgeClient;
 import StevenDimDoors.mod_pocketDim.CommonProxy;
 import StevenDimDoors.mod_pocketDim.Spells;
-import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
-import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 
 
 public class ClientProxy extends CommonProxy

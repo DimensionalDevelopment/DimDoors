@@ -14,8 +14,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.ObjectSaveInputStream;
-import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.helpers.DeleteFolder;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import cpw.mods.fml.common.FMLCommonHandler;
 
