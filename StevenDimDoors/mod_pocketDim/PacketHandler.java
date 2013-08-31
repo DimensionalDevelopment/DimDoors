@@ -126,7 +126,7 @@ public class PacketHandler implements IPacketHandler
 		
 	}
 	
-	public static void onClientJoinPacket(INetworkManager manager, HashMap<Integer, NewDimData> dimList)
+	public static void sendClientJoinPacket(INetworkManager manager)
 	{
 		Collection<Integer> dimIDs= dimList.keySet();
 		Collection<NewDimData> dimDataSet= dimList.values();

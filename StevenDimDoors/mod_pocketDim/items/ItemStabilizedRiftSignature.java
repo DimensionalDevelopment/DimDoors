@@ -2,20 +2,16 @@ package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
 
-import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.NewLinkData;
-import StevenDimDoors.mod_pocketDim.core.PocketManager;
-
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -29,7 +25,7 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
     	 this.setMaxStackSize(1);
          this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
          this.setMaxDamage(0);
-         this.hasSubtypes=true;         
+         this.hasSubtypes = true;         
          if (properties == null)
         	 properties = DDProperties.instance();
     }
@@ -69,19 +65,19 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
     		{
     			boolean hasEnder = false;
     			// checks to see if the item has a link stored, if so, it creates it	
-    			if(par2EntityPlayer.inventory.hasItem(Item.enderPearl.itemID)||par2EntityPlayer.inventory.hasItem(properties.StableFabricItemID))
+    			if (par2EntityPlayer.inventory.hasItem(Item.enderPearl.itemID)||par2EntityPlayer.inventory.hasItem(properties.StableFabricItemID))
     			{
-    				if(!par2EntityPlayer.inventory.consumeInventoryItem(properties.StableFabricItemID))
+    				if (!par2EntityPlayer.inventory.consumeInventoryItem(properties.StableFabricItemID))
     				{
         				par2EntityPlayer.inventory.consumeInventoryItem(Item.enderPearl.itemID);
     				}
     				hasEnder=true;
     			} 				
-    			if(par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
+    			if (par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
     			{
     				offset = 1;
     			}
-    			if(hasEnder&&!par3World.isRemote)
+    			if (hasEnder&&!par3World.isRemote)
     			{
     				if(PocketManager.instance.getLinkDataFromCoords(linkCoords[0], linkCoords[1], linkCoords[2], par3World)==null)
     				{
@@ -92,20 +88,20 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
 
     				par2EntityPlayer.sendChatToPlayer("Rift Created");
     			}
-    			else if(!par3World.isRemote)
+    			else if (!par3World.isRemote)
     			{
     				par2EntityPlayer.sendChatToPlayer("No Ender Pearls!");
     			}
     		}
     	}
-    	else if(!par3World.isRemote)
+    	else if (!par3World.isRemote)
         {
     		if(par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
     		{
     			offset = 1;
     		}
     		//otherwise, it creates the first half of the link. Next click will complete it. 
-    		key= PocketManager.instance.createUniqueInterDimLinkKey();
+    		key = PocketManager.instance.createUniqueInterDimLinkKey();
         	this.writeToNBT(par1ItemStack, par4, par5+offset, par6,par3World.provider.dimensionId);
 			par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.riftStart", (float) .6, 1);
 
@@ -114,28 +110,28 @@ public class ItemStabilizedRiftSignature extends itemLinkSignature
     	return true;	
     }
     
-    @SideOnly(Side.CLIENT)
-
+    
     /**
      * allows items to add custom lines of information to the mouseover description
      */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@SideOnly(Side.CLIENT)
+    @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
     {
-    	if(par1ItemStack.hasTagCompound())
+    	if (par1ItemStack.hasTagCompound())
     	{
-    		if(par1ItemStack.stackTagCompound.getBoolean("isCreated"))
+    		if (par1ItemStack.stackTagCompound.getBoolean("isCreated"))
     		{
     			Integer[] coords = this.readFromNBT(par1ItemStack);
-    			par3List.add(String.valueOf("Leads to dim "+coords[3] +" with depth "+PocketManager.instance.getDimDepth(PocketManager.instance.getDimDepth(coords[3]))));
-        		par3List.add("at x="+coords[0]+" y="+coords[1]+" z="+coords[2]);
+    			par3List.add("Leads to (" + coords[0] + ", " + coords[1] + ", " + coords[2] + ") at dimension #" + coords[3]);
     		}
     	}
     	else
     	{
-    		par3List.add("First click stores location,");
-    		par3List.add ("second click creates two rifts,");
-    		par3List.add("that link the first location");
-    		par3List.add("with the second location");
+    		par3List.add("First click stores a location,");
+    		par3List.add("second click creates two rifts");
+    		par3List.add("that link the locations together.");
     	}
     }
     

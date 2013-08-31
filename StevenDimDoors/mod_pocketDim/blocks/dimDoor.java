@@ -200,7 +200,7 @@ public class dimDoor extends BlockContainer
 	public dimDoor updateAttachedTile(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
-		if (tile instanceof TileEntityDimDoor )
+		if (tile instanceof TileEntityDimDoor)
 		{
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
 			dimTile.openOrClosed = PocketManager.getLink(x, y, z, world.provider.dimensionId) != null;

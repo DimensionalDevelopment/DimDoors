@@ -40,12 +40,10 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
     {
     	try
     	{
-    		dimDoor.class.cast(Block.blocksList[properties.DimensionalDoorID]).updateAttatchedTile(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord).getFullMetadata(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord);
-
+    		mod_pocketDim.dimensionalDoor.updateAttachedTile(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord);
     	}
     	catch(Exception e)
     	{
-    
     		e.printStackTrace();
     	}
     	

@@ -104,7 +104,7 @@ public class mod_pocketDim
 	public static Block exitDoor;
 	public static Block unstableDoor;
 	public static Block blockLimbo;
-	public static Block dimensionalDoor;    
+	public static dimDoor dimensionalDoor;    
 	public static Block blockDimWall;   
 	public static Block dimHatch;
 	public static Block blockDimWallPerm;
@@ -188,7 +188,7 @@ public class mod_pocketDim
 		blockRift = (BlockRift) (new BlockRift(properties.RiftBlockID, 0, Material.air, properties).setHardness(1.0F) .setUnlocalizedName("rift"));
 		blockLimbo = (new BlockLimbo(properties.LimboBlockID, 15, Material.iron, properties.LimboDimensionID, decay).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F));
 		unstableDoor = (new ChaosDoor(properties.UnstableDoorID, Material.iron).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
-		dimensionalDoor = (new dimDoor(properties.DimensionalDoorID, Material.iron)).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor");
+		dimensionalDoor = (dimDoor) (new dimDoor(properties.DimensionalDoorID, Material.iron)).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor");
 		dimHatch = (new dimHatch(properties.TransTrapdoorID, 84, Material.iron)).setHardness(1.0F) .setUnlocalizedName("dimHatch");
 		//  dimRail = (new DimRail(dimRailID, 88, false)).setHardness(.5F) .setUnlocalizedName("dimRail");
 
