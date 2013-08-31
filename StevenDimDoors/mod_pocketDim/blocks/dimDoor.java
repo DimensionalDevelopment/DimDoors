@@ -18,6 +18,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.IDimLink;
@@ -61,7 +62,7 @@ public class dimDoor extends BlockContainer
 			IDimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
 			if (link != null)
 			{
-				PocketManager.traverseDimDoor(world, link, entity);
+				DDTeleporter.traverseDimDoor(world, link, entity);
 			}
 		}
 	}

@@ -101,10 +101,10 @@ public class mod_pocketDim
 	public static mod_pocketDim instance = new mod_pocketDim();
 	
 	public static Block transientDoor;
-	public static Block ExitDoor;
-	public static Block chaosDoor;
+	public static Block exitDoor;
+	public static Block unstableDoor;
 	public static Block blockLimbo;
-	public static Block dimDoor;    
+	public static Block dimensionalDoor;    
 	public static Block blockDimWall;   
 	public static Block dimHatch;
 	public static Block blockDimWallPerm;
@@ -184,11 +184,11 @@ public class mod_pocketDim
 
 		blockDimWall = (new BlockDimWall(properties.FabricBlockID, 0, Material.iron)).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("blockDimWall");
 		blockDimWallPerm = (new BlockDimWallPerm(properties.PermaFabricBlockID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setUnlocalizedName("blockDimWallPerm");
-		ExitDoor = (new ExitDoor(properties.WarpDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
+		exitDoor = (new ExitDoor(properties.WarpDoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
 		blockRift = (BlockRift) (new BlockRift(properties.RiftBlockID, 0, Material.air, properties).setHardness(1.0F) .setUnlocalizedName("rift"));
 		blockLimbo = (new BlockLimbo(properties.LimboBlockID, 15, Material.iron, properties.LimboDimensionID, decay).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F));
-		chaosDoor = (new ChaosDoor(properties.UnstableDoorID, Material.iron).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
-		dimDoor = (new dimDoor(properties.DimensionalDoorID, Material.iron)).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor");
+		unstableDoor = (new ChaosDoor(properties.UnstableDoorID, Material.iron).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
+		dimensionalDoor = (new dimDoor(properties.DimensionalDoorID, Material.iron)).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor");
 		dimHatch = (new dimHatch(properties.TransTrapdoorID, 84, Material.iron)).setHardness(1.0F) .setUnlocalizedName("dimHatch");
 		//  dimRail = (new DimRail(dimRailID, 88, false)).setHardness(.5F) .setUnlocalizedName("dimRail");
 
@@ -206,11 +206,11 @@ public class mod_pocketDim
 
 		GameRegistry.registerWorldGenerator(mod_pocketDim.riftGen);
 
-		GameRegistry.registerBlock(chaosDoor, "Unstable Door");
-		GameRegistry.registerBlock(ExitDoor, "Warp Door");
+		GameRegistry.registerBlock(unstableDoor, "Unstable Door");
+		GameRegistry.registerBlock(exitDoor, "Warp Door");
 		GameRegistry.registerBlock(blockRift, "Rift");
 		GameRegistry.registerBlock(blockLimbo, "Unraveled Fabric");
-		GameRegistry.registerBlock(dimDoor, "Dimensional Door");
+		GameRegistry.registerBlock(dimensionalDoor, "Dimensional Door");
 		GameRegistry.registerBlock(dimHatch,"Transdimensional Trapdoor");
 		GameRegistry.registerBlock(blockDimWallPerm, "Fabric of RealityPerm");
 		GameRegistry.registerBlock(transientDoor, "transientDoor");
@@ -226,11 +226,11 @@ public class mod_pocketDim
 		LanguageRegistry.addName(transientDoor	, "transientDoor");
 		LanguageRegistry.addName(blockRift	, "Rift");
 		LanguageRegistry.addName(blockLimbo	, "Unraveled Fabric");
-		LanguageRegistry.addName(ExitDoor	, "Warp Door");
-		LanguageRegistry.addName(chaosDoor	, "Unstable Door");
+		LanguageRegistry.addName(exitDoor	, "Warp Door");
+		LanguageRegistry.addName(unstableDoor	, "Unstable Door");
 		LanguageRegistry.addName(blockDimWall	, "Fabric of Reality");
 		LanguageRegistry.addName(blockDimWallPerm	, "Eternal Fabric");
-		LanguageRegistry.addName(dimDoor, "Dimensional Door");
+		LanguageRegistry.addName(dimensionalDoor, "Dimensional Door");
 		LanguageRegistry.addName(dimHatch, "Transdimensional Trapdoor");
 	
 		LanguageRegistry.addName(itemExitDoor, "Warp Door");

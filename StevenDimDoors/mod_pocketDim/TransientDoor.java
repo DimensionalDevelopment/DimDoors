@@ -78,10 +78,11 @@ public class TransientDoor extends ExitDoor
 			IDimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
 			if (link != null)
 			{
-				//Turn the transient door into a rift before teleporting the entity
+				DDTeleporter.traverseDimDoor(world, link, entity);
+				//Turn the transient door into a rift AFTER teleporting the entity.
+				//The door's orientation may be needed for generating a room at the link's destination.
 				world.setBlock(x, y, z, properties.RiftBlockID);
 				world.setBlockToAir(x, y - 1, z);
-				PocketManager.traverseDimDoor(world, link, entity);
 			}
 		}
 	}

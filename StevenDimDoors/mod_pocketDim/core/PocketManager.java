@@ -313,8 +313,6 @@ public class PocketManager
 		NewDimData locationDimData;
 		NewDimData destDimData;
 
-
-
 		if(PocketManager.dimList.containsKey(link.locDimID)&&!DimensionManager.getWorld(link.locDimID).isRemote) //checks to see if dim is already registered. If not, it creates a DimData entry for it later
 		{
 			//randomizes exit if deep enough
@@ -387,7 +385,7 @@ public class PocketManager
 		if (DimensionManager.getCurrentSaveRootDirectory() != null)
 		{
 			isSaving = true;
-			HashMap comboSave = new HashMap();
+			HashMap<String, Object> comboSave = new HashMap<String, Object>();
 			comboSave.put("dimensionData", dimensionData);
 			comboSave.put("keyLinkMapping", keyLinkMapping);
 
@@ -423,7 +421,7 @@ public class PocketManager
 	 * loads the dim data from the saved hashMap. Also handles compatibility with old saves, see OldSaveHandler
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	public static void load()
 	{
 		//FIXME: There are a lot of things to fix here... First, we shouldn't be created so many File instances
@@ -449,7 +447,7 @@ public class PocketManager
 				}
 				saveFile = new FileInputStream(dataStore);
 				ObjectSaveInputStream save = new ObjectSaveInputStream(saveFile);
-				HashMap comboSave = ((HashMap) save.readObject());
+				HashMap<String, Object> comboSave = (HashMap<String, Object>) save.readObject();
 
 				try
 				{
@@ -486,7 +484,7 @@ public class PocketManager
 
 					saveFile = new FileInputStream(dataStore);
 					ObjectSaveInputStream save = new ObjectSaveInputStream(saveFile);
-					HashMap comboSave =((HashMap)save.readObject());
+					HashMap<String, Object> comboSave = (HashMap<String, Object>) save.readObject();
 
 					try
 					{
