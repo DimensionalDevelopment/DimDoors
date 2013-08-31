@@ -1,12 +1,11 @@
 package StevenDimDoors.mod_pocketDimClient;
 
-import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.particle.EntityFireworkSparkFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -108,23 +107,12 @@ public class RiftFX extends EntityFX
         float f12 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)par2 - interpPosY);
         float f13 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)par2 - interpPosZ);
         float f14 = 0F;
-
         
-        try
-        {
-        	if(PocketManager.instance.getDimData(this.worldObj.provider.dimensionId).isPocket)
-        	{
-        		f14=.7F;
-        	}
-        	else
-        	{
-        	
-        	}
-        }
-        catch(Exception E)
-        {
-        	
-        }
+        if (PocketManager.getDimensionData(worldObj).isPocketDimension())
+    	{
+    		f14 = 0.7F;
+    	}
+        
         par1Tessellator.setColorRGBA_F(this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, (float) .7);
         par1Tessellator.addVertexWithUV((double)(f11 - par3 * f10 - par6 * f10), (double)(f12 - par4 * f10), (double)(f13 - par5 * f10 - par7 * f10), (double)f7, (double)f9);
         par1Tessellator.addVertexWithUV((double)(f11 - par3 * f10 + par6 * f10), (double)(f12 + par4 * f10), (double)(f13 - par5 * f10 + par7 * f10), (double)f7, (double)f8);

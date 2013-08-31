@@ -12,7 +12,7 @@ import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.IDimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
+import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import cpw.mods.fml.common.IWorldGenerator;
 
 public class GatewayGenerator implements IWorldGenerator
@@ -145,7 +145,7 @@ public class GatewayGenerator implements IWorldGenerator
 				}
 				
 				//Place the shiny transient door into a dungeon
-				itemDimDoor.placeDoorBlock(world, x, y + 1, z, 0, mod_pocketDim.transientDoor);
+				ItemDimensionalDoor.placeDoorBlock(world, x, y + 1, z, 0, mod_pocketDim.transientDoor);
 			}
 		}
 	}

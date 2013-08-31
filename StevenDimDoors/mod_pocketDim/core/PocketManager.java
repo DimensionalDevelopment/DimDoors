@@ -605,6 +605,11 @@ public class PocketManager
 	{
 		return dimensionData.values();
 	}
+	
+	public static IDimLink getLink(int x, int y, int z, World world)
+	{
+		return getLink(x, y, z, world.provider.dimensionId);
+	}
 
 	public static IDimLink getLink(int x, int y, int z, int dimensionID)
 	{

@@ -30,7 +30,7 @@ import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfigReader;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
-import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
+import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.util.ConfigurationProcessingException;
 import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
@@ -281,7 +281,7 @@ public class DungeonHelper
 		IDimLink link = dimension.createLink(x, y + 1, z).setLinkType(IDimLink.TYPE_POCKET);
 		
 		//Place a Warp Door linked to that pocket
-		itemDimDoor.placeDoorBlock(world, x, y, z, 3, mod_pocketDim.exitDoor);
+		ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 3, mod_pocketDim.warpDoor);
 		
 		return link;
 	}

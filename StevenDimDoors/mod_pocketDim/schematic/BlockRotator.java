@@ -65,7 +65,7 @@ public class BlockRotator
 		hasOrientations[Block.rail.blockID] = true;
 		
 		hasOrientations[mod_pocketDim.dimensionalDoor.blockID] = true;
-		hasOrientations[mod_pocketDim.exitDoor.blockID] = true;
+		hasOrientations[mod_pocketDim.warpDoor.blockID] = true;
 		
 	}
 
