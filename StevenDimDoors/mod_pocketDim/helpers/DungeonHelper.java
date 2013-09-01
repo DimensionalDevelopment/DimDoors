@@ -278,7 +278,7 @@ public class DungeonHelper
 	{
 		//Create a link above the specified position. Link to a new pocket dimension.
 		NewDimData dimension = PocketManager.getDimensionData(world);
-		IDimLink link = dimension.createLink(x, y + 1, z).setLinkType(IDimLink.TYPE_POCKET);
+		IDimLink link = dimension.createLink(x, y + 1, z, IDimLink.TYPE_POCKET);
 		
 		//Place a Warp Door linked to that pocket
 		ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 3, mod_pocketDim.warpDoor);

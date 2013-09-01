@@ -27,7 +27,7 @@ public abstract class NewDimData implements Serializable
 		private ArrayList<IDimLink> children;
 		
 		public DimLink(Point4D source, DimLink parent)
-		{			
+		{
 			this.parent = parent;
 			this.source = source;
 			this.tail = parent.tail;
@@ -35,11 +35,16 @@ public abstract class NewDimData implements Serializable
 			parent.children.add(this);
 		}
 		
-		public DimLink(Point4D source)
+		public DimLink(Point4D source, int linkType)
 		{
+			if (linkType < IDimLink.TYPE_ENUM_MIN || linkType > IDimLink.TYPE_ENUM_MAX)
+			{
+				throw new IllegalArgumentException("The specified link type is invalid.");
+			}
+			
 			this.parent = null;
 			this.source = source;
-			this.tail = new LinkTail(0, null);
+			this.tail = new LinkTail(linkType, null);
 			this.children = new ArrayList<IDimLink>(EXPECTED_CHILDREN);
 		}
 
@@ -70,18 +75,6 @@ public abstract class NewDimData implements Serializable
 			}
 			
 			tail.setDestination(new Point4D(x, y, z, dimension.id()));
-			return this;
-		}
-		
-		@Override
-		public IDimLink setLinkType(int linkType)
-		{
-			if (linkType < IDimLink.TYPE_ENUM_MIN || linkType > IDimLink.TYPE_ENUM_MAX)
-			{
-				throw new IllegalArgumentException("The specified link type is invalid.");
-			}
-			
-			tail.setLinkType(linkType);
 			return this;
 		}
 
@@ -131,6 +124,11 @@ public abstract class NewDimData implements Serializable
 		
 		public void overwrite(DimLink nextParent)
 		{
+			if (nextParent == null)
+			{
+				throw new IllegalArgumentException("nextParent cannot be null.");
+			}
+			
 			if (this == nextParent)
 			{
 				//Ignore this request silently
@@ -152,15 +150,28 @@ public abstract class NewDimData implements Serializable
 			
 			//Attach to new parent
 			parent = nextParent;
+			tail = nextParent.tail;
+			nextParent.children.add(this);
+		}
+		
+		public void overwrite(int linkType)
+		{	
+			//Release children
+			for (IDimLink child : children)
+			{
+				((DimLink) child).parent = null;
+			}
+			children.clear();
+			
+			//Release parent
 			if (parent != null)
 			{
-				tail = parent.tail;
-				parent.children.add(this);
+				parent.children.remove(this);
 			}
-			else
-			{
-				tail = new LinkTail(0, null);
-			}
+			
+			//Attach to new parent
+			parent = null;
+			tail = new LinkTail(linkType, null);
 		}
 
 		@Override
@@ -224,7 +235,7 @@ public abstract class NewDimData implements Serializable
 
 	public IDimLink findNearestRift(World world, int range, int x, int y, int z)
 	{
-		//TODO: Rewrite this later to use an octtree, remove World parameter
+		//TODO: Rewrite this later to use an octtree
 
 		//Sanity check...
 		if (world.provider.dimensionId != id)
@@ -271,24 +282,24 @@ public abstract class NewDimData implements Serializable
 		return Math.abs(i) + Math.abs(j) + Math.abs(k);
 	}
 	
-	public IDimLink createLink(int x, int y, int z)
+	public IDimLink createLink(int x, int y, int z, int linkType)
 	{
-		return createLink(new Point4D(x, y, z, id));
+		return createLink(new Point4D(x, y, z, id), linkType);
 	}
 	
-	private IDimLink createLink(Point4D source)
-	{	
+	private IDimLink createLink(Point4D source, int linkType)
+	{
 		//Return an existing link if there is one to avoid creating multiple links starting at the same point.
 		DimLink link = linkMapping.get(source);
 		if (link == null)
 		{
-			link = new DimLink(source);
+			link = new DimLink(source, linkType);
 			linkMapping.put(source, link);
 			linkList.add(link);
 		}
 		else
 		{
-			link.overwrite(null);
+			link.overwrite(linkType);
 		}
 		return link;
 	}

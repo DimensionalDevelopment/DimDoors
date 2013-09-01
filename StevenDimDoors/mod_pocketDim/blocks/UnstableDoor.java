@@ -54,7 +54,7 @@ public class UnstableDoor extends DimensionalDoor
 		if (!world.isRemote && world.getBlockId(x, y - 1, z) == this.blockID)
 		{
 			NewDimData dimension = PocketManager.getDimensionData(world);
-			dimension.createLink(x, y, z).setLinkType(IDimLink.TYPE_RANDOM);
+			dimension.createLink(x, y, z, IDimLink.TYPE_RANDOM);
 		}
 	}
 }

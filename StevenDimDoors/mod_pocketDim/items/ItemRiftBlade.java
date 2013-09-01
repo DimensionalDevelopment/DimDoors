@@ -187,7 +187,7 @@ public class ItemRiftBlade extends ItemSword
 			NewDimData dimension = PocketManager.getDimensionData(world);
 			if (!dimension.isPocketDimension() && dimension.getLink(x, y + 1, z) == null)
 			{
-				dimension.createLink(x, y + 1, z).setLinkType(IDimLink.TYPE_POCKET);
+				dimension.createLink(x, y + 1, z, IDimLink.TYPE_POCKET);
 				player.worldObj.playSoundAtEntity(player,"mods.DimDoors.sfx.riftDoor", 0.6f, 1);
 				ItemDimensionalDoor.placeDoorBlock(world, x, y, z, orientation, mod_pocketDim.transientDoor);  
 			} 

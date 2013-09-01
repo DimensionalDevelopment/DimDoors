@@ -284,7 +284,7 @@ public class DungeonSchematic extends Schematic {
 	
 	private static void createEntranceReverseLink(NewDimData dimension, Point3D pocketCenter, IDimLink entryLink)
 	{
-		IDimLink link = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ());
+		IDimLink link = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), IDimLink.TYPE_NORMAL);
 		Point4D destination = link.source();
 		link.setDestination(destination.getX(), destination.getY(), destination.getZ(),
 			PocketManager.getDimensionData(destination.getDimension()));
@@ -295,7 +295,7 @@ public class DungeonSchematic extends Schematic {
 		//Transform the door's location to the pocket coordinate system
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
-		dimension.createLink(location.getX(), location.getY(), location.getZ()).setLinkType(IDimLink.TYPE_DUNGEON_EXIT);
+		dimension.createLink(location.getX(), location.getY(), location.getZ(), IDimLink.TYPE_DUNGEON_EXIT);
 	}
 	
 	private static void createDimensionalDoorLink(NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
@@ -303,7 +303,7 @@ public class DungeonSchematic extends Schematic {
 		//Transform the door's location to the pocket coordinate system
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
-		dimension.createLink(location.getX(), location.getY(), location.getZ()).setLinkType(IDimLink.TYPE_DUNGEON);
+		dimension.createLink(location.getX(), location.getY(), location.getZ(), IDimLink.TYPE_DUNGEON);
 	}
 	
 	private static void spawnMonolith(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)

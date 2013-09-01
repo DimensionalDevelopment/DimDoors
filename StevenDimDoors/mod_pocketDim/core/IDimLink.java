@@ -27,5 +27,4 @@ public interface IDimLink extends Serializable
 	public IDimLink parent();
 	public int linkType();
 	public IDimLink setDestination(int x, int y, int z, NewDimData dimension);
-	public IDimLink setLinkType(int linkType);
 }

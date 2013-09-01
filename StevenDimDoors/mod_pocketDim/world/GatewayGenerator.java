@@ -97,7 +97,7 @@ public class GatewayGenerator implements IWorldGenerator
 					if (link == null)
 					{
 						dimension = PocketManager.getDimensionData(world);
-						link = dimension.createLink(x, y + 1, z).setLinkType(IDimLink.TYPE_POCKET);
+						link = dimension.createLink(x, y + 1, z, IDimLink.TYPE_POCKET);
 					}
 					else
 					{
@@ -132,7 +132,7 @@ public class GatewayGenerator implements IWorldGenerator
 			{
 				//Create a partial link to a dungeon.
 				dimension = PocketManager.getDimensionData(world);
-				link = dimension.createLink(x, y + 1, z).setLinkType(IDimLink.TYPE_DUNGEON);
+				link = dimension.createLink(x, y + 1, z, IDimLink.TYPE_DUNGEON);
 
 				//If the current dimension isn't Limbo, build a Rift Gateway out of Stone Bricks
 				if (dimension.id() != properties.LimboDimensionID)

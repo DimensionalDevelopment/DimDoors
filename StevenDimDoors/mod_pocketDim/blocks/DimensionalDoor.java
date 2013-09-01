@@ -172,7 +172,7 @@ public class DimensionalDoor extends BlockContainer
 			IDimLink link = dimension.getLink(x, y, z);
 			if (link == null)
 			{
-				dimension.createLink(x, y, z).setLinkType(IDimLink.TYPE_POCKET);
+				dimension.createLink(x, y, z, IDimLink.TYPE_POCKET);
 			}
 		}
 		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));

@@ -41,7 +41,7 @@ public class WarpDoor extends DimensionalDoor
 			IDimLink link = dimension.getLink(x, y, z);
 			if (link == null)
 			{
-				dimension.createLink(x, y, z).setLinkType(IDimLink.TYPE_SAFE_EXIT);
+				dimension.createLink(x, y, z, IDimLink.TYPE_SAFE_EXIT);
 			}
 		}
 		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));

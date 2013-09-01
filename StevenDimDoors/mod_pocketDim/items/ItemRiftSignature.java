@@ -66,8 +66,8 @@ public class ItemRiftSignature extends Item
 				//The link was used before and already has an endpoint stored. Create links connecting the two endpoints.
 				NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
 				NewDimData destinationDimension = PocketManager.getDimensionData(world);
-				IDimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ()).setLinkType(IDimLink.TYPE_NORMAL);
-				IDimLink reverse = destinationDimension.createLink(x, y, z).setLinkType(IDimLink.TYPE_NORMAL);
+				IDimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), IDimLink.TYPE_NORMAL);
+				IDimLink reverse = destinationDimension.createLink(x, y, z, IDimLink.TYPE_NORMAL);
 				link.setDestination(x, y, z, destinationDimension);
 				reverse.setDestination(source.getX(), source.getY(), source.getZ(), sourceDimension);
 				
