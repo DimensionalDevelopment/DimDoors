@@ -17,9 +17,9 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class itemLinkSignature extends Item
+public class ItemRiftSignature extends Item
 {
-	public itemLinkSignature(int itemID)
+	public ItemRiftSignature(int itemID)
 	{
 		super(itemID);
 		this.setMaxStackSize(1);

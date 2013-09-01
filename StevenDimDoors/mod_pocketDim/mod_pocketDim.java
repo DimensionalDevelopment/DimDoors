@@ -44,7 +44,7 @@ import StevenDimDoors.mod_pocketDim.items.ItemStabilizedRiftSignature;
 import StevenDimDoors.mod_pocketDim.items.ItemStableFabric;
 import StevenDimDoors.mod_pocketDim.items.ItemUnstableDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemWarpDoor;
-import StevenDimDoors.mod_pocketDim.items.itemLinkSignature;
+import StevenDimDoors.mod_pocketDim.items.ItemRiftSignature;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.ticking.LimboDecay;
@@ -198,7 +198,7 @@ public class mod_pocketDim
 
 		itemDimDoor = (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemDimDoor");
 		itemExitDoor = (new ItemWarpDoor(properties.WarpDoorItemID, Material.wood)).setUnlocalizedName("itemDimDoorWarp");
-		itemLinkSignature = (new itemLinkSignature(properties.RiftSignatureItemID)).setUnlocalizedName("itemLinkSignature");
+		itemLinkSignature = (new ItemRiftSignature(properties.RiftSignatureItemID)).setUnlocalizedName("itemLinkSignature");
 		itemRiftRemover = (new itemRiftRemover(properties.RiftRemoverItemID, Material.wood)).setUnlocalizedName("itemRiftRemover");
 		itemStableFabric = (new ItemStableFabric(properties.StableFabricItemID, 0)).setUnlocalizedName("itemStableFabric");
 		itemChaosDoor = (new ItemUnstableDoor(properties.UnstableDoorItemID, Material.iron)).setUnlocalizedName("itemChaosDoor");

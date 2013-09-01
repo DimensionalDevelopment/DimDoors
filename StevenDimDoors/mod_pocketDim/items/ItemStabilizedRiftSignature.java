@@ -12,7 +12,7 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemStabilizedRiftSignature extends itemLinkSignature
+public class ItemStabilizedRiftSignature extends ItemRiftSignature
 {
     public ItemStabilizedRiftSignature(int itemID)
     {
