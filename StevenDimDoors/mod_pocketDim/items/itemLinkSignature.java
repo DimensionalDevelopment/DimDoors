@@ -2,23 +2,23 @@ package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import StevenDimDoors.mod_pocketDim.DDProperties;
+import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class itemLinkSignature extends Item
 {
-
 	public itemLinkSignature(int itemID)
 	{
 		super(itemID);
@@ -26,240 +26,149 @@ public class itemLinkSignature extends Item
 		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 		this.setMaxDamage(0);
 		this.hasSubtypes = true;
-		if (properties == null)
-			properties = DDProperties.instance();
 	}
-
-	private static DDProperties properties = null;
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean hasEffect(ItemStack par1ItemStack)
+	public boolean hasEffect(ItemStack stack)
 	{
-		// adds effect if item has a link stored
-
-
-		if(par1ItemStack.hasTagCompound())
-		{
-			if(par1ItemStack.stackTagCompound.getBoolean("isCreated"))
-			{
-				return true;
-			}
-		}
-		return false;
+		//Make the item glow if it has one endpoint stored
+		return (stack.getItemDamage() != 0);
 	}
-
 
 	public void registerIcons(IconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
-
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
 	{
-		int key;
-		ILinkData linkData;
-		int thisWorldID=par3World.provider.dimensionId;
-
-
-
-
-		if(!par3World.isRemote)
-		{		
-
-			//par1ItemStack= par2EntityPlayer.getCurrentEquippedItem();
-			Integer[] linkCoords =this.readFromNBT(par1ItemStack);
-
-
-
-			//System.out.println(key);
-			int offset = 2;
-			int idBlock = par3World.getBlockId(par4, par5, par6);
-
-			if(Block.blocksList.length>idBlock&&idBlock!=0)
+		tryItemUse(stack, player, world, x, y, z);
+		return true;
+	}
+	
+	protected boolean tryItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z)
+	{
+		if (!world.isRemote)
+		{
+			//We don't check for replaceable blocks. The user can deal with that. <_<
+			
+			y += 2; //Increase y by 2 to place the rift at head level
+			if (!player.canPlayerEdit(x, y, z, 0, stack))
 			{
-				if(Block.blocksList[idBlock].isBlockReplaceable(par3World, par4, par5, par6))
-				{
-					offset = 1;
-				}
+				return false;
 			}
-			if(par3World.getBlockId(par4, par5, par6) == properties.DimensionalDoorID && par3World.getBlockId(par4, par5 + 1, par6) == properties.DimensionalDoorID)
+			
+			Point4D source = getSource(stack);
+			if (source != null)
 			{
-				offset = 1;
-			}
-			else
-				if(par3World.getBlockId(par4, par5, par6)==properties.WarpDoorID&&par3World.getBlockId(par4, par5+1, par6)==properties.WarpDoorID)
+				//The link was used before and already has an endpoint stored. Create links connecting the two endpoints.
+				NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
+				NewDimData destinationDimension = PocketManager.getDimensionData(world);
+				IDimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ()).setLinkType(IDimLink.TYPE_NORMAL);
+				IDimLink reverse = destinationDimension.createLink(x, y, z).setLinkType(IDimLink.TYPE_NORMAL);
+				link.setDestination(x, y, z, destinationDimension);
+				reverse.setDestination(source.getX(), source.getY(), source.getZ(), sourceDimension);
+				
+				//Try placing a rift at the destination point
+				if (!mod_pocketDim.blockRift.isBlockImmune(world, x, y, z))
 				{
-					offset = 1;
+					world.setBlock(x, y, z, mod_pocketDim.blockRift.blockID);
 				}
-				else
-					if (par3World.getBlockId(par4, par5, par6)==properties.DimensionalDoorID&&par3World.getBlockId(par4, par5-1, par6)==properties.DimensionalDoorID)
-					{
-						offset = 0;
-					}
-					else
-						if (par3World.getBlockId(par4, par5, par6) == properties.WarpDoorID && par3World.getBlockId(par4, par5-1, par6)==properties.WarpDoorID)
-						{
-							offset = 0;
-						}
-
-			int orientation = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
-
-			for(int count = 0;count<3;count++)
-			{
-				if(PocketManager.instance.getLinkDataFromCoords(par4, par5+count, par6,par3World)!=null)
+				
+				//Try placing a rift at the source point, but check if its world is loaded first
+				World sourceWorld = DimensionManager.getWorld(sourceDimension.id());
+				if (sourceWorld != null &&
+					!mod_pocketDim.blockRift.isBlockImmune(sourceWorld, source.getX(), source.getY(), source.getZ()))
 				{
-					int id= (par3World.getBlockId(par4, par5+count, par6));
-
-					if(id == properties.DimensionalDoorID||id==properties.WarpDoorID||id== properties.UnstableDoorID)
-					{
-						orientation = PocketManager.instance.getLinkDataFromCoords(par4, par5+count, par6,par3World).linkOrientation;
-					}
+					sourceWorld.setBlock(source.getX(), source.getY(), source.getY(), mod_pocketDim.blockRift.blockID);
 				}
-
-
-			}
-
-			if(par1ItemStack.getTagCompound()!=null)
-			{
-				if(par1ItemStack.getTagCompound().getBoolean("isCreated"))
+				
+				if (!player.capabilities.isCreativeMode)
 				{
-					// checks to see if the item has a link stored, if so, it creates it
-
-
-
-					PocketManager.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2],orientation);		
-					PocketManager.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6,linkCoords[4]);	
-
-
-
-					--par1ItemStack.stackSize;
-					par2EntityPlayer.sendChatToPlayer("Rift Created");
-					par1ItemStack.stackTagCompound=null;
-					par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.riftEnd", (float) .6, 1);
+					stack.stackSize--;
 				}
+				clearSource(stack);
+				player.sendChatToPlayer("Rift Created");
+				world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftEnd", 0.6f, 1);
 			}
 			else 
 			{
-
-
-				//otherwise, it creates the first half of the link. Next click will complete it. 
-				key= PocketManager.instance.createUniqueInterDimLinkKey();
-				this.writeToNBT(par1ItemStack, par4, par5+offset, par6,par3World.provider.dimensionId,orientation);
-				par2EntityPlayer.sendChatToPlayer("Rift Signature Stored");
-				par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.riftStart", (float) .6, 1);
-			}	
-			//dimHelper.instance.save();
+				//The link signature has not been used. Store its current target as the first location. 
+				setSource(stack, x, y, z, PocketManager.getDimensionData(world));
+				player.sendChatToPlayer("Location Stored in Rift Signature");
+				world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftStart", 0.6f, 1);
+			}
+			return true;
 		}
-
-
-		return true;
-
-
+		return false;
 	}
-
-	@SideOnly(Side.CLIENT)
 
 	/**
 	 * allows items to add custom lines of information to the mouseover description
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
 	{
-
-		if(par1ItemStack.hasTagCompound())
+		Point4D source = getSource(par1ItemStack);
+		if (source != null)
 		{
-			if(par1ItemStack.stackTagCompound.getBoolean("isCreated"))
-			{
-				Integer[] coords = this.readFromNBT(par1ItemStack);
-
-				par3List.add(String.valueOf("Leads to dim "+coords[3] +" with depth "+(PocketManager.instance.getDimDepth(coords[3]))));
-				par3List.add("at x="+coords[0]+" y="+coords[1]+" z="+coords[2]);
-
-			}
-
+			par3List.add("Leads to (" + source.getX() + ", " + source.getY() + ", " + source.getZ() + ") at dimension #" + source.getDimension());
 		}
 		else
 		{
-			par3List.add("First click stores location,");
-			par3List.add ("second click creates two rifts,");
-			par3List.add("that link the first location");
-			par3List.add("with the second location");
-
-
+			par3List.add("First click stores a location;");
+			par3List.add("second click creates a pair of");
+			par3List.add("rifts linking the two locations.");
 		}
 	}
 
-	public void writeToNBT(ItemStack itemStack,int x, int y, int z, int dimID,int orientation)
+	public static void setSource(ItemStack itemStack, int x, int y, int z, NewDimData dimension)
 	{
-		NBTTagCompound tag;
-
-		if(itemStack.hasTagCompound())
-		{
-			tag = itemStack.getTagCompound();
-
-		}
-		else
-		{
-			tag= new NBTTagCompound();
-		}
+		NBTTagCompound tag = new NBTTagCompound();
 
 		tag.setInteger("linkX", x);
 		tag.setInteger("linkY", y);
 		tag.setInteger("linkZ", z);
-		tag.setInteger("linkDimID", dimID);
-		tag.setBoolean("isCreated", true);
-		tag.setInteger("orientation", orientation);
+		tag.setInteger("linkDimID", dimension.id());
 
 		itemStack.setTagCompound(tag);
-
+		itemStack.setItemDamage(1);
 	}
-
-	/**
-	 * Read the stack fields from a NBT object.
-	 */
-	public Integer[] readFromNBT(ItemStack itemStack)
+	
+	public static void clearSource(ItemStack itemStack)
 	{
-
-		NBTTagCompound tag;
-		Integer[] linkCoords = new Integer[5];
-		if(itemStack.hasTagCompound())
+		//Don't just set the tag to null since there may be other data there (e.g. for renamed items)
+		NBTTagCompound tag = itemStack.getTagCompound();
+		tag.removeTag("linkX");
+		tag.removeTag("linkY");
+		tag.removeTag("linkZ");
+		tag.removeTag("linkDimID");
+		itemStack.setItemDamage(0);
+	}
+	
+	public static Point4D getSource(ItemStack itemStack)
+	{
+		if (itemStack.getItemDamage() != 0)
 		{
-			tag = itemStack.getTagCompound();
-
-			if(!tag.getBoolean("isCreated"))
+			if (itemStack.hasTagCompound())
 			{
-				return null;
+				NBTTagCompound tag = itemStack.getTagCompound();
+				
+				Integer x = tag.getInteger("linkX");
+				Integer y = tag.getInteger("linkY");
+				Integer z = tag.getInteger("linkZ");
+				Integer dimID = tag.getInteger("linkDimID");
+				
+				if (x != null && y != null && z != null && dimID != null)
+				{
+					return new Point4D(x, y, z, dimID);
+				}
 			}
-			linkCoords[0]=tag.getInteger("linkX");
-			linkCoords[1]=tag.getInteger("linkY");
-			linkCoords[2]=tag.getInteger("linkZ");
-			linkCoords[3]=tag.getInteger("linkDimID");
-			linkCoords[4]=tag.getInteger("orientation");
-
-
-
+			itemStack.setItemDamage(0);
 		}
-		return linkCoords;
-
-	}
-
-
-	@Override
-	public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) 
-	{
-		if(!par2World.isRemote)
-		{
-			/**
-    		//creates the first half of the link on item creation
-    		int key= dimHelper.instance.createUniqueInterDimLinkKey();
-    		LinkData linkData= new LinkData(par2World.provider.dimensionId,MathHelper.floor_double(par3EntityPlayer.posX),MathHelper.floor_double(par3EntityPlayer.posY),MathHelper.floor_double(par3EntityPlayer.posZ));
-    		System.out.println(key);
-
-    		dimHelper.instance.interDimLinkList.put(key, linkData);
-    		par1ItemStack.setItemDamage(key);
-			 **/
-		}
+		return null;
 	}
 }

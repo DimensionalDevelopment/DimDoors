@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
-import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -44,13 +43,9 @@ public class PocketManager
 	
 	private static boolean isInitialized = false;
 	private static boolean isSaving = false;
-	private static Random random = new Random();
 
 	//HashMap containing all the dims registered with DimDoors, sorted by dim ID. loaded on startup
 	private static HashMap<Integer, NewDimData> dimensionData = new HashMap<Integer, NewDimData>();
-
-	//HashMap for temporary storage of Link Signature damage hash values. See itemLinkSignature for more details
-	private static HashMap<Integer, IDimLink> keyLinkMapping = new HashMap<Integer, IDimLink>();
 
 	public static boolean isInitialized()
 	{
@@ -89,7 +84,7 @@ public class PocketManager
 		}
 	}
 
-	public boolean resetPocket(NewDimData dimension)
+	public boolean clearPocket(NewDimData dimension)
 	{
 		if (!dimension.isPocketDimension() || DimensionManager.getWorld(dimension.id()) != null)
 		{
@@ -103,7 +98,7 @@ public class PocketManager
 		return true;
 	}
 
-	public static boolean pruneDimension(NewDimData dimension, boolean deleteFolder)
+	public static boolean deletePocket(NewDimData dimension, boolean deleteFolder)
 	{
 		//FIXME: Shouldn't the links in and out of this dimension be altered somehow? Otherwise we have links pointing
 		//into a deleted dimension!
@@ -112,7 +107,6 @@ public class PocketManager
 		if (dimension.isPocketDimension() && DimensionManager.getWorld(dimension.id()) == null)
 		{
 			dimensionData.remove(dimension.id());
-			//FIXME: I added the following line. Seems like a good idea. Is it?
 			DimensionManager.unregisterDimension(dimension.id());
 			if (deleteFolder)
 			{
@@ -147,21 +141,6 @@ public class PocketManager
 	}
 
 	/**
-	 * Used to associate a damage value on a Rift Signature with a link pair. See LinkSignature for details. 
-	 * @return
-	 */
-	public static int createUniqueLinkKey()
-	{
-		int linkKey;
-		do
-		{
-			linkKey = random.nextInt(30000);
-		}
-		while (keyLinkMapping.containsKey(linkKey));
-		return linkKey;
-	}
-
-	/**
 	 * Function that saves all dim data in a hashMap. Calling too often can cause Concurrent modification exceptions, so be careful.
 	 * @return
 	 */
@@ -184,7 +163,6 @@ public class PocketManager
 			isSaving = true;
 			HashMap<String, Object> comboSave = new HashMap<String, Object>();
 			comboSave.put("dimensionData", dimensionData);
-			comboSave.put("keyLinkMapping", keyLinkMapping);
 
 			FileOutputStream saveFile = null;
 			try
@@ -248,15 +226,6 @@ public class PocketManager
 
 				try
 				{
-					keyLinkMapping = (HashMap<Integer, IDimLink>) comboSave.get("keyLinkMapping");
-				}
-				catch (Exception e)
-				{
-					System.out.println("Could not load Link Signature list. Link Sig items will lose their stored locations.");
-				}
-
-				try
-				{
 					dimensionData = (HashMap<Integer, NewDimData>) comboSave.get("dimensionData");
 				}
 				catch(Exception e)
@@ -282,15 +251,6 @@ public class PocketManager
 					saveFile = new FileInputStream(dataStore);
 					ObjectSaveInputStream save = new ObjectSaveInputStream(saveFile);
 					HashMap<String, Object> comboSave = (HashMap<String, Object>) save.readObject();
-
-					try
-					{
-						keyLinkMapping = (HashMap<Integer, IDimLink>) comboSave.get("keyLinkMapping");
-					}
-					catch (Exception e2)
-					{
-						System.out.println("Could not load Link Signature list. Link Sig items will loose restored locations.");
-					}
 
 					try
 					{
@@ -395,7 +355,6 @@ public class PocketManager
 		save();
 		unregisterDimensions();
 		dimensionData.clear();
-		keyLinkMapping.clear();
 	}
 
 	public static Iterable<NewDimData> getDimensions()
