@@ -56,7 +56,7 @@ public class DDProperties
 	 * Crafting Flags
 	 */
 	
-	public final boolean CraftingDimensionaDoorAllowed;
+	public final boolean CraftingDimensionalDoorAllowed;
 	public final boolean CraftingWarpDoorAllowed;
 	public final boolean CraftingRiftSignatureAllowed;
 	public final boolean CraftingRiftRemoverAllowed;
@@ -129,7 +129,7 @@ public class DDProperties
 		Configuration config = new Configuration(configFile);
 		config.load();
 
-		CraftingDimensionaDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Dimensional Door", true).getBoolean(true);
+		CraftingDimensionalDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Dimensional Door", true).getBoolean(true);
 		CraftingWarpDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Warp Door", true).getBoolean(true);
 		CraftingUnstableDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Unstable Door", true).getBoolean(true);
 		CraftingTransTrapdoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Transdimensional Trapdoor", true).getBoolean(true);

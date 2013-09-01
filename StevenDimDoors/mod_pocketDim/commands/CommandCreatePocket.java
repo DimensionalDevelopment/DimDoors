@@ -34,7 +34,7 @@ public class CommandCreatePocket extends DDCommandBase
 			}
 			
 			//Place a door leading to a pocket dimension where the player is standing.
-			//The pocket dimension will be serve as a room for the player to build a dungeon.
+			//The pocket dimension will serve as a room for the player to build a dungeon.
 			int x = (int) sender.posX;
 			int y = (int) sender.posY;
 			int z = (int) sender.posZ;

@@ -1,7 +1,7 @@
 package StevenDimDoors.mod_pocketDim;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.block.Block;
+import java.util.Random;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityMinecart;
@@ -19,36 +19,27 @@ import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.core.IDimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 public class DDTeleporter
 {
+	private static final Random random = new Random();
+	public static int cooldown = 0;
+	
 	private DDTeleporter() { }
-
-	/**
-	 * Create a new portal near an entity.
-	 */
-	public static void placeInPortal(Entity par1Entity, WorldServer world, IDimLink link)
+	
+	private static void placeInPortal(Entity entity, WorldServer world, Point4D destination, DDProperties properties)
 	{
-		Point4D destination = link.destination();
 		int x = destination.getX();
 		int y = destination.getY();
 		int z = destination.getZ();
 
-		//TODO Temporary workaround for mismatched door/rift metadata cases. Gives priority to the door. 
-		int orientation = PocketManager.getDestinationOrientation(link);
-		int receivingDoorMeta = world.getBlockMetadata(x, y - 1, z);
-		int receivingDoorID = world.getBlockId(x, y, z);
-		if (receivingDoorMeta != orientation)
-		{
-			if (receivingDoorID == mod_pocketDim.dimDoor.blockID || receivingDoorID == mod_pocketDim.ExitDoor.blockID)
-			{
-				orientation = receivingDoorMeta;
-			}
-		}
+		int orientation = getDestinationOrientation(destination, properties);
 
-		if (par1Entity instanceof EntityPlayer)
+		if (entity instanceof EntityPlayer)
 		{
-			EntityPlayer player = (EntityPlayer) par1Entity;
+			EntityPlayer player = (EntityPlayer) entity;
 			player.rotationYaw=(orientation*90)+90;
 			if(orientation==2||orientation==6)
 			{
@@ -71,65 +62,65 @@ public class DDTeleporter
 				player.setPositionAndUpdate(x, y-1, z);	
 			}
 		}
-		else if (par1Entity instanceof EntityMinecart)
+		else if (entity instanceof EntityMinecart)
 		{
-			par1Entity.motionX=0;
-			par1Entity.motionZ=0;
-			par1Entity.motionY=0;
-			par1Entity.rotationYaw=(orientation*90)+90;
+			entity.motionX=0;
+			entity.motionZ=0;
+			entity.motionY=0;
+			entity.rotationYaw=(orientation*90)+90;
 
 			if(orientation==2||orientation==6)
 			{
-				DDTeleporter.setEntityPosition(par1Entity, x+1.5, y, z+.5 );
-				par1Entity.motionX =.39;
-				par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+				DDTeleporter.setEntityPosition(entity, x+1.5, y, z+.5 );
+				entity.motionX =.39;
+				entity.worldObj.updateEntityWithOptionalForce(entity, false);
 			}
 			else if(orientation==3||orientation==7)
 			{
-				DDTeleporter.setEntityPosition(par1Entity, x+.5, y, z+1.5 );
-				par1Entity.motionZ =.39;
-				par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+				DDTeleporter.setEntityPosition(entity, x+.5, y, z+1.5 );
+				entity.motionZ =.39;
+				entity.worldObj.updateEntityWithOptionalForce(entity, false);
 			}
 			else if(orientation==0||orientation==4)
 			{
-				DDTeleporter.setEntityPosition(par1Entity,x-.5, y, z+.5);
-				par1Entity.motionX =-.39;
-				par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+				DDTeleporter.setEntityPosition(entity,x-.5, y, z+.5);
+				entity.motionX =-.39;
+				entity.worldObj.updateEntityWithOptionalForce(entity, false);
 			}
 			else if(orientation==1||orientation==5)
 			{
-				DDTeleporter.setEntityPosition(par1Entity,x+.5, y, z-.5);	
-				par1Entity.motionZ =-.39;
-				par1Entity.worldObj.updateEntityWithOptionalForce(par1Entity, false);
+				DDTeleporter.setEntityPosition(entity,x+.5, y, z-.5);	
+				entity.motionZ =-.39;
+				entity.worldObj.updateEntityWithOptionalForce(entity, false);
 			}
 			else
 			{
-				DDTeleporter.setEntityPosition(par1Entity,x, y, z);	
+				DDTeleporter.setEntityPosition(entity,x, y, z);	
 			}
 		}
-		else if (par1Entity instanceof Entity)
+		else if (entity instanceof Entity)
 		{
-			par1Entity.rotationYaw=(orientation*90)+90;
+			entity.rotationYaw=(orientation*90)+90;
 			if(orientation==2||orientation==6)
 			{
-				DDTeleporter.setEntityPosition(par1Entity, x+1.5, y, z+.5 );
+				DDTeleporter.setEntityPosition(entity, x+1.5, y, z+.5 );
 			}
 			else if(orientation==3||orientation==7)
 			{
 
-				DDTeleporter.setEntityPosition(par1Entity, x+.5, y, z+1.5 );
+				DDTeleporter.setEntityPosition(entity, x+.5, y, z+1.5 );
 			}
 			else if(orientation==0||orientation==4)
 			{
-				DDTeleporter.setEntityPosition(par1Entity,x-.5, y, z+.5);
+				DDTeleporter.setEntityPosition(entity,x-.5, y, z+.5);
 			}
 			else if(orientation==1||orientation==5)
 			{
-				DDTeleporter.setEntityPosition(par1Entity,x+.5, y, z-.5);	
+				DDTeleporter.setEntityPosition(entity,x+.5, y, z-.5);	
 			}
 			else
 			{
-				DDTeleporter.setEntityPosition(par1Entity,x, y, z);	
+				DDTeleporter.setEntityPosition(entity,x, y, z);	
 			}
 		}
 	}
@@ -142,18 +133,49 @@ public class DDTeleporter
 		entity.setPosition(x, y, z);
 	}
 	
-	public static Entity teleportEntity(World world, Entity entity, IDimLink link)
-	{	
+	private static int getDestinationOrientation(Point4D door, DDProperties properties)
+	{
+		World world = DimensionManager.getWorld(door.getDimension());
+		if (world == null)
+		{
+			throw new IllegalStateException("The destination world should be loaded!");
+		}
+
+		//Check if the block at that point is actually a door
+		int blockID = world.getBlockId(door.getX(), door.getY(), door.getZ());
+		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
+			blockID != properties.TransientDoorID && blockID != properties.UnstableDoorID)
+		{
+			//Return the pocket's orientation instead
+			return PocketManager.getDimensionData(door.getDimension()).orientation();
+		}
+		
+		//Return the orientation portion of its metadata
+		return world.getBlockMetadata(door.getX(), door.getY(), door.getZ()) & 3;
+	}
+	
+	public static Entity teleportEntity(Entity entity, Point4D destination)
+	{
+		if (entity == null)
+		{
+			throw new IllegalArgumentException("entity cannot be null.");
+		}
+		if (destination == null)
+		{
+			throw new IllegalArgumentException("destination cannot be null.");
+		}
+		
 		//This beautiful teleport method is based off of xCompWiz's teleport function. 
 
-		WorldServer oldWorld = (WorldServer)world;
+		WorldServer oldWorld = (WorldServer) entity.worldObj;
 		WorldServer newWorld;
-		EntityPlayerMP player = (entity instanceof EntityPlayerMP) ? (EntityPlayerMP)entity : null;
+		EntityPlayerMP player = (entity instanceof EntityPlayerMP) ? (EntityPlayerMP) entity : null;
+		DDProperties properties = DDProperties.instance();
 
 		// Is something riding? Handle it first.
-		if(entity.riddenByEntity != null)
+		if (entity.riddenByEntity != null)
 		{
-			return teleportEntity(oldWorld, entity.riddenByEntity, link);
+			return teleportEntity(entity.riddenByEntity, destination);
 		}
 
 		// Are we riding something? Dismount and tell the mount to go first.
@@ -161,22 +183,21 @@ public class DDTeleporter
 		if (cart != null)
 		{
 			entity.mountEntity(null);
-			cart = teleportEntity(oldWorld, cart, link);
+			cart = teleportEntity(cart, destination);
 			// We keep track of both so we can remount them on the other side.
 		}
 
-		// Destination doesn't exist? We need to make it.
-		if (DimensionManager.getWorld(link.destination().getDimension()) == null)
-		{
-			//FIXME: I think this is where I need to add initialization code for pockets!!! REALLY IMPORTANT!!!
-			DimensionManager.initDimension(link.destination().getDimension());
-		}
-
-		// Determine if our destination's in another realm.
-		boolean difDest = link.source().getDimension() != link.destination().getDimension();
+		// Determine if our destination is in another realm.
+		boolean difDest = entity.dimension == destination.getDimension();
 		if (difDest)
 		{
-			newWorld = DimensionManager.getWorld(link.destination().getDimension());
+			// Destination isn't loaded? Then we need to load it.
+			newWorld = DimensionManager.getWorld(destination.getDimension());
+			if (newWorld == null)
+			{
+				DimensionManager.initDimension(destination.getDimension());
+			}
+			newWorld = DimensionManager.getWorld(destination.getDimension());
 		}
 		else
 		{
@@ -185,7 +206,7 @@ public class DDTeleporter
 
 		// GreyMaria: What is this even accomplishing? We're doing the exact same thing at the end of this all.
 		// TODO Check to see if this is actually vital.
-		DDTeleporter.placeInPortal(entity, newWorld, link);
+		DDTeleporter.placeInPortal(entity, newWorld, destination, properties);
 
 		if (difDest) // Are we moving our target to a new dimension?
 		{
@@ -194,7 +215,7 @@ public class DDTeleporter
 				// We need to do all this special stuff to move a player between dimensions.
 
 				// Set the new dimension and inform the client that it's moving to a new world.
-				player.dimension = link.destination().getDimension();
+				player.dimension = destination.getDimension();
 				player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
 
 				// GreyMaria: Used the safe player entity remover before.
@@ -203,7 +224,7 @@ public class DDTeleporter
 				// for a pocket dimension, causing all sleeping players
 				// to remain asleep instead of progressing to day.
 				oldWorld.removePlayerEntityDangerously(player);
-				player.isDead=false;
+				player.isDead = false;
 
 				// Creates sanity by ensuring that we're only known to exist where we're supposed to be known to exist.
 				oldWorld.getPlayerManager().removePlayer(player);
@@ -243,7 +264,8 @@ public class DDTeleporter
 				entity = EntityList.createEntityFromNBT(entityNBT, newWorld);
 
 				if (entity == null)
-				{   // TODO FIXME IMPLEMENT NULL CHECKS THAT ACTUALLY DO SOMETHING.
+				{
+					// TODO FIXME IMPLEMENT NULL CHECKS THAT ACTUALLY DO SOMETHING.
 					/* 
 					 * shit ourselves in an organized fashion, preferably
 					 * in a neat pile instead of all over our users' games
@@ -270,107 +292,84 @@ public class DDTeleporter
 		}
 
 		// Did we teleport a player? Load the chunk for them.
-		if(player != null)
+		if (player != null)
 		{
-			WorldServer.class.cast(newWorld).getChunkProvider().loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
+			newWorld.getChunkProvider().loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
 
 			// Tell Forge we're moving its players so everyone else knows.
 			// Let's try doing this down here in case this is what's killing NEI.
 			GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
 
 		}
-		DDTeleporter.placeInPortal(entity, newWorld, link);
+		DDTeleporter.placeInPortal(entity, newWorld, destination, properties);
 		return entity;    
 	}
 	
 	/**
 	 * Primary function used to teleport the player using doors. Performs numerous null checks, and also generates the destination door/pocket if it has not done so already.
-	 * Also ensures correct orientation relative to the door using DDTeleporter.
-	 * @param world- world the player is currently in
-	 * @param linkData- the link the player is using to teleport, sends the player to its dest information. 
-	 * @param player- the instance of the player to be teleported
-	 * @param orientation- the orientation of the door used to teleport, determines player orientation and door placement on arrival
-	 * @Return
+	 * Also ensures correct orientation relative to the door.
+	 * @param world - world the player is currently in
+	 * @param link - the link the player is using to teleport; sends the player to its destination 
+	 * @param player - the instance of the player to be teleported
 	 */
-	public static void traverseDimDoor(World world, IDimLink linkData, Entity entity)
+	public static void traverseDimDoor(World world, IDimLink link, Entity entity)
 	{
-		DDProperties properties = DDProperties.instance();
-
+		if (world == null)
+		{
+			throw new IllegalArgumentException("world cannot be null.");
+		}
+		if (link == null)
+		{
+			throw new IllegalArgumentException("link cannot be null.");
+		}
+		if (entity == null)
+		{
+			throw new IllegalArgumentException("entity cannot be null.");
+		}
 		if (world.isRemote)
 		{
 			return;
 		}
-		if (linkData != null)
+		
+		if (cooldown == 0 || entity instanceof EntityPlayer)
 		{
-			int destinationID = link.destination().getDimension();
-
-			if(PocketManager.dimList.containsKey(destinationID) && PocketManager.dimList.containsKey(world.provider.dimensionId))
-			{
-				this.generatePocket(linkData);
-
-				if(mod_pocketDim.teleTimer==0||entity instanceof EntityPlayer)
-				{
-					mod_pocketDim.teleTimer=2+rand.nextInt(2);
-				}
-				else
-				{
-					return;
-				}			
-				if(!world.isRemote)
-				{	
-					entity = this.teleportEntity(world, entity, linkData);		
-				}	
-				entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
-
-				int playerXCoord=MathHelper.floor_double(entity.posX);
-				int playerYCoord=MathHelper.floor_double(entity.posY);
-				int playerZCoord=MathHelper.floor_double(entity.posZ);
-
-				if(!entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1,playerZCoord )&&PocketManager.instance.getDimData(linkData.locDimID).isDimRandomRift&&!linkData.hasGennedDoor)
-				{						
-					for(int count=0;count<20;count++)
-					{
-						if(!entity.worldObj.isAirBlock(playerXCoord, playerYCoord-2-count,playerZCoord))
-						{
-							if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord, playerYCoord-2-count,playerZCoord)].blockMaterial.isLiquid())
-							{
-								entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, properties.FabricBlockID);
-								break;
-							}
-						}
-
-						if(entity.worldObj.isBlockOpaqueCube(playerXCoord, playerYCoord-1-count,playerZCoord))
-						{
-							break;
-						}
-						if(count==19)
-						{
-							entity.worldObj.setBlock(playerXCoord, playerYCoord-1, playerZCoord, properties.FabricBlockID);
-						}
-					}	    																	
-				}						
-
-				this.generateDoor(world,linkData);
-
-
-				if(!entity.worldObj.isAirBlock(playerXCoord,playerYCoord+1,playerZCoord))
-				{
-					if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord+1,playerZCoord)].isOpaqueCube() &&
-							!mod_pocketDim.blockRift.isBlockImmune(entity.worldObj, playerXCoord+1,playerYCoord,playerZCoord))
-					{
-						entity.worldObj.setBlock(playerXCoord,playerYCoord+1,playerZCoord,0);
-					}
-				}
-				if (!entity.worldObj.isAirBlock(playerXCoord,playerYCoord,playerZCoord))
-				{
-					if(Block.blocksList[entity.worldObj.getBlockId(playerXCoord,playerYCoord,playerZCoord)].isOpaqueCube() &&
-							!mod_pocketDim.blockRift.isBlockImmune(entity.worldObj, playerXCoord,playerYCoord,playerZCoord))
-					{
-						entity.worldObj.setBlock(playerXCoord,playerYCoord,playerZCoord,0);
-					}
-				}
-			}
+			cooldown = 2 + random.nextInt(2);
 		}
-		return;
+		else
+		{
+			return;
+		}
+
+		if (!initializeDestination(link, DDProperties.instance()))
+		{
+			return;
+		}
+		
+		entity = teleportEntity(entity, link.destination());	
+		entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+	}
+
+	private static boolean initializeDestination(IDimLink link, DDProperties properties)
+	{
+		//FIXME: Change this later to support rooms that have been wiped and must be regenerated.
+		if (link.hasDestination())
+		{
+			return true;
+		}
+
+		//Check the destination type and respond accordingly
+		//FIXME: Add missing link types.
+		//FIXME: Add code for restoring the destination-side door.
+		switch (link.linkType())
+		{
+			case IDimLink.TYPE_DUNGEON:
+				return PocketBuilder.generateNewDungeonPocket(link, properties);
+			case IDimLink.TYPE_POCKET:
+				return PocketBuilder.generateNewPocket(link, properties);
+			case IDimLink.TYPE_NORMAL:
+				return true;
+			default:
+				throw new IllegalArgumentException("link has an unrecognized link type.");
+		}
 	}
 }

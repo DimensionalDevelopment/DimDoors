@@ -3,7 +3,7 @@ package StevenDimDoors.mod_pocketDim.ticking;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.DDTeleporter;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
@@ -43,9 +43,9 @@ public class CommonTickHandler implements ITickHandler, IRegularTickSender
 		
 		//TODO: Stuck this in here because it's already rather hackish.
 		//We should standardize this as an IRegularTickReceiver in the future. ~SenseiKiwi
-		if (mod_pocketDim.teleTimer > 0)
+		if (DDTeleporter.cooldown > 0)
 		{
-			mod_pocketDim.teleTimer--;
+			DDTeleporter.cooldown--;
 		}
 	}
 

@@ -25,26 +25,16 @@ import StevenDimDoors.mod_pocketDim.blocks.TransientDoor;
 import StevenDimDoors.mod_pocketDim.blocks.UnstableDoor;
 import StevenDimDoors.mod_pocketDim.blocks.WarpDoor;
 import StevenDimDoors.mod_pocketDim.blocks.dimHatch;
-import StevenDimDoors.mod_pocketDim.commands.CommandCreateDungeonRift;
-import StevenDimDoors.mod_pocketDim.commands.CommandCreatePocket;
-import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
-import StevenDimDoors.mod_pocketDim.commands.CommandDeleteDimensionData;
-import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
-import StevenDimDoors.mod_pocketDim.commands.CommandExportDungeon;
-import StevenDimDoors.mod_pocketDim.commands.CommandPrintDimensionData;
-import StevenDimDoors.mod_pocketDim.commands.CommandPruneDimensions;
-import StevenDimDoors.mod_pocketDim.commands.CommandResetDungeons;
-import StevenDimDoors.mod_pocketDim.commands.CommandTeleportPlayer;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemBlockDimWall;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
+import StevenDimDoors.mod_pocketDim.items.ItemRiftSignature;
 import StevenDimDoors.mod_pocketDim.items.ItemStabilizedRiftSignature;
 import StevenDimDoors.mod_pocketDim.items.ItemStableFabric;
 import StevenDimDoors.mod_pocketDim.items.ItemUnstableDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemWarpDoor;
-import StevenDimDoors.mod_pocketDim.items.ItemRiftSignature;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.ticking.LimboDecay;
@@ -135,9 +125,6 @@ public class mod_pocketDim
 	public static DDProperties properties;
 	public static MonolithSpawner spawner; //Added this field temporarily. Will be refactored out later.
 	public static GatewayGenerator riftGen;
-
-	public static long genTime;
-	public static int teleTimer = 0;
 	
 	 public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") 
 	 {
@@ -157,22 +144,20 @@ public class mod_pocketDim
 	 
 
 	@PreInit
-	public void PreInit(FMLPreInitializationEvent event)
+	public void onPreInitialization(FMLPreInitializationEvent event)
 	{
 		//This should be the FIRST thing that gets done.
 		properties = DDProperties.initialize(event.getSuggestedConfigurationFile());
 
 		//Now do other stuff
-		MinecraftForge.EVENT_BUS.register(new EventHookContainer());
+		MinecraftForge.EVENT_BUS.register(new EventHookContainer(properties));
 		
-		//These fields MUST be initialized after properties are loaded to prevent
-		//instances from holding onto null references to the properties.
-		tracker = new PlayerRespawnTracker();
-		riftGen = new GatewayGenerator();
+		tracker = new PlayerRespawnTracker(properties);
+		riftGen = new GatewayGenerator(properties);
 	}
 
 	@Init
-	public void Init(FMLInitializationEvent event)
+	public void onInitialization(FMLInitializationEvent event)
 	{
 		CommonTickHandler commonTickHandler = new CommonTickHandler();
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
@@ -255,8 +240,6 @@ public class mod_pocketDim
 		
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dimDoorsCustomTab", "en_US", "Dimensional Doors Items");
 		
-		//GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimRail");
-
 		GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
 		GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
 
@@ -268,7 +251,7 @@ public class mod_pocketDim
 		//GameRegistry.addBiome(this.limboBiome);
 		//GameRegistry.addBiome(this.pocketBiome);
 
-		if (properties.CraftingDimensionaDoorAllowed)
+		if (properties.CraftingDimensionalDoorAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(itemDimDoor, 1), new Object[]
 					{
@@ -280,22 +263,6 @@ public class mod_pocketDim
 				"   ", "yxy", "   ", 'x', mod_pocketDim.itemStableFabric,  'y', Item.doorIron 
 					});
 		}
-
-		/**
-       if(this.enableDimRail)
-        {
-    	 GameRegistry.addRecipe(new ItemStack(dimRail, 1), new Object[]
-                 {
-                     "   ", "yxy", "   ", 'x', this.itemDimDoor,  'y', Block.rail 
-                 });
-
-    	 GameRegistry.addRecipe(new ItemStack(dimRail, 1), new Object[]
-                 {
-                     "   ", "yxy", "   ", 'x', this.itemExitDoor,  'y', Block.rail 
-                 });
-        }
-		 **/
-
 		if(properties.CraftingUnstableDoorAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(itemChaosDoor, 1), new Object[]
@@ -385,28 +352,29 @@ public class mod_pocketDim
 
 
 	@PostInit
-	public void PostInit(FMLPostInitializationEvent event)
+	public void onPostInitialization(FMLPostInitializationEvent event)
 	{	
 		//Register loot chests
 		DDLoot.registerInfo();
 	}
 
 	@ServerStopping
-	public void serverStopping(FMLServerStoppingEvent event)
+	public void onServerStopping(FMLServerStoppingEvent event)
 	{
 		try
 		{
 			PocketManager.unload();
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
 
 	@ServerStarting
-	public void serverStarting(FMLServerStartingEvent event)
+	public void onServerStarting(FMLServerStartingEvent event)
 	{
+		/*
 		CommandResetDungeons.instance().register(event);
 		CommandCreateDungeonRift.instance().register(event);
 		CommandDeleteAllLinks.instance().register(event);
@@ -417,6 +385,7 @@ public class mod_pocketDim
 		CommandPruneDimensions.instance().register(event);
 		CommandCreatePocket.instance().register(event);
 		CommandTeleportPlayer.instance().register(event);
+		*/
 		PocketManager.load();
 	}
 }

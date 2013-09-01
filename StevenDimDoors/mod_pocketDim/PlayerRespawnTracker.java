@@ -12,14 +12,13 @@ import cpw.mods.fml.common.IPlayerTracker;
 
 public class PlayerRespawnTracker implements IPlayerTracker
 {
-	public PlayerRespawnTracker()
+	private final DDProperties properties;
+	
+	public PlayerRespawnTracker(DDProperties properties)
 	{
-		if (properties == null)
-			properties = DDProperties.instance();
+		this.properties = properties;
 	}
 	
-	private static DDProperties properties = null;
-
 	@Override
 	public void onPlayerLogin(EntityPlayer player) {
 		// TODO Auto-generated method stub

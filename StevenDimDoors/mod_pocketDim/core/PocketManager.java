@@ -41,47 +41,37 @@ public class PocketManager
 	
 	private static int OVERWORLD_DIMENSION_ID = 0;
 	
-	private static boolean isInitialized = false;
+	private static boolean isLoaded = false;
 	private static boolean isSaving = false;
 
-	//HashMap containing all the dims registered with DimDoors, sorted by dim ID. loaded on startup
+	//HashMap that maps all the dimension IDs registered with DimDoors to their DD data.
 	private static HashMap<Integer, NewDimData> dimensionData = new HashMap<Integer, NewDimData>();
 
-	public static boolean isInitialized()
+	public static boolean isLoaded()
 	{
-		return isInitialized;
+		return isLoaded;
 	}
 
 	/**
 	 * simple method called on startup to register all dims saved in the dim list. Only tries to register pocket dims, though. Also calls load()
 	 * @return
 	 */
-	public static void initPockets()
+	public static void load()
 	{
-		if (isInitialized)
+		if (isLoaded)
 		{
-			throw new IllegalStateException("Pocket dimensions have already been initialized!");
+			throw new IllegalStateException("Pocket dimensions have already been loaded!");
 		}
 		
+		isLoaded = true;
+		loadInternal();
+		
+		//Register Limbo
 		DDProperties properties = DDProperties.instance();
+		registerDimension(properties.LimboDimensionID, null, false, false);
 		
-		isInitialized = true;
-		load();
-		for (NewDimData dimension : dimensionData.values())
-		{
-			if (dimension.isPocketDimension())
-			{
-				try
-				{
-					DimensionManager.registerDimension(dimension.id(), properties.PocketProviderID);
-				}
-				catch (Exception e)
-				{
-					System.err.println("Could not register pocket dimension #" + dimension.id() + ". Probably caused by a version update/save data corruption/other mods.");
-					e.printStackTrace();
-				}
-			}
-		}
+		//Register pocket dimensions
+		registerPockets(properties);
 	}
 
 	public boolean clearPocket(NewDimData dimension)
@@ -120,8 +110,27 @@ public class PocketManager
 			return false;
 		}
 	}
+	
+	private static void registerPockets(DDProperties properties)
+	{
+		for (NewDimData dimension : dimensionData.values())
+		{
+			if (dimension.isPocketDimension())
+			{
+				try
+				{
+					DimensionManager.registerDimension(dimension.id(), properties.PocketProviderID);
+				}
+				catch (Exception e)
+				{
+					System.err.println("Could not register pocket dimension #" + dimension.id() + ". Probably caused by a version update/save data corruption/other mods.");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
-	private static void unregisterDimensions()
+	private static void unregisterPockets()
 	{
 		for (NewDimData dimension : dimensionData.values())
 		{
@@ -149,6 +158,10 @@ public class PocketManager
 		//TODO change from saving serialized objects to just saving data for compatabilies sake. 
 		//TODO If saving is multithreaded as the concurrent modification exception implies, you should be synchronizing access. ~SenseiKiwi
 
+		if (!isLoaded)
+		{
+			return;
+		}
 		if (isSaving)
 		{
 			return;
@@ -188,7 +201,10 @@ public class PocketManager
 				e.printStackTrace();
 				System.err.println("Could not save data-- SEVERE");
 			}
-			isSaving = false;
+			finally
+			{
+				isSaving = false;
+			}
 		}
 	}
 
@@ -197,7 +213,7 @@ public class PocketManager
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static void load()
+	private static void loadInternal()
 	{
 		//FIXME: There are a lot of things to fix here... First, we shouldn't be created so many File instances
 		//when we could just hold references and reuse them. Second, duplicate code is BAD. Loading stuff should
@@ -353,7 +369,7 @@ public class PocketManager
 	public static void unload()
 	{
 		save();
-		unregisterDimensions();
+		unregisterPockets();
 		dimensionData.clear();
 	}
 

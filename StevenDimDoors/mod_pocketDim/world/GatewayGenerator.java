@@ -29,12 +29,12 @@ public class GatewayGenerator implements IWorldGenerator
 	private static final int NETHER_CHANCE_CORRECTION = 4;
 	private static final int OVERWORLD_DIMENSION_ID = 0;
 	private static final int NETHER_DIMENSION_ID = -1;
-	private static DDProperties properties = null;
 
-	public GatewayGenerator()
+	private final DDProperties properties;
+	
+	public GatewayGenerator(DDProperties properties)
 	{
-		if (properties == null)
-			properties = DDProperties.instance();
+		this.properties = properties;
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class GatewayGenerator implements IWorldGenerator
 				}
 				else
 				{
-					createLimboGateway(world, x, y, z);
+					createLimboGateway(world, x, y, z, properties.LimboBlockID);
 				}
 				
 				//Place the shiny transient door into a dungeon
@@ -190,11 +190,10 @@ public class GatewayGenerator implements IWorldGenerator
 		world.setBlock(x, y, z + 1, blockID, 0, 3);
 	}
 	
-	private static void createLimboGateway(World world, int x, int y, int z)
+	private static void createLimboGateway(World world, int x, int y, int z, int blockID)
 	{
 		//Build the gateway out of Unraveled Fabric. Since nearly all the blocks in Limbo are of
 		//that type, there is no point replacing the ground.
-		final int blockID = properties.LimboBlockID;
 		world.setBlock(x, y + 2, z + 1, blockID, 0, 3);
 		world.setBlock(x, y + 2, z - 1, blockID, 0, 3);
 		

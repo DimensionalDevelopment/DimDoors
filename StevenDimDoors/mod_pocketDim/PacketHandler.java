@@ -10,6 +10,7 @@ import java.util.HashSet;
 
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import StevenDimDoors.mod_pocketDim.core.IDimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
@@ -23,11 +24,9 @@ import cpw.mods.fml.common.network.Player;
 public class PacketHandler implements IPacketHandler 
 {
 	public static byte DIM_UPDATE_PACKET_ID = 1;
-	public static byte REGISTER_DIM_PACKET_ID = 3;
-	public static byte REGISTER_LINK_PACKET_ID = 4;
-	public static byte REMOVE_LINK_PACKET_ID = 5;
-	public static byte DIM_PACKET_ID = 6;
-	public static byte LINK_KEY_PACKET_ID = 7;
+	public static byte REGISTER_DIM_PACKET_ID = 2;
+	public static byte REGISTER_LINK_PACKET_ID = 3;
+	public static byte REMOVE_LINK_PACKET_ID = 4;
 	
 	@Override
 	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) 
@@ -71,7 +70,7 @@ public class PacketHandler implements IPacketHandler
 			{
 				NewDimData dimDataToAddLink= PocketManager.instance.getDimData(dimId);
 
-				ILinkData linkToAdd = new ILinkData(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean(),data.readInt());
+				IDimLink linkToAdd = new IDimLink(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean(),data.readInt());
 				linkToAdd.hasGennedDoor=data.readBoolean();
 
 				PocketManager.instance.createLink(linkToAdd);
@@ -90,7 +89,7 @@ public class PacketHandler implements IPacketHandler
 			{
 				NewDimData dimDataToRemoveFrom= PocketManager.instance.getDimData(dimId);
 
-				ILinkData linkToAdd = new ILinkData(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean(),data.readInt());
+				IDimLink linkToAdd = new IDimLink(dimId, data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readInt(), data.readBoolean(),data.readInt());
 				dimDataToRemoveFrom.removeLinkAtCoords(linkToAdd.locDimID, linkToAdd.locXCoord,linkToAdd.locYCoord, linkToAdd.locZCoord);
 			}
 			catch (Exception e)
@@ -98,11 +97,6 @@ public class PacketHandler implements IPacketHandler
 				System.out.println("Tried to update client link data & failed!");
 				e.printStackTrace();
 			}
-		}
-		else if (id == LINK_KEY_PACKET_ID)
-		{
-			ILinkData link = new ILinkData(data.readInt(), data.readInt(), data.readInt(), data.readInt());
-			dimHelper.PocketManager.interDimLinkList.put(data.readInt(), link);
 		}
 	}
 	
@@ -136,16 +130,16 @@ public class PacketHandler implements IPacketHandler
 		{
 			manager.addToSendQueue(PacketHandler.onDimCreatedPacket(data));
 
-			Collection <HashMap<Integer, HashMap<Integer,  ILinkData>>> linkList = data.linksInThisDim.values();
+			Collection <HashMap<Integer, HashMap<Integer,  IDimLink>>> linkList = data.linksInThisDim.values();
 
 			for(HashMap map :  linkList )
 			{
-				Collection <HashMap<Integer,  ILinkData>> linkList2 = map.values();
+				Collection <HashMap<Integer,  IDimLink>> linkList2 = map.values();
 				for(HashMap map2 : linkList2)
 				{
-					Collection <ILinkData> linkList3 = map2.values();
+					Collection <IDimLink> linkList3 = map2.values();
 
-					for(ILinkData link : linkList3)
+					for(IDimLink link : linkList3)
 					{
 						packetsToSend.add(( PacketHandler.onLinkCreatedPacket(link)));
 					}
@@ -159,7 +153,7 @@ public class PacketHandler implements IPacketHandler
 		}
 	}
 
-	public static void sendLinkCreatedPacket(ILinkData link)
+	public static void sendLinkCreatedPacket(IDimLink link)
 	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream  dataOut = new DataOutputStream(bos);
@@ -193,36 +187,7 @@ public class PacketHandler implements IPacketHandler
 		return packet;
 	}
 
-
-	public static void sendlinkKeyPacket(ILinkData link, int key)
-	{
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		DataOutputStream  dataOut = new DataOutputStream(bos);
-
-		try
-		{
-			dataOut.writeByte(PacketHandler.linkKeyPacketID);
-
-			dataOut.writeInt(link.destDimID);
-			dataOut.writeInt(link.destXCoord);
-			dataOut.writeInt(link.destYCoord);
-			dataOut.writeInt(link.destZCoord);
-			dataOut.writeInt(key);
-		}
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-
-		Packet250CustomPayload packet = new Packet250CustomPayload();
-		packet.channel="DimDoorPackets";
-		packet.data = bos.toByteArray();
-		packet.length = bos.size();;
-		PacketDispatcher.sendPacketToAllPlayers(packet);
-	}
-
-
-	public static void sendLinkRemovedPacket(ILinkData link)
+	public static void sendLinkRemovedPacket(IDimLink link)
 	{
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		DataOutputStream  dataOut = new DataOutputStream(bos);

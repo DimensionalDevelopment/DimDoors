@@ -67,7 +67,7 @@ public class BlockDimWallPerm extends Block
 				//FIXME: Shouldn't we make the player's destination safe BEFORE teleporting him?!
 				//player.setPositionAndUpdate( x, y, z );
 				Point4D destination = new Point4D(destinationX, destinationY, destinationZ, 0);
-				DDTeleporter.teleport(player, destination);
+				DDTeleporter.teleportEntity(player, destination);
 				
 				//player.setPositionAndUpdate( x, y, z );
 
