@@ -1,5 +1,4 @@
 package StevenDimDoors.mod_pocketDim.core;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,14 +10,15 @@ import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.watcher.IOpaqueMessage;
+import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 
-public abstract class NewDimData implements Serializable
+public abstract class NewDimData
 {
 	private static class DimLink implements IDimLink
 	{
 		//DimLink is an inner class here to make it immutable to code outside NewDimData
 		
-		private static final long serialVersionUID = 1462177151401498444L;
 		private static final int EXPECTED_CHILDREN = 2;
 		
 		private Point4D source;
@@ -66,16 +66,9 @@ public abstract class NewDimData implements Serializable
 			return (tail.getDestination() != null);
 		}
 		
-		@Override		
-		public IDimLink setDestination(int x, int y, int z, NewDimData dimension)
+		public void setDestination(int x, int y, int z, NewDimData dimension)
 		{
-			if (dimension == null)
-			{
-				throw new IllegalArgumentException("dimension cannot be null.");
-			}
-			
 			tail.setDestination(new Point4D(x, y, z, dimension.id()));
-			return this;
 		}
 
 		@Override
@@ -179,9 +172,18 @@ public abstract class NewDimData implements Serializable
 		{
 			return source + " -> " + (hasDestination() ? destination() : "");
 		}
-	}
 		
-	private static final long serialVersionUID = 89361974746997260L;
+		public IOpaqueMessage toMessage()
+		{
+			return null;
+		}
+
+		public IOpaqueMessage toKey()
+		{
+			return null;
+		}
+	}
+	
 	private static Random random = new Random();
 	
 	private final int id;
@@ -197,8 +199,11 @@ public abstract class NewDimData implements Serializable
 	private Point4D origin;
 	private int orientation;
 	private DungeonData dungeon;
+	private final IUpdateWatcher dimWatcher;
+	private final IUpdateWatcher linkWatcher;
 	
-	protected NewDimData(int id, NewDimData parent, boolean isPocket, boolean isDungeon)
+	protected NewDimData(int id, NewDimData parent, boolean isPocket, boolean isDungeon,
+		IUpdateWatcher dimWatcher, IUpdateWatcher linkWatcher)
 	{
 		//The isPocket flag is redundant. It's meant as an integrity safeguard.
 		if (isPocket == (parent != null))
@@ -215,24 +220,33 @@ public abstract class NewDimData implements Serializable
 		this.linkList = new ArrayList<DimLink>(); //Should be stored in oct tree -- temporary solution
 		this.children = new ArrayList<NewDimData>(); 
 		this.parent = parent;
-		this.root = (parent != null ? parent.root : this);
-		this.depth = (parent != null ? parent.depth + 1 : 0);
 		this.packDepth = 0;
 		this.isDungeon = isDungeon;
 		this.isFilled = false;
 		this.orientation = 0;
 		this.origin = null;
 		this.dungeon = null;
+		this.dimWatcher = dimWatcher;
+		this.linkWatcher = linkWatcher;
 		
 		//Register with parent
-		addChildDimension(this);
+		if (parent != null)
+		{
+			//We don't need to raise an update event for adding a child because the child's creation will be signaled.
+			this.root = parent.root;
+			this.depth = parent.depth + 1;
+			parent.children.add(this);
+		}
+		else
+		{
+			this.root = this;
+			this.depth = 0;
+		}
 	}
 	
-	private void addChildDimension(NewDimData child)
-	{
-		children.add(child);
-	}
-
+	protected abstract IOpaqueMessage toMessage();
+	protected abstract IOpaqueMessage toKey();
+	
 	public IDimLink findNearestRift(World world, int range, int x, int y, int z)
 	{
 		//TODO: Rewrite this later to use an octtree
@@ -301,6 +315,8 @@ public abstract class NewDimData implements Serializable
 		{
 			link.overwrite(linkType);
 		}
+		//Link created!
+		linkWatcher.onCreated(link.toMessage());
 		return link;
 	}
 	
@@ -330,7 +346,8 @@ public abstract class NewDimData implements Serializable
 		{
 			link.overwrite(parent);
 		}
-		
+		//Link created!
+		linkWatcher.onCreated(link.toMessage());
 		return link;
 	}
 
@@ -344,6 +361,8 @@ public abstract class NewDimData implements Serializable
 		if (target != null)
 		{
 			linkList.remove(target);
+			//Raise deletion event
+			linkWatcher.onDeleted(target.toKey());
 			target.clear();
 		}
 		return (target != null);
@@ -356,6 +375,8 @@ public abstract class NewDimData implements Serializable
 		if (target != null)
 		{
 			linkList.remove(target);
+			//Raise deletion event
+			linkWatcher.onDeleted(target.toKey());
 			target.clear();
 		}
 		return (target != null);
@@ -400,6 +421,8 @@ public abstract class NewDimData implements Serializable
 	public void setFilled(boolean isFilled)
 	{
 		this.isFilled = isFilled;
+		//Raise the dim update event
+		dimWatcher.onUpdated(this.toMessage());
 	}
 	
 	public int id()
@@ -457,7 +480,7 @@ public abstract class NewDimData implements Serializable
 		return children;
 	}
 	
-	public void initializeDungeon(int originX, int originY, int originZ, int orientation, IDimLink link, DungeonData dungeon)
+	public void initializeDungeon(int originX, int originY, int originZ, int orientation, IDimLink incoming, DungeonData dungeon)
 	{
 		if (!isDungeon)
 		{
@@ -468,11 +491,13 @@ public abstract class NewDimData implements Serializable
 			throw new IllegalStateException("The dimension has already been initialized.");
 		}
 		
-		link.setDestination(originX, originY, originZ, this);
-		this.origin = link.destination();
+		setDestination(incoming, originX, originY, originZ);
+		this.origin = incoming.destination();
 		this.orientation = orientation;
 		this.dungeon = dungeon;
 		this.packDepth = calculatePackDepth(parent, dungeon);
+		//Raise the dim update event
+		dimWatcher.onUpdated(this.toMessage());
 	}
 	
 	private static int calculatePackDepth(NewDimData parent, DungeonData current)
@@ -507,7 +532,7 @@ public abstract class NewDimData implements Serializable
 		}
 	}
 
-	public void initializePocket(int originX, int originY, int originZ, int orientation, IDimLink link)
+	public void initializePocket(int originX, int originY, int originZ, int orientation, IDimLink incoming)
 	{
 		if (!isPocketDimension())
 		{
@@ -518,9 +543,19 @@ public abstract class NewDimData implements Serializable
 			throw new IllegalStateException("The dimension has already been initialized.");
 		}
 		
-		link.setDestination(originX, originY, originZ, this);
-		this.origin = link.destination();
+		setDestination(incoming, originX, originY, originZ);
+		this.origin = incoming.destination();
 		this.orientation = orientation;
+		//Raise the dim update event
+		dimWatcher.onUpdated(this.toMessage());
+	}
+	
+	public void setDestination(IDimLink incoming, int x, int y, int z)
+	{
+		DimLink link = (DimLink) incoming;
+		link.setDestination(x, y, z, this);
+		//Raise update event
+		linkWatcher.onUpdated(link.toMessage());
 	}
 
 	public IDimLink getRandomLink()

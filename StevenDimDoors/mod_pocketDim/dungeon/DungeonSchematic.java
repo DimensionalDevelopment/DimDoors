@@ -286,8 +286,8 @@ public class DungeonSchematic extends Schematic {
 	{
 		IDimLink link = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), IDimLink.TYPE_NORMAL);
 		Point4D destination = link.source();
-		link.setDestination(destination.getX(), destination.getY(), destination.getZ(),
-			PocketManager.getDimensionData(destination.getDimension()));
+		NewDimData prevDim = PocketManager.getDimensionData(destination.getDimension());
+		prevDim.setDestination(link, destination.getX(), destination.getY(), destination.getZ());
 	}
 	
 	private static void createExitDoorLink(NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)

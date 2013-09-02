@@ -1,9 +1,10 @@
 package StevenDimDoors.mod_pocketDim.core;
 
+import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,11 +13,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.ObjectSaveInputStream;
 import StevenDimDoors.mod_pocketDim.helpers.DeleteFolder;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-import cpw.mods.fml.common.FMLCommonHandler;
+import StevenDimDoors.mod_pocketDim.watcher.IOpaqueMessage;
+import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
+import StevenDimDoors.mod_pocketDim.watcher.UpdateWatcherProxy;
 
 /**
  * This class regulates all the operations involving the storage and manipulation of dimensions. It handles saving dim data, teleporting the player, and 
@@ -30,19 +32,35 @@ public class PocketManager
 		//a public constructor from NewDimData. It's meant to stop us from constructing instances
 		//of NewDimData without using PocketManager's functions. In turn, that enforces that any
 		//link destinations must be real dimensions controlled by PocketManager.
-		
-		private static final long serialVersionUID = -3497038894870586232L;
 
-		public InnerDimData(int id, NewDimData parent, boolean isPocket, boolean isDungeon)
+		public InnerDimData(int id, NewDimData parent, boolean isPocket, boolean isDungeon,
+			IUpdateWatcher dimWatcher, IUpdateWatcher linkWatcher)
 		{
-			super(id, parent, isPocket, isDungeon);
+			super(id, parent, isPocket, isDungeon, dimWatcher, linkWatcher);
+		}
+
+		@Override
+		protected IOpaqueMessage toMessage()
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		protected IOpaqueMessage toKey()
+		{
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 	
 	private static int OVERWORLD_DIMENSION_ID = 0;
 	
-	private static boolean isLoaded = false;
-	private static boolean isSaving = false;
+	private static volatile boolean isLoading = false;
+	private static volatile boolean isLoaded = false;
+	private static volatile boolean isSaving = false;
+	private static UpdateWatcherProxy linkWatcher = null;
+	private static UpdateWatcherProxy dimWatcher = null;
 
 	//HashMap that maps all the dimension IDs registered with DimDoors to their DD data.
 	private static HashMap<Integer, NewDimData> dimensionData = new HashMap<Integer, NewDimData>();
@@ -62,8 +80,17 @@ public class PocketManager
 		{
 			throw new IllegalStateException("Pocket dimensions have already been loaded!");
 		}
+		if (isLoading)
+		{
+			return;
+		}
+
+		isLoading = true;
 		
-		isLoaded = true;
+		//Set up watcher proxies
+		dimWatcher = new UpdateWatcherProxy();
+		linkWatcher = new UpdateWatcherProxy();
+		
 		loadInternal();
 		
 		//Register Limbo
@@ -72,6 +99,9 @@ public class PocketManager
 		
 		//Register pocket dimensions
 		registerPockets(properties);
+		
+		isLoaded = true;
+		isLoading = false;
 	}
 
 	public boolean clearPocket(NewDimData dimension)
@@ -103,6 +133,9 @@ public class PocketManager
 				File save = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/pocketDimID" + dimension.id());
 				DeleteFolder.deleteFolder(save);
 			}
+			//Raise the dim deleted event
+			dimWatcher.onDeleted(dimension.toKey());
+			//dimension.implode()??? -- more like delete, but yeah
 			return true;
 		}
 		else
@@ -150,146 +183,74 @@ public class PocketManager
 	}
 
 	/**
-	 * Function that saves all dim data in a hashMap. Calling too often can cause Concurrent modification exceptions, so be careful.
-	 * @return
-	 */
-	public static void save()
-	{
-		//TODO change from saving serialized objects to just saving data for compatabilies sake. 
-		//TODO If saving is multithreaded as the concurrent modification exception implies, you should be synchronizing access. ~SenseiKiwi
-
-		if (!isLoaded)
-		{
-			return;
-		}
-		if (isSaving)
-		{
-			return;
-		}
-		World world = DimensionManager.getWorld(OVERWORLD_DIMENSION_ID);
-		if (world == null || world.isRemote)
-		{
-			return;
-		}	
-		if (DimensionManager.getCurrentSaveRootDirectory() != null)
-		{
-			isSaving = true;
-			HashMap<String, Object> comboSave = new HashMap<String, Object>();
-			comboSave.put("dimensionData", dimensionData);
-
-			FileOutputStream saveFile = null;
-			try
-			{
-				String saveFileName=DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataTEMP";
-				saveFile = new FileOutputStream(saveFileName);
-
-				ObjectOutputStream save = new ObjectOutputStream(saveFile);
-				save.writeObject(comboSave);
-				save.close();
-				saveFile.close();
-
-				if (new File(DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD").exists())
-				{
-					new File(DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD").delete(); 
-				}
-				new File(DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsData").renameTo(new File(DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD"));
-
-				new File(saveFileName).renameTo( new File(DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsData"));
-			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-				System.err.println("Could not save data-- SEVERE");
-			}
-			finally
-			{
-				isSaving = false;
-			}
-		}
-	}
-
-	/**
 	 * loads the dim data from the saved hashMap. Also handles compatibility with old saves, see OldSaveHandler
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	private static void loadInternal()
 	{
-		//FIXME: There are a lot of things to fix here... First, we shouldn't be created so many File instances
-		//when we could just hold references and reuse them. Second, duplicate code is BAD. Loading stuff should
-		//be a function so that you can apply it to the save file first, then the "backup", instead of duplicating
-		//so much code. >_<
+		// SenseiKiwi: This is a temporary function for testing purposes.
+		// We'll move on to using a text-based format in the future.
 		
-		boolean firstRun = false;
-		System.out.println("Loading DimDoors data");
-		FileInputStream saveFile = null;
-
-		if (!DimensionManager.getWorld(OVERWORLD_DIMENSION_ID).isRemote && DimensionManager.getCurrentSaveRootDirectory()!=null)
+		if (!DimensionManager.getWorld(OVERWORLD_DIMENSION_ID).isRemote &&
+			DimensionManager.getCurrentSaveRootDirectory() != null)
 		{
-			try
-			{
-				File dataStore = new File( DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsData");
-				if (!dataStore.exists())
-				{
-					if (!new File( DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoorsDataOLD").exists())
-					{
-						firstRun=true;
-					}
-				}
-				saveFile = new FileInputStream(dataStore);
-				ObjectSaveInputStream save = new ObjectSaveInputStream(saveFile);
-				HashMap<String, Object> comboSave = (HashMap<String, Object>) save.readObject();
+			System.out.println("Loading Dimensional Doors save data...");
+			File saveFile = new File(DimensionManager.getCurrentSaveRootDirectory() + "/dimdoors.dat");
+			//Missing code for converting the binary data in the file into an IOpaqueMessage
+			IOpaqueMessage saveData;
+			setState(saveData);
+			System.out.println("Loaded successfully!");
+		}
+	}
+	
+	public static void save()
+	{
+		// SenseiKiwi: This is a temporary function for testing purposes.
+		// We'll move on to using a text-based format in the future.
 
-				try
-				{
-					dimensionData = (HashMap<Integer, NewDimData>) comboSave.get("dimensionData");
-				}
-				catch(Exception e)
-				{
-					System.out.println("Could not load pocket dimension list. Saves are probably lost, but repairable. Move the files from individual pocket dim files to active ones. See MC thread for details.");
-				}
+		if (!isLoaded)
+		{
+			return;
+		}
+		World world = DimensionManager.getWorld(OVERWORLD_DIMENSION_ID);
+		if (world == null || world.isRemote || DimensionManager.getCurrentSaveRootDirectory() != null)
+		{
+			return;
+		}
+		//Check this last to make sure we set the flag shortly after.
+		if (isSaving)
+		{
+			return;
+		}
 
-				save.close();
-				saveFile.close();
-			}
-			catch (Exception e)
-			{
-				try
-				{
-					if (!firstRun)
-					{
-						System.out.println("Save data damaged, trying backup...");
-					}
-					World world=FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
-					File dataStore =new File( world.getSaveHandler().getMapFileFromName("idcounts").getParentFile().getParent()+"/DimensionalDoorsDataOLD");
-
-
-					saveFile = new FileInputStream(dataStore);
-					ObjectSaveInputStream save = new ObjectSaveInputStream(saveFile);
-					HashMap<String, Object> comboSave = (HashMap<String, Object>) save.readObject();
-
-					try
-					{
-						dimensionData = (HashMap<Integer, NewDimData>) comboSave.get("dimensionData");
-					}
-					catch (Exception e2)
-					{
-						System.out.println("Could not load pocket dim list. Saves probably lost, but repairable. Move the files from indivual pocket dim files to active ones. See MC thread for details.");
-					}
-
-					save.close();
-					saveFile.close();
-				}
-				catch (Exception e2)			
-				{
-					if (!firstRun)
-					{
-						System.err.println("Could not read data-- SEVERE");
-						e2.printStackTrace();
-					}
-				}
-			}
-		}	
+		isSaving = true;
+		try
+		{
+			System.out.println("Writing Dimensional Doors save data...");
+			String tempPath = DimensionManager.getCurrentSaveRootDirectory() + "/dimdoors.tmp";
+			String savePath = DimensionManager.getCurrentSaveRootDirectory() + "/dimdoors.dat";
+			File tempFile = new File(tempPath);
+			File saveFile = new File(savePath);
+			DataOutputStream writer = new DataOutputStream(new FileOutputStream(tempFile));
+			getState().writeToStream(writer);
+			writer.close();
+			saveFile.delete();
+			tempFile.renameTo(saveFile);
+			System.out.println("Saved successfully!");
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			isSaving = false;
+		}
 	}
 
 	public static boolean removeRift(World world, int x, int y, int z, int range, EntityPlayer player, ItemStack item)
@@ -340,7 +301,7 @@ public class PocketManager
 			throw new IllegalArgumentException("Cannot register a dimension with ID = " + dimensionID + " because it has already been registered.");
 		}
 
-		NewDimData dimension = new InnerDimData(dimensionID, parent, isPocket, isDungeon);
+		NewDimData dimension = new InnerDimData(dimensionID, parent, isPocket, isDungeon, dimWatcher, linkWatcher);
 		dimensionData.put(dimensionID, dimension);
 		return dimension;
 	}
@@ -394,5 +355,39 @@ public class PocketManager
 		{
 			return null;
 		}
+	}
+	
+	public static void registerDimWatcher(IUpdateWatcher watcher)
+	{
+		dimWatcher.registerReceiver(watcher);
+	}
+	
+	public static boolean unregisterDimWatcher(IUpdateWatcher watcher)
+	{
+		return dimWatcher.unregisterReceiver(watcher);
+	}
+	
+	public static void registerLinkWatcher(IUpdateWatcher watcher)
+	{
+		linkWatcher.registerReceiver(watcher);
+	}
+	
+	public static boolean unregisterLinkWatcher(IUpdateWatcher watcher)
+	{
+		return linkWatcher.unregisterReceiver(watcher);
+	}
+	
+	public static IOpaqueMessage getState()
+	{
+		
+	}
+	
+	public static void setState(IOpaqueMessage state)
+	{
+		if (isLoaded)
+		{
+			throw new IllegalStateException("Pocket dimensions have already been loaded!");
+		}
+		
 	}
 }

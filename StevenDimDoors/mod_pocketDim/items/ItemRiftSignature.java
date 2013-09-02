@@ -68,8 +68,8 @@ public class ItemRiftSignature extends Item
 				NewDimData destinationDimension = PocketManager.getDimensionData(world);
 				IDimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), IDimLink.TYPE_NORMAL);
 				IDimLink reverse = destinationDimension.createLink(x, y, z, IDimLink.TYPE_NORMAL);
-				link.setDestination(x, y, z, destinationDimension);
-				reverse.setDestination(source.getX(), source.getY(), source.getZ(), sourceDimension);
+				destinationDimension.setDestination(link, x, y, z);
+				sourceDimension.setDestination(reverse, source.getX(), source.getY(), source.getZ());
 				
 				//Try placing a rift at the destination point
 				if (!mod_pocketDim.blockRift.isBlockImmune(world, x, y, z))

@@ -1,16 +1,13 @@
 package StevenDimDoors.mod_pocketDim.dungeon;
 
 import java.io.FileNotFoundException;
-import java.io.Serializable;
 
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
 
-public class DungeonData implements Serializable
+public class DungeonData
 {
-	private static final long serialVersionUID = -5624866366474710161L;
-
 	private final int weight;
 	private final boolean isOpen;
 	private final boolean isInternal;

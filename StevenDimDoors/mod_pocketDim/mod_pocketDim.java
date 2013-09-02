@@ -74,13 +74,11 @@ import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = mod_pocketDim.modid, name = "Dimensional Doors", version = mod_pocketDim.version)
 
-
-@NetworkMod(clientSideRequired = true, serverSideRequired = false,
+@NetworkMod(clientSideRequired = true, serverSideRequired = false, connectionHandler=ConnectionHandler.class,
 clientPacketHandlerSpec =
-@SidedPacketHandler(channels = {"pocketDim" }, packetHandler = ClientPacketHandler.class),
+@SidedPacketHandler(channels = {PacketConstants.CHANNEL_NAME}, packetHandler = ClientPacketHandler.class),
 serverPacketHandlerSpec =
-@SidedPacketHandler(channels = {"pocketDim" }, packetHandler = ServerPacketHandler.class),
-channels={"DimDoorPackets"}, packetHandler = PacketHandler.class, connectionHandler=ConnectionHandler.class)
+@SidedPacketHandler(channels = {PacketConstants.CHANNEL_NAME}, packetHandler = ServerPacketHandler.class))
 
 public class mod_pocketDim
 {
