@@ -48,7 +48,7 @@ public class RiftRegenerator implements IRegularTickReceiver {
 	    			{
 	    				IDimLink link = dimension.getRandomLink();
 	    				Point4D source = link.source();
-	    				if (!mod_pocketDim.blockRift.isBlockImmune(world, source.getX(), source.getY(), source.getZ()))
+	    				if (!mod_pocketDim.blockRift.isBlockImmune(world, source.getX(), source.getY(), source.getZ())&& world.getChunkProvider().chunkExists(source.getX() >> 4, source.getZ() >> 4))
 	    				{
 	    					world.setBlock(source.getX(), source.getY(), source.getZ(), properties.RiftBlockID);
 	    				}
