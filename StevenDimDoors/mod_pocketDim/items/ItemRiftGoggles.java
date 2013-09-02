@@ -1,14 +1,11 @@
 package StevenDimDoors.mod_pocketDim.items;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.ItemArmor;
 
 public class ItemRiftGoggles extends ItemArmor
 {
-    private Material doorMaterial;
 
     public ItemRiftGoggles(int par1, int par2, int par3)
     {

@@ -5,14 +5,12 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumToolMaterial;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.AxisAlignedBB;
@@ -22,30 +20,27 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.NewLinkData;
+import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemRiftBlade extends ItemSword
 {
-	public ItemRiftBlade(int par1)
+	private static DDProperties properties = null;
+
+	public ItemRiftBlade(int itemID, EnumToolMaterial material)
 	{
-		super(par1, EnumToolMaterial.GOLD);
+		super(itemID, material);
 
-		// this.setTextureFile("/PocketBlockTextures.png");
-        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 		this.setMaxStackSize(1);
-
-		//   this.itemIcon=5;
 		this.setMaxDamage(500);
-		this.hasSubtypes=false;
-		//TODO move to proxy
+		this.hasSubtypes = false;
 		if (properties == null)
 			properties = DDProperties.instance();
 	}
-
-	private static DDProperties properties = null;
 
 	@SideOnly(Side.CLIENT)
 	public boolean isFull3D()
@@ -53,6 +48,7 @@ public class ItemRiftBlade extends ItemSword
 		return true;
 	}
 
+	@Override
 	public float getStrVsBlock(ItemStack par1ItemStack, Block par2Block)
 	{
 		if (par2Block.blockID == Block.web.blockID)
@@ -71,20 +67,22 @@ public class ItemRiftBlade extends ItemSword
 	public boolean hasEffect(ItemStack par1ItemStack)
 	{
 		return true;
-
 	}
 
+	@Override
 	public boolean hitEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving)
 	{
 		par1ItemStack.damageItem(1, par3EntityLiving);
 		return true;
 	}
 
+	@Override
 	public int getDamageVsEntity(Entity par1Entity)
 	{
 		return 7;
 	}
 
+	@Override
 	public MovingObjectPosition getMovingObjectPositionFromPlayer(World par1World, EntityPlayer par2EntityPlayer, boolean par3)
 	{
 		float var4 = 1.0F;
@@ -109,10 +107,9 @@ public class ItemRiftBlade extends ItemSword
 		return par1World.rayTraceBlocks_do_do(var13, var23, true, false);
 	}
 
-	protected boolean teleportToEntity(ItemStack item, Entity par1Entity, EntityPlayer holder)
+	private boolean teleportToEntity(ItemStack item, Entity par1Entity, EntityPlayer holder)
 	{
 		Vec3 var2 = holder.worldObj.getWorldVec3Pool().getVecFromPool(holder.posX - par1Entity.posX, holder.boundingBox.minY + (double)(holder.height / 2.0F) - par1Entity.posY + (double)par1Entity.getEyeHeight(), holder.posZ - par1Entity.posZ);
-
 
 		double cooef =( var2.lengthVector()-2.5)/var2.lengthVector();
 		var2.xCoord*=cooef;
@@ -123,7 +120,6 @@ public class ItemRiftBlade extends ItemSword
 		double var7 =holder.worldObj.getHeightValue(MathHelper.floor_double(var5), MathHelper.floor_double(var9));
 		if((Math.abs((holder.posY  - var2.yCoord)-var7)>2))
 		{
-
 			var7 = MathHelper.floor_double(holder.posY  - var2.yCoord) ;
 
 			int var14 = MathHelper.floor_double(var5);
@@ -136,262 +132,169 @@ public class ItemRiftBlade extends ItemSword
 			var7=var15;
 		}
 
-
 		holder.setPositionAndUpdate(var5, var7, var9);
 		holder.playSound("mob.endermen.portal", 1.0F, 1.0F);
 		holder.worldObj.playSoundEffect(holder.posX, holder.posY, holder.posZ, "mob.endermen.portal", 1.0F, 1.0F);
-
-
+		
 		return true;
-	}
-	public ItemStack onFoodEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
-	{
-		return par1ItemStack;
 	}
 
 	/**
 	 * How long it takes to use or consume an item
 	 */
-	 public int getMaxItemUseDuration(ItemStack par1ItemStack)
+	@Override
+	public int getMaxItemUseDuration(ItemStack par1ItemStack)
 	{
 		return 72000;
 	}
 
-	public EnumAction getItemUseAction(ItemStack par1ItemStack)
+	@Override
+	public EnumAction getItemUseAction(ItemStack stack)
 	{
 		return properties.RiftBladeRiftCreationEnabled ? EnumAction.bow : EnumAction.block;
 	}
 
-	public void onPlayerStoppedUsing(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer, int par4)
+	@Override
+	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int itemInUseCount)
 	{
 		//Condition for disabling rift creation
 		if (!properties.RiftBladeRiftCreationEnabled)
 			return;
 
-		Vec3 var2 = par3EntityPlayer.getLook(1.0F);
+		if (world.isRemote)
+			return;
+
+		Vec3 var2 = player.getLook(1.0F);
 
 		double cooef = -2;
-		var2.xCoord*=cooef;
-		var2.yCoord*=cooef;
-		var2.zCoord*=cooef;
-		double var5 = par3EntityPlayer.posX  - var2.xCoord;
-		double var9 = par3EntityPlayer.posZ - var2.zCoord;
-		double var7 = par3EntityPlayer.posY - var2.yCoord+2;
+		var2.xCoord *= cooef;
+		var2.yCoord *= cooef;
+		var2.zCoord *= cooef;
+		double var5 = player.posX - var2.xCoord;
+		double var9 = player.posZ - var2.zCoord;
+		double var7 = player.posY - var2.yCoord + 2;
 
 		int x = MathHelper.floor_double(var5);
 		int y = MathHelper.floor_double(var7);
 		int z = MathHelper.floor_double(var9);
 
-		int rotation = (int) (MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
-		NewLinkData link = new NewLinkData(par2World.provider.dimensionId, 0, x, y, z, x, y, z, true,rotation);
+		int orientation = (int) (MathHelper.floor_double((double) ((player.rotationYaw + 90) * 4.0F / 360.0F) + 0.5D) & 3);
 
-		if(this.getMaxItemUseDuration(par1ItemStack)-par4>12&&!par2World.isRemote&&itemDimDoor.canPlace(par2World, x, y, z, rotation))
+		//TODO: This looks weird. Shouldn't we aim to only create rifts on maxed-out usage time? i.e. "<= 0"
+		if (this.getMaxItemUseDuration(stack) - itemInUseCount > 12 &&
+			ItemDimensionalDoor.canPlace(world, x, y, z) && ItemDimensionalDoor.canPlace(world, x, y + 1, z))
 		{
-
-			if(PocketManager.instance.getDimData(par2World.provider.dimensionId)!=null)
+			NewDimData dimension = PocketManager.getDimensionData(world);
+			if (!dimension.isPocketDimension() && dimension.getLink(x, y + 1, z) == null)
 			{
-				if(PocketManager.instance.getDimData(par2World.provider.dimensionId).depth==0)
-				{
-					PocketManager.instance.createPocket(link,true, false);
-				}
-			}
-			else
-			{
-				PocketManager.instance.createPocket(link,true, false);
-			}
-			par3EntityPlayer.worldObj.playSoundAtEntity(par3EntityPlayer,"mods.DimDoors.sfx.riftDoor", (float) .6, 1);
-			itemDimDoor.placeDoorBlock(par2World, x, y-1, z, rotation,  mod_pocketDim.transientDoor);   
+				dimension.createLink(x, y + 1, z, IDimLink.TYPE_POCKET);
+				player.worldObj.playSoundAtEntity(player,"mods.DimDoors.sfx.riftDoor", 0.6f, 1);
+				ItemDimensionalDoor.placeDoorBlock(world, x, y, z, orientation, mod_pocketDim.transientDoor);  
+			} 
 		}
 	}
 
-	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		Boolean didFindThing=false;
-		MovingObjectPosition hit = 	this.getMovingObjectPositionFromPlayer(par3EntityPlayer.worldObj, par3EntityPlayer, false );
-		if(hit!=null&&!par2World.isRemote)
+		if (!world.isRemote)
 		{
-			if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ)==properties.RiftBlockID)
+			@SuppressWarnings("unchecked")
+			List<EntityLiving> list =  (List<EntityLiving>) world.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(player.posX-8,player.posY-8, player.posZ-8, player.posX+8,player.posY+8, player.posZ+8));
+			list.remove(player);
+
+			for (EntityLiving ent : list)
 			{
-				NewLinkData link = PocketManager.instance.getLinkDataFromCoords(hit.blockX, hit.blockY, hit.blockZ, par2World);
-				if(link!=null)
-				{
-
-					Block var11 = mod_pocketDim.transientDoor;
-					int par4 = hit.blockX;
-					int par5 = hit.blockY;
-					int par6 = hit.blockZ;
-					int par7 = 0 ;
-
-
-
-
-					if (par3EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack) && par3EntityPlayer.canPlayerEdit(par4, par5 + 1, par6, par7, par1ItemStack)&&!par2World.isRemote)
-					{
-						int var12 = MathHelper.floor_double((double)((par3EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
-
-						if (!itemDimDoor.canPlace(par2World, par4, par5, par6, var12)||!itemDimDoor.canPlace(par2World, par4, par5-1, par6, var12)||PocketManager.instance.getLinkDataFromCoords(par4, par5, par6, par2World)==null)
-						{
-							return par1ItemStack;
-						}
-						else 
-						{
-
-							itemDimDoor.placeDoorBlock(par2World, par4, par5-1, par6, var12, var11);
-							par3EntityPlayer.worldObj.playSoundAtEntity(par3EntityPlayer,"mods.DimDoors.sfx.riftDoor", (float) .6, 1);
-
-							didFindThing=true;
-
-
-							par1ItemStack.damageItem(10, par3EntityPlayer);
-
-						}
-					}
-				}
-			}
-			else if(par2World.getBlockId(hit.blockX, hit.blockY, hit.blockZ) == properties.TransientDoorID)
-			{
-				didFindThing=true;
-			}
-
-		}
-
-
-
-
-		if(!par3EntityPlayer.worldObj.isRemote)
-		{
-			List<EntityLiving> list =  par3EntityPlayer.worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox( par3EntityPlayer.posX-8,par3EntityPlayer.posY-8, par3EntityPlayer.posZ-8, par3EntityPlayer.posX+8,par3EntityPlayer.posY+8, par3EntityPlayer.posZ+8));
-			list.remove(par3EntityPlayer);
-
-
-			for(EntityLiving ent : list)
-			{
-
-				Vec3 var3 = par3EntityPlayer.getLook(1.0F).normalize();
-				Vec3 var4 =  par3EntityPlayer.worldObj.getWorldVec3Pool().getVecFromPool(ent.posX -  par3EntityPlayer.posX, ent.boundingBox.minY + (double)((ent.height) / 2.0F) - ( par3EntityPlayer.posY + (double) par3EntityPlayer.getEyeHeight()), ent.posZ -  par3EntityPlayer.posZ);
+				Vec3 var3 = player.getLook(1.0F).normalize();
+				Vec3 var4 =  player.worldObj.getWorldVec3Pool().getVecFromPool(ent.posX -  player.posX, ent.boundingBox.minY + (double)((ent.height) / 2.0F) - ( player.posY + (double) player.getEyeHeight()), ent.posZ -  player.posZ);
 				double var5 = var4.lengthVector();
 				var4 = var4.normalize();
 				double var7 = var3.dotProduct(var4);
-				if( (var7+.1) > 1.0D - 0.025D / var5 ?  par3EntityPlayer.canEntityBeSeen(ent) : false)
+				if( (var7+.1) > 1.0D - 0.025D / var5 ?  player.canEntityBeSeen(ent) : false)
 				{
-					System.out.println(list.size());
-					ItemRiftBlade.class.cast(par1ItemStack.getItem()).teleportToEntity(par1ItemStack,ent, par3EntityPlayer);
-					didFindThing=true;
-					break;
-
-					//ItemRiftBlade.class.cast(item.getItem()).teleportTo(event.entityPlayer, ent.posX, ent.posY, ent.posZ);
+					((ItemRiftBlade) stack.getItem()).teleportToEntity(stack, ent, player);
+					return stack;
 				}
 			}
 
+			MovingObjectPosition hit = this.getMovingObjectPositionFromPlayer(world, player, false);
+			if (hit != null)
+			{
+				if (world.getBlockId(hit.blockX, hit.blockY, hit.blockZ) == properties.RiftBlockID)
+				{
+					if (PocketManager.getLink(hit.blockX, hit.blockY, hit.blockZ, world) != null)
+					{
+						Block var11 = mod_pocketDim.transientDoor;
+						int par4 = hit.blockX;
+						int par5 = hit.blockY;
+						int par6 = hit.blockZ;
+						int par7 = 0;
 
+						if (player.canPlayerEdit(par4, par5, par6, par7, stack) && player.canPlayerEdit(par4, par5 + 1, par6, par7, stack)&&!world.isRemote)
+						{
+							int var12 = MathHelper.floor_double((double)((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+
+							if (BaseItemDoor.canPlace(world, par4, par5, par6) &&
+								BaseItemDoor.canPlace(world, par4, par5 - 1, par6))
+							{
+								ItemDimensionalDoor.placeDoorBlock(world, par4, par5 - 1, par6, var12, var11);
+								player.worldObj.playSoundAtEntity(player,"mods.DimDoors.sfx.riftDoor", 0.6f, 1);
+								stack.damageItem(10, player);
+							}
+						}
+					}
+					return stack;
+				}
+			}
+			
+			//FIXME: Should this be inside or after this IF?
+			player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 		}
-		//	if(dimHelper.instance.getDimData(par2World.provider.dimensionId)!=null&&!par2World.isRemote&&!didFindThing)
-		{
 
-			par3EntityPlayer.setItemInUse(par1ItemStack, this.getMaxItemUseDuration(par1ItemStack));
-
-		}
-
-
-
-
-		return par1ItemStack;
-
+		return stack;
 	}
+
+	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
-
 	}
-	public int getItemEnchantability()
-    {
-        return EnumToolMaterial.GOLD.getEnchantability();
-    }
 
-    /**
-     * Return the name for this tool's material.
-     */
-    public String getToolMaterialName()
-    {
-        return EnumToolMaterial.GOLD.toString();
-    }
-
-    /**
-     * Return whether this item is repairable in an anvil.
-     */
-    public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
-    {
-        return mod_pocketDim.itemStableFabric.itemID == par2ItemStack.itemID ? true : super.getIsRepairable(par1ItemStack, par2ItemStack);
-    }
-
-	public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+	/**
+	 * Return whether this item is repairable in an anvil.
+	 */
+	@Override
+	public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
 	{
-		if (par7 != 1)
+		//Don't include a call to super.getIsRepairable()!
+    	//That would cause this sword to accept gold as a repair material (since we set material = Gold).
+		return mod_pocketDim.itemStableFabric.itemID == par2ItemStack.itemID ? true : false;
+	}
+	
+	@Override
+	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y,
+		int z, int par7, float par8, float par9, float par10)
+	{
+		if (BaseItemDoor.tryItemUse(mod_pocketDim.transientDoor, stack, player, world, x, y, z, par7, true, false))
 		{
-			return false;
+			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftDoor", 0.6f, 1);
+			return true;
 		}
 		else
 		{
-			++par5;
-			Block var11;
-
-
-
-			var11 = mod_pocketDim.transientDoor;
-			if (par2EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack) && par2EntityPlayer.canPlayerEdit(par4, par5 + 1, par6, par7, par1ItemStack)&&!par3World.isRemote)
-			{
-				int var12 = MathHelper.floor_double((double)((par2EntityPlayer.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
-
-				if (!itemDimDoor.canPlace(par3World, par4, par5, par6, var12)||PocketManager.instance.getLinkDataFromCoords(par4, par5+1, par6, par3World)==null)
-				{
-					return false;
-				}
-				else 
-				{
-
-					itemDimDoor.placeDoorBlock(par3World, par4, par5, par6, var12, var11);
-					par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.rift", (float) .6, 1);
-
-
-					par1ItemStack.damageItem(10, par2EntityPlayer);
-					return true;
-				}
-			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
 	}
-
-
-
-	@SideOnly(Side.CLIENT)
 
 	/**
 	 * allows items to add custom lines of information to the mouseover description
 	 */
-	 public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
 	{
-		par3List.add("Opens a temporary doors,");
-		par3List.add ("special teleport attack,");
-		par3List.add ("and rotates existing doors");
-	}
-
-	@Override
-	public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) 
-	{
-		if(!par2World.isRemote)
-		{
-			/**
-    		//creates the first half of the link on item creation
-    		int key= dimHelper.instance.createUniqueInterDimLinkKey();
-    		LinkData linkData= new LinkData(par2World.provider.dimensionId,MathHelper.floor_double(par3EntityPlayer.posX),MathHelper.floor_double(par3EntityPlayer.posY),MathHelper.floor_double(par3EntityPlayer.posZ));
-    		System.out.println(key);
-
-    		dimHelper.instance.interDimLinkList.put(key, linkData);
-    		par1ItemStack.setItemDamage(key);
-			 **/
-		}
+		par3List.add("Opens a temporary door, has");
+		par3List.add("a special teleport attack,");
+		par3List.add("and rotates existing doors.");
 	}
 }

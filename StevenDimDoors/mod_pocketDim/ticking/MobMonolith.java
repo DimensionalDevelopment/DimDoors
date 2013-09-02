@@ -13,8 +13,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.core.NewLinkData;
-import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.DDTeleporter;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 
@@ -24,7 +24,7 @@ public class MobMonolith extends EntityFlying implements IMob
 	float soundTime = 0;
 	int aggro = 0;
 	byte textureState = 0;
-	
+
 	float scaleFactor = 0;
 	int aggroMax;
 	int destX=0;
@@ -86,16 +86,14 @@ public class MobMonolith extends EntityFlying implements IMob
 	@Override
 	public void onEntityUpdate()
 	{
-		if(!(this.worldObj.provider instanceof LimboProvider ||this.worldObj.provider instanceof PocketProvider))
+		if (!(this.worldObj.provider instanceof LimboProvider || this.worldObj.provider instanceof PocketProvider))
 		{
 			this.setDead();
 		}
-		
+
 		byte b0 = this.dataWatcher.getWatchableObjectByte(16);
 
 		this.texture="/mods/DimDoors/textures/mobs/Monolith"+b0+".png";
-	
-
 		super.onEntityUpdate();
 
 		if (this.isEntityAlive() && this.isEntityInsideOpaqueBlock())
@@ -103,12 +101,9 @@ public class MobMonolith extends EntityFlying implements IMob
 			this.setDead();
 		}
 
-
-
-
 		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 30);
 
-		if(entityPlayer != null)		
+		if (entityPlayer != null)
 		{
 			if(this.soundTime<=0)
 			{
@@ -116,83 +111,57 @@ public class MobMonolith extends EntityFlying implements IMob
 				this.soundTime=100;
 			}
 
-
-
 			this.faceEntity(entityPlayer, 1, 1);
 
-			if(shouldAttackPlayer(entityPlayer))
+			if (shouldAttackPlayer(entityPlayer))
 			{
-				{	
-
-				}
-				if(aggro<470)
+				if (aggro<470)
 				{
-					if(rand.nextInt(11)>this.textureState||this.aggro>=300||rand.nextInt(13)>this.textureState&&this.aggroMax>this.aggro)
+					if (rand.nextInt(11)>this.textureState||this.aggro>=300||rand.nextInt(13)>this.textureState&&this.aggroMax>this.aggro)
 					{
 						aggro++;
 					}
-
-
-					if(this.worldObj.provider instanceof PocketProvider||this.worldObj.getClosestPlayerToEntity(this, 5)!=null)
+					if (this.worldObj.provider instanceof PocketProvider||this.worldObj.getClosestPlayerToEntity(this, 5)!=null)
 					{
-
 						aggro++;
 						aggro++;
 
-						if(rand.nextBoolean())
+						if (rand.nextBoolean())
 						{
 							aggro++;
 						}
 
 					}
-					if(aggro>430&&this.soundTime<100)
+					if (aggro>430&&this.soundTime<100)
 					{
-						//this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.tearing",2, 1);
 						this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,"mods.DimDoors.sfx.tearing",2F, 1F);
-
 						this.soundTime=100;
-
 					}
-					if(aggro>445&&this.soundTime<200)
+					if (aggro>445&&this.soundTime<200)
 					{
-						//this.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.tearing",5, 1);
 						this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,"mods.DimDoors.sfx.tearing",5F, 1F);
-
 						this.soundTime=200;
 					}
-
-
-
 				}
-				else if(!this.worldObj.isRemote&&!entityPlayer.capabilities.isCreativeMode)
+				else if (!this.worldObj.isRemote && !entityPlayer.capabilities.isCreativeMode)
 				{
-
-
-
-
-
-					NewLinkData link = new NewLinkData(this.worldObj.provider.dimensionId, properties.LimboDimensionID, (int)this.posX, (int)this.posY, (int)this.posZ, (int)this.posX+rand.nextInt(500)-250, (int)this.posY+500, (int)this.posZ+rand.nextInt(500)-250, false,0);
-
-					PocketManager.instance.traverseDimDoor(worldObj, link, entityPlayer);
-					this.aggro=0;
+					Point4D destination = new Point4D(
+						(int) this.posX + MathHelper.getRandomIntegerInRange(rand, -250, 250),
+						(int) this.posY + 500,
+						(int) this.posZ + MathHelper.getRandomIntegerInRange(rand, -250, 250),
+						properties.LimboDimensionID);
+					DDTeleporter.teleportEntity(entityPlayer, destination);
+					this.aggro = 0;
 
 					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.crack",13, 1);
-					
-
-
-
 				}
-				if(!(this.worldObj.provider instanceof LimboProvider || this.worldObj.getClosestPlayerToEntity(this, 5)!=null)||this.aggro>300)
+				if (!(this.worldObj.provider instanceof LimboProvider || this.worldObj.getClosestPlayerToEntity(this, 5) != null) || this.aggro > 300)
 				{
-
 					for (int i = 0; i < -1+this.textureState/2; ++i)
 					{
 						entityPlayer.worldObj.spawnParticle("portal", entityPlayer.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, entityPlayer.posY + this.rand.nextDouble() * (double)entityPlayer.height - 0.75D, entityPlayer.posZ + (this.rand.nextDouble() - 0.5D) * (double)entityPlayer.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
 					}
 				}
-
-
-
 			}
 			else
 			{
@@ -205,12 +174,9 @@ public class MobMonolith extends EntityFlying implements IMob
 
 				}
 			}
-
-
 		}
 		else 
 		{
-
 			if(aggro>0)
 			{
 				aggro--;
@@ -221,43 +187,22 @@ public class MobMonolith extends EntityFlying implements IMob
 				}
 			}
 		}
-		if(soundTime>=0)
+		if (soundTime>=0)
 		{
 			soundTime--;
 		}
-
-		
-
-		{
-
-
-
-
-		}
-
-
 		this.textureState= (byte) (this.aggro/25);
-		if(!this.worldObj.isRemote)
+		if (!this.worldObj.isRemote)
 		{
-
 			this.dataWatcher.updateObject(16, Byte.valueOf(this.textureState));
 		}
-
-
-
-
-
-
 	}
-	
+
 
 	private boolean shouldAttackPlayer(EntityPlayer par1EntityPlayer)
 	{
 		return par1EntityPlayer.canEntityBeSeen(this);
-
 	}
-
-
 
 	private boolean isCourseTraversable(double par1, double par3, double par5, double par7)
 	{
@@ -275,9 +220,9 @@ public class MobMonolith extends EntityFlying implements IMob
 				return false;
 			}
 		}
-
 		return true;
 	}
+	
 	public boolean attackEntityFrom(DamageSource par1DamageSource, int par2)
 	{
 		if(!(par1DamageSource==DamageSource.inWall))
@@ -286,6 +231,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		}
 		return false;
 	}
+	
 	public void faceEntity(Entity par1Entity, float par2, float par3)
 	{
 		double d0 = par1Entity.posX - this.posX;
@@ -311,7 +257,6 @@ public class MobMonolith extends EntityFlying implements IMob
 		this.rotationYaw =  f2;
 		this.rotationYawHead=f2;
 		this.renderYawOffset=this.rotationYaw;
-
 	}
 
 	private float updateRotation(float par1, float par2, float par3)
@@ -336,8 +281,6 @@ public class MobMonolith extends EntityFlying implements IMob
 		return 0.0F;
 	}
 
-
-
 	public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound)
 	{
 		super.writeEntityToNBT(par1NBTTagCompound);
@@ -346,9 +289,8 @@ public class MobMonolith extends EntityFlying implements IMob
 		par1NBTTagCompound.setInteger("aggroMax", this.aggroMax);
 		par1NBTTagCompound.setByte("textureState", this.textureState);
 		par1NBTTagCompound.setFloat("scaleFactor", this.scaleFactor);
-
 	}
-	
+
 	@Override
 	public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound)
 	{
@@ -358,31 +300,27 @@ public class MobMonolith extends EntityFlying implements IMob
 		this.aggroMax = par1NBTTagCompound.getInteger("aggroMax");
 		this.textureState = par1NBTTagCompound.getByte("textureState");
 		this.scaleFactor = par1NBTTagCompound.getFloat("scaleFactor");
-
 	}
-	  public boolean getCanSpawnHere()
-	    {
-		  	List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this,AxisAlignedBB.getBoundingBox( this.posX-15, posY-4, this.posZ-15, this.posX+15, this.posY+15, this.posZ+15));
-	      
-		  	if(this.worldObj.provider.dimensionId==DDProperties.instance().LimboDimensionID)
-		  	{
-		  		if(list.size()>0)
-		  		{
-		  			return false;
-		  		}
-		  		
-		  	}
-		  	else if(this.worldObj.provider instanceof PocketProvider)	
-		  	{
-		  		if(list.size()>5||this.worldObj.canBlockSeeTheSky((int)this.posX, (int)this.posY, (int)this.posZ))
-		  		{
-		  			return false;
-		  		}
-		  	}
-		  	return this.worldObj.checkNoEntityCollision(this.boundingBox) && this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() && !this.worldObj.isAnyLiquid(this.boundingBox);
-	    }
 	
+	public boolean getCanSpawnHere()
+	{
+		List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.getBoundingBox( this.posX-15, posY-4, this.posZ-15, this.posX+15, this.posY+15, this.posZ+15));
 
+		if(this.worldObj.provider.dimensionId==DDProperties.instance().LimboDimensionID)
+		{
+			if(list.size()>0)
+			{
+				return false;
+			}
 
-
+		}
+		else if(this.worldObj.provider instanceof PocketProvider)	
+		{
+			if(list.size()>5||this.worldObj.canBlockSeeTheSky((int)this.posX, (int)this.posY, (int)this.posZ))
+			{
+				return false;
+			}
+		}
+		return this.worldObj.checkNoEntityCollision(this.boundingBox) && this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() && !this.worldObj.isAnyLiquid(this.boundingBox);
+	}
 }

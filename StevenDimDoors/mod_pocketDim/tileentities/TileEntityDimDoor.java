@@ -1,15 +1,15 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.tileentities;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
-public class TileEntityDimRail extends TileEntity
+public class TileEntityDimDoor extends TileEntity
 
 {
-
+	public boolean openOrClosed;
 	public int orientation;
 	public boolean hasExit;
-
+	public boolean isDungeonChainLink;
 	
 	
 	
@@ -33,11 +33,13 @@ public class TileEntityDimRail extends TileEntity
 
 	        try
 	        {
+	            this.openOrClosed = nbt.getBoolean("openOrClosed");
 	            
 	            this.orientation = nbt.getInteger("orientation");
 	            
 	            this.hasExit = nbt.getBoolean("hasExit");
 	            
+	            this.isDungeonChainLink = nbt.getBoolean("isDungeonChainLink");
 
 	          
 
@@ -55,13 +57,13 @@ public class TileEntityDimRail extends TileEntity
 	    {
 	        int i = 0;
 	        super.writeToNBT(nbt);
-	     
+	        nbt.setBoolean("openOrClosed", this.openOrClosed);
 	        
 	        nbt.setBoolean("hasExit", this.hasExit);
 
 	       	nbt.setInteger("orientation", this.orientation);
 	       	
-	   
+	       	nbt.setBoolean("isDungeonChainLink", isDungeonChainLink);
 
           
 	    }

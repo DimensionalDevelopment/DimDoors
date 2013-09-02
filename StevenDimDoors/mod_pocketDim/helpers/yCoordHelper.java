@@ -22,7 +22,7 @@ public class yCoordHelper
 
 		int localX = x < 0 ? (x % 16) + 16 : (x % 16);
 		int localZ = z < 0 ? (z % 16) + 16 : (z % 16);
-		int height = MAXIMUM_UNCOVERED_Y;  //world.getHeight();
+		int height = MAXIMUM_UNCOVERED_Y;
 		int y;
 		
 		if (!fromTop)

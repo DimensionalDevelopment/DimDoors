@@ -8,16 +8,18 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
-import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class BlockDimWallPerm extends Block
 {
+	private static final Random random = new Random();
 	private static DDProperties properties = null;
 	
 	public BlockDimWallPerm(int i, int j, Material par2Material) 
@@ -43,83 +45,50 @@ public class BlockDimWallPerm extends Block
 	/**
 	 * Only matters if the player is in limbo, acts to teleport the player from limbo back to dim 0
 	 */
-	public void onEntityWalking(World par1World, int par2, int par3, int par4, Entity entity) 
+	public void onEntityWalking(World world, int x, int y, int z, Entity entity) 
 	{
-		if (!par1World.isRemote && par1World.provider.dimensionId == properties.LimboDimensionID)
+		if (!world.isRemote && world.provider.dimensionId == properties.LimboDimensionID)
 		{
-			Random rand = new Random();
-
-			IDimLink link = PocketManager.getRandomLinkData(false);
-			if (link == null)
-			{
-				link =new NewLinkData(0,0,0,0);    		
-			}
-			link.destDimID = 0;
-			link.locDimID = par1World.provider.dimensionId;
 			World overworld = DimensionManager.getWorld(0);
-
-			if (overworld == null)
-			{
-				DimensionManager.initDimension(0);
-				overworld = DimensionManager.getWorld(0);
-			}
-			
 			if (overworld != null && entity instanceof EntityPlayerMP)
 			{
 				EntityPlayer player = (EntityPlayer) entity;
 				player.fallDistance = 0;
-				int x = (link.destXCoord + rand.nextInt(properties.LimboReturnRange) - properties.LimboReturnRange/2);
-				int z = (link.destZCoord + rand.nextInt(properties.LimboReturnRange) - properties.LimboReturnRange/2);
+				int rangeLimit = properties.LimboReturnRange / 2;
+				int destinationX = x + MathHelper.getRandomIntegerInRange(random, -rangeLimit, rangeLimit);
+				int destinationZ = z + MathHelper.getRandomIntegerInRange(random, -rangeLimit, rangeLimit);
 
 				//make sure I am in the middle of a chunk, and not on a boundary, so it doesn't load the chunk next to me
-				x = x + (x >> 4);
-				z = z + (z >> 4);
+				destinationX = destinationX + (destinationX >> 4);
+				destinationZ = destinationZ + (destinationZ >> 4);
 
-				int y = yCoordHelper.getFirstUncovered(0, x, 63, z, true);
+				int destinationY = yCoordHelper.getFirstUncovered(overworld, destinationX, 63, destinationZ, true);
 				
-				player.setPositionAndUpdate( x, y, z );
-				//this complicated chunk teleports the player back to the overworld at some random location. Looks funky becaue it has to load the chunk
-				link.destXCoord = x;
-				link.destYCoord = y;
-				link.destZCoord = z;
-				PocketManager.teleportEntity(par1World, player, link);
+				//FIXME: Shouldn't we make the player's destination safe BEFORE teleporting him?!
+				//player.setPositionAndUpdate( x, y, z );
+				Point4D destination = new Point4D(destinationX, destinationY, destinationZ, 0);
+				DDTeleporter.teleportEntity(player, destination);
 				
-				player.setPositionAndUpdate( x, y, z );
+				//player.setPositionAndUpdate( x, y, z );
 
 				// Make absolutely sure the player doesn't spawn inside blocks, though to be honest this shouldn't ever have to be a problem...
-				overworld.setBlockToAir(x, y, z);
-				overworld.setBlockToAir(x, y + 1, z);
+				overworld.setBlockToAir(destinationX, destinationY, destinationZ);
+				overworld.setBlockToAir(destinationX, destinationY + 1, destinationZ);
 				
-				int i=x;
-				int j=y;
-				int k=z;
-
-				for(int xc=-3;xc<4;xc++)
+				for (int xc = -3; xc < 4; xc++)
 				{
-					for(int zc=-3;zc<4;zc++)
+					for (int zc = -3; zc < 4; zc++)
 					{
-						for(int yc=0;yc<200;yc++)
+						if (Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 2 ||
+							Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 3)
 						{
-							if (yc==0)
-							{
-								if(Math.abs(xc)+Math.abs(zc)<rand.nextInt(3)+2)
-								{
-									overworld.setBlock(i+xc, j-1+yc, k+zc, properties.LimboBlockID);
-								}
-								else if(Math.abs(xc)+Math.abs(zc)<rand.nextInt(3)+3)
-
-								{
-									overworld.setBlock(i+xc, j-1+yc, k+zc,  properties.LimboBlockID,2,0);
-								}
-							}
-
+							overworld.setBlock(destinationX + xc, destinationY - 1, destinationZ + zc, properties.LimboBlockID);
 						}
-
 					}
 				}
 
 				//FIXME: Why do we do this repeatedly? We also set the fall distance at the start...
-				player.setPositionAndUpdate( x, y, z );
+				player.setPositionAndUpdate( destinationX, destinationY, destinationZ );
 				player.fallDistance = 0;
 			}
 		}

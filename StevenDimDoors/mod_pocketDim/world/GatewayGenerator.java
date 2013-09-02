@@ -12,7 +12,7 @@ import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.IDimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.items.itemDimDoor;
+import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import cpw.mods.fml.common.IWorldGenerator;
 
 public class GatewayGenerator implements IWorldGenerator
@@ -29,12 +29,12 @@ public class GatewayGenerator implements IWorldGenerator
 	private static final int NETHER_CHANCE_CORRECTION = 4;
 	private static final int OVERWORLD_DIMENSION_ID = 0;
 	private static final int NETHER_DIMENSION_ID = -1;
-	private static DDProperties properties = null;
 
-	public GatewayGenerator()
+	private final DDProperties properties;
+	
+	public GatewayGenerator(DDProperties properties)
 	{
-		if (properties == null)
-			properties = DDProperties.instance();
+		this.properties = properties;
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class GatewayGenerator implements IWorldGenerator
 					if (link == null)
 					{
 						dimension = PocketManager.getDimensionData(world);
-						link = dimension.createLink(x, y + 1, z).setLinkType(IDimLink.TYPE_POCKET);
+						link = dimension.createLink(x, y + 1, z, IDimLink.TYPE_POCKET);
 					}
 					else
 					{
@@ -132,7 +132,7 @@ public class GatewayGenerator implements IWorldGenerator
 			{
 				//Create a partial link to a dungeon.
 				dimension = PocketManager.getDimensionData(world);
-				link = dimension.createLink(x, y + 1, z).setLinkType(IDimLink.TYPE_DUNGEON);
+				link = dimension.createLink(x, y + 1, z, IDimLink.TYPE_DUNGEON);
 
 				//If the current dimension isn't Limbo, build a Rift Gateway out of Stone Bricks
 				if (dimension.id() != properties.LimboDimensionID)
@@ -141,11 +141,11 @@ public class GatewayGenerator implements IWorldGenerator
 				}
 				else
 				{
-					createLimboGateway(world, x, y, z);
+					createLimboGateway(world, x, y, z, properties.LimboBlockID);
 				}
 				
 				//Place the shiny transient door into a dungeon
-				itemDimDoor.placeDoorBlock(world, x, y + 1, z, 0, mod_pocketDim.transientDoor);
+				ItemDimensionalDoor.placeDoorBlock(world, x, y + 1, z, 0, mod_pocketDim.transientDoor);
 			}
 		}
 	}
@@ -190,11 +190,10 @@ public class GatewayGenerator implements IWorldGenerator
 		world.setBlock(x, y, z + 1, blockID, 0, 3);
 	}
 	
-	private static void createLimboGateway(World world, int x, int y, int z)
+	private static void createLimboGateway(World world, int x, int y, int z, int blockID)
 	{
 		//Build the gateway out of Unraveled Fabric. Since nearly all the blocks in Limbo are of
 		//that type, there is no point replacing the ground.
-		final int blockID = properties.LimboBlockID;
 		world.setBlock(x, y + 2, z + 1, blockID, 0, 3);
 		world.setBlock(x, y + 2, z - 1, blockID, 0, 3);
 		

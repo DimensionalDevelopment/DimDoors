@@ -15,11 +15,11 @@ import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ExitDoor extends dimDoor
+public class WarpDoor extends DimensionalDoor
 {
 	private Icon blockIconBottom;
 
-	public ExitDoor(int blockID, Material material) 
+	public WarpDoor(int blockID, Material material) 
 	{
 		super(blockID, material);
 	}
@@ -41,7 +41,7 @@ public class ExitDoor extends dimDoor
 			IDimLink link = dimension.getLink(x, y, z);
 			if (link == null)
 			{
-				dimension.createLink(x, y, z).setLinkType(IDimLink.TYPE_SAFE_EXIT);
+				dimension.createLink(x, y, z, IDimLink.TYPE_SAFE_EXIT);
 			}
 		}
 		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));

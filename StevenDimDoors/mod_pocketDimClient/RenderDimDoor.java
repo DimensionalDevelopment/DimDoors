@@ -14,9 +14,9 @@ import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.blocks.dimDoor;
+import StevenDimDoors.mod_pocketDim.blocks.DimensionalDoor;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -40,12 +40,10 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
     {
     	try
     	{
-    		dimDoor.class.cast(Block.blocksList[properties.DimensionalDoorID]).updateAttatchedTile(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord).getFullMetadata(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord);
-
+    		mod_pocketDim.dimensionalDoor.updateAttachedTile(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord);
     	}
     	catch(Exception e)
     	{
-    
     		e.printStackTrace();
     	}
     	

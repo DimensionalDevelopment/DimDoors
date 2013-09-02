@@ -7,7 +7,7 @@ import net.minecraft.block.BlockRedstoneRepeater;
 import net.minecraft.block.BlockStairs;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.blocks.dimDoor;
+import StevenDimDoors.mod_pocketDim.blocks.DimensionalDoor;
 
 public class BlockRotator
 {
@@ -64,8 +64,8 @@ public class BlockRotator
 		hasOrientations[Block.railActivator.blockID] = true;
 		hasOrientations[Block.rail.blockID] = true;
 		
-		hasOrientations[mod_pocketDim.dimDoor.blockID] = true;
-		hasOrientations[mod_pocketDim.ExitDoor.blockID] = true;
+		hasOrientations[mod_pocketDim.dimensionalDoor.blockID] = true;
+		hasOrientations[mod_pocketDim.warpDoor.blockID] = true;
 		
 	}
 
@@ -379,7 +379,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater || Block.blocksList[blockID] instanceof BlockDoor || Block.blocksList[blockID] instanceof dimDoor || blockID== Block.tripWireSource.blockID || Block.blocksList[blockID] instanceof BlockComparator)
+		else if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater || Block.blocksList[blockID] instanceof BlockDoor || Block.blocksList[blockID] instanceof DimensionalDoor || blockID== Block.tripWireSource.blockID || Block.blocksList[blockID] instanceof BlockComparator)
 		{
 			switch (metadata)
 			{

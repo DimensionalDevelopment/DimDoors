@@ -12,12 +12,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class EventHookContainer
 {
-	private static DDProperties properties = null;
+	private final DDProperties properties;
 	
-	public EventHookContainer()
+	public EventHookContainer(DDProperties properties)
 	{
-		if (properties == null)
-			properties = DDProperties.instance();
+		this.properties = properties;
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -56,7 +55,7 @@ public class EventHookContainer
     @ForgeSubscribe
     public void onWorldsave(WorldEvent.Save event)
     {
-    	if (PocketManager.isInitialized() && event.world.provider.dimensionId == 0)
+    	if (event.world.provider.dimensionId == 0)
     	{
     		PocketManager.save();
     	}

@@ -1,10 +1,8 @@
 package StevenDimDoors.mod_pocketDim.core;
 
-import java.io.Serializable;
-
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
-public interface IDimLink extends Serializable
+public interface IDimLink
 {
 	public final int TYPE_ENUM_MIN = 0;
 	public final int TYPE_ENUM_MAX = 8;
@@ -26,6 +24,4 @@ public interface IDimLink extends Serializable
 	public int childCount();
 	public IDimLink parent();
 	public int linkType();
-	public IDimLink setDestination(int x, int y, int z, NewDimData dimension);
-	public IDimLink setLinkType(int linkType);
 }
