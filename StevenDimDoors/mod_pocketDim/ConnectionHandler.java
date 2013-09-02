@@ -11,7 +11,7 @@ import net.minecraft.network.packet.Packet1Login;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.server.MinecraftServer;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.watcher.IOpaqueMessage;
+import StevenDimDoors.mod_pocketDim.messages.IDataMessage;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.Player;
 
@@ -41,7 +41,7 @@ public class ConnectionHandler implements IConnectionHandler
 		//Send information about all the registered dimensions and links to the client
 		try
 		{
-			IOpaqueMessage message = PocketManager.getState();
+			IDataMessage message = PocketManager.getState();
 			Packet250CustomPayload packet = new Packet250CustomPayload();
 			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 			DataOutputStream writer = new DataOutputStream(buffer);

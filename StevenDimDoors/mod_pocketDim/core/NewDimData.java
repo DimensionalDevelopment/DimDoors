@@ -10,9 +10,10 @@ import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
+import StevenDimDoors.mod_pocketDim.messages.IDataMessage;
+import StevenDimDoors.mod_pocketDim.messages.IUpdateWatcher;
+import StevenDimDoors.mod_pocketDim.messages.LinkMessageBuilder;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-import StevenDimDoors.mod_pocketDim.watcher.IOpaqueMessage;
-import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 
 public abstract class NewDimData
 {
@@ -106,17 +107,18 @@ public abstract class NewDimData
 			tail = new LinkTail(linkType, null);
 		}
 		
-		public IOpaqueMessage toMessage()
+		public IDataMessage toMessage()
 		{
-			return null;
+			return linkMessageBuilder.createMessage(this);
 		}
 
-		public IOpaqueMessage toKey()
+		public IDataMessage toKey()
 		{
-			return null;
+			return linkMessageBuilder.createKey(this);
 		}
 	}
 	
+	private static LinkMessageBuilder linkMessageBuilder = new LinkMessageBuilder();
 	private static Random random = new Random();
 	
 	private final int id;
@@ -177,8 +179,8 @@ public abstract class NewDimData
 		}
 	}
 	
-	protected abstract IOpaqueMessage toMessage();
-	protected abstract IOpaqueMessage toKey();
+	protected abstract IDataMessage toMessage();
+	protected abstract IDataMessage toKey();
 	
 	public DimLink findNearestRift(World world, int range, int x, int y, int z)
 	{

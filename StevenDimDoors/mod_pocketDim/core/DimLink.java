@@ -13,7 +13,7 @@ public abstract class DimLink
 	protected LinkTail tail;
 	protected ArrayList<DimLink> children;
 	
-	public DimLink(Point4D source, DimLink parent)
+	protected DimLink(Point4D source, DimLink parent)
 	{
 		this.parent = parent;
 		this.source = source;
@@ -22,7 +22,7 @@ public abstract class DimLink
 		parent.children.add(this);
 	}
 	
-	public DimLink(Point4D source, int linkType)
+	protected DimLink(Point4D source, int linkType)
 	{
 		if (linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX)
 		{

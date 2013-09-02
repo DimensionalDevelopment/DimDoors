@@ -1,4 +1,4 @@
-package StevenDimDoors.mod_pocketDim.watcher;
+package StevenDimDoors.mod_pocketDim.messages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class UpdateWatcherProxy implements IUpdateWatcher
 	}
 
 	@Override
-	public void onCreated(IOpaqueMessage message)
+	public void onCreated(IDataMessage message)
 	{
 		for (IUpdateWatcher receiver : watchers)
 		{
@@ -22,7 +22,7 @@ public class UpdateWatcherProxy implements IUpdateWatcher
 	}
 
 	@Override
-	public void onUpdated(IOpaqueMessage message)
+	public void onUpdated(IDataMessage message)
 	{
 		for (IUpdateWatcher receiver : watchers)
 		{
@@ -31,7 +31,7 @@ public class UpdateWatcherProxy implements IUpdateWatcher
 	}
 
 	@Override
-	public void onDeleted(IOpaqueMessage message)
+	public void onDeleted(IDataMessage message)
 	{
 		for (IUpdateWatcher receiver : watchers)
 		{

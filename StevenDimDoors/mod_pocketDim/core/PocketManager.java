@@ -14,18 +14,19 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.DeleteFolder;
+import StevenDimDoors.mod_pocketDim.messages.DimMessageBuilder;
+import StevenDimDoors.mod_pocketDim.messages.IDataMessage;
+import StevenDimDoors.mod_pocketDim.messages.IUpdateWatcher;
+import StevenDimDoors.mod_pocketDim.messages.UpdateWatcherProxy;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-import StevenDimDoors.mod_pocketDim.watcher.IOpaqueMessage;
-import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
-import StevenDimDoors.mod_pocketDim.watcher.UpdateWatcherProxy;
 
 /**
  * This class regulates all the operations involving the storage and manipulation of dimensions. It handles saving dim data, teleporting the player, and 
  * creating/registering new dimensions as well as loading old dimensions on startup
  */
 public class PocketManager
-{
+{	
 	private static class InnerDimData extends NewDimData
 	{
 		//This inner class allows us to instantiate NewDimData indirectly without exposing
@@ -40,22 +41,21 @@ public class PocketManager
 		}
 
 		@Override
-		protected IOpaqueMessage toMessage()
+		protected IDataMessage toMessage()
 		{
-			// TODO Auto-generated method stub
-			return null;
+			return dimMessageBuilder.createMessage(this);
 		}
 
 		@Override
-		protected IOpaqueMessage toKey()
+		protected IDataMessage toKey()
 		{
-			// TODO Auto-generated method stub
-			return null;
+			return dimMessageBuilder.createKey(this);
 		}
 	}
-	
+
+	private static DimMessageBuilder dimMessageBuilder = new DimMessageBuilder();
 	private static int OVERWORLD_DIMENSION_ID = 0;
-	
+
 	private static volatile boolean isLoading = false;
 	private static volatile boolean isLoaded = false;
 	private static volatile boolean isSaving = false;
@@ -198,7 +198,7 @@ public class PocketManager
 			System.out.println("Loading Dimensional Doors save data...");
 			File saveFile = new File(DimensionManager.getCurrentSaveRootDirectory() + "/dimdoors.dat");
 			//Missing code for converting the binary data in the file into an IOpaqueMessage
-			IOpaqueMessage saveData;
+			IDataMessage saveData;
 			setState(saveData);
 			System.out.println("Loaded successfully!");
 		}
@@ -377,12 +377,12 @@ public class PocketManager
 		return linkWatcher.unregisterReceiver(watcher);
 	}
 	
-	public static IOpaqueMessage getState()
+	public static IDataMessage getState()
 	{
 		
 	}
 	
-	public static void setState(IOpaqueMessage state)
+	public static void setState(IDataMessage state)
 	{
 		if (isLoaded)
 		{
