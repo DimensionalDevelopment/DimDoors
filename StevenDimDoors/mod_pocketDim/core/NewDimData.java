@@ -1,4 +1,5 @@
 package StevenDimDoors.mod_pocketDim.core;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,92 +16,29 @@ import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 
 public abstract class NewDimData
 {
-	private static class DimLink implements IDimLink
+	private static class InnerDimLink extends DimLink
 	{
-		//DimLink is an inner class here to make it immutable to code outside NewDimData
-		
-		private static final int EXPECTED_CHILDREN = 2;
-		
-		private Point4D source;
-		private DimLink parent;
-		private LinkTail tail;
-		private ArrayList<IDimLink> children;
-		
-		public DimLink(Point4D source, DimLink parent)
+		public InnerDimLink(Point4D source, DimLink parent)
 		{
-			this.parent = parent;
-			this.source = source;
-			this.tail = parent.tail;
-			this.children = new ArrayList<IDimLink>(EXPECTED_CHILDREN);
-			parent.children.add(this);
+			super(source, parent);
 		}
 		
-		public DimLink(Point4D source, int linkType)
+		public InnerDimLink(Point4D source, int linkType)
 		{
-			if (linkType < IDimLink.TYPE_ENUM_MIN || linkType > IDimLink.TYPE_ENUM_MAX)
-			{
-				throw new IllegalArgumentException("The specified link type is invalid.");
-			}
-			
-			this.parent = null;
-			this.source = source;
-			this.tail = new LinkTail(linkType, null);
-			this.children = new ArrayList<IDimLink>(EXPECTED_CHILDREN);
+			super(source, linkType);
 		}
 
-		@Override
-		public Point4D source()
-		{
-			return source;
-		}
-
-		@Override
-		public Point4D destination()
-		{
-			return tail.getDestination();
-		}
-
-		@Override
-		public boolean hasDestination()
-		{
-			return (tail.getDestination() != null);
-		}
-		
 		public void setDestination(int x, int y, int z, NewDimData dimension)
 		{
 			tail.setDestination(new Point4D(x, y, z, dimension.id()));
-		}
-
-		@Override
-		public Iterable<IDimLink> children()
-		{
-			return children;
-		}
-
-		@Override
-		public int childCount()
-		{
-			return children.size();
-		}
-
-		@Override
-		public IDimLink parent()
-		{
-			return parent;
-		}
-		
-		@Override
-		public int linkType()
-		{
-			return tail.getLinkType();
 		}
 		
 		public void clear()
 		{
 			//Release children
-			for (IDimLink child : children)
+			for (DimLink child : children)
 			{
-				((DimLink) child).parent = null;
+				((InnerDimLink) child).parent = null;
 			}
 			children.clear();
 			
@@ -115,7 +53,7 @@ public abstract class NewDimData
 			tail = new LinkTail(0, null);
 		}
 		
-		public void overwrite(DimLink nextParent)
+		public boolean overwrite(InnerDimLink nextParent)
 		{
 			if (nextParent == null)
 			{
@@ -125,13 +63,13 @@ public abstract class NewDimData
 			if (this == nextParent)
 			{
 				//Ignore this request silently
-				return;
+				return false;
 			}
 			
 			//Release children
-			for (IDimLink child : children)
+			for (DimLink child : children)
 			{
-				((DimLink) child).parent = null;
+				((InnerDimLink) child).parent = null;
 			}
 			children.clear();
 			
@@ -145,14 +83,15 @@ public abstract class NewDimData
 			parent = nextParent;
 			tail = nextParent.tail;
 			nextParent.children.add(this);
+			return true;
 		}
 		
 		public void overwrite(int linkType)
 		{	
 			//Release children
-			for (IDimLink child : children)
+			for (DimLink child : children)
 			{
-				((DimLink) child).parent = null;
+				((InnerDimLink) child).parent = null;
 			}
 			children.clear();
 			
@@ -165,12 +104,6 @@ public abstract class NewDimData
 			//Attach to new parent
 			parent = null;
 			tail = new LinkTail(linkType, null);
-		}
-
-		@Override
-		public String toString()
-		{
-			return source + " -> " + (hasDestination() ? destination() : "");
 		}
 		
 		public IOpaqueMessage toMessage()
@@ -187,8 +120,8 @@ public abstract class NewDimData
 	private static Random random = new Random();
 	
 	private final int id;
-	private final Map<Point4D, DimLink> linkMapping;
-	private final List<DimLink> linkList;
+	private final Map<Point4D, InnerDimLink> linkMapping;
+	private final List<InnerDimLink> linkList;
 	private final boolean isDungeon;
 	private boolean isFilled;
 	private final int depth;
@@ -216,8 +149,8 @@ public abstract class NewDimData
 		}
 		
 		this.id = id;
-		this.linkMapping = new TreeMap<Point4D, DimLink>(); //Should be stored in oct tree -- temporary solution
-		this.linkList = new ArrayList<DimLink>(); //Should be stored in oct tree -- temporary solution
+		this.linkMapping = new TreeMap<Point4D, InnerDimLink>(); //Should be stored in oct tree -- temporary solution
+		this.linkList = new ArrayList<InnerDimLink>(); //Should be stored in oct tree -- temporary solution
 		this.children = new ArrayList<NewDimData>(); 
 		this.parent = parent;
 		this.packDepth = 0;
@@ -247,7 +180,7 @@ public abstract class NewDimData
 	protected abstract IOpaqueMessage toMessage();
 	protected abstract IOpaqueMessage toKey();
 	
-	public IDimLink findNearestRift(World world, int range, int x, int y, int z)
+	public DimLink findNearestRift(World world, int range, int x, int y, int z)
 	{
 		//TODO: Rewrite this later to use an octtree
 
@@ -260,8 +193,8 @@ public abstract class NewDimData
 		//Note: Only detect rifts at a distance > 1, so we ignore the rift
 		//that called this function and any adjacent rifts.
 		
-		IDimLink nearest = null;
-		IDimLink link;
+		DimLink nearest = null;
+		DimLink link;
 		
 		int distance;
 		int minDistance = Integer.MAX_VALUE;
@@ -296,18 +229,18 @@ public abstract class NewDimData
 		return Math.abs(i) + Math.abs(j) + Math.abs(k);
 	}
 	
-	public IDimLink createLink(int x, int y, int z, int linkType)
+	public DimLink createLink(int x, int y, int z, int linkType)
 	{
 		return createLink(new Point4D(x, y, z, id), linkType);
 	}
 	
-	private IDimLink createLink(Point4D source, int linkType)
+	private DimLink createLink(Point4D source, int linkType)
 	{
 		//Return an existing link if there is one to avoid creating multiple links starting at the same point.
-		DimLink link = linkMapping.get(source);
+		InnerDimLink link = linkMapping.get(source);
 		if (link == null)
 		{
-			link = new DimLink(source, linkType);
+			link = new InnerDimLink(source, linkType);
 			linkMapping.put(source, link);
 			linkList.add(link);
 		}
@@ -320,44 +253,49 @@ public abstract class NewDimData
 		return link;
 	}
 	
-	public IDimLink createChildLink(int x, int y, int z, IDimLink parent)
+	public DimLink createChildLink(int x, int y, int z, DimLink parent)
 	{
 		if (parent == null)
 		{
 			throw new IllegalArgumentException("parent cannot be null.");
 		}
 		
-		return createChildLink(new Point4D(x, y, z, id), (DimLink) parent);
+		return createChildLink(new Point4D(x, y, z, id), (InnerDimLink) parent);
 	}
 	
-	private IDimLink createChildLink(Point4D source, DimLink parent)
+	private DimLink createChildLink(Point4D source, InnerDimLink parent)
 	{
 		//To avoid having multiple links at a single point, if we find an existing link then we overwrite
 		//its destination data instead of creating a new instance.
 		
-		DimLink link = linkMapping.get(source);
+		InnerDimLink link = linkMapping.get(source);
 		if (link == null)
 		{
-			link = new DimLink(source, parent);
+			link = new InnerDimLink(source, parent);
 			linkMapping.put(source, link);
 			linkList.add(link);
+			
+			//Link created!
+			linkWatcher.onCreated(link.toMessage());
 		}
 		else
 		{
-			link.overwrite(parent);
+			if (link.overwrite(parent))
+			{
+				//Link created!
+				linkWatcher.onCreated(link.toMessage());
+			}
 		}
-		//Link created!
-		linkWatcher.onCreated(link.toMessage());
 		return link;
 	}
 
-	public boolean deleteLink(IDimLink link)
+	public boolean deleteLink(DimLink link)
 	{
 		if (link.source().getDimension() != id)
 		{
 			throw new IllegalArgumentException("Attempted to delete a link from another dimension.");
 		}
-		DimLink target = linkMapping.remove(link.source());
+		InnerDimLink target = linkMapping.remove(link.source());
 		if (target != null)
 		{
 			linkList.remove(target);
@@ -371,7 +309,7 @@ public abstract class NewDimData
 	public boolean deleteLink(int x, int y, int z)
 	{
 		Point4D location = new Point4D(x, y, z, id);
-		DimLink target = linkMapping.remove(location);
+		InnerDimLink target = linkMapping.remove(location);
 		if (target != null)
 		{
 			linkList.remove(target);
@@ -382,13 +320,13 @@ public abstract class NewDimData
 		return (target != null);
 	}
 
-	public IDimLink getLink(int x, int y, int z)
+	public DimLink getLink(int x, int y, int z)
 	{
 		Point4D location = new Point4D(x, y, z, id);
 		return linkMapping.get(location);
 	}
 	
-	public IDimLink getLink(Point4D location)
+	public DimLink getLink(Point4D location)
 	{
 		if (location.getDimension() != id)
 			return null;
@@ -396,9 +334,9 @@ public abstract class NewDimData
 		return linkMapping.get(location);
 	}
 
-	public ArrayList<IDimLink> getAllLinks()
+	public ArrayList<DimLink> getAllLinks()
 	{
-		ArrayList<IDimLink> results = new ArrayList<IDimLink>(linkMapping.size());
+		ArrayList<DimLink> results = new ArrayList<DimLink>(linkMapping.size());
 		results.addAll(linkMapping.values());
 		return results;
 	}
@@ -480,7 +418,7 @@ public abstract class NewDimData
 		return children;
 	}
 	
-	public void initializeDungeon(int originX, int originY, int originZ, int orientation, IDimLink incoming, DungeonData dungeon)
+	public void initializeDungeon(int originX, int originY, int originZ, int orientation, DimLink incoming, DungeonData dungeon)
 	{
 		if (!isDungeon)
 		{
@@ -532,7 +470,7 @@ public abstract class NewDimData
 		}
 	}
 
-	public void initializePocket(int originX, int originY, int originZ, int orientation, IDimLink incoming)
+	public void initializePocket(int originX, int originY, int originZ, int orientation, DimLink incoming)
 	{
 		if (!isPocketDimension())
 		{
@@ -550,15 +488,15 @@ public abstract class NewDimData
 		dimWatcher.onUpdated(this.toMessage());
 	}
 	
-	public void setDestination(IDimLink incoming, int x, int y, int z)
+	public void setDestination(DimLink incoming, int x, int y, int z)
 	{
-		DimLink link = (DimLink) incoming;
+		InnerDimLink link = (InnerDimLink) incoming;
 		link.setDestination(x, y, z, this);
 		//Raise update event
 		linkWatcher.onUpdated(link.toMessage());
 	}
 
-	public IDimLink getRandomLink()
+	public DimLink getRandomLink()
 	{
 		if (linkMapping.isEmpty())
 		{

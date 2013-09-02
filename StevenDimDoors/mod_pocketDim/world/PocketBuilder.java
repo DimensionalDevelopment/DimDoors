@@ -10,7 +10,7 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
@@ -36,7 +36,7 @@ public class PocketBuilder
 
 	private PocketBuilder() { }
 
-	public static boolean generateNewDungeonPocket(IDimLink link, DDProperties properties)
+	public static boolean generateNewDungeonPocket(DimLink link, DDProperties properties)
 	{
 		if (link == null)
 		{
@@ -214,7 +214,7 @@ public class PocketBuilder
 			schematic.getLength() <= DungeonHelper.MAX_DUNGEON_LENGTH);
 	}
 
-	public static boolean generateNewPocket(IDimLink link, DDProperties properties)
+	public static boolean generateNewPocket(DimLink link, DDProperties properties)
 	{
 		return generateNewPocket(link, DEFAULT_POCKET_SIZE, DEFAULT_POCKET_WALL_THICKNESS, properties);
 	}
@@ -240,7 +240,7 @@ public class PocketBuilder
 		return orientation;
 	}
 
-	public static boolean generateNewPocket(IDimLink link, int size, int wallThickness, DDProperties properties)
+	public static boolean generateNewPocket(DimLink link, int size, int wallThickness, DDProperties properties)
 	{
 		if (link == null)
 		{

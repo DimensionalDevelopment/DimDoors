@@ -9,7 +9,8 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
@@ -57,7 +58,7 @@ public class GatewayGenerator implements IWorldGenerator
 		int attempts;
 		int correction;
 		boolean valid;
-		IDimLink link;
+		DimLink link;
 		NewDimData dimension;
 		
 		//Check if we're generating things in the Nether
@@ -97,7 +98,7 @@ public class GatewayGenerator implements IWorldGenerator
 					if (link == null)
 					{
 						dimension = PocketManager.getDimensionData(world);
-						link = dimension.createLink(x, y + 1, z, IDimLink.TYPE_POCKET);
+						link = dimension.createLink(x, y + 1, z, LinkTypes.POCKET);
 					}
 					else
 					{
@@ -132,7 +133,7 @@ public class GatewayGenerator implements IWorldGenerator
 			{
 				//Create a partial link to a dungeon.
 				dimension = PocketManager.getDimensionData(world);
-				link = dimension.createLink(x, y + 1, z, IDimLink.TYPE_DUNGEON);
+				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON);
 
 				//If the current dimension isn't Limbo, build a Rift Gateway out of Stone Bricks
 				if (dimension.id() != properties.LimboDimensionID)

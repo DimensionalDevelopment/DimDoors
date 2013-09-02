@@ -259,7 +259,7 @@ public class PocketManager
 		//Does not actually unregister the rift data, see deleteRift for that.
 		
 		NewDimData dimension = getDimensionData(world);
-		IDimLink nearest = dimension.findNearestRift(world, range, x, y, z);
+		DimLink nearest = dimension.findNearestRift(world, range, x, y, z);
 
 		if (nearest != null)
 		{
@@ -339,12 +339,12 @@ public class PocketManager
 		return dimensionData.values();
 	}
 	
-	public static IDimLink getLink(int x, int y, int z, World world)
+	public static DimLink getLink(int x, int y, int z, World world)
 	{
 		return getLink(x, y, z, world.provider.dimensionId);
 	}
 
-	public static IDimLink getLink(int x, int y, int z, int dimensionID)
+	public static DimLink getLink(int x, int y, int z, int dimensionID)
 	{
 		NewDimData dimension = dimensionData.get(dimensionID);
 		if (dimension != null)

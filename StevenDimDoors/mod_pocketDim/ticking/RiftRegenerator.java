@@ -4,7 +4,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
@@ -46,7 +46,7 @@ public class RiftRegenerator implements IRegularTickReceiver {
 	    		{
 	    			for (int count = 0; count < RIFTS_REGENERATED_PER_DIMENSION; count++)
 	    			{
-	    				IDimLink link = dimension.getRandomLink();
+	    				DimLink link = dimension.getRandomLink();
 	    				Point4D source = link.source();
 	    				if (!mod_pocketDim.blockRift.isBlockImmune(world, source.getX(), source.getY(), source.getZ()))
 	    				{
