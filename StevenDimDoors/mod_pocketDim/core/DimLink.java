@@ -1,30 +1,29 @@
 package StevenDimDoors.mod_pocketDim.core;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public abstract class DimLink
-{
-	private static final int EXPECTED_CHILDREN = 2;
-	
+{	
 	protected Point4D source;
 	protected DimLink parent;
 	protected LinkTail tail;
-	protected ArrayList<DimLink> children;
+	protected List<DimLink> children;
 	
 	protected DimLink(Point4D source, DimLink parent)
 	{
 		this.parent = parent;
 		this.source = source;
 		this.tail = parent.tail;
-		this.children = new ArrayList<DimLink>(EXPECTED_CHILDREN);
+		this.children = new LinkedList<DimLink>();
 		parent.children.add(this);
 	}
 	
 	protected DimLink(Point4D source, int linkType)
 	{
-		if (linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX)
+		if (linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX && linkType != LinkTypes.UNKNOWN)
 		{
 			throw new IllegalArgumentException("The specified link type is invalid.");
 		}
@@ -32,7 +31,7 @@ public abstract class DimLink
 		this.parent = null;
 		this.source = source;
 		this.tail = new LinkTail(linkType, null);
-		this.children = new ArrayList<DimLink>(EXPECTED_CHILDREN);
+		this.children = new LinkedList<DimLink>();
 	}
 
 	public Point4D source()

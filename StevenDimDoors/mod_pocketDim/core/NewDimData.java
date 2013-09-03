@@ -10,10 +10,8 @@ import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
-import StevenDimDoors.mod_pocketDim.messages.IDataMessage;
-import StevenDimDoors.mod_pocketDim.messages.IUpdateWatcher;
-import StevenDimDoors.mod_pocketDim.messages.LinkMessageBuilder;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 
 public abstract class NewDimData
 {
@@ -106,19 +104,8 @@ public abstract class NewDimData
 			parent = null;
 			tail = new LinkTail(linkType, null);
 		}
-		
-		public IDataMessage toMessage()
-		{
-			return linkMessageBuilder.createMessage(this);
-		}
-
-		public IDataMessage toKey()
-		{
-			return linkMessageBuilder.createKey(this);
-		}
 	}
 	
-	private static LinkMessageBuilder linkMessageBuilder = new LinkMessageBuilder();
 	private static Random random = new Random();
 	
 	private final int id;
@@ -134,13 +121,12 @@ public abstract class NewDimData
 	private Point4D origin;
 	private int orientation;
 	private DungeonData dungeon;
-	private final IUpdateWatcher dimWatcher;
-	private final IUpdateWatcher linkWatcher;
+	private final IUpdateWatcher<Point4D> linkWatcher;
 	
 	protected NewDimData(int id, NewDimData parent, boolean isPocket, boolean isDungeon,
-		IUpdateWatcher dimWatcher, IUpdateWatcher linkWatcher)
+		IUpdateWatcher<Point4D> linkWatcher)
 	{
-		//The isPocket flag is redundant. It's meant as an integrity safeguard.
+		// The isPocket flag is redundant. It's meant as an integrity safeguard.
 		if (isPocket == (parent != null))
 		{
 			throw new NullPointerException("Dimensions can be pocket dimensions if and only if they have a parent dimension.");
@@ -161,7 +147,6 @@ public abstract class NewDimData
 		this.orientation = 0;
 		this.origin = null;
 		this.dungeon = null;
-		this.dimWatcher = dimWatcher;
 		this.linkWatcher = linkWatcher;
 		
 		//Register with parent
@@ -179,8 +164,32 @@ public abstract class NewDimData
 		}
 	}
 	
-	protected abstract IDataMessage toMessage();
-	protected abstract IDataMessage toKey();
+	protected NewDimData(int id, NewDimData root)
+	{
+		// This constructor is meant for client-side code only
+		this.id = id;
+		this.linkMapping = new TreeMap<Point4D, InnerDimLink>(); //Should be stored in oct tree -- temporary solution
+		this.linkList = new ArrayList<InnerDimLink>(); //Should be stored in oct tree -- temporary solution
+		this.children = new ArrayList<NewDimData>(); 
+		this.parent = null;
+		this.packDepth = 0;
+		this.isDungeon = false;
+		this.isFilled = false;
+		this.orientation = 0;
+		this.origin = null;
+		this.dungeon = null;
+		this.linkWatcher = null;
+		this.depth = 0;
+		if (root != null)
+		{
+			this.root = root;
+		}
+		else
+		{
+			this.root = this;
+		}
+
+	}
 	
 	public DimLink findNearestRift(World world, int range, int x, int y, int z)
 	{
@@ -251,7 +260,7 @@ public abstract class NewDimData
 			link.overwrite(linkType);
 		}
 		//Link created!
-		linkWatcher.onCreated(link.toMessage());
+		linkWatcher.onCreated(link.source);
 		return link;
 	}
 	
@@ -278,14 +287,14 @@ public abstract class NewDimData
 			linkList.add(link);
 			
 			//Link created!
-			linkWatcher.onCreated(link.toMessage());
+			linkWatcher.onCreated(link.source);
 		}
 		else
 		{
 			if (link.overwrite(parent))
 			{
 				//Link created!
-				linkWatcher.onCreated(link.toMessage());
+				linkWatcher.onCreated(link.source);
 			}
 		}
 		return link;
@@ -302,7 +311,7 @@ public abstract class NewDimData
 		{
 			linkList.remove(target);
 			//Raise deletion event
-			linkWatcher.onDeleted(target.toKey());
+			linkWatcher.onDeleted(target.source);
 			target.clear();
 		}
 		return (target != null);
@@ -316,7 +325,7 @@ public abstract class NewDimData
 		{
 			linkList.remove(target);
 			//Raise deletion event
-			linkWatcher.onDeleted(target.toKey());
+			linkWatcher.onDeleted(target.source);
 			target.clear();
 		}
 		return (target != null);
@@ -345,7 +354,7 @@ public abstract class NewDimData
 	
 	public boolean isPocketDimension()
 	{
-		return (parent != null);
+		return (root != this);
 	}
 	
 	public boolean isDungeon()
@@ -361,8 +370,6 @@ public abstract class NewDimData
 	public void setFilled(boolean isFilled)
 	{
 		this.isFilled = isFilled;
-		//Raise the dim update event
-		dimWatcher.onUpdated(this.toMessage());
 	}
 	
 	public int id()
@@ -412,12 +419,17 @@ public abstract class NewDimData
 	
 	public int linkCount()
 	{
-		return linkMapping.size();
+		return linkList.size();
 	}
 	
 	public Iterable<NewDimData> children()
 	{
 		return children;
+	}
+	
+	public Iterable<? extends DimLink> links()
+	{
+		return linkList;
 	}
 	
 	public void initializeDungeon(int originX, int originY, int originZ, int orientation, DimLink incoming, DungeonData dungeon)
@@ -436,8 +448,6 @@ public abstract class NewDimData
 		this.orientation = orientation;
 		this.dungeon = dungeon;
 		this.packDepth = calculatePackDepth(parent, dungeon);
-		//Raise the dim update event
-		dimWatcher.onUpdated(this.toMessage());
 	}
 	
 	private static int calculatePackDepth(NewDimData parent, DungeonData current)
@@ -486,16 +496,12 @@ public abstract class NewDimData
 		setDestination(incoming, originX, originY, originZ);
 		this.origin = incoming.destination();
 		this.orientation = orientation;
-		//Raise the dim update event
-		dimWatcher.onUpdated(this.toMessage());
 	}
 	
 	public void setDestination(DimLink incoming, int x, int y, int z)
 	{
 		InnerDimLink link = (InnerDimLink) incoming;
 		link.setDestination(x, y, z, this);
-		//Raise update event
-		linkWatcher.onUpdated(link.toMessage());
 	}
 
 	public DimLink getRandomLink()

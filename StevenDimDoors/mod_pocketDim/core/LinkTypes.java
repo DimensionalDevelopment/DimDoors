@@ -7,6 +7,8 @@ public class LinkTypes
 	public static final int ENUM_MIN = 0;
 	public static final int ENUM_MAX = 8;
 	
+	public static final int UNKNOWN = -1337;
+	
 	public static final int NORMAL = 0;
 	public static final int LIMBO = 1;
 	public static final int POCKET = 2;
