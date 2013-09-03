@@ -76,7 +76,7 @@ public class Compactor
 			for (int h = 0; h < linkCount; h++)
 			{
 				Point4D source = Point4D.read(input);
-				dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.UNKNOWN);
+				dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE);
 			}
 		}
 	}

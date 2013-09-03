@@ -167,6 +167,11 @@ public abstract class NewDimData
 	protected NewDimData(int id, NewDimData root)
 	{
 		// This constructor is meant for client-side code only
+		if (root == null)
+		{
+			throw new IllegalArgumentException("root cannot be null.");
+		}
+		
 		this.id = id;
 		this.linkMapping = new TreeMap<Point4D, InnerDimLink>(); //Should be stored in oct tree -- temporary solution
 		this.linkList = new ArrayList<InnerDimLink>(); //Should be stored in oct tree -- temporary solution
@@ -180,15 +185,7 @@ public abstract class NewDimData
 		this.dungeon = null;
 		this.linkWatcher = null;
 		this.depth = 0;
-		if (root != null)
-		{
-			this.root = root;
-		}
-		else
-		{
-			this.root = this;
-		}
-
+		this.root = root;
 	}
 	
 	public DimLink findNearestRift(World world, int range, int x, int y, int z)

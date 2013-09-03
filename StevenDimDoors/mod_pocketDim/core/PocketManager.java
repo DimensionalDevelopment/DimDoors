@@ -17,6 +17,7 @@ import StevenDimDoors.mod_pocketDim.helpers.DeleteFolder;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
+import StevenDimDoors.mod_pocketDim.watcher.IUpdateSource;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 import StevenDimDoors.mod_pocketDim.watcher.UpdateWatcherProxy;
 
@@ -44,14 +45,54 @@ public class PocketManager
 			// This constructor is meant for client-side code only
 			super(id, root);
 		}
-		
-		public InnerDimData(int id)
+	}
+	
+	private static class ClientLinkWatcher implements IUpdateWatcher<Point4D>
+	{
+		@Override
+		public void onCreated(Point4D source)
 		{
-			// This constructor is meant for client-side code only
-			super(id, null);
+			NewDimData dimension = getDimensionData(source.getDimension());
+			dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE);
+		}
+
+		@Override
+		public void onDeleted(Point4D source)
+		{
+			NewDimData dimension = getDimensionData(source.getDimension());
+			dimension.deleteLink(source.getX(), source.getY(), source.getZ());
+		}
+	}
+	
+	private static class ClientDimWatcher implements IUpdateWatcher<ClientDimData>
+	{
+		@Override
+		public void onCreated(ClientDimData data)
+		{
+			registerClientDimension(data.ID, data.RootID);
+		}
+
+		@Override
+		public void onDeleted(ClientDimData data)
+		{
+			deletePocket(getDimensionData(data.ID), false);
 		}
 	}
 
+	private static class DimRegistrationCallback implements IDimRegistrationCallback
+	{
+		// We use this class to provide Compactor with the ability to send us dim data without
+		// having to instantiate a bunch of data containers and without exposing an "unsafe"
+		// creation method for anyone to call. Integrity protection for the win! It's like
+		// exposing a private constructor ONLY to a very specific trusted class.
+		
+		@Override
+		public NewDimData registerDimension(int dimensionID, int rootID)
+		{
+			return registerClientDimension(dimensionID, rootID);
+		}
+	}
+	
 	private static int OVERWORLD_DIMENSION_ID = 0;
 
 	private static volatile boolean isLoading = false;
@@ -301,6 +342,30 @@ public class PocketManager
 		dimensionData.put(dimensionID, dimension);
 		return dimension;
 	}
+	
+	private static NewDimData registerClientDimension(int dimensionID, int rootID)
+	{
+		// No need to raise events here since this code should only run on the client side
+		// getDimensionData() always handles root dimensions properly, even if the weren't defined before
+
+		InnerDimData root = (InnerDimData) getDimensionData(rootID);
+		InnerDimData dimension;
+
+		if (rootID != dimensionID)
+		{
+			dimension = dimensionData.get(dimensionID);
+			if (dimension == null)
+			{
+				dimension = new InnerDimData(dimensionID, root);
+				dimensionData.put(dimension.id(), dimension);
+			}
+		}
+		else
+		{
+			dimension = root;
+		}
+		return dimension;
+	}
 
 	public static NewDimData getDimensionData(World world)
 	{	
@@ -321,6 +386,11 @@ public class PocketManager
 			dimension = registerDimension(dimensionID, null, false, false);
 		}
 		return dimension;
+	}
+
+	public static Iterable<? extends NewDimData> getDimensions()
+	{
+		return dimensionData.values();
 	}
 
 	public static void unload()
@@ -376,6 +446,11 @@ public class PocketManager
 	{
 		return linkWatcher.unregisterReceiver(watcher);
 	}
+
+	public static void getWatchers(IUpdateSource updateSource)
+	{
+		updateSource.registerWatchers(new ClientDimWatcher(), new ClientLinkWatcher());
+	}
 	
 	public static void writePacket(DataOutputStream output) throws IOException
 	{
@@ -398,8 +473,8 @@ public class PocketManager
 		
 		// Set up fields
 		dimensionData = new HashMap<Integer, InnerDimData>();
-		dimWatcher = new UpdateWatcherProxy<ClientDimData>();
-		linkWatcher = new UpdateWatcherProxy<Point4D>();
+		dimWatcher = null;		// Clients shouldn't need to watch dims
+		linkWatcher = null;		// Clients shouldn't need to watch links
 		
 		// Load compacted client-side dimension data
 		Compactor.readDimensions(input, new DimRegistrationCallback());
@@ -410,43 +485,5 @@ public class PocketManager
 		
 		isLoaded = true;
 		isLoading = false;
-	}
-	
-	private static class DimRegistrationCallback implements IDimRegistrationCallback
-	{
-		// We use this class to provide Compactor with the ability to send us dim data without
-		// having to instantiate a bunch of data containers and without exposing an "unsafe"
-		// creation method for anyone to call. Integrity protection for the win! It's like
-		// exposing a private constructor ONLY to a very specific trusted class.
-		
-		@Override
-		public NewDimData registerDimension(int dimensionID, int rootID)
-		{
-			// No need to raise events here since this code should only run on the client side
-			// We assume that the root dimension has already been registered to avoid dependency issues
-
-			InnerDimData root = dimensionData.get(rootID);
-			InnerDimData dimension;
-
-			if (rootID != dimensionID)
-			{
-				dimension = dimensionData.get(dimensionID);
-				if (dimension == null)
-				{
-					dimension = new InnerDimData(dimensionID, root);
-					dimensionData.put(dimension.id(), dimension);
-				}
-			}
-			else
-			{
-				if (root == null)
-				{
-					root = new InnerDimData(rootID);
-					dimensionData.put(root.id(), root);
-				}
-				dimension = root;
-			}
-			return dimension;
-		}
 	}
 }
