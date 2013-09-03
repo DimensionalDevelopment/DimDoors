@@ -384,6 +384,5 @@ public class mod_pocketDim
 		CommandCreatePocket.instance().register(event);
 		CommandTeleportPlayer.instance().register(event);
 		*/
-		PocketManager.load();
 	}
 }

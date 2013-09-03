@@ -127,7 +127,7 @@ public abstract class NewDimData
 		IUpdateWatcher<Point4D> linkWatcher)
 	{
 		// The isPocket flag is redundant. It's meant as an integrity safeguard.
-		if (isPocket == (parent != null))
+		if (isPocket != (parent != null))
 		{
 			throw new NullPointerException("Dimensions can be pocket dimensions if and only if they have a parent dimension.");
 		}
