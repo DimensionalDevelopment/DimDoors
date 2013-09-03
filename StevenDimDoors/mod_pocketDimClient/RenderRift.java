@@ -1,24 +1,19 @@
 package StevenDimDoors.mod_pocketDimClient;
 
-import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.Random;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_LIGHTING;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_ZERO;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.Tessellator;
+import java.util.HashMap;
+
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
-import static org.lwjgl.opengl.GL11.*;
 
-import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.blocks.DimensionalDoor;
-import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

@@ -1,9 +1,6 @@
 package StevenDimDoors.mod_pocketDimClient;
 
-import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
