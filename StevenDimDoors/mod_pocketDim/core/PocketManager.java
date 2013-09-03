@@ -98,8 +98,8 @@ public class PocketManager
 	private static volatile boolean isLoading = false;
 	private static volatile boolean isLoaded = false;
 	private static volatile boolean isSaving = false;
-	private static UpdateWatcherProxy<Point4D> linkWatcher = null;
-	private static UpdateWatcherProxy<ClientDimData> dimWatcher = null;
+	private static final UpdateWatcherProxy<Point4D> linkWatcher = new UpdateWatcherProxy<Point4D>();
+	private static final UpdateWatcherProxy<ClientDimData> dimWatcher = new UpdateWatcherProxy<ClientDimData>();
 
 	//HashMap that maps all the dimension IDs registered with DimDoors to their DD data.
 	private static HashMap<Integer, InnerDimData> dimensionData = null;
@@ -125,11 +125,7 @@ public class PocketManager
 		}
 
 		isLoading = true;
-		
-		//Set up fields
 		dimensionData = new HashMap<Integer, InnerDimData>();
-		dimWatcher = new UpdateWatcherProxy<ClientDimData>();
-		linkWatcher = new UpdateWatcherProxy<Point4D>();
 		
 		//Register Limbo
 		DDProperties properties = DDProperties.instance();
@@ -396,8 +392,6 @@ public class PocketManager
 	public static void unload()
 	{
 		save();
-		dimWatcher = null;
-		linkWatcher = null;
 		dimensionData = null;
 		unregisterPockets();
 	}
@@ -470,12 +464,8 @@ public class PocketManager
 		}
 
 		isLoading = true;
-		
-		// Set up fields
 		dimensionData = new HashMap<Integer, InnerDimData>();
-		dimWatcher = null;		// Clients shouldn't need to watch dims
-		linkWatcher = null;		// Clients shouldn't need to watch links
-		
+
 		// Load compacted client-side dimension data
 		Compactor.readDimensions(input, new DimRegistrationCallback());
 		
