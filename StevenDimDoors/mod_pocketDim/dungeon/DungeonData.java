@@ -31,7 +31,7 @@ public class DungeonData
 		int indexB = schematicPath.lastIndexOf('/');
 		indexA = Math.max(indexA, indexB) + 1;
 		
-		return schematicPath.substring(indexA, schematicPath.length() - DungeonHelper.SCHEMATIC_FILE_EXTENSION.length() - indexA);
+		return schematicPath.substring(indexA, schematicPath.length() - DungeonHelper.SCHEMATIC_FILE_EXTENSION.length());
 	}
 	
 	public int weight()

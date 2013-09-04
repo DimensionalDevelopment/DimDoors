@@ -16,7 +16,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
@@ -312,7 +313,7 @@ public class DDTeleporter
 	 * @param link - the link the player is using to teleport; sends the player to its destination 
 	 * @param player - the instance of the player to be teleported
 	 */
-	public static void traverseDimDoor(World world, IDimLink link, Entity entity)
+	public static void traverseDimDoor(World world, DimLink link, Entity entity)
 	{
 		if (world == null)
 		{
@@ -349,7 +350,7 @@ public class DDTeleporter
 		entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
 	}
 
-	private static boolean initializeDestination(IDimLink link, DDProperties properties)
+	private static boolean initializeDestination(DimLink link, DDProperties properties)
 	{
 		//FIXME: Change this later to support rooms that have been wiped and must be regenerated.
 		if (link.hasDestination())
@@ -362,11 +363,11 @@ public class DDTeleporter
 		//FIXME: Add code for restoring the destination-side door.
 		switch (link.linkType())
 		{
-			case IDimLink.TYPE_DUNGEON:
+			case LinkTypes.DUNGEON:
 				return PocketBuilder.generateNewDungeonPocket(link, properties);
-			case IDimLink.TYPE_POCKET:
+			case LinkTypes.POCKET:
 				return PocketBuilder.generateNewPocket(link, properties);
-			case IDimLink.TYPE_NORMAL:
+			case LinkTypes.NORMAL:
 				return true;
 			default:
 				throw new IllegalArgumentException("link has an unrecognized link type.");

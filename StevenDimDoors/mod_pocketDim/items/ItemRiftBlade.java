@@ -20,7 +20,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import cpw.mods.fml.relauncher.Side;
@@ -187,7 +187,7 @@ public class ItemRiftBlade extends ItemSword
 			NewDimData dimension = PocketManager.getDimensionData(world);
 			if (!dimension.isPocketDimension() && dimension.getLink(x, y + 1, z) == null)
 			{
-				dimension.createLink(x, y + 1, z, IDimLink.TYPE_POCKET);
+				dimension.createLink(x, y + 1, z, LinkTypes.POCKET);
 				player.worldObj.playSoundAtEntity(player,"mods.DimDoors.sfx.riftDoor", 0.6f, 1);
 				ItemDimensionalDoor.placeDoorBlock(world, x, y, z, orientation, mod_pocketDim.transientDoor);  
 			} 

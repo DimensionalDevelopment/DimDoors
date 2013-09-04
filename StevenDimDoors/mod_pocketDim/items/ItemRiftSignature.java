@@ -10,7 +10,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
@@ -66,8 +67,8 @@ public class ItemRiftSignature extends Item
 				//The link was used before and already has an endpoint stored. Create links connecting the two endpoints.
 				NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
 				NewDimData destinationDimension = PocketManager.getDimensionData(world);
-				IDimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), IDimLink.TYPE_NORMAL);
-				IDimLink reverse = destinationDimension.createLink(x, y, z, IDimLink.TYPE_NORMAL);
+				DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL);
+				DimLink reverse = destinationDimension.createLink(x, y, z, LinkTypes.NORMAL);
 				destinationDimension.setDestination(link, x, y, z);
 				sourceDimension.setDestination(reverse, source.getX(), source.getY(), source.getZ());
 				

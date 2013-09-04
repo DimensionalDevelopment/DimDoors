@@ -1,5 +1,9 @@
 package StevenDimDoors.mod_pocketDim.util;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 
 public final class Point4D implements Comparable<Point4D>
 {
@@ -154,5 +158,29 @@ public final class Point4D implements Comparable<Point4D>
 	public String toString()
 	{
 		return "(" + x + ", " + y + ", " + z + ", " + dimension + ")";
+	}
+
+	public static void write(Point4D point, DataOutputStream stream) throws IOException
+	{
+		stream.writeBoolean(point != null);
+		if (point != null)
+		{
+			stream.writeInt(point.x);
+			stream.writeInt(point.y);
+			stream.writeInt(point.z);
+			stream.writeInt(point.dimension);
+		}
+	}
+	
+	public static Point4D read(DataInputStream stream) throws IOException
+	{
+		if (stream.readBoolean())
+		{
+			return new Point4D( stream.readInt(), stream.readInt(), stream.readInt(), stream.readInt() );
+		}
+		else
+		{
+			return null;
+		}
 	}
 }

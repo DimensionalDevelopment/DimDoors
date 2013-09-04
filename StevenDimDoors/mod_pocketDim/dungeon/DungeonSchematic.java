@@ -17,7 +17,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
@@ -167,7 +168,7 @@ public class DungeonSchematic extends Schematic {
 		return new DungeonSchematic(Schematic.copyFromWorld(world, x, y, z, width, height, length, doCompactBounds));
 	}
 
-	public void copyToWorld(World world, Point3D pocketCenter, int dungeonOrientation, IDimLink entryLink, Random random)
+	public void copyToWorld(World world, Point3D pocketCenter, int dungeonOrientation, DimLink entryLink, Random random)
 	{
 		//TODO: This function is an improvised solution so we can get the release moving. In the future,
 		//we should generalize block transformations and implement support for them at the level of Schematic,
@@ -224,7 +225,7 @@ public class DungeonSchematic extends Schematic {
 		setUpDungeon(PocketManager.getDimensionData(world), world, pocketCenter, turnAngle, entryLink, random);
 	}
 	
-	private void setUpDungeon(NewDimData dimension, World world, Point3D pocketCenter, int turnAngle, IDimLink entryLink, Random random)
+	private void setUpDungeon(NewDimData dimension, World world, Point3D pocketCenter, int turnAngle, DimLink entryLink, Random random)
 	{
         //Transform dungeon corners
         Point3D minCorner = new Point3D(0, 0, 0);
@@ -282,9 +283,9 @@ public class DungeonSchematic extends Schematic {
 		}
 	}
 	
-	private static void createEntranceReverseLink(NewDimData dimension, Point3D pocketCenter, IDimLink entryLink)
+	private static void createEntranceReverseLink(NewDimData dimension, Point3D pocketCenter, DimLink entryLink)
 	{
-		IDimLink link = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), IDimLink.TYPE_NORMAL);
+		DimLink link = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), LinkTypes.NORMAL);
 		Point4D destination = link.source();
 		NewDimData prevDim = PocketManager.getDimensionData(destination.getDimension());
 		prevDim.setDestination(link, destination.getX(), destination.getY(), destination.getZ());
@@ -295,7 +296,7 @@ public class DungeonSchematic extends Schematic {
 		//Transform the door's location to the pocket coordinate system
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
-		dimension.createLink(location.getX(), location.getY(), location.getZ(), IDimLink.TYPE_DUNGEON_EXIT);
+		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON_EXIT);
 	}
 	
 	private static void createDimensionalDoorLink(NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
@@ -303,7 +304,7 @@ public class DungeonSchematic extends Schematic {
 		//Transform the door's location to the pocket coordinate system
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
-		dimension.createLink(location.getX(), location.getY(), location.getZ(), IDimLink.TYPE_DUNGEON);
+		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON);
 	}
 	
 	private static void spawnMonolith(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)

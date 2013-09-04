@@ -17,7 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
@@ -38,7 +38,7 @@ public class TileEntityRift extends TileEntity
 	public int age = 0;
 
 	public HashMap<Integer, double[]> renderingCenters = new HashMap<Integer, double[]>();
-	public IDimLink nearestRiftData;
+	public DimLink nearestRiftData;
 	public int spawnedEndermenID=0;
 	DataWatcher watcher = new DataWatcher();
 
@@ -240,7 +240,7 @@ public class TileEntityRift extends TileEntity
 			if (growCount < 100)
 			{
 				NewDimData dimension = PocketManager.getDimensionData(worldObj);
-				IDimLink link = dimension.getLink(xCoord, yCoord, zCoord);
+				DimLink link = dimension.getLink(xCoord, yCoord, zCoord);
 				if (link != null)
 				{
 					if (!this.hasGrownRifts && random.nextInt(3) == 0)

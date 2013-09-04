@@ -20,7 +20,8 @@ import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
@@ -59,7 +60,7 @@ public class DimensionalDoor extends BlockContainer
 		{
 			this.onPoweredBlockChange(world, x, y, z, false);
 
-			IDimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
+			DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
 			if (link != null)
 			{
 				DDTeleporter.traverseDimDoor(world, link, entity);
@@ -169,10 +170,10 @@ public class DimensionalDoor extends BlockContainer
 		if (!world.isRemote && world.getBlockId(x, y - 1, z) == this.blockID)
 		{
 			NewDimData dimension = PocketManager.getDimensionData(world);
-			IDimLink link = dimension.getLink(x, y, z);
+			DimLink link = dimension.getLink(x, y, z);
 			if (link == null)
 			{
-				dimension.createLink(x, y, z, IDimLink.TYPE_POCKET);
+				dimension.createLink(x, y, z, LinkTypes.POCKET);
 			}
 		}
 		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
