@@ -55,7 +55,7 @@ public class PocketBuilder
 		{
 			//Register a new dimension
 			NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
-			NewDimData dimension = PocketManager.registerPocket(parent, false);
+			NewDimData dimension = PocketManager.registerPocket(parent, true);
 			
 			//Load a world
 			World world = DimensionManager.getWorld(dimension.id());
@@ -106,7 +106,7 @@ public class PocketBuilder
 			schematic.copyToWorld(world, destination, orientation, link, random);
 			
 			//Finish up destination initialization
-			dimension.initializePocket(destination.getX(), destination.getY(), destination.getZ(), orientation, link);
+			dimension.initializeDungeon(destination.getX(), destination.getY(), destination.getZ(), orientation, link, dungeon);
 			dimension.setFilled(true);
 			return true;
 		}
