@@ -189,7 +189,7 @@ public class DDTeleporter
 		}
 
 		// Determine if our destination is in another realm.
-		boolean difDest = entity.dimension == destination.getDimension();
+		boolean difDest = entity.dimension != destination.getDimension();
 		if (difDest)
 		{
 			// Destination isn't loaded? Then we need to load it.
@@ -197,8 +197,8 @@ public class DDTeleporter
 			if (newWorld == null)
 			{
 				DimensionManager.initDimension(destination.getDimension());
+				newWorld = DimensionManager.getWorld(destination.getDimension());
 			}
-			newWorld = DimensionManager.getWorld(destination.getDimension());
 		}
 		else
 		{

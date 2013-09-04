@@ -61,11 +61,8 @@ public class TransientDoor extends WarpDoor
 		int var12 = (int) (MathHelper.floor_double((double) ((entity.rotationYaw + 90) * 4.0F / 360.0F) + 0.5D) & 3);
 
 		int orientation = world.getBlockMetadata(x, y - 1, z);
-		if (!world.isRemote && (orientation >= 4 && orientation <= 7) && (orientation - 4) == var12 &&
-				world.getBlockId(x, y - 1, z) == this.blockID)
+		if (!world.isRemote && orientation == var12 && world.getBlockId(x, y - 1, z) == this.blockID)
 		{
-			this.onPoweredBlockChange(world, x, y, z, false);
-
 			DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
 			if (link != null)
 			{
