@@ -146,7 +146,7 @@ public class GatewayGenerator implements IWorldGenerator
 				}
 				
 				//Place the shiny transient door into a dungeon
-				ItemDimensionalDoor.placeDoorBlock(world, x, y + 1, z, 0, mod_pocketDim.transientDoor);
+				ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 0, mod_pocketDim.transientDoor);
 			}
 		}
 	}
