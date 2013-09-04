@@ -391,17 +391,16 @@ public class PocketManager
 
 	public static void unload()
 	{
+		if (!isLoaded)
+		{
+			throw new IllegalStateException("Pocket dimensions have already been unloaded!");
+		}
+		
 		save();
-		dimensionData = null;
 		unregisterPockets();
+		dimensionData = null;
+		isLoaded = false;
 	}
-
-	/*
-	 * This isn't needed right now and it's causing me problems due to the iterator's generic type -_-
-	public static Iterable<NewDimData> getDimensions()
-	{
-		return dimensionData.values();
-	}*/
 	
 	public static DimLink getLink(int x, int y, int z, World world)
 	{

@@ -38,6 +38,11 @@ public class ClientPacketHandler implements IPacketHandler, IUpdateSource
 		if (!packet.channel.equals(PacketConstants.CHANNEL_NAME))
 			return;
 		
+		// If this is a memory connection, then our client is running an integrated server.
+		// We can tell by checking if packet size is 0.
+		if (manager.packetSize() == 0)
+			return;
+		
 		try
 		{
 			DataInputStream input = new DataInputStream(new ByteArrayInputStream(packet.data));
