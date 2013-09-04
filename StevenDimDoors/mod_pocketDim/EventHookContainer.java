@@ -36,7 +36,18 @@ public class EventHookContainer
     @ForgeSubscribe
     public void onWorldLoad(WorldEvent.Load event)
     {
-    	RiftRegenerator.regenerateRiftsInAllWorlds();
+    	// We need to initialize PocketManager here because onServerAboutToStart fires before we can
+    	// use DimensionManager and onServerStarting fires after the game tries to generate terrain.
+    	// If a gateway tries to generate before PocketManager has initialized, we get a crash.
+    	if (!PocketManager.isLoaded())
+    	{
+    		PocketManager.load();
+    	}
+    	
+    	if (PocketManager.isLoaded())
+    	{
+    		RiftRegenerator.regenerateRiftsInAllWorlds();
+    	}
     }
     
     @ForgeSubscribe

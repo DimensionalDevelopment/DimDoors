@@ -15,7 +15,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public abstract class BaseItemDoor extends ItemDoor
@@ -114,7 +114,7 @@ public abstract class BaseItemDoor extends ItemDoor
 		{
 			if (world.getBlockId(hit.blockX, hit.blockY, hit.blockZ) == properties.RiftBlockID)
 			{
-				IDimLink link = PocketManager.getLink(hit.blockX, hit.blockY, hit.blockZ, world.provider.dimensionId);
+				DimLink link = PocketManager.getLink(hit.blockX, hit.blockY, hit.blockZ, world.provider.dimensionId);
 				if (link != null)
 				{
 					int x = hit.blockX;

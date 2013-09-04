@@ -7,7 +7,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import cpw.mods.fml.relauncher.Side;
@@ -54,7 +54,7 @@ public class UnstableDoor extends DimensionalDoor
 		if (!world.isRemote && world.getBlockId(x, y - 1, z) == this.blockID)
 		{
 			NewDimData dimension = PocketManager.getDimensionData(world);
-			dimension.createLink(x, y, z, IDimLink.TYPE_RANDOM);
+			dimension.createLink(x, y, z, LinkTypes.RANDOM);
 		}
 	}
 }

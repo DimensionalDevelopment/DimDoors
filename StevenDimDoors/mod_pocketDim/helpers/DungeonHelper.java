@@ -21,7 +21,8 @@ import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
@@ -274,11 +275,11 @@ public class DungeonHelper
 		return pack;
 	}
 	
-	public IDimLink createCustomDungeonDoor(World world, int x, int y, int z)
+	public DimLink createCustomDungeonDoor(World world, int x, int y, int z)
 	{
 		//Create a link above the specified position. Link to a new pocket dimension.
 		NewDimData dimension = PocketManager.getDimensionData(world);
-		IDimLink link = dimension.createLink(x, y + 1, z, IDimLink.TYPE_POCKET);
+		DimLink link = dimension.createLink(x, y + 1, z, LinkTypes.POCKET);
 		
 		//Place a Warp Door linked to that pocket
 		ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 3, mod_pocketDim.warpDoor);

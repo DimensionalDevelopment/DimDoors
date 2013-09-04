@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
@@ -55,7 +55,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 		}
 		else
 		{
-			IDimLink link;
+			DimLink link;
 			DungeonData result;
 			int x = MathHelper.floor_double(sender.posX);
 			int y = MathHelper.floor_double(sender.posY);

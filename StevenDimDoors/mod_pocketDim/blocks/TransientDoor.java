@@ -12,7 +12,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.IDimLink;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -66,7 +66,7 @@ public class TransientDoor extends WarpDoor
 		{
 			this.onPoweredBlockChange(world, x, y, z, false);
 
-			IDimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
+			DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
 			if (link != null)
 			{
 				DDTeleporter.traverseDimDoor(world, link, entity);
