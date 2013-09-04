@@ -227,8 +227,8 @@ public class PocketBuilder
 			throw new IllegalStateException("The link's source world should be loaded!");
 		}
 
-		//Check if the block at that point is actually a door
-		int blockID = world.getBlockId(source.getX(), source.getY(), source.getZ());
+		//Check if the block below that point is actually a door
+		int blockID = world.getBlockId(source.getX(), source.getY() - 1, source.getZ());
 		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
 			blockID != properties.TransientDoorID)
 		{
@@ -236,7 +236,7 @@ public class PocketBuilder
 		}
 		
 		//Return the orientation portion of its metadata
-		int orientation = world.getBlockMetadata(source.getX(), source.getY(), source.getZ()) & 3;
+		int orientation = world.getBlockMetadata(source.getX(), source.getY() - 1, source.getZ()) & 3;
 		return orientation;
 	}
 
