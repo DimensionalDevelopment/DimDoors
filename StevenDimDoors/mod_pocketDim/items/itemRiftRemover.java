@@ -106,7 +106,6 @@ public class itemRiftRemover extends Item
 				{
 					stack.damageItem(1, player);
 				}
-				player.sendChatToPlayer("Clink! Damaged!");
 				player.worldObj.playSoundAtEntity(player, "mods.DimDoors.sfx.riftClose", 0.8f, 1);
 			}
 		}
