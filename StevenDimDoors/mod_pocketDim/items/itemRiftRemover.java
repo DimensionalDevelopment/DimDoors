@@ -56,7 +56,7 @@ public class itemRiftRemover extends Item
 			NewDimData dimension = PocketManager.getDimensionData(world);
 			DimLink link = dimension.getLink(hx, hy, hz);
 			if (world.getBlockId(hx, hy, hz) == mod_pocketDim.blockRift.blockID && link != null &&
-				player.canPlayerEdit(hx, hy, hz, 0, stack))
+				player.canPlayerEdit(hx, hy, hz, hit.sideHit, stack))
 			{
 				// Invoke onPlayerRightClick()
 				FMLClientHandler.instance().getClient().playerController.onPlayerRightClick(
