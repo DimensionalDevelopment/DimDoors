@@ -1,9 +1,6 @@
 package StevenDimDoors.mod_pocketDim.world;
 
-import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
-import net.minecraft.entity.monster.EntitySpider;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.biome.SpawnListEntry;
 
 public class BiomeGenLimbo extends BiomeGenBase
 {

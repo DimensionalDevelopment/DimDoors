@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim.core;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import net.minecraft.entity.Entity;
@@ -344,8 +345,20 @@ public class DDTeleporter
 			return;
 		}
 		
-		entity = teleportEntity(entity, link.destination());	
-		entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+		if (link.linkType() == LinkTypes.RANDOM)
+		{
+			Point4D randomDestination = getRandomDestination();
+			if (randomDestination != null)
+			{
+				entity = teleportEntity(entity, randomDestination);
+				entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+			}
+		}
+		else
+		{
+			entity = teleportEntity(entity, link.destination());
+			entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+		}
 	}
 
 	private static boolean initializeDestination(DimLink link, DDProperties properties)
@@ -366,9 +379,45 @@ public class DDTeleporter
 			case LinkTypes.POCKET:
 				return PocketBuilder.generateNewPocket(link, properties);
 			case LinkTypes.NORMAL:
+			case LinkTypes.RANDOM:
 				return true;
 			default:
 				throw new IllegalArgumentException("link has an unrecognized link type.");
+		}
+	}
+	
+	private static Point4D getRandomDestination()
+	{
+		// Our aim is to return a point near a random link's source
+		// so that a link of type RANDOM can teleport a player there.
+		
+		// Restrictions:
+		// 1. Ignore links with their source inside a pocket dimension.
+		// 2. Ignore links with link type RANDOM.
+		
+		ArrayList<Point4D> matches = new ArrayList<Point4D>();
+		for (NewDimData dimension : PocketManager.getDimensions())
+		{
+			if (!dimension.isPocketDimension())
+			{
+				for (DimLink link : dimension.getAllLinks())
+				{
+					if (link.linkType() != LinkTypes.RANDOM)
+					{
+						matches.add(link.source());
+					}
+				}
+			}
+		}
+		
+		// Pick a random point, if any is available
+		if (!matches.isEmpty())
+		{
+			return matches.get( random.nextInt(matches.size()) );
+		}
+		else
+		{
+			return null;
 		}
 	}
 }
