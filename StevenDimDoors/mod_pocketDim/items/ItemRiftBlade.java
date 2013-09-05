@@ -28,9 +28,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemRiftBlade extends ItemSword
 {
-	private static DDProperties properties = null;
+	private final DDProperties properties;
 
-	public ItemRiftBlade(int itemID, EnumToolMaterial material)
+	public ItemRiftBlade(int itemID, EnumToolMaterial material, DDProperties properties)
 	{
 		super(itemID, material);
 
@@ -38,10 +38,10 @@ public class ItemRiftBlade extends ItemSword
 		this.setMaxStackSize(1);
 		this.setMaxDamage(500);
 		this.hasSubtypes = false;
-		if (properties == null)
-			properties = DDProperties.instance();
+		this.properties = properties;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean isFull3D()
 	{
@@ -272,9 +272,9 @@ public class ItemRiftBlade extends ItemSword
 	
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y,
-		int z, int par7, float par8, float par9, float par10)
+		int z, int side, float hitX, float hitY, float hitZ)
 	{
-		if (BaseItemDoor.tryItemUse(mod_pocketDim.transientDoor, stack, player, world, x, y, z, par7, true, false))
+		if (BaseItemDoor.tryItemUse(mod_pocketDim.transientDoor, stack, player, world, x, y, z, side, true, false))
 		{
 			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftDoor", 0.6f, 1);
 			return true;
