@@ -309,6 +309,8 @@ public class PocketManager
 
 		InnerDimData dimension = new InnerDimData(dimensionID, parent, isPocket, isDungeon, linkWatcher);
 		dimensionData.put(dimensionID, dimension);
+		dimWatcher.onCreated(new ClientDimData(dimension));
+		
 		return dimension;
 	}
 	
