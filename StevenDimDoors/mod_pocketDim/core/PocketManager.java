@@ -6,15 +6,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.Compactor;
 import StevenDimDoors.mod_pocketDim.helpers.DeleteFolder;
-import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateSource;
@@ -284,29 +280,6 @@ public class PocketManager
 		{
 			isSaving = false;
 		}
-	}
-
-	public static boolean removeRift(World world, int x, int y, int z, int range, EntityPlayer player, ItemStack item)
-	{
-		//Function called by rift tile entities and the rift remover to find and spread between rifts.
-		//Does not actually unregister the rift data, see deleteRift for that.
-		
-		NewDimData dimension = getDimensionData(world);
-		DimLink nearest = dimension.findNearestRift(world, range, x, y, z);
-
-		if (nearest != null)
-		{
-			Point4D location = nearest.source();
-			TileEntity tileEntity = world.getBlockTileEntity(location.getX(), location.getY(), location.getZ());
-			if (tileEntity != null)
-			{
-				TileEntityRift riftEntity = (TileEntityRift) tileEntity;
-				riftEntity.shouldClose = true;
-				item.damageItem(1, player);
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public static NewDimData registerDimension(World world)
