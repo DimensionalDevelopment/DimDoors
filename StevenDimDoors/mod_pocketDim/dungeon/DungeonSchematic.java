@@ -168,14 +168,14 @@ public class DungeonSchematic extends Schematic {
 		return new DungeonSchematic(Schematic.copyFromWorld(world, x, y, z, width, height, length, doCompactBounds));
 	}
 
-	public void copyToWorld(World world, Point3D pocketCenter, int dungeonOrientation, DimLink entryLink, Random random)
+	public void copyToWorld(World world, Point3D pocketCenter, int targetOrientation, DimLink entryLink, Random random)
 	{
 		//TODO: This function is an improvised solution so we can get the release moving. In the future,
 		//we should generalize block transformations and implement support for them at the level of Schematic,
 		//then just use that support from DungeonSchematic instead of making this local fix.
 		//It might be easiest to support transformations using a WorldOperation
 		
-		final int turnAngle = dungeonOrientation - orientation;		
+		final int turnAngle = targetOrientation - this.orientation;
 		
 		int index;
 		int count;
@@ -285,10 +285,10 @@ public class DungeonSchematic extends Schematic {
 	
 	private static void createEntranceReverseLink(NewDimData dimension, Point3D pocketCenter, DimLink entryLink)
 	{
-		DimLink link = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), LinkTypes.NORMAL);
-		Point4D destination = link.source();
+		DimLink reverseLink = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), LinkTypes.NORMAL);
+		Point4D destination = entryLink.source();
 		NewDimData prevDim = PocketManager.getDimensionData(destination.getDimension());
-		prevDim.setDestination(link, destination.getX(), destination.getY(), destination.getZ());
+		prevDim.setDestination(reverseLink, destination.getX(), destination.getY(), destination.getZ());
 	}
 	
 	private static void createExitDoorLink(NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)

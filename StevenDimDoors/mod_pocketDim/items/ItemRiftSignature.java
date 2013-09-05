@@ -24,9 +24,9 @@ public class ItemRiftSignature extends Item
 	{
 		super(itemID);
 		this.setMaxStackSize(1);
-		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 		this.setMaxDamage(0);
 		this.hasSubtypes = true;
+		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -43,67 +43,69 @@ public class ItemRiftSignature extends Item
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7, float par8, float par9, float par10)
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		tryItemUse(stack, player, world, x, y, z);
-		return true;
-	}
-	
-	protected boolean tryItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z)
-	{
-		if (!world.isRemote)
+		// We must use onItemUseFirst() instead of onItemUse() because Minecraft checks
+		// whether the user is in creative mode after calling onItemUse() and undoes any
+		// damage we might set to indicate the rift sig has been activated. Otherwise,
+		// we would need to rely on checking NBT tags for hasEffect() and that function
+		// gets called constantly. Avoiding NBT lookups reduces our performance impact.
+
+		// Return false on the client side to pass this request to the server
+		if (world.isRemote)
 		{
-			//We don't check for replaceable blocks. The user can deal with that. <_<
-			
-			y += 2; //Increase y by 2 to place the rift at head level
-			if (!player.canPlayerEdit(x, y, z, 0, stack))
-			{
-				return false;
-			}
-			
-			Point4D source = getSource(stack);
-			if (source != null)
-			{
-				//The link was used before and already has an endpoint stored. Create links connecting the two endpoints.
-				NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
-				NewDimData destinationDimension = PocketManager.getDimensionData(world);
-				DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL);
-				DimLink reverse = destinationDimension.createLink(x, y, z, LinkTypes.NORMAL);
-				destinationDimension.setDestination(link, x, y, z);
-				sourceDimension.setDestination(reverse, source.getX(), source.getY(), source.getZ());
-				
-				//Try placing a rift at the destination point
-				if (!mod_pocketDim.blockRift.isBlockImmune(world, x, y, z))
-				{
-					world.setBlock(x, y, z, mod_pocketDim.blockRift.blockID);
-				}
-				
-				//Try placing a rift at the source point, but check if its world is loaded first
-				World sourceWorld = DimensionManager.getWorld(sourceDimension.id());
-				if (sourceWorld != null &&
-					!mod_pocketDim.blockRift.isBlockImmune(sourceWorld, source.getX(), source.getY(), source.getZ()))
-				{
-					sourceWorld.setBlock(source.getX(), source.getY(), source.getY(), mod_pocketDim.blockRift.blockID);
-				}
-				
-				if (!player.capabilities.isCreativeMode)
-				{
-					stack.stackSize--;
-				}
-				clearSource(stack);
-				player.sendChatToPlayer("Rift Created");
-				world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftEnd", 0.6f, 1);
-			}
-			else 
-			{
-				//The link signature has not been used. Store its current target as the first location. 
-				setSource(stack, x, y, z, PocketManager.getDimensionData(world));
-				player.sendChatToPlayer("Location Stored in Rift Signature");
-				world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftStart", 0.6f, 1);
-			}
+			return false;
+		}
+
+		//We don't check for replaceable blocks. The user can deal with that. <_<
+
+		y += 2; //Increase y by 2 to place the rift at head level
+		if (!player.canPlayerEdit(x, y, z, 0, stack))
+		{
 			return true;
 		}
-		return false;
+
+		Point4D source = getSource(stack);
+		if (source != null)
+		{
+			//The link was used before and already has an endpoint stored. Create links connecting the two endpoints.
+			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
+			NewDimData destinationDimension = PocketManager.getDimensionData(world);
+			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL);
+			DimLink reverse = destinationDimension.createLink(x, y, z, LinkTypes.NORMAL);
+			destinationDimension.setDestination(link, x, y, z);
+			sourceDimension.setDestination(reverse, source.getX(), source.getY(), source.getZ());
+
+			//Try placing a rift at the destination point
+			if (!mod_pocketDim.blockRift.isBlockImmune(world, x, y, z))
+			{
+				world.setBlock(x, y, z, mod_pocketDim.blockRift.blockID);
+			}
+
+			//Try placing a rift at the source point, but check if its world is loaded first
+			World sourceWorld = DimensionManager.getWorld(sourceDimension.id());
+			if (sourceWorld != null &&
+				!mod_pocketDim.blockRift.isBlockImmune(sourceWorld, source.getX(), source.getY(), source.getZ()))
+			{
+				sourceWorld.setBlock(source.getX(), source.getY(), source.getZ(), mod_pocketDim.blockRift.blockID);
+			}
+
+			if (!player.capabilities.isCreativeMode)
+			{
+				stack.stackSize--;
+			}
+			clearSource(stack);
+			player.sendChatToPlayer("Rift Created");
+			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftEnd", 0.6f, 1);
+		}
+		else
+		{
+			//The link signature has not been used. Store its current target as the first location. 
+			setSource(stack, x, y, z, PocketManager.getDimensionData(world));
+			player.sendChatToPlayer("Location Stored in Rift Signature");
+			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftStart", 0.6f, 1);
+		}
+		return true;
 	}
 
 	/**
@@ -138,7 +140,7 @@ public class ItemRiftSignature extends Item
 		itemStack.setTagCompound(tag);
 		itemStack.setItemDamage(1);
 	}
-	
+
 	public static void clearSource(ItemStack itemStack)
 	{
 		//Don't just set the tag to null since there may be other data there (e.g. for renamed items)
@@ -149,7 +151,7 @@ public class ItemRiftSignature extends Item
 		tag.removeTag("linkDimID");
 		itemStack.setItemDamage(0);
 	}
-	
+
 	public static Point4D getSource(ItemStack itemStack)
 	{
 		if (itemStack.getItemDamage() != 0)
@@ -157,12 +159,12 @@ public class ItemRiftSignature extends Item
 			if (itemStack.hasTagCompound())
 			{
 				NBTTagCompound tag = itemStack.getTagCompound();
-				
+
 				Integer x = tag.getInteger("linkX");
 				Integer y = tag.getInteger("linkY");
 				Integer z = tag.getInteger("linkZ");
 				Integer dimID = tag.getInteger("linkDimID");
-				
+
 				if (x != null && y != null && z != null && dimID != null)
 				{
 					return new Point4D(x, y, z, dimID);

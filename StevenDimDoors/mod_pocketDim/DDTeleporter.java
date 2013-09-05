@@ -142,8 +142,8 @@ public class DDTeleporter
 			throw new IllegalStateException("The destination world should be loaded!");
 		}
 
-		//Check if the block at that point is actually a door
-		int blockID = world.getBlockId(door.getX(), door.getY(), door.getZ());
+		//Check if the block below that point is actually a door
+		int blockID = world.getBlockId(door.getX(), door.getY() - 1, door.getZ());
 		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
 			blockID != properties.TransientDoorID && blockID != properties.UnstableDoorID)
 		{
@@ -152,7 +152,7 @@ public class DDTeleporter
 		}
 		
 		//Return the orientation portion of its metadata
-		return world.getBlockMetadata(door.getX(), door.getY(), door.getZ()) & 3;
+		return world.getBlockMetadata(door.getX(), door.getY() - 1, door.getZ()) & 3;
 	}
 	
 	public static Entity teleportEntity(Entity entity, Point4D destination)

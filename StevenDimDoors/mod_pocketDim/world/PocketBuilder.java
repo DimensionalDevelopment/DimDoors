@@ -10,7 +10,9 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
@@ -18,6 +20,7 @@ import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.util.Pair;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
@@ -55,7 +58,7 @@ public class PocketBuilder
 		{
 			//Register a new dimension
 			NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
-			NewDimData dimension = PocketManager.registerPocket(parent, false);
+			NewDimData dimension = PocketManager.registerPocket(parent, true);
 			
 			//Load a world
 			World world = DimensionManager.getWorld(dimension.id());
@@ -106,7 +109,7 @@ public class PocketBuilder
 			schematic.copyToWorld(world, destination, orientation, link, random);
 			
 			//Finish up destination initialization
-			dimension.initializePocket(destination.getX(), destination.getY(), destination.getZ(), orientation, link);
+			dimension.initializeDungeon(destination.getX(), destination.getY(), destination.getZ(), orientation, link, dungeon);
 			dimension.setFilled(true);
 			return true;
 		}
@@ -227,8 +230,8 @@ public class PocketBuilder
 			throw new IllegalStateException("The link's source world should be loaded!");
 		}
 
-		//Check if the block at that point is actually a door
-		int blockID = world.getBlockId(source.getX(), source.getY(), source.getZ());
+		//Check if the block below that point is actually a door
+		int blockID = world.getBlockId(source.getX(), source.getY() - 1, source.getZ());
 		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
 			blockID != properties.TransientDoorID)
 		{
@@ -236,7 +239,7 @@ public class PocketBuilder
 		}
 		
 		//Return the orientation portion of its metadata
-		int orientation = world.getBlockMetadata(source.getX(), source.getY(), source.getZ()) & 3;
+		int orientation = world.getBlockMetadata(source.getX(), source.getY() - 1, source.getZ()) & 3;
 		return orientation;
 	}
 
@@ -301,6 +304,10 @@ public class PocketBuilder
 			int destinationY = yCoordHelper.adjustDestinationY(source.getY(), world.getHeight(), wallThickness + 1, size);
 			int orientation = getDoorOrientation(source, properties);
 			
+			//Place a link leading back out of the pocket
+			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkTypes.NORMAL);
+			parent.setDestination(reverseLink, source.getX(), source.getY(), source.getZ());
+			
 			//Build the actual pocket area
 			buildPocket(world, source.getX(), destinationY, source.getZ(), orientation, size, wallThickness, properties);
 			
@@ -352,11 +359,10 @@ public class PocketBuilder
 			buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2) - layer, properties.FabricBlockID,
 				layer < (wallThickness - 1) && properties.TNFREAKINGT_Enabled, properties.NonTntWeight);
 		}
-				
+		
 		//Build the door
-		int metadata = BlockRotator.transformMetadata(BlockRotator.EAST_DOOR_METADATA, orientation - BlockRotator.EAST_DOOR_METADATA, properties.DimensionalDoorID);
-		setBlockDirectly(world, x, y, z, properties.DimensionalDoorID, metadata);
-		setBlockDirectly(world, x, y - 1, z, properties.DimensionalDoorID, metadata);
+		int doorOrientation = BlockRotator.transformMetadata(BlockRotator.EAST_DOOR_METADATA, orientation - BlockRotator.EAST_DOOR_METADATA + 2, properties.DimensionalDoorID);
+		ItemDimensionalDoor.placeDoorBlock(world, x, y - 1, z, doorOrientation, mod_pocketDim.dimensionalDoor);
 	}
 
 	private static void buildBox(World world, int centerX, int centerY, int centerZ, int radius, int blockID, boolean placeTnt, int nonTntWeight)
