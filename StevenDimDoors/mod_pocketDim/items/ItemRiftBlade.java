@@ -28,9 +28,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemRiftBlade extends ItemSword
 {
-	private static DDProperties properties = null;
+	private final DDProperties properties;
 
-	public ItemRiftBlade(int itemID, EnumToolMaterial material)
+	public ItemRiftBlade(int itemID, EnumToolMaterial material, DDProperties properties)
 	{
 		super(itemID, material);
 
@@ -38,10 +38,10 @@ public class ItemRiftBlade extends ItemSword
 		this.setMaxStackSize(1);
 		this.setMaxDamage(500);
 		this.hasSubtypes = false;
-		if (properties == null)
-			properties = DDProperties.instance();
+		this.properties = properties;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean isFull3D()
 	{
@@ -224,20 +224,19 @@ public class ItemRiftBlade extends ItemSword
 				{
 					if (PocketManager.getLink(hit.blockX, hit.blockY, hit.blockZ, world) != null)
 					{
-						Block var11 = mod_pocketDim.transientDoor;
-						int par4 = hit.blockX;
-						int par5 = hit.blockY;
-						int par6 = hit.blockZ;
-						int par7 = 0;
+						Block block = mod_pocketDim.transientDoor;
+						int x = hit.blockX;
+						int y = hit.blockY;
+						int z = hit.blockZ;
 
-						if (player.canPlayerEdit(par4, par5, par6, par7, stack) && player.canPlayerEdit(par4, par5 + 1, par6, par7, stack)&&!world.isRemote)
+						if (player.canPlayerEdit(x, y, z, hit.sideHit, stack) && player.canPlayerEdit(x, y + 1, z, hit.sideHit, stack) && !world.isRemote)
 						{
-							int var12 = MathHelper.floor_double((double)((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+							int orientation = MathHelper.floor_double((double)((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
-							if (BaseItemDoor.canPlace(world, par4, par5, par6) &&
-								BaseItemDoor.canPlace(world, par4, par5 - 1, par6))
+							if (BaseItemDoor.canPlace(world, x, y, z) &&
+								BaseItemDoor.canPlace(world, x, y - 1, z))
 							{
-								ItemDimensionalDoor.placeDoorBlock(world, par4, par5 - 1, par6, var12, var11);
+								ItemDimensionalDoor.placeDoorBlock(world, x, y - 1, z, orientation, block);
 								player.worldObj.playSoundAtEntity(player,"mods.DimDoors.sfx.riftDoor", 0.6f, 1);
 								stack.damageItem(10, player);
 							}
@@ -273,9 +272,9 @@ public class ItemRiftBlade extends ItemSword
 	
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y,
-		int z, int par7, float par8, float par9, float par10)
+		int z, int side, float hitX, float hitY, float hitZ)
 	{
-		if (BaseItemDoor.tryItemUse(mod_pocketDim.transientDoor, stack, player, world, x, y, z, par7, true, false))
+		if (BaseItemDoor.tryItemUse(mod_pocketDim.transientDoor, stack, player, world, x, y, z, side, true, false))
 		{
 			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftDoor", 0.6f, 1);
 			return true;

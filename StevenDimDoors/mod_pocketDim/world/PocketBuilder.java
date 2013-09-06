@@ -61,17 +61,8 @@ public class PocketBuilder
 			NewDimData dimension = PocketManager.registerPocket(parent, true);
 			
 			//Load a world
-			World world = DimensionManager.getWorld(dimension.id());
+			World world = PocketManager.loadDimension(dimension.id());
 			
-			if (world == null)
-			{
-				DimensionManager.initDimension(dimension.id());
-				world = DimensionManager.getWorld(dimension.id());
-			}
-			if (world != null && world.provider == null)
-			{
-				DimensionManager.initDimension(dimension.id());
-			}
 			if (world == null || world.provider == null)
 			{
 				System.err.println("Could not initialize dimension for a dungeon!");
@@ -282,17 +273,8 @@ public class PocketBuilder
 			NewDimData dimension = PocketManager.registerPocket(parent, false);
 			
 			//Load a world
-			World world = DimensionManager.getWorld(dimension.id());
+			World world = PocketManager.loadDimension(dimension.id());
 			
-			if (world == null)
-			{
-				DimensionManager.initDimension(dimension.id());
-				world = DimensionManager.getWorld(dimension.id());
-			}
-			if (world != null && world.provider == null)
-			{
-				DimensionManager.initDimension(dimension.id());
-			}
 			if (world == null || world.provider == null)
 			{
 				System.err.println("Could not initialize dimension for a pocket!");
@@ -305,7 +287,7 @@ public class PocketBuilder
 			int orientation = getDoorOrientation(source, properties);
 			
 			//Place a link leading back out of the pocket
-			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkTypes.NORMAL);
+			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkTypes.REVERSE);
 			parent.setDestination(reverseLink, source.getX(), source.getY(), source.getZ());
 			
 			//Build the actual pocket area

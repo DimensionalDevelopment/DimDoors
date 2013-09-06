@@ -5,79 +5,121 @@ import java.util.List;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class itemRiftRemover extends Item
 {
-    public itemRiftRemover(int par1, Material par2Material)
-    {
-    	 super(par1);
-    	 this.setMaxStackSize(1);
-         this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
-         this.setMaxDamage(5);
-         this.hasSubtypes = true;
-    }
-    
-    public void registerIcons(IconRegister par1IconRegister)
-    {
-        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
-    }
-    
-    public static MovingObjectPosition getBlockTarget(World par1World, EntityPlayer par2EntityPlayer, boolean par3)
-    {
-        float var4 = 1.0F;
-        float var5 = par2EntityPlayer.prevRotationPitch + (par2EntityPlayer.rotationPitch - par2EntityPlayer.prevRotationPitch) * var4;
-        float var6 = par2EntityPlayer.prevRotationYaw + (par2EntityPlayer.rotationYaw - par2EntityPlayer.prevRotationYaw) * var4;
-        double var7 = par2EntityPlayer.prevPosX + (par2EntityPlayer.posX - par2EntityPlayer.prevPosX) * (double)var4;
-        double var9 = par2EntityPlayer.prevPosY + (par2EntityPlayer.posY - par2EntityPlayer.prevPosY) * (double)var4 + 1.62D - (double)par2EntityPlayer.yOffset;
-        double var11 = par2EntityPlayer.prevPosZ + (par2EntityPlayer.posZ - par2EntityPlayer.prevPosZ) * (double)var4;
-        Vec3 var13 = par1World.getWorldVec3Pool().getVecFromPool(var7, var9, var11);
-        float var14 = MathHelper.cos(-var6 * 0.017453292F - (float)Math.PI);
-        float var15 = MathHelper.sin(-var6 * 0.017453292F - (float)Math.PI);
-        float var16 = -MathHelper.cos(-var5 * 0.017453292F);
-        float var17 = MathHelper.sin(-var5 * 0.017453292F);
-        float var18 = var15 * var16;
-        float var20 = var14 * var16;
-        double var21 = 5.0D;
-        if (par2EntityPlayer instanceof EntityPlayerMP)
-        {
-            var21 = 6;
-        }
-        Vec3 var23 = var13.addVector((double)var18 * var21, (double)var17 * var21, (double)var20 * var21);
-        return par1World.rayTraceBlocks_do_do(var13, var23, true, false);
-    }
+	public itemRiftRemover(int itemID, Material par2Material)
+	{
+		super(itemID);
+		this.setMaxStackSize(1);
+		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+		this.setMaxDamage(4);
+	}
 
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
-    {
-		MovingObjectPosition hit = getBlockTarget(par3EntityPlayer.worldObj, par3EntityPlayer, false);
+	public void registerIcons(IconRegister par1IconRegister)
+	{
+		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+	}
+
+	@Override
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	{
+		// We invoke PlayerControllerMP.onPlayerRightClick() from here so that Minecraft
+		// will invoke onItemUseFirst() on the client side. We'll tell it to pass the
+		// request to the server, which will make sure that rift-related changes are
+		// reflected on the server.
+
+		if (!world.isRemote)
+		{
+			return stack;
+		}
+
+		MovingObjectPosition hit = this.getMovingObjectPositionFromPlayer(world, player, true);
 		if (hit != null)
 		{
-			if (PocketManager.removeRift(par2World, hit.blockX, hit.blockY, hit.blockZ, 1, par3EntityPlayer, par1ItemStack))
+			int hx = hit.blockX;
+			int hy = hit.blockY;
+			int hz = hit.blockZ;
+			NewDimData dimension = PocketManager.getDimensionData(world);
+			DimLink link = dimension.getLink(hx, hy, hz);
+			if (world.getBlockId(hx, hy, hz) == mod_pocketDim.blockRift.blockID && link != null &&
+				player.canPlayerEdit(hx, hy, hz, hit.sideHit, stack))
 			{
-				par3EntityPlayer.worldObj.playSoundAtEntity(par3EntityPlayer,"mods.DimDoors.sfx.riftClose", 0.8f, 1);
+				// Invoke onPlayerRightClick()
+				FMLClientHandler.instance().getClient().playerController.onPlayerRightClick(
+					player, world, stack, hx, hy, hz, hit.sideHit, hit.hitVec);
 			}
 		}
-    	return par1ItemStack;
-    }
-    
-    /**
-     * allows items to add custom lines of information to the mouseover description
-     */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+		return stack;
+	}
+
+	@Override
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	{
+		// We want to use onItemUseFirst() here so that this code will run on the server side,
+		// so we don't need the client to send link-related updates to the server. Still,
+		// check whether we have a rift in sight before passing the request over.
+
+		// On integrated servers, the link won't be removed immediately because of the rift
+		// removal animation. That means we'll have a chance to check for the link before
+		// it's deleted. Otherwise the Rift Remover's durability wouldn't drop.
+		
+		NewDimData dimension = PocketManager.getDimensionData(world);
+		DimLink link = dimension.getLink(x, y, z);
+		if (world.getBlockId(x, y, z) == mod_pocketDim.blockRift.blockID && link != null &&
+			player.canPlayerEdit(x, y, z, side, stack))
+		{
+			// Tell the rift's tile entity to do its removal animation
+			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			if (tileEntity != null && tileEntity instanceof TileEntityRift)
+			{
+				((TileEntityRift) tileEntity).shouldClose = true;
+			}
+			else if (!world.isRemote)
+			{
+				// Only set the block to air on the server side so that we don't
+				// tell the server to remove the rift block before it can use the
+				// Rift Remover. Otherwise, it won't know to reduce durability.
+				world.setBlockToAir(x, y, z);
+			}
+			if (world.isRemote)
+			{
+				// Tell the server about this
+				return false;
+			}
+			else
+			{
+				if (!player.capabilities.isCreativeMode)
+				{
+					stack.damageItem(1, player);
+				}
+				player.worldObj.playSoundAtEntity(player, "mods.DimDoors.sfx.riftClose", 0.8f, 1);
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * allows items to add custom lines of information to the mouseover description
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@SideOnly(Side.CLIENT)
-    @Override
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
-    {
+	@Override
+	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
+	{
 		par3List.add("Use near exposed rift");
 		par3List.add("to remove it and");
 		par3List.add("any nearby rifts.");

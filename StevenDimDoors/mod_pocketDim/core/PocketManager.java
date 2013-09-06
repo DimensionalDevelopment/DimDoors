@@ -4,17 +4,15 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.Compactor;
 import StevenDimDoors.mod_pocketDim.helpers.DeleteFolder;
-import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateSource;
@@ -100,6 +98,7 @@ public class PocketManager
 	private static volatile boolean isSaving = false;
 	private static final UpdateWatcherProxy<Point4D> linkWatcher = new UpdateWatcherProxy<Point4D>();
 	private static final UpdateWatcherProxy<ClientDimData> dimWatcher = new UpdateWatcherProxy<ClientDimData>();
+	private static ArrayList<NewDimData> rootDimensions = null;
 
 	//HashMap that maps all the dimension IDs registered with DimDoors to their DD data.
 	private static HashMap<Integer, InnerDimData> dimensionData = null;
@@ -126,6 +125,7 @@ public class PocketManager
 
 		isLoading = true;
 		dimensionData = new HashMap<Integer, InnerDimData>();
+		rootDimensions = new ArrayList<NewDimData>();
 		
 		//Register Limbo
 		DDProperties properties = DDProperties.instance();
@@ -285,28 +285,21 @@ public class PocketManager
 			isSaving = false;
 		}
 	}
-
-	public static boolean removeRift(World world, int x, int y, int z, int range, EntityPlayer player, ItemStack item)
+	
+	public static WorldServer loadDimension(int id)
 	{
-		//Function called by rift tile entities and the rift remover to find and spread between rifts.
-		//Does not actually unregister the rift data, see deleteRift for that.
-		
-		NewDimData dimension = getDimensionData(world);
-		DimLink nearest = dimension.findNearestRift(world, range, x, y, z);
-
-		if (nearest != null)
+		WorldServer world = DimensionManager.getWorld(id);
+		if (world == null)
 		{
-			Point4D location = nearest.source();
-			TileEntity tileEntity = world.getBlockTileEntity(location.getX(), location.getY(), location.getZ());
-			if (tileEntity != null)
-			{
-				TileEntityRift riftEntity = (TileEntityRift) tileEntity;
-				riftEntity.shouldClose = true;
-				item.damageItem(1, player);
-				return true;
-			}
+			DimensionManager.initDimension(id);
+			world = DimensionManager.getWorld(id);
 		}
-		return false;
+		else if (world.provider == null)
+		{
+			DimensionManager.initDimension(id);
+			world = DimensionManager.getWorld(id);
+		}
+		return world;
 	}
 
 	public static NewDimData registerDimension(World world)
@@ -336,6 +329,12 @@ public class PocketManager
 
 		InnerDimData dimension = new InnerDimData(dimensionID, parent, isPocket, isDungeon, linkWatcher);
 		dimensionData.put(dimensionID, dimension);
+		if (!dimension.isPocketDimension())
+		{
+			rootDimensions.add(dimension);
+		}
+		dimWatcher.onCreated(new ClientDimData(dimension));
+		
 		return dimension;
 	}
 	
@@ -344,6 +343,9 @@ public class PocketManager
 		// No need to raise events here since this code should only run on the client side
 		// getDimensionData() always handles root dimensions properly, even if the weren't defined before
 
+		// SenseiKiwi: I'm a little worried about how getDimensionData will raise
+		// an event when it creates any root dimensions... Needs checking later.
+		
 		InnerDimData root = (InnerDimData) getDimensionData(rootID);
 		InnerDimData dimension;
 
@@ -389,6 +391,12 @@ public class PocketManager
 		return dimensionData.values();
 	}
 
+	@SuppressWarnings("unchecked")
+	public static ArrayList<NewDimData> getRootDimensions()
+	{
+		return (ArrayList<NewDimData>) rootDimensions.clone();
+	}
+
 	public static void unload()
 	{
 		if (!isLoaded)
@@ -399,6 +407,7 @@ public class PocketManager
 		save();
 		unregisterPockets();
 		dimensionData = null;
+		rootDimensions = null;
 		isLoaded = false;
 	}
 	

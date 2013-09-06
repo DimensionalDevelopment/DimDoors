@@ -1,5 +1,6 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.core;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import net.minecraft.entity.Entity;
@@ -16,9 +17,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
-import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
-import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -26,6 +25,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class DDTeleporter
 {
 	private static final Random random = new Random();
+	private static int END_DIMENSION_ID = 1;
 	public static int cooldown = 0;
 	
 	private DDTeleporter() { }
@@ -193,12 +193,7 @@ public class DDTeleporter
 		if (difDest)
 		{
 			// Destination isn't loaded? Then we need to load it.
-			newWorld = DimensionManager.getWorld(destination.getDimension());
-			if (newWorld == null)
-			{
-				DimensionManager.initDimension(destination.getDimension());
-				newWorld = DimensionManager.getWorld(destination.getDimension());
-			}
+			newWorld = PocketManager.loadDimension(destination.getDimension());
 		}
 		else
 		{
@@ -231,10 +226,10 @@ public class DDTeleporter
 				oldWorld.getPlayerManager().removePlayer(player);
 				newWorld.getPlayerManager().addPlayer(player);
 
-				player.theItemInWorldManager.setWorld((WorldServer)newWorld);
+				player.theItemInWorldManager.setWorld(newWorld);
 
 				// Synchronize with the server so the client knows what time it is and what it's holding.
-				player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, (WorldServer)newWorld);
+				player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
 				player.mcServer.getConfigurationManager().syncPlayerInventory(player);
 				for(Object potionEffect : player.getActivePotionEffects())
 				{
@@ -305,7 +300,7 @@ public class DDTeleporter
 		DDTeleporter.placeInPortal(entity, newWorld, destination, properties);
 		return entity;    
 	}
-	
+
 	/**
 	 * Primary function used to teleport the player using doors. Performs numerous null checks, and also generates the destination door/pocket if it has not done so already.
 	 * Also ensures correct orientation relative to the door.
@@ -346,31 +341,150 @@ public class DDTeleporter
 			return;
 		}
 		
-		entity = teleportEntity(entity, link.destination());	
-		entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+		if (link.linkType() == LinkTypes.RANDOM)
+		{
+			Point4D randomDestination = getRandomDestination();
+			if (randomDestination != null)
+			{
+				entity = teleportEntity(entity, randomDestination);
+				entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+			}
+		}
+		else
+		{
+			entity = teleportEntity(entity, link.destination());
+			entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
+		}
 	}
 
 	private static boolean initializeDestination(DimLink link, DDProperties properties)
 	{
-		//FIXME: Change this later to support rooms that have been wiped and must be regenerated.
+		// FIXME: Change this later to support rooms that have been wiped and must be regenerated.
+		// FIXME: Add code for restoring the destination-side door.
+		// We might need to implement regeneration for REVERSE links as well.
+		
 		if (link.hasDestination())
 		{
 			return true;
 		}
 
-		//Check the destination type and respond accordingly
-		//FIXME: Add missing link types.
-		//FIXME: Add code for restoring the destination-side door.
+		// Check the destination type and respond accordingly
 		switch (link.linkType())
 		{
 			case LinkTypes.DUNGEON:
 				return PocketBuilder.generateNewDungeonPocket(link, properties);
 			case LinkTypes.POCKET:
 				return PocketBuilder.generateNewPocket(link, properties);
+			case LinkTypes.SAFE_EXIT:
+				return generateSafeExit(link, properties);
+			case LinkTypes.DUNGEON_EXIT:
+				return generateDungeonExit(link, properties);
+			case LinkTypes.UNSAFE_EXIT:
+				return generateUnsafeExit(link);
 			case LinkTypes.NORMAL:
+			case LinkTypes.REVERSE:
+			case LinkTypes.RANDOM:
 				return true;
 			default:
 				throw new IllegalArgumentException("link has an unrecognized link type.");
 		}
+	}
+
+	private static Point4D getRandomDestination()
+	{
+		// Our aim is to return a random link's source point
+		// so that a link of type RANDOM can teleport a player there.
+		
+		// Restrictions:
+		// 1. Ignore links with their source inside a pocket dimension.
+		// 2. Ignore links with link type RANDOM.
+		
+		// Iterate over the root dimensions. Pocket dimensions cannot be roots.
+		// Don't just pick a random root and a random link within that root
+		// because we want to have unbiased selection among all links.
+		ArrayList<Point4D> matches = new ArrayList<Point4D>();
+		for (NewDimData dimension : PocketManager.getRootDimensions())
+		{
+			for (DimLink link : dimension.getAllLinks())
+			{
+				if (link.linkType() != LinkTypes.RANDOM)
+				{
+					matches.add(link.source());
+				}
+			}
+		}
+		
+		// Pick a random point, if any is available
+		if (!matches.isEmpty())
+		{
+			return matches.get( random.nextInt(matches.size()) );
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	private static boolean generateUnsafeExit(DimLink link)
+	{
+		// An unsafe exit teleports the user to exactly the same coordinates
+		// as the link source, except located at the dimension's root dimension.
+		// This is very risky, as we make no effort to clear an air pocket or
+		// place a platform at the destination. We also don't place a reverse
+		// link at the destination, so it's a one-way trip. Good luck!
+		
+		// To avoid loops, don't generate a destination if the player is
+		// already in a non-pocket dimension.
+		
+		NewDimData current = PocketManager.getDimensionData(link.source.getDimension());
+		if (current.isPocketDimension())
+		{
+			Point4D source = link.source();
+			current.root().setDestination(link, source.getX(), source.getY(), source.getZ());
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	private static boolean generateSafeExit(DimLink link, DDProperties properties)
+	{
+		NewDimData current = PocketManager.getDimensionData(link.source.getDimension());
+		return generateSafeExit(current.root(), link, properties);
+	}
+	
+	private static boolean generateDungeonExit(DimLink link, DDProperties properties)
+	{
+		// A dungeon exit acts the same as a safe exit, but has the chance of
+		// taking the user to any non-pocket dimension, excluding Limbo and The End.
+		
+		ArrayList<NewDimData> roots = PocketManager.getRootDimensions();
+		for (int attempts = 0; attempts < 10; attempts++)
+		{
+			NewDimData selection = roots.get( random.nextInt(roots.size()) );
+			if (selection.id() != END_DIMENSION_ID && selection.id() != properties.LimboDimensionID)
+			{
+				return generateSafeExit(selection, link, properties);
+			}
+		}
+		return false;
+	}
+	
+	private static boolean generateSafeExit(NewDimData target, DimLink link, DDProperties properties)
+	{
+		// A safe exit attempts to place a Warp Door in a dimension with
+		// some precautions to protect the player. The X and Z coordinates
+		// are fixed to match the source, but the Y coordinate is chosen by
+		// searching for a safe location to place the door. The direction of
+		// the vertical search is away from the map boundary closest to
+		// the source Y. In other words, if a player is really high up, the
+		// search proceeds down. If a player is near the bottom of the map,
+		// the search proceeds up. If a safe destination cannot be found,
+		// then we return false and the source-side door slams shut.
+		
+		// FIXME: Add code here!
+		return false;
 	}
 }

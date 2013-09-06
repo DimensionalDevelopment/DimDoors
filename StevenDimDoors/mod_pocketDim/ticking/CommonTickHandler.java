@@ -3,7 +3,7 @@ package StevenDimDoors.mod_pocketDim.ticking;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
-import StevenDimDoors.mod_pocketDim.DDTeleporter;
+import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 

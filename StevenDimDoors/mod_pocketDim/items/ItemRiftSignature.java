@@ -60,7 +60,7 @@ public class ItemRiftSignature extends Item
 		//We don't check for replaceable blocks. The user can deal with that. <_<
 
 		y += 2; //Increase y by 2 to place the rift at head level
-		if (!player.canPlayerEdit(x, y, z, 0, stack))
+		if (!player.canPlayerEdit(x, y, z, side, stack))
 		{
 			return true;
 		}
