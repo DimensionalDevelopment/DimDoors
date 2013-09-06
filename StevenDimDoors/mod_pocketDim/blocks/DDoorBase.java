@@ -479,7 +479,7 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 	 */
 	public int idPicked(World par1World, int par2, int par3, int par4)
 	{
-		return this.blockID;
+		return this.getDrops();
 	}
 
 	public int idDropped(int par1, Random par2Random, int par3)
