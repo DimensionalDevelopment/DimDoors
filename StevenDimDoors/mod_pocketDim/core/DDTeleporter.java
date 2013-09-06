@@ -18,6 +18,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
+import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -472,19 +477,63 @@ public class DDTeleporter
 		return false;
 	}
 	
-	private static boolean generateSafeExit(NewDimData target, DimLink link, DDProperties properties)
+	private static boolean generateSafeExit(NewDimData destinationDim, DimLink link, DDProperties properties)
 	{
 		// A safe exit attempts to place a Warp Door in a dimension with
 		// some precautions to protect the player. The X and Z coordinates
-		// are fixed to match the source, but the Y coordinate is chosen by
-		// searching for a safe location to place the door. The direction of
-		// the vertical search is away from the map boundary closest to
-		// the source Y. In other words, if a player is really high up, the
-		// search proceeds down. If a player is near the bottom of the map,
-		// the search proceeds up. If a safe destination cannot be found,
-		// then we return false and the source-side door slams shut.
+		// are fixed to match the source (mostly - may be shifted a little),
+		// but the Y coordinate is chosen by searching for a safe location
+		// to place the door.
 		
-		// FIXME: Add code here!
-		return false;
+		// The direction of the vertical search is away from the map boundary
+		// closest to the source Y. In other words, if a player is really
+		// high up, the search goes down. If a player is near the bottom
+		// of the map, the search goes up. If a safe destination cannot be
+		// found, then we return false and the source-side door slams shut.
+		
+		Point3D destination;
+		Point4D source = link.source();
+		World world = PocketManager.loadDimension(destinationDim.id());
+		if (world == null)
+		{
+			return false;
+		}
+		
+		boolean searchDown = (source.getY() >= world.getActualHeight() / 2);
+		destination = yCoordHelper.findSafeCube(world, source.getX(), source.getY() - 2, source.getZ(), searchDown);
+		if (destination == null)
+		{
+			destination = yCoordHelper.findSafeCube(world, source.getX(), source.getY() - 2, source.getZ(), !searchDown);			
+		}
+		if (destination != null)
+		{
+			// Set up a 3x3 platform at the destination
+			int x = destination.getX();
+			int y = destination.getY();
+			int z = destination.getZ();
+			for (int dx = -1; dx <= 1; dx++)
+			{
+				for (int dz = -1; dz <= 1; dz++)
+				{
+					world.setBlock(x + dx, y, z + dz, properties.FabricBlockID);
+				}
+			}
+			
+			// Create a reverse link for returning
+			NewDimData sourceDim = PocketManager.getDimensionData(link.source().getDimension());
+			DimLink reverse = destinationDim.createLink(x, y + 2, z, LinkTypes.REVERSE);
+			sourceDim.setDestination(reverse, source.getX(), source.getY(), source.getZ());
+			
+			// Set up the warp door at the destination
+			int orientation = getDestinationOrientation(source, properties);
+			orientation = BlockRotator.transformMetadata(orientation, 2, properties.WarpDoorID);
+			ItemDimensionalDoor.placeDoorBlock(world, x, y + 1, z, orientation, mod_pocketDim.warpDoor);
+			
+			// Complete the link to the destination
+			// This comes last so the destination isn't set unless everything else works first
+			destinationDim.setDestination(link, x, y + 2, z);
+		}
+		
+		return (destination != null);
 	}
 }
