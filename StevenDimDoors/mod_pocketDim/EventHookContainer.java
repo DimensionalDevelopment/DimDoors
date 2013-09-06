@@ -76,10 +76,15 @@ public class EventHookContainer
     	Entity entity = event.entity;
     	if(entity instanceof EntityPlayer&&entity.worldObj.provider instanceof PocketProvider && this.properties.LimboEnabled)
     	{
+    		if(!this.properties.LimboReturnsInventoryEnabled)
+    		{
+    			((EntityPlayer)entity).inventory.clearInventory(-1, -1);
+    		}
     		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(entity.worldObj.rand);
     		DDTeleporter.teleportEntity(entity, new Point4D(coords.posX,coords.posY,coords.posZ,mod_pocketDim.properties.LimboDimensionID));
     		((EntityLiving) entity).setEntityHealth(20);
     		event.setCanceled(true);
+    		return false;
     	}
     	return true;
     }
