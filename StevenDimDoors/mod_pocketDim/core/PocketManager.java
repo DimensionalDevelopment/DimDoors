@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.Compactor;
@@ -280,6 +281,22 @@ public class PocketManager
 		{
 			isSaving = false;
 		}
+	}
+	
+	public static WorldServer loadDimension(int id)
+	{
+		WorldServer world = DimensionManager.getWorld(id);
+		if (world == null)
+		{
+			DimensionManager.initDimension(id);
+			world = DimensionManager.getWorld(id);
+		}
+		else if (world.provider == null)
+		{
+			DimensionManager.initDimension(id);
+			world = DimensionManager.getWorld(id);
+		}
+		return world;
 	}
 
 	public static NewDimData registerDimension(World world)

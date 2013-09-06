@@ -192,12 +192,7 @@ public class DDTeleporter
 		if (difDest)
 		{
 			// Destination isn't loaded? Then we need to load it.
-			newWorld = DimensionManager.getWorld(destination.getDimension());
-			if (newWorld == null)
-			{
-				DimensionManager.initDimension(destination.getDimension());
-				newWorld = DimensionManager.getWorld(destination.getDimension());
-			}
+			newWorld = PocketManager.loadDimension(destination.getDimension());
 		}
 		else
 		{
@@ -230,10 +225,10 @@ public class DDTeleporter
 				oldWorld.getPlayerManager().removePlayer(player);
 				newWorld.getPlayerManager().addPlayer(player);
 
-				player.theItemInWorldManager.setWorld((WorldServer)newWorld);
+				player.theItemInWorldManager.setWorld(newWorld);
 
 				// Synchronize with the server so the client knows what time it is and what it's holding.
-				player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, (WorldServer)newWorld);
+				player.mcServer.getConfigurationManager().updateTimeAndWeatherForPlayer(player, newWorld);
 				player.mcServer.getConfigurationManager().syncPlayerInventory(player);
 				for(Object potionEffect : player.getActivePotionEffects())
 				{
@@ -304,7 +299,7 @@ public class DDTeleporter
 		DDTeleporter.placeInPortal(entity, newWorld, destination, properties);
 		return entity;    
 	}
-	
+
 	/**
 	 * Primary function used to teleport the player using doors. Performs numerous null checks, and also generates the destination door/pocket if it has not done so already.
 	 * Also ensures correct orientation relative to the door.
@@ -347,7 +342,7 @@ public class DDTeleporter
 		
 		if (link.linkType() == LinkTypes.RANDOM)
 		{
-			Point4D randomDestination = getRandomDestination();
+			Point4D randomDestination = prepareRandomDestination();
 			if (randomDestination != null)
 			{
 				entity = teleportEntity(entity, randomDestination);
@@ -364,6 +359,7 @@ public class DDTeleporter
 	private static boolean initializeDestination(DimLink link, DDProperties properties)
 	{
 		//FIXME: Change this later to support rooms that have been wiped and must be regenerated.
+		//We might need to implement regeneration for REVERSE links as well.
 		if (link.hasDestination())
 		{
 			return true;
@@ -378,7 +374,13 @@ public class DDTeleporter
 				return PocketBuilder.generateNewDungeonPocket(link, properties);
 			case LinkTypes.POCKET:
 				return PocketBuilder.generateNewPocket(link, properties);
+			case LinkTypes.SAFE_EXIT:
+			case LinkTypes.DUNGEON_EXIT:
+				return ;
+			case LinkTypes.UNSAFE_EXIT:
+				return ;
 			case LinkTypes.NORMAL:
+			case LinkTypes.REVERSE:
 			case LinkTypes.RANDOM:
 				return true;
 			default:
@@ -386,9 +388,9 @@ public class DDTeleporter
 		}
 	}
 	
-	private static Point4D getRandomDestination()
+	private static Point4D prepareRandomDestination()
 	{
-		// Our aim is to return a point near a random link's source
+		// Our aim is to return a random link's source point
 		// so that a link of type RANDOM can teleport a player there.
 		
 		// Restrictions:

@@ -285,7 +285,7 @@ public class DungeonSchematic extends Schematic {
 	
 	private static void createEntranceReverseLink(NewDimData dimension, Point3D pocketCenter, DimLink entryLink)
 	{
-		DimLink reverseLink = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), LinkTypes.NORMAL);
+		DimLink reverseLink = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), LinkTypes.REVERSE);
 		Point4D destination = entryLink.source();
 		NewDimData prevDim = PocketManager.getDimensionData(destination.getDimension());
 		prevDim.setDestination(reverseLink, destination.getX(), destination.getY(), destination.getZ());
