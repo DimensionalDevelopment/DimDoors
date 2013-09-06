@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.minecraft.world.World;
@@ -97,6 +98,7 @@ public class PocketManager
 	private static volatile boolean isSaving = false;
 	private static final UpdateWatcherProxy<Point4D> linkWatcher = new UpdateWatcherProxy<Point4D>();
 	private static final UpdateWatcherProxy<ClientDimData> dimWatcher = new UpdateWatcherProxy<ClientDimData>();
+	private static ArrayList<NewDimData> rootDimensions = null;
 
 	//HashMap that maps all the dimension IDs registered with DimDoors to their DD data.
 	private static HashMap<Integer, InnerDimData> dimensionData = null;
@@ -123,6 +125,7 @@ public class PocketManager
 
 		isLoading = true;
 		dimensionData = new HashMap<Integer, InnerDimData>();
+		rootDimensions = new ArrayList<NewDimData>();
 		
 		//Register Limbo
 		DDProperties properties = DDProperties.instance();
@@ -326,6 +329,10 @@ public class PocketManager
 
 		InnerDimData dimension = new InnerDimData(dimensionID, parent, isPocket, isDungeon, linkWatcher);
 		dimensionData.put(dimensionID, dimension);
+		if (!dimension.isPocketDimension())
+		{
+			rootDimensions.add(dimension);
+		}
 		dimWatcher.onCreated(new ClientDimData(dimension));
 		
 		return dimension;
@@ -336,6 +343,9 @@ public class PocketManager
 		// No need to raise events here since this code should only run on the client side
 		// getDimensionData() always handles root dimensions properly, even if the weren't defined before
 
+		// SenseiKiwi: I'm a little worried about how getDimensionData will raise
+		// an event when it creates any root dimensions... Needs checking later.
+		
 		InnerDimData root = (InnerDimData) getDimensionData(rootID);
 		InnerDimData dimension;
 
@@ -381,6 +391,12 @@ public class PocketManager
 		return dimensionData.values();
 	}
 
+	@SuppressWarnings("unchecked")
+	public static ArrayList<NewDimData> getRootDimensions()
+	{
+		return (ArrayList<NewDimData>) rootDimensions.clone();
+	}
+
 	public static void unload()
 	{
 		if (!isLoaded)
@@ -391,6 +407,7 @@ public class PocketManager
 		save();
 		unregisterPockets();
 		dimensionData = null;
+		rootDimensions = null;
 		isLoaded = false;
 	}
 	
