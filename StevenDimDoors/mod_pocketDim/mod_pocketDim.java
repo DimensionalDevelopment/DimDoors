@@ -115,8 +115,6 @@ public class mod_pocketDim
 	public static BiomeGenBase pocketBiome;
 
 	public static PlayerRespawnTracker tracker;
-
-	public static HashMap<String,ArrayList<EntityItem>> limboSpawnInventory = new HashMap<String,ArrayList<EntityItem>>();
 	
 	public static boolean isPlayerWearingGoogles = false;
 

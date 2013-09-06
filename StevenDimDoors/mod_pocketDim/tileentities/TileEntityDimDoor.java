@@ -1,7 +1,10 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public class TileEntityDimDoor extends TileEntity
 
@@ -13,6 +16,14 @@ public class TileEntityDimDoor extends TileEntity
 	
 	
 	
+	public boolean shouldRefresh(int oldID, int newID, int oldMeta, int newMeta, World world, int x, int y, int z)
+    {
+		if(newID==0&&PocketManager.getLink(x, y, z, world)!=null)
+		{
+			world.setBlock(x, y, z, mod_pocketDim.blockRift.blockID);
+		}
+        return true;
+    }
 	
 	 public boolean canUpdate()
 	 {
