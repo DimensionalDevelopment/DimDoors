@@ -248,7 +248,7 @@ public class DungeonSchematic extends Schematic {
 		//Set up link data for exit door
 		for (Point3D location : exitDoorLocations)
 		{
-			createExitDoorLink(dimension, location, entranceDoorLocation, turnAngle, pocketCenter);
+			createExitDoorLink(world, dimension, location, entranceDoorLocation, turnAngle, pocketCenter);
 		}
 		
 		//Remove end portal frames and spawn Monoliths
@@ -291,12 +291,22 @@ public class DungeonSchematic extends Schematic {
 		prevDim.setDestination(reverseLink, destination.getX(), destination.getY(), destination.getZ());
 	}
 	
-	private static void createExitDoorLink(NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
+	private static void createExitDoorLink(World world, NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
 	{
 		//Transform the door's location to the pocket coordinate system
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
 		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON_EXIT);
+		//Replace the sandstone block under the exit door with the same block as the one underneath it
+		int x = location.getX();
+		int y = location.getY() - 3;
+		int z = location.getZ();
+		if (y >= 0)
+		{
+			int blockID = world.getBlockId(x, y, z);
+			int metadata = world.getBlockMetadata(x, y, z);
+			setBlockDirectly(world, x, y + 1, z, blockID, metadata);
+		}
 	}
 	
 	private static void createDimensionalDoorLink(NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
