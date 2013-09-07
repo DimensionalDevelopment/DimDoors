@@ -213,6 +213,12 @@ public class TileEntityRift extends TileEntity
 				}
 			}
 		}
+		else
+		{
+			this.xOffset=0;
+			this.yOffset=0;
+			this.xOffset=0;
+		}
 	}
 	
 	public void grow(int distance)
