@@ -5,6 +5,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunkProvider;
 import StevenDimDoors.mod_pocketDim.Point3D;
 
 public class yCoordHelper 
@@ -70,7 +71,7 @@ public class yCoordHelper
 		return (material.isLiquid() || !material.isReplaceable());
 	}
 	
-	public static Point3D findSafeCube(World world, int x, int startY, int z, boolean searchDown)
+	public static Point3D findSafeCubeUp(World world, int x, int startY, int z)
 	{
 		// Search for a 3x3x3 cube of air with blocks underneath
 		// We can also match against a 3x2x3 box with 
@@ -84,62 +85,139 @@ public class yCoordHelper
 		localX = MathHelper.clamp_int(localX, 1, 14);
 		localZ = MathHelper.clamp_int(localZ, 1, 14);
 		
-		Chunk chunk = world.getChunkProvider().loadChunk(x >> 4, z >> 4);
+		Chunk chunk = initializeChunkArea(world, x >> 4, z >> 4);
 		
-		int layers = 0;
 		int height = world.getActualHeight();
 		int y, dx, dz, blockID;
-		boolean filled;
+		boolean isSafe;
 		Block block;
-		Point3D location = null;
-		
-		if (searchDown)
+
+		// Initialize layers to a huge negative number so that we won't
+		// consider an area as usable unless it gets reset to 0 first
+		// when we find a foundation upon which to build.
+		int layers = -1000000;
+
+		// Check if a 3x3 layer of blocks is empty
+		// If we find a layer that contains replaceable blocks, it can
+		// serve as the base where we'll place the player and door.
+		for (y = Math.max(startY - 1, 0); y < height; y++)
 		{
-			/*for (y = startY; y >= 0; y--)
+			isSafe = true;
+			for (dx = -1; dx <= 1 && isSafe; dx++)
 			{
-				blockID = chunk.getBlockID(localX, y, localZ);
-				
-			}*/
-		}
-		else
-		{
-			// Check if a 3x3 layer of blocks is empty
-			// If we find a layer that contains replaceable blocks, it can
-			// serve as the base where we'll place the player and door.
-			for (y = Math.max(startY, 0); y < height; y++)
-			{
-				filled = false;
-				for (dx = -1; dx <= 1 && !filled; dx++)
+				for (dz = -1; dz <= 1 && isSafe; dz++)
 				{
-					for (dz = -1; dz <= 1 && !filled; dz++)
+					blockID = chunk.getBlockID(localX  + dx, y, localZ + dz);
+					if (blockID != 0)
 					{
-						blockID = chunk.getBlockID(localX  + dx, y, localZ + dz);
-						if (blockID != 0)
+						block = Block.blocksList[blockID];
+						if (!block.blockMaterial.isReplaceable())
 						{
-							block = Block.blocksList[blockID];
-							if (block != null && !block.blockMaterial.isReplaceable())
-							{
-								filled = true;
-							}
-							layers = 0;
+							isSafe = false;
 						}
-					}
-				}
-				if (!filled)
-				{
-					layers++;
-					if (layers == 3)
-					{
-						location = new Point3D(localX + cornerX, y - 2, localZ + cornerZ);
-						break;
+						layers = 0;
 					}
 				}
 			}
+			if (isSafe)
+			{
+				layers++;
+				if (layers == 3)
+				{
+					return new Point3D(localX + cornerX, y - 2, localZ + cornerZ);
+				}
+			}
 		}
-
-		return location;
+		return null;
 	}
 
+	public static Point3D findSafeCubeDown(World world, int x, int startY, int z)
+	{
+		// Search for a 3x3x3 cube of air with blocks underneath
+		// We can also match against a 3x2x3 box with 
+		// We shift the search area into the bounds of a chunk for the sake of simplicity,
+		// so that we don't need to worry about working across chunks.
+		
+		int localX = x < 0 ? (x % 16) + 16 : (x % 16);
+		int localZ = z < 0 ? (z % 16) + 16 : (z % 16);
+		int cornerX = x - localX;
+		int cornerZ = z - localZ;
+		localX = MathHelper.clamp_int(localX, 1, 14);
+		localZ = MathHelper.clamp_int(localZ, 1, 14);
+		
+		Chunk chunk = initializeChunkArea(world, x >> 4, z >> 4);
+		
+		int height = world.getActualHeight();
+		int y, dx, dz, blockID;
+		boolean isSafe;
+		boolean hasBlocks;
+		Block block;
+		int layers = 0;
+
+		// Check if a 3x3 layer of blocks is empty
+		// If we find a layer that contains replaceable blocks, it can
+		// serve as the base where we'll place the player and door.
+		for (y = Math.min(startY + 2, height - 1); y >= 0; y--)
+		{
+			isSafe = true;
+			hasBlocks = false;
+			for (dx = -1; dx <= 1 && isSafe; dx++)
+			{
+				for (dz = -1; dz <= 1 && isSafe; dz++)
+				{
+					blockID = chunk.getBlockID(localX  + dx, y, localZ + dz);
+					if (blockID != 0)
+					{						
+						block = Block.blocksList[blockID];
+						if (!block.blockMaterial.isReplaceable())
+						{
+							if (layers >= 3)
+							{
+								return new Point3D(localX + cornerX, y + 1, localZ + cornerZ);
+							}
+							isSafe = false;
+						}
+						hasBlocks = true;
+					}
+				}
+			}
+			if (isSafe)
+			{
+				layers++;
+				if (hasBlocks)
+				{
+					if (layers >= 3)
+					{
+						return new Point3D(localX + cornerX, y, localZ + cornerZ);
+					}
+					layers = 0;
+				}
+			}
+		}
+		return null;
+	}
+	
+	private static Chunk initializeChunkArea(World world, int chunkX, int chunkZ)
+	{
+		// We initialize a 3x3 area of chunks instead of just initializing
+		// the target chunk because things generated in adjacent chunks
+		// (e.g. trees) might intrude into the target chunk.
+		
+		IChunkProvider provider = world.getChunkProvider();
+		Chunk target = provider.loadChunk(chunkX, chunkZ);
+		for (int dx = -1; dx <= 1; dx++)
+		{
+			for (int dz = -1; dz <= 1; dz++)
+			{
+				if (!provider.chunkExists(chunkX + dx, chunkZ + dz))
+				{
+					provider.loadChunk(chunkX, chunkZ);
+				}
+			}
+		}
+		return target;
+	}
+	
 	public static int adjustDestinationY(int y, int worldHeight, int entranceY, int dungeonHeight)
 	{
 		//The goal here is to guarantee that the dungeon fits within the vertical bounds

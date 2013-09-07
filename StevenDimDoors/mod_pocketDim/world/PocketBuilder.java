@@ -87,7 +87,7 @@ public class PocketBuilder
 			
 			if (packConfig != null && packConfig.doDistortDoorCoordinates())
 			{
-				destination = calculateNoisyDestination(source, dimension, orientation);
+				destination = calculateNoisyDestination(source, dimension, dungeon, orientation);
 			}
 			else
 			{
@@ -111,9 +111,9 @@ public class PocketBuilder
 		}
 	}
 	
-	private static Point3D calculateNoisyDestination(Point4D source, NewDimData dimension, int orientation)
+	private static Point3D calculateNoisyDestination(Point4D source, NewDimData dimension, DungeonData dungeon, int orientation)
 	{
-		int depth = dimension.packDepth();
+		int depth = NewDimData.calculatePackDepth(dimension.parent(), dungeon);
 		int forwardNoise = MathHelper.getRandomIntegerInRange(random, -50 * depth, 150 * depth);
 		int sidewaysNoise = MathHelper.getRandomIntegerInRange(random, -10 * depth, 10 * depth);
 
