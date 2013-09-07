@@ -8,7 +8,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
@@ -21,25 +20,22 @@ import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
-import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class DDoorBase extends BlockContainer implements IDDoorLogic
+public abstract class BaseDimDoor extends BlockContainer implements IDimDoor
 {
-	protected static DDProperties properties = null;
+	protected final DDProperties properties;
 	private Icon blockIconBottom;
 	
-	public DDoorBase(int par1, Material material) 
+	public BaseDimDoor(int blockID, Material material, DDProperties properties) 
 	{
-		super(par1, material);
+		super(blockID, material);
 
-		if (properties == null)
-			properties = DDProperties.instance();
+		this.properties = properties;
 	}
 
 	public void registerIcons(IconRegister par1IconRegister)
@@ -54,63 +50,63 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 		this.enterDimDoor(world, x, y, z, entity);
 	}
 
-	public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
 
 		boolean shouldOpen=true;
 
 		//System.out.println(String.valueOf(par1World.getBlockMetadata(par2, par3, par4)));
-		if(par5EntityPlayer.inventory.getCurrentItem()!=null)
+		if(player.inventory.getCurrentItem()!=null)
 		{
-			if(par5EntityPlayer.inventory.getCurrentItem().getItem() == mod_pocketDim.itemRiftBlade)
+			if(player.inventory.getCurrentItem().getItem() == mod_pocketDim.itemRiftBlade)
 			{
 				shouldOpen = false;
-				if (!par1World.isRemote && par1World.getBlockId(par2, par3-1, par4) == this.blockID)
+				if (!world.isRemote && world.getBlockId(x, y-1, z) == this.blockID)
 				{
-					int var12 = (int) (MathHelper.floor_double((double)((par5EntityPlayer.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
+					int var12 = (int) (MathHelper.floor_double((double)((player.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
 
-					if (par1World.getBlockMetadata(par2, par3-1, par4) == var12)
+					if (world.getBlockMetadata(x, y-1, z) == var12)
 					{
 						var12 = BlockRotator.transformMetadata(var12, 1, this.blockID);
 					}
-					par1World.setBlockMetadataWithNotify(par2, par3-1, par4, var12, 2);
+					world.setBlockMetadataWithNotify(x, y-1, z, var12, 2);
 				}
-				if (!par1World.isRemote && par1World.getBlockId(par2, par3+1, par4) == this.blockID)
+				if (!world.isRemote && world.getBlockId(x, y+1, z) == this.blockID)
 				{
-					int var12 = (int) (MathHelper.floor_double((double)((par5EntityPlayer.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
-					if(par1World.getBlockMetadata(par2, par3, par4)==var12)
+					int var12 = (int) (MathHelper.floor_double((double)((player.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
+					if(world.getBlockMetadata(x, y, z)==var12)
 					{ 
 						var12 = BlockRotator.transformMetadata(var12, 1, this.blockID);
 					}
-					par1World.setBlockMetadataWithNotify(par2, par3, par4, var12, 2);
+					world.setBlockMetadataWithNotify(x, y, z, var12, 2);
 				}
-				par1World.playAuxSFXAtEntity(par5EntityPlayer, 1001, par2, par3, par4, 0);
+				world.playAuxSFXAtEntity(player, 1001, x, y, z, 0);
 
-				if (!shouldOpen && !par1World.isRemote)
+				if (!shouldOpen && !world.isRemote)
 				{
-					par5EntityPlayer.inventory.getCurrentItem().damageItem(5, par5EntityPlayer);
+					player.inventory.getCurrentItem().damageItem(5, player);
 				}
 			}
 		}
 
 		if(shouldOpen)
 		{
-			int var10 = this.getFullMetadata(par1World, par2, par3, par4);
+			int var10 = this.getFullMetadata(world, x, y, z);
 			int var11 = var10 & 7;
 			var11 ^= 4;
 
 			if ((var10 & 8) == 0)
 			{
-				par1World.setBlockMetadataWithNotify(par2, par3, par4, var11,2);
-				par1World.markBlockRangeForRenderUpdate(par2, par3, par4, par2, par3, par4);
+				world.setBlockMetadataWithNotify(x, y, z, var11,2);
+				world.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
 			}
 			else
 			{
-				par1World.setBlockMetadataWithNotify(par2, par3 - 1, par4, var11,2);
-				par1World.markBlockRangeForRenderUpdate(par2, par3 - 1, par4, par2, par3, par4);
+				world.setBlockMetadataWithNotify(x, y - 1, z, var11,2);
+				world.markBlockRangeForRenderUpdate(x, y - 1, z, x, y, z);
 			}
 
-			par1World.playAuxSFXAtEntity(par5EntityPlayer, 1003, par2, par3, par4, 0);
+			world.playAuxSFXAtEntity(player, 1003, x, y, z, 0);
 			return true;
 		}
 		else 
@@ -158,11 +154,11 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 		this.updateAttachedTile(world, x, y, z);
 	}
 
-	@SideOnly(Side.CLIENT)
 
 	/**
 	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
 	 */
+	@SideOnly(Side.CLIENT)
 	public Icon getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
 	{
 		if(par1IBlockAccess.getBlockId(par2, par3-1, par4) == this.blockID)
@@ -177,7 +173,7 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 
 	//Called to update the render information on the tile entity. Could probably implement a data watcher,
 	//but this works fine and is more versatile I think. 
-	public DDoorBase updateAttachedTile(World world, int x, int y, int z)
+	public BaseDimDoor updateAttachedTile(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 		if (tile instanceof TileEntityDimDoor)
@@ -200,11 +196,18 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 		tile.orientation = this.getFullMetadata(par1World, par2, par3, par4) & 7;
 	}
 	
+	public boolean isDoorOpen(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+	{
+		return (this.getFullMetadata(par1IBlockAccess, par2, par3, par4) & 4) != 0;
+	}
+	
+	@Override
 	public boolean isOpaqueCube()
 	{
 		return false;
 	}
 
+	@Override
 	public boolean getBlocksMovement(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
 	{
 		int var5 = this.getFullMetadata(par1IBlockAccess, par2, par3, par4);
@@ -214,6 +217,7 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 	/**
 	 * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
 	 */
+	@Override
 	public boolean renderAsNormalBlock()
 	{
 		return false;
@@ -222,16 +226,18 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 	/**
 	 * The type of render function that is called for this block
 	 */
+	@Override
 	public int getRenderType()
 	{
 		return 7;
 	}
 
-	@SideOnly(Side.CLIENT)
 
 	/**
 	 * Returns the bounding box of the wired rectangular prism to render.
 	 */
+	@Override
+	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getSelectedBoundingBoxFromPool(World par1World, int par2, int par3, int par4)
 	{
 		this.setBlockBoundsBasedOnState(par1World, par2, par3, par4);
@@ -251,6 +257,7 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 	/**
 	 * Updates the blocks bounds based on its current state. Args: world, x, y, z
 	 */
+	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
 	{
 		this.setDoorRotation(this.getFullMetadata(par1IBlockAccess, par2, par3, par4));
@@ -262,11 +269,6 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 	public int getDoorOrientation(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
 	{
 		return this.getFullMetadata(par1IBlockAccess, par2, par3, par4) & 3;
-	}
-
-	public boolean isDoorOpen(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
-	{
-		return (this.getFullMetadata(par1IBlockAccess, par2, par3, par4) & 4) != 0;
 	}
 
 	private void setDoorRotation(int par1)
@@ -354,6 +356,7 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 	/**
 	 * Called when the block is clicked by a player. Args: x, y, z, entityPlayer
 	 */
+	@Override
 	public void onBlockClicked(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer)
 	{
 		//	System.out.println(this.getFullMetadata(par1World, par2, par3, par4)%4);
@@ -363,6 +366,7 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
+	@Override
 	public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5)
 	{
 		int var6 = par1World.getBlockMetadata(par2, par3, par4);
@@ -425,6 +429,7 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 	 * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
 	 * x, y, z, startVec, endVec
 	 */
+	@Override
 	public MovingObjectPosition collisionRayTrace(World par1World, int par2, int par3, int par4, Vec3 par5Vec3, Vec3 par6Vec3)
 	{
 		this.setBlockBoundsBasedOnState(par1World, par2, par3, par4);
@@ -434,6 +439,7 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 	/**
 	 * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
 	 */
+	@Override
 	public boolean canPlaceBlockAt(World par1World, int par2, int par3, int par4)
 	{
 		return par3 >= 255 ? false : par1World.doesBlockHaveSolidTopSurface(par2, par3 - 1, par4) && super.canPlaceBlockAt(par1World, par2, par3, par4) && super.canPlaceBlockAt(par1World, par2, par3 + 1, par4);
@@ -443,6 +449,7 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 	 * Returns the mobility information of the block, 0 = free, 1 = can't push but can move over, 2 = total immobility
 	 * and stop pistons
 	 */
+	@Override
 	public int getMobilityFlag()
 	{
 		return 2;
@@ -473,15 +480,17 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 		return var7 & 7 | (var6 ? 8 : 0) | (var9 ? 16 : 0);
 	}
 
-	@SideOnly(Side.CLIENT)
 	/**
 	 * only called by clickMiddleMouseButton , and passed to inventory.setCurrentItem (along with isCreative)
 	 */
+	@Override
+	@SideOnly(Side.CLIENT)
 	public int idPicked(World par1World, int par2, int par3, int par4)
 	{
 		return this.getDrops();
 	}
 
+	@Override
 	public int idDropped(int par1, Random par2Random, int par3)
 	{
 		return (par1 & 8) != 0 ? 0 : (getDrops());
@@ -490,6 +499,7 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 	/**
 	 * Called when the block is attempted to be harvested
 	 */
+	@Override
 	public void onBlockHarvested(World par1World, int par2, int par3, int par4, int par5, EntityPlayer par6EntityPlayer)
 	{
 		if (par6EntityPlayer.capabilities.isCreativeMode && (par5 & 8) != 0 && par1World.getBlockId(par2, par3 - 1, par4) == this.blockID)
@@ -501,8 +511,7 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 	@Override
 	public TileEntity createNewTileEntity(World world)
 	{
-		TileEntity tile = new TileEntityDimDoor();
-		return tile;
+		return new TileEntityDimDoor();
 	}
 
 	@Override
@@ -523,12 +532,7 @@ public class DDoorBase extends BlockContainer implements IDDoorLogic
 			}
 		}	
 	}
-
-	@Override
-	public void placeDimDoor(World world, int x, int y, int z) 
-	{
-		// TODO Auto-generated method stub
-	}
+	
 	@Override
 	public int getDrops()
 	{

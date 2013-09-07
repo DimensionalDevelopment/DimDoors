@@ -1,18 +1,13 @@
 package StevenDimDoors.mod_pocketDim;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.DamageSource;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
@@ -74,15 +69,17 @@ public class EventHookContainer
     public boolean LivingDeathEvent(LivingDeathEvent event)
     {
     	Entity entity = event.entity;
-    	if(entity instanceof EntityPlayer&&entity.worldObj.provider instanceof PocketProvider && this.properties.LimboEnabled)
+    	if (entity instanceof EntityPlayer && entity.worldObj.provider instanceof PocketProvider
+    		&& properties.LimboEnabled)
     	{
-    		if(!this.properties.LimboReturnsInventoryEnabled)
+    		EntityPlayer player = (EntityPlayer) entity;
+    		if (!properties.LimboReturnsInventoryEnabled)
     		{
-    			((EntityPlayer)entity).inventory.clearInventory(-1, -1);
+    			player.inventory.clearInventory(-1, -1);
     		}
-    		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(entity.worldObj.rand);
-    		DDTeleporter.teleportEntity(entity, new Point4D(coords.posX,coords.posY,coords.posZ,mod_pocketDim.properties.LimboDimensionID));
-    		((EntityLiving) entity).setEntityHealth(20);
+    		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(player.worldObj.rand);
+    		DDTeleporter.teleportEntity(player, new Point4D(coords.posX, coords.posY, coords.posZ, mod_pocketDim.properties.LimboDimensionID));
+    		player.setEntityHealth(player.getMaxHealth());
     		event.setCanceled(true);
     		return false;
     	}
