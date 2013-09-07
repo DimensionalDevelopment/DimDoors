@@ -12,6 +12,13 @@ public final class Point4D implements Comparable<Point4D>
 	private final int z;
 	private final int dimension;
 	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param dimension
+	 */
 	public Point4D(int x, int y, int z, int dimension)
 	{
 		this.x = x;
