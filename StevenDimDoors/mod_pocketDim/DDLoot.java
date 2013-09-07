@@ -78,9 +78,6 @@ public class DDLoot {
 		//because the items in that category have strange weights that are incompatible with all other
 		//chest categories.
 		
-		//This function has a flaw. It treats items with the same item ID but different damage values as
-		//the same item. For instance, it cannot distinguish between different types of wood. That shouldn't
-		//matter for most chest loot, though. This could be fixed if we cared enough.
 		Random random = new Random();
 		HashMap<Integer, WeightedRandomChestContent> container = new HashMap<Integer, WeightedRandomChestContent>();
 		
@@ -89,7 +86,9 @@ public class DDLoot {
 			WeightedRandomChestContent[] items = ChestGenHooks.getItems(category, random);
 			for (WeightedRandomChestContent item : items)
 			{
-				int id = item.theItemId.itemID;
+				ItemStack stack = item.theItemId;
+				int id = stack.itemID;
+				int subtype = stack.getItem().getHasSubtypes() ? stack.getItemDamage() : 0;
 
 				//Correct the weights of Vanilla dungeon chests (DUNGEON_CHEST)
 				//Comparing by String references is valid here since they should match!
@@ -100,20 +99,25 @@ public class DDLoot {
 					item.itemWeight /= DUNGEON_CHEST_WEIGHT_INFLATION;
 					if (item.itemWeight == 0)
 						item.itemWeight = 1;
-				}				
-				if (!container.containsKey(id))
+				}
+				
+				//Generate an identifier for this item using its item ID and damage value,
+				//if it has subtypes. This solves the issue of matching items that have
+				//the same item ID but different subtypes (e.g. wood planks, dyes).
+				int key = ((subtype & 0xFFFF) << 16) + ((id & 0xFFFF) << 16);
+				WeightedRandomChestContent other = container.get(key);
+				if (other == null)
 				{
 					//This item has not been seen before. Simply add it to the container.
-					container.put(id, item);
+					container.put(key, item);
 				}
 				else
 				{
 					//This item conflicts with an existing entry. Replace that entry
 					//if our current item has a lower weight.
-					WeightedRandomChestContent other = container.get(id);
 					if (item.itemWeight < other.itemWeight)
 					{
-						container.put(id, item);
+						container.put(key, item);
 					}
 				}
 			}
@@ -127,7 +131,7 @@ public class DDLoot {
 		{
 			if (item.theItemId.itemID == enchantedBookID)
 			{
-				item.itemWeight = 3;
+				item.itemWeight = 4;
 				break;
 			}
 		}
