@@ -1,29 +1,19 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
-import java.util.Random;
-
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
-import net.minecraft.util.Icon;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class WarpDoor extends DDoorBase implements IDDoorLogic
+public class WarpDoor extends BaseDimDoor
 {
-	private Icon blockIconBottom;
-
-	public WarpDoor(int blockID, Material material) 
+	public WarpDoor(int blockID, Material material, DDProperties properties) 
 	{
-		super(blockID, material);
+		super(blockID, material, properties);
 	}
 
 	@Override
@@ -33,7 +23,7 @@ public class WarpDoor extends DDoorBase implements IDDoorLogic
 		{
 			NewDimData dimension = PocketManager.getDimensionData(world);
 			DimLink link = dimension.getLink(x, y, z);
-			if (link == null&&dimension.isPocketDimension())
+			if (link == null && dimension.isPocketDimension())
 			{
 				dimension.createLink(x, y, z, LinkTypes.SAFE_EXIT);
 			}
@@ -45,6 +35,4 @@ public class WarpDoor extends DDoorBase implements IDDoorLogic
 	{
 		return Item.doorWood.itemID;
 	}
-
-	
 }
