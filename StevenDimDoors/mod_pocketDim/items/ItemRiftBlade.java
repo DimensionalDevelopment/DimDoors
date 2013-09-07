@@ -9,7 +9,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -20,8 +19,6 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
-import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -62,8 +59,14 @@ public class ItemRiftBlade extends ItemSword
 		}
 	}
 
-	@SideOnly(Side.CLIENT)
 	@Override
+    public int getDamageVsEntity(Entity par1Entity)
+    {
+        return 7;
+    }
+
+	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean hasEffect(ItemStack par1ItemStack)
 	{
 		return true;
@@ -74,12 +77,6 @@ public class ItemRiftBlade extends ItemSword
 	{
 		par1ItemStack.damageItem(1, par3EntityLiving);
 		return true;
-	}
-
-	@Override
-	public int getDamageVsEntity(Entity par1Entity)
-	{
-		return 7;
 	}
 
 	@Override
@@ -139,61 +136,6 @@ public class ItemRiftBlade extends ItemSword
 		return true;
 	}
 
-	/**
-	 * How long it takes to use or consume an item
-	 */
-	@Override
-	public int getMaxItemUseDuration(ItemStack par1ItemStack)
-	{
-		return 72000;
-	}
-
-	@Override
-	public EnumAction getItemUseAction(ItemStack stack)
-	{
-		return properties.RiftBladeRiftCreationEnabled ? EnumAction.bow : EnumAction.block;
-	}
-
-	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int itemInUseCount)
-	{
-		//Condition for disabling rift creation
-		if (!properties.RiftBladeRiftCreationEnabled)
-			return;
-
-		if (world.isRemote)
-			return;
-
-		Vec3 var2 = player.getLook(1.0F);
-
-		double cooef = -2;
-		var2.xCoord *= cooef;
-		var2.yCoord *= cooef;
-		var2.zCoord *= cooef;
-		double var5 = player.posX - var2.xCoord;
-		double var9 = player.posZ - var2.zCoord;
-		double var7 = player.posY - var2.yCoord + 2;
-
-		int x = MathHelper.floor_double(var5);
-		int y = MathHelper.floor_double(var7);
-		int z = MathHelper.floor_double(var9);
-
-		int orientation = (int) (MathHelper.floor_double((double) ((player.rotationYaw + 90) * 4.0F / 360.0F) + 0.5D) & 3);
-
-		//TODO: This looks weird. Shouldn't we aim to only create rifts on maxed-out usage time? i.e. "<= 0"
-		if (this.getMaxItemUseDuration(stack) - itemInUseCount > 12 &&
-			ItemDimensionalDoor.canPlace(world, x, y, z) && ItemDimensionalDoor.canPlace(world, x, y + 1, z))
-		{
-			NewDimData dimension = PocketManager.getDimensionData(world);
-			if (!dimension.isPocketDimension() && dimension.getLink(x, y + 1, z) == null)
-			{
-				dimension.createLink(x, y + 1, z, LinkTypes.POCKET);
-				player.worldObj.playSoundAtEntity(player,"mods.DimDoors.sfx.riftDoor", 0.6f, 1);
-				ItemDimensionalDoor.placeDoorBlock(world, x, y, z, orientation, mod_pocketDim.transientDoor);  
-			} 
-		}
-	}
-
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
@@ -212,7 +154,8 @@ public class ItemRiftBlade extends ItemSword
 				double var7 = var3.dotProduct(var4);
 				if( (var7+.1) > 1.0D - 0.025D / var5 ?  player.canEntityBeSeen(ent) : false)
 				{
-					((ItemRiftBlade) stack.getItem()).teleportToEntity(stack, ent, player);
+					teleportToEntity(stack, ent, player);
+					stack.damageItem(3, player);
 					return stack;
 				}
 			}
@@ -220,36 +163,33 @@ public class ItemRiftBlade extends ItemSword
 			MovingObjectPosition hit = this.getMovingObjectPositionFromPlayer(world, player, false);
 			if (hit != null)
 			{
-				if (world.getBlockId(hit.blockX, hit.blockY, hit.blockZ) == properties.RiftBlockID)
+				int x = hit.blockX;
+				int y = hit.blockY;
+				int z = hit.blockZ;
+				if (world.getBlockId(x, y, z) == properties.RiftBlockID)
 				{
-					if (PocketManager.getLink(hit.blockX, hit.blockY, hit.blockZ, world) != null)
+					if (PocketManager.getLink(x, y, z, world) != null)
 					{
-						Block block = mod_pocketDim.transientDoor;
-						int x = hit.blockX;
-						int y = hit.blockY;
-						int z = hit.blockZ;
-
-						if (player.canPlayerEdit(x, y, z, hit.sideHit, stack) && player.canPlayerEdit(x, y + 1, z, hit.sideHit, stack) && !world.isRemote)
+						if (player.canPlayerEdit(x, y, z, hit.sideHit, stack) &&
+							player.canPlayerEdit(x, y + 1, z, hit.sideHit, stack))
 						{
 							int orientation = MathHelper.floor_double((double)((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 
 							if (BaseItemDoor.canPlace(world, x, y, z) &&
 								BaseItemDoor.canPlace(world, x, y - 1, z))
 							{
-								ItemDimensionalDoor.placeDoorBlock(world, x, y - 1, z, orientation, block);
+								ItemDimensionalDoor.placeDoorBlock(world, x, y - 1, z, orientation, mod_pocketDim.transientDoor);
 								player.worldObj.playSoundAtEntity(player,"mods.DimDoors.sfx.riftDoor", 0.6f, 1);
-								stack.damageItem(10, player);
+								stack.damageItem(3, player);
+								return stack;
 							}
 						}
 					}
-					return stack;
 				}
 			}
 			
-			//FIXME: Should this be inside or after this IF?
 			player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
 		}
-
 		return stack;
 	}
 
@@ -269,21 +209,6 @@ public class ItemRiftBlade extends ItemSword
     	//That would cause this sword to accept gold as a repair material (since we set material = Gold).
 		return mod_pocketDim.itemStableFabric.itemID == par2ItemStack.itemID ? true : false;
 	}
-	
-	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y,
-		int z, int side, float hitX, float hitY, float hitZ)
-	{
-		if (BaseItemDoor.tryItemUse(mod_pocketDim.transientDoor, stack, player, world, x, y, z, side, true, false))
-		{
-			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftDoor", 0.6f, 1);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
 
 	/**
 	 * allows items to add custom lines of information to the mouseover description
@@ -292,8 +217,8 @@ public class ItemRiftBlade extends ItemSword
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
 	{
-		par3List.add("Opens a temporary door, has");
-		par3List.add("a special teleport attack,");
-		par3List.add("and rotates existing doors.");
+		par3List.add("Creates temporary doors");
+		par3List.add("on rifts, rotates doors,");
+		par3List.add("and has a teleport attack.");
 	}
 }
