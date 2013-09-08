@@ -14,7 +14,6 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 
 public class TransTrapdoor extends BlockTrapDoor implements IDimDoor
 {
