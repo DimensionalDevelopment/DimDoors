@@ -1,15 +1,22 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
+import java.util.Random;
+
 import net.minecraft.block.BlockTrapDoor;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimHatch;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 
-public class dimHatch extends BlockTrapDoor
+public class dimHatch extends BlockTrapDoor implements IDimDoor, ITileEntityProvider
 {
 
 	public dimHatch(int par1,int par2, Material par2Material) 
@@ -66,4 +73,56 @@ public class dimHatch extends BlockTrapDoor
 			par1World.playAuxSFXAtEntity((EntityPlayer)null, 1003, par2, par3, par4, 0);
 		}
 	}
+
+	public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) 
+	{
+		TileEntityDimHatch tile = (TileEntityDimHatch) par1World.getBlockTileEntity(par2, par3, par4);
+		tile.hasRift = PocketManager.getLink(par2, par3, par4, par1World)!=null;
+		tile.metaData = par1World.getBlockMetadata(par2, par3, par4);
+		tile.isShut = this.isTrapdoorOpen(par4);
+	}
+	@Override
+	public TileEntity createNewTileEntity(World world) 
+	{
+		
+		return new TileEntityDimHatch();
+	}
+
+	public dimHatch updateAttachedTile(World world, int x, int y, int z)
+	{
+		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		if (tile instanceof TileEntityDimHatch)
+		{
+			TileEntityDimHatch dimTile = (TileEntityDimHatch) tile;
+			dimTile.hasRift = PocketManager.getLink(x, y, z, world)!=null;
+			dimTile.metaData = world.getBlockMetadata(x, y, z);
+			dimTile.isShut = this.isTrapdoorOpen( world.getBlockMetadata(x, y, z));
+		}
+		return this;
+	}
+	@Override
+	public void enterDimDoor(World world, int x, int y, int z, Entity entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void placeDimDoor(World world, int x, int y, int z) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z)
+	{
+		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
+		this.updateAttachedTile(world, x, y, z);
+	}
+	@Override
+	public int getDrops() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
 }
