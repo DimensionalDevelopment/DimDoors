@@ -27,6 +27,7 @@ import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
 import StevenDimDoors.mod_pocketDim.schematic.ReplacementFilter;
 import StevenDimDoors.mod_pocketDim.schematic.Schematic;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
+import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class DungeonSchematic extends Schematic {
@@ -248,13 +249,14 @@ public class DungeonSchematic extends Schematic {
 		//Set up link data for exit door
 		for (Point3D location : exitDoorLocations)
 		{
-			createExitDoorLink(dimension, location, entranceDoorLocation, turnAngle, pocketCenter);
+			createExitDoorLink(world, dimension, location, entranceDoorLocation, turnAngle, pocketCenter);
 		}
 		
-		//Remove end portal frames and spawn Monoliths
+		//Remove end portal frames and spawn Monoliths, if allowed
+		boolean canSpawn = MonolithSpawner.isMobSpawningAllowed();
 		for (Point3D location : monolithSpawnLocations)
 		{
-			spawnMonolith(world, location, entranceDoorLocation, turnAngle, pocketCenter);
+			spawnMonolith(world, location, entranceDoorLocation, turnAngle, pocketCenter, canSpawn);
 		}
 	}
 	
@@ -291,12 +293,22 @@ public class DungeonSchematic extends Schematic {
 		prevDim.setDestination(reverseLink, destination.getX(), destination.getY(), destination.getZ());
 	}
 	
-	private static void createExitDoorLink(NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
+	private static void createExitDoorLink(World world, NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
 	{
 		//Transform the door's location to the pocket coordinate system
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
 		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON_EXIT);
+		//Replace the sandstone block under the exit door with the same block as the one underneath it
+		int x = location.getX();
+		int y = location.getY() - 3;
+		int z = location.getZ();
+		if (y >= 0)
+		{
+			int blockID = world.getBlockId(x, y, z);
+			int metadata = world.getBlockMetadata(x, y, z);
+			setBlockDirectly(world, x, y + 1, z, blockID, metadata);
+		}
 	}
 	
 	private static void createDimensionalDoorLink(NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
@@ -307,7 +319,7 @@ public class DungeonSchematic extends Schematic {
 		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON);
 	}
 	
-	private static void spawnMonolith(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
+	private static void spawnMonolith(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter, boolean canSpawn)
 	{
 		//Transform the frame block's location to the pocket coordinate system
 		Point3D location = point.clone();
@@ -315,8 +327,11 @@ public class DungeonSchematic extends Schematic {
 		//Remove frame block
 		setBlockDirectly(world, location.getX(), location.getY(), location.getZ(), 0, 0);
 		//Spawn Monolith
-		Entity mob = new MobMonolith(world);
-		mob.setLocationAndAngles(location.getX(), location.getY(), location.getZ(), 1, 1);
-		world.spawnEntityInWorld(mob);
+		if (canSpawn)
+		{
+			Entity mob = new MobMonolith(world);
+			mob.setLocationAndAngles(location.getX(), location.getY(), location.getZ(), 1, 1);
+			world.spawnEntityInWorld(mob);
+		}
 	}
 }

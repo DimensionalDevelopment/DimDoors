@@ -194,7 +194,7 @@ public class MonolithSpawner implements IRegularTickReceiver {
 		}
 	}
 	
-	private static boolean isMobSpawningAllowed()
+	public static boolean isMobSpawningAllowed()
 	{
 		//This function is used to retrieve the value of doMobSpawning. The code is the same
 		//as the code used by Minecraft. Jaitsu requested this to make testing easier. ~SenseiKiwi
