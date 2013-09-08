@@ -32,10 +32,8 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 {
 	protected final DDProperties properties;
 	private Icon blockIconBottom;
-    protected boolean isBlockContainer=true;
+    protected boolean isBlockContainer = true;
     private boolean isTileProvider = true;
-    
-
 	
 	public BaseDimDoor(int blockID, Material material, DDProperties properties) 
 	{
@@ -185,6 +183,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		tile.openOrClosed = this.isDoorOpen( par1World,  par2,  par3,  par4);  	
 		tile.orientation = this.getFullMetadata(par1World, par2, par3, par4) & 7;
 	}
+	
 	private void setDoorRotation(int par1)
 	{
 		float var2 = 0.1875F;
