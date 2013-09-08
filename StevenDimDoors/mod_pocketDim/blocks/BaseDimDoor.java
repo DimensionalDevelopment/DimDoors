@@ -6,8 +6,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -361,25 +363,58 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public void enterDimDoor(World world, int x, int y, int z, Entity entity) 
 	{
-		int var12 = (int) (MathHelper.floor_double((double) ((entity.rotationYaw + 90) * 4.0F / 360.0F) + 0.5D) & 3);
-
-		int orientation = world.getBlockMetadata(x, y - 1, z);
-		if (!world.isRemote && (orientation >= 4 && orientation <= 7) && (orientation - 4) == var12 &&
-				world.getBlockId(x, y - 1, z) == this.blockID)
+		// We need to ignore particle entities
+		if (world.isRemote || entity instanceof EntityFX)
 		{
-			this.onPoweredBlockChange(world, x, y, z, false);
-
-			DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
-			if (link != null)
+			return;
+		}
+		
+		// Check that this is the top block of the door
+		if (world.getBlockId(x, y - 1, z) == this.blockID)
+		{
+			int metadata = world.getBlockMetadata(x, y - 1, z);
+			boolean canUse = isDoorOpen(metadata);
+			if (canUse && entity instanceof EntityLiving)
 			{
-				DDTeleporter.traverseDimDoor(world, link, entity);
+				// Don't check for non-living entities since it might not work right
+				canUse = isEntityFacingDoor(metadata, (EntityLiving) entity);
 			}
-		}	
+			if (canUse)
+			{
+				// Teleport the entity through the link, if it exists
+				DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
+				if (link != null)
+				{
+					DDTeleporter.traverseDimDoor(world, link, entity);
+				}
+				// Close the door only after the entity goes through
+				// so players don't have it slam in their faces.
+				this.onPoweredBlockChange(world, x, y, z, false);
+			}
+		}
+		else if (world.getBlockId(x, y + 1, z) == this.blockID)
+		{
+			enterDimDoor(world, x, y + 1, z, entity);
+		}
 	}
 	
 	@Override
 	public int getDrops()
 	{
 		return this.blockID;
+	}
+	
+	protected static boolean isDoorOpen(int metadata)
+	{
+		return (metadata & 4) != 0;
+	}
+	
+	protected static boolean isEntityFacingDoor(int metadata, EntityLiving entity)
+	{
+		// Although any entity has the proper fields for this check,
+		// we should only apply it to living entities since things
+		// like Minecarts might come in backwards.
+		int direction = (int) (MathHelper.floor_double((double) ((entity.rotationYaw + 90) * 4.0F / 360.0F) + 0.5D) & 3);
+		return ((metadata & 3) == direction);
 	}
 }
