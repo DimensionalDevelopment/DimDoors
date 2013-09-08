@@ -120,7 +120,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
                 var22 = 1.0F;
             }
             GL11.glColor4d(var21 * var17, var22 * var17, var23 * var17, 1.0F);
-            if (TransTrapdoor.isTrapdoorOnBlock(metadata))
+            if (TransTrapdoor.isTrapdoorSetLow(metadata))
             {
             	if (TransTrapdoor.isTrapdoorOpen(metadata))
             	{

@@ -111,7 +111,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 		return  Block.trapdoor.blockID;
 	}
 	
-	public static boolean isTrapdoorOnBlock(int metadata)
+	public static boolean isTrapdoorSetLow(int metadata)
 	{
 		return (metadata & 8) == 0;
 	}
