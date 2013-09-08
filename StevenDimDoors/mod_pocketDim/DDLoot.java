@@ -58,7 +58,7 @@ public class DDLoot {
 
 		addContent(properties.DimensionalDoorLootEnabled, items, mod_pocketDim.itemDimDoor.itemID, UNCOMMON_LOOT_WEIGHT);
 		addContent(properties.WarpDoorLootEnabled, items, mod_pocketDim.itemExitDoor.itemID, UNCOMMON_LOOT_WEIGHT);
-		addContent(properties.TransTrapdoorLootEnabled, items, mod_pocketDim.dimHatch.blockID, UNCOMMON_LOOT_WEIGHT);
+		addContent(properties.TransTrapdoorLootEnabled, items, mod_pocketDim.transTrapdoor.blockID, UNCOMMON_LOOT_WEIGHT);
 		addContent(properties.RiftSignatureLootEnabled, items, mod_pocketDim.itemLinkSignature.itemID, UNCOMMON_LOOT_WEIGHT);
 		addContent(properties.StableFabricLootEnabled, items, mod_pocketDim.itemStableFabric.itemID, UNCOMMON_LOOT_WEIGHT);
 		addContent(properties.RiftRemoverLootEnabled, items, mod_pocketDim.itemRiftRemover.itemID, UNCOMMON_LOOT_WEIGHT);
