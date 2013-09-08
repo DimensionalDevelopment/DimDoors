@@ -31,7 +31,7 @@ public class RiftFX extends EntityFX
         this.field_92047_az = par14EffectRenderer;
         this.particleScale *= 0.75F;
         this.particleMaxAge = 40 + this.rand.nextInt(26);
-        this.noClip = false;
+        this.noClip = true;
     }
 
     public void func_92045_e(boolean par1)
