@@ -24,16 +24,27 @@ public class LimboDecay implements IRegularTickReceiver {
 	//Provides a reversed list of the block IDs that blocks cycle through during decay.
 	private final int[] decaySequence;
 	
-	private Random random;
-	private DDProperties properties = null;
+	private final Random random;
+	private final DDProperties properties;
+	private final int[] blocksImmuneToDecay;
 	
 	public LimboDecay(IRegularTickSender tickSender, DDProperties properties)
 	{
 		decaySequence = new int[] {
-				properties.LimboBlockID,
-				Block.gravel.blockID,
-				Block.cobblestone.blockID,
-				Block.stone.blockID
+			properties.LimboBlockID,
+			Block.gravel.blockID,
+			Block.cobblestone.blockID,
+			Block.stone.blockID
+		};
+		
+		blocksImmuneToDecay = new int[] {
+			properties.LimboBlockID,
+			properties.PermaFabricBlockID,
+			properties.TransientDoorID,
+			properties.DimensionalDoorID,
+			properties.WarpDoorID,
+			properties.RiftBlockID,
+			properties.UnstableDoorID
 		};
 		
 		this.properties = properties;
@@ -151,12 +162,22 @@ public class LimboDecay implements IRegularTickReceiver {
 	}
 	
 	/**
-	 * Checks if a block can decay. We will not decay air, Unraveled Fabric, Eternal Fabric, or containers.
+	 * Checks if a block can decay. We will not decay air, certain DD blocks, or containers.
 	 */
 	private boolean canDecayBlock(int blockID)
 	{
-		if (blockID == 0 || blockID == properties.LimboBlockID || blockID == properties.PermaFabricBlockID)
+		if (blockID == 0)
+		{
 			return false;
+		}
+		
+		for (int k = 0; k < blocksImmuneToDecay.length; k++)
+		{
+			if (blockID == blocksImmuneToDecay[k])
+			{
+				return false;
+			}
+		}
 		
 		Block block = Block.blocksList[blockID];
 		return (block == null || !(block instanceof BlockContainer));
