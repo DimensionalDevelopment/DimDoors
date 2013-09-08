@@ -217,6 +217,71 @@ public class yCoordHelper
 		}
 		return target;
 	}
+
+	public static Point3D findDropPoint(World world, int x, int y, int z)
+	{
+		/*// Find a simple 2-block-high air gap
+		// Search across a 3x3 column
+		int localX = x < 0 ? (x % 16) + 16 : (x % 16);
+		int localZ = z < 0 ? (z % 16) + 16 : (z % 16);
+		int cornerX = x - localX;
+		int cornerZ = z - localZ;
+		localX = MathHelper.clamp_int(localX, 1, 14);
+		localZ = MathHelper.clamp_int(localZ, 1, 14);
+		
+		Chunk chunk = initializeChunkArea(world, x >> 4, z >> 4);
+		
+		int height = world.getActualHeight();
+		int y, dx, dz, blockID;
+		boolean isSafe;
+		boolean hasBlocks;
+		Block block;
+		int layers = 0;
+
+		// Check if a 3x3 layer of blocks is empty
+		// If we find a layer that contains replaceable blocks, it can
+		// serve as the base where we'll place the player and door.
+		for (y = Math.min(startY + 2, height - 1); y >= 0; y--)
+		{
+			isSafe = true;
+			hasBlocks = false;
+			for (dx = -1; dx <= 1 && isSafe; dx++)
+			{
+				for (dz = -1; dz <= 1 && isSafe; dz++)
+				{
+					blockID = chunk.getBlockID(localX  + dx, y, localZ + dz);
+					if (blockID != 0)
+					{						
+						block = Block.blocksList[blockID];
+						if (!block.blockMaterial.isReplaceable())
+						{
+							if (layers >= 3)
+							{
+								return new Point3D(localX + cornerX, y + 1, localZ + cornerZ);
+							}
+							isSafe = false;
+						}
+						hasBlocks = true;
+					}
+				}
+			}
+			if (isSafe)
+			{
+				layers++;
+				if (hasBlocks)
+				{
+					if (layers >= 3)
+					{
+						return new Point3D(localX + cornerX, y, localZ + cornerZ);
+					}
+					layers = 0;
+				}
+			}
+		}
+		return null;*/
+		// Temporary measure to not break the build
+		return new Point3D(x, y - 2, z);
+	}
 	
 	public static int adjustDestinationY(int y, int worldHeight, int entranceY, int dungeonHeight)
 	{

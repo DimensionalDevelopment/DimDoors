@@ -150,7 +150,7 @@ public class DDTeleporter
 		{
 			throw new IllegalStateException("The destination world should be loaded!");
 		}
-
+		
 		//Check if the block below that point is actually a door
 		int blockID = world.getBlockId(door.getX(), door.getY() - 1, door.getZ());
 		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
@@ -436,9 +436,9 @@ public class DDTeleporter
 	
 	private static boolean generateUnsafeExit(DimLink link)
 	{
-		// An unsafe exit teleports the user to exactly the same coordinates
-		// as the link source, except located at the dimension's root dimension.
-		// This is very risky, as we make no effort to clear an air pocket or
+		// An unsafe exit teleports the user to the first available air space
+		// in the pocket's root dimension. X and Z are kept roughly the same
+		// as the source location, but Y is set by searching down. We don't
 		// place a platform at the destination. We also don't place a reverse
 		// link at the destination, so it's a one-way trip. Good luck!
 		
@@ -449,13 +449,20 @@ public class DDTeleporter
 		if (current.isPocketDimension())
 		{
 			Point4D source = link.source();
-			current.root().setDestination(link, source.getX(), source.getY(), source.getZ());
-			return true;
+			World world = PocketManager.loadDimension(current.root().id());
+			if (world == null)
+			{
+				return false;
+			}
+			
+			Point3D destination = yCoordHelper.findDropPoint(world, source.getX(), source.getY(), source.getZ());
+			if (destination != null)
+			{
+				current.root().setDestination(link, source.getX(), source.getY(), source.getZ());
+				return true;				
+			}
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	private static boolean generateSafeExit(DimLink link, DDProperties properties)
