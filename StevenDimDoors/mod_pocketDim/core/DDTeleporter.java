@@ -30,7 +30,11 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class DDTeleporter
 {
 	private static final Random random = new Random();
-	private static int END_DIMENSION_ID = 1;
+	private static final int END_DIMENSION_ID = 1;
+	private static final int MAX_ROOT_SHIFT_CHANCE = 100;
+	private static final int START_ROOT_SHIFT_CHANCE = 0;
+	private static final int ROOT_SHIFT_CHANCE_PER_LEVEL = 5;
+	
 	public static int cooldown = 0;
 	
 	private DDTeleporter() { }
@@ -465,16 +469,26 @@ public class DDTeleporter
 		// A dungeon exit acts the same as a safe exit, but has the chance of
 		// taking the user to any non-pocket dimension, excluding Limbo and The End.
 		
+		NewDimData current = PocketManager.getDimensionData(link.source.getDimension());
 		ArrayList<NewDimData> roots = PocketManager.getRootDimensions();
-		for (int attempts = 0; attempts < 10; attempts++)
+		int shiftChance = START_ROOT_SHIFT_CHANCE + ROOT_SHIFT_CHANCE_PER_LEVEL * (current.packDepth() - 1);
+
+		if (random.nextInt(MAX_ROOT_SHIFT_CHANCE) < shiftChance)
 		{
-			NewDimData selection = roots.get( random.nextInt(roots.size()) );
-			if (selection.id() != END_DIMENSION_ID && selection.id() != properties.LimboDimensionID)
+			for (int attempts = 0; attempts < 10; attempts++)
 			{
-				return generateSafeExit(selection, link, properties);
+				NewDimData selection = roots.get( random.nextInt(roots.size()) );
+				if (selection.id() != END_DIMENSION_ID &&
+					selection.id() != properties.LimboDimensionID &&
+					selection != current.root())
+				{
+					return generateSafeExit(selection, link, properties);
+				}
 			}
 		}
-		return false;
+		
+		// Yes, this could lead you back into Limbo. That's intentional.
+		return generateSafeExit(current.root(), link, properties);
 	}
 	
 	private static boolean generateSafeExit(NewDimData destinationDim, DimLink link, DDProperties properties)
@@ -482,16 +496,9 @@ public class DDTeleporter
 		// A safe exit attempts to place a Warp Door in a dimension with
 		// some precautions to protect the player. The X and Z coordinates
 		// are fixed to match the source (mostly - may be shifted a little),
-		// but the Y coordinate is chosen by searching for a safe location
-		// to place the door.
+		// but the Y coordinate is chosen by searching for the nearest
+		// a safe location to place the door.
 		
-		// The direction of the vertical search is away from the map boundary
-		// closest to the source Y. In other words, if a player is really
-		// high up, the search goes down. If a player is near the bottom
-		// of the map, the search goes up. If a safe destination cannot be
-		// found, then we return false and the source-side door slams shut.
-		
-		Point3D destination;
 		Point4D source = link.source();
 		World world = PocketManager.loadDimension(destinationDim.id());
 		if (world == null)
@@ -499,11 +506,26 @@ public class DDTeleporter
 			return false;
 		}
 		
-		boolean searchDown = (source.getY() >= world.getActualHeight() / 2);
-		destination = yCoordHelper.findSafeCube(world, source.getX(), source.getY() - 2, source.getZ(), searchDown);
-		if (destination == null)
+		int startY = source.getY() - 2;
+		Point3D destination;
+		Point3D locationUp = yCoordHelper.findSafeCubeUp(world, source.getX(), startY, source.getZ());
+		Point3D locationDown = yCoordHelper.findSafeCubeDown(world, source.getX(), startY, source.getZ());
+		
+		if (locationUp == null)
 		{
-			destination = yCoordHelper.findSafeCube(world, source.getX(), source.getY() - 2, source.getZ(), !searchDown);			
+			destination = locationDown;
+		}
+		else if (locationDown == null)
+		{
+			destination = locationUp;
+		}
+		else if (locationUp.getY() - startY <= startY - locationDown.getY())
+		{
+			destination = locationUp;
+		}
+		else
+		{
+			destination = locationDown;
 		}
 		if (destination != null)
 		{

@@ -447,7 +447,7 @@ public abstract class NewDimData
 		this.packDepth = calculatePackDepth(parent, dungeon);
 	}
 	
-	private static int calculatePackDepth(NewDimData parent, DungeonData current)
+	public static int calculatePackDepth(NewDimData parent, DungeonData current)
 	{
 		DungeonData predecessor = parent.dungeon();
 		if (current == null)

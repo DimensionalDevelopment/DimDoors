@@ -94,14 +94,12 @@ public class DDProperties
 	public final boolean LimboReturnsInventoryEnabled;
 	public final boolean DoorRenderingEnabled;
 	public final boolean TNFREAKINGT_Enabled;
-	public final boolean RiftBladeRiftCreationEnabled;
 
 	/**
 	 * Other
 	 */
 
 	public final int NonTntWeight;
-	public final int RiftSpreadModifier;
 	public final int ClusterGenerationChance;
 	public final int GatewayGenerationChance;
 	public final int MonolithSpawningChance;
@@ -166,9 +164,6 @@ public class DDProperties
 		LimboReturnRange = config.get(Configuration.CATEGORY_GENERAL, "Limbo Return Range", 500,
 				"Sets the farthest distance that Limbo can send you upon returning to the Overworld").getInt();
 		DoorRenderingEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Door Rendering", true).getBoolean(true);
-		RiftBladeRiftCreationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Creation with Rift Blade", true,
-				"Sets whether Rift Blades can create new rifts. If set to false, " +
-				"they will only be able to create transient doors on existing rifts.").getBoolean(true);
 
 		TNFREAKINGT_Enabled = config.get(Configuration.CATEGORY_GENERAL, "EXPLOSIONS!!???!!!?!?!!", false).getBoolean(false);
 		NonTntWeight = config.get(Configuration.CATEGORY_GENERAL, "HOWMUCHTNT", 25, 
@@ -218,10 +213,6 @@ public class DDProperties
 		GatewayGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Gateway Generation Chance", 10,
 				"Sets the chance (out of " + GatewayGenerator.MAX_GATEWAY_GENERATION_CHANCE + ") that a Rift Gateway will " +
 				"generate in a given chunk. The default chance is 10.").getInt();
-		
-		RiftSpreadModifier = config.get(Configuration.CATEGORY_GENERAL, "Rift Spread Modifier", 3,
-				"Sets the number of times a rift can spread. 0 prevents rifts from spreading at all. " +
-				"A value greater than 5 is not recommended as the growth is exponential.").getInt();
 
 		LimboBiomeID = config.get(CATEGORY_BIOME, "Limbo Biome ID", 251).getInt();
 		PocketBiomeID = config.get(CATEGORY_BIOME, "Pocket Biome ID", 250).getInt();
