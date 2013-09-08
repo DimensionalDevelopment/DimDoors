@@ -16,7 +16,7 @@ public class ClientProxy extends CommonProxy
 	{
 		//MinecraftForgeClient.preloadTexture(BLOCK_PNG);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDimDoor.class, new RenderDimDoor());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransTrapdoor.class, new RenderDimTrapDoor());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransTrapdoor.class, new RenderTransTrapdoor());
         //This code activates the new rift rendering, as well as a bit of code in TileEntityRift
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRift.class, new RenderRift());
 

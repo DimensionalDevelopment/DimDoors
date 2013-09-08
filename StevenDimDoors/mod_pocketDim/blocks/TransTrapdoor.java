@@ -4,9 +4,11 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTrapDoor;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
@@ -14,8 +16,9 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 
-public class TransTrapdoor extends BlockTrapDoor implements IDimDoor
+public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntityProvider
 {
 
 	public TransTrapdoor(int blockID, Material material) 
@@ -56,10 +59,31 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor
 	public void onBlockAdded(World world, int x, int y, int z) 
 	{
 		this.placeDimDoor(world, x, y, z);
-		//world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
-		//this.updateAttachedTile(world, x, y, z);
+		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
+		this.updateAttachedTile(world, x, y, z);
+	}
+	
+	public void updateTick(World world, int x, int y, int z, Random random) 
+	{
+		TileEntityTransTrapdoor tile = (TileEntityTransTrapdoor) world.getBlockTileEntity(x, y, z);
+		tile.hasRift = PocketManager.getLink(x, y, z, world) != null;
+	}
+	
+	@Override
+	public TileEntity createNewTileEntity(World world) 
+	{
+		return new TileEntityTransTrapdoor();
 	}
 
+	public void updateAttachedTile(World world, int x, int y, int z)
+	{
+		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		if (tile instanceof TileEntityTransTrapdoor)
+		{
+			TileEntityTransTrapdoor trapdoorTile = (TileEntityTransTrapdoor) tile;
+			trapdoorTile.hasRift = (PocketManager.getLink(x, y, z, world) != null);
+		}
+	}
 	
 	@Override
 	public void placeDimDoor(World world, int x, int y, int z) 
@@ -85,5 +109,10 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor
 	public int getDrops()
 	{
 		return  Block.trapdoor.blockID;
+	}
+	
+	public static boolean isTrapdoorOnBlock(int metadata)
+	{
+		return (metadata & 8) == 0;
 	}
 }

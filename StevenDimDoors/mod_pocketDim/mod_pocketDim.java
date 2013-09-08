@@ -17,10 +17,10 @@ import StevenDimDoors.mod_pocketDim.blocks.BlockDimWallPerm;
 import StevenDimDoors.mod_pocketDim.blocks.BlockLimbo;
 import StevenDimDoors.mod_pocketDim.blocks.BlockRift;
 import StevenDimDoors.mod_pocketDim.blocks.DimensionalDoor;
+import StevenDimDoors.mod_pocketDim.blocks.TransTrapdoor;
 import StevenDimDoors.mod_pocketDim.blocks.TransientDoor;
 import StevenDimDoors.mod_pocketDim.blocks.UnstableDoor;
 import StevenDimDoors.mod_pocketDim.blocks.WarpDoor;
-import StevenDimDoors.mod_pocketDim.blocks.TransTrapdoor;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemBlockDimWall;
@@ -38,8 +38,8 @@ import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
-import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
 import StevenDimDoors.mod_pocketDim.world.GatewayGenerator;
@@ -95,7 +95,7 @@ public class mod_pocketDim
 	public static Block blockLimbo;
 	public static DimensionalDoor dimensionalDoor;    
 	public static Block blockDimWall;   
-	public static Block transTrapdoor;
+	public static TransTrapdoor transTrapdoor;
 	public static Block blockDimWallPerm;
 	public static BlockRift blockRift;
 
@@ -168,7 +168,7 @@ public class mod_pocketDim
 		blockLimbo = new BlockLimbo(properties.LimboBlockID, 15, Material.iron, properties.LimboDimensionID, decay).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F);
 		unstableDoor = (new UnstableDoor(properties.UnstableDoorID, Material.iron, properties).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
 		dimensionalDoor = (DimensionalDoor) (new DimensionalDoor(properties.DimensionalDoorID, Material.iron, properties).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor"));
-		transTrapdoor = (new TransTrapdoor(properties.TransTrapdoorID, Material.wood)).setHardness(1.0F) .setUnlocalizedName("dimHatch");
+		transTrapdoor = (TransTrapdoor) (new TransTrapdoor(properties.TransTrapdoorID, Material.wood).setHardness(1.0F) .setUnlocalizedName("dimHatch"));
 		
 		itemDimDoor = (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemDimDoor");
 		itemExitDoor = (new ItemWarpDoor(properties.WarpDoorItemID, Material.wood)).setUnlocalizedName("itemDimDoorWarp");
