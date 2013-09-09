@@ -30,6 +30,7 @@ public class GatewayGenerator implements IWorldGenerator
 	private static final int NETHER_CHANCE_CORRECTION = 4;
 	private static final int OVERWORLD_DIMENSION_ID = 0;
 	private static final int NETHER_DIMENSION_ID = -1;
+	private static final int END_DIMENSION_ID = 1;
 
 	private final DDProperties properties;
 	
@@ -43,8 +44,9 @@ public class GatewayGenerator implements IWorldGenerator
 	{
 		//Don't generate rifts or gateways if the rift generation flag is disabled,
 		//the current world is a pocket dimension, or the world is remote.
-		if ((!properties.WorldRiftGenerationEnabled && !(world.provider instanceof LimboProvider)) ||
-			world.provider instanceof PocketProvider || world.isRemote)
+		//Also don't generate anything in The End.
+		if (world.isRemote || (!properties.WorldRiftGenerationEnabled && !(world.provider instanceof LimboProvider)) ||
+			(world.provider instanceof PocketProvider) || (world.provider.dimensionId == END_DIMENSION_ID))
 		{
 			return;
 		}

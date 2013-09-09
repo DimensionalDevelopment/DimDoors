@@ -31,7 +31,7 @@ public class ClosingRiftFX extends EntityFX
 		this.field_92047_az = par14EffectRenderer;
 		this.particleScale *= .55F;
 		this.particleMaxAge = 30 + this.rand.nextInt(16);
-		this.noClip = false;
+		this.noClip = true;
 	}
 
 	public void func_92045_e(boolean par1)

@@ -69,8 +69,9 @@ public class EventHookContainer
     public boolean LivingDeathEvent(LivingDeathEvent event)
     {
     	Entity entity = event.entity;
-    	if (entity instanceof EntityPlayer && entity.worldObj.provider instanceof PocketProvider
-    		&& properties.LimboEnabled)
+    	
+    	if (entity instanceof EntityPlayer && properties.LimboEnabled &&
+    		entity.worldObj.provider instanceof PocketProvider)
     	{
     		EntityPlayer player = (EntityPlayer) entity;
     		if (!properties.LimboReturnsInventoryEnabled)
@@ -78,7 +79,8 @@ public class EventHookContainer
     			player.inventory.clearInventory(-1, -1);
     		}
     		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(player.worldObj.rand);
-    		DDTeleporter.teleportEntity(player, new Point4D(coords.posX, coords.posY, coords.posZ, mod_pocketDim.properties.LimboDimensionID));
+    		Point4D destination = new Point4D(coords.posX, coords.posY, coords.posZ, mod_pocketDim.properties.LimboDimensionID);
+    		DDTeleporter.teleportEntity(player, destination, false);
     		player.setEntityHealth(player.getMaxHealth());
     		event.setCanceled(true);
     		return false;

@@ -1,9 +1,10 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
@@ -18,30 +19,48 @@ public class TransientDoor extends BaseDimDoor
 	{
 		super(blockID, material, properties);
 	}
-	
+
 	@Override
 	public void enterDimDoor(World world, int x, int y, int z, Entity entity) 
 	{
-		//TODO: Would it kill us to use REASONABLE variable names? <_< ~SenseiKiwi
-		int var12 = (int) (MathHelper.floor_double((double) ((entity.rotationYaw + 90) * 4.0F / 360.0F) + 0.5D) & 3);
-
-		int orientation = world.getBlockMetadata(x, y - 1, z);
-		if (!world.isRemote && orientation == var12 && world.getBlockId(x, y - 1, z) == this.blockID)
+		// We need to ignore particle entities
+		if (world.isRemote || entity instanceof EntityFX)
 		{
-			DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
-			if (link != null)
+			return;
+		}
+
+		// Check that this is the top block of the door
+		if (world.getBlockId(x, y - 1, z) == this.blockID)
+		{
+			boolean canUse = true;
+			int metadata = world.getBlockMetadata(x, y - 1, z);
+			if (canUse && entity instanceof EntityLiving)
 			{
-				DDTeleporter.traverseDimDoor(world, link, entity);
-				//Turn the transient door into a rift AFTER teleporting the entity.
-				//The door's orientation may be needed for generating a room at the link's destination.
-				world.setBlock(x, y, z, properties.RiftBlockID);
-				world.setBlockToAir(x, y - 1, z);
+				// Don't check for non-living entities since it might not work right
+				canUse = BaseDimDoor.isEntityFacingDoor(metadata, (EntityLiving) entity);
 			}
+			if (canUse)
+			{
+				// Teleport the entity through the link, if it exists
+				DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
+				if (link != null)
+				{
+					DDTeleporter.traverseDimDoor(world, link, entity);
+					// Turn the door into a rift AFTER teleporting the player.
+					// The door's orientation may be necessary for the teleport.
+					world.setBlock(x, y, z, properties.RiftBlockID);
+					world.setBlockToAir(x, y - 1, z);
+				}
+			}
+		}
+		else if (world.getBlockId(x, y + 1, z) == this.blockID)
+		{
+			enterDimDoor(world, x, y + 1, z, entity);
 		}
 	}	
 
 	@Override
-	public void placeDimDoor(World world, int x, int y, int z) 
+	public void placeLink(World world, int x, int y, int z) 
 	{
 		if (!world.isRemote && world.getBlockId(x, y - 1, z) == this.blockID)
 		{
@@ -53,7 +72,7 @@ public class TransientDoor extends BaseDimDoor
 			}
 		}
 	}
-	
+
 	@Override
 	public int getDrops()
 	{

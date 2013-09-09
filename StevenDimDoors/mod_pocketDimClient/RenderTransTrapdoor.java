@@ -12,33 +12,31 @@ import org.lwjgl.opengl.GL11;
 
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.blocks.dimHatch;
-import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
-import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimHatch;
+import StevenDimDoors.mod_pocketDim.blocks.TransTrapdoor;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderDimTrapDoor extends TileEntitySpecialRenderer
+public class RenderTransTrapdoor extends TileEntitySpecialRenderer
 {
-    FloatBuffer field_76908_a = GLAllocation.createDirectFloatBuffer(16);
-
-    public RenderDimTrapDoor()
+    private FloatBuffer field_76908_a = GLAllocation.createDirectFloatBuffer(16);
+	private static DDProperties properties = null;
+	
+    public RenderTransTrapdoor()
     {
 		if (properties == null)
 			properties = DDProperties.instance();
 	}
-	
-	private static DDProperties properties = null;
     
     /**
      * Renders the dimdoor.
      */
-    public void renderDimHatchTileEntity(TileEntityDimHatch tile, double x, double y, double z, float par8)
+    public void renderTransTrapdoorTileEntity(TileEntityTransTrapdoor tile, double x, double y, double z, float par8)
     {
     	try
     	{
-    		( (dimHatch) mod_pocketDim.dimHatch).updateAttachedTile(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord);
+    		mod_pocketDim.transTrapdoor.updateAttachedTile(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord);
     	}
     	catch(Exception e)
     	{
@@ -52,10 +50,8 @@ public class RenderDimTrapDoor extends TileEntitySpecialRenderer
         
         //float distance = (float) tile.getDistanceFrom(playerX, playerY, playerZ);
         GL11.glDisable(GL11.GL_LIGHTING);
-        Random rand = new Random(31100L);
-        float var13 = 0.75F;
-
-
+        Random random = new Random(31100L);
+        int metadata = tile.worldObj.getBlockMetadata(tile.xCoord, tile.yCoord, tile.zCoord);
         	
         for (int count = 0; count < 16; ++count)
         {
@@ -81,8 +77,6 @@ public class RenderDimTrapDoor extends TileEntitySpecialRenderer
                 GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
                 var16 = .5F;
             }
-
-        
 
             GL11.glTranslatef( (float)(Minecraft.getSystemTime() % 200000L) / 200000.0F,0, 0.0F);
             GL11.glTranslatef(0, (float)(Minecraft.getSystemTime() % 200000L) / 200000.0F, 0.0F);
@@ -115,13 +109,10 @@ public class RenderDimTrapDoor extends TileEntitySpecialRenderer
             GL11.glTranslatef(0.5F, 0.5F, 0.5F);
         
             GL11.glBegin(GL11.GL_QUADS);
-           
             
-            
-            
-            float var21 = rand.nextFloat() * 0.5F + 0.1F;
-            float var22 = rand.nextFloat() * 0.4F + 0.4F;
-            float var23 = rand.nextFloat() * 0.6F + 0.5F;
+            float var21 = random.nextFloat() * 0.5F + 0.1F;
+            float var22 = random.nextFloat() * 0.4F + 0.4F;
+            float var23 = random.nextFloat() * 0.6F + 0.5F;
 
             if (count == 0)
             {
@@ -129,29 +120,9 @@ public class RenderDimTrapDoor extends TileEntitySpecialRenderer
                 var22 = 1.0F;
             }
             GL11.glColor4d(var21 * var17, var22 * var17, var23 * var17, 1.0F);
-            if(tile.metaData>7)
+            if (TransTrapdoor.isTrapdoorSetLow(metadata))
             {
-            	if(tile.isShut)
-            	{
-            		GL11.glVertex3d(x, y+0.85, z);
-                	GL11.glVertex3d(x, y+0.85,  z+1);
-                	GL11.glVertex3d(x+1 , y+0.85 , z+1);
-                	GL11.glVertex3d(x+1 , y+0.85 , z);
-            	}
-            	else
-            	{
-            		GL11.glVertex3d(x, y+0.95, z);
-                	GL11.glVertex3d(x, y+0.95,  z+1);
-                	GL11.glVertex3d(x+1 , y+0.95 , z+1);
-                	GL11.glVertex3d(x+1 , y+0.95 , z);
-            		
-            	}
-          
-            
-            }
-            else
-            {
-            	if(tile.isShut)
+            	if (TransTrapdoor.isTrapdoorOpen(metadata))
             	{
             		GL11.glVertex3d(x, y+0.2, z);
                 	GL11.glVertex3d(x, y+0.2,  z+1);
@@ -165,11 +136,25 @@ public class RenderDimTrapDoor extends TileEntitySpecialRenderer
                 	GL11.glVertex3d(x+1 , y+0.15 , z+1);
                 	GL11.glVertex3d(x+1 , y+0.15 , z);
             	}
-            
             }
-
+            else
+            {
+            	if (TransTrapdoor.isTrapdoorOpen(metadata))
+            	{
+            		GL11.glVertex3d(x, y+0.95, z);
+                	GL11.glVertex3d(x, y+0.95,  z+1);
+                	GL11.glVertex3d(x+1 , y+0.95 , z+1);
+                	GL11.glVertex3d(x+1 , y+0.95 , z);
+            	}
+            	else
+            	{
+            		GL11.glVertex3d(x, y+0.85, z);
+                	GL11.glVertex3d(x, y+0.85,  z+1);
+                	GL11.glVertex3d(x+1 , y+0.85 , z+1);
+                	GL11.glVertex3d(x+1 , y+0.85 , z);
+            	}
+            }
             GL11.glEnd();
-           
             GL11.glPopMatrix();
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
         }
@@ -194,7 +179,7 @@ public class RenderDimTrapDoor extends TileEntitySpecialRenderer
     {
     	if (properties.DoorRenderingEnabled)
     	{
-    		this.renderDimHatchTileEntity((TileEntityDimHatch)par1TileEntity, par2, par4, par6, par8);
+    		this.renderTransTrapdoorTileEntity((TileEntityTransTrapdoor)par1TileEntity, par2, par4, par6, par8);
     	}
     }
 }

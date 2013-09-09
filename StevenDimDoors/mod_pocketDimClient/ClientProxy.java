@@ -3,7 +3,7 @@ import net.minecraft.src.ModLoader;
 import StevenDimDoors.mod_pocketDim.CommonProxy;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
-import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimHatch;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 
@@ -16,7 +16,7 @@ public class ClientProxy extends CommonProxy
 	{
 		//MinecraftForgeClient.preloadTexture(BLOCK_PNG);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDimDoor.class, new RenderDimDoor());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDimHatch.class, new RenderDimTrapDoor());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransTrapdoor.class, new RenderTransTrapdoor());
         //This code activates the new rift rendering, as well as a bit of code in TileEntityRift
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRift.class, new RenderRift());
 

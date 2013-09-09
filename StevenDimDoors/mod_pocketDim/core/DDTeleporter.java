@@ -39,98 +39,98 @@ public class DDTeleporter
 	
 	private DDTeleporter() { }
 	
-	private static void placeInPortal(Entity entity, WorldServer world, Point4D destination, DDProperties properties)
+	private static void placeInPortal(Entity entity, WorldServer world, Point4D destination, DDProperties properties, boolean checkOrientation)
 	{
 		int x = destination.getX();
 		int y = destination.getY();
 		int z = destination.getZ();
 
-		int orientation = getDestinationOrientation(destination, properties);
-
+		int orientation;
+		if (checkOrientation)
+		{
+			orientation = getDestinationOrientation(destination, properties);
+			entity.rotationYaw = (orientation * 90) + 90;
+		}
+		else
+		{
+			//Teleport the entity to the precise destination point
+			orientation = -1;
+		}
+		
 		if (entity instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) entity;
-			player.rotationYaw=(orientation*90)+90;
-			if(orientation==2||orientation==6)
+			switch (orientation)
 			{
-				player.setPositionAndUpdate( x+1.5, y-1, z+.5 );
-			}
-			else if(orientation==3||orientation==7)
-			{
-				player.setPositionAndUpdate( x+.5, y-1, z+1.5 );
-			}
-			else if(orientation==0||orientation==4)
-			{
-				player.setPositionAndUpdate(x-.5, y-1, z+.5);
-			}
-			else if(orientation==1||orientation==5)
-			{
-				player.setPositionAndUpdate(x+.5, y-1, z-.5);	
-			}
-			else
-			{
-				player.setPositionAndUpdate(x, y-1, z);	
+				case 0:
+					player.setPositionAndUpdate(x - 0.5, y - 1, z + 0.5);
+					break;
+				case 1:
+					player.setPositionAndUpdate(x + 0.5, y - 1, z - 0.5);
+					break;
+				case 2:
+					player.setPositionAndUpdate(x + 1.5, y - 1, z + 0.5);
+					break;
+				case 3:
+					player.setPositionAndUpdate(x + 0.5, y - 1, z + 1.5);
+					break;
+				default:
+					player.setPositionAndUpdate(x, y - 1, z);	
+					break;
 			}
 		}
 		else if (entity instanceof EntityMinecart)
 		{
-			entity.motionX=0;
-			entity.motionZ=0;
-			entity.motionY=0;
-			entity.rotationYaw=(orientation*90)+90;
+			entity.motionX = 0;
+			entity.motionZ = 0;
+			entity.motionY = 0;
 
-			if(orientation==2||orientation==6)
+			switch (orientation)
 			{
-				DDTeleporter.setEntityPosition(entity, x+1.5, y, z+.5 );
-				entity.motionX =.39;
-				entity.worldObj.updateEntityWithOptionalForce(entity, false);
-			}
-			else if(orientation==3||orientation==7)
-			{
-				DDTeleporter.setEntityPosition(entity, x+.5, y, z+1.5 );
-				entity.motionZ =.39;
-				entity.worldObj.updateEntityWithOptionalForce(entity, false);
-			}
-			else if(orientation==0||orientation==4)
-			{
-				DDTeleporter.setEntityPosition(entity,x-.5, y, z+.5);
-				entity.motionX =-.39;
-				entity.worldObj.updateEntityWithOptionalForce(entity, false);
-			}
-			else if(orientation==1||orientation==5)
-			{
-				DDTeleporter.setEntityPosition(entity,x+.5, y, z-.5);	
-				entity.motionZ =-.39;
-				entity.worldObj.updateEntityWithOptionalForce(entity, false);
-			}
-			else
-			{
-				DDTeleporter.setEntityPosition(entity,x, y, z);	
+				case 0:
+					DDTeleporter.setEntityPosition(entity, x - 0.5, y, z + 0.5);
+					entity.motionX = -0.39;
+					entity.worldObj.updateEntityWithOptionalForce(entity, false);
+					break;
+				case 1:
+					DDTeleporter.setEntityPosition(entity, x + 0.5, y, z - 0.5);
+					entity.motionZ = -0.39;
+					entity.worldObj.updateEntityWithOptionalForce(entity, false);
+					break;
+				case 2:
+					DDTeleporter.setEntityPosition(entity, x + 1.5, y, z + 0.5);
+					entity.motionX = 0.39;
+					entity.worldObj.updateEntityWithOptionalForce(entity, false);
+					break;
+				case 3:
+					DDTeleporter.setEntityPosition(entity, x + 0.5, y, z + 1.5 );
+					entity.motionZ = 0.39;
+					entity.worldObj.updateEntityWithOptionalForce(entity, false);
+					break;
+				default:
+					DDTeleporter.setEntityPosition(entity, x, y, z);	
+					break;
 			}
 		}
-		else if (entity instanceof Entity)
+		else
 		{
-			entity.rotationYaw=(orientation*90)+90;
-			if(orientation==2||orientation==6)
+			switch (orientation)
 			{
-				DDTeleporter.setEntityPosition(entity, x+1.5, y, z+.5 );
-			}
-			else if(orientation==3||orientation==7)
-			{
-
-				DDTeleporter.setEntityPosition(entity, x+.5, y, z+1.5 );
-			}
-			else if(orientation==0||orientation==4)
-			{
-				DDTeleporter.setEntityPosition(entity,x-.5, y, z+.5);
-			}
-			else if(orientation==1||orientation==5)
-			{
-				DDTeleporter.setEntityPosition(entity,x+.5, y, z-.5);	
-			}
-			else
-			{
-				DDTeleporter.setEntityPosition(entity,x, y, z);	
+				case 0:
+					setEntityPosition(entity, x - 0.5, y, z + 0.5);
+					break;
+				case 1:
+					setEntityPosition(entity, x + 0.5, y, z - 0.5);
+					break;
+				case 2:
+					setEntityPosition(entity, x + 1.5, y, z + 0.5);
+					break;
+				case 3:
+					setEntityPosition(entity, x + 0.5, y, z + 1.5);
+					break;
+				default:
+					setEntityPosition(entity, x, y, z);	
+					break;
 			}
 		}
 	}
@@ -150,7 +150,7 @@ public class DDTeleporter
 		{
 			throw new IllegalStateException("The destination world should be loaded!");
 		}
-
+		
 		//Check if the block below that point is actually a door
 		int blockID = world.getBlockId(door.getX(), door.getY() - 1, door.getZ());
 		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
@@ -164,7 +164,7 @@ public class DDTeleporter
 		return world.getBlockMetadata(door.getX(), door.getY() - 1, door.getZ()) & 3;
 	}
 	
-	public static Entity teleportEntity(Entity entity, Point4D destination)
+	public static Entity teleportEntity(Entity entity, Point4D destination, boolean checkOrientation)
 	{
 		if (entity == null)
 		{
@@ -185,7 +185,7 @@ public class DDTeleporter
 		// Is something riding? Handle it first.
 		if (entity.riddenByEntity != null)
 		{
-			return teleportEntity(entity.riddenByEntity, destination);
+			return teleportEntity(entity.riddenByEntity, destination, checkOrientation);
 		}
 
 		// Are we riding something? Dismount and tell the mount to go first.
@@ -193,7 +193,7 @@ public class DDTeleporter
 		if (cart != null)
 		{
 			entity.mountEntity(null);
-			cart = teleportEntity(cart, destination);
+			cart = teleportEntity(cart, destination, checkOrientation);
 			// We keep track of both so we can remount them on the other side.
 		}
 
@@ -211,7 +211,7 @@ public class DDTeleporter
 
 		// GreyMaria: What is this even accomplishing? We're doing the exact same thing at the end of this all.
 		// TODO Check to see if this is actually vital.
-		DDTeleporter.placeInPortal(entity, newWorld, destination, properties);
+		DDTeleporter.placeInPortal(entity, newWorld, destination, properties, checkOrientation);
 
 		if (difDest) // Are we moving our target to a new dimension?
 		{
@@ -306,7 +306,7 @@ public class DDTeleporter
 			GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
 
 		}
-		DDTeleporter.placeInPortal(entity, newWorld, destination, properties);
+		DDTeleporter.placeInPortal(entity, newWorld, destination, properties, checkOrientation);
 		return entity;    
 	}
 
@@ -355,13 +355,13 @@ public class DDTeleporter
 			Point4D randomDestination = getRandomDestination();
 			if (randomDestination != null)
 			{
-				entity = teleportEntity(entity, randomDestination);
+				entity = teleportEntity(entity, randomDestination, true);
 				entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
 			}
 		}
 		else
 		{
-			entity = teleportEntity(entity, link.destination());
+			entity = teleportEntity(entity, link.destination(), link.linkType() != LinkTypes.UNSAFE_EXIT);
 			entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
 		}
 	}
@@ -436,9 +436,9 @@ public class DDTeleporter
 	
 	private static boolean generateUnsafeExit(DimLink link)
 	{
-		// An unsafe exit teleports the user to exactly the same coordinates
-		// as the link source, except located at the dimension's root dimension.
-		// This is very risky, as we make no effort to clear an air pocket or
+		// An unsafe exit teleports the user to the first available air space
+		// in the pocket's root dimension. X and Z are kept roughly the same
+		// as the source location, but Y is set by searching down. We don't
 		// place a platform at the destination. We also don't place a reverse
 		// link at the destination, so it's a one-way trip. Good luck!
 		
@@ -449,13 +449,20 @@ public class DDTeleporter
 		if (current.isPocketDimension())
 		{
 			Point4D source = link.source();
-			current.root().setDestination(link, source.getX(), source.getY(), source.getZ());
-			return true;
+			World world = PocketManager.loadDimension(current.root().id());
+			if (world == null)
+			{
+				return false;
+			}
+			
+			Point3D destination = yCoordHelper.findDropPoint(world, source.getX(), source.getY(), source.getZ());
+			if (destination != null)
+			{
+				current.root().setDestination(link, source.getX(), source.getY(), source.getZ());
+				return true;				
+			}
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	private static boolean generateSafeExit(DimLink link, DDProperties properties)

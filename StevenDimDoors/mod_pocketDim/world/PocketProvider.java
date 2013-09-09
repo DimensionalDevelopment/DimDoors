@@ -17,14 +17,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class PocketProvider extends WorldProvider
 {
-	public int exitXCoord;
-	public int exitYCoord;
-	public int exitZCoord;
-	public int exitDimID;
-	public boolean hasNoSky = true;
-
-	public boolean isSavingSchematic= false;
-	public int dimToSave;
 	private DDProperties properties;
 	private MonolithSpawner spawner;
 
@@ -38,8 +30,7 @@ public class PocketProvider extends WorldProvider
 	@Override
 	protected void registerWorldChunkManager()
 	{
-		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.pocketBiome,1,1);
-		//this.dimensionId = ConfigAtum.dimensionID;
+		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.pocketBiome, 1, 1);
 	}
 	
 	@Override
@@ -48,28 +39,18 @@ public class PocketProvider extends WorldProvider
 		return (dimensionId == 0 ? null : "DimensionalDoors/pocketDimID" + dimensionId);
 	}
 
-	public void saveAsSchematic(int id)
-	{
-		this.isSavingSchematic=true;
-		this.dimensionId=id;
-
-	}
-
+	@Override
 	public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
 	{
 		setCloudRenderer( new CloudRenderBlank());
 		return this.worldObj.getWorldVec3Pool().getVecFromPool((double)0, (double)0, (double)0);
-
 	}
-
-
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public Vec3 getFogColor(float par1, float par2)
 	{
 		return this.worldObj.getWorldVec3Pool().getVecFromPool((double)0, (double)0, (double)0);
-
 	}
 
 	@Override
@@ -90,6 +71,7 @@ public class PocketProvider extends WorldProvider
 		return false;
 	}
 	
+	@Override
 	public boolean canBlockFreeze(int x, int y, int z, boolean byWater)
 	{
 		return false;
@@ -104,6 +86,7 @@ public class PocketProvider extends WorldProvider
 		return "PocketDim " + this.dimensionId;
 	}
 
+	@Override
 	public int getRespawnDimension(EntityPlayerMP player)
 	{
 		int respawnDim;
@@ -124,8 +107,15 @@ public class PocketProvider extends WorldProvider
 		return respawnDim;
 	}
 
+	@Override
 	public boolean canRespawnHere()
 	{
 		return false;
+	}
+	
+	@Override
+	public int getActualHeight()
+	{
+		return 256;
 	}
 }

@@ -31,7 +31,7 @@ public class GoggleRiftFX extends EntityFireworkSparkFX
 		this.field_92047_az = par14EffectRenderer;
 		this.particleScale *= .55F;
 		this.particleMaxAge = 30 + this.rand.nextInt(16);
-		this.noClip = false;
+		this.noClip = true;
 	}
 	public void renderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
 	{

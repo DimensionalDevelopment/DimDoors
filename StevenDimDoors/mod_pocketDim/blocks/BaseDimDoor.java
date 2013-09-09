@@ -3,19 +3,17 @@ package StevenDimDoors.mod_pocketDim.blocks;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
@@ -32,10 +30,6 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 {
 	protected final DDProperties properties;
 	private Icon blockIconBottom;
-    protected boolean isBlockContainer=true;
-    private boolean isTileProvider = true;
-    
-
 	
 	public BaseDimDoor(int blockID, Material material, DDProperties properties) 
 	{
@@ -139,7 +133,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	{
 		//FIXME: We need to set door generation flags on the tile entities. Ignoring that for now. ~SenseiKiwi
 		
-		this.placeDimDoor(world, x, y, z);
+		this.placeLink(world, x, y, z);
 		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
 		this.updateAttachedTile(world, x, y, z);
 	}
@@ -185,6 +179,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		tile.openOrClosed = this.isDoorOpen( par1World,  par2,  par3,  par4);  	
 		tile.orientation = this.getFullMetadata(par1World, par2, par3, par4) & 7;
 	}
+	
 	private void setDoorRotation(int par1)
 	{
 		float var2 = 0.1875F;
@@ -368,25 +363,58 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public void enterDimDoor(World world, int x, int y, int z, Entity entity) 
 	{
-		int var12 = (int) (MathHelper.floor_double((double) ((entity.rotationYaw + 90) * 4.0F / 360.0F) + 0.5D) & 3);
-
-		int orientation = world.getBlockMetadata(x, y - 1, z);
-		if (!world.isRemote && (orientation >= 4 && orientation <= 7) && (orientation - 4) == var12 &&
-				world.getBlockId(x, y - 1, z) == this.blockID)
+		// We need to ignore particle entities
+		if (world.isRemote || entity instanceof EntityFX)
 		{
-			this.onPoweredBlockChange(world, x, y, z, false);
-
-			DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
-			if (link != null)
+			return;
+		}
+		
+		// Check that this is the top block of the door
+		if (world.getBlockId(x, y - 1, z) == this.blockID)
+		{
+			int metadata = world.getBlockMetadata(x, y - 1, z);
+			boolean canUse = isDoorOpen(metadata);
+			if (canUse && entity instanceof EntityLiving)
 			{
-				DDTeleporter.traverseDimDoor(world, link, entity);
+				// Don't check for non-living entities since it might not work right
+				canUse = isEntityFacingDoor(metadata, (EntityLiving) entity);
 			}
-		}	
+			if (canUse)
+			{
+				// Teleport the entity through the link, if it exists
+				DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
+				if (link != null)
+				{
+					DDTeleporter.traverseDimDoor(world, link, entity);
+				}
+				// Close the door only after the entity goes through
+				// so players don't have it slam in their faces.
+				this.onPoweredBlockChange(world, x, y, z, false);
+			}
+		}
+		else if (world.getBlockId(x, y + 1, z) == this.blockID)
+		{
+			enterDimDoor(world, x, y + 1, z, entity);
+		}
 	}
 	
 	@Override
 	public int getDrops()
 	{
 		return this.blockID;
+	}
+	
+	protected static boolean isDoorOpen(int metadata)
+	{
+		return (metadata & 4) != 0;
+	}
+	
+	protected static boolean isEntityFacingDoor(int metadata, EntityLiving entity)
+	{
+		// Although any entity has the proper fields for this check,
+		// we should only apply it to living entities since things
+		// like Minecarts might come in backwards.
+		int direction = (int) (MathHelper.floor_double((double) ((entity.rotationYaw + 90) * 4.0F / 360.0F) + 0.5D) & 3);
+		return ((metadata & 3) == direction);
 	}
 }

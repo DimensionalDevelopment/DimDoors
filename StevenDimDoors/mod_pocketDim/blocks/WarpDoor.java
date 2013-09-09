@@ -17,7 +17,7 @@ public class WarpDoor extends BaseDimDoor
 	}
 
 	@Override
-	public void placeDimDoor(World world, int x, int y, int z) 
+	public void placeLink(World world, int x, int y, int z) 
 	{
 		if (!world.isRemote && world.getBlockId(x, y - 1, z) == this.blockID)
 		{

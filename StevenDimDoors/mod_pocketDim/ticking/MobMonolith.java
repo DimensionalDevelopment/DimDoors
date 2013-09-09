@@ -150,7 +150,7 @@ public class MobMonolith extends EntityFlying implements IMob
 						(int) this.posY + 500,
 						(int) this.posZ + MathHelper.getRandomIntegerInRange(rand, -250, 250),
 						properties.LimboDimensionID);
-					DDTeleporter.teleportEntity(entityPlayer, destination);
+					DDTeleporter.teleportEntity(entityPlayer, destination, false);
 					this.aggro = 0;
 
 					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.crack",13, 1);

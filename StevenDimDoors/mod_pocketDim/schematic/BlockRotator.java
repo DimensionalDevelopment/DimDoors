@@ -7,7 +7,6 @@ import net.minecraft.block.BlockRedstoneRepeater;
 import net.minecraft.block.BlockStairs;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
 
 public class BlockRotator
 {
@@ -379,7 +378,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if(Block.blocksList[blockID] instanceof BlockRedstoneRepeater || Block.blocksList[blockID] instanceof BlockDoor || Block.blocksList[blockID] instanceof BaseDimDoor || blockID== Block.tripWireSource.blockID || Block.blocksList[blockID] instanceof BlockComparator)
+		else if (Block.blocksList[blockID] instanceof BlockRedstoneRepeater || Block.blocksList[blockID] instanceof BlockDoor || blockID== Block.tripWireSource.blockID || Block.blocksList[blockID] instanceof BlockComparator)
 		{
 			switch (metadata)
 			{
