@@ -116,7 +116,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
             	GL11.glTexGen(GL11.GL_S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
                 GL11.glTexGen(GL11.GL_T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
                 GL11.glTexGen(GL11.GL_R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-                GL11.glTexGen(GL11.GL_Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
+                GL11.glTexGen(GL11.GL_Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.1F));
             	 
             	break;
             case 5:
@@ -124,25 +124,29 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
             	GL11.glTexGen(GL11.GL_S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
                 GL11.glTexGen(GL11.GL_T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
                 GL11.glTexGen(GL11.GL_R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-                GL11.glTexGen(GL11.GL_Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
+                GL11.glTexGen(GL11.GL_Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.1F));
             	break;
             case 6:
             	GL11.glTexGen(GL11.GL_S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
                 GL11.glTexGen(GL11.GL_T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
                 GL11.glTexGen(GL11.GL_R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-                GL11.glTexGen(GL11.GL_Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
+                GL11.glTexGen(GL11.GL_Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, -0.1F));
            
             	break;
             case 7:
             	GL11.glTexGen(GL11.GL_S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
                 GL11.glTexGen(GL11.GL_T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
                 GL11.glTexGen(GL11.GL_R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-                GL11.glTexGen(GL11.GL_Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
+                GL11.glTexGen(GL11.GL_Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, -0.1F));
             	break;
             	
             		
             	
             }
+            	
+            		
+            	
+            
            
           
             GL11.glEnable(GL11.GL_TEXTURE_GEN_S);
