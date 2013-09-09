@@ -10,11 +10,11 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
-import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
+import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -70,23 +70,20 @@ public class EventHookContainer
     {
     	Entity entity = event.entity;
     	
-    	if (entity instanceof EntityPlayer && properties.LimboEnabled)
+    	if (entity instanceof EntityPlayer && properties.LimboEnabled &&
+    		entity.worldObj.provider instanceof PocketProvider)
     	{
-    		NewDimData dimension = PocketManager.getDimensionData(entity.worldObj);
-    		if (dimension.isDungeon())
+    		EntityPlayer player = (EntityPlayer) entity;
+    		if (!properties.LimboReturnsInventoryEnabled)
     		{
-	    		EntityPlayer player = (EntityPlayer) entity;
-	    		if (!properties.LimboReturnsInventoryEnabled)
-	    		{
-	    			player.inventory.clearInventory(-1, -1);
-	    		}
-	    		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(player.worldObj.rand);
-	    		Point4D destination = new Point4D(coords.posX, coords.posY, coords.posZ, mod_pocketDim.properties.LimboDimensionID);
-	    		DDTeleporter.teleportEntity(player, destination, false);
-	    		player.setEntityHealth(player.getMaxHealth());
-	    		event.setCanceled(true);
-	    		return false;
+    			player.inventory.clearInventory(-1, -1);
     		}
+    		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(player.worldObj.rand);
+    		Point4D destination = new Point4D(coords.posX, coords.posY, coords.posZ, mod_pocketDim.properties.LimboDimensionID);
+    		DDTeleporter.teleportEntity(player, destination, false);
+    		player.setEntityHealth(player.getMaxHealth());
+    		event.setCanceled(true);
+    		return false;
     	}
     	return true;
     }
