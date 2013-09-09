@@ -10,15 +10,7 @@ public class TileEntityTransTrapdoor extends TileEntity
 {
 	public boolean hasRift;
 
-	@Override
-	public boolean shouldRefresh(int oldID, int newID, int oldMeta, int newMeta, World world, int x, int y, int z)
-	{
-		if (newID == 0 && PocketManager.getLink(x, y, z, world) != null)
-		{
-			world.setBlock(x, y, z, mod_pocketDim.blockRift.blockID);
-		}
-		return true;
-	}
+
 
 	@Override
 	public boolean canUpdate()
