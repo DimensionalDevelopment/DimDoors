@@ -439,6 +439,10 @@ public abstract class NewDimData
 		{
 			throw new IllegalStateException("The dimension has already been initialized.");
 		}
+		if (orientation < 0 || orientation > 3)
+		{
+			throw new IllegalArgumentException("orientation must be between 0 and 3, inclusive.");
+		}
 		
 		setDestination(incoming, originX, originY, originZ);
 		this.origin = incoming.destination();
