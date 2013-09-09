@@ -133,7 +133,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	{
 		//FIXME: We need to set door generation flags on the tile entities. Ignoring that for now. ~SenseiKiwi
 		
-		this.placeDimDoor(world, x, y, z);
+		this.placeLink(world, x, y, z);
 		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
 		this.updateAttachedTile(world, x, y, z);
 	}

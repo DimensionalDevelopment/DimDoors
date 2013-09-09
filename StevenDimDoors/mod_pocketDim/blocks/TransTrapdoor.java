@@ -58,7 +58,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z) 
 	{
-		this.placeDimDoor(world, x, y, z);
+		this.placeLink(world, x, y, z);
 		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
 		this.updateAttachedTile(world, x, y, z);
 	}
@@ -86,7 +86,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	}
 	
 	@Override
-	public void placeDimDoor(World world, int x, int y, int z) 
+	public void placeLink(World world, int x, int y, int z) 
 	{
 		if (!world.isRemote)
 		{
