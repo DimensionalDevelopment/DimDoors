@@ -11,9 +11,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWall;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWallPerm;
+import StevenDimDoors.mod_pocketDim.blocks.BlockDoorGold;
+import StevenDimDoors.mod_pocketDim.blocks.BlockGoldDimDoor;
 import StevenDimDoors.mod_pocketDim.blocks.BlockLimbo;
 import StevenDimDoors.mod_pocketDim.blocks.BlockRift;
 import StevenDimDoors.mod_pocketDim.blocks.DimensionalDoor;
@@ -22,6 +25,9 @@ import StevenDimDoors.mod_pocketDim.blocks.TransientDoor;
 import StevenDimDoors.mod_pocketDim.blocks.UnstableDoor;
 import StevenDimDoors.mod_pocketDim.blocks.WarpDoor;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.dungeon.ItemGoldDimDoor;
+import StevenDimDoors.mod_pocketDim.dungeon.ItemGoldDoor;
+import StevenDimDoors.mod_pocketDim.helpers.ChunkLoaderHelper;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemBlockDimWall;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
@@ -38,6 +44,7 @@ import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
@@ -91,6 +98,8 @@ public class mod_pocketDim
 	
 	public static Block transientDoor;
 	public static Block warpDoor;
+	public static Block goldDoor;
+	public static Block goldDimDoor;
 	public static Block unstableDoor;
 	public static Block blockLimbo;
 	public static DimensionalDoor dimensionalDoor;    
@@ -99,6 +108,8 @@ public class mod_pocketDim
 	public static Block blockDimWallPerm;
 	public static BlockRift blockRift;
 
+	public static Item itemGoldDimDoor;
+	public static Item itemGoldDoor;
 	public static Item itemRiftBlade;
 	public static Item itemDimDoor;
 	public static Item itemExitDoor;
@@ -160,7 +171,9 @@ public class mod_pocketDim
 		LimboDecay decay = new LimboDecay(commonTickHandler, properties);
 
 		transientDoor = new TransientDoor(properties.TransientDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("transientDoor");
+		goldDimDoor = new BlockGoldDimDoor(properties.GoldDimDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorGold");
 
+		goldDoor = new BlockDoorGold(properties.GoldDoorID, Material.iron, properties).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("doorGold");
 		blockDimWall = new BlockDimWall(properties.FabricBlockID, 0, Material.iron).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("blockDimWall");
 		blockDimWallPerm = (new BlockDimWallPerm(properties.PermaFabricBlockID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setUnlocalizedName("blockDimWallPerm");
 		warpDoor = new WarpDoor(properties.WarpDoorID, Material.wood, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
@@ -170,6 +183,8 @@ public class mod_pocketDim
 		dimensionalDoor = (DimensionalDoor) (new DimensionalDoor(properties.DimensionalDoorID, Material.iron, properties).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor"));
 		transTrapdoor = (TransTrapdoor) (new TransTrapdoor(properties.TransTrapdoorID, Material.wood).setHardness(1.0F) .setUnlocalizedName("dimHatch"));
 		
+		itemGoldDimDoor = (new ItemGoldDimDoor(properties.GoldDimDoorItemID, Material.iron)).setUnlocalizedName("itemGoldDimDoor");
+		itemGoldDoor = (new ItemGoldDoor(properties.GoldDoorID, Material.wood)).setUnlocalizedName("itemGoldDoor");
 		itemDimDoor = (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemDimDoor");
 		itemExitDoor = (new ItemWarpDoor(properties.WarpDoorItemID, Material.wood)).setUnlocalizedName("itemDimDoorWarp");
 		itemLinkSignature = (new ItemRiftSignature(properties.RiftSignatureItemID)).setUnlocalizedName("itemLinkSignature");
@@ -184,6 +199,8 @@ public class mod_pocketDim
 
 		GameRegistry.registerWorldGenerator(mod_pocketDim.riftGen);
 
+		GameRegistry.registerBlock(goldDoor, "Golden Door");
+		GameRegistry.registerBlock(goldDimDoor, "Golden Dimensional Door");
 		GameRegistry.registerBlock(unstableDoor, "Unstable Door");
 		GameRegistry.registerBlock(warpDoor, "Warp Door");
 		GameRegistry.registerBlock(blockRift, "Rift");
@@ -199,6 +216,8 @@ public class mod_pocketDim
 		DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false);
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
 
+		LanguageRegistry.addName(goldDoor, "Golden Door");
+		LanguageRegistry.addName(goldDimDoor, "Golden Dimensional Door");
 		LanguageRegistry.addName(transientDoor	, "transientDoor");
 		LanguageRegistry.addName(blockRift	, "Rift");
 		LanguageRegistry.addName(blockLimbo	, "Unraveled Fabric");
@@ -211,6 +230,8 @@ public class mod_pocketDim
 	
 		LanguageRegistry.addName(itemExitDoor, "Warp Door");
 		LanguageRegistry.addName(itemLinkSignature	, "Rift Signature");
+		LanguageRegistry.addName(itemGoldDoor, "Golden Door");
+		LanguageRegistry.addName(itemGoldDimDoor	, "Golden Dimensional Door");
 		LanguageRegistry.addName(itemStabilizedLinkSignature, "Stabilized Rift Signature");
 		LanguageRegistry.addName(itemRiftRemover	, "Rift Remover");
 		LanguageRegistry.addName(itemStableFabric	, "Stable Fabric");
@@ -230,6 +251,7 @@ public class mod_pocketDim
 		GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
 		GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
 		GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityDimHatch");
+		GameRegistry.registerTileEntity(TileEntityDimDoorGold.class, "TileEntityDimDoorGold");
 
 		EntityRegistry.registerModEntity(MobMonolith.class, "Monolith", properties.MonolithEntityID, this, 70, 1, true);
 		EntityList.IDtoClassMapping.put(properties.MonolithEntityID, MobMonolith.class);
@@ -331,7 +353,25 @@ public class mod_pocketDim
 				" y ", "yxy", " y ", 'x', mod_pocketDim.itemLinkSignature,  'y', mod_pocketDim.itemStableFabric
 					});
 		}
-		
+		if (properties.CraftingGoldDimDoorAllowed)
+		{
+			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldDimDoor,1), new Object[]
+					{
+				" x ", " y ", " x ", 'x', mod_pocketDim.itemGoldDoor,  'y', Item.eyeOfEnder
+					});
+		}
+		if (properties.CraftingGoldDoorAllowed)
+		{
+			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldDoor,1), new Object[]
+					{
+				"yy ", "yy ", "yy ", 'y', Item.ingotGold
+					});
+			
+			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldDoor,1), new Object[]
+					{
+				" yy", " yy", " yy", 'y', Item.ingotGold
+					});
+		}
 		DungeonHelper.initialize();
 		
 		proxy.loadTextures();
@@ -342,6 +382,7 @@ public class mod_pocketDim
 	@PostInit
 	public void onPostInitialization(FMLPostInitializationEvent event)
 	{	
+		ForgeChunkManager.setForcedChunkLoadingCallback(instance, new ChunkLoaderHelper());
 		//Register loot chests
 		DDLoot.registerInfo();
 	}

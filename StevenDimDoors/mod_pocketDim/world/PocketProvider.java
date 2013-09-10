@@ -6,6 +6,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
 import StevenDimDoors.mod_pocketDim.DDProperties;
@@ -19,10 +20,13 @@ public class PocketProvider extends WorldProvider
 {
 	private DDProperties properties;
 	private MonolithSpawner spawner;
+	private IRenderHandler skyRenderer;
 
 	public PocketProvider()
 	{
 		this.hasNoSky = true;
+		this.skyRenderer = new PocketSkyProvider();
+
 		this.spawner = mod_pocketDim.spawner;
 		this.properties = mod_pocketDim.properties;
 	}
