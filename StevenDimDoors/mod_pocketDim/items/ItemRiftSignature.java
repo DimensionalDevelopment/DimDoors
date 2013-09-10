@@ -45,6 +45,7 @@ public class ItemRiftSignature extends Item
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
+		//TODO- recognize doors and intelligently place rifts on them.
 		// We must use onItemUseFirst() instead of onItemUse() because Minecraft checks
 		// whether the user is in creative mode after calling onItemUse() and undoes any
 		// damage we might set to indicate the rift sig has been activated. Otherwise,
