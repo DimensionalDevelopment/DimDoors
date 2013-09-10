@@ -155,7 +155,8 @@ public class DDTeleporter
 		//Check if the block below that point is actually a door
 		int blockID = world.getBlockId(door.getX(), door.getY() - 1, door.getZ());
 		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
-			blockID != properties.TransientDoorID && blockID != properties.UnstableDoorID)
+			blockID != properties.TransientDoorID && blockID != properties.UnstableDoorID
+			&& blockID != properties.GoldDimDoorID)
 		{
 			//Return the pocket's orientation instead
 			return PocketManager.getDimensionData(door.getDimension()).orientation();

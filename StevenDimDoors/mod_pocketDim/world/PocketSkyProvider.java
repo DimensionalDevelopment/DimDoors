@@ -11,17 +11,21 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.IRenderHandler;
 
-public class LimboSkyProvider extends CustomSkyProvider
+public class PocketSkyProvider extends CustomSkyProvider
 {
-	@Override
-	public String getMoonRenderPath()
-	{
-		return "/mods/DimDoors/textures/other/limboMoon.png";
-	}
 	
-	@Override
-	public String getSunRenderPath()
+	public class LimboSkyProvider extends CustomSkyProvider
 	{
-		return "/mods/DimDoors/textures/other/limboSun.png";
+		@Override
+		public String getMoonRenderPath()
+		{
+			return "/mods/DimDoors/textures/other/pocketMoon.png";
+		}
+		
+		@Override
+		public String getSunRenderPath()
+		{
+			return "/mods/DimDoors/textures/other/pocketSun.png";
+		}
 	}
 }

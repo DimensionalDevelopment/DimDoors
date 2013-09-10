@@ -180,7 +180,14 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		tile.orientation = this.getFullMetadata(par1World, par2, par3, par4) & 7;
 	}
 	
-	private void setDoorRotation(int par1)
+	@Override
+	public void setBlockBoundsBasedOnState(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+	{
+		this.setDoorRotation(this.getFullMetadata(par1IBlockAccess, par2, par3, par4));
+	}
+	
+	
+	public void setDoorRotation(int par1)
 	{
 		float var2 = 0.1875F;
 		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 2.0F, 1.0F);
