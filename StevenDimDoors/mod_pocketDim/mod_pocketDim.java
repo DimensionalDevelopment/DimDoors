@@ -148,6 +148,7 @@ public class mod_pocketDim
 	@PreInit
 	public void onPreInitialization(FMLPreInitializationEvent event)
 	{
+		this.instance = this;
 		//This should be the FIRST thing that gets done.
 		properties = DDProperties.initialize(event.getSuggestedConfigurationFile());
 
@@ -386,7 +387,6 @@ public class mod_pocketDim
 		//Register loot chests
 		DDLoot.registerInfo();
 	}
-
 	@ServerStopping
 	public void onServerStopping(FMLServerStoppingEvent event)
 	{
@@ -403,6 +403,8 @@ public class mod_pocketDim
 	@ServerStarting
 	public void onServerStarting(FMLServerStartingEvent event)
 	{
+		
+		//TODO- load dims with forced chunks on server startup here  
 		/*
 		CommandResetDungeons.instance().register(event);
 		CommandCreateDungeonRift.instance().register(event);

@@ -21,16 +21,19 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor
 	 
 	 public void updateEntity() 
 	 {
-		 if(this.chunkTicket==null)
-		 {
-			 chunkTicket = ForgeChunkManager.requestTicket(mod_pocketDim.instance, worldObj, Type.NORMAL);
+		 if(PocketManager.getDimensionData(this.worldObj)!=null&&PocketManager.getDimensionData(this.worldObj).isPocketDimension()&&!this.worldObj.isRemote)
+		 { 
+			 if(this.chunkTicket==null)
+			 {
+				 chunkTicket = ForgeChunkManager.requestTicket(mod_pocketDim.instance, worldObj, Type.NORMAL);
+			 }
+			 	
+				chunkTicket.getModData().setInteger("goldDimDoorX", xCoord);
+				chunkTicket.getModData().setInteger("goldDimDoorY", yCoord);
+				chunkTicket.getModData().setInteger("goldDimDoorZ", zCoord);
+				ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair(xCoord >> 4, zCoord >> 4));
+				forceChunkLoading(chunkTicket);
 		 }
-		 
-			chunkTicket.getModData().setInteger("goldDimDoorX", xCoord);
-			chunkTicket.getModData().setInteger("goldDimDoorY", yCoord);
-			chunkTicket.getModData().setInteger("goldDimDoorZ", zCoord);
-     	
-		 this.forceChunkLoading(chunkTicket);
 	 }
 	 
 	 public void forceChunkLoading(Ticket chunkTicket)
@@ -48,10 +51,7 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor
 			{
 				ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair((xCoord >> 4)+chunks, (zCoord >> 4)+chunks));
 
-			}
-			
-			
-			
+			}	
 	 }
 	 
 	 
