@@ -10,7 +10,7 @@ public class TileEntityTransTrapdoor extends TileEntity
 {
 	public boolean hasRift;
 
-
+	
 
 	@Override
 	public boolean canUpdate()
