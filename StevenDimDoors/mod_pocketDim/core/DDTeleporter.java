@@ -122,6 +122,37 @@ public class DDTeleporter
 			orientation = -1;
 		}
 		
+		if(!CheckDestination(entity, world, destination, properties))
+		{
+			
+           //TODO Give entity backwards acceleration
+            if(entity instanceof EntityPlayerMP)
+            {
+            	EntityPlayer player = (EntityPlayer) entity;
+            	player.rotationYaw=(orientation * 90)+90;
+            	switch (orientation)
+    			{
+    				case 0:
+    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
+    					break;
+    				case 1:
+    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
+    					break;
+    				case 2:
+    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
+    					break;
+    				case 3:
+    					player.setPositionAndUpdate(x + 0.5, y - 1, z + .5);
+    					break;
+    				default:
+    					player.setPositionAndUpdate(x, y - 1, z);	
+    					break;
+    			}
+
+            }
+          
+
+		}
 		if (entity instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) entity;
@@ -274,17 +305,7 @@ public class DDTeleporter
 		{
 			newWorld = (WorldServer) oldWorld;
 		}
-		if(!CheckDestination(entity, newWorld, destination, properties))
-		{
-			
-           //TODO Give entity backwards acceleration
-            if(entity instanceof EntityPlayerMP)
-            {
-            	EntityPlayerMP.class.cast(entity).sendChatToPlayer("Destination blocked!!");
-            }
-            return entity;
-
-		}
+		
 
 		// GreyMaria: What is this even accomplishing? We're doing the exact same thing at the end of this all.
 		// TODO Check to see if this is actually vital.
