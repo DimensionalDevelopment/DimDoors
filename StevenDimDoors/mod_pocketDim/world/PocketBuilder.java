@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.world;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -10,7 +11,8 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.blocks.DimensionalDoor;
+import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
@@ -20,10 +22,11 @@ import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.util.Pair;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
+import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 
 public class PocketBuilder
 {
@@ -208,9 +211,9 @@ public class PocketBuilder
 			schematic.getLength() <= DungeonHelper.MAX_DUNGEON_LENGTH);
 	}
 
-	public static boolean generateNewPocket(DimLink link, DDProperties properties)
+	public static boolean generateNewPocket(DimLink link, DDProperties properties, Block door)
 	{
-		return generateNewPocket(link, DEFAULT_POCKET_SIZE, DEFAULT_POCKET_WALL_THICKNESS, properties);
+		return generateNewPocket(link, DEFAULT_POCKET_SIZE, DEFAULT_POCKET_WALL_THICKNESS, properties, door);
 	}
 	
 	private static int getDoorOrientation(Point4D source, DDProperties properties)
@@ -235,7 +238,7 @@ public class PocketBuilder
 		return orientation;
 	}
 
-	public static boolean generateNewPocket(DimLink link, int size, int wallThickness, DDProperties properties)
+	public static boolean generateNewPocket(DimLink link, int size, int wallThickness, DDProperties properties, Block door)
 	{
 		if (link == null)
 		{
@@ -248,6 +251,12 @@ public class PocketBuilder
 		if (link.hasDestination())
 		{
 			throw new IllegalArgumentException("link cannot have a destination assigned already.");
+		}
+		
+		if(door==null)
+		{
+			throw new IllegalArgumentException("Must have a doorItem to gen one!!");
+
 		}
 		
 		if (size < MIN_POCKET_SIZE || size > MAX_POCKET_SIZE)
@@ -292,7 +301,7 @@ public class PocketBuilder
 			parent.setDestination(reverseLink, source.getX(), source.getY(), source.getZ());
 			
 			//Build the actual pocket area
-			buildPocket(world, source.getX(), destinationY, source.getZ(), orientation, size, wallThickness, properties);
+			buildPocket(world, source.getX(), destinationY, source.getZ(), orientation, size, wallThickness, properties, door);
 			
 			//Finish up destination initialization
 			dimension.initializePocket(source.getX(), destinationY, source.getZ(), orientation, link);
@@ -306,7 +315,7 @@ public class PocketBuilder
 		}
 	}
 
-	private static void buildPocket(World world, int x, int y, int z, int orientation, int size, int wallThickness, DDProperties properties)
+	private static void buildPocket(World world, int x, int y, int z, int orientation, int size, int wallThickness, DDProperties properties, Block doorBlock)
 	{
 		if (properties == null)
 		{
@@ -328,6 +337,11 @@ public class PocketBuilder
 		{
 			throw new IllegalArgumentException("size must be large enough to fit the specified wall thickness and some air space.");
 		}
+		if (!(doorBlock instanceof IDimDoor))
+		{
+			throw new IllegalArgumentException("Door must implement IDimDoor");
+		}
+		
 		
 		Point3D center = new Point3D(x - wallThickness + 1 + (size / 2), y - wallThickness - 1 + (size / 2), z);
 		Point3D door = new Point3D(x, y, z);
@@ -345,7 +359,7 @@ public class PocketBuilder
 		
 		//Build the door
 		int doorOrientation = BlockRotator.transformMetadata(BlockRotator.EAST_DOOR_METADATA, orientation - BlockRotator.EAST_DOOR_METADATA + 2, properties.DimensionalDoorID);
-		ItemDimensionalDoor.placeDoorBlock(world, x, y - 1, z, doorOrientation, mod_pocketDim.dimensionalDoor);
+		ItemDimensionalDoor.placeDoorBlock(world, x, y - 1, z, doorOrientation, doorBlock);
 	}
 
 	private static void buildBox(World world, int centerX, int centerY, int centerZ, int radius, int blockID, boolean placeTnt, int nonTntWeight)

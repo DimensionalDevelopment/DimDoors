@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
@@ -21,6 +22,7 @@ import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import cpw.mods.fml.relauncher.Side;
@@ -392,7 +394,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 				DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
 				if (link != null)
 				{
-					DDTeleporter.traverseDimDoor(world, link, entity);
+					DDTeleporter.traverseDimDoor(world, link, entity, this);
 				}
 				// Close the door only after the entity goes through
 				// so players don't have it slam in their faces.

@@ -8,6 +8,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -16,6 +17,7 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 
 public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntityProvider
@@ -50,7 +52,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 			DimLink link = PocketManager.getLink(x, y, z, world);
 			if (link != null)
 			{
-				DDTeleporter.traverseDimDoor(world, link, entity);
+				DDTeleporter.traverseDimDoor(world, link, entity,this);
 			}
 		}
 	}	
@@ -98,6 +100,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 			}
 		}
 	}
+
 	
 	@Override
 	public int idDropped(int metadata, Random random, int fortuneLevel)
@@ -109,7 +112,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	public int getDrops()
 	{
 		return  Block.trapdoor.blockID;
-	}
+	}	
 	
 	public static boolean isTrapdoorSetLow(int metadata)
 	{

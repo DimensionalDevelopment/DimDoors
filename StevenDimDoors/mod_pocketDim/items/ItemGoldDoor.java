@@ -1,4 +1,4 @@
-package StevenDimDoors.mod_pocketDim.dungeon;
+package StevenDimDoors.mod_pocketDim.items;
 
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import net.minecraft.block.Block;
