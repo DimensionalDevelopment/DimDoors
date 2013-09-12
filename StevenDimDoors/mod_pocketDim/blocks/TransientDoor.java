@@ -4,14 +4,17 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 
 public class TransientDoor extends BaseDimDoor
 {
@@ -45,7 +48,7 @@ public class TransientDoor extends BaseDimDoor
 				DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
 				if (link != null)
 				{
-					DDTeleporter.traverseDimDoor(world, link, entity);
+					DDTeleporter.traverseDimDoor(world, link, entity, this);
 					// Turn the door into a rift AFTER teleporting the player.
 					// The door's orientation may be necessary for the teleport.
 					world.setBlock(x, y, z, properties.RiftBlockID);
@@ -96,4 +99,5 @@ public class TransientDoor extends BaseDimDoor
 	{
 		return 8;
 	}
+	
 }

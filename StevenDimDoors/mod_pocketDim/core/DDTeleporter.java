@@ -3,11 +3,13 @@ package StevenDimDoors.mod_pocketDim.core;
 import java.util.ArrayList;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet41EntityEffect;
 import net.minecraft.network.packet.Packet43Experience;
@@ -20,7 +22,9 @@ import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
@@ -39,6 +43,67 @@ public class DDTeleporter
 	
 	private DDTeleporter() { }
 	
+	/**Checks if the destination supplied is valid, ie, filled by any non-replaceable block. 
+	 * 
+	 * @param entity
+	 * @param world
+	 * @param destination
+	 * @param properties
+	 * @return
+	 */
+	public static boolean CheckDestination(Entity entity, WorldServer world, Point4D destination,DDProperties properties)
+	{
+		int x = destination.getX();
+		int y = destination.getY();
+		int z = destination.getZ();
+		int blockIDTop;
+		int blockIDBottom;
+		
+		Point3D point;
+
+		int orientation;
+		
+		orientation = getDestinationOrientation(destination, properties);
+		entity.rotationYaw = (orientation * 90) + 90;
+		switch (orientation)
+		{
+			case 0:
+				point= new Point3D(MathHelper.floor_double(x - 0.5), y - 1, MathHelper.floor_double(z + 0.5));
+				break;
+			case 1:
+				point= new Point3D(MathHelper.floor_double(x + 0.5), y - 1, MathHelper.floor_double(z - 0.5));
+				break;
+			case 2:
+				point =  new Point3D(MathHelper.floor_double(x + 1.5), y - 1, MathHelper.floor_double(z + 0.5));
+				break;
+			case 3:
+				point =  new Point3D(MathHelper.floor_double(x + 0.5), y - 1, MathHelper.floor_double(z + 1.5));
+				break;
+			default:
+				point =  new Point3D(x, y - 1, z);
+				break;
+		}
+		blockIDBottom = world.getBlockId(point.getX(), point.getY(), point.getZ());
+		blockIDTop = world.getBlockId(point.getX(), point.getY()+1, point.getZ());
+		
+		if(!(Block.blocksList[blockIDBottom]==null))
+		{
+			if(!Block.blocksList[blockIDBottom].isBlockReplaceable(world, point.getX(), point.getY(), point.getZ()))
+			{
+				return false;
+			}
+		}
+		if(!(Block.blocksList[blockIDTop]==null))
+		{
+			if(!Block.blocksList[blockIDTop].isBlockReplaceable(world, point.getX(), point.getY()+1, point.getZ()))
+			{
+				return false;
+			}
+		}
+		return true;
+		
+		
+	}
 	private static void placeInPortal(Entity entity, WorldServer world, Point4D destination, DDProperties properties, boolean checkOrientation)
 	{
 		int x = destination.getX();
@@ -57,6 +122,37 @@ public class DDTeleporter
 			orientation = -1;
 		}
 		
+		if(!CheckDestination(entity, world, destination, properties))
+		{
+			
+           //TODO Give entity backwards acceleration
+            if(entity instanceof EntityPlayerMP)
+            {
+            	EntityPlayer player = (EntityPlayer) entity;
+            	player.rotationYaw=(orientation * 90)+90;
+            	switch (orientation)
+    			{
+    				case 0:
+    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
+    					break;
+    				case 1:
+    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
+    					break;
+    				case 2:
+    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
+    					break;
+    				case 3:
+    					player.setPositionAndUpdate(x + 0.5, y - 1, z + .5);
+    					break;
+    				default:
+    					player.setPositionAndUpdate(x, y - 1, z);	
+    					break;
+    			}
+
+            }
+          
+
+		}
 		if (entity instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) entity;
@@ -210,6 +306,7 @@ public class DDTeleporter
 		{
 			newWorld = (WorldServer) oldWorld;
 		}
+		
 
 		// GreyMaria: What is this even accomplishing? We're doing the exact same thing at the end of this all.
 		// TODO Check to see if this is actually vital.
@@ -319,7 +416,7 @@ public class DDTeleporter
 	 * @param link - the link the player is using to teleport; sends the player to its destination 
 	 * @param player - the instance of the player to be teleported
 	 */
-	public static void traverseDimDoor(World world, DimLink link, Entity entity)
+	public static void traverseDimDoor(World world, DimLink link, Entity entity, Block door)
 	{
 		if (world == null)
 		{
@@ -347,7 +444,7 @@ public class DDTeleporter
 			return;
 		}
 
-		if (!initializeDestination(link, DDProperties.instance()))
+		if (!initializeDestination(link, DDProperties.instance(),door))
 		{
 			return;
 		}
@@ -368,7 +465,7 @@ public class DDTeleporter
 		}
 	}
 
-	private static boolean initializeDestination(DimLink link, DDProperties properties)
+	private static boolean initializeDestination(DimLink link, DDProperties properties, Block door)
 	{
 		// FIXME: Change this later to support rooms that have been wiped and must be regenerated.
 		// FIXME: Add code for restoring the destination-side door.
@@ -385,7 +482,7 @@ public class DDTeleporter
 			case LinkTypes.DUNGEON:
 				return PocketBuilder.generateNewDungeonPocket(link, properties);
 			case LinkTypes.POCKET:
-				return PocketBuilder.generateNewPocket(link, properties);
+				return PocketBuilder.generateNewPocket(link, properties,door);
 			case LinkTypes.SAFE_EXIT:
 				return generateSafeExit(link, properties);
 			case LinkTypes.DUNGEON_EXIT:

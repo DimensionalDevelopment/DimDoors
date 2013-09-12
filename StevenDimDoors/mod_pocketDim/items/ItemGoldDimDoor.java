@@ -1,13 +1,13 @@
-package StevenDimDoors.mod_pocketDim.dungeon;
+package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 
 public class ItemGoldDimDoor extends BaseItemDoor
 {
@@ -16,6 +16,7 @@ public class ItemGoldDimDoor extends BaseItemDoor
 		super(itemID, material);
 		// TODO Auto-generated constructor stub
 	}
+	
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
