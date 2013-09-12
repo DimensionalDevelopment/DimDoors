@@ -33,29 +33,11 @@ import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfigReader;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.util.ConfigurationProcessingException;
+import StevenDimDoors.mod_pocketDim.util.FileFilters;
 import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
 public class DungeonHelper
 {
-	//TODO: File-handling functionality should be spun off to a helper class later
-	private static class DirectoryFilter implements FileFilter
-	{
-		@Override
-		public boolean accept(File file)
-		{
-			return file.isDirectory();
-		}
-	}
-	
-	private static class SchematicFileFilter implements FileFilter
-	{
-		@Override
-		public boolean accept(File file)
-		{
-			return file.isFile() && file.getName().endsWith(SCHEMATIC_FILE_EXTENSION);
-		}
-	}
-	
 	private static DungeonHelper instance = null;
 	private static DDProperties properties = null;
 	
@@ -387,7 +369,7 @@ public class DungeonHelper
 		File[] packFiles;
 		ArrayList<String> packFilePaths;
 		File directory = new File(path);
-		SchematicFileFilter schematicFileFilter = new SchematicFileFilter();
+		FileFilter schematicFileFilter = new FileFilters.FileExtensionFilter(SCHEMATIC_FILE_EXTENSION);
 
 		//Check that the Ruins pack has been loaded
 		if (RuinsPack == null)
@@ -411,7 +393,7 @@ public class DungeonHelper
 		schematics = null; //Release memory
 		
 		//Load the custom dungeon packs
-		packDirectories = directory.listFiles(new DirectoryFilter());
+		packDirectories = directory.listFiles(new FileFilters.DirectoryFilter());
 		if (packDirectories != null)
 		{
 			//Loop through each directory, which is assumed to be a dungeon pack

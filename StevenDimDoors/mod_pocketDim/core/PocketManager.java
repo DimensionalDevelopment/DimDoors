@@ -13,6 +13,9 @@ import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.Compactor;
 import StevenDimDoors.mod_pocketDim.helpers.DeleteFolder;
+import StevenDimDoors.mod_pocketDim.saving.DDSaveHandler;
+import StevenDimDoors.mod_pocketDim.saving.IPackable;
+import StevenDimDoors.mod_pocketDim.saving.PackedDimData;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateSource;
@@ -25,7 +28,7 @@ import StevenDimDoors.mod_pocketDim.watcher.UpdateWatcherProxy;
  */
 public class PocketManager
 {	
-	private static class InnerDimData extends NewDimData
+	private static class InnerDimData extends NewDimData implements IPackable<PackedDimData>
 	{
 		// This class allows us to instantiate NewDimData indirectly without exposing
 		// a public constructor from NewDimData. It's meant to stop us from constructing
@@ -42,6 +45,49 @@ public class PocketManager
 		{
 			// This constructor is meant for client-side code only
 			super(id, root);
+		}
+		
+		public void clear()
+		{
+			// If this dimension has a parent, remove it from its parent's list of children
+			if (parent != null)
+			{
+				parent.children.remove(this);
+			}
+			// Remove this dimension as the parent of its children
+			for (NewDimData child : children)
+			{
+				child.parent = null;
+			}
+			// Clear all fields
+			id = Integer.MIN_VALUE;
+			linkMapping.clear();
+			linkMapping = null;
+			linkList.clear();
+			linkList = null;
+			children.clear();
+			children = null;
+			isDungeon = false;
+			isFilled = false;
+			depth = Integer.MIN_VALUE;
+			packDepth = Integer.MIN_VALUE;
+			origin = null;
+			orientation = Integer.MIN_VALUE;
+			dungeon = null;
+			linkWatcher = null;
+		}
+
+		@Override
+		public String name()
+		{
+			return String.valueOf(id);
+		}
+
+		@Override
+		public PackedDimData pack()
+		{
+			// FIXME: IMPLEMENTATION PLZTHX
+			return null;
 		}
 	}
 	
@@ -140,44 +186,44 @@ public class PocketManager
 		isLoading = false;
 	}
 
-	public boolean clearPocket(NewDimData dimension)
+	public boolean resetDungeon(NewDimData target)
 	{
-		if (!dimension.isPocketDimension() || DimensionManager.getWorld(dimension.id()) != null)
+		// We can't reset the dimension if it's currently loaded or if it's not a dungeon.
+		// We cast to InnerDimData so that if anyone tries to be a smartass and create their
+		// own version of NewDimData, this will throw an exception.
+		InnerDimData dimension = (InnerDimData) target;
+		if (dimension.isDungeon() && DimensionManager.getWorld(dimension.id()) == null)
 		{
-			return false;
+			File saveDirectory = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/pocketDimID" + dimension.id());
+			if (DeleteFolder.deleteFolder(saveDirectory))
+			{
+				dimension.setFilled(false);
+				return true;
+			}
 		}
-		
-		File save = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/pocketDimID" + dimension.id());
-		DeleteFolder.deleteFolder(save);
-		dimension.setFilled(false);
-		//FIXME: Reset door information?
-		return true;
+		return false;		
 	}
 
-	public static boolean deletePocket(NewDimData dimension, boolean deleteFolder)
+	public static boolean deletePocket(NewDimData target, boolean deleteFolder)
 	{
-		//FIXME: Shouldn't the links in and out of this dimension be altered somehow? Otherwise we have links pointing
-		//into a deleted dimension!
-		
-		//Checks to see if the pocket is loaded or isn't actually a pocket.
+		// We can't delete the dimension if it's currently loaded or if it's not actually a pocket.
+		// We cast to InnerDimData so that if anyone tries to be a smartass and create their
+		// own version of NewDimData, this will throw an exception.
+		InnerDimData dimension = (InnerDimData) target;
 		if (dimension.isPocketDimension() && DimensionManager.getWorld(dimension.id()) == null)
 		{
-			dimensionData.remove(dimension.id());
-			DimensionManager.unregisterDimension(dimension.id());
 			if (deleteFolder)
 			{
-				File save = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/pocketDimID" + dimension.id());
-				DeleteFolder.deleteFolder(save);
+				File saveDirectory = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/pocketDimID" + dimension.id());
+				DeleteFolder.deleteFolder(saveDirectory);
 			}
-			//Raise the dim deleted event
+			dimensionData.remove(dimension.id());
+			// Raise the dim deleted event
 			dimWatcher.onDeleted(new ClientDimData(dimension));
-			//dimension.implode()??? -- more like delete, but yeah
+			dimension.clear();
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 	
 	private static void registerPockets(DDProperties properties)
@@ -222,32 +268,29 @@ public class PocketManager
 	 * loads the dim data from the saved hashMap. Also handles compatibility with old saves, see OldSaveHandler
 	 */
 	private static void loadInternal()
-	{
-		// SenseiKiwi: This is a temporary function for testing purposes.
-		// We'll move on to using a text-based format in the future.
-		
+	{	
 		if (!DimensionManager.getWorld(OVERWORLD_DIMENSION_ID).isRemote &&
 			DimensionManager.getCurrentSaveRootDirectory() != null)
 		{
-			System.out.println("Loading Dimensional Doors save data...");
-			/*File saveFile = new File(DimensionManager.getCurrentSaveRootDirectory() + "/dimdoors.dat");
+			// Load and register blacklisted dimension IDs
 			
-			setState(saveData);*/
-			System.out.println("Loaded successfully!");
+			// Load save data
+			System.out.println("Loading Dimensional Doors save data...");
+			if (DDSaveHandler.loadAll())
+			{
+				System.out.println("Loaded successfully!");
+			}
 		}
 	}
 	
 	public static void save()
 	{
-		// SenseiKiwi: This is a temporary function for testing purposes.
-		// We'll move on to using a text-based format in the future.
-
 		if (!isLoaded)
 		{
 			return;
 		}
 		World world = DimensionManager.getWorld(OVERWORLD_DIMENSION_ID);
-		if (world == null || world.isRemote || DimensionManager.getCurrentSaveRootDirectory() != null)
+		if (world == null || world.isRemote || DimensionManager.getCurrentSaveRootDirectory() == null)
 		{
 			return;
 		}
@@ -256,30 +299,23 @@ public class PocketManager
 		{
 			return;
 		}
-
 		isSaving = true;
+		
 		try
 		{
 			System.out.println("Writing Dimensional Doors save data...");
-			/*String tempPath = DimensionManager.getCurrentSaveRootDirectory() + "/dimdoors.tmp";
-			String savePath = DimensionManager.getCurrentSaveRootDirectory() + "/dimdoors.dat";
-			File tempFile = new File(tempPath);
-			File saveFile = new File(savePath);
-			DataOutputStream writer = new DataOutputStream(new FileOutputStream(tempFile));
-			getState().writeToStream(writer);
-			writer.close();
-			saveFile.delete();
-			tempFile.renameTo(saveFile);*/
-			System.out.println("Saved successfully!");
+			if ( DDSaveHandler.saveAll(dimensionData.values()) )
+			{
+				System.out.println("Saved successfully!");				
+			}
 		}
-		/*catch (FileNotFoundException e)
+		catch (Exception e)
 		{
-			e.printStackTrace();
+			// Wrap the exception in a RuntimeException so functions that call
+			// PocketManager.save() don't need to catch it. We want MC to
+			// crash if something really bad happens rather than ignoring it!
+			throw new RuntimeException(e);
 		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}*/
 		finally
 		{
 			isSaving = false;
