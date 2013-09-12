@@ -89,7 +89,7 @@ public class EventHookContainer
     }
 
     @ForgeSubscribe
-    public void onWorldsave(WorldEvent.Save event)
+    public void onWorldSave(WorldEvent.Save event)
     {
     	if (event.world.provider.dimensionId == 0)
     	{

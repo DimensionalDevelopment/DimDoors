@@ -171,7 +171,7 @@ public class DDTeleporter
 					player.setPositionAndUpdate(x + 0.5, y - 1, z + 1.5);
 					break;
 				default:
-					player.setPositionAndUpdate(x, y - 1, z);	
+					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);	
 					break;
 			}
 		}
@@ -204,7 +204,8 @@ public class DDTeleporter
 					entity.worldObj.updateEntityWithOptionalForce(entity, false);
 					break;
 				default:
-					DDTeleporter.setEntityPosition(entity, x, y, z);	
+					DDTeleporter.setEntityPosition(entity, x + 0.5, y, z + 0.5);
+					entity.worldObj.updateEntityWithOptionalForce(entity, false);
 					break;
 			}
 		}
@@ -225,7 +226,7 @@ public class DDTeleporter
 					setEntityPosition(entity, x + 0.5, y, z + 1.5);
 					break;
 				default:
-					setEntityPosition(entity, x, y, z);	
+					setEntityPosition(entity, x + 0.5, y, z + 0.5);	
 					break;
 			}
 		}
@@ -553,10 +554,10 @@ public class DDTeleporter
 				return false;
 			}
 			
-			Point3D destination = yCoordHelper.findDropPoint(world, source.getX(), source.getY(), source.getZ());
+			Point3D destination = yCoordHelper.findDropPoint(world, source.getX(), source.getY() + 1, source.getZ());
 			if (destination != null)
 			{
-				current.root().setDestination(link, source.getX(), source.getY(), source.getZ());
+				current.root().setDestination(link, destination.getX(), destination.getY(), destination.getZ());
 				return true;				
 			}
 		}
