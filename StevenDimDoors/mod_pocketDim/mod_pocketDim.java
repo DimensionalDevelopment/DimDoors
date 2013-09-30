@@ -174,7 +174,7 @@ public class mod_pocketDim
 		transientDoor = new TransientDoor(properties.TransientDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("transientDoor");
 		goldDimDoor = new BlockGoldDimDoor(properties.GoldDimDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorGold");
 
-		goldDoor = new BlockDoorGold(properties.GoldDoorID, Material.iron, properties).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("doorGold");
+		goldDoor = new BlockDoorGold(properties.GoldDoorID, Material.iron, properties).setHardness(0.1F).setUnlocalizedName("doorGold");
 		blockDimWall = new BlockDimWall(properties.FabricBlockID, 0, Material.iron).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("blockDimWall");
 		blockDimWallPerm = (new BlockDimWallPerm(properties.PermaFabricBlockID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setUnlocalizedName("blockDimWallPerm");
 		warpDoor = new WarpDoor(properties.WarpDoorID, Material.wood, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");

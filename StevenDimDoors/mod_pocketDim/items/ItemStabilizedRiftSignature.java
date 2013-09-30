@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -46,7 +47,8 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		}
 
 		// Check if the Stabilized Rift Signature has been initialized
-		Point4D source = getSource(stack);
+		Point4DOrientation source = getSource(stack);
+		int orientation = MathHelper.floor_double((double) ((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 		if (source != null)
 		{
 			// Yes, it's initialized. Check if the player is in creative
@@ -60,8 +62,8 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 			//The link was used before and already has an endpoint stored. Create links connecting the two endpoints.
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
 			NewDimData destinationDimension = PocketManager.getDimensionData(world);
-			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL);
-			DimLink reverse = destinationDimension.createLink(x, y, z, LinkTypes.NORMAL);
+			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL,source.getOrientation());
+			DimLink reverse = destinationDimension.createLink(x, y, z, LinkTypes.NORMAL,orientation);
 			destinationDimension.setDestination(link, x, y, z);
 			sourceDimension.setDestination(reverse, source.getX(), source.getY(), source.getZ());
 
@@ -89,7 +91,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		else
 		{
 			//The link signature has not been used. Store its current target as the first location. 
-			setSource(stack, x, y, z, PocketManager.getDimensionData(world));
+			setSource(stack, x, y, z, orientation, PocketManager.getDimensionData(world));
 			player.sendChatToPlayer("Location Stored in Rift Signature");
 			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftStart", 0.6f, 1);
 		}
@@ -104,7 +106,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
 	{
-		Point4D source = getSource(par1ItemStack);
+		Point4DOrientation source = getSource(par1ItemStack);
 		if (source != null)
 		{
 			par3List.add("Leads to (" + source.getX() + ", " + source.getY() + ", " + source.getZ() + ") at dimension #" + source.getDimension());

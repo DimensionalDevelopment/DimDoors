@@ -17,14 +17,14 @@ public abstract class NewDimData
 {
 	private static class InnerDimLink extends DimLink
 	{
-		public InnerDimLink(Point4D source, DimLink parent)
+		public InnerDimLink(Point4D source, DimLink parent,int orientation)
 		{
-			super(source, parent);
+			super(source, parent,orientation);
 		}
 		
-		public InnerDimLink(Point4D source, int linkType)
+		public InnerDimLink(Point4D source, int linkType, int orientation)
 		{
-			super(source, linkType);
+			super(source, linkType,orientation);
 		}
 
 		public void setDestination(int x, int y, int z, NewDimData dimension)
@@ -236,19 +236,22 @@ public abstract class NewDimData
 	{
 		return Math.abs(i) + Math.abs(j) + Math.abs(k);
 	}
-	
 	public DimLink createLink(int x, int y, int z, int linkType)
 	{
-		return createLink(new Point4D(x, y, z, id), linkType);
+		return createLink(new Point4D(x, y, z, id), linkType,-1);
+	}
+	public DimLink createLink(int x, int y, int z, int linkType,int orientation)
+	{
+		return createLink(new Point4D(x, y, z, id), linkType,orientation);
 	}
 	
-	private DimLink createLink(Point4D source, int linkType)
+	private DimLink createLink(Point4D source, int linkType,int orientation)
 	{
 		//Return an existing link if there is one to avoid creating multiple links starting at the same point.
 		InnerDimLink link = linkMapping.get(source);
 		if (link == null)
 		{
-			link = new InnerDimLink(source, linkType);
+			link = new InnerDimLink(source, linkType,orientation);
 			linkMapping.put(source, link);
 			linkList.add(link);
 		}
@@ -279,7 +282,7 @@ public abstract class NewDimData
 		InnerDimLink link = linkMapping.get(source);
 		if (link == null)
 		{
-			link = new InnerDimLink(source, parent);
+			link = new InnerDimLink(source, parent, parent.orientation);
 			linkMapping.put(source, link);
 			linkList.add(link);
 			

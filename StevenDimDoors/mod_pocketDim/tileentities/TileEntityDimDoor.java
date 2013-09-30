@@ -13,6 +13,7 @@ public class TileEntityDimDoor extends TileEntity
 	public int orientation;
 	public boolean hasExit;
 	public boolean isDungeonChainLink;
+	public boolean hasGennedPair=false;
 	
 	
 	
@@ -45,6 +46,8 @@ public class TileEntityDimDoor extends TileEntity
 	            
 	            this.isDungeonChainLink = nbt.getBoolean("isDungeonChainLink");
 
+	            this.hasGennedPair = nbt.getBoolean("hasGennedPair");
+
 	          
 
 	           
@@ -69,6 +72,7 @@ public class TileEntityDimDoor extends TileEntity
 	       	
 	       	nbt.setBoolean("isDungeonChainLink", isDungeonChainLink);
 
-          
+	       	nbt.setBoolean("hasGennedPair", hasGennedPair);
+   
 	    }
 }

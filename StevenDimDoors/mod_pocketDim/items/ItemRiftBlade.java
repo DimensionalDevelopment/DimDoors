@@ -114,10 +114,9 @@ public class ItemRiftBlade extends ItemSword
 		var2.zCoord*=cooef;
 		double var5 = holder.posX  - var2.xCoord;
 		double var9 = holder.posZ - var2.zCoord;
-		double var7 =holder.worldObj.getHeightValue(MathHelper.floor_double(var5), MathHelper.floor_double(var9));
-		if((Math.abs((holder.posY  - var2.yCoord)-var7)>2))
-		{
-			var7 = MathHelper.floor_double(holder.posY  - var2.yCoord) ;
+		
+		
+			double var7 = MathHelper.floor_double(holder.posY  - var2.yCoord) ;
 
 			int var14 = MathHelper.floor_double(var5);
 			int var15 = MathHelper.floor_double(var7);
@@ -127,7 +126,7 @@ public class ItemRiftBlade extends ItemSword
 				var15++;
 			}
 			var7=var15;
-		}
+		
 
 		holder.setPositionAndUpdate(var5, var7, var9);
 		holder.playSound("mob.endermen.portal", 1.0F, 1.0F);

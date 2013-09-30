@@ -28,4 +28,5 @@ class LinkTail
 	public void setLinkType(int linkType) {
 		this.linkType = linkType;
 	}
+
 }

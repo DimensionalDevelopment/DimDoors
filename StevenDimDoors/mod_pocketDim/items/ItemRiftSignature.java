@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -66,14 +67,15 @@ public class ItemRiftSignature extends Item
 			return true;
 		}
 
-		Point4D source = getSource(stack);
+		Point4DOrientation source = getSource(stack);
+		int orientation = MathHelper.floor_double((double) ((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 		if (source != null)
 		{
 			//The link was used before and already has an endpoint stored. Create links connecting the two endpoints.
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
 			NewDimData destinationDimension = PocketManager.getDimensionData(world);
-			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL);
-			DimLink reverse = destinationDimension.createLink(x, y, z, LinkTypes.NORMAL);
+			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL,source.getOrientation());
+			DimLink reverse = destinationDimension.createLink(x, y, z, LinkTypes.NORMAL,orientation);
 			destinationDimension.setDestination(link, x, y, z);
 			sourceDimension.setDestination(reverse, source.getX(), source.getY(), source.getZ());
 
@@ -102,7 +104,7 @@ public class ItemRiftSignature extends Item
 		else
 		{
 			//The link signature has not been used. Store its current target as the first location. 
-			setSource(stack, x, y, z, PocketManager.getDimensionData(world));
+			setSource(stack, x, y, z,orientation, PocketManager.getDimensionData(world));
 			player.sendChatToPlayer("Location Stored in Rift Signature");
 			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftStart", 0.6f, 1);
 		}
@@ -116,7 +118,7 @@ public class ItemRiftSignature extends Item
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
 	{
-		Point4D source = getSource(par1ItemStack);
+		Point4DOrientation source = getSource(par1ItemStack);
 		if (source != null)
 		{
 			par3List.add("Leads to (" + source.getX() + ", " + source.getY() + ", " + source.getZ() + ") at dimension #" + source.getDimension());
@@ -129,13 +131,14 @@ public class ItemRiftSignature extends Item
 		}
 	}
 
-	public static void setSource(ItemStack itemStack, int x, int y, int z, NewDimData dimension)
+	public static void setSource(ItemStack itemStack, int x, int y, int z, int orientation, NewDimData dimension)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
 
 		tag.setInteger("linkX", x);
 		tag.setInteger("linkY", y);
 		tag.setInteger("linkZ", z);
+		tag.setInteger("orientation", orientation);
 		tag.setInteger("linkDimID", dimension.id());
 
 		itemStack.setTagCompound(tag);
@@ -149,11 +152,12 @@ public class ItemRiftSignature extends Item
 		tag.removeTag("linkX");
 		tag.removeTag("linkY");
 		tag.removeTag("linkZ");
+		tag.removeTag("orientation");
 		tag.removeTag("linkDimID");
 		itemStack.setItemDamage(0);
 	}
 
-	public static Point4D getSource(ItemStack itemStack)
+	public static Point4DOrientation getSource(ItemStack itemStack)
 	{
 		if (itemStack.getItemDamage() != 0)
 		{
@@ -164,15 +168,52 @@ public class ItemRiftSignature extends Item
 				Integer x = tag.getInteger("linkX");
 				Integer y = tag.getInteger("linkY");
 				Integer z = tag.getInteger("linkZ");
+				Integer orientation = tag.getInteger("orientation");
 				Integer dimID = tag.getInteger("linkDimID");
 
 				if (x != null && y != null && z != null && dimID != null)
 				{
-					return new Point4D(x, y, z, dimID);
+					return new Point4DOrientation(x, y, z,orientation, dimID);
 				}
 			}
 			itemStack.setItemDamage(0);
 		}
 		return null;
 	}
+	
+	static class Point4DOrientation
+	{
+		private Point4D point;
+		private int orientation;
+		Point4DOrientation(int x, int y, int z, int orientation, int dimID)
+		{
+			this.point= new Point4D(x,y,z,dimID);
+			this.orientation=orientation;
+		}
+		
+		int getX()
+		{
+			return point.getX();
+		}
+		
+		int getY()
+		{
+			return point.getY();
+		}
+		
+		int getZ()
+		{
+			return point.getZ();
+		}
+		
+		int getDimension()
+		{
+			return point.getDimension();
+		}
+		int getOrientation()
+		{
+			return orientation;
+		}
+	}
 }
+

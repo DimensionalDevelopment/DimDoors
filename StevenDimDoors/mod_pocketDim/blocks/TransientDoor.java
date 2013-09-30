@@ -71,7 +71,7 @@ public class TransientDoor extends BaseDimDoor
 			DimLink link = dimension.getLink(x, y, z);
 			if (link == null && dimension.isPocketDimension())
 			{
-				dimension.createLink(x, y, z, LinkTypes.SAFE_EXIT);
+				dimension.createLink(x, y, z, LinkTypes.SAFE_EXIT,world.getBlockMetadata(x, y - 1, z));
 			}
 		}
 	}

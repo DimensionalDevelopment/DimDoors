@@ -30,7 +30,7 @@ public class BlockGoldDimDoor extends BaseDimDoor implements IDimDoor
 			DimLink link = dimension.getLink(x, y, z);
 			if (link == null)
 			{
-				dimension.createLink(x, y, z, LinkTypes.POCKET);
+				dimension.createLink(x, y, z, LinkTypes.POCKET,world.getBlockMetadata(x, y - 1, z));
 			}
 		}
 		

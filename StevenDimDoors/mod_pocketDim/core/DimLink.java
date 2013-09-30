@@ -10,10 +10,12 @@ public abstract class DimLink
 	protected Point4D source;
 	protected DimLink parent;
 	protected LinkTail tail;
+	protected int orientation;
 	protected List<DimLink> children;
 	
-	protected DimLink(Point4D source, DimLink parent)
+	protected DimLink(Point4D source, DimLink parent, int orientation)
 	{
+		this.orientation=orientation;
 		this.parent = parent;
 		this.source = source;
 		this.tail = parent.tail;
@@ -21,13 +23,13 @@ public abstract class DimLink
 		parent.children.add(this);
 	}
 	
-	protected DimLink(Point4D source, int linkType)
+	protected DimLink(Point4D source, int linkType, int orientation)
 	{
 		if (linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX && linkType != LinkTypes.CLIENT_SIDE)
 		{
 			throw new IllegalArgumentException("The specified link type is invalid.");
 		}
-		
+		this.orientation = orientation;
 		this.parent = null;
 		this.source = source;
 		this.tail = new LinkTail(linkType, null);
@@ -43,7 +45,10 @@ public abstract class DimLink
 	{
 		return tail.getDestination();
 	}
-
+	public int getDestinationOrientation()
+	{
+		return PocketManager.getLink(source.getX(), source.getY(), source.getZ(), source.getDimension()).orientation();
+	}
 	public boolean hasDestination()
 	{
 		return (tail.getDestination() != null);
@@ -67,6 +72,10 @@ public abstract class DimLink
 	public int linkType()
 	{
 		return tail.getLinkType();
+	}
+	public int orientation()
+	{
+		return orientation;
 	}
 
 	public String toString()

@@ -15,6 +15,7 @@ import net.minecraft.network.packet.Packet41EntityEffect;
 import net.minecraft.network.packet.Packet43Experience;
 import net.minecraft.network.packet.Packet9Respawn;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -22,11 +23,13 @@ import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.blocks.BlockRift;
 import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -447,7 +450,6 @@ public class DDTeleporter
 		{
 			return;
 		}
-		
 		if (link.linkType() == LinkTypes.RANDOM)
 		{
 			Point4D randomDestination = getRandomDestination();
@@ -459,6 +461,7 @@ public class DDTeleporter
 		}
 		else
 		{
+			buildExitDoor(door, link, DDProperties.instance());
 			entity = teleportEntity(entity, link.destination(), link.linkType() != LinkTypes.UNSAFE_EXIT);
 			entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
 		}
@@ -563,6 +566,38 @@ public class DDTeleporter
 		return false;
 	}
 
+	private static void buildExitDoor(Block door,DimLink link, DDProperties prop)
+	{
+		World startWorld = PocketManager.loadDimension(link.source().getDimension());
+		World destWorld = PocketManager.loadDimension(link.destination().getDimension());
+		TileEntity doorTE = startWorld.getBlockTileEntity(link.source().getX(), link.source().getY(), link.source.getZ());
+		if(doorTE instanceof TileEntityDimDoor)
+		{
+			if((TileEntityDimDoor.class.cast(doorTE).hasGennedPair))
+			{
+				return;
+			}
+			TileEntityDimDoor.class.cast(doorTE).hasGennedPair=true;
+			Block blockToReplace = Block.blocksList[destWorld.getBlockId(link.destination().getX(), link.destination().getY(), link.destination().getZ())];
+			
+			if(!destWorld.isAirBlock(link.destination().getX(), link.destination().getY(), link.destination().getZ()))
+			{
+				if(!blockToReplace.isBlockReplaceable(destWorld, link.destination().getX(), link.destination().getY(), link.destination().getZ()))
+				{
+					return;
+				}
+			}
+			 
+			BaseItemDoor.placeDoorBlock(destWorld, link.destination().getX(), link.destination().getY()-1, link.destination().getZ(),link.getDestinationOrientation(), door);
+			TileEntity doorDestTE = startWorld.getBlockTileEntity(link.destination().getX(), link.destination().getY(), link.destination().getZ());
+			
+			if(doorDestTE instanceof TileEntityDimDoor)
+			{
+				TileEntityDimDoor.class.cast(doorDestTE).hasGennedPair=true;
+				
+			}
+		}
+	}
 	private static boolean generateSafeExit(DimLink link, DDProperties properties)
 	{
 		NewDimData current = PocketManager.getDimensionData(link.source.getDimension());
@@ -647,12 +682,12 @@ public class DDTeleporter
 			}
 			
 			// Create a reverse link for returning
+			int orientation = getDestinationOrientation(source, properties);
 			NewDimData sourceDim = PocketManager.getDimensionData(link.source().getDimension());
-			DimLink reverse = destinationDim.createLink(x, y + 2, z, LinkTypes.REVERSE);
+			DimLink reverse = destinationDim.createLink(x, y + 2, z, LinkTypes.REVERSE,orientation);
 			sourceDim.setDestination(reverse, source.getX(), source.getY(), source.getZ());
 			
 			// Set up the warp door at the destination
-			int orientation = getDestinationOrientation(source, properties);
 			orientation = BlockRotator.transformMetadata(orientation, 2, properties.WarpDoorID);
 			ItemDimensionalDoor.placeDoorBlock(world, x, y + 1, z, orientation, mod_pocketDim.warpDoor);
 			
