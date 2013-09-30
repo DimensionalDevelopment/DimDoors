@@ -15,7 +15,6 @@ public abstract class DimLink
 	
 	protected DimLink(Point4D source, DimLink parent, int orientation)
 	{
-
 		if (parent.source.getDimension() != source.getDimension())
 		{
 			// Ban having children in other dimensions to avoid serialization issues with cross-dimensional tails
