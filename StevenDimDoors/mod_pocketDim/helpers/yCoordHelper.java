@@ -218,10 +218,12 @@ public class yCoordHelper
 		return target;
 	}
 
-	public static Point3D findDropPoint(World world, int x, int y, int z)
+	public static Point3D findDropPoint(World world, int x, int startY, int z)
 	{
-		/*// Find a simple 2-block-high air gap
+		// Find a simple 2-block-high air gap
 		// Search across a 3x3 column
+		final int GAP_HEIGHT = 2;
+		
 		int localX = x < 0 ? (x % 16) + 16 : (x % 16);
 		int localZ = z < 0 ? (z % 16) + 16 : (z % 16);
 		int cornerX = x - localX;
@@ -231,56 +233,45 @@ public class yCoordHelper
 		
 		Chunk chunk = initializeChunkArea(world, x >> 4, z >> 4);
 		
+		int y, dx, dz, index;
 		int height = world.getActualHeight();
-		int y, dx, dz, blockID;
-		boolean isSafe;
-		boolean hasBlocks;
-		Block block;
-		int layers = 0;
+		int[] gaps = new int[9];
 
-		// Check if a 3x3 layer of blocks is empty
-		// If we find a layer that contains replaceable blocks, it can
-		// serve as the base where we'll place the player and door.
-		for (y = Math.min(startY + 2, height - 1); y >= 0; y--)
+		// Check 3x3 layers of blocks for air spaces
+		for (y = Math.min(startY, height - 1); y > 0; y--)
 		{
-			isSafe = true;
-			hasBlocks = false;
-			for (dx = -1; dx <= 1 && isSafe; dx++)
+			for (dx = -1, index = 0; dx <= 1; dx++)
 			{
-				for (dz = -1; dz <= 1 && isSafe; dz++)
+				for (dz = -1; dz <= 1; dz++, index++)
 				{
-					blockID = chunk.getBlockID(localX  + dx, y, localZ + dz);
-					if (blockID != 0)
-					{						
-						block = Block.blocksList[blockID];
-						if (!block.blockMaterial.isReplaceable())
-						{
-							if (layers >= 3)
-							{
-								return new Point3D(localX + cornerX, y + 1, localZ + cornerZ);
-							}
-							isSafe = false;
-						}
-						hasBlocks = true;
+					if (chunk.getBlockID(localX  + dx, y, localZ + dz) != 0)
+					{
+						gaps[index] = 0;
+					}
+					else
+					{
+						gaps[index]++;
 					}
 				}
 			}
-			if (isSafe)
+			// Check if an acceptable gap exists in the center of the search column
+			if (gaps[index / 2] == GAP_HEIGHT)
 			{
-				layers++;
-				if (hasBlocks)
+				return new Point3D(localX + cornerX, y + GAP_HEIGHT - 1, localZ + cornerZ);				
+			}
+			// Check the other positions in the column
+			for (dx = -1, index = 0; dx <= 1; dx++)
+			{
+				for (dz = -1; dz <= 1; dz++, index++)
 				{
-					if (layers >= 3)
+					if (gaps[index] == GAP_HEIGHT)
 					{
-						return new Point3D(localX + cornerX, y, localZ + cornerZ);
+						return new Point3D(localX + cornerX + dx, y + GAP_HEIGHT - 1, localZ + cornerZ + dz);	
 					}
-					layers = 0;
 				}
 			}
 		}
-		return null;*/
-		// Temporary measure to not break the build
-		return new Point3D(x, y - 2, z);
+		return null;
 	}
 	
 	public static int adjustDestinationY(int y, int worldHeight, int entranceY, int dungeonHeight)

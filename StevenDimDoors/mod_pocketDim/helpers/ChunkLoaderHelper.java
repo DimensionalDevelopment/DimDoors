@@ -3,11 +3,9 @@ package StevenDimDoors.mod_pocketDim.helpers;
 import java.util.List;
 
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager;
-
+import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
 
 import com.google.common.collect.Lists;

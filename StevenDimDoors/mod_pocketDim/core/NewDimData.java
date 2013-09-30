@@ -57,12 +57,16 @@ public abstract class NewDimData
 			if (nextParent == null)
 			{
 				throw new IllegalArgumentException("nextParent cannot be null.");
-			}
-			
+			}			
 			if (this == nextParent)
 			{
 				//Ignore this request silently
 				return false;
+			}
+			if (nextParent.source.getDimension() != source.getDimension())
+			{
+				// Ban having children in other dimensions to avoid serialization issues with cross-dimensional tails
+				throw new IllegalArgumentException("source and parent.source must have the same dimension.");
 			}
 			
 			//Release children
@@ -106,22 +110,22 @@ public abstract class NewDimData
 		}
 	}
 	
-	private static Random random = new Random();
+	protected static Random random = new Random();
 	
-	private final int id;
-	private final Map<Point4D, InnerDimLink> linkMapping;
-	private final List<InnerDimLink> linkList;
-	private final boolean isDungeon;
-	private boolean isFilled;
-	private final int depth;
-	private int packDepth;
-	private final NewDimData parent;
-	private final NewDimData root;
-	private final List<NewDimData> children;
-	private Point4D origin;
-	private int orientation;
-	private DungeonData dungeon;
-	private final IUpdateWatcher<Point4D> linkWatcher;
+	protected int id;
+	protected Map<Point4D, InnerDimLink> linkMapping;
+	protected List<InnerDimLink> linkList;
+	protected boolean isDungeon;
+	protected boolean isFilled;
+	protected int depth;
+	protected int packDepth;
+	protected NewDimData parent;
+	protected NewDimData root;
+	protected List<NewDimData> children;
+	protected Point4D origin;
+	protected int orientation;
+	protected DungeonData dungeon;
+	protected IUpdateWatcher<Point4D> linkWatcher;
 	
 	protected NewDimData(int id, NewDimData parent, boolean isPocket, boolean isDungeon,
 		IUpdateWatcher<Point4D> linkWatcher)
