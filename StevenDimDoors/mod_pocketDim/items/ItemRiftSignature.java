@@ -59,6 +59,7 @@ public class ItemRiftSignature extends Item
 			return false;
 		}
 
+		//But... :(
 		//We don't check for replaceable blocks. The user can deal with that. <_<
 
 		y += 2; //Increase y by 2 to place the rift at head level
@@ -103,6 +104,7 @@ public class ItemRiftSignature extends Item
 		}
 		else
 		{
+			//TODO account for replaceable blocks like snow
 			//The link signature has not been used. Store its current target as the first location. 
 			setSource(stack, x, y, z,orientation, PocketManager.getDimensionData(world));
 			player.sendChatToPlayer("Location Stored in Rift Signature");
