@@ -15,12 +15,13 @@ public abstract class DimLink
 	
 	protected DimLink(Point4D source, DimLink parent, int orientation)
 	{
+		
 		if (parent.source.getDimension() != source.getDimension())
 		{
 			// Ban having children in other dimensions to avoid serialization issues with cross-dimensional tails
 			throw new IllegalArgumentException("source and parent.source must have the same dimension.");
 		}
-		
+		this.orientation=orientation;
 		this.parent = parent;
 		this.source = source;
 		this.tail = parent.tail;
