@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -11,6 +12,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
@@ -58,16 +60,13 @@ public class ItemRiftSignature extends Item
 		{
 			return false;
 		}
-
-		//But... :(
-		//We don't check for replaceable blocks. The user can deal with that. <_<
-
+		
 		y += 2; //Increase y by 2 to place the rift at head level
 		if (!player.canPlayerEdit(x, y, z, side, stack))
 		{
 			return true;
 		}
-
+		int adjustedY = adjustYForSpecialBlocks(world,x,y,z);
 		Point4DOrientation source = getSource(stack);
 		int orientation = MathHelper.floor_double((double) ((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 		if (source != null)
@@ -76,14 +75,14 @@ public class ItemRiftSignature extends Item
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
 			NewDimData destinationDimension = PocketManager.getDimensionData(world);
 			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL,source.getOrientation());
-			DimLink reverse = destinationDimension.createLink(x, y, z, LinkTypes.NORMAL,orientation);
-			destinationDimension.setDestination(link, x, y, z);
+			DimLink reverse = destinationDimension.createLink(x, adjustedY, z, LinkTypes.NORMAL,orientation);
+			destinationDimension.setDestination(link, x, adjustedY, z);
 			sourceDimension.setDestination(reverse, source.getX(), source.getY(), source.getZ());
 
 			//Try placing a rift at the destination point
-			if (!mod_pocketDim.blockRift.isBlockImmune(world, x, y, z))
+			if (!mod_pocketDim.blockRift.isBlockImmune(world, x, adjustedY, z))
 			{
-				world.setBlock(x, y, z, mod_pocketDim.blockRift.blockID);
+				world.setBlock(x, adjustedY, z, mod_pocketDim.blockRift.blockID);
 			}
 
 			//Try placing a rift at the source point, but check if its world is loaded first
@@ -104,9 +103,8 @@ public class ItemRiftSignature extends Item
 		}
 		else
 		{
-			//TODO account for replaceable blocks like snow
 			//The link signature has not been used. Store its current target as the first location. 
-			setSource(stack, x, y, z,orientation, PocketManager.getDimensionData(world));
+			setSource(stack, x, adjustedY, z,orientation, PocketManager.getDimensionData(world));
 			player.sendChatToPlayer("Location Stored in Rift Signature");
 			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftStart", 0.6f, 1);
 		}
@@ -133,6 +131,32 @@ public class ItemRiftSignature extends Item
 		}
 	}
 
+	/**
+	 * Makes the rift placement account for replaceable blocks and doors.
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return the adjusted y coord
+	 */
+	public static int adjustYForSpecialBlocks(World world, int x, int y, int z)
+	{
+		y=y-2;//get the block the player actually clicked on
+		Block block = Block.blocksList[world.getBlockId(x, y, z)];
+		if(block.isBlockReplaceable(world, x, y, z))
+		{
+			return y+1;//move block placement down (-2+1) one so its directly over things like snow
+		}
+		if(block instanceof BaseDimDoor)
+		{
+			if(world.getBlockId(x, y-1, z)==block.blockID&&world.getBlockMetadata(x, y, z)==8)
+			{
+				return y;//move rift placement down two so its in the right place on the door. 
+			}
+			return y+1;
+		}
+		return y+2;
+	}
 	public static void setSource(ItemStack itemStack, int x, int y, int z, int orientation, NewDimData dimension)
 	{
 		NBTTagCompound tag = new NBTTagCompound();

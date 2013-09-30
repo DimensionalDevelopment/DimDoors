@@ -45,9 +45,10 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		{
 			return true;
 		}
-
-		// Check if the Stabilized Rift Signature has been initialized
 		Point4DOrientation source = getSource(stack);
+		int adjustedY = adjustYForSpecialBlocks(world,x,y,z);
+		
+		// Check if the Stabilized Rift Signature has been initialized
 		int orientation = MathHelper.floor_double((double) ((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 		if (source != null)
 		{
@@ -63,14 +64,14 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
 			NewDimData destinationDimension = PocketManager.getDimensionData(world);
 			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL,source.getOrientation());
-			DimLink reverse = destinationDimension.createLink(x, y, z, LinkTypes.NORMAL,orientation);
-			destinationDimension.setDestination(link, x, y, z);
+			DimLink reverse = destinationDimension.createLink(x, adjustedY, z, LinkTypes.NORMAL,orientation);
+			destinationDimension.setDestination(link, x, adjustedY, z);
 			sourceDimension.setDestination(reverse, source.getX(), source.getY(), source.getZ());
 
 			//Try placing a rift at the destination point
-			if (!mod_pocketDim.blockRift.isBlockImmune(world, x, y, z))
+			if (!mod_pocketDim.blockRift.isBlockImmune(world, x, adjustedY, z))
 			{
-				world.setBlock(x, y, z, mod_pocketDim.blockRift.blockID);
+				world.setBlock(x, adjustedY, z, mod_pocketDim.blockRift.blockID);
 			}
 
 			//Try placing a rift at the source point, but check if its world is loaded first
@@ -91,7 +92,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		else
 		{
 			//The link signature has not been used. Store its current target as the first location. 
-			setSource(stack, x, y, z, orientation, PocketManager.getDimensionData(world));
+			setSource(stack, x, adjustedY, z, orientation, PocketManager.getDimensionData(world));
 			player.sendChatToPlayer("Location Stored in Rift Signature");
 			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftStart", 0.6f, 1);
 		}
