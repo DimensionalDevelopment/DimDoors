@@ -117,7 +117,7 @@ public class PocketBuilder
 	private static Point3D calculateNoisyDestination(Point4D source, NewDimData dimension, DungeonData dungeon, int orientation)
 	{
 		int depth = NewDimData.calculatePackDepth(dimension.parent(), dungeon);
-		int forwardNoise = MathHelper.getRandomIntegerInRange(random, -50 * depth, 150 * depth);
+		int forwardNoise = MathHelper.getRandomIntegerInRange(random, 10 * depth, 130 * depth);
 		int sidewaysNoise = MathHelper.getRandomIntegerInRange(random, -10 * depth, 10 * depth);
 
 		//Rotate the link destination noise to point in the same direction as the door exit
