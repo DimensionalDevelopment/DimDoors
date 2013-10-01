@@ -170,7 +170,7 @@ public class LimboProvider extends WorldProvider
 		ChunkCoordinates var5 = new ChunkCoordinates(0,0,0);
 
 
-		int spawnFuzz = 10000;
+		int spawnFuzz = 1000;
 		int spawnFuzzHalf = spawnFuzz / 2;
 
 		{

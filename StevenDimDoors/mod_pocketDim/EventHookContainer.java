@@ -79,7 +79,7 @@ public class EventHookContainer
     			player.inventory.clearInventory(-1, -1);
     		}
     		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(player.worldObj.rand);
-    		Point4D destination = new Point4D(coords.posX, coords.posY, coords.posZ, mod_pocketDim.properties.LimboDimensionID);
+    		Point4D destination = new Point4D((int) (coords.posX+entity.posX), coords.posY, (int) (coords.posZ+entity.posZ ), mod_pocketDim.properties.LimboDimensionID);
     		DDTeleporter.teleportEntity(player, destination, false);
     		player.setEntityHealth(player.getMaxHealth());
     		event.setCanceled(true);

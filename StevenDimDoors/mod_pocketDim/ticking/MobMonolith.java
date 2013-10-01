@@ -9,10 +9,12 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
@@ -145,14 +147,11 @@ public class MobMonolith extends EntityFlying implements IMob
 				}
 				else if (!this.worldObj.isRemote && !entityPlayer.capabilities.isCreativeMode)
 				{
-					Point4D destination = new Point4D(
-						(int) this.posX + MathHelper.getRandomIntegerInRange(rand, -250, 250),
-						(int) this.posY + 500,
-						(int) this.posZ + MathHelper.getRandomIntegerInRange(rand, -250, 250),
-						properties.LimboDimensionID);
-					DDTeleporter.teleportEntity(entityPlayer, destination, false);
-					this.aggro = 0;
-
+					ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(entityPlayer.worldObj.rand);
+		    		Point4D destination = new Point4D((int) (coords.posX+entityPlayer.posX), coords.posY, (int) (coords.posZ+entityPlayer.posZ ), mod_pocketDim.properties.LimboDimensionID);
+		    		DDTeleporter.teleportEntity(entityPlayer, destination, false);
+					
+		    		this.aggro = 0;
 					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.crack",13, 1);
 				}
 				if (!(this.worldObj.provider instanceof LimboProvider || this.worldObj.getClosestPlayerToEntity(this, 5) != null) || this.aggro > 300)
