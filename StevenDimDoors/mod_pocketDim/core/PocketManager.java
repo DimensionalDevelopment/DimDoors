@@ -186,7 +186,7 @@ public class PocketManager
 		isLoading = false;
 	}
 
-	public boolean resetDungeon(NewDimData target)
+	public static boolean resetDungeon(NewDimData target)
 	{
 		// We can't reset the dimension if it's currently loaded or if it's not a dungeon.
 		// We cast to InnerDimData so that if anyone tries to be a smartass and create their
@@ -452,6 +452,11 @@ public class PocketManager
 		return getLink(x, y, z, world.provider.dimensionId);
 	}
 
+	public static DimLink getLink(Point4D point)
+	{
+		return getLink(point.getX(), point.getY(), point.getZ(), point.getDimension());
+	}
+	
 	public static DimLink getLink(int x, int y, int z, int dimensionID)
 	{
 		NewDimData dimension = dimensionData.get(dimensionID);

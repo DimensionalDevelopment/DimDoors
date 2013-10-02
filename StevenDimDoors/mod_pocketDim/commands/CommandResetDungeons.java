@@ -10,7 +10,7 @@ public class CommandResetDungeons extends DDCommandBase
 	
 	private CommandResetDungeons()
 	{
-		super("dd-resetdungeons", "");
+		super("dd-rebuilddungeons", "");
 	}
 	
 	public static CommandResetDungeons instance()
@@ -32,12 +32,12 @@ public class CommandResetDungeons extends DDCommandBase
 		int dungeonCount = 0;
 		int resetCount = 0;
 		
-		for (NewDimData data : PocketManager.dimList.values())
+		for (NewDimData data : PocketManager.getDimensions())
 		{
-			if (data.isDimRandomRift)
+			if (data.isDungeon())
 			{
 				dungeonCount++;
-				if (PocketManager.instance.resetPocket(data))
+				if (PocketManager.resetDungeon(data))
 				{
 					resetCount++;
 				}
@@ -45,7 +45,7 @@ public class CommandResetDungeons extends DDCommandBase
 		}
 		
 		//Notify the user of the results
-		sender.sendChatToPlayer("Reset complete. " + resetCount + " out of " + dungeonCount + " dungeons were reset.");
+		sender.sendChatToPlayer("Reset complete. " + resetCount + " out of " + dungeonCount + " dungeons were rebuilt.");
 		return DDCommandResult.SUCCESS;
 	}
 }

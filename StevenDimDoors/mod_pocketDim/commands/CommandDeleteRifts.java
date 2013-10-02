@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
-import StevenDimDoors.mod_pocketDim.core.ILinkData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public class CommandDeleteRifts extends DDCommandBase
@@ -33,56 +33,36 @@ public class CommandDeleteRifts extends DDCommandBase
 		int targetDim;
 		boolean shouldGo= true;
 
-		if(command.length==0)
-		{
-			targetDim= sender.worldObj.provider.dimensionId;
-		}
-		else if(command.length==1)
+		if(command.length==1)
 		{
 			targetDim = parseInt(sender, command[0]);
-			if(!PocketManager.dimList.containsKey(targetDim))
-			{
-				sender.sendChatToPlayer("Error- dim "+targetDim+" not registered");
-				shouldGo=false;
-			}
 		}
 		else
 		{
 			targetDim=0;
 			shouldGo=false;
-			sender.sendChatToPlayer("Error-Invalid argument, delete_links <targetDimID> or blank for current dim");
+			sender.sendChatToPlayer("Error-Invalid argument, delete_all_links <targetDimID>");
 		}
 
 		if(shouldGo)
 		{
-			if(PocketManager.dimList.containsKey(targetDim))
-			{
-				NewDimData dim = PocketManager.instance.getDimData(targetDim);
-				ArrayList<ILinkData> linksInDim = dim.getLinksInDim();
+			
+				NewDimData dim = PocketManager.getDimensionData(targetDim);
+				ArrayList<DimLink> linksInDim = dim.getAllLinks();
 
-				for(ILinkData link : linksInDim)
+				for (DimLink link : linksInDim)
 				{
-					World targetWorld = PocketManager.getWorld(targetDim);
-
-					if(targetWorld==null)
+					World targetWorld = PocketManager.loadDimension(targetDim);
+				
+					if(sender.worldObj.getBlockId(link.source().getX(), link.source().getY(), link.source().getZ())==mod_pocketDim.blockRift.blockID)
 					{
-						PocketManager.initDimension(targetDim);
-					}
-					else if(targetWorld.provider==null)
-					{
-						PocketManager.initDimension(targetDim);
-					}
-					targetWorld = PocketManager.getWorld(targetDim);
-
-					if (targetWorld.getBlockId(link.locXCoord, link.locYCoord, link.locZCoord) == mod_pocketDim.blockRift.blockID)
-					{
-						dim.removeLinkAtCoords(link);
-						targetWorld.setBlock(link.locXCoord, link.locYCoord, link.locZCoord, 0);
+						targetWorld.setBlock(link.source().getX(), link.source().getY(), link.source().getZ(), 0);
 						linksRemoved++;
+						dim.deleteLink(link);
 					}
 				}
-				sender.sendChatToPlayer("Removed "+linksRemoved+" rifts.");	
-			}	
+				sender.sendChatToPlayer("Removed " + linksRemoved + " rifts.");
+			
 		}
 		return DDCommandResult.SUCCESS; //TEMPORARY HACK
 	}

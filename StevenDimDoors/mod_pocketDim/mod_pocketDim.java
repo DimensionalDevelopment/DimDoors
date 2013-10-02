@@ -24,6 +24,13 @@ import StevenDimDoors.mod_pocketDim.blocks.TransTrapdoor;
 import StevenDimDoors.mod_pocketDim.blocks.TransientDoor;
 import StevenDimDoors.mod_pocketDim.blocks.UnstableDoor;
 import StevenDimDoors.mod_pocketDim.blocks.WarpDoor;
+import StevenDimDoors.mod_pocketDim.commands.CommandCreateDungeonRift;
+import StevenDimDoors.mod_pocketDim.commands.CommandCreatePocket;
+import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
+import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
+import StevenDimDoors.mod_pocketDim.commands.CommandExportDungeon;
+import StevenDimDoors.mod_pocketDim.commands.CommandResetDungeons;
+import StevenDimDoors.mod_pocketDim.commands.CommandTeleportPlayer;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.ChunkLoaderHelper;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
@@ -405,17 +412,17 @@ public class mod_pocketDim
 	{
 		
 		//TODO- load dims with forced chunks on server startup here  
-		/*
+		
 		CommandResetDungeons.instance().register(event);
 		CommandCreateDungeonRift.instance().register(event);
 		CommandDeleteAllLinks.instance().register(event);
-		CommandDeleteDimensionData.instance().register(event);
+		//CommandDeleteDimensionData.instance().register(event);
 		CommandDeleteRifts.instance().register(event);
 		CommandExportDungeon.instance().register(event);
-		CommandPrintDimensionData.instance().register(event);
-		CommandPruneDimensions.instance().register(event);
+		//CommandPrintDimensionData.instance().register(event);
+		//CommandPruneDimensions.instance().register(event);
 		CommandCreatePocket.instance().register(event);
 		CommandTeleportPlayer.instance().register(event);
-		*/
+		
 	}
 }

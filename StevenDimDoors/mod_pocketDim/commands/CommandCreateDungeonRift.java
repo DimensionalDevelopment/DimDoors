@@ -4,7 +4,10 @@ import java.util.Collection;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
@@ -29,6 +32,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
+		NewDimData dimension;
 		DungeonHelper dungeonHelper = DungeonHelper.instance();
 		
 		if (sender.worldObj.isRemote)
@@ -60,13 +64,16 @@ public class CommandCreateDungeonRift extends DDCommandBase
 			int x = MathHelper.floor_double(sender.posX);
 			int y = MathHelper.floor_double(sender.posY);
 			int z = MathHelper.floor_double (sender.posZ);
-			
+			int orientation = MathHelper.floor_double((double) ((sender.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+
 			if (command[0].equals("random"))
 			{
-				link = new NewLinkData(sender.worldObj.provider.dimensionId, 0, x, y + 1, z, x, y + 1, z, true, 3);
-				PocketManager.createLink(link);
-				link = PocketManager.createPocket(link, true, true);
-				sender.sendChatToPlayer("Created a rift to a random dungeon (Dimension ID = " + link.destDimID + ").");
+				
+				dimension = PocketManager.getDimensionData(sender.worldObj);
+				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON);
+				sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
+
+				sender.sendChatToPlayer("Created a rift to a random dungeon.");
 			}
 			else
 			{
@@ -79,10 +86,11 @@ public class CommandCreateDungeonRift extends DDCommandBase
 				if (result != null)
 				{
 					//Create a rift to our selected dungeon and notify the player
-					link = new NewLinkData(sender.worldObj.provider.dimensionId, 0, x, y + 1, z, x, y + 1, z, true, 3);
-					link = PocketManager.instance.createPocket(link, true, true);
-					PocketManager.instance.getDimData(link.destDimID).dungeonGenerator = result;
-					sender.sendChatToPlayer("Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination.getDimensionID() + ").");
+					dimension = PocketManager.getDimensionData(sender.worldObj);
+					link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON);
+					PocketManager.getDimensionData(link.destination().getDimension()).initializeDungeon(x, y + 1, z, orientation,link, result);
+					sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
+					sender.sendChatToPlayer("Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
 				}
 				else
 				{

@@ -2,6 +2,8 @@ package StevenDimDoors.mod_pocketDim;
 
 import java.io.Serializable;
 
+import StevenDimDoors.mod_pocketDim.util.Point4D;
+
 public class Point3D implements Serializable {
 
 	private static final long serialVersionUID = -9044026830605287190L;
@@ -15,6 +17,13 @@ public class Point3D implements Serializable {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+	
+	public Point3D(Point4D point) 
+	{
+		this.x = point.getX();
+		this.y = point.getY();
+		this.z = point.getZ();
 	}
 
 	public int getX() 

@@ -242,14 +242,14 @@ public abstract class NewDimData
 	}
 	public DimLink createLink(int x, int y, int z, int linkType)
 	{
-		return createLink(new Point4D(x, y, z, id), linkType,-1);
+		return createLink(new Point4D(x, y, z, id), linkType,0);
 	}
 	public DimLink createLink(int x, int y, int z, int linkType,int orientation)
 	{
 		return createLink(new Point4D(x, y, z, id), linkType,orientation);
 	}
 	
-	private DimLink createLink(Point4D source, int linkType,int orientation)
+	public DimLink createLink(Point4D source, int linkType,int orientation)
 	{
 		//Return an existing link if there is one to avoid creating multiple links starting at the same point.
 		InnerDimLink link = linkMapping.get(source);

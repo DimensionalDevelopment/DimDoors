@@ -42,6 +42,82 @@ public class PocketBuilder
 
 	private PocketBuilder() { }
 
+	/**
+	 * Method that takes an arbitrary link into a dungeon pocket and tries to regenerate it. First uses the origin to find that link, 
+	 * then uses that link to find the link that originally created the dungeon. If it cant find any of these, it 
+	 * instead makes the link that lead to this point into an exit door style link, sending the player to the overworld. 
+	 * @param dimension The dungeon to be regenerated
+	 * @param linkIn The link leading somewhere into the dungeon. 
+	 * @param properties
+	 * @return 
+	 */
+	public static boolean regenerateDungeonPocket(NewDimData dimension, DimLink linkIn, DDProperties properties)
+	{
+		if (linkIn == null)
+		{
+			throw new IllegalArgumentException("link cannot be null.");
+		}
+		if (properties == null)
+		{
+			throw new IllegalArgumentException("properties cannot be null.");
+		}
+		//The link that is at the origin of the dungeon
+		DimLink originLink = dimension.getLink(dimension.origin());
+		Point4D oldLinkPos = linkIn.source();
+		if(originLink==null)
+		{
+			int orientation = linkIn.orientation();
+			originLink=dimension.createLink(oldLinkPos, LinkTypes.SAFE_EXIT, (orientation+2)%4);
+			return false;
+		}
+		//The link that originally created the dungeon on the way in
+		DimLink incomingLink = PocketManager.getLink(originLink.destination());
+		if(incomingLink==null||incomingLink.linkType()!=LinkTypes.DUNGEON||!(originLink.linkType()==LinkTypes.REVERSE))
+		{
+			int orientation = linkIn.orientation();
+			dimension.deleteLink(originLink);
+			dimension.createLink(oldLinkPos, LinkTypes.SAFE_EXIT, (orientation+2)%4);
+			return false;
+		}
+		NewDimData parent = PocketManager.getDimensionData(incomingLink.source().getDimension());
+		
+		if (!dimension.isDungeon())
+		{
+			throw new IllegalArgumentException("destination must be dungeon");
+		}
+		if (dimension.isFilled())
+		{
+			throw new IllegalArgumentException("destination must be empty");
+		}
+		if (!dimension.isInitialized())
+		{
+			throw new IllegalArgumentException("destination must already exist");
+		}
+		
+		try
+		{
+			//Load a world
+			World world = PocketManager.loadDimension(dimension.id());
+			
+			if (world == null || world.provider == null)
+			{
+				System.err.println("Could not initialize dimension for a dungeon!");
+				return false;
+			}
+			
+			Point3D destination = new Point3D(incomingLink.destination());
+			loadAndValidateDungeon(dimension.dungeon(),properties).copyToWorld(world, destination, originLink.orientation(), incomingLink, random);
+			dimension.setFilled(true);
+			return true;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		
+		
+	}
 	public static boolean generateNewDungeonPocket(DimLink link, DDProperties properties)
 	{
 		if (link == null)
@@ -52,10 +128,12 @@ public class PocketBuilder
 		{
 			throw new IllegalArgumentException("properties cannot be null.");
 		}
+	
 		if (link.hasDestination())
 		{
 			throw new IllegalArgumentException("link cannot have a destination assigned already.");
 		}
+		
 
 		try
 		{

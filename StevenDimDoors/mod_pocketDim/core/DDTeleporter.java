@@ -470,13 +470,26 @@ public class DDTeleporter
 
 	private static boolean initializeDestination(DimLink link, DDProperties properties, Block door)
 	{
-		// FIXME: Change this later to support rooms that have been wiped and must be regenerated.
-		// FIXME: Add code for restoring the destination-side door.
-		// We might need to implement regeneration for REVERSE links as well.
-		
 		if (link.hasDestination())
 		{
+			//Need to check if the destination is a dungeon, not only the link because non-dungeon links could still link to a dungeon at this point. 
+			if(PocketManager.getDimensionData(link.destination().getDimension()).isDungeon)
+			{
+				NewDimData dimData = PocketManager.getDimensionData(link.destination().getDimension());
+				if(!dimData.isFilled())
+				{
+					if(!PocketBuilder.regenerateDungeonPocket(dimData, link, properties))
+					{	
+						//If we fail to regenerate, send the player to the parent dimension. 
+						return generateSafeExit(link, properties);
+					}
+				}
+				
+			}
+
 			return true;
+			
+			
 		}
 
 		// Check the destination type and respond accordingly
