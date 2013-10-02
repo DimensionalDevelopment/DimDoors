@@ -52,7 +52,7 @@ public abstract class NewDimData
 			tail = new LinkTail(0, null);
 		}
 		
-		public boolean overwrite(InnerDimLink nextParent)
+		public boolean overwrite(InnerDimLink nextParent,int orientation)
 		{
 			if (nextParent == null)
 			{
@@ -86,10 +86,11 @@ public abstract class NewDimData
 			parent = nextParent;
 			tail = nextParent.tail;
 			nextParent.children.add(this);
+			this.orientation=orientation;
 			return true;
 		}
 		
-		public void overwrite(int linkType)
+		public void overwrite(int linkType, int orientation)
 		{	
 			//Release children
 			for (DimLink child : children)
@@ -107,6 +108,8 @@ public abstract class NewDimData
 			//Attach to new parent
 			parent = null;
 			tail = new LinkTail(linkType, null);
+			//Set new orientation
+			this.orientation=orientation;
 		}
 	}
 	
@@ -261,7 +264,7 @@ public abstract class NewDimData
 		}
 		else
 		{
-			link.overwrite(linkType);
+			link.overwrite(linkType,orientation);
 		}
 		//Link created!
 		linkWatcher.onCreated(link.source);
@@ -295,7 +298,7 @@ public abstract class NewDimData
 		}
 		else
 		{
-			if (link.overwrite(parent))
+			if (link.overwrite(parent, parent.orientation))
 			{
 				//Link created!
 				linkWatcher.onCreated(link.source);

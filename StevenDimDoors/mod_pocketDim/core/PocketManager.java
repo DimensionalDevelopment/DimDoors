@@ -185,25 +185,6 @@ public class PocketManager
 		isLoaded = true;
 		isLoading = false;
 	}
-
-	public static boolean resetDungeon(NewDimData target)
-	{
-		// We can't reset the dimension if it's currently loaded or if it's not a dungeon.
-		// We cast to InnerDimData so that if anyone tries to be a smartass and create their
-		// own version of NewDimData, this will throw an exception.
-		InnerDimData dimension = (InnerDimData) target;
-		if (dimension.isDungeon() && DimensionManager.getWorld(dimension.id()) == null)
-		{
-			File saveDirectory = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/pocketDimID" + dimension.id());
-			if (DeleteFolder.deleteFolder(saveDirectory))
-			{
-				dimension.setFilled(false);
-				return true;
-			}
-		}
-		return false;		
-	}
-
 	public static boolean deletePocket(NewDimData target, boolean deleteFolder)
 	{
 		// We can't delete the dimension if it's currently loaded or if it's not actually a pocket.
@@ -214,10 +195,32 @@ public class PocketManager
 		{
 			if (deleteFolder)
 			{
-				File saveDirectory = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/pocketDimID" + dimension.id());
-				DeleteFolder.deleteFolder(saveDirectory);
+				deleteDimensionFolder(target);
 			}
-			dimensionData.remove(dimension.id());
+			deleteDimensionData(dimension.id);
+			return true;
+		}
+		return false;
+	}
+	public static boolean deleteDimensionFolder(NewDimData target)
+	{
+		InnerDimData dimension = (InnerDimData) target;
+		if (dimension.isPocketDimension() && DimensionManager.getWorld(dimension.id()) == null)
+		{
+			File saveDirectory = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/pocketDimID" + dimension.id());
+			DeleteFolder.deleteFolder(saveDirectory);
+			return true;
+		}
+		return false;
+	}
+	public static boolean deleteDimensionData(int dimensionID)
+	{
+		if(dimensionData.containsKey(dimensionID)&& DimensionManager.getWorld(dimensionID) == null)
+		{
+			NewDimData target = PocketManager.getDimensionData(dimensionID);
+			InnerDimData dimension = (InnerDimData) target;
+
+			dimensionData.remove(dimensionID);
 			// Raise the dim deleted event
 			dimWatcher.onDeleted(new ClientDimData(dimension));
 			dimension.clear();
@@ -226,6 +229,18 @@ public class PocketManager
 		return false;
 	}
 	
+	public static int deleteDimensionData(ArrayList<Integer> dimensions)
+	{
+		int deletedCount=0;
+		for(int dimID : dimensions)
+		{
+			if(deleteDimensionData(dimID))
+			{
+				deletedCount++;
+			}
+		}
+		return deletedCount;
+	}
 	private static void registerPockets(DDProperties properties)
 	{
 		for (NewDimData dimension : dimensionData.values())

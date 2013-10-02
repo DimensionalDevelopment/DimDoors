@@ -470,26 +470,11 @@ public class DDTeleporter
 
 	private static boolean initializeDestination(DimLink link, DDProperties properties, Block door)
 	{
+		//TODO implement blackList
+
 		if (link.hasDestination())
 		{
-			//Need to check if the destination is a dungeon, not only the link because non-dungeon links could still link to a dungeon at this point. 
-			if(PocketManager.getDimensionData(link.destination().getDimension()).isDungeon)
-			{
-				NewDimData dimData = PocketManager.getDimensionData(link.destination().getDimension());
-				if(!dimData.isFilled())
-				{
-					if(!PocketBuilder.regenerateDungeonPocket(dimData, link, properties))
-					{	
-						//If we fail to regenerate, send the player to the parent dimension. 
-						return generateSafeExit(link, properties);
-					}
-				}
-				
-			}
-
 			return true;
-			
-			
 		}
 
 		// Check the destination type and respond accordingly
