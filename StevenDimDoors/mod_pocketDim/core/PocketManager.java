@@ -148,6 +148,8 @@ public class PocketManager
 
 	//HashMap that maps all the dimension IDs registered with DimDoors to their DD data.
 	private static HashMap<Integer, InnerDimData> dimensionData = null;
+	//ArrayList that stores the dimension IDs of any dimension that has been deleted.
+	private static ArrayList<Integer> dimensionIDBlackList = null;
 
 	public static boolean isLoaded()
 	{
@@ -172,7 +174,8 @@ public class PocketManager
 		isLoading = true;
 		dimensionData = new HashMap<Integer, InnerDimData>();
 		rootDimensions = new ArrayList<NewDimData>();
-		
+		dimensionIDBlackList = new ArrayList<Integer>();
+
 		//Register Limbo
 		DDProperties properties = DDProperties.instance();
 		registerDimension(properties.LimboDimensionID, null, false, false);
@@ -197,12 +200,13 @@ public class PocketManager
 			{
 				deleteDimensionFolder(target);
 			}
+			dimensionIDBlackList.add(dimension.id);
 			deleteDimensionData(dimension.id);
 			return true;
 		}
 		return false;
 	}
-	public static boolean deleteDimensionFolder(NewDimData target)
+	private static boolean deleteDimensionFolder(NewDimData target)
 	{
 		InnerDimData dimension = (InnerDimData) target;
 		if (dimension.isPocketDimension() && DimensionManager.getWorld(dimension.id()) == null)
@@ -213,7 +217,7 @@ public class PocketManager
 		}
 		return false;
 	}
-	public static boolean deleteDimensionData(int dimensionID)
+	private static boolean deleteDimensionData(int dimensionID)
 	{
 		if(dimensionData.containsKey(dimensionID)&& DimensionManager.getWorld(dimensionID) == null)
 		{
@@ -229,18 +233,6 @@ public class PocketManager
 		return false;
 	}
 	
-	public static int deleteDimensionData(ArrayList<Integer> dimensions)
-	{
-		int deletedCount=0;
-		for(int dimID : dimensions)
-		{
-			if(deleteDimensionData(dimID))
-			{
-				deletedCount++;
-			}
-		}
-		return deletedCount;
-	}
 	private static void registerPockets(DDProperties properties)
 	{
 		for (NewDimData dimension : dimensionData.values())
@@ -377,7 +369,7 @@ public class PocketManager
 		{
 			throw new IllegalArgumentException("Cannot register a dimension with ID = " + dimensionID + " because it has already been registered.");
 		}
-
+		//TODO blacklist stuff probably should happen here
 		InnerDimData dimension = new InnerDimData(dimensionID, parent, isPocket, isDungeon, linkWatcher);
 		dimensionData.put(dimensionID, dimension);
 		if (!dimension.isPocketDimension())
@@ -485,6 +477,10 @@ public class PocketManager
 		}
 	}
 	
+	public static boolean isBlackListed(int dimensionID)
+	{
+		return PocketManager.dimensionIDBlackList.contains(dimensionID);
+	}
 	public static void registerDimWatcher(IUpdateWatcher<ClientDimData> watcher)
 	{
 		dimWatcher.registerReceiver(watcher);

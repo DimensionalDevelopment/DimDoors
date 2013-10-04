@@ -36,20 +36,15 @@ public class CommandResetDungeons extends DDCommandBase
 		
 		int dungeonCount = 0;
 		int resetCount = 0;
-		ArrayList<Integer> dimIdsToDelete= new ArrayList<Integer>();
-		
+		ArrayList<Integer> dimsToDelete = new ArrayList<Integer>();
 		for (NewDimData data : PocketManager.getDimensions())
 		{
 			dungeonCount++;
-			if(DimensionManager.getWorld(data.id())==null)
+			if(DimensionManager.getWorld(data.id())==null&&data.isDungeon())
 			{
-				if (data.isDungeon())
-				{
-					PocketManager.deleteDimensionFolder(data);
-					dimIdsToDelete.add(data.id());
-				}
+				dimsToDelete.add(data.id());
 			}
-			else
+			else if(data.isDungeon())
 			{
 				for(DimLink link : data.links())
 				{
@@ -64,7 +59,11 @@ public class CommandResetDungeons extends DDCommandBase
 				}
 			}
 		}
-		resetCount = PocketManager.deleteDimensionData(dimIdsToDelete);
+		for(Integer dimID:dimsToDelete)
+		{
+			PocketManager.deletePocket(PocketManager.getDimensionData(dimID), true);
+		}
+
 		//TODO implement blackList
 		
 		//Notify the user of the results

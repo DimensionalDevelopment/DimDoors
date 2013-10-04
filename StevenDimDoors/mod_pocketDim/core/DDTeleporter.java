@@ -470,11 +470,16 @@ public class DDTeleporter
 
 	private static boolean initializeDestination(DimLink link, DDProperties properties, Block door)
 	{
-		//TODO implement blackList
-
 		if (link.hasDestination())
 		{
-			return true;
+			if(PocketManager.isBlackListed(link.destination().getDimension()))
+			{
+				link=PocketManager.getDimensionData(link.source().getDimension()).createLink(link.source,LinkTypes.SAFE_EXIT,link.orientation);
+			}
+			else
+			{
+				return true;
+			}
 		}
 
 		// Check the destination type and respond accordingly
