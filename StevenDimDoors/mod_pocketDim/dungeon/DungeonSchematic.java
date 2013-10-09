@@ -202,8 +202,6 @@ public class DungeonSchematic extends Schematic {
 
 					//In the future, we might want to make this more efficient by building whole chunks at a time
 					setBlockDirectly(world, pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), blockID, blockMeta);
-                    world.markBlockForRenderUpdate((pocketPoint.getX()), pocketPoint.getY(), pocketPoint.getZ());
-
 					index++;
 				}
 			}
