@@ -37,16 +37,13 @@ public class itemRiftRemover extends Item
 	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
 	{
-		// We invoke PlayerControllerMP.onPlayerRightClick() from here so that Minecraft
-		// will invoke onItemUseFirst() on the client side. We'll tell it to pass the
-		// request to the server, which will make sure that rift-related changes are
-		// reflected on the server.
-
-		if (!world.isRemote)
-		{
-			return stack;
-		}
-
+		/**
+		 * Im not exactly sure why this was done with onItemFirstUse before, but that is what was causing the issue. 
+		 * OnItemRightClick would only be called if there was no block to be clicked on, and because we never actually click on rifts (instead we raytrace them) 
+		 * we need a method that is always called. We can update other clients of the visual information using the rift TE, by having it send a packet to all players in a radius. 
+		 * I will need to look at the new network code first, though. 
+		 */
+		//Raytrace for rift block because they dont have any collision
 		MovingObjectPosition hit = this.getMovingObjectPositionFromPlayer(world, player, true);
 		if (hit != null)
 		{
@@ -58,9 +55,19 @@ public class itemRiftRemover extends Item
 			if (world.getBlockId(hx, hy, hz) == mod_pocketDim.blockRift.blockID && link != null &&
 				player.canPlayerEdit(hx, hy, hz, hit.sideHit, stack))
 			{
-				// Invoke onPlayerRightClick()
-				FMLClientHandler.instance().getClient().playerController.onPlayerRightClick(
-					player, world, stack, hx, hy, hz, hit.sideHit, hit.hitVec);
+				// Tell the rift's tile entity to do its removal animation
+				// Handle server client stuff on the rift TE
+				TileEntity tileEntity = world.getBlockTileEntity(hx, hy, hz);
+				if (tileEntity != null && tileEntity instanceof TileEntityRift)
+				{
+					((TileEntityRift) tileEntity).shouldClose = true;	
+				}
+				if (!player.capabilities.isCreativeMode)
+				{
+					stack.damageItem(1, player);
+				}
+				player.worldObj.playSoundAtEntity(player, "mods.DimDoors.sfx.riftClose", 0.8f, 1);
+				
 			}
 		}
 		return stack;
@@ -69,47 +76,7 @@ public class itemRiftRemover extends Item
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		// We want to use onItemUseFirst() here so that this code will run on the server side,
-		// so we don't need the client to send link-related updates to the server. Still,
-		// check whether we have a rift in sight before passing the request over.
-
-		// On integrated servers, the link won't be removed immediately because of the rift
-		// removal animation. That means we'll have a chance to check for the link before
-		// it's deleted. Otherwise the Rift Remover's durability wouldn't drop.
-		
-		NewDimData dimension = PocketManager.getDimensionData(world);
-		DimLink link = dimension.getLink(x, y, z);
-		if (world.getBlockId(x, y, z) == mod_pocketDim.blockRift.blockID && link != null &&
-			player.canPlayerEdit(x, y, z, side, stack))
-		{
-			// Tell the rift's tile entity to do its removal animation
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-			if (tileEntity != null && tileEntity instanceof TileEntityRift)
-			{
-				((TileEntityRift) tileEntity).shouldClose = true;
-			}
-			else if (!world.isRemote)
-			{
-				// Only set the block to air on the server side so that we don't
-				// tell the server to remove the rift block before it can use the
-				// Rift Remover. Otherwise, it won't know to reduce durability.
-				world.setBlockToAir(x, y, z);
-			}
-			if (world.isRemote)
-			{
-				// Tell the server about this
-				return false;
-			}
-			else
-			{
-				if (!player.capabilities.isCreativeMode)
-				{
-					stack.damageItem(1, player);
-				}
-				player.worldObj.playSoundAtEntity(player, "mods.DimDoors.sfx.riftClose", 0.8f, 1);
-			}
-		}
-		return true;
+		return false;
 	}
 
 	/**
