@@ -453,12 +453,21 @@ public abstract class NewDimData
 		{
 			throw new IllegalArgumentException("orientation must be between 0 and 3, inclusive.");
 		}
-		
 		setDestination(incoming, originX, originY, originZ);
 		this.origin = incoming.destination();
 		this.orientation = orientation;
 		this.dungeon = dungeon;
 		this.packDepth = calculatePackDepth(parent, dungeon);
+	}
+	
+	/**
+	 * effectivly moves the dungeon to the 'top' of a chain as far as dungeon generation is concerend. 
+	 */
+	public void setParentToRoot()
+	{
+		this.depth=1;
+		this.parent=this.root;
+		this.root.children.add(this);
 	}
 	
 	public static int calculatePackDepth(NewDimData parent, DungeonData current)

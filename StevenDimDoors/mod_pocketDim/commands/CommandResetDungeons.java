@@ -29,6 +29,10 @@ public class CommandResetDungeons extends DDCommandBase
 	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
+		if(sender.worldObj.isRemote)
+		{
+			return DDCommandResult.SUCCESS; 
+		}
 		if (command.length > 0)
 		{
 			return DDCommandResult.TOO_FEW_ARGUMENTS;
@@ -39,13 +43,17 @@ public class CommandResetDungeons extends DDCommandBase
 		ArrayList<Integer> dimsToDelete = new ArrayList<Integer>();
 		for (NewDimData data : PocketManager.getDimensions())
 		{
-			dungeonCount++;
+			
 			if(DimensionManager.getWorld(data.id())==null&&data.isDungeon())
 			{
+				resetCount++;
+				dungeonCount++;
 				dimsToDelete.add(data.id());
 			}
 			else if(data.isDungeon())
 			{
+				data.setParentToRoot();
+				dungeonCount++;
 				for(DimLink link : data.links())
 				{
 					if(link.linkType()==LinkTypes.REVERSE)
@@ -59,13 +67,15 @@ public class CommandResetDungeons extends DDCommandBase
 				}
 			}
 		}
+		NewDimData test = PocketManager.getDimensionData(sender.worldObj.provider.dimensionId);
+		test.parent().depth();
 		for(Integer dimID:dimsToDelete)
 		{
 			PocketManager.deletePocket(PocketManager.getDimensionData(dimID), true);
 		}
-
+		test.parent().depth();
+		//TODO- for some reason test.parent is null even though I just set like 23 lines earlier, in data.setParentToRoot
 		//TODO implement blackList
-		
 		//Notify the user of the results
 		sender.sendChatToPlayer("Reset complete. " + resetCount + " out of " + dungeonCount + " dungeons were reset.");
 		return DDCommandResult.SUCCESS;
