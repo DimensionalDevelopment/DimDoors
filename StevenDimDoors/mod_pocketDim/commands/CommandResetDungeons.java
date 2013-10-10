@@ -41,6 +41,8 @@ public class CommandResetDungeons extends DDCommandBase
 		int dungeonCount = 0;
 		int resetCount = 0;
 		ArrayList<Integer> dimsToDelete = new ArrayList<Integer>();
+		ArrayList<Integer> dimsToFix = new ArrayList<Integer>();
+
 		for (NewDimData data : PocketManager.getDimensions())
 		{
 			
@@ -52,7 +54,7 @@ public class CommandResetDungeons extends DDCommandBase
 			}
 			else if(data.isDungeon())
 			{
-				data.setParentToRoot();
+				dimsToFix.add(data.id());
 				dungeonCount++;
 				for(DimLink link : data.links())
 				{
@@ -67,14 +69,19 @@ public class CommandResetDungeons extends DDCommandBase
 				}
 			}
 		}
-		NewDimData test = PocketManager.getDimensionData(sender.worldObj.provider.dimensionId);
-		test.parent().depth();
+	
 		for(Integer dimID:dimsToDelete)
 		{
 			PocketManager.deletePocket(PocketManager.getDimensionData(dimID), true);
 		}
-		test.parent().depth();
-		//TODO- for some reason test.parent is null even though I just set like 23 lines earlier, in data.setParentToRoot
+		/**
+		 * temporary workaround
+		 */
+		for(Integer dimID: dimsToFix)
+		{
+			PocketManager.getDimensionData(dimID).setParentToRoot();
+		}
+		//TODO- for some reason the parent field of loaded dimenions get reset to null if I call .setParentToRoot() before I delete the pockets. 
 		//TODO implement blackList
 		//Notify the user of the results
 		sender.sendChatToPlayer("Reset complete. " + resetCount + " out of " + dungeonCount + " dungeons were reset.");

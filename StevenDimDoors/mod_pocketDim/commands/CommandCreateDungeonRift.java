@@ -86,7 +86,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 				if (result != null)
 				{
 					//Create a rift to our selected dungeon and notify the player
-					//TODO currently crashes
+					//TODO currently crashes, need to create the dimension first
 					dimension = PocketManager.getDimensionData(sender.worldObj);
 					link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON);
 					PocketManager.getDimensionData(link.destination().getDimension()).initializeDungeon(x, y + 1, z, orientation,link, result);
