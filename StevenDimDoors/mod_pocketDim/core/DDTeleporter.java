@@ -127,8 +127,6 @@ public class DDTeleporter
 		
 		if(!CheckDestination(entity, world, destination, properties))
 		{
-			
-           //TODO Give entity backwards acceleration
             if(entity instanceof EntityPlayerMP)
             {
             	EntityPlayer player = (EntityPlayer) entity;
@@ -183,7 +181,6 @@ public class DDTeleporter
 			entity.motionX = 0;
 			entity.motionZ = 0;
 			entity.motionY = 0;
-
 			switch (orientation)
 			{
 				case 0:

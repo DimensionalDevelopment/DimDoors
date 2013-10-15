@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
+import StevenDimDoors.mod_pocketDim.IChunkLoader;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
@@ -9,7 +10,7 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 
-public class TileEntityDimDoorGold extends TileEntityDimDoor
+public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLoader
 {
 	
 	private Ticket chunkTicket;
@@ -32,22 +33,22 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor
 				chunkTicket.getModData().setInteger("goldDimDoorY", yCoord);
 				chunkTicket.getModData().setInteger("goldDimDoorZ", zCoord);
 				ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair(xCoord >> 4, zCoord >> 4));
-				forceChunkLoading(chunkTicket);
+				forceChunkLoading(chunkTicket,this.xCoord,this.zCoord);
 		 }
 	 }
 	 
-	 public void forceChunkLoading(Ticket chunkTicket)
+	 public void forceChunkLoading(Ticket chunkTicket,int x,int z)
 	 {
-		 if(PocketManager.getDimensionData(this.worldObj)==null)
+		 if(PocketManager.getDimensionData(chunkTicket.world)==null)
 		 {
 			 return;
 		 }
-		 if(!PocketManager.getDimensionData(this.worldObj).isPocketDimension())
+		 if(!PocketManager.getDimensionData(chunkTicket.world).isPocketDimension())
 		 {
 			 return;
 		 }
 		 
-			for(int chunks = (PocketBuilder.DEFAULT_POCKET_SIZE%16)+1;chunks>0;chunks--)
+			for(int chunks = (PocketBuilder.DEFAULT_POCKET_SIZE/16)+1;chunks>0;chunks--)
 			{
 				ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair((xCoord >> 4)+chunks, (zCoord >> 4)+chunks));
 

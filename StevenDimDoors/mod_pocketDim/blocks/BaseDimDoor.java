@@ -383,9 +383,9 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		{
 			int metadata = world.getBlockMetadata(x, y - 1, z);
 			boolean canUse = isDoorOpen(metadata);
-			if (canUse && entity instanceof EntityLiving)
+			if (canUse && entity instanceof EntityPlayer)
 			{
-				// Don't check for non-living entities since it might not work right
+				// Dont check for non-player entites
 				canUse = isEntityFacingDoor(metadata, (EntityLiving) entity);
 			}
 			if (canUse)
