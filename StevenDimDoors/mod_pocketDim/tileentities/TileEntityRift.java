@@ -170,9 +170,10 @@ public class TileEntityRift extends TileEntity
 			{
 				Point4D location = nearestRiftData.source();
 				TileEntityRift rift = (TileEntityRift) worldObj.getBlockTileEntity(location.getX(), location.getY(), location.getZ());
-				if (rift != null)
+				if (rift != null&&rift.shouldClose!=true)
 				{
 					rift.shouldClose = true;
+					rift.onInventoryChanged();
 				}
 			}
 		}
@@ -187,6 +188,7 @@ public class TileEntityRift extends TileEntity
 			}	
 		}
 		count2++; 
+	
 	}
 
 	public void calculateOldParticleOffset()
@@ -200,18 +202,6 @@ public class TileEntityRift extends TileEntity
 			this.zOffset = this.zCoord - location.getZ();
 			this.distance = Math.abs(xOffset) + Math.abs(yOffset) + Math.abs(zOffset);
 			this.isNearRift=true;
-
-			if (!worldObj.isRemote && distance > 1)
-			{
-				try
-				{
-					grow(distance);
-				}
-				catch(Exception e)
-				{
-
-				}
-			}
 		}
 		else
 		{
@@ -219,6 +209,7 @@ public class TileEntityRift extends TileEntity
 			this.yOffset=0;
 			this.xOffset=0;
 		}
+		this.onInventoryChanged();
 	}
 	
 	public void grow(int distance)

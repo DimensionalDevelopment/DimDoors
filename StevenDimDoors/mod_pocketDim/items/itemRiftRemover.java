@@ -60,7 +60,8 @@ public class itemRiftRemover extends Item
 				TileEntity tileEntity = world.getBlockTileEntity(hx, hy, hz);
 				if (tileEntity != null && tileEntity instanceof TileEntityRift)
 				{
-					((TileEntityRift) tileEntity).shouldClose = true;	
+					((TileEntityRift) tileEntity).shouldClose = true;
+					tileEntity.onInventoryChanged();
 				}
 				if (!player.capabilities.isCreativeMode)
 				{
@@ -76,7 +77,7 @@ public class itemRiftRemover extends Item
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		return false;
+		return true;
 	}
 
 	/**

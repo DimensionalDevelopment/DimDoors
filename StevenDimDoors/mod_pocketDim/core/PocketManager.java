@@ -7,10 +7,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.Compactor;
 import StevenDimDoors.mod_pocketDim.helpers.DeleteFolder;
 import StevenDimDoors.mod_pocketDim.saving.DDSaveHandler;
@@ -276,7 +279,7 @@ public class PocketManager
 	 */
 	private static void loadInternal()
 	{	
-		if (!DimensionManager.getWorld(OVERWORLD_DIMENSION_ID).isRemote &&
+		if (FMLCommonHandler.instance().getSide().isServer()&&
 			DimensionManager.getCurrentSaveRootDirectory() != null)
 		{
 			// Load and register blacklisted dimension IDs

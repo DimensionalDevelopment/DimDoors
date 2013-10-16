@@ -372,8 +372,8 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public void enterDimDoor(World world, int x, int y, int z, Entity entity) 
 	{
-		// We need to ignore particle entities
-		if (world.isRemote || entity instanceof EntityFX)
+		// FX entities dont exist on the server
+		if (world.isRemote)
 		{
 			return;
 		}
