@@ -5,14 +5,17 @@ import java.io.DataInputStream;
 
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.server.integrated.IntegratedServer;
 import StevenDimDoors.mod_pocketDim.PacketConstants;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateSource;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
 
 public class ClientPacketHandler implements IPacketHandler, IUpdateSource
 {
@@ -36,11 +39,10 @@ public class ClientPacketHandler implements IPacketHandler, IUpdateSource
 	{
 		// TODO: Is this even necessary? I'm not convinced we can receive packets from other channels anyway!
 		if (!packet.channel.equals(PacketConstants.CHANNEL_NAME))
-			return;
-		
-		// If this is a memory connection, then our client is running an integrated server.
-		// We can tell by checking if packet size is 0.
-		if (manager.packetSize() == 0)
+			return;		
+	
+		//Checking memory connection wasnt working for some reason, but this seems to work fine. 
+		if (FMLCommonHandler.instance().getMinecraftServerInstance() instanceof IntegratedServer)
 			return;
 		
 		try

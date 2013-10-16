@@ -173,12 +173,19 @@ public class PocketManager
 		{
 			return;
 		}
-
 		isLoading = true;
+		
 		dimensionData = new HashMap<Integer, InnerDimData>();
 		rootDimensions = new ArrayList<NewDimData>();
 		dimensionIDBlackList = new ArrayList<Integer>();
-
+		
+		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+		{
+			//Shouldnt try to load everything if we are a client
+			//This was preventing onPacket from loading properly
+			isLoading=false;
+			return;
+		}
 		//Register Limbo
 		DDProperties properties = DDProperties.instance();
 		registerDimension(properties.LimboDimensionID, null, false, false);
@@ -531,10 +538,6 @@ public class PocketManager
 		{
 			throw new IllegalStateException("Pocket dimensions are already loading!");
 		}
-
-		isLoading = true;
-		dimensionData = new HashMap<Integer, InnerDimData>();
-
 		// Load compacted client-side dimension data
 		Compactor.readDimensions(input, new DimRegistrationCallback());
 		
