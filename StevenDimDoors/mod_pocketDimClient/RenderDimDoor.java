@@ -21,6 +21,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderDimDoor extends TileEntitySpecialRenderer
 {
     FloatBuffer field_76908_a = GLAllocation.createDirectFloatBuffer(16);
+   
+
 
     public RenderDimDoor()
     {
@@ -78,6 +80,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
                 GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
                 var16 = .5F;
             }
+            /**
 
             float startY = (float)(+(y + (double)var13));
             float ratioY = startY + ActiveRenderInfo.objectY;
@@ -93,14 +96,12 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
             float ratioX = startX + ActiveRenderInfo.objectX;
             float ratioX2 = startX + var15 + ActiveRenderInfo.objectX;
             float xConverted = ratioX / ratioX2;
- 
-          
-
-            
+           
             yConverted += (float)(y + (double)var13);
             xConverted += (float)(x + (double)var13);
             zConverted += (float)(z + (double)var13);
-
+             **/
+            
             GL11.glTranslatef( (float)(Minecraft.getSystemTime() % 200000L) / 200000.0F,0, 0.0F);
             GL11.glTranslatef(0, (float)(Minecraft.getSystemTime() % 200000L) / 200000.0F, 0.0F);
 
@@ -176,7 +177,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
             {
                 var23 = 1.0F;
                 var22 = 1.0F;
-                yConverted = 1.0F;
+                //yConverted = 1.0F;
             }
             GL11.glColor4d(var21 * var17, var22 * var17, var23 * var17, 1.0F);
             if(tile.openOrClosed)

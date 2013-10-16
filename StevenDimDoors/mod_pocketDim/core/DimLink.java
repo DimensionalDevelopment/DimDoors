@@ -31,7 +31,7 @@ public abstract class DimLink
 	
 	protected DimLink(Point4D source, int linkType, int orientation)
 	{
-		if (linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX && linkType != LinkTypes.CLIENT_SIDE)
+		if ((linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX) && linkType != LinkTypes.CLIENT_SIDE)
 		{
 			throw new IllegalArgumentException("The specified link type is invalid.");
 		}

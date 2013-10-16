@@ -386,7 +386,7 @@ public class PocketManager
 	
 	private static NewDimData registerClientDimension(int dimensionID, int rootID)
 	{
-		// No need to raise events here since this code should only run on the client side
+		// No need to raise events heres since this code should only run on the client side
 		// getDimensionData() always handles root dimensions properly, even if the weren't defined before
 
 		// SenseiKiwi: I'm a little worried about how getDimensionData will raise
@@ -407,6 +407,12 @@ public class PocketManager
 		else
 		{
 			dimension = root;
+		}
+		if(dimension.isPocketDimension())
+		{
+			//Im registering pocket dims here. I *think* we can assume that if its a pocket and we are 
+			//registering its dim data, we also need to register it with forge. 
+			DimensionManager.registerDimension(dimensionID, mod_pocketDim.properties.PocketProviderID);
 		}
 		return dimension;
 	}

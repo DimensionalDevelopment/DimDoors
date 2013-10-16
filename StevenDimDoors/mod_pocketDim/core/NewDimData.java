@@ -267,7 +267,10 @@ public abstract class NewDimData
 			link.overwrite(linkType,orientation);
 		}
 		//Link created!
-		linkWatcher.onCreated(link.source);
+		if(linkType!=LinkTypes.CLIENT_SIDE)
+		{
+			linkWatcher.onCreated(link.source);
+		}
 		return link;
 	}
 	
