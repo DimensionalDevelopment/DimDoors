@@ -60,7 +60,10 @@ public class Point3D implements Serializable {
 	{
 		return new Point3D(x, y, z);
 	}
-	
+	public int[] toIntArray()
+	{
+		return new int[]{x,y,z};
+	}
 	public boolean equals(Point3D other) 
 	{
 		if (other == null)

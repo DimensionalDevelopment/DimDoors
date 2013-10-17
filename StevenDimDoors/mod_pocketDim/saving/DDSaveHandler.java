@@ -75,6 +75,7 @@ public class DDSaveHandler
 		String basePath = DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/";
 		File basePathFile = new File(basePath);
 		Files.createParentDirs(basePathFile);
+		basePathFile.mkdir();
 		basePathFile = null;
 		basePath += "dim_";
 		
@@ -101,7 +102,7 @@ public class DDSaveHandler
 		catch (Exception e)
 		{
 			System.err.println("Could not save data for dimension #" + dimension.name() + ". The following error occurred:");
-			printException(e, false);
+			printException(e, true);
 			return false;
 		}
 	}

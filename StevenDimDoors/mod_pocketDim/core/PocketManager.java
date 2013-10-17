@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 
@@ -13,12 +14,15 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.helpers.Compactor;
 import StevenDimDoors.mod_pocketDim.helpers.DeleteFolder;
 import StevenDimDoors.mod_pocketDim.saving.DDSaveHandler;
 import StevenDimDoors.mod_pocketDim.saving.IPackable;
 import StevenDimDoors.mod_pocketDim.saving.PackedDimData;
+import StevenDimDoors.mod_pocketDim.saving.PackedLinkData;
+import StevenDimDoors.mod_pocketDim.saving.PackedLinkTail;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateSource;
@@ -89,8 +93,51 @@ public class PocketManager
 		@Override
 		public PackedDimData pack()
 		{
+			ArrayList<Integer> ChildIDs = new ArrayList<Integer>();
+			ArrayList<PackedLinkData> Links = new ArrayList<PackedLinkData>();
+			ArrayList<PackedLinkTail> Tails = new ArrayList<PackedLinkTail>();
+			//Make a list of children
+			for(NewDimData data : this.children)
+			{
+				ChildIDs.add(data.id);
+			}
+			for(DimLink link:this.links())
+			{
+				ArrayList<Point3D> children = new ArrayList<Point3D>();
+				Point3D parentPoint = new Point3D(-1,-1,-1);
+				if(link.parent!=null)
+				{
+					parentPoint=link.parent.source.toPoint3D();
+				}
+				
+				for(DimLink childLink : link.children)
+				{
+					children.add(childLink.source().toPoint3D());
+				}
+				PackedLinkTail tail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
+				Links.add(new PackedLinkData(link.source,parentPoint,tail,link.orientation,children));
+				
+				PackedLinkTail tempTail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
+				if(Tails.contains(tempTail))
+				{
+					Tails.add(tempTail);
+
+				}					
+			}
+			int parentID=this.id;
+			Point3D originPoint=new Point3D(0,0,0);
+			if(this.parent!=null)
+			{
+				parentID = this.parent.id;
+			}
+			if(this.origin!=null)
+			{
+				originPoint=this.origin.toPoint3D();
+			}
+			return new PackedDimData(this.id, depth, this.packDepth, parentID, this.root().id(), orientation, 
+										isDungeon, isFilled, originPoint, ChildIDs, Links, Tails);
 			// FIXME: IMPLEMENTATION PLZTHX
-			return null;
+			//I tried
 		}
 	}
 	

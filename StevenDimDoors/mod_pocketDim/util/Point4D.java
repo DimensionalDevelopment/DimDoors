@@ -4,9 +4,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import StevenDimDoors.mod_pocketDim.Point3D;
+
 
 public final class Point4D implements Comparable<Point4D>
 {
+	
 	private final int x;
 	private final int y;
 	private final int z;
@@ -136,6 +139,14 @@ public final class Point4D implements Comparable<Point4D>
 		return equals((Point4D) obj);
 	}
 	
+	public Point3D toPoint3D()
+	{
+		return new Point3D(this.x,this.y,this.z);
+	}
+	public int[] toIntArray()
+	{
+		return new int[]{x,y,z,dimension};
+	}
 	public boolean equals(Point4D other)
 	{
 		if (this == other)
