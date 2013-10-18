@@ -1,8 +1,14 @@
 package StevenDimDoors.mod_pocketDim;
 
+import paulscode.sound.SoundSystem;
+import net.minecraft.client.audio.SoundPool;
+import net.minecraft.client.audio.SoundPoolEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.World;
+import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEffectEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -15,6 +21,7 @@ import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -39,8 +46,18 @@ public class EventHookContainer
 		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftEnd.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/riftEnd.ogg")));
 		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftClose.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/riftClose.ogg")));
 		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftDoor.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/riftDoor.ogg")));
-	}
+		event.manager.soundPoolMusic.addSound("mods/DimDoors/sfx/creepy.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/creepy.ogg")));
 
+	}
+	@SideOnly(Side.CLIENT)
+	@ForgeSubscribe
+	public void onSoundEffectResult(PlayBackgroundMusicEvent event) 
+	{
+        if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId==mod_pocketDim.properties.LimboDimensionID); 
+        {
+        	this.playMusicForDim(FMLClientHandler.instance().getClient().thePlayer.worldObj);
+        }
+	}
     @ForgeSubscribe
     public void onWorldLoad(WorldEvent.Load event)
     {
@@ -56,6 +73,8 @@ public class EventHookContainer
     	{
     		RiftRegenerator.regenerateRiftsInAllWorlds();
     	}
+    	
+    	this.playMusicForDim(event.world);
     }
     
     @ForgeSubscribe
@@ -63,8 +82,6 @@ public class EventHookContainer
     {
     	event.setCanceled(event.entity.worldObj.provider.dimensionId == properties.LimboDimensionID);
     }
-   
-    
     @ForgeSubscribe(priority=EventPriority.HIGHEST)
     public boolean LivingDeathEvent(LivingDeathEvent event)
     {
@@ -94,6 +111,22 @@ public class EventHookContainer
     	if (event.world.provider.dimensionId == 0)
     	{
     		PocketManager.save();
+    	}
+    }
+    
+    public void playMusicForDim(World world)
+    {
+    	if(world.isRemote&&world.provider instanceof LimboProvider)
+    	{
+    		SoundSystem sndSystem =  FMLClientHandler.instance().getClient().sndManager.sndSystem;
+    		sndSystem.stop("BgMusic");
+    		SoundPoolEntry soundPoolEntry = FMLClientHandler.instance().getClient().sndManager.soundPoolMusic.getRandomSoundFromSoundPool("mods.DimDoors.sfx.creepy");
+    		sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.soundUrl, soundPoolEntry.soundName, false);
+    		sndSystem.play("LimboMusic");
+    	}
+    	else if(world.isRemote && !(world.provider instanceof LimboProvider))
+    	{
+    		FMLClientHandler.instance().getClient().sndManager.sndSystem.stop("LimboMusic");
     	}
     }
 }
