@@ -256,6 +256,40 @@ public class PocketManager
 		isLoaded = true;
 		isLoading = false;
 	}
+	
+	public static boolean registerPackedDimData(PackedDimData packedData)
+	{
+		InnerDimData dimData;
+		
+		if(packedData.ID==packedData.ParentID)
+		{
+			dimData =  new InnerDimData(packedData.ID, null, false, false, linkWatcher);
+			dimData.root=dimData;
+			dimData.parent=dimData;
+			dimData.isFilled=packedData.IsFilled;
+
+			PocketManager.rootDimensions.add(dimData);
+		}
+		else
+		{
+			InnerDimData test = PocketManager.dimensionData.get(packedData.ParentID);
+			dimData =  new InnerDimData(packedData.ID, test,true, packedData.IsDungeon, linkWatcher);
+			dimData.isFilled=packedData.IsFilled;
+			
+			dimData.root=PocketManager.getDimensionData(packedData.RootID);
+			
+			if(packedData.DungeonData!=null)
+			{
+				dimData.dungeon=DDSaveHandler.unpackDungeonData(packedData.DungeonData);
+			}
+
+		}
+		PocketManager.dimensionData.put(dimData.id, dimData);
+		dimWatcher.onCreated(new ClientDimData(dimData));
+
+		
+		return true;
+	}
 	public static boolean deletePocket(NewDimData target, boolean deleteFolder)
 	{
 		// We can't delete the dimension if it's currently loaded or if it's not actually a pocket.
@@ -380,7 +414,7 @@ public class PocketManager
 		try
 		{
 			System.out.println("Writing Dimensional Doors save data...");
-			if ( DDSaveHandler.saveAll(dimensionData.values()) )
+		//	if ( DDSaveHandler.saveAll(dimensionData.values()) )
 			{
 				System.out.println("Saved successfully!");				
 			}
@@ -585,6 +619,11 @@ public class PocketManager
 	{
 		// Write a very compact description of our dimensions and links to be sent to a client
 		Compactor.write(dimensionData.values(), output);
+	}
+	
+	public static boolean isRegisteredInternally(int dimensionID)
+	{
+		return dimensionData.containsKey(dimensionID);
 	}
 	
 	public static void readPacket(DataInputStream input) throws IOException

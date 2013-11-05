@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
@@ -134,7 +135,7 @@ public abstract class NewDimData
 		IUpdateWatcher<Point4D> linkWatcher)
 	{
 		// The isPocket flag is redundant. It's meant as an integrity safeguard.
-		if (isPocket != (parent != null))
+		if (isPocket && (parent == null))
 		{
 			throw new NullPointerException("Dimensions can be pocket dimensions if and only if they have a parent dimension.");
 		}
@@ -345,6 +346,11 @@ public abstract class NewDimData
 	{
 		Point4D location = new Point4D(x, y, z, id);
 		return linkMapping.get(location);
+	}
+	
+	public DimLink getLink(Point3D location)
+	{
+		return linkMapping.get(new Point4D(location.getX(),location.getY(),location.getZ(),this.id));
 	}
 	
 	public DimLink getLink(Point4D location)

@@ -7,7 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraftforge.common.DimensionManager;
+import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
+import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
+import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
+import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.util.FileFilters;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 import com.google.common.io.Files;
 
@@ -47,14 +56,22 @@ public class DDSaveHandler
 		for (File dataFile : dataFiles)
 		{
 			PackedDimData packedDim = readDimension(dataFile, reader);
-			//packedDims.add(packedDim);
+			packedDims.add(packedDim);
 		}
-		return unpackDimData(packedDims);
+		
+		List<PackedLinkData> linksToUnpack = new ArrayList<PackedLinkData>();
+		//get the grand list of all links to unpack
+		for(PackedDimData packedDim : packedDims)
+		{
+			linksToUnpack.addAll(packedDim.Links);
+		}
+
+		
+		return unpackDimData(packedDims)&&unpackLinkData(linksToUnpack);
 	}
 	
 	/**
-	 * Takes a list of packedDimData and rebuilds the DimData for it, as well as registering all of
-	 * them and their links.
+	 * Takes a list of packedDimData and rebuilds the DimData for it
 	 * @param packedDims
 	 * @return
 	 */
@@ -62,18 +79,78 @@ public class DDSaveHandler
 	{
 		List<PackedDimData> unpackedDims = new ArrayList<PackedDimData>();
 		
+		
+		//Load roots
+		for(PackedDimData packedDim : packedDims)
+		{
+			if(packedDim.ParentID==packedDim.ID)
+			{
+				PocketManager.registerPackedDimData(packedDim);
+				unpackedDims.add(packedDim);
+			}
+		}
+		packedDims.removeAll(unpackedDims);
+		unpackedDims.clear();
+		
+		//Load the pockets
 		while(!packedDims.isEmpty())
 		{
-			//Load roots
 			for(PackedDimData packedDim : packedDims)
 			{
-				if(packedDim.ParentID==packedDim.ID)
+				if(PocketManager.isRegisteredInternally(packedDim.ParentID))
 				{
-					
+					PocketManager.registerPackedDimData(packedDim);
+					unpackedDims.add(packedDim);
+				}
+				else
+				{
+					//break here gracefully
 				}
 			}
-			
 			packedDims.removeAll(unpackedDims);
+			unpackedDims.clear();
+			
+		}
+		return true;
+	}
+	
+	private static boolean unpackLinkData(List<PackedLinkData> linksToUnpack)
+	{
+		Point3D fakePoint = new Point3D(-1,-1,-1);
+		List<PackedLinkData> unpackedLinks = new ArrayList<PackedLinkData>();
+		/**
+		 * sort through the list, unpacking links that do not have parents. 
+		 */
+		//TODO- what we have a loop of links?
+		for(PackedLinkData packedLink : linksToUnpack)
+		{
+			if(packedLink.parent.equals(fakePoint))
+			{
+				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
+				DimLink link = data.createLink(packedLink.source, packedLink.tail.linkType,  packedLink.orientation);
+				Point4D destination = packedLink.tail.destination;
+				if(destination!=null)
+				{
+					PocketManager.getDimensionData(destination.getDimension()).setDestination(link, destination.getX(),destination.getY(),destination.getZ());
+				}
+				unpackedLinks.add(packedLink);
+			}
+		}
+		linksToUnpack.removeAll(unpackedLinks);
+		
+		//unpack remaining children
+		while(!linksToUnpack.isEmpty())
+		{
+			for(PackedLinkData packedLink : linksToUnpack)
+			{
+				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
+				if(data.getLink(packedLink.parent)!=null)
+				{
+					data.createChildLink(packedLink.source.getX(), packedLink.source.getY(), packedLink.source.getZ(), data.getLink(packedLink.parent));
+				}
+				unpackedLinks.add(packedLink);
+			}
+			linksToUnpack.removeAll(unpackedLinks);
 		}
 		return true;
 	}
@@ -161,5 +238,21 @@ public class DDSaveHandler
 				System.err.println(e.getCause().getMessage());
 			}
 		}
+	}
+
+	//TODO - make this more robust
+	public static DungeonData unpackDungeonData(PackedDungeonData packedDungeon)
+	{
+		DungeonPack pack;
+		DungeonType type;
+		
+		for(DungeonData data  : DungeonHelper.instance().getRegisteredDungeons())
+		{
+			if(data.schematicName().equals(packedDungeon.SchematicName))
+			{
+				return data;
+			}
+		}
+		return null;
 	}
 }
