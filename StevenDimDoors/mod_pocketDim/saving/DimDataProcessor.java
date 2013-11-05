@@ -27,20 +27,6 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 {
-	private static final String dimID = "DIM_ID";
-	private static final String depth = "DEPTH";
-	private static final String children = "CHILDREN_DIM_IDS";
-	private static final String linkTails = "LINK_TAILS";
-	private static final String filled = "IS_FILLED";
-	private static final String isDungeon = "IS_DUNGEON";
-	private static final String orientation = "ORIENTATION";
-	private static final String parentID = "PARENT_DIM_ID";
-	private static final String rootID = "ROOT_DIM_ID";
-	private static final String packDepth = "PACK_DEPTH";
-	private static final String links = "LINKS";
-	private static final String origin = "ORIGIN_POINT";
-
-
 	@Override
 	public PackedDimData readFromStream(InputStream inputStream)
 		throws ConfigurationProcessingException
@@ -50,12 +36,11 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 			JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
 			PackedDimData data = this.createDImDataFromJson(reader);
 			return data;
-			
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			throw new ConfigurationProcessingException();
+			throw new ConfigurationProcessingException("Could not read packedDimData");
 		}
 	
 	}
@@ -108,6 +93,12 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		List<PackedLinkTail> Tails = new ArrayList<PackedLinkTail>();
 		
 		reader.beginObject();
+		
+		reader.nextName();
+		if(reader.nextLong()!=PackedDimData.SAVE_DATA_VERSION_ID)
+		{
+			throw new IOException("Save data version mismatch");
+		}
 		
 		reader.nextName();
 		ID = reader.nextInt();
@@ -246,7 +237,10 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		
 		return new PackedLinkData(source, parent, tail, orientation, children);
 	}
-	
+	private PackedDungeonData createDungeonDataFromJson(JsonReader reader) throws IOException
+	{
+		return null;
+	}
 	private PackedLinkTail createLinkTailFromJson(JsonReader reader) throws IOException
 	{
 		Point4D destination=null;

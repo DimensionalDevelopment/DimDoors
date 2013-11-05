@@ -47,10 +47,38 @@ public class DDSaveHandler
 		for (File dataFile : dataFiles)
 		{
 			PackedDimData packedDim = readDimension(dataFile, reader);
+			//packedDims.add(packedDim);
+		}
+		return unpackDimData(packedDims);
+	}
+	
+	/**
+	 * Takes a list of packedDimData and rebuilds the DimData for it, as well as registering all of
+	 * them and their links.
+	 * @param packedDims
+	 * @return
+	 */
+	private static boolean unpackDimData(List<PackedDimData> packedDims)
+	{
+		List<PackedDimData> unpackedDims = new ArrayList<PackedDimData>();
+		
+		while(!packedDims.isEmpty())
+		{
+			//Load roots
+			for(PackedDimData packedDim : packedDims)
+			{
+				if(packedDim.ParentID==packedDim.ID)
+				{
+					
+				}
+			}
+			
+			packedDims.removeAll(unpackedDims);
 		}
 		return true;
 	}
 	
+
 	private static PackedDimData readDimension(File dataFile, DimDataProcessor reader)
 	{
 		try

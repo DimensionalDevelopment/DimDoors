@@ -7,6 +7,8 @@ import StevenDimDoors.mod_pocketDim.Point3D;
 public class PackedDimData
 {
 	// These fields will be public since this is a simple data container
+	public final static long SAVE_DATA_VERSION_ID = 982405775L;
+	public final long SAVE_DATA_VERSION_ID_INSTANCE = SAVE_DATA_VERSION_ID;
 	public final int ID;
 	public final boolean IsDungeon;
 	public final boolean IsFilled;
