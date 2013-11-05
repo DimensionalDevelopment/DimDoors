@@ -44,6 +44,11 @@ public class DungeonData
 		return isOpen;
 	}
 	
+	public boolean isInternal()
+	{
+		return isInternal;
+	}
+	
 	public String schematicPath()
 	{
 		return schematicPath;

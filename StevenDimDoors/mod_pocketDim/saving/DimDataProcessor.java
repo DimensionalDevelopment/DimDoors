@@ -86,7 +86,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		int PackDepth;
 		int ParentID;
 		int RootID;
-		PackedDungeonData Dungeon;
+		PackedDungeonData Dungeon = null;
 		Point3D Origin;
 		int Orientation;
 		List<Integer> ChildIDs;
@@ -122,9 +122,12 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		reader.nextName();
 		RootID= reader.nextInt();
 		
-		reader.nextName();
-		Dungeon = createDungeonDataFromJson(reader);
-		reader.nextName();
+		if(reader.nextName().equals("DungeonData"))
+		{
+			Dungeon = createDungeonDataFromJson(reader);
+			reader.nextName();
+		}
+		
 		Origin = createPointFromJson(reader);
 		
 		reader.nextName();
@@ -242,10 +245,45 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 	}
 	private PackedDungeonData createDungeonDataFromJson(JsonReader reader) throws IOException
 	{
+		int Weight;
+		boolean IsOpen;
+		boolean IsInternal;
+		String SchematicPath;
+		String SchematicName;
+		String DungeonTypeName;
+		String DungeonPackName;
+		
 		reader.beginObject();
-		//TODO read in dungeon Data
+		JsonToken test = reader.peek();
+		
+		if(reader.peek() == JsonToken.END_OBJECT)
+		{
+			return null;
+		}
+		
+		reader.nextName();
+		Weight=reader.nextInt();
+		
+		reader.nextName();
+		IsOpen=reader.nextBoolean();
+		
+		reader.nextName();
+		IsInternal=reader.nextBoolean();
+		
+		reader.nextName();
+		SchematicPath=reader.nextString();
+		
+		reader.nextName();
+		SchematicName=reader.nextString();
+		
+		reader.nextName();
+		DungeonTypeName=reader.nextString();
+		
+		reader.nextName();
+		DungeonPackName=reader.nextString();
+		
 		reader.endObject();
-		return null;
+		return new PackedDungeonData(Weight, IsOpen, IsInternal, SchematicPath, SchematicName, DungeonTypeName, DungeonPackName);
 	}
 	private PackedLinkTail createLinkTailFromJson(JsonReader reader) throws IOException
 	{

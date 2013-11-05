@@ -97,7 +97,14 @@ public class PocketManager
 			ArrayList<Integer> ChildIDs = new ArrayList<Integer>();
 			ArrayList<PackedLinkData> Links = new ArrayList<PackedLinkData>();
 			ArrayList<PackedLinkTail> Tails = new ArrayList<PackedLinkTail>();
-			PackedDungeonData packedDungeon = new PackedDungeonData(); //TODO pack dungeon Data
+			PackedDungeonData packedDungeon=null; 
+			
+			if(this.dungeon!=null)
+			{
+				packedDungeon= new PackedDungeonData(dungeon.weight(), dungeon.isOpen(), dungeon.isInternal(), 
+						dungeon.schematicPath(), dungeon.schematicName(), dungeon.dungeonType().Name, 
+						dungeon.dungeonType().Owner.getName());
+			}
 			//Make a list of children
 			for(NewDimData data : this.children)
 			{
