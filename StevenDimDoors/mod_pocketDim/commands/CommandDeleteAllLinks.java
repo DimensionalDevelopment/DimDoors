@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import net.minecraftforge.common.DimensionManager;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public class CommandDeleteAllLinks extends DDCommandBase
 {
@@ -32,53 +33,34 @@ public class CommandDeleteAllLinks extends DDCommandBase
 		int targetDim;
 		boolean shouldGo= true;
 
-		if(command.length==0)
-		{
-			targetDim= sender.worldObj.provider.dimensionId;
-		}
-		else if(command.length==1)
+		if(command.length==1)
 		{
 			targetDim = parseInt(sender, command[0]);
-			if(!dimHelper.dimList.containsKey(targetDim))
-			{
-				sender.sendChatToPlayer("Error- dim "+targetDim+" not registered");
-				shouldGo=false;
-			}
 		}
 		else
 		{
 			targetDim=0;
 			shouldGo=false;
-			sender.sendChatToPlayer("Error-Invalid argument, delete_all_links <targetDimID> or blank for current dim");
+			sender.sendChatToPlayer("Error-Invalid argument, delete_all_links <targetDimID>");
 		}
 
 		if(shouldGo)
 		{
-			if(dimHelper.dimList.containsKey(targetDim))
-			{
-				DimData dim = dimHelper.instance.getDimData(targetDim);
-				ArrayList<LinkData> linksInDim = dim.getLinksInDim();
+			
+				NewDimData dim = PocketManager.getDimensionData(targetDim);
+				ArrayList<DimLink> linksInDim = dim.getAllLinks();
 
-				for (LinkData link : linksInDim)
+				for (DimLink link : linksInDim)
 				{
-					World targetWorld = dimHelper.getWorld(targetDim);
+					World targetWorld = PocketManager.loadDimension(targetDim);
+					targetWorld.setBlock(link.source().getX(), link.source().getY(), link.source().getZ(), 0);
+					dim.deleteLink(link);
+					//TODO Probably should check what the block is, but thats annoying so Ill do it later.
 
-					if(targetWorld==null)
-					{
-						dimHelper.initDimension(targetDim);
-					}
-					else if(targetWorld.provider==null)
-					{
-						dimHelper.initDimension(targetDim);
-					}
-					targetWorld = dimHelper.getWorld(targetDim);
-					dim.removeLinkAtCoords(link);
-					targetWorld.setBlock(link.locXCoord, link.locYCoord, link.locZCoord, 0);
 					linksRemoved++;
 				}
-				//dim.linksInThisDim.clear();
 				sender.sendChatToPlayer("Removed " + linksRemoved + " links.");
-			}
+			
 		}
 		return DDCommandResult.SUCCESS; //TEMPORARY HACK
 	}

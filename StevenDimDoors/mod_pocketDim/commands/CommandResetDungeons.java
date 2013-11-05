@@ -1,8 +1,13 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
+import java.util.ArrayList;
+
 import net.minecraft.entity.player.EntityPlayer;
-import StevenDimDoors.mod_pocketDim.DimData;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import net.minecraftforge.common.DimensionManager;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public class CommandResetDungeons extends DDCommandBase
 {	
@@ -24,6 +29,10 @@ public class CommandResetDungeons extends DDCommandBase
 	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
+		if(sender.worldObj.isRemote)
+		{
+			return DDCommandResult.SUCCESS; 
+		}
 		if (command.length > 0)
 		{
 			return DDCommandResult.TOO_FEW_ARGUMENTS;
@@ -31,19 +40,49 @@ public class CommandResetDungeons extends DDCommandBase
 		
 		int dungeonCount = 0;
 		int resetCount = 0;
-		
-		for (DimData data : dimHelper.dimList.values())
+		ArrayList<Integer> dimsToDelete = new ArrayList<Integer>();
+		ArrayList<Integer> dimsToFix = new ArrayList<Integer>();
+
+		for (NewDimData data : PocketManager.getDimensions())
 		{
-			if (data.isDimRandomRift)
+			
+			if(DimensionManager.getWorld(data.id())==null&&data.isDungeon())
 			{
+				resetCount++;
 				dungeonCount++;
-				if (dimHelper.instance.resetPocket(data))
+				dimsToDelete.add(data.id());
+			}
+			else if(data.isDungeon())
+			{
+				dimsToFix.add(data.id());
+				dungeonCount++;
+				for(DimLink link : data.links())
 				{
-					resetCount++;
+					if(link.linkType()==LinkTypes.REVERSE)
+					{
+						data.createLink(link.source(), LinkTypes.DUNGEON_EXIT, link.orientation());
+					}
+					if(link.linkType()==LinkTypes.DUNGEON)
+					{
+						data.createLink(link.source(), LinkTypes.DUNGEON, link.orientation());
+					}
 				}
 			}
 		}
-		
+	
+		for(Integer dimID:dimsToDelete)
+		{
+			PocketManager.deletePocket(PocketManager.getDimensionData(dimID), true);
+		}
+		/**
+		 * temporary workaround
+		 */
+		for(Integer dimID: dimsToFix)
+		{
+			PocketManager.getDimensionData(dimID).setParentToRoot();
+		}
+		//TODO- for some reason the parent field of loaded dimenions get reset to null if I call .setParentToRoot() before I delete the pockets. 
+		//TODO implement blackList
 		//Notify the user of the results
 		sender.sendChatToPlayer("Reset complete. " + resetCount + " out of " + dungeonCount + " dungeons were reset.");
 		return DDCommandResult.SUCCESS;

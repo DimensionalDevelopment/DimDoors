@@ -16,9 +16,9 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
-import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDimClient.ClosingRiftFX;
 import StevenDimDoors.mod_pocketDimClient.GoggleRiftFX;
 import StevenDimDoors.mod_pocketDimClient.RiftFX;
@@ -37,7 +37,7 @@ public class BlockRift extends BlockContainer
 	private static final int BLOCK_DESTRUCTION_CHANCE = 50;
 	
 	private final DDProperties properties;
-	private static ArrayList<Integer> blocksImmuneToRift;
+	private final ArrayList<Integer> blocksImmuneToRift;
 	
 	public BlockRift(int i, int j, Material par2Material, DDProperties properties) 
 	{
@@ -53,6 +53,9 @@ public class BlockRift extends BlockContainer
 		this.blocksImmuneToRift.add(properties.UnstableDoorID);
 		this.blocksImmuneToRift.add(properties.RiftBlockID);
 		this.blocksImmuneToRift.add(properties.TransientDoorID);
+		this.blocksImmuneToRift.add(properties.GoldDimDoorID);
+		this.blocksImmuneToRift.add(properties.GoldDoorID);
+
 		this.blocksImmuneToRift.add(Block.blockIron.blockID);
 		this.blocksImmuneToRift.add(Block.blockDiamond.blockID);
 		this.blocksImmuneToRift.add(Block.blockEmerald.blockID);
@@ -154,7 +157,7 @@ public class BlockRift extends BlockContainer
 	public void updateTick(World world, int x, int y, int z, Random random)
 	{
 		if (properties.RiftGriefingEnabled && !world.isRemote &&
-				dimHelper.instance.getLinkDataFromCoords(x, y, z, world.provider.dimensionId) != null)
+				PocketManager.getLink(x, y, z, world.provider.dimensionId) != null)
 		{
 			//Randomly decide whether to search for blocks to destroy. This reduces the frequency of search operations,
 			//moderates performance impact, and controls the apparent speed of block destruction.
@@ -335,7 +338,8 @@ public class BlockRift extends BlockContainer
 			}
 		}
 	}
-	public static boolean isBlockImmune(World world, int x, int y, int z)
+	
+	public boolean isBlockImmune(World world, int x, int y, int z)
 	{
 		Block block = Block.blocksList[world.getBlockId(x, y, z)];
 		if (block != null)

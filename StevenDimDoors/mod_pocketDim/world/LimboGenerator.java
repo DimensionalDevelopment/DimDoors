@@ -12,18 +12,12 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
-import net.minecraft.world.gen.MapGenBase;
-import net.minecraft.world.gen.MapGenRavine;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import net.minecraft.world.gen.feature.MapGenScatteredFeature;
-import net.minecraft.world.gen.structure.MapGenMineshaft;
-import net.minecraft.world.gen.structure.MapGenStronghold;
-import net.minecraft.world.gen.structure.MapGenVillage;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.terraingen.ChunkProviderEvent;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 
 public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvider
@@ -46,8 +40,6 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 	public NoiseGeneratorOctaves noiseGen5;
 
 	public World world;
-	private final byte[] field_82700_c = new byte[256];
-	private final byte[] field_82698_d = new byte[256];
 
 	/** A NoiseGeneratorOctaves used in generating terrain */
 	public NoiseGeneratorOctaves noiseGen6;
@@ -56,26 +48,10 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 	/** Reference to the World object. */
 	private World worldObj;
 
-	/** are map structures going to be generated (e.g. strongholds) */
-	private final boolean mapFeaturesEnabled = false;
-
 	/** Holds the overall noise array used in chunk generation */
 	private double[] noiseArray;
-	private double[] stoneNoise = new double[256];
-	private MapGenBase caveGenerator = new CustomCaveGen();
-
-	/** Holds Stronghold Generator */
-	private MapGenStronghold strongholdGenerator = new MapGenStronghold();
-
-	/** Holds Village Generator */
-	private MapGenVillage villageGenerator = new MapGenVillage();
-
-	/** Holds Mineshaft Generator */
-	private MapGenMineshaft mineshaftGenerator = new MapGenMineshaft();
+	
 	private MapGenScatteredFeature scatteredFeatureGenerator = new MapGenScatteredFeature();
-
-	/** Holds ravine generator */
-	private MapGenBase ravineGenerator = new MapGenRavine();
 
 	/** The biomes that are used to generate the chunk */
 	private BiomeGenBase[] biomesForGeneration = new BiomeGenBase[1];
@@ -137,10 +113,11 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 	}
 
 	@Override
-	public boolean chunkExists(int var1, int var2) {
-		// TODO Auto-generated method stub
+	public boolean chunkExists(int var1, int var2)
+	{
 		return super.chunkExists(var1, var2);
 	}
+	
 	@Override
 	public void replaceBlocksForBiome(int par1, int par2, byte[] par3ArrayOfByte, BiomeGenBase[] par4ArrayOfBiomeGenBase)
 	{

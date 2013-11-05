@@ -1,23 +1,37 @@
 package StevenDimDoors.mod_pocketDim;
 
+import paulscode.sound.SoundSystem;
+import net.minecraft.client.audio.SoundPool;
+import net.minecraft.client.audio.SoundPoolEntry;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEffectEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
+import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.world.LimboProvider;
+import StevenDimDoors.mod_pocketDim.world.PocketProvider;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class EventHookContainer
 {
-	private static DDProperties properties = null;
+	private final DDProperties properties;
 	
-	public EventHookContainer()
+	public EventHookContainer(DDProperties properties)
 	{
-		if (properties == null)
-			properties = DDProperties.instance();
+		this.properties = properties;
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -32,43 +46,35 @@ public class EventHookContainer
 		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftEnd.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/riftEnd.ogg")));
 		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftClose.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/riftClose.ogg")));
 		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftDoor.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/riftDoor.ogg")));
-	}
+		event.manager.soundPoolMusic.addSound("mods/DimDoors/sfx/creepy.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/creepy.ogg")));
 
+	}
+	@SideOnly(Side.CLIENT)
+	@ForgeSubscribe
+	public void onSoundEffectResult(PlayBackgroundMusicEvent event) 
+	{
+        if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId==mod_pocketDim.properties.LimboDimensionID); 
+        {
+        	this.playMusicForDim(FMLClientHandler.instance().getClient().thePlayer.worldObj);
+        }
+	}
     @ForgeSubscribe
     public void onWorldLoad(WorldEvent.Load event)
     {
-    	if (!mod_pocketDim.hasInitDims && event.world.provider.dimensionId == 0 && !event.world.isRemote)
+    	// We need to initialize PocketManager here because onServerAboutToStart fires before we can
+    	// use DimensionManager and onServerStarting fires after the game tries to generate terrain.
+    	// If a gateway tries to generate before PocketManager has initialized, we get a crash.
+    	if (!PocketManager.isLoaded())
     	{
-    		System.out.println("Registering Pocket Dims");
-    		mod_pocketDim.hasInitDims = true;
-    		dimHelper.instance.unregsisterDims();
-        	dimHelper.dimList.clear();
-        	dimHelper.instance.interDimLinkList.clear();
-        	dimHelper.instance.initPockets();
+    		PocketManager.load();
     	}
     	
-    	//TODO: In the future, we should iterate over DimHelper's dimension list. We ignore other dimensions anyway.
-    	for (int dimensionID : dimHelper.getIDs())
-    	{    		
-    		World world = dimHelper.getWorld(dimensionID);
-    		int linkCount = 0;
-    		
-    		if (dimHelper.dimList.containsKey(dimensionID))
-    		{
-    			for (LinkData link : dimHelper.instance.getDimData(dimensionID).getLinksInDim())
-    			{
-    				if (!mod_pocketDim.blockRift.isBlockImmune(world, link.locXCoord, link.locYCoord, link.locZCoord))
-    				{
-        				world.setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
-    				}
-    				linkCount++;
-    				if (linkCount >= 100)
-    				{
-    					break;
-    				}
-    			}
-    		}
-    	}   
+    	if (PocketManager.isLoaded())
+    	{
+    		RiftRegenerator.regenerateRiftsInAllWorlds();
+    	}
+    	
+    	this.playMusicForDim(event.world);
     }
     
     @ForgeSubscribe
@@ -76,21 +82,51 @@ public class EventHookContainer
     {
     	event.setCanceled(event.entity.worldObj.provider.dimensionId == properties.LimboDimensionID);
     }
-   
-    @ForgeSubscribe
-    public void onPlayerDrops(PlayerDropsEvent event)
+    @ForgeSubscribe(priority=EventPriority.HIGHEST)
+    public boolean LivingDeathEvent(LivingDeathEvent event)
     {
-    	//TODO: I have some doubts. Is this triggered even if you die outside Limbo? And do you still drop items that others could pick up? We don't cancel the event. ~SenseiKiwi
-    	mod_pocketDim.limboSpawnInventory.put(event.entityPlayer.username, event.drops);
+    	Entity entity = event.entity;
+    	
+    	if (entity instanceof EntityPlayer && properties.LimboEnabled &&
+    		entity.worldObj.provider instanceof PocketProvider)
+    	{
+    		EntityPlayer player = (EntityPlayer) entity;
+    		if (!properties.LimboReturnsInventoryEnabled)
+    		{
+    			player.inventory.clearInventory(-1, -1);
+    		}
+    		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(player.worldObj.rand);
+    		Point4D destination = new Point4D((int) (coords.posX+entity.posX), coords.posY, (int) (coords.posZ+entity.posZ ), mod_pocketDim.properties.LimboDimensionID);
+    		DDTeleporter.teleportEntity(player, destination, false);
+    		player.setEntityHealth(player.getMaxHealth());
+    		event.setCanceled(true);
+    		return false;
+    	}
+    	return true;
     }
 
     @ForgeSubscribe
-    public void onWorldsave(WorldEvent.Save event)
+    public void onWorldSave(WorldEvent.Save event)
     {
-    
-    	if (mod_pocketDim.hasInitDims && event.world.provider.dimensionId == 0)
+    	if (event.world.provider.dimensionId == 0)
     	{
-    		dimHelper.instance.save();
+    		PocketManager.save();
+    	}
+    }
+    
+    public void playMusicForDim(World world)
+    {
+    	if(world.isRemote&&world.provider instanceof LimboProvider)
+    	{
+    		SoundSystem sndSystem =  FMLClientHandler.instance().getClient().sndManager.sndSystem;
+    		sndSystem.stop("BgMusic");
+    		SoundPoolEntry soundPoolEntry = FMLClientHandler.instance().getClient().sndManager.soundPoolMusic.getRandomSoundFromSoundPool("mods.DimDoors.sfx.creepy");
+    		sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.soundUrl, soundPoolEntry.soundName, false);
+    		sndSystem.play("LimboMusic");
+    	}
+    	else if(world.isRemote && !(world.provider instanceof LimboProvider))
+    	{
+    		FMLClientHandler.instance().getClient().sndManager.sndSystem.stop("LimboMusic");
     	}
     }
 }

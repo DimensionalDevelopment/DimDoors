@@ -14,19 +14,21 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
 import StevenDimDoors.mod_pocketDim.Point3D;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.schematic.CompoundFilter;
 import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
 import StevenDimDoors.mod_pocketDim.schematic.ReplacementFilter;
 import StevenDimDoors.mod_pocketDim.schematic.Schematic;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
+import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class DungeonSchematic extends Schematic {
 
@@ -167,15 +169,14 @@ public class DungeonSchematic extends Schematic {
 		return new DungeonSchematic(Schematic.copyFromWorld(world, x, y, z, width, height, length, doCompactBounds));
 	}
 
-	public void copyToWorld(World world, Point3D pocketCenter, int dungeonOrientation, int originDimID, int destDimID, boolean doDistortCoordinates)
+	public void copyToWorld(World world, Point3D pocketCenter, int targetOrientation, DimLink entryLink, Random random)
 	{
 		//TODO: This function is an improvised solution so we can get the release moving. In the future,
-		//we should generalize block tranformations and implement support for them at the level of Schematic,
+		//we should generalize block transformations and implement support for them at the level of Schematic,
 		//then just use that support from DungeonSchematic instead of making this local fix.
 		//It might be easiest to support transformations using a WorldOperation
 		
-		final int turnAngle = dungeonOrientation - orientation;
-		
+		final int turnAngle = targetOrientation - this.orientation;
 		
 		int index;
 		int count;
@@ -222,18 +223,11 @@ public class DungeonSchematic extends Schematic {
 			world.setBlockTileEntity(pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), TileEntity.createAndLoadEntity(tileTag));
 		}
 		
-		setUpDungeon(world, pocketCenter, turnAngle, originDimID, destDimID, doDistortCoordinates);
+		setUpDungeon(PocketManager.getDimensionData(world), world, pocketCenter, turnAngle, entryLink, random);
 	}
 	
-	private void setUpDungeon(World world, Point3D pocketCenter, int turnAngle, int originDimID, int destDimID, boolean doDistortCoordinates)
+	private void setUpDungeon(NewDimData dimension, World world, Point3D pocketCenter, int turnAngle, DimLink entryLink, Random random)
 	{
-		//The following Random initialization code is based on code from ChunkProviderGenerate.
-		//It makes our generation depend on the world seed.
-		Random random = new Random(world.getSeed());
-        long factorA = random.nextLong() / 2L * 2L + 1L;
-        long factorB = random.nextLong() / 2L * 2L + 1L;
-        random.setSeed(pocketCenter.getX() * factorB + pocketCenter.getZ() * factorA ^ world.getSeed());
-		
         //Transform dungeon corners
         Point3D minCorner = new Point3D(0, 0, 0);
         Point3D maxCorner = new Point3D(width - 1, height - 1, length - 1);
@@ -244,24 +238,25 @@ public class DungeonSchematic extends Schematic {
 		filler.apply(world, minCorner, maxCorner);
 		
 		//Set up entrance door rift
-		setUpEntranceDoorLink(world, entranceDoorLocation, turnAngle, pocketCenter);
+		createEntranceReverseLink(dimension, pocketCenter, entryLink, world);
 		
 		//Set up link data for dimensional doors
 		for (Point3D location : dimensionalDoorLocations)
 		{
-			setUpDimensionalDoorLink(world, location, entranceDoorLocation, turnAngle, pocketCenter, originDimID, destDimID, doDistortCoordinates, random);
+			createDimensionalDoorLink(dimension, location, entranceDoorLocation, turnAngle, pocketCenter,world);
 		}
 		
 		//Set up link data for exit door
 		for (Point3D location : exitDoorLocations)
 		{
-			setUpExitDoorLink(world, location, entranceDoorLocation, turnAngle, pocketCenter, originDimID, destDimID, random);
+			createExitDoorLink(world, dimension, location, entranceDoorLocation, turnAngle, pocketCenter);
 		}
 		
-		//Remove end portal frames and spawn Monoliths
+		//Remove end portal frames and spawn Monoliths, if allowed
+		boolean canSpawn = MonolithSpawner.isMobSpawningAllowed();
 		for (Point3D location : monolithSpawnLocations)
 		{
-			spawnMonolith(world, location, entranceDoorLocation, turnAngle, pocketCenter);
+			spawnMonolith(world, location, entranceDoorLocation, turnAngle, pocketCenter, canSpawn);
 		}
 	}
 	
@@ -290,133 +285,46 @@ public class DungeonSchematic extends Schematic {
 		}
 	}
 	
-	private static void setUpEntranceDoorLink(World world, Point3D entrance, int rotation, Point3D pocketCenter)
+	private static void createEntranceReverseLink(NewDimData dimension, Point3D pocketCenter, DimLink entryLink,World world)
 	{
-		//Set the orientation of the rift exit
-		Point3D entranceRiftLocation = entrance.clone();
-		BlockRotator.transformPoint(entranceRiftLocation, entrance, rotation, pocketCenter);
-		LinkData sideLink = dimHelper.instance.getLinkDataFromCoords(
-				entranceRiftLocation.getX(),
-				entranceRiftLocation.getY(),
-				entranceRiftLocation.getZ(),
-				world);
-		sideLink.linkOrientation = world.getBlockMetadata(
-				entranceRiftLocation.getX(),
-				entranceRiftLocation.getY() - 1,
-				entranceRiftLocation.getZ());
+		int orientation = world.getBlockMetadata(pocketCenter.getX(), pocketCenter.getY()-1, pocketCenter.getZ());
+		DimLink reverseLink = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), LinkTypes.REVERSE,orientation);
+		Point4D destination = entryLink.source();
+		NewDimData prevDim = PocketManager.getDimensionData(destination.getDimension());
+		prevDim.setDestination(reverseLink, destination.getX(), destination.getY(), destination.getZ());
 	}
 	
-	private static void setUpExitDoorLink(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter, int originDimID, int destDimID, Random random)
+	private static void createExitDoorLink(World world, NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
 	{
-		try
-		{
-			//TODO: Hax, remove this later
-			DDProperties properties = DDProperties.instance();
-			
-			//Transform doorLocation to the pocket coordinate system.
-			Point3D location = point.clone();
-			BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
-			int blockDirection = world.getBlockMetadata(location.getX(), location.getY() - 1, location.getZ());
-			Point3D linkDestination = location.clone();
-			
-			LinkData randomLink = dimHelper.instance.getRandomLinkData(false);
-			LinkData sideLink = new LinkData(destDimID,
-					dimHelper.instance.getDimData(originDimID).exitDimLink.destDimID,
-					location.getX(),
-					location.getY(),
-					location.getZ(),
-					linkDestination.getX(),
-					linkDestination.getY() + 1,
-					linkDestination.getZ(),
-					true, blockDirection);
-
-			if (sideLink.destDimID == properties.LimboDimensionID)
-			{
-				sideLink.destDimID = 0;
-			}
-			else if ((random.nextBoolean() && randomLink != null))
-			{
-				sideLink.destDimID = randomLink.locDimID;
-			}
-			sideLink.destYCoord = yCoordHelper.getFirstUncovered(sideLink.destDimID, linkDestination.getX(), linkDestination.getY(), linkDestination.getZ())-1;
-
-			if (sideLink.destYCoord < 5)
-			{
-				sideLink.destYCoord = 70;
-			}
-			sideLink.linkOrientation = world.getBlockMetadata(linkDestination.getX(), linkDestination.getY() - 1, linkDestination.getZ());
-
-			dimHelper.instance.createLink(sideLink);
-			/**dimHelper.instance.createLink(sideLink.destDimID , 
-					sideLink.locDimID, 
-					sideLink.destXCoord, 
-					sideLink.destYCoord, 
-					sideLink.destZCoord, 
-					sideLink.locXCoord, 
-					sideLink.locYCoord, 
-					sideLink.locZCoord, 
-					BlockRotator.transformMetadata(sideLink.linkOrientation, 2, Block.doorWood.blockID));
-					**/
-
-			if (world.getBlockId(linkDestination.getX(), linkDestination.getY() - 3, linkDestination.getZ()) == properties.FabricBlockID)
-			{
-				setBlockDirectly(world, linkDestination.getX(), linkDestination.getY() - 2, linkDestination.getZ(), Block.stoneBrick.blockID, 0);
-			}
-			else
-			{
-				setBlockDirectly(world,linkDestination.getX(), linkDestination.getY() - 2, linkDestination.getZ(),
-						world.getBlockId(linkDestination.getX(), linkDestination.getY() - 3, linkDestination.getZ()),
-						world.getBlockMetadata(linkDestination.getX(), linkDestination.getY() - 3, linkDestination.getZ()));
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	private static void setUpDimensionalDoorLink(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter, int originDimID, int destDimID, boolean applyNoise, Random random)
-	{
-		int depth = dimHelper.instance.getDimDepth(originDimID) + 1;
-		int forwardNoise;
-		int sidewaysNoise;
 		
-		if (applyNoise)
-		{
-			forwardNoise = MathHelper.getRandomIntegerInRange(random, -50 * depth, 150 * depth);
-			sidewaysNoise = MathHelper.getRandomIntegerInRange(random, -10 * depth, 10 * depth);
-		}
-		else
-		{
-			forwardNoise = 0;
-			sidewaysNoise = 0;
-		}
-		
-		//Transform doorLocation to the pocket coordinate system
+		//Transform the door's location to the pocket coordinate system
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
-		int blockDirection = world.getBlockMetadata(location.getX(), location.getY() - 1, location.getZ());
-		
-		//Rotate the link destination noise to point in the same direction as the door exit
-		//and add it to the door's location. Use EAST as the reference orientation since linkDestination
-		//is constructed as if pointing East.
-		Point3D linkDestination = new Point3D(forwardNoise, 0, sidewaysNoise);
-		Point3D zeroPoint = new Point3D(0, 0, 0);
-		BlockRotator.transformPoint(linkDestination, zeroPoint, blockDirection - BlockRotator.EAST_DOOR_METADATA, location);
-		
-		//Create the link between our current door and its intended exit in destination pocket
-		LinkData sideLink = new LinkData(destDimID, 0,
-				location.getX(),
-				location.getY(),
-				location.getZ(),
-				linkDestination.getX(),
-				linkDestination.getY() + 1,
-				linkDestination.getZ(),
-				true, blockDirection);
-		dimHelper.instance.createPocket(sideLink, true, true);
+		int orientation = world.getBlockMetadata(location.getX(), location.getY()-1, location.getZ());
+		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON_EXIT,orientation);
+		//Replace the sandstone block under the exit door with the same block as the one underneath it
+		int x = location.getX();
+		int y = location.getY() - 3;
+		int z = location.getZ();
+		if (y >= 0)
+		{
+			int blockID = world.getBlockId(x, y, z);
+			int metadata = world.getBlockMetadata(x, y, z);
+			setBlockDirectly(world, x, y + 1, z, blockID, metadata);
+		}
 	}
 	
-	private static void spawnMonolith(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
+	private static void createDimensionalDoorLink(NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter,World world)
+	{
+		//Transform the door's location to the pocket coordinate system
+		Point3D location = point.clone();
+		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
+		int orientation = world.getBlockMetadata(location.getX(), location.getY()-1, location.getZ());
+
+		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON,orientation);
+	}
+	
+	private static void spawnMonolith(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter, boolean canSpawn)
 	{
 		//Transform the frame block's location to the pocket coordinate system
 		Point3D location = point.clone();
@@ -424,8 +332,11 @@ public class DungeonSchematic extends Schematic {
 		//Remove frame block
 		setBlockDirectly(world, location.getX(), location.getY(), location.getZ(), 0, 0);
 		//Spawn Monolith
-		Entity mob = new MobMonolith(world);
-		mob.setLocationAndAngles(location.getX(), location.getY(), location.getZ(), 1, 1);
-		world.spawnEntityInWorld(mob);
+		if (canSpawn)
+		{
+			Entity mob = new MobMonolith(world);
+			mob.setLocationAndAngles(location.getX(), location.getY(), location.getZ(), 1, 1);
+			world.spawnEntityInWorld(mob);
+		}
 	}
 }

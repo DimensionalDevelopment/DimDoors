@@ -4,6 +4,7 @@ import java.io.File;
 
 import net.minecraftforge.common.Configuration;
 import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
+import StevenDimDoors.mod_pocketDim.world.GatewayGenerator;
 
 public class DDProperties
 {
@@ -12,7 +13,9 @@ public class DDProperties
 	 */
 
 	public final int UnstableDoorID;
-	public final int DimensionalDoorID;
+	public final int DimensionalDoorID;	
+	public final int GoldDoorID;
+	public final int GoldDimDoorID;
 	public final int WarpDoorID;
 	public final int TransTrapdoorID;
 	public final int TransientDoorID;
@@ -31,7 +34,9 @@ public class DDProperties
 	 */
 
 	public final int RiftBladeItemID;
-	public final int RiftSignatureItemID;
+	public final int RiftSignatureItemID;	
+	public final int GoldDimDoorItemID;
+	public final int GoldDoorItemID;
 	public final int RiftRemoverItemID;
 	public final int StableFabricItemID;
 	public final int StabilizedRiftSignatureItemID;
@@ -55,7 +60,7 @@ public class DDProperties
 	 * Crafting Flags
 	 */
 	
-	public final boolean CraftingDimensionaDoorAllowed;
+	public final boolean CraftingDimensionalDoorAllowed;
 	public final boolean CraftingWarpDoorAllowed;
 	public final boolean CraftingRiftSignatureAllowed;
 	public final boolean CraftingRiftRemoverAllowed;
@@ -64,6 +69,8 @@ public class DDProperties
 	public final boolean CraftingTransTrapdoorAllowed;
 	public final boolean CraftingStabilizedRiftSignatureAllowed;
 	public final boolean CraftingStableFabricAllowed;
+	public final boolean CraftingGoldDimDoorAllowed;
+	public final boolean CraftingGoldDoorAllowed;
 	
 	/**
 	 * Loot Flags
@@ -93,14 +100,12 @@ public class DDProperties
 	public final boolean LimboReturnsInventoryEnabled;
 	public final boolean DoorRenderingEnabled;
 	public final boolean TNFREAKINGT_Enabled;
-	public final boolean RiftBladeRiftCreationEnabled;
 
 	/**
 	 * Other
 	 */
 
 	public final int NonTntWeight;
-	public final int RiftSpreadModifier;
 	public final int ClusterGenerationChance;
 	public final int GatewayGenerationChance;
 	public final int MonolithSpawningChance;
@@ -128,7 +133,7 @@ public class DDProperties
 		Configuration config = new Configuration(configFile);
 		config.load();
 
-		CraftingDimensionaDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Dimensional Door", true).getBoolean(true);
+		CraftingDimensionalDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Dimensional Door", true).getBoolean(true);
 		CraftingWarpDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Warp Door", true).getBoolean(true);
 		CraftingUnstableDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Unstable Door", true).getBoolean(true);
 		CraftingTransTrapdoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Transdimensional Trapdoor", true).getBoolean(true);
@@ -137,6 +142,8 @@ public class DDProperties
 		CraftingStabilizedRiftSignatureAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Stabilized Rift Signature", true).getBoolean(true);
 		CraftingRiftBladeAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Rift Blade", true).getBoolean(true);
 		CraftingStableFabricAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Stable Fabric", true).getBoolean(true);
+		CraftingGoldDimDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Golden Dimensional Door", true).getBoolean(true);
+		CraftingGoldDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Golden Door", true).getBoolean(true);
 		
 		DimensionalDoorLootEnabled = config.get(CATEGORY_LOOT, "Enable Dimensional Door Loot", true).getBoolean(true);
 		WarpDoorLootEnabled = config.get(CATEGORY_LOOT, "Enable Warp Door Loot", false).getBoolean(false);
@@ -165,9 +172,6 @@ public class DDProperties
 		LimboReturnRange = config.get(Configuration.CATEGORY_GENERAL, "Limbo Return Range", 500,
 				"Sets the farthest distance that Limbo can send you upon returning to the Overworld").getInt();
 		DoorRenderingEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Door Rendering", true).getBoolean(true);
-		RiftBladeRiftCreationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Creation with Rift Blade", true,
-				"Sets whether Rift Blades can create new rifts. If set to false, " +
-				"they will only be able to create transient doors on existing rifts.").getBoolean(true);
 
 		TNFREAKINGT_Enabled = config.get(Configuration.CATEGORY_GENERAL, "EXPLOSIONS!!???!!!?!?!!", false).getBoolean(false);
 		NonTntWeight = config.get(Configuration.CATEGORY_GENERAL, "HOWMUCHTNT", 25, 
@@ -184,7 +188,9 @@ public class DDProperties
 		RiftBlockID = config.getBlock("Rift Block ID", 1977).getInt();
 		UnstableDoorID = config.getBlock("Unstable Door Block ID", 1978).getInt();
 		TransientDoorID = config.getBlock("Transient Door Block ID", 1979).getInt();
-
+		GoldDoorID = config.getBlock("Gold Door Block ID", 1980).getInt();
+		GoldDimDoorID = config.getBlock("Gold Dim Door Block ID", 1981).getInt();
+		
 		WarpDoorItemID = config.getItem("Warp Door Item ID", 5670).getInt();
 		RiftRemoverItemID = config.getItem("Rift Remover Item ID", 5671).getInt();
 		StableFabricItemID = config.getItem("Stable Fabric Item ID", 5672).getInt();
@@ -193,7 +199,9 @@ public class DDProperties
 		RiftSignatureItemID = config.getItem("Rift Signature Item ID", 5675).getInt();
 		RiftBladeItemID = config.getItem("Rift Blade Item ID", 5676).getInt();
 		StabilizedRiftSignatureItemID = config.getItem("Stabilized Rift Signature Item ID", 5677).getInt();
-
+		GoldDoorItemID = config.getItem("Gold Door Item ID", 5678).getInt();
+		GoldDimDoorItemID = config.getItem("Gold Dim Door Item ID", 5679).getInt();
+		
 		LimboBlockID = config.getTerrainBlock("World Generation Block IDs - must be less than 256", "Limbo Block ID", 217,
 				"Blocks used for the terrain in Limbo").getInt();
 		PermaFabricBlockID = config.getTerrainBlock("World Generation Block IDs - must be less than 256",
@@ -211,16 +219,12 @@ public class DDProperties
 				"spawn in a given Limbo chunk. The default chance is 28.").getInt();
 		
 		ClusterGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Cluster Generation Chance", 3,
-				"Sets the chance (out of " + RiftGenerator.MAX_CLUSTER_GENERATION_CHANCE + ") that a cluster of rifts will " +
+				"Sets the chance (out of " + GatewayGenerator.MAX_CLUSTER_GENERATION_CHANCE + ") that a cluster of rifts will " +
 				"generate in a given chunk. The default chance is 3.").getInt();
 
 		GatewayGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Gateway Generation Chance", 10,
-				"Sets the chance (out of " + RiftGenerator.MAX_GATEWAY_GENERATION_CHANCE + ") that a Rift Gateway will " +
+				"Sets the chance (out of " + GatewayGenerator.MAX_GATEWAY_GENERATION_CHANCE + ") that a Rift Gateway will " +
 				"generate in a given chunk. The default chance is 10.").getInt();
-		
-		RiftSpreadModifier = config.get(Configuration.CATEGORY_GENERAL, "Rift Spread Modifier", 3,
-				"Sets the number of times a rift can spread. 0 prevents rifts from spreading at all. " +
-				"A value greater than 5 is not recommended as the growth is exponential.").getInt();
 
 		LimboBiomeID = config.get(CATEGORY_BIOME, "Limbo Biome ID", 251).getInt();
 		PocketBiomeID = config.get(CATEGORY_BIOME, "Pocket Biome ID", 250).getInt();

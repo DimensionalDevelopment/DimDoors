@@ -3,11 +3,6 @@ package StevenDimDoors.mod_pocketDim.blocks;
 import java.util.List;
 import java.util.Random;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -20,6 +15,9 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockDimWall extends Block
 {
@@ -69,14 +67,7 @@ public class BlockDimWall extends Block
 	@Override
 	public Icon getIcon(int par1, int par2)
 	{
-		if (par2 == 1)
-		{
-			return blockIcon[par2];
-		}
-		else
-		{
-			return blockIcon[0];
-		}
+		return (par2 != 1) ? blockIcon[0] : blockIcon[1];
 	}
 	
 	@Override
@@ -119,8 +110,13 @@ public class BlockDimWall extends Block
         	
         	if (playerEquip instanceof ItemBlock)
         	{
-        		Block block = Block.blocksList[playerEquip.itemID];
-        		if (!Block.isNormalCube(playerEquip.itemID) || block instanceof BlockContainer || block.blockID == this.blockID)
+        		// SenseiKiwi: Using getBlockID() rather than the raw itemID is critical.
+        		// Some mods may override that function and use item IDs outside the range
+        		// of the block list.
+        		
+        		int blockID = ((ItemBlock) playerEquip).getBlockID();
+        		Block block = Block.blocksList[blockID];
+        		if (!Block.isNormalCube(blockID) || block instanceof BlockContainer || blockID == this.blockID)
         		{
         			return false;
         		}

@@ -1,9 +1,6 @@
 package StevenDimDoors.mod_pocketDim;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-
-import StevenDimDoors.mod_pocketDimClient.ClientTickHandler;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,7 +44,6 @@ public class CommonProxy implements IGuiHandler
     public void writeNBTToFile(World world)
     {
         boolean flag = true;
-        boolean secondTry = false;
 
         try
         {
@@ -58,7 +54,6 @@ public class CommonProxy implements IGuiHandler
             if (!flag)
             {
                 dirFolder.replace("saves/", FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
-                secondTry = true;
             }
 
             File file = new File(dirFolder, "GGMData.dat");
@@ -91,7 +86,6 @@ public class CommonProxy implements IGuiHandler
     public void readNBTFromFile(World world)
     {
         boolean flag = true;
-        boolean secondTry = false;
 
         try
         {
@@ -102,7 +96,6 @@ public class CommonProxy implements IGuiHandler
             if (!flag)
             {
                 dirFolder.replace("saves/", FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
-                secondTry = true;
             }
 
             File file = new File(dirFolder, "GGMData.dat");
@@ -117,12 +110,9 @@ public class CommonProxy implements IGuiHandler
                 fileoutputstream.close();
             }
 
-            FileInputStream fileinputstream = new FileInputStream(file);
+            /*FileInputStream fileinputstream = new FileInputStream(file);
             NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
-
-           
-
-            fileinputstream.close();
+            fileinputstream.close();*/
         }
         catch (Exception exception)
         {

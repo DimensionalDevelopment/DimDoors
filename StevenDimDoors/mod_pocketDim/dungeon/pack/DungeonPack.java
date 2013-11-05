@@ -7,10 +7,9 @@ import java.util.HashSet;
 import java.util.Random;
 
 import net.minecraft.util.WeightedRandom;
-import StevenDimDoors.mod_pocketDim.DungeonGenerator;
-import StevenDimDoors.mod_pocketDim.LinkData;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
 import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
 public class DungeonPack
@@ -21,12 +20,12 @@ public class DungeonPack
 	//The ID numbers would be a problem since it couldn't have a valid number, since it wasn't initialized by the pack instance.
 	//FIXME: Do not release this code as an update without dealing with disowned types!
 	
-	private static final int MAX_HISTORY_LENGTH = 1337;
+	private static final int MAX_HISTORY_LENGTH = 30;
 	
 	private final String name;
 	private final HashMap<String, DungeonType> nameToTypeMapping;
-	private final ArrayList<ArrayList<DungeonGenerator>> groupedDungeons;
-	private final ArrayList<DungeonGenerator> allDungeons;
+	private final ArrayList<ArrayList<DungeonData>> groupedDungeons;
+	private final ArrayList<DungeonData> allDungeons;
 	private final DungeonPackConfig config;
 	private final int maxRuleLength;
 	private final ArrayList<DungeonChainRule> rules;
@@ -40,9 +39,9 @@ public class DungeonPack
 		int index;
 		int maxLength = 0;
 		int typeCount = config.getTypeNames().size();
-		this.allDungeons = new ArrayList<DungeonGenerator>();
+		this.allDungeons = new ArrayList<DungeonData>();
 		this.nameToTypeMapping = new HashMap<String, DungeonType>(typeCount);
-		this.groupedDungeons = new ArrayList<ArrayList<DungeonGenerator>>(typeCount);
+		this.groupedDungeons = new ArrayList<ArrayList<DungeonData>>(typeCount);
 		
 		this.groupedDungeons.add(allDungeons); //Make sure the list of all dungeons is placed at index 0
 		this.nameToTypeMapping.put(DungeonType.WILDCARD_TYPE.Name, DungeonType.WILDCARD_TYPE);
@@ -52,7 +51,7 @@ public class DungeonPack
 		{
 			String standardName = typeName.toUpperCase();
 			this.nameToTypeMapping.put(standardName, new DungeonType(this, standardName, index));
-			this.groupedDungeons.add(new ArrayList<DungeonGenerator>());  
+			this.groupedDungeons.add(new ArrayList<DungeonData>());  
 			index++;
 		}
 		
@@ -108,14 +107,14 @@ public class DungeonPack
 		return (this.getType(typeName) != null);
 	}
 
-	public void addDungeon(DungeonGenerator generator)
+	public void addDungeon(DungeonData dungeon)
 	{
 		//Make sure this dungeon really belongs in this pack
-		DungeonType type = generator.getDungeonType();
+		DungeonType type = dungeon.dungeonType();
 		if (type.Owner == this)
 		{
-			allDungeons.add(generator);
-			groupedDungeons.get(type.ID).add(generator);
+			allDungeons.add(dungeon);
+			groupedDungeons.get(type.ID).add(dungeon);
 		}
 		else
 		{
@@ -123,7 +122,7 @@ public class DungeonPack
 		}
 	}
 
-	public DungeonGenerator getNextDungeon(LinkData inbound, Random random)
+	public DungeonData getNextDungeon(NewDimData dimension, Random random)
 	{
 		if (allDungeons.isEmpty())
 		{
@@ -136,27 +135,26 @@ public class DungeonPack
 		//for dungeon packs that can extend arbitrarily deep. We should probably set a reasonable limit anyway.
 		
 		int maxSearchLength = config.allowDuplicatesInChain() ? maxRuleLength : MAX_HISTORY_LENGTH;
-		ArrayList<DungeonGenerator> history = DungeonHelper.getDungeonChainHistory(
-				dimHelper.instance.getDimData(inbound.locDimID), this, maxSearchLength);
+		ArrayList<DungeonData> history = DungeonHelper.getDungeonChainHistory(dimension.parent(), this, maxSearchLength);
 		return getNextDungeon(history, random);
 	}
 	
-	private DungeonGenerator getNextDungeon(ArrayList<DungeonGenerator> history, Random random)
+	private DungeonData getNextDungeon(ArrayList<DungeonData> history, Random random)
 	{
 		//Extract the dungeon types that have been used from history and convert them into an array of IDs
 		int index;
 		int[] typeHistory = new int[history.size()];
-		HashSet<DungeonGenerator> excludedDungeons = null;
+		HashSet<DungeonData> excludedDungeons = null;
 		for (index = 0; index < typeHistory.length; index++)
 		{
-			typeHistory[index] = history.get(index).getDungeonType().ID;
+			typeHistory[index] = history.get(index).dungeonType().ID;
 		}
 		
 		for (DungeonChainRule rule : rules)
 		{
 			if (rule.evaluate(typeHistory))
 			{
-				//Pick a random dungeon type to be generated next based on the rule's products				
+				//Pick a random dungeon type to be generated next based on the rule's products
 				ArrayList<WeightedContainer<DungeonType>> products = rule.products();
 				DungeonType nextType;
 				do
@@ -167,16 +165,16 @@ public class DungeonPack
 						//Initialize the set of excluded dungeons if needed
 						if (excludedDungeons == null && !config.allowDuplicatesInChain())
 						{
-							excludedDungeons = new HashSet<DungeonGenerator>(history);
+							excludedDungeons = new HashSet<DungeonData>(history);
 						}
 						
 						//List which dungeons are allowed
-						ArrayList<DungeonGenerator> candidates;
-						ArrayList<DungeonGenerator> group = groupedDungeons.get(nextType.ID);
+						ArrayList<DungeonData> candidates;
+						ArrayList<DungeonData> group = groupedDungeons.get(nextType.ID);
 						if (excludedDungeons != null && !excludedDungeons.isEmpty())
 						{
-							 candidates = new ArrayList<DungeonGenerator>(group.size());
-							 for (DungeonGenerator dungeon : group)
+							 candidates = new ArrayList<DungeonData>(group.size());
+							 for (DungeonData dungeon : group)
 							 {
 								 if (!excludedDungeons.contains(dungeon))
 								 {
@@ -204,7 +202,7 @@ public class DungeonPack
 		return getRandomDungeon(random);
 	}
 
-	public DungeonGenerator getRandomDungeon(Random random)
+	public DungeonData getRandomDungeon(Random random)
 	{
 		if (!allDungeons.isEmpty())
 		{
@@ -217,7 +215,7 @@ public class DungeonPack
 	}
 	
 	private static DungeonType getRandomDungeonType(Random random, Collection<WeightedContainer<DungeonType>> types,
-			ArrayList<ArrayList<DungeonGenerator>> groupedDungeons)
+			ArrayList<ArrayList<DungeonData>> groupedDungeons)
 	{
 		//TODO: Make this faster? This algorithm runs in quadratic time in the worst case because of the random-selection
 		//process and the removal search. Might be okay for normal use, though. ~SenseiKiwi
@@ -248,18 +246,18 @@ public class DungeonPack
 		return null;
 	}
 	
-	private static DungeonGenerator getRandomDungeon(Random random, Collection<DungeonGenerator> dungeons)
+	private static DungeonData getRandomDungeon(Random random, Collection<DungeonData> dungeons)
 	{
 		//Use Minecraft's WeightedRandom to select our dungeon. =D
-		ArrayList<WeightedContainer<DungeonGenerator>> weights =
-				new ArrayList<WeightedContainer<DungeonGenerator>>(dungeons.size());
-		for (DungeonGenerator dungeon : dungeons)
+		ArrayList<WeightedContainer<DungeonData>> weights =
+				new ArrayList<WeightedContainer<DungeonData>>(dungeons.size());
+		for (DungeonData dungeon : dungeons)
 		{
-			weights.add(new WeightedContainer<DungeonGenerator>(dungeon, dungeon.weight));
+			weights.add(new WeightedContainer<DungeonData>(dungeon, dungeon.weight()));
 		}
 		
 		@SuppressWarnings("unchecked")
-		WeightedContainer<DungeonGenerator> resultContainer = (WeightedContainer<DungeonGenerator>) WeightedRandom.getRandomItem(random, weights);
+		WeightedContainer<DungeonData> resultContainer = (WeightedContainer<DungeonData>) WeightedRandom.getRandomItem(random, weights);
 		return 	(resultContainer != null) ? resultContainer.getData() : null;
 	}
 }

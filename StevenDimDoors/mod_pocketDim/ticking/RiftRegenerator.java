@@ -1,75 +1,54 @@
 package StevenDimDoors.mod_pocketDim.ticking;
 
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class RiftRegenerator implements IRegularTickReceiver {
 	
-	private static final int RIFT_REGENERATION_INTERVAL = 100; //Regenerate random rifts every 100 ticks
-
-	private DDProperties properties;
+	private static final int RIFT_REGENERATION_INTERVAL = 200; //Regenerate random rifts every 200 ticks
+	private static final int RIFTS_REGENERATED_PER_DIMENSION = 5;
 	
-	public RiftRegenerator(IRegularTickSender sender, DDProperties properties)
+	public RiftRegenerator(IRegularTickSender sender)
 	{
 		sender.registerForTicking(this, RIFT_REGENERATION_INTERVAL, false);
-		this.properties = properties;
 	}
 	
 	@Override
 	public void notifyTick()
 	{
-		regenerate();
+		regenerateRiftsInAllWorlds();
 	}
-
-	private void regenerate()
+	
+	public static void regenerateRiftsInAllWorlds()
 	{
-		try
-		{
-			//Regenerate rifts that have been replaced (not permanently removed) by players
-
-			int i = 0;
-
-			while (i < 15 && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+		//Regenerate rifts that have been replaced (not permanently removed) by players
+		DDProperties properties = DDProperties.instance();
+		
+		for (NewDimData dimension : PocketManager.getDimensions())
+    	{
+			if (dimension.linkCount() > 0)
 			{
-				i++;
-				LinkData link;
-
-				//actually gets the random rift based on the size of the list
-				link = (LinkData) dimHelper.instance.getRandomLinkData(true);
-
-				if (link != null)
-				{
-					World world = dimHelper.getWorld(link.locDimID);
-
-					if (world != null && !mod_pocketDim.blockRift.isBlockImmune(world, link.locXCoord, link.locYCoord, link.locZCoord))
-					{
-						if (dimHelper.instance.getLinkDataFromCoords(link.locXCoord, link.locYCoord, link.locZCoord, link.locDimID) != null)
-						{
-							world.setBlock(link.locXCoord, link.locYCoord, link.locZCoord, properties.RiftBlockID);
-							TileEntityRift rift = (TileEntityRift) world.getBlockTileEntity(link.locXCoord, link.locYCoord, link.locZCoord);
-							if (rift == null)
-							{
-								dimHelper.getWorld(link.locDimID).setBlockTileEntity(link.locXCoord, link.locYCoord, link.locZCoord, new TileEntityRift());
-							}
-							if (rift != null)
-							{
-								rift.hasGrownRifts = true;
-							}
-						}
-					}
-				}
+	    		World world = DimensionManager.getWorld(dimension.id());
+	    		
+	    		if (world != null)
+	    		{
+	    			for (int count = 0; count < RIFTS_REGENERATED_PER_DIMENSION; count++)
+	    			{
+	    				DimLink link = dimension.getRandomLink();
+	    				Point4D source = link.source();
+	    				if (!mod_pocketDim.blockRift.isBlockImmune(world, source.getX(), source.getY(), source.getZ())&& world.getChunkProvider().chunkExists(source.getX() >> 4, source.getZ() >> 4))
+	    				{
+	    					world.setBlock(source.getX(), source.getY(), source.getZ(), properties.RiftBlockID);
+	    				}
+	    			}
+	    		}
 			}
-		}
-		catch (Exception e)
-		{
-			System.err.println("An exception occurred in RiftRegenerator.regenerate():");
-			e.printStackTrace();
-		}
+    	}
 	}
 }

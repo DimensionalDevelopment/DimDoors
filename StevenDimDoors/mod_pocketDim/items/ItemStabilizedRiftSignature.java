@@ -2,201 +2,121 @@ package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
 
-import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemStabilizedRiftSignature extends itemLinkSignature
+public class ItemStabilizedRiftSignature extends ItemRiftSignature
 {
-	private static DDProperties properties = null;
-	
-    public ItemStabilizedRiftSignature(int par)
-    {
-    	 super(par);
-    	 this.setMaxStackSize(1);
-         this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
-         this.setMaxDamage(0);
-         this.hasSubtypes=true;         
-         if (properties == null)
-        	 properties = DDProperties.instance();
-    }
-    
-    @SideOnly(Side.CLIENT)
-    @Override
-    public boolean hasEffect(ItemStack par1ItemStack)
-    {
-    	// adds effect if item has a link stored
-    	if(par1ItemStack.hasTagCompound())
-    	{
-    		if(par1ItemStack.stackTagCompound.getBoolean("isCreated"))
-    		{
-    		return true;
-    		}
-    	}
-    	return false;
-    }
-    
-    public void registerIcons(IconRegister par1IconRegister)
-    {
-        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
-    }
+	public ItemStabilizedRiftSignature(int itemID)
+	{
+		super(itemID);
+	}
 
-    @Override
-    public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
-    {
-    	int key;
-    	LinkData linkData;
-		int thisWorldID=par3World.provider.dimensionId;
-		Integer[] linkCoords =this.readFromNBT(par1ItemStack);
+	public void registerIcons(IconRegister par1IconRegister)
+	{
+		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
+	}
 
-    	int offset = 2;
-    	if(par1ItemStack.getTagCompound()!=null)
-    	{
-    		if(par1ItemStack.getTagCompound().getBoolean("isCreated"))
-    		{
-    			boolean hasEnder = false;
-    			// checks to see if the item has a link stored, if so, it creates it	
-    			if(par2EntityPlayer.inventory.hasItem(Item.enderPearl.itemID)||par2EntityPlayer.inventory.hasItem(properties.StableFabricItemID))
-    			{
-    				if(!par2EntityPlayer.inventory.consumeInventoryItem(properties.StableFabricItemID))
-    				{
-        				par2EntityPlayer.inventory.consumeInventoryItem(Item.enderPearl.itemID);
-    				}
-    				hasEnder=true;
-    			} 				
-    			if(par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
-    			{
-    				offset = 1;
-    			}
-    			if(hasEnder&&!par3World.isRemote)
-    			{
-    				if(dimHelper.instance.getLinkDataFromCoords(linkCoords[0], linkCoords[1], linkCoords[2], par3World)==null)
-    				{
-        				dimHelper.instance.createLink(linkCoords[3], par3World.provider.dimensionId, linkCoords[0], linkCoords[1], linkCoords[2],par4, par5+offset, par6);	
-    				}
-    				dimHelper.instance.createLink(par3World.provider.dimensionId, linkCoords[3], par4, par5+offset, par6, linkCoords[0], linkCoords[1], linkCoords[2]);	
-					par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.riftEnd", (float) .6, 1);
+	@Override
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
+	{
+		// Return false on the client side to pass this request to the server
+		if (world.isRemote)
+		{
+			return false;
+		}
 
-    				par2EntityPlayer.sendChatToPlayer("Rift Created");
-    			}
-    			else if(!par3World.isRemote)
-    			{
-    				par2EntityPlayer.sendChatToPlayer("No Ender Pearls!");
-    			}
-    		}
-    	}
-    	else if(!par3World.isRemote)
-        {
-    		if(par3World.getBlockId(par4, par5, par6)==Block.snow.blockID)
-    		{
-    			offset = 1;
-    		}
-    		//otherwise, it creates the first half of the link. Next click will complete it. 
-    		key= dimHelper.instance.createUniqueInterDimLinkKey();
-        	this.writeToNBT(par1ItemStack, par4, par5+offset, par6,par3World.provider.dimensionId);
-			par2EntityPlayer.worldObj.playSoundAtEntity(par2EntityPlayer,"mods.DimDoors.sfx.riftStart", (float) .6, 1);
+		// We don't check for replaceable blocks. The user can deal with that. <_<
+		y += 2; //Increase y by 2 to place the rift at head level
+		if (!player.canPlayerEdit(x, y, z, side, stack))
+		{
+			return true;
+		}
+		Point4DOrientation source = getSource(stack);
+		int adjustedY = adjustYForSpecialBlocks(world,x,y,z);
+		
+		// Check if the Stabilized Rift Signature has been initialized
+		int orientation = MathHelper.floor_double((double) ((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+		if (source != null)
+		{
+			// Yes, it's initialized. Check if the player is in creative
+			// or if the player can pay an Ender Pearl to create a rift.
+			if (!player.capabilities.isCreativeMode && !player.inventory.hasItem(Item.enderPearl.itemID))
+			{
+				player.sendChatToPlayer("You don't have any Ender Pearls!");
+				return true;
+			}
 
-    		par2EntityPlayer.sendChatToPlayer("Rift Signature Stored");
-        }
-    	return true;	
-    }
-    
-    @SideOnly(Side.CLIENT)
+			//The link was used before and already has an endpoint stored. Create links connecting the two endpoints.
+			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
+			NewDimData destinationDimension = PocketManager.getDimensionData(world);
+			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL,source.getOrientation());
+			DimLink reverse = destinationDimension.createLink(x, adjustedY, z, LinkTypes.NORMAL,orientation);
+			destinationDimension.setDestination(link, x, adjustedY, z);
+			sourceDimension.setDestination(reverse, source.getX(), source.getY(), source.getZ());
 
-    /**
-     * allows items to add custom lines of information to the mouseover description
-     */
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
-    {
-    	if(par1ItemStack.hasTagCompound())
-    	{
-    		if(par1ItemStack.stackTagCompound.getBoolean("isCreated"))
-    		{
-    			Integer[] coords = this.readFromNBT(par1ItemStack);
-    			par3List.add(String.valueOf("Leads to dim "+coords[3] +" with depth "+dimHelper.instance.getDimDepth(dimHelper.instance.getDimDepth(coords[3]))));
-        		par3List.add("at x="+coords[0]+" y="+coords[1]+" z="+coords[2]);
-    		}
-    	}
-    	else
-    	{
-    		par3List.add("First click stores location,");
-    		par3List.add ("second click creates two rifts,");
-    		par3List.add("that link the first location");
-    		par3List.add("with the second location");
-    	}
-    }
-    
-    public void writeToNBT(ItemStack itemStack,int x, int y, int z, int dimID)
-    {
-    	NBTTagCompound tag;
+			//Try placing a rift at the destination point
+			if (!mod_pocketDim.blockRift.isBlockImmune(world, x, adjustedY, z))
+			{
+				world.setBlock(x, adjustedY, z, mod_pocketDim.blockRift.blockID);
+			}
 
-    	if(itemStack.hasTagCompound())
-    	{
-    		tag = itemStack.getTagCompound();  	   
-    	}
-    	else
-    	{
-    		tag= new NBTTagCompound();
-    	}  
-    	tag.setInteger("linkX", x);
-    	tag.setInteger("linkY", y);
-    	tag.setInteger("linkZ", z);
-    	tag.setInteger("linkDimID", dimID);
-    	tag.setBoolean("isCreated", true);
-    	itemStack.setTagCompound(tag);
-    }
+			//Try placing a rift at the source point, but check if its world is loaded first
+			World sourceWorld = DimensionManager.getWorld(sourceDimension.id());
+			if (sourceWorld != null &&
+				!mod_pocketDim.blockRift.isBlockImmune(sourceWorld, source.getX(), source.getY(), source.getZ()))
+			{
+				sourceWorld.setBlock(source.getX(), source.getY(), source.getZ(), mod_pocketDim.blockRift.blockID);
+			}
 
-    /**
-     * Read the stack fields from a NBT object.
-     */
-    public Integer[] readFromNBT(ItemStack itemStack)
-    {	
-    	NBTTagCompound tag;
-    	Integer[] linkCoords = new Integer[5];
-    	if(itemStack.hasTagCompound())
-    	{
-    		tag = itemStack.getTagCompound();
+			if (!player.capabilities.isCreativeMode)
+			{
+				player.inventory.consumeInventoryItem(Item.enderPearl.itemID);
+			}
+			player.sendChatToPlayer("Rift Created");
+			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftEnd", 0.6f, 1);
+		}
+		else
+		{
+			//The link signature has not been used. Store its current target as the first location. 
+			setSource(stack, x, adjustedY, z, orientation, PocketManager.getDimensionData(world));
+			player.sendChatToPlayer("Location Stored in Rift Signature");
+			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftStart", 0.6f, 1);
+		}
+		return true;
+	}
 
-    		if(!tag.getBoolean("isCreated"))
-    		{
-    			return null;
-    		}
-    		linkCoords[0]=tag.getInteger("linkX");
-    		linkCoords[1]=tag.getInteger("linkY");
-    		linkCoords[2]=tag.getInteger("linkZ");
-    		linkCoords[3]=tag.getInteger("linkDimID");
-        }
-    	return linkCoords;    
-    }
-    
-    
-    @Override
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer) 
-    {
-    	if(!par2World.isRemote)
-    	{
-    		/**
-    		//creates the first half of the link on item creation
-    		int key= dimHelper.instance.createUniqueInterDimLinkKey();
-    		LinkData linkData= new LinkData(par2World.provider.dimensionId,MathHelper.floor_double(par3EntityPlayer.posX),MathHelper.floor_double(par3EntityPlayer.posY),MathHelper.floor_double(par3EntityPlayer.posZ));
-    		System.out.println(key);
-
-    		dimHelper.instance.interDimLinkList.put(key, linkData);
-    		par1ItemStack.setItemDamage(key);
-    		**/
-    	}
-    }
+	/**
+	 * allows items to add custom lines of information to the mouseover description
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
+	{
+		Point4DOrientation source = getSource(par1ItemStack);
+		if (source != null)
+		{
+			par3List.add("Leads to (" + source.getX() + ", " + source.getY() + ", " + source.getZ() + ") at dimension #" + source.getDimension());
+		}
+		else
+		{
+			par3List.add("First click stores a location,");
+			par3List.add("second click creates two rifts");
+			par3List.add("that link the locations together.");
+		}
+	}
 }

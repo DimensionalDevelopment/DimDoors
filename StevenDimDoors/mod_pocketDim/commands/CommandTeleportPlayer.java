@@ -6,13 +6,16 @@ import java.util.List;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 import StevenDimDoors.mod_pocketDim.BlankTeleporter;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 
 
 public class CommandTeleportPlayer extends DDCommandBase
@@ -39,7 +42,7 @@ public class CommandTeleportPlayer extends DDCommandBase
 	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command) 
 	{
-		List dimensionIDs = Arrays.asList(dimHelper.getStaticDimensionIDs()); //Gets list of all registered dimensions, regardless if loaded or not
+		List dimensionIDs = Arrays.asList(DimensionManager.getStaticDimensionIDs()); //Gets list of all registered dimensions, regardless if loaded or not
 		EntityPlayer targetPlayer = sender;
 		int dimDestinationID = sender.worldObj.provider.dimensionId;
 		
@@ -66,13 +69,10 @@ public class CommandTeleportPlayer extends DDCommandBase
 			{
 				return DDCommandResult.INVALID_DIMENSION_ID;
 			}
-			if(dimHelper.getWorld(dimDestinationID)==null)
-			{
-				dimHelper.initDimension(dimDestinationID);
-			}
-			
-			FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP) targetPlayer, dimDestinationID, new BlankTeleporter(dimHelper.getWorld(dimDestinationID)));
-			targetPlayer.setPositionAndUpdate(Integer.parseInt(command[2]),Integer.parseInt(command[3]),Integer.parseInt(command[4]));
+	
+			PocketManager.loadDimension(dimDestinationID);
+			Point4D destination = new Point4D(Integer.parseInt(command[2]),Integer.parseInt(command[3]),Integer.parseInt(command[4]),dimDestinationID);
+			DDTeleporter.teleportEntity(targetPlayer, destination, false);
 		}
 		else
 		{

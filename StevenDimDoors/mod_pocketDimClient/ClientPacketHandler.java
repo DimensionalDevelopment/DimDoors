@@ -1,23 +1,77 @@
-
-
-// This is my package declaration, do not mess with the standard (package net.minecraft.src;) like I did,
-// Because I know what Im doing in this part, If you don't know what your doing keep it the normal (package net.minecraft.src;)
 package StevenDimDoors.mod_pocketDimClient;
 
-// Theses are all the imports you need
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.server.integrated.IntegratedServer;
+import StevenDimDoors.mod_pocketDim.PacketConstants;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
+import StevenDimDoors.mod_pocketDim.watcher.IUpdateSource;
+import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
 
-// Create a class and implement IPacketHandler
-// This just handles the data packets in the server
-public class ClientPacketHandler implements IPacketHandler{
+public class ClientPacketHandler implements IPacketHandler, IUpdateSource
+{
+	private IUpdateWatcher<Point4D> linkWatcher;
+	private IUpdateWatcher<ClientDimData> dimWatcher;
+	
+	public ClientPacketHandler()
+	{
+		PocketManager.getWatchers(this);
+	}
 
 	@Override
-	public void onPacketData(INetworkManager manager,
-			Packet250CustomPayload packet, Player player) {
-		// TODO Auto-generated method stub
-
+	public void registerWatchers(IUpdateWatcher<ClientDimData> dimWatcher, IUpdateWatcher<Point4D> linkWatcher)
+	{
+		this.dimWatcher = dimWatcher;
+		this.linkWatcher = linkWatcher;
+	}
+	
+	@Override
+	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player)
+	{
+		// TODO: Is this even necessary? I'm not convinced we can receive packets from other channels anyway!
+		if (!packet.channel.equals(PacketConstants.CHANNEL_NAME))
+			return;		
+	
+		//Checking memory connection wasnt working for some reason, but this seems to work fine. 
+		if (FMLCommonHandler.instance().getMinecraftServerInstance() instanceof IntegratedServer)
+			return;
+		
+		try
+		{
+			DataInputStream input = new DataInputStream(new ByteArrayInputStream(packet.data));
+			byte packetID = input.readByte();
+			switch (packetID)
+			{
+				case PacketConstants.CLIENT_JOIN_PACKET_ID:
+					PocketManager.readPacket(input);
+					break;
+				case PacketConstants.CREATE_DIM_PACKET_ID:
+					dimWatcher.onCreated( ClientDimData.read(input) );
+					break;
+				case PacketConstants.CREATE_LINK_PACKET_ID:
+					linkWatcher.onCreated( Point4D.read(input) );
+					break;
+				case PacketConstants.DELETE_DIM_PACKET_ID:
+					dimWatcher.onDeleted( ClientDimData.read(input) );
+					break;
+				case PacketConstants.DELETE_LINK_PACKET_ID:
+					linkWatcher.onDeleted( Point4D.read(input) );
+					break;
+			}
+		}
+		catch (Exception e)
+		{
+			System.err.println("An exception occurred while processing a data packet:");
+			e.printStackTrace();
+		}
 	}
 }

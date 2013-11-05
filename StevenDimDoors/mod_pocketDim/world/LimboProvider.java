@@ -1,5 +1,7 @@
 package StevenDimDoors.mod_pocketDim.world;
 
+import java.util.Random;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
@@ -163,21 +165,26 @@ public class LimboProvider extends WorldProvider
 		return false;
 	}
 
-	@Override
-	public ChunkCoordinates getRandomizedSpawnPoint()
+	public static ChunkCoordinates getLimboSkySpawn(Random rand)
 	{
 		ChunkCoordinates var5 = new ChunkCoordinates(0,0,0);
 
 
-		int spawnFuzz = 10000;
+		int spawnFuzz = 1000;
 		int spawnFuzzHalf = spawnFuzz / 2;
 
 		{
-			var5.posX += this.worldObj.rand.nextInt(spawnFuzz) - spawnFuzzHalf;
-			var5.posZ += this.worldObj.rand.nextInt(spawnFuzz) - spawnFuzzHalf;
+			var5.posX += rand.nextInt(spawnFuzz) - spawnFuzzHalf;
+			var5.posZ += rand.nextInt(spawnFuzz) - spawnFuzzHalf;
 			var5.posY = 700;
 		}
 
 		return var5;
+	}
+	
+	@Override
+	public ChunkCoordinates getRandomizedSpawnPoint()
+	{
+		return getLimboSkySpawn(this.worldObj.rand);
 	}
 }

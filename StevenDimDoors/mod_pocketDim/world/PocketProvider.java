@@ -6,30 +6,27 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.client.IRenderHandler;
+import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.helpers.dimHelper;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class PocketProvider extends WorldProvider
 {
-	public int exitXCoord;
-	public int exitYCoord;
-	public int exitZCoord;
-	public int exitDimID;
-	public boolean hasNoSky = true;
-
-	public boolean isSavingSchematic= false;
-	public int dimToSave;
 	private DDProperties properties;
 	private MonolithSpawner spawner;
+	private IRenderHandler skyRenderer;
 
 	public PocketProvider()
 	{
 		this.hasNoSky = true;
+		this.skyRenderer = new PocketSkyProvider();
+
 		this.spawner = mod_pocketDim.spawner;
 		this.properties = mod_pocketDim.properties;
 	}
@@ -37,8 +34,7 @@ public class PocketProvider extends WorldProvider
 	@Override
 	protected void registerWorldChunkManager()
 	{
-		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.pocketBiome,1,1);
-		//this.dimensionId = ConfigAtum.dimensionID;
+		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.pocketBiome, 1, 1);
 	}
 	
 	@Override
@@ -47,28 +43,18 @@ public class PocketProvider extends WorldProvider
 		return (dimensionId == 0 ? null : "DimensionalDoors/pocketDimID" + dimensionId);
 	}
 
-	public void saveAsSchematic(int id)
-	{
-		this.isSavingSchematic=true;
-		this.dimensionId=id;
-
-	}
-
+	@Override
 	public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
 	{
 		setCloudRenderer( new CloudRenderBlank());
 		return this.worldObj.getWorldVec3Pool().getVecFromPool((double)0, (double)0, (double)0);
-
 	}
-
-
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public Vec3 getFogColor(float par1, float par2)
 	{
 		return this.worldObj.getWorldVec3Pool().getVecFromPool((double)0, (double)0, (double)0);
-
 	}
 
 	@Override
@@ -89,6 +75,7 @@ public class PocketProvider extends WorldProvider
 		return false;
 	}
 	
+	@Override
 	public boolean canBlockFreeze(int x, int y, int z, boolean byWater)
 	{
 		return false;
@@ -103,6 +90,7 @@ public class PocketProvider extends WorldProvider
 		return "PocketDim " + this.dimensionId;
 	}
 
+	@Override
 	public int getRespawnDimension(EntityPlayerMP player)
 	{
 		int respawnDim;
@@ -113,18 +101,25 @@ public class PocketProvider extends WorldProvider
 		}
 		else
 		{
-			respawnDim = dimHelper.instance.getDimData(this.dimensionId).exitDimLink.destDimID;
+			respawnDim = PocketManager.getDimensionData(this.dimensionId).root().id();
 		}
 
-		if (dimHelper.getWorld(respawnDim) == null)
+		if (DimensionManager.getWorld(respawnDim) == null)
 		{
-			dimHelper.initDimension(respawnDim);
+			DimensionManager.initDimension(respawnDim);
 		}
 		return respawnDim;
 	}
 
+	@Override
 	public boolean canRespawnHere()
 	{
 		return false;
+	}
+	
+	@Override
+	public int getActualHeight()
+	{
+		return 256;
 	}
 }
