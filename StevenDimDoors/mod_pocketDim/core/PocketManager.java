@@ -20,6 +20,7 @@ import StevenDimDoors.mod_pocketDim.helpers.Compactor;
 import StevenDimDoors.mod_pocketDim.helpers.DeleteFolder;
 import StevenDimDoors.mod_pocketDim.saving.DDSaveHandler;
 import StevenDimDoors.mod_pocketDim.saving.IPackable;
+import StevenDimDoors.mod_pocketDim.saving.OldSaveImporter;
 import StevenDimDoors.mod_pocketDim.saving.PackedDimData;
 import StevenDimDoors.mod_pocketDim.saving.PackedDungeonData;
 import StevenDimDoors.mod_pocketDim.saving.PackedLinkData;
@@ -380,9 +381,30 @@ public class PocketManager
 	{	
 		System.out.println(!FMLCommonHandler.instance().getSide().isClient());
 
-		if (DimensionManager.getCurrentSaveRootDirectory() != null)
+		File saveDir = DimensionManager.getCurrentSaveRootDirectory();
+		if (saveDir != null)
 		{
 			// Load and register blacklisted dimension IDs
+			File oldSaveData = new File(saveDir+"/DimensionalDoorsData");
+			if(oldSaveData.exists())
+			{
+				try
+				{
+					System.out.println("Importing old DD save data...");
+					OldSaveImporter.importOldSave(oldSaveData);
+					oldSaveData.delete();
+
+					System.out.println("Import Succesful!");
+
+				}
+				catch (Exception e)
+				{
+					//TODO handle fail cases
+					System.out.println("Import failed!");
+					e.printStackTrace();
+				}
+				return;
+			}
 			
 			// Load save data
 			System.out.println("Loading Dimensional Doors save data...");

@@ -75,7 +75,7 @@ public class DDSaveHandler
 	 * @param packedDims
 	 * @return
 	 */
-	private static boolean unpackDimData(List<PackedDimData> packedDims)
+	public static boolean unpackDimData(List<PackedDimData> packedDims)
 	{
 		List<PackedDimData> unpackedDims = new ArrayList<PackedDimData>();
 		
@@ -114,7 +114,7 @@ public class DDSaveHandler
 		return true;
 	}
 	
-	private static boolean unpackLinkData(List<PackedLinkData> linksToUnpack)
+	public static boolean unpackLinkData(List<PackedLinkData> linksToUnpack)
 	{
 		Point3D fakePoint = new Point3D(-1,-1,-1);
 		List<PackedLinkData> unpackedLinks = new ArrayList<PackedLinkData>();
@@ -181,6 +181,17 @@ public class DDSaveHandler
 		File basePathFile = new File(basePath);
 		Files.createParentDirs(basePathFile);
 		basePathFile.mkdir();
+		
+		FileFilter dataFileFilter = new FileFilters.RegexFileFilter("dim_-?\\d+\\.txt");
+		
+		//TODO Deal with temp files correctly
+		File[] dataFiles = basePathFile.listFiles(dataFileFilter);
+		for (File dataFile : dataFiles)
+		{
+			dataFile.delete();
+		}
+		
+		
 		basePathFile = null;
 		basePath += "dim_";
 		
@@ -250,7 +261,7 @@ public class DDSaveHandler
 		{
 			if(data.schematicName().equals(packedDungeon.SchematicName))
 			{
-				return data;
+				//return data;
 			}
 		}
 		return null;
