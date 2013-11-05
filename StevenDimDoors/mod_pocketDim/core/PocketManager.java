@@ -333,8 +333,9 @@ public class PocketManager
 	 */
 	private static void loadInternal()
 	{	
-		if (FMLCommonHandler.instance().getSide().isServer()&&
-			DimensionManager.getCurrentSaveRootDirectory() != null)
+		System.out.println(!FMLCommonHandler.instance().getSide().isClient());
+
+		if (DimensionManager.getCurrentSaveRootDirectory() != null)
 		{
 			// Load and register blacklisted dimension IDs
 			
