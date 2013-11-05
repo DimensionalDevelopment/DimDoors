@@ -21,6 +21,7 @@ import StevenDimDoors.mod_pocketDim.helpers.DeleteFolder;
 import StevenDimDoors.mod_pocketDim.saving.DDSaveHandler;
 import StevenDimDoors.mod_pocketDim.saving.IPackable;
 import StevenDimDoors.mod_pocketDim.saving.PackedDimData;
+import StevenDimDoors.mod_pocketDim.saving.PackedDungeonData;
 import StevenDimDoors.mod_pocketDim.saving.PackedLinkData;
 import StevenDimDoors.mod_pocketDim.saving.PackedLinkTail;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
@@ -96,6 +97,7 @@ public class PocketManager
 			ArrayList<Integer> ChildIDs = new ArrayList<Integer>();
 			ArrayList<PackedLinkData> Links = new ArrayList<PackedLinkData>();
 			ArrayList<PackedLinkTail> Tails = new ArrayList<PackedLinkTail>();
+			PackedDungeonData packedDungeon = new PackedDungeonData(); //TODO pack dungeon Data
 			//Make a list of children
 			for(NewDimData data : this.children)
 			{
@@ -122,7 +124,9 @@ public class PocketManager
 				{
 					Tails.add(tempTail);
 
-				}					
+				}
+				
+				
 			}
 			int parentID=this.id;
 			Point3D originPoint=new Point3D(0,0,0);
@@ -135,7 +139,7 @@ public class PocketManager
 				originPoint=this.origin.toPoint3D();
 			}
 			return new PackedDimData(this.id, depth, this.packDepth, parentID, this.root().id(), orientation, 
-										isDungeon, isFilled, originPoint, ChildIDs, Links, Tails);
+										isDungeon, isFilled,packedDungeon, originPoint, ChildIDs, Links, Tails);
 			// FIXME: IMPLEMENTATION PLZTHX
 			//I tried
 		}

@@ -66,7 +66,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		catch (IOException e) 
 		{
 			// not sure if this is kosher, we need it to explode, but not by throwing the IO exception. 
-			throw new ConfigurationProcessingException();
+			throw new ConfigurationProcessingException("Incorrectly formatted save data");
 		}
 		// TODO Auto-generated method stub
 		
@@ -86,6 +86,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		int PackDepth;
 		int ParentID;
 		int RootID;
+		PackedDungeonData Dungeon;
 		Point3D Origin;
 		int Orientation;
 		List<Integer> ChildIDs;
@@ -122,6 +123,8 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		RootID= reader.nextInt();
 		
 		reader.nextName();
+		Dungeon = createDungeonDataFromJson(reader);
+		reader.nextName();
 		Origin = createPointFromJson(reader);
 		
 		reader.nextName();
@@ -133,7 +136,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		reader.nextName();
 		Links = this.createLinksListFromJson(reader);
 		
-		return new PackedDimData(ID, Depth, PackDepth, ParentID, RootID, Orientation, IsDungeon, IsFilled, Origin, ChildIDs, Links, Tails);
+		return new PackedDimData(ID, Depth, PackDepth, ParentID, RootID, Orientation, IsDungeon, IsFilled, Dungeon, Origin, ChildIDs, Links, Tails);
 	}
 	
 	private Point3D createPointFromJson(JsonReader reader) throws IOException
@@ -239,6 +242,9 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 	}
 	private PackedDungeonData createDungeonDataFromJson(JsonReader reader) throws IOException
 	{
+		reader.beginObject();
+		//TODO read in dungeon Data
+		reader.endObject();
 		return null;
 	}
 	private PackedLinkTail createLinkTailFromJson(JsonReader reader) throws IOException

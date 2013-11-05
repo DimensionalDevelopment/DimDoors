@@ -16,6 +16,7 @@ public class PackedDimData
 	public final int PackDepth;
 	public final int ParentID;
 	public final int RootID;
+	public final PackedDungeonData DungeonData;
 	public final Point3D Origin;
 	public final int Orientation;
 	public final List<Integer> ChildIDs;
@@ -25,7 +26,7 @@ public class PackedDimData
 	// FIXME Missing dungeon data, not sure how to include it
 
 	public PackedDimData(int id, int depth, int packDepth, int parentID, int rootID, int orientation,
-		boolean isDungeon, boolean isFilled, Point3D origin, List<Integer> childIDs, List<PackedLinkData> links,
+		boolean isDungeon, boolean isFilled,PackedDungeonData dungeonData, Point3D origin, List<Integer> childIDs, List<PackedLinkData> links,
 		List<PackedLinkTail> tails)
 	{
 		ID = id;
@@ -36,6 +37,7 @@ public class PackedDimData
 		Orientation = orientation;
 		IsDungeon = isDungeon;
 		IsFilled = isFilled;
+		DungeonData = dungeonData;
 		Origin = origin;
 		ChildIDs = childIDs;
 		Links = links;
