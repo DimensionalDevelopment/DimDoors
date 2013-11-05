@@ -414,7 +414,7 @@ public class PocketManager
 		try
 		{
 			System.out.println("Writing Dimensional Doors save data...");
-		//	if ( DDSaveHandler.saveAll(dimensionData.values()) )
+			if ( DDSaveHandler.saveAll(dimensionData.values()) )
 			{
 				System.out.println("Saved successfully!");				
 			}
