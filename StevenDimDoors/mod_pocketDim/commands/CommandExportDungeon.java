@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.commands;
 
 import java.io.File;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
@@ -132,7 +133,7 @@ public class CommandExportDungeon extends DDCommandBase
 		String exportPath = properties.CustomSchematicDirectory + File.separator + name + ".schematic";
 		if (dungeonHelper.exportDungeon(player.worldObj, x, y, z, exportPath))
 		{
-			player.sendChatToPlayer("Saved dungeon schematic in " + exportPath);
+			sendChat(player,("Saved dungeon schematic in " + exportPath));
 			dungeonHelper.registerDungeon(exportPath, dungeonHelper.getDungeonPack("ruins"), false, true);
 			return DDCommandResult.SUCCESS;
 		}
@@ -164,5 +165,11 @@ public class CommandExportDungeon extends DDCommandBase
 			buffer.append(source[index]);
 		}
 		return buffer.toString();
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender icommandsender) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

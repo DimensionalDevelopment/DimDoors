@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 
@@ -41,8 +42,14 @@ public class CommandCreatePocket extends DDCommandBase
 			DungeonHelper.instance().createCustomDungeonDoor(sender.worldObj, x, y, z);
 			
 			//Notify the player
-			sender.sendChatToPlayer("Created a door to a pocket dimension. Please build your dungeon there.");
+			sendChat(sender,("Created a door to a pocket dimension. Please build your dungeon there."));
 		}
 		return DDCommandResult.SUCCESS;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender icommandsender) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

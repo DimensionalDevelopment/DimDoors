@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.commands;
 
 import java.util.Collection;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -53,9 +54,9 @@ public class CommandCreateDungeonRift extends DDCommandBase
 			Collection<String> dungeonNames = dungeonHelper.getDungeonNames();
 			for (String name : dungeonNames)
 			{
-				sender.sendChatToPlayer(name);
+				sendChat(sender,(name));
 			}
-			sender.sendChatToPlayer("");
+			sendChat(sender,(""));
 		}
 		else
 		{
@@ -73,7 +74,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON);
 				sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
 
-				sender.sendChatToPlayer("Created a rift to a random dungeon.");
+				sendChat(sender,("Created a rift to a random dungeon."));
 			}
 			else
 			{
@@ -91,7 +92,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 					link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON);
 					PocketManager.getDimensionData(link.destination().getDimension()).initializeDungeon(x, y + 1, z, orientation,link, result);
 					sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
-					sender.sendChatToPlayer("Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
+					sendChat(sender,("Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ")."));
 				}
 				else
 				{
@@ -124,5 +125,11 @@ public class CommandCreateDungeonRift extends DDCommandBase
 			}
 		}
 		return bestMatch;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender icommandsender) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

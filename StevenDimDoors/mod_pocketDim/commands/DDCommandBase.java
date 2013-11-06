@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.commands;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatMessageComponent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /*
@@ -63,10 +64,18 @@ public abstract class DDCommandBase extends CommandBase
 				//Send the argument formats for this command
 				for (String format : formats)
 				{
-					player.sendChatToPlayer("Usage: " + name + " " + format);
+					sendChat(player,("Usage: " + name + " " + format));
 				}
 			}
-			player.sendChatToPlayer(result.getMessage());
+			sendChat(player,(result.getMessage()));
 		}
+	}
+	
+	public static void sendChat(EntityPlayer player, String message)
+	{
+		ChatMessageComponent cmp = new ChatMessageComponent();
+		cmp.addText(message);
+		player.sendChatToPlayer(cmp);
+		
 	}
 }

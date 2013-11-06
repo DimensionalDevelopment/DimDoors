@@ -327,6 +327,7 @@ public class DDTeleporter
 				// the last non-sleeping player leaves the Overworld
 				// for a pocket dimension, causing all sleeping players
 				// to remain asleep instead of progressing to day.
+				((WorldServer)entity.worldObj).getPlayerManager().removePlayer(player);
 				oldWorld.removePlayerEntityDangerously(player);
 				player.isDead = false;
 
@@ -357,13 +358,13 @@ public class DDTeleporter
 				oldWorld.getChunkFromChunkCoords(entX, entZ).isModified = true;
 			}
 			// Memory concerns.
-			 oldWorld.releaseEntitySkin(entity);
+			// oldWorld.releaseEntitySkin(entity);
 
 			if (player == null) // Are we NOT working with a player?
 			{
 				NBTTagCompound entityNBT = new NBTTagCompound();
 				entity.isDead = false;
-				entity.addEntityID(entityNBT);
+				entity.writeToNBTOptional(entityNBT);
 				entity.isDead = true;
 				entity = EntityList.createEntityFromNBT(entityNBT, newWorld);
 
@@ -399,6 +400,10 @@ public class DDTeleporter
 		if (player != null)
 		{
 			newWorld.getChunkProvider().loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
+			if(difDest)
+			{
+				 newWorld.getPlayerManager().addPlayer(player);
+			}
 
 			// Tell Forge we're moving its players so everyone else knows.
 			// Let's try doing this down here in case this is what's killing NEI.
