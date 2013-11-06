@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-
+@Deprecated
 public abstract class DimLink
 {	
 	protected Point4D source;

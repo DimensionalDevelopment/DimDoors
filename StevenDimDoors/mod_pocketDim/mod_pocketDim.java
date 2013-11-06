@@ -44,6 +44,7 @@ import StevenDimDoors.mod_pocketDim.items.ItemStabilizedRiftSignature;
 import StevenDimDoors.mod_pocketDim.items.ItemStableFabric;
 import StevenDimDoors.mod_pocketDim.items.ItemUnstableDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemWarpDoor;
+import StevenDimDoors.mod_pocketDim.items.ItemWorldThread;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.ticking.LimboDecay;
@@ -117,6 +118,8 @@ public class mod_pocketDim
 
 	public static Item itemGoldDimDoor;
 	public static Item itemGoldDoor;
+	public static Item itemWorldThread;
+
 	public static Item itemRiftBlade;
 	public static Item itemDimDoor;
 	public static Item itemExitDoor;
@@ -201,7 +204,9 @@ public class mod_pocketDim
 		itemChaosDoor = (new ItemUnstableDoor(properties.UnstableDoorItemID, Material.iron)).setUnlocalizedName("itemChaosDoor");
 		itemRiftBlade = (new ItemRiftBlade(properties.RiftBladeItemID, EnumToolMaterial.GOLD, properties)).setUnlocalizedName("ItemRiftBlade");
 		itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(properties.StabilizedRiftSignatureItemID)).setUnlocalizedName("itemStabilizedRiftSig");
+		itemWorldThread = (new ItemWorldThread(properties.ItemWorldThreadID)).setUnlocalizedName("itemWorldThread");
 
+		
 		mod_pocketDim.limboBiome= (new BiomeGenLimbo(properties.LimboBiomeID));
 		mod_pocketDim.pocketBiome= (new BiomeGenPocket(properties.PocketBiomeID));
 
@@ -246,6 +251,8 @@ public class mod_pocketDim
 		LanguageRegistry.addName(itemChaosDoor	, "Unstable Door");
 		LanguageRegistry.addName(itemDimDoor, "Dimensional Door");
 		LanguageRegistry.addName(itemRiftBlade	, "Rift Blade");
+		LanguageRegistry.addName(itemWorldThread, "World Thread");
+
 		
 		/**
 		 * Add names for multiblock inventory item
@@ -266,120 +273,8 @@ public class mod_pocketDim
 		EntityList.entityEggs.put(properties.MonolithEntityID, new EntityEggInfo(properties.MonolithEntityID, 0, 0xffffff));
 		LanguageRegistry.instance().addStringLocalization("entity.DimDoors.Obelisk.name", "Monolith");
 
-		//GameRegistry.addBiome(this.limboBiome);
-		//GameRegistry.addBiome(this.pocketBiome);
 
-		if (properties.CraftingDimensionalDoorAllowed)
-		{
-			GameRegistry.addRecipe(new ItemStack(itemDimDoor, 1), new Object[]
-					{
-				"   ", "yxy", "   ", 'x', Item.enderPearl,  'y', Item.doorIron 
-					});
-
-			GameRegistry.addRecipe(new ItemStack(itemDimDoor, 1), new Object[]
-					{
-				"   ", "yxy", "   ", 'x', mod_pocketDim.itemStableFabric,  'y', Item.doorIron 
-					});
-		}
-		if(properties.CraftingUnstableDoorAllowed)
-		{
-			GameRegistry.addRecipe(new ItemStack(itemChaosDoor, 1), new Object[]
-					{
-				"   ", "yxy", "   ", 'x', Item.eyeOfEnder,  'y', mod_pocketDim.itemDimDoor 
-					});
-		}
-		if(properties.CraftingWarpDoorAllowed)
-		{
-			GameRegistry.addRecipe(new ItemStack(itemExitDoor, 1), new Object[]
-					{
-				"   ", "yxy", "   ", 'x', Item.enderPearl,  'y', Item.doorWood 
-					});
-
-			GameRegistry.addRecipe(new ItemStack(itemExitDoor, 1), new Object[]
-					{
-				"   ", "yxy", "   ", 'x', mod_pocketDim.itemStableFabric,  'y', Item.doorWood 
-					});
-		}
-		if(properties.CraftingTransTrapdoorAllowed)
-		{
-			GameRegistry.addRecipe(new ItemStack(transTrapdoor, 1), new Object[]
-					{
-				" y ", " x ", " y ", 'x', Item.enderPearl,  'y', Block.trapdoor
-					});
-
-			GameRegistry.addRecipe(new ItemStack(transTrapdoor, 1), new Object[]
-					{
-				" y ", " x ", " y ", 'x', mod_pocketDim.itemStableFabric,  'y', Block.trapdoor
-					});
-		}
-		if(properties.CraftingRiftSignatureAllowed)
-		{
-			GameRegistry.addRecipe(new ItemStack(itemLinkSignature, 1), new Object[]
-					{
-				" y ", "yxy", " y ", 'x', Item.enderPearl,  'y', Item.ingotIron
-					});
-
-			GameRegistry.addRecipe(new ItemStack(itemLinkSignature, 1), new Object[]
-					{
-				" y ", "yxy", " y ", 'x', mod_pocketDim.itemStableFabric,  'y', Item.ingotIron
-					});
-		}
-
-		if(properties.CraftingRiftRemoverAllowed)
-		{
-			GameRegistry.addRecipe(new ItemStack(itemRiftRemover, 1), new Object[]
-					{
-				" y ", "yxy", " y ", 'x', Item.enderPearl,  'y', Item.ingotGold
-					});
-			GameRegistry.addRecipe(new ItemStack(itemRiftRemover, 1), new Object[]
-					{
-				"yyy", "yxy", "yyy", 'x', mod_pocketDim.itemStableFabric,  'y', Item.ingotGold
-					});
-		}
-
-		if (properties.CraftingRiftBladeAllowed)
-		{
-
-			GameRegistry.addRecipe(new ItemStack(itemRiftBlade, 1), new Object[]
-					{
-				" x ", " x ", " y ", 'x', Item.enderPearl,  'y',mod_pocketDim.itemRiftRemover
-					});
-		}
-
-		if (properties.CraftingStableFabricAllowed)
-		{
-			GameRegistry.addRecipe(new ItemStack(itemStableFabric, 4), new Object[]
-					{
-				" y ", "yxy", " y ", 'x', Item.enderPearl,  'y', mod_pocketDim.blockDimWall
-					});
-		}
-		
-		if (properties.CraftingStabilizedRiftSignatureAllowed)
-		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemStabilizedLinkSignature,1), new Object[]
-					{
-				" y ", "yxy", " y ", 'x', mod_pocketDim.itemLinkSignature,  'y', mod_pocketDim.itemStableFabric
-					});
-		}
-		if (properties.CraftingGoldDimDoorAllowed)
-		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldDimDoor,1), new Object[]
-					{
-				" x ", " y ", " x ", 'x', mod_pocketDim.itemGoldDoor,  'y', Item.eyeOfEnder
-					});
-		}
-		if (properties.CraftingGoldDoorAllowed)
-		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldDoor,1), new Object[]
-					{
-				"yy ", "yy ", "yy ", 'y', Item.ingotGold
-					});
-			
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldDoor,1), new Object[]
-					{
-				" yy", " yy", " yy", 'y', Item.ingotGold
-					});
-		}
+		CraftingManager.registerRecipies();
 		DungeonHelper.initialize();
 		
 		proxy.loadTextures();
@@ -424,5 +319,7 @@ public class mod_pocketDim
 		CommandCreatePocket.instance().register(event);
 		CommandTeleportPlayer.instance().register(event);
 		
+		
+		ChunkLoaderHelper.loadChunkForcedWorlds(event);
 	}
 }

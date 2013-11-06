@@ -372,6 +372,18 @@ public class PocketManager
 				}
 			}	
 		}
+		for(Integer dimID : dimensionIDBlackList)
+		{
+			try
+			{
+				DimensionManager.unregisterDimension(dimID);
+			}
+			catch (Exception e)
+			{
+				System.err.println("An unexpected error occurred while unregistering blacklisted dim #" + dimID + ":");
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -384,7 +396,8 @@ public class PocketManager
 		File saveDir = DimensionManager.getCurrentSaveRootDirectory();
 		if (saveDir != null)
 		{
-			// Load and register blacklisted dimension IDs
+			//Try to import data from old DD versions
+			//TODO - remove this code in a few versions
 			File oldSaveData = new File(saveDir+"/DimensionalDoorsData");
 			if(oldSaveData.exists())
 			{
@@ -395,7 +408,6 @@ public class PocketManager
 					oldSaveData.delete();
 
 					System.out.println("Import Succesful!");
-
 				}
 				catch (Exception e)
 				{
@@ -436,7 +448,7 @@ public class PocketManager
 		try
 		{
 			System.out.println("Writing Dimensional Doors save data...");
-			if ( DDSaveHandler.saveAll(dimensionData.values()) )
+			if ( DDSaveHandler.saveAll(dimensionData.values(),dimensionIDBlackList) )
 			{
 				System.out.println("Saved successfully!");				
 			}
@@ -648,6 +660,15 @@ public class PocketManager
 		return dimensionData.containsKey(dimensionID);
 	}
 	
+	public static void createAndRegisterBlacklist(List<Integer> blacklist)
+	{
+		//TODO - create a special blacklist provider
+		for(Integer dimID : blacklist)
+		{
+			PocketManager.dimensionIDBlackList.add(dimID);
+			DimensionManager.registerDimension(dimID, DDProperties.instance().PocketProviderID);
+		}
+	}	
 	public static void readPacket(DataInputStream input) throws IOException
 	{
 		if (isLoaded)

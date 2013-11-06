@@ -9,6 +9,7 @@ import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 
+@Deprecated
 public class DungeonGenerator implements Serializable
 {
         //This static field is hax so that I don't have to add an instance field to DungeonGenerator to support DungeonType.
