@@ -1,14 +1,12 @@
 package StevenDimDoors.mod_pocketDim;
 
 import paulscode.sound.SoundSystem;
-import net.minecraft.client.audio.SoundPool;
 import net.minecraft.client.audio.SoundPoolEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
-import net.minecraftforge.client.event.sound.PlaySoundEffectEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;

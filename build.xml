@@ -153,15 +153,28 @@
 
 		<exec dir="${forge.dir}" executable="sh" osfamily="unix" inputstring="Yes\n">
 			<arg value="install.sh" />
-
 		</exec>
 
-
+		<chmod file="${mcp.dir}/decompile.sh" perm="+x"/>
 		<chmod file="${mcp.dir}/updatemd5.sh" perm="+x"/>
 		<chmod file="${mcp.dir}/recompile.sh" perm="+x"/>
 		<chmod file="${mcp.dir}/reobfuscate_srg.sh" perm="+x"/>
 		<chmod file="${mcp.dir}/runtime/bin/astyle-osx" perm="+x" />
 		<chmod file="${mcp.dir}/runtime/bin/jad-osx" perm="+x" />
+		
+		<!-- Remove below after 1.5 -->
+		<get src="http://mirror.technicpack.net/Technic/lib/fml/fml_libs15.zip" dest="${download.dir}/fml_libs15.zip" />
+		<unzip src="${download.dir}/fml_libs15.zip" dest="${lib.dir}/" />
+		
+		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows" inputstring="Yes\n">
+			<arg line="/c decompile.bat"/>
+		</exec>
+		
+		<exec dir="${mcp.dir}" executable="sh" osfamily="unix" inputstring="Yes\n">
+			<arg value="decompile.sh" />
+		</exec>
+		<!-- Remove above after 1.5 -->
+		
 		<!-- Copy libraries -->
 <!-- 		<copy todir="${mcp.dir}/lib" >
 			<fileset dir="lib" >
