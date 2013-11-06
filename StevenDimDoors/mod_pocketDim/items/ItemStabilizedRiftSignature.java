@@ -57,7 +57,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 			// or if the player can pay an Ender Pearl to create a rift.
 			if (!player.capabilities.isCreativeMode && !player.inventory.hasItem(Item.enderPearl.itemID))
 			{
-				player.sendChatToPlayer("You don't have any Ender Pearls!");
+				mod_pocketDim.sendChat(player,"You don't have any Ender Pearls!");
 				// I won't do this, but this is the chance to localize chat 
 				// messages sent to the player; look at ChatMessageComponent 
 				// and how MFR does it with items like the safari net launcher
@@ -90,14 +90,14 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 			{
 				player.inventory.consumeInventoryItem(Item.enderPearl.itemID);
 			}
-			player.sendChatToPlayer("Rift Created");
+			mod_pocketDim.sendChat(player,"Rift Created");
 			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftEnd", 0.6f, 1);
 		}
 		else
 		{
 			//The link signature has not been used. Store its current target as the first location. 
 			setSource(stack, x, adjustedY, z, orientation, PocketManager.getDimensionData(world));
-			player.sendChatToPlayer("Location Stored in Rift Signature");
+			mod_pocketDim.sendChat(player,"Location Stored in Rift Signature");
 			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftStart", 0.6f, 1);
 		}
 		return true;
