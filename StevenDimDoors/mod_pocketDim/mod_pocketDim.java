@@ -1,6 +1,8 @@
 package StevenDimDoors.mod_pocketDim;
 
 
+import java.io.File;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -95,7 +97,7 @@ serverPacketHandlerSpec =
 public class mod_pocketDim
 {
 	public static final String version = "1.5.2R1.4.1RC1";
-	public static final String modid = "DimDoors";
+	public static final String modid = "dimdoors";
 
 	//need to clean up 
 	@SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
@@ -160,7 +162,9 @@ public class mod_pocketDim
 	{
 		this.instance = this;
 		//This should be the FIRST thing that gets done.
-		properties = DDProperties.initialize(event.getSuggestedConfigurationFile());
+		String path = event.getSuggestedConfigurationFile().getAbsolutePath().replace(modid, "DimDoors");
+		
+		properties = DDProperties.initialize(new File(path));
 
 		//Now do other stuff
 		MinecraftForge.EVENT_BUS.register(new EventHookContainer(properties));

@@ -357,7 +357,7 @@ public class DDTeleporter
 				oldWorld.getChunkFromChunkCoords(entX, entZ).isModified = true;
 			}
 			// Memory concerns.
-			oldWorld.releaseEntitySkin(entity);
+			 oldWorld.releaseEntitySkin(entity);
 
 			if (player == null) // Are we NOT working with a player?
 			{
