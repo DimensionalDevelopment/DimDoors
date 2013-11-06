@@ -140,17 +140,17 @@ public class DungeonHelper
 			config.setName(name);
 			return config;
 		}
-		catch (ConfigurationProcessingException e)
+		catch (FileNotFoundException e)
+		{
+			System.err.println("Could not find a dungeon pack config file: " + configPath);
+		}
+		catch (Exception e) // handles IOException and ConfigurationProcessingException
 		{
 			System.err.println(e.getMessage());
 			if (e.getCause() != null)
 			{
 				System.err.println(e.getCause());
 			}
-		}
-		catch (FileNotFoundException e)
-		{
-			System.err.println("Could not find a dungeon pack config file: " + configPath);
 		}
 		return null;
 	}
@@ -442,6 +442,7 @@ public class DungeonHelper
 		System.out.println("Registering bundled dungeon pack: " + name);
 		
 		InputStream listStream = this.getClass().getResourceAsStream(listPath);
+		// chance of leak?
 		if (listStream == null)
 		{
 			System.err.println("Unable to open list of bundled dungeon schematics for " + name);

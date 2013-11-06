@@ -3,7 +3,6 @@ package StevenDimDoors.mod_pocketDim.saving;
 import java.util.List;
 
 import StevenDimDoors.mod_pocketDim.Point3D;
-import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class PackedLinkData

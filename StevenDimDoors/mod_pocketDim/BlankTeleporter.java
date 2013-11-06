@@ -29,7 +29,7 @@ public class BlankTeleporter extends Teleporter
 	 public void setEntityPosition(Entity entity, double x, double y, double z)
 	 {
 		 entity.lastTickPosX = entity.prevPosX = entity.posX = x;
-		 entity.lastTickPosY = entity.prevPosY = entity.posY = y + (double)entity.yOffset;
+		 entity.lastTickPosY = entity.prevPosY = entity.posY = y + entity.yOffset;
 		 entity.lastTickPosZ = entity.prevPosZ = entity.posZ = z;
 		 entity.setPosition(x, y, z);
 	 }

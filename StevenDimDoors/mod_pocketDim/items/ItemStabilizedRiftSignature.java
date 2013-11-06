@@ -25,6 +25,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		super(itemID);
 	}
 
+	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
@@ -49,7 +50,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		int adjustedY = adjustYForSpecialBlocks(world,x,y,z);
 		
 		// Check if the Stabilized Rift Signature has been initialized
-		int orientation = MathHelper.floor_double((double) ((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+		int orientation = MathHelper.floor_double((player.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
 		if (source != null)
 		{
 			// Yes, it's initialized. Check if the player is in creative
@@ -57,6 +58,9 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 			if (!player.capabilities.isCreativeMode && !player.inventory.hasItem(Item.enderPearl.itemID))
 			{
 				mod_pocketDim.sendChat(player,"You don't have any Ender Pearls!");
+				// I won't do this, but this is the chance to localize chat 
+				// messages sent to the player; look at ChatMessageComponent 
+				// and how MFR does it with items like the safari net launcher
 				return true;
 			}
 

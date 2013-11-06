@@ -10,6 +10,7 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
+@SuppressWarnings("deprecation")
 public class CommandDeleteRifts extends DDCommandBase
 {
 	private static CommandDeleteRifts instance = null;

@@ -66,7 +66,7 @@ public class BlockRift extends BlockContainer
 	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2());
+		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
 	}
 	
 	//sends a packet informing the client that there is a link present so it renders properly. (when placed)
@@ -313,10 +313,10 @@ public class BlockRift extends BlockContainer
 			yChange=(float) ((yGrowth+yGrowthn)+rand.nextGaussian()*.05F);
 			zChange=(float) ((zGrowth+zGrowthn)+rand.nextGaussian()*.05F);
 
-			Xoffset=  (float) ((0.25F/(1+Math.abs(xChange))));
+			Xoffset=  ((0.25F/(1+Math.abs(xChange))));
 
-			Yoffset=  (float) ((0.25F/(1+Math.abs(yChange))));
-			Zoffset=  (float) ((0.25F/(1+Math.abs(zChange))));
+			Yoffset=  ((0.25F/(1+Math.abs(yChange))));
+			Zoffset=  ((0.25F/(1+Math.abs(zChange))));
 
 
 

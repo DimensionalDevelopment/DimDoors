@@ -1,21 +1,22 @@
 package StevenDimDoors.mod_pocketDimClient;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.server.integrated.IntegratedServer;
 import StevenDimDoors.mod_pocketDim.PacketConstants;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateSource;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.relauncher.Side;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.server.integrated.IntegratedServer;
 
 public class ClientPacketHandler implements IPacketHandler, IUpdateSource
 {

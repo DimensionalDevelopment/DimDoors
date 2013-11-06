@@ -10,6 +10,7 @@ import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
+@SuppressWarnings("deprecation")
 public class CommandResetDungeons extends DDCommandBase
 {	
 	private static CommandResetDungeons instance = null;

@@ -3,7 +3,6 @@ package StevenDimDoors.mod_pocketDim.world;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemDoor;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -11,7 +10,6 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
-import StevenDimDoors.mod_pocketDim.blocks.DimensionalDoor;
 import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
@@ -25,9 +23,9 @@ import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.util.Pair;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 
+@SuppressWarnings("deprecation")
 public class PocketBuilder
 {
 	public static final int MIN_POCKET_SIZE = 5;
@@ -51,6 +49,7 @@ public class PocketBuilder
 	 * @param properties
 	 * @return 
 	 */
+	
 	public static boolean regenerateDungeonPocket(NewDimData dimension, DimLink linkIn, DDProperties properties)
 	{
 		if (linkIn == null)
@@ -79,6 +78,7 @@ public class PocketBuilder
 			dimension.createLink(oldLinkPos, LinkTypes.SAFE_EXIT, (orientation+2)%4);
 			return false;
 		}
+		@SuppressWarnings("unused") // ?
 		NewDimData parent = PocketManager.getDimensionData(incomingLink.source().getDimension());
 		
 		if (!dimension.isDungeon())
@@ -118,6 +118,7 @@ public class PocketBuilder
 		
 		
 	}
+	
 	public static boolean generateNewDungeonPocket(DimLink link, DDProperties properties)
 	{
 		if (link == null)

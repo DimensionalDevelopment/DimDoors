@@ -12,6 +12,7 @@ public class ItemStableFabric extends Item
         this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 	}
 	
+	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));

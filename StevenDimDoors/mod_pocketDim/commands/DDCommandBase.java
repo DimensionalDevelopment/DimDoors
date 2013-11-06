@@ -33,6 +33,7 @@ public abstract class DDCommandBase extends CommandBase
 	 */
 	protected abstract DDCommandResult processCommand(EntityPlayer sender, String[] command);
 	
+	@Override
 	public final String getCommandName()
 	{
 		return name;
@@ -50,6 +51,7 @@ public abstract class DDCommandBase extends CommandBase
 	 * Method invoked by the server to execute a command. The call is forwarded to a derived class
 	 * to provide the sending player directly.
 	 */
+	@Override
 	public final void processCommand(ICommandSender sender, String[] command)
 	{
 		//Forward the command

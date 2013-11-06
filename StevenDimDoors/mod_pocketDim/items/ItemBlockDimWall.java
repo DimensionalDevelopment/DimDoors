@@ -15,7 +15,8 @@ public class ItemBlockDimWall extends ItemBlock
           this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
           setHasSubtypes(true);
     }
-    public void registerIcons(IconRegister par1IconRegister)
+    @Override
+	public void registerIcons(IconRegister par1IconRegister)
     {
         this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("tile.", ""));
     }
@@ -26,7 +27,8 @@ public class ItemBlockDimWall extends ItemBlock
 		return damageValue;
 	}
 	
-    public String getUnlocalizedName(ItemStack par1ItemStack)
+    @Override
+	public String getUnlocalizedName(ItemStack par1ItemStack)
     {
         return subNames[(par1ItemStack.getItemDamage())];
     }  

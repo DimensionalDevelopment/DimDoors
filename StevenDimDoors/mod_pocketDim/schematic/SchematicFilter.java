@@ -48,6 +48,7 @@ public class SchematicFilter {
 		return true;
 	}
 	
+	@Override
 	public String toString()
 	{
 		return name;

@@ -37,6 +37,7 @@ public class LimboProvider extends WorldProvider
 		this.properties = mod_pocketDim.properties;
 	}
 
+	@Override
 	@SideOnly(Side.CLIENT)
 	public IRenderHandler getSkyRenderer()
 	{
@@ -55,11 +56,13 @@ public class LimboProvider extends WorldProvider
 		return mod_pocketDim.limboBiome;
 	}
 
+	@Override
 	public boolean canRespawnHere()
 	{
 		return properties.HardcoreLimboEnabled && properties.LimboEnabled;
 	}
 
+	@Override
 	public boolean isBlockHighHumidity(int x, int y, int z)
 	{
 		return false;
@@ -79,22 +82,24 @@ public class LimboProvider extends WorldProvider
 
 		for (int steps = 0; steps <= 15; ++steps)
 		{
-			float var3 = 1.0F - (float)steps / 15.0F;
+			float var3 = 1.0F - steps / 15.0F;
 			this.lightBrightnessTable[steps] = ((0.0F + var3) / (var3 * 3.0F + 1.0F) * (1.0F - modifier) + modifier)*3;
 			//     System.out.println( this.lightBrightnessTable[steps]+"light");
 		}
 	}
 
+	@Override
 	public ChunkCoordinates getSpawnPoint()
 	{
 
 		return this.getRandomizedSpawnPoint();
 	}
 
+	@Override
 	public float calculateCelestialAngle(long par1, float par3)
 	{
 		int var4 = (int)(par1 % 24000L);
-		float var5 = ((float)var4 + par3) / 24000.0F - 0.25F;
+		float var5 = (var4 + par3) / 24000.0F - 0.25F;
 
 		if (var5 < 0.0F)
 		{
@@ -107,7 +112,7 @@ public class LimboProvider extends WorldProvider
 		}
 
 		float var6 = var5;
-		var5 = 1.0F - (float)((Math.cos((double)var5 * Math.PI) + 1.0D) / 2.0D);
+		var5 = 1.0F - (float)((Math.cos(var5 * Math.PI) + 1.0D) / 2.0D);
 		var5 = var6 + (var5 - var6) / 3.0F;
 		return 0;
 	}
@@ -125,6 +130,7 @@ public class LimboProvider extends WorldProvider
 		return (dimensionId == 0 ? null : "DimensionalDoors/Limbo" + dimensionId);
 	}
 
+	@Override
 	public boolean canCoordinateBeSpawn(int par1, int par2)
 	{
 		int var3 = this.worldObj.getFirstUncoveredBlock(par1, par2);
@@ -135,19 +141,21 @@ public class LimboProvider extends WorldProvider
 	{
 		return worldObj.getHeight()/4-800;
 	}
+	@Override
 	public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
 	{
 		setCloudRenderer( new CloudRenderBlank());
-		return this.worldObj.getWorldVec3Pool().getVecFromPool((double)0, (double)0, (double)0);
+		return this.worldObj.getWorldVec3Pool().getVecFromPool(0, 0, 0);
 
 	}
 	@SideOnly(Side.CLIENT)
 	@Override
 	public Vec3 getFogColor(float par1, float par2)
 	{
-		return this.worldObj.getWorldVec3Pool().getVecFromPool((double).2, (double).2, (double).2);
+		return this.worldObj.getWorldVec3Pool().getVecFromPool(.2, .2, .2);
 
 	}
+	@Override
 	public int getRespawnDimension(EntityPlayerMP player)
 	{
 		return 0;
@@ -160,6 +168,7 @@ public class LimboProvider extends WorldProvider
 		return new LimboGenerator(worldObj, 45, spawner, properties);
 	}
 	
+	@Override
 	public boolean canBlockFreeze(int x, int y, int z, boolean byWater)
 	{
 		return false;

@@ -1,5 +1,11 @@
 package StevenDimDoors.mod_pocketDim.helpers;
 
+import StevenDimDoors.mod_pocketDim.IChunkLoader;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+
 import java.io.File;
 import java.util.List;
 
@@ -8,16 +14,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import StevenDimDoors.mod_pocketDim.IChunkLoader;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.NewDimData;
-import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
-
-import com.google.common.collect.Lists;
-
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-
 
 public class ChunkLoaderHelper implements LoadingCallback 
 {

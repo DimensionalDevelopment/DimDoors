@@ -1,10 +1,5 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
-import java.util.Collection;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
@@ -13,6 +8,13 @@ import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 
+import java.util.Collection;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
+
+@SuppressWarnings("deprecation")
 public class CommandCreateDungeonRift extends DDCommandBase
 {
 	private static CommandCreateDungeonRift instance = null;
@@ -65,7 +67,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 			int x = MathHelper.floor_double(sender.posX);
 			int y = MathHelper.floor_double(sender.posY);
 			int z = MathHelper.floor_double (sender.posZ);
-			int orientation = MathHelper.floor_double((double) ((sender.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+			int orientation = MathHelper.floor_double((sender.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
 
 			if (command[0].equals("random"))
 			{

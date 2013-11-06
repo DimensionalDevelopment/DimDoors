@@ -9,13 +9,17 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderMobObelisk extends RenderLiving
 {
-protected ModelMobObelisk obeliskModel;
+	protected ModelMobObelisk obeliskModel;
 
-    public RenderMobObelisk(float f)
-    {
-        super(new ModelMobObelisk(), f);
-        this.obeliskModel = (ModelMobObelisk)this.mainModel;
-        
-    
-    }
+	public RenderMobObelisk(float f)
+	{
+		super(new ModelMobObelisk(), f);
+		this.obeliskModel = (ModelMobObelisk)this.mainModel;
+	}
+
+	@Override
+	protected ResourceLocation getEntityTexture(Entity entity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

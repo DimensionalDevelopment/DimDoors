@@ -29,6 +29,7 @@ public abstract class BaseItemDoor extends ItemDoor
 			properties = DDProperties.instance();
 	}
 
+	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
@@ -59,7 +60,7 @@ public abstract class BaseItemDoor extends ItemDoor
 				player.canPlayerEdit(x, y, z, side, stack) && player.canPlayerEdit(x, y + 1, z, side, stack) &&
 				(!requireLink || PocketManager.getLink(x, y + 1, z, world) != null)&&stack.stackSize>0)
 			{
-				int orientation = MathHelper.floor_double((double) ((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+				int orientation = MathHelper.floor_double((player.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
 				placeDoorBlock(world, x, y, z, orientation, doorBlock);
 
 				if (!player.capabilities.isCreativeMode && reduceStack)

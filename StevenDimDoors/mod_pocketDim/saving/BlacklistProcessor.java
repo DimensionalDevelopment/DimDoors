@@ -25,6 +25,7 @@ public class BlacklistProcessor extends BaseConfigurationProcessor<List<Integer>
 		{
 			JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
 			List<Integer> data = this.createBlacklistFromJson(reader);
+			reader.close();
 			return data;
 		}
 		catch (IOException e)

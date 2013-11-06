@@ -8,7 +8,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class CloudRenderBlank extends IRenderHandler
 {
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
     public void render(float partialTicks, WorldClient world, Minecraft mc)
     {
     	

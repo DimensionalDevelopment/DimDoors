@@ -57,10 +57,11 @@ public class BlockDimWall extends Block
 		}
     }
 	
+	@Override
 	public void registerIcons(IconRegister par1IconRegister)
     {
-        this.blockIcon[0] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2());
-        this.blockIcon[1] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2() + "Perm");
+        this.blockIcon[0] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+        this.blockIcon[1] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "Perm");
     }
 	
 	@SideOnly(Side.CLIENT)
@@ -77,6 +78,7 @@ public class BlockDimWall extends Block
 		return 0;
 	}
 	
+	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int unknown, CreativeTabs tab, List subItems) 
@@ -86,14 +88,17 @@ public class BlockDimWall extends Block
 			subItems.add(new ItemStack(this, 1, ix));
 		}
 	}
-    public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {}
+    @Override
+	public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {}
     
-    protected boolean canSilkHarvest()
+    @Override
+	protected boolean canSilkHarvest()
     {
         return true;
     }
     
-    public int quantityDropped(Random par1Random)
+    @Override
+	public int quantityDropped(Random par1Random)
     {
         return 0;
     }
@@ -101,7 +106,8 @@ public class BlockDimWall extends Block
     /**
      * replaces the block clicked with the held block, instead of placing the block on top of it. Shift click to disable. 
      */
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int par6, float par7, float par8, float par9)
+    @Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int par6, float par7, float par8, float par9)
     {
     	//Check if the metadata value is 0 -- we don't want the user to replace Ancient Fabric
         if (entityPlayer.getCurrentEquippedItem() != null && world.getBlockMetadata(x, y, z) == 0)

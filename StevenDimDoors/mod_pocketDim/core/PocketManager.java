@@ -35,6 +35,7 @@ import StevenDimDoors.mod_pocketDim.watcher.UpdateWatcherProxy;
  * This class regulates all the operations involving the storage and manipulation of dimensions. It handles saving dim data, teleporting the player, and 
  * creating/registering new dimensions as well as loading old dimensions on startup
  */
+@SuppressWarnings("deprecation")
 public class PocketManager
 {	
 	private static class InnerDimData extends NewDimData implements IPackable<PackedDimData>

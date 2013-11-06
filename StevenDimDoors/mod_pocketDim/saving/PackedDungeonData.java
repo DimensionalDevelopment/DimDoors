@@ -1,10 +1,7 @@
 package StevenDimDoors.mod_pocketDim.saving;
 
-import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
-
 public class PackedDungeonData 
 {
-	
 	public final int Weight;
 	public final boolean IsOpen;
 	public final boolean IsInternal;
@@ -23,7 +20,4 @@ public class PackedDungeonData
 		this.DungeonTypeName=dungeonTypeName;
 		this.DungeonPackName=dungeonPackName;
 	}
-
-
-	
 }

@@ -12,7 +12,7 @@ import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 
-public class PocketGenerator extends ChunkProviderGenerate implements IChunkProvider
+public class PocketGenerator extends ChunkProviderGenerate
 {
 	private World worldObj;
 
@@ -32,6 +32,7 @@ public class PocketGenerator extends ChunkProviderGenerate implements IChunkProv
 
 	}
 
+	@Override
 	public boolean unloadQueuedChunks()
 	{
 		return true;

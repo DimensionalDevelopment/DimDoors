@@ -1,22 +1,5 @@
 package StevenDimDoors.mod_pocketDim;
 
-
-import java.io.File;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityEggInfo;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumToolMaterial;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatMessageComponent;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWall;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWallPerm;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDoorGold;
@@ -66,13 +49,10 @@ import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import StevenDimDoors.mod_pocketDimClient.ClientPacketHandler;
 import StevenDimDoors.mod_pocketDimClient.ClientTickHandler;
+
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
-import cpw.mods.fml.common.Mod.ServerStarting;
-import cpw.mods.fml.common.Mod.ServerStopping;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -87,6 +67,22 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
+import java.io.File;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityEggInfo;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumToolMaterial;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = mod_pocketDim.modid, name = "Dimensional Doors", version = mod_pocketDim.version)
 
@@ -95,7 +91,6 @@ clientPacketHandlerSpec =
 @SidedPacketHandler(channels = {PacketConstants.CHANNEL_NAME}, packetHandler = ClientPacketHandler.class),
 serverPacketHandlerSpec =
 @SidedPacketHandler(channels = {PacketConstants.CHANNEL_NAME}, packetHandler = ServerPacketHandler.class))
-
 public class mod_pocketDim
 {
 	public static final String version = "1.5.2R1.4.1RC1";
@@ -107,7 +102,7 @@ public class mod_pocketDim
 
 	@Instance("PocketDimensions")
 	public static mod_pocketDim instance = new mod_pocketDim();
-	
+
 	public static Block transientDoor;
 	public static Block warpDoor;
 	public static Block goldDoor;
@@ -132,55 +127,56 @@ public class mod_pocketDim
 	public static Item itemStableFabric;
 	public static Item itemChaosDoor;
 	public static Item itemStabilizedLinkSignature;
-	
+
 	public static BiomeGenBase limboBiome;
 	public static BiomeGenBase pocketBiome;
-	
+
 	public static boolean isPlayerWearingGoogles = false;
 
 	public static DDProperties properties;
 	public static MonolithSpawner spawner; //Added this field temporarily. Will be refactored out later.
 	public static GatewayGenerator riftGen;
-	
-	 public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") 
-	 {
-		 @Override
-		 public ItemStack getIconItemStack() 
-		 {
-			 return new ItemStack(mod_pocketDim.itemDimDoor, 1, 0);
-         }
-		 
-		 @Override
-		 public String getTranslatedTabLabel()
-		 {
-			 return "Dimensional Doors";
-		 }
-	 };
-	 
-	 
 
-	@PreInit
+	public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") 
+	{
+		@Override
+		public ItemStack getIconItemStack() 
+		{
+			return new ItemStack(mod_pocketDim.itemDimDoor, 1, 0);
+		}
+
+		@Override
+		public String getTranslatedTabLabel()
+		{
+			return "Dimensional Doors";
+		}
+	};
+
+
+
+	@EventHandler
 	public void onPreInitialization(FMLPreInitializationEvent event)
 	{
-		this.instance = this;
+		instance = this;
 		//This should be the FIRST thing that gets done.
 		String path = event.getSuggestedConfigurationFile().getAbsolutePath().replace(modid, "DimDoors");
-		
+
 		properties = DDProperties.initialize(new File(path));
 
 		//Now do other stuff
 		MinecraftForge.EVENT_BUS.register(new EventHookContainer(properties));
-		
+
 		riftGen = new GatewayGenerator(properties);
 	}
 
-	@Init
+	@SuppressWarnings("unused")
+	@EventHandler
 	public void onInitialization(FMLInitializationEvent event)
 	{
 		CommonTickHandler commonTickHandler = new CommonTickHandler();
 		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
 		TickRegistry.registerTickHandler(commonTickHandler, Side.SERVER);
-		
+
 		//MonolithSpawner should be initialized before any provider instances are created
 		//Register the other regular tick receivers as well
 		spawner = new MonolithSpawner(commonTickHandler, properties);
@@ -199,7 +195,7 @@ public class mod_pocketDim
 		unstableDoor = (new UnstableDoor(properties.UnstableDoorID, Material.iron, properties).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
 		dimensionalDoor = (DimensionalDoor) (new DimensionalDoor(properties.DimensionalDoorID, Material.iron, properties).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor"));
 		transTrapdoor = (TransTrapdoor) (new TransTrapdoor(properties.TransTrapdoorID, Material.wood).setHardness(1.0F) .setUnlocalizedName("dimHatch"));
-		
+
 		itemGoldDimDoor = (new ItemGoldDimDoor(properties.GoldDimDoorItemID, Material.iron)).setUnlocalizedName("itemGoldDimDoor");
 		itemGoldDoor = (new ItemGoldDoor(properties.GoldDoorID, Material.wood)).setUnlocalizedName("itemGoldDoor");
 		itemDimDoor = (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemDimDoor");
@@ -212,7 +208,7 @@ public class mod_pocketDim
 		itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(properties.StabilizedRiftSignatureItemID)).setUnlocalizedName("itemStabilizedRiftSig");
 		itemWorldThread = (new ItemWorldThread(properties.ItemWorldThreadID)).setUnlocalizedName("itemWorldThread");
 
-		
+
 		mod_pocketDim.limboBiome= (new BiomeGenLimbo(properties.LimboBiomeID));
 		mod_pocketDim.pocketBiome= (new BiomeGenPocket(properties.PocketBiomeID));
 
@@ -228,7 +224,7 @@ public class mod_pocketDim
 		GameRegistry.registerBlock(transTrapdoor,"Transdimensional Trapdoor");
 		GameRegistry.registerBlock(blockDimWallPerm, "Fabric of RealityPerm");
 		GameRegistry.registerBlock(transientDoor, "transientDoor");
-		
+
 		GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, "Fabric of Reality");
 
 		DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false);
@@ -246,7 +242,7 @@ public class mod_pocketDim
 		LanguageRegistry.addName(blockDimWallPerm	, "Eternal Fabric");
 		LanguageRegistry.addName(dimensionalDoor, "Dimensional Door");
 		LanguageRegistry.addName(transTrapdoor, "Transdimensional Trapdoor");
-	
+
 		LanguageRegistry.addName(itemExitDoor, "Warp Door");
 		LanguageRegistry.addName(itemLinkSignature	, "Rift Signature");
 		LanguageRegistry.addName(itemGoldDoor, "Golden Door");
@@ -259,16 +255,16 @@ public class mod_pocketDim
 		LanguageRegistry.addName(itemRiftBlade	, "Rift Blade");
 		LanguageRegistry.addName(itemWorldThread, "World Thread");
 
-		
+
 		/**
 		 * Add names for multiblock inventory item
 		 */
 		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 0), "Fabric of Reality");
 		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 1), "Ancient Fabric");
 
-		
+
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dimDoorsCustomTab", "en_US", "Dimensional Doors Items");
-		
+
 		GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
 		GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
 		GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityDimHatch");
@@ -282,20 +278,20 @@ public class mod_pocketDim
 
 		CraftingManager.registerRecipies();
 		DungeonHelper.initialize();
-		
+
 		proxy.loadTextures();
 		proxy.registerRenderers();
 	}
 
 
-	@PostInit
+	@EventHandler
 	public void onPostInitialization(FMLPostInitializationEvent event)
 	{	
 		ForgeChunkManager.setForcedChunkLoadingCallback(instance, new ChunkLoaderHelper());
 		//Register loot chests
 		DDLoot.registerInfo();
 	}
-	@ServerStopping
+	@EventHandler
 	public void onServerStopping(FMLServerStoppingEvent event)
 	{
 		try
@@ -308,12 +304,12 @@ public class mod_pocketDim
 		}
 	}
 
-	@ServerStarting
+	@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event)
 	{
-		
+
 		//TODO- load dims with forced chunks on server startup here  
-		
+
 		CommandResetDungeons.instance().register(event);
 		CommandCreateDungeonRift.instance().register(event);
 		CommandDeleteAllLinks.instance().register(event);
@@ -324,8 +320,8 @@ public class mod_pocketDim
 		//CommandPruneDimensions.instance().register(event);
 		CommandCreatePocket.instance().register(event);
 		CommandTeleportPlayer.instance().register(event);
-		
-		
+
+
 		ChunkLoaderHelper.loadChunkForcedWorlds(event);
 	}
 	

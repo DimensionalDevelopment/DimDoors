@@ -1,21 +1,20 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.client.particle.EntityFX;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.item.ItemDoor;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 
+import net.minecraft.block.material.Material;
+import net.minecraft.client.particle.EntityFX;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.world.World;
+
+@SuppressWarnings("deprecation")
 public class TransientDoor extends BaseDimDoor
 {
 	public TransientDoor(int blockID, Material material, DDProperties properties) 
