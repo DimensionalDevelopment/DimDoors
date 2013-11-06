@@ -43,6 +43,8 @@ public class DDProperties
 	public final int DimensionalDoorItemID;
 	public final int UnstableDoorItemID;
 	public final int WarpDoorItemID;
+	public final int ItemWorldThreadID;
+
 
 	/**
 	 * Other IDs
@@ -91,6 +93,7 @@ public class DDProperties
 	 * Other Flags
 	 */
 
+	public final boolean enableServerMode;
 	public final boolean WorldRiftGenerationEnabled;
 	public final boolean RiftSpreadEnabled;
 	public final boolean RiftGriefingEnabled;
@@ -100,6 +103,7 @@ public class DDProperties
 	public final boolean LimboReturnsInventoryEnabled;
 	public final boolean DoorRenderingEnabled;
 	public final boolean TNFREAKINGT_Enabled;
+	
 
 	/**
 	 * Other
@@ -112,11 +116,13 @@ public class DDProperties
 	public final int LimboReturnRange;
 	public final String CustomSchematicDirectory;
 	
+	
 	//Singleton instance
 	private static DDProperties instance = null;
 	//Path for custom dungeons within configuration directory
 	private final String CUSTOM_SCHEMATIC_SUBDIRECTORY = "/DimDoors_Custom_schematics";
 	//Names of categories
+	private final String CATEGORY_SERVERMODE = "server mode";
 	private final String CATEGORY_CRAFTING = "crafting";
 	private final String CATEGORY_ENTITY = "entity";
 	private final String CATEGORY_DIMENSION = "dimension";
@@ -178,6 +184,11 @@ public class DDProperties
 				"Weighs the chance that a block will not be TNT. Must be greater than or equal to 0. " +
 				"EXPLOSIONS must be set to true for this to have any effect.").getInt();
 
+		enableServerMode = config.get(CATEGORY_SERVERMODE, "Server Mode", false,
+				"Enables servermode, changing all crafting recipies to require stabilized fabric. " +
+				"Stabilized fabric, in turn, requires the item World Thread, which is not craftable or obtainable at all. "+
+				"It is up to the server manager on how to distribute it.").getBoolean(false);
+
 		DoorRenderEntityID=config.get(CATEGORY_ENTITY, "Door Render Entity ID", 89).getInt();
 		MonolithEntityID = config.get(CATEGORY_ENTITY, "Monolith Entity ID", 125).getInt();
 
@@ -201,7 +212,8 @@ public class DDProperties
 		StabilizedRiftSignatureItemID = config.getItem("Stabilized Rift Signature Item ID", 5677).getInt();
 		GoldDoorItemID = config.getItem("Gold Door Item ID", 5678).getInt();
 		GoldDimDoorItemID = config.getItem("Gold Dim Door Item ID", 5679).getInt();
-		
+		ItemWorldThreadID = config.getItem("World Thread Item ID", 5680).getInt();
+
 		LimboBlockID = config.getTerrainBlock("World Generation Block IDs - must be less than 256", "Limbo Block ID", 217,
 				"Blocks used for the terrain in Limbo").getInt();
 		PermaFabricBlockID = config.getTerrainBlock("World Generation Block IDs - must be less than 256",

@@ -53,9 +53,7 @@ public class ChunkLoaderHelper implements LoadingCallback
 						PocketManager.loadDimension(data.id());
 					}
 				}
-
 			}
 		}
-		
 	}
 }
