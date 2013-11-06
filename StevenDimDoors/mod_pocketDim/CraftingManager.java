@@ -98,7 +98,7 @@ public class CraftingManager
 		{
 			GameRegistry.addRecipe(new ItemStack(itemStableFabric, 1), new Object[]
 					{
-				" y ", "yxy", " y ", 'x', coreCraftingItem,  'y', mod_pocketDim.itemWorldThread
+				"yyy", "yxy", "yyy", 'x', coreCraftingItem,  'y', mod_pocketDim.itemWorldThread
 					});
 		}
 		
