@@ -9,6 +9,7 @@ import java.util.List;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
@@ -127,7 +128,14 @@ public class DDSaveHandler
 			if(packedLink.parent.equals(fakePoint))
 			{
 				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
-				DimLink link = data.createLink(packedLink.source, packedLink.tail.linkType,  packedLink.orientation);
+				int linkType = packedLink.tail.linkType;
+				
+				if((linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX) && linkType != LinkTypes.CLIENT_SIDE)
+				{
+					linkType = LinkTypes.NORMAL;
+				}
+				
+				DimLink link = data.createLink(packedLink.source, linkType, packedLink.orientation);
 				Point4D destination = packedLink.tail.destination;
 				if(destination!=null)
 				{
