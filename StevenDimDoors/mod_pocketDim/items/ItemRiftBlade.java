@@ -59,7 +59,7 @@ public class ItemRiftBlade extends ItemSword
 		}
 	}
 
-	@Override
+	//@Override
     public int getDamageVsEntity(Entity par1Entity)
     {
         return 7;
@@ -72,7 +72,8 @@ public class ItemRiftBlade extends ItemSword
 		return true;
 	}
 
-	@Override
+	//TODO fix damage
+	//@Override
 	public boolean hitEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving)
 	{
 		par1ItemStack.damageItem(1, par3EntityLiving);

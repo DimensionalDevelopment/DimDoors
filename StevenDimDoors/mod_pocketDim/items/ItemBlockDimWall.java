@@ -28,6 +28,6 @@ public class ItemBlockDimWall extends ItemBlock
 	
     public String getUnlocalizedName(ItemStack par1ItemStack)
     {
-        return subNames[getItemDamageFromStack(par1ItemStack)];
+        return subNames[(par1ItemStack.getItemDamage())];
     }  
 }
