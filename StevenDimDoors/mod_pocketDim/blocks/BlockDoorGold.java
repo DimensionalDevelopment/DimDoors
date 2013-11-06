@@ -14,6 +14,7 @@ public class BlockDoorGold extends BlockDoor
 {
 
 	private Icon blockIconBottom;
+	@SuppressWarnings("unused") // ??
 	private DDProperties properties;
 
 	public BlockDoorGold(int par1, Material par2Material,DDProperties properties) 
@@ -23,17 +24,20 @@ public class BlockDoorGold extends BlockDoor
 
 	}
 	
+	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2()+"_top");
-		this.blockIconBottom = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2()+"_bottom");
+		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName()+"_top");
+		this.blockIconBottom = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName()+"_bottom");
 	}
 	
+	@Override
 	public Icon getIcon(int par1, int par2)
 	{
 		return this.blockIcon;
 	}
 	
+	@Override
 	@SideOnly(Side.CLIENT)
 	public Icon getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
 	{

@@ -20,7 +20,7 @@ import net.minecraftforge.event.terraingen.ChunkProviderEvent;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
 
-public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvider
+public class LimboGenerator extends ChunkProviderGenerate
 {
 	private static Random rand;
 
@@ -128,7 +128,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 	public Chunk provideChunk(int chunkX, int chunkZ)
 	{
 		//TODO: Wtf? Why do you reinitialize the seed when we already initialized it in the constructor?! ~SenseiKiwi
-		LimboGenerator.rand.setSeed((long) chunkX * 341873128712L + (long) chunkZ * 132897987541L);
+		LimboGenerator.rand.setSeed(chunkX * 341873128712L + chunkZ * 132897987541L);
 		byte[] var3 = new byte[32768];
 		this.generateTerrain(chunkX, chunkZ, var3);
 		Chunk var4 = new Chunk(this.worldObj, var3, chunkX, chunkZ);
@@ -178,7 +178,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 			{
 				for (int var9 = -2; var9 <= 2; ++var9)
 				{
-					float var10 = 10.0F / MathHelper.sqrt_float((float)(var8 * var8 + var9 * var9) + 0.2F);
+					float var10 = 10.0F / MathHelper.sqrt_float(var8 * var8 + var9 * var9 + 0.2F);
 					this.parabolicField[var8 + 2 + (var9 + 2) * 5] = var10;
 				}
 			}
@@ -191,8 +191,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 		this.noise3 = this.noiseGen3.generateNoiseOctaves(this.noise3, par2, par3, par4, par5, par6, par7, var44 / 80.0D, var45 / 160.0D, var44 / 80.0D);
 		this.noise1 = this.noiseGen1.generateNoiseOctaves(this.noise1, par2, par3, par4, par5, par6, par7, var44, var45, var44);
 		this.noise2 = this.noiseGen2.generateNoiseOctaves(this.noise2, par2, par3, par4, par5, par6, par7, var44, var45, var44);
-		boolean var43 = false;
-		boolean var42 = false;
+
 		int var12 = 0;
 		int var13 = 0;
 
@@ -204,7 +203,6 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 				float var17 = 0.0F;
 				float var18 = 0.0F;
 				byte var19 = 2;
-				BiomeGenBase var20 = this.biomesForGeneration[var14 + 2 + (var15 + 2) * (par5 + 5)];
 
 				for (int var21 = -var19; var21 <= var19; ++var21)
 				{
@@ -260,13 +258,13 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 
 				for (int var46 = 0; var46 < par6; ++var46)
 				{
-					double var48 = (double)var17;
-					double var26 = (double)var16;
+					double var48 = var17;
+					double var26 = var16;
 					var48 += var47 * 0.2D;
-					var48 = var48 * (double)par6 / 16.0D;
-					double var28 = (double)par6 / 2.0D + var48 * 4.0D;
+					var48 = var48 * par6 / 16.0D;
+					double var28 = par6 / 2.0D + var48 * 4.0D;
 					double var30 = 0.0D;
-					double var32 = ((double)var46 - var28) * 12.0D * 128.0D / 128.0D / var26;
+					double var32 = (var46 - var28) * 12.0D * 128.0D / 128.0D / var26;
 
 					if (var32 < 0.0D)
 					{
@@ -294,7 +292,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 
 					if (var46 > par6 - 4)
 					{
-						double var40 = (double)((float)(var46 - (par6 - 4)) / 3.0F);
+						double var40 = (var46 - (par6 - 4)) / 3.0F;
 						var30 = var30 * (1.0D - var40) + -10.0D * var40;
 					}
 
@@ -306,6 +304,7 @@ public class LimboGenerator extends ChunkProviderGenerate implements IChunkProvi
 
 		return par1ArrayOfDouble;
 	}
+	@Override
 	public void generateTerrain(int par1, int par2, byte[] par3ArrayOfByte)
 	{
 		byte var4 = 4;

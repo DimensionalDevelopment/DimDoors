@@ -38,10 +38,12 @@ public class TileEntityRift extends TileEntity
 	public int age = 0;
 
 	public HashMap<Integer, double[]> renderingCenters = new HashMap<Integer, double[]>();
+	@SuppressWarnings("deprecation")
 	public DimLink nearestRiftData;
 	public int spawnedEndermenID=0;
 	DataWatcher watcher = new DataWatcher();
 
+	@Override
 	public void updateEntity() 
 	{
 		//Invalidate this tile entity if it shouldn't exist
@@ -92,6 +94,7 @@ public class TileEntityRift extends TileEntity
 		}
 	}
 
+	@Override
 	public boolean canUpdate()
 	{
 		return true;
@@ -143,7 +146,7 @@ public class TileEntityRift extends TileEntity
 			if (random.nextInt(30) == 0)
 			{
 				@SuppressWarnings("unchecked")
-				List<Entity> list =  (List<Entity>) worldObj.getEntitiesWithinAABB(EntityEnderman.class,
+				List<Entity> list =  worldObj.getEntitiesWithinAABB(EntityEnderman.class,
 						AxisAlignedBB.getBoundingBox(xCoord - 9, yCoord - 3, zCoord - 9, xCoord + 9, yCoord + 3, zCoord + 9));
 
 				if (list.isEmpty())

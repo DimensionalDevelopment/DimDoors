@@ -16,6 +16,7 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 public class Compactor
 {
 
+	@SuppressWarnings("unused") // ?
 	private static class DimComparator implements Comparator<NewDimData>
 	{
 		@Override

@@ -20,6 +20,7 @@ public class PocketProvider extends WorldProvider
 {
 	private DDProperties properties;
 	private MonolithSpawner spawner;
+	@SuppressWarnings("unused") // ?
 	private IRenderHandler skyRenderer;
 
 	public PocketProvider()
@@ -47,14 +48,14 @@ public class PocketProvider extends WorldProvider
 	public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
 	{
 		setCloudRenderer( new CloudRenderBlank());
-		return this.worldObj.getWorldVec3Pool().getVecFromPool((double)0, (double)0, (double)0);
+		return this.worldObj.getWorldVec3Pool().getVecFromPool(0d, 0d, 0d);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public Vec3 getFogColor(float par1, float par2)
 	{
-		return this.worldObj.getWorldVec3Pool().getVecFromPool((double)0, (double)0, (double)0);
+		return this.worldObj.getWorldVec3Pool().getVecFromPool(0d, 0d, 0d);
 	}
 
 	@Override

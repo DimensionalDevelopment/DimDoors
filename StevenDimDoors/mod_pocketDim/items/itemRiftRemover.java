@@ -29,6 +29,7 @@ public class itemRiftRemover extends Item
 		this.setMaxDamage(4);
 	}
 
+	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());

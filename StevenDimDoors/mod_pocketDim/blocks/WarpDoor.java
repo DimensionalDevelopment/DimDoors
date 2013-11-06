@@ -9,6 +9,7 @@ import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
+@SuppressWarnings("deprecation")
 public class WarpDoor extends BaseDimDoor
 {
 	public WarpDoor(int blockID, Material material, DDProperties properties) 

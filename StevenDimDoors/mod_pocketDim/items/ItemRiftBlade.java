@@ -7,6 +7,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumToolMaterial;
@@ -20,6 +23,7 @@ import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import com.google.common.collect.Multimap;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -58,11 +62,14 @@ public class ItemRiftBlade extends ItemSword
 			return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.pumpkin ? 1.0F : 1.5F;
 		}
 	}
-
+	
 	@Override
-    public int getDamageVsEntity(Entity par1Entity)
+	@SuppressWarnings({ "unchecked", "rawtypes"})
+	public Multimap getItemAttributeModifiers()
     {
-        return 7;
+		Multimap multimap = super.getItemAttributeModifiers();
+        multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", 7, 0));
+        return multimap;
     }
 
 	@Override
@@ -73,7 +80,7 @@ public class ItemRiftBlade extends ItemSword
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving)
+	public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLiving, EntityLivingBase par3EntityLiving)
 	{
 		par1ItemStack.damageItem(1, par3EntityLiving);
 		return true;
@@ -85,9 +92,9 @@ public class ItemRiftBlade extends ItemSword
 		float var4 = 1.0F;
 		float var5 = par2EntityPlayer.prevRotationPitch + (par2EntityPlayer.rotationPitch - par2EntityPlayer.prevRotationPitch) * var4;
 		float var6 = par2EntityPlayer.prevRotationYaw + (par2EntityPlayer.rotationYaw - par2EntityPlayer.prevRotationYaw) * var4;
-		double var7 = par2EntityPlayer.prevPosX + (par2EntityPlayer.posX - par2EntityPlayer.prevPosX) * (double)var4;
-		double var9 = par2EntityPlayer.prevPosY + (par2EntityPlayer.posY - par2EntityPlayer.prevPosY) * (double)var4 + 1.62D - (double)par2EntityPlayer.yOffset;
-		double var11 = par2EntityPlayer.prevPosZ + (par2EntityPlayer.posZ - par2EntityPlayer.prevPosZ) * (double)var4;
+		double var7 = par2EntityPlayer.prevPosX + (par2EntityPlayer.posX - par2EntityPlayer.prevPosX) * var4;
+		double var9 = par2EntityPlayer.prevPosY + (par2EntityPlayer.posY - par2EntityPlayer.prevPosY) * var4 + 1.62D - par2EntityPlayer.yOffset;
+		double var11 = par2EntityPlayer.prevPosZ + (par2EntityPlayer.posZ - par2EntityPlayer.prevPosZ) * var4;
 		Vec3 var13 = par1World.getWorldVec3Pool().getVecFromPool(var7, var9, var11);
 		float var14 = MathHelper.cos(-var6 * 0.017453292F - (float)Math.PI);
 		float var15 = MathHelper.sin(-var6 * 0.017453292F - (float)Math.PI);
@@ -100,13 +107,13 @@ public class ItemRiftBlade extends ItemSword
 		{
 			var21 = 7;
 		}
-		Vec3 var23 = var13.addVector((double)var18 * var21, (double)var17 * var21, (double)var20 * var21);
+		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
 		return par1World.rayTraceBlocks_do_do(var13, var23, true, false);
 	}
 
 	private boolean teleportToEntity(ItemStack item, Entity par1Entity, EntityPlayer holder)
 	{
-		Vec3 var2 = holder.worldObj.getWorldVec3Pool().getVecFromPool(holder.posX - par1Entity.posX, holder.boundingBox.minY + (double)(holder.height / 2.0F) - par1Entity.posY + (double)par1Entity.getEyeHeight(), holder.posZ - par1Entity.posZ);
+		Vec3 var2 = holder.worldObj.getWorldVec3Pool().getVecFromPool(holder.posX - par1Entity.posX, holder.boundingBox.minY + holder.height / 2.0F - par1Entity.posY + par1Entity.getEyeHeight(), holder.posZ - par1Entity.posZ);
 
 		double cooef =( var2.lengthVector()-2.5)/var2.lengthVector();
 		var2.xCoord*=cooef;
@@ -141,13 +148,13 @@ public class ItemRiftBlade extends ItemSword
 		if (!world.isRemote)
 		{
 			@SuppressWarnings("unchecked")
-			List<EntityLiving> list =  (List<EntityLiving>) world.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(player.posX-8,player.posY-8, player.posZ-8, player.posX+8,player.posY+8, player.posZ+8));
+			List<EntityLiving> list =  world.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(player.posX-8,player.posY-8, player.posZ-8, player.posX+8,player.posY+8, player.posZ+8));
 			list.remove(player);
 
 			for (EntityLiving ent : list)
 			{
 				Vec3 var3 = player.getLook(1.0F).normalize();
-				Vec3 var4 =  player.worldObj.getWorldVec3Pool().getVecFromPool(ent.posX -  player.posX, ent.boundingBox.minY + (double)((ent.height) / 2.0F) - ( player.posY + (double) player.getEyeHeight()), ent.posZ -  player.posZ);
+				Vec3 var4 =  player.worldObj.getWorldVec3Pool().getVecFromPool(ent.posX -  player.posX, ent.boundingBox.minY + (ent.height) / 2.0F - ( player.posY + player.getEyeHeight()), ent.posZ -  player.posZ);
 				double var5 = var4.lengthVector();
 				var4 = var4.normalize();
 				double var7 = var3.dotProduct(var4);
@@ -172,7 +179,7 @@ public class ItemRiftBlade extends ItemSword
 						if (player.canPlayerEdit(x, y, z, hit.sideHit, stack) &&
 							player.canPlayerEdit(x, y + 1, z, hit.sideHit, stack))
 						{
-							int orientation = MathHelper.floor_double((double)((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+							int orientation = MathHelper.floor_double((player.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
 
 							if (BaseItemDoor.canPlace(world, x, y, z) &&
 								BaseItemDoor.canPlace(world, x, y - 1, z))
@@ -212,6 +219,7 @@ public class ItemRiftBlade extends ItemSword
 	/**
 	 * allows items to add custom lines of information to the mouseover description
 	 */
+	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)

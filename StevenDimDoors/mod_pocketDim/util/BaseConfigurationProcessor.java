@@ -2,8 +2,8 @@ package StevenDimDoors.mod_pocketDim.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -21,14 +21,17 @@ public abstract class BaseConfigurationProcessor<T>
 		return true;
 	}
 	
-	public T readFromFile(String path) throws FileNotFoundException, ConfigurationProcessingException
+	public T readFromFile(String path) throws ConfigurationProcessingException, IOException
 	{
 		return readFromFile(new File(path));
 	}
 	
-	public T readFromFile(File file) throws FileNotFoundException, ConfigurationProcessingException
+	public T readFromFile(File file) throws ConfigurationProcessingException, IOException
 	{
-		return readFromStream(new FileInputStream(file));
+		FileInputStream t = new FileInputStream(file);
+		T ret = readFromStream(t);
+		t.close();
+		return ret;
 	}
 	
 	public T readFromResource(String resourcePath) throws ConfigurationProcessingException
@@ -38,12 +41,14 @@ public abstract class BaseConfigurationProcessor<T>
 	
 	public abstract T readFromStream(InputStream inputStream) throws ConfigurationProcessingException;
 	
-	public void writeToFile(File file, T data) throws FileNotFoundException, ConfigurationProcessingException
+	public void writeToFile(File file, T data) throws ConfigurationProcessingException, IOException
 	{
-		writeToStream(new FileOutputStream(file), data);
+		FileOutputStream t = new FileOutputStream(file);
+		writeToStream(t, data);
+		t.close();
 	}
 	
-	public void writeToFile(String path, T data) throws FileNotFoundException, ConfigurationProcessingException
+	public void writeToFile(String path, T data) throws ConfigurationProcessingException, IOException
 	{
 		writeToFile(new File(path), data);
 	}

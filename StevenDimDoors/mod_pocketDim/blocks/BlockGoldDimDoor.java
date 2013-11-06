@@ -1,24 +1,23 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
 
-public class BlockGoldDimDoor extends BaseDimDoor implements IDimDoor
+import net.minecraft.block.material.Material;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+@SuppressWarnings("deprecation")
+public class BlockGoldDimDoor extends BaseDimDoor
 {
 
 	public BlockGoldDimDoor(int blockID, Material material,
 			DDProperties properties) {
 		super(blockID, material, properties);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

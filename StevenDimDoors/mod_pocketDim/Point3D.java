@@ -56,6 +56,7 @@ public class Point3D implements Serializable {
 		return this.z = z;
 	}
 	
+	@Override
 	public Point3D clone()
 	{
 		return new Point3D(x, y, z);
@@ -75,6 +76,7 @@ public class Point3D implements Serializable {
 		return (this.x == other.x && this.y == other.y && this.z == other.z);
 	}
 	
+	@Override
 	public boolean equals(Object other)
 	{
 		return equals((Point3D) other);

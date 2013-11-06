@@ -14,6 +14,7 @@ import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 
+@SuppressWarnings("deprecation")
 public abstract class NewDimData
 {
 	private static class InnerDimLink extends DimLink

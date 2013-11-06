@@ -49,6 +49,7 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 
 	public DungeonPackConfigReader() { }
 
+	@SuppressWarnings("resource")
 	@Override
 	public DungeonPackConfig readFromStream(InputStream inputStream) throws ConfigurationProcessingException
 	{
@@ -206,6 +207,7 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 
 	private class DungeonTypeProcessor implements ILineProcessor
 	{
+		@Override
 		public void process(String line, DungeonPackConfig config) throws ConfigurationProcessingException
 		{
 			List<String> typeNames = config.getTypeNames();
@@ -229,6 +231,7 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 	
 	private class DungeonSettingsParser implements ILineProcessor
 	{
+		@Override
 		public void process(String line, DungeonPackConfig config) throws ConfigurationProcessingException
 		{
 			//The various settings that we support will be hardcoded here.
@@ -295,6 +298,7 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 
 	private class RuleDefinitionParser implements ILineProcessor
 	{
+		@Override
 		public void process(String definition, DungeonPackConfig config) throws ConfigurationProcessingException
 		{
 			String[] ruleParts;

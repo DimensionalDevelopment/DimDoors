@@ -46,25 +46,26 @@ public class ClosingRiftFX extends EntityFX
 
 	public void func_92044_a(int par1)
 	{
-		float var2 = (float)((par1 & 16711680) >> 16) / 255.0F;
-		float var3 = (float)((par1 & 65280) >> 8) / 255.0F;
-		float var4 = (float)((par1 & 255) >> 0) / 255.0F;
+		float var2 = ((par1 & 16711680) >> 16) / 255.0F;
+		float var3 = ((par1 & 65280) >> 8) / 255.0F;
+		float var4 = ((par1 & 255) >> 0) / 255.0F;
 		float var5 = 1.0F;
 		this.setRBGColorF(var2 * var5, var3 * var5, var4 * var5);
 	}
 
 	public void func_92046_g(int par1)
 	{
-		this.field_92050_aA = (float)((par1 & 16711680) >> 16) / 255.0F;
-		this.field_92051_aB = (float)((par1 & 65280) >> 8) / 255.0F;
-		this.field_92052_aC = (float)((par1 & 255) >> 0) / 255.0F;
+		this.field_92050_aA = ((par1 & 16711680) >> 16) / 255.0F;
+		this.field_92051_aB = ((par1 & 65280) >> 8) / 255.0F;
+		this.field_92052_aC = ((par1 & 255) >> 0) / 255.0F;
 		this.field_92053_aD = true;
 	}
 
 	/**
 	 * returns the bounding box for this entity
 	 */
-	 public AxisAlignedBB getBoundingBox()
+	 @Override
+	public AxisAlignedBB getBoundingBox()
 	{
 		 return null;
 	}
@@ -72,12 +73,14 @@ public class ClosingRiftFX extends EntityFX
 	/**
 	 * Returns true if this entity should push and be pushed by other entities when colliding.
 	 */
-	 public boolean canBePushed()
+	 @Override
+	public boolean canBePushed()
 	 {
 		 return false;
 	 }
 
-	 public void renderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
+	 @Override
+	public void renderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
 	 {
 		 if (!this.field_92048_ay || this.particleAge < this.particleMaxAge / 3 || (this.particleAge + this.particleMaxAge) / 3 % 2 == 0)
 		 {
@@ -87,14 +90,14 @@ public class ClosingRiftFX extends EntityFX
 
 	 public void doRenderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
 	 {
-		 float var8 = (float)(super.particleTextureIndexX % 16) / 16.0F;
+		 float var8 = super.particleTextureIndexX % 16 / 16.0F;
 		 float var9 = var8 + 0.0624375F;
-		 float var10 = (float)(this.particleTextureIndexX / 16) / 16.0F;
+		 float var10 = this.particleTextureIndexX / 16 / 16.0F;
 		 float var11 = var10 + 0.0624375F;
 		 float var12 = 0.1F * this.particleScale;
-		 float var13 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)par2 - interpPosX);
-		 float var14 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)par2 - interpPosY);
-		 float var15 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)par2 - interpPosZ);
+		 float var13 = (float)(this.prevPosX + (this.posX - this.prevPosX) * par2 - interpPosX);
+		 float var14 = (float)(this.prevPosY + (this.posY - this.prevPosY) * par2 - interpPosY);
+		 float var15 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * par2 - interpPosZ);
 		 float var16 = 0.8F;
 
 		 if (PocketManager.getDimensionData(worldObj).isPocketDimension())
@@ -104,16 +107,17 @@ public class ClosingRiftFX extends EntityFX
 		 
 		 par1Tessellator.setColorRGBA_F(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7);
 
-		 par1Tessellator.addVertexWithUV((double)(var13 - par3 * var12 - par6 * var12), (double)(var14 - par4 * var12), (double)(var15 - par5 * var12 - par7 * var12), (double)var9, (double)var11);
-		 par1Tessellator.addVertexWithUV((double)(var13 - par3 * var12 + par6 * var12), (double)(var14 + par4 * var12), (double)(var15 - par5 * var12 + par7 * var12), (double)var9, (double)var10);
-		 par1Tessellator.addVertexWithUV((double)(var13 + par3 * var12 + par6 * var12), (double)(var14 + par4 * var12), (double)(var15 + par5 * var12 + par7 * var12), (double)var8, (double)var10);
-		 par1Tessellator.addVertexWithUV((double)(var13 + par3 * var12 - par6 * var12), (double)(var14 - par4 * var12), (double)(var15 + par5 * var12 - par7 * var12), (double)var8, (double)var11);
+		 par1Tessellator.addVertexWithUV(var13 - par3 * var12 - par6 * var12, var14 - par4 * var12, var15 - par5 * var12 - par7 * var12, var9, var11);
+		 par1Tessellator.addVertexWithUV(var13 - par3 * var12 + par6 * var12, var14 + par4 * var12, var15 - par5 * var12 + par7 * var12, var9, var10);
+		 par1Tessellator.addVertexWithUV(var13 + par3 * var12 + par6 * var12, var14 + par4 * var12, var15 + par5 * var12 + par7 * var12, var8, var10);
+		 par1Tessellator.addVertexWithUV(var13 + par3 * var12 - par6 * var12, var14 - par4 * var12, var15 + par5 * var12 - par7 * var12, var8, var11);
 	 }
 
 	 /**
 	  * Called to update the entity's position/logic.
 	  */
-	  public void onUpdate()
+	  @Override
+	public void onUpdate()
 	 {
 		 this.prevPosX = this.posX;
 		 this.prevPosY = this.posY;
@@ -126,7 +130,7 @@ public class ClosingRiftFX extends EntityFX
 
 		 if (this.particleAge > this.particleMaxAge / 2)
 		 {
-			 this.setAlphaF(1.0F - ((float)this.particleAge - (float)(this.particleMaxAge / 2)) / (float)this.particleMaxAge);
+			 this.setAlphaF(1.0F - ((float)this.particleAge - (float)(this.particleMaxAge / 2)) / this.particleMaxAge);
 
 			 if (this.field_92053_aD)
 			 {
@@ -168,7 +172,8 @@ public class ClosingRiftFX extends EntityFX
 		 }
 	 }
 
-	  public int getBrightnessForRender(float par1)
+	  @Override
+	public int getBrightnessForRender(float par1)
 	  {
 		  return 15728880;
 	  }
@@ -176,7 +181,8 @@ public class ClosingRiftFX extends EntityFX
 	  /**
 	   * Gets how bright this entity is.
 	   */
-	  public float getBrightness(float par1)
+	  @Override
+	public float getBrightness(float par1)
 	  {
 		  return 1.0F;
 	  }

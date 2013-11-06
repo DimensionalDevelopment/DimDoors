@@ -24,6 +24,7 @@ public class WeightedContainer<T> extends WeightedRandomItem {
 		return data;
 	}
 	
+	@Override
 	public WeightedContainer<T> clone()
 	{
 		return new WeightedContainer<T>(data, itemWeight);

@@ -17,7 +17,7 @@ public class BlockRotationHelper
 	{
 		HashMap<Integer,HashMap<Integer, Integer>> orientation0 = new HashMap<Integer,HashMap<Integer, Integer>>();
 		
-		HashMap<Integer,Integer> stairs0 = new HashMap();
+		HashMap<Integer,Integer> stairs0 = new HashMap<Integer,Integer>();
 		
 		stairs0.put(0, 2);
 		stairs0.put(1, 3);
