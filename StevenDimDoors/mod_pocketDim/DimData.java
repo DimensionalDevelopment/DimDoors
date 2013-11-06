@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-
+@Deprecated
 public class DimData implements Serializable
 {
         public int dimID;

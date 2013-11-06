@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.saving;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
+import StevenDimDoors.mod_pocketDim.util.ConfigurationProcessingException;
 import StevenDimDoors.mod_pocketDim.util.FileFilters;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
@@ -46,7 +48,14 @@ public class DDSaveHandler
 		}
 		
 		// Load the dimension blacklist
-		// --insert code here--
+		File blacklistFile = new File(basePath+"blacklist.txt");
+		
+		if(blacklistFile.exists())
+		{
+			BlacklistProcessor blacklistReader = new BlacklistProcessor();
+			List<Integer> blacklist = readBlacklist(blacklistFile,blacklistReader);
+			PocketManager.createAndRegisterBlacklist(blacklist);
+		}
 		
 		// List any dimension data files and read each dimension
 		DimDataProcessor reader = new DimDataProcessor();
@@ -179,7 +188,7 @@ public class DDSaveHandler
 		}
 	}
 	
-	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions) throws IOException
+	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions, List<Integer> blacklist) throws IOException
 	{
 		// Create the data directory for our dimensions
 		// Don't catch exceptions here. If we can't create this folder,
@@ -189,6 +198,9 @@ public class DDSaveHandler
 		File basePathFile = new File(basePath);
 		Files.createParentDirs(basePathFile);
 		basePathFile.mkdir();
+				
+		BlacklistProcessor blacklistReader = new BlacklistProcessor();
+		writeBlacklist(blacklist, blacklistReader,basePath);		
 		
 		FileFilter dataFileFilter = new FileFilters.RegexFileFilter("dim_-?\\d+\\.txt");
 		
@@ -212,6 +224,25 @@ public class DDSaveHandler
 		return succeeded;
 	}
 	
+	private static boolean writeBlacklist(List<Integer> blacklist, BlacklistProcessor writer, String basePath)
+	{
+		try
+		{
+			File tempFile = new File(basePath + "blacklist.tmp");
+			File saveFile = new File(basePath + "blacklist.txt");
+			writer.writeToFile(tempFile, blacklist);
+			saveFile.delete();
+			tempFile.renameTo(saveFile);
+			return true;
+		}
+		catch (Exception e)
+		{
+			System.err.println("Could not save blacklist. The following error occurred:");
+			printException(e, true);
+			return false;
+		}
+		
+	}
 	private static boolean writeDimension(IPackable<PackedDimData> dimension, DimDataProcessor writer, String basePath)
 	{
 		try
@@ -261,17 +292,29 @@ public class DDSaveHandler
 
 	//TODO - make this more robust
 	public static DungeonData unpackDungeonData(PackedDungeonData packedDungeon)
-	{
-		DungeonPack pack;
-		DungeonType type;
-		
+	{	
 		for(DungeonData data  : DungeonHelper.instance().getRegisteredDungeons())
 		{
 			if(data.schematicName().equals(packedDungeon.SchematicName))
 			{
-				//return data;
+				return data;
 			}
 		}
 		return null;
+	}
+
+	public static List<Integer> readBlacklist(File blacklistFile, BlacklistProcessor reader)
+	{
+	
+		try
+		{
+			return reader.readFromFile(blacklistFile);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 }

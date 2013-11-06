@@ -1,7 +1,7 @@
 package StevenDimDoors.mod_pocketDim;
 
 import java.io.Serializable;
-
+@Deprecated
 public class LinkData implements Serializable
 {
         

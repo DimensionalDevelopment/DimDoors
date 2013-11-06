@@ -67,9 +67,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		{
 			// not sure if this is kosher, we need it to explode, but not by throwing the IO exception. 
 			throw new ConfigurationProcessingException("Incorrectly formatted save data");
-		}
-		// TODO Auto-generated method stub
-		
+		}		
 	}
 	/**
 	 * Nightmare method that takes a JsonReader pointed at a serialized instance of PackedDimData
