@@ -52,10 +52,17 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 			return;
 		}
 
-		for(int chunks = (PocketBuilder.DEFAULT_POCKET_SIZE/16) + 1; chunks > 0; --chunks)
+		//TODO fix this
+		for(int chunksX = (PocketBuilder.DEFAULT_POCKET_SIZE/16) + 1; chunksX > 0; --chunksX)
 		{
-			ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair((xCoord >> 4) + chunks,
-					(zCoord >> 4) + chunks));
+			ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair((xCoord >> 4) + chunksX,
+					(zCoord >> 4)));
+			
+			for(int chunksZ = (PocketBuilder.DEFAULT_POCKET_SIZE/16) + 1; chunksZ > 0; --chunksZ)
+			{
+				ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair((xCoord >> 4),
+						(zCoord >> 4) + chunksZ));
+			}	
 		}	
 	}
 

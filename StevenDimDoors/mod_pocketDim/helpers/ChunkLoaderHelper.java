@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim.helpers;
 
 import StevenDimDoors.mod_pocketDim.IChunkLoader;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
@@ -26,9 +27,15 @@ public class ChunkLoaderHelper implements LoadingCallback
 			int goldDimDoorX = ticket.getModData().getInteger("goldDimDoorX");
 			int goldDimDoorY = ticket.getModData().getInteger("goldDimDoorY");
 			int goldDimDoorZ = ticket.getModData().getInteger("goldDimDoorZ");
-			IChunkLoader tile = (IChunkLoader) world.getBlockTileEntity(goldDimDoorX, goldDimDoorY, goldDimDoorZ);
-			tile.forceChunkLoading(ticket,goldDimDoorX,goldDimDoorZ);
-		
+			if(world.getBlockId(goldDimDoorX, goldDimDoorY, goldDimDoorZ)!=mod_pocketDim.properties.GoldDimDoorID)
+			{
+				ForgeChunkManager.releaseTicket(ticket);
+			}
+			else
+			{
+				IChunkLoader tile = (IChunkLoader) world.getBlockTileEntity(goldDimDoorX, goldDimDoorY, goldDimDoorZ);
+				tile.forceChunkLoading(ticket,goldDimDoorX,goldDimDoorZ);
+			}			
 		}
 	}
 

@@ -115,7 +115,7 @@ public class itemRiftRemover extends Item
 					 {
 						 stack.damageItem(1, player);
 					 }
-				player.worldObj.playSoundAtEntity(player, "mods.DimDoors.sfx.riftClose", 0.8f, 1);
+				player.worldObj.playSoundAtEntity(player, mod_pocketDim.modid+":riftClose", 0.8f, 1);
 				}
 			}
 		}

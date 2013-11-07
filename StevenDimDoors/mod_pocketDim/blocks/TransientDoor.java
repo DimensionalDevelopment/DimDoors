@@ -10,7 +10,7 @@ import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -37,7 +37,7 @@ public class TransientDoor extends BaseDimDoor
 		{
 			boolean canUse = true;
 			int metadata = world.getBlockMetadata(x, y - 1, z);
-			if (canUse && entity instanceof EntityLiving)
+			if (canUse && entity instanceof EntityPlayer)
 			{
 				// Don't check for non-living entities since it might not work right
 				canUse = BaseDimDoor.isEntityFacingDoor(metadata, (EntityLivingBase) entity);

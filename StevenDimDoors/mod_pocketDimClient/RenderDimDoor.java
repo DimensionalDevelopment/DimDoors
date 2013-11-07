@@ -22,8 +22,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderDimDoor extends TileEntitySpecialRenderer
 {
 	FloatBuffer field_76908_a = GLAllocation.createDirectFloatBuffer(16);
-	private ResourceLocation riftPath= new ResourceLocation(mod_pocketDim.modid+":/RIFT.png");
-	private ResourceLocation warpPath= new ResourceLocation(mod_pocketDim.modid+":/WARP.png");
+	private ResourceLocation riftPath= new ResourceLocation(mod_pocketDim.modid+":textures/other/RIFT.png");
+	private ResourceLocation warpPath= new ResourceLocation(mod_pocketDim.modid+":textures/other/WARP.png");
 
 	public RenderDimDoor()
 	{

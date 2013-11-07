@@ -186,7 +186,10 @@ public class TileEntityRift extends TileEntity
 			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 			if (dimension.getLink(xCoord, yCoord, zCoord) != null)
 			{
-				dimension.deleteLink(xCoord, yCoord, zCoord);
+				if(!this.worldObj.isRemote)
+				{
+					dimension.deleteLink(xCoord, yCoord, zCoord);
+				}
 				worldObj.playSound(xCoord, yCoord, zCoord, "mods.DimDoors.sfx.riftClose", (float) .7, 1, true);
 			}	
 		}

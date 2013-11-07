@@ -337,7 +337,11 @@ public abstract class NewDimData
 		{
 			linkList.remove(target);
 			//Raise deletion event
-			linkWatcher.onDeleted(target.source);
+			//TODO why is source null here?
+			if(target.source!=null)
+			{
+				linkWatcher.onDeleted(target.source);
+			}
 			target.clear();
 		}
 		return (target != null);
