@@ -398,11 +398,6 @@ public class DDTeleporter
 		if (player != null)
 		{
 			newWorld.getChunkProvider().loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
-			if(difDest)
-			{
-				 newWorld.getPlayerManager().addPlayer(player);
-			}
-
 			// Tell Forge we're moving its players so everyone else knows.
 			// Let's try doing this down here in case this is what's killing NEI.
 			GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);

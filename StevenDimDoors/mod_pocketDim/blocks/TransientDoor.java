@@ -11,6 +11,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
@@ -39,7 +40,7 @@ public class TransientDoor extends BaseDimDoor
 			if (canUse && entity instanceof EntityLiving)
 			{
 				// Don't check for non-living entities since it might not work right
-				canUse = BaseDimDoor.isEntityFacingDoor(metadata, (EntityLiving) entity);
+				canUse = BaseDimDoor.isEntityFacingDoor(metadata, (EntityLivingBase) entity);
 			}
 			if (canUse)
 			{

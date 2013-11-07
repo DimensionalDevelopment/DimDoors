@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -22,6 +23,9 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
 {
     private FloatBuffer field_76908_a = GLAllocation.createDirectFloatBuffer(16);
 	private static DDProperties properties = null;
+	private ResourceLocation riftPath= new ResourceLocation(mod_pocketDim.modid+":/RIFT.png");
+	private ResourceLocation warpPath= new ResourceLocation(mod_pocketDim.modid+":/WARP.png");
+
 	
     public RenderTransTrapdoor()
     {
@@ -62,8 +66,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
 
             if (count == 0)
             {
-                this.bindTextureByName("/RIFT.png");
-                // move files into assets/modid and change to new ResourceLocation(modid:/RIFT.png)
+                this.bindTexture(riftPath);
                 var17 = 0.1F;
                 var15 = 25.0F;
                 var16 = 0.125F;
@@ -73,7 +76,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
 
             if (count == 1)
             {
-                this.bindTextureByName("/WARP.png");
+                this.bindTexture(warpPath);
                 // move files into assets/modid and change to new ResourceLocation(modid:/WARP.png)
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);

@@ -9,6 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
@@ -389,7 +390,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			if (canUse && entity instanceof EntityPlayer)
 			{
 				// Dont check for non-player entites
-				canUse = isEntityFacingDoor(metadata, (EntityLiving) entity);
+				canUse = isEntityFacingDoor(metadata, (EntityLivingBase) entity);
 			}
 			if (canUse)
 			{
@@ -421,7 +422,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		return (metadata & 4) != 0;
 	}
 	
-	protected static boolean isEntityFacingDoor(int metadata, EntityLiving entity)
+	protected static boolean isEntityFacingDoor(int metadata, EntityLivingBase entity)
 	{
 		// Although any entity has the proper fields for this check,
 		// we should only apply it to living entities since things

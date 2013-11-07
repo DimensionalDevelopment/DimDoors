@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDimClient;
 
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -16,10 +17,14 @@ public class RenderMobObelisk extends RenderLiving
 		super(new ModelMobObelisk(), f);
 		this.obeliskModel = (ModelMobObelisk)this.mainModel;
 	}
+	
+
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity entity) {
-		// TODO Auto-generated method stub
-		return null;
+	protected ResourceLocation getEntityTexture(Entity entity) 
+	{
+		byte b0 = entity.getDataWatcher().getWatchableObjectByte(16);
+
+		return new ResourceLocation(mod_pocketDim.modid+":/textures/mobs/Monolith"+b0+".png");
 	}
 }

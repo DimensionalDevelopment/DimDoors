@@ -36,15 +36,15 @@ public class EventHookContainer
 	@ForgeSubscribe
 	public void onSoundLoad(SoundLoadEvent event) 
 	{
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/monk.ogg");
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/crack.ogg");
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/tearing.ogg");
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/rift.ogg");
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftStart.ogg");
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftEnd.ogg");
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftClose.ogg");
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftDoor.ogg");
-		event.manager.soundPoolMusic.addSound("mods/DimDoors/sfx/creepy.ogg");
+		event.manager.soundPoolSounds.addSound(mod_pocketDim.modid+":/sfx/monk.ogg");
+		event.manager.soundPoolSounds.addSound(mod_pocketDim.modid+":/sfx/crack.ogg");
+		event.manager.soundPoolSounds.addSound(mod_pocketDim.modid+":/sfx/tearing.ogg");
+		event.manager.soundPoolSounds.addSound(mod_pocketDim.modid+":/sfx/rift.ogg");
+		event.manager.soundPoolSounds.addSound(mod_pocketDim.modid+":/sfx/riftStart.ogg");
+		event.manager.soundPoolSounds.addSound(mod_pocketDim.modid+":/sfx/riftEnd.ogg");
+		event.manager.soundPoolSounds.addSound(mod_pocketDim.modid+":/sfx/riftClose.ogg");
+		event.manager.soundPoolSounds.addSound(mod_pocketDim.modid+":/sfx/riftDoor.ogg");
+		event.manager.soundPoolMusic.addSound(mod_pocketDim.modid+":/sfx/creepy.ogg");
 
 	}
 	@SideOnly(Side.CLIENT)

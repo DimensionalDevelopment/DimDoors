@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.ticking;
 
 import java.util.List;
 
+import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLiving;
@@ -36,7 +37,6 @@ public class MobMonolith extends EntityFlying implements IMob
 	public MobMonolith(World par1World) 
 	{
 		super(par1World);
-		this.texture="/mods/DimDoors/textures/mobs/Monolith0.png";
 		this.setSize(3F, 9.0F);
 		this.noClip=true;
 		this.scaleFactor= (float) ((rand.nextDouble()/2)+1);
@@ -88,10 +88,6 @@ public class MobMonolith extends EntityFlying implements IMob
 		{
 			this.setDead();
 		}
-
-		byte b0 = this.dataWatcher.getWatchableObjectByte(16);
-
-		this.texture="/mods/DimDoors/textures/mobs/Monolith"+b0+".png";
 		super.onEntityUpdate();
 
 		if (this.isEntityAlive() && this.isEntityInsideOpaqueBlock())
@@ -289,5 +285,10 @@ public class MobMonolith extends EntityFlying implements IMob
 		return this.worldObj.checkNoEntityCollision(this.boundingBox) &&
 				this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() &&
 				!this.worldObj.isAnyLiquid(this.boundingBox);
+	}
+	
+	public DataWatcher getDataWatcher()
+	{
+		return this.dataWatcher;
 	}
 }
