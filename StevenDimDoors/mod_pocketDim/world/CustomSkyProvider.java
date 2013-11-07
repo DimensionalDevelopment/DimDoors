@@ -18,6 +18,7 @@ public class CustomSkyProvider extends IRenderHandler
 	int starGLCallList;
 	int glSkyList;
 	int glSkyList2;
+    private static final ResourceLocation locationEndSkyPng = new ResourceLocation("textures/environment/end_sky.png");
 
 
 	public ResourceLocation getMoonRenderPath()
@@ -44,7 +45,7 @@ public class CustomSkyProvider extends IRenderHandler
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		RenderHelper.disableStandardItemLighting();
 		GL11.glDepthMask(false);
-		mc.renderEngine.bindTexture(new ResourceLocation("/misc/tunnel.png"));
+		mc.renderEngine.bindTexture((locationEndSkyPng));
 
 		if (mc.theWorld.provider.isSurfaceWorld())
 		{
