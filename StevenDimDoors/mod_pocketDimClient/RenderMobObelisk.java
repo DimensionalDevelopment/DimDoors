@@ -25,6 +25,6 @@ public class RenderMobObelisk extends RenderLiving
 	{
 		byte b0 = entity.getDataWatcher().getWatchableObjectByte(16);
 
-		return new ResourceLocation(mod_pocketDim.modid+":/textures/mobs/Monolith"+b0+".png");
+		return new ResourceLocation(mod_pocketDim.modid+":textures/mobs/Monolith"+b0+".png");
 	}
 }
