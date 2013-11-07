@@ -185,7 +185,7 @@ public class ItemRiftBlade extends ItemSword
 								BaseItemDoor.canPlace(world, x, y - 1, z))
 							{
 								ItemDimensionalDoor.placeDoorBlock(world, x, y - 1, z, orientation, mod_pocketDim.transientDoor);
-								player.worldObj.playSoundAtEntity(player,"mods.DimDoors.sfx.riftDoor", 0.6f, 1);
+								player.worldObj.playSoundAtEntity(player,mod_pocketDim.modid+":riftDoor", 0.6f, 1);
 								stack.damageItem(3, player);
 								return stack;
 							}

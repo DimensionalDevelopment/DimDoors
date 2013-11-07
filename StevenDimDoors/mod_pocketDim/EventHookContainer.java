@@ -117,21 +117,24 @@ public class EventHookContainer
     
     public void playMusicForDim(World world)
     {
-    	if(world.isRemote&&world.provider instanceof LimboProvider)
+    	if(world.isRemote)
     	{
-    		SoundSystem sndSystem =  FMLClientHandler.instance().getClient().sndManager.sndSystem;
-    		sndSystem.stop("BgMusic");
-    		SoundPoolEntry soundPoolEntry = FMLClientHandler.instance().getClient().sndManager.soundPoolMusic.getRandomSoundFromSoundPool(mod_pocketDim.modid+":creepy");
-    		
-    		if(soundPoolEntry!=null) 
-    		{
-				sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.getSoundUrl(), soundPoolEntry.getSoundName(), false);
-				sndSystem.play("LimboMusic");
-    		}
-    	}
-    	else if(world.isRemote && !(world.provider instanceof LimboProvider))
-    	{
-    		FMLClientHandler.instance().getClient().sndManager.sndSystem.stop("LimboMusic");
+    		SoundManager sndManager =  FMLClientHandler.instance().getClient().sndManager;
+
+	    	if(world.provider instanceof LimboProvider)
+	    	{
+	    		sndManager.sndSystem.stop("BgMusic");
+	    		SoundPoolEntry soundPoolEntry = sndManager.soundPoolMusic.getRandomSoundFromSoundPool(mod_pocketDim.modid+":creepy");
+	    		if(soundPoolEntry!=null) 
+	    		{
+	    			sndManager.sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.getSoundUrl(), soundPoolEntry.getSoundName(), false);
+	    			sndManager.sndSystem.play("LimboMusic");
+	    		}
+	    	}
+	    	else if(!(world.provider instanceof LimboProvider))
+	    	{
+	    		sndManager.sndSystem.stop("LimboMusic");
+	    	}
     	}
     }
 }

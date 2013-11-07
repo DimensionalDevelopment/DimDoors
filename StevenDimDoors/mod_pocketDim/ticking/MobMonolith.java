@@ -101,7 +101,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		{
 			if(this.soundTime<=0)
 			{
-				this.playSound("mods.DimDoors.sfx.monk",  1F, 1F);
+				this.playSound(mod_pocketDim.modid+":monk",  1F, 1F);
 				this.soundTime=100;
 			}
 
@@ -128,12 +128,12 @@ public class MobMonolith extends EntityFlying implements IMob
 					}
 					if (aggro>430&&this.soundTime<100)
 					{
-						this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,"mods.DimDoors.sfx.tearing",2F, 1F);
+						this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,mod_pocketDim.modid+":tearing",2F, 1F);
 						this.soundTime=100;
 					}
 					if (aggro>445&&this.soundTime<200)
 					{
-						this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,"mods.DimDoors.sfx.tearing",5F, 1F);
+						this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,mod_pocketDim.modid+":tearing",5F, 1F);
 						this.soundTime=200;
 					}
 				}
@@ -144,7 +144,7 @@ public class MobMonolith extends EntityFlying implements IMob
 					DDTeleporter.teleportEntity(entityPlayer, destination, false);
 
 					this.aggro = 0;
-					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.crack",13, 1);
+					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,mod_pocketDim.modid+":crack",13, 1);
 				}
 				if (!(this.worldObj.provider instanceof LimboProvider || this.worldObj.getClosestPlayerToEntity(this, 5) != null) || this.aggro > 300)
 				{

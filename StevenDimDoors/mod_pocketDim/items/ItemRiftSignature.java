@@ -99,14 +99,14 @@ public class ItemRiftSignature extends Item
 			}
 			clearSource(stack);
 			mod_pocketDim.sendChat(player,("Rift Created"));
-			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftEnd", 0.6f, 1);
+			world.playSoundAtEntity(player,mod_pocketDim.modid+":riftEnd", 0.6f, 1);
 		}
 		else
 		{
 			//The link signature has not been used. Store its current target as the first location. 
 			setSource(stack, x, adjustedY, z,orientation, PocketManager.getDimensionData(world));
 			mod_pocketDim.sendChat(player,("Location Stored in Rift Signature"));
-			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftStart", 0.6f, 1);
+			world.playSoundAtEntity(player,mod_pocketDim.modid+":riftStart", 0.6f, 1);
 		}
 		return true;
 	}
