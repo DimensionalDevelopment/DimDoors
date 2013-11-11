@@ -93,7 +93,7 @@ serverPacketHandlerSpec =
 @SidedPacketHandler(channels = {PacketConstants.CHANNEL_NAME}, packetHandler = ServerPacketHandler.class))
 public class mod_pocketDim
 {
-	public static final String version = "1.5.2R1.4.1RC1";
+	public static final String version = "1.6.2R2.1.1RC1";
 	public static final String modid = "dimdoors";
 
 	//need to clean up 

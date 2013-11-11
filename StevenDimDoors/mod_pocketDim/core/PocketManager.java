@@ -205,6 +205,8 @@ public class PocketManager
 	private static volatile boolean isLoading = false;
 	private static volatile boolean isLoaded = false;
 	private static volatile boolean isSaving = false;
+	public static volatile boolean isConnected = false;
+
 	private static final UpdateWatcherProxy<Point4D> linkWatcher = new UpdateWatcherProxy<Point4D>();
 	private static final UpdateWatcherProxy<ClientDimData> dimWatcher = new UpdateWatcherProxy<ClientDimData>();
 	private static ArrayList<NewDimData> rootDimensions = null;
@@ -586,6 +588,7 @@ public class PocketManager
 
 	public static void unload()
 	{
+		System.out.println("Unloading Pocket Dimensions...");
 		if (!isLoaded)
 		{
 			throw new IllegalStateException("Pocket dimensions have already been unloaded!");
@@ -596,6 +599,7 @@ public class PocketManager
 		dimensionData = null;
 		rootDimensions = null;
 		isLoaded = false;
+		isConnected = false;
 	}
 	
 	public static DimLink getLink(int x, int y, int z, World world)
@@ -687,10 +691,9 @@ public class PocketManager
 		
 		// Register pocket dimensions
 		DDProperties properties = DDProperties.instance();
-		
-		registerPockets(properties);
-		
+				
 		isLoaded = true;
 		isLoading = false;
+		isConnected = true;
 	}
 }

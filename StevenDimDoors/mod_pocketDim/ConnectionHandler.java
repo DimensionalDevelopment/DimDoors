@@ -56,7 +56,10 @@ public class ConnectionHandler implements IConnectionHandler
 	@Override
 	public void connectionClosed(INetworkManager manager) 
 	{ 
-		return; 
+		if(PocketManager.isConnected)
+		{
+			PocketManager.unload();
+		}
 	}
 
 	@Override
