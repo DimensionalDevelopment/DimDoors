@@ -672,19 +672,22 @@ public class PocketManager
 	}	
 	public static void readPacket(DataInputStream input) throws IOException
 	{
+		//TODO- figure out why this is getting called so frequently
 		if (isLoaded)
 		{
-			throw new IllegalStateException("Pocket dimensions have already been loaded!");
+			return;		
 		}
 		if (isLoading)
 		{
 			throw new IllegalStateException("Pocket dimensions are already loading!");
 		}
 		// Load compacted client-side dimension data
+		load();
 		Compactor.readDimensions(input, new DimRegistrationCallback());
 		
 		// Register pocket dimensions
 		DDProperties properties = DDProperties.instance();
+		
 		registerPockets(properties);
 		
 		isLoaded = true;
