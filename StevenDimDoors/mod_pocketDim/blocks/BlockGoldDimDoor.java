@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
@@ -37,7 +38,7 @@ public class BlockGoldDimDoor extends BaseDimDoor
 	@Override
 	public int getDrops()
 	{
-		return this.properties.GoldDoorItemID;
+		return mod_pocketDim.itemGoldDoor.itemID;
 	}
 	
 	@Override

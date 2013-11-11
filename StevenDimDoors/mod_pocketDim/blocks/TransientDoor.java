@@ -27,7 +27,7 @@ public class TransientDoor extends BaseDimDoor
 	public void enterDimDoor(World world, int x, int y, int z, Entity entity) 
 	{
 		// We need to ignore particle entities
-		if (world.isRemote || entity instanceof EntityFX)
+		if (world.isRemote)
 		{
 			return;
 		}
