@@ -14,9 +14,6 @@
 	<property name="mcp.dir" value="${forge.dir}/mcp" />
 	<property name="mcpsrc.dir" value="${mcp.dir}/src/minecraft" />
 	<property name="resources.dir" value="resources" />
-	
-	<property name="gson.url" value="https://google-gson.googlecode.com/files/google-gson-2.2.4-release.zip" />
-	<property name="gson.name" value="gson-2.2.4.zip" />
 
 	<property name="package.meta-inf" value="META-INF" />
 	<property name="build.ver" value="1.6.2" />
@@ -44,6 +41,8 @@
 			<fileset dir="StevenDimDoors" />
 		</copy>	
 	
+		
+		
 		<exec dir="${verclass.dir}" executable="sh" osfamily="unix" outputproperty="grep.out">
 			<arg value="-c"/>
 			<arg value="grep -o -P '[0-9.]+R[0-9.]+(RC[0-9]+)?(B[0-9]+)?' ${verclass.name}"/>
@@ -57,7 +56,6 @@
 	</target>
 
 	<available property="forge-exists" file="${download.dir}/minecraftforge-src-${forge.version}.zip" />
-	<available property="gson-exists" file="${mcpsrc.dir}/com/google/gson/Gson.java" />
 	<available property="already-compiled" file="${classes.dir}/deathrat" />
 	<condition property="should-download-ant-contrib">
 		<or>
@@ -67,27 +65,17 @@
 	</condition>
 
 	<target name="install" depends="build">
-		<copy todir="${classes.dir}/schematics" overwrite="true">
+		 <copy todir="${classes.dir}/schematics" overwrite="true">
 			<fileset dir="schematics" />
 		</copy>
 		<zip destfile="${dist.dir}/DimensionalDoors-${grep.out}-${build.number}.zip" basedir="${classes.dir}"/>
 		<delete dir="${classes.dir}" />
 		<delete dir="${mcp.dir}/reobf"/>
-		<delete dir="${mcpsrc.dir}/StevenDimDoors" />
-		<delete dir="${mcpsrc.dir}/Steven" />
-	</target>
-	
-	<target name="get-gson" unless="gson-exists">
-		<get src="${gson.url}" dest="${download.dir}/${gson.name}" />
-		<unzip src="${download.dir}/${gson.name}" dest="${download.dir}" />
-		<unzip src="${download.dir}/google-gson-2.2.4/gson-2.2.4-sources.jar" dest="${download.dir}/google-gson-2.2.4/"/>
-		<copy todir="${mcpsrc.dir}/com">
-			<fileset dir="${download.dir}/google-gson-2.2.4/com"/>
-		</copy>
+		<delete dir="${mcpsrc}/StevenDimDoors" />
+		<delete dir="${mcpsrc}/Steven" />
 	</target>
 
-	<target name="build" depends="get-version,get-gson" unless="already-compiled">
-		
+	<target name="build" depends="get-version" unless="already-compiled">
 		<!-- Recompile -->
 		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows" failonerror="true">
 			<arg line="/c recompile.bat"/>
@@ -150,18 +138,9 @@
 
 		<exec dir="${forge.dir}" executable="sh" osfamily="unix" inputstring="Yes\n">
 			<arg value="install.sh" />
-		</exec>
-		
-		<get src="http://mirror.technicpack.net/Technic/lib/fml/fml_libs15.zip" dest="${download.dir}/fml_libs15.zip" />
-		<unzip src="${download.dir}/fml_libs15.zip" dest="${lib.dir}/" />
-		
-		<exec dir="${forge.dir}" executable="cmd" osfamily="windows" inputstring="Yes">
-			<arg line="/c install.cmd"/>
+
 		</exec>
 
-		<exec dir="${forge.dir}" executable="sh" osfamily="unix" inputstring="Yes">
-			<arg value="install.sh" />
-		</exec>
 
 		<chmod file="${mcp.dir}/updatemd5.sh" perm="+x"/>
 		<chmod file="${mcp.dir}/recompile.sh" perm="+x"/>
@@ -176,17 +155,17 @@
 		</copy> -->
 	</target>
 
-	<target name="download-forge" depends="download-ant-contrib" unless="forge-exists">
-		<taskdef resource="net/sf/antcontrib/antlib.xml">
-			<classpath>
-				<pathelement location="${download.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
-				<fileset dir="${download.dir}/ant-contrib/lib">
-					<include name="*.jar"/>
-				</fileset>
-			</classpath>
-		</taskdef>
-		<echo message="Downloading forge... " />
-		<get src="${forge.url}" dest="${download.dir}/minecraftforge-src-${forge.version}.zip" />
+		<target name="download-forge" depends="download-ant-contrib" unless="forge-exists">
+			<taskdef resource="net/sf/antcontrib/antlib.xml">
+				<classpath>
+					<pathelement location="${download.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
+					<fileset dir="${download.dir}/ant-contrib/lib">
+						<include name="*.jar"/>
+					</fileset>
+				</classpath>
+			</taskdef>
+			<echo message="Downloading forge... " />
+			<get src="${forge.url}" dest="${download.dir}/minecraftforge-src-${forge.version}.zip" />
 	</target>
 
 
