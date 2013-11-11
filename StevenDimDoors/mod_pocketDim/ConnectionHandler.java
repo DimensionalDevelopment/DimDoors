@@ -19,25 +19,6 @@ public class ConnectionHandler implements IConnectionHandler
 	@Override
 	public String connectionReceived(NetLoginHandler netHandler, INetworkManager manager)
 	{
-		return null;
-	}
-
-	@Override
-	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager) { }
-	
-	@Override
-	public void connectionOpened(NetHandler netClientHandler,MinecraftServer server, INetworkManager manager) { }
-
-	@Override
-	public void connectionClosed(INetworkManager manager) { }
-
-	@Override
-	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login) { }
-
-	@Override
-	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager)
-	{
-		//Send information about all the registered dimensions and links to the client
 		try
 		{
 			Packet250CustomPayload packet = new Packet250CustomPayload();
@@ -56,5 +37,31 @@ public class ConnectionHandler implements IConnectionHandler
 			//This shouldn't happen...
 			e.printStackTrace();
 		}
+		return null;
+	}
+
+	@Override
+	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager) { }
+	
+	@Override
+	public void connectionOpened(NetHandler netClientHandler,MinecraftServer server, INetworkManager manager) { }
+
+	@Override
+	public void connectionClosed(INetworkManager manager) 
+	{
+		if(PocketManager.isConnected)
+		{
+			PocketManager.unload();
+		}
+	}
+
+	@Override
+	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login) { }
+
+	@Override
+	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager)
+	{
+		//Send information about all the registered dimensions and links to the client
+		
 	}
 }
