@@ -1,10 +1,13 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
+import java.util.Random;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
@@ -37,9 +40,9 @@ public class BlockGoldDimDoor extends BaseDimDoor implements IDimDoor
 	}
 	@Override
 	public int getDrops()
-	{
-		return this.properties.GoldDoorItemID;
-	}
+	{	
+		return mod_pocketDim.itemGoldDoor.itemID;
+	}	
 	
 	@Override
 	public TileEntity createNewTileEntity(World world)
