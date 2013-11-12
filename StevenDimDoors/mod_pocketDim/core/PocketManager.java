@@ -272,7 +272,7 @@ public class PocketManager
 			dimData.root=dimData;
 			dimData.parent=dimData;
 			dimData.isFilled=packedData.IsFilled;
-
+			dimData.origin = new Point4D(packedData.Origin.getX(),packedData.Origin.getY(),packedData.Origin.getZ(),packedData.ID);
 			PocketManager.rootDimensions.add(dimData);
 		}
 		else
@@ -280,7 +280,7 @@ public class PocketManager
 			InnerDimData test = PocketManager.dimensionData.get(packedData.ParentID);
 			dimData =  new InnerDimData(packedData.ID, test,true, packedData.IsDungeon, linkWatcher);
 			dimData.isFilled=packedData.IsFilled;
-			
+			dimData.origin = new Point4D(packedData.Origin.getX(),packedData.Origin.getY(),packedData.Origin.getZ(),packedData.ID);
 			dimData.root=PocketManager.getDimensionData(packedData.RootID);
 			
 			if(packedData.DungeonData!=null)
