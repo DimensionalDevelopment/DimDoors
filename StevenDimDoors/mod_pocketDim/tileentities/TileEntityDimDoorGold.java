@@ -44,20 +44,6 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 				chunkTicket.getModData().setInteger("goldDimDoorZ", zCoord);
 				forceChunkLoading(chunkTicket,this.xCoord,this.zCoord);
 			}
-			
-			for(Object chunk : this.chunkTicket.getChunkList())
-			{
-				for(int x = 0; x<16;x++)
-				{
-					for(int z = 0; z<16;z++)
-					{
-						this.worldObj.setBlock(((ChunkCoordIntPair)chunk).chunkXPos*16 + x, this.yCoord-2, ((ChunkCoordIntPair)chunk).chunkZPos*16 + z, Block.glowStone.blockID);
-					}
-				}
-			}
-			
-
-			
 		}
 	}
 
