@@ -24,24 +24,27 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 	  @Override
       public void updateEntity()
       { // every tick?
-              if (PocketManager.getDimensionData(this.worldObj) != null &&
-                              PocketManager.getDimensionData(this.worldObj).isPocketDimension() &&
-                              !this.worldObj.isRemote)
-              {
-                      if(PocketManager.getLink(this.xCoord,this.yCoord,this.zCoord,this.worldObj)==null)
-                      {
-                              return;
-                      }
-                      if (this.chunkTicket == null)
-                      {
-                              chunkTicket = ForgeChunkManager.requestTicket(mod_pocketDim.instance, worldObj, Type.NORMAL);
-                              chunkTicket.getModData().setInteger("goldDimDoorX", xCoord);
-                              chunkTicket.getModData().setInteger("goldDimDoorY", yCoord);
-                              chunkTicket.getModData().setInteger("goldDimDoorZ", zCoord);
-                              forceChunkLoading(chunkTicket,this.xCoord,this.zCoord);
-                      }
-
-              }
+		  if (PocketManager.getDimensionData(this.worldObj) != null &&
+				  PocketManager.getDimensionData(this.worldObj).isPocketDimension() &&
+				  !this.worldObj.isRemote)
+		  {
+			  if(PocketManager.getLink(this.xCoord,this.yCoord,this.zCoord,this.worldObj)==null)
+			  {
+				  return;
+			  }
+			  if (this.chunkTicket == null)
+			  {
+				  if(chunkTicket == null)
+				  {
+					  return;
+				  }
+				  chunkTicket = ForgeChunkManager.requestTicket(mod_pocketDim.instance, worldObj, Type.NORMAL);
+				  chunkTicket.getModData().setInteger("goldDimDoorX", xCoord);
+				  chunkTicket.getModData().setInteger("goldDimDoorY", yCoord);
+				  chunkTicket.getModData().setInteger("goldDimDoorZ", zCoord);
+				  forceChunkLoading(chunkTicket,this.xCoord,this.zCoord);
+			  }
+		  }
       }
 
       @Override
