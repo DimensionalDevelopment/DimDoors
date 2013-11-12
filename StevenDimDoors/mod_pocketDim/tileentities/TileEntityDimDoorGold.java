@@ -2,7 +2,9 @@ package StevenDimDoors.mod_pocketDim.tileentities;
 
 import StevenDimDoors.mod_pocketDim.IChunkLoader;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -43,15 +45,21 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 	@Override
 	public void forceChunkLoading(Ticket chunkTicket,int x,int z)
 	{
-		if (PocketManager.getDimensionData(chunkTicket.world) == null)
+		NewDimData data = PocketManager.getDimensionData(chunkTicket.world);
+		if (data == null)
 		{
 			return;
 		}
-		if (!PocketManager.getDimensionData(chunkTicket.world).isPocketDimension())
+		if (!data.isPocketDimension())
 		{
 			return;
 		}
-
+		
+		Point4D origin = data.origin();
+		switch (data.orientation())
+		{
+		
+		}
 		//TODO fix this
 		for(int chunksX = (PocketBuilder.DEFAULT_POCKET_SIZE/16) + 1; chunksX > 0; --chunksX)
 		{
