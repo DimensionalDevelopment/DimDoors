@@ -1,11 +1,14 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
+import java.awt.List;
+
 import StevenDimDoors.mod_pocketDim.IChunkLoader;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -29,49 +32,72 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 				PocketManager.getDimensionData(this.worldObj).isPocketDimension() &&
 				!this.worldObj.isRemote)
 		{ 
+			if(PocketManager.getLink(this.xCoord,this.yCoord,this.zCoord,this.worldObj)==null)
+			{
+				return;
+			}
 			if (this.chunkTicket == null)
 			{
 				chunkTicket = ForgeChunkManager.requestTicket(mod_pocketDim.instance, worldObj, Type.NORMAL);
+				chunkTicket.getModData().setInteger("goldDimDoorX", xCoord);
+				chunkTicket.getModData().setInteger("goldDimDoorY", yCoord);
+				chunkTicket.getModData().setInteger("goldDimDoorZ", zCoord);
+				forceChunkLoading(chunkTicket,this.xCoord,this.zCoord);
 			}
+			
+			for(Object chunk : this.chunkTicket.getChunkList())
+			{
+				for(int x = 0; x<16;x++)
+				{
+					for(int z = 0; z<16;z++)
+					{
+						this.worldObj.setBlock(((ChunkCoordIntPair)chunk).chunkXPos*16 + x, this.yCoord-2, ((ChunkCoordIntPair)chunk).chunkZPos*16 + z, Block.glowStone.blockID);
+					}
+				}
+			}
+			
 
-			chunkTicket.getModData().setInteger("goldDimDoorX", xCoord);
-			chunkTicket.getModData().setInteger("goldDimDoorY", yCoord);
-			chunkTicket.getModData().setInteger("goldDimDoorZ", zCoord);
-			ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair(xCoord >> 4, zCoord >> 4));
-			forceChunkLoading(chunkTicket,this.xCoord,this.zCoord);
+			
 		}
 	}
 
 	@Override
 	public void forceChunkLoading(Ticket chunkTicket,int x,int z)
 	{
-		NewDimData data = PocketManager.getDimensionData(chunkTicket.world);
-		if (data == null)
-		{
-			return;
-		}
-		if (!data.isPocketDimension())
-		{
-			return;
-		}
+		Point4D origin = PocketManager.getDimensionData(this.worldObj).origin();
+		int orientation = PocketManager.getDimensionData(this.worldObj).orientation();
 		
-		Point4D origin = data.origin();
-		switch (data.orientation())
-		{
+		int xOffset=0;
+		int zOffset=0;
 		
-		}
-		//TODO fix this
-		for(int chunksX = (PocketBuilder.DEFAULT_POCKET_SIZE/16) + 1; chunksX > 0; --chunksX)
+		switch(orientation)
 		{
-			ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair((xCoord >> 4) + chunksX,
-					(zCoord >> 4)));
-			
-			for(int chunksZ = (PocketBuilder.DEFAULT_POCKET_SIZE/16) + 1; chunksZ > 0; --chunksZ)
+		case 0:
+			xOffset = PocketBuilder.DEFAULT_POCKET_SIZE/2;
+			break;
+		case 1: 
+			zOffset = PocketBuilder.DEFAULT_POCKET_SIZE/2;
+
+			break;
+		case 2:
+			xOffset = -PocketBuilder.DEFAULT_POCKET_SIZE/2;
+
+			break;
+		case 3:
+			zOffset = -PocketBuilder.DEFAULT_POCKET_SIZE/2;
+
+			break;
+		}
+		for(int chunkX = -1; chunkX<2;chunkX++)
+		{
+			for(int chunkZ = -1; chunkZ<2;chunkZ++)
 			{
-				ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair((xCoord >> 4),
-						(zCoord >> 4) + chunksZ));
-			}	
-		}	
+				ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair((origin.getX()+xOffset >> 4)+chunkX, (origin.getZ()+zOffset >> 4)+chunkZ));
+			}
+		}
+	
+
+		
 	}
 
 	@Override
