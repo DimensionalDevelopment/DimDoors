@@ -230,13 +230,13 @@ public class DDProperties
 				"Sets the chance (out of " + MonolithSpawner.MAX_MONOLITH_SPAWNING_CHANCE + ") that Monoliths will " +
 				"spawn in a given Limbo chunk. The default chance is 28.").getInt();
 		
-		ClusterGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Cluster Generation Chance", 3,
+		ClusterGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Cluster Generation Chance", 2,
 				"Sets the chance (out of " + GatewayGenerator.MAX_CLUSTER_GENERATION_CHANCE + ") that a cluster of rifts will " +
-				"generate in a given chunk. The default chance is 3.").getInt();
+				"generate in a given chunk. The default chance is 2.").getInt();
 
-		GatewayGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Gateway Generation Chance", 10,
+		GatewayGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Gateway Generation Chance", 15,
 				"Sets the chance (out of " + GatewayGenerator.MAX_GATEWAY_GENERATION_CHANCE + ") that a Rift Gateway will " +
-				"generate in a given chunk. The default chance is 10.").getInt();
+				"generate in a given chunk. The default chance is 15.").getInt();
 
 		LimboBiomeID = config.get(CATEGORY_BIOME, "Limbo Biome ID", 251).getInt();
 		PocketBiomeID = config.get(CATEGORY_BIOME, "Pocket Biome ID", 250).getInt();

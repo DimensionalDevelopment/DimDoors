@@ -27,6 +27,7 @@ import StevenDimDoors.mod_pocketDim.saving.PackedLinkData;
 import StevenDimDoors.mod_pocketDim.saving.PackedLinkTail;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
+import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateSource;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 import StevenDimDoors.mod_pocketDim.watcher.UpdateWatcherProxy;
@@ -153,18 +154,20 @@ public class PocketManager
 		}
 	}
 	
-	private static class ClientLinkWatcher implements IUpdateWatcher<Point4D>
+	private static class ClientLinkWatcher implements IUpdateWatcher<ClientLinkData>
 	{
 		@Override
-		public void onCreated(Point4D source)
+		public void onCreated(ClientLinkData link)
 		{
+			Point4D source = link.point;
 			NewDimData dimension = getDimensionData(source.getDimension());
-			dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE);
+			dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE,link.orientation);
 		}
 
 		@Override
-		public void onDeleted(Point4D source)
+		public void onDeleted(ClientLinkData link)
 		{
+			Point4D source = link.point;
 			NewDimData dimension = getDimensionData(source.getDimension());
 			dimension.deleteLink(source.getX(), source.getY(), source.getZ());
 		}

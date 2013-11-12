@@ -11,6 +11,7 @@ import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
+import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
 
 public class CommandCreateDungeonRift extends DDCommandBase
 {
@@ -70,7 +71,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 			{
 				
 				dimension = PocketManager.getDimensionData(sender.worldObj);
-				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON);
+				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON,orientation);
 				sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
 
 				sender.sendChatToPlayer("Created a rift to a random dungeon.");
@@ -88,8 +89,9 @@ public class CommandCreateDungeonRift extends DDCommandBase
 					//Create a rift to our selected dungeon and notify the player
 					//TODO currently crashes, need to create the dimension first
 					dimension = PocketManager.getDimensionData(sender.worldObj);
-					link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON);
-					PocketManager.getDimensionData(link.destination().getDimension()).initializeDungeon(x, y + 1, z, orientation,link, result);
+					link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON,orientation);
+					PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result);
+					
 					sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
 					sender.sendChatToPlayer("Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
 				}
