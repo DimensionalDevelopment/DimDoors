@@ -119,79 +119,128 @@ public class PocketBuilder
 		
 	}
 	
-	public static boolean generateNewDungeonPocket(DimLink link, DDProperties properties)
-	{
-		if (link == null)
-		{
-			throw new IllegalArgumentException("link cannot be null.");
-		}
-		if (properties == null)
-		{
-			throw new IllegalArgumentException("properties cannot be null.");
-		}
-	
-		if (link.hasDestination())
-		{
-			throw new IllegalArgumentException("link cannot have a destination assigned already.");
-		}
-		
+	private static boolean buildDungeonPocket(DungeonData dungeon, NewDimData dimension, DimLink link, DungeonSchematic schematic,World world, DDProperties properties)
+    {
 
-		try
-		{
-			//Register a new dimension
-			NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
-			NewDimData dimension = PocketManager.registerPocket(parent, true);
-			
-			//Load a world
-			World world = PocketManager.loadDimension(dimension.id());
-			
-			if (world == null || world.provider == null)
-			{
-				System.err.println("Could not initialize dimension for a dungeon!");
-				return false;
-			}
-			
-			//Choose a dungeon to generate
-			Pair<DungeonData, DungeonSchematic> pair = selectDungeon(dimension, random, properties);
-			if (pair == null)
-			{
-				System.err.println("Could not select a dungeon for generation!");
-				return false;
-			}
-			DungeonData dungeon = pair.getFirst();
-			DungeonSchematic schematic = pair.getSecond();
-			
-			//Calculate the destination point
-			DungeonPackConfig packConfig = dungeon.dungeonType().Owner != null ? dungeon.dungeonType().Owner.getConfig() : null;
-			Point4D source = link.source();
-			int orientation = getDoorOrientation(source, properties);
-			Point3D destination;
-			
-			if (packConfig != null && packConfig.doDistortDoorCoordinates())
-			{
-				destination = calculateNoisyDestination(source, dimension, dungeon, orientation);
-			}
-			else
-			{
-				destination = new Point3D(source.getX(), source.getY(), source.getZ());
-			}
-			
-			destination.setY( yCoordHelper.adjustDestinationY(destination.getY(), world.getHeight(), schematic.getEntranceDoorLocation().getY(), schematic.getHeight()) );
-			
-			//Generate the dungeon
-			schematic.copyToWorld(world, destination, orientation, link, random);
-			
-			//Finish up destination initialization
-			dimension.initializeDungeon(destination.getX(), destination.getY(), destination.getZ(), orientation, link, dungeon);
-			dimension.setFilled(true);
-			return true;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
+            //Calculate the destination point
+            DungeonPackConfig packConfig = dungeon.dungeonType().Owner != null ? dungeon.dungeonType().Owner.getConfig() : null;
+            Point4D source = link.source();
+            int orientation = link.orientation();
+            Point3D destination;
+            
+            if (packConfig != null && packConfig.doDistortDoorCoordinates())
+            {
+                    destination = calculateNoisyDestination(source, dimension, dungeon, orientation);
+            }
+            else
+            {
+                    destination = new Point3D(source.getX(), source.getY(), source.getZ());
+            }
+            
+            destination.setY( yCoordHelper.adjustDestinationY(destination.getY(), world.getHeight(), schematic.getEntranceDoorLocation().getY(), schematic.getHeight()) );
+            
+            //Generate the dungeon
+            schematic.copyToWorld(world, destination, orientation, link, random);
+            
+            //Finish up destination initialization
+            dimension.initializeDungeon(destination.getX(), destination.getY(), destination.getZ(), orientation, link, dungeon);
+            dimension.setFilled(true);
+            return true;
+    
+    
+    }
+    
+    public static boolean generateSelectedDungeonPocket(DimLink link, DDProperties properties,DungeonData data)
+    {
+            if (link == null)
+            {
+                    throw new IllegalArgumentException("link cannot be null.");
+            }
+            if (properties == null)
+            {
+                    throw new IllegalArgumentException("properties cannot be null.");
+            }
+    
+            if (link.hasDestination())
+            {
+                    throw new IllegalArgumentException("link cannot have a destination assigned already.");
+            }
+            
+
+            
+                    //Register a new dimension
+                    NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
+                    NewDimData dimension = PocketManager.registerPocket(parent, true);
+                    
+                    //Load a world
+                    World world = PocketManager.loadDimension(dimension.id());
+                    
+                    if (world == null || world.provider == null)
+                    {
+                            System.err.println("Could not initialize dimension for a dungeon!");
+                            return false;
+                    }
+                    
+                    DungeonData dungeon = null;
+                    DungeonSchematic schematic = null;
+
+                    dungeon = data;
+                    if (data == null)
+                    {
+                            System.err.println("Could not select a dungeon for generation!");
+                            return false;
+                    }
+                    schematic = loadAndValidateDungeon(dungeon,properties);
+                    
+                    return PocketBuilder.buildDungeonPocket(dungeon, dimension, link, schematic, world, properties);
+                    
+    }
+    
+    
+    public static boolean generateNewDungeonPocket(DimLink link, DDProperties properties)
+    {
+            if (link == null)
+            {
+                    throw new IllegalArgumentException("link cannot be null.");
+            }
+            if (properties == null)
+            {
+                    throw new IllegalArgumentException("properties cannot be null.");
+            }
+    
+            if (link.hasDestination())
+            {
+                    throw new IllegalArgumentException("link cannot have a destination assigned already.");
+            }
+            
+
+            
+                    //Register a new dimension
+                    NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
+                    NewDimData dimension = PocketManager.registerPocket(parent, true);
+                    
+                    //Load a world
+                    World world = PocketManager.loadDimension(dimension.id());
+                    
+                    if (world == null || world.provider == null)
+                    {
+                            System.err.println("Could not initialize dimension for a dungeon!");
+                            return false;
+                    }
+                    
+                    //Choose a dungeon to generate
+                    Pair<DungeonData, DungeonSchematic> pair = selectDungeon(dimension, random, properties);
+                    if (pair == null)
+                    {
+                            System.err.println("Could not select a dungeon for generation!");
+                            return false;
+                    }
+                    DungeonData dungeon = pair.getFirst();
+                    DungeonSchematic schematic = pair.getSecond();
+                    
+                    return buildDungeonPocket(dungeon, dimension, link, schematic, world, properties);
+    }
+    
 	
 	private static Point3D calculateNoisyDestination(Point4D source, NewDimData dimension, DungeonData dungeon, int orientation)
 	{

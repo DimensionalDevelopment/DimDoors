@@ -12,6 +12,7 @@ import StevenDimDoors.mod_pocketDim.core.IDimRegistrationCallback;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 
 public class Compactor
 {
@@ -76,8 +77,9 @@ public class Compactor
 			int linkCount = input.readInt();
 			for (int h = 0; h < linkCount; h++)
 			{
-				Point4D source = Point4D.read(input);
-				dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE);
+				ClientLinkData link = ClientLinkData.read(input);
+				Point4D source = link.point;
+				dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE,link.orientation);
 			}
 		}
 	}

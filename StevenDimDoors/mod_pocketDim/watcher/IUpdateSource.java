@@ -4,5 +4,5 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public interface IUpdateSource
 {
-	public void registerWatchers(IUpdateWatcher<ClientDimData> dimWatcher, IUpdateWatcher<Point4D> linkWatcher);
+	public void registerWatchers(IUpdateWatcher<ClientDimData> dimWatcher, IUpdateWatcher<ClientLinkData> linkWatcher);
 }

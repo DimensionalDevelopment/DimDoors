@@ -96,7 +96,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 			DimLink link = dimension.getLink(x, y, z);
 			if (link == null && dimension.isPocketDimension())
 			{
-				dimension.createLink(x, y, z, LinkTypes.UNSAFE_EXIT);
+				dimension.createLink(x, y, z, LinkTypes.UNSAFE_EXIT,0);
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import StevenDimDoors.mod_pocketDim.PacketConstants;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
+import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateSource;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 
@@ -20,7 +21,7 @@ import net.minecraft.server.integrated.IntegratedServer;
 
 public class ClientPacketHandler implements IPacketHandler, IUpdateSource
 {
-	private IUpdateWatcher<Point4D> linkWatcher;
+	private IUpdateWatcher<ClientLinkData> linkWatcher;
 	private IUpdateWatcher<ClientDimData> dimWatcher;
 	
 	public ClientPacketHandler()
@@ -29,7 +30,7 @@ public class ClientPacketHandler implements IPacketHandler, IUpdateSource
 	}
 
 	@Override
-	public void registerWatchers(IUpdateWatcher<ClientDimData> dimWatcher, IUpdateWatcher<Point4D> linkWatcher)
+	public void registerWatchers(IUpdateWatcher<ClientDimData> dimWatcher, IUpdateWatcher<ClientLinkData> linkWatcher)
 	{
 		this.dimWatcher = dimWatcher;
 		this.linkWatcher = linkWatcher;
@@ -59,13 +60,13 @@ public class ClientPacketHandler implements IPacketHandler, IUpdateSource
 					dimWatcher.onCreated( ClientDimData.read(input) );
 					break;
 				case PacketConstants.CREATE_LINK_PACKET_ID:
-					linkWatcher.onCreated( Point4D.read(input) );
+					linkWatcher.onCreated( ClientLinkData.read(input) );
 					break;
 				case PacketConstants.DELETE_DIM_PACKET_ID:
 					dimWatcher.onDeleted( ClientDimData.read(input) );
 					break;
 				case PacketConstants.DELETE_LINK_PACKET_ID:
-					linkWatcher.onDeleted( Point4D.read(input) );
+					linkWatcher.onDeleted( ClientLinkData.read(input) );
 					break;
 			}
 		}

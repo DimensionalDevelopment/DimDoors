@@ -245,10 +245,6 @@ public abstract class NewDimData
 	{
 		return Math.abs(i) + Math.abs(j) + Math.abs(k);
 	}
-	public DimLink createLink(int x, int y, int z, int linkType)
-	{
-		return createLink(new Point4D(x, y, z, id), linkType,0);
-	}
 	public DimLink createLink(int x, int y, int z, int linkType,int orientation)
 	{
 		return createLink(new Point4D(x, y, z, id), linkType,orientation);
