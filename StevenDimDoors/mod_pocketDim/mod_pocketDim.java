@@ -321,8 +321,14 @@ public class mod_pocketDim
 		CommandCreatePocket.instance().register(event);
 		CommandTeleportPlayer.instance().register(event);
 
-
-		ChunkLoaderHelper.loadChunkForcedWorlds(event);
+		try
+		{
+			ChunkLoaderHelper.loadChunkForcedWorlds(event);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Loading chunkloaders failed");
+		}
 	}
 	
 	public static void sendChat(EntityPlayer player, String message)

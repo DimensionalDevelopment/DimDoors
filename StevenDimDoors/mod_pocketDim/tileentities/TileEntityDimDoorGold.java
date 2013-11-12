@@ -39,6 +39,10 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 			if (this.chunkTicket == null)
 			{
 				chunkTicket = ForgeChunkManager.requestTicket(mod_pocketDim.instance, worldObj, Type.NORMAL);
+				if(chunkTicket == null)
+				{
+					return;
+				}
 				chunkTicket.getModData().setInteger("goldDimDoorX", xCoord);
 				chunkTicket.getModData().setInteger("goldDimDoorY", yCoord);
 				chunkTicket.getModData().setInteger("goldDimDoorZ", zCoord);
