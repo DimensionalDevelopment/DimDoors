@@ -14,6 +14,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
@@ -34,6 +35,17 @@ public class MobMonolith extends EntityFlying implements IMob
 	int destY = 0;
 	int destZ = 0;
 
+	@Override
+	protected void damageEntity(DamageSource par1DamageSource, float par2)
+    {
+      return;
+    }
+	
+	@Override
+	public boolean attackEntityFrom(DamageSource par1DamageSource, float par2)
+    {
+		return false;
+    }
 	public MobMonolith(World par1World) 
 	{
 		super(par1World);
@@ -200,6 +212,10 @@ public class MobMonolith extends EntityFlying implements IMob
 		if(!(par1DamageSource == DamageSource.inWall))
 		{
 			this.aggro=400;
+		}
+		else
+		{
+			this.posY=posY+1;
 		}
 		return false;
 	}
