@@ -14,7 +14,7 @@
 
 	<property name="build.dir" value="build" />
 	<property name="classes.dir" value="${build.dir}/packaging" />
-	<property name="resourcePack.dir" value="${classes.dir}/assets/" />
+	<property name="resourcePack.dir" value="${classes.dir}" />
 	<property name="schematicPack.dir" value="${classes.dir}/schematics/" />
 	<property name="apiclasses.dir" value="${build.dir}/api-packaging" />
 	<property name="forge.version" value="${minecraft.version}-${forge.forgeversion}.${forge.buildnum}" />
@@ -142,10 +142,6 @@
 		
 		<copy todir="${classes.dir}">
 			<fileset file="${resources.dir}/pack.mcmeta" />
-		</copy>
-		
-		<copy todir="${classes.dir}">
-			<fileset file="${resources.dir}/dimdoors_logo.png" />
 		</copy>
 		
 		<delete file="${resourcePack.dir}/mcmod.info" />
