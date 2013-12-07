@@ -36,15 +36,15 @@ public class EventHookContainer
 	@ForgeSubscribe
 	public void onSoundLoad(SoundLoadEvent event) 
 	{
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/monk.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/monk.ogg")));
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/crack.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/crack.ogg")));
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/tearing.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/tearing.ogg")));
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/rift.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/rift.ogg")));
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftStart.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/riftStart.ogg")));
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftEnd.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/riftEnd.ogg")));
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftClose.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/riftClose.ogg")));
-		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftDoor.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/riftDoor.ogg")));
-		event.manager.soundPoolMusic.addSound("mods/DimDoors/sfx/creepy.ogg", (mod_pocketDim.class.getResource("/mods/DimDoors/sfx/creepy.ogg")));
+		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/monk.ogg");
+		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/crack.ogg");
+		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/tearing.ogg");
+		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/rift.ogg");
+		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftStart.ogg");
+		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftEnd.ogg");
+		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftClose.ogg");
+		event.manager.soundPoolSounds.addSound("mods/DimDoors/sfx/riftDoor.ogg");
+		event.manager.soundPoolMusic.addSound("mods/DimDoors/sfx/creepy.ogg");
 
 	}
 	@SideOnly(Side.CLIENT)
@@ -96,7 +96,7 @@ public class EventHookContainer
     		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(player.worldObj.rand);
     		Point4D destination = new Point4D((int) (coords.posX+entity.posX), coords.posY, (int) (coords.posZ+entity.posZ ), mod_pocketDim.properties.LimboDimensionID);
     		DDTeleporter.teleportEntity(player, destination, false);
-    		player.setEntityHealth(player.getMaxHealth());
+    		player.setHealth(player.getMaxHealth());
     		event.setCanceled(true);
     		return false;
     	}
@@ -119,7 +119,7 @@ public class EventHookContainer
     		SoundSystem sndSystem =  FMLClientHandler.instance().getClient().sndManager.sndSystem;
     		sndSystem.stop("BgMusic");
     		SoundPoolEntry soundPoolEntry = FMLClientHandler.instance().getClient().sndManager.soundPoolMusic.getRandomSoundFromSoundPool("mods.DimDoors.sfx.creepy");
-    		sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.soundUrl, soundPoolEntry.soundName, false);
+    		sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.getSoundUrl(), soundPoolEntry.getSoundName(), false);
     		sndSystem.play("LimboMusic");
     	}
     	else if(world.isRemote && !(world.provider instanceof LimboProvider))

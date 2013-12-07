@@ -11,6 +11,7 @@ import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
@@ -34,6 +35,11 @@ public class CommandTeleportPlayer extends DDCommandBase
 			instance = new CommandTeleportPlayer();
 		}
 		return instance;
+	}
+
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "Usage: /dd-tp <player name> <dimension id> <x> <y> <z>";
 	}
 
 	/**

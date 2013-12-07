@@ -357,13 +357,13 @@ public class DDTeleporter
 				oldWorld.getChunkFromChunkCoords(entX, entZ).isModified = true;
 			}
 			// Memory concerns.
-			oldWorld.releaseEntitySkin(entity);
+			oldWorld.onEntityRemoved(entity);
 
 			if (player == null) // Are we NOT working with a player?
 			{
 				NBTTagCompound entityNBT = new NBTTagCompound();
 				entity.isDead = false;
-				entity.addEntityID(entityNBT);
+				entity.writeMountToNBT(entityNBT);
 				entity.isDead = true;
 				entity = EntityList.createEntityFromNBT(entityNBT, newWorld);
 

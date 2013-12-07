@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.commands;
 
 import java.util.ArrayList;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -27,6 +28,11 @@ public class CommandDeleteRifts extends DDCommandBase
 	}
 
 	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "Usage: /dd-??? <dimension ID>";
+	}
+
+	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		int linksRemoved=0;
@@ -41,7 +47,7 @@ public class CommandDeleteRifts extends DDCommandBase
 		{
 			targetDim=0;
 			shouldGo=false;
-			sender.sendChatToPlayer("Error-Invalid argument, delete_all_links <targetDimID>");
+			sender.addChatMessage("Error-Invalid argument, delete_all_links <targetDimID>");
 		}
 
 		if(shouldGo)
@@ -61,7 +67,7 @@ public class CommandDeleteRifts extends DDCommandBase
 						dim.deleteLink(link);
 					}
 				}
-				sender.sendChatToPlayer("Removed " + linksRemoved + " rifts.");
+				sender.addChatMessage("Removed " + linksRemoved + " rifts.");
 			
 		}
 		return DDCommandResult.SUCCESS; //TEMPORARY HACK

@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -36,7 +37,7 @@ public class MobMonolith extends EntityFlying implements IMob
 	public MobMonolith(World par1World) 
 	{
 		super(par1World);
-		this.texture="/mods/DimDoors/textures/mobs/Monolith0.png";
+		this.getDataWatcher().addObject(16,0);
 		this.setSize(3F, 9.0F);
 		this.noClip=true;
 		this.scaleFactor= (float) ((rand.nextDouble()/2)+1);
@@ -55,10 +56,10 @@ public class MobMonolith extends EntityFlying implements IMob
 	}
 
 	@Override
-	public int getMaxHealth() 
+	protected void applyEntityAttributes()
 	{
-		// TODO Auto-generated method stub
-		return 20;
+		super.applyEntityAttributes();
+		this.getAttributeMap().func_111150_b(SharedMonsterAttributes.maxHealth).setAttribute(20);
 	}
 
 	public boolean canBePushed()
@@ -93,9 +94,6 @@ public class MobMonolith extends EntityFlying implements IMob
 			this.setDead();
 		}
 
-		byte b0 = this.dataWatcher.getWatchableObjectByte(16);
-
-		this.texture="/mods/DimDoors/textures/mobs/Monolith"+b0+".png";
 		super.onEntityUpdate();
 
 		if (this.isEntityAlive() && this.isEntityInsideOpaqueBlock())

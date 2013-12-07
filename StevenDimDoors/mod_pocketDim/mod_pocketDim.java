@@ -94,7 +94,7 @@ serverPacketHandlerSpec =
 
 public class mod_pocketDim
 {
-	public static final String version = "1.5.2R2.0.1RC1";
+	public static final String version = "$VERSION$";
 	public static final String modid = "DimDoors";
 
 	//need to clean up 

@@ -63,10 +63,10 @@ public abstract class DDCommandBase extends CommandBase
 				//Send the argument formats for this command
 				for (String format : formats)
 				{
-					player.sendChatToPlayer("Usage: " + name + " " + format);
+					player.addChatMessage("Usage: " + name + " " + format);
 				}
 			}
-			player.sendChatToPlayer(result.getMessage());
+			player.addChatMessage(result.getMessage());
 		}
 	}
 }

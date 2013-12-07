@@ -66,7 +66,7 @@ public class BlockRift extends BlockContainer
 	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2());
+		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().substring(5));
 	}
 	
 	//sends a packet informing the client that there is a link present so it renders properly. (when placed)

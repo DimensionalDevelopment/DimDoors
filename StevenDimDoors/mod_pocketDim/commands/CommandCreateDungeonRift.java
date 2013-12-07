@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.commands;
 
 import java.util.Collection;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -31,6 +32,13 @@ public class CommandCreateDungeonRift extends DDCommandBase
 	}
 
 	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "Usage: /dd-rift <dungeon name>\r\n" +
+				"       /dd-rift list\r\n" +
+				"       /dd-rift random";
+	}
+
+	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		NewDimData dimension;
@@ -54,9 +62,9 @@ public class CommandCreateDungeonRift extends DDCommandBase
 			Collection<String> dungeonNames = dungeonHelper.getDungeonNames();
 			for (String name : dungeonNames)
 			{
-				sender.sendChatToPlayer(name);
+				sender.addChatMessage(name);
 			}
-			sender.sendChatToPlayer("");
+			sender.addChatMessage("");
 		}
 		else
 		{
@@ -74,7 +82,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON,orientation);
 				sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
 
-				sender.sendChatToPlayer("Created a rift to a random dungeon.");
+				sender.addChatMessage("Created a rift to a random dungeon.");
 			}
 			else
 			{
@@ -93,7 +101,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 					PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result);
 					
 					sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
-					sender.sendChatToPlayer("Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
+					sender.addChatMessage("Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
 				}
 				else
 				{

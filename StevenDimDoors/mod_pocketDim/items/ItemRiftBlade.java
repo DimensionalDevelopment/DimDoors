@@ -2,11 +2,15 @@ package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
 
+import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumToolMaterial;
@@ -60,10 +64,12 @@ public class ItemRiftBlade extends ItemSword
 	}
 
 	@Override
-    public int getDamageVsEntity(Entity par1Entity)
-    {
-        return 7;
-    }
+	public Multimap getItemAttributeModifiers()
+	{
+		Multimap multimap = super.getItemAttributeModifiers();
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double)7, 0));
+		return multimap;
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -73,7 +79,7 @@ public class ItemRiftBlade extends ItemSword
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving)
+	public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLiving, EntityLivingBase par3EntityLiving)
 	{
 		par1ItemStack.damageItem(1, par3EntityLiving);
 		return true;

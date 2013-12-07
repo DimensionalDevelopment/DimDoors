@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import StevenDimDoors.mod_pocketDim.DDProperties;
@@ -62,7 +63,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
 
             if (count == 0)
             {
-                this.bindTextureByName("/RIFT.png");
+                this.bindTexture(new ResourceLocation("/RIFT.png"));
                 var17 = 0.1F;
                 var15 = 25.0F;
                 var16 = 0.125F;
@@ -72,7 +73,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
 
             if (count == 1)
             {
-                this.bindTextureByName("/WARP.png");
+                this.bindTexture(new ResourceLocation("/WARP.png"));
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
                 var16 = .5F;

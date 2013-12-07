@@ -59,8 +59,8 @@ public class BlockDimWall extends Block
 	
 	public void registerIcons(IconRegister par1IconRegister)
     {
-        this.blockIcon[0] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2());
-        this.blockIcon[1] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName2() + "Perm");
+        this.blockIcon[0] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().substring(5));
+        this.blockIcon[1] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().substring(5) + "Perm");
     }
 	
 	@SideOnly(Side.CLIENT)
