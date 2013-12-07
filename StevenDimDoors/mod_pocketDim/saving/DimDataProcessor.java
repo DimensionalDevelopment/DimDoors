@@ -1,22 +1,16 @@
 package StevenDimDoors.mod_pocketDim.saving;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
 
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.util.BaseConfigurationProcessor;
@@ -33,6 +27,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		{
 			JsonReader reader = new JsonReader(new InputStreamReader(inputStream, "UTF-8"));
 			PackedDimData data = this.createDImDataFromJson(reader);
+			reader.close();
 			return data;
 		}
 		catch (IOException e)
@@ -92,7 +87,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		reader.beginObject();
 		
 		reader.nextName();
-		if(reader.nextLong()!=PackedDimData.SAVE_DATA_VERSION_ID)
+		if (reader.nextLong() != PackedDimData.SAVE_DATA_VERSION_ID)
 		{
 			throw new IOException("Save data version mismatch");
 		}
@@ -182,7 +177,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		List<Integer> list = new ArrayList<Integer>();
 		reader.beginArray();
 		
-		while(reader.peek()!= JsonToken.END_ARRAY)
+		while (reader.peek() != JsonToken.END_ARRAY)
 		{
 			list.add(reader.nextInt());
 			
@@ -197,7 +192,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		
 		reader.beginArray();
 		
-		while(reader.peek()!= JsonToken.END_ARRAY)
+		while (reader.peek() != JsonToken.END_ARRAY)
 		{
 			list.add(createLinkDataFromJson(reader));
 		}
@@ -230,7 +225,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		reader.nextName();
 		reader.beginArray();
 		
-		while(reader.peek() != JsonToken.END_ARRAY)
+		while (reader.peek() != JsonToken.END_ARRAY)
 		{
 			children.add(this.createPointFromJson(reader));
 		}
@@ -250,6 +245,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		String DungeonPackName;
 		
 		reader.beginObject();
+		@SuppressWarnings("unused")
 		JsonToken test = reader.peek();
 		
 		if(reader.peek() == JsonToken.END_OBJECT)
@@ -283,13 +279,14 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 	}
 	private PackedLinkTail createLinkTailFromJson(JsonReader reader) throws IOException
 	{
-		Point4D destination=null;
+		Point4D destination = null;
 		int linkType;
 		reader.beginObject();
 		reader.nextName();
 		
-		JsonToken test =reader.peek();
-		if(reader.peek()==JsonToken.BEGIN_OBJECT)
+		@SuppressWarnings("unused")
+		JsonToken test = reader.peek();
+		if (reader.peek() == JsonToken.BEGIN_OBJECT)
 		{
 			destination = this.createPoint4DFromJson(reader);
 			reader.nextName();

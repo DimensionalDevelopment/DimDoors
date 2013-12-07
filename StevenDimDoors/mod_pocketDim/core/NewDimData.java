@@ -14,6 +14,7 @@ import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 
+@SuppressWarnings("deprecation")
 public abstract class NewDimData
 {
 	private static class InnerDimLink extends DimLink
@@ -244,7 +245,6 @@ public abstract class NewDimData
 	{
 		return Math.abs(i) + Math.abs(j) + Math.abs(k);
 	}
-	
 	public DimLink createLink(int x, int y, int z, int linkType,int orientation)
 	{
 		return createLink(new Point4D(x, y, z, id), linkType,orientation);
@@ -333,7 +333,11 @@ public abstract class NewDimData
 		{
 			linkList.remove(target);
 			//Raise deletion event
-			linkWatcher.onDeleted(target.source);
+			//TODO why is source null here?
+			if(target.source!=null)
+			{
+				linkWatcher.onDeleted(target.source);
+			}
 			target.clear();
 		}
 		return (target != null);

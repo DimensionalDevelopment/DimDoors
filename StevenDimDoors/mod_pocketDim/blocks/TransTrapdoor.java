@@ -8,7 +8,6 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemDoor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -17,9 +16,9 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 
+@SuppressWarnings("deprecation")
 public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntityProvider
 {
 
@@ -32,7 +31,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().substring(5));
+		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
 	}
 
 	//Teleports the player to the exit link of that dimension, assuming it is a pocket
@@ -65,6 +64,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 		this.updateAttachedTile(world, x, y, z);
 	}
 	
+	@Override
 	public void updateTick(World world, int x, int y, int z, Random random) 
 	{
 		TileEntityTransTrapdoor tile = (TileEntityTransTrapdoor) world.getBlockTileEntity(x, y, z);

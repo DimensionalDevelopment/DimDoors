@@ -47,6 +47,7 @@ public class CompactBoundsOperation extends WorldOperation
 		return true;
 	}
 	
+	@Override
 	protected boolean finish()
 	{
 		if (minX == Integer.MAX_VALUE)

@@ -47,7 +47,7 @@ public class CommandCreatePocket extends DDCommandBase
 			DungeonHelper.instance().createCustomDungeonDoor(sender.worldObj, x, y, z);
 			
 			//Notify the player
-			sender.addChatMessage("Created a door to a pocket dimension. Please build your dungeon there.");
+			sendChat(sender,("Created a door to a pocket dimension. Please build your dungeon there."));
 		}
 		return DDCommandResult.SUCCESS;
 	}

@@ -60,6 +60,7 @@ public class GatewayGenerator implements IWorldGenerator
 		int attempts;
 		int correction;
 		boolean valid;
+		@SuppressWarnings("deprecation")
 		DimLink link;
 		NewDimData dimension;
 		

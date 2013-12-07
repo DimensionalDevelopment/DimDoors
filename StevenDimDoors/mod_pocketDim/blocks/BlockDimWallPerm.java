@@ -30,21 +30,25 @@ public class BlockDimWallPerm extends Block
 			properties = DDProperties.instance();
 	}
 
+	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().substring(5));
+		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
 	}
 
+	@Override
 	public int quantityDropped(Random par1Random)
 	{
 		return 0;
 	}
 
+	@Override
 	public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {}
 
 	/**
 	 * Only matters if the player is in limbo, acts to teleport the player from limbo back to dim 0
 	 */
+	@Override
 	public void onEntityWalking(World world, int x, int y, int z, Entity entity) 
 	{
 		if (!world.isRemote && world.provider.dimensionId == properties.LimboDimensionID)

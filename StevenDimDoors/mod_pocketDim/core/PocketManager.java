@@ -36,6 +36,7 @@ import StevenDimDoors.mod_pocketDim.watcher.UpdateWatcherProxy;
  * This class regulates all the operations involving the storage and manipulation of dimensions. It handles saving dim data, teleporting the player, and 
  * creating/registering new dimensions as well as loading old dimensions on startup
  */
+@SuppressWarnings("deprecation")
 public class PocketManager
 {	
 	private static class InnerDimData extends NewDimData implements IPackable<PackedDimData>
@@ -154,24 +155,24 @@ public class PocketManager
 		}
 	}
 	
-	private static class ClientLinkWatcher implements IUpdateWatcher<ClientLinkData>
-	{
-		@Override
-		public void onCreated(ClientLinkData link)
-		{
-			Point4D source = link.point;
-			NewDimData dimension = getDimensionData(source.getDimension());
-			dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE,link.orientation);
-		}
+	  private static class ClientLinkWatcher implements IUpdateWatcher<ClientLinkData>
+      {
+		  @Override
+		  public void onCreated(ClientLinkData link)
+		  {
+			  Point4D source = link.point;
+			  NewDimData dimension = getDimensionData(source.getDimension());
+			  dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE,link.orientation);
+		  }
 
-		@Override
-		public void onDeleted(ClientLinkData link)
-		{
-			Point4D source = link.point;
-			NewDimData dimension = getDimensionData(source.getDimension());
-			dimension.deleteLink(source.getX(), source.getY(), source.getZ());
-		}
-	}
+		  @Override
+		  public void onDeleted(ClientLinkData link)
+		  {
+			  Point4D source = link.point;
+			  NewDimData dimension = getDimensionData(source.getDimension());
+			  dimension.deleteLink(source.getX(), source.getY(), source.getZ());
+              }
+      }
 	
 	private static class ClientDimWatcher implements IUpdateWatcher<ClientDimData>
 	{
@@ -276,6 +277,7 @@ public class PocketManager
 			dimData.parent=dimData;
 			dimData.isFilled=packedData.IsFilled;
 			dimData.origin = new Point4D(packedData.Origin.getX(),packedData.Origin.getY(),packedData.Origin.getZ(),packedData.ID);
+
 			PocketManager.rootDimensions.add(dimData);
 		}
 		else
@@ -284,6 +286,7 @@ public class PocketManager
 			dimData =  new InnerDimData(packedData.ID, test,true, packedData.IsDungeon, linkWatcher);
 			dimData.isFilled=packedData.IsFilled;
 			dimData.origin = new Point4D(packedData.Origin.getX(),packedData.Origin.getY(),packedData.Origin.getZ(),packedData.ID);
+
 			dimData.root=PocketManager.getDimensionData(packedData.RootID);
 			
 			if(packedData.DungeonData!=null)
@@ -596,8 +599,7 @@ public class PocketManager
 
 	public static void unload()
 	{
-		System.out.println("Dimensional Doors unloading...");
-
+		System.out.println("Unloading Pocket Dimensions...");
 		if (!isLoaded)
 		{
 			throw new IllegalStateException("Pocket dimensions have already been unloaded!");
@@ -685,9 +687,10 @@ public class PocketManager
 	}	
 	public static void readPacket(DataInputStream input) throws IOException
 	{
+		//TODO- figure out why this is getting called so frequently
 		if (isLoaded)
 		{
-			throw new IllegalStateException("Pocket dimensions have already been loaded!");
+			return;		
 		}
 		if (isLoading)
 		{
@@ -696,8 +699,12 @@ public class PocketManager
 		// Load compacted client-side dimension data
 		load();
 		Compactor.readDimensions(input, new DimRegistrationCallback());
-		isConnected = true;
+		
+		// Register pocket dimensions
+		DDProperties properties = DDProperties.instance();
+				
 		isLoaded = true;
 		isLoading = false;
+		isConnected = true;
 	}
 }

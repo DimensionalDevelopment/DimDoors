@@ -140,7 +140,7 @@ public class CommandExportDungeon extends DDCommandBase
 		String exportPath = properties.CustomSchematicDirectory + File.separator + name + ".schematic";
 		if (dungeonHelper.exportDungeon(player.worldObj, x, y, z, exportPath))
 		{
-			player.addChatMessage("Saved dungeon schematic in " + exportPath);
+			sendChat(player,("Saved dungeon schematic in " + exportPath));
 			dungeonHelper.registerDungeon(exportPath, dungeonHelper.getDungeonPack("ruins"), false, true);
 			return DDCommandResult.SUCCESS;
 		}

@@ -6,12 +6,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemDoor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
@@ -22,12 +20,12 @@ import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+@SuppressWarnings("deprecation")
 public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEntityProvider
 {
 	protected final DDProperties properties;
@@ -40,13 +38,15 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		this.properties = properties;
 	}
 
+	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().substring(5)+"_top");
-		this.blockIconBottom = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().substring(5)+"_bottom");
+		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName()+"_top");
+		this.blockIconBottom = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName()+"_bottom");
 	}
 	
-    @SideOnly(Side.CLIENT)
+    @Override
+	@SideOnly(Side.CLIENT)
 
     /**
      * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
@@ -64,6 +64,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		this.enterDimDoor(world, x, y, z, entity);
 	}
 
+	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
 
@@ -77,7 +78,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 				shouldOpen = false;
 				if (!world.isRemote && world.getBlockId(x, y-1, z) == this.blockID)
 				{
-					int var12 = (int) (MathHelper.floor_double((double)((player.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
+					int var12 = MathHelper.floor_double((player.rotationYaw+90) * 4.0F / 360.0F + 0.5D) & 3;
 
 					if (world.getBlockMetadata(x, y-1, z) == var12)
 					{
@@ -87,7 +88,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 				}
 				if (!world.isRemote && world.getBlockId(x, y+1, z) == this.blockID)
 				{
-					int var12 = (int) (MathHelper.floor_double((double)((player.rotationYaw+90) * 4.0F / 360.0F) + 0.5D) & 3);
+					int var12 = MathHelper.floor_double((player.rotationYaw+90) * 4.0F / 360.0F + 0.5D) & 3;
 					if(world.getBlockMetadata(x, y, z)==var12)
 					{ 
 						var12 = BlockRotator.transformMetadata(var12, 1, this.blockID);
@@ -144,6 +145,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	/**
 	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
 	 */
+	@Override
 	@SideOnly(Side.CLIENT)
 	public Icon getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
 	{
@@ -175,6 +177,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	 * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
 	 * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
 	 */
+	@Override
 	public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) 
 	{
 		TileEntityDimDoor tile = (TileEntityDimDoor) par1World.getBlockTileEntity(par2, par3, par4);
@@ -386,7 +389,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			if (canUse && entity instanceof EntityPlayer)
 			{
 				// Dont check for non-player entites
-				canUse = isEntityFacingDoor(metadata, (EntityLiving) entity);
+				canUse = isEntityFacingDoor(metadata, (EntityLivingBase) entity);
 			}
 			if (canUse)
 			{
@@ -418,12 +421,12 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		return (metadata & 4) != 0;
 	}
 	
-	protected static boolean isEntityFacingDoor(int metadata, EntityLiving entity)
+	protected static boolean isEntityFacingDoor(int metadata, EntityLivingBase entity)
 	{
 		// Although any entity has the proper fields for this check,
 		// we should only apply it to living entities since things
 		// like Minecarts might come in backwards.
-		int direction = (int) (MathHelper.floor_double((double) ((entity.rotationYaw + 90) * 4.0F / 360.0F) + 0.5D) & 3);
+		int direction = MathHelper.floor_double((entity.rotationYaw + 90) * 4.0F / 360.0F + 0.5D) & 3;
 		return ((metadata & 3) == direction);
 	}
 }

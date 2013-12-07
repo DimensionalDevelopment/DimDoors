@@ -10,6 +10,7 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
+@SuppressWarnings("deprecation")
 public class CommandDeleteRifts extends DDCommandBase
 {
 	private static CommandDeleteRifts instance = null;
@@ -47,7 +48,7 @@ public class CommandDeleteRifts extends DDCommandBase
 		{
 			targetDim=0;
 			shouldGo=false;
-			sender.addChatMessage("Error-Invalid argument, delete_all_links <targetDimID>");
+			sendChat(sender,("Error-Invalid argument, delete_all_links <targetDimID>"));
 		}
 
 		if(shouldGo)
@@ -67,7 +68,7 @@ public class CommandDeleteRifts extends DDCommandBase
 						dim.deleteLink(link);
 					}
 				}
-				sender.addChatMessage("Removed " + linksRemoved + " rifts.");
+				sendChat(sender,("Removed " + linksRemoved + " rifts."));
 			
 		}
 		return DDCommandResult.SUCCESS; //TEMPORARY HACK

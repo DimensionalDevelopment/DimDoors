@@ -1,23 +1,15 @@
 package StevenDimDoors.mod_pocketDim.commands;
-import java.util.ArrayList;
+
+import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
+
 import java.util.Arrays;
 import java.util.List;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-
-import StevenDimDoors.mod_pocketDim.BlankTeleporter;
-import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
-import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-import StevenDimDoors.mod_pocketDim.util.Point4D;
-
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
-
 
 public class CommandTeleportPlayer extends DDCommandBase
 {	
@@ -48,7 +40,7 @@ public class CommandTeleportPlayer extends DDCommandBase
 	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command) 
 	{
-		List dimensionIDs = Arrays.asList(DimensionManager.getStaticDimensionIDs()); //Gets list of all registered dimensions, regardless if loaded or not
+		List<Integer> dimensionIDs = Arrays.asList(DimensionManager.getStaticDimensionIDs()); //Gets list of all registered dimensions, regardless if loaded or not
 		EntityPlayer targetPlayer = sender;
 		int dimDestinationID = sender.worldObj.provider.dimensionId;
 		

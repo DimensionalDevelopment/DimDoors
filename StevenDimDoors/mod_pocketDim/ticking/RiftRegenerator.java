@@ -25,6 +25,7 @@ public class RiftRegenerator implements IRegularTickReceiver {
 		regenerateRiftsInAllWorlds();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static void regenerateRiftsInAllWorlds()
 	{
 		//Regenerate rifts that have been replaced (not permanently removed) by players
@@ -40,7 +41,7 @@ public class RiftRegenerator implements IRegularTickReceiver {
 	    		{
 	    			for (int count = 0; count < RIFTS_REGENERATED_PER_DIMENSION; count++)
 	    			{
-	    				DimLink link = dimension.getRandomLink();
+						DimLink link = dimension.getRandomLink();
 	    				Point4D source = link.source();
 	    				if (!mod_pocketDim.blockRift.isBlockImmune(world, source.getX(), source.getY(), source.getZ())&& world.getChunkProvider().chunkExists(source.getX() >> 4, source.getZ() >> 4))
 	    				{

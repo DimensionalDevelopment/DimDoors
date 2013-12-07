@@ -1,15 +1,16 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+
 import java.util.ArrayList;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
-import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.NewDimData;
-import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
+@SuppressWarnings("deprecation")
 public class CommandDeleteAllLinks extends DDCommandBase
 {
 	private static CommandDeleteAllLinks instance = null;
@@ -47,7 +48,7 @@ public class CommandDeleteAllLinks extends DDCommandBase
 		{
 			targetDim=0;
 			shouldGo=false;
-			sender.addChatMessage("Error-Invalid argument, delete_all_links <targetDimID>");
+			sendChat(sender, ("Error-Invalid argument, delete_all_links <targetDimID>"));
 		}
 
 		if(shouldGo)
@@ -65,7 +66,7 @@ public class CommandDeleteAllLinks extends DDCommandBase
 
 					linksRemoved++;
 				}
-				sender.addChatMessage("Removed " + linksRemoved + " links.");
+				sendChat(sender,("Removed " + linksRemoved + " links."));
 			
 		}
 		return DDCommandResult.SUCCESS; //TEMPORARY HACK

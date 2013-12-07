@@ -1,10 +1,5 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
-import java.util.Collection;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
@@ -14,6 +9,13 @@ import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
 
+import java.util.Collection;
+
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
+
+@SuppressWarnings("deprecation")
 public class CommandCreateDungeonRift extends DDCommandBase
 {
 	private static CommandCreateDungeonRift instance = null;
@@ -62,9 +64,9 @@ public class CommandCreateDungeonRift extends DDCommandBase
 			Collection<String> dungeonNames = dungeonHelper.getDungeonNames();
 			for (String name : dungeonNames)
 			{
-				sender.addChatMessage(name);
+				sendChat(sender,(name));
 			}
-			sender.addChatMessage("");
+			sendChat(sender,(""));
 		}
 		else
 		{
@@ -73,7 +75,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 			int x = MathHelper.floor_double(sender.posX);
 			int y = MathHelper.floor_double(sender.posY);
 			int z = MathHelper.floor_double (sender.posZ);
-			int orientation = MathHelper.floor_double((double) ((sender.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+			int orientation = MathHelper.floor_double((sender.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
 
 			if (command[0].equals("random"))
 			{
@@ -82,7 +84,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON,orientation);
 				sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
 
-				sender.addChatMessage("Created a rift to a random dungeon.");
+				sendChat(sender,("Created a rift to a random dungeon."));
 			}
 			else
 			{
@@ -92,17 +94,17 @@ public class CommandCreateDungeonRift extends DDCommandBase
 					result = findDungeonByPartialName(command[0], dungeonHelper.getUntaggedDungeons());
 				}
 				//Check if we found any matches
-				if (result != null)
-				{
-					//Create a rift to our selected dungeon and notify the player
-					//TODO currently crashes, need to create the dimension first
-					dimension = PocketManager.getDimensionData(sender.worldObj);
-					link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON,orientation);
-					PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result);
-					
-					sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
-					sender.addChatMessage("Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
-				}
+				 if (result != null)
+                 {
+                         //Create a rift to our selected dungeon and notify the player
+                         //TODO currently crashes, need to create the dimension first
+                         dimension = PocketManager.getDimensionData(sender.worldObj);
+                         link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON,orientation);
+                         PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result);
+                         
+                         sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
+     					sendChat(sender,("Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ")."));
+                 }
 				else
 				{
 					//No matches!

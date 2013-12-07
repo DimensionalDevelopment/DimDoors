@@ -17,6 +17,7 @@ import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 public class Compactor
 {
 
+	@SuppressWarnings("unused") // ?
 	private static class DimComparator implements Comparator<NewDimData>
 	{
 		@Override

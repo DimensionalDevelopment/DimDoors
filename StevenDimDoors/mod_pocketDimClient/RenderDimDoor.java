@@ -8,8 +8,8 @@ import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-
 import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
 
 import StevenDimDoors.mod_pocketDim.DDProperties;
@@ -22,6 +22,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderDimDoor extends TileEntitySpecialRenderer
 {
 	FloatBuffer field_76908_a = GLAllocation.createDirectFloatBuffer(16);
+	private ResourceLocation riftPath= new ResourceLocation(mod_pocketDim.modid+":textures/other/RIFT.png");
+	private ResourceLocation warpPath= new ResourceLocation(mod_pocketDim.modid+":textures/other/WARP.png");
 
 	public RenderDimDoor()
 	{
@@ -60,13 +62,14 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 		for (int count = 0; count < 16; ++count)
 		{
 			GL11.glPushMatrix();
-			float var15 = (float) (16 - count);
+			float var15 = 16 - count;
 			float var16 = 0.2625F;
 			float var17 = 1.0F / (var15 + .80F);
 
 			if (count == 0)
 			{
-				this.bindTexture(new ResourceLocation("/RIFT.png"));
+				this.bindTexture(riftPath);
+                // move files into assets/modid and change to new ResourceLocation(modid:/RIFT.png)
 				var17 = 0.1F;
 				var15 = 25.0F;
 				var16 = 0.125F;
@@ -76,7 +79,8 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 
 			if (count == 1)
 			{
-				this.bindTexture(new ResourceLocation("/WARP.png"));
+				this.bindTexture(warpPath);
+                // move files into assets/modid and change to new ResourceLocation(modid:/WARP.png)
 				GL11.glEnable(GL11.GL_BLEND);
 				GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
 				var16 = .5F;
@@ -99,14 +103,14 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 			 **/
 
 			GL11.glTranslatef(
-					(float) (Minecraft.getSystemTime() % 200000L) / 200000.0F,
+					Minecraft.getSystemTime() % 200000L / 200000.0F,
 					0, 0.0F);
 			GL11.glTranslatef(0,
-					(float) (Minecraft.getSystemTime() % 200000L) / 200000.0F,
+					Minecraft.getSystemTime() % 200000L / 200000.0F,
 					0.0F);
 
 			GL11.glTranslatef(0, 0,
-					(float) (Minecraft.getSystemTime() % 200000L) / 200000.0F);
+					Minecraft.getSystemTime() % 200000L / 200000.0F);
 
 			GL11.glTexGeni(GL11.GL_S, GL11.GL_TEXTURE_GEN_MODE,
 					GL11.GL_OBJECT_LINEAR);
@@ -173,11 +177,11 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 			GL11.glPushMatrix();
 			GL11.glLoadIdentity();
 			GL11.glTranslatef(0.0F,
-					(float) (Minecraft.getSystemTime() % 200000L) / 200000.0F
+					Minecraft.getSystemTime() % 200000L / 200000.0F
 							* var15, 0.0F);
 			GL11.glScalef(var16, var16, var16);
 			GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-			GL11.glRotatef((float) (count * count * 4321 + count * 9) * 2.0F,
+			GL11.glRotatef((count * count * 4321 + count * 9) * 2.0F,
 					0.0F, 0.0F, 1.0F);
 			GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 

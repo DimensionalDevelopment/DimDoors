@@ -10,6 +10,7 @@ import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
+@SuppressWarnings("deprecation")
 public class CommandResetDungeons extends DDCommandBase
 {	
 	private static CommandResetDungeons instance = null;
@@ -90,7 +91,7 @@ public class CommandResetDungeons extends DDCommandBase
 		//TODO- for some reason the parent field of loaded dimenions get reset to null if I call .setParentToRoot() before I delete the pockets. 
 		//TODO implement blackList
 		//Notify the user of the results
-		sender.addChatMessage("Reset complete. " + resetCount + " out of " + dungeonCount + " dungeons were reset.");
+		sendChat(sender,("Reset complete. " + resetCount + " out of " + dungeonCount + " dungeons were reset."));
 		return DDCommandResult.SUCCESS;
 	}
 }

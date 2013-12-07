@@ -118,6 +118,7 @@ public class Schematic {
 
 	public static Schematic readFromFile(File schematicFile) throws FileNotFoundException, InvalidSchematicException
 	{
+		// TODO: fix resource leaks here
 		return readFromStream(new FileInputStream(schematicFile));
 	}
 
@@ -329,7 +330,7 @@ public class Schematic {
 		{
 			//Used when the result of this function will be passed outside this class.
 			//Avoids exposing the private field to external modifications.
-			schematicTag.setTag("TileEntities", (NBTTagList) tileEntities.copy());
+			schematicTag.setTag("TileEntities", tileEntities.copy());
 		}
 		else
 		{

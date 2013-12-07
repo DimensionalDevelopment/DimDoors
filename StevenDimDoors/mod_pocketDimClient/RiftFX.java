@@ -46,25 +46,26 @@ public class RiftFX extends EntityFX
 
     public void func_92044_a(int par1)
     {
-        float var2 = (float)((par1 & 16711680) >> 16) / 255.0F;
-        float var3 = (float)((par1 & 65280) >> 8) / 255.0F;
-        float var4 = (float)((par1 & 255) >> 0) / 255.0F;
+        float var2 = ((par1 & 16711680) >> 16) / 255.0F;
+        float var3 = ((par1 & 65280) >> 8) / 255.0F;
+        float var4 = ((par1 & 255) >> 0) / 255.0F;
         float var5 = 1.0F;
         this.setRBGColorF(var2 * var5, var3 * var5, var4 * var5);
     }
 
     public void func_92046_g(int par1)
     {
-        this.field_92050_aA = (float)((par1 & 16711680) >> 16) / 255.0F;
-        this.field_92051_aB = (float)((par1 & 65280) >> 8) / 255.0F;
-        this.field_92052_aC = (float)((par1 & 255) >> 0) / 255.0F;
+        this.field_92050_aA = ((par1 & 16711680) >> 16) / 255.0F;
+        this.field_92051_aB = ((par1 & 65280) >> 8) / 255.0F;
+        this.field_92052_aC = ((par1 & 255) >> 0) / 255.0F;
         this.field_92053_aD = true;
     }
 
     /**
      * returns the bounding box for this entity
      */
-    public AxisAlignedBB getBoundingBox()
+    @Override
+	public AxisAlignedBB getBoundingBox()
     {
         return null;
     }
@@ -72,12 +73,14 @@ public class RiftFX extends EntityFX
     /**
      * Returns true if this entity should push and be pushed by other entities when colliding.
      */
-    public boolean canBePushed()
+    @Override
+	public boolean canBePushed()
     {
         return false;
     }
 
-    public void renderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
+    @Override
+	public void renderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
     {
         if (!this.field_92048_ay || this.particleAge < this.particleMaxAge / 3 || (this.particleAge + this.particleMaxAge) / 3 % 2 == 0)
         {
@@ -89,9 +92,9 @@ public class RiftFX extends EntityFX
     
     public void doRenderParticle(Tessellator par1Tessellator, float par2, float par3, float par4, float par5, float par6, float par7)
     {
-        float f6 = (float)this.particleTextureIndexX / 16.0F;
+        float f6 = this.particleTextureIndexX / 16.0F;
         float f7 = f6 + 0.0624375F;
-        float f8 = (float)this.particleTextureIndexY / 16.0F;
+        float f8 = this.particleTextureIndexY / 16.0F;
         float f9 = f8 + 0.0624375F;
         float f10 = 0.1F * this.particleScale;
 
@@ -103,9 +106,9 @@ public class RiftFX extends EntityFX
             f9 = this.particleIcon.getMaxV();
         }
 
-        float f11 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)par2 - interpPosX);
-        float f12 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)par2 - interpPosY);
-        float f13 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)par2 - interpPosZ);
+        float f11 = (float)(this.prevPosX + (this.posX - this.prevPosX) * par2 - interpPosX);
+        float f12 = (float)(this.prevPosY + (this.posY - this.prevPosY) * par2 - interpPosY);
+        float f13 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * par2 - interpPosZ);
         float f14 = 0F;
         
         if (PocketManager.getDimensionData(worldObj).isPocketDimension())
@@ -114,16 +117,17 @@ public class RiftFX extends EntityFX
     	}
         
         par1Tessellator.setColorRGBA_F(this.particleRed * f14, this.particleGreen * f14, this.particleBlue * f14, (float) .7);
-        par1Tessellator.addVertexWithUV((double)(f11 - par3 * f10 - par6 * f10), (double)(f12 - par4 * f10), (double)(f13 - par5 * f10 - par7 * f10), (double)f7, (double)f9);
-        par1Tessellator.addVertexWithUV((double)(f11 - par3 * f10 + par6 * f10), (double)(f12 + par4 * f10), (double)(f13 - par5 * f10 + par7 * f10), (double)f7, (double)f8);
-        par1Tessellator.addVertexWithUV((double)(f11 + par3 * f10 + par6 * f10), (double)(f12 + par4 * f10), (double)(f13 + par5 * f10 + par7 * f10), (double)f6, (double)f8);
-        par1Tessellator.addVertexWithUV((double)(f11 + par3 * f10 - par6 * f10), (double)(f12 - par4 * f10), (double)(f13 + par5 * f10 - par7 * f10), (double)f6, (double)f9);
+        par1Tessellator.addVertexWithUV(f11 - par3 * f10 - par6 * f10, f12 - par4 * f10, f13 - par5 * f10 - par7 * f10, f7, f9);
+        par1Tessellator.addVertexWithUV(f11 - par3 * f10 + par6 * f10, f12 + par4 * f10, f13 - par5 * f10 + par7 * f10, f7, f8);
+        par1Tessellator.addVertexWithUV(f11 + par3 * f10 + par6 * f10, f12 + par4 * f10, f13 + par5 * f10 + par7 * f10, f6, f8);
+        par1Tessellator.addVertexWithUV(f11 + par3 * f10 - par6 * f10, f12 - par4 * f10, f13 + par5 * f10 - par7 * f10, f6, f9);
     }
 
     /**
      * Called to update the entity's position/logic.
      */
-    public void onUpdate()
+    @Override
+	public void onUpdate()
     {
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
@@ -136,7 +140,7 @@ public class RiftFX extends EntityFX
 
         if (this.particleAge > this.particleMaxAge / 2)
         {
-            this.setAlphaF(1.0F - ((float)this.particleAge - (float)(this.particleMaxAge / 2)) / (float)this.particleMaxAge);
+            this.setAlphaF(1.0F - ((float)this.particleAge - (float)(this.particleMaxAge / 2)) / this.particleMaxAge);
 
             if (this.field_92053_aD)
             {
@@ -178,7 +182,8 @@ public class RiftFX extends EntityFX
         }
     }
 
-    public int getBrightnessForRender(float par1)
+    @Override
+	public int getBrightnessForRender(float par1)
     {
         return 15728880;
     }
@@ -186,7 +191,8 @@ public class RiftFX extends EntityFX
     /**
      * Gets how bright this entity is.
      */
-    public float getBrightness(float par1)
+    @Override
+	public float getBrightness(float par1)
     {
         return 1.0F;
     }

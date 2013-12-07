@@ -10,6 +10,7 @@ import net.minecraft.network.packet.NetHandler;
 import net.minecraft.network.packet.Packet1Login;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.integrated.IntegratedServer;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.Player;
@@ -36,6 +37,28 @@ public class ConnectionHandler implements IConnectionHandler
 		{
 			//This shouldn't happen...
 			e.printStackTrace();
+		}	
+		return null;
+	}
+
+	@Override
+	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager) 
+	{
+		
+	}
+	
+	@Override
+	public void connectionOpened(NetHandler netClientHandler,MinecraftServer server, INetworkManager manager)
+	{ 
+		
+	}
+
+	@Override
+	public void connectionClosed(INetworkManager manager) 
+	{ 
+		if(PocketManager.isConnected)
+		{
+			PocketManager.unload();
 		}
 		return null;
 	}
@@ -63,5 +86,17 @@ public class ConnectionHandler implements IConnectionHandler
 	{
 		//Send information about all the registered dimensions and links to the client
 		
+	}
+
+	@Override
+	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login) 
+	{ 
+		 return;
+	}
+
+	@Override
+	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager)
+	{
+	
 	}
 }

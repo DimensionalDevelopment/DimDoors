@@ -1,4 +1,4 @@
-<project name="Necromancy" default="install" basedir=".">
+<project name="DimensionalDoors" default="install" basedir=".">
 	<property environment="env" />
 
 	<property name="project.name" value="DimDoors" />

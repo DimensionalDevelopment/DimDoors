@@ -9,7 +9,6 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemDoor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet41EntityEffect;
 import net.minecraft.network.packet.Packet43Experience;
@@ -23,8 +22,6 @@ import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.blocks.BlockRift;
-import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
@@ -34,6 +31,7 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
 import cpw.mods.fml.common.registry.GameRegistry;
 
+@SuppressWarnings("deprecation")
 public class DDTeleporter
 {
 	private static final Random random = new Random();
@@ -235,7 +233,7 @@ public class DDTeleporter
 	private static void setEntityPosition(Entity entity, double x, double y, double z)
 	{
 		entity.lastTickPosX = entity.prevPosX = entity.posX = x;
-		entity.lastTickPosY = entity.prevPosY = entity.posY = y + (double)entity.yOffset;
+		entity.lastTickPosY = entity.prevPosY = entity.posY = y + entity.yOffset;
 		entity.lastTickPosZ = entity.prevPosZ = entity.posZ = z;
 		entity.setPosition(x, y, z);
 	}
@@ -304,7 +302,7 @@ public class DDTeleporter
 		}
 		else
 		{
-			newWorld = (WorldServer) oldWorld;
+			newWorld = oldWorld;
 		}
 		
 
@@ -327,6 +325,7 @@ public class DDTeleporter
 				// the last non-sleeping player leaves the Overworld
 				// for a pocket dimension, causing all sleeping players
 				// to remain asleep instead of progressing to day.
+				((WorldServer)entity.worldObj).getPlayerManager().removePlayer(player);
 				oldWorld.removePlayerEntityDangerously(player);
 				player.isDead = false;
 
@@ -399,7 +398,6 @@ public class DDTeleporter
 		if (player != null)
 		{
 			newWorld.getChunkProvider().loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
-
 			// Tell Forge we're moving its players so everyone else knows.
 			// Let's try doing this down here in case this is what's killing NEI.
 			GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);

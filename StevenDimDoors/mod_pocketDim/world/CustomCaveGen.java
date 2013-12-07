@@ -31,8 +31,8 @@ public class CustomCaveGen extends MapGenBase
      */
     protected void generateCaveNode(long par1, int par3, int par4, byte[] par5ArrayOfByte, double par6, double par8, double par10, float par12, float par13, float par14, int par15, int par16, double par17)
     {
-        double var19 = (double)(par3 * 16 + 8);
-        double var21 = (double)(par4 * 16 + 8);
+        double var19 = par3 * 16 + 8;
+        double var21 = par4 * 16 + 8;
         float var23 = 0.0F;
         float var24 = 0.0F;
         Random var25 = new Random(par1);
@@ -55,13 +55,13 @@ public class CustomCaveGen extends MapGenBase
 
         for (boolean var28 = var25.nextInt(6) == 0; par15 < par16; ++par15)
         {
-            double var29 = 1.5D + (double)(MathHelper.sin((float)par15 * (float)Math.PI / (float)par16) * par12 * 1.0F);
+            double var29 = 1.5D + MathHelper.sin(par15 * (float)Math.PI / par16) * par12 * 1.0F;
             double var31 = var29 * par17;
             float var33 = MathHelper.cos(par14);
             float var34 = MathHelper.sin(par14);
-            par6 += (double)(MathHelper.cos(par13) * var33);
-            par8 += (double)var34;
-            par10 += (double)(MathHelper.sin(par13) * var33);
+            par6 += MathHelper.cos(par13) * var33;
+            par8 += var34;
+            par10 += MathHelper.sin(par13) * var33;
 
             if (var28)
             {
@@ -90,8 +90,8 @@ public class CustomCaveGen extends MapGenBase
             {
                 double var35 = par6 - var19;
                 double var37 = par10 - var21;
-                double var39 = (double)(par16 - par15);
-                double var41 = (double)(par12 + 2.0F + 16.0F);
+                double var39 = par16 - par15;
+                double var41 = par12 + 2.0F + 16.0F;
 
                 if (var35 * var35 + var37 * var37 - var39 * var39 > var41 * var41)
                 {
@@ -169,11 +169,11 @@ public class CustomCaveGen extends MapGenBase
                     {
                         for (var42 = var55; var42 < var36; ++var42)
                         {
-                            double var59 = ((double)(var42 + par3 * 16) + 0.5D - par6) / var29;
+                            double var59 = (var42 + par3 * 16 + 0.5D - par6) / var29;
 
                             for (var45 = var56; var45 < var40; ++var45)
                             {
-                                double var46 = ((double)(var45 + par4 * 16) + 0.5D - par10) / var29;
+                                double var46 = (var45 + par4 * 16 + 0.5D - par10) / var29;
                                 int var48 = (var42 * 16 + var45) * 128 + var38;
                                 boolean var49 = false;
 
@@ -181,7 +181,7 @@ public class CustomCaveGen extends MapGenBase
                                 {
                                     for (int var50 = var38 - 1; var50 >= var57; --var50)
                                     {
-                                        double var51 = ((double)var50 + 0.5D - par8) / var31;
+                                        double var51 = (var50 + 0.5D - par8) / var31;
 
                                         if (var51 > -0.7D && var59 * var59 + var51 * var51 + var46 * var46 < 1.0D)
                                         {
@@ -229,7 +229,8 @@ public class CustomCaveGen extends MapGenBase
     /**
      * Recursively called by generate() (generate) and optionally by itself.
      */
-    protected void recursiveGenerate(World par1World, int par2, int par3, int par4, int par5, byte[] par6ArrayOfByte)
+    @Override
+	protected void recursiveGenerate(World par1World, int par2, int par3, int par4, int par5, byte[] par6ArrayOfByte)
     {
         int var7 = this.rand.nextInt(this.rand.nextInt(this.rand.nextInt(40) + 1) + 1);
 
@@ -240,9 +241,9 @@ public class CustomCaveGen extends MapGenBase
 
         for (int var8 = 0; var8 < var7; ++var8)
         {
-            double var9 = (double)(par2 * 16 + this.rand.nextInt(16));
-            double var11 = (double)this.rand.nextInt(this.rand.nextInt(120) + 8);
-            double var13 = (double)(par3 * 16 + this.rand.nextInt(16));
+            double var9 = par2 * 16 + this.rand.nextInt(16);
+            double var11 = this.rand.nextInt(this.rand.nextInt(120) + 8);
+            double var13 = par3 * 16 + this.rand.nextInt(16);
             int var15 = 1;
 
             if (this.rand.nextInt(4) == 0)

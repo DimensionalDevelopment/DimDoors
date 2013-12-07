@@ -144,6 +144,7 @@ public class DDSaveHandler
 					linkType = LinkTypes.NORMAL;
 				}
 				
+				@SuppressWarnings("deprecation")
 				DimLink link = data.createLink(packedLink.source, linkType, packedLink.orientation);
 				Point4D destination = packedLink.tail.destination;
 				if(destination!=null)

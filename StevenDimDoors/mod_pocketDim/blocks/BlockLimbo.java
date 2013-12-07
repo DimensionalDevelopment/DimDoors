@@ -40,7 +40,7 @@ public class BlockLimbo extends Block
 	@Override
 	public void registerIcons(IconRegister iconRegister)
 	{
-		this.blockIcon = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().substring(5));
+		this.blockIcon = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
 	}
 
 	@Override

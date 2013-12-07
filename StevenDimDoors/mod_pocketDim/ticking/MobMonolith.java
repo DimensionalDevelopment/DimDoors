@@ -2,10 +2,10 @@ package StevenDimDoors.mod_pocketDim.ticking;
 
 import java.util.List;
 
+import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,6 +14,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
@@ -30,10 +31,21 @@ public class MobMonolith extends EntityFlying implements IMob
 
 	float scaleFactor = 0;
 	int aggroMax;
-	int destX=0;
-	int destY=0;
-	int destZ=0;
+	int destX = 0; // unused fields?
+	int destY = 0;
+	int destZ = 0;
 
+	@Override
+	protected void damageEntity(DamageSource par1DamageSource, float par2)
+    {
+      return;
+    }
+	
+	@Override
+	public boolean attackEntityFrom(DamageSource par1DamageSource, float par2)
+    {
+		return false;
+    }
 	public MobMonolith(World par1World) 
 	{
 		super(par1World);
@@ -67,6 +79,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		return false;
 	}
 
+	@Override
 	public float getRenderSizeModifier()
 	{
 		return this.scaleFactor;
@@ -75,11 +88,12 @@ public class MobMonolith extends EntityFlying implements IMob
 	public void setEntityPosition(Entity entity, double x, double y, double z)
 	{
 		entity.lastTickPosX = entity.prevPosX = entity.posX = x;
-		entity.lastTickPosY = entity.prevPosY = entity.posY = y + (double)entity.yOffset;
+		entity.lastTickPosY = entity.prevPosY = entity.posY = y + entity.yOffset;
 		entity.lastTickPosZ = entity.prevPosZ = entity.posZ = z;
 		entity.setPosition(x, y, z);
 	}
 
+	@Override
 	protected void entityInit()
 	{
 		super.entityInit();
@@ -107,7 +121,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		{
 			if(this.soundTime<=0)
 			{
-				this.playSound("mods.DimDoors.sfx.monk",  1F, 1F);
+				this.playSound(mod_pocketDim.modid+":monk",  1F, 1F);
 				this.soundTime=100;
 			}
 
@@ -134,29 +148,29 @@ public class MobMonolith extends EntityFlying implements IMob
 					}
 					if (aggro>430&&this.soundTime<100)
 					{
-						this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,"mods.DimDoors.sfx.tearing",2F, 1F);
+						this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,mod_pocketDim.modid+":tearing",2F, 1F);
 						this.soundTime=100;
 					}
 					if (aggro>445&&this.soundTime<200)
 					{
-						this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,"mods.DimDoors.sfx.tearing",5F, 1F);
+						this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,mod_pocketDim.modid+":tearing",5F, 1F);
 						this.soundTime=200;
 					}
 				}
 				else if (!this.worldObj.isRemote && !entityPlayer.capabilities.isCreativeMode)
 				{
 					ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(entityPlayer.worldObj.rand);
-		    		Point4D destination = new Point4D((int) (coords.posX+entityPlayer.posX), coords.posY, (int) (coords.posZ+entityPlayer.posZ ), mod_pocketDim.properties.LimboDimensionID);
-		    		DDTeleporter.teleportEntity(entityPlayer, destination, false);
-					
-		    		this.aggro = 0;
-					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,"mods.DimDoors.sfx.crack",13, 1);
+					Point4D destination = new Point4D((int) (coords.posX+entityPlayer.posX), coords.posY, (int) (coords.posZ+entityPlayer.posZ ), mod_pocketDim.properties.LimboDimensionID);
+					DDTeleporter.teleportEntity(entityPlayer, destination, false);
+
+					this.aggro = 0;
+					entityPlayer.worldObj.playSoundAtEntity(entityPlayer,mod_pocketDim.modid+":crack",13, 1);
 				}
 				if (!(this.worldObj.provider instanceof LimboProvider || this.worldObj.getClosestPlayerToEntity(this, 5) != null) || this.aggro > 300)
 				{
 					for (int i = 0; i < -1+this.textureState/2; ++i)
 					{
-						entityPlayer.worldObj.spawnParticle("portal", entityPlayer.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, entityPlayer.posY + this.rand.nextDouble() * (double)entityPlayer.height - 0.75D, entityPlayer.posZ + (this.rand.nextDouble() - 0.5D) * (double)entityPlayer.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
+						entityPlayer.worldObj.spawnParticle("portal", entityPlayer.posX + (this.rand.nextDouble() - 0.5D) * this.width, entityPlayer.posY + this.rand.nextDouble() * entityPlayer.height - 0.75D, entityPlayer.posZ + (this.rand.nextDouble() - 0.5D) * entityPlayer.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D);
 					}
 				}
 			}
@@ -201,34 +215,20 @@ public class MobMonolith extends EntityFlying implements IMob
 		return par1EntityPlayer.canEntityBeSeen(this);
 	}
 
-	private boolean isCourseTraversable(double par1, double par3, double par5, double par7)
-	{
-		double d4 = (par1 - this.posX) / par7;
-		double d5 = (par3 - this.posY) / par7;
-		double d6 = (par5 - this.posZ) / par7;
-		AxisAlignedBB axisalignedbb = this.boundingBox.copy();
-
-		for (int i = 1; (double)i < par7; ++i)
-		{
-			axisalignedbb.offset(d4, d5, d6);
-
-			if (!this.worldObj.getCollidingBoundingBoxes(this, axisalignedbb).isEmpty())
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-	
 	public boolean attackEntityFrom(DamageSource par1DamageSource, int par2)
 	{
-		if(!(par1DamageSource==DamageSource.inWall))
+		if(!(par1DamageSource == DamageSource.inWall))
 		{
 			this.aggro=400;
 		}
+		else
+		{
+			this.posY=posY+1;
+		}
 		return false;
 	}
-	
+
+	@Override
 	public void faceEntity(Entity par1Entity, float par2, float par3)
 	{
 		double d0 = par1Entity.posX - this.posX;
@@ -238,14 +238,14 @@ public class MobMonolith extends EntityFlying implements IMob
 		if (par1Entity instanceof EntityLiving)
 		{
 			EntityLiving entityliving = (EntityLiving)par1Entity;
-			d2 = entityliving.posY + (double)entityliving.getEyeHeight() - (this.posY + (double)this.getEyeHeight());
+			d2 = entityliving.posY + entityliving.getEyeHeight() - (this.posY + this.getEyeHeight());
 		}
 		else
 		{
-			d2 = (par1Entity.boundingBox.minY + par1Entity.boundingBox.maxY)  - (this.posY + (double)this.getEyeHeight());
+			d2 = (par1Entity.boundingBox.minY + par1Entity.boundingBox.maxY)  - (this.posY + this.getEyeHeight());
 		}
 
-		double d3 = (double)MathHelper.sqrt_double(d0 * d0 + d1 * d1);
+		double d3 = MathHelper.sqrt_double(d0 * d0 + d1 * d1);
 		float f2 = (float)(Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
 		float f3 = (float)(-(Math.atan2(d2, d3) * 180.0D / Math.PI));
 		this.rotationPitch =  f3;
@@ -256,28 +256,13 @@ public class MobMonolith extends EntityFlying implements IMob
 		this.renderYawOffset=this.rotationYaw;
 	}
 
-	private float updateRotation(float par1, float par2, float par3)
-	{
-		float f3 = MathHelper.wrapAngleTo180_float(par2 - par1);
-
-		if (f3 > par3)
-		{
-			f3 = par3;
-		}
-
-		if (f3 < -par3)
-		{
-			f3 = -par3;
-		}
-
-		return par1 + f3;
-	}
-
+	@Override
 	public float getRotationYawHead()
 	{
 		return 0.0F;
 	}
 
+	@Override
 	public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound)
 	{
 		super.writeEntityToNBT(par1NBTTagCompound);
@@ -298,9 +283,11 @@ public class MobMonolith extends EntityFlying implements IMob
 		this.textureState = par1NBTTagCompound.getByte("textureState");
 		this.scaleFactor = par1NBTTagCompound.getFloat("scaleFactor");
 	}
-	
+
+	@Override
 	public boolean getCanSpawnHere()
 	{
+		@SuppressWarnings("rawtypes")
 		List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.getBoundingBox( this.posX-15, posY-4, this.posZ-15, this.posX+15, this.posY+15, this.posZ+15));
 
 		if(this.worldObj.provider.dimensionId==DDProperties.instance().LimboDimensionID)
@@ -313,11 +300,19 @@ public class MobMonolith extends EntityFlying implements IMob
 		}
 		else if(this.worldObj.provider instanceof PocketProvider)	
 		{
-			if(list.size()>5||this.worldObj.canBlockSeeTheSky((int)this.posX, (int)this.posY, (int)this.posZ))
+			if (list.size() > 5 ||
+					this.worldObj.canBlockSeeTheSky((int)this.posX, (int)this.posY, (int)this.posZ))
 			{
 				return false;
 			}
 		}
-		return this.worldObj.checkNoEntityCollision(this.boundingBox) && this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() && !this.worldObj.isAnyLiquid(this.boundingBox);
+		return this.worldObj.checkNoEntityCollision(this.boundingBox) &&
+				this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() &&
+				!this.worldObj.isAnyLiquid(this.boundingBox);
+	}
+	
+	public DataWatcher getDataWatcher()
+	{
+		return this.dataWatcher;
 	}
 }

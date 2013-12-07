@@ -31,7 +31,8 @@ public class BiomeGenLimbo extends BiomeGenBase
 
     }
     
-    public float getSpawningChance()
+    @Override
+	public float getSpawningChance()
     {
         return 0.00001F;
     }

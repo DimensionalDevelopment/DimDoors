@@ -1,31 +1,18 @@
 package StevenDimDoors.mod_pocketDim.world;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.client.IRenderHandler;
+import net.minecraft.util.ResourceLocation;
 
 public class PocketSkyProvider extends CustomSkyProvider
 {
-	
-	public class LimboSkyProvider extends CustomSkyProvider
+	@Override
+	public ResourceLocation getMoonRenderPath()
 	{
-		@Override
-		public String getMoonRenderPath()
-		{
-			return "/mods/DimDoors/textures/other/pocketMoon.png";
-		}
-		
-		@Override
-		public String getSunRenderPath()
-		{
-			return "/mods/DimDoors/textures/other/pocketSun.png";
-		}
+		return new ResourceLocation("DimDoors:textures/other/limboMoon.png");
+	}
+	
+	@Override
+	public ResourceLocation getSunRenderPath()
+	{
+		return new ResourceLocation("DimDoors:textures/other/limboSun.png");
 	}
 }
