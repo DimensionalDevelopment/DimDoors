@@ -32,7 +32,9 @@ public class ClientLinkData
         
         public static ClientLinkData read(DataInputStream input) throws IOException
         {
-                return new ClientLinkData(Point4D.read(input), input.readInt());
+	        Point4D point = Point4D.read(input);
+	        int orientation = input.readInt();
+            return new ClientLinkData(point, orientation);
         }
         
 }

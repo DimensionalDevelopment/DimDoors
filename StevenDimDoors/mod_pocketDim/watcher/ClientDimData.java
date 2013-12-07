@@ -32,6 +32,8 @@ public class ClientDimData
 	
 	public static ClientDimData read(DataInputStream input) throws IOException
 	{
-		return new ClientDimData(input.readInt(), input.readInt());
+		int id = input.readInt();
+		int rootId = input.readInt();
+		return new ClientDimData(id, rootId);
 	}
 }
