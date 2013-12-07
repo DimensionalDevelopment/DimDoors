@@ -50,7 +50,6 @@ public class MobMonolith extends EntityFlying implements IMob
 	public MobMonolith(World par1World) 
 	{
 		super(par1World);
-		this.getDataWatcher().addObject(16,0);
 		this.setSize(3F, 9.0F);
 		this.noClip=true;
 		this.scaleFactor= (float) ((rand.nextDouble()/2)+1);
@@ -72,7 +71,7 @@ public class MobMonolith extends EntityFlying implements IMob
 	protected void applyEntityAttributes()
 	{
 		super.applyEntityAttributes();
-		this.getAttributeMap().func_111150_b(SharedMonsterAttributes.maxHealth).setAttribute(20);
+		this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).setAttribute(20);
 	}
 
 	public boolean canBePushed()
