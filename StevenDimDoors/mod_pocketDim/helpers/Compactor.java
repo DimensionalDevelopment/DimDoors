@@ -39,6 +39,7 @@ public class Compactor
 			for (DimLink link : dimension.links())
 			{
 				Point4D.write(link.source(), output);
+				output.writeInt(link.orientation());
 			}
 		}
 		
