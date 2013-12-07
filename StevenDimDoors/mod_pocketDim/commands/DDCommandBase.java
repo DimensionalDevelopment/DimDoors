@@ -72,4 +72,12 @@ public abstract class DDCommandBase extends CommandBase
 			sendChat(player,(result.getMessage()));
 		}
 	}
+
+	public static void sendChat(EntityPlayer player, String message)
+	{
+		ChatMessageComponent cmp = new ChatMessageComponent();
+		cmp.addText(message);
+		player.sendChatToPlayer(cmp);
+
+	}
 }
