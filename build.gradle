@@ -36,3 +36,9 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+jar 
+{
+	destinationDir = "build/dist/"
+	archiveName = "DimensionalDoors-$version.jar"
+}
