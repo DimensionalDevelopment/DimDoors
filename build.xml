@@ -1,93 +1,62 @@
+
+
 <project name="DimensionalDoors" default="install" basedir=".">
+
 	<property environment="env" />
-
-	<property name="project.name" value="DimDoors" />
-	<property name="src.dir" value="StevenDimDoors" />
-	<property name="resources.dir" value="resources" />
-	<property name="schematics.dir" value="schematics" />
-	<property name="versionclass.dir" value="mod_pocketDim" />
-	<property name="versionclass.file" value="mod_pocketDim.java"/>
-
-	<property name="minecraft.version" value="1.6.4" />
-	<property name="forge.forgeversion" value="9.11.1" />
-	<property name="forge.buildnum" value="953" />
 
 	<property name="build.dir" value="build" />
 	<property name="classes.dir" value="${build.dir}/packaging" />
-	<property name="resourcePack.dir" value="${classes.dir}" />
-	<property name="schematicPack.dir" value="${classes.dir}/schematics/" />
-	<property name="apiclasses.dir" value="${build.dir}/api-packaging" />
-	<property name="forge.version" value="${minecraft.version}-${forge.forgeversion}.${forge.buildnum}" />
+	<property name="src.dir" value="src" />
+	<property name="forge.version" value="1.6.4-9.11.1.953" />
 	<property name="forge.url" value="http://files.minecraftforge.net/minecraftforge/minecraftforge-src-${forge.version}.zip" />
+	<property name="mcp.version" value="811" />
 	<property name="forge.dir" value="${build.dir}/forge" />
 	<property name="mcp.dir" value="${forge.dir}/mcp" />
-	<property name="mcpsrc.dir" value="${mcp.dir}/src/minecraft/StevenDimDoors" />
+	<property name="mcpsrc.dir" value="${mcp.dir}/src/minecraft" />
+	<property name="resources.dir" value="resources" />
 
 	<property name="package.meta-inf" value="META-INF" />
+	<property name="build.ver" value="1.6.4" />
 	<property name="dist.dir" value="${build.dir}/dist" />
 
-	<property name="download.dir" value="${build.dir}/downloads" />
+	<property name="download.dir" value="downloads" />
 
 	<property name="lib.dir" value="${mcp.dir}/lib" />
 
 	<property file="${forge.dir}/forgeversion.properties" />
 	<condition property="forge.already.installed">
-		<equals arg1="${forge.build.number}" arg2="${forge.buildnum}" />
+		<equals arg1="${forge.build.number}" arg2="953" />
 	</condition>
+
+	<property name="verclass.dir" value="${mcpsrc.dir}/StevenDimDoors/mod_pocketDim/" />
+	<property name="verclass.name" value="mod_pocketDim.java"/>
+
 
 	<mkdir dir="${download.dir}"/>
 	<mkdir dir="${build.dir}" />
-	
+
 	<target name="get-version" depends="setup-forge">
-		<!-- Copy source -->
-		<copy todir="${mcpsrc.dir}" overwrite="true">
-			<fileset dir="${src.dir}"/>
-		</copy>
-
-		<!-- Get the version from the mcmod.info -->
-		<script language="javascript">
-		    importClass(java.io.File);
-		    importClass(java.nio.file.Files)
-		    importClass(java.io.FileReader);
-		    importClass(java.io.BufferedReader);
-		    importClass(java.io.FileWriter);
-		    importClass(java.io.BufferedWriter);
-
-			echo = project.createTask("echo");
-			echo.setMessage("Parsing mcmod.info...");
-			echo.perform();
-			
-			var file = new File("./mcmod.info");
-
-			fr = new FileReader(file);
-			br = new BufferedReader(fr);
-
-			// Read the file.
-			// This assumes the file has no line
-			var line;
-			var json = "";
-			while ((line = br.readLine()) != null) {
-				json += line;
-			}
-
-			var struct = JSON.parse(json);
-			var version = struct["modlist"][0].version;
-
-			echo = project.createTask("echo");
-			echo.setMessage("Parsed version: " + version);
-			echo.perform();
-
-			project.setProperty("mod.version", version);
-		</script>
-
-		<!-- Replace the version information in the mod class -->
-		<replace file="${mcpsrc.dir}/${versionclass.dir}/${versionclass.file}">
-		    <replacefilter token="$VERSION$" value="${mod.version}"/>
-		</replace>
+		<mkdir dir="${mcpsrc.dir}/StevenDimDoors" />
+		<copy todir="${mcpsrc.dir}/StevenDimDoors" overwrite="true">
+			<fileset dir="StevenDimDoors" />
+		</copy>	
+	
+		
+		
+		<exec dir="${verclass.dir}" executable="sh" osfamily="unix" outputproperty="grep.out">
+			<arg value="-c"/>
+			<arg value="grep -o -P '[0-9.]+R[0-9.]+(RC[0-9]+)?(B[0-9]+)?' ${verclass.name}"/>
+		</exec>
+		<exec executable="python" osfamily="unix">
+			<arg value="versionscript.py" />
+			<arg value="${grep.out}" />
+		</exec>
+		<echo message="Grepped version: ${grep.out}"/>
+		<copy todir="${classes.dir}" file="mcmod.info" overwrite="true"/> 
 	</target>
 
 	<available property="forge-exists" file="${download.dir}/minecraftforge-src-${forge.version}.zip" />
-	<available property="already-compiled" file="${classes.dir}/${src.dir}" />
+	<available property="already-compiled" file="${classes.dir}/deathrat" />
 	<condition property="should-download-ant-contrib">
 		<or>
 			<available file="${download.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
@@ -96,13 +65,14 @@
 	</condition>
 
 	<target name="install" depends="build">
-		<delete dir="${mcpsrc.dir}/${src.dir}" />
-		<delete dir="${dist.dir}" />
-		<jar destfile="${dist.dir}/${project.name}-${mod.version}-${build.number}.jar" basedir="${classes.dir}"/>
+		 <copy todir="${classes.dir}/schematics" overwrite="true">
+			<fileset dir="schematics" />
+		</copy>
+		<zip destfile="${dist.dir}/DimensionalDoors-${grep.out}-${build.number}.zip" basedir="${classes.dir}"/>
 		<delete dir="${classes.dir}" />
 		<delete dir="${mcp.dir}/reobf"/>
-		<delete dir="{$apiclasses.dir}" />
-		<delete dir="${mcpsrc.dir}/${src.dir}" />
+		<delete dir="${mcpsrc}/StevenDimDoors" />
+		<delete dir="${mcpsrc}/Steven" />
 	</target>
 
 	<target name="build" depends="get-version" unless="already-compiled">
@@ -117,36 +87,19 @@
 
 		<!-- Reobf -->
 		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows">
-			<arg line="/c reobfuscate.bat --srgnames"/>
+			<arg line="/c reobfuscate_srg.bat"/>
 		</exec>
 
 		<exec dir="${mcp.dir}" executable="sh" osfamily="unix">
-			<arg value="reobfuscate.sh" />
+			<arg value="reobfuscate_srg.sh" />
 		</exec>
 
 		<copy todir="${classes.dir}">
 			<fileset dir="${mcp.dir}/reobf/minecraft"/>
 		</copy>
-
-		<copy todir="${resourcePack.dir}">
-			<fileset dir="${resources.dir}" />
-		</copy>
-		
-		<copy todir="${schematicPack.dir}">
-			<fileset dir="${schematics.dir}" />
-		</copy>
-		
 		<copy todir="${classes.dir}">
-			<fileset file="mcmod.info" />
+			<fileset dir="${resources.dir}"/>
 		</copy>
-		
-		<copy todir="${classes.dir}">
-			<fileset file="${resources.dir}/pack.mcmeta" />
-		</copy>
-		
-		<delete file="${resourcePack.dir}/mcmod.info" />
-		
-		<delete file="${resourcePack.dir}/pack.mcmeta" />
 	</target>
 
 	<target name="build-number-there" if="env.BUILD_NUMBER" >
@@ -156,7 +109,7 @@
 
 	<target name="build-number-not-there" unless="env.BUILD_NUMBER" >
 		<echo message="!! No build number set !!" />
-		<property name="build.number" value="0" />
+		<property name="build.number" value="CUSTOM_BUILD" />
 	</target>
 
 	<target name="setup-forge" depends="download-forge,build-number-there,build-number-not-there" unless="forge.already.installed">
@@ -167,9 +120,15 @@
 				<include name="minecraftforge-src-${forge.version}.zip"/>
 			</fileset>
 		</unzip>
-
+		
+		
 		<!-- Change executables' permitions -->
+
 		<chmod file="${forge.dir}/install.sh" perm="+x"/>
+
+		<!-- if your building on OSX these 2 should be executable -->
+
+
 
 		<!-- Install forge -->
 		<delete dir="${mcp.dir}" failonerror="no"/>
@@ -179,28 +138,37 @@
 
 		<exec dir="${forge.dir}" executable="sh" osfamily="unix" inputstring="Yes\n">
 			<arg value="install.sh" />
+
 		</exec>
+
 
 		<chmod file="${mcp.dir}/updatemd5.sh" perm="+x"/>
 		<chmod file="${mcp.dir}/recompile.sh" perm="+x"/>
-		<chmod file="${mcp.dir}/reobfuscate.sh" perm="+x"/>
+		<chmod file="${mcp.dir}/reobfuscate_srg.sh" perm="+x"/>
 		<chmod file="${mcp.dir}/runtime/bin/astyle-osx" perm="+x" />
 		<chmod file="${mcp.dir}/runtime/bin/jad-osx" perm="+x" />
+		<!-- Copy libraries -->
+<!-- 		<copy todir="${mcp.dir}/lib" >
+			<fileset dir="lib" >
+				<patternset includes="*.jar" />
+			</fileset>
+		</copy> -->
 	</target>
 
-	<target name="download-forge" depends="download-ant-contrib" unless="forge-exists">
-		<taskdef resource="net/sf/antcontrib/antlib.xml">
-			<classpath>
-				<pathelement location="${download.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
-				<fileset dir="${download.dir}/ant-contrib/lib">
-					<include name="*.jar"/>
-				</fileset>
-			</classpath>
-		</taskdef>
-		<echo message="Downloading forge... " />
-		<get src="http://files.minecraftforge.net/minecraftforge-src-${forge.version}.zip"
-							dest="${download.dir}/minecraftforge-src-${forge.version}.zip" />
+		<target name="download-forge" depends="download-ant-contrib" unless="forge-exists">
+			<taskdef resource="net/sf/antcontrib/antlib.xml">
+				<classpath>
+					<pathelement location="${download.dir}/ant-contrib/ant-contrib-1.0b3.jar"/>
+					<fileset dir="${download.dir}/ant-contrib/lib">
+						<include name="*.jar"/>
+					</fileset>
+				</classpath>
+			</taskdef>
+			<echo message="Downloading forge... " />
+			<get src="${forge.url}" dest="${download.dir}/minecraftforge-src-${forge.version}.zip" />
 	</target>
+
+
 
 	<target name="download-ant-contrib" unless="should-download-ant-contrib">
 		<echo message="Getting: ant-contrib"/>
@@ -228,3 +196,4 @@
 
 
 </project>
+
