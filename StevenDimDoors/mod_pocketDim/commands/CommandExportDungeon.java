@@ -27,6 +27,13 @@ public class CommandExportDungeon extends DDCommandBase
 	}
 
 	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "Usage: /dd-export <dungeon type> <dungeon name> open <weight>\r\n" +
+				"       /dd-export <dungeon type> <dungeon name> closed <weight>\r\n" +
+				"       /dd-export <schematic name> override";
+	}
+
+	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		/*
@@ -165,11 +172,5 @@ public class CommandExportDungeon extends DDCommandBase
 			buffer.append(source[index]);
 		}
 		return buffer.toString();
-	}
-
-	@Override
-	public String getCommandUsage(ICommandSender icommandsender) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

@@ -356,13 +356,13 @@ public class DDTeleporter
 				oldWorld.getChunkFromChunkCoords(entX, entZ).isModified = true;
 			}
 			// Memory concerns.
-			// oldWorld.releaseEntitySkin(entity);
+			oldWorld.onEntityRemoved(entity);
 
 			if (player == null) // Are we NOT working with a player?
 			{
 				NBTTagCompound entityNBT = new NBTTagCompound();
 				entity.isDead = false;
-				entity.writeToNBTOptional(entityNBT);
+				entity.writeMountToNBT(entityNBT);
 				entity.isDead = true;
 				entity = EntityList.createEntityFromNBT(entityNBT, newWorld);
 
@@ -469,7 +469,7 @@ public class DDTeleporter
 		{
 			if(PocketManager.isBlackListed(link.destination().getDimension()))
 			{
-				link=PocketManager.getDimensionData(link.source().getDimension()).createLink(link.source,LinkTypes.SAFE_EXIT,link.orientation);
+				link=PocketManager.getDimensionData(link.source().getDimension()).createLink(link.link.point,LinkTypes.SAFE_EXIT,link.link.orientation);
 			}
 			else
 			{
@@ -545,7 +545,7 @@ public class DDTeleporter
 		// To avoid loops, don't generate a destination if the player is
 		// already in a non-pocket dimension.
 		
-		NewDimData current = PocketManager.getDimensionData(link.source.getDimension());
+		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
 		if (current.isPocketDimension())
 		{
 			Point4D source = link.source();
@@ -569,7 +569,7 @@ public class DDTeleporter
 	{
 		World startWorld = PocketManager.loadDimension(link.source().getDimension());
 		World destWorld = PocketManager.loadDimension(link.destination().getDimension());
-		TileEntity doorTE = startWorld.getBlockTileEntity(link.source().getX(), link.source().getY(), link.source.getZ());
+		TileEntity doorTE = startWorld.getBlockTileEntity(link.source().getX(), link.source().getY(), link.link.point.getZ());
 		if(doorTE instanceof TileEntityDimDoor)
 		{
 			if((TileEntityDimDoor.class.cast(doorTE).hasGennedPair))
@@ -599,7 +599,7 @@ public class DDTeleporter
 	}
 	private static boolean generateSafeExit(DimLink link, DDProperties properties)
 	{
-		NewDimData current = PocketManager.getDimensionData(link.source.getDimension());
+		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
 		return generateSafeExit(current.root(), link, properties);
 	}
 	
@@ -608,7 +608,7 @@ public class DDTeleporter
 		// A dungeon exit acts the same as a safe exit, but has the chance of
 		// taking the user to any non-pocket dimension, excluding Limbo and The End.
 		
-		NewDimData current = PocketManager.getDimensionData(link.source.getDimension());
+		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
 		ArrayList<NewDimData> roots = PocketManager.getRootDimensions();
 		int shiftChance = START_ROOT_SHIFT_CHANCE + ROOT_SHIFT_CHANCE_PER_LEVEL * (current.packDepth() - 1);
 

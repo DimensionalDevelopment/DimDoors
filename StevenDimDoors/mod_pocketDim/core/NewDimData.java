@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
+import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
@@ -21,12 +22,12 @@ public abstract class NewDimData
 	{
 		public InnerDimLink(Point4D source, DimLink parent,int orientation)
 		{
-			super(source, parent,orientation);
+			super(new ClientLinkData(source, orientation), parent);
 		}
 		
 		public InnerDimLink(Point4D source, int linkType, int orientation)
 		{
-			super(source, linkType,orientation);
+			super(new ClientLinkData(source, orientation), linkType);
 		}
 
 		public void setDestination(int x, int y, int z, NewDimData dimension)
@@ -50,7 +51,7 @@ public abstract class NewDimData
 			}
 			
 			parent = null;
-			source = null;
+			link = null;
 			tail = new LinkTail(0, null);
 		}
 		
@@ -65,7 +66,7 @@ public abstract class NewDimData
 				//Ignore this request silently
 				return false;
 			}
-			if (nextParent.source.getDimension() != source.getDimension())
+			if (nextParent.link.point.getDimension() != link.point.getDimension())
 			{
 				// Ban having children in other dimensions to avoid serialization issues with cross-dimensional tails
 				throw new IllegalArgumentException("source and parent.source must have the same dimension.");
@@ -88,7 +89,7 @@ public abstract class NewDimData
 			parent = nextParent;
 			tail = nextParent.tail;
 			nextParent.children.add(this);
-			this.orientation=orientation;
+			this.link.orientation=orientation;
 			return true;
 		}
 		
@@ -111,7 +112,7 @@ public abstract class NewDimData
 			parent = null;
 			tail = new LinkTail(linkType, null);
 			//Set new orientation
-			this.orientation=orientation;
+			this.link.orientation=orientation;
 		}
 	}
 	
@@ -130,10 +131,10 @@ public abstract class NewDimData
 	protected Point4D origin;
 	protected int orientation;
 	protected DungeonData dungeon;
-	protected IUpdateWatcher<Point4D> linkWatcher;
+	protected IUpdateWatcher<ClientLinkData> linkWatcher;
 	
 	protected NewDimData(int id, NewDimData parent, boolean isPocket, boolean isDungeon,
-		IUpdateWatcher<Point4D> linkWatcher)
+		IUpdateWatcher<ClientLinkData> linkWatcher)
 	{
 		// The isPocket flag is redundant. It's meant as an integrity safeguard.
 		if (isPocket && (parent == null))
@@ -267,7 +268,7 @@ public abstract class NewDimData
 		//Link created!
 		if(linkType!=LinkTypes.CLIENT_SIDE)
 		{
-			linkWatcher.onCreated(link.source);
+			linkWatcher.onCreated(link.link);
 		}
 		return link;
 	}
@@ -290,19 +291,19 @@ public abstract class NewDimData
 		InnerDimLink link = linkMapping.get(source);
 		if (link == null)
 		{
-			link = new InnerDimLink(source, parent, parent.orientation);
+			link = new InnerDimLink(source, parent, parent.link.orientation);
 			linkMapping.put(source, link);
 			linkList.add(link);
 			
 			//Link created!
-			linkWatcher.onCreated(link.source);
+			linkWatcher.onCreated(link.link);
 		}
 		else
 		{
-			if (link.overwrite(parent, parent.orientation))
+			if (link.overwrite(parent, parent.link.orientation))
 			{
 				//Link created!
-				linkWatcher.onCreated(link.source);
+				linkWatcher.onCreated(link.link);
 			}
 		}
 		return link;
@@ -319,7 +320,7 @@ public abstract class NewDimData
 		{
 			linkList.remove(target);
 			//Raise deletion event
-			linkWatcher.onDeleted(target.source);
+			linkWatcher.onDeleted(target.link);
 			target.clear();
 		}
 		return (target != null);
@@ -334,9 +335,9 @@ public abstract class NewDimData
 			linkList.remove(target);
 			//Raise deletion event
 			//TODO why is source null here?
-			if(target.source!=null)
+			if(target.link!=null)
 			{
-				linkWatcher.onDeleted(target.source);
+				linkWatcher.onDeleted(target.link);
 			}
 			target.clear();
 		}

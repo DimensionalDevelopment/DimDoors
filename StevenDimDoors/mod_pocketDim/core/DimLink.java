@@ -4,46 +4,56 @@ import java.util.LinkedList;
 import java.util.List;
 
 import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
+
 public abstract class DimLink
 {	
-	protected Point4D source;
+	protected ClientLinkData link;
 	protected DimLink parent;
 	protected LinkTail tail;
-	protected int orientation;
 	protected List<DimLink> children;
 	
-	protected DimLink(Point4D source, DimLink parent, int orientation)
+	protected DimLink(ClientLinkData link, DimLink parent)
 	{
 		
-		if (parent.source.getDimension() != source.getDimension())
+		if (parent.link.point.getDimension() != link.point.getDimension())
 		{
 			// Ban having children in other dimensions to avoid serialization issues with cross-dimensional tails
 			throw new IllegalArgumentException("source and parent.source must have the same dimension.");
 		}
-		this.orientation=orientation;
 		this.parent = parent;
-		this.source = source;
+		this.link = link;
 		this.tail = parent.tail;
 		this.children = new LinkedList<DimLink>();
 		parent.children.add(this);
 	}
 	
-	protected DimLink(Point4D source, int linkType, int orientation)
+	protected DimLink(ClientLinkData link, int linkType)
 	{
 		if ((linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX) && linkType != LinkTypes.CLIENT_SIDE)
 		{
 			throw new IllegalArgumentException("The specified link type is invalid.");
 		}
-		this.orientation = orientation;
+
 		this.parent = null;
-		this.source = source;
+		this.link = link;
 		this.tail = new LinkTail(linkType, null);
 		this.children = new LinkedList<DimLink>();
 	}
 
 	public Point4D source()
 	{
-		return source;
+		return link.point;
+	}
+
+	public int orientation()
+	{
+		return link.orientation;
+	}
+
+	public ClientLinkData link()
+	{
+		return link;
 	}
 
 	public Point4D destination()
@@ -52,7 +62,7 @@ public abstract class DimLink
 	}
 	public int getDestinationOrientation()
 	{
-		return PocketManager.getLink(source.getX(), source.getY(), source.getZ(), source.getDimension()).orientation();
+		return PocketManager.getLink(link.point.getX(), link.point.getY(), link.point.getZ(), link.point.getDimension()).link().orientation;
 	}
 	public boolean hasDestination()
 	{
@@ -78,13 +88,9 @@ public abstract class DimLink
 	{
 		return tail.getLinkType();
 	}
-	public int orientation()
-	{
-		return orientation;
-	}
 
 	public String toString()
 	{
-		return source + " -> " + (hasDestination() ? destination() : "");
+		return link.point + " -> " + (hasDestination() ? destination() : "");
 	}
 }

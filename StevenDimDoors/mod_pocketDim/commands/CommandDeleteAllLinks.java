@@ -29,6 +29,11 @@ public class CommandDeleteAllLinks extends DDCommandBase
 	}
 
 	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "Usage: /dd-deletelinks <targetDimensionID>";
+	}
+
+	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		int linksRemoved=0;
@@ -65,11 +70,5 @@ public class CommandDeleteAllLinks extends DDCommandBase
 			
 		}
 		return DDCommandResult.SUCCESS; //TEMPORARY HACK
-	}
-
-	@Override
-	public String getCommandUsage(ICommandSender icommandsender) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

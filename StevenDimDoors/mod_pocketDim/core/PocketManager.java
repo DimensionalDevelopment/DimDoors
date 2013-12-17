@@ -47,7 +47,7 @@ public class PocketManager
 		// that any link destinations must be real dimensions controlled by PocketManager.
 
 		public InnerDimData(int id, InnerDimData parent, boolean isPocket, boolean isDungeon,
-			IUpdateWatcher<Point4D> linkWatcher)
+			IUpdateWatcher<ClientLinkData> linkWatcher)
 		{
 			super(id, parent, isPocket, isDungeon, linkWatcher);
 		}
@@ -119,7 +119,7 @@ public class PocketManager
 				Point3D parentPoint = new Point3D(-1,-1,-1);
 				if(link.parent!=null)
 				{
-					parentPoint=link.parent.source.toPoint3D();
+					parentPoint=link.parent.link.point.toPoint3D();
 				}
 				
 				for(DimLink childLink : link.children)
@@ -127,7 +127,7 @@ public class PocketManager
 					children.add(childLink.source().toPoint3D());
 				}
 				PackedLinkTail tail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
-				Links.add(new PackedLinkData(link.source,parentPoint,tail,link.orientation,children));
+				Links.add(new PackedLinkData(link.link.point,parentPoint,tail,link.link.orientation,children));
 				
 				PackedLinkTail tempTail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
 				if(Tails.contains(tempTail))
@@ -208,9 +208,11 @@ public class PocketManager
 	private static volatile boolean isLoading = false;
 	private static volatile boolean isLoaded = false;
 	private static volatile boolean isSaving = false;
+	/**
+	 * Set as true if we are a client that has connected to a dedicated server
+	 */
 	public static volatile boolean isConnected = false;
-
-	private static final UpdateWatcherProxy<Point4D> linkWatcher = new UpdateWatcherProxy<Point4D>();
+	private static final UpdateWatcherProxy<ClientLinkData> linkWatcher = new UpdateWatcherProxy<ClientLinkData>();
 	private static final UpdateWatcherProxy<ClientDimData> dimWatcher = new UpdateWatcherProxy<ClientDimData>();
 	private static ArrayList<NewDimData> rootDimensions = null;
 
@@ -572,6 +574,10 @@ public class PocketManager
 		//Any pocket dimension must be listed with PocketManager to have a dimension ID
 		//assigned, so it's safe to assume that any unknown dimensions don't belong to us.
 		
+		if(PocketManager.dimensionData == null)
+		{
+			System.out.println("Something odd happend during shutdown");
+		}
 		NewDimData dimension = PocketManager.dimensionData.get(dimensionID);
 		if (dimension == null)
 		{
@@ -598,7 +604,7 @@ public class PocketManager
 		{
 			throw new IllegalStateException("Pocket dimensions have already been unloaded!");
 		}
-		
+
 		save();
 		unregisterPockets();
 		dimensionData = null;
@@ -644,12 +650,12 @@ public class PocketManager
 		return dimWatcher.unregisterReceiver(watcher);
 	}
 	
-	public static void registerLinkWatcher(IUpdateWatcher<Point4D> watcher)
+	public static void registerLinkWatcher(IUpdateWatcher<ClientLinkData> watcher)
 	{
 		linkWatcher.registerReceiver(watcher);
 	}
 	
-	public static boolean unregisterLinkWatcher(IUpdateWatcher<Point4D> watcher)
+	public static boolean unregisterLinkWatcher(IUpdateWatcher<ClientLinkData> watcher)
 	{
 		return linkWatcher.unregisterReceiver(watcher);
 	}

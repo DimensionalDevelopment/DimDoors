@@ -22,6 +22,11 @@ public class CommandCreatePocket extends DDCommandBase
 	}
 
 	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "Usage: /dd-create";
+	}
+
+	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		//TODO: Some commands have isRemote checks, some do not. Why? Can commands even run locally anyway?
@@ -45,11 +50,5 @@ public class CommandCreatePocket extends DDCommandBase
 			sendChat(sender,("Created a door to a pocket dimension. Please build your dungeon there."));
 		}
 		return DDCommandResult.SUCCESS;
-	}
-
-	@Override
-	public String getCommandUsage(ICommandSender icommandsender) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

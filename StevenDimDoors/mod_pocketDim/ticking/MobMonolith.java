@@ -6,6 +6,7 @@ import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -67,6 +68,12 @@ public class MobMonolith extends EntityFlying implements IMob
 	}
 
 	@Override
+	protected void applyEntityAttributes()
+	{
+		super.applyEntityAttributes();
+		this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).setAttribute(20);
+	}
+
 	public boolean canBePushed()
 	{
 		return false;
@@ -100,6 +107,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		{
 			this.setDead();
 		}
+
 		super.onEntityUpdate();
 
 		if (this.isEntityAlive() && this.isEntityInsideOpaqueBlock())

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
@@ -40,16 +41,16 @@ public class ServerPacketHandler implements IPacketHandler
 		}	
 	}
 	
-	private static class LinkWatcher implements IUpdateWatcher<Point4D>
+	private static class LinkWatcher implements IUpdateWatcher<ClientLinkData>
 	{
 		@Override
-		public void onCreated(Point4D message)
+		public void onCreated(ClientLinkData message)
 		{
 			sendLinkPacket(PacketConstants.CREATE_LINK_PACKET_ID, message);
 		}
 
 		@Override
-		public void onDeleted(Point4D message)
+		public void onDeleted(ClientLinkData message)
 		{
 			sendLinkPacket(PacketConstants.DELETE_LINK_PACKET_ID, message);
 		}
@@ -77,7 +78,7 @@ public class ServerPacketHandler implements IPacketHandler
 		}
 	}
 	
-	private static void sendLinkPacket(byte id, Point4D data)
+	private static void sendLinkPacket(byte id, ClientLinkData message)
 	{
 		try
 		{
@@ -85,7 +86,7 @@ public class ServerPacketHandler implements IPacketHandler
 			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 			DataOutputStream writer = new DataOutputStream(buffer);
 			writer.writeByte(id);
-			Point4D.write(data, writer);
+			message.write(writer);
 			writer.close();
 			packet.channel = PacketConstants.CHANNEL_NAME;
 			packet.data = buffer.toByteArray();

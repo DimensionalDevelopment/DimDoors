@@ -29,6 +29,11 @@ public class CommandTeleportPlayer extends DDCommandBase
 		return instance;
 	}
 
+	@Override
+	public String getCommandUsage(ICommandSender sender) {
+		return "Usage: /dd-tp <player name> <dimension id> <x> <y> <z>";
+	}
+
 	/**
 	 * TODO- Change to accept variety of input, like just coords, just dim ID, or two player names. 
 	 */
@@ -85,12 +90,6 @@ public class CommandTeleportPlayer extends DDCommandBase
        {  
           return false;  
        }  
-    }
-
-	@Override
-	public String getCommandUsage(ICommandSender icommandsender) {
-		// TODO Auto-generated method stub
-		return null;
-	}  
+    }  
 	
 }

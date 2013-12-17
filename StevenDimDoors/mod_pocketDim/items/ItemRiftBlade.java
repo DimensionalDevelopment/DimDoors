@@ -62,15 +62,14 @@ public class ItemRiftBlade extends ItemSword
 			return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.pumpkin ? 1.0F : 1.5F;
 		}
 	}
-	
+
 	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes"})
 	public Multimap getItemAttributeModifiers()
-    {
+	{
 		Multimap multimap = super.getItemAttributeModifiers();
-        multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", 7, 0));
-        return multimap;
-    }
+		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double)7, 0));
+		return multimap;
+	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
