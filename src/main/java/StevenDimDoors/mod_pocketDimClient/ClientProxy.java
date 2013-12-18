@@ -1,5 +1,4 @@
 package StevenDimDoors.mod_pocketDimClient;
-import net.minecraft.src.ModLoader;
 import StevenDimDoors.mod_pocketDim.CommonProxy;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
@@ -33,7 +32,6 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public  void printStringClient(String string)
 	{	
-		ModLoader.getMinecraftInstance().ingameGUI.getChatGUI().printChatMessage(string);
 	}
 	
 }
