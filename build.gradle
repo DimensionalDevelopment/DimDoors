@@ -45,4 +45,5 @@ processResources
 jar 
 {
 	destinationDir = new File("build/dist/")
+	archiveName = "DimensionalDoors-${version}-${BUILD_NUMBER}"
 }
