@@ -13,6 +13,8 @@ buildscript {
 
 apply plugin: 'forge'
 
+
+
 version = "2.1.1RC1"
 group= "com.stevenrs11.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "dimdoors"
@@ -20,6 +22,9 @@ archivesBaseName = "dimdoors"
 minecraft {
 	version = "1.6.4-9.11.1.964"
 }
+
+targetCompatibility = '1.7'
+sourceCompatibility = '1.7'
 
 processResources
 {
@@ -39,6 +44,5 @@ processResources
 
 jar 
 {
-	destinationDir = "build/dist/"
-	archiveName = "DimensionalDoors-$version.jar"
+	destinationDir = new File("build/dist/")
 }

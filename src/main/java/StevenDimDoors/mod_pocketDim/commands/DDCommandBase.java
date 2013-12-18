@@ -80,4 +80,10 @@ public abstract class DDCommandBase extends CommandBase
 		player.sendChatToPlayer(cmp);
 
 	}
+	
+	@Override
+	public int compareTo(Object par1Obj)
+    {
+        return this.getCommandName().compareTo(((CommandBase)par1Obj).getCommandName());
+    }
 }
