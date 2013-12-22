@@ -78,7 +78,6 @@ public class PocketBuilder
 			dimension.createLink(oldLinkPos, LinkTypes.SAFE_EXIT, (orientation+2)%4);
 			return false;
 		}
-		@SuppressWarnings("unused") // ?
 		NewDimData parent = PocketManager.getDimensionData(incomingLink.source().getDimension());
 		
 		if (!dimension.isDungeon())
@@ -106,7 +105,7 @@ public class PocketBuilder
 			}
 			
 			Point3D destination = new Point3D(incomingLink.destination());
-			loadAndValidateDungeon(dimension.dungeon(),properties).copyToWorld(world, destination, originLink.orientation(), incomingLink, random);
+			loadAndValidateDungeon(dimension.dungeon(), properties).copyToWorld(world, destination, originLink.orientation(), incomingLink, random, properties);
 			dimension.setFilled(true);
 			return true;
 		}
@@ -115,8 +114,6 @@ public class PocketBuilder
 			e.printStackTrace();
 			return false;
 		}
-		
-		
 	}
 	
 	private static boolean buildDungeonPocket(DungeonData dungeon, NewDimData dimension, DimLink link, DungeonSchematic schematic,World world, DDProperties properties)
@@ -140,7 +137,7 @@ public class PocketBuilder
             destination.setY( yCoordHelper.adjustDestinationY(destination.getY(), world.getHeight(), schematic.getEntranceDoorLocation().getY(), schematic.getHeight()) );
             
             //Generate the dungeon
-            schematic.copyToWorld(world, destination, orientation, link, random);
+            schematic.copyToWorld(world, destination, orientation, link, random, properties);
             
             //Finish up destination initialization
             dimension.initializeDungeon(destination.getX(), destination.getY(), destination.getZ(), orientation, link, dungeon);

@@ -12,16 +12,22 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDLoot;
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.schematic.WorldOperation;
 
 public class FillContainersOperation extends WorldOperation
 {
 	private Random random;
+	private DDProperties properties;
 	
-	public FillContainersOperation(Random random)
+	private static final int GRAVE_CHEST_CHANCE = 100;
+	private static final int MAX_GRAVE_CHEST_CHANCE = 700;
+	
+	public FillContainersOperation(Random random, DDProperties properties)
 	{
 		super("FillContainersOperation");
 		this.random = random;
+		this.properties = properties;
 	}
 
 	@Override
@@ -29,22 +35,30 @@ public class FillContainersOperation extends WorldOperation
 	{
 		int blockID = world.getBlockId(x, y, z);
 
-		//Fill empty chests and dispensers
+		// Fill empty chests and dispensers
 		if (Block.blocksList[blockID] instanceof BlockContainer)
 		{
 			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 
-			//Fill chests
+			// Fill chests
 			if (tileEntity instanceof TileEntityChest)
 			{
 				TileEntityChest chest = (TileEntityChest) tileEntity;
 				if (isInventoryEmpty(chest))
 				{
-					DDLoot.generateChestContents(DDLoot.DungeonChestInfo, chest, random);
+					// Randomly choose whether this will be a regular dungeon chest or a grave chest
+					if (random.nextInt(MAX_GRAVE_CHEST_CHANCE) < GRAVE_CHEST_CHANCE)
+					{
+						DDLoot.fillGraveChest(chest, random, properties);
+					}
+					else
+					{
+						DDLoot.generateChestContents(DDLoot.DungeonChestInfo, chest, random);						
+					}
 				}
 			}
 			
-			//Fill dispensers
+			// Fill dispensers
 			if (tileEntity instanceof TileEntityDispenser)
 			{
 				TileEntityDispenser dispenser = (TileEntityDispenser) tileEntity;

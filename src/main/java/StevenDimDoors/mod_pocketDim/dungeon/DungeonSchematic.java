@@ -170,7 +170,7 @@ public class DungeonSchematic extends Schematic {
 		return new DungeonSchematic(Schematic.copyFromWorld(world, x, y, z, width, height, length, doCompactBounds));
 	}
 
-	public void copyToWorld(World world, Point3D pocketCenter, int targetOrientation, DimLink entryLink, Random random)
+	public void copyToWorld(World world, Point3D pocketCenter, int targetOrientation, DimLink entryLink, Random random, DDProperties properties)
 	{
 		//TODO: This function is an improvised solution so we can get the release moving. In the future,
 		//we should generalize block transformations and implement support for them at the level of Schematic,
@@ -224,10 +224,10 @@ public class DungeonSchematic extends Schematic {
 			world.setBlockTileEntity(pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), TileEntity.createAndLoadEntity(tileTag));
 		}
 		
-		setUpDungeon(PocketManager.getDimensionData(world), world, pocketCenter, turnAngle, entryLink, random);
+		setUpDungeon(PocketManager.getDimensionData(world), world, pocketCenter, turnAngle, entryLink, random, properties);
 	}
 	
-	private void setUpDungeon(NewDimData dimension, World world, Point3D pocketCenter, int turnAngle, DimLink entryLink, Random random)
+	private void setUpDungeon(NewDimData dimension, World world, Point3D pocketCenter, int turnAngle, DimLink entryLink, Random random, DDProperties properties)
 	{
         //Transform dungeon corners
         Point3D minCorner = new Point3D(0, 0, 0);
@@ -235,7 +235,7 @@ public class DungeonSchematic extends Schematic {
         transformCorners(entranceDoorLocation, pocketCenter, turnAngle, minCorner, maxCorner);
         
 		//Fill empty chests and dispensers
-		FillContainersOperation filler = new FillContainersOperation(random);
+		FillContainersOperation filler = new FillContainersOperation(random, properties);
 		filler.apply(world, minCorner, maxCorner);
 		
 		//Set up entrance door rift
@@ -302,7 +302,7 @@ public class DungeonSchematic extends Schematic {
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
 		int orientation = world.getBlockMetadata(location.getX(), location.getY()-1, location.getZ());
-		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON_EXIT,orientation);
+		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON_EXIT, orientation);
 		//Replace the sandstone block under the exit door with the same block as the one underneath it
 		int x = location.getX();
 		int y = location.getY() - 3;
@@ -322,7 +322,7 @@ public class DungeonSchematic extends Schematic {
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
 		int orientation = world.getBlockMetadata(location.getX(), location.getY()-1, location.getZ());
 
-		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON,orientation);
+		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON, orientation);
 	}
 	
 	private static void spawnMonolith(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter, boolean canSpawn)

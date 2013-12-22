@@ -279,6 +279,9 @@ public class mod_pocketDim
 		CraftingManager.registerRecipies();
 		DungeonHelper.initialize();
 
+		// Register loot chests
+		DDLoot.registerInfo(properties);
+
 		proxy.loadTextures();
 		proxy.registerRenderers();
 	}
@@ -288,9 +291,8 @@ public class mod_pocketDim
 	public void onPostInitialization(FMLPostInitializationEvent event)
 	{	
 		ForgeChunkManager.setForcedChunkLoadingCallback(instance, new ChunkLoaderHelper());
-		//Register loot chests
-		DDLoot.registerInfo();
 	}
+	
 	@EventHandler
 	public void onServerStopping(FMLServerStoppingEvent event)
 	{
