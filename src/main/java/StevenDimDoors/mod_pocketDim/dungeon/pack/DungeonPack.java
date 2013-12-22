@@ -191,7 +191,14 @@ public class DungeonPack
 							return getRandomDungeon(random, candidates);
 						}
 						//If we've reached this point, then a dungeon was not selected. Discard the type and try again.
-						products.remove(nextType);
+						for (index = 0; index < products.size(); index++)
+						{
+							if (products.get(index).getData().equals(nextType))
+							{
+								products.remove(index);
+								break;
+							}
+						}
 					}
 				}
 				while (nextType != null);

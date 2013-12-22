@@ -49,7 +49,6 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 
 	public DungeonPackConfigReader() { }
 
-	@SuppressWarnings("resource")
 	@Override
 	public DungeonPackConfig readFromStream(InputStream inputStream) throws ConfigurationProcessingException
 	{
