@@ -20,6 +20,7 @@ public class ConnectionHandler implements IConnectionHandler
 	@Override
 	public String connectionReceived(NetLoginHandler netHandler, INetworkManager manager)
 	{
+		/**
 		try
 		{
 			Packet250CustomPayload packet = new Packet250CustomPayload();
@@ -37,8 +38,10 @@ public class ConnectionHandler implements IConnectionHandler
 		{
 			//This shouldn't happen...
 			e.printStackTrace();
-		}	
+		}
+		**/	
 		return null;
+		
 	}
 
 	@Override
