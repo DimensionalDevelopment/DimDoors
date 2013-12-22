@@ -56,6 +56,32 @@ public class ServerPacketHandler implements IPacketHandler
 		}
 	}
 	
+	public static Packet250CustomPayload createLinkPacket(ClientLinkData data)
+	{
+		try
+		{
+			Packet250CustomPayload packet = new Packet250CustomPayload();
+			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+			DataOutputStream writer = new DataOutputStream(buffer);
+			writer.writeByte(PacketConstants.CREATE_LINK_PACKET_ID);
+			data.write(writer);
+			writer.close();
+			packet.channel = PacketConstants.CHANNEL_NAME;
+			packet.data = buffer.toByteArray();
+			packet.length = packet.data.length;
+			return packet;
+		}
+		catch (IOException e)
+		{
+			//This shouldn't happen...
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+	}
+
+	
 	private static void sendDimPacket(byte id, ClientDimData data)
 	{
 		try

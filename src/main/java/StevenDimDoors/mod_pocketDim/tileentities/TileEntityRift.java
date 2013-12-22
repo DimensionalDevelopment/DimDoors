@@ -16,6 +16,7 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
+import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
@@ -36,6 +37,7 @@ public class TileEntityRift extends TileEntity
 	private int count=200;
 	private int count2 = 0;
 	public int age = 0;
+	private boolean hasUpdated = false;
 
 	public HashMap<Integer, double[]> renderingCenters = new HashMap<Integer, double[]>();
 	@SuppressWarnings("deprecation")
@@ -47,7 +49,7 @@ public class TileEntityRift extends TileEntity
 	public void updateEntity() 
 	{
 		//Invalidate this tile entity if it shouldn't exist
-		if (PocketManager.getLink(xCoord, yCoord, zCoord, worldObj.provider.dimensionId) == null)
+		if (!this.worldObj.isRemote && PocketManager.getLink(xCoord, yCoord, zCoord, worldObj.provider.dimensionId) == null)
 		{
 			this.invalidate();
 			if (worldObj.getBlockId(xCoord, yCoord, zCoord) == mod_pocketDim.blockRift.blockID)
@@ -63,6 +65,10 @@ public class TileEntityRift extends TileEntity
 			this.invalidate();
 			return;
 		}
+		
+
+	
+		
 
 		//The code for the new rift rendering hooks in here, as well as in the ClientProxy to bind the TESR to the rift.
 		//It is inactive for now.
@@ -99,6 +105,8 @@ public class TileEntityRift extends TileEntity
 	{
 		return true;
 	}
+	
+	
 
 	public void clearBlocksOnRift()
 	{
@@ -345,20 +353,14 @@ public class TileEntityRift extends TileEntity
 		nbt.setInteger("spawnedEndermenID", this.spawnedEndermenID);
 	}
 
-	@Override
-	public Packet getDescriptionPacket() 
-	{
-		Packet132TileEntityData packet = new Packet132TileEntityData();
-		packet.actionType = 0;
-		packet.xPosition = xCoord;
-		packet.yPosition = yCoord;
-		packet.zPosition = zCoord;
-
-		NBTTagCompound nbt = new NBTTagCompound();
-		writeToNBT(nbt);
-		packet.data = nbt;
-		return packet;
-	}
+	 public Packet getDescriptionPacket()
+	 {
+		 if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
+		 {
+			 return ServerPacketHandler.createLinkPacket(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj).link());
+		 }
+		 return null;
+	 }
 
 	@Override
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
