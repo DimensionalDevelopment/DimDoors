@@ -212,7 +212,7 @@ public class PocketManager
 	 * Set as true if we are a client that has connected to a dedicated server
 	 */
 	public static volatile boolean isConnected = false;
-	private static final UpdateWatcherProxy<ClientLinkData> linkWatcher = new UpdateWatcherProxy<ClientLinkData>();
+	public static final UpdateWatcherProxy<ClientLinkData> linkWatcher = new UpdateWatcherProxy<ClientLinkData>();
 	private static final UpdateWatcherProxy<ClientDimData> dimWatcher = new UpdateWatcherProxy<ClientDimData>();
 	private static ArrayList<NewDimData> rootDimensions = null;
 

@@ -50,6 +50,7 @@ import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import StevenDimDoors.mod_pocketDimClient.ClientPacketHandler;
 import StevenDimDoors.mod_pocketDimClient.ClientTickHandler;
 
+import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -93,7 +94,7 @@ serverPacketHandlerSpec =
 @SidedPacketHandler(channels = {PacketConstants.CHANNEL_NAME}, packetHandler = ServerPacketHandler.class))
 public class mod_pocketDim
 {
-	public static final String version = "$VERSION$";
+	public static final String version = "2.2.0";
 	public static final String modid = "dimdoors";
 
 	//need to clean up 
@@ -136,6 +137,7 @@ public class mod_pocketDim
 	public static DDProperties properties;
 	public static MonolithSpawner spawner; //Added this field temporarily. Will be refactored out later.
 	public static GatewayGenerator riftGen;
+	public static PlayerTracker tracker;
 
 	public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") 
 	{
@@ -213,6 +215,8 @@ public class mod_pocketDim
 		mod_pocketDim.pocketBiome= (new BiomeGenPocket(properties.PocketBiomeID));
 
 		GameRegistry.registerWorldGenerator(mod_pocketDim.riftGen);
+		tracker = new PlayerTracker();
+		GameRegistry.registerPlayerTracker(tracker);
 
 		GameRegistry.registerBlock(goldDoor, "Golden Door");
 		GameRegistry.registerBlock(goldDimDoor, "Golden Dimensional Door");

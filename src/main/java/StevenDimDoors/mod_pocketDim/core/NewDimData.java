@@ -131,7 +131,7 @@ public abstract class NewDimData
 	protected Point4D origin;
 	protected int orientation;
 	protected DungeonData dungeon;
-	protected IUpdateWatcher<ClientLinkData> linkWatcher;
+	public IUpdateWatcher<ClientLinkData> linkWatcher;
 	
 	protected NewDimData(int id, NewDimData parent, boolean isPocket, boolean isDungeon,
 		IUpdateWatcher<ClientLinkData> linkWatcher)

@@ -1,9 +1,14 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
+import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet130UpdateSign;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 
-public class TileEntityDimDoor extends TileEntity
+public class TileEntityDimDoor extends TileEntity 
 {
 	public boolean openOrClosed;
 	public int orientation;
@@ -18,7 +23,19 @@ public class TileEntityDimDoor extends TileEntity
 	}
 
 	@Override
-	public void updateEntity() { }
+	public void updateEntity()
+	{ 
+		
+	}
+	
+	 public Packet getDescriptionPacket()
+	 {
+		 if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
+		 {
+			 return ServerPacketHandler.createLinkPacket(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj).link());
+		 }
+		 return null;
+	 }
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
@@ -54,4 +71,6 @@ public class TileEntityDimDoor extends TileEntity
 		nbt.setBoolean("isDungeonChainLink", isDungeonChainLink);
 		nbt.setBoolean("hasGennedPair", hasGennedPair);
 	}
+
+	
 }

@@ -10,6 +10,7 @@ import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.network.packet.Packet41EntityEffect;
 import net.minecraft.network.packet.Packet43Experience;
 import net.minecraft.network.packet.Packet9Respawn;
@@ -19,6 +20,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.network.ForgePacket;
+import net.minecraftforge.common.network.packet.DimensionRegisterPacket;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -270,6 +273,7 @@ public class DDTeleporter
 		{
 			throw new IllegalArgumentException("destination cannot be null.");
 		}
+		 
 		
 		//This beautiful teleport method is based off of xCompWiz's teleport function. 
 
@@ -316,6 +320,10 @@ public class DDTeleporter
 			{
 				// We need to do all this special stuff to move a player between dimensions.
 
+				//Register the dim on the client when we teleport to it.
+				 Packet250CustomPayload[] pkt = ForgePacket.makePacketSet(new DimensionRegisterPacket(newWorld.provider.dimensionId, DimensionManager.getProviderType(newWorld.provider.dimensionId)));
+				 player.playerNetServerHandler.sendPacketToPlayer(pkt[0]);
+				  
 				// Set the new dimension and inform the client that it's moving to a new world.
 				player.dimension = destination.getDimension();
 				player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
