@@ -6,8 +6,10 @@
 /schematics/ruins/complexHall_pitStairs_open_100.schematic
 /schematics/ruins/complexHall_ruinsO_open_100.schematic
 /schematics/ruins/ComplexHall_SK-AnchoredDescent_Open_50.schematic
+/schematics/ruins/ComplexHall_SK-HallwayHiddenTreasure-B_Closed_50.schematic
 /schematics/ruins/ComplexHall_SK-HiddenStairs_Open_100.schematic
 /schematics/ruins/ComplexHall_SK-LostGarden_Open_10.schematic
+/schematics/ruins/ComplexHall_SK-RuinsOhNo_Open_50.schematic
 /schematics/ruins/complexHall_smallBranchWithExit_closed_100.schematic
 /schematics/ruins/complexHall_smallRotundaWithExit_closed_100.schematic
 /schematics/ruins/complexHall_tntPuzzleTrap_closed_50.schematic
@@ -50,6 +52,8 @@
 /schematics/ruins/SimpleHall_SK-LeftUpPath_Open_50.schematic
 /schematics/ruins/SimpleHall_SK-RightDownStairs_Open_50.schematic
 /schematics/ruins/SimpleHall_SK-RightUpPath_Open_50.schematic
+/schematics/ruins/SimpleHall_SK-UTurnLeft_Open_50.schematic
+/schematics/ruins/SimpleHall_SK-UTurnRight_Open_50.schematic
 /schematics/ruins/SimpleHall_SK-SpiralHallway_Open_100.schematic
 /schematics/ruins/simpleHall_smallSimpleLeft_closed_100.schematic
 /schematics/ruins/simpleHall_smallSimpleRight_closed_100.schematic
@@ -63,5 +67,12 @@
 /schematics/ruins/trap_pistonHallway_closed_100.schematic
 /schematics/ruins/trap_pistonSmasherHall_closed_100.schematic
 /schematics/ruins/trap_raceTheTNTHall_closed_50.schematic
+/schematics/ruins/Trap_SK-FakeTNTTrap-B_Closed_50.schematic
+/schematics/ruins/Trap_SK-NicolesTower_Open_50.schematic
 /schematics/ruins/Trap_SK-RestlessCorridor_Open_10.schematic
+/schematics/ruins/Trap_SK-SimpleLeftTrap_Closed_50.schematic
+/schematics/ruins/Trap_SK-SimpleRightTrap_Closed_50.schematic
+/schematics/ruins/Trap_SK-TrappedStairsDown_Closed_50.schematic
+/schematics/ruins/Trap_SK-TrappedStairsUp_Closed_50.schematic
+/schematics/ruins/Trap_SK-UTrapRight_Open_50.schematic
 /schematics/ruins/trap_wallFallcomboPistonHall_closed_200.schematic
