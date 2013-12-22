@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.NetLoginHandler;
 import net.minecraft.network.packet.NetHandler;
@@ -11,6 +12,10 @@ import net.minecraft.network.packet.Packet1Login;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.network.ForgePacket;
+import net.minecraftforge.common.network.packet.DimensionRegisterPacket;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.Player;
@@ -20,26 +25,12 @@ public class ConnectionHandler implements IConnectionHandler
 	@Override
 	public String connectionReceived(NetLoginHandler netHandler, INetworkManager manager)
 	{
-		/**
-		try
+		for(NewDimData data : PocketManager.getDimensions())
 		{
-			Packet250CustomPayload packet = new Packet250CustomPayload();
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-			DataOutputStream writer = new DataOutputStream(buffer);
-			writer.writeByte(PacketConstants.CLIENT_JOIN_PACKET_ID);
-			PocketManager.writePacket(writer);
-			writer.close();
-			packet.channel = PacketConstants.CHANNEL_NAME;
-			packet.data = buffer.toByteArray();
-			packet.length = packet.data.length;
-			manager.addToSendQueue(packet);
+			
+			Packet250CustomPayload[] pkt = ForgePacket.makePacketSet(new DimensionRegisterPacket(data.id(), DimensionManager.getProviderType(data.id())));
+			manager.addToSendQueue(pkt[0]);
 		}
-		catch (IOException e)
-		{
-			//This shouldn't happen...
-			e.printStackTrace();
-		}
-		**/	
 		return null;
 		
 	}
