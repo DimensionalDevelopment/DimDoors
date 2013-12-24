@@ -171,7 +171,6 @@ public class mod_pocketDim
 		riftGen = new GatewayGenerator(properties);
 	}
 
-	@SuppressWarnings("unused")
 	@EventHandler
 	public void onInitialization(FMLInitializationEvent event)
 	{
@@ -211,8 +210,8 @@ public class mod_pocketDim
 		itemWorldThread = (new ItemWorldThread(properties.ItemWorldThreadID)).setUnlocalizedName("itemWorldThread");
 
 
-		mod_pocketDim.limboBiome= (new BiomeGenLimbo(properties.LimboBiomeID));
-		mod_pocketDim.pocketBiome= (new BiomeGenPocket(properties.PocketBiomeID));
+		mod_pocketDim.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
+		mod_pocketDim.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
 		GameRegistry.registerWorldGenerator(mod_pocketDim.riftGen);
 		tracker = new PlayerTracker();
@@ -331,7 +330,7 @@ public class mod_pocketDim
 		{
 			ChunkLoaderHelper.loadChunkForcedWorlds(event);
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			System.out.println("Loading chunkloaders failed");
 		}
@@ -342,6 +341,5 @@ public class mod_pocketDim
 		ChatMessageComponent cmp = new ChatMessageComponent();
 		cmp.addText(message);
 		player.sendChatToPlayer(cmp);
-		
 	}
 }
