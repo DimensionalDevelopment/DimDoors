@@ -457,11 +457,7 @@ public class PocketManager
 		
 		try
 		{
-			System.out.println("Writing Dimensional Doors save data...");
-			if ( DDSaveHandler.saveAll(dimensionData.values(),dimensionIDBlackList) )
-			{
-				System.out.println("Saved successfully!");				
-			}
+			DDSaveHandler.saveAll(dimensionData.values(), dimensionIDBlackList);
 		}
 		catch (Exception e)
 		{
