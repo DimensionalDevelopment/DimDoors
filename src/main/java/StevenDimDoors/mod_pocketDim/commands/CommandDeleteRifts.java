@@ -60,15 +60,21 @@ public class CommandDeleteRifts extends DDCommandBase
 				for (DimLink link : linksInDim)
 				{
 					World targetWorld = PocketManager.loadDimension(targetDim);
-				
-					if(sender.worldObj.getBlockId(link.source().getX(), link.source().getY(), link.source().getZ())==mod_pocketDim.blockRift.blockID)
+					
+					if(!mod_pocketDim.blockRift.isBlockImmune(sender.worldObj,link.source().getX(), link.source().getY(), link.source().getZ())||
+							(targetWorld.getBlockId(link.source().getX(), link.source().getY(), link.source().getZ())==mod_pocketDim.blockRift.blockID))
 					{
-						targetWorld.setBlock(link.source().getX(), link.source().getY(), link.source().getZ(), 0);
 						linksRemoved++;
+						targetWorld.setBlock(link.source().getX(), link.source().getY(), link.source().getZ(), 0);
 						dim.deleteLink(link);
+					
+						
 					}
+					//TODO Probably should check what the block is, but thats annoying so Ill do it later.
+
+				
 				}
-				sendChat(sender,("Removed " + linksRemoved + " rifts."));
+				sendChat(sender,("Removed " + linksRemoved + " links."));
 			
 		}
 		return DDCommandResult.SUCCESS; //TEMPORARY HACK

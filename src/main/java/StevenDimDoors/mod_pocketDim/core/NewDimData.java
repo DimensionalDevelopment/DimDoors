@@ -198,6 +198,7 @@ public abstract class NewDimData
 		this.root = root;
 	}
 	
+
 	public DimLink findNearestRift(World world, int range, int x, int y, int z)
 	{
 		//TODO: Rewrite this later to use an octtree
@@ -226,7 +227,7 @@ public abstract class NewDimData
 				for (k = -range; k <= range; k++)
 				{
 					distance = getAbsoluteSum(i, j, k);
-					if (distance > 1 && distance < minDistance && world.getBlockId(x + i, y + j, z + k) == properties.RiftBlockID)
+					if (distance > 0 && distance < minDistance && world.getBlockId(x + i, y + j, z + k) == properties.RiftBlockID)
 					{
 						link = getLink(x+i, y+j, z+k);
 						if (link != null)
@@ -240,6 +241,48 @@ public abstract class NewDimData
 		}
 
 		return nearest;
+	}
+	
+	public ArrayList<DimLink> findRiftsInRange(World world, int range, int x, int y, int z)
+	{
+		ArrayList<DimLink> links = new ArrayList<DimLink>();
+		//TODO: Rewrite this later to use an octtree
+
+		//Sanity check...
+		if (world.provider.dimensionId != id)
+		{
+			throw new IllegalArgumentException("Attempted to search for links in a World instance for a different dimension!");
+		}
+		
+		//Note: Only detect rifts at a distance > 1, so we ignore the rift
+		//that called this function and any adjacent rifts.
+		
+		DimLink link;
+		
+		int distance;
+		int i, j, k;
+		DDProperties properties = DDProperties.instance();
+
+		for (i = -range; i <= range; i++)
+		{
+			for (j = -range; j <= range; j++)
+			{
+				for (k = -range; k <= range; k++)
+				{
+					distance = getAbsoluteSum(i, j, k);
+					if (distance > 0 && world.getBlockId(x + i, y + j, z + k) == properties.RiftBlockID)
+					{
+						link = getLink(x+i, y+j, z+k);
+						if (link != null)
+						{
+							links.add(link);
+						}
+					}
+				}
+			}
+		}
+
+		return links;
 	}
 	
 	private static int getAbsoluteSum(int i, int j, int k)

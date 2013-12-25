@@ -17,6 +17,8 @@ import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDimClient.ClosingRiftFX;
@@ -152,6 +154,8 @@ public class BlockRift extends BlockContainer
 		return null;
 	}
 	
+	
+	
 	//function that regulates how many blocks it eats/ how fast it eats them. 
 	@Override
 	public void updateTick(World world, int x, int y, int z, Random random)
@@ -162,11 +166,12 @@ public class BlockRift extends BlockContainer
 			//Randomly decide whether to search for blocks to destroy. This reduces the frequency of search operations,
 			//moderates performance impact, and controls the apparent speed of block destruction.
 			if (random.nextInt(MAX_BLOCK_SEARCH_CHANCE) < BLOCK_SEARCH_CHANCE &&
-					((TileEntityRift) world.getBlockTileEntity(x, y, z)).isNearRift )
+					((TileEntityRift) world.getBlockTileEntity(x, y, z)).isNearRift() )
 			{
 				destroyNearbyBlocks(world, x, y, z, random);
 			}
 		}
+		
 	}
 	
 	private void destroyNearbyBlocks(World world, int x, int y, int z, Random random)
@@ -338,7 +343,7 @@ public class BlockRift extends BlockContainer
 			}
 		}
 	}
-	
+
 	public boolean isBlockImmune(World world, int x, int y, int z)
 	{
 		Block block = Block.blocksList[world.getBlockId(x, y, z)];
@@ -349,7 +354,7 @@ public class BlockRift extends BlockContainer
 		}
 		return false;
 	}
-
+	
 	@Override
 	public int idPicked(World par1World, int par2, int par3, int par4)
 	{
