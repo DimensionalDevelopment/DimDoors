@@ -8,6 +8,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
+import StevenDimDoors.experimental.MazeGenerator;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
@@ -472,6 +473,7 @@ public class PocketBuilder
 		Point3D door = new Point3D(x, y, z);
 		BlockRotator.transformPoint(center, door, orientation - BlockRotator.EAST_DOOR_METADATA, door);
 		
+		/*
 		//Build the outer layer of Eternal Fabric
 		buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2), properties.PermaFabricBlockID, false, 0);
 
@@ -481,6 +483,9 @@ public class PocketBuilder
 			buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2) - layer, properties.FabricBlockID,
 				layer < (wallThickness - 1) && properties.TNFREAKINGT_Enabled, properties.NonTntWeight);
 		}
+		*/
+		
+		MazeGenerator.generate(world, x, y, z, random);
 		
 		//Build the door
 		int doorOrientation = BlockRotator.transformMetadata(BlockRotator.EAST_DOOR_METADATA, orientation - BlockRotator.EAST_DOOR_METADATA + 2, properties.DimensionalDoorID);
