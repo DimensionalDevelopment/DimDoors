@@ -20,7 +20,7 @@ group= "com.stevenrs11.dimdoors" // http://maven.apache.org/guides/mini/guide-na
 archivesBaseName = "dimdoors"
 
 minecraft {
-	version = "1.6.4-9.11.1.965"
+	version = "1.6.4-9.11.1.964"
 }
 
 targetCompatibility = '1.6'
