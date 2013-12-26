@@ -41,3 +41,10 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+jar 
+{
+	destinationDir = new File("build/dist/")
+	archiveName = "DimensionalDoors-${version}-" +  System.getenv("BUILD_NUMBER") + ".jar"	
+	
+}
