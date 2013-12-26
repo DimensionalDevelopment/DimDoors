@@ -17,7 +17,7 @@ apply plugin: 'forge'
 
 version = "2.2.1RC1"
 group= "com.stevenrs11.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "DimensionalDoors"
+archivesBaseName = "DimensionalDoors-${version}-" +  System.getenv("BUILD_NUMBER") + ".jar"
 
 minecraft {
 	version = "1.6.4-9.11.1.964"
@@ -40,11 +40,4 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
-}
-
-jar 
-{
-	destinationDir = new File("build/dist/")
-	archiveName = "DimensionalDoors-${version}-" +  System.getenv("BUILD_NUMBER") + ".jar"	
-	
 }
