@@ -41,10 +41,3 @@ processResources
         exclude 'mcmod.info'
     }
 }
-
-jar 
-{
-	destinationDir = new File("build/dist/")
-	archiveName = "{archivesBaseName}-{version}-"+".jar"	
-	
-}
