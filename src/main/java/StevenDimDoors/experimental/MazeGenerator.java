@@ -1,5 +1,7 @@
 package StevenDimDoors.experimental;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -13,18 +15,60 @@ public class MazeGenerator
 {
 	public static final int ROOT_WIDTH = 40;
 	public static final int ROOT_LENGTH = 40;
-	public static final int ROOT_HEIGHT = 19;
+	public static final int ROOT_HEIGHT = 20;
 	private static final int MIN_HEIGHT = 4;
 	private static final int MIN_SIDE = 3;
-	private static final int SPLIT_COUNT = 8;
+	private static final int SPLIT_COUNT = 9;
 	
 	private MazeGenerator() { }
 	
 	public static void generate(World world, int x, int y, int z, Random random)
 	{
 		SpatialNode root = partitionRooms(ROOT_WIDTH, ROOT_HEIGHT, ROOT_LENGTH, SPLIT_COUNT, random);
+		// Collect all the leaf nodes by performing a tree traversal
+		ArrayList<SpatialNode> rooms = new ArrayList<SpatialNode>(1 << SPLIT_COUNT);
+		listRooms(root, rooms);
+		removeRandomRooms(rooms, random);
 		buildRooms(root, world, new Point3D(x - ROOT_WIDTH / 2, y - ROOT_HEIGHT - 1, z - ROOT_WIDTH / 2));
+	}
+	
+	private static void listRooms(SpatialNode node, ArrayList<SpatialNode> rooms)
+	{
+		if (node.isLeaf())
+		{
+			rooms.add(node);
+		}
+		else
+		{
+			listRooms(node.leftChild(), rooms);
+			listRooms(node.rightChild(), rooms);
+		}
+	}
 		
+	private static void removeRandomRooms(ArrayList<SpatialNode> rooms, Random random)
+	{
+		// Randomly remove a fraction of the rooms
+		Collections.shuffle(rooms, random);
+		int remaining = rooms.size() / 2;
+		for (int k = rooms.size() - 1; k >= remaining; k--)
+		{
+			removeRoom(rooms.remove(k));
+		}
+	}
+	
+	private static void removeRoom(SpatialNode node)
+	{
+		// Remove a node and any of its ancestors that become leaf nodes
+		SpatialNode parent;
+		SpatialNode current;
+		
+		current = node;
+		while (current != null && current.isLeaf())
+		{
+			parent = current.parent();
+			current.remove();
+			current = parent;
+		}
 	}
 	
 	private static SpatialNode partitionRooms(int width, int height, int length, int maxLevels, Random random)
@@ -99,8 +143,10 @@ public class MazeGenerator
 		}
 		else
 		{
-			buildRooms(node.leftChild(), world, offset);
-			buildRooms(node.rightChild(), world, offset);
+			if (node.leftChild() != null)
+				buildRooms(node.leftChild(), world, offset);
+			if (node.rightChild() != null)
+				buildRooms(node.rightChild(), world, offset);
 		}
 	}
 	
