@@ -2,10 +2,12 @@ package StevenDimDoors.mod_pocketDim.tileentities;
 
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityEnderman;
@@ -16,6 +18,9 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
@@ -30,10 +35,8 @@ public class TileEntityRift extends TileEntity
 	public int xOffset=0;
 	public int yOffset=0;
 	public int zOffset=0;
-	public int distance=0;
 	public boolean hasGrownRifts=false;
 	public boolean shouldClose=false;
-	public boolean isNearRift=false;
 	private int count=200;
 	private int count2 = 0;
 	public int age = 0;
@@ -87,9 +90,9 @@ public class TileEntityRift extends TileEntity
 		{
 			this.spawnEndermen();
 			this.calculateOldParticleOffset(); //this also calculates the distance for the particle stuff.
-			if (distance > 1) //only grow if rifts are nearby
+			if (mod_pocketDim.properties.RiftSpreadEnabled&&!this.hasGrownRifts) //only grow if rifts are nearby
 			{
-				this.grow(distance);
+				this.grow();
 			}
 			count = 0;
 		}
@@ -165,10 +168,6 @@ public class TileEntityRift extends TileEntity
 				}				
 			}
 		}
-		else
-		{
-			this.isNearRift = false;
-		}
 	}
 
 	public void closeRift()
@@ -176,22 +175,25 @@ public class TileEntityRift extends TileEntity
 		NewDimData dimension = PocketManager.getDimensionData(worldObj);
 		if (count2 > 20 && count2 < 22)
 		{			 
-			nearestRiftData = dimension.findNearestRift(worldObj, 10, xCoord, yCoord, zCoord);
-			if (this.nearestRiftData != null)
+			ArrayList<DimLink> rifts= dimension.findRiftsInRange(worldObj, 6, xCoord, yCoord, zCoord);
+			if (rifts.size()>0)
 			{
-				Point4D location = nearestRiftData.source();
-				TileEntityRift rift = (TileEntityRift) worldObj.getBlockTileEntity(location.getX(), location.getY(), location.getZ());
-				if (rift != null&&rift.shouldClose!=true)
+				for(DimLink riftToClose : rifts)
 				{
-					rift.shouldClose = true;
-					rift.onInventoryChanged();
+					Point4D location = riftToClose.source();
+					TileEntityRift rift = (TileEntityRift) worldObj.getBlockTileEntity(location.getX(), location.getY(), location.getZ());
+					if (rift != null&&rift.shouldClose!=true)
+					{
+						rift.shouldClose = true;
+						rift.onInventoryChanged();
+					}
 				}
+				
 			}
 		}
 		if (count2 > 40)
 		{
 			this.invalidate();
-			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 			if (dimension.getLink(xCoord, yCoord, zCoord) != null)
 			{
 				if(!this.worldObj.isRemote)
@@ -199,6 +201,7 @@ public class TileEntityRift extends TileEntity
 					dimension.deleteLink(xCoord, yCoord, zCoord);
 				}
 				worldObj.playSound(xCoord, yCoord, zCoord, "mods.DimDoors.sfx.riftClose", (float) .7, 1, true);
+				worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 			}	
 		}
 		count2++; 
@@ -214,8 +217,7 @@ public class TileEntityRift extends TileEntity
 			this.xOffset = this.xCoord - location.getX();
 			this.yOffset = this.yCoord - location.getY();
 			this.zOffset = this.zCoord - location.getZ();
-			this.distance = Math.abs(xOffset) + Math.abs(yOffset) + Math.abs(zOffset);
-			this.isNearRift=true;
+			int distance = Math.abs(xOffset) + Math.abs(yOffset) + Math.abs(zOffset);
 		}
 		else
 		{
@@ -224,44 +226,6 @@ public class TileEntityRift extends TileEntity
 			this.xOffset=0;
 		}
 		this.onInventoryChanged();
-	}
-	
-	public void grow(int distance)
-	{
-		if(worldObj.isRemote)
-		{
-			return;
-		}
-		int growCount=0;
-		if(random.nextInt(distance*2)==0)
-		{
-			int x=0,y=0,z=0;
-			while(growCount<100)
-			{
-				growCount++;
-				x=this.xCoord+(1-(random.nextInt(2)*2)*random.nextInt(6));
-				y=this.yCoord+(1-(random.nextInt(2)*2)*random.nextInt(4));
-				z=this.zCoord+(1-(random.nextInt(2)*2)*random.nextInt(6));
-				if(worldObj.isAirBlock(x, y, z))
-				{
-					break;
-				}
-
-			}
-			if (growCount < 100)
-			{
-				NewDimData dimension = PocketManager.getDimensionData(worldObj);
-				DimLink link = dimension.getLink(xCoord, yCoord, zCoord);
-				if (link != null)
-				{
-					if (!this.hasGrownRifts && random.nextInt(3) == 0)
-					{
-						dimension.createChildLink(x, y, z, link);
-						this.hasGrownRifts = true;
-					}
-				}
-			}
-		}
 	}
 	
 	public void calculateNextRenderQuad(float age, Random rand)
@@ -320,6 +284,84 @@ public class TileEntityRift extends TileEntity
 	{
 		return pass == 1;
 	}
+	
+	public int countParents(DimLink link)
+	{
+		if(link.parent()!=null)
+		{
+			return 1 + countParents(link.parent());
+		}
+		return 1;
+	}
+	
+	public void grow()
+	{
+		if(worldObj.isRemote||this.hasGrownRifts)
+		{
+			return;
+		}
+		
+		NewDimData dimension = PocketManager.getDimensionData(worldObj);
+		if(dimension.findNearestRift(this.worldObj, 5, xCoord, yCoord, zCoord)==null)
+		{
+			return;
+		}
+		int growCount=0;
+		DimLink link = dimension.getLink(xCoord, yCoord, zCoord);
+		
+			int x=0,y=0,z=0;
+			while(growCount<100)
+			{
+				growCount++;
+				x=xCoord+(1-(random.nextInt(2)*2)*random.nextInt(6));
+				y=yCoord+(1-(random.nextInt(2)*2)*random.nextInt(4));
+				z=zCoord+(1-(random.nextInt(2)*2)*random.nextInt(6));
+				if(worldObj.isAirBlock(x, y, z))
+				{
+					break;
+				}
+
+			}
+			if (growCount < 100)
+			{
+				
+				
+				
+				//look to see if there is a block inbetween the rift and the spread location that should interrupt the spread. With this change, 
+				//rifts cannot spread if there are any blocks nearby that are invularble to rift destruction
+				//TODO- make this look for blocks breaking line of sight with the rift
+				if (link != null)
+				{
+					if ((this.countParents(link)<4))
+					{
+						MovingObjectPosition hit =  this.worldObj.clip(this.worldObj.getWorldVec3Pool().getVecFromPool(this.xCoord,this.yCoord,this.zCoord), this.worldObj.getWorldVec3Pool().getVecFromPool(x,y,z),false);
+						if(hit!=null)
+						{
+							
+							if(mod_pocketDim.blockRift.isBlockImmune(this.worldObj,hit.blockX,hit.blockY,hit.blockZ))
+							{
+								System.out.println(Block.blocksList[this.worldObj.getBlockId(hit.blockX,hit.blockY,hit.blockZ)].getLocalizedName()+" HIT");
+
+								return;
+							}
+							System.out.println(Block.blocksList[this.worldObj.getBlockId(hit.blockX,hit.blockY,hit.blockZ)].getLocalizedName());
+							hit =  this.worldObj.clip(this.worldObj.getWorldVec3Pool().getVecFromPool(this.xCoord,this.yCoord,this.zCoord), this.worldObj.getWorldVec3Pool().getVecFromPool(x,y,z),false);
+							System.out.println(Block.blocksList[this.worldObj.getBlockId(hit.blockX,hit.blockY,hit.blockZ)].getLocalizedName());
+
+						}
+						
+						dimension.createChildLink(x, y, z, link);
+						this.hasGrownRifts=true;
+					}
+					else
+					{
+						System.out.println("allDone");
+						this.hasGrownRifts=true;
+					}
+				}
+			}
+	}
+	
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
@@ -366,5 +408,15 @@ public class TileEntityRift extends TileEntity
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
 	{
 		readFromNBT(pkt.data);
+	}
+
+	public boolean isNearRift() 
+	{
+		if(PocketManager.getDimensionData(worldObj).findNearestRift(this.worldObj, 5, xCoord, yCoord, zCoord)==null)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 }

@@ -31,6 +31,7 @@ import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -319,10 +320,10 @@ public class DDTeleporter
 			if(player != null) // Are we working with a player?
 			{
 				// We need to do all this special stuff to move a player between dimensions.
-
-				//Register the dim on the client when we teleport to it.
-				 Packet250CustomPayload[] pkt = ForgePacket.makePacketSet(new DimensionRegisterPacket(newWorld.provider.dimensionId, DimensionManager.getProviderType(newWorld.provider.dimensionId)));
-				 player.playerNetServerHandler.sendPacketToPlayer(pkt[0]);
+				 //Give the client the dimensionData for the destination
+				 PocketManager.dimWatcher.onCreated(new ClientDimData(PocketManager.getDimensionData(destination.getDimension())));
+				 
+				 
 				  
 				// Set the new dimension and inform the client that it's moving to a new world.
 				player.dimension = destination.getDimension();

@@ -17,7 +17,7 @@ public class CommandTeleportPlayer extends DDCommandBase
 	
 	private CommandTeleportPlayer()
 	{
-		super("dd-tp", new String[] {"<Player Name> <Dimension ID> <X Coord> <Y Coord> <Z Coord>"} );
+		super("dd-tp", new String[] {"<Player Name> <Dimension ID> <X Coord> <Y Coord> <Z Coord>","<Player Name> <Dimension ID>"} );
 	}
 	
 	public static CommandTeleportPlayer instance()
@@ -40,7 +40,6 @@ public class CommandTeleportPlayer extends DDCommandBase
 	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command) 
 	{
-		List<Integer> dimensionIDs = Arrays.asList(DimensionManager.getStaticDimensionIDs()); //Gets list of all registered dimensions, regardless if loaded or not
 		EntityPlayer targetPlayer = sender;
 		int dimDestinationID = sender.worldObj.provider.dimensionId;
 		
@@ -63,7 +62,7 @@ public class CommandTeleportPlayer extends DDCommandBase
 			}
 			dimDestinationID=Integer.parseInt(command[1]);//gets the target dim ID from the command string
 			
-			if(!dimensionIDs.contains(dimDestinationID))
+			if(!DimensionManager.isDimensionRegistered(dimDestinationID))
 			{
 				return DDCommandResult.INVALID_DIMENSION_ID;
 			}
@@ -72,7 +71,56 @@ public class CommandTeleportPlayer extends DDCommandBase
 			Point4D destination = new Point4D(Integer.parseInt(command[2]),Integer.parseInt(command[3]),Integer.parseInt(command[4]),dimDestinationID);
 			DDTeleporter.teleportEntity(targetPlayer, destination, false);
 		}
-		else
+		else if(command.length == 2 && isInteger(command[1]))
+		{
+			if(sender.worldObj.getPlayerEntityByName(command[0])!=null) //Gets the targeted player
+			{
+				targetPlayer = sender.worldObj.getPlayerEntityByName(command[0]);
+			}
+			else
+			{
+				return DDCommandResult.INVALID_ARGUMENTS;
+			}
+			dimDestinationID=Integer.parseInt(command[1]);//gets the target dim ID from the command string
+			
+			if(!DimensionManager.isDimensionRegistered(dimDestinationID))
+			{
+				return DDCommandResult.INVALID_DIMENSION_ID;
+			}
+	
+		
+			Point4D destination = PocketManager.getDimensionData(dimDestinationID).origin();
+			if(!PocketManager.getDimensionData(dimDestinationID).isPocketDimension())
+			{
+				destination = new Point4D(destination.getX(),PocketManager.loadDimension(dimDestinationID).getTopSolidOrLiquidBlock(
+						destination.getX(), destination.getZ()),
+						destination.getZ(),destination.getDimension());
+			}
+			DDTeleporter.teleportEntity(targetPlayer, destination, false);
+		}
+		else if(command.length == 1 && isInteger(command[0]))
+		{
+			
+			targetPlayer = sender;
+			
+			dimDestinationID=Integer.parseInt(command[0]);//gets the target dim ID from the command string
+			
+			if(!DimensionManager.isDimensionRegistered(dimDestinationID))
+			{
+				return DDCommandResult.INVALID_DIMENSION_ID;
+			}
+	
+			
+			Point4D destination = PocketManager.getDimensionData(dimDestinationID).origin();
+			if(!PocketManager.getDimensionData(dimDestinationID).isPocketDimension())
+			{
+				destination = new Point4D(destination.getX(),PocketManager.loadDimension(dimDestinationID).getTopSolidOrLiquidBlock(
+						destination.getX(), destination.getZ()),
+						destination.getZ(),destination.getDimension());
+			}
+			DDTeleporter.teleportEntity(targetPlayer, destination, false);
+		}
+		else	
 		{
 			return DDCommandResult.INVALID_ARGUMENTS;
 		}

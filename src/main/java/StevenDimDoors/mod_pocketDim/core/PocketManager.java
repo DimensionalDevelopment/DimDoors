@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -213,7 +215,7 @@ public class PocketManager
 	 */
 	public static volatile boolean isConnected = false;
 	public static final UpdateWatcherProxy<ClientLinkData> linkWatcher = new UpdateWatcherProxy<ClientLinkData>();
-	private static final UpdateWatcherProxy<ClientDimData> dimWatcher = new UpdateWatcherProxy<ClientDimData>();
+	static final UpdateWatcherProxy<ClientDimData> dimWatcher = new UpdateWatcherProxy<ClientDimData>();
 	private static ArrayList<NewDimData> rootDimensions = null;
 
 	//HashMap that maps all the dimension IDs registered with DimDoors to their DD data.
@@ -524,6 +526,7 @@ public class PocketManager
 		return dimension;
 	}
 	
+	@SideOnly(Side.CLIENT)
 	private static NewDimData registerClientDimension(int dimensionID, int rootID)
 	{
 		// No need to raise events heres since this code should only run on the client side
@@ -548,10 +551,13 @@ public class PocketManager
 		{
 			dimension = root;
 		}
-		if(dimension.isPocketDimension())
+		if(dimension.isPocketDimension()&&!DimensionManager.isDimensionRegistered(dimension.id()))
 		{
 			//Im registering pocket dims here. I *think* we can assume that if its a pocket and we are 
 			//registering its dim data, we also need to register it with forge. 
+			
+			//New packet stuff prevents this from always being true, unfortuantly. I send the dimdata to the client when they teleport.
+			//Steven
 			DimensionManager.registerDimension(dimensionID, mod_pocketDim.properties.PocketProviderID);
 		}
 		return dimension;
