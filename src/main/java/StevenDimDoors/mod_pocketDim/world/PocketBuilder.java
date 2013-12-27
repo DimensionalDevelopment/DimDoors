@@ -25,7 +25,6 @@ import StevenDimDoors.mod_pocketDim.util.Pair;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 
-@SuppressWarnings("deprecation")
 public class PocketBuilder
 {
 	public static final int MIN_POCKET_SIZE = 5;

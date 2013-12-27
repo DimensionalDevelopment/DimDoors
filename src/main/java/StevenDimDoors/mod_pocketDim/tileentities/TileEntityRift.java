@@ -194,7 +194,6 @@ public class TileEntityRift extends TileEntity
 		if (count2 > 40)
 		{
 			this.invalidate();
-			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 			if (dimension.getLink(xCoord, yCoord, zCoord) != null)
 			{
 				if(!this.worldObj.isRemote)
@@ -202,6 +201,7 @@ public class TileEntityRift extends TileEntity
 					dimension.deleteLink(xCoord, yCoord, zCoord);
 				}
 				worldObj.playSound(xCoord, yCoord, zCoord, "mods.DimDoors.sfx.riftClose", (float) .7, 1, true);
+				worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 			}	
 		}
 		count2++; 

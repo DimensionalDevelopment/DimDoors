@@ -42,7 +42,6 @@ public class PocketGenerator extends ChunkProviderGenerate
 	public Chunk provideChunk(int chunkX, int chunkZ)
 	{
 		byte[] var3 = new byte[32768];
-
 		Chunk chunk = new Chunk(worldObj, var3, chunkX, chunkZ);
 		
 		if(!chunk.isTerrainPopulated)
@@ -50,14 +49,13 @@ public class PocketGenerator extends ChunkProviderGenerate
 			chunk.isTerrainPopulated = true;
 			spawner.registerChunkForPopulation(worldObj.provider.dimensionId, chunkX, chunkZ);
 		}
-
 		return chunk;
 	}
 
 	@Override
 	public Chunk loadChunk(int var1, int var2) 
 	{
-		return super.loadChunk(var1, var2);
+		return this.provideChunk(var1, var2);
 	}
 
 	@Override
