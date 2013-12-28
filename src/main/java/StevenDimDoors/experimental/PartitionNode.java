@@ -2,22 +2,22 @@ package StevenDimDoors.experimental;
 
 import StevenDimDoors.mod_pocketDim.Point3D;
 
-public class SpatialNode
+public class PartitionNode
 {
 	private Point3D minCorner;
 	private Point3D maxCorner;
-	private SpatialNode parent;
-	private SpatialNode leftChild = null;
-	private SpatialNode rightChild = null;
+	private PartitionNode parent;
+	private PartitionNode leftChild = null;
+	private PartitionNode rightChild = null;
 	
-	public SpatialNode(int width, int height, int length)
+	public PartitionNode(int width, int height, int length)
 	{
 		parent = null;
 		minCorner = new Point3D(0, 0, 0);
 		maxCorner = new Point3D(width - 1, height - 1, length - 1);
 	}
 	
-	private SpatialNode(SpatialNode parent, Point3D minCorner, Point3D maxCorner)
+	private PartitionNode(PartitionNode parent, Point3D minCorner, Point3D maxCorner)
 	{
 		this.parent = parent;
 		this.minCorner = minCorner;
@@ -44,12 +44,12 @@ public class SpatialNode
 		return (leftChild == null && rightChild == null);
 	}
 	
-	public SpatialNode leftChild()
+	public PartitionNode leftChild()
 	{
 		return leftChild;
 	}
 	
-	public SpatialNode rightChild()
+	public PartitionNode rightChild()
 	{
 		return rightChild;
 	}
@@ -64,7 +64,7 @@ public class SpatialNode
 		return maxCorner;
 	}
 	
-	public SpatialNode parent()
+	public PartitionNode parent()
 	{
 		return parent;
 	}
@@ -79,8 +79,8 @@ public class SpatialNode
 		{
 			throw new IllegalArgumentException("The specified cutting plane is invalid.");
 		}
-		leftChild = new SpatialNode(this, minCorner, new Point3D(rightStart - 1, maxCorner.getY(), maxCorner.getZ()));
-		rightChild = new SpatialNode(this, new Point3D(rightStart, minCorner.getY(), minCorner.getZ()), maxCorner);
+		leftChild = new PartitionNode(this, minCorner, new Point3D(rightStart - 1, maxCorner.getY(), maxCorner.getZ()));
+		rightChild = new PartitionNode(this, new Point3D(rightStart, minCorner.getY(), minCorner.getZ()), maxCorner);
 	}
 	
 	public void splitByY(int rightStart)
@@ -93,8 +93,8 @@ public class SpatialNode
 		{
 			throw new IllegalArgumentException("The specified cutting plane is invalid.");
 		}
-		leftChild = new SpatialNode(this, minCorner, new Point3D(maxCorner.getX(), rightStart - 1, maxCorner.getZ()));
-		rightChild = new SpatialNode(this, new Point3D(minCorner.getX(), rightStart, minCorner.getZ()), maxCorner);
+		leftChild = new PartitionNode(this, minCorner, new Point3D(maxCorner.getX(), rightStart - 1, maxCorner.getZ()));
+		rightChild = new PartitionNode(this, new Point3D(minCorner.getX(), rightStart, minCorner.getZ()), maxCorner);
 	}
 	
 	public void splitByZ(int rightStart)
@@ -107,8 +107,8 @@ public class SpatialNode
 		{
 			throw new IllegalArgumentException("The specified cutting plane is invalid.");
 		}
-		leftChild = new SpatialNode(this, minCorner, new Point3D(maxCorner.getX(), maxCorner.getY(), rightStart - 1));
-		rightChild = new SpatialNode(this, new Point3D(minCorner.getX(), minCorner.getY(), rightStart), maxCorner);
+		leftChild = new PartitionNode(this, minCorner, new Point3D(maxCorner.getX(), maxCorner.getY(), rightStart - 1));
+		rightChild = new PartitionNode(this, new Point3D(minCorner.getX(), minCorner.getY(), rightStart), maxCorner);
 	}
 	
 	public void remove()

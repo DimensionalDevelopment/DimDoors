@@ -24,15 +24,15 @@ public class MazeGenerator
 	
 	public static void generate(World world, int x, int y, int z, Random random)
 	{
-		SpatialNode root = partitionRooms(ROOT_WIDTH, ROOT_HEIGHT, ROOT_LENGTH, SPLIT_COUNT, random);
+		PartitionNode root = partitionRooms(ROOT_WIDTH, ROOT_HEIGHT, ROOT_LENGTH, SPLIT_COUNT, random);
 		// Collect all the leaf nodes by performing a tree traversal
-		ArrayList<SpatialNode> rooms = new ArrayList<SpatialNode>(1 << SPLIT_COUNT);
+		ArrayList<PartitionNode> rooms = new ArrayList<PartitionNode>(1 << SPLIT_COUNT);
 		listRooms(root, rooms);
 		removeRandomRooms(rooms, random);
 		buildRooms(root, world, new Point3D(x - ROOT_WIDTH / 2, y - ROOT_HEIGHT - 1, z - ROOT_WIDTH / 2));
 	}
 	
-	private static void listRooms(SpatialNode node, ArrayList<SpatialNode> rooms)
+	private static void listRooms(PartitionNode node, ArrayList<PartitionNode> rooms)
 	{
 		if (node.isLeaf())
 		{
@@ -45,7 +45,7 @@ public class MazeGenerator
 		}
 	}
 		
-	private static void removeRandomRooms(ArrayList<SpatialNode> rooms, Random random)
+	private static void removeRandomRooms(ArrayList<PartitionNode> rooms, Random random)
 	{
 		// Randomly remove a fraction of the rooms
 		Collections.shuffle(rooms, random);
@@ -56,11 +56,11 @@ public class MazeGenerator
 		}
 	}
 	
-	private static void removeRoom(SpatialNode node)
+	private static void removeRoom(PartitionNode node)
 	{
 		// Remove a node and any of its ancestors that become leaf nodes
-		SpatialNode parent;
-		SpatialNode current;
+		PartitionNode parent;
+		PartitionNode current;
 		
 		current = node;
 		while (current != null && current.isLeaf())
@@ -71,14 +71,14 @@ public class MazeGenerator
 		}
 	}
 	
-	private static SpatialNode partitionRooms(int width, int height, int length, int maxLevels, Random random)
+	private static PartitionNode partitionRooms(int width, int height, int length, int maxLevels, Random random)
 	{
-		SpatialNode root = new SpatialNode(width, height, length);
+		PartitionNode root = new PartitionNode(width, height, length);
 		splitByRandomX(root, maxLevels, random);
 		return root;
 	}
 	
-	private static void splitByRandomX(SpatialNode node, int levels, Random random)
+	private static void splitByRandomX(PartitionNode node, int levels, Random random)
 	{
 		if (node.width() >= 2 * MIN_SIDE)
 		{
@@ -97,7 +97,7 @@ public class MazeGenerator
 		}
 	}
 	
-	private static void splitByRandomZ(SpatialNode node, int levels, Random random)
+	private static void splitByRandomZ(PartitionNode node, int levels, Random random)
 	{
 		if (node.length() >= 2 * MIN_SIDE)
 		{
@@ -116,7 +116,7 @@ public class MazeGenerator
 		}
 	}
 	
-	private static void splitByRandomY(SpatialNode node, int levels, Random random)
+	private static void splitByRandomY(PartitionNode node, int levels, Random random)
 	{
 		if (node.height() >= 2 * MIN_HEIGHT)
 		{
@@ -135,7 +135,7 @@ public class MazeGenerator
 		}
 	}
 	
-	private static void buildRooms(SpatialNode node, World world, Point3D offset)
+	private static void buildRooms(PartitionNode node, World world, Point3D offset)
 	{
 		if (node.isLeaf())
 		{
