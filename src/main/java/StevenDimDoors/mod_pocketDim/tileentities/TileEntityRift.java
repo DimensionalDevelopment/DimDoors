@@ -37,7 +37,7 @@ public class TileEntityRift extends TileEntity
 	public int zOffset=0;
 	public boolean hasGrownRifts=false;
 	public boolean shouldClose=false;
-	private int count=200;
+	private int count=0;
 	private int count2 = 0;
 	public int age = 0;
 	private boolean hasUpdated = false;
@@ -296,7 +296,7 @@ public class TileEntityRift extends TileEntity
 	
 	public void grow()
 	{
-		if(worldObj.isRemote||this.hasGrownRifts)
+		if(worldObj.isRemote||this.hasGrownRifts||random.nextInt(3)==0)
 		{
 			return;
 		}
