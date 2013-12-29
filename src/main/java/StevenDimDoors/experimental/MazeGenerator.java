@@ -58,17 +58,6 @@ public class MazeGenerator
 			listRoomPartitions(node.rightChild(), partitions);
 		}
 	}
-		
-	private static void removeRandomRooms(ArrayList<PartitionNode> rooms, Random random)
-	{
-		// Randomly remove a fraction of the rooms
-		Collections.shuffle(rooms, random);
-		int remaining = rooms.size() / 2;
-		for (int k = rooms.size() - 1; k >= remaining; k--)
-		{
-			removeRoom(rooms.remove(k));
-		}
-	}
 	
 	private static void removeRoom(PartitionNode node)
 	{
@@ -375,35 +364,31 @@ public class MazeGenerator
 		// that was handled in a previous step!
 		
 		final int MAX_DISTANCE = 2;
+		final int MIN_SECTION_ROOMS = 5;
 		
 		int distance;
 		IGraphNode<PartitionNode, DoorwayData> current;
 		IGraphNode<PartitionNode, DoorwayData> neighbor;
 		
 		ArrayList<IGraphNode<PartitionNode, DoorwayData>> cores = new ArrayList<IGraphNode<PartitionNode, DoorwayData>>();
+		ArrayList<IGraphNode<PartitionNode, DoorwayData>> removals = new ArrayList<IGraphNode<PartitionNode, DoorwayData>>();
+		ArrayList<IGraphNode<PartitionNode, DoorwayData>> section = new ArrayList<IGraphNode<PartitionNode, DoorwayData>>();
+		
 		Queue<IGraphNode<PartitionNode, DoorwayData>> ordering = new LinkedList<IGraphNode<PartitionNode, DoorwayData>>();
 		HashMap<IGraphNode<PartitionNode, DoorwayData>, Integer> distances = new HashMap<IGraphNode<PartitionNode, DoorwayData>, Integer>();
 		
 		// Repeatedly generate sections until all nodes have been visited
 		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes())
 		{
-			// If this node has an indegree and outdegree of 0, then it has no neighbors,
-			// which means it could not have been visited. This could happen if its neighbors
-			// were pruned away before. Single rooms look weird, so remove it.
-			if (node.indegree() == 0 && node.outdegree() == 0)
-			{
-				roomGraph.removeNode(node);
-			}
-
 			// If this node hasn't been visited, then use it as the core of a new section
-			// Otherwise, ignore it, since it already belongs to a section
-			else if (!distances.containsKey(node))
+			// Otherwise, ignore it, since it was already processed
+			if (!distances.containsKey(node))
 			{
-				cores.add(node);
-				
 				// Perform a breadth-first search to tag surrounding nodes with distances
 				distances.put(node, 0);
 				ordering.add(node);
+				section.clear();
+				
 				while (!ordering.isEmpty())
 				{
 					current = ordering.remove();
@@ -411,6 +396,8 @@ public class MazeGenerator
 					
 					if (distance <= MAX_DISTANCE + 1)
 					{
+						section.add(current);
+						
 						// Visit neighboring nodes and assign them distances, if they don't
 						// have a distance assigned already
 						for (IEdge<PartitionNode, DoorwayData> edge : current.inbound())
@@ -434,18 +421,36 @@ public class MazeGenerator
 					}
 					else
 					{
-						roomGraph.removeNode(current);
+						removals.add(current);
 						break;
 					}
 				}
 				
-				// Remove all nodes that have a distance of exactly MAX_DISTANCE + 1
+				// List nodes that have a distance of exactly MAX_DISTANCE + 1
 				// Those are precisely the nodes that remain in the queue
+				// We can't remove them immediately because that could break
+				// the iterator for the graph.
 				while (!ordering.isEmpty())
 				{
-					roomGraph.removeNode( ordering.remove() );
+					removals.add(ordering.remove());
+				}
+				
+				// Check if this section contains enough rooms
+				if (section.size() >= MIN_SECTION_ROOMS)
+				{
+					cores.add(node);
+				}
+				else
+				{
+					removals.addAll(section);
 				}
 			}
+		}
+		
+		// Remove all the nodes that were listed for removal
+		for (IGraphNode<PartitionNode, DoorwayData> node : removals)
+		{
+			roomGraph.removeNode(node);
 		}
 		return cores;
 	}
