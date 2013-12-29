@@ -122,4 +122,40 @@ public class PartitionNode
 			parent = null;
 		}
 	}
+	
+	public boolean contains(int x, int y, int z)
+	{
+		return ((minCorner.getX() <= x && x <= maxCorner.getX()) &&
+			(minCorner.getY() <= y && y <= maxCorner.getY()) &&
+			(minCorner.getZ() <= z && z <= maxCorner.getZ()));
+	}
+
+	public PartitionNode findPoint(int x, int y, int z)
+	{
+		// Find the lowest node that contains the specified point or return null
+		if (this.contains(x, y, z))
+		{
+			return this.findPointInternal(x, y, z);
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	private PartitionNode findPointInternal(int x, int y, int z)
+	{
+		if (leftChild != null && leftChild.contains(x, y, z))
+		{
+			return leftChild.findPointInternal(x, y, z);
+		}
+		else if (rightChild != null && rightChild.contains(x, y, z))
+		{
+			return rightChild.findPointInternal(x, y, z);
+		}
+		else
+		{
+			return this;
+		}
+	}
 }
