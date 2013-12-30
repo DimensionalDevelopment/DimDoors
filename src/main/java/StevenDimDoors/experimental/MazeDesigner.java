@@ -475,7 +475,7 @@ public class MazeDesigner
 		// a list of those edges and remove them if they connect two nodes
 		// in the same set. Otherwise, merge their sets and keep the edge.
 		// This is similar to algorithms for spanning trees. The same
-		// idea applies for the other doorways with some chance added.
+		// idea applies for the other doorways, plus some randomness.
 		
 		// First, list all nodes in the subgraph
 		IGraphNode<PartitionNode, DoorwayData> current;
