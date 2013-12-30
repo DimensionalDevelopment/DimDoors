@@ -13,8 +13,8 @@ import StevenDimDoors.mod_pocketDim.Point3D;
 
 public class MazeDesigner
 {
-	private static final int MAZE_WIDTH = 40;
-	private static final int MAZE_LENGTH = 40;
+	private static final int MAZE_WIDTH = 34;
+	private static final int MAZE_LENGTH = 34;
 	private static final int MAZE_HEIGHT = 20;
 	private static final int MIN_HEIGHT = 4;
 	private static final int MIN_SIDE = 3;
