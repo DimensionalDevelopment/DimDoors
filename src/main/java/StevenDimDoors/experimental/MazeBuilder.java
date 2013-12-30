@@ -21,9 +21,10 @@ public class MazeBuilder
 	public static void generate(World world, int x, int y, int z, Random random)
 	{
 		MazeDesign design = MazeDesigner.generate(random);
+		Point3D offset = new Point3D(x - design.width() / 2, y - design.height() - 1, z - design.length() / 2);
 		
-		buildRooms(design.getRoomGraph(), world,
-				new Point3D(x - design.width() / 2, y - design.height() - 1, z - design.length() / 2));
+		buildRooms(design.getRoomGraph(), world, offset);
+		carveDoorways(design.getRoomGraph(), world, offset, random);
 	}
 	
 	private static void buildRooms(DirectedGraph<PartitionNode, DoorwayData> roomGraph, World world, Point3D offset)
@@ -33,11 +34,10 @@ public class MazeBuilder
 			PartitionNode room = node.data();
 			buildBox(world, offset, room.minCorner(), room.maxCorner(), Block.stoneBrick.blockID, 0);
 		}
-		
-		// TESTING!!!
-		// This code carves out cheap doorways
-		// The final system will be better
-		// This has to happen after all the rooms have been built or the passages will be overwritten sometimes
+	}
+	
+	private static void carveDoorways(DirectedGraph<PartitionNode, DoorwayData> roomGraph, World world, Point3D offset, Random random)
+	{
 		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes())
 		{
 			for (IEdge<PartitionNode, DoorwayData> doorway : node.outbound())
@@ -47,27 +47,40 @@ public class MazeBuilder
 				
 				if (axis == DoorwayData.Z_AXIS)
 				{
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ(), 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 2,	offset.getZ() + lower.getZ(), 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 2,	offset.getZ() + lower.getZ() + 1, 0, 0);
+					carveDoorAlongZ(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ());
 				}
 				else if (axis == DoorwayData.X_AXIS)
 				{
-					setBlockDirectly(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 2,	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 2,	offset.getZ() + lower.getZ() + 1, 0, 0);
+					carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1);
 				}
 				else
 				{
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY(),	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY(),	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1, 0, 0);
+					carveHole(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY(),	offset.getZ() + lower.getZ() + 1);
 				}
 			}
 		}
+	}
+	
+	private static void carveDoorAlongX(World world, int x, int y, int z)
+	{
+		setBlockDirectly(world, x, y, z, 0, 0);
+		setBlockDirectly(world, x, y + 1, z, 0, 0);
+		setBlockDirectly(world, x + 1, y, z, 0, 0);
+		setBlockDirectly(world, x + 1, y + 1, z, 0, 0);
+	}
+	
+	private static void carveDoorAlongZ(World world, int x, int y, int z)
+	{
+		setBlockDirectly(world, x, y, z, 0, 0);
+		setBlockDirectly(world, x, y + 1, z, 0, 0);
+		setBlockDirectly(world, x, y, z + 1, 0, 0);
+		setBlockDirectly(world, x, y + 1, z + 1, 0, 0);
+	}
+	
+	private static void carveHole(World world, int x, int y, int z)
+	{
+		setBlockDirectly(world, x, y, z, 0, 0);
+		setBlockDirectly(world, x, y + 1, z, 0, 0);
 	}
 	
 	private static void buildBox(World world, Point3D offset, Point3D minCorner, Point3D maxCorner, int blockID, int metadata)
