@@ -1,14 +1,8 @@
 package StevenDimDoors.experimental;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -22,11 +16,20 @@ public class MazeBuilder
 	{
 		MazeDesign design = MazeDesigner.generate(random);
 		Point3D offset = new Point3D(x - design.width() / 2, y - design.height() - 1, z - design.length() / 2);
+		SphereDecayOperation decay = new SphereDecayOperation(random, 0, 0, Block.stoneBrick.blockID, 2);
 		
 		buildRooms(design.getRoomGraph(), world, offset);
-		carveDoorways(design.getRoomGraph(), world, offset, random);
+		carveDoorways(design.getRoomGraph(), world, offset, decay, random);
+		
+		applyRandomDestruction(design, world, offset, decay, random);
 	}
 	
+	private static void applyRandomDestruction(MazeDesign design, World world,
+			Point3D offset, SphereDecayOperation decay, Random random)
+	{
+		//final int DECAY_BOX_SIZE = 8  
+	}
+
 	private static void buildRooms(DirectedGraph<PartitionNode, DoorwayData> roomGraph, World world, Point3D offset)
 	{
 		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes())
@@ -36,14 +39,11 @@ public class MazeBuilder
 		}
 	}
 	
-	private static void carveDoorways(DirectedGraph<PartitionNode, DoorwayData> roomGraph, World world, Point3D offset, Random random)
-	{
-		final int MIN_DOUBLE_DOOR_SPAN = 10;
-		
-		int gap;
+	private static void carveDoorways(DirectedGraph<PartitionNode, DoorwayData> roomGraph, World world,
+			Point3D offset, SphereDecayOperation decay, Random random)
+	{	
 		char axis;
 		Point3D lower;
-		Point3D upper;
 		DoorwayData doorway;
 		
 		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes())
@@ -53,69 +53,92 @@ public class MazeBuilder
 				doorway = passage.data();
 				axis = doorway.axis();
 				lower = doorway.minCorner();
-				upper = doorway.maxCorner(); 
-				
-				switch (axis)
-				{
-					case DoorwayData.X_AXIS:
-						if (doorway.length() >= MIN_DOUBLE_DOOR_SPAN)
-						{
-							gap = (doorway.length() - 2) / 3;
-							carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ() + gap);
-							carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1, offset.getZ() + upper.getZ() - gap);
-						}
-						else if (doorway.length() > 3)
-						{
-							switch (random.nextInt(3))
-							{
-								case 0:
-									carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1, offset.getZ() + (lower.getZ() + upper.getZ()) / 2);
-									break;
-								case 1:
-									carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ() + 2);
-									break;
-								case 2:
-									carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1, offset.getZ() + upper.getZ() - 2);
-									break;
-							}
-						}
-						else
-						{
-							carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1);
-						}
-						break;
-					case DoorwayData.Z_AXIS:
-						if (doorway.width() >= MIN_DOUBLE_DOOR_SPAN)
-						{
-							gap = (doorway.width() - 2) / 3;
-							carveDoorAlongZ(world, offset.getX() + lower.getX() + gap, offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ());
-							carveDoorAlongZ(world, offset.getX() + upper.getX() - gap, offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ());
-						}
-						else if (doorway.length() > 3)
-						{
-							switch (random.nextInt(3))
-							{
-								case 0:
-									carveDoorAlongZ(world, offset.getX() + (lower.getX() + upper.getX()) / 2, offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ());
-									break;
-								case 1:
-									carveDoorAlongZ(world, offset.getX() + lower.getX() + 2, offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ());
-									break;
-								case 2:
-									carveDoorAlongZ(world, offset.getX() + upper.getX() - 2, offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ());
-									break;
-							}
-						}
-						else
-						{
-							carveDoorAlongZ(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ());
-						}
-						break;
-					case DoorwayData.Y_AXIS:
-						carveHole(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY(),	offset.getZ() + lower.getZ() + 1);
-						break;
-				}
+				carveDoorway(world, axis, offset.getX() + lower.getX(), offset.getY() + lower.getY(),
+						offset.getZ() + lower.getZ(), doorway.width(), doorway.height(), doorway.length(),
+						decay, random);
 			}
+		}
+	}
+	
+	private static void carveDoorway(World world, char axis, int x, int y, int z, int width, int height,
+			int length, SphereDecayOperation decay, Random random)
+	{
+		final int MIN_DOUBLE_DOOR_SPAN = 10;
+		
+		int gap;
+		switch (axis)
+		{
+			case DoorwayData.X_AXIS:
+				if (length >= MIN_DOUBLE_DOOR_SPAN)
+				{
+					gap = (length - 2) / 3;
+					carveDoorAlongX(world, x, y + 1, z + gap);
+					carveDoorAlongX(world, x, y + 1, z + length - gap - 1);
+				}
+				else if (length > 3)
+				{
+					switch (random.nextInt(3))
+					{
+						case 0:
+							carveDoorAlongX(world, x, y + 1, z + (length - 1) / 2);
+							break;
+						case 1:
+							carveDoorAlongX(world, x, y + 1, z + 2);
+							break;
+						case 2:
+							carveDoorAlongX(world, x, y + 1, z + length - 3);
+							break;
+					}
+				}
+				else
+				{
+					carveDoorAlongX(world, x, y + 1, z + 1);
+				}
+				break;
+			case DoorwayData.Z_AXIS:
+				if (width >= MIN_DOUBLE_DOOR_SPAN)
+				{
+					gap = (width - 2) / 3;
+					carveDoorAlongZ(world, x + gap, y + 1, z);
+					carveDoorAlongZ(world, x + width - gap - 1, y + 1, z);
+				}
+				else if (length > 3)
+				{
+					switch (random.nextInt(3))
+					{
+						case 0:
+							carveDoorAlongZ(world, x + (width - 1) / 2, y + 1, z);
+							break;
+						case 1:
+							carveDoorAlongZ(world, x + 2, y + 1, z);
+							break;
+						case 2:
+							carveDoorAlongZ(world, x + width - 3, y + 1, z);
+							break;
+					}
+				}
+				else
+				{
+					carveDoorAlongZ(world, x + 1, y + 1, z);
+				}
+				break;
+			case DoorwayData.Y_AXIS:
+				gap = Math.min(width, length) - 2;
+				if (gap > 1)
+				{
+					if (gap > 6)
+					{
+						gap = 6;
+					}
+					decay.apply(world,
+							x + random.nextInt(width - gap - 1) + 1, y - 1,
+							z + random.nextInt(length - gap - 1) + 1, gap, 4, gap);
+				}
+				else
+				{
+					carveHole(world, x + 1, y, z + 1);
+				}
+				break;
 		}
 	}
 	
@@ -140,6 +163,7 @@ public class MazeBuilder
 		setBlockDirectly(world, x, y, z, 0, 0);
 		setBlockDirectly(world, x, y + 1, z, 0, 0);
 	}
+
 	
 	private static void buildBox(World world, Point3D offset, Point3D minCorner, Point3D maxCorner, int blockID, int metadata)
 	{
