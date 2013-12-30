@@ -39,10 +39,10 @@ public class MazeDesigner
 		// Cut out random subgraphs from the adjacency graph
 		ArrayList<IGraphNode<PartitionNode, DoorwayData>> cores = createMazeSections(rooms, random);
 		
-		// Remove unnecessary passages through floors/ceilings
+		// Remove unnecessary passages through floors/ceilings and some from the walls
 		for (IGraphNode<PartitionNode, DoorwayData> core : cores)
 		{
-			minimizeVerticalPassages(core, rooms, random);
+			pruneDoorways(core, rooms, random);
 		}
 		
 		return new MazeDesign(root, rooms, cores);
@@ -459,7 +459,7 @@ public class MazeDesigner
 		return cores;
 	}
 	
-	private static void minimizeVerticalPassages(IGraphNode<PartitionNode, DoorwayData> core,
+	private static void pruneDoorways(IGraphNode<PartitionNode, DoorwayData> core,
 			DirectedGraph<PartitionNode, DoorwayData> rooms, Random random)
 	{
 		// We receive a node for one of the rooms in a section of the maze
@@ -467,13 +467,15 @@ public class MazeDesigner
 		// still allowing any room to be reachable from any other room.
 		// In technical terms, we receive a node from a connected subgraph
 		// and we need to remove as many Y_AXIS-type edges as possible while
-		// preserving connectedness.
+		// preserving connectedness. We also want to randomly remove some of
+		// the other doorways without breaking connectedness.
 		
 		// An efficient solution is to assign nodes to disjoint sets based
 		// on their components, ignoring all Y_AXIS edges, then iterate over
 		// a list of those edges and remove them if they connect two nodes
 		// in the same set. Otherwise, merge their sets and keep the edge.
-		// This is similar to algorithms for spanning trees.
+		// This is similar to algorithms for spanning trees. The same
+		// idea applies for the other doorways with some chance added.
 		
 		// First, list all nodes in the subgraph
 		IGraphNode<PartitionNode, DoorwayData> current;
@@ -536,6 +538,38 @@ public class MazeDesigner
 		for (IEdge<PartitionNode, DoorwayData> passage : targets)
 		{
 			if (!components.mergeSets(passage.head(), passage.tail()))
+			{
+				rooms.removeEdge(passage);
+			}
+		}
+		
+		// Repeat the pruning process with X_AXIS and Z_AXIS doorways
+		// In this case, unnecessary edges might be kept at random
+		components.clear();
+		targets.clear();
+		
+		for (IGraphNode<PartitionNode, DoorwayData> room : subgraph)
+		{
+			components.makeSet(room);
+		}
+		for (IGraphNode<PartitionNode, DoorwayData> room : subgraph)
+		{
+			for (IEdge<PartitionNode, DoorwayData> passage : room.outbound())
+			{
+				if (passage.data().axis() == DoorwayData.Y_AXIS)
+				{
+					components.mergeSets(passage.head(), passage.tail());
+				}
+				else
+				{
+					targets.add(passage);
+				}
+			}
+		}
+		Collections.shuffle(targets, random);
+		for (IEdge<PartitionNode, DoorwayData> passage : targets)
+		{
+			if (!components.mergeSets(passage.head(), passage.tail()) && random.nextBoolean())
 			{
 				rooms.removeEdge(passage);
 			}

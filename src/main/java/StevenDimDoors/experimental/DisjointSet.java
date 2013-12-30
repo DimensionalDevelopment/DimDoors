@@ -126,4 +126,9 @@ public class DisjointSet<T>
 			return (firstRoot == secondRoot);
 		}
 	}
+	
+	public void clear()
+	{
+		mapping.clear();
+	}
 }
