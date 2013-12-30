@@ -6,29 +6,26 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
+import java.util.Stack;
 
-import net.minecraft.block.Block;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import StevenDimDoors.mod_pocketDim.Point3D;
 
-public class MazeGenerator
+public class MazeDesigner
 {
-	public static final int ROOT_WIDTH = 40;
-	public static final int ROOT_LENGTH = 40;
-	public static final int ROOT_HEIGHT = 20;
+	private static final int MAZE_WIDTH = 40;
+	private static final int MAZE_LENGTH = 40;
+	private static final int MAZE_HEIGHT = 20;
 	private static final int MIN_HEIGHT = 4;
 	private static final int MIN_SIDE = 3;
 	private static final int SPLIT_COUNT = 9;
 	
-	private MazeGenerator() { }
+	private MazeDesigner() { }
 	
-	public static void generate(World world, int x, int y, int z, Random random)
+	public static MazeDesign generate(Random random)
 	{
 		// Construct a random binary space partitioning of our maze volume
-		PartitionNode root = partitionRooms(ROOT_WIDTH, ROOT_HEIGHT, ROOT_LENGTH, SPLIT_COUNT, random);
+		PartitionNode root = partitionRooms(MAZE_WIDTH, MAZE_HEIGHT, MAZE_LENGTH, SPLIT_COUNT, random);
 
 		// List all the leaf nodes of the partition tree, which denote individual rooms
 		ArrayList<PartitionNode> partitions = new ArrayList<PartitionNode>(1 << SPLIT_COUNT);
@@ -42,10 +39,15 @@ public class MazeGenerator
 		// Cut out random subgraphs from the adjacency graph
 		ArrayList<IGraphNode<PartitionNode, DoorwayData>> cores = createMazeSections(rooms, random);
 		
+		// Remove unnecessary passages through floors/ceilings
+		for (IGraphNode<PartitionNode, DoorwayData> core : cores)
+		{
+			minimizeVerticalPassages(core, rooms, random);
+		}
 		
-		buildRooms(rooms, world, new Point3D(x - ROOT_WIDTH / 2, y - ROOT_HEIGHT - 1, z - ROOT_WIDTH / 2));
+		return new MazeDesign(root, rooms, cores);
 	}
-	
+
 	private static void listRoomPartitions(PartitionNode node, ArrayList<PartitionNode> partitions)
 	{
 		if (node.isLeaf())
@@ -59,7 +61,7 @@ public class MazeGenerator
 		}
 	}
 	
-	private static void removeRoom(PartitionNode node)
+	private static void removeRoomPartitions(PartitionNode node)
 	{
 		// Remove a node and any of its ancestors that become leaf nodes
 		PartitionNode parent;
@@ -448,119 +450,96 @@ public class MazeGenerator
 		}
 		
 		// Remove all the nodes that were listed for removal
+		// Also remove unused partitions from the partition tree
 		for (IGraphNode<PartitionNode, DoorwayData> node : removals)
 		{
+			removeRoomPartitions(node.data());
 			roomGraph.removeNode(node);
 		}
 		return cores;
 	}
 	
-	private static void buildRooms(DirectedGraph<PartitionNode, DoorwayData> roomGraph, World world, Point3D offset)
+	private static void minimizeVerticalPassages(IGraphNode<PartitionNode, DoorwayData> core,
+			DirectedGraph<PartitionNode, DoorwayData> rooms, Random random)
 	{
-		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes())
+		// We receive a node for one of the rooms in a section of the maze
+		// and we need to remove as many floor doorways as possible while
+		// still allowing any room to be reachable from any other room.
+		// In technical terms, we receive a node from a connected subgraph
+		// and we need to remove as many Y_AXIS-type edges as possible while
+		// preserving connectedness.
+		
+		// An efficient solution is to assign nodes to disjoint sets based
+		// on their components, ignoring all Y_AXIS edges, then iterate over
+		// a list of those edges and remove them if they connect two nodes
+		// in the same set. Otherwise, merge their sets and keep the edge.
+		// This is similar to algorithms for spanning trees.
+		
+		// First, list all nodes in the subgraph
+		IGraphNode<PartitionNode, DoorwayData> current;
+		IGraphNode<PartitionNode, DoorwayData> neighbor;
+		
+		Stack<IGraphNode<PartitionNode, DoorwayData>> ordering = new Stack<IGraphNode<PartitionNode, DoorwayData>>();
+		ArrayList<IGraphNode<PartitionNode, DoorwayData>> subgraph = new ArrayList<IGraphNode<PartitionNode, DoorwayData>>(64);
+		DisjointSet<IGraphNode<PartitionNode, DoorwayData>> components = new DisjointSet<IGraphNode<PartitionNode, DoorwayData>>(128);
+		
+		ordering.add(core);
+		components.makeSet(core);
+		while (!ordering.isEmpty())
 		{
-			PartitionNode room = node.data();
-			buildBox(world, offset, room.minCorner(), room.maxCorner(), Block.stoneBrick.blockID, 0);
+			current = ordering.pop();
+			subgraph.add(current);
+			
+			for (IEdge<PartitionNode, DoorwayData> edge : current.inbound())
+			{
+				neighbor = edge.head();
+				if (components.makeSet(neighbor))
+				{
+					ordering.add(neighbor);
+				}
+			}
+			for (IEdge<PartitionNode, DoorwayData> edge : current.outbound())
+			{
+				neighbor = edge.tail();
+				if (components.makeSet(neighbor))
+				{
+					ordering.add(neighbor);
+				}
+			}
 		}
 		
-		// TESTING!!!
-		// This code carves out cheap doorways
-		// The final system will be better
-		// This has to happen after all the rooms have been built or the passages will be overwritten sometimes
-		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes())
+		// Now iterate over the list of nodes and merge their sets
+		// We only have to look at outbound edges since inbound edges mirror them
+		// Also list any Y_AXIS doorways we come across
+		ArrayList<IEdge<PartitionNode, DoorwayData>> targets =
+				new ArrayList<IEdge<PartitionNode, DoorwayData>>();
+		
+		for (IGraphNode<PartitionNode, DoorwayData> room : subgraph)
 		{
-			for (IEdge<PartitionNode, DoorwayData> doorway : node.outbound())
+			for (IEdge<PartitionNode, DoorwayData> passage : room.outbound())
 			{
-				char axis = doorway.data().axis();
-				Point3D lower = doorway.data().minCorner();
-				
-				if (axis == DoorwayData.Z_AXIS)
+				if (passage.data().axis() != DoorwayData.Y_AXIS)
 				{
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ(), 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 2,	offset.getZ() + lower.getZ(), 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 2,	offset.getZ() + lower.getZ() + 1, 0, 0);
-				}
-				else if (axis == DoorwayData.X_AXIS)
-				{
-					setBlockDirectly(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 2,	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 2,	offset.getZ() + lower.getZ() + 1, 0, 0);
+					components.mergeSets(passage.head(), passage.tail());
 				}
 				else
 				{
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY(),	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY(),	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1, 0, 0);
-					setBlockDirectly(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1, 0, 0);
+					targets.add(passage);
 				}
 			}
 		}
-	}
-	
-	private static void buildBox(World world, Point3D offset, Point3D minCorner, Point3D maxCorner, int blockID, int metadata)
-	{
-		int minX = minCorner.getX() + offset.getX();
-		int minY = minCorner.getY() + offset.getY();
-		int minZ = minCorner.getZ() + offset.getZ();
 		
-		int maxX = maxCorner.getX() + offset.getX();
-		int maxY = maxCorner.getY() + offset.getY();
-		int maxZ = maxCorner.getZ() + offset.getZ();
+		// Shuffle the list of doorways to randomize which ones are removed
+		Collections.shuffle(targets, random);
 		
-		int x, y, z;
-		
-		for (x = minX; x <= maxX; x++)
+		// Merge sets together and remove unnecessary doorways
+		for (IEdge<PartitionNode, DoorwayData> passage : targets)
 		{
-			for (z = minZ; z <= maxZ; z++)
+			if (!components.mergeSets(passage.head(), passage.tail()))
 			{
-				setBlockDirectly(world, x, minY, z, blockID, metadata);
-				setBlockDirectly(world, x, maxY, z, blockID, metadata);
-			}
-		}
-		for (x = minX; x <= maxX; x++)
-		{
-			for (y = minY; y <= maxY; y++)
-			{
-				setBlockDirectly(world, x, y, minZ, blockID, metadata);
-				setBlockDirectly(world, x, y, maxZ, blockID, metadata);
-			}
-		}
-		for (z = minZ; z <= maxZ; z++)
-		{
-			for (y = minY; y <= maxY; y++)
-			{
-				setBlockDirectly(world, minX, y, z, blockID, metadata);
-				setBlockDirectly(world, maxX, y, z, blockID, metadata);
+				rooms.removeEdge(passage);
 			}
 		}
 	}
 	
-	private static void setBlockDirectly(World world, int x, int y, int z, int blockID, int metadata)
-	{
-		if (blockID != 0 && Block.blocksList[blockID] == null)
-		{
-			return;
-		}
-
-		int cX = x >> 4;
-		int cZ = z >> 4;
-		int cY = y >> 4;
-		Chunk chunk;
-
-		int localX = (x % 16) < 0 ? (x % 16) + 16 : (x % 16);
-		int localZ = (z % 16) < 0 ? (z % 16) + 16 : (z % 16);
-		ExtendedBlockStorage extBlockStorage;
-
-		chunk = world.getChunkFromChunkCoords(cX, cZ);
-		extBlockStorage = chunk.getBlockStorageArray()[cY];
-		if (extBlockStorage == null) 
-		{
-			extBlockStorage = new ExtendedBlockStorage(cY << 4, !world.provider.hasNoSky);
-			chunk.getBlockStorageArray()[cY] = extBlockStorage;
-		}
-		extBlockStorage.setExtBlockID(localX, y & 15, localZ, blockID);
-		extBlockStorage.setExtBlockMetadata(localX, y & 15, localZ, metadata);
-	}
 }
