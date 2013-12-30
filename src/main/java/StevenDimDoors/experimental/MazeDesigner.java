@@ -234,11 +234,11 @@ public class MazeDesigner
 							minYI = Math.max(minY, otherMin.getY());
 							maxYI = Math.min(maxY, otherMax.getY());
 							
-							for (p = a; p <= maxXI - minXI; p++)
+							for (p = 0; p <= maxXI - minXI; p++)
 							{
-								for (q = b; q <= maxYI - minYI; q++)
+								for (q = 0; q <= maxYI - minYI; q++)
 								{
-									detected[p][q] = true;
+									detected[p + a][q + b] = true;
 								}	
 							}
 							// Check if we meet the minimum dimensions needed for a doorway
@@ -282,11 +282,11 @@ public class MazeDesigner
 							minZI = Math.max(minZ, otherMin.getZ());
 							maxZI = Math.min(maxZ, otherMax.getZ());
 							
-							for (q = b; q <= maxYI - minYI; q++)
+							for (q = 0; q <= maxYI - minYI; q++)
 							{
-								for (r = c; r <= maxZI - minZI; r++)
+								for (r = 0; r <= maxZI - minZI; r++)
 								{
-									detected[q][r] = true;
+									detected[q + b][r + c] = true;
 								}	
 							}
 							// Check if we meet the minimum dimensions needed for a doorway
@@ -330,11 +330,11 @@ public class MazeDesigner
 							minZI = Math.max(minZ, otherMin.getZ());
 							maxZI = Math.min(maxZ, otherMax.getZ());
 							
-							for (p = a; p <= maxXI - minXI; p++)
+							for (p = 0; p <= maxXI - minXI; p++)
 							{
-								for (r = c; r <= maxZI - minZI; r++)
+								for (r = 0; r <= maxZI - minZI; r++)
 								{
-									detected[p][r] = true;
+									detected[p + a][r + c] = true;
 								}	
 							}
 							// Check if we meet the minimum dimensions needed for a doorway
