@@ -38,24 +38,82 @@ public class MazeBuilder
 	
 	private static void carveDoorways(DirectedGraph<PartitionNode, DoorwayData> roomGraph, World world, Point3D offset, Random random)
 	{
+		final int MIN_DOUBLE_DOOR_SPAN = 10;
+		
+		int gap;
+		char axis;
+		Point3D lower;
+		Point3D upper;
+		DoorwayData doorway;
+		
 		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes())
 		{
-			for (IEdge<PartitionNode, DoorwayData> doorway : node.outbound())
+			for (IEdge<PartitionNode, DoorwayData> passage : node.outbound())
 			{
-				char axis = doorway.data().axis();
-				Point3D lower = doorway.data().minCorner();
+				doorway = passage.data();
+				axis = doorway.axis();
+				lower = doorway.minCorner();
+				upper = doorway.maxCorner(); 
 				
-				if (axis == DoorwayData.Z_AXIS)
+				switch (axis)
 				{
-					carveDoorAlongZ(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ());
-				}
-				else if (axis == DoorwayData.X_AXIS)
-				{
-					carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1);
-				}
-				else
-				{
-					carveHole(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY(),	offset.getZ() + lower.getZ() + 1);
+					case DoorwayData.X_AXIS:
+						if (doorway.length() >= MIN_DOUBLE_DOOR_SPAN)
+						{
+							gap = (doorway.length() - 2) / 3;
+							carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ() + gap);
+							carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1, offset.getZ() + upper.getZ() - gap);
+						}
+						else if (doorway.length() > 3)
+						{
+							switch (random.nextInt(3))
+							{
+								case 0:
+									carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1, offset.getZ() + (lower.getZ() + upper.getZ()) / 2);
+									break;
+								case 1:
+									carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ() + 2);
+									break;
+								case 2:
+									carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1, offset.getZ() + upper.getZ() - 2);
+									break;
+							}
+						}
+						else
+						{
+							carveDoorAlongX(world, offset.getX() + lower.getX(), offset.getY() + lower.getY() + 1,	offset.getZ() + lower.getZ() + 1);
+						}
+						break;
+					case DoorwayData.Z_AXIS:
+						if (doorway.width() >= MIN_DOUBLE_DOOR_SPAN)
+						{
+							gap = (doorway.width() - 2) / 3;
+							carveDoorAlongZ(world, offset.getX() + lower.getX() + gap, offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ());
+							carveDoorAlongZ(world, offset.getX() + upper.getX() - gap, offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ());
+						}
+						else if (doorway.length() > 3)
+						{
+							switch (random.nextInt(3))
+							{
+								case 0:
+									carveDoorAlongZ(world, offset.getX() + (lower.getX() + upper.getX()) / 2, offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ());
+									break;
+								case 1:
+									carveDoorAlongZ(world, offset.getX() + lower.getX() + 2, offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ());
+									break;
+								case 2:
+									carveDoorAlongZ(world, offset.getX() + upper.getX() - 2, offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ());
+									break;
+							}
+						}
+						else
+						{
+							carveDoorAlongZ(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY() + 1, offset.getZ() + lower.getZ());
+						}
+						break;
+					case DoorwayData.Y_AXIS:
+						carveHole(world, offset.getX() + lower.getX() + 1, offset.getY() + lower.getY(),	offset.getZ() + lower.getZ() + 1);
+						break;
 				}
 			}
 		}

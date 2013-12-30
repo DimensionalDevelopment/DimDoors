@@ -33,4 +33,19 @@ public class DoorwayData
 	{
 		return axis;
 	}
+	
+	public int width()
+	{
+		return (maxCorner.getX() - minCorner.getX() + 1);
+	}
+	
+	public int height()
+	{
+		return (maxCorner.getY() - minCorner.getY() + 1);
+	}
+	
+	public int length()
+	{
+		return (maxCorner.getZ() - minCorner.getZ() + 1);
+	}
 }
