@@ -297,7 +297,6 @@ public class DungeonSchematic extends Schematic {
 	
 	private static void createExitDoorLink(World world, NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
 	{
-		
 		//Transform the door's location to the pocket coordinate system
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
