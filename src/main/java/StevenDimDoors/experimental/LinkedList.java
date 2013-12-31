@@ -226,6 +226,7 @@ public class LinkedList<T> implements Iterable<T>
 		Node<T> addition = new Node(node, node.next, data, this);
 		node.next = addition;
 		addition.next.prev = addition;
+		size++;
 		return addition;
 	}
 	

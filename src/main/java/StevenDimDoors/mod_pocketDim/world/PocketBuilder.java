@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
-import StevenDimDoors.experimental.MazeGenerator;
+import StevenDimDoors.experimental.MazeBuilder;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
@@ -484,7 +484,7 @@ public class PocketBuilder
 		}
 		*/
 		
-		MazeGenerator.generate(world, x, y, z, random);
+		MazeBuilder.generate(world, x, y, z, random);
 		
 		//Build the door
 		int doorOrientation = BlockRotator.transformMetadata(BlockRotator.EAST_DOOR_METADATA, orientation - BlockRotator.EAST_DOOR_METADATA + 2, properties.DimensionalDoorID);
