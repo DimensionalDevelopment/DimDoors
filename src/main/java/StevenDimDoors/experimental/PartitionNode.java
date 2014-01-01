@@ -2,41 +2,22 @@ package StevenDimDoors.experimental;
 
 import StevenDimDoors.mod_pocketDim.Point3D;
 
-public class PartitionNode
+public class PartitionNode extends BoundingBox
 {
-	private Point3D minCorner;
-	private Point3D maxCorner;
 	private PartitionNode parent;
 	private PartitionNode leftChild = null;
 	private PartitionNode rightChild = null;
 	
 	public PartitionNode(int width, int height, int length)
 	{
+		super(new Point3D(0, 0, 0), new Point3D(width - 1, height - 1, length - 1));
 		parent = null;
-		minCorner = new Point3D(0, 0, 0);
-		maxCorner = new Point3D(width - 1, height - 1, length - 1);
 	}
 	
 	private PartitionNode(PartitionNode parent, Point3D minCorner, Point3D maxCorner)
 	{
+		super(minCorner, maxCorner);
 		this.parent = parent;
-		this.minCorner = minCorner;
-		this.maxCorner = maxCorner;
-	}
-	
-	public int width()
-	{
-		return (maxCorner.getX() - minCorner.getX() + 1);
-	}
-	
-	public int height()
-	{
-		return (maxCorner.getY() - minCorner.getY() + 1);
-	}
-	
-	public int length()
-	{
-		return (maxCorner.getZ() - minCorner.getZ() + 1);
 	}
 	
 	public boolean isLeaf()
@@ -52,16 +33,6 @@ public class PartitionNode
 	public PartitionNode rightChild()
 	{
 		return rightChild;
-	}
-	
-	public Point3D minCorner()
-	{
-		return minCorner;
-	}
-	
-	public Point3D maxCorner()
-	{
-		return maxCorner;
 	}
 	
 	public PartitionNode parent()
@@ -121,13 +92,6 @@ public class PartitionNode
 				parent.rightChild = null;
 			parent = null;
 		}
-	}
-	
-	public boolean contains(int x, int y, int z)
-	{
-		return ((minCorner.getX() <= x && x <= maxCorner.getX()) &&
-			(minCorner.getY() <= y && y <= maxCorner.getY()) &&
-			(minCorner.getZ() <= z && z <= maxCorner.getZ()));
 	}
 
 	public PartitionNode findPoint(int x, int y, int z)

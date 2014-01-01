@@ -7,6 +7,7 @@ public class MazeDesign
 	private PartitionNode root;
 	private DirectedGraph<PartitionNode, DoorwayData> rooms;
 	private ArrayList<IGraphNode<PartitionNode, DoorwayData>> cores;
+	private ArrayList<BoundingBox> protectedAreas;
 	
 	public MazeDesign(PartitionNode root, DirectedGraph<PartitionNode, DoorwayData> rooms,
 			ArrayList<IGraphNode<PartitionNode, DoorwayData>> cores)
@@ -29,6 +30,11 @@ public class MazeDesign
 	public ArrayList<IGraphNode<PartitionNode, DoorwayData>> getCoreNodes()
 	{
 		return cores;
+	}
+	
+	public ArrayList<BoundingBox> getProtectedAreas()
+	{
+		return protectedAreas;
 	}
 	
 	public int width()

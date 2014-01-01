@@ -21,6 +21,8 @@ public class MazeBuilder
 		buildRooms(design.getRoomGraph(), world, offset);
 		carveDoorways(design.getRoomGraph(), world, offset, decay, random);
 		
+		//placeDoors(design, world, offset);
+		
 		applyRandomDestruction(design, world, offset, decay, random);
 	}
 	
