@@ -10,4 +10,6 @@ public interface IDimDoor
 	public void placeLink(World world, int x, int y, int z);
 	
 	public int getDrops();
+	
+	public void initDoorTE(World world, int x, int y, int z);
 }

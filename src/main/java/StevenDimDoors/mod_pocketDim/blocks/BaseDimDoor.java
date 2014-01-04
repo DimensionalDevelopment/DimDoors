@@ -25,7 +25,6 @@ import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@SuppressWarnings("deprecation")
 public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEntityProvider
 {
 	protected final DDProperties properties;
@@ -428,5 +427,12 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		// like Minecarts might come in backwards.
 		int direction = MathHelper.floor_double((entity.rotationYaw + 90) * 4.0F / 360.0F + 0.5D) & 3;
 		return ((metadata & 3) == direction);
+	}
+	
+	@Override
+	public void initDoorTE(World world, int x, int y, int z)
+	{
+		TileEntity te = this.createNewTileEntity(world);
+		world.setBlockTileEntity(x, y, z, te);
 	}
 }

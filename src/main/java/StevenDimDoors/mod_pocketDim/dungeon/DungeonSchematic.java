@@ -17,10 +17,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.schematic.CompoundFilter;
 import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
@@ -293,6 +296,8 @@ public class DungeonSchematic extends Schematic {
 		Point4D destination = entryLink.source();
 		NewDimData prevDim = PocketManager.getDimensionData(destination.getDimension());
 		prevDim.setDestination(reverseLink, destination.getX(), destination.getY(), destination.getZ());
+		initDoorTileEntity(world, pocketCenter);
+
 	}
 	
 	private static void createExitDoorLink(World world, NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
@@ -313,6 +318,8 @@ public class DungeonSchematic extends Schematic {
 			int metadata = world.getBlockMetadata(x, y, z);
 			setBlockDirectly(world, x, y + 1, z, blockID, metadata);
 		}
+		initDoorTileEntity(world, location);
+
 	}
 	
 	private static void createDimensionalDoorLink(NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter,World world)
@@ -323,6 +330,9 @@ public class DungeonSchematic extends Schematic {
 		int orientation = world.getBlockMetadata(location.getX(), location.getY()-1, location.getZ());
 
 		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON, orientation);
+		initDoorTileEntity(world, location);
+
+		
 	}
 	
 	private static void spawnMonolith(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter, boolean canSpawn)
@@ -339,5 +349,22 @@ public class DungeonSchematic extends Schematic {
 			mob.setLocationAndAngles(location.getX(), location.getY(), location.getZ(), 1, 1);
 			world.spawnEntityInWorld(mob);
 		}
+	}
+	private static void initDoorTileEntity(World world, Point3D point)
+	{
+		Block door = Block.blocksList[world.getBlockId(point.getX(), point.getY(), point.getZ())];
+		Block door2 = Block.blocksList[world.getBlockId(point.getX(), point.getY()-1, point.getZ())];
+
+		if(door instanceof IDimDoor&&door2 instanceof IDimDoor)
+		{
+			((IDimDoor) door).initDoorTE(world, point.getX(), point.getY(), point.getZ());
+			((IDimDoor) door).initDoorTE(world, point.getX(), point.getY()-1, point.getZ());
+
+		}
+		else
+		{
+			throw new IllegalArgumentException("Tried to init a dim door TE on a block that isnt a Dim Door!!");
+		}
+		
 	}
 }
