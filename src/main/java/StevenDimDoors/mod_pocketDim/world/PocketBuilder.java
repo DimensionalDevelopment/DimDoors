@@ -472,7 +472,7 @@ public class PocketBuilder
 		Point3D door = new Point3D(x, y, z);
 		BlockRotator.transformPoint(center, door, orientation - BlockRotator.EAST_DOOR_METADATA, door);
 		
-		/*
+		
 		//Build the outer layer of Eternal Fabric
 		buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2), properties.PermaFabricBlockID, false, 0);
 
@@ -482,9 +482,9 @@ public class PocketBuilder
 			buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2) - layer, properties.FabricBlockID,
 				layer < (wallThickness - 1) && properties.TNFREAKINGT_Enabled, properties.NonTntWeight);
 		}
-		*/
 		
-		MazeBuilder.generate(world, x, y, z, random);
+		
+		//MazeBuilder.generate(world, x, y, z, random);
 		
 		//Build the door
 		int doorOrientation = BlockRotator.transformMetadata(BlockRotator.EAST_DOOR_METADATA, orientation - BlockRotator.EAST_DOOR_METADATA + 2, properties.DimensionalDoorID);

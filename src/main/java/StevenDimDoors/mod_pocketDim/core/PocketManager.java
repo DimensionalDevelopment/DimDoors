@@ -300,7 +300,6 @@ public class PocketManager
 		PocketManager.dimensionData.put(dimData.id, dimData);
 		dimWatcher.onCreated(new ClientDimData(dimData));
 
-		
 		return true;
 	}
 	public static boolean deletePocket(NewDimData target, boolean deleteFolder)
@@ -403,7 +402,7 @@ public class PocketManager
 	 */
 	private static void loadInternal()
 	{	
-		System.out.println(!FMLCommonHandler.instance().getSide().isClient());
+		//System.out.println(!FMLCommonHandler.instance().getSide().isClient());
 
 		File saveDir = DimensionManager.getCurrentSaveRootDirectory();
 		if (saveDir != null)
@@ -507,14 +506,24 @@ public class PocketManager
 		DimensionManager.registerDimension(dimensionID, properties.PocketProviderID);
 		return registerDimension(dimensionID, (InnerDimData) parent, true, isDungeon);
 	}
-
+	/**
+	 * Registers a dimension with DD but NOT with forge.
+	 * @param dimensionID
+	 * @param parent
+	 * @param isPocket
+	 * @param isDungeon
+	 * @return
+	 */
 	private static NewDimData registerDimension(int dimensionID, InnerDimData parent, boolean isPocket, boolean isDungeon)
-	{
+	{	
 		if (dimensionData.containsKey(dimensionID))
 		{
+			if(PocketManager.dimensionIDBlackList.contains(dimensionID))
+			{
+				throw new IllegalArgumentException("Cannot register a dimension with ID = " + dimensionID + " because it has been blacklisted.");
+			}
 			throw new IllegalArgumentException("Cannot register a dimension with ID = " + dimensionID + " because it has already been registered.");
 		}
-		//TODO blacklist stuff probably should happen here
 		InnerDimData dimension = new InnerDimData(dimensionID, parent, isPocket, isDungeon, linkWatcher);
 		dimensionData.put(dimensionID, dimension);
 		if (!dimension.isPocketDimension())
@@ -529,6 +538,7 @@ public class PocketManager
 	@SideOnly(Side.CLIENT)
 	private static NewDimData registerClientDimension(int dimensionID, int rootID)
 	{
+		System.out.println("Registered dim "+dimensionID+" on the client.");
 		// No need to raise events heres since this code should only run on the client side
 		// getDimensionData() always handles root dimensions properly, even if the weren't defined before
 
@@ -560,7 +570,7 @@ public class PocketManager
 			//Steven
 			DimensionManager.registerDimension(dimensionID, mod_pocketDim.properties.PocketProviderID);
 		}
-		return dimension;
+	return dimension;
 	}
 
 	public static NewDimData getDimensionData(World world)
@@ -579,6 +589,7 @@ public class PocketManager
 		if(PocketManager.dimensionData == null)
 		{
 			System.out.println("Something odd happend during shutdown");
+			return null;
 		}
 		NewDimData dimension = PocketManager.dimensionData.get(dimensionID);
 		if (dimension == null)
