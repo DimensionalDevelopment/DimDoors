@@ -20,7 +20,6 @@ public class PocketProvider extends WorldProvider
 {
 	private DDProperties properties;
 	private MonolithSpawner spawner;
-	@SuppressWarnings("unused") // ?
 	private IRenderHandler skyRenderer;
 
 	public PocketProvider()

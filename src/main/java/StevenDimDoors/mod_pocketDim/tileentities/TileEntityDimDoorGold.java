@@ -1,19 +1,14 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
-import java.awt.List;
-
-import StevenDimDoors.mod_pocketDim.IChunkLoader;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.NewDimData;
-import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.util.Point4D;
-import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
-import net.minecraft.block.Block;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
+import StevenDimDoors.mod_pocketDim.IChunkLoader;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
 
 public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLoader
 {
@@ -85,9 +80,6 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 				ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair((origin.getX()+xOffset >> 4)+chunkX, (origin.getZ()+zOffset >> 4)+chunkZ));
 			}
 		}
-	
-
-		
 	}
 
 	@Override
@@ -95,38 +87,5 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 	{
 		ForgeChunkManager.releaseTicket(chunkTicket);
 		super.invalidate();
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound nbt)
-	{ // this and write both call user, and super saves/reads all the same data. why override at all?
-		super.readFromNBT(nbt);
-		@SuppressWarnings("unused") // ???
-		int i = nbt.getInteger(("Size"));
-
-		try
-		{
-			this.openOrClosed = nbt.getBoolean("openOrClosed");
-			this.orientation = nbt.getInteger("orientation");
-			this.hasExit = nbt.getBoolean("hasExit");
-			this.isDungeonChainLink = nbt.getBoolean("isDungeonChainLink");
-		}
-		catch (Exception e) // ???
-		{
-
-		}
-	}
-
-	@Override
-	public void writeToNBT(NBTTagCompound nbt)
-	{
-		@SuppressWarnings("unused") // ?????
-		int i = 0;
-		super.writeToNBT(nbt);
-		
-		nbt.setBoolean("openOrClosed", this.openOrClosed);
-		nbt.setBoolean("hasExit", this.hasExit);
-		nbt.setInteger("orientation", this.orientation);
-		nbt.setBoolean("isDungeonChainLink", isDungeonChainLink);
 	}
 }

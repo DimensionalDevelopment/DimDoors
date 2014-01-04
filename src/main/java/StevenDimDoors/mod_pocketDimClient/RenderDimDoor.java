@@ -4,7 +4,6 @@ import java.nio.FloatBuffer;
 import java.util.Random;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -14,6 +13,9 @@ import org.lwjgl.opengl.GL11;
 
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -21,9 +23,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderDimDoor extends TileEntitySpecialRenderer
 {
-	FloatBuffer field_76908_a = GLAllocation.createDirectFloatBuffer(16);
-	private ResourceLocation riftPath= new ResourceLocation(mod_pocketDim.modid+":textures/other/RIFT.png");
-	private ResourceLocation warpPath= new ResourceLocation(mod_pocketDim.modid+":textures/other/WARP.png");
+	private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
+	private ResourceLocation riftPath= new ResourceLocation(mod_pocketDim.modid + ":textures/other/RIFT.png");
+	private ResourceLocation warpPath= new ResourceLocation(mod_pocketDim.modid + ":textures/other/WARP.png");
+
+	private static final int NETHER_DIMENSION_ID = -1;
+	private static DDProperties properties = null;
 
 	public RenderDimDoor()
 	{
@@ -31,13 +36,11 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 			properties = DDProperties.instance();
 	}
 
-	private static DDProperties properties = null;
-
 	/**
 	 * Renders the dimdoor.
 	 */
 	public void renderDimDoorTileEntity(TileEntityDimDoor tile, double x,
-			double y, double z, float par8)
+			double y, double z)
 	{
 		try
 		{
@@ -108,7 +111,6 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 			GL11.glTranslatef(0,
 					Minecraft.getSystemTime() % 200000L / 200000.0F,
 					0.0F);
-
 			GL11.glTranslatef(0, 0,
 					Minecraft.getSystemTime() % 200000L / 200000.0F);
 
@@ -186,17 +188,32 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 			GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 
 			GL11.glBegin(GL11.GL_QUADS);
-
-			float var21 = rand.nextFloat() * 0.5F + 0.1F;
-			float var22 = rand.nextFloat() * 0.4F + 0.4F;
-			float var23 = rand.nextFloat() * 0.6F + 0.5F;
-
-			if (count == 0)
+			
+			// Set the portal's color depending on whether it's in the Nether
+			float var21, var22, var23;
+			NewDimData dimension = PocketManager.getDimensionData(tile.worldObj);
+			if (dimension.root().id() == NETHER_DIMENSION_ID)
 			{
-				var23 = 1.0F;
-				var22 = 1.0F;
-				// yConverted = 1.0F;
+				var21 = rand.nextFloat() * 0.5F + 0.4F;
+				var22 = rand.nextFloat() * 0.05F;
+				var23 = rand.nextFloat() * 0.05F;
+				if (count == 0)
+				{
+					var21 = 1.0F;
+				}
 			}
+			else
+			{
+				var21 = rand.nextFloat() * 0.5F + 0.1F;
+				var22 = rand.nextFloat() * 0.4F + 0.4F;
+				var23 = rand.nextFloat() * 0.6F + 0.5F;
+				if (count == 0)
+				{
+					var23 = 1.0F;
+					var22 = 1.0F;
+				}
+			}
+			
 			GL11.glColor4d(var21 * var17, var22 * var17, var23 * var17, 1.0F);
 			if (tile.openOrClosed)
 			{
@@ -215,9 +232,8 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 					GL11.glVertex3d(x + 1, y + 1, z + .01);
 					GL11.glVertex3d(x + 1, y - 1, z + .01);
 					GL11.glVertex3d(x, y - 1, z + .01);
-
 					break;
-				case 2: //
+				case 2:
 					GL11.glVertex3d(x + .99, y + 1, z);
 					GL11.glVertex3d(x + .99, y + 1, z + 1.0D);
 					GL11.glVertex3d(x + .99, y - 1, z + 1.0D);
@@ -229,9 +245,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 					GL11.glVertex3d(x + 1, y + 1, z + .99);
 					GL11.glVertex3d(x, y + 1, z + .99);
 					break;
-				case 4://
-					// GL11.glTranslatef();
-
+				case 4:
 					GL11.glVertex3d(x + .15F, y - 1, z);
 					GL11.glVertex3d(x + .15, y - 1, z + 1.0D);
 					GL11.glVertex3d(x + .15, y + 1, z + 1.0D);
@@ -242,9 +256,8 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 					GL11.glVertex3d(x + 1, y + 1, z + .15);
 					GL11.glVertex3d(x + 1, y - 1, z + .15);
 					GL11.glVertex3d(x, y - 1, z + .15);
-
 					break;
-				case 6: //
+				case 6:
 					GL11.glVertex3d(x + .85, y + 1, z);
 					GL11.glVertex3d(x + .85, y + 1, z + 1.0D);
 					GL11.glVertex3d(x + .85, y - 1, z + 1.0D);
@@ -255,8 +268,6 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 					GL11.glVertex3d(x + 1, y - 1, z + .85);
 					GL11.glVertex3d(x + 1, y + 1, z + .85);
 					GL11.glVertex3d(x, y + 1, z + .85);
-					break;
-				default:
 					break;
 				}
 			}
@@ -275,22 +286,20 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 		GL11.glEnable(GL11.GL_LIGHTING);
 	}
 
-	private FloatBuffer getFloatBuffer(float par1, float par2, float par3,
-			float par4)
+	private FloatBuffer getFloatBuffer(float par1, float par2, float par3, float par4)
 	{
-		this.field_76908_a.clear();
-		this.field_76908_a.put(par1).put(par2).put(par3).put(par4);
-		this.field_76908_a.flip();
-		return this.field_76908_a;
+		buffer.clear();
+		buffer.put(par1).put(par2).put(par3).put(par4);
+		buffer.flip();
+		return buffer;
 	}
 
-	public void renderTileEntityAt(TileEntity par1TileEntity, double par2,
-			double par4, double par6, float par8)
+	@Override
+	public void renderTileEntityAt(TileEntity par1TileEntity, double par2, double par4, double par6, float par8)
 	{
 		if (properties.DoorRenderingEnabled)
 		{
-			this.renderDimDoorTileEntity((TileEntityDimDoor) par1TileEntity,
-					par2, par4, par6, par8);
+			renderDimDoorTileEntity((TileEntityDimDoor) par1TileEntity, par2, par4, par6);
 		}
 	}
 }

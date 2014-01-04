@@ -50,6 +50,8 @@ public class DungeonHelper
 	private static final String DUNGEON_CREATION_GUIDE_SOURCE_PATH = "/mods/DimDoors/text/How_to_add_dungeons.txt";
 	private static final String RUINS_PACK_PATH = "/schematics/ruins";
 	private static final String BUNDLED_RUINS_LIST_PATH = "/schematics/ruins.txt";
+	private static final String NETHER_PACK_PATH = "/schematics/nether";
+	private static final String BUNDLED_NETHER_LIST_PATH = "/schematics/nether.txt";
 	private static final String STANDARD_CONFIG_FILE_NAME = "rules.txt";
 	
 	private static final int NETHER_DIMENSION_ID = -1;
@@ -72,6 +74,7 @@ public class DungeonHelper
 	private ArrayList<DungeonData> registeredDungeons = new ArrayList<DungeonData>();
  
 	private DungeonPack RuinsPack;
+	private DungeonPack NetherPack;
 	private HashMap<String, DungeonPack> dungeonPackMapping = new HashMap<String, DungeonPack>();
 	private ArrayList<DungeonPack> dungeonPackList = new ArrayList<DungeonPack>();
 	
@@ -246,8 +249,7 @@ public class DungeonHelper
 		{
 			if (data.id() == NETHER_DIMENSION_ID)
 			{
-				//TODO: Change this to the nether-side pack later ^_^
-				pack = RuinsPack;
+				pack = NetherPack;
 			}
 			else
 			{
@@ -261,7 +263,7 @@ public class DungeonHelper
 	{
 		//Create a link above the specified position. Link to a new pocket dimension.
 		NewDimData dimension = PocketManager.getDimensionData(world);
-		DimLink link = dimension.createLink(x, y + 1, z, LinkTypes.POCKET,3);
+		DimLink link = dimension.createLink(x, y + 1, z, LinkTypes.POCKET, 3);
 		
 		//Place a Warp Door linked to that pocket
 		ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 3, mod_pocketDim.warpDoor);
@@ -434,6 +436,9 @@ public class DungeonHelper
 		registerBundledPack(BUNDLED_RUINS_LIST_PATH, RUINS_PACK_PATH, "Ruins", reader);
 		RuinsPack = getDungeonPack("Ruins");
 		
+		registerBundledPack(BUNDLED_NETHER_LIST_PATH, NETHER_PACK_PATH, "Nether", reader);
+		NetherPack = getDungeonPack("Nether");
+		
 		System.out.println("Finished registering bundled dungeon packs");
 	}
 	
@@ -497,7 +502,7 @@ public class DungeonHelper
 
 	public DungeonData selectDungeon(NewDimData dimension, Random random)
 	{
-		DungeonPack pack = getDimDungeonPack(dimension);
+		DungeonPack pack = getDimDungeonPack(dimension.parent());
 		DungeonData selection;
 		DungeonPackConfig config;
 		DungeonPack selectedPack;
