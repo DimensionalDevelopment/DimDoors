@@ -40,8 +40,6 @@ public class TileEntityDimDoor extends TileEntity
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		@SuppressWarnings("unused") // ???
-		int i = nbt.getInteger(("Size"));
 
 		try
 		{
@@ -60,8 +58,6 @@ public class TileEntityDimDoor extends TileEntity
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
-		@SuppressWarnings("unused") // ?????
-		int i = 0;
 		super.writeToNBT(nbt);
 		
 		nbt.setBoolean("openOrClosed", this.openOrClosed);

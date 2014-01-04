@@ -586,6 +586,7 @@ public class PocketManager
 		//Any pocket dimension must be listed with PocketManager to have a dimension ID
 		//assigned, so it's safe to assume that any unknown dimensions don't belong to us.
 		
+		//FIXME: What's the point of this condition? Most calls to this function will crash anyway! ~SenseiKiwi
 		if(PocketManager.dimensionData == null)
 		{
 			System.out.println("Something odd happend during shutdown");

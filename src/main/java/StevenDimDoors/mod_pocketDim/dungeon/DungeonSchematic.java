@@ -14,16 +14,15 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.schematic.CompoundFilter;
 import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
@@ -35,13 +34,14 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class DungeonSchematic extends Schematic {
 
-	private static final short MAX_VANILLA_BLOCK_ID = 158;
+	private static final short MAX_VANILLA_BLOCK_ID = 173;
 	private static final short STANDARD_FABRIC_OF_REALITY_ID = 1973;
 	private static final short STANDARD_ETERNAL_FABRIC_ID = 220;
 	private static final short STANDARD_WARP_DOOR_ID = 1975;
 	private static final short STANDARD_DIMENSIONAL_DOOR_ID = 1970;
 	private static final short MONOLITH_SPAWN_MARKER_ID = (short) Block.endPortalFrame.blockID;
 	private static final short EXIT_DOOR_MARKER_ID = (short) Block.sandStone.blockID;
+	private static final int NETHER_DIMENSION_ID = -1;
 	
 	private int orientation;
 	private Point3D entranceDoorLocation;
@@ -242,12 +242,12 @@ public class DungeonSchematic extends Schematic {
 		filler.apply(world, minCorner, maxCorner);
 		
 		//Set up entrance door rift
-		createEntranceReverseLink(dimension, pocketCenter, entryLink, world);
+		createEntranceReverseLink(world, dimension, pocketCenter, entryLink);
 		
 		//Set up link data for dimensional doors
 		for (Point3D location : dimensionalDoorLocations)
 		{
-			createDimensionalDoorLink(dimension, location, entranceDoorLocation, turnAngle, pocketCenter,world);
+			createDimensionalDoorLink(world, dimension, location, entranceDoorLocation, turnAngle, pocketCenter);
 		}
 		
 		//Set up link data for exit door
@@ -261,6 +261,16 @@ public class DungeonSchematic extends Schematic {
 		for (Point3D location : monolithSpawnLocations)
 		{
 			spawnMonolith(world, location, entranceDoorLocation, turnAngle, pocketCenter, canSpawn);
+		}
+		
+		// If this is a Nether dungeon, search for a sign near the entry door and write the dimension's depth.
+		// Checking if this is specifically a Nether pack dungeon is a bit tricky, so I'm going to use this
+		// approach to check - if the dungeon is rooted in the Nether, then it SHOULD be a Nether dungeon.
+		// This isn't necessarily true if someone uses dd-rift to spawn a dungeon, but it should work under
+		// normal use of the mod.
+		if (dimension.root().id() == NETHER_DIMENSION_ID)
+		{
+			writeDepthSign(world, pocketCenter, dimension.depth());
 		}
 	}
 	
@@ -289,15 +299,14 @@ public class DungeonSchematic extends Schematic {
 		}
 	}
 	
-	private static void createEntranceReverseLink(NewDimData dimension, Point3D pocketCenter, DimLink entryLink,World world)
+	private static void createEntranceReverseLink(World world, NewDimData dimension, Point3D pocketCenter, DimLink entryLink)
 	{
-		int orientation = world.getBlockMetadata(pocketCenter.getX(), pocketCenter.getY()-1, pocketCenter.getZ());
-		DimLink reverseLink = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), LinkTypes.REVERSE,orientation);
+		int orientation = world.getBlockMetadata(pocketCenter.getX(), pocketCenter.getY() - 1, pocketCenter.getZ());
+		DimLink reverseLink = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), LinkTypes.REVERSE, orientation);
 		Point4D destination = entryLink.source();
 		NewDimData prevDim = PocketManager.getDimensionData(destination.getDimension());
 		prevDim.setDestination(reverseLink, destination.getX(), destination.getY(), destination.getZ());
 		initDoorTileEntity(world, pocketCenter);
-
 	}
 	
 	private static void createExitDoorLink(World world, NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
@@ -305,7 +314,7 @@ public class DungeonSchematic extends Schematic {
 		//Transform the door's location to the pocket coordinate system
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
-		int orientation = world.getBlockMetadata(location.getX(), location.getY()-1, location.getZ());
+		int orientation = world.getBlockMetadata(location.getX(), location.getY() - 1, location.getZ());
 		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON_EXIT, orientation);
 		//Replace the sandstone block under the exit door with the same block as the one underneath it
 		int x = location.getX();
@@ -318,20 +327,17 @@ public class DungeonSchematic extends Schematic {
 			setBlockDirectly(world, x, y + 1, z, blockID, metadata);
 		}
 		initDoorTileEntity(world, location);
-
 	}
 	
-	private static void createDimensionalDoorLink(NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter,World world)
+	private static void createDimensionalDoorLink(World world, NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
 	{
 		//Transform the door's location to the pocket coordinate system
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
-		int orientation = world.getBlockMetadata(location.getX(), location.getY()-1, location.getZ());
+		int orientation = world.getBlockMetadata(location.getX(), location.getY() - 1, location.getZ());
 
 		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON, orientation);
 		initDoorTileEntity(world, location);
-
-		
 	}
 	
 	private static void spawnMonolith(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter, boolean canSpawn)
@@ -349,21 +355,49 @@ public class DungeonSchematic extends Schematic {
 			world.spawnEntityInWorld(mob);
 		}
 	}
+
 	private static void initDoorTileEntity(World world, Point3D point)
 	{
 		Block door = Block.blocksList[world.getBlockId(point.getX(), point.getY(), point.getZ())];
-		Block door2 = Block.blocksList[world.getBlockId(point.getX(), point.getY()-1, point.getZ())];
+		Block door2 = Block.blocksList[world.getBlockId(point.getX(), point.getY() - 1, point.getZ())];
 
-		if(door instanceof IDimDoor&&door2 instanceof IDimDoor)
+		if (door instanceof IDimDoor && door2 instanceof IDimDoor)
 		{
 			((IDimDoor) door).initDoorTE(world, point.getX(), point.getY(), point.getZ());
-			((IDimDoor) door).initDoorTE(world, point.getX(), point.getY()-1, point.getZ());
-
+			((IDimDoor) door).initDoorTE(world, point.getX(), point.getY() - 1, point.getZ());
 		}
 		else
 		{
 			throw new IllegalArgumentException("Tried to init a dim door TE on a block that isnt a Dim Door!!");
 		}
+	}
+	
+	private static void writeDepthSign(World world, Point3D pocketCenter, int depth)
+	{
+		final int SEARCH_RANGE = 5;
 		
+		int x, y, z, block;
+		int dx, dy, dz;
+		
+		for (dy = SEARCH_RANGE; dy >= -SEARCH_RANGE; dy--)
+		{
+			for (dz = -SEARCH_RANGE; dz <= SEARCH_RANGE; dz++)
+			{
+				for (dx = -SEARCH_RANGE; dx <= SEARCH_RANGE; dx++)
+				{
+					x = pocketCenter.getX() + dx;
+					y = pocketCenter.getY() + dy;
+					z = pocketCenter.getZ() + dz;
+					block = world.getBlockId(x, y, z);
+					if (block == Block.signWall.blockID || block == Block.signPost.blockID)
+					{
+						TileEntitySign signEntity = new TileEntitySign();
+						signEntity.signText[1] = "Level " + depth;
+						world.setBlockTileEntity(x, y, z, signEntity);
+						return;
+					}
+				}
+			}
+		}
 	}
 }

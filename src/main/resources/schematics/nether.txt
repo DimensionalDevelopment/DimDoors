@@ -1,0 +1,16 @@
+/schematics/nether/ComplexHall_SK-CourtyardAmbush_Open_100.schematic
+/schematics/nether/ComplexHall_SK-Intersection_Open_100.schematic
+/schematics/nether/ComplexHall_SK-SoulWastes_Open_100.schematic
+/schematics/nether/ComplexHall_SK-Starfall_Open_100.schematic
+/schematics/nether/ComplexHall_SK-TheCauldron_Open_100.schematic
+/schematics/nether/Maze_SK-BrimstoneMines_Open_80.schematic
+/schematics/nether/Maze_SK-QuartzfoldCave_Open_40.schematic
+/schematics/nether/Maze_SK-Tangle_Open_80.schematic
+/schematics/nether/SimpleHall_SK-AnvilValley_Open_100.schematic
+/schematics/nether/SimpleHall_SK-Arena_Open_100.schematic
+/schematics/nether/SimpleHall_SK-DarkPathLeft_Open_50.schematic
+/schematics/nether/SimpleHall_SK-DarkPathRight_Open_50.schematic
+/schematics/nether/SimpleHall_SK-DiamondRoom_Open_100.schematic
+/schematics/nether/SimpleHall_SK-LongBridge_Open_100.schematic
+/schematics/nether/SimpleHall_SK-SpiralStairsDown_Open_100.schematic
+/schematics/nether/SimpleHall_SK-TheFurnace_Open_100.schematic
