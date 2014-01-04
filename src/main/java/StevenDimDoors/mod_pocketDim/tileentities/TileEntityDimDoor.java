@@ -19,15 +19,14 @@ public class TileEntityDimDoor extends TileEntity
 	@Override
 	public boolean canUpdate()
 	{
-		return false;
+		return true;
 	}
 
 	@Override
 	public void updateEntity()
 	{ 
-		
 	}
-	
+	@Override
 	 public Packet getDescriptionPacket()
 	 {
 		 if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
