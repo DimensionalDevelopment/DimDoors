@@ -30,21 +30,24 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class TileEntityRift extends TileEntity
 {
+	private static final int ENDERMAN_SPAWNING_CHANCE = 1;
+	private static final int MAX_ENDERMAN_SPAWNING_CHANCE = 32;
+	
 	private static Random random = new Random();
 
-	public int xOffset=0;
-	public int yOffset=0;
-	public int zOffset=0;
-	public boolean hasGrownRifts=false;
-	public boolean shouldClose=false;
-	private int count=0;
+	public int xOffset = 0;
+	public int yOffset = 0;
+	public int zOffset = 0;
+	private boolean hasGrownRifts = false;
+	public boolean shouldClose = false;
+	private int count = 0;
 	private int count2 = 0;
-	public int age = 0;
+	private int age = 0;
 	private boolean hasUpdated = false;
 
 	public HashMap<Integer, double[]> renderingCenters = new HashMap<Integer, double[]>();
 	public DimLink nearestRiftData;
-	public int spawnedEndermenID=0;
+	public int spawnedEndermenID = 0;
 	DataWatcher watcher = new DataWatcher();
 
 	@Override
@@ -68,10 +71,6 @@ public class TileEntityRift extends TileEntity
 			return;
 		}
 
-
-
-
-
 		//The code for the new rift rendering hooks in here, as well as in the ClientProxy to bind the TESR to the rift.
 		//It is inactive for now.
 		/**
@@ -89,7 +88,7 @@ public class TileEntityRift extends TileEntity
 		{
 			this.spawnEndermen();
 			this.calculateOldParticleOffset(); //this also calculates the distance for the particle stuff.
-			if (mod_pocketDim.properties.RiftSpreadEnabled&&!this.hasGrownRifts) //only grow if rifts are nearby
+			if (mod_pocketDim.properties.RiftSpreadEnabled && !this.hasGrownRifts) //only grow if rifts are nearby
 			{
 				this.grow();
 			}
@@ -108,32 +107,28 @@ public class TileEntityRift extends TileEntity
 		return true;
 	}
 
-
-
-	public void clearBlocksOnRift()
+	private void clearBlocksOnRift()
 	{
 		//clears blocks for the new rending effect
-
 		for(double[] coord: this.renderingCenters.values())
 		{
 			int x = MathHelper.floor_double(coord[0]+.5);
 			int y = MathHelper.floor_double(coord[1]+.5);
 			int z = MathHelper.floor_double(coord[2]+.5);
 
-			if (!mod_pocketDim.blockRift.isBlockImmune(worldObj,this.xCoord+x, this.yCoord+y, this.zCoord+z))//right side
+			if (!mod_pocketDim.blockRift.isBlockImmune(worldObj,this.xCoord + x, this.yCoord + y, this.zCoord + z)) //right side
 			{
 				worldObj.setBlockToAir(this.xCoord+x, this.yCoord+y, this.zCoord+z);
 			}
 
-			if (!mod_pocketDim.blockRift.isBlockImmune(worldObj,this.xCoord-x, this.yCoord-y, this.zCoord-z))//left side
+			if (!mod_pocketDim.blockRift.isBlockImmune(worldObj,this.xCoord - x, this.yCoord - y, this.zCoord - z)) //left side
 			{
 				worldObj.setBlockToAir(this.xCoord-x, this.yCoord-y, this.zCoord-z);
 			}
-
 		}
 	}
 
-	public void spawnEndermen()
+	private void spawnEndermen()
 	{
 		if (worldObj.isRemote)
 		{
@@ -150,10 +145,9 @@ public class TileEntityRift extends TileEntity
 		}
 
 		//enderman will only spawn in groups of rifts
-		nearestRiftData = dimension.findNearestRift(worldObj, 5, xCoord, yCoord, zCoord);
-		if (nearestRiftData != null)
+		if (random.nextInt(MAX_ENDERMAN_SPAWNING_CHANCE) < ENDERMAN_SPAWNING_CHANCE)
 		{
-			if (random.nextInt(30) == 0)
+			if (isNearRift())
 			{
 				List<Entity> list =  worldObj.getEntitiesWithinAABB(EntityEnderman.class,
 						AxisAlignedBB.getBoundingBox(xCoord - 9, yCoord - 3, zCoord - 9, xCoord + 9, yCoord + 3, zCoord + 9));
@@ -168,7 +162,13 @@ public class TileEntityRift extends TileEntity
 		}
 	}
 
-	public void closeRift()
+	public boolean isNearRift() 
+	{
+		nearestRiftData = PocketManager.getDimensionData(worldObj).findNearestRift(this.worldObj, 5, xCoord, yCoord, zCoord);
+		return (nearestRiftData != null);
+	}
+
+	private void closeRift()
 	{
 		NewDimData dimension = PocketManager.getDimensionData(worldObj);
 		if (count2 > 20 && count2 < 22)
@@ -206,7 +206,7 @@ public class TileEntityRift extends TileEntity
 
 	}
 
-	public void calculateOldParticleOffset()
+	private void calculateOldParticleOffset()
 	{
 		nearestRiftData = PocketManager.getDimensionData(worldObj).findNearestRift(worldObj, 5, xCoord, yCoord, zCoord);
 		if (nearestRiftData != null) 
@@ -226,7 +226,7 @@ public class TileEntityRift extends TileEntity
 		this.onInventoryChanged();
 	}
 
-	public void calculateNextRenderQuad(float age, Random rand)
+	private void calculateNextRenderQuad(float age, Random rand)
 	{
 		int maxSize = MathHelper.floor_double((Math.log(Math.pow(age+1,2))));
 		int iteration=0;
@@ -294,13 +294,13 @@ public class TileEntityRift extends TileEntity
 
 	public void grow()
 	{
-		if(worldObj.isRemote||this.hasGrownRifts||random.nextInt(3)==0)
+		if (worldObj.isRemote || this.hasGrownRifts || random.nextInt(3) == 0)
 		{
 			return;
 		}
 
 		NewDimData dimension = PocketManager.getDimensionData(worldObj);
-		if(dimension.findNearestRift(this.worldObj, 5, xCoord, yCoord, zCoord)==null)
+		if (dimension.findNearestRift(this.worldObj, 5, xCoord, yCoord, zCoord) == null)
 		{
 			return;
 		}
@@ -322,9 +322,6 @@ public class TileEntityRift extends TileEntity
 		}
 		if (growCount < 100)
 		{
-
-
-
 			//look to see if there is a block inbetween the rift and the spread location that should interrupt the spread. With this change, 
 			//rifts cannot spread if there are any blocks nearby that are invularble to rift destruction
 			//TODO- make this look for blocks breaking line of sight with the rift
@@ -360,7 +357,6 @@ public class TileEntityRift extends TileEntity
 		}
 	}
 
-
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
@@ -395,7 +391,7 @@ public class TileEntityRift extends TileEntity
 
 	public Packet getDescriptionPacket()
 	{
-		if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
+		if (PocketManager.getLink(xCoord, yCoord, zCoord, worldObj) != null)
 		{
 			return ServerPacketHandler.createLinkPacket(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj).link());
 		}
@@ -406,15 +402,5 @@ public class TileEntityRift extends TileEntity
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
 	{
 		readFromNBT(pkt.data);
-	}
-
-	public boolean isNearRift() 
-	{
-		if(PocketManager.getDimensionData(worldObj).findNearestRift(this.worldObj, 5, xCoord, yCoord, zCoord)==null)
-		{
-			return false;
-		}
-
-		return true;
 	}
 }
