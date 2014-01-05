@@ -43,7 +43,6 @@ public class TileEntityRift extends TileEntity
 	private boolean hasUpdated = false;
 
 	public HashMap<Integer, double[]> renderingCenters = new HashMap<Integer, double[]>();
-	@SuppressWarnings("deprecation")
 	public DimLink nearestRiftData;
 	public int spawnedEndermenID=0;
 	DataWatcher watcher = new DataWatcher();
@@ -156,7 +155,6 @@ public class TileEntityRift extends TileEntity
 		{
 			if (random.nextInt(30) == 0)
 			{
-				@SuppressWarnings("unchecked")
 				List<Entity> list =  worldObj.getEntitiesWithinAABB(EntityEnderman.class,
 						AxisAlignedBB.getBoundingBox(xCoord - 9, yCoord - 3, zCoord - 9, xCoord + 9, yCoord + 3, zCoord + 9));
 
