@@ -204,7 +204,7 @@ public class BlockRift extends BlockContainer
 				if (!isBlockImmune(world, current.getX(), current.getY(), current.getZ()) &&
 						random.nextInt(MAX_BLOCK_DESTRUCTION_CHANCE) < BLOCK_DESTRUCTION_CHANCE)
 				{
-					world.setBlockToAir(current.getX(), current.getY(), current.getZ());
+					world.destroyBlock(current.getX(), current.getY(), current.getZ(), false);
 				}
 			}
 		}
