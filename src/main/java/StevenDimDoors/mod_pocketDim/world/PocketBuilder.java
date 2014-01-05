@@ -116,7 +116,7 @@ public class PocketBuilder
 		}
 	}
 
-	private static boolean buildDungeonPocket(DungeonData dungeon, NewDimData dimension, DimLink link, DungeonSchematic schematic,World world, DDProperties properties)
+	private static boolean buildDungeonPocket(DungeonData dungeon, NewDimData dimension, DimLink link, DungeonSchematic schematic, World world, DDProperties properties)
 	{
 		//Calculate the destination point
 		DungeonPackConfig packConfig = dungeon.dungeonType().Owner != null ? dungeon.dungeonType().Owner.getConfig() : null;
@@ -145,7 +145,7 @@ public class PocketBuilder
 		return true;    
 	}
 
-	public static boolean generateSelectedDungeonPocket(DimLink link, DDProperties properties,DungeonData data)
+	public static boolean generateSelectedDungeonPocket(DimLink link, DDProperties properties, DungeonData data)
 	{
 		if (link == null)
 		{
@@ -183,7 +183,7 @@ public class PocketBuilder
 			System.err.println("Could not select a dungeon for generation!");
 			return false;
 		}
-		schematic = loadAndValidateDungeon(dungeon,properties);
+		schematic = loadAndValidateDungeon(dungeon, properties);
 
 		return PocketBuilder.buildDungeonPocket(dungeon, dimension, link, schematic, world, properties);
 
