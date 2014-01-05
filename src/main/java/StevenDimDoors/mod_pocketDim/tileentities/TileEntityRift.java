@@ -67,10 +67,10 @@ public class TileEntityRift extends TileEntity
 			this.invalidate();
 			return;
 		}
-		
 
-	
-		
+
+
+
 
 		//The code for the new rift rendering hooks in here, as well as in the ClientProxy to bind the TESR to the rift.
 		//It is inactive for now.
@@ -107,8 +107,8 @@ public class TileEntityRift extends TileEntity
 	{
 		return true;
 	}
-	
-	
+
+
 
 	public void clearBlocksOnRift()
 	{
@@ -186,7 +186,7 @@ public class TileEntityRift extends TileEntity
 						rift.onInventoryChanged();
 					}
 				}
-				
+
 			}
 		}
 		if (count2 > 40)
@@ -203,7 +203,7 @@ public class TileEntityRift extends TileEntity
 			}	
 		}
 		count2++; 
-	
+
 	}
 
 	public void calculateOldParticleOffset()
@@ -225,7 +225,7 @@ public class TileEntityRift extends TileEntity
 		}
 		this.onInventoryChanged();
 	}
-	
+
 	public void calculateNextRenderQuad(float age, Random rand)
 	{
 		int maxSize = MathHelper.floor_double((Math.log(Math.pow(age+1,2))));
@@ -282,7 +282,7 @@ public class TileEntityRift extends TileEntity
 	{
 		return pass == 1;
 	}
-	
+
 	public int countParents(DimLink link)
 	{
 		if(link.parent()!=null)
@@ -291,14 +291,14 @@ public class TileEntityRift extends TileEntity
 		}
 		return 1;
 	}
-	
+
 	public void grow()
 	{
 		if(worldObj.isRemote||this.hasGrownRifts||random.nextInt(3)==0)
 		{
 			return;
 		}
-		
+
 		NewDimData dimension = PocketManager.getDimensionData(worldObj);
 		if(dimension.findNearestRift(this.worldObj, 5, xCoord, yCoord, zCoord)==null)
 		{
@@ -306,60 +306,60 @@ public class TileEntityRift extends TileEntity
 		}
 		int growCount=0;
 		DimLink link = dimension.getLink(xCoord, yCoord, zCoord);
-		
-			int x=0,y=0,z=0;
-			while(growCount<100)
-			{
-				growCount++;
-				x=xCoord+(1-(random.nextInt(2)*2)*random.nextInt(6));
-				y=yCoord+(1-(random.nextInt(2)*2)*random.nextInt(4));
-				z=zCoord+(1-(random.nextInt(2)*2)*random.nextInt(6));
-				if(worldObj.isAirBlock(x, y, z))
-				{
-					break;
-				}
 
-			}
-			if (growCount < 100)
+		int x=0,y=0,z=0;
+		while(growCount<100)
+		{
+			growCount++;
+			x=xCoord+(1-(random.nextInt(2)*2)*random.nextInt(6));
+			y=yCoord+(1-(random.nextInt(2)*2)*random.nextInt(4));
+			z=zCoord+(1-(random.nextInt(2)*2)*random.nextInt(6));
+			if(worldObj.isAirBlock(x, y, z))
 			{
-				
-				
-				
-				//look to see if there is a block inbetween the rift and the spread location that should interrupt the spread. With this change, 
-				//rifts cannot spread if there are any blocks nearby that are invularble to rift destruction
-				//TODO- make this look for blocks breaking line of sight with the rift
-				if (link != null)
+				break;
+			}
+
+		}
+		if (growCount < 100)
+		{
+
+
+
+			//look to see if there is a block inbetween the rift and the spread location that should interrupt the spread. With this change, 
+			//rifts cannot spread if there are any blocks nearby that are invularble to rift destruction
+			//TODO- make this look for blocks breaking line of sight with the rift
+			if (link != null)
+			{
+				if ((this.countParents(link)<4))
 				{
-					if ((this.countParents(link)<4))
+					MovingObjectPosition hit =  this.worldObj.clip(this.worldObj.getWorldVec3Pool().getVecFromPool(this.xCoord,this.yCoord,this.zCoord), this.worldObj.getWorldVec3Pool().getVecFromPool(x,y,z),false);
+					if(hit!=null)
 					{
-						MovingObjectPosition hit =  this.worldObj.clip(this.worldObj.getWorldVec3Pool().getVecFromPool(this.xCoord,this.yCoord,this.zCoord), this.worldObj.getWorldVec3Pool().getVecFromPool(x,y,z),false);
-						if(hit!=null)
+
+						if(mod_pocketDim.blockRift.isBlockImmune(this.worldObj,hit.blockX,hit.blockY,hit.blockZ))
 						{
-							
-							if(mod_pocketDim.blockRift.isBlockImmune(this.worldObj,hit.blockX,hit.blockY,hit.blockZ))
-							{
-								System.out.println(Block.blocksList[this.worldObj.getBlockId(hit.blockX,hit.blockY,hit.blockZ)].getLocalizedName()+" HIT");
+							System.out.println(Block.blocksList[this.worldObj.getBlockId(hit.blockX,hit.blockY,hit.blockZ)].getLocalizedName()+" HIT");
 
-								return;
-							}
-							System.out.println(Block.blocksList[this.worldObj.getBlockId(hit.blockX,hit.blockY,hit.blockZ)].getLocalizedName());
-							hit =  this.worldObj.clip(this.worldObj.getWorldVec3Pool().getVecFromPool(this.xCoord,this.yCoord,this.zCoord), this.worldObj.getWorldVec3Pool().getVecFromPool(x,y,z),false);
-							System.out.println(Block.blocksList[this.worldObj.getBlockId(hit.blockX,hit.blockY,hit.blockZ)].getLocalizedName());
-
+							return;
 						}
-						
-						dimension.createChildLink(x, y, z, link);
-						this.hasGrownRifts=true;
+						System.out.println(Block.blocksList[this.worldObj.getBlockId(hit.blockX,hit.blockY,hit.blockZ)].getLocalizedName());
+						hit =  this.worldObj.clip(this.worldObj.getWorldVec3Pool().getVecFromPool(this.xCoord,this.yCoord,this.zCoord), this.worldObj.getWorldVec3Pool().getVecFromPool(x,y,z),false);
+						System.out.println(Block.blocksList[this.worldObj.getBlockId(hit.blockX,hit.blockY,hit.blockZ)].getLocalizedName());
+
 					}
-					else
-					{
-						System.out.println("allDone");
-						this.hasGrownRifts=true;
-					}
+
+					dimension.createChildLink(x, y, z, link);
+					this.hasGrownRifts=true;
+				}
+				else
+				{
+					System.out.println("allDone");
+					this.hasGrownRifts=true;
 				}
 			}
+		}
 	}
-	
+
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)
@@ -393,14 +393,14 @@ public class TileEntityRift extends TileEntity
 		nbt.setInteger("spawnedEndermenID", this.spawnedEndermenID);
 	}
 
-	 public Packet getDescriptionPacket()
-	 {
-		 if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
-		 {
-			 return ServerPacketHandler.createLinkPacket(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj).link());
-		 }
-		 return null;
-	 }
+	public Packet getDescriptionPacket()
+	{
+		if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
+		{
+			return ServerPacketHandler.createLinkPacket(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj).link());
+		}
+		return null;
+	}
 
 	@Override
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
@@ -414,7 +414,7 @@ public class TileEntityRift extends TileEntity
 		{
 			return false;
 		}
-		
+
 		return true;
 	}
 }
