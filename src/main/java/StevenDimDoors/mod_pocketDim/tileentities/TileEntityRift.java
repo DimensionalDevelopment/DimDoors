@@ -21,6 +21,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
@@ -30,25 +31,27 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class TileEntityRift extends TileEntity
 {
+	private static final int MAX_SPREAD_ATTEMPTS = 3;
+	private static final int MAX_SEARCH_ATTEMPTS = 50;
+	private static final int MAX_ANCESTOR_LINKS = 3;
 	private static final int ENDERMAN_SPAWNING_CHANCE = 1;
 	private static final int MAX_ENDERMAN_SPAWNING_CHANCE = 32;
 	
 	private static Random random = new Random();
 
+	private int age = 0;
+	private int count = 0;
+	private int count2 = 0;
 	public int xOffset = 0;
 	public int yOffset = 0;
 	public int zOffset = 0;
-	private boolean hasGrownRifts = false;
 	public boolean shouldClose = false;
-	private int count = 0;
-	private int count2 = 0;
-	private int age = 0;
 	private boolean hasUpdated = false;
+	private boolean hasGrownRifts = false;
 
-	public HashMap<Integer, double[]> renderingCenters = new HashMap<Integer, double[]>();
 	public DimLink nearestRiftData;
 	public int spawnedEndermenID = 0;
-	DataWatcher watcher = new DataWatcher();
+	public HashMap<Integer, double[]> renderingCenters = new HashMap<Integer, double[]>();
 
 	@Override
 	public void updateEntity() 
@@ -88,14 +91,12 @@ public class TileEntityRift extends TileEntity
 		{
 			this.spawnEndermen();
 			this.calculateOldParticleOffset(); //this also calculates the distance for the particle stuff.
-			if (mod_pocketDim.properties.RiftSpreadEnabled && !this.hasGrownRifts) //only grow if rifts are nearby
-			{
-				this.grow();
-			}
+			this.grow(mod_pocketDim.properties);
 			count = 0;
 		}
-
-		if (this.shouldClose) //Determines if rift should render white closing particles and spread closing effect to other rifts nearby
+		
+		//Determines if rift should render white closing particles and spread closing effect to other rifts nearby
+		if (this.shouldClose)
 		{
 			closeRift();
 		}
@@ -110,20 +111,21 @@ public class TileEntityRift extends TileEntity
 	private void clearBlocksOnRift()
 	{
 		//clears blocks for the new rending effect
-		for(double[] coord: this.renderingCenters.values())
+		for (double[] coord : this.renderingCenters.values())
 		{
-			int x = MathHelper.floor_double(coord[0]+.5);
-			int y = MathHelper.floor_double(coord[1]+.5);
-			int z = MathHelper.floor_double(coord[2]+.5);
-
-			if (!mod_pocketDim.blockRift.isBlockImmune(worldObj,this.xCoord + x, this.yCoord + y, this.zCoord + z)) //right side
+			int x = MathHelper.floor_double(coord[0] + 0.5);
+			int y = MathHelper.floor_double(coord[1] + 0.5);
+			int z = MathHelper.floor_double(coord[2] + 0.5);
+			
+			// Right side
+			if (!mod_pocketDim.blockRift.isBlockImmune(worldObj, this.xCoord + x, this.yCoord + y, this.zCoord + z))
 			{
-				worldObj.setBlockToAir(this.xCoord+x, this.yCoord+y, this.zCoord+z);
+				worldObj.setBlockToAir(this.xCoord + x, this.yCoord + y, this.zCoord + z);
 			}
-
-			if (!mod_pocketDim.blockRift.isBlockImmune(worldObj,this.xCoord - x, this.yCoord - y, this.zCoord - z)) //left side
+			// Left side
+			if (!mod_pocketDim.blockRift.isBlockImmune(worldObj, this.xCoord - x, this.yCoord - y, this.zCoord - z))
 			{
-				worldObj.setBlockToAir(this.xCoord-x, this.yCoord-y, this.zCoord-z);
+				worldObj.setBlockToAir(this.xCoord - x, this.yCoord - y, this.zCoord - z);
 			}
 		}
 	}
@@ -147,7 +149,7 @@ public class TileEntityRift extends TileEntity
 		//enderman will only spawn in groups of rifts
 		if (random.nextInt(MAX_ENDERMAN_SPAWNING_CHANCE) < ENDERMAN_SPAWNING_CHANCE)
 		{
-			if (isNearRift())
+			if (updateNearestRift())
 			{
 				List<Entity> list =  worldObj.getEntitiesWithinAABB(EntityEnderman.class,
 						AxisAlignedBB.getBoundingBox(xCoord - 9, yCoord - 3, zCoord - 9, xCoord + 9, yCoord + 3, zCoord + 9));
@@ -161,8 +163,8 @@ public class TileEntityRift extends TileEntity
 			}
 		}
 	}
-
-	public boolean isNearRift() 
+	
+	public boolean updateNearestRift()
 	{
 		nearestRiftData = PocketManager.getDimensionData(worldObj).findNearestRift(this.worldObj, 5, xCoord, yCoord, zCoord);
 		return (nearestRiftData != null);
@@ -208,7 +210,7 @@ public class TileEntityRift extends TileEntity
 
 	private void calculateOldParticleOffset()
 	{
-		nearestRiftData = PocketManager.getDimensionData(worldObj).findNearestRift(worldObj, 5, xCoord, yCoord, zCoord);
+		updateNearestRift();
 		if (nearestRiftData != null) 
 		{
 			Point4D location = nearestRiftData.source();
@@ -283,75 +285,64 @@ public class TileEntityRift extends TileEntity
 		return pass == 1;
 	}
 
-	public int countParents(DimLink link)
+	public int countAncestorLinks(DimLink link)
 	{
-		if(link.parent()!=null)
+		if (link.parent() != null)
 		{
-			return 1 + countParents(link.parent());
+			return countAncestorLinks(link.parent()) + 1;
 		}
-		return 1;
+		else
+		{
+			return 0;
+		}
 	}
 
-	public void grow()
+	public void grow(DDProperties properties)
 	{
-		if (worldObj.isRemote || this.hasGrownRifts || random.nextInt(3) == 0)
+		if (worldObj.isRemote || hasGrownRifts || !properties.RiftSpreadEnabled || random.nextInt(3) == 0)
 		{
 			return;
 		}
 
 		NewDimData dimension = PocketManager.getDimensionData(worldObj);
-		if (dimension.findNearestRift(this.worldObj, 5, xCoord, yCoord, zCoord) == null)
+		DimLink link = dimension.getLink(xCoord, yCoord, zCoord);
+		
+		if (countAncestorLinks(link) > MAX_ANCESTOR_LINKS)
 		{
 			return;
 		}
-		int growCount=0;
-		DimLink link = dimension.getLink(xCoord, yCoord, zCoord);
-
-		int x=0,y=0,z=0;
-		while(growCount<100)
+		
+		//FIXME: This condition would prevent people from creating rooms of densely packed rifts... ~SenseiKiwi
+		if (updateNearestRift())
 		{
-			growCount++;
-			x=xCoord+(1-(random.nextInt(2)*2)*random.nextInt(6));
-			y=yCoord+(1-(random.nextInt(2)*2)*random.nextInt(4));
-			z=zCoord+(1-(random.nextInt(2)*2)*random.nextInt(6));
-			if(worldObj.isAirBlock(x, y, z))
-			{
-				break;
-			}
-
+			return;
 		}
-		if (growCount < 100)
+
+		int x, y, z;
+		int spreadAttempts = 0;
+		for (int searchAttempts = 0; searchAttempts < MAX_SEARCH_ATTEMPTS; searchAttempts++)
 		{
-			//look to see if there is a block inbetween the rift and the spread location that should interrupt the spread. With this change, 
-			//rifts cannot spread if there are any blocks nearby that are invularble to rift destruction
-			//TODO- make this look for blocks breaking line of sight with the rift
-			if (link != null)
+			x = xCoord + MathHelper.getRandomIntegerInRange(random, -6, 6);
+			y = yCoord + MathHelper.getRandomIntegerInRange(random, -4, 4);
+			z = zCoord + MathHelper.getRandomIntegerInRange(random, -6, 6);
+			
+			if (y >= 0 && y < worldObj.getActualHeight() && worldObj.isAirBlock(x, y, z))
 			{
-				if ((this.countParents(link)<4))
+				Vec3 position = worldObj.getWorldVec3Pool().getVecFromPool(xCoord, yCoord, zCoord);
+				Vec3 spreadTarget = worldObj.getWorldVec3Pool().getVecFromPool(x, y, z);
+				MovingObjectPosition hit =  worldObj.clip(position, spreadTarget, false);
+				if (hit == null || !mod_pocketDim.blockRift.isBlockImmune(worldObj, hit.blockX, hit.blockY, hit.blockZ))
 				{
-					MovingObjectPosition hit =  this.worldObj.clip(this.worldObj.getWorldVec3Pool().getVecFromPool(this.xCoord,this.yCoord,this.zCoord), this.worldObj.getWorldVec3Pool().getVecFromPool(x,y,z),false);
-					if(hit!=null)
-					{
-
-						if(mod_pocketDim.blockRift.isBlockImmune(this.worldObj,hit.blockX,hit.blockY,hit.blockZ))
-						{
-							System.out.println(Block.blocksList[this.worldObj.getBlockId(hit.blockX,hit.blockY,hit.blockZ)].getLocalizedName()+" HIT");
-
-							return;
-						}
-						System.out.println(Block.blocksList[this.worldObj.getBlockId(hit.blockX,hit.blockY,hit.blockZ)].getLocalizedName());
-						hit =  this.worldObj.clip(this.worldObj.getWorldVec3Pool().getVecFromPool(this.xCoord,this.yCoord,this.zCoord), this.worldObj.getWorldVec3Pool().getVecFromPool(x,y,z),false);
-						System.out.println(Block.blocksList[this.worldObj.getBlockId(hit.blockX,hit.blockY,hit.blockZ)].getLocalizedName());
-
-					}
-
 					dimension.createChildLink(x, y, z, link);
-					this.hasGrownRifts=true;
+					hasGrownRifts = true;
 				}
 				else
 				{
-					System.out.println("allDone");
-					this.hasGrownRifts=true;
+					spreadAttempts++;
+					if (spreadAttempts >= MAX_SPREAD_ATTEMPTS)
+					{
+						break;
+					}
 				}
 			}
 		}
@@ -361,23 +352,22 @@ public class TileEntityRift extends TileEntity
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
-		this.renderingCenters= new HashMap<Integer, double[]>();
-		this.count=nbt.getInteger("count");
-		this.count2=nbt.getInteger("count2");
+		this.renderingCenters = new HashMap<Integer, double[]>();
+		this.count = nbt.getInteger("count");
+		this.count2 = nbt.getInteger("count2");
 		this.xOffset = nbt.getInteger("xOffset");
 		this.yOffset = nbt.getInteger("yOffset");
 		this.zOffset = nbt.getInteger("zOffset");
-		this.hasGrownRifts =nbt.getBoolean("grownRifts");
-		this.age=nbt.getInteger("age");
-		this.shouldClose=nbt.getBoolean("shouldClose");
+		this.hasGrownRifts = nbt.getBoolean("grownRifts");
+		this.age = nbt.getInteger("age");
+		this.shouldClose = nbt.getBoolean("shouldClose");
 		this.spawnedEndermenID = nbt.getInteger("spawnedEndermenID");
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbt)
 	{
-		super.writeToNBT(nbt);      
-		nbt.setInteger("hashMapSize", this.renderingCenters.size());
+		super.writeToNBT(nbt);
 		nbt.setInteger("age", this.age);
 		nbt.setInteger("count", this.count);
 		nbt.setInteger("count2", this.count2);
