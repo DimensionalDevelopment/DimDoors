@@ -68,7 +68,7 @@ public class DungeonSchematic extends Schematic {
 	
 	public Point3D getEntranceDoorLocation()
 	{
-		return entranceDoorLocation.clone();
+		return (entranceDoorLocation != null) ? entranceDoorLocation.clone() : null;
 	}
 	
 	private DungeonSchematic()
