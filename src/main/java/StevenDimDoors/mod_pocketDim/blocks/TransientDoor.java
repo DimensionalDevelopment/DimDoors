@@ -15,7 +15,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-@SuppressWarnings("deprecation")
 public class TransientDoor extends BaseDimDoor
 {
 	public TransientDoor(int blockID, Material material, DDProperties properties) 

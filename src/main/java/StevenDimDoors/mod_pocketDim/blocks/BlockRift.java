@@ -8,6 +8,7 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.tileentity.TileEntity;
@@ -28,7 +29,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockRift extends BlockContainer
+public class BlockRift extends Block implements ITileEntityProvider
 {
 	private static final float MIN_IMMUNE_HARDNESS = 200.0F;
 	private static final int BLOCK_DESTRUCTION_RANGE = 4;
@@ -107,7 +108,6 @@ public class BlockRift extends BlockContainer
 	@Override
 	public boolean canCollideCheck(int par1, boolean par2)
 	{
-
 		return par2;
 	}
 
@@ -125,11 +125,10 @@ public class BlockRift extends BlockContainer
 	@Override
 	public int getRenderType()
 	{
-		if(mod_pocketDim.isPlayerWearingGoogles)
+		if (mod_pocketDim.isPlayerWearingGoogles)
 		{
 			return 0;
 		}
-
 		return 8;
 	}
 
@@ -154,8 +153,6 @@ public class BlockRift extends BlockContainer
 		return null;
 	}
 	
-	
-	
 	//function that regulates how many blocks it eats/ how fast it eats them. 
 	@Override
 	public void updateTick(World world, int x, int y, int z, Random random)
@@ -166,12 +163,11 @@ public class BlockRift extends BlockContainer
 			//Randomly decide whether to search for blocks to destroy. This reduces the frequency of search operations,
 			//moderates performance impact, and controls the apparent speed of block destruction.
 			if (random.nextInt(MAX_BLOCK_SEARCH_CHANCE) < BLOCK_SEARCH_CHANCE &&
-					((TileEntityRift) world.getBlockTileEntity(x, y, z)).isNearRift() )
+					((TileEntityRift) world.getBlockTileEntity(x, y, z)).updateNearestRift() )
 			{
 				destroyNearbyBlocks(world, x, y, z, random);
 			}
 		}
-		
 	}
 	
 	private void destroyNearbyBlocks(World world, int x, int y, int z, Random random)
@@ -204,7 +200,7 @@ public class BlockRift extends BlockContainer
 				if (!isBlockImmune(world, current.getX(), current.getY(), current.getZ()) &&
 						random.nextInt(MAX_BLOCK_DESTRUCTION_CHANCE) < BLOCK_DESTRUCTION_CHANCE)
 				{
-					world.setBlockToAir(current.getX(), current.getY(), current.getZ());
+					world.destroyBlock(current.getX(), current.getY(), current.getZ(), false);
 				}
 			}
 		}
@@ -368,7 +364,7 @@ public class BlockRift extends BlockContainer
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World var1) 
+	public TileEntity createNewTileEntity(World world) 
 	{
 		return new TileEntityRift();
 	}

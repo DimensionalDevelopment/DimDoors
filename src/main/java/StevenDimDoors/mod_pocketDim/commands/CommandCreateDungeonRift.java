@@ -15,26 +15,26 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 
-@SuppressWarnings("deprecation")
 public class CommandCreateDungeonRift extends DDCommandBase
 {
 	private static CommandCreateDungeonRift instance = null;
-	
+
 	private CommandCreateDungeonRift()
 	{
 		super("dd-rift", "<dungeon name | 'list' | 'random'>");
 	}
-	
+
 	public static CommandCreateDungeonRift instance()
 	{
 		if (instance == null)
 			instance = new CommandCreateDungeonRift();
-		
+
 		return instance;
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
+	public String getCommandUsage(ICommandSender sender)
+	{
 		return "Usage: /dd-rift <dungeon name>\r\n" +
 				"       /dd-rift list\r\n" +
 				"       /dd-rift random";
@@ -45,7 +45,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 	{
 		NewDimData dimension;
 		DungeonHelper dungeonHelper = DungeonHelper.instance();
-		
+
 		if (sender.worldObj.isRemote)
 		{
 			return DDCommandResult.SUCCESS;
@@ -58,15 +58,15 @@ public class CommandCreateDungeonRift extends DDCommandBase
 		{
 			return DDCommandResult.TOO_MANY_ARGUMENTS;
 		}
-		
+
 		if (command[0].equals("list"))
 		{
 			Collection<String> dungeonNames = dungeonHelper.getDungeonNames();
 			for (String name : dungeonNames)
 			{
-				sendChat(sender,(name));
+				sendChat(sender, name);
 			}
-			sendChat(sender,(""));
+			sendChat(sender, "");
 		}
 		else
 		{
@@ -79,12 +79,12 @@ public class CommandCreateDungeonRift extends DDCommandBase
 
 			if (command[0].equals("random"))
 			{
-				
-				dimension = PocketManager.getDimensionData(sender.worldObj);
-				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON,orientation);
-				sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
 
-				sendChat(sender,("Created a rift to a random dungeon."));
+				dimension = PocketManager.getDimensionData(sender.worldObj);
+				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
+				sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID, 0, 3);
+
+				sendChat(sender, "Created a rift to a random dungeon.");
 			}
 			else
 			{
@@ -94,17 +94,17 @@ public class CommandCreateDungeonRift extends DDCommandBase
 					result = findDungeonByPartialName(command[0], dungeonHelper.getUntaggedDungeons());
 				}
 				//Check if we found any matches
-				 if (result != null)
-                 {
-                         //Create a rift to our selected dungeon and notify the player
-                         //TODO currently crashes, need to create the dimension first
-                         dimension = PocketManager.getDimensionData(sender.worldObj);
-                         link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON,orientation);
-                         PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result);
-                         
-                         sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID,0,3);
-     					sendChat(sender,("Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ")."));
-                 }
+				if (result != null)
+				{
+					//Create a rift to our selected dungeon and notify the player
+					//TODO currently crashes, need to create the dimension first
+					dimension = PocketManager.getDimensionData(sender.worldObj);
+					link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
+					PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result);
+
+					sender.worldObj.setBlock(x, y + 1, z, mod_pocketDim.blockRift.blockID, 0, 3);
+					sendChat(sender, "Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
+				}
 				else
 				{
 					//No matches!
@@ -114,7 +114,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 		}
 		return DDCommandResult.SUCCESS;
 	}
-	
+
 	private DungeonData findDungeonByPartialName(String query, Collection<DungeonData> dungeons)
 	{
 		//Search for the shortest dungeon name that contains the lowercase query string.
@@ -122,12 +122,12 @@ public class CommandCreateDungeonRift extends DDCommandBase
 		String normalQuery = query.toLowerCase();
 		DungeonData bestMatch = null;
 		int matchLength = Integer.MAX_VALUE;
-		
+
 		for (DungeonData dungeon : dungeons)
 		{
 			//We need to extract the file's name. Comparing against schematicPath could
 			//yield false matches if the query string is contained within the path.
-			
+
 			dungeonName = dungeon.schematicName().toLowerCase();
 			if (dungeonName.length() < matchLength && dungeonName.contains(normalQuery))
 			{
