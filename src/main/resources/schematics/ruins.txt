@@ -41,6 +41,7 @@
 /schematics/ruins/Hub_SK-Claustrophobia_Open_40.schematic
 /schematics/ruins/Hub_SK-FractalCage_Open_40.schematic
 /schematics/ruins/Hub_SK-HeartOfDisorder_Open_50.schematic
+/schematics/ruins/Hub_SK-RandomSnow_Open_75.schematic
 /schematics/ruins/Hub_SK-RandomSwamp_Open_75.schematic
 /schematics/ruins/Hub_SK-TheNexus_Open_40.schematic
 /schematics/ruins/maze_smallMaze1_closed_100.schematic
