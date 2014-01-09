@@ -30,6 +30,7 @@
 /schematics/ruins/deadEnd_tntTrapO_open_100.schematic
 /schematics/ruins/exit_exitCube_open_100.schematic
 /schematics/ruins/exit_lockingExitHall_closed_100.schematic
+/schematics/ruins/Exit_SK-LockingExitTrap_Closed_50.schematic
 /schematics/ruins/exit_smallExitPrison_open_100.schematic
 /schematics/ruins/hub_4WayBasicHall_closed_200.schematic
 /schematics/ruins/hub_4WayHallExit_closed_200.schematic
@@ -40,6 +41,7 @@
 /schematics/ruins/Hub_SK-Claustrophobia_Open_40.schematic
 /schematics/ruins/Hub_SK-FractalCage_Open_40.schematic
 /schematics/ruins/Hub_SK-HeartOfDisorder_Open_50.schematic
+/schematics/ruins/Hub_SK-RandomSwamp_Open_75.schematic
 /schematics/ruins/Hub_SK-TheNexus_Open_40.schematic
 /schematics/ruins/maze_smallMaze1_closed_100.schematic
 /schematics/ruins/maze_smallMultilevelMaze_closed_100.schematic
