@@ -392,15 +392,28 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			}
 			if (canUse)
 			{
+				
+				
 				// Teleport the entity through the link, if it exists
 				DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
 				if (link != null)
 				{
-					DDTeleporter.traverseDimDoor(world, link, entity, this);
+					try
+					{
+						DDTeleporter.traverseDimDoor(world, link, entity, this);
+					}
+					catch(Exception e)
+					{
+						System.err.println("Something when wrong teleporting to a dim:");
+						e.printStackTrace();
+					}
+				
 				}
+				
 				// Close the door only after the entity goes through
 				// so players don't have it slam in their faces.
 				this.onPoweredBlockChange(world, x, y, z, false);
+				
 			}
 		}
 		else if (world.getBlockId(x, y + 1, z) == this.blockID)
