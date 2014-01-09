@@ -6,6 +6,7 @@
 /schematics/nether/Maze_SK-BrimstoneMines_Open_80.schematic
 /schematics/nether/Maze_SK-QuartzfoldCave_Open_40.schematic
 /schematics/nether/Maze_SK-Tangle_Open_80.schematic
+/schematics/nether/Maze_SK-SwirlsUponSwirls_Open_40.schematic
 /schematics/nether/SimpleHall_SK-AnvilValley_Open_100.schematic
 /schematics/nether/SimpleHall_SK-Arena_Open_100.schematic
 /schematics/nether/SimpleHall_SK-DarkPathLeft_Open_50.schematic
