@@ -39,6 +39,8 @@ public class DungeonSchematic extends Schematic {
 	private static final short STANDARD_ETERNAL_FABRIC_ID = 220;
 	private static final short STANDARD_WARP_DOOR_ID = 1975;
 	private static final short STANDARD_DIMENSIONAL_DOOR_ID = 1970;
+	private static final short STANDARD_TRANSIENT_DOOR_ID = 1979;
+
 	private static final short MONOLITH_SPAWN_MARKER_ID = (short) Block.endPortalFrame.blockID;
 	private static final short EXIT_DOOR_MARKER_ID = (short) Block.sandStone.blockID;
 	private static final int NETHER_DIMENSION_ID = -1;
@@ -53,7 +55,8 @@ public class DungeonSchematic extends Schematic {
 		STANDARD_FABRIC_OF_REALITY_ID,
 		STANDARD_ETERNAL_FABRIC_ID,
 		STANDARD_WARP_DOOR_ID,
-		STANDARD_DIMENSIONAL_DOOR_ID
+		STANDARD_DIMENSIONAL_DOOR_ID,
+		STANDARD_TRANSIENT_DOOR_ID
 	};
 	
 	private DungeonSchematic(Schematic source)

@@ -167,7 +167,6 @@ public class mod_pocketDim
 
 		//Now do other stuff
 		MinecraftForge.EVENT_BUS.register(new EventHookContainer(properties));
-
 		riftGen = new GatewayGenerator(properties);
 	}
 
@@ -280,11 +279,13 @@ public class mod_pocketDim
 
 
 		CraftingManager.registerRecipies();
-		DungeonHelper.initialize();
+		DungeonHelper.initialize();		
+		this.riftGen.initGateways();
+
+
 
 		// Register loot chests
 		DDLoot.registerInfo(properties);
-
 		proxy.loadTextures();
 		proxy.registerRenderers();
 	}

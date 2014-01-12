@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim.world;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -14,6 +15,8 @@ import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
+import StevenDimDoors.mod_pocketDim.world.gateways.BaseGateway;
+import StevenDimDoors.mod_pocketDim.world.gateways.GatewayTwoPillars;
 import cpw.mods.fml.common.IWorldGenerator;
 
 public class GatewayGenerator implements IWorldGenerator
@@ -31,14 +34,23 @@ public class GatewayGenerator implements IWorldGenerator
 	private static final int OVERWORLD_DIMENSION_ID = 0;
 	private static final int NETHER_DIMENSION_ID = -1;
 	private static final int END_DIMENSION_ID = 1;
+	
+	private static ArrayList<BaseGateway> gateways;
 
 	private final DDProperties properties;
 	
 	public GatewayGenerator(DDProperties properties)
 	{
 		this.properties = properties;
+	
 	}
-
+	
+	public void initGateways()
+	{
+		gateways=new ArrayList<BaseGateway>();
+		gateways.add(new GatewayTwoPillars(this.properties));
+	}
+	
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
@@ -134,6 +146,8 @@ public class GatewayGenerator implements IWorldGenerator
 			//Build the gateway if we found a valid location
 			if (valid)
 			{
+				this.gateways.get(random.nextInt(gateways.size())).generate(world, x, y, z);
+				/**
 				//Create a partial link to a dungeon.
 				dimension = PocketManager.getDimensionData(world);
 				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, 0);
@@ -150,6 +164,7 @@ public class GatewayGenerator implements IWorldGenerator
 				
 				//Place the shiny transient door into a dungeon
 				ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 0, mod_pocketDim.transientDoor);
+				**/
 			}
 		}
 	}
