@@ -15,6 +15,7 @@ import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
 import StevenDimDoors.mod_pocketDim.schematic.Schematic;
 import StevenDimDoors.mod_pocketDim.schematic.SchematicFilter;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
+import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -44,6 +45,16 @@ public abstract class BaseGateway
 	 */
 	public boolean generate(World world, int x, int y, int z)
 	{
+		/**
+		 * We have two cases here. The gateway may or may not specify a schematic to load from. If it does, we need to line up the door in the schematic with the given rift.
+		 * I tried doing this by taking the difference between the selected coords for the door, and the position of the door relative to the bounds of the .schematic, 
+		 * but it doesnt work. It seems like it should, though. Odd. 
+		 * 
+		 * The other issue is with the .schematic itself. It looks like we are exporting quite a few air blocks with the real blocks. 
+		 * This may be a limitation of our export function, as it wasnt really meant for this. I added a line in the generate function to skip air blocks completely. 
+		 * Should also speed up generation time. 
+		 * 
+		 */
 		Point3D doorLocation= new Point3D(0,0,0);
 		int orientation = 0;
 		try 
@@ -55,6 +66,12 @@ public abstract class BaseGateway
 					doorLocation = filter.getEntranceDoorLocation();
 					orientation = filter.getEntranceOrientation();
 					schematic.copyToWorld(world, x-doorLocation.getX(), y-doorLocation.getY(), z-doorLocation.getZ());
+					
+					for(int c = 0; c<240; c++)
+					{
+						world.setBlock(x-doorLocation.getX(), y-doorLocation.getY()+c, z-doorLocation.getZ(),Block.glowStone.blockID);
+
+					}
 					
 			}
 		} 

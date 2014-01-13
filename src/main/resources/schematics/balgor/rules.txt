@@ -1,0 +1,23 @@
+Version 1
+Types:
+Trap
+ComplexHall
+Maze
+
+Settings:
+AllowDuplicatesInChain = false
+AllowPackChangeOut = false
+DistortDoorCoordinates = true
+
+## Prevent this pack from being selected for transitioning in once we've transitioned out
+AllowPackChangeIn = true
+
+Rules:
+
+? ? ? -> 
+
+? ? -> Maze#20 ComplexHall#40 Trap#40
+
+? -> ComplexHall#40 Trap#60
+
+->ComplexHall#100
