@@ -32,8 +32,7 @@ public abstract class BaseGateway
 
 	public BaseGateway(DDProperties properties)
 	{
-		//not using DD properties because sometimes its IDS can be wrong, but require it so we dont init too early
-		filter = new GatewayBlockFilter((short) mod_pocketDim.dimensionalDoor.blockID,(short) mod_pocketDim.transientDoor.blockID);
+		filter = new GatewayBlockFilter((short) properties.DimensionalDoorID, (short) properties.TransientDoorID);
 	}
 	
 	/**
