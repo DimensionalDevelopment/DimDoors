@@ -33,7 +33,8 @@ public abstract class BaseGateway
 	public BaseGateway(DDProperties properties)
 	{
 		//not using DD properties because sometimes its IDS can be wrong, but require it so we dont init too early
-		filter = new GatewayBlockFilter((short) mod_pocketDim.dimensionalDoor.blockID,(short) mod_pocketDim.transientDoor.blockID);
+		filter = new GatewayBlockFilter((short) mod_pocketDim.dimensionalDoor.blockID,
+				(short) mod_pocketDim.transientDoor.blockID,(short)mod_pocketDim.warpDoor.blockID);
 	}
 	
 	/**
@@ -65,13 +66,7 @@ public abstract class BaseGateway
 				doorLocation = filter.getEntranceDoorLocation();
 				orientation = filter.getEntranceOrientation();
 				
-				schematic.copyToWorld(world, x-schematic.getWidth()+doorLocation.getX(), y-schematic.getHeight()+doorLocation.getY(), z-schematic.getLength()+doorLocation.getZ());
-				
-				//TODO debug code to easily locate the rifts
-				for(int c = 0; c<240; c++)
-				{
-					world.setBlock(x, y+c, z,Block.glowStone.blockID);
-				}	
+				schematic.copyToWorld(world, x-doorLocation.getX(), y+1-doorLocation.getY(), z-doorLocation.getZ());
 			}
 		} 
 		catch (Exception e) 
@@ -123,6 +118,7 @@ public abstract class BaseGateway
 	{
 		return !surfaceGateway;
 	}
+	
 	public boolean isBiomeValid(BiomeGenBase biome)
 	{
 		return this.isBiomeSpecific||this.allowedBiomeNames.contains(biome.biomeName.toLowerCase());
