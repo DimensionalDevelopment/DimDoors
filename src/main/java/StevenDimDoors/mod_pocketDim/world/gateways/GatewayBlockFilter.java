@@ -15,14 +15,14 @@ public class GatewayBlockFilter extends SchematicFilter {
 	private int transientDoorID;
 
 	
-	public GatewayBlockFilter(short dimensionalDoorID,short transientDoorID)
+	public GatewayBlockFilter(short dimensionalDoorID, short transientDoorID)
 	{
-		super("GatewayEnteranceFinder");
+		super("GatewayEntranceFinder");
 		this.dimensionalDoorID = dimensionalDoorID;
 		this.entranceDoorLocation = null;
 		this.entranceOrientation = 0;
 		this.schematic = null;
-		this.transientDoorID=transientDoorID;
+		this.transientDoorID = transientDoorID;
 	}
 	
 	public int getEntranceOrientation() {
@@ -45,7 +45,6 @@ public class GatewayBlockFilter extends SchematicFilter {
 	{
 		int indexBelow;
 		int indexDoubleBelow;
-		System.out.println(blocks[index]);
 		if (blocks[index] == dimensionalDoorID)
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
@@ -67,7 +66,6 @@ public class GatewayBlockFilter extends SchematicFilter {
 			}
 		}
 		return false;
-		
 	}
 	
 	@Override

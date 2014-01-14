@@ -378,7 +378,6 @@ public class Schematic {
 			{
 				for (dx = 0; dx < width; dx++)
 				{
-				
 					setBlockDirectly(world, x + dx, y + dy, z + dz, blocks[index], metadata[index]);
 					index++;
 				}
