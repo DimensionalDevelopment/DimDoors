@@ -87,7 +87,6 @@ public class DungeonSchematic extends Schematic {
 
 	public static DungeonSchematic readFromFile(File schematicFile) throws FileNotFoundException, InvalidSchematicException
 	{
-		// TODO: fix resource leak
 		return readFromStream(new FileInputStream(schematicFile));
 	}
 
