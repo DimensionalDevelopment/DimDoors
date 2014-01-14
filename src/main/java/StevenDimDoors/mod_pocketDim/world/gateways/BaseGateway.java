@@ -50,11 +50,7 @@ public abstract class BaseGateway
 		 * I tried doing this by taking the difference between the selected coords for the door, and the position of the door relative to the bounds of the .schematic, 
 		 * but it doesnt work. It seems like it should, though. Odd. 
 		 * 
-		 * The other issue is with the .schematic itself. It looks like we are exporting quite a few air blocks with the real blocks. 
-		 * This may be a limitation of our export function, as it wasnt really meant for this. 
-		 * 
-		 * I added a line in the generate function to skip air blocks completely, but commented it out so you can see it carrying air blocks along. Its in schematic.copyToWorld
-		 * Should also speed up generation time. 
+		 * Now we have a new issue- we get an index array out of bounds. One of the exported *blocks* is -69. 
 		 * 
 		 */
 		Point3D doorLocation= new Point3D(0,0,0);
@@ -63,18 +59,19 @@ public abstract class BaseGateway
 		{
 			if(this.schematicPath!=null)
 			{
-					Schematic schematic = Schematic.readFromResource(schematicPath);
-					schematic.applyFilter(filter);
-					doorLocation = filter.getEntranceDoorLocation();
-					orientation = filter.getEntranceOrientation();
-					schematic.copyToWorld(world, x-schematic.getWidth()+doorLocation.getX(), y-schematic.getHeight()+doorLocation.getY(), z-schematic.getLength()+doorLocation.getZ());
-					
-					for(int c = 0; c<240; c++)
-					{
-						world.setBlock(x, y+c, z,Block.glowStone.blockID);
-
-					}
-					
+				Schematic schematic = Schematic.readFromResource(schematicPath);
+				schematic.applyFilter(filter);
+				
+				doorLocation = filter.getEntranceDoorLocation();
+				orientation = filter.getEntranceOrientation();
+				
+				schematic.copyToWorld(world, x-schematic.getWidth()+doorLocation.getX(), y-schematic.getHeight()+doorLocation.getY(), z-schematic.getLength()+doorLocation.getZ());
+				
+				//TODO debug code to easily locate the rifts
+				for(int c = 0; c<240; c++)
+				{
+					world.setBlock(x, y+c, z,Block.glowStone.blockID);
+				}	
 			}
 		} 
 		catch (Exception e) 
@@ -90,6 +87,13 @@ public abstract class BaseGateway
 		return true;
 	}
 	
+	/**
+	 * Use this function to generate randomized bits of the structure. 
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
 	abstract void generateRandomBits(World world, int x, int y, int z);
 	
 	/**
