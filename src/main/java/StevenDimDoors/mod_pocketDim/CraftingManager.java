@@ -113,7 +113,7 @@ public class CraftingManager
 		{
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldDimDoor,1), new Object[]
 					{
-				" x ", " y ", " x ", 'x', mod_pocketDim.itemGoldDoor,  'y', Item.eyeOfEnder
+				"   ", "xyx", "   ", 'x', mod_pocketDim.itemGoldDoor,  'y', Item.eyeOfEnder
 					});
 		}
 		if (properties.CraftingGoldDoorAllowed)

@@ -299,12 +299,20 @@ public class TileEntityRift extends TileEntity
 
 	public void grow(DDProperties properties)
 	{
-		if (worldObj.isRemote || hasGrownRifts || !properties.RiftSpreadEnabled || random.nextInt(3) == 0)
+		if (worldObj.isRemote || hasGrownRifts || !properties.RiftSpreadEnabled || random.nextInt(5) == 0)
 		{
 			return;
 		}
 
 		NewDimData dimension = PocketManager.getDimensionData(worldObj);
+		
+		if(random.nextInt(dimension.findRiftsInRange(this.worldObj, 5, xCoord, yCoord, zCoord).size()+1)<2)
+		{
+			if(random.nextInt(7)!=0)
+			{
+				return;
+			}
+		}
 		DimLink link = dimension.getLink(xCoord, yCoord, zCoord);
 		
 		if (countAncestorLinks(link) > MAX_ANCESTOR_LINKS)
@@ -335,6 +343,7 @@ public class TileEntityRift extends TileEntity
 				{
 					dimension.createChildLink(x, y, z, link);
 					hasGrownRifts = true;
+					return;
 				}
 				else
 				{

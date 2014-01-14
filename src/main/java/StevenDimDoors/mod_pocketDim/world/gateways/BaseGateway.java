@@ -51,7 +51,9 @@ public abstract class BaseGateway
 		 * but it doesnt work. It seems like it should, though. Odd. 
 		 * 
 		 * The other issue is with the .schematic itself. It looks like we are exporting quite a few air blocks with the real blocks. 
-		 * This may be a limitation of our export function, as it wasnt really meant for this. I added a line in the generate function to skip air blocks completely. 
+		 * This may be a limitation of our export function, as it wasnt really meant for this. 
+		 * 
+		 * I added a line in the generate function to skip air blocks completely, but commented it out so you can see it carrying air blocks along. Its in schematic.copyToWorld
 		 * Should also speed up generation time. 
 		 * 
 		 */
@@ -65,11 +67,11 @@ public abstract class BaseGateway
 					schematic.applyFilter(filter);
 					doorLocation = filter.getEntranceDoorLocation();
 					orientation = filter.getEntranceOrientation();
-					schematic.copyToWorld(world, x-doorLocation.getX(), y-doorLocation.getY(), z-doorLocation.getZ());
+					schematic.copyToWorld(world, x-schematic.getWidth()+doorLocation.getX(), y-schematic.getHeight()+doorLocation.getY(), z-schematic.getLength()+doorLocation.getZ());
 					
 					for(int c = 0; c<240; c++)
 					{
-						world.setBlock(x-doorLocation.getX(), y-doorLocation.getY()+c, z-doorLocation.getZ(),Block.glowStone.blockID);
+						world.setBlock(x, y+c, z,Block.glowStone.blockID);
 
 					}
 					
