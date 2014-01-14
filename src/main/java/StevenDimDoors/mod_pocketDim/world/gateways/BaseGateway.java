@@ -46,15 +46,7 @@ public abstract class BaseGateway
 	 */
 	public boolean generate(World world, int x, int y, int z)
 	{
-		/**
-		 * We have two cases here. The gateway may or may not specify a schematic to load from. If it does, we need to line up the door in the schematic with the given rift.
-		 * I tried doing this by taking the difference between the selected coords for the door, and the position of the door relative to the bounds of the .schematic, 
-		 * but it doesnt work. It seems like it should, though. Odd. 
-		 * 
-		 * Now we have a new issue- we get an index array out of bounds. One of the exported *blocks* is -69. 
-		 * 
-		 */
-		Point3D doorLocation= new Point3D(0,0,0);
+		
 		int orientation = 0;
 		try 
 		{
@@ -63,7 +55,7 @@ public abstract class BaseGateway
 				Schematic schematic = Schematic.readFromResource(schematicPath);
 				schematic.applyFilter(filter);
 				
-				doorLocation = filter.getEntranceDoorLocation();
+				Point3D doorLocation = filter.getEntranceDoorLocation();
 				orientation = filter.getEntranceOrientation();
 				
 				schematic.copyToWorld(world, x-doorLocation.getX(), y+1-doorLocation.getY(), z-doorLocation.getZ());
@@ -72,6 +64,7 @@ public abstract class BaseGateway
 		catch (Exception e) 
 		{
 			e.printStackTrace();
+			System.err.println("Could not load schematic "+this.schematicPath+" for gateway");
 			return false;
 		}
 		this.generateRandomBits(world, x,y,z);
