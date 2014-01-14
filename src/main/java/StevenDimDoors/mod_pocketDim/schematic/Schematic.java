@@ -378,13 +378,8 @@ public class Schematic {
 			{
 				for (dx = 0; dx < width; dx++)
 				{
-					//In the future, we might want to make this more efficient by building whole chunks at a time
-					//Ignore air blocks
-					//TODO
-					//if(blocks[index]!=0)
-					{
-						setBlockDirectly(world, x + dx, y + dy, z + dz, blocks[index], metadata[index]);
-					}
+				
+					setBlockDirectly(world, x + dx, y + dy, z + dz, blocks[index], metadata[index]);
 					index++;
 				}
 			}
