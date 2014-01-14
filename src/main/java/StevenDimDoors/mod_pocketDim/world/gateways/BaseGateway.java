@@ -53,11 +53,11 @@ public abstract class BaseGateway
 		 * Now we have a new issue- we get an index array out of bounds. One of the exported *blocks* is -69. 
 		 * 
 		 */
-		Point3D doorLocation= new Point3D(0,0,0);
+		Point3D doorLocation = new Point3D(0, 0, 0);
 		int orientation = 0;
 		try 
 		{
-			if(this.schematicPath!=null)
+			if (this.schematicPath != null)
 			{
 				Schematic schematic = Schematic.readFromResource(schematicPath);
 				schematic.applyFilter(filter);
@@ -65,12 +65,12 @@ public abstract class BaseGateway
 				doorLocation = filter.getEntranceDoorLocation();
 				orientation = filter.getEntranceOrientation();
 				
-				schematic.copyToWorld(world, x-schematic.getWidth()+doorLocation.getX(), y-schematic.getHeight()+doorLocation.getY(), z-schematic.getLength()+doorLocation.getZ());
+				schematic.copyToWorld(world, x - doorLocation.getX(), y, z - doorLocation.getZ());
 				
 				//TODO debug code to easily locate the rifts
-				for(int c = 0; c<240; c++)
+				for (int c = 5; c < 240; c++)
 				{
-					world.setBlock(x, y+c, z,Block.glowStone.blockID);
+					world.setBlock(x, y + c, z, Block.glowStone.blockID);
 				}	
 			}
 		} 
@@ -79,7 +79,7 @@ public abstract class BaseGateway
 			e.printStackTrace();
 			return false;
 		}
-		this.generateRandomBits(world, x,y,z);
+		this.generateRandomBits(world, x, y, z);
 		
 		DimLink link = PocketManager.getDimensionData(world).createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
 		PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, this.getStartingDungeon(world.rand));
@@ -123,10 +123,9 @@ public abstract class BaseGateway
 	{
 		return !surfaceGateway;
 	}
+	
 	public boolean isBiomeValid(BiomeGenBase biome)
 	{
-		return this.isBiomeSpecific||this.allowedBiomeNames.contains(biome.biomeName.toLowerCase());
+		return this.isBiomeSpecific || this.allowedBiomeNames.contains(biome.biomeName.toLowerCase());
 	}
-	
-	
 }
