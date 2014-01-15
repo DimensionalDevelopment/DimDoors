@@ -21,12 +21,34 @@ import net.minecraft.world.biome.BiomeGenBase;
 
 public abstract class BaseGateway 
 {
+	//This pack is what the dungeon initially generates into from this gateway.
 	protected DungeonPack startingPack;
+	
+	/**Flag that determines if this gateway is tied to a specific biome. 
+	 *For compatabilities sake, we are just using string comparison to check.
+	 **/
 	protected boolean isBiomeSpecific;
-	protected ArrayList<String> allowedBiomeNames;
+	
+	/**
+	 * List of biome names that we check against. Is by default a whitelist, but the isBiomeValid method 
+	 * can be overriden for specific gateways. For example, any biome containing 'forest' would be valid if we added 'forest',
+	 * even from other mods.
+	 */
+	protected ArrayList<String> biomeNames = new ArrayList<String>();
+	
+	/**
+	 * List containing all the .schematics attached to this gateway. Selection is random by default, 
+	 * but can be overriden for specific gateways in getSchematicToBuild
+	 */
+	protected ArrayList<String> schematicPaths= new ArrayList<String>();
+	
+	//TODO not yet implemented
 	protected boolean surfaceGateway;
+	
+	//TODO not yet implemented
 	protected int generationWeight;
-	protected String schematicPath;
+	
+	//Used to find the doorway for the .schematic
 	protected GatewayBlockFilter filter;
 
 
@@ -46,33 +68,48 @@ public abstract class BaseGateway
 	 */
 	public boolean generate(World world, int x, int y, int z)
 	{
-		
 		int orientation = 0;
-		try 
+		
+		if(this.hasSchematic())
 		{
-			if(this.schematicPath!=null)
-			{
-				Schematic schematic = Schematic.readFromResource(schematicPath);
-				schematic.applyFilter(filter);
+			Schematic schematic = this.getSchematicToBuild(world, x, y, z);
+		
+			schematic.applyFilter(filter);	
+			Point3D doorLocation = filter.getEntranceDoorLocation();
+			orientation = filter.getEntranceOrientation();
 				
-				Point3D doorLocation = filter.getEntranceDoorLocation();
-				orientation = filter.getEntranceOrientation();
-				
-				schematic.copyToWorld(world, x-doorLocation.getX(), y+1-doorLocation.getY(), z-doorLocation.getZ());
-			}
-		} 
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-			System.err.println("Could not load schematic "+this.schematicPath+" for gateway");
-			return false;
+			schematic.copyToWorld(world, x-doorLocation.getX(), y+1-doorLocation.getY(), z-doorLocation.getZ());
 		}
+			
 		this.generateRandomBits(world, x,y,z);
 		
 		DimLink link = PocketManager.getDimensionData(world).createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
 		PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, this.getStartingDungeon(world.rand));
 
 		return true;
+	}
+	
+	/**
+	 * Gets a .schematic to generate for this gateway
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	public Schematic getSchematicToBuild(World world, int x, int y, int z)
+	{
+		//TODO- refine selection criteria here, this is the default case
+		try 
+		{
+			return Schematic.readFromResource(schematicPaths.get(world.rand.nextInt(schematicPaths.size())));
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			System.err.println("Could not load schematic for gateway");
+			return null;
+		}
 	}
 	
 	/**
@@ -104,7 +141,8 @@ public abstract class BaseGateway
 	 */
 	public boolean isLocationValid(World world, int x, int y, int z, BiomeGenBase biome)
 	{
-		return false;
+		//TODO- refine condition here as warranted
+		return this.isBiomeValid(biome);
 	}
 	
 	public boolean shouldGenUnderground()
@@ -114,7 +152,11 @@ public abstract class BaseGateway
 	
 	public boolean isBiomeValid(BiomeGenBase biome)
 	{
-		return this.isBiomeSpecific||this.allowedBiomeNames.contains(biome.biomeName.toLowerCase());
+		return !this.isBiomeSpecific||this.biomeNames.contains(biome.biomeName.toLowerCase());
+	}
+	public boolean hasSchematic()
+	{
+		return this.schematicPaths!=null&&this.schematicPaths.size()>0;
 	}
 	
 	

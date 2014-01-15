@@ -19,10 +19,10 @@ public class GatewayTwoPillars extends BaseGateway
 		super(properties);
 		super.startingPack=DungeonHelper.instance().getDungeonPack("RUINS");
 		super.isBiomeSpecific=false;
-		super.allowedBiomeNames=null;
+		super.biomeNames=null;
 		surfaceGateway=true;
 		generationWeight = 0;
-		schematicPath="/schematics/gateways/twoPillars.schematic";
+		schematicPaths.add("/schematics/gateways/twoPillars.schematic");
 		
 	}
 	@Override

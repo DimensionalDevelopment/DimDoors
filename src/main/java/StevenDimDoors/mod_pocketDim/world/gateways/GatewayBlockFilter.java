@@ -48,7 +48,6 @@ public class GatewayBlockFilter extends SchematicFilter {
 	{
 		int indexBelow;
 		int indexDoubleBelow;
-		System.out.println(blocks[index]);
 		if (blocks[index] == dimensionalDoorID)
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
