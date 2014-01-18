@@ -2,6 +2,8 @@ package StevenDimDoors.mod_pocketDim.ticking;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
@@ -29,7 +31,7 @@ public class MobMonolith extends EntityFlying implements IMob
 	float soundTime = 0;
 	int aggro = 0;
 	byte textureState = 0;
-
+	float entityCollisionReduction = 100;
 	float scaleFactor = 0;
 	int aggroMax;
 	int destX = 0; // unused fields?
@@ -99,6 +101,39 @@ public class MobMonolith extends EntityFlying implements IMob
 		super.entityInit();
 		this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
 	}
+	
+	  public boolean isClipping()
+	    {
+		  
+		  int i = MathHelper.floor_double(this.boundingBox.minX);
+		  int j = MathHelper.floor_double(this.boundingBox.maxX + 1.0D);
+		  int k = MathHelper.floor_double(this.boundingBox.minY);
+		  int l = MathHelper.floor_double(this.boundingBox.maxY + 1.0D);
+		  int i1 = MathHelper.floor_double(this.boundingBox.minZ);
+		  int j1 = MathHelper.floor_double(this.boundingBox.maxZ + 1.0D);
+
+		  for (int k1 = i; k1 < j; ++k1)
+		  {
+			  for (int l1 = k; l1 < l; ++l1)
+			  {
+				  for (int i2 = i1; i2 < j1; ++i2)
+				  {
+					if(!this.worldObj.isAirBlock(k1, l1, i2))
+					{
+						return true;
+					}
+				  }
+			  }
+		  }
+			  
+
+			  return false;
+	    }
+	  @Override
+	  public boolean isEntityAlive()
+	  {
+		  return false;
+	  }
 
 	@Override
 	public void onEntityUpdate()
@@ -107,12 +142,11 @@ public class MobMonolith extends EntityFlying implements IMob
 		{
 			this.setDead();
 		}
-
+		
 		super.onEntityUpdate();
-
-		if (this.isEntityAlive() && this.isEntityInsideOpaqueBlock())
+		if(this.isClipping())
 		{
-			this.setDead();
+			this.moveEntity(0, .1, 0);
 		}
 
 		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 30);

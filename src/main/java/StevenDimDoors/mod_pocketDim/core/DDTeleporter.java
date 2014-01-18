@@ -274,8 +274,6 @@ public class DDTeleporter
 		{
 			throw new IllegalArgumentException("destination cannot be null.");
 		}
-		 
-		
 		//This beautiful teleport method is based off of xCompWiz's teleport function. 
 
 		WorldServer oldWorld = (WorldServer) entity.worldObj;
@@ -372,6 +370,10 @@ public class DDTeleporter
 				NBTTagCompound entityNBT = new NBTTagCompound();
 				entity.isDead = false;
 				entity.writeMountToNBT(entityNBT);
+				if(entityNBT.hasNoTags())
+				{
+					return entity;
+				}
 				entity.isDead = true;
 				entity = EntityList.createEntityFromNBT(entityNBT, newWorld);
 
@@ -410,6 +412,7 @@ public class DDTeleporter
 			// Tell Forge we're moving its players so everyone else knows.
 			// Let's try doing this down here in case this is what's killing NEI.
 			GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
+
 
 		}
 		DDTeleporter.placeInPortal(entity, newWorld, destination, properties, checkOrientation);

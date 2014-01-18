@@ -129,8 +129,8 @@ public class MonolithSpawner implements IRegularTickReceiver {
 				}
 				while (!pocket.isAirBlock(x,jumpHeight+6 , z)&&jumpSanity<20);
 
-				Entity monolith = new MobMonolith(pocket);
-				monolith.setLocationAndAngles(x, jumpHeight, z, 1, 1);
+				MobMonolith monolith = new MobMonolith(pocket);
+				monolith.setLocationAndAngles(x, jumpHeight-(5-monolith.getRenderSizeModifier()*5), z, 1, 1);
 				pocket.spawnEntityInWorld(monolith);
 				didSpawn = true;
 			}
