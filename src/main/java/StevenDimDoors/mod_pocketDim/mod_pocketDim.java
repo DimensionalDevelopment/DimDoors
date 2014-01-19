@@ -286,7 +286,7 @@ public class mod_pocketDim
 		LanguageRegistry.instance().addStringLocalization("entity.DimDoors.Obelisk.name", "Monolith");
 
 
-		CraftingManager.registerRecipes();
+		CraftingManager.registerRecipes(properties);
 		DungeonHelper.initialize();		
 		this.riftGen.initGateways();
 
