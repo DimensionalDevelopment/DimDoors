@@ -17,6 +17,7 @@ import net.minecraftforge.common.network.ForgePacket;
 import net.minecraftforge.common.network.packet.DimensionRegisterPacket;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
 import cpw.mods.fml.common.network.IConnectionHandler;
 import cpw.mods.fml.common.network.Player;
 
@@ -31,10 +32,11 @@ public class ConnectionHandler implements IConnectionHandler
 			{
 				Packet250CustomPayload[] pkt = ForgePacket.makePacketSet(new DimensionRegisterPacket(data.id(), DimensionManager.getProviderType(data.id())));
 				manager.addToSendQueue(pkt[0]);
+
 			}
 			catch(Exception E)
 			{
-				
+				E.printStackTrace();
 			}
 			
 		
@@ -64,7 +66,7 @@ public class ConnectionHandler implements IConnectionHandler
 	@Override
 	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager)
 	{
-		//Send information about all the registered dimensions and links to the client
+		PocketManager.getDimwatcher().onCreated(new ClientDimData(PocketManager.getDimensionData(0)));
 		
 	}
 }
