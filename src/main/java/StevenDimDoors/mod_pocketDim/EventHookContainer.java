@@ -100,6 +100,8 @@ public class EventHookContainer
     		Point4D destination = new Point4D((int) (coords.posX+entity.posX), coords.posY, (int) (coords.posZ+entity.posZ ), mod_pocketDim.properties.LimboDimensionID);
     		DDTeleporter.teleportEntity(player, destination, false);
     		player.setHealth(player.getMaxHealth());
+    		player.extinguish();
+    		player.clearActivePotions();
     		event.setCanceled(true);
     		return false;
     	}
