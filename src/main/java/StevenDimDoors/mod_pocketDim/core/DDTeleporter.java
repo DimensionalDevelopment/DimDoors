@@ -319,7 +319,7 @@ public class DDTeleporter
 			{
 				// We need to do all this special stuff to move a player between dimensions.
 				 //Give the client the dimensionData for the destination
-				 PocketManager.dimWatcher.onCreated(new ClientDimData(PocketManager.getDimensionData(destination.getDimension())));
+				 PocketManager.getDimwatcher().onCreated(new ClientDimData(PocketManager.getDimensionData(destination.getDimension())));
 				 
 				 
 				  

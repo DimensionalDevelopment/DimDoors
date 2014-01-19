@@ -214,8 +214,8 @@ public class PocketManager
 	 * Set as true if we are a client that has connected to a dedicated server
 	 */
 	public static volatile boolean isConnected = false;
-	public static final UpdateWatcherProxy<ClientLinkData> linkWatcher = new UpdateWatcherProxy<ClientLinkData>();
-	static final UpdateWatcherProxy<ClientDimData> dimWatcher = new UpdateWatcherProxy<ClientDimData>();
+	private static final UpdateWatcherProxy<ClientLinkData> linkWatcher = new UpdateWatcherProxy<ClientLinkData>();
+	private static final UpdateWatcherProxy<ClientDimData> dimWatcher = new UpdateWatcherProxy<ClientDimData>();
 	private static ArrayList<NewDimData> rootDimensions = null;
 
 	//HashMap that maps all the dimension IDs registered with DimDoors to their DD data.
@@ -253,6 +253,7 @@ public class PocketManager
 			//Shouldnt try to load everything if we are a client
 			//This was preventing onPacket from loading properly
 			isLoading=false;
+			isLoaded=true;
 			return;
 		}
 		//Register Limbo
@@ -298,7 +299,7 @@ public class PocketManager
 
 		}
 		PocketManager.dimensionData.put(dimData.id, dimData);
-		dimWatcher.onCreated(new ClientDimData(dimData));
+		getDimwatcher().onCreated(new ClientDimData(dimData));
 
 		return true;
 	}
@@ -340,7 +341,7 @@ public class PocketManager
 
 			dimensionData.remove(dimensionID);
 			// Raise the dim deleted event
-			dimWatcher.onDeleted(new ClientDimData(dimension));
+			getDimwatcher().onDeleted(new ClientDimData(dimension));
 			dimension.clear();
 			return true;
 		}
@@ -530,7 +531,7 @@ public class PocketManager
 		{
 			rootDimensions.add(dimension);
 		}
-		dimWatcher.onCreated(new ClientDimData(dimension));
+		getDimwatcher().onCreated(new ClientDimData(dimension));
 		
 		return dimension;
 	}
@@ -656,12 +657,11 @@ public class PocketManager
 	}
 	public static void registerDimWatcher(IUpdateWatcher<ClientDimData> watcher)
 	{
-		dimWatcher.registerReceiver(watcher);
+		getDimwatcher().registerReceiver(watcher);
 	}
-	
 	public static boolean unregisterDimWatcher(IUpdateWatcher<ClientDimData> watcher)
 	{
-		return dimWatcher.unregisterReceiver(watcher);
+		return getDimwatcher().unregisterReceiver(watcher);
 	}
 	
 	public static void registerLinkWatcher(IUpdateWatcher<ClientLinkData> watcher)
@@ -720,5 +720,10 @@ public class PocketManager
 		isLoaded = true;
 		isLoading = false;
 		isConnected = true;
+	}
+
+	public static UpdateWatcherProxy<ClientDimData> getDimwatcher() 
+	{
+		return dimWatcher;
 	}
 }
