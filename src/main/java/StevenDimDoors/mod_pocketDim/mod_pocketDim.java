@@ -1,5 +1,7 @@
 package StevenDimDoors.mod_pocketDim;
 
+import StevenDimDoors.experimental.LiquidCorium;
+import StevenDimDoors.experimental.LiquidCoriumBlock;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWall;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWallPerm;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDoorGold;
@@ -76,6 +78,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityEggInfo;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -84,6 +87,8 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 @Mod(modid = mod_pocketDim.modid, name = "Dimensional Doors", version = mod_pocketDim.version)
 
@@ -138,6 +143,9 @@ public class mod_pocketDim
 	public static MonolithSpawner spawner; //Added this field temporarily. Will be refactored out later.
 	public static GatewayGenerator riftGen;
 	public static PlayerTracker tracker;
+	
+	public static Block coriumBlock;
+	public static Fluid coriumFluid;
 
 	public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") 
 	{
@@ -232,7 +240,7 @@ public class mod_pocketDim
 		DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false);
 		DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false);
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
-
+		
 		LanguageRegistry.addName(goldDoor, "Golden Door");
 		LanguageRegistry.addName(goldDimDoor, "Golden Dimensional Door");
 		LanguageRegistry.addName(transientDoor	, "transientDoor");
@@ -282,7 +290,15 @@ public class mod_pocketDim
 		DungeonHelper.initialize();		
 		this.riftGen.initGateways();
 
+		coriumFluid = new LiquidCorium("Corium").setDensity(1000).setTemperature(3473).setDensity(9400).setLuminosity(6).setRarity(EnumRarity.rare);
+		coriumBlock = new LiquidCoriumBlock(900, coriumFluid, Material.lava).setQuantaPerBlock(16).setTickRate(20).setTickRandomly(true).setUnlocalizedName("Corium"); 
+		FluidRegistry.registerFluid(coriumFluid);
+		GameRegistry.registerBlock(coriumBlock,"Corium");
+		LanguageRegistry.addName(coriumBlock, "Corium");
 
+
+		
+		
 
 		// Register loot chests
 		DDLoot.registerInfo(properties);

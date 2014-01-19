@@ -9,20 +9,22 @@ import StevenDimDoors.mod_pocketDim.schematic.SchematicFilter;
 public class GatewayBlockFilter extends SchematicFilter {
 
 	private short dimensionalDoorID;
+	private int transientDoorID;
+	private int warpDoorID;
 	private int entranceOrientation;
 	private Schematic schematic;
 	private Point3D entranceDoorLocation;
-	private int transientDoorID;
 
-	
-	public GatewayBlockFilter(short dimensionalDoorID, short transientDoorID)
+
+	public GatewayBlockFilter(short dimensionalDoorID, short transientDoorID, short warpDoorID)
 	{
 		super("GatewayEntranceFinder");
-		this.dimensionalDoorID = dimensionalDoorID;
 		this.entranceDoorLocation = null;
 		this.entranceOrientation = 0;
 		this.schematic = null;
+		this.dimensionalDoorID = dimensionalDoorID;
 		this.transientDoorID = transientDoorID;
+		this.warpDoorID = warpDoorID;
 	}
 	
 	public int getEntranceOrientation() {
@@ -59,6 +61,16 @@ public class GatewayBlockFilter extends SchematicFilter {
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
 			if (indexBelow >= 0 && blocks[indexBelow] == transientDoorID)
+			{
+				entranceDoorLocation = schematic.calculatePoint(index);
+				entranceOrientation = (metadata[indexBelow] & 3);
+				return true;
+			}
+		}
+		if (blocks[index] == warpDoorID)
+		{
+			indexBelow = schematic.calculateIndexBelow(index);
+			if (indexBelow >= 0 && blocks[indexBelow] == warpDoorID)
 			{
 				entranceDoorLocation = schematic.calculatePoint(index);
 				entranceOrientation = (metadata[indexBelow] & 3);

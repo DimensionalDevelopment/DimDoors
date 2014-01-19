@@ -16,6 +16,7 @@ import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.world.gateways.BaseGateway;
+import StevenDimDoors.mod_pocketDim.world.gateways.GatewaySandstonePillars;
 import StevenDimDoors.mod_pocketDim.world.gateways.GatewayTwoPillars;
 import cpw.mods.fml.common.IWorldGenerator;
 
@@ -36,6 +37,7 @@ public class GatewayGenerator implements IWorldGenerator
 	private static final int END_DIMENSION_ID = 1;
 	
 	private static ArrayList<BaseGateway> gateways;
+	private static BaseGateway defaultGateway;
 
 	private final DDProperties properties;
 	
@@ -48,7 +50,11 @@ public class GatewayGenerator implements IWorldGenerator
 	public void initGateways()
 	{
 		gateways=new ArrayList<BaseGateway>();
-		gateways.add(new GatewayTwoPillars(this.properties));
+		this.defaultGateway=new GatewayTwoPillars(this.properties);
+		
+		//add gateways here
+		gateways.add(new GatewaySandstonePillars(this.properties));
+
 	}
 	
 	@Override
@@ -146,25 +152,23 @@ public class GatewayGenerator implements IWorldGenerator
 			//Build the gateway if we found a valid location
 			if (valid)
 			{
-				this.gateways.get(random.nextInt(gateways.size())).generate(world, x, y, z);
-				/**
-				//Create a partial link to a dungeon.
-				dimension = PocketManager.getDimensionData(world);
-				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, 0);
-
-				//If the current dimension isn't Limbo, build a Rift Gateway out of Stone Bricks
-				if (dimension.id() != properties.LimboDimensionID)
+				//TODO I feel like this is slow and should be optimized. We are linear time with total # of generation restrictions
+				//Create an array and copy valid gateways into it
+				ArrayList<BaseGateway> validGateways = new ArrayList<BaseGateway>();
+				for(BaseGateway gateway:gateways)
 				{
-					createStoneGateway(world, x, y, z, random);
+					if(gateway.isLocationValid(world, x, y, z, world.getBiomeGenForCoords(x, z)))
+					{
+						validGateways.add(gateway);
+					}
 				}
-				else
+				//Add default gateway if we where unable to find a suitable gateway
+				if(validGateways.isEmpty())
 				{
-					createLimboGateway(world, x, y, z, properties.LimboBlockID);
+					validGateways.add(this.defaultGateway);
 				}
-				
-				//Place the shiny transient door into a dungeon
-				ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 0, mod_pocketDim.transientDoor);
-				**/
+				//randomly select a gateway from the pool of viable gateways
+				validGateways.get(random.nextInt(validGateways.size())).generate(world, x, y, z);
 			}
 		}
 	}
