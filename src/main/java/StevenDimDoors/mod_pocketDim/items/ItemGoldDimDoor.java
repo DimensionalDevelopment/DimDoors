@@ -21,16 +21,16 @@ public class ItemGoldDimDoor extends BaseItemDoor
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
 	{
-		par3List.add("Similar to a Iron Dim Door");
-		par3List.add("But if present in a pocket dim");
-		par3List.add("it will keep it loaded.");
+		par3List.add("Similar to a Dimensional Door");
+		par3List.add("but keeps a pocket dimension");
+		par3List.add("loaded if placed on the inside.");
 	}
 
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y,
 		int z, int par7, float par8, float par9, float par10)
 	{
-		return tryItemUse(mod_pocketDim.goldDimDoor, stack, player, world, x, y, z, par7, false, true);
+		return tryItemUse(mod_pocketDim.goldenDimensionalDoor, stack, player, world, x, y, z, par7, false, true);
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class ItemGoldDimDoor extends BaseItemDoor
 	{
 		if (!world.isRemote)
 		{
-			if (tryPlacingDoor(mod_pocketDim.goldDimDoor, world, player, stack) &&
+			if (tryPlacingDoor(mod_pocketDim.goldenDimensionalDoor, world, player, stack) &&
 				!player.capabilities.isCreativeMode)
 			{
 				stack.stackSize--;

@@ -14,8 +14,8 @@ public class DDProperties
 
 	public final int UnstableDoorID;
 	public final int DimensionalDoorID;	
-	public final int GoldDoorID;
-	public final int GoldDimDoorID;
+	public final int GoldenDoorID;
+	public final int GoldenDimensionalDoorID;
 	public final int WarpDoorID;
 	public final int TransTrapdoorID;
 	public final int TransientDoorID;
@@ -35,15 +35,15 @@ public class DDProperties
 
 	public final int RiftBladeItemID;
 	public final int RiftSignatureItemID;	
-	public final int GoldDimDoorItemID;
-	public final int GoldDoorItemID;
+	public final int GoldenDimensionalDoorItemID;
+	public final int GoldenDoorItemID;
 	public final int RiftRemoverItemID;
 	public final int StableFabricItemID;
 	public final int StabilizedRiftSignatureItemID;
 	public final int DimensionalDoorItemID;
 	public final int UnstableDoorItemID;
 	public final int WarpDoorItemID;
-	public final int ItemWorldThreadID;
+	public final int WorldThreadItemID;
 
 
 	/**
@@ -71,29 +71,21 @@ public class DDProperties
 	public final boolean CraftingTransTrapdoorAllowed;
 	public final boolean CraftingStabilizedRiftSignatureAllowed;
 	public final boolean CraftingStableFabricAllowed;
-	public final boolean CraftingGoldDimDoorAllowed;
-	public final boolean CraftingGoldDoorAllowed;
+	public final boolean CraftingGoldenDimensionalDoorAllowed;
+	public final boolean CraftingGoldenDoorAllowed;
 	
 	/**
 	 * Loot Flags
 	 */
 	
-	public final boolean DimensionalDoorLootEnabled;
-	public final boolean WarpDoorLootEnabled;
-	public final boolean UnstableDoorLootEnabled;
-	public final boolean TransTrapdoorLootEnabled;
-	public final boolean RiftSignatureLootEnabled;
-	public final boolean RiftRemoverLootEnabled;
-	public final boolean StabilizedRiftSignatureLootEnabled;
 	public final boolean RiftBladeLootEnabled;
-	public final boolean StableFabricLootEnabled;
 	public final boolean FabricOfRealityLootEnabled;
+	public final boolean WorldThreadLootEnabled;
 
 	/**
 	 * Other Flags
 	 */
 
-	public final boolean enableServerMode;
 	public final boolean WorldRiftGenerationEnabled;
 	public final boolean RiftSpreadEnabled;
 	public final boolean RiftGriefingEnabled;
@@ -122,7 +114,6 @@ public class DDProperties
 	//Path for custom dungeons within configuration directory
 	private final String CUSTOM_SCHEMATIC_SUBDIRECTORY = "/DimDoors_Custom_schematics";
 	//Names of categories
-	private final String CATEGORY_SERVERMODE = "server mode";
 	private final String CATEGORY_CRAFTING = "crafting";
 	private final String CATEGORY_ENTITY = "entity";
 	private final String CATEGORY_DIMENSION = "dimension";
@@ -148,20 +139,13 @@ public class DDProperties
 		CraftingStabilizedRiftSignatureAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Stabilized Rift Signature", true).getBoolean(true);
 		CraftingRiftBladeAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Rift Blade", true).getBoolean(true);
 		CraftingStableFabricAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Stable Fabric", true).getBoolean(true);
-		CraftingGoldDimDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Golden Dimensional Door", true).getBoolean(true);
-		CraftingGoldDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Golden Door", true).getBoolean(true);
+		CraftingGoldenDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Golden Door", true).getBoolean(true);
+		CraftingGoldenDimensionalDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Golden Dimensional Door", true).getBoolean(true);
 		
-		DimensionalDoorLootEnabled = config.get(CATEGORY_LOOT, "Enable Dimensional Door Loot", true).getBoolean(true);
-		WarpDoorLootEnabled = config.get(CATEGORY_LOOT, "Enable Warp Door Loot", false).getBoolean(false);
-		UnstableDoorLootEnabled = config.get(CATEGORY_LOOT, "Enable Unstable Door Loot", false).getBoolean(false);
-		TransTrapdoorLootEnabled = config.get(CATEGORY_LOOT, "Enable Transdimensional Trapdoor Loot", false).getBoolean(false);
-		RiftSignatureLootEnabled = config.get(CATEGORY_LOOT, "Enable Rift Signature Loot", true).getBoolean(true);
-		RiftRemoverLootEnabled = config.get(CATEGORY_LOOT, "Enable Rift Remover Loot", true).getBoolean(true);
-		StabilizedRiftSignatureLootEnabled = config.get(CATEGORY_LOOT, "Enable Stabilized Rift Signature Loot", false).getBoolean(false);
 		RiftBladeLootEnabled = config.get(CATEGORY_LOOT, "Enable Rift Blade Loot", true).getBoolean(true);
-		StableFabricLootEnabled = config.get(CATEGORY_LOOT, "Enable Stable Fabric Loot", false).getBoolean(false);
 		FabricOfRealityLootEnabled = config.get(CATEGORY_LOOT, "Enable Fabric of Reality Loot", true).getBoolean(true);
-
+		WorldThreadLootEnabled = config.get(CATEGORY_LOOT, "Enable World Thread Loot", true).getBoolean(true);
+		
 		RiftGriefingEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Griefing", true,
 				"Sets whether rifts destroy blocks around them or not").getBoolean(true);
 		RiftSpreadEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift Spread", true,
@@ -184,12 +168,7 @@ public class DDProperties
 				"Weighs the chance that a block will not be TNT. Must be greater than or equal to 0. " +
 				"EXPLOSIONS must be set to true for this to have any effect.").getInt();
 
-		enableServerMode = config.get(CATEGORY_SERVERMODE, "Server Mode", false,
-				"Enables servermode, changing all crafting recipies to require stabilized fabric. " +
-				"Stabilized fabric, in turn, requires the item World Thread, which is not craftable or obtainable at all. "+
-				"It is up to the server manager on how to distribute it.").getBoolean(false);
-
-		DoorRenderEntityID=config.get(CATEGORY_ENTITY, "Door Render Entity ID", 89).getInt();
+		DoorRenderEntityID = config.get(CATEGORY_ENTITY, "Door Render Entity ID", 89).getInt();
 		MonolithEntityID = config.get(CATEGORY_ENTITY, "Monolith Entity ID", 125).getInt();
 
 		DimensionalDoorID = config.getBlock("Dimensional Door Block ID", 1970).getInt();
@@ -199,8 +178,8 @@ public class DDProperties
 		RiftBlockID = config.getBlock("Rift Block ID", 1977).getInt();
 		UnstableDoorID = config.getBlock("Unstable Door Block ID", 1978).getInt();
 		TransientDoorID = config.getBlock("Transient Door Block ID", 1979).getInt();
-		GoldDoorID = config.getBlock("Gold Door Block ID", 1980).getInt();
-		GoldDimDoorID = config.getBlock("Gold Dim Door Block ID", 1981).getInt();
+		GoldenDoorID = config.getBlock("Gold Door Block ID", 1980).getInt();
+		GoldenDimensionalDoorID = config.getBlock("Gold Dim Door Block ID", 1981).getInt();
 		
 		WarpDoorItemID = config.getItem("Warp Door Item ID", 5670).getInt();
 		RiftRemoverItemID = config.getItem("Rift Remover Item ID", 5671).getInt();
@@ -210,9 +189,9 @@ public class DDProperties
 		RiftSignatureItemID = config.getItem("Rift Signature Item ID", 5675).getInt();
 		RiftBladeItemID = config.getItem("Rift Blade Item ID", 5676).getInt();
 		StabilizedRiftSignatureItemID = config.getItem("Stabilized Rift Signature Item ID", 5677).getInt();
-		GoldDoorItemID = config.getItem("Gold Door Item ID", 5678).getInt();
-		GoldDimDoorItemID = config.getItem("Gold Dim Door Item ID", 5679).getInt();
-		ItemWorldThreadID = config.getItem("World Thread Item ID", 5680).getInt();
+		GoldenDoorItemID = config.getItem("Gold Door Item ID", 5678).getInt();
+		GoldenDimensionalDoorItemID = config.getItem("Gold Dim Door Item ID", 5679).getInt();
+		WorldThreadItemID = config.getItem("World Thread Item ID", 5680).getInt();
 
 		LimboBlockID = config.getTerrainBlock("World Generation Block IDs - must be less than 256", "Limbo Block ID", 217,
 				"Blocks used for the terrain in Limbo").getInt();

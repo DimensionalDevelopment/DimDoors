@@ -50,7 +50,7 @@ public class DDLoot {
 		addContent(true, items, Item.appleGold.itemID, 10);
 
 		addContent(properties.FabricOfRealityLootEnabled, items, mod_pocketDim.blockDimWall.blockID, 80, 4, 16);
-		addContent(properties.StableFabricLootEnabled, items, mod_pocketDim.itemStableFabric.itemID, 40);
+		addContent(properties.WorldThreadLootEnabled, items, mod_pocketDim.itemWorldThread.itemID, 80);
 		
 		// Add all the items to our dungeon chest
 		addItemsToContainer(DungeonChestInfo, items);

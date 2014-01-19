@@ -111,8 +111,8 @@ public class mod_pocketDim
 
 	public static Block transientDoor;
 	public static Block warpDoor;
-	public static Block goldDoor;
-	public static Block goldDimDoor;
+	public static Block goldenDoor;
+	public static Block goldenDimensionalDoor;
 	public static Block unstableDoor;
 	public static Block blockLimbo;
 	public static DimensionalDoor dimensionalDoor;    
@@ -121,17 +121,17 @@ public class mod_pocketDim
 	public static Block blockDimWallPerm;
 	public static BlockRift blockRift;
 
-	public static Item itemGoldDimDoor;
-	public static Item itemGoldDoor;
+	public static Item itemGoldenDimensionalDoor;
+	public static Item itemGoldenDoor;
 	public static Item itemWorldThread;
 
 	public static Item itemRiftBlade;
-	public static Item itemDimDoor;
-	public static Item itemExitDoor;
+	public static Item itemDimensionalDoor;
+	public static Item itemWarpDoor;
 	public static Item itemRiftRemover;
-	public static Item itemLinkSignature;
+	public static Item itemRiftSignature;
 	public static Item itemStableFabric;
-	public static Item itemChaosDoor;
+	public static Item itemUnstableDoor;
 	public static Item itemStabilizedLinkSignature;
 
 	public static BiomeGenBase limboBiome;
@@ -152,7 +152,7 @@ public class mod_pocketDim
 		@Override
 		public ItemStack getIconItemStack() 
 		{
-			return new ItemStack(mod_pocketDim.itemDimDoor, 1, 0);
+			return new ItemStack(mod_pocketDim.itemDimensionalDoor, 1, 0);
 		}
 
 		@Override
@@ -192,9 +192,9 @@ public class mod_pocketDim
 		LimboDecay decay = new LimboDecay(commonTickHandler, properties);
 
 		transientDoor = new TransientDoor(properties.TransientDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("transientDoor");
-		goldDimDoor = new BlockGoldDimDoor(properties.GoldDimDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorGold");
+		goldenDimensionalDoor = new BlockGoldDimDoor(properties.GoldenDimensionalDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorGold");
 
-		goldDoor = new BlockDoorGold(properties.GoldDoorID, Material.iron, properties).setHardness(0.1F).setUnlocalizedName("doorGold");
+		goldenDoor = new BlockDoorGold(properties.GoldenDoorID, Material.iron).setHardness(0.1F).setUnlocalizedName("doorGold");
 		blockDimWall = new BlockDimWall(properties.FabricBlockID, 0, Material.iron).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("blockDimWall");
 		blockDimWallPerm = (new BlockDimWallPerm(properties.PermaFabricBlockID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setUnlocalizedName("blockDimWallPerm");
 		warpDoor = new WarpDoor(properties.WarpDoorID, Material.wood, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
@@ -204,19 +204,19 @@ public class mod_pocketDim
 		dimensionalDoor = (DimensionalDoor) (new DimensionalDoor(properties.DimensionalDoorID, Material.iron, properties).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor"));
 		transTrapdoor = (TransTrapdoor) (new TransTrapdoor(properties.TransTrapdoorID, Material.wood).setHardness(1.0F) .setUnlocalizedName("dimHatch"));
 
-		itemGoldDimDoor = (new ItemGoldDimDoor(properties.GoldDimDoorItemID, Material.iron)).setUnlocalizedName("itemGoldDimDoor");
-		itemGoldDoor = (new ItemGoldDoor(properties.GoldDoorID, Material.wood)).setUnlocalizedName("itemGoldDoor");
-		itemDimDoor = (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemDimDoor");
-		itemExitDoor = (new ItemWarpDoor(properties.WarpDoorItemID, Material.wood)).setUnlocalizedName("itemDimDoorWarp");
-		itemLinkSignature = (new ItemRiftSignature(properties.RiftSignatureItemID)).setUnlocalizedName("itemLinkSignature");
+		itemGoldenDimensionalDoor = (new ItemGoldDimDoor(properties.GoldenDimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemGoldDimDoor");
+		itemGoldenDoor = (new ItemGoldDoor(properties.GoldenDoorID, Material.wood)).setUnlocalizedName("itemGoldDoor");
+		itemDimensionalDoor = (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemDimDoor");
+		itemWarpDoor = (new ItemWarpDoor(properties.WarpDoorItemID, Material.wood)).setUnlocalizedName("itemDimDoorWarp");
+		itemRiftSignature = (new ItemRiftSignature(properties.RiftSignatureItemID)).setUnlocalizedName("itemLinkSignature");
 		itemRiftRemover = (new itemRiftRemover(properties.RiftRemoverItemID, Material.wood)).setUnlocalizedName("itemRiftRemover");
 		itemStableFabric = (new ItemStableFabric(properties.StableFabricItemID, 0)).setUnlocalizedName("itemStableFabric");
-		itemChaosDoor = (new ItemUnstableDoor(properties.UnstableDoorItemID, Material.iron)).setUnlocalizedName("itemChaosDoor");
+		itemUnstableDoor = (new ItemUnstableDoor(properties.UnstableDoorItemID, Material.iron)).setUnlocalizedName("itemChaosDoor");
 		itemRiftBlade = (new ItemRiftBlade(properties.RiftBladeItemID, EnumToolMaterial.GOLD, properties)).setUnlocalizedName("ItemRiftBlade");
 		itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(properties.StabilizedRiftSignatureItemID)).setUnlocalizedName("itemStabilizedRiftSig");
-		itemWorldThread = (new ItemWorldThread(properties.ItemWorldThreadID)).setUnlocalizedName("itemWorldThread");
+		itemWorldThread = (new ItemWorldThread(properties.WorldThreadItemID)).setUnlocalizedName("itemWorldThread");
 
-
+		
 		mod_pocketDim.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
 		mod_pocketDim.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
@@ -224,8 +224,8 @@ public class mod_pocketDim
 		tracker = new PlayerTracker();
 		GameRegistry.registerPlayerTracker(tracker);
 
-		GameRegistry.registerBlock(goldDoor, "Golden Door");
-		GameRegistry.registerBlock(goldDimDoor, "Golden Dimensional Door");
+		GameRegistry.registerBlock(goldenDoor, "Golden Door");
+		GameRegistry.registerBlock(goldenDimensionalDoor, "Golden Dimensional Door");
 		GameRegistry.registerBlock(unstableDoor, "Unstable Door");
 		GameRegistry.registerBlock(warpDoor, "Warp Door");
 		GameRegistry.registerBlock(blockRift, "Rift");
@@ -241,9 +241,9 @@ public class mod_pocketDim
 		DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false);
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
 		
-		LanguageRegistry.addName(goldDoor, "Golden Door");
-		LanguageRegistry.addName(goldDimDoor, "Golden Dimensional Door");
-		LanguageRegistry.addName(transientDoor	, "transientDoor");
+		LanguageRegistry.addName(goldenDoor, "Golden Door");
+		LanguageRegistry.addName(goldenDimensionalDoor, "Golden Dimensional Door");
+		LanguageRegistry.addName(transientDoor	, "Transient Door");
 		LanguageRegistry.addName(blockRift	, "Rift");
 		LanguageRegistry.addName(blockLimbo	, "Unraveled Fabric");
 		LanguageRegistry.addName(warpDoor	, "Warp Door");
@@ -253,16 +253,16 @@ public class mod_pocketDim
 		LanguageRegistry.addName(dimensionalDoor, "Dimensional Door");
 		LanguageRegistry.addName(transTrapdoor, "Transdimensional Trapdoor");
 
-		LanguageRegistry.addName(itemExitDoor, "Warp Door");
-		LanguageRegistry.addName(itemLinkSignature	, "Rift Signature");
-		LanguageRegistry.addName(itemGoldDoor, "Golden Door");
-		LanguageRegistry.addName(itemGoldDimDoor	, "Golden Dimensional Door");
+		LanguageRegistry.addName(itemWarpDoor, "Warp Door");
+		LanguageRegistry.addName(itemRiftSignature, "Rift Signature");
+		LanguageRegistry.addName(itemGoldenDoor, "Golden Door");
+		LanguageRegistry.addName(itemGoldenDimensionalDoor, "Golden Dimensional Door");
 		LanguageRegistry.addName(itemStabilizedLinkSignature, "Stabilized Rift Signature");
-		LanguageRegistry.addName(itemRiftRemover	, "Rift Remover");
-		LanguageRegistry.addName(itemStableFabric	, "Stable Fabric");
-		LanguageRegistry.addName(itemChaosDoor	, "Unstable Door");
-		LanguageRegistry.addName(itemDimDoor, "Dimensional Door");
-		LanguageRegistry.addName(itemRiftBlade	, "Rift Blade");
+		LanguageRegistry.addName(itemRiftRemover, "Rift Remover");
+		LanguageRegistry.addName(itemStableFabric, "Stable Fabric");
+		LanguageRegistry.addName(itemUnstableDoor, "Unstable Door");
+		LanguageRegistry.addName(itemDimensionalDoor, "Dimensional Door");
+		LanguageRegistry.addName(itemRiftBlade, "Rift Blade");
 		LanguageRegistry.addName(itemWorldThread, "World Thread");
 
 
@@ -286,7 +286,7 @@ public class mod_pocketDim
 		LanguageRegistry.instance().addStringLocalization("entity.DimDoors.Obelisk.name", "Monolith");
 
 
-		CraftingManager.registerRecipies();
+		CraftingManager.registerRecipes();
 		DungeonHelper.initialize();		
 		this.riftGen.initGateways();
 

@@ -254,7 +254,7 @@ public class DDTeleporter
 		int blockID = world.getBlockId(door.getX(), door.getY() - 1, door.getZ());
 		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
 			blockID != properties.TransientDoorID && blockID != properties.UnstableDoorID
-			&& blockID != properties.GoldDimDoorID)
+			&& blockID != properties.GoldenDimensionalDoorID)
 		{
 			//Return the pocket's orientation instead
 			return PocketManager.getDimensionData(door.getDimension()).orientation();
