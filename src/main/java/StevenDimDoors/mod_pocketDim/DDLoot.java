@@ -189,9 +189,11 @@ public class DDLoot {
 		addModifiedEquipment( getRandomItem(Item.bootsIron, Item.bootsChain, null, 25, 10, random) , stacks, random);
 		
 		// Insert other random stuff
-		// 40% chance for a name tag, 35% chance for a glass bottle, and 5% chance for record 11
+		// 40% chance for a name tag, 35% chance for a glass bottle
+		// 30% chance for an ender pearl, 5% chance for record 11
 		addItemWithChance(stacks, random, 40, Item.nameTag, 1);
 		addItemWithChance(stacks, random, 35, Item.glassBottle, 1);
+		addItemWithChance(stacks, random, 30, Item.enderPearl, 1);
 		addItemWithChance(stacks, random, 5, Item.record11, 1);
 		
 		fillChest(stacks, inventory, random);
