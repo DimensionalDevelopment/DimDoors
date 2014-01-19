@@ -15,7 +15,6 @@ public class GatewayBlockFilter extends SchematicFilter {
 	private Schematic schematic;
 	private Point3D entranceDoorLocation;
 
-
 	public GatewayBlockFilter(short dimensionalDoorID, short transientDoorID, short warpDoorID)
 	{
 		super("GatewayEntranceFinder");

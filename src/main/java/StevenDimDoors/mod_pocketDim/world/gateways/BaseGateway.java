@@ -158,7 +158,7 @@ public abstract class BaseGateway
 	{
 		return !this.isBiomeSpecific || this.biomeNames.contains(biome.biomeName.toLowerCase());
 	}
-	
+
 	public boolean hasSchematic()
 	{
 		return this.schematicPaths != null && !this.schematicPaths.isEmpty();
