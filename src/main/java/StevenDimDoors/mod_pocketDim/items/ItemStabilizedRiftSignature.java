@@ -54,10 +54,10 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		if (source != null)
 		{
 			// Yes, it's initialized. Check if the player is in creative
-			// or if the player can pay an Ender Pearl to create a rift.
-			if (!player.capabilities.isCreativeMode && !player.inventory.hasItem(Item.enderPearl.itemID))
+			// or if the player can pay with Stable Fabric to create a rift.
+			if (!player.capabilities.isCreativeMode && !player.inventory.hasItem(mod_pocketDim.itemStableFabric.itemID))
 			{
-				mod_pocketDim.sendChat(player,"You don't have any Ender Pearls!");
+				mod_pocketDim.sendChat(player, "You don't have any Stable Fabric!");
 				// I won't do this, but this is the chance to localize chat 
 				// messages sent to the player; look at ChatMessageComponent 
 				// and how MFR does it with items like the safari net launcher
@@ -88,7 +88,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 
 			if (!player.capabilities.isCreativeMode)
 			{
-				player.inventory.consumeInventoryItem(Item.enderPearl.itemID);
+				player.inventory.consumeInventoryItem(mod_pocketDim.itemStableFabric.itemID);
 			}
 			mod_pocketDim.sendChat(player,"Rift Created");
 			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftEnd", 0.6f, 1);
@@ -97,7 +97,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		{
 			//The link signature has not been used. Store its current target as the first location. 
 			setSource(stack, x, adjustedY, z, orientation, PocketManager.getDimensionData(world));
-			mod_pocketDim.sendChat(player,"Location Stored in Rift Signature");
+			mod_pocketDim.sendChat(player,"Location Stored in Stabilized Rift Signature");
 			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftStart", 0.6f, 1);
 		}
 		return true;
