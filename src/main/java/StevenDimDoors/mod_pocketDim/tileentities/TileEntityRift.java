@@ -36,6 +36,8 @@ public class TileEntityRift extends TileEntity
 	private static final int MAX_ANCESTOR_LINKS = 3;
 	private static final int ENDERMAN_SPAWNING_CHANCE = 1;
 	private static final int MAX_ENDERMAN_SPAWNING_CHANCE = 32;
+	private static final int RIFT_SPREAD_CHANCE = 1;
+	private static final int MAX_RIFT_SPREAD_CHANCE = 256;
 	
 	private static Random random = new Random();
 
@@ -299,20 +301,13 @@ public class TileEntityRift extends TileEntity
 
 	public void grow(DDProperties properties)
 	{
-		if (worldObj.isRemote || hasGrownRifts || !properties.RiftSpreadEnabled || random.nextInt(5) == 0)
+		if (worldObj.isRemote || hasGrownRifts || !properties.RiftSpreadEnabled
+			|| random.nextInt(MAX_RIFT_SPREAD_CHANCE) < RIFT_SPREAD_CHANCE)
 		{
 			return;
 		}
 
 		NewDimData dimension = PocketManager.getDimensionData(worldObj);
-		
-		if(random.nextInt(dimension.findRiftsInRange(this.worldObj, 5, xCoord, yCoord, zCoord).size()+1)<2)
-		{
-			if(random.nextInt(7)!=0)
-			{
-				return;
-			}
-		}
 		DimLink link = dimension.getLink(xCoord, yCoord, zCoord);
 		
 		if (countAncestorLinks(link) > MAX_ANCESTOR_LINKS)
@@ -320,8 +315,11 @@ public class TileEntityRift extends TileEntity
 			return;
 		}
 		
-		//FIXME: This condition would prevent people from creating rooms of densely packed rifts... ~SenseiKiwi
-		if (updateNearestRift())
+		// The probability of rifts trying to spread increases if more rifts are nearby
+		// Players should see rifts spread faster within clusters than at the edges of clusters
+		// Also, single rifts CANNOT spread.
+		int nearRifts = dimension.findRiftsInRange(this.worldObj, 5, xCoord, yCoord, zCoord).size();
+		if (nearRifts == 0 || random.nextInt(nearRifts) == 0)
 		{
 			return;
 		}
@@ -343,7 +341,7 @@ public class TileEntityRift extends TileEntity
 				{
 					dimension.createChildLink(x, y, z, link);
 					hasGrownRifts = true;
-					return;
+					break;
 				}
 				else
 				{

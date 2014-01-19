@@ -15,17 +15,15 @@ public class GatewayBlockFilter extends SchematicFilter {
 	private Schematic schematic;
 	private Point3D entranceDoorLocation;
 
-
-	
-	public GatewayBlockFilter(short dimensionalDoorID,short transientDoorID,short warpDoorID)
+	public GatewayBlockFilter(short dimensionalDoorID, short transientDoorID, short warpDoorID)
 	{
-		super("GatewayEnteranceFinder");
-		this.dimensionalDoorID = dimensionalDoorID;
+		super("GatewayEntranceFinder");
 		this.entranceDoorLocation = null;
 		this.entranceOrientation = 0;
 		this.schematic = null;
-		this.transientDoorID=transientDoorID;
-		this.warpDoorID=warpDoorID;
+		this.dimensionalDoorID = dimensionalDoorID;
+		this.transientDoorID = transientDoorID;
+		this.warpDoorID = warpDoorID;
 	}
 	
 	public int getEntranceOrientation() {
@@ -79,7 +77,6 @@ public class GatewayBlockFilter extends SchematicFilter {
 			}
 		}
 		return false;
-		
 	}
 	
 	@Override

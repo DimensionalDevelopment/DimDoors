@@ -87,7 +87,6 @@ public class DungeonSchematic extends Schematic {
 
 	public static DungeonSchematic readFromFile(File schematicFile) throws FileNotFoundException, InvalidSchematicException
 	{
-		// TODO: fix resource leak
 		return readFromStream(new FileInputStream(schematicFile));
 	}
 
@@ -168,6 +167,7 @@ public class DungeonSchematic extends Schematic {
 		mapping.put((short) properties.PermaFabricBlockID, STANDARD_ETERNAL_FABRIC_ID);
 		mapping.put((short) properties.WarpDoorID, STANDARD_WARP_DOOR_ID);
 		mapping.put((short) properties.DimensionalDoorID, STANDARD_DIMENSIONAL_DOOR_ID);
+		mapping.put((short) properties.TransientDoorID, STANDARD_TRANSIENT_DOOR_ID);
 		return mapping;
 	}
 	

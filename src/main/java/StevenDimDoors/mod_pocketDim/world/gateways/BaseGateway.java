@@ -54,9 +54,8 @@ public abstract class BaseGateway
 
 	public BaseGateway(DDProperties properties)
 	{
-		//not using DD properties because sometimes its IDS can be wrong, but require it so we dont init too early
-		filter = new GatewayBlockFilter((short) mod_pocketDim.dimensionalDoor.blockID,
-				(short) mod_pocketDim.transientDoor.blockID,(short)mod_pocketDim.warpDoor.blockID);
+		filter = new GatewayBlockFilter((short) properties.DimensionalDoorID, (short) properties.TransientDoorID,
+				(short) properties.WarpDoorID);
 	}
 	
 	/**
@@ -70,18 +69,23 @@ public abstract class BaseGateway
 	{
 		int orientation = 0;
 		
-		if(this.hasSchematic())
+		if (this.hasSchematic())
 		{
 			Schematic schematic = this.getSchematicToBuild(world, x, y, z);
 		
 			schematic.applyFilter(filter);	
 			Point3D doorLocation = filter.getEntranceDoorLocation();
 			orientation = filter.getEntranceOrientation();
-				
-			schematic.copyToWorld(world, x-doorLocation.getX(), y+1-doorLocation.getY(), z-doorLocation.getZ());
+			
+			// I suspect that the location used below is wrong. Gateways should be placed vertically based on
+			// the Y position of the surface where they belong. I'm pretty sure including doorLocation.getY()
+			// messes up the calculation. ~SenseiKiwi
+			
+			//schematic.copyToWorld(world, x - doorLocation.getX(), y, z - doorLocation.getZ());
+			schematic.copyToWorld(world, x - doorLocation.getX(), y + 1 - doorLocation.getY(), z - doorLocation.getZ());
 		}
 			
-		this.generateRandomBits(world, x,y,z);
+		this.generateRandomBits(world, x, y, z);
 		
 		DimLink link = PocketManager.getDimensionData(world).createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
 		PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, this.getStartingDungeon(world.rand));
@@ -152,12 +156,11 @@ public abstract class BaseGateway
 	
 	public boolean isBiomeValid(BiomeGenBase biome)
 	{
-		return !this.isBiomeSpecific||this.biomeNames.contains(biome.biomeName.toLowerCase());
+		return !this.isBiomeSpecific || this.biomeNames.contains(biome.biomeName.toLowerCase());
 	}
+
 	public boolean hasSchematic()
 	{
-		return this.schematicPaths!=null&&this.schematicPaths.size()>0;
+		return this.schematicPaths != null && !this.schematicPaths.isEmpty();
 	}
-	
-	
 }
