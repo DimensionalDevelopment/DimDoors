@@ -59,7 +59,7 @@ public class CraftingManager
 		{
 			GameRegistry.addRecipe(new ItemStack(itemRiftBlade, 1), new Object[]
 					{
-				" x ", " x ", " y ", 'x', mod_pocketDim.itemStableFabric, 'y', mod_pocketDim.itemRiftRemover
+				" x ", " x ", " y ", 'x', mod_pocketDim.itemStableFabric, 'y', Item.blazeRod
 					});
 		}
 
