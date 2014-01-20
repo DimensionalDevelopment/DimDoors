@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim;
 import java.util.ArrayList;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -195,6 +196,12 @@ public class DDLoot {
 		addItemWithChance(stacks, random, 35, Item.glassBottle, 1);
 		addItemWithChance(stacks, random, 30, Item.enderPearl, 1);
 		addItemWithChance(stacks, random, 5, Item.record11, 1);
+		
+		// Finally, there is a 3% chance of adding a player head
+		if (random.nextInt(100) < 50) // FIXME: SET TO 50% FOR TESTING, CHANGE TO 3%
+		{
+			stacks.add( new ItemStack(Block.skull) );
+		}
 		
 		fillChest(stacks, inventory, random);
 	}
