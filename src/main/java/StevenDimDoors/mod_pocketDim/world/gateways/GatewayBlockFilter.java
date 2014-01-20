@@ -8,22 +8,20 @@ import StevenDimDoors.mod_pocketDim.schematic.SchematicFilter;
 
 public class GatewayBlockFilter extends SchematicFilter {
 
-	private short dimensionalDoorID;
-	private int transientDoorID;
-	private int warpDoorID;
+	private static final short STANDARD_WARP_DOOR_ID = 1975;
+	private static final short STANDARD_DIMENSIONAL_DOOR_ID = 1970;
+	private static final short STANDARD_TRANSIENT_DOOR_ID = 1979;
+
 	private int entranceOrientation;
 	private Schematic schematic;
 	private Point3D entranceDoorLocation;
 
-	public GatewayBlockFilter(short dimensionalDoorID, short transientDoorID, short warpDoorID)
+	public GatewayBlockFilter()
 	{
 		super("GatewayEntranceFinder");
 		this.entranceDoorLocation = null;
 		this.entranceOrientation = 0;
 		this.schematic = null;
-		this.dimensionalDoorID = dimensionalDoorID;
-		this.transientDoorID = transientDoorID;
-		this.warpDoorID = warpDoorID;
 	}
 	
 	public int getEntranceOrientation() {
@@ -46,30 +44,30 @@ public class GatewayBlockFilter extends SchematicFilter {
 	{
 		int indexBelow;
 		int indexDoubleBelow;
-		if (blocks[index] == dimensionalDoorID)
+		if (blocks[index] == STANDARD_DIMENSIONAL_DOOR_ID)
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == dimensionalDoorID)
+			if (indexBelow >= 0 && blocks[indexBelow] == STANDARD_DIMENSIONAL_DOOR_ID)
 			{
 				entranceDoorLocation = schematic.calculatePoint(index);
 				entranceOrientation = (metadata[indexBelow] & 3);
 				return true;
 			}
 		}
-		if (blocks[index] == transientDoorID)
+		if (blocks[index] == STANDARD_TRANSIENT_DOOR_ID)
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == transientDoorID)
+			if (indexBelow >= 0 && blocks[indexBelow] == STANDARD_TRANSIENT_DOOR_ID)
 			{
 				entranceDoorLocation = schematic.calculatePoint(index);
 				entranceOrientation = (metadata[indexBelow] & 3);
 				return true;
 			}
 		}
-		if (blocks[index] == warpDoorID)
+		if (blocks[index] == STANDARD_WARP_DOOR_ID)
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == warpDoorID)
+			if (indexBelow >= 0 && blocks[indexBelow] == STANDARD_WARP_DOOR_ID)
 			{
 				entranceDoorLocation = schematic.calculatePoint(index);
 				entranceOrientation = (metadata[indexBelow] & 3);
