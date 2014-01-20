@@ -44,19 +44,16 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		this.blockIconBottom = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName()+"_bottom");
 	}
 	
-    @Override
-	@SideOnly(Side.CLIENT)
-
-    /**
+        /**
      * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
      */
-    public Icon getIcon(int par1, int par2)
+	@Override
+	@SideOnly(Side.CLIENT)
+	public Icon getIcon(int par1, int par2)
     {
         return this.blockIcon;
     }
     
-    
-
 	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) 
 	{
@@ -66,11 +63,9 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-
-		boolean shouldOpen=true;
-
-		//System.out.println(String.valueOf(par1World.getBlockMetadata(par2, par3, par4)));
-		if(player.inventory.getCurrentItem()!=null)
+		boolean shouldOpen = true;
+		
+		if (player.inventory.getCurrentItem()!=null)
 		{
 			if(player.inventory.getCurrentItem().getItem() == mod_pocketDim.itemRiftBlade)
 			{
@@ -392,8 +387,6 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			}
 			if (canUse)
 			{
-				
-				
 				// Teleport the entity through the link, if it exists
 				DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
 				if (link != null)
@@ -402,12 +395,11 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 					{
 						DDTeleporter.traverseDimDoor(world, link, entity, this);
 					}
-					catch(Exception e)
+					catch (Exception e)
 					{
-						System.err.println("Something when wrong teleporting to a dim:");
+						System.err.println("Something went wrong teleporting to a dimension:");
 						e.printStackTrace();
 					}
-				
 				}
 				
 				// Close the door only after the entity goes through
