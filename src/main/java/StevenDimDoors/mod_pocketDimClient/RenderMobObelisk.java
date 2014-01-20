@@ -1,7 +1,6 @@
 package StevenDimDoors.mod_pocketDimClient;
 
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import net.minecraft.client.renderer.entity.RenderEntity;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -9,14 +8,14 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderMobObelisk extends RenderEntity
+public class RenderMobObelisk extends RenderLiving
 {
 	protected ModelMobObelisk obeliskModel;
 
 	public RenderMobObelisk(float f)
 	{
-		super();
-		//this.obeliskModel = (ModelMobObelisk)this.mainModel;
+		super(new ModelMobObelisk(), f);
+		this.obeliskModel = (ModelMobObelisk)this.mainModel;
 	}
 	
 
