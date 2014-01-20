@@ -72,22 +72,11 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 				shouldOpen = false;
 				if (!world.isRemote && world.getBlockId(x, y-1, z) == this.blockID)
 				{
-					int var12 = MathHelper.floor_double((player.rotationYaw+90) * 4.0F / 360.0F + 0.5D) & 3;
-
-					if (world.getBlockMetadata(x, y-1, z) == var12)
-					{
-						var12 = BlockRotator.transformMetadata(var12, 1, this.blockID);
-					}
-					world.setBlockMetadataWithNotify(x, y-1, z, var12, 2);
+					world.setBlockMetadataWithNotify(x, y-1, z, (world.getBlockMetadata(x, y-1, z)+1)%4, 2);
 				}
 				if (!world.isRemote && world.getBlockId(x, y+1, z) == this.blockID)
 				{
-					int var12 = MathHelper.floor_double((player.rotationYaw+90) * 4.0F / 360.0F + 0.5D) & 3;
-					if(world.getBlockMetadata(x, y, z)==var12)
-					{ 
-						var12 = BlockRotator.transformMetadata(var12, 1, this.blockID);
-					}
-					world.setBlockMetadataWithNotify(x, y, z, var12, 2);
+					world.setBlockMetadataWithNotify(x, y, z, (world.getBlockMetadata(x, y, z)+1)%4, 2);
 				}
 				world.playAuxSFXAtEntity(player, 1001, x, y, z, 0);
 

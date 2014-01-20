@@ -98,14 +98,14 @@ public class EventHookContainer
     		{
     			player.inventory.clearInventory(-1, -1);
     		}
-    		
+    		player.extinguish();
+    		player.clearActivePotions();
     		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(player.worldObj.rand);
     		Point4D destination = new Point4D((int) (coords.posX+entity.posX), coords.posY, (int) (coords.posZ+entity.posZ ), mod_pocketDim.properties.LimboDimensionID);
     		DDTeleporter.teleportEntity(player, destination, false);
     		player.setHealth(player.getMaxHealth());
-    		player.extinguish();
-    		player.clearActivePotions();
     		event.setCanceled(true);
+    		
     		return false;
     	}
     	return true;
