@@ -21,6 +21,7 @@ public class DDProperties
 	public final int TransientDoorID;
 	public final int FabricBlockID;
 	public final int RiftBlockID;
+	public final int CoriumBlockID;
 
 	/**
 	 * World Generation Block IDs
@@ -180,6 +181,8 @@ public class DDProperties
 		TransientDoorID = config.getBlock("Transient Door Block ID", 1979).getInt();
 		GoldenDoorID = config.getBlock("Gold Door Block ID", 1980).getInt();
 		GoldenDimensionalDoorID = config.getBlock("Gold Dim Door Block ID", 1981).getInt();
+		
+		CoriumBlockID = config.getBlock("Corium Block ID", 900).getInt();
 		
 		WarpDoorItemID = config.getItem("Warp Door Item ID", 5670).getInt();
 		RiftRemoverItemID = config.getItem("Rift Remover Item ID", 5671).getInt();

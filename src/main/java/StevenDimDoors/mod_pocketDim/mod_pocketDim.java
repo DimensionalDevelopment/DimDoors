@@ -291,14 +291,10 @@ public class mod_pocketDim
 		this.riftGen.initGateways();
 
 		coriumFluid = new LiquidCorium("Corium").setDensity(1000).setTemperature(3473).setDensity(9400).setLuminosity(6).setRarity(EnumRarity.rare);
-		coriumBlock = new LiquidCoriumBlock(900, coriumFluid, Material.lava).setQuantaPerBlock(16).setTickRate(20).setTickRandomly(true).setUnlocalizedName("Corium"); 
+		coriumBlock = new LiquidCoriumBlock(properties.CoriumBlockID, coriumFluid, Material.lava).setQuantaPerBlock(16).setTickRate(20).setTickRandomly(true).setUnlocalizedName("Corium"); 
 		FluidRegistry.registerFluid(coriumFluid);
 		GameRegistry.registerBlock(coriumBlock,"Corium");
 		LanguageRegistry.addName(coriumBlock, "Corium");
-
-
-		
-		
 
 		// Register loot chests
 		DDLoot.registerInfo(properties);
