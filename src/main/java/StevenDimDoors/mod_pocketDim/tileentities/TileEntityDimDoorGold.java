@@ -73,9 +73,9 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 
 			break;
 		}
-		for(int chunkX = -1; chunkX<2;chunkX++)
+		for(int chunkX = -2; chunkX<3;chunkX++)
 		{
-			for(int chunkZ = -1; chunkZ<2;chunkZ++)
+			for(int chunkZ = -2; chunkZ<3;chunkZ++)
 			{
 				ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair((origin.getX()+xOffset >> 4)+chunkX, (origin.getZ()+zOffset >> 4)+chunkZ));
 			}
