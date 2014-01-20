@@ -31,9 +31,9 @@ public class ItemRiftBlade extends ItemSword
 {
 	private final DDProperties properties;
 
-	public ItemRiftBlade(int itemID, EnumToolMaterial material, DDProperties properties)
+	public ItemRiftBlade(int itemID, DDProperties properties)
 	{
-		super(itemID, material);
+		super(itemID, EnumToolMaterial.EMERALD);
 
 		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 		this.setMaxStackSize(1);
@@ -211,7 +211,7 @@ public class ItemRiftBlade extends ItemSword
 	public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
 	{
 		//Don't include a call to super.getIsRepairable()!
-    	//That would cause this sword to accept gold as a repair material (since we set material = Gold).
+    	//That would cause this sword to accept diamonds as a repair material (since we set material = Diamond).
 		return mod_pocketDim.itemStableFabric.itemID == par2ItemStack.itemID ? true : false;
 	}
 

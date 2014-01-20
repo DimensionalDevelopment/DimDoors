@@ -15,16 +15,11 @@ import net.minecraft.world.IBlockAccess;
 
 public class BlockDoorGold extends BlockDoor
 {
-
 	private Icon blockIconBottom;
-	@SuppressWarnings("unused") // ??
-	private DDProperties properties;
 
-	public BlockDoorGold(int par1, Material par2Material,DDProperties properties) 
+	public BlockDoorGold(int par1, Material par2Material)
 	{
 		super(par1, par2Material);
-		this.properties=properties;
-
 	}
 	
 	@Override
@@ -36,7 +31,7 @@ public class BlockDoorGold extends BlockDoor
 	
 	public int idDropped(int par1, Random par2Random, int par3)
 	{
-		return mod_pocketDim.itemGoldDoor.itemID;
+		return mod_pocketDim.itemGoldenDoor.itemID;
 	}
 	  
 	@Override
@@ -49,7 +44,7 @@ public class BlockDoorGold extends BlockDoor
 	@SideOnly(Side.CLIENT)
 	public Icon getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
 	{
-		if(par1IBlockAccess.getBlockId(par2, par3-1, par4) == this.blockID)
+		if (par1IBlockAccess.getBlockId(par2, par3-1, par4) == this.blockID)
 		{
 			return this.blockIcon;
 		}

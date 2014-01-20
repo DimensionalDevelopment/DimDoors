@@ -12,12 +12,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-@SuppressWarnings("deprecation")
 public class BlockGoldDimDoor extends BaseDimDoor
 {
 
-	public BlockGoldDimDoor(int blockID, Material material,
-			DDProperties properties) {
+	public BlockGoldDimDoor(int blockID, Material material, DDProperties properties)
+	{
 		super(blockID, material, properties);
 	}
 
@@ -38,7 +37,7 @@ public class BlockGoldDimDoor extends BaseDimDoor
 	@Override
 	public int getDrops()
 	{
-		return mod_pocketDim.itemGoldDoor.itemID;
+		return mod_pocketDim.itemGoldenDoor.itemID;
 	}
 	
 	@Override

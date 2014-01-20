@@ -349,7 +349,7 @@ public class PocketBuilder
 		int blockID = world.getBlockId(source.getX(), source.getY() - 1, source.getZ());
 		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
 				blockID != properties.TransientDoorID &&
-				blockID != properties.GoldDimDoorID)
+				blockID != properties.GoldenDimensionalDoorID)
 		{
 			throw new IllegalStateException("The link's source is not a door block. It should be impossible to traverse a rift without a door!");
 		}

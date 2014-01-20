@@ -9,41 +9,25 @@ import static StevenDimDoors.mod_pocketDim.mod_pocketDim.*;
 public class CraftingManager
 {
 
-	public static void registerRecipies()
-	{
-		Item coreCraftingItem = Item.enderPearl;
-		
-		if(properties.enableServerMode)
-		{
-			coreCraftingItem = itemWorldThread;
-		}
+	public static void registerRecipes(DDProperties properties)
+	{	
 		if (properties.CraftingDimensionalDoorAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(itemDimDoor, 1), new Object[]
-					{
-				"   ", "yxy", "   ", 'x', coreCraftingItem,  'y', Item.doorIron 
-					});
-
-			GameRegistry.addRecipe(new ItemStack(itemDimDoor, 1), new Object[]
+			GameRegistry.addRecipe(new ItemStack(itemDimensionalDoor, 1), new Object[]
 					{
 				"   ", "yxy", "   ", 'x', mod_pocketDim.itemStableFabric,  'y', Item.doorIron 
 					});
 		}
 		if(properties.CraftingUnstableDoorAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(itemChaosDoor, 1), new Object[]
+			GameRegistry.addRecipe(new ItemStack(itemUnstableDoor, 1), new Object[]
 					{
-				"   ", "yxy", "   ", 'x', Item.eyeOfEnder,  'y', mod_pocketDim.itemDimDoor 
+				"   ", "yxy", "   ", 'x', Item.eyeOfEnder,  'y', mod_pocketDim.itemDimensionalDoor 
 					});
 		}
 		if(properties.CraftingWarpDoorAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(itemExitDoor, 1), new Object[]
-					{
-				"   ", "yxy", "   ", 'x', coreCraftingItem,  'y', Item.doorWood 
-					});
-
-			GameRegistry.addRecipe(new ItemStack(itemExitDoor, 1), new Object[]
+			GameRegistry.addRecipe(new ItemStack(itemWarpDoor, 1), new Object[]
 					{
 				"   ", "yxy", "   ", 'x', mod_pocketDim.itemStableFabric,  'y', Item.doorWood 
 					});
@@ -52,22 +36,12 @@ public class CraftingManager
 		{
 			GameRegistry.addRecipe(new ItemStack(transTrapdoor, 1), new Object[]
 					{
-				" y ", " x ", " y ", 'x', coreCraftingItem,  'y', Block.trapdoor
-					});
-
-			GameRegistry.addRecipe(new ItemStack(transTrapdoor, 1), new Object[]
-					{
-				" y ", " x ", " y ", 'x', mod_pocketDim.itemStableFabric,  'y', Block.trapdoor
+				" y ", " x ", " y ", 'x', mod_pocketDim.itemStableFabric, 'y', Block.trapdoor
 					});
 		}
 		if(properties.CraftingRiftSignatureAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(itemLinkSignature, 1), new Object[]
-					{
-				" y ", "yxy", " y ", 'x', coreCraftingItem,  'y', Item.ingotIron
-					});
-
-			GameRegistry.addRecipe(new ItemStack(itemLinkSignature, 1), new Object[]
+			GameRegistry.addRecipe(new ItemStack(itemRiftSignature, 1), new Object[]
 					{
 				" y ", "yxy", " y ", 'x', mod_pocketDim.itemStableFabric,  'y', Item.ingotIron
 					});
@@ -77,20 +51,15 @@ public class CraftingManager
 		{
 			GameRegistry.addRecipe(new ItemStack(itemRiftRemover, 1), new Object[]
 					{
-				" y ", "yxy", " y ", 'x', coreCraftingItem,  'y', Item.ingotGold
-					});
-			GameRegistry.addRecipe(new ItemStack(itemRiftRemover, 1), new Object[]
-					{
-				"yyy", "yxy", "yyy", 'x', mod_pocketDim.itemStableFabric,  'y', Item.ingotGold
+				"yyy", "yxy", "yyy", 'x', mod_pocketDim.itemStableFabric, 'y', Item.ingotGold
 					});
 		}
 
 		if (properties.CraftingRiftBladeAllowed)
 		{
-
 			GameRegistry.addRecipe(new ItemStack(itemRiftBlade, 1), new Object[]
 					{
-				" x ", " x ", " y ", 'x', coreCraftingItem,  'y',mod_pocketDim.itemRiftRemover
+				" x ", " x ", " y ", 'x', mod_pocketDim.itemStableFabric, 'y', Item.blazeRod
 					});
 		}
 
@@ -98,7 +67,7 @@ public class CraftingManager
 		{
 			GameRegistry.addRecipe(new ItemStack(itemStableFabric, 1), new Object[]
 					{
-				"yyy", "yxy", "yyy", 'x', coreCraftingItem,  'y', mod_pocketDim.itemWorldThread					
+				"yyy", "yxy", "yyy", 'x', Item.enderPearl,  'y', mod_pocketDim.itemWorldThread					
 				});
 		}
 		
@@ -106,30 +75,23 @@ public class CraftingManager
 		{
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemStabilizedLinkSignature,1), new Object[]
 					{
-				" y ", "yxy", " y ", 'x', mod_pocketDim.itemLinkSignature,  'y', mod_pocketDim.itemStableFabric
+				" y ", "yxy", " y ", 'x', mod_pocketDim.itemRiftSignature,  'y', mod_pocketDim.itemStableFabric
 					});
 		}
-		if (properties.CraftingGoldDimDoorAllowed)
+		if (properties.CraftingGoldenDimensionalDoorAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldDimDoor,1), new Object[]
+			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldenDimensionalDoor,1), new Object[]
 					{
-				"   ", "xyx", "   ", 'x', mod_pocketDim.itemGoldDoor,  'y', Item.eyeOfEnder
+				"   ", "xyx", "   ", 'x', mod_pocketDim.itemGoldenDoor, 'y', Item.eyeOfEnder
 					});
 		}
-		if (properties.CraftingGoldDoorAllowed)
+		if (properties.CraftingGoldenDoorAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldDoor,1), new Object[]
+			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldenDoor, 1), new Object[]
 					{
 				"yy ", "yy ", "yy ", 'y', Item.ingotGold
 					});
-			
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldDoor,1), new Object[]
-					{
-				" yy", " yy", " yy", 'y', Item.ingotGold
-					});
 		}
-		
 	}
-
 	
 }

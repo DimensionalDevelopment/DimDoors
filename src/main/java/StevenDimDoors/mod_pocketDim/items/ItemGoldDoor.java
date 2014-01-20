@@ -33,7 +33,7 @@ public class ItemGoldDoor extends ItemDoor
 		else
 		{
 			++par5;
-			Block block = mod_pocketDim.goldDoor;
+			Block block = mod_pocketDim.goldenDoor;
 
 			if (par2EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack) && par2EntityPlayer.canPlayerEdit(par4, par5 + 1, par6, par7, par1ItemStack))
 			{

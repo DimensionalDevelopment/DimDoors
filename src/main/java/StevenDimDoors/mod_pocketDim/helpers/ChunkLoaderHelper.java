@@ -27,7 +27,7 @@ public class ChunkLoaderHelper implements LoadingCallback
 			int goldDimDoorX = ticket.getModData().getInteger("goldDimDoorX");
 			int goldDimDoorY = ticket.getModData().getInteger("goldDimDoorY");
 			int goldDimDoorZ = ticket.getModData().getInteger("goldDimDoorZ");
-			if(world.getBlockId(goldDimDoorX, goldDimDoorY, goldDimDoorZ)!=mod_pocketDim.properties.GoldDimDoorID)
+			if(world.getBlockId(goldDimDoorX, goldDimDoorY, goldDimDoorZ) != mod_pocketDim.properties.GoldenDimensionalDoorID)
 			{
 				ForgeChunkManager.releaseTicket(ticket);
 			}
