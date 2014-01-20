@@ -13,6 +13,7 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
+import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.dungeon.ModBlockFilter;
 import StevenDimDoors.mod_pocketDim.dungeon.SpecialBlockFinder;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
@@ -29,23 +30,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 
 public abstract class BaseGateway 
 {
-	//TODO all these constants probably need to go somewhere, they are being
-	//duplicated atm
-	private static final short MAX_VANILLA_BLOCK_ID = 173;
-	private static final short STANDARD_FABRIC_OF_REALITY_ID = 1973;
-	private static final short STANDARD_ETERNAL_FABRIC_ID = 220;
-	private static final short STANDARD_WARP_DOOR_ID = 1975;
-	private static final short STANDARD_DIMENSIONAL_DOOR_ID = 1970;
-	private static final short STANDARD_TRANSIENT_DOOR_ID = 1979;
-	
-	private static final short[] MOD_BLOCK_FILTER_EXCEPTIONS = new short[] {
-		STANDARD_FABRIC_OF_REALITY_ID,
-		STANDARD_ETERNAL_FABRIC_ID,
-		STANDARD_WARP_DOOR_ID,
-		STANDARD_DIMENSIONAL_DOOR_ID,
-		STANDARD_TRANSIENT_DOOR_ID
-	};
-	
 	//This pack is what the dungeon initially generates into from this gateway.
 	protected DungeonPack startingPack;
 	
@@ -95,23 +79,11 @@ public abstract class BaseGateway
 		{
 			//Get the correct filters
 			GatewayBlockFilter filter = new GatewayBlockFilter();
-			Schematic schematic = this.getSchematicToBuild(world, x, y, z);
-			CompoundFilter standardizer = new CompoundFilter();
-			standardizer.addFilter(new ModBlockFilter(MAX_VANILLA_BLOCK_ID, MOD_BLOCK_FILTER_EXCEPTIONS,
-					(short) properties.FabricBlockID, (byte) 0));
+			DungeonSchematic schematic = this.getSchematicToBuild(world, x, y, z);
 			
-			Map<Short, Short> mapping = getAssignedToStandardIDMapping(properties);
-			for (Entry<Short, Short> entry : mapping.entrySet())
-			{
-				if (entry.getKey() != entry.getValue())
-				{
-					standardizer.addFilter(new ReplacementFilter(entry.getValue(), entry.getKey()));
-				}
-			}
-			
-			//apply the filters
-			schematic.applyFilter(standardizer);
+			//apply filters
 			schematic.applyFilter(filter);	
+			schematic.applyImportFilters(properties);
 			
 			Point3D doorLocation = filter.getEntranceDoorLocation();
 			orientation = filter.getEntranceOrientation();
@@ -140,12 +112,12 @@ public abstract class BaseGateway
 	 * @param z
 	 * @return
 	 */
-	public Schematic getSchematicToBuild(World world, int x, int y, int z)
+	public DungeonSchematic getSchematicToBuild(World world, int x, int y, int z)
 	{
 		//TODO- refine selection criteria here, this is the default case
 		try 
 		{
-			return Schematic.readFromResource(schematicPaths.get(world.rand.nextInt(schematicPaths.size())));
+			return DungeonSchematic.readFromResource(schematicPaths.get(world.rand.nextInt(schematicPaths.size())));
 		}
 		catch (Exception e) 
 		{
@@ -201,18 +173,5 @@ public abstract class BaseGateway
 	public boolean hasSchematic()
 	{
 		return this.schematicPaths != null && !this.schematicPaths.isEmpty();
-	}
-
-	//TODO- we probably should put this is a seperate class, or have it in DDProperties. 
-	private Map<Short, Short> getAssignedToStandardIDMapping(DDProperties properties)
-	{
-		//If we ever need this broadly or support other mods, this should be moved to a separate class
-		TreeMap<Short, Short> mapping = new TreeMap<Short, Short>();
-		mapping.put((short) properties.FabricBlockID, STANDARD_FABRIC_OF_REALITY_ID);
-		mapping.put((short) properties.PermaFabricBlockID, STANDARD_ETERNAL_FABRIC_ID);
-		mapping.put((short) properties.WarpDoorID, STANDARD_WARP_DOOR_ID);
-		mapping.put((short) properties.DimensionalDoorID, STANDARD_DIMENSIONAL_DOOR_ID);
-		mapping.put((short) properties.TransientDoorID, STANDARD_TRANSIENT_DOOR_ID);
-		return mapping;
 	}
 }
