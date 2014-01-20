@@ -74,7 +74,10 @@ public class EventHookContainer
     		RiftRegenerator.regenerateRiftsInAllWorlds();
     	}
     	
-    	this.playMusicForDim(event.world);
+    	if(event.world!=null)
+    	{
+    		this.playMusicForDim(event.world);
+    	}
     }
     
     @ForgeSubscribe

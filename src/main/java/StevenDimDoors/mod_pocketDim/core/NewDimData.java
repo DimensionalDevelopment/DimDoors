@@ -372,19 +372,7 @@ public abstract class NewDimData
 	public boolean deleteLink(int x, int y, int z)
 	{
 		Point4D location = new Point4D(x, y, z, id);
-		InnerDimLink target = linkMapping.remove(location);
-		if (target != null)
-		{
-			linkList.remove(target);
-			//Raise deletion event
-			//TODO why is source null here?
-			if(target.link!=null)
-			{
-				linkWatcher.onDeleted(target.link);
-			}
-			target.clear();
-		}
-		return (target != null);
+		return this.deleteLink(this.getLink(location));
 	}
 
 	public DimLink getLink(int x, int y, int z)

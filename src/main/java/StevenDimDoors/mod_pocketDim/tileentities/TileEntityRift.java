@@ -175,7 +175,7 @@ public class TileEntityRift extends TileEntity
 	private void closeRift()
 	{
 		NewDimData dimension = PocketManager.getDimensionData(worldObj);
-		if (count2 > 20 && count2 < 22)
+		if (count2 == 20)
 		{			 
 			ArrayList<DimLink> rifts= dimension.findRiftsInRange(worldObj, 6, xCoord, yCoord, zCoord);
 			if (rifts.size()>0)
