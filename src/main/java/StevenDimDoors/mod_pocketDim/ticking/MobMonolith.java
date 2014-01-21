@@ -29,7 +29,7 @@ public class MobMonolith extends EntityFlying implements IMob
 {
 
 	float soundTime = 0;
-	int aggro = 0;
+	public int aggro = 0;
 	byte textureState = 0;
 	float entityCollisionReduction = 100;
 	float scaleFactor = 0;
@@ -172,12 +172,6 @@ public class MobMonolith extends EntityFlying implements IMob
 					if (this.worldObj.provider instanceof PocketProvider||this.worldObj.getClosestPlayerToEntity(this, 5)!=null)
 					{
 						aggro++;
-						aggro++;
-
-						if (rand.nextBoolean())
-						{
-							aggro++;
-						}
 
 					}
 					if (aggro>430&&this.soundTime<100)
