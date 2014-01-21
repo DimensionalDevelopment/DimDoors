@@ -41,7 +41,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		this.setSize(3F, 9.0F);
 		this.noClip=true;
 		this.scaleFactor = (float) ((rand.nextDouble()/2)+1);
-		this.aggroMax =rand.nextInt(245)+200;
+		this.aggroMax = rand.nextInt(245)+200;
 
 		if (properties == null)
 			properties = DDProperties.instance();
@@ -241,13 +241,13 @@ public class MobMonolith extends EntityFlying implements IMob
 
 	public boolean attackEntityFrom(DamageSource par1DamageSource, int par2)
 	{
-		if(!(par1DamageSource == DamageSource.inWall))
+		if (par1DamageSource == DamageSource.inWall)
 		{
-			this.aggro=400;
+			this.posY = posY + 1;
 		}
 		else
 		{
-			this.posY=posY+1;
+			this.aggro = this.aggroMax;
 		}
 		return false;
 	}
