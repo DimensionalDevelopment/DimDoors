@@ -8,13 +8,18 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockFlowing;
+import net.minecraft.block.BlockFluid;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.IFluidBlock;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -200,12 +205,32 @@ public class BlockRift extends Block implements ITileEntityProvider
 				if (!isBlockImmune(world, current.getX(), current.getY(), current.getZ()) &&
 						random.nextInt(MAX_BLOCK_DESTRUCTION_CHANCE) < BLOCK_DESTRUCTION_CHANCE)
 				{
+					this.spawnWorldThread(world.getBlockId(current.getX(), current.getY(), current.getZ()), world, x, y, z);
 					world.destroyBlock(current.getX(), current.getY(), current.getZ(), false);
 				}
 			}
 		}
 	}
-	
+	private void spawnWorldThread(int blockID,World worldObj,int x,int y,int z )
+	{
+		if(blockID == 0)
+		{
+			return;
+		}
+		if(Block.blocksList[blockID] instanceof BlockFlowing||
+				Block.blocksList[blockID] instanceof BlockFluid||
+				Block.blocksList[blockID] instanceof IFluidBlock)
+		{
+			return;
+		}
+		if(worldObj.rand.nextBoolean())
+		{
+			
+			ItemStack thread = new ItemStack(mod_pocketDim.itemWorldThread,1);
+			EntityItem threadEntity = new EntityItem(worldObj, x,y,z, thread);
+			worldObj.spawnEntityInWorld(threadEntity);
+		}
+	}
 	private void addAdjacentBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
 	{
 		Point3D[] neighbors = new Point3D[] {

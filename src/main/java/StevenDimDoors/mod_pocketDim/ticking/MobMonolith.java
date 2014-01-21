@@ -79,7 +79,7 @@ public class MobMonolith extends EntityFlying implements IMob
 	protected void applyEntityAttributes()
 	{
 		super.applyEntityAttributes();
-		this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).setAttribute(0);
+		this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).setAttribute(10);
 	}
 
 	public boolean canBePushed()
