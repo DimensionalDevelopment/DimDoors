@@ -345,7 +345,14 @@ public class TileEntityRift extends TileEntity
 				MovingObjectPosition hit =  worldObj.clip(position, spreadTarget, false);
 				if (hit == null || !mod_pocketDim.blockRift.isBlockImmune(worldObj, hit.blockX, hit.blockY, hit.blockZ))
 				{
-					dimension.createChildLink(x, y, z, link);
+					if(hit!=null)
+					{
+						dimension.createChildLink(hit.blockX, hit.blockY, hit.blockZ, link);
+					}
+					else
+					{
+						dimension.createChildLink(x,y,z,link);
+					}
 					hasGrownRifts = true;
 					break;
 				}
