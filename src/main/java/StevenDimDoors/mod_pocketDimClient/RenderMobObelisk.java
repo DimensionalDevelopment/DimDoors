@@ -71,10 +71,10 @@ public class RenderMobObelisk extends RenderLiving
 	            
 			  GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 		  }
-	        catch (Exception exception)
-	        {
-	            exception.printStackTrace();
-	        }
+		  catch (Exception exception)
+		  {
+			  exception.printStackTrace();
+		  }
 
 	        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
 	        GL11.glEnable(GL11.GL_TEXTURE_2D);

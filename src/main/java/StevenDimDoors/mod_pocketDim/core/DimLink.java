@@ -62,7 +62,12 @@ public abstract class DimLink
 	}
 	public int getDestinationOrientation()
 	{
-		return PocketManager.getLink(link.point.getX(), link.point.getY(), link.point.getZ(), link.point.getDimension()).link().orientation;
+		DimLink link = PocketManager.getLink(this.destination().getX(), this.destination().getY(), this.destination().getZ(), this.destination().getDimension());
+		if(link !=null)
+		{
+			return link.orientation();
+		}
+		return (this.orientation()+2)%4;
 	}
 	public boolean hasDestination()
 	{

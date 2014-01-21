@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 public interface IDimDoor
@@ -11,5 +12,5 @@ public interface IDimDoor
 	
 	public int getDrops();
 	
-	public void initDoorTE(World world, int x, int y, int z);
+	public TileEntity initDoorTE(World world, int x, int y, int z);
 }
