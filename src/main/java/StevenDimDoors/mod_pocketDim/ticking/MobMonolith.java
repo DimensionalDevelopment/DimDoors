@@ -34,7 +34,7 @@ public class MobMonolith extends EntityFlying implements IMob
 	private int aggroMax;
 
 	private static DDProperties properties = null;
-	
+
 	public MobMonolith(World par1World) 
 	{
 		super(par1World);
@@ -49,15 +49,15 @@ public class MobMonolith extends EntityFlying implements IMob
 
 	@Override
 	protected void damageEntity(DamageSource par1DamageSource, float par2)
-    {
-      return;
-    }
-	
+	{
+		return;
+	}
+
 	@Override
 	public boolean attackEntityFrom(DamageSource par1DamageSource, float par2)
-    {
+	{
 		return false;
-    }
+	}
 
 	@Override
 	public boolean canDespawn()
@@ -97,39 +97,39 @@ public class MobMonolith extends EntityFlying implements IMob
 		super.entityInit();
 		this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
 	}
-	
-	  public boolean isClipping()
-	    {
-		  
-		  int i = MathHelper.floor_double(this.boundingBox.minX);
-		  int j = MathHelper.floor_double(this.boundingBox.maxX + 1.0D);
-		  int k = MathHelper.floor_double(this.boundingBox.minY);
-		  int l = MathHelper.floor_double(this.boundingBox.maxY + 1.0D);
-		  int i1 = MathHelper.floor_double(this.boundingBox.minZ);
-		  int j1 = MathHelper.floor_double(this.boundingBox.maxZ + 1.0D);
 
-		  for (int k1 = i; k1 < j; ++k1)
-		  {
-			  for (int l1 = k; l1 < l; ++l1)
-			  {
-				  for (int i2 = i1; i2 < j1; ++i2)
-				  {
+	public boolean isClipping()
+	{
+
+		int i = MathHelper.floor_double(this.boundingBox.minX);
+		int j = MathHelper.floor_double(this.boundingBox.maxX + 1.0D);
+		int k = MathHelper.floor_double(this.boundingBox.minY);
+		int l = MathHelper.floor_double(this.boundingBox.maxY + 1.0D);
+		int i1 = MathHelper.floor_double(this.boundingBox.minZ);
+		int j1 = MathHelper.floor_double(this.boundingBox.maxZ + 1.0D);
+
+		for (int k1 = i; k1 < j; ++k1)
+		{
+			for (int l1 = k; l1 < l; ++l1)
+			{
+				for (int i2 = i1; i2 < j1; ++i2)
+				{
 					if(!this.worldObj.isAirBlock(k1, l1, i2))
 					{
 						return true;
 					}
-				  }
-			  }
-		  }
-			  
+				}
+			}
+		}
 
-			  return false;
-	    }
-	  @Override
-	  public boolean isEntityAlive()
-	  {
-		  return false;
-	  }
+
+		return false;
+	}
+	@Override
+	public boolean isEntityAlive()
+	{
+		return false;
+	}
 
 	@Override
 	public void onEntityUpdate()
@@ -138,7 +138,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		{
 			this.setDead();
 		}
-		
+
 		super.onEntityUpdate();
 		if(this.isClipping())
 		{
@@ -334,7 +334,7 @@ public class MobMonolith extends EntityFlying implements IMob
 				this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() &&
 				!this.worldObj.isAnyLiquid(this.boundingBox);
 	}
-	
+
 	public DataWatcher getDataWatcher()
 	{
 		return this.dataWatcher;
