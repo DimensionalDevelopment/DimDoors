@@ -27,16 +27,25 @@ import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 
 public class MobMonolith extends EntityFlying implements IMob
 {
-
-	float soundTime = 0;
 	public int aggro = 0;
-	byte textureState = 0;
-	float entityCollisionReduction = 100;
-	float scaleFactor = 0;
-	int aggroMax;
-	int destX = 0; // unused fields?
-	int destY = 0;
-	int destZ = 0;
+	private float soundTime = 0;
+	private byte textureState = 0;
+	private float scaleFactor = 0;
+	private int aggroMax;
+
+	private static DDProperties properties = null;
+	
+	public MobMonolith(World par1World) 
+	{
+		super(par1World);
+		this.setSize(3F, 9.0F);
+		this.noClip=true;
+		this.scaleFactor = (float) ((rand.nextDouble()/2)+1);
+		this.aggroMax =rand.nextInt(245)+200;
+
+		if (properties == null)
+			properties = DDProperties.instance();
+	}
 
 	@Override
 	protected void damageEntity(DamageSource par1DamageSource, float par2)
@@ -49,19 +58,6 @@ public class MobMonolith extends EntityFlying implements IMob
     {
 		return false;
     }
-	public MobMonolith(World par1World) 
-	{
-		super(par1World);
-		this.setSize(3F, 9.0F);
-		this.noClip=true;
-		this.scaleFactor= (float) ((rand.nextDouble()/2)+1);
-		this.aggroMax=rand.nextInt(245)+200;
-
-		if (properties == null)
-			properties = DDProperties.instance();
-	}
-
-	private static DDProperties properties = null;
 
 	@Override
 	public boolean canDespawn()
