@@ -27,41 +27,37 @@ import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 
 public class MobMonolith extends EntityFlying implements IMob
 {
-
-	float soundTime = 0;
 	public int aggro = 0;
-	byte textureState = 0;
-	float entityCollisionReduction = 100;
-	float scaleFactor = 0;
-	int aggroMax;
-	int destX = 0; // unused fields?
-	int destY = 0;
-	int destZ = 0;
+	private float soundTime = 0;
+	private byte textureState = 0;
+	private float scaleFactor = 0;
+	private int aggroMax;
 
-	@Override
-	protected void damageEntity(DamageSource par1DamageSource, float par2)
-    {
-      return;
-    }
-	
-	@Override
-	public boolean attackEntityFrom(DamageSource par1DamageSource, float par2)
-    {
-		return false;
-    }
+	private static DDProperties properties = null;
+
 	public MobMonolith(World par1World) 
 	{
 		super(par1World);
 		this.setSize(3F, 9.0F);
 		this.noClip=true;
-		this.scaleFactor= (float) ((rand.nextDouble()/2)+1);
-		this.aggroMax=rand.nextInt(245)+200;
+		this.scaleFactor = (float) ((rand.nextDouble()/2)+1);
+		this.aggroMax = rand.nextInt(245)+200;
 
 		if (properties == null)
 			properties = DDProperties.instance();
 	}
 
-	private static DDProperties properties = null;
+	@Override
+	protected void damageEntity(DamageSource par1DamageSource, float par2)
+	{
+		return;
+	}
+
+	@Override
+	public boolean attackEntityFrom(DamageSource par1DamageSource, float par2)
+	{
+		return false;
+	}
 
 	@Override
 	public boolean canDespawn()
@@ -101,39 +97,39 @@ public class MobMonolith extends EntityFlying implements IMob
 		super.entityInit();
 		this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
 	}
-	
-	  public boolean isClipping()
-	    {
-		  
-		  int i = MathHelper.floor_double(this.boundingBox.minX);
-		  int j = MathHelper.floor_double(this.boundingBox.maxX + 1.0D);
-		  int k = MathHelper.floor_double(this.boundingBox.minY);
-		  int l = MathHelper.floor_double(this.boundingBox.maxY + 1.0D);
-		  int i1 = MathHelper.floor_double(this.boundingBox.minZ);
-		  int j1 = MathHelper.floor_double(this.boundingBox.maxZ + 1.0D);
 
-		  for (int k1 = i; k1 < j; ++k1)
-		  {
-			  for (int l1 = k; l1 < l; ++l1)
-			  {
-				  for (int i2 = i1; i2 < j1; ++i2)
-				  {
+	public boolean isClipping()
+	{
+
+		int i = MathHelper.floor_double(this.boundingBox.minX);
+		int j = MathHelper.floor_double(this.boundingBox.maxX + 1.0D);
+		int k = MathHelper.floor_double(this.boundingBox.minY);
+		int l = MathHelper.floor_double(this.boundingBox.maxY + 1.0D);
+		int i1 = MathHelper.floor_double(this.boundingBox.minZ);
+		int j1 = MathHelper.floor_double(this.boundingBox.maxZ + 1.0D);
+
+		for (int k1 = i; k1 < j; ++k1)
+		{
+			for (int l1 = k; l1 < l; ++l1)
+			{
+				for (int i2 = i1; i2 < j1; ++i2)
+				{
 					if(!this.worldObj.isAirBlock(k1, l1, i2))
 					{
 						return true;
 					}
-				  }
-			  }
-		  }
-			  
+				}
+			}
+		}
 
-			  return false;
-	    }
-	  @Override
-	  public boolean isEntityAlive()
-	  {
-		  return false;
-	  }
+
+		return false;
+	}
+	@Override
+	public boolean isEntityAlive()
+	{
+		return false;
+	}
 
 	@Override
 	public void onEntityUpdate()
@@ -142,7 +138,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		{
 			this.setDead();
 		}
-		
+
 		super.onEntityUpdate();
 		if(this.isClipping())
 		{
@@ -245,13 +241,13 @@ public class MobMonolith extends EntityFlying implements IMob
 
 	public boolean attackEntityFrom(DamageSource par1DamageSource, int par2)
 	{
-		if(!(par1DamageSource == DamageSource.inWall))
+		if (par1DamageSource == DamageSource.inWall)
 		{
-			this.aggro=400;
+			this.posY = posY + 1;
 		}
 		else
 		{
-			this.posY=posY+1;
+			this.aggro = this.aggroMax;
 		}
 		return false;
 	}
@@ -338,7 +334,7 @@ public class MobMonolith extends EntityFlying implements IMob
 				this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() &&
 				!this.worldObj.isAnyLiquid(this.boundingBox);
 	}
-	
+
 	public DataWatcher getDataWatcher()
 	{
 		return this.dataWatcher;

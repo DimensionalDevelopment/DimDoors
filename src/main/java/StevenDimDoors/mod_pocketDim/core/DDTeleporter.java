@@ -601,8 +601,10 @@ public class DDTeleporter
 			}
 			
 			BaseItemDoor.placeDoorBlock(destWorld, link.destination().getX(), link.destination().getY()-1, link.destination().getZ(),link.getDestinationOrientation(), door);
+
 			TileEntity 	doorDestTE = ((BaseDimDoor)door).initDoorTE(destWorld, link.destination().getX(), link.destination().getY(), link.destination().getZ());
 
+			
 			if(doorDestTE instanceof TileEntityDimDoor)
 			{
 				TileEntityDimDoor.class.cast(doorDestTE).hasGennedPair=true;
