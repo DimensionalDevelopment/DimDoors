@@ -42,7 +42,6 @@ public class MobMonolith extends EntityFlying implements IMob
 		this.noClip=true;
 		this.scaleFactor = (float) ((rand.nextDouble()/2)+1);
 		this.aggroMax = rand.nextInt(245)+200;
-
 		if (properties == null)
 			properties = DDProperties.instance();
 	}
@@ -58,6 +57,17 @@ public class MobMonolith extends EntityFlying implements IMob
 	{
 		return false;
 	}
+	@Override
+	public AxisAlignedBB getBoundingBox()
+	{
+		return null;
+	}
+	
+	@Override
+	public AxisAlignedBB getCollisionBox(Entity par1Entity)
+	{
+		return null;
+	}
 
 	@Override
 	public boolean canDespawn()
@@ -69,7 +79,7 @@ public class MobMonolith extends EntityFlying implements IMob
 	protected void applyEntityAttributes()
 	{
 		super.applyEntityAttributes();
-		this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).setAttribute(20);
+		this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).setAttribute(0);
 	}
 
 	public boolean canBePushed()
@@ -145,7 +155,7 @@ public class MobMonolith extends EntityFlying implements IMob
 			this.moveEntity(0, .1, 0);
 		}
 
-		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 60);
+		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 35);
 
 		if (entityPlayer != null)
 		{
@@ -164,6 +174,8 @@ public class MobMonolith extends EntityFlying implements IMob
 					if (rand.nextInt(11)>this.textureState||this.aggro>=300||rand.nextInt(13)>this.textureState&&this.aggroMax>this.aggro)
 					{
 						aggro++;
+						aggro++;
+
 					}
 					if (this.worldObj.provider instanceof PocketProvider||this.worldObj.getClosestPlayerToEntity(this, 5)!=null)
 					{
@@ -198,7 +210,7 @@ public class MobMonolith extends EntityFlying implements IMob
 					}
 				}
 			}
-			else
+			else if(this.worldObj.provider instanceof PocketProvider)
 			{
 				if(aggro<this.aggroMax/2)
 				{
