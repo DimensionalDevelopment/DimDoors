@@ -37,17 +37,17 @@ public class RenderMobObelisk extends RenderLiving
 		final float maxScaling = 0.1f;
 		final int maxAggroLevel = 500;
 		MobMonolith monolith = ((MobMonolith) entity);
-		
+
 		// Use linear interpolation to scale how much jitter we want for our given aggro level
 		float aggroScaling = minScaling + monolith.aggro * (maxScaling - minScaling) / maxAggroLevel;
-		
+
 		// Calculate jitter - include entity ID to give Monoliths individual jitters
 		float time = ((Minecraft.getSystemTime() + 0xF1234568 * monolith.entityId) % 200000) / 50.0F;
 		// We use random constants here on purpose just to get different wave forms
 		double xJitter = aggroScaling * Math.sin(1.1f * time) * Math.sin(0.8f * time);
 		double yJitter = aggroScaling * Math.sin(1.2f * time) * Math.sin(0.9f * time);
 		double zJitter = aggroScaling * Math.sin(1.3f * time) * Math.sin(0.7f * time);
-		
+
 		// Render with jitter
 		this.render(entity, x + xJitter, y + yJitter, z + zJitter, par8, par9);
 		this.func_110827_b(entity, x, y, z, par8, par9);

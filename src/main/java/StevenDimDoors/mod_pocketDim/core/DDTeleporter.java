@@ -25,6 +25,7 @@ import net.minecraftforge.common.network.packet.DimensionRegisterPacket;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
@@ -598,9 +599,11 @@ public class DDTeleporter
 					return;
 				}
 			}
-			 
+			
 			BaseItemDoor.placeDoorBlock(destWorld, link.destination().getX(), link.destination().getY()-1, link.destination().getZ(),link.getDestinationOrientation(), door);
-			TileEntity doorDestTE = startWorld.getBlockTileEntity(link.destination().getX(), link.destination().getY(), link.destination().getZ());
+
+			TileEntity 	doorDestTE = ((BaseDimDoor)door).initDoorTE(destWorld, link.destination().getX(), link.destination().getY(), link.destination().getZ());
+
 			
 			if(doorDestTE instanceof TileEntityDimDoor)
 			{

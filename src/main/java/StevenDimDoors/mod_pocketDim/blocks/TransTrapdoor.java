@@ -120,9 +120,10 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	}
 	
 	@Override
-	public void initDoorTE(World world, int x, int y, int z)
+	public TileEntity initDoorTE(World world, int x, int y, int z)
 	{
 		TileEntity te = this.createNewTileEntity(world);
 		world.setBlockTileEntity(x, y, z, te);
+		return te;
 	}
 }
