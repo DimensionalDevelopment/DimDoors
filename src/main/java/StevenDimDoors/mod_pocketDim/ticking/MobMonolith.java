@@ -145,7 +145,7 @@ public class MobMonolith extends EntityFlying implements IMob
 			this.moveEntity(0, .1, 0);
 		}
 
-		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 30);
+		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this, 60);
 
 		if (entityPlayer != null)
 		{
@@ -200,11 +200,11 @@ public class MobMonolith extends EntityFlying implements IMob
 			}
 			else
 			{
-				if(aggro>0)
+				if(aggro<this.aggroMax/2)
 				{
-					if(rand.nextInt(10)==0)
+					if(rand.nextInt(3)==0)
 					{
-						aggro--;
+						aggro++;
 					}
 
 				}

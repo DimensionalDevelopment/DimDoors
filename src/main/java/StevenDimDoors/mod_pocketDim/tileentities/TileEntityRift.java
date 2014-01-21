@@ -11,6 +11,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
@@ -161,6 +162,11 @@ public class TileEntityRift extends TileEntity
 					EntityEnderman enderman = new EntityEnderman(worldObj);
 					enderman.setLocationAndAngles(xCoord + 0.5, yCoord - 1, zCoord + 0.5, 5, 6);
 					worldObj.spawnEntityInWorld(enderman);
+					EntityPlayer player = this.worldObj.getClosestPlayerToEntity(enderman, 50);
+					if(player!=null)
+					{
+						enderman.setTarget(player);
+					}
 				}				
 			}
 		}
