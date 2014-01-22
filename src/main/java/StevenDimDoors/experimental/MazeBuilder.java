@@ -230,5 +230,6 @@ public class MazeBuilder
 		}
 		extBlockStorage.setExtBlockID(localX, y & 15, localZ, blockID);
 		extBlockStorage.setExtBlockMetadata(localX, y & 15, localZ, metadata);
+		chunk.setChunkModified();
 	}
 }

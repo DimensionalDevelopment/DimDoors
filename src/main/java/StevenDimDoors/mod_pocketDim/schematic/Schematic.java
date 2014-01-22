@@ -427,6 +427,7 @@ public class Schematic {
 			}
 			extBlockStorage.setExtBlockID(localX, y & 15, localZ, blockID);
 			extBlockStorage.setExtBlockMetadata(localX, y & 15, localZ, metadata);
+			chunk.setChunkModified();
 		}
 		catch(Exception e)
 		{
