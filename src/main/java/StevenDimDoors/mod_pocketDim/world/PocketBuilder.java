@@ -427,6 +427,7 @@ public class PocketBuilder
 			//Finish up destination initialization
 			dimension.initializePocket(source.getX(), destinationY, source.getZ(), orientation, link);
 			dimension.setFilled(true);
+			
 			return true;
 		}
 		catch (Exception e)
@@ -474,7 +475,7 @@ public class PocketBuilder
 		//Build the (wallThickness - 1) layers of Fabric of Reality
 		for (int layer = 1; layer < wallThickness; layer++)
 		{
-			buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2) - layer, properties.FabricBlockID,
+			buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2) - layer, Block.glowStone.blockID,
 					layer < (wallThickness - 1) && properties.TNFREAKINGT_Enabled, properties.NonTntWeight);
 		}
 		
@@ -543,8 +544,8 @@ public class PocketBuilder
 		}
 
 		int cX = x >> 4;
-			int cZ = z >> 4;
-			int cY = y >> 4;
+		int cZ = z >> 4;
+		int cY = y >> 4;
 		Chunk chunk;
 
 		int localX = (x % 16) < 0 ? (x % 16) + 16 : (x % 16);
@@ -560,5 +561,6 @@ public class PocketBuilder
 		}
 		extBlockStorage.setExtBlockID(localX, y & 15, localZ, blockID);
 		extBlockStorage.setExtBlockMetadata(localX, y & 15, localZ, metadata);
+		chunk.setChunkModified();
 	}
 }
