@@ -74,7 +74,7 @@ public class yCoordHelper
 	public static Point3D findSafeCubeUp(World world, int x, int startY, int z)
 	{
 		// Search for a 3x3x3 cube of air with blocks underneath
-		// We can also match against a 3x2x3 box with 
+		// We can also match against a 3x2x3 box with replaceable blocks underneath
 		// We shift the search area into the bounds of a chunk for the sake of simplicity,
 		// so that we don't need to worry about working across chunks.
 		
