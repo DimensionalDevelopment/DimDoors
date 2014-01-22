@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
@@ -43,8 +46,8 @@ public class TileEntityRift extends TileEntity
 	private static Random random = new Random();
 
 	private int age = 0;
-	private int count = 0;
-	private int count2 = 0;
+	private int updateTimer = 0;
+	private int riftCloseTimer = 0;
 	public int xOffset = 0;
 	public int yOffset = 0;
 	public int zOffset = 0;
@@ -59,13 +62,18 @@ public class TileEntityRift extends TileEntity
 	@Override
 	public void updateEntity() 
 	{
-		//Invalidate this tile entity if it shouldn't exist
-		if (!this.worldObj.isRemote && PocketManager.getLink(xCoord, yCoord, zCoord, worldObj.provider.dimensionId) == null)
+		//Determines if rift should render white closing particles and spread closing effect to other rifts nearby
+		if (this.shouldClose)
+		{
+			closeRift();
+		}
+		else if( PocketManager.getLink(xCoord, yCoord, zCoord, worldObj.provider.dimensionId) == null)
 		{
 			this.invalidate();
 			if (worldObj.getBlockId(xCoord, yCoord, zCoord) == mod_pocketDim.blockRift.blockID)
 			{
 				worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+				worldObj.removeBlockTileEntity(xCoord, yCoord, zCoord);
 				this.invalidate();
 				return;
 			}
@@ -73,6 +81,7 @@ public class TileEntityRift extends TileEntity
 
 		if (worldObj.getBlockId(xCoord, yCoord, zCoord) != mod_pocketDim.blockRift.blockID)
 		{
+			worldObj.removeBlockTileEntity(xCoord, yCoord, zCoord);
 			this.invalidate();
 			return;
 		}
@@ -89,20 +98,19 @@ public class TileEntityRift extends TileEntity
 		 **/
 
 		//This code should execute once every 10 seconds
-		count++;
-		if (count > 200)
+		if (updateTimer > 200)
 		{
 			this.spawnEndermen();
-			this.calculateOldParticleOffset(); //this also calculates the distance for the particle stuff.
 			this.grow(mod_pocketDim.properties);
-			count = 0;
+			updateTimer = 0;
 		}
-		
-		//Determines if rift should render white closing particles and spread closing effect to other rifts nearby
-		if (this.shouldClose)
+		else if(updateTimer==0)
 		{
-			closeRift();
+			this.calculateOldParticleOffset(); //this also calculates the distance for the particle stuff.
 		}
+		updateTimer++;
+
+		
 	}
 
 	@Override
@@ -181,8 +189,8 @@ public class TileEntityRift extends TileEntity
 	private void closeRift()
 	{
 		NewDimData dimension = PocketManager.getDimensionData(worldObj);
-		if (count2 == 20)
-		{			 
+		if (riftCloseTimer == 20)
+		{
 			ArrayList<DimLink> rifts= dimension.findRiftsInRange(worldObj, 6, xCoord, yCoord, zCoord);
 			if (rifts.size()>0)
 			{
@@ -190,30 +198,31 @@ public class TileEntityRift extends TileEntity
 				{
 					Point4D location = riftToClose.source();
 					TileEntityRift rift = (TileEntityRift) worldObj.getBlockTileEntity(location.getX(), location.getY(), location.getZ());
-					if (rift != null&&rift.shouldClose!=true)
+					if (rift != null)
 					{
 						rift.shouldClose = true;
 						rift.onInventoryChanged();
 					}
 				}
-
 			}
 		}
-		if (count2 > 40)
+		if (riftCloseTimer > 40)
 		{
 			this.invalidate();
-			if (dimension.getLink(xCoord, yCoord, zCoord) != null)
+			if(!this.worldObj.isRemote)
 			{
-				if(!this.worldObj.isRemote)
+				DimLink link = PocketManager.getLink(this.xCoord, this.yCoord, this.zCoord, worldObj);
+				if(link!=null)
 				{
-					dimension.deleteLink(xCoord, yCoord, zCoord);
+					dimension.deleteLink(link);
 				}
-				worldObj.playSound(xCoord, yCoord, zCoord, "mods.DimDoors.sfx.riftClose", (float) .7, 1, true);
-				worldObj.setBlockToAir(xCoord, yCoord, zCoord);
-			}	
+			}
+			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+			worldObj.playSound(xCoord, yCoord, zCoord, "mods.DimDoors.sfx.riftClose", (float) .7, 1, true);
+			this.worldObj.removeBlockTileEntity(xCoord, yCoord, zCoord);
+			return;
 		}
-		count2++; 
-
+		riftCloseTimer++; 
 	}
 
 	private void calculateOldParticleOffset()
@@ -308,7 +317,7 @@ public class TileEntityRift extends TileEntity
 	public void grow(DDProperties properties)
 	{
 		if (worldObj.isRemote || hasGrownRifts || !properties.RiftSpreadEnabled
-			|| random.nextInt(MAX_RIFT_SPREAD_CHANCE) < RIFT_SPREAD_CHANCE)
+			|| random.nextInt(MAX_RIFT_SPREAD_CHANCE) < RIFT_SPREAD_CHANCE || this.shouldClose)
 		{
 			return;
 		}
@@ -348,10 +357,12 @@ public class TileEntityRift extends TileEntity
 					if(hit!=null)
 					{
 						dimension.createChildLink(hit.blockX, hit.blockY, hit.blockZ, link);
+						this.worldObj.setBlock(hit.blockX, hit.blockY, hit.blockZ, mod_pocketDim.blockRift.blockID);
 					}
 					else
 					{
 						dimension.createChildLink(x,y,z,link);
+						this.worldObj.setBlock(x,y,z, mod_pocketDim.blockRift.blockID);
 					}
 					hasGrownRifts = true;
 					break;
@@ -373,8 +384,8 @@ public class TileEntityRift extends TileEntity
 	{
 		super.readFromNBT(nbt);
 		this.renderingCenters = new HashMap<Integer, double[]>();
-		this.count = nbt.getInteger("count");
-		this.count2 = nbt.getInteger("count2");
+		this.updateTimer = nbt.getInteger("count");
+		this.riftCloseTimer = nbt.getInteger("count2");
 		this.xOffset = nbt.getInteger("xOffset");
 		this.yOffset = nbt.getInteger("yOffset");
 		this.zOffset = nbt.getInteger("zOffset");
@@ -389,8 +400,8 @@ public class TileEntityRift extends TileEntity
 	{
 		super.writeToNBT(nbt);
 		nbt.setInteger("age", this.age);
-		nbt.setInteger("count", this.count);
-		nbt.setInteger("count2", this.count2);
+		nbt.setInteger("count", this.updateTimer);
+		nbt.setInteger("count2", this.riftCloseTimer);
 		nbt.setBoolean("grownRifts",this.hasGrownRifts);
 		nbt.setInteger("xOffset", this.xOffset);
 		nbt.setInteger("yOffset", this.yOffset);

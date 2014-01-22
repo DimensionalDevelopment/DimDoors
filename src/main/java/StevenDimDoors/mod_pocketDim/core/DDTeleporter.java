@@ -157,7 +157,7 @@ public class DDTeleporter
           
 
 		}
-		if (entity instanceof EntityPlayer)
+		else if (entity instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) entity;
 			switch (orientation)
