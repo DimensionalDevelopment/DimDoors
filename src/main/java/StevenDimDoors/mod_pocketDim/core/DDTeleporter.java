@@ -36,11 +36,13 @@ import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@SuppressWarnings("deprecation")
 public class DDTeleporter
 {
 	private static final Random random = new Random();
+	private static final int NETHER_DIMENSION_ID = -1;
 	private static final int END_DIMENSION_ID = 1;
+	private static final int MAX_NETHER_EXIT_CHANCE = 100;
+	private static final int NETHER_EXIT_CHANCE = 20; //20% chance to compensate for frequent exit failures - the Nether often doesn't have enough space for an exit
 	private static final int MAX_ROOT_SHIFT_CHANCE = 100;
 	private static final int START_ROOT_SHIFT_CHANCE = 0;
 	private static final int ROOT_SHIFT_CHANCE_PER_LEVEL = 5;
@@ -57,7 +59,7 @@ public class DDTeleporter
 	 * @param properties
 	 * @return
 	 */
-	public static boolean CheckDestination(Entity entity, WorldServer world, Point4D destination,DDProperties properties)
+	private static boolean checkDestination(Entity entity, WorldServer world, Point4D destination,DDProperties properties)
 	{
 		int x = destination.getX();
 		int y = destination.getY();
@@ -74,10 +76,10 @@ public class DDTeleporter
 		switch (orientation)
 		{
 			case 0:
-				point= new Point3D(MathHelper.floor_double(x - 0.5), y - 1, MathHelper.floor_double(z + 0.5));
+				point = new Point3D(MathHelper.floor_double(x - 0.5), y - 1, MathHelper.floor_double(z + 0.5));
 				break;
 			case 1:
-				point= new Point3D(MathHelper.floor_double(x + 0.5), y - 1, MathHelper.floor_double(z - 0.5));
+				point = new Point3D(MathHelper.floor_double(x + 0.5), y - 1, MathHelper.floor_double(z - 0.5));
 				break;
 			case 2:
 				point =  new Point3D(MathHelper.floor_double(x + 1.5), y - 1, MathHelper.floor_double(z + 0.5));
@@ -92,24 +94,23 @@ public class DDTeleporter
 		blockIDBottom = world.getBlockId(point.getX(), point.getY(), point.getZ());
 		blockIDTop = world.getBlockId(point.getX(), point.getY()+1, point.getZ());
 		
-		if(!(Block.blocksList[blockIDBottom]==null))
+		if (Block.blocksList[blockIDBottom] != null)
 		{
 			if(!Block.blocksList[blockIDBottom].isBlockReplaceable(world, point.getX(), point.getY(), point.getZ()))
 			{
 				return false;
 			}
 		}
-		if(!(Block.blocksList[blockIDTop]==null))
+		if (Block.blocksList[blockIDTop] != null)
 		{
-			if(!Block.blocksList[blockIDTop].isBlockReplaceable(world, point.getX(), point.getY()+1, point.getZ()))
+			if (!Block.blocksList[blockIDTop].isBlockReplaceable(world, point.getX(), point.getY()+1, point.getZ()))
 			{
 				return false;
 			}
 		}
 		return true;
-		
-		
 	}
+	
 	private static void placeInPortal(Entity entity, WorldServer world, Point4D destination, DDProperties properties, boolean checkOrientation)
 	{
 		int x = destination.getX();
@@ -128,12 +129,12 @@ public class DDTeleporter
 			orientation = -1;
 		}
 		
-		if(!CheckDestination(entity, world, destination, properties))
+		if (!checkDestination(entity, world, destination, properties))
 		{
-            if(entity instanceof EntityPlayerMP)
+            if (entity instanceof EntityPlayerMP)
             {
             	EntityPlayer player = (EntityPlayer) entity;
-            	player.rotationYaw=(orientation * 90)+90;
+            	player.rotationYaw = (orientation * 90) + 90;
             	switch (orientation)
     			{
     				case 0:
@@ -146,18 +147,15 @@ public class DDTeleporter
     					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
     					break;
     				case 3:
-    					player.setPositionAndUpdate(x + 0.5, y - 1, z + .5);
+    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
     					break;
     				default:
     					player.setPositionAndUpdate(x, y - 1, z);	
     					break;
     			}
-
             }
-          
-
 		}
-		if (entity instanceof EntityPlayer)
+		else if (entity instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) entity;
 			switch (orientation)
@@ -413,8 +411,6 @@ public class DDTeleporter
 			// Tell Forge we're moving its players so everyone else knows.
 			// Let's try doing this down here in case this is what's killing NEI.
 			GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
-
-
 		}
 		DDTeleporter.placeInPortal(entity, newWorld, destination, properties, checkOrientation);
 		return entity;    
@@ -448,6 +444,9 @@ public class DDTeleporter
 		
 		if (cooldown == 0 || entity instanceof EntityPlayer)
 		{
+			// According to Steven, we increase the cooldown by a random amount so that if someone
+			// makes a loop with doors and throws items in them, the slamming sounds won't all
+			// sync up and be very loud. The cooldown itself prevents server-crashing madness.
 			cooldown = 2 + random.nextInt(2);
 		}
 		else
@@ -622,6 +621,8 @@ public class DDTeleporter
 	{
 		// A dungeon exit acts the same as a safe exit, but has the chance of
 		// taking the user to any non-pocket dimension, excluding Limbo and The End.
+		// There is a chance of choosing the Nether first before other root dimensions
+		// to compensate for servers with many Mystcraft ages or other worlds.
 		
 		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
 		ArrayList<NewDimData> roots = PocketManager.getRootDimensions();
@@ -629,6 +630,10 @@ public class DDTeleporter
 
 		if (random.nextInt(MAX_ROOT_SHIFT_CHANCE) < shiftChance)
 		{
+			if (random.nextInt(MAX_NETHER_EXIT_CHANCE) < NETHER_EXIT_CHANCE)
+			{
+				return generateSafeExit(PocketManager.getDimensionData(NETHER_DIMENSION_ID), link, properties);
+			}
 			for (int attempts = 0; attempts < 10; attempts++)
 			{
 				NewDimData selection = roots.get( random.nextInt(roots.size()) );
