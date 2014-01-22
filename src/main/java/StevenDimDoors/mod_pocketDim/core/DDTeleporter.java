@@ -317,10 +317,13 @@ public class DDTeleporter
 			if(player != null) // Are we working with a player?
 			{
 				// We need to do all this special stuff to move a player between dimensions.
-				 //Give the client the dimensionData for the destination
-				 PocketManager.getDimwatcher().onCreated(new ClientDimData(PocketManager.getDimensionData(destination.getDimension())));
-				 
-				 
+				//Give the client the dimensionData for the destination
+				
+				// FIXME: This violates the way we assume PocketManager works. DimWatcher should not be exposed
+				// to prevent us from doing bad things. Moreover, no dimension is being created, so if we ever
+				// tie code to that, it could cause confusing bugs.
+				// No hacky for you! ~SenseiKiwi
+				PocketManager.getDimwatcher().onCreated(new ClientDimData(PocketManager.getDimensionData(destination.getDimension())));
 				  
 				// Set the new dimension and inform the client that it's moving to a new world.
 				player.dimension = destination.getDimension();
