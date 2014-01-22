@@ -223,7 +223,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 		{
 			return;
 		}
-		if(worldObj.rand.nextBoolean())
+		if(worldObj.rand.nextInt(7)==0)
 		{
 			
 			ItemStack thread = new ItemStack(mod_pocketDim.itemWorldThread,1);
@@ -251,6 +251,14 @@ public class BlockRift extends Block implements ITileEntityProvider
 		}
 	}
 	
+	/**
+	 * Lets pistons push through rifts, destroying them
+	 */
+	@Override
+	public int getMobilityFlag()
+    {
+        return 1;
+    }
 	
 	/**
 	 * regulates the render effect, especially when multiple rifts start to link up. Has 3 main parts- Grows toward and away from nearest rft, bends toward it, and a randomization function
