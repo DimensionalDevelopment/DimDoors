@@ -56,8 +56,8 @@ public abstract class BaseGateway
 			DungeonSchematic schematic = this.getSchematicToBuild(world, x, y, z);
 			
 			//apply filters
-			schematic.applyImportFilters(properties);
 			schematic.applyFilter(filter);	
+			schematic.applyImportFilters(properties);
 			
 			Point3D doorLocation = filter.getEntranceDoorLocation();
 			orientation = filter.getEntranceOrientation();
