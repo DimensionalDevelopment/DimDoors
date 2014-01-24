@@ -692,6 +692,8 @@ public class DDTeleporter
 		if (destination != null)
 		{
 			// Set up a 3x3 platform at the destination
+			// Only place fabric of reality if the block is replaceable or air
+			// Don't cause block updates
 			int x = destination.getX();
 			int y = destination.getY();
 			int z = destination.getZ();
@@ -699,7 +701,27 @@ public class DDTeleporter
 			{
 				for (int dz = -1; dz <= 1; dz++)
 				{
-					world.setBlock(x + dx, y, z + dz, properties.FabricBlockID);
+					// Checking if the block is not an opaque solid is equivalent
+					// checking for a replaceable block, because we only allow
+					// exits intersecting blocks on those two surfaces.
+					if (!world.isBlockNormalCube(x + dx, y, z + dz))
+					{
+						world.setBlock(x + dx, y, z + dz, properties.FabricBlockID, 0, 2);
+					}
+				}
+			}
+			
+			// Clear out any blocks in the space above the platform layer
+			// This removes any potential threats like replaceable Poison Ivy from BoP
+			// Remember to avoid block updates to keep gravel from collapsing
+			for (int dy = 1; dy <= 2; dy++)
+			{
+				for (int dx = -1; dx <= 1; dx++)
+				{
+					for (int dz = -1; dz <= 1; dz++)
+					{
+						world.setBlock(x + dx, y + dy, z + dz, 0, 0, 2);
+					}
 				}
 			}
 			
