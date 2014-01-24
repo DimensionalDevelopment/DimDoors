@@ -18,7 +18,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.terraingen.ChunkProviderEvent;
 import StevenDimDoors.mod_pocketDim.DDProperties;
-import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
+import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 
 public class LimboGenerator extends ChunkProviderGenerate
 {
@@ -81,9 +81,9 @@ public class LimboGenerator extends ChunkProviderGenerate
 	}
 
 	private DDProperties properties;
-	private MonolithSpawner spawner;
+	private CustomLimboPopulator spawner;
 
-	public LimboGenerator(World world, long seed, MonolithSpawner spawner, DDProperties properties) 
+	public LimboGenerator(World world, long seed, CustomLimboPopulator spawner, DDProperties properties) 
 	{
 		super(world, seed, false);
 

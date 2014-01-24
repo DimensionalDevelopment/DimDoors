@@ -38,7 +38,7 @@ import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.ticking.LimboDecay;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
-import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
+import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
@@ -140,8 +140,8 @@ public class mod_pocketDim
 	public static boolean isPlayerWearingGoogles = false;
 
 	public static DDProperties properties;
-	public static MonolithSpawner spawner; //Added this field temporarily. Will be refactored out later.
-	public static GatewayGenerator riftGen;
+	public static CustomLimboPopulator spawner; //Added this field temporarily. Will be refactored out later.
+	public static GatewayGenerator gatewayGenerator;
 	public static PlayerTracker tracker;
 	
 	public static Block coriumBlock;
@@ -175,7 +175,7 @@ public class mod_pocketDim
 
 		//Now do other stuff
 		MinecraftForge.EVENT_BUS.register(new EventHookContainer(properties));
-		riftGen = new GatewayGenerator(properties);
+		gatewayGenerator = new GatewayGenerator(properties);
 	}
 
 	@EventHandler
@@ -187,7 +187,7 @@ public class mod_pocketDim
 
 		//MonolithSpawner should be initialized before any provider instances are created
 		//Register the other regular tick receivers as well
-		spawner = new MonolithSpawner(commonTickHandler, properties);
+		spawner = new CustomLimboPopulator(commonTickHandler, properties);
 		new RiftRegenerator(commonTickHandler); //No need to store the reference
 		LimboDecay decay = new LimboDecay(commonTickHandler, properties);
 
@@ -220,7 +220,7 @@ public class mod_pocketDim
 		mod_pocketDim.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
 		mod_pocketDim.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
-		GameRegistry.registerWorldGenerator(mod_pocketDim.riftGen);
+		GameRegistry.registerWorldGenerator(mod_pocketDim.gatewayGenerator);
 		tracker = new PlayerTracker();
 		GameRegistry.registerPlayerTracker(tracker);
 
@@ -288,7 +288,7 @@ public class mod_pocketDim
 
 		CraftingManager.registerRecipes(properties);
 		DungeonHelper.initialize();		
-		this.riftGen.initGateways();
+		this.gatewayGenerator.initGateways();
 
 		/**
 		coriumFluid = new LiquidCorium("Corium").setDensity(1000).setTemperature(3473).setDensity(9400).setLuminosity(6).setRarity(EnumRarity.rare);

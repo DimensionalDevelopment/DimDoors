@@ -16,6 +16,7 @@ import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.world.gateways.BaseGateway;
+import StevenDimDoors.mod_pocketDim.world.gateways.GatewayLimbo;
 import StevenDimDoors.mod_pocketDim.world.gateways.GatewaySandstonePillars;
 import StevenDimDoors.mod_pocketDim.world.gateways.GatewayTwoPillars;
 import cpw.mods.fml.common.IWorldGenerator;
@@ -54,6 +55,8 @@ public class GatewayGenerator implements IWorldGenerator
 		
 		//add gateways here
 		gateways.add(new GatewaySandstonePillars(this.properties));
+		gateways.add(defaultGateway);
+		gateways.add(new GatewayLimbo(this.properties));
 
 	}
 	
@@ -63,7 +66,7 @@ public class GatewayGenerator implements IWorldGenerator
 		//Don't generate rifts or gateways if the rift generation flag is disabled,
 		//the current world is a pocket dimension, or the world is remote.
 		//Also don't generate anything in The End.
-		if (world.isRemote || (!properties.WorldRiftGenerationEnabled && !(world.provider instanceof LimboProvider)) ||
+		if (world.isRemote || (!properties.WorldRiftGenerationEnabled) ||
 			(world.provider instanceof PocketProvider) || (world.provider.dimensionId == END_DIMENSION_ID))
 		{
 			return;
@@ -171,60 +174,6 @@ public class GatewayGenerator implements IWorldGenerator
 				validGateways.get(random.nextInt(validGateways.size())).generate(world, x, y, z);
 			}
 		}
-	}
-	
-	private static void createStoneGateway(World world, int x, int y, int z, Random random)
-	{
-		final int blockID = Block.stoneBrick.blockID;
-		
-		//Replace some of the ground around the gateway with bricks
-		for (int xc = -GATEWAY_RADIUS; xc <= GATEWAY_RADIUS; xc++)
-		{
-			for (int zc= -GATEWAY_RADIUS; zc <= GATEWAY_RADIUS; zc++)
-			{
-				//Check that the block is supported by an opaque block.
-				//This prevents us from building over a cliff, on the peak of a mountain,
-				//or the surface of the ocean or a frozen lake.
-				if (world.isBlockOpaqueCube(x + xc, y - 2, z + zc))
-				{
-					//Randomly choose whether to place bricks or not. The math is designed so that the
-					//chances of placing a block decrease as we get farther from the gateway's center.
-					if (Math.abs(xc) + Math.abs(zc) < random.nextInt(2) + 3)
-					{
-						//Place Stone Bricks
-						world.setBlock(x + xc, y - 1, z + zc, blockID, 0, 3);
-					}
-					else if (Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 3)
-					{
-						//Place Cracked Stone Bricks
-						world.setBlock(x + xc, y - 1, z + zc, blockID, 2, 3);
-					}
-				}
-			}
-		}
-		
-		//Use Chiseled Stone Bricks to top off the pillars around the door
-		world.setBlock(x, y + 2, z + 1, blockID, 3, 3);
-		world.setBlock(x, y + 2, z - 1, blockID, 3, 3);
-		//Build the columns around the door
-		world.setBlock(x, y + 1, z - 1, blockID, 0, 3);
-		world.setBlock(x, y + 1, z + 1, blockID, 0, 3);
-		world.setBlock(x, y, z - 1, blockID, 0, 3);
-		world.setBlock(x, y, z + 1, blockID, 0, 3);
-	}
-	
-	private static void createLimboGateway(World world, int x, int y, int z, int blockID)
-	{
-		//Build the gateway out of Unraveled Fabric. Since nearly all the blocks in Limbo are of
-		//that type, there is no point replacing the ground.
-		world.setBlock(x, y + 2, z + 1, blockID, 0, 3);
-		world.setBlock(x, y + 2, z - 1, blockID, 0, 3);
-		
-		//Build the columns around the door
-		world.setBlock(x, y + 1, z - 1, blockID, 0, 3);
-		world.setBlock(x, y + 1, z + 1, blockID, 0, 3);
-		world.setBlock(x, y, z - 1, blockID, 0, 3);
-		world.setBlock(x, y, z + 1, blockID, 0, 3);
 	}
 	
 	private static boolean checkGatewayLocation(World world, int x, int y, int z)

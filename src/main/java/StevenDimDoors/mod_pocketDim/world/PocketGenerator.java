@@ -10,15 +10,15 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
+import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 
 public class PocketGenerator extends ChunkProviderGenerate
 {
 	private World worldObj;
 
-	private MonolithSpawner spawner;
+	private CustomLimboPopulator spawner;
 	
-	public PocketGenerator(World par1World, long par2, boolean par4, MonolithSpawner spawner) 
+	public PocketGenerator(World par1World, long par2, boolean par4, CustomLimboPopulator spawner) 
 	{
 		super(par1World, par2, par4);
 		this.worldObj = par1World;

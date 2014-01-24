@@ -19,12 +19,6 @@ public class GatewaySandstonePillars extends BaseGateway
 	public GatewaySandstonePillars(DDProperties properties)
 	{
 		super(properties);
-		super.startingPack=DungeonHelper.instance().getDungeonPack("RUINS");
-		super.isBiomeSpecific=true;
-		super.biomeNames.add("desert");
-		surfaceGateway=true;
-		generationWeight = 0;
-		schematicPaths.add("/schematics/gateways/sandstonePillars.schematic");
 		
 	}
 	@Override
@@ -37,6 +31,31 @@ public class GatewaySandstonePillars extends BaseGateway
 	@Override
 	public void generateRandomBits(World world, int x, int y, int z) 
 	{
+	}
+	@Override
+	public DungeonPack getStartingPack() 
+	{
+		return DungeonHelper.instance().getDungeonPack("RUINS");
+	}
+	@Override
+	public String[] getBiomeNames() 
+	{
+		return new String[]{"desert"};
+	}
+	@Override
+	public String getSchematicPath() 
+	{
+		return "/schematics/gateways/sandstonePillars.schematic";
+	}
+	@Override
+	public boolean isSurfaceGateway() 
+	{
+		return true;
+	}
+	@Override
+	public boolean areCoordsValid(World world, int x, int y, int z) {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 }

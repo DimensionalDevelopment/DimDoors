@@ -14,7 +14,7 @@ import net.minecraftforge.client.IRenderHandler;
 import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
+import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -27,7 +27,7 @@ public class LimboProvider extends WorldProvider
 
 	private IRenderHandler skyRenderer;
 	private DDProperties properties;
-	private MonolithSpawner spawner;
+	private CustomLimboPopulator spawner;
 
 	public LimboProvider()
 	{

@@ -11,6 +11,7 @@ import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
@@ -30,35 +31,8 @@ import net.minecraft.world.biome.BiomeGenBase;
 
 public abstract class BaseGateway 
 {
-	//This pack is what the dungeon initially generates into from this gateway.
-	protected DungeonPack startingPack;
+	DDProperties properties;
 	
-	/**Flag that determines if this gateway is tied to a specific biome. 
-	 *For compatabilities sake, we are just using string comparison to check.
-	 **/
-	protected boolean isBiomeSpecific;
-	
-	/**
-	 * List of biome names that we check against. Is by default a whitelist, but the isBiomeValid method 
-	 * can be overriden for specific gateways. For example, any biome containing 'forest' would be valid if we added 'forest',
-	 * even from other mods.
-	 */
-	protected ArrayList<String> biomeNames = new ArrayList<String>();
-	
-	/**
-	 * List containing all the .schematics attached to this gateway. Selection is random by default, 
-	 * but can be overriden for specific gateways in getSchematicToBuild
-	 */
-	protected ArrayList<String> schematicPaths= new ArrayList<String>();
-	
-	//TODO not yet implemented
-	protected boolean surfaceGateway;
-	
-	//TODO not yet implemented
-	protected int generationWeight;
-	
-	private DDProperties properties;
-
 	public BaseGateway(DDProperties properties)
 	{
 		this.properties=properties;
@@ -75,7 +49,7 @@ public abstract class BaseGateway
 	{
 		int orientation = 0;
 		
-		if (this.hasSchematic())
+		if (this.getSchematicPath()!=null)
 		{
 			//Get the correct filters
 			GatewayBlockFilter filter = new GatewayBlockFilter();
@@ -99,7 +73,8 @@ public abstract class BaseGateway
 		this.generateRandomBits(world, x, y, z);
 		
 		DimLink link = PocketManager.getDimensionData(world).createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
-		PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, this.getStartingDungeon(world.rand));
+		NewDimData data = PocketManager.registerPocket(PocketManager.getDimensionData(world), true);
+		PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, this.getStartingDungeon(data,world.rand));
 
 		return true;
 	}
@@ -117,7 +92,7 @@ public abstract class BaseGateway
 		//TODO- refine selection criteria here, this is the default case
 		try 
 		{
-			return DungeonSchematic.readFromResource(schematicPaths.get(world.rand.nextInt(schematicPaths.size())));
+			return DungeonSchematic.readFromResource(this.getSchematicPath());
 		}
 		catch (Exception e) 
 		{
@@ -128,21 +103,12 @@ public abstract class BaseGateway
 	}
 	
 	/**
-	 * Use this function to generate randomized bits of the structure. 
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 */
-	abstract void generateRandomBits(World world, int x, int y, int z);
-	
-	/**
 	 * returns a dungeon from the assigned pack to start with
 	 * @return
 	 */
-	public DungeonData getStartingDungeon(Random random)
+	public DungeonData getStartingDungeon(NewDimData dimension, Random random)
 	{
-		return startingPack.getRandomDungeon(random);
+		return getStartingPack().getNextDungeon(dimension,random);
 	}
 	
 	/**
@@ -156,22 +122,63 @@ public abstract class BaseGateway
 	 */
 	public boolean isLocationValid(World world, int x, int y, int z, BiomeGenBase biome)
 	{
-		//TODO- refine condition here as warranted
-		return this.isBiomeValid(biome);
-	}
-	
-	public boolean shouldGenUnderground()
-	{
-		return !surfaceGateway;
+		return this.isBiomeValid(biome)&&areCoordsValid(world, x, y, z);
 	}
 	
 	public boolean isBiomeValid(BiomeGenBase biome)
 	{
-		return !this.isBiomeSpecific || this.biomeNames.contains(biome.biomeName.toLowerCase());
+		if(this.getBiomeNames()!=null)
+		{
+			for(String biomeName : this.getBiomeNames())
+			{
+				if(biome.biomeName.contains(biomeName))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		return true;
 	}
+	
+	/**
+	 * Use this function to generate randomized bits of the structure. 
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
+	abstract void generateRandomBits(World world, int x, int y, int z);
+	
+	/**
+	 * Decides if the given coords/world are valid
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	public abstract boolean areCoordsValid(World world, int x, int y, int z);
 
-	public boolean hasSchematic()
-	{
-		return this.schematicPaths != null && !this.schematicPaths.isEmpty();
-	}
+	/**
+	 * @return the pack the dungeon initially generates into from this gateway.
+	 */
+	public abstract DungeonPack getStartingPack();
+	
+	/**
+	 * Is by default a whitelist, but the isBiomeValid method 
+	 * can be overriden for specific gateways. For example, any biome containing 'forest' would be valid if we added 'forest',
+	 * even from other mods.
+	 * @return List of biome names that we check against. 
+	 */
+	public abstract String[] getBiomeNames();
+	
+	/**
+	 * @return List containing all the .schematics attached to this gateway. Selection is random by default
+	 */
+	public abstract String getSchematicPath();
+	
+	//TODO not yet implemented
+	public abstract boolean isSurfaceGateway();
+	
 }
