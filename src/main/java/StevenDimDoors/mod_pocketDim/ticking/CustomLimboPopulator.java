@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.ticking;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
@@ -9,12 +10,13 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.util.ChunkLocation;
 
-public class MonolithSpawner implements IRegularTickReceiver {
+public class CustomLimboPopulator implements IRegularTickReceiver {
 
 	public static final int MAX_MONOLITH_SPAWNING_CHANCE = 100;
 	private static final String MOB_SPAWNING_RULE = "doMobSpawning";
@@ -23,12 +25,12 @@ public class MonolithSpawner implements IRegularTickReceiver {
 	private static final int MONOLITH_SPAWNING_INTERVAL = 1;
 	
 	private DDProperties properties;
-	private ArrayList<ChunkLocation> locations;
+	private ConcurrentLinkedQueue<ChunkLocation> locations;
 	
-	public MonolithSpawner(IRegularTickSender sender, DDProperties properties)
+	public CustomLimboPopulator(IRegularTickSender sender, DDProperties properties)
 	{
 		this.properties = properties;
-		this.locations = new ArrayList<ChunkLocation>();
+		this.locations = new ConcurrentLinkedQueue<ChunkLocation>();
 		sender.registerForTicking(this, MONOLITH_SPAWNING_INTERVAL, false);
 	}
 	
@@ -49,6 +51,10 @@ public class MonolithSpawner implements IRegularTickReceiver {
 					{
 						//Limbo chunk
 						placeMonolithsInLimbo(location.DimensionID, location.ChunkX, location.ChunkZ);
+						
+						World world = DimensionManager.getWorld(location.DimensionID);
+						
+						mod_pocketDim.instance.gatewayGenerator.generate(world.rand, location.ChunkX, location.ChunkZ,world, world.getChunkProvider(),  world.getChunkProvider());
 					}
 					else
 					{

@@ -6,6 +6,7 @@ import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
+import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 
@@ -17,13 +18,6 @@ public class GatewayTwoPillars extends BaseGateway
 	public GatewayTwoPillars(DDProperties properties)
 	{
 		super(properties);
-		super.startingPack=DungeonHelper.instance().getDungeonPack("RUINS");
-		super.isBiomeSpecific=false;
-		super.biomeNames=null;
-		surfaceGateway=true;
-		generationWeight = 0;
-		schematicPaths.add("/schematics/gateways/twoPillars.schematic");
-		
 	}
 	@Override
 	void generateRandomBits(World world, int x, int y, int z) 
@@ -55,6 +49,31 @@ public class GatewayTwoPillars extends BaseGateway
 				}
 			}
 		}
+	}
+	@Override
+	public DungeonPack getStartingPack() {
+		// TODO Auto-generated method stub
+		return DungeonHelper.instance().getDungeonPack("RUINS");
+	}
+	@Override
+	public String[] getBiomeNames() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String getSchematicPath() {
+		// TODO Auto-generated method stub
+		return "/schematics/gateways/twoPillars.schematic";
+	}
+	@Override
+	public boolean isSurfaceGateway() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	@Override
+	public boolean areCoordsValid(World world, int x, int y, int z) {
+		// TODO Auto-generated method stub
+		return !(world.provider instanceof LimboProvider);
 	}
 
 }

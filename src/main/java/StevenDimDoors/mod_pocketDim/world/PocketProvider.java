@@ -12,14 +12,14 @@ import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
 import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
+import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class PocketProvider extends WorldProvider
 {
 	private DDProperties properties;
-	private MonolithSpawner spawner;
+	private CustomLimboPopulator spawner;
 	private IRenderHandler skyRenderer;
 
 	public PocketProvider()

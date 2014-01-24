@@ -29,7 +29,7 @@ import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
 import StevenDimDoors.mod_pocketDim.schematic.ReplacementFilter;
 import StevenDimDoors.mod_pocketDim.schematic.Schematic;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
-import StevenDimDoors.mod_pocketDim.ticking.MonolithSpawner;
+import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class DungeonSchematic extends Schematic {
@@ -260,7 +260,7 @@ public class DungeonSchematic extends Schematic {
 		}
 		
 		//Remove end portal frames and spawn Monoliths, if allowed
-		boolean canSpawn = MonolithSpawner.isMobSpawningAllowed();
+		boolean canSpawn = CustomLimboPopulator.isMobSpawningAllowed();
 		for (Point3D location : monolithSpawnLocations)
 		{
 			spawnMonolith(world, location, entranceDoorLocation, turnAngle, pocketCenter, canSpawn);
