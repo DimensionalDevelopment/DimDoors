@@ -73,8 +73,9 @@ public class yCoordHelper
 	
 	public static Point3D findSafeCubeUp(World world, int x, int startY, int z)
 	{
-		// Search for a 3x3x3 cube of air with blocks underneath
-		// We can also match against a 3x2x3 box with replaceable blocks underneath
+		// Search for a 3x2x3 box with solid opaque blocks (without tile entities)
+		// or replaceable blocks underneath. The box must contain either air and
+		// non-liquid replaceable blocks only.
 		// We shift the search area into the bounds of a chunk for the sake of simplicity,
 		// so that we don't need to worry about working across chunks.
 		
@@ -88,7 +89,7 @@ public class yCoordHelper
 		Chunk chunk = initializeChunkArea(world, x >> 4, z >> 4);
 		
 		int height = world.getActualHeight();
-		int y, dx, dz, blockID;
+		int y, dx, dz, blockID, metadata;
 		boolean isSafe;
 		Block block;
 
@@ -98,8 +99,9 @@ public class yCoordHelper
 		int layers = -1000000;
 
 		// Check if a 3x3 layer of blocks is empty
-		// If we find a layer that contains replaceable blocks, it can
-		// serve as the base where we'll place the player and door.
+		// Treat non-liquid replaceable blocks like air
+		// If we find a layer that contains replaceable blocks or solid opaque blocks without
+		// tile entities, then it can serve as the base where we'll place the player and door.
 		for (y = Math.max(startY - 1, 0); y < height; y++)
 		{
 			isSafe = true;
@@ -108,10 +110,11 @@ public class yCoordHelper
 				for (dz = -1; dz <= 1 && isSafe; dz++)
 				{
 					blockID = chunk.getBlockID(localX  + dx, y, localZ + dz);
-					if (blockID != 0)
+					metadata = chunk.getBlockMetadata(localX  + dx, y, localZ + dz);
+					block = Block.blocksList[blockID];
+					if (blockID != 0 && (!block.blockMaterial.isReplaceable() || block.blockMaterial.isLiquid()))
 					{
-						block = Block.blocksList[blockID];
-						if (!block.blockMaterial.isReplaceable())
+						if (!block.blockMaterial.isReplaceable() && (!block.isOpaqueCube() || block.hasTileEntity(metadata)))
 						{
 							isSafe = false;
 						}
@@ -133,8 +136,9 @@ public class yCoordHelper
 
 	public static Point3D findSafeCubeDown(World world, int x, int startY, int z)
 	{
-		// Search for a 3x3x3 cube of air with blocks underneath
-		// We can also match against a 3x2x3 box with 
+		// Search for a 3x2x3 box with solid opaque blocks (without tile entities)
+		// or replaceable blocks underneath. The box must contain either air and
+		// non-liquid replaceable blocks only.
 		// We shift the search area into the bounds of a chunk for the sake of simplicity,
 		// so that we don't need to worry about working across chunks.
 		
@@ -148,15 +152,16 @@ public class yCoordHelper
 		Chunk chunk = initializeChunkArea(world, x >> 4, z >> 4);
 		
 		int height = world.getActualHeight();
-		int y, dx, dz, blockID;
+		int y, dx, dz, blockID, metadata;
 		boolean isSafe;
 		boolean hasBlocks;
 		Block block;
 		int layers = 0;
 
 		// Check if a 3x3 layer of blocks is empty
-		// If we find a layer that contains replaceable blocks, it can
-		// serve as the base where we'll place the player and door.
+		// Treat non-liquid replaceable blocks like air
+		// If we find a layer that contains replaceable blocks or solid opaque blocks without
+		// tile entities, then it can serve as the base where we'll place the player and door.
 		for (y = Math.min(startY + 2, height - 1); y >= 0; y--)
 		{
 			isSafe = true;
@@ -166,10 +171,11 @@ public class yCoordHelper
 				for (dz = -1; dz <= 1 && isSafe; dz++)
 				{
 					blockID = chunk.getBlockID(localX  + dx, y, localZ + dz);
-					if (blockID != 0)
-					{						
-						block = Block.blocksList[blockID];
-						if (!block.blockMaterial.isReplaceable())
+					metadata = chunk.getBlockMetadata(localX  + dx, y, localZ + dz);
+					block = Block.blocksList[blockID];
+					if (blockID != 0 && (!block.blockMaterial.isReplaceable() || block.blockMaterial.isLiquid()))
+					{
+						if (!block.blockMaterial.isReplaceable() && (!block.isOpaqueCube() || block.hasTileEntity(metadata)))
 						{
 							if (layers >= 3)
 							{
