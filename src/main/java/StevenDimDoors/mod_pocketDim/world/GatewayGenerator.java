@@ -67,7 +67,7 @@ public class GatewayGenerator implements IWorldGenerator
 		//the current world is a pocket dimension, or the world is remote.
 		//Also don't generate anything in The End.
 		if (world.isRemote || (!properties.WorldRiftGenerationEnabled) ||
-			(world.provider instanceof PocketProvider) || (world.provider.dimensionId == END_DIMENSION_ID))
+			(world.provider instanceof PocketProvider) || (world.provider.dimensionId == END_DIMENSION_ID)||(world.provider.dimensionId == NETHER_DIMENSION_ID))
 		{
 			return;
 		}
