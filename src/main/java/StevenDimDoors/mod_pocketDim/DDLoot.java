@@ -49,9 +49,13 @@ public class DDLoot {
 		addContent(true, items, Item.diamond.itemID, 40, 1, 2);
 		addContent(true, items, Item.emerald.itemID, 20, 1, 2);
 		addContent(true, items, Item.appleGold.itemID, 10);
+		addContent(true, items, Item.nameTag.itemID, 15);
+		addContent(true, items, Item.eyeOfEnder.itemID, 15);
+		addContent(true, items, Item.ghastTear.itemID, 15);
 
 		addContent(properties.FabricOfRealityLootEnabled, items, mod_pocketDim.blockDimWall.blockID, 80, 4, 16);
-		addContent(properties.WorldThreadLootEnabled, items, mod_pocketDim.itemWorldThread.itemID, 80);
+		addContent(properties.WorldThreadLootEnabled, items, mod_pocketDim.itemWorldThread.itemID, 90, 1,2);
+
 		
 		// Add all the items to our dungeon chest
 		addItemsToContainer(DungeonChestInfo, items);

@@ -135,7 +135,7 @@ public class DungeonPack
 		//for dungeon packs that can extend arbitrarily deep. We should probably set a reasonable limit anyway.
 		
 		int maxSearchLength = config.allowDuplicatesInChain() ? maxRuleLength : MAX_HISTORY_LENGTH;
-		ArrayList<DungeonData> history = DungeonHelper.getDungeonChainHistory(dimension.parent(), this, maxSearchLength);
+		ArrayList<DungeonData> history = DungeonHelper.getDungeonChainHistory(dimension, this, maxSearchLength);
 		return getNextDungeon(history, random);
 	}
 	

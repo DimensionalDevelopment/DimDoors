@@ -43,6 +43,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 	private static final int BLOCK_SEARCH_CHANCE = 50;
 	private static final int MAX_BLOCK_DESTRUCTION_CHANCE = 100;
 	private static final int BLOCK_DESTRUCTION_CHANCE = 50;
+	private static final int WORLD_THREAD_PROBABILITY = 10;
 	
 	private final DDProperties properties;
 	private final ArrayList<Integer> blocksImmuneToRift;
@@ -208,7 +209,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 		{
 			return;
 		}
-		if(worldObj.rand.nextInt(7)==0)
+		if(worldObj.rand.nextInt(100)<this.WORLD_THREAD_PROBABILITY)
 		{
 			
 			ItemStack thread = new ItemStack(mod_pocketDim.itemWorldThread,1);

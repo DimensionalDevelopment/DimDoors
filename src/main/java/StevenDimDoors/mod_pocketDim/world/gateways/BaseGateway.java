@@ -73,8 +73,7 @@ public abstract class BaseGateway
 		this.generateRandomBits(world, x, y, z);
 		
 		DimLink link = PocketManager.getDimensionData(world).createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
-		NewDimData data = PocketManager.registerPocket(PocketManager.getDimensionData(world), true);
-		PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, this.getStartingDungeon(data,world.rand));
+		PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, this.getStartingDungeon(PocketManager.getDimensionData(world),world.rand));
 
 		return true;
 	}

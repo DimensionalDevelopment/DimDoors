@@ -63,24 +63,23 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-			int var10 = this.getFullMetadata(world, x, y, z);
-			int var11 = var10 & 7;
-			var11 ^= 4;
+		int var10 = this.getFullMetadata(world, x, y, z);
+		int var11 = var10 & 7;
+		var11 ^= 4;
 
-			if ((var10 & 8) == 0)
-			{
-				world.setBlockMetadataWithNotify(x, y, z, var11,2);
-				world.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
-			}
-			else
-			{
-				world.setBlockMetadataWithNotify(x, y - 1, z, var11,2);
-				world.markBlockRangeForRenderUpdate(x, y - 1, z, x, y, z);
-			}
+		if ((var10 & 8) == 0)
+		{
+			world.setBlockMetadataWithNotify(x, y, z, var11,2);
+			world.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
+		}
+		else
+		{
+			world.setBlockMetadataWithNotify(x, y - 1, z, var11,2);
+			world.markBlockRangeForRenderUpdate(x, y - 1, z, x, y, z);
+		}
 
-			world.playAuxSFXAtEntity(player, 1003, x, y, z, 0);
-			return true;
-
+		world.playAuxSFXAtEntity(player, 1003, x, y, z, 0);
+		return true;
 	}
 
 	@Override

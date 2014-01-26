@@ -615,9 +615,12 @@ public class DungeonHelper
 		{
 			throw new IllegalArgumentException("dimension cannot be null.");
 		}
-		
+		if(dimension.parent()==null)
+		{
+			return new ArrayList<DungeonData>();
+		}
 		int count = 0;
-		NewDimData tail = dimension;
+		NewDimData tail = dimension.parent();
 		DungeonData dungeon = tail.dungeon();
 		ArrayList<DungeonData> history = new ArrayList<DungeonData>();
 		
