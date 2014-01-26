@@ -25,6 +25,7 @@ public class BlockRotator
 		hasOrientations[Block.stairsStoneBrick.blockID] = true;
 		hasOrientations[Block.lever.blockID] = true;
 		hasOrientations[Block.stoneButton.blockID] = true;
+		hasOrientations[Block.woodenButton.blockID] = true;
 		hasOrientations[Block.redstoneRepeaterIdle.blockID] = true;
 		hasOrientations[Block.redstoneRepeaterActive.blockID] = true;
 		hasOrientations[Block.tripWireSource.blockID] = true;
@@ -62,7 +63,10 @@ public class BlockRotator
 		hasOrientations[Block.railDetector.blockID] = true;
 		hasOrientations[Block.railActivator.blockID] = true;
 		hasOrientations[Block.rail.blockID] = true;
-		
+		hasOrientations[Block.furnaceBurning.blockID] = true;
+		hasOrientations[Block.furnaceIdle.blockID] = true;
+		hasOrientations[Block.bed.blockID] = true;
+
 		hasOrientations[mod_pocketDim.dimensionalDoor.blockID] = true;
 		hasOrientations[mod_pocketDim.warpDoor.blockID] = true;
 		
@@ -176,6 +180,36 @@ public class BlockRotator
 				break;					
 			}
 		}
+		else if (blockID==Block.bed.blockID)
+		{
+			switch (metadata)
+			{
+			case 2:
+				metadata = 1;
+				break;
+			case 1:
+				metadata = 0;
+				break;					
+			case 0:
+				metadata = 3;
+				break;
+			case 3:
+				metadata = 2;
+				break;	
+			case 10:
+				metadata = 9;
+				break;
+			case 9:
+				metadata = 8;
+				break;					
+			case 8:
+				metadata = 11;
+				break;
+			case 11:
+				metadata = 10;
+				break;	
+			}
+		}
 		else if (Block.blocksList[blockID] instanceof BlockStairs)
 		{
 
@@ -207,7 +241,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if (blockID == Block.chest.blockID || blockID == Block.chestTrapped.blockID || blockID == Block.ladder.blockID || blockID == Block.hopperBlock.blockID)
+		else if (blockID == Block.chest.blockID || blockID == Block.chestTrapped.blockID || blockID == Block.ladder.blockID || blockID == Block.hopperBlock.blockID|| blockID == Block.furnaceBurning.blockID|| blockID == Block.furnaceIdle.blockID)
 		{
 			switch (metadata)
 			{
@@ -318,7 +352,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if(blockID== Block.lever.blockID||blockID== Block.stoneButton.blockID||blockID== Block.woodenButton.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
+		else if(blockID== Block.lever.blockID||blockID== Block.stoneButton.blockID||blockID== Block.stoneButton.blockID||blockID== Block.woodenButton.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
 		{
 			switch (metadata)
 			{

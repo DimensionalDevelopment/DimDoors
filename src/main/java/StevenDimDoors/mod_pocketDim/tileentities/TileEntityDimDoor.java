@@ -1,7 +1,10 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
 import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet130UpdateSign;
@@ -34,6 +37,23 @@ public class TileEntityDimDoor extends TileEntity
 			 return ServerPacketHandler.createLinkPacket(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj).link());
 		 }
 		 return null;
+	 }
+	
+	 public void invalidate()
+	 {
+		 this.tileEntityInvalid = true;
+		 
+		 if(this.worldObj.getBlockId(xCoord, yCoord, zCoord)==0&&!this.worldObj.isRemote)
+		 {
+			 if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
+			 {
+				 this.worldObj.setBlock(xCoord, yCoord, zCoord, mod_pocketDim.blockRift.blockID);
+			 }
+			 else if(PocketManager.getLink(xCoord, yCoord+1, zCoord, worldObj)!=null)
+			 {
+				 this.worldObj.setBlock(xCoord, yCoord+1, zCoord, mod_pocketDim.blockRift.blockID,0,2);
+			 }
+		 }
 	 }
 
 	@Override

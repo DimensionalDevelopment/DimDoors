@@ -77,21 +77,6 @@ public class BlockRift extends Block implements ITileEntityProvider
 		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
 	}
 	
-	//sends a packet informing the client that there is a link present so it renders properly. (when placed)
-	@Override
-	public void onBlockAdded(World par1World, int par2, int par3, int par4) 
-	{
-		try
-		{
-		//	PacketHandler.onLinkCreatedPacket(dimHelper.instance.getLinkDataFromCoords(par2, par3, par4, par1World));
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		//	this.updateTick(par1World, par2, par3, par4, new Random());
-	}
-	
 	@Override
 	public boolean isCollidable()
 	{
