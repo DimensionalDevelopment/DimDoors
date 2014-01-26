@@ -96,7 +96,7 @@ public class DDTeleporter
 		
 		if (Block.blocksList[blockIDBottom] != null)
 		{
-			if(!Block.blocksList[blockIDBottom].isBlockReplaceable(world, point.getX(), point.getY(), point.getZ()))
+			if(!Block.blocksList[blockIDBottom].isBlockReplaceable(world, point.getX(), point.getY(), point.getZ())&&world.isBlockOpaqueCube(point.getX(), point.getY(), point.getZ()))
 			{
 				return false;
 			}

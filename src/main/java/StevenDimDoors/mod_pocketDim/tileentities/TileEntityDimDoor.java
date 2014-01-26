@@ -47,11 +47,7 @@ public class TileEntityDimDoor extends TileEntity
 		 {
 			 if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
 			 {
-				 this.worldObj.setBlock(xCoord, yCoord, zCoord, mod_pocketDim.blockRift.blockID);
-			 }
-			 else if(PocketManager.getLink(xCoord, yCoord+1, zCoord, worldObj)!=null)
-			 {
-				 this.worldObj.setBlock(xCoord, yCoord+1, zCoord, mod_pocketDim.blockRift.blockID,0,2);
+				 mod_pocketDim.instance.fastRiftRegenerator.registerRiftForRegen(xCoord, yCoord, zCoord, this.worldObj.provider.dimensionId);	 
 			 }
 		 }
 	 }

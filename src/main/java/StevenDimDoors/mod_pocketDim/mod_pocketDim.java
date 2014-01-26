@@ -36,6 +36,7 @@ import StevenDimDoors.mod_pocketDim.items.ItemWarpDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemWorldThread;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
+import StevenDimDoors.mod_pocketDim.ticking.FastRiftRegenerator;
 import StevenDimDoors.mod_pocketDim.ticking.LimboDecay;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
@@ -141,6 +142,7 @@ public class mod_pocketDim
 
 	public static DDProperties properties;
 	public static CustomLimboPopulator spawner; //Added this field temporarily. Will be refactored out later.
+	public FastRiftRegenerator fastRiftRegenerator;
 	public static GatewayGenerator gatewayGenerator;
 	public static PlayerTracker tracker;
 	
@@ -161,8 +163,6 @@ public class mod_pocketDim
 			return "Dimensional Doors";
 		}
 	};
-
-
 
 	@EventHandler
 	public void onPreInitialization(FMLPreInitializationEvent event)
@@ -190,6 +190,7 @@ public class mod_pocketDim
 		spawner = new CustomLimboPopulator(commonTickHandler, properties);
 		new RiftRegenerator(commonTickHandler); //No need to store the reference
 		LimboDecay decay = new LimboDecay(commonTickHandler, properties);
+		this.fastRiftRegenerator = new FastRiftRegenerator(commonTickHandler);
 
 		transientDoor = new TransientDoor(properties.TransientDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("transientDoor");
 		goldenDimensionalDoor = new BlockGoldDimDoor(properties.GoldenDimensionalDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorGold");
