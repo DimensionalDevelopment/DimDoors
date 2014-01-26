@@ -56,7 +56,6 @@ public class DDLoot {
 		addContent(properties.FabricOfRealityLootEnabled, items, mod_pocketDim.blockDimWall.blockID, 80, 4, 16);
 		addContent(properties.WorldThreadLootEnabled, items, mod_pocketDim.itemWorldThread.itemID, 90, 1,2);
 
-		
 		// Add all the items to our dungeon chest
 		addItemsToContainer(DungeonChestInfo, items);
 	}
