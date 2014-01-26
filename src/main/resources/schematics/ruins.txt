@@ -45,7 +45,7 @@
 /schematics/ruins/Hub_SK-RandomSwamp_Open_75.schematic
 /schematics/ruins/Hub_SK-TheNexus_Open_40.schematic
 /schematics/ruins/maze_smallMaze1_closed_100.schematic
-/schematics/ruins/maze_smallMultilevelMaze_closed_100.schematic
+/schematics/ruins/hub_smallMultilevelMaze_closed_100.schematic
 /schematics/ruins/simpleHall_collapsedSingleTunnel1_closed_100.schematic
 /schematics/ruins/simpleHall_simpleDropHall_closed_100.schematic
 /schematics/ruins/simpleHall_simpleSmallT1_closed_100.schematic

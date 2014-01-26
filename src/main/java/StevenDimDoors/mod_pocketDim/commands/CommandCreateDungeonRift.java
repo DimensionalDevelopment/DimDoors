@@ -83,7 +83,6 @@ public class CommandCreateDungeonRift extends DDCommandBase
 				dimension = PocketManager.getDimensionData(sender.worldObj);
 				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
 				sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID, 0, 3);
-
 				sendChat(sender, "Created a rift to a random dungeon.");
 			}
 			else
@@ -97,11 +96,9 @@ public class CommandCreateDungeonRift extends DDCommandBase
 				if (result != null)
 				{
 					//Create a rift to our selected dungeon and notify the player
-					//TODO currently crashes, need to create the dimension first
 					dimension = PocketManager.getDimensionData(sender.worldObj);
 					link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
 					PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result);
-
 					sender.worldObj.setBlock(x, y + 1, z, mod_pocketDim.blockRift.blockID, 0, 3);
 					sendChat(sender, "Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
 				}
@@ -127,7 +124,6 @@ public class CommandCreateDungeonRift extends DDCommandBase
 		{
 			//We need to extract the file's name. Comparing against schematicPath could
 			//yield false matches if the query string is contained within the path.
-
 			dungeonName = dungeon.schematicName().toLowerCase();
 			if (dungeonName.length() < matchLength && dungeonName.contains(normalQuery))
 			{
