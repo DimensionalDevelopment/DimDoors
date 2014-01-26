@@ -15,6 +15,8 @@ import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
+
 
 public abstract class BaseItemDoor extends ItemDoor
 {
@@ -83,7 +85,7 @@ public abstract class BaseItemDoor extends ItemDoor
 			return false;
 		}
 
-		MovingObjectPosition hit = this.getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+		MovingObjectPosition hit = getMovingObjectPositionFromPlayer(player.worldObj, player, true);
 		if (hit != null)
 		{
 			if (world.getBlockId(hit.blockX, hit.blockY, hit.blockZ) == properties.RiftBlockID)
@@ -101,6 +103,10 @@ public abstract class BaseItemDoor extends ItemDoor
 						{
 							int orientation = MathHelper.floor_double(((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 							placeDoorBlock(world, x, y - 1, z, orientation, doorBlock);
+							if(!(item.getItem() instanceof BaseItemDoor))
+							{
+								((TileEntityDimDoor)world.getBlockTileEntity(x, y, z)).hasGennedPair=true;
+							}
 							return true;
 						}
 					}

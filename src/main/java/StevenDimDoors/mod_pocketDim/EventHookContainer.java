@@ -1,22 +1,31 @@
 package StevenDimDoors.mod_pocketDim;
 
 import paulscode.sound.SoundSystem;
+import net.minecraft.block.Block;
 import net.minecraft.client.audio.SoundManager;
 import net.minecraft.client.audio.SoundPool;
 import net.minecraft.client.audio.SoundPoolEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemDoor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
+import net.minecraftforge.event.Event;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
@@ -58,6 +67,52 @@ public class EventHookContainer
         	this.playMusicForDim(FMLClientHandler.instance().getClient().thePlayer.worldObj);
         }
 	}
+	
+	
+	@ForgeSubscribe
+	public void onPlayerEvent(PlayerInteractEvent event)
+	{
+		//Handle placement of vanilla doors on rifts
+		if(!event.entity.worldObj.isRemote)
+		{
+			World world = event.entity.worldObj;
+			ItemStack item = event.entityPlayer.inventory.getCurrentItem();
+			if(item!=null)
+			{
+				if(item.getItem() instanceof ItemDoor&&!(item.getItem() instanceof BaseItemDoor))
+				{
+					Block doorToPlace = null; 
+					if(item.itemID == Item.doorIron.itemID)
+					{
+						doorToPlace =mod_pocketDim.dimensionalDoor;
+					}
+					else if(item.itemID == Item.doorWood.itemID)
+					{
+						doorToPlace =mod_pocketDim.warpDoor;
+					}
+					else if(item.itemID == mod_pocketDim.itemGoldenDoor.itemID)
+					{
+						doorToPlace =mod_pocketDim.goldenDimensionalDoor;
+					}
+					if(((BaseItemDoor) mod_pocketDim.itemDimensionalDoor).tryPlacingDoor(doorToPlace, world, event.entityPlayer,item))
+					{
+						if(!event.entityPlayer.capabilities.isCreativeMode)
+						{
+							item.stackSize--;
+						}
+						if(!event.entity.worldObj.isRemote)
+						{
+							event.setCanceled(true);
+						}
+					}
+					else
+					{
+						BaseItemDoor.tryItemUse(doorToPlace, item, event.entityPlayer, world, event.x, event.y, event.z, event.face, true, true);
+					}
+				}
+			}
+		}
+	}	          
     @ForgeSubscribe
     public void onWorldLoad(WorldEvent.Load event)
     {
@@ -134,8 +189,6 @@ public class EventHookContainer
 	    		{
 	    			sndManager.sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.getSoundUrl(), soundPoolEntry.getSoundName(), false);
 	    			sndManager.sndSystem.play("LimboMusic");
-	    			sndManager.sndSystem.setVolume("BgMusic", sndManager.sndSystem.getMasterVolume()+5);
-
 	    		}
 	    	}
 	    	else if(!(world.provider instanceof LimboProvider))

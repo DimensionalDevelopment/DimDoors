@@ -30,7 +30,6 @@ public class DimensionalDoor extends BaseDimDoor
 				dimension.createLink(x, y, z, LinkTypes.POCKET,world.getBlockMetadata(x, y - 1, z));
 			}
 		}
-		
 	}
 	@Override
 	public int getDrops()
