@@ -46,7 +46,7 @@ public class EventHookContainer
 		event.manager.addSound(mod_pocketDim.modid+":riftEnd.ogg");
 		event.manager.addSound(mod_pocketDim.modid+":riftClose.ogg");
 		event.manager.addSound(mod_pocketDim.modid+":riftDoor.ogg");
-		event.manager.addMusic(mod_pocketDim.modid+":creepy.ogg");
+		event.manager.addSound(mod_pocketDim.modid+":creepy.ogg");
 
 	}
 	@SideOnly(Side.CLIENT)
@@ -129,11 +129,13 @@ public class EventHookContainer
 	    	if(world.provider instanceof LimboProvider)
 	    	{
 	    		sndManager.sndSystem.stop("BgMusic");
-	    		SoundPoolEntry soundPoolEntry = sndManager.soundPoolMusic.getRandomSoundFromSoundPool(mod_pocketDim.modid+":creepy");
+	    		SoundPoolEntry soundPoolEntry = sndManager.soundPoolSounds.getRandomSoundFromSoundPool(mod_pocketDim.modid+":creepy");
 	    		if(soundPoolEntry!=null) 
 	    		{
 	    			sndManager.sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.getSoundUrl(), soundPoolEntry.getSoundName(), false);
 	    			sndManager.sndSystem.play("LimboMusic");
+	    			sndManager.sndSystem.setVolume("BgMusic", sndManager.sndSystem.getMasterVolume()+5);
+
 	    		}
 	    	}
 	    	else if(!(world.provider instanceof LimboProvider))
