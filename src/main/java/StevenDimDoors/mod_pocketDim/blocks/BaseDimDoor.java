@@ -333,9 +333,14 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 
 	@Override
 	public int idDropped(int par1, Random par2Random, int par3)
-	{
-		return (par1 & 8) != 0 ? 0 : (getDrops());
-	}
+    {
+		//I have no idea, but sometimes this is returned as the blockID instead of metadata. 
+		if(par1>100)
+		{
+			return this.getDrops();
+		}
+        return (par1 & 8) != 0 ? 0 :getDrops();
+    }
 
 	/**
 	 * Called when the block is attempted to be harvested

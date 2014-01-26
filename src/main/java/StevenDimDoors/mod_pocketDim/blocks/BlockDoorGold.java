@@ -29,10 +29,11 @@ public class BlockDoorGold extends BlockDoor
 		this.blockIconBottom = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName()+"_bottom");
 	} 
 	
+	@Override
 	public int idDropped(int par1, Random par2Random, int par3)
-	{
-		return mod_pocketDim.itemGoldenDoor.itemID;
-	}
+    {
+        return (par1 & 8) != 0 ? 0 : mod_pocketDim.itemGoldenDoor.itemID;
+    }
 	  
 	@Override
 	public Icon getIcon(int par1, int par2)
