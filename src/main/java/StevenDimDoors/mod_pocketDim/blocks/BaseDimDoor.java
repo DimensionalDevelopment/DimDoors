@@ -63,32 +63,6 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		boolean shouldOpen = true;
-		
-		if (player.inventory.getCurrentItem()!=null)
-		{
-			if(player.inventory.getCurrentItem().getItem() == mod_pocketDim.itemRiftBlade)
-			{
-				shouldOpen = false;
-				if (!world.isRemote && world.getBlockId(x, y-1, z) == this.blockID)
-				{
-					world.setBlockMetadataWithNotify(x, y-1, z, (world.getBlockMetadata(x, y-1, z)+1)%4, 2);
-				}
-				if (!world.isRemote && world.getBlockId(x, y+1, z) == this.blockID)
-				{
-					world.setBlockMetadataWithNotify(x, y, z, (world.getBlockMetadata(x, y, z)+1)%4, 2);
-				}
-				world.playAuxSFXAtEntity(player, 1001, x, y, z, 0);
-
-				if (!shouldOpen && !world.isRemote)
-				{
-					player.inventory.getCurrentItem().damageItem(5, player);
-				}
-			}
-		}
-
-		if(shouldOpen)
-		{
 			int var10 = this.getFullMetadata(world, x, y, z);
 			int var11 = var10 & 7;
 			var11 ^= 4;
@@ -106,19 +80,12 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 
 			world.playAuxSFXAtEntity(player, 1003, x, y, z, 0);
 			return true;
-		}
-		else 
-		{
-			return false;
-		}
 
 	}
 
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z) 
 	{
-		//FIXME: We need to set door generation flags on the tile entities. Ignoring that for now. ~SenseiKiwi
-		
 		this.placeLink(world, x, y, z);
 		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
 		this.updateAttachedTile(world, x, y, z);
