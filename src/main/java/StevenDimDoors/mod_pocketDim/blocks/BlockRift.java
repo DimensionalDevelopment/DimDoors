@@ -199,7 +199,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 	}
 	private void spawnWorldThread(int blockID,World worldObj,int x,int y,int z )
 	{
-		if(blockID == 0)
+		if(blockID == 0||!(worldObj.rand.nextInt(100)<this.WORLD_THREAD_PROBABILITY))
 		{
 			return;
 		}
@@ -209,13 +209,11 @@ public class BlockRift extends Block implements ITileEntityProvider
 		{
 			return;
 		}
-		if(worldObj.rand.nextInt(100)<this.WORLD_THREAD_PROBABILITY)
-		{
-			
-			ItemStack thread = new ItemStack(mod_pocketDim.itemWorldThread,1);
-			EntityItem threadEntity = new EntityItem(worldObj, x,y,z, thread);
-			worldObj.spawnEntityInWorld(threadEntity);
-		}
+		
+		ItemStack thread = new ItemStack(mod_pocketDim.itemWorldThread,1);
+		EntityItem threadEntity = new EntityItem(worldObj, x,y,z, thread);
+		worldObj.spawnEntityInWorld(threadEntity);
+		
 	}
 	private void addAdjacentBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
 	{

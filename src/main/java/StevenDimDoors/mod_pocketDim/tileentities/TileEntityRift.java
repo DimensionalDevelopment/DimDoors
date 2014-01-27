@@ -170,10 +170,14 @@ public class TileEntityRift extends TileEntity
 					EntityEnderman enderman = new EntityEnderman(worldObj);
 					enderman.setLocationAndAngles(xCoord + 0.5, yCoord - 1, zCoord + 0.5, 5, 6);
 					worldObj.spawnEntityInWorld(enderman);
-					EntityPlayer player = this.worldObj.getClosestPlayerToEntity(enderman, 50);
-					if(player!=null)
+					
+					if(this.worldObj.rand.nextInt(3)==0)
 					{
-						enderman.setTarget(player);
+						EntityPlayer player = this.worldObj.getClosestPlayerToEntity(enderman, 50);
+						if(player!=null)
+						{
+							enderman.setTarget(player);
+						}
 					}
 				}				
 			}

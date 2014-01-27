@@ -88,8 +88,10 @@ public class DDSaveHandler
 	public static boolean unpackDimData(List<PackedDimData> packedDims)
 	{
 		List<PackedDimData> unpackedDims = new ArrayList<PackedDimData>();
-		
-		
+		for(PackedDimData data : packedDims)
+		{
+			System.out.println(data.ID);
+		}
 		//Load roots
 		for(PackedDimData packedDim : packedDims)
 		{
@@ -144,7 +146,6 @@ public class DDSaveHandler
 					linkType = LinkTypes.NORMAL;
 				}
 				
-				@SuppressWarnings("deprecation")
 				DimLink link = data.createLink(packedLink.source, linkType, packedLink.orientation);
 				Point4D destination = packedLink.tail.destination;
 				if(destination!=null)
