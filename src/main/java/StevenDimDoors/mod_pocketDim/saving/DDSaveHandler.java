@@ -87,7 +87,9 @@ public class DDSaveHandler
 	public static boolean unpackDimData(HashMap<Integer,PackedDimData> packedDims)
 	{
 		ArrayList<PackedDimData> roots = new ArrayList<PackedDimData>();
-		
+		ArrayList<Integer> children = new ArrayList<Integer>();
+		ArrayList<Integer> tempChildren = new ArrayList<Integer>();
+
 		//Load roots
 		for(PackedDimData packedDim : packedDims.values())
 		{
@@ -100,18 +102,22 @@ public class DDSaveHandler
 		//load the children for each root
 		for(PackedDimData packedDim : roots)
 		{
-			registerChildren(packedDim, packedDims);
+			children.addAll(packedDim.ChildIDs);
 		}
-		return true;
-	}
-	
-	private static void registerChildren(PackedDimData data, HashMap<Integer, PackedDimData> packedDims)
-	{
-		PocketManager.registerPackedDimData(data);
-		for(Integer child : data.ChildIDs)
+		while(!children.isEmpty())
 		{
-			registerChildren(packedDims.get(child),packedDims);
+			for(Integer child: children)
+			{
+				PackedDimData data = packedDims.get(child);
+				PocketManager.registerPackedDimData(data);
+				tempChildren.addAll(data.ChildIDs);
+			}
+			children.clear();
+			children.addAll(tempChildren);
+			tempChildren.clear();
 		}
+		
+		return true;
 	}
 	
 	public static boolean unpackLinkData(List<PackedLinkData> linksToUnpack)
