@@ -218,7 +218,13 @@ public class MobMonolith extends EntityFlying implements IMob
 					{
 						aggro++;
 					}
-
+				}
+				else
+				{
+					if(aggro>0)
+					{
+						aggro--;
+					}	
 				}
 			}
 		}
