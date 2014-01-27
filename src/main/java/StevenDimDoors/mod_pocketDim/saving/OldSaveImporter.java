@@ -25,7 +25,7 @@ public class OldSaveImporter
         save.close();
         
         List<PackedLinkData> allPackedLinks = new ArrayList<PackedLinkData>();
-        List<PackedDimData> newPackedDimData = new ArrayList<PackedDimData>();
+        HashMap<Integer,PackedDimData> newPackedDimData = new   HashMap<Integer,PackedDimData>();
        
         HashMap<Integer, DimData> dimMap;
         
@@ -59,7 +59,7 @@ public class OldSaveImporter
             }
             
             PackedDimData dim = new PackedDimData(data.dimID, data.depth, data.depth, data.exitDimLink.locDimID, data.exitDimLink.locDimID, 0, data.dungeonGenerator!=null, data.hasBeenFilled, null, new Point3D(0,64,0), childDims, newPackedLinkData, null);
-            newPackedDimData.add(dim);
+            newPackedDimData.put(dim.ID,dim);
             
             DDSaveHandler.unpackDimData(newPackedDimData);
             DDSaveHandler.unpackLinkData(allPackedLinks);

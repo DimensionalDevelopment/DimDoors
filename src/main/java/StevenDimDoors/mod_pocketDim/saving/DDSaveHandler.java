@@ -5,6 +5,7 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import net.minecraftforge.common.DimensionManager;
@@ -59,24 +60,22 @@ public class DDSaveHandler
 		
 		// List any dimension data files and read each dimension
 		DimDataProcessor reader = new DimDataProcessor();
-		List<PackedDimData> packedDims = new ArrayList<PackedDimData>();
+		HashMap<Integer,PackedDimData> packedDims = new HashMap<Integer,PackedDimData>();
 		FileFilter dataFileFilter = new FileFilters.RegexFileFilter("dim_-?\\d+\\.txt");
 		
 		File[] dataFiles = dataDirectory.listFiles(dataFileFilter);
 		for (File dataFile : dataFiles)
 		{
 			PackedDimData packedDim = readDimension(dataFile, reader);
-			packedDims.add(packedDim);
+			packedDims.put(packedDim.ID,packedDim);
 		}
 		
 		List<PackedLinkData> linksToUnpack = new ArrayList<PackedLinkData>();
 		//get the grand list of all links to unpack
-		for(PackedDimData packedDim : packedDims)
+		for(PackedDimData packedDim : packedDims.values())
 		{
 			linksToUnpack.addAll(packedDim.Links);
 		}
-
-		
 		return unpackDimData(packedDims)&&unpackLinkData(linksToUnpack);
 	}
 	
@@ -85,45 +84,34 @@ public class DDSaveHandler
 	 * @param packedDims
 	 * @return
 	 */
-	public static boolean unpackDimData(List<PackedDimData> packedDims)
+	public static boolean unpackDimData(HashMap<Integer,PackedDimData> packedDims)
 	{
-		List<PackedDimData> unpackedDims = new ArrayList<PackedDimData>();
-		for(PackedDimData data : packedDims)
-		{
-			System.out.println(data.ID);
-		}
+		ArrayList<PackedDimData> roots = new ArrayList<PackedDimData>();
+		
 		//Load roots
-		for(PackedDimData packedDim : packedDims)
+		for(PackedDimData packedDim : packedDims.values())
 		{
 			if(packedDim.ParentID==packedDim.ID)
 			{
 				PocketManager.registerPackedDimData(packedDim);
-				unpackedDims.add(packedDim);
+				roots.add(packedDim);
 			}
 		}
-		packedDims.removeAll(unpackedDims);
-		unpackedDims.clear();
-		
-		//Load the pockets
-		while(!packedDims.isEmpty())
+		//load the children for each root
+		for(PackedDimData packedDim : roots)
 		{
-			for(PackedDimData packedDim : packedDims)
-			{
-				if(PocketManager.isRegisteredInternally(packedDim.ParentID))
-				{
-					PocketManager.registerPackedDimData(packedDim);
-					unpackedDims.add(packedDim);
-				}
-				else
-				{
-					//break here gracefully
-				}
-			}
-			packedDims.removeAll(unpackedDims);
-			unpackedDims.clear();
-			
+			registerChildren(packedDim, packedDims);
 		}
 		return true;
+	}
+	
+	private static void registerChildren(PackedDimData data, HashMap<Integer, PackedDimData> packedDims)
+	{
+		PocketManager.registerPackedDimData(data);
+		for(Integer child : data.ChildIDs)
+		{
+			registerChildren(packedDims.get(child),packedDims);
+		}
 	}
 	
 	public static boolean unpackLinkData(List<PackedLinkData> linksToUnpack)
