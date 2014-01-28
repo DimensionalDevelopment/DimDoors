@@ -80,6 +80,5 @@
 /schematics/ruins/Trap_SK-UTrapRight_Open_50.schematic
 /schematics/ruins/trap_wallFallcomboPistonHall_closed_200.schematic
 /schematics/ruins/DeadEnd_Floating-Altar_Open_100.schematic
-
-
-DeadEnd_Floating-Altar_Open
+/schematics/ruins/complexHall_exitRuinsWithHiddenDoor_open_100
+.schematic

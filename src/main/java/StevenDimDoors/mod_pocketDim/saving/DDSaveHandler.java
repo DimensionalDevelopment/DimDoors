@@ -119,6 +119,12 @@ public class DDSaveHandler
 		}
 		return true;
 	}
+	/**
+	 * ensures that a pocket's children havent been deleted
+	 * @param packedDim
+	 * @param packedDims
+	 * @return
+	 */
 	private static ArrayList<Integer> verifyChildren(PackedDimData packedDim,HashMap<Integer,PackedDimData> packedDims)
 	{			
 		ArrayList<Integer> children = new ArrayList<Integer>();
