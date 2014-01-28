@@ -5,7 +5,10 @@ import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraftforge.common.DimensionManager;
@@ -86,38 +89,55 @@ public class DDSaveHandler
 	 */
 	public static boolean unpackDimData(HashMap<Integer,PackedDimData> packedDims)
 	{
-		ArrayList<PackedDimData> roots = new ArrayList<PackedDimData>();
-		ArrayList<Integer> children = new ArrayList<Integer>();
+		LinkedList<Integer> children = new LinkedList<Integer>();
 		ArrayList<Integer> tempChildren = new ArrayList<Integer>();
-
-		//Load roots
+		int registeredDims=packedDims.keySet().size();
+		
 		for(PackedDimData packedDim : packedDims.values())
 		{
-			if(packedDim.ParentID==packedDim.ID)
+			//Load roots
+			if(packedDim.RootID==packedDim.ID)
 			{
+				children.add(packedDim.ID);
 				PocketManager.registerPackedDimData(packedDim);
-				roots.add(packedDim);
+			}
+			//fix pockets without parents
+			if(!packedDims.containsKey(packedDim.ParentID))
+			{
+				packedDim=(new PackedDimData(packedDim.ID, 1, packedDim.PackDepth, packedDim.RootID, packedDim.RootID, packedDim.Orientation, packedDim.IsDungeon, packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, packedDim.ChildIDs, packedDim.Links, packedDim.Tails));
+				packedDims.put(packedDim.ID, packedDim);
+				children.addLast(packedDim.ID);
 			}
 		}
 		//load the children for each root
-		for(PackedDimData packedDim : roots)
-		{
-			children.addAll(packedDim.ChildIDs);
-		}
 		while(!children.isEmpty())
 		{
-			for(Integer child: children)
-			{
-				PackedDimData data = packedDims.get(child);
-				PocketManager.registerPackedDimData(data);
-				tempChildren.addAll(data.ChildIDs);
-			}
-			children.clear();
-			children.addAll(tempChildren);
-			tempChildren.clear();
+			Integer childID = children.pop();
+			PackedDimData data = packedDims.get(childID);
+			children.addAll(verifyChildren(data, packedDims));
+			PocketManager.registerPackedDimData(data);
 		}
-		
 		return true;
+	}
+	private static ArrayList<Integer> verifyChildren(PackedDimData packedDim,HashMap<Integer,PackedDimData> packedDims)
+	{			
+		ArrayList<Integer> children = new ArrayList<Integer>();
+		children.addAll(packedDim.ChildIDs);
+		boolean isMissing = false;
+		for(Integer childID : packedDim.ChildIDs)
+		{
+			if(!packedDims.containsKey(childID))
+			{
+				children.remove(childID);
+				isMissing=true;
+			}
+		}
+		if(isMissing)
+		{
+			packedDim=(new PackedDimData(packedDim.ID, packedDim.Depth, packedDim.PackDepth, packedDim.ParentID, packedDim.RootID, packedDim.Orientation, packedDim.IsDungeon, packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, children, packedDim.Links, packedDim.Tails));
+			packedDims.put(packedDim.ID, packedDim);
+		}
+		return children;
 	}
 	
 	public static boolean unpackLinkData(List<PackedLinkData> linksToUnpack)

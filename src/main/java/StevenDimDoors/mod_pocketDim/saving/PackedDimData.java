@@ -43,4 +43,10 @@ public class PackedDimData
 		Links = links;
 		Tails = tails;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "ID= "+this.ID;
+	}
 }
