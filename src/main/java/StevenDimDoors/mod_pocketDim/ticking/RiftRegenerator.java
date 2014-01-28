@@ -25,7 +25,6 @@ public class RiftRegenerator implements IRegularTickReceiver {
 		regenerateRiftsInAllWorlds();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static void regenerateRiftsInAllWorlds()
 	{
 		//Regenerate rifts that have been replaced (not permanently removed) by players

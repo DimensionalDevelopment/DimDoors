@@ -271,25 +271,26 @@ public class PocketManager
 	
 	public static boolean registerPackedDimData(PackedDimData packedData)
 	{
-		InnerDimData dimData;
 		
+		InnerDimData dimData;
+		//register roots
 		if(packedData.ID==packedData.ParentID)
 		{
 			dimData =  new InnerDimData(packedData.ID, null, false, false, linkWatcher);
 			dimData.root=dimData;
 			dimData.parent=dimData;
+			dimData.depth=packedData.Depth;
 			dimData.isFilled=packedData.IsFilled;
 			dimData.origin = new Point4D(packedData.Origin.getX(),packedData.Origin.getY(),packedData.Origin.getZ(),packedData.ID);
 
 			PocketManager.rootDimensions.add(dimData);
 		}
-		else
+		else //register children
 		{
 			InnerDimData test = PocketManager.dimensionData.get(packedData.ParentID);
 			dimData =  new InnerDimData(packedData.ID, test,true, packedData.IsDungeon, linkWatcher);
 			dimData.isFilled=packedData.IsFilled;
 			dimData.origin = new Point4D(packedData.Origin.getX(),packedData.Origin.getY(),packedData.Origin.getZ(),packedData.ID);
-
 			dimData.root=PocketManager.getDimensionData(packedData.RootID);
 			
 			if(packedData.DungeonData!=null)

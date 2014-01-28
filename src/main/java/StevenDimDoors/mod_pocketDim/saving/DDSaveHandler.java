@@ -89,38 +89,34 @@ public class DDSaveHandler
 	 */
 	public static boolean unpackDimData(HashMap<Integer,PackedDimData> packedDims)
 	{
-		LinkedList<Integer> children = new LinkedList<Integer>();
-		ArrayList<Integer> tempChildren = new ArrayList<Integer>();
-		int registeredDims=packedDims.keySet().size();
+		LinkedList<Integer> dimsToRegister = new LinkedList<Integer>();
 		
 		for(PackedDimData packedDim : packedDims.values())
-		{
-			//Load roots
+		{						
+			//fix pockets without parents
+			verifyParents(packedDim, packedDims);
+			
+			//Load roots first by inserting them in the LinkedList first.
 			if(packedDim.RootID==packedDim.ID)
 			{
-				children.add(packedDim.ID);
-				PocketManager.registerPackedDimData(packedDim);
-			}
-			//fix pockets without parents
-			if(!packedDims.containsKey(packedDim.ParentID))
-			{
-				packedDim=(new PackedDimData(packedDim.ID, 1, packedDim.PackDepth, packedDim.RootID, packedDim.RootID, packedDim.Orientation, packedDim.IsDungeon, packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, packedDim.ChildIDs, packedDim.Links, packedDim.Tails));
-				packedDims.put(packedDim.ID, packedDim);
-				children.addLast(packedDim.ID);
+				dimsToRegister.addFirst(packedDim.ID);
 			}
 		}
+		
 		//load the children for each root
-		while(!children.isEmpty())
+		while(!dimsToRegister.isEmpty())
 		{
-			Integer childID = children.pop();
+			Integer childID = dimsToRegister.pop();
 			PackedDimData data = packedDims.get(childID);
-			children.addAll(verifyChildren(data, packedDims));
+			dimsToRegister.addAll(verifyChildren(data, packedDims));
 			PocketManager.registerPackedDimData(data);
 		}
 		return true;
 	}
 	/**
-	 * ensures that a pocket's children havent been deleted
+	 * Fixes the case where a child of a parent has been deleted.
+	 * -removes the child from parent
+	 * 
 	 * @param packedDim
 	 * @param packedDims
 	 * @return
@@ -144,6 +140,38 @@ public class DDSaveHandler
 			packedDims.put(packedDim.ID, packedDim);
 		}
 		return children;
+	}
+	
+	/**
+	 * Fixes the case where a child had its parent deleted OR where a parent forgot about its child
+	 * -Changes the missing parent to the dims root if its original parent is gone.
+	 * -Finds the new parent and adds it to its list of children or reminds the old parent if it forgot its child
+	 * 
+	 * @param packedDim
+	 * @param packedDims
+	 */
+	public static void verifyParents(PackedDimData packedDim,HashMap<Integer,PackedDimData> packedDims)
+	{
+		ArrayList<Integer> fosterChildren = new ArrayList<Integer>();
+		fosterChildren.add(packedDim.ID);
+
+		//fix pockets without parents
+		if(!packedDims.containsKey(packedDim.ParentID))
+		{
+			//Fix the orphan by changing its root to its parent, re-connecting it to the list
+			packedDim=(new PackedDimData(packedDim.ID, 1, packedDim.PackDepth, packedDim.RootID, packedDim.RootID, packedDim.Orientation, packedDim.IsDungeon, packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, packedDim.ChildIDs, packedDim.Links, packedDim.Tails));
+			packedDims.put(packedDim.ID, packedDim);
+		}
+		//fix pockets whose parents have forgotten about them
+		PackedDimData fosterParent = packedDims.get(packedDim.ParentID);
+		if(!fosterParent.ChildIDs.contains(packedDim.ID)&&packedDim.ID!=packedDim.RootID)
+		{
+			//find the root, and fix it by adding the orphan's ID to its children
+			fosterChildren.addAll(fosterParent.ChildIDs);
+			fosterParent=(new PackedDimData(fosterParent.ID, fosterParent.Depth, fosterParent.PackDepth, fosterParent.ParentID, fosterParent.RootID, fosterParent.Orientation, fosterParent.IsDungeon, fosterParent.IsFilled, fosterParent.DungeonData, fosterParent.Origin, fosterChildren, fosterParent.Links, fosterParent.Tails));
+			packedDims.put(fosterParent.ID, fosterParent);	
+		}
+			
 	}
 	
 	public static boolean unpackLinkData(List<PackedLinkData> linksToUnpack)
