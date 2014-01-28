@@ -1,9 +1,7 @@
 package StevenDimDoors.mod_pocketDim;
 
-import paulscode.sound.SoundSystem;
 import net.minecraft.block.Block;
 import net.minecraft.client.audio.SoundManager;
-import net.minecraft.client.audio.SoundPool;
 import net.minecraft.client.audio.SoundPoolEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,15 +12,13 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
-import net.minecraftforge.event.Event;
 import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
@@ -30,6 +26,7 @@ import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
+import StevenDimDoors.mod_pocketDim.world.fortresses.DDNetherFortressGenerator;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -41,6 +38,15 @@ public class EventHookContainer
 	public EventHookContainer(DDProperties properties)
 	{
 		this.properties = properties;
+	}
+	
+	@ForgeSubscribe(priority = EventPriority.LOW)
+	public void onMapGen(InitMapGenEvent event)
+	{
+		if (event.type == InitMapGenEvent.EventType.NETHER_BRIDGE)
+		{
+			event.newGen = new DDNetherFortressGenerator();
+		}
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -56,8 +62,8 @@ public class EventHookContainer
 		event.manager.addSound(mod_pocketDim.modid+":riftClose.ogg");
 		event.manager.addSound(mod_pocketDim.modid+":riftDoor.ogg");
 		event.manager.addSound(mod_pocketDim.modid+":creepy.ogg");
-
 	}
+	
 	@SideOnly(Side.CLIENT)
 	@ForgeSubscribe
 	public void onSoundEffectResult(PlayBackgroundMusicEvent event) 
@@ -67,7 +73,6 @@ public class EventHookContainer
         	this.playMusicForDim(FMLClientHandler.instance().getClient().thePlayer.worldObj);
         }
 	}
-	
 	
 	@ForgeSubscribe
 	public void onPlayerEvent(PlayerInteractEvent event)
@@ -113,6 +118,7 @@ public class EventHookContainer
 			}
 		}
 	}	          
+	
     @ForgeSubscribe
     public void onWorldLoad(WorldEvent.Load event)
     {
@@ -129,7 +135,7 @@ public class EventHookContainer
     		RiftRegenerator.regenerateRiftsInAllWorlds();
     	}
     	
-    	if(event.world!=null)
+    	if (event.world != null)
     	{
     		this.playMusicForDim(event.world);
     	}
@@ -140,7 +146,8 @@ public class EventHookContainer
     {
     	event.setCanceled(event.entity.worldObj.provider.dimensionId == properties.LimboDimensionID);
     }
-    @ForgeSubscribe(priority=EventPriority.HIGHEST)
+    
+    @ForgeSubscribe(priority = EventPriority.HIGHEST)
     public boolean LivingDeathEvent(LivingDeathEvent event)
     {
     	Entity entity = event.entity;
