@@ -174,7 +174,9 @@ public class mod_pocketDim
 		properties = DDProperties.initialize(new File(path));
 
 		//Now do other stuff
-		MinecraftForge.EVENT_BUS.register(new EventHookContainer(properties));
+		EventHookContainer hooks = new EventHookContainer(properties);
+		MinecraftForge.EVENT_BUS.register(hooks);
+		MinecraftForge.TERRAIN_GEN_BUS.register(hooks);
 		gatewayGenerator = new GatewayGenerator(properties);
 	}
 
