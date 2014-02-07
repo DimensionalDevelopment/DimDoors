@@ -581,4 +581,9 @@ public abstract class NewDimData
 			return linkList.get(0);
 		}
 	}
+	
+	public String toString()
+	{
+		return "DimID= "+this.id;
+	}
 }

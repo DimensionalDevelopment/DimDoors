@@ -30,19 +30,18 @@ public class ConnectionHandler implements IConnectionHandler
 		{
 			try
 			{
-				Packet250CustomPayload[] pkt = ForgePacket.makePacketSet(new DimensionRegisterPacket(data.id(), DimensionManager.getProviderType(data.id())));
-				manager.addToSendQueue(pkt[0]);
-
+				if(data.isPocketDimension()||data.id()==mod_pocketDim.properties.LimboDimensionID)
+				{
+					Packet250CustomPayload[] pkt = ForgePacket.makePacketSet(new DimensionRegisterPacket(data.id(), DimensionManager.getProviderType(data.id())));
+					manager.addToSendQueue(pkt[0]);
+				}
 			}
 			catch(Exception E)
 			{
 				E.printStackTrace();
 			}
-			
-		
 		}
 		return null;
-		
 	}
 
 	@Override
