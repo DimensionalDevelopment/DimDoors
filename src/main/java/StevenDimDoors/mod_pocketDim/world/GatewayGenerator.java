@@ -79,25 +79,9 @@ public class GatewayGenerator implements IWorldGenerator
 
 		int x, y, z;
 		int attempts;
-		int correction;
 		boolean valid;
-		@SuppressWarnings("deprecation")
 		DimLink link;
 		NewDimData dimension;
-		
-		//Check if we're generating things in the Nether
-		if (world.provider.dimensionId == NETHER_DIMENSION_ID)
-		{
-			//The terrain in the Nether makes it much harder for our gateway spawning algorithm to find a spot to place a gateway.
-			//Tests show that only about 15% of attempts succeed. Compensate for this by multiplying the chance of generation
-			//by a correction factor.
-			correction = NETHER_CHANCE_CORRECTION;
-		}
-		else
-		{
-			//No correction
-			correction = 1;
-		}
 
 		//Randomly decide whether to place a cluster of rifts here
 		if (random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < properties.ClusterGenerationChance)
@@ -136,7 +120,7 @@ public class GatewayGenerator implements IWorldGenerator
 		
 		//Check if generating structures is enabled and randomly decide whether to place a Rift Gateway here.
 		//This only happens if a rift cluster was NOT generated.
-		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance * correction &&
+		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance &&
 				isStructureGenerationAllowed())
 		{
 			valid = false;
