@@ -1,7 +1,21 @@
 package StevenDimDoors.mod_pocketDim;
 
-import StevenDimDoors.experimental.LiquidCorium;
-import StevenDimDoors.experimental.LiquidCoriumBlock;
+import java.io.File;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityEggInfo;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWall;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWallPerm;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDoorGold;
@@ -36,10 +50,10 @@ import StevenDimDoors.mod_pocketDim.items.ItemWarpDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemWorldThread;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
+import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 import StevenDimDoors.mod_pocketDim.ticking.FastRiftRegenerator;
 import StevenDimDoors.mod_pocketDim.ticking.LimboDecay;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
-import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
@@ -52,8 +66,6 @@ import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import StevenDimDoors.mod_pocketDimClient.ClientPacketHandler;
 import StevenDimDoors.mod_pocketDimClient.ClientTickHandler;
-
-import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -70,26 +82,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
-
-import java.io.File;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityEggInfo;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumRarity;
-import net.minecraft.item.EnumToolMaterial;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatMessageComponent;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 
 @Mod(modid = mod_pocketDim.modid, name = "Dimensional Doors", version = mod_pocketDim.version)
 
@@ -146,9 +138,6 @@ public class mod_pocketDim
 	public static GatewayGenerator gatewayGenerator;
 	public static PlayerTracker tracker;
 	
-	public static Block coriumBlock;
-	public static Fluid coriumFluid;
-
 	public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") 
 	{
 		@Override
@@ -292,14 +281,6 @@ public class mod_pocketDim
 		CraftingManager.registerRecipes(properties);
 		DungeonHelper.initialize();		
 		this.gatewayGenerator.initGateways();
-
-		/**
-		coriumFluid = new LiquidCorium("Corium").setDensity(1000).setTemperature(3473).setDensity(9400).setLuminosity(6).setRarity(EnumRarity.rare);
-		coriumBlock = new LiquidCoriumBlock(properties.CoriumBlockID, coriumFluid, Material.lava).setQuantaPerBlock(16).setTickRate(20).setTickRandomly(true).setUnlocalizedName("Corium"); 
-		FluidRegistry.registerFluid(coriumFluid);
-		GameRegistry.registerBlock(coriumBlock,"Corium");
-		LanguageRegistry.addName(coriumBlock, "Corium");
-		**/
 
 		// Register loot chests
 		DDLoot.registerInfo(properties);
