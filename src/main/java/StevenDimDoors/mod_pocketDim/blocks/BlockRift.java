@@ -36,7 +36,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockRift extends Block implements ITileEntityProvider
 {
-	private static final float MIN_IMMUNE_HARDNESS = 200.0F;
+	private static final float MIN_IMMUNE_RESISTANCE = 5000.0F;
 	private static final int BLOCK_DESTRUCTION_RANGE = 4;
 	private static final int BLOCK_DESTRUCTION_VOLUME = (int) Math.pow(2 * BLOCK_DESTRUCTION_RANGE + 1, 3);
 	private static final int MAX_BLOCK_SEARCH_CHANCE = 100;
@@ -65,11 +65,11 @@ public class BlockRift extends Block implements ITileEntityProvider
 		this.blocksImmuneToRift.add(properties.GoldenDimensionalDoorID);
 		this.blocksImmuneToRift.add(properties.GoldenDoorID);
 
+		this.blocksImmuneToRift.add(Block.blockLapis.blockID);
 		this.blocksImmuneToRift.add(Block.blockIron.blockID);
+		this.blocksImmuneToRift.add(Block.blockGold.blockID);
 		this.blocksImmuneToRift.add(Block.blockDiamond.blockID);
 		this.blocksImmuneToRift.add(Block.blockEmerald.blockID);
-		this.blocksImmuneToRift.add(Block.blockGold.blockID);
-		this.blocksImmuneToRift.add(Block.blockLapis.blockID);
 	}
 	
 	@Override
@@ -362,8 +362,13 @@ public class BlockRift extends Block implements ITileEntityProvider
 		Block block = Block.blocksList[world.getBlockId(x, y, z)];
 		if (block != null)
 		{
-			float hardness = block.getBlockHardness(world, x, y, z);
-			return (hardness < 0 || hardness >= MIN_IMMUNE_HARDNESS || blocksImmuneToRift.contains(block.blockID));
+			// SenseiKiwi: I've switched to using the block's blast resistance instead of its
+			// hardness since most defensive blocks are meant to defend against explosions and
+			// may have low hardness to make them easier to build with. However, block.getExplosionResistance()
+			// is designed to receive an entity, the source of the blast. We have no entity so
+			// I've set this to access blockResistance directly. Might need changing later.
+			
+			return (block.blockResistance >= MIN_IMMUNE_RESISTANCE || blocksImmuneToRift.contains(block.blockID));
 		}
 		return false;
 	}
