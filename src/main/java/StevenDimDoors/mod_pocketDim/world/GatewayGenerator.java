@@ -32,7 +32,6 @@ public class GatewayGenerator implements IWorldGenerator
 	private static final int CHUNK_LENGTH = 16;
 	private static final int GATEWAY_RADIUS = 4;
 	private static final int MAX_GATEWAY_GENERATION_ATTEMPTS = 10;
-	private static final int NETHER_CHANCE_CORRECTION = 4;
 	private static final int OVERWORLD_DIMENSION_ID = 0;
 	private static final int NETHER_DIMENSION_ID = -1;
 	private static final int END_DIMENSION_ID = 1;
