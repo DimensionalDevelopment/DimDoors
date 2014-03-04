@@ -43,7 +43,10 @@ public class EventHookContainer
 	@ForgeSubscribe(priority = EventPriority.LOW)
 	public void onMapGen(InitMapGenEvent event)
 	{
-		if (event.type == InitMapGenEvent.EventType.NETHER_BRIDGE)
+		// Replace the Nether fortress generator with our own only if any gateways would ever generate.
+		// This allows admins to disable our fortress overriding without disabling all gateways.
+		if (properties.FortressGatewayGenerationChance > 0 && properties.WorldRiftGenerationEnabled &&
+				event.type == InitMapGenEvent.EventType.NETHER_BRIDGE)
 		{
 			event.newGen = new DDNetherFortressGenerator();
 		}

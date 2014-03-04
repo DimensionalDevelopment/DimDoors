@@ -6,16 +6,15 @@ import java.util.Random;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.structure.ComponentNetherBridgeCrossing;
 import net.minecraft.world.gen.structure.ComponentNetherBridgeThrone;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureNetherBridgeStart;
+import StevenDimDoors.mod_pocketDim.DDProperties;
 
 public class DDStructureNetherBridgeStart extends StructureNetherBridgeStart
 {
-	private static int GATEWAY_GENERATION_CHANCE = 1;
-	private static int MAX_GATEWAY_GENERATION_CHANCE = 3;
+	public static final int MAX_GATEWAY_GENERATION_CHANCE = 100;
 	
 	private boolean hasGateway;
 	private int minX;
@@ -24,7 +23,7 @@ public class DDStructureNetherBridgeStart extends StructureNetherBridgeStart
 	
 	public DDStructureNetherBridgeStart() { }
 	
-	public DDStructureNetherBridgeStart(World world, Random random, int chunkX, int chunkZ)
+	public DDStructureNetherBridgeStart(World world, Random random, int chunkX, int chunkZ, DDProperties properties)
     {
 		// StructureNetherBridgeStart handles designing the fortress for us
     	super(world, random, chunkX, chunkZ);
@@ -36,7 +35,7 @@ public class DDStructureNetherBridgeStart extends StructureNetherBridgeStart
     	hasGateway = false;
     	
     	// Randomly decide whether to build a gateway in this fortress
-    	if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < GATEWAY_GENERATION_CHANCE)
+    	if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.FortressGatewayGenerationChance)
     	{
     		// Search for all the blaze spawners in a fortress
     		spawnerRooms = new ArrayList<ComponentNetherBridgeThrone>();
