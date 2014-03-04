@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.ticking;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -12,7 +13,9 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class FastRiftRegenerator implements IRegularTickReceiver {
 	
-	private static final int RIFT_REGENERATION_INTERVAL = 10; //Regenerate random rifts every 10 ticks
+	private static final int RIFT_REGENERATION_INTERVAL = 10; //Regenerate scheduled rifts every 10 ticks
+	private static Random random = new Random();
+
 	private ArrayList<Point4D> locationsToRegen = new ArrayList<Point4D>();
 	
 	public FastRiftRegenerator(IRegularTickSender sender)
@@ -23,31 +26,24 @@ public class FastRiftRegenerator implements IRegularTickReceiver {
 	@Override
 	public void notifyTick()
 	{
-		regenerateRiftsInAllWorlds();
+		regenerateScheduledRifts();
 	}
 	
-	public void regenerateRiftsInAllWorlds()
+	public void regenerateScheduledRifts()
 	{
-		if (this.locationsToRegen.isEmpty())
+		if (!locationsToRegen.isEmpty())
 		{
-			return;
-		}
-		List<Integer> loadedWorlds = (List<Integer>) Arrays.asList(DimensionManager.getIDs());
-		
-		for (Point4D point: this.locationsToRegen)
-		{
-			if (loadedWorlds.contains(point.getDimension()) && PocketManager.getLink(point) != null)
+			List<Integer> loadedWorlds = (List<Integer>) Arrays.asList(DimensionManager.getIDs());
+			for (Point4D point: locationsToRegen)
 			{
-	    		World world = DimensionManager.getWorld(point.getDimension());
-	    		
-    			if (!mod_pocketDim.blockRift.isBlockImmune(world, point.getX(), point.getY(), point.getZ())
-    					&& world.getChunkProvider().chunkExists(point.getX() >> 4, point.getZ() >> 4))
+				if (loadedWorlds.contains(point.getDimension()) && PocketManager.getLink(point) != null)
 				{
-					world.setBlock(point.getX(), point.getY(), point.getZ(), mod_pocketDim.blockRift.blockID);
+		    		World world = DimensionManager.getWorld(point.getDimension());
+	    			mod_pocketDim.blockRift.regenerateRift(world, point.getX(), point.getY(), point.getZ(), random);
 				}
 			}
+			locationsToRegen.clear();
 		}
-		this.locationsToRegen.clear();
 	}
 	
 	public void registerRiftForRegen(int x, int y, int z, int dimID)

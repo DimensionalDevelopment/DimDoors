@@ -135,11 +135,6 @@ public class EventHookContainer
     		PocketManager.load();
     	}
     	
-    	if (PocketManager.isLoaded())
-    	{
-    		RiftRegenerator.regenerateRiftsInAllWorlds();
-    	}
-    	
     	if (event.world != null)
     	{
     		this.playMusicForDim(event.world);
