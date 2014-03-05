@@ -166,7 +166,6 @@ public class mod_pocketDim
 		EventHookContainer hooks = new EventHookContainer(properties);
 		MinecraftForge.EVENT_BUS.register(hooks);
 		MinecraftForge.TERRAIN_GEN_BUS.register(hooks);
-		gatewayGenerator = new GatewayGenerator(properties);
 	}
 
 	@EventHandler
@@ -181,7 +180,7 @@ public class mod_pocketDim
 		spawner = new CustomLimboPopulator(commonTickHandler, properties);
 		new RiftRegenerator(commonTickHandler); //No need to store the reference
 		LimboDecay decay = new LimboDecay(commonTickHandler, properties);
-		this.fastRiftRegenerator = new FastRiftRegenerator(commonTickHandler);
+		fastRiftRegenerator = new FastRiftRegenerator(commonTickHandler);
 
 		transientDoor = new TransientDoor(properties.TransientDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("transientDoor");
 		goldenDimensionalDoor = new BlockGoldDimDoor(properties.GoldenDimensionalDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorGold");
@@ -277,17 +276,15 @@ public class mod_pocketDim
 		EntityList.entityEggs.put(properties.MonolithEntityID, new EntityEggInfo(properties.MonolithEntityID, 0, 0xffffff));
 		LanguageRegistry.instance().addStringLocalization("entity.DimDoors.Obelisk.name", "Monolith");
 
-
 		CraftingManager.registerRecipes(properties);
 		DungeonHelper.initialize();		
-		this.gatewayGenerator.initGateways();
+		gatewayGenerator = new GatewayGenerator(properties);
 
 		// Register loot chests
 		DDLoot.registerInfo(properties);
 		proxy.loadTextures();
 		proxy.registerRenderers();
 	}
-
 
 	@EventHandler
 	public void onPostInitialization(FMLPostInitializationEvent event)

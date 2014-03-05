@@ -36,27 +36,26 @@ public class GatewayGenerator implements IWorldGenerator
 	private static final int NETHER_DIMENSION_ID = -1;
 	private static final int END_DIMENSION_ID = 1;
 	
-	private static ArrayList<BaseGateway> gateways;
-	private static BaseGateway defaultGateway;
+	private ArrayList<BaseGateway> gateways;
+	private BaseGateway defaultGateway;
 
 	private final DDProperties properties;
 	
 	public GatewayGenerator(DDProperties properties)
 	{
 		this.properties = properties;
-	
+		this.initialize();
 	}
 	
-	public void initGateways()
+	private void initialize()
 	{
-		gateways=new ArrayList<BaseGateway>();
-		this.defaultGateway=new GatewayTwoPillars(this.properties);
+		gateways = new ArrayList<BaseGateway>();
+		defaultGateway = new GatewayTwoPillars(properties);
 		
-		//add gateways here
-		gateways.add(new GatewaySandstonePillars(this.properties));
+		// Add gateways here
 		gateways.add(defaultGateway);
-		gateways.add(new GatewayLimbo(this.properties));
-
+		gateways.add(new GatewaySandstonePillars(properties));
+		gateways.add(new GatewayLimbo(properties));
 	}
 	
 	@Override
