@@ -105,7 +105,7 @@ public class PocketBuilder
 			}
 
 			Point3D destination = new Point3D(incomingLink.destination());
-			loadAndValidateDungeon(dimension.dungeon(), properties).copyToWorld(world, destination, originLink.orientation(), incomingLink, random, properties);
+			loadAndValidateDungeon(dimension.dungeon(), properties).copyToWorld(world, destination, originLink.orientation(), incomingLink, random, properties, false);
 			dimension.setFilled(true);
 			return true;
 		}
@@ -136,7 +136,7 @@ public class PocketBuilder
 		destination.setY( yCoordHelper.adjustDestinationY(destination.getY(), world.getHeight(), schematic.getEntranceDoorLocation().getY(), schematic.getHeight()) );
 
 		//Generate the dungeon
-		schematic.copyToWorld(world, destination, orientation, link, random, properties);
+		schematic.copyToWorld(world, destination, orientation, link, random, properties, false);
 
 		//Finish up destination initialization
 		dimension.initializeDungeon(destination.getX(), destination.getY(), destination.getZ(), orientation, link, dungeon);

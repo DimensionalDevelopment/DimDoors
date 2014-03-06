@@ -67,7 +67,7 @@ public abstract class BaseGateway
 			// messes up the calculation. ~SenseiKiwi
 
 			//schematic.copyToWorld(world, x - doorLocation.getX(), y, z - doorLocation.getZ());
-			schematic.copyToWorld(world, x - doorLocation.getX(), y + 1 - doorLocation.getY(), z - doorLocation.getZ());
+			schematic.copyToWorld(world, x - doorLocation.getX(), y + 1 - doorLocation.getY(), z - doorLocation.getZ(), true);
 		}
 			
 		this.generateRandomBits(world, x, y, z);

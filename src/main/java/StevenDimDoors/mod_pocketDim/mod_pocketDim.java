@@ -210,8 +210,6 @@ public class mod_pocketDim
 		mod_pocketDim.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
 		mod_pocketDim.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
-		GameRegistry.registerWorldGenerator(mod_pocketDim.gatewayGenerator);
-
 		GameRegistry.registerBlock(goldenDoor, "Golden Door");
 		GameRegistry.registerBlock(goldenDimensionalDoor, "Golden Dimensional Door");
 		GameRegistry.registerBlock(unstableDoor, "Unstable Door");
@@ -253,13 +251,11 @@ public class mod_pocketDim
 		LanguageRegistry.addName(itemRiftBlade, "Rift Blade");
 		LanguageRegistry.addName(itemWorldThread, "World Thread");
 
-
 		/**
 		 * Add names for multiblock inventory item
 		 */
 		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 0), "Fabric of Reality");
 		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 1), "Ancient Fabric");
-
 
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dimDoorsCustomTab", "en_US", "Dimensional Doors Items");
 
@@ -274,8 +270,9 @@ public class mod_pocketDim
 		LanguageRegistry.instance().addStringLocalization("entity.DimDoors.Obelisk.name", "Monolith");
 
 		CraftingManager.registerRecipes(properties);
-		DungeonHelper.initialize();		
+		DungeonHelper.initialize();
 		gatewayGenerator = new GatewayGenerator(properties);
+		GameRegistry.registerWorldGenerator(mod_pocketDim.gatewayGenerator);
 
 		// Register loot chests
 		DDLoot.registerInfo(properties);

@@ -118,7 +118,7 @@ public class Schematic {
 
 	public static Schematic readFromFile(File schematicFile) throws FileNotFoundException, InvalidSchematicException
 	{
-		// TODO: fix resource leaks here
+		// There is no resource leak... readFromStream() closes the stream TWICE.
 		return readFromStream(new FileInputStream(schematicFile));
 	}
 
@@ -362,14 +362,26 @@ public class Schematic {
 		return filter.apply(this, this.blocks, this.metadata);
 	}
 	
-	public void copyToWorld(World world, int x, int y, int z)
+	public void copyToWorld(World world, int x, int y, int z, boolean notifyClients)
+	{
+		if (notifyClients)
+		{
+			copyToWorld(world, x, y, z, new WorldBlockSetter(false, true));
+		}
+		else
+		{
+			copyToWorld(world, x, y, z, new ChunkBlockSetter());
+		}
+	}
+	
+	protected void copyToWorld(World world, int x, int y, int z, IBlockSetter blockSetter)
 	{
 		//This isn't implemented as a WorldOperation because it doesn't quite fit the structure of those operations.
 		//It's not worth the trouble in this case.
 		int index;
 		int count;
 		int dx, dy, dz;
-		
+
 		//Copy blocks and metadata into the world
 		index = 0;
 		for (dy = 0; dy < height; dy++)
@@ -378,11 +390,12 @@ public class Schematic {
 			{
 				for (dx = 0; dx < width; dx++)
 				{
-					setBlockDirectly(world, x + dx, y + dy, z + dz, blocks[index], metadata[index]);
+					blockSetter.setBlock(world, x + dx, y + dy, z + dz, blocks[index], metadata[index]);
 					index++;
 				}
 			}
 		}
+
 		//Copy tile entities into the world
 		count = tileEntities.tagCount();
 		for (index = 0; index < count; index++)
@@ -397,41 +410,6 @@ public class Schematic {
 			tileTag.setInteger("z", dz);
 			//Load the tile entity and put it in the world
 			world.setBlockTileEntity(dx, dy, dz, TileEntity.createAndLoadEntity(tileTag));
-		}
-	}
-	
-	protected static void setBlockDirectly(World world, int x, int y, int z, int blockID, int metadata)
-	{
-		if (blockID != 0 && Block.blocksList[blockID] == null)
-		{
-			return;
-		}
-
-		int cX = x >> 4;
-		int cZ = z >> 4;
-		int cY = y >> 4;
-		Chunk chunk;
-
-		int localX = (x % 16) < 0 ? (x % 16) + 16 : (x % 16);
-		int localZ = (z % 16) < 0 ? (z % 16) + 16 : (z % 16);
-		ExtendedBlockStorage extBlockStorage;
-
-		try
-		{
-			chunk = world.getChunkFromChunkCoords(cX, cZ);
-			extBlockStorage = chunk.getBlockStorageArray()[cY];
-			if (extBlockStorage == null) 
-			{
-				extBlockStorage = new ExtendedBlockStorage(cY << 4, !world.provider.hasNoSky);
-				chunk.getBlockStorageArray()[cY] = extBlockStorage;
-			}
-			extBlockStorage.setExtBlockID(localX, y & 15, localZ, blockID);
-			extBlockStorage.setExtBlockMetadata(localX, y & 15, localZ, metadata);
-			chunk.setChunkModified();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
 		}
 	}
 }
