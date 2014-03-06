@@ -134,9 +134,9 @@ public class mod_pocketDim
 
 	public static DDProperties properties;
 	public static CustomLimboPopulator spawner; //Added this field temporarily. Will be refactored out later.
-	public FastRiftRegenerator fastRiftRegenerator;
+	public static FastRiftRegenerator fastRiftRegenerator;
 	public static GatewayGenerator gatewayGenerator;
-	public static PlayerTracker tracker;
+	public static DeathTracker deathTracker;
 	
 	public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") 
 	{
@@ -206,14 +206,11 @@ public class mod_pocketDim
 		itemRiftBlade = (new ItemRiftBlade(properties.RiftBladeItemID, properties)).setUnlocalizedName("ItemRiftBlade");
 		itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(properties.StabilizedRiftSignatureItemID)).setUnlocalizedName("itemStabilizedRiftSig");
 		itemWorldThread = (new ItemWorldThread(properties.WorldThreadItemID)).setUnlocalizedName("itemWorldThread");
-
 		
 		mod_pocketDim.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
 		mod_pocketDim.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
 		GameRegistry.registerWorldGenerator(mod_pocketDim.gatewayGenerator);
-		tracker = new PlayerTracker();
-		GameRegistry.registerPlayerTracker(tracker);
 
 		GameRegistry.registerBlock(goldenDoor, "Golden Door");
 		GameRegistry.registerBlock(goldenDimensionalDoor, "Golden Dimensional Door");
@@ -298,6 +295,8 @@ public class mod_pocketDim
 		try
 		{
 			PocketManager.unload();
+			deathTracker.writeToFile();
+			deathTracker = null;
 		}
 		catch (Exception e)
 		{
@@ -308,9 +307,9 @@ public class mod_pocketDim
 	@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event)
 	{
-
 		//TODO- load dims with forced chunks on server startup here  
 
+		// Register commands with the server
 		CommandResetDungeons.instance().register(event);
 		CommandCreateDungeonRift.instance().register(event);
 		CommandDeleteAllLinks.instance().register(event);
@@ -321,7 +320,11 @@ public class mod_pocketDim
 		//CommandPruneDimensions.instance().register(event);
 		CommandCreatePocket.instance().register(event);
 		CommandTeleportPlayer.instance().register(event);
-
+		
+		// Initialize a new DeathTracker
+		String deathTrackerFile = DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/deaths.txt";
+		deathTracker = new DeathTracker(deathTrackerFile);
+		
 		try
 		{
 			ChunkLoaderHelper.loadChunkForcedWorlds(event);
