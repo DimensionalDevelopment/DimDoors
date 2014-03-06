@@ -24,12 +24,15 @@ import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
+import StevenDimDoors.mod_pocketDim.schematic.ChunkBlockSetter;
 import StevenDimDoors.mod_pocketDim.schematic.CompoundFilter;
+import StevenDimDoors.mod_pocketDim.schematic.IBlockSetter;
 import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
 import StevenDimDoors.mod_pocketDim.schematic.ReplacementFilter;
 import StevenDimDoors.mod_pocketDim.schematic.Schematic;
-import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
+import StevenDimDoors.mod_pocketDim.schematic.WorldBlockSetter;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
+import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class DungeonSchematic extends Schematic {
@@ -176,7 +179,21 @@ public class DungeonSchematic extends Schematic {
 		return new DungeonSchematic(Schematic.copyFromWorld(world, x, y, z, width, height, length, doCompactBounds));
 	}
 
-	public void copyToWorld(World world, Point3D pocketCenter, int targetOrientation, DimLink entryLink, Random random, DDProperties properties)
+	public void copyToWorld(World world, Point3D pocketCenter, int targetOrientation, DimLink entryLink,
+			Random random, DDProperties properties, boolean notifyClients)
+	{
+		if (notifyClients)
+		{
+			copyToWorld(world, pocketCenter, targetOrientation, entryLink, random, properties, new WorldBlockSetter(false, true));
+		}
+		else
+		{
+			copyToWorld(world, pocketCenter, targetOrientation, entryLink, random, properties, new ChunkBlockSetter());
+		}
+	}
+	
+	public void copyToWorld(World world, Point3D pocketCenter, int targetOrientation, DimLink entryLink,
+			Random random, DDProperties properties, IBlockSetter blockSetter)
 	{
 		//TODO: This function is an improvised solution so we can get the release moving. In the future,
 		//we should generalize block transformations and implement support for them at the level of Schematic,
@@ -208,7 +225,7 @@ public class DungeonSchematic extends Schematic {
 					blockMeta = BlockRotator.transformMetadata(metadata[index], turnAngle, blockID);
 
 					//In the future, we might want to make this more efficient by building whole chunks at a time
-					setBlockDirectly(world, pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), blockID, blockMeta);
+					blockSetter.setBlock(world, pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), blockID, blockMeta);
 					index++;
 				}
 			}
@@ -230,10 +247,10 @@ public class DungeonSchematic extends Schematic {
 			world.setBlockTileEntity(pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), TileEntity.createAndLoadEntity(tileTag));
 		}
 		
-		setUpDungeon(PocketManager.getDimensionData(world), world, pocketCenter, turnAngle, entryLink, random, properties);
+		setUpDungeon(PocketManager.getDimensionData(world), world, pocketCenter, turnAngle, entryLink, random, properties, blockSetter);
 	}
 	
-	private void setUpDungeon(NewDimData dimension, World world, Point3D pocketCenter, int turnAngle, DimLink entryLink, Random random, DDProperties properties)
+	private void setUpDungeon(NewDimData dimension, World world, Point3D pocketCenter, int turnAngle, DimLink entryLink, Random random, DDProperties properties, IBlockSetter blockSetter)
 	{
         //Transform dungeon corners
         Point3D minCorner = new Point3D(0, 0, 0);
@@ -256,14 +273,14 @@ public class DungeonSchematic extends Schematic {
 		//Set up link data for exit door
 		for (Point3D location : exitDoorLocations)
 		{
-			createExitDoorLink(world, dimension, location, entranceDoorLocation, turnAngle, pocketCenter);
+			createExitDoorLink(world, dimension, location, entranceDoorLocation, turnAngle, pocketCenter, blockSetter);
 		}
 		
 		//Remove end portal frames and spawn Monoliths, if allowed
 		boolean canSpawn = CustomLimboPopulator.isMobSpawningAllowed();
 		for (Point3D location : monolithSpawnLocations)
 		{
-			spawnMonolith(world, location, entranceDoorLocation, turnAngle, pocketCenter, canSpawn);
+			spawnMonolith(world, location, entranceDoorLocation, turnAngle, pocketCenter, canSpawn, blockSetter);
 		}
 		
 		// If this is a Nether dungeon, search for a sign near the entry door and write the dimension's depth.
@@ -312,7 +329,7 @@ public class DungeonSchematic extends Schematic {
 		initDoorTileEntity(world, pocketCenter);
 	}
 	
-	private static void createExitDoorLink(World world, NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter)
+	private static void createExitDoorLink(World world, NewDimData dimension, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter, IBlockSetter blockSetter)
 	{
 		//Transform the door's location to the pocket coordinate system
 		Point3D location = point.clone();
@@ -327,7 +344,7 @@ public class DungeonSchematic extends Schematic {
 		{
 			int blockID = world.getBlockId(x, y, z);
 			int metadata = world.getBlockMetadata(x, y, z);
-			setBlockDirectly(world, x, y + 1, z, blockID, metadata);
+			blockSetter.setBlock(world, x, y + 1, z, blockID, metadata);
 		}
 		initDoorTileEntity(world, location);
 	}
@@ -343,13 +360,13 @@ public class DungeonSchematic extends Schematic {
 		initDoorTileEntity(world, location);
 	}
 	
-	private static void spawnMonolith(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter, boolean canSpawn)
+	private static void spawnMonolith(World world, Point3D point, Point3D entrance, int rotation, Point3D pocketCenter, boolean canSpawn, IBlockSetter blockSetter)
 	{
 		//Transform the frame block's location to the pocket coordinate system
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
 		//Remove frame block
-		setBlockDirectly(world, location.getX(), location.getY(), location.getZ(), 0, 0);
+		blockSetter.setBlock(world, location.getX(), location.getY(), location.getZ(), 0, 0);
 		//Spawn Monolith
 		if (canSpawn)
 		{
@@ -377,7 +394,7 @@ public class DungeonSchematic extends Schematic {
 	
 	private static void writeDepthSign(World world, Point3D pocketCenter, int depth)
 	{
-		final int SEARCH_RANGE = 5;
+		final int SEARCH_RANGE = 6;
 		
 		int x, y, z, block;
 		int dx, dy, dz;
