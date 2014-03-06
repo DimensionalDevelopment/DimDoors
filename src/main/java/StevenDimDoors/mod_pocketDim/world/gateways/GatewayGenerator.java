@@ -1,4 +1,4 @@
-package StevenDimDoors.mod_pocketDim.world;
+package StevenDimDoors.mod_pocketDim.world.gateways;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,10 +15,7 @@ import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
-import StevenDimDoors.mod_pocketDim.world.gateways.BaseGateway;
-import StevenDimDoors.mod_pocketDim.world.gateways.GatewayLimbo;
-import StevenDimDoors.mod_pocketDim.world.gateways.GatewaySandstonePillars;
-import StevenDimDoors.mod_pocketDim.world.gateways.GatewayTwoPillars;
+import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import cpw.mods.fml.common.IWorldGenerator;
 
 public class GatewayGenerator implements IWorldGenerator

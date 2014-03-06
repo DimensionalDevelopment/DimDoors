@@ -4,8 +4,8 @@ import java.io.File;
 
 import net.minecraftforge.common.Configuration;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
-import StevenDimDoors.mod_pocketDim.world.GatewayGenerator;
 import StevenDimDoors.mod_pocketDim.world.fortresses.DDStructureNetherBridgeStart;
+import StevenDimDoors.mod_pocketDim.world.gateways.GatewayGenerator;
 
 public class DDProperties
 {
