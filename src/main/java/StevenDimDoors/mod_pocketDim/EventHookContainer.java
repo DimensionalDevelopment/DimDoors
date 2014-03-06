@@ -208,7 +208,7 @@ public class EventHookContainer
     	{
     		PocketManager.save();
     		
-    		if (mod_pocketDim.deathTracker.isModified())
+    		if (mod_pocketDim.deathTracker != null && mod_pocketDim.deathTracker.isModified())
     		{
     			mod_pocketDim.deathTracker.writeToFile();
     		}
