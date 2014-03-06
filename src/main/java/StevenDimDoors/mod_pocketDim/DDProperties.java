@@ -96,6 +96,7 @@ public class DDProperties
 	public final boolean LimboReturnsInventoryEnabled;
 	public final boolean DoorRenderingEnabled;
 	public final boolean TNFREAKINGT_Enabled;
+	public final boolean MonolithTeleportationEnabled;
 	
 
 	/**
@@ -118,10 +119,11 @@ public class DDProperties
 	//Names of categories
 	private final String CATEGORY_CRAFTING = "crafting";
 	private final String CATEGORY_ENTITY = "entity";
+	private final String CATEGORY_SPECIAL = "special";
 	private final String CATEGORY_DIMENSION = "dimension";
 	private final String CATEGORY_PROVIDER = "provider";
 	private final String CATEGORY_BIOME = "biome";
-	private final String CATEGORY_LOOT = "loot";	
+	private final String CATEGORY_LOOT = "loot";
 	
 	private DDProperties(File configFile)
 	{
@@ -228,13 +230,20 @@ public class DDProperties
 
 		config.save();
 		
-		//Unfortunately, there are users out there who have been misconfiguring the worldgen blocks to have IDs above 255.
-		//This leads to disastrous and cryptic errors in other areas of Minecraft. To prevent headaches, we'll throw
-		//an exception here if the blocks have invalid IDs.
+		// Unfortunately, there are users out there who have been misconfiguring the worldgen blocks to have IDs above 255.
+		// This leads to disastrous and cryptic errors in other areas of Minecraft. To prevent headaches, we'll throw
+		// an exception here if the blocks have invalid IDs.
 		if (LimboBlockID > 255 || PermaFabricBlockID > 255)
 		{
 			throw new IllegalStateException("World generation blocks MUST have block IDs less than 256. Fix your configuration!");
 		}
+		
+		// SPECIAL CONFIG SETTINGS
+		// I'm adding this category because one of our users convinced me, personally, to please allow this.
+		// These settings are checked _after_ we save the config file, so Forge won't generate them automatically.
+		// Whoever wants to use them must intentionally write them into the config file.
+		
+		MonolithTeleportationEnabled = config.get(CATEGORY_SPECIAL, "Enable Monolith Teleportation", true).getBoolean(true);
 	}
 	
 	public static DDProperties initialize(File configFile)

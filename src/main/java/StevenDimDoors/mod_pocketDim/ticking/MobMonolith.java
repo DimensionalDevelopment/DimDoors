@@ -193,7 +193,7 @@ public class MobMonolith extends EntityFlying implements IMob
 						this.soundTime=200;
 					}
 				}
-				else if (!this.worldObj.isRemote && !entityPlayer.capabilities.isCreativeMode)
+				else if (!this.worldObj.isRemote && properties.MonolithTeleportationEnabled && !entityPlayer.capabilities.isCreativeMode)
 				{
 					ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(entityPlayer.worldObj.rand);
 					Point4D destination = new Point4D((int) (coords.posX+entityPlayer.posX), coords.posY, (int) (coords.posZ+entityPlayer.posZ ), mod_pocketDim.properties.LimboDimensionID);
