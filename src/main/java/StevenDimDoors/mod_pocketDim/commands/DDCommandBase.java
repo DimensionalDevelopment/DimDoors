@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatMessageComponent;
@@ -84,6 +85,6 @@ public abstract class DDCommandBase extends CommandBase
 	@Override
 	public int compareTo(Object par1Obj)
     {
-        return this.getCommandName().compareTo(((CommandBase)par1Obj).getCommandName());
+        return this.getCommandName().compareTo(((ICommand)par1Obj).getCommandName());
     }
 }
