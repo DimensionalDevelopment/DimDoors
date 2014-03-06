@@ -4,7 +4,8 @@ import java.io.File;
 
 import net.minecraftforge.common.Configuration;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
-import StevenDimDoors.mod_pocketDim.world.GatewayGenerator;
+import StevenDimDoors.mod_pocketDim.world.fortresses.DDStructureNetherBridgeStart;
+import StevenDimDoors.mod_pocketDim.world.gateways.GatewayGenerator;
 
 public class DDProperties
 {
@@ -21,7 +22,6 @@ public class DDProperties
 	public final int TransientDoorID;
 	public final int FabricBlockID;
 	public final int RiftBlockID;
-	public final int CoriumBlockID;
 
 	/**
 	 * World Generation Block IDs
@@ -105,6 +105,7 @@ public class DDProperties
 	public final int NonTntWeight;
 	public final int ClusterGenerationChance;
 	public final int GatewayGenerationChance;
+	public final int FortressGatewayGenerationChance;
 	public final int MonolithSpawningChance;
 	public final int LimboReturnRange;
 	public final String CustomSchematicDirectory;
@@ -182,8 +183,6 @@ public class DDProperties
 		GoldenDoorID = config.getBlock("Gold Door Block ID", 1980).getInt();
 		GoldenDimensionalDoorID = config.getBlock("Gold Dim Door Block ID", 1981).getInt();
 		
-		CoriumBlockID = config.getBlock("Corium Block ID", 900).getInt();
-		
 		WarpDoorItemID = config.getItem("Warp Door Item ID", 5670).getInt();
 		RiftRemoverItemID = config.getItem("Rift Remover Item ID", 5671).getInt();
 		StableFabricItemID = config.getItem("Stable Fabric Item ID", 5672).getInt();
@@ -219,6 +218,10 @@ public class DDProperties
 		GatewayGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Gateway Generation Chance", 15,
 				"Sets the chance (out of " + GatewayGenerator.MAX_GATEWAY_GENERATION_CHANCE + ") that a Rift Gateway will " +
 				"generate in a given chunk. The default chance is 15.").getInt();
+
+		FortressGatewayGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Fortress Gateway Generation Chance", 33,
+				"Sets the chance (out of " + DDStructureNetherBridgeStart.MAX_GATEWAY_GENERATION_CHANCE + ") that a Rift Gateway will " +
+				"generate as part of a Nether Fortress. The default chance is 33.").getInt();
 
 		LimboBiomeID = config.get(CATEGORY_BIOME, "Limbo Biome ID", 251).getInt();
 		PocketBiomeID = config.get(CATEGORY_BIOME, "Pocket Biome ID", 250).getInt();

@@ -3,11 +3,11 @@ package StevenDimDoors.mod_pocketDim;
 import java.util.ArrayList;
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.util.WeightedRandomChestContent;
@@ -19,10 +19,14 @@ import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
  */
 public class DDLoot {
 	
+	private static final String[] SPECIAL_SKULL_OWNERS = new String[] { "stevenrs11", "kamikazekiwi3", "Jaitsu", "XCompWiz", "skyboy026", "Wylker" };
+	
 	private static final double MIN_ITEM_DAMAGE = 0.3;
 	private static final double MAX_ITEM_DAMAGE = 0.9;
 	private static final int ITEM_ENCHANTMENT_CHANCE = 50;
 	private static final int MAX_ITEM_ENCHANTMENT_CHANCE = 100;
+	private static final int SPECIAL_SKULL_CHANCE = 20;
+	private static final int MAX_SPECIAL_SKULL_CHANCE = 100;
 	
 	public static final String DIMENSIONAL_DUNGEON_CHEST = "dimensionalDungeonChest";
 	public static ChestGenHooks DungeonChestInfo = null;
@@ -49,11 +53,9 @@ public class DDLoot {
 		addContent(true, items, Item.diamond.itemID, 40, 1, 2);
 		addContent(true, items, Item.emerald.itemID, 20, 1, 2);
 		addContent(true, items, Item.appleGold.itemID, 10);
-		addContent(true, items, Item.eyeOfEnder.itemID, 15);
-		addContent(true, items, Item.ghastTear.itemID, 15);
 
-		addContent(properties.FabricOfRealityLootEnabled, items, mod_pocketDim.blockDimWall.blockID, 80, 4, 16);
-		addContent(properties.WorldThreadLootEnabled, items, mod_pocketDim.itemWorldThread.itemID, 90, 2,10);
+		addContent(properties.FabricOfRealityLootEnabled, items, mod_pocketDim.blockDimWall.blockID, 20, 16, 64);
+		addContent(properties.WorldThreadLootEnabled, items, mod_pocketDim.itemWorldThread.itemID, 80, 2, 8);
 
 		// Add all the items to our dungeon chest
 		addItemsToContainer(DungeonChestInfo, items);
@@ -194,20 +196,22 @@ public class DDLoot {
 		// Insert other random stuff
 		// 40% chance for a name tag, 35% chance for a glass bottle
 		// 30% chance for an ender pearl, 5% chance for record 11
+		// 30% chance for a ghast tear
 		addItemWithChance(stacks, random, 40, Item.nameTag, 1);
 		addItemWithChance(stacks, random, 35, Item.glassBottle, 1);
 		addItemWithChance(stacks, random, 30, Item.enderPearl, 1);
+		addItemWithChance(stacks, random, 30, Item.ghastTear, 1);
 		addItemWithChance(stacks, random, 5, Item.record11, 1);
 		
-		// Finally, there is a 3% chance of adding a player head
-		if (random.nextInt(100) < 50) // FIXME: SET TO 50% FOR TESTING, CHANGE TO 3%
+		// Finally, there is a 5% chance of adding a player head
+		if (random.nextInt(100) < 5)
 		{
-			stacks.add( new ItemStack(Block.skull) );
+			addGraveSkull(stacks, random);
 		}
 		
 		fillChest(stacks, inventory, random);
 	}
-	
+
 	private static void addModifiedEquipment(Item item, ArrayList<ItemStack> stacks, Random random)
 	{
 		if (item == null)
@@ -269,5 +273,24 @@ public class DDLoot {
 	{
 		int damage = (int) (item.getMaxDamage() * MathHelper.getRandomDoubleInRange(random, MIN_ITEM_DAMAGE, MAX_ITEM_DAMAGE));
 		return new ItemStack(item, 1, damage);
+	}
+	
+	private static void addGraveSkull(ArrayList<ItemStack> stacks, Random random)
+	{
+		final int PLAYER_SKULL_METADATA = 3;
+		DeathTracker deathTracker = mod_pocketDim.deathTracker;
+		String skullOwner;
+		if (deathTracker.isEmpty() || (random.nextInt(MAX_SPECIAL_SKULL_CHANCE) < SPECIAL_SKULL_CHANCE))
+		{
+			skullOwner = SPECIAL_SKULL_OWNERS[ random.nextInt(SPECIAL_SKULL_OWNERS.length) ];
+		}
+		else
+		{
+			skullOwner = deathTracker.getRandomUsername(random);
+		}
+		ItemStack skull = new ItemStack(Item.skull, 1, PLAYER_SKULL_METADATA);
+		skull.stackTagCompound = new NBTTagCompound();
+		skull.stackTagCompound.setString("SkullOwner", skullOwner);
+		stacks.add(skull);
 	}
 }

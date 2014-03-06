@@ -36,14 +36,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockRift extends Block implements ITileEntityProvider
 {
-	private static final float MIN_IMMUNE_HARDNESS = 200.0F;
+	private static final float MIN_IMMUNE_RESISTANCE = 5000.0F;
 	private static final int BLOCK_DESTRUCTION_RANGE = 4;
 	private static final int BLOCK_DESTRUCTION_VOLUME = (int) Math.pow(2 * BLOCK_DESTRUCTION_RANGE + 1, 3);
 	private static final int MAX_BLOCK_SEARCH_CHANCE = 100;
 	private static final int BLOCK_SEARCH_CHANCE = 50;
 	private static final int MAX_BLOCK_DESTRUCTION_CHANCE = 100;
 	private static final int BLOCK_DESTRUCTION_CHANCE = 50;
-	private static final int WORLD_THREAD_PROBABILITY = 10;
+	private static final int WORLD_THREAD_CHANCE = 5;
+	private static final int MAX_WORLD_THREAD_CHANCE = 100;
 	
 	private final DDProperties properties;
 	private final ArrayList<Integer> blocksImmuneToRift;
@@ -65,11 +66,11 @@ public class BlockRift extends Block implements ITileEntityProvider
 		this.blocksImmuneToRift.add(properties.GoldenDimensionalDoorID);
 		this.blocksImmuneToRift.add(properties.GoldenDoorID);
 
+		this.blocksImmuneToRift.add(Block.blockLapis.blockID);
 		this.blocksImmuneToRift.add(Block.blockIron.blockID);
+		this.blocksImmuneToRift.add(Block.blockGold.blockID);
 		this.blocksImmuneToRift.add(Block.blockDiamond.blockID);
 		this.blocksImmuneToRift.add(Block.blockEmerald.blockID);
-		this.blocksImmuneToRift.add(Block.blockGold.blockID);
-		this.blocksImmuneToRift.add(Block.blockLapis.blockID);
 	}
 	
 	@Override
@@ -191,30 +192,25 @@ public class BlockRift extends Block implements ITileEntityProvider
 				if (!isBlockImmune(world, current.getX(), current.getY(), current.getZ()) &&
 						random.nextInt(MAX_BLOCK_DESTRUCTION_CHANCE) < BLOCK_DESTRUCTION_CHANCE)
 				{
-					this.spawnWorldThread(world.getBlockId(current.getX(), current.getY(), current.getZ()), world, x, y, z);
+					this.spawnWorldThread(world.getBlockId(current.getX(), current.getY(), current.getZ()), world, x, y, z, random);
 					world.destroyBlock(current.getX(), current.getY(), current.getZ(), false);
 				}
 			}
 		}
 	}
-	private void spawnWorldThread(int blockID,World worldObj,int x,int y,int z )
+	
+	private void spawnWorldThread(int blockID, World world, int x, int y, int z, Random random)
 	{
-		if(blockID == 0||!(worldObj.rand.nextInt(100)<this.WORLD_THREAD_PROBABILITY))
+		if (blockID != 0 && (random.nextInt(MAX_WORLD_THREAD_CHANCE) < WORLD_THREAD_CHANCE)
+				&& !(Block.blocksList[blockID] instanceof BlockFlowing ||
+					Block.blocksList[blockID] instanceof BlockFluid ||
+					Block.blocksList[blockID] instanceof IFluidBlock))
 		{
-			return;
+			ItemStack thread = new ItemStack(mod_pocketDim.itemWorldThread, 1);
+			world.spawnEntityInWorld(new EntityItem(world, x, y, z, thread));
 		}
-		if(Block.blocksList[blockID] instanceof BlockFlowing||
-				Block.blocksList[blockID] instanceof BlockFluid||
-				Block.blocksList[blockID] instanceof IFluidBlock)
-		{
-			return;
-		}
-		
-		ItemStack thread = new ItemStack(mod_pocketDim.itemWorldThread,1);
-		EntityItem threadEntity = new EntityItem(worldObj, x,y,z, thread);
-		worldObj.spawnEntityInWorld(threadEntity);
-		
 	}
+	
 	private void addAdjacentBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
 	{
 		Point3D[] neighbors = new Point3D[] {
@@ -232,6 +228,16 @@ public class BlockRift extends Block implements ITileEntityProvider
 				pointDistances.put(neighbors[index], distance + 1);
 				points.add(neighbors[index]);
 			}
+		}
+	}
+
+	public void regenerateRift(World world, int x, int y, int z, Random random)
+	{
+		if (!this.isBlockImmune(world, x, y, z) && world.getChunkProvider().chunkExists(x >> 4, z >> 4))
+		{
+			int blockID = world.getBlockId(x, y, z);
+			world.setBlock(x, y, z, properties.RiftBlockID);
+			this.spawnWorldThread(blockID, world, x, y, z, random);
 		}
 	}
 	
@@ -362,8 +368,13 @@ public class BlockRift extends Block implements ITileEntityProvider
 		Block block = Block.blocksList[world.getBlockId(x, y, z)];
 		if (block != null)
 		{
-			float hardness = block.getBlockHardness(world, x, y, z);
-			return (hardness < 0 || hardness >= MIN_IMMUNE_HARDNESS || blocksImmuneToRift.contains(block.blockID));
+			// SenseiKiwi: I've switched to using the block's blast resistance instead of its
+			// hardness since most defensive blocks are meant to defend against explosions and
+			// may have low hardness to make them easier to build with. However, block.getExplosionResistance()
+			// is designed to receive an entity, the source of the blast. We have no entity so
+			// I've set this to access blockResistance directly. Might need changing later.
+			
+			return (block.blockResistance >= MIN_IMMUNE_RESISTANCE || blocksImmuneToRift.contains(block.blockID));
 		}
 		return false;
 	}

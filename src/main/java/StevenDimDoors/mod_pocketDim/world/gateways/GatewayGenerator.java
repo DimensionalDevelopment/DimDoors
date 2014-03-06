@@ -1,4 +1,4 @@
-package StevenDimDoors.mod_pocketDim.world;
+package StevenDimDoors.mod_pocketDim.world.gateways;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -15,10 +15,7 @@ import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
-import StevenDimDoors.mod_pocketDim.world.gateways.BaseGateway;
-import StevenDimDoors.mod_pocketDim.world.gateways.GatewayLimbo;
-import StevenDimDoors.mod_pocketDim.world.gateways.GatewaySandstonePillars;
-import StevenDimDoors.mod_pocketDim.world.gateways.GatewayTwoPillars;
+import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import cpw.mods.fml.common.IWorldGenerator;
 
 public class GatewayGenerator implements IWorldGenerator
@@ -32,32 +29,30 @@ public class GatewayGenerator implements IWorldGenerator
 	private static final int CHUNK_LENGTH = 16;
 	private static final int GATEWAY_RADIUS = 4;
 	private static final int MAX_GATEWAY_GENERATION_ATTEMPTS = 10;
-	private static final int NETHER_CHANCE_CORRECTION = 4;
 	private static final int OVERWORLD_DIMENSION_ID = 0;
 	private static final int NETHER_DIMENSION_ID = -1;
 	private static final int END_DIMENSION_ID = 1;
 	
-	private static ArrayList<BaseGateway> gateways;
-	private static BaseGateway defaultGateway;
+	private ArrayList<BaseGateway> gateways;
+	private BaseGateway defaultGateway;
 
 	private final DDProperties properties;
 	
 	public GatewayGenerator(DDProperties properties)
 	{
 		this.properties = properties;
-	
+		this.initialize();
 	}
 	
-	public void initGateways()
+	private void initialize()
 	{
-		gateways=new ArrayList<BaseGateway>();
-		this.defaultGateway=new GatewayTwoPillars(this.properties);
+		gateways = new ArrayList<BaseGateway>();
+		defaultGateway = new GatewayTwoPillars(properties);
 		
-		//add gateways here
-		gateways.add(new GatewaySandstonePillars(this.properties));
+		// Add gateways here
 		gateways.add(defaultGateway);
-		gateways.add(new GatewayLimbo(this.properties));
-
+		gateways.add(new GatewaySandstonePillars(properties));
+		gateways.add(new GatewayLimbo(properties));
 	}
 	
 	@Override
@@ -79,25 +74,9 @@ public class GatewayGenerator implements IWorldGenerator
 
 		int x, y, z;
 		int attempts;
-		int correction;
 		boolean valid;
-		@SuppressWarnings("deprecation")
 		DimLink link;
 		NewDimData dimension;
-		
-		//Check if we're generating things in the Nether
-		if (world.provider.dimensionId == NETHER_DIMENSION_ID)
-		{
-			//The terrain in the Nether makes it much harder for our gateway spawning algorithm to find a spot to place a gateway.
-			//Tests show that only about 15% of attempts succeed. Compensate for this by multiplying the chance of generation
-			//by a correction factor.
-			correction = NETHER_CHANCE_CORRECTION;
-		}
-		else
-		{
-			//No correction
-			correction = 1;
-		}
 
 		//Randomly decide whether to place a cluster of rifts here
 		if (random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < properties.ClusterGenerationChance)
@@ -136,7 +115,7 @@ public class GatewayGenerator implements IWorldGenerator
 		
 		//Check if generating structures is enabled and randomly decide whether to place a Rift Gateway here.
 		//This only happens if a rift cluster was NOT generated.
-		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance * correction &&
+		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance &&
 				isStructureGenerationAllowed())
 		{
 			valid = false;

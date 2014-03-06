@@ -22,11 +22,9 @@ import net.minecraftforge.event.world.WorldEvent;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
-import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
-import StevenDimDoors.mod_pocketDim.world.fortresses.DDNetherFortressGenerator;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -43,10 +41,15 @@ public class EventHookContainer
 	@ForgeSubscribe(priority = EventPriority.LOW)
 	public void onMapGen(InitMapGenEvent event)
 	{
-		if (event.type == InitMapGenEvent.EventType.NETHER_BRIDGE)
+		// Replace the Nether fortress generator with our own only if any gateways would ever generate.
+		// This allows admins to disable our fortress overriding without disabling all gateways.
+		/*
+		if (properties.FortressGatewayGenerationChance > 0 && properties.WorldRiftGenerationEnabled &&
+				event.type == InitMapGenEvent.EventType.NETHER_BRIDGE)
 		{
 			event.newGen = new DDNetherFortressGenerator();
 		}
+		*/
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -130,11 +133,6 @@ public class EventHookContainer
     		PocketManager.load();
     	}
     	
-    	if (PocketManager.isLoaded())
-    	{
-    		RiftRegenerator.regenerateRiftsInAllWorlds();
-    	}
-    	
     	if (event.world != null)
     	{
     		this.playMusicForDim(event.world);
@@ -148,29 +146,59 @@ public class EventHookContainer
     }
     
     @ForgeSubscribe(priority = EventPriority.HIGHEST)
-    public boolean LivingDeathEvent(LivingDeathEvent event)
+    public boolean onDeathWithHighPriority(LivingDeathEvent event)
     {
+    	// Teleport the entity to Limbo if it's a player in a pocket dimension and
+    	// if Limbo preserves player inventories. We'll check again in a low-priority event handler
+    	// to give other mods a chance to save the player if Limbo does _not_ preserve inventories.
+    	
     	Entity entity = event.entity;
     	
     	if (entity instanceof EntityPlayer && properties.LimboEnabled &&
-    		entity.worldObj.provider instanceof PocketProvider)
+    		entity.worldObj.provider instanceof PocketProvider && properties.LimboReturnsInventoryEnabled)
     	{
     		EntityPlayer player = (EntityPlayer) entity;
-    		if (!properties.LimboReturnsInventoryEnabled)
-    		{
-    			player.inventory.clearInventory(-1, -1);
-    		}
-    		player.extinguish();
-    		player.clearActivePotions();
-    		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(player.worldObj.rand);
-    		Point4D destination = new Point4D((int) (coords.posX+entity.posX), coords.posY, (int) (coords.posZ+entity.posZ ), mod_pocketDim.properties.LimboDimensionID);
-    		DDTeleporter.teleportEntity(player, destination, false);
-    		player.setHealth(player.getMaxHealth());
+    		mod_pocketDim.deathTracker.addUsername(player.username);
+    		revivePlayerInLimbo(player);
     		event.setCanceled(true);
-    		
     		return false;
     	}
     	return true;
+    }
+    
+    @ForgeSubscribe(priority = EventPriority.LOWEST)
+    public boolean onDeathWithLowPriority(LivingDeathEvent event)
+    {
+    	// This low-priority handler gives mods a chance to save a player from death before we apply
+    	// teleporting them to Limbo _without_ preserving their inventory. We also check if the player
+    	// died in a pocket dimension and record it, regardless of whether the player will be sent to Limbo.
+    	
+    	Entity entity = event.entity;
+    	
+    	if (entity instanceof EntityPlayer && entity.worldObj.provider instanceof PocketProvider)
+    	{
+    		EntityPlayer player = (EntityPlayer) entity;
+    		mod_pocketDim.deathTracker.addUsername(player.username);
+
+    		if (properties.LimboEnabled && !properties.LimboReturnsInventoryEnabled)
+    		{
+    			player.inventory.clearInventory(-1, -1);
+        		revivePlayerInLimbo(player);
+        		event.setCanceled(true);
+    		}
+    		return false;
+    	}
+       	return true;
+    }
+    
+    private void revivePlayerInLimbo(EntityPlayer player)
+    {
+    	player.extinguish();
+		player.clearActivePotions();
+		player.setHealth(player.getMaxHealth());
+		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(player.worldObj.rand);
+		Point4D destination = new Point4D((int) (coords.posX + player.posX), coords.posY, (int) (coords.posZ + player.posZ ), mod_pocketDim.properties.LimboDimensionID);
+		DDTeleporter.teleportEntity(player, destination, false);
     }
 
     @ForgeSubscribe
@@ -179,6 +207,11 @@ public class EventHookContainer
     	if (event.world.provider.dimensionId == 0)
     	{
     		PocketManager.save();
+    		
+    		if (mod_pocketDim.deathTracker != null && mod_pocketDim.deathTracker.isModified())
+    		{
+    			mod_pocketDim.deathTracker.writeToFile();
+    		}
     	}
     }
     
