@@ -44,7 +44,9 @@ public class LimboDecay implements IRegularTickReceiver {
 			properties.DimensionalDoorID,
 			properties.WarpDoorID,
 			properties.RiftBlockID,
-			properties.UnstableDoorID
+			properties.UnstableDoorID,
+			properties.GoldenDoorID,
+			properties.GoldenDimensionalDoorID
 		};
 		
 		this.properties = properties;
