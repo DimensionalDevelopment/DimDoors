@@ -22,6 +22,7 @@ public class BlockRotator
 	static
 	{
 		hasOrientations[Block.dispenser.blockID] = true;
+		hasOrientations[Block.dropper.blockID] = true;
 		hasOrientations[Block.stairsStoneBrick.blockID] = true;
 		hasOrientations[Block.lever.blockID] = true;
 		hasOrientations[Block.stoneButton.blockID] = true;
@@ -241,7 +242,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if (blockID == Block.chest.blockID || blockID == Block.chestTrapped.blockID || blockID == Block.ladder.blockID || blockID == Block.hopperBlock.blockID|| blockID == Block.furnaceBurning.blockID|| blockID == Block.furnaceIdle.blockID)
+		else if (blockID == Block.chest.blockID || blockID == Block.chestTrapped.blockID || blockID == Block.ladder.blockID || blockID == Block.furnaceBurning.blockID|| blockID == Block.furnaceIdle.blockID)
 		{
 			switch (metadata)
 			{
@@ -258,7 +259,36 @@ public class BlockRotator
 				metadata = 3;
 				break;
 			}
-
+		}
+		else if (blockID == Block.hopperBlock.blockID)
+		{
+			switch (metadata)
+			{
+			case 2:
+				metadata = 5;
+				break;
+			case 3:
+				metadata = 4;
+				break;					
+			case 4:
+				metadata = 2;
+				break;
+			case 5:
+				metadata = 3;
+				break;
+			case 10:
+				metadata = 13;
+				break;
+			case 11:
+				metadata = 12;
+				break;					
+			case 12:
+				metadata = 10;
+				break;
+			case 13:
+				metadata = 11;
+				break;
+			}
 		}
 		else if (blockID==Block.vine.blockID)
 		{
@@ -352,7 +382,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if(blockID== Block.lever.blockID||blockID== Block.stoneButton.blockID||blockID== Block.stoneButton.blockID||blockID== Block.woodenButton.blockID||blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
+		else if(blockID== Block.lever.blockID || blockID == Block.stoneButton.blockID || blockID == Block.woodenButton.blockID || blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
 		{
 			switch (metadata)
 			{
@@ -382,7 +412,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if(blockID== Block.pistonBase.blockID||blockID==Block.pistonExtension.blockID||blockID==Block.pistonStickyBase.blockID||blockID==Block.dispenser.blockID||blockID==Block.dropper.blockID)
+		else if(blockID== Block.pistonBase.blockID||blockID==Block.pistonExtension.blockID||blockID==Block.pistonStickyBase.blockID || blockID == Block.dispenser.blockID || blockID == Block.dropper.blockID)
 		{
 			switch (metadata)
 			{
