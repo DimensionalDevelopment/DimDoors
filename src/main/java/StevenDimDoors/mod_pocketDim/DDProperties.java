@@ -119,7 +119,6 @@ public class DDProperties
 	//Names of categories
 	private final String CATEGORY_CRAFTING = "crafting";
 	private final String CATEGORY_ENTITY = "entity";
-	private final String CATEGORY_SPECIAL = "special";
 	private final String CATEGORY_DIMENSION = "dimension";
 	private final String CATEGORY_PROVIDER = "provider";
 	private final String CATEGORY_BIOME = "biome";
@@ -209,6 +208,9 @@ public class DDProperties
 		WorldRiftGenerationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift World Generation", true,
 				"Sets whether dungeon rifts generate in dimensions other than Limbo").getBoolean(true);
 		
+		MonolithTeleportationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Monolith Teleportation", true,
+				"Sets whether Monoliths can teleport players").getBoolean(true);
+		
 		MonolithSpawningChance = config.get(Configuration.CATEGORY_GENERAL, "Monolith Spawning Chance", 28,
 				"Sets the chance (out of " + CustomLimboPopulator.MAX_MONOLITH_SPAWNING_CHANCE + ") that Monoliths will " +
 				"spawn in a given Limbo chunk. The default chance is 28.").getInt();
@@ -237,13 +239,6 @@ public class DDProperties
 		{
 			throw new IllegalStateException("World generation blocks MUST have block IDs less than 256. Fix your configuration!");
 		}
-		
-		// SPECIAL CONFIG SETTINGS
-		// I'm adding this category because one of our users convinced me, personally, to please allow this.
-		// These settings are checked _after_ we save the config file, so Forge won't generate them automatically.
-		// Whoever wants to use them must intentionally write them into the config file.
-		
-		MonolithTeleportationEnabled = config.get(CATEGORY_SPECIAL, "Enable Monolith Teleportation", true).getBoolean(true);
 	}
 	
 	public static DDProperties initialize(File configFile)
