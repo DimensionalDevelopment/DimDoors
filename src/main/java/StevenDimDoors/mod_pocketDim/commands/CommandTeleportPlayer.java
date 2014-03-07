@@ -23,17 +23,11 @@ public class CommandTeleportPlayer extends DDCommandBase
 	public static CommandTeleportPlayer instance()
 	{
 		if (instance == null)
-		{
 			instance = new CommandTeleportPlayer();
-		}
+
 		return instance;
 	}
-
-	@Override
-	public String getCommandUsage(ICommandSender sender) {
-		return "Usage: /dd-tp <player name> <dimension id> <x> <y> <z>";
-	}
-
+	
 	/**
 	 * TODO- Change to accept variety of input, like just coords, just dim ID, or two player names. 
 	 */

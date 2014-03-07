@@ -307,16 +307,16 @@ public class mod_pocketDim
 		//TODO- load dims with forced chunks on server startup here  
 
 		// Register commands with the server
-		CommandResetDungeons.instance().register(event);
-		CommandCreateDungeonRift.instance().register(event);
-		CommandDeleteAllLinks.instance().register(event);
+		event.registerServerCommand( CommandResetDungeons.instance() );
+		event.registerServerCommand( CommandCreateDungeonRift.instance() );
+		event.registerServerCommand( CommandDeleteAllLinks.instance() );
 		//CommandDeleteDimensionData.instance().register(event);
-		CommandDeleteRifts.instance().register(event);
-		CommandExportDungeon.instance().register(event);
+		event.registerServerCommand( CommandDeleteRifts.instance() );
+		event.registerServerCommand( CommandExportDungeon.instance() );
 		//CommandPrintDimensionData.instance().register(event);
 		//CommandPruneDimensions.instance().register(event);
-		CommandCreatePocket.instance().register(event);
-		CommandTeleportPlayer.instance().register(event);
+		event.registerServerCommand( CommandCreatePocket.instance() );
+		event.registerServerCommand( CommandTeleportPlayer.instance() );
 		
 		// Initialize a new DeathTracker
 		String deathTrackerFile = DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/deaths.txt";

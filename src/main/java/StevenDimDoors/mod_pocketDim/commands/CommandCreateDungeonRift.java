@@ -33,14 +33,6 @@ public class CommandCreateDungeonRift extends DDCommandBase
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender sender)
-	{
-		return "Usage: /dd-rift <dungeon name>\r\n" +
-				"       /dd-rift list\r\n" +
-				"       /dd-rift random";
-	}
-
-	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		NewDimData dimension;
