@@ -27,13 +27,6 @@ public class CommandExportDungeon extends DDCommandBase
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
-		return "Usage: /dd-export <dungeon type> <dungeon name> open <weight>\r\n" +
-				"       /dd-export <dungeon type> <dungeon name> closed <weight>\r\n" +
-				"       /dd-export <schematic name> override";
-	}
-
-	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		/*

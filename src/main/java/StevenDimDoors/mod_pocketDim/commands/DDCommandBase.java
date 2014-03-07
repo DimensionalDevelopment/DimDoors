@@ -39,12 +39,22 @@ public abstract class DDCommandBase extends CommandBase
 		return name;
 	}
 	
-	/*
-	 * Registers the command at server startup.
-	 */
-	public void register(FMLServerStartingEvent event)
+	@Override
+	public final String getCommandUsage(ICommandSender sender)
 	{
-		event.registerServerCommand(this);
+		StringBuilder builder = new StringBuilder();
+		builder.append('/');
+		builder.append(name);
+		builder.append(' ');
+		builder.append(formats[0]);
+		for (int index = 1; index < formats.length; index++)
+		{
+			builder.append(" OR /");
+			builder.append(name);
+			builder.append(' ');
+			builder.append(formats[index]);
+		}
+		return builder.toString();
 	}
 	
 	/*
@@ -66,10 +76,10 @@ public abstract class DDCommandBase extends CommandBase
 				//Send the argument formats for this command
 				for (String format : formats)
 				{
-					sendChat(player,("Usage: " + name + " " + format));
+					sendChat(player, "Usage: " + name + " " + format);
 				}
 			}
-			sendChat(player,(result.getMessage()));
+			sendChat(player, result.getMessage());
 		}
 	}
 
@@ -78,12 +88,5 @@ public abstract class DDCommandBase extends CommandBase
 		ChatMessageComponent cmp = new ChatMessageComponent();
 		cmp.addText(message);
 		player.sendChatToPlayer(cmp);
-
 	}
-	
-	@Override
-	public int compareTo(Object par1Obj)
-    {
-        return this.getCommandName().compareTo(((CommandBase)par1Obj).getCommandName());
-    }
 }

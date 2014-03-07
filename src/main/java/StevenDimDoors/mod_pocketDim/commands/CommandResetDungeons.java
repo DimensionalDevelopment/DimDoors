@@ -29,11 +29,6 @@ public class CommandResetDungeons extends DDCommandBase
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender sender) {
-		return "/dd-resetdungeons";
-	}
-
-	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
 		if(sender.worldObj.isRemote)
