@@ -61,6 +61,7 @@ import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
+import StevenDimDoors.mod_pocketDim.world.DDBiomeGenBase;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import StevenDimDoors.mod_pocketDim.world.gateways.GatewayGenerator;
@@ -207,6 +208,11 @@ public class mod_pocketDim
 		itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(properties.StabilizedRiftSignatureItemID)).setUnlocalizedName("itemStabilizedRiftSig");
 		itemWorldThread = (new ItemWorldThread(properties.WorldThreadItemID)).setUnlocalizedName("itemWorldThread");
 		
+		// Check if other biomes have been registered with the same IDs we want. If so, crash Minecraft
+		// to notify the user instead of letting it pass and conflicting with Biomes o' Plenty.
+		DDBiomeGenBase.checkBiomes( new int[] { properties.LimboBiomeID, properties.PocketBiomeID } );
+
+		// Initialize our biomes
 		mod_pocketDim.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
 		mod_pocketDim.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
@@ -282,7 +288,10 @@ public class mod_pocketDim
 
 	@EventHandler
 	public void onPostInitialization(FMLPostInitializationEvent event)
-	{	
+	{
+		// Check in case other mods have registered over our biome IDs
+		DDBiomeGenBase.checkBiomes( new int[] { properties.LimboBiomeID, properties.PocketBiomeID } );
+		
 		ForgeChunkManager.setForcedChunkLoadingCallback(instance, new ChunkLoaderHelper());
 	}
 	
