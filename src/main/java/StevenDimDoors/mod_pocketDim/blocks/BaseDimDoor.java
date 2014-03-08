@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.IconFlipped;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -28,8 +29,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEntityProvider
 {
-	private Icon blockIconBottom;
-	protected final DDProperties properties;
+    protected final DDProperties properties;
+	
+	@SideOnly(Side.CLIENT)
+    private Icon[] upperTextures;
+    @SideOnly(Side.CLIENT)
+    private Icon[] lowerTextures;
 	
 	public BaseDimDoor(int blockID, Material material, DDProperties properties) 
 	{
@@ -39,10 +44,15 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	}
 
 	@Override
-	public void registerIcons(IconRegister par1IconRegister)
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister iconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName()+"_top");
-		this.blockIconBottom = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName()+"_bottom");
+		upperTextures = new Icon[2];
+        lowerTextures = new Icon[2];
+        upperTextures[0] = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "_upper");
+        lowerTextures[0] = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "_lower");
+        upperTextures[1] = new IconFlipped(upperTextures[0], true, false);
+        lowerTextures[1] = new IconFlipped(lowerTextures[0], true, false);
 	}
 	
     /**
@@ -50,9 +60,9 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
      */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int par1, int par2)
+	public Icon getIcon(int side, int metadata)
     {
-        return this.blockIcon;
+        return this.upperTextures[0];
     }
     
 	@Override
@@ -64,22 +74,24 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		int var10 = this.getFullMetadata(world, x, y, z);
-		int var11 = var10 & 7;
-		var11 ^= 4;
+		final int MAGIC_CONSTANT = 1003;
+		
+		int metadata = this.getFullMetadata(world, x, y, z);
+		int lowMeta = metadata & 7;
+		lowMeta ^= 4;
 
-		if ((var10 & 8) == 0)
+		if (isUpperDoorBlock(metadata))
 		{
-			world.setBlockMetadataWithNotify(x, y, z, var11,2);
-			world.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
+			world.setBlockMetadataWithNotify(x, y - 1, z, lowMeta,2);
+			world.markBlockRangeForRenderUpdate(x, y - 1, z, x, y, z);			
 		}
 		else
 		{
-			world.setBlockMetadataWithNotify(x, y - 1, z, var11,2);
-			world.markBlockRangeForRenderUpdate(x, y - 1, z, x, y, z);
+			world.setBlockMetadataWithNotify(x, y, z, lowMeta, 2);
+			world.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
 		}
 
-		world.playAuxSFXAtEntity(player, 1003, x, y, z, 0);
+		world.playAuxSFXAtEntity(player, MAGIC_CONSTANT, x, y, z, 0);
 		return true;
 	}
 
@@ -91,23 +103,73 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		this.updateAttachedTile(world, x, y, z);
 	}
 
-
 	/**
-	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
-	 */
+     * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
+     */
 	@Override
-	@SideOnly(Side.CLIENT)
-	public Icon getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
-	{
-		if(par1IBlockAccess.getBlockId(par2, par3-1, par4) == this.blockID)
-		{
-			return this.blockIcon;
-		}
-		else
-		{
-			return blockIconBottom;
-		}
-	}
+    @SideOnly(Side.CLIENT)
+    public Icon getBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side)
+    {
+        if (side != 1 && side != 0)
+        {
+            int fullMetadata = this.getFullMetadata(blockAccess, x, y, z);
+            int orientation = fullMetadata & 3;
+            boolean reversed = false;
+
+            if (isDoorOpen(fullMetadata))
+            {
+                if (orientation == 0 && side == 2)
+                {
+                    reversed = !reversed;
+                }
+                else if (orientation == 1 && side == 5)
+                {
+                    reversed = !reversed;
+                }
+                else if (orientation == 2 && side == 3)
+                {
+                    reversed = !reversed;
+                }
+                else if (orientation == 3 && side == 4)
+                {
+                    reversed = !reversed;
+                }
+            }
+            else
+            {
+                if (orientation == 0 && side == 5)
+                {
+                    reversed = !reversed;
+                }
+                else if (orientation == 1 && side == 3)
+                {
+                    reversed = !reversed;
+                }
+                else if (orientation == 2 && side == 4)
+                {
+                    reversed = !reversed;
+                }
+                else if (orientation == 3 && side == 2)
+                {
+                    reversed = !reversed;
+                }
+
+                if ((fullMetadata & 16) != 0)
+                {
+                    reversed = !reversed;
+                }
+            }
+
+            if (isUpperDoorBlock(fullMetadata))
+            	return this.upperTextures[reversed ? 1 : 0];
+            else
+            	return this.lowerTextures[reversed ? 1 : 0];
+        }
+        else
+        {
+            return this.lowerTextures[0];
+        }
+    }
 
 	//Called to update the render information on the tile entity. Could probably implement a data watcher,
 	//but this works fine and is more versatile I think. 
@@ -353,12 +415,12 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public abstract int getDrops();
 	
-	protected static boolean isUpperDoorBlock(int metadata)
+	public static boolean isUpperDoorBlock(int metadata)
 	{
 		return (metadata & 8) != 0;
 	}
 	
-	protected static boolean isDoorOpen(int metadata)
+	public static boolean isDoorOpen(int metadata)
 	{
 		return (metadata & 4) != 0;
 	}
