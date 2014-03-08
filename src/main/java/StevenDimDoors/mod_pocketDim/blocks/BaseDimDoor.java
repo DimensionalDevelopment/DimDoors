@@ -82,7 +82,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 
 		if (isUpperDoorBlock(metadata))
 		{
-			world.setBlockMetadataWithNotify(x, y - 1, z, lowMeta,2);
+			world.setBlockMetadataWithNotify(x, y - 1, z, lowMeta, 2);
 			world.markBlockRangeForRenderUpdate(x, y - 1, z, x, y, z);			
 		}
 		else
@@ -295,7 +295,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	public void onNeighborBlockChange(World world, int x, int y, int z, int neighborID)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
-		if (!isUpperDoorBlock(metadata))
+		if (isUpperDoorBlock(metadata))
 		{
 			if (world.getBlockId(x, y - 1, z) != this.blockID)
 			{
@@ -403,7 +403,6 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 				// Close the door only after the entity goes through
 				// so players don't have it slam in their faces.
 				this.onPoweredBlockChange(world, x, y, z, false);
-				
 			}
 		}
 		else if (world.getBlockId(x, y + 1, z) == this.blockID)
@@ -411,9 +410,6 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			enterDimDoor(world, x, y + 1, z, entity);
 		}
 	}
-	
-	@Override
-	public abstract int getDrops();
 	
 	public static boolean isUpperDoorBlock(int metadata)
 	{
