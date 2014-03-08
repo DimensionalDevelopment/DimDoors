@@ -45,7 +45,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		this.blockIconBottom = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName()+"_bottom");
 	}
 	
-        /**
+    /**
      * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
      */
 	@Override
