@@ -6,10 +6,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.IconFlipped;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
@@ -27,31 +29,40 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEntityProvider
 {
-	protected final DDProperties properties;
-	private Icon blockIconBottom;
+    protected final DDProperties properties;
+	
+	@SideOnly(Side.CLIENT)
+    private Icon[] upperTextures;
+    @SideOnly(Side.CLIENT)
+    private Icon[] lowerTextures;
 	
 	public BaseDimDoor(int blockID, Material material, DDProperties properties) 
 	{
 		super(blockID, material);
-
+		
 		this.properties = properties;
 	}
 
 	@Override
-	public void registerIcons(IconRegister par1IconRegister)
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister iconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName()+"_top");
-		this.blockIconBottom = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName()+"_bottom");
+		upperTextures = new Icon[2];
+        lowerTextures = new Icon[2];
+        upperTextures[0] = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "_upper");
+        lowerTextures[0] = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "_lower");
+        upperTextures[1] = new IconFlipped(upperTextures[0], true, false);
+        lowerTextures[1] = new IconFlipped(lowerTextures[0], true, false);
 	}
 	
-        /**
+    /**
      * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
      */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int par1, int par2)
+	public Icon getIcon(int side, int metadata)
     {
-        return this.blockIcon;
+        return this.upperTextures[0];
     }
     
 	@Override
@@ -63,22 +74,24 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
-		int var10 = this.getFullMetadata(world, x, y, z);
-		int var11 = var10 & 7;
-		var11 ^= 4;
+		final int MAGIC_CONSTANT = 1003;
+		
+		int metadata = this.getFullMetadata(world, x, y, z);
+		int lowMeta = metadata & 7;
+		lowMeta ^= 4;
 
-		if ((var10 & 8) == 0)
+		if (isUpperDoorBlock(metadata))
 		{
-			world.setBlockMetadataWithNotify(x, y, z, var11,2);
-			world.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
+			world.setBlockMetadataWithNotify(x, y - 1, z, lowMeta, 2);
+			world.markBlockRangeForRenderUpdate(x, y - 1, z, x, y, z);			
 		}
 		else
 		{
-			world.setBlockMetadataWithNotify(x, y - 1, z, var11,2);
-			world.markBlockRangeForRenderUpdate(x, y - 1, z, x, y, z);
+			world.setBlockMetadataWithNotify(x, y, z, lowMeta, 2);
+			world.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
 		}
 
-		world.playAuxSFXAtEntity(player, 1003, x, y, z, 0);
+		world.playAuxSFXAtEntity(player, MAGIC_CONSTANT, x, y, z, 0);
 		return true;
 	}
 
@@ -90,23 +103,73 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		this.updateAttachedTile(world, x, y, z);
 	}
 
-
 	/**
-	 * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
-	 */
+     * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
+     */
 	@Override
-	@SideOnly(Side.CLIENT)
-	public Icon getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
-	{
-		if(par1IBlockAccess.getBlockId(par2, par3-1, par4) == this.blockID)
-		{
-			return this.blockIcon;
-		}
-		else
-		{
-			return blockIconBottom;
-		}
-	}
+    @SideOnly(Side.CLIENT)
+    public Icon getBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side)
+    {
+        if (side != 1 && side != 0)
+        {
+            int fullMetadata = this.getFullMetadata(blockAccess, x, y, z);
+            int orientation = fullMetadata & 3;
+            boolean reversed = false;
+
+            if (isDoorOpen(fullMetadata))
+            {
+                if (orientation == 0 && side == 2)
+                {
+                    reversed = !reversed;
+                }
+                else if (orientation == 1 && side == 5)
+                {
+                    reversed = !reversed;
+                }
+                else if (orientation == 2 && side == 3)
+                {
+                    reversed = !reversed;
+                }
+                else if (orientation == 3 && side == 4)
+                {
+                    reversed = !reversed;
+                }
+            }
+            else
+            {
+                if (orientation == 0 && side == 5)
+                {
+                    reversed = !reversed;
+                }
+                else if (orientation == 1 && side == 3)
+                {
+                    reversed = !reversed;
+                }
+                else if (orientation == 2 && side == 4)
+                {
+                    reversed = !reversed;
+                }
+                else if (orientation == 3 && side == 2)
+                {
+                    reversed = !reversed;
+                }
+
+                if ((fullMetadata & 16) != 0)
+                {
+                    reversed = !reversed;
+                }
+            }
+
+            if (isUpperDoorBlock(fullMetadata))
+            	return this.upperTextures[reversed ? 1 : 0];
+            else
+            	return this.lowerTextures[reversed ? 1 : 0];
+        }
+        else
+        {
+            return this.lowerTextures[0];
+        }
+    }
 
 	//Called to update the render information on the tile entity. Could probably implement a data watcher,
 	//but this works fine and is more versatile I think. 
@@ -229,60 +292,38 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
 	@Override
-	public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5)
+	public void onNeighborBlockChange(World world, int x, int y, int z, int neighborID)
 	{
-		int var6 = par1World.getBlockMetadata(par2, par3, par4);
-
-		if ((var6 & 8) == 0)
+		int metadata = world.getBlockMetadata(x, y, z);
+		if (isUpperDoorBlock(metadata))
 		{
-			boolean var7 = false;
-
-			if (par1World.getBlockId(par2, par3 + 1, par4) != this.blockID)
+			if (world.getBlockId(x, y - 1, z) != this.blockID)
 			{
-				par1World.setBlock(par2, par3, par4, 0);
-				var7 = true;
+				world.setBlock(x, y, z, 0);
 			}
-
-			/**
-            if (!par1World.doesBlockHaveSolidTopSurface(par2, par3 - 1, par4))
-            {
-                par1World.setBlockWithNotify(par2, par3, par4, 0);
-                var7 = true;
-
-                if (par1World.getBlockId(par2, par3 + 1, par4) == this.blockID)
-                {
-                    par1World.setBlockWithNotify(par2, par3 + 1, par4, 0);
-                }
-            }
-			 **/
-
-			if (var7)
+			
+			if (neighborID > 0 && neighborID != this.blockID)
 			{
-				if (!par1World.isRemote)
-				{
-					this.dropBlockAsItem(par1World, par2, par3, par4, properties.DimensionalDoorID, 0);
-				}
-			}
-			else
-			{
-				boolean var8 = par1World.isBlockIndirectlyGettingPowered(par2, par3, par4) || par1World.isBlockIndirectlyGettingPowered(par2, par3 + 1, par4);
-
-				if ((var8 || par5 > 0 && Block.blocksList[par5].canProvidePower()) && par5 != this.blockID)
-				{
-					this.onPoweredBlockChange(par1World, par2, par3, par4, var8);
-				}
+				this.onNeighborBlockChange(world, x, y - 1, z, neighborID);
 			}
 		}
 		else
 		{
-			if (par1World.getBlockId(par2, par3 - 1, par4) != this.blockID)
+			if (world.getBlockId(x, y + 1, z) != this.blockID)
 			{
-				par1World.setBlock(par2, par3, par4, 0);
+				world.setBlock(x, y, z, 0);
+				if (!world.isRemote)
+				{
+					this.dropBlockAsItem(world, x, y, z, metadata, 0);
+				}
 			}
-
-			if (par5 > 0 && par5 != this.blockID)
+			else
 			{
-				this.onNeighborBlockChange(par1World, par2, par3 - 1, par4, par5);
+				boolean powered = world.isBlockIndirectlyGettingPowered(x, y, z) || world.isBlockIndirectlyGettingPowered(x, y + 1, z);
+				if ((powered || neighborID > 0 && Block.blocksList[neighborID].canProvidePower()) && neighborID != this.blockID)
+				{
+					this.onPoweredBlockChange(world, x, y, z, powered);
+				}
 			}
 		}
 	}
@@ -297,15 +338,12 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		return this.getDrops();
 	}
 
-	@Override
-	public int idDropped(int par1, Random par2Random, int par3)
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int idDropped(int metadata, Random random, int fortune)
     {
-		//I have no idea, but sometimes this is returned as the blockID instead of metadata. 
-		if(par1>100)
-		{
-			return this.getDrops();
-		}
-        return (par1 & 8) != 0 ? 0 :getDrops();
+        return isUpperDoorBlock(metadata) ? 0 : this.getDrops();
     }
 
 	/**
@@ -365,7 +403,6 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 				// Close the door only after the entity goes through
 				// so players don't have it slam in their faces.
 				this.onPoweredBlockChange(world, x, y, z, false);
-				
 			}
 		}
 		else if (world.getBlockId(x, y + 1, z) == this.blockID)
@@ -374,13 +411,12 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		}
 	}
 	
-	@Override
-	public int getDrops()
+	public static boolean isUpperDoorBlock(int metadata)
 	{
-		return this.blockID;
+		return (metadata & 8) != 0;
 	}
 	
-	protected static boolean isDoorOpen(int metadata)
+	public static boolean isDoorOpen(int metadata)
 	{
 		return (metadata & 4) != 0;
 	}

@@ -113,10 +113,9 @@ public class GatewayGenerator implements IWorldGenerator
 			while (random.nextInt(MAX_CLUSTER_GROWTH_CHANCE) < CLUSTER_GROWTH_CHANCE);
 		}
 		
-		//Check if generating structures is enabled and randomly decide whether to place a Rift Gateway here.
-		//This only happens if a rift cluster was NOT generated.
-		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance &&
-				isStructureGenerationAllowed())
+		// Randomly decide whether to place a Rift Gateway here.
+		// This only happens if a rift cluster was NOT generated.
+		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance)
 		{
 			valid = false;
 			x = y = z = 0; //Stop the compiler from freaking out
@@ -176,10 +175,5 @@ public class GatewayGenerator implements IWorldGenerator
 		Material material = world.getBlockMaterial(x, y, z);
 		return (material != Material.leaves && material != Material.wood && material != Material.pumpkin
 				&& world.isBlockOpaqueCube(x, y, z) && world.getBlockId(x, y, z) != Block.bedrock.blockID);
-	}
-	
-	private static boolean isStructureGenerationAllowed()
-	{
-		return DimensionManager.getWorld(OVERWORLD_DIMENSION_ID).getWorldInfo().isMapFeaturesEnabled();
 	}
 }
