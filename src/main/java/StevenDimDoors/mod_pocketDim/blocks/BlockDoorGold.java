@@ -45,7 +45,7 @@ public class BlockDoorGold extends BlockDoor
 	@SideOnly(Side.CLIENT)
 	public Icon getBlockTexture(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
 	{
-		if (par1IBlockAccess.getBlockId(par2, par3-1, par4) == this.blockID)
+		if (par1IBlockAccess.getBlockId(par2, par3 - 1, par4) == this.blockID)
 		{
 			return this.blockIcon;
 		}

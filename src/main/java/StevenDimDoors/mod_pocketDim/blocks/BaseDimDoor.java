@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
@@ -27,13 +28,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEntityProvider
 {
-	protected final DDProperties properties;
 	private Icon blockIconBottom;
+	protected final DDProperties properties;
 	
 	public BaseDimDoor(int blockID, Material material, DDProperties properties) 
 	{
 		super(blockID, material);
-
+		
 		this.properties = properties;
 	}
 
@@ -229,60 +230,38 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
 	@Override
-	public void onNeighborBlockChange(World par1World, int par2, int par3, int par4, int par5)
+	public void onNeighborBlockChange(World world, int x, int y, int z, int neighborID)
 	{
-		int var6 = par1World.getBlockMetadata(par2, par3, par4);
-
-		if ((var6 & 8) == 0)
+		int metadata = world.getBlockMetadata(x, y, z);
+		if (!isUpperDoorBlock(metadata))
 		{
-			boolean var7 = false;
-
-			if (par1World.getBlockId(par2, par3 + 1, par4) != this.blockID)
+			if (world.getBlockId(x, y - 1, z) != this.blockID)
 			{
-				par1World.setBlock(par2, par3, par4, 0);
-				var7 = true;
+				world.setBlock(x, y, z, 0);
 			}
-
-			/**
-            if (!par1World.doesBlockHaveSolidTopSurface(par2, par3 - 1, par4))
-            {
-                par1World.setBlockWithNotify(par2, par3, par4, 0);
-                var7 = true;
-
-                if (par1World.getBlockId(par2, par3 + 1, par4) == this.blockID)
-                {
-                    par1World.setBlockWithNotify(par2, par3 + 1, par4, 0);
-                }
-            }
-			 **/
-
-			if (var7)
+			
+			if (neighborID > 0 && neighborID != this.blockID)
 			{
-				if (!par1World.isRemote)
-				{
-					this.dropBlockAsItem(par1World, par2, par3, par4, properties.DimensionalDoorID, 0);
-				}
-			}
-			else
-			{
-				boolean var8 = par1World.isBlockIndirectlyGettingPowered(par2, par3, par4) || par1World.isBlockIndirectlyGettingPowered(par2, par3 + 1, par4);
-
-				if ((var8 || par5 > 0 && Block.blocksList[par5].canProvidePower()) && par5 != this.blockID)
-				{
-					this.onPoweredBlockChange(par1World, par2, par3, par4, var8);
-				}
+				this.onNeighborBlockChange(world, x, y - 1, z, neighborID);
 			}
 		}
 		else
 		{
-			if (par1World.getBlockId(par2, par3 - 1, par4) != this.blockID)
+			if (world.getBlockId(x, y + 1, z) != this.blockID)
 			{
-				par1World.setBlock(par2, par3, par4, 0);
+				world.setBlock(x, y, z, 0);
+				if (!world.isRemote)
+				{
+					this.dropBlockAsItem(world, x, y, z, metadata, 0);
+				}
 			}
-
-			if (par5 > 0 && par5 != this.blockID)
+			else
 			{
-				this.onNeighborBlockChange(par1World, par2, par3 - 1, par4, par5);
+				boolean powered = world.isBlockIndirectlyGettingPowered(x, y, z) || world.isBlockIndirectlyGettingPowered(x, y + 1, z);
+				if ((powered || neighborID > 0 && Block.blocksList[neighborID].canProvidePower()) && neighborID != this.blockID)
+				{
+					this.onPoweredBlockChange(world, x, y, z, powered);
+				}
 			}
 		}
 	}
@@ -297,15 +276,12 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		return this.getDrops();
 	}
 
-	@Override
-	public int idDropped(int par1, Random par2Random, int par3)
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int idDropped(int metadata, Random random, int fortune)
     {
-		//I have no idea, but sometimes this is returned as the blockID instead of metadata. 
-		if(par1>100)
-		{
-			return this.getDrops();
-		}
-        return (par1 & 8) != 0 ? 0 :getDrops();
+        return isUpperDoorBlock(metadata) ? 0 : this.getDrops();
     }
 
 	/**
@@ -375,9 +351,11 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	}
 	
 	@Override
-	public int getDrops()
+	public abstract int getDrops();
+	
+	protected static boolean isUpperDoorBlock(int metadata)
 	{
-		return this.blockID;
+		return (metadata & 8) != 0;
 	}
 	
 	protected static boolean isDoorOpen(int metadata)
