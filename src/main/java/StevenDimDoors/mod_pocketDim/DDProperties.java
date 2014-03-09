@@ -157,7 +157,7 @@ public class DDProperties
 				"Sets whether groups of connected rifts will spawn Endermen").getBoolean(true);
 		
 		LimboEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Limbo", true,
-				"Sets whether the Limbo dimension is activated").getBoolean(true);
+				"Sets whether players are teleported to Limbo when they die in any pocket dimension").getBoolean(true);
 		LimboReturnsInventoryEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Limbo Returns Inventory", true,
 				"Sets whether players keep their inventories upon dying and respawning in Limbo").getBoolean(true);
 		HardcoreLimboEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Hardcore Limbo", false,
