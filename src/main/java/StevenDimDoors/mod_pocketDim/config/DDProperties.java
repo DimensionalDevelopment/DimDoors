@@ -1,4 +1,4 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.config;
 
 import java.io.File;
 
@@ -87,7 +87,6 @@ public class DDProperties
 	 * Other Flags
 	 */
 
-	public final boolean WorldRiftGenerationEnabled;
 	public final boolean RiftSpreadEnabled;
 	public final boolean RiftGriefingEnabled;
 	public final boolean RiftsSpawnEndermenEnabled;
@@ -204,9 +203,6 @@ public class DDProperties
 		LimboDimensionID = config.get(CATEGORY_DIMENSION, "Limbo Dimension ID", -23).getInt();
 		PocketProviderID = config.get(CATEGORY_PROVIDER, "Pocket Provider ID", 24).getInt();
 		LimboProviderID = config.get(CATEGORY_PROVIDER, "Limbo Provider ID", 13).getInt();
-
-		WorldRiftGenerationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift World Generation", true,
-				"Sets whether dungeon rifts generate in dimensions other than Limbo").getBoolean(true);
 		
 		MonolithTeleportationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Monolith Teleportation", true,
 				"Sets whether Monoliths can teleport players").getBoolean(true);

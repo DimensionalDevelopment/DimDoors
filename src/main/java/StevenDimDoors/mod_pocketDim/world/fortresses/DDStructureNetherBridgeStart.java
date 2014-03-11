@@ -10,7 +10,7 @@ import net.minecraft.world.gen.structure.ComponentNetherBridgeThrone;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureNetherBridgeStart;
-import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 
 public class DDStructureNetherBridgeStart extends StructureNetherBridgeStart
 {

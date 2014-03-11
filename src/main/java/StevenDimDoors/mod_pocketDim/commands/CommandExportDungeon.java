@@ -4,7 +4,7 @@ import java.io.File;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 
 public class CommandExportDungeon extends DDCommandBase

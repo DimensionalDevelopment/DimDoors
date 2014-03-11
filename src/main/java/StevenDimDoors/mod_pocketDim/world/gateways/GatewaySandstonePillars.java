@@ -3,8 +3,8 @@ package StevenDimDoors.mod_pocketDim.world.gateways;
 import java.util.ArrayList;
 import java.util.Random;
 
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import net.minecraft.block.Block;

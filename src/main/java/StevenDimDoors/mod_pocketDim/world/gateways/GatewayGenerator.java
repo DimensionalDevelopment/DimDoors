@@ -8,8 +8,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.DimensionManager;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
@@ -58,15 +58,17 @@ public class GatewayGenerator implements IWorldGenerator
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
-		//Don't generate rifts or gateways if the rift generation flag is disabled,
-		//the current world is a pocket dimension, or the world is remote.
-		//Also don't generate anything in The End.
-		if (world.isRemote || (!properties.WorldRiftGenerationEnabled) ||
-			(world.provider instanceof PocketProvider) || (world.provider.dimensionId == END_DIMENSION_ID)||(world.provider.dimensionId == NETHER_DIMENSION_ID))
+		// Don't generate rifts or gateways if the current world is a pocket dimension or the world is remote.
+		// Also don't generate anything in the Nether or The End.
+		int dimensionID = world.provider.dimensionId;
+		if (world.isRemote
+			|| (world.provider instanceof PocketProvider)
+			|| (dimensionID == END_DIMENSION_ID)
+			|| (dimensionID == NETHER_DIMENSION_ID))
 		{
 			return;
 		}
-		//This check prevents a crash related to superflat worlds not loading World 0
+		// This check prevents a crash related to superflat worlds not loading World 0
 		if (DimensionManager.getWorld(OVERWORLD_DIMENSION_ID) == null)
 		{
 			return;
@@ -78,8 +80,10 @@ public class GatewayGenerator implements IWorldGenerator
 		DimLink link;
 		NewDimData dimension;
 
-		//Randomly decide whether to place a cluster of rifts here
-		if (random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < properties.ClusterGenerationChance)
+		// Check if we're allowed to generate rift clusters in this dimension.
+		// If so, randomly decide whether to one.
+		if (mod_pocketDim.worldProperties.RiftClusterDimensions.isAccepted(dimensionID)
+				&& random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < properties.ClusterGenerationChance)
 		{
 			link = null;
 			dimension = null;
@@ -113,9 +117,10 @@ public class GatewayGenerator implements IWorldGenerator
 			while (random.nextInt(MAX_CLUSTER_GROWTH_CHANCE) < CLUSTER_GROWTH_CHANCE);
 		}
 		
-		// Randomly decide whether to place a Rift Gateway here.
+		// Check if we can place a Rift Gateway in this dimension, then randomly decide whether to place one.
 		// This only happens if a rift cluster was NOT generated.
-		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance)
+		else if (mod_pocketDim.worldProperties.RiftGatewayDimensions.isAccepted(dimensionID) &&
+				random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance)
 		{
 			valid = false;
 			x = y = z = 0; //Stop the compiler from freaking out
