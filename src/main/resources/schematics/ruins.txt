@@ -1,4 +1,5 @@
 /schematics/ruins/complexHall_buggyTopEntry1_open_100.schematic
+/schematics/ruins/ComplexHall_Cere-PuzzleWall_Open_75.schematic
 /schematics/ruins/complexHall_exitRuinsWithHiddenDoor_open_100.schematic
 /schematics/ruins/complexHall_hallwayHiddenTreasure_closed_100.schematic
 /schematics/ruins/complexHall_largeBrokenHall_closed_100.schematic
@@ -15,6 +16,7 @@
 /schematics/ruins/complexHall_tntPuzzleTrap_closed_50.schematic
 /schematics/ruins/deadEnd_azersDungeonO_closed_100.schematic
 /schematics/ruins/deadEnd_brokenPillarsO_open_100.schematic
+/schematics/ruins/DeadEnd_Cere-FloatingAltar_Open_75.schematic
 /schematics/ruins/deadEnd_diamondTowerTemple1_open_100.schematic
 /schematics/ruins/deadEnd_fallingTrapO_open_100.schematic
 /schematics/ruins/deadEnd_hiddenStaircaseO_open_100.schematic
@@ -72,6 +74,7 @@
 /schematics/ruins/trap_pistonSmasherHall_closed_100.schematic
 /schematics/ruins/Trap_SK-FakeTNTTrap-B_Closed_50.schematic
 /schematics/ruins/Trap_SK-NicolesTower_Open_50.schematic
+/schematics/ruins/Trap_SK-RaceTheLight_Closed_50.schematic
 /schematics/ruins/Trap_SK-RestlessCorridor_Open_40.schematic
 /schematics/ruins/Trap_SK-SimpleLeftTrap_Closed_50.schematic
 /schematics/ruins/Trap_SK-SimpleRightTrap_Closed_50.schematic
@@ -79,6 +82,3 @@
 /schematics/ruins/Trap_SK-TrappedStairsUp_Closed_50.schematic
 /schematics/ruins/Trap_SK-UTrapRight_Open_50.schematic
 /schematics/ruins/trap_wallFallcomboPistonHall_closed_200.schematic
-/schematics/ruins/DeadEnd_Floating-Altar_Open_100.schematic
-/schematics/ruins/complexHall_exitRuinsWithHiddenDoor_open_100
-.schematic
