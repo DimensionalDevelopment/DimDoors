@@ -98,7 +98,7 @@ public class TileEntityRift extends TileEntity
 		//This code should execute once every 10 seconds
 		if (updateTimer > 200)
 		{
-			//this.spawnEndermen();
+			this.spawnEndermen();
 			this.grow(mod_pocketDim.properties);
 			updateTimer = 0;
 		}
