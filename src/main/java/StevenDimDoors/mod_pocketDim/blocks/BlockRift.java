@@ -7,7 +7,6 @@ import java.util.Queue;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockFlowing;
 import net.minecraft.block.BlockFluid;
 import net.minecraft.block.ITileEntityProvider;
@@ -27,6 +26,7 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDimClient.ClosingRiftFX;
 import StevenDimDoors.mod_pocketDimClient.GoggleRiftFX;
 import StevenDimDoors.mod_pocketDimClient.RiftFX;
@@ -38,7 +38,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 {
 	private static final float MIN_IMMUNE_RESISTANCE = 5000.0F;
 	private static final int BLOCK_DESTRUCTION_RANGE = 4;
-	private static final int BLOCK_DESTRUCTION_VOLUME = (int) Math.pow(2 * BLOCK_DESTRUCTION_RANGE + 1, 3);
+	private static final int RIFT_SPREAD_RANGE = 5;
 	private static final int MAX_BLOCK_SEARCH_CHANCE = 100;
 	private static final int BLOCK_SEARCH_CHANCE = 50;
 	private static final int MAX_BLOCK_DESTRUCTION_CHANCE = 100;
@@ -164,11 +164,30 @@ public class BlockRift extends Block implements ITileEntityProvider
 	
 	private void destroyNearbyBlocks(World world, int x, int y, int z, Random random)
 	{
-		HashMap<Point3D, Integer> pointDistances = new HashMap<Point3D, Integer>(BLOCK_DESTRUCTION_VOLUME);
-		Queue<Point3D> points = new LinkedList<Point3D>();
+		// Find reachable blocks that are vulnerable to rift damage (ignoring air, of course)
+		ArrayList<Point3D> targets = findReachableBlocks(world, x, y, z, BLOCK_DESTRUCTION_RANGE, false);
 		
-		//Perform a breadth-first search outwards from the point at which the rift is located. Record the distances
-		//of the points we visit to stop the search at its maximum range.
+		// For each block, randomly decide whether to destroy it.
+		// The randomness makes it so the destroyed area appears "noisy" if the rift is exposed to a large surface.
+		for (Point3D target : targets)
+		{
+			if (random.nextInt(MAX_BLOCK_DESTRUCTION_CHANCE) < BLOCK_DESTRUCTION_CHANCE)
+			{
+				spawnWorldThread(world.getBlockId(target.getX(), target.getY(), target.getZ()), world, x, y, z, random);
+				world.destroyBlock(target.getX(), target.getY(), target.getZ(), false);
+			}
+		}
+	}
+	
+	private ArrayList<Point3D> findReachableBlocks(World world, int x, int y, int z, int range, boolean includeAir)
+	{
+		int searchVolume = (int) Math.pow(2 * range + 1, 3);
+		HashMap<Point3D, Integer> pointDistances = new HashMap<Point3D, Integer>(searchVolume);
+		Queue<Point3D> points = new LinkedList<Point3D>();
+		ArrayList<Point3D> targets = new ArrayList<Point3D>();
+		
+		// Perform a breadth-first search outwards from the point at which the rift is located.
+		// Record the distances of the points we visit to stop the search at its maximum range.
 		pointDistances.put(new Point3D(x, y, z), 0);
 		addAdjacentBlocks(x, y, z, 0, pointDistances, points);
 		while (!points.isEmpty())
@@ -176,10 +195,14 @@ public class BlockRift extends Block implements ITileEntityProvider
 			Point3D current = points.remove();
 			int distance = pointDistances.get(current);
 			
-			//If the current block is air, continue searching. Otherwise, try destroying the block.
+			// If the current block is air, continue searching. Otherwise, add the block to our list.
 			if (world.isAirBlock(current.getX(), current.getY(), current.getZ()))
 			{
-				//Make sure we stay within the search range
+				if (includeAir)
+				{
+					targets.add(current);
+				}
+				// Make sure we stay within the search range
 				if (distance < BLOCK_DESTRUCTION_RANGE)
 				{
 					addAdjacentBlocks(current.getX(), current.getY(), current.getZ(), distance, pointDistances, points);
@@ -187,18 +210,16 @@ public class BlockRift extends Block implements ITileEntityProvider
 			}
 			else
 			{
-				//Check if the current block is immune to destruction by rifts. If not, randomly decide whether to destroy it.
-				//The randomness makes it so the destroyed area appears "noisy" if the rift is exposed to a large surface.
-				if (!isBlockImmune(world, current.getX(), current.getY(), current.getZ()) &&
-						random.nextInt(MAX_BLOCK_DESTRUCTION_CHANCE) < BLOCK_DESTRUCTION_CHANCE)
+				// Check if the current block is immune to destruction by rifts. If not, add it to our list.
+				if (!isBlockImmune(world, current.getX(), current.getY(), current.getZ()))
 				{
-					this.spawnWorldThread(world.getBlockId(current.getX(), current.getY(), current.getZ()), world, x, y, z, random);
-					world.destroyBlock(current.getX(), current.getY(), current.getZ(), false);
+					targets.add(current);
 				}
 			}
 		}
+		return targets;
 	}
-	
+		
 	private void spawnWorldThread(int blockID, World world, int x, int y, int z, Random random)
 	{
 		if (blockID != 0 && (random.nextInt(MAX_WORLD_THREAD_CHANCE) < WORLD_THREAD_CHANCE)
@@ -236,9 +257,38 @@ public class BlockRift extends Block implements ITileEntityProvider
 		if (!this.isBlockImmune(world, x, y, z) && world.getChunkProvider().chunkExists(x >> 4, z >> 4))
 		{
 			int blockID = world.getBlockId(x, y, z);
-			world.setBlock(x, y, z, properties.RiftBlockID);
-			this.spawnWorldThread(blockID, world, x, y, z, random);
+			if (world.setBlock(x, y, z, properties.RiftBlockID))
+				spawnWorldThread(blockID, world, x, y, z, random);
 		}
+	}
+	
+	public boolean spreadRift(NewDimData dimension, DimLink parent, World world, Random random)
+	{
+		int x, y, z, blockID;
+		Point4D source = parent.source();
+		
+		// Find reachable blocks that are vulnerable to rift damage and include air
+		ArrayList<Point3D> targets = findReachableBlocks(world, source.getX(), source.getY(), source.getZ(),
+				RIFT_SPREAD_RANGE, true);
+		
+		if (!targets.isEmpty())
+		{
+			// Choose randomly from among the possible locations where we can spawn a new rift
+			Point3D target = targets.get( random.nextInt(targets.size()) );
+			x = target.getX();
+			y = target.getY();
+			z = target.getZ();
+
+			// Create a child, replace the block with a rift, and consider dropping World Thread
+			blockID = world.getBlockId(x, y, z);
+			if (world.setBlock(x, y, z, properties.RiftBlockID))
+			{
+				dimension.createChildLink(x, y, z, parent);
+				spawnWorldThread(blockID, world, x, y, z, random);
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**

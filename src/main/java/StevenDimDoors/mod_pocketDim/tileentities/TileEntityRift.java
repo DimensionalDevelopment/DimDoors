@@ -35,8 +35,6 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class TileEntityRift extends TileEntity
 {
-	private static final int MAX_SPREAD_ATTEMPTS = 3;
-	private static final int MAX_SEARCH_ATTEMPTS = 50;
 	private static final int MAX_ANCESTOR_LINKS = 3;
 	private static final int ENDERMAN_SPAWNING_CHANCE = 1;
 	private static final int MAX_ENDERMAN_SPAWNING_CHANCE = 32;
@@ -100,7 +98,7 @@ public class TileEntityRift extends TileEntity
 		//This code should execute once every 10 seconds
 		if (updateTimer > 200)
 		{
-			this.spawnEndermen();
+			//this.spawnEndermen();
 			this.grow(mod_pocketDim.properties);
 			updateTimer = 0;
 		}
@@ -334,53 +332,16 @@ public class TileEntityRift extends TileEntity
 			return;
 		}
 		
-		// The probability of rifts trying to spread increases if more rifts are nearby
-		// Players should see rifts spread faster within clusters than at the edges of clusters
+		// The probability of rifts trying to spread increases if more rifts are nearby.
+		// Players should see rifts spread faster within clusters than at the edges of clusters.
 		// Also, single rifts CANNOT spread.
-		int nearRifts = dimension.findRiftsInRange(this.worldObj, 5, xCoord, yCoord, zCoord).size();
+		int nearRifts = dimension.findRiftsInRange(worldObj, 5, xCoord, yCoord, zCoord).size();
 		if (nearRifts == 0 || random.nextInt(nearRifts) == 0)
 		{
 			return;
 		}
-
-		int x, y, z;
-		int spreadAttempts = 0;
-		for (int searchAttempts = 0; searchAttempts < MAX_SEARCH_ATTEMPTS; searchAttempts++)
-		{
-			x = xCoord + MathHelper.getRandomIntegerInRange(random, -6, 6);
-			y = yCoord + MathHelper.getRandomIntegerInRange(random, -4, 4);
-			z = zCoord + MathHelper.getRandomIntegerInRange(random, -6, 6);
-			
-			if (y >= 0 && y < worldObj.getActualHeight() && worldObj.isAirBlock(x, y, z))
-			{
-				Vec3 position = worldObj.getWorldVec3Pool().getVecFromPool(xCoord, yCoord, zCoord);
-				Vec3 spreadTarget = worldObj.getWorldVec3Pool().getVecFromPool(x, y, z);
-				MovingObjectPosition hit =  worldObj.clip(position, spreadTarget, false);
-				if (hit == null || !mod_pocketDim.blockRift.isBlockImmune(worldObj, hit.blockX, hit.blockY, hit.blockZ))
-				{
-					if(hit!=null)
-					{
-						dimension.createChildLink(hit.blockX, hit.blockY, hit.blockZ, link);
-						this.worldObj.setBlock(hit.blockX, hit.blockY, hit.blockZ, mod_pocketDim.blockRift.blockID);
-					}
-					else
-					{
-						dimension.createChildLink(x,y,z,link);
-						this.worldObj.setBlock(x,y,z, mod_pocketDim.blockRift.blockID);
-					}
-					hasGrownRifts = true;
-					break;
-				}
-				else
-				{
-					spreadAttempts++;
-					if (spreadAttempts >= MAX_SPREAD_ATTEMPTS)
-					{
-						break;
-					}
-				}
-			}
-		}
+		
+		hasGrownRifts = mod_pocketDim.blockRift.spreadRift(dimension, link, worldObj, random);
 	}
 
 	@Override
