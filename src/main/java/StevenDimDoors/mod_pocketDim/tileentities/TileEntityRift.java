@@ -35,11 +35,14 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class TileEntityRift extends TileEntity
 {
-	private static final int MAX_ANCESTOR_LINKS = 3;
+	private static final int MAX_ANCESTOR_LINKS = 2;
+	private static final int MAX_CHILD_LINKS = 1;
 	private static final int ENDERMAN_SPAWNING_CHANCE = 1;
 	private static final int MAX_ENDERMAN_SPAWNING_CHANCE = 32;
 	private static final int RIFT_SPREAD_CHANCE = 1;
 	private static final int MAX_RIFT_SPREAD_CHANCE = 256;
+	private static final int HOSTILE_ENDERMAN_CHANCE = 1;
+	private static final int MAX_HOSTILE_ENDERMAN_CHANCE = 3;
 	
 	private static Random random = new Random();
 
@@ -51,7 +54,6 @@ public class TileEntityRift extends TileEntity
 	public int zOffset = 0;
 	public boolean shouldClose = false;
 	private boolean hasUpdated = false;
-	private boolean hasGrownRifts = false;
 
 	public DimLink nearestRiftData;
 	public int spawnedEndermenID = 0;
@@ -107,8 +109,6 @@ public class TileEntityRift extends TileEntity
 			this.calculateOldParticleOffset(); //this also calculates the distance for the particle stuff.
 		}
 		updateTimer++;
-
-		
 	}
 
 	@Override
@@ -169,10 +169,10 @@ public class TileEntityRift extends TileEntity
 					enderman.setLocationAndAngles(xCoord + 0.5, yCoord - 1, zCoord + 0.5, 5, 6);
 					worldObj.spawnEntityInWorld(enderman);
 					
-					if(this.worldObj.rand.nextInt(3)==0)
+					if (random.nextInt(MAX_HOSTILE_ENDERMAN_CHANCE) < HOSTILE_ENDERMAN_CHANCE)
 					{
 						EntityPlayer player = this.worldObj.getClosestPlayerToEntity(enderman, 50);
-						if(player!=null)
+						if (player != null)
 						{
 							enderman.setTarget(player);
 						}
@@ -318,7 +318,7 @@ public class TileEntityRift extends TileEntity
 
 	public void grow(DDProperties properties)
 	{
-		if (worldObj.isRemote || hasGrownRifts || !properties.RiftSpreadEnabled
+		if (worldObj.isRemote || !properties.RiftSpreadEnabled
 			|| random.nextInt(MAX_RIFT_SPREAD_CHANCE) < RIFT_SPREAD_CHANCE || this.shouldClose)
 		{
 			return;
@@ -327,7 +327,7 @@ public class TileEntityRift extends TileEntity
 		NewDimData dimension = PocketManager.getDimensionData(worldObj);
 		DimLink link = dimension.getLink(xCoord, yCoord, zCoord);
 		
-		if (countAncestorLinks(link) > MAX_ANCESTOR_LINKS)
+		if (link.childCount() >= MAX_CHILD_LINKS || countAncestorLinks(link) > MAX_ANCESTOR_LINKS)
 		{
 			return;
 		}
@@ -340,8 +340,7 @@ public class TileEntityRift extends TileEntity
 		{
 			return;
 		}
-		
-		hasGrownRifts = mod_pocketDim.blockRift.spreadRift(dimension, link, worldObj, random);
+		mod_pocketDim.blockRift.spreadRift(dimension, link, worldObj, random);
 	}
 
 	@Override
@@ -354,7 +353,6 @@ public class TileEntityRift extends TileEntity
 		this.xOffset = nbt.getInteger("xOffset");
 		this.yOffset = nbt.getInteger("yOffset");
 		this.zOffset = nbt.getInteger("zOffset");
-		this.hasGrownRifts = nbt.getBoolean("grownRifts");
 		this.age = nbt.getInteger("age");
 		this.shouldClose = nbt.getBoolean("shouldClose");
 		this.spawnedEndermenID = nbt.getInteger("spawnedEndermenID");
@@ -367,7 +365,6 @@ public class TileEntityRift extends TileEntity
 		nbt.setInteger("age", this.age);
 		nbt.setInteger("count", this.updateTimer);
 		nbt.setInteger("count2", this.riftCloseTimer);
-		nbt.setBoolean("grownRifts",this.hasGrownRifts);
 		nbt.setInteger("xOffset", this.xOffset);
 		nbt.setInteger("yOffset", this.yOffset);
 		nbt.setInteger("zOffset", this.zOffset);
