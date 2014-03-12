@@ -35,6 +35,7 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class TileEntityRift extends TileEntity
 {
+	private static final int RIFT_INTERACTION_RANGE = 5;
 	private static final int MAX_ANCESTOR_LINKS = 2;
 	private static final int MAX_CHILD_LINKS = 1;
 	private static final int ENDERMAN_SPAWNING_CHANCE = 1;
@@ -327,7 +328,7 @@ public class TileEntityRift extends TileEntity
 		NewDimData dimension = PocketManager.getDimensionData(worldObj);
 		DimLink link = dimension.getLink(xCoord, yCoord, zCoord);
 		
-		if (link.childCount() >= MAX_CHILD_LINKS || countAncestorLinks(link) > MAX_ANCESTOR_LINKS)
+		if (link.childCount() >= MAX_CHILD_LINKS || countAncestorLinks(link) >= MAX_ANCESTOR_LINKS)
 		{
 			return;
 		}
@@ -335,7 +336,7 @@ public class TileEntityRift extends TileEntity
 		// The probability of rifts trying to spread increases if more rifts are nearby.
 		// Players should see rifts spread faster within clusters than at the edges of clusters.
 		// Also, single rifts CANNOT spread.
-		int nearRifts = dimension.findRiftsInRange(worldObj, 5, xCoord, yCoord, zCoord).size();
+		int nearRifts = dimension.findRiftsInRange(worldObj, RIFT_INTERACTION_RANGE, xCoord, yCoord, zCoord).size();
 		if (nearRifts == 0 || random.nextInt(nearRifts) == 0)
 		{
 			return;
