@@ -108,6 +108,7 @@ public class DDProperties
 	public final int FortressGatewayGenerationChance;
 	public final int MonolithSpawningChance;
 	public final int LimboReturnRange;
+	public final int WorldThreadRequirementLevel;
 	public final String CustomSchematicDirectory;
 	
 	
@@ -143,6 +144,10 @@ public class DDProperties
 		CraftingStableFabricAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Stable Fabric", true).getBoolean(true);
 		CraftingGoldenDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Golden Door", true).getBoolean(true);
 		CraftingGoldenDimensionalDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Golden Dimensional Door", true).getBoolean(true);
+		
+		WorldThreadRequirementLevel = config.get(CATEGORY_CRAFTING, "World Thread Requirement Level", 4,
+				"Controls the amount of World Thread needed to craft Stable Fabric. The number must be an " +
+				"integer from 1 to 4. The levels change the recipe to use 1, 2, 4, or 8 threads, respectively. The default level is 4.").getInt();
 		
 		RiftBladeLootEnabled = config.get(CATEGORY_LOOT, "Enable Rift Blade Loot", true).getBoolean(true);
 		FabricOfRealityLootEnabled = config.get(CATEGORY_LOOT, "Enable Fabric of Reality Loot", true).getBoolean(true);
