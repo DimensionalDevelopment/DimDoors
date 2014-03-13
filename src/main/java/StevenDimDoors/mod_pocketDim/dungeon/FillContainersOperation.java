@@ -20,8 +20,8 @@ public class FillContainersOperation extends WorldOperation
 	private Random random;
 	private DDProperties properties;
 	
-	private static final int GRAVE_CHEST_CHANCE = 100;
-	private static final int MAX_GRAVE_CHEST_CHANCE = 700;
+	private static final int GRAVE_CHEST_CHANCE = 1;
+	private static final int MAX_GRAVE_CHEST_CHANCE = 6;
 	
 	public FillContainersOperation(Random random, DDProperties properties)
 	{
