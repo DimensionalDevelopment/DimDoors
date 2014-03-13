@@ -51,7 +51,8 @@ public class BlockDimWallPerm extends Block
 	@Override
 	public void onEntityWalking(World world, int x, int y, int z, Entity entity) 
 	{
-		if (!world.isRemote && world.provider.dimensionId == properties.LimboDimensionID)
+		if (!world.isRemote && world.provider.dimensionId == properties.LimboDimensionID
+				&& mod_pocketDim.worldProperties.LimboEscapeEnabled)
 		{
 			World overworld = DimensionManager.getWorld(0);
 			if (overworld != null && entity instanceof EntityPlayerMP)

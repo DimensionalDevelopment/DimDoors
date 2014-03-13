@@ -13,6 +13,12 @@ public class DDWorldProperties
 	public final DimensionFilter RiftClusterDimensions;
 	public final DimensionFilter RiftGatewayDimensions;
 	
+	/**
+	 * General Flags
+	 */
+	public final boolean LimboEscapeEnabled;
+	
+	
 	//Names of categories
 	private static final String CATEGORY_WORLD_GENERATION = "world generation";
 	
@@ -32,6 +38,11 @@ public class DDWorldProperties
 
 		RiftClusterDimensions = loadFilter(config, "Rift Cluster", "Rift Clusters");
 		RiftGatewayDimensions = loadFilter(config, "Rift Gateway", "Rift Gateways");
+		
+		LimboEscapeEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Limbo Escape", true,
+				"Sets whether players are teleported out of Limbo when walking over the Eternal Fabric that " + 
+				"generates near the bottom of the dimension. If disabled, players could still leave through " +
+				"dungeons in Limbo or by dying (if Hardcore Limbo is disabled). The default value is true.").getBoolean(true);
 		
 		config.save();
 	}
