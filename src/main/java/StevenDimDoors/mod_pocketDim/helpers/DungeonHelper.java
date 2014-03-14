@@ -19,8 +19,8 @@ import java.util.regex.Pattern;
 
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
@@ -577,11 +577,11 @@ public class DungeonHelper
 		return selection;
 	}
 
-	public Collection<String> getDungeonNames() {
-
-		//Use a HashSet to guarantee that all dungeon names will be distinct.
-		//This shouldn't be necessary if we keep proper lists without repetitions,
-		//but it's a fool-proof workaround.
+	public ArrayList<String> getDungeonNames()
+	{
+		// Use a HashSet to guarantee that all dungeon names will be distinct.
+		// This shouldn't be necessary if we keep proper lists without repetitions,
+		// but it's a fool-proof workaround.
 		HashSet<String> dungeonNames = new HashSet<String>();
 		dungeonNames.addAll( parseDungeonNames(registeredDungeons) );
 		dungeonNames.addAll( parseDungeonNames(untaggedDungeons) );

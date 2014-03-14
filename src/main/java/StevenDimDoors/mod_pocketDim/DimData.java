@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
+
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 @Deprecated

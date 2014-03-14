@@ -11,8 +11,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
@@ -51,7 +51,8 @@ public class BlockDimWallPerm extends Block
 	@Override
 	public void onEntityWalking(World world, int x, int y, int z, Entity entity) 
 	{
-		if (!world.isRemote && world.provider.dimensionId == properties.LimboDimensionID)
+		if (!world.isRemote && world.provider.dimensionId == properties.LimboDimensionID
+				&& mod_pocketDim.worldProperties.LimboEscapeEnabled)
 		{
 			World overworld = DimensionManager.getWorld(0);
 			if (overworld != null && entity instanceof EntityPlayerMP)

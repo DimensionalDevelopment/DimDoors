@@ -1,4 +1,4 @@
-package StevenDimDoors.mod_pocketDim;
+package StevenDimDoors.mod_pocketDim.config;
 
 import java.io.File;
 
@@ -87,7 +87,6 @@ public class DDProperties
 	 * Other Flags
 	 */
 
-	public final boolean WorldRiftGenerationEnabled;
 	public final boolean RiftSpreadEnabled;
 	public final boolean RiftGriefingEnabled;
 	public final boolean RiftsSpawnEndermenEnabled;
@@ -109,6 +108,7 @@ public class DDProperties
 	public final int FortressGatewayGenerationChance;
 	public final int MonolithSpawningChance;
 	public final int LimboReturnRange;
+	public final int WorldThreadRequirementLevel;
 	public final String CustomSchematicDirectory;
 	
 	
@@ -145,6 +145,10 @@ public class DDProperties
 		CraftingGoldenDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Golden Door", true).getBoolean(true);
 		CraftingGoldenDimensionalDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Golden Dimensional Door", true).getBoolean(true);
 		
+		WorldThreadRequirementLevel = config.get(CATEGORY_CRAFTING, "World Thread Requirement Level", 4,
+				"Controls the amount of World Thread needed to craft Stable Fabric. The number must be an " +
+				"integer from 1 to 4. The levels change the recipe to use 1, 2, 4, or 8 threads, respectively. The default level is 4.").getInt();
+		
 		RiftBladeLootEnabled = config.get(CATEGORY_LOOT, "Enable Rift Blade Loot", true).getBoolean(true);
 		FabricOfRealityLootEnabled = config.get(CATEGORY_LOOT, "Enable Fabric of Reality Loot", true).getBoolean(true);
 		WorldThreadLootEnabled = config.get(CATEGORY_LOOT, "Enable World Thread Loot", true).getBoolean(true);
@@ -157,7 +161,7 @@ public class DDProperties
 				"Sets whether groups of connected rifts will spawn Endermen").getBoolean(true);
 		
 		LimboEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Limbo", true,
-				"Sets whether the Limbo dimension is activated").getBoolean(true);
+				"Sets whether players are teleported to Limbo when they die in any pocket dimension").getBoolean(true);
 		LimboReturnsInventoryEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Limbo Returns Inventory", true,
 				"Sets whether players keep their inventories upon dying and respawning in Limbo").getBoolean(true);
 		HardcoreLimboEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Hardcore Limbo", false,
@@ -204,9 +208,6 @@ public class DDProperties
 		LimboDimensionID = config.get(CATEGORY_DIMENSION, "Limbo Dimension ID", -23).getInt();
 		PocketProviderID = config.get(CATEGORY_PROVIDER, "Pocket Provider ID", 24).getInt();
 		LimboProviderID = config.get(CATEGORY_PROVIDER, "Limbo Provider ID", 13).getInt();
-
-		WorldRiftGenerationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Rift World Generation", true,
-				"Sets whether dungeon rifts generate in dimensions other than Limbo").getBoolean(true);
 		
 		MonolithTeleportationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Monolith Teleportation", true,
 				"Sets whether Monoliths can teleport players").getBoolean(true);

@@ -17,7 +17,7 @@ import net.minecraft.world.gen.feature.MapGenScatteredFeature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.terraingen.ChunkProviderEvent;
-import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 
 public class LimboGenerator extends ChunkProviderGenerate

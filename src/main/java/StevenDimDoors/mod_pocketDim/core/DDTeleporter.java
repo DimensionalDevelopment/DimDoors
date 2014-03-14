@@ -22,10 +22,10 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.network.ForgePacket;
 import net.minecraftforge.common.network.packet.DimensionRegisterPacket;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
@@ -40,9 +40,12 @@ public class DDTeleporter
 {
 	private static final Random random = new Random();
 	private static final int NETHER_DIMENSION_ID = -1;
+	private static final int OVERWORLD_DIMENSION_ID = 0;
 	private static final int END_DIMENSION_ID = 1;
 	private static final int MAX_NETHER_EXIT_CHANCE = 100;
 	private static final int NETHER_EXIT_CHANCE = 20; //20% chance to compensate for frequent exit failures - the Nether often doesn't have enough space for an exit
+	private static final int MAX_OVERWORLD_EXIT_CHANCE = 100;
+	private static final int OVERWORLD_EXIT_CHANCE = 15;
 	private static final int MAX_ROOT_SHIFT_CHANCE = 100;
 	private static final int START_ROOT_SHIFT_CHANCE = 0;
 	private static final int ROOT_SHIFT_CHANCE_PER_LEVEL = 5;
@@ -633,7 +636,11 @@ public class DDTeleporter
 
 		if (random.nextInt(MAX_ROOT_SHIFT_CHANCE) < shiftChance)
 		{
-			if (random.nextInt(MAX_NETHER_EXIT_CHANCE) < NETHER_EXIT_CHANCE)
+			if (current.root().id() != OVERWORLD_DIMENSION_ID && random.nextInt(MAX_OVERWORLD_EXIT_CHANCE) < OVERWORLD_EXIT_CHANCE)
+			{
+				return generateSafeExit(PocketManager.getDimensionData(OVERWORLD_DIMENSION_ID), link, properties);
+			}
+			if (current.root().id() != NETHER_DIMENSION_ID && random.nextInt(MAX_NETHER_EXIT_CHANCE) < NETHER_EXIT_CHANCE)
 			{
 				return generateSafeExit(PocketManager.getDimensionData(NETHER_DIMENSION_ID), link, properties);
 			}

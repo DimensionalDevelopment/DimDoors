@@ -12,6 +12,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraftforge.common.ChestGenHooks;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
 /*
@@ -19,7 +20,7 @@ import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
  */
 public class DDLoot {
 	
-	private static final String[] SPECIAL_SKULL_OWNERS = new String[] { "stevenrs11", "kamikazekiwi3", "Jaitsu", "XCompWiz", "skyboy026", "Wylker" };
+	private static final String[] SPECIAL_SKULL_OWNERS = new String[] { "stevenrs11", "kamikazekiwi3", "fbt", "Jaitsu", "XCompWiz", "skyboy026", "Wylker" };
 	
 	private static final double MIN_ITEM_DAMAGE = 0.3;
 	private static final double MAX_ITEM_DAMAGE = 0.9;
@@ -30,7 +31,7 @@ public class DDLoot {
 	
 	public static final String DIMENSIONAL_DUNGEON_CHEST = "dimensionalDungeonChest";
 	public static ChestGenHooks DungeonChestInfo = null;
-	private static final int CHEST_SIZE = 5;
+	private static final int CHEST_SIZE = 6;
 	
 	private DDLoot() { }
 	
@@ -55,7 +56,7 @@ public class DDLoot {
 		addContent(true, items, Item.appleGold.itemID, 10);
 
 		addContent(properties.FabricOfRealityLootEnabled, items, mod_pocketDim.blockDimWall.blockID, 20, 16, 64);
-		addContent(properties.WorldThreadLootEnabled, items, mod_pocketDim.itemWorldThread.itemID, 80, 2, 8);
+		addContent(properties.WorldThreadLootEnabled, items, mod_pocketDim.itemWorldThread.itemID, 80, 2, 12);
 
 		// Add all the items to our dungeon chest
 		addItemsToContainer(DungeonChestInfo, items);

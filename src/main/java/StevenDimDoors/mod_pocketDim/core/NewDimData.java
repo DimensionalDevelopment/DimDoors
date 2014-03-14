@@ -8,14 +8,13 @@ import java.util.TreeMap;
 
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 import net.minecraft.world.World;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 
-@SuppressWarnings("deprecation")
 public abstract class NewDimData
 {
 	private static class InnerDimLink extends DimLink

@@ -15,7 +15,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWall;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWallPerm;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDoorGold;
@@ -29,11 +28,15 @@ import StevenDimDoors.mod_pocketDim.blocks.UnstableDoor;
 import StevenDimDoors.mod_pocketDim.blocks.WarpDoor;
 import StevenDimDoors.mod_pocketDim.commands.CommandCreateDungeonRift;
 import StevenDimDoors.mod_pocketDim.commands.CommandCreatePocket;
+import StevenDimDoors.mod_pocketDim.commands.CommandCreateRandomRift;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
 import StevenDimDoors.mod_pocketDim.commands.CommandExportDungeon;
+import StevenDimDoors.mod_pocketDim.commands.CommandListDungeons;
 import StevenDimDoors.mod_pocketDim.commands.CommandResetDungeons;
 import StevenDimDoors.mod_pocketDim.commands.CommandTeleportPlayer;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
+import StevenDimDoors.mod_pocketDim.config.DDWorldProperties;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.ChunkLoaderHelper;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
@@ -74,8 +77,9 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -134,6 +138,7 @@ public class mod_pocketDim
 	public static boolean isPlayerWearingGoogles = false;
 
 	public static DDProperties properties;
+	public static DDWorldProperties worldProperties;
 	public static CustomLimboPopulator spawner; //Added this field temporarily. Will be refactored out later.
 	public static FastRiftRegenerator fastRiftRegenerator;
 	public static GatewayGenerator gatewayGenerator;
@@ -229,8 +234,11 @@ public class mod_pocketDim
 
 		GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, "Fabric of Reality");
 
-		DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false);
-		DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false);
+		if (!DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false))
+			throw new IllegalStateException("There is a provider ID conflict between PocketProvider from Dimensional Doors and another provider type. Fix your configuration!");
+		if (!DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false))
+			throw new IllegalStateException("There is a provider ID conflict between LimboProvider from Dimensional Doors and another provider type. Fix your configuration!");
+			
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
 		
 		LanguageRegistry.addName(goldenDoor, "Golden Door");
@@ -296,28 +304,41 @@ public class mod_pocketDim
 	}
 	
 	@EventHandler
-	public void onServerStopping(FMLServerStoppingEvent event)
+	public void onServerStopped(FMLServerStoppedEvent event)
 	{
 		try
 		{
 			PocketManager.unload();
 			deathTracker.writeToFile();
 			deathTracker = null;
+			worldProperties = null;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
+	
+	@EventHandler
+	public void onServerAboutToStart(FMLServerAboutToStartEvent event)
+	{
+		final String saveRootDirectory = DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath();
+		
+		// Load the config file that's specific to this world
+		worldProperties = new DDWorldProperties(new File(saveRootDirectory + "/DimensionalDoors/DimDoorsWorld.cfg"));
+
+		// Initialize a new DeathTracker
+		deathTracker = new DeathTracker(saveRootDirectory + "/DimensionalDoors/data/deaths.txt");
+	}
 
 	@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event)
 	{
-		//TODO- load dims with forced chunks on server startup here  
-
 		// Register commands with the server
 		event.registerServerCommand( CommandResetDungeons.instance() );
 		event.registerServerCommand( CommandCreateDungeonRift.instance() );
+		event.registerServerCommand( CommandListDungeons.instance() );
+		event.registerServerCommand( CommandCreateRandomRift.instance() );
 		event.registerServerCommand( CommandDeleteAllLinks.instance() );
 		//CommandDeleteDimensionData.instance().register(event);
 		event.registerServerCommand( CommandDeleteRifts.instance() );
@@ -327,9 +348,6 @@ public class mod_pocketDim
 		event.registerServerCommand( CommandCreatePocket.instance() );
 		event.registerServerCommand( CommandTeleportPlayer.instance() );
 		
-		// Initialize a new DeathTracker
-		String deathTrackerFile = DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/deaths.txt";
-		deathTracker = new DeathTracker(deathTrackerFile);
 		
 		try
 		{
@@ -337,7 +355,8 @@ public class mod_pocketDim
 		}
 		catch (Exception e)
 		{
-			System.out.println("Loading chunkloaders failed");
+			System.err.println("Failed to load chunk loaders for Dimensional Doors. The following error occurred:");
+			System.err.println(e.toString());
 		}
 	}
 	
