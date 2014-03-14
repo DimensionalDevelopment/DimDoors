@@ -232,8 +232,11 @@ public class mod_pocketDim
 
 		GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, "Fabric of Reality");
 
-		DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false);
-		DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false);
+		if (!DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false))
+			throw new IllegalStateException("There is a provider ID conflict between PocketProvider from Dimensional Doors and another provider type. Fix your configuration!");
+		if (!DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false))
+			throw new IllegalStateException("There is a provider ID conflict between LimboProvider from Dimensional Doors and another provider type. Fix your configuration!");
+			
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
 		
 		LanguageRegistry.addName(goldenDoor, "Golden Door");
