@@ -28,9 +28,11 @@ import StevenDimDoors.mod_pocketDim.blocks.UnstableDoor;
 import StevenDimDoors.mod_pocketDim.blocks.WarpDoor;
 import StevenDimDoors.mod_pocketDim.commands.CommandCreateDungeonRift;
 import StevenDimDoors.mod_pocketDim.commands.CommandCreatePocket;
+import StevenDimDoors.mod_pocketDim.commands.CommandCreateRandomRift;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
 import StevenDimDoors.mod_pocketDim.commands.CommandExportDungeon;
+import StevenDimDoors.mod_pocketDim.commands.CommandListDungeons;
 import StevenDimDoors.mod_pocketDim.commands.CommandResetDungeons;
 import StevenDimDoors.mod_pocketDim.commands.CommandTeleportPlayer;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
@@ -335,6 +337,8 @@ public class mod_pocketDim
 		// Register commands with the server
 		event.registerServerCommand( CommandResetDungeons.instance() );
 		event.registerServerCommand( CommandCreateDungeonRift.instance() );
+		event.registerServerCommand( CommandListDungeons.instance() );
+		event.registerServerCommand( CommandCreateRandomRift.instance() );
 		event.registerServerCommand( CommandDeleteAllLinks.instance() );
 		//CommandDeleteDimensionData.instance().register(event);
 		event.registerServerCommand( CommandDeleteRifts.instance() );

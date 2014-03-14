@@ -577,11 +577,11 @@ public class DungeonHelper
 		return selection;
 	}
 
-	public Collection<String> getDungeonNames() {
-
-		//Use a HashSet to guarantee that all dungeon names will be distinct.
-		//This shouldn't be necessary if we keep proper lists without repetitions,
-		//but it's a fool-proof workaround.
+	public ArrayList<String> getDungeonNames()
+	{
+		// Use a HashSet to guarantee that all dungeon names will be distinct.
+		// This shouldn't be necessary if we keep proper lists without repetitions,
+		// but it's a fool-proof workaround.
 		HashSet<String> dungeonNames = new HashSet<String>();
 		dungeonNames.addAll( parseDungeonNames(registeredDungeons) );
 		dungeonNames.addAll( parseDungeonNames(untaggedDungeons) );
