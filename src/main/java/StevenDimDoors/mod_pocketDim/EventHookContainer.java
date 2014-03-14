@@ -218,24 +218,29 @@ public class EventHookContainer
     
     public void playMusicForDim(World world)
     {
-    	if(world.isRemote)
+    	if (world.isRemote)
     	{
     		SoundManager sndManager =  FMLClientHandler.instance().getClient().sndManager;
 
-	    	if(world.provider instanceof LimboProvider)
-	    	{
-	    		sndManager.sndSystem.stop("BgMusic");
-	    		SoundPoolEntry soundPoolEntry = sndManager.soundPoolSounds.getRandomSoundFromSoundPool(mod_pocketDim.modid+":creepy");
-	    		if(soundPoolEntry!=null) 
-	    		{
-	    			sndManager.sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.getSoundUrl(), soundPoolEntry.getSoundName(), false);
-	    			sndManager.sndSystem.play("LimboMusic");
-	    		}
-	    	}
-	    	else if(!(world.provider instanceof LimboProvider))
-	    	{
-	    		sndManager.sndSystem.stop("LimboMusic");
-	    	}
+    		// SenseiKiwi: I've added the following check as a quick fix for a reported crash.
+    		// This needs to work without a hitch or we have to stop trying to replace the background music...
+    		if (sndManager != null && sndManager.sndSystem != null)
+    		{
+		    	if (world.provider instanceof LimboProvider)
+		    	{
+		    		sndManager.sndSystem.stop("BgMusic");
+		    		SoundPoolEntry soundPoolEntry = sndManager.soundPoolSounds.getRandomSoundFromSoundPool(mod_pocketDim.modid+":creepy");
+		    		if (soundPoolEntry != null) 
+		    		{
+		    			sndManager.sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.getSoundUrl(), soundPoolEntry.getSoundName(), false);
+		    			sndManager.sndSystem.play("LimboMusic");
+		    		}
+		    	}
+		    	else if (!(world.provider instanceof LimboProvider))
+		    	{
+		    		sndManager.sndSystem.stop("LimboMusic");
+		    	}
+    		}
     	}
     }
 }
