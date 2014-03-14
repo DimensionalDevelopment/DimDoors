@@ -36,52 +36,13 @@ public class ItemRiftBlade extends ItemSword
 		super(itemID, EnumToolMaterial.EMERALD);
 
 		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
-		this.setMaxStackSize(1);
-		this.setMaxDamage(500);
-		this.hasSubtypes = false;
 		this.properties = properties;
 	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean isFull3D()
-	{
-		return true;
-	}
-
-	@Override
-	public float getStrVsBlock(ItemStack par1ItemStack, Block par2Block)
-	{
-		if (par2Block.blockID == Block.web.blockID)
-		{
-			return 15.0F;
-		}
-		else
-		{
-			Material material = par2Block.blockMaterial;
-			return material != Material.plants && material != Material.vine && material != Material.coral && material != Material.leaves && material != Material.pumpkin ? 1.0F : 1.5F;
-		}
-	}
-
-	@Override
-	public Multimap getItemAttributeModifiers()
-	{
-		Multimap multimap = super.getItemAttributeModifiers();
-		multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double)7, 0));
-		return multimap;
-	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean hasEffect(ItemStack par1ItemStack)
 	{
-		return true;
-	}
-
-	@Override
-	public boolean hitEntity(ItemStack par1ItemStack, EntityLivingBase par2EntityLiving, EntityLivingBase par3EntityLiving)
-	{
-		par1ItemStack.damageItem(1, par3EntityLiving);
 		return true;
 	}
 
@@ -147,7 +108,7 @@ public class ItemRiftBlade extends ItemSword
 		if (!world.isRemote)
 		{
 			@SuppressWarnings("unchecked")
-			List<EntityLiving> list =  world.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(player.posX-8,player.posY-8, player.posZ-8, player.posX+8,player.posY+8, player.posZ+8));
+			List<EntityLiving> list =  world.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(player.posX-10,player.posY-10, player.posZ-10, player.posX+10,player.posY+10, player.posZ+10));
 			list.remove(player);
 
 			for (EntityLiving ent : list)
@@ -223,8 +184,7 @@ public class ItemRiftBlade extends ItemSword
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
 	{
-		par3List.add("Creates temporary doors");
-		par3List.add("on rifts, rotates doors,");
+		par3List.add("Opens temporary doors on rifts");
 		par3List.add("and has a teleport attack.");
 	}
 }
