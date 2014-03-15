@@ -81,42 +81,43 @@ public class EventHookContainer
 	@ForgeSubscribe
 	public void onPlayerEvent(PlayerInteractEvent event)
 	{
-		//Handle placement of vanilla doors on rifts
-		if(!event.entity.worldObj.isRemote)
+		// Handle placing Vanilla doors on rifts
+		if (!event.entity.worldObj.isRemote)
 		{
 			World world = event.entity.worldObj;
-			ItemStack item = event.entityPlayer.inventory.getCurrentItem();
-			if(item!=null)
+			ItemStack stack = event.entityPlayer.inventory.getCurrentItem();
+			if (stack != null)
 			{
-				if(item.getItem() instanceof ItemDoor&&!(item.getItem() instanceof BaseItemDoor))
+				Item item = stack.getItem();
+				if (item instanceof ItemDoor && !(item instanceof BaseItemDoor))
 				{
 					Block doorToPlace = null; 
-					if(item.itemID == Item.doorIron.itemID)
+					if (stack.itemID == Item.doorIron.itemID)
 					{
-						doorToPlace =mod_pocketDim.dimensionalDoor;
+						doorToPlace = mod_pocketDim.dimensionalDoor;
 					}
-					else if(item.itemID == Item.doorWood.itemID)
+					else if (stack.itemID == Item.doorWood.itemID)
 					{
-						doorToPlace =mod_pocketDim.warpDoor;
+						doorToPlace = mod_pocketDim.warpDoor;
 					}
-					else if(item.itemID == mod_pocketDim.itemGoldenDoor.itemID)
+					else if (stack.itemID == mod_pocketDim.itemGoldenDoor.itemID)
 					{
-						doorToPlace =mod_pocketDim.goldenDimensionalDoor;
+						doorToPlace = mod_pocketDim.goldenDimensionalDoor;
 					}
-					if(((BaseItemDoor) mod_pocketDim.itemDimensionalDoor).tryPlacingDoor(doorToPlace, world, event.entityPlayer,item))
+					
+					// SenseiKiwi: Why do we have a condition like this? And the event isn't cancelled if we take the else portion.
+					// Comments would have been very helpful.
+					if (mod_pocketDim.itemDimensionalDoor.tryPlacingDoor(doorToPlace, world, event.entityPlayer, stack))
 					{
-						if(!event.entityPlayer.capabilities.isCreativeMode)
+						if (!event.entityPlayer.capabilities.isCreativeMode)
 						{
-							item.stackSize--;
+							stack.stackSize--;
 						}
-						if(!event.entity.worldObj.isRemote)
-						{
-							event.setCanceled(true);
-						}
+						event.setCanceled(true);
 					}
 					else
 					{
-						BaseItemDoor.tryItemUse(doorToPlace, item, event.entityPlayer, world, event.x, event.y, event.z, event.face, true, true);
+						BaseItemDoor.tryItemUse(doorToPlace, stack, event.entityPlayer, world, event.x, event.y, event.z, event.face, true, true);
 					}
 				}
 			}

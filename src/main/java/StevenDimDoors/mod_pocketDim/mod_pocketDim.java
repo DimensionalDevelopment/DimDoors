@@ -124,7 +124,7 @@ public class mod_pocketDim
 	public static Item itemWorldThread;
 
 	public static Item itemRiftBlade;
-	public static Item itemDimensionalDoor;
+	public static ItemDimensionalDoor itemDimensionalDoor;
 	public static Item itemWarpDoor;
 	public static Item itemRiftRemover;
 	public static Item itemRiftSignature;
@@ -203,7 +203,7 @@ public class mod_pocketDim
 
 		itemGoldenDimensionalDoor = (new ItemGoldDimDoor(properties.GoldenDimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemGoldDimDoor");
 		itemGoldenDoor = (new ItemGoldDoor(properties.GoldenDoorID, Material.wood)).setUnlocalizedName("itemGoldDoor");
-		itemDimensionalDoor = (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemDimDoor");
+		itemDimensionalDoor = (ItemDimensionalDoor) (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemDimDoor");
 		itemWarpDoor = (new ItemWarpDoor(properties.WarpDoorItemID, Material.wood)).setUnlocalizedName("itemDimDoorWarp");
 		itemRiftSignature = (new ItemRiftSignature(properties.RiftSignatureItemID)).setUnlocalizedName("itemLinkSignature");
 		itemRiftRemover = (new itemRiftRemover(properties.RiftRemoverItemID, Material.wood)).setUnlocalizedName("itemRiftRemover");
