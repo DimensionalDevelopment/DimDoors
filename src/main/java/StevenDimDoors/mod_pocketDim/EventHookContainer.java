@@ -40,7 +40,7 @@ public class EventHookContainer
 	}
 	
 	@ForgeSubscribe(priority = EventPriority.LOW)
-	public void onMapGen(InitMapGenEvent event)
+	public void onInitMapGen(InitMapGenEvent event)
 	{
 		// Replace the Nether fortress generator with our own only if any gateways would ever generate.
 		// This allows admins to disable our fortress overriding without disabling all gateways.
