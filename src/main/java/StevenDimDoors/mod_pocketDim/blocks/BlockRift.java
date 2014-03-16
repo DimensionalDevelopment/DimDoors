@@ -43,8 +43,8 @@ public class BlockRift extends Block implements ITileEntityProvider
 	private static final int BLOCK_SEARCH_CHANCE = 50;
 	private static final int MAX_BLOCK_DESTRUCTION_CHANCE = 100;
 	private static final int BLOCK_DESTRUCTION_CHANCE = 50;
-	private static final int WORLD_THREAD_CHANCE = 5;
-	private static final int MAX_WORLD_THREAD_CHANCE = 100;
+
+	public static final int MAX_WORLD_THREAD_DROP_CHANCE = 1000;
 	
 	private final DDProperties properties;
 	private final ArrayList<Integer> blocksImmuneToRift;
@@ -173,7 +173,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 		{
 			if (random.nextInt(MAX_BLOCK_DESTRUCTION_CHANCE) < BLOCK_DESTRUCTION_CHANCE)
 			{
-				spawnWorldThread(world.getBlockId(target.getX(), target.getY(), target.getZ()), world, x, y, z, random);
+				dropWorldThread(world.getBlockId(target.getX(), target.getY(), target.getZ()), world, x, y, z, random);
 				world.destroyBlock(target.getX(), target.getY(), target.getZ(), false);
 			}
 		}
@@ -220,9 +220,9 @@ public class BlockRift extends Block implements ITileEntityProvider
 		return targets;
 	}
 		
-	private void spawnWorldThread(int blockID, World world, int x, int y, int z, Random random)
+	private void dropWorldThread(int blockID, World world, int x, int y, int z, Random random)
 	{
-		if (blockID != 0 && (random.nextInt(MAX_WORLD_THREAD_CHANCE) < WORLD_THREAD_CHANCE)
+		if (blockID != 0 && (random.nextInt(MAX_WORLD_THREAD_DROP_CHANCE) < properties.WorldThreadDropChance)
 				&& !(Block.blocksList[blockID] instanceof BlockFlowing ||
 					Block.blocksList[blockID] instanceof BlockFluid ||
 					Block.blocksList[blockID] instanceof IFluidBlock))
@@ -258,7 +258,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 		{
 			int blockID = world.getBlockId(x, y, z);
 			if (world.setBlock(x, y, z, properties.RiftBlockID))
-				spawnWorldThread(blockID, world, x, y, z, random);
+				dropWorldThread(blockID, world, x, y, z, random);
 		}
 	}
 	
@@ -284,7 +284,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 			if (world.setBlock(x, y, z, properties.RiftBlockID))
 			{
 				dimension.createChildLink(x, y, z, parent);
-				spawnWorldThread(blockID, world, x, y, z, random);
+				dropWorldThread(blockID, world, x, y, z, random);
 				return true;
 			}
 		}

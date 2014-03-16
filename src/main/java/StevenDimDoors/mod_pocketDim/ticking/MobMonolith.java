@@ -195,8 +195,7 @@ public class MobMonolith extends EntityFlying implements IMob
 				}
 				else if (!this.worldObj.isRemote && properties.MonolithTeleportationEnabled && !entityPlayer.capabilities.isCreativeMode)
 				{
-					ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(entityPlayer.worldObj.rand);
-					Point4D destination = new Point4D((int) (coords.posX+entityPlayer.posX), coords.posY, (int) (coords.posZ+entityPlayer.posZ ), mod_pocketDim.properties.LimboDimensionID);
+					Point4D destination = LimboProvider.getLimboSkySpawn(entityPlayer, properties);
 					DDTeleporter.teleportEntity(entityPlayer, destination, false);
 
 					this.aggro = 0;

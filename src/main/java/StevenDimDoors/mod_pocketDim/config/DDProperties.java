@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.config;
 import java.io.File;
 
 import net.minecraftforge.common.Configuration;
+import StevenDimDoors.mod_pocketDim.blocks.BlockRift;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 import StevenDimDoors.mod_pocketDim.world.fortresses.DDStructureNetherBridgeStart;
 import StevenDimDoors.mod_pocketDim.world.gateways.GatewayGenerator;
@@ -107,6 +108,8 @@ public class DDProperties
 	public final int GatewayGenerationChance;
 	public final int FortressGatewayGenerationChance;
 	public final int MonolithSpawningChance;
+	public final int WorldThreadDropChance;
+	public final int LimboEntryRange;
 	public final int LimboReturnRange;
 	public final int WorldThreadRequirementLevel;
 	public final String CustomSchematicDirectory;
@@ -166,8 +169,10 @@ public class DDProperties
 				"Sets whether players keep their inventories upon dying and respawning in Limbo").getBoolean(true);
 		HardcoreLimboEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Hardcore Limbo", false,
 				"Sets whether players that die in Limbo will respawn there").getBoolean(false);
+		LimboEntryRange = config.get(Configuration.CATEGORY_GENERAL, "Limbo Entry Range", 500,
+				"Sets the farthest distance that players may be moved at random when sent to Limbo. Must be greater than or equal to 0.").getInt();
 		LimboReturnRange = config.get(Configuration.CATEGORY_GENERAL, "Limbo Return Range", 500,
-				"Sets the farthest distance that Limbo can send you upon returning to the Overworld").getInt();
+				"Sets the farthest distance that players may be moved at random when sent from Limbo to the Overworld. Must be greater than or equal to 0.").getInt();
 		DoorRenderingEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Door Rendering", true).getBoolean(true);
 
 		TNFREAKINGT_Enabled = config.get(Configuration.CATEGORY_GENERAL, "EXPLOSIONS!!???!!!?!?!!", false).getBoolean(false);
@@ -227,6 +232,10 @@ public class DDProperties
 		FortressGatewayGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Fortress Gateway Generation Chance", 33,
 				"Sets the chance (out of " + DDStructureNetherBridgeStart.MAX_GATEWAY_GENERATION_CHANCE + ") that a Rift Gateway will " +
 				"generate as part of a Nether Fortress. The default chance is 33.").getInt();
+		
+		WorldThreadDropChance = config.get(Configuration.CATEGORY_GENERAL, "World Thread Drop Chance", 50,
+				"Sets the chance (out of " + BlockRift.MAX_WORLD_THREAD_DROP_CHANCE + ") that a rift will " +
+				"drop World Thread when it destroys a block. The default chance is 50.").getInt();
 
 		LimboBiomeID = config.get(CATEGORY_BIOME, "Limbo Biome ID", 251).getInt();
 		PocketBiomeID = config.get(CATEGORY_BIOME, "Pocket Biome ID", 250).getInt();

@@ -89,7 +89,7 @@ public class EventHookContainer
 			if (stack != null)
 			{
 				Item item = stack.getItem();
-				if (item instanceof ItemDoor && !(item instanceof BaseItemDoor))
+				if (item instanceof ItemDoor)
 				{
 					Block doorToPlace = null; 
 					if (stack.itemID == Item.doorIron.itemID)
@@ -105,19 +105,22 @@ public class EventHookContainer
 						doorToPlace = mod_pocketDim.goldenDimensionalDoor;
 					}
 					
-					// SenseiKiwi: Why do we have a condition like this? And the event isn't cancelled if we take the else portion.
-					// Comments would have been very helpful.
-					if (mod_pocketDim.itemDimensionalDoor.tryPlacingDoor(doorToPlace, world, event.entityPlayer, stack))
+					if (doorToPlace != null)
 					{
-						if (!event.entityPlayer.capabilities.isCreativeMode)
+						// SenseiKiwi: Why do we have a condition like this? And the event isn't cancelled if we take the else portion.
+						// Comments would have been very helpful.
+						if (mod_pocketDim.itemDimensionalDoor.tryPlacingDoor(doorToPlace, world, event.entityPlayer, stack))
 						{
-							stack.stackSize--;
+							if (!event.entityPlayer.capabilities.isCreativeMode)
+							{
+								stack.stackSize--;
+							}
+							event.setCanceled(true);
 						}
-						event.setCanceled(true);
-					}
-					else
-					{
-						BaseItemDoor.tryItemUse(doorToPlace, stack, event.entityPlayer, world, event.x, event.y, event.z, event.face, true, true);
+						else
+						{
+							BaseItemDoor.tryItemUse(doorToPlace, stack, event.entityPlayer, world, event.x, event.y, event.z, event.face, true, true);
+						}
 					}
 				}
 			}
@@ -198,8 +201,7 @@ public class EventHookContainer
     	player.extinguish();
 		player.clearActivePotions();
 		player.setHealth(player.getMaxHealth());
-		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(player.worldObj.rand);
-		Point4D destination = new Point4D((int) (coords.posX + player.posX), coords.posY, (int) (coords.posZ + player.posZ ), mod_pocketDim.properties.LimboDimensionID);
+		Point4D destination = LimboProvider.getLimboSkySpawn(player, properties);
 		DDTeleporter.teleportEntity(player, destination, false);
     }
 
