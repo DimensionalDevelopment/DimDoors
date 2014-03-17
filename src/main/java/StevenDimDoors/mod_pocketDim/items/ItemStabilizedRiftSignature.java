@@ -119,8 +119,8 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		else
 		{
 			par3List.add("First click stores a location,");
-			par3List.add("second click creates two rifts");
-			par3List.add("that link the locations together.");
+			par3List.add("other clicks create rifts linking");
+			par3List.add("the first and last locations together.");
 		}
 	}
 }
