@@ -16,6 +16,8 @@ DistortDoorCoordinates = true
 ## Prevent this pack from being selected for transitioning in once we've transitioned out
 AllowPackChangeIn = false
 
+DuplicateSearchLevels = 1
+
 Rules:
 
 Exit -> DeadEnd Exit

@@ -615,7 +615,7 @@ public class DungeonHelper
 		{
 			throw new IllegalArgumentException("dimension cannot be null.");
 		}
-		if(dimension.parent()==null)
+		if (dimension.parent() == null)
 		{
 			return new ArrayList<DungeonData>();
 		}
@@ -663,5 +663,12 @@ public class DungeonHelper
 			}
 		}
 		return dungeons;
+	}
+	
+	public static NewDimData getAncestor(NewDimData dimension, int levels)
+	{
+		// Find the ancestor of a dimension located a specified number of levels up.
+		// If such an ancestor does not exist, return the root dimension.
+		return null;
 	}
 }
