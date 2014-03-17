@@ -362,15 +362,15 @@ public class Schematic {
 		return filter.apply(this, this.blocks, this.metadata);
 	}
 	
-	public void copyToWorld(World world, int x, int y, int z, boolean notifyClients)
+	public void copyToWorld(World world, int x, int y, int z, boolean notifyClients, boolean ignoreAir)
 	{
 		if (notifyClients)
 		{
-			copyToWorld(world, x, y, z, new WorldBlockSetter(false, true));
+			copyToWorld(world, x, y, z, new WorldBlockSetter(false, true, ignoreAir));
 		}
 		else
 		{
-			copyToWorld(world, x, y, z, new ChunkBlockSetter());
+			copyToWorld(world, x, y, z, new ChunkBlockSetter(ignoreAir));
 		}
 	}
 	

@@ -184,11 +184,11 @@ public class DungeonSchematic extends Schematic {
 	{
 		if (notifyClients)
 		{
-			copyToWorld(world, pocketCenter, targetOrientation, entryLink, random, properties, new WorldBlockSetter(false, true));
+			copyToWorld(world, pocketCenter, targetOrientation, entryLink, random, properties, new WorldBlockSetter(false, true, false));
 		}
 		else
 		{
-			copyToWorld(world, pocketCenter, targetOrientation, entryLink, random, properties, new ChunkBlockSetter());
+			copyToWorld(world, pocketCenter, targetOrientation, entryLink, random, properties, new ChunkBlockSetter(false));
 		}
 	}
 	

@@ -25,7 +25,7 @@ public class GatewayGenerator implements IWorldGenerator
 	private static final int CLUSTER_GROWTH_CHANCE = 80;
 	private static final int MAX_CLUSTER_GROWTH_CHANCE = 100;
 	private static final int MIN_RIFT_Y = 4;
-	private static final int MAX_RIFT_Y = 250;
+	private static final int MAX_RIFT_Y = 240;
 	private static final int CHUNK_LENGTH = 16;
 	private static final int GATEWAY_RADIUS = 4;
 	private static final int MAX_GATEWAY_GENERATION_ATTEMPTS = 10;
@@ -50,7 +50,6 @@ public class GatewayGenerator implements IWorldGenerator
 		defaultGateway = new GatewayTwoPillars(properties);
 		
 		// Add gateways here
-		gateways.add(defaultGateway);
 		gateways.add(new GatewaySandstonePillars(properties));
 		gateways.add(new GatewayLimbo(properties));
 	}
@@ -135,26 +134,24 @@ public class GatewayGenerator implements IWorldGenerator
 				valid = checkGatewayLocation(world, x, y, z);
 			}
 
-			//Build the gateway if we found a valid location
+			// Build the gateway if we found a valid location
 			if (valid)
 			{
-				//TODO I feel like this is slow and should be optimized. We are linear time with total # of generation restrictions
-				//Create an array and copy valid gateways into it
 				ArrayList<BaseGateway> validGateways = new ArrayList<BaseGateway>();
-				for(BaseGateway gateway:gateways)
+				for (BaseGateway gateway : gateways)
 				{
-					if(gateway.isLocationValid(world, x, y, z, world.getBiomeGenForCoords(x, z)))
+					if (gateway.isLocationValid(world, x, y, z))
 					{
 						validGateways.add(gateway);
 					}
 				}
-				//Add default gateway if we where unable to find a suitable gateway
-				if(validGateways.isEmpty())
+				// Add the default gateway if the rest were rejected
+				if (validGateways.isEmpty())
 				{
-					validGateways.add(this.defaultGateway);
+					validGateways.add(defaultGateway);
 				}
-				//randomly select a gateway from the pool of viable gateways
-				validGateways.get(random.nextInt(validGateways.size())).generate(world, x, y, z);
+				// Randomly select a gateway from the pool of viable gateways
+				validGateways.get(random.nextInt(validGateways.size())).generate(world, x, y - 1, z);
 			}
 		}
 	}

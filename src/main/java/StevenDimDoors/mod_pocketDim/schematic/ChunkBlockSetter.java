@@ -7,11 +7,16 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 
 public class ChunkBlockSetter implements IBlockSetter
 {
-	public ChunkBlockSetter() { }
+	private boolean ignoreAir;
+	
+	public ChunkBlockSetter(boolean ignoreAir)
+	{
+		this.ignoreAir = ignoreAir;
+	}
 	
 	public void setBlock(World world, int x, int y, int z, int blockID, int metadata)
 	{
-		if (blockID != 0 && Block.blocksList[blockID] == null)
+		if ((blockID == 0 && ignoreAir) || (blockID != 0 && Block.blocksList[blockID] == null))
 		{
 			return;
 		}
