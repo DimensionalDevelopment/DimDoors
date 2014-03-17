@@ -231,10 +231,13 @@ public class DungeonHelper
 		return dungeonPackMapping.get(name.toUpperCase());
 	}
 	
-	private DungeonPack getDimDungeonPack(NewDimData data)
+	private DungeonPack getDimDungeonPack(NewDimData dimension)
 	{
+		// TODO: Drop support for dim-based packs and switch to embedding the pack
+		// in the link data itself. That would solve the dungeon pre-generation issue.
+		
 		DungeonPack pack;
-		DungeonData dungeon = data.dungeon();
+		DungeonData dungeon = dimension.dungeon();
 		if (dungeon != null)
 		{
 			pack = dungeon.dungeonType().Owner;
@@ -247,7 +250,7 @@ public class DungeonHelper
 		}
 		else
 		{
-			if (data.id() == NETHER_DIMENSION_ID)
+			if (dimension.id() == NETHER_DIMENSION_ID)
 			{
 				pack = NetherPack;
 			}
@@ -500,9 +503,9 @@ public class DungeonHelper
 		}
 	}
 
-	public DungeonData selectDungeon(NewDimData dimension, Random random)
+	public DungeonData selectNextDungeon(NewDimData parent, Random random)
 	{
-		DungeonPack pack = getDimDungeonPack(dimension.parent());
+		DungeonPack pack = getDimDungeonPack(parent);
 		DungeonData selection;
 		DungeonPackConfig config;
 		DungeonPack selectedPack;
@@ -512,30 +515,30 @@ public class DungeonHelper
 			config = pack.getConfig();
 			selectedPack = pack;
 			
-			//Are we allowed to switch to another dungeon pack?
+			// Are we allowed to switch to another dungeon pack?
 			if (config.allowPackChangeOut())
 			{
-				//Calculate the chance of switching to a different pack type
+				// Calculate the chance of switching to a different pack type
 				int packSwitchChance;
-				if (dimension.depth() == 1)
+				if (parent.isPocketDimension())
 				{
-					packSwitchChance = START_PACK_SWITCH_CHANCE;
+					packSwitchChance = MIN_PACK_SWITCH_CHANCE + parent.packDepth() * PACK_SWITCH_CHANCE_PER_LEVEL;
 				}
 				else
 				{
-					packSwitchChance = MIN_PACK_SWITCH_CHANCE + dimension.parent().packDepth() * PACK_SWITCH_CHANCE_PER_LEVEL;
+					packSwitchChance = START_PACK_SWITCH_CHANCE;					
 				}
 
-				//Decide randomly whether to switch packs or not
+				// Decide randomly whether to switch packs or not
 				if (random.nextInt(MAX_PACK_SWITCH_CHANCE) < packSwitchChance)
 				{
-					//Find another pack
+					// Find another pack
 					selectedPack = getRandomDungeonPack(pack, random);
 				}
 			}
 			
 			//Pick the next dungeon
-			selection = selectedPack.getNextDungeon(dimension, random);
+			selection = selectedPack.getNextDungeon(parent, random);
 		}
 		catch (Exception e)
 		{
@@ -609,34 +612,42 @@ public class DungeonHelper
 		return names;
 	}
 	
-	public static ArrayList<DungeonData> getDungeonChainHistory(NewDimData dimension, DungeonPack pack, int maxSize)
+	/**
+	 * Lists all of the dungeons found by iterating through a dimension's ancestors. The search stops when a non-dungeon dimension is found or when the pack of a dungeon differs from the specified pack.
+	 * @param start - the first dimension to include in the history
+	 * @param pack - the pack to which any dungeons must belong in order to be listed
+	 * @param maxSize - the maximum number of dungeons that can be listed
+	 * @return a list of dungeons used in a given chain
+	 */
+	public static ArrayList<DungeonData> getDungeonChainHistory(NewDimData start, DungeonPack pack, int maxSize)
 	{
-		if (dimension == null)
+		if (start == null)
 		{
 			throw new IllegalArgumentException("dimension cannot be null.");
 		}
-		if (dimension.parent() == null)
-		{
-			return new ArrayList<DungeonData>();
-		}
 		int count = 0;
-		NewDimData tail = dimension.parent();
-		DungeonData dungeon = tail.dungeon();
+		NewDimData current = start;
+		DungeonData dungeon = current.dungeon();
 		ArrayList<DungeonData> history = new ArrayList<DungeonData>();
 		
 		while (count < maxSize && dungeon != null && dungeon.dungeonType().Owner == pack)
 		{
 			history.add(dungeon);
-			tail = tail.parent();
-			dungeon = tail.dungeon();
+			current = current.parent();
+			dungeon = current.dungeon();
 			count++;
 		}
 		return history;
 	}
 	
-	public static ArrayList<DungeonData> getFlatDungeonTree(NewDimData dimension, int maxSize)
+	/**
+	 * Performs a breadth-first listing of all dungeons rooted at a specified dimension. Only dungeons from the same pack as the root will be included.
+	 * @param root - the pocket dimension that serves as the root for the dungeon tree
+	 * @param maxSize - the maximum number of dungeons that can be listed
+	 * @return a list of the dungeons used in a given dungeon tree
+	 */
+	public static ArrayList<DungeonData> listDungeonsInTree(NewDimData root, int maxSize)
 	{
-		NewDimData root = dimension;
 		ArrayList<DungeonData> dungeons = new ArrayList<DungeonData>();
 		Queue<NewDimData> pendingDimensions = new LinkedList<NewDimData>();
 		

@@ -123,7 +123,7 @@ public class DungeonPack
 		}
 	}
 
-	public DungeonData getNextDungeon(NewDimData dimension, Random random)
+	public DungeonData getNextDungeon(NewDimData parent, Random random)
 	{
 		if (allDungeons.isEmpty())
 		{
@@ -136,13 +136,13 @@ public class DungeonPack
 		//for dungeon packs that can extend arbitrarily deep. We should probably set a reasonable limit anyway.
 		
 		int maxSearchLength = config.allowDuplicatesInChain() ? maxRuleLength : MAX_HISTORY_LENGTH;
-		ArrayList<DungeonData> history = DungeonHelper.getDungeonChainHistory(dimension, this, maxSearchLength);
+		ArrayList<DungeonData> history = DungeonHelper.getDungeonChainHistory(parent, this, maxSearchLength);
 
 		ArrayList<DungeonData> subtreeHistory;
 		/*if (config.getDuplicateSearchLevels() > 0)
 		{
 			subtreeHistory = DungeonHelper.getFlatDungeonTree(
-					DungeonHelper.getAncestor(dimension, config.getDuplicateSearchLevels()),
+					DungeonHelper.getAncestor(parent, config.getDuplicateSearchLevels()),
 					MAX_SUBTREE_LIST_SIZE);
 		}
 		else
