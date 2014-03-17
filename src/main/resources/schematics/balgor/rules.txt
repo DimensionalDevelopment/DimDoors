@@ -12,7 +12,7 @@ AllowPackChangeIn = true
 
 Rules:
 
-? ? ? -> 
+? ? ? -> ?
 
 ? ? -> Maze#20 ComplexHall#40 Trap#40
 

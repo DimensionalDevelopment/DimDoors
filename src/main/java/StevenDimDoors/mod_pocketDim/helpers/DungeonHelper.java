@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,7 +32,6 @@ import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfigReader;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
-import StevenDimDoors.mod_pocketDim.util.ConfigurationProcessingException;
 import StevenDimDoors.mod_pocketDim.util.FileFilters;
 import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
@@ -48,10 +47,7 @@ public class DungeonHelper
 	
 	private static final String DEFAULT_ERROR_SCHEMATIC_PATH = "/schematics/core/somethingBroke.schematic";
 	private static final String DUNGEON_CREATION_GUIDE_SOURCE_PATH = "/mods/DimDoors/text/How_to_add_dungeons.txt";
-	private static final String RUINS_PACK_PATH = "/schematics/ruins";
-	private static final String BUNDLED_RUINS_LIST_PATH = "/schematics/ruins.txt";
-	private static final String NETHER_PACK_PATH = "/schematics/nether";
-	private static final String BUNDLED_NETHER_LIST_PATH = "/schematics/nether.txt";
+	private static final String BUNDLED_PACK_BASE_PATH = "/schematics/";
 	private static final String STANDARD_CONFIG_FILE_NAME = "rules.txt";
 	
 	private static final int NETHER_DIMENSION_ID = -1;
@@ -158,7 +154,7 @@ public class DungeonHelper
 		return null;
 	}
 	
-	private void registerDungeonPack(String directory, Iterable<String> schematics, boolean isInternal, boolean verbose, DungeonPackConfigReader reader)
+	private DungeonPack registerDungeonPack(String directory, Iterable<String> schematics, boolean isInternal, boolean verbose, DungeonPackConfigReader reader)
 	{
 		//First determine the pack's name and validate it
 		File packDirectory = new File(directory);
@@ -187,7 +183,7 @@ public class DungeonHelper
 			if (config == null)
 			{
 				System.err.println("Could not load config file: " + configPath);
-				return;
+				return null;
 			}
 			
 			//Register the pack
@@ -208,6 +204,7 @@ public class DungeonHelper
 		{
 			registerDungeon(schematicPath, pack, isInternal, verbose);
 		}
+		return pack;
 	}
 	
 	public List<DungeonData> getRegisteredDungeons()
@@ -235,6 +232,7 @@ public class DungeonHelper
 	{
 		// TODO: Drop support for dim-based packs and switch to embedding the pack
 		// in the link data itself. That would solve the dungeon pre-generation issue.
+		// Gateways should dictate which packs are being used, not the dimensions.
 		
 		DungeonPack pack;
 		DungeonData dungeon = dimension.dungeon();
@@ -436,32 +434,31 @@ public class DungeonHelper
 		defaultError = new DungeonData(DEFAULT_ERROR_SCHEMATIC_PATH, true, DungeonType.UNKNOWN_TYPE, true, DEFAULT_DUNGEON_WEIGHT);
 		
 		//Open the list of dungeons packaged with our mod and register their schematics
-		registerBundledPack(BUNDLED_RUINS_LIST_PATH, RUINS_PACK_PATH, "Ruins", reader);
-		RuinsPack = getDungeonPack("Ruins");
-		
-		registerBundledPack(BUNDLED_NETHER_LIST_PATH, NETHER_PACK_PATH, "Nether", reader);
-		NetherPack = getDungeonPack("Nether");
+		RuinsPack = registerBundledPack("Ruins", reader);
+		NetherPack = registerBundledPack("Nether", reader);
+		registerBundledPack("Balgor", reader);
 		
 		System.out.println("Finished registering bundled dungeon packs");
 	}
 	
-	private void registerBundledPack(String listPath, String packPath, String name, DungeonPackConfigReader reader)
+	private DungeonPack registerBundledPack(String name, DungeonPackConfigReader reader)
 	{
 		System.out.println("Registering bundled dungeon pack: " + name);
 		
+		String packPath = BUNDLED_PACK_BASE_PATH + name.toLowerCase();
+		String listPath = packPath + ".txt";
 		InputStream listStream = this.getClass().getResourceAsStream(listPath);
-		// chance of leak?
+		
 		if (listStream == null)
 		{
-			System.err.println("Unable to open list of bundled dungeon schematics for " + name);
-			return;
+			throw new IllegalStateException("Failed to open the list of bundled dungeon schematics for " + name);
 		}
 		
+		ArrayList<String> schematics = new ArrayList<String>();
 		try
 		{
-			//Read the list of schematics that come with a bundled pack
+			// Read the list of schematics that come with a bundled pack
 			BufferedReader listReader = new BufferedReader(new InputStreamReader(listStream));
-			ArrayList<String> schematics = new ArrayList<String>();
 			String schematicPath = listReader.readLine();
 			while (schematicPath != null)
 			{
@@ -473,15 +470,19 @@ public class DungeonHelper
 				schematicPath = listReader.readLine();
 			}
 			listReader.close();
-			
-			//Register the pack
-			registerDungeonPack(packPath, schematics, true, false, reader);
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
-			System.err.println("An exception occurred while reading the list of bundled dungeon schematics for " + name);
-			e.printStackTrace();
+			throw new RuntimeException("An unexpected error occured while trying to read the list of schematics for the " + name + " bundled dungeon pack. This would inevitably cause Dimensional Doors to crash during runtime.", e);
 		}
+		
+		// Register the pack
+		DungeonPack pack = registerDungeonPack(packPath, schematics, true, false, reader);
+		if (pack == null)
+		{
+			throw new RuntimeException("Failed to load the " + name + " bundled dungeon pack. This would inevitably cause Dimensional Doors to crash during runtime.");
+		}
+		return pack;
 	}
 
 	public boolean exportDungeon(World world, int centerX, int centerY, int centerZ, String exportPath)

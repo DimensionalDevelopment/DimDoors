@@ -104,8 +104,13 @@ public class PocketBuilder
 				return false;
 			}
 
+			DungeonSchematic schematic = loadAndValidateDungeon(dimension.dungeon(), properties);
+			if (schematic == null)
+			{
+				return false;
+			}
 			Point3D destination = new Point3D(incomingLink.destination());
-			loadAndValidateDungeon(dimension.dungeon(), properties).copyToWorld(world, destination, originLink.orientation(), incomingLink, random, properties, false);
+			schematic.copyToWorld(world, destination, originLink.orientation(), incomingLink, random, properties, false);
 			dimension.setFilled(true);
 			return true;
 		}
@@ -167,6 +172,10 @@ public class PocketBuilder
 		// Try to load up the schematic
 		DungeonSchematic schematic = null;
 		schematic = loadAndValidateDungeon(dungeon, properties);
+		if (schematic == null)
+		{
+			return false;
+		}
 		
 		// Register a new dimension
 		NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
