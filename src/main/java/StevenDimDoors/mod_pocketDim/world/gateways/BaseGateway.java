@@ -73,7 +73,15 @@ public abstract class BaseGateway
 		this.generateRandomBits(world, x, y, z);
 		
 		DimLink link = PocketManager.getDimensionData(world).createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
-		PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, this.getStartingDungeon(PocketManager.getDimensionData(world),world.rand));
+		DungeonData dungeon = this.getStartingDungeon(PocketManager.getDimensionData(world), world.rand);
+		if (dungeon != null)
+		{
+			PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, dungeon);
+		}
+		else
+		{
+			System.err.println("Warning: Dimensional Doors was unable to assign a dungeon to a Rift Gateway.");
+		}
 
 		return true;
 	}
@@ -107,7 +115,7 @@ public abstract class BaseGateway
 	 */
 	public DungeonData getStartingDungeon(NewDimData dimension, Random random)
 	{
-		return getStartingPack().getNextDungeon(dimension,random);
+		return getStartingPack().getNextDungeon(dimension, random);
 	}
 	
 	/**

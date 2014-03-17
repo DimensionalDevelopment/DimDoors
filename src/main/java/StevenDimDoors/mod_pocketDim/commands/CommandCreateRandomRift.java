@@ -69,15 +69,24 @@ public class CommandCreateRandomRift extends DDCommandBase
 			{
 				result = getRandomDungeonByPartialName(command[0], dungeonHelper.getUntaggedDungeons());
 			}
-			//Check if we found any matches
+			
+			// Check if we found any matches
 			if (result != null)
 			{
-				//Create a rift to our selected dungeon and notify the player
 				dimension = PocketManager.getDimensionData(sender.worldObj);
 				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
-				PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result);
-				sender.worldObj.setBlock(x, y + 1, z, mod_pocketDim.blockRift.blockID, 0, 3);
-				sendChat(sender, "Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
+				if (PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result))
+				{
+					// Create a rift to our selected dungeon and notify the player
+					sender.worldObj.setBlock(x, y + 1, z, mod_pocketDim.blockRift.blockID, 0, 3);
+					sendChat(sender, "Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
+				}
+				else
+				{
+					// Dungeon generation failed somehow. Notify the user and remove the useless link.
+					dimension.deleteLink(link);
+					sendChat(sender, "Dungeon generation failed unexpectedly!");
+				}
 			}
 			else
 			{
