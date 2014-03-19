@@ -1,3 +1,4 @@
+/schematics/ruins/ComplexHall_Balgor0-CrumbledHall_Closed_75.schematic
 /schematics/ruins/complexHall_buggyTopEntry1_open_100.schematic
 /schematics/ruins/ComplexHall_Cere-PuzzleWall_Open_75.schematic
 /schematics/ruins/ComplexHall_Cere-TransferTunnel_Closed_100.schematic
@@ -16,6 +17,7 @@
 /schematics/ruins/complexHall_smallRotundaWithExit_closed_100.schematic
 /schematics/ruins/complexHall_tntPuzzleTrap_closed_50.schematic
 /schematics/ruins/deadEnd_azersDungeonO_closed_100.schematic
+/schematics/ruins/DeadEnd_Balgor0-ArrowHall_Closed_75.schematic
 /schematics/ruins/deadEnd_brokenPillarsO_open_100.schematic
 /schematics/ruins/DeadEnd_Cere-FloatingAltar_Open_75.schematic
 /schematics/ruins/deadEnd_diamondTowerTemple1_open_100.schematic
@@ -37,6 +39,7 @@
 /schematics/ruins/exit_smallExitPrison_open_100.schematic
 /schematics/ruins/hub_4WayBasicHall_closed_200.schematic
 /schematics/ruins/hub_4WayHallExit_closed_200.schematic
+/schematics/ruins/Hub_Balgor0-OmniMaze_Open_50.schematic
 /schematics/ruins/Hub_Cere-GreatHall_Open_40.schematic
 /schematics/ruins/hub_doorTotemRuins_open_100.schematic
 /schematics/ruins/hub_fortRuins_open_100.schematic
