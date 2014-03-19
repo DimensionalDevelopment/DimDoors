@@ -62,7 +62,7 @@ public class LimboProvider extends WorldProvider
 	@Override
 	public boolean canRespawnHere()
 	{
-		return properties.HardcoreLimboEnabled && properties.LimboEnabled;
+		return properties.HardcoreLimboEnabled;
 	}
 
 	@Override
