@@ -138,17 +138,22 @@ public class DungeonPack
 		int maxSearchLength = config.allowDuplicatesInChain() ? maxRuleLength : MAX_HISTORY_LENGTH;
 		ArrayList<DungeonData> history = DungeonHelper.getDungeonChainHistory(parent, this, maxSearchLength);
 
-		ArrayList<DungeonData> subtreeHistory;
-		/*if (config.getDuplicateSearchLevels() > 0)
+		ArrayList<DungeonData> subtreeHistory = null;
+		if (config.getDuplicateSearchLevels() > 0)
 		{
-			subtreeHistory = DungeonHelper.getFlatDungeonTree(
-					DungeonHelper.getAncestor(parent, config.getDuplicateSearchLevels()),
-					MAX_SUBTREE_LIST_SIZE);
+			// Search over (DuplicateSearchLevels - 1); zero means don't search at all,
+			// one means search only up to the level of the immediate parent, and so on.
+			// Since we start with the parent, we need to drop the max levels by one.
+			NewDimData ancestor = DungeonHelper.getAncestor(parent, this, config.getDuplicateSearchLevels() - 1);
+			if (ancestor != null)
+			{
+				subtreeHistory = DungeonHelper.listDungeonsInTree(ancestor, this, MAX_SUBTREE_LIST_SIZE);
+			}
 		}
-		else
+		if (subtreeHistory == null)
 		{
 			subtreeHistory = new ArrayList<DungeonData>();
-		}*/
+		}
 		subtreeHistory = new ArrayList<DungeonData>();
 		
 		return getNextDungeon(history, subtreeHistory, random);

@@ -641,45 +641,66 @@ public class DungeonHelper
 	}
 	
 	/**
-	 * Performs a breadth-first listing of all dungeons rooted at a specified dimension. Only dungeons from the same pack as the root will be included.
+	 * Performs a breadth-first listing of all dungeons rooted at a specified dimension. Only dungeons from the specified pack will be included.
 	 * @param root - the pocket dimension that serves as the root for the dungeon tree
+	 * @param pack - the pack to which any dungeons must belong in order to be listed
 	 * @param maxSize - the maximum number of dungeons that can be listed
 	 * @return a list of the dungeons used in a given dungeon tree
 	 */
-	public static ArrayList<DungeonData> listDungeonsInTree(NewDimData root, int maxSize)
+	public static ArrayList<DungeonData> listDungeonsInTree(NewDimData root, DungeonPack pack, int maxSize)
 	{
+		int count = 0;
+		NewDimData current;
+		DungeonData dungeon;
 		ArrayList<DungeonData> dungeons = new ArrayList<DungeonData>();
-		Queue<NewDimData> pendingDimensions = new LinkedList<NewDimData>();
-		
-		if (root.dungeon() == null)
-		{
-			return dungeons;
-		}
+		Queue<NewDimData> pendingDimensions = new LinkedList<NewDimData>();	
 		pendingDimensions.add(root);
 		
+		// Perform a breadth-first search through the dungeon graph
 		while (dungeons.size() < maxSize && !pendingDimensions.isEmpty())
 		{
-			NewDimData current = pendingDimensions.remove();
-			for (NewDimData child : current.children())
+			current = pendingDimensions.remove();
+			dungeon = current.dungeon();
+			// Check that this is a dungeon, and if so, that it belongs to the pack that we want
+			if (dungeon != null && dungeon.dungeonType().Owner == pack)
 			{
-				if (child.dungeon() != null)
+				dungeons.add(dungeon);
+				// Add all child dungeons for checking later
+				for (NewDimData child : current.children())
 				{
-					dungeons.add(child.dungeon());
 					pendingDimensions.add(child);
-				}
-				if (dungeons.size() == maxSize)
-				{
-					break;
 				}
 			}
 		}
 		return dungeons;
 	}
 	
-	public static NewDimData getAncestor(NewDimData dimension, int levels)
+	/**
+	 * Gets the highest ancestor of a dimension with a dungeon that belongs to the specified pack.
+	 * @param dimension - the first dimension to include in the search
+	 * @param pack - the pack to which the ancestors must belong
+	 * @param maxLevels - the maximum number of ancestors to check
+	 * @return the highest ancestor that belongs to the specified pack within the specified levels, or <code>null</code> if none exists
+	 */
+	public static NewDimData getAncestor(NewDimData dimension, DungeonPack pack, int maxLevels)
 	{
 		// Find the ancestor of a dimension located a specified number of levels up.
-		// If such an ancestor does not exist, return the root dimension.
-		return null;
+		NewDimData parent = dimension;
+		NewDimData current = null;
+		
+		// We solve this inductively. We begin with null as the first valid ancestor,
+		// like a kind of virtual child dimension. Then "current" references the
+		// highest valid ancestor found so far and "parent" references its parent
+		for (int levels = 0; levels <= maxLevels; levels++)
+		{
+			if (parent == null || parent.dungeon() == null ||
+				parent.dungeon().dungeonType().Owner != pack)
+			{
+				break;
+			}
+			current = parent;
+			parent = parent.parent();
+		}
+		return current;
 	}
 }
