@@ -211,8 +211,8 @@ public class DDProperties
 				"Perma Fabric Block ID", 220, "Blocks used for enclosing pocket dimensions").getInt();
 
 		LimboDimensionID = config.get(CATEGORY_DIMENSION, "Limbo Dimension ID", -23).getInt();
-		PocketProviderID = config.get(CATEGORY_PROVIDER, "Pocket Provider ID", 24).getInt();
-		LimboProviderID = config.get(CATEGORY_PROVIDER, "Limbo Provider ID", 13).getInt();
+		PocketProviderID = config.get(CATEGORY_PROVIDER, "Pocket Provider ID", 124).getInt();
+		LimboProviderID = config.get(CATEGORY_PROVIDER, "Limbo Provider ID", 113).getInt();
 		
 		MonolithTeleportationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Monolith Teleportation", true,
 				"Sets whether Monoliths can teleport players").getBoolean(true);
@@ -237,8 +237,8 @@ public class DDProperties
 				"Sets the chance (out of " + BlockRift.MAX_WORLD_THREAD_DROP_CHANCE + ") that a rift will " +
 				"drop World Thread when it destroys a block. The default chance is 50.").getInt();
 
-		LimboBiomeID = config.get(CATEGORY_BIOME, "Limbo Biome ID", 251).getInt();
-		PocketBiomeID = config.get(CATEGORY_BIOME, "Pocket Biome ID", 250).getInt();
+		LimboBiomeID = config.get(CATEGORY_BIOME, "Limbo Biome ID", 148).getInt();
+		PocketBiomeID = config.get(CATEGORY_BIOME, "Pocket Biome ID", 149).getInt();
 
 		config.save();
 		
