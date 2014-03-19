@@ -436,7 +436,6 @@ public class DungeonHelper
 		//Open the list of dungeons packaged with our mod and register their schematics
 		RuinsPack = registerBundledPack("Ruins", reader);
 		NetherPack = registerBundledPack("Nether", reader);
-		registerBundledPack("Balgor", reader);
 		
 		System.out.println("Finished registering bundled dungeon packs");
 	}
