@@ -73,7 +73,7 @@
 /schematics/ruins/trap_fakeTNTTrap_closed_100.schematic
 /schematics/ruins/trap_hallwayPitFallTrap_closed_200.schematic
 /schematics/ruins/trap_lavaPyramid_open_100.schematic
-/schematics/ruins/trap_pistonFallRuins_open_100.schematic
+/schematics/ruins/trap_pistonFallRuins_open_75.schematic
 /schematics/ruins/trap_pistonFloorHall_closed_150.schematic
 /schematics/ruins/trap_pistonFloorPlatform2_closed_100.schematic
 /schematics/ruins/trap_pistonFloorPlatform_closed_100.schematic
