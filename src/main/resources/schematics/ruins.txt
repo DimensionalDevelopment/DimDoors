@@ -35,8 +35,10 @@
 /schematics/ruins/deadEnd_tntTrapO_open_100.schematic
 /schematics/ruins/exit_exitCube_open_100.schematic
 /schematics/ruins/exit_lockingExitHall_closed_100.schematic
+/schematics/ruins/Exit_SK-HotSuspense_Open_75.schematic
 /schematics/ruins/Exit_SK-LockingExitTrap_Closed_50.schematic
 /schematics/ruins/exit_smallExitPrison_open_100.schematic
+/schematics/ruins/Exit_XombyCraft-RopeBridge_Open_100.schematic
 /schematics/ruins/hub_4WayBasicHall_closed_200.schematic
 /schematics/ruins/hub_4WayHallExit_closed_200.schematic
 /schematics/ruins/Hub_Balgor0-OmniMaze_Open_50.schematic
