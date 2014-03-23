@@ -46,6 +46,7 @@ public class DDTeleporter
 	private static final int MAX_ROOT_SHIFT_CHANCE = 100;
 	private static final int START_ROOT_SHIFT_CHANCE = 0;
 	private static final int ROOT_SHIFT_CHANCE_PER_LEVEL = 5;
+	private static final String SPIRIT_WORLD_NAME = "Spirit World";
 	
 	public static int cooldown = 0;
 	
@@ -644,9 +645,7 @@ public class DDTeleporter
 			for (int attempts = 0; attempts < 10; attempts++)
 			{
 				NewDimData selection = roots.get( random.nextInt(roots.size()) );
-				if (selection.id() != END_DIMENSION_ID &&
-					selection.id() != properties.LimboDimensionID &&
-					selection != current.root())
+				if (selection != current.root() && isValidForDungeonExit(selection, properties))
 				{
 					return generateSafeExit(selection, link, properties);
 				}
@@ -655,6 +654,19 @@ public class DDTeleporter
 		
 		// Yes, this could lead you back into Limbo. That's intentional.
 		return generateSafeExit(current.root(), link, properties);
+	}
+	
+	private static boolean isValidForDungeonExit(NewDimData destination, DDProperties properties)
+	{
+		// Prevent exits to The End and Limbo
+		if (destination.id() == END_DIMENSION_ID || destination.id() == properties.LimboDimensionID)
+		{
+			return false;
+		}
+		// Prevent exits to Witchery's Spirit World; we need to load the dimension to retrieve its name.
+		// This is okay because the dimension would have to be loaded subsequently by generateSafeExit().
+		World world = PocketManager.loadDimension(destination.id());
+		return (world != null && !SPIRIT_WORLD_NAME.equals(world.provider.getDimensionName()));
 	}
 	
 	private static boolean generateSafeExit(NewDimData destinationDim, DimLink link, DDProperties properties)

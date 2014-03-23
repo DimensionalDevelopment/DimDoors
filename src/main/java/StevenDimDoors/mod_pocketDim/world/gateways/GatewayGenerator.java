@@ -32,6 +32,7 @@ public class GatewayGenerator implements IWorldGenerator
 	private static final int OVERWORLD_DIMENSION_ID = 0;
 	private static final int NETHER_DIMENSION_ID = -1;
 	private static final int END_DIMENSION_ID = 1;
+	private static final String SPIRIT_WORLD_NAME = "Spirit World";
 	
 	private ArrayList<BaseGateway> gateways;
 	private BaseGateway defaultGateway;
@@ -58,12 +59,14 @@ public class GatewayGenerator implements IWorldGenerator
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
 		// Don't generate rifts or gateways if the current world is a pocket dimension or the world is remote.
-		// Also don't generate anything in the Nether or The End.
+		// Also don't generate anything in the Nether, The End, or in Witchery's Spirit World.
+		// We only match against Spirit World using hashing to speed up the process a little (hopefully).
 		int dimensionID = world.provider.dimensionId;
 		if (world.isRemote
 			|| (world.provider instanceof PocketProvider)
 			|| (dimensionID == END_DIMENSION_ID)
-			|| (dimensionID == NETHER_DIMENSION_ID))
+			|| (dimensionID == NETHER_DIMENSION_ID)
+			|| (world.provider.getDimensionName().hashCode() == SPIRIT_WORLD_NAME.hashCode()))
 		{
 			return;
 		}
