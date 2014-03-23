@@ -57,16 +57,6 @@ public class FillContainersOperation extends WorldOperation
 					}
 				}
 			}
-			
-			// Fill dispensers
-			if (tileEntity instanceof TileEntityDispenser)
-			{
-				TileEntityDispenser dispenser = (TileEntityDispenser) tileEntity;
-				if (isInventoryEmpty(dispenser))
-				{
-					dispenser.addItem(new ItemStack(Item.arrow, 64));
-				}
-			}
 		}
 		return true;
 	}
