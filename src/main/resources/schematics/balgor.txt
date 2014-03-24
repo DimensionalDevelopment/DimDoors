@@ -1,6 +1,0 @@
-/schematics/balgor/ComplexHall_GardenBalgor1_open_39.schematic
-/schematics/balgor/ComplexHall_OpenHallBalgor1_Closed_68.schematic
-/schematics/balgor/ComplexHall_SilverEggHallBalgor1_closed_25.schematic
-/schematics/balgor/Maze_OmniMazeBalgor1_open_30.schematic
-/schematics/balgor/Trap_ArrowTrapBalgor1_closed_20.schematic
-/schematics/balgor/Trap_ZombieHallBalgor1_closed_25.schematic

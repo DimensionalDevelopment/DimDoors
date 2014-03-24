@@ -1,5 +1,7 @@
+/schematics/ruins/ComplexHall_Balgor0-CrumbledHall_Closed_75.schematic
 /schematics/ruins/complexHall_buggyTopEntry1_open_100.schematic
 /schematics/ruins/ComplexHall_Cere-PuzzleWall_Open_75.schematic
+/schematics/ruins/ComplexHall_Cere-TransferTunnel_Closed_100.schematic
 /schematics/ruins/complexHall_exitRuinsWithHiddenDoor_open_100.schematic
 /schematics/ruins/complexHall_hallwayHiddenTreasure_closed_100.schematic
 /schematics/ruins/complexHall_largeBrokenHall_closed_100.schematic
@@ -15,6 +17,7 @@
 /schematics/ruins/complexHall_smallRotundaWithExit_closed_100.schematic
 /schematics/ruins/complexHall_tntPuzzleTrap_closed_50.schematic
 /schematics/ruins/deadEnd_azersDungeonO_closed_100.schematic
+/schematics/ruins/DeadEnd_Balgor0-ArrowHall_Closed_75.schematic
 /schematics/ruins/deadEnd_brokenPillarsO_open_100.schematic
 /schematics/ruins/DeadEnd_Cere-FloatingAltar_Open_75.schematic
 /schematics/ruins/deadEnd_diamondTowerTemple1_open_100.schematic
@@ -32,10 +35,14 @@
 /schematics/ruins/deadEnd_tntTrapO_open_100.schematic
 /schematics/ruins/exit_exitCube_open_100.schematic
 /schematics/ruins/exit_lockingExitHall_closed_100.schematic
+/schematics/ruins/Exit_SK-HotSuspense_Open_75.schematic
 /schematics/ruins/Exit_SK-LockingExitTrap_Closed_50.schematic
 /schematics/ruins/exit_smallExitPrison_open_100.schematic
+/schematics/ruins/Exit_XombyCraft-RopeBridge_Open_100.schematic
 /schematics/ruins/hub_4WayBasicHall_closed_200.schematic
 /schematics/ruins/hub_4WayHallExit_closed_200.schematic
+/schematics/ruins/Hub_Balgor0-OmniMaze_Open_50.schematic
+/schematics/ruins/Hub_Cere-GreatHall_Open_40.schematic
 /schematics/ruins/hub_doorTotemRuins_open_100.schematic
 /schematics/ruins/hub_fortRuins_open_100.schematic
 /schematics/ruins/hub_hallwayTrapRooms1_closed_100.schematic
@@ -61,12 +68,14 @@
 /schematics/ruins/SimpleHall_SK-SpiralHallway_Open_100.schematic
 /schematics/ruins/SimpleHall_SK-UTurnLeft_Open_50.schematic
 /schematics/ruins/SimpleHall_SK-UTurnRight_Open_50.schematic
+/schematics/ruins/SimpleHall_SK-WatchedForkLeft_Closed_80.schematic
+/schematics/ruins/SimpleHall_SK-WatchedForkRight_Closed_80.schematic
 /schematics/ruins/simpleHall_smallSimpleLeft_closed_100.schematic
 /schematics/ruins/simpleHall_smallSimpleRight_closed_100.schematic
 /schematics/ruins/trap_fakeTNTTrap_closed_100.schematic
 /schematics/ruins/trap_hallwayPitFallTrap_closed_200.schematic
 /schematics/ruins/trap_lavaPyramid_open_100.schematic
-/schematics/ruins/trap_pistonFallRuins_open_100.schematic
+/schematics/ruins/trap_pistonFallRuins_open_75.schematic
 /schematics/ruins/trap_pistonFloorHall_closed_150.schematic
 /schematics/ruins/trap_pistonFloorPlatform2_closed_100.schematic
 /schematics/ruins/trap_pistonFloorPlatform_closed_100.schematic

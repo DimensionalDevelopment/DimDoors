@@ -21,6 +21,7 @@ public class DungeonPack
 	//FIXME: Do not release this code as an update without dealing with disowned types!
 	
 	private static final int MAX_HISTORY_LENGTH = 30;
+	private static final int MAX_SUBTREE_LIST_SIZE = 30;
 	
 	private final String name;
 	private final HashMap<String, DungeonType> nameToTypeMapping;
@@ -122,7 +123,7 @@ public class DungeonPack
 		}
 	}
 
-	public DungeonData getNextDungeon(NewDimData dimension, Random random)
+	public DungeonData getNextDungeon(NewDimData parent, Random random)
 	{
 		if (allDungeons.isEmpty())
 		{
@@ -135,16 +136,36 @@ public class DungeonPack
 		//for dungeon packs that can extend arbitrarily deep. We should probably set a reasonable limit anyway.
 		
 		int maxSearchLength = config.allowDuplicatesInChain() ? maxRuleLength : MAX_HISTORY_LENGTH;
-		ArrayList<DungeonData> history = DungeonHelper.getDungeonChainHistory(dimension, this, maxSearchLength);
-		return getNextDungeon(history, random);
+		ArrayList<DungeonData> history = DungeonHelper.getDungeonChainHistory(parent, this, maxSearchLength);
+
+		ArrayList<DungeonData> subtreeHistory = null;
+		if (config.getDuplicateSearchLevels() > 0)
+		{
+			// Search over (DuplicateSearchLevels - 1); zero means don't search at all,
+			// one means search only up to the level of the immediate parent, and so on.
+			// Since we start with the parent, we need to drop the max levels by one.
+			NewDimData ancestor = DungeonHelper.getAncestor(parent, this, config.getDuplicateSearchLevels() - 1);
+			if (ancestor != null)
+			{
+				subtreeHistory = DungeonHelper.listDungeonsInTree(ancestor, this, MAX_SUBTREE_LIST_SIZE);
+			}
+		}
+		if (subtreeHistory == null)
+		{
+			subtreeHistory = new ArrayList<DungeonData>();
+		}
+		subtreeHistory = new ArrayList<DungeonData>();
+		
+		return getNextDungeon(history, subtreeHistory, random);
 	}
 	
-	private DungeonData getNextDungeon(ArrayList<DungeonData> history, Random random)
+	private DungeonData getNextDungeon(ArrayList<DungeonData> history, ArrayList<DungeonData> subtreeHistory, Random random)
 	{
 		//Extract the dungeon types that have been used from history and convert them into an array of IDs
 		int index;
 		int[] typeHistory = new int[history.size()];
 		HashSet<DungeonData> excludedDungeons = null;
+		boolean doExclude = !config.allowDuplicatesInChain() || !subtreeHistory.isEmpty();
 		for (index = 0; index < typeHistory.length; index++)
 		{
 			typeHistory[index] = history.get(index).dungeonType().ID;
@@ -163,9 +184,19 @@ public class DungeonPack
 					if (nextType != null)
 					{
 						//Initialize the set of excluded dungeons if needed
-						if (excludedDungeons == null && !config.allowDuplicatesInChain())
+						if (excludedDungeons == null && doExclude)
 						{
-							excludedDungeons = new HashSet<DungeonData>(history);
+							if (config.allowDuplicatesInChain())
+							{
+								excludedDungeons = new HashSet<DungeonData>(subtreeHistory);
+								excludedDungeons.addAll(subtreeHistory);
+							}
+							else
+							{
+								excludedDungeons = new HashSet<DungeonData>(2 * (history.size() + subtreeHistory.size()));
+								excludedDungeons.addAll(history);
+								excludedDungeons.addAll(subtreeHistory);
+							}
 						}
 						
 						//List which dungeons are allowed

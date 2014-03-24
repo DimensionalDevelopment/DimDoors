@@ -3,8 +3,10 @@ package StevenDimDoors.mod_pocketDim.world;
 import java.util.Random;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -15,6 +17,7 @@ import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -59,7 +62,7 @@ public class LimboProvider extends WorldProvider
 	@Override
 	public boolean canRespawnHere()
 	{
-		return properties.HardcoreLimboEnabled && properties.LimboEnabled;
+		return properties.HardcoreLimboEnabled;
 	}
 
 	@Override
@@ -174,26 +177,18 @@ public class LimboProvider extends WorldProvider
 		return false;
 	}
 
-	public static ChunkCoordinates getLimboSkySpawn(Random rand)
+	public static Point4D getLimboSkySpawn(EntityPlayer player, DDProperties properties)
 	{
-		ChunkCoordinates var5 = new ChunkCoordinates(0,0,0);
-
-
-		int spawnFuzz = 1000;
-		int spawnFuzzHalf = spawnFuzz / 2;
-
-		{
-			var5.posX += rand.nextInt(spawnFuzz) - spawnFuzzHalf;
-			var5.posZ += rand.nextInt(spawnFuzz) - spawnFuzzHalf;
-			var5.posY = 700;
-		}
-
-		return var5;
+		int x = (int) (player.posX) + MathHelper.getRandomIntegerInRange(player.worldObj.rand, -properties.LimboEntryRange, properties.LimboEntryRange);
+		int z = (int) (player.posZ) + MathHelper.getRandomIntegerInRange(player.worldObj.rand, -properties.LimboEntryRange, properties.LimboEntryRange);
+		return new Point4D(x, 700, z, properties.LimboDimensionID);
 	}
 	
 	@Override
 	public ChunkCoordinates getRandomizedSpawnPoint()
 	{
-		return getLimboSkySpawn(this.worldObj.rand);
+		int x = MathHelper.getRandomIntegerInRange(this.worldObj.rand, -500, 500);
+		int z = MathHelper.getRandomIntegerInRange(this.worldObj.rand, -500, 500);
+		return new ChunkCoordinates(x, 700, z);
 	}
 }

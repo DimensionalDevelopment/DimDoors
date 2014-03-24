@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -13,7 +14,6 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 
 public class ComponentNetherGateway extends StructureComponent
 {
@@ -159,7 +159,7 @@ public class ComponentNetherGateway extends StructureComponent
         	{
         		link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
         	}
-        	BaseItemDoor.placeDoorBlock(world, x, y, z, orientation, mod_pocketDim.transientDoor);
+        	ItemDoor.placeDoorBlock(world, x, y, z, orientation, mod_pocketDim.transientDoor);
         }
 
         for (x = 0; x <= 6; ++x)

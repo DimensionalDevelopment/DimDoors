@@ -40,7 +40,7 @@ public class EventHookContainer
 	}
 	
 	@ForgeSubscribe(priority = EventPriority.LOW)
-	public void onMapGen(InitMapGenEvent event)
+	public void onInitMapGen(InitMapGenEvent event)
 	{
 		// Replace the Nether fortress generator with our own only if any gateways would ever generate.
 		// This allows admins to disable our fortress overriding without disabling all gateways.
@@ -81,42 +81,46 @@ public class EventHookContainer
 	@ForgeSubscribe
 	public void onPlayerEvent(PlayerInteractEvent event)
 	{
-		//Handle placement of vanilla doors on rifts
-		if(!event.entity.worldObj.isRemote)
+		// Handle placing Vanilla doors on rifts
+		if (!event.entity.worldObj.isRemote)
 		{
 			World world = event.entity.worldObj;
-			ItemStack item = event.entityPlayer.inventory.getCurrentItem();
-			if(item!=null)
+			ItemStack stack = event.entityPlayer.inventory.getCurrentItem();
+			if (stack != null)
 			{
-				if(item.getItem() instanceof ItemDoor&&!(item.getItem() instanceof BaseItemDoor))
+				Item item = stack.getItem();
+				if (item instanceof ItemDoor)
 				{
 					Block doorToPlace = null; 
-					if(item.itemID == Item.doorIron.itemID)
+					if (stack.itemID == Item.doorIron.itemID)
 					{
-						doorToPlace =mod_pocketDim.dimensionalDoor;
+						doorToPlace = mod_pocketDim.dimensionalDoor;
 					}
-					else if(item.itemID == Item.doorWood.itemID)
+					else if (stack.itemID == Item.doorWood.itemID)
 					{
-						doorToPlace =mod_pocketDim.warpDoor;
+						doorToPlace = mod_pocketDim.warpDoor;
 					}
-					else if(item.itemID == mod_pocketDim.itemGoldenDoor.itemID)
+					else if (stack.itemID == mod_pocketDim.itemGoldenDoor.itemID)
 					{
-						doorToPlace =mod_pocketDim.goldenDimensionalDoor;
+						doorToPlace = mod_pocketDim.goldenDimensionalDoor;
 					}
-					if(((BaseItemDoor) mod_pocketDim.itemDimensionalDoor).tryPlacingDoor(doorToPlace, world, event.entityPlayer,item))
+					
+					if (doorToPlace != null)
 					{
-						if(!event.entityPlayer.capabilities.isCreativeMode)
+						// SenseiKiwi: Why do we have a condition like this? And the event isn't cancelled if we take the else portion.
+						// Comments would have been very helpful.
+						if (mod_pocketDim.itemDimensionalDoor.tryPlacingDoor(doorToPlace, world, event.entityPlayer, stack))
 						{
-							item.stackSize--;
-						}
-						if(!event.entity.worldObj.isRemote)
-						{
+							if (!event.entityPlayer.capabilities.isCreativeMode)
+							{
+								stack.stackSize--;
+							}
 							event.setCanceled(true);
 						}
-					}
-					else
-					{
-						BaseItemDoor.tryItemUse(doorToPlace, item, event.entityPlayer, world, event.x, event.y, event.z, event.face, true, true);
+						else
+						{
+							BaseItemDoor.tryItemUse(doorToPlace, stack, event.entityPlayer, world, event.x, event.y, event.z, event.face, true, true);
+						}
 					}
 				}
 			}
@@ -197,8 +201,7 @@ public class EventHookContainer
     	player.extinguish();
 		player.clearActivePotions();
 		player.setHealth(player.getMaxHealth());
-		ChunkCoordinates coords = LimboProvider.getLimboSkySpawn(player.worldObj.rand);
-		Point4D destination = new Point4D((int) (coords.posX + player.posX), coords.posY, (int) (coords.posZ + player.posZ ), mod_pocketDim.properties.LimboDimensionID);
+		Point4D destination = LimboProvider.getLimboSkySpawn(player, properties);
 		DDTeleporter.teleportEntity(player, destination, false);
     }
 
@@ -218,24 +221,29 @@ public class EventHookContainer
     
     public void playMusicForDim(World world)
     {
-    	if(world.isRemote)
+    	if (world.isRemote)
     	{
     		SoundManager sndManager =  FMLClientHandler.instance().getClient().sndManager;
 
-	    	if(world.provider instanceof LimboProvider)
-	    	{
-	    		sndManager.sndSystem.stop("BgMusic");
-	    		SoundPoolEntry soundPoolEntry = sndManager.soundPoolSounds.getRandomSoundFromSoundPool(mod_pocketDim.modid+":creepy");
-	    		if(soundPoolEntry!=null) 
-	    		{
-	    			sndManager.sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.getSoundUrl(), soundPoolEntry.getSoundName(), false);
-	    			sndManager.sndSystem.play("LimboMusic");
-	    		}
-	    	}
-	    	else if(!(world.provider instanceof LimboProvider))
-	    	{
-	    		sndManager.sndSystem.stop("LimboMusic");
-	    	}
+    		// SenseiKiwi: I've added the following check as a quick fix for a reported crash.
+    		// This needs to work without a hitch or we have to stop trying to replace the background music...
+    		if (sndManager != null && sndManager.sndSystem != null)
+    		{
+		    	if (world.provider instanceof LimboProvider)
+		    	{
+		    		sndManager.sndSystem.stop("BgMusic");
+		    		SoundPoolEntry soundPoolEntry = sndManager.soundPoolSounds.getRandomSoundFromSoundPool(mod_pocketDim.modid+":creepy");
+		    		if (soundPoolEntry != null) 
+		    		{
+		    			sndManager.sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.getSoundUrl(), soundPoolEntry.getSoundName(), false);
+		    			sndManager.sndSystem.play("LimboMusic");
+		    		}
+		    	}
+		    	else if (!(world.provider instanceof LimboProvider))
+		    	{
+		    		sndManager.sndSystem.stop("LimboMusic");
+		    	}
+    		}
     	}
     }
 }

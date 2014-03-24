@@ -1,136 +1,41 @@
 package StevenDimDoors.mod_pocketDim.world.gateways;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Random;
-import java.util.TreeMap;
-import java.util.Map.Entry;
-
-import StevenDimDoors.mod_pocketDim.Point3D;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.config.DDProperties;
-import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
-import StevenDimDoors.mod_pocketDim.core.NewDimData;
-import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
-import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
-import StevenDimDoors.mod_pocketDim.dungeon.ModBlockFilter;
-import StevenDimDoors.mod_pocketDim.dungeon.SpecialBlockFinder;
-import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
-import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
-import StevenDimDoors.mod_pocketDim.schematic.CompoundFilter;
-import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
-import StevenDimDoors.mod_pocketDim.schematic.ReplacementFilter;
-import StevenDimDoors.mod_pocketDim.schematic.Schematic;
-import StevenDimDoors.mod_pocketDim.schematic.SchematicFilter;
-import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
-import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 
 public abstract class BaseGateway 
 {
-	DDProperties properties;
+	protected DDProperties properties;
 	
 	public BaseGateway(DDProperties properties)
 	{
-		this.properties=properties;
+		this.properties = properties;
 	}
 	
 	/**
-	 * Generates the gateway centered on the given coords
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
+	 * Generates the gateway centered on the given coordinates
+	 * @param world - the world in which to generate the gateway
+	 * @param x - the x-coordinate at which to center the gateway; usually where the door is placed
+	 * @param y - the y-coordinate of the block on which the gateway may be built
+	 * @param z - the z-coordinate at which to center the gateway; usually where the door is placed
 	 */
-	public boolean generate(World world, int x, int y, int z)
-	{
-		int orientation = 0;
-		
-		if (this.getSchematicPath()!=null)
-		{
-			//Get the correct filters
-			GatewayBlockFilter filter = new GatewayBlockFilter();
-			DungeonSchematic schematic = this.getSchematicToBuild(world, x, y, z);
-			
-			//apply filters
-			schematic.applyFilter(filter);	
-			schematic.applyImportFilters(properties);
-			
-			Point3D doorLocation = filter.getEntranceDoorLocation();
-			orientation = filter.getEntranceOrientation();
-			
-			// I suspect that the location used below is wrong. Gateways should be placed vertically based on
-			// the Y position of the surface where they belong. I'm pretty sure including doorLocation.getY()
-			// messes up the calculation. ~SenseiKiwi
-
-			//schematic.copyToWorld(world, x - doorLocation.getX(), y, z - doorLocation.getZ());
-			schematic.copyToWorld(world, x - doorLocation.getX(), y + 1 - doorLocation.getY(), z - doorLocation.getZ(), true);
-		}
-			
-		this.generateRandomBits(world, x, y, z);
-		
-		DimLink link = PocketManager.getDimensionData(world).createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
-		PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, this.getStartingDungeon(PocketManager.getDimensionData(world),world.rand));
-
-		return true;
-	}
+	public abstract boolean generate(World world, int x, int y, int z);
 	
 	/**
-	 * Gets a .schematic to generate for this gateway
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return
+	 * Determines whether the specified biome is a valid biome in which to generate this gateway
+	 * @param biome - the biome to be checked
+	 * @return <code>true</code> true if the specified biome is a valid for generating this gateway, otherwise <code>false</code>
 	 */
-	public DungeonSchematic getSchematicToBuild(World world, int x, int y, int z)
+	protected boolean isBiomeValid(BiomeGenBase biome)
 	{
-		//TODO- refine selection criteria here, this is the default case
-		try 
+		String biomeName = biome.biomeName.toLowerCase();
+		String[] keywords = this.getBiomeKeywords();
+		if (keywords != null)
 		{
-			return DungeonSchematic.readFromResource(this.getSchematicPath());
-		}
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-			System.err.println("Could not load schematic for gateway");
-			return null;
-		}
-	}
-	
-	/**
-	 * returns a dungeon from the assigned pack to start with
-	 * @return
-	 */
-	public DungeonData getStartingDungeon(NewDimData dimension, Random random)
-	{
-		return getStartingPack().getNextDungeon(dimension,random);
-	}
-	
-	/**
-	 * determines if a given location is valid for the gateway to be generated, based on height, biome, and world.
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param biome
-	 * @return
-	 */
-	public boolean isLocationValid(World world, int x, int y, int z, BiomeGenBase biome)
-	{
-		return this.isBiomeValid(biome)&&areCoordsValid(world, x, y, z);
-	}
-	
-	public boolean isBiomeValid(BiomeGenBase biome)
-	{
-		if(this.getBiomeNames()!=null)
-		{
-			for(String biomeName : this.getBiomeNames())
+			for (String keyword : keywords)
 			{
-				if(biome.biomeName.contains(biomeName))
+				if (biomeName.contains(keyword))
 				{
 					return true;
 				}
@@ -141,43 +46,33 @@ public abstract class BaseGateway
 	}
 	
 	/**
-	 * Use this function to generate randomized bits of the structure. 
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
+	 * Determines whether the specified world and coordinates are a valid location for generating this gateway
+	 * @param world - the world in which to generate the gateway
+	 * @param x - the x-coordinate at which to center the gateway; usually where the door is placed
+	 * @param y - the y-coordinate of the block on which the gateway may be built
+	 * @param z - the z-coordinate at which to center the gateway; usually where the door is placed
+	 * @return <code>true</code> if the location is valid, otherwise <code>false</code>
 	 */
-	abstract void generateRandomBits(World world, int x, int y, int z);
-	
-	/**
-	 * Decides if the given coords/world are valid
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return
-	 */
-	public abstract boolean areCoordsValid(World world, int x, int y, int z);
+	public boolean isLocationValid(World world, int x, int y, int z)
+	{
+		return isBiomeValid(world.getBiomeGenForCoords(x, z));
+	}
 
 	/**
-	 * @return the pack the dungeon initially generates into from this gateway.
+	 * Gets the dungeon pack associated with this gateway
+	 * @return the dungeon pack to use for this gateway
 	 */
-	public abstract DungeonPack getStartingPack();
+	/*protected DungeonPack getDungeonPack()
+	{
+		return DungeonHelper.instance().getDungeonPack("RUINS");
+	}*/
 	
 	/**
-	 * Is by default a whitelist, but the isBiomeValid method 
-	 * can be overriden for specific gateways. For example, any biome containing 'forest' would be valid if we added 'forest',
-	 * even from other mods.
-	 * @return List of biome names that we check against. 
+	 * Gets the lowercase keywords to be used in checking whether a given biome is a valid location for this gateway
+	 * @return an array of biome keywords to match against
 	 */
-	public abstract String[] getBiomeNames();
-	
-	/**
-	 * @return List containing all the .schematics attached to this gateway. Selection is random by default
-	 */
-	public abstract String getSchematicPath();
-	
-	//TODO not yet implemented
-	public abstract boolean isSurfaceGateway();
-	
+	public String[] getBiomeKeywords()
+	{
+		return new String[] { "" };
+	}
 }

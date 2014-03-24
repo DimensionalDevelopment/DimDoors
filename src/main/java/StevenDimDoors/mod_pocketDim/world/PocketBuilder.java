@@ -104,8 +104,13 @@ public class PocketBuilder
 				return false;
 			}
 
+			DungeonSchematic schematic = loadAndValidateDungeon(dimension.dungeon(), properties);
+			if (schematic == null)
+			{
+				return false;
+			}
 			Point3D destination = new Point3D(incomingLink.destination());
-			loadAndValidateDungeon(dimension.dungeon(), properties).copyToWorld(world, destination, originLink.orientation(), incomingLink, random, properties, false);
+			schematic.copyToWorld(world, destination, originLink.orientation(), incomingLink, random, properties, false);
 			dimension.setFilled(true);
 			return true;
 		}
@@ -145,7 +150,7 @@ public class PocketBuilder
 		return true;    
 	}
 
-	public static boolean generateSelectedDungeonPocket(DimLink link, DDProperties properties, DungeonData data)
+	public static boolean generateSelectedDungeonPocket(DimLink link, DDProperties properties, DungeonData dungeon)
 	{
 		if (link == null)
 		{
@@ -155,13 +160,24 @@ public class PocketBuilder
 		{
 			throw new IllegalArgumentException("properties cannot be null.");
 		}
-
 		if (link.hasDestination())
 		{
 			throw new IllegalArgumentException("link cannot have a destination assigned already.");
 		}
+		if (dungeon == null)
+		{
+			throw new IllegalArgumentException("dungeon cannot be null.");
+		}
 
-		//Register a new dimension
+		// Try to load up the schematic
+		DungeonSchematic schematic = null;
+		schematic = loadAndValidateDungeon(dungeon, properties);
+		if (schematic == null)
+		{
+			return false;
+		}
+		
+		// Register a new dimension
 		NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
 		NewDimData dimension = PocketManager.registerPocket(parent, true);
 
@@ -174,19 +190,7 @@ public class PocketBuilder
 			return false;
 		}
 
-		DungeonData dungeon = null;
-		DungeonSchematic schematic = null;
-
-		dungeon = data;
-		if (data == null)
-		{
-			System.err.println("Could not select a dungeon for generation!");
-			return false;
-		}
-		schematic = loadAndValidateDungeon(dungeon, properties);
-
 		return PocketBuilder.buildDungeonPocket(dungeon, dimension, link, schematic, world, properties);
-
 	}
 
 
@@ -206,10 +210,18 @@ public class PocketBuilder
 			throw new IllegalArgumentException("link cannot have a destination assigned already.");
 		}
 
-
+		//Choose a dungeon to generate
+		NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
+		Pair<DungeonData, DungeonSchematic> pair = selectNextDungeon(parent, random, properties);
+		if (pair == null)
+		{
+			System.err.println("Could not select a dungeon for generation!");
+			return false;
+		}
+		DungeonData dungeon = pair.getFirst();
+		DungeonSchematic schematic = pair.getSecond();
 
 		//Register a new dimension
-		NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
 		NewDimData dimension = PocketManager.registerPocket(parent, true);
 
 		//Load a world
@@ -220,17 +232,7 @@ public class PocketBuilder
 			System.err.println("Could not initialize dimension for a dungeon!");
 			return false;
 		}
-
-		//Choose a dungeon to generate
-		Pair<DungeonData, DungeonSchematic> pair = selectDungeon(dimension, random, properties);
-		if (pair == null)
-		{
-			System.err.println("Could not select a dungeon for generation!");
-			return false;
-		}
-		DungeonData dungeon = pair.getFirst();
-		DungeonSchematic schematic = pair.getSecond();
-
+		
 		return buildDungeonPocket(dungeon, dimension, link, schematic, world, properties);
 	}
 
@@ -251,18 +253,12 @@ public class PocketBuilder
 		return linkDestination;
 	}
 
-	private static Pair<DungeonData, DungeonSchematic> selectDungeon(NewDimData dimension, Random random, DDProperties properties)
+	private static Pair<DungeonData, DungeonSchematic> selectNextDungeon(NewDimData parent, Random random, DDProperties properties)
 	{
-		//We assume the dimension doesn't have a dungeon assigned
-		if (dimension.dungeon() != null)
-		{
-			throw new IllegalArgumentException("dimension cannot have a dungeon assigned already.");
-		}
-
 		DungeonData dungeon = null;
 		DungeonSchematic schematic = null;
 
-		dungeon = DungeonHelper.instance().selectDungeon(dimension, random);
+		dungeon = DungeonHelper.instance().selectNextDungeon(parent, random);
 
 		if (dungeon != null)
 		{

@@ -9,8 +9,8 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.network.packet.Packet41EntityEffect;
 import net.minecraft.network.packet.Packet43Experience;
 import net.minecraft.network.packet.Packet9Respawn;
@@ -20,14 +20,11 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.network.ForgePacket;
-import net.minecraftforge.common.network.packet.DimensionRegisterPacket;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
@@ -49,6 +46,7 @@ public class DDTeleporter
 	private static final int MAX_ROOT_SHIFT_CHANCE = 100;
 	private static final int START_ROOT_SHIFT_CHANCE = 0;
 	private static final int ROOT_SHIFT_CHANCE_PER_LEVEL = 5;
+	private static final String SPIRIT_WORLD_NAME = "Spirit World";
 	
 	public static int cooldown = 0;
 	
@@ -605,7 +603,7 @@ public class DDTeleporter
 				}
 			}
 			
-			BaseItemDoor.placeDoorBlock(destWorld, link.destination().getX(), link.destination().getY()-1, link.destination().getZ(),link.getDestinationOrientation(), door);
+			ItemDoor.placeDoorBlock(destWorld, link.destination().getX(), link.destination().getY()-1, link.destination().getZ(),link.getDestinationOrientation(), door);
 
 			TileEntity 	doorDestTE = ((BaseDimDoor)door).initDoorTE(destWorld, link.destination().getX(), link.destination().getY(), link.destination().getZ());
 
@@ -647,9 +645,7 @@ public class DDTeleporter
 			for (int attempts = 0; attempts < 10; attempts++)
 			{
 				NewDimData selection = roots.get( random.nextInt(roots.size()) );
-				if (selection.id() != END_DIMENSION_ID &&
-					selection.id() != properties.LimboDimensionID &&
-					selection != current.root())
+				if (selection != current.root() && isValidForDungeonExit(selection, properties))
 				{
 					return generateSafeExit(selection, link, properties);
 				}
@@ -658,6 +654,19 @@ public class DDTeleporter
 		
 		// Yes, this could lead you back into Limbo. That's intentional.
 		return generateSafeExit(current.root(), link, properties);
+	}
+	
+	private static boolean isValidForDungeonExit(NewDimData destination, DDProperties properties)
+	{
+		// Prevent exits to The End and Limbo
+		if (destination.id() == END_DIMENSION_ID || destination.id() == properties.LimboDimensionID)
+		{
+			return false;
+		}
+		// Prevent exits to Witchery's Spirit World; we need to load the dimension to retrieve its name.
+		// This is okay because the dimension would have to be loaded subsequently by generateSafeExit().
+		World world = PocketManager.loadDimension(destination.id());
+		return (world != null && !SPIRIT_WORLD_NAME.equals(world.provider.getDimensionName()));
 	}
 	
 	private static boolean generateSafeExit(NewDimData destinationDim, DimLink link, DDProperties properties)
