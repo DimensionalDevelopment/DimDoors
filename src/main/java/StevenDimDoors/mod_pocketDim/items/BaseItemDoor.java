@@ -143,7 +143,8 @@ public abstract class BaseItemDoor extends ItemDoor
 			}
 
 			if (canPlace(world, x, y, z) && canPlace(world, x, y + 1, z) && player.canPlayerEdit(x, y, z, side, stack)
-					&& player.canPlayerEdit(x, y + 1, z, side, stack) && stack.stackSize > 0)
+					&& (player.canPlayerEdit(x, y + 1, z, side, stack) && stack.stackSize > 0)
+					&&((stack.getItem() instanceof BaseItemDoor) || PocketManager.getLink(x, y + 1, z, world) != null))
 			{
 				int orientation = MathHelper.floor_double((player.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
 				placeDoorBlock(world, x, y, z, orientation, doorBlock);
