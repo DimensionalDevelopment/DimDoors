@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -243,43 +244,58 @@ public class DDSaveHandler
 		// Create the data directory for our dimensions
 		// Don't catch exceptions here. If we can't create this folder,
 		// the mod should crash to let the user know early on.
+		
+		//I still dont think that this is the best way to do this, but atleast it is better than 
+		//risking deleting everything. I delete files afterwards that I did not modify. 
 
-		String basePath = DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/";
-		File basePathFile = new File(basePath);
-		Files.createParentDirs(basePathFile);
-		basePathFile.mkdir();
-				
+		//get the save directory path
+		File saveDirectory = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/");
+		
+		//create the save directory
+		Files.createParentDirs(saveDirectory);
+		saveDirectory.mkdir();
+		
+		//create and write the blackList
 		BlacklistProcessor blacklistReader = new BlacklistProcessor();
-		writeBlacklist(blacklist, blacklistReader,basePath);		
+		writeBlacklist(blacklist, blacklistReader,saveDirectory);		
 		
 		FileFilter dataFileFilter = new FileFilters.RegexFileFilter("dim_-?\\d+\\.txt");
 		
-		//TODO Deal with temp files correctly
-		File[] dataFiles = basePathFile.listFiles(dataFileFilter);
+		//Take the list of all dimData files already saved in the save Directory, and map them according to ID. 
+		File[] dataFiles = saveDirectory.listFiles(dataFileFilter);
+		HashMap<Integer,File> unsavedDimData = new HashMap<Integer,File>();
 		for (File dataFile : dataFiles)
 		{
-			dataFile.delete();
+			unsavedDimData.put(Integer.parseInt(dataFile.getName().split("[.]")[0].substring(4)), dataFile);
 		}
 		
-		
-		basePathFile = null;
-		basePath += "dim_";
-		
 		boolean succeeded = true;
+		
+		//write the dimension save data, and remove the ones we save from the mapping
 		DimDataProcessor writer = new DimDataProcessor();
 		for (IPackable<PackedDimData> dimension : dimensions)
 		{
-			succeeded &= writeDimension(dimension, writer, basePath);
+			succeeded &= writeDimension(dimension, writer, saveDirectory.getAbsolutePath()+"/dim_");
+			unsavedDimData.remove(Integer.parseInt(dimension.name()));
+		}
+		
+		//once we have finished saving, delete the files from the save directory that where not saved
+		if(succeeded)
+		{
+			for (File dataFile : unsavedDimData.values())
+			{
+				dataFile.delete();
+			}
 		}
 		return succeeded;
 	}
 	
-	private static boolean writeBlacklist(List<Integer> blacklist, BlacklistProcessor writer, String basePath)
+	private static boolean writeBlacklist(List<Integer> blacklist, BlacklistProcessor writer, File saveDirectory)
 	{
 		try
 		{
-			File tempFile = new File(basePath + "blacklist.tmp");
-			File saveFile = new File(basePath + "blacklist.txt");
+			File tempFile = new File(saveDirectory.getAbsolutePath() + "blacklist.tmp");
+			File saveFile = new File(saveDirectory.getAbsolutePath() + "blacklist.txt");
 			writer.writeToFile(tempFile, blacklist);
 			saveFile.delete();
 			tempFile.renameTo(saveFile);

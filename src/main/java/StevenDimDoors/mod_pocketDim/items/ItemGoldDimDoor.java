@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
 
 public class ItemGoldDimDoor extends BaseItemDoor
 {
@@ -16,7 +17,6 @@ public class ItemGoldDimDoor extends BaseItemDoor
 		// TODO Auto-generated constructor stub
 	}
 	
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
@@ -27,26 +27,8 @@ public class ItemGoldDimDoor extends BaseItemDoor
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y,
-		int z, int par7, float par8, float par9, float par10)
+	protected BaseDimDoor getDoortoItemMapping()
 	{
-		return tryItemUse(mod_pocketDim.goldenDimensionalDoor, stack, player, world, x, y, z, par7, false, true);
+		return (BaseDimDoor) mod_pocketDim.goldenDimensionalDoor;
 	}
-
-	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-	{
-		if (!world.isRemote)
-		{
-			if (tryPlacingDoor(mod_pocketDim.goldenDimensionalDoor, world, player, stack) &&
-				!player.capabilities.isCreativeMode)
-			{
-				stack.stackSize--;
-			}
-		}
-		return stack;
-	}
-	
-	
-
 }
