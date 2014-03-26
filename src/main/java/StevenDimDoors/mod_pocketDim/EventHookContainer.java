@@ -92,7 +92,7 @@ public class EventHookContainer
 			if (mod_pocketDim.itemDimensionalDoor.tryToPlaceDoor(stack, event.entityPlayer, world,
 					event.x, event.y, event.z, event.face))
 			{
-				// Cancel the event so that we don't get two doors
+				// Cancel the event so that we don't get two doors from vanilla doors
 				event.setCanceled(true);
 			}
 		}
