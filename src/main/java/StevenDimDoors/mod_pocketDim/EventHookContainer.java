@@ -33,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class EventHookContainer
 {
-	private final DDProperties	properties;
+	private final DDProperties properties;
 
 	public EventHookContainer(DDProperties properties)
 	{
@@ -44,9 +44,8 @@ public class EventHookContainer
 	public void onInitMapGen(InitMapGenEvent event)
 	{
 		// Replace the Nether fortress generator with our own only if any
-		// gateways would ever generate.
-		// This allows admins to disable our fortress overriding without
-		// disabling all gateways.
+		// gateways would ever generate. This allows admins to disable our
+		// fortress overriding without disabling all gateways.
 		/*
 		 * if (properties.FortressGatewayGenerationChance > 0 &&
 		 * properties.WorldRiftGenerationEnabled && event.type ==
@@ -88,15 +87,13 @@ public class EventHookContainer
 		
 		World world = event.entity.worldObj;
 		ItemStack stack = event.entityPlayer.inventory.getCurrentItem();
-		if (stack != null)
+		if (stack != null && stack.getItem() instanceof ItemDoor)
 		{
-			if (stack.getItem() instanceof ItemDoor)
+			if (mod_pocketDim.itemDimensionalDoor.tryToPlaceDoor(stack, event.entityPlayer, world,
+					event.x, event.y, event.z, event.face))
 			{
-				if(mod_pocketDim.itemDimensionalDoor.tryToPlaceDoor(stack, event.entityPlayer, world, event.x, event.y, event.z, event.face))
-				{
-					//cancel the event so we dont get two doors from vanilla doors
-					event.setCanceled(true);
-				}
+				// Cancel the event so that we don't get two doors
+				event.setCanceled(true);
 			}
 		}
 	}
@@ -105,11 +102,9 @@ public class EventHookContainer
 	public void onWorldLoad(WorldEvent.Load event)
 	{
 		// We need to initialize PocketManager here because onServerAboutToStart
-		// fires before we can
-		// use DimensionManager and onServerStarting fires after the game tries
-		// to generate terrain.
-		// If a gateway tries to generate before PocketManager has initialized,
-		// we get a crash.
+		// fires before we can use DimensionManager and onServerStarting fires
+		// after the game tries to generate terrain. If a gateway tries to
+		// generate before PocketManager has initialized, we get a crash.
 		if (!PocketManager.isLoaded())
 		{
 			PocketManager.load();
@@ -131,16 +126,14 @@ public class EventHookContainer
 	public boolean onDeathWithHighPriority(LivingDeathEvent event)
 	{
 		// Teleport the entity to Limbo if it's a player in a pocket dimension
-		// and
-		// if Limbo preserves player inventories. We'll check again in a
-		// low-priority event handler
-		// to give other mods a chance to save the player if Limbo does _not_
-		// preserve inventories.
+		// and if Limbo preserves player inventories. We'll check again in a
+		// low-priority event handler to give other mods a chance to save the
+		// player if Limbo does _not_ preserve inventories.
 
 		Entity entity = event.entity;
 
-		if (entity instanceof EntityPlayer && properties.LimboEnabled && entity.worldObj.provider instanceof PocketProvider
-				&& properties.LimboReturnsInventoryEnabled)
+		if (properties.LimboEnabled && properties.LimboReturnsInventoryEnabled &&
+				entity instanceof EntityPlayer && entity.worldObj.provider instanceof PocketProvider)
 		{
 			EntityPlayer player = (EntityPlayer) entity;
 			mod_pocketDim.deathTracker.addUsername(player.username);
@@ -155,11 +148,10 @@ public class EventHookContainer
 	public boolean onDeathWithLowPriority(LivingDeathEvent event)
 	{
 		// This low-priority handler gives mods a chance to save a player from
-		// death before we apply
-		// teleporting them to Limbo _without_ preserving their inventory. We
-		// also check if the player
-		// died in a pocket dimension and record it, regardless of whether the
-		// player will be sent to Limbo.
+		// death before we apply teleporting them to Limbo _without_ preserving
+		// their inventory. We also check if the player died in a pocket
+		// dimension and record it, regardless of whether the player will be
+		// sent to Limbo.
 
 		Entity entity = event.entity;
 
@@ -209,9 +201,8 @@ public class EventHookContainer
 			SoundManager sndManager = FMLClientHandler.instance().getClient().sndManager;
 
 			// SenseiKiwi: I've added the following check as a quick fix for a
-			// reported crash.
-			// This needs to work without a hitch or we have to stop trying to
-			// replace the background music...
+			// reported crash. This needs to work without a hitch or we have to
+			// stop trying to replace the background music...
 			if (sndManager != null && sndManager.sndSystem != null)
 			{
 				if (world.provider instanceof LimboProvider)
