@@ -304,6 +304,7 @@ public class PocketManager
 
 		return true;
 	}
+	
 	public static boolean deletePocket(NewDimData target, boolean deleteFolder)
 	{
 		// We can't delete the dimension if it's currently loaded or if it's not actually a pocket.
@@ -314,7 +315,7 @@ public class PocketManager
 		{
 			if (deleteFolder)
 			{
-				deleteDimensionFolder(target);
+				deleteDimensionFiles(target);
 			}
 			dimensionIDBlackList.add(dimension.id);
 			deleteDimensionData(dimension.id);
@@ -322,20 +323,25 @@ public class PocketManager
 		}
 		return false;
 	}
-	private static boolean deleteDimensionFolder(NewDimData target)
+	
+	private static boolean deleteDimensionFiles(NewDimData target)
 	{
 		InnerDimData dimension = (InnerDimData) target;
 		if (dimension.isPocketDimension() && DimensionManager.getWorld(dimension.id()) == null)
 		{
-			File saveDirectory = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/pocketDimID" + dimension.id());
+			String saveRootPath = DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath();
+			File saveDirectory = new File(saveRootPath + "/DimensionalDoors/pocketDimID" + dimension.id());
 			DeleteFolder.deleteFolder(saveDirectory);
+			File dataFile = new File(saveRootPath + "/DimensionalDoors/data/dim_" + dimension.id() + ".txt");
+			dataFile.delete();
 			return true;
 		}
 		return false;
 	}
+	
 	private static boolean deleteDimensionData(int dimensionID)
 	{
-		if(dimensionData.containsKey(dimensionID)&& DimensionManager.getWorld(dimensionID) == null)
+		if (dimensionData.containsKey(dimensionID) && DimensionManager.getWorld(dimensionID) == null)
 		{
 			NewDimData target = PocketManager.getDimensionData(dimensionID);
 			InnerDimData dimension = (InnerDimData) target;
