@@ -244,58 +244,35 @@ public class DDSaveHandler
 		// Create the data directory for our dimensions
 		// Don't catch exceptions here. If we can't create this folder,
 		// the mod should crash to let the user know early on.
-		
-		//I still dont think that this is the best way to do this, but atleast it is better than 
-		//risking deleting everything. I delete files afterwards that I did not modify. 
 
-		//get the save directory path
+		// Get the save directory path
 		File saveDirectory = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/");
+		String savePath = saveDirectory.getAbsolutePath();
 		
-		//create the save directory
+		// Create the save directory
 		Files.createParentDirs(saveDirectory);
 		saveDirectory.mkdir();
 		
-		//create and write the blackList
-		BlacklistProcessor blacklistReader = new BlacklistProcessor();
-		writeBlacklist(blacklist, blacklistReader,saveDirectory);		
+		// Create and write the blackList
+		writeBlacklist(blacklist, savePath);
 		
-		FileFilter dataFileFilter = new FileFilters.RegexFileFilter("dim_-?\\d+\\.txt");
-		
-		//Take the list of all dimData files already saved in the save Directory, and map them according to ID. 
-		File[] dataFiles = saveDirectory.listFiles(dataFileFilter);
-		HashMap<Integer,File> unsavedDimData = new HashMap<Integer,File>();
-		for (File dataFile : dataFiles)
-		{
-			unsavedDimData.put(Integer.parseInt(dataFile.getName().split("[.]")[0].substring(4)), dataFile);
-		}
-		
+		// Write the dimension save data, and remove the ones we save from the mapping
 		boolean succeeded = true;
-		
-		//write the dimension save data, and remove the ones we save from the mapping
 		DimDataProcessor writer = new DimDataProcessor();
 		for (IPackable<PackedDimData> dimension : dimensions)
 		{
-			succeeded &= writeDimension(dimension, writer, saveDirectory.getAbsolutePath()+"/dim_");
-			unsavedDimData.remove(Integer.parseInt(dimension.name()));
-		}
-		
-		//once we have finished saving, delete the files from the save directory that where not saved
-		if(succeeded)
-		{
-			for (File dataFile : unsavedDimData.values())
-			{
-				dataFile.delete();
-			}
+			succeeded &= writeDimension(dimension, writer, savePath + "/dim_");
 		}
 		return succeeded;
 	}
 	
-	private static boolean writeBlacklist(List<Integer> blacklist, BlacklistProcessor writer, File saveDirectory)
+	private static boolean writeBlacklist(List<Integer> blacklist, String savePath)
 	{
 		try
 		{
-			File tempFile = new File(saveDirectory.getAbsolutePath() + "blacklist.tmp");
-			File saveFile = new File(saveDirectory.getAbsolutePath() + "blacklist.txt");
+			BlacklistProcessor writer = new BlacklistProcessor();
+			File tempFile = new File(savePath + "/blacklist.tmp");
+			File saveFile = new File(savePath + "/blacklist.txt");
 			writer.writeToFile(tempFile, blacklist);
 			saveFile.delete();
 			tempFile.renameTo(saveFile);
@@ -306,9 +283,9 @@ public class DDSaveHandler
 			System.err.println("Could not save blacklist. The following error occurred:");
 			printException(e, true);
 			return false;
-		}
-		
+		}	
 	}
+	
 	private static boolean writeDimension(IPackable<PackedDimData> dimension, DimDataProcessor writer, String basePath)
 	{
 		try
