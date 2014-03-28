@@ -19,7 +19,7 @@ public abstract class NewDimData
 {
 	private static class InnerDimLink extends DimLink
 	{
-		public InnerDimLink(Point4D source, DimLink parent,int orientation)
+		public InnerDimLink(Point4D source, DimLink parent, int orientation)
 		{
 			super(new ClientLinkData(source, orientation), parent);
 		}
@@ -130,6 +130,7 @@ public abstract class NewDimData
 	protected Point4D origin;
 	protected int orientation;
 	protected DungeonData dungeon;
+	protected boolean modified;
 	public IUpdateWatcher<ClientLinkData> linkWatcher;
 	
 	protected NewDimData(int id, NewDimData parent, boolean isPocket, boolean isDungeon,
@@ -157,6 +158,7 @@ public abstract class NewDimData
 		this.origin = null;
 		this.dungeon = null;
 		this.linkWatcher = linkWatcher;
+		this.modified = true;
 		
 		//Register with parent
 		if (parent != null)
@@ -165,6 +167,7 @@ public abstract class NewDimData
 			this.root = parent.root;
 			this.depth = parent.depth + 1;
 			parent.children.add(this);
+			parent.modified = true;
 		}
 		else
 		{
@@ -288,27 +291,30 @@ public abstract class NewDimData
 	{
 		return Math.abs(i) + Math.abs(j) + Math.abs(k);
 	}
-	public DimLink createLink(int x, int y, int z, int linkType,int orientation)
+	
+	public DimLink createLink(int x, int y, int z, int linkType, int orientation)
 	{
-		return createLink(new Point4D(x, y, z, id), linkType,orientation);
+		return createLink(new Point4D(x, y, z, id), linkType, orientation);
 	}
 	
-	public DimLink createLink(Point4D source, int linkType,int orientation)
+	public DimLink createLink(Point4D source, int linkType, int orientation)
 	{
 		//Return an existing link if there is one to avoid creating multiple links starting at the same point.
 		InnerDimLink link = linkMapping.get(source);
 		if (link == null)
 		{
-			link = new InnerDimLink(source, linkType,orientation);
+			link = new InnerDimLink(source, linkType, orientation);
 			linkMapping.put(source, link);
 			linkList.add(link);
 		}
 		else
 		{
-			link.overwrite(linkType,orientation);
+			link.overwrite(linkType, orientation);
 		}
+		modified = true;
+		
 		//Link created!
-		if(linkType!=LinkTypes.CLIENT_SIDE)
+		if (linkType != LinkTypes.CLIENT_SIDE)
 		{
 			linkWatcher.onCreated(link.link);
 		}
@@ -348,6 +354,7 @@ public abstract class NewDimData
 				linkWatcher.onCreated(link.link);
 			}
 		}
+		modified = true;
 		return link;
 	}
 
@@ -364,6 +371,7 @@ public abstract class NewDimData
 			//Raise deletion event
 			linkWatcher.onDeleted(target.link);
 			target.clear();
+			modified = true;
 		}
 		return (target != null);
 	}
@@ -418,6 +426,7 @@ public abstract class NewDimData
 	public void setFilled(boolean isFilled)
 	{
 		this.isFilled = isFilled;
+		this.modified = true;
 	}
 	
 	public int id()
@@ -499,16 +508,19 @@ public abstract class NewDimData
 		this.orientation = orientation;
 		this.dungeon = dungeon;
 		this.packDepth = calculatePackDepth(parent, dungeon);
+		this.modified = true;
 	}
 	
 	/**
-	 * effectivly moves the dungeon to the 'top' of a chain as far as dungeon generation is concerend. 
+	 * Effectively moves the dungeon to the 'top' of a chain as far as dungeon generation is concerned. 
 	 */
 	public void setParentToRoot()
 	{
-		this.depth=1;
-		this.parent=this.root;
+		this.depth = 1;
+		this.parent = this.root;
 		this.root.children.add(this);
+		this.root.modified = true;
+		this.modified = true;
 	}
 	
 	public static int calculatePackDepth(NewDimData parent, DungeonData current)
@@ -557,12 +569,14 @@ public abstract class NewDimData
 		setDestination(incoming, originX, originY, originZ);
 		this.origin = incoming.destination();
 		this.orientation = orientation;
+		this.modified = true;
 	}
 	
 	public void setDestination(DimLink incoming, int x, int y, int z)
 	{
 		InnerDimLink link = (InnerDimLink) incoming;
 		link.setDestination(x, y, z, this);
+		this.modified = true;
 	}
 
 	public DimLink getRandomLink()
@@ -581,8 +595,18 @@ public abstract class NewDimData
 		}
 	}
 	
+	public boolean isModified()
+	{
+		return modified;
+	}
+	
+	public void clearModified()
+	{
+		this.modified = false;
+	}
+	
 	public String toString()
 	{
-		return "DimID= "+this.id;
+		return "DimID= " + this.id;
 	}
 }

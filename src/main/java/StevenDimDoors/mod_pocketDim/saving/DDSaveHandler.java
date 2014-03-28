@@ -64,14 +64,14 @@ public class DDSaveHandler
 		
 		// List any dimension data files and read each dimension
 		DimDataProcessor reader = new DimDataProcessor();
-		HashMap<Integer,PackedDimData> packedDims = new HashMap<Integer,PackedDimData>();
+		HashMap<Integer, PackedDimData> packedDims = new HashMap<Integer, PackedDimData>();
 		FileFilter dataFileFilter = new FileFilters.RegexFileFilter("dim_-?\\d+\\.txt");
 		
 		File[] dataFiles = dataDirectory.listFiles(dataFileFilter);
 		for (File dataFile : dataFiles)
 		{
 			PackedDimData packedDim = readDimension(dataFile, reader);
-			packedDims.put(packedDim.ID,packedDim);
+			packedDims.put(packedDim.ID, packedDim);
 		}
 		
 		List<PackedLinkData> linksToUnpack = new ArrayList<PackedLinkData>();
@@ -80,7 +80,7 @@ public class DDSaveHandler
 		{
 			linksToUnpack.addAll(packedDim.Links);
 		}
-		return unpackDimData(packedDims)&&unpackLinkData(linksToUnpack);
+		return unpackDimData(packedDims) && unpackLinkData(linksToUnpack);
 	}
 	
 	/**
@@ -239,29 +239,39 @@ public class DDSaveHandler
 		}
 	}
 	
-	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions, List<Integer> blacklist) throws IOException
+	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions,
+			List<Integer> blacklist, boolean checkModified) throws IOException
 	{
-		// Create the data directory for our dimensions
-		// Don't catch exceptions here. If we can't create this folder,
-		// the mod should crash to let the user know early on.
-
 		// Get the save directory path
 		File saveDirectory = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/");
 		String savePath = saveDirectory.getAbsolutePath();
 		
 		// Create the save directory
+		// Don't catch exceptions here. If we can't create this folder,
+		// then the mod should crash to let the user know early on.
 		Files.createParentDirs(saveDirectory);
 		saveDirectory.mkdir();
 		
 		// Create and write the blackList
 		writeBlacklist(blacklist, savePath);
 		
-		// Write the dimension save data, and remove the ones we save from the mapping
+		// Write the dimension save data
 		boolean succeeded = true;
 		DimDataProcessor writer = new DimDataProcessor();
 		for (IPackable<PackedDimData> dimension : dimensions)
 		{
-			succeeded &= writeDimension(dimension, writer, savePath + "/dim_");
+			// Check if the dimension should be saved
+			if (!checkModified || dimension.isModified())
+			{
+				if (writeDimension(dimension, writer, savePath + "/dim_"))
+				{
+					dimension.clearModified();
+				}
+				else
+				{
+					succeeded = false;
+				}
+			}
 		}
 		return succeeded;
 	}

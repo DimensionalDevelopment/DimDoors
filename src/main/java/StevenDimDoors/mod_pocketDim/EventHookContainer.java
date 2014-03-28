@@ -185,7 +185,7 @@ public class EventHookContainer
 	{
 		if (event.world.provider.dimensionId == 0)
 		{
-			PocketManager.save();
+			PocketManager.save(true);
 
 			if (mod_pocketDim.deathTracker != null && mod_pocketDim.deathTracker.isModified())
 			{
