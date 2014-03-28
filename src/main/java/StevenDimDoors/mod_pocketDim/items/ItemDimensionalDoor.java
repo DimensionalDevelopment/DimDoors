@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -11,10 +12,10 @@ import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
 
 public class ItemDimensionalDoor extends BaseItemDoor
 {
-	public ItemDimensionalDoor(int itemID, Material material)
-	{
-		super(itemID, material);
-	}
+	public ItemDimensionalDoor(int itemID, Material material, ItemDoor door)
+    {
+  	  super(itemID, material, door);
+    }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override

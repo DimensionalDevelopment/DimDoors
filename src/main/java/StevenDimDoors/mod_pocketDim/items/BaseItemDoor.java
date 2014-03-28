@@ -28,17 +28,24 @@ public abstract class BaseItemDoor extends ItemDoor
 	private static HashMap<ItemDoor, BaseItemDoor> vanillaDoorMapping = new HashMap<ItemDoor, BaseItemDoor>();
 	private static DDProperties properties = null;
 
-	public BaseItemDoor(int itemID, Material material)
+	/**
+	 * door represents the non-dimensional door this item is associated with. Leave null for none. 
+	 * @param itemID
+	 * @param material
+	 * @param door
+	 */
+	public BaseItemDoor(int itemID, Material material, ItemDoor door)
 	{
 		super(itemID, material);
 		this.setMaxStackSize(64);
 		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 		if (properties == null)
 			properties = DDProperties.instance();
-
-		vanillaDoorMapping.put((ItemDoor) mod_pocketDim.itemGoldenDoor, (BaseItemDoor) mod_pocketDim.itemGoldenDimensionalDoor);
-		vanillaDoorMapping.put((ItemDoor) Item.doorIron, (BaseItemDoor) mod_pocketDim.itemDimensionalDoor);
-		vanillaDoorMapping.put((ItemDoor) Item.doorWood, (BaseItemDoor) mod_pocketDim.itemWarpDoor);
+		
+		if(door!=null)
+		{
+			vanillaDoorMapping.put(door, this);
+		}
 	}
 
 	@Override
