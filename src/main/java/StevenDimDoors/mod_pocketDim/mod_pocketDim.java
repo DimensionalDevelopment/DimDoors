@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityEggInfo;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.biome.BiomeGenBase;
@@ -201,14 +202,14 @@ public class mod_pocketDim
 		dimensionalDoor = (DimensionalDoor) (new DimensionalDoor(properties.DimensionalDoorID, Material.iron, properties).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor"));
 		transTrapdoor = (TransTrapdoor) (new TransTrapdoor(properties.TransTrapdoorID, Material.wood).setHardness(1.0F) .setUnlocalizedName("dimHatch"));
 
-		itemGoldenDimensionalDoor = (new ItemGoldDimDoor(properties.GoldenDimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemGoldDimDoor");
 		itemGoldenDoor = (new ItemGoldDoor(properties.GoldenDoorID, Material.wood)).setUnlocalizedName("itemGoldDoor");
-		itemDimensionalDoor = (ItemDimensionalDoor) (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemDimDoor");
-		itemWarpDoor = (new ItemWarpDoor(properties.WarpDoorItemID, Material.wood)).setUnlocalizedName("itemDimDoorWarp");
+		itemGoldenDimensionalDoor = (new ItemGoldDimDoor(properties.GoldenDimensionalDoorItemID, Material.iron, (ItemDoor)this.itemGoldenDoor)).setUnlocalizedName("itemGoldDimDoor");
+		itemDimensionalDoor = (ItemDimensionalDoor) (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron, (ItemDoor)Item.doorIron)).setUnlocalizedName("itemDimDoor");
+		itemWarpDoor = (new ItemWarpDoor(properties.WarpDoorItemID, Material.wood,(ItemDoor)Item.doorWood)).setUnlocalizedName("itemDimDoorWarp");
 		itemRiftSignature = (new ItemRiftSignature(properties.RiftSignatureItemID)).setUnlocalizedName("itemLinkSignature");
 		itemRiftRemover = (new itemRiftRemover(properties.RiftRemoverItemID, Material.wood)).setUnlocalizedName("itemRiftRemover");
 		itemStableFabric = (new ItemStableFabric(properties.StableFabricItemID, 0)).setUnlocalizedName("itemStableFabric");
-		itemUnstableDoor = (new ItemUnstableDoor(properties.UnstableDoorItemID, Material.iron)).setUnlocalizedName("itemChaosDoor");
+		itemUnstableDoor = (new ItemUnstableDoor(properties.UnstableDoorItemID, Material.iron, null)).setUnlocalizedName("itemChaosDoor");
 		itemRiftBlade = (new ItemRiftBlade(properties.RiftBladeItemID, properties)).setUnlocalizedName("ItemRiftBlade");
 		itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(properties.StabilizedRiftSignatureItemID)).setUnlocalizedName("itemStabilizedRiftSig");
 		itemWorldThread = (new ItemWorldThread(properties.WorldThreadItemID)).setUnlocalizedName("itemWorldThread");
