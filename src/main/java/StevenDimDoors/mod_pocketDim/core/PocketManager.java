@@ -446,7 +446,7 @@ public class PocketManager
 		}
 	}
 	
-	public static void save()
+	public static void save(boolean checkModified)
 	{
 		if (!isLoaded)
 		{
@@ -466,7 +466,7 @@ public class PocketManager
 		
 		try
 		{
-			DDSaveHandler.saveAll(dimensionData.values(), dimensionIDBlackList);
+			DDSaveHandler.saveAll(dimensionData.values(), dimensionIDBlackList, checkModified);
 		}
 		catch (Exception e)
 		{
@@ -627,7 +627,7 @@ public class PocketManager
 			throw new IllegalStateException("Pocket dimensions have already been unloaded!");
 		}
 
-		save();
+		save(false);
 		unregisterPockets();
 		dimensionData = null;
 		rootDimensions = null;

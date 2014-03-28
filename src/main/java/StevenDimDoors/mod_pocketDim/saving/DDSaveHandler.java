@@ -64,14 +64,14 @@ public class DDSaveHandler
 		
 		// List any dimension data files and read each dimension
 		DimDataProcessor reader = new DimDataProcessor();
-		HashMap<Integer,PackedDimData> packedDims = new HashMap<Integer,PackedDimData>();
+		HashMap<Integer, PackedDimData> packedDims = new HashMap<Integer, PackedDimData>();
 		FileFilter dataFileFilter = new FileFilters.RegexFileFilter("dim_-?\\d+\\.txt");
 		
 		File[] dataFiles = dataDirectory.listFiles(dataFileFilter);
 		for (File dataFile : dataFiles)
 		{
 			PackedDimData packedDim = readDimension(dataFile, reader);
-			packedDims.put(packedDim.ID,packedDim);
+			packedDims.put(packedDim.ID, packedDim);
 		}
 		
 		List<PackedLinkData> linksToUnpack = new ArrayList<PackedLinkData>();
@@ -80,7 +80,7 @@ public class DDSaveHandler
 		{
 			linksToUnpack.addAll(packedDim.Links);
 		}
-		return unpackDimData(packedDims)&&unpackLinkData(linksToUnpack);
+		return unpackDimData(packedDims) && unpackLinkData(linksToUnpack);
 	}
 	
 	/**
@@ -239,7 +239,8 @@ public class DDSaveHandler
 		}
 	}
 	
-	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions, List<Integer> blacklist) throws IOException
+	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions,
+			List<Integer> blacklist, boolean checkModified) throws IOException
 	{
 		// Create the data directory for our dimensions
 		// Don't catch exceptions here. If we can't create this folder,
@@ -261,7 +262,17 @@ public class DDSaveHandler
 		DimDataProcessor writer = new DimDataProcessor();
 		for (IPackable<PackedDimData> dimension : dimensions)
 		{
-			succeeded &= writeDimension(dimension, writer, savePath + "/dim_");
+			if (!checkModified || dimension.isModified())
+			{
+				if (writeDimension(dimension, writer, savePath + "/dim_"))
+				{
+					dimension.clearModified();
+				}
+				else
+				{
+					succeeded = false;
+				}
+			}
 		}
 		return succeeded;
 	}
