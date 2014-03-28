@@ -242,26 +242,25 @@ public class DDSaveHandler
 	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions,
 			List<Integer> blacklist, boolean checkModified) throws IOException
 	{
-		// Create the data directory for our dimensions
-		// Don't catch exceptions here. If we can't create this folder,
-		// the mod should crash to let the user know early on.
-
 		// Get the save directory path
 		File saveDirectory = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/");
 		String savePath = saveDirectory.getAbsolutePath();
 		
 		// Create the save directory
+		// Don't catch exceptions here. If we can't create this folder,
+		// then the mod should crash to let the user know early on.
 		Files.createParentDirs(saveDirectory);
 		saveDirectory.mkdir();
 		
 		// Create and write the blackList
 		writeBlacklist(blacklist, savePath);
 		
-		// Write the dimension save data, and remove the ones we save from the mapping
+		// Write the dimension save data
 		boolean succeeded = true;
 		DimDataProcessor writer = new DimDataProcessor();
 		for (IPackable<PackedDimData> dimension : dimensions)
 		{
+			// Check if the dimension should be saved
 			if (!checkModified || dimension.isModified())
 			{
 				if (writeDimension(dimension, writer, savePath + "/dim_"))
