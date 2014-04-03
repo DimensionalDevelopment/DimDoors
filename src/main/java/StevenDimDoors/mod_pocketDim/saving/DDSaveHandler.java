@@ -15,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
@@ -24,6 +25,7 @@ import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.util.ConfigurationProcessingException;
+import StevenDimDoors.mod_pocketDim.util.DDLogger;
 import StevenDimDoors.mod_pocketDim.util.FileFilters;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
@@ -43,6 +45,8 @@ public class DDSaveHandler
 		
 		// Don't surround this code with try-catch. Our mod should crash if an error
 		// occurs at this level, since it could lead to some nasty problems.
+		
+		DDLogger.logger().startTimer("Loading data");
 		
 		String basePath = DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/";
 		File dataDirectory = new File(basePath);
@@ -65,7 +69,7 @@ public class DDSaveHandler
 		
 		// List any dimension data files and read each dimension
 		DimDataProcessor reader = new DimDataProcessor();
-		HashMap<Integer,PackedDimData> packedDims = new HashMap<Integer,PackedDimData>();
+		HashMap<Integer, PackedDimData> packedDims = new HashMap<Integer, PackedDimData>();
 		FileFilter dataFileFilter = new FileFilters.RegexFileFilter("dim_-?\\d+\\.txt");
 		
 		File[] dataFiles = dataDirectory.listFiles(dataFileFilter);
@@ -77,6 +81,7 @@ public class DDSaveHandler
 				throw new IllegalStateException("The DD data for "+dataFile.getName().replace(".txt", "")+" at "+dataFile.getPath()+" is corrupted. Please report this on the MCF or on the DD github issues tracker.");
 			}
 			packedDims.put(packedDim.ID,packedDim);
+
 		}
 		
 		List<PackedLinkData> linksToUnpack = new ArrayList<PackedLinkData>();
@@ -85,7 +90,7 @@ public class DDSaveHandler
 		{
 			linksToUnpack.addAll(packedDim.Links);
 		}
-		return unpackDimData(packedDims)&&unpackLinkData(linksToUnpack);
+		return unpackDimData(packedDims) && unpackLinkData(linksToUnpack);
 	}
 	
 	/**
@@ -244,19 +249,18 @@ public class DDSaveHandler
 		}
 	}
 	
-	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions, List<Integer> blacklist) throws IOException
+	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions,
+			List<Integer> blacklist, boolean checkModified) throws IOException
 	{
-		long startTime = System.nanoTime();
-		
+		DDLogger.startTimer("Saving data");
 		// Create the data directory for our dimensions
 		// Don't catch exceptions here. If we can't create this folder,
 		// the mod should crash to let the user know early on.
 
 		// Get the save directory path
-		File saveDirectory = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/");
+		File saveDirectory = new File(mod_pocketDim.instance.getCurrentSavePath() + "/DimensionalDoors/data/");
 		File backupDir = new File(saveDirectory+"/backup");		
 		String savePath = saveDirectory.getAbsolutePath();
-
 
 		if(!saveDirectory.exists())
 		{
@@ -268,16 +272,28 @@ public class DDSaveHandler
 		// Create and write the blackList
 		writeBlacklist(blacklist, savePath);
 		
-		// Write the dimension save data, and remove the ones we save from the mapping
+		// Write the dimension save data
 		boolean succeeded = true;
 		DimDataProcessor writer = new DimDataProcessor();
 		for (IPackable<PackedDimData> dimension : dimensions)
 		{
-			succeeded &= writeDimension(dimension, writer, savePath + "/dim_",backupDir);
+
+			// Check if the dimension should be saved
+			if (!checkModified || dimension.isModified())
+			{
+				if (writeDimension(dimension, writer, savePath + "/dim_",backupDir))
+				{
+					dimension.clearModified();
+				}
+				else
+				{
+					succeeded = false;
+				}
+			}
 		}
 		
-		startTime = System.nanoTime()-startTime; 
-		System.out.println("Saving took "+startTime/1000000000D+" seconds");
+		DDLogger.stopTimer("Saving data");
+		System.out.println(DDLogger.logger().printLog());
 		return succeeded;
 	}
 	

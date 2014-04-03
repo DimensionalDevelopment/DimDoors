@@ -63,6 +63,7 @@ import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
+import StevenDimDoors.mod_pocketDim.util.DDLogger;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
 import StevenDimDoors.mod_pocketDim.world.DDBiomeGenBase;
@@ -144,6 +145,9 @@ public class mod_pocketDim
 	public static FastRiftRegenerator fastRiftRegenerator;
 	public static GatewayGenerator gatewayGenerator;
 	public static DeathTracker deathTracker;
+	
+	//TODO this is a temporary workaround for saving data
+	private String currrentSaveRootDirectory;
 	
 	public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") 
 	{
@@ -313,6 +317,7 @@ public class mod_pocketDim
 			deathTracker.writeToFile();
 			deathTracker = null;
 			worldProperties = null;
+			this.currrentSaveRootDirectory=null;
 		}
 		catch (Exception e)
 		{
@@ -323,13 +328,13 @@ public class mod_pocketDim
 	@EventHandler
 	public void onServerAboutToStart(FMLServerAboutToStartEvent event)
 	{
-		final String saveRootDirectory = DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath();
+		currrentSaveRootDirectory = DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath();
 		
 		// Load the config file that's specific to this world
-		worldProperties = new DDWorldProperties(new File(saveRootDirectory + "/DimensionalDoors/DimDoorsWorld.cfg"));
+		worldProperties = new DDWorldProperties(new File(currrentSaveRootDirectory + "/DimensionalDoors/DimDoorsWorld.cfg"));
 
 		// Initialize a new DeathTracker
-		deathTracker = new DeathTracker(saveRootDirectory + "/DimensionalDoors/data/deaths.txt");
+		deathTracker = new DeathTracker(currrentSaveRootDirectory + "/DimensionalDoors/data/deaths.txt");
 	}
 
 	@EventHandler
@@ -359,6 +364,11 @@ public class mod_pocketDim
 			System.err.println("Failed to load chunk loaders for Dimensional Doors. The following error occurred:");
 			System.err.println(e.toString());
 		}
+	}
+	
+	public String getCurrentSavePath()
+	{
+		return this.currrentSaveRootDirectory;
 	}
 	
 	public static void sendChat(EntityPlayer player, String message)
