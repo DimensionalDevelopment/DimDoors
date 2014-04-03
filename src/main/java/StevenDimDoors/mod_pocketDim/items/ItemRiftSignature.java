@@ -142,6 +142,10 @@ public class ItemRiftSignature extends Item
 	{
 		y=y-2;//get the block the player actually clicked on
 		Block block = Block.blocksList[world.getBlockId(x, y, z)];
+		if(block==null)
+		{
+			return y+2;
+		}
 		if(block.isBlockReplaceable(world, x, y, z))
 		{
 			return y+1;//move block placement down (-2+1) one so its directly over things like snow
