@@ -46,7 +46,7 @@ public class DDSaveHandler
 		// Don't surround this code with try-catch. Our mod should crash if an error
 		// occurs at this level, since it could lead to some nasty problems.
 		
-		DDLogger.logger().startTimer("Loading data");
+		DDLogger.startTimer("Loading data");
 		
 		String basePath = DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/";
 		File dataDirectory = new File(basePath);

@@ -15,7 +15,7 @@ public class DDLogger
 		this.log.append("Logger started.\n");
 	}
 	
-	private static DDLogger logger()
+	public static DDLogger logger()
 	{
 		if( instance == null)
 		{
@@ -35,10 +35,9 @@ public class DDLogger
 		{
 			this.description=description;
 		}
-		private DDTimer start()
+		private void start()
 		{
 			this.startTime=System.nanoTime();
-			return this;
 		}
 		private void stop(long endTime)
 		{
