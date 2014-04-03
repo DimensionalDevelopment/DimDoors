@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
 
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.Point3D;
@@ -71,6 +72,10 @@ public class DDSaveHandler
 		for (File dataFile : dataFiles)
 		{
 			PackedDimData packedDim = readDimension(dataFile, reader);
+			if(packedDim == null)
+			{
+				throw new IllegalStateException("The DD data for "+dataFile.getName().replace(".txt", "")+" at "+dataFile.getPath()+" is corrupted. Please report this on the MCF or on the DD github issues tracker.");
+			}
 			packedDims.put(packedDim.ID,packedDim);
 		}
 		
@@ -241,17 +246,24 @@ public class DDSaveHandler
 	
 	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions, List<Integer> blacklist) throws IOException
 	{
+		long startTime = System.nanoTime();
+		
 		// Create the data directory for our dimensions
 		// Don't catch exceptions here. If we can't create this folder,
 		// the mod should crash to let the user know early on.
 
 		// Get the save directory path
 		File saveDirectory = new File(DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/");
+		File backupDir = new File(saveDirectory+"/backup");		
 		String savePath = saveDirectory.getAbsolutePath();
-		
-		// Create the save directory
-		Files.createParentDirs(saveDirectory);
-		saveDirectory.mkdir();
+
+
+		if(!saveDirectory.exists())
+		{
+			// Create the save directory
+			Files.createParentDirs(saveDirectory);
+			saveDirectory.mkdir();
+		}
 		
 		// Create and write the blackList
 		writeBlacklist(blacklist, savePath);
@@ -261,8 +273,11 @@ public class DDSaveHandler
 		DimDataProcessor writer = new DimDataProcessor();
 		for (IPackable<PackedDimData> dimension : dimensions)
 		{
-			succeeded &= writeDimension(dimension, writer, savePath + "/dim_");
+			succeeded &= writeDimension(dimension, writer, savePath + "/dim_",backupDir);
 		}
+		
+		startTime = System.nanoTime()-startTime; 
+		System.out.println("Saving took "+startTime/1000000000D+" seconds");
 		return succeeded;
 	}
 	
@@ -286,15 +301,20 @@ public class DDSaveHandler
 		}	
 	}
 	
-	private static boolean writeDimension(IPackable<PackedDimData> dimension, DimDataProcessor writer, String basePath)
+	private static boolean writeDimension(IPackable<PackedDimData> dimension, DimDataProcessor writer, String basePath, File backupDir)
 	{
 		try
 		{
-			File tempFile = new File(basePath + (dimension.name() + ".tmp"));
 			File saveFile = new File(basePath + (dimension.name() + ".txt"));
-			writer.writeToFile(tempFile, dimension.pack());
-			saveFile.delete();
-			tempFile.renameTo(saveFile);
+			
+			//If the savefile already exists, back it up. 
+			if(saveFile.exists())
+			{
+				FileUtils.copyFileToDirectory(saveFile, backupDir);
+				saveFile.delete();
+			}
+
+			writer.writeToFile(saveFile, dimension.pack());
 			return true;
 		}
 		catch (Exception e)
