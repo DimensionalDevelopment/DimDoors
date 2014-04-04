@@ -315,6 +315,8 @@ public class mod_pocketDim
 		{
 			PocketManager.unload();
 			deathTracker.writeToFile();
+			System.out.println(DDLogger.logger().printLog());
+			DDLogger.logger().clearLog();
 			deathTracker = null;
 			worldProperties = null;
 			this.currrentSaveRootDirectory=null;

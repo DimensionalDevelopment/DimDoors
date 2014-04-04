@@ -293,7 +293,6 @@ public class DDSaveHandler
 		}
 		
 		DDLogger.stopTimer("Saving data");
-		System.out.println(DDLogger.logger().printLog());
 		return succeeded;
 	}
 	
