@@ -252,7 +252,6 @@ public class DDSaveHandler
 	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions,
 			List<Integer> blacklist, boolean checkModified) throws IOException
 	{
-		DDLogger.startTimer("Saving data");
 		// Create the data directory for our dimensions
 		// Don't catch exceptions here. If we can't create this folder,
 		// the mod should crash to let the user know early on.
@@ -292,7 +291,6 @@ public class DDSaveHandler
 			}
 		}
 		
-		DDLogger.stopTimer("Saving data");
 		return succeeded;
 	}
 	
