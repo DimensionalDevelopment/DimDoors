@@ -621,8 +621,7 @@ public class PocketManager
 		{
 			throw new IllegalStateException("Pocket dimensions have already been unloaded!");
 		}
-
-		save(false);
+		
 		unregisterPockets();
 		dimensionData = null;
 		rootDimensions = null;

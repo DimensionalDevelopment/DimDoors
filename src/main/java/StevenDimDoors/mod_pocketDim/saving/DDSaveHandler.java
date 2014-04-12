@@ -2,16 +2,11 @@ package StevenDimDoors.mod_pocketDim.saving;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
 
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.Point3D;
@@ -21,10 +16,7 @@ import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
-import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
-import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
-import StevenDimDoors.mod_pocketDim.util.ConfigurationProcessingException;
 import StevenDimDoors.mod_pocketDim.util.DDLogger;
 import StevenDimDoors.mod_pocketDim.util.FileFilters;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
@@ -258,8 +250,10 @@ public class DDSaveHandler
 
 		// Get the save directory path
 		File saveDirectory = new File(mod_pocketDim.instance.getCurrentSavePath() + "/DimensionalDoors/data/");
-		File backupDir = new File(saveDirectory+"/backup");		
+		File backupDirectory = new File(saveDirectory + "/backup");
 		String savePath = saveDirectory.getAbsolutePath();
+		String baseSavePath = savePath + "/dim_";
+		String baseBackupPath = backupDirectory.getAbsolutePath() + "/dim_";
 
 		if(!saveDirectory.exists())
 		{
@@ -276,11 +270,10 @@ public class DDSaveHandler
 		DimDataProcessor writer = new DimDataProcessor();
 		for (IPackable<PackedDimData> dimension : dimensions)
 		{
-
 			// Check if the dimension should be saved
 			if (!checkModified || dimension.isModified())
 			{
-				if (writeDimension(dimension, writer, savePath + "/dim_",backupDir))
+				if (writeDimension(dimension, writer, baseSavePath, baseBackupPath))
 				{
 					dimension.clearModified();
 				}
@@ -314,17 +307,16 @@ public class DDSaveHandler
 		}	
 	}
 	
-	private static boolean writeDimension(IPackable<PackedDimData> dimension, DimDataProcessor writer, String basePath, File backupDir)
+	private static boolean writeDimension(IPackable<PackedDimData> dimension, DimDataProcessor writer, String basePath, String backupPath)
 	{
 		try
 		{
-			File saveFile = new File(basePath + (dimension.name() + ".txt"));
+			File saveFile = new File(basePath + dimension.name() + ".txt");
 			
-			//If the savefile already exists, back it up. 
-			if(saveFile.exists())
+			// If the save file already exists, back it up.
+			if (saveFile.exists())
 			{
-				FileUtils.copyFileToDirectory(saveFile, backupDir);
-				saveFile.delete();
+				Files.move(saveFile, new File(backupPath + dimension.name() + ".txt"));
 			}
 
 			writer.writeToFile(saveFile, dimension.pack());

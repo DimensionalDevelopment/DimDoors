@@ -15,7 +15,8 @@ public class DDLogger
 		this.log.append("Logger started.\n");
 	}
 	
-	public static DDLogger logger()
+	// SenseiKiwi: I changed this to private to guarantee that the logger isn't being used anywhere.
+	private static DDLogger logger()
 	{
 		if( instance == null)
 		{
