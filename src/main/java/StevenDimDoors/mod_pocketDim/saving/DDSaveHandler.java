@@ -250,16 +250,21 @@ public class DDSaveHandler
 
 		// Get the save directory path
 		File saveDirectory = new File(mod_pocketDim.instance.getCurrentSavePath() + "/DimensionalDoors/data/");
-		File backupDirectory = new File(saveDirectory + "/backup");
 		String savePath = saveDirectory.getAbsolutePath();
 		String baseSavePath = savePath + "/dim_";
+		File backupDirectory = new File(savePath + "/backup");
 		String baseBackupPath = backupDirectory.getAbsolutePath() + "/dim_";
 
-		if(!saveDirectory.exists())
+		if (!saveDirectory.exists())
 		{
 			// Create the save directory
 			Files.createParentDirs(saveDirectory);
 			saveDirectory.mkdir();
+		}
+		if (!backupDirectory.exists())
+		{
+			// Create the backup directory
+			backupDirectory.mkdir();
 		}
 		
 		// Create and write the blackList
