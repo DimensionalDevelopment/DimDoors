@@ -17,6 +17,7 @@ import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
@@ -84,7 +85,10 @@ public class EventHookContainer
 	public void onPlayerEvent(PlayerInteractEvent event)
 	{
 		// Handle all door placement here
-		
+		if(event.action == Action.LEFT_CLICK_BLOCK)
+		{
+			return;
+		}
 		World world = event.entity.worldObj;
 		ItemStack stack = event.entityPlayer.inventory.getCurrentItem();
 		if (stack != null && stack.getItem() instanceof ItemDoor)

@@ -179,10 +179,29 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		if (tile instanceof TileEntityDimDoor)
 		{
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
-			dimTile.openOrClosed = PocketManager.getLink(x, y, z, world.provider.dimensionId) != null;
+			dimTile.openOrClosed = this.isDoorOnRift(world, x, y, z);
 			dimTile.orientation = this.getFullMetadata(world, x, y, z) & 7;
 		}
 		return this;
+	}
+	
+	public boolean isDoorOnRift(World world, int x, int y, int z)
+	{
+		if(this.isUpperDoorBlock( world.getBlockMetadata(x, y, z)))
+		{
+			if(PocketManager.getLink(x, y, z, world.provider.dimensionId) != null||PocketManager.getLink(x, y-1, z, world.provider.dimensionId) != null)
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if(PocketManager.getLink(x, y, z, world.provider.dimensionId) != null||PocketManager.getLink(x, y+1, z, world.provider.dimensionId) != null)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -192,9 +211,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) 
 	{
-		TileEntityDimDoor tile = (TileEntityDimDoor) par1World.getBlockTileEntity(par2, par3, par4);
-		tile.openOrClosed = this.isDoorOpen( par1World,  par2,  par3,  par4);  	
-		tile.orientation = this.getFullMetadata(par1World, par2, par3, par4) & 7;
+		this.updateAttachedTile(par1World, par2, par3, par4);
 	}
 	
 	@Override

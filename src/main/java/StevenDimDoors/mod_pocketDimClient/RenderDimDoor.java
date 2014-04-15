@@ -42,15 +42,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 	public void renderDimDoorTileEntity(TileEntityDimDoor tile, double x,
 			double y, double z)
 	{
-		try
-		{
-			mod_pocketDim.dimensionalDoor.updateAttachedTile(tile.worldObj,
-					tile.xCoord, tile.yCoord, tile.zCoord);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		
 
 		// float playerX = (float)this.tileEntityRenderer.playerX;
 		// float playerY = (float)this.tileEntityRenderer.playerY;
@@ -215,62 +207,61 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 			}
 			
 			GL11.glColor4d(var21 * var17, var22 * var17, var23 * var17, 1.0F);
-			if (tile.openOrClosed)
-			{
+			
 
 				switch (tile.orientation)
 				{
 				case 0:
 
-					GL11.glVertex3d(x + .01F, y - 1, z);
-					GL11.glVertex3d(x + .01, y - 1, z + 1.0D);
+					GL11.glVertex3d(x + .01F, y, z);
+					GL11.glVertex3d(x + .01, y , z + 1.0D);
 					GL11.glVertex3d(x + .01, y + 1, z + 1.0D);
 					GL11.glVertex3d(x + .01, y + 1, z);
 					break;
 				case 1:
 					GL11.glVertex3d(x, y + 1, z + .01);
 					GL11.glVertex3d(x + 1, y + 1, z + .01);
-					GL11.glVertex3d(x + 1, y - 1, z + .01);
-					GL11.glVertex3d(x, y - 1, z + .01);
+					GL11.glVertex3d(x + 1, y , z + .01);
+					GL11.glVertex3d(x, y , z + .01);
 					break;
 				case 2:
 					GL11.glVertex3d(x + .99, y + 1, z);
 					GL11.glVertex3d(x + .99, y + 1, z + 1.0D);
-					GL11.glVertex3d(x + .99, y - 1, z + 1.0D);
-					GL11.glVertex3d(x + .99, y - 1, z);
+					GL11.glVertex3d(x + .99, y , z + 1.0D);
+					GL11.glVertex3d(x + .99, y , z);
 					break;
 				case 3:
-					GL11.glVertex3d(x, y - 1, z + .99);
-					GL11.glVertex3d(x + 1, y - 1, z + .99);
+					GL11.glVertex3d(x, y , z + .99);
+					GL11.glVertex3d(x + 1, y , z + .99);
 					GL11.glVertex3d(x + 1, y + 1, z + .99);
 					GL11.glVertex3d(x, y + 1, z + .99);
 					break;
 				case 4:
-					GL11.glVertex3d(x + .15F, y - 1, z);
-					GL11.glVertex3d(x + .15, y - 1, z + 1.0D);
+					GL11.glVertex3d(x + .15F, y , z);
+					GL11.glVertex3d(x + .15, y , z + 1.0D);
 					GL11.glVertex3d(x + .15, y + 1, z + 1.0D);
 					GL11.glVertex3d(x + .15, y + 1, z);
 					break;
 				case 5:
 					GL11.glVertex3d(x, y + 1, z + .15);
 					GL11.glVertex3d(x + 1, y + 1, z + .15);
-					GL11.glVertex3d(x + 1, y - 1, z + .15);
-					GL11.glVertex3d(x, y - 1, z + .15);
+					GL11.glVertex3d(x + 1, y , z + .15);
+					GL11.glVertex3d(x, y , z + .15);
 					break;
 				case 6:
 					GL11.glVertex3d(x + .85, y + 1, z);
 					GL11.glVertex3d(x + .85, y + 1, z + 1.0D);
-					GL11.glVertex3d(x + .85, y - 1, z + 1.0D);
-					GL11.glVertex3d(x + .85, y - 1, z);
+					GL11.glVertex3d(x + .85, y , z + 1.0D);
+					GL11.glVertex3d(x + .85, y , z);
 					break;
 				case 7:
-					GL11.glVertex3d(x, y - 1, z + .85);
-					GL11.glVertex3d(x + 1, y - 1, z + .85);
+					GL11.glVertex3d(x, y , z + .85);
+					GL11.glVertex3d(x + 1, y , z + .85);
 					GL11.glVertex3d(x + 1, y + 1, z + .85);
 					GL11.glVertex3d(x, y + 1, z + .85);
 					break;
 				}
-			}
+			
 
 			GL11.glEnd();
 
@@ -299,7 +290,21 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 	{
 		if (properties.DoorRenderingEnabled)
 		{
-			renderDimDoorTileEntity((TileEntityDimDoor) par1TileEntity, par2, par4, par6);
+			TileEntityDimDoor tile = (TileEntityDimDoor) par1TileEntity;
+			try
+			{
+				mod_pocketDim.dimensionalDoor.updateAttachedTile(tile.worldObj,
+						tile.xCoord, tile.yCoord, tile.zCoord);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			
+			if (tile.openOrClosed)
+			{
+				renderDimDoorTileEntity((TileEntityDimDoor) par1TileEntity, par2, par4, par6);
+			}
 		}
 	}
 }
