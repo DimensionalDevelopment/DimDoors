@@ -100,6 +100,12 @@ public class MobMonolith extends EntityFlying implements IMob
 	{
 		return false;
 	}
+	
+	@Override
+	public float getEyeHeight()
+	{
+		return this.height +2F;
+	}
 
 	public void setEntityPosition(Entity entity, double x, double y, double z)
 	{
@@ -206,14 +212,14 @@ public class MobMonolith extends EntityFlying implements IMob
 			this.playSound(mod_pocketDim.modid+":monk",  1F, 1F);
 			this.soundTime=100;
 		}
-		if ((aggroPercent>.80)&&this.soundTime<100)
+		if ((aggroPercent>.70)&&this.soundTime<100)
 		{
-			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,mod_pocketDim.modid+":tearing",2, 1F);
-			this.soundTime=200;
+			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,mod_pocketDim.modid+":tearing",1F, (float) (1+this.rand.nextGaussian()));
+			this.soundTime=100+this.rand.nextInt(75);
 		}
-		if ((aggroPercent>.95)&&this.soundTime<200)
+		if ((aggroPercent>.90)&&this.soundTime<200)
 		{
-			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,mod_pocketDim.modid+":tearing",5, 1F);
+			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,mod_pocketDim.modid+":tearing",7, 1F);
 			this.soundTime=250;
 		}
 		this.soundTime--;
