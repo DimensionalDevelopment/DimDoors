@@ -2,22 +2,16 @@ package StevenDimDoors.mod_pocketDim.ticking;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
@@ -27,26 +21,27 @@ import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 
 public class MobMonolith extends EntityFlying implements IMob
 {
-	public static final int MAX_AGGRO_RANGE = 35;
-	public static final int MAX_SOUND_COOLDOWN = 200;
-	public static final float MAX_AGGRO = 100;
-	public static final int TEXTURE_STATES = 18;
+	public static final byte MAX_AGGRO = 100;
+	private static final int MAX_TEXTURE_STATE = 18;
+	private static final int MAX_SOUND_COOLDOWN = 200;
+	private static final int MAX_AGGRO_RANGE = 35;
+	private static final int AGGRO_WATCHER_INDEX = 16;
+	
+	private static final float WIDTH = 3f;
+	private static final float HEIGHT = 3f;
+	private static final float EYE_HEIGHT = HEIGHT / 2;
+	
 	public float pitchLevel;
-	
-	public float aggro = 0;
-	private float soundTime = 0;
-	private byte textureState = 0;
-	
-	private int aggroMax;
+	private byte aggro = 0;
+	private int soundTime = 0;
 
 	private static DDProperties properties = null;
 
 	public MobMonolith(World par1World) 
 	{
 		super(par1World);
-		this.setSize(3F, 3F);
-		this.noClip=true;
-		this.aggroMax = rand.nextInt(245)+200;
+		this.setSize(WIDTH, HEIGHT);
+		this.noClip = true;
 		if (properties == null)
 			properties = DDProperties.instance();
 	}
@@ -66,10 +61,17 @@ public class MobMonolith extends EntityFlying implements IMob
 		}
 		else
 		{
-			this.aggro = this.aggroMax;
+			this.aggro = MAX_AGGRO;
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean canBreatheUnderwater()
+    {
+        return true;
+    }
+	
 	@Override
 	public AxisAlignedBB getBoundingBox()
 	{
@@ -104,22 +106,15 @@ public class MobMonolith extends EntityFlying implements IMob
 	@Override
 	public float getEyeHeight()
 	{
-		return this.height +2F;
-	}
-
-	public void setEntityPosition(Entity entity, double x, double y, double z)
-	{
-		entity.lastTickPosX = entity.prevPosX = entity.posX = x;
-		entity.lastTickPosY = entity.prevPosY = entity.posY = y + entity.yOffset;
-		entity.lastTickPosZ = entity.prevPosZ = entity.posZ = z;
-		entity.setPosition(x, y, z);
+		return EYE_HEIGHT;
 	}
 
 	@Override
 	protected void entityInit()
 	{
 		super.entityInit();
-		this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
+		// Add a byte for the aggro level
+		this.dataWatcher.addObject(AGGRO_WATCHER_INDEX, Byte.valueOf((byte) 0));
 	}
 
 	@Override
@@ -131,73 +126,93 @@ public class MobMonolith extends EntityFlying implements IMob
 	@Override
 	public void onEntityUpdate()
 	{
+		// Remove this Monolith if it's not in Limbo or in a pocket dimension
 		if (!(this.worldObj.provider instanceof LimboProvider || this.worldObj.provider instanceof PocketProvider))
 		{
 			this.setDead();
+			super.onEntityUpdate();
+			return;
 		}
-
-		super.onEntityUpdate();
-
-		EntityPlayer entityPlayer = this.worldObj.getClosestPlayerToEntity(this,MAX_AGGRO_RANGE);
 		
-		//need to always manage aggro level, even if player is out of range. 
-		this.setAggroLevel(entityPlayer);
+		super.onEntityUpdate();
+		
+		// Check for players and update aggro levels even if there are no players in range
+		EntityPlayer player = this.worldObj.getClosestPlayerToEntity(this, MAX_AGGRO_RANGE);
+		boolean visibility = (player != null) ? this.canEntityBeSeen(player) : false;
+		this.updateAggroLevel(player, visibility);
 
-		//these things only matter if the player is in range. 
-		if (entityPlayer != null)
+		// Change orientation and face a player if one is in range
+		if (player != null)
 		{
-			this.faceEntity(entityPlayer, 1, 1);
-			this.playSounds(entityPlayer);
-			//teleport the player if the conditions are met
-			if (aggro >= MAX_AGGRO && !this.worldObj.isRemote && properties.MonolithTeleportationEnabled && !entityPlayer.capabilities.isCreativeMode)
+			this.facePlayer(player);
+			this.playSounds(player);
+
+			if (visibility)
 			{
-				Point4D destination = LimboProvider.getLimboSkySpawn(entityPlayer, properties);
-				DDTeleporter.teleportEntity(entityPlayer, destination, false);
-				this.aggro = 0;
-				entityPlayer.worldObj.playSoundAtEntity(entityPlayer,mod_pocketDim.modid+":crack",13, 1);
+				this.spawnParticles(player);
+				
+				// Teleport the target player if various conditions are met
+				if (aggro >= MAX_AGGRO && !this.worldObj.isRemote &&
+						properties.MonolithTeleportationEnabled && !player.capabilities.isCreativeMode)
+				{
+					this.aggro = 0;
+					Point4D destination = LimboProvider.getLimboSkySpawn(player, properties);
+					DDTeleporter.teleportEntity(player, destination, false);
+					player.worldObj.playSoundAtEntity(player, mod_pocketDim.modid + ":crack", 13, 1);
+				}
 			}
 		}
 	}
 
-	private void setAggroLevel(EntityPlayer player)
+	private void updateAggroLevel(EntityPlayer player, boolean visibility)
 	{
-		//aggro constantly decreases at a rate that varies with the current amount of aggro. 
-		if(aggro > 0)
+		// If we're working on the server side, adjust aggro level
+		// If we're working on the client side, retrieve aggro level from dataWatcher
+		if (!this.worldObj.isRemote)
 		{
-			this.aggro = this.aggro -(this.aggro/25);
-		}
-		if(player != null)
-		{
-			//monoliths increase aggro slightly if the player is near, but slowly and to a cap. 
-			float distance = this.getDistanceToEntity(player);
-			aggro+= 1.5-(distance/this.MAX_AGGRO_RANGE);
-			
-			//rapidly increase aggro if the monolith has line of sight to the player.
-			if(player.canEntityBeSeen(this))
-			{				
-				//prevent monoliths from teleporting the player in limbo
-				if(this.worldObj.provider instanceof LimboProvider)
+			// Server side...
+			if (player != null)
+			{
+				// Rapidly increase the aggro level if this Monolith can see the player
+				if (visibility)
 				{
-					aggro+=1.5;
+					if (this.worldObj.provider instanceof LimboProvider)
+					{
+						// Don't spawn particles in Limbo since we won't teleport the player
+						aggro += 1;
+					}
+					else
+					{
+						// Aggro increases faster outside of Limbo
+						aggro += 2;
+					}
 				}
 				else
 				{
-					this.spawnParticles(player);
-					aggro+=3;
+					// Aggro increases slightly if the player is nearby, but this increase is capped
+					aggro += 2 - (this.getDistanceToEntity(player) / MAX_AGGRO_RANGE);
 				}
 			}
+			else
+			{
+				// Decrease aggro over time
+				aggro *= 0.98;
+			}
+			// Clamp the aggro level
+			aggro = (byte) MathHelper.clamp_int(aggro, 0, MAX_AGGRO_RANGE);
+			this.dataWatcher.updateObject(AGGRO_WATCHER_INDEX, Byte.valueOf(aggro));
 		}
-		
-		//convert the aggro counter to one of the texture states, and set it.
-		this.textureState = (byte) ((this.TEXTURE_STATES/this.MAX_AGGRO)*this.aggro);
-		if(this.textureState>TEXTURE_STATES)
+		else
 		{
-			textureState = TEXTURE_STATES;
+			// Client side...
+			aggro = this.dataWatcher.getWatchableObjectByte(AGGRO_WATCHER_INDEX);
 		}
-		if (!this.worldObj.isRemote)
-		{
-			this.dataWatcher.updateObject(16, Byte.valueOf(this.textureState));
-		}
+	}
+	
+	public int getTextureState()
+	{
+		// Determine texture state from aggro progress
+		return MathHelper.clamp_int(MAX_TEXTURE_STATE * aggro / MAX_AGGRO, 0, MAX_TEXTURE_STATE);
 	}
 	
 	/**
@@ -206,28 +221,29 @@ public class MobMonolith extends EntityFlying implements IMob
 	 */
 	private void playSounds(EntityPlayer entityPlayer)
 	{
-		float aggroPercent = (aggro/MAX_AGGRO);
-		if(this.soundTime<=0)
+		float aggroPercent = this.getAggroProgress();
+		if (this.soundTime <= 0)
 		{
-			this.playSound(mod_pocketDim.modid+":monk",  1F, 1F);
-			this.soundTime=100;
+			this.playSound(mod_pocketDim.modid + ":monk",  1F, 1F);
+			this.soundTime = 100;
 		}
-		if ((aggroPercent>.70)&&this.soundTime<100)
+		if ((aggroPercent > 0.70) && this.soundTime < 100)
 		{
-			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,mod_pocketDim.modid+":tearing",1F, (float) (1+this.rand.nextGaussian()));
-			this.soundTime=100+this.rand.nextInt(75);
+			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, mod_pocketDim.modid + ":tearing", 1F, (float) (1 + this.rand.nextGaussian()));
+			this.soundTime = 100 + this.rand.nextInt(75);
 		}
-		if ((aggroPercent>.90)&&this.soundTime<200)
+		if ((aggroPercent > 0.90) && this.soundTime < 200)
 		{
-			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ,mod_pocketDim.modid+":tearing",7, 1F);
-			this.soundTime=250;
+			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, mod_pocketDim.modid + ":tearing", 7, 1F);
+			this.soundTime = 250;
 		}
 		this.soundTime--;
 	}
 	
 	private void spawnParticles(EntityPlayer player)
 	{
-		for (int i = 1; i < (10*(aggro/MAX_AGGRO)); ++i)
+		int count = 10 * aggro / MAX_AGGRO;
+		for (int i = 1; i < count; ++i)
 		{
 			player.worldObj.spawnParticle("portal", player.posX + (this.rand.nextDouble() - 0.5D) * this.width, 
 					player.posY + this.rand.nextDouble() * player.height - 0.75D, 
@@ -237,43 +253,38 @@ public class MobMonolith extends EntityFlying implements IMob
 		}
 	}
 	
-	@Override
-	public void faceEntity(Entity par1Entity, float par2, float par3)
+	public float getAggroProgress()
 	{
-		double d0 = par1Entity.posX - this.posX;
-		double d1 = par1Entity.posZ - this.posZ;
-		double d2 = (par1Entity.posY + par1Entity.getEyeHeight())  - (this.posY +this.getEyeHeight());
+		return ((float) aggro) / MAX_AGGRO;
+	}
+	
+	private void facePlayer(EntityPlayer player)
+	{
+		double d0 = player.posX - this.posX;
+		double d1 = player.posZ - this.posZ;
+		double d2 = (player.posY + player.getEyeHeight()) - (this.posY + this.getEyeHeight());
 		double d3 = MathHelper.sqrt_double(d0 * d0 + d1 * d1);
 		float f2 = (float)(Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
-		this.pitchLevel = (float)-((Math.atan(d2/d3) )* 180.0D / Math.PI);
-		
+		this.pitchLevel = (float) -((Math.atan(d2/d3) )* 180.0D / Math.PI);
 		this.rotationYaw =  f2;
-		this.rotationYawHead=f2;
-		this.renderYawOffset=this.rotationYaw;
-	}
-
-	
-
-	@Override
-	public void writeEntityToNBT(NBTTagCompound par1NBTTagCompound)
-	{
-		super.writeEntityToNBT(par1NBTTagCompound);
-		par1NBTTagCompound.setFloat("soundTime", this.soundTime);
-		par1NBTTagCompound.setFloat("aggro", this.aggro);
-		par1NBTTagCompound.setInteger("aggroMax", this.aggroMax);
-		par1NBTTagCompound.setByte("textureState", this.textureState);
+		this.rotationYawHead = f2;
+		this.renderYawOffset = this.rotationYaw;
 	}
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound par1NBTTagCompound)
+	public void writeEntityToNBT(NBTTagCompound rootTag)
 	{
-		super.readEntityFromNBT(par1NBTTagCompound);
-		this.soundTime = par1NBTTagCompound.getFloat("soundTime");
+		super.writeEntityToNBT(rootTag);
+		rootTag.setInteger("Aggro", this.aggro);
+	}
+
+	@Override
+	public void readEntityFromNBT(NBTTagCompound rootTag)
+	{
+		super.readEntityFromNBT(rootTag);
 		
-		//make them load with half aggro so they dont instantly teleport players
-		this.aggro = par1NBTTagCompound.getFloat("aggro")/2;
-		this.aggroMax = par1NBTTagCompound.getInteger("aggroMax");
-		this.textureState = par1NBTTagCompound.getByte("textureState");
+		// Load Monoliths with half aggro so they don't teleport players instantly
+		this.aggro = (byte) (rootTag.getInteger("Aggro") / 2);
 	}
 
 	@Override
@@ -282,7 +293,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		@SuppressWarnings("rawtypes")
 		List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.getBoundingBox( this.posX-15, posY-4, this.posZ-15, this.posX+15, this.posY+15, this.posZ+15));
 
-		if(this.worldObj.provider.dimensionId==DDProperties.instance().LimboDimensionID)
+		if (this.worldObj.provider.dimensionId == DDProperties.instance().LimboDimensionID)
 		{
 			if(list.size()>0)
 			{
@@ -290,7 +301,7 @@ public class MobMonolith extends EntityFlying implements IMob
 			}
 
 		}
-		else if(this.worldObj.provider instanceof PocketProvider)	
+		else if(this.worldObj.provider instanceof PocketProvider)
 		{
 			if (list.size() > 5 ||
 					this.worldObj.canBlockSeeTheSky((int)this.posX, (int)this.posY, (int)this.posZ))
@@ -301,10 +312,5 @@ public class MobMonolith extends EntityFlying implements IMob
 		return this.worldObj.checkNoEntityCollision(this.boundingBox) &&
 				this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() &&
 				!this.worldObj.isAnyLiquid(this.boundingBox);
-	}
-
-	public DataWatcher getDataWatcher()
-	{
-		return this.dataWatcher;
 	}
 }
