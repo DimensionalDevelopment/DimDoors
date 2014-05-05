@@ -178,8 +178,9 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 		if (tile instanceof TileEntityDimDoor)
 		{
+			int metadata = world.getBlockMetadata(x, y, z);
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
-			dimTile.openOrClosed = this.isDoorOnRift(world, x, y, z);
+			dimTile.openOrClosed = this.isDoorOnRift(world, x, y, z)&&this.isUpperDoorBlock(metadata);
 			dimTile.orientation = this.getFullMetadata(world, x, y, z) & 7;
 		}
 		return this;
