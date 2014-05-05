@@ -213,50 +213,50 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 				{
 				case 0:
 
-					GL11.glVertex3d(x + .01F, y, z);
-					GL11.glVertex3d(x + .01, y , z + 1.0D);
+					GL11.glVertex3d(x + .01F, y - 1, z);
+					GL11.glVertex3d(x + .01, y - 1, z + 1.0D);
 					GL11.glVertex3d(x + .01, y + 1, z + 1.0D);
 					GL11.glVertex3d(x + .01, y + 1, z);
 					break;
 				case 1:
 					GL11.glVertex3d(x, y + 1, z + .01);
 					GL11.glVertex3d(x + 1, y + 1, z + .01);
-					GL11.glVertex3d(x + 1, y , z + .01);
-					GL11.glVertex3d(x, y , z + .01);
+					GL11.glVertex3d(x + 1, y -1, z + .01);
+					GL11.glVertex3d(x, y -1, z + .01);
 					break;
 				case 2:
 					GL11.glVertex3d(x + .99, y + 1, z);
 					GL11.glVertex3d(x + .99, y + 1, z + 1.0D);
-					GL11.glVertex3d(x + .99, y , z + 1.0D);
-					GL11.glVertex3d(x + .99, y , z);
+					GL11.glVertex3d(x + .99, y - 1, z + 1.0D);
+					GL11.glVertex3d(x + .99, y - 1, z);
 					break;
 				case 3:
-					GL11.glVertex3d(x, y , z + .99);
-					GL11.glVertex3d(x + 1, y , z + .99);
+					GL11.glVertex3d(x, y -1, z + .99);
+					GL11.glVertex3d(x + 1, y -1, z + .99);
 					GL11.glVertex3d(x + 1, y + 1, z + .99);
 					GL11.glVertex3d(x, y + 1, z + .99);
 					break;
 				case 4:
-					GL11.glVertex3d(x + .15F, y , z);
-					GL11.glVertex3d(x + .15, y , z + 1.0D);
+					GL11.glVertex3d(x + .15F, y - 1 , z);
+					GL11.glVertex3d(x + .15, y - 1, z + 1.0D);
 					GL11.glVertex3d(x + .15, y + 1, z + 1.0D);
 					GL11.glVertex3d(x + .15, y + 1, z);
 					break;
 				case 5:
 					GL11.glVertex3d(x, y + 1, z + .15);
 					GL11.glVertex3d(x + 1, y + 1, z + .15);
-					GL11.glVertex3d(x + 1, y , z + .15);
-					GL11.glVertex3d(x, y , z + .15);
+					GL11.glVertex3d(x + 1, y - 1, z + .15);
+					GL11.glVertex3d(x, y - 1, z + .15);
 					break;
 				case 6:
 					GL11.glVertex3d(x + .85, y + 1, z);
 					GL11.glVertex3d(x + .85, y + 1, z + 1.0D);
-					GL11.glVertex3d(x + .85, y , z + 1.0D);
-					GL11.glVertex3d(x + .85, y , z);
+					GL11.glVertex3d(x + .85, y - 1, z + 1.0D);
+					GL11.glVertex3d(x + .85, y - 1, z);
 					break;
 				case 7:
-					GL11.glVertex3d(x, y , z + .85);
-					GL11.glVertex3d(x + 1, y , z + .85);
+					GL11.glVertex3d(x, y - 1, z + .85);
+					GL11.glVertex3d(x + 1, y - 1, z + .85);
 					GL11.glVertex3d(x + 1, y + 1, z + .85);
 					GL11.glVertex3d(x, y + 1, z + .85);
 					break;
