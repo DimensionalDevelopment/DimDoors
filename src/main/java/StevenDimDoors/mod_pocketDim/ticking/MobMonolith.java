@@ -21,7 +21,8 @@ import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 
 public class MobMonolith extends EntityFlying implements IMob
 {
-	public static final byte MAX_AGGRO = 100;
+	private static final short MAX_AGGRO = 200;
+	private static final short MAX_AGGRO_CAP = 60;
 	private static final int MAX_TEXTURE_STATE = 18;
 	private static final int MAX_SOUND_COOLDOWN = 200;
 	private static final int MAX_AGGRO_RANGE = 35;
@@ -32,16 +33,18 @@ public class MobMonolith extends EntityFlying implements IMob
 	private static final float EYE_HEIGHT = HEIGHT / 2;
 	
 	public float pitchLevel;
-	private byte aggro = 0;
+	private short aggro = 0;
 	private int soundTime = 0;
+	private final short aggroCap;
 
 	private static DDProperties properties = null;
 
-	public MobMonolith(World par1World) 
+	public MobMonolith(World world) 
 	{
-		super(par1World);
+		super(world);
 		this.setSize(WIDTH, HEIGHT);
 		this.noClip = true;
+		this.aggroCap = (short) this.rand.nextInt(MAX_AGGRO_CAP + 1);
 		if (properties == null)
 			properties = DDProperties.instance();
 	}
@@ -113,8 +116,8 @@ public class MobMonolith extends EntityFlying implements IMob
 	protected void entityInit()
 	{
 		super.entityInit();
-		// Add a byte for the aggro level
-		this.dataWatcher.addObject(AGGRO_WATCHER_INDEX, Byte.valueOf((byte) 0));
+		// Add a short for the aggro level
+		this.dataWatcher.addObject(AGGRO_WATCHER_INDEX, Short.valueOf((short) 0));
 	}
 
 	@Override
@@ -138,18 +141,26 @@ public class MobMonolith extends EntityFlying implements IMob
 		
 		// Check for players and update aggro levels even if there are no players in range
 		EntityPlayer player = this.worldObj.getClosestPlayerToEntity(this, MAX_AGGRO_RANGE);
-		boolean visibility = (player != null) ? this.canEntityBeSeen(player) : false;
+		boolean visibility = (player != null) ? player.canEntityBeSeen(this) : false;
 		this.updateAggroLevel(player, visibility);
-
+		
 		// Change orientation and face a player if one is in range
 		if (player != null)
 		{
 			this.facePlayer(player);
-			this.playSounds(player);
+			if (!this.worldObj.isRemote)
+			{
+				// Play sounds on the server side
+				this.playSounds(player);
+			}
 
 			if (visibility)
 			{
-				this.spawnParticles(player);
+				// Only spawn particles on the client side and outside Limbo
+				if (this.worldObj.isRemote && !(this.worldObj.provider instanceof LimboProvider))
+				{
+					this.spawnParticles(player);
+				}
 				
 				// Teleport the target player if various conditions are met
 				if (aggro >= MAX_AGGRO && !this.worldObj.isRemote &&
@@ -171,41 +182,40 @@ public class MobMonolith extends EntityFlying implements IMob
 		if (!this.worldObj.isRemote)
 		{
 			// Server side...
-			if (player != null)
+			// Rapidly increase the aggro level if this Monolith can see the player
+			if (visibility)
 			{
-				// Rapidly increase the aggro level if this Monolith can see the player
-				if (visibility)
+				if (this.worldObj.provider instanceof LimboProvider)
 				{
-					if (this.worldObj.provider instanceof LimboProvider)
-					{
-						// Don't spawn particles in Limbo since we won't teleport the player
-						aggro += 1;
-					}
-					else
-					{
-						// Aggro increases faster outside of Limbo
-						aggro += 2;
-					}
+					aggro++;
 				}
 				else
 				{
-					// Aggro increases slightly if the player is nearby, but this increase is capped
-					aggro += 2 - (this.getDistanceToEntity(player) / MAX_AGGRO_RANGE);
+					// Aggro increases faster outside of Limbo
+					aggro += 4;
 				}
 			}
 			else
 			{
-				// Decrease aggro over time
-				aggro *= 0.98;
+				if (aggro >= aggroCap)
+				{
+					// Decrease aggro over time
+					aggro--;
+				}
+				else if (player != null)
+				{
+					// Increase aggro if a player is within range and aggro < aggroCap
+					aggro++;
+				}
 			}
 			// Clamp the aggro level
-			aggro = (byte) MathHelper.clamp_int(aggro, 0, MAX_AGGRO_RANGE);
-			this.dataWatcher.updateObject(AGGRO_WATCHER_INDEX, Byte.valueOf(aggro));
+			aggro = (short) MathHelper.clamp_int(aggro, 0, MAX_AGGRO);
+			this.dataWatcher.updateObject(AGGRO_WATCHER_INDEX, Short.valueOf(aggro));
 		}
 		else
 		{
 			// Client side...
-			aggro = this.dataWatcher.getWatchableObjectByte(AGGRO_WATCHER_INDEX);
+			aggro = this.dataWatcher.getWatchableObjectShort(AGGRO_WATCHER_INDEX);
 		}
 	}
 	
@@ -284,7 +294,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		super.readEntityFromNBT(rootTag);
 		
 		// Load Monoliths with half aggro so they don't teleport players instantly
-		this.aggro = (byte) (rootTag.getInteger("Aggro") / 2);
+		this.aggro = (short) (rootTag.getInteger("Aggro") / 2);
 	}
 
 	@Override
