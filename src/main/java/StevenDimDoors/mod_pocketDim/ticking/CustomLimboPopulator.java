@@ -1,6 +1,5 @@
 package StevenDimDoors.mod_pocketDim.ticking;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -65,7 +64,7 @@ public class CustomLimboPopulator implements IRegularTickReceiver {
 							limboWorld = PocketManager.loadDimension(properties.LimboDimensionID);
 						}
 						placeMonolithsInLimbo(limboWorld, location.ChunkX, location.ChunkZ);
-						mod_pocketDim.instance.gatewayGenerator.generate(limboWorld.rand, location.ChunkX, location.ChunkZ,
+						mod_pocketDim.gatewayGenerator.generate(limboWorld.rand, location.ChunkX, location.ChunkZ,
 								limboWorld, limboWorld.getChunkProvider(), limboWorld.getChunkProvider());
 					}
 					else

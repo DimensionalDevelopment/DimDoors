@@ -33,7 +33,7 @@ public class RiftRegenerator implements IRegularTickReceiver {
 	{
 		// Regenerate rifts that have been replaced (not permanently removed) by players
 		// Only do this in dimensions that are currently loaded
-		List<Integer> loadedWorlds = (List<Integer>) Arrays.asList(DimensionManager.getIDs());
+		List<Integer> loadedWorlds = Arrays.asList(DimensionManager.getIDs());
 		for (Integer dimensionID : loadedWorlds)
     	{
 			NewDimData dimension = PocketManager.getDimensionData(dimensionID);
