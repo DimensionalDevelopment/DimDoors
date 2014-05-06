@@ -75,13 +75,14 @@ public class RenderMobObelisk extends RenderLiving
 
 			float f6 = 0.0625F;
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
 			GL11.glScalef(-1.0F, -1.0F, 1.0F);
 			this.preRenderCallback(par1EntityLivingBase, par9);
             GL11.glRotatef(((MobMonolith)par1EntityLivingBase).pitchLevel , 1.0F, 0.0F, 0.0F);
+    		GL11.glTranslatef(0.0F, 24.0F * f6 - 0.0078125F, 0.0F);
 
-			GL11.glTranslatef(0.0F, -24.0F * f6 - 0.0078125F, 0.0F);
 
-			this.renderModel(par1EntityLivingBase, 0, 0, rotation, interpolatedYawHead - interpolatedYaw, pitch, f6);
+			this.renderModel(par1EntityLivingBase, 0, 0, rotation, interpolatedYaw, pitch, f6);
 
 			OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
