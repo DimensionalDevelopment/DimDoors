@@ -22,7 +22,6 @@ import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 public class MobMonolith extends EntityFlying implements IMob
 {
 	private static final short MAX_AGGRO = 200;
-	private static final short MAX_AGGRO_CAP = 60;
 	private static final int MAX_TEXTURE_STATE = 18;
 	private static final int MAX_SOUND_COOLDOWN = 200;
 	private static final int MAX_AGGRO_RANGE = 35;
@@ -35,7 +34,6 @@ public class MobMonolith extends EntityFlying implements IMob
 	public float pitchLevel;
 	private short aggro = 0;
 	private int soundTime = 0;
-	private final short aggroCap;
 
 	private static DDProperties properties = null;
 
@@ -44,7 +42,6 @@ public class MobMonolith extends EntityFlying implements IMob
 		super(world);
 		this.setSize(WIDTH, HEIGHT);
 		this.noClip = true;
-		this.aggroCap = (short) this.rand.nextInt(MAX_AGGRO_CAP + 1);
 		if (properties == null)
 			properties = DDProperties.instance();
 	}
@@ -58,11 +55,7 @@ public class MobMonolith extends EntityFlying implements IMob
 	@Override
 	public boolean attackEntityFrom(DamageSource par1DamageSource, float par2)
 	{
-		if (par1DamageSource == DamageSource.inWall)
-		{
-			this.posY = posY + 1;
-		}
-		else
+		if (!(par1DamageSource == DamageSource.inWall))
 		{
 			this.aggro = MAX_AGGRO;
 		}
@@ -181,31 +174,29 @@ public class MobMonolith extends EntityFlying implements IMob
 		// If we're working on the client side, retrieve aggro level from dataWatcher
 		if (!this.worldObj.isRemote)
 		{
-			// Server side...
-			// Rapidly increase the aggro level if this Monolith can see the player
-			if (visibility)
+			//Server side..
+			//aggro constantly decreases at a rate that varies with the current amount of aggro. 
+			if(aggro > 0)
 			{
-				if (this.worldObj.provider instanceof LimboProvider)
-				{
-					aggro++;
-				}
-				else
-				{
-					// Aggro increases faster outside of Limbo
-					aggro += 4;
-				}
+				this.aggro -= (short)(this.aggro/(this.MAX_AGGRO/4));
 			}
-			else
+			if(player != null)
 			{
-				if (aggro >= aggroCap)
-				{
-					// Decrease aggro over time
-					aggro--;
-				}
-				else if (player != null)
-				{
-					// Increase aggro if a player is within range and aggro < aggroCap
-					aggro++;
+				//monoliths increase aggro slightly if the player is near, but slowly and to a cap. 
+				aggro+= 1.5-(this.getDistanceToEntity(player)/this.MAX_AGGRO_RANGE);
+
+				//rapidly increase aggro if the monolith has line of sight to the player.
+				if(visibility)
+				{				
+					//reduce the rate at which aggro increases in limbo
+					if(this.worldObj.provider instanceof LimboProvider)
+					{
+						aggro+=1.5;
+					}
+					else
+					{
+						aggro+=3;
+					}
 				}
 			}
 			// Clamp the aggro level
