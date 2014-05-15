@@ -298,4 +298,9 @@ public class DungeonPack
 		WeightedContainer<DungeonData> resultContainer = (WeightedContainer<DungeonData>) WeightedRandom.getRandomItem(random, weights);
 		return 	(resultContainer != null) ? resultContainer.getData() : null;
 	}
+	@Override
+	public String toString()
+	{
+		return this.name;
+	}
 }
