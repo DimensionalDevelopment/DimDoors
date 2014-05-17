@@ -181,33 +181,8 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 
 			GL11.glBegin(GL11.GL_QUADS);
 			
-			// Set the portal's color depending on whether it's in the Nether
-			float var21, var22, var23;
-			NewDimData dimension = PocketManager.getDimensionData(tile.worldObj);
-			if (dimension.root().id() == NETHER_DIMENSION_ID)
-			{
-				var21 = rand.nextFloat() * 0.5F + 0.4F;
-				var22 = rand.nextFloat() * 0.05F;
-				var23 = rand.nextFloat() * 0.05F;
-				if (count == 0)
-				{
-					var21 = 1.0F;
-				}
-			}
-			else
-			{
-				var21 = rand.nextFloat() * 0.5F + 0.1F;
-				var22 = rand.nextFloat() * 0.4F + 0.4F;
-				var23 = rand.nextFloat() * 0.6F + 0.5F;
-				if (count == 0)
-				{
-					var23 = 1.0F;
-					var22 = 1.0F;
-				}
-			}
-			
-			GL11.glColor4d(var21 * var17, var22 * var17, var23 * var17, 1.0F);
-			
+			float[] color = tile.getRenderColor(rand);
+			GL11.glColor4f(color[0] * var17, color[1] * var17, color[2] * var17, color[3]);
 
 				switch (tile.orientation)
 				{

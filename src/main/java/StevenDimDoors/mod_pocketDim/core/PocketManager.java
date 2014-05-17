@@ -424,7 +424,8 @@ public class PocketManager
 				{
 					System.out.println("Importing old DD save data...");
 					OldSaveImporter.importOldSave(oldSaveData);
-					oldSaveData.delete();
+					
+					oldSaveData.renameTo(new File(oldSaveData.getAbsolutePath()+"_IMPORTED"));
 
 					System.out.println("Import Succesful!");
 				}
