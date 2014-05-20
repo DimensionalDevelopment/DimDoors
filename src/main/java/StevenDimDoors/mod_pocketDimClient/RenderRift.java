@@ -39,7 +39,7 @@ public class RenderRift extends TileEntitySpecialRenderer
 	    GL11.glColor4f(.2F, .2F, .2F, 1F);
 	    
 	    GL11.glEnable(GL_BLEND);
-	    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+	    glBlendFunc(GL11.GL_SRC_ALPHA_SATURATE,GL_ONE_MINUS_DST_COLOR);
 
 	    /**
 	     * just draws the verticies

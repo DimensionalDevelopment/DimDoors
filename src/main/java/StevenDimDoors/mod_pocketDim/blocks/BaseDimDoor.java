@@ -22,7 +22,6 @@ import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.ItemDDKey;
-import StevenDimDoors.mod_pocketDim.items.ItemDDLockCreator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -331,10 +330,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public void onNeighborBlockChange(World world, int x, int y, int z, int neighborID)
 	{
-		if(this.hasLock(world, x, y, z))
-		{
-			return;
-		}
+		
 		int metadata = world.getBlockMetadata(x, y, z);
 		if (isUpperDoorBlock(metadata))
 		{
@@ -342,7 +338,6 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			{
 				world.setBlock(x, y, z, 0);
 			}
-			
 			if (neighborID > 0 && neighborID != this.blockID)
 			{
 				this.onNeighborBlockChange(world, x, y - 1, z, neighborID);
@@ -358,7 +353,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 					this.dropBlockAsItem(world, x, y, z, metadata, 0);
 				}
 			}
-			else
+			else if(!this.hasLock(world, x, y, z))
 			{
 				boolean powered = world.isBlockIndirectlyGettingPowered(x, y, z) || world.isBlockIndirectlyGettingPowered(x, y + 1, z);
 				if ((powered || neighborID > 0 && Block.blocksList[neighborID].canProvidePower()) && neighborID != this.blockID)
@@ -490,7 +485,6 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			return false;
 		}
 		DimLink link = getLink(world, x, y, z);
-		ItemStack itemStack;
 		
 		for(ItemStack item : player.inventory.mainInventory)
 		{
@@ -498,7 +492,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			{
 				if(item.getItem() instanceof ItemDDKey)
 				{
-					if(ItemDDKey.getBoundLink(item)==link)
+					if(((ItemDDKey) item.getItem()).canKeyOpen(link, item))
 					{
 						return true;
 					}

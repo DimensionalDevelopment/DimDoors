@@ -1,15 +1,21 @@
 package StevenDimDoors.mod_pocketDim;
 
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.items.ItemDDKey;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import cpw.mods.fml.common.ICraftingHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import static StevenDimDoors.mod_pocketDim.mod_pocketDim.*;
 
-public class CraftingManager
+public class CraftingManager implements ICraftingHandler
 {
-	private CraftingManager() { }
+	CraftingManager() { }
 	
 	public static void registerRecipes(DDProperties properties)
 	{
@@ -86,6 +92,55 @@ public class CraftingManager
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldenDoor, 1),
 				"yy", "yy", "yy", 'y', Item.ingotGold);
 		}
+		if (properties.CraftingDDKeysAllowed)
+		{
+			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemDDKey, 1),
+				" x ", " x ", "yzy", 'y', Item.ingotGold, 'x', Item.ingotIron, 'z', mod_pocketDim.itemStableFabric);
+			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemDDKey, 1),
+					"z", "z", 'z', mod_pocketDim.itemDDKey);
+		}
+		
+	}
+
+	@Override
+	public void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix)
+	{
+		if(item.getItem() instanceof ItemDDKey)
+		{
+			ItemDDKey keyItem = (ItemDDKey) item.getItem();
+			ItemStack topKey = null;
+			ItemStack bottomKey = null;
+			int topKeySlot = 0;
+			
+			for(int i = 0; i<craftMatrix.getSizeInventory();i++)
+			{
+				ItemStack slot = craftMatrix.getStackInSlot(i);
+				if(slot!=null)
+				{
+					if(topKey==null)
+					{
+						topKey = slot;
+						topKeySlot = i;
+					}
+					else 
+					{
+						bottomKey = slot;
+						break;
+					}
+				}
+			}
+			keyItem.addDoorToKey(topKey, bottomKey);
+			item.setTagCompound(bottomKey.getTagCompound());
+			player.inventory.addItemStackToInventory(topKey);
+		}
+		
+	}
+
+	@Override
+	public void onSmelting(EntityPlayer player, ItemStack item)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

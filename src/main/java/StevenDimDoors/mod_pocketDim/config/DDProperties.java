@@ -47,7 +47,6 @@ public class DDProperties
 	public final int WarpDoorItemID;
 	public final int WorldThreadItemID;
 	public final int DDKeyItemID;
-	public final int DDLockCreatorItemID;
 
 
 	/**
@@ -77,6 +76,8 @@ public class DDProperties
 	public final boolean CraftingStableFabricAllowed;
 	public final boolean CraftingGoldenDimensionalDoorAllowed;
 	public final boolean CraftingGoldenDoorAllowed;
+	public final boolean CraftingDDKeysAllowed;
+
 	
 	/**
 	 * Loot Flags
@@ -149,7 +150,8 @@ public class DDProperties
 		CraftingStableFabricAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Stable Fabric", true).getBoolean(true);
 		CraftingGoldenDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Golden Door", true).getBoolean(true);
 		CraftingGoldenDimensionalDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Golden Dimensional Door", true).getBoolean(true);
-		
+		CraftingDDKeysAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Rift Keys", true).getBoolean(true);
+
 		WorldThreadRequirementLevel = config.get(CATEGORY_CRAFTING, "World Thread Requirement Level", 4,
 				"Controls the amount of World Thread needed to craft Stable Fabric. The number must be an " +
 				"integer from 1 to 4. The levels change the recipe to use 1, 2, 4, or 8 threads, respectively. The default level is 4.").getInt();
@@ -207,7 +209,6 @@ public class DDProperties
 		GoldenDimensionalDoorItemID = config.getItem("Gold Dim Door Item ID", 5679).getInt();
 		WorldThreadItemID = config.getItem("World Thread Item ID", 5680).getInt();
 		DDKeyItemID = config.getItem("Rift Key Item ID", 5681).getInt();
-		DDLockCreatorItemID = config.getItem("Rift Interlock Item ID", 5682).getInt();
 
 		LimboBlockID = config.getTerrainBlock("World Generation Block IDs - must be less than 256", "Limbo Block ID", 217,
 				"Blocks used for the terrain in Limbo").getInt();
