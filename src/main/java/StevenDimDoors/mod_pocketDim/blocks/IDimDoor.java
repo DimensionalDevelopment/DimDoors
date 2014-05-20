@@ -13,4 +13,7 @@ public interface IDimDoor
 	public int getDrops();
 	
 	public TileEntity initDoorTE(World world, int x, int y, int z);
+	
+	public boolean isDoorOnRift(World world, int x, int y, int z);
+	
 }

@@ -66,7 +66,7 @@ public class PocketBuilder
 		if(originLink==null)
 		{
 			int orientation = linkIn.orientation();
-			originLink=dimension.createLink(oldLinkPos, LinkTypes.SAFE_EXIT, (orientation+2)%4);
+			originLink=dimension.createLink(oldLinkPos, LinkTypes.SAFE_EXIT, (orientation+2)%4, false);
 			return false;
 		}
 		//The link that originally created the dungeon on the way in
@@ -75,7 +75,7 @@ public class PocketBuilder
 		{
 			int orientation = linkIn.orientation();
 			dimension.deleteLink(originLink);
-			dimension.createLink(oldLinkPos, LinkTypes.SAFE_EXIT, (orientation+2)%4);
+			dimension.createLink(oldLinkPos, LinkTypes.SAFE_EXIT, (orientation+2)%4, false);
 			return false;
 		}
 		NewDimData parent = PocketManager.getDimensionData(incomingLink.source().getDimension());

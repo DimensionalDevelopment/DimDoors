@@ -197,7 +197,7 @@ public class DDSaveHandler
 					linkType = LinkTypes.NORMAL;
 				}
 				
-				DimLink link = data.createLink(packedLink.source, linkType, packedLink.orientation);
+				DimLink link = data.createLink(packedLink.source, linkType, packedLink.orientation, packedLink.locked);
 				Point4D destination = packedLink.tail.destination;
 				if(destination!=null)
 				{
@@ -216,7 +216,7 @@ public class DDSaveHandler
 				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
 				if(data.getLink(packedLink.parent)!=null)
 				{
-					data.createChildLink(packedLink.source.getX(), packedLink.source.getY(), packedLink.source.getZ(), data.getLink(packedLink.parent));
+					data.createChildLink(packedLink.source, data.getLink(packedLink.parent), packedLink.locked);
 				}
 				unpackedLinks.add(packedLink);
 			}

@@ -202,6 +202,8 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 	
 	private PackedLinkData createLinkDataFromJson(JsonReader reader) throws IOException
 	{
+		boolean locked = false;
+
 		Point4D source;
 		Point3D parent;
 		PackedLinkTail tail;
@@ -230,9 +232,16 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 			children.add(this.createPointFromJson(reader));
 		}
 		reader.endArray();
+		
+		if(reader.peek()== JsonToken.NAME)
+		{
+			reader.nextName();
+			locked = reader.nextBoolean();
+			
+		}
 		reader.endObject();
 		
-		return new PackedLinkData(source, parent, tail, orientation, children);
+		return new PackedLinkData(source, parent, tail, orientation, children, locked);
 	}
 	private PackedDungeonData createDungeonDataFromJson(JsonReader reader) throws IOException
 	{
@@ -293,6 +302,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		}
 		
 		linkType = reader.nextInt();
+		
 		reader.endObject();
 		
 		return new PackedLinkTail(destination, linkType);

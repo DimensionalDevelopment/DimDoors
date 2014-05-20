@@ -42,6 +42,8 @@ import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.ChunkLoaderHelper;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemBlockDimWall;
+import StevenDimDoors.mod_pocketDim.items.ItemDDKey;
+import StevenDimDoors.mod_pocketDim.items.ItemDDLockCreator;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemGoldDimDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemGoldDoor;
@@ -136,6 +138,8 @@ public class mod_pocketDim
 	public static Item itemStableFabric;
 	public static Item itemUnstableDoor;
 	public static Item itemStabilizedLinkSignature;
+	public static Item itemDDKey;
+	public static Item itemDDLockCreator;
 
 	public static BiomeGenBase limboBiome;
 	public static BiomeGenBase pocketBiome;
@@ -209,6 +213,8 @@ public class mod_pocketDim
 		dimensionalDoor = (DimensionalDoor) (new DimensionalDoor(properties.DimensionalDoorID, Material.iron, properties).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor"));
 		transTrapdoor = (TransTrapdoor) (new TransTrapdoor(properties.TransTrapdoorID, Material.wood).setHardness(1.0F) .setUnlocalizedName("dimHatch"));
 
+		itemDDKey = (new ItemDDKey(properties.DDKeyItemID)).setUnlocalizedName("itemDDKey");
+		itemDDLockCreator = (new ItemDDLockCreator(properties.DDLockCreatorItemID)).setUnlocalizedName("itemDDLockCreator");
 		itemGoldenDoor = (new ItemGoldDoor(properties.GoldenDoorItemID, Material.wood)).setUnlocalizedName("itemGoldDoor");
 		itemGoldenDimensionalDoor = (new ItemGoldDimDoor(properties.GoldenDimensionalDoorItemID, Material.iron, (ItemDoor)this.itemGoldenDoor)).setUnlocalizedName("itemGoldDimDoor");
 		itemDimensionalDoor = (ItemDimensionalDoor) (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron, (ItemDoor)Item.doorIron)).setUnlocalizedName("itemDimDoor");
@@ -272,6 +278,8 @@ public class mod_pocketDim
 		LanguageRegistry.addName(itemDimensionalDoor, "Dimensional Door");
 		LanguageRegistry.addName(itemRiftBlade, "Rift Blade");
 		LanguageRegistry.addName(itemWorldThread, "World Thread");
+		LanguageRegistry.addName(itemDDKey, "Unbound Rift Key");
+		LanguageRegistry.addName(itemDDLockCreator, "Unbound Rift Interlock");
 
 		/**
 		 * Add names for multiblock inventory item

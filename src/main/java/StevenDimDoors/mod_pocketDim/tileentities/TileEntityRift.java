@@ -32,6 +32,7 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 
 public class TileEntityRift extends DDTileEntityBase
 {
@@ -375,7 +376,7 @@ public class TileEntityRift extends DDTileEntityBase
 	{
 		if (PocketManager.getLink(xCoord, yCoord, zCoord, worldObj) != null)
 		{
-			return ServerPacketHandler.createLinkPacket(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj).link());
+			return ServerPacketHandler.createLinkPacket(new ClientLinkData(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)));
 		}
 		return null;
 	}

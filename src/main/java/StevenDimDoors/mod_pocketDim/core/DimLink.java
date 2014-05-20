@@ -8,27 +8,31 @@ import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 
 public abstract class DimLink
 {	
-	protected ClientLinkData link;
+	protected Point4D point;
+	protected int orientation;
+	protected boolean isLocked;
 	protected DimLink parent;
 	protected LinkTail tail;
 	protected List<DimLink> children;
 	
-	protected DimLink(ClientLinkData link, DimLink parent)
+	protected DimLink(Point4D point, int orientation, boolean locked, DimLink parent)
 	{
 		
-		if (parent.link.point.getDimension() != link.point.getDimension())
+		if (parent.point.getDimension() != point.getDimension())
 		{
 			// Ban having children in other dimensions to avoid serialization issues with cross-dimensional tails
 			throw new IllegalArgumentException("source and parent.source must have the same dimension.");
 		}
 		this.parent = parent;
-		this.link = link;
+		this.point = point;
 		this.tail = parent.tail;
+		this.orientation = orientation;
+		this.isLocked = locked;
 		this.children = new LinkedList<DimLink>();
 		parent.children.add(this);
 	}
 	
-	protected DimLink(ClientLinkData link, int linkType)
+	protected DimLink(Point4D point, int orientation, boolean locked, int linkType)
 	{
 		if ((linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX) && linkType != LinkTypes.CLIENT_SIDE)
 		{
@@ -36,24 +40,41 @@ public abstract class DimLink
 		}
 
 		this.parent = null;
-		this.link = link;
+		this.point = point;
+		this.orientation = orientation;
+		this.isLocked = locked;
 		this.tail = new LinkTail(linkType, null);
 		this.children = new LinkedList<DimLink>();
 	}
 
 	public Point4D source()
 	{
-		return link.point;
+		return point;
 	}
 
+	public void clear()
+	{
+		//Release children
+		for (DimLink child : children)
+		{
+			 child.parent = null;
+		}
+		children.clear();
+		
+		//Release parent
+		if (parent != null)
+		{
+			parent.children.remove(this);
+		}
+		
+		parent = null;
+		point = null;
+		tail = new LinkTail(0, null);
+	}
+	
 	public int orientation()
 	{
-		return link.orientation;
-	}
-
-	public ClientLinkData link()
-	{
-		return link;
+		return orientation;
 	}
 
 	public Point4D destination()
@@ -93,9 +114,19 @@ public abstract class DimLink
 	{
 		return tail.getLinkType();
 	}
+	
+	public boolean isLocked()
+	{
+		return isLocked;
+	}
+	
+	public void setLocked(boolean bol)
+	{
+		isLocked = bol;
+	}
 
 	public String toString()
 	{
-		return link.point + " -> " + (hasDestination() ? destination() : "");
+		return point + " -> " + (hasDestination() ? destination() : "");
 	}
 }

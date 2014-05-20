@@ -46,6 +46,8 @@ public class DDProperties
 	public final int UnstableDoorItemID;
 	public final int WarpDoorItemID;
 	public final int WorldThreadItemID;
+	public final int DDKeyItemID;
+	public final int DDLockCreatorItemID;
 
 
 	/**
@@ -204,6 +206,8 @@ public class DDProperties
 		GoldenDoorItemID = config.getItem("Gold Door Item ID", 5678).getInt();
 		GoldenDimensionalDoorItemID = config.getItem("Gold Dim Door Item ID", 5679).getInt();
 		WorldThreadItemID = config.getItem("World Thread Item ID", 5680).getInt();
+		DDKeyItemID = config.getItem("Rift Key Item ID", 5681).getInt();
+		DDLockCreatorItemID = config.getItem("Rift Interlock Item ID", 5682).getInt();
 
 		LimboBlockID = config.getTerrainBlock("World Generation Block IDs - must be less than 256", "Limbo Block ID", 217,
 				"Blocks used for the terrain in Limbo").getInt();

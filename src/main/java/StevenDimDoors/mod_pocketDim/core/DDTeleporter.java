@@ -485,7 +485,7 @@ public class DDTeleporter
 		{
 			if(PocketManager.isBlackListed(link.destination().getDimension()))
 			{
-				link=PocketManager.getDimensionData(link.source().getDimension()).createLink(link.link.point,LinkTypes.SAFE_EXIT,link.link.orientation);
+				link=PocketManager.getDimensionData(link.source().getDimension()).createLink(link.point,LinkTypes.SAFE_EXIT,link.orientation, false);
 			}
 			else
 			{
@@ -561,7 +561,7 @@ public class DDTeleporter
 		// To avoid loops, don't generate a destination if the player is
 		// already in a non-pocket dimension.
 		
-		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
+		NewDimData current = PocketManager.getDimensionData(link.point.getDimension());
 		if (current.isPocketDimension())
 		{
 			Point4D source = link.source();
@@ -585,7 +585,7 @@ public class DDTeleporter
 	{
 		World startWorld = PocketManager.loadDimension(link.source().getDimension());
 		World destWorld = PocketManager.loadDimension(link.destination().getDimension());
-		TileEntity doorTE = startWorld.getBlockTileEntity(link.source().getX(), link.source().getY(), link.link.point.getZ());
+		TileEntity doorTE = startWorld.getBlockTileEntity(link.source().getX(), link.source().getY(), link.point.getZ());
 		if(doorTE instanceof TileEntityDimDoor)
 		{
 			if((TileEntityDimDoor.class.cast(doorTE).hasGennedPair))
@@ -617,7 +617,7 @@ public class DDTeleporter
 	}
 	private static boolean generateSafeExit(DimLink link, DDProperties properties)
 	{
-		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
+		NewDimData current = PocketManager.getDimensionData(link.point.getDimension());
 		return generateSafeExit(current.root(), link, properties);
 	}
 	
@@ -628,7 +628,7 @@ public class DDTeleporter
 		// There is a chance of choosing the Nether first before other root dimensions
 		// to compensate for servers with many Mystcraft ages or other worlds.
 		
-		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
+		NewDimData current = PocketManager.getDimensionData(link.point.getDimension());
 		ArrayList<NewDimData> roots = PocketManager.getRootDimensions();
 		int shiftChance = START_ROOT_SHIFT_CHANCE + ROOT_SHIFT_CHANCE_PER_LEVEL * (current.packDepth() - 1);
 

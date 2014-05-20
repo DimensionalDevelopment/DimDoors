@@ -12,46 +12,31 @@ import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
+import StevenDimDoors.mod_pocketDim.saving.IPackable;
+import StevenDimDoors.mod_pocketDim.saving.PackedDimData;
+import StevenDimDoors.mod_pocketDim.saving.PackedDungeonData;
+import StevenDimDoors.mod_pocketDim.saving.PackedLinkData;
+import StevenDimDoors.mod_pocketDim.saving.PackedLinkTail;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 
-public abstract class NewDimData
+public abstract class NewDimData implements IPackable<PackedDimData>
 {
 	private static class InnerDimLink extends DimLink
 	{
-		public InnerDimLink(Point4D source, DimLink parent, int orientation)
+		public InnerDimLink(Point4D source, DimLink parent, int orientation, boolean isLocked)
 		{
-			super(new ClientLinkData(source, orientation), parent);
+			super(source, orientation, isLocked, parent);
 		}
 		
-		public InnerDimLink(Point4D source, int linkType, int orientation)
+		public InnerDimLink(Point4D source, int linkType, int orientation, boolean isLocked)
 		{
-			super(new ClientLinkData(source, orientation), linkType);
+			super(source, orientation, isLocked, linkType);
 		}
 
 		public void setDestination(int x, int y, int z, NewDimData dimension)
 		{
 			tail.setDestination(new Point4D(x, y, z, dimension.id()));
-		}
-		
-		public void clear()
-		{
-			//Release children
-			for (DimLink child : children)
-			{
-				((InnerDimLink) child).parent = null;
-			}
-			children.clear();
-			
-			//Release parent
-			if (parent != null)
-			{
-				parent.children.remove(this);
-			}
-			
-			parent = null;
-			link = null;
-			tail = new LinkTail(0, null);
 		}
 		
 		public boolean overwrite(InnerDimLink nextParent,int orientation)
@@ -65,7 +50,7 @@ public abstract class NewDimData
 				//Ignore this request silently
 				return false;
 			}
-			if (nextParent.link.point.getDimension() != link.point.getDimension())
+			if (nextParent.point.getDimension() != point.getDimension())
 			{
 				// Ban having children in other dimensions to avoid serialization issues with cross-dimensional tails
 				throw new IllegalArgumentException("source and parent.source must have the same dimension.");
@@ -88,7 +73,7 @@ public abstract class NewDimData
 			parent = nextParent;
 			tail = nextParent.tail;
 			nextParent.children.add(this);
-			this.link.orientation=orientation;
+			this.orientation=orientation;
 			return true;
 		}
 		
@@ -111,7 +96,7 @@ public abstract class NewDimData
 			parent = null;
 			tail = new LinkTail(linkType, null);
 			//Set new orientation
-			this.link.orientation=orientation;
+			this.orientation=orientation;
 		}
 	}
 	
@@ -294,16 +279,16 @@ public abstract class NewDimData
 	
 	public DimLink createLink(int x, int y, int z, int linkType, int orientation)
 	{
-		return createLink(new Point4D(x, y, z, id), linkType, orientation);
+		return createLink(new Point4D(x, y, z, id), linkType, orientation, false);
 	}
 	
-	public DimLink createLink(Point4D source, int linkType, int orientation)
+	public DimLink createLink(Point4D source, int linkType, int orientation, boolean locked)
 	{
 		//Return an existing link if there is one to avoid creating multiple links starting at the same point.
 		InnerDimLink link = linkMapping.get(source);
 		if (link == null)
 		{
-			link = new InnerDimLink(source, linkType, orientation);
+			link = new InnerDimLink(source, linkType, orientation, locked);
 			linkMapping.put(source, link);
 			linkList.add(link);
 		}
@@ -316,42 +301,41 @@ public abstract class NewDimData
 		//Link created!
 		if (linkType != LinkTypes.CLIENT_SIDE)
 		{
-			linkWatcher.onCreated(link.link);
+			linkWatcher.onCreated(new ClientLinkData(link));
 		}
 		return link;
 	}
 	
 	public DimLink createChildLink(int x, int y, int z, DimLink parent)
 	{
-		if (parent == null)
-		{
-			throw new IllegalArgumentException("parent cannot be null.");
-		}
-		
-		return createChildLink(new Point4D(x, y, z, id), (InnerDimLink) parent);
+		return createChildLink(new Point4D(x, y, z, id), (InnerDimLink) parent, false);
 	}
 	
-	private DimLink createChildLink(Point4D source, InnerDimLink parent)
+	public DimLink createChildLink(Point4D source, DimLink parent, boolean locked)
 	{
 		//To avoid having multiple links at a single point, if we find an existing link then we overwrite
 		//its destination data instead of creating a new instance.
 		
+		if (parent == null)
+		{
+			throw new IllegalArgumentException("parent cannot be null.");
+		}
 		InnerDimLink link = linkMapping.get(source);
 		if (link == null)
 		{
-			link = new InnerDimLink(source, parent, parent.link.orientation);
+			link = new InnerDimLink(source, parent, parent.orientation, locked);
 			linkMapping.put(source, link);
 			linkList.add(link);
 			
 			//Link created!
-			linkWatcher.onCreated(link.link);
+			linkWatcher.onCreated(new ClientLinkData(link));
 		}
 		else
 		{
-			if (link.overwrite(parent, parent.link.orientation))
+			if (link.overwrite((InnerDimLink) parent, parent.orientation))
 			{
 				//Link created!
-				linkWatcher.onCreated(link.link);
+				linkWatcher.onCreated(new ClientLinkData(link));
 			}
 		}
 		modified = true;
@@ -369,7 +353,7 @@ public abstract class NewDimData
 		{
 			linkList.remove(target);
 			//Raise deletion event
-			linkWatcher.onDeleted(target.link);
+			linkWatcher.onDeleted(new ClientLinkData(link));
 			target.clear();
 			modified = true;
 		}
@@ -604,6 +588,102 @@ public abstract class NewDimData
 	{
 		this.modified = false;
 	}
+	
+	public void clear()
+	{
+		// If this dimension has a parent, remove it from its parent's list of children
+		if (parent != null)
+		{
+			parent.children.remove(this);
+		}
+		// Remove this dimension as the parent of its children
+		for (NewDimData child : children)
+		{
+			child.parent = null;
+		}
+		// Clear all fields
+		id = Integer.MIN_VALUE;
+		linkMapping.clear();
+		linkMapping = null;
+		linkList.clear();
+		linkList = null;
+		children.clear();
+		children = null;
+		isDungeon = false;
+		isFilled = false;
+		depth = Integer.MIN_VALUE;
+		packDepth = Integer.MIN_VALUE;
+		origin = null;
+		orientation = Integer.MIN_VALUE;
+		dungeon = null;
+		linkWatcher = null;
+	}
+	
+	public PackedDimData pack()
+	{
+		ArrayList<Integer> ChildIDs = new ArrayList<Integer>();
+		ArrayList<PackedLinkData> Links = new ArrayList<PackedLinkData>();
+		ArrayList<PackedLinkTail> Tails = new ArrayList<PackedLinkTail>();
+		PackedDungeonData packedDungeon=null; 
+		
+		if(this.dungeon!=null)
+		{
+			packedDungeon= new PackedDungeonData(dungeon.weight(), dungeon.isOpen(), dungeon.isInternal(), 
+					dungeon.schematicPath(), dungeon.schematicName(), dungeon.dungeonType().Name, 
+					dungeon.dungeonType().Owner.getName());
+		}
+		//Make a list of children
+		for(NewDimData data : this.children)
+		{
+			ChildIDs.add(data.id);
+		}
+		for(DimLink link:this.links())
+		{
+			ArrayList<Point3D> children = new ArrayList<Point3D>();
+			Point3D parentPoint = new Point3D(-1,-1,-1);
+			if(link.parent!=null)
+			{
+				parentPoint=link.parent.point.toPoint3D();
+			}
+			
+			for(DimLink childLink : link.children)
+			{
+				children.add(childLink.source().toPoint3D());
+			}
+			PackedLinkTail tail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
+			Links.add(new PackedLinkData(link.point,parentPoint,tail,link.orientation,children,link.isLocked()));
+			
+			PackedLinkTail tempTail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
+			if(Tails.contains(tempTail))
+			{
+				Tails.add(tempTail);
+
+			}
+			
+			
+		}
+		int parentID=this.id;
+		Point3D originPoint=new Point3D(0,0,0);
+		if(this.parent!=null)
+		{
+			parentID = this.parent.id;
+		}
+		if(this.origin!=null)
+		{
+			originPoint=this.origin.toPoint3D();
+		}
+		return new PackedDimData(this.id, depth, this.packDepth, parentID, this.root().id(), orientation, 
+									isDungeon, isFilled,packedDungeon, originPoint, ChildIDs, Links, Tails);
+		// FIXME: IMPLEMENTATION PLZTHX
+		//I tried
+	}
+	
+	@Override
+	public String name()
+	{
+		return String.valueOf(id);
+	}
+
 	
 	public String toString()
 	{

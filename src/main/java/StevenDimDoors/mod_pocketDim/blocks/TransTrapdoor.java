@@ -18,7 +18,6 @@ import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 
-@SuppressWarnings("deprecation")
 public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntityProvider
 {
 
@@ -125,5 +124,11 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 		TileEntity te = this.createNewTileEntity(world);
 		world.setBlockTileEntity(x, y, z, te);
 		return te;
+	}
+
+	@Override
+	public boolean isDoorOnRift(World world, int x, int y, int z)
+	{
+		return PocketManager.getLink(x, y, z, world)!=null;
 	}
 }

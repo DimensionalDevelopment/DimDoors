@@ -41,7 +41,7 @@ import StevenDimDoors.mod_pocketDim.watcher.UpdateWatcherProxy;
  */
 public class PocketManager
 {	
-	private static class InnerDimData extends NewDimData implements IPackable<PackedDimData>
+	private static class InnerDimData extends NewDimData
 	{
 		// This class allows us to instantiate NewDimData indirectly without exposing
 		// a public constructor from NewDimData. It's meant to stop us from constructing
@@ -59,102 +59,7 @@ public class PocketManager
 			// This constructor is meant for client-side code only
 			super(id, root);
 		}
-		
-		public void clear()
-		{
-			// If this dimension has a parent, remove it from its parent's list of children
-			if (parent != null)
-			{
-				parent.children.remove(this);
-			}
-			// Remove this dimension as the parent of its children
-			for (NewDimData child : children)
-			{
-				child.parent = null;
-			}
-			// Clear all fields
-			id = Integer.MIN_VALUE;
-			linkMapping.clear();
-			linkMapping = null;
-			linkList.clear();
-			linkList = null;
-			children.clear();
-			children = null;
-			isDungeon = false;
-			isFilled = false;
-			depth = Integer.MIN_VALUE;
-			packDepth = Integer.MIN_VALUE;
-			origin = null;
-			orientation = Integer.MIN_VALUE;
-			dungeon = null;
-			linkWatcher = null;
-		}
 
-		@Override
-		public String name()
-		{
-			return String.valueOf(id);
-		}
-
-		@Override
-		public PackedDimData pack()
-		{
-			ArrayList<Integer> ChildIDs = new ArrayList<Integer>();
-			ArrayList<PackedLinkData> Links = new ArrayList<PackedLinkData>();
-			ArrayList<PackedLinkTail> Tails = new ArrayList<PackedLinkTail>();
-			PackedDungeonData packedDungeon=null; 
-			
-			if(this.dungeon!=null)
-			{
-				packedDungeon= new PackedDungeonData(dungeon.weight(), dungeon.isOpen(), dungeon.isInternal(), 
-						dungeon.schematicPath(), dungeon.schematicName(), dungeon.dungeonType().Name, 
-						dungeon.dungeonType().Owner.getName());
-			}
-			//Make a list of children
-			for(NewDimData data : this.children)
-			{
-				ChildIDs.add(data.id);
-			}
-			for(DimLink link:this.links())
-			{
-				ArrayList<Point3D> children = new ArrayList<Point3D>();
-				Point3D parentPoint = new Point3D(-1,-1,-1);
-				if(link.parent!=null)
-				{
-					parentPoint=link.parent.link.point.toPoint3D();
-				}
-				
-				for(DimLink childLink : link.children)
-				{
-					children.add(childLink.source().toPoint3D());
-				}
-				PackedLinkTail tail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
-				Links.add(new PackedLinkData(link.link.point,parentPoint,tail,link.link.orientation,children));
-				
-				PackedLinkTail tempTail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
-				if(Tails.contains(tempTail))
-				{
-					Tails.add(tempTail);
-
-				}
-				
-				
-			}
-			int parentID=this.id;
-			Point3D originPoint=new Point3D(0,0,0);
-			if(this.parent!=null)
-			{
-				parentID = this.parent.id;
-			}
-			if(this.origin!=null)
-			{
-				originPoint=this.origin.toPoint3D();
-			}
-			return new PackedDimData(this.id, depth, this.packDepth, parentID, this.root().id(), orientation, 
-										isDungeon, isFilled,packedDungeon, originPoint, ChildIDs, Links, Tails);
-			// FIXME: IMPLEMENTATION PLZTHX
-			//I tried
-		}
 	}
 	
 	  private static class ClientLinkWatcher implements IUpdateWatcher<ClientLinkData>
