@@ -128,6 +128,15 @@ public abstract class DimLink
 	{
 		return lock.open(item);
 	}
+	
+	/**
+	 * Tries to open this lock. Returns true if the lock is open or if the key can open it
+	 * @return
+	 */
+	public boolean canOpen(ItemStack item)
+	{
+		return lock.canOpen(item);
+	}
 
 	/**
 	 * test if there is a lock, regardless if it is locked or not.
@@ -154,6 +163,7 @@ public abstract class DimLink
 	  */
 	public void setLock(DDLock lock)
 	{
+		PocketManager.getDimensionData(this.source().getDimension()).flagModified();
 		this.lock = lock;
 	}
 	

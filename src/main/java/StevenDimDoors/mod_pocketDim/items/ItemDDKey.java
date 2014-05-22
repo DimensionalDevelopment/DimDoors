@@ -31,6 +31,10 @@ public class ItemDDKey extends Item
 		this.setMaxStackSize(1);
 
 	}
+    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+    {
+    	
+    }
 
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) 
     {
@@ -57,7 +61,13 @@ public class ItemDDKey extends Item
 	{
 		return !DDLock.hasCreatedLock(par1ItemStack);
 	}
-
+	
+	
+	public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+	{
+		return false;
+	}
+	  
 	public boolean onItemUseFirst(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float playerX, float playerY,
 			float playerZ)
 	{
@@ -82,7 +92,7 @@ public class ItemDDKey extends Item
 		//what to do if the door has a lock already
 		if(link.hasLock())
 		{
-			if(link.getLock().canOpen(itemStack))
+			if(link.canOpen(itemStack))
 			{
 				if(link.isLocked())
 				{
@@ -95,7 +105,10 @@ public class ItemDDKey extends Item
 				link.getLock().lock(!link.isLocked());
 				PocketManager.getLinkWatcher().update(new ClientLinkData(link.source(),link.getLock()));
 			}
-
+			else
+			{
+				world.playSoundAtEntity(player, mod_pocketDim.modid + ":doorLocked",  1F, 1F);
+			}
 		}
 		else
 		{

@@ -66,7 +66,7 @@ public class CraftingManager implements ICraftingHandler
 		if (properties.CraftingRiftSignatureAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(itemRiftSignature, 1),
-				" y ", "yxy", " y ", 'x', mod_pocketDim.itemStableFabric, 'y', Item.ingotIron);
+				" y ", "yxy", " y ", 'x', Item.enderPearl, 'y', Item.ingotIron);
 		}
 		if (properties.CraftingRiftRemoverAllowed)
 		{
@@ -96,7 +96,7 @@ public class CraftingManager implements ICraftingHandler
 		if (properties.CraftingDDKeysAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemDDKey, 1),
-				" x ", " x ", "yzy", 'y', Item.ingotGold, 'x', Item.ingotIron, 'z', mod_pocketDim.itemStableFabric);
+				"  z", " y ", "y  ", 'y', Item.ingotGold, 'z', Item.enderPearl);
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemDDKey, 1),
 					"z", "z", 'z', mod_pocketDim.itemDDKey);
 		}
