@@ -55,9 +55,9 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		{
 			// Yes, it's initialized. Check if the player is in creative
 			// or if the player can pay with Stable Fabric to create a rift.
-			if (!player.capabilities.isCreativeMode && !player.inventory.hasItem(mod_pocketDim.itemStableFabric.itemID))
+			if (!player.capabilities.isCreativeMode && !player.inventory.hasItem(Item.enderPearl.itemID))
 			{
-				mod_pocketDim.sendChat(player, "You don't have any Stable Fabric!");
+				mod_pocketDim.sendChat(player, "You don't have any Ender Pearls!");
 				// I won't do this, but this is the chance to localize chat 
 				// messages sent to the player; look at ChatMessageComponent 
 				// and how MFR does it with items like the safari net launcher
@@ -88,7 +88,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 
 			if (!player.capabilities.isCreativeMode)
 			{
-				player.inventory.consumeInventoryItem(mod_pocketDim.itemStableFabric.itemID);
+				player.inventory.consumeInventoryItem(Item.enderPearl.itemID);
 			}
 			mod_pocketDim.sendChat(player,"Rift Created");
 			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftEnd", 0.6f, 1);

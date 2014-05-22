@@ -56,12 +56,12 @@ public class CraftingManager implements ICraftingHandler
 		if (properties.CraftingWarpDoorAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(itemWarpDoor, 1),
-				"yxy", 'x', mod_pocketDim.itemStableFabric, 'y', Item.doorWood);
+				"yxy", 'x', Item.enderPearl, 'y', Item.doorWood);
 		}
 		if (properties.CraftingTransTrapdoorAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(transTrapdoor, 1),
-				"y", "x", "y", 'x', mod_pocketDim.itemStableFabric, 'y', Block.trapdoor);
+				"y", "x", "y", 'x', Item.enderPearl, 'y', Block.trapdoor);
 		}
 		if (properties.CraftingRiftSignatureAllowed)
 		{
@@ -71,7 +71,7 @@ public class CraftingManager implements ICraftingHandler
 		if (properties.CraftingRiftRemoverAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(itemRiftRemover, 1),
-				"yyy", "yxy", "yyy", 'x', mod_pocketDim.itemStableFabric, 'y', Item.ingotGold);
+				"yyy", "yxy", "yyy", 'x', Item.enderPearl, 'y', Item.ingotGold);
 		}
 		if (properties.CraftingRiftBladeAllowed)
 		{
@@ -81,12 +81,12 @@ public class CraftingManager implements ICraftingHandler
 		if (properties.CraftingStabilizedRiftSignatureAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemStabilizedLinkSignature,1),
-				" y ", "yxy", " y ", 'x', mod_pocketDim.itemRiftSignature, 'y', mod_pocketDim.itemStableFabric);
+				" y ", "yxy", " y ", 'x', mod_pocketDim.itemRiftSignature, 'y', mod_pocketDim.itemWorldThread);
 		}
 		if (properties.CraftingGoldenDimensionalDoorAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldenDimensionalDoor,1),
-				"yxy", 'x', mod_pocketDim.itemGoldenDoor, 'y', mod_pocketDim.itemStableFabric);
+				"yxy", 'y', mod_pocketDim.itemGoldenDoor, 'x', mod_pocketDim.itemStableFabric);
 		}
 		if (properties.CraftingGoldenDoorAllowed)
 		{
