@@ -287,26 +287,25 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
         x= ActiveRenderInfo.objectX;
         y = ActiveRenderInfo.objectY;
         z = ActiveRenderInfo.objectZ;
-       
 
-        
-       
         GL11.glRotatef(180.0F - 90*rotation, 0.0F, 1.0F, 0.0F);
         //GL11.glRotatef((float)(-90 * rotation), 0.0F, 0.0F, 1.0F);
+
+        GL11.glTranslatef(0.007F, .25F, 0F);
 
         switch (rotation)
         {
         	case 0:
-                GL11.glTranslatef(-0.5F, .24F, -0.03F);
+                GL11.glTranslatef(-0.5F, 0, -0.03F);
         		break;
             case 1:
-                GL11.glTranslatef(-.5F, .24F, .97F);
+                GL11.glTranslatef(-.5F, 0F, .97F);
                 break;
             case 2:
-                GL11.glTranslatef(.5F, .24F, .97F);
+                GL11.glTranslatef(.5F, 0F, .97F);
                 break;
             case 3:
-                GL11.glTranslatef(0.5F, .24F, -0.03F);
+                GL11.glTranslatef(0.5F, 0F, -0.03F);
         }
 
         	GL11.glDisable(GL_LIGHTING);
