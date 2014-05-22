@@ -485,7 +485,7 @@ public class DDTeleporter
 		{
 			if(PocketManager.isBlackListed(link.destination().getDimension()))
 			{
-				link=PocketManager.getDimensionData(link.source().getDimension()).createLink(link.point,LinkTypes.SAFE_EXIT,link.orientation, false);
+				link=PocketManager.getDimensionData(link.source().getDimension()).createLink(link.point,LinkTypes.SAFE_EXIT,link.orientation, null);
 			}
 			else
 			{

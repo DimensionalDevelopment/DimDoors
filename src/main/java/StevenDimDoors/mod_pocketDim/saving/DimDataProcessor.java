@@ -13,6 +13,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 
 import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.core.DDLock;
 import StevenDimDoors.mod_pocketDim.util.BaseConfigurationProcessor;
 import StevenDimDoors.mod_pocketDim.util.ConfigurationProcessingException;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
@@ -202,7 +203,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 	
 	private PackedLinkData createLinkDataFromJson(JsonReader reader) throws IOException
 	{
-		boolean locked = false;
+		DDLock lock = null;
 
 		Point4D source;
 		Point3D parent;
@@ -235,13 +236,11 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		
 		if(reader.peek()== JsonToken.NAME)
 		{
-			reader.nextName();
-			locked = reader.nextBoolean();
-			
+			lock = this.createLockFromJson(reader);
 		}
 		reader.endObject();
 		
-		return new PackedLinkData(source, parent, tail, orientation, children, locked);
+		return new PackedLinkData(source, parent, tail, orientation, children, lock);
 	}
 	private PackedDungeonData createDungeonDataFromJson(JsonReader reader) throws IOException
 	{
@@ -307,4 +306,21 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		
 		return new PackedLinkTail(destination, linkType);
 	}
+	
+	private DDLock createLockFromJson(JsonReader reader) throws IOException
+	{
+		reader.nextName();
+
+		reader.beginObject();
+		reader.nextName();
+
+		boolean locked = reader.nextBoolean();
+		reader.nextName();
+
+		int key = reader.nextInt();
+		reader.endObject();
+
+		return new DDLock(locked, key);
+	}
+	
 }

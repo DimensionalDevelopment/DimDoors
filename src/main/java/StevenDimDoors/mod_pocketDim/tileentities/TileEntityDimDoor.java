@@ -19,6 +19,7 @@ public class TileEntityDimDoor extends DDTileEntityBase
 	public boolean openOrClosed;
 	public int orientation;
 	public boolean hasExit;
+	public byte lockStatus;
 	public boolean isDungeonChainLink;
 	public boolean hasGennedPair=false;
 

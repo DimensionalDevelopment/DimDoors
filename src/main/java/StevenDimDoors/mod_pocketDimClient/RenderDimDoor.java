@@ -315,15 +315,13 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 			if(i==1)
 			{
 		        bindTexture(KeyholeLight);
-		        GL11.glColor4d(1, 1, 1, .6);
+		        GL11.glColor4d(1, 1, 1, .7);
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_COLOR);
 
 			}
-			else
+			else 
 			{
 		        bindTexture(keyPath);
-		        GL11.glColor4d(.0, .7, .1, 1);
-
 				glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
 
 			}
@@ -365,12 +363,17 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 			
 			if (tile.openOrClosed)
 			{
+				
 				renderDimDoorTileEntity((TileEntityDimDoor) par1TileEntity, par2, par4, par6);
-				for(int i = 0; i<2; i++ )
+				if(tile.lockStatus>=1)
 				{
-					this.renderKeyHole(tile, par2, par4, par6, i);
+					for(int i = 0; i<1+tile.lockStatus; i++ )
+					{
+						this.renderKeyHole(tile, par2, par4, par6, i);
 
+					}
 				}
+				
 			}
 		
 		}

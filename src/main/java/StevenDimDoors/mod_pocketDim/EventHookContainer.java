@@ -59,6 +59,9 @@ public class EventHookContainer
 	@ForgeSubscribe
 	public void onSoundLoad(SoundLoadEvent event)
 	{
+		event.manager.addSound(mod_pocketDim.modid + ":doorLocked.ogg");
+		event.manager.addSound(mod_pocketDim.modid + ":keyLock.ogg");
+		event.manager.addSound(mod_pocketDim.modid + ":keyUnlock.ogg");
 		event.manager.addSound(mod_pocketDim.modid + ":monk.ogg");
 		event.manager.addSound(mod_pocketDim.modid + ":crack.ogg");
 		event.manager.addSound(mod_pocketDim.modid + ":tearing.ogg");

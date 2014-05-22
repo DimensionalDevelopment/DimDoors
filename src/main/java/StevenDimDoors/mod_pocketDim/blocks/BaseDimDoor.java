@@ -181,14 +181,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	//but this works fine and is more versatile I think. 
 	public BaseDimDoor updateAttachedTile(World world, int x, int y, int z)
 	{
-		TileEntity tile = world.getBlockTileEntity(x, y, z);
-		if (tile instanceof TileEntityDimDoor)
-		{
-			int metadata = world.getBlockMetadata(x, y, z);
-			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
-			dimTile.openOrClosed = this.isDoorOnRift(world, x, y, z)&&this.isUpperDoorBlock(metadata);
-			dimTile.orientation = this.getFullMetadata(world, x, y, z) & 7;
-		}
+		mod_pocketDim.proxy.updateDoorTE(this, world, x, y, z);
 		return this;
 	}
 	
@@ -353,7 +346,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 					this.dropBlockAsItem(world, x, y, z, metadata, 0);
 				}
 			}
-			else if(!this.hasLock(world, x, y, z))
+			else if(this.getLockStatus(world, x, y, z)<=1)
 			{
 				boolean powered = world.isBlockIndirectlyGettingPowered(x, y, z) || world.isBlockIndirectlyGettingPowered(x, y + 1, z);
 				if ((powered || neighborID > 0 && Block.blocksList[neighborID].canProvidePower()) && neighborID != this.blockID)
@@ -457,16 +450,31 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		return (metadata & 4) != 0;
 	}
 	
-	
-	public boolean hasLock(World world, int x, int y, int z)
+	/**
+	 * 0 if link is no lock;
+	 * 1 if there is a lock;
+	 * 2 if the lock is locked.
+	 * @param world
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return
+	 */
+	public byte getLockStatus(World world, int x, int y, int z)
 	{
+		byte status = 0;
 		DimLink link = getLink(world, x, y, z);
-		if(link!=null&&link.isLocked())
+		if(link!=null&&link.hasLock())
 		{
-			return true;
+			status++;
+			if(link.isLocked())
+			{
+				status++;
+			}
 		}
-		return false;
+		return status;
 	}
+	
 	
 	public boolean checkCanOpen(World world, int x, int y, int z)
 	{
@@ -475,16 +483,15 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	
 	public boolean checkCanOpen(World world, int x, int y, int z, EntityPlayer player)
 	{
-		if(!hasLock(world, x, y, z))
+		DimLink link = getLink(world, x, y, z);
+		if(link==null||player==null)
+		{
+			return link==null;
+		}
+		if(!link.isLocked())
 		{
 			return true;
 		}
-		
-		if(player == null)
-		{
-			return false;
-		}
-		DimLink link = getLink(world, x, y, z);
 		
 		for(ItemStack item : player.inventory.mainInventory)
 		{
@@ -492,13 +499,14 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			{
 				if(item.getItem() instanceof ItemDDKey)
 				{
-					if(((ItemDDKey) item.getItem()).canKeyOpen(link, item))
+					if(link.open(item))
 					{
 						return true;
 					}
 				}
 			}
 		}
+		player.playSound(mod_pocketDim.modid + ":doorLocked",  1F, 1F);
 		return false;
 	}
 

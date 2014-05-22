@@ -80,7 +80,7 @@ public class OldSaveImporter
             	PackedLinkTail tail = new PackedLinkTail(destintion, link.linkOrientation);
             	List<Point3D> children = new ArrayList<Point3D>();
 
-            	PackedLinkData newPackedLink = new PackedLinkData(source, new Point3D(-1,-1,-1), tail, link.linkOrientation,children, false);
+            	PackedLinkData newPackedLink = new PackedLinkData(source, new Point3D(-1,-1,-1), tail, link.linkOrientation,children, null);
             	
             	newPackedLinkData.add(newPackedLink);
             	allPackedLinks.add(newPackedLink);

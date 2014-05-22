@@ -68,6 +68,9 @@ public class ClientPacketHandler implements IPacketHandler, IUpdateSource
 				case PacketConstants.DELETE_LINK_PACKET_ID:
 					linkWatcher.onDeleted( ClientLinkData.read(input) );
 					break;
+				case PacketConstants.UPDATE_LINK_PACKET_ID:
+					linkWatcher.update( ClientLinkData.read(input) );
+					break;
 			}
 		}
 		catch (Exception e)

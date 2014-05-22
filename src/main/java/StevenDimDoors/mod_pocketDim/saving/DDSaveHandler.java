@@ -197,7 +197,7 @@ public class DDSaveHandler
 					linkType = LinkTypes.NORMAL;
 				}
 				
-				DimLink link = data.createLink(packedLink.source, linkType, packedLink.orientation, packedLink.locked);
+				DimLink link = data.createLink(packedLink.source, linkType, packedLink.orientation, packedLink.lock);
 				Point4D destination = packedLink.tail.destination;
 				if(destination!=null)
 				{
@@ -216,7 +216,7 @@ public class DDSaveHandler
 				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
 				if(data.getLink(packedLink.parent)!=null)
 				{
-					data.createChildLink(packedLink.source, data.getLink(packedLink.parent), packedLink.locked);
+					data.createChildLink(packedLink.source, data.getLink(packedLink.parent), packedLink.lock);
 				}
 				unpackedLinks.add(packedLink);
 			}
@@ -224,7 +224,7 @@ public class DDSaveHandler
 		}
 		return true;
 	}
-	
+		
 
 	private static PackedDimData readDimension(File dataFile, DimDataProcessor reader)
 	{

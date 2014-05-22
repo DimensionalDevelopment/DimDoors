@@ -7,32 +7,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
-import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.Compactor;
 import StevenDimDoors.mod_pocketDim.helpers.DeleteFolder;
 import StevenDimDoors.mod_pocketDim.saving.DDSaveHandler;
-import StevenDimDoors.mod_pocketDim.saving.IPackable;
 import StevenDimDoors.mod_pocketDim.saving.OldSaveImporter;
 import StevenDimDoors.mod_pocketDim.saving.PackedDimData;
-import StevenDimDoors.mod_pocketDim.saving.PackedDungeonData;
-import StevenDimDoors.mod_pocketDim.saving.PackedLinkData;
-import StevenDimDoors.mod_pocketDim.saving.PackedLinkTail;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateSource;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 import StevenDimDoors.mod_pocketDim.watcher.UpdateWatcherProxy;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * This class regulates all the operations involving the storage and manipulation of dimensions.
@@ -40,7 +33,7 @@ import StevenDimDoors.mod_pocketDim.watcher.UpdateWatcherProxy;
  * well as loading old dimensions on startup
  */
 public class PocketManager
-{	
+{
 	private static class InnerDimData extends NewDimData
 	{
 		// This class allows us to instantiate NewDimData indirectly without exposing
@@ -69,7 +62,7 @@ public class PocketManager
 		  {
 			  Point4D source = link.point;
 			  NewDimData dimension = getDimensionData(source.getDimension());
-			  dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE,link.orientation);
+			  dimension.createLink(source, LinkTypes.CLIENT_SIDE, 0, link.lock);
 		  }
 
 		  @Override
@@ -78,7 +71,17 @@ public class PocketManager
 			  Point4D source = link.point;
 			  NewDimData dimension = getDimensionData(source.getDimension());
 			  dimension.deleteLink(source.getX(), source.getY(), source.getZ());
-              }
+		  }
+
+		  @Override
+		  public void update(ClientLinkData link)
+		  {
+			  Point4D source = link.point;
+			  NewDimData dimension = getDimensionData(source.getDimension());	
+			  DimLink dLink = dimension.getLink(source);
+			  dLink.setLock(link.lock);
+			  
+		  }
       }
 	
 	private static class ClientDimWatcher implements IUpdateWatcher<ClientDimData>
@@ -93,6 +96,12 @@ public class PocketManager
 		public void onDeleted(ClientDimData data)
 		{
 			deletePocket(getDimensionData(data.ID), false);
+		}
+
+		@Override
+		public void update(ClientDimData message)
+		{
+			// TODO Auto-generated method stub
 		}
 	}
 
@@ -632,5 +641,10 @@ public class PocketManager
 	public static UpdateWatcherProxy<ClientDimData> getDimwatcher() 
 	{
 		return dimWatcher;
+	}
+	
+	public static UpdateWatcherProxy<ClientLinkData> getLinkWatcher() 
+	{
+		return linkWatcher;
 	}
 }

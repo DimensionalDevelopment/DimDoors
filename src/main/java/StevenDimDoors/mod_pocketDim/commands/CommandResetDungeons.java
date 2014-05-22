@@ -62,11 +62,11 @@ public class CommandResetDungeons extends DDCommandBase
 				{
 					if(link.linkType()==LinkTypes.REVERSE)
 					{
-						data.createLink(link.source(), LinkTypes.DUNGEON_EXIT, link.orientation(), false);
+						data.createLink(link.source(), LinkTypes.DUNGEON_EXIT, link.orientation(), null);
 					}
 					if(link.linkType()==LinkTypes.DUNGEON)
 					{
-						data.createLink(link.source(), LinkTypes.DUNGEON, link.orientation(), false);
+						data.createLink(link.source(), LinkTypes.DUNGEON, link.orientation(), null);
 					}
 				}
 			}

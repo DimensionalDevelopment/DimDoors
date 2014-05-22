@@ -24,14 +24,14 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 {
 	private static class InnerDimLink extends DimLink
 	{
-		public InnerDimLink(Point4D source, DimLink parent, int orientation, boolean isLocked)
+		public InnerDimLink(Point4D source, DimLink parent, int orientation, DDLock lock)
 		{
-			super(source, orientation, isLocked, parent);
+			super(source, orientation, lock, parent);
 		}
 		
-		public InnerDimLink(Point4D source, int linkType, int orientation, boolean isLocked)
+		public InnerDimLink(Point4D source, int linkType, int orientation, DDLock lock)
 		{
-			super(source, orientation, isLocked, linkType);
+			super(source, orientation, lock, linkType);
 		}
 
 		public void setDestination(int x, int y, int z, NewDimData dimension)
@@ -99,7 +99,6 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 			this.orientation=orientation;
 		}
 	}
-	
 	protected static Random random = new Random();
 	
 	protected int id;
@@ -279,10 +278,10 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 	
 	public DimLink createLink(int x, int y, int z, int linkType, int orientation)
 	{
-		return createLink(new Point4D(x, y, z, id), linkType, orientation, false);
+		return createLink(new Point4D(x, y, z, id), linkType, orientation, null);
 	}
 	
-	public DimLink createLink(Point4D source, int linkType, int orientation, boolean locked)
+	public DimLink createLink(Point4D source, int linkType, int orientation, DDLock locked)
 	{
 		//Return an existing link if there is one to avoid creating multiple links starting at the same point.
 		InnerDimLink link = linkMapping.get(source);
@@ -308,10 +307,10 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 	
 	public DimLink createChildLink(int x, int y, int z, DimLink parent)
 	{
-		return createChildLink(new Point4D(x, y, z, id), (InnerDimLink) parent, false);
+		return createChildLink(new Point4D(x, y, z, id), (InnerDimLink) parent, null);
 	}
 	
-	public DimLink createChildLink(Point4D source, DimLink parent, boolean locked)
+	public DimLink createChildLink(Point4D source, DimLink parent, DDLock locked)
 	{
 		//To avoid having multiple links at a single point, if we find an existing link then we overwrite
 		//its destination data instead of creating a new instance.
@@ -584,6 +583,11 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 		return modified;
 	}
 	
+	public void flagModified()
+	{
+		modified = true;
+	}
+	
 	public void clearModified()
 	{
 		this.modified = false;
@@ -651,7 +655,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 				children.add(childLink.source().toPoint3D());
 			}
 			PackedLinkTail tail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
-			Links.add(new PackedLinkData(link.point,parentPoint,tail,link.orientation,children,link.isLocked()));
+			Links.add(new PackedLinkData(link.point,parentPoint,tail,link.orientation,children,link.getLock()));
 			
 			PackedLinkTail tempTail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
 			if(Tails.contains(tempTail))

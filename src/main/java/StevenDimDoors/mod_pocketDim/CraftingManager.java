@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim;
 
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
+import StevenDimDoors.mod_pocketDim.core.DDLock;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.items.ItemDDKey;
 import net.minecraft.block.Block;
@@ -129,7 +130,7 @@ public class CraftingManager implements ICraftingHandler
 					}
 				}
 			}
-			keyItem.addDoorToKey(topKey, bottomKey);
+			DDLock.addKeys(bottomKey, DDLock.getKeys(topKey));
 			item.setTagCompound(bottomKey.getTagCompound());
 			player.inventory.addItemStackToInventory(topKey);
 		}

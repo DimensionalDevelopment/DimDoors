@@ -8,6 +8,8 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -16,6 +18,7 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.items.ItemDDKey;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 
 public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntityProvider
@@ -40,6 +43,55 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 		enterDimDoor(world, x, y, z, entity);
 	}
 
+	public boolean checkCanOpen(World world, int x, int y, int z)
+	{
+		return this.checkCanOpen(world, x, y, z, null);
+	}
+	
+	public boolean checkCanOpen(World world, int x, int y, int z, EntityPlayer player)
+	{
+		DimLink link = PocketManager.getLink( x, y,z, world);
+		if(link==null||player==null)
+		{
+			return link==null;
+		}
+		if(!link.isLocked())
+		{
+			return true;
+		}
+		
+		for(ItemStack item : player.inventory.mainInventory)
+		{
+			if(item != null)
+			{
+				if(item.getItem() instanceof ItemDDKey)
+				{
+					if(link.open(item))
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
+    {
+		if(this.checkCanOpen(par1World, par3, par3, par4, par5EntityPlayer))
+		{
+			return super.onBlockActivated(par1World, par2, par3, par4, par5EntityPlayer, par6, par7, par8, par9);
+		}
+		return false;
+    }
+
+    public void onPoweredBlockChange(World par1World, int par2, int par3, int par4, boolean par5)
+    {
+    	if(this.checkCanOpen(par1World, par2, par3, par4))
+    	{
+    		super.onPoweredBlockChange(par1World, par2, par3, par4, par5);
+    	}
+    }
 	@Override
 	public void enterDimDoor(World world, int x, int y, int z, Entity entity) 
 	{

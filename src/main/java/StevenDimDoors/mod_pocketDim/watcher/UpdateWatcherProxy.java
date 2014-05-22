@@ -39,4 +39,13 @@ public class UpdateWatcherProxy<T> implements IUpdateWatcher<T>
 	{
 		return watchers.remove(receiver);
 	}
+
+	@Override
+	public void update(T message)
+	{
+		for (IUpdateWatcher<T> receiver : watchers)
+		{
+			receiver.update(message);
+		}		
+	}
 }

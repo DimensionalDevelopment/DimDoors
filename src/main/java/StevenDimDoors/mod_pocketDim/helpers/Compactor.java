@@ -80,7 +80,7 @@ public class Compactor
 			{
 				ClientLinkData link = ClientLinkData.read(input);
 				Point4D source = link.point;
-				dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE,link.orientation);
+				dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE,0);
 			}
 		}
 	}
