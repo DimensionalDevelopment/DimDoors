@@ -23,6 +23,7 @@ import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
+import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
@@ -251,14 +252,13 @@ public class DDTeleporter
 		}
 		
 		//Check if the block below that point is actually a door
-		int blockID = world.getBlockId(door.getX(), door.getY() - 1, door.getZ());
-		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
-			blockID != properties.TransientDoorID && blockID != properties.UnstableDoorID
-			&& blockID != properties.GoldenDimensionalDoorID)
+		Block block = Block.blocksList[world.getBlockId(door.getX(), door.getY() - 1, door.getZ())];
+		if (block==null || !(block instanceof IDimDoor))
 		{
 			//Return the pocket's orientation instead
 			return PocketManager.getDimensionData(door.getDimension()).orientation();
 		}
+		
 		
 		//Return the orientation portion of its metadata
 		return world.getBlockMetadata(door.getX(), door.getY() - 1, door.getZ()) & 3;
@@ -458,7 +458,7 @@ public class DDTeleporter
 			return;
 		}
 
-		if (!initializeDestination(link, DDProperties.instance(),door))
+		if (!initializeDestination(link, DDProperties.instance(),entity,door))
 		{
 			return;
 		}
@@ -471,7 +471,7 @@ public class DDTeleporter
 				entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
 			}
 		}
-		else
+		else 
 		{
 			buildExitDoor(door, link, DDProperties.instance());
 			entity = teleportEntity(entity, link.destination(), link.linkType() != LinkTypes.UNSAFE_EXIT);
@@ -479,9 +479,9 @@ public class DDTeleporter
 		}
 	}
 
-	private static boolean initializeDestination(DimLink link, DDProperties properties, Block door)
+	private static boolean initializeDestination(DimLink link, DDProperties properties, Entity entity, Block door)
 	{
-		if (link.hasDestination())
+		if (link.hasDestination()&&link.linkType()!=LinkTypes.PERSONAL)
 		{
 			if(PocketManager.isBlackListed(link.destination().getDimension()))
 			{
@@ -500,6 +500,8 @@ public class DDTeleporter
 				return PocketBuilder.generateNewDungeonPocket(link, properties);
 			case LinkTypes.POCKET:
 				return PocketBuilder.generateNewPocket(link, properties,door);
+			case LinkTypes.PERSONAL:
+				return setupPersonalLink(link, properties, entity, door);
 			case LinkTypes.SAFE_EXIT:
 				return generateSafeExit(link, properties);
 			case LinkTypes.DUNGEON_EXIT:
@@ -513,6 +515,29 @@ public class DDTeleporter
 			default:
 				throw new IllegalArgumentException("link has an unrecognized link type.");
 		}
+	}
+	
+	private static boolean setupPersonalLink(DimLink link, DDProperties properties,Entity player, Block door)
+	{
+		if(!(player instanceof EntityPlayer))
+		{
+			return false;
+		}
+		
+		NewDimData dim = PocketManager.getPersonalDimensionForPlayer(player.getEntityName());
+		if(dim == null)
+		{
+			return PocketBuilder.generateNewPersonalPocket(link, properties, player, door);
+		}
+		
+		DimLink personalHomeLink = dim.getLink(dim.origin());
+		if(personalHomeLink!=null)
+		{
+			PocketManager.getDimensionData(link.source().getDimension()).setDestination(personalHomeLink, link.source().getX(), link.source().getY(), link.source().getZ());
+		}
+		
+		dim.setDestination(link, dim.origin.getX(), dim.origin.getY(), dim.origin.getZ());
+		return true;
 	}
 
 	private static Point4D getRandomDestination()

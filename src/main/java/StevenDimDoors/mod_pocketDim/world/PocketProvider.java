@@ -19,8 +19,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PocketProvider extends WorldProvider
 {
 	private DDProperties properties;
-	private CustomLimboPopulator spawner;
-	private IRenderHandler skyRenderer;
+	protected CustomLimboPopulator spawner;
+	protected IRenderHandler skyRenderer;
 
 	public PocketProvider()
 	{

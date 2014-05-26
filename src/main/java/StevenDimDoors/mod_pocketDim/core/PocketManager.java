@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
@@ -137,6 +138,9 @@ public class PocketManager
 	//ArrayList that stores the dimension IDs of any dimension that has been deleted.
 	private static ArrayList<Integer> dimensionIDBlackList = null;
 
+	//Stores all the personal pocket mappings
+	private static HashMap<String, NewDimData> personalPocketsMapping = null; 
+
 	public static boolean isLoaded()
 	{
 		return isLoaded;
@@ -161,6 +165,7 @@ public class PocketManager
 		dimensionData = new HashMap<Integer, InnerDimData>();
 		rootDimensions = new ArrayList<NewDimData>();
 		dimensionIDBlackList = new ArrayList<Integer>();
+		personalPocketsMapping = new HashMap<String, NewDimData>();
 		
 		if(FMLCommonHandler.instance().getEffectiveSide().isClient())
 		{
@@ -277,7 +282,14 @@ public class PocketManager
 			{
 				try
 				{
-					DimensionManager.registerDimension(dimension.id(), properties.PocketProviderID);
+					if(personalPocketsMapping.containsValue(dimension))
+					{
+						DimensionManager.registerDimension(dimension.id(), properties.PersonalPocketProviderID);
+					}
+					else
+					{
+						DimensionManager.registerDimension(dimension.id(), properties.PocketProviderID);
+					}
 				}
 				catch (Exception e)
 				{
@@ -412,6 +424,21 @@ public class PocketManager
 		return registerDimension(world.provider.dimensionId, null, false, false);
 	}
 
+	public static NewDimData registerPersonalPocket(NewDimData parent, String playerName)
+	{
+		if (parent == null)
+		{
+			throw new IllegalArgumentException("parent cannot be null. A pocket dimension must always have a parent dimension.");
+		}
+		
+		DDProperties properties = DDProperties.instance();
+		int dimensionID = DimensionManager.getNextFreeDimId();
+		DimensionManager.registerDimension(dimensionID, properties.PersonalPocketProviderID);
+		NewDimData data = registerDimension(dimensionID, (InnerDimData) parent, true, false);
+		personalPocketsMapping.put(playerName, data);
+		return data;
+	}
+	
 	public static NewDimData registerPocket(NewDimData parent, boolean isDungeon)
 	{
 		if (parent == null)
@@ -539,6 +566,7 @@ public class PocketManager
 		
 		unregisterPockets();
 		dimensionData = null;
+		personalPocketsMapping = null;
 		rootDimensions = null;
 		isLoaded = false;
 		isConnected = false;
@@ -646,5 +674,25 @@ public class PocketManager
 	public static UpdateWatcherProxy<ClientLinkData> getLinkWatcher() 
 	{
 		return linkWatcher;
+	}
+
+	public static NewDimData getPersonalDimensionForPlayer(String name)
+	{
+		if(personalPocketsMapping.containsKey(name))
+		{
+			return personalPocketsMapping.get(name);
+		}
+		return null;
+	}
+	
+	public static void setPersonalPocketsMapping(HashMap<String, NewDimData> ppMap)
+	{
+		personalPocketsMapping = ppMap;
+	}
+
+	public static HashMap<String, NewDimData> getPersonalPocketMapping()
+	{
+		// TODO Auto-generated method stub
+		return personalPocketsMapping;
 	}
 }

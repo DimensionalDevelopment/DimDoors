@@ -24,9 +24,11 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransTrapdoor.class, new RenderTransTrapdoor());
         //This code activates the new rift rendering, as well as a bit of code in TileEntityRift
         //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRift.class, new RenderRift());
-
+        
 		//MinecraftForgeClient.preloadTexture(RIFT2_PNG);
        RenderingRegistry.registerEntityRenderingHandler(MobMonolith.class, new RenderMobObelisk(.5F));		
+       RenderingRegistry.registerBlockHandler(new PrivatePocketRender(RenderingRegistry.getNextAvailableRenderId()));
+       
 	}
 	
 	@Override

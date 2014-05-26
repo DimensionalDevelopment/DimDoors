@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.Point3D;
@@ -59,6 +60,15 @@ public class DDSaveHandler
 			PocketManager.createAndRegisterBlacklist(blacklist);
 		}
 		
+		// Load the personal pockets mapping		
+		File personalPocketMap = new File(basePath+"personalPockets.txt");
+		HashMap<String, Integer> ppMap = new HashMap<String, Integer>();
+		if(personalPocketMap.exists())
+		{
+			PersonalPocketMappingProcessor ppMappingProcessor = new PersonalPocketMappingProcessor();
+			ppMap = readPersonalPocketsMapping(personalPocketMap,ppMappingProcessor);
+		}						
+		
 		// List any dimension data files and read each dimension
 		DimDataProcessor reader = new DimDataProcessor();
 		HashMap<Integer, PackedDimData> packedDims = new HashMap<Integer, PackedDimData>();
@@ -82,7 +92,17 @@ public class DDSaveHandler
 		{
 			linksToUnpack.addAll(packedDim.Links);
 		}
-		return unpackDimData(packedDims) && unpackLinkData(linksToUnpack);
+		unpackDimData(packedDims);
+		unpackLinkData(linksToUnpack);
+		
+		HashMap<String, NewDimData> personalPocketsMap = new HashMap<String, NewDimData>();
+		for(Entry<String, Integer> pair : ppMap.entrySet())
+		{
+			personalPocketsMap.put(pair.getKey(), PocketManager.getDimensionData(pair.getValue()));
+		}
+		PocketManager.setPersonalPocketsMapping(personalPocketsMap);
+		
+		return true;
 	}
 	
 	/**
@@ -270,6 +290,9 @@ public class DDSaveHandler
 		// Create and write the blackList
 		writeBlacklist(blacklist, savePath);
 		
+		//create and write personal pocket mapping
+		writePersonalPocketMap(PocketManager.getPersonalPocketMapping(), savePath);
+		
 		// Write the dimension save data
 		boolean succeeded = true;
 		DimDataProcessor writer = new DimDataProcessor();
@@ -307,6 +330,32 @@ public class DDSaveHandler
 		catch (Exception e)
 		{
 			System.err.println("Could not save blacklist. The following error occurred:");
+			printException(e, true);
+			return false;
+		}	
+	}
+	
+	private static boolean writePersonalPocketMap(HashMap<String, NewDimData> hashMap, String savePath)
+	{
+		try
+		{
+			HashMap<String, Integer> ppMap = new HashMap<String, Integer>();
+			
+			for(Entry<String, NewDimData> pair : hashMap.entrySet())
+			{
+				ppMap.put(pair.getKey(), pair.getValue().id());
+			}
+			PersonalPocketMappingProcessor writer = new PersonalPocketMappingProcessor();
+			File tempFile = new File(savePath + "/personalPockets.tmp");
+			File saveFile = new File(savePath + "/personalPockets.txt");
+			writer.writeToFile(tempFile, ppMap);
+			saveFile.delete();
+			tempFile.renameTo(saveFile);
+			return true;
+		}
+		catch (Exception e)
+		{
+			System.err.println("Could not save personal pockets mapping. The following error occurred:");
 			printException(e, true);
 			return false;
 		}	
@@ -378,7 +427,6 @@ public class DDSaveHandler
 
 	public static List<Integer> readBlacklist(File blacklistFile, BlacklistProcessor reader)
 	{
-	
 		try
 		{
 			return reader.readFromFile(blacklistFile);
@@ -388,6 +436,18 @@ public class DDSaveHandler
 			e.printStackTrace();
 			return null;
 		}
-		
+	}
+	
+	public static HashMap<String,Integer> readPersonalPocketsMapping(File ppMap, PersonalPocketMappingProcessor reader)
+	{
+		try
+		{
+			return reader.readFromFile(ppMap);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

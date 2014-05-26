@@ -65,6 +65,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 		this.blocksImmuneToRift.add(properties.TransientDoorID);
 		this.blocksImmuneToRift.add(properties.GoldenDimensionalDoorID);
 		this.blocksImmuneToRift.add(properties.GoldenDoorID);
+		this.blocksImmuneToRift.add(properties.PersonalDimDoorID);
 
 		this.blocksImmuneToRift.add(Block.blockLapis.blockID);
 		this.blocksImmuneToRift.add(Block.blockIron.blockID);

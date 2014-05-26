@@ -1,18 +1,24 @@
 package StevenDimDoors.mod_pocketDim;
 
-import StevenDimDoors.mod_pocketDim.config.DDProperties;
-import StevenDimDoors.mod_pocketDim.core.DDLock;
-import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.items.ItemDDKey;
+import static StevenDimDoors.mod_pocketDim.mod_pocketDim.itemDimensionalDoor;
+import static StevenDimDoors.mod_pocketDim.mod_pocketDim.itemRiftBlade;
+import static StevenDimDoors.mod_pocketDim.mod_pocketDim.itemRiftRemover;
+import static StevenDimDoors.mod_pocketDim.mod_pocketDim.itemRiftSignature;
+import static StevenDimDoors.mod_pocketDim.mod_pocketDim.itemStableFabric;
+import static StevenDimDoors.mod_pocketDim.mod_pocketDim.itemUnstableDoor;
+import static StevenDimDoors.mod_pocketDim.mod_pocketDim.itemWarpDoor;
+import static StevenDimDoors.mod_pocketDim.mod_pocketDim.transTrapdoor;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
+import StevenDimDoors.mod_pocketDim.core.DDLock;
+import StevenDimDoors.mod_pocketDim.items.ItemDDKey;
 import cpw.mods.fml.common.ICraftingHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
-import static StevenDimDoors.mod_pocketDim.mod_pocketDim.*;
 
 public class CraftingManager implements ICraftingHandler
 {
@@ -92,6 +98,18 @@ public class CraftingManager implements ICraftingHandler
 		{
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldenDoor, 1),
 				"yy", "yy", "yy", 'y', Item.ingotGold);
+		}
+		if (properties.CraftingPersonalDimDoorAllowed)
+		{
+			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemPersonalDoor,1),
+				"yxy", 'y', mod_pocketDim.itemGoldenDoor, 'x', mod_pocketDim.itemStableFabric);
+		}
+		if (properties.CraftingQuartzDoorAllowed)
+		{
+			GameRegistry.addRecipe(new ShapedOreRecipe(mod_pocketDim.itemQuartzDoor, new Object[]{
+				"yy", "yy", "yy", Character.valueOf('y'), "oreQuartz"}));
+			
+			
 		}
 		if (properties.CraftingDDKeysAllowed)
 		{

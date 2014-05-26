@@ -70,6 +70,8 @@ public class BlockRotator
 
 		hasOrientations[mod_pocketDim.dimensionalDoor.blockID] = true;
 		hasOrientations[mod_pocketDim.warpDoor.blockID] = true;
+		hasOrientations[mod_pocketDim.goldenDimensionalDoor.blockID] = true;
+		hasOrientations[mod_pocketDim.personalDimDoor.blockID] = true;
 		
 	}
 

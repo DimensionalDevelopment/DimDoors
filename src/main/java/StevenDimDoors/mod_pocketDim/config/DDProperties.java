@@ -23,6 +23,9 @@ public class DDProperties
 	public final int TransientDoorID;
 	public final int FabricBlockID;
 	public final int RiftBlockID;
+	public final int QuartzDoorID;
+	public final int PersonalDimDoorID;
+
 
 	/**
 	 * World Generation Block IDs
@@ -47,7 +50,8 @@ public class DDProperties
 	public final int WarpDoorItemID;
 	public final int WorldThreadItemID;
 	public final int DDKeyItemID;
-
+	public final int ItemQuartzDoorID;
+	public final int ItemPersonalDimDoorID;
 
 	/**
 	 * Other IDs
@@ -58,6 +62,7 @@ public class DDProperties
 	public final int LimboDimensionID;
 	public final int LimboProviderID;
 	public final int PocketProviderID;
+	public final int PersonalPocketProviderID;
 	public final int DoorRenderEntityID;
 	public final int MonolithEntityID;
 
@@ -77,7 +82,8 @@ public class DDProperties
 	public final boolean CraftingGoldenDimensionalDoorAllowed;
 	public final boolean CraftingGoldenDoorAllowed;
 	public final boolean CraftingDDKeysAllowed;
-
+	public final boolean CraftingQuartzDoorAllowed;
+	public final boolean CraftingPersonalDimDoorAllowed;
 	
 	/**
 	 * Loot Flags
@@ -151,6 +157,8 @@ public class DDProperties
 		CraftingGoldenDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Golden Door", true).getBoolean(true);
 		CraftingGoldenDimensionalDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Golden Dimensional Door", true).getBoolean(true);
 		CraftingDDKeysAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Rift Keys", true).getBoolean(true);
+		CraftingQuartzDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Quartz Doors", true).getBoolean(true);
+		CraftingPersonalDimDoorAllowed = config.get(CATEGORY_CRAFTING, "Allow Crafting Personal Dim Doors", true).getBoolean(true);
 
 		WorldThreadRequirementLevel = config.get(CATEGORY_CRAFTING, "World Thread Requirement Level", 4,
 				"Controls the amount of World Thread needed to craft Stable Fabric. The number must be an " +
@@ -196,6 +204,8 @@ public class DDProperties
 		TransientDoorID = config.getBlock("Transient Door Block ID", 1979).getInt();
 		GoldenDoorID = config.getBlock("Gold Door Block ID", 1980).getInt();
 		GoldenDimensionalDoorID = config.getBlock("Gold Dim Door Block ID", 1981).getInt();
+		QuartzDoorID = config.getBlock("Quartz Door Block ID", 1982).getInt();
+		PersonalDimDoorID = config.getBlock("Personal Dim Door ID", 1983).getInt();
 		
 		WarpDoorItemID = config.getItem("Warp Door Item ID", 5670).getInt();
 		RiftRemoverItemID = config.getItem("Rift Remover Item ID", 5671).getInt();
@@ -209,6 +219,8 @@ public class DDProperties
 		GoldenDimensionalDoorItemID = config.getItem("Gold Dim Door Item ID", 5679).getInt();
 		WorldThreadItemID = config.getItem("World Thread Item ID", 5680).getInt();
 		DDKeyItemID = config.getItem("Rift Key Item ID", 5681).getInt();
+		ItemQuartzDoorID = config.getItem("Quartz Door Item ID", 5681).getInt();
+		ItemPersonalDimDoorID = config.getItem("Personal Dim Door ID", 5681).getInt();
 
 		LimboBlockID = config.getTerrainBlock("World Generation Block IDs - must be less than 256", "Limbo Block ID", 217,
 				"Blocks used for the terrain in Limbo").getInt();
@@ -218,6 +230,7 @@ public class DDProperties
 		LimboDimensionID = config.get(CATEGORY_DIMENSION, "Limbo Dimension ID", -23).getInt();
 		PocketProviderID = config.get(CATEGORY_PROVIDER, "Pocket Provider ID", 124).getInt();
 		LimboProviderID = config.get(CATEGORY_PROVIDER, "Limbo Provider ID", 113).getInt();
+		PersonalPocketProviderID = config.get(CATEGORY_PROVIDER, "Personal Pocket Provider ID", 125).getInt();
 		
 		MonolithTeleportationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Monolith Teleportation", true,
 				"Sets whether Monoliths can teleport players").getBoolean(true);

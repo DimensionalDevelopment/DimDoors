@@ -5,7 +5,7 @@ public class LinkTypes
 	private LinkTypes() { }
 	
 	public static final int ENUM_MIN = 0;
-	public static final int ENUM_MAX = 7;
+	public static final int ENUM_MAX = 8;
 	
 	public static final int CLIENT_SIDE = -1337;
 	
@@ -18,4 +18,6 @@ public class LinkTypes
 	public static final int SAFE_EXIT = 5;
 	public static final int UNSAFE_EXIT = 6;
 	public static final int REVERSE = 7;
+	public static final int PERSONAL = 8;
+
 }

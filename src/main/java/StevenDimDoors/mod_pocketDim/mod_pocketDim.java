@@ -1,7 +1,6 @@
 package StevenDimDoors.mod_pocketDim;
 
 import java.io.File;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -19,10 +18,12 @@ import net.minecraftforge.common.MinecraftForge;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWall;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWallPerm;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDoorGold;
+import StevenDimDoors.mod_pocketDim.blocks.BlockDoorQuartz;
 import StevenDimDoors.mod_pocketDim.blocks.BlockGoldDimDoor;
 import StevenDimDoors.mod_pocketDim.blocks.BlockLimbo;
 import StevenDimDoors.mod_pocketDim.blocks.BlockRift;
 import StevenDimDoors.mod_pocketDim.blocks.DimensionalDoor;
+import StevenDimDoors.mod_pocketDim.blocks.PersonalDimDoor;
 import StevenDimDoors.mod_pocketDim.blocks.TransTrapdoor;
 import StevenDimDoors.mod_pocketDim.blocks.TransientDoor;
 import StevenDimDoors.mod_pocketDim.blocks.UnstableDoor;
@@ -46,6 +47,8 @@ import StevenDimDoors.mod_pocketDim.items.ItemDDKey;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemGoldDimDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemGoldDoor;
+import StevenDimDoors.mod_pocketDim.items.ItemPersonalDoor;
+import StevenDimDoors.mod_pocketDim.items.ItemQuartzDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
 import StevenDimDoors.mod_pocketDim.items.ItemRiftSignature;
 import StevenDimDoors.mod_pocketDim.items.ItemStabilizedRiftSignature;
@@ -64,11 +67,11 @@ import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
-import StevenDimDoors.mod_pocketDim.util.DDLogger;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
 import StevenDimDoors.mod_pocketDim.world.DDBiomeGenBase;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
+import StevenDimDoors.mod_pocketDim.world.PersonalPocketProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import StevenDimDoors.mod_pocketDim.world.gateways.GatewayGenerator;
 import StevenDimDoors.mod_pocketDimClient.ClientPacketHandler;
@@ -113,6 +116,8 @@ public class mod_pocketDim
 	@Instance("PocketDimensions")
 	public static mod_pocketDim instance = new mod_pocketDim();
 
+	public static Block quartzDoor;
+	public static Block personalDimDoor;
 	public static Block transientDoor;
 	public static Block warpDoor;
 	public static Block goldenDoor;
@@ -138,6 +143,8 @@ public class mod_pocketDim
 	public static Item itemUnstableDoor;
 	public static Item itemStabilizedLinkSignature;
 	public static Item itemDDKey;
+	public static Item itemQuartzDoor;
+	public static Item itemPersonalDoor;
 
 	public static BiomeGenBase limboBiome;
 	public static BiomeGenBase pocketBiome;
@@ -201,6 +208,9 @@ public class mod_pocketDim
 		transientDoor = new TransientDoor(properties.TransientDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("transientDoor");
 		goldenDimensionalDoor = new BlockGoldDimDoor(properties.GoldenDimensionalDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorGold");
 
+		quartzDoor = new BlockDoorQuartz(properties.QuartzDoorID, Material.rock).setHardness(0.1F).setUnlocalizedName("doorQuartz");
+		personalDimDoor = new PersonalDimDoor(properties.PersonalDimDoorID, Material.rock,properties).setHardness(0.1F).setUnlocalizedName("dimDoorPersonal");
+
 		goldenDoor = new BlockDoorGold(properties.GoldenDoorID, Material.iron).setHardness(0.1F).setUnlocalizedName("doorGold");
 		blockDimWall = new BlockDimWall(properties.FabricBlockID, 0, Material.iron).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("blockDimWall");
 		blockDimWallPerm = (new BlockDimWallPerm(properties.PermaFabricBlockID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setUnlocalizedName("blockDimWallPerm");
@@ -212,6 +222,8 @@ public class mod_pocketDim
 		transTrapdoor = (TransTrapdoor) (new TransTrapdoor(properties.TransTrapdoorID, Material.wood).setHardness(1.0F) .setUnlocalizedName("dimHatch"));
 
 		itemDDKey = (new ItemDDKey(properties.DDKeyItemID)).setUnlocalizedName("itemDDKey");
+		itemQuartzDoor = (new ItemQuartzDoor(properties.QuartzDoorID, Material.rock)).setUnlocalizedName("itemQuartzDoor");
+		itemPersonalDoor = (new ItemPersonalDoor(properties.PersonalDimDoorID, Material.rock, (ItemDoor)this.itemQuartzDoor)).setUnlocalizedName("itemQuartzDimDoor");
 		itemGoldenDoor = (new ItemGoldDoor(properties.GoldenDoorItemID, Material.wood)).setUnlocalizedName("itemGoldDoor");
 		itemGoldenDimensionalDoor = (new ItemGoldDimDoor(properties.GoldenDimensionalDoorItemID, Material.iron, (ItemDoor)this.itemGoldenDoor)).setUnlocalizedName("itemGoldDimDoor");
 		itemDimensionalDoor = (ItemDimensionalDoor) (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron, (ItemDoor)Item.doorIron)).setUnlocalizedName("itemDimDoor");
@@ -232,6 +244,8 @@ public class mod_pocketDim
 		mod_pocketDim.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
 		mod_pocketDim.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
+		GameRegistry.registerBlock(quartzDoor, "Quartz Door");
+		GameRegistry.registerBlock(personalDimDoor, "Personal Dimensional Door");
 		GameRegistry.registerBlock(goldenDoor, "Golden Door");
 		GameRegistry.registerBlock(goldenDimensionalDoor, "Golden Dimensional Door");
 		GameRegistry.registerBlock(unstableDoor, "Unstable Door");
@@ -248,6 +262,8 @@ public class mod_pocketDim
 		if (!DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false))
 			throw new IllegalStateException("There is a provider ID conflict between PocketProvider from Dimensional Doors and another provider type. Fix your configuration!");
 		if (!DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false))
+			throw new IllegalStateException("There is a provider ID conflict between LimboProvider from Dimensional Doors and another provider type. Fix your configuration!");
+		if (!DimensionManager.registerProviderType(properties.PersonalPocketProviderID, PersonalPocketProvider.class, false))
 			throw new IllegalStateException("There is a provider ID conflict between LimboProvider from Dimensional Doors and another provider type. Fix your configuration!");
 			
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
