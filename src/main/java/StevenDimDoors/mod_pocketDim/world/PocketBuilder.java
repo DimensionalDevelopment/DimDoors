@@ -314,6 +314,14 @@ public class PocketBuilder
 		}
 	}
 	
+	/**I know this is almost a copy of generateNewPocket, but we might want to change other things.
+	 * 
+	 * @param link
+	 * @param properties
+	 * @param player
+	 * @param door
+	 * @return
+	 */
 	public static boolean generateNewPersonalPocket(DimLink link, DDProperties properties,Entity player, Block door)
 	{
 		//incase a chicken walks in or something
@@ -343,20 +351,19 @@ public class PocketBuilder
 			}
 
 			//Calculate the destination point
-			Point4D dest = LimboProvider.getLimboSkySpawn((EntityPlayer) player, properties);
 			Point4D source = link.source();
 			int destinationY = yCoordHelper.adjustDestinationY(link.source().getY(), world.getHeight(), wallThickness + 1, size);
 			int orientation = getDoorOrientation(source, properties);
 
 			//Place a link leading back out of the pocket
-			DimLink reverseLink = dimension.createLink(dest.getX(), destinationY, dest.getZ(), LinkTypes.REVERSE,(link.orientation()+2)%4);
+			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkTypes.REVERSE,(link.orientation()+2)%4);
 			parent.setDestination(reverseLink, source.getX(), source.getY(), source.getZ());
 
 			//Build the actual pocket area
-			buildPocket(world, dest.getX(), destinationY, dest.getZ(), orientation, size, wallThickness, properties, door);
+			buildPocket(world, source.getX(), destinationY, source.getZ(), orientation, size, wallThickness, properties, door);
 
 			//Finish up destination initialization
-			dimension.initializePocket(dest.getX(), destinationY, dest.getZ(), orientation, link);
+			dimension.initializePocket(source.getX(), destinationY, source.getZ(), orientation, link);
 			dimension.setFilled(true);
 			
 			return true;

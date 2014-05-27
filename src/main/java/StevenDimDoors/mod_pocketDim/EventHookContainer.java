@@ -1,14 +1,11 @@
 package StevenDimDoors.mod_pocketDim;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.audio.SoundManager;
 import net.minecraft.client.audio.SoundPoolEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
@@ -20,11 +17,11 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
+import StevenDimDoors.mod_pocketDim.items.ItemWarpDoor;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
@@ -78,7 +75,6 @@ public class EventHookContainer
 	public void onSoundEffectResult(PlayBackgroundMusicEvent event)
 	{
 		if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID)
-			;
 		{
 			this.playMusicForDim(FMLClientHandler.instance().getClient().thePlayer.worldObj);
 		}
@@ -96,6 +92,20 @@ public class EventHookContainer
 		ItemStack stack = event.entityPlayer.inventory.getCurrentItem();
 		if (stack != null && stack.getItem() instanceof ItemDoor)
 		{
+			if(stack.getItem() instanceof ItemWarpDoor)
+			{
+				NewDimData data = PocketManager.getDimensionData(world);
+				while(data.depth()>0)
+				{
+					if(PocketManager.getPersonalPocketMapping().containsValue(data))
+					{
+						mod_pocketDim.sendChat(event.entityPlayer,("Something prevents the Warp Door from tunneling out here"));
+						event.setCanceled(true);
+						return;
+					}
+					data = data.parent();
+				}
+			}
 			if (mod_pocketDim.itemDimensionalDoor.tryToPlaceDoor(stack, event.entityPlayer, world,
 					event.x, event.y, event.z, event.face))
 			{
