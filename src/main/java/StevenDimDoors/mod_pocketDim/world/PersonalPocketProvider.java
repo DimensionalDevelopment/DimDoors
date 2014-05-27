@@ -65,19 +65,6 @@ public class PersonalPocketProvider extends PocketProvider
 	}
 
 	@Override
-	public int getRespawnDimension(EntityPlayerMP player)
-	{
-		return this.dimensionId;
-	}
-
-	//TODO only owning player can respawn here
-	@Override
-	public boolean canRespawnHere()
-	{
-		return true;
-	}
-	
-	@Override
 	public int getActualHeight()
 	{
 		return -256;

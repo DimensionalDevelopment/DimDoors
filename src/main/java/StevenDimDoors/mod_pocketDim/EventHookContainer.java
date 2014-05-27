@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
@@ -150,13 +151,24 @@ public class EventHookContainer
 		Entity entity = event.entity;
 
 		if (properties.LimboEnabled && properties.LimboReturnsInventoryEnabled &&
-				entity instanceof EntityPlayer && entity.worldObj.provider instanceof PocketProvider)
+				entity instanceof EntityPlayer)
 		{
-			EntityPlayer player = (EntityPlayer) entity;
-			mod_pocketDim.deathTracker.addUsername(player.username);
-			revivePlayerInLimbo(player);
-			event.setCanceled(true);
-			return false;
+			if(entity.worldObj.provider instanceof PocketProvider)
+			{
+				EntityPlayer player = (EntityPlayer) entity;
+				mod_pocketDim.deathTracker.addUsername(player.username);
+				revivePlayerInLimbo(player);
+				event.setCanceled(true);
+				return false;
+			}
+			else if(entity.worldObj.provider instanceof LimboProvider && event.source == DamageSource.outOfWorld)
+			{
+				EntityPlayer player = (EntityPlayer) entity;
+				revivePlayerInLimbo(player);
+				mod_pocketDim.sendChat(player, "Search for the dark red pools which accumulate in the lower reaches of Limbo");
+				event.setCanceled(true);
+				return false;
+			}
 		}
 		return true;
 	}
