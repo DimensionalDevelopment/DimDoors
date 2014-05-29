@@ -10,7 +10,7 @@ public abstract class DimLink
 {	
 	protected Point4D point;
 	protected int orientation;
-	private DDLock lock;
+	protected DDLock lock;
 	protected DimLink parent;
 	protected LinkTail tail;
 	protected List<DimLink> children;
@@ -151,36 +151,9 @@ public abstract class DimLink
 	{
 		return this.hasLock()&&this.lock.isLocked();
 	}
-	
+
 	public DDLock getLock()
 	{
-		PocketManager.getDimensionData(this.source().getDimension()).flagModified();
 		return this.lock;
 	}
-	 /**
-	  * only use this on the client to update errything
-	  * @param lock
-	  */
-	public void setLock(DDLock lock)
-	{
-		PocketManager.getDimensionData(this.source().getDimension()).flagModified();
-		this.lock = lock;
-	}
-	
-	/**
-	 * create a lock from a key. Returns false if this door already has a lock, or if they has already locked a door
-	 * @param itemStack
-	 * @return
-	 */
-	public boolean createLock(ItemStack itemStack, int lockKey)
-	{
-		if(this.hasLock()||DDLock.hasCreatedLock(itemStack))
-		{
-			return false;
-		}
-		this.lock = DDLock.createLock(itemStack, lockKey);
-		PocketManager.getDimensionData(this.source().getDimension()).flagModified();
-		return true;
-	}
-
 }

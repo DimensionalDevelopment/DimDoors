@@ -80,7 +80,7 @@ public class PocketManager
 			  Point4D source = link.point;
 			  NewDimData dimension = getDimensionData(source.getDimension());	
 			  DimLink dLink = dimension.getLink(source);
-			  dLink.setLock(link.lock);
+			  dLink.lock=link.lock;
 			  
 		  }
       }

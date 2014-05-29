@@ -40,7 +40,7 @@ public class DDLock
 	 * otherwise returns true
 	 * @param flag
 	 */
-	public void lock(boolean flag)
+	protected void lock(boolean flag)
 	{
 		this.isLocked = flag;
 	}
@@ -157,7 +157,7 @@ public class DDLock
 	
 	
 
-	public static DDLock createLock(ItemStack itemStack, int lockKey2)
+	protected static DDLock createLock(ItemStack itemStack, int lockKey2)
 	{
 		itemStack.getTagCompound().setBoolean("HasCreatedLock", true);
 		DDLock.setKeys(itemStack, new int[]{lockKey2});

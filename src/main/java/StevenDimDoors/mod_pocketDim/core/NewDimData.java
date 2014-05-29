@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
@@ -98,6 +99,31 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 			//Set new orientation
 			this.orientation=orientation;
 		}
+		
+		 /**
+		  * only use this on the client to update errything
+		  * @param lock
+		  */
+		public void setLock(DDLock lock)
+		{
+			this.lock = lock;
+		}
+		
+		/**
+		 * create a lock from a key. Returns false if this door already has a lock, or if they has already locked a door
+		 * @param itemStack
+		 * @return
+		 */
+		public boolean createLock(ItemStack itemStack, int lockKey)
+		{
+			if(this.hasLock()||DDLock.hasCreatedLock(itemStack))
+			{
+				return false;
+			}
+			this.lock = DDLock.createLock(itemStack, lockKey);
+			return true;
+		}
+		
 	}
 	protected static Random random = new Random();
 	
@@ -561,6 +587,27 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 		link.setDestination(x, y, z, this);
 		this.modified = true;
 	}
+	
+	public void lock(DimLink link, boolean locked)
+	{
+		InnerDimLink innerLink = (InnerDimLink)link;
+		innerLink.lock.lock(locked);
+		modified = true;
+	}
+	
+	public void setLock(DimLink link, DDLock lock)
+	{
+		InnerDimLink innerLink = (InnerDimLink)link;
+		innerLink.setLock(lock);
+		modified = true;
+	}
+	
+	public void createLock(DimLink link, ItemStack item, int lockKey)
+	{
+		InnerDimLink innerLink = (InnerDimLink)link;
+		innerLink.createLock(item, lockKey);
+		modified = true;
+	}
 
 	public DimLink getRandomLink()
 	{
@@ -581,11 +628,6 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 	public boolean isModified()
 	{
 		return modified;
-	}
-	
-	public void flagModified()
-	{
-		modified = true;
 	}
 	
 	public void clearModified()
@@ -655,13 +697,12 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 				children.add(childLink.source().toPoint3D());
 			}
 			PackedLinkTail tail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
-			Links.add(new PackedLinkData(link.point,parentPoint,tail,link.orientation,children,link.getLock()));
+			Links.add(new PackedLinkData(link.point,parentPoint,tail,link.orientation,children,link.lock));
 			
 			PackedLinkTail tempTail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
 			if(Tails.contains(tempTail))
 			{
 				Tails.add(tempTail);
-
 			}
 			
 			

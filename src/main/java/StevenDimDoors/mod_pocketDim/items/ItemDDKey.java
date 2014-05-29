@@ -102,7 +102,7 @@ public class ItemDDKey extends Item
 				{
 					world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyLock",  1F, 1F);
 				}
-				link.getLock().lock(!link.isLocked());
+				PocketManager.getDimensionData(world).lock(link, !link.isLocked());
 				PocketManager.getLinkWatcher().update(new ClientLinkData(link.source(),link.getLock()));
 			}
 			else
@@ -115,7 +115,7 @@ public class ItemDDKey extends Item
 			if(!DDLock.hasCreatedLock(itemStack))
 			{
 				world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyLock",  1F, 1F);
-				link.createLock(itemStack, world.rand.nextInt(Integer.MAX_VALUE));
+				PocketManager.getDimensionData(world).createLock(link, itemStack, world.rand.nextInt(Integer.MAX_VALUE));
 				PocketManager.getLinkWatcher().update(new ClientLinkData(link.source(),link.getLock()));
 			}
 		}
