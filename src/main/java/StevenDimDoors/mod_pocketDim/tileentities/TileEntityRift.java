@@ -33,7 +33,7 @@ import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
-public class TileEntityRift extends TileEntity
+public class TileEntityRift extends DDTileEntityBase
 {
 	private static final int RIFT_INTERACTION_RANGE = 5;
 	private static final int MAX_ANCESTOR_LINKS = 2;
@@ -44,7 +44,9 @@ public class TileEntityRift extends TileEntity
 	private static final int MAX_RIFT_SPREAD_CHANCE = 256;
 	private static final int HOSTILE_ENDERMAN_CHANCE = 1;
 	private static final int MAX_HOSTILE_ENDERMAN_CHANCE = 3;
-	
+	private static final float[] POCKET_RENDER_COLOR= {1,1,1,.7F};
+	private static final float[] DEFAULT_RENDER_COLOR= {1,1,1,1};
+
 	private static Random random = new Random();
 
 	private int age = 0;
@@ -112,11 +114,7 @@ public class TileEntityRift extends TileEntity
 		updateTimer++;
 	}
 
-	@Override
-	public boolean canUpdate()
-	{
-		return true;
-	}
+	
 
 	private void clearBlocksOnRift()
 	{
@@ -386,5 +384,11 @@ public class TileEntityRift extends TileEntity
 	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt)
 	{
 		readFromNBT(pkt.data);
+	}
+
+	@Override
+	public float[] getRenderColor(Random rand)
+	{
+		return null;
 	}
 }

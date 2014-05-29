@@ -75,7 +75,6 @@ public class EventHookContainer
 	public void onSoundEffectResult(PlayBackgroundMusicEvent event)
 	{
 		if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID)
-			;
 		{
 			this.playMusicForDim(FMLClientHandler.instance().getClient().thePlayer.worldObj);
 		}
@@ -93,11 +92,14 @@ public class EventHookContainer
 		ItemStack stack = event.entityPlayer.inventory.getCurrentItem();
 		if (stack != null && stack.getItem() instanceof ItemDoor)
 		{
-			if (mod_pocketDim.itemDimensionalDoor.tryToPlaceDoor(stack, event.entityPlayer, world,
-					event.x, event.y, event.z, event.face))
+			if(BaseItemDoor.getDoorToPlace(stack.getItem())!=null)
 			{
-				// Cancel the event so that we don't get two doors from vanilla doors
-				event.setCanceled(true);
+				if (mod_pocketDim.itemDimensionalDoor.tryToPlaceDoor(stack, event.entityPlayer, world,
+						event.x, event.y, event.z, event.face))
+				{
+					// Cancel the event so that we don't get two doors from vanilla doors
+					event.setCanceled(true);
+				}
 			}
 		}
 	}

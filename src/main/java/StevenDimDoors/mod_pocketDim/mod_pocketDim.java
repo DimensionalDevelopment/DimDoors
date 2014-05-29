@@ -101,6 +101,9 @@ public class mod_pocketDim
 {
 	public static final String version = "1.6.4-R2.2.3";
 	public static final String modid = "dimdoors";
+	
+	//TODO need a place to stick all these constants
+	public static final int NETHER_DIMENSION_ID = -1;
 
 	//need to clean up 
 	@SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")

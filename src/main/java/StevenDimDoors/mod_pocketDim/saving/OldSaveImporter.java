@@ -39,10 +39,39 @@ public class OldSaveImporter
                  return;
         }
         
+        //build the child list
+        HashMap<Integer, ArrayList<Integer>> parentChildMapping = new HashMap<Integer, ArrayList<Integer>>();
+        for(DimData data : dimMap.values())
+        {
+        	if(data.isPocket)
+        	{
+	        	LinkData link = data.exitDimLink;
+	        	
+	        	if(parentChildMapping.containsKey(link.destDimID))
+	        	{
+	        		parentChildMapping.get(link.destDimID).add(data.dimID);
+	        	}
+	        	else
+	        	{
+	        		parentChildMapping.put(link.destDimID, new ArrayList<Integer>());
+	        		parentChildMapping.get(link.destDimID).add(data.dimID);
+	        	}
+	        	parentChildMapping.remove(data.dimID);
+        	}
+        }
+        
         for(DimData data : dimMap.values())
         {
             List<PackedLinkData> newPackedLinkData = new ArrayList<PackedLinkData>();
-        	List<Integer> childDims = new ArrayList<Integer>();
+            List<Integer> childDims;
+        	if(parentChildMapping.containsKey(data.dimID))
+        	{
+            	childDims =parentChildMapping.get(data.dimID);
+        	}
+        	else
+        	{
+        		childDims = new ArrayList<Integer>();
+        	}
 
             for(LinkData link : data.getLinksInDim())
             {
@@ -55,19 +84,21 @@ public class OldSaveImporter
             	
             	newPackedLinkData.add(newPackedLink);
             	allPackedLinks.add(newPackedLink);
-
             }
-            
-            PackedDimData dim = new PackedDimData(data.dimID, data.depth, data.depth, data.exitDimLink.locDimID, data.exitDimLink.locDimID, 0, data.dungeonGenerator!=null, data.hasBeenFilled, null, new Point3D(0,64,0), childDims, newPackedLinkData, null);
+            PackedDimData dim;
+            if(data.isPocket)
+            {
+                dim = new PackedDimData(data.dimID, data.depth, data.depth, data.exitDimLink.locDimID, data.exitDimLink.locDimID, 0, data.dungeonGenerator!=null, data.hasBeenFilled, null, new Point3D(0,64,0), childDims, newPackedLinkData, null);
+            }
+            else
+            {
+                dim = new PackedDimData(data.dimID, data.depth, data.depth, data.dimID, data.dimID, 0, data.dungeonGenerator!=null, data.hasBeenFilled, null, new Point3D(0,64,0), childDims, newPackedLinkData, null);
+            }
             newPackedDimData.put(dim.ID,dim);
-            
-            DDSaveHandler.unpackDimData(newPackedDimData);
-            DDSaveHandler.unpackLinkData(allPackedLinks);
-
-            
         }
-       
-    
+        
+        DDSaveHandler.unpackDimData(newPackedDimData);
+        DDSaveHandler.unpackLinkData(allPackedLinks);
 	}
 	
 }
