@@ -55,7 +55,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 		{
 			return link==null;
 		}
-		if(!link.isLocked())
+		if(!link.getLockState())
 		{
 			return true;
 		}
@@ -66,7 +66,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 			{
 				if(item.getItem() instanceof ItemDDKey)
 				{
-					if(link.open(item))
+					if(link.tryToOpen(item))
 					{
 						return true;
 					}

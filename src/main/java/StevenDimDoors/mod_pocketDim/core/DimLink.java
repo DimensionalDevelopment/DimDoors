@@ -124,18 +124,18 @@ public abstract class DimLink
 	 * Tries to open this lock. Returns true if the lock is open or if the key can open it
 	 * @return
 	 */
-	public boolean open(ItemStack item)
+	public boolean tryToOpen(ItemStack item)
 	{
-		return lock.open(item);
+		return lock.tryToOpen(item);
 	}
 	
 	/**
-	 * Tries to open this lock. Returns true if the lock is open or if the key can open it
+	 * Tests if the given key item fits this lock
 	 * @return
 	 */
-	public boolean canOpen(ItemStack item)
+	public boolean doesKeyUnlock(ItemStack item)
 	{
-		return lock.canOpen(item);
+		return lock.doesKeyUnlock(item);
 	}
 
 	/**
@@ -147,11 +147,19 @@ public abstract class DimLink
 		return this.lock!=null;
 	}
 	
-	public boolean isLocked()
+	/**
+	 * Tests if the lock is open or not
+	 * 
+	 */
+	public boolean getLockState()
 	{
-		return this.hasLock()&&this.lock.isLocked();
+		return this.hasLock()&&this.lock.getLockState();
 	}
 
+	/**
+	 * gets the actual lock object
+	 * @return
+	 */
 	public DDLock getLock()
 	{
 		return this.lock;

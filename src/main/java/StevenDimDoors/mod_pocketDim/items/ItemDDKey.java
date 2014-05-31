@@ -92,9 +92,9 @@ public class ItemDDKey extends Item
 		//what to do if the door has a lock already
 		if(link.hasLock())
 		{
-			if(link.canOpen(itemStack))
+			if(link.doesKeyUnlock(itemStack))
 			{
-				if(link.isLocked())
+				if(link.getLockState())
 				{
 					world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyUnlock",  1F, 1F);
 				}
@@ -102,7 +102,7 @@ public class ItemDDKey extends Item
 				{
 					world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyLock",  1F, 1F);
 				}
-				PocketManager.getDimensionData(world).lock(link, !link.isLocked());
+				PocketManager.getDimensionData(world).lock(link, !link.getLockState());
 				PocketManager.getLinkWatcher().update(new ClientLinkData(link.source(),link.getLock()));
 			}
 			else

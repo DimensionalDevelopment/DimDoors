@@ -120,7 +120,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 			{
 				return false;
 			}
-			this.lock = DDLock.createLock(itemStack, lockKey);
+			this.lock = DDLock.generateLockKeyPair(itemStack, lockKey);
 			return true;
 		}
 		
@@ -591,7 +591,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 	public void lock(DimLink link, boolean locked)
 	{
 		InnerDimLink innerLink = (InnerDimLink)link;
-		innerLink.lock.lock(locked);
+		innerLink.lock.setLockState(locked);
 		modified = true;
 	}
 	

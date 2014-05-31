@@ -37,7 +37,7 @@ public class ClientLinkData
 
 		if (hasLock)
 		{
-			output.writeBoolean(lock.isLocked());
+			output.writeBoolean(lock.getLockState());
 			output.writeInt(lock.getLockKey());
 		}
 	}

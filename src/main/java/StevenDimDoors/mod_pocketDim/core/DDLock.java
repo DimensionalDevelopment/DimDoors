@@ -12,13 +12,13 @@ import net.minecraft.nbt.NBTTagList;
 
 public class DDLock
 {
-	private boolean isLocked;
+	private boolean lockState;
 	private final int lockKey;
 	
 	
 	public DDLock(boolean isLocked, int lockKey)
 	{
-		this.isLocked = isLocked;
+		this.lockState = isLocked;
 		this.lockKey = lockKey;
 	}
 	
@@ -30,9 +30,9 @@ public class DDLock
 	 * See if the lock is currently locked. False if there is no lock.
 	 * @return
 	 */
-	public boolean isLocked()
+	public boolean getLockState()
 	{
-		return this.isLocked;
+		return this.lockState;
 	}
 	
 	/**
@@ -40,9 +40,9 @@ public class DDLock
 	 * otherwise returns true
 	 * @param flag
 	 */
-	protected void lock(boolean flag)
+	protected void setLockState(boolean flag)
 	{
-		this.isLocked = flag;
+		this.lockState = flag;
 	}
 	
 	
@@ -52,7 +52,7 @@ public class DDLock
 	 * @param itemStack
 	 * @return
 	 */
-	public boolean canOpen(ItemStack itemStack)
+	public boolean doesKeyUnlock(ItemStack itemStack)
 	{
 		for(int key :getKeys(itemStack))
 		{
@@ -69,9 +69,9 @@ public class DDLock
 	 * @param item
 	 * @return
 	 */
-	public boolean open(ItemStack itemStack)
+	public boolean tryToOpen(ItemStack itemStack)
 	{
-		return (!this.isLocked)||this.canOpen(itemStack);
+		return (!this.lockState)||this.doesKeyUnlock(itemStack);
 	}
 	
 	/**
@@ -139,7 +139,7 @@ public class DDLock
 	
 	public static boolean hasCreatedLock(ItemStack key)
 	{
-		if(isKey(key))
+		if(isItemKey(key))
 		{
 			if(key.hasTagCompound())
 			{
@@ -150,14 +150,14 @@ public class DDLock
 		return false;
 	}
 	
-	public static boolean isKey(ItemStack key)
+	public static boolean isItemKey(ItemStack key)
 	{
 		return key.getItem() instanceof ItemDDKey;
 	}
 	
 	
 
-	protected static DDLock createLock(ItemStack itemStack, int lockKey2)
+	protected static DDLock generateLockKeyPair(ItemStack itemStack, int lockKey2)
 	{
 		itemStack.getTagCompound().setBoolean("HasCreatedLock", true);
 		DDLock.setKeys(itemStack, new int[]{lockKey2});

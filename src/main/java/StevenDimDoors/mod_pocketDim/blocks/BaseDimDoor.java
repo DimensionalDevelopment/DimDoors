@@ -474,7 +474,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		if(link!=null&&link.hasLock())
 		{
 			status++;
-			if(link.isLocked())
+			if(link.getLockState())
 			{
 				status++;
 			}
@@ -495,7 +495,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		{
 			return link==null;
 		}
-		if(!link.isLocked())
+		if(!link.getLockState())
 		{
 			return true;
 		}
@@ -506,7 +506,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			{
 				if(item.getItem() instanceof ItemDDKey)
 				{
-					if(link.open(item))
+					if(link.tryToOpen(item))
 					{
 						return true;
 					}

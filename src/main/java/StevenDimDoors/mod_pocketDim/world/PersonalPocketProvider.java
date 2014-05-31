@@ -31,7 +31,7 @@ public class PersonalPocketProvider extends PocketProvider
 	public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
 	{
 		setCloudRenderer( new CloudRenderBlank());
-		return this.worldObj.getWorldVec3Pool().getVecFromPool(.89, .89, .89);
+		return this.worldObj.getWorldVec3Pool().getVecFromPool(1,1,1);
 	}
 	
 	 public boolean isSurfaceWorld()
@@ -61,7 +61,7 @@ public class PersonalPocketProvider extends PocketProvider
 	@Override
 	public Vec3 getFogColor(float par1, float par2)
 	{
-		return this.worldObj.getWorldVec3Pool().getVecFromPool(.89, .89, .89);
+		return this.worldObj.getWorldVec3Pool().getVecFromPool(1,1,1);
 	}
 
 	@Override
