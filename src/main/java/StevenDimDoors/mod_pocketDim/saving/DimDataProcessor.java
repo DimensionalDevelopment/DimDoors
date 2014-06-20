@@ -59,7 +59,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		{
 			//ensure our json object corresponds to our schema
 			validateJson(ele);
-			outputStream.write(data.toString().getBytes("UTF-8"));
+			outputStream.write(ele.toString().getBytes("UTF-8"));
 			outputStream.close();
 		} 
 		catch (Exception e) 
