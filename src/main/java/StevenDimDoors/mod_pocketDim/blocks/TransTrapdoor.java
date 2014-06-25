@@ -97,7 +97,6 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	{
 		if (!world.isRemote && isTrapdoorOpen(world.getBlockMetadata(x, y, z)))
 		{
-			
 			DimLink link = PocketManager.getLink(x, y, z, world);
 			if (link != null)
 			{

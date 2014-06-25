@@ -64,10 +64,26 @@
                     "type": "object",
 					"properties": {
 						"children": {
-							"type": "array",
+							"type":"array",
 							"items":{
-								"type": "number"
-							}
+								"type": "object",
+								"properties":{
+									"x": {
+										"type": "integer"
+									},
+									"y": {
+										"type": "integer"
+									},
+									"z": {
+										"type": "integer"
+									}
+								},
+								"required": [
+									"x",
+									"y",
+									"z"
+								]
+							}	
 						},
 						"orientation": {
 							"type": "number"
