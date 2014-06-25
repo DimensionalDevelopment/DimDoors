@@ -12,6 +12,7 @@ import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
@@ -157,7 +158,7 @@ public class DDSaveHandler
 		}
 		if(isMissing)
 		{
-			packedDim=(new PackedDimData(packedDim.ID, packedDim.Depth, packedDim.PackDepth, packedDim.ParentID, packedDim.RootID, packedDim.Orientation, packedDim.IsDungeon, packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, children, packedDim.Links, packedDim.Tails));
+			packedDim=(new PackedDimData(packedDim.ID, packedDim.Depth, packedDim.PackDepth, packedDim.ParentID, packedDim.RootID, packedDim.Orientation, DimensionType.getTypeFromIndex(packedDim.DimensionType), packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, children, packedDim.Links, packedDim.Tails));
 			packedDims.put(packedDim.ID, packedDim);
 		}
 		return children;
@@ -175,12 +176,12 @@ public class DDSaveHandler
 	{
 		ArrayList<Integer> fosterChildren = new ArrayList<Integer>();
 		fosterChildren.add(packedDim.ID);
-
+		DimensionType type = DimensionType.getTypeFromIndex(packedDim.DimensionType);
 		//fix pockets without parents
 		if(!packedDims.containsKey(packedDim.ParentID))
 		{
 			//Fix the orphan by changing its root to its parent, re-connecting it to the list
-			packedDim=(new PackedDimData(packedDim.ID, 1, packedDim.PackDepth, packedDim.RootID, packedDim.RootID, packedDim.Orientation, packedDim.IsDungeon, packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, packedDim.ChildIDs, packedDim.Links, packedDim.Tails));
+			packedDim=(new PackedDimData(packedDim.ID, 1, packedDim.PackDepth, packedDim.RootID, packedDim.RootID, packedDim.Orientation,type, packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, packedDim.ChildIDs, packedDim.Links, packedDim.Tails));
 			packedDims.put(packedDim.ID, packedDim);
 		}
 		//fix pockets whose parents have forgotten about them
@@ -189,7 +190,7 @@ public class DDSaveHandler
 		{
 			//find the root, and fix it by adding the orphan's ID to its children
 			fosterChildren.addAll(fosterParent.ChildIDs);
-			fosterParent=(new PackedDimData(fosterParent.ID, fosterParent.Depth, fosterParent.PackDepth, fosterParent.ParentID, fosterParent.RootID, fosterParent.Orientation, fosterParent.IsDungeon, fosterParent.IsFilled, fosterParent.DungeonData, fosterParent.Origin, fosterChildren, fosterParent.Links, fosterParent.Tails));
+			fosterParent=(new PackedDimData(fosterParent.ID, fosterParent.Depth, fosterParent.PackDepth, fosterParent.ParentID, fosterParent.RootID, fosterParent.Orientation, type, fosterParent.IsFilled, fosterParent.DungeonData, fosterParent.Origin, fosterChildren, fosterParent.Links, fosterParent.Tails));
 			packedDims.put(fosterParent.ID, fosterParent);	
 		}
 			

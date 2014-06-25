@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
@@ -46,13 +47,13 @@ public class CommandResetDungeons extends DDCommandBase
 		for (NewDimData data : PocketManager.getDimensions())
 		{
 			
-			if(DimensionManager.getWorld(data.id())==null&&data.isDungeon())
+			if(DimensionManager.getWorld(data.id())==null&&data.getDimensionType() == DimensionType.DUNGEON)
 			{
 				resetCount++;
 				dungeonCount++;
 				dimsToDelete.add(data.id());
 			}
-			else if(data.isDungeon())
+			else if(data.getDimensionType() == DimensionType.DUNGEON)
 			{
 				dimsToFix.add(data.id());
 				dungeonCount++;

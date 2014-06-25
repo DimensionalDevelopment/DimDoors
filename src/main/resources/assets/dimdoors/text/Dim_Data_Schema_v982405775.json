@@ -19,9 +19,6 @@
 		"IsDungeon": {
 			"type":"boolean"
 		},
-		"PocketType": {
-			"type":"number"
-		},
 		"IsFilled": {
 			"type":"boolean"
 		},
@@ -224,8 +221,8 @@
 					"Orientation",
 					"Links",
 					"IsFilled",
-					"IsDungeon",
 					"ID",
+					"IsDungeon",
 					"Depth",
 					"ChildIDs"
 				]

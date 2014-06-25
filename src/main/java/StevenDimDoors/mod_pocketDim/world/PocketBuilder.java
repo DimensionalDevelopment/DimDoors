@@ -14,6 +14,7 @@ import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
@@ -99,7 +100,7 @@ public class PocketBuilder
 		
 		// Register a new dimension
 		NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
-		NewDimData dimension = PocketManager.registerPocket(parent, true);
+		NewDimData dimension = PocketManager.registerPocket(parent, DimensionType.DUNGEON);
 
 		//Load a world
 		World world = PocketManager.loadDimension(dimension.id());
@@ -142,7 +143,7 @@ public class PocketBuilder
 		DungeonSchematic schematic = pair.getSecond();
 
 		//Register a new dimension
-		NewDimData dimension = PocketManager.registerPocket(parent, true);
+		NewDimData dimension = PocketManager.registerPocket(parent, DimensionType.DUNGEON);
 
 		//Load a world
 		World world = PocketManager.loadDimension(dimension.id());
@@ -248,9 +249,9 @@ public class PocketBuilder
 				schematic.getLength() <= DungeonHelper.MAX_DUNGEON_LENGTH);
 	}
 
-	public static boolean generateNewPocket(DimLink link, DDProperties properties, Block door)
+	public static boolean generateNewPocket(DimLink link, DDProperties properties, Block door, DimensionType type)
 	{
-		return generateNewPocket(link, DEFAULT_POCKET_SIZE, DEFAULT_POCKET_WALL_THICKNESS, properties, door);
+		return generateNewPocket(link, DEFAULT_POCKET_SIZE, DEFAULT_POCKET_WALL_THICKNESS, properties, door, type);
 	}
 
 	private static int getDoorOrientation(Point4D source, DDProperties properties)
@@ -373,7 +374,7 @@ public class PocketBuilder
 		}
 	}
 	
-	public static boolean generateNewPocket(DimLink link, int size, int wallThickness, DDProperties properties, Block door)
+	public static boolean generateNewPocket(DimLink link, int size, int wallThickness, DDProperties properties, Block door, DimensionType type)
 	{
 		validatePocketSetup(link, size, wallThickness, properties, door);
 		
@@ -381,7 +382,7 @@ public class PocketBuilder
 		{
 			//Register a new dimension
 			NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
-			NewDimData dimension = PocketManager.registerPocket(parent, false);
+			NewDimData dimension = PocketManager.registerPocket(parent, type);
 
 
 			//Load a world

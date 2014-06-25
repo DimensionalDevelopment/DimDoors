@@ -498,7 +498,7 @@ public class DDTeleporter
 			case DUNGEON:
 				return PocketBuilder.generateNewDungeonPocket(link, properties);
 			case POCKET:
-				return PocketBuilder.generateNewPocket(link, properties,door);
+				return PocketBuilder.generateNewPocket(link, properties, door, DimensionType.POCKET);
 			case PERSONAL:
 				return setupPersonalLink(link, properties, entity, door);
 			case SAFE_EXIT:

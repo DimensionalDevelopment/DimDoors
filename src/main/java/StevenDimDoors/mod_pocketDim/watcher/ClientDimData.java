@@ -3,37 +3,42 @@ package StevenDimDoors.mod_pocketDim.watcher;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 
 public class ClientDimData
 {
 	//We'll use public fields since this is just a data container and it's immutable
 	public final int ID;
-	public final int RootID;
+	public final int rootID;
+	public final DimensionType type;
 	
-	public ClientDimData(int id, int rootID)
+	public ClientDimData(int id, int rootID, DimensionType type)
 	{
 		ID = id;
-		RootID = rootID;
+		this.rootID = rootID;
+		this.type = type;
 	}
 	
 	public ClientDimData(NewDimData dimension)
 	{
 		ID = dimension.id();
-		RootID = dimension.root().id();
+		this.rootID = dimension.root().id();
+		this.type = dimension.getDimensionType();
 	}
 	
 	public void write(DataOutputStream output) throws IOException
 	{
 		output.writeInt(ID);
-		output.writeInt(RootID);
+		output.writeInt(rootID);
+		output.writeInt(type.index);
 	}
 	
 	public static ClientDimData read(DataInputStream input) throws IOException
 	{
 		int id = input.readInt();
-		int rootId = input.readInt();
-		return new ClientDimData(id, rootId);
+		int rootID = input.readInt();
+		int index = input.readInt();
+		return new ClientDimData(id, rootID, DimensionType.getTypeFromIndex(index));
 	}
 }

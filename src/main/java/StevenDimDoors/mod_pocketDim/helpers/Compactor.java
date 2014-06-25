@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.core.IDimRegistrationCallback;
 import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
@@ -67,13 +68,14 @@ public class Compactor
 		{
 			int id = input.readInt();
 			int rootID = input.readInt();
+			DimensionType type = DimensionType.getTypeFromIndex(input.readInt());
 			
 			if (rootIDs.add(rootID))
 			{
-				callback.registerDimension(rootID, rootID);
+				callback.registerDimension(rootID, rootID, type);
 			}
 			// Don't check if (id != rootID) - we want to retrieve the reference anyway
-			NewDimData dimension = callback.registerDimension(id, rootID);
+			NewDimData dimension = callback.registerDimension(id, rootID, type);
 			int linkCount = input.readInt();
 			for (int h = 0; h < linkCount; h++)
 			{

@@ -1,30 +1,37 @@
 package StevenDimDoors.mod_pocketDim.saving;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import StevenDimDoors.mod_pocketDim.Point3D;
+import java.util.HashMap;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.util.BaseConfigurationProcessor;
 import StevenDimDoors.mod_pocketDim.util.ConfigurationProcessingException;
 import StevenDimDoors.mod_pocketDim.util.JSONValidator;
-import StevenDimDoors.mod_pocketDim.util.Point4D;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 
 public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 {
-	private static final String JSON_SCHEMA_PATH = "/assets/dimdoors/text/Dim_Data_Schema.json";
+	public final String JSON_VERSION_PROPERTY_NAME = "SAVE_DATA_VERSION_ID_INSTANCE";
+	private HashMap<Integer, String> SAVE_DATA_DEFINITIONS; 
 	private static final JsonParser jsonParser = new JsonParser();
+	public static final String currentSaveVersionPath = "/assets/dimdoors/text/Dim_Data_Schema_v1-0-0.json";
 
+
+	//TODO dont load the schemas every time
+	public DimDataProcessor()
+	{	
+		SAVE_DATA_DEFINITIONS = new HashMap<Integer, String>();
+		SAVE_DATA_DEFINITIONS.put(982405775, "/assets/dimdoors/text/Dim_Data_Schema_v982405775.json");
+		SAVE_DATA_DEFINITIONS.put(PackedDimData.SAVE_DATA_VERSION_ID, currentSaveVersionPath);
+
+	}
 	@Override
 	public PackedDimData readFromStream(InputStream inputStream)
 		throws ConfigurationProcessingException
@@ -58,38 +65,96 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		try 
 		{
 			//ensure our json object corresponds to our schema
-			validateJson(ele);
+			JSONValidator.validate(getSaveDataSchema(ele.getAsJsonObject()), ele);
 			outputStream.write(ele.toString().getBytes("UTF-8"));
 			outputStream.close();
 		} 
 		catch (Exception e) 
 		{
 			// not sure if this is kosher, we need it to explode, but not by throwing the IO exception. 
-			throw new ConfigurationProcessingException("Incorrectly formatted save data");
-		}		
+			throw new ConfigurationProcessingException("Could not access save data");
+		}
+		
 	}
+	
 	
 	public PackedDimData readDimDataJson(JsonReader reader) throws IOException
 	{
 		JsonElement ele = jsonParser.parse(reader);
-		this.validateJson(ele);
+		JsonObject schema = this.getSaveDataSchema(ele.getAsJsonObject());
+		JSONValidator.validate(schema, ele);
+		ele = processSaveData(schema, ele.getAsJsonObject());
+		
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		return gsonBuilder.create().fromJson(ele, PackedDimData.class);
 	}
 	
 	/**
-	 * checks our json against the dim data schema
-	 * @param data
+	 * Gets the schema that corresponds to a version of our save data
+	 * @param obj
 	 * @return
-	 * @throws IOException
+	 * @throws IOException 
 	 */
-	public boolean validateJson(JsonElement data) throws IOException
+	public JsonObject getSaveDataSchema(JsonObject obj)
 	{
-		InputStream in = this.getClass().getResourceAsStream(JSON_SCHEMA_PATH);
+		String schemaPath =  this.SAVE_DATA_DEFINITIONS.get(obj.get(JSON_VERSION_PROPERTY_NAME).getAsInt());
+		
+		if(schemaPath == null)
+		{
+			throw new IllegalStateException("Invalid save data version");
+		}
+		InputStream in = this.getClass().getResourceAsStream(schemaPath);
 		JsonReader reader = new JsonReader(new InputStreamReader(in));
-		JSONValidator.validate((JsonObject) jsonParser.parse(reader), data);
-		reader.close();
-		in.close();
-		return true;
+
+		JsonObject schema = jsonParser.parse(reader).getAsJsonObject();
+		try
+		{
+			reader.close();
+			in.close();
+		}
+		catch (IOException e)
+		{
+			System.err.println("Could not load Json Save Data definitions");
+			e.printStackTrace();
+			throw new IllegalStateException("Could not load Json Save Data definitions");
+		}
+		return schema;
+	}
+	
+	/**
+	 * I use this method to update old save data files to the new format before actually loading them. 
+	 * @return
+	 */
+	public JsonObject processSaveData(JsonObject schema, JsonObject save)
+	{
+		if(save.get(JSON_VERSION_PROPERTY_NAME).getAsInt()== 982405775)
+		{
+			DimensionType type;
+			
+			//see if the dim is a pocket
+			if(save.get("RootID").getAsInt() != save.get("ID").getAsInt())
+			{
+				if(save.get("IsDungeon").getAsBoolean())
+				{
+					type = DimensionType.DUNGEON;
+				}
+				else
+				{
+					type = DimensionType.POCKET;
+				}
+			}
+			else
+			{
+				type = DimensionType.ROOT;
+			}
+			
+			save.remove("IsDungeon");
+			save.addProperty("DimensionType",type.index);
+			save.remove(this.JSON_VERSION_PROPERTY_NAME);
+			save.addProperty(this.JSON_VERSION_PROPERTY_NAME, PackedDimData.SAVE_DATA_VERSION_ID);
+		}
+		
+		JSONValidator.validate(this.getSaveDataSchema(save), save);
+		return save;
 	}
 }

@@ -3,14 +3,15 @@ package StevenDimDoors.mod_pocketDim.saving;
 import java.util.List;
 
 import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
 
 public class PackedDimData
 {
 	// These fields will be public since this is a simple data container
-	public final static long SAVE_DATA_VERSION_ID = 982405775L;
+	public final static int SAVE_DATA_VERSION_ID = 100;
 	public final long SAVE_DATA_VERSION_ID_INSTANCE = SAVE_DATA_VERSION_ID;
 	public final int ID;
-	public final boolean IsDungeon;
+	public final int DimensionType;
 	public final boolean IsFilled;
 	public final int Depth;
 	public final int PackDepth;
@@ -26,7 +27,7 @@ public class PackedDimData
 	// FIXME Missing dungeon data, not sure how to include it
 
 	public PackedDimData(int id, int depth, int packDepth, int parentID, int rootID, int orientation,
-		boolean isDungeon, boolean isFilled,PackedDungeonData dungeonData, Point3D origin, List<Integer> childIDs, List<PackedLinkData> links,
+		DimensionType type, boolean isFilled,PackedDungeonData dungeonData, Point3D origin, List<Integer> childIDs, List<PackedLinkData> links,
 		List<PackedLinkTail> tails)
 	{
 		ID = id;
@@ -35,7 +36,7 @@ public class PackedDimData
 		ParentID = parentID;
 		RootID = rootID;
 		Orientation = orientation;
-		IsDungeon = isDungeon;
+		DimensionType = type.index;
 		IsFilled = isFilled;
 		DungeonData = dungeonData;
 		Origin = origin;

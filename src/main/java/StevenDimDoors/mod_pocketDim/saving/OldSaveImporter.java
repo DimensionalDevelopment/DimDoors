@@ -2,17 +2,16 @@ package StevenDimDoors.mod_pocketDim.saving;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import StevenDimDoors.mod_pocketDim.DimData;
 import StevenDimDoors.mod_pocketDim.LinkData;
-import StevenDimDoors.mod_pocketDim.Point3D;
-
 import StevenDimDoors.mod_pocketDim.ObjectSaveInputStream;
+import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class OldSaveImporter
@@ -77,7 +76,7 @@ public class OldSaveImporter
             {
             	Point4D source = new Point4D(link.locXCoord,link.locYCoord,link.locZCoord,link.locDimID);
             	Point4D destintion = new Point4D(link.destXCoord,link.destYCoord,link.destZCoord,link.destDimID);
-            	PackedLinkTail tail = new PackedLinkTail(destintion, link.linkOrientation);
+            	PackedLinkTail tail = new PackedLinkTail(destintion, LinkType.NORMAL);
             	List<Point3D> children = new ArrayList<Point3D>();
 
             	PackedLinkData newPackedLink = new PackedLinkData(source, new Point3D(-1,-1,-1), tail, link.linkOrientation,children, null);
@@ -86,13 +85,30 @@ public class OldSaveImporter
             	allPackedLinks.add(newPackedLink);
             }
             PackedDimData dim;
+            DimensionType type;
+            
             if(data.isPocket)
             {
-                dim = new PackedDimData(data.dimID, data.depth, data.depth, data.exitDimLink.locDimID, data.exitDimLink.locDimID, 0, data.dungeonGenerator!=null, data.hasBeenFilled, null, new Point3D(0,64,0), childDims, newPackedLinkData, null);
+            	if(data.dungeonGenerator!=null)
+            	{
+            		type = DimensionType.DUNGEON;
+            	}
+            	else
+            	{
+            		type = DimensionType.POCKET;
+            	}
             }
             else
             {
-                dim = new PackedDimData(data.dimID, data.depth, data.depth, data.dimID, data.dimID, 0, data.dungeonGenerator!=null, data.hasBeenFilled, null, new Point3D(0,64,0), childDims, newPackedLinkData, null);
+            	type = DimensionType.ROOT;
+            }
+            if(data.isPocket)
+            {
+                dim = new PackedDimData(data.dimID, data.depth, data.depth, data.exitDimLink.locDimID, data.exitDimLink.locDimID, 0, type, data.hasBeenFilled, null, new Point3D(0,64,0), childDims, newPackedLinkData, null);
+            }
+            else
+            {
+                dim = new PackedDimData(data.dimID, data.depth, data.depth, data.dimID, data.dimID, 0, type, data.hasBeenFilled, null, new Point3D(0,64,0), childDims, newPackedLinkData, null);
             }
             newPackedDimData.put(dim.ID,dim);
         }

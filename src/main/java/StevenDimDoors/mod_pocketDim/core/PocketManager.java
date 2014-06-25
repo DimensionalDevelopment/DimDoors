@@ -42,16 +42,16 @@ public class PocketManager
 		// instances of NewDimData going through PocketManager. In turn, that enforces
 		// that any link destinations must be real dimensions controlled by PocketManager.
 
-		public InnerDimData(int id, InnerDimData parent, boolean isPocket, boolean isDungeon,
+		public InnerDimData(int id, InnerDimData parent, DimensionType type,
 			IUpdateWatcher<ClientLinkData> linkWatcher)
 		{
-			super(id, parent, isPocket, isDungeon, linkWatcher);
+			super(id, parent, type, linkWatcher);
 		}
 		
-		public InnerDimData(int id, InnerDimData root)
+		public InnerDimData(int id, NewDimData root, DimensionType type)
 		{
 			// This constructor is meant for client-side code only
-			super(id, root);
+			super(id, root, type);
 		}
 
 	}
@@ -90,7 +90,7 @@ public class PocketManager
 		@Override
 		public void onCreated(ClientDimData data)
 		{
-			registerClientDimension(data.ID, data.RootID);
+			registerClientDimension(data.ID, data.rootID, data.type);
 		}
 
 		@Override
@@ -114,9 +114,9 @@ public class PocketManager
 		// exposing a private constructor ONLY to a very specific trusted class.
 		
 		@Override
-		public NewDimData registerDimension(int dimensionID, int rootID)
+		public NewDimData registerDimension(int dimensionID, int rootID, DimensionType type)
 		{
-			return registerClientDimension(dimensionID, rootID);
+			return registerClientDimension(dimensionID, rootID, type);
 		}
 	}
 	
@@ -177,7 +177,7 @@ public class PocketManager
 		}
 		//Register Limbo
 		DDProperties properties = DDProperties.instance();
-		registerDimension(properties.LimboDimensionID, null, false, false);
+		registerDimension(properties.LimboDimensionID, null, DimensionType.ROOT);
 		
 		loadInternal();
 		
@@ -192,10 +192,15 @@ public class PocketManager
 	{
 		
 		InnerDimData dimData;
+		DimensionType type = DimensionType.getTypeFromIndex(packedData.DimensionType);
+		if(type == null)
+		{
+			throw new IllegalArgumentException("Invalid dimension type");
+		}
 		//register roots
 		if(packedData.ID==packedData.ParentID)
 		{
-			dimData =  new InnerDimData(packedData.ID, null, false, false, linkWatcher);
+			dimData =  new InnerDimData(packedData.ID, null, type, linkWatcher);
 			dimData.root=dimData;
 			dimData.parent=dimData;
 			dimData.depth=packedData.Depth;
@@ -207,7 +212,7 @@ public class PocketManager
 		else //register children
 		{
 			InnerDimData test = PocketManager.dimensionData.get(packedData.ParentID);
-			dimData =  new InnerDimData(packedData.ID, test,true, packedData.IsDungeon, linkWatcher);
+			dimData =  new InnerDimData(packedData.ID, test, type, linkWatcher);
 			dimData.isFilled=packedData.IsFilled;
 			dimData.origin = new Point4D(packedData.Origin.getX(),packedData.Origin.getY(),packedData.Origin.getZ(),packedData.ID);
 			dimData.root=PocketManager.getDimensionData(packedData.RootID);
@@ -421,7 +426,7 @@ public class PocketManager
 
 	public static NewDimData registerDimension(World world)
 	{
-		return registerDimension(world.provider.dimensionId, null, false, false);
+		return registerDimension(world.provider.dimensionId, null, DimensionType.ROOT);
 	}
 
 	public static NewDimData registerPersonalPocket(NewDimData parent, String playerName)
@@ -434,12 +439,12 @@ public class PocketManager
 		DDProperties properties = DDProperties.instance();
 		int dimensionID = DimensionManager.getNextFreeDimId();
 		DimensionManager.registerDimension(dimensionID, properties.PersonalPocketProviderID);
-		NewDimData data = registerDimension(dimensionID, (InnerDimData) parent, true, false);
+		NewDimData data = registerDimension(dimensionID, (InnerDimData) parent, DimensionType.PERSONAL);
 		personalPocketsMapping.put(playerName, data);
 		return data;
 	}
 	
-	public static NewDimData registerPocket(NewDimData parent, boolean isDungeon)
+	public static NewDimData registerPocket(NewDimData parent, DimensionType type)
 	{
 		if (parent == null)
 		{
@@ -449,7 +454,7 @@ public class PocketManager
 		DDProperties properties = DDProperties.instance();
 		int dimensionID = DimensionManager.getNextFreeDimId();
 		DimensionManager.registerDimension(dimensionID, properties.PocketProviderID);
-		return registerDimension(dimensionID, (InnerDimData) parent, true, isDungeon);
+		return registerDimension(dimensionID, (InnerDimData) parent, type);
 	}
 	/**
 	 * Registers a dimension with DD but NOT with forge.
@@ -459,7 +464,7 @@ public class PocketManager
 	 * @param isDungeon
 	 * @return
 	 */
-	private static NewDimData registerDimension(int dimensionID, InnerDimData parent, boolean isPocket, boolean isDungeon)
+	private static NewDimData registerDimension(int dimensionID, InnerDimData parent, DimensionType type)
 	{	
 		if (dimensionData.containsKey(dimensionID))
 		{
@@ -469,7 +474,7 @@ public class PocketManager
 			}
 			throw new IllegalArgumentException("Cannot register a dimension with ID = " + dimensionID + " because it has already been registered.");
 		}
-		InnerDimData dimension = new InnerDimData(dimensionID, parent, isPocket, isDungeon, linkWatcher);
+		InnerDimData dimension = new InnerDimData(dimensionID, parent, type, linkWatcher);
 		dimensionData.put(dimensionID, dimension);
 		if (!dimension.isPocketDimension())
 		{
@@ -481,7 +486,7 @@ public class PocketManager
 	}
 	
 	@SideOnly(Side.CLIENT)
-	private static NewDimData registerClientDimension(int dimensionID, int rootID)
+	private static NewDimData registerClientDimension(int dimensionID, int rootID, DimensionType type)
 	{
 		System.out.println("Registered dim "+dimensionID+" on the client.");
 		// No need to raise events heres since this code should only run on the client side
@@ -498,7 +503,7 @@ public class PocketManager
 			dimension = dimensionData.get(dimensionID);
 			if (dimension == null)
 			{
-				dimension = new InnerDimData(dimensionID, root);
+				dimension = new InnerDimData(dimensionID, root, type);
 				dimensionData.put(dimension.id(), dimension);
 			}
 		}
@@ -538,9 +543,11 @@ public class PocketManager
 			return null;
 		}
 		NewDimData dimension = PocketManager.dimensionData.get(dimensionID);
+		
+		// if we do not have a record of it, then it must be a root
 		if (dimension == null)
 		{
-			dimension = registerDimension(dimensionID, null, false, false);
+			dimension = registerDimension(dimensionID, null, DimensionType.ROOT);
 		}
 		return dimension;
 	}

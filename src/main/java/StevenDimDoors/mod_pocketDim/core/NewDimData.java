@@ -130,10 +130,10 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 	protected int id;
 	protected Map<Point4D, InnerDimLink> linkMapping;
 	protected List<InnerDimLink> linkList;
-	protected boolean isDungeon;
 	protected boolean isFilled;
 	protected int depth;
 	protected int packDepth;
+	protected DimensionType type;
 	protected NewDimData parent;
 	protected NewDimData root;
 	protected List<NewDimData> children;
@@ -143,17 +143,11 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 	protected boolean modified;
 	public IUpdateWatcher<ClientLinkData> linkWatcher;
 	
-	protected NewDimData(int id, NewDimData parent, boolean isPocket, boolean isDungeon,
-		IUpdateWatcher<ClientLinkData> linkWatcher)
+	protected NewDimData(int id, NewDimData parent, DimensionType type, IUpdateWatcher<ClientLinkData> linkWatcher)
 	{
-		// The isPocket flag is redundant. It's meant as an integrity safeguard.
-		if (isPocket && (parent == null))
+		if (type != DimensionType.ROOT && (parent == null))
 		{
 			throw new NullPointerException("Dimensions can be pocket dimensions if and only if they have a parent dimension.");
-		}
-		if (isDungeon && !isPocket)
-		{
-			throw new IllegalArgumentException("A dimensional dungeon must also be a pocket dimension.");
 		}
 		
 		this.id = id;
@@ -162,7 +156,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 		this.children = new ArrayList<NewDimData>(); 
 		this.parent = parent;
 		this.packDepth = 0;
-		this.isDungeon = isDungeon;
+		this.type = type;
 		this.isFilled = false;
 		this.orientation = 0;
 		this.origin = null;
@@ -186,7 +180,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 		}
 	}
 	
-	protected NewDimData(int id, NewDimData root)
+	protected NewDimData(int id, NewDimData root, DimensionType type)
 	{
 		// This constructor is meant for client-side code only
 		if (root == null)
@@ -200,7 +194,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 		this.children = new ArrayList<NewDimData>(); 
 		this.parent = null;
 		this.packDepth = 0;
-		this.isDungeon = false;
+		this.type = type;
 		this.isFilled = false;
 		this.orientation = 0;
 		this.origin = null;
@@ -422,11 +416,10 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 		return (root != this);
 	}
 	
-	public boolean isDungeon()
+	public DimensionType getDimensionType()
 	{
-		return isDungeon;
+		return this.type;
 	}
-	
 	public boolean isFilled()
 	{
 		return isFilled;
@@ -500,7 +493,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 	
 	public void initializeDungeon(int originX, int originY, int originZ, int orientation, DimLink incoming, DungeonData dungeon)
 	{
-		if (!isDungeon)
+		if (this.type != DimensionType.DUNGEON)
 		{
 			throw new IllegalStateException("Cannot invoke initializeDungeon() on a non-dungeon dimension.");
 		}
@@ -655,7 +648,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 		linkList = null;
 		children.clear();
 		children = null;
-		isDungeon = false;
+		type = null;
 		isFilled = false;
 		depth = Integer.MIN_VALUE;
 		packDepth = Integer.MIN_VALUE;
@@ -696,10 +689,10 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 			{
 				children.add(childLink.source().toPoint3D());
 			}
-			PackedLinkTail tail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType().index);
+			PackedLinkTail tail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
 			Links.add(new PackedLinkData(link.point,parentPoint,tail,link.orientation,children,link.lock));
 			
-			PackedLinkTail tempTail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType().index);
+			PackedLinkTail tempTail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
 			if(Tails.contains(tempTail))
 			{
 				Tails.add(tempTail);
@@ -718,7 +711,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 			originPoint=this.origin.toPoint3D();
 		}
 		return new PackedDimData(this.id, depth, this.packDepth, parentID, this.root().id(), orientation, 
-									isDungeon, isFilled,packedDungeon, originPoint, ChildIDs, Links, Tails);
+									type, isFilled,packedDungeon, originPoint, ChildIDs, Links, Tails);
 		// FIXME: IMPLEMENTATION PLZTHX
 		//I tried
 	}
