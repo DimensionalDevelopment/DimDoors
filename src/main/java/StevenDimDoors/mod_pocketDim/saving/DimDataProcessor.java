@@ -19,17 +19,22 @@ import com.google.gson.stream.JsonReader;
 public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 {
 	public final String JSON_VERSION_PROPERTY_NAME = "SAVE_DATA_VERSION_ID_INSTANCE";
-	private HashMap<Integer, String> SAVE_DATA_DEFINITIONS; 
+	private HashMap<Integer, JsonObject> SAVE_DATA_SCHEMA; 
 	private static final JsonParser jsonParser = new JsonParser();
-	public static final String currentSaveVersionPath = "/assets/dimdoors/text/Dim_Data_Schema_v1-0-0.json";
-
-
+	
+	public static final String BASE_SCHEMA_PATH = "/assets/dimdoors/text/";
+	
+	
 	//TODO dont load the schemas every time
 	public DimDataProcessor()
 	{	
-		SAVE_DATA_DEFINITIONS = new HashMap<Integer, String>();
-		SAVE_DATA_DEFINITIONS.put(982405775, "/assets/dimdoors/text/Dim_Data_Schema_v982405775.json");
-		SAVE_DATA_DEFINITIONS.put(PackedDimData.SAVE_DATA_VERSION_ID, currentSaveVersionPath);
+		SAVE_DATA_SCHEMA = new HashMap<Integer, JsonObject>();
+		
+		//Load the old schema/s
+		SAVE_DATA_SCHEMA.put(982405775, loadSchema(BASE_SCHEMA_PATH+"Dim_Data_Schema_v982405775.json"));
+		
+		//load the current schema
+		SAVE_DATA_SCHEMA.put(PackedDimData.SAVE_DATA_VERSION_ID, loadSchema(BASE_SCHEMA_PATH+"Dim_Data_Schema_v1-0-0.json"));
 
 	}
 	@Override
@@ -59,14 +64,15 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 	{
 		//create a json object from a packedDimData instance
 		GsonBuilder gsonBuilder = new GsonBuilder();
-		Gson gson = gsonBuilder.setPrettyPrinting().create();
+		gsonBuilder.setPrettyPrinting();
+		Gson gson = gsonBuilder.create();
 		JsonElement ele = gson.toJsonTree(data);
-		
+	
 		try 
 		{
 			//ensure our json object corresponds to our schema
 			JSONValidator.validate(getSaveDataSchema(ele.getAsJsonObject()), ele);
-			outputStream.write(ele.toString().getBytes("UTF-8"));
+			outputStream.write(gson.toJson(ele).getBytes("UTF-8"));
 			outputStream.close();
 		} 
 		catch (Exception e) 
@@ -77,14 +83,28 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		
 	}
 	
-	
+	/**
+	 * validates the save file against it's current version, then updates and validates it again if it needs it
+	 * then it loads it
+	 * @param reader
+	 * @return
+	 * @throws IOException
+	 */
 	public PackedDimData readDimDataJson(JsonReader reader) throws IOException
 	{
+		//read the save file into a Json element
 		JsonElement ele = jsonParser.parse(reader);
+		
+		//get the schema that corresponds to the save file's listed version number
 		JsonObject schema = this.getSaveDataSchema(ele.getAsJsonObject());
+		
+		//validate the save file against its schema
 		JSONValidator.validate(schema, ele);
+		
+		//handle updating old save data
 		ele = processSaveData(schema, ele.getAsJsonObject());
 		
+		//convert the updated and verified json into an instance of PackedDimData
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		return gsonBuilder.create().fromJson(ele, PackedDimData.class);
 	}
@@ -97,13 +117,24 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 	 */
 	public JsonObject getSaveDataSchema(JsonObject obj)
 	{
-		String schemaPath =  this.SAVE_DATA_DEFINITIONS.get(obj.get(JSON_VERSION_PROPERTY_NAME).getAsInt());
+		JsonObject schema =  this.SAVE_DATA_SCHEMA.get(obj.get(JSON_VERSION_PROPERTY_NAME).getAsInt());
 		
-		if(schemaPath == null)
+		if(schema == null)
 		{
 			throw new IllegalStateException("Invalid save data version");
 		}
-		InputStream in = this.getClass().getResourceAsStream(schemaPath);
+		
+		return schema;
+	}
+	
+	/**
+	 * Internally load the save data schema so we dont load them every single time we validate save data
+	 * @param path
+	 * @return
+	 */
+	private JsonObject loadSchema(String path)
+	{
+		InputStream in = this.getClass().getResourceAsStream(path);
 		JsonReader reader = new JsonReader(new InputStreamReader(in));
 
 		JsonObject schema = jsonParser.parse(reader).getAsJsonObject();
@@ -118,6 +149,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 			e.printStackTrace();
 			throw new IllegalStateException("Could not load Json Save Data definitions");
 		}
+		
 		return schema;
 	}
 	
@@ -152,6 +184,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 			save.addProperty("DimensionType",type.index);
 			save.remove(this.JSON_VERSION_PROPERTY_NAME);
 			save.addProperty(this.JSON_VERSION_PROPERTY_NAME, PackedDimData.SAVE_DATA_VERSION_ID);
+			return processSaveData(this.getSaveDataSchema(save), save);
 		}
 		
 		JSONValidator.validate(this.getSaveDataSchema(save), save);
