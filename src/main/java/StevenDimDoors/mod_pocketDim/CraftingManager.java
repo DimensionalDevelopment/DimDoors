@@ -48,22 +48,22 @@ public class CraftingManager
 		if (properties.CraftingWarpDoorAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemWarpDoor, 1),
-				"yxy", 'x', mod_pocketDim.itemStableFabric, 'y', Item.doorWood);
+				"yxy", 'x', Item.enderPearl, 'y', Item.doorWood);
 		}
 		if (properties.CraftingTransTrapdoorAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.transTrapdoor, 1),
-				"y", "x", "y", 'x', mod_pocketDim.itemStableFabric, 'y', Block.trapdoor);
+				"y", "x", "y", 'x', Item.enderPearl, 'y', Block.trapdoor);
 		}
 		if (properties.CraftingRiftSignatureAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemRiftSignature, 1),
-				" y ", "yxy", " y ", 'x', mod_pocketDim.itemStableFabric, 'y', Item.ingotIron);
+				" y ", "yxy", " y ", 'x', Item.enderPearl, 'y', Item.ingotIron);
 		}
 		if (properties.CraftingRiftRemoverAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemRiftRemover, 1),
-				"yyy", "yxy", "yyy", 'x', mod_pocketDim.itemStableFabric, 'y', Item.ingotGold);
+				"yyy", "yxy", "yyy", 'x', Item.enderPearl, 'y', Item.ingotGold);
 		}
 		if (properties.CraftingRiftBladeAllowed)
 		{
@@ -72,12 +72,12 @@ public class CraftingManager
 		}
 		if (properties.CraftingStabilizedRiftSignatureAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemStabilizedLinkSignature,1),
-				" y ", "yxy", " y ", 'x', mod_pocketDim.itemRiftSignature, 'y', mod_pocketDim.itemStableFabric);
+			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemStabilizedLinkSignature, 1),
+				" y ", "yxy", " y ", 'x', mod_pocketDim.itemStableFabric, 'y', Item.ingotIron);
 		}
 		if (properties.CraftingGoldenDimensionalDoorAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldenDimensionalDoor,1),
+			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldenDimensionalDoor, 1),
 				"yxy", 'x', mod_pocketDim.itemStableFabric, 'y', mod_pocketDim.itemGoldenDoor);
 		}
 		if (properties.CraftingGoldenDoorAllowed)
