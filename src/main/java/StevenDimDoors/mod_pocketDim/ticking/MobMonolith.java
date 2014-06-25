@@ -145,9 +145,13 @@ public class MobMonolith extends EntityFlying implements IMob
 		if (player != null)
 		{
 			this.facePlayer(player);
-			if (!this.worldObj.isRemote)
+			if (!this.worldObj.isRemote && !(this.worldObj.provider instanceof LimboProvider))
 			{
-				// Play sounds on the server side
+				// Play sounds on the server side, if the player isn't in Limbo.
+				// Limbo is excluded to avoid drowning out its background music.
+				// Also, since it's a large open area with many Monoliths, some
+				// of the sounds that would usually play for a moment would
+				// keep playing constantly and would get very annoying.
 				this.playSounds(player);
 			}
 
@@ -161,7 +165,8 @@ public class MobMonolith extends EntityFlying implements IMob
 				
 				// Teleport the target player if various conditions are met
 				if (aggro >= MAX_AGGRO && !this.worldObj.isRemote &&
-						properties.MonolithTeleportationEnabled && !player.capabilities.isCreativeMode)
+						properties.MonolithTeleportationEnabled && !player.capabilities.isCreativeMode &&
+						!(this.worldObj.provider instanceof LimboProvider))
 				{
 					this.aggro = 0;
 					Point4D destination = LimboProvider.getLimboSkySpawn(player, properties);
@@ -239,7 +244,7 @@ public class MobMonolith extends EntityFlying implements IMob
 			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, mod_pocketDim.modid + ":tearing", 1F, (float) (1 + this.rand.nextGaussian()));
 			this.soundTime = 100 + this.rand.nextInt(75);
 		}
-		if ((aggroPercent > 0.90) && this.soundTime < 200)
+		if ((aggroPercent > 0.80) && this.soundTime < 200)
 		{
 			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, mod_pocketDim.modid + ":tearing", 7, 1F);
 			this.soundTime = 250;
