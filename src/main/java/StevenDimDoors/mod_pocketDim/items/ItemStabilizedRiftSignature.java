@@ -1,7 +1,6 @@
 package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
-
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -11,10 +10,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.util.Point4D;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -67,8 +65,8 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 			//The link was used before and already has an endpoint stored. Create links connecting the two endpoints.
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
 			NewDimData destinationDimension = PocketManager.getDimensionData(world);
-			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL,source.getOrientation());
-			DimLink reverse = destinationDimension.createLink(x, adjustedY, z, LinkTypes.NORMAL,orientation);
+			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkType.NORMAL,source.getOrientation());
+			DimLink reverse = destinationDimension.createLink(x, adjustedY, z, LinkType.NORMAL,orientation);
 			destinationDimension.setDestination(link, x, adjustedY, z);
 			sourceDimension.setDestination(reverse, source.getX(), source.getY(), source.getZ());
 

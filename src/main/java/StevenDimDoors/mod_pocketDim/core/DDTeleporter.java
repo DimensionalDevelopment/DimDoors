@@ -2,7 +2,6 @@ package StevenDimDoors.mod_pocketDim.core;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -462,7 +461,7 @@ public class DDTeleporter
 		{
 			return;
 		}
-		if (link.linkType() == LinkTypes.RANDOM)
+		if (link.linkType() == LinkType.RANDOM)
 		{
 			Point4D randomDestination = getRandomDestination();
 			if (randomDestination != null)
@@ -474,18 +473,18 @@ public class DDTeleporter
 		else 
 		{
 			buildExitDoor(door, link, DDProperties.instance());
-			entity = teleportEntity(entity, link.destination(), link.linkType() != LinkTypes.UNSAFE_EXIT);
+			entity = teleportEntity(entity, link.destination(), link.linkType() != LinkType.UNSAFE_EXIT);
 			entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
 		}
 	}
 
 	private static boolean initializeDestination(DimLink link, DDProperties properties, Entity entity, Block door)
 	{
-		if (link.hasDestination()&&link.linkType()!=LinkTypes.PERSONAL)
+		if (link.hasDestination()&&link.linkType()!=LinkType.PERSONAL)
 		{
 			if(PocketManager.isBlackListed(link.destination().getDimension()))
 			{
-				link=PocketManager.getDimensionData(link.source().getDimension()).createLink(link.point,LinkTypes.SAFE_EXIT,link.orientation, null);
+				link=PocketManager.getDimensionData(link.source().getDimension()).createLink(link.point,LinkType.SAFE_EXIT,link.orientation, null);
 			}
 			else
 			{
@@ -496,21 +495,21 @@ public class DDTeleporter
 		// Check the destination type and respond accordingly
 		switch (link.linkType())
 		{
-			case LinkTypes.DUNGEON:
+			case DUNGEON:
 				return PocketBuilder.generateNewDungeonPocket(link, properties);
-			case LinkTypes.POCKET:
+			case POCKET:
 				return PocketBuilder.generateNewPocket(link, properties,door);
-			case LinkTypes.PERSONAL:
+			case PERSONAL:
 				return setupPersonalLink(link, properties, entity, door);
-			case LinkTypes.SAFE_EXIT:
+			case SAFE_EXIT:
 				return generateSafeExit(link, properties);
-			case LinkTypes.DUNGEON_EXIT:
+			case DUNGEON_EXIT:
 				return generateDungeonExit(link, properties);
-			case LinkTypes.UNSAFE_EXIT:
+			case UNSAFE_EXIT:
 				return generateUnsafeExit(link);
-			case LinkTypes.NORMAL:
-			case LinkTypes.REVERSE:
-			case LinkTypes.RANDOM:
+			case NORMAL:
+			case REVERSE:
+			case RANDOM:
 				return true;
 			default:
 				throw new IllegalArgumentException("link has an unrecognized link type.");
@@ -557,7 +556,7 @@ public class DDTeleporter
 		{
 			for (DimLink link : dimension.getAllLinks())
 			{
-				if (link.linkType() != LinkTypes.RANDOM)
+				if (link.linkType() != LinkType.RANDOM)
 				{
 					matches.add(link.source());
 				}
@@ -769,7 +768,7 @@ public class DDTeleporter
 			// Create a reverse link for returning
 			int orientation = getDestinationOrientation(source, properties);
 			NewDimData sourceDim = PocketManager.getDimensionData(link.source().getDimension());
-			DimLink reverse = destinationDim.createLink(x, y + 2, z, LinkTypes.REVERSE,orientation);
+			DimLink reverse = destinationDim.createLink(x, y + 2, z, LinkType.REVERSE,orientation);
 			sourceDim.setDestination(reverse, source.getX(), source.getY(), source.getZ());
 			
 			// Set up the warp door at the destination

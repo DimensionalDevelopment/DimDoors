@@ -1,12 +1,10 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
 import java.util.ArrayList;
-
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
@@ -60,13 +58,13 @@ public class CommandResetDungeons extends DDCommandBase
 				dungeonCount++;
 				for(DimLink link : data.links())
 				{
-					if(link.linkType()==LinkTypes.REVERSE)
+					if(link.linkType()==LinkType.REVERSE)
 					{
-						data.createLink(link.source(), LinkTypes.DUNGEON_EXIT, link.orientation(), null);
+						data.createLink(link.source(), LinkType.DUNGEON_EXIT, link.orientation(), null);
 					}
-					if(link.linkType()==LinkTypes.DUNGEON)
+					if(link.linkType()==LinkType.DUNGEON)
 					{
-						data.createLink(link.source(), LinkTypes.DUNGEON, link.orientation(), null);
+						data.createLink(link.source(), LinkType.DUNGEON, link.orientation(), null);
 					}
 				}
 			}

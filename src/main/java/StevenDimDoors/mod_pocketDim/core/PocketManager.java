@@ -63,7 +63,7 @@ public class PocketManager
 		  {
 			  Point4D source = link.point;
 			  NewDimData dimension = getDimensionData(source.getDimension());
-			  dimension.createLink(source, LinkTypes.CLIENT_SIDE, 0, link.lock);
+			  dimension.createLink(source, LinkType.CLIENT, 0, link.lock);
 		  }
 
 		  @Override

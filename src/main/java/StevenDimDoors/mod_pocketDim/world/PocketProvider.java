@@ -82,6 +82,18 @@ public class PocketProvider extends WorldProvider
 	}
 
 	@Override
+	protected void generateLightBrightnessTable()
+	{
+		float modifier = 0.0F;
+
+		for (int steps = 0; steps <= 15; ++steps)
+		{
+			float var3 = 1.0F - steps / 15.0F;
+			this.lightBrightnessTable[steps] = 10;
+			//     System.out.println( this.lightBrightnessTable[steps]+"light");
+		}
+	}
+	@Override
 	public String getDimensionName() 
 	{
 		//TODO: This should be a proper name. We need to show people proper names for things whenever possible.

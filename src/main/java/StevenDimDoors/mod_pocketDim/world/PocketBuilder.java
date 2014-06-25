@@ -1,7 +1,6 @@
 package StevenDimDoors.mod_pocketDim.world;
 
 import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,13 +9,12 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
-import StevenDimDoors.experimental.MazeBuilder;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
@@ -24,10 +22,10 @@ import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.util.Pair;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 
 public class PocketBuilder
 {
@@ -356,7 +354,7 @@ public class PocketBuilder
 			int orientation = getDoorOrientation(source, properties);
 
 			//Place a link leading back out of the pocket
-			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkTypes.REVERSE,(link.orientation()+2)%4);
+			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkType.REVERSE,(link.orientation()+2)%4);
 			parent.setDestination(reverseLink, source.getX(), source.getY(), source.getZ());
 
 			//Build the actual pocket area
@@ -401,7 +399,7 @@ public class PocketBuilder
 			int orientation = getDoorOrientation(source, properties);
 
 			//Place a link leading back out of the pocket
-			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkTypes.REVERSE,(link.orientation()+2)%4);
+			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkType.REVERSE,(link.orientation()+2)%4);
 			parent.setDestination(reverseLink, source.getX(), source.getY(), source.getZ());
 
 			//Build the actual pocket area

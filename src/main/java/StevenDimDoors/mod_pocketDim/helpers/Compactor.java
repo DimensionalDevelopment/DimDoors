@@ -6,10 +6,9 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.IDimRegistrationCallback;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
@@ -80,7 +79,7 @@ public class Compactor
 			{
 				ClientLinkData link = ClientLinkData.read(input);
 				Point4D source = link.point;
-				dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE,0);
+				dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkType.CLIENT,0);
 			}
 		}
 	}

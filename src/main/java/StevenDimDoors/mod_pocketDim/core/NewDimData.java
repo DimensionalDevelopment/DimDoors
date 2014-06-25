@@ -30,7 +30,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 			super(source, orientation, lock, parent);
 		}
 		
-		public InnerDimLink(Point4D source, int linkType, int orientation, DDLock lock)
+		public InnerDimLink(Point4D source, LinkType linkType, int orientation, DDLock lock)
 		{
 			super(source, orientation, lock, linkType);
 		}
@@ -78,7 +78,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 			return true;
 		}
 		
-		public void overwrite(int linkType, int orientation)
+		public void overwrite(LinkType linkType, int orientation)
 		{	
 			//Release children
 			for (DimLink child : children)
@@ -302,12 +302,12 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 		return Math.abs(i) + Math.abs(j) + Math.abs(k);
 	}
 	
-	public DimLink createLink(int x, int y, int z, int linkType, int orientation)
+	public DimLink createLink(int x, int y, int z, LinkType linkType, int orientation)
 	{
 		return createLink(new Point4D(x, y, z, id), linkType, orientation, null);
 	}
 	
-	public DimLink createLink(Point4D source, int linkType, int orientation, DDLock locked)
+	public DimLink createLink(Point4D source, LinkType linkType, int orientation, DDLock locked)
 	{
 		//Return an existing link if there is one to avoid creating multiple links starting at the same point.
 		InnerDimLink link = linkMapping.get(source);
@@ -324,7 +324,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 		modified = true;
 		
 		//Link created!
-		if (linkType != LinkTypes.CLIENT_SIDE)
+		if (linkType != LinkType.CLIENT)
 		{
 			linkWatcher.onCreated(new ClientLinkData(link));
 		}
@@ -696,10 +696,10 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 			{
 				children.add(childLink.source().toPoint3D());
 			}
-			PackedLinkTail tail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
+			PackedLinkTail tail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType().index);
 			Links.add(new PackedLinkData(link.point,parentPoint,tail,link.orientation,children,link.lock));
 			
-			PackedLinkTail tempTail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType());
+			PackedLinkTail tempTail = new PackedLinkTail(link.tail.getDestination(),link.tail.getLinkType().index);
 			if(Tails.contains(tempTail))
 			{
 				Tails.add(tempTail);

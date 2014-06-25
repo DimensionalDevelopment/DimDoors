@@ -16,13 +16,12 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.regex.Pattern;
-
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
@@ -264,7 +263,7 @@ public class DungeonHelper
 	{
 		//Create a link above the specified position. Link to a new pocket dimension.
 		NewDimData dimension = PocketManager.getDimensionData(world);
-		DimLink link = dimension.createLink(x, y + 1, z, LinkTypes.POCKET, 3);
+		DimLink link = dimension.createLink(x, y + 1, z, LinkType.POCKET, 3);
 		
 		//Place a Warp Door linked to that pocket
 		ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 3, mod_pocketDim.warpDoor);

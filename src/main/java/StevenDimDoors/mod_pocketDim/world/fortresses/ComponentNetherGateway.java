@@ -2,7 +2,6 @@ package StevenDimDoors.mod_pocketDim.world.fortresses;
 
 import java.util.List;
 import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,7 +10,7 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
@@ -157,7 +156,7 @@ public class ComponentNetherGateway extends StructureComponent
         	link = dimension.getLink(x, y + 1, z);
         	if (link == null)
         	{
-        		link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
+        		link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
         	}
         	ItemDoor.placeDoorBlock(world, x, y, z, orientation, mod_pocketDim.transientDoor);
         }

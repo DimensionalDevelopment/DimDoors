@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeMap;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,7 +19,7 @@ import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
@@ -322,7 +321,7 @@ public class DungeonSchematic extends Schematic {
 	private static void createEntranceReverseLink(World world, NewDimData dimension, Point3D pocketCenter, DimLink entryLink)
 	{
 		int orientation = world.getBlockMetadata(pocketCenter.getX(), pocketCenter.getY() - 1, pocketCenter.getZ());
-		DimLink reverseLink = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), LinkTypes.REVERSE, orientation);
+		DimLink reverseLink = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), LinkType.REVERSE, orientation);
 		Point4D destination = entryLink.source();
 		NewDimData prevDim = PocketManager.getDimensionData(destination.getDimension());
 		prevDim.setDestination(reverseLink, destination.getX(), destination.getY(), destination.getZ());
@@ -335,7 +334,7 @@ public class DungeonSchematic extends Schematic {
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
 		int orientation = world.getBlockMetadata(location.getX(), location.getY() - 1, location.getZ());
-		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON_EXIT, orientation);
+		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkType.DUNGEON_EXIT, orientation);
 		//Replace the sandstone block under the exit door with the same block as the one underneath it
 		int x = location.getX();
 		int y = location.getY() - 3;
@@ -356,7 +355,7 @@ public class DungeonSchematic extends Schematic {
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
 		int orientation = world.getBlockMetadata(location.getX(), location.getY() - 1, location.getZ());
 
-		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkTypes.DUNGEON, orientation);
+		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkType.DUNGEON, orientation);
 		initDoorTileEntity(world, location);
 	}
 	

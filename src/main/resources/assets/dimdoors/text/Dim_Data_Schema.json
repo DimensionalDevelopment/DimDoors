@@ -19,6 +19,9 @@
 		"IsDungeon": {
 			"type":"boolean"
 		},
+		"PocketType": {
+			"type":"number"
+		},
 		"IsFilled": {
 			"type":"boolean"
 		},

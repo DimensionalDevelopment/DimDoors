@@ -3,7 +3,7 @@ package StevenDimDoors.mod_pocketDim.world.gateways;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.schematic.InvalidSchematicException;
@@ -44,7 +44,7 @@ public abstract class BaseSchematicGateway extends BaseGateway
 		this.generateRandomBits(world, x, y, z);
 		
 		// Generate a dungeon link in the door
-		PocketManager.getDimensionData(world).createLink(x, y + doorLocation.getY(), z, LinkTypes.DUNGEON, orientation);
+		PocketManager.getDimensionData(world).createLink(x, y + doorLocation.getY(), z, LinkType.DUNGEON, orientation);
 		
 		return true;
 	}

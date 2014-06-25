@@ -43,6 +43,7 @@ public class PrivatePocketRender implements ISimpleBlockRenderingHandler
             renderer.renderFaceYNeg(block, (double)x, (double)y, (double)z, icon);
             flag = true;
         }
+        tessellator.setColorOpaque_F(1F, 1F, 1F);
 
         if (renderer.renderAllFaces || block.shouldSideBeRendered(world, x, y + 1, z, 1))
         {
@@ -51,6 +52,7 @@ public class PrivatePocketRender implements ISimpleBlockRenderingHandler
         }
 
       
+        tessellator.setColorOpaque_F(1F, 1F, 1F);
 
         if (renderer.renderAllFaces || block.shouldSideBeRendered(world, x, y, z - 1, 2))
         {
@@ -59,6 +61,7 @@ public class PrivatePocketRender implements ISimpleBlockRenderingHandler
 
             flag = true;
         }
+        tessellator.setColorOpaque_F(1F, 1F, 1F);
 
         if (renderer.renderAllFaces || block.shouldSideBeRendered(world, x, y, z + 1, 3))
         {
@@ -68,6 +71,7 @@ public class PrivatePocketRender implements ISimpleBlockRenderingHandler
 
             flag = true;
         }
+        tessellator.setColorOpaque_F(1F, 1F, 1F);
 
         if (renderer.renderAllFaces || block.shouldSideBeRendered(world, x - 1, y, z, 4))
         {
@@ -77,6 +81,7 @@ public class PrivatePocketRender implements ISimpleBlockRenderingHandler
 
             flag = true;
         }
+        tessellator.setColorOpaque_F(1F, 1F, 1F);
 
         if (renderer.renderAllFaces || block.shouldSideBeRendered(world, x + 1, y, z, 5))
         {

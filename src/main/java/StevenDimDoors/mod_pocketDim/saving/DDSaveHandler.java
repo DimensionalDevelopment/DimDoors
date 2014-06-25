@@ -8,12 +8,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
@@ -21,7 +20,6 @@ import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.util.DDLogger;
 import StevenDimDoors.mod_pocketDim.util.FileFilters;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-
 import com.google.common.io.Files;
 
 public class DDSaveHandler
@@ -210,12 +208,7 @@ public class DDSaveHandler
 			if(packedLink.parent.equals(fakePoint))
 			{
 				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
-				int linkType = packedLink.tail.linkType;
-				
-				if((linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX) && linkType != LinkTypes.CLIENT_SIDE)
-				{
-					linkType = LinkTypes.NORMAL;
-				}
+				LinkType linkType = LinkType.getLinkTypeFromIndex(packedLink.tail.linkType);
 				
 				DimLink link = data.createLink(packedLink.source, linkType, packedLink.orientation, packedLink.lock);
 				Point4D destination = packedLink.tail.destination;

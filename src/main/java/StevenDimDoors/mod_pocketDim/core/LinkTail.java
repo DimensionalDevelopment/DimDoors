@@ -5,9 +5,9 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 class LinkTail
 {
 	private Point4D destination;
-	private int linkType;
+	private LinkType linkType;
 		
-	public LinkTail(int linkType, Point4D destination)
+	public LinkTail(LinkType linkType, Point4D destination)
 	{
 		this.linkType = linkType;
 		this.destination = destination;
@@ -21,11 +21,11 @@ class LinkTail
 		this.destination = destination;
 	}
 
-	public int getLinkType() {
+	public LinkType getLinkType() {
 		return linkType;
 	}
 
-	public void setLinkType(int linkType) {
+	public void setLinkType(LinkType linkType) {
 		this.linkType = linkType;
 	}
 }

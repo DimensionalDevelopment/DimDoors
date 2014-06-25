@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.ItemDDKey;
@@ -147,7 +147,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 			DimLink link = dimension.getLink(x, y, z);
 			if (link == null && dimension.isPocketDimension())
 			{
-				dimension.createLink(x, y, z, LinkTypes.UNSAFE_EXIT,0);
+				dimension.createLink(x, y, z, LinkType.UNSAFE_EXIT,0);
 			}
 		}
 	}

@@ -3,7 +3,7 @@ package StevenDimDoors.mod_pocketDim.blocks;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
@@ -29,7 +29,7 @@ public class BlockGoldDimDoor extends BaseDimDoor
 			DimLink link = dimension.getLink(x, y, z);
 			if (link == null)
 			{
-				dimension.createLink(x, y, z, LinkTypes.POCKET,world.getBlockMetadata(x, y - 1, z));
+				dimension.createLink(x, y, z, LinkType.POCKET,world.getBlockMetadata(x, y - 1, z));
 			}
 		}
 	}

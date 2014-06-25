@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
@@ -58,7 +58,7 @@ public class CommandCreateRandomRift extends DDCommandBase
 		if (command.length == 0)
 		{
 			dimension = PocketManager.getDimensionData(sender.worldObj);
-			link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
+			link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
 			sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID, 0, 3);
 			sendChat(sender, "Created a rift to a random dungeon.");
 		}
@@ -74,7 +74,7 @@ public class CommandCreateRandomRift extends DDCommandBase
 			if (result != null)
 			{
 				dimension = PocketManager.getDimensionData(sender.worldObj);
-				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
+				link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
 				if (PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result))
 				{
 					// Create a rift to our selected dungeon and notify the player

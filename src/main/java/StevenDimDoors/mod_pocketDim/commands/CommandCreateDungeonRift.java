@@ -2,7 +2,7 @@ package StevenDimDoors.mod_pocketDim.commands;
 
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
@@ -68,7 +68,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 		if (result != null)
 		{
 			dimension = PocketManager.getDimensionData(sender.worldObj);
-			link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
+			link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
 			if (PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result))
 			{
 				// Create a rift to our selected dungeon and notify the player

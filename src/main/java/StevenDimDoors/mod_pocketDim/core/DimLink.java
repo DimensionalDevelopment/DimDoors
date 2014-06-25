@@ -32,12 +32,16 @@ public abstract class DimLink
 		parent.children.add(this);
 	}
 	
-	protected DimLink(Point4D point, int orientation, DDLock lock, int linkType)
+	protected DimLink(Point4D point, int orientation, DDLock lock, LinkType linkType)
 	{
+		/**This really cant happen anymore, I guess.
+		 * 
 		if ((linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX) && linkType != LinkTypes.CLIENT_SIDE)
 		{
 			throw new IllegalArgumentException("The specified link type is invalid.");
 		}
+		**/
+		
 		this.lock = lock;
 		this.parent = null;
 		this.point = point;
@@ -68,7 +72,7 @@ public abstract class DimLink
 		
 		parent = null;
 		point = null;
-		tail = new LinkTail(0, null);
+		tail = new LinkTail(LinkType.NORMAL, null);
 	}
 	
 	public int orientation()
@@ -109,7 +113,7 @@ public abstract class DimLink
 		return parent;
 	}
 	
-	public int linkType()
+	public LinkType linkType()
 	{
 		return tail.getLinkType();
 	}

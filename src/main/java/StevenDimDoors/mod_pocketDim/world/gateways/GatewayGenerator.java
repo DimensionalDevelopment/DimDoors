@@ -2,7 +2,6 @@ package StevenDimDoors.mod_pocketDim.world.gateways;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
@@ -11,10 +10,9 @@ import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import cpw.mods.fml.common.IWorldGenerator;
 
@@ -107,7 +105,7 @@ public class GatewayGenerator implements IWorldGenerator
 					if (link == null)
 					{
 						dimension = PocketManager.getDimensionData(world);
-						link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON,0);
+						link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON,0);
 					}
 					else
 					{
