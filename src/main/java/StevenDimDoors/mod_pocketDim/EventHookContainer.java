@@ -1,14 +1,11 @@
 package StevenDimDoors.mod_pocketDim;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.audio.SoundManager;
 import net.minecraft.client.audio.SoundPoolEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
@@ -20,7 +17,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
@@ -84,7 +80,7 @@ public class EventHookContainer
 	public void onPlayerEvent(PlayerInteractEvent event)
 	{
 		// Handle all door placement here
-		if(event.action == Action.LEFT_CLICK_BLOCK)
+		if (event.action == Action.LEFT_CLICK_BLOCK)
 		{
 			return;
 		}
@@ -92,9 +88,9 @@ public class EventHookContainer
 		ItemStack stack = event.entityPlayer.inventory.getCurrentItem();
 		if (stack != null && stack.getItem() instanceof ItemDoor)
 		{
-			if(BaseItemDoor.getDoorToPlace(stack.getItem())!=null)
+			if (BaseItemDoor.getDoorToPlace(stack.getItem()) != null)
 			{
-				if (mod_pocketDim.itemDimensionalDoor.tryToPlaceDoor(stack, event.entityPlayer, world,
+				if (BaseItemDoor.tryToPlaceDoor(stack, event.entityPlayer, world,
 						event.x, event.y, event.z, event.face))
 				{
 					// Cancel the event so that we don't get two doors from vanilla doors

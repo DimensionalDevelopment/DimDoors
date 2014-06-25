@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.HashMap;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -64,7 +65,7 @@ public abstract class BaseItemDoor extends ItemDoor
 	 * 
 	 * @return
 	 */
-	protected abstract BaseDimDoor getDoortoItemMapping();
+	protected abstract BaseDimDoor getDoorBlock();
 
 	/**
 	 * Overriden here to remove vanilla block placement functionality from
@@ -73,7 +74,6 @@ public abstract class BaseItemDoor extends ItemDoor
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -87,7 +87,7 @@ public abstract class BaseItemDoor extends ItemDoor
 		{
 			return null;
 		}
-		return ((BaseItemDoor) item).getDoortoItemMapping();
+		return ((BaseItemDoor) item).getDoorBlock();
 	}
 
 	/**

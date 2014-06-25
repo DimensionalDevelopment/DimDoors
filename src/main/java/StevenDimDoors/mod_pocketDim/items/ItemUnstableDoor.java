@@ -25,7 +25,7 @@ public class ItemUnstableDoor extends BaseItemDoor
     }
     
     @Override
-    protected BaseDimDoor getDoortoItemMapping()
+    protected BaseDimDoor getDoorBlock()
 	{
 		return (BaseDimDoor) mod_pocketDim.unstableDoor;
 	}
