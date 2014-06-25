@@ -39,7 +39,7 @@ public class ClientLinkData
 	public void write(DataOutputStream output) throws IOException
 	{
 		Point4D.write(point, output);
-		output.write(this.type.index);
+		output.writeInt(this.type.index);
 		boolean hasLock = this.lock != null;
 		output.writeBoolean(hasLock);
 

@@ -8,11 +8,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumMovingObjectType;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -24,6 +27,7 @@ import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 
 public class ItemDDKey extends Item
 {
+	public static final int TIME_TO_UNLOCK = 50;
 	public ItemDDKey(int itemID)
 	{
 		super(itemID);
@@ -63,8 +67,10 @@ public class ItemDDKey extends Item
 	}
 	
 	
-	public boolean onItemUse(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
 	{
+		player.setItemInUse(itemStack, this.getMaxItemUseDuration(itemStack));
+
 		return false;
 	}
 	  
@@ -74,6 +80,11 @@ public class ItemDDKey extends Item
 		if(world.isRemote)
 		{
 			return false;
+		}
+		
+		if(player.getItemInUse() != null)
+		{
+			return true;
 		}
 		int blockID = world.getBlockId(x, y, z);
 		//make sure we are dealing with a door
@@ -104,6 +115,7 @@ public class ItemDDKey extends Item
 				}
 				PocketManager.getDimensionData(world).lock(link, !link.getLockState());
 				PocketManager.getLinkWatcher().update(new ClientLinkData(link));
+				
 			}
 			else
 			{
@@ -121,7 +133,77 @@ public class ItemDDKey extends Item
 		}
 		return false;
 	}
+	/**
+	 * Handle removal of locks here
+	 */
+	@Override
+	 public void onPlayerStoppedUsing(ItemStack itemStack, World world, EntityPlayer player, int heldTime)
+	 {
+	        int j = this.getMaxItemUseDuration(itemStack) - heldTime;
+	        if(j>= TIME_TO_UNLOCK)
+	        {
+	        	MovingObjectPosition pos = getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+				if(pos!=null&&pos.typeOfHit == EnumMovingObjectType.TILE)
+				{
+					DimLink link = PocketManager.getLink(pos.blockX, pos.blockY, pos.blockZ, player.worldObj);
+					if(link!=null && link.hasLock())
+					{
+						if (link.doesKeyUnlock(itemStack)&& !world.isRemote)
+						{
+							PocketManager.getDimensionData(world).removeLock(link, itemStack);
+							world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyUnlock",  1F, 1F);
 
+						}
+					}
+				}
+	        }
+			player.clearItemInUse();
+
+
+	 }
+	 
+	 /**
+	  * Raytrace to make sure we are still looking at the right block
+	  */
+	 @Override
+	 public void onUsingItemTick(ItemStack stack, EntityPlayer player, int count)   
+	 {
+	 
+		 //no need to check every tick
+		if(count%10 == 0)
+		{
+			MovingObjectPosition pos = getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+			if(pos!=null&&pos.typeOfHit == EnumMovingObjectType.TILE)
+			{
+				DimLink link = PocketManager.getLink(pos.blockX, pos.blockY, pos.blockZ, player.worldObj);
+				if(link!=null && link.hasLock())
+				{
+					if (link.doesKeyUnlock(stack))
+					{
+						return;
+					}
+				}
+			}
+			
+			player.clearItemInUse();
+		}
+	 }
+
+	 public EnumAction getItemUseAction(ItemStack par1ItemStack)
+	 {
+	        return EnumAction.bow;
+	 }
+	 
+	 public ItemStack onEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+	    {
+	        return par1ItemStack;
+	    }
+	 
+	 
+	 public int getMaxItemUseDuration(ItemStack par1ItemStack)
+	    {
+	        return 72000;
+	    }
 
 	public String getItemStackDisplayName(ItemStack par1ItemStack)
 	{

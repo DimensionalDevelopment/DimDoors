@@ -124,6 +124,14 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 			return true;
 		}
 		
+		public void removeLock(ItemStack itemStack, InnerDimLink link)
+		{
+			if(link.doesKeyUnlock(itemStack))
+			{
+				link.lock = null;
+			}
+		}
+		
 	}
 	protected static Random random = new Random();
 	
@@ -599,6 +607,13 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 	{
 		InnerDimLink innerLink = (InnerDimLink)link;
 		innerLink.createLock(item, lockKey);
+		modified = true;
+	}
+	
+	public void removeLock(DimLink link, ItemStack item)
+	{
+		InnerDimLink innerLink = (InnerDimLink)link;
+		innerLink.removeLock(item, innerLink);
 		modified = true;
 	}
 
