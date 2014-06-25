@@ -50,7 +50,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	
 	public boolean checkCanOpen(World world, int x, int y, int z, EntityPlayer player)
 	{
-		DimLink link = PocketManager.getLink( x, y,z, world);
+		DimLink link = PocketManager.getLink( x, y, z, world);
 		if(link==null||player==null)
 		{
 			return link==null;
@@ -78,7 +78,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	
 	public boolean onBlockActivated(World par1World, int par2, int par3, int par4, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9)
     {
-		if(this.checkCanOpen(par1World, par3, par3, par4, par5EntityPlayer))
+		if(this.checkCanOpen(par1World, par2, par3, par4, par5EntityPlayer))
 		{
 			return super.onBlockActivated(par1World, par2, par3, par4, par5EntityPlayer, par6, par7, par8, par9);
 		}
@@ -97,13 +97,13 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	{
 		if (!world.isRemote && isTrapdoorOpen(world.getBlockMetadata(x, y, z)))
 		{
-			this.onPoweredBlockChange(world, x, y, z, false);
 			
 			DimLink link = PocketManager.getLink(x, y, z, world);
 			if (link != null)
 			{
 				DDTeleporter.traverseDimDoor(world, link, entity,this);
 			}
+			super.onPoweredBlockChange(world, x, y, z, false);
 		}
 	}	
 

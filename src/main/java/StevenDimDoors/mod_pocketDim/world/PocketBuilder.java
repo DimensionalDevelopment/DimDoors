@@ -337,7 +337,7 @@ public class PocketBuilder
 		{
 			//Register a new dimension
 			NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
-			NewDimData dimension = PocketManager.registerPersonalPocket(parent, player.getEntityName());
+			NewDimData dimension = PocketManager.registerPocket(parent, DimensionType.PERSONAL, player.getEntityName());
 
 
 			//Load a world

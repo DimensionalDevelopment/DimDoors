@@ -429,7 +429,14 @@ public class PocketManager
 		return registerDimension(world.provider.dimensionId, null, DimensionType.ROOT);
 	}
 
-	public static NewDimData registerPersonalPocket(NewDimData parent, String playerName)
+	/**
+	 * method to register a new pocket with DD and with forge.
+	 * @param parent
+	 * @param type
+	 * @param playername
+	 * @return
+	 */
+	public static NewDimData registerPocket(NewDimData parent, DimensionType type, String playername)
 	{
 		if (parent == null)
 		{
@@ -438,23 +445,38 @@ public class PocketManager
 		
 		DDProperties properties = DDProperties.instance();
 		int dimensionID = DimensionManager.getNextFreeDimId();
-		DimensionManager.registerDimension(dimensionID, properties.PersonalPocketProviderID);
-		NewDimData data = registerDimension(dimensionID, (InnerDimData) parent, DimensionType.PERSONAL);
-		personalPocketsMapping.put(playerName, data);
-		return data;
+		
+		//register a personal pocket
+		if(type == DimensionType.PERSONAL)
+		{
+			if(playername == null)
+			{
+				throw new IllegalArgumentException("A personal pocket must be attached to a playername");
+			}
+			DimensionManager.registerDimension(dimensionID, properties.PersonalPocketProviderID);
+			NewDimData data = registerDimension(dimensionID, (InnerDimData) parent, type);
+			personalPocketsMapping.put(playername, data);
+			return data;
+		}
+		else
+		{	//register a pocket as personal if its parents are personal, but without a mapping. 
+			if(parent.type == DimensionType.PERSONAL)
+			{
+				DimensionManager.registerDimension(dimensionID, properties.PersonalPocketProviderID);
+				NewDimData data = registerDimension(dimensionID, (InnerDimData) parent, DimensionType.PERSONAL);	
+				return data;
+			}
+			
+			//register a standard pocket
+			DimensionManager.registerDimension(dimensionID, properties.PocketProviderID);
+			return registerDimension(dimensionID, (InnerDimData) parent, type);
+		}
+		
 	}
 	
 	public static NewDimData registerPocket(NewDimData parent, DimensionType type)
 	{
-		if (parent == null)
-		{
-			throw new IllegalArgumentException("parent cannot be null. A pocket dimension must always have a parent dimension.");
-		}
-		
-		DDProperties properties = DDProperties.instance();
-		int dimensionID = DimensionManager.getNextFreeDimId();
-		DimensionManager.registerDimension(dimensionID, properties.PocketProviderID);
-		return registerDimension(dimensionID, (InnerDimData) parent, type);
+		return registerPocket(parent, type, null);
 	}
 	/**
 	 * Registers a dimension with DD but NOT with forge.

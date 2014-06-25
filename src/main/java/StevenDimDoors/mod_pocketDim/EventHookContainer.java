@@ -18,8 +18,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import StevenDimDoors.mod_pocketDim.blocks.TransTrapdoor;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.ItemWarpDoor;
@@ -96,15 +98,12 @@ public class EventHookContainer
 			if(stack.getItem() instanceof ItemWarpDoor)
 			{
 				NewDimData data = PocketManager.getDimensionData(world);
-				while(data.depth()>0)
+				
+				if(data.getDimensionType() == DimensionType.PERSONAL)
 				{
-					if(PocketManager.getPersonalPocketMapping().containsValue(data))
-					{
-						mod_pocketDim.sendChat(event.entityPlayer,("Something prevents the Warp Door from tunneling out here"));
-						event.setCanceled(true);
-						return;
-					}
-					data = data.parent();
+					mod_pocketDim.sendChat(event.entityPlayer,("Something prevents the Warp Door from tunneling out here"));
+					event.setCanceled(true);
+					return;
 				}
 			}
 			if (mod_pocketDim.itemDimensionalDoor.tryToPlaceDoor(stack, event.entityPlayer, world,
