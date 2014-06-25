@@ -24,9 +24,9 @@ import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 
 public abstract class BaseItemDoor extends ItemDoor
 {
-	// maps non-dimensional door items to their corresponding dimensional door
-	// item
-	private static HashMap<ItemDoor, BaseItemDoor> vanillaDoorMapping = new HashMap<ItemDoor, BaseItemDoor>();
+	// Maps non-dimensional door items to their corresponding dimensional door item
+	// Also maps dimensional door items to themselves for simplicity
+	private static HashMap<ItemDoor, BaseItemDoor> doorItemMapping = new HashMap<ItemDoor, BaseItemDoor>();
 	private static DDProperties properties = null;
 
 	/**
@@ -35,7 +35,7 @@ public abstract class BaseItemDoor extends ItemDoor
 	 * @param material
 	 * @param door
 	 */
-	public BaseItemDoor(int itemID, Material material, ItemDoor door)
+	public BaseItemDoor(int itemID, Material material, ItemDoor vanillaDoor)
 	{
 		super(itemID, material);
 		this.setMaxStackSize(64);
@@ -43,9 +43,10 @@ public abstract class BaseItemDoor extends ItemDoor
 		if (properties == null)
 			properties = DDProperties.instance();
 		
-		if(door!=null)
+		doorItemMapping.put(this, this);
+		if (vanillaDoor != null)
 		{
-			vanillaDoorMapping.put(door, this);
+			doorItemMapping.put(vanillaDoor, this);
 		}
 	}
 
@@ -77,19 +78,6 @@ public abstract class BaseItemDoor extends ItemDoor
 		return false;
 	}
 
-	public static BaseDimDoor getDoorToPlace(Item item)
-	{
-		if (!(item instanceof BaseItemDoor))
-		{
-			item = BaseItemDoor.vanillaDoorMapping.get(item);
-		}
-		if(item == null)
-		{
-			return null;
-		}
-		return ((BaseItemDoor) item).getDoorBlock();
-	}
-
 	/**
 	 * Tries to place a door block, called in EventHookContainer
 	 * 
@@ -111,15 +99,20 @@ public abstract class BaseItemDoor extends ItemDoor
 		{
 			return false;
 		}
-		if (!(stack.getItem() instanceof ItemDoor))
+		// Retrieve the actual door type that we want to use here.
+		// It's okay if stack isn't an ItemDoor. In that case, the lookup will
+		// return null, just as if the item was an unrecognized door type.
+		BaseItemDoor mappedItem = doorItemMapping.get(stack.getItem());
+		if (mappedItem == null)
 		{
-			throw new IllegalArgumentException("The itemstack must correspond to some type of door");
+			return false;
 		}
-		if (BaseItemDoor.placeDoorOnBlock(getDoorToPlace(stack.getItem()), stack, player, world, x, y, z, side))
+		BaseDimDoor doorBlock = mappedItem.getDoorBlock();
+		if (BaseItemDoor.placeDoorOnBlock(doorBlock, stack, player, world, x, y, z, side))
 		{
 			return true;
 		}
-		return BaseItemDoor.placeDoorOnRift(getDoorToPlace(stack.getItem()), world, player, stack);
+		return BaseItemDoor.placeDoorOnRift(doorBlock, world, player, stack);
 	}
 
 	/**
