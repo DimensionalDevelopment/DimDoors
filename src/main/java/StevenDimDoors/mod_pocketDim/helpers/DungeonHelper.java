@@ -46,7 +46,7 @@ public class DungeonHelper
 	public static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	
 	private static final String DEFAULT_ERROR_SCHEMATIC_PATH = "/schematics/core/somethingBroke.schematic";
-	private static final String DUNGEON_CREATION_GUIDE_SOURCE_PATH = "/mods/DimDoors/text/How_to_add_dungeons.txt";
+	private static final String DUNGEON_CREATION_GUIDE_SOURCE_PATH = "/assets/dimdoors/text/How_to_add_dungeons.txt";
 	private static final String BUNDLED_PACK_BASE_PATH = "/schematics/";
 	private static final String STANDARD_CONFIG_FILE_NAME = "rules.txt";
 	

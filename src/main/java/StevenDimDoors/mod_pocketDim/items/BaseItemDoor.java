@@ -83,6 +83,10 @@ public abstract class BaseItemDoor extends ItemDoor
 		{
 			item = BaseItemDoor.vanillaDoorMapping.get(item);
 		}
+		if(item == null)
+		{
+			return null;
+		}
 		return ((BaseItemDoor) item).getDoortoItemMapping();
 	}
 
