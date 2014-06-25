@@ -79,9 +79,8 @@ public abstract class BaseItemDoor extends ItemDoor
 	}
 
 	/**
-	 * Tries to place a door block, called in EventHookContainer
+	 * Tries to place a door as a dimensional door
 	 * 
-	 * @param doorBlock
 	 * @param stack
 	 * @param player
 	 * @param world
@@ -89,8 +88,6 @@ public abstract class BaseItemDoor extends ItemDoor
 	 * @param y
 	 * @param z
 	 * @param side
-	 * @param requireLink
-	 * @param reduceStack
 	 * @return
 	 */
 	public static boolean tryToPlaceDoor(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side)
