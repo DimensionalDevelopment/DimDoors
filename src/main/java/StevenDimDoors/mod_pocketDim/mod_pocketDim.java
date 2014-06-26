@@ -264,7 +264,7 @@ public class mod_pocketDim
 		if (!DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false))
 			throw new IllegalStateException("There is a provider ID conflict between LimboProvider from Dimensional Doors and another provider type. Fix your configuration!");
 		if (!DimensionManager.registerProviderType(properties.PersonalPocketProviderID, PersonalPocketProvider.class, false))
-			throw new IllegalStateException("There is a provider ID conflict between LimboProvider from Dimensional Doors and another provider type. Fix your configuration!");
+			throw new IllegalStateException("There is a provider ID conflict between PersonalPocketProvider from Dimensional Doors and another provider type. Fix your configuration!");
 			
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
 		
@@ -292,12 +292,16 @@ public class mod_pocketDim
 		LanguageRegistry.addName(itemRiftBlade, "Rift Blade");
 		LanguageRegistry.addName(itemWorldThread, "World Thread");
 		LanguageRegistry.addName(itemDDKey, "Rift Key");
+		LanguageRegistry.addName(itemQuartzDoor, "Quartz Door");
+		LanguageRegistry.addName(itemPersonalDoor, "Personal Dimensional Door");
+
 
 		/**
 		 * Add names for multiblock inventory item
 		 */
 		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 0), "Fabric of Reality");
 		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 1), "Ancient Fabric");
+		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 2), "Altered Fabric");
 
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dimDoorsCustomTab", "en_US", "Dimensional Doors Items");
 
@@ -309,7 +313,7 @@ public class mod_pocketDim
 		EntityRegistry.registerModEntity(MobMonolith.class, "Monolith", properties.MonolithEntityID, this, 70, 1, true);
 		EntityList.IDtoClassMapping.put(properties.MonolithEntityID, MobMonolith.class);
 		EntityList.entityEggs.put(properties.MonolithEntityID, new EntityEggInfo(properties.MonolithEntityID, 0, 0xffffff));
-		LanguageRegistry.instance().addStringLocalization("entity.DimDoors.Obelisk.name", "Monolith");
+		LanguageRegistry.instance().addStringLocalization("entity.dimdoors.Monolith.name", "Monolith");
 
 		CraftingManager.registerRecipes(properties);
 		GameRegistry.registerCraftingHandler(new CraftingManager());

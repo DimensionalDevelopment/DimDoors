@@ -27,7 +27,8 @@ import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 
 public class ItemDDKey extends Item
 {
-	public static final int TIME_TO_UNLOCK = 50;
+	public static final int TIME_TO_UNLOCK = 30;
+
 	public ItemDDKey(int itemID)
 	{
 		super(itemID);
@@ -35,24 +36,24 @@ public class ItemDDKey extends Item
 		this.setMaxStackSize(1);
 
 	}
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
-    {
-    	
-    }
 
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) 
-    {
-    	if(DDLock.hasCreatedLock(par1ItemStack))
-   		{
-    		par3List.add("Bound");
-   		}
-    	else
-    	{
-    		par3List.add("Unbound");
-    	}
-    }
+	public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+	{
 
-    
+	}
+
+	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
+	{
+		if (DDLock.hasCreatedLock(par1ItemStack))
+		{
+			par3List.add("Bound");
+		}
+		else
+		{
+			par3List.add("Unbound");
+		}
+	}
+
 	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
@@ -65,118 +66,120 @@ public class ItemDDKey extends Item
 	{
 		return !DDLock.hasCreatedLock(par1ItemStack);
 	}
-	
-	
-	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+
+	public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World par3World, int par4, int par5, int par6, int par7, float par8, float par9,
+			float par10)
 	{
 		player.setItemInUse(itemStack, this.getMaxItemUseDuration(itemStack));
 
 		return false;
 	}
-	  
+
 	public boolean onItemUseFirst(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int side, float playerX, float playerY,
 			float playerZ)
 	{
-		if(world.isRemote)
+		if (world.isRemote)
 		{
 			return false;
 		}
-		
-		if(player.getItemInUse() != null)
+
+		if (player.getItemInUse() != null)
 		{
 			return true;
 		}
 		int blockID = world.getBlockId(x, y, z);
-		//make sure we are dealing with a door
+		// make sure we are dealing with a door
 		if (!(Block.blocksList[blockID] instanceof IDimDoor))
 		{
 			return false;
 		}
-		
+
 		DimLink link = PocketManager.getLink(x, y, z, world);
-		//dont do anything to doors without links
+		// dont do anything to doors without links
 		if (link == null)
 		{
 			return false;
 		}
 
-		//what to do if the door has a lock already
-		if(link.hasLock())
+		// what to do if the door has a lock already
+		if (link.hasLock())
 		{
-			if(link.doesKeyUnlock(itemStack))
+			if (link.doesKeyUnlock(itemStack))
 			{
-				if(link.getLockState())
+				if (link.getLockState())
 				{
-					world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyUnlock",  1F, 1F);
+					world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyUnlock", 1F, 1F);
 				}
 				else
 				{
-					world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyLock",  1F, 1F);
+					world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyLock", 1F, 1F);
 				}
 				PocketManager.getDimensionData(world).lock(link, !link.getLockState());
 				PocketManager.getLinkWatcher().update(new ClientLinkData(link));
-				
+
 			}
 			else
 			{
-				world.playSoundAtEntity(player, mod_pocketDim.modid + ":doorLocked",  1F, 1F);
+				world.playSoundAtEntity(player, mod_pocketDim.modid + ":doorLocked", 1F, 1F);
 			}
 		}
 		else
 		{
-			if(!DDLock.hasCreatedLock(itemStack))
+			if (!DDLock.hasCreatedLock(itemStack))
 			{
-				world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyLock",  1F, 1F);
+				world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyLock", 1F, 1F);
 				PocketManager.getDimensionData(world).createLock(link, itemStack, world.rand.nextInt(Integer.MAX_VALUE));
 				PocketManager.getLinkWatcher().update(new ClientLinkData(link));
 			}
 		}
 		return false;
 	}
+
 	/**
 	 * Handle removal of locks here
 	 */
 	@Override
-	 public void onPlayerStoppedUsing(ItemStack itemStack, World world, EntityPlayer player, int heldTime)
-	 {
-	        int j = this.getMaxItemUseDuration(itemStack) - heldTime;
-	        if(j>= TIME_TO_UNLOCK)
-	        {
-	        	MovingObjectPosition pos = getMovingObjectPositionFromPlayer(player.worldObj, player, true);
-				if(pos!=null&&pos.typeOfHit == EnumMovingObjectType.TILE)
+	public void onPlayerStoppedUsing(ItemStack itemStack, World world, EntityPlayer player, int heldTime)
+	{
+		int j = this.getMaxItemUseDuration(itemStack) - heldTime;
+		if (j >= TIME_TO_UNLOCK)
+		{
+			//Raytrace to make sure we are still looking at a door
+			MovingObjectPosition pos = getMovingObjectPositionFromPlayer(player.worldObj, player, true);
+			if (pos != null && pos.typeOfHit == EnumMovingObjectType.TILE)
+			{
+				//make sure we have a link and it has a lock
+				DimLink link = PocketManager.getLink(pos.blockX, pos.blockY, pos.blockZ, player.worldObj);
+				if (link != null && link.hasLock())
 				{
-					DimLink link = PocketManager.getLink(pos.blockX, pos.blockY, pos.blockZ, player.worldObj);
-					if(link!=null && link.hasLock())
+					//make sure the given key is able to access the lock
+					if (link.doesKeyUnlock(itemStack) && !world.isRemote)
 					{
-						if (link.doesKeyUnlock(itemStack)&& !world.isRemote)
-						{
-							PocketManager.getDimensionData(world).removeLock(link, itemStack);
-							world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyUnlock",  1F, 1F);
+						PocketManager.getDimensionData(world).removeLock(link, itemStack);
+						world.playSoundAtEntity(player, mod_pocketDim.modid + ":doorLockRemoved", 1F, 1F);
 
-						}
 					}
 				}
-	        }
-			player.clearItemInUse();
+			}
+		}
+		player.clearItemInUse();
 
+	}
 
-	 }
-	 
-	 /**
-	  * Raytrace to make sure we are still looking at the right block
-	  */
-	 @Override
-	 public void onUsingItemTick(ItemStack stack, EntityPlayer player, int count)   
-	 {
-	 
-		 //no need to check every tick
-		if(count%10 == 0)
+	/**
+	 * Raytrace to make sure we are still looking at the right block while preparing to remove the lock
+	 */
+	@Override
+	public void onUsingItemTick(ItemStack stack, EntityPlayer player, int count)
+	{
+		// no need to check every tick, twice a second instead
+		if (count % 10 == 0)
 		{
 			MovingObjectPosition pos = getMovingObjectPositionFromPlayer(player.worldObj, player, true);
-			if(pos!=null&&pos.typeOfHit == EnumMovingObjectType.TILE)
+			if (pos != null && pos.typeOfHit == EnumMovingObjectType.TILE)
 			{
 				DimLink link = PocketManager.getLink(pos.blockX, pos.blockY, pos.blockZ, player.worldObj);
-				if(link!=null && link.hasLock())
+				if (link != null && link.hasLock())
 				{
 					if (link.doesKeyUnlock(stack))
 					{
@@ -184,29 +187,27 @@ public class ItemDDKey extends Item
 					}
 				}
 			}
-			
 			player.clearItemInUse();
 		}
-	 }
+	}
 
-	 public EnumAction getItemUseAction(ItemStack par1ItemStack)
-	 {
-	        return EnumAction.bow;
-	 }
-	 
-	 public ItemStack onEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
-	    {
-	        return par1ItemStack;
-	    }
-	 
-	 
-	 public int getMaxItemUseDuration(ItemStack par1ItemStack)
-	    {
-	        return 72000;
-	    }
+	public EnumAction getItemUseAction(ItemStack par1ItemStack)
+	{
+		return EnumAction.bow;
+	}
+
+	public ItemStack onEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+	{
+		return par1ItemStack;
+	}
+
+	public int getMaxItemUseDuration(ItemStack par1ItemStack)
+	{
+		return 72000;
+	}
 
 	public String getItemStackDisplayName(ItemStack par1ItemStack)
 	{
-		return StatCollector.translateToLocal(this.getUnlocalizedName(par1ItemStack) + ".name");
+		return StatCollector.translateToLocal(this.getUnlocalizedName(par1ItemStack));
 	}
 }

@@ -93,7 +93,7 @@ public class BlockDimWall extends Block
 	public int damageDropped(int metadata) 
 	{
 		//Return 0 to avoid dropping Ancient Fabric even if the player somehow manages to break it
-		return metadata == 1 ? 0 : 2;
+		return metadata == 1 ? 0 : metadata;
 	}
 	
 	@Override

@@ -81,16 +81,21 @@ public class PocketProvider extends WorldProvider
 		return false;
 	}
 
+	 public float calculateCelestialAngle(long par1, float par3)
+	 {
+		 return .5F;
+	 }
+	 
 	@Override
 	protected void generateLightBrightnessTable()
-	{
+	{ 
 		float modifier = 0.0F;
 
 		for (int steps = 0; steps <= 15; ++steps)
 		{
 			float var3 = 1.0F - steps / 15.0F;
-			this.lightBrightnessTable[steps] = 10;
-			//     System.out.println( this.lightBrightnessTable[steps]+"light");
+			this.lightBrightnessTable[steps] = var3;
+			System.out.println( this.lightBrightnessTable[steps]+"light");
 		}
 	}
 	@Override
