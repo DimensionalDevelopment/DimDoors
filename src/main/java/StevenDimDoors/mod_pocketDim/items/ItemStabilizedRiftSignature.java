@@ -67,7 +67,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 			{
 				// Only the source-to-destination link is needed.
 				link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL, source.getOrientation());
-				destinationDimension.setDestination(link, x, adjustedY, z);
+				destinationDimension.setLinkDestination(link, x, adjustedY, z);
 			}
 			else
 			{
@@ -86,8 +86,8 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 				// Create links connecting the two endpoints.
 				link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL, source.getOrientation());
 				reverse = destinationDimension.createLink(x, adjustedY, z, LinkTypes.NORMAL, orientation);
-				destinationDimension.setDestination(link, x, adjustedY, z);
-				sourceDimension.setDestination(reverse, source.getX(), source.getY(), source.getZ());
+				destinationDimension.setLinkDestination(link, x, adjustedY, z);
+				sourceDimension.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());
 	
 				// Try placing a rift at the destination point
 				if (!mod_pocketDim.blockRift.isBlockImmune(world, x, adjustedY, z))
