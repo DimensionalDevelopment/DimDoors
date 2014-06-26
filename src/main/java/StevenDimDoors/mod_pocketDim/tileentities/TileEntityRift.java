@@ -1,17 +1,10 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-
-import net.minecraft.block.Block;
-import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,12 +12,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
@@ -61,22 +50,21 @@ public class TileEntityRift extends DDTileEntityBase
 	public DimLink nearestRiftData;
 	public int spawnedEndermenID = 0;
 	public HashMap<Integer, double[]> renderingCenters = new HashMap<Integer, double[]>();
-
+	
 	@Override
 	public void updateEntity() 
 	{
-		//Determines if rift should render white closing particles and spread closing effect to other rifts nearby
+		// Determines if rift should render white closing particles and spread closing effect to other rifts nearby
 		if (this.shouldClose)
 		{
 			closeRift();
 		}
-		else if( PocketManager.getLink(xCoord, yCoord, zCoord, worldObj.provider.dimensionId) == null)
+		else if (PocketManager.getLink(xCoord, yCoord, zCoord, worldObj.provider.dimensionId) == null)
 		{
 			this.invalidate();
 			if (worldObj.getBlockId(xCoord, yCoord, zCoord) == mod_pocketDim.blockRift.blockID)
 			{
 				worldObj.setBlockToAir(xCoord, yCoord, zCoord);
-				worldObj.removeBlockTileEntity(xCoord, yCoord, zCoord);
 				this.invalidate();
 				return;
 			}
@@ -101,20 +89,18 @@ public class TileEntityRift extends DDTileEntityBase
 		 **/
 
 		//This code should execute once every 10 seconds
-		if (updateTimer > 200)
+		if (updateTimer >= 200)
 		{
-			this.spawnEndermen();
+			this.spawnEndermen(mod_pocketDim.properties);
 			this.grow(mod_pocketDim.properties);
 			updateTimer = 0;
 		}
-		else if(updateTimer==0)
+		else if (updateTimer == 0)
 		{
 			this.calculateOldParticleOffset(); //this also calculates the distance for the particle stuff.
 		}
 		updateTimer++;
 	}
-
-	
 
 	private void clearBlocksOnRift()
 	{
@@ -138,25 +124,23 @@ public class TileEntityRift extends DDTileEntityBase
 		}
 	}
 
-	private void spawnEndermen()
+	private void spawnEndermen(DDProperties properties)
 	{
-		if (worldObj.isRemote)
+		if (worldObj.isRemote || !properties.RiftsSpawnEndermenEnabled)
 		{
 			return;
 		}
 
-		NewDimData dimension = PocketManager.getDimensionData(worldObj);
-
-		//Ensure that this rift is only spawning one enderman at a time, to prevent hordes of endermen
+		// Ensure that this rift is only spawning one Enderman at a time, to prevent hordes of Endermen
 		Entity entity = worldObj.getEntityByID(this.spawnedEndermenID);
 		if (entity != null && entity instanceof EntityEnderman)
 		{
 			return;
 		}
 
-		//enderman will only spawn in groups of rifts
 		if (random.nextInt(MAX_ENDERMAN_SPAWNING_CHANCE) < ENDERMAN_SPAWNING_CHANCE)
 		{
+			// Endermen will only spawn from groups of rifts
 			if (updateNearestRift())
 			{
 				List<Entity> list =  worldObj.getEntitiesWithinAABB(EntityEnderman.class,
@@ -210,10 +194,10 @@ public class TileEntityRift extends DDTileEntityBase
 		if (riftCloseTimer > 40)
 		{
 			this.invalidate();
-			if(!this.worldObj.isRemote)
+			if (!this.worldObj.isRemote)
 			{
 				DimLink link = PocketManager.getLink(this.xCoord, this.yCoord, this.zCoord, worldObj);
-				if(link!=null)
+				if (link != null)
 				{
 					dimension.deleteLink(link);
 				}
@@ -228,8 +212,7 @@ public class TileEntityRift extends DDTileEntityBase
 
 	private void calculateOldParticleOffset()
 	{
-		updateNearestRift();
-		if (nearestRiftData != null) 
+		if (updateNearestRift()) 
 		{
 			Point4D location = nearestRiftData.source();
 			this.xOffset = this.xCoord - location.getX();
@@ -371,6 +354,7 @@ public class TileEntityRift extends DDTileEntityBase
 		nbt.setInteger("spawnedEndermenID", this.spawnedEndermenID);
 	}
 
+	@Override
 	public Packet getDescriptionPacket()
 	{
 		if (PocketManager.getLink(xCoord, yCoord, zCoord, worldObj) != null)
