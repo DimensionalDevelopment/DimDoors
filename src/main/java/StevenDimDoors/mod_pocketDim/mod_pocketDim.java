@@ -292,6 +292,7 @@ public class mod_pocketDim
 		LanguageRegistry.instance().addStringLocalization("entity.DimDoors.Obelisk.name", "Monolith");
 
 		CraftingManager.registerRecipes(properties);
+		CraftingManager.registerDispenserBehaviors();
 		DungeonHelper.initialize();
 		gatewayGenerator = new GatewayGenerator(properties);
 		GameRegistry.registerWorldGenerator(mod_pocketDim.gatewayGenerator);

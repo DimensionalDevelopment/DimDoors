@@ -45,10 +45,10 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		{
 			return true;
 		}
-		Point4DOrientation source = getSource(stack);
+		int orientation = MathHelper.floor_double((player.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
 		
 		// Check if the Stabilized Rift Signature has been initialized
-		int orientation = MathHelper.floor_double((player.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
+		Point4DOrientation source = getSource(stack);
 		if (source != null)
 		{
 			// Yes, it's initialized.
@@ -115,6 +115,54 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 			world.playSoundAtEntity(player,"mods.DimDoors.sfx.riftStart", 0.6f, 1);
 		}
 		return true;
+	}
+
+	public static boolean useFromDispenser(ItemStack stack, World world, int x, int y, int z)
+	{
+		// Stabilized Rift Signatures can only be used from dispensers to restore
+		// a previous link pair. The operation would be free for a player, so
+		// dispensers can also perform it for free. Otherwise, the item does nothing.
+		if (world.isRemote)
+		{
+			return false;
+		}
+		
+		// Adjust Y so the rift is at head level, depending on the presence of certain blocks
+		int adjustedY = adjustYForSpecialBlocks(world, x, y + 2, z);
+		Point4DOrientation source = getSource(stack);
+		
+		// The SRS must have been initialized
+		if (source != null)
+		{
+			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
+			NewDimData destinationDimension = PocketManager.getDimensionData(world);
+			DimLink reverse = destinationDimension.getLink(x, adjustedY, z);
+			DimLink link;
+			
+			// Check whether the SRS is being used to restore one of its previous
+			// link pairs. In other words, the SRS is being used on a location
+			// that already has a link pointing to the SRS's source, with the
+			// intention of overwriting the source-side link to point there.
+			if (reverse != null && source.getPoint().equals(reverse.destination()))
+			{
+				// Only the source-to-destination link is needed.
+				link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL, source.getOrientation());
+				destinationDimension.setLinkDestination(link, x, adjustedY, z);
+
+				// Try placing a rift at the source point, but check if its world is loaded first
+				World sourceWorld = DimensionManager.getWorld(sourceDimension.id());
+				if (sourceWorld != null &&
+					!mod_pocketDim.blockRift.isBlockImmune(sourceWorld, source.getX(), source.getY(), source.getZ()))
+				{
+					sourceWorld.setBlock(source.getX(), source.getY(), source.getZ(), mod_pocketDim.blockRift.blockID);
+				}
+				
+				// This call doesn't seem to be working...
+				world.playSoundEffect(x + 0.5, adjustedY + 0.5, z + 0.5, "mods.DimDoors.sfx.riftEnd", 0.6f, 1);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

@@ -1,9 +1,11 @@
 package StevenDimDoors.mod_pocketDim;
 
-import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
+import StevenDimDoors.mod_pocketDim.items.behaviors.DispenserBehaviorStabilizedRS;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CraftingManager
@@ -87,4 +89,9 @@ public class CraftingManager
 		}
 	}
 	
+	public static void registerDispenserBehaviors()
+	{
+		// Register the dispenser behaviors for certain DD items
+		BlockDispenser.dispenseBehaviorRegistry.putObject(mod_pocketDim.itemStabilizedRiftSignature, new DispenserBehaviorStabilizedRS());
+	}
 }
