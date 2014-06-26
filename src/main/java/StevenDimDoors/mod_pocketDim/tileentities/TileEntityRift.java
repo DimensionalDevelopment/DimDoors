@@ -174,8 +174,7 @@ public class TileEntityRift extends DDTileEntityBase
 				}
 			}
 			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
-			worldObj.playSound(xCoord, yCoord, zCoord, "mods.DimDoors.sfx.riftClose", (float) .7, 1, true);
-			return;
+			worldObj.playSound(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, "mods.DimDoors.sfx.riftClose", 0.7f, 1, false);
 		}
 		closeTimer++; 
 	}
