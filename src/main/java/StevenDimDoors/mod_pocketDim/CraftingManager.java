@@ -72,7 +72,7 @@ public class CraftingManager
 		}
 		if (properties.CraftingStabilizedRiftSignatureAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemStabilizedLinkSignature, 1),
+			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemStabilizedRiftSignature, 1),
 				" y ", "yxy", " y ", 'x', mod_pocketDim.itemStableFabric, 'y', Item.ingotIron);
 		}
 		if (properties.CraftingGoldenDimensionalDoorAllowed)
