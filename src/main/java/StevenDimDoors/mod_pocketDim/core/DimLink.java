@@ -60,6 +60,7 @@ public abstract class DimLink
 	{
 		return tail.getDestination();
 	}
+	
 	public int getDestinationOrientation()
 	{
 		DimLink link = PocketManager.getLink(this.destination().getX(), this.destination().getY(), this.destination().getZ(), this.destination().getDimension());
@@ -69,6 +70,7 @@ public abstract class DimLink
 		}
 		return (this.orientation()+2)%4;
 	}
+	
 	public boolean hasDestination()
 	{
 		return (tail.getDestination() != null);
@@ -94,6 +96,7 @@ public abstract class DimLink
 		return tail.getLinkType();
 	}
 
+	@Override
 	public String toString()
 	{
 		return link.point + " -> " + (hasDestination() ? destination() : "");

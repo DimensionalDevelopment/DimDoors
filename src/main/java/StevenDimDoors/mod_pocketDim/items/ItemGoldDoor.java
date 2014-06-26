@@ -15,6 +15,7 @@ public class ItemGoldDoor extends ItemDoor
 	public ItemGoldDoor(int par1, Material par2Material) 
 	{
 		super(par1, par2Material);
+		this.setMaxStackSize(16);
 	}
 
 	@Override

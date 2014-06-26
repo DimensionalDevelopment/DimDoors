@@ -141,12 +141,14 @@ public final class Point4D implements Comparable<Point4D>
 	
 	public Point3D toPoint3D()
 	{
-		return new Point3D(this.x,this.y,this.z);
+		return new Point3D(this.x, this.y, this.z);
 	}
+	
 	public int[] toIntArray()
 	{
-		return new int[]{x,y,z,dimension};
+		return new int[] {x, y, z, dimension};
 	}
+	
 	public boolean equals(Point4D other)
 	{
 		if (this == other)

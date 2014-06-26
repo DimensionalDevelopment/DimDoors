@@ -415,7 +415,7 @@ public class PocketBuilder
 
 			//Place a link leading back out of the pocket
 			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkTypes.REVERSE,(link.orientation()+2)%4);
-			parent.setDestination(reverseLink, source.getX(), source.getY(), source.getZ());
+			parent.setLinkDestination(reverseLink, source.getX(), source.getY(), source.getZ());
 
 			//Build the actual pocket area
 			buildPocket(world, source.getX(), destinationY, source.getZ(), orientation, size, wallThickness, properties, door);

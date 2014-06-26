@@ -34,12 +34,13 @@ public class ItemRiftSignature extends Item
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean hasEffect(ItemStack stack)
+	public boolean hasEffect(ItemStack stack, int pass)
 	{
 		//Make the item glow if it has one endpoint stored
 		return (stack.getItemDamage() != 0);
 	}
 
+	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
@@ -60,14 +61,14 @@ public class ItemRiftSignature extends Item
 			return false;
 		}
 		
-		y += 2; //Increase y by 2 to place the rift at head level
-		if (!player.canPlayerEdit(x, y, z, side, stack))
+		//Increase y by 2 to place the rift at head level
+		int adjustedY = adjustYForSpecialBlocks(world, x, y + 2, z);
+		if (!player.canPlayerEdit(x, adjustedY, z, side, stack))
 		{
 			return true;
 		}
-		int adjustedY = adjustYForSpecialBlocks(world,x,y,z);
 		Point4DOrientation source = getSource(stack);
-		int orientation = MathHelper.floor_double((double) ((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+		int orientation = MathHelper.floor_double(((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 		if (source != null)
 		{
 			//The link was used before and already has an endpoint stored. Create links connecting the two endpoints.
@@ -75,8 +76,8 @@ public class ItemRiftSignature extends Item
 			NewDimData destinationDimension = PocketManager.getDimensionData(world);
 			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL,source.getOrientation());
 			DimLink reverse = destinationDimension.createLink(x, adjustedY, z, LinkTypes.NORMAL,orientation);
-			destinationDimension.setDestination(link, x, adjustedY, z);
-			sourceDimension.setDestination(reverse, source.getX(), source.getY(), source.getZ());
+			destinationDimension.setLinkDestination(link, x, adjustedY, z);
+			sourceDimension.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());
 
 			//Try placing a rift at the destination point
 			if (!mod_pocketDim.blockRift.isBlockImmune(world, x, adjustedY, z))
@@ -113,6 +114,7 @@ public class ItemRiftSignature extends Item
 	/**
 	 * allows items to add custom lines of information to the mouseover description
 	 */
+	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
@@ -140,26 +142,28 @@ public class ItemRiftSignature extends Item
 	 */
 	public static int adjustYForSpecialBlocks(World world, int x, int y, int z)
 	{
-		y=y-2;//get the block the player actually clicked on
-		Block block = Block.blocksList[world.getBlockId(x, y, z)];
-		if(block==null)
+		int targetY = y - 2; // Get the block the player actually clicked on
+		Block block = Block.blocksList[world.getBlockId(x, targetY, z)];
+		if (block == null)
 		{
-			return y+2;
+			return targetY + 2;
 		}
-		if(block.isBlockReplaceable(world, x, y, z))
+		if (block.isBlockReplaceable(world, x, targetY, z))
 		{
-			return y+1;//move block placement down (-2+1) one so its directly over things like snow
+			return targetY + 1; // Move block placement down (-2+1) one so its directly over things like snow
 		}
-		if(block instanceof BaseDimDoor)
+		if (block instanceof BaseDimDoor)
 		{
-			if(world.getBlockId(x, y-1, z)==block.blockID&&world.getBlockMetadata(x, y, z)==8)
+			if (BaseDimDoor.isUpperDoorBlock(world.getBlockMetadata(x, targetY, z)))
 			{
-				return y;//move rift placement down two so its in the right place on the door. 
+				return targetY; // Move rift placement down two so its in the right place on the door. 
 			}
-			return y+1;
+			// Move rift placement down one so its in the right place on the door.
+			return targetY + 1;
 		}
-		return y+2;
+		return targetY + 2;
 	}
+	
 	public static void setSource(ItemStack itemStack, int x, int y, int z, int orientation, NewDimData dimension)
 	{
 		NBTTagCompound tag = new NBTTagCompound();
@@ -200,11 +204,12 @@ public class ItemRiftSignature extends Item
 				Integer orientation = tag.getInteger("orientation");
 				Integer dimID = tag.getInteger("linkDimID");
 
-				if (x != null && y != null && z != null && dimID != null)
+				if (x != null && y != null && z != null && orientation != null && dimID != null)
 				{
-					return new Point4DOrientation(x, y, z,orientation, dimID);
+					return new Point4DOrientation(x, y, z, orientation, dimID);
 				}
 			}
+			// Mark the item as uninitialized if its source couldn't be read
 			itemStack.setItemDamage(0);
 		}
 		return null;
@@ -214,10 +219,11 @@ public class ItemRiftSignature extends Item
 	{
 		private Point4D point;
 		private int orientation;
+		
 		Point4DOrientation(int x, int y, int z, int orientation, int dimID)
 		{
-			this.point= new Point4D(x,y,z,dimID);
-			this.orientation=orientation;
+			this.point = new Point4D(x, y, z, dimID);
+			this.orientation = orientation;
 		}
 		
 		int getX()
@@ -239,9 +245,15 @@ public class ItemRiftSignature extends Item
 		{
 			return point.getDimension();
 		}
+		
 		int getOrientation()
 		{
 			return orientation;
+		}
+		
+		Point4D getPoint()
+		{
+			return point;
 		}
 	}
 }
