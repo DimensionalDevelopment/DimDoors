@@ -52,10 +52,10 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		if (source != null)
 		{
 			// Yes, it's initialized.
-			DimLink link;
-			DimLink reverse;
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
 			NewDimData destinationDimension = PocketManager.getDimensionData(world);
+			DimLink reverse = destinationDimension.getLink(x, adjustedY, z);
+			DimLink link;
 			
 			// Check whether the SRS is being used to restore one of its previous
 			// link pairs. In other words, the SRS is being used on a location
@@ -63,7 +63,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 			// intention of overwriting the source-side link to point there.
 			// Those benign redirection operations will be handled for free.
 			
-			if (false) //TODO Add proper check!
+			if (reverse != null && source.getPoint().equals(reverse.destination()))
 			{
 				// Only the source-to-destination link is needed.
 				link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL, source.getOrientation());

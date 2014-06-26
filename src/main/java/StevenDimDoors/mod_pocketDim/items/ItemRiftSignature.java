@@ -219,10 +219,11 @@ public class ItemRiftSignature extends Item
 	{
 		private Point4D point;
 		private int orientation;
+		
 		Point4DOrientation(int x, int y, int z, int orientation, int dimID)
 		{
-			this.point= new Point4D(x,y,z,dimID);
-			this.orientation=orientation;
+			this.point = new Point4D(x, y, z, dimID);
+			this.orientation = orientation;
 		}
 		
 		int getX()
@@ -244,9 +245,15 @@ public class ItemRiftSignature extends Item
 		{
 			return point.getDimension();
 		}
+		
 		int getOrientation()
 		{
 			return orientation;
+		}
+		
+		Point4D getPoint()
+		{
+			return point;
 		}
 	}
 }
