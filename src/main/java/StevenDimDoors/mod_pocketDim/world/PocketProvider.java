@@ -11,6 +11,7 @@ import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 import cpw.mods.fml.relauncher.Side;
@@ -88,13 +89,18 @@ public class PocketProvider extends WorldProvider
 	 
 	@Override
 	protected void generateLightBrightnessTable()
-	{ 
+	{
+		if(PocketManager.getDimensionData(this.dimensionId).getDimensionType() == DimensionType.POCKET)
+		{
+			super.generateLightBrightnessTable();
+			return;
+		}
 		float modifier = 0.0F;
 
 		for (int steps = 0; steps <= 15; ++steps)
 		{
-			float var3 = 1.0F - steps / 15.0F;
-			this.lightBrightnessTable[steps] = var3;
+			float var3 = (float) (Math.pow(steps,1.5) / Math.pow(15.0F,1.5));
+			this.lightBrightnessTable[15-steps] = var3;
 			System.out.println( this.lightBrightnessTable[steps]+"light");
 		}
 	}
