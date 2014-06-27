@@ -215,7 +215,7 @@ public class DDSaveHandler
 				Point4D destination = packedLink.tail.destination;
 				if(destination!=null)
 				{
-					PocketManager.getDimensionData(destination.getDimension()).setDestination(link, destination.getX(),destination.getY(),destination.getZ());
+					PocketManager.getDimensionData(destination.getDimension()).setLinkDestination(link, destination.getX(),destination.getY(),destination.getZ());
 				}
 				unpackedLinks.add(packedLink);
 			}

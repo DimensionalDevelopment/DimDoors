@@ -324,7 +324,7 @@ public class DungeonSchematic extends Schematic {
 		DimLink reverseLink = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), LinkType.REVERSE, orientation);
 		Point4D destination = entryLink.source();
 		NewDimData prevDim = PocketManager.getDimensionData(destination.getDimension());
-		prevDim.setDestination(reverseLink, destination.getX(), destination.getY(), destination.getZ());
+		prevDim.setLinkDestination(reverseLink, destination.getX(), destination.getY(), destination.getZ());
 		initDoorTileEntity(world, pocketCenter);
 	}
 	

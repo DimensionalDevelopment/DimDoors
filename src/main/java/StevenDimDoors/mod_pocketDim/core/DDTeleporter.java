@@ -532,10 +532,10 @@ public class DDTeleporter
 		DimLink personalHomeLink = dim.getLink(dim.origin());
 		if(personalHomeLink!=null)
 		{
-			PocketManager.getDimensionData(link.source().getDimension()).setDestination(personalHomeLink, link.source().getX(), link.source().getY(), link.source().getZ());
+			PocketManager.getDimensionData(link.source().getDimension()).setLinkDestination(personalHomeLink, link.source().getX(), link.source().getY(), link.source().getZ());
 		}
 		
-		dim.setDestination(link, dim.origin.getX(), dim.origin.getY(), dim.origin.getZ());
+		dim.setLinkDestination(link, dim.origin.getX(), dim.origin.getY(), dim.origin.getZ());
 		return true;
 	}
 
@@ -598,7 +598,7 @@ public class DDTeleporter
 			Point3D destination = yCoordHelper.findDropPoint(world, source.getX(), source.getY() + 1, source.getZ());
 			if (destination != null)
 			{
-				current.root().setDestination(link, destination.getX(), destination.getY(), destination.getZ());
+				current.root().setLinkDestination(link, destination.getX(), destination.getY(), destination.getZ());
 				return true;				
 			}
 		}
@@ -769,7 +769,7 @@ public class DDTeleporter
 			int orientation = getDestinationOrientation(source, properties);
 			NewDimData sourceDim = PocketManager.getDimensionData(link.source().getDimension());
 			DimLink reverse = destinationDim.createLink(x, y + 2, z, LinkType.REVERSE,orientation);
-			sourceDim.setDestination(reverse, source.getX(), source.getY(), source.getZ());
+			sourceDim.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());
 			
 			// Set up the warp door at the destination
 			orientation = BlockRotator.transformMetadata(orientation, 2, properties.WarpDoorID);
@@ -777,7 +777,7 @@ public class DDTeleporter
 			
 			// Complete the link to the destination
 			// This comes last so the destination isn't set unless everything else works first
-			destinationDim.setDestination(link, x, y + 2, z);
+			destinationDim.setLinkDestination(link, x, y + 2, z);
 		}
 		
 		return (destination != null);

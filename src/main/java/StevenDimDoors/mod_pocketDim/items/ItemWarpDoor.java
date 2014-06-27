@@ -28,7 +28,7 @@ public class ItemWarpDoor extends BaseItemDoor
 	}
     
 	@Override
-	protected BaseDimDoor getDoortoItemMapping()
+	protected BaseDimDoor getDoorBlock()
 	{
 		return (BaseDimDoor) mod_pocketDim.warpDoor;
 	}

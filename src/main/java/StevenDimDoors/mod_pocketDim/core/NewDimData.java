@@ -513,7 +513,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 		{
 			throw new IllegalArgumentException("orientation must be between 0 and 3, inclusive.");
 		}
-		setDestination(incoming, originX, originY, originZ);
+		setLinkDestination(incoming, originX, originY, originZ);
 		this.origin = incoming.destination();
 		this.orientation = orientation;
 		this.dungeon = dungeon;
@@ -576,13 +576,13 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 			throw new IllegalStateException("The dimension has already been initialized.");
 		}
 		
-		setDestination(incoming, originX, originY, originZ);
+		setLinkDestination(incoming, originX, originY, originZ);
 		this.origin = incoming.destination();
 		this.orientation = orientation;
 		this.modified = true;
 	}
 	
-	public void setDestination(DimLink incoming, int x, int y, int z)
+	public void setLinkDestination(DimLink incoming, int x, int y, int z)
 	{
 		InnerDimLink link = (InnerDimLink) incoming;
 		link.setDestination(x, y, z, this);

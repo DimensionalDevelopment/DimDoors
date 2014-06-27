@@ -24,6 +24,7 @@ import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
+import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemWarpDoor;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
@@ -88,13 +89,13 @@ public class EventHookContainer
 	public void onPlayerEvent(PlayerInteractEvent event)
 	{
 		// Handle all door placement here
-		if(event.action == Action.LEFT_CLICK_BLOCK)
+		if (event.action == Action.LEFT_CLICK_BLOCK)
 		{
 			return;
 		}
 		World world = event.entity.worldObj;
 		ItemStack stack = event.entityPlayer.inventory.getCurrentItem();
-		if (stack != null && stack.getItem() instanceof ItemDoor)
+		if (stack != null)
 		{
 			if(stack.getItem() instanceof ItemWarpDoor)
 			{
@@ -107,13 +108,14 @@ public class EventHookContainer
 					return;
 				}
 			}
-			if (mod_pocketDim.itemDimensionalDoor.tryToPlaceDoor(stack, event.entityPlayer, world,
+			if (BaseItemDoor.tryToPlaceDoor(stack, event.entityPlayer, world,
 					event.x, event.y, event.z, event.face))
 			{
 				// Cancel the event so that we don't get two doors from vanilla doors
 				event.setCanceled(true);
 			}
 		}
+		
 	}
 
 	@ForgeSubscribe

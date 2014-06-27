@@ -141,10 +141,10 @@ public class mod_pocketDim
 	public static Item itemRiftSignature;
 	public static Item itemStableFabric;
 	public static Item itemUnstableDoor;
-	public static Item itemStabilizedLinkSignature;
 	public static Item itemDDKey;
 	public static Item itemQuartzDoor;
 	public static Item itemPersonalDoor;
+	public static Item itemStabilizedRiftSignature;
 
 	public static BiomeGenBase limboBiome;
 	public static BiomeGenBase pocketBiome;
@@ -233,7 +233,7 @@ public class mod_pocketDim
 		itemStableFabric = (new ItemStableFabric(properties.StableFabricItemID, 0)).setUnlocalizedName("itemStableFabric");
 		itemUnstableDoor = (new ItemUnstableDoor(properties.UnstableDoorItemID, Material.iron, null)).setUnlocalizedName("itemChaosDoor");
 		itemRiftBlade = (new ItemRiftBlade(properties.RiftBladeItemID, properties)).setUnlocalizedName("ItemRiftBlade");
-		itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(properties.StabilizedRiftSignatureItemID)).setUnlocalizedName("itemStabilizedRiftSig");
+		itemStabilizedRiftSignature = (new ItemStabilizedRiftSignature(properties.StabilizedRiftSignatureItemID)).setUnlocalizedName("itemStabilizedRiftSig");
 		itemWorldThread = (new ItemWorldThread(properties.WorldThreadItemID)).setUnlocalizedName("itemWorldThread");
 		
 		// Check if other biomes have been registered with the same IDs we want. If so, crash Minecraft
@@ -284,7 +284,7 @@ public class mod_pocketDim
 		LanguageRegistry.addName(itemRiftSignature, "Rift Signature");
 		LanguageRegistry.addName(itemGoldenDoor, "Golden Door");
 		LanguageRegistry.addName(itemGoldenDimensionalDoor, "Golden Dimensional Door");
-		LanguageRegistry.addName(itemStabilizedLinkSignature, "Stabilized Rift Signature");
+		LanguageRegistry.addName(itemStabilizedRiftSignature, "Stabilized Rift Signature");
 		LanguageRegistry.addName(itemRiftRemover, "Rift Remover");
 		LanguageRegistry.addName(itemStableFabric, "Stable Fabric");
 		LanguageRegistry.addName(itemUnstableDoor, "Unstable Door");
@@ -316,7 +316,9 @@ public class mod_pocketDim
 		LanguageRegistry.instance().addStringLocalization("entity.dimdoors.Monolith.name", "Monolith");
 
 		CraftingManager.registerRecipes(properties);
+		CraftingManager.registerDispenserBehaviors();
 		GameRegistry.registerCraftingHandler(new CraftingManager());
+
 		DungeonHelper.initialize();
 		gatewayGenerator = new GatewayGenerator(properties);
 		GameRegistry.registerWorldGenerator(mod_pocketDim.gatewayGenerator);
