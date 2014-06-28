@@ -30,6 +30,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class EventHookContainer
 {
+	private static final int MAX_FOOD_LEVEL = 20;
+	
 	private final DDProperties properties;
 
 	public EventHookContainer(DDProperties properties)
@@ -175,6 +177,7 @@ public class EventHookContainer
 		player.extinguish();
 		player.clearActivePotions();
 		player.setHealth(player.getMaxHealth());
+		player.getFoodStats().addStats(MAX_FOOD_LEVEL, 0);
 		Point4D destination = LimboProvider.getLimboSkySpawn(player, properties);
 		DDTeleporter.teleportEntity(player, destination, false);
 	}
