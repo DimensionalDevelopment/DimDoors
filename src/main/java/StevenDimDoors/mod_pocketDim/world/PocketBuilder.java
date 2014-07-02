@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
-import StevenDimDoors.experimental.MazeBuilder;
+import StevenDimDoors.experimental.BoundingBox;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
@@ -21,13 +21,13 @@ import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.util.Pair;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 
 public class PocketBuilder
-{
+{	
 	public static final int MIN_POCKET_SIZE = 5;
 	public static final int MAX_POCKET_SIZE = 51;
 	public static final int DEFAULT_POCKET_SIZE = 39;
@@ -558,5 +558,40 @@ public class PocketBuilder
 		extBlockStorage.setExtBlockID(localX, y & 15, localZ, blockID);
 		extBlockStorage.setExtBlockMetadata(localX, y & 15, localZ, metadata);
 		chunk.setChunkModified();
+	}
+
+	public static BoundingBox calculateDefaultBounds(NewDimData pocket)
+	{
+		// Calculate the XZ bounds of this pocket assuming that it has the default size
+		// The Y bounds will be set to encompass the height of a chunk.
+		
+		int minX = 0;
+		int minZ = 0;
+		Point4D origin = pocket.origin();
+		int orientation = pocket.orientation();
+		if (orientation < 0 || orientation > 3)
+		{
+			throw new IllegalArgumentException("pocket has an invalid orientation value.");
+		}
+		switch (orientation)
+		{
+		case 0:
+			minX = origin.getX() - DEFAULT_POCKET_WALL_THICKNESS + 1;
+			minZ = origin.getZ() - DEFAULT_POCKET_SIZE / 2;
+			break;
+		case 1:
+			minX = origin.getX() - DEFAULT_POCKET_SIZE / 2;
+			minZ = origin.getZ() - DEFAULT_POCKET_WALL_THICKNESS + 1;
+			break;
+		case 2:
+			minX = origin.getX() + DEFAULT_POCKET_WALL_THICKNESS - DEFAULT_POCKET_SIZE;
+			minZ = origin.getZ() - DEFAULT_POCKET_SIZE / 2;
+			break;
+		case 3:
+			minX = origin.getX() - DEFAULT_POCKET_SIZE / 2;
+			minZ = origin.getZ() + DEFAULT_POCKET_WALL_THICKNESS - DEFAULT_POCKET_SIZE;
+			break;
+		}
+		return new BoundingBox(minX, 0, minZ, DEFAULT_POCKET_SIZE, 255, DEFAULT_POCKET_SIZE);
 	}
 }
