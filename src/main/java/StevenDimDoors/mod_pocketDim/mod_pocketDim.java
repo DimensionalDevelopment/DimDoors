@@ -63,7 +63,6 @@ import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
-import StevenDimDoors.mod_pocketDim.util.DDLogger;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
 import StevenDimDoors.mod_pocketDim.world.DDBiomeGenBase;
@@ -148,6 +147,7 @@ public class mod_pocketDim
 	public static FastRiftRegenerator fastRiftRegenerator;
 	public static GatewayGenerator gatewayGenerator;
 	public static DeathTracker deathTracker;
+	private static EventHookContainer hooks;
 	
 	//TODO this is a temporary workaround for saving data
 	private String currrentSaveRootDirectory;
@@ -177,7 +177,7 @@ public class mod_pocketDim
 		properties = DDProperties.initialize(new File(path));
 
 		//Now do other stuff
-		EventHookContainer hooks = new EventHookContainer(properties);
+		hooks = new EventHookContainer(properties);
 		MinecraftForge.EVENT_BUS.register(hooks);
 		MinecraftForge.TERRAIN_GEN_BUS.register(hooks);
 	}
@@ -336,6 +336,7 @@ public class mod_pocketDim
 		
 		// Load the config file that's specific to this world
 		worldProperties = new DDWorldProperties(new File(currrentSaveRootDirectory + "/DimensionalDoors/DimDoorsWorld.cfg"));
+		hooks.setWorldProperties(worldProperties);
 
 		// Initialize a new DeathTracker
 		deathTracker = new DeathTracker(currrentSaveRootDirectory + "/DimensionalDoors/data/deaths.txt");
