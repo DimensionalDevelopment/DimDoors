@@ -15,7 +15,7 @@ apply plugin: 'forge'
 
 
 
-version = "2.2.3-" + System.getenv("BUILD_NUMBER")
+version = "2.2.4-" + System.getenv("BUILD_NUMBER")
 group= "com.stevenrs11.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "DimensionalDoors"
 

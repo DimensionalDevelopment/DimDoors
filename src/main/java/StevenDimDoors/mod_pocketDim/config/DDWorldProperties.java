@@ -9,7 +9,6 @@ public class DDWorldProperties
 	/**
 	 * World Generation Settings
 	 */
-
 	public final DimensionFilter RiftClusterDimensions;
 	public final DimensionFilter RiftGatewayDimensions;
 	
@@ -17,7 +16,7 @@ public class DDWorldProperties
 	 * General Flags
 	 */
 	public final boolean LimboEscapeEnabled;
-	
+	public final boolean UniversalLimboEnabled;
 	
 	//Names of categories
 	private static final String CATEGORY_WORLD_GENERATION = "world generation";
@@ -43,6 +42,12 @@ public class DDWorldProperties
 				"Sets whether players are teleported out of Limbo when walking over the Eternal Fabric that " + 
 				"generates near the bottom of the dimension. If disabled, players could still leave through " +
 				"dungeons in Limbo or by dying (if Hardcore Limbo is disabled). The default value is true.").getBoolean(true);
+		
+		UniversalLimboEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Universal Limbo", false,
+				"Sets whether players are teleported to Limbo when they die in any dimension (except Limbo). " +
+				"Normally, players only go to Limbo if they die in a pocket dimension. This setting will not " + 
+				"affect deaths in Limbo, which can be set with the Hardcore Limbo option. " +
+				"The default value is false.").getBoolean(false);
 		
 		config.save();
 	}

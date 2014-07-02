@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.EventPriority;
@@ -18,6 +19,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
+import StevenDimDoors.mod_pocketDim.config.DDWorldProperties;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
@@ -30,11 +32,22 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class EventHookContainer
 {
+	private static final int MAX_FOOD_LEVEL = 20;
+	
 	private final DDProperties properties;
+	private DDWorldProperties worldProperties;
 
 	public EventHookContainer(DDProperties properties)
 	{
 		this.properties = properties;
+	}
+	
+	public void setWorldProperties(DDWorldProperties worldProperties)
+	{
+		// SenseiKiwi:
+		// Why have a setter rather than accessing mod_pocketDim.worldProperties?
+		// I want to make this dependency explicit in our code.
+		this.worldProperties = worldProperties;
 	}
 
 	@ForgeSubscribe(priority = EventPriority.LOW)
@@ -132,7 +145,7 @@ public class EventHookContainer
 		Entity entity = event.entity;
 
 		if (properties.LimboEnabled && properties.LimboReturnsInventoryEnabled &&
-				entity instanceof EntityPlayer && entity.worldObj.provider instanceof PocketProvider)
+				entity instanceof EntityPlayer && isValidSourceForLimbo(entity.worldObj.provider))
 		{
 			EntityPlayer player = (EntityPlayer) entity;
 			mod_pocketDim.deathTracker.addUsername(player.username);
@@ -154,7 +167,7 @@ public class EventHookContainer
 
 		Entity entity = event.entity;
 
-		if (entity instanceof EntityPlayer && entity.worldObj.provider instanceof PocketProvider)
+		if (entity instanceof EntityPlayer && isValidSourceForLimbo(entity.worldObj.provider))
 		{
 			EntityPlayer player = (EntityPlayer) entity;
 			mod_pocketDim.deathTracker.addUsername(player.username);
@@ -169,12 +182,24 @@ public class EventHookContainer
 		}
 		return true;
 	}
+	
+	private boolean isValidSourceForLimbo(WorldProvider provider)
+	{
+		// Returns whether a given world is a valid place for sending a player
+		// to Limbo. We can send someone to Limbo from a certain dimension if
+		// Universal Limbo is enabled and the source dimension is not Limbo, or
+		// if the source dimension is a pocket dimension.
+		
+		return (worldProperties.UniversalLimboEnabled && provider.dimensionId != properties.LimboDimensionID) ||
+				(provider instanceof PocketProvider);
+	}
 
 	private void revivePlayerInLimbo(EntityPlayer player)
 	{
 		player.extinguish();
 		player.clearActivePotions();
 		player.setHealth(player.getMaxHealth());
+		player.getFoodStats().addStats(MAX_FOOD_LEVEL, 0);
 		Point4D destination = LimboProvider.getLimboSkySpawn(player, properties);
 		DDTeleporter.teleportEntity(player, destination, false);
 	}
