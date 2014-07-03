@@ -38,11 +38,7 @@ public class CommandCreateRandomRift extends DDCommandBase
 	{
 		NewDimData dimension;
 		DungeonHelper dungeonHelper = DungeonHelper.instance();
-
-		if (sender.worldObj.isRemote)
-		{
-			return DDCommandResult.SUCCESS;
-		}
+		
 		if (command.length > 1)
 		{
 			return DDCommandResult.TOO_MANY_ARGUMENTS;
@@ -118,9 +114,6 @@ public class CommandCreateRandomRift extends DDCommandBase
 		{
 			return null;
 		}
-		else
-		{
-			return matches.get( random.nextInt(matches.size()) );
-		}
+		return matches.get( random.nextInt(matches.size()) );
 	}
 }

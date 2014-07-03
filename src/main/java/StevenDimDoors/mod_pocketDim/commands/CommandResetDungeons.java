@@ -2,7 +2,6 @@ package StevenDimDoors.mod_pocketDim.commands;
 
 import java.util.ArrayList;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
@@ -10,7 +9,6 @@ import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
-@SuppressWarnings("deprecation")
 public class CommandResetDungeons extends DDCommandBase
 {	
 	private static CommandResetDungeons instance = null;

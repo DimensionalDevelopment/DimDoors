@@ -1,15 +1,10 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-
-import java.util.Arrays;
-import java.util.List;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.DimensionManager;
 
 public class CommandTeleportPlayer extends DDCommandBase
 {	
@@ -121,7 +116,7 @@ public class CommandTeleportPlayer extends DDCommandBase
 		return DDCommandResult.SUCCESS;
 	}
 	
-    public boolean isInteger( String input )  
+    public static boolean isInteger( String input )  
     {  
        try  
        {  

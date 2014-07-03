@@ -1,16 +1,13 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
+import java.util.ArrayList;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
-import java.util.ArrayList;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
-
-@SuppressWarnings("deprecation")
 public class CommandDeleteAllLinks extends DDCommandBase
 {
 	private static CommandDeleteAllLinks instance = null;
