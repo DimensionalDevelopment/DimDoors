@@ -351,14 +351,10 @@ public class mod_pocketDim
 		event.registerServerCommand( CommandListDungeons.instance() );
 		event.registerServerCommand( CommandCreateRandomRift.instance() );
 		event.registerServerCommand( CommandDeleteAllLinks.instance() );
-		//CommandDeleteDimensionData.instance().register(event);
 		event.registerServerCommand( CommandDeleteRifts.instance() );
 		event.registerServerCommand( CommandExportDungeon.instance() );
-		//CommandPrintDimensionData.instance().register(event);
-		//CommandPruneDimensions.instance().register(event);
 		event.registerServerCommand( CommandCreatePocket.instance() );
 		event.registerServerCommand( CommandTeleportPlayer.instance() );
-		
 		
 		try
 		{

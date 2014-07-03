@@ -29,10 +29,6 @@ public class CommandResetDungeons extends DDCommandBase
 	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
 	{
-		if(sender.worldObj.isRemote)
-		{
-			return DDCommandResult.SUCCESS; 
-		}
 		if (command.length > 0)
 		{
 			return DDCommandResult.TOO_FEW_ARGUMENTS;
