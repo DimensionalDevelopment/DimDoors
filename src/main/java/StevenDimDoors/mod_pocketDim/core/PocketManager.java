@@ -317,6 +317,11 @@ public class PocketManager
 			{
 				deleteDimensionFiles(dimension);
 			}
+			// Note: We INTENTIONALLY don't unregister the dimensions that we
+			// delete with Forge. Instead, we keep them registered to stop Forge
+			// from reallocating those IDs to other mods such as Mystcraft. This
+			// is to prevent bugs. Blacklisted dimensions are still properly
+			// unregistered when the server shuts down.
 			dimensionIDBlackList.add(dimension.id);
 			deleteDimensionData(dimension);
 			return true;
