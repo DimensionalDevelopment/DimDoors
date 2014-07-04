@@ -2,31 +2,33 @@ package StevenDimDoors.mod_pocketDim.helpers;
 
 import java.io.File;
 
-
 public class DeleteFolder
 {
-	public static boolean deleteFolder(File file)
+	public static boolean deleteFolder(File directory)
 	{
 		try
 		{
-			File[] files = file.listFiles();
-			
-			if(files==null)
+			File[] contents = directory.listFiles();
+			if (contents != null)
 			{
-				file.delete();
-				return true;
+				for (File entry : contents)
+				{
+					if (entry.isDirectory())
+					{
+						deleteFolder(entry);
+					}
+					else
+					{
+						entry.delete();
+					}
+				}
 			}
-			for(File inFile : files)
-			{
-				DeleteFolder.deleteFolder(inFile);
-			}
-			
+			return directory.delete();
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 }
