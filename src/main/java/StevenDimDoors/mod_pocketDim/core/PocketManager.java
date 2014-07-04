@@ -483,6 +483,11 @@ public class PocketManager
 	
 	public static WorldServer loadDimension(int id)
 	{
+		if (!DimensionManager.isDimensionRegistered(id))
+		{
+			return null;
+		}
+		
 		WorldServer world = DimensionManager.getWorld(id);
 		if (world == null)
 		{
