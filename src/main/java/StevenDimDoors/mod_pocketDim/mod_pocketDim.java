@@ -30,7 +30,6 @@ import StevenDimDoors.mod_pocketDim.blocks.WarpDoor;
 import StevenDimDoors.mod_pocketDim.commands.CommandCreateDungeonRift;
 import StevenDimDoors.mod_pocketDim.commands.CommandCreatePocket;
 import StevenDimDoors.mod_pocketDim.commands.CommandCreateRandomRift;
-import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
 import StevenDimDoors.mod_pocketDim.commands.CommandExportDungeon;
 import StevenDimDoors.mod_pocketDim.commands.CommandListDungeons;
