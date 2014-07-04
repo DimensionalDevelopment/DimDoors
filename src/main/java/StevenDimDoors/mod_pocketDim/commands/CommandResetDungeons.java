@@ -2,7 +2,6 @@ package StevenDimDoors.mod_pocketDim.commands;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Stack;
 
 import net.minecraft.entity.player.EntityPlayer;
 import StevenDimDoors.mod_pocketDim.core.DimLink;

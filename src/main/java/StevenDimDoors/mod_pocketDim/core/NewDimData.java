@@ -581,10 +581,7 @@ public abstract class NewDimData
 		{
 			return parent.packDepth + 1;
 		}
-		else
-		{
-			return 1;
-		}
+		return 1;
 	}
 
 	public void initializePocket(int originX, int originY, int originZ, int orientation, DimLink incoming)
@@ -621,10 +618,7 @@ public abstract class NewDimData
 		{
 			return linkList.get(random.nextInt(linkList.size()));
 		}
-		else
-		{
-			return linkList.get(0);
-		}
+		return linkList.get(0);
 	}
 	
 	public boolean isModified()
@@ -637,6 +631,7 @@ public abstract class NewDimData
 		this.modified = false;
 	}
 	
+	@Override
 	public String toString()
 	{
 		return "DimID= " + this.id;
