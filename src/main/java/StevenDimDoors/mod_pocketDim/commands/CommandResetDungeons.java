@@ -1,9 +1,10 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Stack;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
@@ -31,55 +32,73 @@ public class CommandResetDungeons extends DDCommandBase
 	{
 		if (command.length > 0)
 		{
-			return DDCommandResult.TOO_FEW_ARGUMENTS;
+			return DDCommandResult.TOO_MANY_ARGUMENTS;
+		}
+
+		int id;
+		int resetCount = 0;
+		int dungeonCount = 0;
+		HashSet<Integer> deletedDimensions = new HashSet<Integer>();
+		ArrayList<NewDimData> loadedDungeons = new ArrayList<NewDimData>();
+
+		// Copy the list of dimensions to iterate over the copy. Otherwise,
+		// we would trigger an exception by modifying the original list.
+		ArrayList<NewDimData> dimensions = new ArrayList<NewDimData>();
+		for (NewDimData dimension : PocketManager.getDimensions())
+		{
+			dimensions.add(dimension);
 		}
 		
-		int dungeonCount = 0;
-		int resetCount = 0;
-		ArrayList<Integer> dimsToDelete = new ArrayList<Integer>();
-		ArrayList<Integer> dimsToFix = new ArrayList<Integer>();
-
-		for (NewDimData data : PocketManager.getDimensions())
+		// Iterate over the list of dimensions. Check which ones are dungeons.
+		// If a dungeon is found, try to delete it. If it can't be deleted,
+		// then it must be loaded and needs to be updated to prevent bugs.
+		for (NewDimData dimension : dimensions)
 		{
-			
-			if(DimensionManager.getWorld(data.id())==null&&data.isDungeon())
+			if (dimension.isDungeon())
 			{
-				resetCount++;
 				dungeonCount++;
-				dimsToDelete.add(data.id());
-			}
-			else if(data.isDungeon())
-			{
-				dimsToFix.add(data.id());
-				dungeonCount++;
-				for(DimLink link : data.links())
+				id = dimension.id();
+				if (PocketManager.deletePocket(dimension, true))
 				{
-					if(link.linkType()==LinkTypes.REVERSE)
+					resetCount++;
+					deletedDimensions.add(id);
+				}
+				else
+				{
+					loadedDungeons.add(dimension);
+				}
+			}
+		}
+		
+		// Modify the loaded dungeons to prevent bugs
+		for (NewDimData dungeon : loadedDungeons)
+		{
+			// Find top-most loaded dungeons and update their parents.
+			// They will automatically update their children.
+			// Dungeons with non-dungeon parents don't need to be fixed.
+			if (dungeon.parent() == null)
+			{
+				dungeon.setParentToRoot();
+			}
+			
+			// Links to any deleted dungeons must be replaced
+			for (DimLink link : dungeon.links())
+			{
+				if (link.hasDestination() && deletedDimensions.contains(link.destination().getDimension()))
+				{
+					if (link.linkType() == LinkTypes.DUNGEON)
 					{
-						data.createLink(link.source(), LinkTypes.DUNGEON_EXIT, link.orientation());
+						dungeon.createLink(link.source(), LinkTypes.DUNGEON, link.orientation());
 					}
-					if(link.linkType()==LinkTypes.DUNGEON)
+					else if (link.linkType() == LinkTypes.REVERSE)
 					{
-						data.createLink(link.source(), LinkTypes.DUNGEON, link.orientation());
+						dungeon.createLink(link.source(), LinkTypes.DUNGEON_EXIT, link.orientation());
 					}
 				}
 			}
 		}
-	
-		for(Integer dimID:dimsToDelete)
-		{
-			PocketManager.deletePocket(PocketManager.getDimensionData(dimID), true);
-		}
-		/**
-		 * temporary workaround
-		 */
-		for(Integer dimID: dimsToFix)
-		{
-			PocketManager.getDimensionData(dimID).setParentToRoot();
-		}
-		//TODO- for some reason the parent field of loaded dimenions get reset to null if I call .setParentToRoot() before I delete the pockets. 
-		//TODO implement blackList
-		//Notify the user of the results
+		
+		// Notify the user of the results
 		sendChat(sender,("Reset complete. " + resetCount + " out of " + dungeonCount + " dungeons were reset."));
 		return DDCommandResult.SUCCESS;
 	}
