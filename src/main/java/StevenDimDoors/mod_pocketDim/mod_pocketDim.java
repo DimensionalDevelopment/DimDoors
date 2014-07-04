@@ -350,7 +350,6 @@ public class mod_pocketDim
 		event.registerServerCommand( CommandCreateDungeonRift.instance() );
 		event.registerServerCommand( CommandListDungeons.instance() );
 		event.registerServerCommand( CommandCreateRandomRift.instance() );
-		event.registerServerCommand( CommandDeleteAllLinks.instance() );
 		event.registerServerCommand( CommandDeleteRifts.instance() );
 		event.registerServerCommand( CommandExportDungeon.instance() );
 		event.registerServerCommand( CommandCreatePocket.instance() );
