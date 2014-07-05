@@ -116,14 +116,14 @@ public class CommandTeleportPlayer extends DDCommandBase
 		else if (command.length == 4)
 		{
 			x = Integer.parseInt(command[1]);
-			y = Integer.parseInt(command[2]) + 1;
+			y = Integer.parseInt(command[2]) + 1; // Correct the Y value
 			z = Integer.parseInt(command[3]);
 			destination = new Point4D(x, y, z, dimensionID);
 		}
 		else
 		{
 			x = Integer.parseInt(command[2]);
-			y = Integer.parseInt(command[3]) + 1;
+			y = Integer.parseInt(command[3]) + 1; // Correct the Y value
 			z = Integer.parseInt(command[4]);
 			destination = new Point4D(x, y, z, dimensionID);
 		}
