@@ -2,6 +2,9 @@ package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.ITileEntityProvider;
@@ -99,18 +102,30 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 			}
 		}
 	}
-
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int idPicked(World world, int x, int y, int z)
+	{
+		return this.getDoorItem();
+	}
 	
 	@Override
 	public int idDropped(int metadata, Random random, int fortuneLevel)
     {
-        return getDrops();
+        return this.getDrops();
     }
+	
+	@Override
+	public int getDoorItem()
+	{
+		return mod_pocketDim.transTrapdoor.blockID;
+	}
 
 	@Override
 	public int getDrops()
 	{
-		return  Block.trapdoor.blockID;
+		return Block.trapdoor.blockID;
 	}	
 	
 	public static boolean isTrapdoorSetLow(int metadata)

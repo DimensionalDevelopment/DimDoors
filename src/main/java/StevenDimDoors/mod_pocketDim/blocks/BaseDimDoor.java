@@ -340,9 +340,9 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public int idPicked(World par1World, int par2, int par3, int par4)
+	public int idPicked(World world, int x, int y, int z)
 	{
-		return this.getDrops();
+		return this.getDoorItem();
 	}
 
     /**

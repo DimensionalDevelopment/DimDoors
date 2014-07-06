@@ -12,5 +12,7 @@ public interface IDimDoor
 	
 	public int getDrops();
 	
+	public int getDoorItem();
+	
 	public TileEntity initDoorTE(World world, int x, int y, int z);
 }

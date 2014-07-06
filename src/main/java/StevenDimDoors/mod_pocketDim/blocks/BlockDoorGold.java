@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.IconFlipped;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -34,6 +35,13 @@ public class BlockDoorGold extends BlockDoor
         lowerTextures[0] = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "_lower");
         upperTextures[1] = new IconFlipped(upperTextures[0], true, false);
         lowerTextures[1] = new IconFlipped(lowerTextures[0], true, false);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int idPicked(World world, int x, int y, int z)
+	{
+		return mod_pocketDim.itemGoldenDoor.itemID;
 	}
 	
 	@Override

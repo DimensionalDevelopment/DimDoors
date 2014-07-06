@@ -35,6 +35,12 @@ public class BlockGoldDimDoor extends BaseDimDoor
 	}
 	
 	@Override
+	public int getDoorItem()
+	{
+		return mod_pocketDim.itemGoldenDimensionalDoor.itemID;
+	}
+	
+	@Override
 	public int getDrops()
 	{
 		return mod_pocketDim.itemGoldenDoor.itemID;

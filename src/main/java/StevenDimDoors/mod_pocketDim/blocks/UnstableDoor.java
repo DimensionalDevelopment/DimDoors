@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
@@ -24,6 +25,13 @@ public class UnstableDoor extends BaseDimDoor
 			dimension.createLink(x, y, z, LinkTypes.RANDOM,world.getBlockMetadata(x, y - 1, z));
 		}
 	}
+	
+	@Override
+	public int getDoorItem()
+	{
+		return mod_pocketDim.itemUnstableDoor.itemID;
+	}
+	
 	@Override
 	public int getDrops()
 	{
