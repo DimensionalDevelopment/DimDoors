@@ -162,7 +162,7 @@ public class DungeonSchematic extends Schematic {
 		applyFilter(standardizer);
 	}
 	
-	private Map<Short, Short> getAssignedToStandardIDMapping(DDProperties properties)
+	private static Map<Short, Short> getAssignedToStandardIDMapping(DDProperties properties)
 	{
 		//If we ever need this broadly or support other mods, this should be moved to a separate class
 		TreeMap<Short, Short> mapping = new TreeMap<Short, Short>();
