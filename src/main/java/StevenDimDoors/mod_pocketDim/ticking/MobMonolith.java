@@ -21,9 +21,9 @@ import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 
 public class MobMonolith extends EntityFlying implements IMob
 {
-	private static final short MAX_AGGRO = 200;
-	private static final short MAX_AGGRO_CAP = 80;
-	private static final short MIN_AGGRO_CAP = 20;
+	private static final short MAX_AGGRO = 250;
+	private static final short MAX_AGGRO_CAP = 100;
+	private static final short MIN_AGGRO_CAP = 25;
 	private static final int MAX_TEXTURE_STATE = 18;
 	private static final int MAX_SOUND_COOLDOWN = 200;
 	private static final int MAX_AGGRO_RANGE = 35;

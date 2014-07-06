@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Stack;
 import java.util.TreeMap;
 
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
@@ -516,10 +517,41 @@ public abstract class NewDimData
 	 */
 	public void setParentToRoot()
 	{
+		// Update this dimension's information
+		if (parent != null)
+		{
+			parent.children.remove(this);
+		}
 		this.depth = 1;
 		this.parent = this.root;
 		this.root.children.add(this);
 		this.root.modified = true;
+		this.modified = true;
+		if (this.isDungeon)
+		{
+			this.packDepth = calculatePackDepth(this.parent, this.dungeon);
+		}
+		
+		// Update the depths for child dimensions using a depth-first traversal
+		Stack<NewDimData> ordering = new Stack<NewDimData>();
+		ordering.addAll(this.children);
+		
+		while (!ordering.isEmpty())
+		{
+			NewDimData current = ordering.pop();
+			current.resetDepth();
+			ordering.addAll(current.children);
+		}
+	}
+	
+	private void resetDepth()
+	{
+		// We assume that this is only applied to dimensions with parents
+		this.depth = this.parent.depth + 1;
+		if (this.isDungeon)
+		{
+			this.packDepth = calculatePackDepth(this.parent, this.dungeon);
+		}
 		this.modified = true;
 	}
 	
@@ -549,10 +581,7 @@ public abstract class NewDimData
 		{
 			return parent.packDepth + 1;
 		}
-		else
-		{
-			return 1;
-		}
+		return 1;
 	}
 
 	public void initializePocket(int originX, int originY, int originZ, int orientation, DimLink incoming)
@@ -589,10 +618,7 @@ public abstract class NewDimData
 		{
 			return linkList.get(random.nextInt(linkList.size()));
 		}
-		else
-		{
-			return linkList.get(0);
-		}
+		return linkList.get(0);
 	}
 	
 	public boolean isModified()
@@ -605,6 +631,7 @@ public abstract class NewDimData
 		this.modified = false;
 	}
 	
+	@Override
 	public String toString()
 	{
 		return "DimID= " + this.id;

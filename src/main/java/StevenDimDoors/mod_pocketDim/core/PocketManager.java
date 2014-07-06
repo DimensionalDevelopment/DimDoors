@@ -315,44 +315,48 @@ public class PocketManager
 		{
 			if (deleteFolder)
 			{
-				deleteDimensionFiles(target);
+				deleteDimensionFiles(dimension);
 			}
+			// Note: We INTENTIONALLY don't unregister the dimensions that we
+			// delete with Forge. Instead, we keep them registered to stop Forge
+			// from reallocating those IDs to other mods such as Mystcraft. This
+			// is to prevent bugs. Blacklisted dimensions are still properly
+			// unregistered when the server shuts down.
 			dimensionIDBlackList.add(dimension.id);
-			deleteDimensionData(dimension.id);
+			deleteDimensionData(dimension);
 			return true;
 		}
 		return false;
 	}
 	
-	private static boolean deleteDimensionFiles(NewDimData target)
+	private static void deleteDimensionFiles(InnerDimData dimension)
 	{
-		InnerDimData dimension = (InnerDimData) target;
-		if (dimension.isPocketDimension() && DimensionManager.getWorld(dimension.id()) == null)
-		{
-			String saveRootPath = DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath();
-			File saveDirectory = new File(saveRootPath + "/DimensionalDoors/pocketDimID" + dimension.id());
-			DeleteFolder.deleteFolder(saveDirectory);
-			File dataFile = new File(saveRootPath + "/DimensionalDoors/data/dim_" + dimension.id() + ".txt");
-			dataFile.delete();
-			return true;
-		}
-		return false;
+		// We assume that the caller checks if the dimension is loaded, for the
+		// sake of efficiency. Don't call this on a loaded dimension or bad
+		// things will happen!
+		String saveRootPath = DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath();
+		File saveDirectory = new File(saveRootPath + "/DimensionalDoors/pocketDimID" + dimension.id());
+		DeleteFolder.deleteFolder(saveDirectory);
+		File dataFile = new File(saveRootPath + "/DimensionalDoors/data/dim_" + dimension.id() + ".txt");
+		dataFile.delete();
 	}
 	
-	private static boolean deleteDimensionData(int dimensionID)
+	private static void deleteDimensionData(InnerDimData dimension)
 	{
-		if (dimensionData.containsKey(dimensionID) && DimensionManager.getWorld(dimensionID) == null)
+		// We assume that the caller checks if the dimension is loaded, for the
+		// sake of efficiency. Don't call this on a loaded dimension or bad
+		// things will happen!
+		if (dimensionData.remove(dimension.id()) != null)
 		{
-			NewDimData target = PocketManager.getDimensionData(dimensionID);
-			InnerDimData dimension = (InnerDimData) target;
-
-			dimensionData.remove(dimensionID);
 			// Raise the dim deleted event
 			getDimwatcher().onDeleted(new ClientDimData(dimension));
 			dimension.clear();
-			return true;
 		}
-		return false;
+		else
+		{
+			// This should never happen. A simple sanity check.
+			throw new IllegalArgumentException("The specified dimension is not listed with PocketManager.");
+		}
 	}
 	
 	private static void registerPockets(DDProperties properties)
@@ -479,6 +483,11 @@ public class PocketManager
 	
 	public static WorldServer loadDimension(int id)
 	{
+		if (!DimensionManager.isDimensionRegistered(id))
+		{
+			return null;
+		}
+		
 		WorldServer world = DimensionManager.getWorld(id);
 		if (world == null)
 		{
@@ -647,10 +656,7 @@ public class PocketManager
 		{
 			return dimension.getLink(x, y, z);
 		}
-		else
-		{
-			return null;
-		}
+		return null;
 	}
 	
 	public static boolean isBlackListed(int dimensionID)
@@ -715,9 +721,6 @@ public class PocketManager
 		// Load compacted client-side dimension data
 		load();
 		Compactor.readDimensions(input, new DimRegistrationCallback());
-		
-		// Register pocket dimensions
-		DDProperties properties = DDProperties.instance();
 				
 		isLoaded = true;
 		isLoading = false;

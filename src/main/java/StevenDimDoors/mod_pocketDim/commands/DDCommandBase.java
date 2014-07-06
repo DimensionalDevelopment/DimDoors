@@ -5,7 +5,6 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatMessageComponent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /*
  * An abstract base class for our Dimensional Doors commands. This cleans up the code a little and provides
@@ -96,13 +95,15 @@ public abstract class DDCommandBase extends CommandBase
      * that Dryware and Technic Jenkins don't have those functions defined. How in the world?
      * I have no idea. But it's breaking our builds. -_-  ~SenseiKiwi
      */
-    public int compareTo(ICommand par1ICommand)
+    @Override
+	public int compareTo(ICommand command)
     {
-        return this.getCommandName().compareTo(par1ICommand.getCommandName());
+        return this.getCommandName().compareTo(command.getCommandName());
     }
 
-    public int compareTo(Object par1Obj)
+    @Override
+	public int compareTo(Object other)
     {
-        return this.compareTo((ICommand)par1Obj);
+        return this.compareTo((ICommand) other);
     }
 }

@@ -25,7 +25,6 @@ import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
@@ -483,9 +482,33 @@ public class DDTeleporter
 	{
 		if (link.hasDestination())
 		{
-			if(PocketManager.isBlackListed(link.destination().getDimension()))
+			if (PocketManager.isBlackListed(link.destination().getDimension()))
 			{
-				link=PocketManager.getDimensionData(link.source().getDimension()).createLink(link.link.point,LinkTypes.SAFE_EXIT,link.link.orientation);
+				// This link leads to a dimension that has been blacklisted.
+				// That means that it was a pocket and it was deleted.
+				// Depending on the link type, we must overwrite it or cancel
+				// the teleport operation. We don't need to assign 'link' with
+				// a different value. NewDimData will overwrite it in-place.
+				NewDimData start = PocketManager.getDimensionData(link.source().getDimension());
+				if (link.linkType() == LinkTypes.DUNGEON)
+				{
+					// Ovewrite the link into a dungeon link with no destination
+					start.createLink(link.source(), LinkTypes.DUNGEON, link.orientation());
+				}
+				else
+				{
+					if (start.isPocketDimension())
+					{
+						// Ovewrite the link into a safe exit link, because
+						// this could be the only way out from a pocket.
+						start.createLink(link.source(), LinkTypes.SAFE_EXIT, link.orientation());
+					}
+					else
+					{
+						// Cancel the teleport attempt
+						return false;
+					}
+				}
 			}
 			else
 			{
@@ -499,7 +522,7 @@ public class DDTeleporter
 			case LinkTypes.DUNGEON:
 				return PocketBuilder.generateNewDungeonPocket(link, properties);
 			case LinkTypes.POCKET:
-				return PocketBuilder.generateNewPocket(link, properties,door);
+				return PocketBuilder.generateNewPocket(link, properties, door);
 			case LinkTypes.SAFE_EXIT:
 				return generateSafeExit(link, properties);
 			case LinkTypes.DUNGEON_EXIT:
@@ -544,10 +567,7 @@ public class DDTeleporter
 		{
 			return matches.get( random.nextInt(matches.size()) );
 		}
-		else
-		{
-			return null;
-		}
+		return null;
 	}
 	
 	private static boolean generateUnsafeExit(DimLink link)
@@ -749,7 +769,7 @@ public class DDTeleporter
 			
 			// Set up the warp door at the destination
 			orientation = BlockRotator.transformMetadata(orientation, 2, properties.WarpDoorID);
-			ItemDimensionalDoor.placeDoorBlock(world, x, y + 1, z, orientation, mod_pocketDim.warpDoor);
+			ItemDoor.placeDoorBlock(world, x, y + 1, z, orientation, mod_pocketDim.warpDoor);
 			
 			// Complete the link to the destination
 			// This comes last so the destination isn't set unless everything else works first
