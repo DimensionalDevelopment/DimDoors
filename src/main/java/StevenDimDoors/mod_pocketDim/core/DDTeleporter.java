@@ -484,10 +484,31 @@ public class DDTeleporter
 		{
 			if (PocketManager.isBlackListed(link.destination().getDimension()))
 			{
-				// Overwrite this link to a blacklisted destination with a safe exit link
-				// We don't need to change 'link' to a different reference.
-				// NewDimData will overwrite the existing link in-place.
-				PocketManager.getDimensionData(link.source().getDimension()).createLink(link.source(), LinkTypes.SAFE_EXIT, link.orientation());
+				// This link leads to a dimension that has been blacklisted.
+				// That means that it was a pocket and it was deleted.
+				// Depending on the link type, we must overwrite it or cancel
+				// the teleport operation. We don't need to assign 'link' with
+				// a different value. NewDimData will overwrite it in-place.
+				NewDimData start = PocketManager.getDimensionData(link.source().getDimension());
+				if (link.linkType() == LinkTypes.DUNGEON)
+				{
+					// Ovewrite the link into a dungeon link with no destination
+					start.createLink(link.source(), LinkTypes.DUNGEON, link.orientation());
+				}
+				else
+				{
+					if (start.isPocketDimension())
+					{
+						// Ovewrite the link into a safe exit link, because
+						// this could be the only way out from a pocket.
+						start.createLink(link.source(), LinkTypes.SAFE_EXIT, link.orientation());
+					}
+					else
+					{
+						// Cancel the teleport attempt
+						return false;
+					}
+				}
 			}
 			else
 			{
