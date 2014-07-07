@@ -9,10 +9,8 @@ import StevenDimDoors.mod_pocketDim.core.LinkTypes;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
-@SuppressWarnings("deprecation")
 public class DimensionalDoor extends BaseDimDoor
 {
-
 	public DimensionalDoor(int blockID, Material material, DDProperties properties) 
 	{
 		super(blockID, material, properties);
@@ -27,10 +25,11 @@ public class DimensionalDoor extends BaseDimDoor
 			DimLink link = dimension.getLink(x, y, z);
 			if (link == null)
 			{
-				dimension.createLink(x, y, z, LinkTypes.POCKET,world.getBlockMetadata(x, y - 1, z));
+				dimension.createLink(x, y, z, LinkTypes.POCKET, world.getBlockMetadata(x, y - 1, z));
 			}
 		}
 	}
+	
 	@Override
 	public int getDrops()
 	{

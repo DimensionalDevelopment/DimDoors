@@ -18,7 +18,6 @@ import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 
-@SuppressWarnings("deprecation")
 public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntityProvider
 {
 
@@ -61,7 +60,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	{
 		this.placeLink(world, x, y, z);
 		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
-		this.updateAttachedTile(world, x, y, z);
+		updateAttachedTile(world, x, y, z);
 	}
 	
 	@Override
@@ -76,8 +75,8 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	{
 		return new TileEntityTransTrapdoor();
 	}
-
-	public void updateAttachedTile(World world, int x, int y, int z)
+	
+	public static void updateAttachedTile(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 		if (tile instanceof TileEntityTransTrapdoor)

@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
@@ -22,7 +21,6 @@ import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -159,16 +157,13 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
                     reversed = !reversed;
                 }
             }
-
             if (isUpperDoorBlock(fullMetadata))
+            {
             	return this.upperTextures[reversed ? 1 : 0];
-            else
-            	return this.lowerTextures[reversed ? 1 : 0];
+            }
+            return this.lowerTextures[reversed ? 1 : 0];
         }
-        else
-        {
-            return this.lowerTextures[0];
-        }
+        return this.lowerTextures[0];
     }
 
 	//Called to update the render information on the tile entity. Could probably implement a data watcher,
@@ -180,29 +175,23 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		{
 			int metadata = world.getBlockMetadata(x, y, z);
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
-			dimTile.openOrClosed = this.isDoorOnRift(world, x, y, z)&&this.isUpperDoorBlock(metadata);
+			dimTile.openOrClosed = isDoorOnRift(world, x, y, z) && isUpperDoorBlock(metadata);
 			dimTile.orientation = this.getFullMetadata(world, x, y, z) & 7;
 		}
 		return this;
 	}
 	
-	public boolean isDoorOnRift(World world, int x, int y, int z)
+	public static boolean isDoorOnRift(World world, int x, int y, int z)
 	{
-		if(this.isUpperDoorBlock( world.getBlockMetadata(x, y, z)))
+		if (isUpperDoorBlock(world.getBlockMetadata(x, y, z)))
 		{
-			if(PocketManager.getLink(x, y, z, world.provider.dimensionId) != null||PocketManager.getLink(x, y-1, z, world.provider.dimensionId) != null)
-			{
-				return true;
-			}
+			// Target block is the upper block
+			return (PocketManager.getLink(x, y, z, world.provider.dimensionId) != null ||
+					PocketManager.getLink(x, y - 1, z, world.provider.dimensionId) != null);
 		}
-		else
-		{
-			if(PocketManager.getLink(x, y, z, world.provider.dimensionId) != null||PocketManager.getLink(x, y+1, z, world.provider.dimensionId) != null)
-			{
-				return true;
-			}
-		}
-		return false;
+		// Target block is the lower block
+		return (PocketManager.getLink(x, y, z, world.provider.dimensionId) != null ||
+				PocketManager.getLink(x, y + 1, z, world.provider.dimensionId) != null);
 	}
 
 	/**
@@ -359,7 +348,8 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
     /**
      * Returns the ID of the items to drop on destruction.
      */
-    public int idDropped(int metadata, Random random, int fortune)
+    @Override
+	public int idDropped(int metadata, Random random, int fortune)
     {
         return isUpperDoorBlock(metadata) ? 0 : this.getDrops();
     }
