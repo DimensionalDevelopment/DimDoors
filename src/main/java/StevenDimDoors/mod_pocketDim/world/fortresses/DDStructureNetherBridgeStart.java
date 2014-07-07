@@ -105,7 +105,8 @@ public class DDStructureNetherBridgeStart extends StructureNetherBridgeStart
     /**
      * Keeps iterating Structure Pieces and spawning them until the checks tell it to stop
      */
-    public void generateStructure(World world, Random random, StructureBoundingBox generationBounds)
+    @Override
+	public void generateStructure(World world, Random random, StructureBoundingBox generationBounds)
     {
     	if (hasGateway)
     	{
