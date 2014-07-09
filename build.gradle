@@ -13,10 +13,8 @@ buildscript {
 
 apply plugin: 'forge'
 
-
-
 version = "2.2.4-" + System.getenv("BUILD_NUMBER")
-group= "com.stevenrs11.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "com.stevenrs11.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "DimensionalDoors"
 
 minecraft {
@@ -28,17 +26,19 @@ sourceCompatibility = '1.6'
 
 processResources
 {
-    // replace stuff in mcmod.info, nothing else
+    // Replace stuff $version and $mcversion in mcmod.info and mod_pocketDim.java
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
+		include 'mod_pocketDim.java'
                 
-        // replace version and mcversion
+        // Replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
         
-    // copy everything else, thats not the mcmod.info
+    // Copy everything else
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+		exclude 'mod_pocketDim.java'
     }
 }
 

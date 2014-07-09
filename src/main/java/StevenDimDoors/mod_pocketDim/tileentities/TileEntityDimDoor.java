@@ -36,19 +36,20 @@ public class TileEntityDimDoor extends DDTileEntityBase
 		 }
 		 return null;
 	 }
-	
-	 public void invalidate()
-	 {
-		 this.tileEntityInvalid = true;
-		 
-		 if(this.worldObj.getBlockId(xCoord, yCoord, zCoord)==0&&!this.worldObj.isRemote)
-		 {
-			 if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
-			 {
-				 mod_pocketDim.instance.fastRiftRegenerator.registerRiftForRegen(xCoord, yCoord, zCoord, this.worldObj.provider.dimensionId);	 
-			 }
-		 }
-	 }
+
+	@Override
+	public void invalidate()
+	{
+		this.tileEntityInvalid = true;
+
+		if(this.worldObj.getBlockId(xCoord, yCoord, zCoord)==0&&!this.worldObj.isRemote)
+		{
+			if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
+			{
+				mod_pocketDim.fastRiftRegenerator.registerRiftForRegen(xCoord, yCoord, zCoord, this.worldObj.provider.dimensionId);	 
+			}
+		}
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)

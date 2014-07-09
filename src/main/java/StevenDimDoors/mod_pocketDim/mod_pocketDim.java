@@ -97,7 +97,7 @@ serverPacketHandlerSpec =
 @SidedPacketHandler(channels = {PacketConstants.CHANNEL_NAME}, packetHandler = ServerPacketHandler.class))
 public class mod_pocketDim
 {
-	public static final String version = "1.6.4-R2.2.4";
+	public static final String version = "$version";
 	public static final String modid = "dimdoors";
 	
 	//TODO need a place to stick all these constants
@@ -107,8 +107,8 @@ public class mod_pocketDim
 	@SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
 	public static CommonProxy proxy;
 
-	@Instance("PocketDimensions")
-	public static mod_pocketDim instance = new mod_pocketDim();
+	@Instance(mod_pocketDim.modid)
+	public static mod_pocketDim instance;
 
 	public static Block transientDoor;
 	public static Block warpDoor;
@@ -169,7 +169,6 @@ public class mod_pocketDim
 	@EventHandler
 	public void onPreInitialization(FMLPreInitializationEvent event)
 	{
-		instance = this;
 		//This should be the FIRST thing that gets done.
 		String path = event.getSuggestedConfigurationFile().getAbsolutePath().replace(modid, "DimDoors");
 
