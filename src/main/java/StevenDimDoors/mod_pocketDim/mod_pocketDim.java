@@ -97,7 +97,7 @@ serverPacketHandlerSpec =
 @SidedPacketHandler(channels = {PacketConstants.CHANNEL_NAME}, packetHandler = ServerPacketHandler.class))
 public class mod_pocketDim
 {
-	public static final String version = "$version";
+	public static final String version = "@VERSION@";
 	public static final String modid = "dimdoors";
 	
 	//TODO need a place to stick all these constants
