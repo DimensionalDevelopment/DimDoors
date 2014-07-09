@@ -29,7 +29,7 @@ processResources
     // Replace stuff $version and $mcversion in mcmod.info and mod_pocketDim.java
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-		include 'mod_pocketDim.java'
+		include 'StevenDimDoors/mod_pocketDim/mod_pocketDim.java'
                 
         // Replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
@@ -38,7 +38,7 @@ processResources
     // Copy everything else
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-		exclude 'mod_pocketDim.java'
+		exclude 'StevenDimDoors/mod_pocketDim/mod_pocketDim.java'
     }
 }
 
