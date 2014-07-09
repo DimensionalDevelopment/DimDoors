@@ -18,7 +18,10 @@ group = "com.stevenrs11.dimdoors" // http://maven.apache.org/guides/mini/guide-n
 archivesBaseName = "DimensionalDoors"
 
 minecraft {
-	version = "1.6.4-9.11.1.964" 
+	version = "1.6.4-9.11.1.964"
+	
+	replaceIn "mod_pocketDim.java"
+	replace "@VERSION@", project.version
 }
 
 targetCompatibility = '1.6'
@@ -26,11 +29,10 @@ sourceCompatibility = '1.6'
 
 processResources
 {
-    // Replace stuff $version and $mcversion in mcmod.info and mod_pocketDim.java
+    // Replace stuff $version and $mcversion in mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-		include 'StevenDimDoors/mod_pocketDim/mod_pocketDim.java'
-                
+        
         // Replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
@@ -38,7 +40,6 @@ processResources
     // Copy everything else
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-		exclude 'StevenDimDoors/mod_pocketDim/mod_pocketDim.java'
     }
 }
 
