@@ -54,7 +54,7 @@ import StevenDimDoors.mod_pocketDim.items.ItemWorldThread;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 import StevenDimDoors.mod_pocketDim.ticking.FastRiftRegenerator;
-import StevenDimDoors.mod_pocketDim.ticking.LimboDecay;
+import StevenDimDoors.mod_pocketDim.ticking.LimboDecayScheduler;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.ticking.ServerTickHandler;
@@ -65,6 +65,7 @@ import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
 import StevenDimDoors.mod_pocketDim.world.DDBiomeGenBase;
+import StevenDimDoors.mod_pocketDim.world.LimboDecay;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import StevenDimDoors.mod_pocketDim.world.gateways.GatewayGenerator;
@@ -142,9 +143,13 @@ public class mod_pocketDim
 	public static DDProperties properties;
 	public static DDWorldProperties worldProperties;
 	public static CustomLimboPopulator spawner; //Added this field temporarily. Will be refactored out later.
+	private static RiftRegenerator riftRegenerator;
 	public static FastRiftRegenerator fastRiftRegenerator;
 	public static GatewayGenerator gatewayGenerator;
 	public static DeathTracker deathTracker;
+	private static ServerTickHandler serverTickHandler;
+	private static LimboDecayScheduler limboDecayScheduler;
+	private static LimboDecay limboDecay;
 	private static EventHookContainer hooks;
 	
 	//TODO this is a temporary workaround for saving data
@@ -182,16 +187,14 @@ public class mod_pocketDim
 	@EventHandler
 	public void onInitialization(FMLInitializationEvent event)
 	{
-		ServerTickHandler commonTickHandler = new ServerTickHandler();
-		TickRegistry.registerTickHandler(commonTickHandler, Side.SERVER);
+		// Initialize ServerTickHandler instance
+		serverTickHandler = new ServerTickHandler();
+		TickRegistry.registerTickHandler(serverTickHandler, Side.SERVER);
+		
+		// Initialize LimboDecay instance: required for BlockLimbo
+		limboDecay = new LimboDecay(properties);
 
-		//MonolithSpawner should be initialized before any provider instances are created
-		//Register the other regular tick receivers as well
-		spawner = new CustomLimboPopulator(commonTickHandler, properties);
-		new RiftRegenerator(commonTickHandler); //No need to store the reference
-		LimboDecay decay = new LimboDecay(commonTickHandler, properties);
-		fastRiftRegenerator = new FastRiftRegenerator(commonTickHandler);
-
+		// Initialize blocks and items
 		transientDoor = new TransientDoor(properties.TransientDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("transientDoor");
 		goldenDimensionalDoor = new BlockGoldDimDoor(properties.GoldenDimensionalDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorGold");
 
@@ -200,7 +203,7 @@ public class mod_pocketDim
 		blockDimWallPerm = (new BlockDimWallPerm(properties.PermaFabricBlockID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setUnlocalizedName("blockDimWallPerm");
 		warpDoor = new WarpDoor(properties.WarpDoorID, Material.wood, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
 		blockRift = (BlockRift) (new BlockRift(properties.RiftBlockID, 0, Material.air, properties).setHardness(1.0F) .setUnlocalizedName("rift"));
-		blockLimbo = new BlockLimbo(properties.LimboBlockID, 15, Material.iron, properties.LimboDimensionID, decay).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F);
+		blockLimbo = new BlockLimbo(properties.LimboBlockID, 15, Material.iron, properties.LimboDimensionID, limboDecay).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F);
 		unstableDoor = (new UnstableDoor(properties.UnstableDoorID, Material.iron, properties).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
 		dimensionalDoor = (DimensionalDoor) (new DimensionalDoor(properties.DimensionalDoorID, Material.iron, properties).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor"));
 		transTrapdoor = (TransTrapdoor) (new TransTrapdoor(properties.TransTrapdoorID, Material.wood).setHardness(1.0F) .setUnlocalizedName("dimHatch"));
@@ -317,7 +320,11 @@ public class mod_pocketDim
 			deathTracker.writeToFile();
 			deathTracker = null;
 			worldProperties = null;
-			this.currrentSaveRootDirectory=null;
+			currrentSaveRootDirectory = null;
+			
+			// Unregister all tick receivers from serverTickHandler to avoid leaking
+			// scheduled tasks between single-player game sessions
+			serverTickHandler.unregisterReceivers();
 		}
 		catch (Exception e)
 		{
@@ -333,9 +340,16 @@ public class mod_pocketDim
 		// Load the config file that's specific to this world
 		worldProperties = new DDWorldProperties(new File(currrentSaveRootDirectory + "/DimensionalDoors/DimDoorsWorld.cfg"));
 		hooks.setWorldProperties(worldProperties);
-
+		
 		// Initialize a new DeathTracker
 		deathTracker = new DeathTracker(currrentSaveRootDirectory + "/DimensionalDoors/data/deaths.txt");
+		
+		// Register regular tick receivers
+		// CustomLimboPopulator should be initialized before any provider instances are created
+		spawner = new CustomLimboPopulator(serverTickHandler, properties);
+		riftRegenerator = new RiftRegenerator(serverTickHandler);
+		limboDecayScheduler = new LimboDecayScheduler(serverTickHandler, limboDecay);
+		fastRiftRegenerator = new FastRiftRegenerator(serverTickHandler);
 	}
 
 	@EventHandler
@@ -353,7 +367,7 @@ public class mod_pocketDim
 		
 		try
 		{
-			ChunkLoaderHelper.loadChunkForcedWorlds(event);
+			ChunkLoaderHelper.loadForcedChunkWorlds(event);
 		}
 		catch (Exception e)
 		{

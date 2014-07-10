@@ -20,7 +20,7 @@ public class RiftRegenerator implements IRegularTickReceiver {
 	
 	public RiftRegenerator(IRegularTickSender sender)
 	{
-		sender.registerForTicking(this, RIFT_REGENERATION_INTERVAL, false);
+		sender.registerReceiver(this, RIFT_REGENERATION_INTERVAL, false);
 	}
 	
 	@Override

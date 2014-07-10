@@ -20,7 +20,7 @@ public class FastRiftRegenerator implements IRegularTickReceiver {
 	
 	public FastRiftRegenerator(IRegularTickSender sender)
 	{
-		sender.registerForTicking(this, RIFT_REGENERATION_INTERVAL, false);
+		sender.registerReceiver(this, RIFT_REGENERATION_INTERVAL, false);
 	}
 	
 	@Override
@@ -33,6 +33,7 @@ public class FastRiftRegenerator implements IRegularTickReceiver {
 	{
 		if (!locationsToRegen.isEmpty())
 		{
+			@SuppressWarnings("cast")
 			List<Integer> loadedWorlds = (List<Integer>) Arrays.asList(DimensionManager.getIDs());
 			for (Point4D point: locationsToRegen)
 			{

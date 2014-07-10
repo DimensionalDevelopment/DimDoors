@@ -83,7 +83,7 @@ public class ChunkLoaderHelper implements LoadingCallback
 		}
 	}
 
-	public static void loadChunkForcedWorlds(FMLServerStartingEvent event)
+	public static void loadForcedChunkWorlds(FMLServerStartingEvent event)
 	{
 		for (NewDimData data : PocketManager.getDimensions())
 		{

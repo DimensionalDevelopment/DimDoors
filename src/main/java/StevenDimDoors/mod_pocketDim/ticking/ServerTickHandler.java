@@ -14,17 +14,22 @@ public class ServerTickHandler implements ITickHandler, IRegularTickSender
 	private int tickCount = 0;
 	private ArrayList<RegularTickReceiverInfo> receivers;
 
-
 	public ServerTickHandler()
 	{
 		this.receivers = new ArrayList<RegularTickReceiverInfo>();
 	}
 
 	@Override
-	public void registerForTicking(IRegularTickReceiver receiver, int interval, boolean onTickStart)
+	public void registerReceiver(IRegularTickReceiver receiver, int interval, boolean onTickStart)
 	{
 		RegularTickReceiverInfo info = new RegularTickReceiverInfo(receiver, interval, onTickStart);
 		receivers.add(info);
+	}
+	
+	@Override
+	public void unregisterReceivers()
+	{
+		receivers.clear();
 	}
 
 	@Override

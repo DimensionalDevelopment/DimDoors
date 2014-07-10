@@ -30,7 +30,7 @@ public class CustomLimboPopulator implements IRegularTickReceiver {
 	{
 		this.properties = properties;
 		this.locations = new ConcurrentLinkedQueue<ChunkLocation>();
-		sender.registerForTicking(this, MONOLITH_SPAWNING_INTERVAL, false);
+		sender.registerReceiver(this, MONOLITH_SPAWNING_INTERVAL, false);
 	}
 	
 	@Override
