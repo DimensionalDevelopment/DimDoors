@@ -7,13 +7,14 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.TreeMap;
 
-import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 
 public abstract class NewDimData
@@ -134,6 +135,9 @@ public abstract class NewDimData
 	protected boolean modified;
 	public IUpdateWatcher<ClientLinkData> linkWatcher;
 	
+	// Don't write this field to a file - it should be recreated on startup
+	private Map<ChunkCoordIntPair, List<InnerDimLink>> chunkMapping;
+	
 	protected NewDimData(int id, NewDimData parent, boolean isPocket, boolean isDungeon,
 		IUpdateWatcher<ClientLinkData> linkWatcher)
 	{
@@ -204,23 +208,20 @@ public abstract class NewDimData
 
 	public DimLink findNearestRift(World world, int range, int x, int y, int z)
 	{
-		//TODO: Rewrite this later to use an octtree
-
-		//Sanity check...
+		// Sanity check...
 		if (world.provider.dimensionId != id)
 		{
 			throw new IllegalArgumentException("Attempted to search for links in a World instance for a different dimension!");
 		}
 		
-		//Note: Only detect rifts at a distance > 1, so we ignore the rift
-		//that called this function and any adjacent rifts.
-		
-		DimLink nearest = null;
+		// Note: Only detect rifts at a distance > 0, so we ignore the rift
+		// at the center of the search space.
 		DimLink link;
-		
+		DimLink nearest = null;
+
+		int i, j, k;
 		int distance;
 		int minDistance = Integer.MAX_VALUE;
-		int i, j, k;
 		DDProperties properties = DDProperties.instance();
 
 		for (i = -range; i <= range; i++)
@@ -232,7 +233,7 @@ public abstract class NewDimData
 					distance = getAbsoluteSum(i, j, k);
 					if (distance > 0 && distance < minDistance && world.getBlockId(x + i, y + j, z + k) == properties.RiftBlockID)
 					{
-						link = getLink(x+i, y+j, z+k);
+						link = getLink(x + i, y + j, z + k);
 						if (link != null)
 						{
 							nearest = link;
@@ -248,24 +249,20 @@ public abstract class NewDimData
 	
 	public ArrayList<DimLink> findRiftsInRange(World world, int range, int x, int y, int z)
 	{
-		ArrayList<DimLink> links = new ArrayList<DimLink>();
-		//TODO: Rewrite this later to use an octtree
-
-		//Sanity check...
+		// Sanity check...
 		if (world.provider.dimensionId != id)
 		{
 			throw new IllegalArgumentException("Attempted to search for links in a World instance for a different dimension!");
 		}
-		
-		//Note: Only detect rifts at a distance > 1, so we ignore the rift
-		//that called this function and any adjacent rifts.
-		
-		DimLink link;
-		
-		int distance;
-		int i, j, k;
-		DDProperties properties = DDProperties.instance();
 
+		// Note: Only detect rifts at a distance > 0, so we ignore the rift
+		// at the center of the search space.
+		int i, j, k;
+		int distance;
+		DimLink link;
+		DDProperties properties = DDProperties.instance();
+		ArrayList<DimLink> links = new ArrayList<DimLink>();
+		
 		for (i = -range; i <= range; i++)
 		{
 			for (j = -range; j <= range; j++)
@@ -275,7 +272,7 @@ public abstract class NewDimData
 					distance = getAbsoluteSum(i, j, k);
 					if (distance > 0 && world.getBlockId(x + i, y + j, z + k) == properties.RiftBlockID)
 					{
-						link = getLink(x+i, y+j, z+k);
+						link = getLink(x + i, y + j, z + k);
 						if (link != null)
 						{
 							links.add(link);
