@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.core;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.minecraft.world.ChunkCoordIntPair;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 
@@ -15,7 +16,6 @@ public abstract class DimLink
 	
 	protected DimLink(ClientLinkData link, DimLink parent)
 	{
-		
 		if (parent.link.point.getDimension() != link.point.getDimension())
 		{
 			// Ban having children in other dimensions to avoid serialization issues with cross-dimensional tails
@@ -94,6 +94,11 @@ public abstract class DimLink
 	public int linkType()
 	{
 		return tail.getLinkType();
+	}
+	
+	public ChunkCoordIntPair getChunkCoordinates()
+	{
+		return new ChunkCoordIntPair(link.point.getX() >> 4, link.point.getZ() >> 4);
 	}
 
 	@Override

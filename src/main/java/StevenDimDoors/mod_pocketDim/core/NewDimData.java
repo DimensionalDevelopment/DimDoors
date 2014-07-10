@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -117,6 +118,8 @@ public abstract class NewDimData
 		}
 	}
 	
+	private static int EXPECTED_LINKS_PER_CHUNK = 2;
+	
 	protected static Random random = new Random();
 	
 	protected int id;
@@ -163,6 +166,7 @@ public abstract class NewDimData
 		this.origin = null;
 		this.dungeon = null;
 		this.linkWatcher = linkWatcher;
+		this.chunkMapping = new HashMap<ChunkCoordIntPair, List<InnerDimLink>>();
 		this.modified = true;
 		
 		//Register with parent
@@ -203,6 +207,7 @@ public abstract class NewDimData
 		this.linkWatcher = null;
 		this.depth = 0;
 		this.root = root;
+		this.chunkMapping = null;
 	}
 	
 
@@ -297,13 +302,26 @@ public abstract class NewDimData
 	
 	public DimLink createLink(Point4D source, int linkType, int orientation)
 	{
-		//Return an existing link if there is one to avoid creating multiple links starting at the same point.
+		// Return an existing link if there is one to avoid creating multiple links starting at the same point.
 		InnerDimLink link = linkMapping.get(source);
 		if (link == null)
 		{
 			link = new InnerDimLink(source, linkType, orientation);
 			linkMapping.put(source, link);
 			linkList.add(link);
+			
+			// If this code is running on the server side, add this link to chunkMapping.
+			if (linkType != LinkTypes.CLIENT_SIDE)
+			{
+				ChunkCoordIntPair chunk = link.getChunkCoordinates();
+				List<InnerDimLink> chunkLinks = chunkMapping.get(chunk);
+				if (chunkLinks == null)
+				{
+					chunkLinks = new ArrayList<InnerDimLink>(EXPECTED_LINKS_PER_CHUNK);
+					chunkMapping.put(chunk, chunkLinks);
+				}
+				chunkLinks.add(link);
+			}
 		}
 		else
 		{
@@ -311,7 +329,7 @@ public abstract class NewDimData
 		}
 		modified = true;
 		
-		//Link created!
+		// Link created!
 		if (linkType != LinkTypes.CLIENT_SIDE)
 		{
 			linkWatcher.onCreated(link.link);
@@ -331,8 +349,8 @@ public abstract class NewDimData
 	
 	private DimLink createChildLink(Point4D source, InnerDimLink parent)
 	{
-		//To avoid having multiple links at a single point, if we find an existing link then we overwrite
-		//its destination data instead of creating a new instance.
+		// To avoid having multiple links at a single point, if we find an existing link then we overwrite
+		// its destination data instead of creating a new instance.
 		
 		InnerDimLink link = linkMapping.get(source);
 		if (link == null)
@@ -341,14 +359,28 @@ public abstract class NewDimData
 			linkMapping.put(source, link);
 			linkList.add(link);
 			
-			//Link created!
+			// If this code is running on the server side, add this link to chunkMapping.
+			// Granted, the client side code should never create child links anyway...
+			if (link.linkType() != LinkTypes.CLIENT_SIDE)
+			{
+				ChunkCoordIntPair chunk = link.getChunkCoordinates();
+				List<InnerDimLink> chunkLinks = chunkMapping.get(chunk);
+				if (chunkLinks == null)
+				{
+					chunkLinks = new ArrayList<InnerDimLink>(EXPECTED_LINKS_PER_CHUNK);
+					chunkMapping.put(chunk, chunkLinks);
+				}
+				chunkLinks.add(link);
+			}
+			
+			// Link created!
 			linkWatcher.onCreated(link.link);
 		}
 		else
 		{
 			if (link.overwrite(parent, parent.link.orientation))
 			{
-				//Link created!
+				// Link created!
 				linkWatcher.onCreated(link.link);
 			}
 		}
@@ -366,7 +398,19 @@ public abstract class NewDimData
 		if (target != null)
 		{
 			linkList.remove(target);
-			//Raise deletion event
+			
+			// If this code is running on the server side, remove this link to chunkMapping.
+			if (link.linkType() != LinkTypes.CLIENT_SIDE)
+			{
+				ChunkCoordIntPair chunk = target.getChunkCoordinates();
+				List<InnerDimLink> chunkLinks = chunkMapping.get(chunk);
+				if (chunkLinks != null)
+				{
+					chunkLinks.remove(target);
+				}
+			}
+			
+			// Raise deletion event
 			linkWatcher.onDeleted(target.link);
 			target.clear();
 			modified = true;
@@ -388,7 +432,7 @@ public abstract class NewDimData
 	
 	public DimLink getLink(Point3D location)
 	{
-		return linkMapping.get(new Point4D(location.getX(),location.getY(),location.getZ(),this.id));
+		return linkMapping.get(new Point4D(location.getX(), location.getY(), location.getZ(), this.id));
 	}
 	
 	public DimLink getLink(Point4D location)
@@ -616,6 +660,16 @@ public abstract class NewDimData
 			return linkList.get(random.nextInt(linkList.size()));
 		}
 		return linkList.get(0);
+	}
+	
+	public Iterable<? extends DimLink> getChunkLinks(int chunkX, int chunkZ)
+	{
+		List<InnerDimLink> chunkLinks = chunkMapping.get(new ChunkCoordIntPair(chunkX, chunkZ));
+		if (chunkLinks != null)
+		{
+			return chunkLinks;
+		}
+		return new ArrayList<InnerDimLink>(0);
 	}
 	
 	public boolean isModified()
