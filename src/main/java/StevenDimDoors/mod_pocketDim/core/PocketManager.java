@@ -171,9 +171,8 @@ public class PocketManager
 		  public void onDeleted(ClientLinkData link)
 		  {
 			  Point4D source = link.point;
-			  NewDimData dimension = getDimensionData(source.getDimension());
-			  dimension.deleteLink(source.getX(), source.getY(), source.getZ());
-              }
+			  getDimensionData(source.getDimension()).deleteLink(source);
+          }
       }
 	
 	private static class ClientDimWatcher implements IUpdateWatcher<ClientDimData>

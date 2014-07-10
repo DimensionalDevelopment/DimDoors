@@ -418,9 +418,8 @@ public abstract class NewDimData
 		return (target != null);
 	}
 
-	public boolean deleteLink(int x, int y, int z)
+	public boolean deleteLink(Point4D location)
 	{
-		Point4D location = new Point4D(x, y, z, id);
 		return this.deleteLink(this.getLink(location));
 	}
 
