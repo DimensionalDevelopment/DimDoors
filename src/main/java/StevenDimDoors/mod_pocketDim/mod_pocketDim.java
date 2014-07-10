@@ -52,12 +52,12 @@ import StevenDimDoors.mod_pocketDim.items.ItemUnstableDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemWarpDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemWorldThread;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
-import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 import StevenDimDoors.mod_pocketDim.ticking.FastRiftRegenerator;
 import StevenDimDoors.mod_pocketDim.ticking.LimboDecay;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
+import StevenDimDoors.mod_pocketDim.ticking.ServerTickHandler;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
@@ -69,7 +69,6 @@ import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import StevenDimDoors.mod_pocketDim.world.gateways.GatewayGenerator;
 import StevenDimDoors.mod_pocketDimClient.ClientPacketHandler;
-import StevenDimDoors.mod_pocketDimClient.ClientTickHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -183,8 +182,7 @@ public class mod_pocketDim
 	@EventHandler
 	public void onInitialization(FMLInitializationEvent event)
 	{
-		CommonTickHandler commonTickHandler = new CommonTickHandler();
-		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
+		ServerTickHandler commonTickHandler = new ServerTickHandler();
 		TickRegistry.registerTickHandler(commonTickHandler, Side.SERVER);
 
 		//MonolithSpawner should be initialized before any provider instances are created
