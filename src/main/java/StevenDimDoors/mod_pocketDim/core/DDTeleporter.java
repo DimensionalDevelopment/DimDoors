@@ -51,59 +51,49 @@ public class DDTeleporter
 	
 	private DDTeleporter() { }
 	
-	/**Checks if the destination supplied is valid, ie, filled by any non-replaceable block. 
-	 * 
-	 * @param entity
-	 * @param world
-	 * @param destination
-	 * @param properties
-	 * @return
+	/**
+	 * Checks if the destination supplied is safe (i.e. filled by any replaceable or non-opaque blocks)
 	 */
-	private static boolean checkDestination(Entity entity, WorldServer world, Point4D destination,DDProperties properties)
+	private static boolean checkDestination(WorldServer world, Point4D destination, int orientation)
 	{
 		int x = destination.getX();
 		int y = destination.getY();
 		int z = destination.getZ();
 		int blockIDTop;
-		int blockIDBottom;
-		
+		int blockIDBottom;		
 		Point3D point;
-
-		int orientation;
 		
-		orientation = getDestinationOrientation(destination, properties);
-		entity.rotationYaw = (orientation * 90) + 90;
 		switch (orientation)
 		{
 			case 0:
-				point = new Point3D(MathHelper.floor_double(x - 0.5), y - 1, MathHelper.floor_double(z + 0.5));
+				point = new Point3D(x - 1, y - 1, z);
 				break;
 			case 1:
-				point = new Point3D(MathHelper.floor_double(x + 0.5), y - 1, MathHelper.floor_double(z - 0.5));
+				point = new Point3D(x, y - 1, z - 1);
 				break;
 			case 2:
-				point =  new Point3D(MathHelper.floor_double(x + 1.5), y - 1, MathHelper.floor_double(z + 0.5));
+				point =  new Point3D(x + 1, y - 1, z);
 				break;
 			case 3:
-				point =  new Point3D(MathHelper.floor_double(x + 0.5), y - 1, MathHelper.floor_double(z + 1.5));
+				point =  new Point3D(x, y - 1, z + 1);
 				break;
 			default:
 				point =  new Point3D(x, y - 1, z);
 				break;
 		}
 		blockIDBottom = world.getBlockId(point.getX(), point.getY(), point.getZ());
-		blockIDTop = world.getBlockId(point.getX(), point.getY()+1, point.getZ());
+		blockIDTop = world.getBlockId(point.getX(), point.getY() + 1, point.getZ());
 		
 		if (Block.blocksList[blockIDBottom] != null)
 		{
-			if(!Block.blocksList[blockIDBottom].isBlockReplaceable(world, point.getX(), point.getY(), point.getZ())&&world.isBlockOpaqueCube(point.getX(), point.getY(), point.getZ()))
+			if (!Block.blocksList[blockIDBottom].isBlockReplaceable(world, point.getX(), point.getY(), point.getZ()) && world.isBlockOpaqueCube(point.getX(), point.getY(), point.getZ()))
 			{
 				return false;
 			}
 		}
 		if (Block.blocksList[blockIDTop] != null)
 		{
-			if (!Block.blocksList[blockIDTop].isBlockReplaceable(world, point.getX(), point.getY()+1, point.getZ()))
+			if (!Block.blocksList[blockIDTop].isBlockReplaceable(world, point.getX(), point.getY() + 1, point.getZ()))
 			{
 				return false;
 			}
@@ -125,56 +115,37 @@ public class DDTeleporter
 		}
 		else
 		{
-			//Teleport the entity to the precise destination point
+			// Teleport the entity to the precise destination point
 			orientation = -1;
 		}
 		
-		if (!checkDestination(entity, world, destination, properties))
-		{
-            if (entity instanceof EntityPlayerMP)
-            {
-            	EntityPlayer player = (EntityPlayer) entity;
-            	player.rotationYaw = (orientation * 90) + 90;
-            	switch (orientation)
-    			{
-    				case 0:
-    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
-    					break;
-    				case 1:
-    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
-    					break;
-    				case 2:
-    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
-    					break;
-    				case 3:
-    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
-    					break;
-    				default:
-    					player.setPositionAndUpdate(x, y - 1, z);	
-    					break;
-    			}
-            }
-		}
-		else if (entity instanceof EntityPlayer)
+		if (entity instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) entity;
-			switch (orientation)
+			if (checkDestination(world, destination, orientation))
 			{
-				case 0:
-					player.setPositionAndUpdate(x - 0.5, y - 1, z + 0.5);
-					break;
-				case 1:
-					player.setPositionAndUpdate(x + 0.5, y - 1, z - 0.5);
-					break;
-				case 2:
-					player.setPositionAndUpdate(x + 1.5, y - 1, z + 0.5);
-					break;
-				case 3:
-					player.setPositionAndUpdate(x + 0.5, y - 1, z + 1.5);
-					break;
-				default:
-					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);	
-					break;
+				switch (orientation)
+				{
+					case 0:
+						player.setPositionAndUpdate(x - 0.5, y - 1, z + 0.5);
+						break;
+					case 1:
+						player.setPositionAndUpdate(x + 0.5, y - 1, z - 0.5);
+						break;
+					case 2:
+						player.setPositionAndUpdate(x + 1.5, y - 1, z + 0.5);
+						break;
+					case 3:
+						player.setPositionAndUpdate(x + 0.5, y - 1, z + 1.5);
+						break;
+					default:
+						player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);	
+						break;
+				}
+			}
+			else
+			{
+				player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
 			}
 		}
 		else if (entity instanceof EntityMinecart)
@@ -200,7 +171,7 @@ public class DDTeleporter
 					entity.worldObj.updateEntityWithOptionalForce(entity, false);
 					break;
 				case 3:
-					DDTeleporter.setEntityPosition(entity, x + 0.5, y, z + 1.5 );
+					DDTeleporter.setEntityPosition(entity, x + 0.5, y, z + 1.5);
 					entity.motionZ = 0.39;
 					entity.worldObj.updateEntityWithOptionalForce(entity, false);
 					break;

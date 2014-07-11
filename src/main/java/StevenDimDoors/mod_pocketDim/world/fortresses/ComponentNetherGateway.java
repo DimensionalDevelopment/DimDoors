@@ -66,7 +66,8 @@ public class ComponentNetherGateway extends StructureComponent
      * second Part of Structure generating, this for example places Spiderwebs, Mob Spawners, it closes Mineshafts at
      * the end, it adds Fences...
      */
-    public boolean addComponentParts(World world, Random random, StructureBoundingBox bounds)
+    @Override
+	public boolean addComponentParts(World world, Random random, StructureBoundingBox bounds)
     {
     	int NETHER_SLAB_METADATA = 6;
         

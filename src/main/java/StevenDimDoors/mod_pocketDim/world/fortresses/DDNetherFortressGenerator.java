@@ -18,7 +18,8 @@ public class DDNetherFortressGenerator extends MapGenNetherBridge
     	MapGenStructureIO.func_143034_b(DDStructureNetherBridgeStart.class, "Fortress");
     }
 
-    protected StructureStart getStructureStart(int chunkX, int chunkZ)
+    @Override
+	protected StructureStart getStructureStart(int chunkX, int chunkZ)
     {
         return new DDStructureNetherBridgeStart(this.worldObj, this.rand, chunkX, chunkZ, DDProperties.instance());
     }

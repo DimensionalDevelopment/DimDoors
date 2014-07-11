@@ -72,6 +72,12 @@ public class TransientDoor extends BaseDimDoor
 			}
 		}
 	}
+	
+	@Override
+	public int getDoorItem()
+	{
+		return 0;
+	}
 
 	@Override
 	public int getDrops()

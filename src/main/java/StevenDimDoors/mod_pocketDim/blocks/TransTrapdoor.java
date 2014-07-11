@@ -2,6 +2,9 @@ package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.ITileEntityProvider;
@@ -18,7 +21,6 @@ import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 
-@SuppressWarnings("deprecation")
 public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntityProvider
 {
 
@@ -61,7 +63,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	{
 		this.placeLink(world, x, y, z);
 		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
-		this.updateAttachedTile(world, x, y, z);
+		updateAttachedTile(world, x, y, z);
 	}
 	
 	@Override
@@ -76,8 +78,8 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	{
 		return new TileEntityTransTrapdoor();
 	}
-
-	public void updateAttachedTile(World world, int x, int y, int z)
+	
+	public static void updateAttachedTile(World world, int x, int y, int z)
 	{
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 		if (tile instanceof TileEntityTransTrapdoor)
@@ -100,18 +102,30 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 			}
 		}
 	}
-
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int idPicked(World world, int x, int y, int z)
+	{
+		return this.getDoorItem();
+	}
 	
 	@Override
 	public int idDropped(int metadata, Random random, int fortuneLevel)
     {
-        return getDrops();
+        return this.getDrops();
     }
+	
+	@Override
+	public int getDoorItem()
+	{
+		return mod_pocketDim.transTrapdoor.blockID;
+	}
 
 	@Override
 	public int getDrops()
 	{
-		return  Block.trapdoor.blockID;
+		return Block.trapdoor.blockID;
 	}	
 	
 	public static boolean isTrapdoorSetLow(int metadata)
