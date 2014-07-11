@@ -53,7 +53,6 @@ import StevenDimDoors.mod_pocketDim.items.ItemWarpDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemWorldThread;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
-import StevenDimDoors.mod_pocketDim.ticking.FastRiftRegenerator;
 import StevenDimDoors.mod_pocketDim.ticking.LimboDecayScheduler;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
@@ -143,8 +142,7 @@ public class mod_pocketDim
 	public static DDProperties properties;
 	public static DDWorldProperties worldProperties;
 	public static CustomLimboPopulator spawner; //Added this field temporarily. Will be refactored out later.
-	private static RiftRegenerator riftRegenerator;
-	public static FastRiftRegenerator fastRiftRegenerator;
+	public static RiftRegenerator riftRegenerator;
 	public static GatewayGenerator gatewayGenerator;
 	public static DeathTracker deathTracker;
 	private static ServerTickHandler serverTickHandler;
@@ -325,6 +323,9 @@ public class mod_pocketDim
 			// Unregister all tick receivers from serverTickHandler to avoid leaking
 			// scheduled tasks between single-player game sessions
 			serverTickHandler.unregisterReceivers();
+			spawner = null;
+			riftRegenerator = null;
+			limboDecayScheduler = null;
 		}
 		catch (Exception e)
 		{
@@ -339,7 +340,6 @@ public class mod_pocketDim
 		
 		// Load the config file that's specific to this world
 		worldProperties = new DDWorldProperties(new File(currrentSaveRootDirectory + "/DimensionalDoors/DimDoorsWorld.cfg"));
-		hooks.setWorldProperties(worldProperties);
 		
 		// Initialize a new DeathTracker
 		deathTracker = new DeathTracker(currrentSaveRootDirectory + "/DimensionalDoors/data/deaths.txt");
@@ -347,9 +347,10 @@ public class mod_pocketDim
 		// Register regular tick receivers
 		// CustomLimboPopulator should be initialized before any provider instances are created
 		spawner = new CustomLimboPopulator(serverTickHandler, properties);
-		riftRegenerator = new RiftRegenerator(serverTickHandler);
+		riftRegenerator = new RiftRegenerator(serverTickHandler, blockRift);
 		limboDecayScheduler = new LimboDecayScheduler(serverTickHandler, limboDecay);
-		fastRiftRegenerator = new FastRiftRegenerator(serverTickHandler);
+		
+		hooks.setSessionFields(worldProperties, riftRegenerator);
 	}
 
 	@EventHandler

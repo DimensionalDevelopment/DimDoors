@@ -1,17 +1,13 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
 import java.util.Random;
-import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
-import StevenDimDoors.mod_pocketDim.core.NewDimData;
-import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import net.minecraft.block.Block;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet130UpdateSign;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.tileentity.TileEntity;
+import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public class TileEntityDimDoor extends DDTileEntityBase 
 {
@@ -28,25 +24,26 @@ public class TileEntityDimDoor extends DDTileEntityBase
 	}
 
 	@Override
-	 public Packet getDescriptionPacket()
-	 {
-		 if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
-		 {
-			 return ServerPacketHandler.createLinkPacket(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj).link());
-		 }
-		 return null;
-	 }
+	public Packet getDescriptionPacket()
+	{
+		DimLink link = PocketManager.getLink(xCoord, yCoord, zCoord, worldObj);
+		if (link != null)
+		{
+			return ServerPacketHandler.createLinkPacket(link.link());
+		}
+		return null;
+	}
 
 	@Override
 	public void invalidate()
 	{
-		this.tileEntityInvalid = true;
-
-		if(this.worldObj.getBlockId(xCoord, yCoord, zCoord)==0&&!this.worldObj.isRemote)
+		super.invalidate();
+		if (!worldObj.isRemote && worldObj.getBlockId(xCoord, yCoord, zCoord) == 0)
 		{
-			if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
+			DimLink link = PocketManager.getLink(xCoord, yCoord, zCoord, worldObj);
+			if (link != null)
 			{
-				mod_pocketDim.fastRiftRegenerator.registerRiftForRegen(xCoord, yCoord, zCoord, this.worldObj.provider.dimensionId);	 
+				 mod_pocketDim.riftRegenerator.scheduleFastRegeneration(link);
 			}
 		}
 	}
@@ -74,7 +71,7 @@ public class TileEntityDimDoor extends DDTileEntityBase
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
-		
+
 		nbt.setBoolean("openOrClosed", this.openOrClosed);
 		nbt.setBoolean("hasExit", this.hasExit);
 		nbt.setInteger("orientation", this.orientation);

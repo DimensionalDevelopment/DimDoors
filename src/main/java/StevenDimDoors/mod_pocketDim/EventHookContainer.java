@@ -8,6 +8,7 @@ import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.EventPriority;
@@ -17,12 +18,16 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.config.DDWorldProperties;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
+import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
@@ -36,18 +41,20 @@ public class EventHookContainer
 	
 	private final DDProperties properties;
 	private DDWorldProperties worldProperties;
+	private RiftRegenerator regenerator;
 
 	public EventHookContainer(DDProperties properties)
 	{
 		this.properties = properties;
 	}
 	
-	public void setWorldProperties(DDWorldProperties worldProperties)
+	public void setSessionFields(DDWorldProperties worldProperties, RiftRegenerator regenerator)
 	{
 		// SenseiKiwi:
-		// Why have a setter rather than accessing mod_pocketDim.worldProperties?
+		// Why have a setter rather than accessing mod_pocketDim directly?
 		// I want to make this dependency explicit in our code.
 		this.worldProperties = worldProperties;
+		this.regenerator = regenerator;
 	}
 
 	@ForgeSubscribe(priority = EventPriority.LOW)
@@ -214,6 +221,22 @@ public class EventHookContainer
 			if (mod_pocketDim.deathTracker != null && mod_pocketDim.deathTracker.isModified())
 			{
 				mod_pocketDim.deathTracker.writeToFile();
+			}
+		}
+	}
+	
+	@ForgeSubscribe
+	public void onChunkLoad(ChunkEvent.Load event)
+	{
+		// Schedule rift regeneration for any links located in this chunk.
+		// This event runs on both the client and server. Allow server only.
+		Chunk chunk = event.getChunk();
+		if (!chunk.worldObj.isRemote)
+		{
+			NewDimData dimension = PocketManager.getDimensionData(chunk.worldObj);
+			for (DimLink link : dimension.getChunkLinks(chunk.xPosition, chunk.zPosition))
+			{
+				regenerator.scheduleSlowRegeneration(link);
 			}
 		}
 	}
