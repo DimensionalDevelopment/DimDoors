@@ -35,16 +35,6 @@ public class TileEntityDimDoor extends DDTileEntityBase
 	}
 
 	@Override
-	public void invalidate()
-	{
-		super.invalidate();
-		if (!worldObj.isRemote && worldObj.getBlockId(xCoord, yCoord, zCoord) == 0)
-		{
-			mod_pocketDim.riftRegenerator.scheduleFastRegeneration(xCoord, yCoord, zCoord, worldObj);
-		}
-	}
-
-	@Override
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		super.readFromNBT(nbt);
