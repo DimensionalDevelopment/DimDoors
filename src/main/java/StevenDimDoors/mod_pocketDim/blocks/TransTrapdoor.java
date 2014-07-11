@@ -63,30 +63,12 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	{
 		this.placeLink(world, x, y, z);
 		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
-		updateAttachedTile(world, x, y, z);
-	}
-	
-	@Override
-	public void updateTick(World world, int x, int y, int z, Random random) 
-	{
-		TileEntityTransTrapdoor tile = (TileEntityTransTrapdoor) world.getBlockTileEntity(x, y, z);
-		tile.hasRift = PocketManager.getLink(x, y, z, world) != null;
 	}
 	
 	@Override
 	public TileEntity createNewTileEntity(World world) 
 	{
 		return new TileEntityTransTrapdoor();
-	}
-	
-	public static void updateAttachedTile(World world, int x, int y, int z)
-	{
-		TileEntity tile = world.getBlockTileEntity(x, y, z);
-		if (tile instanceof TileEntityTransTrapdoor)
-		{
-			TileEntityTransTrapdoor trapdoorTile = (TileEntityTransTrapdoor) tile;
-			trapdoorTile.hasRift = (PocketManager.getLink(x, y, z, world) != null);
-		}
 	}
 	
 	@Override
@@ -98,7 +80,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 			DimLink link = dimension.getLink(x, y, z);
 			if (link == null && dimension.isPocketDimension())
 			{
-				dimension.createLink(x, y, z, LinkTypes.UNSAFE_EXIT,0);
+				dimension.createLink(x, y, z, LinkTypes.UNSAFE_EXIT, 0);
 			}
 		}
 	}
@@ -140,4 +122,18 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 		world.setBlockTileEntity(x, y, z, te);
 		return te;
 	}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, int oldBlockID, int oldMeta)
+    {
+		// This function runs on the server side after a block is replaced
+		// We MUST call super.breakBlock() since it involves removing tile entities
+        super.breakBlock(world, x, y, z, oldBlockID, oldMeta);
+        
+        // Schedule rift regeneration for this block if it was replaced
+        if (world.getBlockId(x, y, z) != oldBlockID)
+        {
+        	mod_pocketDim.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
+        }
+    }
 }

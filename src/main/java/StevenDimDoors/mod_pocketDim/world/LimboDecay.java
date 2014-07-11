@@ -1,4 +1,4 @@
-package StevenDimDoors.mod_pocketDim.ticking;
+package StevenDimDoors.mod_pocketDim.world;
 
 import java.util.Random;
 
@@ -13,13 +13,12 @@ import StevenDimDoors.mod_pocketDim.config.DDProperties;
  * Provides methods for applying Limbo decay. Limbo decay refers to the effect that most blocks placed in Limbo
  * naturally change into stone, then cobble, then gravel, and finally Unraveled Fabric as time passes.
  */
-public class LimboDecay implements IRegularTickReceiver {
+public class LimboDecay {
 
 	private static final int MAX_DECAY_SPREAD_CHANCE = 100;
 	private static final int DECAY_SPREAD_CHANCE = 50;
 	private static final int CHUNK_SIZE = 16;
 	private static final int SECTION_HEIGHT = 16;
-	private static final int LIMBO_DECAY_INTERVAL = 10; //Apply spread decay every 10 ticks
 	
 	//Provides a reversed list of the block IDs that blocks cycle through during decay.
 	private final int[] decaySequence;
@@ -28,7 +27,7 @@ public class LimboDecay implements IRegularTickReceiver {
 	private final DDProperties properties;
 	private final int[] blocksImmuneToDecay;
 	
-	public LimboDecay(IRegularTickSender tickSender, DDProperties properties)
+	public LimboDecay(DDProperties properties)
 	{
 		decaySequence = new int[] {
 			properties.LimboBlockID,
@@ -51,16 +50,6 @@ public class LimboDecay implements IRegularTickReceiver {
 		
 		this.properties = properties;
 		this.random = new Random();
-		tickSender.registerForTicking(this, LIMBO_DECAY_INTERVAL, false);
-	}
-
-	/**
-	 * Applies fast Limbo decay periodically.
-	 */
-	@Override
-	public void notifyTick()
-	{
-		applyRandomFastDecay();
 	}
 
 	/**
@@ -88,7 +77,7 @@ public class LimboDecay implements IRegularTickReceiver {
 	 * Picks random blocks from each active chunk in Limbo and, if decay is applicable, converts them directly to Unraveled Fabric.
 	 * This decay method is designed to stop players from avoiding Limbo decay by building floating structures.
 	 */
-	private void applyRandomFastDecay()
+	public void applyRandomFastDecay()
 	{
 		int x, y, z;
 		int sectionY;

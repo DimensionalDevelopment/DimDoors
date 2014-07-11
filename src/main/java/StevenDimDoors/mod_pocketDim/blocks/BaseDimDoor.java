@@ -306,7 +306,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		{
 			if (world.getBlockId(x, y - 1, z) != this.blockID)
 			{
-				world.setBlock(x, y, z, 0);
+				world.setBlockToAir(x, y, z);
 			}
 			
 			if (neighborID > 0 && neighborID != this.blockID)
@@ -318,7 +318,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		{
 			if (world.getBlockId(x, y + 1, z) != this.blockID)
 			{
-				world.setBlock(x, y, z, 0);
+				world.setBlockToAir(x, y, z);
 				if (!world.isRemote)
 				{
 					this.dropBlockAsItem(world, x, y, z, metadata, 0);
@@ -353,18 +353,6 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
     {
         return isUpperDoorBlock(metadata) ? 0 : this.getDrops();
     }
-
-	/**
-	 * Called when the block is attempted to be harvested
-	 */
-	@Override
-	public void onBlockHarvested(World par1World, int par2, int par3, int par4, int par5, EntityPlayer par6EntityPlayer)
-	{
-		if (par6EntityPlayer.capabilities.isCreativeMode && (par5 & 8) != 0 && par1World.getBlockId(par2, par3 - 1, par4) == this.blockID)
-		{
-			par1World.setBlock(par2, par3 - 1, par4, 0);
-		}
-	}
 
 	@Override
 	public TileEntity createNewTileEntity(World world)
@@ -445,4 +433,18 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		world.setBlockTileEntity(x, y, z, te);
 		return te;
 	}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, int oldBlockID, int oldMeta)
+    {
+		// This function runs on the server side after a block is replaced
+		// We MUST call super.breakBlock() since it involves removing tile entities
+        super.breakBlock(world, x, y, z, oldBlockID, oldMeta);
+        
+        // Schedule rift regeneration for this block if it was replaced
+        if (world.getBlockId(x, y, z) != oldBlockID)
+        {
+        	mod_pocketDim.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
+        }
+    }
 }

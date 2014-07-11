@@ -47,25 +47,27 @@ public class BlockRift extends Block implements ITileEntityProvider
 	public static final int MAX_WORLD_THREAD_DROP_CHANCE = 1000;
 	
 	private final DDProperties properties;
-	private final ArrayList<Integer> blocksImmuneToRift;
+	private final ArrayList<Integer> blocksImmuneToRift;	// List of Vanilla blocks immune to rifts
+	private final ArrayList<Integer> modBlocksImmuneToRift; // List of DD blocks immune to rifts
 	
 	public BlockRift(int i, int j, Material par2Material, DDProperties properties) 
 	{
 		super(i, par2Material);
 		this.setTickRandomly(true);
 		this.properties = properties;
+		this.modBlocksImmuneToRift = new ArrayList<Integer>();
+		this.modBlocksImmuneToRift.add(properties.FabricBlockID);
+		this.modBlocksImmuneToRift.add(properties.PermaFabricBlockID);
+		this.modBlocksImmuneToRift.add(properties.DimensionalDoorID);
+		this.modBlocksImmuneToRift.add(properties.WarpDoorID);
+		this.modBlocksImmuneToRift.add(properties.TransTrapdoorID);
+		this.modBlocksImmuneToRift.add(properties.UnstableDoorID);
+		this.modBlocksImmuneToRift.add(properties.RiftBlockID);
+		this.modBlocksImmuneToRift.add(properties.TransientDoorID);
+		this.modBlocksImmuneToRift.add(properties.GoldenDimensionalDoorID);
+		this.modBlocksImmuneToRift.add(properties.GoldenDoorID);
+		
 		this.blocksImmuneToRift = new ArrayList<Integer>();
-		this.blocksImmuneToRift.add(properties.FabricBlockID);
-		this.blocksImmuneToRift.add(properties.PermaFabricBlockID);
-		this.blocksImmuneToRift.add(properties.DimensionalDoorID);
-		this.blocksImmuneToRift.add(properties.WarpDoorID);
-		this.blocksImmuneToRift.add(properties.TransTrapdoorID);
-		this.blocksImmuneToRift.add(properties.UnstableDoorID);
-		this.blocksImmuneToRift.add(properties.RiftBlockID);
-		this.blocksImmuneToRift.add(properties.TransientDoorID);
-		this.blocksImmuneToRift.add(properties.GoldenDimensionalDoorID);
-		this.blocksImmuneToRift.add(properties.GoldenDoorID);
-
 		this.blocksImmuneToRift.add(Block.blockLapis.blockID);
 		this.blocksImmuneToRift.add(Block.blockIron.blockID);
 		this.blocksImmuneToRift.add(Block.blockGold.blockID);
@@ -84,9 +86,6 @@ public class BlockRift extends Block implements ITileEntityProvider
 	{
 		return false;
 	}
-	
-	@Override
-	public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {}
 
 	@Override
 	public boolean isOpaqueCube()
@@ -113,10 +112,10 @@ public class BlockRift extends Block implements ITileEntityProvider
 		return true;
 	}
 	
-	//this doesnt do anything yet.
 	@Override
 	public int getRenderType()
 	{
+		// This doesn't do anything yet
 		if (mod_pocketDim.isPlayerWearingGoogles)
 		{
 			return 0;
@@ -220,7 +219,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 		return targets;
 	}
 		
-	private void dropWorldThread(int blockID, World world, int x, int y, int z, Random random)
+	public void dropWorldThread(int blockID, World world, int x, int y, int z, Random random)
 	{
 		if (blockID != 0 && (random.nextInt(MAX_WORLD_THREAD_DROP_CHANCE) < properties.WorldThreadDropChance)
 				&& !(Block.blocksList[blockID] instanceof BlockFlowing ||
@@ -232,7 +231,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 		}
 	}
 	
-	private void addAdjacentBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
+	private static void addAdjacentBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
 	{
 		Point3D[] neighbors = new Point3D[] {
 				new Point3D(x - 1, y, z),
@@ -249,16 +248,6 @@ public class BlockRift extends Block implements ITileEntityProvider
 				pointDistances.put(neighbors[index], distance + 1);
 				points.add(neighbors[index]);
 			}
-		}
-	}
-
-	public void regenerateRift(World world, int x, int y, int z, Random random)
-	{
-		if (!this.isBlockImmune(world, x, y, z) && world.getChunkProvider().chunkExists(x >> 4, z >> 4))
-		{
-			int blockID = world.getBlockId(x, y, z);
-			if (world.setBlock(x, y, z, properties.RiftBlockID))
-				dropWorldThread(blockID, world, x, y, z, random);
 		}
 	}
 	
@@ -412,6 +401,15 @@ public class BlockRift extends Block implements ITileEntityProvider
 			}
 		}
 	}
+	
+	public boolean tryPlacingRift(World world, int x, int y, int z)
+	{
+		if (world != null && !isBlockImmune(world, x, y, z))
+		{
+			return world.setBlock(x, y, z, mod_pocketDim.blockRift.blockID);
+		}
+		return false;
+	}
 
 	public boolean isBlockImmune(World world, int x, int y, int z)
 	{
@@ -424,7 +422,21 @@ public class BlockRift extends Block implements ITileEntityProvider
 			// is designed to receive an entity, the source of the blast. We have no entity so
 			// I've set this to access blockResistance directly. Might need changing later.
 			
-			return (block.blockResistance >= MIN_IMMUNE_RESISTANCE || blocksImmuneToRift.contains(block.blockID));
+			return (block.blockResistance >= MIN_IMMUNE_RESISTANCE ||
+					modBlocksImmuneToRift.contains(block.blockID) ||
+					blocksImmuneToRift.contains(block.blockID));
+		}
+		return false;
+	}
+	
+	public boolean isModBlockImmune(World world, int x, int y, int z)
+	{
+		// Check whether the block at the specified location is one of the
+		// rift-resistant blocks from DD.
+		Block block = Block.blocksList[world.getBlockId(x, y, z)];
+		if (block != null)
+		{
+			return modBlocksImmuneToRift.contains(block.blockID);
 		}
 		return false;
 	}
@@ -446,4 +458,18 @@ public class BlockRift extends Block implements ITileEntityProvider
 	{
 		return new TileEntityRift();
 	}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, int oldBlockID, int oldMeta)
+    {
+		// This function runs on the server side after a block is replaced
+		// We MUST call super.breakBlock() since it involves removing tile entities
+        super.breakBlock(world, x, y, z, oldBlockID, oldMeta);
+        
+        // Schedule rift regeneration for this block if it was changed
+        if (world.getBlockId(x, y, z) != oldBlockID)
+        {
+        	mod_pocketDim.riftRegenerator.scheduleSlowRegeneration(x, y, z, world);
+        }
+    }
 }

@@ -1,19 +1,21 @@
 package StevenDimDoors.mod_pocketDim.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 import java.util.TreeMap;
 
-import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
+import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 
 public abstract class NewDimData
@@ -116,6 +118,8 @@ public abstract class NewDimData
 		}
 	}
 	
+	private static int EXPECTED_LINKS_PER_CHUNK = 2;
+	
 	protected static Random random = new Random();
 	
 	protected int id;
@@ -133,6 +137,9 @@ public abstract class NewDimData
 	protected DungeonData dungeon;
 	protected boolean modified;
 	public IUpdateWatcher<ClientLinkData> linkWatcher;
+	
+	// Don't write this field to a file - it should be recreated on startup
+	private Map<ChunkCoordIntPair, List<InnerDimLink>> chunkMapping;
 	
 	protected NewDimData(int id, NewDimData parent, boolean isPocket, boolean isDungeon,
 		IUpdateWatcher<ClientLinkData> linkWatcher)
@@ -159,6 +166,7 @@ public abstract class NewDimData
 		this.origin = null;
 		this.dungeon = null;
 		this.linkWatcher = linkWatcher;
+		this.chunkMapping = new HashMap<ChunkCoordIntPair, List<InnerDimLink>>();
 		this.modified = true;
 		
 		//Register with parent
@@ -199,28 +207,26 @@ public abstract class NewDimData
 		this.linkWatcher = null;
 		this.depth = 0;
 		this.root = root;
+		this.chunkMapping = null;
 	}
 	
 
 	public DimLink findNearestRift(World world, int range, int x, int y, int z)
 	{
-		//TODO: Rewrite this later to use an octtree
-
-		//Sanity check...
+		// Sanity check...
 		if (world.provider.dimensionId != id)
 		{
 			throw new IllegalArgumentException("Attempted to search for links in a World instance for a different dimension!");
 		}
 		
-		//Note: Only detect rifts at a distance > 1, so we ignore the rift
-		//that called this function and any adjacent rifts.
-		
-		DimLink nearest = null;
+		// Note: Only detect rifts at a distance > 0, so we ignore the rift
+		// at the center of the search space.
 		DimLink link;
-		
+		DimLink nearest = null;
+
+		int i, j, k;
 		int distance;
 		int minDistance = Integer.MAX_VALUE;
-		int i, j, k;
 		DDProperties properties = DDProperties.instance();
 
 		for (i = -range; i <= range; i++)
@@ -232,7 +238,7 @@ public abstract class NewDimData
 					distance = getAbsoluteSum(i, j, k);
 					if (distance > 0 && distance < minDistance && world.getBlockId(x + i, y + j, z + k) == properties.RiftBlockID)
 					{
-						link = getLink(x+i, y+j, z+k);
+						link = getLink(x + i, y + j, z + k);
 						if (link != null)
 						{
 							nearest = link;
@@ -248,24 +254,20 @@ public abstract class NewDimData
 	
 	public ArrayList<DimLink> findRiftsInRange(World world, int range, int x, int y, int z)
 	{
-		ArrayList<DimLink> links = new ArrayList<DimLink>();
-		//TODO: Rewrite this later to use an octtree
-
-		//Sanity check...
+		// Sanity check...
 		if (world.provider.dimensionId != id)
 		{
 			throw new IllegalArgumentException("Attempted to search for links in a World instance for a different dimension!");
 		}
-		
-		//Note: Only detect rifts at a distance > 1, so we ignore the rift
-		//that called this function and any adjacent rifts.
-		
-		DimLink link;
-		
-		int distance;
-		int i, j, k;
-		DDProperties properties = DDProperties.instance();
 
+		// Note: Only detect rifts at a distance > 0, so we ignore the rift
+		// at the center of the search space.
+		int i, j, k;
+		int distance;
+		DimLink link;
+		DDProperties properties = DDProperties.instance();
+		ArrayList<DimLink> links = new ArrayList<DimLink>();
+		
 		for (i = -range; i <= range; i++)
 		{
 			for (j = -range; j <= range; j++)
@@ -275,7 +277,7 @@ public abstract class NewDimData
 					distance = getAbsoluteSum(i, j, k);
 					if (distance > 0 && world.getBlockId(x + i, y + j, z + k) == properties.RiftBlockID)
 					{
-						link = getLink(x+i, y+j, z+k);
+						link = getLink(x + i, y + j, z + k);
 						if (link != null)
 						{
 							links.add(link);
@@ -300,13 +302,26 @@ public abstract class NewDimData
 	
 	public DimLink createLink(Point4D source, int linkType, int orientation)
 	{
-		//Return an existing link if there is one to avoid creating multiple links starting at the same point.
+		// Return an existing link if there is one to avoid creating multiple links starting at the same point.
 		InnerDimLink link = linkMapping.get(source);
 		if (link == null)
 		{
 			link = new InnerDimLink(source, linkType, orientation);
 			linkMapping.put(source, link);
 			linkList.add(link);
+			
+			// If this code is running on the server side, add this link to chunkMapping.
+			if (linkType != LinkTypes.CLIENT_SIDE)
+			{
+				ChunkCoordIntPair chunk = link.getChunkCoordinates();
+				List<InnerDimLink> chunkLinks = chunkMapping.get(chunk);
+				if (chunkLinks == null)
+				{
+					chunkLinks = new ArrayList<InnerDimLink>(EXPECTED_LINKS_PER_CHUNK);
+					chunkMapping.put(chunk, chunkLinks);
+				}
+				chunkLinks.add(link);
+			}
 		}
 		else
 		{
@@ -314,7 +329,7 @@ public abstract class NewDimData
 		}
 		modified = true;
 		
-		//Link created!
+		// Link created!
 		if (linkType != LinkTypes.CLIENT_SIDE)
 		{
 			linkWatcher.onCreated(link.link);
@@ -334,8 +349,8 @@ public abstract class NewDimData
 	
 	private DimLink createChildLink(Point4D source, InnerDimLink parent)
 	{
-		//To avoid having multiple links at a single point, if we find an existing link then we overwrite
-		//its destination data instead of creating a new instance.
+		// To avoid having multiple links at a single point, if we find an existing link then we overwrite
+		// its destination data instead of creating a new instance.
 		
 		InnerDimLink link = linkMapping.get(source);
 		if (link == null)
@@ -344,14 +359,28 @@ public abstract class NewDimData
 			linkMapping.put(source, link);
 			linkList.add(link);
 			
-			//Link created!
+			// If this code is running on the server side, add this link to chunkMapping.
+			// Granted, the client side code should never create child links anyway...
+			if (link.linkType() != LinkTypes.CLIENT_SIDE)
+			{
+				ChunkCoordIntPair chunk = link.getChunkCoordinates();
+				List<InnerDimLink> chunkLinks = chunkMapping.get(chunk);
+				if (chunkLinks == null)
+				{
+					chunkLinks = new ArrayList<InnerDimLink>(EXPECTED_LINKS_PER_CHUNK);
+					chunkMapping.put(chunk, chunkLinks);
+				}
+				chunkLinks.add(link);
+			}
+			
+			// Link created!
 			linkWatcher.onCreated(link.link);
 		}
 		else
 		{
 			if (link.overwrite(parent, parent.link.orientation))
 			{
-				//Link created!
+				// Link created!
 				linkWatcher.onCreated(link.link);
 			}
 		}
@@ -369,7 +398,19 @@ public abstract class NewDimData
 		if (target != null)
 		{
 			linkList.remove(target);
-			//Raise deletion event
+			
+			// If this code is running on the server side, remove this link to chunkMapping.
+			if (link.linkType() != LinkTypes.CLIENT_SIDE)
+			{
+				ChunkCoordIntPair chunk = target.getChunkCoordinates();
+				List<InnerDimLink> chunkLinks = chunkMapping.get(chunk);
+				if (chunkLinks != null)
+				{
+					chunkLinks.remove(target);
+				}
+			}
+			
+			// Raise deletion event
 			linkWatcher.onDeleted(target.link);
 			target.clear();
 			modified = true;
@@ -377,9 +418,8 @@ public abstract class NewDimData
 		return (target != null);
 	}
 
-	public boolean deleteLink(int x, int y, int z)
+	public boolean deleteLink(Point4D location)
 	{
-		Point4D location = new Point4D(x, y, z, id);
 		return this.deleteLink(this.getLink(location));
 	}
 
@@ -391,7 +431,7 @@ public abstract class NewDimData
 	
 	public DimLink getLink(Point3D location)
 	{
-		return linkMapping.get(new Point4D(location.getX(),location.getY(),location.getZ(),this.id));
+		return linkMapping.get(new Point4D(location.getX(), location.getY(), location.getZ(), this.id));
 	}
 	
 	public DimLink getLink(Point4D location)
@@ -619,6 +659,16 @@ public abstract class NewDimData
 			return linkList.get(random.nextInt(linkList.size()));
 		}
 		return linkList.get(0);
+	}
+	
+	public Iterable<? extends DimLink> getChunkLinks(int chunkX, int chunkZ)
+	{
+		List<InnerDimLink> chunkLinks = chunkMapping.get(new ChunkCoordIntPair(chunkX, chunkZ));
+		if (chunkLinks != null)
+		{
+			return chunkLinks;
+		}
+		return new ArrayList<InnerDimLink>(0);
 	}
 	
 	public boolean isModified()
