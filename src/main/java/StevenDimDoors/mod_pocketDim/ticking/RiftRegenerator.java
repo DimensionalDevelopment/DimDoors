@@ -95,8 +95,8 @@ public class RiftRegenerator implements IRegularTickReceiver {
 			return;
 		
 		// The chunk at the given location must be loaded.
-		// FIXME: I can't figure out how to check if a chunk is loaded.
-		// Will only check if the chunk exists for now. This isn't a big deal. --SenseiKiwi
+		// Note: ChunkProviderServer.chunkExists() returns whether a chunk is
+		// loaded, not whether it has already been created.
 		if (!world.getChunkProvider().chunkExists(x >> 4, z >> 4))
 			return;
 		
