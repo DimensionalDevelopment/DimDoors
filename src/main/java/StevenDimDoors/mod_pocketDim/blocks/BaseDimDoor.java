@@ -441,7 +441,10 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		// We MUST call super.breakBlock() since it involves removing tile entities
         super.breakBlock(world, x, y, z, oldBlockID, oldMeta);
         
-        // Schedule rift regeneration for this block
-        mod_pocketDim.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
+        // Schedule rift regeneration for this block if it was replaced
+        if (world.getBlockId(x, y, z) != oldBlockID)
+        {
+        	mod_pocketDim.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
+        }
     }
 }

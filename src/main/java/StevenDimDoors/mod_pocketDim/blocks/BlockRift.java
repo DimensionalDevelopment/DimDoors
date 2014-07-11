@@ -466,7 +466,10 @@ public class BlockRift extends Block implements ITileEntityProvider
 		// We MUST call super.breakBlock() since it involves removing tile entities
         super.breakBlock(world, x, y, z, oldBlockID, oldMeta);
         
-        // Schedule rift regeneration for this block
-        mod_pocketDim.riftRegenerator.scheduleSlowRegeneration(x, y, z, world);
+        // Schedule rift regeneration for this block if it was changed
+        if (world.getBlockId(x, y, z) != oldBlockID)
+        {
+        	mod_pocketDim.riftRegenerator.scheduleSlowRegeneration(x, y, z, world);
+        }
     }
 }
