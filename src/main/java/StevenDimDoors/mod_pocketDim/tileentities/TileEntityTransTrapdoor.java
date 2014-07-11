@@ -6,8 +6,6 @@ import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 public class TileEntityTransTrapdoor extends DDTileEntityBase
 {
-	public boolean hasRift;
-	
 	@Override
 	public boolean canUpdate()
 	{
