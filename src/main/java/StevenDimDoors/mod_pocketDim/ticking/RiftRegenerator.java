@@ -48,15 +48,23 @@ public class RiftRegenerator implements IRegularTickReceiver {
 		scheduleRegeneration(link, MIN_SLOW_DELAY, MAX_SLOW_DELAY);
 	}
 	
-	public void scheduleFastRegeneration(DimLink link)
+	public void scheduleSlowRegeneration(int x, int y, int z, World world)
 	{
-		scheduleRegeneration(link, MIN_FAST_DELAY, MAX_FAST_DELAY);
+		scheduleRegeneration(PocketManager.getLink(x, y, z, world), MIN_SLOW_DELAY, MAX_SLOW_DELAY);
+	}
+	
+	public void scheduleFastRegeneration(int x, int y, int z, World world)
+	{
+		scheduleRegeneration(PocketManager.getLink(x, y, z, world), MIN_FAST_DELAY, MAX_FAST_DELAY);
 	}
 	
 	private void scheduleRegeneration(DimLink link, int minDelay, int maxDelay)
 	{
-		int tickDelay = MathHelper.getRandomIntegerInRange(random, minDelay * TICKS_PER_SECOND, maxDelay * TICKS_PER_SECOND);
-		ticketQueue.add(new RiftTicket(link.source(), tickCount + tickDelay));
+		if (link != null)
+		{
+			int tickDelay = MathHelper.getRandomIntegerInRange(random, minDelay * TICKS_PER_SECOND, maxDelay * TICKS_PER_SECOND);
+			ticketQueue.add(new RiftTicket(link.source(), tickCount + tickDelay));
+		}
 	}
 	
 	private void processTicketQueue()

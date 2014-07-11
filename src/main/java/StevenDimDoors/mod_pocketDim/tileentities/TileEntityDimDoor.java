@@ -40,11 +40,7 @@ public class TileEntityDimDoor extends DDTileEntityBase
 		super.invalidate();
 		if (!worldObj.isRemote && worldObj.getBlockId(xCoord, yCoord, zCoord) == 0)
 		{
-			DimLink link = PocketManager.getLink(xCoord, yCoord, zCoord, worldObj);
-			if (link != null)
-			{
-				 mod_pocketDim.riftRegenerator.scheduleFastRegeneration(link);
-			}
+			mod_pocketDim.riftRegenerator.scheduleFastRegeneration(xCoord, yCoord, zCoord, worldObj);
 		}
 	}
 

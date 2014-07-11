@@ -7,7 +7,6 @@ import java.util.Queue;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockFlowing;
 import net.minecraft.block.BlockFluid;
 import net.minecraft.block.ITileEntityProvider;
@@ -87,9 +86,6 @@ public class BlockRift extends Block implements ITileEntityProvider
 	{
 		return false;
 	}
-	
-	@Override
-	public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {}
 
 	@Override
 	public boolean isOpaqueCube()
@@ -116,10 +112,10 @@ public class BlockRift extends Block implements ITileEntityProvider
 		return true;
 	}
 	
-	//this doesnt do anything yet.
 	@Override
 	public int getRenderType()
 	{
+		// This doesn't do anything yet
 		if (mod_pocketDim.isPlayerWearingGoogles)
 		{
 			return 0;
@@ -235,7 +231,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 		}
 	}
 	
-	private void addAdjacentBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
+	private static void addAdjacentBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
 	{
 		Point3D[] neighbors = new Point3D[] {
 				new Point3D(x - 1, y, z),
@@ -462,4 +458,15 @@ public class BlockRift extends Block implements ITileEntityProvider
 	{
 		return new TileEntityRift();
 	}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, int oldBlockID, int oldMeta)
+    {
+		// This function runs on the server side after a block is replaced
+		// We MUST call super.breakBlock() since it involves removing tile entities
+        super.breakBlock(world, x, y, z, oldBlockID, oldMeta);
+        
+        // Schedule rift regeneration for this block
+        mod_pocketDim.riftRegenerator.scheduleSlowRegeneration(x, y, z, world);
+    }
 }
