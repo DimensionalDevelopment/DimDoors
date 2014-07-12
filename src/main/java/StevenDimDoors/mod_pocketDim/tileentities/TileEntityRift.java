@@ -1,6 +1,5 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -42,8 +41,7 @@ public class TileEntityRift extends DDTileEntityBase
 	public int yOffset = 0;
 	public int zOffset = 0;
 	public boolean shouldClose = false;
-
-	public DimLink nearestRiftData;
+	public Point4D nearestRiftLocation = null;
 	public int spawnedEndermenID = 0;
 	
 	public TileEntityRift()
@@ -64,20 +62,20 @@ public class TileEntityRift extends DDTileEntityBase
 			}
 			else
 			{
-				this.invalidate();
+				invalidate();
 			}
 			return;
 		}
 		
 		if (worldObj.getBlockId(xCoord, yCoord, zCoord) != mod_pocketDim.blockRift.blockID)
 		{
-			this.invalidate();
+			invalidate();
 			return;
 		}
 		
 		// Check if this rift should render white closing particles and
 		// spread the closing effect to other rifts nearby.
-		if (this.shouldClose)
+		if (shouldClose)
 		{
 			closeRift();
 			return;
@@ -85,13 +83,13 @@ public class TileEntityRift extends DDTileEntityBase
 		
 		if (updateTimer >= UPDATE_PERIOD)
 		{
-			this.spawnEndermen(mod_pocketDim.properties);
+			spawnEndermen(mod_pocketDim.properties);
 			updateTimer = 0;
 		}
 		else if (updateTimer == UPDATE_PERIOD / 2)
 		{
-			this.calculateParticleOffsets();
-			this.spread(mod_pocketDim.properties);
+			updateNearestRift();
+			spread(mod_pocketDim.properties);
 		}
 		updateTimer++;
 	}
@@ -136,57 +134,60 @@ public class TileEntityRift extends DDTileEntityBase
 			}
 		}
 	}
-	
-	public boolean updateNearestRift()
-	{
-		nearestRiftData = PocketManager.getDimensionData(worldObj).findNearestRift(this.worldObj, 5, xCoord, yCoord, zCoord);
-		return (nearestRiftData != null);
-	}
 
 	private void closeRift()
 	{
 		NewDimData dimension = PocketManager.getDimensionData(worldObj);
 		if (closeTimer == CLOSING_PERIOD / 2)
 		{
-			ArrayList<DimLink> riftLinks = dimension.findRiftsInRange(worldObj, 6, xCoord, yCoord, zCoord);
-			if (riftLinks.size() > 0)
+			for (DimLink riftLink : dimension.findRiftsInRange(worldObj, 6, xCoord, yCoord, zCoord))
 			{
-				for (DimLink riftLink : riftLinks)
+				Point4D location = riftLink.source();
+				TileEntityRift rift = (TileEntityRift) worldObj.getBlockTileEntity(location.getX(), location.getY(), location.getZ());
+				if (rift != null && !rift.shouldClose)
 				{
-					Point4D location = riftLink.source();
-					TileEntityRift rift = (TileEntityRift) worldObj.getBlockTileEntity(location.getX(), location.getY(), location.getZ());
-					if (rift != null)
-					{
-						rift.shouldClose = true;
-						rift.onInventoryChanged();
-					}
+					rift.shouldClose = true;
+					rift.onInventoryChanged();
 				}
 			}
 		}
 		if (closeTimer >= CLOSING_PERIOD)
 		{
-			if (!this.worldObj.isRemote)
+			DimLink link = PocketManager.getLink(this.xCoord, this.yCoord, this.zCoord, worldObj);
+			if (link != null)
 			{
-				DimLink link = PocketManager.getLink(this.xCoord, this.yCoord, this.zCoord, worldObj);
-				if (link != null)
-				{
-					dimension.deleteLink(link);
-				}
+				dimension.deleteLink(link);
 			}
 			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 			worldObj.playSound(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, "mods.DimDoors.sfx.riftClose", 0.7f, 1, false);
 		}
 		closeTimer++; 
 	}
-
-	private void calculateParticleOffsets()
+	
+	public boolean updateNearestRift()
 	{
-		if (updateNearestRift()) 
+		Point4D previousNearest = nearestRiftLocation;
+		DimLink nearestRiftLink = PocketManager.getDimensionData(worldObj).findNearestRift(
+				worldObj, RIFT_INTERACTION_RANGE, xCoord, yCoord, zCoord);
+		
+		nearestRiftLocation = (nearestRiftLink == null) ? null : nearestRiftLink.source();
+
+		// If the nearest rift location changed, then update particle offsets
+		if (previousNearest != nearestRiftLocation &&
+			(previousNearest == null || nearestRiftLocation == null || !previousNearest.equals(nearestRiftLocation)))
 		{
-			Point4D location = nearestRiftData.source();
-			this.xOffset = this.xCoord - location.getX();
-			this.yOffset = this.yCoord - location.getY();
-			this.zOffset = this.zCoord - location.getZ();
+			updateParticleOffsets();
+		}
+		return (nearestRiftLocation != null);
+	}
+
+	private void updateParticleOffsets()
+	{
+		if (nearestRiftLocation != null) 
+		{
+			this.xOffset = this.xCoord - nearestRiftLocation.getX();
+			this.yOffset = this.yCoord - nearestRiftLocation.getY();
+			this.zOffset = this.zCoord - nearestRiftLocation.getZ();
 		}
 		else
 		{
