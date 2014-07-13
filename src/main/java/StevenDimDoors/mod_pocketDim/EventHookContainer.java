@@ -230,8 +230,11 @@ public class EventHookContainer
 	{
 		// Schedule rift regeneration for any links located in this chunk.
 		// This event runs on both the client and server. Allow server only.
+		// Also, check that PocketManager is loaded, because onChunkLoad() can
+		// fire while chunks are being initialized in a new world, before
+		// onWorldLoad() fires.
 		Chunk chunk = event.getChunk();
-		if (!chunk.worldObj.isRemote)
+		if (!chunk.worldObj.isRemote && PocketManager.isLoaded())
 		{
 			NewDimData dimension = PocketManager.getDimensionData(chunk.worldObj);
 			for (DimLink link : dimension.getChunkLinks(chunk.xPosition, chunk.zPosition))
