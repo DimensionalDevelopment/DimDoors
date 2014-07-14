@@ -106,7 +106,7 @@ public class GatewayGenerator implements IWorldGenerator
 					//Create a link. If this is not the first time, create a child link and connect it to the first link.
 					if (link == null)
 					{
-						dimension = PocketManager.getDimensionData(world);
+						dimension = PocketManager.createDimensionData(world);
 						link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON,0);
 					}
 					else

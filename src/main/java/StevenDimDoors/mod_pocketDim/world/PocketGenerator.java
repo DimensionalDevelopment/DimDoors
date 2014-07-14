@@ -68,7 +68,7 @@ public class PocketGenerator extends ChunkProviderGenerate
 	@Override
 	public List getPossibleCreatures(EnumCreatureType var1, int var2, int var3, int var4) 
 	{
-		NewDimData dimension = PocketManager.getDimensionData(this.worldObj);
+		NewDimData dimension = PocketManager.createDimensionData(this.worldObj);
 		if (dimension != null && dimension.dungeon() != null && !dimension.dungeon().isOpen())
 		{
 			return this.worldObj.getBiomeGenForCoords(var2, var3).getSpawnableList(var1);

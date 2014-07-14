@@ -163,15 +163,15 @@ public class PocketManager
 		public void onCreated(ClientLinkData link)
 		{
 			Point4D source = link.point;
-			NewDimData dimension = getDimensionData(source.getDimension());
-			dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE,link.orientation);
+			NewDimData dimension = createDimensionData(source.getDimension());
+			dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE, link.orientation);
 		}
 
 		@Override
 		public void onDeleted(ClientLinkData link)
 		{
 			Point4D source = link.point;
-			getDimensionData(source.getDimension()).deleteLink(source);
+			createDimensionData(source.getDimension()).deleteLink(source);
 		}
 	}
 
@@ -270,7 +270,6 @@ public class PocketManager
 
 	public static boolean registerPackedDimData(PackedDimData packedData)
 	{
-
 		InnerDimData dimData;
 		//register roots
 		if(packedData.ID==packedData.ParentID)
@@ -290,7 +289,7 @@ public class PocketManager
 			dimData =  new InnerDimData(packedData.ID, test,true, packedData.IsDungeon, linkWatcher);
 			dimData.isFilled=packedData.IsFilled;
 			dimData.origin = new Point4D(packedData.Origin.getX(),packedData.Origin.getY(),packedData.Origin.getZ(),packedData.ID);
-			dimData.root=PocketManager.getDimensionData(packedData.RootID);
+			dimData.root = PocketManager.createDimensionData(packedData.RootID);
 
 			if(packedData.DungeonData!=null)
 			{
@@ -412,9 +411,7 @@ public class PocketManager
 	 * loads the dim data from the saved hashMap. Also handles compatibility with old saves, see OldSaveHandler
 	 */
 	private static void loadInternal()
-	{	
-		//System.out.println(!FMLCommonHandler.instance().getSide().isClient());
-
+	{
 		File saveDir = DimensionManager.getCurrentSaveRootDirectory();
 		if (saveDir != null)
 		{
@@ -501,23 +498,19 @@ public class PocketManager
 		return world;
 	}
 
-	public static NewDimData registerDimension(World world)
-	{
-		return registerDimension(world.provider.dimensionId, null, false, false);
-	}
-
 	public static NewDimData registerPocket(NewDimData parent, boolean isDungeon)
 	{
 		if (parent == null)
 		{
 			throw new IllegalArgumentException("parent cannot be null. A pocket dimension must always have a parent dimension.");
 		}
-
+		
 		DDProperties properties = DDProperties.instance();
 		int dimensionID = DimensionManager.getNextFreeDimId();
 		DimensionManager.registerDimension(dimensionID, properties.PocketProviderID);
 		return registerDimension(dimensionID, (InnerDimData) parent, true, isDungeon);
 	}
+	
 	/**
 	 * Registers a dimension with DD but NOT with forge.
 	 * @param dimensionID
@@ -548,16 +541,16 @@ public class PocketManager
 	}
 
 	@SideOnly(Side.CLIENT)
-	private static NewDimData registerClientDimension(int dimensionID, int rootID)
+	protected static NewDimData registerClientDimension(int dimensionID, int rootID)
 	{
-		System.out.println("Registered dim "+dimensionID+" on the client.");
-		// No need to raise events heres since this code should only run on the client side
-		// getDimensionData() always handles root dimensions properly, even if the weren't defined before
+		// No need to raise events heres since this code should only run on the
+		// client side. createDimensionData() always handles root dimensions
+		// properly, even if they weren't defined before.
 
-		// SenseiKiwi: I'm a little worried about how getDimensionData will raise
+		// SenseiKiwi: I'm a little worried about how createDimensionData will raise
 		// an event when it creates any root dimensions... Needs checking later.
 
-		InnerDimData root = (InnerDimData) getDimensionData(rootID);
+		InnerDimData root = (InnerDimData) createDimensionData(rootID);
 		InnerDimData dimension;
 
 		if (rootID != dimensionID)
@@ -573,7 +566,7 @@ public class PocketManager
 		{
 			dimension = root;
 		}
-		if(dimension.isPocketDimension()&&!DimensionManager.isDimensionRegistered(dimension.id()))
+		if (dimension.isPocketDimension() && !DimensionManager.isDimensionRegistered(dimension.id()))
 		{
 			//Im registering pocket dims here. I *think* we can assume that if its a pocket and we are 
 			//registering its dim data, we also need to register it with forge. 
@@ -584,26 +577,29 @@ public class PocketManager
 		}
 		return dimension;
 	}
-
-	public static NewDimData getDimensionData(World world)
-	{	
-		return getDimensionData(world.provider.dimensionId);
-	}
-
+	
 	public static NewDimData getDimensionData(int dimensionID)
 	{
-		//Retrieve the data for a dimension. If we don't have a record for that dimension,
-		//assume it's a non-pocket dimension that hasn't been initialized with us before
-		//and create a NewDimData instance for it.
-		//Any pocket dimension must be listed with PocketManager to have a dimension ID
-		//assigned, so it's safe to assume that any unknown dimensions don't belong to us.
+		return PocketManager.dimensionData.get(dimensionID);
+	}
 
-		//FIXME: What's the point of this condition? Most calls to this function will crash anyway! ~SenseiKiwi
-		if(PocketManager.dimensionData == null)
-		{
-			System.out.println("Something odd happend during shutdown");
-			return null;
-		}
+	public static NewDimData createDimensionData(World world)
+	{	
+		return createDimensionData(world.provider.dimensionId);
+	}
+	
+	public static NewDimData createDimensionDataDangerously(int dimensionID)
+	{
+		// Same as createDimensionData(int), but public. Meant to discourage anyone from
+		// using it unless absolutely needed! We'll probably phase this out eventually.
+		return createDimensionData(dimensionID);
+	}
+
+	protected static NewDimData createDimensionData(int dimensionID)
+	{
+		// Retrieve the data for a dimension. If we don't have a record for that dimension,
+		// assume it's a non-pocket dimension that hasn't been initialized with us before
+		// and create a NewDimData instance for it.
 		NewDimData dimension = PocketManager.dimensionData.get(dimensionID);
 		if (dimension == null)
 		{

@@ -44,7 +44,7 @@ public abstract class BaseSchematicGateway extends BaseGateway
 		this.generateRandomBits(world, x, y, z);
 		
 		// Generate a dungeon link in the door
-		PocketManager.getDimensionData(world).createLink(x, y + doorLocation.getY(), z, LinkTypes.DUNGEON, orientation);
+		PocketManager.createDimensionData(world).createLink(x, y + doorLocation.getY(), z, LinkTypes.DUNGEON, orientation);
 		
 		return true;
 	}

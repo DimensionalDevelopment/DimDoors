@@ -54,7 +54,7 @@ public class GoggleRiftFX extends EntityFireworkSparkFX
 		float var15 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * par2 - interpPosZ);
 		float var16 = .0F;
 
-		if (PocketManager.getDimensionData(worldObj).isPocketDimension())
+		if (PocketManager.createDimensionData(worldObj).isPocketDimension())
 		{
 			var16 = .7F;
 		}

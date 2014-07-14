@@ -263,7 +263,7 @@ public class DungeonHelper
 	public DimLink createCustomDungeonDoor(World world, int x, int y, int z)
 	{
 		//Create a link above the specified position. Link to a new pocket dimension.
-		NewDimData dimension = PocketManager.getDimensionData(world);
+		NewDimData dimension = PocketManager.createDimensionData(world);
 		DimLink link = dimension.createLink(x, y + 1, z, LinkTypes.POCKET, 3);
 		
 		//Place a Warp Door linked to that pocket

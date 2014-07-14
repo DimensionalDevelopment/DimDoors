@@ -21,7 +21,7 @@ public class UnstableDoor extends BaseDimDoor
 	{
 		if (!world.isRemote && world.getBlockId(x, y - 1, z) == this.blockID)
 		{
-			NewDimData dimension = PocketManager.getDimensionData(world);
+			NewDimData dimension = PocketManager.createDimensionData(world);
 			dimension.createLink(x, y, z, LinkTypes.RANDOM,world.getBlockMetadata(x, y - 1, z));
 		}
 	}

@@ -111,7 +111,7 @@ public class RiftFX extends EntityFX
         float f13 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * par2 - interpPosZ);
         float f14 = 0F;
         
-        if (PocketManager.getDimensionData(worldObj).isPocketDimension())
+        if (PocketManager.createDimensionData(worldObj).isPocketDimension())
     	{
     		f14 = 0.7F;
     	}

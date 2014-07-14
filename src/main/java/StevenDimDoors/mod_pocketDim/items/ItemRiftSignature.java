@@ -74,7 +74,7 @@ public class ItemRiftSignature extends Item
 			// The link was used before and already has an endpoint stored.
 			// Create links connecting the two endpoints.
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
-			NewDimData destinationDimension = PocketManager.getDimensionData(world);
+			NewDimData destinationDimension = PocketManager.createDimensionData(world);
 			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.NORMAL,source.getOrientation());
 			DimLink reverse = destinationDimension.createLink(x, adjustedY, z, LinkTypes.NORMAL,orientation);
 			destinationDimension.setLinkDestination(link, x, adjustedY, z);
@@ -99,7 +99,7 @@ public class ItemRiftSignature extends Item
 		else
 		{
 			//The link signature has not been used. Store its current target as the first location. 
-			setSource(stack, x, adjustedY, z,orientation, PocketManager.getDimensionData(world));
+			setSource(stack, x, adjustedY, z, orientation, PocketManager.createDimensionData(world));
 			mod_pocketDim.sendChat(player,("Location Stored in Rift Signature"));
 			world.playSoundAtEntity(player,mod_pocketDim.modid+":riftStart", 0.6f, 1);
 		}

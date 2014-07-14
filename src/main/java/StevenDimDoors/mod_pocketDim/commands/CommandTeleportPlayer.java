@@ -80,7 +80,6 @@ public class CommandTeleportPlayer extends DDCommandBase
 		else
 		{
 			dimensionID = targetPlayer.worldObj.provider.dimensionId;
-			// SenseiKiwi: Will not be used, but I prefer not to leave 'world' as null
 			world = targetPlayer.worldObj;
 		}
 		
@@ -95,7 +94,7 @@ public class CommandTeleportPlayer extends DDCommandBase
 		if (command.length == 2)
 		{
 			// Check if the destination is a pocket dimension
-			dimension = PocketManager.getDimensionData(dimensionID);
+			dimension = PocketManager.createDimensionData(world);
 			if (dimension.isPocketDimension())
 			{
 				// The destination is a pocket dimension.

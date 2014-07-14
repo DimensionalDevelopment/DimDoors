@@ -46,7 +46,7 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 		// link associated with it.
 		if (!worldObj.isRemote)
 		{
-			NewDimData dimension = PocketManager.getDimensionData(worldObj);
+			NewDimData dimension = PocketManager.createDimensionData(worldObj);
 			
 			// Check whether a ticket has already been assigned to this door
 			if (chunkTicket == null)

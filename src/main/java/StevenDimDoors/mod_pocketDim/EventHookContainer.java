@@ -236,7 +236,7 @@ public class EventHookContainer
 		Chunk chunk = event.getChunk();
 		if (!chunk.worldObj.isRemote && PocketManager.isLoaded())
 		{
-			NewDimData dimension = PocketManager.getDimensionData(chunk.worldObj);
+			NewDimData dimension = PocketManager.createDimensionData(chunk.worldObj);
 			for (DimLink link : dimension.getChunkLinks(chunk.xPosition, chunk.zPosition))
 			{
 				regenerator.scheduleSlowRegeneration(link);

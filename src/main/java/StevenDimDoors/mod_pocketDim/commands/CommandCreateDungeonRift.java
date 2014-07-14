@@ -61,7 +61,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 		// Check if we found any matches
 		if (result != null)
 		{
-			dimension = PocketManager.getDimensionData(sender.worldObj);
+			dimension = PocketManager.createDimensionData(sender.worldObj);
 			link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
 			if (PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result))
 			{

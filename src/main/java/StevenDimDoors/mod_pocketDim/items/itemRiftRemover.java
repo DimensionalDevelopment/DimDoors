@@ -54,7 +54,7 @@ public class itemRiftRemover extends Item
 			int hx = hit.blockX;
 			int hy = hit.blockY;
 			int hz = hit.blockZ;
-			NewDimData dimension = PocketManager.getDimensionData(world);
+			NewDimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(hx, hy, hz);
 			if (world.getBlockId(hx, hy, hz) == mod_pocketDim.blockRift.blockID && link != null &&
 				player.canPlayerEdit(hx, hy, hz, hit.sideHit, stack))
@@ -85,7 +85,7 @@ public class itemRiftRemover extends Item
 			 y = hit.blockY;
 			 z = hit.blockZ;
 			 
-			 NewDimData dimension = PocketManager.getDimensionData(world);
+			 NewDimData dimension = PocketManager.createDimensionData(world);
 			 DimLink link = dimension.getLink(x, y, z);
 			 if (world.getBlockId(x, y, z) == mod_pocketDim.blockRift.blockID && link != null &&
 				player.canPlayerEdit(x, y, z, side, stack))

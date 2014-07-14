@@ -63,7 +63,7 @@ public class CommandDeleteRifts extends DDCommandBase
 		int y;
 		int z;
 		Point4D location;
-		NewDimData dimension = PocketManager.getDimensionData(targetDimension);
+		NewDimData dimension = PocketManager.createDimensionData(world);
 		ArrayList<DimLink> links = dimension.getAllLinks();
 		for (DimLink link : links)
 		{
