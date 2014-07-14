@@ -53,7 +53,7 @@ public class CommandCreateRandomRift extends DDCommandBase
 
 		if (command.length == 0)
 		{
-			dimension = PocketManager.getDimensionData(sender.worldObj);
+			dimension = PocketManager.createDimensionData(sender.worldObj);
 			link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
 			sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID, 0, 3);
 			sendChat(sender, "Created a rift to a random dungeon.");
@@ -69,7 +69,7 @@ public class CommandCreateRandomRift extends DDCommandBase
 			// Check if we found any matches
 			if (result != null)
 			{
-				dimension = PocketManager.getDimensionData(sender.worldObj);
+				dimension = PocketManager.createDimensionData(sender.worldObj);
 				link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON, orientation);
 				if (PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result))
 				{

@@ -137,7 +137,7 @@ public class TileEntityRift extends DDTileEntityBase
 
 	private void closeRift()
 	{
-		NewDimData dimension = PocketManager.getDimensionData(worldObj);
+		NewDimData dimension = PocketManager.createDimensionData(worldObj);
 		if (closeTimer == CLOSING_PERIOD / 2)
 		{
 			for (DimLink riftLink : dimension.findRiftsInRange(worldObj, 6, xCoord, yCoord, zCoord))
@@ -167,7 +167,7 @@ public class TileEntityRift extends DDTileEntityBase
 	public boolean updateNearestRift()
 	{
 		Point4D previousNearest = nearestRiftLocation;
-		DimLink nearestRiftLink = PocketManager.getDimensionData(worldObj).findNearestRift(
+		DimLink nearestRiftLink = PocketManager.createDimensionData(worldObj).findNearestRift(
 				worldObj, RIFT_INTERACTION_RANGE, xCoord, yCoord, zCoord);
 		
 		nearestRiftLocation = (nearestRiftLink == null) ? null : nearestRiftLink.source();
@@ -221,7 +221,7 @@ public class TileEntityRift extends DDTileEntityBase
 			return;
 		}
 
-		NewDimData dimension = PocketManager.getDimensionData(worldObj);
+		NewDimData dimension = PocketManager.createDimensionData(worldObj);
 		DimLink link = dimension.getLink(xCoord, yCoord, zCoord);
 		
 		if (link.childCount() >= MAX_CHILD_LINKS || countAncestorLinks(link) >= MAX_ANCESTOR_LINKS)

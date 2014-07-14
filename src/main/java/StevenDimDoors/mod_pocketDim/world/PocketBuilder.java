@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.world;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -21,7 +22,6 @@ import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.util.Pair;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
@@ -39,87 +39,6 @@ public class PocketBuilder
 	private static final Random random = new Random();
 
 	private PocketBuilder() { }
-
-	/**
-	 * Method that takes an arbitrary link into a dungeon pocket and tries to regenerate it. First uses the origin to find that link, 
-	 * then uses that link to find the link that originally created the dungeon. If it cant find any of these, it 
-	 * instead makes the link that lead to this point into an exit door style link, sending the player to the overworld. 
-	 * @param dimension The dungeon to be regenerated
-	 * @param linkIn The link leading somewhere into the dungeon. 
-	 * @param properties
-	 * @return 
-	 */
-
-	public static boolean regenerateDungeonPocket(NewDimData dimension, DimLink linkIn, DDProperties properties)
-	{
-		if (linkIn == null)
-		{
-			throw new IllegalArgumentException("link cannot be null.");
-		}
-		if (properties == null)
-		{
-			throw new IllegalArgumentException("properties cannot be null.");
-		}
-		//The link that is at the origin of the dungeon
-		DimLink originLink = dimension.getLink(dimension.origin());
-		Point4D oldLinkPos = linkIn.source();
-		if(originLink==null)
-		{
-			int orientation = linkIn.orientation();
-			originLink=dimension.createLink(oldLinkPos, LinkTypes.SAFE_EXIT, (orientation+2)%4);
-			return false;
-		}
-		//The link that originally created the dungeon on the way in
-		DimLink incomingLink = PocketManager.getLink(originLink.destination());
-		if(incomingLink==null||incomingLink.linkType()!=LinkTypes.DUNGEON||!(originLink.linkType()==LinkTypes.REVERSE))
-		{
-			int orientation = linkIn.orientation();
-			dimension.deleteLink(originLink);
-			dimension.createLink(oldLinkPos, LinkTypes.SAFE_EXIT, (orientation+2)%4);
-			return false;
-		}
-		NewDimData parent = PocketManager.getDimensionData(incomingLink.source().getDimension());
-
-		if (!dimension.isDungeon())
-		{
-			throw new IllegalArgumentException("destination must be dungeon");
-		}
-		if (dimension.isFilled())
-		{
-			throw new IllegalArgumentException("destination must be empty");
-		}
-		if (!dimension.isInitialized())
-		{
-			throw new IllegalArgumentException("destination must already exist");
-		}
-
-		try
-		{
-			//Load a world
-			World world = PocketManager.loadDimension(dimension.id());
-
-			if (world == null || world.provider == null)
-			{
-				System.err.println("Could not initialize dimension for a dungeon!");
-				return false;
-			}
-
-			DungeonSchematic schematic = loadAndValidateDungeon(dimension.dungeon(), properties);
-			if (schematic == null)
-			{
-				return false;
-			}
-			Point3D destination = new Point3D(incomingLink.destination());
-			schematic.copyToWorld(world, destination, originLink.orientation(), incomingLink, random, properties, false);
-			dimension.setFilled(true);
-			return true;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
 
 	private static boolean buildDungeonPocket(DungeonData dungeon, NewDimData dimension, DimLink link, DungeonSchematic schematic, World world, DDProperties properties)
 	{
@@ -479,7 +398,7 @@ public class PocketBuilder
 
 		//Build the door
 		int doorOrientation = BlockRotator.transformMetadata(BlockRotator.EAST_DOOR_METADATA, orientation - BlockRotator.EAST_DOOR_METADATA + 2, properties.DimensionalDoorID);
-		ItemDimensionalDoor.placeDoorBlock(world, x, y - 1, z, doorOrientation, doorBlock);
+		ItemDoor.placeDoorBlock(world, x, y - 1, z, doorOrientation, doorBlock);
 	}
 
 	private static void buildBox(World world, int centerX, int centerY, int centerZ, int radius, int blockID, boolean placeTnt, int nonTntWeight)

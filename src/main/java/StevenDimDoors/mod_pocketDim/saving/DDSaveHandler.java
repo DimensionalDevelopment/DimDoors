@@ -189,7 +189,7 @@ public class DDSaveHandler
 		{
 			if(packedLink.parent.equals(fakePoint))
 			{
-				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
+				NewDimData data = PocketManager.createDimensionDataDangerously(packedLink.source.getDimension());
 				int linkType = packedLink.tail.linkType;
 				
 				if((linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX) && linkType != LinkTypes.CLIENT_SIDE)
@@ -201,7 +201,7 @@ public class DDSaveHandler
 				Point4D destination = packedLink.tail.destination;
 				if(destination!=null)
 				{
-					PocketManager.getDimensionData(destination.getDimension()).setLinkDestination(link, destination.getX(),destination.getY(),destination.getZ());
+					PocketManager.createDimensionDataDangerously(destination.getDimension()).setLinkDestination(link, destination.getX(),destination.getY(),destination.getZ());
 				}
 				unpackedLinks.add(packedLink);
 			}
@@ -213,7 +213,7 @@ public class DDSaveHandler
 		{
 			for(PackedLinkData packedLink : linksToUnpack)
 			{
-				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
+				NewDimData data = PocketManager.createDimensionDataDangerously(packedLink.source.getDimension());
 				if(data.getLink(packedLink.parent)!=null)
 				{
 					data.createChildLink(packedLink.source.getX(), packedLink.source.getY(), packedLink.source.getZ(), data.getLink(packedLink.parent));

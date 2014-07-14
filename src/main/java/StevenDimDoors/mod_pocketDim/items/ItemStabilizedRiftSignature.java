@@ -53,7 +53,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		{
 			// Yes, it's initialized.
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
-			NewDimData destinationDimension = PocketManager.getDimensionData(world);
+			NewDimData destinationDimension = PocketManager.createDimensionData(world);
 			DimLink reverse = destinationDimension.getLink(x, adjustedY, z);
 			DimLink link;
 			
@@ -104,7 +104,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		else
 		{
 			// The link signature has not been used. Store its current target as the first location. 
-			setSource(stack, x, adjustedY, z, orientation, PocketManager.getDimensionData(world));
+			setSource(stack, x, adjustedY, z, orientation, PocketManager.createDimensionData(world));
 			mod_pocketDim.sendChat(player, "Location Stored in Stabilized Rift Signature");
 			world.playSoundAtEntity(player, "mods.DimDoors.sfx.riftStart", 0.6f, 1);
 		}
@@ -129,7 +129,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 		if (source != null)
 		{
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
-			NewDimData destinationDimension = PocketManager.getDimensionData(world);
+			NewDimData destinationDimension = PocketManager.createDimensionData(world);
 			DimLink reverse = destinationDimension.getLink(x, adjustedY, z);
 			DimLink link;
 			

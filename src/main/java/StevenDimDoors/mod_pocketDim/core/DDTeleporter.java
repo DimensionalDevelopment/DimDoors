@@ -227,7 +227,7 @@ public class DDTeleporter
 			&& blockID != properties.GoldenDimensionalDoorID)
 		{
 			//Return the pocket's orientation instead
-			return PocketManager.getDimensionData(door.getDimension()).orientation();
+			return PocketManager.createDimensionData(world).orientation();
 		}
 		
 		//Return the orientation portion of its metadata
@@ -294,7 +294,7 @@ public class DDTeleporter
 				// to prevent us from doing bad things. Moreover, no dimension is being created, so if we ever
 				// tie code to that, it could cause confusing bugs.
 				// No hacky for you! ~SenseiKiwi
-				PocketManager.getDimwatcher().onCreated(new ClientDimData(PocketManager.getDimensionData(destination.getDimension())));
+				PocketManager.getDimwatcher().onCreated(new ClientDimData(PocketManager.createDimensionData(newWorld)));
 				  
 				// Set the new dimension and inform the client that it's moving to a new world.
 				player.dimension = destination.getDimension();
@@ -552,7 +552,7 @@ public class DDTeleporter
 		// To avoid loops, don't generate a destination if the player is
 		// already in a non-pocket dimension.
 		
-		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
+		NewDimData current = PocketManager.getDimensionData(link.source().getDimension());
 		if (current.isPocketDimension())
 		{
 			Point4D source = link.source();
@@ -606,9 +606,10 @@ public class DDTeleporter
 			}
 		}
 	}
+	
 	private static boolean generateSafeExit(DimLink link, DDProperties properties)
 	{
-		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
+		NewDimData current = PocketManager.getDimensionData(link.source().getDimension());
 		return generateSafeExit(current.root(), link, properties);
 	}
 	
@@ -619,7 +620,7 @@ public class DDTeleporter
 		// There is a chance of choosing the Nether first before other root dimensions
 		// to compensate for servers with many Mystcraft ages or other worlds.
 		
-		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
+		NewDimData current = PocketManager.getDimensionData(link.source().getDimension());
 		ArrayList<NewDimData> roots = PocketManager.getRootDimensions();
 		int shiftChance = START_ROOT_SHIFT_CHANCE + ROOT_SHIFT_CHANCE_PER_LEVEL * (current.packDepth() - 1);
 
@@ -627,11 +628,11 @@ public class DDTeleporter
 		{
 			if (current.root().id() != OVERWORLD_DIMENSION_ID && random.nextInt(MAX_OVERWORLD_EXIT_CHANCE) < OVERWORLD_EXIT_CHANCE)
 			{
-				return generateSafeExit(PocketManager.getDimensionData(OVERWORLD_DIMENSION_ID), link, properties);
+				return generateSafeExit(PocketManager.createDimensionDataDangerously(OVERWORLD_DIMENSION_ID), link, properties);
 			}
 			if (current.root().id() != NETHER_DIMENSION_ID && random.nextInt(MAX_NETHER_EXIT_CHANCE) < NETHER_EXIT_CHANCE)
 			{
-				return generateSafeExit(PocketManager.getDimensionData(NETHER_DIMENSION_ID), link, properties);
+				return generateSafeExit(PocketManager.createDimensionDataDangerously(NETHER_DIMENSION_ID), link, properties);
 			}
 			for (int attempts = 0; attempts < 10; attempts++)
 			{
@@ -735,7 +736,7 @@ public class DDTeleporter
 			// Create a reverse link for returning
 			int orientation = getDestinationOrientation(source, properties);
 			NewDimData sourceDim = PocketManager.getDimensionData(link.source().getDimension());
-			DimLink reverse = destinationDim.createLink(x, y + 2, z, LinkTypes.REVERSE,orientation);
+			DimLink reverse = destinationDim.createLink(x, y + 2, z, LinkTypes.REVERSE, orientation);
 			sourceDim.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());
 			
 			// Set up the warp door at the destination
