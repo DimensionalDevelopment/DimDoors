@@ -2,6 +2,9 @@ package StevenDimDoors.mod_pocketDim.blocks;
 
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.ITileEntityProvider;
@@ -111,14 +114,6 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	{
 		this.placeLink(world, x, y, z);
 		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
-		this.updateAttachedTile(world, x, y, z);
-	}
-	
-	@Override
-	public void updateTick(World world, int x, int y, int z, Random random) 
-	{
-		TileEntityTransTrapdoor tile = (TileEntityTransTrapdoor) world.getBlockTileEntity(x, y, z);
-		tile.hasRift = PocketManager.getLink(x, y, z, world) != null;
 	}
 	
 	@Override
@@ -126,23 +121,13 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	{
 		return new TileEntityTransTrapdoor();
 	}
-
-	public void updateAttachedTile(World world, int x, int y, int z)
-	{
-		TileEntity tile = world.getBlockTileEntity(x, y, z);
-		if (tile instanceof TileEntityTransTrapdoor)
-		{
-			TileEntityTransTrapdoor trapdoorTile = (TileEntityTransTrapdoor) tile;
-			trapdoorTile.hasRift = (PocketManager.getLink(x, y, z, world) != null);
-		}
-	}
 	
 	@Override
 	public void placeLink(World world, int x, int y, int z) 
 	{
 		if (!world.isRemote)
 		{
-			NewDimData dimension = PocketManager.getDimensionData(world);
+			NewDimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(x, y, z);
 			if (link == null && dimension.isPocketDimension())
 			{
@@ -150,18 +135,30 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 			}
 		}
 	}
-
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public int idPicked(World world, int x, int y, int z)
+	{
+		return this.getDoorItem();
+	}
 	
 	@Override
 	public int idDropped(int metadata, Random random, int fortuneLevel)
     {
-        return getDrops();
+        return this.getDrops();
     }
+	
+	@Override
+	public int getDoorItem()
+	{
+		return mod_pocketDim.transTrapdoor.blockID;
+	}
 
 	@Override
 	public int getDrops()
 	{
-		return  Block.trapdoor.blockID;
+		return Block.trapdoor.blockID;
 	}	
 	
 	public static boolean isTrapdoorSetLow(int metadata)
@@ -182,4 +179,18 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	{
 		return PocketManager.getLink(x, y, z, world)!=null;
 	}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, int oldBlockID, int oldMeta)
+    {
+		// This function runs on the server side after a block is replaced
+		// We MUST call super.breakBlock() since it involves removing tile entities
+        super.breakBlock(world, x, y, z, oldBlockID, oldMeta);
+        
+        // Schedule rift regeneration for this block if it was replaced
+        if (world.getBlockId(x, y, z) != oldBlockID)
+        {
+        	mod_pocketDim.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
+        }
+    }
 }

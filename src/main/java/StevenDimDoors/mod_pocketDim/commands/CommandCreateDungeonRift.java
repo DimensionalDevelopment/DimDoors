@@ -1,5 +1,9 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
+import java.util.Collection;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.MathHelper;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkType;
@@ -8,12 +12,6 @@ import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
-
-import java.util.Collection;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.MathHelper;
 
 public class CommandCreateDungeonRift extends DDCommandBase
 {
@@ -38,10 +36,6 @@ public class CommandCreateDungeonRift extends DDCommandBase
 		NewDimData dimension;
 		DungeonHelper dungeonHelper = DungeonHelper.instance();
 
-		if (sender.worldObj.isRemote)
-		{
-			return DDCommandResult.SUCCESS;
-		}
 		if (command.length == 0)
 		{
 			return DDCommandResult.TOO_FEW_ARGUMENTS;
@@ -69,6 +63,7 @@ public class CommandCreateDungeonRift extends DDCommandBase
 		{
 			dimension = PocketManager.getDimensionData(sender.worldObj);
 			link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
+
 			if (PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result))
 			{
 				// Create a rift to our selected dungeon and notify the player

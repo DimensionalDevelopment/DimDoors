@@ -25,13 +25,19 @@ public class BlockGoldDimDoor extends BaseDimDoor
 	{
 		if (!world.isRemote && world.getBlockId(x, y - 1, z) == this.blockID)
 		{
-			NewDimData dimension = PocketManager.getDimensionData(world);
+			NewDimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(x, y, z);
 			if (link == null)
 			{
 				dimension.createLink(x, y, z, LinkType.POCKET,world.getBlockMetadata(x, y - 1, z));
 			}
 		}
+	}
+	
+	@Override
+	public int getDoorItem()
+	{
+		return mod_pocketDim.itemGoldenDimensionalDoor.itemID;
 	}
 	
 	@Override

@@ -31,6 +31,7 @@ public class GatewayLimbo extends BaseGateway
 		world.setBlock(x, y + 1, z + 1, blockID, 0, 3);
 
 		PocketManager.getDimensionData(world).createLink(x, y + 2, z, LinkType.DUNGEON, 0);
+
 		ItemDoor.placeDoorBlock(world, x, y + 1, z, 0, mod_pocketDim.transientDoor);
 		return true;
 	}

@@ -45,7 +45,7 @@ public abstract class BaseSchematicGateway extends BaseGateway
 		
 		// Generate a dungeon link in the door
 		PocketManager.getDimensionData(world).createLink(x, y + doorLocation.getY(), z, LinkType.DUNGEON, orientation);
-		
+
 		return true;
 	}
 	

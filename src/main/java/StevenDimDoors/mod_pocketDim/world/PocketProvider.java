@@ -7,7 +7,6 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
@@ -90,7 +89,7 @@ public class PocketProvider extends WorldProvider
 	@Override
 	protected void generateLightBrightnessTable()
 	{
-		if(PocketManager.getDimensionData(this.dimensionId).getDimensionType() == DimensionType.POCKET)
+		if(PocketManager.getDimensionData(this.dimensionId).type() == DimensionType.POCKET)
 		{
 			super.generateLightBrightnessTable();
 			return;
@@ -126,11 +125,8 @@ public class PocketProvider extends WorldProvider
 		{
 			respawnDim = PocketManager.getDimensionData(this.dimensionId).root().id();
 		}
-
-		if (DimensionManager.getWorld(respawnDim) == null)
-		{
-			DimensionManager.initDimension(respawnDim);
-		}
+		// TODO: Are we sure we need to load the dimension as well? Why can't the game handle that?
+		PocketManager.loadDimension(respawnDim);
 		return respawnDim;
 	}
 

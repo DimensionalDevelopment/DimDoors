@@ -24,7 +24,7 @@ public class ClientDimData
 	{
 		ID = dimension.id();
 		this.rootID = dimension.root().id();
-		this.type = dimension.getDimensionType();
+		this.type = dimension.type();
 	}
 	
 	public void write(DataOutputStream output) throws IOException

@@ -1,85 +1,93 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
-import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.common.ForgeChunkManager.Type;
 import StevenDimDoors.mod_pocketDim.IChunkLoader;
-import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.helpers.ChunkLoaderHelper;
 import StevenDimDoors.mod_pocketDim.world.PocketBuilder;
 
 public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLoader
 {
 	private Ticket chunkTicket;
+	private boolean initialized = false;
 
 	@Override
 	public boolean canUpdate()
 	{
-		return true;
+		return !initialized;
+	}
+	
+	@Override
+	public boolean isInitialized()
+	{
+		return initialized;
 	}
 
 	@Override
 	public void updateEntity() 
-	{ // every tick?
-		if (PocketManager.getDimensionData(this.worldObj) != null &&
-				PocketManager.getDimensionData(this.worldObj).isPocketDimension() &&
-				!this.worldObj.isRemote)
-		{ 
-			if(PocketManager.getLink(this.xCoord,this.yCoord,this.zCoord,this.worldObj)==null)
+	{
+		if (!initialized)
+		{
+			initialize(null);
+		}
+	}
+	
+	@Override
+	public void initialize(Ticket ticket)
+	{
+		initialized = true;
+		chunkTicket = ticket;
+		
+		// Only do anything if this function is running on the server side
+		// NOTE: We don't have to check whether this block is the upper door
+		// block or the lower one because only one of them should have a
+		// link associated with it.
+		if (!worldObj.isRemote)
+		{
+			NewDimData dimension = PocketManager.createDimensionData(worldObj);
+			
+			// Check whether a ticket has already been assigned to this door
+			if (chunkTicket == null)
 			{
-				return;
-			}
-			if (this.chunkTicket == null)
-			{
-				chunkTicket = ForgeChunkManager.requestTicket(mod_pocketDim.instance, worldObj, Type.NORMAL);
-				if(chunkTicket == null)
+				// No ticket yet.
+				// Check if this area should be loaded and request a new ticket.
+				if (isValidChunkLoaderSetup(dimension))
 				{
-					return;
+					chunkTicket = ChunkLoaderHelper.createTicket(xCoord, yCoord, zCoord, worldObj);
 				}
-				chunkTicket.getModData().setInteger("goldDimDoorX", xCoord);
-				chunkTicket.getModData().setInteger("goldDimDoorY", yCoord);
-				chunkTicket.getModData().setInteger("goldDimDoorZ", zCoord);
-				forceChunkLoading(chunkTicket,this.xCoord,this.zCoord);
+			}
+			else
+			{
+				// A ticket has already been provided.
+				// Check if this area should be loaded. If not, release the ticket.
+				if (!isValidChunkLoaderSetup(dimension))
+				{
+					ForgeChunkManager.releaseTicket(chunkTicket);
+					chunkTicket = null;
+				}
+			}
+			
+			// If chunkTicket isn't null at this point, then this is a valid door setup.
+			// The last step is to request force loading of the pocket's chunks.
+			if (chunkTicket != null)
+			{
+				ChunkLoaderHelper.forcePocketChunks(dimension, chunkTicket);
 			}
 		}
 	}
-
-	@Override
-	public void forceChunkLoading(Ticket chunkTicket,int x,int z)
+	
+	private boolean isValidChunkLoaderSetup(NewDimData dimension)
 	{
-		Point4D origin = PocketManager.getDimensionData(this.worldObj).origin();
-		int orientation = PocketManager.getDimensionData(this.worldObj).orientation();
+		// Check the various conditions that make this a valid door setup.
+		// 1. The door must be inside the pocket's XZ boundaries,
+		//		to prevent loading of chunks with a distant door
+		// 2. The dimension must be a pocket dimension
+		// 3. The door must be linked so that it's clear that it's not a normal door
 		
-		int xOffset=0;
-		int zOffset=0;
-		
-		switch(orientation)
-		{
-		case 0:
-			xOffset = PocketBuilder.DEFAULT_POCKET_SIZE/2;
-			break;
-		case 1: 
-			zOffset = PocketBuilder.DEFAULT_POCKET_SIZE/2;
-
-			break;
-		case 2:
-			xOffset = -PocketBuilder.DEFAULT_POCKET_SIZE/2;
-
-			break;
-		case 3:
-			zOffset = -PocketBuilder.DEFAULT_POCKET_SIZE/2;
-
-			break;
-		}
-		for(int chunkX = -2; chunkX<3;chunkX++)
-		{
-			for(int chunkZ = -2; chunkZ<3;chunkZ++)
-			{
-				ForgeChunkManager.forceChunk(chunkTicket, new ChunkCoordIntPair((origin.getX()+xOffset >> 4)+chunkX, (origin.getZ()+zOffset >> 4)+chunkZ));
-			}
-		}
+		return (dimension.isPocketDimension() && dimension.getLink(xCoord, yCoord, zCoord) != null &&
+				PocketBuilder.calculateDefaultBounds(dimension).contains(xCoord, yCoord, zCoord));
 	}
 
 	@Override

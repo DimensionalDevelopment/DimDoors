@@ -3,16 +3,15 @@ package StevenDimDoors.mod_pocketDim.blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
-@SuppressWarnings("deprecation")
 public class DimensionalDoor extends BaseDimDoor
 {
-
 	public DimensionalDoor(int blockID, Material material, DDProperties properties) 
 	{
 		super(blockID, material, properties);
@@ -23,7 +22,7 @@ public class DimensionalDoor extends BaseDimDoor
 	{
 		if (!world.isRemote && world.getBlockId(x, y - 1, z) == this.blockID)
 		{
-			NewDimData dimension = PocketManager.getDimensionData(world);
+			NewDimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(x, y, z);
 			if (link == null)
 			{
@@ -31,6 +30,13 @@ public class DimensionalDoor extends BaseDimDoor
 			}
 		}
 	}
+	
+	@Override
+	public int getDoorItem()
+	{
+		return mod_pocketDim.itemDimensionalDoor.itemID;
+	}
+	
 	@Override
 	public int getDrops()
 	{

@@ -31,10 +31,6 @@ public class CommandListDungeons extends DDCommandBase
 		int pageCount;
 		ArrayList<String> dungeonNames;
 
-		if (sender.worldObj.isRemote)
-		{
-			return DDCommandResult.SUCCESS;
-		}
 		if (command.length > 1)
 		{
 			return DDCommandResult.TOO_MANY_ARGUMENTS;

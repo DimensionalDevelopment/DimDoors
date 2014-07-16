@@ -70,41 +70,37 @@ public class ItemRiftSignature extends Item
 		int orientation = MathHelper.floor_double(((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
 		if (source != null)
 		{
-			//The link was used before and already has an endpoint stored. Create links connecting the two endpoints.
+			// The link was used before and already has an endpoint stored.
+			// Create links connecting the two endpoints.
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
 			NewDimData destinationDimension = PocketManager.getDimensionData(world);
 
 			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkType.NORMAL,source.getOrientation());
 			DimLink reverse = destinationDimension.createLink(x, adjustedY, z, LinkType.NORMAL,orientation);
+
 			destinationDimension.setLinkDestination(link, x, adjustedY, z);
 			sourceDimension.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());
 
-			//Try placing a rift at the destination point
-			if (!mod_pocketDim.blockRift.isBlockImmune(world, x, adjustedY, z))
-			{
-				world.setBlock(x, adjustedY, z, mod_pocketDim.blockRift.blockID);
-			}
+			// Try placing a rift at the destination point
+			mod_pocketDim.blockRift.tryPlacingRift(world, x, adjustedY, z);
 
-			//Try placing a rift at the source point, but check if its world is loaded first
+			// Try placing a rift at the source point
+			// We don't need to check if sourceWorld is null - that's already handled.
 			World sourceWorld = DimensionManager.getWorld(sourceDimension.id());
-			if (sourceWorld != null &&
-				!mod_pocketDim.blockRift.isBlockImmune(sourceWorld, source.getX(), source.getY(), source.getZ()))
-			{
-				sourceWorld.setBlock(source.getX(), source.getY(), source.getZ(), mod_pocketDim.blockRift.blockID);
-			}
+			mod_pocketDim.blockRift.tryPlacingRift(sourceWorld, source.getX(), source.getY(), source.getZ());
 
 			if (!player.capabilities.isCreativeMode)
 			{
 				stack.stackSize--;
 			}
 			clearSource(stack);
-			mod_pocketDim.sendChat(player,("Rift Created"));
-			world.playSoundAtEntity(player,mod_pocketDim.modid+":riftEnd", 0.6f, 1);
+			mod_pocketDim.sendChat(player, "Rift Created");
+			world.playSoundAtEntity(player, mod_pocketDim.modid + ":riftEnd", 0.6f, 1);
 		}
 		else
 		{
 			//The link signature has not been used. Store its current target as the first location. 
-			setSource(stack, x, adjustedY, z,orientation, PocketManager.getDimensionData(world));
+			setSource(stack, x, adjustedY, z, orientation, PocketManager.createDimensionData(world));
 			mod_pocketDim.sendChat(player,("Location Stored in Rift Signature"));
 			world.playSoundAtEntity(player,mod_pocketDim.modid+":riftStart", 0.6f, 1);
 		}

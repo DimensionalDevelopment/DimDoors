@@ -65,7 +65,8 @@ public class ComponentNetherGateway extends StructureComponent
      * second Part of Structure generating, this for example places Spiderwebs, Mob Spawners, it closes Mineshafts at
      * the end, it adds Fences...
      */
-    public boolean addComponentParts(World world, Random random, StructureBoundingBox bounds)
+    @Override
+	public boolean addComponentParts(World world, Random random, StructureBoundingBox bounds)
     {
     	int NETHER_SLAB_METADATA = 6;
         
@@ -152,7 +153,7 @@ public class ComponentNetherGateway extends StructureComponent
         if (bounds.isVecInside(x, y, z) && bounds.isVecInside(x, y + 1, z))
         {
         	orientation = this.getMetadataWithOffset(Block.doorWood.blockID, 1);
-        	dimension = PocketManager.getDimensionData(world);
+        	dimension = PocketManager.createDimensionData(world);
         	link = dimension.getLink(x, y + 1, z);
         	if (link == null)
         	{

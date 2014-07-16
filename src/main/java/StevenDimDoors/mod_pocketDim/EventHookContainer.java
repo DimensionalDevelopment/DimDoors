@@ -4,10 +4,11 @@ import net.minecraft.client.audio.SoundManager;
 import net.minecraft.client.audio.SoundPoolEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.EventPriority;
@@ -17,15 +18,18 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import StevenDimDoors.mod_pocketDim.blocks.TransTrapdoor;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
+import StevenDimDoors.mod_pocketDim.config.DDWorldProperties;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
+import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemWarpDoor;
+import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
@@ -35,11 +39,24 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class EventHookContainer
 {
+	private static final int MAX_FOOD_LEVEL = 20;
+	
 	private final DDProperties properties;
+	private DDWorldProperties worldProperties;
+	private RiftRegenerator regenerator;
 
 	public EventHookContainer(DDProperties properties)
 	{
 		this.properties = properties;
+	}
+	
+	public void setSessionFields(DDWorldProperties worldProperties, RiftRegenerator regenerator)
+	{
+		// SenseiKiwi:
+		// Why have a setter rather than accessing mod_pocketDim directly?
+		// I want to make this dependency explicit in our code.
+		this.worldProperties = worldProperties;
+		this.regenerator = regenerator;
 	}
 
 	@ForgeSubscribe(priority = EventPriority.LOW)
@@ -101,7 +118,7 @@ public class EventHookContainer
 			{
 				NewDimData data = PocketManager.getDimensionData(world);
 				
-				if(data.getDimensionType() == DimensionType.PERSONAL)
+				if(data.type() == DimensionType.PERSONAL)
 				{
 					mod_pocketDim.sendChat(event.entityPlayer,("Something prevents the Warp Door from tunneling out here"));
 					event.setCanceled(true);
@@ -153,7 +170,7 @@ public class EventHookContainer
 		Entity entity = event.entity;
 
 		if (properties.LimboEnabled && properties.LimboReturnsInventoryEnabled &&
-				entity instanceof EntityPlayer)
+				entity instanceof EntityPlayer && isValidSourceForLimbo(entity.worldObj.provider))
 		{
 			if(entity.worldObj.provider instanceof PocketProvider)
 			{
@@ -186,7 +203,7 @@ public class EventHookContainer
 
 		Entity entity = event.entity;
 
-		if (entity instanceof EntityPlayer && entity.worldObj.provider instanceof PocketProvider)
+		if (entity instanceof EntityPlayer && isValidSourceForLimbo(entity.worldObj.provider))
 		{
 			EntityPlayer player = (EntityPlayer) entity;
 			mod_pocketDim.deathTracker.addUsername(player.username);
@@ -201,12 +218,24 @@ public class EventHookContainer
 		}
 		return true;
 	}
+	
+	private boolean isValidSourceForLimbo(WorldProvider provider)
+	{
+		// Returns whether a given world is a valid place for sending a player
+		// to Limbo. We can send someone to Limbo from a certain dimension if
+		// Universal Limbo is enabled and the source dimension is not Limbo, or
+		// if the source dimension is a pocket dimension.
+		
+		return (worldProperties.UniversalLimboEnabled && provider.dimensionId != properties.LimboDimensionID) ||
+				(provider instanceof PocketProvider);
+	}
 
 	private void revivePlayerInLimbo(EntityPlayer player)
 	{
 		player.extinguish();
 		player.clearActivePotions();
 		player.setHealth(player.getMaxHealth());
+		player.getFoodStats().addStats(MAX_FOOD_LEVEL, 0);
 		Point4D destination = LimboProvider.getLimboSkySpawn(player, properties);
 		DDTeleporter.teleportEntity(player, destination, false);
 	}
@@ -221,6 +250,25 @@ public class EventHookContainer
 			if (mod_pocketDim.deathTracker != null && mod_pocketDim.deathTracker.isModified())
 			{
 				mod_pocketDim.deathTracker.writeToFile();
+			}
+		}
+	}
+	
+	@ForgeSubscribe
+	public void onChunkLoad(ChunkEvent.Load event)
+	{
+		// Schedule rift regeneration for any links located in this chunk.
+		// This event runs on both the client and server. Allow server only.
+		// Also, check that PocketManager is loaded, because onChunkLoad() can
+		// fire while chunks are being initialized in a new world, before
+		// onWorldLoad() fires.
+		Chunk chunk = event.getChunk();
+		if (!chunk.worldObj.isRemote && PocketManager.isLoaded())
+		{
+			NewDimData dimension = PocketManager.createDimensionData(chunk.worldObj);
+			for (DimLink link : dimension.getChunkLinks(chunk.xPosition, chunk.zPosition))
+			{
+				regenerator.scheduleSlowRegeneration(link);
 			}
 		}
 	}

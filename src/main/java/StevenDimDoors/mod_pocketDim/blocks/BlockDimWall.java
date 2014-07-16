@@ -106,6 +106,7 @@ public class BlockDimWall extends Block
 			subItems.add(new ItemStack(this, 1, ix));
 		}
 	}
+	
     @Override
 	public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {}
     

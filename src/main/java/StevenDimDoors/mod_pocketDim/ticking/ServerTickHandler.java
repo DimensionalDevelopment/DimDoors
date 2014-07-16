@@ -7,24 +7,29 @@ import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
-public class CommonTickHandler implements ITickHandler, IRegularTickSender
+public class ServerTickHandler implements ITickHandler, IRegularTickSender
 {
-	private static final String PROFILING_LABEL = "Dimensional Doors: Common Tick";
+	private static final String PROFILING_LABEL = "Dimensional Doors: Server Tick";
 	
 	private int tickCount = 0;
 	private ArrayList<RegularTickReceiverInfo> receivers;
 
-
-	public CommonTickHandler()
+	public ServerTickHandler()
 	{
 		this.receivers = new ArrayList<RegularTickReceiverInfo>();
 	}
 
 	@Override
-	public void registerForTicking(IRegularTickReceiver receiver, int interval, boolean onTickStart)
+	public void registerReceiver(IRegularTickReceiver receiver, int interval, boolean onTickStart)
 	{
 		RegularTickReceiverInfo info = new RegularTickReceiverInfo(receiver, interval, onTickStart);
 		receivers.add(info);
+	}
+	
+	@Override
+	public void unregisterReceivers()
+	{
+		receivers.clear();
 	}
 
 	@Override

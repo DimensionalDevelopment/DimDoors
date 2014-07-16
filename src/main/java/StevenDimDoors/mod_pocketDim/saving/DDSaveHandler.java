@@ -210,12 +210,13 @@ public class DDSaveHandler
 			{
 				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
 				LinkType linkType = LinkType.getLinkTypeFromIndex(packedLink.tail.linkType);
+
 				
 				DimLink link = data.createLink(packedLink.source, linkType, packedLink.orientation, packedLink.lock);
 				Point4D destination = packedLink.tail.destination;
 				if(destination!=null)
 				{
-					PocketManager.getDimensionData(destination.getDimension()).setLinkDestination(link, destination.getX(),destination.getY(),destination.getZ());
+					PocketManager.createDimensionDataDangerously(destination.getDimension()).setLinkDestination(link, destination.getX(),destination.getY(),destination.getZ());
 				}
 				unpackedLinks.add(packedLink);
 			}
@@ -227,7 +228,7 @@ public class DDSaveHandler
 		{
 			for(PackedLinkData packedLink : linksToUnpack)
 			{
-				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
+				NewDimData data = PocketManager.createDimensionDataDangerously(packedLink.source.getDimension());
 				if(data.getLink(packedLink.parent)!=null)
 				{
 					data.createChildLink(packedLink.source, data.getLink(packedLink.parent), packedLink.lock);

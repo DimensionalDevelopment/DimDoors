@@ -161,7 +161,7 @@ public class DungeonSchematic extends Schematic {
 		applyFilter(standardizer);
 	}
 	
-	private Map<Short, Short> getAssignedToStandardIDMapping(DDProperties properties)
+	private static Map<Short, Short> getAssignedToStandardIDMapping(DDProperties properties)
 	{
 		//If we ever need this broadly or support other mods, this should be moved to a separate class
 		TreeMap<Short, Short> mapping = new TreeMap<Short, Short>();
@@ -246,7 +246,7 @@ public class DungeonSchematic extends Schematic {
 			world.setBlockTileEntity(pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), TileEntity.createAndLoadEntity(tileTag));
 		}
 		
-		setUpDungeon(PocketManager.getDimensionData(world), world, pocketCenter, turnAngle, entryLink, random, properties, blockSetter);
+		setUpDungeon(PocketManager.createDimensionData(world), world, pocketCenter, turnAngle, entryLink, random, properties, blockSetter);
 	}
 	
 	private void setUpDungeon(NewDimData dimension, World world, Point3D pocketCenter, int turnAngle, DimLink entryLink, Random random, DDProperties properties, IBlockSetter blockSetter)

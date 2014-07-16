@@ -215,10 +215,7 @@ public class yCoordHelper
 		{
 			for (int dz = -1; dz <= 1; dz++)
 			{
-				if (!provider.chunkExists(chunkX + dx, chunkZ + dz))
-				{
-					provider.loadChunk(chunkX, chunkZ);
-				}
+				provider.loadChunk(chunkX, chunkZ);
 			}
 		}
 		return target;

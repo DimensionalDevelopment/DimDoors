@@ -3,7 +3,7 @@ package StevenDimDoors.mod_pocketDim.core;
 import java.util.LinkedList;
 import java.util.List;
 import net.minecraft.item.ItemStack;
-import StevenDimDoors.mod_pocketDim.items.ItemDDKey;
+import net.minecraft.world.ChunkCoordIntPair;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public abstract class DimLink
@@ -87,12 +87,12 @@ public abstract class DimLink
 	
 	public int getDestinationOrientation()
 	{
-		DimLink link = PocketManager.getLink(this.destination().getX(), this.destination().getY(), this.destination().getZ(), this.destination().getDimension());
-		if(link !=null)
+		DimLink destinationLink = PocketManager.getLink(tail.getDestination());
+		if (destinationLink != null)
 		{
-			return link.orientation();
+			return destinationLink.orientation();
 		}
-		return (this.orientation()+2)%4;
+		return (orientation + 2) % 4;
 	}
 	
 	public boolean hasDestination()
@@ -120,11 +120,6 @@ public abstract class DimLink
 		return tail.getLinkType();
 	}
 	
-	@Override
-	public String toString()
-	{
-		return point + " -> " + (hasDestination() ? destination() : "");
-	}
 	
 	/**
 	 * Tries to open this lock. Returns true if the lock is open or if the key can open it
@@ -169,5 +164,16 @@ public abstract class DimLink
 	public DDLock getLock()
 	{
 		return this.lock;
+	}
+	
+	public ChunkCoordIntPair getChunkCoordinates()
+	{
+		return new ChunkCoordIntPair(point.getX() >> 4, point.getZ() >> 4);
+	}
+
+	@Override
+	public String toString()
+	{
+		return point + " -> " + (hasDestination() ? destination() : "()");
 	}
 }

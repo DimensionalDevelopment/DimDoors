@@ -38,11 +38,7 @@ public class CommandCreateRandomRift extends DDCommandBase
 	{
 		NewDimData dimension;
 		DungeonHelper dungeonHelper = DungeonHelper.instance();
-
-		if (sender.worldObj.isRemote)
-		{
-			return DDCommandResult.SUCCESS;
-		}
+		
 		if (command.length > 1)
 		{
 			return DDCommandResult.TOO_MANY_ARGUMENTS;
@@ -59,6 +55,7 @@ public class CommandCreateRandomRift extends DDCommandBase
 		{
 			dimension = PocketManager.getDimensionData(sender.worldObj);
 			link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
+
 			sender.worldObj.setBlock(x, y + 1, z,mod_pocketDim.blockRift.blockID, 0, 3);
 			sendChat(sender, "Created a rift to a random dungeon.");
 		}
@@ -75,6 +72,7 @@ public class CommandCreateRandomRift extends DDCommandBase
 			{
 				dimension = PocketManager.getDimensionData(sender.worldObj);
 				link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
+
 				if (PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result))
 				{
 					// Create a rift to our selected dungeon and notify the player
@@ -118,9 +116,6 @@ public class CommandCreateRandomRift extends DDCommandBase
 		{
 			return null;
 		}
-		else
-		{
-			return matches.get( random.nextInt(matches.size()) );
-		}
+		return matches.get( random.nextInt(matches.size()) );
 	}
 }

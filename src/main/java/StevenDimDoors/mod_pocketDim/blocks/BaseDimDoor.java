@@ -32,9 +32,9 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
     protected final DDProperties properties;
 	
 	@SideOnly(Side.CLIENT)
-    private Icon[] upperTextures;
+    protected Icon[] upperTextures;
     @SideOnly(Side.CLIENT)
-    private Icon[] lowerTextures;
+    protected Icon[] lowerTextures;
 	
 	public BaseDimDoor(int blockID, Material material, DDProperties properties) 
 	{
@@ -172,16 +172,13 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
                     reversed = !reversed;
                 }
             }
-
             if (isUpperDoorBlock(fullMetadata))
+            {
             	return this.upperTextures[reversed ? 1 : 0];
-            else
-            	return this.lowerTextures[reversed ? 1 : 0];
+            }
+            return this.lowerTextures[reversed ? 1 : 0];
         }
-        else
-        {
-            return this.lowerTextures[0];
-        }
+        return this.lowerTextures[0];
     }
 
 	//Called to update the render information on the tile entity. Could probably implement a data watcher,
@@ -189,6 +186,14 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	public BaseDimDoor updateAttachedTile(World world, int x, int y, int z)
 	{
 		mod_pocketDim.proxy.updateDoorTE(this, world, x, y, z);
+		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		if (tile instanceof TileEntityDimDoor)
+		{
+			int metadata = world.getBlockMetadata(x, y, z);
+			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
+			dimTile.openOrClosed = isDoorOnRift(world, x, y, z) && isUpperDoorBlock(metadata);
+			dimTile.orientation = this.getFullMetadata(world, x, y, z) & 7;
+		}
 		return this;
 	}
 	
@@ -196,6 +201,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	{
 		return this.getLink(world, x, y, z) != null;
 	}
+	
 	public DimLink getLink(World world, int x, int y, int z)
 	{
 		DimLink link= PocketManager.getLink(x, y, z, world.provider.dimensionId);
@@ -336,7 +342,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		{
 			if (world.getBlockId(x, y - 1, z) != this.blockID)
 			{
-				world.setBlock(x, y, z, 0);
+				world.setBlockToAir(x, y, z);
 			}
 			if (neighborID > 0 && neighborID != this.blockID)
 			{
@@ -347,7 +353,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		{
 			if (world.getBlockId(x, y + 1, z) != this.blockID)
 			{
-				world.setBlock(x, y, z, 0);
+				world.setBlockToAir(x, y, z);
 				if (!world.isRemote)
 				{
 					this.dropBlockAsItem(world, x, y, z, metadata, 0);
@@ -369,30 +375,19 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public int idPicked(World par1World, int par2, int par3, int par4)
+	public int idPicked(World world, int x, int y, int z)
 	{
-		return this.getDrops();
+		return this.getDoorItem();
 	}
 
     /**
      * Returns the ID of the items to drop on destruction.
      */
-    public int idDropped(int metadata, Random random, int fortune)
+    @Override
+	public int idDropped(int metadata, Random random, int fortune)
     {
         return isUpperDoorBlock(metadata) ? 0 : this.getDrops();
     }
-
-	/**
-	 * Called when the block is attempted to be harvested
-	 */
-	@Override
-	public void onBlockHarvested(World par1World, int par2, int par3, int par4, int par5, EntityPlayer par6EntityPlayer)
-	{
-		if (par6EntityPlayer.capabilities.isCreativeMode && (par5 & 8) != 0 && par1World.getBlockId(par2, par3 - 1, par4) == this.blockID)
-		{
-			par1World.setBlock(par2, par3 - 1, par4, 0);
-		}
-	}
 
 	@Override
 	public TileEntity createNewTileEntity(World world)
@@ -534,4 +529,18 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		world.setBlockTileEntity(x, y, z, te);
 		return te;
 	}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, int oldBlockID, int oldMeta)
+    {
+		// This function runs on the server side after a block is replaced
+		// We MUST call super.breakBlock() since it involves removing tile entities
+        super.breakBlock(world, x, y, z, oldBlockID, oldMeta);
+        
+        // Schedule rift regeneration for this block if it was replaced
+        if (world.getBlockId(x, y, z) != oldBlockID)
+        {
+        	mod_pocketDim.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
+        }
+    }
 }

@@ -1,15 +1,12 @@
 package StevenDimDoors.mod_pocketDim.commands;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-
-import java.util.Arrays;
-import java.util.List;
-
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.common.DimensionManager;
 
 public class CommandTeleportPlayer extends DDCommandBase
 {	
@@ -17,7 +14,10 @@ public class CommandTeleportPlayer extends DDCommandBase
 	
 	private CommandTeleportPlayer()
 	{
-		super("dd-tp", new String[] {"<Player Name> <Dimension ID> <X Coord> <Y Coord> <Z Coord>","<Player Name> <Dimension ID>"} );
+		super("dd-tp", new String[] {
+				"<player name> <dimension number>",
+				"<player name> <x> <y> <z>",
+				"<player name> <dimension number> <x> <y> <z>"} );
 	}
 	
 	public static CommandTeleportPlayer instance()
@@ -28,110 +28,119 @@ public class CommandTeleportPlayer extends DDCommandBase
 		return instance;
 	}
 	
-	/**
-	 * TODO- Change to accept variety of input, like just coords, just dim ID, or two player names. 
-	 */
 	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command) 
 	{
-		EntityPlayer targetPlayer = sender;
-		int dimDestinationID = sender.worldObj.provider.dimensionId;
+		int x;
+		int y;
+		int z;
+		World world;
+		int dimensionID;
+		Point4D destination;
+		NewDimData dimension;
+		boolean checkOrientation;
+		EntityPlayer targetPlayer;
 		
-		if(command.length == 5)
+		if (command.length < 2)
 		{
-			for(int i= 1; i <5;i++)
-			{
-				if(!isInteger(command[i]))
-				{
-					return DDCommandResult.INVALID_ARGUMENTS;
-				}
-			}
-			if(sender.worldObj.getPlayerEntityByName(command[0])!=null) //Gets the targeted player
-			{
-				targetPlayer = sender.worldObj.getPlayerEntityByName(command[0]);
-			}
-			else
-			{
-				return DDCommandResult.INVALID_ARGUMENTS;
-			}
-			dimDestinationID=Integer.parseInt(command[1]);//gets the target dim ID from the command string
-			
-			if(!DimensionManager.isDimensionRegistered(dimDestinationID))
-			{
-				return DDCommandResult.INVALID_DIMENSION_ID;
-			}
-	
-			PocketManager.loadDimension(dimDestinationID);
-			Point4D destination = new Point4D(Integer.parseInt(command[2]),Integer.parseInt(command[3]),Integer.parseInt(command[4]),dimDestinationID);
-			DDTeleporter.teleportEntity(targetPlayer, destination, false);
+			return DDCommandResult.TOO_FEW_ARGUMENTS;
 		}
-		else if(command.length == 2 && isInteger(command[1]))
+		if (command.length > 5)
 		{
-			if(sender.worldObj.getPlayerEntityByName(command[0])!=null) //Gets the targeted player
-			{
-				targetPlayer = sender.worldObj.getPlayerEntityByName(command[0]);
-			}
-			else
-			{
-				return DDCommandResult.INVALID_ARGUMENTS;
-			}
-			dimDestinationID=Integer.parseInt(command[1]);//gets the target dim ID from the command string
-			
-			if(!DimensionManager.isDimensionRegistered(dimDestinationID))
-			{
-				return DDCommandResult.INVALID_DIMENSION_ID;
-			}
-	
-		
-			Point4D destination = PocketManager.getDimensionData(dimDestinationID).origin();
-			if(!PocketManager.getDimensionData(dimDestinationID).isPocketDimension())
-			{
-				destination = new Point4D(destination.getX(),PocketManager.loadDimension(dimDestinationID).getTopSolidOrLiquidBlock(
-						destination.getX(), destination.getZ()),
-						destination.getZ(),destination.getDimension());
-			}
-			DDTeleporter.teleportEntity(targetPlayer, destination, false);
+			return DDCommandResult.TOO_MANY_ARGUMENTS;
 		}
-		else if(command.length == 1 && isInteger(command[0]))
-		{
-			
-			targetPlayer = sender;
-			
-			dimDestinationID=Integer.parseInt(command[0]);//gets the target dim ID from the command string
-			
-			if(!DimensionManager.isDimensionRegistered(dimDestinationID))
-			{
-				return DDCommandResult.INVALID_DIMENSION_ID;
-			}
-	
-			
-			Point4D destination = PocketManager.getDimensionData(dimDestinationID).origin();
-			if(!PocketManager.getDimensionData(dimDestinationID).isPocketDimension())
-			{
-				destination = new Point4D(destination.getX(),PocketManager.loadDimension(dimDestinationID).getTopSolidOrLiquidBlock(
-						destination.getX(), destination.getZ()),
-						destination.getZ(),destination.getDimension());
-			}
-			DDTeleporter.teleportEntity(targetPlayer, destination, false);
-		}
-		else	
+		if (command.length == 3)
 		{
 			return DDCommandResult.INVALID_ARGUMENTS;
 		}
+		// Check that all arguments after the username are integers
+		for (int k = 1; k < command.length; k++)
+		{
+			if (!isInteger(command[k]))
+			{
+				return DDCommandResult.INVALID_ARGUMENTS;
+			}
+		}
+		// Check if the target player is logged in
+		targetPlayer = MinecraftServer.getServer().getConfigurationManager().getPlayerForUsername(command[0]);
+		if (targetPlayer == null)
+		{
+			return DDCommandResult.PLAYER_OFFLINE;
+		}
+		// If a dimension ID was provided, try to load it
+		if (command.length != 4)
+		{
+			dimensionID = Integer.parseInt(command[1]);
+			world = PocketManager.loadDimension(dimensionID);
+			if (world == null)
+			{
+				return DDCommandResult.UNREGISTERED_DIMENSION;
+			}
+		}
+		else
+		{
+			dimensionID = targetPlayer.worldObj.provider.dimensionId;
+			world = targetPlayer.worldObj;
+		}
+		
+		// If we teleport to a pocket dimension, set checkOrientation to true
+		// so the player is placed correctly relative to the entrance door.
+		checkOrientation = false;
+		
+		// Parse or calculate the destination as necessary
+		// The Y coordinate must be increased by 1 because of the way that
+		// DDTeleporter considers destination points. It assumes that the
+		// point provided is the upper block of a door.
+		if (command.length == 2)
+		{
+			// Check if the destination is a pocket dimension
+			dimension = PocketManager.createDimensionData(world);
+			if (dimension.isPocketDimension())
+			{
+				// The destination is a pocket dimension.
+				// Teleport the player to its original entrance (the origin).
+				destination = dimension.origin();
+				checkOrientation = true;
+			}
+			else
+			{
+				// The destination is not a pocket dimension, which means we
+				// don't automatically know a safe location where we can send
+				// the player. Send the player to (0, Y, 0), where Y is chosen
+				// by searching. Add 2 to place the player ABOVE the top block.
+				y = world.getTopSolidOrLiquidBlock(0, 0) + 2;
+				destination = new Point4D(0, y, 0, dimensionID);
+			}
+		}
+		else if (command.length == 4)
+		{
+			x = Integer.parseInt(command[1]);
+			y = Integer.parseInt(command[2]) + 1; // Correct the Y value
+			z = Integer.parseInt(command[3]);
+			destination = new Point4D(x, y, z, dimensionID);
+		}
+		else
+		{
+			x = Integer.parseInt(command[2]);
+			y = Integer.parseInt(command[3]) + 1; // Correct the Y value
+			z = Integer.parseInt(command[4]);
+			destination = new Point4D(x, y, z, dimensionID);
+		}
+		// Teleport!
+		DDTeleporter.teleportEntity(targetPlayer, destination, checkOrientation);
 		return DDCommandResult.SUCCESS;
 	}
 	
-    public boolean isInteger( String input )  
-    {  
-       try  
-       {  
-          Integer.parseInt( input );  
-          return true;  
-       }  
-       catch(Exception e )  
-       {  
-          return false;  
-       }  
-    }  
-	
+	private static boolean isInteger(String input)
+	{
+		try  
+		{  
+			Integer.parseInt(input);  
+			return true;  
+		}  
+		catch(Exception e)
+		{  
+			return false;  
+		}  
+	}
 }

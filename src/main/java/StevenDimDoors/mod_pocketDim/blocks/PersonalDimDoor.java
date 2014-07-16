@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.blocks;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkType;
@@ -34,8 +35,13 @@ public class PersonalDimDoor extends BaseDimDoor
 	@Override
 	public int getDrops()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return mod_pocketDim.itemQuartzDoor.itemID;
+	}
+
+	@Override
+	public int getDoorItem()
+	{
+		return mod_pocketDim.itemPersonalDoor.itemID;
 	}
 
 }
