@@ -21,7 +21,6 @@ public class CommonProxy implements IGuiHandler
     public static String WARP_PNG = "/WARP.png";
 
     public  void registerRenderers()
-
     {
     }
     public void registerEntity(Class <? extends Entity > entity, String entityname, int id, Object mod, int trackingrange, int updateFreq, boolean updatevelo)

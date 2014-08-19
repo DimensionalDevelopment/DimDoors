@@ -65,6 +65,7 @@ import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
+import StevenDimDoors.mod_pocketDim.util.l_systems.LSystem;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
 import StevenDimDoors.mod_pocketDim.world.DDBiomeGenBase;
@@ -325,6 +326,18 @@ public class mod_pocketDim
 		DDLoot.registerInfo(properties);
 		proxy.loadTextures();
 		proxy.registerRenderers();
+		
+		
+		LSystem.generateLSystem("terdragon 9", LSystem.TERDRAGON, 9);
+		LSystem.generateLSystem("terdragon 8", LSystem.TERDRAGON, 8);
+		LSystem.generateLSystem("terdragon 7", LSystem.TERDRAGON, 7);
+		LSystem.generateLSystem("terdragon 6", LSystem.TERDRAGON, 6);
+		LSystem.generateLSystem("terdragon 5", LSystem.TERDRAGON, 5);
+		LSystem.generateLSystem("terdragon 4", LSystem.TERDRAGON, 4);
+
+		LSystem.generateLSystem("dragon 15", LSystem.DRAGON, 15);
+
+
 	}
 
 	@EventHandler

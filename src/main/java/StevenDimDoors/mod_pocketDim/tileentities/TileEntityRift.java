@@ -44,12 +44,15 @@ public class TileEntityRift extends DDTileEntityBase
 	public boolean shouldClose = false;
 	public Point4D nearestRiftLocation = null;
 	public int spawnedEndermenID = 0;
+	public int riftRotation;
 	
 	public TileEntityRift()
 	{
 		// Vary the update times of rifts to prevent all the rifts in a cluster
 		// from updating at the same time.
 		updateTimer = random.nextInt(UPDATE_PERIOD);
+		this.riftRotation = random.nextInt(360);
+
 	}
 	
 	@Override
@@ -74,6 +77,7 @@ public class TileEntityRift extends DDTileEntityBase
 			return;
 		}
 		
+
 		// Check if this rift should render white closing particles and
 		// spread the closing effect to other rifts nearby.
 		if (shouldClose)
@@ -251,6 +255,8 @@ public class TileEntityRift extends DDTileEntityBase
 		this.zOffset = nbt.getInteger("zOffset");
 		this.shouldClose = nbt.getBoolean("shouldClose");
 		this.spawnedEndermenID = nbt.getInteger("spawnedEndermenID");
+		this.riftRotation = nbt.getInteger("riftRotation");
+
 	}
 
 	@Override
@@ -263,6 +269,8 @@ public class TileEntityRift extends DDTileEntityBase
 		nbt.setInteger("zOffset", this.zOffset);
 		nbt.setBoolean("shouldClose", this.shouldClose);
 		nbt.setInteger("spawnedEndermenID", this.spawnedEndermenID);
+		
+		nbt.setInteger("riftRotation", this.riftRotation);
 	}
 
 	@Override

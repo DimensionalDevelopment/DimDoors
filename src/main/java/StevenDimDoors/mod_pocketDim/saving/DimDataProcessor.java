@@ -18,14 +18,21 @@ import com.google.gson.stream.JsonReader;
 
 public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 {
+	//The name of the version ID where it is stored in the JSON
 	public final String JSON_VERSION_PROPERTY_NAME = "SAVE_DATA_VERSION_ID_INSTANCE";
+	
+	//mapping of version IDs to their corresponding schema. Prevents reloading of schema during save/load cycles
 	private HashMap<Integer, JsonObject> SAVE_DATA_SCHEMA; 
+	
+	//The parser used to read in the JSON Files
 	private static final JsonParser jsonParser = new JsonParser();
 	
+	//The directory for JSON schema files
 	public static final String BASE_SCHEMA_PATH = "/assets/dimdoors/text/";
 	
-	
-	//TODO dont load the schemas every time
+	/**
+	 * Need to manually include a schema defintion for every save file version currently supported
+	 */
 	public DimDataProcessor()
 	{	
 		SAVE_DATA_SCHEMA = new HashMap<Integer, JsonObject>();
@@ -33,7 +40,7 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 		//Load the old schema/s
 		SAVE_DATA_SCHEMA.put(982405775, loadSchema(BASE_SCHEMA_PATH+"Dim_Data_Schema_v982405775.json"));
 		
-		//load the current schema
+		//load the schema representing the current save data format
 		SAVE_DATA_SCHEMA.put(PackedDimData.SAVE_DATA_VERSION_ID, loadSchema(BASE_SCHEMA_PATH+"Dim_Data_Schema_v1-0-0.json"));
 
 	}
@@ -159,7 +166,18 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 	 */
 	public JsonObject processSaveData(JsonObject schema, JsonObject save)
 	{
-		if(save.get(JSON_VERSION_PROPERTY_NAME).getAsInt()== 982405775)
+		int incomingSaveVersionID = save.get(JSON_VERSION_PROPERTY_NAME).getAsInt();
+		
+		// Handle save data versions that are current
+		if(incomingSaveVersionID == PackedDimData.SAVE_DATA_VERSION_ID)
+		{
+			JSONValidator.validate(this.getSaveDataSchema(save), save);
+			return save;
+		}
+		
+		// Handle save data versions that are older, starting with the random one. 
+		// We have to 
+		if(incomingSaveVersionID== 982405775)
 		{
 			DimensionType type;
 			
@@ -183,11 +201,11 @@ public class DimDataProcessor extends BaseConfigurationProcessor<PackedDimData>
 			save.remove("IsDungeon");
 			save.addProperty("DimensionType",type.index);
 			save.remove(this.JSON_VERSION_PROPERTY_NAME);
-			save.addProperty(this.JSON_VERSION_PROPERTY_NAME, PackedDimData.SAVE_DATA_VERSION_ID);
-			return processSaveData(this.getSaveDataSchema(save), save);
+			
+			//Need to hardcode the version number here, so if we change the current version then this still updates to the proper version
+			save.addProperty(this.JSON_VERSION_PROPERTY_NAME, 100);
 		}
 		
-		JSONValidator.validate(this.getSaveDataSchema(save), save);
-		return save;
+		return processSaveData(this.getSaveDataSchema(save), save);
 	}
 }
