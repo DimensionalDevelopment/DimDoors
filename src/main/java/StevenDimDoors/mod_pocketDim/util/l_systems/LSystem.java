@@ -368,7 +368,7 @@ public class LSystem
 		Poly2Tri.triangulate(poly);
 	
 		ArrayList<DelaunayTriangle> tris =(ArrayList<DelaunayTriangle>) poly.getTriangles();
-	
+		
 		for(DelaunayTriangle tri : tris)
 		{
 			for(TriangulationPoint tpoint : tri.points)

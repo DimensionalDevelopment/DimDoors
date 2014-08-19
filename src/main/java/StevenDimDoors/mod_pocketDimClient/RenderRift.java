@@ -93,17 +93,18 @@ public class RenderRift extends TileEntitySpecialRenderer
 		int jIndex = 0;
 
 		// set the color for the render
-		GL11.glColor4f(.15F, .15F, .1F, 1F);
+		GL11.glColor4f(.3F, .3F, .3F, 1F);
 
 		//set the blending mode
 		GL11.glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+		//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
 		
 		// start rendering triangles for the moving shards
 		GL11.glBegin(GL11.GL_TRIANGLES);
 		for (Point p : poly.points)
 		{
-			jIndex++;
+			jIndex = Math.abs(p.x+p.y);
 
 			// calculate the rotation for the fractal, apply offset, and apply
 			// jitter
@@ -131,9 +132,10 @@ public class RenderRift extends TileEntitySpecialRenderer
 		GL11.glEnd();
 
 		//GL11.glDisable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_COLOR);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_COLOR);
 		//glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
 
+		/**
 		GL11.glBegin(GL11.GL_TRIANGLES);
 
 		// draw the next set of triangles to form a background and change their
@@ -165,5 +167,6 @@ public class RenderRift extends TileEntitySpecialRenderer
 		}
 		// stop drawing triangles
 		GL11.glEnd();
+		**/
 	}
 }
