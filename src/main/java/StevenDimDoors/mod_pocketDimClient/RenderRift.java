@@ -96,13 +96,13 @@ public class RenderRift extends TileEntitySpecialRenderer
 		int jIndex = 0;
 
 		// set the color for the render
-		GL11.glColor4f(.3F, .3F, .3F, 1F);
+		GL11.glColor4f(.1F, .1F, .1F, 1F);
 
 		/**best ones so far
 		 * 		glBlendFunc(GL_SRC_COLOR, GL_ONE);
 		 *		glBlendFunc(GL_SRC_COLOR, GL_ONE);
 		 */
-		glBlendFunc(GL_SRC_COLOR, GL_ONE);
+		glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ONE);
 		GL11.glBegin(GL11.GL_TRIANGLES);
 		for (Point p : poly.points)
 		{
@@ -139,6 +139,7 @@ public class RenderRift extends TileEntitySpecialRenderer
 		 * 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_COLOR);
 		 * 		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO );
 		 */
+		GL11.glColor4f(.3F, .3F, .3F, .2F);
 
 		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO );
 		
@@ -162,13 +163,6 @@ public class RenderRift extends TileEntitySpecialRenderer
 			x += .5;
 			y += .5;
 			z += .5;
-
-			// the additional divisors here determine the color of the
-			// stationary shards
-			if (jIndex % 3 == 0)
-			{
-			//	GL11.glColor4d(jitters[(jIndex + 1) % jCount]/8F , jitters[(jIndex + 2) % jCount] /8F, jitters[(jIndex) % jCount]/8F , 1);
-			}
 			
 			GL11.glVertex3d(xWorld + x, yWorld + y, zWorld + z);
 		}
