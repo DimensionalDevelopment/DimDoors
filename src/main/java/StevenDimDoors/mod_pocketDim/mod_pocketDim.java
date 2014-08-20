@@ -327,15 +327,33 @@ public class mod_pocketDim
 		proxy.loadTextures();
 		proxy.registerRenderers();
 		
-		
-		LSystem.generateLSystem("terdragon 9", LSystem.TERDRAGON, 9);
-		LSystem.generateLSystem("terdragon 8", LSystem.TERDRAGON, 8);
-		LSystem.generateLSystem("terdragon 7", LSystem.TERDRAGON, 7);
-		LSystem.generateLSystem("terdragon 6", LSystem.TERDRAGON, 6);
-		LSystem.generateLSystem("terdragon 5", LSystem.TERDRAGON, 5);
-		LSystem.generateLSystem("terdragon 4", LSystem.TERDRAGON, 4);
+		LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 4);
+		LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 5);
+	//	LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 6); //degenerate
+		LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 7);
+	//	LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 8);
+	//	LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 9);
 
-		LSystem.generateLSystem("dragon 15", LSystem.DRAGON, 15);
+		
+	//	LSystem.generateLSystem("vortex", LSystem.VORTEX, 8);
+		LSystem.generateLSystem("vortex", LSystem.VORTEX, 9);
+		LSystem.generateLSystem("vortex", LSystem.VORTEX, 10);
+		LSystem.generateLSystem("vortex", LSystem.VORTEX, 11);
+	//	LSystem.generateLSystem("vortex", LSystem.VORTEX, 12);
+
+		LSystem.generateLSystem("twindragon", LSystem.TWINDRAGON, 7);
+		LSystem.generateLSystem("twindragon", LSystem.TWINDRAGON, 8);
+		LSystem.generateLSystem("twindragon", LSystem.TWINDRAGON, 9);
+		LSystem.generateLSystem("twindragon", LSystem.TWINDRAGON, 10);
+	//	LSystem.generateLSystem("twindragon", LSystem.TWINDRAGON, 11);
+
+		
+		LSystem.generateLSystem("dragon", LSystem.DRAGON, 8);
+		LSystem.generateLSystem("dragon", LSystem.DRAGON, 9);
+		LSystem.generateLSystem("dragon", LSystem.DRAGON, 10);
+		LSystem.generateLSystem("dragon", LSystem.DRAGON, 11);
+	//	LSystem.generateLSystem("dragon", LSystem.DRAGON, 12);
+	//	LSystem.generateLSystem("dragon", LSystem.DRAGON, 13);
 
 
 	}

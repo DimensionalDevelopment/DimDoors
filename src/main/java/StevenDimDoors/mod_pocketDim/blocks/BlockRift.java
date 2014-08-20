@@ -307,99 +307,16 @@ public class BlockRift extends Block implements ITileEntityProvider
 	@Override
 	@SideOnly(Side.CLIENT)
 	
-	public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random rand)
+	public void randomDisplayTick(World world, int x, int y, int z, Random rand)
 	{
 
-		int count;
-		//growth in the direction towards the nearby rift
-		float xGrowth=0;
-		float yGrowth=0;
-		float zGrowth=0;
-		//growth away from the nearby rift
-		float xGrowthn=0;
-		float yGrowthn=0;
-		float zGrowthn=0;
-		//how far the particles are away from original rift. Used to decrease noise the farther they are away. 
-		float xChange = 0;
-		float yChange = 0;
-		float zChange = 0;
-
-		TileEntityRift tile = (TileEntityRift)par1World.getBlockTileEntity(par2, par3, par4);
-
-		float Xoffset=0;
-		float Yoffset=0;
-		float Zoffset=0;
-		for (count = 0; count < 12 && tile!=null; ++count)
-		{
-			//TODO change to a switch statement for clarity
-			if(tile.xOffset>0)
-			{
-				if(rand.nextInt(tile.xOffset)==0)
-				{
-					xGrowth =xGrowth+.15F*tile.xOffset;
-
-				}
-			}
-			else if(tile.xOffset<0)
-			{
-				if(rand.nextInt(-tile.xOffset)==0)
-				{
-					xGrowthn =xGrowthn-.15F*-tile.xOffset;
-
-				}
-			}
-
-			if(tile.yOffset>0)
-			{
-				if(rand.nextInt(tile.yOffset)==0)
-				{
-					yGrowth =yGrowth+.15F*tile.yOffset;
-
-				}
-			}
-			else if(tile.yOffset<0)
-			{
-				if(rand.nextInt(-tile.yOffset)==0)
-				{
-					yGrowthn =yGrowthn-.15F*-tile.yOffset;
-
-				}
-			}
-
-			if(tile.zOffset>0)
-			{
-				if(rand.nextInt(tile.zOffset)==0)
-				{
-					zGrowth =zGrowth+.15F*tile.zOffset;
-
-				}
-			}
-			else if(tile.zOffset<0)
-			{
-				if(rand.nextInt(-tile.zOffset)==0)
-				{
-					zGrowthn =zGrowthn-.15F*-tile.zOffset;
-
-				}
-			}
-
-
-			xChange=(float) ((xGrowth+xGrowthn)+rand.nextGaussian()*.05F);
-			yChange=(float) ((yGrowth+yGrowthn)+rand.nextGaussian()*.05F);
-			zChange=(float) ((zGrowth+zGrowthn)+rand.nextGaussian()*.05F);
-
-			Xoffset=  ((0.25F/(1+Math.abs(xChange))));
-
-			Yoffset=  ((0.25F/(1+Math.abs(yChange))));
-			Zoffset=  ((0.25F/(1+Math.abs(zChange))));
-
-
-
-
-			//FMLClientHandler.instance().getClient().effectRenderer.addEffect(new RiftFX(par1World,par2+.5+xChange+Xoffset*rand.nextGaussian(), par3+.5+yChange+Yoffset*rand.nextGaussian() , par4+.5+zChange+Zoffset*rand.nextGaussian(), rand.nextGaussian() * 0.001D, rand.nextGaussian()  * 0.001D, rand.nextGaussian() * 0.001D, FMLClientHandler.instance().getClient().effectRenderer));
-		//	FMLClientHandler.instance().getClient().effectRenderer.addEffect(new RiftFX(par1World,par2+.5-xChange-Xoffset*rand.nextGaussian(), par3+.5-yChange-Yoffset*rand.nextGaussian() , par4+.5-zChange-Zoffset*rand.nextGaussian(), rand.nextGaussian() * 0.001D, rand.nextGaussian()  * 0.001D, rand.nextGaussian() * 0.001D, FMLClientHandler.instance().getClient().effectRenderer));
-
-
+		
+		 ArrayList<Point3D> targets=findReachableBlocks(world, x, y, z, 2, false);
+		
+		
+		TileEntityRift tile = (TileEntityRift)world.getBlockTileEntity(x, y, z);
+		
+		
 			if(rand.nextBoolean())
 			{
 				//renders an extra little blob on top of the actual rift location so its easier to find. Eventually will only render if the player has the goggles. 
@@ -408,10 +325,10 @@ public class BlockRift extends Block implements ITileEntityProvider
 			if(tile.shouldClose)
 			{
 				//renders an opposite color effect if it is being closed by the rift remover
-				FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(par1World,par2+.5, par3+.5, par4+.5, rand.nextGaussian() * 0.01D, rand.nextGaussian()  * 0.01D, rand.nextGaussian() * 0.01D, FMLClientHandler.instance().getClient().effectRenderer));
+				FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(world,x+.5, y+.5, z+.5, rand.nextGaussian() * 0.01D, rand.nextGaussian()  * 0.01D, rand.nextGaussian() * 0.01D, FMLClientHandler.instance().getClient().effectRenderer));
 
 			}
-		}
+		
 	}
 	
 	public boolean tryPlacingRift(World world, int x, int y, int z)

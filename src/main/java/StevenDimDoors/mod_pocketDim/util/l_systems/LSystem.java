@@ -16,7 +16,7 @@ import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
 
 public class LSystem
 {
-	public static HashMap<String, PolygonStorage> curves = new HashMap<String, PolygonStorage>();
+	public static ArrayList<PolygonStorage> curves = new ArrayList<PolygonStorage>();
 
 	/**
 	 * An array containing the args to generate a curve.
@@ -26,6 +26,8 @@ public class LSystem
 	 */
 	public static final String[] TERDRAGON = {"F>+F----F++++F-","60","F"};
 	public static final String[] DRAGON = {"X>X+YF:Y>FX-Y","90","FX"};
+	public static final String[] TWINDRAGON = {"X>X+YF:Y>FX-Y","90","FX--FX"};
+	public static final String[] VORTEX = {"X>X+YF:Y>FX-Y","90","FX---FX"};
 
 	
 	
@@ -64,7 +66,61 @@ public class LSystem
 		//replace the boundary of the polygon with a series of points representing triangles for rendering
 		polygon.points = tesselate(polygon);
 		
-		curves.put(key, polygon);
+		curves.add(polygon);
+
+	}
+	
+	/**
+	 * Naively returns all of the points comprising the fractal
+	 * @param input
+	 * @return
+	 */
+	public static PolygonStorage getSpaceFillingCurve(ArrayList<double[]> input)
+	{
+		// store max x and y values to create bounding box
+				int maxY = Integer.MIN_VALUE;
+				int maxX = Integer.MIN_VALUE;
+				int minY = Integer.MAX_VALUE;
+				int minX = Integer.MAX_VALUE;
+
+				// store confirmed duplicates here
+				HashSet<Point> duplicates = new HashSet<Point>();
+
+				// store possible singles here
+				HashSet<Point> singles = new HashSet<Point>();
+
+				// list to store confirmed singles and output in the correct order
+				ArrayList<Point> output = new ArrayList<Point>();
+
+				// sort into Hashmaps and hashsets to make contains operations possible,
+				// while testing for duplicates
+				for (double[] point : input)
+				{
+					// convert doubles to ints and record min/max values
+
+					int xCoord = (int) Math.round(point[0]);
+					int yCoord = (int) Math.round(point[1]);
+
+					if (xCoord > maxX)
+					{
+						maxX = xCoord;
+					}
+					if (xCoord < minX)
+					{
+						minX = xCoord;
+					}
+
+					if (yCoord > maxY)
+					{
+						maxY = yCoord;
+					}
+					if (yCoord < minY)
+					{
+						minY = yCoord;
+					}
+					output.add(new Point(xCoord, yCoord));
+				}
+				return new PolygonStorage(output, maxX, maxY, minX, minY);
 
 	}
 
@@ -105,7 +161,7 @@ public class LSystem
 			{
 				maxX = xCoord;
 			}
-			else if (xCoord < minX)
+			if (xCoord < minX)
 			{
 				minX = xCoord;
 			}
@@ -114,7 +170,7 @@ public class LSystem
 			{
 				maxY = yCoord;
 			}
-			else if (yCoord < minY)
+			if (yCoord < minY)
 			{
 				minY = yCoord;
 			}

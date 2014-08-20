@@ -1,8 +1,8 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,6 +11,7 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
@@ -18,6 +19,8 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
+import StevenDimDoors.mod_pocketDim.util.l_systems.LSystem;
+import StevenDimDoors.mod_pocketDim.util.l_systems.LSystem.PolygonStorage;
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 
 public class TileEntityRift extends DDTileEntityBase
@@ -44,7 +47,10 @@ public class TileEntityRift extends DDTileEntityBase
 	public boolean shouldClose = false;
 	public Point4D nearestRiftLocation = null;
 	public int spawnedEndermenID = 0;
+	
 	public int riftRotation;
+	public int renderKey;
+	public int growth;
 	
 	public TileEntityRift()
 	{
@@ -52,6 +58,7 @@ public class TileEntityRift extends DDTileEntityBase
 		// from updating at the same time.
 		updateTimer = random.nextInt(UPDATE_PERIOD);
 		this.riftRotation = random.nextInt(360);
+		this.renderKey = random.nextInt(LSystem.curves.size());
 
 	}
 	
@@ -96,6 +103,7 @@ public class TileEntityRift extends DDTileEntityBase
 			updateNearestRift();
 			spread(mod_pocketDim.properties);
 		}
+		growth++;
 		updateTimer++;
 	}
 
@@ -256,6 +264,8 @@ public class TileEntityRift extends DDTileEntityBase
 		this.shouldClose = nbt.getBoolean("shouldClose");
 		this.spawnedEndermenID = nbt.getInteger("spawnedEndermenID");
 		this.riftRotation = nbt.getInteger("riftRotation");
+		this.renderKey = nbt.getInteger("renderKey");
+		this.growth = nbt.getInteger("growth");
 
 	}
 
@@ -269,8 +279,10 @@ public class TileEntityRift extends DDTileEntityBase
 		nbt.setInteger("zOffset", this.zOffset);
 		nbt.setBoolean("shouldClose", this.shouldClose);
 		nbt.setInteger("spawnedEndermenID", this.spawnedEndermenID);
-		
+		nbt.setInteger("renderKey", this.renderKey);
 		nbt.setInteger("riftRotation", this.riftRotation);
+		nbt.setInteger("growth", this.growth);
+
 	}
 
 	@Override
@@ -293,5 +305,12 @@ public class TileEntityRift extends DDTileEntityBase
 	public float[] getRenderColor(Random rand)
 	{
 		return null;
+	}
+
+	public PolygonStorage getCurve()
+	{
+		
+		
+		return (LSystem.curves.get(renderKey));
 	}
 }
