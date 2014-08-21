@@ -320,7 +320,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 			if(rand.nextBoolean())
 			{
 				//renders an extra little blob on top of the actual rift location so its easier to find. Eventually will only render if the player has the goggles. 
-			//	FMLClientHandler.instance().getClient().effectRenderer.addEffect(new GoggleRiftFX(par1World,par2+.5, par3+.5, par4+.5, rand.nextGaussian() * 0.01D, rand.nextGaussian()  * 0.01D, rand.nextGaussian() * 0.01D, FMLClientHandler.instance().getClient().effectRenderer));
+				FMLClientHandler.instance().getClient().effectRenderer.addEffect(new GoggleRiftFX(world,x+.5, y+.5, z+.5, rand.nextGaussian() * 0.01D, rand.nextGaussian()  * 0.01D, rand.nextGaussian() * 0.01D, FMLClientHandler.instance().getClient().effectRenderer));
 			}
 			if(tile.shouldClose)
 			{

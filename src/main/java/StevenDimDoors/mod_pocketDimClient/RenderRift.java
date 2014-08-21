@@ -95,7 +95,7 @@ public class RenderRift extends TileEntitySpecialRenderer
 		// gets the same jitter waveform over multiple frames
 		int jIndex = 0;
 		// set the color for the render
-				GL11.glColor4f(.02F, .02F, .02F, 1F);
+		GL11.glColor4f(.1F, .1F, .1F, 1F);
 
 				//set the blending mode
 				GL11.glEnable(GL_BLEND);
@@ -109,7 +109,7 @@ public class RenderRift extends TileEntitySpecialRenderer
 			// jitter
 			double x = (((p.x + jitters[(jIndex + 1) % jCount]) - offsetX) * Math.cos(Math.toRadians(riftRotation)) - (jitters[(jIndex + 2) % jCount])
 					* Math.sin(Math.toRadians(riftRotation)));
-			double y = p.y + (jitters[jIndex % jCount]);
+			double y = p.y + (jitters[jIndex % jCount]) - offsetY;
 			double z = (((p.x + jitters[(jIndex + 2) % jCount]) - offsetX) * Math.sin(Math.toRadians(riftRotation)) + (jitters[(jIndex + 2) % jCount]) * Math
 					.cos(Math.toRadians(riftRotation)));
 
@@ -132,8 +132,9 @@ public class RenderRift extends TileEntitySpecialRenderer
 		}
 		GL11.glEnd();
 
-		
-		glBlendFunc(GL_ONE, GL_ONE_MINUS_DST_COLOR);
+		GL11.glColor4f(.3F, .3F, .3F, .2F);
+
+		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO );
 		
 	
 		
@@ -145,7 +146,7 @@ public class RenderRift extends TileEntitySpecialRenderer
 			jIndex++;
 
 			double x = (((p.x) - offsetX) * Math.cos(Math.toRadians(riftRotation)) - 0 * Math.sin(Math.toRadians(riftRotation)));
-			double y = p.y;
+			double y = p.y - offsetY;
 			double z = (((p.x) - offsetX) * Math.sin(Math.toRadians(riftRotation)) + 0 * Math.cos(Math.toRadians(riftRotation)));
 
 			x *= scale;
@@ -158,7 +159,7 @@ public class RenderRift extends TileEntitySpecialRenderer
 			
 			if (jIndex % 3 == 0)
 			{
-				GL11.glColor4d(jitters[(jIndex + 5) % jCount] / 11, jitters[(jIndex + 4) % jCount] / 8, jitters[(jIndex+3) % jCount] / 8, 1);
+				//GL11.glColor4d(1-jitters[(jIndex + 5) % jCount] / 11,1- jitters[(jIndex + 4) % jCount] / 8, 1-jitters[(jIndex+3) % jCount] / 8, 1);
 			}
 			GL11.glVertex3d(xWorld + x, yWorld + y, zWorld + z);
 		}
