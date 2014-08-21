@@ -35,7 +35,7 @@ public class RenderRift extends TileEntitySpecialRenderer
 		 */
 		TileEntityRift rift = (TileEntityRift) te;
 		// draws the verticies corresponding to the passed it
-		this.drawCrack(rift.riftRotation, rift.getCurve(), Math.log(2+rift.growth)/5D, xWorld, yWorld, zWorld);
+		this.drawCrack(rift.riftRotation, rift.getCurve(), rift.growth/15, xWorld, yWorld, zWorld);
 
 		GL11.glDisable(GL_BLEND);
 		// reenable all the stuff we disabled
@@ -83,11 +83,10 @@ public class RenderRift extends TileEntitySpecialRenderer
 		double[] jitters = new double[jCount];
 
 		// generate a series of waveforms
-		for (int i = 0; i < jCount-1; i += 1)
+		for (int i = 0; i < jCount - 1; i += 1)
 		{
 			jitters[i] = Math.sin((1F + i / 10F) * time) * Math.cos(1F - (i / 10F) * time) / motionMagnitude;
 			jitters[i + 1] = Math.cos((1F + i / 10F) * time) * Math.sin(1F - (i / 10F) * time) / motionMagnitude;
-		
 
 		}
 
@@ -97,24 +96,22 @@ public class RenderRift extends TileEntitySpecialRenderer
 		// set the color for the render
 		GL11.glColor4f(.1F, .1F, .1F, 1F);
 
-				//set the blending mode
-				GL11.glEnable(GL_BLEND);
-				glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ONE);
+		// set the blending mode
+		GL11.glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ONE);
 		GL11.glBegin(GL11.GL_TRIANGLES);
 		for (Point p : poly.points)
 		{
-			jIndex = Math.abs(((p.x + p.y)*(p.x + p.y + 1)/2) + p.y);
-			//jIndex++;
+			jIndex = Math.abs(((p.x + p.y) * (p.x + p.y + 1) / 2) + p.y);
+			// jIndex++;
 			// calculate the rotation for the fractal, apply offset, and apply
 			// jitter
 			double x = (((p.x + jitters[(jIndex + 1) % jCount]) - offsetX) * Math.cos(Math.toRadians(riftRotation)) - (jitters[(jIndex + 2) % jCount])
 					* Math.sin(Math.toRadians(riftRotation)));
 			double y = p.y + (jitters[jIndex % jCount]) - offsetY;
-			double z = (((p.x + jitters[(jIndex + 2) % jCount]) - offsetX) * Math.sin(Math.toRadians(riftRotation)) + (jitters[(jIndex + 2) % jCount]) * Math
-					.cos(Math.toRadians(riftRotation)));
+			double z = (((p.x + jitters[(jIndex + 2) % jCount]) - offsetX) * Math.sin(Math.toRadians(riftRotation)) + (jitters[(jIndex + 2) % jCount])
+					* Math.cos(Math.toRadians(riftRotation)));
 
-			
-			
 			// apply scaling
 			x *= scale;
 			y *= scale;
@@ -134,10 +131,8 @@ public class RenderRift extends TileEntitySpecialRenderer
 
 		GL11.glColor4f(.3F, .3F, .3F, .2F);
 
-		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO );
-		
-	
-		
+		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+
 		// draw the next set of triangles to form a background and change their
 		// color slightly over time
 		GL11.glBegin(GL11.GL_TRIANGLES);
@@ -156,16 +151,18 @@ public class RenderRift extends TileEntitySpecialRenderer
 			x += .5;
 			y += .5;
 			z += .5;
-			
+
 			if (jIndex % 3 == 0)
 			{
-				//GL11.glColor4d(1-jitters[(jIndex + 5) % jCount] / 11,1- jitters[(jIndex + 4) % jCount] / 8, 1-jitters[(jIndex+3) % jCount] / 8, 1);
+				// GL11.glColor4d(1-jitters[(jIndex + 5) % jCount] / 11,1-
+				// jitters[(jIndex + 4) % jCount] / 8, 1-jitters[(jIndex+3) %
+				// jCount] / 8, 1);
 			}
 			GL11.glVertex3d(xWorld + x, yWorld + y, zWorld + z);
 		}
 
 		// stop drawing triangles
 		GL11.glEnd();
-		
+
 	}
 }

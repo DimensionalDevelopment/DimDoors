@@ -48,17 +48,15 @@ public class TileEntityRift extends DDTileEntityBase
 	public Point4D nearestRiftLocation = null;
 	public int spawnedEndermenID = 0;
 	
-	public int riftRotation;
-	public int renderKey;
-	public int growth;
+	public int riftRotation = random.nextInt(360);
+	public int renderKey = random.nextInt(LSystem.curves.size());
+	public float growth = 0;
 	
 	public TileEntityRift()
 	{
 		// Vary the update times of rifts to prevent all the rifts in a cluster
 		// from updating at the same time.
 		updateTimer = random.nextInt(UPDATE_PERIOD);
-		this.riftRotation = random.nextInt(360);
-		this.renderKey = random.nextInt(LSystem.curves.size());
 
 	}
 	
@@ -103,7 +101,7 @@ public class TileEntityRift extends DDTileEntityBase
 			updateNearestRift();
 			spread(mod_pocketDim.properties);
 		}
-		growth++;
+		growth += 1F/(growth+1);
 		updateTimer++;
 	}
 
@@ -151,7 +149,7 @@ public class TileEntityRift extends DDTileEntityBase
 	private void closeRift()
 	{
 		NewDimData dimension = PocketManager.createDimensionData(worldObj);
-		if (closeTimer == CLOSING_PERIOD / 2)
+		if (growth < CLOSING_PERIOD / 2)
 		{
 			for (DimLink riftLink : dimension.findRiftsInRange(worldObj, 6, xCoord, yCoord, zCoord))
 			{
@@ -164,7 +162,7 @@ public class TileEntityRift extends DDTileEntityBase
 				}
 			}
 		}
-		if (closeTimer >= CLOSING_PERIOD && !worldObj.isRemote)
+		if (growth == 0 && !worldObj.isRemote)
 		{
 			DimLink link = PocketManager.getLink(this.xCoord, this.yCoord, this.zCoord, worldObj);
 			if (link != null)
@@ -174,7 +172,8 @@ public class TileEntityRift extends DDTileEntityBase
 			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 			worldObj.playSound(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, "mods.DimDoors.sfx.riftClose", 0.7f, 1, false);
 		}
-		closeTimer++; 
+	
+		growth --;
 	}
 	
 	public boolean updateNearestRift()
@@ -265,7 +264,7 @@ public class TileEntityRift extends DDTileEntityBase
 		this.spawnedEndermenID = nbt.getInteger("spawnedEndermenID");
 		this.riftRotation = nbt.getInteger("riftRotation");
 		this.renderKey = nbt.getInteger("renderKey");
-		this.growth = nbt.getInteger("growth");
+		this.growth = nbt.getFloat("growth");
 
 	}
 
@@ -281,7 +280,7 @@ public class TileEntityRift extends DDTileEntityBase
 		nbt.setInteger("spawnedEndermenID", this.spawnedEndermenID);
 		nbt.setInteger("renderKey", this.renderKey);
 		nbt.setInteger("riftRotation", this.riftRotation);
-		nbt.setInteger("growth", this.growth);
+		nbt.setFloat("growth", this.growth);
 
 	}
 
