@@ -94,15 +94,12 @@ public class RenderRift extends TileEntitySpecialRenderer
 		// determines which jitter waveform we select. Modulo so the same point
 		// gets the same jitter waveform over multiple frames
 		int jIndex = 0;
-
 		// set the color for the render
-		GL11.glColor4f(.1F, .1F, .1F, 1F);
+				GL11.glColor4f(.02F, .02F, .02F, 1F);
 
-		/**best ones so far
-		 * 		glBlendFunc(GL_SRC_COLOR, GL_ONE);
-		 *		glBlendFunc(GL_SRC_COLOR, GL_ONE);
-		 */
-		glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ONE);
+				//set the blending mode
+				GL11.glEnable(GL_BLEND);
+				glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ONE);
 		GL11.glBegin(GL11.GL_TRIANGLES);
 		for (Point p : poly.points)
 		{
@@ -116,6 +113,7 @@ public class RenderRift extends TileEntitySpecialRenderer
 			double z = (((p.x + jitters[(jIndex + 2) % jCount]) - offsetX) * Math.sin(Math.toRadians(riftRotation)) + (jitters[(jIndex + 2) % jCount]) * Math
 					.cos(Math.toRadians(riftRotation)));
 
+			
 			
 			// apply scaling
 			x *= scale;
@@ -135,13 +133,7 @@ public class RenderRift extends TileEntitySpecialRenderer
 		GL11.glEnd();
 
 		
-		/**best one so far
-		 * 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_COLOR);
-		 * 		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO );
-		 */
-		GL11.glColor4f(.3F, .3F, .3F, .2F);
-
-		glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO );
+		glBlendFunc(GL_ONE, GL_ONE_MINUS_DST_COLOR);
 		
 	
 		
@@ -164,6 +156,10 @@ public class RenderRift extends TileEntitySpecialRenderer
 			y += .5;
 			z += .5;
 			
+			if (jIndex % 3 == 0)
+			{
+				GL11.glColor4d(jitters[(jIndex + 5) % jCount] / 11, jitters[(jIndex + 4) % jCount] / 8, jitters[(jIndex+3) % jCount] / 8, 1);
+			}
 			GL11.glVertex3d(xWorld + x, yWorld + y, zWorld + z);
 		}
 
