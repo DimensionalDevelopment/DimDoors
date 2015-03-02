@@ -2,29 +2,25 @@ package StevenDimDoors.mod_pocketDim.saving;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
+import java.util.Map.Entry;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
-import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPack;
-import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
-import StevenDimDoors.mod_pocketDim.util.ConfigurationProcessingException;
+import StevenDimDoors.mod_pocketDim.util.DDLogger;
 import StevenDimDoors.mod_pocketDim.util.FileFilters;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-
 import com.google.common.io.Files;
 
 public class DDSaveHandler
@@ -41,6 +37,8 @@ public class DDSaveHandler
 		
 		// Don't surround this code with try-catch. Our mod should crash if an error
 		// occurs at this level, since it could lead to some nasty problems.
+		
+		DDLogger.startTimer("Loading data");
 		
 		String basePath = DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/";
 		File dataDirectory = new File(basePath);
@@ -61,16 +59,30 @@ public class DDSaveHandler
 			PocketManager.createAndRegisterBlacklist(blacklist);
 		}
 		
+		// Load the personal pockets mapping		
+		File personalPocketMap = new File(basePath+"personalPockets.txt");
+		HashMap<String, Integer> ppMap = new HashMap<String, Integer>();
+		if(personalPocketMap.exists())
+		{
+			PersonalPocketMappingProcessor ppMappingProcessor = new PersonalPocketMappingProcessor();
+			ppMap = readPersonalPocketsMapping(personalPocketMap,ppMappingProcessor);
+		}						
+		
 		// List any dimension data files and read each dimension
 		DimDataProcessor reader = new DimDataProcessor();
-		HashMap<Integer,PackedDimData> packedDims = new HashMap<Integer,PackedDimData>();
+		HashMap<Integer, PackedDimData> packedDims = new HashMap<Integer, PackedDimData>();
 		FileFilter dataFileFilter = new FileFilters.RegexFileFilter("dim_-?\\d+\\.txt");
 		
 		File[] dataFiles = dataDirectory.listFiles(dataFileFilter);
 		for (File dataFile : dataFiles)
 		{
 			PackedDimData packedDim = readDimension(dataFile, reader);
+			if(packedDim == null)
+			{
+				throw new IllegalStateException("The DD data for "+dataFile.getName().replace(".txt", "")+" at "+dataFile.getPath()+" is corrupted. Please report this on the MCF or on the DD github issues tracker.");
+			}
 			packedDims.put(packedDim.ID,packedDim);
+
 		}
 		
 		List<PackedLinkData> linksToUnpack = new ArrayList<PackedLinkData>();
@@ -79,7 +91,17 @@ public class DDSaveHandler
 		{
 			linksToUnpack.addAll(packedDim.Links);
 		}
-		return unpackDimData(packedDims)&&unpackLinkData(linksToUnpack);
+		unpackDimData(packedDims);
+		unpackLinkData(linksToUnpack);
+		
+		HashMap<String, NewDimData> personalPocketsMap = new HashMap<String, NewDimData>();
+		for(Entry<String, Integer> pair : ppMap.entrySet())
+		{
+			personalPocketsMap.put(pair.getKey(), PocketManager.getDimensionData(pair.getValue()));
+		}
+		PocketManager.setPersonalPocketsMapping(personalPocketsMap);
+		
+		return true;
 	}
 	
 	/**
@@ -136,7 +158,7 @@ public class DDSaveHandler
 		}
 		if(isMissing)
 		{
-			packedDim=(new PackedDimData(packedDim.ID, packedDim.Depth, packedDim.PackDepth, packedDim.ParentID, packedDim.RootID, packedDim.Orientation, packedDim.IsDungeon, packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, children, packedDim.Links, packedDim.Tails));
+			packedDim=(new PackedDimData(packedDim.ID, packedDim.Depth, packedDim.PackDepth, packedDim.ParentID, packedDim.RootID, packedDim.Orientation, DimensionType.getTypeFromIndex(packedDim.DimensionType), packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, children, packedDim.Links, packedDim.Tails));
 			packedDims.put(packedDim.ID, packedDim);
 		}
 		return children;
@@ -154,12 +176,12 @@ public class DDSaveHandler
 	{
 		ArrayList<Integer> fosterChildren = new ArrayList<Integer>();
 		fosterChildren.add(packedDim.ID);
-
+		DimensionType type = DimensionType.getTypeFromIndex(packedDim.DimensionType);
 		//fix pockets without parents
 		if(!packedDims.containsKey(packedDim.ParentID))
 		{
 			//Fix the orphan by changing its root to its parent, re-connecting it to the list
-			packedDim=(new PackedDimData(packedDim.ID, 1, packedDim.PackDepth, packedDim.RootID, packedDim.RootID, packedDim.Orientation, packedDim.IsDungeon, packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, packedDim.ChildIDs, packedDim.Links, packedDim.Tails));
+			packedDim=(new PackedDimData(packedDim.ID, 1, packedDim.PackDepth, packedDim.RootID, packedDim.RootID, packedDim.Orientation,type, packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, packedDim.ChildIDs, packedDim.Links, packedDim.Tails));
 			packedDims.put(packedDim.ID, packedDim);
 		}
 		//fix pockets whose parents have forgotten about them
@@ -168,7 +190,7 @@ public class DDSaveHandler
 		{
 			//find the root, and fix it by adding the orphan's ID to its children
 			fosterChildren.addAll(fosterParent.ChildIDs);
-			fosterParent=(new PackedDimData(fosterParent.ID, fosterParent.Depth, fosterParent.PackDepth, fosterParent.ParentID, fosterParent.RootID, fosterParent.Orientation, fosterParent.IsDungeon, fosterParent.IsFilled, fosterParent.DungeonData, fosterParent.Origin, fosterChildren, fosterParent.Links, fosterParent.Tails));
+			fosterParent=(new PackedDimData(fosterParent.ID, fosterParent.Depth, fosterParent.PackDepth, fosterParent.ParentID, fosterParent.RootID, fosterParent.Orientation, type, fosterParent.IsFilled, fosterParent.DungeonData, fosterParent.Origin, fosterChildren, fosterParent.Links, fosterParent.Tails));
 			packedDims.put(fosterParent.ID, fosterParent);	
 		}
 			
@@ -187,18 +209,14 @@ public class DDSaveHandler
 			if(packedLink.parent.equals(fakePoint))
 			{
 				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
-				int linkType = packedLink.tail.linkType;
+				LinkType linkType = LinkType.getLinkTypeFromIndex(packedLink.tail.linkType);
+
 				
-				if((linkType < LinkTypes.ENUM_MIN || linkType > LinkTypes.ENUM_MAX) && linkType != LinkTypes.CLIENT_SIDE)
-				{
-					linkType = LinkTypes.NORMAL;
-				}
-				
-				DimLink link = data.createLink(packedLink.source, linkType, packedLink.orientation);
+				DimLink link = data.createLink(packedLink.source, linkType, packedLink.orientation, packedLink.lock);
 				Point4D destination = packedLink.tail.destination;
 				if(destination!=null)
 				{
-					PocketManager.getDimensionData(destination.getDimension()).setDestination(link, destination.getX(),destination.getY(),destination.getZ());
+					PocketManager.createDimensionDataDangerously(destination.getDimension()).setLinkDestination(link, destination.getX(),destination.getY(),destination.getZ());
 				}
 				unpackedLinks.add(packedLink);
 			}
@@ -210,10 +228,10 @@ public class DDSaveHandler
 		{
 			for(PackedLinkData packedLink : linksToUnpack)
 			{
-				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
+				NewDimData data = PocketManager.createDimensionDataDangerously(packedLink.source.getDimension());
 				if(data.getLink(packedLink.parent)!=null)
 				{
-					data.createChildLink(packedLink.source.getX(), packedLink.source.getY(), packedLink.source.getZ(), data.getLink(packedLink.parent));
+					data.createChildLink(packedLink.source, data.getLink(packedLink.parent), packedLink.lock);
 				}
 				unpackedLinks.add(packedLink);
 			}
@@ -221,7 +239,7 @@ public class DDSaveHandler
 		}
 		return true;
 	}
-	
+		
 
 	private static PackedDimData readDimension(File dataFile, DimDataProcessor reader)
 	{
@@ -238,48 +256,67 @@ public class DDSaveHandler
 		}
 	}
 	
-	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions, List<Integer> blacklist) throws IOException
+	public static boolean saveAll(Iterable<? extends IPackable<PackedDimData>> dimensions,
+			List<Integer> blacklist, boolean checkModified) throws IOException
 	{
 		// Create the data directory for our dimensions
 		// Don't catch exceptions here. If we can't create this folder,
 		// the mod should crash to let the user know early on.
 
-		String basePath = DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/";
-		File basePathFile = new File(basePath);
-		Files.createParentDirs(basePathFile);
-		basePathFile.mkdir();
-				
-		BlacklistProcessor blacklistReader = new BlacklistProcessor();
-		writeBlacklist(blacklist, blacklistReader,basePath);		
-		
-		FileFilter dataFileFilter = new FileFilters.RegexFileFilter("dim_-?\\d+\\.txt");
-		
-		//TODO Deal with temp files correctly
-		File[] dataFiles = basePathFile.listFiles(dataFileFilter);
-		for (File dataFile : dataFiles)
+		// Get the save directory path
+		File saveDirectory = new File(mod_pocketDim.instance.getCurrentSavePath() + "/DimensionalDoors/data/");
+		String savePath = saveDirectory.getAbsolutePath();
+		String baseSavePath = savePath + "/dim_";
+		File backupDirectory = new File(savePath + "/backup");
+		String baseBackupPath = backupDirectory.getAbsolutePath() + "/dim_";
+
+		if (!saveDirectory.exists())
 		{
-			dataFile.delete();
+			// Create the save directory
+			Files.createParentDirs(saveDirectory);
+			saveDirectory.mkdir();
+		}
+		if (!backupDirectory.exists())
+		{
+			// Create the backup directory
+			backupDirectory.mkdir();
 		}
 		
+		// Create and write the blackList
+		writeBlacklist(blacklist, savePath);
 		
-		basePathFile = null;
-		basePath += "dim_";
+		//create and write personal pocket mapping
+		writePersonalPocketMap(PocketManager.getPersonalPocketMapping(), savePath);
 		
+		// Write the dimension save data
 		boolean succeeded = true;
 		DimDataProcessor writer = new DimDataProcessor();
 		for (IPackable<PackedDimData> dimension : dimensions)
 		{
-			succeeded &= writeDimension(dimension, writer, basePath);
+			// Check if the dimension should be saved
+			if (!checkModified || dimension.isModified())
+			{
+				if (writeDimension(dimension, writer, baseSavePath, baseBackupPath))
+				{
+					dimension.clearModified();
+				}
+				else
+				{
+					succeeded = false;
+				}
+			}
 		}
+		
 		return succeeded;
 	}
 	
-	private static boolean writeBlacklist(List<Integer> blacklist, BlacklistProcessor writer, String basePath)
+	private static boolean writeBlacklist(List<Integer> blacklist, String savePath)
 	{
 		try
 		{
-			File tempFile = new File(basePath + "blacklist.tmp");
-			File saveFile = new File(basePath + "blacklist.txt");
+			BlacklistProcessor writer = new BlacklistProcessor();
+			File tempFile = new File(savePath + "/blacklist.tmp");
+			File saveFile = new File(savePath + "/blacklist.txt");
 			writer.writeToFile(tempFile, blacklist);
 			saveFile.delete();
 			tempFile.renameTo(saveFile);
@@ -290,18 +327,48 @@ public class DDSaveHandler
 			System.err.println("Could not save blacklist. The following error occurred:");
 			printException(e, true);
 			return false;
-		}
-		
+		}	
 	}
-	private static boolean writeDimension(IPackable<PackedDimData> dimension, DimDataProcessor writer, String basePath)
+	
+	private static boolean writePersonalPocketMap(HashMap<String, NewDimData> hashMap, String savePath)
 	{
 		try
 		{
-			File tempFile = new File(basePath + (dimension.name() + ".tmp"));
-			File saveFile = new File(basePath + (dimension.name() + ".txt"));
-			writer.writeToFile(tempFile, dimension.pack());
+			HashMap<String, Integer> ppMap = new HashMap<String, Integer>();
+			
+			for(Entry<String, NewDimData> pair : hashMap.entrySet())
+			{
+				ppMap.put(pair.getKey(), pair.getValue().id());
+			}
+			PersonalPocketMappingProcessor writer = new PersonalPocketMappingProcessor();
+			File tempFile = new File(savePath + "/personalPockets.tmp");
+			File saveFile = new File(savePath + "/personalPockets.txt");
+			writer.writeToFile(tempFile, ppMap);
 			saveFile.delete();
 			tempFile.renameTo(saveFile);
+			return true;
+		}
+		catch (Exception e)
+		{
+			System.err.println("Could not save personal pockets mapping. The following error occurred:");
+			printException(e, true);
+			return false;
+		}	
+	}
+	
+	private static boolean writeDimension(IPackable<PackedDimData> dimension, DimDataProcessor writer, String basePath, String backupPath)
+	{
+		try
+		{
+			File saveFile = new File(basePath + dimension.name() + ".txt");
+			
+			// If the save file already exists, back it up.
+			if (saveFile.exists())
+			{
+				Files.move(saveFile, new File(backupPath + dimension.name() + ".txt"));
+			}
+
+			writer.writeToFile(saveFile, dimension.pack());
 			return true;
 		}
 		catch (Exception e)
@@ -355,7 +422,6 @@ public class DDSaveHandler
 
 	public static List<Integer> readBlacklist(File blacklistFile, BlacklistProcessor reader)
 	{
-	
 		try
 		{
 			return reader.readFromFile(blacklistFile);
@@ -365,6 +431,18 @@ public class DDSaveHandler
 			e.printStackTrace();
 			return null;
 		}
-		
+	}
+	
+	public static HashMap<String,Integer> readPersonalPocketsMapping(File ppMap, PersonalPocketMappingProcessor reader)
+	{
+		try
+		{
+			return reader.readFromFile(ppMap);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

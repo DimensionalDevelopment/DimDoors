@@ -12,8 +12,8 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDLoot;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.schematic.WorldOperation;
 
 /**

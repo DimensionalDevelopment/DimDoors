@@ -45,4 +45,9 @@ public class DungeonType implements Comparable<DungeonType>
 		final int prime = 2039;
 		return prime * ID;
 	}
+	@Override
+	public String toString()
+	{
+		return this.Name+" owned by "+this.Owner;
+	}
 }

@@ -35,6 +35,8 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 	private final int DEFAULT_PRODUCT_WEIGHT = 100;
 	private final int MAX_DUNGEON_PACK_WEIGHT = 10000;
 	private final int MIN_DUNGEON_PACK_WEIGHT = 1;
+	private final int MAX_DUPLICATE_SEARCH_LEVELS = 5;
+	private final int MIN_DUPLICATE_SEARCH_LEVELS = 0;
 	private final int DEFAULT_DUNGEON_PACK_WEIGHT = 100;
 	private final int MAX_CONDITION_LENGTH = 20;
 	private final int MAX_PRODUCT_COUNT = MAX_CONDITION_LENGTH;
@@ -80,6 +82,7 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 			config.setAllowPackChangeOut(true);
 			config.setDistortDoorCoordinates(false);
 			config.setPackWeight(DEFAULT_DUNGEON_PACK_WEIGHT);
+			config.setDuplicateSearchLevels(MIN_DUPLICATE_SEARCH_LEVELS);
 			
 			//Read the settings section
 			if (findSection("Settings", reader))
@@ -267,6 +270,18 @@ public class DungeonPackConfigReader extends BaseConfigurationProcessor<DungeonP
 						if (weight >= MIN_DUNGEON_PACK_WEIGHT && weight <= MAX_DUNGEON_PACK_WEIGHT)
 						{
 							config.setPackWeight(weight);
+						}
+						else
+						{
+							valid = false;
+						}
+					}
+					else if (name.equalsIgnoreCase("DuplicateSearchLevels"))
+					{
+						int levels = Integer.parseInt(value);
+						if (levels >= MIN_DUPLICATE_SEARCH_LEVELS && levels <= MAX_DUPLICATE_SEARCH_LEVELS)
+						{
+							config.setDuplicateSearchLevels(levels);
 						}
 						else
 						{

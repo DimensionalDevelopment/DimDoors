@@ -2,15 +2,14 @@ package StevenDimDoors.mod_pocketDim.core;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.network.packet.Packet41EntityEffect;
 import net.minecraft.network.packet.Packet43Experience;
 import net.minecraft.network.packet.Packet9Respawn;
@@ -20,15 +19,12 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.network.ForgePacket;
-import net.minecraftforge.common.network.packet.DimensionRegisterPacket;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
+import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
-import StevenDimDoors.mod_pocketDim.items.BaseItemDoor;
-import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
@@ -40,70 +36,64 @@ public class DDTeleporter
 {
 	private static final Random random = new Random();
 	private static final int NETHER_DIMENSION_ID = -1;
+	private static final int OVERWORLD_DIMENSION_ID = 0;
 	private static final int END_DIMENSION_ID = 1;
 	private static final int MAX_NETHER_EXIT_CHANCE = 100;
 	private static final int NETHER_EXIT_CHANCE = 20; //20% chance to compensate for frequent exit failures - the Nether often doesn't have enough space for an exit
+	private static final int MAX_OVERWORLD_EXIT_CHANCE = 100;
+	private static final int OVERWORLD_EXIT_CHANCE = 15;
 	private static final int MAX_ROOT_SHIFT_CHANCE = 100;
 	private static final int START_ROOT_SHIFT_CHANCE = 0;
 	private static final int ROOT_SHIFT_CHANCE_PER_LEVEL = 5;
+	private static final String SPIRIT_WORLD_NAME = "Spirit World";
 	
 	public static int cooldown = 0;
 	
 	private DDTeleporter() { }
 	
-	/**Checks if the destination supplied is valid, ie, filled by any non-replaceable block. 
-	 * 
-	 * @param entity
-	 * @param world
-	 * @param destination
-	 * @param properties
-	 * @return
+	/**
+	 * Checks if the destination supplied is safe (i.e. filled by any replaceable or non-opaque blocks)
 	 */
-	private static boolean checkDestination(Entity entity, WorldServer world, Point4D destination,DDProperties properties)
+	private static boolean checkDestination(WorldServer world, Point4D destination, int orientation)
 	{
 		int x = destination.getX();
 		int y = destination.getY();
 		int z = destination.getZ();
 		int blockIDTop;
-		int blockIDBottom;
-		
+		int blockIDBottom;		
 		Point3D point;
-
-		int orientation;
 		
-		orientation = getDestinationOrientation(destination, properties);
-		entity.rotationYaw = (orientation * 90) + 90;
 		switch (orientation)
 		{
 			case 0:
-				point = new Point3D(MathHelper.floor_double(x - 0.5), y - 1, MathHelper.floor_double(z + 0.5));
+				point = new Point3D(x - 1, y - 1, z);
 				break;
 			case 1:
-				point = new Point3D(MathHelper.floor_double(x + 0.5), y - 1, MathHelper.floor_double(z - 0.5));
+				point = new Point3D(x, y - 1, z - 1);
 				break;
 			case 2:
-				point =  new Point3D(MathHelper.floor_double(x + 1.5), y - 1, MathHelper.floor_double(z + 0.5));
+				point =  new Point3D(x + 1, y - 1, z);
 				break;
 			case 3:
-				point =  new Point3D(MathHelper.floor_double(x + 0.5), y - 1, MathHelper.floor_double(z + 1.5));
+				point =  new Point3D(x, y - 1, z + 1);
 				break;
 			default:
 				point =  new Point3D(x, y - 1, z);
 				break;
 		}
 		blockIDBottom = world.getBlockId(point.getX(), point.getY(), point.getZ());
-		blockIDTop = world.getBlockId(point.getX(), point.getY()+1, point.getZ());
+		blockIDTop = world.getBlockId(point.getX(), point.getY() + 1, point.getZ());
 		
 		if (Block.blocksList[blockIDBottom] != null)
 		{
-			if(!Block.blocksList[blockIDBottom].isBlockReplaceable(world, point.getX(), point.getY(), point.getZ())&&world.isBlockOpaqueCube(point.getX(), point.getY(), point.getZ()))
+			if (!Block.blocksList[blockIDBottom].isBlockReplaceable(world, point.getX(), point.getY(), point.getZ()) && world.isBlockOpaqueCube(point.getX(), point.getY(), point.getZ()))
 			{
 				return false;
 			}
 		}
 		if (Block.blocksList[blockIDTop] != null)
 		{
-			if (!Block.blocksList[blockIDTop].isBlockReplaceable(world, point.getX(), point.getY()+1, point.getZ()))
+			if (!Block.blocksList[blockIDTop].isBlockReplaceable(world, point.getX(), point.getY() + 1, point.getZ()))
 			{
 				return false;
 			}
@@ -125,56 +115,37 @@ public class DDTeleporter
 		}
 		else
 		{
-			//Teleport the entity to the precise destination point
+			// Teleport the entity to the precise destination point
 			orientation = -1;
 		}
 		
-		if (!checkDestination(entity, world, destination, properties))
-		{
-            if (entity instanceof EntityPlayerMP)
-            {
-            	EntityPlayer player = (EntityPlayer) entity;
-            	player.rotationYaw = (orientation * 90) + 90;
-            	switch (orientation)
-    			{
-    				case 0:
-    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
-    					break;
-    				case 1:
-    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
-    					break;
-    				case 2:
-    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
-    					break;
-    				case 3:
-    					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
-    					break;
-    				default:
-    					player.setPositionAndUpdate(x, y - 1, z);	
-    					break;
-    			}
-            }
-		}
-		else if (entity instanceof EntityPlayer)
+		if (entity instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) entity;
-			switch (orientation)
+			if (checkDestination(world, destination, orientation))
 			{
-				case 0:
-					player.setPositionAndUpdate(x - 0.5, y - 1, z + 0.5);
-					break;
-				case 1:
-					player.setPositionAndUpdate(x + 0.5, y - 1, z - 0.5);
-					break;
-				case 2:
-					player.setPositionAndUpdate(x + 1.5, y - 1, z + 0.5);
-					break;
-				case 3:
-					player.setPositionAndUpdate(x + 0.5, y - 1, z + 1.5);
-					break;
-				default:
-					player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);	
-					break;
+				switch (orientation)
+				{
+					case 0:
+						player.setPositionAndUpdate(x - 0.5, y - 1, z + 0.5);
+						break;
+					case 1:
+						player.setPositionAndUpdate(x + 0.5, y - 1, z - 0.5);
+						break;
+					case 2:
+						player.setPositionAndUpdate(x + 1.5, y - 1, z + 0.5);
+						break;
+					case 3:
+						player.setPositionAndUpdate(x + 0.5, y - 1, z + 1.5);
+						break;
+					default:
+						player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);	
+						break;
+				}
+			}
+			else
+			{
+				player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
 			}
 		}
 		else if (entity instanceof EntityMinecart)
@@ -200,7 +171,7 @@ public class DDTeleporter
 					entity.worldObj.updateEntityWithOptionalForce(entity, false);
 					break;
 				case 3:
-					DDTeleporter.setEntityPosition(entity, x + 0.5, y, z + 1.5 );
+					DDTeleporter.setEntityPosition(entity, x + 0.5, y, z + 1.5);
 					entity.motionZ = 0.39;
 					entity.worldObj.updateEntityWithOptionalForce(entity, false);
 					break;
@@ -250,14 +221,13 @@ public class DDTeleporter
 		}
 		
 		//Check if the block below that point is actually a door
-		int blockID = world.getBlockId(door.getX(), door.getY() - 1, door.getZ());
-		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
-			blockID != properties.TransientDoorID && blockID != properties.UnstableDoorID
-			&& blockID != properties.GoldenDimensionalDoorID)
+		Block block = Block.blocksList[world.getBlockId(door.getX(), door.getY() - 1, door.getZ())];
+		if (block==null || !(block instanceof IDimDoor))
 		{
 			//Return the pocket's orientation instead
-			return PocketManager.getDimensionData(door.getDimension()).orientation();
+			return PocketManager.createDimensionData(world).orientation();
 		}
+		
 		
 		//Return the orientation portion of its metadata
 		return world.getBlockMetadata(door.getX(), door.getY() - 1, door.getZ()) & 3;
@@ -323,7 +293,7 @@ public class DDTeleporter
 				// to prevent us from doing bad things. Moreover, no dimension is being created, so if we ever
 				// tie code to that, it could cause confusing bugs.
 				// No hacky for you! ~SenseiKiwi
-				PocketManager.getDimwatcher().onCreated(new ClientDimData(PocketManager.getDimensionData(destination.getDimension())));
+				PocketManager.getDimwatcher().onCreated(new ClientDimData(PocketManager.createDimensionData(newWorld)));
 				  
 				// Set the new dimension and inform the client that it's moving to a new world.
 				player.dimension = destination.getDimension();
@@ -457,11 +427,11 @@ public class DDTeleporter
 			return;
 		}
 
-		if (!initializeDestination(link, DDProperties.instance(),door))
+		if (!initializeDestination(link, DDProperties.instance(),entity,door))
 		{
 			return;
 		}
-		if (link.linkType() == LinkTypes.RANDOM)
+		if (link.linkType() == LinkType.RANDOM)
 		{
 			Point4D randomDestination = getRandomDestination();
 			if (randomDestination != null)
@@ -470,21 +440,46 @@ public class DDTeleporter
 				entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
 			}
 		}
-		else
+		else 
 		{
 			buildExitDoor(door, link, DDProperties.instance());
-			entity = teleportEntity(entity, link.destination(), link.linkType() != LinkTypes.UNSAFE_EXIT);
+			entity = teleportEntity(entity, link.destination(), link.linkType() != LinkType.UNSAFE_EXIT);
 			entity.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "mob.endermen.portal", 1.0F, 1.0F);
 		}
 	}
 
-	private static boolean initializeDestination(DimLink link, DDProperties properties, Block door)
+	private static boolean initializeDestination(DimLink link, DDProperties properties, Entity entity, Block door)
 	{
-		if (link.hasDestination())
+		if (link.hasDestination()&&link.linkType()!=LinkType.PERSONAL)
 		{
-			if(PocketManager.isBlackListed(link.destination().getDimension()))
+			if (PocketManager.isBlackListed(link.destination().getDimension()))
 			{
-				link=PocketManager.getDimensionData(link.source().getDimension()).createLink(link.link.point,LinkTypes.SAFE_EXIT,link.link.orientation);
+
+				// This link leads to a dimension that has been blacklisted.
+				// That means that it was a pocket and it was deleted.
+				// Depending on the link type, we must overwrite it or cancel
+				// the teleport operation. We don't need to assign 'link' with
+				// a different value. NewDimData will overwrite it in-place.
+				NewDimData start = PocketManager.getDimensionData(link.source().getDimension());
+				if (link.linkType() == LinkType.DUNGEON)
+				{
+					// Ovewrite the link into a dungeon link with no destination
+					start.createLink(link.source(), LinkType.DUNGEON, link.orientation(), null);
+				}
+				else
+				{
+					if (start.isPocketDimension())
+					{
+						// Ovewrite the link into a safe exit link, because
+						// this could be the only way out from a pocket.
+						start.createLink(link.source(), LinkType.SAFE_EXIT, link.orientation(), null);
+					}
+					else
+					{
+						// Cancel the teleport attempt
+						return false;
+					}
+				}
 			}
 			else
 			{
@@ -495,23 +490,48 @@ public class DDTeleporter
 		// Check the destination type and respond accordingly
 		switch (link.linkType())
 		{
-			case LinkTypes.DUNGEON:
+			case DUNGEON:
 				return PocketBuilder.generateNewDungeonPocket(link, properties);
-			case LinkTypes.POCKET:
-				return PocketBuilder.generateNewPocket(link, properties,door);
-			case LinkTypes.SAFE_EXIT:
+			case POCKET:
+				return PocketBuilder.generateNewPocket(link, properties, door, DimensionType.POCKET);
+			case PERSONAL:
+				return setupPersonalLink(link, properties, entity, door);
+			case SAFE_EXIT:
 				return generateSafeExit(link, properties);
-			case LinkTypes.DUNGEON_EXIT:
+			case DUNGEON_EXIT:
 				return generateDungeonExit(link, properties);
-			case LinkTypes.UNSAFE_EXIT:
+			case UNSAFE_EXIT:
 				return generateUnsafeExit(link);
-			case LinkTypes.NORMAL:
-			case LinkTypes.REVERSE:
-			case LinkTypes.RANDOM:
+			case NORMAL:
+			case REVERSE:
+			case RANDOM:
 				return true;
 			default:
 				throw new IllegalArgumentException("link has an unrecognized link type.");
 		}
+	}
+	
+	private static boolean setupPersonalLink(DimLink link, DDProperties properties,Entity player, Block door)
+	{
+		if(!(player instanceof EntityPlayer))
+		{
+			return false;
+		}
+		
+		NewDimData dim = PocketManager.getPersonalDimensionForPlayer(player.getEntityName());
+		if(dim == null)
+		{
+			return PocketBuilder.generateNewPersonalPocket(link, properties, player, door);
+		}
+		
+		DimLink personalHomeLink = dim.getLink(dim.origin());
+		if(personalHomeLink!=null)
+		{
+			PocketManager.getDimensionData(link.source().getDimension()).setLinkDestination(personalHomeLink, link.source().getX(), link.source().getY(), link.source().getZ());
+		}
+		
+		dim.setLinkDestination(link, dim.origin.getX(), dim.origin.getY(), dim.origin.getZ());
+		return true;
 	}
 
 	private static Point4D getRandomDestination()
@@ -531,7 +551,7 @@ public class DDTeleporter
 		{
 			for (DimLink link : dimension.getAllLinks())
 			{
-				if (link.linkType() != LinkTypes.RANDOM)
+				if (link.linkType() != LinkType.RANDOM)
 				{
 					matches.add(link.source());
 				}
@@ -543,10 +563,7 @@ public class DDTeleporter
 		{
 			return matches.get( random.nextInt(matches.size()) );
 		}
-		else
-		{
-			return null;
-		}
+		return null;
 	}
 	
 	private static boolean generateUnsafeExit(DimLink link)
@@ -560,7 +577,8 @@ public class DDTeleporter
 		// To avoid loops, don't generate a destination if the player is
 		// already in a non-pocket dimension.
 		
-		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
+		NewDimData current = PocketManager.getDimensionData(link.point.getDimension());
+
 		if (current.isPocketDimension())
 		{
 			Point4D source = link.source();
@@ -573,7 +591,7 @@ public class DDTeleporter
 			Point3D destination = yCoordHelper.findDropPoint(world, source.getX(), source.getY() + 1, source.getZ());
 			if (destination != null)
 			{
-				current.root().setDestination(link, destination.getX(), destination.getY(), destination.getZ());
+				current.root().setLinkDestination(link, destination.getX(), destination.getY(), destination.getZ());
 				return true;				
 			}
 		}
@@ -584,7 +602,7 @@ public class DDTeleporter
 	{
 		World startWorld = PocketManager.loadDimension(link.source().getDimension());
 		World destWorld = PocketManager.loadDimension(link.destination().getDimension());
-		TileEntity doorTE = startWorld.getBlockTileEntity(link.source().getX(), link.source().getY(), link.link.point.getZ());
+		TileEntity doorTE = startWorld.getBlockTileEntity(link.source().getX(), link.source().getY(), link.point.getZ());
 		if(doorTE instanceof TileEntityDimDoor)
 		{
 			if((TileEntityDimDoor.class.cast(doorTE).hasGennedPair))
@@ -602,7 +620,7 @@ public class DDTeleporter
 				}
 			}
 			
-			BaseItemDoor.placeDoorBlock(destWorld, link.destination().getX(), link.destination().getY()-1, link.destination().getZ(),link.getDestinationOrientation(), door);
+			ItemDoor.placeDoorBlock(destWorld, link.destination().getX(), link.destination().getY()-1, link.destination().getZ(),link.getDestinationOrientation(), door);
 
 			TileEntity 	doorDestTE = ((BaseDimDoor)door).initDoorTE(destWorld, link.destination().getX(), link.destination().getY(), link.destination().getZ());
 
@@ -614,9 +632,10 @@ public class DDTeleporter
 			}
 		}
 	}
+	
 	private static boolean generateSafeExit(DimLink link, DDProperties properties)
 	{
-		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
+		NewDimData current = PocketManager.getDimensionData(link.point.getDimension());
 		return generateSafeExit(current.root(), link, properties);
 	}
 	
@@ -627,22 +646,25 @@ public class DDTeleporter
 		// There is a chance of choosing the Nether first before other root dimensions
 		// to compensate for servers with many Mystcraft ages or other worlds.
 		
-		NewDimData current = PocketManager.getDimensionData(link.link.point.getDimension());
+		NewDimData current = PocketManager.getDimensionData(link.point.getDimension());
+
 		ArrayList<NewDimData> roots = PocketManager.getRootDimensions();
 		int shiftChance = START_ROOT_SHIFT_CHANCE + ROOT_SHIFT_CHANCE_PER_LEVEL * (current.packDepth() - 1);
 
 		if (random.nextInt(MAX_ROOT_SHIFT_CHANCE) < shiftChance)
 		{
-			if (random.nextInt(MAX_NETHER_EXIT_CHANCE) < NETHER_EXIT_CHANCE)
+			if (current.root().id() != OVERWORLD_DIMENSION_ID && random.nextInt(MAX_OVERWORLD_EXIT_CHANCE) < OVERWORLD_EXIT_CHANCE)
 			{
-				return generateSafeExit(PocketManager.getDimensionData(NETHER_DIMENSION_ID), link, properties);
+				return generateSafeExit(PocketManager.createDimensionDataDangerously(OVERWORLD_DIMENSION_ID), link, properties);
+			}
+			if (current.root().id() != NETHER_DIMENSION_ID && random.nextInt(MAX_NETHER_EXIT_CHANCE) < NETHER_EXIT_CHANCE)
+			{
+				return generateSafeExit(PocketManager.createDimensionDataDangerously(NETHER_DIMENSION_ID), link, properties);
 			}
 			for (int attempts = 0; attempts < 10; attempts++)
 			{
 				NewDimData selection = roots.get( random.nextInt(roots.size()) );
-				if (selection.id() != END_DIMENSION_ID &&
-					selection.id() != properties.LimboDimensionID &&
-					selection != current.root())
+				if (selection != current.root() && isValidForDungeonExit(selection, properties))
 				{
 					return generateSafeExit(selection, link, properties);
 				}
@@ -651,6 +673,19 @@ public class DDTeleporter
 		
 		// Yes, this could lead you back into Limbo. That's intentional.
 		return generateSafeExit(current.root(), link, properties);
+	}
+	
+	private static boolean isValidForDungeonExit(NewDimData destination, DDProperties properties)
+	{
+		// Prevent exits to The End and Limbo
+		if (destination.id() == END_DIMENSION_ID || destination.id() == properties.LimboDimensionID)
+		{
+			return false;
+		}
+		// Prevent exits to Witchery's Spirit World; we need to load the dimension to retrieve its name.
+		// This is okay because the dimension would have to be loaded subsequently by generateSafeExit().
+		World world = PocketManager.loadDimension(destination.id());
+		return (world != null && !SPIRIT_WORLD_NAME.equals(world.provider.getDimensionName()));
 	}
 	
 	private static boolean generateSafeExit(NewDimData destinationDim, DimLink link, DDProperties properties)
@@ -728,16 +763,17 @@ public class DDTeleporter
 			// Create a reverse link for returning
 			int orientation = getDestinationOrientation(source, properties);
 			NewDimData sourceDim = PocketManager.getDimensionData(link.source().getDimension());
-			DimLink reverse = destinationDim.createLink(x, y + 2, z, LinkTypes.REVERSE,orientation);
-			sourceDim.setDestination(reverse, source.getX(), source.getY(), source.getZ());
+			DimLink reverse = destinationDim.createLink(x, y + 2, z, LinkType.REVERSE,orientation);
+
+			sourceDim.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());
 			
 			// Set up the warp door at the destination
 			orientation = BlockRotator.transformMetadata(orientation, 2, properties.WarpDoorID);
-			ItemDimensionalDoor.placeDoorBlock(world, x, y + 1, z, orientation, mod_pocketDim.warpDoor);
+			ItemDoor.placeDoorBlock(world, x, y + 1, z, orientation, mod_pocketDim.warpDoor);
 			
 			// Complete the link to the destination
 			// This comes last so the destination isn't set unless everything else works first
-			destinationDim.setDestination(link, x, y + 2, z);
+			destinationDim.setLinkDestination(link, x, y + 2, z);
 		}
 		
 		return (destination != null);

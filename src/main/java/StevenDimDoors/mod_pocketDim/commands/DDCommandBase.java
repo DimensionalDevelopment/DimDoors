@@ -5,7 +5,6 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatMessageComponent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 /*
  * An abstract base class for our Dimensional Doors commands. This cleans up the code a little and provides
@@ -40,12 +39,22 @@ public abstract class DDCommandBase extends CommandBase
 		return name;
 	}
 	
-	/*
-	 * Registers the command at server startup.
-	 */
-	public void register(FMLServerStartingEvent event)
+	@Override
+	public final String getCommandUsage(ICommandSender sender)
 	{
-		event.registerServerCommand(this);
+		StringBuilder builder = new StringBuilder();
+		builder.append('/');
+		builder.append(name);
+		builder.append(' ');
+		builder.append(formats[0]);
+		for (int index = 1; index < formats.length; index++)
+		{
+			builder.append(" OR /");
+			builder.append(name);
+			builder.append(' ');
+			builder.append(formats[index]);
+		}
+		return builder.toString();
 	}
 	
 	/*
@@ -67,10 +76,10 @@ public abstract class DDCommandBase extends CommandBase
 				//Send the argument formats for this command
 				for (String format : formats)
 				{
-					sendChat(player,("Usage: " + name + " " + format));
+					sendChat(player, "Usage: " + name + " " + format);
 				}
 			}
-			sendChat(player,(result.getMessage()));
+			sendChat(player, result.getMessage());
 		}
 	}
 
@@ -79,12 +88,22 @@ public abstract class DDCommandBase extends CommandBase
 		ChatMessageComponent cmp = new ChatMessageComponent();
 		cmp.addText(message);
 		player.sendChatToPlayer(cmp);
-
 	}
-	
-	@Override
-	public int compareTo(Object par1Obj)
+
+    /*
+     * The following two compareTo() methods are copied from CommandBase because it seems
+     * that Dryware and Technic Jenkins don't have those functions defined. How in the world?
+     * I have no idea. But it's breaking our builds. -_-  ~SenseiKiwi
+     */
+    @Override
+	public int compareTo(ICommand command)
     {
-        return this.getCommandName().compareTo(((ICommand)par1Obj).getCommandName());
+        return this.getCommandName().compareTo(command.getCommandName());
+    }
+
+    @Override
+	public int compareTo(Object other)
+    {
+        return this.compareTo((ICommand) other);
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.world.gen.structure.ComponentNetherBridgeThrone;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureNetherBridgeStart;
-import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 
 public class DDStructureNetherBridgeStart extends StructureNetherBridgeStart
 {
@@ -105,7 +105,8 @@ public class DDStructureNetherBridgeStart extends StructureNetherBridgeStart
     /**
      * Keeps iterating Structure Pieces and spawning them until the checks tell it to stop
      */
-    public void generateStructure(World world, Random random, StructureBoundingBox generationBounds)
+    @Override
+	public void generateStructure(World world, Random random, StructureBoundingBox generationBounds)
     {
     	if (hasGateway)
     	{

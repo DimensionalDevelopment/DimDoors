@@ -1,6 +1,6 @@
 package StevenDimDoors.mod_pocketDim.world.fortresses;
 
-import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraft.world.gen.structure.StructureStart;
@@ -18,7 +18,8 @@ public class DDNetherFortressGenerator extends MapGenNetherBridge
     	MapGenStructureIO.func_143034_b(DDStructureNetherBridgeStart.class, "Fortress");
     }
 
-    protected StructureStart getStructureStart(int chunkX, int chunkZ)
+    @Override
+	protected StructureStart getStructureStart(int chunkX, int chunkZ)
     {
         return new DDStructureNetherBridgeStart(this.worldObj, this.rand, chunkX, chunkZ, DDProperties.instance());
     }

@@ -1,6 +1,5 @@
 package StevenDimDoors.mod_pocketDim.ticking;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -9,8 +8,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
@@ -31,30 +30,42 @@ public class CustomLimboPopulator implements IRegularTickReceiver {
 	{
 		this.properties = properties;
 		this.locations = new ConcurrentLinkedQueue<ChunkLocation>();
-		sender.registerForTicking(this, MONOLITH_SPAWNING_INTERVAL, false);
+		sender.registerReceiver(this, MONOLITH_SPAWNING_INTERVAL, false);
 	}
 	
 	@Override
 	public void notifyTick() {
 		
-		//Check if any new spawning requests have come in
+		World limboWorld = null;
+		
+		// Check if any new spawning requests have come in
 		if (!locations.isEmpty())
 		{
-			//Check if mob spawning is allowed
+			// Check if mob spawning is allowed
 			if (isMobSpawningAllowed())
 			{
-				//Loop over the locations and call the appropriate function depending
-				//on whether the request is for Limbo or for a pocket dimension.
+				// Loop over the locations and call the appropriate function depending
+				// on whether the request is for Limbo or for a pocket dimension.
 				for (ChunkLocation location : locations)
 				{
 					if (location.DimensionID == properties.LimboDimensionID)
 					{
-						//Limbo chunk
-						placeMonolithsInLimbo(location.DimensionID, location.ChunkX, location.ChunkZ);
+						// Limbo chunk
 						
-						World world = DimensionManager.getWorld(location.DimensionID);
+						// SenseiKiwi: Check if we haven't loaded Limbo for another request in this request
+						// cycle. If so, try to load Limbo up. This solves a strange issue with ChickenChunks
+						// where CC somehow forces chunks to generate in Limbo if LimboProvider.canRespawnHere()
+						// is true, yet when execution reaches this point, Limbo isn't loaded anymore! My theory
+						// is that CC force-loads a chunk for some reason, but since there are no players around,
+						// Limbo immediately unloads after standard world gen runs, and before this code can run.
 						
-						mod_pocketDim.instance.gatewayGenerator.generate(world.rand, location.ChunkX, location.ChunkZ,world, world.getChunkProvider(),  world.getChunkProvider());
+						if (limboWorld == null)
+						{
+							limboWorld = PocketManager.loadDimension(properties.LimboDimensionID);
+						}
+						placeMonolithsInLimbo(limboWorld, location.ChunkX, location.ChunkZ);
+						mod_pocketDim.gatewayGenerator.generate(limboWorld.rand, location.ChunkX, location.ChunkZ,
+								limboWorld, limboWorld.getChunkProvider(), limboWorld.getChunkProvider());
 					}
 					else
 					{
@@ -145,15 +156,8 @@ public class CustomLimboPopulator implements IRegularTickReceiver {
 		while (sanity < 5 && !didSpawn);
 	}
 
-	private void placeMonolithsInLimbo(int dimensionID, int chunkX, int chunkZ)
+	private void placeMonolithsInLimbo(World limbo, int chunkX, int chunkZ)
 	{
-		World limbo = DimensionManager.getWorld(dimensionID);
-		
-		if (limbo == null)
-		{
-			return;
-		}
-		
 		//The following initialization code is based on code from ChunkProviderGenerate.
 		//It makes our generation depend on the world seed.
 		Random random = new Random(limbo.getSeed() ^ 0xB5130C4ACC71A822L);

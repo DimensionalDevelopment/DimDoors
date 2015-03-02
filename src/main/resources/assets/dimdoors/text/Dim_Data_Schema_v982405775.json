@@ -1,0 +1,245 @@
+{
+	"type":"object",
+	"$schema": "http://json-schema.org/draft-04/schema",
+
+	"description": "A serialized Dim Data object",
+	"properties":{
+		"ChildIDs": {
+			"type":"array",
+			 "items": {
+                    "type": "number"
+                }
+		},
+		"Depth": {
+			"type":"number"
+		},
+		"ID": {
+			"type":"number"
+		},
+		"IsDungeon": {
+			"type":"boolean"
+		},
+		"IsFilled": {
+			"type":"boolean"
+		},
+		"DungeonData": {
+			"type": "object",
+			
+			"properties": {
+				"Weight": {
+					"type": "number"
+				},
+				"IsOpen": {
+					"type": "boolean"
+				},
+				"IsInternal": {
+					"type": "boolean"
+				},
+				"SchematicPath": {
+					"type": "string"
+				},
+				"SchematicName": {
+					"type": "string"
+				},
+				"DungeonTypeName": {
+					"type": "string"
+				},
+				"DungeonPackName": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"Weight",
+				"IsOpen",
+				"IsInternal",
+				"SchematicPath",
+				"SchematicName",
+				"DungeonTypeName",
+				"DungeonPackName"
+			]
+		},
+		"Links": {
+			"type":"array",
+			 "items": {
+                    "type": "object",
+					"properties": {
+						"children": {
+							"type":"array",
+							"items":{
+								"type": "object",
+								"properties":{
+									"x": {
+										"type": "integer"
+									},
+									"y": {
+										"type": "integer"
+									},
+									"z": {
+										"type": "integer"
+									}
+								},
+								"required": [
+									"x",
+									"y",
+									"z"
+								]
+							}	
+						},
+						"orientation": {
+							"type": "number"
+						},
+						"source": {
+							"type": "object",
+							"properties": {
+								"x": {
+									"type": "integer"
+								},
+								"y": {
+									"type": "integer"
+								},
+								"z": {
+									"type": "integer"
+								},
+								"dimension": {
+									"type": "integer"
+								}
+							},
+							"required": [
+								"x",
+								"y",
+								"z",
+								"dimension"
+							]
+						},
+						"parent": {
+							"type": "object",
+							"properties": {
+								"x": {
+									"type": "integer"
+								},
+								"y": {
+									"type": "integer"
+								},
+								"z": {
+									"type": "integer"
+								}
+							},
+							"required": [
+								"x",
+								"y",
+								"z"
+							]
+						},
+						"tail": {
+							"type": "object",
+							"properties": {
+								"linkType" : {
+									"type": "number"
+								},
+								"destination":{
+									"type": "object",
+									"properties": {
+										"x": {
+											"type": "integer"
+										},
+										"y": {
+											"type": "integer"
+										},
+										"z": {
+											"type": "integer"
+										},
+										"dimension": {
+											"type": "integer"
+										}
+									},
+									"required": [
+										"x",
+										"y",
+										"z",
+										"dimension"
+									]
+								}
+							},
+							"required": [
+								"linkType"
+							]
+						},
+						"lock":{
+							"type": "object",
+							"properties": {
+								"lockState": {
+									"type": "boolean"
+								},
+								"lockKey": {
+									"type": "number"
+								}
+							},
+							"required": [
+								"lockState",
+								"lockKey"
+							]
+						
+						}
+					},
+					"required": [
+						"children",
+						"orientation",
+						"source",
+						"parent",
+						"tail"
+					]
+                }
+		},
+		"Orientation": {
+			"type":"number"
+		},
+		"Origin": {
+			"type":"object",
+			"properties":{
+				"x": {
+					"type":"number"
+				},
+				"y": {
+					"type":"number"
+				},
+				"z": {
+					"type":"number"
+				}
+			},
+			"required": [
+				"x",
+				"y",
+				"z"
+			]
+		},
+		"PackDepth": {
+			"type":"number"
+		},
+		"ParentID": {
+			"type":"number"
+		},
+		"RootID": {
+			"type":"number"
+		},
+		"SAVE_DATA_VERSION_ID_INSTANCE": {
+			"type":"number"
+		},
+		"Tails": {
+			"type":"array"
+		}
+	},
+	"required": ["Tails",
+					"SAVE_DATA_VERSION_ID_INSTANCE",
+					"RootID",
+					"ParentID",
+					"PackDepth",
+					"Origin",
+					"Orientation",
+					"Links",
+					"IsFilled",
+					"ID",
+					"IsDungeon",
+					"Depth",
+					"ChildIDs"
+				]
+}

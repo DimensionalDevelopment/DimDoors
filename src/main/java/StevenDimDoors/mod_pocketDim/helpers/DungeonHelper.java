@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,13 +16,12 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.regex.Pattern;
-
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
@@ -32,7 +31,6 @@ import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfigReader;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonType;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
-import StevenDimDoors.mod_pocketDim.util.ConfigurationProcessingException;
 import StevenDimDoors.mod_pocketDim.util.FileFilters;
 import StevenDimDoors.mod_pocketDim.util.WeightedContainer;
 
@@ -47,11 +45,8 @@ public class DungeonHelper
 	public static final String SCHEMATIC_FILE_EXTENSION = ".schematic";
 	
 	private static final String DEFAULT_ERROR_SCHEMATIC_PATH = "/schematics/core/somethingBroke.schematic";
-	private static final String DUNGEON_CREATION_GUIDE_SOURCE_PATH = "/mods/DimDoors/text/How_to_add_dungeons.txt";
-	private static final String RUINS_PACK_PATH = "/schematics/ruins";
-	private static final String BUNDLED_RUINS_LIST_PATH = "/schematics/ruins.txt";
-	private static final String NETHER_PACK_PATH = "/schematics/nether";
-	private static final String BUNDLED_NETHER_LIST_PATH = "/schematics/nether.txt";
+	private static final String DUNGEON_CREATION_GUIDE_SOURCE_PATH = "/assets/dimdoors/text/How_to_add_dungeons.txt";
+	private static final String BUNDLED_PACK_BASE_PATH = "/schematics/";
 	private static final String STANDARD_CONFIG_FILE_NAME = "rules.txt";
 	
 	private static final int NETHER_DIMENSION_ID = -1;
@@ -158,7 +153,7 @@ public class DungeonHelper
 		return null;
 	}
 	
-	private void registerDungeonPack(String directory, Iterable<String> schematics, boolean isInternal, boolean verbose, DungeonPackConfigReader reader)
+	private DungeonPack registerDungeonPack(String directory, Iterable<String> schematics, boolean isInternal, boolean verbose, DungeonPackConfigReader reader)
 	{
 		//First determine the pack's name and validate it
 		File packDirectory = new File(directory);
@@ -187,7 +182,7 @@ public class DungeonHelper
 			if (config == null)
 			{
 				System.err.println("Could not load config file: " + configPath);
-				return;
+				return null;
 			}
 			
 			//Register the pack
@@ -208,6 +203,7 @@ public class DungeonHelper
 		{
 			registerDungeon(schematicPath, pack, isInternal, verbose);
 		}
+		return pack;
 	}
 	
 	public List<DungeonData> getRegisteredDungeons()
@@ -231,10 +227,14 @@ public class DungeonHelper
 		return dungeonPackMapping.get(name.toUpperCase());
 	}
 	
-	private DungeonPack getDimDungeonPack(NewDimData data)
+	private DungeonPack getDimDungeonPack(NewDimData dimension)
 	{
+		// TODO: Drop support for dim-based packs and switch to embedding the pack
+		// in the link data itself. That would solve the dungeon pre-generation issue.
+		// Gateways should dictate which packs are being used, not the dimensions.
+		
 		DungeonPack pack;
-		DungeonData dungeon = data.dungeon();
+		DungeonData dungeon = dimension.dungeon();
 		if (dungeon != null)
 		{
 			pack = dungeon.dungeonType().Owner;
@@ -247,7 +247,7 @@ public class DungeonHelper
 		}
 		else
 		{
-			if (data.id() == NETHER_DIMENSION_ID)
+			if (dimension.id() == NETHER_DIMENSION_ID)
 			{
 				pack = NetherPack;
 			}
@@ -263,8 +263,8 @@ public class DungeonHelper
 	{
 		//Create a link above the specified position. Link to a new pocket dimension.
 		NewDimData dimension = PocketManager.getDimensionData(world);
-		DimLink link = dimension.createLink(x, y + 1, z, LinkTypes.POCKET, 3);
-		
+		DimLink link = dimension.createLink(x, y + 1, z, LinkType.POCKET, 3);
+
 		//Place a Warp Door linked to that pocket
 		ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 3, mod_pocketDim.warpDoor);
 		
@@ -433,32 +433,30 @@ public class DungeonHelper
 		defaultError = new DungeonData(DEFAULT_ERROR_SCHEMATIC_PATH, true, DungeonType.UNKNOWN_TYPE, true, DEFAULT_DUNGEON_WEIGHT);
 		
 		//Open the list of dungeons packaged with our mod and register their schematics
-		registerBundledPack(BUNDLED_RUINS_LIST_PATH, RUINS_PACK_PATH, "Ruins", reader);
-		RuinsPack = getDungeonPack("Ruins");
-		
-		registerBundledPack(BUNDLED_NETHER_LIST_PATH, NETHER_PACK_PATH, "Nether", reader);
-		NetherPack = getDungeonPack("Nether");
+		RuinsPack = registerBundledPack("Ruins", reader);
+		NetherPack = registerBundledPack("Nether", reader);
 		
 		System.out.println("Finished registering bundled dungeon packs");
 	}
 	
-	private void registerBundledPack(String listPath, String packPath, String name, DungeonPackConfigReader reader)
+	private DungeonPack registerBundledPack(String name, DungeonPackConfigReader reader)
 	{
 		System.out.println("Registering bundled dungeon pack: " + name);
 		
+		String packPath = BUNDLED_PACK_BASE_PATH + name.toLowerCase();
+		String listPath = packPath + ".txt";
 		InputStream listStream = this.getClass().getResourceAsStream(listPath);
-		// chance of leak?
+		
 		if (listStream == null)
 		{
-			System.err.println("Unable to open list of bundled dungeon schematics for " + name);
-			return;
+			throw new IllegalStateException("Failed to open the list of bundled dungeon schematics for " + name);
 		}
 		
+		ArrayList<String> schematics = new ArrayList<String>();
 		try
 		{
-			//Read the list of schematics that come with a bundled pack
+			// Read the list of schematics that come with a bundled pack
 			BufferedReader listReader = new BufferedReader(new InputStreamReader(listStream));
-			ArrayList<String> schematics = new ArrayList<String>();
 			String schematicPath = listReader.readLine();
 			while (schematicPath != null)
 			{
@@ -470,15 +468,19 @@ public class DungeonHelper
 				schematicPath = listReader.readLine();
 			}
 			listReader.close();
-			
-			//Register the pack
-			registerDungeonPack(packPath, schematics, true, false, reader);
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
-			System.err.println("An exception occurred while reading the list of bundled dungeon schematics for " + name);
-			e.printStackTrace();
+			throw new RuntimeException("An unexpected error occured while trying to read the list of schematics for the " + name + " bundled dungeon pack. This would inevitably cause Dimensional Doors to crash during runtime.", e);
 		}
+		
+		// Register the pack
+		DungeonPack pack = registerDungeonPack(packPath, schematics, true, false, reader);
+		if (pack == null)
+		{
+			throw new RuntimeException("Failed to load the " + name + " bundled dungeon pack. This would inevitably cause Dimensional Doors to crash during runtime.");
+		}
+		return pack;
 	}
 
 	public boolean exportDungeon(World world, int centerX, int centerY, int centerZ, String exportPath)
@@ -500,9 +502,9 @@ public class DungeonHelper
 		}
 	}
 
-	public DungeonData selectDungeon(NewDimData dimension, Random random)
+	public DungeonData selectNextDungeon(NewDimData parent, Random random)
 	{
-		DungeonPack pack = getDimDungeonPack(dimension.parent());
+		DungeonPack pack = getDimDungeonPack(parent);
 		DungeonData selection;
 		DungeonPackConfig config;
 		DungeonPack selectedPack;
@@ -512,30 +514,30 @@ public class DungeonHelper
 			config = pack.getConfig();
 			selectedPack = pack;
 			
-			//Are we allowed to switch to another dungeon pack?
+			// Are we allowed to switch to another dungeon pack?
 			if (config.allowPackChangeOut())
 			{
-				//Calculate the chance of switching to a different pack type
+				// Calculate the chance of switching to a different pack type
 				int packSwitchChance;
-				if (dimension.depth() == 1)
+				if (parent.isPocketDimension())
 				{
-					packSwitchChance = START_PACK_SWITCH_CHANCE;
+					packSwitchChance = MIN_PACK_SWITCH_CHANCE + parent.packDepth() * PACK_SWITCH_CHANCE_PER_LEVEL;
 				}
 				else
 				{
-					packSwitchChance = MIN_PACK_SWITCH_CHANCE + dimension.parent().packDepth() * PACK_SWITCH_CHANCE_PER_LEVEL;
+					packSwitchChance = START_PACK_SWITCH_CHANCE;					
 				}
 
-				//Decide randomly whether to switch packs or not
+				// Decide randomly whether to switch packs or not
 				if (random.nextInt(MAX_PACK_SWITCH_CHANCE) < packSwitchChance)
 				{
-					//Find another pack
+					// Find another pack
 					selectedPack = getRandomDungeonPack(pack, random);
 				}
 			}
 			
 			//Pick the next dungeon
-			selection = selectedPack.getNextDungeon(dimension, random);
+			selection = selectedPack.getNextDungeon(parent, random);
 		}
 		catch (Exception e)
 		{
@@ -577,11 +579,11 @@ public class DungeonHelper
 		return selection;
 	}
 
-	public Collection<String> getDungeonNames() {
-
-		//Use a HashSet to guarantee that all dungeon names will be distinct.
-		//This shouldn't be necessary if we keep proper lists without repetitions,
-		//but it's a fool-proof workaround.
+	public ArrayList<String> getDungeonNames()
+	{
+		// Use a HashSet to guarantee that all dungeon names will be distinct.
+		// This shouldn't be necessary if we keep proper lists without repetitions,
+		// but it's a fool-proof workaround.
 		HashSet<String> dungeonNames = new HashSet<String>();
 		dungeonNames.addAll( parseDungeonNames(registeredDungeons) );
 		dungeonNames.addAll( parseDungeonNames(untaggedDungeons) );
@@ -609,59 +611,95 @@ public class DungeonHelper
 		return names;
 	}
 	
-	public static ArrayList<DungeonData> getDungeonChainHistory(NewDimData dimension, DungeonPack pack, int maxSize)
+	/**
+	 * Lists all of the dungeons found by iterating through a dimension's ancestors. The search stops when a non-dungeon dimension is found or when the pack of a dungeon differs from the specified pack.
+	 * @param start - the first dimension to include in the history
+	 * @param pack - the pack to which any dungeons must belong in order to be listed
+	 * @param maxSize - the maximum number of dungeons that can be listed
+	 * @return a list of dungeons used in a given chain
+	 */
+	public static ArrayList<DungeonData> getDungeonChainHistory(NewDimData start, DungeonPack pack, int maxSize)
 	{
-		if (dimension == null)
+		if (start == null)
 		{
 			throw new IllegalArgumentException("dimension cannot be null.");
 		}
-		if(dimension.parent()==null)
-		{
-			return new ArrayList<DungeonData>();
-		}
 		int count = 0;
-		NewDimData tail = dimension.parent();
-		DungeonData dungeon = tail.dungeon();
+		NewDimData current = start;
+		DungeonData dungeon = current.dungeon();
 		ArrayList<DungeonData> history = new ArrayList<DungeonData>();
 		
 		while (count < maxSize && dungeon != null && dungeon.dungeonType().Owner == pack)
 		{
 			history.add(dungeon);
-			tail = tail.parent();
-			dungeon = tail.dungeon();
+			current = current.parent();
+			dungeon = current.dungeon();
 			count++;
 		}
 		return history;
 	}
 	
-	public static ArrayList<DungeonData> getFlatDungeonTree(NewDimData dimension, int maxSize)
+	/**
+	 * Performs a breadth-first listing of all dungeons rooted at a specified dimension. Only dungeons from the specified pack will be included.
+	 * @param root - the pocket dimension that serves as the root for the dungeon tree
+	 * @param pack - the pack to which any dungeons must belong in order to be listed
+	 * @param maxSize - the maximum number of dungeons that can be listed
+	 * @return a list of the dungeons used in a given dungeon tree
+	 */
+	public static ArrayList<DungeonData> listDungeonsInTree(NewDimData root, DungeonPack pack, int maxSize)
 	{
-		NewDimData root = dimension;
+		int count = 0;
+		NewDimData current;
+		DungeonData dungeon;
 		ArrayList<DungeonData> dungeons = new ArrayList<DungeonData>();
-		Queue<NewDimData> pendingDimensions = new LinkedList<NewDimData>();
-		
-		if (root.dungeon() == null)
-		{
-			return dungeons;
-		}
+		Queue<NewDimData> pendingDimensions = new LinkedList<NewDimData>();	
 		pendingDimensions.add(root);
 		
+		// Perform a breadth-first search through the dungeon graph
 		while (dungeons.size() < maxSize && !pendingDimensions.isEmpty())
 		{
-			NewDimData current = pendingDimensions.remove();
-			for (NewDimData child : current.children())
+			current = pendingDimensions.remove();
+			dungeon = current.dungeon();
+			// Check that this is a dungeon, and if so, that it belongs to the pack that we want
+			if (dungeon != null && dungeon.dungeonType().Owner == pack)
 			{
-				if (child.dungeon() != null)
+				dungeons.add(dungeon);
+				// Add all child dungeons for checking later
+				for (NewDimData child : current.children())
 				{
-					dungeons.add(child.dungeon());
 					pendingDimensions.add(child);
-				}
-				if (dungeons.size() == maxSize)
-				{
-					break;
 				}
 			}
 		}
 		return dungeons;
+	}
+	
+	/**
+	 * Gets the highest ancestor of a dimension with a dungeon that belongs to the specified pack.
+	 * @param dimension - the first dimension to include in the search
+	 * @param pack - the pack to which the ancestors must belong
+	 * @param maxLevels - the maximum number of ancestors to check
+	 * @return the highest ancestor that belongs to the specified pack within the specified levels, or <code>null</code> if none exists
+	 */
+	public static NewDimData getAncestor(NewDimData dimension, DungeonPack pack, int maxLevels)
+	{
+		// Find the ancestor of a dimension located a specified number of levels up.
+		NewDimData parent = dimension;
+		NewDimData current = null;
+		
+		// We solve this inductively. We begin with null as the first valid ancestor,
+		// like a kind of virtual child dimension. Then "current" references the
+		// highest valid ancestor found so far and "parent" references its parent
+		for (int levels = 0; levels <= maxLevels; levels++)
+		{
+			if (parent == null || parent.dungeon() == null ||
+				parent.dungeon().dungeonType().Owner != pack)
+			{
+				break;
+			}
+			current = parent;
+			parent = parent.parent();
+		}
+		return current;
 	}
 }

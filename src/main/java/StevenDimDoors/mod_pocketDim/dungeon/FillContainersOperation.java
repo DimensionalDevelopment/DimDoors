@@ -12,7 +12,7 @@ import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.DDLoot;
-import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.schematic.WorldOperation;
 
 public class FillContainersOperation extends WorldOperation
@@ -20,8 +20,8 @@ public class FillContainersOperation extends WorldOperation
 	private Random random;
 	private DDProperties properties;
 	
-	private static final int GRAVE_CHEST_CHANCE = 100;
-	private static final int MAX_GRAVE_CHEST_CHANCE = 700;
+	private static final int GRAVE_CHEST_CHANCE = 1;
+	private static final int MAX_GRAVE_CHEST_CHANCE = 6;
 	
 	public FillContainersOperation(Random random, DDProperties properties)
 	{
@@ -55,16 +55,6 @@ public class FillContainersOperation extends WorldOperation
 					{
 						DDLoot.generateChestContents(DDLoot.DungeonChestInfo, chest, random);						
 					}
-				}
-			}
-			
-			// Fill dispensers
-			if (tileEntity instanceof TileEntityDispenser)
-			{
-				TileEntityDispenser dispenser = (TileEntityDispenser) tileEntity;
-				if (isInventoryEmpty(dispenser))
-				{
-					dispenser.addItem(new ItemStack(Item.arrow, 64));
 				}
 			}
 		}

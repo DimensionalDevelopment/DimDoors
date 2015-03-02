@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDimClient;
 import java.nio.FloatBuffer;
 import java.util.Random;
 
+import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -11,9 +12,9 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.blocks.TransTrapdoor;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -38,21 +39,6 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
      */
     public void renderTransTrapdoorTileEntity(TileEntityTransTrapdoor tile, double x, double y, double z, float par8)
     {
-    	try
-    	{
-    		mod_pocketDim.transTrapdoor.updateAttachedTile(tile.worldObj, tile.xCoord, tile.yCoord, tile.zCoord);
-    	}
-    	catch(Exception e)
-    	{
-    		e.printStackTrace();
-    	}
-    	
-    	
-       // float playerX = (float)this.tileEntityRenderer.playerX;
-       // float playerY = (float)this.tileEntityRenderer.playerY;
-       // float playerZ = (float)this.tileEntityRenderer.playerZ;
-        
-        //float distance = (float) tile.getDistanceFrom(playerX, playerY, playerZ);
         GL11.glDisable(GL11.GL_LIGHTING);
         Random random = new Random(31100L);
         int metadata = tile.worldObj.getBlockMetadata(tile.xCoord, tile.yCoord, tile.zCoord);
@@ -77,7 +63,6 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
             if (count == 1)
             {
                 this.bindTexture(warpPath);
-                // move files into assets/modid and change to new ResourceLocation(modid:/WARP.png)
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
                 var16 = .5F;
@@ -127,7 +112,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
             GL11.glColor4d(var21 * var17, var22 * var17, var23 * var17, 1.0F);
             if (TransTrapdoor.isTrapdoorSetLow(metadata))
             {
-            	if (TransTrapdoor.isTrapdoorOpen(metadata))
+            	if (BlockTrapDoor.isTrapdoorOpen(metadata))
             	{
             		GL11.glVertex3d(x, y+0.2, z);
                 	GL11.glVertex3d(x, y+0.2,  z+1);
@@ -144,7 +129,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
             }
             else
             {
-            	if (TransTrapdoor.isTrapdoorOpen(metadata))
+            	if (BlockTrapDoor.isTrapdoorOpen(metadata))
             	{
             		GL11.glVertex3d(x, y+0.95, z);
                 	GL11.glVertex3d(x, y+0.95,  z+1);
@@ -180,7 +165,8 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
         return this.field_76908_a;
     }
 
-    public void renderTileEntityAt(TileEntity par1TileEntity, double par2, double par4, double par6, float par8)
+    @Override
+	public void renderTileEntityAt(TileEntity par1TileEntity, double par2, double par4, double par6, float par8)
     {
     	if (properties.DoorRenderingEnabled)
     	{

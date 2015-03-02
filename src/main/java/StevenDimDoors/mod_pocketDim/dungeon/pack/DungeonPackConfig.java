@@ -11,6 +11,7 @@ public class DungeonPackConfig
 	private boolean allowPackChangeOut;
 	private boolean distortDoorCoordinates;
 	private int packWeight;
+	private int duplicateSearchLevels;
 	private ArrayList<DungeonChainRuleDefinition> rules;
 	
 	public DungeonPackConfig() { }
@@ -25,6 +26,7 @@ public class DungeonPackConfig
 		this.allowPackChangeOut = source.allowPackChangeOut;
 		this.distortDoorCoordinates = source.distortDoorCoordinates;
 		this.packWeight = source.packWeight;
+		this.duplicateSearchLevels = source.duplicateSearchLevels;
 		this.rules = (source.rules != null) ? (ArrayList<DungeonChainRuleDefinition>) source.rules.clone() : null;
 	}
 	
@@ -112,6 +114,16 @@ public class DungeonPackConfig
 	public void setPackWeight(int packWeight)
 	{
 		this.packWeight = packWeight;
+	}
+	
+	public int getDuplicateSearchLevels()
+	{
+		return duplicateSearchLevels;
+	}
+	
+	public void setDuplicateSearchLevels(int duplicateSearchLevels)
+	{
+		this.duplicateSearchLevels = duplicateSearchLevels;
 	}
 	
 	public boolean doDistortDoorCoordinates()

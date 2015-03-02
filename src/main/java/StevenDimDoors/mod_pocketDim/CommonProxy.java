@@ -1,11 +1,14 @@
 package StevenDimDoors.mod_pocketDim;
 import java.io.File;
 import java.io.FileOutputStream;
+import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
+import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -18,7 +21,6 @@ public class CommonProxy implements IGuiHandler
     public static String WARP_PNG = "/WARP.png";
 
     public  void registerRenderers()
-
     {
     }
     public void registerEntity(Class <? extends Entity > entity, String entityname, int id, Object mod, int trackingrange, int updateFreq, boolean updatevelo)
@@ -130,6 +132,20 @@ public class CommonProxy implements IGuiHandler
     {
     	
     }
+	public void updateDoorTE(BaseDimDoor door, World world, int x, int y, int z)
+	{
+		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		if (tile instanceof TileEntityDimDoor)
+		{
+			int metadata = world.getBlockMetadata(x, y, z);
+			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
+			dimTile.openOrClosed = door.isDoorOnRift(world, x, y, z)&&door.isUpperDoorBlock(metadata);
+			dimTile.orientation = door.getFullMetadata(world, x, y, z) & 7;
+			dimTile.lockStatus = door.getLockStatus(world, x, y, z);
+		}
+	}
+    
+    
    
     
 }

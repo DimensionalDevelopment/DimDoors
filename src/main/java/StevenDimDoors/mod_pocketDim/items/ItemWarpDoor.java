@@ -4,15 +4,17 @@ import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
 
 public class ItemWarpDoor extends BaseItemDoor
 {
-	public ItemWarpDoor(int itemID, Material material)
+	public ItemWarpDoor(int itemID, Material material, ItemDoor door)
 	{
-		super(itemID, material);
+		super(itemID, material, door);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -26,23 +28,8 @@ public class ItemWarpDoor extends BaseItemDoor
 	}
     
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
+	protected BaseDimDoor getDoorBlock()
 	{
-		if (!world.isRemote)
-		{
-			if (tryPlacingDoor(mod_pocketDim.warpDoor, world, player, stack) &&
-				!player.capabilities.isCreativeMode)
-			{
-				stack.stackSize--;
-			}
-		}
-		return stack;
-	}
-
-	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y,
-		int z, int par7, float par8, float par9, float par10)
-	{
-		return tryItemUse(mod_pocketDim.warpDoor, stack, player, world, x, y, z, par7, false, true);
+		return (BaseDimDoor) mod_pocketDim.warpDoor;
 	}
 }

@@ -38,6 +38,13 @@ public class ServerPacketHandler implements IPacketHandler
 		public void onDeleted(ClientDimData message)
 		{
 			sendDimPacket(PacketConstants.DELETE_DIM_PACKET_ID, message);
+		}
+
+		@Override
+		public void update(ClientDimData message)
+		{
+			// TODO Auto-generated method stub
+			
 		}	
 	}
 	
@@ -53,6 +60,12 @@ public class ServerPacketHandler implements IPacketHandler
 		public void onDeleted(ClientLinkData message)
 		{
 			sendLinkPacket(PacketConstants.DELETE_LINK_PACKET_ID, message);
+		}
+
+		@Override
+		public void update(ClientLinkData message)
+		{
+			sendLinkPacket(PacketConstants.UPDATE_LINK_PACKET_ID, message);
 		}
 	}
 	

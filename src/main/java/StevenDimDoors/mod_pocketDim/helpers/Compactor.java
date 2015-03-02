@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-
 import StevenDimDoors.mod_pocketDim.core.DimLink;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.core.IDimRegistrationCallback;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
@@ -68,19 +68,20 @@ public class Compactor
 		{
 			int id = input.readInt();
 			int rootID = input.readInt();
+			DimensionType type = DimensionType.getTypeFromIndex(input.readInt());
 			
 			if (rootIDs.add(rootID))
 			{
-				callback.registerDimension(rootID, rootID);
+				callback.registerDimension(rootID, rootID, type);
 			}
 			// Don't check if (id != rootID) - we want to retrieve the reference anyway
-			NewDimData dimension = callback.registerDimension(id, rootID);
+			NewDimData dimension = callback.registerDimension(id, rootID, type);
 			int linkCount = input.readInt();
 			for (int h = 0; h < linkCount; h++)
 			{
 				ClientLinkData link = ClientLinkData.read(input);
 				Point4D source = link.point;
-				dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkTypes.CLIENT_SIDE,link.orientation);
+				dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkType.CLIENT,0);
 			}
 		}
 	}

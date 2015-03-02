@@ -7,10 +7,10 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.CloudRenderBlank;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 import cpw.mods.fml.relauncher.Side;
@@ -19,8 +19,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PocketProvider extends WorldProvider
 {
 	private DDProperties properties;
-	private CustomLimboPopulator spawner;
-	private IRenderHandler skyRenderer;
+	protected CustomLimboPopulator spawner;
+	protected IRenderHandler skyRenderer;
 
 	public PocketProvider()
 	{
@@ -81,6 +81,28 @@ public class PocketProvider extends WorldProvider
 		return false;
 	}
 
+	 public float calculateCelestialAngle(long par1, float par3)
+	 {
+		 return .5F;
+	 }
+	 
+	@Override
+	protected void generateLightBrightnessTable()
+	{
+		if(PocketManager.getDimensionData(this.dimensionId).type() == DimensionType.POCKET)
+		{
+			super.generateLightBrightnessTable();
+			return;
+		}
+		float modifier = 0.0F;
+
+		for (int steps = 0; steps <= 15; ++steps)
+		{
+			float var3 = (float) (Math.pow(steps,1.5) / Math.pow(15.0F,1.5));
+			this.lightBrightnessTable[15-steps] = var3;
+			System.out.println( this.lightBrightnessTable[steps]+"light");
+		}
+	}
 	@Override
 	public String getDimensionName() 
 	{
@@ -103,11 +125,8 @@ public class PocketProvider extends WorldProvider
 		{
 			respawnDim = PocketManager.getDimensionData(this.dimensionId).root().id();
 		}
-
-		if (DimensionManager.getWorld(respawnDim) == null)
-		{
-			DimensionManager.initDimension(respawnDim);
-		}
+		// TODO: Are we sure we need to load the dimension as well? Why can't the game handle that?
+		PocketManager.loadDimension(respawnDim);
 		return respawnDim;
 	}
 

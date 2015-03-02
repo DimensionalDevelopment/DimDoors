@@ -2,19 +2,17 @@ package StevenDimDoors.mod_pocketDim.world.gateways;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.DimensionManager;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import cpw.mods.fml.common.IWorldGenerator;
 
@@ -25,13 +23,14 @@ public class GatewayGenerator implements IWorldGenerator
 	private static final int CLUSTER_GROWTH_CHANCE = 80;
 	private static final int MAX_CLUSTER_GROWTH_CHANCE = 100;
 	private static final int MIN_RIFT_Y = 4;
-	private static final int MAX_RIFT_Y = 250;
+	private static final int MAX_RIFT_Y = 240;
 	private static final int CHUNK_LENGTH = 16;
 	private static final int GATEWAY_RADIUS = 4;
 	private static final int MAX_GATEWAY_GENERATION_ATTEMPTS = 10;
 	private static final int OVERWORLD_DIMENSION_ID = 0;
 	private static final int NETHER_DIMENSION_ID = -1;
 	private static final int END_DIMENSION_ID = 1;
+	private static final String SPIRIT_WORLD_NAME = "Spirit World";
 	
 	private ArrayList<BaseGateway> gateways;
 	private BaseGateway defaultGateway;
@@ -50,7 +49,6 @@ public class GatewayGenerator implements IWorldGenerator
 		defaultGateway = new GatewayTwoPillars(properties);
 		
 		// Add gateways here
-		gateways.add(defaultGateway);
 		gateways.add(new GatewaySandstonePillars(properties));
 		gateways.add(new GatewayLimbo(properties));
 	}
@@ -58,15 +56,19 @@ public class GatewayGenerator implements IWorldGenerator
 	@Override
 	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
 	{
-		//Don't generate rifts or gateways if the rift generation flag is disabled,
-		//the current world is a pocket dimension, or the world is remote.
-		//Also don't generate anything in The End.
-		if (world.isRemote || (!properties.WorldRiftGenerationEnabled) ||
-			(world.provider instanceof PocketProvider) || (world.provider.dimensionId == END_DIMENSION_ID)||(world.provider.dimensionId == NETHER_DIMENSION_ID))
+		// Don't generate rifts or gateways if the current world is a pocket dimension or the world is remote.
+		// Also don't generate anything in the Nether, The End, or in Witchery's Spirit World.
+		// We only match against Spirit World using hashing to speed up the process a little (hopefully).
+		int dimensionID = world.provider.dimensionId;
+		if (world.isRemote
+			|| (world.provider instanceof PocketProvider)
+			|| (dimensionID == END_DIMENSION_ID)
+			|| (dimensionID == NETHER_DIMENSION_ID)
+			|| (world.provider.getDimensionName().hashCode() == SPIRIT_WORLD_NAME.hashCode()))
 		{
 			return;
 		}
-		//This check prevents a crash related to superflat worlds not loading World 0
+		// This check prevents a crash related to superflat worlds not loading World 0
 		if (DimensionManager.getWorld(OVERWORLD_DIMENSION_ID) == null)
 		{
 			return;
@@ -78,8 +80,10 @@ public class GatewayGenerator implements IWorldGenerator
 		DimLink link;
 		NewDimData dimension;
 
-		//Randomly decide whether to place a cluster of rifts here
-		if (random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < properties.ClusterGenerationChance)
+		// Check if we're allowed to generate rift clusters in this dimension.
+		// If so, randomly decide whether to one.
+		if (mod_pocketDim.worldProperties.RiftClusterDimensions.isAccepted(dimensionID)
+				&& random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < properties.ClusterGenerationChance)
 		{
 			link = null;
 			dimension = null;
@@ -101,7 +105,7 @@ public class GatewayGenerator implements IWorldGenerator
 					if (link == null)
 					{
 						dimension = PocketManager.getDimensionData(world);
-						link = dimension.createLink(x, y + 1, z, LinkTypes.DUNGEON,0);
+						link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON,0);
 					}
 					else
 					{
@@ -113,10 +117,10 @@ public class GatewayGenerator implements IWorldGenerator
 			while (random.nextInt(MAX_CLUSTER_GROWTH_CHANCE) < CLUSTER_GROWTH_CHANCE);
 		}
 		
-		//Check if generating structures is enabled and randomly decide whether to place a Rift Gateway here.
-		//This only happens if a rift cluster was NOT generated.
-		else if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance &&
-				isStructureGenerationAllowed())
+		// Check if we can place a Rift Gateway in this dimension, then randomly decide whether to place one.
+		// This only happens if a rift cluster was NOT generated.
+		else if (mod_pocketDim.worldProperties.RiftGatewayDimensions.isAccepted(dimensionID) &&
+				random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance)
 		{
 			valid = false;
 			x = y = z = 0; //Stop the compiler from freaking out
@@ -131,26 +135,24 @@ public class GatewayGenerator implements IWorldGenerator
 				valid = checkGatewayLocation(world, x, y, z);
 			}
 
-			//Build the gateway if we found a valid location
+			// Build the gateway if we found a valid location
 			if (valid)
 			{
-				//TODO I feel like this is slow and should be optimized. We are linear time with total # of generation restrictions
-				//Create an array and copy valid gateways into it
 				ArrayList<BaseGateway> validGateways = new ArrayList<BaseGateway>();
-				for(BaseGateway gateway:gateways)
+				for (BaseGateway gateway : gateways)
 				{
-					if(gateway.isLocationValid(world, x, y, z, world.getBiomeGenForCoords(x, z)))
+					if (gateway.isLocationValid(world, x, y, z))
 					{
 						validGateways.add(gateway);
 					}
 				}
-				//Add default gateway if we where unable to find a suitable gateway
-				if(validGateways.isEmpty())
+				// Add the default gateway if the rest were rejected
+				if (validGateways.isEmpty())
 				{
-					validGateways.add(this.defaultGateway);
+					validGateways.add(defaultGateway);
 				}
-				//randomly select a gateway from the pool of viable gateways
-				validGateways.get(random.nextInt(validGateways.size())).generate(world, x, y, z);
+				// Randomly select a gateway from the pool of viable gateways
+				validGateways.get(random.nextInt(validGateways.size())).generate(world, x, y - 1, z);
 			}
 		}
 	}
@@ -176,10 +178,5 @@ public class GatewayGenerator implements IWorldGenerator
 		Material material = world.getBlockMaterial(x, y, z);
 		return (material != Material.leaves && material != Material.wood && material != Material.pumpkin
 				&& world.isBlockOpaqueCube(x, y, z) && world.getBlockId(x, y, z) != Block.bedrock.blockID);
-	}
-	
-	private static boolean isStructureGenerationAllowed()
-	{
-		return DimensionManager.getWorld(OVERWORLD_DIMENSION_ID).getWorldInfo().isMapFeaturesEnabled();
 	}
 }

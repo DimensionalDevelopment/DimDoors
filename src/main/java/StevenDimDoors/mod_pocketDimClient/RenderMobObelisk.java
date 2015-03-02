@@ -1,22 +1,19 @@
 package StevenDimDoors.mod_pocketDimClient;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.common.MinecraftForge;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityHanging;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -31,15 +28,15 @@ public class RenderMobObelisk extends RenderLiving
 		this.obeliskModel = (ModelMobObelisk)this.mainModel;
 	}
 
+	@Override
 	public void doRenderLiving(EntityLiving entity, double x, double y, double z, float par8, float par9)
 	{
 		final float minScaling = 0;
 		final float maxScaling = 0.1f;
-		final int maxAggroLevel = 500;
 		MobMonolith monolith = ((MobMonolith) entity);
 
 		// Use linear interpolation to scale how much jitter we want for our given aggro level
-		float aggroScaling = minScaling + monolith.aggro * (maxScaling - minScaling) / maxAggroLevel;
+		float aggroScaling = minScaling + (maxScaling - minScaling) * monolith.getAggroProgress();
 
 		// Calculate jitter - include entity ID to give Monoliths individual jitters
 		float time = ((Minecraft.getSystemTime() + 0xF1234568 * monolith.entityId) % 200000) / 50.0F;
@@ -67,21 +64,25 @@ public class RenderMobObelisk extends RenderLiving
 
 		try
 		{
-			float interpolatedYaw = this.interpolateRotation(par1EntityLivingBase.prevRenderYawOffset, par1EntityLivingBase.renderYawOffset, par9);
-			float interpolatedYawHead = this.interpolateRotation(par1EntityLivingBase.prevRotationYawHead, par1EntityLivingBase.rotationYawHead, par9);
+			float interpolatedYaw = interpolateRotation(par1EntityLivingBase.prevRenderYawOffset, par1EntityLivingBase.renderYawOffset, par9);
+			float interpolatedYawHead = interpolateRotation(par1EntityLivingBase.prevRotationYawHead, par1EntityLivingBase.rotationYawHead, par9);
 			float rotation;
 			float pitch = par1EntityLivingBase.prevRotationPitch + (par1EntityLivingBase.rotationPitch - par1EntityLivingBase.prevRotationPitch) * par9;
 			this.renderLivingAt(par1EntityLivingBase, x, y, z);
 
 			rotation = this.handleRotationFloat(par1EntityLivingBase, par9);
 			this.rotateCorpse(par1EntityLivingBase, rotation, interpolatedYaw, par9);
+
 			float f6 = 0.0625F;
 			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+
 			GL11.glScalef(-1.0F, -1.0F, 1.0F);
 			this.preRenderCallback(par1EntityLivingBase, par9);
-			GL11.glTranslatef(0.0F, -24.0F * f6 - 0.0078125F, 0.0F);
+            GL11.glRotatef(((MobMonolith)par1EntityLivingBase).pitchLevel , 1.0F, 0.0F, 0.0F);
+    		GL11.glTranslatef(0.0F, 24.0F * f6 - 0.0078125F, 0.0F);
 
-			this.renderModel(par1EntityLivingBase, 0, 0, rotation, interpolatedYawHead - interpolatedYaw, pitch, f6);
+
+			this.renderModel(par1EntityLivingBase, 0, 0, rotation, interpolatedYaw, pitch, f6);
 
 			OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -105,29 +106,25 @@ public class RenderMobObelisk extends RenderLiving
 		GL11.glPopMatrix();
 		MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post(par1EntityLivingBase, this));
 	}
-
-
-	private float interpolateRotation(float par1, float par2, float par3)
+	
+	private static float interpolateRotation(float par1, float par2, float par3)
 	{
-		float f3;
-
-		for (f3 = par2 - par1; f3 < -180.0F; f3 += 360.0F)
+		float f3 = par2 - par1;
+		while (f3 < -180.0f)
 		{
-			;
+			f3 += 360.0F;
 		}
-
 		while (f3 >= 180.0F)
 		{
 			f3 -= 360.0F;
 		}
-
 		return par1 + par3 * f3;
 	}
+	
 	@Override
 	protected ResourceLocation getEntityTexture(Entity entity) 
 	{
-		byte b0 = entity.getDataWatcher().getWatchableObjectByte(16);
-
-		return new ResourceLocation(mod_pocketDim.modid+":textures/mobs/Monolith"+b0+".png");
+		MobMonolith monolith = (MobMonolith) entity;
+		return new ResourceLocation(mod_pocketDim.modid + ":textures/mobs/Monolith" + monolith.getTextureState() + ".png");
 	}
 }

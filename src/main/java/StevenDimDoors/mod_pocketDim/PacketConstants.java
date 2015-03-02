@@ -12,5 +12,6 @@ public class PacketConstants
 	public static final byte CREATE_LINK_PACKET_ID = 4;
 	public static final byte DELETE_LINK_PACKET_ID = 5;
 	public static final byte CLIENT_LOGIN_DIM_REGISTER = 6;
+	public static final byte UPDATE_LINK_PACKET_ID = 7;
 
 }

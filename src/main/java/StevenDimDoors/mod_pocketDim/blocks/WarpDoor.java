@@ -3,13 +3,13 @@ package StevenDimDoors.mod_pocketDim.blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
-import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
-@SuppressWarnings("deprecation")
 public class WarpDoor extends BaseDimDoor
 {
 	public WarpDoor(int blockID, Material material, DDProperties properties) 
@@ -22,13 +22,19 @@ public class WarpDoor extends BaseDimDoor
 	{
 		if (!world.isRemote && world.getBlockId(x, y - 1, z) == this.blockID)
 		{
-			NewDimData dimension = PocketManager.getDimensionData(world);
+			NewDimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(x, y, z);
 			if (link == null && dimension.isPocketDimension())
 			{
-				dimension.createLink(x, y, z, LinkTypes.SAFE_EXIT,world.getBlockMetadata(x, y - 1, z));
+				dimension.createLink(x, y, z, LinkType.SAFE_EXIT,world.getBlockMetadata(x, y - 1, z));
 			}
 		}
+	}
+	
+	@Override
+	public int getDoorItem()
+	{
+		return mod_pocketDim.itemWarpDoor.itemID;
 	}
 	
 	@Override

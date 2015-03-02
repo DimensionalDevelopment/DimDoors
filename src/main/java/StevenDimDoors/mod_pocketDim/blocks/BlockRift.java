@@ -7,7 +7,6 @@ import java.util.Queue;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockFlowing;
 import net.minecraft.block.BlockFluid;
 import net.minecraft.block.ITileEntityProvider;
@@ -20,13 +19,14 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
-import StevenDimDoors.mod_pocketDim.DDProperties;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
+import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDimClient.ClosingRiftFX;
 import StevenDimDoors.mod_pocketDimClient.GoggleRiftFX;
 import StevenDimDoors.mod_pocketDimClient.RiftFX;
@@ -38,23 +38,37 @@ public class BlockRift extends Block implements ITileEntityProvider
 {
 	private static final float MIN_IMMUNE_RESISTANCE = 5000.0F;
 	private static final int BLOCK_DESTRUCTION_RANGE = 4;
-	private static final int BLOCK_DESTRUCTION_VOLUME = (int) Math.pow(2 * BLOCK_DESTRUCTION_RANGE + 1, 3);
+	private static final int RIFT_SPREAD_RANGE = 5;
 	private static final int MAX_BLOCK_SEARCH_CHANCE = 100;
 	private static final int BLOCK_SEARCH_CHANCE = 50;
 	private static final int MAX_BLOCK_DESTRUCTION_CHANCE = 100;
 	private static final int BLOCK_DESTRUCTION_CHANCE = 50;
-	private static final int WORLD_THREAD_CHANCE = 5;
-	private static final int MAX_WORLD_THREAD_CHANCE = 100;
+
+	public static final int MAX_WORLD_THREAD_DROP_CHANCE = 1000;
 	
 	private final DDProperties properties;
-	private final ArrayList<Integer> blocksImmuneToRift;
+	private final ArrayList<Integer> blocksImmuneToRift;	// List of Vanilla blocks immune to rifts
+	private final ArrayList<Integer> modBlocksImmuneToRift; // List of DD blocks immune to rifts
 	
 	public BlockRift(int i, int j, Material par2Material, DDProperties properties) 
 	{
 		super(i, par2Material);
 		this.setTickRandomly(true);
 		this.properties = properties;
+		this.modBlocksImmuneToRift = new ArrayList<Integer>();
+		this.modBlocksImmuneToRift.add(properties.FabricBlockID);
+		this.modBlocksImmuneToRift.add(properties.PermaFabricBlockID);
+		this.modBlocksImmuneToRift.add(properties.DimensionalDoorID);
+		this.modBlocksImmuneToRift.add(properties.WarpDoorID);
+		this.modBlocksImmuneToRift.add(properties.TransTrapdoorID);
+		this.modBlocksImmuneToRift.add(properties.UnstableDoorID);
+		this.modBlocksImmuneToRift.add(properties.RiftBlockID);
+		this.modBlocksImmuneToRift.add(properties.TransientDoorID);
+		this.modBlocksImmuneToRift.add(properties.GoldenDimensionalDoorID);
+		this.modBlocksImmuneToRift.add(properties.GoldenDoorID);
+		
 		this.blocksImmuneToRift = new ArrayList<Integer>();
+		
 		this.blocksImmuneToRift.add(properties.FabricBlockID);
 		this.blocksImmuneToRift.add(properties.PermaFabricBlockID);
 		this.blocksImmuneToRift.add(properties.DimensionalDoorID);
@@ -65,7 +79,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 		this.blocksImmuneToRift.add(properties.TransientDoorID);
 		this.blocksImmuneToRift.add(properties.GoldenDimensionalDoorID);
 		this.blocksImmuneToRift.add(properties.GoldenDoorID);
-
+		this.blocksImmuneToRift.add(properties.PersonalDimDoorID);
 		this.blocksImmuneToRift.add(Block.blockLapis.blockID);
 		this.blocksImmuneToRift.add(Block.blockIron.blockID);
 		this.blocksImmuneToRift.add(Block.blockGold.blockID);
@@ -84,9 +98,6 @@ public class BlockRift extends Block implements ITileEntityProvider
 	{
 		return false;
 	}
-	
-	@Override
-	public void onBlockDestroyedByPlayer(World par1World, int par2, int par3, int par4, int par5) {}
 
 	@Override
 	public boolean isOpaqueCube()
@@ -113,10 +124,10 @@ public class BlockRift extends Block implements ITileEntityProvider
 		return true;
 	}
 	
-	//this doesnt do anything yet.
 	@Override
 	public int getRenderType()
 	{
+		// This doesn't do anything yet
 		if (mod_pocketDim.isPlayerWearingGoogles)
 		{
 			return 0;
@@ -164,11 +175,30 @@ public class BlockRift extends Block implements ITileEntityProvider
 	
 	private void destroyNearbyBlocks(World world, int x, int y, int z, Random random)
 	{
-		HashMap<Point3D, Integer> pointDistances = new HashMap<Point3D, Integer>(BLOCK_DESTRUCTION_VOLUME);
-		Queue<Point3D> points = new LinkedList<Point3D>();
+		// Find reachable blocks that are vulnerable to rift damage (ignoring air, of course)
+		ArrayList<Point3D> targets = findReachableBlocks(world, x, y, z, BLOCK_DESTRUCTION_RANGE, false);
 		
-		//Perform a breadth-first search outwards from the point at which the rift is located. Record the distances
-		//of the points we visit to stop the search at its maximum range.
+		// For each block, randomly decide whether to destroy it.
+		// The randomness makes it so the destroyed area appears "noisy" if the rift is exposed to a large surface.
+		for (Point3D target : targets)
+		{
+			if (random.nextInt(MAX_BLOCK_DESTRUCTION_CHANCE) < BLOCK_DESTRUCTION_CHANCE)
+			{
+				dropWorldThread(world.getBlockId(target.getX(), target.getY(), target.getZ()), world, x, y, z, random);
+				world.destroyBlock(target.getX(), target.getY(), target.getZ(), false);
+			}
+		}
+	}
+	
+	private ArrayList<Point3D> findReachableBlocks(World world, int x, int y, int z, int range, boolean includeAir)
+	{
+		int searchVolume = (int) Math.pow(2 * range + 1, 3);
+		HashMap<Point3D, Integer> pointDistances = new HashMap<Point3D, Integer>(searchVolume);
+		Queue<Point3D> points = new LinkedList<Point3D>();
+		ArrayList<Point3D> targets = new ArrayList<Point3D>();
+		
+		// Perform a breadth-first search outwards from the point at which the rift is located.
+		// Record the distances of the points we visit to stop the search at its maximum range.
 		pointDistances.put(new Point3D(x, y, z), 0);
 		addAdjacentBlocks(x, y, z, 0, pointDistances, points);
 		while (!points.isEmpty())
@@ -176,10 +206,14 @@ public class BlockRift extends Block implements ITileEntityProvider
 			Point3D current = points.remove();
 			int distance = pointDistances.get(current);
 			
-			//If the current block is air, continue searching. Otherwise, try destroying the block.
+			// If the current block is air, continue searching. Otherwise, add the block to our list.
 			if (world.isAirBlock(current.getX(), current.getY(), current.getZ()))
 			{
-				//Make sure we stay within the search range
+				if (includeAir)
+				{
+					targets.add(current);
+				}
+				// Make sure we stay within the search range
 				if (distance < BLOCK_DESTRUCTION_RANGE)
 				{
 					addAdjacentBlocks(current.getX(), current.getY(), current.getZ(), distance, pointDistances, points);
@@ -187,21 +221,19 @@ public class BlockRift extends Block implements ITileEntityProvider
 			}
 			else
 			{
-				//Check if the current block is immune to destruction by rifts. If not, randomly decide whether to destroy it.
-				//The randomness makes it so the destroyed area appears "noisy" if the rift is exposed to a large surface.
-				if (!isBlockImmune(world, current.getX(), current.getY(), current.getZ()) &&
-						random.nextInt(MAX_BLOCK_DESTRUCTION_CHANCE) < BLOCK_DESTRUCTION_CHANCE)
+				// Check if the current block is immune to destruction by rifts. If not, add it to our list.
+				if (!isBlockImmune(world, current.getX(), current.getY(), current.getZ()))
 				{
-					this.spawnWorldThread(world.getBlockId(current.getX(), current.getY(), current.getZ()), world, x, y, z, random);
-					world.destroyBlock(current.getX(), current.getY(), current.getZ(), false);
+					targets.add(current);
 				}
 			}
 		}
+		return targets;
 	}
-	
-	private void spawnWorldThread(int blockID, World world, int x, int y, int z, Random random)
+		
+	public void dropWorldThread(int blockID, World world, int x, int y, int z, Random random)
 	{
-		if (blockID != 0 && (random.nextInt(MAX_WORLD_THREAD_CHANCE) < WORLD_THREAD_CHANCE)
+		if (blockID != 0 && (random.nextInt(MAX_WORLD_THREAD_DROP_CHANCE) < properties.WorldThreadDropChance)
 				&& !(Block.blocksList[blockID] instanceof BlockFlowing ||
 					Block.blocksList[blockID] instanceof BlockFluid ||
 					Block.blocksList[blockID] instanceof IFluidBlock))
@@ -211,7 +243,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 		}
 	}
 	
-	private void addAdjacentBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
+	private static void addAdjacentBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
 	{
 		Point3D[] neighbors = new Point3D[] {
 				new Point3D(x - 1, y, z),
@@ -230,15 +262,34 @@ public class BlockRift extends Block implements ITileEntityProvider
 			}
 		}
 	}
-
-	public void regenerateRift(World world, int x, int y, int z, Random random)
+	
+	public boolean spreadRift(NewDimData dimension, DimLink parent, World world, Random random)
 	{
-		if (!this.isBlockImmune(world, x, y, z) && world.getChunkProvider().chunkExists(x >> 4, z >> 4))
+		int x, y, z, blockID;
+		Point4D source = parent.source();
+		
+		// Find reachable blocks that are vulnerable to rift damage and include air
+		ArrayList<Point3D> targets = findReachableBlocks(world, source.getX(), source.getY(), source.getZ(),
+				RIFT_SPREAD_RANGE, true);
+		
+		if (!targets.isEmpty())
 		{
-			int blockID = world.getBlockId(x, y, z);
-			world.setBlock(x, y, z, properties.RiftBlockID);
-			this.spawnWorldThread(blockID, world, x, y, z, random);
+			// Choose randomly from among the possible locations where we can spawn a new rift
+			Point3D target = targets.get( random.nextInt(targets.size()) );
+			x = target.getX();
+			y = target.getY();
+			z = target.getZ();
+
+			// Create a child, replace the block with a rift, and consider dropping World Thread
+			blockID = world.getBlockId(x, y, z);
+			if (world.setBlock(x, y, z, properties.RiftBlockID))
+			{
+				dimension.createChildLink(x, y, z, parent);
+				dropWorldThread(blockID, world, x, y, z, random);
+				return true;
+			}
 		}
+		return false;
 	}
 	
 	/**
@@ -256,111 +307,37 @@ public class BlockRift extends Block implements ITileEntityProvider
 	@Override
 	@SideOnly(Side.CLIENT)
 	
-	public void randomDisplayTick(World par1World, int par2, int par3, int par4, Random rand)
+	public void randomDisplayTick(World world, int x, int y, int z, Random rand)
 	{
 
-		int count;
-		//growth in the direction towards the nearby rift
-		float xGrowth=0;
-		float yGrowth=0;
-		float zGrowth=0;
-		//growth away from the nearby rift
-		float xGrowthn=0;
-		float yGrowthn=0;
-		float zGrowthn=0;
-		//how far the particles are away from original rift. Used to decrease noise the farther they are away. 
-		float xChange = 0;
-		float yChange = 0;
-		float zChange = 0;
-
-		TileEntityRift tile = (TileEntityRift)par1World.getBlockTileEntity(par2, par3, par4);
-
-		float Xoffset=0;
-		float Yoffset=0;
-		float Zoffset=0;
-		for (count = 0; count < 12 && tile!=null; ++count)
-		{
-			//TODO change to a switch statement for clarity
-			if(tile.xOffset>0)
-			{
-				if(rand.nextInt(tile.xOffset)==0)
-				{
-					xGrowth =xGrowth+.15F*tile.xOffset;
-
-				}
-			}
-			else if(tile.xOffset<0)
-			{
-				if(rand.nextInt(-tile.xOffset)==0)
-				{
-					xGrowthn =xGrowthn-.15F*-tile.xOffset;
-
-				}
-			}
-
-			if(tile.yOffset>0)
-			{
-				if(rand.nextInt(tile.yOffset)==0)
-				{
-					yGrowth =yGrowth+.15F*tile.yOffset;
-
-				}
-			}
-			else if(tile.yOffset<0)
-			{
-				if(rand.nextInt(-tile.yOffset)==0)
-				{
-					yGrowthn =yGrowthn-.15F*-tile.yOffset;
-
-				}
-			}
-
-			if(tile.zOffset>0)
-			{
-				if(rand.nextInt(tile.zOffset)==0)
-				{
-					zGrowth =zGrowth+.15F*tile.zOffset;
-
-				}
-			}
-			else if(tile.zOffset<0)
-			{
-				if(rand.nextInt(-tile.zOffset)==0)
-				{
-					zGrowthn =zGrowthn-.15F*-tile.zOffset;
-
-				}
-			}
-
-
-			xChange=(float) ((xGrowth+xGrowthn)+rand.nextGaussian()*.05F);
-			yChange=(float) ((yGrowth+yGrowthn)+rand.nextGaussian()*.05F);
-			zChange=(float) ((zGrowth+zGrowthn)+rand.nextGaussian()*.05F);
-
-			Xoffset=  ((0.25F/(1+Math.abs(xChange))));
-
-			Yoffset=  ((0.25F/(1+Math.abs(yChange))));
-			Zoffset=  ((0.25F/(1+Math.abs(zChange))));
-
-
-
-
-			FMLClientHandler.instance().getClient().effectRenderer.addEffect(new RiftFX(par1World,par2+.5+xChange+Xoffset*rand.nextGaussian(), par3+.5+yChange+Yoffset*rand.nextGaussian() , par4+.5+zChange+Zoffset*rand.nextGaussian(), rand.nextGaussian() * 0.001D, rand.nextGaussian()  * 0.001D, rand.nextGaussian() * 0.001D, FMLClientHandler.instance().getClient().effectRenderer));
-			FMLClientHandler.instance().getClient().effectRenderer.addEffect(new RiftFX(par1World,par2+.5-xChange-Xoffset*rand.nextGaussian(), par3+.5-yChange-Yoffset*rand.nextGaussian() , par4+.5-zChange-Zoffset*rand.nextGaussian(), rand.nextGaussian() * 0.001D, rand.nextGaussian()  * 0.001D, rand.nextGaussian() * 0.001D, FMLClientHandler.instance().getClient().effectRenderer));
-
-
+		
+		 ArrayList<Point3D> targets=findReachableBlocks(world, x, y, z, 2, false);
+		
+		
+		TileEntityRift tile = (TileEntityRift)world.getBlockTileEntity(x, y, z);
+		
+		
 			if(rand.nextBoolean())
 			{
 				//renders an extra little blob on top of the actual rift location so its easier to find. Eventually will only render if the player has the goggles. 
-				FMLClientHandler.instance().getClient().effectRenderer.addEffect(new GoggleRiftFX(par1World,par2+.5, par3+.5, par4+.5, rand.nextGaussian() * 0.01D, rand.nextGaussian()  * 0.01D, rand.nextGaussian() * 0.01D, FMLClientHandler.instance().getClient().effectRenderer));
+				FMLClientHandler.instance().getClient().effectRenderer.addEffect(new GoggleRiftFX(world,x+.5, y+.5, z+.5, rand.nextGaussian() * 0.01D, rand.nextGaussian()  * 0.01D, rand.nextGaussian() * 0.01D, FMLClientHandler.instance().getClient().effectRenderer));
 			}
 			if(tile.shouldClose)
 			{
 				//renders an opposite color effect if it is being closed by the rift remover
-				FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(par1World,par2+.5, par3+.5, par4+.5, rand.nextGaussian() * 0.01D, rand.nextGaussian()  * 0.01D, rand.nextGaussian() * 0.01D, FMLClientHandler.instance().getClient().effectRenderer));
+				FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(world,x+.5, y+.5, z+.5, rand.nextGaussian() * 0.01D, rand.nextGaussian()  * 0.01D, rand.nextGaussian() * 0.01D, FMLClientHandler.instance().getClient().effectRenderer));
 
 			}
+		
+	}
+	
+	public boolean tryPlacingRift(World world, int x, int y, int z)
+	{
+		if (world != null && !isBlockImmune(world, x, y, z))
+		{
+			return world.setBlock(x, y, z, mod_pocketDim.blockRift.blockID);
 		}
+		return false;
 	}
 
 	public boolean isBlockImmune(World world, int x, int y, int z)
@@ -374,7 +351,21 @@ public class BlockRift extends Block implements ITileEntityProvider
 			// is designed to receive an entity, the source of the blast. We have no entity so
 			// I've set this to access blockResistance directly. Might need changing later.
 			
-			return (block.blockResistance >= MIN_IMMUNE_RESISTANCE || blocksImmuneToRift.contains(block.blockID));
+			return (block.blockResistance >= MIN_IMMUNE_RESISTANCE ||
+					modBlocksImmuneToRift.contains(block.blockID) ||
+					blocksImmuneToRift.contains(block.blockID));
+		}
+		return false;
+	}
+	
+	public boolean isModBlockImmune(World world, int x, int y, int z)
+	{
+		// Check whether the block at the specified location is one of the
+		// rift-resistant blocks from DD.
+		Block block = Block.blocksList[world.getBlockId(x, y, z)];
+		if (block != null)
+		{
+			return modBlocksImmuneToRift.contains(block.blockID);
 		}
 		return false;
 	}
@@ -396,4 +387,18 @@ public class BlockRift extends Block implements ITileEntityProvider
 	{
 		return new TileEntityRift();
 	}
+	
+	@Override
+	public void breakBlock(World world, int x, int y, int z, int oldBlockID, int oldMeta)
+    {
+		// This function runs on the server side after a block is replaced
+		// We MUST call super.breakBlock() since it involves removing tile entities
+        super.breakBlock(world, x, y, z, oldBlockID, oldMeta);
+        
+        // Schedule rift regeneration for this block if it was changed
+        if (world.getBlockId(x, y, z) != oldBlockID)
+        {
+        	mod_pocketDim.riftRegenerator.scheduleSlowRegeneration(x, y, z, world);
+        }
+    }
 }

@@ -2,9 +2,8 @@ package StevenDimDoors.mod_pocketDim.commands;
 
 import java.io.File;
 
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 
 public class CommandExportDungeon extends DDCommandBase
@@ -24,13 +23,6 @@ public class CommandExportDungeon extends DDCommandBase
 			instance = new CommandExportDungeon();
 		
 		return instance;
-	}
-
-	@Override
-	public String getCommandUsage(ICommandSender sender) {
-		return "Usage: /dd-export <dungeon type> <dungeon name> open <weight>\r\n" +
-				"       /dd-export <dungeon type> <dungeon name> closed <weight>\r\n" +
-				"       /dd-export <schematic name> override";
 	}
 
 	@Override
@@ -67,66 +59,51 @@ public class CommandExportDungeon extends DDCommandBase
 					//Export the schematic
 					return exportDungeon(sender, command[0]);
 				}
-				else
-				{
-					//The schematic name contains illegal characters. Inform the user.
-					return new DDCommandResult("Error: Invalid schematic name. Please use only letters, numbers, dashes, and underscores.");
-				}
+				//The schematic name contains illegal characters. Inform the user.
+				return new DDCommandResult("Error: Invalid schematic name. Please use only letters, numbers, dashes, and underscores.");
 			}
-			else
-			{
-				//The command is malformed in some way. Assume that the user meant to use
-				//the 3-argument version and report an error.
-				return DDCommandResult.TOO_FEW_ARGUMENTS;
-			}
+			//The command is malformed in some way. Assume that the user meant to use
+			//the 3-argument version and report an error.
+			return DDCommandResult.TOO_FEW_ARGUMENTS;
 		}
 		
 		//The user must have used the 3-argument version of this command
-		//TODO: Why do we check remoteness here but not before? And why not for the other export case?
-		//Something feels wrong... ~SenseiKiwi
-		if (!sender.worldObj.isRemote)
+		//TODO: This validation should be in DungeonHelper or in another class. We should move it
+		//during the save file format rewrite. ~SenseiKiwi
+			
+		if (!dungeonHelper.validateDungeonType(command[0], dungeonHelper.getDungeonPack("ruins")))
 		{
-			//TODO: This validation should be in DungeonHelper or in another class. We should move it
-			//during the save file format rewrite. ~SenseiKiwi
-			
-			if (!dungeonHelper.validateDungeonType(command[0], dungeonHelper.getDungeonPack("ruins")))
-			{
-				return new DDCommandResult("Error: Invalid dungeon type. Please use one of the existing types.");
-			}
-			if (!DungeonHelper.DUNGEON_NAME_PATTERN.matcher(command[1]).matches())
-			{
-				return new DDCommandResult("Error: Invalid dungeon name. Please use only letters, numbers, and dashes.");
-			}
-			if (!command[2].equalsIgnoreCase("open") && !command[2].equalsIgnoreCase("closed"))
-			{
-				return new DDCommandResult("Error: Please specify whether the dungeon is 'open' or 'closed'.");
-			}
-			
-			//If there are no more arguments, export the dungeon.
-			if (command.length == 3)
-			{
-				return exportDungeon(sender, join(command, "_", 0, 3));
-			}
-			else
-			{
-				//Validate the weight argument
-				try
-				{
-					int weight = Integer.parseInt(command[3]);
-					if (weight >= DungeonHelper.MIN_DUNGEON_WEIGHT && weight <= DungeonHelper.MAX_DUNGEON_WEIGHT)
-					{
-						return exportDungeon(sender, join(command, "_", 0, 4));
-					}
-				}
-				catch (Exception e) { }
-			}
-			
-			//If we've reached this point, then we must have an invalid weight.
-			return new DDCommandResult("Invalid dungeon weight. Please specify a weight between "
-					+ DungeonHelper.MIN_DUNGEON_WEIGHT + " and " + DungeonHelper.MAX_DUNGEON_WEIGHT + ", inclusive.");
+			return new DDCommandResult("Error: Invalid dungeon type. Please use one of the existing types.");
+		}
+		if (!DungeonHelper.DUNGEON_NAME_PATTERN.matcher(command[1]).matches())
+		{
+			return new DDCommandResult("Error: Invalid dungeon name. Please use only letters, numbers, and dashes.");
+		}
+		if (!command[2].equalsIgnoreCase("open") && !command[2].equalsIgnoreCase("closed"))
+		{
+			return new DDCommandResult("Error: Please specify whether the dungeon is 'open' or 'closed'.");
 		}
 		
-		return DDCommandResult.SUCCESS;
+		//If there are no more arguments, export the dungeon.
+		if (command.length == 3)
+		{
+			return exportDungeon(sender, join(command, "_", 0, 3));
+		}
+		
+		//Validate the weight argument
+		try
+		{
+			int weight = Integer.parseInt(command[3]);
+			if (weight >= DungeonHelper.MIN_DUNGEON_WEIGHT && weight <= DungeonHelper.MAX_DUNGEON_WEIGHT)
+			{
+				return exportDungeon(sender, join(command, "_", 0, 4));
+			}
+		}
+		catch (Exception e) { }
+		
+		//If we've reached this point, then we must have an invalid weight.
+		return new DDCommandResult("Invalid dungeon weight. Please specify a weight between "
+				+ DungeonHelper.MIN_DUNGEON_WEIGHT + " and " + DungeonHelper.MAX_DUNGEON_WEIGHT + ", inclusive.");
 	}
 	
 	private static DDCommandResult exportDungeon(EntityPlayer player, String name)
@@ -144,10 +121,7 @@ public class CommandExportDungeon extends DDCommandBase
 			dungeonHelper.registerDungeon(exportPath, dungeonHelper.getDungeonPack("ruins"), false, true);
 			return DDCommandResult.SUCCESS;
 		}
-		else
-		{
-			return new DDCommandResult("Error: Failed to save dungeon schematic!");
-		}
+		return new DDCommandResult("Error: Failed to save dungeon schematic!");
 	}
 	
 	private static String join(String[] source, String delimiter, int start, int end)

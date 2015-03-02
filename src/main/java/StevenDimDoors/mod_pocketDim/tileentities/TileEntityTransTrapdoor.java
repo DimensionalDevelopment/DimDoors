@@ -1,44 +1,33 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import java.util.Random;
 
-public class TileEntityTransTrapdoor extends TileEntity
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+
+public class TileEntityTransTrapdoor extends DDTileEntityBase
 {
-	public boolean hasRift;
-
-	
-
 	@Override
 	public boolean canUpdate()
 	{
-		return true;
+		return false;
 	}
 
 	@Override
-	public void updateEntity() 
+	public float[] getRenderColor(Random rand)
 	{
-		
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound nbt)
-	{
-		super.readFromNBT(nbt);
-		try
+		float[] rgbaColor = {1,1,1,1};
+		if (this.worldObj.provider.dimensionId == mod_pocketDim.NETHER_DIMENSION_ID)
 		{
-			this.hasRift = nbt.getBoolean("hasRift");
+			rgbaColor[0] = worldObj.rand.nextFloat() * 0.5F + 0.4F;
+			rgbaColor[1] = worldObj.rand.nextFloat() * 0.05F;
+			rgbaColor[2] = worldObj.rand.nextFloat() * 0.05F;
 		}
-		catch (Exception e)
+		else
 		{
-
+			rgbaColor[0] = worldObj.rand.nextFloat() * 0.5F + 0.1F;
+			rgbaColor[1] = worldObj.rand.nextFloat() * 0.4F + 0.4F;
+			rgbaColor[2] = worldObj.rand.nextFloat() * 0.6F + 0.5F;
 		}
-	}
-
-	@Override
-	public void writeToNBT(NBTTagCompound nbt)
-	{
-		super.writeToNBT(nbt);
-		nbt.setBoolean("hasRift", this.hasRift);
+		return rgbaColor;
 	}
 }

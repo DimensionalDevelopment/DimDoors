@@ -4,5 +4,6 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 public interface IChunkLoader 
 {
-	public void forceChunkLoading(Ticket ticket,int x, int z);
+	public boolean isInitialized();
+	public void initialize(Ticket ticket);
 }

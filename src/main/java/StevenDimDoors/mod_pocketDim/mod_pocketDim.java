@@ -1,7 +1,6 @@
 package StevenDimDoors.mod_pocketDim;
 
 import java.io.File;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -9,38 +8,46 @@ import net.minecraft.entity.EntityEggInfo;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWall;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDimWallPerm;
 import StevenDimDoors.mod_pocketDim.blocks.BlockDoorGold;
+import StevenDimDoors.mod_pocketDim.blocks.BlockDoorQuartz;
 import StevenDimDoors.mod_pocketDim.blocks.BlockGoldDimDoor;
 import StevenDimDoors.mod_pocketDim.blocks.BlockLimbo;
 import StevenDimDoors.mod_pocketDim.blocks.BlockRift;
 import StevenDimDoors.mod_pocketDim.blocks.DimensionalDoor;
+import StevenDimDoors.mod_pocketDim.blocks.PersonalDimDoor;
 import StevenDimDoors.mod_pocketDim.blocks.TransTrapdoor;
 import StevenDimDoors.mod_pocketDim.blocks.TransientDoor;
 import StevenDimDoors.mod_pocketDim.blocks.UnstableDoor;
 import StevenDimDoors.mod_pocketDim.blocks.WarpDoor;
 import StevenDimDoors.mod_pocketDim.commands.CommandCreateDungeonRift;
 import StevenDimDoors.mod_pocketDim.commands.CommandCreatePocket;
-import StevenDimDoors.mod_pocketDim.commands.CommandDeleteAllLinks;
+import StevenDimDoors.mod_pocketDim.commands.CommandCreateRandomRift;
 import StevenDimDoors.mod_pocketDim.commands.CommandDeleteRifts;
 import StevenDimDoors.mod_pocketDim.commands.CommandExportDungeon;
+import StevenDimDoors.mod_pocketDim.commands.CommandListDungeons;
 import StevenDimDoors.mod_pocketDim.commands.CommandResetDungeons;
 import StevenDimDoors.mod_pocketDim.commands.CommandTeleportPlayer;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
+import StevenDimDoors.mod_pocketDim.config.DDWorldProperties;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.helpers.ChunkLoaderHelper;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.items.ItemBlockDimWall;
+import StevenDimDoors.mod_pocketDim.items.ItemDDKey;
 import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemGoldDimDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemGoldDoor;
+import StevenDimDoors.mod_pocketDim.items.ItemPersonalDoor;
+import StevenDimDoors.mod_pocketDim.items.ItemQuartzDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemRiftBlade;
 import StevenDimDoors.mod_pocketDim.items.ItemRiftSignature;
 import StevenDimDoors.mod_pocketDim.items.ItemStabilizedRiftSignature;
@@ -49,23 +56,25 @@ import StevenDimDoors.mod_pocketDim.items.ItemUnstableDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemWarpDoor;
 import StevenDimDoors.mod_pocketDim.items.ItemWorldThread;
 import StevenDimDoors.mod_pocketDim.items.itemRiftRemover;
-import StevenDimDoors.mod_pocketDim.ticking.CommonTickHandler;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
-import StevenDimDoors.mod_pocketDim.ticking.FastRiftRegenerator;
-import StevenDimDoors.mod_pocketDim.ticking.LimboDecay;
+import StevenDimDoors.mod_pocketDim.ticking.LimboDecayScheduler;
 import StevenDimDoors.mod_pocketDim.ticking.MobMonolith;
 import StevenDimDoors.mod_pocketDim.ticking.RiftRegenerator;
+import StevenDimDoors.mod_pocketDim.ticking.ServerTickHandler;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoorGold;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityRift;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
+import StevenDimDoors.mod_pocketDim.util.l_systems.LSystem;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenLimbo;
 import StevenDimDoors.mod_pocketDim.world.BiomeGenPocket;
+import StevenDimDoors.mod_pocketDim.world.DDBiomeGenBase;
+import StevenDimDoors.mod_pocketDim.world.LimboDecay;
 import StevenDimDoors.mod_pocketDim.world.LimboProvider;
+import StevenDimDoors.mod_pocketDim.world.PersonalPocketProvider;
 import StevenDimDoors.mod_pocketDim.world.PocketProvider;
 import StevenDimDoors.mod_pocketDim.world.gateways.GatewayGenerator;
 import StevenDimDoors.mod_pocketDimClient.ClientPacketHandler;
-import StevenDimDoors.mod_pocketDimClient.ClientTickHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -73,8 +82,9 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -92,16 +102,21 @@ serverPacketHandlerSpec =
 @SidedPacketHandler(channels = {PacketConstants.CHANNEL_NAME}, packetHandler = ServerPacketHandler.class))
 public class mod_pocketDim
 {
-	public static final String version = "1.6.4R2.2.2RC1";
+	public static final String version = "@VERSION@";
 	public static final String modid = "dimdoors";
+	
+	//TODO need a place to stick all these constants
+	public static final int NETHER_DIMENSION_ID = -1;
 
 	//need to clean up 
 	@SidedProxy(clientSide = "StevenDimDoors.mod_pocketDimClient.ClientProxy", serverSide = "StevenDimDoors.mod_pocketDim.CommonProxy")
 	public static CommonProxy proxy;
 
-	@Instance("PocketDimensions")
-	public static mod_pocketDim instance = new mod_pocketDim();
+	@Instance(mod_pocketDim.modid)
+	public static mod_pocketDim instance;
 
+	public static Block quartzDoor;
+	public static Block personalDimDoor;
 	public static Block transientDoor;
 	public static Block warpDoor;
 	public static Block goldenDoor;
@@ -119,13 +134,16 @@ public class mod_pocketDim
 	public static Item itemWorldThread;
 
 	public static Item itemRiftBlade;
-	public static Item itemDimensionalDoor;
+	public static ItemDimensionalDoor itemDimensionalDoor;
 	public static Item itemWarpDoor;
 	public static Item itemRiftRemover;
 	public static Item itemRiftSignature;
 	public static Item itemStableFabric;
 	public static Item itemUnstableDoor;
-	public static Item itemStabilizedLinkSignature;
+	public static Item itemDDKey;
+	public static Item itemQuartzDoor;
+	public static Item itemPersonalDoor;
+	public static Item itemStabilizedRiftSignature;
 
 	public static BiomeGenBase limboBiome;
 	public static BiomeGenBase pocketBiome;
@@ -133,10 +151,18 @@ public class mod_pocketDim
 	public static boolean isPlayerWearingGoogles = false;
 
 	public static DDProperties properties;
+	public static DDWorldProperties worldProperties;
 	public static CustomLimboPopulator spawner; //Added this field temporarily. Will be refactored out later.
-	public static FastRiftRegenerator fastRiftRegenerator;
+	public static RiftRegenerator riftRegenerator;
 	public static GatewayGenerator gatewayGenerator;
 	public static DeathTracker deathTracker;
+	private static ServerTickHandler serverTickHandler;
+	private static LimboDecayScheduler limboDecayScheduler;
+	private static LimboDecay limboDecay;
+	private static EventHookContainer hooks;
+	
+	//TODO this is a temporary workaround for saving data
+	private String currrentSaveRootDirectory;
 	
 	public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") 
 	{
@@ -156,14 +182,13 @@ public class mod_pocketDim
 	@EventHandler
 	public void onPreInitialization(FMLPreInitializationEvent event)
 	{
-		instance = this;
 		//This should be the FIRST thing that gets done.
 		String path = event.getSuggestedConfigurationFile().getAbsolutePath().replace(modid, "DimDoors");
 
 		properties = DDProperties.initialize(new File(path));
 
 		//Now do other stuff
-		EventHookContainer hooks = new EventHookContainer(properties);
+		hooks = new EventHookContainer(properties);
 		MinecraftForge.EVENT_BUS.register(hooks);
 		MinecraftForge.TERRAIN_GEN_BUS.register(hooks);
 	}
@@ -171,45 +196,55 @@ public class mod_pocketDim
 	@EventHandler
 	public void onInitialization(FMLInitializationEvent event)
 	{
-		CommonTickHandler commonTickHandler = new CommonTickHandler();
-		TickRegistry.registerTickHandler(new ClientTickHandler(), Side.CLIENT);
-		TickRegistry.registerTickHandler(commonTickHandler, Side.SERVER);
+		// Initialize ServerTickHandler instance
+		serverTickHandler = new ServerTickHandler();
+		TickRegistry.registerTickHandler(serverTickHandler, Side.SERVER);
+		
+		// Initialize LimboDecay instance: required for BlockLimbo
+		limboDecay = new LimboDecay(properties);
 
-		//MonolithSpawner should be initialized before any provider instances are created
-		//Register the other regular tick receivers as well
-		spawner = new CustomLimboPopulator(commonTickHandler, properties);
-		new RiftRegenerator(commonTickHandler); //No need to store the reference
-		LimboDecay decay = new LimboDecay(commonTickHandler, properties);
-		fastRiftRegenerator = new FastRiftRegenerator(commonTickHandler);
-
+		// Initialize blocks and items
 		transientDoor = new TransientDoor(properties.TransientDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("transientDoor");
 		goldenDimensionalDoor = new BlockGoldDimDoor(properties.GoldenDimensionalDoorID, Material.iron, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorGold");
+
+		quartzDoor = new BlockDoorQuartz(properties.QuartzDoorID, Material.rock).setHardness(0.1F).setUnlocalizedName("doorQuartz");
+		personalDimDoor = new PersonalDimDoor(properties.PersonalDimDoorID, Material.rock,properties).setHardness(0.1F).setUnlocalizedName("dimDoorPersonal");
 
 		goldenDoor = new BlockDoorGold(properties.GoldenDoorID, Material.iron).setHardness(0.1F).setUnlocalizedName("doorGold");
 		blockDimWall = new BlockDimWall(properties.FabricBlockID, 0, Material.iron).setLightValue(1.0F).setHardness(0.1F).setUnlocalizedName("blockDimWall");
 		blockDimWallPerm = (new BlockDimWallPerm(properties.PermaFabricBlockID, 0, Material.iron)).setLightValue(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setUnlocalizedName("blockDimWallPerm");
 		warpDoor = new WarpDoor(properties.WarpDoorID, Material.wood, properties).setHardness(1.0F) .setUnlocalizedName("dimDoorWarp");
 		blockRift = (BlockRift) (new BlockRift(properties.RiftBlockID, 0, Material.air, properties).setHardness(1.0F) .setUnlocalizedName("rift"));
-		blockLimbo = new BlockLimbo(properties.LimboBlockID, 15, Material.iron, properties.LimboDimensionID, decay).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F);
+		blockLimbo = new BlockLimbo(properties.LimboBlockID, 15, Material.iron, properties.LimboDimensionID, limboDecay).setHardness(.2F).setUnlocalizedName("BlockLimbo").setLightValue(.0F);
 		unstableDoor = (new UnstableDoor(properties.UnstableDoorID, Material.iron, properties).setHardness(.2F).setUnlocalizedName("chaosDoor").setLightValue(.0F) );
 		dimensionalDoor = (DimensionalDoor) (new DimensionalDoor(properties.DimensionalDoorID, Material.iron, properties).setHardness(1.0F).setResistance(2000.0F) .setUnlocalizedName("dimDoor"));
 		transTrapdoor = (TransTrapdoor) (new TransTrapdoor(properties.TransTrapdoorID, Material.wood).setHardness(1.0F) .setUnlocalizedName("dimHatch"));
 
-		itemGoldenDimensionalDoor = (new ItemGoldDimDoor(properties.GoldenDimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemGoldDimDoor");
-		itemGoldenDoor = (new ItemGoldDoor(properties.GoldenDoorID, Material.wood)).setUnlocalizedName("itemGoldDoor");
-		itemDimensionalDoor = (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron)).setUnlocalizedName("itemDimDoor");
-		itemWarpDoor = (new ItemWarpDoor(properties.WarpDoorItemID, Material.wood)).setUnlocalizedName("itemDimDoorWarp");
+		itemDDKey = (new ItemDDKey(properties.DDKeyItemID)).setUnlocalizedName("itemDDKey");
+		itemQuartzDoor = (new ItemQuartzDoor(properties.QuartzDoorID, Material.rock)).setUnlocalizedName("itemQuartzDoor");
+		itemPersonalDoor = (new ItemPersonalDoor(properties.PersonalDimDoorID, Material.rock, (ItemDoor)this.itemQuartzDoor)).setUnlocalizedName("itemQuartzDimDoor");
+		itemGoldenDoor = (new ItemGoldDoor(properties.GoldenDoorItemID, Material.wood)).setUnlocalizedName("itemGoldDoor");
+		itemGoldenDimensionalDoor = (new ItemGoldDimDoor(properties.GoldenDimensionalDoorItemID, Material.iron, (ItemDoor)this.itemGoldenDoor)).setUnlocalizedName("itemGoldDimDoor");
+		itemDimensionalDoor = (ItemDimensionalDoor) (new ItemDimensionalDoor(properties.DimensionalDoorItemID, Material.iron, (ItemDoor)Item.doorIron)).setUnlocalizedName("itemDimDoor");
+		itemWarpDoor = (new ItemWarpDoor(properties.WarpDoorItemID, Material.wood,(ItemDoor)Item.doorWood)).setUnlocalizedName("itemDimDoorWarp");
 		itemRiftSignature = (new ItemRiftSignature(properties.RiftSignatureItemID)).setUnlocalizedName("itemLinkSignature");
 		itemRiftRemover = (new itemRiftRemover(properties.RiftRemoverItemID, Material.wood)).setUnlocalizedName("itemRiftRemover");
 		itemStableFabric = (new ItemStableFabric(properties.StableFabricItemID, 0)).setUnlocalizedName("itemStableFabric");
-		itemUnstableDoor = (new ItemUnstableDoor(properties.UnstableDoorItemID, Material.iron)).setUnlocalizedName("itemChaosDoor");
+		itemUnstableDoor = (new ItemUnstableDoor(properties.UnstableDoorItemID, Material.iron, null)).setUnlocalizedName("itemChaosDoor");
 		itemRiftBlade = (new ItemRiftBlade(properties.RiftBladeItemID, properties)).setUnlocalizedName("ItemRiftBlade");
-		itemStabilizedLinkSignature = (new ItemStabilizedRiftSignature(properties.StabilizedRiftSignatureItemID)).setUnlocalizedName("itemStabilizedRiftSig");
+		itemStabilizedRiftSignature = (new ItemStabilizedRiftSignature(properties.StabilizedRiftSignatureItemID)).setUnlocalizedName("itemStabilizedRiftSig");
 		itemWorldThread = (new ItemWorldThread(properties.WorldThreadItemID)).setUnlocalizedName("itemWorldThread");
 		
+		// Check if other biomes have been registered with the same IDs we want. If so, crash Minecraft
+		// to notify the user instead of letting it pass and conflicting with Biomes o' Plenty.
+		DDBiomeGenBase.checkBiomes( new int[] { properties.LimboBiomeID, properties.PocketBiomeID } );
+
+		// Initialize our biomes
 		mod_pocketDim.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
 		mod_pocketDim.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
+		GameRegistry.registerBlock(quartzDoor, "Quartz Door");
+		GameRegistry.registerBlock(personalDimDoor, "Personal Dimensional Door");
 		GameRegistry.registerBlock(goldenDoor, "Golden Door");
 		GameRegistry.registerBlock(goldenDimensionalDoor, "Golden Dimensional Door");
 		GameRegistry.registerBlock(unstableDoor, "Unstable Door");
@@ -223,8 +258,13 @@ public class mod_pocketDim
 
 		GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, "Fabric of Reality");
 
-		DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false);
-		DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false);
+		if (!DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false))
+			throw new IllegalStateException("There is a provider ID conflict between PocketProvider from Dimensional Doors and another provider type. Fix your configuration!");
+		if (!DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false))
+			throw new IllegalStateException("There is a provider ID conflict between LimboProvider from Dimensional Doors and another provider type. Fix your configuration!");
+		if (!DimensionManager.registerProviderType(properties.PersonalPocketProviderID, PersonalPocketProvider.class, false))
+			throw new IllegalStateException("There is a provider ID conflict between PersonalPocketProvider from Dimensional Doors and another provider type. Fix your configuration!");
+			
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
 		
 		LanguageRegistry.addName(goldenDoor, "Golden Door");
@@ -243,19 +283,24 @@ public class mod_pocketDim
 		LanguageRegistry.addName(itemRiftSignature, "Rift Signature");
 		LanguageRegistry.addName(itemGoldenDoor, "Golden Door");
 		LanguageRegistry.addName(itemGoldenDimensionalDoor, "Golden Dimensional Door");
-		LanguageRegistry.addName(itemStabilizedLinkSignature, "Stabilized Rift Signature");
+		LanguageRegistry.addName(itemStabilizedRiftSignature, "Stabilized Rift Signature");
 		LanguageRegistry.addName(itemRiftRemover, "Rift Remover");
 		LanguageRegistry.addName(itemStableFabric, "Stable Fabric");
 		LanguageRegistry.addName(itemUnstableDoor, "Unstable Door");
 		LanguageRegistry.addName(itemDimensionalDoor, "Dimensional Door");
 		LanguageRegistry.addName(itemRiftBlade, "Rift Blade");
 		LanguageRegistry.addName(itemWorldThread, "World Thread");
+		LanguageRegistry.addName(itemDDKey, "Rift Key");
+		LanguageRegistry.addName(itemQuartzDoor, "Quartz Door");
+		LanguageRegistry.addName(itemPersonalDoor, "Personal Dimensional Door");
+
 
 		/**
 		 * Add names for multiblock inventory item
 		 */
 		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 0), "Fabric of Reality");
 		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 1), "Ancient Fabric");
+		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 2), "Altered Fabric");
 
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dimDoorsCustomTab", "en_US", "Dimensional Doors Items");
 
@@ -267,9 +312,12 @@ public class mod_pocketDim
 		EntityRegistry.registerModEntity(MobMonolith.class, "Monolith", properties.MonolithEntityID, this, 70, 1, true);
 		EntityList.IDtoClassMapping.put(properties.MonolithEntityID, MobMonolith.class);
 		EntityList.entityEggs.put(properties.MonolithEntityID, new EntityEggInfo(properties.MonolithEntityID, 0, 0xffffff));
-		LanguageRegistry.instance().addStringLocalization("entity.DimDoors.Obelisk.name", "Monolith");
+		LanguageRegistry.instance().addStringLocalization("entity.dimdoors.Monolith.name", "Monolith");
 
 		CraftingManager.registerRecipes(properties);
+		CraftingManager.registerDispenserBehaviors();
+		GameRegistry.registerCraftingHandler(new CraftingManager());
+
 		DungeonHelper.initialize();
 		gatewayGenerator = new GatewayGenerator(properties);
 		GameRegistry.registerWorldGenerator(mod_pocketDim.gatewayGenerator);
@@ -278,58 +326,118 @@ public class mod_pocketDim
 		DDLoot.registerInfo(properties);
 		proxy.loadTextures();
 		proxy.registerRenderers();
+		
+		LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 4);
+		LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 5);
+	//	LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 6); //degenerate
+		LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 7);
+	//	LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 8);
+	//	LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 9);
+
+		
+	//	LSystem.generateLSystem("vortex", LSystem.VORTEX, 8);
+		LSystem.generateLSystem("vortex", LSystem.VORTEX, 9);
+		LSystem.generateLSystem("vortex", LSystem.VORTEX, 10);
+		LSystem.generateLSystem("vortex", LSystem.VORTEX, 11);
+	//	LSystem.generateLSystem("vortex", LSystem.VORTEX, 12);
+
+		LSystem.generateLSystem("twindragon", LSystem.TWINDRAGON, 7);
+		LSystem.generateLSystem("twindragon", LSystem.TWINDRAGON, 8);
+		LSystem.generateLSystem("twindragon", LSystem.TWINDRAGON, 9);
+		LSystem.generateLSystem("twindragon", LSystem.TWINDRAGON, 10);
+	//	LSystem.generateLSystem("twindragon", LSystem.TWINDRAGON, 11);
+
+		
+		LSystem.generateLSystem("dragon", LSystem.DRAGON, 8);
+		LSystem.generateLSystem("dragon", LSystem.DRAGON, 9);
+		LSystem.generateLSystem("dragon", LSystem.DRAGON, 10);
+		LSystem.generateLSystem("dragon", LSystem.DRAGON, 11);
+	//	LSystem.generateLSystem("dragon", LSystem.DRAGON, 12);
+	//	LSystem.generateLSystem("dragon", LSystem.DRAGON, 13);
+
+
 	}
 
 	@EventHandler
 	public void onPostInitialization(FMLPostInitializationEvent event)
-	{	
+	{
+		// Check in case other mods have registered over our biome IDs
+		DDBiomeGenBase.checkBiomes( new int[] { properties.LimboBiomeID, properties.PocketBiomeID } );
+		
 		ForgeChunkManager.setForcedChunkLoadingCallback(instance, new ChunkLoaderHelper());
 	}
 	
 	@EventHandler
-	public void onServerStopping(FMLServerStoppingEvent event)
+	public void onServerStopped(FMLServerStoppedEvent event)
 	{
 		try
 		{
 			PocketManager.unload();
 			deathTracker.writeToFile();
 			deathTracker = null;
+			worldProperties = null;
+			currrentSaveRootDirectory = null;
+			
+			// Unregister all tick receivers from serverTickHandler to avoid leaking
+			// scheduled tasks between single-player game sessions
+			serverTickHandler.unregisterReceivers();
+			spawner = null;
+			riftRegenerator = null;
+			limboDecayScheduler = null;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
+	
+	@EventHandler
+	public void onServerAboutToStart(FMLServerAboutToStartEvent event)
+	{
+		currrentSaveRootDirectory = DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath();
+		
+		// Load the config file that's specific to this world
+		worldProperties = new DDWorldProperties(new File(currrentSaveRootDirectory + "/DimensionalDoors/DimDoorsWorld.cfg"));
+		
+		// Initialize a new DeathTracker
+		deathTracker = new DeathTracker(currrentSaveRootDirectory + "/DimensionalDoors/data/deaths.txt");
+		
+		// Register regular tick receivers
+		// CustomLimboPopulator should be initialized before any provider instances are created
+		spawner = new CustomLimboPopulator(serverTickHandler, properties);
+		riftRegenerator = new RiftRegenerator(serverTickHandler, blockRift);
+		limboDecayScheduler = new LimboDecayScheduler(serverTickHandler, limboDecay);
+		
+		hooks.setSessionFields(worldProperties, riftRegenerator);
+	}
 
 	@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event)
 	{
-		//TODO- load dims with forced chunks on server startup here  
-
 		// Register commands with the server
-		CommandResetDungeons.instance().register(event);
-		CommandCreateDungeonRift.instance().register(event);
-		CommandDeleteAllLinks.instance().register(event);
-		//CommandDeleteDimensionData.instance().register(event);
-		CommandDeleteRifts.instance().register(event);
-		CommandExportDungeon.instance().register(event);
-		//CommandPrintDimensionData.instance().register(event);
-		//CommandPruneDimensions.instance().register(event);
-		CommandCreatePocket.instance().register(event);
-		CommandTeleportPlayer.instance().register(event);
-		
-		// Initialize a new DeathTracker
-		String deathTrackerFile = DimensionManager.getCurrentSaveRootDirectory() + "/DimensionalDoors/data/deaths.txt";
-		deathTracker = new DeathTracker(deathTrackerFile);
+		event.registerServerCommand( CommandResetDungeons.instance() );
+		event.registerServerCommand( CommandCreateDungeonRift.instance() );
+		event.registerServerCommand( CommandListDungeons.instance() );
+		event.registerServerCommand( CommandCreateRandomRift.instance() );
+		event.registerServerCommand( CommandDeleteRifts.instance() );
+		event.registerServerCommand( CommandExportDungeon.instance() );
+		event.registerServerCommand( CommandCreatePocket.instance() );
+		event.registerServerCommand( CommandTeleportPlayer.instance() );
 		
 		try
 		{
-			ChunkLoaderHelper.loadChunkForcedWorlds(event);
+			ChunkLoaderHelper.loadForcedChunkWorlds(event);
 		}
 		catch (Exception e)
 		{
-			System.out.println("Loading chunkloaders failed");
+			System.err.println("Failed to load chunk loaders for Dimensional Doors. The following error occurred:");
+			System.err.println(e.toString());
 		}
+	}
+	
+	public String getCurrentSavePath()
+	{
+		return this.currrentSaveRootDirectory;
 	}
 	
 	public static void sendChat(EntityPlayer player, String message)

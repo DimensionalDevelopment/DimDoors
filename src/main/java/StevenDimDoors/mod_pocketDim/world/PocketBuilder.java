@@ -1,19 +1,22 @@
 package StevenDimDoors.mod_pocketDim.world;
 
 import java.util.Random;
-
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
-import StevenDimDoors.experimental.MazeBuilder;
-import StevenDimDoors.mod_pocketDim.DDProperties;
+import StevenDimDoors.experimental.BoundingBox;
 import StevenDimDoors.mod_pocketDim.Point3D;
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.blocks.IDimDoor;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
-import StevenDimDoors.mod_pocketDim.core.LinkTypes;
+import StevenDimDoors.mod_pocketDim.core.DimensionType;
+import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.dungeon.DungeonData;
@@ -21,13 +24,13 @@ import StevenDimDoors.mod_pocketDim.dungeon.DungeonSchematic;
 import StevenDimDoors.mod_pocketDim.dungeon.pack.DungeonPackConfig;
 import StevenDimDoors.mod_pocketDim.helpers.DungeonHelper;
 import StevenDimDoors.mod_pocketDim.helpers.yCoordHelper;
+import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import StevenDimDoors.mod_pocketDim.util.Pair;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-import StevenDimDoors.mod_pocketDim.items.ItemDimensionalDoor;
 
 public class PocketBuilder
-{
+{	
 	public static final int MIN_POCKET_SIZE = 5;
 	public static final int MAX_POCKET_SIZE = 51;
 	public static final int DEFAULT_POCKET_SIZE = 39;
@@ -39,82 +42,6 @@ public class PocketBuilder
 	private static final Random random = new Random();
 
 	private PocketBuilder() { }
-
-	/**
-	 * Method that takes an arbitrary link into a dungeon pocket and tries to regenerate it. First uses the origin to find that link, 
-	 * then uses that link to find the link that originally created the dungeon. If it cant find any of these, it 
-	 * instead makes the link that lead to this point into an exit door style link, sending the player to the overworld. 
-	 * @param dimension The dungeon to be regenerated
-	 * @param linkIn The link leading somewhere into the dungeon. 
-	 * @param properties
-	 * @return 
-	 */
-
-	public static boolean regenerateDungeonPocket(NewDimData dimension, DimLink linkIn, DDProperties properties)
-	{
-		if (linkIn == null)
-		{
-			throw new IllegalArgumentException("link cannot be null.");
-		}
-		if (properties == null)
-		{
-			throw new IllegalArgumentException("properties cannot be null.");
-		}
-		//The link that is at the origin of the dungeon
-		DimLink originLink = dimension.getLink(dimension.origin());
-		Point4D oldLinkPos = linkIn.source();
-		if(originLink==null)
-		{
-			int orientation = linkIn.orientation();
-			originLink=dimension.createLink(oldLinkPos, LinkTypes.SAFE_EXIT, (orientation+2)%4);
-			return false;
-		}
-		//The link that originally created the dungeon on the way in
-		DimLink incomingLink = PocketManager.getLink(originLink.destination());
-		if(incomingLink==null||incomingLink.linkType()!=LinkTypes.DUNGEON||!(originLink.linkType()==LinkTypes.REVERSE))
-		{
-			int orientation = linkIn.orientation();
-			dimension.deleteLink(originLink);
-			dimension.createLink(oldLinkPos, LinkTypes.SAFE_EXIT, (orientation+2)%4);
-			return false;
-		}
-		NewDimData parent = PocketManager.getDimensionData(incomingLink.source().getDimension());
-
-		if (!dimension.isDungeon())
-		{
-			throw new IllegalArgumentException("destination must be dungeon");
-		}
-		if (dimension.isFilled())
-		{
-			throw new IllegalArgumentException("destination must be empty");
-		}
-		if (!dimension.isInitialized())
-		{
-			throw new IllegalArgumentException("destination must already exist");
-		}
-
-		try
-		{
-			//Load a world
-			World world = PocketManager.loadDimension(dimension.id());
-
-			if (world == null || world.provider == null)
-			{
-				System.err.println("Could not initialize dimension for a dungeon!");
-				return false;
-			}
-
-			Point3D destination = new Point3D(incomingLink.destination());
-			loadAndValidateDungeon(dimension.dungeon(), properties).copyToWorld(world, destination, originLink.orientation(), incomingLink, random, properties, false);
-			dimension.setFilled(true);
-			return true;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
 
 	private static boolean buildDungeonPocket(DungeonData dungeon, NewDimData dimension, DimLink link, DungeonSchematic schematic, World world, DDProperties properties)
 	{
@@ -145,7 +72,7 @@ public class PocketBuilder
 		return true;    
 	}
 
-	public static boolean generateSelectedDungeonPocket(DimLink link, DDProperties properties, DungeonData data)
+	public static boolean generateSelectedDungeonPocket(DimLink link, DDProperties properties, DungeonData dungeon)
 	{
 		if (link == null)
 		{
@@ -155,15 +82,26 @@ public class PocketBuilder
 		{
 			throw new IllegalArgumentException("properties cannot be null.");
 		}
-
 		if (link.hasDestination())
 		{
 			throw new IllegalArgumentException("link cannot have a destination assigned already.");
 		}
+		if (dungeon == null)
+		{
+			throw new IllegalArgumentException("dungeon cannot be null.");
+		}
 
-		//Register a new dimension
+		// Try to load up the schematic
+		DungeonSchematic schematic = null;
+		schematic = loadAndValidateDungeon(dungeon, properties);
+		if (schematic == null)
+		{
+			return false;
+		}
+		
+		// Register a new dimension
 		NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
-		NewDimData dimension = PocketManager.registerPocket(parent, true);
+		NewDimData dimension = PocketManager.registerPocket(parent, DimensionType.DUNGEON);
 
 		//Load a world
 		World world = PocketManager.loadDimension(dimension.id());
@@ -174,19 +112,7 @@ public class PocketBuilder
 			return false;
 		}
 
-		DungeonData dungeon = null;
-		DungeonSchematic schematic = null;
-
-		dungeon = data;
-		if (data == null)
-		{
-			System.err.println("Could not select a dungeon for generation!");
-			return false;
-		}
-		schematic = loadAndValidateDungeon(dungeon, properties);
-
 		return PocketBuilder.buildDungeonPocket(dungeon, dimension, link, schematic, world, properties);
-
 	}
 
 
@@ -206,11 +132,19 @@ public class PocketBuilder
 			throw new IllegalArgumentException("link cannot have a destination assigned already.");
 		}
 
-
+		//Choose a dungeon to generate
+		NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
+		Pair<DungeonData, DungeonSchematic> pair = selectNextDungeon(parent, random, properties);
+		if (pair == null)
+		{
+			System.err.println("Could not select a dungeon for generation!");
+			return false;
+		}
+		DungeonData dungeon = pair.getFirst();
+		DungeonSchematic schematic = pair.getSecond();
 
 		//Register a new dimension
-		NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
-		NewDimData dimension = PocketManager.registerPocket(parent, true);
+		NewDimData dimension = PocketManager.registerPocket(parent, DimensionType.DUNGEON);
 
 		//Load a world
 		World world = PocketManager.loadDimension(dimension.id());
@@ -220,17 +154,7 @@ public class PocketBuilder
 			System.err.println("Could not initialize dimension for a dungeon!");
 			return false;
 		}
-
-		//Choose a dungeon to generate
-		Pair<DungeonData, DungeonSchematic> pair = selectDungeon(dimension, random, properties);
-		if (pair == null)
-		{
-			System.err.println("Could not select a dungeon for generation!");
-			return false;
-		}
-		DungeonData dungeon = pair.getFirst();
-		DungeonSchematic schematic = pair.getSecond();
-
+		
 		return buildDungeonPocket(dungeon, dimension, link, schematic, world, properties);
 	}
 
@@ -251,18 +175,12 @@ public class PocketBuilder
 		return linkDestination;
 	}
 
-	private static Pair<DungeonData, DungeonSchematic> selectDungeon(NewDimData dimension, Random random, DDProperties properties)
+	private static Pair<DungeonData, DungeonSchematic> selectNextDungeon(NewDimData parent, Random random, DDProperties properties)
 	{
-		//We assume the dimension doesn't have a dungeon assigned
-		if (dimension.dungeon() != null)
-		{
-			throw new IllegalArgumentException("dimension cannot have a dungeon assigned already.");
-		}
-
 		DungeonData dungeon = null;
 		DungeonSchematic schematic = null;
 
-		dungeon = DungeonHelper.instance().selectDungeon(dimension, random);
+		dungeon = DungeonHelper.instance().selectNextDungeon(parent, random);
 
 		if (dungeon != null)
 		{
@@ -332,9 +250,9 @@ public class PocketBuilder
 				schematic.getLength() <= DungeonHelper.MAX_DUNGEON_LENGTH);
 	}
 
-	public static boolean generateNewPocket(DimLink link, DDProperties properties, Block door)
+	public static boolean generateNewPocket(DimLink link, DDProperties properties, Block door, DimensionType type)
 	{
-		return generateNewPocket(link, DEFAULT_POCKET_SIZE, DEFAULT_POCKET_WALL_THICKNESS, properties, door);
+		return generateNewPocket(link, DEFAULT_POCKET_SIZE, DEFAULT_POCKET_WALL_THICKNESS, properties, door, type);
 	}
 
 	private static int getDoorOrientation(Point4D source, DDProperties properties)
@@ -346,10 +264,8 @@ public class PocketBuilder
 		}
 
 		//Check if the block below that point is actually a door
-		int blockID = world.getBlockId(source.getX(), source.getY() - 1, source.getZ());
-		if (blockID != properties.DimensionalDoorID && blockID != properties.WarpDoorID &&
-				blockID != properties.TransientDoorID &&
-				blockID != properties.GoldenDimensionalDoorID)
+		Block block = Block.blocksList[world.getBlockId(source.getX(), source.getY() - 1, source.getZ())];
+		if (block==null || !(block instanceof IDimDoor))
 		{
 			throw new IllegalStateException("The link's source is not a door block. It should be impossible to traverse a rift without a door!");
 		}
@@ -358,8 +274,8 @@ public class PocketBuilder
 		int orientation = world.getBlockMetadata(source.getX(), source.getY() - 1, source.getZ()) & 3;
 		return orientation;
 	}
-
-	public static boolean generateNewPocket(DimLink link, int size, int wallThickness, DDProperties properties, Block door)
+	
+	public static void validatePocketSetup(DimLink link, int size, int wallThickness, DDProperties properties, Block door)
 	{
 		if (link == null)
 		{
@@ -396,12 +312,79 @@ public class PocketBuilder
 		{
 			throw new IllegalArgumentException("size must be large enough to fit the specified wall thickness and some air space.");
 		}
-
+	}
+	
+	/**I know this is almost a copy of generateNewPocket, but we might want to change other things.
+	 * 
+	 * @param link
+	 * @param properties
+	 * @param player
+	 * @param door
+	 * @return
+	 */
+	public static boolean generateNewPersonalPocket(DimLink link, DDProperties properties,Entity player, Block door)
+	{
+		//incase a chicken walks in or something
+		if(!(player instanceof EntityPlayer))
+		{
+			return false;
+		}
+		int wallThickness = DEFAULT_POCKET_WALL_THICKNESS;
+		int size = DEFAULT_POCKET_SIZE;
+		
+		validatePocketSetup(link, size, wallThickness, properties, door);
+		
 		try
 		{
 			//Register a new dimension
 			NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
-			NewDimData dimension = PocketManager.registerPocket(parent, false);
+			NewDimData dimension = PocketManager.registerPocket(parent, DimensionType.PERSONAL, player.getEntityName());
+
+
+			//Load a world
+			World world = PocketManager.loadDimension(dimension.id());
+
+			if (world == null || world.provider == null)
+			{
+				System.err.println("Could not initialize dimension for a pocket!");
+				return false;
+			}
+
+			//Calculate the destination point
+			Point4D source = link.source();
+			int destinationY = yCoordHelper.adjustDestinationY(link.source().getY(), world.getHeight(), wallThickness + 1, size);
+			int orientation = getDoorOrientation(source, properties);
+
+			//Place a link leading back out of the pocket
+			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkType.REVERSE,(link.orientation()+2)%4);
+			parent.setLinkDestination(reverseLink, source.getX(), source.getY(), source.getZ());
+
+			//Build the actual pocket area
+			buildPocket(world, source.getX(), destinationY, source.getZ(), orientation, size, wallThickness, properties, door);
+
+			//Finish up destination initialization
+			dimension.initializePocket(source.getX(), destinationY, source.getZ(), orientation, link);
+			dimension.setFilled(true);
+			
+			return true;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static boolean generateNewPocket(DimLink link, int size, int wallThickness, DDProperties properties, Block door, DimensionType type)
+	{
+		validatePocketSetup(link, size, wallThickness, properties, door);
+		
+		try
+		{
+			//Register a new dimension
+			NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
+			NewDimData dimension = PocketManager.registerPocket(parent, type);
+
 
 			//Load a world
 			World world = PocketManager.loadDimension(dimension.id());
@@ -418,8 +401,9 @@ public class PocketBuilder
 			int orientation = getDoorOrientation(source, properties);
 
 			//Place a link leading back out of the pocket
-			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkTypes.REVERSE,(link.orientation()+2)%4);
-			parent.setDestination(reverseLink, source.getX(), source.getY(), source.getZ());
+
+			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkType.REVERSE,(link.orientation()+2)%4);
+			parent.setLinkDestination(reverseLink, source.getX(), source.getY(), source.getZ());
 
 			//Build the actual pocket area
 			buildPocket(world, source.getX(), destinationY, source.getZ(), orientation, size, wallThickness, properties, door);
@@ -470,23 +454,31 @@ public class PocketBuilder
 		BlockRotator.transformPoint(center, door, orientation - BlockRotator.EAST_DOOR_METADATA, door);
 
 		//Build the outer layer of Eternal Fabric
-		buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2), properties.PermaFabricBlockID, false, 0);
+		buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2), properties.PermaFabricBlockID, 0, false, 0);
 
+		//check if we are building a personal pocket
+		int metadata = 0;
+		if(world.provider instanceof PersonalPocketProvider)
+		{
+			metadata = 2;
+		}
+		
 		//Build the (wallThickness - 1) layers of Fabric of Reality
 		for (int layer = 1; layer < wallThickness; layer++)
 		{
-			buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2) - layer, properties.FabricBlockID,
+			buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2) - layer, mod_pocketDim.blockDimWall.blockID, metadata,
 					layer < (wallThickness - 1) && properties.TNFREAKINGT_Enabled, properties.NonTntWeight);
 		}
 		
 		//MazeBuilder.generate(world, x, y, z, random);
 
 		//Build the door
-		int doorOrientation = BlockRotator.transformMetadata(BlockRotator.EAST_DOOR_METADATA, orientation - BlockRotator.EAST_DOOR_METADATA + 2, properties.DimensionalDoorID);
+		int doorOrientation = BlockRotator.transformMetadata(BlockRotator.EAST_DOOR_METADATA, orientation - BlockRotator.EAST_DOOR_METADATA + 2, doorBlock.blockID);
 		ItemDimensionalDoor.placeDoorBlock(world, x, y - 1, z, doorOrientation, doorBlock);
+
 	}
 
-	private static void buildBox(World world, int centerX, int centerY, int centerZ, int radius, int blockID, boolean placeTnt, int nonTntWeight)
+	private static void buildBox(World world, int centerX, int centerY, int centerZ, int radius, int blockID, int metadata, boolean placeTnt, int nonTntWeight)
 	{
 		int x, y, z;
 
@@ -503,14 +495,14 @@ public class PocketBuilder
 		{
 			for (z = startZ; z <= endZ; z++)
 			{
-				setBlockDirectlySpecial(world, x, startY, z, blockID, 0, placeTnt, nonTntWeight);
-				setBlockDirectlySpecial(world, x, endY, z, blockID, 0, placeTnt, nonTntWeight);
+				setBlockDirectlySpecial(world, x, startY, z, blockID, metadata, placeTnt, nonTntWeight);
+				setBlockDirectlySpecial(world, x, endY, z, blockID, metadata, placeTnt, nonTntWeight);
 			}
 
 			for (y = startY; y <= endY; y++)
 			{
-				setBlockDirectlySpecial(world, x, y, startZ, blockID, 0, placeTnt, nonTntWeight);
-				setBlockDirectlySpecial(world, x, y, endZ, blockID, 0, placeTnt, nonTntWeight);
+				setBlockDirectlySpecial(world, x, y, startZ, blockID, metadata, placeTnt, nonTntWeight);
+				setBlockDirectlySpecial(world, x, y, endZ, blockID, metadata, placeTnt, nonTntWeight);
 			}
 		}
 
@@ -518,8 +510,8 @@ public class PocketBuilder
 		{
 			for (z = startZ; z <= endZ; z++)
 			{
-				setBlockDirectlySpecial(world, startX, y, z, blockID, 0, placeTnt, nonTntWeight);
-				setBlockDirectlySpecial(world, endX, y, z, blockID, 0, placeTnt, nonTntWeight);
+				setBlockDirectlySpecial(world, startX, y, z, blockID, metadata, placeTnt, nonTntWeight);
+				setBlockDirectlySpecial(world, endX, y, z, blockID, metadata, placeTnt, nonTntWeight);
 			}
 		}
 	}
@@ -562,5 +554,40 @@ public class PocketBuilder
 		extBlockStorage.setExtBlockID(localX, y & 15, localZ, blockID);
 		extBlockStorage.setExtBlockMetadata(localX, y & 15, localZ, metadata);
 		chunk.setChunkModified();
+	}
+
+	public static BoundingBox calculateDefaultBounds(NewDimData pocket)
+	{
+		// Calculate the XZ bounds of this pocket assuming that it has the default size
+		// The Y bounds will be set to encompass the height of a chunk.
+		
+		int minX = 0;
+		int minZ = 0;
+		Point4D origin = pocket.origin();
+		int orientation = pocket.orientation();
+		if (orientation < 0 || orientation > 3)
+		{
+			throw new IllegalArgumentException("pocket has an invalid orientation value.");
+		}
+		switch (orientation)
+		{
+		case 0:
+			minX = origin.getX() - DEFAULT_POCKET_WALL_THICKNESS + 1;
+			minZ = origin.getZ() - DEFAULT_POCKET_SIZE / 2;
+			break;
+		case 1:
+			minX = origin.getX() - DEFAULT_POCKET_SIZE / 2;
+			minZ = origin.getZ() - DEFAULT_POCKET_WALL_THICKNESS + 1;
+			break;
+		case 2:
+			minX = origin.getX() + DEFAULT_POCKET_WALL_THICKNESS - DEFAULT_POCKET_SIZE;
+			minZ = origin.getZ() - DEFAULT_POCKET_SIZE / 2;
+			break;
+		case 3:
+			minX = origin.getX() - DEFAULT_POCKET_SIZE / 2;
+			minZ = origin.getZ() + DEFAULT_POCKET_WALL_THICKNESS - DEFAULT_POCKET_SIZE;
+			break;
+		}
+		return new BoundingBox(minX, 0, minZ, DEFAULT_POCKET_SIZE, 255, DEFAULT_POCKET_SIZE);
 	}
 }
