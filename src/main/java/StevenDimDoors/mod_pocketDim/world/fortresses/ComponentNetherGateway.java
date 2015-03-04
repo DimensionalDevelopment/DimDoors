@@ -2,7 +2,7 @@ package StevenDimDoors.mod_pocketDim.world.fortresses;
 
 import java.util.List;
 import java.util.Random;
-import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -71,75 +71,75 @@ public class ComponentNetherGateway extends StructureComponent
     	int NETHER_SLAB_METADATA = 6;
         
         // Set all the blocks in the area of the room to air
-        this.fillWithBlocks(world, bounds, 0, 2, 0, 6, 6, 6, 0, 0, false);
+        this.fillWithBlocks(world, bounds, 0, 2, 0, 6, 6, 6, Blocks.air, Blocks.air, false);
         // Set up the platform under the gateway
-        this.fillWithBlocks(world, bounds, 0, 0, 0, 6, 1, 6, Block.netherBrick.blockID, Block.netherBrick.blockID, false);
+        this.fillWithBlocks(world, bounds, 0, 0, 0, 6, 1, 6, Blocks.nether_brick, Blocks.nether_brick, false);
         
         // Build the fence at the back of the room
-        this.fillWithBlocks(world, bounds, 1, 2, 6, 5, 2, 6, Block.netherBrick.blockID, Block.netherBrick.blockID, false);
-        this.fillWithBlocks(world, bounds, 1, 3, 6, 5, 3, 6, Block.netherFence.blockID, Block.netherFence.blockID, false);
+        this.fillWithBlocks(world, bounds, 1, 2, 6, 5, 2, 6, Blocks.nether_brick, Blocks.nether_brick, false);
+        this.fillWithBlocks(world, bounds, 1, 3, 6, 5, 3, 6, Blocks.nether_brick_fence, Blocks.nether_brick_fence, false);
 
         // Build the fences at the sides of the room
-        this.fillWithBlocks(world, bounds, 0, 2, 0, 0, 2, 6, Block.netherBrick.blockID, Block.netherBrick.blockID, false);
-        this.fillWithBlocks(world, bounds, 0, 3, 0, 0, 3, 6, Block.netherFence.blockID, Block.netherFence.blockID, false);
+        this.fillWithBlocks(world, bounds, 0, 2, 0, 0, 2, 6, Blocks.nether_brick, Blocks.nether_brick, false);
+        this.fillWithBlocks(world, bounds, 0, 3, 0, 0, 3, 6, Blocks.nether_brick_fence, Blocks.nether_brick_fence, false);
         
-        this.fillWithBlocks(world, bounds, 6, 2, 0, 6, 2, 6, Block.netherBrick.blockID, Block.netherBrick.blockID, false);
-        this.fillWithBlocks(world, bounds, 6, 3, 0, 6, 3, 6, Block.netherFence.blockID, Block.netherFence.blockID, false);
+        this.fillWithBlocks(world, bounds, 6, 2, 0, 6, 2, 6, Blocks.nether_brick, Blocks.nether_brick, false);
+        this.fillWithBlocks(world, bounds, 6, 3, 0, 6, 3, 6, Blocks.nether_brick_fence, Blocks.nether_brick_fence, false);
         
         // Build the fence portions closest to the entrance
-        this.placeBlockAtCurrentPosition(world, Block.netherBrick.blockID, 0, 1, 2, 0, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.netherFence.blockID, 0, 1, 3, 0, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick, 0, 1, 2, 0, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_fence, 0, 1, 3, 0, bounds);
         
-        this.placeBlockAtCurrentPosition(world, Block.netherBrick.blockID, 0, 5, 2, 0, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.netherFence.blockID, 0, 5, 3, 0, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick, 0, 5, 2, 0, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_fence, 0, 5, 3, 0, bounds);
         
         // Build the first layer of the gateway
-        this.fillWithBlocks(world, bounds, 1, 2, 2, 5, 2, 5, Block.netherBrick.blockID, Block.netherBrick.blockID, false);
-        this.fillWithMetadataBlocks(world, bounds, 1, 2, 1, 5, 2, 1, Block.stoneSingleSlab.blockID, NETHER_SLAB_METADATA, Block.stoneSingleSlab.blockID, NETHER_SLAB_METADATA, false);
+        this.fillWithBlocks(world, bounds, 1, 2, 2, 5, 2, 5, Blocks.nether_brick, Blocks.nether_brick, false);
+        this.fillWithMetadataBlocks(world, bounds, 1, 2, 1, 5, 2, 1, Blocks.stone_slab, NETHER_SLAB_METADATA, Blocks.stone_slab, NETHER_SLAB_METADATA, false);
         
-        this.placeBlockAtCurrentPosition(world, Block.stoneSingleSlab.blockID, NETHER_SLAB_METADATA, 1, 2, 2, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.stoneSingleSlab.blockID, NETHER_SLAB_METADATA, 5, 2, 2, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.stone_slab, NETHER_SLAB_METADATA, 1, 2, 2, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.stone_slab, NETHER_SLAB_METADATA, 5, 2, 2, bounds);
         
         // Build the second layer of the gateway
-        int orientation = this.getMetadataWithOffset(Block.stairsNetherBrick.blockID, 2);
-        this.fillWithBlocks(world, bounds, 2, 3, 3, 2, 3, 4, Block.netherBrick.blockID, Block.netherBrick.blockID, false);
-        this.fillWithBlocks(world, bounds, 4, 3, 3, 4, 3, 4, Block.netherBrick.blockID, Block.netherBrick.blockID, false);
-        this.placeBlockAtCurrentPosition(world, Block.netherBrick.blockID, 0, 3, 3, 4, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.stairsNetherBrick.blockID, orientation, 3, 3, 5, bounds);
+        int orientation = this.getMetadataWithOffset(Blocks.nether_brick_stairs, 2);
+        this.fillWithBlocks(world, bounds, 2, 3, 3, 2, 3, 4, Blocks.nether_brick, Blocks.nether_brick, false);
+        this.fillWithBlocks(world, bounds, 4, 3, 3, 4, 3, 4, Blocks.nether_brick, Blocks.nether_brick, false);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick, 0, 3, 3, 4, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_stairs, orientation, 3, 3, 5, bounds);
         
         // Build the third layer of the gateway
         // We add 4 to get the rotated metadata for upside-down stairs
         // because Minecraft only supports metadata rotations for normal stairs -_-
-        this.fillWithMetadataBlocks(world, bounds, 2, 4, 4, 4, 4, 4, Block.stairsNetherBrick.blockID, orientation, Block.stairsNetherBrick.blockID, orientation, false);
+        this.fillWithMetadataBlocks(world, bounds, 2, 4, 4, 4, 4, 4, Blocks.nether_brick_stairs, orientation, Blocks.nether_brick_stairs, orientation, false);
         
-        this.placeBlockAtCurrentPosition(world, Block.stairsNetherBrick.blockID, this.getMetadataWithOffset(Block.stairsNetherBrick.blockID, 0) + 4, 2, 4, 3, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.stairsNetherBrick.blockID, this.getMetadataWithOffset(Block.stairsNetherBrick.blockID, 1) + 4, 4, 4, 3, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_stairs, this.getMetadataWithOffset(Blocks.nether_brick_stairs, 0) + 4, 2, 4, 3, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_stairs, this.getMetadataWithOffset(Blocks.nether_brick_stairs, 1) + 4, 4, 4, 3, bounds);
         
         // Build the fourth layer of the gateway
-        this.placeBlockAtCurrentPosition(world, Block.netherBrick.blockID, 0, 3, 5, 3, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick, 0, 3, 5, 3, bounds);
         
-        this.placeBlockAtCurrentPosition(world, Block.netherrack.blockID, 0, 2, 5, 3, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.stairsNetherBrick.blockID, this.getMetadataWithOffset(Block.stairsNetherBrick.blockID, 0) + 4, 1, 5, 3, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.stairsNetherBrick.blockID, this.getMetadataWithOffset(Block.stairsNetherBrick.blockID, 3) + 4, 2, 5, 2, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.stairsNetherBrick.blockID, this.getMetadataWithOffset(Block.stairsNetherBrick.blockID, 2) + 4, 2, 5, 4, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.netherrack, 0, 2, 5, 3, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_stairs, this.getMetadataWithOffset(Blocks.nether_brick_stairs, 0) + 4, 1, 5, 3, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_stairs, this.getMetadataWithOffset(Blocks.nether_brick_stairs, 3) + 4, 2, 5, 2, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_stairs, this.getMetadataWithOffset(Blocks.nether_brick_stairs, 2) + 4, 2, 5, 4, bounds);
         
-        this.placeBlockAtCurrentPosition(world, Block.netherrack.blockID, 0, 4, 5, 3, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.stairsNetherBrick.blockID, this.getMetadataWithOffset(Block.stairsNetherBrick.blockID, 1) + 4, 5, 5, 3, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.stairsNetherBrick.blockID, this.getMetadataWithOffset(Block.stairsNetherBrick.blockID, 3) + 4, 4, 5, 2, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.stairsNetherBrick.blockID, this.getMetadataWithOffset(Block.stairsNetherBrick.blockID, 2) + 4, 4, 5, 4, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.netherrack, 0, 4, 5, 3, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_stairs, this.getMetadataWithOffset(Blocks.nether_brick_stairs, 1) + 4, 5, 5, 3, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_stairs, this.getMetadataWithOffset(Blocks.nether_brick_stairs, 3) + 4, 4, 5, 2, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_stairs, this.getMetadataWithOffset(Blocks.nether_brick_stairs, 2) + 4, 4, 5, 4, bounds);
         
         // Build the top layer of the gateway
-        this.placeBlockAtCurrentPosition(world, Block.netherFence.blockID, 0, 3, 6, 3, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_fence, 0, 3, 6, 3, bounds);
         
-        this.placeBlockAtCurrentPosition(world, Block.fire.blockID, 0, 2, 6, 3, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.netherFence.blockID, 0, 1, 6, 3, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.netherFence.blockID, 0, 2, 6, 2, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.netherFence.blockID, 0, 2, 6, 4, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.fire, 0, 2, 6, 3, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_fence, 0, 1, 6, 3, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_fence, 0, 2, 6, 2, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_fence, 0, 2, 6, 4, bounds);
         
-        this.placeBlockAtCurrentPosition(world, Block.fire.blockID, 0, 4, 6, 3, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.netherFence.blockID, 0, 5, 6, 3, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.netherFence.blockID, 0, 4, 6, 2, bounds);
-        this.placeBlockAtCurrentPosition(world, Block.netherFence.blockID, 0, 4, 6, 4, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.fire, 0, 4, 6, 3, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_fence, 0, 5, 6, 3, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_fence, 0, 4, 6, 2, bounds);
+        this.placeBlockAtCurrentPosition(world, Blocks.nether_brick_fence, 0, 4, 6, 4, bounds);
         
         // Place the transient door
         int y = this.getYWithOffset(3);
@@ -152,7 +152,7 @@ public class ComponentNetherGateway extends StructureComponent
         // due to the way Minecraft handles structure generation!
         if (bounds.isVecInside(x, y, z) && bounds.isVecInside(x, y + 1, z))
         {
-        	orientation = this.getMetadataWithOffset(Block.doorWood.blockID, 1);
+        	orientation = this.getMetadataWithOffset(Blocks.wooden_door, 1);
         	dimension = PocketManager.createDimensionData(world);
         	link = dimension.getLink(x, y + 1, z);
         	if (link == null)
@@ -166,7 +166,7 @@ public class ComponentNetherGateway extends StructureComponent
         {
             for (z = 0; z <= 6; ++z)
             {
-                this.fillCurrentPositionBlocksDownwards(world, Block.netherBrick.blockID, 0, x, -1, z, bounds);
+                this.func_151554_b(world, Blocks.nether_brick, 0, x, -1, z, bounds);
             }
         }
 

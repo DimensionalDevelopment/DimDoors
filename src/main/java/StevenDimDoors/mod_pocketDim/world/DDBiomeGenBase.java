@@ -23,7 +23,7 @@ public class DDBiomeGenBase extends BiomeGenBase
 	{
 		for (int k = 0; k < biomes.length; k++)
 		{
-			if (biomeList[biomes[k]] != null && !(biomeList[biomes[k]] instanceof DDBiomeGenBase))
+			if (getBiomeGenArray()[biomes[k]] != null && !(getBiomeGenArray()[biomes[k]] instanceof DDBiomeGenBase))
 			{
 				// Crash Minecraft to avoid having people complain to us about strange things
 				// that are really the result of silent biome ID conflicts.

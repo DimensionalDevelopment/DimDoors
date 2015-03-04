@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim.world.gateways;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 
@@ -16,7 +17,7 @@ public class GatewayTwoPillars extends BaseSchematicGateway
 	@Override
 	protected void generateRandomBits(World world, int x, int y, int z) 
 	{
-		final int blockID = Block.stoneBrick.blockID;
+		final Block block = Blocks.stonebrick;
 		
 		//Replace some of the ground around the gateway with bricks
 		for (int xc = -GATEWAY_RADIUS; xc <= GATEWAY_RADIUS; xc++)
@@ -26,19 +27,19 @@ public class GatewayTwoPillars extends BaseSchematicGateway
 				//Check that the block is supported by an opaque block.
 				//This prevents us from building over a cliff, on the peak of a mountain,
 				//or the surface of the ocean or a frozen lake.
-				if (world.isBlockOpaqueCube(x + xc, y - 1, z + zc))
+				if (world.isBlockNormalCubeDefault(x + xc, y - 1, z + zc, false))
 				{
 					//Randomly choose whether to place bricks or not. The math is designed so that the
 					//chances of placing a block decrease as we get farther from the gateway's center.
 					if (Math.abs(xc) + Math.abs(zc) < world.rand.nextInt(2) + 3)
 					{
 						//Place Stone Bricks
-						world.setBlock(x + xc, y, z + zc, blockID, 0, 3);
+						world.setBlock(x + xc, y, z + zc, block, 0, 3);
 					}
 					else if (Math.abs(xc) + Math.abs(zc) < world.rand.nextInt(3) + 3)
 					{
 						//Place Cracked Stone Bricks
-						world.setBlock(x + xc, y, z + zc, blockID, 2, 3);
+						world.setBlock(x + xc, y, z + zc, block, 2, 3);
 					}
 				}
 			}

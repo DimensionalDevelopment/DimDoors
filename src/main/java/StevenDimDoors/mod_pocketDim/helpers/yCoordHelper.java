@@ -52,22 +52,17 @@ public class yCoordHelper
 	
 	public static boolean isCoveredBlock(Chunk chunk, int localX, int y, int localZ)
 	{
-		int blockID;
 		Block block;
 		Material material;
 		
 		if (y < 0)
 			return false;
 		
-		blockID = chunk.getBlockID(localX, y, localZ);
-		if (blockID == 0)
-			return false;
-
-		block = Block.blocksList[blockID];
+		block = chunk.getBlock(localX, y, localZ);
 		if (block == null)
 			return false;
 		
-		material = block.blockMaterial;
+		material = block.getMaterial();
 		return (material.isLiquid() || !material.isReplaceable());
 	}
 	
@@ -109,12 +104,11 @@ public class yCoordHelper
 			{
 				for (dz = -1; dz <= 1 && isSafe; dz++)
 				{
-					blockID = chunk.getBlockID(localX  + dx, y, localZ + dz);
+					block = chunk.getBlock(localX  + dx, y, localZ + dz);
 					metadata = chunk.getBlockMetadata(localX  + dx, y, localZ + dz);
-					block = Block.blocksList[blockID];
-					if (blockID != 0 && (!block.blockMaterial.isReplaceable() || block.blockMaterial.isLiquid()))
+					if (!block.isAir(world, x, y, z) && (!block.getMaterial().isReplaceable() || block.getMaterial().isLiquid()))
 					{
-						if (!block.blockMaterial.isReplaceable() && (!block.isOpaqueCube() || block.hasTileEntity(metadata)))
+						if (!block.getMaterial().isReplaceable() && (!block.isOpaqueCube() || block.hasTileEntity(metadata)))
 						{
 							isSafe = false;
 						}
@@ -170,12 +164,11 @@ public class yCoordHelper
 			{
 				for (dz = -1; dz <= 1 && isSafe; dz++)
 				{
-					blockID = chunk.getBlockID(localX  + dx, y, localZ + dz);
+					block = chunk.getBlock(localX  + dx, y, localZ + dz);
 					metadata = chunk.getBlockMetadata(localX  + dx, y, localZ + dz);
-					block = Block.blocksList[blockID];
-					if (blockID != 0 && (!block.blockMaterial.isReplaceable() || block.blockMaterial.isLiquid()))
+					if (!block.isAir(world,x,y,z) && (!block.getMaterial().isReplaceable() || block.getMaterial().isLiquid()))
 					{
-						if (!block.blockMaterial.isReplaceable() && (!block.isOpaqueCube() || block.hasTileEntity(metadata)))
+						if (!block.getMaterial().isReplaceable() && (!block.isOpaqueCube() || block.hasTileEntity(metadata)))
 						{
 							if (layers >= 3)
 							{
@@ -247,7 +240,7 @@ public class yCoordHelper
 			{
 				for (dz = -1; dz <= 1; dz++, index++)
 				{
-					if (chunk.getBlockID(localX  + dx, y, localZ + dz) != 0)
+					if (!chunk.getBlock(localX  + dx, y, localZ + dz).isAir(world, x+dx,y,z+dz))
 					{
 						gaps[index] = 0;
 					}

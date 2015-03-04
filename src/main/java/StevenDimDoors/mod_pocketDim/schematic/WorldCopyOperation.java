@@ -42,7 +42,7 @@ public class WorldCopyOperation extends WorldOperation
 		blockIDs[index] = (short) world.getBlockId(x, y, z);
 		metadata[index] = (byte) world.getBlockMetadata(x, y, z);
 		
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if (tileEntity != null)
 		{
 			//Extract tile entity data

@@ -3,10 +3,11 @@ package StevenDimDoors.mod_pocketDim.helpers;
 import java.util.HashMap;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 
 public class BlockRotationHelper
 {
-	public HashMap<Integer,HashMap<Integer,HashMap<Integer,Integer>>> rotationMappings = new HashMap<Integer,HashMap<Integer,HashMap<Integer,Integer>>>();
+	public HashMap<Integer,HashMap<Block,HashMap<Integer,Integer>>> rotationMappings = new HashMap<Integer,HashMap<Block,HashMap<Integer,Integer>>>();
 	
 	public BlockRotationHelper()
 	{
@@ -15,7 +16,7 @@ public class BlockRotationHelper
 	
 	public void InitializeRotationMap()
 	{
-		HashMap<Integer,HashMap<Integer, Integer>> orientation0 = new HashMap<Integer,HashMap<Integer, Integer>>();
+		HashMap<Block,HashMap<Integer, Integer>> orientation0 = new HashMap<Block,HashMap<Integer, Integer>>();
 		
 		HashMap<Integer,Integer> stairs0 = new HashMap<Integer,Integer>();
 		
@@ -99,7 +100,7 @@ public class BlockRotationHelper
 		railsSpecial0.put(9, 8);
 
 
-		HashMap<Integer,HashMap<Integer, Integer>> orientation1 = new HashMap<Integer,HashMap<Integer, Integer>>();
+		HashMap<Block,HashMap<Integer, Integer>> orientation1 = new HashMap<Block,HashMap<Integer, Integer>>();
 		
 		HashMap<Integer,Integer> stairs1 = new HashMap<Integer,Integer>();
 		
@@ -183,7 +184,7 @@ public class BlockRotationHelper
 		railsSpecial1.put(8, 8);
 		railsSpecial1.put(9, 9);
 		
-		HashMap<Integer,HashMap<Integer, Integer>> orientation2 = new HashMap<Integer,HashMap<Integer, Integer>>();
+		HashMap<Block,HashMap<Integer, Integer>> orientation2 = new HashMap<Block,HashMap<Integer, Integer>>();
 		
 		HashMap<Integer,Integer> stairs2 = new HashMap<Integer,Integer>();
 		
@@ -270,122 +271,119 @@ public class BlockRotationHelper
 	
 
 		
-		orientation0.put(Block.stairsBrick.blockID, stairs0);
-		orientation0.put(Block.stairsCobblestone.blockID, stairs0);
-		orientation0.put(Block.stairsNetherBrick.blockID, stairs0);
-		orientation0.put(Block.stairsNetherQuartz.blockID, stairs0);
-		orientation0.put(Block.stairsSandStone.blockID, stairs0);
-		orientation0.put(Block.stairsStoneBrick.blockID, stairs0);
-		orientation0.put(Block.stairsWoodBirch.blockID, stairs0);
-		orientation0.put(Block.stairsWoodJungle.blockID, stairs0);
-		orientation0.put(Block.stairsWoodOak.blockID, stairs0);
-		orientation0.put(Block.stairsWoodSpruce.blockID, stairs0);
-		orientation0.put(Block.stairsBrick.blockID, stairs0);
-		orientation0.put(Block.vine.blockID, vine0);
-		orientation0.put(Block.chest.blockID, chestsLadders0);
-		orientation0.put(Block.chestTrapped.blockID, chestsLadders0);
-		orientation0.put(Block.ladder.blockID, chestsLadders0);
-		orientation0.put(Block.lever.blockID, leverButtonTorch0);
-		orientation0.put(Block.stoneButton.blockID, leverButtonTorch0);
-		orientation0.put(Block.woodenButton.blockID, leverButtonTorch0);
-		orientation0.put(Block.torchRedstoneActive.blockID, leverButtonTorch0);
-		orientation0.put(Block.torchRedstoneIdle.blockID, leverButtonTorch0);
-		orientation0.put(Block.torchWood.blockID, leverButtonTorch0);
-		orientation0.put(Block.pistonBase.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.pistonExtension.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.pistonMoving.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.pistonStickyBase.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.dropper.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.dispenser.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.redstoneComparatorActive.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.redstoneComparatorIdle.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.redstoneRepeaterActive.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.redstoneRepeaterIdle.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.doorWood.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.doorIron.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.tripWireSource.blockID,pistonDropperDispenser0);
-		orientation0.put(Block.railDetector.blockID,railsSpecial0);
-		orientation0.put(Block.railActivator.blockID,railsSpecial0);
-		orientation0.put(Block.railPowered.blockID,railsSpecial0);
-		orientation0.put(Block.rail.blockID,rails0);
+		orientation0.put(Blocks.brick_stairs, stairs0);
+		orientation0.put(Blocks.stone_stairs, stairs0);
+		orientation0.put(Blocks.nether_brick_stairs, stairs0);
+		orientation0.put(Blocks.quartz_stairs, stairs0);
+		orientation0.put(Blocks.sandstone_stairs, stairs0);
+		orientation0.put(Blocks.stone_brick_stairs, stairs0);
+		orientation0.put(Blocks.birch_stairs, stairs0);
+		orientation0.put(Blocks.jungle_stairs, stairs0);
+		orientation0.put(Blocks.oak_stairs, stairs0);
+		orientation0.put(Blocks.spruce_stairs, stairs0);
+		orientation0.put(Blocks.brick_stairs, stairs0);
+		orientation0.put(Blocks.vine, vine0);
+		orientation0.put(Blocks.chest, chestsLadders0);
+		orientation0.put(Blocks.trapped_chest, chestsLadders0);
+		orientation0.put(Blocks.ladder, chestsLadders0);
+		orientation0.put(Blocks.lever, leverButtonTorch0);
+		orientation0.put(Blocks.stone_button, leverButtonTorch0);
+		orientation0.put(Blocks.wooden_button, leverButtonTorch0);
+		orientation0.put(Blocks.redstone_torch, leverButtonTorch0);
+		orientation0.put(Blocks.unlit_redstone_torch, leverButtonTorch0);
+		orientation0.put(Blocks.torch, leverButtonTorch0);
+		orientation0.put(Blocks.piston,pistonDropperDispenser0);
+		orientation0.put(Blocks.piston_head,pistonDropperDispenser0);
+		orientation0.put(Blocks.piston_extension,pistonDropperDispenser0);
+		orientation0.put(Blocks.sticky_piston,pistonDropperDispenser0);
+		orientation0.put(Blocks.dropper,pistonDropperDispenser0);
+		orientation0.put(Blocks.dispenser,pistonDropperDispenser0);
+		orientation0.put(Blocks.powered_comparator,pistonDropperDispenser0);
+		orientation0.put(Blocks.unpowered_comparator,pistonDropperDispenser0);
+		orientation0.put(Blocks.powered_repeater,pistonDropperDispenser0);
+		orientation0.put(Blocks.unpowered_repeater,pistonDropperDispenser0);
+		orientation0.put(Blocks.wooden_door,pistonDropperDispenser0);
+		orientation0.put(Blocks.iron_door,pistonDropperDispenser0);
+		orientation0.put(Blocks.tripwire_hook,pistonDropperDispenser0);
+		orientation0.put(Blocks.detector_rail,railsSpecial0);
+		orientation0.put(Blocks.activator_rail,railsSpecial0);
+		orientation0.put(Blocks.golden_rail,railsSpecial0);
+		orientation0.put(Blocks.rail,rails0);
 		
-		orientation1.put(Block.stairsBrick.blockID, stairs1);
-		orientation1.put(Block.stairsCobblestone.blockID, stairs1);
-		orientation1.put(Block.stairsNetherBrick.blockID, stairs1);
-		orientation1.put(Block.stairsNetherQuartz.blockID, stairs1);
-		orientation1.put(Block.stairsSandStone.blockID, stairs1);
-		orientation1.put(Block.stairsStoneBrick.blockID, stairs1);
-		orientation1.put(Block.stairsWoodBirch.blockID, stairs1);
-		orientation1.put(Block.stairsWoodJungle.blockID, stairs1);
-		orientation1.put(Block.stairsWoodOak.blockID, stairs1);
-		orientation1.put(Block.stairsWoodSpruce.blockID, stairs1);
-		orientation1.put(Block.stairsBrick.blockID, stairs1);
-		orientation1.put(Block.vine.blockID, vine1);
-		orientation1.put(Block.chest.blockID, chestsLadders1);
-		orientation1.put(Block.chestTrapped.blockID, chestsLadders1);
-		orientation1.put(Block.ladder.blockID, chestsLadders1);
-		orientation1.put(Block.lever.blockID, leverButtonTorch1);
-		orientation1.put(Block.stoneButton.blockID, leverButtonTorch1);
-		orientation1.put(Block.woodenButton.blockID, leverButtonTorch1);
-		orientation1.put(Block.torchRedstoneActive.blockID, leverButtonTorch1);
-		orientation1.put(Block.torchRedstoneIdle.blockID, leverButtonTorch1);
-		orientation1.put(Block.torchWood.blockID, leverButtonTorch1);
-		orientation1.put(Block.pistonBase.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.pistonExtension.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.pistonMoving.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.pistonStickyBase.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.dropper.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.dispenser.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.redstoneComparatorActive.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.redstoneComparatorIdle.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.redstoneRepeaterActive.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.redstoneRepeaterIdle.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.doorWood.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.doorIron.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.tripWireSource.blockID,pistonDropperDispenser1);
-		orientation1.put(Block.railDetector.blockID,railsSpecial1);
-		orientation1.put(Block.railActivator.blockID,railsSpecial1);
-		orientation1.put(Block.railPowered.blockID,railsSpecial1);
-		orientation1.put(Block.rail.blockID,rails1);
+		orientation1.put(Blocks.brick_stairs, stairs1);
+		orientation1.put(Blocks.stone_stairs, stairs1);
+		orientation1.put(Blocks.nether_brick_stairs, stairs1);
+		orientation1.put(Blocks.quartz_stairs, stairs1);
+		orientation1.put(Blocks.sandstone_stairs, stairs1);
+		orientation1.put(Blocks.stone_brick_stairs, stairs1);
+		orientation1.put(Blocks.birch_stairs, stairs1);
+		orientation1.put(Blocks.jungle_stairs, stairs1);
+		orientation1.put(Blocks.oak_stairs, stairs1);
+		orientation1.put(Blocks.spruce_stairs, stairs1);
+		orientation1.put(Blocks.vine, vine1);
+		orientation1.put(Blocks.chest, chestsLadders1);
+		orientation1.put(Blocks.trapped_chest, chestsLadders1);
+		orientation1.put(Blocks.ladder, chestsLadders1);
+		orientation1.put(Blocks.lever, leverButtonTorch1);
+		orientation1.put(Blocks.stone_button, leverButtonTorch1);
+		orientation1.put(Blocks.wooden_button, leverButtonTorch1);
+		orientation1.put(Blocks.redstone_torch, leverButtonTorch1);
+		orientation1.put(Blocks.unlit_redstone_torch, leverButtonTorch1);
+		orientation1.put(Blocks.torch, leverButtonTorch1);
+		orientation1.put(Blocks.piston,pistonDropperDispenser1);
+		orientation1.put(Blocks.piston_head,pistonDropperDispenser1);
+		orientation1.put(Blocks.piston_extension,pistonDropperDispenser1);
+		orientation1.put(Blocks.sticky_piston,pistonDropperDispenser1);
+		orientation1.put(Blocks.dropper,pistonDropperDispenser1);
+		orientation1.put(Blocks.dispenser,pistonDropperDispenser1);
+		orientation1.put(Blocks.powered_comparator,pistonDropperDispenser1);
+		orientation1.put(Blocks.unpowered_comparator,pistonDropperDispenser1);
+		orientation1.put(Blocks.powered_repeater,pistonDropperDispenser1);
+		orientation1.put(Blocks.unpowered_repeater,pistonDropperDispenser1);
+		orientation1.put(Blocks.wooden_door,pistonDropperDispenser1);
+		orientation1.put(Blocks.iron_door,pistonDropperDispenser1);
+		orientation1.put(Blocks.tripwire_hook,pistonDropperDispenser1);
+		orientation1.put(Blocks.detector_rail,railsSpecial1);
+		orientation1.put(Blocks.activator_rail,railsSpecial1);
+		orientation1.put(Blocks.golden_rail,railsSpecial1);
+		orientation1.put(Blocks.rail,rails1);
 
-		orientation2.put(Block.stairsBrick.blockID, stairs2);
-		orientation2.put(Block.stairsCobblestone.blockID, stairs2);
-		orientation2.put(Block.stairsNetherBrick.blockID, stairs2);
-		orientation2.put(Block.stairsNetherQuartz.blockID, stairs2);
-		orientation2.put(Block.stairsSandStone.blockID, stairs2);
-		orientation2.put(Block.stairsStoneBrick.blockID, stairs2);
-		orientation2.put(Block.stairsWoodBirch.blockID, stairs2);
-		orientation2.put(Block.stairsWoodJungle.blockID, stairs2);
-		orientation2.put(Block.stairsWoodOak.blockID, stairs2);
-		orientation2.put(Block.stairsWoodSpruce.blockID, stairs2);
-		orientation2.put(Block.stairsBrick.blockID, stairs2);
-		orientation2.put(Block.vine.blockID, vine2);
-		orientation2.put(Block.chest.blockID, chestsLadders2);
-		orientation2.put(Block.chestTrapped.blockID, chestsLadders2);
-		orientation2.put(Block.ladder.blockID, chestsLadders2);
-		orientation2.put(Block.lever.blockID, leverButtonTorch2);
-		orientation2.put(Block.stoneButton.blockID, leverButtonTorch2);
-		orientation2.put(Block.woodenButton.blockID, leverButtonTorch2);
-		orientation2.put(Block.torchRedstoneActive.blockID, leverButtonTorch2);
-		orientation2.put(Block.torchRedstoneIdle.blockID, leverButtonTorch2);
-		orientation2.put(Block.torchWood.blockID, leverButtonTorch2);
-		orientation2.put(Block.pistonBase.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.pistonExtension.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.pistonMoving.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.pistonStickyBase.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.dropper.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.dispenser.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.redstoneComparatorActive.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.redstoneComparatorIdle.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.redstoneRepeaterActive.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.redstoneRepeaterIdle.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.doorWood.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.doorIron.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.tripWireSource.blockID,pistonDropperDispenser2);
-		orientation2.put(Block.railDetector.blockID,railsSpecial2);
-		orientation2.put(Block.railActivator.blockID,railsSpecial2);
-		orientation2.put(Block.railPowered.blockID,railsSpecial2);
-		orientation2.put(Block.rail.blockID,rails2);
+		orientation2.put(Blocks.brick_stairs, stairs2);
+		orientation2.put(Blocks.stone_stairs, stairs2);
+		orientation2.put(Blocks.nether_brick_stairs, stairs2);
+		orientation2.put(Blocks.quartz_stairs, stairs2);
+		orientation2.put(Blocks.sandstone_stairs, stairs2);
+		orientation2.put(Blocks.stone_brick_stairs, stairs2);
+		orientation2.put(Blocks.birch_stairs, stairs2);
+		orientation2.put(Blocks.jungle_stairs, stairs2);
+		orientation2.put(Blocks.oak_stairs, stairs2);
+		orientation2.put(Blocks.spruce_stairs, stairs2);
+		orientation2.put(Blocks.vine, vine2);
+		orientation2.put(Blocks.trapped_chest, chestsLadders2);
+		orientation2.put(Blocks.ladder, chestsLadders2);
+		orientation2.put(Blocks.lever, leverButtonTorch2);
+		orientation2.put(Blocks.stone_button, leverButtonTorch2);
+		orientation2.put(Blocks.wooden_button, leverButtonTorch2);
+		orientation2.put(Blocks.redstone_torch, leverButtonTorch2);
+		orientation2.put(Blocks.unlit_redstone_torch, leverButtonTorch2);
+		orientation2.put(Blocks.torch, leverButtonTorch2);
+		orientation2.put(Blocks.piston,pistonDropperDispenser2);
+		orientation2.put(Blocks.piston_head,pistonDropperDispenser2);
+		orientation2.put(Blocks.piston_extension,pistonDropperDispenser2);
+		orientation2.put(Blocks.sticky_piston,pistonDropperDispenser2);
+		orientation2.put(Blocks.dropper,pistonDropperDispenser2);
+		orientation2.put(Blocks.dispenser,pistonDropperDispenser2);
+		orientation2.put(Blocks.powered_comparator,pistonDropperDispenser2);
+		orientation2.put(Blocks.unpowered_comparator,pistonDropperDispenser2);
+		orientation2.put(Blocks.powered_repeater,pistonDropperDispenser2);
+		orientation2.put(Blocks.unpowered_repeater,pistonDropperDispenser2);
+		orientation2.put(Blocks.wooden_door,pistonDropperDispenser2);
+		orientation2.put(Blocks.iron_door,pistonDropperDispenser2);
+		orientation2.put(Blocks.tripwire_hook,pistonDropperDispenser2);
+		orientation2.put(Blocks.detector_rail,railsSpecial2);
+		orientation2.put(Blocks.activator_rail,railsSpecial2);
+		orientation2.put(Blocks.golden_rail,railsSpecial2);
+		orientation2.put(Blocks.rail,rails2);
 		
 		this.rotationMappings.put(2, orientation2);
 		this.rotationMappings.put(1, orientation1);

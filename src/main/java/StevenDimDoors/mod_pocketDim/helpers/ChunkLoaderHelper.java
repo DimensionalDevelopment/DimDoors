@@ -32,9 +32,9 @@ public class ChunkLoaderHelper implements LoadingCallback
 			int y = ticket.getModData().getInteger("goldDimDoorY");
 			int z = ticket.getModData().getInteger("goldDimDoorZ");
 
-			if (world.getBlockId(x, y, z) == mod_pocketDim.properties.GoldenDimensionalDoorID)
+			if (world.getBlock(x, y, z) == mod_pocketDim.goldenDimensionalDoor)
 			{
-				IChunkLoader loader = (IChunkLoader) world.getBlockTileEntity(x, y, z);
+				IChunkLoader loader = (IChunkLoader) world.getTileEntity(x, y, z);
 				if (!loader.isInitialized())
 				{
 					loader.initialize(ticket);

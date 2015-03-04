@@ -1,17 +1,23 @@
 package StevenDimDoors.mod_pocketDim;
 
+import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundManager;
 import net.minecraft.client.audio.SoundPoolEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent17;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -45,9 +51,12 @@ public class EventHookContainer
 	private DDWorldProperties worldProperties;
 	private RiftRegenerator regenerator;
 
+    private ISound limboMusic;
+
 	public EventHookContainer(DDProperties properties)
 	{
 		this.properties = properties;
+        this.limboMusic = PositionedSoundRecord.func_147673_a(new ResourceLocation(mod_pocketDim.modid + ":creepy"));
 	}
 	
 	public void setSessionFields(DDWorldProperties worldProperties, RiftRegenerator regenerator)
@@ -75,31 +84,20 @@ public class EventHookContainer
 
 	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
-	public void onSoundLoad(SoundLoadEvent event)
+	public void onSoundEffectResult(PlaySoundEvent17 event)
 	{
-		event.manager.addSound(mod_pocketDim.modid + ":doorLockRemoved.ogg");
-		event.manager.addSound(mod_pocketDim.modid + ":doorLocked.ogg");
-		event.manager.addSound(mod_pocketDim.modid + ":keyLock.ogg");
-		event.manager.addSound(mod_pocketDim.modid + ":keyUnlock.ogg");
-		event.manager.addSound(mod_pocketDim.modid + ":monk.ogg");
-		event.manager.addSound(mod_pocketDim.modid + ":crack.ogg");
-		event.manager.addSound(mod_pocketDim.modid + ":tearing.ogg");
-		event.manager.addSound(mod_pocketDim.modid + ":rift.ogg");
-		event.manager.addSound(mod_pocketDim.modid + ":riftStart.ogg");
-		event.manager.addSound(mod_pocketDim.modid + ":riftEnd.ogg");
-		event.manager.addSound(mod_pocketDim.modid + ":riftClose.ogg");
-		event.manager.addSound(mod_pocketDim.modid + ":riftDoor.ogg");
-		event.manager.addSound(mod_pocketDim.modid + ":creepy.ogg");
-	}
+        ResourceLocation playingSound = event.sound.getPositionedSoundLocation();
+        if (playingSound != null && playingSound.getResourceDomain().equals("minecraft") && playingSound.getResourcePath().equals("music.game")) {
+            if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID) {
+                ResourceLocation sound = new ResourceLocation(mod_pocketDim.modid + ":creepy");
 
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onSoundEffectResult(PlayBackgroundMusicEvent event)
-	{
-		if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID)
-		{
-			this.playMusicForDim(FMLClientHandler.instance().getClient().thePlayer.worldObj);
-		}
+                if (!Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(limboMusic)) {
+                    event.result = limboMusic;
+                } else {
+                    event.setResult(Event.Result.DENY);
+                }
+            }
+        }
 	}
 
 	@SubscribeEvent
@@ -147,10 +145,10 @@ public class EventHookContainer
 			PocketManager.load();
 		}
 
-		if (event.world != null)
-		{
-			this.playMusicForDim(event.world);
-		}
+        if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID &&
+                !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(limboMusic)) {
+            Minecraft.getMinecraft().getSoundHandler().playSound(limboMusic);
+        }
 	}
 
 	@SubscribeEvent
@@ -210,7 +208,7 @@ public class EventHookContainer
 
 			if (properties.LimboEnabled && !properties.LimboReturnsInventoryEnabled)
 			{
-				player.inventory.clearInventory(-1, -1);
+				player.inventory.clearInventory(null, -1);
 				revivePlayerInLimbo(player);
 				event.setCanceled(true);
 			}
@@ -269,35 +267,6 @@ public class EventHookContainer
 			for (DimLink link : dimension.getChunkLinks(chunk.xPosition, chunk.zPosition))
 			{
 				regenerator.scheduleSlowRegeneration(link);
-			}
-		}
-	}
-
-	public void playMusicForDim(World world)
-	{
-		if (world.isRemote)
-		{
-			SoundManager sndManager = FMLClientHandler.instance().getClient().sndManager;
-
-			// SenseiKiwi: I've added the following check as a quick fix for a
-			// reported crash. This needs to work without a hitch or we have to
-			// stop trying to replace the background music...
-			if (sndManager != null && sndManager.sndSystem != null)
-			{
-				if (world.provider instanceof LimboProvider)
-				{
-					sndManager.sndSystem.stop("BgMusic");
-					SoundPoolEntry soundPoolEntry = sndManager.soundPoolSounds.getRandomSoundFromSoundPool(mod_pocketDim.modid + ":creepy");
-					if (soundPoolEntry != null)
-					{
-						sndManager.sndSystem.backgroundMusic("LimboMusic", soundPoolEntry.getSoundUrl(), soundPoolEntry.getSoundName(), false);
-						sndManager.sndSystem.play("LimboMusic");
-					}
-				}
-				else if (!(world.provider instanceof LimboProvider))
-				{
-					sndManager.sndSystem.stop("LimboMusic");
-				}
 			}
 		}
 	}

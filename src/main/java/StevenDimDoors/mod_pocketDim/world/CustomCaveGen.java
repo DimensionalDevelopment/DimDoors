@@ -2,7 +2,9 @@ package StevenDimDoors.mod_pocketDim.world;
 
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.MapGenBase;
@@ -21,15 +23,15 @@ public class CustomCaveGen extends MapGenBase
     /**
      * Generates a larger initial cave node than usual. Called 25% of the time.
      */
-    protected void generateLargeCaveNode(long par1, int par3, int par4, byte[] par5ArrayOfByte, double par6, double par8, double par10)
+    protected void generateLargeCaveNode(long par1, int par3, int par4, Block[] blocks, double par6, double par8, double par10)
     {
-        this.generateCaveNode(par1, par3, par4, par5ArrayOfByte, par6, par8, par10, 1.0F + this.rand.nextFloat() * 6.0F, 0.0F, 0.0F, -1, -1, 0.5D);
+        this.generateCaveNode(par1, par3, par4, blocks, par6, par8, par10, 1.0F + this.rand.nextFloat() * 6.0F, 0.0F, 0.0F, -1, -1, 0.5D);
     }
 
     /**
      * Generates a node in the current cave system recursion tree.
      */
-    protected void generateCaveNode(long par1, int par3, int par4, byte[] par5ArrayOfByte, double par6, double par8, double par10, float par12, float par13, float par14, int par15, int par16, double par17)
+    protected void generateCaveNode(long par1, int par3, int par4, Block[] blocks, double par6, double par8, double par10, float par12, float par13, float par14, int par15, int par16, double par17)
     {
         double var19 = par3 * 16 + 8;
         double var21 = par4 * 16 + 8;
@@ -81,8 +83,8 @@ public class CustomCaveGen extends MapGenBase
 
             if (!var54 && par15 == var27 && par12 > 1.0F && par16 > 0)
             {
-                this.generateCaveNode(var25.nextLong(), par3, par4, par5ArrayOfByte, par6, par8, par10, var25.nextFloat() * 0.5F + 0.5F, par13 - ((float)Math.PI / 2F), par14 / 3.0F, par15, par16, 1.0D);
-                this.generateCaveNode(var25.nextLong(), par3, par4, par5ArrayOfByte, par6, par8, par10, var25.nextFloat() * 0.5F + 0.5F, par13 + ((float)Math.PI / 2F), par14 / 3.0F, par15, par16, 1.0D);
+                this.generateCaveNode(var25.nextLong(), par3, par4, blocks, par6, par8, par10, var25.nextFloat() * 0.5F + 0.5F, par13 - ((float)Math.PI / 2F), par14 / 3.0F, par15, par16, 1.0D);
+                this.generateCaveNode(var25.nextLong(), par3, par4, blocks, par6, par8, par10, var25.nextFloat() * 0.5F + 0.5F, par13 + ((float)Math.PI / 2F), par14 / 3.0F, par15, par16, 1.0D);
                 return;
             }
 
@@ -151,7 +153,7 @@ public class CustomCaveGen extends MapGenBase
 
                                 if (var44 >= 0 && var44 < 128)
                                 {
-                                    if (par5ArrayOfByte[var45] == Block.waterMoving.blockID || par5ArrayOfByte[var45] == Block.waterStill.blockID)
+                                    if (blocks[var45] == Blocks.flowing_water || blocks[var45] == Blocks.water)
                                     {
                                         var58 = true;
                                     }
@@ -185,26 +187,26 @@ public class CustomCaveGen extends MapGenBase
 
                                         if (var51 > -0.7D && var59 * var59 + var51 * var51 + var46 * var46 < 1.0D)
                                         {
-                                            byte var53 = par5ArrayOfByte[var48];
+                                            Block var53 = blocks[var48];
 
-                                            if (var53 == Block.grass.blockID)
+                                            if (var53 == Blocks.grass)
                                             {
                                                 var49 = true;
                                             }
 
-                                            if (var53 == properties.LimboBlockID || var53 == Block.dirt.blockID || var53 == Block.grass.blockID)
+                                            if (var53 == mod_pocketDim.blockLimbo || var53 == Blocks.dirt || var53 == Blocks.grass)
                                             {
                                                 if (var50 < 10)
                                                 {
-                                                    par5ArrayOfByte[var48] = (byte)Block.lavaMoving.blockID;
+                                                    blocks[var48] = Blocks.flowing_lava;
                                                 }
                                                 else
                                                 {
-                                                    par5ArrayOfByte[var48] = 0;
+                                                    blocks[var48] = Blocks.air;
 
-                                                    if (var49 && par5ArrayOfByte[var48 - 1] == Block.dirt.blockID)
+                                                    if (var49 && blocks[var48 - 1] == Blocks.dirt)
                                                     {
-                                                        par5ArrayOfByte[var48 - 1] = this.worldObj.getBiomeGenForCoords(var42 + par3 * 16, var45 + par4 * 16).topBlock;
+                                                        blocks[var48 - 1] = this.worldObj.getBiomeGenForCoords(var42 + par3 * 16, var45 + par4 * 16).topBlock;
                                                     }
                                                 }
                                             }
@@ -230,7 +232,7 @@ public class CustomCaveGen extends MapGenBase
      * Recursively called by generate() (generate) and optionally by itself.
      */
     @Override
-	protected void recursiveGenerate(World par1World, int par2, int par3, int par4, int par5, byte[] par6ArrayOfByte)
+	protected void func_151538_a(World par1World, int par2, int par3, int par4, int par5, Block[] blocks)
     {
         int var7 = this.rand.nextInt(this.rand.nextInt(this.rand.nextInt(40) + 1) + 1);
 
@@ -248,7 +250,7 @@ public class CustomCaveGen extends MapGenBase
 
             if (this.rand.nextInt(4) == 0)
             {
-                this.generateLargeCaveNode(this.rand.nextLong(), par4, par5, par6ArrayOfByte, var9, var11, var13);
+                this.generateLargeCaveNode(this.rand.nextLong(), par4, par5, blocks, var9, var11, var13);
                 var15 += this.rand.nextInt(4);
             }
 
@@ -263,7 +265,7 @@ public class CustomCaveGen extends MapGenBase
                     var19 *= this.rand.nextFloat() * this.rand.nextFloat() * 3.0F + 1.0F;
                 }
 
-                this.generateCaveNode(this.rand.nextLong(), par4, par5, par6ArrayOfByte, var9, var11, var13, var19, var17, var18, 0, 0, 1.0D);
+                this.generateCaveNode(this.rand.nextLong(), par4, par5, blocks, var9, var11, var13, var19, var17, var18, 0, 0, 1.0D);
             }
         }
     }

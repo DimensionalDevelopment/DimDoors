@@ -71,7 +71,7 @@ public class CommandDeleteRifts extends DDCommandBase
 			x = location.getX();
 			y = location.getY();
 			z = location.getZ();
-			if (world.getBlockId(x, y, z) == mod_pocketDim.blockRift.blockID)
+			if (world.getBlock(x, y, z) == mod_pocketDim.blockRift)
 			{
 				// Remove the rift and its link
 				world.setBlockToAir(x, y, z);
