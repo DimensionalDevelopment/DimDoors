@@ -41,7 +41,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
     {
         GL11.glDisable(GL11.GL_LIGHTING);
         Random random = new Random(31100L);
-        int metadata = tile.worldObj.getBlockMetadata(tile.xCoord, tile.yCoord, tile.zCoord);
+        int metadata = tile.getWorldObj().getBlockMetadata(tile.xCoord, tile.yCoord, tile.zCoord);
         	
         for (int count = 0; count < 16; ++count)
         {
@@ -112,7 +112,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
             GL11.glColor4d(var21 * var17, var22 * var17, var23 * var17, 1.0F);
             if (TransTrapdoor.isTrapdoorSetLow(metadata))
             {
-            	if (BlockTrapDoor.isTrapdoorOpen(metadata))
+            	if (BlockTrapDoor.func_150118_d(metadata))
             	{
             		GL11.glVertex3d(x, y+0.2, z);
                 	GL11.glVertex3d(x, y+0.2,  z+1);
@@ -129,7 +129,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
             }
             else
             {
-            	if (BlockTrapDoor.isTrapdoorOpen(metadata))
+            	if (BlockTrapDoor.func_150118_d(metadata))
             	{
             		GL11.glVertex3d(x, y+0.95, z);
                 	GL11.glVertex3d(x, y+0.95,  z+1);

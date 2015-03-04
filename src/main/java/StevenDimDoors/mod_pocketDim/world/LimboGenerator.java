@@ -3,7 +3,11 @@ package StevenDimDoors.mod_pocketDim.world;
 import java.util.List;
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.ChunkPosition;
@@ -13,9 +17,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
-import net.minecraft.world.gen.feature.MapGenScatteredFeature;
+import net.minecraft.world.gen.structure.MapGenScatteredFeature;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.terraingen.ChunkProviderEvent;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
@@ -119,7 +122,7 @@ public class LimboGenerator extends ChunkProviderGenerate
 	}
 	
 	@Override
-	public void replaceBlocksForBiome(int par1, int par2, byte[] par3ArrayOfByte, BiomeGenBase[] par4ArrayOfBiomeGenBase)
+	public void replaceBlocksForBiome(int par1, int par2, Block[] blocks, byte[] par3ArrayOfByte, BiomeGenBase[] par4ArrayOfBiomeGenBase)
 	{
 
 	}
@@ -129,8 +132,8 @@ public class LimboGenerator extends ChunkProviderGenerate
 	{
 		//TODO: Wtf? Why do you reinitialize the seed when we already initialized it in the constructor?! ~SenseiKiwi
 		LimboGenerator.rand.setSeed(chunkX * 341873128712L + chunkZ * 132897987541L);
-		byte[] var3 = new byte[32768];
-		this.generateTerrain(chunkX, chunkZ, var3);
+		Block[] var3 = new Block[32768];
+		this.func_147424_a(chunkX, chunkZ, var3);
 		Chunk var4 = new Chunk(this.worldObj, var3, chunkX, chunkZ);
 		var4.generateSkylightMap();
 		
@@ -163,7 +166,7 @@ public class LimboGenerator extends ChunkProviderGenerate
 	{
 		ChunkProviderEvent.InitNoiseField event = new ChunkProviderEvent.InitNoiseField(this, par1ArrayOfDouble, par2, par3, par4, par5, par6, par7);
 		MinecraftForge.EVENT_BUS.post(event);
-		if (event.getResult() == Result.DENY) return event.noisefield;
+		if (event.getResult() == Event.Result.DENY) return event.noisefield;
 
 		if (par1ArrayOfDouble == null)
 		{
@@ -208,13 +211,13 @@ public class LimboGenerator extends ChunkProviderGenerate
 				{
 					for (int var22 = -var19; var22 <= var19; ++var22)
 					{
-						float var24 = this.parabolicField[var21 + 2 + (var22 + 2) * 5] / (BiomeGenBase.plains.minHeight + 9.0F);
+						float var24 = this.parabolicField[var21 + 2 + (var22 + 2) * 5] / (BiomeGenBase.plains.rootHeight + 9.0F);
 
 
 						//this adjusts the height of the terrain
 
-						var16 += BiomeGenBase.plains.maxHeight * var24+4;
-						var17 += BiomeGenBase.plains.minHeight * var24-1;
+						var16 += BiomeGenBase.plains.heightVariation * var24+4;
+						var17 += BiomeGenBase.plains.rootHeight * var24-1;
 						var18 += var24;
 					}
 				}
@@ -305,7 +308,7 @@ public class LimboGenerator extends ChunkProviderGenerate
 		return par1ArrayOfDouble;
 	}
 	@Override
-	public void generateTerrain(int par1, int par2, byte[] par3ArrayOfByte)
+	public void func_147424_a(int par1, int par2, Block[] blocks)
 	{
 		byte var4 = 4;
 		byte var5 = 16;
@@ -353,16 +356,16 @@ public class LimboGenerator extends ChunkProviderGenerate
 							{
 								if ((var47 += var49) > 0.0D)
 								{
-									par3ArrayOfByte[var43 += var44] = (byte)properties.LimboBlockID;
+									blocks[var43 += var44] = mod_pocketDim.blockLimbo;
 								}
 								else if (var12 * 8 + var31 < var6)
 								{
-									par3ArrayOfByte[var43 += var44] = (byte)properties.PermaFabricBlockID;
+									blocks[var43 += var44] = mod_pocketDim.blockDimWallPerm;
 								}
 
 								else
 								{
-									par3ArrayOfByte[var43 += var44] = 0;
+									blocks[var43 += var44] = Blocks.air;
 								}
 							}
 
@@ -402,7 +405,7 @@ public class LimboGenerator extends ChunkProviderGenerate
 	}
 
 	@Override
-	public ChunkPosition findClosestStructure(World var1, String var2,
+	public ChunkPosition func_147416_a(World var1, String var2,
 			int var3, int var4, int var5) {
 		// TODO Auto-generated method stub
 		return null;

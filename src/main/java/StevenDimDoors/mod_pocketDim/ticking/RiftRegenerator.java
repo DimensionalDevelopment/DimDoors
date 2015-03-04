@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.ticking;
 import java.util.PriorityQueue;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -112,9 +113,9 @@ public class RiftRegenerator implements IRegularTickReceiver {
 		else
 		{
 			// All of the necessary conditions have been met. Restore the rift!
-			int blockID = world.getBlockId(x, y, z);
-			if (world.setBlock(x, y, z, blockRift.blockID))
-				blockRift.dropWorldThread(blockID, world, x, y, z, random);
+			Block block = world.getBlock(x, y, z);
+			if (world.setBlock(x, y, z, blockRift))
+				blockRift.dropWorldThread(block, world, x, y, z, random);
 		}
 	}
 	

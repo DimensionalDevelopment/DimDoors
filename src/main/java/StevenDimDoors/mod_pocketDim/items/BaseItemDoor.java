@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -30,14 +30,13 @@ public abstract class BaseItemDoor extends ItemDoor
 	private static DDProperties properties = null;
 
 	/**
-	 * door represents the non-dimensional door this item is associated with. Leave null for none. 
-	 * @param itemID
+	 * door represents the non-dimensional door this item is associated with. Leave null for none.
 	 * @param material
-	 * @param door
+	 * @param vanillaDoor
 	 */
-	public BaseItemDoor(int itemID, Material material, ItemDoor vanillaDoor)
+	public BaseItemDoor(Material material, ItemDoor vanillaDoor)
 	{
-		super(itemID, material);
+		super( material);
 		this.setMaxStackSize(64);
 		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 		if (properties == null)
@@ -51,7 +50,7 @@ public abstract class BaseItemDoor extends ItemDoor
 	}
 
 	@Override
-	public void registerIcons(IconRegister par1IconRegister)
+	public void registerIcons(IIconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
 	}
@@ -134,10 +133,10 @@ public abstract class BaseItemDoor extends ItemDoor
 		// side
 		if (side == 1 && !world.isRemote)
 		{
-			int blockID = world.getBlockId(x, y, z);
-			if (blockID != 0)
+			Block block = world.getBlock(x, y, z);
+			if (!block.isAir(world, x, y, z))
 			{
-				if (!Block.blocksList[blockID].isBlockReplaceable(world, x, y, z))
+				if (!block.isReplaceable(world, x, y, z))
 				{
 					y++;
 				}
@@ -179,7 +178,7 @@ public abstract class BaseItemDoor extends ItemDoor
 		MovingObjectPosition hit = BaseItemDoor.doRayTrace(player.worldObj, player, true);
 		if (hit != null)
 		{
-			if (world.getBlockId(hit.blockX, hit.blockY, hit.blockZ) == properties.RiftBlockID)
+			if (world.getBlock(hit.blockX, hit.blockY, hit.blockZ) == mod_pocketDim.blockRift)
 			{
 				DimLink link = PocketManager.getLink(hit.blockX, hit.blockY, hit.blockZ, world.provider.dimensionId);
 				if (link != null)
@@ -196,7 +195,7 @@ public abstract class BaseItemDoor extends ItemDoor
 							placeDoorBlock(world, x, y - 1, z, orientation, doorBlock);
 							if (!(stack.getItem() instanceof BaseItemDoor))
 							{
-								((TileEntityDimDoor) world.getBlockTileEntity(x, y, z)).hasGennedPair = true;
+								((TileEntityDimDoor) world.getTileEntity(x, y, z)).hasGennedPair = true;
 							}
 							if (!player.capabilities.isCreativeMode)
 							{
@@ -213,9 +212,9 @@ public abstract class BaseItemDoor extends ItemDoor
 
 	public static boolean canPlace(World world, int x, int y, int z)
 	{
-		int id = world.getBlockId(x, y, z);
+		Block block = world.getBlock(x, y, z);
 
-		return (id == properties.RiftBlockID || id == 0 || Block.blocksList[id].blockMaterial.isReplaceable());
+		return (block == mod_pocketDim.blockRift || block.isAir(world, x, y, z) || block.getMaterial().isReplaceable());
 	}
 
 	/**
@@ -236,7 +235,7 @@ public abstract class BaseItemDoor extends ItemDoor
 		double d1 = par2EntityPlayer.prevPosY + (par2EntityPlayer.posY - par2EntityPlayer.prevPosY) * (double) f
 				+ (double) (par1World.isRemote ? par2EntityPlayer.getEyeHeight() - par2EntityPlayer.getDefaultEyeHeight() : par2EntityPlayer.getEyeHeight()); 
 		double d2 = par2EntityPlayer.prevPosZ + (par2EntityPlayer.posZ - par2EntityPlayer.prevPosZ) * (double) f;
-		Vec3 vec3 = par1World.getWorldVec3Pool().getVecFromPool(d0, d1, d2);
+		Vec3 vec3 = Vec3.createVectorHelper (d0, d1, d2);
 		float f3 = MathHelper.cos(-f2 * 0.017453292F - (float) Math.PI);
 		float f4 = MathHelper.sin(-f2 * 0.017453292F - (float) Math.PI);
 		float f5 = -MathHelper.cos(-f1 * 0.017453292F);
@@ -249,6 +248,6 @@ public abstract class BaseItemDoor extends ItemDoor
 			d3 = ((EntityPlayerMP) par2EntityPlayer).theItemInWorldManager.getBlockReachDistance();
 		}
 		Vec3 vec31 = vec3.addVector((double) f7 * d3, (double) f6 * d3, (double) f8 * d3);
-		return par1World.rayTraceBlocks_do_do(vec3, vec31, par3, !par3);
+		return par1World.rayTraceBlocks(vec3, vec31, par3);
 	}
 }

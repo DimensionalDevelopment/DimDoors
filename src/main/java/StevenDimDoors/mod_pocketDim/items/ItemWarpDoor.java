@@ -12,9 +12,9 @@ import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
 
 public class ItemWarpDoor extends BaseItemDoor
 {
-	public ItemWarpDoor(int itemID, Material material, ItemDoor door)
+	public ItemWarpDoor(Material material, ItemDoor door)
 	{
-		super(itemID, material, door);
+		super(material, door);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

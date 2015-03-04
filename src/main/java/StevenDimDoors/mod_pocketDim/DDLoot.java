@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -46,34 +47,34 @@ public class DDLoot {
 		
 		ArrayList<WeightedRandomChestContent> items = new ArrayList<WeightedRandomChestContent>();
 		
-		addContent(true, items, Item.ingotIron.itemID, 160, 1, 3);
-		addContent(true, items, Item.coal.itemID, 120, 1, 3);
-		addContent(true, items, Item.netherQuartz.itemID, 120, 1, 3);
-		addContent(true, items, Item.enchantedBook.itemID, 100);
-		addContent(true, items, Item.ingotGold.itemID, 80, 1, 3);
-		addContent(true, items, Item.diamond.itemID, 40, 1, 2);
-		addContent(true, items, Item.emerald.itemID, 20, 1, 2);
-		addContent(true, items, Item.appleGold.itemID, 10);
+		addContent(true, items, Items.iron_ingot, 160, 1, 3);
+		addContent(true, items, Items.coal, 120, 1, 3);
+		addContent(true, items, Items.quartz, 120, 1, 3);
+		addContent(true, items, Items.book, 100);
+		addContent(true, items, Items.gold_ingot, 80, 1, 3);
+		addContent(true, items, Items.diamond, 40, 1, 2);
+		addContent(true, items, Items.emerald, 20, 1, 2);
+		addContent(true, items, Items.golden_apple, 10);
 
-		addContent(properties.FabricOfRealityLootEnabled, items, mod_pocketDim.blockDimWall.blockID, 20, 16, 64);
-		addContent(properties.WorldThreadLootEnabled, items, mod_pocketDim.itemWorldThread.itemID, 80, 2, 12);
+		addContent(properties.FabricOfRealityLootEnabled, items, Item.getItemFromBlock(mod_pocketDim.blockDimWall), 20, 16, 64);
+		addContent(properties.WorldThreadLootEnabled, items, mod_pocketDim.itemWorldThread, 80, 2, 12);
 
 		// Add all the items to our dungeon chest
 		addItemsToContainer(DungeonChestInfo, items);
 	}
 		
 	private static void addContent(boolean include, ArrayList<WeightedRandomChestContent> items,
-			int itemID, int weight)
+			Item item, int weight)
 	{
 		if (include)
-			items.add(new WeightedRandomChestContent(itemID, 0, 1, 1, weight));
+			items.add(new WeightedRandomChestContent(item, 0, 1, 1, weight));
 	}
 	
 	private static void addContent(boolean include, ArrayList<WeightedRandomChestContent> items,
-			int itemID, int weight, int minAmount, int maxAmount)
+			Item item, int weight, int minAmount, int maxAmount)
 	{
 		if (include)
-			items.add(new WeightedRandomChestContent(itemID, 0, minAmount, maxAmount, weight));
+			items.add(new WeightedRandomChestContent(item, 0, minAmount, maxAmount, weight));
 	}
 	
 	private static void addItemsToContainer(ChestGenHooks container, ArrayList<WeightedRandomChestContent> items)
@@ -156,25 +157,25 @@ public class DDLoot {
 		count = MathHelper.getRandomIntegerInRange(random, 2, 5);
 		for (k = 0; k < count; k++)
 		{
-			stacks.add( new ItemStack(Item.bone, 1) );
+			stacks.add( new ItemStack(Items.bone, 1) );
 		}
 		count = MathHelper.getRandomIntegerInRange(random, 2, 4);
 		for (k = 0; k < count; k++)
 		{
-			stacks.add( new ItemStack(Item.rottenFlesh, 1) );
+			stacks.add( new ItemStack(Items.rotten_flesh, 1) );
 		}
 		
 		// Insert tools
 		// 30% chance of adding a pickaxe
 		if (random.nextInt(100) < 30)
 		{
-			addModifiedTool(Item.pickaxeIron, stacks, random);
+			addModifiedTool(Items.iron_pickaxe, stacks, random);
 		}
 		// 30% chance of adding a bow and some arrows
 		if (random.nextInt(100) < 30)
 		{
 			addModifiedBow(stacks, random);
-			stacks.add( new ItemStack(Item.arrow, MathHelper.getRandomIntegerInRange(random, 8, 32)) );
+			stacks.add( new ItemStack(Items.arrow, MathHelper.getRandomIntegerInRange(random, 8, 32)) );
 		}
 		// 10% chance of adding a Rift Blade (no enchants)
 		if (properties.RiftBladeLootEnabled && random.nextInt(100) < 10)
@@ -184,25 +185,25 @@ public class DDLoot {
 		else
 		{
 			// 20% of adding an iron sword, 10% of adding a stone sword
-			addModifiedSword( getRandomItem(Item.swordIron, Item.swordStone, null, 20, 10, random) , stacks, random);
+			addModifiedSword( getRandomItem(Items.iron_sword, Items.stone_sword, null, 20, 10, random) , stacks, random);
 		}
 		
 		// Insert equipment
 		// For each piece, 25% of an iron piece, 10% of a chainmail piece
-		addModifiedEquipment( getRandomItem(Item.helmetIron, Item.helmetChain, null, 25, 10, random) , stacks, random);
-		addModifiedEquipment( getRandomItem(Item.plateIron, Item.plateChain, null, 25, 10, random) , stacks, random);
-		addModifiedEquipment( getRandomItem(Item.legsIron, Item.legsChain, null, 25, 10, random) , stacks, random);
-		addModifiedEquipment( getRandomItem(Item.bootsIron, Item.bootsChain, null, 25, 10, random) , stacks, random);
+		addModifiedEquipment( getRandomItem(Items.iron_helmet, Items.chainmail_helmet, null, 25, 10, random) , stacks, random);
+		addModifiedEquipment( getRandomItem(Items.iron_chestplate, Items.chainmail_chestplate, null, 25, 10, random) , stacks, random);
+		addModifiedEquipment( getRandomItem(Items.iron_leggings, Items.chainmail_leggings, null, 25, 10, random) , stacks, random);
+		addModifiedEquipment( getRandomItem(Items.iron_boots, Items.iron_boots, null, 25, 10, random) , stacks, random);
 		
 		// Insert other random stuff
 		// 40% chance for a name tag, 35% chance for a glass bottle
 		// 30% chance for an ender pearl, 5% chance for record 11
 		// 30% chance for a ghast tear
-		addItemWithChance(stacks, random, 40, Item.nameTag, 1);
-		addItemWithChance(stacks, random, 35, Item.glassBottle, 1);
-		addItemWithChance(stacks, random, 30, Item.enderPearl, 1);
-		addItemWithChance(stacks, random, 30, Item.ghastTear, 1);
-		addItemWithChance(stacks, random, 5, Item.record11, 1);
+		addItemWithChance(stacks, random, 40, Items.name_tag, 1);
+		addItemWithChance(stacks, random, 35, Items.glass_bottle, 1);
+		addItemWithChance(stacks, random, 30, Items.ender_pearl, 1);
+		addItemWithChance(stacks, random, 30, Items.ghast_tear, 1);
+		addItemWithChance(stacks, random, 5, Items.record_11, 1);
 		
 		// Finally, there is a 5% chance of adding a player head
 		if (random.nextInt(100) < 5)
@@ -239,7 +240,7 @@ public class DDLoot {
 	
 	private static void addModifiedBow(ArrayList<ItemStack> stacks, Random random)
 	{
-		stacks.add( getModifiedItem(Item.bow, random, new Enchantment[] { Enchantment.flame, Enchantment.power, Enchantment.punch }) );
+		stacks.add( getModifiedItem(Items.bow, random, new Enchantment[] { Enchantment.flame, Enchantment.power, Enchantment.punch }) );
 	}
 	
 	private static ItemStack getModifiedItem(Item item, Random random, Enchantment[] enchantments)
@@ -289,7 +290,7 @@ public class DDLoot {
 		{
 			skullOwner = deathTracker.getRandomUsername(random);
 		}
-		ItemStack skull = new ItemStack(Item.skull, 1, PLAYER_SKULL_METADATA);
+		ItemStack skull = new ItemStack(Items.skull, 1, PLAYER_SKULL_METADATA);
 		skull.stackTagCompound = new NBTTagCompound();
 		skull.stackTagCompound.setString("SkullOwner", skullOwner);
 		stacks.add(skull);

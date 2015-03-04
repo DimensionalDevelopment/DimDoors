@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.world;
 
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -50,7 +51,7 @@ public class LimboProvider extends WorldProvider
 	@Override
 	protected void registerWorldChunkManager()
 	{
-		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.limboBiome,1,1);
+		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.limboBiome,1);
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class LimboProvider extends WorldProvider
 
 
 	@Override
-	public boolean canSnowAt(int x, int y, int z)
+	public boolean canSnowAt(int x, int y, int z, boolean checkLight)
 	{
 		return false;
 	}
@@ -136,8 +137,8 @@ public class LimboProvider extends WorldProvider
 	@Override
 	public boolean canCoordinateBeSpawn(int par1, int par2)
 	{
-		int var3 = this.worldObj.getFirstUncoveredBlock(par1, par2);
-		return var3 == properties.LimboBlockID;
+		Block block = this.worldObj.getTopBlock(par1, par2);
+		return block == mod_pocketDim.blockLimbo;
 	}
 	@Override
 	public double getHorizon()
@@ -148,14 +149,14 @@ public class LimboProvider extends WorldProvider
 	public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
 	{
 		setCloudRenderer( new CloudRenderBlank());
-		return this.worldObj.getWorldVec3Pool().getVecFromPool(0, 0, 0);
+		return Vec3.createVectorHelper(0, 0, 0);
 
 	}
 	@SideOnly(Side.CLIENT)
 	@Override
 	public Vec3 getFogColor(float par1, float par2)
 	{
-		return this.worldObj.getWorldVec3Pool().getVecFromPool(.2, .2, .2);
+		return Vec3.createVectorHelper(.2, .2, .2);
 
 	}
 	@Override

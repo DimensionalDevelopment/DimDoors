@@ -6,14 +6,14 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -25,11 +25,11 @@ public class BlockDimWall extends Block
 {
 	private static final float SUPER_HIGH_HARDNESS = 10000000000000F;
 	private static final float SUPER_EXPLOSION_RESISTANCE = 18000000F;
-	private Icon[] blockIcon = new Icon[3];
+	private IIcon[] blockIcon = new IIcon[3];
 	
-	public BlockDimWall(int blockID, int j, Material par2Material) 
+	public BlockDimWall(int j, Material par2Material)
 	{
-		super(blockID, par2Material);
+		super(par2Material);
 		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);      
 	}
 	
@@ -65,7 +65,7 @@ public class BlockDimWall extends Block
     }
 	
 	@Override
-	public void registerIcons(IconRegister par1IconRegister)
+	public void registerBlockIcons(IIconRegister par1IconRegister)
     {
         this.blockIcon[0] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
         this.blockIcon[1] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "Perm");
@@ -74,7 +74,7 @@ public class BlockDimWall extends Block
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public Icon getIcon(int par1, int par2)
+	public IIcon getIcon(int par1, int par2)
 	{
 		switch(par2)
 		{
@@ -99,7 +99,7 @@ public class BlockDimWall extends Block
 	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(int unknown, CreativeTabs tab, List subItems) 
+	public void getSubBlocks(Item unknown, CreativeTabs tab, List subItems)
 	{
 		for (int ix = 0; ix < 3; ix++) 
 		{
@@ -138,10 +138,10 @@ public class BlockDimWall extends Block
         		// SenseiKiwi: Using getBlockID() rather than the raw itemID is critical.
         		// Some mods may override that function and use item IDs outside the range
         		// of the block list.
-        		
-        		int blockID = ((ItemBlock) playerEquip).getBlockID();
-        		Block block = Block.blocksList[blockID];
-        		if (!Block.isNormalCube(blockID) || block instanceof BlockContainer || blockID == this.blockID)
+
+                ItemBlock playerEquipItemBlock = (ItemBlock)playerEquip;
+        		Block block = playerEquipItemBlock.field_150939_a;
+        		if (!block.isNormalCube(world, x, y, z) || block instanceof BlockContainer || block == this)
         		{
         			return false;
         		}
@@ -151,7 +151,7 @@ public class BlockDimWall extends Block
             		{
             			entityPlayer.getCurrentEquippedItem().stackSize--;
             		}
-            		world.setBlock(x, y, z, entityPlayer.getCurrentEquippedItem().itemID, entityPlayer.getCurrentEquippedItem().getItemDamage(), 0);
+            		world.setBlock(x, y, z, block, playerEquipItemBlock.getMetadata(entityPlayer.getCurrentEquippedItem().getItemDamage()), 0);
         		}
         		return true;
         	}

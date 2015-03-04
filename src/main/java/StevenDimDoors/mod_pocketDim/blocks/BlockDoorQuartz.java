@@ -6,12 +6,13 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.Item;
 
 public class BlockDoorQuartz extends BlockDoor
 {
-	public BlockDoorQuartz(int par1, Material par2Material)
+	public BlockDoorQuartz(Material par2Material)
 	{
-		super(par1, par2Material);
+		super(par2Material);
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -21,8 +22,8 @@ public class BlockDoorQuartz extends BlockDoor
     }
 	
 	@Override
-	public int idDropped(int par1, Random par2Random, int par3)
+	public Item getItemDropped(int par1, Random par2Random, int par3)
     {
-        return (par1 & 8) != 0 ? 0 : mod_pocketDim.itemGoldenDoor.itemID;
+        return (par1 & 8) != 0 ? null : mod_pocketDim.itemGoldenDoor;
     }
 }

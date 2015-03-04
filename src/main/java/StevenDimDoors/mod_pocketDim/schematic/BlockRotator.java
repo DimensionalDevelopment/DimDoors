@@ -1,12 +1,12 @@
 package StevenDimDoors.mod_pocketDim.schematic;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockComparator;
-import net.minecraft.block.BlockDoor;
-import net.minecraft.block.BlockRedstoneRepeater;
-import net.minecraft.block.BlockStairs;
+import net.minecraft.block.*;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import net.minecraft.init.Blocks;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class BlockRotator
 {
@@ -17,65 +17,65 @@ public class BlockRotator
 	private final static int BLOCK_ID_COUNT = 4096;
 	
 	//Provides a fast lookup table for whether blocks have orientations
-	private final static boolean[] hasOrientations = new boolean[BLOCK_ID_COUNT];
+	private final static Map<Block, Boolean> hasOrientations = new HashMap<Block, Boolean>();
 	
-	static
+	public static void setupOrientations()
 	{
-		hasOrientations[Block.dispenser.blockID] = true;
-		hasOrientations[Block.dropper.blockID] = true;
-		hasOrientations[Block.stairsStoneBrick.blockID] = true;
-		hasOrientations[Block.lever.blockID] = true;
-		hasOrientations[Block.stoneButton.blockID] = true;
-		hasOrientations[Block.woodenButton.blockID] = true;
-		hasOrientations[Block.redstoneRepeaterIdle.blockID] = true;
-		hasOrientations[Block.redstoneRepeaterActive.blockID] = true;
-		hasOrientations[Block.tripWireSource.blockID] = true;
-		hasOrientations[Block.torchWood.blockID] = true;
-		hasOrientations[Block.torchRedstoneIdle.blockID] = true;
-		hasOrientations[Block.torchRedstoneActive.blockID] = true;
-		hasOrientations[Block.doorIron.blockID] = true;
-		hasOrientations[Block.doorWood.blockID] = true;
-		hasOrientations[Block.pistonBase.blockID] = true;
-		hasOrientations[Block.pistonStickyBase.blockID] = true;
-		hasOrientations[Block.pistonExtension.blockID] = true;
-		hasOrientations[Block.redstoneComparatorIdle.blockID] = true;
-		hasOrientations[Block.redstoneComparatorActive.blockID] = true;
-		hasOrientations[Block.signPost.blockID] = true;
-		hasOrientations[Block.signWall.blockID] = true;
-		hasOrientations[Block.skull.blockID] = true;
-		hasOrientations[Block.ladder.blockID] = true;
-		hasOrientations[Block.vine.blockID] = true;
-		hasOrientations[Block.anvil.blockID] = true;
-		hasOrientations[Block.chest.blockID] = true;
-		hasOrientations[Block.chestTrapped.blockID] = true;
-		hasOrientations[Block.hopperBlock.blockID] = true;
-		hasOrientations[Block.stairsNetherBrick.blockID] = true;
-		hasOrientations[Block.stairsCobblestone.blockID] = true;
-		hasOrientations[Block.stairsNetherQuartz.blockID] = true;
-		hasOrientations[Block.stairsSandStone.blockID] = true;
-		hasOrientations[Block.stairsBrick.blockID] = true;
-		hasOrientations[Block.stairsWoodBirch.blockID] = true;
-		hasOrientations[Block.stairsWoodOak.blockID] = true;
-		hasOrientations[Block.stairsWoodJungle.blockID] = true;
-		hasOrientations[Block.stairsWoodSpruce.blockID] = true;
-		hasOrientations[Block.wood.blockID] = true;
-		hasOrientations[Block.blockNetherQuartz.blockID] = true;
-		hasOrientations[Block.railPowered.blockID] = true;
-		hasOrientations[Block.railDetector.blockID] = true;
-		hasOrientations[Block.railActivator.blockID] = true;
-		hasOrientations[Block.rail.blockID] = true;
-		hasOrientations[Block.furnaceBurning.blockID] = true;
-		hasOrientations[Block.furnaceIdle.blockID] = true;
-		hasOrientations[Block.bed.blockID] = true;
+		hasOrientations.put(Blocks.dispenser, true);
+        hasOrientations.put(Blocks.dropper, true);
+        hasOrientations.put(Blocks.stone_brick_stairs, true);
+		hasOrientations.put(Blocks.lever, true);
+		hasOrientations.put(Blocks.stone_button, true);
+        hasOrientations.put(Blocks.wooden_button, true);
+		hasOrientations.put(Blocks.unpowered_repeater, true);
+        hasOrientations.put(Blocks.powered_repeater, true);
+        hasOrientations.put(Blocks.tripwire_hook, true);
+        hasOrientations.put(Blocks.torch, true);
+        hasOrientations.put(Blocks.redstone_torch, true);
+        hasOrientations.put(Blocks.unlit_redstone_torch, true);
+		hasOrientations.put(Blocks.iron_door, true);
+        hasOrientations.put(Blocks.wooden_door, true);
+        hasOrientations.put(Blocks.piston, true);
+        hasOrientations.put(Blocks.sticky_piston, true);
+        hasOrientations.put(Blocks.piston_head, true);
+		hasOrientations.put(Blocks.powered_comparator, true);
+        hasOrientations.put(Blocks.unpowered_comparator, true);
+        hasOrientations.put(Blocks.standing_sign, true);
+        hasOrientations.put(Blocks.wall_sign, true);
+		hasOrientations.put(Blocks.skull, true);
+        hasOrientations.put(Blocks.ladder, true);
+        hasOrientations.put(Blocks.vine, true);
+        hasOrientations.put(Blocks.anvil, true);
+        hasOrientations.put(Blocks.chest, true);
+        hasOrientations.put(Blocks.trapped_chest, true);
+        hasOrientations.put(Blocks.hopper, true);
+		hasOrientations.put(Blocks.nether_brick_stairs, true);
+        hasOrientations.put(Blocks.stone_stairs, true);
+        hasOrientations.put(Blocks.quartz_stairs, true);
+        hasOrientations.put(Blocks.sandstone_stairs, true);
+        hasOrientations.put(Blocks.brick_stairs, true);
+        hasOrientations.put(Blocks.birch_stairs, true);
+        hasOrientations.put(Blocks.oak_stairs, true);
+        hasOrientations.put(Blocks.jungle_stairs, true);
+        hasOrientations.put(Blocks.spruce_stairs, true);
+        hasOrientations.put(Blocks.log, true);
+        hasOrientations.put(Blocks.log2, true);
+		hasOrientations.put(Blocks.quartz_block, true);
+        hasOrientations.put(Blocks.rail, true);
+        hasOrientations.put(Blocks.activator_rail, true);
+        hasOrientations.put(Blocks.detector_rail, true);
+        hasOrientations.put(Blocks.golden_rail, true);
+        hasOrientations.put(Blocks.furnace, true);
+        hasOrientations.put(Blocks.lit_furnace, true);
+        hasOrientations.put(Blocks.bed, true);
 
-		hasOrientations[mod_pocketDim.dimensionalDoor.blockID] = true;
-		hasOrientations[mod_pocketDim.warpDoor.blockID] = true;
-		hasOrientations[mod_pocketDim.goldenDimensionalDoor.blockID] = true;
-		hasOrientations[mod_pocketDim.personalDimDoor.blockID] = true;
-		
+        hasOrientations.put(mod_pocketDim.dimensionalDoor, true);
+        hasOrientations.put(mod_pocketDim.warpDoor, true);
+        hasOrientations.put(mod_pocketDim.goldenDimensionalDoor, true);
+        hasOrientations.put(mod_pocketDim.personalDimDoor, true);
 	}
 
-	public static int transformMetadata(int metadata, int turns, int blockID)
+	public static int transformMetadata(int metadata, int turns, Block block)
 	{
 		//I changed rotations to reduce the monstrous code we had. It might be
 		//slightly less efficient, but it's easier to maintain for now. ~SenseiKiwi
@@ -84,37 +84,37 @@ public class BlockRotator
 		turns += 1 << 16;
 		turns %= 4;
 		
-		if (hasOrientations[blockID])
+		if (hasOrientations.containsKey(block) && hasOrientations.get(block))
 		{
 			while (turns > 0)
 			{
-				metadata = rotateMetadataBy90(metadata, blockID);
+				metadata = rotateMetadataBy90(metadata, block);
 				turns--;
 			}
 		}
 		return metadata;
 	}
 	
-	private static int rotateMetadataBy90(int metadata, int blockID)
+	private static int rotateMetadataBy90(int metadata, Block block)
 	{
 		//TODO: Replace this horrible function with something prettier. We promise we will for the next version,
 		//after switching to MC 1.6. PADRE, PLEASE FORGIVE OUR SINS.
 
-		if (blockID == Block.wood.blockID)
+		if (block == Blocks.log || block == Blocks.log2)
 		{
 			if (metadata >= 4 && metadata < 12)
 			{
 				metadata = (metadata % 8) + 4;
 			}
 		}
-		else if (blockID == Block.blockNetherQuartz.blockID)
+		else if (block == Blocks.quartz_block)
 		{
 			if (metadata == 3 || metadata == 4)
 			{
 				metadata = (metadata - 2) % 2 + 3;
 			}
 		}
-		else if (blockID == Block.railPowered.blockID || blockID == Block.railDetector.blockID || blockID == Block.railActivator.blockID)
+		else if (block == Blocks.golden_rail || block == Blocks.detector_rail || block == Blocks.activator_rail)
 		{
 			switch (metadata)
 			{
@@ -159,7 +159,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if (blockID==Block.rail.blockID)
+		else if (block==Blocks.rail)
 		{
 			switch (metadata)
 			{
@@ -183,7 +183,7 @@ public class BlockRotator
 				break;					
 			}
 		}
-		else if (blockID==Block.bed.blockID)
+		else if (block==Blocks.bed)
 		{
 			switch (metadata)
 			{
@@ -213,7 +213,7 @@ public class BlockRotator
 				break;	
 			}
 		}
-		else if (Block.blocksList[blockID] instanceof BlockStairs)
+		else if (block instanceof BlockStairs)
 		{
 
 			switch (metadata)
@@ -244,7 +244,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if (blockID == Block.chest.blockID || blockID == Block.chestTrapped.blockID || blockID == Block.ladder.blockID || blockID == Block.furnaceBurning.blockID|| blockID == Block.furnaceIdle.blockID)
+		else if (block == Blocks.chest || block == Blocks.trapped_chest || block == Blocks.ladder || block == Blocks.lit_furnace || block == Blocks.furnace)
 		{
 			switch (metadata)
 			{
@@ -262,7 +262,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if (blockID == Block.hopperBlock.blockID)
+		else if (block == Blocks.hopper)
 		{
 			switch (metadata)
 			{
@@ -292,7 +292,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if (blockID==Block.vine.blockID)
+		else if (block==Blocks.vine)
 		{
 			switch (metadata)
 			{
@@ -311,7 +311,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if (blockID==Block.signWall.blockID)
+		else if (block==Blocks.wall_sign)
 		{
 			switch (metadata)
 			{
@@ -330,7 +330,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if (blockID==Block.signPost.blockID)
+		else if (block==Blocks.standing_sign)
 		{
 			switch (metadata)
 			{
@@ -384,7 +384,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if(blockID== Block.lever.blockID || blockID == Block.stoneButton.blockID || blockID == Block.woodenButton.blockID || blockID== Block.torchWood.blockID||blockID== Block.torchRedstoneIdle.blockID||blockID== Block.torchRedstoneActive.blockID)
+		else if(block== Blocks.lever || block == Blocks.stone_button || block == Blocks.wooden_button || block== Blocks.torch||block== Blocks.unlit_redstone_torch||block== Blocks.redstone_torch)
 		{
 			switch (metadata)
 			{
@@ -414,7 +414,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if(blockID== Block.pistonBase.blockID||blockID==Block.pistonExtension.blockID||blockID==Block.pistonStickyBase.blockID || blockID == Block.dispenser.blockID || blockID == Block.dropper.blockID)
+		else if(block== Blocks.piston||block==Blocks.piston_head||block==Blocks.sticky_piston || block == Blocks.dispenser || block == Blocks.dropper)
 		{
 			switch (metadata)
 			{
@@ -444,7 +444,7 @@ public class BlockRotator
 				break;
 			}
 		}
-		else if (Block.blocksList[blockID] instanceof BlockRedstoneRepeater || Block.blocksList[blockID] instanceof BlockDoor || blockID== Block.tripWireSource.blockID || Block.blocksList[blockID] instanceof BlockComparator)
+		else if (block instanceof BlockRedstoneRepeater || block instanceof BlockDoor || block== Blocks.tripwire_hook || block instanceof BlockRedstoneComparator)
 		{
 			switch (metadata)
 			{

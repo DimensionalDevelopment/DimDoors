@@ -4,8 +4,8 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -18,9 +18,9 @@ public class BlockLimbo extends Block
 	private final int limboDimensionID;
 	private final LimboDecay decay;
 	
-	public BlockLimbo(int i, int j, Material par2Material, int limboDimensionID, LimboDecay decay) 
+	public BlockLimbo(int j, Material par2Material, int limboDimensionID, LimboDecay decay)
 	{
-		super(i, Material.ground);
+		super(Material.ground);
 		this.limboDimensionID = limboDimensionID;
 		this.decay = decay;
 		this.setTickRandomly(true);
@@ -32,19 +32,19 @@ public class BlockLimbo extends Block
 	 */
 	@SideOnly(Side.CLIENT)
 	@Override
-	public Icon getBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side)
+	public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side)
 	{
 		return this.getIcon(side, blockAccess.getBlockMetadata(x, y, z));
 	}
 
 	@Override
-	public void registerIcons(IconRegister iconRegister)
+	public void registerBlockIcons(IIconRegister iconRegister)
 	{
 		this.blockIcon = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
 	}
 
 	@Override
-	public Icon getIcon(int par1, int par2)
+	public IIcon getIcon(int par1, int par2)
 	{
 		return this.blockIcon;
 	}

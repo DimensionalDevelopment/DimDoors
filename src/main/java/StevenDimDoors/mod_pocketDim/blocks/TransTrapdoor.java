@@ -9,11 +9,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
@@ -27,14 +31,14 @@ import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntityProvider
 {
 
-	public TransTrapdoor(int blockID, Material material) 
+	public TransTrapdoor(Material material)
 	{
-		super(blockID, material);
+		super(material);
 		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 	}
 
 	@Override
-	public void registerIcons(IconRegister par1IconRegister)
+	public void registerBlockIcons(IIconRegister par1IconRegister)
 	{
 		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
 	}
@@ -92,20 +96,20 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
     {
     	if(this.checkCanOpen(par1World, par2, par3, par4))
     	{
-    		super.onPoweredBlockChange(par1World, par2, par3, par4, par5);
+    		super.func_150120_a(par1World, par2, par3, par4, par5);
     	}
     }
 	@Override
 	public void enterDimDoor(World world, int x, int y, int z, Entity entity) 
 	{
-		if (!world.isRemote && isTrapdoorOpen(world.getBlockMetadata(x, y, z)))
+		if (!world.isRemote && func_150118_d(world.getBlockMetadata(x, y, z)))
 		{
 			DimLink link = PocketManager.getLink(x, y, z, world);
-			if (link != null)
+			if (link != null && (link.linkType() != LinkType.PERSONAL || entity instanceof EntityPlayer))
 			{
 				DDTeleporter.traverseDimDoor(world, link, entity,this);
 			}
-			super.onPoweredBlockChange(world, x, y, z, false);
+			super.func_150120_a(world, x, y, z, false);
 		}
 	}	
 
@@ -113,11 +117,11 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	public void onBlockAdded(World world, int x, int y, int z) 
 	{
 		this.placeLink(world, x, y, z);
-		world.setBlockTileEntity(x, y, z, this.createNewTileEntity(world));
+		world.setTileEntity(x, y, z, this.createNewTileEntity(world, world.getBlockMetadata(x, y, z)));
 	}
 	
 	@Override
-	public TileEntity createNewTileEntity(World world) 
+	public TileEntity createNewTileEntity(World world, int metadata)
 	{
 		return new TileEntityTransTrapdoor();
 	}
@@ -138,28 +142,22 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public int idPicked(World world, int x, int y, int z)
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
 	{
-		return this.getDoorItem();
+		return new ItemStack(this.getDoorItem(), 1, 0);
 	}
 	
 	@Override
-	public int idDropped(int metadata, Random random, int fortuneLevel)
+	public Item getItemDropped(int metadata, Random random, int fortuneLevel)
     {
-        return this.getDrops();
+        return Item.getItemFromBlock(Blocks.trapdoor);
     }
 	
 	@Override
-	public int getDoorItem()
+	public Item getDoorItem()
 	{
-		return mod_pocketDim.transTrapdoor.blockID;
+		return Item.getItemFromBlock(mod_pocketDim.transTrapdoor);
 	}
-
-	@Override
-	public int getDrops()
-	{
-		return Block.trapdoor.blockID;
-	}	
 	
 	public static boolean isTrapdoorSetLow(int metadata)
 	{
@@ -169,8 +167,8 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	@Override
 	public TileEntity initDoorTE(World world, int x, int y, int z)
 	{
-		TileEntity te = this.createNewTileEntity(world);
-		world.setBlockTileEntity(x, y, z, te);
+		TileEntity te = this.createNewTileEntity(world, world.getBlockMetadata(x, y, z));
+		world.setTileEntity(x, y, z, te);
 		return te;
 	}
 
@@ -181,14 +179,14 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	}
 	
 	@Override
-	public void breakBlock(World world, int x, int y, int z, int oldBlockID, int oldMeta)
+	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldMeta)
     {
 		// This function runs on the server side after a block is replaced
 		// We MUST call super.breakBlock() since it involves removing tile entities
-        super.breakBlock(world, x, y, z, oldBlockID, oldMeta);
+        super.breakBlock(world, x, y, z, oldBlock, oldMeta);
         
         // Schedule rift regeneration for this block if it was replaced
-        if (world.getBlockId(x, y, z) != oldBlockID)
+        if (world.getBlock(x, y, z) != oldBlock)
         {
         	mod_pocketDim.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
         }

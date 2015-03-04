@@ -134,13 +134,13 @@ public class CommonProxy implements IGuiHandler
     }
 	public void updateDoorTE(BaseDimDoor door, World world, int x, int y, int z)
 	{
-		TileEntity tile = world.getBlockTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(x, y, z);
 		if (tile instanceof TileEntityDimDoor)
 		{
 			int metadata = world.getBlockMetadata(x, y, z);
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
 			dimTile.openOrClosed = door.isDoorOnRift(world, x, y, z)&&door.isUpperDoorBlock(metadata);
-			dimTile.orientation = door.getFullMetadata(world, x, y, z) & 7;
+			dimTile.orientation = world.getBlockMetadata(x,y,z) & 7;
 			dimTile.lockStatus = door.getLockStatus(world, x, y, z);
 		}
 	}

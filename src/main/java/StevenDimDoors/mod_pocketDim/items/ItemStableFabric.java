@@ -1,19 +1,19 @@
 package StevenDimDoors.mod_pocketDim.items;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 public class ItemStableFabric extends Item
 {
-	public ItemStableFabric(int itemID, int par2)
+	public ItemStableFabric(int par2)
 	{
-		super(itemID);
+		super();
         this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 	}
 	
 	@Override
-	public void registerIcons(IconRegister par1IconRegister)
+	public void registerIcons(IIconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
 	}

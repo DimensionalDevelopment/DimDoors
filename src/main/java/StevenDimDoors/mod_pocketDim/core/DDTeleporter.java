@@ -8,11 +8,9 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet41EntityEffect;
-import net.minecraft.network.packet.Packet43Experience;
-import net.minecraft.network.packet.Packet9Respawn;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -59,8 +57,8 @@ public class DDTeleporter
 		int x = destination.getX();
 		int y = destination.getY();
 		int z = destination.getZ();
-		int blockIDTop;
-		int blockIDBottom;		
+		Block blockTop;
+        Block blockBottom;
 		Point3D point;
 		
 		switch (orientation)
@@ -81,19 +79,19 @@ public class DDTeleporter
 				point =  new Point3D(x, y - 1, z);
 				break;
 		}
-		blockIDBottom = world.getBlockId(point.getX(), point.getY(), point.getZ());
-		blockIDTop = world.getBlockId(point.getX(), point.getY() + 1, point.getZ());
+		blockBottom = world.getBlock(point.getX(), point.getY(), point.getZ());
+		blockTop = world.getBlock(point.getX(), point.getY() + 1, point.getZ());
 		
-		if (Block.blocksList[blockIDBottom] != null)
+		if (blockBottom != null)
 		{
-			if (!Block.blocksList[blockIDBottom].isBlockReplaceable(world, point.getX(), point.getY(), point.getZ()) && world.isBlockOpaqueCube(point.getX(), point.getY(), point.getZ()))
+			if (!blockBottom.isReplaceable(world, point.getX(), point.getY(), point.getZ()) && world.isBlockNormalCubeDefault(point.getX(), point.getY(), point.getZ(), false))
 			{
 				return false;
 			}
 		}
-		if (Block.blocksList[blockIDTop] != null)
+		if (blockTop != null)
 		{
-			if (!Block.blocksList[blockIDTop].isBlockReplaceable(world, point.getX(), point.getY() + 1, point.getZ()))
+			if (!blockTop.isReplaceable(world, point.getX(), point.getY() + 1, point.getZ()))
 			{
 				return false;
 			}
@@ -221,7 +219,7 @@ public class DDTeleporter
 		}
 		
 		//Check if the block below that point is actually a door
-		Block block = Block.blocksList[world.getBlockId(door.getX(), door.getY() - 1, door.getZ())];
+		Block block = world.getBlock(door.getX(), door.getY() - 1, door.getZ());
 		if (block==null || !(block instanceof IDimDoor))
 		{
 			//Return the pocket's orientation instead
@@ -394,7 +392,7 @@ public class DDTeleporter
 	 * Also ensures correct orientation relative to the door.
 	 * @param world - world the player is currently in
 	 * @param link - the link the player is using to teleport; sends the player to its destination 
-	 * @param player - the instance of the player to be teleported
+	 * @param entity - the instance of the player to be teleported
 	 */
 	public static void traverseDimDoor(World world, DimLink link, Entity entity, Block door)
 	{
@@ -495,7 +493,7 @@ public class DDTeleporter
 			case POCKET:
 				return PocketBuilder.generateNewPocket(link, properties, door, DimensionType.POCKET);
 			case PERSONAL:
-				return setupPersonalLink(link, properties, entity, door);
+				return setupPersonalLink(link, properties, (EntityPlayer)entity, door);
 			case SAFE_EXIT:
 				return generateSafeExit(link, properties);
 			case DUNGEON_EXIT:
@@ -511,14 +509,14 @@ public class DDTeleporter
 		}
 	}
 	
-	private static boolean setupPersonalLink(DimLink link, DDProperties properties,Entity player, Block door)
+	private static boolean setupPersonalLink(DimLink link, DDProperties properties,EntityPlayer player, Block door)
 	{
 		if(!(player instanceof EntityPlayer))
 		{
 			return false;
 		}
 		
-		NewDimData dim = PocketManager.getPersonalDimensionForPlayer(player.getEntityName());
+		NewDimData dim = PocketManager.getPersonalDimensionForPlayer(player.getGameProfile().getId().toString());
 		if(dim == null)
 		{
 			return PocketBuilder.generateNewPersonalPocket(link, properties, player, door);
@@ -602,7 +600,7 @@ public class DDTeleporter
 	{
 		World startWorld = PocketManager.loadDimension(link.source().getDimension());
 		World destWorld = PocketManager.loadDimension(link.destination().getDimension());
-		TileEntity doorTE = startWorld.getBlockTileEntity(link.source().getX(), link.source().getY(), link.point.getZ());
+		TileEntity doorTE = startWorld.getTileEntity(link.source().getX(), link.source().getY(), link.point.getZ());
 		if(doorTE instanceof TileEntityDimDoor)
 		{
 			if((TileEntityDimDoor.class.cast(doorTE).hasGennedPair))
@@ -610,11 +608,11 @@ public class DDTeleporter
 				return;
 			}
 			TileEntityDimDoor.class.cast(doorTE).hasGennedPair=true;
-			Block blockToReplace = Block.blocksList[destWorld.getBlockId(link.destination().getX(), link.destination().getY(), link.destination().getZ())];
+			Block blockToReplace = destWorld.getBlock(link.destination().getX(), link.destination().getY(), link.destination().getZ());
 			
 			if(!destWorld.isAirBlock(link.destination().getX(), link.destination().getY(), link.destination().getZ()))
 			{
-				if(!blockToReplace.isBlockReplaceable(destWorld, link.destination().getX(), link.destination().getY(), link.destination().getZ()))
+				if(!blockToReplace.isReplaceable(destWorld, link.destination().getX(), link.destination().getY(), link.destination().getZ()))
 				{
 					return;
 				}
@@ -739,9 +737,9 @@ public class DDTeleporter
 					// Checking if the block is not an opaque solid is equivalent
 					// checking for a replaceable block, because we only allow
 					// exits intersecting blocks on those two surfaces.
-					if (!world.isBlockNormalCube(x + dx, y, z + dz))
+					if (!world.isBlockNormalCubeDefault(x + dx, y, z + dz, false))
 					{
-						world.setBlock(x + dx, y, z + dz, properties.FabricBlockID, 0, 2);
+						world.setBlock(x + dx, y, z + dz, mod_pocketDim.blockDimWall, 0, 2);
 					}
 				}
 			}
@@ -755,7 +753,7 @@ public class DDTeleporter
 				{
 					for (int dz = -1; dz <= 1; dz++)
 					{
-						world.setBlock(x + dx, y + dy, z + dz, 0, 0, 2);
+						world.setBlock(x + dx, y + dy, z + dz, Blocks.air, 0, 2);
 					}
 				}
 			}
@@ -768,7 +766,7 @@ public class DDTeleporter
 			sourceDim.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());
 			
 			// Set up the warp door at the destination
-			orientation = BlockRotator.transformMetadata(orientation, 2, properties.WarpDoorID);
+			orientation = BlockRotator.transformMetadata(orientation, 2, mod_pocketDim.warpDoor);
 			ItemDoor.placeDoorBlock(world, x, y + 1, z, orientation, mod_pocketDim.warpDoor);
 			
 			// Complete the link to the destination

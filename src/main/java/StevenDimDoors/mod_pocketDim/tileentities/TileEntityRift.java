@@ -7,9 +7,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
@@ -65,7 +62,7 @@ public class TileEntityRift extends DDTileEntityBase
 	{
 		if (PocketManager.getLink(xCoord, yCoord, zCoord, worldObj.provider.dimensionId) == null)
 		{
-			if (worldObj.getBlockId(xCoord, yCoord, zCoord) == mod_pocketDim.blockRift.blockID)
+			if (worldObj.getBlock(xCoord, yCoord, zCoord) == mod_pocketDim.blockRift)
 			{
 				worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 			}
@@ -76,7 +73,7 @@ public class TileEntityRift extends DDTileEntityBase
 			return;
 		}
 		
-		if (worldObj.getBlockId(xCoord, yCoord, zCoord) != mod_pocketDim.blockRift.blockID)
+		if (worldObj.getBlock(xCoord, yCoord, zCoord) != mod_pocketDim.blockRift)
 		{
 			invalidate();
 			return;
@@ -154,11 +151,11 @@ public class TileEntityRift extends DDTileEntityBase
 			for (DimLink riftLink : dimension.findRiftsInRange(worldObj, 6, xCoord, yCoord, zCoord))
 			{
 				Point4D location = riftLink.source();
-				TileEntityRift rift = (TileEntityRift) worldObj.getBlockTileEntity(location.getX(), location.getY(), location.getZ());
+				TileEntityRift rift = (TileEntityRift) worldObj.getTileEntity(location.getX(), location.getY(), location.getZ());
 				if (rift != null && !rift.shouldClose)
 				{
 					rift.shouldClose = true;
-					rift.onInventoryChanged();
+					rift.markDirty();
 				}
 			}
 		}
@@ -207,7 +204,7 @@ public class TileEntityRift extends DDTileEntityBase
 			this.yOffset = 0;
 			this.xOffset = 0;
 		}
-		this.onInventoryChanged();
+		this.markDirty();
 	}
 	
 	@Override

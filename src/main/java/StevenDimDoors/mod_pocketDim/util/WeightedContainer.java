@@ -1,6 +1,6 @@
 package StevenDimDoors.mod_pocketDim.util;
 
-import net.minecraft.util.WeightedRandomItem;
+import net.minecraft.util.WeightedRandom;
 
 /*.
  * Implements a simple generic item for using net.minecraft.util.WeightedRandom with objects of type T.
@@ -9,7 +9,7 @@ import net.minecraft.util.WeightedRandomItem;
  * extending WeightedRandomItem or cases in which we would have to break compatibility with previous serialized
  * instances to add support for WeightedRandomItem.
  */
-public class WeightedContainer<T> extends WeightedRandomItem {
+public class WeightedContainer<T> extends WeightedRandom.Item {
 	
 	private T data;
 	

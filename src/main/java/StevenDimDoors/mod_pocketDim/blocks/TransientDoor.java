@@ -1,9 +1,11 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
@@ -15,9 +17,9 @@ import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public class TransientDoor extends BaseDimDoor
 {
-	public TransientDoor(int blockID, Material material, DDProperties properties) 
+	public TransientDoor(Material material, DDProperties properties)
 	{
-		super(blockID, material, properties);
+		super(material, properties);
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class TransientDoor extends BaseDimDoor
 		}
 
 		// Check that this is the top block of the door
-		if (world.getBlockId(x, y - 1, z) == this.blockID)
+		if (world.getBlock(x, y - 1, z) == this)
 		{
 			boolean canUse = true;
 			int metadata = world.getBlockMetadata(x, y - 1, z);
@@ -45,15 +47,17 @@ public class TransientDoor extends BaseDimDoor
 				DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
 				if (link != null)
 				{
-					DDTeleporter.traverseDimDoor(world, link, entity, this);
-					// Turn the door into a rift AFTER teleporting the player.
-					// The door's orientation may be necessary for the teleport.
-					world.setBlock(x, y, z, properties.RiftBlockID);
-					world.setBlockToAir(x, y - 1, z);
+                    if (link.linkType() != LinkType.PERSONAL || entity instanceof EntityPlayer) {
+                        DDTeleporter.traverseDimDoor(world, link, entity, this);
+                        // Turn the door into a rift AFTER teleporting the player.
+                        // The door's orientation may be necessary for the teleport.
+                        world.setBlock(x, y, z, mod_pocketDim.blockRift);
+                        world.setBlockToAir(x, y - 1, z);
+                    }
 				}
 			}
 		}
-		else if (world.getBlockId(x, y + 1, z) == this.blockID)
+		else if (world.getBlock(x, y + 1, z) == this)
 		{
 			enterDimDoor(world, x, y + 1, z, entity);
 		}
@@ -62,7 +66,7 @@ public class TransientDoor extends BaseDimDoor
 	@Override
 	public void placeLink(World world, int x, int y, int z) 
 	{
-		if (!world.isRemote && world.getBlockId(x, y - 1, z) == this.blockID)
+		if (!world.isRemote && world.getBlock(x, y - 1, z) == this)
 		{
 			NewDimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(x, y, z);
@@ -74,15 +78,9 @@ public class TransientDoor extends BaseDimDoor
 	}
 	
 	@Override
-	public int getDoorItem()
+	public Item getDoorItem()
 	{
-		return 0;
-	}
-
-	@Override
-	public int getDrops()
-	{
-		return 0;
+		return null;
 	}
 
 	@Override

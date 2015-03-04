@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.TreeMap;
 
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -251,7 +252,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 				for (k = -range; k <= range; k++)
 				{
 					distance = getAbsoluteSum(i, j, k);
-					if (distance > 0 && distance < minDistance && world.getBlockId(x + i, y + j, z + k) == properties.RiftBlockID)
+					if (distance > 0 && distance < minDistance && world.getBlock(x + i, y + j, z + k) == mod_pocketDim.blockRift)
 					{
 						link = getLink(x + i, y + j, z + k);
 						if (link != null)
@@ -290,7 +291,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 				for (k = -range; k <= range; k++)
 				{
 					distance = getAbsoluteSum(i, j, k);
-					if (distance > 0 && world.getBlockId(x + i, y + j, z + k) == properties.RiftBlockID)
+					if (distance > 0 && world.getBlock(x + i, y + j, z + k) == mod_pocketDim.blockRift)
 					{
 						link = getLink(x + i, y + j, z + k);
 						if (link != null)

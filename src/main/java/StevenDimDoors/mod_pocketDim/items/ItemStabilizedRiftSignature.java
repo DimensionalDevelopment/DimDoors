@@ -1,8 +1,10 @@
 package StevenDimDoors.mod_pocketDim.items;
 
 import java.util.List;
-import net.minecraft.client.renderer.texture.IconRegister;
+
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
@@ -18,13 +20,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemStabilizedRiftSignature extends ItemRiftSignature
 {
-	public ItemStabilizedRiftSignature(int itemID)
+	public ItemStabilizedRiftSignature()
 	{
-		super(itemID);
+		super();
 	}
 
 	@Override
-	public void registerIcons(IconRegister par1IconRegister)
+	public void registerIcons(IIconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
 	}
@@ -74,7 +76,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature
 				// Check if the player is in creative mode,
 				// or if the player can pay with an Ender Pearl to create a rift.
 				if (!player.capabilities.isCreativeMode &&
-						!player.inventory.consumeInventoryItem(Item.enderPearl.itemID))
+						!player.inventory.consumeInventoryItem(Items.ender_pearl))
 				{
 					mod_pocketDim.sendChat(player, "You don't have any Ender Pearls!");
 					// I won't do this, but this is the chance to localize chat 

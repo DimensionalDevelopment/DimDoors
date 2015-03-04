@@ -7,15 +7,15 @@ public class ModBlockFilter extends SchematicFilter {
 
 	private short maxVanillaBlockID;
 	private short[] exceptions;
-	private short replacementBlockID;
+	private Block replacementBlock;
 	private byte replacementMetadata;
 	
-	public ModBlockFilter(short maxVanillaBlockID, short[] exceptions, short replacementBlockID, byte replacementMetadata)
+	public ModBlockFilter(short maxVanillaBlockID, short[] exceptions, Block replacementBlock, byte replacementMetadata)
 	{
 		super("ModBlockFilter");
 		this.maxVanillaBlockID = maxVanillaBlockID;
 		this.exceptions = exceptions;
-		this.replacementBlockID = replacementBlockID;
+		this.replacementBlock = replacementBlock;
 		this.replacementMetadata = replacementMetadata;
 	}
 	

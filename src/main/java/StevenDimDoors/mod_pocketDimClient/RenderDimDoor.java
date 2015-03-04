@@ -31,7 +31,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.MapCoord;
 import net.minecraft.world.storage.MapData;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -352,7 +351,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 			TileEntityDimDoor tile = (TileEntityDimDoor) par1TileEntity;
 			try
 			{
-				mod_pocketDim.dimensionalDoor.updateAttachedTile(tile.worldObj,
+				mod_pocketDim.dimensionalDoor.updateAttachedTile(tile.getWorldObj(),
 						tile.xCoord, tile.yCoord, tile.zCoord);
 			}
 			catch (Exception e)

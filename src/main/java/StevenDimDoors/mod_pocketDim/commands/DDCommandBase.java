@@ -4,7 +4,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
 
 /*
  * An abstract base class for our Dimensional Doors commands. This cleans up the code a little and provides
@@ -85,9 +85,8 @@ public abstract class DDCommandBase extends CommandBase
 
 	public static void sendChat(EntityPlayer player, String message)
 	{
-		ChatMessageComponent cmp = new ChatMessageComponent();
-		cmp.addText(message);
-		player.sendChatToPlayer(cmp);
+        ChatComponentText text = new ChatComponentText(message);
+        player.addChatMessage(text);
 	}
 
     /*

@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.world;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
@@ -27,7 +28,7 @@ public class PocketGenerator extends ChunkProviderGenerate
 	}
 	
 	@Override
-	public void generateTerrain(int par1, int par2, byte[] par3ArrayOfByte)
+	public void func_147424_a(int par1, int par2, Block[] blocks)
 	{
 
 	}
@@ -41,7 +42,7 @@ public class PocketGenerator extends ChunkProviderGenerate
 	@Override
 	public Chunk provideChunk(int chunkX, int chunkZ)
 	{
-		byte[] var3 = new byte[32768];
+		Block[] var3 = new Block[32768];
 		Chunk chunk = new Chunk(worldObj, var3, chunkX, chunkZ);
 		
 		if(!chunk.isTerrainPopulated)
@@ -77,7 +78,7 @@ public class PocketGenerator extends ChunkProviderGenerate
 	}
 
 	@Override
-	public ChunkPosition findClosestStructure(World var1, String var2, int var3, int var4, int var5)
+	public ChunkPosition func_147416_a(World var1, String var2, int var3, int var4, int var5)
 	{
 		return null;
 	}

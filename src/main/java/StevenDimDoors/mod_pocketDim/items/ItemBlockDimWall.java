@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim.items;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -9,14 +10,14 @@ public class ItemBlockDimWall extends ItemBlock
 {
 	private final static String[] subNames = {"Fabric of Reality", "Ancient Fabric" , "Altered Fabric"};
 	
-    public ItemBlockDimWall(int par1)
+    public ItemBlockDimWall(Block block)
     {
-    	  super(par1);
+    	  super(block);
           this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
           setHasSubtypes(true);
     }
     @Override
-	public void registerIcons(IconRegister par1IconRegister)
+	public void registerIcons(IIconRegister par1IconRegister)
     {
         this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("tile.", ""));
     }

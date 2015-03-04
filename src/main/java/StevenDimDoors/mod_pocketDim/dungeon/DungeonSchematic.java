@@ -11,6 +11,7 @@ import java.util.Random;
 import java.util.TreeMap;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
@@ -113,7 +114,7 @@ public class DungeonSchematic extends Schematic {
 		applyFilter(finder);
 		
 		//Flip the entrance's orientation to get the dungeon's orientation
-		orientation = BlockRotator.transformMetadata(finder.getEntranceOrientation(), 2, Block.doorWood.blockID);
+		orientation = BlockRotator.transformMetadata(finder.getEntranceOrientation(), 2, Blocks.wooden_door);
 
 		entranceDoorLocation = finder.getEntranceDoorLocation();
 		exitDoorLocations = finder.getExitDoorLocations();
@@ -233,7 +234,7 @@ public class DungeonSchematic extends Schematic {
 		count = tileEntities.tagCount();
 		for (index = 0; index < count; index++)
 		{
-			NBTTagCompound tileTag = (NBTTagCompound) tileEntities.tagAt(index);
+			NBTTagCompound tileTag = (NBTTagCompound) tileEntities.getCompoundTagAt(index);
 			//Rewrite its location to be in world coordinates
 			pocketPoint.setX(tileTag.getInteger("x"));
 			pocketPoint.setY(tileTag.getInteger("y"));
@@ -243,7 +244,7 @@ public class DungeonSchematic extends Schematic {
 			tileTag.setInteger("y", pocketPoint.getY());
 			tileTag.setInteger("z", pocketPoint.getZ());
 			//Load the tile entity and put it in the world
-			world.setBlockTileEntity(pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), TileEntity.createAndLoadEntity(tileTag));
+			world.setTileEntity(pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), TileEntity.createAndLoadEntity(tileTag));
 		}
 		
 		setUpDungeon(PocketManager.createDimensionData(world), world, pocketCenter, turnAngle, entryLink, random, properties, blockSetter);
@@ -341,9 +342,9 @@ public class DungeonSchematic extends Schematic {
 		int z = location.getZ();
 		if (y >= 0)
 		{
-			int blockID = world.getBlockId(x, y, z);
+			Block block = world.getBlock(x, y, z);
 			int metadata = world.getBlockMetadata(x, y, z);
-			blockSetter.setBlock(world, x, y + 1, z, blockID, metadata);
+			blockSetter.setBlock(world, x, y + 1, z, block, metadata);
 		}
 		initDoorTileEntity(world, location);
 	}
@@ -365,7 +366,7 @@ public class DungeonSchematic extends Schematic {
 		Point3D location = point.clone();
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
 		//Remove frame block
-		blockSetter.setBlock(world, location.getX(), location.getY(), location.getZ(), 0, 0);
+		blockSetter.setBlock(world, location.getX(), location.getY(), location.getZ(), Blocks.air, 0);
 		//Spawn Monolith
 		if (canSpawn)
 		{
@@ -377,8 +378,8 @@ public class DungeonSchematic extends Schematic {
 
 	private static void initDoorTileEntity(World world, Point3D point)
 	{
-		Block door = Block.blocksList[world.getBlockId(point.getX(), point.getY(), point.getZ())];
-		Block door2 = Block.blocksList[world.getBlockId(point.getX(), point.getY() - 1, point.getZ())];
+		Block door = world.getBlock(point.getX(), point.getY(), point.getZ());
+		Block door2 = world.getBlock(point.getX(), point.getY() - 1, point.getZ());
 
 		if (door instanceof IDimDoor && door2 instanceof IDimDoor)
 		{
@@ -395,7 +396,8 @@ public class DungeonSchematic extends Schematic {
 	{
 		final int SEARCH_RANGE = 6;
 		
-		int x, y, z, block;
+		int x, y, z;
+        Block block;
 		int dx, dy, dz;
 		
 		for (dy = SEARCH_RANGE; dy >= -SEARCH_RANGE; dy--)
@@ -407,12 +409,12 @@ public class DungeonSchematic extends Schematic {
 					x = pocketCenter.getX() + dx;
 					y = pocketCenter.getY() + dy;
 					z = pocketCenter.getZ() + dz;
-					block = world.getBlockId(x, y, z);
-					if (block == Block.signWall.blockID || block == Block.signPost.blockID)
+					block = world.getBlock(x, y, z);
+					if (block == Blocks.wall_sign || block == Blocks.standing_sign)
 					{
 						TileEntitySign signEntity = new TileEntitySign();
 						signEntity.signText[1] = "Level " + depth;
-						world.setBlockTileEntity(x, y, z, signEntity);
+						world.setTileEntity(x, y, z, signEntity);
 						return;
 					}
 				}

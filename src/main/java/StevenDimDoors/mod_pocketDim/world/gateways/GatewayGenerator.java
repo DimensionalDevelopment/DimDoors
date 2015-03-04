@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.common.DimensionManager;
@@ -97,9 +98,9 @@ public class GatewayGenerator implements IWorldGenerator
 				//If the point is within the acceptable altitude range, the block above is empty, and we're
 				//not building on bedrock, then generate a rift there
 				if (y >= MIN_RIFT_Y && y <= MAX_RIFT_Y && world.isAirBlock(x, y + 1, z) &&
-					world.getBlockId(x, y, z) != Block.bedrock.blockID &&	//<-- Stops Nether roof spawning. DO NOT REMOVE!
-					world.getBlockId(x, y - 1, z) != Block.bedrock.blockID &&
-					world.getBlockId(x, y - 2, z) != Block.bedrock.blockID)
+					world.getBlock(x, y, z) != Blocks.bedrock &&	//<-- Stops Nether roof spawning. DO NOT REMOVE!
+					world.getBlock(x, y - 1, z) != Blocks.bedrock &&
+					world.getBlock(x, y - 2, z) != Blocks.bedrock)
 				{
 					//Create a link. If this is not the first time, create a child link and connect it to the first link.
 					if (link == null)
@@ -165,8 +166,8 @@ public class GatewayGenerator implements IWorldGenerator
 		return (y >= MIN_RIFT_Y &&
 				y <= MAX_RIFT_Y &&
 				world.isAirBlock(x, y + 1, z) &&
-				world.getBlockId(x, y, z) != Block.bedrock.blockID &&	//<-- Stops Nether roof spawning. DO NOT REMOVE!
-				world.getBlockId(x, y - 1, z) != Block.bedrock.blockID &&
+				world.getBlock(x, y, z) != Blocks.bedrock &&	//<-- Stops Nether roof spawning. DO NOT REMOVE!
+				world.getBlock(x, y - 1, z) != Blocks.bedrock &&
 				checkFoundationMaterial(world, x, y - 2, z));
 	}
 	
@@ -175,8 +176,8 @@ public class GatewayGenerator implements IWorldGenerator
 		//We check the material and opacity to prevent generating gateways on top of trees or houses,
 		//or on top of strange things like tall grass, water, slabs, or torches.
 		//We also want to avoid generating things on top of the Nether's bedrock!
-		Material material = world.getBlockMaterial(x, y, z);
-		return (material != Material.leaves && material != Material.wood && material != Material.pumpkin
-				&& world.isBlockOpaqueCube(x, y, z) && world.getBlockId(x, y, z) != Block.bedrock.blockID);
+		Material material = world.getBlock(x, y, z).getMaterial();
+		return (material != Material.leaves && material != Material.wood && material != Material.gourd
+				&& world.isBlockNormalCubeDefault(x, y, z, false) && world.getBlock(x, y, z) != Blocks.bedrock);
 	}
 }

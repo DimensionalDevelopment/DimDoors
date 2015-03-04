@@ -3,7 +3,9 @@ package StevenDimDoors.mod_pocketDim.ticking;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -99,7 +101,7 @@ public class CustomLimboPopulator implements IRegularTickReceiver {
 		}
 		
 		int sanity = 0;
-		int blockID = 0;
+		Block block = Blocks.air;
 		boolean didSpawn = false;
 
 		//The following initialization code is based on code from ChunkProviderGenerate.
@@ -117,23 +119,23 @@ public class CustomLimboPopulator implements IRegularTickReceiver {
 			x = chunkX * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
 			z = chunkZ * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
 			y = MAX_MONOLITH_SPAWN_Y;
-			blockID = pocket.getBlockId(x, y, z);
+			block = pocket.getBlock(x, y, z);
 
-			while (blockID == 0 &&y>0)
+			while (block.isAir(pocket, x, y, z) &&y>0)
 			{
 				y--;
-				blockID = pocket.getBlockId(x, y, z);
+				block = pocket.getBlock(x, y, z);
 
 			}
-			while ((blockID == properties.FabricBlockID || blockID == properties.PermaFabricBlockID) && y > 0)
+			while ((block == mod_pocketDim.blockDimWall || block == mod_pocketDim.blockDimWallPerm) && y > 0)
 			{
 				y--;
-				blockID = pocket.getBlockId(x, y, z);
+				block = pocket.getBlock(x, y, z);
 			}
-			while (blockID == 0 && y > 0)
+			while (block.isAir(pocket, x, y, z) && y > 0)
 			{
 				y--;
-				blockID = pocket.getBlockId(x, y, z);
+				block = pocket.getBlock(x, y, z);
 			}
 			if(y > 0)
 			{
@@ -175,7 +177,7 @@ public class CustomLimboPopulator implements IRegularTickReceiver {
 				int x = chunkX * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
 				int z = chunkZ * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
 
-				while (limbo.getBlockId(x, y, z) == 0 && y <255)
+				while (limbo.getBlock(x, y, z).isAir(limbo, x, y, z) && y <255)
 				{
 					y++;
 				}

@@ -12,15 +12,15 @@ import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 public class DimensionalDoor extends BaseDimDoor
 {
-	public DimensionalDoor(int blockID, Material material, DDProperties properties) 
+	public DimensionalDoor(Material material, DDProperties properties)
 	{
-		super(blockID, material, properties);
+		super(material, properties);
 	}
 
 	@Override
 	public void placeLink(World world, int x, int y, int z) 
 	{
-		if (!world.isRemote && world.getBlockId(x, y - 1, z) == this.blockID)
+		if (!world.isRemote && world.getBlock(x, y - 1, z) == this)
 		{
 			NewDimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(x, y, z);
@@ -32,14 +32,8 @@ public class DimensionalDoor extends BaseDimDoor
 	}
 	
 	@Override
-	public int getDoorItem()
+	public Item getDoorItem()
 	{
-		return mod_pocketDim.itemDimensionalDoor.itemID;
-	}
-	
-	@Override
-	public int getDrops()
-	{
-		return Item.doorIron.itemID;
+		return mod_pocketDim.itemDimensionalDoor;
 	}
 }

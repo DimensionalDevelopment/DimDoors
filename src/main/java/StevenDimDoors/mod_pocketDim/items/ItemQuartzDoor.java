@@ -3,7 +3,7 @@ package StevenDimDoors.mod_pocketDim.items;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
@@ -12,13 +12,13 @@ import net.minecraft.world.World;
 
 public class ItemQuartzDoor extends ItemDoor
 {
-	public ItemQuartzDoor(int par1, Material par2Material) 
+	public ItemQuartzDoor( Material par2Material)
 	{
-		super(par1, par2Material);
+		super(par2Material);
 	}
 
 	@Override
-	public void registerIcons(IconRegister par1IconRegister)
+	public void registerIcons(IIconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
 	}

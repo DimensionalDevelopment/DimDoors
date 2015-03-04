@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,7 +12,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.EnumToolMaterial;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.AxisAlignedBB;
@@ -31,9 +31,9 @@ public class ItemRiftBlade extends ItemSword
 {
 	private final DDProperties properties;
 
-	public ItemRiftBlade(int itemID, DDProperties properties)
+	public ItemRiftBlade(DDProperties properties)
 	{
-		super(itemID, EnumToolMaterial.EMERALD);
+		super(ToolMaterial.EMERALD);
 
 		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 		this.properties = properties;
@@ -55,7 +55,7 @@ public class ItemRiftBlade extends ItemSword
 		double var7 = par2EntityPlayer.prevPosX + (par2EntityPlayer.posX - par2EntityPlayer.prevPosX) * var4;
 		double var9 = par2EntityPlayer.prevPosY + (par2EntityPlayer.posY - par2EntityPlayer.prevPosY) * var4 + 1.62D - par2EntityPlayer.yOffset;
 		double var11 = par2EntityPlayer.prevPosZ + (par2EntityPlayer.posZ - par2EntityPlayer.prevPosZ) * var4;
-		Vec3 var13 = par1World.getWorldVec3Pool().getVecFromPool(var7, var9, var11);
+		Vec3 var13 = Vec3.createVectorHelper(var7, var9, var11);
 		float var14 = MathHelper.cos(-var6 * 0.017453292F - (float)Math.PI);
 		float var15 = MathHelper.sin(-var6 * 0.017453292F - (float)Math.PI);
 		float var16 = -MathHelper.cos(-var5 * 0.017453292F);
@@ -68,12 +68,12 @@ public class ItemRiftBlade extends ItemSword
 			var21 = 7;
 		}
 		Vec3 var23 = var13.addVector(var18 * var21, var17 * var21, var20 * var21);
-		return par1World.rayTraceBlocks_do_do(var13, var23, true, false);
+		return par1World.rayTraceBlocks(var13, var23, true);
 	}
 
 	private boolean teleportToEntity(ItemStack item, Entity par1Entity, EntityPlayer holder)
 	{
-		Vec3 var2 = holder.worldObj.getWorldVec3Pool().getVecFromPool(holder.posX - par1Entity.posX, holder.boundingBox.minY + holder.height / 2.0F - par1Entity.posY + par1Entity.getEyeHeight(), holder.posZ - par1Entity.posZ);
+		Vec3 var2 = Vec3.createVectorHelper(holder.posX - par1Entity.posX, holder.boundingBox.minY + holder.height / 2.0F - par1Entity.posY + par1Entity.getEyeHeight(), holder.posZ - par1Entity.posZ);
 
 		double cooef =( var2.lengthVector()-2.5)/var2.lengthVector();
 		var2.xCoord*=cooef;
@@ -114,7 +114,7 @@ public class ItemRiftBlade extends ItemSword
 			for (EntityLiving ent : list)
 			{
 				Vec3 var3 = player.getLook(1.0F).normalize();
-				Vec3 var4 =  player.worldObj.getWorldVec3Pool().getVecFromPool(ent.posX -  player.posX, ent.boundingBox.minY + (ent.height) / 2.0F - ( player.posY + player.getEyeHeight()), ent.posZ -  player.posZ);
+				Vec3 var4 =  Vec3.createVectorHelper(ent.posX -  player.posX, ent.boundingBox.minY + (ent.height) / 2.0F - ( player.posY + player.getEyeHeight()), ent.posZ -  player.posZ);
 				double var5 = var4.lengthVector();
 				var4 = var4.normalize();
 				double var7 = var3.dotProduct(var4);
@@ -132,7 +132,7 @@ public class ItemRiftBlade extends ItemSword
 				int x = hit.blockX;
 				int y = hit.blockY;
 				int z = hit.blockZ;
-				if (world.getBlockId(x, y, z) == properties.RiftBlockID)
+				if (world.getBlock(x, y, z) == mod_pocketDim.blockRift)
 				{
 					if (PocketManager.getLink(x, y, z, world) != null)
 					{
@@ -160,7 +160,7 @@ public class ItemRiftBlade extends ItemSword
 	}
 
 	@Override
-	public void registerIcons(IconRegister par1IconRegister)
+	public void registerIcons(IIconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
 	}
@@ -173,7 +173,7 @@ public class ItemRiftBlade extends ItemSword
 	{
 		//Don't include a call to super.getIsRepairable()!
     	//That would cause this sword to accept diamonds as a repair material (since we set material = Diamond).
-		return mod_pocketDim.itemStableFabric.itemID == par2ItemStack.itemID ? true : false;
+		return mod_pocketDim.itemStableFabric == par2ItemStack.getItem() ? true : false;
 	}
 
 	/**

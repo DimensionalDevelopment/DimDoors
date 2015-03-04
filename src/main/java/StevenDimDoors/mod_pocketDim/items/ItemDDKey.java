@@ -6,7 +6,7 @@ import java.util.List;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -29,9 +28,9 @@ public class ItemDDKey extends Item
 {
 	public static final int TIME_TO_UNLOCK = 30;
 
-	public ItemDDKey(int itemID)
+	public ItemDDKey()
 	{
-		super(itemID);
+		super();
 		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
 		this.setMaxStackSize(1);
 
@@ -55,7 +54,7 @@ public class ItemDDKey extends Item
 	}
 
 	@Override
-	public void registerIcons(IconRegister par1IconRegister)
+	public void registerIcons(IIconRegister par1IconRegister)
 	{
 		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
 	}
@@ -87,9 +86,9 @@ public class ItemDDKey extends Item
 		{
 			return true;
 		}
-		int blockID = world.getBlockId(x, y, z);
+		Block block = world.getBlock(x, y, z);
 		// make sure we are dealing with a door
-		if (!(Block.blocksList[blockID] instanceof IDimDoor))
+		if (!(block instanceof IDimDoor))
 		{
 			return false;
 		}
@@ -146,7 +145,7 @@ public class ItemDDKey extends Item
 		{
 			//Raytrace to make sure we are still looking at a door
 			MovingObjectPosition pos = getMovingObjectPositionFromPlayer(player.worldObj, player, true);
-			if (pos != null && pos.typeOfHit == EnumMovingObjectType.TILE)
+			if (pos != null && pos.typeOfHit ==  MovingObjectPosition.MovingObjectType.BLOCK)
 			{
 				//make sure we have a link and it has a lock
 				DimLink link = PocketManager.getLink(pos.blockX, pos.blockY, pos.blockZ, player.worldObj);
@@ -170,13 +169,13 @@ public class ItemDDKey extends Item
 	 * Raytrace to make sure we are still looking at the right block while preparing to remove the lock
 	 */
 	@Override
-	public void onUsingItemTick(ItemStack stack, EntityPlayer player, int count)
+	public void onUsingTick(ItemStack stack, EntityPlayer player, int count)
 	{
 		// no need to check every tick, twice a second instead
 		if (count % 10 == 0)
 		{
 			MovingObjectPosition pos = getMovingObjectPositionFromPlayer(player.worldObj, player, true);
-			if (pos != null && pos.typeOfHit == EnumMovingObjectType.TILE)
+			if (pos != null && pos.typeOfHit ==  MovingObjectPosition.MovingObjectType.BLOCK)
 			{
 				DimLink link = PocketManager.getLink(pos.blockX, pos.blockY, pos.blockZ, player.worldObj);
 				if (link != null && link.hasLock())

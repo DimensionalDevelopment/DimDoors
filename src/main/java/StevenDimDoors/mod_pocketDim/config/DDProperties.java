@@ -2,56 +2,14 @@ package StevenDimDoors.mod_pocketDim.config;
 
 import java.io.File;
 
-import net.minecraftforge.common.Configuration;
 import StevenDimDoors.mod_pocketDim.blocks.BlockRift;
 import StevenDimDoors.mod_pocketDim.ticking.CustomLimboPopulator;
 import StevenDimDoors.mod_pocketDim.world.fortresses.DDStructureNetherBridgeStart;
 import StevenDimDoors.mod_pocketDim.world.gateways.GatewayGenerator;
+import net.minecraftforge.common.config.Configuration;
 
 public class DDProperties
 {
-	/**
-	 * Block IDs
-	 */
-
-	public final int UnstableDoorID;
-	public final int DimensionalDoorID;	
-	public final int GoldenDoorID;
-	public final int GoldenDimensionalDoorID;
-	public final int WarpDoorID;
-	public final int TransTrapdoorID;
-	public final int TransientDoorID;
-	public final int FabricBlockID;
-	public final int RiftBlockID;
-	public final int QuartzDoorID;
-	public final int PersonalDimDoorID;
-
-
-	/**
-	 * World Generation Block IDs
-	 */
-
-	public final int LimboBlockID;
-	public final int PermaFabricBlockID;
-
-	/**
-	 * Item IDs
-	 */
-
-	public final int RiftBladeItemID;
-	public final int RiftSignatureItemID;	
-	public final int GoldenDimensionalDoorItemID;
-	public final int GoldenDoorItemID;
-	public final int RiftRemoverItemID;
-	public final int StableFabricItemID;
-	public final int StabilizedRiftSignatureItemID;
-	public final int DimensionalDoorItemID;
-	public final int UnstableDoorItemID;
-	public final int WarpDoorItemID;
-	public final int WorldThreadItemID;
-	public final int DDKeyItemID;
-	public final int ItemQuartzDoorID;
-	public final int ItemPersonalDimDoorID;
 
 	/**
 	 * Other IDs
@@ -195,38 +153,6 @@ public class DDProperties
 		DoorRenderEntityID = config.get(CATEGORY_ENTITY, "Door Render Entity ID", 89).getInt();
 		MonolithEntityID = config.get(CATEGORY_ENTITY, "Monolith Entity ID", 125).getInt();
 
-		DimensionalDoorID = config.getBlock("Dimensional Door Block ID", 1970).getInt();
-		TransTrapdoorID = config.getBlock("Transdimensional Trapdoor Block ID", 1971).getInt();
-		FabricBlockID =config.getBlock("Fabric Of Reality Block ID", 1973).getInt();
-		WarpDoorID = config.getBlock("Warp Door Block ID", 1975).getInt();
-		RiftBlockID = config.getBlock("Rift Block ID", 1977).getInt();
-		UnstableDoorID = config.getBlock("Unstable Door Block ID", 1978).getInt();
-		TransientDoorID = config.getBlock("Transient Door Block ID", 1979).getInt();
-		GoldenDoorID = config.getBlock("Gold Door Block ID", 1980).getInt();
-		GoldenDimensionalDoorID = config.getBlock("Gold Dim Door Block ID", 1981).getInt();
-		QuartzDoorID = config.getBlock("Quartz Door Block ID", 1982).getInt();
-		PersonalDimDoorID = config.getBlock("Personal Dim Door ID", 1983).getInt();
-		
-		WarpDoorItemID = config.getItem("Warp Door Item ID", 5670).getInt();
-		RiftRemoverItemID = config.getItem("Rift Remover Item ID", 5671).getInt();
-		StableFabricItemID = config.getItem("Stable Fabric Item ID", 5672).getInt();
-		UnstableDoorItemID = config.getItem("Unstable Door Item ID", 5673).getInt();
-		DimensionalDoorItemID = config.getItem("Dimensional Door Item ID", 5674).getInt();
-		RiftSignatureItemID = config.getItem("Rift Signature Item ID", 5675).getInt();
-		RiftBladeItemID = config.getItem("Rift Blade Item ID", 5676).getInt();
-		StabilizedRiftSignatureItemID = config.getItem("Stabilized Rift Signature Item ID", 5677).getInt();
-		GoldenDoorItemID = config.getItem("Gold Door Item ID", 5678).getInt();
-		GoldenDimensionalDoorItemID = config.getItem("Gold Dim Door Item ID", 5679).getInt();
-		WorldThreadItemID = config.getItem("World Thread Item ID", 5680).getInt();
-		DDKeyItemID = config.getItem("Rift Key Item ID", 5681).getInt();
-		ItemQuartzDoorID = config.getItem("Quartz Door Item ID", 5681).getInt();
-		ItemPersonalDimDoorID = config.getItem("Personal Dim Door ID", 5681).getInt();
-
-		LimboBlockID = config.getTerrainBlock("World Generation Block IDs - must be less than 256", "Limbo Block ID", 217,
-				"Blocks used for the terrain in Limbo").getInt();
-		PermaFabricBlockID = config.getTerrainBlock("World Generation Block IDs - must be less than 256",
-				"Perma Fabric Block ID", 220, "Blocks used for enclosing pocket dimensions").getInt();
-
 		LimboDimensionID = config.get(CATEGORY_DIMENSION, "Limbo Dimension ID", -23).getInt();
 		PocketProviderID = config.get(CATEGORY_PROVIDER, "Pocket Provider ID", 124).getInt();
 		LimboProviderID = config.get(CATEGORY_PROVIDER, "Limbo Provider ID", 113).getInt();
@@ -259,14 +185,6 @@ public class DDProperties
 		PocketBiomeID = config.get(CATEGORY_BIOME, "Pocket Biome ID", 149).getInt();
 
 		config.save();
-		
-		// Unfortunately, there are users out there who have been misconfiguring the worldgen blocks to have IDs above 255.
-		// This leads to disastrous and cryptic errors in other areas of Minecraft. To prevent headaches, we'll throw
-		// an exception here if the blocks have invalid IDs.
-		if (LimboBlockID > 255 || PermaFabricBlockID > 255)
-		{
-			throw new IllegalStateException("World generation blocks MUST have block IDs less than 256. Fix your configuration!");
-		}
 	}
 	
 	public static DDProperties initialize(File configFile)

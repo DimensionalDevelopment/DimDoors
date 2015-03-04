@@ -27,11 +27,11 @@ public class Schematic {
 	protected short height;
 	protected short length;
 
-	protected short[] blocks;
+	protected String[] blocks;
 	protected byte[] metadata;
 	protected NBTTagList tileEntities;
 
-	protected Schematic(short width, short height, short length, short[] blocks, byte[] metadata, NBTTagList tileEntities)
+	protected Schematic(short width, short height, short length, String[] blocks, byte[] metadata, NBTTagList tileEntities)
 	{
 		this.width = width;
 		this.height = height;
@@ -96,9 +96,9 @@ public class Schematic {
 		return length;
 	}
 	
-	public short getBlockID(int x, int y, int z)
+	public Block getBlock(int x, int y, int z)
 	{
-		return blocks[calculateIndex(x, y, z)];
+		return (Block)Block.blockRegistry.getObject(blocks[calculateIndex(x, y, z)]);
 	}
 
 	public byte getBlockMetadata(int x, int y, int z)
@@ -141,7 +141,7 @@ public class Schematic {
 		byte[] metadata = null;			//block metadata
 		byte[] lowBits = null;			//first 8 bits of the block IDs
 		byte[] highBits = null;			//additional 4 bits of the block IDs
-		short[] blocks = null;			//list of combined block IDs
+		String[] blocks = null;			//list of combined block IDs
 		NBTTagList tileEntities = null;	//storage for tile entities in NBT form
 		NBTTagCompound schematicTag;	//the NBT data extracted from the schematic file
 		boolean hasExtendedBlockIDs;	//indicates whether the schematic contains extended block IDs
@@ -186,7 +186,7 @@ public class Schematic {
 			if (volume > 2 * highBits.length && hasExtendedBlockIDs)
 				throw new InvalidSchematicException("The schematic has extended block IDs for fewer blocks than its dimensions indicate.");
 
-			blocks = new short[volume];
+			blocks = new String[volume];
 			if (hasExtendedBlockIDs)
 			{
 				//Combine the split block IDs into a single value
