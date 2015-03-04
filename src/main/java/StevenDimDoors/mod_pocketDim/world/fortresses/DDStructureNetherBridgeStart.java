@@ -10,8 +10,9 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import net.minecraft.world.gen.structure.StructureNetherBridgePieces;
+import net.minecraft.world.gen.structure.StructureStart;
 
-public class DDStructureNetherBridgeStart extends StructureNetherBridgePieces.Start
+public class DDStructureNetherBridgeStart extends StructureStart
 {
 	public static final int MAX_GATEWAY_GENERATION_CHANCE = 100;
 	
@@ -25,7 +26,7 @@ public class DDStructureNetherBridgeStart extends StructureNetherBridgePieces.St
 	public DDStructureNetherBridgeStart(World world, Random random, int chunkX, int chunkZ, DDProperties properties)
     {
 		// StructureNetherBridgeStart handles designing the fortress for us
-    	super(random, chunkX, chunkZ);
+    	super(chunkX, chunkZ);
     	
     	Iterator componentIterator;
     	StructureComponent component;

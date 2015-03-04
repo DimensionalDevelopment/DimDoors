@@ -1,13 +1,15 @@
 package StevenDimDoors.mod_pocketDim.ticking;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
 import StevenDimDoors.mod_pocketDim.core.DDTeleporter;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.relauncher.Side;
 
-public class ServerTickHandler implements ITickHandler, IRegularTickSender
+public class ServerTickHandler implements IRegularTickSender
 {
 	private static final String PROFILING_LABEL = "Dimensional Doors: Server Tick";
 	
@@ -32,10 +34,19 @@ public class ServerTickHandler implements ITickHandler, IRegularTickSender
 		receivers.clear();
 	}
 
-	@Override
-	public void tickStart(EnumSet<TickType> type, Object... tickData) 
-	{
-		if (type.equals(EnumSet.of(TickType.SERVER)))
+	@SubscribeEvent
+	public void tickEvent(TickEvent event) {
+        if (event.side != Side.SERVER)
+            return;
+
+        if (event.phase == TickEvent.Phase.START)
+            tickStart(event.type);
+        else if (event.phase == TickEvent.Phase.END)
+            tickEnd(event.type);
+    }
+
+    private void tickStart(TickEvent.Type type) {
+		if (type.equals(EnumSet.of(TickEvent.Type.SERVER)))
 		{
 			for (RegularTickReceiverInfo info : receivers)
 			{
@@ -54,8 +65,7 @@ public class ServerTickHandler implements ITickHandler, IRegularTickSender
 		}
 	}
 
-	@Override
-	public void tickEnd(EnumSet<TickType> type, Object... tickData)
+	private void tickEnd(TickEvent.Type type)
 	{
 		for (RegularTickReceiverInfo info : receivers)
 		{
@@ -65,17 +75,5 @@ public class ServerTickHandler implements ITickHandler, IRegularTickSender
 			}
 		}
 		tickCount++; //There is no need to reset the counter. Let it overflow.
-	}
-
-	@Override
-	public EnumSet<TickType> ticks()
-	{
-		return EnumSet.of(TickType.SERVER);
-	}
-
-	@Override
-	public String getLabel()
-	{
-		return PROFILING_LABEL; //Used for profiling!
 	}
 }

@@ -33,12 +33,12 @@ public class FillContainersOperation extends WorldOperation
 	@Override
 	protected boolean applyToBlock(World world, int x, int y, int z)
 	{
-		int blockID = world.getBlockId(x, y, z);
+		Block block = world.getBlock(x, y, z);
 
 		// Fill empty chests and dispensers
-		if (Block.blocksList[blockID] instanceof BlockContainer)
+		if (block instanceof BlockContainer)
 		{
-			TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+			TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 			// Fill chests
 			if (tileEntity instanceof TileEntityChest)

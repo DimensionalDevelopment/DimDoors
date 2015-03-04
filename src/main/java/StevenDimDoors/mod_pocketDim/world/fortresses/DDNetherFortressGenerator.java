@@ -15,7 +15,7 @@ public class DDNetherFortressGenerator extends MapGenNetherBridge
     	// If we don't do this, Minecraft will crash when a fortress tries to generate.
     	// Moreover, use Fortress as our structure identifier so that if DD is removed,
     	// fortresses will generate properly using Vanilla code.
-    	MapGenStructureIO.func_143034_b(DDStructureNetherBridgeStart.class, "Fortress");
+    	MapGenStructureIO.func_143031_a(DDStructureNetherBridgeStart.class, "Fortress");
     }
 
     @Override

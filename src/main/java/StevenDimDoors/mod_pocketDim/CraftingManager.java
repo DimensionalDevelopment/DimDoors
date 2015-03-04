@@ -1,6 +1,8 @@
 package StevenDimDoors.mod_pocketDim;
 
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,10 +16,9 @@ import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DDLock;
 import StevenDimDoors.mod_pocketDim.items.ItemDDKey;
 import StevenDimDoors.mod_pocketDim.items.behaviors.DispenserBehaviorStabilizedRS;
-import cpw.mods.fml.common.ICraftingHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class CraftingManager implements ICraftingHandler
+public class CraftingManager
 {
 	CraftingManager() { }
 	
@@ -123,19 +124,19 @@ public class CraftingManager implements ICraftingHandler
 		
 	}
 
-	@Override
-	public void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix)
+	@SubscribeEvent
+	public void onCrafting(PlayerEvent.ItemCraftedEvent event)
 	{
-		if(item.getItem() instanceof ItemDDKey)
+		if(event.crafting.getItem() instanceof ItemDDKey)
 		{
-			ItemDDKey keyItem = (ItemDDKey) item.getItem();
+			ItemDDKey keyItem = (ItemDDKey) event.crafting.getItem();
 			ItemStack topKey = null;
 			ItemStack bottomKey = null;
 			int topKeySlot = 0;
 			
-			for(int i = 0; i<craftMatrix.getSizeInventory();i++)
+			for(int i = 0; i<event.craftMatrix.getSizeInventory();i++)
 			{
-				ItemStack slot = craftMatrix.getStackInSlot(i);
+				ItemStack slot = event.craftMatrix.getStackInSlot(i);
 				if(slot!=null)
 				{
 					if(topKey==null)
@@ -151,16 +152,9 @@ public class CraftingManager implements ICraftingHandler
 				}
 			}
 			DDLock.addKeys(bottomKey, DDLock.getKeys(topKey));
-			item.setTagCompound(bottomKey.getTagCompound());
-			player.inventory.addItemStackToInventory(topKey);
+			event.crafting.setTagCompound(bottomKey.getTagCompound());
+			event.player.inventory.addItemStackToInventory(topKey);
 		}
-		
-	}
-
-	@Override
-	public void onSmelting(EntityPlayer player, ItemStack item)
-	{
-		// TODO Auto-generated method stub
 		
 	}
 	

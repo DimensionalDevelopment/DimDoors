@@ -3,6 +3,7 @@ package StevenDimDoors.experimental;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -16,7 +17,7 @@ public class MazeBuilder
 	{
 		MazeDesign design = MazeDesigner.generate(random);
 		Point3D offset = new Point3D(x - design.width() / 2, y - design.height() - 1, z - design.length() / 2);
-		SphereDecayOperation decay = new SphereDecayOperation(random, 0, 0, Block.stoneBrick.blockID, 2);
+		SphereDecayOperation decay = new SphereDecayOperation(random, Blocks.air, 0, Blocks.stonebrick, 2);
 		
 		buildRooms(design.getRoomGraph(), world, offset);
 		carveDoorways(design.getRoomGraph(), world, offset, decay, random);
@@ -37,7 +38,7 @@ public class MazeBuilder
 		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes())
 		{
 			PartitionNode room = node.data();
-			buildBox(world, offset, room.minCorner(), room.maxCorner(), Block.stoneBrick.blockID, 0);
+			buildBox(world, offset, room.minCorner(), room.maxCorner(), Blocks.stonebrick, 0);
 		}
 	}
 	
@@ -146,28 +147,28 @@ public class MazeBuilder
 	
 	private static void carveDoorAlongX(World world, int x, int y, int z)
 	{
-		setBlockDirectly(world, x, y, z, 0, 0);
-		setBlockDirectly(world, x, y + 1, z, 0, 0);
-		setBlockDirectly(world, x + 1, y, z, 0, 0);
-		setBlockDirectly(world, x + 1, y + 1, z, 0, 0);
+		setBlockDirectly(world, x, y, z, Blocks.air, 0);
+		setBlockDirectly(world, x, y + 1, z, Blocks.air, 0);
+		setBlockDirectly(world, x + 1, y, z, Blocks.air, 0);
+		setBlockDirectly(world, x + 1, y + 1, z, Blocks.air, 0);
 	}
 	
 	private static void carveDoorAlongZ(World world, int x, int y, int z)
 	{
-		setBlockDirectly(world, x, y, z, 0, 0);
-		setBlockDirectly(world, x, y + 1, z, 0, 0);
-		setBlockDirectly(world, x, y, z + 1, 0, 0);
-		setBlockDirectly(world, x, y + 1, z + 1, 0, 0);
+		setBlockDirectly(world, x, y, z, Blocks.air, 0);
+		setBlockDirectly(world, x, y + 1, z, Blocks.air, 0);
+		setBlockDirectly(world, x, y, z + 1, Blocks.air, 0);
+		setBlockDirectly(world, x, y + 1, z + 1, Blocks.air, 0);
 	}
 	
 	private static void carveHole(World world, int x, int y, int z)
 	{
-		setBlockDirectly(world, x, y, z, 0, 0);
-		setBlockDirectly(world, x, y + 1, z, 0, 0);
+		setBlockDirectly(world, x, y, z, Blocks.air, 0);
+		setBlockDirectly(world, x, y + 1, z, Blocks.air, 0);
 	}
 
 	
-	private static void buildBox(World world, Point3D offset, Point3D minCorner, Point3D maxCorner, int blockID, int metadata)
+	private static void buildBox(World world, Point3D offset, Point3D minCorner, Point3D maxCorner, Block block, int metadata)
 	{
 		int minX = minCorner.getX() + offset.getX();
 		int minY = minCorner.getY() + offset.getY();
@@ -183,35 +184,30 @@ public class MazeBuilder
 		{
 			for (z = minZ; z <= maxZ; z++)
 			{
-				setBlockDirectly(world, x, minY, z, blockID, metadata);
-				setBlockDirectly(world, x, maxY, z, blockID, metadata);
+				setBlockDirectly(world, x, minY, z, block, metadata);
+				setBlockDirectly(world, x, maxY, z, block, metadata);
 			}
 		}
 		for (x = minX; x <= maxX; x++)
 		{
 			for (y = minY; y <= maxY; y++)
 			{
-				setBlockDirectly(world, x, y, minZ, blockID, metadata);
-				setBlockDirectly(world, x, y, maxZ, blockID, metadata);
+				setBlockDirectly(world, x, y, minZ, block, metadata);
+				setBlockDirectly(world, x, y, maxZ, block, metadata);
 			}
 		}
 		for (z = minZ; z <= maxZ; z++)
 		{
 			for (y = minY; y <= maxY; y++)
 			{
-				setBlockDirectly(world, minX, y, z, blockID, metadata);
-				setBlockDirectly(world, maxX, y, z, blockID, metadata);
+				setBlockDirectly(world, minX, y, z, block, metadata);
+				setBlockDirectly(world, maxX, y, z, block, metadata);
 			}
 		}
 	}
 	
-	private static void setBlockDirectly(World world, int x, int y, int z, int blockID, int metadata)
+	private static void setBlockDirectly(World world, int x, int y, int z, Block block, int metadata)
 	{
-		if (blockID != 0 && Block.blocksList[blockID] == null)
-		{
-			return;
-		}
-
 		int cX = x >> 4;
 		int cZ = z >> 4;
 		int cY = y >> 4;
@@ -228,7 +224,7 @@ public class MazeBuilder
 			extBlockStorage = new ExtendedBlockStorage(cY << 4, !world.provider.hasNoSky);
 			chunk.getBlockStorageArray()[cY] = extBlockStorage;
 		}
-		extBlockStorage.setExtBlockID(localX, y & 15, localZ, blockID);
+		extBlockStorage.setExtBlockID(localX, y & 15, localZ, block);
 		extBlockStorage.setExtBlockMetadata(localX, y & 15, localZ, metadata);
 		chunk.setChunkModified();
 	}

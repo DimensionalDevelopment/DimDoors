@@ -2,6 +2,9 @@ package StevenDimDoors.mod_pocketDim.core;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -381,7 +384,7 @@ public class DDTeleporter
 			newWorld.getChunkProvider().loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
 			// Tell Forge we're moving its players so everyone else knows.
 			// Let's try doing this down here in case this is what's killing NEI.
-			GameRegistry.onPlayerChangedDimension((EntityPlayer)entity);
+            FMLCommonHandler.instance().firePlayerChangedDimensionEvent((EntityPlayer)entity, oldWorld.provider.dimensionId, newWorld.provider.dimensionId);
 		}
 		DDTeleporter.placeInPortal(entity, newWorld, destination, properties, checkOrientation);
 		return entity;    

@@ -34,7 +34,7 @@ public class PocketProvider extends WorldProvider
 	@Override
 	protected void registerWorldChunkManager()
 	{
-		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.pocketBiome, 1, 1);
+		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.pocketBiome, 1);
 	}
 	
 	@Override
@@ -47,14 +47,14 @@ public class PocketProvider extends WorldProvider
 	public Vec3 getSkyColor(Entity cameraEntity, float partialTicks)
 	{
 		setCloudRenderer( new CloudRenderBlank());
-		return this.worldObj.getWorldVec3Pool().getVecFromPool(0d, 0d, 0d);
+		return Vec3.createVectorHelper(0d, 0d, 0d);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public Vec3 getFogColor(float par1, float par2)
 	{
-		return this.worldObj.getWorldVec3Pool().getVecFromPool(0d, 0d, 0d);
+		return Vec3.createVectorHelper(0d, 0d, 0d);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class PocketProvider extends WorldProvider
 	}
 
 	@Override
-	public boolean canSnowAt(int x, int y, int z)
+	public boolean canSnowAt(int x, int y, int z, boolean light)
 	{
 		return false;
 	}

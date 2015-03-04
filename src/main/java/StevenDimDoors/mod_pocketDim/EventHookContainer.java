@@ -1,5 +1,7 @@
 package StevenDimDoors.mod_pocketDim;
 
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.audio.SoundManager;
 import net.minecraft.client.audio.SoundPoolEntry;
 import net.minecraft.entity.Entity;
@@ -11,8 +13,6 @@ import net.minecraft.world.WorldProvider;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.event.sound.PlayBackgroundMusicEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
-import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -59,7 +59,7 @@ public class EventHookContainer
 		this.regenerator = regenerator;
 	}
 
-	@ForgeSubscribe(priority = EventPriority.LOW)
+    @SubscribeEvent(priority = EventPriority.LOW)
 	public void onInitMapGen(InitMapGenEvent event)
 	{
 		// Replace the Nether fortress generator with our own only if any
@@ -74,7 +74,7 @@ public class EventHookContainer
 	}
 
 	@SideOnly(Side.CLIENT)
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onSoundLoad(SoundLoadEvent event)
 	{
 		event.manager.addSound(mod_pocketDim.modid + ":doorLockRemoved.ogg");
@@ -93,7 +93,7 @@ public class EventHookContainer
 	}
 
 	@SideOnly(Side.CLIENT)
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onSoundEffectResult(PlayBackgroundMusicEvent event)
 	{
 		if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID)
@@ -102,7 +102,7 @@ public class EventHookContainer
 		}
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onPlayerEvent(PlayerInteractEvent event)
 	{
 		// Handle all door placement here
@@ -135,7 +135,7 @@ public class EventHookContainer
 		
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onWorldLoad(WorldEvent.Load event)
 	{
 		// We need to initialize PocketManager here because onServerAboutToStart
@@ -153,13 +153,13 @@ public class EventHookContainer
 		}
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onPlayerFall(LivingFallEvent event)
 	{
 		event.setCanceled(event.entity.worldObj.provider.dimensionId == properties.LimboDimensionID);
 	}
 
-	@ForgeSubscribe(priority = EventPriority.HIGHEST)
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public boolean onDeathWithHighPriority(LivingDeathEvent event)
 	{
 		// Teleport the entity to Limbo if it's a player in a pocket dimension
@@ -175,7 +175,7 @@ public class EventHookContainer
 			if(entity.worldObj.provider instanceof PocketProvider)
 			{
 				EntityPlayer player = (EntityPlayer) entity;
-				mod_pocketDim.deathTracker.addUsername(player.username);
+				mod_pocketDim.deathTracker.addUsername(player.getGameProfile().getName());
 				revivePlayerInLimbo(player);
 				event.setCanceled(true);
 				return false;
@@ -192,7 +192,7 @@ public class EventHookContainer
 		return true;
 	}
 
-	@ForgeSubscribe(priority = EventPriority.LOWEST)
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public boolean onDeathWithLowPriority(LivingDeathEvent event)
 	{
 		// This low-priority handler gives mods a chance to save a player from
@@ -206,7 +206,7 @@ public class EventHookContainer
 		if (entity instanceof EntityPlayer && isValidSourceForLimbo(entity.worldObj.provider))
 		{
 			EntityPlayer player = (EntityPlayer) entity;
-			mod_pocketDim.deathTracker.addUsername(player.username);
+			mod_pocketDim.deathTracker.addUsername(player.getGameProfile().getName());
 
 			if (properties.LimboEnabled && !properties.LimboReturnsInventoryEnabled)
 			{
@@ -240,7 +240,7 @@ public class EventHookContainer
 		DDTeleporter.teleportEntity(player, destination, false);
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onWorldSave(WorldEvent.Save event)
 	{
 		if (event.world.provider.dimensionId == 0)
@@ -254,7 +254,7 @@ public class EventHookContainer
 		}
 	}
 	
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void onChunkLoad(ChunkEvent.Load event)
 	{
 		// Schedule rift regeneration for any links located in this chunk.

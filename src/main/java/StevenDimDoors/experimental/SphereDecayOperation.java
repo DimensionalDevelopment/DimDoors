@@ -29,18 +29,18 @@ public class SphereDecayOperation extends WorldOperation
 	private double centerX;
 	private double centerY;
 	private double centerZ;
-	private int primaryBlockID;
+	private Block primaryBlock;
 	private int primaryMetadata;
-	private int secondaryBlockID;
+	private Block secondaryBlock;
 	private int secondaryMetadata;
 	
-	public SphereDecayOperation(Random random, int primaryBlockID, int primaryMetadata, int secondaryBlockID, int secondaryMetadata)
+	public SphereDecayOperation(Random random, Block primaryBlock, int primaryMetadata, Block secondaryBlock, int secondaryMetadata)
 	{
 		super("SphereDecayOperation");
 		this.random = random;
-		this.primaryBlockID = primaryBlockID;
+		this.primaryBlock = primaryBlock;
 		this.primaryMetadata = primaryMetadata;
-		this.secondaryBlockID = secondaryBlockID;
+		this.secondaryBlock = secondaryBlock;
 		this.secondaryMetadata = secondaryMetadata;
 	}
 	
@@ -72,11 +72,11 @@ public class SphereDecayOperation extends WorldOperation
 			
 			if (squareDistance < 0.5 || random.nextDouble() < scaling / squareDistance)
 			{
-				world.setBlock(x, y, z, primaryBlockID, primaryMetadata, 1);
+				world.setBlock(x, y, z, primaryBlock, primaryMetadata, 1);
 			}
 			else if (random.nextDouble() < scaling / squareDistance)
 			{
-				world.setBlock(x, y, z, secondaryBlockID, secondaryMetadata, 1);
+				world.setBlock(x, y, z, secondaryBlock, secondaryMetadata, 1);
 			}
 		}
 		return true;

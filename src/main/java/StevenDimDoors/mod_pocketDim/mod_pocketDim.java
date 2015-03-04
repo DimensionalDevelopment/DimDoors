@@ -1,6 +1,8 @@
 package StevenDimDoors.mod_pocketDim;
 
 import java.io.File;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -189,7 +191,7 @@ public class mod_pocketDim
 	{
 		// Initialize ServerTickHandler instance
 		serverTickHandler = new ServerTickHandler();
-		TickRegistry.registerTickHandler(serverTickHandler, Side.SERVER);
+        FMLCommonHandler.instance().bus().register(serverTickHandler);
 		
 		// Initialize LimboDecay instance: required for BlockLimbo
 		limboDecay = new LimboDecay(properties);
@@ -307,7 +309,7 @@ public class mod_pocketDim
 
 		CraftingManager.registerRecipes(properties);
 		CraftingManager.registerDispenserBehaviors();
-		GameRegistry.registerCraftingHandler(new CraftingManager());
+        FMLCommonHandler.instance().bus().register(new CraftingManager());
 
 		DungeonHelper.initialize();
 		gatewayGenerator = new GatewayGenerator(properties);

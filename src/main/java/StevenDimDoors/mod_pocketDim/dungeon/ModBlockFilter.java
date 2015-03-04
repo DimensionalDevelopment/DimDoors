@@ -36,7 +36,7 @@ public class ModBlockFilter extends SchematicFilter {
 				}
 			}
 			//No matching exception found. Replace the block.
-			blocks[index] = replacementBlockID;
+			blocks[index] = replacementBlock;
 			metadata[index] = replacementMetadata;
 			return true;
 		}
