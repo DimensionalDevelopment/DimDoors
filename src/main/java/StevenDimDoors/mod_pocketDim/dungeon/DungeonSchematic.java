@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeMap;
+
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -37,15 +39,6 @@ import StevenDimDoors.mod_pocketDim.util.Point4D;
 
 public class DungeonSchematic extends Schematic {
 
-	private static final short MAX_VANILLA_BLOCK_ID = 173;
-	private static final short STANDARD_FABRIC_OF_REALITY_ID = 1973;
-	private static final short STANDARD_ETERNAL_FABRIC_ID = 220;
-	private static final short STANDARD_WARP_DOOR_ID = 1975;
-	private static final short STANDARD_DIMENSIONAL_DOOR_ID = 1970;
-	private static final short STANDARD_TRANSIENT_DOOR_ID = 1979;
-
-	private static final short MONOLITH_SPAWN_MARKER_ID = (short) Block.endPortalFrame.blockID;
-	private static final short EXIT_DOOR_MARKER_ID = (short) Block.sandStone.blockID;
 	private static final int NETHER_DIMENSION_ID = -1;
 	
 	private int orientation;
@@ -53,18 +46,17 @@ public class DungeonSchematic extends Schematic {
 	private ArrayList<Point3D> exitDoorLocations;
 	private ArrayList<Point3D> dimensionalDoorLocations;
 	private ArrayList<Point3D> monolithSpawnLocations;
-	
-	private static final short[] MOD_BLOCK_FILTER_EXCEPTIONS = new short[] {
-		STANDARD_FABRIC_OF_REALITY_ID,
-		STANDARD_ETERNAL_FABRIC_ID,
-		STANDARD_WARP_DOOR_ID,
-		STANDARD_DIMENSIONAL_DOOR_ID,
-		STANDARD_TRANSIENT_DOOR_ID
-	};
-	
+	private ArrayList<Block> modBlockFilterExceptions;
+
 	private DungeonSchematic(Schematic source)
 	{
 		super(source);
+        modBlockFilterExceptions = new ArrayList<Block>(5);
+        modBlockFilterExceptions.add(mod_pocketDim.blockDimWall);
+        modBlockFilterExceptions.add(mod_pocketDim.blockDimWallPerm);
+        modBlockFilterExceptions.add(mod_pocketDim.warpDoor);
+        modBlockFilterExceptions.add(mod_pocketDim.dimensionalDoor);
+        modBlockFilterExceptions.add(mod_pocketDim.transientDoor);
 	}
 	
 	public int getOrientation()
@@ -109,8 +101,8 @@ public class DungeonSchematic extends Schematic {
 	public void applyImportFilters(DDProperties properties)
 	{
 		//Search for special blocks (warp doors, dim doors, and end portal frames that mark Monolith spawn points)
-		SpecialBlockFinder finder = new SpecialBlockFinder(STANDARD_WARP_DOOR_ID, STANDARD_DIMENSIONAL_DOOR_ID,
-				MONOLITH_SPAWN_MARKER_ID, EXIT_DOOR_MARKER_ID);
+		SpecialBlockFinder finder = new SpecialBlockFinder(mod_pocketDim.warpDoor, mod_pocketDim.dimensionalDoor,
+				Blocks.end_portal_frame, Blocks.sandstone);
 		applyFilter(finder);
 		
 		//Flip the entrance's orientation to get the dungeon's orientation
@@ -123,19 +115,10 @@ public class DungeonSchematic extends Schematic {
 		
 		//Filter out mod blocks except some of our own
 		CompoundFilter standardizer = new CompoundFilter();
-		standardizer.addFilter(new ModBlockFilter(MAX_VANILLA_BLOCK_ID, MOD_BLOCK_FILTER_EXCEPTIONS,
-				(short) properties.FabricBlockID, (byte) 0));
+		standardizer.addFilter(new ModBlockFilter(modBlockFilterExceptions,
+                mod_pocketDim.blockDimWall, (byte) 0));
 		
 		//Also convert standard DD block IDs to local versions
-		Map<Short, Short> mapping = getAssignedToStandardIDMapping(properties);
-		
-		for (Entry<Short, Short> entry : mapping.entrySet())
-		{
-			if (entry.getKey() != entry.getValue())
-			{
-				standardizer.addFilter(new ReplacementFilter(entry.getValue(), entry.getKey()));
-			}
-		}
 		applyFilter(standardizer);
 	}
 	
@@ -144,36 +127,15 @@ public class DungeonSchematic extends Schematic {
 		//Check if some block IDs assigned by Forge differ from our standard IDs
 		//If so, change the IDs to standard values
 		CompoundFilter standardizer = new CompoundFilter();
-		Map<Short, Short> mapping = getAssignedToStandardIDMapping(properties);
-		
-		for (Entry<Short, Short> entry : mapping.entrySet())
-		{
-			if (entry.getKey() != entry.getValue())
-			{
-				standardizer.addFilter(new ReplacementFilter(entry.getKey(), entry.getValue()));
-			}
-		}
 		
 		//Filter out mod blocks except some of our own
 		//This comes after ID standardization because the mod block filter relies on standardized IDs
-		standardizer.addFilter(new ModBlockFilter(MAX_VANILLA_BLOCK_ID, MOD_BLOCK_FILTER_EXCEPTIONS,
-				STANDARD_FABRIC_OF_REALITY_ID, (byte) 0));
+		standardizer.addFilter(new ModBlockFilter(modBlockFilterExceptions,
+				mod_pocketDim.blockDimWall, (byte) 0));
 		
 		applyFilter(standardizer);
 	}
-	
-	private static Map<Short, Short> getAssignedToStandardIDMapping(DDProperties properties)
-	{
-		//If we ever need this broadly or support other mods, this should be moved to a separate class
-		TreeMap<Short, Short> mapping = new TreeMap<Short, Short>();
-		mapping.put((short) properties.FabricBlockID, STANDARD_FABRIC_OF_REALITY_ID);
-		mapping.put((short) properties.PermaFabricBlockID, STANDARD_ETERNAL_FABRIC_ID);
-		mapping.put((short) properties.WarpDoorID, STANDARD_WARP_DOOR_ID);
-		mapping.put((short) properties.DimensionalDoorID, STANDARD_DIMENSIONAL_DOOR_ID);
-		mapping.put((short) properties.TransientDoorID, STANDARD_TRANSIENT_DOOR_ID);
-		return mapping;
-	}
-	
+
 	public static DungeonSchematic copyFromWorld(World world, int x, int y, int z, short width, short height, short length, boolean doCompactBounds)
 	{
 		return new DungeonSchematic(Schematic.copyFromWorld(world, x, y, z, width, height, length, doCompactBounds));

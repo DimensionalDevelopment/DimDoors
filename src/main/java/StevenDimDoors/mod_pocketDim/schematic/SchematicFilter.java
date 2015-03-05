@@ -1,5 +1,7 @@
 package StevenDimDoors.mod_pocketDim.schematic;
 
+import net.minecraft.block.Block;
+
 public class SchematicFilter {
 
 	private String name;
@@ -14,7 +16,7 @@ public class SchematicFilter {
 		return name;
 	}
 	
-	public boolean apply(Schematic schematic, short[] blocks, byte[] metadata)
+	public boolean apply(Schematic schematic, Block[] blocks, byte[] metadata)
 	{
 		if (!initialize(schematic, blocks, metadata))
 			return false;
@@ -28,12 +30,12 @@ public class SchematicFilter {
 		return finish();
 	}
 	
-	protected boolean initialize(Schematic schematic, short[] blocks, byte[] metadata)
+	protected boolean initialize(Schematic schematic, Block[] blocks, byte[] metadata)
 	{
 		return true;
 	}
 	
-	protected boolean applyToBlock(int index, short[] blocks, byte[] metadata)
+	protected boolean applyToBlock(int index, Block[] blocks, byte[] metadata)
 	{
 		return true;
 	}

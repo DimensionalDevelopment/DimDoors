@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import StevenDimDoors.mod_pocketDim.Point3D;
 import StevenDimDoors.mod_pocketDim.schematic.Schematic;
 import StevenDimDoors.mod_pocketDim.schematic.SchematicFilter;
+import net.minecraft.block.Block;
 
 public class SpecialBlockFinder extends SchematicFilter {
 
-	private short warpDoorID;
-	private short dimensionalDoorID;
-	private short monolithSpawnMarkerID;
-	private short exitMarkerID;
+	private Block warpDoor;
+    private Block dimensionalDoor;
+    private Block monolithSpawnMarker;
+    private Block exitMarker;
 	private int entranceOrientation;
 	private Schematic schematic;
 	private Point3D entranceDoorLocation;
@@ -19,13 +20,13 @@ public class SpecialBlockFinder extends SchematicFilter {
 	private ArrayList<Point3D> dimensionalDoorLocations;
 	private ArrayList<Point3D> monolithSpawnLocations;
 	
-	public SpecialBlockFinder(short warpDoorID, short dimensionalDoorID, short monolithSpawnMarkerID, short exitMarkerID)
+	public SpecialBlockFinder(Block warpDoor, Block dimensionalDoor, Block monolithSpawn, Block exitDoor)
 	{
 		super("SpecialBlockFinder");
-		this.warpDoorID = warpDoorID;
-		this.dimensionalDoorID = dimensionalDoorID;
-		this.monolithSpawnMarkerID = monolithSpawnMarkerID;
-		this.exitMarkerID = exitMarkerID;
+		this.warpDoor = warpDoor;
+        this.dimensionalDoor = dimensionalDoor;
+        this.monolithSpawnMarker = monolithSpawn;
+        this.exitMarker = exitDoor;
 		this.entranceDoorLocation = null;
 		this.entranceOrientation = 0;
 		this.exitDoorLocations = new ArrayList<Point3D>();
@@ -55,27 +56,27 @@ public class SpecialBlockFinder extends SchematicFilter {
 	}
 	
 	@Override
-	protected boolean initialize(Schematic schematic, short[] blocks, byte[] metadata)
+	protected boolean initialize(Schematic schematic, Block[] blocks, byte[] metadata)
 	{
 		this.schematic = schematic;
 		return true;
 	}
 	
 	@Override
-	protected boolean applyToBlock(int index, short[] blocks, byte[] metadata)
+	protected boolean applyToBlock(int index, Block[] blocks, byte[] metadata)
 	{
 		int indexBelow;
 		int indexDoubleBelow;
 		
-		if (blocks[index] == monolithSpawnMarkerID)
+		if (blocks[index] == monolithSpawnMarker)
 		{
 			monolithSpawnLocations.add(schematic.calculatePoint(index));
 			return true;
 		}
-		if (blocks[index] == dimensionalDoorID)
+		if (blocks[index] == dimensionalDoor)
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == dimensionalDoorID)
+			if (indexBelow >= 0 && blocks[indexBelow] == dimensionalDoor)
 			{
 				dimensionalDoorLocations.add(schematic.calculatePoint(index));
 				return true;
@@ -85,13 +86,13 @@ public class SpecialBlockFinder extends SchematicFilter {
 				return false;
 			}
 		}
-		if (blocks[index] == warpDoorID)
+		if (blocks[index] == warpDoor)
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == warpDoorID)
+			if (indexBelow >= 0 && blocks[indexBelow] == warpDoor)
 			{
 				indexDoubleBelow = schematic.calculateIndexBelow(indexBelow);
-				if (indexDoubleBelow >= 0 && blocks[indexDoubleBelow] == exitMarkerID)
+				if (indexDoubleBelow >= 0 && blocks[indexDoubleBelow] == exitMarker)
 				{
 					exitDoorLocations.add(schematic.calculatePoint(index));
 					return true;

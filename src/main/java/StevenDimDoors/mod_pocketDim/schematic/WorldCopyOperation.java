@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim.schematic;
 
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -11,14 +12,14 @@ public class WorldCopyOperation extends WorldOperation
 	private int originY;
 	private int originZ;
 	private int index;
-	private short[] blockIDs;
+	private Block[] blocks;
 	private byte[] metadata;
 	private NBTTagList tileEntities;
 	
 	public WorldCopyOperation()
 	{
 		super("WorldCopyOperation");
-		blockIDs = null;
+		blocks = null;
 		metadata = null;
 		tileEntities = null;
 	}
@@ -30,7 +31,7 @@ public class WorldCopyOperation extends WorldOperation
 		originX = x;
 		originY = y;
 		originZ = z;
-		blockIDs = new short[width * height * length];
+		blocks = new Block[width * height * length];
 		metadata = new byte[width * height * length];
 		tileEntities = new NBTTagList();
 		return true;
@@ -39,7 +40,7 @@ public class WorldCopyOperation extends WorldOperation
 	@Override
 	protected boolean applyToBlock(World world, int x, int y, int z)
 	{
-		blockIDs[index] = (short) world.getBlockId(x, y, z);
+		blocks[index] = world.getBlock(x, y, z);
 		metadata[index] = (byte) world.getBlockMetadata(x, y, z);
 		
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
@@ -59,9 +60,9 @@ public class WorldCopyOperation extends WorldOperation
 		return true;
 	}
 	
-	public short[] getBlockIDs()
+	public Block[] getBlocks()
 	{
-		return blockIDs;
+		return blocks;
 	}
 	
 	public byte[] getMetadata()

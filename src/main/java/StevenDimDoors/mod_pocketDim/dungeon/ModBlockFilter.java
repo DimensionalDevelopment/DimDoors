@@ -3,33 +3,33 @@ package StevenDimDoors.mod_pocketDim.dungeon;
 import net.minecraft.block.Block;
 import StevenDimDoors.mod_pocketDim.schematic.SchematicFilter;
 
+import java.util.List;
+
 public class ModBlockFilter extends SchematicFilter {
 
-	private short maxVanillaBlockID;
-	private short[] exceptions;
+	private List<Block> exceptions;
 	private Block replacementBlock;
 	private byte replacementMetadata;
 	
-	public ModBlockFilter(short maxVanillaBlockID, short[] exceptions, Block replacementBlock, byte replacementMetadata)
+	public ModBlockFilter(List<Block> exceptions, Block replacementBlock, byte replacementMetadata)
 	{
 		super("ModBlockFilter");
-		this.maxVanillaBlockID = maxVanillaBlockID;
 		this.exceptions = exceptions;
 		this.replacementBlock = replacementBlock;
 		this.replacementMetadata = replacementMetadata;
 	}
 	
 	@Override
-	protected boolean applyToBlock(int index, short[] blocks, byte[] metadata)
+	protected boolean applyToBlock(int index, Block[] blocks, byte[] metadata)
 	{
 		int k;
-		short currentID = blocks[index];
-		if (currentID > maxVanillaBlockID || (currentID != 0 && Block.blocksList[currentID] == null))
+		Block current = blocks[index];
+		if (!Block.blockRegistry.getNameForObject(current).startsWith("minecraft:"))
 		{
 			//This might be a mod block. Check if an exception exists.
-			for (k = 0; k < exceptions.length; k++)
+			for (k = 0; k < exceptions.size(); k++)
 			{
-				if (currentID == exceptions[k])
+				if (current == exceptions.get(k))
 				{
 					//Exception found, not considered a mod block
 					return false;

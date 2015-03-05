@@ -1,5 +1,7 @@
 package StevenDimDoors.mod_pocketDim.schematic;
 
+import net.minecraft.block.Block;
+
 import java.util.ArrayList;
 
 public class CompoundFilter extends SchematicFilter {
@@ -18,7 +20,7 @@ public class CompoundFilter extends SchematicFilter {
 	}
 	
 	@Override
-	protected boolean initialize(Schematic schematic, short[] blocks, byte[] metadata)
+	protected boolean initialize(Schematic schematic,Block[] blocks, byte[] metadata)
 	{
 		for (SchematicFilter filter : filters)
 		{
@@ -44,7 +46,7 @@ public class CompoundFilter extends SchematicFilter {
 	}
 	
 	@Override
-	protected boolean applyToBlock(int index, short[] blocks, byte[] metadata)
+	protected boolean applyToBlock(int index, Block[] blocks, byte[] metadata)
 	{
 		for (SchematicFilter filter : filters)
 		{

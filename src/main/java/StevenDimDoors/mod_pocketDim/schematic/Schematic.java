@@ -400,7 +400,7 @@ public class Schematic {
 		count = tileEntities.tagCount();
 		for (index = 0; index < count; index++)
 		{
-			NBTTagCompound tileTag = (NBTTagCompound) tileEntities.tagAt(index);
+			NBTTagCompound tileTag = (NBTTagCompound) tileEntities.getCompoundTagAt(index);
 			//Rewrite its location to be in world coordinates
 			dx = tileTag.getInteger("x") + x;
 			dy = tileTag.getInteger("y") + y;
@@ -409,7 +409,7 @@ public class Schematic {
 			tileTag.setInteger("y", dy);
 			tileTag.setInteger("z", dz);
 			//Load the tile entity and put it in the world
-			world.setBlockTileEntity(dx, dy, dz, TileEntity.createAndLoadEntity(tileTag));
+			world.setTileEntity(dx, dy, dz, TileEntity.createAndLoadEntity(tileTag));
 		}
 	}
 }

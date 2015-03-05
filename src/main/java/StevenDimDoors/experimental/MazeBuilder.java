@@ -224,7 +224,7 @@ public class MazeBuilder
 			extBlockStorage = new ExtendedBlockStorage(cY << 4, !world.provider.hasNoSky);
 			chunk.getBlockStorageArray()[cY] = extBlockStorage;
 		}
-		extBlockStorage.setExtBlockID(localX, y & 15, localZ, block);
+		extBlockStorage.func_150818_a(localX, y & 15, localZ, block);
 		extBlockStorage.setExtBlockMetadata(localX, y & 15, localZ, metadata);
 		chunk.setChunkModified();
 	}
