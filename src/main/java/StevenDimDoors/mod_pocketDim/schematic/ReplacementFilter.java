@@ -1,16 +1,18 @@
 package StevenDimDoors.mod_pocketDim.schematic;
 
 
+import net.minecraft.block.Block;
+
 public class ReplacementFilter extends SchematicFilter {
 
-	private short targetBlock;
+	private Block targetBlock;
 	private byte targetMetadata;
 	private boolean matchMetadata;
-	private short replacementBlock;
+	private Block replacementBlock;
 	private byte replacementMetadata;
 	private boolean changeMetadata;
 	
-	public ReplacementFilter(short targetBlock, byte targetMetadata, short replacementBlock, byte replacementMetadata)
+	public ReplacementFilter(Block targetBlock, byte targetMetadata, Block replacementBlock, byte replacementMetadata)
 	{
 		super("ReplacementFilter");
 		this.targetBlock = targetBlock;
@@ -21,7 +23,7 @@ public class ReplacementFilter extends SchematicFilter {
 		this.changeMetadata = true;
 	}
 	
-	public ReplacementFilter(short targetBlock, short replacementBlock, byte replacementMetadata)
+	public ReplacementFilter(Block targetBlock, Block replacementBlock, byte replacementMetadata)
 	{
 		super("ReplacementFilter");
 		this.targetBlock = targetBlock;
@@ -31,7 +33,7 @@ public class ReplacementFilter extends SchematicFilter {
 		this.changeMetadata = true;
 	}
 	
-	public ReplacementFilter(short targetBlock, byte targetMetadata, short replacementBlock)
+	public ReplacementFilter(Block targetBlock, byte targetMetadata, Block replacementBlock)
 	{
 		super("ReplacementFilter");
 		this.targetBlock = targetBlock;
@@ -41,7 +43,7 @@ public class ReplacementFilter extends SchematicFilter {
 		this.changeMetadata = false;
 	}
 	
-	public ReplacementFilter(short targetBlock, short replacementBlock)
+	public ReplacementFilter(Block targetBlock, Block replacementBlock)
 	{
 		super("ReplacementFilter");
 		this.targetBlock = targetBlock;
@@ -51,7 +53,7 @@ public class ReplacementFilter extends SchematicFilter {
 	}
 
 	@Override
-	protected boolean applyToBlock(int index, short[] blocks, byte[] metadata)
+	protected boolean applyToBlock(int index, Block[] blocks, byte[] metadata)
 	{
 		if (blocks[index] == targetBlock)
 		{
