@@ -1,9 +1,6 @@
 package StevenDimDoors.mod_pocketDim.core;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +18,6 @@ import StevenDimDoors.mod_pocketDim.saving.PackedDimData;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
-import StevenDimDoors.mod_pocketDim.watcher.IUpdateSource;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
 import StevenDimDoors.mod_pocketDim.watcher.UpdateWatcherProxy;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -508,8 +504,7 @@ public class PocketManager
 	 * 
 	 * @param dimensionID
 	 * @param parent
-	 * @param isPocket
-	 * @param isDungeon
+	 * @param type
 	 * @return
 	 */
 	private static NewDimData registerDimension(int dimensionID, InnerDimData parent, DimensionType type)
@@ -689,12 +684,7 @@ public class PocketManager
 		return linkWatcher.unregisterReceiver(watcher);
 	}
 
-	public static void getWatchers(IUpdateSource updateSource)
-	{
-		updateSource.registerWatchers(new ClientDimWatcher(), new ClientLinkWatcher());
-	}
-
-	public static void writePacket(DataOutputStream output) throws IOException
+	public static void writePacket(DataOutput output) throws IOException
 	{
 		// Write a very compact description of our dimensions and links to be
 		// sent to a client
@@ -716,7 +706,7 @@ public class PocketManager
 		}
 	}
 
-	public static void readPacket(DataInputStream input) throws IOException
+	public static void readPacket(DataInput input) throws IOException
 	{
 		// TODO- figure out why this is getting called so frequently
 		if (isLoaded)

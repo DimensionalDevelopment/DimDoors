@@ -1,15 +1,21 @@
 package StevenDimDoors.mod_pocketDim;
 
+import StevenDimDoors.mod_pocketDim.network.DimDoorsNetwork;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
+import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
+import net.minecraftforge.common.network.ForgeMessage;
 
-public class ConnectionHandler implements IConnectionHandler
+public class ConnectionHandler
 {
-	@Override
-	public String connectionReceived(NetLoginHandler netHandler, INetworkManager manager)
+	@SubscribeEvent
+	public String connectionReceived(FMLNetworkEvent.ServerConnectionFromClientEvent event)
 	{
 		for(NewDimData data : PocketManager.getDimensions())
 		{
@@ -17,8 +23,9 @@ public class ConnectionHandler implements IConnectionHandler
 			{
 				if(data.isPocketDimension()||data.id()==mod_pocketDim.properties.LimboDimensionID)
 				{
-					Packet250CustomPayload[] pkt = ForgePacket.makePacketSet(new DimensionRegisterPacket(data.id(), DimensionManager.getProviderType(data.id())));
-					manager.addToSendQueue(pkt[0]);
+                    DimDoorsNetwork.sendToPlayer( new ForgeMessage.DimensionRegisterMessage(data.id(), DimensionManager.getProviderType(data.id())), )
+					Packet pkt =
+                    event.manager.scheduleOutboundPacket(pkt[0]);
 				}
 			}
 			catch(Exception E)
@@ -29,14 +36,8 @@ public class ConnectionHandler implements IConnectionHandler
 		return null;
 	}
 
-	@Override
-	public void connectionOpened(NetHandler netClientHandler, String server, int port, INetworkManager manager) { }
-	
-	@Override
-	public void connectionOpened(NetHandler netClientHandler,MinecraftServer server, INetworkManager manager) { }
-
-	@Override
-	public void connectionClosed(INetworkManager manager) 
+	@SubscribeEvent
+	public void connectionClosed(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
 	{
 		if(PocketManager.isConnected)
 		{
@@ -44,11 +45,8 @@ public class ConnectionHandler implements IConnectionHandler
 		}
 	}
 
-	@Override
-	public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login) { }
-
-	@Override
-	public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager)
+	@SubscribeEvent
+	public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
 	{
 		// Hax... please don't do this! >_< 
 		PocketManager.getDimwatcher().onCreated(new ClientDimData(PocketManager.createDimensionDataDangerously(0)));

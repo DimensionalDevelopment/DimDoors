@@ -9,10 +9,10 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
+import net.minecraft.network.Packet;
 
 
-
-public class TileEntityDimDoor extends DDTileEntityBase 
+public class TileEntityDimDoor extends DDTileEntityBase
 {
 	public boolean openOrClosed;
 	public int orientation;

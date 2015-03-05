@@ -1,8 +1,6 @@
 package StevenDimDoors.mod_pocketDim.helpers;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -27,7 +25,7 @@ public class Compactor
 		}
 	}
 	
-	public static void write(Collection<? extends NewDimData> values, DataOutputStream output) throws IOException
+	public static void write(Collection<? extends NewDimData> values, DataOutput output) throws IOException
 	{
 		// SenseiKiwi: Just encode the data straight up for now. I'll implement fancier compression later.
 		output.writeInt(values.size());
@@ -56,7 +54,7 @@ public class Compactor
 		*/
 	}
 
-	public static void readDimensions(DataInputStream input, IDimRegistrationCallback callback) throws IOException
+	public static void readDimensions(DataInput input, IDimRegistrationCallback callback) throws IOException
 	{
 		// Read in the dimensions one by one. Make sure we register root dimensions before
 		// attempting to register the dimensions under them.

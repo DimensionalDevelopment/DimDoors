@@ -1,8 +1,7 @@
 package StevenDimDoors.mod_pocketDim.watcher;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
+
 import StevenDimDoors.mod_pocketDim.core.DimensionType;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 
@@ -27,14 +26,14 @@ public class ClientDimData
 		this.type = dimension.type();
 	}
 	
-	public void write(DataOutputStream output) throws IOException
+	public void write(DataOutput output) throws IOException
 	{
 		output.writeInt(ID);
 		output.writeInt(rootID);
 		output.writeInt(type.index);
 	}
 	
-	public static ClientDimData read(DataInputStream input) throws IOException
+	public static ClientDimData read(DataInput input) throws IOException
 	{
 		int id = input.readInt();
 		int rootID = input.readInt();

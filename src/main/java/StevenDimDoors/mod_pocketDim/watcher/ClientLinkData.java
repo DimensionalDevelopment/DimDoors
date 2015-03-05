@@ -1,8 +1,7 @@
 package StevenDimDoors.mod_pocketDim.watcher;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
+
 import StevenDimDoors.mod_pocketDim.core.DDLock;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkType;
@@ -36,7 +35,7 @@ public class ClientLinkData
 
 	}
 
-	public void write(DataOutputStream output) throws IOException
+	public void write(DataOutput output) throws IOException
 	{
 		Point4D.write(point, output);
 		output.writeInt(this.type.index);
@@ -50,7 +49,7 @@ public class ClientLinkData
 		}
 	}
 
-	public static ClientLinkData read(DataInputStream input) throws IOException
+	public static ClientLinkData read(DataInput input) throws IOException
 	{
 		Point4D point = Point4D.read(input);
 		LinkType type = LinkType.getLinkTypeFromIndex(input.readInt());

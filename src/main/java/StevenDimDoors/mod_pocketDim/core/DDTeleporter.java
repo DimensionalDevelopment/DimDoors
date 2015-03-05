@@ -14,6 +14,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.S07PacketRespawn;
+import net.minecraft.network.play.server.S1DPacketEntityEffect;
+import net.minecraft.network.play.server.S1FPacketSetExperience;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
@@ -298,7 +301,7 @@ public class DDTeleporter
 				  
 				// Set the new dimension and inform the client that it's moving to a new world.
 				player.dimension = destination.getDimension();
-				player.playerNetServerHandler.sendPacketToPlayer(new Packet9Respawn(player.dimension, (byte)player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), newWorld.getHeight(), player.theItemInWorldManager.getGameType()));
+                player.playerNetServerHandler.sendPacket(new S07PacketRespawn(player.dimension, player.worldObj.difficultySetting, newWorld.getWorldInfo().getTerrainType(), player.theItemInWorldManager.getGameType()));
 
 				// GreyMaria: Used the safe player entity remover before.
 				// This should fix an apparently unreported bug where
@@ -321,10 +324,10 @@ public class DDTeleporter
 				for(Object potionEffect : player.getActivePotionEffects())
 				{
 					PotionEffect effect = (PotionEffect)potionEffect;
-					player.playerNetServerHandler.sendPacketToPlayer(new Packet41EntityEffect(player.entityId, effect));
+					player.playerNetServerHandler.sendPacket(new S1DPacketEntityEffect(player.getEntityId(), effect));
 				}
 
-				player.playerNetServerHandler.sendPacketToPlayer(new Packet43Experience(player.experience, player.experienceTotal, player.experienceLevel));
+				player.playerNetServerHandler.sendPacket(new S1FPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
 			}  	
 
 			// Creates sanity by removing the entity from its old location's chunk entity list, if applicable.
@@ -384,7 +387,7 @@ public class DDTeleporter
 			newWorld.getChunkProvider().loadChunk(MathHelper.floor_double(entity.posX) >> 4, MathHelper.floor_double(entity.posZ) >> 4);
 			// Tell Forge we're moving its players so everyone else knows.
 			// Let's try doing this down here in case this is what's killing NEI.
-            FMLCommonHandler.instance().firePlayerChangedDimensionEvent((EntityPlayer)entity, oldWorld.provider.dimensionId, newWorld.provider.dimensionId);
+            FMLCommonHandler.instance().firePlayerChangedDimensionEvent((EntityPlayer) entity, oldWorld.provider.dimensionId, newWorld.provider.dimensionId);
 		}
 		DDTeleporter.placeInPortal(entity, newWorld, destination, properties, checkOrientation);
 		return entity;    
