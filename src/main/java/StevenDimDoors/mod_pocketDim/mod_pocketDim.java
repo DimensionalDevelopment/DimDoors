@@ -247,6 +247,20 @@ public class mod_pocketDim
 		GameRegistry.registerBlock(transTrapdoor,"Transdimensional Trapdoor");
 		GameRegistry.registerBlock(blockDimWallPerm, "Fabric of RealityPerm");
 		GameRegistry.registerBlock(transientDoor, "transientDoor");
+        GameRegistry.registerItem(itemDDKey, "Rift Key");
+        GameRegistry.registerItem(itemQuartzDoor, "Quartz Door Item");
+        GameRegistry.registerItem(itemPersonalDoor, "Personal Dimensional Door Item");
+        GameRegistry.registerItem(itemGoldenDoor, "Golden Door Item");
+        GameRegistry.registerItem(itemGoldenDimensionalDoor, "Golden Dimensional Door Item");
+        GameRegistry.registerItem(itemDimensionalDoor, "Dimensional Door Item");
+        GameRegistry.registerItem(itemWarpDoor, "Warp Door Item");
+        GameRegistry.registerItem(itemRiftSignature, "Rift Signature");
+        GameRegistry.registerItem(itemRiftRemover, "Rift Remover");
+        GameRegistry.registerItem(itemStableFabric, "Stable Fabric Item");
+        GameRegistry.registerItem(itemUnstableDoor, "Unstable Door Item");
+        GameRegistry.registerItem(itemRiftBlade, "Rift Blade");
+        GameRegistry.registerItem(itemStabilizedRiftSignature, "Stabilized Rift Signature");
+        GameRegistry.registerItem(itemWorldThread, "World Thread");
 
 		GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, "Fabric of Reality");
 

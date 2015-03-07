@@ -145,6 +145,9 @@ public class EventHookContainer
 			PocketManager.load();
 		}
 
+        if (FMLClientHandler.instance().getClient().thePlayer == null)
+            return;
+
         if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID &&
                 !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(limboMusic)) {
             Minecraft.getMinecraft().getSoundHandler().playSound(limboMusic);
