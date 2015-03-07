@@ -23,8 +23,7 @@ public class ConnectionHandler
 			{
 				if(data.isPocketDimension()||data.id()==mod_pocketDim.properties.LimboDimensionID)
 				{
-                    DimDoorsNetwork.sendToPlayer( new ForgeMessage.DimensionRegisterMessage(data.id(), DimensionManager.getProviderType(data.id())), )
-					Packet pkt =
+                    DimDoorsNetwork.sendToPlayer( new ForgeMessage.DimensionRegisterMessage(data.id(), DimensionManager.getProviderType(data.id())));
                     event.manager.scheduleOutboundPacket(pkt[0]);
 				}
 			}

@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim.tileentities;
 
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.network.CreateLinkPacket;
 import net.minecraft.nbt.NBTTagCompound;
 import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -9,7 +10,6 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
-import net.minecraft.network.Packet;
 
 
 public class TileEntityDimDoor extends DDTileEntityBase
@@ -32,10 +32,20 @@ public class TileEntityDimDoor extends DDTileEntityBase
 	 {
 		 if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
 		 {
-			 return ServerPacketHandler.createLinkPacket(new ClientLinkData(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)));
+             ClientLinkData linkData = new ClientLinkData(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj));
+             NBTTagCompound tag = new NBTTagCompound();
+             linkData.writeToNBT(tag);
+             return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, tag);
 		 }
 		 return null;
 	 }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        NBTTagCompound tag = pkt.func_148857_g();
+        ClientLinkData linkData = ClientLinkData.readFromNBT(tag);
+        PocketManager.getLinkWatcher().onCreated(linkData);
+    }
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt)

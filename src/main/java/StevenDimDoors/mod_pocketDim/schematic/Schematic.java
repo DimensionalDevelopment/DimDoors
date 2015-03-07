@@ -6,11 +6,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -27,19 +30,30 @@ public class Schematic {
 	protected short height;
 	protected short length;
 
-	protected String[] blocks;
+	protected Block[] blocks;
 	protected byte[] metadata;
 	protected NBTTagList tileEntities;
 
-	protected Schematic(short width, short height, short length, String[] blocks, byte[] metadata, NBTTagList tileEntities)
+	protected Schematic(short width, short height, short length, String[] blockPalette, short[] blockIds, byte[] metadata, NBTTagList tileEntities)
 	{
 		this.width = width;
 		this.height = height;
 		this.length = length;
-		this.blocks = blocks;
 		this.metadata = metadata;
 		this.tileEntities = tileEntities;
+
+        if (blockPalette != null)
+            loadBlockList(blockPalette, blockIds);
 	}
+
+    protected Schematic(short width, short height, short length, Block[] blocks, byte[] metadata, NBTTagList tileEntities) {
+        this.width = width;
+        this.height = height;
+        this.length = length;
+        this.blocks = blocks;
+        this.metadata = metadata;
+        this.tileEntities = tileEntities;
+    }
 	
 	protected Schematic(Schematic source)
 	{
@@ -52,6 +66,20 @@ public class Schematic {
 		this.metadata = source.metadata;
 		this.tileEntities = source.tileEntities;
 	}
+
+    private void loadBlockList(String[] blockPalette, short[] blockIds) {
+        this.blocks = new Block[blockIds.length];
+
+        Block[] blockObjPalette = new Block[blockPalette.length];
+
+        for (int i = 0; i < blockPalette.length; i++) {
+            blockObjPalette[i++] = (Block)Block.blockRegistry.getObject(blockPalette[i]);
+        }
+
+        for (int i = 0; i < blockIds.length; i++) {
+            this.blocks[i] = blockObjPalette[blockIds[i]];
+        }
+    }
 
 	public int calculateIndex(int x, int y, int z)
 	{
@@ -124,9 +152,7 @@ public class Schematic {
 
 	public static Schematic readFromResource(String resourcePath) throws InvalidSchematicException
 	{
-		//We need an instance of a class in the mod to retrieve a resource
-		Schematic empty = new Schematic((short) 0, (short) 0, (short) 0, null, null, null);
-		InputStream schematicStream = empty.getClass().getResourceAsStream(resourcePath);
+		InputStream schematicStream = Schematic.class.getResourceAsStream(resourcePath);
 		return readFromStream(schematicStream);
 	}
 
@@ -141,7 +167,8 @@ public class Schematic {
 		byte[] metadata = null;			//block metadata
 		byte[] lowBits = null;			//first 8 bits of the block IDs
 		byte[] highBits = null;			//additional 4 bits of the block IDs
-		String[] blocks = null;			//list of combined block IDs
+		short[] blockIds = null;			//list of combined block IDs
+        String[] blockPalette = null;
 		NBTTagList tileEntities = null;	//storage for tile entities in NBT form
 		NBTTagCompound schematicTag;	//the NBT data extracted from the schematic file
 		boolean hasExtendedBlockIDs;	//indicates whether the schematic contains extended block IDs
@@ -173,6 +200,19 @@ public class Schematic {
 			if (length < 0)
 				throw new InvalidSchematicException("The schematic cannot have a negative length.");
 
+
+            NBTTagList nbtPalette = schematicTag.getTagList("Palette", 8);
+
+            if (nbtPalette.tagCount() < 1) {
+                throw new InvalidSchematicException("The schematic must have a valid block palette.");
+            }
+
+            blockPalette = new String[nbtPalette.tagCount()];
+
+            for (int i = 0; i < nbtPalette.tagCount(); i++) {
+                blockPalette[i] = nbtPalette.getStringTagAt(i);
+            }
+
 			//load block info
 			lowBits = schematicTag.getByteArray("Blocks");
 			highBits = schematicTag.getByteArray("AddBlocks");
@@ -186,7 +226,7 @@ public class Schematic {
 			if (volume > 2 * highBits.length && hasExtendedBlockIDs)
 				throw new InvalidSchematicException("The schematic has extended block IDs for fewer blocks than its dimensions indicate.");
 
-			blocks = new String[volume];
+			blockIds = new short[volume];
 			if (hasExtendedBlockIDs)
 			{
 				//Combine the split block IDs into a single value
@@ -194,12 +234,12 @@ public class Schematic {
 				int index;
 				for (index = 0; index < pairs; index += 2) 
 				{
-					blocks[index] = (short) (((highBits[index >> 1] & 0x0F) << 8) + (lowBits[index] & 0xFF));
-					blocks[index + 1] = (short) (((highBits[index >> 1] & 0xF0) << 4) + (lowBits[index + 1] & 0xFF));
+                    blockIds[index] = (short) (((highBits[index >> 1] & 0x0F) << 8) + (lowBits[index] & 0xFF));
+                    blockIds[index + 1] = (short) (((highBits[index >> 1] & 0xF0) << 4) + (lowBits[index + 1] & 0xFF));
 				}
 				if (index < volume)
 				{
-					blocks[index] = lowBits[index >> 1];
+                    blockIds[index] = lowBits[index >> 1];
 				}
 			}
 			else
@@ -207,14 +247,21 @@ public class Schematic {
 				//Copy the blockIDs
 				for (int index = 0; index < volume; index++)
 				{
-					blocks[index] = (short) (lowBits[index] & 0xFF);
+                    blockIds[index] = (short) (lowBits[index] & 0xFF);
 				}
 			}
 
+            for (int i = 0; i < blockIds.length; i++) {
+                int paletteIndex = blockIds[i];
+                if (paletteIndex < 0 || paletteIndex >= blockPalette.length) {
+                    throw new InvalidSchematicException("Block entry referenced a non-existant palette entry.");
+                }
+            }
+
 			//Get the list of tile entities
-			tileEntities = schematicTag.getTagList("TileEntities");
+			tileEntities = schematicTag.getTagList("TileEntities", 10);
 			
-			Schematic result = new Schematic(width, height, length, blocks, metadata, tileEntities);
+			Schematic result = new Schematic(width, height, length, blockPalette, blockIds, metadata, tileEntities);
 			return result;
 		}
 		catch (InvalidSchematicException ex)
@@ -266,7 +313,7 @@ public class Schematic {
 		//Short and sweet ^_^
 		WorldCopyOperation copier = new WorldCopyOperation();
 		copier.apply(world, x, y, z, width, height, length);
-		return new Schematic(width, height, length, copier.getBlockIDs(), copier.getMetadata(), copier.getTileEntities());
+		return new Schematic(width, height, length, copier.getBlocks(), copier.getMetadata(), copier.getTileEntities());
 	}
 
 	private static boolean encodeBlockIDs(short[] blocks, byte[] lowBits, byte[] highBits)
@@ -291,6 +338,20 @@ public class Schematic {
 		return hasHighBits;
 	}
 
+    private static void reduceToPalette(Block[] blocks, List<String> blockPalette, short[] blockIds) {
+        for (int i = 0; i < blocks.length; i++) {
+            String blockName = Block.blockRegistry.getNameForObject(blocks[i]);
+            int blockIndex = blockPalette.indexOf(blockName);
+
+            if (blockIndex < 0) {
+                blockIndex = blockPalette.size();
+                blockPalette.add(blockName);
+            }
+
+            blockIds[i] = (short)blockIndex;
+        }
+    }
+
 	public NBTTagCompound writeToNBT()
 	{
 		return writeToNBT(true);
@@ -301,13 +362,13 @@ public class Schematic {
 		return writeToNBT(width, height, length, blocks, metadata, tileEntities, copyTileEntities);
 	}
 	
-	protected static NBTTagCompound writeToNBT(short width, short height, short length, short[] blocks, byte[] metadata,
+	protected static NBTTagCompound writeToNBT(short width, short height, short length, Block[] blocks, byte[] metadata,
 			NBTTagList tileEntities, boolean copyTileEntities)
 	{
 		//This is the main storage function. Schematics are really compressed NBT tags, so if we can generate
 		//the tags, most of the work is done. All the other storage functions will rely on this one.
 
-		NBTTagCompound schematicTag = new NBTTagCompound("Schematic");
+		NBTTagCompound schematicTag = new NBTTagCompound();
 
 		schematicTag.setShort("Width", width);
 		schematicTag.setShort("Length", length);
@@ -316,9 +377,13 @@ public class Schematic {
 		schematicTag.setTag("Entities", new NBTTagList());
 		schematicTag.setString("Materials", "Alpha");
 
+        List<String> blockPalette = new LinkedList<String>();
+        short[] blockIds = new short[blocks.length];
+        reduceToPalette(blocks, blockPalette, blockIds);
+
 		byte[] lowBits = new byte[blocks.length];
 		byte[] highBits = new byte[(blocks.length >> 1) + (blocks.length & 1)];
-		boolean hasExtendedIDs = encodeBlockIDs(blocks, lowBits, highBits);
+		boolean hasExtendedIDs = encodeBlockIDs(blockIds, lowBits, highBits);
 
 		schematicTag.setByteArray("Blocks", lowBits);
 		schematicTag.setByteArray("Data", metadata);

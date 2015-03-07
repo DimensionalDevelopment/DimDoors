@@ -166,7 +166,7 @@ public class DungeonSchematic extends Schematic {
 		
 		int index;
 		int count;
-		int blockID;
+		Block block;
 		int blockMeta;
 		int dx, dy, dz;
 		Point3D pocketPoint = new Point3D(0, 0, 0);
@@ -182,12 +182,12 @@ public class DungeonSchematic extends Schematic {
 					pocketPoint.setX(dx);
 					pocketPoint.setY(dy);
 					pocketPoint.setZ(dz);
-					blockID = blocks[index];
+					block = blocks[index];
 					BlockRotator.transformPoint(pocketPoint, entranceDoorLocation, turnAngle, pocketCenter);
-					blockMeta = BlockRotator.transformMetadata(metadata[index], turnAngle, blockID);
+					blockMeta = BlockRotator.transformMetadata(metadata[index], turnAngle, block);
 
 					//In the future, we might want to make this more efficient by building whole chunks at a time
-					blockSetter.setBlock(world, pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), blockID, blockMeta);
+					blockSetter.setBlock(world, pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), block, blockMeta);
 					index++;
 				}
 			}
