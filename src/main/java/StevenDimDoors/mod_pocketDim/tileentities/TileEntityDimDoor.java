@@ -10,6 +10,9 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 
 public class TileEntityDimDoor extends DDTileEntityBase

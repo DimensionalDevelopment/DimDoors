@@ -52,6 +52,6 @@ processResources
 jar 
 {
     manifest {
-        attributes 'FMLAT': 'accessTransformer.cfg'
+        attributes 'FMLAT': 'DimDoors_at.cfg'
     }
 }
