@@ -182,7 +182,7 @@ public class DDProperties
 				"drop World Thread when it destroys a block. The default chance is 50.").getInt();
 
 		LimboBiomeID = config.get(CATEGORY_BIOME, "Limbo Biome ID", 148).getInt();
-		PocketBiomeID = config.get(CATEGORY_BIOME, "Pocket Biome ID", 149).getInt();
+		PocketBiomeID = config.get(CATEGORY_BIOME, "Pocket Biome ID", 147).getInt();
 
 		config.save();
 	}
