@@ -53,7 +53,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 	private final ArrayList<Block> blocksImmuneToRift;	// List of Vanilla blocks immune to rifts
 	private final ArrayList<Block> modBlocksImmuneToRift; // List of DD blocks immune to rifts
 	
-	public BlockRift(int j, Material par2Material, DDProperties properties)
+	public BlockRift(Material par2Material, DDProperties properties)
 	{
 		super(par2Material);
 		this.setTickRandomly(true);
@@ -131,11 +131,7 @@ public class BlockRift extends Block implements ITileEntityProvider
 	public int getRenderType()
 	{
 		// This doesn't do anything yet
-		if (mod_pocketDim.isPlayerWearingGoogles)
-		{
-			return 0;
-		}
-		return 8;
+		return 0;
 	}
 
 	/**
@@ -320,12 +316,11 @@ public class BlockRift extends Block implements ITileEntityProvider
 		TileEntityRift tile = (TileEntityRift)world.getTileEntity(x, y, z);
 		
 		
-			if(rand.nextBoolean())
-			{
+
 				//renders an extra little blob on top of the actual rift location so its easier to find. Eventually will only render if the player has the goggles. 
 				FMLClientHandler.instance().getClient().effectRenderer.addEffect(new GoggleRiftFX(world,x+.5, y+.5, z+.5, rand.nextGaussian() * 0.01D, rand.nextGaussian()  * 0.01D, rand.nextGaussian() * 0.01D, FMLClientHandler.instance().getClient().effectRenderer));
-			}
-			if(tile.shouldClose)
+
+		if(tile.shouldClose)
 			{
 				//renders an opposite color effect if it is being closed by the rift remover
 				FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(world,x+.5, y+.5, z+.5, rand.nextGaussian() * 0.01D, rand.nextGaussian()  * 0.01D, rand.nextGaussian() * 0.01D, FMLClientHandler.instance().getClient().effectRenderer));

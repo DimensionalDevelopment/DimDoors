@@ -140,8 +140,6 @@ public class mod_pocketDim
 	public static BiomeGenBase limboBiome;
 	public static BiomeGenBase pocketBiome;
 
-	public static boolean isPlayerWearingGoogles = false;
-
 	public static DDProperties properties;
 	public static DDWorldProperties worldProperties;
 	public static CustomLimboPopulator spawner; //Added this field temporarily. Will be refactored out later.
@@ -206,7 +204,7 @@ public class mod_pocketDim
 		blockDimWall = new BlockDimWall(0, Material.iron).setLightLevel(1.0F).setHardness(0.1F).setBlockName("blockDimWall");
 		blockDimWallPerm = (new BlockDimWallPerm(0, Material.iron)).setLightLevel(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setBlockName("blockDimWallPerm");
 		warpDoor = new WarpDoor(Material.wood, properties).setHardness(1.0F) .setBlockName("dimDoorWarp");
-		blockRift = (BlockRift) (new BlockRift(0, Material.air, properties).setHardness(1.0F) .setBlockName("rift"));
+		blockRift = (BlockRift) (new BlockRift(Material.fire, properties).setHardness(1.0F) .setBlockName("rift"));
 		blockLimbo = new BlockLimbo(15, Material.iron, properties.LimboDimensionID, limboDecay).setHardness(.2F).setBlockName("BlockLimbo").setLightLevel(.0F);
 		unstableDoor = (new UnstableDoor(Material.iron, properties).setHardness(.2F).setBlockName("chaosDoor").setLightLevel(.0F) );
 		dimensionalDoor = (DimensionalDoor) (new DimensionalDoor(Material.iron, properties).setHardness(1.0F).setResistance(2000.0F) .setBlockName("dimDoor"));
@@ -310,10 +308,10 @@ public class mod_pocketDim
 
 		LanguageRegistry.instance().addStringLocalization("itemGroup.dimDoorsCustomTab", "en_US", "Dimensional Doors Items");
 
-		GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
-		GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
-		GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityDimHatch");
-		GameRegistry.registerTileEntity(TileEntityDimDoorGold.class, "TileEntityDimDoorGold");
+        GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
+        GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
+        GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityDimHatch");
+        GameRegistry.registerTileEntity(TileEntityDimDoorGold.class, "TileEntityDimDoorGold");
 
 		EntityRegistry.registerModEntity(MobMonolith.class, "Monolith", properties.MonolithEntityID, this, 70, 1, true);
 		EntityList.IDtoClassMapping.put(properties.MonolithEntityID, MobMonolith.class);
