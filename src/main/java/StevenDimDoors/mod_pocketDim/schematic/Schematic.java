@@ -73,7 +73,7 @@ public class Schematic {
         Block[] blockObjPalette = new Block[blockPalette.length];
 
         for (int i = 0; i < blockPalette.length; i++) {
-            blockObjPalette[i++] = (Block)Block.blockRegistry.getObject(blockPalette[i]);
+            blockObjPalette[i] = (Block)Block.blockRegistry.getObject(blockPalette[i]);
         }
 
         for (int i = 0; i < blockIds.length; i++) {
