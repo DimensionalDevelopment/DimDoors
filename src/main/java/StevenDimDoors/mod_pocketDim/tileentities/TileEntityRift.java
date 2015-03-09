@@ -51,7 +51,6 @@ public class TileEntityRift extends DDTileEntityBase
 	public int spawnedEndermenID = 0;
 	
 	public int riftRotation = random.nextInt(360);
-	public int renderKey = random.nextInt(LSystem.curves.size());
 	public float growth = 0;
 	
 	public TileEntityRift()
@@ -265,7 +264,6 @@ public class TileEntityRift extends DDTileEntityBase
 		this.shouldClose = nbt.getBoolean("shouldClose");
 		this.spawnedEndermenID = nbt.getInteger("spawnedEndermenID");
 		this.riftRotation = nbt.getInteger("riftRotation");
-		this.renderKey = nbt.getInteger("renderKey");
 		this.growth = nbt.getFloat("growth");
 
 	}
@@ -280,7 +278,6 @@ public class TileEntityRift extends DDTileEntityBase
 		nbt.setInteger("zOffset", this.zOffset);
 		nbt.setBoolean("shouldClose", this.shouldClose);
 		nbt.setInteger("spawnedEndermenID", this.spawnedEndermenID);
-		nbt.setInteger("renderKey", this.renderKey);
 		nbt.setInteger("riftRotation", this.riftRotation);
 		nbt.setFloat("growth", this.growth);
 
@@ -319,12 +316,5 @@ public class TileEntityRift extends DDTileEntityBase
 	public float[] getRenderColor(Random rand)
 	{
 		return null;
-	}
-
-	public PolygonStorage getCurve()
-	{
-		
-		
-		return (LSystem.curves.get(renderKey));
 	}
 }

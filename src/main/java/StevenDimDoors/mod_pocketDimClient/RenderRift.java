@@ -35,7 +35,6 @@ public class RenderRift extends TileEntitySpecialRenderer
 		 */
 		TileEntityRift rift = (TileEntityRift) te;
 		// draws the verticies corresponding to the passed it
-		this.drawCrack(rift.riftRotation, rift.getCurve(), rift.growth/15, xWorld, yWorld, zWorld);
 
 		GL11.glDisable(GL_BLEND);
 		// reenable all the stuff we disabled
