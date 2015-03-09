@@ -193,7 +193,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			int metadata = world.getBlockMetadata(x, y, z);
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
 			dimTile.openOrClosed = isDoorOnRift(world, x, y, z) && isUpperDoorBlock(metadata);
-			dimTile.orientation = world.getBlockMetadata(x, y, z) & 7;
+			dimTile.orientation = this.func_150012_g(world, x, y, z) & 7;
 		}
 		return this;
 	}
@@ -393,7 +393,11 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public TileEntity createNewTileEntity(World world, int metadata)
 	{
-		return new TileEntityDimDoor();
+        if ((metadata & 8) != 0) {
+            return new TileEntityDimDoor();
+        }
+
+        return null;
 	}
 
 	@Override
