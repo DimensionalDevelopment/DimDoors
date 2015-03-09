@@ -33,21 +33,27 @@ public class TileEntityDimDoor extends DDTileEntityBase
 	@Override
 	 public Packet getDescriptionPacket()
 	 {
+         NBTTagCompound tag = new NBTTagCompound();
+         writeToNBT(tag);
 		 if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
 		 {
              ClientLinkData linkData = new ClientLinkData(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj));
-             NBTTagCompound tag = new NBTTagCompound();
-             linkData.writeToNBT(tag);
-             return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, tag);
+             NBTTagCompound link = new NBTTagCompound();
+             linkData.writeToNBT(link);
+             tag.setTag("Link", link);
 		 }
-		 return null;
+         return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 1, tag);
 	 }
 
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
         NBTTagCompound tag = pkt.func_148857_g();
-        ClientLinkData linkData = ClientLinkData.readFromNBT(tag);
-        PocketManager.getLinkWatcher().onCreated(linkData);
+        readFromNBT(tag);
+
+        if (tag.hasKey("Link")) {
+            ClientLinkData linkData = ClientLinkData.readFromNBT(tag.getCompoundTag("Link"));
+            PocketManager.getLinkWatcher().onCreated(linkData);
+        }
     }
 
 	@Override

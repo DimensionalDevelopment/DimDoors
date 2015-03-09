@@ -90,26 +90,23 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			return false;
 		}
 
-		final int MAGIC_CONSTANT = 1003;
-		
-		int metadata = world.getBlockMetadata(x, y, z);
-		int lowMeta = metadata & 7;
-		lowMeta ^= 4;
+        int metadata = this.func_150012_g(world, x, y, z);
+        int newMetadata = metadata & 7;
+        newMetadata ^= 4;
 
-		if (isUpperDoorBlock(metadata))
-		{
-			world.setBlockMetadataWithNotify(x, y - 1, z, lowMeta, 2);
-			world.markBlockRangeForRenderUpdate(x, y - 1, z, x, y, z);			
-		}
-		else
-		{
-			world.setBlockMetadataWithNotify(x, y, z, lowMeta, 2);
-			world.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
-		}
+        if ((metadata & 8) == 0)
+        {
+            world.setBlockMetadataWithNotify(x, y, z, newMetadata, 2);
+            world.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
+        }
+        else
+        {
+            world.setBlockMetadataWithNotify(x, y - 1, z, newMetadata, 2);
+            world.markBlockRangeForRenderUpdate(x, y - 1, z, x, y, z);
+        }
 
-		world.playAuxSFXAtEntity(player, MAGIC_CONSTANT, x, y, z, 0);
-	
-		return true;
+        world.playAuxSFXAtEntity(player, 1003, x, y, z, 0);
+        return true;
 	}
 
 	@Override
@@ -129,7 +126,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
     {
         if (side != 1 && side != 0)
         {
-            int fullMetadata = blockAccess.getBlockMetadata(x, y, z);
+            int fullMetadata = func_150012_g(blockAccess, x, y, z);
             int orientation = fullMetadata & 3;
             boolean reversed = false;
 
@@ -246,7 +243,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
 	{
-		this.setDoorRotation(par1IBlockAccess.getBlockMetadata(par2, par3, par4));
+		this.setDoorRotation(func_150012_g(par1IBlockAccess, par2, par3, par4));
 	}
 	
 	

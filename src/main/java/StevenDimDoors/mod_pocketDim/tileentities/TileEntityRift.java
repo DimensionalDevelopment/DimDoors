@@ -164,7 +164,7 @@ public class TileEntityRift extends DDTileEntityBase
 				}
 			}
 		}
-		if (growth == 0 && !worldObj.isRemote)
+		if (growth <= 0 && !worldObj.isRemote)
 		{
 			DimLink link = PocketManager.getLink(this.xCoord, this.yCoord, this.zCoord, worldObj);
 			if (link != null)

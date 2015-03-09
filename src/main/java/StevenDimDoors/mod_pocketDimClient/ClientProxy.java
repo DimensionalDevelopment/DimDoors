@@ -40,7 +40,7 @@ public class ClientProxy extends CommonProxy
 			int metadata = world.getBlockMetadata(x, y, z);
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;			
 			dimTile.openOrClosed = door.isDoorOnRift(world, x, y, z)&&door.isUpperDoorBlock(metadata);
-			dimTile.orientation = world.getBlockMetadata(x, y, z) & 7;
+			dimTile.orientation = door.func_150012_g(world, x, y, z) & 7;
 			dimTile.lockStatus = door.getLockStatus(world, x, y, z);
 		}
 	}
