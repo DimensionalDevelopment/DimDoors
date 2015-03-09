@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim;
 
 import java.io.File;
 
+import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -261,6 +262,8 @@ public class mod_pocketDim
         GameRegistry.registerItem(itemWorldThread, "World Thread");
 
 		GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, "Fabric of Reality");
+
+        BlockRotator.setupOrientations();
 
 		if (!DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false))
 			throw new IllegalStateException("There is a provider ID conflict between PocketProvider from Dimensional Doors and another provider type. Fix your configuration!");
