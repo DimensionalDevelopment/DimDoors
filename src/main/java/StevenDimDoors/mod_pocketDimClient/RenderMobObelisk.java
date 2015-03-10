@@ -121,6 +121,6 @@ public class RenderMobObelisk extends RenderLiving
 	protected ResourceLocation getEntityTexture(Entity entity) 
 	{
 		MobMonolith monolith = (MobMonolith) entity;
-		return new ResourceLocation(mod_pocketDim.modid + ":textures/mobs/Monolith" + monolith.getTextureState() + ".png");
+		return new ResourceLocation(mod_pocketDim.modid + ":textures/mobs/oldMonolith/Monolith" + monolith.getTextureState() + ".png");
 	}
 }

@@ -39,11 +39,6 @@ public class ModelMobObelisk extends ModelBase
     	
       wholemonolith = new ModelRenderer(this, 0, 0);
       wholemonolith.addBox(-48/2F,-108F/1.3F, -12/2F, 48, 108, 12);
-      wholemonolith.setTextureSize(256, 256);
-      wholemonolith.mirror = true;
-      this.wholemonolith.rotationPointY=0;
-      this.wholemonolith.rotationPointX=0;
-      this.wholemonolith.rotationPointZ=0;
      
      
   }
@@ -51,22 +46,10 @@ public class ModelMobObelisk extends ModelBase
   @Override
   public void render(Entity par1Entity, float par2, float par3, float par4, float par5, float par6, float par7) 
   {
-	  super.render(par1Entity, 0, 0, 0, 0, 0, 0);
 	    this.setRotationAngles(0,  0,  0,  0,  0,0,  par1Entity);
-	   
-	    
+
+
 	    GL11.glScalef(((MobMonolith) par1Entity).getRenderSizeModifier(), ((MobMonolith) par1Entity).getRenderSizeModifier(), ((MobMonolith) par1Entity).getRenderSizeModifier());
 	    wholemonolith.render(par7);
   }
-  
-  
-  
- 
-  
-  @Override
-  public void setRotationAngles(float par1, float par2, float par3, float par4, float par5, float par6, Entity par7Entity) 
-  {
-    super.setRotationAngles( 0,  0,  0,  0,  0,  0,  par7Entity);
-  }
-
 }
