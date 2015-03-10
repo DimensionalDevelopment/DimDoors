@@ -1,6 +1,6 @@
 {
-"modinfoversion":2,
-"modlist":
+"modListVersion":2,
+"modList":
 [
 {
 "modid": "dimdoors",
@@ -12,7 +12,7 @@
 "mcversion": "$mcversion",
 "url": "http://www.minecraftforum.net/topic/1650007-147smpssplan-dimensional-doors-v110-physics-what-physics-updated-with-fancy-opengl/",
 "updateUrl": "",
-"authors": [ "StevenRS11", "SenseiKiwi" ],
+"authorList": [ "StevenRS11", "SenseiKiwi" ],
 "parent":"",
 "screenshots": [],
 "dependencies": [ "Forge"]
