@@ -87,7 +87,7 @@ public class EventHookContainer
 	public void onSoundEffectResult(PlaySoundEvent17 event)
 	{
         ResourceLocation playingSound = event.sound.getPositionedSoundLocation();
-        if (playingSound != null && playingSound.getResourceDomain().equals("minecraft") && playingSound.getResourcePath().equals("music.game")) {
+        if (playingSound != null && playingSound.getResourceDomain().equals("minecraft") && (playingSound.getResourcePath().equals("music.game") || playingSound.getResourcePath().equals("music.game.creative"))) {
             if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID) {
                 ResourceLocation sound = new ResourceLocation(mod_pocketDim.modid + ":creepy");
 
@@ -145,11 +145,8 @@ public class EventHookContainer
 			PocketManager.load();
 		}
 
-        if (FMLClientHandler.instance().getClient().thePlayer == null)
-            return;
-
-        if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID &&
-                !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(limboMusic)) {
+        if (event.world.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID &&
+                event.world.isRemote && !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(limboMusic)) {
             Minecraft.getMinecraft().getSoundHandler().playSound(limboMusic);
         }
 	}
