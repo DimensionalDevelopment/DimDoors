@@ -292,7 +292,7 @@ public class TileEntityRift extends DDTileEntityBase
             ClientLinkData linkData = new ClientLinkData(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj));
 
             NBTTagCompound link = new NBTTagCompound();
-            linkData.writeToNBT(tag);
+            linkData.writeToNBT(link);
 
             tag.setTag("Link", link);
         }
