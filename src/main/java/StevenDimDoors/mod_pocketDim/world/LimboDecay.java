@@ -22,38 +22,50 @@ public class LimboDecay {
 	private static final int DECAY_SPREAD_CHANCE = 50;
 	private static final int CHUNK_SIZE = 16;
 	private static final int SECTION_HEIGHT = 16;
-	
+
 	//Provides a reversed list of the block IDs that blocks cycle through during decay.
-	private final Block[] decaySequence;
+	private Block[] decaySequence = null;
 	
 	private final Random random;
 	private final DDProperties properties;
-	private final Block[] blocksImmuneToDecay;
+	private Block[] blocksImmuneToDecay = null;
 	
 	public LimboDecay(DDProperties properties)
 	{
-		decaySequence = new Block[] {
-            mod_pocketDim.blockLimbo,
-            Blocks.gravel,
-            Blocks.cobblestone,
-            Blocks.stone
-		};
-		
-		blocksImmuneToDecay = new Block[] {
-            mod_pocketDim.blockLimbo,
-            mod_pocketDim.blockDimWallPerm,
-            mod_pocketDim.transientDoor,
-            mod_pocketDim.dimensionalDoor,
-            mod_pocketDim.warpDoor,
-            mod_pocketDim.blockRift,
-            mod_pocketDim.unstableDoor,
-            mod_pocketDim.goldenDoor,
-            mod_pocketDim.goldenDimensionalDoor
-		};
-		
 		this.properties = properties;
 		this.random = new Random();
 	}
+
+    public Block[] getDecaySequence() {
+        if (decaySequence == null) {
+            decaySequence = new Block[] {
+                    mod_pocketDim.blockLimbo,
+                    Blocks.gravel,
+                    Blocks.cobblestone,
+                    Blocks.stone
+            };
+        }
+
+        return decaySequence;
+    }
+
+    public Block[] getBlocksImmuneToDecay() {
+        if (blocksImmuneToDecay == null) {
+            blocksImmuneToDecay = new Block[] {
+                    mod_pocketDim.blockLimbo,
+                    mod_pocketDim.blockDimWallPerm,
+                    mod_pocketDim.transientDoor,
+                    mod_pocketDim.dimensionalDoor,
+                    mod_pocketDim.warpDoor,
+                    mod_pocketDim.blockRift,
+                    mod_pocketDim.unstableDoor,
+                    mod_pocketDim.goldenDoor,
+                    mod_pocketDim.goldenDimensionalDoor
+            };
+        }
+
+        return blocksImmuneToDecay;
+    }
 
 	/**
 	 * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
@@ -135,9 +147,9 @@ public class LimboDecay {
 		{
 			//Loop over the block IDs that decay can go through.
 			//Find an index matching the current blockID, if any.
-			for (index = 0; index < decaySequence.length; index++)
+			for (index = 0; index < getDecaySequence().length; index++)
 			{
-				if (decaySequence[index] == block)
+				if (getDecaySequence()[index] == block)
 				{
 					break;
 				}
@@ -149,7 +161,7 @@ public class LimboDecay {
 			//last ID in the array, which is the first one that all blocks decay into.
 			//We assume that Unraveled Fabric is NOT decayable. Otherwise, this will go out of bounds!
 			
-			world.setBlock(x, y, z, decaySequence[index - 1]);
+			world.setBlock(x, y, z, getDecaySequence()[index - 1]);
 			return true;
 		}
 		return false;
@@ -165,9 +177,9 @@ public class LimboDecay {
 			return false;
 		}
 		
-		for (int k = 0; k < blocksImmuneToDecay.length; k++)
+		for (int k = 0; k < getBlocksImmuneToDecay().length; k++)
 		{
-			if (block == blocksImmuneToDecay[k])
+			if (block == getBlocksImmuneToDecay()[k])
 			{
 				return false;
 			}
