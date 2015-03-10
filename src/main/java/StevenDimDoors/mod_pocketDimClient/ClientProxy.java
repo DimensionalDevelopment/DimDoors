@@ -57,5 +57,7 @@ public class ClientProxy extends CommonProxy
         ClientOnlyHooks hooks = new ClientOnlyHooks(properties);
         MinecraftForge.EVENT_BUS.register(hooks);
         MinecraftForge.TERRAIN_GEN_BUS.register(hooks);
+        PocketManager.getDimwatcher().registerReceiver (new PocketManager.ClientDimWatcher());
+        PocketManager.getLinkWatcher().registerReceiver(new PocketManager.ClientLinkWatcher());
     }
 }

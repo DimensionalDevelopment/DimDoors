@@ -56,7 +56,7 @@ public class PocketManager
 
 	}
 
-	private static class ClientLinkWatcher implements IUpdateWatcher<ClientLinkData>
+	public static class ClientLinkWatcher implements IUpdateWatcher<ClientLinkData>
 	{
 		@Override
 		public void onCreated(ClientLinkData link)
@@ -85,7 +85,7 @@ public class PocketManager
 		}
 	}
 
-	private static class ClientDimWatcher implements IUpdateWatcher<ClientDimData>
+	public static class ClientDimWatcher implements IUpdateWatcher<ClientDimData>
 	{
 		@Override
 		public void onCreated(ClientDimData data)

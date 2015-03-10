@@ -3,8 +3,10 @@ package StevenDimDoors.mod_pocketDim;
 import java.io.File;
 import java.util.List;
 
+import StevenDimDoors.mod_pocketDim.network.DimDoorsNetwork;
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -82,12 +84,6 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -179,6 +175,8 @@ public class mod_pocketDim
 		MinecraftForge.TERRAIN_GEN_BUS.register(hooks);
 
         proxy.registerSidedHooks(properties);
+
+        DimDoorsNetwork.init();
 	}
 
 	@EventHandler
@@ -292,6 +290,7 @@ public class mod_pocketDim
 		DDLoot.registerInfo(properties);
 		proxy.loadTextures();
 		proxy.registerRenderers();
+        FMLCommonHandler.instance().bus().register(new ConnectionHandler());
 	}
 
     public static void translateAndAdd(String key, List list) {

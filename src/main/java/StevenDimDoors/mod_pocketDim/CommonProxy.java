@@ -149,6 +149,7 @@ public class CommonProxy implements IGuiHandler
 	}
     
     public void registerSidedHooks(DDProperties properties) {
+        new ServerPacketHandler();
     }
     
 }
