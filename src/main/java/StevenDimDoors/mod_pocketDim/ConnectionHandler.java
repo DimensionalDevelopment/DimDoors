@@ -15,26 +15,6 @@ import net.minecraftforge.common.network.ForgeMessage;
 public class ConnectionHandler
 {
 	@SubscribeEvent
-	public String connectionReceived(FMLNetworkEvent.ServerConnectionFromClientEvent event)
-	{
-		for(NewDimData data : PocketManager.getDimensions())
-		{
-			try
-			{
-				if(data.isPocketDimension()||data.id()==mod_pocketDim.properties.LimboDimensionID)
-				{
-                    event.manager.channel().writeAndFlush(new ForgeMessage.DimensionRegisterMessage(data.id(), DimensionManager.getProviderType(data.id())));
-				}
-			}
-			catch(Exception E)
-			{
-				E.printStackTrace();
-			}
-		}
-		return null;
-	}
-
-	@SubscribeEvent
 	public void connectionClosed(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
 	{
 		if(PocketManager.isConnected)
