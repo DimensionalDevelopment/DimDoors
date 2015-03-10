@@ -61,9 +61,10 @@ public class PocketManager
 		@Override
 		public void onCreated(ClientLinkData link)
 		{
-			Point4D source = link.point;
-			NewDimData dimension = getDimensionData(source.getDimension());
-			dimension.createLink(source, LinkType.CLIENT, 0, link.lock);
+            Point4D source = link.point;
+            NewDimData dimension = getDimensionData(source.getDimension());
+            if (dimension.getLink(source.getX(), source.getY(), source.getZ()) == null)
+			    dimension.createLink(source, LinkType.CLIENT, 0, link.lock);
 		}
 
 		@Override
@@ -71,7 +72,8 @@ public class PocketManager
 		{
 			Point4D source = link.point;
 			NewDimData dimension = getDimensionData(source.getDimension());
-			dimension.deleteLink(source.getX(), source.getY(), source.getZ());
+            if (dimension.getLink(source.getX(),source.getY(),source.getZ()) != null)
+			    dimension.deleteLink(source.getX(), source.getY(), source.getZ());
 		}
 
 		@Override
