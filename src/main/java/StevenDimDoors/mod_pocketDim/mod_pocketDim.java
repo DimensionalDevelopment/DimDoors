@@ -191,7 +191,7 @@ public class mod_pocketDim
 
 		// Initialize blocks and items
 		transientDoor = new TransientDoor(Material.iron, properties).setHardness(1.0F) .setBlockName("transientDoor");
-		goldenDimensionalDoor = new BlockGoldDimDoor(Material.iron, properties).setHardness(1.0F) .setBlockName("dimDoorGold");
+		goldenDimensionalDoor = new BlockGoldDimDoor(Material.iron, properties).setHardness(1.0F).setBlockName("dimDoorGold");
 
 		quartzDoor = new BlockDoorQuartz(Material.rock).setHardness(0.1F).setBlockName("doorQuartz");
 		personalDimDoor = new PersonalDimDoor(Material.rock,properties).setHardness(0.1F).setBlockName("dimDoorPersonal");
