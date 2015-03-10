@@ -2,6 +2,7 @@ package StevenDimDoors.mod_pocketDim;
 import java.io.File;
 import java.io.FileOutputStream;
 import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 
 import net.minecraft.entity.Entity;
@@ -12,6 +13,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
+import net.minecraftforge.common.MinecraftForge;
+
 public class CommonProxy implements IGuiHandler
 {
     public static String BLOCK_PNG = "/PocketBlockTextures.png";
@@ -145,7 +148,7 @@ public class CommonProxy implements IGuiHandler
 		}
 	}
     
-    
-   
+    public void registerSidedHooks(DDProperties properties) {
+    }
     
 }

@@ -177,6 +177,8 @@ public class mod_pocketDim
 		hooks = new EventHookContainer(properties);
 		MinecraftForge.EVENT_BUS.register(hooks);
 		MinecraftForge.TERRAIN_GEN_BUS.register(hooks);
+
+        proxy.registerSidedHooks(properties);
 	}
 
 	@EventHandler

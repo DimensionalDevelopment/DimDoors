@@ -1,4 +1,5 @@
 package StevenDimDoors.mod_pocketDimClient;
+import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.CommonProxy;
@@ -12,6 +13,7 @@ import StevenDimDoors.mod_pocketDim.tileentities.TileEntityTransTrapdoor;
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.common.MinecraftForge;
 
 
 public class ClientProxy extends CommonProxy
@@ -49,5 +51,11 @@ public class ClientProxy extends CommonProxy
 	public  void printStringClient(String string)
 	{	
 	}
-	
+
+    @Override
+    public void registerSidedHooks(DDProperties properties) {
+        ClientOnlyHooks hooks = new ClientOnlyHooks(properties);
+        MinecraftForge.EVENT_BUS.register(hooks);
+        MinecraftForge.TERRAIN_GEN_BUS.register(hooks);
+    }
 }

@@ -51,12 +51,9 @@ public class EventHookContainer
 	private DDWorldProperties worldProperties;
 	private RiftRegenerator regenerator;
 
-    private ISound limboMusic;
-
 	public EventHookContainer(DDProperties properties)
 	{
 		this.properties = properties;
-        this.limboMusic = PositionedSoundRecord.func_147673_a(new ResourceLocation(mod_pocketDim.modid + ":creepy"));
 	}
 	
 	public void setSessionFields(DDWorldProperties worldProperties, RiftRegenerator regenerator)
@@ -80,24 +77,6 @@ public class EventHookContainer
 		 * InitMapGenEvent.EventType.NETHER_BRIDGE) { event.newGen = new
 		 * DDNetherFortressGenerator(); }
 		 */
-	}
-
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onSoundEffectResult(PlaySoundEvent17 event)
-	{
-        ResourceLocation playingSound = event.sound.getPositionedSoundLocation();
-        if (playingSound != null && playingSound.getResourceDomain().equals("minecraft") && (playingSound.getResourcePath().equals("music.game") || playingSound.getResourcePath().equals("music.game.creative"))) {
-            if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID) {
-                ResourceLocation sound = new ResourceLocation(mod_pocketDim.modid + ":creepy");
-
-                if (!Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(limboMusic)) {
-                    event.result = limboMusic;
-                } else {
-                    event.setResult(Event.Result.DENY);
-                }
-            }
-        }
 	}
 
 	@SubscribeEvent
@@ -144,11 +123,6 @@ public class EventHookContainer
 		{
 			PocketManager.load();
 		}
-
-        if (event.world.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID &&
-                event.world.isRemote && !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(limboMusic)) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(limboMusic);
-        }
 	}
 
 	@SubscribeEvent
