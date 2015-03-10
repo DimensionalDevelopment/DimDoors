@@ -21,8 +21,6 @@ import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
-import StevenDimDoors.mod_pocketDim.util.l_systems.LSystem;
-import StevenDimDoors.mod_pocketDim.util.l_systems.LSystem.PolygonStorage;
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 
 public class TileEntityRift extends DDTileEntityBase
