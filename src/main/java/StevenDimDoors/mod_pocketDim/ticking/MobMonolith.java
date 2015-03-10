@@ -50,6 +50,10 @@ public class MobMonolith extends EntityFlying implements IMob
 			properties = DDProperties.instance();
 	}
 
+    public boolean isDangerous() {
+        return properties.LimboDimensionID != worldObj.provider.dimensionId;
+    }
+
 	@Override
 	protected void damageEntity(DamageSource par1DamageSource, float par2)
 	{
@@ -145,7 +149,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		if (player != null)
 		{
 			this.facePlayer(player);
-			if (!this.worldObj.isRemote && !(this.worldObj.provider instanceof LimboProvider))
+			if (!this.worldObj.isRemote && isDangerous())
 			{
 				// Play sounds on the server side, if the player isn't in Limbo.
 				// Limbo is excluded to avoid drowning out its background music.
@@ -158,7 +162,7 @@ public class MobMonolith extends EntityFlying implements IMob
 			if (visibility)
 			{
 				// Only spawn particles on the client side and outside Limbo
-				if (this.worldObj.isRemote && !(this.worldObj.provider instanceof LimboProvider))
+				if (this.worldObj.isRemote && isDangerous())
 				{
 					this.spawnParticles(player);
 				}
@@ -166,7 +170,7 @@ public class MobMonolith extends EntityFlying implements IMob
 				// Teleport the target player if various conditions are met
 				if (aggro >= MAX_AGGRO && !this.worldObj.isRemote &&
 						properties.MonolithTeleportationEnabled && !player.capabilities.isCreativeMode &&
-						!(this.worldObj.provider instanceof LimboProvider))
+						isDangerous())
 				{
 					this.aggro = 0;
 					Point4D destination = LimboProvider.getLimboSkySpawn(player, properties);
@@ -189,7 +193,10 @@ public class MobMonolith extends EntityFlying implements IMob
 			{
 				if (this.worldObj.provider instanceof LimboProvider)
 				{
-					aggro++;
+                    if (isDangerous())
+                        aggro++;
+                    else
+					    aggro += 18;
 				}
 				else
 				{
@@ -211,7 +218,8 @@ public class MobMonolith extends EntityFlying implements IMob
 				}
 			}
 			// Clamp the aggro level
-			aggro = (short) MathHelper.clamp_int(aggro, 0, MAX_AGGRO);
+            int maxAggro = isDangerous()?MAX_AGGRO:180;
+			aggro = (short) MathHelper.clamp_int(aggro, 0, maxAggro);
 			this.dataWatcher.updateObject(AGGRO_WATCHER_INDEX, Short.valueOf(aggro));
 		}
 		else

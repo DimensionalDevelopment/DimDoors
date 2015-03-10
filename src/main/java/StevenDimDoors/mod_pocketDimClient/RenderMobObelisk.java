@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDimClient;
 
+import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -35,8 +36,11 @@ public class RenderMobObelisk extends RenderLiving
 		final float maxScaling = 0.1f;
 		MobMonolith monolith = ((MobMonolith) entity);
 
-		// Use linear interpolation to scale how much jitter we want for our given aggro level
-		float aggroScaling = minScaling + (maxScaling - minScaling) * monolith.getAggroProgress();
+        float aggroScaling = 0;
+        if (monolith.isDangerous()) {
+            // Use linear interpolation to scale how much jitter we want for our given aggro level
+            aggroScaling = minScaling + (maxScaling - minScaling) * monolith.getAggroProgress();
+        }
 
 		// Calculate jitter - include entity ID to give Monoliths individual jitters
 		float time = ((Minecraft.getSystemTime() + 0xF1234568 * monolith.getEntityId()) % 200000) / 50.0F;
