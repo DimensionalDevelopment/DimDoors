@@ -191,19 +191,19 @@ public class mod_pocketDim
 
 		// Initialize blocks and items
 		transientDoor = new TransientDoor(Material.iron, properties).setHardness(1.0F) .setBlockName("transientDoor");
-		goldenDimensionalDoor = new BlockGoldDimDoor(Material.iron, properties).setHardness(1.0F).setBlockName("dimDoorGold");
+		goldenDimensionalDoor = new BlockGoldDimDoor(Material.iron, properties).setHardness(1.0F).setBlockName("dimDoorGold").setBlockTextureName("itemGoldDimDoor");
 
-		quartzDoor = new BlockDoorQuartz(Material.rock).setHardness(0.1F).setBlockName("doorQuartz");
-		personalDimDoor = new PersonalDimDoor(Material.rock,properties).setHardness(0.1F).setBlockName("dimDoorPersonal");
+		quartzDoor = new BlockDoorQuartz(Material.rock).setHardness(0.1F).setBlockName("doorQuartz").setBlockTextureName("itemQuartzDoor");
+		personalDimDoor = new PersonalDimDoor(Material.rock,properties).setHardness(0.1F).setBlockName("dimDoorPersonal").setBlockTextureName("itemQuartzDimDoor");
 
-		goldenDoor = new BlockDoorGold(Material.iron).setHardness(0.1F).setBlockName("doorGold");
+		goldenDoor = new BlockDoorGold(Material.iron).setHardness(0.1F).setBlockName("doorGold").setBlockTextureName("itemGoldDoor");
 		blockDimWall = new BlockDimWall(0, Material.iron).setLightLevel(1.0F).setHardness(0.1F).setBlockName("blockDimWall");
 		blockDimWallPerm = (new BlockDimWallPerm(0, Material.iron)).setLightLevel(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setBlockName("blockDimWallPerm");
-		warpDoor = new WarpDoor(Material.wood, properties).setHardness(1.0F) .setBlockName("dimDoorWarp");
+		warpDoor = new WarpDoor(Material.wood, properties).setHardness(1.0F) .setBlockName("dimDoorWarp").setBlockTextureName("itemDimDoorWarp");
 		blockRift = (BlockRift) (new BlockRift(Material.fire, properties).setHardness(1.0F) .setBlockName("rift"));
 		blockLimbo = new BlockLimbo(15, Material.iron, properties.LimboDimensionID, limboDecay).setHardness(.2F).setBlockName("BlockLimbo").setLightLevel(.0F);
-		unstableDoor = (new UnstableDoor(Material.iron, properties).setHardness(.2F).setBlockName("chaosDoor").setLightLevel(.0F) );
-		dimensionalDoor = (DimensionalDoor) (new DimensionalDoor(Material.iron, properties).setHardness(1.0F).setResistance(2000.0F) .setBlockName("dimDoor"));
+		unstableDoor = (new UnstableDoor(Material.iron, properties).setHardness(.2F).setBlockName("chaosDoor").setLightLevel(.0F).setBlockTextureName("itemChaosDoor") );
+		dimensionalDoor = (DimensionalDoor) (new DimensionalDoor(Material.iron, properties).setHardness(1.0F).setResistance(2000.0F) .setBlockName("dimDoor").setBlockTextureName("itemDimDoor"));
 		transTrapdoor = (TransTrapdoor) (new TransTrapdoor(Material.wood).setHardness(1.0F) .setBlockName("dimHatch"));
 
 		itemDDKey = (new ItemDDKey()).setUnlocalizedName("itemDDKey");
@@ -229,15 +229,15 @@ public class mod_pocketDim
 		mod_pocketDim.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
 		mod_pocketDim.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
-		GameRegistry.registerBlock(quartzDoor, "Quartz Door");
-		GameRegistry.registerBlock(personalDimDoor, "Personal Dimensional Door");
-		GameRegistry.registerBlock(goldenDoor, "Golden Door");
-		GameRegistry.registerBlock(goldenDimensionalDoor, "Golden Dimensional Door");
-		GameRegistry.registerBlock(unstableDoor, "Unstable Door");
-		GameRegistry.registerBlock(warpDoor, "Warp Door");
+		GameRegistry.registerBlock(quartzDoor, null, "Quartz Door");
+		GameRegistry.registerBlock(personalDimDoor, null, "Personal Dimensional Door");
+		GameRegistry.registerBlock(goldenDoor, null, "Golden Door");
+		GameRegistry.registerBlock(goldenDimensionalDoor, null, "Golden Dimensional Door");
+		GameRegistry.registerBlock(unstableDoor, null, "Unstable Door");
+		GameRegistry.registerBlock(warpDoor, null, "Warp Door");
 		GameRegistry.registerBlock(blockRift, "Rift");
 		GameRegistry.registerBlock(blockLimbo, "Unraveled Fabric");
-		GameRegistry.registerBlock(dimensionalDoor, "Dimensional Door");
+		GameRegistry.registerBlock(dimensionalDoor, null, "Dimensional Door");
 		GameRegistry.registerBlock(transTrapdoor,"Transdimensional Trapdoor");
 		GameRegistry.registerBlock(blockDimWallPerm, "Fabric of RealityPerm");
 		GameRegistry.registerBlock(transientDoor, "transientDoor");

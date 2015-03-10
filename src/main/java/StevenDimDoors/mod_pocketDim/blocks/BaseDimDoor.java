@@ -66,7 +66,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int metadata)
     {
-        return this.upperTextures[0];
+        return upperTextures[0];
     }
     
 	@Override
@@ -390,14 +390,16 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
         return isUpperDoorBlock(metadata) ? null : this.getDoorItem();
     }
 
+    @Override
+    @SideOnly(Side.CLIENT)
+    public Item getItem(World world, int x, int y, int z) {
+        return this.getDoorItem();
+    }
+
 	@Override
 	public TileEntity createNewTileEntity(World world, int metadata)
 	{
-        if ((metadata & 8) != 0) {
-            return new TileEntityDimDoor();
-        }
-
-        return null;
+        return new TileEntityDimDoor();
 	}
 
 	@Override
