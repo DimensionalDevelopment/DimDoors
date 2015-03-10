@@ -6,6 +6,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
@@ -21,7 +22,7 @@ public class ItemUnstableDoor extends BaseItemDoor
 	@Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
     {
-    	par3List.add("Caution: Leads to random destination");
+    	par3List.add(StatCollector.translateToLocal("info.chaosDoor"));
     }
     
     @Override

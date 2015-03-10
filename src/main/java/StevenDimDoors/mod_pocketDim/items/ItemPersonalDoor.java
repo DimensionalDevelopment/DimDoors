@@ -21,10 +21,7 @@ public class ItemPersonalDoor extends BaseItemDoor
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
 	{
-		par3List.add("Creates a pathway to");
-		par3List.add("Your personal pocket");
-
-	
+		mod_pocketDim.translateAndAdd("info.personalDimDoor", par3List);
 	}
 
 	@Override

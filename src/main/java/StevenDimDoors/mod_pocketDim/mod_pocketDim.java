@@ -1,6 +1,7 @@
 package StevenDimDoors.mod_pocketDim;
 
 import java.io.File;
+import java.util.List;
 
 import StevenDimDoors.mod_pocketDim.schematic.BlockRotator;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -14,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -161,12 +163,6 @@ public class mod_pocketDim
 		{
 			return mod_pocketDim.itemDimensionalDoor;
 		}
-
-		@Override
-		public String getTranslatedTabLabel()
-		{
-			return "Dimensional Doors";
-		}
 	};
 
 	@EventHandler
@@ -272,43 +268,6 @@ public class mod_pocketDim
 			throw new IllegalStateException("There is a provider ID conflict between PersonalPocketProvider from Dimensional Doors and another provider type. Fix your configuration!");
 			
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
-		
-		LanguageRegistry.addName(goldenDoor, "Golden Door");
-		LanguageRegistry.addName(goldenDimensionalDoor, "Golden Dimensional Door");
-		LanguageRegistry.addName(transientDoor	, "Transient Door");
-		LanguageRegistry.addName(blockRift	, "Rift");
-		LanguageRegistry.addName(blockLimbo	, "Unraveled Fabric");
-		LanguageRegistry.addName(warpDoor	, "Warp Door");
-		LanguageRegistry.addName(unstableDoor	, "Unstable Door");
-		LanguageRegistry.addName(blockDimWall	, "Fabric of Reality");
-		LanguageRegistry.addName(blockDimWallPerm	, "Eternal Fabric");
-		LanguageRegistry.addName(dimensionalDoor, "Dimensional Door");
-		LanguageRegistry.addName(transTrapdoor, "Transdimensional Trapdoor");
-
-		LanguageRegistry.addName(itemWarpDoor, "Warp Door");
-		LanguageRegistry.addName(itemRiftSignature, "Rift Signature");
-		LanguageRegistry.addName(itemGoldenDoor, "Golden Door");
-		LanguageRegistry.addName(itemGoldenDimensionalDoor, "Golden Dimensional Door");
-		LanguageRegistry.addName(itemStabilizedRiftSignature, "Stabilized Rift Signature");
-		LanguageRegistry.addName(itemRiftRemover, "Rift Remover");
-		LanguageRegistry.addName(itemStableFabric, "Stable Fabric");
-		LanguageRegistry.addName(itemUnstableDoor, "Unstable Door");
-		LanguageRegistry.addName(itemDimensionalDoor, "Dimensional Door");
-		LanguageRegistry.addName(itemRiftBlade, "Rift Blade");
-		LanguageRegistry.addName(itemWorldThread, "World Thread");
-		LanguageRegistry.addName(itemDDKey, "Rift Key");
-		LanguageRegistry.addName(itemQuartzDoor, "Quartz Door");
-		LanguageRegistry.addName(itemPersonalDoor, "Personal Dimensional Door");
-
-
-		/**
-		 * Add names for multiblock inventory item
-		 */
-		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 0), "Fabric of Reality");
-		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 1), "Ancient Fabric");
-		LanguageRegistry.addName(new ItemStack(blockDimWall, 1, 2), "Altered Fabric");
-
-		LanguageRegistry.instance().addStringLocalization("itemGroup.dimDoorsCustomTab", "en_US", "Dimensional Doors Items");
 
         GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
         GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
@@ -318,7 +277,6 @@ public class mod_pocketDim
 		EntityRegistry.registerModEntity(MobMonolith.class, "Monolith", properties.MonolithEntityID, this, 70, 1, true);
 		EntityList.IDtoClassMapping.put(properties.MonolithEntityID, MobMonolith.class);
 		EntityList.entityEggs.put(properties.MonolithEntityID, new EntityList.EntityEggInfo(properties.MonolithEntityID, 0, 0xffffff));
-		LanguageRegistry.instance().addStringLocalization("entity.dimdoors.Monolith.name", "Monolith");
 
 		CraftingManager.registerRecipes(properties);
 		CraftingManager.registerDispenserBehaviors();
@@ -333,6 +291,16 @@ public class mod_pocketDim
 		proxy.loadTextures();
 		proxy.registerRenderers();
 	}
+
+    public static void translateAndAdd(String key, List list) {
+        for (int i=0;i<10;i++) {
+            if (StatCollector.canTranslate(key+Integer.toString(i))) {
+                String line = StatCollector.translateToLocal(key + Integer.toString(i));
+                list.add(line);
+            } else
+                break;
+        }
+    }
 
 	@EventHandler
 	public void onPostInitialization(FMLPostInitializationEvent event)

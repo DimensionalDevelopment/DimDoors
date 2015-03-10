@@ -184,7 +184,6 @@ public class ItemRiftBlade extends ItemSword
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
 	{
-		par3List.add("Opens temporary doors on rifts");
-		par3List.add("and has a teleport attack.");
+        mod_pocketDim.translateAndAdd("info.riftblade", par3List);
 	}
 }

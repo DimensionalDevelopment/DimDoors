@@ -65,7 +65,6 @@ public class DDProperties
 	public final boolean TNFREAKINGT_Enabled;
 	public final boolean MonolithTeleportationEnabled;
     public final boolean DangerousLimboMonolithsDisabled;
-	
 
 	/**
 	 * Other
@@ -81,7 +80,6 @@ public class DDProperties
 	public final int LimboReturnRange;
 	public final int WorldThreadRequirementLevel;
 	public final String CustomSchematicDirectory;
-	
 	
 	//Singleton instance
 	private static DDProperties instance = null;

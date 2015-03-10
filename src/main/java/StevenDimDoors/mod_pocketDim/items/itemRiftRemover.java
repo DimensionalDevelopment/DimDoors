@@ -130,8 +130,6 @@ public class itemRiftRemover extends Item
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
 	{
-		par3List.add("Use near exposed rift");
-		par3List.add("to remove it and");
-		par3List.add("any nearby rifts.");
+		mod_pocketDim.translateAndAdd("info.riftRemover",par3List);
 	}
 }

@@ -8,7 +8,7 @@ import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 
 public class ItemBlockDimWall extends ItemBlock
 {
-	private final static String[] subNames = {"Fabric of Reality", "Ancient Fabric" , "Altered Fabric"};
+	private final static String[] subNames = {"tile.blockDimWall", "tile.blockAncientWall" , "tile.blockAlteredWall"};
 	
     public ItemBlockDimWall(Block block)
     {

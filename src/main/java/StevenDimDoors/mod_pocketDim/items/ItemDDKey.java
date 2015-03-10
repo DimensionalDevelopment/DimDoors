@@ -45,11 +45,11 @@ public class ItemDDKey extends Item
 	{
 		if (DDLock.hasCreatedLock(par1ItemStack))
 		{
-			par3List.add("Bound");
+			par3List.add(StatCollector.translateToLocal("info.riftkey.bound"));
 		}
 		else
 		{
-			par3List.add("Unbound");
+			par3List.add(StatCollector.translateToLocal("info.riftkey.unbound"));
 		}
 	}
 

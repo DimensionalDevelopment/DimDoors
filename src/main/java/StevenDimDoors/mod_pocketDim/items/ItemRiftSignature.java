@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
@@ -118,13 +119,11 @@ public class ItemRiftSignature extends Item
 		Point4DOrientation source = getSource(par1ItemStack);
 		if (source != null)
 		{
-			par3List.add("Leads to (" + source.getX() + ", " + source.getY() + ", " + source.getZ() + ") at dimension #" + source.getDimension());
+			par3List.add(StatCollector.translateToLocalFormatted("info.riftSignature.bound", source.getX(), source.getY(), source.getZ(), source.getDimension()));
 		}
 		else
 		{
-			par3List.add("First click stores a location;");
-			par3List.add("second click creates a pair of");
-			par3List.add("rifts linking the two locations.");
+            mod_pocketDim.translateAndAdd("info.riftSignature.unbound", par3List);
 		}
 	}
 
