@@ -131,7 +131,7 @@ public class MobMonolith extends EntityFlying implements IMob
 	public void onEntityUpdate()
 	{
 		// Remove this Monolith if it's not in Limbo or in a pocket dimension
-		if (!(this.worldObj.provider instanceof LimboProvider || this.worldObj.provider instanceof PocketProvider))
+		if (!(this.worldObj.provider.dimensionId == properties.LimboDimensionID|| this.worldObj.provider instanceof PocketProvider))
 		{
 			this.setDead();
 			super.onEntityUpdate();
@@ -191,12 +191,12 @@ public class MobMonolith extends EntityFlying implements IMob
 			// Rapidly increase the aggro level if this Monolith can see the player
 			if (visibility)
 			{
-				if (this.worldObj.provider instanceof LimboProvider)
+				if (this.worldObj.provider.dimensionId == properties.LimboDimensionID)
 				{
                     if (isDangerous())
                         aggro++;
                     else
-					    aggro += 18;
+					    aggro += 36;
 				}
 				else
 				{
@@ -206,16 +206,16 @@ public class MobMonolith extends EntityFlying implements IMob
 			}
 			else
 			{
-				if (aggro > aggroCap)
-				{
-					// Decrease aggro over time
-					aggro--;
-				}
-				else if (player != null && (aggro < aggroCap))
-				{
-					// Increase aggro if a player is within range and aggro < aggroCap
-					aggro++;
-				}
+                if (isDangerous()) {
+                    if (aggro > aggroCap) {
+                        // Decrease aggro over time
+                        aggro--;
+                    } else if (player != null && (aggro < aggroCap)) {
+                        // Increase aggro if a player is within range and aggro < aggroCap
+                        aggro++;
+                    }
+                } else
+                    aggro -= 3;
 			}
 			// Clamp the aggro level
             int maxAggro = isDangerous()?MAX_AGGRO:180;
@@ -244,7 +244,7 @@ public class MobMonolith extends EntityFlying implements IMob
 		float aggroPercent = this.getAggroProgress();
 		if (this.soundTime <= 0)
 		{
-			this.playSound(mod_pocketDim.modid + ":monk",  1F, 1F);
+			this.playSound(mod_pocketDim.modid + ":monk", 1F, 1F);
 			this.soundTime = 100;
 		}
 		if ((aggroPercent > 0.70) && this.soundTime < 100)
