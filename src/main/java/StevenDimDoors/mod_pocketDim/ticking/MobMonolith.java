@@ -51,7 +51,7 @@ public class MobMonolith extends EntityFlying implements IMob
 	}
 
     public boolean isDangerous() {
-        return properties.LimboDimensionID != worldObj.provider.dimensionId;
+        return properties.MonolithTeleportationEnabled && (properties.LimboDimensionID != worldObj.provider.dimensionId || !properties.DangerousLimboMonolithsDisabled);
     }
 
 	@Override

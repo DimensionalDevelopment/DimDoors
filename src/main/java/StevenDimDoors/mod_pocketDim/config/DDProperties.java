@@ -64,6 +64,7 @@ public class DDProperties
 	public final boolean DoorRenderingEnabled;
 	public final boolean TNFREAKINGT_Enabled;
 	public final boolean MonolithTeleportationEnabled;
+    public final boolean DangerousLimboMonolithsDisabled;
 	
 
 	/**
@@ -160,6 +161,9 @@ public class DDProperties
 		
 		MonolithTeleportationEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Monolith Teleportation", true,
 				"Sets whether Monoliths can teleport players").getBoolean(true);
+
+        DangerousLimboMonolithsDisabled = config.get(Configuration.CATEGORY_GENERAL, "Docile Monoliths in Limbo", true,
+                "Sets whether monoliths in Limbo stare at the player rather than attack").getBoolean(true);
 		
 		MonolithSpawningChance = config.get(Configuration.CATEGORY_GENERAL, "Monolith Spawning Chance", 28,
 				"Sets the chance (out of " + CustomLimboPopulator.MAX_MONOLITH_SPAWNING_CHANCE + ") that Monoliths will " +
