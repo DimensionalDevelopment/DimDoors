@@ -94,7 +94,7 @@ import cpw.mods.fml.relauncher.Side;
 @Mod(modid = mod_pocketDim.modid, name = "Dimensional Doors", version = mod_pocketDim.version)
 public class mod_pocketDim
 {
-	public static final String version = "@VERSION@";
+	public static final String version = "2.2.5-test";
 	public static final String modid = "dimdoors";
 	
 	//TODO need a place to stick all these constants
