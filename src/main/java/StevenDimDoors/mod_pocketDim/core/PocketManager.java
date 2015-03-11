@@ -568,7 +568,10 @@ public class PocketManager
 			// unfortuantly. I send the dimdata to the client when they
 			// teleport.
 			// Steven
-			DimensionManager.registerDimension(dimensionID, mod_pocketDim.properties.PocketProviderID);
+            int providerID = mod_pocketDim.properties.PocketProviderID;
+            if (type == DimensionType.PERSONAL)
+                providerID = mod_pocketDim.properties.PersonalPocketProviderID;
+			DimensionManager.registerDimension(dimensionID,providerID);
 		}
 		return dimension;
 	}
