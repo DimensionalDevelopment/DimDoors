@@ -200,11 +200,11 @@ public class mod_pocketDim
 		blockDimWall = new BlockDimWall(0, Material.iron).setLightLevel(1.0F).setHardness(0.1F).setBlockName("blockDimWall");
 		blockDimWallPerm = (new BlockDimWallPerm(0, Material.iron)).setLightLevel(1.0F).setBlockUnbreakable().setResistance(6000000.0F).setBlockName("blockDimWallPerm");
 		warpDoor = new WarpDoor(Material.wood, properties).setHardness(1.0F) .setBlockName("dimDoorWarp").setBlockTextureName("itemDimDoorWarp");
-		blockRift = (BlockRift) (new BlockRift(Material.fire, properties).setHardness(1.0F) .setBlockName("rift"));
 		blockLimbo = new BlockLimbo(15, Material.iron, properties.LimboDimensionID, limboDecay).setHardness(.2F).setBlockName("BlockLimbo").setLightLevel(.0F);
 		unstableDoor = (new UnstableDoor(Material.iron, properties).setHardness(.2F).setBlockName("chaosDoor").setLightLevel(.0F).setBlockTextureName("itemChaosDoor") );
 		dimensionalDoor = (DimensionalDoor) (new DimensionalDoor(Material.iron, properties).setHardness(1.0F).setResistance(2000.0F) .setBlockName("dimDoor").setBlockTextureName("itemDimDoor"));
 		transTrapdoor = (TransTrapdoor) (new TransTrapdoor(Material.wood).setHardness(1.0F) .setBlockName("dimHatch"));
+        blockRift = (BlockRift) (new BlockRift(Material.fire, properties).setHardness(1.0F) .setBlockName("rift"));
 
 		itemDDKey = (new ItemDDKey()).setUnlocalizedName("itemDDKey");
 		itemQuartzDoor = (new ItemQuartzDoor(Material.rock)).setUnlocalizedName("itemQuartzDoor");
