@@ -286,7 +286,7 @@ public class PocketBuilder
 		{
 			throw new IllegalArgumentException("properties cannot be null.");
 		}
-		if (link.hasDestination())
+		if (link.linkType() != LinkType.PERSONAL && link.hasDestination())
 		{
 			throw new IllegalArgumentException("link cannot have a destination assigned already.");
 		}
