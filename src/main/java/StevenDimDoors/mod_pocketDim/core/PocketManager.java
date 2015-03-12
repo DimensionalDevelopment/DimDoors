@@ -629,6 +629,13 @@ public class PocketManager
 		return (ArrayList<NewDimData>) rootDimensions.clone();
 	}
 
+    public static void tryUnload() {
+        if (isConnected)
+            unload();
+        isLoading = false;
+        isLoaded = false;
+    }
+
 	public static void unload()
 	{
 		System.out.println("Unloading Pocket Dimensions...");

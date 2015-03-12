@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim;
 
+import StevenDimDoors.mod_pocketDim.network.ClientJoinPacket;
 import StevenDimDoors.mod_pocketDim.network.DimDoorsNetwork;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -42,17 +43,14 @@ public class ConnectionHandler
 	@SubscribeEvent
 	public void connectionClosed(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
 	{
-		if(PocketManager.isConnected)
-		{
-			PocketManager.unload();
-		}
+        PocketManager.tryUnload();
 	}
 
 	@SubscribeEvent
 	public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
 	{
-		// Hax... please don't do this! >_< 
-		PocketManager.getDimwatcher().onCreated(new ClientDimData(PocketManager.createDimensionDataDangerously(0)));
+		// Hax... please don't do this! >_<
+        DimDoorsNetwork.sendToPlayer(new ClientJoinPacket(), event.player);
 		
 	}
 }

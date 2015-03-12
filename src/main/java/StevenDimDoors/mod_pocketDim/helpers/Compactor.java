@@ -33,11 +33,11 @@ public class Compactor
 		{
 			output.writeInt(dimension.id());
 			output.writeInt(dimension.root().id());
+            output.writeInt(dimension.type().index);
 			output.writeInt(dimension.linkCount());
 			for (DimLink link : dimension.links())
 			{
-				Point4D.write(link.source(), output);
-				output.writeInt(link.orientation());
+                (new ClientLinkData(link)).write(output);
 			}
 		}
 		

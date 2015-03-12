@@ -119,10 +119,9 @@ public class EventHookContainer
 		// fires before we can use DimensionManager and onServerStarting fires
 		// after the game tries to generate terrain. If a gateway tries to
 		// generate before PocketManager has initialized, we get a crash.
-		if (!PocketManager.isLoaded())
+		if (!event.world.isRemote && !PocketManager.isLoaded())
 		{
 			PocketManager.load();
-            PocketManager.isConnected = true;
 		}
 	}
 
