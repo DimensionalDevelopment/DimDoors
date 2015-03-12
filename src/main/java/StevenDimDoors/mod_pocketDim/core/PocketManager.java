@@ -63,7 +63,7 @@ public class PocketManager
 		{
             Point4D source = link.point;
             NewDimData dimension = getDimensionData(source.getDimension());
-            if (dimension.getLink(source.getX(), source.getY(), source.getZ()) == null)
+            if (dimension != null && dimension.getLink(source.getX(), source.getY(), source.getZ()) == null)
 			    dimension.createLink(source, LinkType.CLIENT, 0, link.lock);
 		}
 
@@ -72,7 +72,7 @@ public class PocketManager
 		{
 			Point4D source = link.point;
 			NewDimData dimension = getDimensionData(source.getDimension());
-            if (dimension.getLink(source.getX(),source.getY(),source.getZ()) != null)
+            if (dimension != null && dimension.getLink(source.getX(),source.getY(),source.getZ()) != null)
 			    dimension.deleteLink(source.getX(), source.getY(), source.getZ());
 		}
 
@@ -81,9 +81,10 @@ public class PocketManager
 		{
 			Point4D source = link.point;
 			NewDimData dimension = getDimensionData(source.getDimension());
-			DimLink dLink = dimension.getLink(source);
-			dLink.lock = link.lock;
-
+            if (dimension != null) {
+                DimLink dLink = dimension.getLink(source);
+                dLink.lock = link.lock;
+            }
 		}
 	}
 

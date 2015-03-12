@@ -122,6 +122,7 @@ public class EventHookContainer
 		if (!PocketManager.isLoaded())
 		{
 			PocketManager.load();
+            PocketManager.isConnected = true;
 		}
 	}
 
