@@ -39,7 +39,7 @@ public class DimDoorsNetwork extends FMLIndexedMessageToMessageCodec<DimDoorsPac
         INSTANCE.addDiscriminator(4, DeleteLinkPacket.class);
         INSTANCE.addDiscriminator(5, UpdateLinkPacket.class);
 
-        channels.putAll(NetworkRegistry.INSTANCE.newChannel("ModysseyTeleporters", INSTANCE));
+        channels.putAll(NetworkRegistry.INSTANCE.newChannel("DimDoors", INSTANCE));
     }
 
     public void encodeInto(ChannelHandlerContext ctx, DimDoorsPacket msg, ByteBuf target) throws Exception {
