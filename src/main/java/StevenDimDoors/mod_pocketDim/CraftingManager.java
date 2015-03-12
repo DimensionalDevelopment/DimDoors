@@ -105,7 +105,7 @@ public class CraftingManager
 		if (properties.CraftingPersonalDimDoorAllowed)
 		{
 			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemPersonalDoor,1),
-				"yxy", 'y', mod_pocketDim.itemGoldenDoor, 'x', mod_pocketDim.itemStableFabric);
+				"yxy", 'y', mod_pocketDim.itemQuartzDoor, 'x', mod_pocketDim.itemStableFabric);
 		}
 		if (properties.CraftingQuartzDoorAllowed)
 		{
