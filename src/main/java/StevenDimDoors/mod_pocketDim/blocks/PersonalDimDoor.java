@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim.blocks;
 
+import StevenDimDoors.mod_pocketDim.world.PersonalPocketProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
@@ -28,7 +29,10 @@ public class PersonalDimDoor extends BaseDimDoor
 			DimLink link = dimension.getLink(x, y, z);
 			if (link == null)
 			{
-				dimension.createLink(x, y, z, LinkType.PERSONAL, world.getBlockMetadata(x, y - 1, z));
+                if (world.provider instanceof PersonalPocketProvider)
+                    dimension.createLink(x, y, z, LinkType.LIMBO, world.getBlockMetadata(x, y-1, z));
+                else
+				    dimension.createLink(x, y, z, LinkType.PERSONAL, world.getBlockMetadata(x, y - 1, z));
 			}
 		}
 	}

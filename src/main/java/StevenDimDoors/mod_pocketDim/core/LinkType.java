@@ -14,6 +14,7 @@ public enum LinkType
 	UNSAFE_EXIT(6),
 	REVERSE(7),
 	PERSONAL(8),
+    LIMBO(9),
 	CLIENT(-1337);
 	
 	LinkType(int index)

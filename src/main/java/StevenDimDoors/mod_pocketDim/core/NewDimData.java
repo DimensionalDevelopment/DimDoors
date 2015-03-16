@@ -428,7 +428,8 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 			}
 			
 			// Raise deletion event
-			linkWatcher.onDeleted(new ClientLinkData(link));
+            if (linkWatcher != null)
+			    linkWatcher.onDeleted(new ClientLinkData(link));
 			target.clear();
 			modified = true;
 		}

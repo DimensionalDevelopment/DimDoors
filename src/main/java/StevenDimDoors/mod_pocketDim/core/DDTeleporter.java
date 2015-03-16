@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.core;
 import java.util.ArrayList;
 import java.util.Random;
 
+import StevenDimDoors.mod_pocketDim.world.LimboProvider;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.block.Block;
@@ -499,13 +500,22 @@ public class DDTeleporter
 			case POCKET:
 				return PocketBuilder.generateNewPocket(link, properties, door, DimensionType.POCKET);
 			case PERSONAL:
-				return setupPersonalLink(link, properties, (EntityPlayer)entity, door);
+				return setupPersonalLink(link, properties, entity, door);
 			case SAFE_EXIT:
 				return generateSafeExit(link, properties);
 			case DUNGEON_EXIT:
 				return generateDungeonExit(link, properties);
 			case UNSAFE_EXIT:
 				return generateUnsafeExit(link);
+            case LIMBO:
+                if(!(entity instanceof EntityPlayer))
+                {
+                    return false;
+                }
+
+                Point4D dest = LimboProvider.getLimboSkySpawn((EntityPlayer)entity, DDProperties.instance());
+                link.tail.setDestination(dest);
+                return true;
 			case NORMAL:
 			case REVERSE:
 			case RANDOM:
@@ -515,13 +525,14 @@ public class DDTeleporter
 		}
 	}
 	
-	private static boolean setupPersonalLink(DimLink link, DDProperties properties,EntityPlayer player, Block door)
+	private static boolean setupPersonalLink(DimLink link, DDProperties properties,Entity entity, Block door)
 	{
-		if(!(player instanceof EntityPlayer))
+		if(!(entity instanceof EntityPlayer))
 		{
 			return false;
 		}
-		
+
+        EntityPlayer player = (EntityPlayer)entity;
 		NewDimData dim = PocketManager.getPersonalDimensionForPlayer(player.getGameProfile().getId().toString());
 		if(dim == null)
 		{
@@ -533,8 +544,7 @@ public class DDTeleporter
 		{
 			PocketManager.getDimensionData(link.source().getDimension()).setLinkDestination(personalHomeLink, link.source().getX(), link.source().getY(), link.source().getZ());
 		}
-		
-		dim.setLinkDestination(link, dim.origin.getX(), dim.origin.getY(), dim.origin.getZ());
+
 		return true;
 	}
 
