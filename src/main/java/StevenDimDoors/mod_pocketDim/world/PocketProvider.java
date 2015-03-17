@@ -89,7 +89,7 @@ public class PocketProvider extends WorldProvider
 	@Override
 	protected void generateLightBrightnessTable()
 	{
-		if(PocketManager.getDimensionData(this.dimensionId).type() == DimensionType.POCKET)
+		if(!PocketManager.isLoaded() || PocketManager.getDimensionData(this.dimensionId).type() == DimensionType.POCKET)
 		{
 			super.generateLightBrightnessTable();
 			return;

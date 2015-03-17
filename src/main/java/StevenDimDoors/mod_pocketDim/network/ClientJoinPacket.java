@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim.network;
 
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -30,7 +31,10 @@ public class ClientJoinPacket extends DimDoorsPacket {
 
     @Override
     public void handleClient(World world, EntityPlayer player) {
+        NewDimData dimensionData = PocketManager.getDimensionData(player.worldObj);
 
+        if (dimensionData.isPocketDimension())
+            player.worldObj.provider.registerWorld(player.worldObj);
     }
 
     @Override
