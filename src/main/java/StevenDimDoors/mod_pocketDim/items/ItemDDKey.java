@@ -82,7 +82,7 @@ public class ItemDDKey extends Item
 			return false;
 		}
 
-		if (player.getItemInUse() != null)
+		if (player.inventory.getCurrentItem() != null)
 		{
 			return true;
 		}
