@@ -48,6 +48,14 @@ processResources
             }
         }
 
+afterEvaluate {
+    allprojects { project ->
+        if (project.plugins.hasPlugin("idea"))
+        {
+            idea { module { inheritOutputDirs = true } }
+        }
+    }
+}
 
 jar 
 {
