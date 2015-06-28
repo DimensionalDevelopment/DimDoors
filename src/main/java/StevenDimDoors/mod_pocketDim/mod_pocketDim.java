@@ -317,7 +317,7 @@ public class mod_pocketDim
 	{
 		try
 		{
-			PocketManager.unload();
+			PocketManager.tryUnload();
 			deathTracker.writeToFile();
 			deathTracker = null;
 			worldProperties = null;

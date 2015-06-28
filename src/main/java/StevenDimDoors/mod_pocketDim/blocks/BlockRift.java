@@ -349,7 +349,11 @@ public class BlockRift extends Block implements ITileEntityProvider
 			// is designed to receive an entity, the source of the blast. We have no entity so
 			// I've set this to access blockResistance directly. Might need changing later.
 			
-			return (block.blockResistance >= MIN_IMMUNE_RESISTANCE ||
+			//notabadminer: block.getExplosionResistance() doesn't do anything with the entity passed to it
+			//so passing null is fine. Just do it. Also, it returns resistance/5 so we should *5 to get
+			//back to the resistance value.
+			
+			return (block.getExplosionResistance(null) * 5 >= MIN_IMMUNE_RESISTANCE ||
 					modBlocksImmuneToRift.contains(block) ||
 					blocksImmuneToRift.contains(block));
 		}
