@@ -1,5 +1,6 @@
 package StevenDimDoors.mod_pocketDim.world;
 
+import StevenDimDoors.mod_pocketDim.core.NewDimData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.Vec3;
@@ -89,7 +90,8 @@ public class PocketProvider extends WorldProvider
 	@Override
 	protected void generateLightBrightnessTable()
 	{
-		if(!PocketManager.isLoaded() || PocketManager.getDimensionData(this.dimensionId).type() == DimensionType.POCKET)
+        NewDimData data = PocketManager.getDimensionData(this.dimensionId);
+		if(!PocketManager.isLoaded() || data == null || data.type() == DimensionType.POCKET)
 		{
 			super.generateLightBrightnessTable();
 			return;
