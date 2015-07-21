@@ -668,6 +668,9 @@ public class PocketManager
 
 	public static DimLink getLink(int x, int y, int z, int dimensionID)
 	{
+        if (!isLoaded())
+            return null;
+
 		NewDimData dimension = dimensionData.get(dimensionID);
 		if (dimension != null)
 		{
