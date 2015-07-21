@@ -318,14 +318,17 @@ public class mod_pocketDim
 		try
 		{
 			PocketManager.tryUnload();
-			deathTracker.writeToFile();
-			deathTracker = null;
+            if (deathTracker != null) {
+                deathTracker.writeToFile();
+                deathTracker = null;
+            }
 			worldProperties = null;
 			currrentSaveRootDirectory = null;
 			
 			// Unregister all tick receivers from serverTickHandler to avoid leaking
 			// scheduled tasks between single-player game sessions
-			serverTickHandler.unregisterReceivers();
+            if (serverTickHandler != null)
+			    serverTickHandler.unregisterReceivers();
 			spawner = null;
 			riftRegenerator = null;
 			limboDecayScheduler = null;
