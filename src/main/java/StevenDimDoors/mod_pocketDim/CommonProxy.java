@@ -5,6 +5,7 @@ import StevenDimDoors.mod_pocketDim.blocks.BaseDimDoor;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.tileentities.TileEntityDimDoor;
 
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -151,5 +152,8 @@ public class CommonProxy implements IGuiHandler
     public void registerSidedHooks(DDProperties properties) {
         new ServerPacketHandler();
     }
-    
+
+    public EntityPlayer getMessagePlayer(MessageContext ctx) {
+        return ctx.getServerHandler().playerEntity;
+    }
 }

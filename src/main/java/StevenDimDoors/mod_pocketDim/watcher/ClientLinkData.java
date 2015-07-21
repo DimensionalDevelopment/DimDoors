@@ -6,6 +6,7 @@ import StevenDimDoors.mod_pocketDim.core.DDLock;
 import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.LinkType;
 import StevenDimDoors.mod_pocketDim.util.Point4D;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ClientLinkData
@@ -36,7 +37,7 @@ public class ClientLinkData
 
 	}
 
-	public void write(DataOutput output) throws IOException
+	public void write(ByteBuf output) throws IOException
 	{
 		Point4D.write(point, output);
 		output.writeInt(this.type.index);
@@ -67,7 +68,7 @@ public class ClientLinkData
         }
     }
 
-	public static ClientLinkData read(DataInput input) throws IOException
+	public static ClientLinkData read(ByteBuf input) throws IOException
 	{
 		Point4D point = Point4D.read(input);
 		LinkType type = LinkType.getLinkTypeFromIndex(input.readInt());

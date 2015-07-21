@@ -1,5 +1,8 @@
 package StevenDimDoors.mod_pocketDim.network;
 
+import StevenDimDoors.mod_pocketDim.mod_pocketDim;
+import StevenDimDoors.mod_pocketDim.network.handlers.*;
+import StevenDimDoors.mod_pocketDim.network.packets.*;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -9,6 +12,8 @@ import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
@@ -23,75 +28,29 @@ import net.minecraft.tileentity.TileEntity;
 import java.util.EnumMap;
 
 @ChannelHandler.Sharable
-public class DimDoorsNetwork extends FMLIndexedMessageToMessageCodec<DimDoorsPacket> {
+public class DimDoorsNetwork extends SimpleNetworkWrapper {
 
-    private static final DimDoorsNetwork INSTANCE = new DimDoorsNetwork();
-    private static final EnumMap<Side, FMLEmbeddedChannel> channels = Maps.newEnumMap(Side.class);
+    private static final DimDoorsNetwork INSTANCE = new DimDoorsNetwork(mod_pocketDim.modid);
+
+    public DimDoorsNetwork(String channelName) {
+        super(channelName);
+    }
 
     public static void init() {
-        if (!channels.isEmpty())
-            return;
-
-        INSTANCE.addDiscriminator(0, ClientJoinPacket.class);
-        INSTANCE.addDiscriminator(1, CreateDimensionPacket.class);
-        INSTANCE.addDiscriminator(2, DeleteDimensionPacket.class);
-        INSTANCE.addDiscriminator(3, CreateLinkPacket.class);
-        INSTANCE.addDiscriminator(4, DeleteLinkPacket.class);
-        INSTANCE.addDiscriminator(5, UpdateLinkPacket.class);
-
-        channels.putAll(NetworkRegistry.INSTANCE.newChannel("DimDoors", INSTANCE));
+        INSTANCE.registerMessage(ClientJoinHandler.class, ClientJoinPacket.class, 0, Side.CLIENT);
+        INSTANCE.registerMessage(CreateDimensionHandler.class, CreateDimensionPacket.class, 1, Side.CLIENT);
+        INSTANCE.registerMessage(DeleteDimensionHandler.class, DeleteDimensionPacket.class, 2, Side.CLIENT);
+        INSTANCE.registerMessage(CreateLinkHandler.class, CreateLinkPacket.class, 3, Side.CLIENT);
+        INSTANCE.registerMessage(DeleteLinkHandler.class, DeleteLinkPacket.class, 4, Side.CLIENT);
+        INSTANCE.registerMessage(UpdateLinkHandler.class, UpdateLinkPacket.class, 5, Side.CLIENT);
     }
 
-    public void encodeInto(ChannelHandlerContext ctx, DimDoorsPacket msg, ByteBuf target) throws Exception {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        msg.write(out);
-        target.writeBytes(out.toByteArray());
+    public static void sendToAllPlayers(IMessage message) {
+        INSTANCE.sendToAll(message);
     }
 
-    @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf source, DimDoorsPacket msg) {
-        ByteArrayDataInput in = ByteStreams.newDataInput(source.array());
-
-        in.skipBytes(1);
-        msg.read(in);
-
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
-            handleClient(msg);
-        else
-            handleServer(ctx, msg);
-    }
-
-    @SideOnly(Side.CLIENT)
-    private void handleClient(DimDoorsPacket msg) {
-        msg.handleClient(Minecraft.getMinecraft().theWorld, Minecraft.getMinecraft().thePlayer);
-    }
-
-    private void handleServer(ChannelHandlerContext ctx, DimDoorsPacket msg) {
-        EntityPlayerMP player = ((NetHandlerPlayServer)ctx.channel().attr(NetworkRegistry.NET_HANDLER).get()).playerEntity;
-        msg.handleServer(player.worldObj, player);
-    }
-
-    public static void sendToAllPlayers(DimDoorsPacket packet) {
-        channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
-        channels.get(Side.SERVER).writeAndFlush(packet);
-    }
-
-    public static void sendToServer(DimDoorsPacket packet) {
-        channels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
-        channels.get(Side.CLIENT).writeAndFlush(packet);
-    }
-
-    public static void sendToPlayer(DimDoorsPacket packet, EntityPlayer player) {
-        channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
-        channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
-        channels.get(Side.SERVER).writeAndFlush(packet);
-    }
-
-    public static void sendToVicinity(DimDoorsPacket packet, TileEntity entity, double distance) {
-        channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
-
-        NetworkRegistry.TargetPoint vicinity = new NetworkRegistry.TargetPoint(entity.getWorldObj().provider.dimensionId, entity.xCoord + 0.5, entity.yCoord + 0.5, entity.zCoord + 0.5, distance);
-        channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(vicinity);
-        channels.get(Side.SERVER).writeAndFlush(packet);
+    public static void sendToPlayer(IMessage message, EntityPlayer player) {
+        if (player instanceof EntityPlayerMP)
+            INSTANCE.sendTo(message, (EntityPlayerMP)player);
     }
 }

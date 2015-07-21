@@ -1,5 +1,8 @@
 package StevenDimDoors.mod_pocketDimClient;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import StevenDimDoors.mod_pocketDim.CommonProxy;
@@ -60,4 +63,9 @@ public class ClientProxy extends CommonProxy
         PocketManager.getDimwatcher().registerReceiver (new PocketManager.ClientDimWatcher());
         PocketManager.getLinkWatcher().registerReceiver(new PocketManager.ClientLinkWatcher());
     }
+
+	@Override
+	public EntityPlayer getMessagePlayer(MessageContext ctx) {
+		return Minecraft.getMinecraft().thePlayer;
+	}
 }

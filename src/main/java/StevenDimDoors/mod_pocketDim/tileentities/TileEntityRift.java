@@ -1,10 +1,8 @@
 package StevenDimDoors.mod_pocketDim.tileentities;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import StevenDimDoors.mod_pocketDim.network.CreateLinkPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,8 +11,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
-import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
 import StevenDimDoors.mod_pocketDim.config.DDProperties;
 import StevenDimDoors.mod_pocketDim.core.DimLink;

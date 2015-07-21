@@ -2,11 +2,8 @@ package StevenDimDoors.mod_pocketDim.tileentities;
 
 import java.util.Random;
 
-import StevenDimDoors.mod_pocketDim.network.CreateLinkPacket;
 import net.minecraft.nbt.NBTTagCompound;
-import StevenDimDoors.mod_pocketDim.ServerPacketHandler;
 import StevenDimDoors.mod_pocketDim.mod_pocketDim;
-import StevenDimDoors.mod_pocketDim.core.DimLink;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
 
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;

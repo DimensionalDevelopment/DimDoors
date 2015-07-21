@@ -1,16 +1,11 @@
 package StevenDimDoors.mod_pocketDim;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
 import StevenDimDoors.mod_pocketDim.network.*;
+import StevenDimDoors.mod_pocketDim.network.packets.*;
 import StevenDimDoors.mod_pocketDim.watcher.ClientLinkData;
 import StevenDimDoors.mod_pocketDim.core.PocketManager;
-import StevenDimDoors.mod_pocketDim.util.Point4D;
 import StevenDimDoors.mod_pocketDim.watcher.ClientDimData;
 import StevenDimDoors.mod_pocketDim.watcher.IUpdateWatcher;
-import net.minecraft.network.Packet;
 
 public class ServerPacketHandler
 {

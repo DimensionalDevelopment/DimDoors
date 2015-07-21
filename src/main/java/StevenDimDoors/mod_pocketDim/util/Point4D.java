@@ -3,6 +3,7 @@ package StevenDimDoors.mod_pocketDim.util;
 import java.io.*;
 
 import StevenDimDoors.mod_pocketDim.Point3D;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
 
@@ -188,7 +189,7 @@ public final class Point4D implements Comparable<Point4D>
         }
     }
 
-	public static void write(Point4D point, DataOutput stream) throws IOException
+	public static void write(Point4D point, ByteBuf stream) throws IOException
 	{
 		stream.writeBoolean(point != null);
 		if (point != null)
@@ -200,7 +201,7 @@ public final class Point4D implements Comparable<Point4D>
 		}
 	}
 	
-	public static Point4D read(DataInput stream) throws IOException
+	public static Point4D read(ByteBuf stream) throws IOException
 	{
 		if (stream.readBoolean())
 		{

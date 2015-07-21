@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -699,7 +701,7 @@ public class PocketManager
 		return linkWatcher.unregisterReceiver(watcher);
 	}
 
-	public static void writePacket(DataOutput output) throws IOException
+	public static void writePacket(ByteBuf output) throws IOException
 	{
 		// Write a very compact description of our dimensions and links to be
 		// sent to a client
@@ -721,7 +723,7 @@ public class PocketManager
 		}
 	}
 
-	public static void readPacket(DataInput input) throws IOException
+	public static void readPacket(ByteBuf input) throws IOException
 	{
 		// TODO- figure out why this is getting called so frequently
 		if (isLoaded)
