@@ -305,7 +305,7 @@ public class PocketManager
 			{
 				try
 				{
-					if (personalPocketsMapping.containsValue(dimension))
+					if (dimension.type() == DimensionType.PERSONAL)
 					{
 						if (!DimensionManager.isDimensionRegistered(dimension.id())){
 							DimensionManager.registerDimension(dimension.id(), properties.PersonalPocketProviderID);
