@@ -427,6 +427,7 @@ public class DDSaveHandler
 			List<Integer> list = reader.readFromFile(blacklistFile);
             if (list == null)
                 return new ArrayList<Integer>(0);
+            return list;
 		}
 		catch (Exception e)
 		{
