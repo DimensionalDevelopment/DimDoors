@@ -424,12 +424,14 @@ public class DDSaveHandler
 	{
 		try
 		{
-			return reader.readFromFile(blacklistFile);
+			List<Integer> list = reader.readFromFile(blacklistFile);
+            if (list == null)
+                return new ArrayList<Integer>(0);
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			return null;
+			return new ArrayList<Integer>(0);
 		}
 	}
 	
