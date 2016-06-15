@@ -1,8 +1,10 @@
 eclipse/
 build/
 .gradle/
+.idea/
+run/
+out/
 *.iml
 *.ipr
 *.iws
 forge-*-changelog.txt
-out/
