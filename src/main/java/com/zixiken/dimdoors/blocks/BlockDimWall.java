@@ -3,7 +3,7 @@ package com.zixiken.dimdoors.blocks;
 import java.util.List;
 import java.util.Random;
 
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -25,7 +25,7 @@ public class BlockDimWall extends Block {
 	
 	public BlockDimWall() {
 		super(Material.iron);
-		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+		this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
 		setLightLevel(1.0F);
         setHardness(0.1F);
         setUnlocalizedName(ID);
@@ -65,9 +65,9 @@ public class BlockDimWall extends Block {
 	@Override
 	public void registerBlockIcons(IIconRegister par1IconRegister)
     {
-        this.blockIcon[0] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
-        this.blockIcon[1] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "Perm");
-        this.blockIcon[2] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "Personal");
+        this.blockIcon[0] = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName());
+        this.blockIcon[1] = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName() + "Perm");
+        this.blockIcon[2] = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName() + "Personal");
     }
 	
 	@SideOnly(Side.CLIENT)

@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.client;
 
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.ticking.MobMonolith;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -124,6 +124,6 @@ public class RenderMobObelisk extends RenderLiving
 	protected ResourceLocation getEntityTexture(Entity entity) 
 	{
 		MobMonolith monolith = (MobMonolith) entity;
-		return new ResourceLocation(mod_pocketDim.modid + ":textures/mobs/oldMonolith/Monolith" + monolith.getTextureState() + ".png");
+		return new ResourceLocation(DimDoors.modid + ":textures/mobs/oldMonolith/Monolith" + monolith.getTextureState() + ".png");
 	}
 }

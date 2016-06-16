@@ -2,7 +2,7 @@ package com.zixiken.dimdoors.tileentities;
 
 import java.util.Random;
 
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 
 public class TileEntityTransTrapdoor extends DDTileEntityBase
 {
@@ -16,7 +16,7 @@ public class TileEntityTransTrapdoor extends DDTileEntityBase
 	public float[] getRenderColor(Random rand)
 	{
 		float[] rgbaColor = {1,1,1,1};
-		if (this.worldObj.provider.dimensionId == mod_pocketDim.NETHER_DIMENSION_ID)
+		if (this.worldObj.provider.dimensionId == DimDoors.NETHER_DIMENSION_ID)
 		{
 			rgbaColor[0] = worldObj.rand.nextFloat() * 0.5F + 0.4F;
 			rgbaColor[1] = worldObj.rand.nextFloat() * 0.05F;

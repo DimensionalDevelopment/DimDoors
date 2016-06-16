@@ -63,7 +63,7 @@ public class DimData implements Serializable
                         {
                                 while (k<range)
                                 {
-                                        if (world.getBlock(x+i, y+j, z+k) == mod_pocketDim.blockRift && MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)<distance)
+                                        if (world.getBlock(x+i, y+j, z+k) == DimDoors.blockRift && MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)<distance)
                                         {
                                                 if(MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)!=0)
                                                 {
@@ -103,7 +103,7 @@ public class DimData implements Serializable
                         {
                                 while (k<range)
                                 {
-                                        if(world.getBlock(x+i, y+j, z+k)==mod_pocketDim.blockRift)
+                                        if(world.getBlock(x+i, y+j, z+k)== DimDoors.blockRift)
                                         {
                                                 if(MathHelper.abs(i)+MathHelper.abs(j)+MathHelper.abs(k)!=0)
                                                 {

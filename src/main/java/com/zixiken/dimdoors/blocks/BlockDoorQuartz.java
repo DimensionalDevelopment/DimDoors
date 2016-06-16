@@ -1,7 +1,8 @@
 package com.zixiken.dimdoors.blocks;
 
 import java.util.Random;
-import com.zixiken.dimdoors.mod_pocketDim;
+
+import com.zixiken.dimdoors.DimDoors;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.BlockDoor;
@@ -21,18 +22,18 @@ public class BlockDoorQuartz extends BlockDoor {
 	@SideOnly(Side.CLIENT)
     protected String getTextureName()
     {
-        return mod_pocketDim.modid + ":" + this.getUnlocalizedName();
+        return DimDoors.modid + ":" + this.getUnlocalizedName();
     }
 	
 	@Override
 	public Item getItemDropped(int par1, Random par2Random, int par3)
     {
-        return (par1 & 8) != 0 ? null : mod_pocketDim.itemQuartzDoor;
+        return (par1 & 8) != 0 ? null : DimDoors.itemQuartzDoor;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public Item getItem(World world, int x, int y, int z) {
-        return mod_pocketDim.itemQuartzDoor;
+        return DimDoors.itemQuartzDoor;
     }
 }

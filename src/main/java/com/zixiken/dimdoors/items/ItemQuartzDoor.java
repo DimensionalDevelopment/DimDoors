@@ -1,12 +1,9 @@
 package com.zixiken.dimdoors.items;
 
-import com.zixiken.dimdoors.blocks.BlockDoorQuartz;
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
@@ -16,14 +13,14 @@ public class ItemQuartzDoor extends ItemDoor {
     public static final String ID = "itemQuartzDoor";
 
 	public ItemQuartzDoor() {
-		super(mod_pocketDim.quartzDoor);
+		super(DimDoors.quartzDoor);
 		setUnlocalizedName(ID);
 	}
 
 	@Override
 	public void registerIcons(IIconRegister par1IconRegister)
 	{
-		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
+		this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
 	}
 
 	@Override
@@ -36,7 +33,7 @@ public class ItemQuartzDoor extends ItemDoor {
 		else
 		{
 			++par5;
-			Block block = mod_pocketDim.quartzDoor;
+			Block block = DimDoors.quartzDoor;
 
 			if (par2EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack) && par2EntityPlayer.canPlayerEdit(par4, par5 + 1, par6, par7, par1ItemStack))
 			{

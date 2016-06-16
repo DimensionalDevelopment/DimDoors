@@ -3,8 +3,8 @@ package com.zixiken.dimdoors.helpers;
 import java.io.File;
 import java.util.List;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.mod_pocketDim;
 import com.zixiken.dimdoors.world.PocketBuilder;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -32,7 +32,7 @@ public class ChunkLoaderHelper implements LoadingCallback
 			int y = ticket.getModData().getInteger("goldDimDoorY");
 			int z = ticket.getModData().getInteger("goldDimDoorZ");
 
-			if (world.getBlock(x, y, z) == mod_pocketDim.goldenDimensionalDoor)
+			if (world.getBlock(x, y, z) == DimDoors.goldenDimensionalDoor)
 			{
 				IChunkLoader loader = (IChunkLoader) world.getTileEntity(x, y, z);
 				if (!loader.isInitialized())
@@ -51,7 +51,7 @@ public class ChunkLoaderHelper implements LoadingCallback
 	public static Ticket createTicket(int x, int y, int z, World world)
 	{
 		NBTTagCompound data;
-		Ticket ticket = ForgeChunkManager.requestTicket(mod_pocketDim.instance, world, Type.NORMAL);
+		Ticket ticket = ForgeChunkManager.requestTicket(DimDoors.instance, world, Type.NORMAL);
 		if (ticket != null)
 		{
 			data = ticket.getModData();

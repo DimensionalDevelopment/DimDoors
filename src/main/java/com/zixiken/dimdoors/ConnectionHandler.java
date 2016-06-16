@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors;
 
+import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.network.packets.ClientJoinPacket;
 import com.zixiken.dimdoors.network.DimDoorsNetwork;
 import com.zixiken.dimdoors.core.PocketManager;
@@ -24,7 +25,7 @@ public class ConnectionHandler
             FMLEmbeddedChannel channel =  NetworkRegistry.INSTANCE.getChannel("FORGE", Side.SERVER);
             for (NewDimData data : PocketManager.getDimensions()) {
                 try {
-                    if (data.isPocketDimension() || data.id() == mod_pocketDim.properties.LimboDimensionID) {
+                    if (data.isPocketDimension() || data.id() == DDProperties.instance().LimboDimensionID) {
                         channel.writeOutbound(new ForgeMessage.DimensionRegisterMessage(data.id(), DimensionManager.getProviderType(data.id())));
                     }
 

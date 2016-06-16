@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.world;
 
+import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,7 +14,6 @@ import net.minecraft.world.biome.WorldChunkManagerHell;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.client.IRenderHandler;
 import com.zixiken.dimdoors.CloudRenderBlank;
-import com.zixiken.dimdoors.mod_pocketDim;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.ticking.CustomLimboPopulator;
 import com.zixiken.dimdoors.util.Point4D;
@@ -35,8 +35,8 @@ public class LimboProvider extends WorldProvider
 	{
 		this.hasNoSky = false;
 		this.skyRenderer = new LimboSkyProvider();
-		this.spawner = mod_pocketDim.spawner;
-		this.properties = mod_pocketDim.properties;
+		this.spawner = DimDoors.spawner;
+		this.properties = DimDoors.properties;
 	}
 
 	@Override
@@ -49,13 +49,13 @@ public class LimboProvider extends WorldProvider
 	@Override
 	protected void registerWorldChunkManager()
 	{
-		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.limboBiome,1);
+		super.worldChunkMgr = new WorldChunkManagerHell(DimDoors.limboBiome,1);
 	}
 
 	@Override
 	public BiomeGenBase getBiomeGenForCoords(int x, int z)
 	{
-		return mod_pocketDim.limboBiome;
+		return DimDoors.limboBiome;
 	}
 
 	@Override
@@ -136,7 +136,7 @@ public class LimboProvider extends WorldProvider
 	public boolean canCoordinateBeSpawn(int par1, int par2)
 	{
 		Block block = this.worldObj.getTopBlock(par1, par2);
-		return block == mod_pocketDim.blockLimbo;
+		return block == DimDoors.blockLimbo;
 	}
 	@Override
 	public double getHorizon()

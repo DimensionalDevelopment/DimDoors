@@ -1,7 +1,6 @@
 package com.zixiken.dimdoors.blocks;
 
-import com.zixiken.dimdoors.mod_pocketDim;
-import com.zixiken.dimdoors.config.DDProperties;
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.NewDimData;
@@ -39,7 +38,7 @@ public class BlockGoldDimDoor extends BaseDimDoor {
 	@Override
 	public Item getDoorItem()
 	{
-		return mod_pocketDim.itemGoldenDimensionalDoor;
+		return DimDoors.itemGoldenDimensionalDoor;
 	}
 	
 	@Override

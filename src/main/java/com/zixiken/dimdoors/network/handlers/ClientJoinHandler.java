@@ -1,9 +1,9 @@
 package com.zixiken.dimdoors.network.handlers;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.network.packets.ClientJoinPacket;
-import com.zixiken.dimdoors.mod_pocketDim;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -15,7 +15,7 @@ public class ClientJoinHandler implements IMessageHandler<ClientJoinPacket, IMes
 
     @Override
     public IMessage onMessage(ClientJoinPacket message, MessageContext ctx) {
-        EntityPlayer player = mod_pocketDim.proxy.getMessagePlayer(ctx);
+        EntityPlayer player = DimDoors.proxy.getMessagePlayer(ctx);
         NewDimData dimensionData = PocketManager.getDimensionData(player.worldObj);
 
         if (dimensionData.isPocketDimension())

@@ -2,8 +2,8 @@ package com.zixiken.dimdoors.blocks;
 
 import java.util.Random;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.config.DDProperties;
-import com.zixiken.dimdoors.mod_pocketDim;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -25,7 +25,7 @@ public class BlockDimWallPerm extends Block {
 	
 	public BlockDimWallPerm() {
 		super(Material.ground);
-        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+        this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
 		setLightLevel(1.0F);
         setBlockUnbreakable();
         setResistance(6000000.0F);
@@ -36,7 +36,7 @@ public class BlockDimWallPerm extends Block {
 	@Override
 	public void registerBlockIcons(IIconRegister par1IconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+		this.blockIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName());
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class BlockDimWallPerm extends Block {
 	public void onEntityWalking(World world, int x, int y, int z, Entity entity) 
 	{
 		if (!world.isRemote && world.provider.dimensionId == properties.LimboDimensionID
-				&& mod_pocketDim.worldProperties.LimboEscapeEnabled)
+				&& DimDoors.worldProperties.LimboEscapeEnabled)
 		{
 			World overworld = DimensionManager.getWorld(0);
 			if (overworld != null && entity instanceof EntityPlayerMP)
@@ -90,7 +90,7 @@ public class BlockDimWallPerm extends Block {
 						if (Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 2 ||
 							Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 3)
 						{
-							overworld.setBlock(destinationX + xc, destinationY - 1, destinationZ + zc, mod_pocketDim.blockLimbo);
+							overworld.setBlock(destinationX + xc, destinationY - 1, destinationZ + zc, DimDoors.blockLimbo);
 						}
 					}
 				}

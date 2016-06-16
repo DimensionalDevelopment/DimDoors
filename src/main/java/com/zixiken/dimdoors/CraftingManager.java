@@ -25,97 +25,97 @@ public class CraftingManager
 			switch (properties.WorldThreadRequirementLevel)
 			{
 				case 1:
-					GameRegistry.addShapelessRecipe(new ItemStack(mod_pocketDim.itemStableFabric, 1),
-						Items.ender_pearl, mod_pocketDim.itemWorldThread);
+					GameRegistry.addShapelessRecipe(new ItemStack(DimDoors.itemStableFabric, 1),
+						Items.ender_pearl, DimDoors.itemWorldThread);
 					break;
 				case 2:
-					GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemStableFabric, 1),
-						"yxy", 'x', Items.ender_pearl, 'y', mod_pocketDim.itemWorldThread);
+					GameRegistry.addRecipe(new ItemStack(DimDoors.itemStableFabric, 1),
+						"yxy", 'x', Items.ender_pearl, 'y', DimDoors.itemWorldThread);
 					break;
 				case 3:
-					GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemStableFabric, 1),
-						" y ", "yxy", " y ", 'x', Items.ender_pearl, 'y', mod_pocketDim.itemWorldThread);
+					GameRegistry.addRecipe(new ItemStack(DimDoors.itemStableFabric, 1),
+						" y ", "yxy", " y ", 'x', Items.ender_pearl, 'y', DimDoors.itemWorldThread);
 					break;
 				default:
-					GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemStableFabric, 1),
-						"yyy", "yxy", "yyy", 'x', Items.ender_pearl, 'y', mod_pocketDim.itemWorldThread);
+					GameRegistry.addRecipe(new ItemStack(DimDoors.itemStableFabric, 1),
+						"yyy", "yxy", "yyy", 'x', Items.ender_pearl, 'y', DimDoors.itemWorldThread);
 					break;
 			}
 		}
 		
 		if (properties.CraftingDimensionalDoorAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemDimensionalDoor, 1),
-				"yxy", 'x', mod_pocketDim.itemStableFabric, 'y', Items.iron_door);
+			GameRegistry.addRecipe(new ItemStack(DimDoors.itemDimensionalDoor, 1),
+				"yxy", 'x', DimDoors.itemStableFabric, 'y', Items.iron_door);
 		}
 		if (properties.CraftingUnstableDoorAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemUnstableDoor, 1),
-				"yxy", 'x', Items.ender_eye, 'y', mod_pocketDim.itemDimensionalDoor);
+			GameRegistry.addRecipe(new ItemStack(DimDoors.itemUnstableDoor, 1),
+				"yxy", 'x', Items.ender_eye, 'y', DimDoors.itemDimensionalDoor);
 		}
 		if (properties.CraftingWarpDoorAllowed)
 		{
 
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemWarpDoor, 1),
+			GameRegistry.addRecipe(new ItemStack(DimDoors.itemWarpDoor, 1),
 				"yxy", 'x', Items.ender_pearl, 'y', Items.wooden_door);
 		}
 		if (properties.CraftingTransTrapdoorAllowed)
 		{
 
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.transTrapdoor, 1),
+			GameRegistry.addRecipe(new ItemStack(DimDoors.transTrapdoor, 1),
 				"y", "x", "y", 'x', Items.ender_pearl, 'y', Blocks.trapdoor);
 		}
 		if (properties.CraftingRiftSignatureAllowed)
 		{
 
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemRiftSignature, 1),
+			GameRegistry.addRecipe(new ItemStack(DimDoors.itemRiftSignature, 1),
 				" y ", "yxy", " y ", 'x', Items.ender_pearl, 'y', Items.iron_ingot);
 		}
 		if (properties.CraftingRiftRemoverAllowed)
 		{
 
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemRiftRemover, 1),
+			GameRegistry.addRecipe(new ItemStack(DimDoors.itemRiftRemover, 1),
 				"yyy", "yxy", "yyy", 'x', Items.ender_pearl, 'y', Items.gold_ingot);
 		}
 		if (properties.CraftingRiftBladeAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemRiftBlade, 1),
-				"x", "x", "y", 'x', mod_pocketDim.itemStableFabric, 'y', Items.blaze_rod);
+			GameRegistry.addRecipe(new ItemStack(DimDoors.itemRiftBlade, 1),
+				"x", "x", "y", 'x', DimDoors.itemStableFabric, 'y', Items.blaze_rod);
 		}
 		if (properties.CraftingStabilizedRiftSignatureAllowed)
 		{
 
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemStabilizedRiftSignature, 1),
-				" y ", "yxy", " y ", 'x', mod_pocketDim.itemStableFabric, 'y', Items.iron_ingot);
+			GameRegistry.addRecipe(new ItemStack(DimDoors.itemStabilizedRiftSignature, 1),
+				" y ", "yxy", " y ", 'x', DimDoors.itemStableFabric, 'y', Items.iron_ingot);
 		}
 		if (properties.CraftingGoldenDimensionalDoorAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldenDimensionalDoor, 1),
-				"yxy", 'x', mod_pocketDim.itemStableFabric, 'y', mod_pocketDim.itemGoldenDoor);
+			GameRegistry.addRecipe(new ItemStack(DimDoors.itemGoldenDimensionalDoor, 1),
+				"yxy", 'x', DimDoors.itemStableFabric, 'y', DimDoors.itemGoldenDoor);
 		}
 		if (properties.CraftingGoldenDoorAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemGoldenDoor, 1),
+			GameRegistry.addRecipe(new ItemStack(DimDoors.itemGoldenDoor, 1),
 				"yy", "yy", "yy", 'y', Items.gold_ingot);
 		}
 		if (properties.CraftingPersonalDimDoorAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemPersonalDoor,1),
-				"yxy", 'y', mod_pocketDim.itemQuartzDoor, 'x', mod_pocketDim.itemStableFabric);
+			GameRegistry.addRecipe(new ItemStack(DimDoors.itemPersonalDoor,1),
+				"yxy", 'y', DimDoors.itemQuartzDoor, 'x', DimDoors.itemStableFabric);
 		}
 		if (properties.CraftingQuartzDoorAllowed)
 		{
-			GameRegistry.addRecipe(new ShapedOreRecipe(mod_pocketDim.itemQuartzDoor, new Object[]{
+			GameRegistry.addRecipe(new ShapedOreRecipe(DimDoors.itemQuartzDoor, new Object[]{
 				"yy", "yy", "yy", Character.valueOf('y'), "oreQuartz"}));
 			
 			
 		}
 		if (properties.CraftingDDKeysAllowed)
 		{
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemDDKey, 1),
+			GameRegistry.addRecipe(new ItemStack(DimDoors.itemDDKey, 1),
 				"  z", " y ", "y  ", 'y', Items.gold_ingot, 'z', Items.ender_pearl);
-			GameRegistry.addRecipe(new ItemStack(mod_pocketDim.itemDDKey, 1),
-					"z", "z", 'z', mod_pocketDim.itemDDKey);
+			GameRegistry.addRecipe(new ItemStack(DimDoors.itemDDKey, 1),
+					"z", "z", 'z', DimDoors.itemDDKey);
 		}
 		
 	}
@@ -157,6 +157,6 @@ public class CraftingManager
 	public static void registerDispenserBehaviors()
 	{
 		// Register the dispenser behaviors for certain DD items
-		BlockDispenser.dispenseBehaviorRegistry.putObject(mod_pocketDim.itemStabilizedRiftSignature, new DispenserBehaviorStabilizedRS());
+		BlockDispenser.dispenseBehaviorRegistry.putObject(DimDoors.itemStabilizedRiftSignature, new DispenserBehaviorStabilizedRS());
 	}
 }

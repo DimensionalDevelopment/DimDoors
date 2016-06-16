@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.TreeMap;
 
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.watcher.ClientLinkData;
 import com.zixiken.dimdoors.Point3D;
 import com.zixiken.dimdoors.config.DDProperties;
@@ -251,7 +251,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 				for (k = -range; k <= range; k++)
 				{
 					distance = getAbsoluteSum(i, j, k);
-					if (distance > 0 && distance < minDistance && world.getBlock(x + i, y + j, z + k) == mod_pocketDim.blockRift)
+					if (distance > 0 && distance < minDistance && world.getBlock(x + i, y + j, z + k) == DimDoors.blockRift)
 					{
 						link = getLink(x + i, y + j, z + k);
 						if (link != null)
@@ -290,7 +290,7 @@ public abstract class NewDimData implements IPackable<PackedDimData>
 				for (k = -range; k <= range; k++)
 				{
 					distance = getAbsoluteSum(i, j, k);
-					if (distance > 0 && world.getBlock(x + i, y + j, z + k) == mod_pocketDim.blockRift)
+					if (distance > 0 && world.getBlock(x + i, y + j, z + k) == DimDoors.blockRift)
 					{
 						link = getLink(x + i, y + j, z + k);
 						if (link != null)

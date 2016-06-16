@@ -3,9 +3,9 @@ package com.zixiken.dimdoors.client;
 import java.nio.FloatBuffer;
 import java.util.Random;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.blocks.TransTrapdoor;
 import com.zixiken.dimdoors.config.DDProperties;
-import com.zixiken.dimdoors.mod_pocketDim;
 import com.zixiken.dimdoors.tileentities.TileEntityTransTrapdoor;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.client.Minecraft;
@@ -24,8 +24,8 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer
 {
     private FloatBuffer field_76908_a = GLAllocation.createDirectFloatBuffer(16);
 	private static DDProperties properties = null;
-	private ResourceLocation riftPath= new ResourceLocation(mod_pocketDim.modid+":textures/other/RIFT.png");
-	private ResourceLocation warpPath= new ResourceLocation(mod_pocketDim.modid+":textures/other/WARP.png");
+	private ResourceLocation riftPath= new ResourceLocation(DimDoors.modid+":textures/other/RIFT.png");
+	private ResourceLocation warpPath= new ResourceLocation(DimDoors.modid+":textures/other/WARP.png");
 
 	
     public RenderTransTrapdoor()

@@ -3,7 +3,7 @@ package com.zixiken.dimdoors.blocks;
 import java.util.Random;
 
 import com.zixiken.dimdoors.core.DimLink;
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -32,7 +32,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 
 	public TransTrapdoor() {
 		super(Material.wood);
-		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+		this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setHardness(1.0F);
         setUnlocalizedName(ID);
 	}
@@ -40,7 +40,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	@Override
 	public void registerBlockIcons(IIconRegister par1IconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+		this.blockIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName());
 	}
 
 	//Teleports the player to the exit link of that dimension, assuming it is a pocket
@@ -156,7 +156,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	@Override
 	public Item getDoorItem()
 	{
-		return Item.getItemFromBlock(mod_pocketDim.transTrapdoor);
+		return Item.getItemFromBlock(DimDoors.transTrapdoor);
 	}
 	
 	public static boolean isTrapdoorSetLow(int metadata)
@@ -188,7 +188,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
         // Schedule rift regeneration for this block if it was replaced
         if (world.getBlock(x, y, z) != oldBlock)
         {
-        	mod_pocketDim.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
+        	DimDoors.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
         }
     }
 }

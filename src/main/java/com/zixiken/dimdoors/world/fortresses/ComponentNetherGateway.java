@@ -6,7 +6,7 @@ import java.util.Random;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.nbt.NBTTagCompound;
@@ -160,7 +160,7 @@ public class ComponentNetherGateway extends StructureComponent
         	{
         		link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
         	}
-        	ItemDoor.placeDoorBlock(world, x, y, z, orientation, mod_pocketDim.transientDoor);
+        	ItemDoor.placeDoorBlock(world, x, y, z, orientation, DimDoors.transientDoor);
         }
 
         for (x = 0; x <= 6; ++x)

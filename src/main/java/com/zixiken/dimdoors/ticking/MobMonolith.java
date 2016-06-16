@@ -2,6 +2,7 @@ package com.zixiken.dimdoors.ticking;
 
 import java.util.List;
 
+import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -12,7 +13,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.mod_pocketDim;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.core.DDTeleporter;
 import com.zixiken.dimdoors.util.Point4D;
@@ -175,7 +175,7 @@ public class MobMonolith extends EntityFlying implements IMob
 					this.aggro = 0;
 					Point4D destination = LimboProvider.getLimboSkySpawn(player, properties);
 					DDTeleporter.teleportEntity(player, destination, false);
-					player.worldObj.playSoundAtEntity(player, mod_pocketDim.modid + ":crack", 13, 1);
+					player.worldObj.playSoundAtEntity(player, DimDoors.modid + ":crack", 13, 1);
 				}
 			}
 		}
@@ -244,17 +244,17 @@ public class MobMonolith extends EntityFlying implements IMob
 		float aggroPercent = this.getAggroProgress();
 		if (this.soundTime <= 0)
 		{
-			this.playSound(mod_pocketDim.modid + ":monk", 1F, 1F);
+			this.playSound(DimDoors.modid + ":monk", 1F, 1F);
 			this.soundTime = 100;
 		}
 		if ((aggroPercent > 0.70) && this.soundTime < 100)
 		{
-			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, mod_pocketDim.modid + ":tearing", 1F, (float) (1 + this.rand.nextGaussian()));
+			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, DimDoors.modid + ":tearing", 1F, (float) (1 + this.rand.nextGaussian()));
 			this.soundTime = 100 + this.rand.nextInt(75);
 		}
 		if ((aggroPercent > 0.80) && this.soundTime < 200)
 		{
-			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, mod_pocketDim.modid + ":tearing", 7, 1F);
+			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, DimDoors.modid + ":tearing", 7, 1F);
 			this.soundTime = 250;
 		}
 		this.soundTime--;

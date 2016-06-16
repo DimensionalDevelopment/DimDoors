@@ -9,7 +9,7 @@ import com.zixiken.dimdoors.blocks.BaseDimDoor;
 import com.zixiken.dimdoors.blocks.IDimDoor;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.helpers.yCoordHelper;
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.schematic.BlockRotator;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 import com.zixiken.dimdoors.util.Point4D;
@@ -756,7 +756,7 @@ public class DDTeleporter
                     // exits intersecting blocks on those two surfaces.
                     if (!world.isBlockNormalCubeDefault(x + dx, y, z + dz, false))
                     {
-                        world.setBlock(x + dx, y, z + dz, mod_pocketDim.blockDimWall, 0, 2);
+                        world.setBlock(x + dx, y, z + dz, DimDoors.blockDimWall, 0, 2);
                     }
                 }
             }
@@ -783,8 +783,8 @@ public class DDTeleporter
             sourceDim.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());
 
             // Set up the warp door at the destination
-            orientation = BlockRotator.transformMetadata(orientation, 2, mod_pocketDim.warpDoor);
-            ItemDoor.placeDoorBlock(world, x, y + 1, z, orientation, mod_pocketDim.warpDoor);
+            orientation = BlockRotator.transformMetadata(orientation, 2, DimDoors.warpDoor);
+            ItemDoor.placeDoorBlock(world, x, y + 1, z, orientation, DimDoors.warpDoor);
 
             // Complete the link to the destination
             // This comes last so the destination isn't set unless everything else works first

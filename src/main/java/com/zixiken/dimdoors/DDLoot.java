@@ -56,8 +56,8 @@ public class DDLoot {
 		addContent(true, items, Items.emerald, 20, 1, 2);
 		addContent(true, items, Items.golden_apple, 10);
 
-		addContent(properties.FabricOfRealityLootEnabled, items, Item.getItemFromBlock(mod_pocketDim.blockDimWall), 20, 16, 64);
-		addContent(properties.WorldThreadLootEnabled, items, mod_pocketDim.itemWorldThread, 80, 2, 12);
+		addContent(properties.FabricOfRealityLootEnabled, items, Item.getItemFromBlock(DimDoors.blockDimWall), 20, 16, 64);
+		addContent(properties.WorldThreadLootEnabled, items, DimDoors.itemWorldThread, 80, 2, 12);
 
 		// Add all the items to our dungeon chest
 		addItemsToContainer(DungeonChestInfo, items);
@@ -180,7 +180,7 @@ public class DDLoot {
 		// 10% chance of adding a Rift Blade (no enchants)
 		if (properties.RiftBladeLootEnabled && random.nextInt(100) < 10)
 		{
-			stacks.add( new ItemStack(mod_pocketDim.itemRiftBlade, 1) );
+			stacks.add( new ItemStack(DimDoors.itemRiftBlade, 1) );
 		}
 		else
 		{
@@ -280,7 +280,7 @@ public class DDLoot {
 	private static void addGraveSkull(ArrayList<ItemStack> stacks, Random random)
 	{
 		final int PLAYER_SKULL_METADATA = 3;
-		DeathTracker deathTracker = mod_pocketDim.deathTracker;
+		DeathTracker deathTracker = DimDoors.deathTracker;
 		String skullOwner;
 		if (deathTracker.isEmpty() || (random.nextInt(MAX_SPECIAL_SKULL_CHANCE) < SPECIAL_SKULL_CHANCE))
 		{

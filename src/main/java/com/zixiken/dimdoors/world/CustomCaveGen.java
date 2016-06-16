@@ -2,7 +2,7 @@ package com.zixiken.dimdoors.world;
 
 import java.util.Random;
 
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
@@ -194,7 +194,7 @@ public class CustomCaveGen extends MapGenBase
                                                 var49 = true;
                                             }
 
-                                            if (var53 == mod_pocketDim.blockLimbo || var53 == Blocks.dirt || var53 == Blocks.grass)
+                                            if (var53 == DimDoors.blockLimbo || var53 == Blocks.dirt || var53 == Blocks.grass)
                                             {
                                                 if (var50 < 10)
                                                 {

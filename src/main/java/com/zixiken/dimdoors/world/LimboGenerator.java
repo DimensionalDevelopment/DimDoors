@@ -3,7 +3,7 @@ package com.zixiken.dimdoors.world;
 import java.util.List;
 import java.util.Random;
 
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
@@ -356,11 +356,11 @@ public class LimboGenerator extends ChunkProviderGenerate
 							{
 								if ((var47 += var49) > 0.0D)
 								{
-									blocks[var43 += var44] = mod_pocketDim.blockLimbo;
+									blocks[var43 += var44] = DimDoors.blockLimbo;
 								}
 								else if (var12 * 8 + var31 < var6)
 								{
-									blocks[var43 += var44] = mod_pocketDim.blockDimWallPerm;
+									blocks[var43 += var44] = DimDoors.blockDimWallPerm;
 								}
 
 								else

@@ -1,10 +1,9 @@
 package com.zixiken.dimdoors.blocks;
 
-import com.zixiken.dimdoors.config.DDProperties;
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.mod_pocketDim;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -35,7 +34,7 @@ public class UnstableDoor extends BaseDimDoor {
 	@Override
 	public Item getDoorItem()
 	{
-		return mod_pocketDim.itemUnstableDoor;
+		return DimDoors.itemUnstableDoor;
 	}
 	
 	@Override

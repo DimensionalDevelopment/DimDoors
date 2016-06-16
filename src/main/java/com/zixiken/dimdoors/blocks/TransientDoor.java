@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.blocks;
 
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.DimLink;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -9,7 +9,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.core.DDTeleporter;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.NewDimData;
@@ -53,7 +52,7 @@ public class TransientDoor extends BaseDimDoor {
                         DDTeleporter.traverseDimDoor(world, link, entity, this);
                         // Turn the door into a rift AFTER teleporting the player.
                         // The door's orientation may be necessary for the teleport.
-                        world.setBlock(x, y, z, mod_pocketDim.blockRift);
+                        world.setBlock(x, y, z, DimDoors.blockRift);
                         world.setBlockToAir(x, y - 1, z);
                     }
 				}

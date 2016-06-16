@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.schematic;
 
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.*;
 import com.zixiken.dimdoors.Point3D;
 import net.minecraft.init.Blocks;
@@ -69,10 +69,10 @@ public class BlockRotator
         hasOrientations.put(Blocks.lit_furnace, true);
         hasOrientations.put(Blocks.bed, true);
 
-        hasOrientations.put(mod_pocketDim.dimensionalDoor, true);
-        hasOrientations.put(mod_pocketDim.warpDoor, true);
-        hasOrientations.put(mod_pocketDim.goldenDimensionalDoor, true);
-        hasOrientations.put(mod_pocketDim.personalDimDoor, true);
+        hasOrientations.put(DimDoors.dimensionalDoor, true);
+        hasOrientations.put(DimDoors.warpDoor, true);
+        hasOrientations.put(DimDoors.goldenDimensionalDoor, true);
+        hasOrientations.put(DimDoors.personalDimDoor, true);
 	}
 
 	public static int transformMetadata(int metadata, int turns, Block block)

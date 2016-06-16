@@ -2,8 +2,8 @@ package com.zixiken.dimdoors.blocks;
 
 import java.util.Random;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.config.DDProperties;
-import com.zixiken.dimdoors.mod_pocketDim;
 import com.zixiken.dimdoors.world.LimboDecay;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -25,7 +25,7 @@ public class BlockLimbo extends Block {
 		limboDimensionID = DDProperties.instance().LimboDimensionID;
 		this.decay = decay;
 		setTickRandomly(true);
-		setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+		setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setHardness(.2F);
         setUnlocalizedName(ID);
         setLightLevel(.0F);
@@ -44,7 +44,7 @@ public class BlockLimbo extends Block {
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegister)
 	{
-		this.blockIcon = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+		this.blockIcon = iconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName());
 	}
 
 	@Override

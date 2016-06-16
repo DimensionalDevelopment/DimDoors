@@ -17,6 +17,7 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
@@ -26,7 +27,6 @@ import com.zixiken.dimdoors.dungeon.pack.DungeonPack;
 import com.zixiken.dimdoors.dungeon.pack.DungeonPackConfig;
 import com.zixiken.dimdoors.dungeon.pack.DungeonPackConfigReader;
 import com.zixiken.dimdoors.items.ItemDimensionalDoor;
-import com.zixiken.dimdoors.mod_pocketDim;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.core.NewDimData;
@@ -267,7 +267,7 @@ public class DungeonHelper
 		DimLink link = dimension.createLink(x, y + 1, z, LinkType.POCKET, 3);
 
 		//Place a Warp Door linked to that pocket
-		ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 3, mod_pocketDim.warpDoor);
+		ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 3, DimDoors.warpDoor);
 		
 		return link;
 	}

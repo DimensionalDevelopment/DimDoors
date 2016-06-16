@@ -2,8 +2,8 @@ package com.zixiken.dimdoors.commands;
 
 import java.util.ArrayList;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.DimLink;
-import com.zixiken.dimdoors.mod_pocketDim;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.core.NewDimData;
@@ -71,14 +71,14 @@ public class CommandDeleteRifts extends DDCommandBase
 			x = location.getX();
 			y = location.getY();
 			z = location.getZ();
-			if (world.getBlock(x, y, z) == mod_pocketDim.blockRift)
+			if (world.getBlock(x, y, z) == DimDoors.blockRift)
 			{
 				// Remove the rift and its link
 				world.setBlockToAir(x, y, z);
 				dimension.deleteLink(link);
 				linksRemoved++;
 			}
-			else if (!mod_pocketDim.blockRift.isBlockImmune(world, x, y, z))
+			else if (!DimDoors.blockRift.isBlockImmune(world, x, y, z))
 			{
 				// If a block is not immune, then it must not be a DD block.
 				// The link would regenerate into a rift eventually.

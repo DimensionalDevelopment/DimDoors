@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.network;
 
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.network.handlers.*;
 import com.zixiken.dimdoors.network.packets.*;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -19,7 +19,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 @ChannelHandler.Sharable
 public class DimDoorsNetwork extends SimpleNetworkWrapper {
 
-    private static final DimDoorsNetwork INSTANCE = new DimDoorsNetwork(mod_pocketDim.modid);
+    private static final DimDoorsNetwork INSTANCE = new DimDoorsNetwork(DimDoors.modid);
 
     public DimDoorsNetwork(String channelName) {
         super(channelName);

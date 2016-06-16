@@ -7,7 +7,7 @@ import java.nio.FloatBuffer;
 import java.util.Random;
 
 import com.zixiken.dimdoors.config.DDProperties;
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 import org.lwjgl.opengl.GL11;
 
@@ -29,11 +29,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class RenderDimDoor extends TileEntitySpecialRenderer
 {
 	private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
-	private ResourceLocation warpPath= new ResourceLocation(mod_pocketDim.modid + ":textures/other/WARP.png");
-	private ResourceLocation keyPath= new ResourceLocation(mod_pocketDim.modid + ":textures/other/keyhole.png");
-	private ResourceLocation KeyholeLight= new ResourceLocation(mod_pocketDim.modid + ":textures/other/keyholeLight.png");
-	private ResourceLocation keyOutline= new ResourceLocation(mod_pocketDim.modid + ":textures/other/keyOutline.png");
-	private ResourceLocation keyOutlineLight= new ResourceLocation(mod_pocketDim.modid + ":textures/other/keyOutlineLight.png");
+	private ResourceLocation warpPath= new ResourceLocation(DimDoors.modid + ":textures/other/WARP.png");
+	private ResourceLocation keyPath= new ResourceLocation(DimDoors.modid + ":textures/other/keyhole.png");
+	private ResourceLocation KeyholeLight= new ResourceLocation(DimDoors.modid + ":textures/other/keyholeLight.png");
+	private ResourceLocation keyOutline= new ResourceLocation(DimDoors.modid + ":textures/other/keyOutline.png");
+	private ResourceLocation keyOutlineLight= new ResourceLocation(DimDoors.modid + ":textures/other/keyOutlineLight.png");
 
 
 	private static final int NETHER_DIMENSION_ID = -1;
@@ -332,7 +332,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 			TileEntityDimDoor tile = (TileEntityDimDoor) par1TileEntity;
 			try
 			{
-				mod_pocketDim.dimensionalDoor.updateAttachedTile(tile.getWorldObj(),
+				DimDoors.dimensionalDoor.updateAttachedTile(tile.getWorldObj(),
 						tile.xCoord, tile.yCoord, tile.zCoord);
 			}
 			catch (Exception e)

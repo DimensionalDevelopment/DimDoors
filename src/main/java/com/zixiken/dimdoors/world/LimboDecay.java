@@ -2,7 +2,7 @@ package com.zixiken.dimdoors.world;
 
 import java.util.Random;
 
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.init.Blocks;
@@ -39,7 +39,7 @@ public class LimboDecay {
     public Block[] getDecaySequence() {
         if (decaySequence == null) {
             decaySequence = new Block[] {
-                    mod_pocketDim.blockLimbo,
+                    DimDoors.blockLimbo,
                     Blocks.gravel,
                     Blocks.cobblestone,
                     Blocks.stone
@@ -52,15 +52,15 @@ public class LimboDecay {
     public Block[] getBlocksImmuneToDecay() {
         if (blocksImmuneToDecay == null) {
             blocksImmuneToDecay = new Block[] {
-                    mod_pocketDim.blockLimbo,
-                    mod_pocketDim.blockDimWallPerm,
-                    mod_pocketDim.transientDoor,
-                    mod_pocketDim.dimensionalDoor,
-                    mod_pocketDim.warpDoor,
-                    mod_pocketDim.blockRift,
-                    mod_pocketDim.unstableDoor,
-                    mod_pocketDim.goldenDoor,
-                    mod_pocketDim.goldenDimensionalDoor
+                    DimDoors.blockLimbo,
+                    DimDoors.blockDimWallPerm,
+                    DimDoors.transientDoor,
+                    DimDoors.dimensionalDoor,
+                    DimDoors.warpDoor,
+                    DimDoors.blockRift,
+                    DimDoors.unstableDoor,
+                    DimDoors.goldenDoor,
+                    DimDoors.goldenDimensionalDoor
             };
         }
 
@@ -130,7 +130,7 @@ public class LimboDecay {
 		Block block = world.getBlock(x, y, z);
 		if (canDecayBlock(block, world, x, y, z))
 		{
-			world.setBlock(x, y, z, mod_pocketDim.blockLimbo);
+			world.setBlock(x, y, z, DimDoors.blockLimbo);
 			return true;
 		}
 		return false;

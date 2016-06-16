@@ -1,11 +1,10 @@
 package com.zixiken.dimdoors.blocks;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.world.PersonalPocketProvider;
-import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.mod_pocketDim;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
@@ -40,7 +39,7 @@ public class PersonalDimDoor extends BaseDimDoor {
 	@Override
 	public Item getDoorItem()
 	{
-		return mod_pocketDim.itemPersonalDoor;
+		return DimDoors.itemPersonalDoor;
 	}
 
 }

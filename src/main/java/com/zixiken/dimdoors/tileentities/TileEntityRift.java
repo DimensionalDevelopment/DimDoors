@@ -3,10 +3,10 @@ package com.zixiken.dimdoors.tileentities;
 import java.util.List;
 import java.util.Random;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.mod_pocketDim;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
@@ -60,7 +60,7 @@ public class TileEntityRift extends DDTileEntityBase
 	{
 		if (PocketManager.getLink(xCoord, yCoord, zCoord, worldObj.provider.dimensionId) == null)
 		{
-			if (worldObj.getBlock(xCoord, yCoord, zCoord) == mod_pocketDim.blockRift)
+			if (worldObj.getBlock(xCoord, yCoord, zCoord) == DimDoors.blockRift)
 			{
 				worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 			}
@@ -71,7 +71,7 @@ public class TileEntityRift extends DDTileEntityBase
 			return;
 		}
 		
-		if (worldObj.getBlock(xCoord, yCoord, zCoord) != mod_pocketDim.blockRift)
+		if (worldObj.getBlock(xCoord, yCoord, zCoord) != DimDoors.blockRift)
 		{
 			invalidate();
 			return;
@@ -88,13 +88,13 @@ public class TileEntityRift extends DDTileEntityBase
 		
 		if (updateTimer >= UPDATE_PERIOD)
 		{
-			spawnEndermen(mod_pocketDim.properties);
+			spawnEndermen(DimDoors.properties);
 			updateTimer = 0;
 		}
 		else if (updateTimer == UPDATE_PERIOD / 2)
 		{
 			updateNearestRift();
-			spread(mod_pocketDim.properties);
+			spread(DimDoors.properties);
 		}
 		growth += 1F/(growth+1);
 		updateTimer++;
@@ -244,7 +244,7 @@ public class TileEntityRift extends DDTileEntityBase
 		{
 			return;
 		}
-		mod_pocketDim.blockRift.spreadRift(dimension, link, worldObj, random);
+		DimDoors.blockRift.spreadRift(dimension, link, worldObj, random);
 	}
 
 	@Override

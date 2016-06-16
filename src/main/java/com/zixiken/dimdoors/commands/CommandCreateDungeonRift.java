@@ -2,12 +2,12 @@ package com.zixiken.dimdoors.commands;
 
 import java.util.Collection;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.dungeon.DungeonData;
 import com.zixiken.dimdoors.helpers.DungeonHelper;
-import com.zixiken.dimdoors.mod_pocketDim;
 import com.zixiken.dimdoors.world.PocketBuilder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
@@ -64,10 +64,10 @@ public class CommandCreateDungeonRift extends DDCommandBase
 			dimension = PocketManager.getDimensionData(sender.worldObj);
 			link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
 
-			if (PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result))
+			if (PocketBuilder.generateSelectedDungeonPocket(link, DimDoors.properties, result))
 			{
 				// Create a rift to our selected dungeon and notify the player
-				sender.worldObj.setBlock(x, y + 1, z, mod_pocketDim.blockRift, 0, 3);
+				sender.worldObj.setBlock(x, y + 1, z, DimDoors.blockRift, 0, 3);
 				sendChat(sender, "Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
 			}
 			else

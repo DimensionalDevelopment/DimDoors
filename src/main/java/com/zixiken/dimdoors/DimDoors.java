@@ -10,20 +10,6 @@ import com.zixiken.dimdoors.commands.CommandListDungeons;
 import com.zixiken.dimdoors.ticking.MobMonolith;
 import com.zixiken.dimdoors.world.LimboDecay;
 import com.zixiken.dimdoors.world.LimboProvider;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemDoor;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.MinecraftForge;
 import com.zixiken.dimdoors.blocks.BlockDimWall;
 import com.zixiken.dimdoors.blocks.BlockDimWallPerm;
 import com.zixiken.dimdoors.blocks.BlockDoorGold;
@@ -77,28 +63,38 @@ import com.zixiken.dimdoors.world.DDBiomeGenBase;
 import com.zixiken.dimdoors.world.PersonalPocketProvider;
 import com.zixiken.dimdoors.world.PocketProvider;
 import com.zixiken.dimdoors.world.gateways.GatewayGenerator;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+
+import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemDoor;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@Mod(modid = mod_pocketDim.modid, name = "Dimensional Doors", version = mod_pocketDim.version)
-public class mod_pocketDim
-{
-	public static final String version = "2.2.5-test9";
-	public static final String modid = "dimdoors";
-	
-	//TODO need a place to stick all these constants
+@Mod(modid = DimDoors.MODID, name = "Dimensional Doors", version = DimDoors.VERSION)
+public class DimDoors {
+	public static final String VERSION = "2.3.0-a1";
+	public static final String MODID = "dimdoors";
+
 	public static final int NETHER_DIMENSION_ID = -1;
 
-	//need to clean up 
-	@SidedProxy(clientSide = "ClientProxy", serverSide = "CommonProxy")
+	@SidedProxy(clientSide = "com.zixiken.dimdoors.client.ClientProxy",
+            serverSide = "com.zixiken.dimdoors.CommonProxy")
 	public static CommonProxy proxy;
 
-	@Mod.Instance(mod_pocketDim.modid)
-	public static mod_pocketDim instance;
+	@Mod.Instance(DimDoors.MODID)
+	public static DimDoors instance;
 
 	public static Block quartzDoor;
 	public static Block personalDimDoor;
@@ -114,8 +110,8 @@ public class mod_pocketDim
 	public static Block blockDimWallPerm;
 	public static BlockRift blockRift;
 
-	public static Item itemGoldenDimensionalDoor;
-	public static Item itemGoldenDoor;
+	public static ItemDoor itemGoldenDimensionalDoor;
+	public static ItemDoor itemGoldenDoor;
 	public static Item itemWorldThread;
 
 	public static Item itemRiftBlade;
@@ -139,28 +135,27 @@ public class mod_pocketDim
 	public static RiftRegenerator riftRegenerator;
 	public static GatewayGenerator gatewayGenerator;
 	public static DeathTracker deathTracker;
+
+    private static LimboDecayScheduler limboDecayScheduler;
 	private static ServerTickHandler serverTickHandler;
-	private static LimboDecayScheduler limboDecayScheduler;
 	private static LimboDecay limboDecay;
 	private static EventHookContainer hooks;
 	
 	//TODO this is a temporary workaround for saving data
 	private String currrentSaveRootDirectory;
 	
-	public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") 
-	{
+	public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") {
 		@Override
 		public Item getTabIconItem()
 		{
-			return mod_pocketDim.itemDimensionalDoor;
+			return DimDoors.itemDimensionalDoor;
 		}
 	};
 
 	@Mod.EventHandler
-	public void onPreInitialization(FMLPreInitializationEvent event)
-	{
+	public void onPreInitialization(FMLPreInitializationEvent event) {
 		//This should be the FIRST thing that gets done.
-		String path = event.getSuggestedConfigurationFile().getAbsolutePath().replace(modid, "DimDoors");
+		String path = event.getSuggestedConfigurationFile().getAbsolutePath().replace(MODID, "DimDoors");
 
 		properties = DDProperties.initialize(new File(path));
 
@@ -175,8 +170,7 @@ public class mod_pocketDim
 	}
 
 	@Mod.EventHandler
-	public void onInitialization(FMLInitializationEvent event)
-	{
+	public void onInitialization(FMLInitializationEvent event) {
 		// Initialize ServerTickHandler instance
 		serverTickHandler = new ServerTickHandler();
         MinecraftForge.EVENT_BUS.register(serverTickHandler);
@@ -204,25 +198,25 @@ public class mod_pocketDim
 		itemDDKey = new ItemDDKey();
 		itemQuartzDoor = new ItemQuartzDoor();
 		itemPersonalDoor = new ItemPersonalDoor();
-		itemGoldenDoor = (new ItemGoldDoor(Material.wood)).setUnlocalizedName("itemGoldDoor");
-		itemGoldenDimensionalDoor = (new ItemGoldDimDoor(Material.iron, (ItemDoor)this.itemGoldenDoor)).setUnlocalizedName("itemGoldDimDoor");
-		itemDimensionalDoor = (ItemDimensionalDoor) (new ItemDimensionalDoor(Material.iron, (ItemDoor) Items.iron_door)).setUnlocalizedName("itemDimDoor");
-		itemWarpDoor = (new ItemWarpDoor(Material.wood,(ItemDoor)Items.iron_door)).setUnlocalizedName("itemDimDoorWarp");
-		itemRiftSignature = (new ItemRiftSignature()).setUnlocalizedName("itemLinkSignature");
-		itemRiftRemover = (new itemRiftRemover(Material.wood)).setUnlocalizedName("itemRiftRemover");
-		itemStableFabric = (new ItemStableFabric(0)).setUnlocalizedName("itemStableFabric");
-		itemUnstableDoor = (new ItemUnstableDoor(Material.iron, null)).setUnlocalizedName("itemChaosDoor");
-		itemRiftBlade = (new ItemRiftBlade(properties)).setUnlocalizedName("ItemRiftBlade");
-		itemStabilizedRiftSignature = (new ItemStabilizedRiftSignature()).setUnlocalizedName("itemStabilizedRiftSig");
-		itemWorldThread = (new ItemWorldThread()).setUnlocalizedName("itemWorldThread");
+		itemGoldenDoor = new ItemGoldDoor();
+		itemGoldenDimensionalDoor = new ItemGoldDimDoor();
+		itemDimensionalDoor = new ItemDimensionalDoor();
+		itemWarpDoor = new ItemWarpDoor();
+		itemRiftSignature = new ItemRiftSignature();
+		itemRiftRemover = new itemRiftRemover();
+		itemStableFabric = new ItemStableFabric();
+		itemUnstableDoor = new ItemUnstableDoor();
+		itemRiftBlade = new ItemRiftBlade();
+		itemStabilizedRiftSignature = new ItemStabilizedRiftSignature();
+		itemWorldThread = new ItemWorldThread();
 		
 		// Check if other biomes have been registered with the same IDs we want. If so, crash Minecraft
 		// to notify the user instead of letting it pass and conflicting with Biomes o' Plenty.
-		DDBiomeGenBase.checkBiomes( new int[] { properties.LimboBiomeID, properties.PocketBiomeID } );
+		DDBiomeGenBase.checkBiomes(properties.LimboBiomeID, properties.PocketBiomeID);
 
 		// Initialize our biomes
-		mod_pocketDim.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
-		mod_pocketDim.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
+		DimDoors.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
+		DimDoors.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
 		GameRegistry.registerBlock(quartzDoor, null, "Quartz Door");
 		GameRegistry.registerBlock(personalDimDoor, null, "Personal Dimensional Door");
@@ -255,11 +249,11 @@ public class mod_pocketDim
 
         BlockRotator.setupOrientations();
 
-		if (!DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false))
+		if(!DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false))
 			throw new IllegalStateException("There is a provider ID conflict between PocketProvider from Dimensional Doors and another provider type. Fix your configuration!");
-		if (!DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false))
+		if(!DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false))
 			throw new IllegalStateException("There is a provider ID conflict between LimboProvider from Dimensional Doors and another provider type. Fix your configuration!");
-		if (!DimensionManager.registerProviderType(properties.PersonalPocketProviderID, PersonalPocketProvider.class, false))
+		if(!DimensionManager.registerProviderType(properties.PersonalPocketProviderID, PersonalPocketProvider.class, false))
 			throw new IllegalStateException("There is a provider ID conflict between PersonalPocketProvider from Dimensional Doors and another provider type. Fix your configuration!");
 			
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
@@ -275,7 +269,7 @@ public class mod_pocketDim
 
 		CraftingManager.registerRecipes(properties);
 		CraftingManager.registerDispenserBehaviors();
-        FMLCommonHandler.instance().bus().register(new CraftingManager());
+        MinecraftForge.EVENT_BUS.register(new CraftingManager());
 
 		DungeonHelper.initialize();
 		gatewayGenerator = new GatewayGenerator(properties);
@@ -283,60 +277,38 @@ public class mod_pocketDim
 
 		// Register loot chests
 		DDLoot.registerInfo(properties);
-		proxy.loadTextures();
-		proxy.registerRenderers();
-        FMLCommonHandler.instance().bus().register(new ConnectionHandler());
+        MinecraftForge.EVENT_BUS.register(new ConnectionHandler());
 	}
 
-    public static void translateAndAdd(String key, List list) {
-        for (int i=0;i<10;i++) {
-            if (StatCollector.canTranslate(key+Integer.toString(i))) {
-                String line = StatCollector.translateToLocal(key + Integer.toString(i));
-                list.add(line);
-            } else
-                break;
-        }
-    }
-
 	@Mod.EventHandler
-	public void onPostInitialization(FMLPostInitializationEvent event)
-	{
+	public void onPostInitialization(FMLPostInitializationEvent event) {
 		// Check in case other mods have registered over our biome IDs
-		DDBiomeGenBase.checkBiomes( new int[] { properties.LimboBiomeID, properties.PocketBiomeID } );
+		DDBiomeGenBase.checkBiomes(properties.LimboBiomeID, properties.PocketBiomeID);
 		
 		ForgeChunkManager.setForcedChunkLoadingCallback(instance, new ChunkLoaderHelper());
 	}
 	
 	@Mod.EventHandler
-	public void onServerStopped(FMLServerStoppedEvent event)
-	{
-		try
-		{
-			PocketManager.tryUnload();
-            if (deathTracker != null) {
-                deathTracker.writeToFile();
-                deathTracker = null;
-            }
-			worldProperties = null;
-			currrentSaveRootDirectory = null;
-			
-			// Unregister all tick receivers from serverTickHandler to avoid leaking
-			// scheduled tasks between single-player game sessions
-            if (serverTickHandler != null)
-			    serverTickHandler.unregisterReceivers();
-			spawner = null;
-			riftRegenerator = null;
-			limboDecayScheduler = null;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+	public void onServerStopped(FMLServerStoppedEvent event) {
+        PocketManager.tryUnload();
+        if(deathTracker != null) {
+            deathTracker.writeToFile();
+            deathTracker = null;
+        }
+        worldProperties = null;
+        currrentSaveRootDirectory = null;
+
+        // Unregister all tick receivers from serverTickHandler to avoid leaking
+        // scheduled tasks between single-player game sessions
+        if(serverTickHandler != null)
+            serverTickHandler.unregisterReceivers();
+        spawner = null;
+        riftRegenerator = null;
+        limboDecayScheduler = null;
 	}
 	
 	@Mod.EventHandler
-	public void onServerAboutToStart(FMLServerAboutToStartEvent event)
-	{
+	public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
 		currrentSaveRootDirectory = DimensionManager.getCurrentSaveRootDirectory().getAbsolutePath();
 		
 		// Load the config file that's specific to this world
@@ -355,8 +327,7 @@ public class mod_pocketDim
 	}
 
 	@Mod.EventHandler
-	public void onServerStarting(FMLServerStartingEvent event)
-	{
+	public void onServerStarting(FMLServerStartingEvent event) {
 		// Register commands with the server
 		event.registerServerCommand( CommandResetDungeons.instance() );
 		event.registerServerCommand( CommandCreateDungeonRift.instance() );
@@ -366,26 +337,26 @@ public class mod_pocketDim
 		event.registerServerCommand( CommandExportDungeon.instance() );
 		event.registerServerCommand( CommandCreatePocket.instance() );
 		event.registerServerCommand( CommandTeleportPlayer.instance() );
-		
-		try
-		{
-			ChunkLoaderHelper.loadForcedChunkWorlds(event);
-		}
-		catch (Exception e)
-		{
-			System.err.println("Failed to load chunk loaders for Dimensional Doors. The following error occurred:");
-			System.err.println(e.toString());
-		}
+
+        ChunkLoaderHelper.loadForcedChunkWorlds(event);
 	}
 	
 	public String getCurrentSavePath()
 	{
 		return this.currrentSaveRootDirectory;
 	}
-	
-	public static void sendChat(EntityPlayer player, String message)
-	{
+
+	public static void sendChat(EntityPlayer player, String message) {
         ChatComponentText text = new ChatComponentText(message);
         player.addChatComponentMessage(text);
 	}
+
+    public static void translateAndAdd(String key, List list) {
+        for(int i=0;i<10;i++) {
+            if(StatCollector.canTranslate(key+Integer.toString(i))) {
+                String line = StatCollector.translateToLocal(key + Integer.toString(i));
+                list.add(line);
+            } else break;
+        }
+    }
 }

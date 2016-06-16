@@ -1,7 +1,7 @@
 package com.zixiken.dimdoors.world.gateways;
 
 import com.zixiken.dimdoors.Point3D;
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.schematic.Schematic;
 import com.zixiken.dimdoors.schematic.SchematicFilter;
 import net.minecraft.block.Block;
@@ -44,30 +44,30 @@ public class GatewayBlockFilter extends SchematicFilter {
 	{
 		int indexBelow;
 		int indexDoubleBelow;
-		if (blocks[index] == mod_pocketDim.dimensionalDoor)
+		if (blocks[index] == DimDoors.dimensionalDoor)
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == mod_pocketDim.dimensionalDoor)
+			if (indexBelow >= 0 && blocks[indexBelow] == DimDoors.dimensionalDoor)
 			{
 				entranceDoorLocation = schematic.calculatePoint(index);
 				entranceOrientation = (metadata[indexBelow] & 3);
 				return true;
 			}
 		}
-		if (blocks[index] == mod_pocketDim.transientDoor)
+		if (blocks[index] == DimDoors.transientDoor)
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == mod_pocketDim.transientDoor)
+			if (indexBelow >= 0 && blocks[indexBelow] == DimDoors.transientDoor)
 			{
 				entranceDoorLocation = schematic.calculatePoint(index);
 				entranceOrientation = (metadata[indexBelow] & 3);
 				return true;
 			}
 		}
-		if (blocks[index] == mod_pocketDim.warpDoor)
+		if (blocks[index] == DimDoors.warpDoor)
 		{
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == mod_pocketDim.warpDoor)
+			if (indexBelow >= 0 && blocks[indexBelow] == DimDoors.warpDoor)
 			{
 				entranceDoorLocation = schematic.calculatePoint(index);
 				entranceOrientation = (metadata[indexBelow] & 3);

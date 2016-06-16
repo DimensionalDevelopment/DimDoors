@@ -2,9 +2,9 @@ package com.zixiken.dimdoors.blocks;
 
 import java.util.Random;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.DimLink;
-import com.zixiken.dimdoors.mod_pocketDim;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
@@ -22,7 +22,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.core.DDTeleporter;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.items.ItemDDKey;
@@ -48,8 +47,8 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	{
 		upperTextures = new IIcon[2];
         lowerTextures = new IIcon[2];
-        upperTextures[0] = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "_upper");
-        lowerTextures[0] = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "_lower");
+        upperTextures[0] = iconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName() + "_upper");
+        lowerTextures[0] = iconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName() + "_lower");
         upperTextures[1] = new IconFlipped(upperTextures[0], true, false);
         lowerTextures[1] = new IconFlipped(lowerTextures[0], true, false);
 	}
@@ -181,7 +180,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	//but this works fine and is more versatile I think. 
 	public BaseDimDoor updateAttachedTile(World world, int x, int y, int z)
 	{
-		mod_pocketDim.proxy.updateDoorTE(this, world, x, y, z);
+		DimDoors.proxy.updateDoorTE(this, world, x, y, z);
 		TileEntity tile = world.getTileEntity(x, y, z);
 		if (tile instanceof TileEntityDimDoor)
 		{
@@ -510,7 +509,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 				}
 			}
 		}
-		player.playSound(mod_pocketDim.modid + ":doorLocked",  1F, 1F);
+		player.playSound(DimDoors.modid + ":doorLocked",  1F, 1F);
 		return false;
 	}
 
@@ -542,7 +541,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
         // Schedule rift regeneration for this block if it was replaced
         if (world.getBlock(x, y, z) != oldBlock)
         {
-        	mod_pocketDim.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
+        	DimDoors.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
         }
     }
 }

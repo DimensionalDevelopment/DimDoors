@@ -51,7 +51,7 @@ public class EventHookContainer
 	public void setSessionFields(DDWorldProperties worldProperties, RiftRegenerator regenerator)
 	{
 		// SenseiKiwi:
-		// Why have a setter rather than accessing mod_pocketDim directly?
+		// Why have a setter rather than accessing DimDoors directly?
 		// I want to make this dependency explicit in our code.
 		this.worldProperties = worldProperties;
 		this.regenerator = regenerator;
@@ -89,7 +89,7 @@ public class EventHookContainer
 				
 				if(data.type() == DimensionType.PERSONAL)
 				{
-					mod_pocketDim.sendChat(event.entityPlayer,("Something prevents the Warp Door from tunneling out here"));
+					DimDoors.sendChat(event.entityPlayer,("Something prevents the Warp Door from tunneling out here"));
 					event.setCanceled(true);
 					return;
 				}
@@ -139,7 +139,7 @@ public class EventHookContainer
 			if(entity.worldObj.provider instanceof PocketProvider)
 			{
 				EntityPlayer player = (EntityPlayer) entity;
-				mod_pocketDim.deathTracker.addUsername(player.getGameProfile().getName());
+				DimDoors.deathTracker.addUsername(player.getGameProfile().getName());
 				revivePlayerInLimbo(player);
 				event.setCanceled(true);
 				return false;
@@ -148,7 +148,7 @@ public class EventHookContainer
 			{
 				EntityPlayer player = (EntityPlayer) entity;
 				revivePlayerInLimbo(player);
-				mod_pocketDim.sendChat(player, "Search for the dark red pools which accumulate in the lower reaches of Limbo");
+				DimDoors.sendChat(player, "Search for the dark red pools which accumulate in the lower reaches of Limbo");
 				event.setCanceled(true);
 				return false;
 			}
@@ -170,7 +170,7 @@ public class EventHookContainer
 		if (entity instanceof EntityPlayer && isValidSourceForLimbo(entity.worldObj.provider))
 		{
 			EntityPlayer player = (EntityPlayer) entity;
-			mod_pocketDim.deathTracker.addUsername(player.getGameProfile().getName());
+			DimDoors.deathTracker.addUsername(player.getGameProfile().getName());
 
 			if (properties.LimboEnabled && !properties.LimboReturnsInventoryEnabled)
 			{
@@ -211,9 +211,9 @@ public class EventHookContainer
 		{
 			PocketManager.save(true);
 
-			if (mod_pocketDim.deathTracker != null && mod_pocketDim.deathTracker.isModified())
+			if (DimDoors.deathTracker != null && DimDoors.deathTracker.isModified())
 			{
-				mod_pocketDim.deathTracker.writeToFile();
+				DimDoors.deathTracker.writeToFile();
 			}
 		}
 	}

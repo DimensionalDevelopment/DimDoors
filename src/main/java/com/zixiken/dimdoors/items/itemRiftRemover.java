@@ -2,9 +2,9 @@ package com.zixiken.dimdoors.items;
 
 import java.util.List;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.mod_pocketDim;
 import com.zixiken.dimdoors.tileentities.TileEntityRift;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -19,20 +19,21 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class itemRiftRemover extends Item
-{
-	public itemRiftRemover(Material par2Material)
-	{
+public class itemRiftRemover extends Item {
+	public static final String ID = "itemRiftRemover";
+
+	public itemRiftRemover() {
 		super();
-		this.setMaxStackSize(1);
-		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
-		this.setMaxDamage(4);
+		setMaxStackSize(1);
+		setCreativeTab(DimDoors.dimDoorsCreativeTab);
+		setMaxDamage(4);
+        setUnlocalizedName(ID);
 	}
 
 	@Override
 	public void registerIcons(IIconRegister par1IconRegister)
 	{
-		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
+		this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
 	}
 
 	@Override
@@ -56,7 +57,7 @@ public class itemRiftRemover extends Item
 			int hz = hit.blockZ;
 			NewDimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(hx, hy, hz);
-			if (world.getBlock(hx, hy, hz) == mod_pocketDim.blockRift && link != null &&
+			if (world.getBlock(hx, hy, hz) == DimDoors.blockRift && link != null &&
 				player.canPlayerEdit(hx, hy, hz, hit.sideHit, stack))
 			{
 				// Invoke onPlayerRightClick()
@@ -87,7 +88,7 @@ public class itemRiftRemover extends Item
 			 
 			 NewDimData dimension = PocketManager.createDimensionData(world);
 			 DimLink link = dimension.getLink(x, y, z);
-			 if (world.getBlock(x, y, z) == mod_pocketDim.blockRift && link != null &&
+			 if (world.getBlock(x, y, z) == DimDoors.blockRift && link != null &&
 				player.canPlayerEdit(x, y, z, side, stack))
 			 {
 				// Tell the rift's tile entity to do its removal animation
@@ -115,7 +116,7 @@ public class itemRiftRemover extends Item
 					 {
 						 stack.damageItem(1, player);
 					 }
-				player.worldObj.playSoundAtEntity(player, mod_pocketDim.modid+":riftClose", 0.8f, 1);
+				player.worldObj.playSoundAtEntity(player, DimDoors.modid+":riftClose", 0.8f, 1);
 				}
 			}
 		}
@@ -130,6 +131,6 @@ public class itemRiftRemover extends Item
 	@Override
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
 	{
-		mod_pocketDim.translateAndAdd("info.riftRemover",par3List);
+		DimDoors.translateAndAdd("info.riftRemover",par3List);
 	}
 }

@@ -2,11 +2,11 @@ package com.zixiken.dimdoors.items;
 
 import java.util.List;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.blocks.IDimDoor;
 import com.zixiken.dimdoors.core.DDLock;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.mod_pocketDim;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -26,7 +26,7 @@ public class ItemDDKey extends Item {
 
 	public ItemDDKey() {
 		super();
-		setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+		setCreativeTab(DimDoors.dimDoorsCreativeTab);
 		setMaxStackSize(1);
         setUnlocalizedName(ID);
 	}
@@ -51,7 +51,7 @@ public class ItemDDKey extends Item {
 	@Override
 	public void registerIcons(IIconRegister par1IconRegister)
 	{
-		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
+		this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
 	}
 
 	@Override
@@ -102,11 +102,11 @@ public class ItemDDKey extends Item {
 			{
 				if (link.getLockState())
 				{
-					world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyUnlock", 1F, 1F);
+					world.playSoundAtEntity(player, DimDoors.modid + ":keyUnlock", 1F, 1F);
 				}
 				else
 				{
-					world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyLock", 1F, 1F);
+					world.playSoundAtEntity(player, DimDoors.modid + ":keyLock", 1F, 1F);
 				}
 				PocketManager.getDimensionData(world).lock(link, !link.getLockState());
 				PocketManager.getLinkWatcher().update(new ClientLinkData(link));
@@ -114,14 +114,14 @@ public class ItemDDKey extends Item {
 			}
 			else
 			{
-				world.playSoundAtEntity(player, mod_pocketDim.modid + ":doorLocked", 1F, 1F);
+				world.playSoundAtEntity(player, DimDoors.modid + ":doorLocked", 1F, 1F);
 			}
 		}
 		else
 		{
 			if (!DDLock.hasCreatedLock(itemStack))
 			{
-				world.playSoundAtEntity(player, mod_pocketDim.modid + ":keyLock", 1F, 1F);
+				world.playSoundAtEntity(player, DimDoors.modid + ":keyLock", 1F, 1F);
 				PocketManager.getDimensionData(world).createLock(link, itemStack, world.rand.nextInt(Integer.MAX_VALUE));
 				PocketManager.getLinkWatcher().update(new ClientLinkData(link));
 			}
@@ -150,7 +150,7 @@ public class ItemDDKey extends Item {
 					if (link.doesKeyUnlock(itemStack) && !world.isRemote)
 					{
 						PocketManager.getDimensionData(world).removeLock(link, itemStack);
-						world.playSoundAtEntity(player, mod_pocketDim.modid + ":doorLockRemoved", 1F, 1F);
+						world.playSoundAtEntity(player, DimDoors.modid + ":doorLockRemoved", 1F, 1F);
 
 					}
 				}

@@ -2,8 +2,8 @@ package com.zixiken.dimdoors.tileentities;
 
 import java.util.Random;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.mod_pocketDim;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.zixiken.dimdoors.watcher.ClientLinkData;
@@ -88,7 +88,7 @@ public class TileEntityDimDoor extends DDTileEntityBase
 	public float[] getRenderColor(Random rand)
 	{
 		float[] rgbaColor = {1,1,1,1};
-		if (this.worldObj.provider.dimensionId == mod_pocketDim.NETHER_DIMENSION_ID)
+		if (this.worldObj.provider.dimensionId == DimDoors.NETHER_DIMENSION_ID)
 		{
 			rgbaColor[0] = rand.nextFloat() * 0.5F + 0.4F;
 			rgbaColor[1] = rand.nextFloat() * 0.05F;

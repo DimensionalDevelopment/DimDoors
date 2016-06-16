@@ -2,8 +2,8 @@ package com.zixiken.dimdoors.world;
 
 import java.util.Random;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.DimLink;
-import com.zixiken.dimdoors.mod_pocketDim;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -455,7 +455,7 @@ public class PocketBuilder
 		BlockRotator.transformPoint(center, door, orientation - BlockRotator.EAST_DOOR_METADATA, door);
 
 		//Build the outer layer of Eternal Fabric
-		buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2), mod_pocketDim.blockDimWallPerm, 0, false, 0);
+		buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2), DimDoors.blockDimWallPerm, 0, false, 0);
 
 		//check if we are building a personal pocket
 		int metadata = 0;
@@ -467,7 +467,7 @@ public class PocketBuilder
 		//Build the (wallThickness - 1) layers of Fabric of Reality
 		for (int layer = 1; layer < wallThickness; layer++)
 		{
-			buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2) - layer, mod_pocketDim.blockDimWall, metadata,
+			buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2) - layer, DimDoors.blockDimWall, metadata,
 					layer < (wallThickness - 1) && properties.TNFREAKINGT_Enabled, properties.NonTntWeight);
 		}
 		

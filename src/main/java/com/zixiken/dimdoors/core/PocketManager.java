@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.watcher.IUpdateWatcher;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.world.World;
@@ -572,9 +572,9 @@ public class PocketManager
 			// unfortuantly. I send the dimdata to the client when they
 			// teleport.
 			// Steven
-            int providerID = mod_pocketDim.properties.PocketProviderID;
+            int providerID = DimDoors.properties.PocketProviderID;
             if (type == DimensionType.PERSONAL)
-                providerID = mod_pocketDim.properties.PersonalPocketProviderID;
+                providerID = DimDoors.properties.PersonalPocketProviderID;
 			DimensionManager.registerDimension(dimensionID,providerID);
 		}
 		return dimension;

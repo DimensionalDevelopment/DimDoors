@@ -1,112 +1,55 @@
 package com.zixiken.dimdoors;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+
 import com.zixiken.dimdoors.blocks.BaseDimDoor;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 
-public class CommonProxy implements IGuiHandler
-{
+public class CommonProxy {
     public static String BLOCK_PNG = "/PocketBlockTextures.png";
     public static String ITEM_PNG = "/PocketItemTextures.png";
     public static String RIFT_PNG = "/RIFT.png";
     public static String RIFT2_PNG = "/RIFT2.png";
     public static String WARP_PNG = "/WARP.png";
 
-    public  void registerRenderers()
-    {
-    }
-    public void registerEntity(Class <? extends Entity > entity, String entityname, int id, Object mod, int trackingrange, int updateFreq, boolean updatevelo)
-    {
-    }
-
-    @Override
-    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
-    {
-        return null;
-    }
-
-    @Override
-    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
-    {
-        return null;
-    }
-
-    public void loadTextures()
-    {
-    }
-
-    public void writeNBTToFile(World world)
-    {
-        boolean flag = true;
-
-        try
-        {
-            File dataStore = world.getSaveHandler().getMapFileFromName("idcounts");
-            String dirFolder = dataStore.getCanonicalPath();
-            dirFolder = dirFolder.replace("idcounts.dat", "");
-
-            if (!flag)
-            {
-                dirFolder.replace("saves/", FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
-            }
+    public void writeNBTToFile(World world) {
+        try {
+            String dirFolder = world.getSaveHandler().getMapFileFromName("idcounts")
+                    .getCanonicalPath().replace("idcounts.dat", "");
 
             File file = new File(dirFolder, "GGMData.dat");
 
-            if (!file.exists())
-            {
-                file.createNewFile();
-            }
+            if (!file.exists()) file.createNewFile();
 
             FileOutputStream fileoutputstream = new FileOutputStream(file);
             NBTTagCompound nbttagcompound = new NBTTagCompound();
-            
 
-            
             CompressedStreamTools.writeCompressed(nbttagcompound, fileoutputstream);
             fileoutputstream.close();
-        }
-        catch (Exception exception)
-        {
-         //   exception.printStackTrace();
-
-            if (!(exception instanceof NullPointerException))
-            {
-            }
-
-            flag = false;
+        } catch (IOException e) {
+            System.err.println("Could not write NBT data to file:\n" + e);
         }
     }
 
-    public void readNBTFromFile(World world)
-    {
-        boolean flag = true;
-
-        try
-        {
-            File dataStore = world.getSaveHandler().getMapFileFromName("idcounts");
-            String dirFolder = dataStore.getCanonicalPath();
-            dirFolder = dirFolder.replace("idcounts.dat", "");
-
-            if (!flag)
-            {
-                dirFolder.replace("saves/", FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName());
-            }
+    public void readNBTFromFile(World world) {
+        try {
+            String dirFolder = world.getSaveHandler().getMapFileFromName("idcounts")
+                    .getCanonicalPath().replace("idcounts.dat", "");
 
             File file = new File(dirFolder, "GGMData.dat");
 
-            if (!file.exists())
-            {
+            if (!file.exists()) {
                 file.createNewFile();
                 FileOutputStream fileoutputstream = new FileOutputStream(file);
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
@@ -118,25 +61,14 @@ public class CommonProxy implements IGuiHandler
             /*FileInputStream fileinputstream = new FileInputStream(file);
             NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
             fileinputstream.close();*/
-        }
-        catch (Exception exception)
-        {
-           // exception.printStackTrace();
-
-            if (!(exception instanceof NullPointerException))
-            {
-            }
-
-            flag = false;
+        } catch (IOException e) {
+            System.err.println("Could not read NBT data from file:\n" + e);
         }
     }
 
-    public  void printStringClient(String string)
-    {
-    	
-    }
-	public void updateDoorTE(BaseDimDoor door, World world, int x, int y, int z)
-	{
+    public  void printStringClient(String string) {}
+
+	public void updateDoorTE(BaseDimDoor door, World world, int x, int y, int z) {
 		TileEntity tile = world.getTileEntity(x, y, z);
 		if (tile instanceof TileEntityDimDoor)
 		{

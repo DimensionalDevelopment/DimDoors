@@ -3,13 +3,12 @@ package com.zixiken.dimdoors.items;
 import java.util.HashMap;
 import java.util.List;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.blocks.BaseDimDoor;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.mod_pocketDim;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -35,7 +34,7 @@ public abstract class BaseItemDoor extends ItemDoor {
 	public BaseItemDoor(Block block, ItemDoor vanillaDoor) {
 		super(block);
 		this.setMaxStackSize(64);
-		this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+		this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
 		if (properties == null)
 			properties = DDProperties.instance();
 		
@@ -49,7 +48,7 @@ public abstract class BaseItemDoor extends ItemDoor {
 	@Override
 	public void registerIcons(IIconRegister par1IconRegister)
 	{
-		this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
+		this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
 	}
 
 	@SuppressWarnings({ "rawtypes" })
@@ -175,7 +174,7 @@ public abstract class BaseItemDoor extends ItemDoor {
 		MovingObjectPosition hit = BaseItemDoor.doRayTrace(player.worldObj, player, true);
 		if (hit != null)
 		{
-			if (world.getBlock(hit.blockX, hit.blockY, hit.blockZ) == mod_pocketDim.blockRift)
+			if (world.getBlock(hit.blockX, hit.blockY, hit.blockZ) == DimDoors.blockRift)
 			{
 				DimLink link = PocketManager.getLink(hit.blockX, hit.blockY, hit.blockZ, world.provider.dimensionId);
 				if (link != null)
@@ -211,7 +210,7 @@ public abstract class BaseItemDoor extends ItemDoor {
 	{
 		Block block = world.getBlock(x, y, z);
 
-		return (block == mod_pocketDim.blockRift || block.isAir(world, x, y, z) || block.getMaterial().isReplaceable());
+		return (block == DimDoors.blockRift || block.isAir(world, x, y, z) || block.getMaterial().isReplaceable());
 	}
 
 	/**

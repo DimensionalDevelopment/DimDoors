@@ -3,8 +3,8 @@ package com.zixiken.dimdoors.ticking;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.mod_pocketDim;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
@@ -66,7 +66,7 @@ public class CustomLimboPopulator implements IRegularTickReceiver {
 							limboWorld = PocketManager.loadDimension(properties.LimboDimensionID);
 						}
 						placeMonolithsInLimbo(limboWorld, location.ChunkX, location.ChunkZ);
-						mod_pocketDim.gatewayGenerator.generate(limboWorld.rand, location.ChunkX, location.ChunkZ,
+						DimDoors.gatewayGenerator.generate(limboWorld.rand, location.ChunkX, location.ChunkZ,
 								limboWorld, limboWorld.getChunkProvider(), limboWorld.getChunkProvider());
 					}
 					else
@@ -127,7 +127,7 @@ public class CustomLimboPopulator implements IRegularTickReceiver {
 				block = pocket.getBlock(x, y, z);
 
 			}
-			while ((block == mod_pocketDim.blockDimWall || block == mod_pocketDim.blockDimWallPerm) && y > 0)
+			while ((block == DimDoors.blockDimWall || block == DimDoors.blockDimWallPerm) && y > 0)
 			{
 				y--;
 				block = pocket.getBlock(x, y, z);

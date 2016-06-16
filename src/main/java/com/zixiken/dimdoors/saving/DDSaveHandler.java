@@ -15,7 +15,7 @@ import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.dungeon.DungeonData;
 import com.zixiken.dimdoors.helpers.DungeonHelper;
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.util.DDLogger;
 import net.minecraftforge.common.DimensionManager;
 import com.zixiken.dimdoors.core.DimensionType;
@@ -265,7 +265,7 @@ public class DDSaveHandler
 		// the mod should crash to let the user know early on.
 
 		// Get the save directory path
-		File saveDirectory = new File(mod_pocketDim.instance.getCurrentSavePath() + "/DimensionalDoors/data/");
+		File saveDirectory = new File(DimDoors.instance.getCurrentSavePath() + "/DimensionalDoors/data/");
 		String savePath = saveDirectory.getAbsolutePath();
 		String baseSavePath = savePath + "/dim_";
 		File backupDirectory = new File(savePath + "/backup");

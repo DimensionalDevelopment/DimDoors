@@ -1,9 +1,9 @@
 package com.zixiken.dimdoors.world;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.mod_pocketDim;
 import com.zixiken.dimdoors.ticking.CustomLimboPopulator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -28,14 +28,14 @@ public class PocketProvider extends WorldProvider
 		this.hasNoSky = true;
 		this.skyRenderer = new PocketSkyProvider();
 
-		this.spawner = mod_pocketDim.spawner;
-		this.properties = mod_pocketDim.properties;
+		this.spawner = DimDoors.spawner;
+		this.properties = DimDoors.properties;
 	}
 
 	@Override
 	protected void registerWorldChunkManager()
 	{
-		super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.pocketBiome, 1);
+		super.worldChunkMgr = new WorldChunkManagerHell(DimDoors.pocketBiome, 1);
 	}
 	
 	@Override

@@ -8,7 +8,7 @@ import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.mod_pocketDim;
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.world.PocketProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
@@ -84,7 +84,7 @@ public class GatewayGenerator implements IWorldGenerator
 
 		// Check if we're allowed to generate rift clusters in this dimension.
 		// If so, randomly decide whether to one.
-		if (mod_pocketDim.worldProperties.RiftClusterDimensions.isAccepted(dimensionID)
+		if (DimDoors.worldProperties.RiftClusterDimensions.isAccepted(dimensionID)
 				&& random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < properties.ClusterGenerationChance)
 		{
 			link = null;
@@ -121,7 +121,7 @@ public class GatewayGenerator implements IWorldGenerator
 		
 		// Check if we can place a Rift Gateway in this dimension, then randomly decide whether to place one.
 		// This only happens if a rift cluster was NOT generated.
-		else if (mod_pocketDim.worldProperties.RiftGatewayDimensions.isAccepted(dimensionID) &&
+		else if (DimDoors.worldProperties.RiftGatewayDimensions.isAccepted(dimensionID) &&
 				random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance)
 		{
 			valid = false;

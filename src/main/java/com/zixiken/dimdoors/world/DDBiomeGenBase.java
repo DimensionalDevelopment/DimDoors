@@ -19,7 +19,7 @@ public class DDBiomeGenBase extends BiomeGenBase
         this.spawnableCaveCreatureList.clear();
     }
 
-	public static void checkBiomes(int[] biomes)
+	public static void checkBiomes(int ... biomes)
 	{
 		for (int k = 0; k < biomes.length; k++)
 		{
