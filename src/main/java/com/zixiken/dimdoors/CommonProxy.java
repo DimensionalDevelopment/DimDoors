@@ -1,20 +1,22 @@
 package com.zixiken.dimdoors;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import com.zixiken.dimdoors.blocks.BaseDimDoor;
-import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.block.BlockDoor;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class CommonProxy {
     public static String BLOCK_PNG = "/PocketBlockTextures.png";
@@ -22,6 +24,8 @@ public class CommonProxy {
     public static String RIFT_PNG = "/RIFT.png";
     public static String RIFT2_PNG = "/RIFT2.png";
     public static String WARP_PNG = "/WARP.png";
+
+    public void registerRenderers() {}
 
     public void writeNBTToFile(World world) {
         try {
@@ -42,7 +46,7 @@ public class CommonProxy {
         }
     }
 
-    public void readNBTFromFile(World world) {
+    public NBTTagCompound readNBTFromFile(World world) {
         try {
             String dirFolder = world.getSaveHandler().getMapFileFromName("idcounts")
                     .getCanonicalPath().replace("idcounts.dat", "");
@@ -58,29 +62,29 @@ public class CommonProxy {
                 fileoutputstream.close();
             }
 
-            /*FileInputStream fileinputstream = new FileInputStream(file);
+            FileInputStream fileinputstream = new FileInputStream(file);
             NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
-            fileinputstream.close();*/
+            fileinputstream.close();
+            return nbttagcompound;
         } catch (IOException e) {
             System.err.println("Could not read NBT data from file:\n" + e);
+            return null;
         }
     }
 
-    public  void printStringClient(String string) {}
-
-	public void updateDoorTE(BaseDimDoor door, World world, int x, int y, int z) {
-		TileEntity tile = world.getTileEntity(x, y, z);
+	public void updateDoorTE(BaseDimDoor door, World world, BlockPos pos) {
+		TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof TileEntityDimDoor)
 		{
-			int metadata = world.getBlockMetadata(x, y, z);
+            IBlockState state = world.getBlockState(pos);
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
-			dimTile.openOrClosed = door.isDoorOnRift(world, x, y, z)&&door.isUpperDoorBlock(metadata);
-			dimTile.orientation = door.func_150012_g(world, x,y,z) & 7;
-			dimTile.lockStatus = door.getLockStatus(world, x, y, z);
+			dimTile.openOrClosed = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(state);
+			dimTile.orientation = state.getValue(BlockDoor.FACING).rotateY().getHorizontalIndex();
+			dimTile.lockStatus = door.getLockStatus(world, pos);
 		}
 	}
     
-    public void registerSidedHooks(DDProperties properties) {
+    public void registerSidedHooks() {
         new ServerPacketHandler();
     }
 

@@ -8,6 +8,7 @@ import java.util.List;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.watcher.IUpdateWatcher;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
@@ -677,6 +678,10 @@ public class PocketManager
 		}
 		return null;
 	}
+
+	public static DimLink getLink(BlockPos pos, int dimensionId) {
+        return getLink(pos.getX(), pos.getY(), pos.getZ(), dimensionId);
+    }
 
 	public static boolean isBlackListed(int dimensionID)
 	{

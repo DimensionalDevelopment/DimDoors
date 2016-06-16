@@ -9,6 +9,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.IconFlipped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -17,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -192,22 +194,22 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		return this;
 	}
 	
-	public boolean isDoorOnRift(World world, int x, int y, int z)
+	public boolean isDoorOnRift(World world, BlockPos pos)
 	{
-		return this.getLink(world, x, y, z) != null;
+		return this.getLink(world, pos) != null;
 	}
 	
-	public DimLink getLink(World world, int x, int y, int z)
+	public DimLink getLink(World world, BlockPos pos)
 	{
-		DimLink link= PocketManager.getLink(x, y, z, world.provider.dimensionId);
+		DimLink link= PocketManager.getLink(pos, world.provider.getDimensionId());
 		if(link!=null)
 		{
 			return link;
 		}
 		
-		if(isUpperDoorBlock( world.getBlockMetadata(x, y, z)))
+		if(isUpperDoorBlock(world.getBlockState(pos)))
 		{
-			link = PocketManager.getLink(x, y-1, z, world.provider.dimensionId);
+			link = PocketManager.getLink(pos.down(), world.provider.getDimensionId());
 			if(link!=null)
 			{
 				return link;
@@ -215,7 +217,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		}
 		else
 		{
-			link = PocketManager.getLink(x, y+1, z, world.provider.dimensionId);
+			link = PocketManager.getLink(pos.up(), world.provider.getDimensionId());
 			if(link != null)
 			{
 				return link;
@@ -443,9 +445,9 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		}
 	}
 	
-	public boolean isUpperDoorBlock(int metadata)
+	public boolean isUpperDoorBlock(IBlockState state)
 	{
-		return (metadata & 8) != 0;
+		return state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER;
 	}
 	
 	public boolean isDoorOpen(int metadata)
@@ -463,10 +465,10 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	 * @param z
 	 * @return
 	 */
-	public byte getLockStatus(World world, int x, int y, int z)
+	public byte getLockStatus(World world, BlockPos pos)
 	{
 		byte status = 0;
-		DimLink link = getLink(world, x, y, z);
+		DimLink link = getLink(world, pos);
 		if(link!=null&&link.hasLock())
 		{
 			status++;

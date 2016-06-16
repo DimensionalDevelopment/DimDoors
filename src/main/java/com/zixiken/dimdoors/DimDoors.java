@@ -3,6 +3,7 @@ package com.zixiken.dimdoors;
 import java.io.File;
 import java.util.List;
 
+import com.zixiken.dimdoors.items.*;
 import com.zixiken.dimdoors.network.DimDoorsNetwork;
 import com.zixiken.dimdoors.schematic.BlockRotator;
 import com.zixiken.dimdoors.blocks.TransientDoor;
@@ -34,21 +35,7 @@ import com.zixiken.dimdoors.config.DDWorldProperties;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.helpers.ChunkLoaderHelper;
 import com.zixiken.dimdoors.helpers.DungeonHelper;
-import com.zixiken.dimdoors.items.ItemBlockDimWall;
-import com.zixiken.dimdoors.items.ItemDDKey;
-import com.zixiken.dimdoors.items.ItemDimensionalDoor;
-import com.zixiken.dimdoors.items.ItemGoldDimDoor;
-import com.zixiken.dimdoors.items.ItemGoldDoor;
-import com.zixiken.dimdoors.items.ItemPersonalDoor;
-import com.zixiken.dimdoors.items.ItemQuartzDoor;
-import com.zixiken.dimdoors.items.ItemRiftBlade;
-import com.zixiken.dimdoors.items.ItemRiftSignature;
-import com.zixiken.dimdoors.items.ItemStabilizedRiftSignature;
-import com.zixiken.dimdoors.items.ItemStableFabric;
-import com.zixiken.dimdoors.items.ItemUnstableDoor;
-import com.zixiken.dimdoors.items.ItemWarpDoor;
-import com.zixiken.dimdoors.items.ItemWorldThread;
-import com.zixiken.dimdoors.items.itemRiftRemover;
+import com.zixiken.dimdoors.items.ItemRiftRemover;
 import com.zixiken.dimdoors.ticking.CustomLimboPopulator;
 import com.zixiken.dimdoors.ticking.LimboDecayScheduler;
 import com.zixiken.dimdoors.ticking.RiftRegenerator;
@@ -164,7 +151,7 @@ public class DimDoors {
 		MinecraftForge.EVENT_BUS.register(hooks);
 		MinecraftForge.TERRAIN_GEN_BUS.register(hooks);
 
-        proxy.registerSidedHooks(properties);
+        proxy.registerSidedHooks();
 
         DimDoorsNetwork.init();
 	}
@@ -203,7 +190,7 @@ public class DimDoors {
 		itemDimensionalDoor = new ItemDimensionalDoor();
 		itemWarpDoor = new ItemWarpDoor();
 		itemRiftSignature = new ItemRiftSignature();
-		itemRiftRemover = new itemRiftRemover();
+		itemRiftRemover = new ItemRiftRemover();
 		itemStableFabric = new ItemStableFabric();
 		itemUnstableDoor = new ItemUnstableDoor();
 		itemRiftBlade = new ItemRiftBlade();
@@ -218,34 +205,33 @@ public class DimDoors {
 		DimDoors.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
 		DimDoors.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
-		GameRegistry.registerBlock(quartzDoor, null, "Quartz Door");
-		GameRegistry.registerBlock(personalDimDoor, null, "Personal Dimensional Door");
-		GameRegistry.registerBlock(goldenDoor, null, "Golden Door");
-		GameRegistry.registerBlock(goldenDimensionalDoor, null, "Golden Dimensional Door");
-		GameRegistry.registerBlock(unstableDoor, null, "Unstable Door");
-		GameRegistry.registerBlock(warpDoor, null, "Warp Door");
-		GameRegistry.registerBlock(blockRift, "Rift");
-		GameRegistry.registerBlock(blockLimbo, "Unraveled Fabric");
-		GameRegistry.registerBlock(dimensionalDoor, null, "Dimensional Door");
-		GameRegistry.registerBlock(transTrapdoor,"Transdimensional Trapdoor");
-		GameRegistry.registerBlock(blockDimWallPerm, "Fabric of RealityPerm");
-		GameRegistry.registerBlock(transientDoor, "transientDoor");
-        GameRegistry.registerItem(itemDDKey, "Rift Key");
-        GameRegistry.registerItem(itemQuartzDoor, "Quartz Door Item");
-        GameRegistry.registerItem(itemPersonalDoor, "Personal Dimensional Door Item");
-        GameRegistry.registerItem(itemGoldenDoor, "Golden Door Item");
-        GameRegistry.registerItem(itemGoldenDimensionalDoor, "Golden Dimensional Door Item");
-        GameRegistry.registerItem(itemDimensionalDoor, "Dimensional Door Item");
-        GameRegistry.registerItem(itemWarpDoor, "Warp Door Item");
-        GameRegistry.registerItem(itemRiftSignature, "Rift Signature");
-        GameRegistry.registerItem(itemRiftRemover, "Rift Remover");
-        GameRegistry.registerItem(itemStableFabric, "Stable Fabric Item");
-        GameRegistry.registerItem(itemUnstableDoor, "Unstable Door Item");
-        GameRegistry.registerItem(itemRiftBlade, "Rift Blade");
-        GameRegistry.registerItem(itemStabilizedRiftSignature, "Stabilized Rift Signature");
-        GameRegistry.registerItem(itemWorldThread, "World Thread");
-
-		GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, "Fabric of Reality");
+		GameRegistry.registerBlock(quartzDoor, null, BlockDoorQuartz.ID);
+		GameRegistry.registerBlock(personalDimDoor, null, PersonalDimDoor.ID);
+		GameRegistry.registerBlock(goldenDoor, null, BlockDoorGold.ID);
+		GameRegistry.registerBlock(goldenDimensionalDoor, null, BlockGoldDimDoor.ID);
+		GameRegistry.registerBlock(unstableDoor, null, UnstableDoor.ID);
+		GameRegistry.registerBlock(warpDoor, null, WarpDoor.ID);
+		GameRegistry.registerBlock(blockRift, BlockRift.ID);
+		GameRegistry.registerBlock(blockLimbo, BlockLimbo.ID);
+		GameRegistry.registerBlock(dimensionalDoor, null, DimensionalDoor.ID);
+		GameRegistry.registerBlock(transTrapdoor, TransTrapdoor.ID);
+        GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, BlockDimWall.ID);
+		GameRegistry.registerBlock(blockDimWallPerm, BlockDimWallPerm.ID);
+		GameRegistry.registerBlock(transientDoor, TransientDoor.ID);
+        GameRegistry.registerItem(itemDDKey, ItemDDKey.ID);
+        GameRegistry.registerItem(itemQuartzDoor, ItemQuartzDoor.ID);
+        GameRegistry.registerItem(itemPersonalDoor, ItemPersonalDoor.ID);
+        GameRegistry.registerItem(itemGoldenDoor, ItemGoldDoor.ID);
+        GameRegistry.registerItem(itemGoldenDimensionalDoor, ItemGoldDimDoor.ID);
+        GameRegistry.registerItem(itemDimensionalDoor, ItemDimensionalDoor.ID);
+        GameRegistry.registerItem(itemWarpDoor, ItemWarpDoor.ID);
+        GameRegistry.registerItem(itemRiftSignature, ItemRiftSignature.ID);
+        GameRegistry.registerItem(itemRiftRemover, ItemRiftRemover.ID);
+        GameRegistry.registerItem(itemStableFabric, ItemStableFabric.ID);
+        GameRegistry.registerItem(itemUnstableDoor, ItemUnstableDoor.ID);
+        GameRegistry.registerItem(itemRiftBlade, ItemRiftBlade.ID);
+        GameRegistry.registerItem(itemStabilizedRiftSignature, ItemStabilizedRiftSignature.ID);
+        GameRegistry.registerItem(itemWorldThread, ItemWorldThread.ID);
 
         BlockRotator.setupOrientations();
 

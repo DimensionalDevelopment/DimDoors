@@ -19,10 +19,10 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class itemRiftRemover extends Item {
-	public static final String ID = "itemRiftRemover";
+public class ItemRiftRemover extends Item {
+	public static final String ID = "ItemRiftRemover";
 
-	public itemRiftRemover() {
+	public ItemRiftRemover() {
 		super();
 		setMaxStackSize(1);
 		setCreativeTab(DimDoors.dimDoorsCreativeTab);
