@@ -19,11 +19,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class CommonProxy {
-    public static String BLOCK_PNG = "/PocketBlockTextures.png";
-    public static String ITEM_PNG = "/PocketItemTextures.png";
-    public static String RIFT_PNG = "/RIFT.png";
-    public static String RIFT2_PNG = "/RIFT2.png";
-    public static String WARP_PNG = "/WARP.png";
 
     public void registerRenderers() {}
 
@@ -74,8 +69,7 @@ public class CommonProxy {
 
 	public void updateDoorTE(BaseDimDoor door, World world, BlockPos pos) {
 		TileEntity tile = world.getTileEntity(pos);
-		if (tile instanceof TileEntityDimDoor)
-		{
+		if (tile instanceof TileEntityDimDoor) {
             IBlockState state = world.getBlockState(pos);
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
 			dimTile.openOrClosed = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(state);

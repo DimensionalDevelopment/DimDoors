@@ -26,7 +26,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderDimDoor extends TileEntitySpecialRenderer
+public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor>
 {
 	private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
 	private ResourceLocation warpPath= new ResourceLocation(DimDoors.modid + ":textures/other/WARP.png");
@@ -39,8 +39,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer
 	private static final int NETHER_DIMENSION_ID = -1;
 	private static DDProperties properties = null;
 
-	public RenderDimDoor()
-	{
+	public RenderDimDoor() {
 		if (properties == null)
 			properties = DDProperties.instance();
 	}

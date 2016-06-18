@@ -5,6 +5,7 @@ import com.zixiken.dimdoors.ticking.MobMonolith;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
@@ -18,13 +19,12 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderMobObelisk extends RenderLiving
+public class RenderMobObelisk extends RenderLiving<MobMonolith>
 {
 	protected ModelMobObelisk obeliskModel;
 
-	public RenderMobObelisk(float f)
-	{
-		super(new ModelMobObelisk(), f);
+	public RenderMobObelisk(RenderManager manager) {
+		super(manager, new ModelMobObelisk(), 0.5F);
 		this.obeliskModel = (ModelMobObelisk)this.mainModel;
 	}
 

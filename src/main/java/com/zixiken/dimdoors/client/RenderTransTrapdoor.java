@@ -20,8 +20,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderTransTrapdoor extends TileEntitySpecialRenderer
-{
+public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTransTrapdoor> {
     private FloatBuffer field_76908_a = GLAllocation.createDirectFloatBuffer(16);
 	private static DDProperties properties = null;
 	private ResourceLocation riftPath= new ResourceLocation(DimDoors.modid+":textures/other/RIFT.png");
