@@ -17,6 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -36,66 +37,45 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	}
     
 	@Override
-	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) 
-	{
-		this.enterDimDoor(world, x, y, z, entity);
+	public void onEntityCollidedWithBlock(World world, BlockPos pos, Entity entity) {
+		enterDimDoor(world, pos, entity);
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
-	{
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player,
+									EnumFacing side, float hitX, float hitY, float hitZ) {
 		
 		ItemStack stack = player.inventory.getCurrentItem();
-		if (stack != null && stack.getItem() instanceof ItemDDKey)
-		{
-			return false;
-		}
+		if (stack != null && stack.getItem() instanceof ItemDDKey) {return false;}
 
-		if(!checkCanOpen(world, x, y, z, player))
-		{
-			return false;
-		}
+		if(!checkCanOpen(world, pos, player)) {return false;}
 
-        int metadata = this.func_150012_g(world, x, y, z);
-        int newMetadata = metadata & 7;
-        newMetadata ^= 4;
-
-        if ((metadata & 8) == 0)
-        {
-            world.setBlockMetadataWithNotify(x, y, z, newMetadata, 2);
-            world.markBlockRangeForRenderUpdate(x, y, z, x, y, z);
-        }
-        else
-        {
-            world.setBlockMetadataWithNotify(x, y - 1, z, newMetadata, 2);
-            world.markBlockRangeForRenderUpdate(x, y - 1, z, x, y, z);
+        if(state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER) {
+            pos = pos.down();
+            state = world.getBlockState(pos);
         }
 
-        world.playAuxSFXAtEntity(player, 1003, x, y, z, 0);
-        return true;
+        if(state.getBlock() != this) return false;
+        else {
+            state = state.cycleProperty(BlockDoor.OPEN);
+            world.setBlockState(pos, state, 2);
+            world.markBlockRangeForRenderUpdate(pos, pos.up());
+            world.playAuxSFXAtEntity(player, state.getValue(BlockDoor.OPEN) ? 1003 : 1006, pos, 0);
+            return true;
+        }
 	}
 
 	@Override
-	public void onBlockAdded(World world, int x, int y, int z) 
-	{
-		this.placeLink(world, x, y, z);
-		world.setTileEntity(x, y, z, this.createNewTileEntity(world, world.getBlockMetadata(x, y, z)));
-		this.updateAttachedTile(world, x, y, z);
+	public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
+		placeLink(world, pos);
+		world.setTileEntity(pos, createNewTileEntity(world, 0));
+		updateAttachedTile(world, pos);
 	}
 
 	//Called to update the render information on the tile entity. Could probably implement a data watcher,
 	//but this works fine and is more versatile I think. 
-	public BaseDimDoor updateAttachedTile(World world, int x, int y, int z)
-	{
-		DimDoors.proxy.updateDoorTE(this, world, x, y, z);
-		TileEntity tile = world.getTileEntity(x, y, z);
-		if (tile instanceof TileEntityDimDoor)
-		{
-			int metadata = world.getBlockMetadata(x, y, z);
-			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
-			dimTile.openOrClosed = isDoorOnRift(world, x, y, z) && isUpperDoorBlock(metadata);
-			dimTile.orientation = this.func_150012_g(world, x, y, z) & 7;
-		}
+	public BaseDimDoor updateAttachedTile(World world, BlockPos pos) {
+		DimDoors.proxy.updateDoorTE(this, world, pos);
 		return this;
 	}
 	
@@ -304,7 +284,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	}
 
 	@Override
-	public void enterDimDoor(World world, int x, int y, int z, Entity entity) 
+	public void enterDimDoor(World world, BlockPos pos, Entity entity)
 	{
 		// FX entities dont exist on the server
 		if (world.isRemote)
@@ -386,14 +366,14 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	}
 	
 	
-	public boolean checkCanOpen(World world, int x, int y, int z)
+	public boolean checkCanOpen(World world, BlockPos pos)
 	{
-		return this.checkCanOpen(world, x, y, z, null);
+		return this.checkCanOpen(world, pos, null);
 	}
 	
-	public boolean checkCanOpen(World world, int x, int y, int z, EntityPlayer player)
+	public boolean checkCanOpen(World world, BlockPos pos, EntityPlayer player)
 	{
-		DimLink link = getLink(world, x, y, z);
+		DimLink link = getLink(world, pos);
 		if(link==null||player==null)
 		{
 			return link==null;

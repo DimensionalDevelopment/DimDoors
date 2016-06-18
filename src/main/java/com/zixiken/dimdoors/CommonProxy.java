@@ -74,6 +74,7 @@ public class CommonProxy {
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
 			dimTile.openOrClosed = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(state);
 			dimTile.orientation = state.getValue(BlockDoor.FACING).rotateY().getHorizontalIndex();
+            if(state.getValue(BlockDoor.OPEN)) dimTile.orientation |= 4;
 			dimTile.lockStatus = door.getLockStatus(world, pos);
 		}
 	}

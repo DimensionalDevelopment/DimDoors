@@ -3,6 +3,7 @@ package com.zixiken.dimdoors.blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 public interface IDimDoor
@@ -15,7 +16,7 @@ public interface IDimDoor
 	 * @param z
 	 * @param entity
 	 */
-	public void enterDimDoor(World world, int x, int y, int z, Entity entity);
+	public void enterDimDoor(World world, BlockPos pos, Entity entity);
 	
 	/**
 	 * called when a door is placed to determine how it will place a link
@@ -24,11 +25,11 @@ public interface IDimDoor
 	 * @param y
 	 * @param z
 	 */
-	public void placeLink(World world, int x, int y, int z);
+	public void placeLink(World world, BlockPos pos);
 	
 	public Item getDoorItem();
 	
-	public TileEntity initDoorTE(World world, int x, int y, int z);
+	public TileEntity initDoorTE(World world, BlockPos pos);
 	
 	/**
 	 * checks if any of this doors blocks are overlapping with a rift
@@ -38,6 +39,6 @@ public interface IDimDoor
 	 * @param z
 	 * @return
 	 */
-	public boolean isDoorOnRift(World world, int x, int y, int z);
+	public boolean isDoorOnRift(World world, BlockPos pos);
 	
 }
