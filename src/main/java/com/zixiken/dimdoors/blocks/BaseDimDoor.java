@@ -10,8 +10,6 @@ import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.IconFlipped;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +17,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
@@ -28,42 +25,15 @@ import com.zixiken.dimdoors.core.DDTeleporter;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.items.ItemDDKey;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEntityProvider
-{
-	@SideOnly(Side.CLIENT)
-    protected IIcon[] upperTextures;
-    @SideOnly(Side.CLIENT)
-    protected IIcon[] lowerTextures;
+public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEntityProvider {
 	
 	public BaseDimDoor(Material material)
 	{
 		super(material);
 	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister iconRegister)
-	{
-		upperTextures = new IIcon[2];
-        lowerTextures = new IIcon[2];
-        upperTextures[0] = iconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName() + "_upper");
-        lowerTextures[0] = iconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName() + "_lower");
-        upperTextures[1] = new IconFlipped(upperTextures[0], true, false);
-        lowerTextures[1] = new IconFlipped(lowerTextures[0], true, false);
-	}
-	
-    /**
-     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
-     */
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int metadata)
-    {
-        return upperTextures[0];
-    }
     
 	@Override
 	public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) 
@@ -112,71 +82,6 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		world.setTileEntity(x, y, z, this.createNewTileEntity(world, world.getBlockMetadata(x, y, z)));
 		this.updateAttachedTile(world, x, y, z);
 	}
-
-	/**
-     * Retrieves the block texture to use based on the display side. Args: iBlockAccess, x, y, z, side
-     */
-	@Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side)
-    {
-        if (side != 1 && side != 0)
-        {
-            int fullMetadata = func_150012_g(blockAccess, x, y, z);
-            int orientation = fullMetadata & 3;
-            boolean reversed = false;
-
-            if (isDoorOpen(fullMetadata))
-            {
-                if (orientation == 0 && side == 2)
-                {
-                    reversed = !reversed;
-                }
-                else if (orientation == 1 && side == 5)
-                {
-                    reversed = !reversed;
-                }
-                else if (orientation == 2 && side == 3)
-                {
-                    reversed = !reversed;
-                }
-                else if (orientation == 3 && side == 4)
-                {
-                    reversed = !reversed;
-                }
-            }
-            else
-            {
-                if (orientation == 0 && side == 5)
-                {
-                    reversed = !reversed;
-                }
-                else if (orientation == 1 && side == 3)
-                {
-                    reversed = !reversed;
-                }
-                else if (orientation == 2 && side == 4)
-                {
-                    reversed = !reversed;
-                }
-                else if (orientation == 3 && side == 2)
-                {
-                    reversed = !reversed;
-                }
-
-                if ((fullMetadata & 16) != 0)
-                {
-                    reversed = !reversed;
-                }
-            }
-            if (isUpperDoorBlock(fullMetadata))
-            {
-            	return this.upperTextures[reversed ? 1 : 0];
-            }
-            return this.lowerTextures[reversed ? 1 : 0];
-        }
-        return this.lowerTextures[0];
-    }
 
 	//Called to update the render information on the tile entity. Could probably implement a data watcher,
 	//but this works fine and is more versatile I think. 

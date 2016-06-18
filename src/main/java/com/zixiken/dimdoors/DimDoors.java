@@ -151,73 +151,52 @@ public class DimDoors {
 		MinecraftForge.EVENT_BUS.register(hooks);
 		MinecraftForge.TERRAIN_GEN_BUS.register(hooks);
 
-        proxy.registerSidedHooks();
+        // Initialize and register blocks and items
+        //TODO: Move this all to their own classes
+        transientDoor = new TransientDoor();
+        goldenDimensionalDoor = new BlockGoldDimDoor();
 
-        DimDoorsNetwork.init();
-	}
+        quartzDoor = new BlockDoorQuartz();
+        personalDimDoor = new PersonalDimDoor();
 
-	@Mod.EventHandler
-	public void onInitialization(FMLInitializationEvent event) {
-		// Initialize ServerTickHandler instance
-		serverTickHandler = new ServerTickHandler();
-        MinecraftForge.EVENT_BUS.register(serverTickHandler);
-		
-		// Initialize LimboDecay instance: required for BlockLimbo
-		limboDecay = new LimboDecay(properties);
-
-		// Initialize blocks and items
-		transientDoor = new TransientDoor();
-		goldenDimensionalDoor = new BlockGoldDimDoor();
-
-		quartzDoor = new BlockDoorQuartz();
-		personalDimDoor = new PersonalDimDoor();
-
-		goldenDoor = new BlockDoorGold();
-		blockDimWall = new BlockDimWall();
-		blockDimWallPerm = new BlockDimWallPerm();
-		warpDoor = new WarpDoor();
-		blockLimbo = new BlockLimbo(limboDecay);
-		unstableDoor = new UnstableDoor();
-		dimensionalDoor = new DimensionalDoor();
-		transTrapdoor = new TransTrapdoor();
+        goldenDoor = new BlockDoorGold();
+        blockDimWall = new BlockDimWall();
+        blockDimWallPerm = new BlockDimWallPerm();
+        warpDoor = new WarpDoor();
+        blockLimbo = new BlockLimbo(limboDecay);
+        unstableDoor = new UnstableDoor();
+        dimensionalDoor = new DimensionalDoor();
+        transTrapdoor = new TransTrapdoor();
         blockRift = new BlockRift();
 
-		itemDDKey = new ItemDDKey();
-		itemQuartzDoor = new ItemQuartzDoor();
-		itemPersonalDoor = new ItemPersonalDoor();
-		itemGoldenDoor = new ItemGoldDoor();
-		itemGoldenDimensionalDoor = new ItemGoldDimDoor();
-		itemDimensionalDoor = new ItemDimensionalDoor();
-		itemWarpDoor = new ItemWarpDoor();
-		itemRiftSignature = new ItemRiftSignature();
-		itemRiftRemover = new ItemRiftRemover();
-		itemStableFabric = new ItemStableFabric();
-		itemUnstableDoor = new ItemUnstableDoor();
-		itemRiftBlade = new ItemRiftBlade();
-		itemStabilizedRiftSignature = new ItemStabilizedRiftSignature();
-		itemWorldThread = new ItemWorldThread();
-		
-		// Check if other biomes have been registered with the same IDs we want. If so, crash Minecraft
-		// to notify the user instead of letting it pass and conflicting with Biomes o' Plenty.
-		DDBiomeGenBase.checkBiomes(properties.LimboBiomeID, properties.PocketBiomeID);
+        itemDDKey = new ItemDDKey();
+        itemQuartzDoor = new ItemQuartzDoor();
+        itemPersonalDoor = new ItemPersonalDoor();
+        itemGoldenDoor = new ItemGoldDoor();
+        itemGoldenDimensionalDoor = new ItemGoldDimDoor();
+        itemDimensionalDoor = new ItemDimensionalDoor();
+        itemWarpDoor = new ItemWarpDoor();
+        itemRiftSignature = new ItemRiftSignature();
+        itemRiftRemover = new ItemRiftRemover();
+        itemStableFabric = new ItemStableFabric();
+        itemUnstableDoor = new ItemUnstableDoor();
+        itemRiftBlade = new ItemRiftBlade();
+        itemStabilizedRiftSignature = new ItemStabilizedRiftSignature();
+        itemWorldThread = new ItemWorldThread();
 
-		// Initialize our biomes
-		DimDoors.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
-		DimDoors.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
-
-		GameRegistry.registerBlock(quartzDoor, null, BlockDoorQuartz.ID);
-		GameRegistry.registerBlock(personalDimDoor, null, PersonalDimDoor.ID);
-		GameRegistry.registerBlock(goldenDoor, null, BlockDoorGold.ID);
-		GameRegistry.registerBlock(goldenDimensionalDoor, null, BlockGoldDimDoor.ID);
-		GameRegistry.registerBlock(unstableDoor, null, UnstableDoor.ID);
-		GameRegistry.registerBlock(warpDoor, null, WarpDoor.ID);
-		GameRegistry.registerBlock(blockRift, BlockRift.ID);
-		GameRegistry.registerBlock(blockLimbo, BlockLimbo.ID);
-		GameRegistry.registerBlock(dimensionalDoor, null, DimensionalDoor.ID);
-		GameRegistry.registerBlock(transTrapdoor, TransTrapdoor.ID);
+        GameRegistry.registerBlock(quartzDoor, null, BlockDoorQuartz.ID);
+        GameRegistry.registerBlock(personalDimDoor, null, PersonalDimDoor.ID);
+        GameRegistry.registerBlock(goldenDoor, null, BlockDoorGold.ID);
+        GameRegistry.registerBlock(goldenDimensionalDoor, null, BlockGoldDimDoor.ID);
+        GameRegistry.registerBlock(unstableDoor, null, UnstableDoor.ID);
+        GameRegistry.registerBlock(warpDoor, null, WarpDoor.ID);
+        GameRegistry.registerBlock(blockRift, BlockRift.ID);
+        GameRegistry.registerBlock(blockLimbo, BlockLimbo.ID);
+        GameRegistry.registerBlock(dimensionalDoor, null, DimensionalDoor.ID);
+        GameRegistry.registerBlock(transTrapdoor, TransTrapdoor.ID);
         GameRegistry.registerBlock(blockDimWall, ItemBlockDimWall.class, BlockDimWall.ID);
-		GameRegistry.registerBlock(blockDimWallPerm, BlockDimWallPerm.ID);
-		GameRegistry.registerBlock(transientDoor, TransientDoor.ID);
+        GameRegistry.registerBlock(blockDimWallPerm, BlockDimWallPerm.ID);
+        GameRegistry.registerBlock(transientDoor, TransientDoor.ID);
         GameRegistry.registerItem(itemDDKey, ItemDDKey.ID);
         GameRegistry.registerItem(itemQuartzDoor, ItemQuartzDoor.ID);
         GameRegistry.registerItem(itemPersonalDoor, ItemPersonalDoor.ID);
@@ -233,6 +212,39 @@ public class DimDoors {
         GameRegistry.registerItem(itemStabilizedRiftSignature, ItemStabilizedRiftSignature.ID);
         GameRegistry.registerItem(itemWorldThread, ItemWorldThread.ID);
 
+        GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
+        GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
+        GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityDimHatch");
+        GameRegistry.registerTileEntity(TileEntityDimDoorGold.class, "TileEntityDimDoorGold");
+
+        EntityRegistry.registerModEntity(MobMonolith.class, "Monolith", properties.MonolithEntityID, this, 70, 1, true);
+        EntityList.idToClassMapping.put(properties.MonolithEntityID, MobMonolith.class);
+        EntityList.entityEggs.put(properties.MonolithEntityID, new EntityList.EntityEggInfo(properties.MonolithEntityID, 0, 0xffffff));
+
+		proxy.registerRenderers();
+
+        proxy.registerSidedHooks();
+
+        DimDoorsNetwork.init();
+	}
+
+	@Mod.EventHandler
+	public void onInitialization(FMLInitializationEvent event) {
+		// Initialize ServerTickHandler instance
+		serverTickHandler = new ServerTickHandler();
+        MinecraftForge.EVENT_BUS.register(serverTickHandler);
+		
+		// Initialize LimboDecay instance: required for BlockLimbo
+		limboDecay = new LimboDecay(properties);
+		
+		// Check if other biomes have been registered with the same IDs we want. If so, crash Minecraft
+		// to notify the user instead of letting it pass and conflicting with Biomes o' Plenty.
+		DDBiomeGenBase.checkBiomes(properties.LimboBiomeID, properties.PocketBiomeID);
+
+		// Initialize our biomes
+		DimDoors.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
+		DimDoors.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
+
         BlockRotator.setupOrientations();
 
 		if(!DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false))
@@ -243,15 +255,6 @@ public class DimDoors {
 			throw new IllegalStateException("There is a provider ID conflict between PersonalPocketProvider from Dimensional Doors and another provider type. Fix your configuration!");
 			
 		DimensionManager.registerDimension(properties.LimboDimensionID, properties.LimboProviderID);
-
-        GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
-        GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
-        GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityDimHatch");
-        GameRegistry.registerTileEntity(TileEntityDimDoorGold.class, "TileEntityDimDoorGold");
-
-		EntityRegistry.registerModEntity(MobMonolith.class, "Monolith", properties.MonolithEntityID, this, 70, 1, true);
-		EntityList.idToClassMapping.put(properties.MonolithEntityID, MobMonolith.class);
-		EntityList.entityEggs.put(properties.MonolithEntityID, new EntityList.EntityEggInfo(properties.MonolithEntityID, 0, 0xffffff));
 
 		CraftingManager.registerRecipes(properties);
 		CraftingManager.registerDispenserBehaviors();
