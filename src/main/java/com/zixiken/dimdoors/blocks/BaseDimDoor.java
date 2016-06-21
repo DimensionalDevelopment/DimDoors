@@ -116,9 +116,8 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	 * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
 	 */
 	@Override
-	public void updateTick(World par1World, int par2, int par3, int par4, Random par5Random) 
-	{
-		this.updateAttachedTile(par1World, par2, par3, par4);
+	public void updateTick(World par1World, BlockPos pos, IBlockState state, Random rand) {
+		this.updateAttachedTile(par1World, pos);
 	}
 	
 	@Override
@@ -216,37 +215,29 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	 * their own) Args: x, y, z, neighbor blockID
 	 */
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block neighbor)
-	{
-		
-		int metadata = world.getBlockMetadata(x, y, z);
-		if (isUpperDoorBlock(metadata))
-		{
-			if (world.getBlock(x, y - 1, z) != this)
-			{
-				world.setBlockToAir(x, y, z);
+	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighbor) {
+
+		int metadata = getMetaFromState(world.getBlockState(pos));
+		if (isUpperDoorBlock(state)) {
+			if (world.getBlockState(pos.down()) != this) {
+				world.setBlockToAir(pos);
 			}
-			if (!neighbor.isAir(world, x, y, z) && neighbor != this)
-			{
-				this.onNeighborBlockChange(world, x, y - 1, z, neighbor);
+			if (!neighbor.isAir(world, pos) && neighbor != this) {
+				this.onNeighborBlockChange(world, pos.down(), state, neighbor);
 			}
 		}
-		else
-		{
-			if (world.getBlock(x, y + 1, z) != this)
-			{
-				world.setBlockToAir(x, y, z);
-				if (!world.isRemote)
-				{
-					this.dropBlockAsItem(world, x, y, z, metadata, 0);
+		else {
+			if (world.getBlockState(pos.up()) != this) {
+				world.setBlockToAir(pos);
+				if (!world.isRemote) {
+					this.dropBlockAsItem(world, pos, state, 0);
 				}
 			}
-			else if(this.getLockStatus(world, x, y, z)<=1)
-			{
-				boolean powered = world.isBlockIndirectlyGettingPowered(x, y, z) || world.isBlockIndirectlyGettingPowered(x, y + 1, z);
-				if ((powered || !neighbor.isAir(world, x, y, z) && neighbor.canProvidePower()) && neighbor != this)
+			else if(this.getLockStatus(world, pos)<=1) {
+				boolean powered = world.isBlockPowered(pos) || world.isBlockPowered(pos.up());
+				if ((powered || !neighbor.isAir(world, pos) && neighbor.canProvidePower()) && neighbor != this)
 				{
-					this.func_150014_a(world, x, y, z, powered);
+					this.toggleDoor(world, pos, powered);
 				}
 			}
 		}
@@ -257,8 +248,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
-	{
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player) {
 		return new ItemStack(this.getDoorItem(), 1, 0);
 	}
 
@@ -266,14 +256,13 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
      * Returns the ID of the items to drop on destruction.
      */
     @Override
-	public Item getItemDropped(int metadata, Random random, int fortune)
-    {
-        return isUpperDoorBlock(metadata) ? null : this.getDoorItem();
+	public Item getItemDropped(IBlockState state, Random random, int fortune) {
+        return isUpperDoorBlock(state) ? null : this.getDoorItem();
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public Item getItem(World world, int x, int y, int z) {
+    public Item getItem(World world, BlockPos pos) {
         return this.getDoorItem();
     }
 
@@ -284,17 +273,14 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	}
 
 	@Override
-	public void enterDimDoor(World world, BlockPos pos, Entity entity)
-	{
+	public void enterDimDoor(World world, BlockPos pos, Entity entity) {
 		// FX entities dont exist on the server
-		if (world.isRemote)
-		{
+		if (world.isRemote) {
 			return;
 		}
 		
 		// Check that this is the top block of the door
-		if (world.getBlock(x, y - 1, z) == this)
-		{
+		if (world.getBlock(x, y - 1, z) == this) {
 			int metadata = world.getBlockMetadata(x, y - 1, z);
 			boolean canUse = isDoorOpen(metadata);
 			if (canUse && entity instanceof EntityPlayer)
@@ -345,9 +331,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	 * 1 if there is a lock;
 	 * 2 if the lock is locked.
 	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param pos
 	 * @return
 	 */
 	public byte getLockStatus(World world, BlockPos pos)
@@ -396,7 +380,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 				}
 			}
 		}
-		player.playSound(DimDoors.modid + ":doorLocked",  1F, 1F);
+		player.playSound(DimDoors.MODID + ":doorLocked",  1F, 1F);
 		return false;
 	}
 
@@ -411,19 +395,18 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	}
 	
 	@Override
-	public TileEntity initDoorTE(World world, int x, int y, int z)
-	{
-		TileEntity te = this.createNewTileEntity(world, world.getBlockMetadata(x, y, z));
-		world.setTileEntity(x, y, z, te);
+	public TileEntity initDoorTE(World world, BlockPos pos) {
+		TileEntity te = this.createTileEntity(world, world.getBlockState(pos));
+		world.setTileEntity(pos, te);
 		return te;
 	}
 	
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldMeta)
+	public void breakBlock(World world, BlockPos pos, IBlockState state)
     {
 		// This function runs on the server side after a block is replaced
 		// We MUST call super.breakBlock() since it involves removing tile entities
-        super.breakBlock(world, x, y, z, oldBlock, oldMeta);
+        super.breakBlock(world, pos, state);
         
         // Schedule rift regeneration for this block if it was replaced
         if (world.getBlock(x, y, z) != oldBlock)

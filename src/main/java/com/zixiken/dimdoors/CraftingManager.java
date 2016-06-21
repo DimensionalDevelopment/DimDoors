@@ -4,15 +4,15 @@ package com.zixiken.dimdoors;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.core.DDLock;
 import com.zixiken.dimdoors.items.behaviors.DispenserBehaviorStabilizedRS;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import com.zixiken.dimdoors.items.ItemDDKey;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CraftingManager
 {
@@ -57,7 +57,7 @@ public class CraftingManager
 		{
 
 			GameRegistry.addRecipe(new ItemStack(DimDoors.itemWarpDoor, 1),
-				"yxy", 'x', Items.ender_pearl, 'y', Items.wooden_door);
+				"yxy", 'x', Items.ender_pearl, 'y', Items.oak_door);
 		}
 		if (properties.CraftingTransTrapdoorAllowed)
 		{

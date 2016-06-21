@@ -22,9 +22,9 @@ import com.zixiken.dimdoors.util.Point4D;
 import com.zixiken.dimdoors.watcher.ClientDimData;
 import com.zixiken.dimdoors.watcher.ClientLinkData;
 import com.zixiken.dimdoors.watcher.UpdateWatcherProxy;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * This class regulates all the operations involving the storage and
@@ -451,7 +451,7 @@ public class PocketManager
 
 	public static NewDimData registerDimension(World world)
 	{
-		return registerDimension(world.provider.dimensionId, null, DimensionType.ROOT);
+		return registerDimension(world.provider.getDimensionId(), null, DimensionType.ROOT);
 	}
 
 	/**
@@ -588,12 +588,12 @@ public class PocketManager
 
 	public static NewDimData getDimensionData(World dimension)
 	{
-		return PocketManager.dimensionData.get(dimension.provider.dimensionId);
+		return PocketManager.dimensionData.get(dimension.provider.getDimensionId());
 	}
 
 	public static NewDimData createDimensionData(World world)
 	{
-		return createDimensionData(world.provider.dimensionId);
+		return createDimensionData(world.provider.getDimensionId());
 	}
 
 	public static NewDimData createDimensionDataDangerously(int dimensionID)
@@ -658,7 +658,7 @@ public class PocketManager
 
 	public static DimLink getLink(int x, int y, int z, World world)
 	{
-		return getLink(x, y, z, world.provider.dimensionId);
+		return getLink(x, y, z, world.provider.getDimensionId());
 	}
 
 	public static DimLink getLink(Point4D point)

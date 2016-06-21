@@ -18,25 +18,21 @@ public class BlankTeleporter extends Teleporter
 	     * Create a new portal near an entity.
 	     */
 	 @Override
-	 public void placeInPortal(Entity par1Entity, double par2, double par4, double par6, float par8)
-	 {
-		        
+	 public void placeInPortal(Entity par1Entity, float rotationyaw) {
 	 }
 		 
 		 
 	    
 
-	 public void setEntityPosition(Entity entity, double x, double y, double z)
-	 {
+	 public void setEntityPosition(Entity entity, double x, double y, double z) {
 		 entity.lastTickPosX = entity.prevPosX = entity.posX = x;
-		 entity.lastTickPosY = entity.prevPosY = entity.posY = y + entity.yOffset;
+		 entity.lastTickPosY = entity.prevPosY = entity.posY = y + entity.getYOffset();
 		 entity.lastTickPosZ = entity.prevPosZ = entity.posZ = z;
 		 entity.setPosition(x, y, z);
 	 }
 	  
 	 @Override
-	 public void removeStalePortalLocations(long par1)
-	 {
+	 public void removeStalePortalLocations(long par1) {
 	    
 	 }
 }
