@@ -656,9 +656,9 @@ public class PocketManager
 		isConnected = false;
 	}
 
-	public static DimLink getLink(int x, int y, int z, World world)
+	public static DimLink getLink(BlockPos pos, World world)
 	{
-		return getLink(x, y, z, world.provider.getDimensionId());
+		return getLink(pos, world.provider.getDimensionId());
 	}
 
 	public static DimLink getLink(Point4D point)

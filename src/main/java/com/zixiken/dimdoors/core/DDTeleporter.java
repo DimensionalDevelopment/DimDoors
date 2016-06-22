@@ -401,24 +401,12 @@ public class DDTeleporter
      * @param link - the link the player is using to teleport; sends the player to its destination
      * @param entity - the instance of the player to be teleported
      */
-    public static void traverseDimDoor(World world, DimLink link, Entity entity, Block door)
-    {
-        if (world == null)
-        {
-            throw new IllegalArgumentException("world cannot be null.");
-        }
-        if (link == null)
-        {
-            throw new IllegalArgumentException("link cannot be null.");
-        }
-        if (entity == null)
-        {
-            throw new IllegalArgumentException("entity cannot be null.");
-        }
-        if (world.isRemote)
-        {
-            return;
-        }
+    public static void traverseDimDoor(World world, DimLink link,
+                                       Entity entity, Block door) throws IllegalArgumentException {
+        if(world.isRemote) return;
+        if(world == null) throw new IllegalArgumentException("world cannot be null.");
+        if(link == null) throw new IllegalArgumentException("link cannot be null.");
+        if(entity == null) throw new IllegalArgumentException("entity cannot be null.");
 
         if (cooldown == 0 || entity instanceof EntityPlayer)
         {

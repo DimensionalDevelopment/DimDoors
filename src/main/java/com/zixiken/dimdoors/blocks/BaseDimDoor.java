@@ -3,8 +3,13 @@ package com.zixiken.dimdoors.blocks;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.DimLink;
+import com.zixiken.dimdoors.core.DDTeleporter;
+import com.zixiken.dimdoors.core.LinkType;
+import com.zixiken.dimdoors.core.PocketManager;
+import com.zixiken.dimdoors.items.ItemDDKey;
+import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
@@ -18,14 +23,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.core.DDTeleporter;
-import com.zixiken.dimdoors.core.PocketManager;
-import com.zixiken.dimdoors.items.ItemDDKey;
-import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -111,29 +111,25 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		return null;
 	}
 
-	/**
-	 * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
-	 * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
-	 */
 	@Override
 	public void updateTick(World par1World, BlockPos pos, IBlockState state, Random rand) {
-		this.updateAttachedTile(par1World, pos);
+		updateAttachedTile(par1World, pos);
 	}
-	
+
 	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+	public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos)
 	{
-		this.setDoorRotation(func_150012_g(par1IBlockAccess, par2, par3, par4));
+		this.setDoorRotation(worldIn.getBlockState(pos));
 	}
-	
-	
-	public void setDoorRotation(int par1)
+
+
+	private void setDoorRotation(IBlockState state)
 	{
 		float var2 = 0.1875F;
-		this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 2.0F, 1.0F);
-		int var3 = par1 & 3;
-		boolean var4 = (par1 & 4) != 0;
-		boolean var5 = (par1 & 16) != 0;
+		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 2.0F, 1.0F);
+		int var3 = state.getValue(BlockDoor.FACING).rotateY().getHorizontalIndex();
+		boolean var4 = state.getValue(BlockDoor.OPEN);
+		boolean var5 = state.getValue(BlockDoor.HINGE) == EnumHingePosition.LEFT;
 
 		if (var3 == 0)
 		{
@@ -141,16 +137,16 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			{
 				if (!var5)
 				{
-					this.setBlockBounds(0.001F, 0.0F, 0.0F, 1.0F, 1.0F, var2);
+					setBlockBounds(0.001F, 0.0F, 0.0F, 1.0F, 1.0F, var2);
 				}
 				else
 				{
-					this.setBlockBounds(0.001F, 0.0F, 1.0F - var2, 1.0F, 1.0F, 1.0F);
+					setBlockBounds(0.001F, 0.0F, 1.0F - var2, 1.0F, 1.0F, 1.0F);
 				}
 			}
 			else
 			{
-				this.setBlockBounds(0.0F, 0.0F, 0.0F, var2, 1.0F, 1.0F);
+				setBlockBounds(0.0F, 0.0F, 0.0F, var2, 1.0F, 1.0F);
 			}
 		}
 		else if (var3 == 1)
@@ -159,16 +155,16 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			{
 				if (!var5)
 				{
-					this.setBlockBounds(1.0F - var2, 0.0F, 0.001F, 1.0F, 1.0F, 1.0F);
+					setBlockBounds(1.0F - var2, 0.0F, 0.001F, 1.0F, 1.0F, 1.0F);
 				}
 				else
 				{
-					this.setBlockBounds(0.0F, 0.0F, 0.001F, var2, 1.0F, 1.0F);
+					setBlockBounds(0.0F, 0.0F, 0.001F, var2, 1.0F, 1.0F);
 				}
 			}
 			else
 			{
-				this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, var2);
+				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, var2);
 			}
 		}
 		else if (var3 == 2)
@@ -177,16 +173,16 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			{
 				if (!var5)
 				{
-					this.setBlockBounds(0.0F, 0.0F, 1.0F - var2, .99F, 1.0F, 1.0F);
+					setBlockBounds(0.0F, 0.0F, 1.0F - var2, .99F, 1.0F, 1.0F);
 				}
 				else
 				{
-					this.setBlockBounds(0.0F, 0.0F, 0.0F, .99F, 1.0F, var2);
+					setBlockBounds(0.0F, 0.0F, 0.0F, .99F, 1.0F, var2);
 				}
 			}
 			else
 			{
-				this.setBlockBounds(1.0F - var2, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+				setBlockBounds(1.0F - var2, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 			}
 		}
 		else if (var3 == 3)
@@ -195,16 +191,16 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			{
 				if (!var5)
 				{
-					this.setBlockBounds(0.0F, 0.0F, 0.0F, var2, 1.0F, 0.99F);
+					setBlockBounds(0.0F, 0.0F, 0.0F, var2, 1.0F, 0.99F);
 				}
 				else
 				{
-					this.setBlockBounds(1.0F - var2, 0.0F, 0.0F, 1.0F, 1.0F, 0.99F);
+					setBlockBounds(1.0F - var2, 0.0F, 0.0F, 1.0F, 1.0F, 0.99F);
 				}
 			}
 			else
 			{
-				this.setBlockBounds(0.0F, 0.0F, 1.0F - var2, 1.0F, 1.0F, 1.0F);
+				setBlockBounds(0.0F, 0.0F, 1.0F - var2, 1.0F, 1.0F, 1.0F);
 			}
 		}
 	}
@@ -217,28 +213,20 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighbor) {
 
-		int metadata = getMetaFromState(world.getBlockState(pos));
 		if (isUpperDoorBlock(state)) {
-			if (world.getBlockState(pos.down()) != this) {
-				world.setBlockToAir(pos);
-			}
-			if (!neighbor.isAir(world, pos) && neighbor != this) {
-				this.onNeighborBlockChange(world, pos.down(), state, neighbor);
-			}
-		}
-		else {
+			if (world.getBlockState(pos.down()) != this)
+                world.setBlockToAir(pos);
+			if (!neighbor.isAir(world, pos) && neighbor != this)
+                onNeighborBlockChange(world, pos.down(), state, neighbor);
+		} else {
 			if (world.getBlockState(pos.up()) != this) {
 				world.setBlockToAir(pos);
-				if (!world.isRemote) {
-					this.dropBlockAsItem(world, pos, state, 0);
-				}
+				if (!world.isRemote) dropBlockAsItem(world, pos, state, 0);
 			}
 			else if(this.getLockStatus(world, pos)<=1) {
 				boolean powered = world.isBlockPowered(pos) || world.isBlockPowered(pos.up());
 				if ((powered || !neighbor.isAir(world, pos) && neighbor.canProvidePower()) && neighbor != this)
-				{
-					this.toggleDoor(world, pos, powered);
-				}
+					toggleDoor(world, pos, powered);
 			}
 		}
 	}
@@ -262,44 +250,30 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 
     @Override
     @SideOnly(Side.CLIENT)
-    public Item getItem(World world, BlockPos pos) {
-        return this.getDoorItem();
-    }
+    public Item getItem(World world, BlockPos pos) {return this.getDoorItem();}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int metadata)
-	{
-        return new TileEntityDimDoor();
-	}
+	public TileEntity createNewTileEntity(World world, int metadata) {return new TileEntityDimDoor();}
 
 	@Override
 	public void enterDimDoor(World world, BlockPos pos, Entity entity) {
 		// FX entities dont exist on the server
-		if (world.isRemote) {
-			return;
-		}
+		if (world.isRemote) {return;}
 		
 		// Check that this is the top block of the door
-		if (world.getBlock(x, y - 1, z) == this) {
-			int metadata = world.getBlockMetadata(x, y - 1, z);
-			boolean canUse = isDoorOpen(metadata);
+		if (world.getBlockState(pos).getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER) {
+			IBlockState state = world.getBlockState(pos.down());
+			boolean canUse = state.getValue(BlockDoor.OPEN);
 			if (canUse && entity instanceof EntityPlayer)
-			{
 				// Dont check for non-player entites
-				canUse = isEntityFacingDoor(metadata, (EntityLivingBase) entity);
-			}
-			if (canUse)
-			{
+				canUse = isEntityFacingDoor(state, (EntityLivingBase) entity);
+			if (canUse) {
 				// Teleport the entity through the link, if it exists
-				DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
-				if (link != null && (link.linkType() != LinkType.PERSONAL || entity instanceof EntityPlayer))
-				{
-					try
-					{
+				DimLink link = PocketManager.getLink(pos, world.provider.getDimensionId());
+				if (link != null && (link.linkType() != LinkType.PERSONAL || entity instanceof EntityPlayer)) {
+					try {
 						DDTeleporter.traverseDimDoor(world, link, entity, this);
-					}
-					catch (Exception e)
-					{
+					} catch (IllegalArgumentException e) {
 						System.err.println("Something went wrong teleporting to a dimension:");
 						e.printStackTrace();
 					}
@@ -307,24 +281,15 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 				
 				// Close the door only after the entity goes through
 				// so players don't have it slam in their faces.
-				this.func_150014_a(world, x, y, z, false);
+				this.toggleDoor(world, pos, false);
 			}
-		}
-		else if (world.getBlock(x, y + 1, z) == this)
-		{
-			enterDimDoor(world, x, y + 1, z, entity);
-		}
+		} else {
+            BlockPos up = pos.up();
+            if (world.getBlockState(up).getBlock() == this) enterDimDoor(world, up, entity);
+        }
 	}
 	
-	public boolean isUpperDoorBlock(IBlockState state)
-	{
-		return state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER;
-	}
-	
-	public boolean isDoorOpen(int metadata)
-	{
-		return (metadata & 4) != 0;
-	}
+	public boolean isUpperDoorBlock(IBlockState state) {return state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER;}
 	
 	/**
 	 * 0 if link is no lock;
@@ -334,84 +299,51 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	 * @param pos
 	 * @return
 	 */
-	public byte getLockStatus(World world, BlockPos pos)
-	{
+	public byte getLockStatus(World world, BlockPos pos) {
 		byte status = 0;
 		DimLink link = getLink(world, pos);
-		if(link!=null&&link.hasLock())
-		{
+		if(link != null && link.hasLock()) {
 			status++;
-			if(link.getLockState())
-			{
-				status++;
-			}
+			if(link.getLockState()) status++;
 		}
 		return status;
 	}
 	
-	
-	public boolean checkCanOpen(World world, BlockPos pos)
-	{
-		return this.checkCanOpen(world, pos, null);
-	}
-	
-	public boolean checkCanOpen(World world, BlockPos pos, EntityPlayer player)
-	{
+	public boolean checkCanOpen(World world, BlockPos pos, EntityPlayer player) {
 		DimLink link = getLink(world, pos);
-		if(link==null||player==null)
-		{
-			return link==null;
-		}
-		if(!link.getLockState())
-		{
-			return true;
-		}
+		if(link == null || player == null) return link == null;
+		if(!link.getLockState()) return true;
 		
 		for(ItemStack item : player.inventory.mainInventory)
-		{
-			if(item != null)
-			{
-				if(item.getItem() instanceof ItemDDKey)
-				{
-					if(link.tryToOpen(item))
-					{
-						return true;
-					}
-				}
-			}
-		}
+			if(item != null && item.getItem() instanceof ItemDDKey && link.tryToOpen(item)) return true;
+
 		player.playSound(DimDoors.MODID + ":doorLocked",  1F, 1F);
 		return false;
 	}
 
 	    
-	protected static boolean isEntityFacingDoor(int metadata, EntityLivingBase entity)
-	{
+	protected static boolean isEntityFacingDoor(IBlockState state, EntityLivingBase entity) {
 		// Although any entity has the proper fields for this check,
 		// we should only apply it to living entities since things
 		// like Minecarts might come in backwards.
-		int direction = MathHelper.floor_double((entity.rotationYaw + 90) * 4.0F / 360.0F + 0.5D) & 3;
-		return ((metadata & 3) == direction);
+		return (state.getValue(BlockDoor.FACING) == EnumFacing.fromAngle(entity.rotationYaw));
 	}
 	
 	@Override
 	public TileEntity initDoorTE(World world, BlockPos pos) {
-		TileEntity te = this.createTileEntity(world, world.getBlockState(pos));
+		TileEntity te = createTileEntity(world, world.getBlockState(pos));
 		world.setTileEntity(pos, te);
 		return te;
 	}
 	
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state)
-    {
+	public void breakBlock(World world, BlockPos pos, IBlockState state) {
 		// This function runs on the server side after a block is replaced
 		// We MUST call super.breakBlock() since it involves removing tile entities
         super.breakBlock(world, pos, state);
         
         // Schedule rift regeneration for this block if it was replaced
-        if (world.getBlock(x, y, z) != oldBlock)
-        {
-        	DimDoors.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
-        }
+        if (world.getBlockState(pos).getBlock() != state.getBlock())
+            DimDoors.riftRegenerator.scheduleFastRegeneration(pos, world);
     }
 }

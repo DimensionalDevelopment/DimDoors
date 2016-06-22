@@ -6,6 +6,7 @@ import java.util.Random;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
 import net.minecraft.block.Block;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -49,14 +50,12 @@ public class RiftRegenerator implements IRegularTickReceiver {
 		scheduleRegeneration(link, MIN_SLOW_DELAY, MAX_SLOW_DELAY);
 	}
 	
-	public void scheduleSlowRegeneration(int x, int y, int z, World world)
-	{
-		scheduleRegeneration(PocketManager.getLink(x, y, z, world), MIN_SLOW_DELAY, MAX_SLOW_DELAY);
+	public void scheduleSlowRegeneration(BlockPos pos, World world) {
+		scheduleRegeneration(PocketManager.getLink(pos, world), MIN_SLOW_DELAY, MAX_SLOW_DELAY);
 	}
 	
-	public void scheduleFastRegeneration(int x, int y, int z, World world)
-	{
-		scheduleRegeneration(PocketManager.getLink(x, y, z, world), MIN_FAST_DELAY, MAX_FAST_DELAY);
+	public void scheduleFastRegeneration(BlockPos pos, World world) {
+		scheduleRegeneration(PocketManager.getLink(pos, world), MIN_FAST_DELAY, MAX_FAST_DELAY);
 	}
 	
 	private void scheduleRegeneration(DimLink link, int minDelay, int maxDelay)
