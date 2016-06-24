@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.zixiken.dimdoors.items.*;
 import com.zixiken.dimdoors.network.DimDoorsNetwork;
+import com.zixiken.dimdoors.render.BlockRenderManager;
 import com.zixiken.dimdoors.schematic.BlockRotator;
 import com.zixiken.dimdoors.blocks.TransientDoor;
 import com.zixiken.dimdoors.commands.CommandListDungeons;
@@ -226,6 +227,8 @@ public class DimDoors {
         proxy.registerSidedHooks();
 
         DimDoorsNetwork.init();
+
+        BlockRenderManager.addModelVariants();
 	}
 
 	@Mod.EventHandler
@@ -267,6 +270,8 @@ public class DimDoors {
 		// Register loot chests
 		DDLoot.registerInfo(properties);
         MinecraftForge.EVENT_BUS.register(new ConnectionHandler());
+
+        BlockRenderManager.registerBlockRenderers();
 	}
 
 	@Mod.EventHandler

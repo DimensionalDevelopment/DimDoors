@@ -2,24 +2,17 @@ package com.zixiken.dimdoors.items;
 
 import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class ItemBlockDimWall extends ItemBlock
-{
-	private final static String[] subNames = {"tile.blockDimWall", "tile.blockAncientWall" , "tile.blockAlteredWall"};
+public class ItemBlockDimWall extends ItemBlock {
+	private final static String[] subNames = {"", "Perm" , "Personal"};
 	
-    public ItemBlockDimWall(Block block)
-    {
-    	  super(block);
-          this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
-          setHasSubtypes(true);
-    }
-    @Override
-	public void registerIcons(IIconRegister par1IconRegister)
-    {
-        this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("tile.", ""));
+    public ItemBlockDimWall(Block block) {
+        super(block);
+        setCreativeTab(DimDoors.dimDoorsCreativeTab);
+        setMaxDamage(0);
+        setHasSubtypes(true);
     }
     
     @Override
@@ -28,8 +21,7 @@ public class ItemBlockDimWall extends ItemBlock
 		return damageValue;
 	}
 	
-    public String getUnlocalizedName(ItemStack par1ItemStack)
-    {
-        return subNames[this.getDamage(par1ItemStack)];
+    public String getUnlocalizedName(ItemStack stack) {
+        return super.getUnlocalizedName() + subNames[this.getDamage(stack)];
     }  
 }
