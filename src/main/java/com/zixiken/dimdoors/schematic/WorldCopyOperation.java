@@ -1,77 +1,59 @@
 package com.zixiken.dimdoors.schematic;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
-public class WorldCopyOperation extends WorldOperation
-{
-	private int originX;
-	private int originY;
-	private int originZ;
+public class WorldCopyOperation extends WorldOperation {
+	private BlockPos origin;
 	private int index;
-	private Block[] blocks;
-	private byte[] metadata;
+	private IBlockState[] state;
 	private NBTTagList tileEntities;
 	
-	public WorldCopyOperation()
-	{
+	public WorldCopyOperation() {
 		super("WorldCopyOperation");
-		blocks = null;
-		metadata = null;
+		state = null;
 		tileEntities = null;
 	}
 	
 	@Override
-	protected boolean initialize(World world, int x, int y, int z, int width, int height, int length)
-	{
+	protected boolean initialize(World world, BlockPos pos, BlockPos volume) {
 		index = 0;
-		originX = x;
-		originY = y;
-		originZ = z;
-		blocks = new Block[width * height * length];
-		metadata = new byte[width * height * length];
+		origin = pos;
+		state = new IBlockState[volume.getX() * volume.getY() * volume.getZ()];
 		tileEntities = new NBTTagList();
 		return true;
 	}
 
 	@Override
-	protected boolean applyToBlock(World world, int x, int y, int z)
-	{
-		blocks[index] = world.getBlock(x, y, z);
-		metadata[index] = (byte) world.getBlockMetadata(x, y, z);
+	protected boolean applyToBlock(World world, BlockPos pos) {
+		state[index] = world.getBlockState(pos);
 		
-		TileEntity tileEntity = world.getTileEntity(x, y, z);
-		if (tileEntity != null)
-		{
+		TileEntity tileEntity = world.getTileEntity(pos);
+		if (tileEntity != null) {
 			//Extract tile entity data
 			NBTTagCompound tileTag = new NBTTagCompound();
 			tileEntity.writeToNBT(tileTag);
 			//Translate the tile entity's position from the world's coordinate system
 			//to the schematic's coordinate system.
-			tileTag.setInteger("x", x - originX);
-			tileTag.setInteger("y", y - originY);
-			tileTag.setInteger("z", z - originZ);
+			tileTag.setInteger("x", pos.getX() - origin.getX());
+			tileTag.setInteger("y", pos.getY() - origin.getY());
+			tileTag.setInteger("z", pos.getZ() - origin.getZ());
 			tileEntities.appendTag(tileTag);
 		}
 		index++; //This works assuming the loops in WorldOperation are done in YZX order
 		return true;
 	}
 	
-	public Block[] getBlocks()
-	{
-		return blocks;
+	public IBlockState[] getBlockState() {
+		return state;
 	}
 	
-	public byte[] getMetadata()
-	{
-		return metadata;
-	}
-	
-	public NBTTagList getTileEntities()
-	{
+	public NBTTagList getTileEntities() {
 		return tileEntities;
 	}
 }

@@ -199,7 +199,7 @@ public class DDSaveHandler
 	
 	public static boolean unpackLinkData(List<PackedLinkData> linksToUnpack)
 	{
-		Point3D fakePoint = new Point3D(-1,-1,-1);
+		BlockPos fakePoint = new BlockPos(-1,-1,-1);
 		List<PackedLinkData> unpackedLinks = new ArrayList<PackedLinkData>();
 		/**
 		 * sort through the list, unpacking links that do not have parents. 

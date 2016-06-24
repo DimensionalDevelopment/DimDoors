@@ -36,7 +36,7 @@ public abstract class BaseSchematicGateway extends BaseGateway
 		schematic.applyFilter(gatewayFilter);
 		schematic.applyImportFilters(properties);
 		
-		Point3D doorLocation = gatewayFilter.getEntranceDoorLocation();
+		BlockPos doorLocation = gatewayFilter.getEntranceDoorLocation();
 		int orientation = gatewayFilter.getEntranceOrientation();
 
 		// Build the gateway into the world

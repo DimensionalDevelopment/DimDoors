@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.zixiken.dimdoors.Point3D;
 import com.zixiken.dimdoors.core.DimensionType;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 
 public class PackedDimData
 {
@@ -18,18 +20,17 @@ public class PackedDimData
 	public final int ParentID;
 	public final int RootID;
 	public final PackedDungeonData DungeonData;
-	public final Point3D Origin;
-	public final int Orientation;
+	public final BlockPos Origin;
+	public final EnumFacing Orientation;
 	public final List<Integer> ChildIDs;
 	public final List<PackedLinkData> Links;
 	public final List<PackedLinkTail> Tails;
 	
 	// FIXME Missing dungeon data, not sure how to include it
 
-	public PackedDimData(int id, int depth, int packDepth, int parentID, int rootID, int orientation,
-		DimensionType type, boolean isFilled,PackedDungeonData dungeonData, Point3D origin, List<Integer> childIDs, List<PackedLinkData> links,
-		List<PackedLinkTail> tails)
-	{
+	public PackedDimData(int id, int depth, int packDepth, int parentID, int rootID, EnumFacing orientation,
+						 DimensionType type, boolean isFilled, PackedDungeonData dungeonData, BlockPos origin, List<Integer> childIDs, List<PackedLinkData> links,
+						 List<PackedLinkTail> tails) {
 		ID = id;
 		Depth = depth;
 		PackDepth = packDepth;
@@ -46,8 +47,7 @@ public class PackedDimData
 	}
 	
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "ID= "+this.ID;
 	}
 	

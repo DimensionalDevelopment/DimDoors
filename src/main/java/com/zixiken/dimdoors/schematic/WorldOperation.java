@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.schematic;
 
-import com.zixiken.dimdoors.Point3D;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 public abstract class WorldOperation {
@@ -12,48 +12,29 @@ public abstract class WorldOperation {
 		this.name = name;
 	}
 
-	protected boolean initialize(World world, int x, int y, int z, int width, int height, int length)
-	{
+	protected boolean initialize(World world, BlockPos pos, BlockPos volume) {
 		return true;
 	}
 	
-	protected abstract boolean applyToBlock(World world, int x, int y, int z);
+	protected abstract boolean applyToBlock(World world, BlockPos pos);
 
-	protected boolean finish()
-	{
+	protected boolean finish() {
 		return true;
 	}
-
-	public boolean apply(World world, Point3D minCorner, Point3D maxCorner)
-	{
-		int x = minCorner.getX();
-		int y = minCorner.getY();
-		int z = minCorner.getZ();
-		int width = maxCorner.getX() - x + 1;
-		int height = maxCorner.getY() - y + 1;
-		int length = maxCorner.getZ() - z + 1;
-		return apply(world, x, y, z, width, height, length);
-	}
 	
-	public boolean apply(World world, int x, int y, int z, int width, int height, int length)
-	{
-		if (!initialize(world, x, y, z, width, height, length))
+	public boolean apply(World world, BlockPos pos, BlockPos volume) {
+		if (!initialize(world, pos, volume))
 			return false;
 		
 		int cx, cy, cz;
-		int limitX = x + width;
-		int limitY = y + height;
-		int limitZ = z + length;
+		BlockPos limit = pos.add(volume);
 		
 		//The order of these loops is important. Don't change it! It's used to avoid calculating
 		//indeces in some schematic operations. The proper order is YZX.
-		for (cy = y; cy < limitY; cy++)
-		{
-			for (cz = z; cz < limitZ; cz++)
-			{
-				for (cx = x; cx < limitX; cx++)
-				{
-					if (!applyToBlock(world, cx, cy, cz))
+		for (cy = pos.getY(); cy < limit.getY(); cy++) {
+			for (cz = pos.getZ(); cz < limit.getZ(); cz++) {
+				for (cx = pos.getX(); cx < limit.getX(); cx++) {
+					if (!applyToBlock(world, new BlockPos(cx, cy, cz)))
 						return false;
 				}
 			}
@@ -63,14 +44,12 @@ public abstract class WorldOperation {
 	}
 	
 	
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 	
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return name;
 	}
 }

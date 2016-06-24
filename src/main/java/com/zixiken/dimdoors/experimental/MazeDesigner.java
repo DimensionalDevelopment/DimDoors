@@ -8,8 +8,9 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
 
+import com.zixiken.dimdoors.helpers.BlockPosHelper;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
-import com.zixiken.dimdoors.Point3D;
 
 public class MazeDesigner
 {
@@ -22,8 +23,7 @@ public class MazeDesigner
 	
 	private MazeDesigner() { }
 	
-	public static MazeDesign generate(Random random)
-	{
+	public static MazeDesign generate(Random random) {
 		// Construct a random binary space partitioning of our maze volume
 		PartitionNode root = partitionRooms(MAZE_WIDTH, MAZE_HEIGHT, MAZE_LENGTH, SPLIT_COUNT, random);
 
@@ -48,100 +48,79 @@ public class MazeDesigner
 		return new MazeDesign(root, rooms, cores);
 	}
 
-	private static void listRoomPartitions(PartitionNode node, ArrayList<PartitionNode> partitions)
-	{
-		if (node.isLeaf())
-		{
+	private static void listRoomPartitions(PartitionNode node, ArrayList<PartitionNode> partitions) {
+		if (node.isLeaf()) {
 			partitions.add(node);
-		}
-		else
-		{
+		} else {
 			listRoomPartitions(node.leftChild(), partitions);
 			listRoomPartitions(node.rightChild(), partitions);
 		}
 	}
 	
-	private static void removeRoomPartitions(PartitionNode node)
-	{
+	private static void removeRoomPartitions(PartitionNode node) {
 		// Remove a node and any of its ancestors that become leaf nodes
 		PartitionNode parent;
 		PartitionNode current;
 		
 		current = node;
-		while (current != null && current.isLeaf())
-		{
+		while (current != null && current.isLeaf()) {
 			parent = current.parent();
 			current.remove();
 			current = parent;
 		}
 	}
 	
-	private static PartitionNode partitionRooms(int width, int height, int length, int maxLevels, Random random)
-	{
-		PartitionNode root = new PartitionNode(width, height, length);
+	private static PartitionNode partitionRooms(int width, int height, int length, int maxLevels, Random random) {
+		PartitionNode root = new PartitionNode(new BlockPos(width, height, length));
 		splitByRandomX(root, maxLevels, random);
 		return root;
 	}
 	
-	private static void splitByRandomX(PartitionNode node, int levels, Random random)
-	{
-		if (node.width() >= 2 * MIN_SIDE)
-		{
+	private static void splitByRandomX(PartitionNode node, int levels, Random random) {
+		if (node.volume().getX() >= 2 * MIN_SIDE) {
 			node.splitByX(MathHelper.getRandomIntegerInRange(random,
 					node.minCorner().getX() + MIN_SIDE, node.maxCorner().getX() - MIN_SIDE + 1));
 
-			if (levels > 1)
-			{
+			if (levels > 1) {
 				splitByRandomZ(node.leftChild(), levels - 1, random);
 				splitByRandomZ(node.rightChild(), levels - 1, random);
 			}
-		}
-		else if (levels > 1)
-		{
+		} else if (levels > 1) {
 			splitByRandomZ(node, levels - 1, random);
 		}
 	}
 	
 	private static void splitByRandomZ(PartitionNode node, int levels, Random random)
 	{
-		if (node.length() >= 2 * MIN_SIDE)
-		{
+		if (node.volume().getZ() >= 2 * MIN_SIDE) {
 			node.splitByZ(MathHelper.getRandomIntegerInRange(random,
 					node.minCorner().getZ() + MIN_SIDE, node.maxCorner().getZ() - MIN_SIDE + 1));
 
-			if (levels > 1)
-			{
+			if (levels > 1) {
 				splitByRandomY(node.leftChild(), levels - 1, random);
 				splitByRandomY(node.rightChild(), levels - 1, random);
 			}
 		}
-		else if (levels > 1)
-		{
+		else if (levels > 1) {
 			splitByRandomY(node, levels - 1, random);
 		}
 	}
 	
-	private static void splitByRandomY(PartitionNode node, int levels, Random random)
-	{
-		if (node.height() >= 2 * MIN_HEIGHT)
-		{
+	private static void splitByRandomY(PartitionNode node, int levels, Random random) {
+		if (node.volume().getY() >= 2 * MIN_HEIGHT) {
 			node.splitByY(MathHelper.getRandomIntegerInRange(random,
 					node.minCorner().getY() + MIN_HEIGHT, node.maxCorner().getY() - MIN_HEIGHT + 1));
 
-			if (levels > 1)
-			{
+			if (levels > 1) {
 				splitByRandomX(node.leftChild(), levels - 1, random);
 				splitByRandomX(node.rightChild(), levels - 1, random);
 			}
-		}
-		else if (levels > 1)
-		{
+		} else if (levels > 1) {
 			splitByRandomX(node, levels - 1, random);
 		}
 	}
 	
-	private static DirectedGraph<PartitionNode, DoorwayData> createRoomGraph(PartitionNode root, ArrayList<PartitionNode> partitions, Random random)
-	{
+	private static DirectedGraph<PartitionNode, DoorwayData> createRoomGraph(PartitionNode root, ArrayList<PartitionNode> partitions, Random random) {
 		DirectedGraph<PartitionNode, DoorwayData> roomGraph = new DirectedGraph<PartitionNode, DoorwayData>();
 		HashMap<PartitionNode, IGraphNode<PartitionNode, DoorwayData>> roomsToGraph = new HashMap<PartitionNode, IGraphNode<PartitionNode, DoorwayData>>(2 * partitions.size());
 		
@@ -152,14 +131,12 @@ public class MazeDesigner
 		// Add all rooms to a graph
 		// Also add them to a map so we can associate rooms with their graph nodes
 		// The map is needed for linking graph nodes based on adjacent partitions
-		for (PartitionNode partition : partitions)
-		{
+		for (PartitionNode partition : partitions) {
 			roomsToGraph.put(partition, roomGraph.addNode(partition));
 		}
 		
 		// Add edges for each room
-		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes())
-		{
+		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes()) {
 			findDoorways(node, root, roomsToGraph, roomGraph);
 		}
 		
@@ -168,8 +145,7 @@ public class MazeDesigner
 	
 	private static void findDoorways(IGraphNode<PartitionNode, DoorwayData> roomNode, PartitionNode root,
 			HashMap<PartitionNode, IGraphNode<PartitionNode, DoorwayData>> roomsToGraph,
-			DirectedGraph<PartitionNode, DoorwayData> roomGraph)
-	{
+			DirectedGraph<PartitionNode, DoorwayData> roomGraph) {
 		// This function finds rooms adjacent to a specified room that could be connected
 		// to it through a doorway. Edges are added to the room graph to denote rooms that
 		// could be connected. The areas of their common bounds that could be carved
@@ -190,62 +166,43 @@ public class MazeDesigner
 		
 		int a, b, c;
 		int p, q, r;
-		int minXI, minYI, minZI;
-		int maxXI, maxYI, maxZI;
-		Point3D otherMin;
-		Point3D otherMax;
+		BlockPos minI;
+		BlockPos maxI;
+		BlockPos diff;
+		BlockPos otherMin;
+		BlockPos otherMax;
 		DoorwayData doorway;
 		IGraphNode<PartitionNode, DoorwayData> adjacentNode;
 		
 		PartitionNode room = roomNode.data();
-		Point3D minCorner = room.minCorner();
-		Point3D maxCorner = room.maxCorner();
+		BlockPos minCorner = room.minCorner();
+		BlockPos maxCorner = room.maxCorner();
 		
-		int minX = minCorner.getX();
-		int minY = minCorner.getY();
-		int minZ = minCorner.getZ();
+		BlockPos volume = room.volume();
 		
-		int maxX = maxCorner.getX();
-		int maxY = maxCorner.getY();
-		int maxZ = maxCorner.getZ();
-		
-		int width = room.width();
-		int height = room.height();
-		int length = room.length();
-		
-		if (maxZ < root.maxCorner().getZ())
-		{
+		if (maxCorner.getZ() < root.maxCorner().getZ()) {
 			// Check for adjacent rooms along the XY plane
-			detected = new boolean[width][height];
-			for (a = 0; a < width; a++)
-			{
-				for (b = 0; b < height; b++)
-				{
-					if (!detected[a][b])
-					{
-						adjacent = root.findPoint(minX + a, minY + b, maxZ + 1);
-						if (adjacent != null)
-						{
+			detected = new boolean[volume.getX()][volume.getY()];
+			for (a = 0; a < volume.getX(); a++) {
+				for (b = 0; b < volume.getY(); b++) {
+					if (!detected[a][b]) {
+						adjacent = root.findPoint(minCorner.add(a, b, 1));
+						if (adjacent != null) {
 							// Compute the dimensions available for a doorway
-							otherMin = adjacent.minCorner();
-							otherMax = adjacent.maxCorner();
-							minXI = Math.max(minX, otherMin.getX());
-							maxXI = Math.min(maxX, otherMax.getX());
-							minYI = Math.max(minY, otherMin.getY());
-							maxYI = Math.min(maxY, otherMax.getY());
+							minI = BlockPosHelper.max(minCorner, adjacent.minCorner());
+							maxI = BlockPosHelper.min(maxCorner, adjacent.maxCorner());
+							diff = maxI.subtract(minI);
 							
-							for (p = 0; p <= maxXI - minXI; p++)
-							{
-								for (q = 0; q <= maxYI - minYI; q++)
-								{
+							for (p = 0; p <= diff.getX(); p++) {
+								for (q = 0; q <= diff.getY(); q++) {
 									detected[p + a][q + b] = true;
 								}	
 							}
 							// Check if we meet the minimum dimensions needed for a doorway
-							if (maxXI - minXI + 1 >= MIN_SIDE && maxYI - minYI + 1 >= MIN_HEIGHT)
+							if (diff.add(1,0,0).getX() + 1 >= MIN_SIDE && maxYI - minYI + 1 >= MIN_HEIGHT)
 							{
-								otherMin = new Point3D(minXI, minYI, maxZ);
-								otherMax = new Point3D(maxXI, maxYI, maxZ + 1);
+								otherMin = new BlockPos(minXI, minYI, maxZ);
+								otherMax = new BlockPos(maxXI, maxYI, maxZ + 1);
 								doorway = new DoorwayData(otherMin, otherMax, DoorwayData.Z_AXIS);
 								adjacentNode = roomsToGraph.get(adjacent);
 								roomGraph.addEdge(roomNode, adjacentNode, doorway);
@@ -292,8 +249,8 @@ public class MazeDesigner
 							// Check if we meet the minimum dimensions needed for a doorway
 							if (maxYI - minYI + 1 >= MIN_HEIGHT && maxZI - minZI + 1 >= MIN_SIDE)
 							{
-								otherMin = new Point3D(maxX, minYI, minZI);
-								otherMax = new Point3D(maxX + 1, maxYI, maxZI);
+								otherMin = new BlockPos(maxX, minYI, minZI);
+								otherMax = new BlockPos(maxX + 1, maxYI, maxZI);
 								doorway = new DoorwayData(otherMin, otherMax, DoorwayData.X_AXIS);
 								adjacentNode = roomsToGraph.get(adjacent);
 								roomGraph.addEdge(roomNode, adjacentNode, doorway);
@@ -340,8 +297,8 @@ public class MazeDesigner
 							// Check if we meet the minimum dimensions needed for a doorway
 							if (maxXI - minXI + 1 >= MIN_SIDE && maxZI - minZI + 1 >= MIN_SIDE)
 							{
-								otherMin = new Point3D(minXI, maxY, minZI);
-								otherMax = new Point3D(maxXI, maxY + 1, maxZI);
+								otherMin = new BlockPos(minXI, maxY, minZI);
+								otherMax = new BlockPos(maxXI, maxY + 1, maxZI);
 								doorway = new DoorwayData(otherMin, otherMax, DoorwayData.Y_AXIS);
 								adjacentNode = roomsToGraph.get(adjacent);
 								roomGraph.addEdge(roomNode, adjacentNode, doorway);

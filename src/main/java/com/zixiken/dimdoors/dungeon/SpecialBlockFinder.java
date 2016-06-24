@@ -2,10 +2,13 @@ package com.zixiken.dimdoors.dungeon;
 
 import java.util.ArrayList;
 
-import com.zixiken.dimdoors.Point3D;
 import com.zixiken.dimdoors.schematic.Schematic;
 import com.zixiken.dimdoors.schematic.SchematicFilter;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 
 public class SpecialBlockFinder extends SchematicFilter {
 
@@ -13,94 +16,79 @@ public class SpecialBlockFinder extends SchematicFilter {
     private Block dimensionalDoor;
     private Block monolithSpawnMarker;
     private Block exitMarker;
-	private int entranceOrientation;
+	private EnumFacing entranceOrientation;
 	private Schematic schematic;
-	private Point3D entranceDoorLocation;
-	private ArrayList<Point3D> exitDoorLocations;
-	private ArrayList<Point3D> dimensionalDoorLocations;
-	private ArrayList<Point3D> monolithSpawnLocations;
+	private BlockPos entranceDoorLocation;
+	private ArrayList<BlockPos> exitDoorLocations;
+	private ArrayList<BlockPos> dimensionalDoorLocations;
+	private ArrayList<BlockPos> monolithSpawnLocations;
 	
-	public SpecialBlockFinder(Block warpDoor, Block dimensionalDoor, Block monolithSpawn, Block exitDoor)
-	{
+	public SpecialBlockFinder(Block warpDoor, Block dimensionalDoor, Block monolithSpawn, Block exitDoor) {
 		super("SpecialBlockFinder");
 		this.warpDoor = warpDoor;
         this.dimensionalDoor = dimensionalDoor;
         this.monolithSpawnMarker = monolithSpawn;
         this.exitMarker = exitDoor;
 		this.entranceDoorLocation = null;
-		this.entranceOrientation = 0;
-		this.exitDoorLocations = new ArrayList<Point3D>();
-		this.dimensionalDoorLocations = new ArrayList<Point3D>();
-		this.monolithSpawnLocations = new ArrayList<Point3D>();
+		this.entranceOrientation = EnumFacing.SOUTH;
+		this.exitDoorLocations = new ArrayList<BlockPos>();
+		this.dimensionalDoorLocations = new ArrayList<BlockPos>();
+		this.monolithSpawnLocations = new ArrayList<BlockPos>();
 		this.schematic = null;
 	}
 	
-	public int getEntranceOrientation() {
+	public EnumFacing getEntranceOrientation() {
 		return entranceOrientation;
 	}
 
-	public Point3D getEntranceDoorLocation() {
+	public BlockPos getEntranceDoorLocation() {
 		return entranceDoorLocation;
 	}
 
-	public ArrayList<Point3D> getExitDoorLocations() {
+	public ArrayList<BlockPos> getExitDoorLocations() {
 		return exitDoorLocations;
 	}
 
-	public ArrayList<Point3D> getDimensionalDoorLocations() {
+	public ArrayList<BlockPos> getDimensionalDoorLocations() {
 		return dimensionalDoorLocations;
 	}
 
-	public ArrayList<Point3D> getMonolithSpawnLocations() {
+	public ArrayList<BlockPos> getMonolithSpawnLocations() {
 		return monolithSpawnLocations;
 	}
 	
 	@Override
-	protected boolean initialize(Schematic schematic, Block[] blocks, byte[] metadata)
-	{
+	protected boolean initialize(Schematic schematic, IBlockState[] state) {
 		this.schematic = schematic;
 		return true;
 	}
 	
 	@Override
-	protected boolean applyToBlock(int index, Block[] blocks, byte[] metadata)
-	{
+	protected boolean applyToBlock(int index, IBlockState[] state) {
 		int indexBelow;
 		int indexDoubleBelow;
 		
-		if (blocks[index] == monolithSpawnMarker)
-		{
+		if (state[index] == monolithSpawnMarker) {
 			monolithSpawnLocations.add(schematic.calculatePoint(index));
 			return true;
-		}
-		if (blocks[index] == dimensionalDoor)
-		{
+		} if (state[index] == dimensionalDoor) {
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == dimensionalDoor)
-			{
+			if (indexBelow >= 0 && state[indexBelow] == dimensionalDoor) {
 				dimensionalDoorLocations.add(schematic.calculatePoint(index));
 				return true;
-			}
-			else
-			{
+			} else {
 				return false;
 			}
-		}
-		if (blocks[index] == warpDoor)
-		{
+		} if (state[index] == warpDoor) {
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == warpDoor)
-			{
+			if (indexBelow >= 0 && state[indexBelow] == warpDoor) {
 				indexDoubleBelow = schematic.calculateIndexBelow(indexBelow);
-				if (indexDoubleBelow >= 0 && blocks[indexDoubleBelow] == exitMarker)
-				{
+				if (indexDoubleBelow >= 0 && state[indexDoubleBelow] == exitMarker) {
 					exitDoorLocations.add(schematic.calculatePoint(index));
 					return true;
-				}
-				else if (entranceDoorLocation == null)
-				{
+				} else if (entranceDoorLocation == null) {
 					entranceDoorLocation = schematic.calculatePoint(index);
-					entranceOrientation = (metadata[indexBelow] & 3);
+					entranceOrientation = state[indexBelow].getValue(BlockDoor.FACING);
 					return true;
 				}
 			}
@@ -109,8 +97,7 @@ public class SpecialBlockFinder extends SchematicFilter {
 	}
 	
 	@Override
-	protected boolean terminates()
-	{
+	protected boolean terminates() {
 		return false;
 	}
 }

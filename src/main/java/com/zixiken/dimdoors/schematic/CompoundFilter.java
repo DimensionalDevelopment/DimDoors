@@ -1,6 +1,7 @@
 package com.zixiken.dimdoors.schematic;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 
 import java.util.ArrayList;
 
@@ -8,8 +9,7 @@ public class CompoundFilter extends SchematicFilter {
 
 	private ArrayList<SchematicFilter> filters;
 	
-	public CompoundFilter()
-	{
+	public CompoundFilter() {
 		super("CompoundFilter");
 		filters = new ArrayList<SchematicFilter>();
 	}
@@ -20,12 +20,9 @@ public class CompoundFilter extends SchematicFilter {
 	}
 	
 	@Override
-	protected boolean initialize(Schematic schematic,Block[] blocks, byte[] metadata)
-	{
-		for (SchematicFilter filter : filters)
-		{
-			if (!filter.initialize(schematic, blocks, metadata))
-			{
+	protected boolean initialize(Schematic schematic, IBlockState[] metadata) {
+		for (SchematicFilter filter : filters) {
+			if (!filter.initialize(schematic, metadata)) {
 				return false;
 			}
 		}
@@ -33,12 +30,9 @@ public class CompoundFilter extends SchematicFilter {
 	}
 	
 	@Override
-	protected boolean finish()
-	{
-		for (SchematicFilter filter : filters)
-		{
-			if (!filter.finish())
-			{
+	protected boolean finish() {
+		for (SchematicFilter filter : filters) {
+			if (!filter.finish()) {
 				return false;
 			}
 		}
@@ -46,12 +40,9 @@ public class CompoundFilter extends SchematicFilter {
 	}
 	
 	@Override
-	protected boolean applyToBlock(int index, Block[] blocks, byte[] metadata)
-	{
-		for (SchematicFilter filter : filters)
-		{
-			if (filter.applyToBlock(index, blocks, metadata))
-			{
+	protected boolean applyToBlock(int index, IBlockState[] state) {
+		for (SchematicFilter filter : filters) {
+			if (filter.applyToBlock(index, state)) {
 				return filter.terminates();
 			}
 		}

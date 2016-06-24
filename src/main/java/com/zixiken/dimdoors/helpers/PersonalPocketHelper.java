@@ -1,6 +1,5 @@
 package com.zixiken.dimdoors.helpers;
 
-public class PersonalPocketHelper
-{
+public class PersonalPocketHelper {
 
 }

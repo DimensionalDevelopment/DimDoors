@@ -1,58 +1,51 @@
 package com.zixiken.dimdoors.schematic;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 
 public class SchematicFilter {
 
 	private String name;
 	
-	protected SchematicFilter(String name)
-	{
+	protected SchematicFilter(String name) {
 		this.name = name;
 	}
 	
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 	
-	public boolean apply(Schematic schematic, Block[] blocks, byte[] metadata)
+	public boolean apply(Schematic schematic, IBlockState[] state)
 	{
-		if (!initialize(schematic, blocks, metadata))
+		if (!initialize(schematic, state))
 			return false;
 		
-		for (int index = 0; index < blocks.length; index++)
-		{
-			if (applyToBlock(index, blocks, metadata) && terminates())
+		for (int index = 0; index < state.length; index++) {
+			if (applyToBlock(index, state) && terminates())
 				return false;
 		}
 		
 		return finish();
 	}
 	
-	protected boolean initialize(Schematic schematic, Block[] blocks, byte[] metadata)
-	{
+	protected boolean initialize(Schematic schematic, IBlockState[] state) {
 		return true;
 	}
 	
-	protected boolean applyToBlock(int index, Block[] blocks, byte[] metadata)
-	{
+	protected boolean applyToBlock(int index, IBlockState[] state) {
 		return true;
 	}
 	
-	protected boolean finish()
-	{
+	protected boolean finish() {
 		return true;
 	}
 	
-	protected boolean terminates()
-	{
+	protected boolean terminates() {
 		return true;
 	}
 	
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return name;
 	}
 }

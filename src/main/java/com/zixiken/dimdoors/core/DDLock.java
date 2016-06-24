@@ -42,16 +42,12 @@ public class DDLock
 	
 	/**
 	 * see if we could unlock this door if it where locked.
-	 * @param link
 	 * @param itemStack
 	 * @return
 	 */
-	public boolean doesKeyUnlock(ItemStack itemStack)
-	{
-		for(int key :getKeys(itemStack))
-		{
-			if(this.lockKey == key)
-			{
+	public boolean doesKeyUnlock(ItemStack itemStack) {
+		for(int key :getKeys(itemStack)) {
+			if(this.lockKey == key) {
 				return true;
 			}
 		}
@@ -60,11 +56,10 @@ public class DDLock
 	
 	/**
 	 * Tries to open this lock
-	 * @param item
+	 * @param itemStack
 	 * @return
 	 */
-	public boolean tryToOpen(ItemStack itemStack)
-	{
+	public boolean tryToOpen(ItemStack itemStack) {
 		return (!this.lockState)||this.doesKeyUnlock(itemStack);
 	}
 	
@@ -78,10 +73,8 @@ public class DDLock
 	 * gets all the keys stored on a single key item
 	 * @return
 	 */
-	public static int[] getKeys(ItemStack itemStack)
-	{
-		if (!itemStack.hasTagCompound())
-		{
+	public static int[] getKeys(ItemStack itemStack) {
+		if (!itemStack.hasTagCompound()) {
 			initNBTTags(itemStack);
 		}
 		return itemStack.getTagCompound().getIntArray("DDKeys");
@@ -92,8 +85,7 @@ public class DDLock
 	 * @return 
 	 * @return
 	 */
-	public static void addKeys(ItemStack itemStack, int[] keysToAdd)
-	{
+	public static void addKeys(ItemStack itemStack, int[] keysToAdd) {
 		int[] oldKeys = DDLock.getKeys(itemStack);
 		int[] newKeys = new int[keysToAdd.length+oldKeys.length];
 		System.arraycopy(oldKeys, 0, newKeys, 0, oldKeys.length);
@@ -107,10 +99,8 @@ public class DDLock
 	 * @return 
 	 * @return
 	 */
-	public static void setKeys(ItemStack itemStack, int[] keys)
-	{
-		if (!itemStack.hasTagCompound())
-		{
+	public static void setKeys(ItemStack itemStack, int[] keys) {
+		if (!itemStack.hasTagCompound()) {
 			initNBTTags(itemStack);
 		}
 		NBTTagCompound tag = itemStack.getTagCompound();
@@ -122,8 +112,7 @@ public class DDLock
 	 * Gives the key a new NBTTag
 	 * @param itemStack
 	 */
-	public static void initNBTTags(ItemStack itemStack)
-	{
+	public static void initNBTTags(ItemStack itemStack) {
 		itemStack.setTagCompound(new NBTTagCompound());
 		NBTTagCompound tag = itemStack.getTagCompound();
 		tag.setIntArray("DDKeys", new int[0]);
@@ -144,20 +133,16 @@ public class DDLock
 		return false;
 	}
 	
-	public static boolean isItemKey(ItemStack key)
-	{
+	public static boolean isItemKey(ItemStack key) {
 		return key.getItem() instanceof ItemDDKey;
 	}
 	
 	
 
-	protected static DDLock generateLockKeyPair(ItemStack itemStack, int lockKey2)
-	{
+	protected static DDLock generateLockKeyPair(ItemStack itemStack, int lockKey2) {
 		itemStack.getTagCompound().setBoolean("HasCreatedLock", true);
 		DDLock.setKeys(itemStack, new int[]{lockKey2});
 		return new DDLock(true, lockKey2);
-		
-
 	}
 	
 }

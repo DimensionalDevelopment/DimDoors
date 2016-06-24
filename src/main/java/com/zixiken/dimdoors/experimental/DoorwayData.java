@@ -1,6 +1,7 @@
 package com.zixiken.dimdoors.experimental;
 
 import com.zixiken.dimdoors.Point3D;
+import net.minecraft.util.BlockPos;
 
 public class DoorwayData
 {
@@ -8,23 +9,23 @@ public class DoorwayData
 	public static final char Y_AXIS = 'Y';
 	public static final char Z_AXIS = 'Z';
 	
-	private Point3D minCorner;
-	private Point3D maxCorner;
+	private BlockPos minCorner;
+	private BlockPos maxCorner;
 	private char axis;
 	
-	public DoorwayData(Point3D minCorner, Point3D maxCorner, char axis)
+	public DoorwayData(BlockPos minCorner, BlockPos maxCorner, char axis)
 	{
 		this.minCorner = minCorner;
 		this.maxCorner = maxCorner;
 		this.axis = axis;
 	}
 	
-	public Point3D minCorner()
+	public BlockPos minCorner()
 	{
 		return minCorner;
 	}
 	
-	public Point3D maxCorner()
+	public BlockPos maxCorner()
 	{
 		return maxCorner;
 	}
@@ -34,18 +35,7 @@ public class DoorwayData
 		return axis;
 	}
 	
-	public int width()
-	{
-		return (maxCorner.getX() - minCorner.getX() + 1);
-	}
-	
-	public int height()
-	{
-		return (maxCorner.getY() - minCorner.getY() + 1);
-	}
-	
-	public int length()
-	{
-		return (maxCorner.getZ() - minCorner.getZ() + 1);
+	public BlockPos volume() {
+		return maxCorner.subtract(minCorner).add(1,1,1);
 	}
 }

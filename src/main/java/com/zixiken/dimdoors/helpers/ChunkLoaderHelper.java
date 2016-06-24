@@ -65,8 +65,8 @@ public class ChunkLoaderHelper implements LoadingCallback
 	public static void forcePocketChunks(NewDimData pocket, Ticket ticket)
 	{
 		BoundingBox bounds = PocketBuilder.calculateDefaultBounds(pocket);
-		Point3D minCorner = bounds.minCorner();
-		Point3D maxCorner = bounds.maxCorner();
+		BlockPos minCorner = bounds.minCorner();
+		BlockPos maxCorner = bounds.maxCorner();
 		int minX = minCorner.getX() >> 4;
 		int minZ = minCorner.getZ() >> 4;
 		int maxX = maxCorner.getX() >> 4;

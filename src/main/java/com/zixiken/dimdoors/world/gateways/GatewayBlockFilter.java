@@ -1,10 +1,10 @@
 package com.zixiken.dimdoors.world.gateways;
 
-import com.zixiken.dimdoors.Point3D;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.schematic.Schematic;
 import com.zixiken.dimdoors.schematic.SchematicFilter;
 import net.minecraft.block.Block;
+import net.minecraft.util.BlockPos;
 
 public class GatewayBlockFilter extends SchematicFilter {
 
@@ -14,7 +14,7 @@ public class GatewayBlockFilter extends SchematicFilter {
 
 	private int entranceOrientation;
 	private Schematic schematic;
-	private Point3D entranceDoorLocation;
+	private BlockPos entranceDoorLocation;
 
 	public GatewayBlockFilter()
 	{
@@ -28,7 +28,7 @@ public class GatewayBlockFilter extends SchematicFilter {
 		return entranceOrientation;
 	}
 
-	public Point3D getEntranceDoorLocation() {
+	public BlockPos getEntranceDoorLocation() {
 		return entranceDoorLocation;
 	}
 	
