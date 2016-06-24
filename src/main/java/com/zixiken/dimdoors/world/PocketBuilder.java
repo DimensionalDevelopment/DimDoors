@@ -7,6 +7,8 @@ import com.zixiken.dimdoors.core.DimLink;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -44,21 +46,17 @@ public class PocketBuilder
 
 	private PocketBuilder() { }
 
-	private static boolean buildDungeonPocket(DungeonData dungeon, NewDimData dimension, DimLink link, DungeonSchematic schematic, World world, DDProperties properties)
-	{
+	private static boolean buildDungeonPocket(DungeonData dungeon, NewDimData dimension, DimLink link, DungeonSchematic schematic, World world, DDProperties properties) {
 		//Calculate the destination point
 		DungeonPackConfig packConfig = dungeon.dungeonType().Owner != null ? dungeon.dungeonType().Owner.getConfig() : null;
 		Point4D source = link.source();
-		int orientation = link.orientation();
-		Point3D destination;
+		EnumFacing orientation = link.orientation();
+		BlockPos destination;
 
-		if (packConfig != null && packConfig.doDistortDoorCoordinates())
-		{
+		if (packConfig != null && packConfig.doDistortDoorCoordinates()) {
 			destination = calculateNoisyDestination(source, dimension, dungeon, orientation);
-		}
-		else
-		{
-			destination = new Point3D(source.getX(), source.getY(), source.getZ());
+		} else {
+			destination = new BlockPos(source.getX(), source.getY(), source.getZ());
 		}
 
 		destination.setY( yCoordHelper.adjustDestinationY(destination.getY(), world.getHeight(), schematic.getEntranceDoorLocation().getY(), schematic.getHeight()) );
@@ -67,7 +65,7 @@ public class PocketBuilder
 		schematic.copyToWorld(world, destination, orientation, link, random, properties, false);
 
 		//Finish up destination initialization
-		dimension.initializeDungeon(destination.getX(), destination.getY(), destination.getZ(), orientation, link, dungeon);
+		dimension.initializeDungeon(destination, orientation, link, dungeon);
 		dimension.setFilled(true);
 		
 		return true;    
@@ -160,7 +158,7 @@ public class PocketBuilder
 	}
 
 
-	private static Point3D calculateNoisyDestination(Point4D source, NewDimData dimension, DungeonData dungeon, int orientation)
+	private static BlockPos calculateNoisyDestination(Point4D source, NewDimData dimension, DungeonData dungeon, int orientation)
 	{
 		int depth = NewDimData.calculatePackDepth(dimension.parent(), dungeon);
 		int forwardNoise = MathHelper.getRandomIntegerInRange(random, 10 * depth, 130 * depth);
@@ -169,9 +167,9 @@ public class PocketBuilder
 		//Rotate the link destination noise to point in the same direction as the door exit
 		//and add it to the door's location. Use EAST as the reference orientation since linkDestination
 		//is constructed as if pointing East.
-		Point3D linkDestination = new Point3D(forwardNoise, 0, sidewaysNoise);
-		Point3D sourcePoint = new Point3D(source.getX(), source.getY(), source.getZ());
-		Point3D zeroPoint = new Point3D(0, 0, 0);
+		BlockPos linkDestination = new BlockPos(forwardNoise, 0, sidewaysNoise);
+		BlockPos sourcePoint = new BlockPos(source.getX(), source.getY(), source.getZ());
+		BlockPos zeroPoint = new BlockPos(0, 0, 0);
 		BlockRotator.transformPoint(linkDestination, zeroPoint, orientation - BlockRotator.EAST_DOOR_METADATA, sourcePoint);
 		return linkDestination;
 	}
@@ -450,8 +448,8 @@ public class PocketBuilder
 		}
 
 
-		Point3D center = new Point3D(x - wallThickness + 1 + (size / 2), y - wallThickness - 1 + (size / 2), z);
-		Point3D door = new Point3D(x, y, z);
+		BlockPos center = new BlockPos(x - wallThickness + 1 + (size / 2), y - wallThickness - 1 + (size / 2), z);
+		BlockPos door = new BlockPos(x, y, z);
 		BlockRotator.transformPoint(center, door, orientation - BlockRotator.EAST_DOOR_METADATA, door);
 
 		//Build the outer layer of Eternal Fabric

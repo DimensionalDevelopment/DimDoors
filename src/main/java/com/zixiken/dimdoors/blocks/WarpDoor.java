@@ -4,8 +4,10 @@ import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.DimDoors;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.core.NewDimData;
 
@@ -19,15 +21,12 @@ public class WarpDoor extends BaseDimDoor {
 	}
 
 	@Override
-	public void placeLink(World world, int x, int y, int z) 
-	{
-		if (!world.isRemote && world.getBlock(x, y - 1, z) == this)
-		{
+	public void placeLink(World world, BlockPos pos) {
+		if (!world.isRemote && world.getBlockState(pos.down()) == this) {
 			NewDimData dimension = PocketManager.createDimensionData(world);
-			DimLink link = dimension.getLink(x, y, z);
-			if (link == null && dimension.isPocketDimension())
-			{
-				dimension.createLink(x, y, z, LinkType.SAFE_EXIT,world.getBlockMetadata(x, y - 1, z));
+			DimLink link = dimension.getLink(pos);
+			if (link == null && dimension.isPocketDimension()) {
+				dimension.createLink(pos, LinkType.SAFE_EXIT,world. getBlockState(pos.down()).getValue(BlockDoor.FACING));
 			}
 		}
 	}

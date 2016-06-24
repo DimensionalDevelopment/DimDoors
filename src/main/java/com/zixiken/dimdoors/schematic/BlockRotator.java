@@ -3,7 +3,10 @@ package com.zixiken.dimdoors.schematic;
 import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.*;
 import com.zixiken.dimdoors.Point3D;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,7 +78,7 @@ public class BlockRotator
         hasOrientations.put(DimDoors.personalDimDoor, true);
 	}
 
-	public static int transformMetadata(int metadata, int turns, Block block)
+	public static IBlockState transformMetadata(IBlockState state, int turns, Block block)
 	{
 		//I changed rotations to reduce the monstrous code we had. It might be
 		//slightly less efficient, but it's easier to maintain for now. ~SenseiKiwi
@@ -88,14 +91,14 @@ public class BlockRotator
 		{
 			while (turns > 0)
 			{
-				metadata = rotateMetadataBy90(metadata, block);
+				state = rotateMetadataBy90(state, block);
 				turns--;
 			}
 		}
-		return metadata;
+		return state;
 	}
 	
-	private static int rotateMetadataBy90(int metadata, Block block)
+	private static IBlockState rotateMetadataBy90(IBlockState state, Block block)
 	{
 		//TODO: Replace this horrible function with something prettier. We promise we will for the next version,
 		//after switching to MC 1.6. PADRE, PLEASE FORGIVE OUR SINS.
@@ -501,7 +504,7 @@ public class BlockRotator
 		return metadata;
 	}
 	
-	public static void transformPoint(Point3D position, Point3D srcOrigin, int angle, Point3D destOrigin)
+	public static void transformPoint(BlockPos position, BlockPos srcOrigin, EnumFacing angle, BlockPos destOrigin)
 	{
 		//This function receives a position (e.g. point in schematic space), translates it relative
 		//to a source coordinate system (e.g. the point that will be the center of a schematic),
@@ -512,9 +515,7 @@ public class BlockRotator
 		
 		//Position is only overwritten at the end, so it's okay to provide it as srcOrigin or destOrigin as well.
 		
-		int tx = position.getX() - srcOrigin.getX();
-		int ty = position.getY() - srcOrigin.getY();
-		int tz = position.getZ() - srcOrigin.getZ();
+		BlockPos t = position.subtract(srcOrigin);
 		
 		//"int angle" specifies a rotation consistent with Minecraft's orientation system.
 		//That means each increment of 1 in angle would be a 90-degree clockwise turn.
@@ -522,40 +523,32 @@ public class BlockRotator
 		//calculated by (B - A).
 
 		//Adjust angle into the expected range
-		if (angle < 0)
-		{
-			int correction = -(angle / 4);
-			angle = angle + 4 * (correction + 1);
-		}
-		angle = angle % 4;
-		
+
 		int rx;
 		int rz;
-		switch (angle)
-		{
-			case 0: //No rotation
-				rx = tx;
-				rz = tz;
+
+		switch (angle) {
+			case SOUTH: //No rotation
+				rx = t.getX();
+				rz = t.getZ();
 				break;
-			case 1: //90 degrees clockwise
-				rx = -tz;
-				rz = tx;
+			case WEST: //90 degrees clockwise
+				rx = -t.getZ();
+				rz = t.getX();
 				break;
-			case 2: //180 degrees
-				rx = -tx;
-				rz = -tz;
+			case NORTH: //180 degrees
+				rx = -t.getX();
+				rz = -t.getZ();
 				break;
-			case 3: //270 degrees clockwise
-				rx = tz;
-				rz = -tx;
+			case EAST: //270 degrees clockwise
+				rx = t.getZ();
+				rz = -t.getX();
 				
 				break;
 			default: //This should never happen
 				throw new IllegalStateException("Invalid angle value. This should never happen!");
 		}
 		
-		position.setX( rx + destOrigin.getX() );
-		position.setY( ty + destOrigin.getY() );
-		position.setZ( rz + destOrigin.getZ() );
+		position = new BlockPos(rx + destOrigin.getX(), t.getY() + destOrigin.getY(), rz + destOrigin.getZ() );
 	}
 }

@@ -77,9 +77,9 @@ public class OldSaveImporter
             	Point4D source = new Point4D(link.locXCoord,link.locYCoord,link.locZCoord,link.locDimID);
             	Point4D destintion = new Point4D(link.destXCoord,link.destYCoord,link.destZCoord,link.destDimID);
             	PackedLinkTail tail = new PackedLinkTail(destintion, LinkType.NORMAL);
-            	List<Point3D> children = new ArrayList<Point3D>();
+            	List<BlockPos> children = new ArrayList<BlockPos>();
 
-            	PackedLinkData newPackedLink = new PackedLinkData(source, new Point3D(-1,-1,-1), tail, link.linkOrientation,children, null);
+            	PackedLinkData newPackedLink = new PackedLinkData(source, new BlockPos(-1,-1,-1), tail, link.linkOrientation,children, null);
             	
             	newPackedLinkData.add(newPackedLink);
             	allPackedLinks.add(newPackedLink);
@@ -104,11 +104,11 @@ public class OldSaveImporter
             }
             if(data.isPocket)
             {
-                dim = new PackedDimData(data.dimID, data.depth, data.depth, data.exitDimLink.locDimID, data.exitDimLink.locDimID, 0, type, data.hasBeenFilled, null, new Point3D(0,64,0), childDims, newPackedLinkData, null);
+                dim = new PackedDimData(data.dimID, data.depth, data.depth, data.exitDimLink.locDimID, data.exitDimLink.locDimID, 0, type, data.hasBeenFilled, null, new BlockPos(0,64,0), childDims, newPackedLinkData, null);
             }
             else
             {
-                dim = new PackedDimData(data.dimID, data.depth, data.depth, data.dimID, data.dimID, 0, type, data.hasBeenFilled, null, new Point3D(0,64,0), childDims, newPackedLinkData, null);
+                dim = new PackedDimData(data.dimID, data.depth, data.depth, data.dimID, data.dimID, 0, type, data.hasBeenFilled, null, new BlockPos(0,64,0), childDims, newPackedLinkData, null);
             }
             newPackedDimData.put(dim.ID,dim);
         }

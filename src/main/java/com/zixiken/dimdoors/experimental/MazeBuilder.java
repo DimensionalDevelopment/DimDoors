@@ -4,19 +4,18 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import com.zixiken.dimdoors.Point3D;
 
-public class MazeBuilder
-{
+public class MazeBuilder {
 	private MazeBuilder() { }
 	
-	public static void generate(World world, int x, int y, int z, Random random)
-	{
+	public static void generate(World world, int x, int y, int z, Random random) {
 		MazeDesign design = MazeDesigner.generate(random);
-		Point3D offset = new Point3D(x - design.width() / 2, y - design.height() - 1, z - design.length() / 2);
+		BlockPos offset = new BlockPos(x - design.width() / 2, y - design.height() - 1, z - design.length() / 2);
 		SphereDecayOperation decay = new SphereDecayOperation(random, Blocks.air, 0, Blocks.stonebrick, 2);
 		
 		buildRooms(design.getRoomGraph(), world, offset);
@@ -28,12 +27,12 @@ public class MazeBuilder
 	}
 	
 	private static void applyRandomDestruction(MazeDesign design, World world,
-			Point3D offset, SphereDecayOperation decay, Random random)
+			BlockPos offset, SphereDecayOperation decay, Random random)
 	{
 		//final int DECAY_BOX_SIZE = 8  
 	}
 
-	private static void buildRooms(DirectedGraph<PartitionNode, DoorwayData> roomGraph, World world, Point3D offset)
+	private static void buildRooms(DirectedGraph<PartitionNode, DoorwayData> roomGraph, World world, BlockPos offset)
 	{
 		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes())
 		{
@@ -43,10 +42,10 @@ public class MazeBuilder
 	}
 	
 	private static void carveDoorways(DirectedGraph<PartitionNode, DoorwayData> roomGraph, World world,
-			Point3D offset, SphereDecayOperation decay, Random random)
+			BlockPos offset, SphereDecayOperation decay, Random random)
 	{	
 		char axis;
-		Point3D lower;
+		BlockPos lower;
 		DoorwayData doorway;
 		
 		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes())
@@ -168,7 +167,7 @@ public class MazeBuilder
 	}
 
 	
-	private static void buildBox(World world, Point3D offset, Point3D minCorner, Point3D maxCorner, Block block, int metadata)
+	private static void buildBox(World world, BlockPos offset, BlockPos minCorner, BlockPos maxCorner, Block block, int metadata)
 	{
 		int minX = minCorner.getX() + offset.getX();
 		int minY = minCorner.getY() + offset.getY();

@@ -2,42 +2,36 @@ package com.zixiken.dimdoors.dungeon;
 
 import net.minecraft.block.Block;
 import com.zixiken.dimdoors.schematic.SchematicFilter;
+import net.minecraft.block.state.IBlockState;
 
 import java.util.List;
 
 public class ModBlockFilter extends SchematicFilter {
 
 	private List<Block> exceptions;
-	private Block replacementBlock;
-	private byte replacementMetadata;
+	private IBlockState replacementState;
 	
-	public ModBlockFilter(List<Block> exceptions, Block replacementBlock, byte replacementMetadata)
+	public ModBlockFilter(List<Block> exceptions, IBlockState state)
 	{
 		super("ModBlockFilter");
 		this.exceptions = exceptions;
-		this.replacementBlock = replacementBlock;
-		this.replacementMetadata = replacementMetadata;
+		this.replacementState = state;
 	}
 	
 	@Override
-	protected boolean applyToBlock(int index, Block[] blocks, byte[] metadata)
-	{
+	protected boolean applyToBlock(int index, IBlockState[] state) {
 		int k;
-		Block current = blocks[index];
-		if (!Block.blockRegistry.getNameForObject(current).startsWith("minecraft:"))
-		{
+		Block current = state[index].getBlock();
+		if (!Block.blockRegistry.getNameForObject(current).getResourcePath().startsWith("minecraft:")) {
 			//This might be a mod block. Check if an exception exists.
-			for (k = 0; k < exceptions.size(); k++)
-			{
-				if (current == exceptions.get(k))
-				{
+			for (k = 0; k < exceptions.size(); k++) {
+				if (current == exceptions.get(k)) {
 					//Exception found, not considered a mod block
 					return false;
 				}
 			}
 			//No matching exception found. Replace the block.
-			blocks[index] = replacementBlock;
-			metadata[index] = replacementMetadata;
+			state[index] = replacementState;
 			return true;
 		}
 		return false;

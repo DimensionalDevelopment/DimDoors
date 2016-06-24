@@ -17,6 +17,8 @@ import com.zixiken.dimdoors.world.PocketBuilder;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.item.EntityMinecart;
@@ -30,6 +32,8 @@ import net.minecraft.network.play.server.S1DPacketEntityEffect;
 import net.minecraft.network.play.server.S1FPacketSetExperience;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -37,8 +41,7 @@ import net.minecraftforge.common.DimensionManager;
 import com.zixiken.dimdoors.watcher.ClientDimData;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-public class DDTeleporter
-{
+public class DDTeleporter {
     private static final Random random = new Random();
     private static final int NETHER_DIMENSION_ID = -1;
     private static final int OVERWORLD_DIMENSION_ID = 0;
@@ -59,50 +62,45 @@ public class DDTeleporter
     /**
      * Checks if the destination supplied is safe (i.e. filled by any replaceable or non-opaque blocks)
      */
-    private static boolean checkDestination(WorldServer world, Point4D destination, int orientation)
-    {
+    private static boolean checkDestination(WorldServer world, Point4D destination, EnumFacing orientation) {
         int x = destination.getX();
         int y = destination.getY();
         int z = destination.getZ();
         Block blockTop;
         Block blockBottom;
-        Point3D point;
+        BlockPos point;
 
-        switch (orientation)
-        {
-            case 0:
-                point = new Point3D(x - 1, y - 1, z);
+        switch (orientation) {
+            case SOUTH:
+                point = new BlockPos(x - 1, y - 1, z);
                 break;
-            case 1:
-                point = new Point3D(x, y - 1, z - 1);
+            case WEST:
+                point = new BlockPos(x, y - 1, z - 1);
                 break;
-            case 2:
-                point =  new Point3D(x + 1, y - 1, z);
+            case NORTH:
+                point =  new BlockPos(x + 1, y - 1, z);
                 break;
-            case 3:
-                point =  new Point3D(x, y - 1, z + 1);
+            case EAST:
+                point =  new BlockPos(x, y - 1, z + 1);
                 break;
             default:
-                point =  new Point3D(x, y - 1, z);
+                point =  new BlockPos(x, y - 1, z);
                 break;
         }
-        blockBottom = world.getBlock(point.getX(), point.getY(), point.getZ());
-        blockTop = world.getBlock(point.getX(), point.getY() + 1, point.getZ());
 
-        if (blockBottom != null)
-        {
-            if (!blockBottom.isReplaceable(world, point.getX(), point.getY(), point.getZ()) && world.isBlockNormalCubeDefault(point.getX(), point.getY(), point.getZ(), false))
-            {
+        blockBottom = world.getBlockState(point).getBlock();
+        blockTop = world.getBlockState(point.up()).getBlock();
+
+        if (blockBottom != null) {
+            if (!blockBottom.isReplaceable(world, point) && world.isBlockNormalCube(point, false)) {
+                return false;
+            }
+        } if (blockTop != null) {
+            if (!blockTop.isReplaceable(world, point.up())) {
                 return false;
             }
         }
-        if (blockTop != null)
-        {
-            if (!blockTop.isReplaceable(world, point.getX(), point.getY() + 1, point.getZ()))
-            {
-                return false;
-            }
-        }
+
         return true;
     }
 
@@ -112,16 +110,16 @@ public class DDTeleporter
         int y = destination.getY();
         int z = destination.getZ();
 
-        int orientation;
+        EnumFacing orientation;
         if (checkOrientation)
         {
             orientation = getDestinationOrientation(destination, properties);
-            entity.rotationYaw = (orientation * 90) + 90;
+            entity.rotationYaw = (orientation.getIndex() * 90) + 90;
         }
         else
         {
             // Teleport the entity to the precise destination point
-            orientation = -1;
+            orientation = EnumFacing.SOUTH;
         }
 
         if (entity instanceof EntityPlayer)
@@ -148,8 +146,7 @@ public class DDTeleporter
                         break;
                 }
             }
-            else
-            {
+            else {
                 player.setPositionAndUpdate(x + 0.5, y - 1, z + 0.5);
             }
         }
@@ -217,29 +214,25 @@ public class DDTeleporter
         entity.setPosition(x, y, z);
     }
 
-    private static int getDestinationOrientation(Point4D door, DDProperties properties)
-    {
+    private static EnumFacing getDestinationOrientation(Point4D door, DDProperties properties) {
         World world = DimensionManager.getWorld(door.getDimension());
-        if (world == null)
-        {
+        if (world == null) {
             throw new IllegalStateException("The destination world should be loaded!");
         }
 
         //Check if the block below that point is actually a door
-        Block block = world.getBlock(door.getX(), door.getY() - 1, door.getZ());
-        if (block==null || !(block instanceof IDimDoor))
-        {
+        IBlockState block = world.getBlockState(door.toBlockPos().down());
+        if (block==null || !(block instanceof IDimDoor)) {
             //Return the pocket's orientation instead
             return PocketManager.createDimensionData(world).orientation();
         }
 
 
         //Return the orientation portion of its metadata
-        return world.getBlockMetadata(door.getX(), door.getY() - 1, door.getZ()) & 3;
+        return world.getBlockState(door.toBlockPos().down()).getValue(BlockDoor.FACING);
     }
 
-    public static Entity teleportEntity(Entity entity, Point4D destination, boolean checkOrientation)
-    {
+    public static Entity teleportEntity(Entity entity, Point4D destination, boolean checkOrientation) {
         if (entity == null)
         {
             throw new IllegalArgumentException("entity cannot be null.");
@@ -390,6 +383,7 @@ public class DDTeleporter
             // Let's try doing this down here in case this is what's killing NEI.
             FMLCommonHandler.instance().firePlayerChangedDimensionEvent((EntityPlayer) entity, oldWorld.provider.dimensionId, newWorld.provider.dimensionId);
         }
+
         DDTeleporter.placeInPortal(entity, newWorld, destination, properties, checkOrientation);
         return entity;
     }
@@ -591,7 +585,7 @@ public class DDTeleporter
                 return false;
             }
 
-            Point3D destination = yCoordHelper.findDropPoint(world, source.getX(), source.getY() + 1, source.getZ());
+            BlockPos destination = yCoordHelper.findDropPoint(world, source.getX(), source.getY() + 1, source.getZ());
             if (destination != null)
             {
                 current.root().setLinkDestination(link, destination.getX(), destination.getY(), destination.getZ());
@@ -707,9 +701,9 @@ public class DDTeleporter
         }
 
         int startY = source.getY() - 2;
-        Point3D destination;
-        Point3D locationUp = yCoordHelper.findSafeCubeUp(world, source.getX(), startY, source.getZ());
-        Point3D locationDown = yCoordHelper.findSafeCubeDown(world, source.getX(), startY, source.getZ());
+        BlockPos destination;
+        BlockPos locationUp = yCoordHelper.findSafeCubeUp(world, source.getX(), startY, source.getZ());
+        BlockPos locationDown = yCoordHelper.findSafeCubeDown(world, source.getX(), startY, source.getZ());
 
         if (locationUp == null)
         {

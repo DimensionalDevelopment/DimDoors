@@ -5,44 +5,39 @@ import java.io.*;
 import com.zixiken.dimdoors.Point3D;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 
 
 public final class Point4D implements Comparable<Point4D>
 {
 	
-	private final int x;
-	private final int y;
-	private final int z;
+	private final BlockPos pos;
 	private final int dimension;
 	
 	/**
 	 * 
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param pos
 	 * @param dimension
 	 */
-	public Point4D(int x, int y, int z, int dimension)
+	public Point4D(BlockPos pos, int dimension)
 	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.pos = pos;
 		this.dimension = dimension;
 	}
 
 	public int getX()
 	{
-		return x;
+		return pos.getX();
 	}
 
 	public int getY()
 	{
-		return y;
+		return pos.getY();
 	}
 
 	public int getZ()
 	{
-		return z;
+		return pos.getZ();
 	}
 
 	public int getDimension()
@@ -51,8 +46,7 @@ public final class Point4D implements Comparable<Point4D>
 	}
 	
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		//Time for some witchcraft.
 		//The code here is inspired by a discussion on Stack Overflow regarding hash codes for 3D.
 		//Source: http://stackoverflow.com/questions/9858376/hashcode-for-3d-integer-coordinates-with-high-spatial-coherence
@@ -67,69 +61,20 @@ public final class Point4D implements Comparable<Point4D>
 		
 		hash = 0;
 		index = 0;
-		for (bit = 0; bit < 8; bit++)
-		{
-			hash |= ((y >> bit) & 1) << index;
+		for (bit = 0; bit < 8; bit++) {
+			hash |= ((pos.getY() >> bit) & 1) << index;
 			index++;
-			hash |= ((x >> bit) & 1) << index;
+			hash |= ((pos.getX() >> bit) & 1) << index;
 			index++;
-			hash |= ((z >> bit) & 1) << index;
-			index++;
-		}
-		for (; bit < 12; bit++)
-		{
-			hash |= ((x >> bit) & 1) << index;
-			index++;
-			hash |= ((z >> bit) & 1) << index;
+			hash |= ((pos.getZ() >> bit) & 1) << index;
 			index++;
 		}
-		return hash;
-	}
-	
-	public long toSeed()
-	{
-		//Time for some witchcraft.
-		//The code here is inspired by a discussion on Stack Overflow regarding hash codes for 3D.
-		//Source: http://stackoverflow.com/questions/9858376/hashcode-for-3d-integer-coordinates-with-high-spatial-coherence
-		
-		//Use 8 bits from Y and 16 bits from X and Z. Mix in 8 bits from the destination dim ID too - that means
-		//even if you aligned two doors perfectly between two pockets, it's unlikely they would lead to the same dungeon.
-		//We map bits in reverse order to produce more varied RNG output for nearly-identical points. The reason is
-		//that Java's Random outputs the 32 MSBs of its internal state to produce its output. If the differences
-		//between two seeds are small (i.e. in the LSBs), then they will tend to produce similar random outputs anyway!
-		
-		//Only bother to assign the 48 least-significant bits since Random only takes those bits from its seed.
-		//NOTE: The casts to long are necessary to get the right results from the bit shifts!!!
-		
-		int bit;
-		int index;
-		long hash;
-		final int w = this.dimension;
-		final int x = this.x;
-		final int y = this.y;
-		final int z = this.z;
-		
-		hash = 0;
-		index = 48;
-		for (bit = 0; bit < 8; bit++)
-		{
-			hash |= (long) ((w >> bit) & 1) << index;
-			index--;
-			hash |= (long) ((x >> bit) & 1) << index;
-			index--;
-			hash |= (long) ((y >> bit) & 1) << index;
-			index--;
-			hash |= (long) ((z >> bit) & 1) << index;
-			index--;
+		for (; bit < 12; bit++) {
+			hash |= ((pos.getX() >> bit) & 1) << index;
+			index++;
+			hash |= ((pos.getZ() >> bit) & 1) << index;
+			index++;
 		}
-		for (; bit < 16; bit++)
-		{
-			hash |= (long) ((x >> bit) & 1) << index;
-			index--;
-			hash |= (long) ((z >> bit) & 1) << index;
-			index--;
-		}
-		
 		return hash;
 	}
 	
@@ -139,81 +84,64 @@ public final class Point4D implements Comparable<Point4D>
 		return equals((Point4D) obj);
 	}
 	
-	public Point3D toPoint3D()
-	{
-		return new Point3D(this.x, this.y, this.z);
+	public BlockPos toBlockPos() {
+		return new BlockPos(this.pos);
 	}
 	
-	public int[] toIntArray()
-	{
-		return new int[] {x, y, z, dimension};
-	}
-	
-	public boolean equals(Point4D other)
-	{
+	public boolean equals(Point4D other) {
 		if (this == other)
 			return true;
 		if (other == null)
 			return false;
-		
-		return (x == other.x && y == other.y && z == other.z && dimension == other.dimension);
+		return (pos.equals(other.pos) && dimension == other.dimension);
 	}
 
 	@Override
-	public int compareTo(Point4D other)
-	{
-		int diff = x - other.x;
-		if (diff != 0)
-			return diff;
-		diff = y - other.y;
-		if (diff != 0)
-			return diff;
-		diff = z - other.z;
-		if (diff != 0)
-			return diff;
+	public int compareTo(Point4D other) {
+		BlockPos diff = pos.subtract(other.pos);
+		if (diff.getX() != 0)
+			return diff.getX();
+		if (diff.getY() != 0)
+			return diff.getZ();
+		if (diff.getZ() != 0)
+			return diff.getZ();
 		return dimension - other.dimension;
 	}
 
 	@Override
 	public String toString()
 	{
-		return "(" + x + ", " + y + ", " + z + ", " + dimension + ")";
+		return "(" + pos + ", " + dimension + ")";
 	}
 
     public static void writeToNBT(Point4D point, NBTTagCompound tag) {
         if (point != null) {
-            tag.setInteger("X", point.x);
-            tag.setInteger("Y", point.y);
-            tag.setInteger("Z", point.z);
+            tag.setInteger("X", point.getX());
+            tag.setInteger("Y", point.getY());
+            tag.setInteger("Z", point.getZ());
             tag.setInteger("Dimension", point.dimension);
         }
     }
 
-	public static void write(Point4D point, ByteBuf stream) throws IOException
-	{
+	public static void write(Point4D point, ByteBuf stream) throws IOException {
 		stream.writeBoolean(point != null);
-		if (point != null)
-		{
-			stream.writeInt(point.x);
-			stream.writeInt(point.y);
-			stream.writeInt(point.z);
+		if (point != null) {
+			stream.writeInt(point.getX());
+			stream.writeInt(point.getY());
+			stream.writeInt(point.getZ());
 			stream.writeInt(point.dimension);
 		}
 	}
 	
-	public static Point4D read(ByteBuf stream) throws IOException
-	{
-		if (stream.readBoolean())
-		{
-			return new Point4D( stream.readInt(), stream.readInt(), stream.readInt(), stream.readInt() );
-		}
-		else
-		{
+	public static Point4D read(ByteBuf stream) throws IOException {
+		if (stream.readBoolean()) {
+			return new Point4D(new BlockPos(stream.readInt(), stream.readInt(), stream.readInt()), stream.readInt() );
+		} else {
 			return null;
 		}
 	}
 
     public static Point4D readFromNBT(NBTTagCompound tag) {
-        return new Point4D(tag.getInteger("X"), tag.getInteger("Y"), tag.getInteger("Z"), tag.getInteger("Dimension"));
+        return new Point4D(new BlockPos(tag.getInteger("X"), tag.getInteger("Y"), tag.getInteger("Z")), tag.getInteger("Dimension"));
     }
 }

@@ -175,11 +175,11 @@ public class BlockRift extends Block implements ITileEntityProvider {
 	private void destroyNearbyBlocks(World world, int x, int y, int z, Random random)
 	{
 		// Find reachable blocks that are vulnerable to rift damage (ignoring air, of course)
-		ArrayList<Point3D> targets = findReachableBlocks(world, x, y, z, BLOCK_DESTRUCTION_RANGE, false);
+		ArrayList<BlockPos> targets = findReachableBlocks(world, x, y, z, BLOCK_DESTRUCTION_RANGE, false);
 		
 		// For each block, randomly decide whether to destroy it.
 		// The randomness makes it so the destroyed area appears "noisy" if the rift is exposed to a large surface.
-		for (Point3D target : targets)
+		for (BlockPos target : targets)
 		{
 			if (random.nextInt(MAX_BLOCK_DESTRUCTION_CHANCE) < BLOCK_DESTRUCTION_CHANCE)
 			{
@@ -189,20 +189,20 @@ public class BlockRift extends Block implements ITileEntityProvider {
 		}
 	}
 	
-	private ArrayList<Point3D> findReachableBlocks(World world, int x, int y, int z, int range, boolean includeAir)
+	private ArrayList<BlockPos> findReachableBlocks(World world, int x, int y, int z, int range, boolean includeAir)
 	{
 		int searchVolume = (int) Math.pow(2 * range + 1, 3);
-		HashMap<Point3D, Integer> pointDistances = new HashMap<Point3D, Integer>(searchVolume);
-		Queue<Point3D> points = new LinkedList<Point3D>();
-		ArrayList<Point3D> targets = new ArrayList<Point3D>();
+		HashMap<BlockPos, Integer> pointDistances = new HashMap<BlockPos, Integer>(searchVolume);
+		Queue<BlockPos> points = new LinkedList<BlockPos>();
+		ArrayList<BlockPos> targets = new ArrayList<BlockPos>();
 		
 		// Perform a breadth-first search outwards from the point at which the rift is located.
 		// Record the distances of the points we visit to stop the search at its maximum range.
-		pointDistances.put(new Point3D(x, y, z), 0);
+		pointDistances.put(new BlockPos(x, y, z), 0);
 		addAdjacentBlocks(x, y, z, 0, pointDistances, points);
 		while (!points.isEmpty())
 		{
-			Point3D current = points.remove();
+			BlockPos current = points.remove();
 			int distance = pointDistances.get(current);
 			
 			// If the current block is air, continue searching. Otherwise, add the block to our list.
@@ -241,15 +241,15 @@ public class BlockRift extends Block implements ITileEntityProvider {
 		}
 	}
 	
-	private static void addAdjacentBlocks(int x, int y, int z, int distance, HashMap<Point3D, Integer> pointDistances, Queue<Point3D> points)
+	private static void addAdjacentBlocks(int x, int y, int z, int distance, HashMap<BlockPos, Integer> pointDistances, Queue<BlockPos> points)
 	{
-		Point3D[] neighbors = new Point3D[] {
-				new Point3D(x - 1, y, z),
-				new Point3D(x + 1, y, z),
-				new Point3D(x, y - 1, z),
-				new Point3D(x, y + 1, z),
-				new Point3D(x, y, z - 1),
-				new Point3D(x, y, z + 1)
+		BlockPos[] neighbors = new BlockPos[] {
+				new BlockPos(x - 1, y, z),
+				new BlockPos(x + 1, y, z),
+				new BlockPos(x, y - 1, z),
+				new BlockPos(x, y + 1, z),
+				new BlockPos(x, y, z - 1),
+				new BlockPos(x, y, z + 1)
 		};
 		for (int index = 0; index < neighbors.length; index++)
 		{
@@ -268,13 +268,13 @@ public class BlockRift extends Block implements ITileEntityProvider {
 		Point4D source = parent.source();
 		
 		// Find reachable blocks that are vulnerable to rift damage and include air
-		ArrayList<Point3D> targets = findReachableBlocks(world, source.getX(), source.getY(), source.getZ(),
+		ArrayList<BlockPos> targets = findReachableBlocks(world, source.getX(), source.getY(), source.getZ(),
 				RIFT_SPREAD_RANGE, true);
 		
 		if (!targets.isEmpty())
 		{
 			// Choose randomly from among the possible locations where we can spawn a new rift
-			Point3D target = targets.get( random.nextInt(targets.size()) );
+			BlockPos target = targets.get( random.nextInt(targets.size()) );
 			x = target.getX();
 			y = target.getY();
 			z = target.getZ();
@@ -310,7 +310,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 	{
 
 		
-		 ArrayList<Point3D> targets=findReachableBlocks(world, x, y, z, 2, false);
+		 ArrayList<BlockPos> targets=findReachableBlocks(world, x, y, z, 2, false);
 		
 		
 		TileEntityRift tile = (TileEntityRift)world.getTileEntity(x, y, z);
