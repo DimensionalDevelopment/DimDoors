@@ -15,6 +15,8 @@ public class BlockRenderManager {
         register(DimDoors.blockDimWall);
         register(DimDoors.blockDimWall, 1, "Ancient");
         register(DimDoors.blockDimWall, 2, "Altered");
+
+        register(DimDoors.blockDimWallPerm);
     }
 
     public static void addModelVariants() {

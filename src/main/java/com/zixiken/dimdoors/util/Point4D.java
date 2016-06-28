@@ -2,14 +2,12 @@ package com.zixiken.dimdoors.util;
 
 import java.io.*;
 
-import com.zixiken.dimdoors.Point3D;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 
 
-public final class Point4D implements Comparable<Point4D>
-{
+public final class Point4D implements Comparable<Point4D> {
 	
 	private final BlockPos pos;
 	private final int dimension;
