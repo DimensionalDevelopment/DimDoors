@@ -14,10 +14,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.client.PrivatePocketRender;
 import net.minecraftforge.fml.relauncher.Side;
@@ -52,17 +53,17 @@ public class BlockDimWall extends Block {
 	protected BlockState createBlockState() {return new BlockState(this, TYPE);}
 
 	@Override
-	public float getBlockHardness(World world, int x, int y, int z) {
-		if (world.getBlockMetadata(x, y, z) != 1) return this.blockHardness;
+	public float getBlockHardness(World world, BlockPos pos) {
+		if (world.getBlockState(pos).getValue(TYPE) != 1) return this.blockHardness;
 		else return SUPER_HIGH_HARDNESS;
 	}
-	
+
 	@Override
-    public float getExplosionResistance(Entity entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ) {
-		if (world.getBlockMetadata(x, y, z) != 1)
-			return super.getExplosionResistance(entity, world, x, y, z, explosionX, explosionY, explosionZ);
-		else return SUPER_EXPLOSION_RESISTANCE;
-    }
+	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
+		if(world.getBlockState(pos).getValue(TYPE) != 1)
+			return super.getExplosionResistance(world, pos, exploder, explosion);
+        else return SUPER_EXPLOSION_RESISTANCE;
+	}
 	
 	public int getRenderType()
     {
@@ -99,36 +100,22 @@ public class BlockDimWall extends Block {
     {
         return 0;
     }
-   
+
     /**
      * replaces the block clicked with the held block, instead of placing the block on top of it. Shift click to disable. 
      */
     @Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityPlayer, int par6, float par7, float par8, float par9) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
     	//Check if the metadata value is 0 -- we don't want the user to replace Ancient Fabric
-        if (entityPlayer.getCurrentEquippedItem() != null && world.getBlockMetadata(x, y, z) != 1)
-        {
-        	Item playerEquip = entityPlayer.getCurrentEquippedItem().getItem();
-        	
-        	if (playerEquip instanceof ItemBlock)
-        	{
-        		// SenseiKiwi: Using getBlockID() rather than the raw itemID is critical.
-        		// Some mods may override that function and use item IDs outside the range
-        		// of the block list.
-
-                ItemBlock playerEquipItemBlock = (ItemBlock)playerEquip;
-        		Block block = playerEquipItemBlock.field_150939_a;
-        		if (!block.isNormalCube(world, x, y, z) || block instanceof BlockContainer || block == this)
-        		{
+        ItemStack playerEquip = player.getCurrentEquippedItem();
+        if (playerEquip != null && state.getValue(TYPE) != 1) {
+            Block block = Block.getBlockFromItem(playerEquip.getItem());
+        	if (block != null) {
+        		if (!block.isNormalCube(world, pos) || block instanceof BlockContainer || block == this)
         			return false;
-        		}
-        		if (!world.isRemote)
-        		{
-            		if (!entityPlayer.capabilities.isCreativeMode)
-            		{
-            			entityPlayer.getCurrentEquippedItem().stackSize--;
-            		}
-            		world.setBlock(x, y, z, block, playerEquipItemBlock.getMetadata(entityPlayer.getCurrentEquippedItem().getItemDamage()), 0);
+        		if (!world.isRemote) {
+            		if (!player.capabilities.isCreativeMode) playerEquip.stackSize--;
+            		world.setBlockState(pos, block.getStateFromMeta(playerEquip.getItemDamage()));
         		}
         		return true;
         	}

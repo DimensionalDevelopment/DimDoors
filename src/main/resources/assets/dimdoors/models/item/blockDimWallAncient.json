@@ -1,5 +1,5 @@
 {
-  "parent": "dimdoors:block/blockDimWallPersonal",
+  "parent": "dimdoors:block/blockDimWallAncient",
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],

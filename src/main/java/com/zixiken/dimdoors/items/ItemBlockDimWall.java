@@ -6,7 +6,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 public class ItemBlockDimWall extends ItemBlock {
-	private final static String[] subNames = {"", "Perm" , "Personal"};
+	private final static String[] subNames = {"", "Ancient" , "Altered"};
 	
     public ItemBlockDimWall(Block block) {
         super(block);

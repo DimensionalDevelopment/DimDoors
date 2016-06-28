@@ -1,7 +1,7 @@
 {
   "variants": {
     "type=0": { "model": "dimdoors:blockDimWall" },
-    "type=1": { "model": "dimdoors:blockDimWallPerm" },
-    "type=2": { "model": "dimdoors:blockDimWallPersonal" }
+    "type=1": { "model": "dimdoors:blockDimWallAncient" },
+    "type=2": { "model": "dimdoors:blockDimWallAltered" }
   }
 }

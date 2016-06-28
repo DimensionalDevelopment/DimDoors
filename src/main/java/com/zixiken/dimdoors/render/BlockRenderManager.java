@@ -13,15 +13,15 @@ public class BlockRenderManager {
 
     public static void registerBlockRenderers() {
         register(DimDoors.blockDimWall);
-        register(DimDoors.blockDimWall, 1, "Perm");
-        register(DimDoors.blockDimWall, 2, "Personal");
+        register(DimDoors.blockDimWall, 1, "Ancient");
+        register(DimDoors.blockDimWall, 2, "Altered");
     }
 
     public static void addModelVariants() {
         ModelBakery.registerItemVariants(Item.getItemFromBlock(DimDoors.blockDimWall),
                 new ResourceLocation(ID + ":blockDimWall"),
-                new ResourceLocation(ID + ":blockDimWallPerm"),
-                new ResourceLocation(ID + ":blockDimWallPersonal"));
+                new ResourceLocation(ID + ":blockDimWallAncient"),
+                new ResourceLocation(ID + ":blockDimWallAltered"));
     }
 
     private static void register(Block block) {
