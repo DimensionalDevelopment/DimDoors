@@ -17,6 +17,7 @@ public class BlockRenderManager {
         register(DimDoors.blockDimWall, 2, "Altered");
 
         register(DimDoors.blockDimWallPerm);
+        register(DimDoors.blockLimbo);
     }
 
     public static void addModelVariants() {
@@ -29,7 +30,7 @@ public class BlockRenderManager {
     private static void register(Block block) {
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher()
                 .register(Item.getItemFromBlock(block), 0,
-                new ModelResourceLocation(ID + ':' + block.getUnlocalizedName().substring(5)));
+                new ModelResourceLocation(ID + ':' + block.getUnlocalizedName().substring(5), "inventory"));
     }
 
     private static void register(Block block, int meta, String name) {

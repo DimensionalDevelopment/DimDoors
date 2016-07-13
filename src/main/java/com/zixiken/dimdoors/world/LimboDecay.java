@@ -6,6 +6,7 @@ import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -71,20 +72,20 @@ public class LimboDecay {
 	 * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
 	 * and applies Limbo decay to them. This gives the impression that decay spreads outward from Unraveled Fabric.
 	 */
-	public void applySpreadDecay(World world, int x, int y, int z)
-	{		
+	public void applySpreadDecay(World world, BlockPos pos) {
+
 		//Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
 		//full spread decay checks, which can also shift its performance impact on the game.
 		if (random.nextInt(MAX_DECAY_SPREAD_CHANCE) < DECAY_SPREAD_CHANCE)
 		{
 			//Apply decay to the blocks above, below, and on all four sides.
 			//World.getBlockId() implements bounds checking, so we don't have to worry about reaching out of the world
-			decayBlock(world, x - 1, y, z);
-			decayBlock(world, x + 1, y, z);
-			decayBlock(world, x, y, z - 1);
-			decayBlock(world, x, y, z + 1);
-			decayBlock(world, x, y - 1, z);
-			decayBlock(world, x, y + 1, z);
+			decayBlock(world, pos.west());
+			decayBlock(world, pos.east());
+			decayBlock(world, pos.north());
+			decayBlock(world, pos.south());
+			decayBlock(world, pos.south());
+			decayBlock(world, pos.north());
 		}
 	}
 	
@@ -139,8 +140,7 @@ public class LimboDecay {
 	/**
 	 * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
 	 */
-	private boolean decayBlock(World world, int x, int y, int z)
-	{
+	private boolean decayBlock(World world, BlockPos pos) {
 		int index;
 		Block block = world.getBlock(x, y, z);
 		if (canDecayBlock(block, world, x, y, z))
