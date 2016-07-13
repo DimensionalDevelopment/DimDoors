@@ -7,9 +7,11 @@ import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoorGold;
 
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 public class BlockGoldDimDoor extends BaseDimDoor {
@@ -22,16 +24,12 @@ public class BlockGoldDimDoor extends BaseDimDoor {
 	}
 
 	@Override
-	public void placeLink(World world, int x, int y, int z) 
-	{
-		if (!world.isRemote && world.getBlock(x, y - 1, z) == this)
-		{
+	public void placeLink(World world, BlockPos pos) {
+		if (!world.isRemote && world.getBlockState(pos.down()).getBlock() == this) {
 			NewDimData dimension = PocketManager.createDimensionData(world);
-			DimLink link = dimension.getLink(x, y, z);
+			DimLink link = dimension.getLink(pos);
 			if (link == null)
-			{
-				dimension.createLink(x, y, z, LinkType.POCKET,world.getBlockMetadata(x, y - 1, z));
-			}
+				dimension.createLink(pos, LinkType.POCKET, world.getBlockState(pos.down()).getValue(BlockDoor.FACING));
 		}
 	}
 	
