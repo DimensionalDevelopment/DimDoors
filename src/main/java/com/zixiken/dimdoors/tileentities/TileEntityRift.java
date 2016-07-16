@@ -18,8 +18,10 @@ import net.minecraft.util.AxisAlignedBB;
 import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.util.Point4D;
 import com.zixiken.dimdoors.watcher.ClientLinkData;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ITickable;
 
-public class TileEntityRift extends DDTileEntityBase
+public class TileEntityRift extends DDTileEntityBase implements ITickable
 {
 	private static final int RIFT_INTERACTION_RANGE = 5;
 	private static final int MAX_ANCESTOR_LINKS = 2;
@@ -37,9 +39,7 @@ public class TileEntityRift extends DDTileEntityBase
 
 	private int updateTimer;
 	private int closeTimer = 0;
-	public int xOffset = 0;
-	public int yOffset = 0;
-	public int zOffset = 0;
+	public BlockPos offset = BlockPos.ORIGIN;
 	public boolean shouldClose = false;
 	public Point4D nearestRiftLocation = null;
 	public int spawnedEndermenID = 0;
@@ -47,32 +47,24 @@ public class TileEntityRift extends DDTileEntityBase
 	public int riftRotation = random.nextInt(360);
 	public float growth = 0;
 	
-	public TileEntityRift()
-	{
+	public TileEntityRift() {
 		// Vary the update times of rifts to prevent all the rifts in a cluster
 		// from updating at the same time.
 		updateTimer = random.nextInt(UPDATE_PERIOD);
-
 	}
 	
 	@Override
-	public void updateEntity() 
-	{
-		if (PocketManager.getLink(xCoord, yCoord, zCoord, worldObj.provider.dimensionId) == null)
-		{
-			if (worldObj.getBlock(xCoord, yCoord, zCoord) == DimDoors.blockRift)
-			{
-				worldObj.setBlockToAir(xCoord, yCoord, zCoord);
-			}
-			else
-			{
+	public void update() {
+		if (PocketManager.getLink(pos, worldObj.provider.getDimensionId()) == null) {
+			if (worldObj.getBlockState(pos).getBlock() == DimDoors.blockRift) {
+				worldObj.setBlockToAir(pos);
+			} else {
 				invalidate();
 			}
 			return;
 		}
 		
-		if (worldObj.getBlock(xCoord, yCoord, zCoord) != DimDoors.blockRift)
-		{
+		if (worldObj.getBlockState(pos).getBlock() != DimDoors.blockRift) {
 			invalidate();
 			return;
 		}
@@ -80,19 +72,16 @@ public class TileEntityRift extends DDTileEntityBase
 
 		// Check if this rift should render white closing particles and
 		// spread the closing effect to other rifts nearby.
-		if (shouldClose)
-		{
+		if (shouldClose) {
 			closeRift();
 			return;
 		}
 		
-		if (updateTimer >= UPDATE_PERIOD)
-		{
+		if (updateTimer >= UPDATE_PERIOD) {
 			spawnEndermen(DimDoors.properties);
 			updateTimer = 0;
 		}
-		else if (updateTimer == UPDATE_PERIOD / 2)
-		{
+		else if (updateTimer == UPDATE_PERIOD / 2) {
 			updateNearestRift();
 			spread(DimDoors.properties);
 		}
@@ -102,38 +91,31 @@ public class TileEntityRift extends DDTileEntityBase
 
 	private void spawnEndermen(DDProperties properties)
 	{
-		if (worldObj.isRemote || !properties.RiftsSpawnEndermenEnabled)
-		{
+		if (worldObj.isRemote || !properties.RiftsSpawnEndermenEnabled) {
 			return;
 		}
 
 		// Ensure that this rift is only spawning one Enderman at a time, to prevent hordes of Endermen
 		Entity entity = worldObj.getEntityByID(this.spawnedEndermenID);
-		if (entity != null && entity instanceof EntityEnderman)
-		{
+		if (entity != null && entity instanceof EntityEnderman) {
 			return;
 		}
 
-		if (random.nextInt(MAX_ENDERMAN_SPAWNING_CHANCE) < ENDERMAN_SPAWNING_CHANCE)
-		{
+		if (random.nextInt(MAX_ENDERMAN_SPAWNING_CHANCE) < ENDERMAN_SPAWNING_CHANCE) {
 			// Endermen will only spawn from groups of rifts
-			if (updateNearestRift())
-			{
-				List<Entity> list =  worldObj.getEntitiesWithinAABB(EntityEnderman.class,
-						AxisAlignedBB.getBoundingBox(xCoord - 9, yCoord - 3, zCoord - 9, xCoord + 9, yCoord + 3, zCoord + 9));
+			if (updateNearestRift()) {
+				List<EntityEnderman> list =  worldObj.getEntitiesWithinAABB(EntityEnderman.class,
+						AxisAlignedBB.fromBounds(pos.getX() - 9, pos.getY() - 3, pos.getZ() - 9, pos.getX() + 9, pos.getY() + 3, pos.getZ() + 9));
 
-				if (list.isEmpty())
-				{
+				if (list.isEmpty()) {
 					EntityEnderman enderman = new EntityEnderman(worldObj);
-					enderman.setLocationAndAngles(xCoord + 0.5, yCoord - 1, zCoord + 0.5, 5, 6);
+					enderman.setLocationAndAngles(pos.getX() + 0.5, pos.getY() - 1, pos.getZ() + 0.5, 5, 6);
 					worldObj.spawnEntityInWorld(enderman);
 					
-					if (random.nextInt(MAX_HOSTILE_ENDERMAN_CHANCE) < HOSTILE_ENDERMAN_CHANCE)
-					{
+					if (random.nextInt(MAX_HOSTILE_ENDERMAN_CHANCE) < HOSTILE_ENDERMAN_CHANCE) {
 						EntityPlayer player = this.worldObj.getClosestPlayerToEntity(enderman, 50);
-						if (player != null)
-						{
-							enderman.setTarget(player);
+						if (player != null) {
+							enderman.setAttackTarget(player);
 						}
 					}
 				}				
@@ -141,41 +123,35 @@ public class TileEntityRift extends DDTileEntityBase
 		}
 	}
 
-	private void closeRift()
-	{
+	private void closeRift() {
 		NewDimData dimension = PocketManager.createDimensionData(worldObj);
-		if (growth < CLOSING_PERIOD / 2)
-		{
-			for (DimLink riftLink : dimension.findRiftsInRange(worldObj, 6, xCoord, yCoord, zCoord))
-			{
+		if (growth < CLOSING_PERIOD / 2) {
+			for (DimLink riftLink : dimension.findRiftsInRange(worldObj, 6, pos)) {
 				Point4D location = riftLink.source();
-				TileEntityRift rift = (TileEntityRift) worldObj.getTileEntity(location.getX(), location.getY(), location.getZ());
-				if (rift != null && !rift.shouldClose)
-				{
+				TileEntityRift rift = (TileEntityRift) worldObj.getTileEntity(location.toBlockPos());
+				if (rift != null && !rift.shouldClose) {
 					rift.shouldClose = true;
 					rift.markDirty();
 				}
 			}
 		}
-		if (growth <= 0 && !worldObj.isRemote)
-		{
-			DimLink link = PocketManager.getLink(this.xCoord, this.yCoord, this.zCoord, worldObj);
-			if (link != null && !worldObj.isRemote)
-			{
+		if (growth <= 0 && !worldObj.isRemote) {
+			DimLink link = PocketManager.getLink(pos, worldObj);
+			if (link != null && !worldObj.isRemote) {
 				dimension.deleteLink(link);
 			}
-			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
-			worldObj.playSound(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5, "mods.DimDoors.sfx.riftClose", 0.7f, 1, false);
+
+			worldObj.setBlockToAir(pos);
+			worldObj.playSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, "mods.DimDoors.sfx.riftClose", 0.7f, 1, false);
 		}
 	
 		growth --;
 	}
 	
-	public boolean updateNearestRift()
-	{
+	public boolean updateNearestRift() {
 		Point4D previousNearest = nearestRiftLocation;
 		DimLink nearestRiftLink = PocketManager.createDimensionData(worldObj).findNearestRift(
-				worldObj, RIFT_INTERACTION_RANGE, xCoord, yCoord, zCoord);
+				worldObj, RIFT_INTERACTION_RANGE, pos);
 		
 		nearestRiftLocation = (nearestRiftLink == null) ? null : nearestRiftLink.source();
 
@@ -188,73 +164,57 @@ public class TileEntityRift extends DDTileEntityBase
 		return (nearestRiftLocation != null);
 	}
 
-	private void updateParticleOffsets()
-	{
-		if (nearestRiftLocation != null) 
-		{
-			this.xOffset = this.xCoord - nearestRiftLocation.getX();
-			this.yOffset = this.yCoord - nearestRiftLocation.getY();
-			this.zOffset = this.zCoord - nearestRiftLocation.getZ();
-		}
-		else
-		{
-			this.xOffset = 0;
-			this.yOffset = 0;
-			this.xOffset = 0;
+	private void updateParticleOffsets() {
+		if (nearestRiftLocation != null) {
+			this.offset = this.pos.subtract(nearestRiftLocation.toBlockPos());
+		} else {
+			this.offset = BlockPos.ORIGIN;
 		}
 		this.markDirty();
 	}
 	
 	@Override
-	public boolean shouldRenderInPass(int pass)
-	{
+	public boolean shouldRenderInPass(int pass) {
 		return pass == 1;
 	}
 
-	public int countAncestorLinks(DimLink link)
-	{
-		if (link.parent() != null)
-		{
+	public int countAncestorLinks(DimLink link) {
+		if (link.parent() != null) {
 			return countAncestorLinks(link.parent()) + 1;
 		}
+
 		return 0;
 	}
 
-	public void spread(DDProperties properties)
-	{
+	public void spread(DDProperties properties) {
 		if (worldObj.isRemote || !properties.RiftSpreadEnabled
-			|| random.nextInt(MAX_RIFT_SPREAD_CHANCE) < RIFT_SPREAD_CHANCE || this.shouldClose)
-		{
+			|| random.nextInt(MAX_RIFT_SPREAD_CHANCE) < RIFT_SPREAD_CHANCE || this.shouldClose) {
 			return;
 		}
 
 		NewDimData dimension = PocketManager.createDimensionData(worldObj);
-		DimLink link = dimension.getLink(xCoord, yCoord, zCoord);
+		DimLink link = dimension.getLink(pos);
 		
-		if (link.childCount() >= MAX_CHILD_LINKS || countAncestorLinks(link) >= MAX_ANCESTOR_LINKS)
-		{
+		if (link.childCount() >= MAX_CHILD_LINKS || countAncestorLinks(link) >= MAX_ANCESTOR_LINKS) {
 			return;
 		}
 		
 		// The probability of rifts trying to spread increases if more rifts are nearby.
 		// Players should see rifts spread faster within clusters than at the edges of clusters.
 		// Also, single rifts CANNOT spread.
-		int nearRifts = dimension.findRiftsInRange(worldObj, RIFT_INTERACTION_RANGE, xCoord, yCoord, zCoord).size();
-		if (nearRifts == 0 || random.nextInt(nearRifts) == 0)
-		{
+		int nearRifts = dimension.findRiftsInRange(worldObj, RIFT_INTERACTION_RANGE, pos).size();
+		if (nearRifts == 0 || random.nextInt(nearRifts) == 0) {
 			return;
 		}
+
 		DimDoors.blockRift.spreadRift(dimension, link, worldObj, random);
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt)
-	{
+	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 		this.updateTimer = nbt.getInteger("updateTimer");
-		this.xOffset = nbt.getInteger("xOffset");
-		this.yOffset = nbt.getInteger("yOffset");
-		this.zOffset = nbt.getInteger("zOffset");
+		this.offset = new BlockPos(nbt.getInteger("xOffset"), nbt.getInteger("yOffset"), nbt.getInteger("zOffset"));
 		this.shouldClose = nbt.getBoolean("shouldClose");
 		this.spawnedEndermenID = nbt.getInteger("spawnedEndermenID");
 		this.riftRotation = nbt.getInteger("riftRotation");
@@ -267,9 +227,9 @@ public class TileEntityRift extends DDTileEntityBase
 	{
 		super.writeToNBT(nbt);
 		nbt.setInteger("updateTimer", this.updateTimer);
-		nbt.setInteger("xOffset", this.xOffset);
-		nbt.setInteger("yOffset", this.yOffset);
-		nbt.setInteger("zOffset", this.zOffset);
+		nbt.setInteger("xOffset", this.offset.getX());
+		nbt.setInteger("yOffset", this.offset.getY());
+		nbt.setInteger("zOffset", this.offset.getZ());
 		nbt.setBoolean("shouldClose", this.shouldClose);
 		nbt.setInteger("spawnedEndermenID", this.spawnedEndermenID);
 		nbt.setInteger("riftRotation", this.riftRotation);
@@ -278,26 +238,24 @@ public class TileEntityRift extends DDTileEntityBase
 	}
 
     @Override
-    public Packet getDescriptionPacket()
-    {
+    public Packet getDescriptionPacket() {
         NBTTagCompound tag = new NBTTagCompound();
         writeToNBT(tag);
 
-        if(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj)!=null)
-        {
-            ClientLinkData linkData = new ClientLinkData(PocketManager.getLink(xCoord, yCoord, zCoord, worldObj));
+        if(PocketManager.getLink(pos, worldObj)!=null) {
+            ClientLinkData linkData = new ClientLinkData(PocketManager.getLink(pos, worldObj));
 
             NBTTagCompound link = new NBTTagCompound();
             linkData.writeToNBT(link);
 
             tag.setTag("Link", link);
         }
-        return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, 0, tag);
+        return new S35PacketUpdateTileEntity(this.pos, 0, tag);
     }
 
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-        NBTTagCompound tag = pkt.func_148857_g();
+        NBTTagCompound tag = pkt.getNbtCompound();
         readFromNBT(tag);
 
         if (tag.hasKey("Link")) {

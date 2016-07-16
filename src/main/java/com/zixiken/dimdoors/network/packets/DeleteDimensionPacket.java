@@ -1,9 +1,8 @@
 package com.zixiken.dimdoors.network.packets;
 
 import com.zixiken.dimdoors.watcher.ClientDimData;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 import java.io.IOException;
 
