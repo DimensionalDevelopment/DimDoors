@@ -7,6 +7,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.world.PocketBuilder;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -20,50 +21,40 @@ import com.zixiken.dimdoors.Point3D;
 import com.zixiken.dimdoors.core.NewDimData;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
-public class ChunkLoaderHelper implements LoadingCallback 
-{
+public class ChunkLoaderHelper implements LoadingCallback {
 	@Override
-	public void ticketsLoaded(List<Ticket> tickets, World world) 
-	{
-		for (Ticket ticket : tickets) 
-		{
+	public void ticketsLoaded(List<Ticket> tickets, World world) {
+		for (Ticket ticket : tickets) {
 			boolean loaded = false;
-			int x = ticket.getModData().getInteger("goldDimDoorX");
-			int y = ticket.getModData().getInteger("goldDimDoorY");
-			int z = ticket.getModData().getInteger("goldDimDoorZ");
+			BlockPos pos = new BlockPos(ticket.getModData().getInteger("goldDimDoor"), ticket.getModData().getInteger("goldDimDoorY"), ticket.getModData().getInteger("goldDimDoorZ"));
 
-			if (world.getBlock(x, y, z) == DimDoors.goldenDimensionalDoor)
-			{
-				IChunkLoader loader = (IChunkLoader) world.getTileEntity(x, y, z);
-				if (!loader.isInitialized())
-				{
+			if (world.getBlockState(pos).getBlock() == DimDoors.goldenDimensionalDoor) {
+				IChunkLoader loader = (IChunkLoader) world.getTileEntity(pos);
+				if (!loader.isInitialized()) {
 					loader.initialize(ticket);
 					loaded = true;
 				}
-			}
-			if (!loaded)
-			{
+			}if (!loaded) {
 				ForgeChunkManager.releaseTicket(ticket);
 			}
 		}
 	}
 
-	public static Ticket createTicket(int x, int y, int z, World world)
+	public static Ticket createTicket(BlockPos pos, World world)
 	{
 		NBTTagCompound data;
 		Ticket ticket = ForgeChunkManager.requestTicket(DimDoors.instance, world, Type.NORMAL);
 		if (ticket != null)
 		{
 			data = ticket.getModData();
-			data.setInteger("goldDimDoorX", x);
-			data.setInteger("goldDimDoorY", y);
-			data.setInteger("goldDimDoorZ", z);
+			data.setInteger("goldDimDoorX", pos.getX());
+			data.setInteger("goldDimDoorY", pos.getY());
+			data.setInteger("goldDimDoorZ", pos.getZ());
 		}
 		return ticket;
 	}
 
-	public static void forcePocketChunks(NewDimData pocket, Ticket ticket)
-	{
+	public static void forcePocketChunks(NewDimData pocket, Ticket ticket) {
 		BoundingBox bounds = PocketBuilder.calculateDefaultBounds(pocket);
 		BlockPos minCorner = bounds.minCorner();
 		BlockPos maxCorner = bounds.maxCorner();
@@ -74,27 +65,21 @@ public class ChunkLoaderHelper implements LoadingCallback
 		int chunkX;
 		int chunkZ;
 
-		for (chunkX = minX; chunkX <= maxX; chunkX++)
-		{
-			for (chunkZ = minZ; chunkZ <= maxZ; chunkZ++)
-			{
+		for (chunkX = minX; chunkX <= maxX; chunkX++) {
+			for (chunkZ = minZ; chunkZ <= maxZ; chunkZ++) {
 				ForgeChunkManager.forceChunk(ticket, new ChunkCoordIntPair(chunkX, chunkZ));
 			}
 		}
 	}
 
-	public static void loadForcedChunkWorlds(FMLServerStartingEvent event)
-	{
-		for (NewDimData data : PocketManager.getDimensions())
-		{
-			if(data.isPocketDimension())
-			{
+	public static void loadForcedChunkWorlds(FMLServerStartingEvent event) {
+		for (NewDimData data : PocketManager.getDimensions()) {
+			if(data.isPocketDimension()) {
 				String chunkDir = DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoors/pocketDimID" + data.id();
 
 				File file = new File(chunkDir);
 
-				if(file.exists())
-				{
+				if(file.exists()) {
 					if(ForgeChunkManager.savedWorldHasForcedChunkTickets(file))
 					{
 						PocketManager.loadDimension(data.id());

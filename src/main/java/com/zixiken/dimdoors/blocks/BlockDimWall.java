@@ -65,8 +65,7 @@ public class BlockDimWall extends Block {
         else return SUPER_EXPLOSION_RESISTANCE;
 	}
 	
-	public int getRenderType()
-    {
+	public int getRenderType() {
         return PrivatePocketRender.renderID;
     }
 	

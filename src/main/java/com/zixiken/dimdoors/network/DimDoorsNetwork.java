@@ -3,23 +3,17 @@ package com.zixiken.dimdoors.network;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.network.handlers.*;
 import com.zixiken.dimdoors.network.packets.*;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.FMLEmbeddedChannel;
-import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
-import cpw.mods.fml.common.network.FMLOutboundHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.netty.channel.ChannelHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 @ChannelHandler.Sharable
 public class DimDoorsNetwork extends SimpleNetworkWrapper {
 
-    private static final DimDoorsNetwork INSTANCE = new DimDoorsNetwork(DimDoors.modid);
+    private static final DimDoorsNetwork INSTANCE = new DimDoorsNetwork(DimDoors.MODID);
 
     public DimDoorsNetwork(String channelName) {
         super(channelName);
