@@ -2,15 +2,15 @@ package com.zixiken.dimdoors.client;
 
 import com.zixiken.dimdoors.core.PocketManager;
 import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.particle.EntityFireworkSparkFX;
+import net.minecraft.client.particle.EntityFirework;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GoggleRiftFX extends EntityFireworkSparkFX
+public class GoggleRiftFX extends EntityFirework.SparkFX
 {
     private int field_92049_a = 160;
     private boolean field_92054_ax;
