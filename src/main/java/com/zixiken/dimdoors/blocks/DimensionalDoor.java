@@ -3,8 +3,11 @@ package com.zixiken.dimdoors.blocks;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.DimDoors;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.NewDimData;
@@ -20,16 +23,13 @@ public class DimensionalDoor extends BaseDimDoor {
 	}
 
 	@Override
-	public void placeLink(World world, int x, int y, int z) 
-	{
-		if (!world.isRemote && world.getBlock(x, y - 1, z) == this)
-		{
+	public void placeLink(World world, BlockPos pos) {
+        IBlockState state = world.getBlockState(pos.down());
+		if (!world.isRemote && state.getBlock() == this) {
 			NewDimData dimension = PocketManager.createDimensionData(world);
-			DimLink link = dimension.getLink(x, y, z);
+			DimLink link = dimension.getLink(pos);
 			if (link == null)
-			{
-				dimension.createLink(x, y, z, LinkType.POCKET,world.getBlockMetadata(x, y - 1, z));
-			}
+				dimension.createLink(pos, LinkType.POCKET, state.getValue(BlockDoor.FACING));
 		}
 	}
 	
