@@ -257,12 +257,9 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 
 	@Override
 	public void enterDimDoor(World world, BlockPos pos, Entity entity) {
-		// FX entities dont exist on the server
-		if (world.isRemote) {return;}
-		
 		// Check that this is the top block of the door
-		if (world.getBlockState(pos).getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER) {
-			IBlockState state = world.getBlockState(pos.down());
+		IBlockState state = world.getBlockState(pos.down());
+		if (!world.isRemote && state.getBlock() == this) {
 			boolean canUse = state.getValue(BlockDoor.OPEN);
 			if (canUse && entity instanceof EntityPlayer)
 				// Dont check for non-player entites

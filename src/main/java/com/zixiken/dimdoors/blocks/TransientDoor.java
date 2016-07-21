@@ -2,12 +2,15 @@ package com.zixiken.dimdoors.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.DimLink;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.core.DDTeleporter;
 import com.zixiken.dimdoors.core.LinkType;
@@ -24,82 +27,49 @@ public class TransientDoor extends BaseDimDoor {
 	}
 
 	@Override
-	public void enterDimDoor(World world, int x, int y, int z, Entity entity) 
-	{
-		// We need to ignore particle entities
-		if (world.isRemote)
-		{
-			return;
-		}
-
+	public void enterDimDoor(World world, BlockPos pos, Entity entity) {
 		// Check that this is the top block of the door
-		if (world.getBlock(x, y - 1, z) == this)
-		{
-			boolean canUse = true;
-			int metadata = world.getBlockMetadata(x, y - 1, z);
-			if (canUse && entity instanceof EntityPlayer)
-			{
-				// Don't check for non-living entities since it might not work right
-				canUse = isEntityFacingDoor(metadata, (EntityLivingBase) entity);
-			}
-			if (canUse)
-			{
+		IBlockState state = world.getBlockState(pos.down());
+		if (!world.isRemote && state.getBlock() == this) {
+			if (entity instanceof EntityPlayer && isEntityFacingDoor(state, (EntityLivingBase) entity)) {
 				// Teleport the entity through the link, if it exists
-				DimLink link = PocketManager.getLink(x, y, z, world.provider.dimensionId);
-				if (link != null)
-				{
-                    if (link.linkType() != LinkType.PERSONAL || entity instanceof EntityPlayer) {
-                        DDTeleporter.traverseDimDoor(world, link, entity, this);
-                        // Turn the door into a rift AFTER teleporting the player.
-                        // The door's orientation may be necessary for the teleport.
-                        world.setBlock(x, y, z, DimDoors.blockRift);
-                        world.setBlockToAir(x, y - 1, z);
-                    }
+				DimLink link = PocketManager.getLink(pos, world.provider.getDimensionId());
+				if (link != null && link.linkType() != LinkType.PERSONAL) {
+                    DDTeleporter.traverseDimDoor(world, link, entity, this);
+                    // Turn the door into a rift AFTER teleporting the player.
+                    // The door's orientation may be necessary for the teleport.
+                    world.setBlockState(pos, DimDoors.blockRift.getDefaultState());
+                    world.setBlockToAir(pos.down());
 				}
 			}
 		}
-		else if (world.getBlock(x, y + 1, z) == this)
-		{
-			enterDimDoor(world, x, y + 1, z, entity);
-		}
+		else {
+            BlockPos up = pos.up();
+            if (world.getBlockState(up).getBlock() == this) enterDimDoor(world, up, entity);
+        }
 	}	
 
 	@Override
-	public void placeLink(World world, int x, int y, int z) 
-	{
-		if (!world.isRemote && world.getBlock(x, y - 1, z) == this)
-		{
+	public void placeLink(World world, BlockPos pos) {
+        IBlockState state = world.getBlockState(pos.down());
+		if (!world.isRemote && state.getBlock() == this) {
 			NewDimData dimension = PocketManager.createDimensionData(world);
-			DimLink link = dimension.getLink(x, y, z);
-			if (link == null && dimension.isPocketDimension())
-			{
-				dimension.createLink(x, y, z, LinkType.SAFE_EXIT,world.getBlockMetadata(x, y - 1, z));
+			DimLink link = dimension.getLink(pos);
+			if (link == null && dimension.isPocketDimension()) {
+				dimension.createLink(pos, LinkType.SAFE_EXIT, state.getValue(BlockDoor.FACING));
 			}
 		}
 	}
 	
 	@Override
-	public Item getDoorItem()
-	{
-		return null;
-	}
+	public Item getDoorItem() {return null;}
 
 	@Override
-	public boolean isCollidable()
-	{
-		return false;
-	}
+	public boolean isCollidable() {return false;}
 
+    //The old textures are transparent. We should get the same effect with no render,
+    //though setting opaque to false might be necessary for ao/culling purposes
 	@Override
-	public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4)
-	{
-		return null;
-	}
-
-	@Override
-	public int getRenderType()
-	{
-		return 8;
-	}
+	public int getRenderType() {return -1;}
 	
 }
