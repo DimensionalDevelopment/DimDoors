@@ -3,10 +3,7 @@ package com.zixiken.dimdoors.blocks;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.core.DDTeleporter;
-import com.zixiken.dimdoors.core.DimLink;
-import com.zixiken.dimdoors.core.LinkType;
-import com.zixiken.dimdoors.core.PocketManager;
+import com.zixiken.dimdoors.core.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.ITileEntityProvider;
@@ -24,6 +21,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.items.ItemDDKey;
 import com.zixiken.dimdoors.tileentities.TileEntityTransTrapdoor;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntityProvider {
 	public static final String ID = "dimHatch";
@@ -78,81 +77,60 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	}	
 
 	@Override
-	public void onBlockAdded(World world, int x, int y, int z) 
-	{
-		this.placeLink(world, x, y, z);
-		world.setTileEntity(x, y, z, this.createNewTileEntity(world, world.getBlockMetadata(x, y, z)));
+	public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
+		this.placeLink(world, pos);
+		world.setTileEntity(pos, createNewTileEntity(world, getMetaFromState(state)));
 	}
-	
+
 	@Override
-	public TileEntity createNewTileEntity(World world, int metadata)
-	{
-		return new TileEntityTransTrapdoor();
-	}
-	
+	public TileEntity createNewTileEntity(World world, int metadata) {return new TileEntityTransTrapdoor();}
+
 	@Override
-	public void placeLink(World world, int x, int y, int z) 
-	{
-		if (!world.isRemote)
-		{
+	public void placeLink(World world, BlockPos pos) {
+		if (!world.isRemote) {
 			NewDimData dimension = PocketManager.createDimensionData(world);
-			DimLink link = dimension.getLink(x, y, z);
+			DimLink link = dimension.getLink(pos);
 			if (link == null && dimension.isPocketDimension())
-			{
-				dimension.createLink(x, y, z, LinkType.UNSAFE_EXIT,0);
-			}
+                dimension.createLink(pos, LinkType.UNSAFE_EXIT, EnumFacing.EAST);
 		}
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z, EntityPlayer player)
-	{
+	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player) {
 		return new ItemStack(this.getDoorItem(), 1, 0);
 	}
 	
 	@Override
-	public Item getItemDropped(int metadata, Random random, int fortuneLevel)
-    {
+	public Item getItemDropped(IBlockState state, Random random, int fortuneLevel) {
         return Item.getItemFromBlock(Blocks.trapdoor);
     }
 	
 	@Override
-	public Item getDoorItem()
-	{
-		return Item.getItemFromBlock(DimDoors.transTrapdoor);
-	}
+	public Item getDoorItem() {return Item.getItemFromBlock(DimDoors.transTrapdoor);}
 	
-	public static boolean isTrapdoorSetLow(int metadata)
-	{
-		return (metadata & 8) == 0;
-	}
+	public static boolean isTrapdoorSetLow(IBlockState state) {
+        return state.getValue(BlockTrapDoor.HALF) == DoorHalf.BOTTOM;
+    }
 	
 	@Override
-	public TileEntity initDoorTE(World world, int x, int y, int z)
-	{
-		TileEntity te = this.createNewTileEntity(world, world.getBlockMetadata(x, y, z));
-		world.setTileEntity(x, y, z, te);
+	public TileEntity initDoorTE(World world, BlockPos pos) {
+		TileEntity te = createNewTileEntity(world, getMetaFromState(world.getBlockState(pos)));
+		world.setTileEntity(pos, te);
 		return te;
 	}
 
 	@Override
-	public boolean isDoorOnRift(World world, int x, int y, int z)
-	{
-		return PocketManager.getLink(x, y, z, world)!=null;
-	}
+	public boolean isDoorOnRift(World world, BlockPos pos) {return PocketManager.getLink(pos, world) != null;}
 	
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block oldBlock, int oldMeta)
-    {
+	public void breakBlock(World world, BlockPos pos, IBlockState state) {
 		// This function runs on the server side after a block is replaced
 		// We MUST call super.breakBlock() since it involves removing tile entities
-        super.breakBlock(world, x, y, z, oldBlock, oldMeta);
+        super.breakBlock(world, pos, state);
         
         // Schedule rift regeneration for this block if it was replaced
-        if (world.getBlock(x, y, z) != oldBlock)
-        {
-        	DimDoors.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
-        }
+        if (world.getBlockState(pos).getBlock() != state.getBlock())
+            DimDoors.riftRegenerator.scheduleFastRegeneration(pos, world);
     }
 }
