@@ -4,9 +4,12 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.core.PocketManager;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -22,24 +25,17 @@ public class UnstableDoor extends BaseDimDoor {
 	}
 
 	@Override
-	public void placeLink(World world, int x, int y, int z) 
-	{
-		if (!world.isRemote && world.getBlock(x, y - 1, z) == this)
-		{
+	public void placeLink(World world, BlockPos pos) {
+        IBlockState state = world.getBlockState(pos.down());
+		if (!world.isRemote && state.getBlock() == this) {
 			NewDimData dimension = PocketManager.getDimensionData(world);
-			dimension.createLink(x, y, z, LinkType.RANDOM,world.getBlockMetadata(x, y - 1, z));
+			dimension.createLink(pos, LinkType.RANDOM, state.getValue(BlockDoor.FACING));
 		}
 	}
 	
 	@Override
-	public Item getDoorItem()
-	{
-		return DimDoors.itemUnstableDoor;
-	}
-	
-	@Override
-	public Item getItemDropped(int p_149650_1_, Random p_149650_2_, int p_149650_3_)
-	{
-		return Items.iron_door;
-	}
+	public Item getDoorItem() {return DimDoors.itemUnstableDoor;}
+
+    @Override
+	public Item getItemDropped(IBlockState state, Random random, int fortune) {return Items.iron_door;}
 }

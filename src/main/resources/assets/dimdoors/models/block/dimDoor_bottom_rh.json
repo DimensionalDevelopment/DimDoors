@@ -2,6 +2,6 @@
     "parent": "block/door_bottom_rh",
     "textures": {
         "bottom": "blocks/dimDoor_lower",
-        "top": "blocks/DimDoor_upper"
+        "top": "blocks/dimDoor_upper"
     }
 }
