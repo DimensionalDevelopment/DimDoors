@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.zixiken.dimdoors.items.*;
 import com.zixiken.dimdoors.network.DimDoorsNetwork;
-import com.zixiken.dimdoors.render.BlockRenderManager;
+import com.zixiken.dimdoors.render.ItemRenderManager;
 import com.zixiken.dimdoors.schematic.BlockRotator;
 import com.zixiken.dimdoors.blocks.TransientDoor;
 import com.zixiken.dimdoors.commands.CommandListDungeons;
@@ -228,7 +228,7 @@ public class DimDoors {
 
         DimDoorsNetwork.init();
 
-        BlockRenderManager.addModelVariants();
+        ItemRenderManager.addModelVariants();
 	}
 
 	@Mod.EventHandler
@@ -271,7 +271,7 @@ public class DimDoors {
 		DDLoot.registerInfo(properties);
         MinecraftForge.EVENT_BUS.register(new ConnectionHandler());
 
-        BlockRenderManager.registerBlockRenderers();
+        ItemRenderManager.registerItemRenderers();
 	}
 
 	@Mod.EventHandler
