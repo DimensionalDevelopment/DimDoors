@@ -5,32 +5,28 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public class DispenserBehaviorStabilizedRS extends BehaviorDefaultDispenseItem
-{
+public class DispenserBehaviorStabilizedRS extends BehaviorDefaultDispenseItem {
     @Override
-	public ItemStack dispenseStack(IBlockSource dispenser, ItemStack stack)
-    {
+	public ItemStack dispenseStack(IBlockSource dispenser, ItemStack stack) {
     	// Search for a non-air block up to 3 blocks in front of a dispenser.
     	// If it's found, call ItemStabilizedRiftSignature.useFromDispenser().
-        int x = dispenser.getXInt();
-        int y = dispenser.getYInt();
-        int z = dispenser.getZInt();
-        EnumFacing facing = BlockDispenser.func_149937_b(dispenser.getBlockMetadata());
+        BlockPos pos = dispenser.getBlockPos();
+        int x = pos.getX(), y = pos.getY(), z = pos.getZ();
+        EnumFacing facing = BlockDispenser.getFacing(dispenser.getBlockMetadata());
         int dx = facing.getFrontOffsetX();
         int dy = facing.getFrontOffsetY();
         int dz = facing.getFrontOffsetZ();
         World world = dispenser.getWorld();
         
-        for (int k = 1; k <= 3; k++)
-        {
+        for (int k = 1; k <= 3; k++) {
         	x += dx;
         	y += dy;
         	z += dz;
-        	if (!world.isAirBlock(x, y, z))
-        	{
+        	if (!world.isAirBlock(new BlockPos(x, y, z))) {
         		// Found a block. Activate the item.
         		ItemStabilizedRiftSignature.useFromDispenser(stack, world, x, y, z);
         		break;
