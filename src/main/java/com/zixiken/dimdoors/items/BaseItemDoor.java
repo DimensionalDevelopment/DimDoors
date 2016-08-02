@@ -112,7 +112,7 @@ public abstract class BaseItemDoor extends ItemDoor {
 			if (canPlace(world, pos) && canPlace(world, upPos) && player.canPlayerEdit(pos, side, stack)
 					&& (player.canPlayerEdit(upPos, side, stack) && stack.stackSize > 0)
 					&& ((stack.getItem() instanceof BaseItemDoor) || PocketManager.getLink(upPos, world) != null)) {
-				placeDoorBlock(world, pos, EnumFacing.fromAngle(player.rotationYaw), doorBlock);
+				placeDoor(world, pos, EnumFacing.fromAngle(player.rotationYaw), doorBlock);
 				if (!player.capabilities.isCreativeMode) stack.stackSize--;
 				return true;
 			}
@@ -142,7 +142,7 @@ public abstract class BaseItemDoor extends ItemDoor {
 					if (player.canPlayerEdit(pos, hit.sideHit, stack) &&
                             player.canPlayerEdit(downPos, hit.sideHit, stack) &&
                             canPlace(world, pos) && canPlace(world, downPos)) {
-                        placeDoorBlock(world, downPos, EnumFacing.fromAngle(player.rotationYaw), doorBlock);
+                        placeDoor(world, downPos, EnumFacing.fromAngle(player.rotationYaw), doorBlock);
                         if (!(stack.getItem() instanceof BaseItemDoor))
                             ((TileEntityDimDoor) world.getTileEntity(pos)).hasGennedPair = true;
                         if (!player.capabilities.isCreativeMode) stack.stackSize--;
