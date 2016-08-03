@@ -29,6 +29,7 @@ public class ItemRenderManager {
         register(DimDoors.itemGoldenDoor);
         register(DimDoors.itemPersonalDoor);
         register(DimDoors.itemQuartzDoor);
+        register(DimDoors.itemRiftBlade);
     }
 
     public static void addModelVariants() {
