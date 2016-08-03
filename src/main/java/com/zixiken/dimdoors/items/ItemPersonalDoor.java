@@ -15,16 +15,11 @@ public class ItemPersonalDoor extends BaseItemDoor {
         setUnlocalizedName(ID);
     }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
-	{
-		DimDoors.translateAndAdd("info.personalDimDoor", par3List);
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+		DimDoors.translateAndAdd("info.personalDimDoor", tooltip);
 	}
 
 	@Override
-	protected BaseDimDoor getDoorBlock()
-	{
-		return (BaseDimDoor) DimDoors.personalDimDoor;
-	}
+	protected BaseDimDoor getDoorBlock() {return (BaseDimDoor) DimDoors.personalDimDoor;}
 }
