@@ -16,17 +16,11 @@ public class ItemGoldDimDoor extends BaseItemDoor {
   	    super(DimDoors.goldenDimensionalDoor, DimDoors.itemGoldenDoor);
         setUnlocalizedName(ID);
     }
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
-	{
-        DimDoors.translateAndAdd("info.goldDimDoor", par3List);
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        DimDoors.translateAndAdd("info.goldDimDoor", tooltip);
 	}
 
 	@Override
-	protected BaseDimDoor getDoorBlock()
-	{
-		return (BaseDimDoor) DimDoors.goldenDimensionalDoor;
-	}
+	protected BaseDimDoor getDoorBlock() {return DimDoors.goldenDimensionalDoor;}
 }
