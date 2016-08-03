@@ -20,6 +20,7 @@ public class ItemRenderManager {
 
         register(getItemFromBlock(DimDoors.blockDimWallPerm));
         register(getItemFromBlock(DimDoors.blockLimbo));
+        register(getItemFromBlock(DimDoors.blockRift));
 
         //Item registration
         register(DimDoors.itemDDKey);
