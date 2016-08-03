@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.blocks.BaseDimDoor;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemDoor;
@@ -18,16 +17,11 @@ public class ItemDimensionalDoor extends BaseItemDoor {
         setUnlocalizedName(ID);
     }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
-	{
-        DimDoors.translateAndAdd("info.dimDoor",par3List);
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        DimDoors.translateAndAdd("info.dimDoor", tooltip);
 	}
 
 	@Override
-	protected BaseDimDoor getDoorBlock()
-	{
-		return (BaseDimDoor) DimDoors.dimensionalDoor;
-	}
+	protected BaseDimDoor getDoorBlock() {return DimDoors.dimensionalDoor;}
 }

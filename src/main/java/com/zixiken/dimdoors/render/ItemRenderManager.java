@@ -24,6 +24,7 @@ public class ItemRenderManager {
 
         //Item registration
         register(DimDoors.itemDDKey);
+        register(DimDoors.itemDimensionalDoor);
     }
 
     public static void addModelVariants() {
