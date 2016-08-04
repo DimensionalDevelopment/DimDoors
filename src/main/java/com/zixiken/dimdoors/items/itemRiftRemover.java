@@ -6,8 +6,6 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.tileentities.TileEntityRift;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +15,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.core.NewDimData;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -32,7 +29,7 @@ public class ItemRiftRemover extends Item {
         setUnlocalizedName(ID);
 	}
 
-	@Override
+/*	@Override
 	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		// We invoke PlayerControllerMP.onPlayerRightClick() from here so that Minecraft
 		// will invoke onItemUseFirst() on the client side. We'll tell it to pass the
@@ -54,7 +51,7 @@ public class ItemRiftRemover extends Item {
 			}
 		}
 		return stack;
-	}
+	}*/
 
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
@@ -65,6 +62,14 @@ public class ItemRiftRemover extends Item {
 		// On integrated servers, the link won't be removed immediately because of the rift
 		// removal animation. That means we'll have a chance to check for the link before
 		// it's deleted. Otherwise the Rift Remover's durability wouldn't drop.
+
+        MovingObjectPosition hit = this.getMovingObjectPositionFromPlayer(world, player, true);
+        if (hit == null) return false;
+        pos = hit.getBlockPos();
+        NewDimData dimension = PocketManager.createDimensionData(world);
+        DimLink link = dimension.getLink(pos);
+        if (world.getBlockState(pos).getBlock() != DimDoors.blockRift || link == null ||
+                !player.canPlayerEdit(pos, hit.sideHit, stack)) return false;
 
         // Tell the rift's tile entity to do its removal animation
         TileEntity tileEntity = world.getTileEntity(pos);
@@ -93,7 +98,7 @@ public class ItemRiftRemover extends Item {
 	 */
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
 		DimDoors.translateAndAdd("info.riftRemover",tooltip);
 	}
 }
