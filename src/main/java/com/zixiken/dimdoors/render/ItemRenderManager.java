@@ -30,6 +30,7 @@ public class ItemRenderManager {
         register(DimDoors.itemPersonalDoor);
         register(DimDoors.itemQuartzDoor);
         register(DimDoors.itemRiftBlade);
+        register(DimDoors.itemRiftRemover);
     }
 
     public static void addModelVariants() {

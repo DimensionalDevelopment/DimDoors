@@ -6,21 +6,23 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.tileentities.TileEntityRift;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.core.NewDimData;
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemRiftRemover extends Item {
-	public static final String ID = "ItemRiftRemover";
+	public static final String ID = "itemRiftRemover";
 
 	public ItemRiftRemover() {
 		super();
@@ -31,106 +33,67 @@ public class ItemRiftRemover extends Item {
 	}
 
 	@Override
-	public void registerIcons(IIconRegister par1IconRegister)
-	{
-		this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
-	}
-
-	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-	{
+	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
 		// We invoke PlayerControllerMP.onPlayerRightClick() from here so that Minecraft
 		// will invoke onItemUseFirst() on the client side. We'll tell it to pass the
 		// request to the server, which will make sure that rift-related changes are
 		// reflected on the server.
 
-		if (!world.isRemote)
-		{
-			return stack;
-		}
+		if (!world.isRemote) return stack;
 
 		MovingObjectPosition hit = this.getMovingObjectPositionFromPlayer(world, player, true);
-		if (hit != null)
-		{
-			int hx = hit.blockX;
-			int hy = hit.blockY;
-			int hz = hit.blockZ;
+		if (hit != null) {
+			BlockPos pos = hit.getBlockPos();
 			NewDimData dimension = PocketManager.createDimensionData(world);
-			DimLink link = dimension.getLink(hx, hy, hz);
-			if (world.getBlock(hx, hy, hz) == DimDoors.blockRift && link != null &&
-				player.canPlayerEdit(hx, hy, hz, hit.sideHit, stack))
-			{
+			DimLink link = dimension.getLink(pos);
+			if (world.getBlockState(pos).getBlock() == DimDoors.blockRift && link != null &&
+					player.canPlayerEdit(pos, hit.sideHit, stack)) {
 				// Invoke onPlayerRightClick()
 				FMLClientHandler.instance().getClient().playerController.onPlayerRightClick(
-					player, world, stack, hx, hy, hz, hit.sideHit, hit.hitVec);
+                        (EntityPlayerSP)player, (WorldClient)world, stack, pos, hit.sideHit, hit.hitVec);
 			}
 		}
 		return stack;
 	}
 
 	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
-	{
-
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
+            EnumFacing side, float hitX, float hitY, float hitZ) {
 		// We want to use onItemUseFirst() here so that this code will run on the server side,
-		// so we don't need the client to send link-related updates to the server. Still,
-		// check whether we have a rift in sight before passing the request over.
+		// so we don't need the client to send link-related updates to the server.
 
 		// On integrated servers, the link won't be removed immediately because of the rift
 		// removal animation. That means we'll have a chance to check for the link before
 		// it's deleted. Otherwise the Rift Remover's durability wouldn't drop.
-		MovingObjectPosition hit = this.getMovingObjectPositionFromPlayer(world, player, true);
-		if (hit != null)
-		{
-			 x = hit.blockX;
-			 y = hit.blockY;
-			 z = hit.blockZ;
-			 
-			 NewDimData dimension = PocketManager.createDimensionData(world);
-			 DimLink link = dimension.getLink(x, y, z);
-			 if (world.getBlock(x, y, z) == DimDoors.blockRift && link != null &&
-				player.canPlayerEdit(x, y, z, side, stack))
-			 {
-				// Tell the rift's tile entity to do its removal animation
-				 TileEntity tileEntity = world.getTileEntity(x, y, z);
-				 if (tileEntity != null && tileEntity instanceof TileEntityRift)
-				 {
-					 ((TileEntityRift) tileEntity).shouldClose = true;
-					 tileEntity.markDirty();
-				 }
-				 else if (!world.isRemote)
-				 {
-					 // Only set the block to air on the server side so that we don't
-					 // tell the server to remove the rift block before it can use the
-					 // Rift Remover. Otherwise, it won't know to reduce durability.
-					 world.setBlockToAir(x, y, z);
-				 }
-				 if (world.isRemote)
-				 {
-					 // Tell the server about this
-					 return false;
-				 }
-				 else
-				 {
-					 if (!player.capabilities.isCreativeMode)
-					 {
-						 stack.damageItem(1, player);
-					 }
-				player.worldObj.playSoundAtEntity(player, DimDoors.modid+":riftClose", 0.8f, 1);
-				}
-			}
-		}
-		return true;
+
+        // Tell the rift's tile entity to do its removal animation
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if (tileEntity != null && tileEntity instanceof TileEntityRift) {
+            ((TileEntityRift) tileEntity).shouldClose = true;
+            tileEntity.markDirty();
+        }
+
+        if (world.isRemote)
+            // Tell the server about this
+            return false;
+        else {
+            // Only set the block to air on the server side so that we don't
+            // tell the server to remove the rift block before it can use the
+            // Rift Remover. Otherwise, it won't know to reduce durability.
+            world.setBlockToAir(pos);
+            if (!player.capabilities.isCreativeMode)
+                stack.damageItem(1, player);
+            player.worldObj.playSoundAtEntity(player, DimDoors.MODID + ":riftClose", 0.8f, 1);
+            return true;
+        }
 	}
 
 	/**
 	 * allows items to add custom lines of information to the mouseover description
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
-	{
-		DimDoors.translateAndAdd("info.riftRemover",par3List);
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List tooltip, boolean advanced) {
+		DimDoors.translateAndAdd("info.riftRemover",tooltip);
 	}
 }
