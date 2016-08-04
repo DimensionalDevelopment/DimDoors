@@ -26,9 +26,10 @@ public class DispenserBehaviorStabilizedRS extends BehaviorDefaultDispenseItem {
         	x += dx;
         	y += dy;
         	z += dz;
-        	if (!world.isAirBlock(new BlockPos(x, y, z))) {
+            pos = new BlockPos(x, y, z);
+        	if (!world.isAirBlock(pos)) {
         		// Found a block. Activate the item.
-        		ItemStabilizedRiftSignature.useFromDispenser(stack, world, x, y, z);
+        		ItemStabilizedRiftSignature.useFromDispenser(stack, world, pos);
         		break;
         	}
         }

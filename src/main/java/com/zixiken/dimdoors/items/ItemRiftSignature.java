@@ -87,7 +87,7 @@ public class ItemRiftSignature extends Item {
 			world.playSoundAtEntity(player, DimDoors.MODID + ":riftEnd", 0.6f, 1);
 		} else {
 			//The link signature has not been used. Store its current target as the first location. 
-			setSource(stack, pos.getX(), pos.getY(), pos.getZ(), orientation, PocketManager.createDimensionData(world));
+			setSource(stack, pos, orientation, PocketManager.createDimensionData(world));
 			DimDoors.sendChat(player,("Location Stored in Rift Signature"));
 			world.playSoundAtEntity(player, DimDoors.MODID + ":riftStart", 0.6f, 1);
 		}
@@ -128,13 +128,12 @@ public class ItemRiftSignature extends Item {
 		return pos.up(2);
 	}
 	
-	public static void setSource(ItemStack itemStack, int x, int y, int z,
-            EnumFacing orientation, NewDimData dimension) {
+	public static void setSource(ItemStack itemStack, BlockPos pos, EnumFacing orientation, NewDimData dimension) {
 		NBTTagCompound tag = new NBTTagCompound();
 
-		tag.setInteger("linkX", x);
-		tag.setInteger("linkY", y);
-		tag.setInteger("linkZ", z);
+		tag.setInteger("linkX", pos.getX());
+		tag.setInteger("linkY", pos.getY());
+		tag.setInteger("linkZ", pos.getZ());
 		tag.setInteger("orientation", orientation.getIndex());
 		tag.setInteger("linkDimID", dimension.id());
 

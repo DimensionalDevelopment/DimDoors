@@ -5,18 +5,19 @@ import java.util.List;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.NewDimData;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemStabilizedRiftSignature extends ItemRiftSignature {
 	public static final String ID = "itemStableRiftSignature";
@@ -27,38 +28,25 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature {
 	}
 
 	@Override
-	public void registerIcons(IIconRegister par1IconRegister)
-	{
-		this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
-	}
-
-	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
-	{
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
+		    EnumFacing side, float hitX, float hitY, float hitZ) {
 		// Return false on the client side to pass this request to the server
-		if (world.isRemote)
-		{
-			return false;
-		}
+		if (world.isRemote) return false;
 
 		// Adjust Y so the rift is at head level, depending on the presence of certain blocks
-		int adjustedY = adjustYForSpecialBlocks(world, x, y + 2, z);
-		if (!player.canPlayerEdit(x, adjustedY, z, side, stack))
-		{
-			return true;
-		}
-		int orientation = MathHelper.floor_double((player.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
-		
+		pos = adjustYForSpecialBlocks(world, pos);
+		if (!player.canPlayerEdit(pos, side, stack)) return true;
+
+        EnumFacing orientation = EnumFacing.fromAngle(player.rotationYaw);
 		// Check if the Stabilized Rift Signature has been initialized
 		Point4DOrientation source = getSource(stack);
-		if (source != null)
-		{
-
+		if (source != null) {
 			// Yes, it's initialized.
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
 			NewDimData destinationDimension = PocketManager.createDimensionData(world);
-			DimLink reverse = destinationDimension.getLink(x, adjustedY, z);
-			DimLink link;
+			DimLink link = sourceDimension.createLink(source.getPoint().toBlockPos(), LinkType.NORMAL,
+                    source.getOrientation());
+            DimLink reverse = destinationDimension.getLink(pos);
 			
 			// Check whether the SRS is being used to restore one of its previous
 			// link pairs. In other words, the SRS is being used on a location
@@ -67,18 +55,12 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature {
 			// Those benign redirection operations will be handled for free.
 			
 			if (reverse != null && source.getPoint().equals(reverse.destination()))
-			{
 				// Only the source-to-destination link is needed.
-				link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkType.NORMAL, source.getOrientation());
-				destinationDimension.setLinkDestination(link, x, adjustedY, z);
-			}
-			else
-			{
+				destinationDimension.setLinkDestination(link, pos);
+			else {
 				// Check if the player is in creative mode,
 				// or if the player can pay with an Ender Pearl to create a rift.
-				if (!player.capabilities.isCreativeMode &&
-						!player.inventory.consumeInventoryItem(Items.ender_pearl))
-				{
+				if (!player.capabilities.isCreativeMode && !player.inventory.consumeInventoryItem(Items.ender_pearl)) {
 					DimDoors.sendChat(player, "You don't have any Ender Pearls!");
 					// I won't do this, but this is the chance to localize chat 
 					// messages sent to the player; look at ChatMessageComponent 
@@ -87,72 +69,65 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature {
 				}
 	
 				// Create links connecting the two endpoints.
-				link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkType.NORMAL, source.getOrientation());
-				reverse = destinationDimension.createLink(x, adjustedY, z, LinkType.NORMAL, orientation);
-				destinationDimension.setLinkDestination(link, x, adjustedY, z);
-				sourceDimension.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());
+				reverse = destinationDimension.createLink(pos, LinkType.NORMAL, orientation);
+				destinationDimension.setLinkDestination(link, pos);
+				sourceDimension.setLinkDestination(reverse, source.getPoint().toBlockPos());
 	
 				// Try placing a rift at the destination point
-				DimDoors.blockRift.tryPlacingRift(world, x, adjustedY, z);
+				DimDoors.blockRift.tryPlacingRift(world, pos);
 			}
 			
 			// Try placing a rift at the source point
 			// We don't need to check if sourceWorld is null - that's already handled.
 			World sourceWorld = DimensionManager.getWorld(sourceDimension.id());
 			
-			DimDoors.blockRift.tryPlacingRift(sourceWorld, source.getX(), source.getY(), source.getZ());
+			DimDoors.blockRift.tryPlacingRift(sourceWorld, source.getPoint().toBlockPos());
 			DimDoors.sendChat(player, "Rift Created");
 			world.playSoundAtEntity(player, "mods.DimDoors.sfx.riftEnd", 0.6f, 1);
-		}
-		else
-		{
+		} else {
 			// The link signature has not been used. Store its current target as the first location. 
-			setSource(stack, x, adjustedY, z, orientation, PocketManager.createDimensionData(world));
+			setSource(stack, pos, orientation, PocketManager.createDimensionData(world));
 			DimDoors.sendChat(player, "Location Stored in Stabilized Rift Signature");
 			world.playSoundAtEntity(player, "mods.DimDoors.sfx.riftStart", 0.6f, 1);
 		}
 		return true;
 	}
 
-	public static boolean useFromDispenser(ItemStack stack, World world, int x, int y, int z)
-	{
+	public static boolean useFromDispenser(ItemStack stack, World world, BlockPos pos) {
 		// Stabilized Rift Signatures can only be used from dispensers to restore
 		// a previous link pair. The operation would be free for a player, so
 		// dispensers can also perform it for free. Otherwise, the item does nothing.
-		if (world.isRemote)
-		{
-			return false;
-		}
+		if (world.isRemote) return false;
 		
 		// Adjust Y so the rift is at head level, depending on the presence of certain blocks
-		int adjustedY = adjustYForSpecialBlocks(world, x, y + 2, z);
+		pos = adjustYForSpecialBlocks(world, pos);
 		Point4DOrientation source = getSource(stack);
 		
 		// The SRS must have been initialized
-		if (source != null)
-		{
+		if (source != null) {
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
 			NewDimData destinationDimension = PocketManager.createDimensionData(world);
-			DimLink reverse = destinationDimension.getLink(x, adjustedY, z);
+			DimLink reverse = destinationDimension.getLink(pos);
 			DimLink link;
 			
 			// Check whether the SRS is being used to restore one of its previous
 			// link pairs. In other words, the SRS is being used on a location
 			// that already has a link pointing to the SRS's source, with the
 			// intention of overwriting the source-side link to point there.
-			if (reverse != null && source.getPoint().equals(reverse.destination()))
-			{
+			if (reverse != null && source.getPoint().equals(reverse.destination())) {
 				// Only the source-to-destination link is needed.
-				link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkType.NORMAL, source.getOrientation());
-				destinationDimension.setLinkDestination(link, x, adjustedY, z);
+				link = sourceDimension.createLink(source.getPoint().toBlockPos(), LinkType.NORMAL,
+                        source.getOrientation());
+				destinationDimension.setLinkDestination(link, pos);
 				
 				// Try placing a rift at the source point
 				// We don't need to check if sourceWorld is null - that's already handled.
 				World sourceWorld = DimensionManager.getWorld(sourceDimension.id());
-				DimDoors.blockRift.tryPlacingRift(sourceWorld, source.getX(), source.getY(), source.getZ());
+				DimDoors.blockRift.tryPlacingRift(sourceWorld, source.getPoint().toBlockPos());
 				
 				// This call doesn't seem to be working...
-				world.playSoundEffect(x + 0.5, adjustedY + 0.5, z + 0.5, "mods.DimDoors.sfx.riftEnd", 0.6f, 1);
+				world.playSoundEffect(pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5,
+                        "mods.DimDoors.sfx.riftEnd", 0.6f, 1);
 				return true;
 			}
 		}
@@ -162,20 +137,13 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature {
 	/**
 	 * allows items to add custom lines of information to the mouseover description
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
-	{
-		Point4DOrientation source = getSource(par1ItemStack);
-		if (source != null)
-		{
-            String text = StatCollector.translateToLocalFormatted("info.riftSignature.bound", source.getX(), source.getY(), source.getZ(), source.getDimension());
-			par3List.add(text);
-		}
-		else
-		{
-			DimDoors.translateAndAdd("info.riftSignature.stable", par3List);
-		}
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+		Point4DOrientation source = getSource(stack);
+		if (source != null) {
+            tooltip.add(StatCollector.translateToLocalFormatted("info.riftSignature.bound",
+                    source.getX(), source.getY(), source.getZ(), source.getDimension()));
+		} else DimDoors.translateAndAdd("info.riftSignature.stable", tooltip);
 	}
 }
