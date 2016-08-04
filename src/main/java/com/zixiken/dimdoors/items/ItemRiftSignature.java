@@ -10,17 +10,17 @@ import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.util.Point4D;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemRiftSignature extends Item {
     public static final String ID = "itemRiftSignature";
@@ -36,21 +36,14 @@ public class ItemRiftSignature extends Item {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public boolean hasEffect(ItemStack stack, int pass)
-	{
+	public boolean hasEffect(ItemStack stack) {
 		//Make the item glow if it has one endpoint stored
 		return (stack.getItemDamage() != 0);
 	}
 
 	@Override
-	public void registerIcons(IIconRegister par1IconRegister)
-	{
-		this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
-	}
-
-	@Override
-	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
-	{
+	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
+		    EnumFacing side, float hitX, float hitY, float hitZ) {
 		// We must use onItemUseFirst() instead of onItemUse() because Minecraft checks
 		// whether the user is in creative mode after calling onItemUse() and undoes any
 		// damage we might set to indicate the rift sig has been activated. Otherwise,
@@ -58,54 +51,45 @@ public class ItemRiftSignature extends Item {
 		// gets called constantly. Avoiding NBT lookups reduces our performance impact.
 
 		// Return false on the client side to pass this request to the server
-		if (world.isRemote)
-		{
-			return false;
-		}
-		
-		//Increase y by 2 to place the rift at head level
-		int adjustedY = adjustYForSpecialBlocks(world, x, y + 2, z);
-		if (!player.canPlayerEdit(x, adjustedY, z, side, stack))
-		{
-			return true;
-		}
+		if (world.isRemote) return false;
+
+		pos = adjustYForSpecialBlocks(world, pos);
+
+		if (!player.canPlayerEdit(pos, side, stack)) return true;
+
 		Point4DOrientation source = getSource(stack);
-		int orientation = MathHelper.floor_double(((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
-		if (source != null)
-		{
+
+		EnumFacing orientation = EnumFacing.fromAngle(player.rotationYaw);
+		if (source != null) {
 			// The link was used before and already has an endpoint stored.
 			// Create links connecting the two endpoints.
 			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
 			NewDimData destinationDimension = PocketManager.getDimensionData(world);
 
-			DimLink link = sourceDimension.createLink(source.getX(), source.getY(), source.getZ(), LinkType.NORMAL,source.getOrientation());
-			DimLink reverse = destinationDimension.createLink(x, adjustedY, z, LinkType.NORMAL,orientation);
+			DimLink link = sourceDimension.createLink(source.getPoint().toBlockPos(), LinkType.NORMAL,
+                    source.getOrientation());
+			DimLink reverse = destinationDimension.createLink(pos, LinkType.NORMAL, orientation);
 
-			destinationDimension.setLinkDestination(link, x, adjustedY, z);
-			sourceDimension.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());
+			destinationDimension.setLinkDestination(link, pos);
+			sourceDimension.setLinkDestination(reverse, source.getPoint().toBlockPos());
 
 			// Try placing a rift at the destination point
-			DimDoors.blockRift.tryPlacingRift(world, x, adjustedY, z);
+			DimDoors.blockRift.tryPlacingRift(world, pos);
 
 			// Try placing a rift at the source point
 			// We don't need to check if sourceWorld is null - that's already handled.
 			World sourceWorld = DimensionManager.getWorld(sourceDimension.id());
-			DimDoors.blockRift.tryPlacingRift(sourceWorld, source.getX(), source.getY(), source.getZ());
+			DimDoors.blockRift.tryPlacingRift(sourceWorld, source.getPoint().toBlockPos());
 
-			if (!player.capabilities.isCreativeMode)
-			{
-				stack.stackSize--;
-			}
+			if (!player.capabilities.isCreativeMode) stack.stackSize--;
 			clearSource(stack);
 			DimDoors.sendChat(player, "Rift Created");
-			world.playSoundAtEntity(player, DimDoors.modid + ":riftEnd", 0.6f, 1);
-		}
-		else
-		{
+			world.playSoundAtEntity(player, DimDoors.MODID + ":riftEnd", 0.6f, 1);
+		} else {
 			//The link signature has not been used. Store its current target as the first location. 
-			setSource(stack, x, adjustedY, z, orientation, PocketManager.createDimensionData(world));
+			setSource(stack, pos.getX(), pos.getY(), pos.getZ(), orientation, PocketManager.createDimensionData(world));
 			DimDoors.sendChat(player,("Location Stored in Rift Signature"));
-			world.playSoundAtEntity(player, DimDoors.modid+":riftStart", 0.6f, 1);
+			world.playSoundAtEntity(player, DimDoors.MODID + ":riftStart", 0.6f, 1);
 		}
 		return true;
 	}
@@ -114,19 +98,13 @@ public class ItemRiftSignature extends Item {
 	 * allows items to add custom lines of information to the mouseover description
 	 */
 	@Override
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
-	{
-		Point4DOrientation source = getSource(par1ItemStack);
+	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+		Point4DOrientation source = getSource(stack);
 		if (source != null)
-		{
-			par3List.add(StatCollector.translateToLocalFormatted("info.riftSignature.bound", source.getX(), source.getY(), source.getZ(), source.getDimension()));
-		}
-		else
-		{
-            DimDoors.translateAndAdd("info.riftSignature.unbound", par3List);
-		}
+			tooltip.add(StatCollector.translateToLocalFormatted("info.riftSignature.bound",
+                    source.getX(), source.getY(), source.getZ(), source.getDimension()));
+		else DimDoors.translateAndAdd("info.riftSignature.unbound", tooltip);
 	}
 
 	/**
@@ -137,46 +115,34 @@ public class ItemRiftSignature extends Item {
 	 * @param z
 	 * @return the adjusted y coord
 	 */
-	public static int adjustYForSpecialBlocks(World world, int x, int y, int z)
-	{
-		int targetY = y - 2; // Get the block the player actually clicked on
-		Block block = world.getBlock(x, targetY, z);
-		if (block == null)
-		{
-			return targetY + 2;
+	public static BlockPos adjustYForSpecialBlocks(World world, BlockPos pos) {
+		Block block = world.getBlockState(pos).getBlock();
+		if (block == null) return pos.up(2);
+		if (block.isReplaceable(world, pos))
+            // Move block placement so its directly over things like snow
+            return pos.up();
+		if (block instanceof BaseDimDoor) {
+			if (((BaseDimDoor)block).isUpperDoorBlock(world.getBlockState(pos))) return pos;
+			else return pos.up(); //Place rift on the correct place on the door
 		}
-		if (block.isReplaceable(world, x, targetY, z))
-		{
-			return targetY + 1; // Move block placement down (-2+1) one so its directly over things like snow
-		}
-		if (block instanceof BaseDimDoor)
-		{
-			if (((BaseDimDoor) block).isUpperDoorBlock(world.getBlockMetadata(x, targetY, z)))
-			{
-				return targetY; // Move rift placement down two so its in the right place on the door. 
-			}
-			// Move rift placement down one so its in the right place on the door.
-			return targetY + 1;
-		}
-		return targetY + 2;
+		return pos.up(2);
 	}
 	
-	public static void setSource(ItemStack itemStack, int x, int y, int z, int orientation, NewDimData dimension)
-	{
+	public static void setSource(ItemStack itemStack, int x, int y, int z,
+            EnumFacing orientation, NewDimData dimension) {
 		NBTTagCompound tag = new NBTTagCompound();
 
 		tag.setInteger("linkX", x);
 		tag.setInteger("linkY", y);
 		tag.setInteger("linkZ", z);
-		tag.setInteger("orientation", orientation);
+		tag.setInteger("orientation", orientation.getIndex());
 		tag.setInteger("linkDimID", dimension.id());
 
 		itemStack.setTagCompound(tag);
 		itemStack.setItemDamage(1);
 	}
 
-	public static void clearSource(ItemStack itemStack)
-	{
+	public static void clearSource(ItemStack itemStack) {
 		//Don't just set the tag to null since there may be other data there (e.g. for renamed items)
 		NBTTagCompound tag = itemStack.getTagCompound();
 		tag.removeTag("linkX");
@@ -187,24 +153,18 @@ public class ItemRiftSignature extends Item {
 		itemStack.setItemDamage(0);
 	}
 
-	public static Point4DOrientation getSource(ItemStack itemStack)
-	{
-		if (itemStack.getItemDamage() != 0)
-		{
-			if (itemStack.hasTagCompound())
-			{
+	public static Point4DOrientation getSource(ItemStack itemStack) {
+		if (itemStack.getItemDamage() != 0) {
+			if (itemStack.hasTagCompound()) {
 				NBTTagCompound tag = itemStack.getTagCompound();
 
 				Integer x = tag.getInteger("linkX");
 				Integer y = tag.getInteger("linkY");
 				Integer z = tag.getInteger("linkZ");
-				Integer orientation = tag.getInteger("orientation");
+				EnumFacing orientation = EnumFacing.VALUES[tag.getInteger("orientation")];
 				Integer dimID = tag.getInteger("linkDimID");
 
-				if (x != null && y != null && z != null && orientation != null && dimID != null)
-				{
-					return new Point4DOrientation(x, y, z, orientation, dimID);
-				}
+                return new Point4DOrientation(x, y, z, orientation, dimID);
 			}
 			// Mark the item as uninitialized if its source couldn't be read
 			itemStack.setItemDamage(0);
@@ -212,46 +172,26 @@ public class ItemRiftSignature extends Item {
 		return null;
 	}
 	
-	static class Point4DOrientation
-	{
+	static class Point4DOrientation {
 		private Point4D point;
-		private int orientation;
+		private EnumFacing orientation;
 		
-		Point4DOrientation(int x, int y, int z, int orientation, int dimID)
-		{
-			this.point = new Point4D(x, y, z, dimID);
+		Point4DOrientation(int x, int y, int z, EnumFacing orientation, int dimID) {
+			this.point = new Point4D(new BlockPos(x, y, z), dimID);
 			this.orientation = orientation;
 		}
 		
-		int getX()
-		{
-			return point.getX();
-		}
+		int getX() {return point.getX();}
 		
-		int getY()
-		{
-			return point.getY();
-		}
+		int getY() {return point.getY();}
 		
-		int getZ()
-		{
-			return point.getZ();
-		}
+		int getZ() {return point.getZ();}
 		
-		int getDimension()
-		{
-			return point.getDimension();
-		}
+		int getDimension() {return point.getDimension();}
 		
-		int getOrientation()
-		{
-			return orientation;
-		}
+		EnumFacing getOrientation() {return orientation;}
 		
-		Point4D getPoint()
-		{
-			return point;
-		}
+		Point4D getPoint() {return point;}
 	}
 }
 
