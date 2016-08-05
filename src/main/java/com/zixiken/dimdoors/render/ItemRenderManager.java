@@ -35,6 +35,7 @@ public class ItemRenderManager {
         register(DimDoors.itemStabilizedRiftSignature);
         register(DimDoors.itemStableFabric);
         register(DimDoors.itemUnstableDoor);
+        register(DimDoors.itemWarpDoor);
     }
 
     public static void addModelVariants() {
