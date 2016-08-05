@@ -50,7 +50,7 @@ public class FillContainersOperation extends WorldOperation
 					}
 					else
 					{
-						DDLoot.generateChestContents(DDLoot.DungeonChestInfo, chest, random);						
+						DDLoot.generateChestContents(DDLoot.dungeonChestInfo, chest, random);
 					}
 				}
 			}
