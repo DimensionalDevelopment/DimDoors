@@ -36,6 +36,7 @@ public class ItemRenderManager {
         register(DimDoors.itemStableFabric);
         register(DimDoors.itemUnstableDoor);
         register(DimDoors.itemWarpDoor);
+        register(DimDoors.itemWorldThread);
     }
 
     public static void addModelVariants() {
