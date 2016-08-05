@@ -33,6 +33,7 @@ public class ItemRenderManager {
         register(DimDoors.itemRiftRemover);
         register(DimDoors.itemRiftSignature);
         register(DimDoors.itemStabilizedRiftSignature);
+        register(DimDoors.itemStableFabric);
     }
 
     public static void addModelVariants() {
