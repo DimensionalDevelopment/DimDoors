@@ -90,7 +90,7 @@ public class DimDoors {
 	public static Block warpDoor;
 	public static Block goldenDoor;
 	public static BlockGoldDimDoor goldenDimensionalDoor;
-	public static Block unstableDoor;
+	public static UnstableDoor unstableDoor;
 	public static Block blockLimbo;
 	public static DimensionalDoor dimensionalDoor;    
 	public static Block blockDimWall;   
