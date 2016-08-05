@@ -16,8 +16,7 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
-public class ConnectionHandler
-{
+public class ConnectionHandler {
     @SubscribeEvent
     public void serverConnectionFromClientEvent(FMLNetworkEvent.ServerConnectionFromClientEvent event) {
         if (FMLCommonHandler.instance().getSide() == Side.SERVER) {
@@ -25,10 +24,10 @@ public class ConnectionHandler
             FMLEmbeddedChannel channel =  NetworkRegistry.INSTANCE.getChannel("FORGE", Side.SERVER);
             for (NewDimData data : PocketManager.getDimensions()) {
                 try {
-                    if (data.isPocketDimension() || data.id() == DDProperties.instance().LimboDimensionID) {
-                        channel.writeOutbound(new ForgeMessage.DimensionRegisterMessage(data.id(), DimensionManager.getProviderType(data.id())));
-                    }
-
+                    int id = data.id();
+                    if (data.isPocketDimension() || id == DDProperties.instance().LimboDimensionID)
+                        channel.writeOutbound(new ForgeMessage.DimensionRegisterMessage(id,
+                                DimensionManager.getProviderType(id)));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -37,16 +36,11 @@ public class ConnectionHandler
     }
 
 	@SubscribeEvent
-	public void connectionClosed(FMLNetworkEvent.ClientDisconnectionFromServerEvent event)
-	{
-        PocketManager.tryUnload();
-	}
+	public void connectionClosed(FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {PocketManager.tryUnload();}
 
 	@SubscribeEvent
-	public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
-	{
+	public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
 		// Hax... please don't do this! >_<
         DimDoorsNetwork.sendToPlayer(new ClientJoinPacket(), event.player);
-		
 	}
 }
