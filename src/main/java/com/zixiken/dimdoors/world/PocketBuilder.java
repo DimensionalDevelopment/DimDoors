@@ -18,7 +18,6 @@ import net.minecraftforge.common.DimensionManager;
 import com.zixiken.dimdoors.experimental.BoundingBox;
 import com.zixiken.dimdoors.blocks.IDimDoor;
 import com.zixiken.dimdoors.config.DDProperties;
-import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.dungeon.DungeonData;
 import com.zixiken.dimdoors.dungeon.DungeonSchematic;
 import com.zixiken.dimdoors.dungeon.pack.DungeonPackConfig;

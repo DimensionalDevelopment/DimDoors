@@ -15,7 +15,6 @@ import com.zixiken.dimdoors.helpers.DungeonHelper;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.util.DDLogger;
 import net.minecraftforge.common.DimensionManager;
-import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.util.FileFilters;
 import com.zixiken.dimdoors.util.Point4D;
 import com.google.common.io.Files;

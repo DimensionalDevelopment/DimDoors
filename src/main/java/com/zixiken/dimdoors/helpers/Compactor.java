@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 
 import com.zixiken.dimdoors.core.*;
-import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.util.Point4D;
 import com.zixiken.dimdoors.watcher.ClientLinkData;
 import io.netty.buffer.ByteBuf;

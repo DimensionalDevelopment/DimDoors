@@ -11,7 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.core.DimData;
 
 public class TransientDoor extends BaseDimDoor {
 	public static final String ID = "transientDoor";
