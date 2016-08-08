@@ -1,7 +1,7 @@
 package com.zixiken.dimdoors.world;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.ticking.CustomLimboPopulator;
@@ -85,7 +85,7 @@ public class PocketProvider extends WorldProvider {
             return;
         }
 
-        NewDimData data = PocketManager.getDimensionData(this.dimensionId);
+        DimData data = PocketManager.getDimensionData(this.dimensionId);
 		if(data == null || data.type() == DimensionType.POCKET) {
 			super.generateLightBrightnessTable();
 			return;

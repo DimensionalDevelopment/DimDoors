@@ -11,7 +11,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 
 public class PersonalDimDoor extends BaseDimDoor {
 	public static final String ID = "dimDoorPersonal";
@@ -26,7 +26,7 @@ public class PersonalDimDoor extends BaseDimDoor {
 	public void placeLink(World world, BlockPos pos) {
         IBlockState state = world.getBlockState(pos.down());
 		if (!world.isRemote && state.getBlock() == this) {
-			NewDimData dimension = PocketManager.getDimensionData(world);
+			DimData dimension = PocketManager.getDimensionData(world);
 			DimLink link = dimension.getLink(pos);
 			if (link == null) {
                 if (world.provider instanceof PersonalPocketProvider)

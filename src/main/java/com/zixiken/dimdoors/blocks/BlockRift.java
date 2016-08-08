@@ -5,6 +5,7 @@ import java.util.*;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.client.ClosingRiftFX;
 import com.zixiken.dimdoors.config.DDProperties;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.tileentities.TileEntityRift;
@@ -25,7 +26,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
-import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.util.Point4D;
 import com.zixiken.dimdoors.client.GoggleRiftFX;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -197,7 +197,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 		}
 	}
 	
-	public boolean spreadRift(NewDimData dimension, DimLink parent, World world, Random random) {
+	public boolean spreadRift(DimData dimension, DimLink parent, World world, Random random) {
 		Point4D source = parent.source();
 		
 		// Find reachable blocks that are vulnerable to rift damage and include air

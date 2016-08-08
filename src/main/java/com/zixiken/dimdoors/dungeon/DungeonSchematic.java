@@ -10,6 +10,7 @@ import java.util.Random;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.blocks.IDimDoor;
 import com.zixiken.dimdoors.config.DDProperties;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.PocketManager;
@@ -28,7 +29,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.schematic.BlockRotator;
 import com.zixiken.dimdoors.schematic.ChunkBlockSetter;
 import com.zixiken.dimdoors.schematic.CompoundFilter;
@@ -186,7 +186,7 @@ public class DungeonSchematic extends Schematic {
 		setUpDungeon(PocketManager.createDimensionData(world), world, pocketCenter, turnAngle, entryLink, random, properties, blockSetter);
 	}
 	
-	private void setUpDungeon(NewDimData dimension, World world, BlockPos pocketCenter, EnumFacing turnAngle, DimLink entryLink, Random random, DDProperties properties, IBlockSetter blockSetter)
+	private void setUpDungeon(DimData dimension, World world, BlockPos pocketCenter, EnumFacing turnAngle, DimLink entryLink, Random random, DDProperties properties, IBlockSetter blockSetter)
 	{
         //Transform dungeon corners
         BlockPos minCorner = new BlockPos(0, 0, 0);
@@ -236,16 +236,16 @@ public class DungeonSchematic extends Schematic {
 		minCorner = temp;
 	}
 	
-	private static void createEntranceReverseLink(World world, NewDimData dimension, BlockPos pocketCenter, DimLink entryLink) {
+	private static void createEntranceReverseLink(World world, DimData dimension, BlockPos pocketCenter, DimLink entryLink) {
 		EnumFacing orientation = EnumFacingHelper.getFacingFromBlockState(world.getBlockState(pocketCenter.down()));
 		DimLink reverseLink = dimension.createLink(pocketCenter, LinkType.REVERSE, orientation);
 		Point4D destination = entryLink.source();
-		NewDimData prevDim = PocketManager.getDimensionData(destination.getDimension());
+		DimData prevDim = PocketManager.getDimensionData(destination.getDimension());
 		prevDim.setLinkDestination(reverseLink, destination.toBlockPos());
 		initDoorTileEntity(world, pocketCenter);
 	}
 	
-	private static void createExitDoorLink(World world, NewDimData dimension, BlockPos point, BlockPos entrance, EnumFacing rotation, BlockPos pocketCenter, IBlockSetter blockSetter) {
+	private static void createExitDoorLink(World world, DimData dimension, BlockPos point, BlockPos entrance, EnumFacing rotation, BlockPos pocketCenter, IBlockSetter blockSetter) {
 		//Transform the door's location to the pocket coordinate system
 		BlockPos location = point;
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
@@ -262,7 +262,7 @@ public class DungeonSchematic extends Schematic {
 		initDoorTileEntity(world, location);
 	}
 	
-	private static void createDimensionalDoorLink(World world, NewDimData dimension, BlockPos point, BlockPos entrance, EnumFacing rotation, BlockPos pocketCenter)
+	private static void createDimensionalDoorLink(World world, DimData dimension, BlockPos point, BlockPos entrance, EnumFacing rotation, BlockPos pocketCenter)
 	{
 		//Transform the door's location to the pocket coordinate system
 		BlockPos location = point;

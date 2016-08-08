@@ -1,9 +1,9 @@
 package com.zixiken.dimdoors.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
-import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoorGold;
 
@@ -26,7 +26,7 @@ public class BlockGoldDimDoor extends BaseDimDoor {
 	@Override
 	public void placeLink(World world, BlockPos pos) {
 		if (!world.isRemote && world.getBlockState(pos.down()).getBlock() == this) {
-			NewDimData dimension = PocketManager.createDimensionData(world);
+			DimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(pos);
 			if (link == null)
 				dimension.createLink(pos, LinkType.POCKET, world.getBlockState(pos.down()).getValue(BlockDoor.FACING));

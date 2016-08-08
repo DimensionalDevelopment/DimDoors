@@ -2,7 +2,7 @@ package com.zixiken.dimdoors.world;
 
 import java.util.List;
 
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.ticking.CustomLimboPopulator;
 import net.minecraft.entity.EnumCreatureType;
@@ -49,7 +49,7 @@ public class PocketGenerator extends ChunkProviderGenerate {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public List getPossibleCreatures(EnumCreatureType type, BlockPos pos) {
-		NewDimData dimension = PocketManager.createDimensionData(this.worldObj);
+		DimData dimension = PocketManager.createDimensionData(this.worldObj);
 		if (dimension != null && dimension.dungeon() != null && !dimension.dungeon().isOpen()) {
 			return this.worldObj.getBiomeGenForCoords(pos).getSpawnableList(type);
 		}

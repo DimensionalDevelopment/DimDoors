@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.config.DDProperties;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
 import net.minecraft.entity.Entity;
@@ -15,7 +16,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.util.Point4D;
 import com.zixiken.dimdoors.watcher.ClientLinkData;
 import net.minecraft.util.BlockPos;
@@ -124,7 +124,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable
 	}
 
 	private void closeRift() {
-		NewDimData dimension = PocketManager.createDimensionData(worldObj);
+		DimData dimension = PocketManager.createDimensionData(worldObj);
 		if (growth < CLOSING_PERIOD / 2) {
 			for (DimLink riftLink : dimension.findRiftsInRange(worldObj, 6, pos)) {
 				Point4D location = riftLink.source();
@@ -192,7 +192,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable
 			return;
 		}
 
-		NewDimData dimension = PocketManager.createDimensionData(worldObj);
+		DimData dimension = PocketManager.createDimensionData(worldObj);
 		DimLink link = dimension.getLink(pos);
 		
 		if (link.childCount() >= MAX_CHILD_LINKS || countAncestorLinks(link) >= MAX_ANCESTOR_LINKS) {

@@ -4,11 +4,9 @@ import java.io.*;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-import com.zixiken.dimdoors.core.DimLink;
-import com.zixiken.dimdoors.core.DimensionType;
-import com.zixiken.dimdoors.core.IDimRegistrationCallback;
-import com.zixiken.dimdoors.core.LinkType;
-import com.zixiken.dimdoors.core.NewDimData;
+
+import com.zixiken.dimdoors.core.*;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.util.Point4D;
 import com.zixiken.dimdoors.watcher.ClientLinkData;
 import io.netty.buffer.ByteBuf;
@@ -18,18 +16,18 @@ public class Compactor
 {
 
 	@SuppressWarnings("unused") // ?
-	private static class DimComparator implements Comparator<NewDimData> {
+	private static class DimComparator implements Comparator<DimData> {
 		@Override
-		public int compare(NewDimData a, NewDimData b)
+		public int compare(DimData a, DimData b)
 		{
 			return a.id() - b.id();
 		}
 	}
 	
-	public static void write(Collection<? extends NewDimData> values, ByteBuf output) throws IOException {
+	public static void write(Collection<? extends DimData> values, ByteBuf output) throws IOException {
 		// SenseiKiwi: Just encode the data straight up for now. I'll implement fancier compression later.
 		output.writeInt(values.size());
-		for (NewDimData dimension : values) {
+		for (DimData dimension : values) {
 			output.writeInt(dimension.id());
 			output.writeInt(dimension.root().id());
             output.writeInt(dimension.type().index);
@@ -46,7 +44,7 @@ public class Compactor
 		/*
 		// To compress the dimension IDs, we'll sort them by ID
 		// and write the _difference_ between their ID numbers.
-		NewDimData[] dimensions = new NewDimData[values.size()];
+		DimData[] dimensions = new DimData[values.size()];
 		dimensions = values.toArray(dimensions);
 		Arrays.sort(dimensions, new DimComparator());
 		*/
@@ -68,7 +66,7 @@ public class Compactor
 				callback.registerDimension(rootID, rootID, type);
 			}
 			// Don't check if (id != rootID) - we want to retrieve the reference anyway
-			NewDimData dimension = callback.registerDimension(id, rootID, type);
+			DimData dimension = callback.registerDimension(id, rootID, type);
 			int linkCount = input.readInt();
 			for (int h = 0; h < linkCount; h++) {
 				ClientLinkData link = ClientLinkData.read(input);

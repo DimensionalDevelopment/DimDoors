@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.blocks;
 
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.DimDoors;
@@ -10,7 +11,6 @@ import net.minecraft.item.Item;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.core.LinkType;
-import com.zixiken.dimdoors.core.NewDimData;
 
 public class DimensionalDoor extends BaseDimDoor {
 	public static final String ID = "dimDoor";
@@ -26,7 +26,7 @@ public class DimensionalDoor extends BaseDimDoor {
 	public void placeLink(World world, BlockPos pos) {
         IBlockState state = world.getBlockState(pos.down());
 		if (!world.isRemote && state.getBlock() == this) {
-			NewDimData dimension = PocketManager.createDimensionData(world);
+			DimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(pos);
 			if (link == null)
 				dimension.createLink(pos, LinkType.POCKET, state.getValue(BlockDoor.FACING));

@@ -14,7 +14,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -41,7 +41,7 @@ public class ItemRiftRemover extends Item {
 		MovingObjectPosition hit = this.getMovingObjectPositionFromPlayer(world, player, true);
 		if (hit != null) {
 			BlockPos pos = hit.getBlockPos();
-			NewDimData dimension = PocketManager.createDimensionData(world);
+			DimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(pos);
 			if (world.getBlockState(pos).getBlock() == DimDoors.blockRift && link != null &&
 					player.canPlayerEdit(pos, hit.sideHit, stack)) {
@@ -66,7 +66,7 @@ public class ItemRiftRemover extends Item {
         MovingObjectPosition hit = this.getMovingObjectPositionFromPlayer(world, player, true);
         if (hit == null) return false;
         pos = hit.getBlockPos();
-        NewDimData dimension = PocketManager.createDimensionData(world);
+        DimData dimension = PocketManager.createDimensionData(world);
         DimLink link = dimension.getLink(pos);
         if (world.getBlockState(pos).getBlock() != DimDoors.blockRift || link == null ||
                 !player.canPlayerEdit(pos, hit.sideHit, stack)) return false;

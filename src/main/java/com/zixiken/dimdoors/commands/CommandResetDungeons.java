@@ -7,7 +7,7 @@ import com.zixiken.dimdoors.core.DimLink;
 import net.minecraft.entity.player.EntityPlayer;
 import com.zixiken.dimdoors.core.DimensionType;
 import com.zixiken.dimdoors.core.LinkType;
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.PocketManager;
 
 public class CommandResetDungeons extends DDCommandBase {
@@ -34,13 +34,13 @@ public class CommandResetDungeons extends DDCommandBase {
 		int resetCount = 0;
 		int dungeonCount = 0;
 		HashSet<Integer> deletedDimensions = new HashSet<Integer>();
-		ArrayList<NewDimData> loadedDungeons = new ArrayList<NewDimData>();
+		ArrayList<DimData> loadedDungeons = new ArrayList<DimData>();
 
 		// Copy the list of dimensions to iterate over the copy. Otherwise,
 		// we would trigger an exception by modifying the original list.
-		ArrayList<NewDimData> dimensions = new ArrayList<NewDimData>();
+		ArrayList<DimData> dimensions = new ArrayList<DimData>();
 
-		for (NewDimData dimension : PocketManager.getDimensions()) {
+		for (DimData dimension : PocketManager.getDimensions()) {
 
 			dimensions.add(dimension);
 		}
@@ -48,7 +48,7 @@ public class CommandResetDungeons extends DDCommandBase {
 		// Iterate over the list of dimensions. Check which ones are dungeons.
 		// If a dungeon is found, try to delete it. If it can't be deleted,
 		// then it must be loaded and needs to be updated to prevent bugs.
-		for (NewDimData dimension : dimensions) {
+		for (DimData dimension : dimensions) {
 			if (dimension.type() == DimensionType.DUNGEON) {
 				dungeonCount++;
 				id = dimension.id();
@@ -63,7 +63,7 @@ public class CommandResetDungeons extends DDCommandBase {
 		}
 		
 		// Modify the loaded dungeons to prevent bugs
-		for (NewDimData dungeon : loadedDungeons) {
+		for (DimData dungeon : loadedDungeons) {
 			// Find top-most loaded dungeons and update their parents.
 			// They will automatically update their children.
 			// Dungeons with non-dungeon parents don't need to be fixed.

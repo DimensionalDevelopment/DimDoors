@@ -10,7 +10,6 @@ import java.util.TreeMap;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.watcher.ClientLinkData;
-import com.zixiken.dimdoors.Point3D;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.dungeon.DungeonData;
 import com.zixiken.dimdoors.dungeon.pack.DungeonPack;
@@ -27,7 +26,7 @@ import com.zixiken.dimdoors.saving.PackedDungeonData;
 import com.zixiken.dimdoors.saving.PackedLinkData;
 import com.zixiken.dimdoors.saving.PackedLinkTail;
 
-public abstract class NewDimData implements IPackable<PackedDimData> {
+public abstract class DimData implements IPackable<PackedDimData> {
 	private static class InnerDimLink extends DimLink {
 		public InnerDimLink(Point4D source, DimLink parent, EnumFacing orientation, DDLock lock) {
 			super(source, orientation, lock, parent);
@@ -37,7 +36,7 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
 			super(source, orientation, lock, linkType);
 		}
 
-		public void setDestination(BlockPos pos, NewDimData dimension) {
+		public void setDestination(BlockPos pos, DimData dimension) {
 			tail.setDestination(new Point4D(pos, dimension.id()));
 		}
 		
@@ -130,9 +129,9 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
 	protected int depth;
 	protected int packDepth;
 	protected DimensionType type;
-	protected NewDimData parent;
-	protected NewDimData root;
-	protected List<NewDimData> children;
+	protected DimData parent;
+	protected DimData root;
+	protected List<DimData> children;
 	protected Point4D origin;
 	protected EnumFacing orientation;
 	protected DungeonData dungeon;
@@ -143,7 +142,7 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
 	// Don't write this field to a file - it should be recreated on startup
 	private Map<ChunkCoordIntPair, List<InnerDimLink>> chunkMapping;
 	
-	protected NewDimData(int id, NewDimData parent, DimensionType type, IUpdateWatcher<ClientLinkData> linkWatcher) {
+	protected DimData(int id, DimData parent, DimensionType type, IUpdateWatcher<ClientLinkData> linkWatcher) {
 		if (type != DimensionType.ROOT && (parent == null)) {
 			throw new NullPointerException("Dimensions can be pocket dimensions if and only if they have a parent dimension.");
 		}
@@ -151,7 +150,7 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
 		this.id = id;
 		this.linkMapping = new TreeMap<Point4D, InnerDimLink>(); //Should be stored in oct tree -- temporary solution
 		this.linkList = new ArrayList<InnerDimLink>(); //Should be stored in oct tree -- temporary solution
-		this.children = new ArrayList<NewDimData>(); 
+		this.children = new ArrayList<DimData>();
 		this.parent = parent;
 		this.packDepth = 0;
 		this.type = type;
@@ -176,7 +175,7 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
 		}
 	}
 	
-	protected NewDimData(int id, NewDimData root, DimensionType type) {
+	protected DimData(int id, DimData root, DimensionType type) {
 		// This constructor is meant for client-side code only
 		if (root == null) {
 			throw new IllegalArgumentException("root cannot be null.");
@@ -185,7 +184,7 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
 		this.id = id;
 		this.linkMapping = new TreeMap<Point4D, InnerDimLink>(); //Should be stored in oct tree -- temporary solution
 		this.linkList = new ArrayList<InnerDimLink>(); //Should be stored in oct tree -- temporary solution
-		this.children = new ArrayList<NewDimData>(); 
+		this.children = new ArrayList<DimData>();
 		this.parent = null;
 		this.packDepth = 0;
 		this.type = type;
@@ -430,11 +429,11 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
 		return origin;
 	}
 	
-	public NewDimData parent() {
+	public DimData parent() {
 		return parent;
 	}
 
-	public NewDimData root() {
+	public DimData root() {
 		return root;
 	}
 	
@@ -454,7 +453,7 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
 		return linkList.size();
 	}
 	
-	public Iterable<NewDimData> children() {
+	public Iterable<DimData> children() {
 		return children;
 	}
 	
@@ -497,11 +496,11 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
 		}
 		
 		// Update the depths for child dimensions using a depth-first traversal
-		Stack<NewDimData> ordering = new Stack<NewDimData>();
+		Stack<DimData> ordering = new Stack<DimData>();
 		ordering.addAll(this.children);
 		
 		while (!ordering.isEmpty()) {
-			NewDimData current = ordering.pop();
+			DimData current = ordering.pop();
 			current.resetDepth();
 			ordering.addAll(current.children);
 		}
@@ -517,7 +516,7 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
 		this.modified = true;
 	}
 	
-	public static int calculatePackDepth(NewDimData parent, DungeonData current) {
+	public static int calculatePackDepth(DimData parent, DungeonData current) {
 		DungeonData predecessor = parent.dungeon();
 		if (current == null) {
 			throw new IllegalArgumentException("current cannot be null.");
@@ -613,7 +612,7 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
 			parent.children.remove(this);
 		}
 		// Remove this dimension as the parent of its children
-		for (NewDimData child : children) {
+		for (DimData child : children) {
 			child.parent = null;
 		}
 		// Clear all fields
@@ -646,7 +645,7 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
 					dungeon.dungeonType().Owner.getName());
 		}
 		//Make a list of children
-		for(NewDimData data : this.children) {
+		for(DimData data : this.children) {
 			ChildIDs.add(data.id);
 		}
 		for(DimLink link:this.links()) {

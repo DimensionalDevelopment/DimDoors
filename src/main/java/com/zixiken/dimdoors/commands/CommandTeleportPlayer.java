@@ -5,7 +5,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.core.DDTeleporter;
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.util.Point4D;
 
@@ -32,7 +32,7 @@ public class CommandTeleportPlayer extends DDCommandBase {
 		World world;
 		int dimensionID;
 		Point4D destination;
-		NewDimData dimension;
+		DimData dimension;
 		boolean checkOrientation;
 		EntityPlayer targetPlayer;
 		

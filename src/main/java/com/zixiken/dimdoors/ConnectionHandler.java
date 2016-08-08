@@ -6,7 +6,7 @@ import com.zixiken.dimdoors.network.DimDoorsNetwork;
 import com.zixiken.dimdoors.core.PocketManager;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraftforge.common.DimensionManager;
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 import net.minecraftforge.common.network.ForgeMessage;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -22,7 +22,7 @@ public class ConnectionHandler {
         if (FMLCommonHandler.instance().getSide() == Side.SERVER) {
             NetHandlerPlayServer server = ((NetHandlerPlayServer)event.handler);
             FMLEmbeddedChannel channel =  NetworkRegistry.INSTANCE.getChannel("FORGE", Side.SERVER);
-            for (NewDimData data : PocketManager.getDimensions()) {
+            for (DimData data : PocketManager.getDimensions()) {
                 try {
                     int id = data.id();
                     if (data.isPocketDimension() || id == DDProperties.instance().LimboDimensionID)

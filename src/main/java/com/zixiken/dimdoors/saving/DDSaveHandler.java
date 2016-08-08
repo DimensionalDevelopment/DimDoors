@@ -9,17 +9,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.zixiken.dimdoors.Point3D;
-import com.zixiken.dimdoors.core.DimLink;
-import com.zixiken.dimdoors.core.LinkType;
-import com.zixiken.dimdoors.core.PocketManager;
+import com.zixiken.dimdoors.core.*;
 import com.zixiken.dimdoors.dungeon.DungeonData;
 import com.zixiken.dimdoors.helpers.DungeonHelper;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.util.DDLogger;
 import net.minecraftforge.common.DimensionManager;
-import com.zixiken.dimdoors.core.DimensionType;
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.util.FileFilters;
 import com.zixiken.dimdoors.util.Point4D;
 import com.google.common.io.Files;
@@ -95,7 +91,7 @@ public class DDSaveHandler
 		unpackDimData(packedDims);
 		unpackLinkData(linksToUnpack);
 		
-		HashMap<String, NewDimData> personalPocketsMap = new HashMap<String, NewDimData>();
+		HashMap<String, DimData> personalPocketsMap = new HashMap<String, DimData>();
 		for(Entry<String, Integer> pair : ppMap.entrySet())
 		{
 			personalPocketsMap.put(pair.getKey(), PocketManager.getDimensionData(pair.getValue()));
@@ -106,7 +102,7 @@ public class DDSaveHandler
 	}
 	
 	/**
-	 * Takes a list of packedDimData and rebuilds the DimData for it
+	 * Takes a list of packedDimData and rebuilds the LegacyDimData for it
 	 * @param packedDims
 	 * @return
 	 */
@@ -209,7 +205,7 @@ public class DDSaveHandler
 		{
 			if(packedLink.parent.equals(fakePoint))
 			{
-				NewDimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
+				DimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
 				LinkType linkType = LinkType.getLinkTypeFromIndex(packedLink.tail.linkType);
 
 				
@@ -229,7 +225,7 @@ public class DDSaveHandler
 		{
 			for(PackedLinkData packedLink : linksToUnpack)
 			{
-				NewDimData data = PocketManager.createDimensionDataDangerously(packedLink.source.getDimension());
+				DimData data = PocketManager.createDimensionDataDangerously(packedLink.source.getDimension());
 				if(data.getLink(packedLink.parent)!=null)
 				{
 					data.createChildLink(packedLink.source, data.getLink(packedLink.parent), packedLink.lock);
@@ -331,13 +327,13 @@ public class DDSaveHandler
 		}	
 	}
 	
-	private static boolean writePersonalPocketMap(HashMap<String, NewDimData> hashMap, String savePath)
+	private static boolean writePersonalPocketMap(HashMap<String, DimData> hashMap, String savePath)
 	{
 		try
 		{
 			HashMap<String, Integer> ppMap = new HashMap<String, Integer>();
 			
-			for(Entry<String, NewDimData> pair : hashMap.entrySet())
+			for(Entry<String, DimData> pair : hashMap.entrySet())
 			{
 				ppMap.put(pair.getKey(), pair.getValue().id());
 			}

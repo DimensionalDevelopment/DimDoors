@@ -2,6 +2,7 @@ package com.zixiken.dimdoors;
 
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.config.DDWorldProperties;
+import com.zixiken.dimdoors.core.*;
 import com.zixiken.dimdoors.items.BaseItemDoor;
 import com.zixiken.dimdoors.items.ItemWarpDoor;
 import com.zixiken.dimdoors.ticking.RiftRegenerator;
@@ -26,11 +27,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.Action;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import com.zixiken.dimdoors.core.DDTeleporter;
-import com.zixiken.dimdoors.core.DimLink;
-import com.zixiken.dimdoors.core.DimensionType;
-import com.zixiken.dimdoors.core.NewDimData;
-import com.zixiken.dimdoors.core.PocketManager;
+import com.zixiken.dimdoors.core.DimData;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -85,7 +82,7 @@ public class EventHookContainer
 		{
 			if(stack.getItem() instanceof ItemWarpDoor)
 			{
-				NewDimData data = PocketManager.getDimensionData(world);
+				DimData data = PocketManager.getDimensionData(world);
 				
 				if(data.type() == DimensionType.PERSONAL)
 				{
@@ -229,7 +226,7 @@ public class EventHookContainer
 		Chunk chunk = event.getChunk();
 		if (!chunk.worldObj.isRemote && PocketManager.isLoaded())
 		{
-			NewDimData dimension = PocketManager.createDimensionData(chunk.worldObj);
+			DimData dimension = PocketManager.createDimensionData(chunk.worldObj);
 			for (DimLink link : dimension.getChunkLinks(chunk.xPosition, chunk.zPosition))
 			{
 				regenerator.scheduleSlowRegeneration(link);

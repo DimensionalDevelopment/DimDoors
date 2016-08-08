@@ -6,7 +6,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.DimLink;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.util.Point4D;
 
@@ -63,7 +63,7 @@ public class CommandDeleteRifts extends DDCommandBase
 		int y;
 		int z;
 		Point4D location;
-		NewDimData dimension = PocketManager.createDimensionData(world);
+		DimData dimension = PocketManager.createDimensionData(world);
 		ArrayList<DimLink> links = dimension.getAllLinks();
 		for (DimLink link : links)
 		{

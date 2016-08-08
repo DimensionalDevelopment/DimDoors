@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.config.DDProperties;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.PocketManager;
@@ -31,7 +32,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.dungeon.DungeonSchematic;
 import com.zixiken.dimdoors.dungeon.pack.DungeonType;
 import com.zixiken.dimdoors.util.FileFilters;
@@ -200,7 +200,7 @@ public class DungeonHelper {
 		return dungeonPackMapping.get(name.toUpperCase());
 	}
 	
-	private DungeonPack getDimDungeonPack(NewDimData dimension) {
+	private DungeonPack getDimDungeonPack(DimData dimension) {
 		// TODO: Drop support for dim-based packs and switch to embedding the pack
 		// in the link data itself. That would solve the dungeon pre-generation issue.
 		// Gateways should dictate which packs are being used, not the dimensions.
@@ -227,7 +227,7 @@ public class DungeonHelper {
 	
 	public DimLink createCustomDungeonDoor(World world, BlockPos pos) {
 		//Create a link above the specified position. Link to a new pocket dimension.
-		NewDimData dimension = PocketManager.getDimensionData(world);
+		DimData dimension = PocketManager.getDimensionData(world);
 		DimLink link = dimension.createLink(pos.up(), LinkType.POCKET, EnumFacing.NORTH);
 
 		//Place a Warp Door linked to that pocket
@@ -412,7 +412,7 @@ public class DungeonHelper {
 		}
 	}
 
-	public DungeonData selectNextDungeon(NewDimData parent, Random random) {
+	public DungeonData selectNextDungeon(DimData parent, Random random) {
 		DungeonPack pack = getDimDungeonPack(parent);
 		DungeonData selection;
 		DungeonPackConfig config;
@@ -506,11 +506,11 @@ public class DungeonHelper {
 	 * @param maxSize - the maximum number of dungeons that can be listed
 	 * @return a list of dungeons used in a given chain
 	 */
-	public static ArrayList<DungeonData> getDungeonChainHistory(NewDimData start, DungeonPack pack, int maxSize) {
+	public static ArrayList<DungeonData> getDungeonChainHistory(DimData start, DungeonPack pack, int maxSize) {
 		if (start == null) throw new IllegalArgumentException("dimension cannot be null.");
 
 		int count = 0;
-		NewDimData current = start;
+		DimData current = start;
 		DungeonData dungeon = current.dungeon();
 		ArrayList<DungeonData> history = new ArrayList<DungeonData>();
 		
@@ -530,12 +530,12 @@ public class DungeonHelper {
 	 * @param maxSize - the maximum number of dungeons that can be listed
 	 * @return a list of the dungeons used in a given dungeon tree
 	 */
-	public static ArrayList<DungeonData> listDungeonsInTree(NewDimData root, DungeonPack pack, int maxSize) {
+	public static ArrayList<DungeonData> listDungeonsInTree(DimData root, DungeonPack pack, int maxSize) {
 		int count = 0;
-		NewDimData current;
+		DimData current;
 		DungeonData dungeon;
 		ArrayList<DungeonData> dungeons = new ArrayList<DungeonData>();
-		Queue<NewDimData> pendingDimensions = new LinkedList<NewDimData>();	
+		Queue<DimData> pendingDimensions = new LinkedList<DimData>();
 		pendingDimensions.add(root);
 		
 		// Perform a breadth-first search through the dungeon graph
@@ -547,7 +547,7 @@ public class DungeonHelper {
 			if (dungeon != null && dungeon.dungeonType().Owner == pack) {
 				dungeons.add(dungeon);
 				// Add all child dungeons for checking later
-				for (NewDimData child : current.children()) {
+				for (DimData child : current.children()) {
 					pendingDimensions.add(child);
 				}
 			}
@@ -562,10 +562,10 @@ public class DungeonHelper {
 	 * @param maxLevels - the maximum number of ancestors to check
 	 * @return the highest ancestor that belongs to the specified pack within the specified levels, or <code>null</code> if none exists
 	 */
-	public static NewDimData getAncestor(NewDimData dimension, DungeonPack pack, int maxLevels) {
+	public static DimData getAncestor(DimData dimension, DungeonPack pack, int maxLevels) {
 		// Find the ancestor of a dimension located a specified number of levels up.
-		NewDimData parent = dimension;
-		NewDimData current = null;
+		DimData parent = dimension;
+		DimData current = null;
 		
 		// We solve this inductively. We begin with null as the first valid ancestor,
 		// like a kind of virtual child dimension. Then "current" references the

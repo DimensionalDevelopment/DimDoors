@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.world.PocketBuilder;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,8 +18,6 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.ForgeChunkManager.Type;
 import com.zixiken.dimdoors.experimental.BoundingBox;
 import com.zixiken.dimdoors.IChunkLoader;
-import com.zixiken.dimdoors.Point3D;
-import com.zixiken.dimdoors.core.NewDimData;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 public class ChunkLoaderHelper implements LoadingCallback {
@@ -52,7 +51,7 @@ public class ChunkLoaderHelper implements LoadingCallback {
 		return ticket;
 	}
 
-	public static void forcePocketChunks(NewDimData pocket, Ticket ticket) {
+	public static void forcePocketChunks(DimData pocket, Ticket ticket) {
 		BoundingBox bounds = PocketBuilder.calculateDefaultBounds(pocket);
 		BlockPos minCorner = bounds.minCorner();
 		BlockPos maxCorner = bounds.maxCorner();
@@ -71,7 +70,7 @@ public class ChunkLoaderHelper implements LoadingCallback {
 	}
 
 	public static void loadForcedChunkWorlds(FMLServerStartingEvent event) {
-		for (NewDimData data : PocketManager.getDimensions()) {
+		for (DimData data : PocketManager.getDimensions()) {
 			if(data.isPocketDimension()) {
 				String chunkDir = DimensionManager.getCurrentSaveRootDirectory()+"/DimensionalDoors/pocketDimID" + data.id();
 

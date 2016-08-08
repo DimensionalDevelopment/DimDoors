@@ -88,7 +88,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 	@Override
 	public void placeLink(World world, BlockPos pos) {
 		if (!world.isRemote) {
-			NewDimData dimension = PocketManager.createDimensionData(world);
+			DimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(pos);
 			if (link == null && dimension.isPocketDimension())
                 dimension.createLink(pos, LinkType.UNSAFE_EXIT, EnumFacing.EAST);

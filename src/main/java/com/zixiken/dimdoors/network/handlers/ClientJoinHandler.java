@@ -1,7 +1,7 @@
 package com.zixiken.dimdoors.network.handlers;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.network.packets.ClientJoinPacket;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +16,7 @@ public class ClientJoinHandler implements IMessageHandler<ClientJoinPacket, IMes
     @Override
     public IMessage onMessage(ClientJoinPacket message, MessageContext ctx) {
         EntityPlayer player = DimDoors.proxy.getMessagePlayer(ctx);
-        NewDimData dimensionData = PocketManager.getDimensionData(player.worldObj);
+        DimData dimensionData = PocketManager.getDimensionData(player.worldObj);
 
         if (dimensionData.isPocketDimension())
             player.worldObj.provider.registerWorld(player.worldObj);

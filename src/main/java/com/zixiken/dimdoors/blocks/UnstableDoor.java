@@ -2,7 +2,7 @@ package com.zixiken.dimdoors.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.LinkType;
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
@@ -28,7 +28,7 @@ public class UnstableDoor extends BaseDimDoor {
 	public void placeLink(World world, BlockPos pos) {
         IBlockState state = world.getBlockState(pos.down());
 		if (!world.isRemote && state.getBlock() == this) {
-			NewDimData dimension = PocketManager.getDimensionData(world);
+			DimData dimension = PocketManager.getDimensionData(world);
 			dimension.createLink(pos, LinkType.RANDOM, state.getValue(BlockDoor.FACING));
 		}
 	}

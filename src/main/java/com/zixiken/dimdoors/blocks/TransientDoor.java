@@ -1,7 +1,7 @@
 package com.zixiken.dimdoors.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.core.DimLink;
+import com.zixiken.dimdoors.core.*;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -9,13 +9,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.core.DDTeleporter;
-import com.zixiken.dimdoors.core.LinkType;
-import com.zixiken.dimdoors.core.NewDimData;
-import com.zixiken.dimdoors.core.PocketManager;
+import com.zixiken.dimdoors.core.DimData;
 
 public class TransientDoor extends BaseDimDoor {
 	public static final String ID = "transientDoor";
@@ -53,7 +49,7 @@ public class TransientDoor extends BaseDimDoor {
 	public void placeLink(World world, BlockPos pos) {
         IBlockState state = world.getBlockState(pos.down());
 		if (!world.isRemote && state.getBlock() == this) {
-			NewDimData dimension = PocketManager.createDimensionData(world);
+			DimData dimension = PocketManager.createDimensionData(world);
 			DimLink link = dimension.getLink(pos);
 			if (link == null && dimension.isPocketDimension()) {
 				dimension.createLink(pos, LinkType.SAFE_EXIT, state.getValue(BlockDoor.FACING));

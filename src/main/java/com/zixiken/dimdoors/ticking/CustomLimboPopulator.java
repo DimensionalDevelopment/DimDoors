@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -13,7 +14,6 @@ import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import com.zixiken.dimdoors.config.DDProperties;
-import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.helpers.yCoordHelper;
 import com.zixiken.dimdoors.util.ChunkLocation;
 
@@ -89,7 +89,7 @@ public class CustomLimboPopulator implements IRegularTickReceiver {
 	
 	private void placeMonolithsInPocket(int dimensionID, int chunkX, int chunkZ)
 	{
-		NewDimData dimension = PocketManager.getDimensionData(dimensionID);
+		DimData dimension = PocketManager.getDimensionData(dimensionID);
 		World pocket = DimensionManager.getWorld(dimensionID);
 
 		if (pocket == null ||

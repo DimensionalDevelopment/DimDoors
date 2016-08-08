@@ -3,6 +3,7 @@ package com.zixiken.dimdoors.items;
 import java.util.List;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.PocketManager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,12 +11,10 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import com.zixiken.dimdoors.core.LinkType;
-import com.zixiken.dimdoors.core.NewDimData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -42,8 +41,8 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature {
 		Point4DOrientation source = getSource(stack);
 		if (source != null) {
 			// Yes, it's initialized.
-			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
-			NewDimData destinationDimension = PocketManager.createDimensionData(world);
+			DimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
+			DimData destinationDimension = PocketManager.createDimensionData(world);
 			DimLink link = sourceDimension.createLink(source.getPoint().toBlockPos(), LinkType.NORMAL,
                     source.getOrientation());
             DimLink reverse = destinationDimension.getLink(pos);
@@ -105,8 +104,8 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature {
 		
 		// The SRS must have been initialized
 		if (source != null) {
-			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
-			NewDimData destinationDimension = PocketManager.createDimensionData(world);
+			DimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
+			DimData destinationDimension = PocketManager.createDimensionData(world);
 			DimLink reverse = destinationDimension.getLink(pos);
 			DimLink link;
 			

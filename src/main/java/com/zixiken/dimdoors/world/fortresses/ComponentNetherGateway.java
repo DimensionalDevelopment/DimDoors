@@ -13,7 +13,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 
 public class ComponentNetherGateway extends StructureComponent
 {
@@ -147,7 +147,7 @@ public class ComponentNetherGateway extends StructureComponent
         int x = this.getXWithOffset(3, 3);
         int z = this.getZWithOffset(3, 3);
         DimLink link;
-        NewDimData dimension;
+        DimData dimension;
 
         // This function might run multiple times for a single component
         // due to the way Minecraft handles structure generation!

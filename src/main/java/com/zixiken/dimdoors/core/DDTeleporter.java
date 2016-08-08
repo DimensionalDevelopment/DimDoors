@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.zixiken.dimdoors.world.LimboProvider;
-import com.zixiken.dimdoors.Point3D;
 import com.zixiken.dimdoors.blocks.BaseDimDoor;
 import com.zixiken.dimdoors.blocks.IDimDoor;
 import com.zixiken.dimdoors.config.DDProperties;
@@ -446,8 +445,8 @@ public class DDTeleporter {
                 // That means that it was a pocket and it was deleted.
                 // Depending on the link type, we must overwrite it or cancel
                 // the teleport operation. We don't need to assign 'link' with
-                // a different value. NewDimData will overwrite it in-place.
-                NewDimData start = PocketManager.getDimensionData(link.source().getDimension());
+                // a different value. DimData will overwrite it in-place.
+                DimData start = PocketManager.getDimensionData(link.source().getDimension());
                 if (link.linkType() == LinkType.DUNGEON)
                 {
                     // Ovewrite the link into a dungeon link with no destination
@@ -515,7 +514,7 @@ public class DDTeleporter {
         }
 
         EntityPlayer player = (EntityPlayer)entity;
-        NewDimData dim = PocketManager.getPersonalDimensionForPlayer(player.getGameProfile().getId().toString());
+        DimData dim = PocketManager.getPersonalDimensionForPlayer(player.getGameProfile().getId().toString());
         if(dim == null)
         {
             return PocketBuilder.generateNewPersonalPocket(link, properties, player, door);
@@ -544,7 +543,7 @@ public class DDTeleporter {
         // Don't just pick a random root and a random link within that root
         // because we want to have unbiased selection among all links.
         ArrayList<Point4D> matches = new ArrayList<Point4D>();
-        for (NewDimData dimension : PocketManager.getRootDimensions())
+        for (DimData dimension : PocketManager.getRootDimensions())
         {
             for (DimLink link : dimension.getAllLinks())
             {
@@ -574,7 +573,7 @@ public class DDTeleporter {
         // To avoid loops, don't generate a destination if the player is
         // already in a non-pocket dimension.
 
-        NewDimData current = PocketManager.getDimensionData(link.point.getDimension());
+        DimData current = PocketManager.getDimensionData(link.point.getDimension());
 
         if (current.isPocketDimension())
         {
@@ -632,7 +631,7 @@ public class DDTeleporter {
 
     private static boolean generateSafeExit(DimLink link, DDProperties properties)
     {
-        NewDimData current = PocketManager.getDimensionData(link.point.getDimension());
+        DimData current = PocketManager.getDimensionData(link.point.getDimension());
         return generateSafeExit(current.root(), link, properties);
     }
 
@@ -643,9 +642,9 @@ public class DDTeleporter {
         // There is a chance of choosing the Nether first before other root dimensions
         // to compensate for servers with many Mystcraft ages or other worlds.
 
-        NewDimData current = PocketManager.getDimensionData(link.point.getDimension());
+        DimData current = PocketManager.getDimensionData(link.point.getDimension());
 
-        ArrayList<NewDimData> roots = PocketManager.getRootDimensions();
+        ArrayList<DimData> roots = PocketManager.getRootDimensions();
         int shiftChance = START_ROOT_SHIFT_CHANCE + ROOT_SHIFT_CHANCE_PER_LEVEL * (current.packDepth() - 1);
 
         if (random.nextInt(MAX_ROOT_SHIFT_CHANCE) < shiftChance)
@@ -660,7 +659,7 @@ public class DDTeleporter {
             }
             for (int attempts = 0; attempts < 10; attempts++)
             {
-                NewDimData selection = roots.get( random.nextInt(roots.size()) );
+                DimData selection = roots.get( random.nextInt(roots.size()) );
                 if (selection != current.root() && isValidForDungeonExit(selection, properties))
                 {
                     return generateSafeExit(selection, link, properties);
@@ -672,7 +671,7 @@ public class DDTeleporter {
         return generateSafeExit(current.root(), link, properties);
     }
 
-    private static boolean isValidForDungeonExit(NewDimData destination, DDProperties properties)
+    private static boolean isValidForDungeonExit(DimData destination, DDProperties properties)
     {
         // Prevent exits to The End and Limbo
         if (destination.id() == END_DIMENSION_ID || destination.id() == properties.LimboDimensionID)
@@ -685,7 +684,7 @@ public class DDTeleporter {
         return (world != null && !SPIRIT_WORLD_NAME.equals(world.provider.getDimensionName()));
     }
 
-    private static boolean generateSafeExit(NewDimData destinationDim, DimLink link, DDProperties properties)
+    private static boolean generateSafeExit(DimData destinationDim, DimLink link, DDProperties properties)
     {
         // A safe exit attempts to place a Warp Door in a dimension with
         // some precautions to protect the player. The X and Z coordinates
@@ -759,7 +758,7 @@ public class DDTeleporter {
 
             // Create a reverse link for returning
             int orientation = getDestinationOrientation(source, properties);
-            NewDimData sourceDim = PocketManager.getDimensionData(link.source().getDimension());
+            DimData sourceDim = PocketManager.getDimensionData(link.source().getDimension());
             DimLink reverse = destinationDim.createLink(x, y + 2, z, LinkType.REVERSE,orientation);
 
             sourceDim.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());

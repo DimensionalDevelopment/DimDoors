@@ -1,7 +1,7 @@
 package com.zixiken.dimdoors.tileentities;
 
 import com.zixiken.dimdoors.IChunkLoader;
-import com.zixiken.dimdoors.core.NewDimData;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.helpers.ChunkLoaderHelper;
 import com.zixiken.dimdoors.world.PocketBuilder;
@@ -27,7 +27,7 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 		// block or the lower one because only one of them should have a
 		// link associated with it.
 		if (!worldObj.isRemote) {
-			NewDimData dimension = PocketManager.createDimensionData(worldObj);
+			DimData dimension = PocketManager.createDimensionData(worldObj);
 			
 			// Check whether a ticket has already been assigned to this door
 			if (chunkTicket == null) {
@@ -53,7 +53,7 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 		}
 	}
 	
-	private boolean isValidChunkLoaderSetup(NewDimData dimension) {
+	private boolean isValidChunkLoaderSetup(DimData dimension) {
 		// Check the various conditions that make this a valid door setup.
 		// 1. The door must be inside the pocket's XZ boundaries,
 		//		to prevent loading of chunks with a distant door

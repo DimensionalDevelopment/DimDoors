@@ -2,8 +2,8 @@ package com.zixiken.dimdoors.watcher;
 
 import java.io.*;
 
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.DimensionType;
-import com.zixiken.dimdoors.core.NewDimData;
 import io.netty.buffer.ByteBuf;
 
 public class ClientDimData
@@ -20,7 +20,7 @@ public class ClientDimData
 		this.type = type;
 	}
 	
-	public ClientDimData(NewDimData dimension)
+	public ClientDimData(DimData dimension)
 	{
 		ID = dimension.id();
 		this.rootID = dimension.root().id();

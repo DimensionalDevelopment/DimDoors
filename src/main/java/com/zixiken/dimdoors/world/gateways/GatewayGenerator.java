@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.zixiken.dimdoors.config.DDProperties;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
-import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.world.PocketProvider;
@@ -80,7 +80,7 @@ public class GatewayGenerator implements IWorldGenerator
 		int attempts;
 		boolean valid;
 		DimLink link;
-		NewDimData dimension;
+		DimData dimension;
 
 		// Check if we're allowed to generate rift clusters in this dimension.
 		// If so, randomly decide whether to one.

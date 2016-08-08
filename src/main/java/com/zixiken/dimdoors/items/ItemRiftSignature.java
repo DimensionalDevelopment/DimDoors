@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.blocks.BaseDimDoor;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
-import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.util.Point4D;
 import net.minecraft.block.Block;
@@ -63,8 +63,8 @@ public class ItemRiftSignature extends Item {
 		if (source != null) {
 			// The link was used before and already has an endpoint stored.
 			// Create links connecting the two endpoints.
-			NewDimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
-			NewDimData destinationDimension = PocketManager.getDimensionData(world);
+			DimData sourceDimension = PocketManager.getDimensionData(source.getDimension());
+			DimData destinationDimension = PocketManager.getDimensionData(world);
 
 			DimLink link = sourceDimension.createLink(source.getPoint().toBlockPos(), LinkType.NORMAL,
                     source.getOrientation());
@@ -128,7 +128,7 @@ public class ItemRiftSignature extends Item {
 		return pos.up(2);
 	}
 	
-	public static void setSource(ItemStack itemStack, BlockPos pos, EnumFacing orientation, NewDimData dimension) {
+	public static void setSource(ItemStack itemStack, BlockPos pos, EnumFacing orientation, DimData dimension) {
 		NBTTagCompound tag = new NBTTagCompound();
 
 		tag.setInteger("linkX", pos.getX());

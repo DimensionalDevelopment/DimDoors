@@ -3,7 +3,7 @@ package com.zixiken.dimdoors.world;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.core.DimLink;
+import com.zixiken.dimdoors.core.*;
 import com.zixiken.dimdoors.helpers.BlockPosHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,13 +16,9 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.DimensionManager;
 import com.zixiken.dimdoors.experimental.BoundingBox;
-import com.zixiken.dimdoors.Point3D;
 import com.zixiken.dimdoors.blocks.IDimDoor;
 import com.zixiken.dimdoors.config.DDProperties;
-import com.zixiken.dimdoors.core.DimensionType;
-import com.zixiken.dimdoors.core.LinkType;
-import com.zixiken.dimdoors.core.NewDimData;
-import com.zixiken.dimdoors.core.PocketManager;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.dungeon.DungeonData;
 import com.zixiken.dimdoors.dungeon.DungeonSchematic;
 import com.zixiken.dimdoors.dungeon.pack.DungeonPackConfig;
@@ -47,7 +43,7 @@ public class PocketBuilder
 
 	private PocketBuilder() { }
 
-	private static boolean buildDungeonPocket(DungeonData dungeon, NewDimData dimension, DimLink link, DungeonSchematic schematic, World world, DDProperties properties) {
+	private static boolean buildDungeonPocket(DungeonData dungeon, DimData dimension, DimLink link, DungeonSchematic schematic, World world, DDProperties properties) {
 		//Calculate the destination point
 		DungeonPackConfig packConfig = dungeon.dungeonType().Owner != null ? dungeon.dungeonType().Owner.getConfig() : null;
 		Point4D source = link.source();
@@ -92,8 +88,8 @@ public class PocketBuilder
 		}
 		
 		// Register a new dimension
-		NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
-		NewDimData dimension = PocketManager.registerPocket(parent, DimensionType.DUNGEON);
+		DimData parent = PocketManager.getDimensionData(link.source().getDimension());
+		DimData dimension = PocketManager.registerPocket(parent, DimensionType.DUNGEON);
 
 		//Load a world
 		World world = PocketManager.loadDimension(dimension.id());
@@ -119,7 +115,7 @@ public class PocketBuilder
 		}
 
 		//Choose a dungeon to generate
-		NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
+		DimData parent = PocketManager.getDimensionData(link.source().getDimension());
 		Pair<DungeonData, DungeonSchematic> pair = selectNextDungeon(parent, random, properties);
 
 		if (pair == null) {
@@ -131,7 +127,7 @@ public class PocketBuilder
 		DungeonSchematic schematic = pair.getSecond();
 
 		//Register a new dimension
-		NewDimData dimension = PocketManager.registerPocket(parent, DimensionType.DUNGEON);
+		DimData dimension = PocketManager.registerPocket(parent, DimensionType.DUNGEON);
 
 		//Load a world
 		World world = PocketManager.loadDimension(dimension.id());
@@ -145,8 +141,8 @@ public class PocketBuilder
 	}
 
 
-	private static BlockPos calculateNoisyDestination(Point4D source, NewDimData dimension, DungeonData dungeon, EnumFacing facing) {
-		int depth = NewDimData.calculatePackDepth(dimension.parent(), dungeon);
+	private static BlockPos calculateNoisyDestination(Point4D source, DimData dimension, DungeonData dungeon, EnumFacing facing) {
+		int depth = DimData.calculatePackDepth(dimension.parent(), dungeon);
 		int forwardNoise = MathHelper.getRandomIntegerInRange(random, 10 * depth, 130 * depth);
 		int sidewaysNoise = MathHelper.getRandomIntegerInRange(random, -10 * depth, 10 * depth);
 
@@ -160,7 +156,7 @@ public class PocketBuilder
 		return linkDestination;
 	}
 
-	private static Pair<DungeonData, DungeonSchematic> selectNextDungeon(NewDimData parent, Random random, DDProperties properties) {
+	private static Pair<DungeonData, DungeonSchematic> selectNextDungeon(DimData parent, Random random, DDProperties properties) {
 		DungeonData dungeon = null;
 		DungeonSchematic schematic = null;
 
@@ -302,8 +298,8 @@ public class PocketBuilder
 		try
 		{
 			//Register a new dimension
-			NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
-			NewDimData dimension = PocketManager.registerPocket(parent, DimensionType.PERSONAL, player.getGameProfile().getId().toString());
+			DimData parent = PocketManager.getDimensionData(link.source().getDimension());
+			DimData dimension = PocketManager.registerPocket(parent, DimensionType.PERSONAL, player.getGameProfile().getId().toString());
 
 
 			//Load a world
@@ -347,8 +343,8 @@ public class PocketBuilder
 		try
 		{
 			//Register a new dimension
-			NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
-			NewDimData dimension = PocketManager.registerPocket(parent, type);
+			DimData parent = PocketManager.getDimensionData(link.source().getDimension());
+			DimData dimension = PocketManager.registerPocket(parent, type);
 
 
 			//Load a world
@@ -516,7 +512,7 @@ public class PocketBuilder
 		chunk.setChunkModified();
 	}
 
-	public static BoundingBox calculateDefaultBounds(NewDimData pocket)
+	public static BoundingBox calculateDefaultBounds(DimData pocket)
 	{
 		// Calculate the XZ bounds of this pocket assuming that it has the default size
 		// The Y bounds will be set to encompass the height of a chunk.

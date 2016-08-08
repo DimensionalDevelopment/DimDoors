@@ -3,6 +3,7 @@ package com.zixiken.dimdoors.commands;
 import java.util.Collection;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.core.DimData;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.PocketManager;
@@ -13,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
-import com.zixiken.dimdoors.core.NewDimData;
 
 public class CommandCreateDungeonRift extends DDCommandBase {
 	private static CommandCreateDungeonRift instance = null;
@@ -31,7 +31,7 @@ public class CommandCreateDungeonRift extends DDCommandBase {
 
 	@Override
 	protected DDCommandResult processCommand(EntityPlayer sender, String[] command) {
-		NewDimData dimension;
+		DimData dimension;
 		DungeonHelper dungeonHelper = DungeonHelper.instance();
 
 		if (command.length == 0) {
