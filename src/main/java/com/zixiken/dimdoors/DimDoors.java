@@ -248,8 +248,6 @@ public class DimDoors {
 		DimDoors.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
 		DimDoors.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
-        BlockRotator.setupOrientations();
-
 		if(!DimensionManager.registerProviderType(properties.PocketProviderID, PocketProvider.class, false))
 			throw new IllegalStateException("There is a provider ID conflict between PocketProvider from Dimensional Doors and another provider type. Fix your configuration!");
 		if(!DimensionManager.registerProviderType(properties.LimboProviderID, LimboProvider.class, false))
