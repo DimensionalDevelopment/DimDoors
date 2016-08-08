@@ -40,12 +40,10 @@ public class ChunkLoaderHelper implements LoadingCallback {
 		}
 	}
 
-	public static Ticket createTicket(BlockPos pos, World world)
-	{
+	public static Ticket createTicket(BlockPos pos, World world) {
 		NBTTagCompound data;
 		Ticket ticket = ForgeChunkManager.requestTicket(DimDoors.instance, world, Type.NORMAL);
-		if (ticket != null)
-		{
+		if (ticket != null) {
 			data = ticket.getModData();
 			data.setInteger("goldDimDoorX", pos.getX());
 			data.setInteger("goldDimDoorY", pos.getY());

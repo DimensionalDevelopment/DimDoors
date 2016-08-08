@@ -5,81 +5,55 @@ import java.util.List;
 import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.ticking.CustomLimboPopulator;
-import net.minecraft.block.Block;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.world.ChunkPosition;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderGenerate;
 
-public class PocketGenerator extends ChunkProviderGenerate
-{
+public class PocketGenerator extends ChunkProviderGenerate {
 	private World worldObj;
 
 	private CustomLimboPopulator spawner;
 	
-	public PocketGenerator(World par1World, long par2, boolean par4, CustomLimboPopulator spawner) 
-	{
-		super(par1World, par2, par4);
+	public PocketGenerator(World par1World, long par2, boolean par4, CustomLimboPopulator spawner) {
+		super(par1World, par2, par4, null);
 		this.worldObj = par1World;
 		
 		this.spawner = spawner;
 	}
-	
-	@Override
-	public void func_147424_a(int par1, int par2, Block[] blocks)
-	{
-
-	}
 
 	@Override
-	public boolean unloadQueuedChunks()
-	{
+	public boolean unloadQueuedChunks() {
 		return true;
 	}
 
 	@Override
-	public Chunk provideChunk(int chunkX, int chunkZ)
-	{
-		Block[] var3 = new Block[32768];
-		Chunk chunk = new Chunk(worldObj, var3, chunkX, chunkZ);
+	public Chunk provideChunk(int chunkX, int chunkZ) {
+		Chunk chunk = new Chunk(worldObj, new ChunkPrimer(), chunkX, chunkZ);
 		
-		if(!chunk.isTerrainPopulated)
-		{
-			chunk.isTerrainPopulated = true;
-			spawner.registerChunkForPopulation(worldObj.provider.dimensionId, chunkX, chunkZ);
+		if(!chunk.isTerrainPopulated()) {
+			chunk.setTerrainPopulated(true);
+			spawner.registerChunkForPopulation(worldObj.provider.getDimensionId(), chunkX, chunkZ);
 		}
 		return chunk;
 	}
 
 	@Override
-	public Chunk loadChunk(int var1, int var2) 
-	{
-		return this.provideChunk(var1, var2);
-	}
-
-	@Override
-	public void populate(IChunkProvider chunkProvider, int chunkX, int chunkZ) 
-	{
+	public void populate(IChunkProvider chunkProvider, int chunkX, int chunkZ) {
         
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public List getPossibleCreatures(EnumCreatureType var1, int var2, int var3, int var4) 
-	{
+	public List getPossibleCreatures(EnumCreatureType type, BlockPos pos) {
 		NewDimData dimension = PocketManager.createDimensionData(this.worldObj);
-		if (dimension != null && dimension.dungeon() != null && !dimension.dungeon().isOpen())
-		{
-			return this.worldObj.getBiomeGenForCoords(var2, var3).getSpawnableList(var1);
+		if (dimension != null && dimension.dungeon() != null && !dimension.dungeon().isOpen()) {
+			return this.worldObj.getBiomeGenForCoords(pos).getSpawnableList(type);
 		}
 		return null;
 	}
 
-	@Override
-	public ChunkPosition func_147416_a(World var1, String var2, int var3, int var4, int var5)
-	{
-		return null;
-	}
 }

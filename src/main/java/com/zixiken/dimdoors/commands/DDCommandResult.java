@@ -17,40 +17,33 @@ public class DDCommandResult {
 	private String message;
 	private boolean printUsage;
 	
-	private DDCommandResult(int code, String message, boolean printUsage)
-	{
+	private DDCommandResult(int code, String message, boolean printUsage) {
 		this.code = code;
 		this.message = message;
 		this.printUsage = printUsage;
 	}
 	
-	public DDCommandResult(String message)
-	{
+	public DDCommandResult(String message) {
 		this(CUSTOM_ERROR_CODE, message, false);
 	}
 	
-	public DDCommandResult(String message, boolean printUsage)
-	{
+	public DDCommandResult(String message, boolean printUsage) {
 		this(CUSTOM_ERROR_CODE, message, printUsage);
 	}
 	
-	public boolean failed()
-	{
+	public boolean failed() {
 		return (code != 0);
 	}
 	
-	public int getCode()
-	{
+	public int getCode() {
 		return code;
 	}
 	
-	public String getMessage()
-	{
+	public String getMessage() {
 		return message;
 	}
 	
-	public boolean shouldPrintUsage()
-	{
+	public boolean shouldPrintUsage() {
 		return printUsage;
 	}
 }

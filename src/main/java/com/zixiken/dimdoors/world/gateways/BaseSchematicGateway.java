@@ -6,26 +6,23 @@ import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.PocketManager;
 import com.zixiken.dimdoors.dungeon.DungeonSchematic;
 import com.zixiken.dimdoors.schematic.InvalidSchematicException;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
 
-public abstract class BaseSchematicGateway extends BaseGateway 
-{
-	public BaseSchematicGateway(DDProperties properties)
-	{
+public abstract class BaseSchematicGateway extends BaseGateway {
+	public BaseSchematicGateway(DDProperties properties) {
 		super(properties);
 	}
 	
 	@Override
-	public boolean generate(World world, int x, int y, int z)
-	{
+	public boolean generate(World world, BlockPos pos) {
 		DungeonSchematic schematic;
 		
-		try
-		{
+		try {
 			schematic = DungeonSchematic.readFromResource(this.getSchematicPath());
-		}
-		catch (InvalidSchematicException e)
-		{
+		} catch (InvalidSchematicException e) {
 			System.err.println("Could not load the schematic for a gateway. The following exception occurred:");
 			e.printStackTrace();
 			return false;
@@ -37,14 +34,14 @@ public abstract class BaseSchematicGateway extends BaseGateway
 		schematic.applyImportFilters(properties);
 		
 		BlockPos doorLocation = gatewayFilter.getEntranceDoorLocation();
-		int orientation = gatewayFilter.getEntranceOrientation();
+		EnumFacing orientation = gatewayFilter.getEntranceOrientation();
 
 		// Build the gateway into the world
-		schematic.copyToWorld(world, x - doorLocation.getX(), y, z - doorLocation.getZ(), true, true);
-		this.generateRandomBits(world, x, y, z);
+		schematic.copyToWorld(world, pos.subtract(new Vec3i(doorLocation.getX(), 0, doorLocation.getZ())), true, true);
+		this.generateRandomBits(world, pos);
 		
 		// Generate a dungeon link in the door
-		PocketManager.getDimensionData(world).createLink(x, y + doorLocation.getY(), z, LinkType.DUNGEON, orientation);
+		PocketManager.getDimensionData(world).createLink(pos.add(0, doorLocation.getY(), 0), LinkType.DUNGEON, orientation);
 
 		return true;
 	}
@@ -52,11 +49,10 @@ public abstract class BaseSchematicGateway extends BaseGateway
 	/**
 	 * Generates randomized portions of the gateway structure (e.g. rubble, foliage)
 	 * @param world - the world in which to generate the gateway
-	 * @param x - the x-coordinate at which to center the gateway; usually where the door is placed
-	 * @param y - the y-coordinate of the block on which the gateway may be built
-	 * @param z - the z-coordinate at which to center the gateway; usually where the door is placed
+	 * @param pos - the coordinate at which to center the gateway; usually where the door is placed
 	 */
-	protected void generateRandomBits(World world, int x, int y, int z) { }
+	protected void generateRandomBits(World world, BlockPos pos) {
+	}
 	
 	/**
 	 * Gets the path for the schematic file to be used for this gateway. Subsequent calls to this method may return other schematic paths.

@@ -2,9 +2,6 @@ package com.zixiken.dimdoors.helpers;
 
 import net.minecraft.util.BlockPos;
 
-/**
- * Created by Jared Johnson on 6/22/2016.
- */
 public class BlockPosHelper {
     public static boolean between(BlockPos pos, BlockPos min, BlockPos max) {
         return ((min.getX() <= pos.getX() && pos.getX() <= max.getX()) &&
@@ -26,5 +23,13 @@ public class BlockPosHelper {
 
     public static boolean lessThan(BlockPos a, BlockPos b) {
         return (a.getX() < b.getX() && a.getY() < b.getY() && a.getZ() < b.getZ());
+    }
+
+    public static boolean lessThanOrEqual(BlockPos a, BlockPos b) {
+        return (a.getX() <= b.getX() && a.getY() <= b.getY() && a.getZ() <= b.getZ());
+    }
+
+    public static BlockPos posFromSingleValue(int value) {
+        return new BlockPos(value, value, value);
     }
 }

@@ -10,20 +10,19 @@ import com.zixiken.dimdoors.dungeon.DungeonData;
 import com.zixiken.dimdoors.helpers.DungeonHelper;
 import com.zixiken.dimdoors.world.PocketBuilder;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import com.zixiken.dimdoors.core.NewDimData;
 
-public class CommandCreateDungeonRift extends DDCommandBase
-{
+public class CommandCreateDungeonRift extends DDCommandBase {
 	private static CommandCreateDungeonRift instance = null;
 
-	private CommandCreateDungeonRift()
-	{
+	private CommandCreateDungeonRift() {
 		super("dd-rift", "<dungeon name>");
 	}
 
-	public static CommandCreateDungeonRift instance()
-	{
+	public static CommandCreateDungeonRift instance() {
 		if (instance == null)
 			instance = new CommandCreateDungeonRift();
 
@@ -31,79 +30,67 @@ public class CommandCreateDungeonRift extends DDCommandBase
 	}
 
 	@Override
-	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
-	{
+	protected DDCommandResult processCommand(EntityPlayer sender, String[] command) {
 		NewDimData dimension;
 		DungeonHelper dungeonHelper = DungeonHelper.instance();
 
-		if (command.length == 0)
-		{
+		if (command.length == 0) {
 			return DDCommandResult.TOO_FEW_ARGUMENTS;
-		}
-		if (command.length > 1)
-		{
+		} if (command.length > 1) {
 			return DDCommandResult.TOO_MANY_ARGUMENTS;
 		}
 		
 		DimLink link;
 		DungeonData result;
-		int x = MathHelper.floor_double(sender.posX);
-		int y = MathHelper.floor_double(sender.posY);
-		int z = MathHelper.floor_double (sender.posZ);
-		int orientation = MathHelper.floor_double((sender.rotationYaw + 180.0F) * 4.0F / 360.0F - 0.5D) & 3;
+
+		BlockPos pos = new BlockPos(MathHelper.floor_double(sender.posX), MathHelper.floor_double(sender.posY), MathHelper.floor_double (sender.posZ));
+
+		EnumFacing facing = EnumFacing.fromAngle(sender.rotationYaw).getOpposite();
 
 		result = findDungeonByPartialName(command[0], dungeonHelper.getRegisteredDungeons());
-		if (result == null)
-		{
+
+		if (result == null) {
 			result = findDungeonByPartialName(command[0], dungeonHelper.getUntaggedDungeons());
 		}
 		
 		// Check if we found any matches
-		if (result != null)
-		{
+		if (result != null) {
 			dimension = PocketManager.getDimensionData(sender.worldObj);
-			link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
+			link = dimension.createLink(pos.up(), LinkType.DUNGEON, facing);
 
-			if (PocketBuilder.generateSelectedDungeonPocket(link, DimDoors.properties, result))
-			{
+			if (PocketBuilder.generateSelectedDungeonPocket(link, DimDoors.properties, result)) {
 				// Create a rift to our selected dungeon and notify the player
-				sender.worldObj.setBlock(x, y + 1, z, DimDoors.blockRift, 0, 3);
+				sender.worldObj.setBlockState(pos.up(), DimDoors.blockRift.getDefaultState());
 				sendChat(sender, "Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
-			}
-			else
-			{
+			} else {
 				// Dungeon generation failed somehow. Notify the user and remove the useless link.
 				dimension.deleteLink(link);
 				sendChat(sender, "Dungeon generation failed unexpectedly!");
 			}
-		}
-		else
-		{
+		} else {
 			//No matches!
 			return new DDCommandResult("Error: The specified dungeon was not found. Use 'dd-list' to see a list of the available dungeons.");
 		}
 		return DDCommandResult.SUCCESS;
 	}
 
-	private static DungeonData findDungeonByPartialName(String query, Collection<DungeonData> dungeons)
-	{
+	private static DungeonData findDungeonByPartialName(String query, Collection<DungeonData> dungeons) {
 		//Search for the shortest dungeon name that contains the lowercase query string.
 		String dungeonName;
 		String normalQuery = query.toLowerCase();
 		DungeonData bestMatch = null;
 		int matchLength = Integer.MAX_VALUE;
 
-		for (DungeonData dungeon : dungeons)
-		{
+		for (DungeonData dungeon : dungeons) {
 			//We need to extract the file's name. Comparing against schematicPath could
 			//yield false matches if the query string is contained within the path.
 			dungeonName = dungeon.schematicName().toLowerCase();
-			if (dungeonName.length() < matchLength && dungeonName.contains(normalQuery))
-			{
+			if (dungeonName.length() < matchLength && dungeonName.contains(normalQuery)) {
 				matchLength = dungeonName.length();
 				bestMatch = dungeon;
 			}
 		}
+
 		return bestMatch;
 	}
 }
