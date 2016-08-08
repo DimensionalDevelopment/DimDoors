@@ -3,17 +3,14 @@ package com.zixiken.dimdoors.commands;
 import com.zixiken.dimdoors.helpers.DungeonHelper;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class CommandCreatePocket extends DDCommandBase
-{
+public class CommandCreatePocket extends DDCommandBase {
 	private static CommandCreatePocket instance = null;
 	
-	private CommandCreatePocket()
-	{
+	private CommandCreatePocket() {
 		super("dd-create", "");
 	}
 	
-	public static CommandCreatePocket instance()
-	{
+	public static CommandCreatePocket instance() {
 		if (instance == null)
 			instance = new CommandCreatePocket();
 		
@@ -21,10 +18,8 @@ public class CommandCreatePocket extends DDCommandBase
 	}
 
 	@Override
-	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
-	{
-		if (command.length > 0)
-		{
+	protected DDCommandResult processCommand(EntityPlayer sender, String[] command) {
+		if (command.length > 0) {
 			return DDCommandResult.TOO_MANY_ARGUMENTS;
 		}
 		

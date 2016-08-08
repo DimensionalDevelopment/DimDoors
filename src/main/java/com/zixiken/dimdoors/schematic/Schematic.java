@@ -26,12 +26,12 @@ import net.minecraft.world.World;
 public class Schematic {
 
 	protected BlockPos volume;
-	protected IBlockState[] state;
+	protected IBlockState[] states;
 	protected NBTTagList tileEntities;
 
 	protected Schematic(BlockPos volume, IBlockState[] state, NBTTagList tileEntities) {
 		this.volume = volume;
-		this.state = state;
+		this.states = state;
 		this.tileEntities = tileEntities;
 	}
 	
@@ -39,7 +39,7 @@ public class Schematic {
 		//Shallow copy constructor - critical for code reuse in derived classes since
 		//source's fields will be inaccessible if the derived class is in another package.
 		this.volume = source.volume;
-		this.state = source.state;
+		this.states = source.states;
 		this.tileEntities = source.tileEntities;
 	}
 
@@ -73,11 +73,11 @@ public class Schematic {
 	}
 	
 	public Block getBlock(BlockPos pos) {
-		return state[calculateIndex(pos)].getBlock();
+		return states[calculateIndex(pos)].getBlock();
 	}
 
 	public IBlockState getBlockState(BlockPos pos) {
-		return state[calculateIndex(pos)];
+		return states[calculateIndex(pos)];
 	}
 
 	public NBTTagList getTileEntities() {
@@ -197,7 +197,7 @@ public class Schematic {
 	}
 
 	protected NBTTagCompound writeToNBT(boolean copyTileEntities) {
-		return writeToNBT(volume, state, tileEntities, copyTileEntities);
+		return writeToNBT(volume, states, tileEntities, copyTileEntities);
 	}
 	
 	protected static NBTTagCompound writeToNBT(BlockPos volume, IBlockState[] state, NBTTagList tileEntities, boolean copyTileEntities) {
@@ -245,7 +245,7 @@ public class Schematic {
 	}
 	
 	public boolean applyFilter(SchematicFilter filter) {
-		return filter.apply(this, this.state);
+		return filter.apply(this, this.states);
 	}
 	
 	public void copyToWorld(World world, BlockPos pos, boolean notifyClients, boolean ignoreAir) {
@@ -268,7 +268,7 @@ public class Schematic {
 		for (dy = 0; dy < volume.getY(); dy++) {
 			for (dz = 0; dz < volume.getZ(); dz++) {
 				for (dx = 0; dx < volume.getX(); dx++) {
-					blockSetter.setBlock(world, pos.add(dx, dy, dz), state[index]);
+					blockSetter.setBlock(world, pos.add(dx, dy, dz), states[index]);
 					index++;
 				}
 			}

@@ -5,20 +5,19 @@ import java.io.File;
 import net.minecraft.entity.player.EntityPlayer;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.helpers.DungeonHelper;
+import net.minecraft.util.BlockPos;
 
 public class CommandExportDungeon extends DDCommandBase
 {	
 	private static CommandExportDungeon instance = null;
 	
-	private CommandExportDungeon()
-	{
+	private CommandExportDungeon() {
 		super("dd-export", new String[] {
 				"<dungeon type> <dungeon name> <'open' | 'closed'> [weight]",
 				"<schematic name> override" } );
 	}
 	
-	public static CommandExportDungeon instance()
-	{
+	public static CommandExportDungeon instance() {
 		if (instance == null)
 			instance = new CommandExportDungeon();
 		
@@ -26,8 +25,7 @@ public class CommandExportDungeon extends DDCommandBase
 	}
 
 	@Override
-	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
-	{
+	protected DDCommandResult processCommand(EntityPlayer sender, String[] command) {
 		/*
 		 * There are two versions of this command. One version takes 3 to 4 arguments consisting
 		 * of the information needed for a proper schematic name.
@@ -39,23 +37,18 @@ public class CommandExportDungeon extends DDCommandBase
 		
 		DungeonHelper dungeonHelper = DungeonHelper.instance();
 		
-		if (command.length < 2)
-		{
+		if (command.length < 2) {
 			return DDCommandResult.TOO_FEW_ARGUMENTS;
 		}
-		if (command.length > 4)
-		{
+		if (command.length > 4) {
 			return DDCommandResult.TOO_MANY_ARGUMENTS;
 		}
 		
 		//Check if we received the 2-argument version
-		if (command.length == 2)
-		{
-			if (command[1].equalsIgnoreCase("override"))
-			{
+		if (command.length == 2) {
+			if (command[1].equalsIgnoreCase("override")) {
 				//Check that the schematic name is a legal name
-				if (DungeonHelper.SCHEMATIC_NAME_PATTERN.matcher(command[0]).matches())
-				{
+				if (DungeonHelper.SCHEMATIC_NAME_PATTERN.matcher(command[0]).matches()) {
 					//Export the schematic
 					return exportDungeon(sender, command[0]);
 				}
@@ -71,80 +64,70 @@ public class CommandExportDungeon extends DDCommandBase
 		//TODO: This validation should be in DungeonHelper or in another class. We should move it
 		//during the save file format rewrite. ~SenseiKiwi
 			
-		if (!dungeonHelper.validateDungeonType(command[0], dungeonHelper.getDungeonPack("ruins")))
-		{
+		if (!dungeonHelper.validateDungeonType(command[0], dungeonHelper.getDungeonPack("ruins"))) {
 			return new DDCommandResult("Error: Invalid dungeon type. Please use one of the existing types.");
-		}
-		if (!DungeonHelper.DUNGEON_NAME_PATTERN.matcher(command[1]).matches())
-		{
+		} if (!DungeonHelper.DUNGEON_NAME_PATTERN.matcher(command[1]).matches()) {
 			return new DDCommandResult("Error: Invalid dungeon name. Please use only letters, numbers, and dashes.");
-		}
-		if (!command[2].equalsIgnoreCase("open") && !command[2].equalsIgnoreCase("closed"))
-		{
+		} if (!command[2].equalsIgnoreCase("open") && !command[2].equalsIgnoreCase("closed")) {
 			return new DDCommandResult("Error: Please specify whether the dungeon is 'open' or 'closed'.");
 		}
 		
 		//If there are no more arguments, export the dungeon.
-		if (command.length == 3)
-		{
+		if (command.length == 3) {
 			return exportDungeon(sender, join(command, "_", 0, 3));
 		}
 		
 		//Validate the weight argument
-		try
-		{
+		try {
 			int weight = Integer.parseInt(command[3]);
-			if (weight >= DungeonHelper.MIN_DUNGEON_WEIGHT && weight <= DungeonHelper.MAX_DUNGEON_WEIGHT)
-			{
+			if (weight >= DungeonHelper.MIN_DUNGEON_WEIGHT && weight <= DungeonHelper.MAX_DUNGEON_WEIGHT) {
 				return exportDungeon(sender, join(command, "_", 0, 4));
 			}
-		}
-		catch (Exception e) { }
+		} catch (Exception e) { }
 		
 		//If we've reached this point, then we must have an invalid weight.
 		return new DDCommandResult("Invalid dungeon weight. Please specify a weight between "
 				+ DungeonHelper.MIN_DUNGEON_WEIGHT + " and " + DungeonHelper.MAX_DUNGEON_WEIGHT + ", inclusive.");
 	}
 	
-	private static DDCommandResult exportDungeon(EntityPlayer player, String name)
-	{
+	private static DDCommandResult exportDungeon(EntityPlayer player, String name) {
 		DDProperties properties = DDProperties.instance();
 		DungeonHelper dungeonHelper = DungeonHelper.instance();
 
-		int x = (int) player.posX;
-		int y = (int) player.posY;
-		int z = (int) player.posZ;
+		BlockPos pos = new BlockPos((int) player.posX, (int) player.posY, (int) player.posZ);
 		String exportPath = properties.CustomSchematicDirectory + File.separator + name + ".schematic";
-		if (dungeonHelper.exportDungeon(player.worldObj, x, y, z, exportPath))
-		{
+
+		if (dungeonHelper.exportDungeon(player.worldObj, pos, exportPath)) {
 			sendChat(player,("Saved dungeon schematic in " + exportPath));
 			dungeonHelper.registerDungeon(exportPath, dungeonHelper.getDungeonPack("ruins"), false, true);
 			return DDCommandResult.SUCCESS;
 		}
+
 		return new DDCommandResult("Error: Failed to save dungeon schematic!");
 	}
 	
-	private static String join(String[] source, String delimiter, int start, int end)
-	{
+	private static String join(String[] source, String delimiter, int start, int end) {
 		//TODO: This function should be moved to a helper, but we have several single-function helpers as is.
 		//I find that to be worse than keeping this private. ~SenseiKiwi
 		
 		int index;
 		int length = 0;
 		StringBuilder buffer;
-		for (index = start; index < end; index++)
-		{
+
+		for (index = start; index < end; index++) {
 			length += source[index].length();
 		}
+
 		length += (end - start - 1) * delimiter.length();
 		
 		buffer = new StringBuilder(length);
 		buffer.append(source[start]);
-		for (index = start + 1; index < end; index++)
-		{
+
+		for (index = start + 1; index < end; index++) {
 			buffer.append(delimiter);
 			buffer.append(source[index]);
 		}
+
 		return buffer.toString();
 	}
 }

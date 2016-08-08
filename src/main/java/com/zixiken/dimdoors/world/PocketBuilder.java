@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.core.DimLink;
+import com.zixiken.dimdoors.helpers.BlockPosHelper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -71,30 +72,22 @@ public class PocketBuilder
 		return true;    
 	}
 
-	public static boolean generateSelectedDungeonPocket(DimLink link, DDProperties properties, DungeonData dungeon)
-	{
-		if (link == null)
-		{
+	public static boolean generateSelectedDungeonPocket(DimLink link, DDProperties properties, DungeonData dungeon) {
+		if (link == null) {
 			throw new IllegalArgumentException("link cannot be null.");
-		}
-		if (properties == null)
-		{
+		} if (properties == null) {
 			throw new IllegalArgumentException("properties cannot be null.");
-		}
-		if (link.hasDestination())
-		{
+		} if (link.hasDestination()) {
 			throw new IllegalArgumentException("link cannot have a destination assigned already.");
-		}
-		if (dungeon == null)
-		{
+		} if (dungeon == null) {
 			throw new IllegalArgumentException("dungeon cannot be null.");
 		}
 
 		// Try to load up the schematic
 		DungeonSchematic schematic = null;
 		schematic = loadAndValidateDungeon(dungeon, properties);
-		if (schematic == null)
-		{
+
+		if (schematic == null) {
 			return false;
 		}
 		
@@ -105,8 +98,7 @@ public class PocketBuilder
 		//Load a world
 		World world = PocketManager.loadDimension(dimension.id());
 
-		if (world == null || world.provider == null)
-		{
+		if (world == null || world.provider == null) {
 			System.err.println("Could not initialize dimension for a dungeon!");
 			return false;
 		}
@@ -115,30 +107,26 @@ public class PocketBuilder
 	}
 
 
-	public static boolean generateNewDungeonPocket(DimLink link, DDProperties properties)
-	{
-		if (link == null)
-		{
+	public static boolean generateNewDungeonPocket(DimLink link, DDProperties properties) {
+		if (link == null) {
 			throw new IllegalArgumentException("link cannot be null.");
-		}
-		if (properties == null)
-		{
+		} if (properties == null) {
 			throw new IllegalArgumentException("properties cannot be null.");
 		}
 
-		if (link.hasDestination())
-		{
+		if (link.hasDestination()) {
 			throw new IllegalArgumentException("link cannot have a destination assigned already.");
 		}
 
 		//Choose a dungeon to generate
 		NewDimData parent = PocketManager.getDimensionData(link.source().getDimension());
 		Pair<DungeonData, DungeonSchematic> pair = selectNextDungeon(parent, random, properties);
-		if (pair == null)
-		{
+
+		if (pair == null) {
 			System.err.println("Could not select a dungeon for generation!");
 			return false;
 		}
+
 		DungeonData dungeon = pair.getFirst();
 		DungeonSchematic schematic = pair.getSecond();
 
@@ -148,8 +136,7 @@ public class PocketBuilder
 		//Load a world
 		World world = PocketManager.loadDimension(dimension.id());
 
-		if (world == null || world.provider == null)
-		{
+		if (world == null || world.provider == null) {
 			System.err.println("Could not initialize dimension for a dungeon!");
 			return false;
 		}
@@ -158,8 +145,7 @@ public class PocketBuilder
 	}
 
 
-	private static BlockPos calculateNoisyDestination(Point4D source, NewDimData dimension, DungeonData dungeon, int orientation)
-	{
+	private static BlockPos calculateNoisyDestination(Point4D source, NewDimData dimension, DungeonData dungeon, EnumFacing facing) {
 		int depth = NewDimData.calculatePackDepth(dimension.parent(), dungeon);
 		int forwardNoise = MathHelper.getRandomIntegerInRange(random, 10 * depth, 130 * depth);
 		int sidewaysNoise = MathHelper.getRandomIntegerInRange(random, -10 * depth, 10 * depth);
@@ -170,100 +156,80 @@ public class PocketBuilder
 		BlockPos linkDestination = new BlockPos(forwardNoise, 0, sidewaysNoise);
 		BlockPos sourcePoint = new BlockPos(source.getX(), source.getY(), source.getZ());
 		BlockPos zeroPoint = new BlockPos(0, 0, 0);
-		BlockRotator.transformPoint(linkDestination, zeroPoint, orientation - BlockRotator.EAST_DOOR_METADATA, sourcePoint);
+		BlockRotator.transformPoint(linkDestination, zeroPoint, facing, sourcePoint);
 		return linkDestination;
 	}
 
-	private static Pair<DungeonData, DungeonSchematic> selectNextDungeon(NewDimData parent, Random random, DDProperties properties)
-	{
+	private static Pair<DungeonData, DungeonSchematic> selectNextDungeon(NewDimData parent, Random random, DDProperties properties) {
 		DungeonData dungeon = null;
 		DungeonSchematic schematic = null;
 
 		dungeon = DungeonHelper.instance().selectNextDungeon(parent, random);
 
-		if (dungeon != null)
-		{
+		if (dungeon != null) {
 			schematic = loadAndValidateDungeon(dungeon, properties);
-		}
-		else
-		{
+		} else {
 			System.err.println("Could not select a dungeon at all!");
 		}
 
-		if (schematic == null)
-		{
+		if (schematic == null) {
 			//TODO: In the future, remove this dungeon from the generation lists altogether.
 			//That will have to wait until our code is updated to support that more easily.
-			try
-			{
+			try {
 				System.err.println("Loading the default error dungeon instead...");
 				dungeon = DungeonHelper.instance().getDefaultErrorDungeon();
 				schematic = loadAndValidateDungeon(dungeon, properties);
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 				return null;
 			}
 		}
+
 		return new Pair<DungeonData, DungeonSchematic>(dungeon, schematic);
 	}
 
-	private static DungeonSchematic loadAndValidateDungeon(DungeonData dungeon, DDProperties properties)
-	{
-		try
-		{
+	private static DungeonSchematic loadAndValidateDungeon(DungeonData dungeon, DDProperties properties) {
+		try {
 			DungeonSchematic schematic = dungeon.loadSchematic();
 
 			//Validate the dungeon's dimensions
-			if (hasValidDimensions(schematic))
-			{
+			if (hasValidDimensions(schematic)) {
 				schematic.applyImportFilters(properties);
 
 				//Check that the dungeon has an entrance or we'll have a crash
-				if (schematic.getEntranceDoorLocation() == null)
-				{
+				if (schematic.getEntranceDoorLocation() == null) {
 					System.err.println("The following schematic file does not have an entrance: " + dungeon.schematicPath());
 					return null;
 				}
-			}
-			else
-			{
+			} else {
 				System.err.println("The following schematic file has dimensions that exceed the maximum permitted dimensions for dungeons: " + dungeon.schematicPath());
 				return null;
 			}
+
 			return schematic;
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			System.err.println("An error occurred while loading the following schematic: " + dungeon.schematicPath());
 			System.err.println(e.getMessage());
 			return null;
 		}
 	}
 
-	private static boolean hasValidDimensions(DungeonSchematic schematic)
-	{
-		return (schematic.getWidth() <= DungeonHelper.MAX_DUNGEON_WIDTH &&
-				schematic.getHeight() <= DungeonHelper.MAX_DUNGEON_HEIGHT &&
-				schematic.getLength() <= DungeonHelper.MAX_DUNGEON_LENGTH);
+	private static boolean hasValidDimensions(DungeonSchematic schematic) {
+		return BlockPosHelper.lessThanOrEqual(schematic.getVolume(), DungeonHelper.MAX_DUNGEON_SIZE);
 	}
 
-	public static boolean generateNewPocket(DimLink link, DDProperties properties, Block door, DimensionType type)
-	{
+	public static boolean generateNewPocket(DimLink link, DDProperties properties, Block door, DimensionType type) {
 		return generateNewPocket(link, DEFAULT_POCKET_SIZE, DEFAULT_POCKET_WALL_THICKNESS, properties, door, type);
 	}
 
-	private static int getDoorOrientation(Point4D source, DDProperties properties)
-	{
+	private static int getDoorOrientation(Point4D source, DDProperties properties) {
 		World world = DimensionManager.getWorld(source.getDimension());
-		if (world == null)
-		{
-			throw new IllegalStateException("The link's source world should be loaded!");
-		}
+
+		if (world == null) throw new IllegalStateException("The link's source world should be loaded!");
+
 
 		//Check if the block below that point is actually a door
-		Block block = world.getBlock(source.getX(), source.getY() - 1, source.getZ());
+		Block block = world.getBlock(source.getX().getX(), source.getY() - 1, source.getZ());
 		if (block==null || !(block instanceof IDimDoor))
 		{
 			throw new IllegalStateException("The link's source is not a door block. It should be impossible to traverse a rift without a door!");

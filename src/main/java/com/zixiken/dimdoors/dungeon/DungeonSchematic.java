@@ -13,15 +13,19 @@ import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.core.DimLink;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.PocketManager;
+import com.zixiken.dimdoors.helpers.BlockPosHelper;
+import com.zixiken.dimdoors.helpers.EnumFacingHelper;
 import com.zixiken.dimdoors.ticking.CustomLimboPopulator;
 import com.zixiken.dimdoors.ticking.MobMonolith;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.core.NewDimData;
@@ -93,7 +97,7 @@ public class DungeonSchematic extends Schematic {
 				Blocks.end_portal_frame, Blocks.sandstone);applyFilter(finder);
 		
 		//Flip the entrance's orientation to get the dungeon's orientation
-		orientation = BlockRotator.transformMetadata(finder.getEntranceOrientation(), 2, Blocks.oak_door);
+		orientation = EnumFacingHelper.getFacingFromBlockState(BlockRotator.transform(Blocks.oak_door.getDefaultState(), 2));
 
 		entranceDoorLocation = finder.getEntranceDoorLocation();
 		exitDoorLocations = finder.getExitDoorLocations();
@@ -108,8 +112,7 @@ public class DungeonSchematic extends Schematic {
 		applyFilter(standardizer);
 	}
 	
-	public void applyExportFilters(DDProperties properties)
-	{		
+	public void applyExportFilters(DDProperties properties) {
 		//Check if some block IDs assigned by Forge differ from our standard IDs
 		//If so, change the IDs to standard values
 		CompoundFilter standardizer = new CompoundFilter();
@@ -121,16 +124,12 @@ public class DungeonSchematic extends Schematic {
 		applyFilter(standardizer);
 	}
 
-	public static DungeonSchematic copyFromWorld(World world, int x, int y, int z, short width, short height, short length, boolean doCompactBounds)
-	{
-		return new DungeonSchematic(Schematic.copyFromWorld(world, x, y, z, width, height, length, doCompactBounds));
+	public static DungeonSchematic copyFromWorld(World world, BlockPos pos, BlockPos size, boolean doCompactBounds) {
+		return new DungeonSchematic(Schematic.copyFromWorld(world, pos, size, doCompactBounds));
 	}
 
-	public void copyToWorld(World world, BlockPos pocketCenter, int targetOrientation, DimLink entryLink,
-			Random random, DDProperties properties, boolean notifyClients)
-	{
-		if (notifyClients)
-		{
+	public void copyToWorld(World world, BlockPos pocketCenter, EnumFacing targetOrientation, DimLink entryLink, Random random, DDProperties properties, boolean notifyClients) {
+		if (notifyClients) {
 			copyToWorld(world, pocketCenter, targetOrientation, entryLink, random, properties, new WorldBlockSetter(false, true, false));
 		}
 		else
@@ -139,39 +138,32 @@ public class DungeonSchematic extends Schematic {
 		}
 	}
 	
-	public void copyToWorld(World world, BlockPos pocketCenter, int targetOrientation, DimLink entryLink, Random random, DDProperties properties, IBlockSetter blockSetter)
-	{
+	public void copyToWorld(World world, BlockPos pocketCenter, EnumFacing targetOrientation, DimLink entryLink, Random random, DDProperties properties, IBlockSetter blockSetter) {
 		//TODO: This function is an improvised solution so we can get the release moving. In the future,
 		//we should generalize block transformations and implement support for them at the level of Schematic,
 		//then just use that support from DungeonSchematic instead of making this local fix.
 		//It might be easiest to support transformations using a WorldOperation
 		
-		final int turnAngle = targetOrientation - this.orientation;
+		EnumFacing turnAngle = EnumFacing.getHorizontal(targetOrientation.getHorizontalIndex() - orientation.getHorizontalIndex());
 		
 		int index;
 		int count;
-		Block block;
-		int blockMeta;
+		IBlockState state;
 		int dx, dy, dz;
 		BlockPos pocketPoint = new BlockPos(0, 0, 0);
 		
 		//Copy blocks and metadata into the world
 		index = 0;
-		for (dy = 0; dy < height; dy++)
-		{
-			for (dz = 0; dz < length; dz++)
-			{
-				for (dx = 0; dx < width; dx++)
-				{
-					pocketPoint.setX(dx);
-					pocketPoint.setY(dy);
-					pocketPoint.setZ(dz);
-					block = blocks[index];
+		for (dy = 0; dy < volume.getY(); dy++) {
+			for (dz = 0; dz < volume.getZ(); dz++) {
+				for (dx = 0; dx < volume.getX(); dx++) {
+					pocketPoint = new BlockPos(dx, dy, dz);
+					state = states[index];
 					BlockRotator.transformPoint(pocketPoint, entranceDoorLocation, turnAngle, pocketCenter);
-					blockMeta = BlockRotator.transformMetadata(metadata[index], turnAngle, block);
+					state = BlockRotator.transform(states[index], turnAngle.getHorizontalIndex());
 
 					//In the future, we might want to make this more efficient by building whole chunks at a time
-					blockSetter.setBlock(world, pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), block, blockMeta);
+					blockSetter.setBlock(world, pocketPoint, state);
 					index++;
 				}
 			}
@@ -182,25 +174,23 @@ public class DungeonSchematic extends Schematic {
 		{
 			NBTTagCompound tileTag = (NBTTagCompound) tileEntities.getCompoundTagAt(index);
 			//Rewrite its location to be in world coordinates
-			pocketPoint.setX(tileTag.getInteger("x"));
-			pocketPoint.setY(tileTag.getInteger("y"));
-			pocketPoint.setZ(tileTag.getInteger("z"));
+			pocketPoint = new BlockPos(tileTag.getInteger("x"), tileTag.getInteger("y"), tileTag.getInteger("z"));
 			BlockRotator.transformPoint(pocketPoint, entranceDoorLocation, turnAngle, pocketCenter);
 			tileTag.setInteger("x", pocketPoint.getX());
 			tileTag.setInteger("y", pocketPoint.getY());
 			tileTag.setInteger("z", pocketPoint.getZ());
 			//Load the tile entity and put it in the world
-			world.setTileEntity(pocketPoint.getX(), pocketPoint.getY(), pocketPoint.getZ(), TileEntity.createAndLoadEntity(tileTag));
+			world.setTileEntity(pocketPoint, TileEntity.createAndLoadEntity(tileTag));
 		}
 		
 		setUpDungeon(PocketManager.createDimensionData(world), world, pocketCenter, turnAngle, entryLink, random, properties, blockSetter);
 	}
 	
-	private void setUpDungeon(NewDimData dimension, World world, BlockPos pocketCenter, int turnAngle, DimLink entryLink, Random random, DDProperties properties, IBlockSetter blockSetter)
+	private void setUpDungeon(NewDimData dimension, World world, BlockPos pocketCenter, EnumFacing turnAngle, DimLink entryLink, Random random, DDProperties properties, IBlockSetter blockSetter)
 	{
         //Transform dungeon corners
         BlockPos minCorner = new BlockPos(0, 0, 0);
-        BlockPos maxCorner = new BlockPos(width - 1, height - 1, length - 1);
+        BlockPos maxCorner = new BlockPos(volume.subtract(BlockPosHelper.posFromSingleValue(1)));
         transformCorners(entranceDoorLocation, pocketCenter, turnAngle, minCorner, maxCorner);
         
 		//Fill empty chests and dispensers
@@ -211,21 +201,18 @@ public class DungeonSchematic extends Schematic {
 		createEntranceReverseLink(world, dimension, pocketCenter, entryLink);
 		
 		//Set up link data for dimensional doors
-		for (BlockPos location : dimensionalDoorLocations)
-		{
+		for (BlockPos location : dimensionalDoorLocations) {
 			createDimensionalDoorLink(world, dimension, location, entranceDoorLocation, turnAngle, pocketCenter);
 		}
 		
 		//Set up link data for exit door
-		for (BlockPos location : exitDoorLocations)
-		{
+		for (BlockPos location : exitDoorLocations) {
 			createExitDoorLink(world, dimension, location, entranceDoorLocation, turnAngle, pocketCenter, blockSetter);
 		}
 		
 		//Remove end portal frames and spawn Monoliths, if allowed
 		boolean canSpawn = CustomLimboPopulator.isMobSpawningAllowed();
-		for (BlockPos location : monolithSpawnLocations)
-		{
+		for (BlockPos location : monolithSpawnLocations) {
 			spawnMonolith(world, location, entranceDoorLocation, turnAngle, pocketCenter, canSpawn, blockSetter);
 		}
 		
@@ -234,82 +221,66 @@ public class DungeonSchematic extends Schematic {
 		// approach to check - if the dungeon is rooted in the Nether, then it SHOULD be a Nether dungeon.
 		// This isn't necessarily true if someone uses dd-rift to spawn a dungeon, but it should work under
 		// normal use of the mod.
-		if (dimension.root().id() == NETHER_DIMENSION_ID)
-		{
+		if (dimension.root().id() == NETHER_DIMENSION_ID) {
 			writeDepthSign(world, pocketCenter, dimension.depth());
 		}
 	}
 	
 	private static void transformCorners(BlockPos schematicEntrance, BlockPos pocketCenter, EnumFacing turnAngle, BlockPos minCorner, BlockPos maxCorner) {
-		int temp;
+		BlockPos temp;
 		BlockRotator.transformPoint(minCorner, schematicEntrance, turnAngle, pocketCenter);
 		BlockRotator.transformPoint(maxCorner, schematicEntrance, turnAngle, pocketCenter);
-		if (minCorner.getX() > maxCorner.getX()) {
-			temp = minCorner.getX();
-			minCorner = new BlockPos(maxCorner.getX(), minCorner.getY(), minCorner.getZ());
-			maxCorner = new BlockPos(temp, maxCorner.getY(), maxCorner.getZ());
-		} if (minCorner.getY() > maxCorner.getY()) {
-			temp = minCorner.getY();
-			minCorner.setY(maxCorner.getY());
-			maxCorner.setY(temp);
-		} if (minCorner.getZ() > maxCorner.getZ()) {
-			temp = minCorner.getZ();
-			minCorner.setZ(maxCorner.getZ());
-			maxCorner.setZ(temp);
-		}
+
+		temp = BlockPosHelper.min(minCorner, maxCorner);
+		maxCorner = BlockPosHelper.max(minCorner, maxCorner);
+		minCorner = temp;
 	}
 	
-	private static void createEntranceReverseLink(World world, NewDimData dimension, BlockPos pocketCenter, DimLink entryLink)
-	{
-		int orientation = world.getBlockMetadata(pocketCenter.getX(), pocketCenter.getY() - 1, pocketCenter.getZ());
-		DimLink reverseLink = dimension.createLink(pocketCenter.getX(), pocketCenter.getY(), pocketCenter.getZ(), LinkType.REVERSE, orientation);
+	private static void createEntranceReverseLink(World world, NewDimData dimension, BlockPos pocketCenter, DimLink entryLink) {
+		EnumFacing orientation = EnumFacingHelper.getFacingFromBlockState(world.getBlockState(pocketCenter.down()));
+		DimLink reverseLink = dimension.createLink(pocketCenter, LinkType.REVERSE, orientation);
 		Point4D destination = entryLink.source();
 		NewDimData prevDim = PocketManager.getDimensionData(destination.getDimension());
-		prevDim.setLinkDestination(reverseLink, destination.getX(), destination.getY(), destination.getZ());
+		prevDim.setLinkDestination(reverseLink, destination.toBlockPos());
 		initDoorTileEntity(world, pocketCenter);
 	}
 	
-	private static void createExitDoorLink(World world, NewDimData dimension, BlockPos point, BlockPos entrance, EnumFacing rotation, BlockPos pocketCenter, IBlockSetter blockSetter)
+	private static void createExitDoorLink(World world, NewDimData dimension, BlockPos point, BlockPos entrance, EnumFacing rotation, BlockPos pocketCenter, IBlockSetter blockSetter) {
+		//Transform the door's location to the pocket coordinate system
+		BlockPos location = point;
+		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
+		EnumFacing orientation = EnumFacingHelper.getFacingFromBlockState(world.getBlockState(location.down()));
+		dimension.createLink(location, LinkType.DUNGEON_EXIT, orientation);
+		//Replace the sandstone block under the exit door with the same block as the one underneath it
+		location = location.down(3);
+
+		if (location.getY() >= 0) {
+			IBlockState state = world.getBlockState(location);
+			blockSetter.setBlock(world, location.up(), state);
+		}
+
+		initDoorTileEntity(world, location);
+	}
+	
+	private static void createDimensionalDoorLink(World world, NewDimData dimension, BlockPos point, BlockPos entrance, EnumFacing rotation, BlockPos pocketCenter)
 	{
 		//Transform the door's location to the pocket coordinate system
 		BlockPos location = point;
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
-		int orientation = world.getBlockMetadata(location.getX(), location.getY() - 1, location.getZ());
-		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkType.DUNGEON_EXIT, orientation);
-		//Replace the sandstone block under the exit door with the same block as the one underneath it
-		int x = location.getX();
-		int y = location.getY() - 3;
-		int z = location.getZ();
-		if (y >= 0)
-		{
-			Block block = world.getBlock(x, y, z);
-			int metadata = world.getBlockMetadata(x, y, z);
-			blockSetter.setBlock(world, x, y + 1, z, block, metadata);
-		}
-		initDoorTileEntity(world, location);
-	}
-	
-	private static void createDimensionalDoorLink(World world, NewDimData dimension, BlockPos point, BlockPos entrance, int rotation, BlockPos pocketCenter)
-	{
-		//Transform the door's location to the pocket coordinate system
-		BlockPos location = point.clone();
-		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
-		int orientation = world.getBlockMetadata(location.getX(), location.getY() - 1, location.getZ());
+		EnumFacing orientation = EnumFacingHelper.getFacingFromBlockState(world.getBlockState(location.down()));
 
-		dimension.createLink(location.getX(), location.getY(), location.getZ(), LinkType.DUNGEON, orientation);
+		dimension.createLink(location, LinkType.DUNGEON, orientation);
 		initDoorTileEntity(world, location);
 	}
 	
-	private static void spawnMonolith(World world, BlockPos point, BlockPos entrance, int rotation, BlockPos pocketCenter, boolean canSpawn, IBlockSetter blockSetter)
-	{
+	private static void spawnMonolith(World world, BlockPos point, BlockPos entrance, EnumFacing rotation, BlockPos pocketCenter, boolean canSpawn, IBlockSetter blockSetter) {
 		//Transform the frame block's location to the pocket coordinate system
-		BlockPos location = point.clone();
+		BlockPos location = point;
 		BlockRotator.transformPoint(location, entrance, rotation, pocketCenter);
 		//Remove frame block
-		blockSetter.setBlock(world, location.getX(), location.getY(), location.getZ(), Blocks.air, 0);
+		blockSetter.setBlock(world, location, Blocks.air.getDefaultState());
 		//Spawn Monolith
-		if (canSpawn)
-		{
+		if (canSpawn) {
 			Entity mob = new MobMonolith(world);
 			mob.setLocationAndAngles(location.getX(), location.getY(), location.getZ(), 1, 1);
 			world.spawnEntityInWorld(mob);
@@ -318,43 +289,34 @@ public class DungeonSchematic extends Schematic {
 
 	private static void initDoorTileEntity(World world, BlockPos point)
 	{
-		Block door = world.getBlock(point.getX(), point.getY(), point.getZ());
-		Block door2 = world.getBlock(point.getX(), point.getY() - 1, point.getZ());
+		IBlockState door = world.getBlockState(point);
+		IBlockState door2 = world.getBlockState(point.down());
 
-		if (door instanceof IDimDoor && door2 instanceof IDimDoor)
-		{
-			((IDimDoor) door).initDoorTE(world, point.getX(), point.getY(), point.getZ());
-			((IDimDoor) door).initDoorTE(world, point.getX(), point.getY() - 1, point.getZ());
-		}
-		else
-		{
+		if (door instanceof IDimDoor && door2 instanceof IDimDoor) {
+			((IDimDoor) door).initDoorTE(world, point);
+			((IDimDoor) door).initDoorTE(world, point.down());
+		} else {
 			throw new IllegalArgumentException("Tried to init a dim door TE on a block that isnt a Dim Door!!");
 		}
 	}
 	
-	private static void writeDepthSign(World world, BlockPos pocketCenter, int depth)
-	{
+	private static void writeDepthSign(World world, BlockPos pocketCenter, int depth) {
 		final int SEARCH_RANGE = 6;
 		
-		int x, y, z;
+		BlockPos pos;
         Block block;
 		int dx, dy, dz;
 		
-		for (dy = SEARCH_RANGE; dy >= -SEARCH_RANGE; dy--)
-		{
-			for (dz = -SEARCH_RANGE; dz <= SEARCH_RANGE; dz++)
-			{
-				for (dx = -SEARCH_RANGE; dx <= SEARCH_RANGE; dx++)
-				{
-					x = pocketCenter.getX() + dx;
-					y = pocketCenter.getY() + dy;
-					z = pocketCenter.getZ() + dz;
-					block = world.getBlock(x, y, z);
-					if (block == Blocks.wall_sign || block == Blocks.standing_sign)
-					{
+		for (dy = SEARCH_RANGE; dy >= -SEARCH_RANGE; dy--) {
+			for (dz = -SEARCH_RANGE; dz <= SEARCH_RANGE; dz++) {
+				for (dx = -SEARCH_RANGE; dx <= SEARCH_RANGE; dx++) {
+					pos = pocketCenter.add(dx, dy, dz);
+
+					block = world.getBlockState(pos).getBlock();
+					if (block == Blocks.wall_sign || block == Blocks.standing_sign) {
 						TileEntitySign signEntity = new TileEntitySign();
-						signEntity.signText[1] = "Level " + depth;
-						world.setTileEntity(x, y, z, signEntity);
+						signEntity.signText[1] = new ChatComponentText("Level " + depth);
+						world.setTileEntity(pocketCenter, signEntity);
 						return;
 					}
 				}

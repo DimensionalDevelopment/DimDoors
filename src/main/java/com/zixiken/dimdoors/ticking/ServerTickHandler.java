@@ -4,32 +4,28 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import com.zixiken.dimdoors.core.DDTeleporter;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.relauncher.Side;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
-public class ServerTickHandler implements IRegularTickSender
-{
+public class ServerTickHandler implements IRegularTickSender {
 	private static final String PROFILING_LABEL = "Dimensional Doors: Server Tick";
 	
 	private int tickCount = 0;
 	private ArrayList<RegularTickReceiverInfo> receivers;
 
-	public ServerTickHandler()
-	{
+	public ServerTickHandler() {
 		this.receivers = new ArrayList<RegularTickReceiverInfo>();
 	}
 
 	@Override
-	public void registerReceiver(IRegularTickReceiver receiver, int interval, boolean onTickStart)
-	{
+	public void registerReceiver(IRegularTickReceiver receiver, int interval, boolean onTickStart) {
 		RegularTickReceiverInfo info = new RegularTickReceiverInfo(receiver, interval, onTickStart);
 		receivers.add(info);
 	}
 	
 	@Override
-	public void unregisterReceivers()
-	{
+	public void unregisterReceivers() {
 		receivers.clear();
 	}
 
@@ -45,12 +41,9 @@ public class ServerTickHandler implements IRegularTickSender
     }
 
     private void tickStart(TickEvent.Type type) {
-		if (type.equals(EnumSet.of(TickEvent.Type.SERVER)))
-		{
-			for (RegularTickReceiverInfo info : receivers)
-			{
-				if (info.OnTickStart && tickCount % info.Interval == 0)
-				{
+		if (type.equals(EnumSet.of(TickEvent.Type.SERVER))) {
+			for (RegularTickReceiverInfo info : receivers) {
+				if (info.OnTickStart && tickCount % info.Interval == 0) {
 					info.RegularTickReceiver.notifyTick();
 				}
 			}
@@ -58,18 +51,14 @@ public class ServerTickHandler implements IRegularTickSender
 		
 		//TODO: Stuck this in here because it's already rather hackish.
 		//We should standardize this as an IRegularTickReceiver in the future. ~SenseiKiwi
-		if (DDTeleporter.cooldown > 0)
-		{
+		if (DDTeleporter.cooldown > 0) {
 			DDTeleporter.cooldown--;
 		}
 	}
 
-	private void tickEnd(TickEvent.Type type)
-	{
-		for (RegularTickReceiverInfo info : receivers)
-		{
-			if (!info.OnTickStart && tickCount % info.Interval == 0)
-			{
+	private void tickEnd(TickEvent.Type type) {
+		for (RegularTickReceiverInfo info : receivers) {
+			if (!info.OnTickStart && tickCount % info.Interval == 0) {
 				info.RegularTickReceiver.notifyTick();
 			}
 		}

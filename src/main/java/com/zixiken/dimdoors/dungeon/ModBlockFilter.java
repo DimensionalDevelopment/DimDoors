@@ -11,8 +11,7 @@ public class ModBlockFilter extends SchematicFilter {
 	private List<Block> exceptions;
 	private IBlockState replacementState;
 	
-	public ModBlockFilter(List<Block> exceptions, IBlockState state)
-	{
+	public ModBlockFilter(List<Block> exceptions, IBlockState state) {
 		super("ModBlockFilter");
 		this.exceptions = exceptions;
 		this.replacementState = state;
@@ -38,8 +37,7 @@ public class ModBlockFilter extends SchematicFilter {
 	}
 	
 	@Override
-	protected boolean terminates()
-	{
+	protected boolean terminates() {
 		return false;
 	}
 }

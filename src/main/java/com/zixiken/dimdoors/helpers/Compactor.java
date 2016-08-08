@@ -12,6 +12,7 @@ import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.util.Point4D;
 import com.zixiken.dimdoors.watcher.ClientLinkData;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.util.EnumFacing;
 
 public class Compactor
 {
@@ -72,7 +73,7 @@ public class Compactor
 			for (int h = 0; h < linkCount; h++) {
 				ClientLinkData link = ClientLinkData.read(input);
 				Point4D source = link.point;
-				dimension.createLink(source.getX(), source.getY(), source.getZ(), LinkType.CLIENT,0);
+				dimension.createLink(source.toBlockPos(), LinkType.CLIENT, EnumFacing.getHorizontal(0));
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package com.zixiken.dimdoors.commands;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
 
@@ -62,10 +63,15 @@ public abstract class DDCommandBase extends CommandBase
 	 * to provide the sending player directly.
 	 */
 	@Override
-	public final void processCommand(ICommandSender sender, String[] command)
-	{
+	public final void processCommand(ICommandSender sender, String[] command) {
 		//Forward the command
-		EntityPlayer player = getCommandSenderAsPlayer(sender);
+		EntityPlayer player = null;
+		try {
+			player = getCommandSenderAsPlayer(sender);
+		} catch (PlayerNotFoundException e) {
+			e.printStackTrace();
+		}
+
 		DDCommandResult result = processCommand(player, command);
 
 		//If the command failed, send the player a status message.
@@ -98,11 +104,5 @@ public abstract class DDCommandBase extends CommandBase
 	public int compareTo(ICommand command)
     {
         return this.getCommandName().compareTo(command.getCommandName());
-    }
-
-    @Override
-	public int compareTo(Object other)
-    {
-        return this.compareTo((ICommand) other);
     }
 }

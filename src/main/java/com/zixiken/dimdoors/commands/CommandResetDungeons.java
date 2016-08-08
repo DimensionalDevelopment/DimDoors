@@ -10,17 +10,14 @@ import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.core.NewDimData;
 import com.zixiken.dimdoors.core.PocketManager;
 
-public class CommandResetDungeons extends DDCommandBase
-{	
+public class CommandResetDungeons extends DDCommandBase {
 	private static CommandResetDungeons instance = null;
 	
-	private CommandResetDungeons()
-	{
+	private CommandResetDungeons() {
 		super("dd-resetdungeons", "");
 	}
 	
-	public static CommandResetDungeons instance()
-	{
+	public static CommandResetDungeons instance() {
 		if (instance == null)
 			instance = new CommandResetDungeons();
 		
@@ -28,10 +25,8 @@ public class CommandResetDungeons extends DDCommandBase
 	}
 
 	@Override
-	protected DDCommandResult processCommand(EntityPlayer sender, String[] command)
-	{
-		if (command.length > 0)
-		{
+	protected DDCommandResult processCommand(EntityPlayer sender, String[] command) {
+		if (command.length > 0) {
 			return DDCommandResult.TOO_MANY_ARGUMENTS;
 		}
 
@@ -44,8 +39,8 @@ public class CommandResetDungeons extends DDCommandBase
 		// Copy the list of dimensions to iterate over the copy. Otherwise,
 		// we would trigger an exception by modifying the original list.
 		ArrayList<NewDimData> dimensions = new ArrayList<NewDimData>();
-		for (NewDimData dimension : PocketManager.getDimensions())
-		{
+
+		for (NewDimData dimension : PocketManager.getDimensions()) {
 
 			dimensions.add(dimension);
 		}
@@ -53,48 +48,35 @@ public class CommandResetDungeons extends DDCommandBase
 		// Iterate over the list of dimensions. Check which ones are dungeons.
 		// If a dungeon is found, try to delete it. If it can't be deleted,
 		// then it must be loaded and needs to be updated to prevent bugs.
-		for (NewDimData dimension : dimensions)
-		{
-			if (dimension.type() == DimensionType.DUNGEON)
-			{
+		for (NewDimData dimension : dimensions) {
+			if (dimension.type() == DimensionType.DUNGEON) {
 				dungeonCount++;
 				id = dimension.id();
-				if (PocketManager.deletePocket(dimension, true))
-				{
+
+				if (PocketManager.deletePocket(dimension, true)) {
 					resetCount++;
 					deletedDimensions.add(id);
-				}
-				else
-				{
+				} else {
 					loadedDungeons.add(dimension);
 				}
 			}
-
 		}
 		
 		// Modify the loaded dungeons to prevent bugs
-		for (NewDimData dungeon : loadedDungeons)
-		{
+		for (NewDimData dungeon : loadedDungeons) {
 			// Find top-most loaded dungeons and update their parents.
 			// They will automatically update their children.
 			// Dungeons with non-dungeon parents don't need to be fixed.
-			if (dungeon.parent() == null)
-			{
+			if (dungeon.parent() == null) {
 				dungeon.setParentToRoot();
 			}
 			
 			// Links to any deleted dungeons must be replaced
-			for (DimLink link : dungeon.links())
-			{
-				if (link.hasDestination() && deletedDimensions.contains(link.destination().getDimension()))
-				{
-
-					if (link.linkType() == LinkType.DUNGEON)
-					{
+			for (DimLink link : dungeon.links()) {
+				if (link.hasDestination() && deletedDimensions.contains(link.destination().getDimension())) {
+					if (link.linkType() == LinkType.DUNGEON) {
 						dungeon.createLink(link.source(), LinkType.DUNGEON, link.orientation(), null);
-					}
-					else if (link.linkType() == LinkType.REVERSE)
-					{
+					} else if (link.linkType() == LinkType.REVERSE) {
 						dungeon.createLink(link.source(), LinkType.DUNGEON_EXIT, link.orientation(), null);
 					}
 				}

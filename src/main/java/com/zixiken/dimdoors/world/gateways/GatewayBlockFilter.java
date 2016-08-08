@@ -1,30 +1,29 @@
 package com.zixiken.dimdoors.world.gateways;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.blocks.DimensionalDoor;
+import com.zixiken.dimdoors.blocks.TransientDoor;
+import com.zixiken.dimdoors.blocks.WarpDoor;
 import com.zixiken.dimdoors.schematic.Schematic;
 import com.zixiken.dimdoors.schematic.SchematicFilter;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 
 public class GatewayBlockFilter extends SchematicFilter {
-
-	private static final short STANDARD_WARP_DOOR_ID = 1975;
-	private static final short STANDARD_DIMENSIONAL_DOOR_ID = 1970;
-	private static final short STANDARD_TRANSIENT_DOOR_ID = 1979;
-
-	private int entranceOrientation;
+	private EnumFacing entranceOrientation;
 	private Schematic schematic;
 	private BlockPos entranceDoorLocation;
 
-	public GatewayBlockFilter()
-	{
+	public GatewayBlockFilter() {
 		super("GatewayEntranceFinder");
 		this.entranceDoorLocation = null;
-		this.entranceOrientation = 0;
+		this.entranceOrientation = EnumFacing.NORTH;
 		this.schematic = null;
 	}
 	
-	public int getEntranceOrientation() {
+	public EnumFacing getEntranceOrientation() {
 		return entranceOrientation;
 	}
 
@@ -33,44 +32,33 @@ public class GatewayBlockFilter extends SchematicFilter {
 	}
 	
 	@Override
-	protected boolean initialize(Schematic schematic, Block[] blocks, byte[] metadata)
-	{
+	protected boolean initialize(Schematic schematic, IBlockState[] states) {
 		this.schematic = schematic;
 		return true;
 	}
 	
 	@Override
-	protected boolean applyToBlock(int index, Block[] blocks, byte[] metadata)
-	{
+	protected boolean applyToBlock(int index, IBlockState[] states) {
 		int indexBelow;
-		int indexDoubleBelow;
-		if (blocks[index] == DimDoors.dimensionalDoor)
-		{
+		if (states[index] == DimDoors.dimensionalDoor) {
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == DimDoors.dimensionalDoor)
-			{
+			if (indexBelow >= 0 && states[indexBelow] == DimDoors.dimensionalDoor) {
 				entranceDoorLocation = schematic.calculatePoint(index);
-				entranceOrientation = (metadata[indexBelow] & 3);
+				entranceOrientation = states[indexBelow].getValue(DimensionalDoor.FACING);
 				return true;
 			}
-		}
-		if (blocks[index] == DimDoors.transientDoor)
-		{
+		} if (states[index] == DimDoors.transientDoor) {
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == DimDoors.transientDoor)
-			{
+			if (indexBelow >= 0 && states[indexBelow] == DimDoors.transientDoor) {
 				entranceDoorLocation = schematic.calculatePoint(index);
-				entranceOrientation = (metadata[indexBelow] & 3);
+				entranceOrientation = states[indexBelow].getValue(TransientDoor.FACING);
 				return true;
 			}
-		}
-		if (blocks[index] == DimDoors.warpDoor)
-		{
+		} if (states[index] == DimDoors.warpDoor) {
 			indexBelow = schematic.calculateIndexBelow(index);
-			if (indexBelow >= 0 && blocks[indexBelow] == DimDoors.warpDoor)
-			{
+			if (indexBelow >= 0 && states[indexBelow] == DimDoors.warpDoor) {
 				entranceDoorLocation = schematic.calculatePoint(index);
-				entranceOrientation = (metadata[indexBelow] & 3);
+				entranceOrientation = states[indexBelow].getValue(WarpDoor.FACING);
 				return true;
 			}
 		}
@@ -78,8 +66,7 @@ public class GatewayBlockFilter extends SchematicFilter {
 	}
 	
 	@Override
-	protected boolean terminates()
-	{
+	protected boolean terminates() {
 		return true;
 	}
 }
