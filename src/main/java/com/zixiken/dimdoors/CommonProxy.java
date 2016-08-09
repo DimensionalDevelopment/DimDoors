@@ -8,6 +8,7 @@ import java.io.IOException;
 import com.zixiken.dimdoors.blocks.BaseDimDoor;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 
+import com.zixiken.dimdoors.watcher.ServerPacketHandler;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
