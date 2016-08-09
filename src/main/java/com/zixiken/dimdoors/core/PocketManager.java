@@ -16,7 +16,7 @@ import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.helpers.Compactor;
 import com.zixiken.dimdoors.helpers.DeleteFolder;
 import com.zixiken.dimdoors.saving.DDSaveHandler;
-import com.zixiken.dimdoors.legacy.LegacySaveImporter;
+import com.zixiken.dimdoors.legacy.OldSaveImporter;
 import com.zixiken.dimdoors.saving.PackedDimData;
 import com.zixiken.dimdoors.util.Point4D;
 import com.zixiken.dimdoors.watcher.ClientDimData;
@@ -374,7 +374,7 @@ public class PocketManager
 				try
 				{
 					System.out.println("Importing old DD save data...");
-					LegacySaveImporter.importOldSave(oldSaveData);
+					OldSaveImporter.importOldSave(oldSaveData);
 
 					oldSaveData.renameTo(new File(oldSaveData.getAbsolutePath() + "_IMPORTED"));
 

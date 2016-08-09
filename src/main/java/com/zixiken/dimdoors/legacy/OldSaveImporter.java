@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import com.zixiken.dimdoors.ObjectSaveInputStream;
+
 import com.zixiken.dimdoors.core.DimensionType;
 import com.zixiken.dimdoors.core.LinkType;
 import com.zixiken.dimdoors.saving.DDSaveHandler;
@@ -17,7 +17,7 @@ import com.zixiken.dimdoors.util.Point4D;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 
-public class LegacySaveImporter {
+public class OldSaveImporter {
 	public static void importOldSave(File file) throws IOException, ClassNotFoundException {
 		FileInputStream saveFile = new FileInputStream(file);
         ObjectSaveInputStream save = new ObjectSaveInputStream(saveFile);

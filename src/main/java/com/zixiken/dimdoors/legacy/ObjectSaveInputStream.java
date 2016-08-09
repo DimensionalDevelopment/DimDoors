@@ -1,20 +1,17 @@
-package com.zixiken.dimdoors;
+package com.zixiken.dimdoors.legacy;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
-import java.util.logging.Logger;
 
 @SuppressWarnings("unused")
 public class ObjectSaveInputStream extends ObjectInputStream {
 
   //  private static Logger logger = LoggerFactory.getLogger(ObjectSaveInputStream.class);
 
-    public ObjectSaveInputStream(InputStream in) throws IOException {
-        super(in);
-    }
+    public ObjectSaveInputStream(InputStream in) throws IOException {super(in);}
 
     @Override
     protected ObjectStreamClass readClassDescriptor() throws IOException, ClassNotFoundException {
