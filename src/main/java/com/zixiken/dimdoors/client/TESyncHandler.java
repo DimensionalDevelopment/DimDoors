@@ -1,24 +1,19 @@
 package com.zixiken.dimdoors.client;
 
-public class TESyncHandler
-{
-	public void onServerChanges()
-	{
+public class TESyncHandler {
+	public void onServerChanges() {
 		
 	}
 	
-	public void onClientChanges()
-	{
+	public void onClientChanges() {
 		
 	}
 	
-	public void onClientData()
-	{
+	public void onClientData() {
 		
 	}
 	
-	public void onServerData()
-	{
+	public void onServerData() {
 		
 	}
 	

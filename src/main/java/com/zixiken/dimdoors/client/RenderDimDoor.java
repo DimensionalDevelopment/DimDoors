@@ -9,31 +9,29 @@ import java.util.Random;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
 import static org.lwjgl.opengl.GL11.*;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor>
 {
 	private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
-	private ResourceLocation warpPath= new ResourceLocation(DimDoors.modid + ":textures/other/WARP.png");
-	private ResourceLocation keyPath= new ResourceLocation(DimDoors.modid + ":textures/other/keyhole.png");
-	private ResourceLocation KeyholeLight= new ResourceLocation(DimDoors.modid + ":textures/other/keyholeLight.png");
-	private ResourceLocation keyOutline= new ResourceLocation(DimDoors.modid + ":textures/other/keyOutline.png");
-	private ResourceLocation keyOutlineLight= new ResourceLocation(DimDoors.modid + ":textures/other/keyOutlineLight.png");
+	private ResourceLocation warpPath= new ResourceLocation(DimDoors.MODID + ":textures/other/WARP.png");
+	private ResourceLocation keyPath= new ResourceLocation(DimDoors.MODID + ":textures/other/keyhole.png");
+	private ResourceLocation KeyholeLight= new ResourceLocation(DimDoors.MODID + ":textures/other/keyholeLight.png");
+	private ResourceLocation keyOutline= new ResourceLocation(DimDoors.MODID + ":textures/other/keyOutline.png");
+	private ResourceLocation keyOutlineLight= new ResourceLocation(DimDoors.MODID + ":textures/other/keyOutlineLight.png");
 
 
 	private static final int NETHER_DIMENSION_ID = -1;
@@ -47,162 +45,122 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor>
 	/**
 	 * Renders the dimdoor.
 	 */
-	public void renderDimDoorTileEntity(TileEntityDimDoor tile, double x,
-										double y, double z)
-	{
-		
+	public void renderDimDoorTileEntity(TileEntityDimDoor tile, double x, double y, double z) {
 		GL11.glDisable(GL11.GL_LIGHTING);
 		Random rand = new Random(31100L);
 		float var13 = 0.75F;
 
-		for (int count = 0; count < 16; ++count)
-		{
-			
-			
-			GL11.glPushMatrix();
+		for (int count = 0; count < 16; ++count) {
+			GlStateManager.pushMatrix();
+
 			float var15 = 16 - count;
 			float var16 = 0.2625F;
 			float var17 = 1.0F / (var15 + .80F);
 
-			if (count == 0)
-			{
-				this.bindTexture(warpPath);
-                // move files into assets/modid and change to new ResourceLocation(modid:/RIFT.png)
+			this.bindTexture(warpPath);
+			GlStateManager.enableBlend();
+
+			if (count == 0) {
 				var17 = 0.1F;
 				var15 = 25.0F;
 				var16 = 0.125F;
-				GL11.glEnable(GL11.GL_BLEND);
-				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+				GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			}
 
-			if (count == 1)
-			{
-				this.bindTexture(warpPath);
-                // move files into assets/modid and change to new ResourceLocation(modid:/WARP.png)
-				GL11.glEnable(GL11.GL_BLEND);
-				GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE);
+			if (count == 1) {
 				var16 = .5F;
+
+				GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
 			}
-			
-			
 		
-				GL11.glTranslatef(
-						Minecraft.getSystemTime() % 200000L / 200000.0F,
-						0, 0.0F);
-				GL11.glTranslatef(0,
-						Minecraft.getSystemTime() % 200000L / 200000.0F,
-						0.0F);
-				GL11.glTranslatef(0, 0,
-						Minecraft.getSystemTime() % 200000L / 200000.0F);
+			GlStateManager.translate(Minecraft.getSystemTime() % 200000L / 200000.0F, 0, 0.0F);
+			GlStateManager.translate(0, Minecraft.getSystemTime() % 200000L / 200000.0F, 0.0F);
+			GlStateManager.translate(0, 0,	Minecraft.getSystemTime() % 200000L / 200000.0F);
 	
-				GL11.glTexGeni(GL11.GL_S, GL11.GL_TEXTURE_GEN_MODE,
-						GL11.GL_OBJECT_LINEAR);
-				GL11.glTexGeni(GL11.GL_T, GL11.GL_TEXTURE_GEN_MODE,
-						GL11.GL_OBJECT_LINEAR);
-				GL11.glTexGeni(GL11.GL_R, GL11.GL_TEXTURE_GEN_MODE,
-						GL11.GL_OBJECT_LINEAR);
-				GL11.glTexGeni(GL11.GL_Q, GL11.GL_TEXTURE_GEN_MODE,
-						GL11.GL_OBJECT_LINEAR);
-				switch ((tile.orientation % 4) + 4)
-				{
-				case 4:
-					GL11.glTexGen(GL11.GL_S, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
-					GL11.glTexGen(GL11.GL_T, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
-					GL11.glTexGen(GL11.GL_R, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-					GL11.glTexGen(GL11.GL_Q, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.15F));
-	
-					break;
-				case 5:
-	
-					GL11.glTexGen(GL11.GL_S, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
-					GL11.glTexGen(GL11.GL_T, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
-					GL11.glTexGen(GL11.GL_R, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-					GL11.glTexGen(GL11.GL_Q, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.15F));
-					break;
-				case 6:
-					GL11.glTexGen(GL11.GL_S, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
-					GL11.glTexGen(GL11.GL_T, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
-					GL11.glTexGen(GL11.GL_R, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-					GL11.glTexGen(GL11.GL_Q, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(1.0F, 0.0F, 0.0F, -0.15F));
-	
-					break;
-				case 7:
-					GL11.glTexGen(GL11.GL_S, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
-					GL11.glTexGen(GL11.GL_T, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
-					GL11.glTexGen(GL11.GL_R, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-					GL11.glTexGen(GL11.GL_Q, GL11.GL_OBJECT_PLANE,
-							this.getFloatBuffer(0.0F, 0.0F, 1.0F, -0.15F));
-					break;
-	
-				}
-	
-				GL11.glEnable(GL11.GL_TEXTURE_GEN_S);
-				GL11.glEnable(GL11.GL_TEXTURE_GEN_T);
-				GL11.glEnable(GL11.GL_TEXTURE_GEN_R);
-				GL11.glEnable(GL11.GL_TEXTURE_GEN_Q);
-			
-			
-			GL11.glPopMatrix();
-			GL11.glMatrixMode(GL11.GL_TEXTURE);
-			GL11.glPushMatrix();
-			GL11.glLoadIdentity();
-			GL11.glTranslatef(0.0F,
-					Minecraft.getSystemTime() % 200000L / 200000.0F
-							* var15, 0.0F);
-			GL11.glScalef(var16, var16, var16);
-			GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-			GL11.glRotatef((count * count * 4321 + count * 9) * 2.0F,
-					0.0F, 0.0F, 1.0F);
-			GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+			GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_LINEAR);
+			GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_LINEAR);
+			GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_LINEAR);
+			GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_LINEAR);
 
-			GL11.glBegin(GL11.GL_QUADS);
-			
+			EnumFacing orientation = EnumFacing.getHorizontal((tile.orientation.getHorizontalIndex() % 4) + 4);
+
+			switch (orientation) {
+				case SOUTH:
+					GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.15F));
+					break;
+				case WEST:
+                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.15F));
+					break;
+				case NORTH:
+                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
+					GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, -0.15F));
+					break;
+				case EAST:
+					GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, -0.15F));
+					break;
+			}
+	
+			GlStateManager.enableTexGenCoord(GlStateManager.TexGen.S);
+            GlStateManager.enableTexGenCoord(GlStateManager.TexGen.T);
+            GlStateManager.enableTexGenCoord(GlStateManager.TexGen.R);
+            GlStateManager.enableTexGenCoord(GlStateManager.TexGen.Q);
+
+			GlStateManager.popMatrix();
+
+            GlStateManager.matrixMode(GL11.GL_TEXTURE);
+			GlStateManager.pushMatrix();
+			GlStateManager.loadIdentity();
+			GlStateManager.translate(0.0F, Minecraft.getSystemTime() % 200000L / 200000.0F * var15, 0.0F);
+			GlStateManager.scale(var16, var16, var16);
+			GlStateManager.translate(0.5F, 0.5F, 0.5F);
+			GlStateManager.rotate((count * count * 4321 + count * 9) * 2.0F, 0.0F, 0.0F, 1.0F);
+			GlStateManager.translate(0.5F, 0.5F, 0.5F);
+
+            Tessellator tessellator = Tessellator.getInstance();
+            WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+            worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+
 			float[] color = tile.getRenderColor(rand);
-			GL11.glColor4f(color[0] * var17, color[1] * var17, color[2] * var17, color[3]);
+			GlStateManager.color(color[0] * var17, color[1] * var17, color[2] * var17, color[3]);
 
-				switch (tile.orientation)
-				{
-				case 0:
-
-					GL11.glVertex3d(x + .01F, y - 1, z);
-					GL11.glVertex3d(x + .01, y - 1, z + 1.0D);
-					GL11.glVertex3d(x + .01, y + 1, z + 1.0D);
-					GL11.glVertex3d(x + .01, y + 1, z);
+			switch (tile.orientation) {
+                case SOUTH:
+					worldRenderer.pos(x + .01F, y - 1, z).endVertex();
+					worldRenderer.pos(x + .01, y - 1, z + 1.0D).endVertex();
+					worldRenderer.pos(x + .01, y + 1, z + 1.0D).endVertex();
+					worldRenderer.pos(x + .01, y + 1, z).endVertex();
 					break;
-				case 1:
-					GL11.glVertex3d(x, y + 1, z + .01);
-					GL11.glVertex3d(x + 1, y + 1, z + .01);
-					GL11.glVertex3d(x + 1, y -1, z + .01);
-					GL11.glVertex3d(x, y -1, z + .01);
+                case WEST:
+					worldRenderer.pos(x, y + 1, z + .01).endVertex();
+					worldRenderer.pos(x + 1, y + 1, z + .01).endVertex();
+                    worldRenderer.pos(x + 1, y -1, z + .01).endVertex();
+					worldRenderer.pos(x, y -1, z + .01).endVertex();
 					break;
-				case 2:
-					GL11.glVertex3d(x + .99, y + 1, z);
-					GL11.glVertex3d(x + .99, y + 1, z + 1.0D);
-					GL11.glVertex3d(x + .99, y - 1, z + 1.0D);
-					GL11.glVertex3d(x + .99, y - 1, z);
+                case NORTH:
+					worldRenderer.pos(x + .99, y + 1, z).endVertex();
+					worldRenderer.pos(x + .99, y + 1, z + 1.0D).endVertex();
+					worldRenderer.pos(x + .99, y - 1, z + 1.0D).endVertex();
+					worldRenderer.pos(x + .99, y - 1, z).endVertex();
 					break;
-				case 3:
-					GL11.glVertex3d(x, y -1, z + .99);
-					GL11.glVertex3d(x + 1, y -1, z + .99);
-					GL11.glVertex3d(x + 1, y + 1, z + .99);
-					GL11.glVertex3d(x, y + 1, z + .99);
+                case EAST:
+					worldRenderer.pos(x, y -1, z + .99).endVertex();
+					worldRenderer.pos(x + 1, y -1, z + .99).endVertex();
+					worldRenderer.pos(x + 1, y + 1, z + .99).endVertex();
+					worldRenderer.pos(x, y + 1, z + .99).endVertex();
 					break;
-				case 4:
+				/*case 4:
 					GL11.glVertex3d(x + .15F, y - 1 , z);
 					GL11.glVertex3d(x + .15, y - 1, z + 1.0D);
 					GL11.glVertex3d(x + .15, y + 1, z + 1.0D);
@@ -225,130 +183,112 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor>
 					GL11.glVertex3d(x + 1, y - 1, z + .85);
 					GL11.glVertex3d(x + 1, y + 1, z + .85);
 					GL11.glVertex3d(x, y + 1, z + .85);
-					break;
+					break;*/
 				}
 			
+            tessellator.draw();
 
-			GL11.glEnd();
-
-			GL11.glPopMatrix();
-			GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			GlStateManager.popMatrix();
+			GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 		}
 
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_GEN_S);
-		GL11.glDisable(GL11.GL_TEXTURE_GEN_T);
-		GL11.glDisable(GL11.GL_TEXTURE_GEN_R);
-		GL11.glDisable(GL11.GL_TEXTURE_GEN_Q);
-		GL11.glEnable(GL11.GL_LIGHTING);
+		GlStateManager.disableBlend();
+		GlStateManager.disableTexGenCoord(GlStateManager.TexGen.S);
+        GlStateManager.disableTexGenCoord(GlStateManager.TexGen.T);
+        GlStateManager.disableTexGenCoord(GlStateManager.TexGen.R);
+        GlStateManager.disableTexGenCoord(GlStateManager.TexGen.Q);
+		GlStateManager.enableLighting();
 	}
 
-	private FloatBuffer getFloatBuffer(float par1, float par2, float par3, float par4)
-	{
+	private FloatBuffer getFloatBuffer(float par1, float par2, float par3, float par4) {
 		buffer.clear();
 		buffer.put(par1).put(par2).put(par3).put(par4);
 		buffer.flip();
 		return buffer;
 	}
 	
-	private void renderKeyHole(TileEntityDimDoor tile, double x,
-			double y, double z, int i)
-	{
-		if(tile.orientation>3)
-		{
-			return;
-		}
-		int rotation = (tile.orientation+3)%4;
+	private void renderKeyHole(TileEntityDimDoor tile, double x, double y, double z, int i) {
+		EnumFacing rotation = EnumFacing.getHorizontal((tile.orientation.getHorizontalIndex()+3)%4);
         
-        GL11.glPushMatrix();
-        GL11.glTranslated(x,y,z);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x,y,z);
 
-        x= ActiveRenderInfo.objectX;
-        y = ActiveRenderInfo.objectY;
-        z = ActiveRenderInfo.objectZ;
+        x = ActiveRenderInfo.getPosition().xCoord;
+        y = ActiveRenderInfo.getPosition().yCoord;
+        z = ActiveRenderInfo.getPosition().zCoord;
 
-        GL11.glRotatef(180.0F - 90*rotation, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(180.0F - 90*rotation.getHorizontalIndex(), 0.0F, 1.0F, 0.0F);
         //GL11.glRotatef((float)(-90 * rotation), 0.0F, 0.0F, 1.0F);
 
-        GL11.glTranslatef(0.007F, .25F, 0F);
+        GlStateManager.translate(0.007F, .25F, 0F);
 
-        switch (rotation)
-        {
-        	case 0:
+        switch (rotation) {
+            case SOUTH:
                 GL11.glTranslatef(-0.5F, 0, -0.03F);
         		break;
-            case 1:
+            case WEST:
                 GL11.glTranslatef(-.5F, 0F, .97F);
                 break;
-            case 2:
+            case NORTH:
                 GL11.glTranslatef(.5F, 0F, .97F);
                 break;
-            case 3:
+            case EAST:
                 GL11.glTranslatef(0.5F, 0F, -0.03F);
         }
 
-        	GL11.glDisable(GL_LIGHTING);
-            Tessellator tessellator = Tessellator.instance;
-			GL11.glEnable(GL11.GL_BLEND);
-			if(i==1)
-			{
-		        bindTexture(KeyholeLight);
-		        GL11.glColor4d(1, 1, 1, .7);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_COLOR);
+		GL11.glDisable(GL_LIGHTING);
 
-			}
-			else 
-			{
-		        bindTexture(keyPath);
-				glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
 
-			}
-		    GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glScalef(0.00860625F, 0.00730625F, 0.0086625F);
-            GL11.glTranslatef(-65.0F, -107.0F, -3.0F);
-            GL11.glNormal3f(0.0F, 0.0F, -1.0F);
-            tessellator.startDrawingQuads();
-            byte b0 = 7;
-            tessellator.addVertexWithUV((double)(0 - b0), (double)(128 + b0), 0.0D, 0.0D, 1.0D);
-            tessellator.addVertexWithUV((double)(128 + b0), (double)(128 + b0), 0.0D, 1.0D, 1.0D);
-            tessellator.addVertexWithUV((double)(128 + b0), (double)(0 - b0), 0.0D, 1.0D, 0.0D);
-            tessellator.addVertexWithUV((double)(0 - b0), (double)(0 - b0), 0.0D, 0.0D, 0.0D);
-            tessellator.draw();
-            GL11.glTranslatef(0.0F, 0.0F, -1.0F);
-			GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_BLEND);
 
-        
-        GL11.glPopMatrix();
+        if(i==1) {
+	        bindTexture(KeyholeLight);
+	        GlStateManager.color(1, 1, 1, .7f);
+			GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_COLOR);
+		} else {
+	        bindTexture(keyPath);
+			GlStateManager.blendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
+        }
+
+	    GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.scale(0.00860625F, 0.00730625F, 0.0086625F);
+        GlStateManager.translate(-65.0F, -107.0F, -3.0F);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
+        byte b0 = 7;
+
+        worldRenderer.pos((double)(0 - b0), (double)(128 + b0), 0.0D).tex(0.0D, 1.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
+        worldRenderer.pos((double)(128 + b0), (double)(128 + b0), 0.0D).tex(1.0D, 1.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
+        worldRenderer.pos((double)(128 + b0), (double)(0 - b0), 0.0D).tex(1.0D, 0.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
+        worldRenderer.pos((double)(0 - b0), (double)(0 - b0), 0.0D).tex(0.0D, 0.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
+        tessellator.draw();
+
+        GlStateManager.translate(0.0F, 0.0F, -1.0F);
+    	GlStateManager.disableBlend();
+
+        GlStateManager.popMatrix();
 	}
 	  
 	
 	@Override
-	public void renderTileEntityAt(TileEntity par1TileEntity, double par2, double par4, double par6, float par8)
-	{
-		if (properties.DoorRenderingEnabled)
-		{
-			TileEntityDimDoor tile = (TileEntityDimDoor) par1TileEntity;
-			try
-			{
-				DimDoors.dimensionalDoor.updateAttachedTile(tile.getWorldObj(),
-						tile.xCoord, tile.yCoord, tile.zCoord);
-			}
-			catch (Exception e)
-			{
+	public void renderTileEntityAt(TileEntityDimDoor te, double x, double y, double z, float partialTicks, int destroyStage) {
+		if (properties.DoorRenderingEnabled) {
+			TileEntityDimDoor tile = te;
+
+			try {
+				DimDoors.dimensionalDoor.updateAttachedTile(tile.getWorld(), tile.getPos());
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
-			if (tile.openOrClosed)
-			{
-				
-				renderDimDoorTileEntity((TileEntityDimDoor) par1TileEntity, par2, par4, par6);
-				if(tile.lockStatus>=1)
-				{
-					for(int i = 0; i<1+tile.lockStatus; i++ )
-					{
-						this.renderKeyHole(tile, par2, par4, par6, i);
-
+			if (tile.openOrClosed) {
+				renderDimDoorTileEntity((TileEntityDimDoor) te, x, y, z);
+				if(tile.lockStatus>=1) {
+					for(int i = 0; i<1+tile.lockStatus; i++ ) {
+						this.renderKeyHole(tile, x, y, z, i);
 					}
 				}
 				

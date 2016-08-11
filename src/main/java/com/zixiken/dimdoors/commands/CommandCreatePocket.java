@@ -2,6 +2,7 @@ package com.zixiken.dimdoors.commands;
 
 import com.zixiken.dimdoors.helpers.DungeonHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
 
 public class CommandCreatePocket extends DDCommandBase {
 	private static CommandCreatePocket instance = null;
@@ -25,10 +26,9 @@ public class CommandCreatePocket extends DDCommandBase {
 		
 		//Place a door leading to a pocket dimension where the player is standing.
 		//The pocket dimension will serve as a room for the player to build a dungeon.
-		int x = (int) sender.posX;
-		int y = (int) sender.posY;
-		int z = (int) sender.posZ;
-		DungeonHelper.instance().createCustomDungeonDoor(sender.worldObj, x, y, z);
+		BlockPos pos = new BlockPos((int) sender.posX, (int) sender.posY, (int) sender.posZ);
+
+		DungeonHelper.instance().createCustomDungeonDoor(sender.worldObj, pos);
 		
 		//Notify the player
 		sendChat(sender, "Created a door to a pocket dimension. Please build your dungeon there.");

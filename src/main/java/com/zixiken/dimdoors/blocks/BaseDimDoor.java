@@ -79,32 +79,24 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		return this;
 	}
 	
-	public boolean isDoorOnRift(World world, BlockPos pos)
-	{
+	public boolean isDoorOnRift(World world, BlockPos pos) {
 		return this.getLink(world, pos) != null;
 	}
 	
-	public DimLink getLink(World world, BlockPos pos)
-	{
+	public DimLink getLink(World world, BlockPos pos) {
 		DimLink link= PocketManager.getLink(pos, world.provider.getDimensionId());
-		if(link!=null)
-		{
+		if(link!=null) {
 			return link;
 		}
 		
-		if(isUpperDoorBlock(world.getBlockState(pos)))
-		{
+		if(isUpperDoorBlock(world.getBlockState(pos))) {
 			link = PocketManager.getLink(pos.down(), world.provider.getDimensionId());
-			if(link!=null)
-			{
+			if(link!=null) {
 				return link;
 			}
-		}
-		else
-		{
+		} else {
 			link = PocketManager.getLink(pos.up(), world.provider.getDimensionId());
-			if(link != null)
-			{
+			if(link != null) {
 				return link;
 			}
 		}
@@ -117,89 +109,56 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	}
 
 	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos)
-	{
+	public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
 		this.setDoorRotation(worldIn.getBlockState(pos));
 	}
 
 
-	private void setDoorRotation(IBlockState state)
-	{
+	private void setDoorRotation(IBlockState state) {
 		float var2 = 0.1875F;
 		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 2.0F, 1.0F);
 		int var3 = state.getValue(BlockDoor.FACING).rotateY().getHorizontalIndex();
 		boolean var4 = state.getValue(BlockDoor.OPEN);
 		boolean var5 = state.getValue(BlockDoor.HINGE) == EnumHingePosition.LEFT;
 
-		if (var3 == 0)
-		{
-			if (var4)
-			{
-				if (!var5)
-				{
+		if (var3 == 0) {
+			if (var4) {
+				if (!var5) {
 					setBlockBounds(0.001F, 0.0F, 0.0F, 1.0F, 1.0F, var2);
-				}
-				else
-				{
+				} else {
 					setBlockBounds(0.001F, 0.0F, 1.0F - var2, 1.0F, 1.0F, 1.0F);
 				}
-			}
-			else
-			{
+			} else {
 				setBlockBounds(0.0F, 0.0F, 0.0F, var2, 1.0F, 1.0F);
 			}
-		}
-		else if (var3 == 1)
-		{
-			if (var4)
-			{
-				if (!var5)
-				{
+		} else if (var3 == 1) {
+			if (var4) {
+				if (!var5) {
 					setBlockBounds(1.0F - var2, 0.0F, 0.001F, 1.0F, 1.0F, 1.0F);
-				}
-				else
-				{
+				} else {
 					setBlockBounds(0.0F, 0.0F, 0.001F, var2, 1.0F, 1.0F);
 				}
-			}
-			else
-			{
+			} else {
 				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, var2);
 			}
-		}
-		else if (var3 == 2)
-		{
-			if (var4)
-			{
-				if (!var5)
-				{
+		} else if (var3 == 2) {
+			if (var4) {
+				if (!var5) {
 					setBlockBounds(0.0F, 0.0F, 1.0F - var2, .99F, 1.0F, 1.0F);
-				}
-				else
-				{
+				} else {
 					setBlockBounds(0.0F, 0.0F, 0.0F, .99F, 1.0F, var2);
 				}
-			}
-			else
-			{
+			} else {
 				setBlockBounds(1.0F - var2, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
 			}
-		}
-		else if (var3 == 3)
-		{
-			if (var4)
-			{
-				if (!var5)
-				{
+		} else if (var3 == 3) {
+			if (var4) {
+				if (!var5) {
 					setBlockBounds(0.0F, 0.0F, 0.0F, var2, 1.0F, 0.99F);
-				}
-				else
-				{
+				} else {
 					setBlockBounds(1.0F - var2, 0.0F, 0.0F, 1.0F, 1.0F, 0.99F);
 				}
-			}
-			else
-			{
+			} else {
 				setBlockBounds(0.0F, 0.0F, 1.0F - var2, 1.0F, 1.0F, 1.0F);
 			}
 		}
@@ -212,7 +171,6 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	 */
 	@Override
 	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighbor) {
-
 		if (isUpperDoorBlock(state)) {
 			if (world.getBlockState(pos.down()) != this)
                 world.setBlockToAir(pos);
