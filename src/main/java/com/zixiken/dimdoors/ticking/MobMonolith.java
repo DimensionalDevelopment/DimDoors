@@ -9,9 +9,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.core.DDTeleporter;
@@ -40,8 +38,7 @@ public class MobMonolith extends EntityFlying implements IMob
 
 	private static DDProperties properties = null;
 
-	public MobMonolith(World world) 
-	{
+	public MobMonolith(World world) {
 		super(world);
 		this.setSize(WIDTH, HEIGHT);
 		this.noClip = true;
@@ -51,88 +48,74 @@ public class MobMonolith extends EntityFlying implements IMob
 	}
 
     public boolean isDangerous() {
-        return properties.MonolithTeleportationEnabled && (properties.LimboDimensionID != worldObj.provider.dimensionId || !properties.DangerousLimboMonolithsDisabled);
+        return properties.MonolithTeleportationEnabled && (properties.LimboDimensionID != worldObj.provider.getDimensionId() || !properties.DangerousLimboMonolithsDisabled);
     }
 
 	@Override
-	protected void damageEntity(DamageSource par1DamageSource, float par2)
-	{
+	protected void damageEntity(DamageSource par1DamageSource, float par2) {
 		return;
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource par1DamageSource, float par2)
-	{
-		if (par1DamageSource != DamageSource.inWall)
-		{
+	public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+		if (par1DamageSource != DamageSource.inWall) {
 			this.aggro = MAX_AGGRO;
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean canBreatheUnderwater()
-    {
+	public boolean canBreatheUnderwater() {
         return true;
     }
 	
 	@Override
-	public AxisAlignedBB getBoundingBox()
-	{
+	public AxisAlignedBB getCollisionBoundingBox() {
 		return null;
 	}
 	
 	@Override
-	public AxisAlignedBB getCollisionBox(Entity par1Entity)
-	{
+	public AxisAlignedBB getCollisionBox(Entity par1Entity) {
 		return null;
 	}
 
 	@Override
-	public boolean canDespawn()
-	{
+	public boolean canDespawn() {
 		return false;
 	}
 
 	@Override
-	protected void applyEntityAttributes()
-	{
+	protected void applyEntityAttributes() {
 		super.applyEntityAttributes();
 		this.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).setBaseValue(57005);
 	}
 
 	@Override
-	public boolean canBePushed()
-	{
+	public boolean canBePushed() {
 		return false;
 	}
 	
 	@Override
-	public float getEyeHeight()
-	{
+	public float getEyeHeight() {
 		return EYE_HEIGHT;
 	}
 
 	@Override
-	protected void entityInit()
-	{
+	protected void entityInit() {
 		super.entityInit();
 		// Add a short for the aggro level
 		this.dataWatcher.addObject(AGGRO_WATCHER_INDEX, Short.valueOf((short) 0));
 	}
 
 	@Override
-	public boolean isEntityAlive()
-	{
+	public boolean isEntityAlive() {
 		return false;
 	}
 
 	@Override
-	public void onEntityUpdate()
-	{
+	public void onEntityUpdate() {
 		// Remove this Monolith if it's not in Limbo or in a pocket dimension
-		if (!(this.worldObj.provider.dimensionId == properties.LimboDimensionID|| this.worldObj.provider instanceof PocketProvider))
-		{
+		if (!(this.worldObj.provider.getDimensionId() == properties.LimboDimensionID|| this.worldObj.provider instanceof PocketProvider)) {
 			this.setDead();
 			super.onEntityUpdate();
 			return;
@@ -146,11 +129,9 @@ public class MobMonolith extends EntityFlying implements IMob
 		this.updateAggroLevel(player, visibility);
 		
 		// Change orientation and face a player if one is in range
-		if (player != null)
-		{
+		if (player != null) {
 			this.facePlayer(player);
-			if (!this.worldObj.isRemote && isDangerous())
-			{
+			if (!this.worldObj.isRemote && isDangerous()) {
 				// Play sounds on the server side, if the player isn't in Limbo.
 				// Limbo is excluded to avoid drowning out its background music.
 				// Also, since it's a large open area with many Monoliths, some
@@ -159,23 +140,19 @@ public class MobMonolith extends EntityFlying implements IMob
 				this.playSounds(player);
 			}
 
-			if (visibility)
-			{
+			if (visibility) {
 				// Only spawn particles on the client side and outside Limbo
-				if (this.worldObj.isRemote && isDangerous())
-				{
+				if (this.worldObj.isRemote && isDangerous()) {
 					this.spawnParticles(player);
 				}
 				
 				// Teleport the target player if various conditions are met
 				if (aggro >= MAX_AGGRO && !this.worldObj.isRemote &&
-						properties.MonolithTeleportationEnabled && !player.capabilities.isCreativeMode &&
-						isDangerous())
-				{
+						properties.MonolithTeleportationEnabled && !player.capabilities.isCreativeMode && isDangerous()) {
 					this.aggro = 0;
 					Point4D destination = LimboProvider.getLimboSkySpawn(player, properties);
 					DDTeleporter.teleportEntity(player, destination, false);
-					player.worldObj.playSoundAtEntity(player, DimDoors.modid + ":crack", 13, 1);
+					player.worldObj.playSoundAtEntity(player, DimDoors.MODID + ":crack", 13, 1);
 				}
 			}
 		}
@@ -185,28 +162,21 @@ public class MobMonolith extends EntityFlying implements IMob
 	{
 		// If we're working on the server side, adjust aggro level
 		// If we're working on the client side, retrieve aggro level from dataWatcher
-		if (!this.worldObj.isRemote)
-		{
+		if (!this.worldObj.isRemote) {
 			// Server side...
 			// Rapidly increase the aggro level if this Monolith can see the player
-			if (visibility)
-			{
-				if (this.worldObj.provider.dimensionId == properties.LimboDimensionID)
-				{
+			if (visibility) {
+				if (this.worldObj.provider.getDimensionId() == properties.LimboDimensionID) {
                     if (isDangerous())
                         aggro++;
                     else
 					    aggro += 36;
-				}
-				else
-				{
+				} else {
 					// Aggro increases faster outside of Limbo
 					aggro += 3;
 				}
-			}
-			else
-			{
-                if (isDangerous()) {
+			} else {
+				if (isDangerous()) {
                     if (aggro > aggroCap) {
                         // Decrease aggro over time
                         aggro--;
@@ -221,16 +191,13 @@ public class MobMonolith extends EntityFlying implements IMob
             int maxAggro = isDangerous()?MAX_AGGRO:180;
 			aggro = (short) MathHelper.clamp_int(aggro, 0, maxAggro);
 			this.dataWatcher.updateObject(AGGRO_WATCHER_INDEX, Short.valueOf(aggro));
-		}
-		else
-		{
+		} else {
 			// Client side...
 			aggro = this.dataWatcher.getWatchableObjectShort(AGGRO_WATCHER_INDEX);
 		}
 	}
 	
-	public int getTextureState()
-	{
+	public int getTextureState() {
 		// Determine texture state from aggro progress
 		return MathHelper.clamp_int(MAX_TEXTURE_STATE * aggro / MAX_AGGRO, 0, MAX_TEXTURE_STATE);
 	}
@@ -239,33 +206,27 @@ public class MobMonolith extends EntityFlying implements IMob
 	 * Plays sounds at different levels of aggro, using soundTime to prevent too many sounds at once. 
 	 * @param entityPlayer
 	 */
-	private void playSounds(EntityPlayer entityPlayer)
-	{
+	private void playSounds(EntityPlayer entityPlayer) {
 		float aggroPercent = this.getAggroProgress();
 		if (this.soundTime <= 0)
 		{
-			this.playSound(DimDoors.modid + ":monk", 1F, 1F);
+			this.playSound(DimDoors.MODID + ":monk", 1F, 1F);
 			this.soundTime = 100;
-		}
-		if ((aggroPercent > 0.70) && this.soundTime < 100)
-		{
-			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, DimDoors.modid + ":tearing", 1F, (float) (1 + this.rand.nextGaussian()));
+		} if ((aggroPercent > 0.70) && this.soundTime < 100) {
+			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, DimDoors.MODID + ":tearing", 1F, (float) (1 + this.rand.nextGaussian()));
 			this.soundTime = 100 + this.rand.nextInt(75);
-		}
-		if ((aggroPercent > 0.80) && this.soundTime < 200)
-		{
-			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, DimDoors.modid + ":tearing", 7, 1F);
+		} if ((aggroPercent > 0.80) && this.soundTime < 200) {
+			this.worldObj.playSoundEffect(entityPlayer.posX, entityPlayer.posY, entityPlayer.posZ, DimDoors.MODID + ":tearing", 7, 1F);
 			this.soundTime = 250;
 		}
 		this.soundTime--;
 	}
 	
-	private void spawnParticles(EntityPlayer player)
-	{
+	private void spawnParticles(EntityPlayer player) {
 		int count = 10 * aggro / MAX_AGGRO;
-		for (int i = 1; i < count; ++i)
-		{
-			player.worldObj.spawnParticle("portal", player.posX + (this.rand.nextDouble() - 0.5D) * this.width, 
+
+		for (int i = 1; i < count; ++i) {
+			player.worldObj.spawnParticle(EnumParticleTypes.PORTAL, player.posX + (this.rand.nextDouble() - 0.5D) * this.width,
 					player.posY + this.rand.nextDouble() * player.height - 0.75D, 
 					player.posZ + (this.rand.nextDouble() - 0.5D) * player.width, 
 					(this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(),
@@ -273,13 +234,11 @@ public class MobMonolith extends EntityFlying implements IMob
 		}
 	}
 	
-	public float getAggroProgress()
-	{
+	public float getAggroProgress() {
 		return ((float) aggro) / MAX_AGGRO;
 	}
 	
-	private void facePlayer(EntityPlayer player)
-	{
+	private void facePlayer(EntityPlayer player) {
 		double d0 = player.posX - this.posX;
 		double d1 = player.posZ - this.posZ;
 		double d2 = (player.posY + player.getEyeHeight()) - (this.posY + this.getEyeHeight());
@@ -292,15 +251,13 @@ public class MobMonolith extends EntityFlying implements IMob
 	}
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound rootTag)
-	{
+	public void writeEntityToNBT(NBTTagCompound rootTag) {
 		super.writeEntityToNBT(rootTag);
 		rootTag.setInteger("Aggro", this.aggro);
 	}
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound rootTag)
-	{
+	public void readEntityFromNBT(NBTTagCompound rootTag) {
 		super.readEntityFromNBT(rootTag);
 		
 		// Load Monoliths with half aggro so they don't teleport players instantly
@@ -308,29 +265,22 @@ public class MobMonolith extends EntityFlying implements IMob
 	}
 
 	@Override
-	public boolean getCanSpawnHere()
-	{
+	public boolean getCanSpawnHere() {
 		@SuppressWarnings("rawtypes")
-		List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.getBoundingBox( this.posX-15, posY-4, this.posZ-15, this.posX+15, this.posY+15, this.posZ+15));
+		List list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.fromBounds(this.posX-15, posY-4, this.posZ-15, this.posX+15, this.posY+15, this.posZ+15));
 
-		if (this.worldObj.provider.dimensionId == DDProperties.instance().LimboDimensionID)
-		{
-			if(list.size()>0)
-			{
+		if (this.worldObj.provider.getDimensionId() == DDProperties.instance().LimboDimensionID) {
+			if(list.size()>0) {
 				return false;
 			}
 
 		}
-		else if(this.worldObj.provider instanceof PocketProvider)
-		{
-			if (list.size() > 5 ||
-					this.worldObj.canBlockSeeTheSky((int)this.posX, (int)this.posY, (int)this.posZ))
-			{
+		else if(this.worldObj.provider instanceof PocketProvider) {
+			if (list.size() > 5 || this.worldObj.canBlockSeeSky(new BlockPos((int)this.posX, (int)this.posY, (int)this.posZ))) {
 				return false;
 			}
 		}
-		return this.worldObj.checkNoEntityCollision(this.boundingBox) &&
-				this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() &&
-				!this.worldObj.isAnyLiquid(this.boundingBox);
+
+		return this.worldObj.checkNoEntityCollision(this.getEntityBoundingBox()) && this.worldObj.getCollidingBoundingBoxes(this, this.getEntityBoundingBox()).isEmpty() && !this.worldObj.isAnyLiquid(this.getEntityBoundingBox());
 	}
 }

@@ -3,28 +3,26 @@ package com.zixiken.dimdoors.client;
 import static org.lwjgl.opengl.GL11.*;
 
 import com.zixiken.dimdoors.tileentities.TileEntityRift;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class RenderRift extends TileEntitySpecialRenderer
-{
-
+public class RenderRift extends TileEntitySpecialRenderer {
 	@Override
-	public void renderTileEntityAt(TileEntity te, double xWorld, double yWorld, double zWorld, float f)
-	{
+	public void renderTileEntityAt(TileEntity te, double x, double y, double z, float partialTicks, int destroyStage) {
 		// prepare fb for drawing
 		GL11.glPushMatrix();
 
 		// make the rift render on both sides, disable texture mapping and
 		// lighting
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL_TEXTURE_2D);
-		GL11.glDisable(GL_LIGHTING);
-		GL11.glEnable(GL_BLEND);
+		GlStateManager.disableCull();
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableLighting();
+		GlStateManager.enableBlend();
 		/**
 		 * GL11.glLogicOp(GL11.GL_INVERT);
 		 * GL11.glEnable(GL11.GL_COLOR_LOGIC_OP);
@@ -32,12 +30,12 @@ public class RenderRift extends TileEntitySpecialRenderer
 		TileEntityRift rift = (TileEntityRift) te;
 		// draws the verticies corresponding to the passed it
 
-		GL11.glDisable(GL_BLEND);
 		// reenable all the stuff we disabled
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glEnable(GL11.GL_LIGHTING);
-		GL11.glEnable(GL_TEXTURE_2D);
+		GlStateManager.disableBlend();
+		GlStateManager.enableCull();
+		GlStateManager.enableLighting();
+		GlStateManager.enableTexture2D();
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 }

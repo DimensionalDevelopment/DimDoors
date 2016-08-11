@@ -20,7 +20,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.client.PrivatePocketRender;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -64,10 +63,6 @@ public class BlockDimWall extends Block {
 			return super.getExplosionResistance(world, pos, exploder, explosion);
         else return SUPER_EXPLOSION_RESISTANCE;
 	}
-	
-	public int getRenderType() {
-        return PrivatePocketRender.renderID;
-    }
 	
 	@Override
 	public int damageDropped(IBlockState state) {

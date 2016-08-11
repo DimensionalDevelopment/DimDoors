@@ -50,7 +50,7 @@ public class CustomSkyProvider extends IRenderHandler
 		if (mc.theWorld.provider.isSurfaceWorld())
 		{
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
-			Vec3 vec3 = world.getSkyColor(mc.renderViewEntity, par1);
+			Vec3 vec3 = world.getSkyColor(mc.getRenderViewEntity(), par1);
 			float f1 = (float)vec3.xCoord;
 			float f2 = (float)vec3.yCoord;
 			float f3 = (float)vec3.zCoord;
