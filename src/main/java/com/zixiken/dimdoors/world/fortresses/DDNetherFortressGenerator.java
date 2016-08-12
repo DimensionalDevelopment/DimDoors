@@ -5,17 +5,15 @@ import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraft.world.gen.structure.StructureStart;
 
-public class DDNetherFortressGenerator extends MapGenNetherBridge
-{
+public class DDNetherFortressGenerator extends MapGenNetherBridge {
     public DDNetherFortressGenerator()
-    {
-    	super();
+    {super();
     	
     	// Register our custom StructureStart class with MapGenStructureIO
     	// If we don't do this, Minecraft will crash when a fortress tries to generate.
     	// Moreover, use Fortress as our structure identifier so that if DD is removed,
     	// fortresses will generate properly using Vanilla code.
-    	MapGenStructureIO.func_143031_a(DDStructureNetherBridgeStart.class, "Fortress");
+    	MapGenStructureIO.registerStructure(DDStructureNetherBridgeStart.class, "Fortress");
     }
 
     @Override

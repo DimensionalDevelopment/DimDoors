@@ -10,9 +10,8 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 
-public class Spells
-{
-	public EntityPlayer player;
+public class Spells {
+	/*public EntityPlayer player;
 	public int spellID;
 	public int castingTime=0;
 	

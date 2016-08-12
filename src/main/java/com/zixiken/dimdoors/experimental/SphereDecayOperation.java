@@ -2,8 +2,11 @@ package com.zixiken.dimdoors.experimental;
 
 import java.util.Random;
 
+import com.zixiken.dimdoors.helpers.BlockPosHelper;
 import com.zixiken.dimdoors.schematic.WorldOperation;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -16,57 +19,39 @@ public class SphereDecayOperation extends WorldOperation
 {
 	private Random random;
 	private double scaling;
-	private double centerX;
-	private double centerY;
-	private double centerZ;
-	private Block primaryBlock;
-	private int primaryMetadata;
-	private Block secondaryBlock;
-	private int secondaryMetadata;
-	
-	public SphereDecayOperation(Random random, Block primaryBlock, int primaryMetadata, Block secondaryBlock, int secondaryMetadata)
-	{
+	private BlockPos center;
+	private IBlockState primaryBlock;
+	private IBlockState secondaryBlock;
+
+	public SphereDecayOperation(Random random, IBlockState primaryBlock, IBlockState secondaryBlock) {
 		super("SphereDecayOperation");
 		this.random = random;
 		this.primaryBlock = primaryBlock;
-		this.primaryMetadata = primaryMetadata;
 		this.secondaryBlock = secondaryBlock;
-		this.secondaryMetadata = secondaryMetadata;
 	}
 	
 	@Override
-	protected boolean initialize(World world, int x, int y, int z, int width, int height, int length)
-	{
+	protected boolean initialize(World world, BlockPos pos, BlockPos volume) {
 		// Calculate a scaling factor so that the probability of decay
 		// at the edge of the largest dimension of our bounds is 20%.
-		scaling = Math.max(width - 1, Math.max(height - 1, length - 1)) / 2.0;
+		scaling = Math.max(pos.getX() - 1, Math.max(pos.getY() - 1, pos.getZ() - 1)) / 2.0;
 		scaling *= scaling * 0.20;
-		
-		centerX = x + width / 2.0;
-		centerY = y + height / 2.0;
-		centerZ = z + length / 2.0;
+
+		center = pos.add(BlockPosHelper.divide(volume, 2.0));
 		return true;
 	}
 
 	@Override
-	protected boolean applyToBlock(World world, int x, int y, int z)
-	{
+	protected boolean applyToBlock(World world, BlockPos pos) {
 		// Don't raise any notifications. This operation is only designed to run
 		// when a dimension is being generated, which means there are no players around.
-		if (!world.isAirBlock(x, y, z))
-		{
-			double dx = (centerX - x - 0.5);
-			double dy = (centerY - y - 0.5); 
-			double dz = (centerZ - z - 0.5);
-			double squareDistance = dx * dx + dy * dy + dz * dz;
+		if (!world.isAirBlock(pos)) {
+			double squareDistance = center.distanceSq(pos);
 			
-			if (squareDistance < 0.5 || random.nextDouble() < scaling / squareDistance)
-			{
-				world.setBlock(x, y, z, primaryBlock, primaryMetadata, 1);
-			}
-			else if (random.nextDouble() < scaling / squareDistance)
-			{
-				world.setBlock(x, y, z, secondaryBlock, secondaryMetadata, 1);
+			if (squareDistance < 0.5 || random.nextDouble() < scaling / squareDistance) {
+				world.setBlockState(pos, primaryBlock);
+			} else if (random.nextDouble() < scaling / squareDistance) {
+				world.setBlockState(pos, secondaryBlock);
 			}
 		}
 		return true;

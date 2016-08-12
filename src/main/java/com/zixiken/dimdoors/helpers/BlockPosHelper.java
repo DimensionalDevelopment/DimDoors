@@ -1,6 +1,7 @@
 package com.zixiken.dimdoors.helpers;
 
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3i;
 
 public class BlockPosHelper {
     public static boolean between(BlockPos pos, BlockPos min, BlockPos max) {
@@ -29,7 +30,11 @@ public class BlockPosHelper {
         return (a.getX() <= b.getX() && a.getY() <= b.getY() && a.getZ() <= b.getZ());
     }
 
-    public static BlockPos posFromSingleValue(int value) {
+    public static BlockPos posFromSingleValue(double value) {
         return new BlockPos(value, value, value);
+    }
+
+    public static BlockPos divide(BlockPos volume, double factor) {
+        return new BlockPos(volume.getX() / factor, volume.getY() / factor, volume.getZ() / factor);
     }
 }

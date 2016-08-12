@@ -90,8 +90,7 @@ public class MazeDesigner
 		}
 	}
 	
-	private static void splitByRandomZ(PartitionNode node, int levels, Random random)
-	{
+	private static void splitByRandomZ(PartitionNode node, int levels, Random random) {
 		if (node.volume().getZ() >= 2 * MIN_SIDE) {
 			node.splitByZ(MathHelper.getRandomIntegerInRange(random,
 					node.minCorner().getZ() + MIN_SIDE, node.maxCorner().getZ() - MIN_SIDE + 1));
@@ -199,17 +198,14 @@ public class MazeDesigner
 								}	
 							}
 							// Check if we meet the minimum dimensions needed for a doorway
-							if (diff.add(1,0,0).getX() + 1 >= MIN_SIDE && maxYI - minYI + 1 >= MIN_HEIGHT)
-							{
-								otherMin = new BlockPos(minXI, minYI, maxZ);
-								otherMax = new BlockPos(maxXI, maxYI, maxZ + 1);
+							if (diff.add(1,0,0).getX() + 1 >= MIN_SIDE && maxI.getY() - minI.getY() + 1 >= MIN_HEIGHT) {
+								otherMin = new BlockPos(minI.getX(), minI.getY(), maxCorner.getZ());
+								otherMax = new BlockPos(maxI.getX(), maxI.getY(), maxCorner.getZ() + 1);
 								doorway = new DoorwayData(otherMin, otherMax, DoorwayData.Z_AXIS);
 								adjacentNode = roomsToGraph.get(adjacent);
 								roomGraph.addEdge(roomNode, adjacentNode, doorway);
 							}
-						}
-						else
-						{
+						} else {
 							detected[a][b] = true;
 						}
 					}
@@ -218,46 +214,34 @@ public class MazeDesigner
 		}
 		
 		
-		if (maxX < root.maxCorner().getX())
-		{
+		if (maxCorner.getX() < root.maxCorner().getX()) {
 			// Check for adjacent rooms along the YZ plane
-			detected = new boolean[height][length];
-			for (b = 0; b < height; b++)
-			{
-				for (c = 0; c < length; c++)
-				{
-					if (!detected[b][c])
-					{
-						adjacent = root.findPoint(maxX + 1, minY + b, minZ + c);
-						if (adjacent != null)
-						{
+			detected = new boolean[volume.getY()][volume.getZ()];
+			for (b = 0; b < volume.getY(); b++) {
+				for (c = 0; c < volume.getZ(); c++) {
+					if (!detected[b][c]) {
+						adjacent = root.findPoint(new BlockPos(maxCorner.getX() + 1, minCorner.getY() + b, minCorner.getZ() + c));
+						if (adjacent != null) {
 							// Compute the dimensions available for a doorway
 							otherMin = adjacent.minCorner();
 							otherMax = adjacent.maxCorner();
-							minYI = Math.max(minY, otherMin.getY());
-							maxYI = Math.min(maxY, otherMax.getY());
-							minZI = Math.max(minZ, otherMin.getZ());
-							maxZI = Math.min(maxZ, otherMax.getZ());
+							minI = BlockPosHelper.max(minCorner, otherMin);
+							maxI = BlockPosHelper.min(maxCorner, otherMax);
 							
-							for (q = 0; q <= maxYI - minYI; q++)
-							{
-								for (r = 0; r <= maxZI - minZI; r++)
-								{
+							for (q = 0; q <= maxI.getY() - minI.getY(); q++) {
+								for (r = 0; r <= maxI.getZ() - minI.getZ(); r++) {
 									detected[q + b][r + c] = true;
 								}	
 							}
 							// Check if we meet the minimum dimensions needed for a doorway
-							if (maxYI - minYI + 1 >= MIN_HEIGHT && maxZI - minZI + 1 >= MIN_SIDE)
-							{
-								otherMin = new BlockPos(maxX, minYI, minZI);
-								otherMax = new BlockPos(maxX + 1, maxYI, maxZI);
+							if (maxI.getY() - minI.getY() + 1 >= MIN_HEIGHT && maxI.getZ() - minI.getZ() + 1 >= MIN_SIDE) {
+								otherMin = new BlockPos(maxCorner.getX(), minI.getY(), minI.getZ());
+								otherMax = new BlockPos(maxCorner.getX() + 1, maxI.getY(), maxI.getZ());
 								doorway = new DoorwayData(otherMin, otherMax, DoorwayData.X_AXIS);
 								adjacentNode = roomsToGraph.get(adjacent);
 								roomGraph.addEdge(roomNode, adjacentNode, doorway);
 							}
-						}
-						else
-						{
+						} else {
 							detected[b][c] = true;
 						}
 					}
@@ -266,46 +250,35 @@ public class MazeDesigner
 		}
 		
 		
-		if (maxY < root.maxCorner().getY())
-		{
+		if (maxCorner.getY() < root.maxCorner().getY()) {
 			// Check for adjacent rooms along the XZ plane
-			detected = new boolean[width][length];
-			for (a = 0; a < width; a++)
-			{
-				for (c = 0; c < length; c++)
-				{
-					if (!detected[a][c])
-					{
-						adjacent = root.findPoint(minX + a, maxY + 1, minZ + c);
-						if (adjacent != null)
-						{
+			detected = new boolean[volume.getX()][volume.getZ()];
+			for (a = 0; a < volume.getX(); a++) {
+				for (c = 0; c < volume.getZ(); c++) {
+					if (!detected[a][c]) {
+						adjacent = root.findPoint(new BlockPos(minCorner.getX() + a, maxCorner.getY() + 1, minCorner.getZ() + c));
+						if (adjacent != null) {
 							// Compute the dimensions available for a doorway
 							otherMin = adjacent.minCorner();
 							otherMax = adjacent.maxCorner();
-							minXI = Math.max(minX, otherMin.getX());
-							maxXI = Math.min(maxX, otherMax.getX());
-							minZI = Math.max(minZ, otherMin.getZ());
-							maxZI = Math.min(maxZ, otherMax.getZ());
+							minI = BlockPosHelper.max(minCorner, otherMin);
+							maxI = BlockPosHelper.min(maxCorner, otherMax);
 							
-							for (p = 0; p <= maxXI - minXI; p++)
-							{
-								for (r = 0; r <= maxZI - minZI; r++)
-								{
+							for (p = 0; p <= maxI.getX() - minI.getX(); p++) {
+								for (r = 0; r <= maxI.getZ() - minI.getZ(); r++) {
 									detected[p + a][r + c] = true;
 								}	
 							}
+
 							// Check if we meet the minimum dimensions needed for a doorway
-							if (maxXI - minXI + 1 >= MIN_SIDE && maxZI - minZI + 1 >= MIN_SIDE)
-							{
-								otherMin = new BlockPos(minXI, maxY, minZI);
-								otherMax = new BlockPos(maxXI, maxY + 1, maxZI);
+							if (maxI.getX() - minI.getX() + 1 >= MIN_SIDE && maxI.getZ() - minI.getZ() + 1 >= MIN_SIDE) {
+								otherMin = new BlockPos(minI.getX(), maxCorner.getY(), minI.getZ());
+								otherMax = new BlockPos(maxI.getX(), maxCorner.getY() + 1, maxI.getZ());
 								doorway = new DoorwayData(otherMin, otherMax, DoorwayData.Y_AXIS);
 								adjacentNode = roomsToGraph.get(adjacent);
 								roomGraph.addEdge(roomNode, adjacentNode, doorway);
 							}
-						}
-						else
-						{
+						} else {
 							detected[a][c] = true;
 						}
 					}
@@ -316,8 +289,7 @@ public class MazeDesigner
 		//Done!
 	}
 	
-	private static ArrayList<IGraphNode<PartitionNode, DoorwayData>> createMazeSections(DirectedGraph<PartitionNode, DoorwayData> roomGraph, Random random)
-	{
+	private static ArrayList<IGraphNode<PartitionNode, DoorwayData>> createMazeSections(DirectedGraph<PartitionNode, DoorwayData> roomGraph, Random random) {
 		// The randomness of the sections generated here hinges on
 		// the nodes in the graph being in a random order. We assume
 		// that was handled in a previous step!
@@ -337,49 +309,40 @@ public class MazeDesigner
 		HashMap<IGraphNode<PartitionNode, DoorwayData>, Integer> distances = new HashMap<IGraphNode<PartitionNode, DoorwayData>, Integer>();
 		
 		// Repeatedly generate sections until all nodes have been visited
-		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes())
-		{
+		for (IGraphNode<PartitionNode, DoorwayData> node : roomGraph.nodes()) {
 			// If this node hasn't been visited, then use it as the core of a new section
 			// Otherwise, ignore it, since it was already processed
-			if (!distances.containsKey(node))
-			{
+			if (!distances.containsKey(node)) {
 				// Perform a breadth-first search to tag surrounding nodes with distances
 				distances.put(node, 0);
 				ordering.add(node);
 				section.clear();
 				
-				while (!ordering.isEmpty())
-				{
+				while (!ordering.isEmpty()) {
 					current = ordering.remove();
 					distance = distances.get(current) + 1;
 					
-					if (distance <= MAX_DISTANCE + 1)
-					{
+					if (distance <= MAX_DISTANCE + 1) {
 						section.add(current);
 						
 						// Visit neighboring nodes and assign them distances, if they don't
 						// have a distance assigned already
-						for (IEdge<PartitionNode, DoorwayData> edge : current.inbound())
-						{
+						for (IEdge<PartitionNode, DoorwayData> edge : current.inbound()) {
 							neighbor = edge.head();
-							if (!distances.containsKey(neighbor))
-							{
+							if (!distances.containsKey(neighbor)) {
 								distances.put(neighbor, distance);
 								ordering.add(neighbor);
 							}
 						}
-						for (IEdge<PartitionNode, DoorwayData> edge : current.outbound())
-						{
+
+						for (IEdge<PartitionNode, DoorwayData> edge : current.outbound()) {
 							neighbor = edge.tail();
-							if (!distances.containsKey(neighbor))
-							{
+							if (!distances.containsKey(neighbor)) {
 								distances.put(neighbor, distance);
 								ordering.add(neighbor);
 							}
 						}
-					}
-					else
-					{
+					} else {
 						removals.add(current);
 						break;
 					}
@@ -389,18 +352,14 @@ public class MazeDesigner
 				// Those are precisely the nodes that remain in the queue
 				// We can't remove them immediately because that could break
 				// the iterator for the graph.
-				while (!ordering.isEmpty())
-				{
+				while (!ordering.isEmpty()) {
 					removals.add(ordering.remove());
 				}
 				
 				// Check if this section contains enough rooms
-				if (section.size() >= MIN_SECTION_ROOMS)
-				{
+				if (section.size() >= MIN_SECTION_ROOMS) {
 					cores.add(node);
-				}
-				else
-				{
+				} else {
 					removals.addAll(section);
 				}
 			}
@@ -408,8 +367,7 @@ public class MazeDesigner
 		
 		// Remove all the nodes that were listed for removal
 		// Also remove unused partitions from the partition tree
-		for (IGraphNode<PartitionNode, DoorwayData> node : removals)
-		{
+		for (IGraphNode<PartitionNode, DoorwayData> node : removals) {
 			removeRoomPartitions(node.data());
 			roomGraph.removeNode(node);
 		}
@@ -444,24 +402,20 @@ public class MazeDesigner
 		
 		ordering.add(core);
 		components.makeSet(core);
-		while (!ordering.isEmpty())
-		{
+		while (!ordering.isEmpty()) {
 			current = ordering.pop();
 			subgraph.add(current);
 			
-			for (IEdge<PartitionNode, DoorwayData> edge : current.inbound())
-			{
+			for (IEdge<PartitionNode, DoorwayData> edge : current.inbound()) {
 				neighbor = edge.head();
-				if (components.makeSet(neighbor))
-				{
+				if (components.makeSet(neighbor)) {
 					ordering.add(neighbor);
 				}
 			}
-			for (IEdge<PartitionNode, DoorwayData> edge : current.outbound())
-			{
+
+			for (IEdge<PartitionNode, DoorwayData> edge : current.outbound()) {
 				neighbor = edge.tail();
-				if (components.makeSet(neighbor))
-				{
+				if (components.makeSet(neighbor)) {
 					ordering.add(neighbor);
 				}
 			}
@@ -470,19 +424,13 @@ public class MazeDesigner
 		// Now iterate over the list of nodes and merge their sets
 		// We only have to look at outbound edges since inbound edges mirror them
 		// Also list any Y_AXIS doorways we come across
-		ArrayList<IEdge<PartitionNode, DoorwayData>> targets =
-				new ArrayList<IEdge<PartitionNode, DoorwayData>>();
+		ArrayList<IEdge<PartitionNode, DoorwayData>> targets = new ArrayList<IEdge<PartitionNode, DoorwayData>>();
 		
-		for (IGraphNode<PartitionNode, DoorwayData> room : subgraph)
-		{
-			for (IEdge<PartitionNode, DoorwayData> passage : room.outbound())
-			{
-				if (passage.data().axis() != DoorwayData.Y_AXIS)
-				{
+		for (IGraphNode<PartitionNode, DoorwayData> room : subgraph) {
+			for (IEdge<PartitionNode, DoorwayData> passage : room.outbound()) {
+				if (passage.data().axis() != DoorwayData.Y_AXIS) {
 					components.mergeSets(passage.head(), passage.tail());
-				}
-				else
-				{
+				} else {
 					targets.add(passage);
 				}
 			}
@@ -492,10 +440,8 @@ public class MazeDesigner
 		Collections.shuffle(targets, random);
 		
 		// Merge sets together and remove unnecessary doorways
-		for (IEdge<PartitionNode, DoorwayData> passage : targets)
-		{
-			if (!components.mergeSets(passage.head(), passage.tail()))
-			{
+		for (IEdge<PartitionNode, DoorwayData> passage : targets) {
+			if (!components.mergeSets(passage.head(), passage.tail())) {
 				rooms.removeEdge(passage);
 			}
 		}
@@ -505,29 +451,23 @@ public class MazeDesigner
 		components.clear();
 		targets.clear();
 		
-		for (IGraphNode<PartitionNode, DoorwayData> room : subgraph)
-		{
+		for (IGraphNode<PartitionNode, DoorwayData> room : subgraph) {
 			components.makeSet(room);
 		}
-		for (IGraphNode<PartitionNode, DoorwayData> room : subgraph)
-		{
-			for (IEdge<PartitionNode, DoorwayData> passage : room.outbound())
-			{
-				if (passage.data().axis() == DoorwayData.Y_AXIS)
-				{
+
+		for (IGraphNode<PartitionNode, DoorwayData> room : subgraph) {
+			for (IEdge<PartitionNode, DoorwayData> passage : room.outbound()) {
+				if (passage.data().axis() == DoorwayData.Y_AXIS) {
 					components.mergeSets(passage.head(), passage.tail());
-				}
-				else
-				{
+				} else {
 					targets.add(passage);
 				}
 			}
 		}
+
 		Collections.shuffle(targets, random);
-		for (IEdge<PartitionNode, DoorwayData> passage : targets)
-		{
-			if (!components.mergeSets(passage.head(), passage.tail()) && random.nextBoolean())
-			{
+		for (IEdge<PartitionNode, DoorwayData> passage : targets) {
+			if (!components.mergeSets(passage.head(), passage.tail()) && random.nextBoolean()) {
 				rooms.removeEdge(passage);
 			}
 		}
