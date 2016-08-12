@@ -59,7 +59,7 @@ public class BlockDimWallPerm extends Block {
                 destinationX += (destinationX >> 4);
                 destinationZ += (destinationZ >> 4);
 
-				int destinationY = yCoordHelper.getFirstUncovered(overworld, destinationX, 63, destinationZ, true);
+				int destinationY = yCoordHelper.getFirstUncovered(overworld, new BlockPos(destinationX, 63, destinationZ), true);
 
                 BlockPos destPos = new BlockPos(destinationX, destinationY, destinationZ);
 				

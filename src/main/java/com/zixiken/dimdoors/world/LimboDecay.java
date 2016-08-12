@@ -5,6 +5,7 @@ import java.util.Random;
 import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.ChunkCoordIntPair;
@@ -25,25 +26,24 @@ public class LimboDecay {
 	private static final int SECTION_HEIGHT = 16;
 
 	//Provides a reversed list of the block IDs that blocks cycle through during decay.
-	private Block[] decaySequence = null;
+	private IBlockState[] decaySequence = null;
 	
 	private final Random random;
 	private final DDProperties properties;
 	private Block[] blocksImmuneToDecay = null;
 	
-	public LimboDecay(DDProperties properties)
-	{
+	public LimboDecay(DDProperties properties) {
 		this.properties = properties;
 		this.random = new Random();
 	}
 
-    public Block[] getDecaySequence() {
+    public IBlockState[] getDecaySequence() {
         if (decaySequence == null) {
-            decaySequence = new Block[] {
-                    DimDoors.blockLimbo,
-                    Blocks.gravel,
-                    Blocks.cobblestone,
-                    Blocks.stone
+            decaySequence = new IBlockState[] {
+                    DimDoors.blockLimbo.getDefaultState(),
+                    Blocks.gravel.getDefaultState(),
+                    Blocks.cobblestone.getDefaultState(),
+                    Blocks.stone.getDefaultState()
             };
         }
 
@@ -76,8 +76,7 @@ public class LimboDecay {
 
 		//Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
 		//full spread decay checks, which can also shift its performance impact on the game.
-		if (random.nextInt(MAX_DECAY_SPREAD_CHANCE) < DECAY_SPREAD_CHANCE)
-		{
+		if (random.nextInt(MAX_DECAY_SPREAD_CHANCE) < DECAY_SPREAD_CHANCE) {
 			//Apply decay to the blocks above, below, and on all four sides.
 			//World.getBlockId() implements bounds checking, so we don't have to worry about reaching out of the world
 			decayBlock(world, pos.west());
@@ -93,31 +92,25 @@ public class LimboDecay {
 	 * Picks random blocks from each active chunk in Limbo and, if decay is applicable, converts them directly to Unraveled Fabric.
 	 * This decay method is designed to stop players from avoiding Limbo decay by building floating structures.
 	 */
-	public void applyRandomFastDecay()
-	{
-		int x, y, z;
+	public void applyRandomFastDecay() {
+		BlockPos pos;
 		int sectionY;
 		int limboHeight;
 		World limbo = DimensionManager.getWorld(properties.LimboDimensionID);
 		
-		if (limbo != null)
-		{
+		if (limbo != null) {
 			limboHeight = limbo.getHeight();
 			
 			//Obtain the coordinates of active chunks in Limbo. For each section of each chunk,
 			//pick a random block and try to apply fast decay.
-			for (Object coordObject : ForgeChunkManager.getPersistentChunksFor(limbo).keySet())
-			{
+			for (Object coordObject : ForgeChunkManager.getPersistentChunksFor(limbo).keySet()) {
 				ChunkCoordIntPair chunkCoord = (ChunkCoordIntPair) coordObject;
 				
 				//Loop through each chunk section and fast-decay a random block
 				//Apply the changes using the world object instead of directly to the chunk so that clients are always notified.
-				for (sectionY = 0; sectionY < limboHeight; sectionY += SECTION_HEIGHT)
-				{
-					x = chunkCoord.chunkXPos * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
-					z = chunkCoord.chunkZPos * CHUNK_SIZE + random.nextInt(CHUNK_SIZE);
-					y = sectionY + random.nextInt(SECTION_HEIGHT);
-					decayBlockFast(limbo, x, y, z);
+				for (sectionY = 0; sectionY < limboHeight; sectionY += SECTION_HEIGHT) {
+					pos = new BlockPos(chunkCoord.chunkXPos * CHUNK_SIZE + random.nextInt(CHUNK_SIZE), chunkCoord.chunkZPos * CHUNK_SIZE + random.nextInt(CHUNK_SIZE), sectionY + random.nextInt(SECTION_HEIGHT));
+					decayBlockFast(limbo, pos);
 				}
 			}
 		}
@@ -126,12 +119,12 @@ public class LimboDecay {
 	/**
 	 * Checks if a block can be decayed and, if so, changes it directly into Unraveled Fabric.
 	 */
-	private boolean decayBlockFast(World world, int x, int y, int z)
+	private boolean decayBlockFast(World world, BlockPos pos)
 	{
-		Block block = world.getBlock(x, y, z);
-		if (canDecayBlock(block, world, x, y, z))
+		IBlockState state = world.getBlockState(pos);
+		if (canDecayBlock(state, world, pos))
 		{
-			world.setBlock(x, y, z, DimDoors.blockLimbo);
+			world.setBlockState(pos, DimDoors.blockLimbo.getDefaultState());
 			return true;
 		}
 		return false;
@@ -142,8 +135,8 @@ public class LimboDecay {
 	 */
 	private boolean decayBlock(World world, BlockPos pos) {
 		int index;
-		Block block = world.getBlock(x, y, z);
-		if (canDecayBlock(block, world, x, y, z))
+		IBlockState block = world.getBlockState(pos);
+		if (canDecayBlock(block, world, pos))
 		{
 			//Loop over the block IDs that decay can go through.
 			//Find an index matching the current blockID, if any.
@@ -161,7 +154,7 @@ public class LimboDecay {
 			//last ID in the array, which is the first one that all blocks decay into.
 			//We assume that Unraveled Fabric is NOT decayable. Otherwise, this will go out of bounds!
 			
-			world.setBlock(x, y, z, getDecaySequence()[index - 1]);
+			world.setBlockState(pos, getDecaySequence()[index - 1]);
 			return true;
 		}
 		return false;
@@ -170,21 +163,17 @@ public class LimboDecay {
 	/**
 	 * Checks if a block can decay. We will not decay air, certain DD blocks, or containers.
 	 */
-	private boolean canDecayBlock(Block block, World world, int x, int y, int z)
-	{
-		if (block.isAir(world, x, y, z))
-		{
+	private boolean canDecayBlock(IBlockState state, World world, BlockPos pos) {
+		if (state.getBlock().isAir(world, pos)) {
 			return false;
 		}
 		
-		for (int k = 0; k < getBlocksImmuneToDecay().length; k++)
-		{
-			if (block == getBlocksImmuneToDecay()[k])
-			{
+		for (int k = 0; k < getBlocksImmuneToDecay().length; k++) {
+			if (state.getBlock() == getBlocksImmuneToDecay()[k]) {
 				return false;
 			}
 		}
 
-		return (block == null || !(block instanceof BlockContainer));
+		return (state == null || !(state instanceof BlockContainer));
 	}
 }

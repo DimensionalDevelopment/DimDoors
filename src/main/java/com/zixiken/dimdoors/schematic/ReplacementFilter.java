@@ -2,35 +2,30 @@ package com.zixiken.dimdoors.schematic;
 
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 
 public class ReplacementFilter extends SchematicFilter {
 
-	private Block targetBlock;
-	private byte targetMetadata;
-	private boolean matchMetadata;
-	private Block replacementBlock;
-	private byte replacementMetadata;
-	private boolean changeMetadata;
+	private IBlockState targetState;
+	private boolean matchState;
+	private IBlockState replacementState;
+	private boolean changeState;
 	
-	public ReplacementFilter(Block targetBlock, byte targetMetadata, Block replacementBlock, byte replacementMetadata)
-	{
+	public ReplacementFilter(IBlockState targetState, byte targetMetadata, IBlockState replacementState) {
 		super("ReplacementFilter");
-		this.targetBlock = targetBlock;
-		this.targetMetadata = targetMetadata;
-		this.matchMetadata = true;
-		this.replacementBlock = replacementBlock;
-		this.replacementMetadata = replacementMetadata;
-		this.changeMetadata = true;
+		this.targetState = targetState;
+		this.matchState = true;
+		this.replacementState = replacementState;
+		this.changeState = true;
 	}
 	
-	public ReplacementFilter(Block targetBlock, Block replacementBlock, byte replacementMetadata)
+	/*public ReplacementFilter(IBlockState targetState, IBlockState replacementState)
 	{
 		super("ReplacementFilter");
-		this.targetBlock = targetBlock;
-		this.matchMetadata = false;
-		this.replacementBlock = replacementBlock;
-		this.replacementMetadata = replacementMetadata;
-		this.changeMetadata = true;
+		this.targetState = targetState;
+		this.matchState = false;
+		this.replacementState = replacementState;
+		this.changeState = true;
 	}
 	
 	public ReplacementFilter(Block targetBlock, byte targetMetadata, Block replacementBlock)
@@ -38,31 +33,26 @@ public class ReplacementFilter extends SchematicFilter {
 		super("ReplacementFilter");
 		this.targetBlock = targetBlock;
 		this.targetMetadata = targetMetadata;
-		this.matchMetadata = true;
+		this.matchState = true;
 		this.replacementBlock = replacementBlock;
-		this.changeMetadata = false;
+		this.changeState = false;
 	}
 	
-	public ReplacementFilter(Block targetBlock, Block replacementBlock)
-	{
+	public ReplacementFilter(IBlockState targetState, IBlockState replacementState) {
 		super("ReplacementFilter");
-		this.targetBlock = targetBlock;
-		this.matchMetadata = false;
-		this.replacementBlock = replacementBlock;
-		this.changeMetadata = false;
-	}
+		this.targetState = targetState;
+		this.matchState = false;
+		this.replacementState = replacementState;
+		this.changeState = false;
+	}*/
 
 	@Override
-	protected boolean applyToBlock(int index, Block[] blocks, byte[] metadata)
-	{
-		if (blocks[index] == targetBlock)
-		{
-			if ((matchMetadata && metadata[index] == targetMetadata) || !matchMetadata)
-			{
-				blocks[index] = replacementBlock;
-				if (changeMetadata)
-				{
-					metadata[index] = replacementMetadata;
+	protected boolean applyToBlock(int index, IBlockState[] states) {
+		if (states[index] == targetState) {
+			if ((matchState && states[index] == targetState) || !matchState) {
+				states[index] = replacementState;
+				if (changeState) {
+					states[index] = replacementState;
 				}
 				return true;
 			}

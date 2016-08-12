@@ -16,33 +16,31 @@ public class yCoordHelper
 	
 	private yCoordHelper() { }
 	
-	public static int getFirstUncovered(World world, int x, int yStart, int z) {
-		return getFirstUncovered(world, x, yStart, z, false);
+	public static int getFirstUncovered(World world, BlockPos pos) {
+		return getFirstUncovered(world, pos, false);
 	}
 	
-	public static int getFirstUncovered(World world, int x, int yStart, int z, boolean fromTop) {
-		Chunk chunk = world.getChunkProvider().provideChunk(x >> 4, z >> 4);
+	public static int getFirstUncovered(World world, BlockPos pos, boolean fromTop) {
+		Chunk chunk = world.getChunkProvider().provideChunk(pos.getX() >> 4, pos.getZ() >> 4);
 
-		int localX = x < 0 ? (x % 16) + 16 : (x % 16);
-		int localZ = z < 0 ? (z % 16) + 16 : (z % 16);
+		int localX = pos.getX() < 0 ? (pos.getX() % 16) + 16 : (pos.getX() % 16);
+		int localZ = pos.getZ() < 0 ? (pos.getZ() % 16) + 16 : (pos.getZ() % 16);
 		int height = MAXIMUM_UNCOVERED_Y;
+
 		int y;
 		
-		if (!fromTop)
-		{
+		if (!fromTop) {
 			boolean covered = true;
-			for (y = yStart; y < height && covered; y++)
-			{
+			for (y = pos.getY(); y < height && covered; y++) {
 				covered = isCoveredBlock(chunk, localX, y - 1, localZ) || isCoveredBlock(chunk, localX, y, localZ);
 			}
 		}
-		else
-		{
+		else {
 			boolean covered = false;
-			for (y = MAXIMUM_UNCOVERED_Y; y > 1 && !covered; y--)
-			{
+			for (y = MAXIMUM_UNCOVERED_Y; y > 1 && !covered; y--) {
 				covered = isCoveredBlock(chunk, localX, y - 1, localZ);
 			}
+
 			if (!covered) y = 63;
 			y++;
 		}
@@ -50,8 +48,7 @@ public class yCoordHelper
 		return y;
 	}
 	
-	public static boolean isCoveredBlock(Chunk chunk, int localX, int y, int localZ)
-	{
+	public static boolean isCoveredBlock(Chunk chunk, int localX, int y, int localZ) {
 		Block block;
 		Material material;
 		

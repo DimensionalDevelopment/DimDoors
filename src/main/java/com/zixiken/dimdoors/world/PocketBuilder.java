@@ -3,9 +3,14 @@ package com.zixiken.dimdoors.world;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.blocks.BlockDimWall;
 import com.zixiken.dimdoors.core.*;
 import com.zixiken.dimdoors.helpers.BlockPosHelper;
+import com.zixiken.dimdoors.helpers.EnumFacingHelper;
+import com.zixiken.dimdoors.items.ItemBlockDimWall;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockTNT;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
@@ -55,7 +60,7 @@ public class PocketBuilder
 			destination = new BlockPos(source.getX(), source.getY(), source.getZ());
 		}
 
-		destination.setY( yCoordHelper.adjustDestinationY(destination.getY(), world.getHeight(), schematic.getEntranceDoorLocation().getY(), schematic.getHeight()) );
+		destination = new BlockPos(destination.getZ(), yCoordHelper.adjustDestinationY(destination.getY(), world.getHeight(), schematic.getEntranceDoorLocation().getY(), schematic.getVolume().getY()), destination.getZ());
 
 		//Generate the dungeon
 		schematic.copyToWorld(world, destination, orientation, link, random, properties, false);
@@ -217,59 +222,49 @@ public class PocketBuilder
 		return generateNewPocket(link, DEFAULT_POCKET_SIZE, DEFAULT_POCKET_WALL_THICKNESS, properties, door, type);
 	}
 
-	private static int getDoorOrientation(Point4D source, DDProperties properties) {
+	private static EnumFacing getDoorOrientation(Point4D source, DDProperties properties) {
 		World world = DimensionManager.getWorld(source.getDimension());
 
 		if (world == null) throw new IllegalStateException("The link's source world should be loaded!");
 
 
 		//Check if the block below that point is actually a door
-		Block block = world.getBlock(source.getX().getX(), source.getY() - 1, source.getZ());
-		if (block==null || !(block instanceof IDimDoor))
-		{
+		Block block = world.getBlockState(source.toBlockPos().down()).getBlock();
+		if (block==null || !(block instanceof IDimDoor)) {
 			throw new IllegalStateException("The link's source is not a door block. It should be impossible to traverse a rift without a door!");
 		}
 
 		//Return the orientation portion of its metadata
-		int orientation = world.getBlockMetadata(source.getX(), source.getY() - 1, source.getZ()) & 3;
+		EnumFacing orientation = EnumFacingHelper.getFacingFromBlockState(world.getBlockState(source.toBlockPos().down()));
+
 		return orientation;
 	}
 	
-	public static void validatePocketSetup(DimLink link, int size, int wallThickness, DDProperties properties, Block door)
-	{
-		if (link == null)
-		{
+	public static void validatePocketSetup(DimLink link, int size, int wallThickness, DDProperties properties, Block door) {
+		if (link == null) {
 			throw new IllegalArgumentException();
 		}
-		if (properties == null)
-		{
+        if (properties == null) {
 			throw new IllegalArgumentException("properties cannot be null.");
 		}
-		if (link.linkType() != LinkType.PERSONAL && link.hasDestination())
-		{
+		if (link.linkType() != LinkType.PERSONAL && link.hasDestination()) {
 			throw new IllegalArgumentException("link cannot have a destination assigned already.");
 		}
 
-		if(door==null)
-		{
+		if(door==null) {
 			throw new IllegalArgumentException("Must have a doorItem to gen one!!");
-
 		}
 
-		if (size < MIN_POCKET_SIZE || size > MAX_POCKET_SIZE)
-		{
+		if (size < MIN_POCKET_SIZE || size > MAX_POCKET_SIZE) {
 			throw new IllegalArgumentException("size must be between " + MIN_POCKET_SIZE + " and " + MAX_POCKET_SIZE + ", inclusive.");
 		}
-		if (wallThickness < MIN_POCKET_WALL_THICKNESS || wallThickness > MAX_POCKET_WALL_THICKNESS)
-		{
+		if (wallThickness < MIN_POCKET_WALL_THICKNESS || wallThickness > MAX_POCKET_WALL_THICKNESS) {
 			throw new IllegalArgumentException("wallThickness must be between " + MIN_POCKET_WALL_THICKNESS + " and " + MAX_POCKET_WALL_THICKNESS + ", inclusive.");
 		}
-		if (size % 2 == 0)
-		{
+		if (size % 2 == 0) {
 			throw new IllegalArgumentException("size must be an odd number.");
 		}
-		if (size < 2 * wallThickness + 3)
-		{
+		if (size < 2 * wallThickness + 3) {
 			throw new IllegalArgumentException("size must be large enough to fit the specified wall thickness and some air space.");
 		}
 	}
@@ -282,11 +277,9 @@ public class PocketBuilder
 	 * @param door
 	 * @return
 	 */
-	public static boolean generateNewPersonalPocket(DimLink link, DDProperties properties,EntityPlayer player, Block door)
-	{
+	public static boolean generateNewPersonalPocket(DimLink link, DDProperties properties,EntityPlayer player, Block door) {
 		//incase a chicken walks in or something
-		if(!(player instanceof EntityPlayer))
-		{
+		if(!(player instanceof EntityPlayer)) {
 			return false;
 		}
 		int wallThickness = DEFAULT_POCKET_WALL_THICKNESS;
@@ -294,8 +287,7 @@ public class PocketBuilder
 		
 		validatePocketSetup(link, size, wallThickness, properties, door);
 		
-		try
-		{
+		try {
 			//Register a new dimension
 			DimData parent = PocketManager.getDimensionData(link.source().getDimension());
 			DimData dimension = PocketManager.registerPocket(parent, DimensionType.PERSONAL, player.getGameProfile().getId().toString());
@@ -304,8 +296,7 @@ public class PocketBuilder
 			//Load a world
 			World world = PocketManager.loadDimension(dimension.id());
 
-			if (world == null || world.provider == null)
-			{
+			if (world == null || world.provider == null) {
 				System.err.println("Could not initialize dimension for a pocket!");
 				return false;
 			}
@@ -313,34 +304,30 @@ public class PocketBuilder
 			//Calculate the destination point
 			Point4D source = link.source();
 			int destinationY = yCoordHelper.adjustDestinationY(link.source().getY(), world.getHeight(), wallThickness + 1, size);
-			int orientation = getDoorOrientation(source, properties);
+			EnumFacing orientation = getDoorOrientation(source, properties);
 
 			//Place a link leading back out of the pocket
-			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkType.REVERSE,(link.orientation()+2)%4);
-			parent.setLinkDestination(reverseLink, source.getX(), source.getY(), source.getZ());
+			DimLink reverseLink = dimension.createLink(new BlockPos(source.getX(), destinationY, source.getZ()), LinkType.REVERSE,(link.orientation().getOpposite()));
+			parent.setLinkDestination(reverseLink, source.toBlockPos());
 
 			//Build the actual pocket area
-			buildPocket(world, source.getX(), destinationY, source.getZ(), orientation, size, wallThickness, properties, door);
+			buildPocket(world, source.toBlockPos(), orientation, size, wallThickness, properties, door.getDefaultState());
 
 			//Finish up destination initialization
-			dimension.initializePocket(source.getX(), destinationY, source.getZ(), orientation, link);
+			dimension.initializePocket(new BlockPos(source.getX(), destinationY, source.getZ()), orientation, link);
 			dimension.setFilled(true);
 			
 			return true;
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
 	
-	public static boolean generateNewPocket(DimLink link, int size, int wallThickness, DDProperties properties, Block door, DimensionType type)
-	{
+	public static boolean generateNewPocket(DimLink link, int size, int wallThickness, DDProperties properties, Block door, DimensionType type) {
 		validatePocketSetup(link, size, wallThickness, properties, door);
 		
-		try
-		{
+		try {
 			//Register a new dimension
 			DimData parent = PocketManager.getDimensionData(link.source().getDimension());
 			DimData dimension = PocketManager.registerPocket(parent, type);
@@ -349,8 +336,7 @@ public class PocketBuilder
 			//Load a world
 			World world = PocketManager.loadDimension(dimension.id());
 
-			if (world == null || world.provider == null)
-			{
+			if (world == null || world.provider == null) {
 				System.err.println("Could not initialize dimension for a pocket!");
 				return false;
 			}
@@ -358,157 +344,114 @@ public class PocketBuilder
 			//Calculate the destination point
 			Point4D source = link.source();
 			int destinationY = yCoordHelper.adjustDestinationY(source.getY(), world.getHeight(), wallThickness + 1, size);
-			int orientation = getDoorOrientation(source, properties);
+			EnumFacing orientation = getDoorOrientation(source, properties);
 
 			//Place a link leading back out of the pocket
 
-			DimLink reverseLink = dimension.createLink(source.getX(), destinationY, source.getZ(), LinkType.REVERSE,(link.orientation()+2)%4);
-			parent.setLinkDestination(reverseLink, source.getX(), source.getY(), source.getZ());
+			DimLink reverseLink = dimension.createLink(new BlockPos(source.getX(), destinationY, source.getZ()), LinkType.REVERSE,(link.orientation().getOpposite()));
+			parent.setLinkDestination(reverseLink, source.toBlockPos());
 
 			//Build the actual pocket area
-			buildPocket(world, source.getX(), destinationY, source.getZ(), orientation, size, wallThickness, properties, door);
+			buildPocket(world, source.toBlockPos(), orientation, size, wallThickness, properties, door.getDefaultState());
 
 			//Finish up destination initialization
-			dimension.initializePocket(source.getX(), destinationY, source.getZ(), orientation, link);
+			dimension.initializePocket(new BlockPos(source.getX(), destinationY, source.getZ()), orientation, link);
 			dimension.setFilled(true);
 			
 			return true;
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
 
-	private static void buildPocket(World world, int x, int y, int z, int orientation, int size, int wallThickness, DDProperties properties, Block doorBlock)
-	{
-		if (properties == null)
-		{
+	private static void buildPocket(World world, BlockPos pos, EnumFacing orientation, int size, int wallThickness, DDProperties properties, IBlockState doorBlock) {
+		if (properties == null) {
 			throw new IllegalArgumentException("properties cannot be null.");
 		}
-		if (size < MIN_POCKET_SIZE || size > MAX_POCKET_SIZE)
-		{
+		if (size < MIN_POCKET_SIZE || size > MAX_POCKET_SIZE) {
 			throw new IllegalArgumentException("size must be between " + MIN_POCKET_SIZE + " and " + MAX_POCKET_SIZE + ", inclusive.");
 		}
-		if (wallThickness < MIN_POCKET_WALL_THICKNESS || wallThickness > MAX_POCKET_WALL_THICKNESS)
-		{
+		if (wallThickness < MIN_POCKET_WALL_THICKNESS || wallThickness > MAX_POCKET_WALL_THICKNESS) {
 			throw new IllegalArgumentException("wallThickness must be between " + MIN_POCKET_WALL_THICKNESS + " and " + MAX_POCKET_WALL_THICKNESS + ", inclusive.");
 		}
-		if (size % 2 == 0)
-		{
+		if (size % 2 == 0) {
 			throw new IllegalArgumentException("size must be an odd number.");
 		}
-		if (size < 2 * wallThickness + 3)
-		{
+		if (size < 2 * wallThickness + 3) {
 			throw new IllegalArgumentException("size must be large enough to fit the specified wall thickness and some air space.");
 		}
-		if (!(doorBlock instanceof IDimDoor))
-		{
+		if (!(doorBlock instanceof IDimDoor)) {
 			throw new IllegalArgumentException("Door must implement IDimDoor");
 		}
 
 
-		BlockPos center = new BlockPos(x - wallThickness + 1 + (size / 2), y - wallThickness - 1 + (size / 2), z);
-		BlockPos door = new BlockPos(x, y, z);
-		BlockRotator.transformPoint(center, door, orientation - BlockRotator.EAST_DOOR_METADATA, door);
+		BlockPos center = pos.add(-wallThickness + 1 + (size / 2), -wallThickness - 1 + (size / 2), 0);
+		BlockPos door = pos;
+		BlockRotator.transformPoint(center, door, orientation, door);
 
 		//Build the outer layer of Eternal Fabric
-		buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2), DimDoors.blockDimWallPerm, 0, false, 0);
+		buildBox(world, center, (size / 2), DimDoors.blockDimWallPerm.getDefaultState(), false, 0);
 
 		//check if we are building a personal pocket
 		int metadata = 0;
-		if(world.provider instanceof PersonalPocketProvider)
-		{
+		if(world.provider instanceof PersonalPocketProvider) {
 			metadata = 2;
 		}
 		
 		//Build the (wallThickness - 1) layers of Fabric of Reality
 		for (int layer = 1; layer < wallThickness; layer++)
 		{
-			buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2) - layer, DimDoors.blockDimWall, metadata,
-					layer < (wallThickness - 1) && properties.TNFREAKINGT_Enabled, properties.NonTntWeight);
+			buildBox(world, center, (size / 2) - layer, DimDoors.blockDimWall.getDefaultState().withProperty(BlockDimWall.TYPE, 2),
+                    layer < (wallThickness - 1) && properties.TNFREAKINGT_Enabled, properties.NonTntWeight);
 		}
 		
 		//MazeBuilder.generate(world, x, y, z, random);
 
 		//Build the door
-		int doorOrientation = BlockRotator.transformMetadata(BlockRotator.EAST_DOOR_METADATA, orientation - BlockRotator.EAST_DOOR_METADATA + 2, doorBlock);
-		ItemDimensionalDoor.placeDoorBlock(world, x, y - 1, z, doorOrientation, doorBlock);
+		EnumFacing doorOrientation = EnumFacingHelper.getFacingFromBlockState(BlockRotator.transform(doorBlock,2));
+		ItemDimensionalDoor.placeDoor(world, pos.down(), doorOrientation, doorBlock.getBlock());
 
 	}
 
-	private static void buildBox(World world, int centerX, int centerY, int centerZ, int radius, Block block, int metadata, boolean placeTnt, int nonTntWeight)
-	{
+	private static void buildBox(World world, BlockPos center, int radius, IBlockState state, boolean placeTnt, int nonTntWeight) {
 		int x, y, z;
 
-		final int startX = centerX - radius;
-		final int startY = centerY - radius;
-		final int startZ = centerZ - radius;
+		final int startX = center.getX() - radius;
+		final int startY = center.getY() - radius;
+		final int startZ = center.getZ() - radius;
 
-		final int endX = centerX + radius;
-		final int endY = centerY + radius;
-		final int endZ = centerZ + radius;
+		final int endX = center.getX() + radius;
+		final int endY = center.getY() + radius;
+		final int endZ = center.getZ() + radius;
 
 		//Build faces of the box
-		for (x = startX; x <= endX; x++)
-		{
-			for (z = startZ; z <= endZ; z++)
-			{
-				setBlockDirectlySpecial(world, x, startY, z, block, metadata, placeTnt, nonTntWeight);
-				setBlockDirectlySpecial(world, x, endY, z, block, metadata, placeTnt, nonTntWeight);
+		for (x = startX; x <= endX; x++) {
+			for (z = startZ; z <= endZ; z++) {
+				setBlockDirectlySpecial(world, new BlockPos(x, startY, z), state, placeTnt, nonTntWeight);
+				setBlockDirectlySpecial(world, new BlockPos(x, endY, z), state, placeTnt, nonTntWeight);
 			}
 
-			for (y = startY; y <= endY; y++)
-			{
-				setBlockDirectlySpecial(world, x, y, startZ, block, metadata, placeTnt, nonTntWeight);
-				setBlockDirectlySpecial(world, x, y, endZ, block, metadata, placeTnt, nonTntWeight);
+			for (y = startY; y <= endY; y++) {
+				setBlockDirectlySpecial(world, new BlockPos(x, y, startZ), state, placeTnt, nonTntWeight);
+				setBlockDirectlySpecial(world, new BlockPos(x, y, endZ), state, placeTnt, nonTntWeight);
 			}
 		}
 
-		for (y = startY; y <= endY; y++)
-		{
-			for (z = startZ; z <= endZ; z++)
-			{
-				setBlockDirectlySpecial(world, startX, y, z, block, metadata, placeTnt, nonTntWeight);
-				setBlockDirectlySpecial(world, endX, y, z, block, metadata, placeTnt, nonTntWeight);
+		for (y = startY; y <= endY; y++) {
+			for (z = startZ; z <= endZ; z++) {
+				setBlockDirectlySpecial(world, new BlockPos(startX, y, z), state, placeTnt, nonTntWeight);
+				setBlockDirectlySpecial(world, new BlockPos(endX, y, z), state, placeTnt, nonTntWeight);
 			}
 		}
 	}
 
-	private static void setBlockDirectlySpecial(World world, int x, int y, int z, Block block, int metadata, boolean placeTnt, int nonTntWeight)
-	{
-		if (placeTnt && random.nextInt(nonTntWeight + 1) == 0)
-		{
-			setBlockDirectly(world, x, y, z, Blocks.tnt, 1);
+	private static void setBlockDirectlySpecial(World world, BlockPos pos, IBlockState state, boolean placeTnt, int nonTntWeight) {
+		if (placeTnt && random.nextInt(nonTntWeight + 1) == 0) {
+			world.setBlockState(pos, Blocks.tnt.getDefaultState().withProperty(BlockTNT.EXPLODE, true), 1);
+		} else {
+			world.setBlockState(pos, state);
 		}
-		else
-		{
-			setBlockDirectly(world, x, y, z, block, metadata);
-		}
-	}
-
-	private static void setBlockDirectly(World world, int x, int y, int z, Block block, int metadata)
-	{
-		int cX = x >> 4;
-		int cZ = z >> 4;
-		int cY = y >> 4;
-		Chunk chunk;
-
-		int localX = (x % 16) < 0 ? (x % 16) + 16 : (x % 16);
-		int localZ = (z % 16) < 0 ? (z % 16) + 16 : (z % 16);
-		ExtendedBlockStorage extBlockStorage;
-
-		chunk = world.getChunkFromChunkCoords(cX, cZ);
-		extBlockStorage = chunk.getBlockStorageArray()[cY];
-		if (extBlockStorage == null) 
-		{
-			extBlockStorage = new ExtendedBlockStorage(cY << 4, !world.provider.hasNoSky);
-			chunk.getBlockStorageArray()[cY] = extBlockStorage;
-		}
-		extBlockStorage.func_150818_a(localX, y & 15, localZ, block);
-		extBlockStorage.setExtBlockMetadata(localX, y & 15, localZ, metadata);
-		chunk.setChunkModified();
 	}
 
 	public static BoundingBox calculateDefaultBounds(DimData pocket)
@@ -519,29 +462,28 @@ public class PocketBuilder
 		int minX = 0;
 		int minZ = 0;
 		Point4D origin = pocket.origin();
-		int orientation = pocket.orientation();
-		if (orientation < 0 || orientation > 3)
-		{
+		EnumFacing orientation = pocket.orientation();
+		if (orientation.equals(EnumFacing.UP) || orientation.equals(EnumFacing.DOWN)) {
 			throw new IllegalArgumentException("pocket has an invalid orientation value.");
 		}
-		switch (orientation)
-		{
-		case 0:
-			minX = origin.getX() - DEFAULT_POCKET_WALL_THICKNESS + 1;
-			minZ = origin.getZ() - DEFAULT_POCKET_SIZE / 2;
-			break;
-		case 1:
-			minX = origin.getX() - DEFAULT_POCKET_SIZE / 2;
-			minZ = origin.getZ() - DEFAULT_POCKET_WALL_THICKNESS + 1;
-			break;
-		case 2:
-			minX = origin.getX() + DEFAULT_POCKET_WALL_THICKNESS - DEFAULT_POCKET_SIZE;
-			minZ = origin.getZ() - DEFAULT_POCKET_SIZE / 2;
-			break;
-		case 3:
-			minX = origin.getX() - DEFAULT_POCKET_SIZE / 2;
-			minZ = origin.getZ() + DEFAULT_POCKET_WALL_THICKNESS - DEFAULT_POCKET_SIZE;
-			break;
+
+        switch (orientation) {
+            case SOUTH:
+			    minX = origin.getX() - DEFAULT_POCKET_WALL_THICKNESS + 1;
+		        minZ = origin.getZ() - DEFAULT_POCKET_SIZE / 2;
+			    break;
+            case WEST:
+			    minX = origin.getX() - DEFAULT_POCKET_SIZE / 2;
+			    minZ = origin.getZ() - DEFAULT_POCKET_WALL_THICKNESS + 1;
+			    break;
+            case NORTH:
+			    minX = origin.getX() + DEFAULT_POCKET_WALL_THICKNESS - DEFAULT_POCKET_SIZE;
+		    	minZ = origin.getZ() - DEFAULT_POCKET_SIZE / 2;
+			    break;
+            case EAST:
+    			minX = origin.getX() - DEFAULT_POCKET_SIZE / 2;
+	    		minZ = origin.getZ() + DEFAULT_POCKET_WALL_THICKNESS - DEFAULT_POCKET_SIZE;
+		    	break;
 		}
 		return new BoundingBox(minX, 0, minZ, DEFAULT_POCKET_SIZE, 255, DEFAULT_POCKET_SIZE);
 	}

@@ -31,22 +31,19 @@ public class RiftRegenerator implements IRegularTickReceiver {
 	private PriorityQueue<RiftTicket> ticketQueue;
 	private BlockRift blockRift;
 	
-	public RiftRegenerator(IRegularTickSender sender, BlockRift blockRift)
-	{
+	public RiftRegenerator(IRegularTickSender sender, BlockRift blockRift) {
 		this.ticketQueue = new PriorityQueue<RiftTicket>();
 		this.blockRift = blockRift;
 		sender.registerReceiver(this, RIFT_REGENERATION_INTERVAL, false);
 	}
 	
 	@Override
-	public void notifyTick()
-	{
+	public void notifyTick() {
 		processTicketQueue();
 		tickCount++;
 	}
 	
-	public void scheduleSlowRegeneration(DimLink link)
-	{
+	public void scheduleSlowRegeneration(DimLink link) {
 		scheduleRegeneration(link, MIN_SLOW_DELAY, MAX_SLOW_DELAY);
 	}
 	
@@ -58,31 +55,22 @@ public class RiftRegenerator implements IRegularTickReceiver {
 		scheduleRegeneration(PocketManager.getLink(pos, world), MIN_FAST_DELAY, MAX_FAST_DELAY);
 	}
 	
-	private void scheduleRegeneration(DimLink link, int minDelay, int maxDelay)
-	{
-		if (link != null)
-		{
+	private void scheduleRegeneration(DimLink link, int minDelay, int maxDelay) {
+		if (link != null) {
 			int tickDelay = MathHelper.getRandomIntegerInRange(random, minDelay * TICKS_PER_SECOND, maxDelay * TICKS_PER_SECOND);
 			ticketQueue.add(new RiftTicket(link.source(), tickCount + tickDelay));
 		}
 	}
 	
-	private void processTicketQueue()
-	{
+	private void processTicketQueue() {
 		RiftTicket ticket;
-		while (!ticketQueue.isEmpty() && ticketQueue.peek().timestamp() <= tickCount)
-		{
+		while (!ticketQueue.isEmpty() && ticketQueue.peek().timestamp() <= tickCount) {
 			ticket = ticketQueue.remove();
 			regenerateRift(ticket.location());
 		}
 	}
 
-	private void regenerateRift(Point4D location)
-	{
-		int x = location.getX();
-		int y = location.getY();
-		int z = location.getZ();
-		
+	private void regenerateRift(Point4D location) {
 		// Try to regenerate a rift, or possibly reschedule its regeneration.
 		// The world for the given location must be loaded.
 		World world = DimensionManager.getWorld(location.getDimension());
@@ -97,24 +85,20 @@ public class RiftRegenerator implements IRegularTickReceiver {
 		// The chunk at the given location must be loaded.
 		// Note: ChunkProviderServer.chunkExists() returns whether a chunk is
 		// loaded, not whether it has already been created.
-		if (!world.getChunkProvider().chunkExists(x >> 4, z >> 4))
+		if (!world.getChunkProvider().chunkExists(location.getX() >> 4, location.getZ() >> 4))
 			return;
 		
 		// If the location is occupied by an immune DD block, then don't regenerate.
-		if (blockRift.isModBlockImmune(world, x, y, z))
+		if (blockRift.isModBlockImmune(world, location.toBlockPos()))
 			return;
 		
 		// If the location is occupied by an immune block, then reschedule.
-		if (blockRift.isBlockImmune(world, x, y, z))
-		{
+		if (blockRift.isBlockImmune(world, location.toBlockPos())) {
 			scheduleRegeneration(link, MIN_RESCHEDULE_DELAY, MAX_RESCHEDULE_DELAY);
-		}
-		else
-		{
+		} else {
 			// All of the necessary conditions have been met. Restore the rift!
-			Block block = world.getBlock(x, y, z);
-			if (world.setBlock(x, y, z, blockRift))
-				blockRift.dropWorldThread(block, world, x, y, z, random);
+			if (world.setBlockState(location.toBlockPos(), blockRift.getDefaultState()))
+				blockRift.dropWorldThread(world, location.toBlockPos(), random);
 		}
 	}
 	

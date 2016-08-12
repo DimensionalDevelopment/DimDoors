@@ -14,15 +14,14 @@ import com.zixiken.dimdoors.dungeon.DungeonData;
 import com.zixiken.dimdoors.helpers.DungeonHelper;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.util.DDLogger;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.common.DimensionManager;
 import com.zixiken.dimdoors.util.FileFilters;
 import com.zixiken.dimdoors.util.Point4D;
 import com.google.common.io.Files;
 
-public class DDSaveHandler
-{
-	public static boolean loadAll()
-	{
+public class DDSaveHandler {
+	public static boolean loadAll() {
 		// SenseiKiwi: Loading up our save data is not as simple as just reading files.
 		// To properly restore dimensions, we need to make sure we always load
 		// a dimension's parent and root before trying to load it. We'll use
@@ -40,16 +39,14 @@ public class DDSaveHandler
 		File dataDirectory = new File(basePath);
 		
 		// Check if the folder exists. If it doesn't, just return.
-		if (!dataDirectory.exists())
-		{
+		if (!dataDirectory.exists()) {
 			return true;
 		}
 		
 		// Load the dimension blacklist
 		File blacklistFile = new File(basePath+"blacklist.txt");
 		
-		if(blacklistFile.exists())
-		{
+		if(blacklistFile.exists()) {
 			BlacklistProcessor blacklistReader = new BlacklistProcessor();
 			List<Integer> blacklist = readBlacklist(blacklistFile,blacklistReader);
 			PocketManager.createAndRegisterBlacklist(blacklist);
@@ -58,8 +55,7 @@ public class DDSaveHandler
 		// Load the personal pockets mapping		
 		File personalPocketMap = new File(basePath+"personalPockets.txt");
 		HashMap<String, Integer> ppMap = new HashMap<String, Integer>();
-		if(personalPocketMap.exists())
-		{
+		if(personalPocketMap.exists()) {
 			PersonalPocketMappingProcessor ppMappingProcessor = new PersonalPocketMappingProcessor();
 			ppMap = readPersonalPocketsMapping(personalPocketMap,ppMappingProcessor);
 		}						
@@ -70,11 +66,9 @@ public class DDSaveHandler
 		FileFilter dataFileFilter = new FileFilters.RegexFileFilter("dim_-?\\d+\\.txt");
 		
 		File[] dataFiles = dataDirectory.listFiles(dataFileFilter);
-		for (File dataFile : dataFiles)
-		{
+		for (File dataFile : dataFiles) {
 			PackedDimData packedDim = readDimension(dataFile, reader);
-			if(packedDim == null)
-			{
+			if(packedDim == null) {
 				throw new IllegalStateException("The DD data for "+dataFile.getName().replace(".txt", "")+" at "+dataFile.getPath()+" is corrupted. Please report this on the MCF or on the DD github issues tracker.");
 			}
 			packedDims.put(packedDim.ID,packedDim);
@@ -83,16 +77,14 @@ public class DDSaveHandler
 		
 		List<PackedLinkData> linksToUnpack = new ArrayList<PackedLinkData>();
 		//get the grand list of all links to unpack
-		for(PackedDimData packedDim : packedDims.values())
-		{
+		for(PackedDimData packedDim : packedDims.values()) {
 			linksToUnpack.addAll(packedDim.Links);
 		}
 		unpackDimData(packedDims);
 		unpackLinkData(linksToUnpack);
 		
 		HashMap<String, DimData> personalPocketsMap = new HashMap<String, DimData>();
-		for(Entry<String, Integer> pair : ppMap.entrySet())
-		{
+		for(Entry<String, Integer> pair : ppMap.entrySet()) {
 			personalPocketsMap.put(pair.getKey(), PocketManager.getDimensionData(pair.getValue()));
 		}
 		PocketManager.setPersonalPocketsMapping(personalPocketsMap);
@@ -105,25 +97,21 @@ public class DDSaveHandler
 	 * @param packedDims
 	 * @return
 	 */
-	public static boolean unpackDimData(HashMap<Integer,PackedDimData> packedDims)
-	{
+	public static boolean unpackDimData(HashMap<Integer,PackedDimData> packedDims) {
 		LinkedList<Integer> dimsToRegister = new LinkedList<Integer>();
 		
-		for(PackedDimData packedDim : packedDims.values())
-		{						
+		for(PackedDimData packedDim : packedDims.values()) {
 			//fix pockets without parents
 			verifyParents(packedDim, packedDims);
 			
 			//Load roots first by inserting them in the LinkedList first.
-			if(packedDim.RootID==packedDim.ID)
-			{
+			if(packedDim.RootID==packedDim.ID) {
 				dimsToRegister.addFirst(packedDim.ID);
 			}
 		}
 		
 		//load the children for each root
-		while(!dimsToRegister.isEmpty())
-		{
+		while(!dimsToRegister.isEmpty()) {
 			Integer childID = dimsToRegister.pop();
 			PackedDimData data = packedDims.get(childID);
 			dimsToRegister.addAll(verifyChildren(data, packedDims));
@@ -139,21 +127,17 @@ public class DDSaveHandler
 	 * @param packedDims
 	 * @return
 	 */
-	private static ArrayList<Integer> verifyChildren(PackedDimData packedDim,HashMap<Integer,PackedDimData> packedDims)
-	{			
+	private static ArrayList<Integer> verifyChildren(PackedDimData packedDim,HashMap<Integer,PackedDimData> packedDims) {
 		ArrayList<Integer> children = new ArrayList<Integer>();
 		children.addAll(packedDim.ChildIDs);
 		boolean isMissing = false;
-		for(Integer childID : packedDim.ChildIDs)
-		{
-			if(!packedDims.containsKey(childID))
-			{
+		for(Integer childID : packedDim.ChildIDs) {
+			if(!packedDims.containsKey(childID)) {
 				children.remove(childID);
 				isMissing=true;
 			}
 		}
-		if(isMissing)
-		{
+		if(isMissing) {
 			packedDim=(new PackedDimData(packedDim.ID, packedDim.Depth, packedDim.PackDepth, packedDim.ParentID, packedDim.RootID, packedDim.Orientation, DimensionType.getTypeFromIndex(packedDim.DimensionType), packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, children, packedDim.Links, packedDim.Tails));
 			packedDims.put(packedDim.ID, packedDim);
 		}
@@ -168,22 +152,19 @@ public class DDSaveHandler
 	 * @param packedDim
 	 * @param packedDims
 	 */
-	public static void verifyParents(PackedDimData packedDim,HashMap<Integer,PackedDimData> packedDims)
-	{
+	public static void verifyParents(PackedDimData packedDim,HashMap<Integer,PackedDimData> packedDims) {
 		ArrayList<Integer> fosterChildren = new ArrayList<Integer>();
 		fosterChildren.add(packedDim.ID);
 		DimensionType type = DimensionType.getTypeFromIndex(packedDim.DimensionType);
 		//fix pockets without parents
-		if(!packedDims.containsKey(packedDim.ParentID))
-		{
+		if(!packedDims.containsKey(packedDim.ParentID)) {
 			//Fix the orphan by changing its root to its parent, re-connecting it to the list
 			packedDim=(new PackedDimData(packedDim.ID, 1, packedDim.PackDepth, packedDim.RootID, packedDim.RootID, packedDim.Orientation,type, packedDim.IsFilled, packedDim.DungeonData, packedDim.Origin, packedDim.ChildIDs, packedDim.Links, packedDim.Tails));
 			packedDims.put(packedDim.ID, packedDim);
 		}
 		//fix pockets whose parents have forgotten about them
 		PackedDimData fosterParent = packedDims.get(packedDim.ParentID);
-		if(!fosterParent.ChildIDs.contains(packedDim.ID)&&packedDim.ID!=packedDim.RootID)
-		{
+		if(!fosterParent.ChildIDs.contains(packedDim.ID)&&packedDim.ID!=packedDim.RootID) {
 			//find the root, and fix it by adding the orphan's ID to its children
 			fosterChildren.addAll(fosterParent.ChildIDs);
 			fosterParent=(new PackedDimData(fosterParent.ID, fosterParent.Depth, fosterParent.PackDepth, fosterParent.ParentID, fosterParent.RootID, fosterParent.Orientation, type, fosterParent.IsFilled, fosterParent.DungeonData, fosterParent.Origin, fosterChildren, fosterParent.Links, fosterParent.Tails));
@@ -192,16 +173,14 @@ public class DDSaveHandler
 			
 	}
 	
-	public static boolean unpackLinkData(List<PackedLinkData> linksToUnpack)
-	{
+	public static boolean unpackLinkData(List<PackedLinkData> linksToUnpack) {
 		BlockPos fakePoint = new BlockPos(-1,-1,-1);
 		List<PackedLinkData> unpackedLinks = new ArrayList<PackedLinkData>();
 		/**
 		 * sort through the list, unpacking links that do not have parents. 
 		 */
 		//TODO- what we have a loop of links?
-		for(PackedLinkData packedLink : linksToUnpack)
-		{
+		for(PackedLinkData packedLink : linksToUnpack) {
 			if(packedLink.parent.equals(fakePoint))
 			{
 				DimData data = PocketManager.getDimensionData(packedLink.source.getDimension());
@@ -212,7 +191,7 @@ public class DDSaveHandler
 				Point4D destination = packedLink.tail.destination;
 				if(destination!=null)
 				{
-					PocketManager.createDimensionDataDangerously(destination.getDimension()).setLinkDestination(link, destination.getX(),destination.getY(),destination.getZ());
+					PocketManager.createDimensionDataDangerously(destination.getDimension()).setLinkDestination(link, destination.toBlockPos());
 				}
 				unpackedLinks.add(packedLink);
 			}

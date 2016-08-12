@@ -33,9 +33,8 @@ public class CustomSkyProvider extends IRenderHandler
 
 
 	@Override
-	public void render(float par1, WorldClient world, Minecraft mc) 
-	{
-
+	public void render(float par1, WorldClient world, Minecraft mc) {
+		/*
 		starGLCallList = GLAllocation.generateDisplayLists(3);
 		glSkyList = this.starGLCallList + 1;
 		glSkyList2 = this.starGLCallList + 2;
@@ -225,9 +224,6 @@ public class CustomSkyProvider extends IRenderHandler
 			GL11.glCallList(this.glSkyList2);
 			GL11.glPopMatrix();
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
-			GL11.glDepthMask(true);
+			GL11.glDepthMask(true);*/
 		}
-
-	}
-
 }

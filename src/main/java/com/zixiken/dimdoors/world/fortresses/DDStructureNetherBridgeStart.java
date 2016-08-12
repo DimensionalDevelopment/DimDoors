@@ -23,8 +23,7 @@ public class DDStructureNetherBridgeStart extends StructureStart
 	
 	public DDStructureNetherBridgeStart() { }
 	
-	public DDStructureNetherBridgeStart(World world, Random random, int chunkX, int chunkZ, DDProperties properties)
-    {
+	public DDStructureNetherBridgeStart(World world, Random random, int chunkX, int chunkZ, DDProperties properties) {
 		// StructureNetherBridgeStart handles designing the fortress for us
     	super(chunkX, chunkZ);
     	
@@ -35,23 +34,19 @@ public class DDStructureNetherBridgeStart extends StructureStart
     	hasGateway = false;
     	
     	// Randomly decide whether to build a gateway in this fortress
-    	if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.FortressGatewayGenerationChance)
-    	{
+    	if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.FortressGatewayGenerationChance) {
     		// Search for all the blaze spawners in a fortress
     		spawnerRooms = new ArrayList<StructureNetherBridgePieces.Throne>();
     		componentIterator = this.components.iterator();
-    		while (componentIterator.hasNext())
-    		{
+    		while (componentIterator.hasNext()) {
     			component = (StructureComponent) componentIterator.next();
-    			if (component instanceof StructureNetherBridgePieces.Throne)
-    			{
+    			if (component instanceof StructureNetherBridgePieces.Throne) {
     				spawnerRooms.add((StructureNetherBridgePieces.Throne) component);
     			}
     		}
     		
     		// If any spawner rooms were found, choose one to randomly replace
-    		if (!spawnerRooms.isEmpty())
-    		{
+    		if (!spawnerRooms.isEmpty()) {
     			hasGateway = true;
     			component = spawnerRooms.get(random.nextInt(spawnerRooms.size()));
     			// Store enough data to identify the room when it's going to be built later
@@ -64,37 +59,33 @@ public class DDStructureNetherBridgeStart extends StructureStart
     }
     
 	@Override
-	public NBTTagCompound func_143021_a(int chunkX, int chunkZ)
-    {
+	public NBTTagCompound writeStructureComponentsToNBT(int chunkX, int chunkZ) {
 		// We override the function for writing NBT data to add our own gateway data
-		NBTTagCompound fortressTag = super.func_143021_a(chunkX, chunkZ);
+		NBTTagCompound fortressTag = super.writeStructureComponentsToNBT(chunkX, chunkZ);
 		
 		// Add a compound tag with our data
 		NBTTagCompound dimensionalTag = new NBTTagCompound();
 		dimensionalTag.setBoolean("HasGateway", this.hasGateway);
-		if (hasGateway)
-		{
+		if (hasGateway) {
 			dimensionalTag.setInteger("GatewayMinX", this.minX);
 			dimensionalTag.setInteger("GatewayMinY", this.minY);
 			dimensionalTag.setInteger("GatewayMinZ", this.minZ);
 		}
+
 		fortressTag.setTag("DimensionalDoors", dimensionalTag);
 		
 		return fortressTag;
     }
 
 	@Override
-    public void func_143020_a(World world, NBTTagCompound fortressTag)
-    {
+    public void readStructureComponentsFromNBT(World world, NBTTagCompound fortressTag) {
 		// We override the function for reading NBT data to load gateway data
-		super.func_143020_a(world, fortressTag);
+		super.readStructureComponentsFromNBT(world, fortressTag);
 		
         NBTTagCompound dimensionalTag = fortressTag.getCompoundTag("DimensionalDoors");
-        if (dimensionalTag != null)
-        {
+        if (dimensionalTag != null) {
         	this.hasGateway = dimensionalTag.getBoolean("HasGateway");
-        	if (hasGateway)
-        	{
+        	if (hasGateway) {
         		minX = dimensionalTag.getInteger("GatewayMinX");
     			minY = dimensionalTag.getInteger("GatewayMinY");
     			minZ = dimensionalTag.getInteger("GatewayMinZ");
@@ -106,38 +97,31 @@ public class DDStructureNetherBridgeStart extends StructureStart
      * Keeps iterating Structure Pieces and spawning them until the checks tell it to stop
      */
     @Override
-	public void generateStructure(World world, Random random, StructureBoundingBox generationBounds)
-    {
-    	if (hasGateway)
-    	{
+	public void generateStructure(World world, Random random, StructureBoundingBox generationBounds) {
+    	if (hasGateway) {
     		// Use a modified version of Vanilla's fortress generation code
     		// Try to detect the room that we intend to replace with our gateway
     		Iterator iterator = this.components.iterator();
 
-            while (iterator.hasNext())
-            {
+            while (iterator.hasNext()) {
                 StructureComponent component = (StructureComponent)iterator.next();
                 StructureBoundingBox bounds = component.getBoundingBox();
                 
-                if (bounds.intersectsWith(generationBounds))
-                {
+                if (bounds.intersectsWith(generationBounds)) {
                 	// Check if this is our replacement target
                 	// Checking the location is enough because structures aren't allowed to have
                 	// intersecting bounding boxes - nothing else can have these min coordinates.
-                	if (bounds.minX == this.minX && bounds.minY == this.minY && bounds.minZ == this.minZ)
-                	{
+                	if (bounds.minX == this.minX && bounds.minY == this.minY && bounds.minZ == this.minZ) {
                 		component = ComponentNetherGateway.createFromComponent(component, random);
                 	}
+
                 	// Now for the last bit of Vanilla's generation code
-                	if (!component.addComponentParts(world, random, generationBounds))
-                    {
+                	if (!component.addComponentParts(world, random, generationBounds)) {
                         iterator.remove();
                     }
                 }
             }
-    	}
-    	else
-    	{
+    	} else {
     		// Just run the usual structure generation
     		super.generateStructure(world, random, generationBounds);
     	}
