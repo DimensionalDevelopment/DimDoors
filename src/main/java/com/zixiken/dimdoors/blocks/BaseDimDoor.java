@@ -31,8 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEntityProvider {
 	
-	public BaseDimDoor(Material material)
-	{
+	public BaseDimDoor(Material material) {
 		super(material);
 	}
     

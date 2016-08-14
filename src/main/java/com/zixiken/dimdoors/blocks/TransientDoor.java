@@ -62,9 +62,9 @@ public class TransientDoor extends BaseDimDoor {
 	@Override
 	public boolean isCollidable() {return false;}
 
-    //The old textures are transparent. We should get the same effect with no render,
-    //though setting opaque to false might be necessary for ao/culling purposes
 	@Override
-	public int getRenderType() {return -1;}
-	
+	public int getRenderType() {return 2;}
+
+	@Override
+	public boolean isOpaqueCube() {return false;}
 }

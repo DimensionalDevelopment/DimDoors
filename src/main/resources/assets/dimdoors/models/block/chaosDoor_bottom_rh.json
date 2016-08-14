@@ -2,6 +2,6 @@
     "parent": "block/door_bottom_rh",
     "textures": {
         "bottom": "blocks/door_iron_lower",
-        "top": "blocks/chaosDoor_upper"
+        "top": "dimdoors:blocks/chaosDoor_upper"
     }
 }

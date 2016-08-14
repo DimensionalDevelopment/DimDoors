@@ -1,7 +1,7 @@
 {
     "parent": "block/door_top",
     "textures": {
-        "bottom": "blocks/dimDoorWarp_lower",
-        "top": "blocks/dimDoorWarp_upper"
+        "bottom": "dimdoors:blocks/dimDoorWarp_lower",
+        "top": "dimdoors:blocks/dimDoorWarp_upper"
     }
 }

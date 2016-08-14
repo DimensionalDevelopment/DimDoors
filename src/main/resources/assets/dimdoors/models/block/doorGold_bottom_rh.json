@@ -1,7 +1,7 @@
 {
     "parent": "block/door_bottom_rh",
     "textures": {
-        "bottom": "blocks/doorGold_lower",
-        "top": "blocks/doorGold_upper"
+        "bottom": "dimdoors:blocks/doorGold_lower",
+        "top": "dimdoors:blocks/doorGold_upper"
     }
 }
