@@ -21,6 +21,8 @@ public class ItemRenderManager {
         register(getItemFromBlock(DimDoors.blockDimWallPerm));
         register(getItemFromBlock(DimDoors.blockLimbo));
         register(getItemFromBlock(DimDoors.blockRift));
+        register(getItemFromBlock(DimDoors.transientDoor));
+        register(getItemFromBlock(DimDoors.transTrapdoor));
 
         //Item registration
         register(DimDoors.itemDDKey);

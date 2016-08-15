@@ -20,6 +20,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
@@ -77,16 +78,13 @@ public class BlockRift extends Block implements ITileEntityProvider {
 	}
 	
 	@Override
-	public boolean isCollidable()
-	{
-		return false;
-	}
+	public boolean isCollidable() {return false;}
 
 	@Override
-	public boolean isOpaqueCube()
-	{
-		return false;
-	}
+	public boolean isOpaqueCube() {return false;}
+
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {return null;}
 
 	/**
 	 * Returns whether this block is collideable based on the arguments passed in Args: blockMetaData, unknownFlag

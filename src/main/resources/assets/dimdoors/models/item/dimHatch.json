@@ -1,5 +1,5 @@
 {
-  "parent": "dimdoors:block/blockRift",
+  "parent": "dimdoors:block/dimHatch_top",
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],
