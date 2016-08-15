@@ -34,8 +34,5 @@ public class DimensionalDoor extends BaseDimDoor {
 	}
 	
 	@Override
-	public Item getDoorItem()
-	{
-		return DimDoors.itemDimensionalDoor;
-	}
+	public Item getDoorItem() {return DimDoors.itemDimensionalDoor;}
 }

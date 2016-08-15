@@ -171,17 +171,17 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	@Override
 	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighbor) {
 		if (isUpperDoorBlock(state)) {
-			if (world.getBlockState(pos.down()) != this)
-                world.setBlockToAir(pos);
-			if (!neighbor.isAir(world, pos) && neighbor != this)
-                onNeighborBlockChange(world, pos.down(), state, neighbor);
+            BlockPos downPos = pos.down();
+			IBlockState downState = world.getBlockState(downPos);
+			if (downState.getBlock() != this) world.setBlockToAir(pos);
+			else if (neighbor != this) onNeighborBlockChange(world, downPos, downState, neighbor);
 		} else {
-			if (world.getBlockState(pos.up()) != this) {
+            BlockPos upPos = pos.up();
+			if (world.getBlockState(upPos).getBlock() != this) {
 				world.setBlockToAir(pos);
 				if (!world.isRemote) dropBlockAsItem(world, pos, state, 0);
-			}
-			else if(this.getLockStatus(world, pos)<=1) {
-				boolean powered = world.isBlockPowered(pos) || world.isBlockPowered(pos.up());
+			} else if(this.getLockStatus(world, pos) <= 1) {
+				boolean powered = world.isBlockPowered(pos) || world.isBlockPowered(upPos);
 				if ((powered || !neighbor.isAir(world, pos) && neighbor.canProvidePower()) && neighbor != this)
 					toggleDoor(world, pos, powered);
 			}
