@@ -64,11 +64,16 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
         }
 	}
 
-	@Override
+    @Override
+    public boolean hasTileEntity(IBlockState state) {return state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER;}
+
+    @Override
 	public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
-		placeLink(world, pos);
-		world.setTileEntity(pos, createNewTileEntity(world, 0));
-		updateAttachedTile(world, pos);
+		if(state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER) placeLink(world, pos);
+        else {
+            world.setTileEntity(pos, createNewTileEntity(world, 0));
+            updateAttachedTile(world, pos);
+        }
 	}
 
 	//Called to update the render information on the tile entity. Could probably implement a data watcher,
