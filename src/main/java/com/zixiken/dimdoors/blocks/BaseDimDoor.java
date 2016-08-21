@@ -114,7 +114,9 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 
 	@Override
 	public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
-		this.setDoorRotation(worldIn.getBlockState(pos));
+		IBlockState downState = worldIn.getBlockState(pos.down());
+        if(downState.getBlock() == this) setDoorRotation(downState);
+		else setDoorRotation(worldIn.getBlockState(pos));
 	}
 
 
