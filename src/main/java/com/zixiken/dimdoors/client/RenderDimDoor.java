@@ -137,28 +137,28 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor>
 
 			switch (tile.orientation) {
                 case SOUTH:
-					worldRenderer.pos(x + .01F, y - 1, z).endVertex();
+					worldRenderer.pos(x + .01, y - 1, z).endVertex();
 					worldRenderer.pos(x + .01, y - 1, z + 1.0D).endVertex();
-					worldRenderer.pos(x + .01, y + 1, z + 1.0D).endVertex();
-					worldRenderer.pos(x + .01, y + 1, z).endVertex();
+					worldRenderer.pos(x + .01, y + 2, z + 1.0D).endVertex();
+					worldRenderer.pos(x + .01, y + 2, z).endVertex();
 					break;
                 case WEST:
-					worldRenderer.pos(x, y + 1, z + .01).endVertex();
-					worldRenderer.pos(x + 1, y + 1, z + .01).endVertex();
+					worldRenderer.pos(x, y + 2, z + .01).endVertex();
+					worldRenderer.pos(x + 1, y + 2, z + .01).endVertex();
                     worldRenderer.pos(x + 1, y -1, z + .01).endVertex();
 					worldRenderer.pos(x, y -1, z + .01).endVertex();
 					break;
                 case NORTH:
-					worldRenderer.pos(x + .99, y + 1, z).endVertex();
-					worldRenderer.pos(x + .99, y + 1, z + 1.0D).endVertex();
+					worldRenderer.pos(x + .99, y + 2, z).endVertex();
+					worldRenderer.pos(x + .99, y + 2, z + 1.0D).endVertex();
 					worldRenderer.pos(x + .99, y - 1, z + 1.0D).endVertex();
 					worldRenderer.pos(x + .99, y - 1, z).endVertex();
 					break;
                 case EAST:
 					worldRenderer.pos(x, y -1, z + .99).endVertex();
 					worldRenderer.pos(x + 1, y -1, z + .99).endVertex();
-					worldRenderer.pos(x + 1, y + 1, z + .99).endVertex();
-					worldRenderer.pos(x, y + 1, z + .99).endVertex();
+					worldRenderer.pos(x + 1, y + 2, z + .99).endVertex();
+					worldRenderer.pos(x, y + 2, z + .99).endVertex();
 					break;
 				/*case 4:
 					GL11.glVertex3d(x + .15F, y - 1 , z);
@@ -285,7 +285,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor>
 			}
 			
 			if (tile.openOrClosed) {
-				renderDimDoorTileEntity((TileEntityDimDoor) te, x, y, z);
+				renderDimDoorTileEntity(te, x, y, z);
 				if(tile.lockStatus>=1) {
 					for(int i = 0; i<1+tile.lockStatus; i++ ) {
 						this.renderKeyHole(tile, x, y, z, i);
