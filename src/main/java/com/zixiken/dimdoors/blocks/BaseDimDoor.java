@@ -34,9 +34,9 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 	public BaseDimDoor(Material material) {
 		super(material);
 	}
-    
+
 	@Override
-	public void onEntityCollidedWithBlock(World world, BlockPos pos, Entity entity) {
+	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
 		enterDimDoor(world, pos, entity);
 	}
 
@@ -112,13 +112,12 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 		updateAttachedTile(par1World, pos);
 	}
 
-	@Override
+    @Override
 	public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
 		IBlockState downState = worldIn.getBlockState(pos.down());
         if(downState.getBlock() == this) setDoorRotation(downState);
 		else setDoorRotation(worldIn.getBlockState(pos));
 	}
-
 
 	private void setDoorRotation(IBlockState state) {
 		float var2 = 0.1875F;
@@ -169,7 +168,6 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 			}
 		}
 	}
-
 
 	/**
 	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
