@@ -71,10 +71,9 @@ public class CommonProxy {
 	public void updateDoorTE(BaseDimDoor door, World world, BlockPos pos) {
 		TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof TileEntityDimDoor) {
-            IBlockState state = world.getBlockState(pos);
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
-			dimTile.openOrClosed = door.isDoorOnRift(world, pos) && !door.isUpperDoorBlock(state);
-			dimTile.orientation = state.getValue(BlockDoor.FACING).rotateY();
+			dimTile.openOrClosed = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(world.getBlockState(pos));
+			dimTile.orientation = world.getBlockState(pos.down()).getValue(BlockDoor.FACING).rotateY();
             //if(state.getValue(BlockDoor.OPEN)) dimTile.orientation |= 4;
 			dimTile.lockStatus = door.getLockStatus(world, pos);
 		}

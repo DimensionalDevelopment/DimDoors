@@ -139,26 +139,26 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor>
                 case SOUTH:
 					worldRenderer.pos(x + .01, y - 1, z).endVertex();
 					worldRenderer.pos(x + .01, y - 1, z + 1.0D).endVertex();
-					worldRenderer.pos(x + .01, y + 2, z + 1.0D).endVertex();
-					worldRenderer.pos(x + .01, y + 2, z).endVertex();
+					worldRenderer.pos(x + .01, y + 1, z + 1.0D).endVertex();
+					worldRenderer.pos(x + .01, y + 1, z).endVertex();
 					break;
                 case WEST:
-					worldRenderer.pos(x, y + 2, z + .01).endVertex();
-					worldRenderer.pos(x + 1, y + 2, z + .01).endVertex();
+					worldRenderer.pos(x, y + 1, z + .01).endVertex();
+					worldRenderer.pos(x + 1, y + 1, z + .01).endVertex();
                     worldRenderer.pos(x + 1, y -1, z + .01).endVertex();
 					worldRenderer.pos(x, y -1, z + .01).endVertex();
 					break;
                 case NORTH:
-					worldRenderer.pos(x + .99, y + 2, z).endVertex();
-					worldRenderer.pos(x + .99, y + 2, z + 1.0D).endVertex();
+					worldRenderer.pos(x + .99, y + 1, z).endVertex();
+					worldRenderer.pos(x + .99, y + 1, z + 1.0D).endVertex();
 					worldRenderer.pos(x + .99, y - 1, z + 1.0D).endVertex();
 					worldRenderer.pos(x + .99, y - 1, z).endVertex();
 					break;
                 case EAST:
 					worldRenderer.pos(x, y -1, z + .99).endVertex();
 					worldRenderer.pos(x + 1, y -1, z + .99).endVertex();
-					worldRenderer.pos(x + 1, y + 2, z + .99).endVertex();
-					worldRenderer.pos(x, y + 2, z + .99).endVertex();
+					worldRenderer.pos(x + 1, y + 1, z + .99).endVertex();
+					worldRenderer.pos(x, y + 1, z + .99).endVertex();
 					break;
 				/*case 4:
 					GL11.glVertex3d(x + .15F, y - 1 , z);
