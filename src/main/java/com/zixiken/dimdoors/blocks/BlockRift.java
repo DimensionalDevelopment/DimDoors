@@ -2,12 +2,8 @@ package com.zixiken.dimdoors.blocks;
 
 import java.util.*;
 
-import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.client.ClosingRiftFX;
-import com.zixiken.dimdoors.config.DDProperties;
-import com.zixiken.dimdoors.core.DimData;
-import com.zixiken.dimdoors.core.DimLink;
-import com.zixiken.dimdoors.core.PocketManager;
+import com.zixiken.dimdoors.items.ModItems;
 import com.zixiken.dimdoors.tileentities.TileEntityRift;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -27,7 +23,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
-import com.zixiken.dimdoors.util.Point4D;
 import com.zixiken.dimdoors.client.GoggleRiftFX;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -35,39 +30,29 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockRift extends Block implements ITileEntityProvider {
 	private static final float MIN_IMMUNE_RESISTANCE = 5000.0F;
-	private static final int BLOCK_DESTRUCTION_RANGE = 4;
-	private static final int RIFT_SPREAD_RANGE = 5;
-	private static final int MAX_BLOCK_SEARCH_CHANCE = 100;
-	private static final int BLOCK_SEARCH_CHANCE = 50;
-	private static final int MAX_BLOCK_DESTRUCTION_CHANCE = 100;
-	private static final int BLOCK_DESTRUCTION_CHANCE = 50;
+    public static final String ID = "blockRift";
 
-	public static final int MAX_WORLD_THREAD_DROP_CHANCE = 1000;
-    public static final String ID = "rift";
-	
-	private final DDProperties properties;
 	private final ArrayList<Block> blocksImmuneToRift;	// List of Vanilla blocks immune to rifts
 	private final ArrayList<Block> modBlocksImmuneToRift; // List of DD blocks immune to rifts
 	
 	public BlockRift() {
 		super(Material.fire);
 		setTickRandomly(true);
-		properties = DDProperties.instance();
         setHardness(1.0F);
         setUnlocalizedName(ID);
 
 		modBlocksImmuneToRift = new ArrayList<Block>();
-		modBlocksImmuneToRift.add(DimDoors.blockDimWall);
-		modBlocksImmuneToRift.add(DimDoors.blockDimWallPerm);
-		modBlocksImmuneToRift.add(DimDoors.dimensionalDoor);
-		modBlocksImmuneToRift.add(DimDoors.warpDoor);
-		modBlocksImmuneToRift.add(DimDoors.transTrapdoor);
-		modBlocksImmuneToRift.add(DimDoors.unstableDoor);
-		modBlocksImmuneToRift.add(DimDoors.blockRift);
-		modBlocksImmuneToRift.add(DimDoors.transientDoor);
-		modBlocksImmuneToRift.add(DimDoors.goldenDimensionalDoor);
-		modBlocksImmuneToRift.add(DimDoors.goldenDoor);
-		modBlocksImmuneToRift.add(DimDoors.personalDimDoor);
+		modBlocksImmuneToRift.add(ModBlocks.blockDimWall);
+		modBlocksImmuneToRift.add(ModBlocks.blockDimDoor);
+		modBlocksImmuneToRift.add(ModBlocks.blockDimDoorWarp);
+		modBlocksImmuneToRift.add(ModBlocks.blockDimHatch);
+		modBlocksImmuneToRift.add(ModBlocks.blockDimDoorChaos);
+		modBlocksImmuneToRift.add(ModBlocks.blockRift);
+		modBlocksImmuneToRift.add(ModBlocks.blockDimDoorTransient);
+		modBlocksImmuneToRift.add(ModBlocks.blockDimDoorGold);
+		modBlocksImmuneToRift.add(ModBlocks.blockDoorGold);
+		modBlocksImmuneToRift.add(ModBlocks.blockDimDoorPersonal);
+		modBlocksImmuneToRift.add(ModBlocks.blockDoorQuartz);
 		
 		blocksImmuneToRift = new ArrayList<Block>();
 		blocksImmuneToRift.add(Blocks.lapis_block);
@@ -109,120 +94,21 @@ public class BlockRift extends Block implements ITileEntityProvider {
 	public int getRenderType() {
         return 2; //Tile Entity Special Renderer
     }
-	
-	//function that regulates how many blocks it eats/ how fast it eats them. 
-	@Override
-	public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-		if (properties.RiftGriefingEnabled && !worldIn.isRemote &&
-				PocketManager.getLink(pos, worldIn.provider.getDimensionId()) != null) {
-			//Randomly decide whether to search for blocks to destroy. This reduces the frequency of search operations,
-			//moderates performance impact, and controls the apparent speed of block destruction.
-			if (rand.nextInt(MAX_BLOCK_SEARCH_CHANCE) < BLOCK_SEARCH_CHANCE &&
-					((TileEntityRift) worldIn.getTileEntity(pos)).updateNearestRift() ) {
-				destroyNearbyBlocks(worldIn, pos, rand);
-			}
-		}
-	}
-	
-	private void destroyNearbyBlocks(World world, BlockPos pos, Random random) {
-		// Find reachable blocks that are vulnerable to rift damage (ignoring air, of course)
-		ArrayList<BlockPos> targets = findReachableBlocks(world, pos, BLOCK_DESTRUCTION_RANGE, false);
-		
-		// For each block, randomly decide whether to destroy it.
-		// The randomness makes it so the destroyed area appears "noisy" if the rift is exposed to a large surface.
-		for (BlockPos target : targets) {
-			if (random.nextInt(MAX_BLOCK_DESTRUCTION_CHANCE) < BLOCK_DESTRUCTION_CHANCE) {
-				dropWorldThread(world, pos, random);
-				world.destroyBlock(target, false);
-			}
-		}
-	}
-	
-	private ArrayList<BlockPos> findReachableBlocks(World world, BlockPos pos, int range, boolean includeAir) {
-		int searchVolume = (int) Math.pow(2 * range + 1, 3);
-		HashMap<BlockPos, Integer> pointDistances = new HashMap<BlockPos, Integer>(searchVolume);
-		Queue<BlockPos> points = new LinkedList<BlockPos>();
-		ArrayList<BlockPos> targets = new ArrayList<BlockPos>();
-		
-		// Perform a breadth-first search outwards from the point at which the rift is located.
-		// Record the distances of the points we visit to stop the search at its maximum range.
-		pointDistances.put(pos, 0);
-		addAdjacentBlocks(pos, 0, pointDistances, points);
-		while (!points.isEmpty()) {
-			BlockPos current = points.remove();
-			int distance = pointDistances.get(current);
-			
-			// If the current block is air, continue searching. Otherwise, add the block to our list.
-			if (world.isAirBlock(current)) {
-				if (includeAir) targets.add(current);
-
-				// Make sure we stay within the search range
-				if (distance < BLOCK_DESTRUCTION_RANGE) addAdjacentBlocks(current, distance, pointDistances, points);
-			} else {
-				// Check if the current block is immune to destruction by rifts. If not, add it to our list.
-				if (!isBlockImmune(world, current)) targets.add(current);
-			}
-		}
-		return targets;
-	}
 		
 	public void dropWorldThread(World world, BlockPos pos, Random random) {
         Block block = world.getBlockState(pos).getBlock();
 
-		if (!block.isAir(world, pos) &&
-                (random.nextInt(MAX_WORLD_THREAD_DROP_CHANCE) < properties.WorldThreadDropChance) &&
-                !(block instanceof BlockLiquid || block instanceof IFluidBlock)) {
-			ItemStack thread = new ItemStack(DimDoors.itemWorldThread, 1);
+		if (!block.isAir(world, pos) && !(block instanceof BlockLiquid || block instanceof IFluidBlock)) {
+			ItemStack thread = new ItemStack(ModItems.itemWorldThread, 1);
 			world.spawnEntityInWorld(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), thread));
 		}
-	}
-	
-	private static void addAdjacentBlocks(BlockPos pos, int distance, HashMap<BlockPos, Integer> pointDistances, Queue<BlockPos> points) {
-		BlockPos[] neighbors = {
-				pos.north(),
-				pos.south(),
-				pos.up(),
-				pos.down(),
-				pos.west(),
-				pos.east()
-		};
-
-		for (BlockPos neighbor : neighbors) {
-			if (!pointDistances.containsKey(neighbor)) {
-				pointDistances.put(neighbor, distance + 1);
-				points.add(neighbor);
-			}
-		}
-	}
-	
-	public boolean spreadRift(DimData dimension, DimLink parent, World world, Random random) {
-		Point4D source = parent.source();
-		
-		// Find reachable blocks that are vulnerable to rift damage and include air
-		ArrayList<BlockPos> targets = findReachableBlocks(world, source.toBlockPos(), RIFT_SPREAD_RANGE, true);
-		
-		if (!targets.isEmpty()) {
-			// Choose randomly from among the possible locations where we can spawn a new rift
-			BlockPos target = targets.get( random.nextInt(targets.size()) );
-
-			// Create a child, replace the block with a rift, and consider dropping World Thread
-			if (world.setBlockState(target, getDefaultState())) {
-				dimension.createChildLink(target, parent);
-				dropWorldThread(world, target, random);
-				return true;
-			}
-		}
-        return false;
 	}
 	
 	/**
 	 * Lets pistons push through rifts, destroying them
 	 */
 	@Override
-	public int getMobilityFlag()
-    {
-        return 1;
-    }
+	public int getMobilityFlag() {return 1;}
 	
 	/**
 	 * regulates the render effect, especially when multiple rifts start to link up.
@@ -294,9 +180,5 @@ public class BlockRift extends Block implements ITileEntityProvider {
 	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state) {
 		world.removeTileEntity(pos);
-        
-        // Schedule rift regeneration for this block if it was changed
-        if (world.getBlockState(pos).getBlock() != state.getBlock())
-            DimDoors.riftRegenerator.scheduleSlowRegeneration(pos, world);
     }
 }

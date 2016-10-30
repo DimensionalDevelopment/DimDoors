@@ -2,45 +2,33 @@ package com.zixiken.dimdoors.client;
 
 import static org.lwjgl.opengl.GL11.GL_LIGHTING;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
 import java.nio.FloatBuffer;
 import java.util.Random;
 
-import com.zixiken.dimdoors.config.DDProperties;
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 import static org.lwjgl.opengl.GL11.*;
 
 @SideOnly(Side.CLIENT)
-public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor>
-{
+public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> {
 	private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
 	private ResourceLocation warpPath= new ResourceLocation(DimDoors.MODID + ":textures/other/WARP.png");
 	private ResourceLocation keyPath= new ResourceLocation(DimDoors.MODID + ":textures/other/keyhole.png");
 	private ResourceLocation KeyholeLight= new ResourceLocation(DimDoors.MODID + ":textures/other/keyholeLight.png");
-	private ResourceLocation keyOutline= new ResourceLocation(DimDoors.MODID + ":textures/other/keyOutline.png");
-	private ResourceLocation keyOutlineLight= new ResourceLocation(DimDoors.MODID + ":textures/other/keyOutlineLight.png");
-
-
-	private static final int NETHER_DIMENSION_ID = -1;
-	private static DDProperties properties = null;
-
-	public RenderDimDoor() {
-		if (properties == null)
-			properties = DDProperties.instance();
-	}
 
 	/**
 	 * Renders the dimdoor.
@@ -48,7 +36,6 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor>
 	public void renderDimDoorTileEntity(TileEntityDimDoor tile, double x, double y, double z) {
 		GL11.glDisable(GL11.GL_LIGHTING);
 		Random rand = new Random(31100L);
-		float var13 = 0.75F;
 
 		for (int count = 0; count < 16; ++count) {
 			GlStateManager.pushMatrix();
@@ -275,25 +262,14 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor>
 	
 	@Override
 	public void renderTileEntityAt(TileEntityDimDoor te, double x, double y, double z, float partialTicks, int destroyStage) {
-		if (properties.DoorRenderingEnabled) {
-			TileEntityDimDoor tile = te;
+        World world = te.getWorld();
+        BlockPos pos = te.getPos();
+        ((BlockDimDoorBase)world.getBlockState(pos).getBlock()).updateAttachedTile(world, pos);
+	    if (te.openOrClosed) {
+			renderDimDoorTileEntity(te, x, y, z);
+			if(te.lockStatus >= 1)
+				for(int i = 0; i < 1+te.lockStatus; i++ ) this.renderKeyHole(te, x, y, z, i);
 
-			try {
-				DimDoors.dimensionalDoor.updateAttachedTile(tile.getWorld(), tile.getPos());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			if (tile.openOrClosed) {
-				renderDimDoorTileEntity(te, x, y, z);
-				if(tile.lockStatus>=1) {
-					for(int i = 0; i<1+tile.lockStatus; i++ ) {
-						this.renderKeyHole(tile, x, y, z, i);
-					}
-				}
-				
-			}
-		
 		}
 	}
 }

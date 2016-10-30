@@ -27,7 +27,7 @@ public interface IDimDoor
 	 */
 	public void placeLink(World world, BlockPos pos);
 	
-	public Item getDoorItem();
+	public Item getItemDoor();
 	
 	public TileEntity initDoorTE(World world, BlockPos pos);
 	

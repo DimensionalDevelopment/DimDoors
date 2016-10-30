@@ -1,89 +1,51 @@
 package com.zixiken.dimdoors;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import com.zixiken.dimdoors.blocks.BaseDimDoor;
+import com.zixiken.dimdoors.blocks.BlockDimDoorBase;
+import com.zixiken.dimdoors.blocks.ModBlocks;
+import com.zixiken.dimdoors.items.ModItems;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 
-import com.zixiken.dimdoors.watcher.ServerPacketHandler;
+import com.zixiken.dimdoors.tileentities.TileEntityDimDoorGold;
+import com.zixiken.dimdoors.tileentities.TileEntityRift;
+import com.zixiken.dimdoors.tileentities.TileEntityTransTrapdoor;
 import net.minecraft.block.BlockDoor;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
 
-    public void registerRenderers() {}
+    public void onPreInitialization(FMLPreInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(new EventHookContainer());
+        ModBlocks.registerBlocks();
+        ModItems.registerItems();
 
-    public void writeNBTToFile(World world) {
-        try {
-            String dirFolder = world.getSaveHandler().getMapFileFromName("idcounts")
-                    .getCanonicalPath().replace("idcounts.dat", "");
+        ModelManager.registerModelVariants();
+        ModelManager.addCustomStateMappers();
 
-            File file = new File(dirFolder, "GGMData.dat");
-
-            if (!file.exists()) file.createNewFile();
-
-            FileOutputStream fileoutputstream = new FileOutputStream(file);
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-
-            CompressedStreamTools.writeCompressed(nbttagcompound, fileoutputstream);
-            fileoutputstream.close();
-        } catch (IOException e) {
-            System.err.println("Could not write NBT data to file:\n" + e);
-        }
+        GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
+        GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
+        GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityDimHatch");
+        GameRegistry.registerTileEntity(TileEntityDimDoorGold.class, "TileEntityDimDoorGold");
     }
 
-    public NBTTagCompound readNBTFromFile(World world) {
-        try {
-            String dirFolder = world.getSaveHandler().getMapFileFromName("idcounts")
-                    .getCanonicalPath().replace("idcounts.dat", "");
-
-            File file = new File(dirFolder, "GGMData.dat");
-
-            if (!file.exists()) {
-                file.createNewFile();
-                FileOutputStream fileoutputstream = new FileOutputStream(file);
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-                
-                CompressedStreamTools.writeCompressed(nbttagcompound, fileoutputstream);
-                fileoutputstream.close();
-            }
-
-            FileInputStream fileinputstream = new FileInputStream(file);
-            NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
-            fileinputstream.close();
-            return nbttagcompound;
-        } catch (IOException e) {
-            System.err.println("Could not read NBT data from file:\n" + e);
-            return null;
-        }
+    public void onInitialization(FMLInitializationEvent event) {
+        CraftingManager.registerRecipes();
+        ModelManager.registerModels();
     }
 
-	public void updateDoorTE(BaseDimDoor door, World world, BlockPos pos) {
+	public void updateDoorTE(BlockDimDoorBase door, World world, BlockPos pos) {
 		TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof TileEntityDimDoor) {
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
 			dimTile.openOrClosed = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(world.getBlockState(pos));
 			dimTile.orientation = world.getBlockState(pos.down()).getValue(BlockDoor.FACING).rotateY();
             //if(state.getValue(BlockDoor.OPEN)) dimTile.orientation |= 4;
-			dimTile.lockStatus = door.getLockStatus(world, pos);
+			dimTile.lockStatus = 0;
 		}
 	}
-    
-    public void registerSidedHooks() {
-        new ServerPacketHandler();
-    }
-
-    public EntityPlayer getMessagePlayer(MessageContext ctx) {
-        return ctx.getServerHandler().playerEntity;
-    }
 }

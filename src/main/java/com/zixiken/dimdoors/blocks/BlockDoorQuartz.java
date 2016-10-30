@@ -2,7 +2,7 @@ package com.zixiken.dimdoors.blocks;
 
 import java.util.Random;
 
-import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.items.ModItems;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockDoorQuartz extends BlockDoor {
-    public static final String ID = "doorQuartz";
+    public static final String ID = "blockDoorQuartz";
 
 	public BlockDoorQuartz() {
 		super(Material.rock);
@@ -23,10 +23,10 @@ public class BlockDoorQuartz extends BlockDoor {
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER ? DimDoors.itemQuartzDoor : null;
+        return state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER ? ModItems.itemDoorQuartz : null;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public Item getItem(World worldIn, BlockPos pos) {return DimDoors.itemQuartzDoor;}
+    public Item getItem(World worldIn, BlockPos pos) {return ModItems.itemDoorQuartz;}
 }

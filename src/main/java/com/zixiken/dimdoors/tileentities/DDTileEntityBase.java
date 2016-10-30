@@ -1,4 +1,5 @@
 package com.zixiken.dimdoors.tileentities;
+
 import java.util.Random;
 
 import net.minecraft.block.state.IBlockState;

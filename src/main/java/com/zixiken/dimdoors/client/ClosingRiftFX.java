@@ -1,9 +1,7 @@
 package com.zixiken.dimdoors.client;
 
-import com.zixiken.dimdoors.core.PocketManager;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
@@ -23,7 +21,8 @@ public class ClosingRiftFX extends EntityFX
 	private float fadeColourBlue;
 	private boolean hasFadeColour;
 
-	public ClosingRiftFX(World world, double x, double y, double z, double motionX, double motionY, double motionZ, EffectRenderer effectRenderer) {
+	public ClosingRiftFX(World world, double x, double y, double z, double motionX, double motionY,
+						 double motionZ, EffectRenderer effectRenderer) {
 
 		super(world, x, y, z);
 		this.motionX = motionX;
@@ -53,13 +52,17 @@ public class ClosingRiftFX extends EntityFX
 	 }
 
 	 @Override
-	public void renderParticle(WorldRenderer worldRenderer, Entity entityIn, float partialTicks, float p_180434_4_, float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_) {
-		if (!this.twinkle || this.particleAge < this.particleMaxAge / 3 || (this.particleAge + this.particleMaxAge) / 3 % 2 == 0) {
-			 this.doRenderParticle(worldRenderer, partialTicks, p_180434_4_, p_180434_5_, p_180434_6_, p_180434_7_, p_180434_8_);
-		}
+	public void renderParticle(WorldRenderer worldRenderer, Entity entityIn, float partialTicks,float p_180434_4_,
+                               float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_) {
+		if (!this.twinkle
+                || this.particleAge < this.particleMaxAge / 3
+                || (this.particleAge + this.particleMaxAge) / 3 % 2 == 0)
+			 this.doRenderParticle(worldRenderer, partialTicks, p_180434_4_,
+                     p_180434_5_, p_180434_6_, p_180434_7_, p_180434_8_);
 	 }
 
-	public void doRenderParticle(WorldRenderer worldRenderer, float par2, float par3, float par4, float par5, float par6, float par7) {
+	public void doRenderParticle(WorldRenderer worldRenderer, float par2, float par3, float par4,
+                                 float par5, float par6, float par7) {
 		float var8 = super.particleTextureIndexX % 16 / 16.0F;
 		float var9 = var8 + 0.0624375F;
 		float var10 = this.particleTextureIndexX / 16 / 16.0F;
@@ -70,14 +73,22 @@ public class ClosingRiftFX extends EntityFX
 		float var15 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * par2 - interpPosZ);
 		float var16 = 0.8F;
 
-		if (PocketManager.createDimensionData(worldObj).isPocketDimension()) {
-		    var16 = 0.4F;
-		}
-
-		worldRenderer.pos(var13 - par3 * var12 - par6 * var12, var14 - par4 * var12, var15 - par5 * var12 - par7 * var12).tex(var9, var11).color(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7).endVertex();
-        worldRenderer.pos(var13 - par3 * var12 + par6 * var12, var14 + par4 * var12, var15 - par5 * var12 + par7 * var12).tex(var9, var10).color(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7).endVertex();
-        worldRenderer.pos(var13 + par3 * var12 + par6 * var12, var14 + par4 * var12, var15 + par5 * var12 + par7 * var12).tex(var8, var10).color(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7).endVertex();
-        worldRenderer.pos(var13 + par3 * var12 - par6 * var12, var14 - par4 * var12, var15 + par5 * var12 - par7 * var12).tex(var8, var11).color(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7).endVertex();
+		worldRenderer.pos(var13 - par3 * var12 - par6 * var12, var14 - par4 * var12, var15 - par5 * var12 - par7 * var12)
+                .tex(var9, var11)
+                .color(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7)
+                .endVertex();
+        worldRenderer.pos(var13 - par3 * var12 + par6 * var12, var14 + par4 * var12, var15 - par5 * var12 + par7 * var12)
+                .tex(var9, var10)
+                .color(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7)
+                .endVertex();
+        worldRenderer.pos(var13 + par3 * var12 + par6 * var12, var14 + par4 * var12, var15 + par5 * var12 + par7 * var12)
+                .tex(var8, var10)
+                .color(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7)
+                .endVertex();
+        worldRenderer.pos(var13 + par3 * var12 - par6 * var12, var14 - par4 * var12, var15 + par5 * var12 - par7 * var12)
+                .tex(var8, var11)
+                .color(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7)
+                .endVertex();
 	}
 
 	/**

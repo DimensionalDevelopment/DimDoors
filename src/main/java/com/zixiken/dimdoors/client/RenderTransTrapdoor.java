@@ -4,8 +4,7 @@ import java.nio.FloatBuffer;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.blocks.TransTrapdoor;
-import com.zixiken.dimdoors.config.DDProperties;
+import com.zixiken.dimdoors.blocks.BlockTransTrapdoor;
 import com.zixiken.dimdoors.tileentities.TileEntityTransTrapdoor;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.state.IBlockState;
@@ -25,15 +24,8 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTransTrapdoor> {
     private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
-	private static DDProperties properties = null;
 	private ResourceLocation riftPath= new ResourceLocation(DimDoors.MODID+":textures/other/RIFT.png");
 	private ResourceLocation warpPath= new ResourceLocation(DimDoors.MODID+":textures/other/WARP.png");
-
-	
-    public RenderTransTrapdoor() {
-		if (properties == null)
-			properties = DDProperties.instance();
-	}
 
     /**
      * Renders the dimdoor.
@@ -110,7 +102,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
             WorldRenderer worldrenderer = tessellator.getWorldRenderer();
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-            if (TransTrapdoor.isTrapdoorSetLow(state)) {
+            if (BlockTransTrapdoor.isTrapdoorSetLow(state)) {
             	if (state.getValue(BlockTrapDoor.OPEN)) {
             		worldrenderer.pos(x, y+0.2, z).color(r, g, b, 1.0F).endVertex();
                     worldrenderer.pos(x, y+0.2, z+1).color(r, g, b, 1.0F).endVertex();
@@ -158,8 +150,6 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
 
     @Override
     public void renderTileEntityAt(TileEntityTransTrapdoor te, double x, double y, double z, float partialTicks, int destroyStage) {
-    	if (properties.DoorRenderingEnabled) {
-    		this.renderTransTrapdoorTileEntity(te, x, y, z, partialTicks);
-    	}
+    	this.renderTransTrapdoorTileEntity(te, x, y, z, partialTicks);
     }
 }
