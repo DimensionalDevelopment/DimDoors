@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors;
 
+import com.zixiken.dimdoors.blocks.BlockDimDoor;
 import com.zixiken.dimdoors.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.blocks.ModBlocks;
 import com.zixiken.dimdoors.items.ModItems;
@@ -9,6 +10,7 @@ import com.zixiken.dimdoors.tileentities.TileEntityDimDoorGold;
 import com.zixiken.dimdoors.tileentities.TileEntityRift;
 import com.zixiken.dimdoors.tileentities.TileEntityTransTrapdoor;
 import net.minecraft.block.BlockDoor;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
@@ -42,8 +44,11 @@ public class CommonProxy {
 		TileEntity tile = world.getTileEntity(pos);
 		if (tile instanceof TileEntityDimDoor) {
 			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
+            IBlockState state = world.getBlockState(pos.down());
+            dimTile.orientation = state.getBlock() instanceof BlockDimDoorBase ?
+                    state.getValue(BlockDoor.FACING).rotateY() :
+                    ModBlocks.blockDimDoor.getDefaultState().getValue(BlockDoor.FACING);
 			dimTile.openOrClosed = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(world.getBlockState(pos));
-			dimTile.orientation = world.getBlockState(pos.down()).getValue(BlockDoor.FACING).rotateY();
             //if(state.getValue(BlockDoor.OPEN)) dimTile.orientation |= 4;
 			dimTile.lockStatus = 0;
 		}
