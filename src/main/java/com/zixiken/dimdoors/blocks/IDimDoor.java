@@ -29,8 +29,6 @@ public interface IDimDoor
 	
 	public Item getItemDoor();
 	
-	public TileEntity initDoorTE(World world, BlockPos pos);
-	
 	/**
 	 * checks if any of this doors blocks are overlapping with a rift
 	 * @param world

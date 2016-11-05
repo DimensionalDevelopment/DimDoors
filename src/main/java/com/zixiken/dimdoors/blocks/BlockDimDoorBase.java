@@ -214,13 +214,6 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 	}
 	
 	@Override
-	public TileEntity initDoorTE(World world, BlockPos pos) {
-		TileEntity te = createTileEntity(world, world.getBlockState(pos));
-		world.setTileEntity(pos, te);
-		return te;
-	}
-	
-	@Override
 	public void breakBlock(World world, BlockPos pos, IBlockState state) {
 		// This function runs on the server side after a block is replaced
 		// We MUST call super.breakBlock() since it involves removing tile entities

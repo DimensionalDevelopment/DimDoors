@@ -95,13 +95,6 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 	public static boolean isTrapdoorSetLow(IBlockState state) {
         return state.getValue(BlockTrapDoor.HALF) == DoorHalf.BOTTOM;
     }
-	
-	@Override
-	public TileEntity initDoorTE(World world, BlockPos pos) {
-		TileEntity te = createNewTileEntity(world, getMetaFromState(world.getBlockState(pos)));
-		world.setTileEntity(pos, te);
-		return te;
-	}
 
 	@Override
 	public boolean isDoorOnRift(World world, BlockPos pos) {return true;}
