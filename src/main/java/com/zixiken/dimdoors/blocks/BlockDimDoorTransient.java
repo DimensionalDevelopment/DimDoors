@@ -6,14 +6,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BlockDimDoorTransient extends BlockDimDoorBase {
 	public static final String ID = "blockDimDoorTransient";
 
 	public BlockDimDoorTransient() {
-		super(Material.iron);
+		super(Material.IRON);
 		setHardness(1.0F);
 		setUnlocalizedName(ID);
 	}
@@ -44,10 +45,4 @@ public class BlockDimDoorTransient extends BlockDimDoorBase {
 
 	@Override
 	public boolean isCollidable() {return false;}
-
-	@Override
-	public int getRenderType() {return 2;}
-
-	@Override
-	public boolean isOpaqueCube() {return false;}
 }

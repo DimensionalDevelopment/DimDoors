@@ -1,9 +1,10 @@
 package com.zixiken.dimdoors.world;
 
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
 
 public class PocketProvider extends WorldProvider {
-    @Override
+    /*@Override
     public String getDimensionName() {
         return "Pocket Dimension";
     }
@@ -11,5 +12,10 @@ public class PocketProvider extends WorldProvider {
     @Override
     public String getInternalNameSuffix() {
         return "_pocket";
+    }*/
+
+    @Override
+    public DimensionType getDimensionType() {
+        return DimensionType.OVERWORLD;
     }
 }

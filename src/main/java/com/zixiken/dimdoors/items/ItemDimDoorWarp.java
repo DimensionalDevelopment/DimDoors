@@ -14,7 +14,7 @@ public class ItemDimDoorWarp extends ItemDoorBase {
 	public static final String ID = "itemDimDoorWarp";
 
 	public ItemDimDoorWarp() {
-		super(ModBlocks.blockDimDoorWarp, (ItemDoor)Items.oak_door);
+		super(ModBlocks.blockDimDoorWarp, (ItemDoor)Items.OAK_DOOR	);
         setUnlocalizedName(ID);
 	}
 

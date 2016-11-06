@@ -7,7 +7,8 @@ import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
-import net.minecraft.util.BlockPos;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -16,7 +17,7 @@ public class BlockDoorGold extends BlockDoor {
     public static final String ID = "blockDoorGold";
 
 	public BlockDoorGold() {
-		super(Material.iron);
+		super(Material.IRON);
         setHardness(0.1F);
         setUnlocalizedName(ID);
 	}
@@ -28,5 +29,7 @@ public class BlockDoorGold extends BlockDoor {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public Item getItem(World worldIn, BlockPos pos) {return ModItems.itemDoorGold;}
+    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
+        return new ItemStack(ModItems.itemDoorGold);
+    }
 }

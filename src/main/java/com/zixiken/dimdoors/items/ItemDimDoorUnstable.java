@@ -6,7 +6,6 @@ import com.zixiken.dimdoors.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.blocks.ModBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 
 public class ItemDimDoorUnstable extends ItemDoorBase {
     public static final String ID = "itemDimDoorChaos";
@@ -18,7 +17,7 @@ public class ItemDimDoorUnstable extends ItemDoorBase {
 
 	@Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-    	tooltip.add(StatCollector.translateToLocal("info.chaosDoor"));
+    	//tooltip.add(StatCollector.translateToLocal("info.chaosDoor"));
     }
     
     @Override

@@ -4,15 +4,16 @@ import com.zixiken.dimdoors.blocks.ModBlocks;
 import com.zixiken.dimdoors.items.ModItems;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 
 import static net.minecraft.item.Item.getItemFromBlock;
 
+@SuppressWarnings({"MethodCallSideOnly", "NewExpressionSideOnly"})
 public class ModelManager {
     private static final String ID = DimDoors.MODID;
 
@@ -55,6 +56,7 @@ public class ModelManager {
                 new ModelResourceLocation(ID + ':' + item.getUnlocalizedName().substring(5) + name, "inventory"));
     }
 
+    @SuppressWarnings("LocalVariableDeclarationSideOnly")
     public static void addCustomStateMappers() {
         StateMap map = new StateMap.Builder().ignore(BlockDoor.POWERED).build();
 

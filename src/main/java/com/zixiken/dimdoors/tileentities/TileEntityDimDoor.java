@@ -29,7 +29,7 @@ public class TileEntityDimDoor extends DDTileEntityBase
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 
 		nbt.setBoolean("openOrClosed", this.openOrClosed);
@@ -37,12 +37,13 @@ public class TileEntityDimDoor extends DDTileEntityBase
 		nbt.setInteger("orientation", this.orientation.getIndex());
 		nbt.setBoolean("isDungeonChainLink", isDungeonChainLink);
 		nbt.setBoolean("hasGennedPair", hasGennedPair);
+		return nbt;
 	}
 
 	@Override
 	public float[] getRenderColor(Random rand) {
 		float[] rgbaColor = {1,1,1,1};
-		if (this.worldObj.provider.getDimensionId() == -1) {
+		if (this.worldObj.provider.getDimension() == -1) {
 			rgbaColor[0] = rand.nextFloat() * 0.5F + 0.4F;
 			rgbaColor[1] = rand.nextFloat() * 0.05F;
 			rgbaColor[2] = rand.nextFloat() * 0.05F;

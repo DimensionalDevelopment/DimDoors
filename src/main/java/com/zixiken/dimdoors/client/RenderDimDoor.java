@@ -9,9 +9,10 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.BlockPos;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.*;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -116,7 +117,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
 			GlStateManager.translate(0.5F, 0.5F, 0.5F);
 
             Tessellator tessellator = Tessellator.getInstance();
-            WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+            VertexBuffer worldRenderer = tessellator.getBuffer();
             worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 
 			float[] color = tile.getRenderColor(rand);
@@ -243,7 +244,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
         GlStateManager.translate(-65.0F, -107.0F, -3.0F);
 
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+        VertexBuffer worldRenderer = tessellator.getBuffer();
 		worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
         byte b0 = 7;
 

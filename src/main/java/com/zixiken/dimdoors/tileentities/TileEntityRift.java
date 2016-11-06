@@ -8,9 +8,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 
 public class TileEntityRift extends DDTileEntityBase implements ITickable {
 	private static final int ENDERMAN_SPAWNING_CHANCE = 1;
@@ -73,7 +73,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 			// Endermen will only spawn from groups of rifts
 			if (updateNearestRift()) {
 				List<EntityEnderman> list =  worldObj.getEntitiesWithinAABB(EntityEnderman.class,
-						AxisAlignedBB.fromBounds(pos.getX() - 9, pos.getY() - 3, pos.getZ() - 9, pos.getX() + 9, pos.getY() + 3, pos.getZ() + 9));
+						new AxisAlignedBB(pos.getX() - 9, pos.getY() - 3, pos.getZ() - 9, pos.getX() + 9, pos.getY() + 3, pos.getZ() + 9));
 
 				if (list.isEmpty()) {
 					EntityEnderman enderman = new EntityEnderman(worldObj);
@@ -114,11 +114,10 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 		this.spawnedEndermenID = nbt.getInteger("spawnedEndermenID");
 		this.riftRotation = nbt.getInteger("riftRotation");
 		this.growth = nbt.getFloat("growth");
-
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt)
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt)
 	{
 		super.writeToNBT(nbt);
 		nbt.setInteger("updateTimer", this.updateTimer);
@@ -130,6 +129,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 		nbt.setInteger("riftRotation", this.riftRotation);
 		nbt.setFloat("growth", this.growth);
 
+		return nbt;
 	}
 
 	@Override

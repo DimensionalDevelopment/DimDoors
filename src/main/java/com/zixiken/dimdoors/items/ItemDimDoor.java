@@ -13,7 +13,7 @@ public class ItemDimDoor extends ItemDoorBase {
 	public static final String ID = "itemDimDoor";
 
 	public ItemDimDoor() {
-  	    super(ModBlocks.blockDimDoor, (ItemDoor)Items.iron_door);
+  	    super(ModBlocks.blockDimDoor, (ItemDoor)Items.IRON_DOOR);
         setUnlocalizedName(ID);
     }
 

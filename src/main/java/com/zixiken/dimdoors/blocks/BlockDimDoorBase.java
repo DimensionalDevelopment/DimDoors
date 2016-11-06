@@ -16,13 +16,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
 
 public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, ITileEntityProvider {
 	
@@ -34,8 +36,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player,
-									EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if(!checkCanOpen(world, pos, player)) {return false;}
 
         if(state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER) {
@@ -78,93 +79,12 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 		updateAttachedTile(par1World, pos);
 	}
 
-    @Override
-	public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
-		IBlockState downState = worldIn.getBlockState(pos.down());
-        if(downState.getBlock() == this) setDoorRotation(downState);
-		else setDoorRotation(worldIn.getBlockState(pos));
-	}
-
-	private void setDoorRotation(IBlockState state) {
-		float var2 = 0.1875F;
-		setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 2.0F, 1.0F);
-		int var3 = state.getValue(BlockDoor.FACING).rotateY().getHorizontalIndex();
-		boolean var4 = state.getValue(BlockDoor.OPEN);
-		boolean var5 = state.getValue(BlockDoor.HINGE) == EnumHingePosition.LEFT;
-
-		if (var3 == 0) {
-			if (var4) {
-				if (!var5) {
-					setBlockBounds(0.001F, 0.0F, 0.0F, 1.0F, 1.0F, var2);
-				} else {
-					setBlockBounds(0.001F, 0.0F, 1.0F - var2, 1.0F, 1.0F, 1.0F);
-				}
-			} else {
-				setBlockBounds(0.0F, 0.0F, 0.0F, var2, 1.0F, 1.0F);
-			}
-		} else if (var3 == 1) {
-			if (var4) {
-				if (!var5) {
-					setBlockBounds(1.0F - var2, 0.0F, 0.001F, 1.0F, 1.0F, 1.0F);
-				} else {
-					setBlockBounds(0.0F, 0.0F, 0.001F, var2, 1.0F, 1.0F);
-				}
-			} else {
-				setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, var2);
-			}
-		} else if (var3 == 2) {
-			if (var4) {
-				if (!var5) {
-					setBlockBounds(0.0F, 0.0F, 1.0F - var2, .99F, 1.0F, 1.0F);
-				} else {
-					setBlockBounds(0.0F, 0.0F, 0.0F, .99F, 1.0F, var2);
-				}
-			} else {
-				setBlockBounds(1.0F - var2, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-			}
-		} else if (var3 == 3) {
-			if (var4) {
-				if (!var5) {
-					setBlockBounds(0.0F, 0.0F, 0.0F, var2, 1.0F, 0.99F);
-				} else {
-					setBlockBounds(1.0F - var2, 0.0F, 0.0F, 1.0F, 1.0F, 0.99F);
-				}
-			} else {
-				setBlockBounds(0.0F, 0.0F, 1.0F - var2, 1.0F, 1.0F, 1.0F);
-			}
-		}
-	}
-
-	/**
-	 * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
-	 * their own) Args: x, y, z, neighbor blockID
-	 */
-	@Override
-	public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighbor) {
-		if (isUpperDoorBlock(state)) {
-            BlockPos downPos = pos.down();
-			IBlockState downState = world.getBlockState(downPos);
-			if (downState.getBlock() != this) world.setBlockToAir(pos);
-			else if (neighbor != this) onNeighborBlockChange(world, downPos, downState, neighbor);
-		} else {
-            BlockPos upPos = pos.up();
-			if (world.getBlockState(upPos).getBlock() != this) {
-				world.setBlockToAir(pos);
-				if (!world.isRemote) dropBlockAsItem(world, pos, state, 0);
-			} else {
-				boolean powered = world.isBlockPowered(pos) || world.isBlockPowered(upPos);
-				if ((powered || !neighbor.isAir(world, pos) && neighbor.canProvidePower()) && neighbor != this)
-					toggleDoor(world, pos, powered);
-			}
-		}
-	}
-
 	/**
 	 * only called by clickMiddleMouseButton , and passed to inventory.setCurrentItem (along with isCreative)
 	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player) {
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
 		return new ItemStack(this.getItemDoor(), 1, 0);
 	}
 
@@ -178,7 +98,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 
     @Override
     @SideOnly(Side.CLIENT)
-    public Item getItem(World world, BlockPos pos) {return this.getItemDoor();}
+    public ItemStack getItem(World world, BlockPos pos, IBlockState state) { return new ItemStack(this.getItemDoor(), 1, 0) }
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int metadata) {return new TileEntityDimDoor();}
