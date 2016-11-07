@@ -6,6 +6,7 @@ import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -15,7 +16,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.tileentities.TileEntityTransTrapdoor;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,15 +28,18 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 	public static final String ID = "blockDimHatch";
 
 	public BlockTransTrapdoor() {
-		super(Material.wood);
+		super(Material.WOOD);
 		this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setHardness(1.0F);
         setUnlocalizedName(ID);
+		setSoundType(SoundType.WOOD);
 	}
 
 	//Teleports the player to the exit link of that dimension, assuming it is a pocket
 	@Override
-	public void onEntityCollidedWithBlock(World world, BlockPos pos, Entity entity) {enterDimDoor(world, pos, entity);}
+	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
+		enterDimDoor(world, pos, entity);
+	}
 
 	public boolean checkCanOpen(World world, BlockPos pos) {return this.checkCanOpen(world, pos, null);}
 	
@@ -42,14 +48,14 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 	}
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         return checkCanOpen(worldIn, pos, playerIn) &&
-                super.onBlockActivated(worldIn, pos, state, playerIn, side, hitX, hitY,  hitZ);
+                super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY,  hitZ);
     }
 
     @Override
-    public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
-        if(checkCanOpen(worldIn, pos)) super.onNeighborBlockChange(worldIn, pos, state, neighborBlock);
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock) {
+        if(checkCanOpen(worldIn, pos)) super.neighborChanged(state, worldIn, pos, neighborBlock);
     }
 
     @Override
@@ -59,7 +65,6 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 			if (entity instanceof EntityPlayer) {
                 state.cycleProperty(BlockTrapDoor.OPEN);
                 world.markBlockRangeForRenderUpdate(pos, pos);
-                world.playAuxSFXAtEntity(null, 1006, pos, 0);
             }
 		}
 	}	
@@ -79,13 +84,13 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player) {
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
 		return new ItemStack(this.getItemDoor(), 1, 0);
 	}
 	
 	@Override
 	public Item getItemDropped(IBlockState state, Random random, int fortuneLevel) {
-        return Item.getItemFromBlock(Blocks.trapdoor);
+        return Item.getItemFromBlock(Blocks.TRAPDOOR);
     }
 	
 	@Override

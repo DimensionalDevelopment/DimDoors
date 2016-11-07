@@ -6,6 +6,7 @@ import java.util.Random;
 import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
@@ -16,11 +17,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
 
 public class BlockDimWall extends Block {
     public static final String ID = "blockDimWall";
@@ -36,6 +41,7 @@ public class BlockDimWall extends Block {
         setHardness(0.1F);
         setUnlocalizedName(ID);
         setDefaultState(blockState.getBaseState().withProperty(TYPE, 0));
+		setSoundType(SoundType.STONE);
 	}
 
 	@Override
@@ -84,7 +90,7 @@ public class BlockDimWall extends Block {
     }
 
     @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player) {
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
         return new ItemStack(Item.getItemFromBlock(this), 1, getMetaFromState(world.getBlockState(pos)));
     }
 
@@ -98,13 +104,13 @@ public class BlockDimWall extends Block {
      * replaces the block clicked with the held block, instead of placing the block on top of it. Shift click to disable. 
      */
     @Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
     	//Check if the metadata value is 0 -- we don't want the user to replace Ancient Fabric
-        ItemStack playerEquip = player.getCurrentEquippedItem();
+        ItemStack playerEquip = player.getHeldItemMainhand();
         if (playerEquip != null && state.getValue(TYPE) != 1) {
             Block block = Block.getBlockFromItem(playerEquip.getItem());
         	if (block != null) {
-        		if (!block.isNormalCube(world, pos) || block instanceof BlockContainer || block == this)
+        		if (!block.isNormalCube(state) || block instanceof BlockContainer || block == this)
         			return false;
         		if (!world.isRemote) {
             		if (!player.capabilities.isCreativeMode) playerEquip.stackSize--;

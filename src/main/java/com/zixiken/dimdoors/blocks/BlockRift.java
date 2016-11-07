@@ -8,6 +8,7 @@ import com.zixiken.dimdoors.tileentities.TileEntityRift;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
@@ -16,10 +17,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
@@ -36,7 +38,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 	private final ArrayList<Block> modBlocksImmuneToRift; // List of DD blocks immune to rifts
 	
 	public BlockRift() {
-		super(Material.fire);
+		super(Material.FIRE);
 		setTickRandomly(true);
         setHardness(1.0F);
         setUnlocalizedName(ID);
@@ -55,21 +57,23 @@ public class BlockRift extends Block implements ITileEntityProvider {
 		modBlocksImmuneToRift.add(ModBlocks.blockDoorQuartz);
 		
 		blocksImmuneToRift = new ArrayList<Block>();
-		blocksImmuneToRift.add(Blocks.lapis_block);
-		blocksImmuneToRift.add(Blocks.iron_block);
-		blocksImmuneToRift.add(Blocks.gold_block);
-		blocksImmuneToRift.add(Blocks.diamond_block);
-		blocksImmuneToRift.add(Blocks.emerald_block);
+		blocksImmuneToRift.add(Blocks.LAPIS_BLOCK);
+		blocksImmuneToRift.add(Blocks.IRON_BLOCK);
+		blocksImmuneToRift.add(Blocks.GOLD_BLOCK);
+		blocksImmuneToRift.add(Blocks.DIAMOND_BLOCK);
+		blocksImmuneToRift.add(Blocks.EMERALD_BLOCK);
 	}
 	
 	@Override
 	public boolean isCollidable() {return false;}
 
 	@Override
-	public boolean isOpaqueCube() {return false;}
+	public boolean isOpaqueCube(IBlockState state) {return false;}
 
 	@Override
-	public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {return null;}
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos) {
+		return null;
+	}
 
 	/**
 	 * Returns whether this block is collideable based on the arguments passed in Args: blockMetaData, unknownFlag
@@ -91,14 +95,14 @@ public class BlockRift extends Block implements ITileEntityProvider {
 	}
 	
 	@Override
-	public int getRenderType() {
-        return 2; //Tile Entity Special Renderer
+	public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.INVISIBLE; //Tile Entity Special Renderer
     }
 		
 	public void dropWorldThread(World world, BlockPos pos, Random random) {
         Block block = world.getBlockState(pos).getBlock();
 
-		if (!block.isAir(world, pos) && !(block instanceof BlockLiquid || block instanceof IFluidBlock)) {
+		if (!world.getBlockState(pos).equals(Blocks.AIR) && !(block instanceof BlockLiquid || block instanceof IFluidBlock)) {
 			ItemStack thread = new ItemStack(ModItems.itemWorldThread, 1);
 			world.spawnEntityInWorld(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), thread));
 		}
@@ -108,7 +112,9 @@ public class BlockRift extends Block implements ITileEntityProvider {
 	 * Lets pistons push through rifts, destroying them
 	 */
 	@Override
-	public int getMobilityFlag() {return 1;}
+	public EnumPushReaction getMobilityFlag(IBlockState state) {
+		return EnumPushReaction.NORMAL;
+	}
 	
 	/**
 	 * regulates the render effect, especially when multiple rifts start to link up.
@@ -116,7 +122,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 	 */
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
+	public void randomDisplayTick(IBlockState state, World worldIn, BlockPos pos, Random rand) {
         //ArrayList<BlockPos> targets = findReachableBlocks(worldIn, pos, 2, false);
         //TODO: implement the parts specified in the method comment?
         int x = pos.getX(), y = pos.getY(), z = pos.getZ();
@@ -127,16 +133,14 @@ public class BlockRift extends Block implements ITileEntityProvider {
         FMLClientHandler.instance().getClient().effectRenderer.addEffect(new GoggleRiftFX(
                 worldIn,
                 x+.5, y+.5, z+.5,
-                rand.nextGaussian()*0.01D, rand.nextGaussian()*0.01D, rand.nextGaussian()*0.01D,
-                FMLClientHandler.instance().getClient().effectRenderer));
+                rand.nextGaussian()*0.01D, rand.nextGaussian()*0.01D, rand.nextGaussian()*0.01D));
 
 		if(tile.shouldClose)
             //renders an opposite color effect if it is being closed by the rift remover
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(
                     worldIn,
                     x+.5, y+.5, z+.5,
-                    rand.nextGaussian()*0.01D, rand.nextGaussian()*0.01D, rand.nextGaussian()*0.01D,
-                    FMLClientHandler.instance().getClient().effectRenderer));
+                    rand.nextGaussian()*0.01D, rand.nextGaussian()*0.01D, rand.nextGaussian()*0.01D));
 	}
 	
 	public boolean tryPlacingRift(World world, BlockPos pos) {
@@ -150,10 +154,10 @@ public class BlockRift extends Block implements ITileEntityProvider {
 		// may have low hardness to make them easier to build with. However, block.getExplosionResistance()
 		// is designed to receive an entity, the source of the blast. We have no entity so
 		// I've set this to access blockResistance directly. Might need changing later.
-		return block != null &&
-                (block.blockResistance >= MIN_IMMUNE_RESISTANCE ||
+		return block != null /*&&
+                (block >= MIN_IMMUNE_RESISTANCE*/ ||
 				modBlocksImmuneToRift.contains(block) ||
-				blocksImmuneToRift.contains(block));
+				blocksImmuneToRift.contains(block);
 	}
 
 	public boolean isModBlockImmune(World world, BlockPos pos) {
@@ -164,7 +168,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 	}
 	
 	@Override
-	public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos, EntityPlayer player) {
+	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
         return null;
     }
 

@@ -9,9 +9,14 @@ import com.zixiken.dimdoors.blocks.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 
@@ -22,7 +27,6 @@ public abstract class ItemDoorBase extends ItemDoor {
 
 	/**
 	 * door represents the non-dimensional door this item is associated with. Leave null for none.
-	 * @param material
 	 * @param vanillaDoor
 	 */
 	public ItemDoorBase(Block block, ItemDoor vanillaDoor) {
@@ -51,8 +55,7 @@ public abstract class ItemDoorBase extends ItemDoor {
 	 * dimensional doors, we handle this in the EventHookContainer
 	 */
 	@Override
-	public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
-                             EnumFacing side, float hitX, float hitY, float hitZ) {return false;}
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {return EnumActionResult.FAIL;}
 
 	/**
 	 * Tries to place a door as a dimensional door
@@ -60,14 +63,10 @@ public abstract class ItemDoorBase extends ItemDoor {
 	 * @param stack
 	 * @param player
 	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
 	 * @param side
 	 * @return
 	 */
-	public static boolean tryToPlaceDoor(ItemStack stack, EntityPlayer player, World world,
-                                         BlockPos pos, EnumFacing side) {
+	public static boolean tryToPlaceDoor(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
 		if (world.isRemote) return false;
 
 		// Retrieve the actual door type that we want to use here.
@@ -75,7 +74,6 @@ public abstract class ItemDoorBase extends ItemDoor {
 		// return null, just as if the item was an unrecognized door type.
 		ItemDoorBase mappedItem = doorItemMapping.get(stack.getItem());
 		if (mappedItem == null) return false;
-
 		BlockDimDoorBase doorBlock = mappedItem.getDoorBlock();
 		if (ItemDoorBase.placeDoorOnBlock(doorBlock, stack, player, world, pos, side)) return true;
 		return ItemDoorBase.placeDoorOnRift(doorBlock, world, player, stack);
@@ -87,9 +85,7 @@ public abstract class ItemDoorBase extends ItemDoor {
 	 * @param stack
 	 * @param player
 	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
+	 * @param pos
 	 * @param side
 	 * @return
 	 */
@@ -101,13 +97,13 @@ public abstract class ItemDoorBase extends ItemDoor {
 		// side
 		if (side == EnumFacing.UP) {
 			Block block = world.getBlockState(pos).getBlock();
-			if (!block.isAir(world, pos) && !block.isReplaceable(world, pos)) pos = pos.up();
+			if (!world.getBlockState(pos).equals(Blocks.AIR) && !block.isReplaceable(world, pos)) pos = pos.up();
 
             BlockPos upPos = pos.up();
 			if (canPlace(world, pos) && canPlace(world, upPos) && player.canPlayerEdit(pos, side, stack)
 					&& player.canPlayerEdit(upPos, side, stack) && stack.stackSize > 0
 					&& stack.getItem() instanceof ItemDoorBase) {
-				placeDoor(world, pos, EnumFacing.fromAngle(player.rotationYaw), doorBlock);
+				placeDoor(world, pos, EnumFacing.fromAngle(player.rotationYaw), doorBlock, true);
 				if (!player.capabilities.isCreativeMode) stack.stackSize--;
 				return true;
 			}
@@ -127,7 +123,7 @@ public abstract class ItemDoorBase extends ItemDoor {
 	public static boolean placeDoorOnRift(Block doorBlock, World world, EntityPlayer player, ItemStack stack) {
 		if (world.isRemote) return false;
 
-		MovingObjectPosition hit = ItemDoorBase.doRayTrace(world, player, true);
+		RayTraceResult hit = ItemDoorBase.doRayTrace(world, player, true);
 		if (hit != null) {
             BlockPos pos = hit.getBlockPos();
 			if (world.getBlockState(pos).getBlock() == ModBlocks.blockRift) {
@@ -135,7 +131,7 @@ public abstract class ItemDoorBase extends ItemDoor {
                 if (player.canPlayerEdit(pos, hit.sideHit, stack) &&
                         player.canPlayerEdit(downPos, hit.sideHit, stack) &&
                         canPlace(world, pos) && canPlace(world, downPos)) {
-                    placeDoor(world, downPos, EnumFacing.fromAngle(player.rotationYaw), doorBlock);
+                    placeDoor(world, downPos, EnumFacing.fromAngle(player.rotationYaw), doorBlock, true);
                     if (!(stack.getItem() instanceof ItemDoorBase))
                         ((TileEntityDimDoor) world.getTileEntity(pos)).hasGennedPair = true;
                     if (!player.capabilities.isCreativeMode) stack.stackSize--;
@@ -149,25 +145,25 @@ public abstract class ItemDoorBase extends ItemDoor {
 	public static boolean canPlace(World world, BlockPos pos) {
 		Block block = world.getBlockState(pos).getBlock();
 
-		return (block == ModBlocks.blockRift || block.isAir(world, pos) || block.getMaterial().isReplaceable());
+		return (block == ModBlocks.blockRift || world.getBlockState(pos).equals(Blocks.AIR) || block.getMaterial(world.getBlockState(pos)).isReplaceable());
 	}
 
 	/**
 	 * Copied from minecraft Item.class
 	 * TODO we probably can improve this
 	 * 
-	 * @param par1World
-	 * @param par2EntityPlayer
-	 * @param par3
+	 * @param world
+	 * @param player
+	 * @param useLiquids
 	 * @return
 	 */
-    protected static MovingObjectPosition doRayTrace(World worldIn, EntityPlayer playerIn, boolean useLiquids) {
-        float f = playerIn.rotationPitch;
-        float f1 = playerIn.rotationYaw;
-        double d0 = playerIn.posX;
-        double d1 = playerIn.posY + (double)playerIn.getEyeHeight();
-        double d2 = playerIn.posZ;
-        Vec3 vec3 = new Vec3(d0, d1, d2);
+    protected static RayTraceResult doRayTrace(World world, EntityPlayer player, boolean useLiquids) {
+        float f = player.rotationPitch;
+        float f1 = player.rotationYaw;
+        double d0 = player.posX;
+        double d1 = player.posY + (double)player.getEyeHeight();
+        double d2 = player.posZ;
+        Vec3d vec3 = new Vec3d(d0, d1, d2);
         float f2 = MathHelper.cos(-f1 * 0.017453292F - (float)Math.PI);
         float f3 = MathHelper.sin(-f1 * 0.017453292F - (float)Math.PI);
         float f4 = -MathHelper.cos(-f * 0.017453292F);
@@ -175,18 +171,18 @@ public abstract class ItemDoorBase extends ItemDoor {
         float f6 = f3 * f4;
         float f7 = f2 * f4;
         double d3 = 5.0D;
-        if (playerIn instanceof EntityPlayerMP)
-            d3 = ((EntityPlayerMP)playerIn).theItemInWorldManager.getBlockReachDistance();
-        Vec3 vec31 = vec3.addVector((double)f6 * d3, (double)f5 * d3, (double)f7 * d3);
-        return worldIn.rayTraceBlocks(vec3, vec31, useLiquids, !useLiquids, false);
+        if (player instanceof EntityPlayerMP)
+            d3 = ((EntityPlayerMP)player).interactionManager.getBlockReachDistance();
+        Vec3d vec31 = vec3.addVector((double)f6 * d3, (double)f5 * d3, (double)f7 * d3);
+        return world.rayTraceBlocks(vec3, vec31, useLiquids, !useLiquids, false);
     }
 
 	public void translateAndAdd(String key, List<String> list) {
 		for(int i=0;i<10;i++) {
-			if(StatCollector.canTranslate(key+Integer.toString(i))) {
+			/*if(StatCollector.canTranslate(key+Integer.toString(i))) {
 				String line = StatCollector.translateToLocal(key + Integer.toString(i));
 				list.add(line);
-			} else break;
+			} else */ break;
 		}
 	}
 }

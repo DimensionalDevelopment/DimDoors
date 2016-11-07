@@ -49,7 +49,6 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
             state = state.cycleProperty(BlockDoor.OPEN);
             world.setBlockState(pos, state, 2);
             world.markBlockRangeForRenderUpdate(pos, pos.up());
-            world.playAuxSFXAtEntity(player, state.getValue(BlockDoor.OPEN) ? 1003 : 1006, pos, 0);
             return true;
         }
 	}
@@ -98,7 +97,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 
     @Override
     @SideOnly(Side.CLIENT)
-    public ItemStack getItem(World world, BlockPos pos, IBlockState state) { return new ItemStack(this.getItemDoor(), 1, 0) }
+    public ItemStack getItem(World world, BlockPos pos, IBlockState state) { return new ItemStack(this.getItemDoor(), 1, 0); }
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int metadata) {return new TileEntityDimDoor();}
