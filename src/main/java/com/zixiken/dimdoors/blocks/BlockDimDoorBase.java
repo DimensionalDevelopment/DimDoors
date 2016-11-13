@@ -136,6 +136,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 	public void breakBlock(World world, BlockPos pos, IBlockState state) {
 		// This function runs on the server side after a block is replaced
 		// We MUST call super.breakBlock() since it involves removing tile entities
+		if(state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER) world.setBlockToAir(pos.up());
         super.breakBlock(world, pos, state);
     }
 }
