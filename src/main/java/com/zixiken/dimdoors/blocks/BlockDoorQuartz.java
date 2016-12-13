@@ -20,6 +20,7 @@ public class BlockDoorQuartz extends BlockDoor {
 		super(Material.ROCK);
         setHardness(0.1F);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
 	}
 
     @Override

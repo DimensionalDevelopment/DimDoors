@@ -16,6 +16,7 @@ public class BlockDimDoorGold extends BlockDimDoorBase {
 		super(Material.IRON);
         setHardness(1.0F);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
 	}
 
 	@Override

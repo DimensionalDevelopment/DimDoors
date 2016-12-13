@@ -40,6 +40,7 @@ public class BlockDimWall extends Block {
 		setLightLevel(1.0F);
         setHardness(0.1F);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
         setDefaultState(blockState.getBaseState().withProperty(TYPE, 0));
 		setSoundType(SoundType.STONE);
 	}

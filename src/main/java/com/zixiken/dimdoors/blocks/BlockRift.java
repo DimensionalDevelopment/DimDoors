@@ -42,6 +42,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 		setTickRandomly(true);
         setHardness(1.0F);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
 
 		modBlocksImmuneToRift = new ArrayList<Block>();
 		modBlocksImmuneToRift.add(ModBlocks.blockDimWall);
@@ -104,7 +105,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 
 		if (!world.getBlockState(pos).equals(Blocks.AIR) && !(block instanceof BlockLiquid || block instanceof IFluidBlock)) {
 			ItemStack thread = new ItemStack(ModItems.itemWorldThread, 1);
-			world.spawnEntityInWorld(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), thread));
+			world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), thread));
 		}
 	}
 	

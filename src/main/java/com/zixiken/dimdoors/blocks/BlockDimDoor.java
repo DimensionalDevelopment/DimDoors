@@ -14,6 +14,7 @@ public class BlockDimDoor extends BlockDimDoorBase {
         setHardness(1.0F);
         setResistance(2000.0F);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
 	}
 
 	@Override

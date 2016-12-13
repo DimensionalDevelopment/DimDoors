@@ -1,6 +1,8 @@
 package com.zixiken.dimdoors.items;
 
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import com.zixiken.dimdoors.blocks.ModBlocks;
 
 public class ModItems {
     public static ItemDimDoorGold itemDimDoorGold;
@@ -12,6 +14,7 @@ public class ModItems {
     public static ItemDimDoorUnstable itemDimDoorChaos;
     public static ItemDoorQuartz itemDoorQuartz;
     public static ItemDimDoorPersonal itemDimDoorPersonal;
+    public static ItemBlockDimWall itemBlockDimWall;
 
     public static void registerItems() {
         GameRegistry.registerItem(itemDoorQuartz = new ItemDoorQuartz(), ItemDoorQuartz.ID);
@@ -23,5 +26,12 @@ public class ModItems {
         GameRegistry.registerItem(itemStableFabric = new ItemStableFabric(), ItemStableFabric.ID);
         GameRegistry.registerItem(itemDimDoorChaos = new ItemDimDoorUnstable(), ItemDimDoorUnstable.ID);
         GameRegistry.registerItem(itemWorldThread = new ItemWorldThread(), ItemWorldThread.ID);
+
+        //ItemBlocks
+        GameRegistry.register(itemBlockDimWall = new ItemBlockDimWall());
+        GameRegistry.register(new ItemBlock(ModBlocks.blockDimHatch)
+                .setRegistryName(ModBlocks.blockDimHatch.getRegistryName()));
+        GameRegistry.register(new ItemBlock(ModBlocks.blockRift)
+                .setRegistryName(ModBlocks.blockRift.getRegistryName()));
     }
 }

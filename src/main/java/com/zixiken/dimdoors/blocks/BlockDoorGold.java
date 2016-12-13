@@ -20,6 +20,7 @@ public class BlockDoorGold extends BlockDoor {
 		super(Material.IRON);
         setHardness(0.1F);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
 	}
 
     @Override

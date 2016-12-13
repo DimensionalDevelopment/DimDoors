@@ -13,6 +13,7 @@ public class BlockDimDoorWarp extends BlockDimDoorBase {
 		super(Material.WOOD);
         setHardness(1.0F);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
 	}
 
 	@Override

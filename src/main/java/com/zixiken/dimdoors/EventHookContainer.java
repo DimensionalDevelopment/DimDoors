@@ -11,7 +11,7 @@ public class EventHookContainer {
 	public void onPlayerEvent(PlayerInteractEvent event) {
 		// Handle all door placement here
 
-		World world = event.getEntity().worldObj;
+		World world = event.getEntity().world;
 		ItemStack stack = event.getEntityPlayer().inventory.getCurrentItem();
 		if (stack != null && ItemDoorBase.tryToPlaceDoor(stack, event.getEntityPlayer(), world, event.getPos(), event.getFace()))
 				// Cancel the event so that we don't get two doors from vanilla doors

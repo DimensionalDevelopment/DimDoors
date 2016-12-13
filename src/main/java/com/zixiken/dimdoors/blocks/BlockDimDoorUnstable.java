@@ -17,6 +17,7 @@ public class BlockDimDoorUnstable extends BlockDimDoorBase {
 		super(Material.IRON);
         setHardness(.2F);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
         setLightLevel(.0F);
 	}
 

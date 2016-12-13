@@ -32,6 +32,7 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 		this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setHardness(1.0F);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
 		setSoundType(SoundType.WOOD);
 	}
 
@@ -43,9 +44,7 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 
 	public boolean checkCanOpen(World world, BlockPos pos) {return this.checkCanOpen(world, pos, null);}
 	
-	public boolean checkCanOpen(World world, BlockPos pos, EntityPlayer player) {
-		return true;
-	}
+	public boolean checkCanOpen(World world, BlockPos pos, EntityPlayer player) {return true;}
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {

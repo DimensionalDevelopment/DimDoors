@@ -13,6 +13,7 @@ public class BlockDimDoorPersonal extends BlockDimDoorBase {
 		super(Material.ROCK);
         setHardness(0.1F);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
 	}
 
 	@Override

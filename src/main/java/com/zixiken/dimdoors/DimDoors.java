@@ -6,6 +6,8 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod(modid = DimDoors.MODID, name = "Dimensional Doors", version = DimDoors.VERSION)
 public class DimDoors {
@@ -21,6 +23,7 @@ public class DimDoors {
 	
 	public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") {
 		@Override
+		@SideOnly(Side.CLIENT)
 		public Item getTabIconItem() {return ModItems.itemDimDoor;}
 	};
 
