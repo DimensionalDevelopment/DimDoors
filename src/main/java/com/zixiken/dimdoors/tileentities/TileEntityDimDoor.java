@@ -43,7 +43,7 @@ public class TileEntityDimDoor extends DDTileEntityBase
 	@Override
 	public float[] getRenderColor(Random rand) {
 		float[] rgbaColor = {1,1,1,1};
-		if (this.worldObj.provider.getDimension() == -1) {
+		if (this.world.provider.getDimension() == -1) {
 			rgbaColor[0] = rand.nextFloat() * 0.5F + 0.4F;
 			rgbaColor[1] = rand.nextFloat() * 0.05F;
 			rgbaColor[2] = rand.nextFloat() * 0.05F;

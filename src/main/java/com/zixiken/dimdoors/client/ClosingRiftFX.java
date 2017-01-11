@@ -93,13 +93,13 @@ public class ClosingRiftFX extends Particle
 
 		this.setParticleTextureIndex(this.baseTextureIndex + (7 - this.particleAge * 8 / this.particleMaxAge));
 		// this.motionY -= 0.004D;
-		this.moveEntity(this.motionX, this.motionY, this.motionZ);
+		this.move(this.motionX, this.motionY, this.motionZ);
 		this.motionX *= 0.9100000262260437D;
 		this.motionY *= 0.9100000262260437D;
 		this.motionZ *= 0.9100000262260437D;
 
 		if (this.trail && this.particleAge < this.particleMaxAge / 2 && (this.particleAge + this.particleMaxAge) % 2 == 0) {
-			ClosingRiftFX var1 = new ClosingRiftFX(this.worldObj, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
+			ClosingRiftFX var1 = new ClosingRiftFX(this.world, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
 			var1.setRBGColorF(this.particleRed, this.particleGreen, this.particleBlue);
 			var1.particleAge = var1.particleMaxAge / 2;
 
