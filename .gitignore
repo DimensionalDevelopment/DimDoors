@@ -8,3 +8,6 @@ out/
 *.ipr
 *.iws
 forge-*-changelog.txt
+
+#Netbeans
+.nb-gradle/private/cache/

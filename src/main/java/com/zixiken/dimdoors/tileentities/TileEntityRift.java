@@ -37,7 +37,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 	
 	@Override
 	public void update() {
-		if (worldObj.getBlockState(pos).getBlock() != ModBlocks.blockRift) {
+		if (world.getBlockState(pos).getBlock() != ModBlocks.blockRift) {
 			invalidate();
 			return;
 		}
@@ -61,10 +61,10 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 	}
 
 	private void spawnEndermen() {
-		if (worldObj.isRemote) return;
+		if (world.isRemote) return;
 
 		// Ensure that this rift is only spawning one Enderman at a time, to prevent hordes of Endermen
-		Entity entity = worldObj.getEntityByID(this.spawnedEndermenID);
+		Entity entity = world.getEntityByID(this.spawnedEndermenID);
 		if (entity != null && entity instanceof EntityEnderman) {
 			return;
 		}
@@ -72,16 +72,16 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 		if (random.nextInt(MAX_ENDERMAN_SPAWNING_CHANCE) < ENDERMAN_SPAWNING_CHANCE) {
 			// Endermen will only spawn from groups of rifts
 			if (updateNearestRift()) {
-				List<EntityEnderman> list =  worldObj.getEntitiesWithinAABB(EntityEnderman.class,
+				List<EntityEnderman> list =  world.getEntitiesWithinAABB(EntityEnderman.class,
 						new AxisAlignedBB(pos.getX() - 9, pos.getY() - 3, pos.getZ() - 9, pos.getX() + 9, pos.getY() + 3, pos.getZ() + 9));
 
 				if (list.isEmpty()) {
-					EntityEnderman enderman = new EntityEnderman(worldObj);
+					EntityEnderman enderman = new EntityEnderman(world);
 					enderman.setLocationAndAngles(pos.getX() + 0.5, pos.getY() - 1, pos.getZ() + 0.5, 5, 6);
-					worldObj.spawnEntityInWorld(enderman);
+					world.spawnEntity(enderman);
 
 					if (random.nextInt(MAX_HOSTILE_ENDERMAN_CHANCE) < HOSTILE_ENDERMAN_CHANCE) {
-						EntityPlayer player = this.worldObj.getClosestPlayerToEntity(enderman, 50);
+						EntityPlayer player = this.world.getClosestPlayerToEntity(enderman, 50);
 						if (player != null) {
 							enderman.setAttackTarget(player);
 						}
@@ -92,7 +92,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 	}
 
 	private void closeRift() {
-		worldObj.setBlockToAir(pos);
+		world.setBlockToAir(pos);
 		growth--;
 	}
 
