@@ -10,5 +10,6 @@ public class ItemStableFabric extends Item {
 		super();
         setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
 	}
 }

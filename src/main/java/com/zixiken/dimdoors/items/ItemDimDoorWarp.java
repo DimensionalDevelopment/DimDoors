@@ -16,6 +16,7 @@ public class ItemDimDoorWarp extends ItemDoorBase {
 	public ItemDimDoorWarp() {
 		super(ModBlocks.blockDimDoorWarp, (ItemDoor)Items.OAK_DOOR	);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
 	}
 
 	@Override

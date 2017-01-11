@@ -13,6 +13,7 @@ public class ItemDimDoorUnstable extends ItemDoorBase {
     public ItemDimDoorUnstable() {
         super(ModBlocks.blockDimDoorChaos, null);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
     }
 
 	@Override

@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors;
 
+import com.zixiken.dimdoors.blocks.BlockDimWall;
 import com.zixiken.dimdoors.blocks.ModBlocks;
 import com.zixiken.dimdoors.items.ModItems;
 import net.minecraft.block.BlockDoor;
@@ -15,8 +16,6 @@ import static net.minecraft.item.Item.getItemFromBlock;
 
 @SuppressWarnings({"MethodCallSideOnly", "NewExpressionSideOnly"})
 public class ModelManager {
-    private static final String ID = DimDoors.MODID;
-
     public static void registerModels() {
         //ItemBlock registration
         register(getItemFromBlock(ModBlocks.blockDimWall));
@@ -24,7 +23,6 @@ public class ModelManager {
         register(getItemFromBlock(ModBlocks.blockDimWall), 2, "Altered");
 
         register(getItemFromBlock(ModBlocks.blockRift));
-        register(getItemFromBlock(ModBlocks.blockDimDoorTransient));
         register(getItemFromBlock(ModBlocks.blockDimHatch));
 
         //Item registration
@@ -41,19 +39,19 @@ public class ModelManager {
 
     public static void registerModelVariants() {
         ModelBakery.registerItemVariants(getItemFromBlock(ModBlocks.blockDimWall),
-                new ResourceLocation(ID + ":blockDimWall"),
-                new ResourceLocation(ID + ":blockDimWallAncient"),
-                new ResourceLocation(ID + ":blockDimWallAltered"));
+                ModBlocks.blockDimWall.getRegistryName(),
+                new ResourceLocation(ModBlocks.blockDimWall.getRegistryName() + "Ancient"),
+                new ResourceLocation(ModBlocks.blockDimWall.getRegistryName() + "Altered"));
     }
 
     private static void register(Item item) {
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0,
-                new ModelResourceLocation(ID + ':' + item.getUnlocalizedName().substring(5), "inventory"));
+                new ModelResourceLocation(item.getRegistryName(), "inventory"));
     }
 
     private static void register(Item item, int meta, String name) {
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, meta,
-                new ModelResourceLocation(ID + ':' + item.getUnlocalizedName().substring(5) + name, "inventory"));
+                new ModelResourceLocation(item.getRegistryName() + name, "inventory"));
     }
 
     @SuppressWarnings("LocalVariableDeclarationSideOnly")

@@ -13,6 +13,7 @@ public class ItemDimDoorGold extends ItemDoorBase {
 	public ItemDimDoorGold() {
   	    super(ModBlocks.blockDimDoorGold, ModItems.itemDoorGold);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
     }
 	@Override
 	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {

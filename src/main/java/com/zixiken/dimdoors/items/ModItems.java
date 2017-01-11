@@ -17,15 +17,15 @@ public class ModItems {
     public static ItemBlockDimWall itemBlockDimWall;
 
     public static void registerItems() {
-        GameRegistry.registerItem(itemDoorQuartz = new ItemDoorQuartz(), ItemDoorQuartz.ID);
-        GameRegistry.registerItem(itemDimDoorPersonal = new ItemDimDoorPersonal(), ItemDimDoorPersonal.ID);
-        GameRegistry.registerItem(itemDoorGold = new ItemDoorGold(), ItemDoorGold.ID);
-        GameRegistry.registerItem(itemDimDoorGold = new ItemDimDoorGold(), ItemDimDoorGold.ID);
-        GameRegistry.registerItem(itemDimDoor = new ItemDimDoor(), ItemDimDoor.ID);
-        GameRegistry.registerItem(itemDimDoorWarp = new ItemDimDoorWarp(), ItemDimDoorWarp.ID);
-        GameRegistry.registerItem(itemStableFabric = new ItemStableFabric(), ItemStableFabric.ID);
-        GameRegistry.registerItem(itemDimDoorChaos = new ItemDimDoorUnstable(), ItemDimDoorUnstable.ID);
-        GameRegistry.registerItem(itemWorldThread = new ItemWorldThread(), ItemWorldThread.ID);
+        GameRegistry.register(itemDoorQuartz = new ItemDoorQuartz());
+        GameRegistry.register(itemDimDoorPersonal = new ItemDimDoorPersonal());
+        GameRegistry.register(itemDoorGold = new ItemDoorGold());
+        GameRegistry.register(itemDimDoorGold = new ItemDimDoorGold());
+        GameRegistry.register(itemDimDoor = new ItemDimDoor());
+        GameRegistry.register(itemDimDoorWarp = new ItemDimDoorWarp());
+        GameRegistry.register(itemStableFabric = new ItemStableFabric());
+        GameRegistry.register(itemDimDoorChaos = new ItemDimDoorUnstable());
+        GameRegistry.register(itemWorldThread = new ItemWorldThread());
 
         //ItemBlocks
         GameRegistry.register(itemBlockDimWall = new ItemBlockDimWall());

@@ -10,5 +10,6 @@ public class ItemWorldThread extends Item {
 		super();
         setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
 	}
 }
