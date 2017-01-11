@@ -1,6 +1,5 @@
 package com.zixiken.dimdoors;
 
-import com.zixiken.dimdoors.blocks.BlockDimWall;
 import com.zixiken.dimdoors.blocks.ModBlocks;
 import com.zixiken.dimdoors.items.ModItems;
 import net.minecraft.block.BlockDoor;
