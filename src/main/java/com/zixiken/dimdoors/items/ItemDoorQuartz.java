@@ -9,5 +9,6 @@ public class ItemDoorQuartz extends ItemDoor {
 	public ItemDoorQuartz() {
 		super(ModBlocks.blockDoorQuartz);
 		setUnlocalizedName(ID);
+		setRegistryName(ID);
 	}
 }

@@ -10,5 +10,6 @@ public class ItemDoorGold extends ItemDoor {
 		super(ModBlocks.blockDoorGold);
 		setMaxStackSize(16);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
 	}
 }

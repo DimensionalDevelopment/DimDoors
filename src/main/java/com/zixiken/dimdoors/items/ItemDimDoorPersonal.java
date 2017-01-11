@@ -13,6 +13,7 @@ public class ItemDimDoorPersonal extends ItemDoorBase {
 	public ItemDimDoorPersonal() {
   	    super(ModBlocks.blockDimDoorPersonal, ModItems.itemDoorQuartz);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
     }
 
 	@Override

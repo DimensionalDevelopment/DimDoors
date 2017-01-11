@@ -27,6 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
+@SuppressWarnings("deprecation")
 public class BlockDimWall extends Block {
     public static final String ID = "blockDimWall";
     public static final PropertyInteger TYPE = PropertyInteger.create("type", 0, 2);
@@ -107,18 +108,15 @@ public class BlockDimWall extends Block {
     @Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
     	//Check if the metadata value is 0 -- we don't want the user to replace Ancient Fabric
-        ItemStack playerEquip = player.getHeldItemMainhand();
-        if (playerEquip != null && state.getValue(TYPE) != 1) {
-            Block block = Block.getBlockFromItem(playerEquip.getItem());
-        	if (block != null) {
-        		if (!block.isNormalCube(state) || block instanceof BlockContainer || block == this)
-        			return false;
-        		if (!world.isRemote) {
-            		if (!player.capabilities.isCreativeMode) playerEquip.stackSize--;
-            		world.setBlockState(pos, block.getStateFromMeta(playerEquip.getItemDamage()));
-        		}
-        		return true;
-        	}
+        if (heldItem != null && state.getValue(TYPE) != 1) {
+            Block block = Block.getBlockFromItem(heldItem.getItem());
+			if (!state.isNormalCube() || block instanceof BlockContainer || block == this)
+				return false;
+			if (!world.isRemote) {
+				if (!player.capabilities.isCreativeMode) heldItem.stackSize--;
+				world.setBlockState(pos, state);
+			}
+			return true;
         }
         return false;
     }

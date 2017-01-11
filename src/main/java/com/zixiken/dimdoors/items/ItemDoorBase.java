@@ -7,6 +7,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.blocks.ModBlocks;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -75,8 +76,8 @@ public abstract class ItemDoorBase extends ItemDoor {
 		ItemDoorBase mappedItem = doorItemMapping.get(stack.getItem());
 		if (mappedItem == null) return false;
 		BlockDimDoorBase doorBlock = mappedItem.getDoorBlock();
-		if (ItemDoorBase.placeDoorOnBlock(doorBlock, stack, player, world, pos, side)) return true;
-		return ItemDoorBase.placeDoorOnRift(doorBlock, world, player, stack);
+		return ItemDoorBase.placeDoorOnBlock(doorBlock, stack, player, world, pos, side) ||
+				ItemDoorBase.placeDoorOnRift(doorBlock, world, player, stack);
 	}
 
 	/**
@@ -143,9 +144,9 @@ public abstract class ItemDoorBase extends ItemDoor {
 	}
 
 	public static boolean canPlace(World world, BlockPos pos) {
-		Block block = world.getBlockState(pos).getBlock();
+		IBlockState state = world.getBlockState(pos);
 
-		return (block == ModBlocks.blockRift || world.getBlockState(pos).equals(Blocks.AIR) || block.getMaterial(world.getBlockState(pos)).isReplaceable());
+		return (state.getBlock() == ModBlocks.blockRift || state.equals(Blocks.AIR) || state.getMaterial().isReplaceable());
 	}
 
 	/**

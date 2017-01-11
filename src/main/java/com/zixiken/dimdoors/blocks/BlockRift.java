@@ -30,6 +30,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SuppressWarnings("deprecation")
 public class BlockRift extends Block implements ITileEntityProvider {
 	private static final float MIN_IMMUNE_RESISTANCE = 5000.0F;
     public static final String ID = "blockRift";

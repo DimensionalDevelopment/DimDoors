@@ -15,6 +15,7 @@ public class ItemDimDoor extends ItemDoorBase {
 	public ItemDimDoor() {
   	    super(ModBlocks.blockDimDoor, (ItemDoor)Items.IRON_DOOR);
         setUnlocalizedName(ID);
+        setRegistryName(ID);
     }
 
 	@Override
