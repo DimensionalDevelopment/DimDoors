@@ -18,8 +18,9 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-public class CommonProxy {
+public abstract class DDProxyCommon implements IDDProxy {
 
+    @Override
     public void onPreInitialization(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new EventHookContainer());
         ModBlocks.registerBlocks();
@@ -34,6 +35,7 @@ public class CommonProxy {
         GameRegistry.registerTileEntity(TileEntityDimDoorGold.class, "TileEntityDimDoorGold");
     }
 
+    @Override
     public void onInitialization(FMLInitializationEvent event) {
         CraftingManager.registerRecipes();
         ModelManager.registerModels();
@@ -51,4 +53,7 @@ public class CommonProxy {
 			dimTile.lockStatus = 0;
 		}
 	}
+
+    @Override
+    public abstract boolean isClient();
 }
