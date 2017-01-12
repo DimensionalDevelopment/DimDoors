@@ -13,6 +13,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,6 +22,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -51,6 +53,12 @@ public class BlockDimWall extends Block {
         if(meta >= 0 && meta <= 2) return getDefaultState().withProperty(TYPE, meta);
         else return getDefaultState();
     }
+
+    @Override
+	public boolean isReplaceable(IBlockAccess world, BlockPos pos) {
+        if(world.getBlockState(pos).getValue(TYPE) == 1) return false;
+		return true;
+	}
 
 	@Override
 	public int getMetaFromState(IBlockState state) {return state.getValue(TYPE);}
@@ -100,24 +108,5 @@ public class BlockDimWall extends Block {
 	public int quantityDropped(Random par1Random)
     {
         return 0;
-    }
-
-    /**
-     * replaces the block clicked with the held block, instead of placing the block on top of it. Shift click to disable. 
-     */
-    @Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-    	//Check if the metadata value is 0 -- we don't want the user to replace Ancient Fabric
-        if (heldItem != null && state.getValue(TYPE) != 1) {
-            Block block = Block.getBlockFromItem(heldItem.getItem());
-			if (!state.isNormalCube() || block instanceof BlockContainer || block == this)
-				return false;
-			if (!world.isRemote) {
-				if (!player.capabilities.isCreativeMode) heldItem.stackSize--;
-				world.setBlockState(pos, state);
-			}
-			return true;
-        }
-        return false;
     }
 }
