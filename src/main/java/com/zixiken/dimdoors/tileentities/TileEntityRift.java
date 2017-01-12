@@ -17,7 +17,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 	private static final int MAX_ENDERMAN_SPAWNING_CHANCE = 32;
 	private static final int HOSTILE_ENDERMAN_CHANCE = 1;
 	private static final int MAX_HOSTILE_ENDERMAN_CHANCE = 3;
-	private static final int UPDATE_PERIOD = 200;
+	private static final int UPDATE_PERIOD = 200; //10 seconds
 
 	private static Random random = new Random();
 
@@ -93,7 +93,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 
 	private void closeRift() {
 		world.setBlockToAir(pos);
-		growth--;
+		growth--; //@todo?
 	}
 
 	public boolean updateNearestRift() {
