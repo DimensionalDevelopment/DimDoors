@@ -5,6 +5,7 @@
  */
 package com.zixiken.dimdoors.shared;
 
+import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,7 +21,7 @@ public class RiftRegistry {
 
     // Privates
     private int nextUnusedID;
-    private final Map<Integer, Rift> riftList;
+    private final Map<Integer, DDTileEntityBase> riftList;
 
     // Methods
     public RiftRegistry() {
@@ -41,7 +42,7 @@ public class RiftRegistry {
             String tag = "" + i;
             while (riftsNBT.hasKey(tag)) {
                 NBTTagCompound riftNBT = riftsNBT.getCompoundTag(tag);
-                Rift rift = Rift.readFromNBT(i, riftNBT);
+                DDTileEntityBase rift = DDTileEntityBase.readFromNBT(i, riftNBT);
                 riftList.put(i, rift);
                 
                 i++;
@@ -53,13 +54,13 @@ public class RiftRegistry {
     public void writeToNBT(NBTTagCompound nbt) {
         nbt.setInteger("nextUnusedID", nextUnusedID);
         NBTTagCompound riftsNBT = new NBTTagCompound();
-        for (Map.Entry<Integer, Rift> entry : riftList.entrySet()) {
-            riftsNBT.setTag("" + entry.getKey(), Rift.writeToNBT(entry.getValue()));
+        for (Map.Entry<Integer, DDTileEntityBase> entry : riftList.entrySet()) {
+            riftsNBT.setTag("" + entry.getKey(), DDTileEntityBase.writeToNBT(entry.getValue()));
         }
         nbt.setTag("riftData", riftsNBT);
     }
 
-    public int registerNewRift(Rift rift, World world) {
+    public int registerNewRift(DDTileEntityBase rift, World world) {
         riftList.put(nextUnusedID, rift);        
         
         nextUnusedID++;
@@ -74,7 +75,7 @@ public class RiftRegistry {
         }
     }
 
-    public Rift getRift(int ID) {
+    public DDTileEntityBase getRift(int ID) {
         return riftList.get(ID);
     }
 }
