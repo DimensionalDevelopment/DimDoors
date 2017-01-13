@@ -14,10 +14,12 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
  *
  * @author Robijnvogel
  */
-public interface IDDProxy
-{
+public interface IDDProxy {
+
     public boolean isClient();
+
     public void onPreInitialization(FMLPreInitializationEvent event);
+
     public void onInitialization(FMLInitializationEvent event);
 
     public EntityPlayer getLocalPlayer();

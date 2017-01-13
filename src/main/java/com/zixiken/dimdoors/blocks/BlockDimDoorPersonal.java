@@ -7,20 +7,23 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BlockDimDoorPersonal extends BlockDimDoorBase {
-	public static final String ID = "blockDimDoorPersonal";
 
-	public BlockDimDoorPersonal() {
-		super(Material.ROCK);
+    public static final String ID = "blockDimDoorPersonal";
+
+    public BlockDimDoorPersonal() {
+        super(Material.ROCK);
         setHardness(0.1F);
         setUnlocalizedName(ID);
         setRegistryName(ID);
-	}
+    }
 
-	@Override
-	public void placeLink(World world, BlockPos pos) {
-	}
+    @Override
+    public void placeLink(World world, BlockPos pos) {
+    }
 
-	@Override
-	public Item getItemDoor() {return ModItems.itemDimDoorPersonal;}
+    @Override
+    public Item getItemDoor() {
+        return ModItems.itemDimDoorPersonal;
+    }
 
 }

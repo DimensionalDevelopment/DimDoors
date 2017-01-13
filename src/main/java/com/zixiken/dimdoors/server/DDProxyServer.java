@@ -14,7 +14,7 @@ import net.minecraftforge.common.DimensionManager;
  *
  * @author Robijnvogel
  */
-public class DDProxyServer extends DDProxyCommon{
+public class DDProxyServer extends DDProxyCommon {
 
     @Override
     public boolean isClient() {
@@ -30,5 +30,5 @@ public class DDProxyServer extends DDProxyCommon{
     public World getDefWorld() {
         return DimensionManager.getWorld(0); //gets the server world dim 0 handler
     }
-    
+
 }

@@ -41,18 +41,18 @@ public abstract class DDProxyCommon implements IDDProxy {
         ModelManager.registerModels();
     }
 
-	public void updateDoorTE(BlockDimDoorBase door, World world, BlockPos pos) {
-		TileEntity tile = world.getTileEntity(pos);
-		if (tile instanceof TileEntityDimDoor) {
-			TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
+    public void updateDoorTE(BlockDimDoorBase door, World world, BlockPos pos) {
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile instanceof TileEntityDimDoor) {
+            TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
             IBlockState state = world.getBlockState(pos.down());
-            dimTile.orientation = state.getBlock() instanceof BlockDimDoorBase ?
-                    state.getValue(BlockDoor.FACING).rotateY() :
-                    ModBlocks.blockDimDoor.getDefaultState().getValue(BlockDoor.FACING);
-			dimTile.openOrClosed = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(world.getBlockState(pos));
-			dimTile.lockStatus = 0;
-		}
-	}
+            dimTile.orientation = state.getBlock() instanceof BlockDimDoorBase
+                    ? state.getValue(BlockDoor.FACING).rotateY()
+                    : ModBlocks.blockDimDoor.getDefaultState().getValue(BlockDoor.FACING);
+            dimTile.openOrClosed = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(world.getBlockState(pos));
+            dimTile.lockStatus = 0;
+        }
+    }
 
     @Override
     public abstract boolean isClient();

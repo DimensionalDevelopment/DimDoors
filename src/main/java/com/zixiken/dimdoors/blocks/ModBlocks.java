@@ -3,6 +3,7 @@ package com.zixiken.dimdoors.blocks;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ModBlocks {
+
     public static BlockDoorQuartz blockDoorQuartz;
     public static BlockDoorGold blockDoorGold;
     public static BlockDimDoorPersonal blockDimDoorPersonal;

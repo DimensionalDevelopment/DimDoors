@@ -8,19 +8,22 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 public class ItemDimDoorPersonal extends ItemDoorBase {
-	public static final String ID = "itemDimDoorQuartz";
 
-	public ItemDimDoorPersonal() {
-  	    super(ModBlocks.blockDimDoorPersonal, ModItems.itemDoorQuartz);
+    public static final String ID = "itemDimDoorQuartz";
+
+    public ItemDimDoorPersonal() {
+        super(ModBlocks.blockDimDoorPersonal, ModItems.itemDoorQuartz);
         setUnlocalizedName(ID);
         setRegistryName(ID);
     }
 
-	@Override
-	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-		translateAndAdd("info.personalDimDoor", tooltip);
-	}
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        translateAndAdd("info.personalDimDoor", tooltip);
+    }
 
-	@Override
-	protected BlockDimDoorBase getDoorBlock() {return ModBlocks.blockDimDoorPersonal;}
+    @Override
+    protected BlockDimDoorBase getDoorBlock() {
+        return ModBlocks.blockDimDoorPersonal;
+    }
 }

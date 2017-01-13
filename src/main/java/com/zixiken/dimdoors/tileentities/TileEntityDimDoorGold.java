@@ -6,24 +6,25 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLoader {
-	private Ticket chunkTicket;
-	private boolean initialized = false;
+
+    private Ticket chunkTicket;
+    private boolean initialized = false;
 
     public TileEntityDimDoorGold(World world) {
         super(world);
     }
-	
-	@Override
-	public boolean isInitialized() {
-		return initialized;
-	}
 
-	@Override
-	public void initialize(Ticket ticket) {
-		initialized = true;
-		chunkTicket = ticket;
+    @Override
+    public boolean isInitialized() {
+        return initialized;
+    }
 
-		/*
+    @Override
+    public void initialize(Ticket ticket) {
+        initialized = true;
+        chunkTicket = ticket;
+
+        /*
 		// Only do anything if this function is running on the server side
 		// NOTE: We don't have to check whether this block is the upper door
 		// block or the lower one because only one of them should have a
@@ -53,12 +54,12 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
 				ChunkLoaderHelper.forcePocketChunks(dimension, chunkTicket);
 			}
 		}
-		*/
-	}
+         */
+    }
 
-	@Override
-	public void invalidate() {
-		ForgeChunkManager.releaseTicket(chunkTicket);
-		super.invalidate();
-	}
+    @Override
+    public void invalidate() {
+        ForgeChunkManager.releaseTicket(chunkTicket);
+        super.invalidate();
+    }
 }

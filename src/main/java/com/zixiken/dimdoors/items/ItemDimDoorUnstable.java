@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 public class ItemDimDoorUnstable extends ItemDoorBase {
+
     public static final String ID = "itemDimDoorChaos";
 
     public ItemDimDoorUnstable() {
@@ -16,11 +17,13 @@ public class ItemDimDoorUnstable extends ItemDoorBase {
         setRegistryName(ID);
     }
 
-	@Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-    	//tooltip.add(StatCollector.translateToLocal("info.chaosDoor"));
-    }
-    
     @Override
-    protected BlockDimDoorBase getDoorBlock() {return ModBlocks.blockDimDoorChaos;}
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        //tooltip.add(StatCollector.translateToLocal("info.chaosDoor"));
+    }
+
+    @Override
+    protected BlockDimDoorBase getDoorBlock() {
+        return ModBlocks.blockDimDoorChaos;
+    }
 }

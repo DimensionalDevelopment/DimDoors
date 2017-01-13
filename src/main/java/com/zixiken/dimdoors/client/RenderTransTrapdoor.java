@@ -23,9 +23,10 @@ import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTransTrapdoor> {
+
     private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
-	private ResourceLocation riftPath= new ResourceLocation(DimDoors.MODID+":textures/other/RIFT.png");
-	private ResourceLocation warpPath= new ResourceLocation(DimDoors.MODID+":textures/other/WARP.png");
+    private ResourceLocation riftPath = new ResourceLocation(DimDoors.MODID + ":textures/other/RIFT.png");
+    private ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/WARP.png");
 
     /**
      * Renders the dimdoor.
@@ -34,7 +35,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
         GlStateManager.disableLighting();
         Random random = new Random(31100L);
         IBlockState state = tile.getWorld().getBlockState(tile.getPos());
-        	
+
         for (int count = 0; count < 16; ++count) {
             GlStateManager.pushMatrix();
 
@@ -58,16 +59,16 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
                 var16 = .5F;
             }
 
-            GlStateManager.translate(Minecraft.getSystemTime() % 200000L / 200000.0F,0, 0.0F);
+            GlStateManager.translate(Minecraft.getSystemTime() % 200000L / 200000.0F, 0, 0.0F);
             GlStateManager.translate(0, Minecraft.getSystemTime() % 200000L / 200000.0F, 0.0F);
 
-            GlStateManager.translate(0,0, Minecraft.getSystemTime() % 200000L / 200000.0F);
+            GlStateManager.translate(0, 0, Minecraft.getSystemTime() % 200000L / 200000.0F);
 
             GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_LINEAR);
             GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_LINEAR);
             GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_LINEAR);
             GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_LINEAR);
-         
+
             GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
             GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
             GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
@@ -83,12 +84,12 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
             GlStateManager.matrixMode(GL11.GL_TEXTURE);
             GlStateManager.pushMatrix();
             GlStateManager.loadIdentity();
-            GlStateManager.translate(0.0F, Minecraft.getSystemTime() % 200000L / 200000.0F*var15, 0.0F);
+            GlStateManager.translate(0.0F, Minecraft.getSystemTime() % 200000L / 200000.0F * var15, 0.0F);
             GlStateManager.scale(var16, var16, var16);
             GlStateManager.translate(0.5F, 0.5F, 0.5F);
             GlStateManager.rotate((count * count * 4321 + count * 9) * 2.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.translate(0.5F, 0.5F, 0.5F);
-            
+
             float r = (random.nextFloat() * 0.5F + 0.1F) * var17;
             float g = (random.nextFloat() * 0.4F + 0.4F) * var17;
             float b = (random.nextFloat() * 0.6F + 0.5F) * var17;
@@ -103,29 +104,29 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
             if (BlockTransTrapdoor.isTrapdoorSetLow(state)) {
-            	if (state.getValue(BlockTrapDoor.OPEN)) {
-            		worldrenderer.pos(x, y+0.2, z).color(r, g, b, 1.0F).endVertex();
-                    worldrenderer.pos(x, y+0.2, z+1).color(r, g, b, 1.0F).endVertex();
-                    worldrenderer.pos(x+1, y+0.2, z+1).color(r, g, b, 1.0F).endVertex();
-                    worldrenderer.pos(x+1, y+0.2, z).color(r, g, b, 1.0F).endVertex();
-            	} else {
-                    worldrenderer.pos(x, y+0.15, z).color(r, g, b, 1.0F).endVertex();
-                    worldrenderer.pos(x, y+0.15, z+1).color(r, g, b, 1.0F).endVertex();
-                    worldrenderer.pos(x+1, y+0.15, z+1).color(r, g, b, 1.0F).endVertex();
-                    worldrenderer.pos(x+1, y+0.15, z).color(r, g, b, 1.0F).endVertex();
-            	}
+                if (state.getValue(BlockTrapDoor.OPEN)) {
+                    worldrenderer.pos(x, y + 0.2, z).color(r, g, b, 1.0F).endVertex();
+                    worldrenderer.pos(x, y + 0.2, z + 1).color(r, g, b, 1.0F).endVertex();
+                    worldrenderer.pos(x + 1, y + 0.2, z + 1).color(r, g, b, 1.0F).endVertex();
+                    worldrenderer.pos(x + 1, y + 0.2, z).color(r, g, b, 1.0F).endVertex();
+                } else {
+                    worldrenderer.pos(x, y + 0.15, z).color(r, g, b, 1.0F).endVertex();
+                    worldrenderer.pos(x, y + 0.15, z + 1).color(r, g, b, 1.0F).endVertex();
+                    worldrenderer.pos(x + 1, y + 0.15, z + 1).color(r, g, b, 1.0F).endVertex();
+                    worldrenderer.pos(x + 1, y + 0.15, z).color(r, g, b, 1.0F).endVertex();
+                }
             } else {
-            	if (state.getValue(BlockTrapDoor.OPEN)) {
-                    worldrenderer.pos(x, y+0.95, z).color(r, g, b, 1.0F).endVertex();
-                    worldrenderer.pos(x, y+0.95, z+1).color(r, g, b, 1.0F).endVertex();
-                	worldrenderer.pos(x+1, y+0.95, z+1).color(r, g, b, 1.0F).endVertex();
-                	worldrenderer.pos(x+1, y+0.95, z).color(r, g, b, 1.0F).endVertex();
-            	} else {
-                    worldrenderer.pos(x, y+0.85, z).color(r, g, b, 1.0F).endVertex();
-                    worldrenderer.pos(x, y+0.85, z+1).color(r, g, b, 1.0F).endVertex();
-                    worldrenderer.pos(x+1, y+0.85, z+1).color(r, g, b, 1.0F).endVertex();
-                    worldrenderer.pos(x+1, y+0.85, z).color(r, g, b, 1.0F).endVertex();
-            	}
+                if (state.getValue(BlockTrapDoor.OPEN)) {
+                    worldrenderer.pos(x, y + 0.95, z).color(r, g, b, 1.0F).endVertex();
+                    worldrenderer.pos(x, y + 0.95, z + 1).color(r, g, b, 1.0F).endVertex();
+                    worldrenderer.pos(x + 1, y + 0.95, z + 1).color(r, g, b, 1.0F).endVertex();
+                    worldrenderer.pos(x + 1, y + 0.95, z).color(r, g, b, 1.0F).endVertex();
+                } else {
+                    worldrenderer.pos(x, y + 0.85, z).color(r, g, b, 1.0F).endVertex();
+                    worldrenderer.pos(x, y + 0.85, z + 1).color(r, g, b, 1.0F).endVertex();
+                    worldrenderer.pos(x + 1, y + 0.85, z + 1).color(r, g, b, 1.0F).endVertex();
+                    worldrenderer.pos(x + 1, y + 0.85, z).color(r, g, b, 1.0F).endVertex();
+                }
             }
 
             tessellator.draw();
@@ -150,6 +151,6 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
 
     @Override
     public void renderTileEntityAt(TileEntityTransTrapdoor te, double x, double y, double z, float partialTicks, int destroyStage) {
-    	this.renderTransTrapdoorTileEntity(te, x, y, z, partialTicks);
+        this.renderTransTrapdoorTileEntity(te, x, y, z, partialTicks);
     }
 }

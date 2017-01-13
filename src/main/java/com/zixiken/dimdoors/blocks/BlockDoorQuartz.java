@@ -14,14 +14,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockDoorQuartz extends BlockDoor {
+
     public static final String ID = "blockDoorQuartz";
 
-	public BlockDoorQuartz() {
-		super(Material.ROCK);
+    public BlockDoorQuartz() {
+        super(Material.ROCK);
         setHardness(0.1F);
         setUnlocalizedName(ID);
         setRegistryName(ID);
-	}
+    }
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {

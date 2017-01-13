@@ -35,20 +35,19 @@ class Pocket {
         pocket.size = pocketNBT.getInteger("size");
         pocket.depth = pocketNBT.getInteger("depth");
         pocket.typeID = pocketNBT.getInteger("typeID");
-        
+
         //@todo pocket.coords = pocketNBT.get;
         NBTTagCompound playersNBT = pocketNBT.getCompoundTag("players");
         NBTTagCompound doorsNBT = pocketNBT.getCompoundTag("doors");
         //@todo iterate through above two compound tags
-        
+
         return pocket;
     }
-    
+
     static NBTBase writeToNBT(Pocket pocket) {
         NBTTagCompound pocketNBT = new NBTTagCompound();
-        
+
         //@todo implement shit;
-        
         return pocketNBT;
     }
 

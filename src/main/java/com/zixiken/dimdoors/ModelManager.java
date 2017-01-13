@@ -15,6 +15,7 @@ import static net.minecraft.item.Item.getItemFromBlock;
 
 @SuppressWarnings({"MethodCallSideOnly", "NewExpressionSideOnly"})
 public class ModelManager {
+
     public static void registerModels() {
         //ItemBlock registration
         register(getItemFromBlock(ModBlocks.blockDimWall));

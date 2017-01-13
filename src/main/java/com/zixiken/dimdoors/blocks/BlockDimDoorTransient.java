@@ -11,39 +11,46 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BlockDimDoorTransient extends BlockDimDoorBase {
-	public static final String ID = "blockDimDoorTransient";
 
-	public BlockDimDoorTransient() {
-		super(Material.IRON);
-		setHardness(1.0F);
-		setUnlocalizedName(ID);
-		setRegistryName(ID);
-	}
+    public static final String ID = "blockDimDoorTransient";
 
-	@Override
-	public void enterDimDoor(World world, BlockPos pos, Entity entity) {
-		// Check that this is the top block of the door
-		IBlockState state = world.getBlockState(pos.down());
-		if (!world.isRemote && state.getBlock() == this) {
-			if (entity instanceof EntityPlayer && isEntityFacingDoor(state, (EntityLivingBase) entity)) {
-				// Turn the door into a rift AFTER teleporting the player.
-				// The door's orientation may be necessary for the teleport.
-				world.setBlockState(pos, ModBlocks.blockRift.getDefaultState());
-				world.setBlockToAir(pos.down());
-			}
-		} else {
+    public BlockDimDoorTransient() {
+        super(Material.IRON);
+        setHardness(1.0F);
+        setUnlocalizedName(ID);
+        setRegistryName(ID);
+    }
+
+    @Override
+    public void enterDimDoor(World world, BlockPos pos, Entity entity) {
+        // Check that this is the top block of the door
+        IBlockState state = world.getBlockState(pos.down());
+        if (!world.isRemote && state.getBlock() == this) {
+            if (entity instanceof EntityPlayer && isEntityFacingDoor(state, (EntityLivingBase) entity)) {
+                // Turn the door into a rift AFTER teleporting the player.
+                // The door's orientation may be necessary for the teleport.
+                world.setBlockState(pos, ModBlocks.blockRift.getDefaultState());
+                world.setBlockToAir(pos.down());
+            }
+        } else {
             BlockPos up = pos.up();
-            if (world.getBlockState(up).getBlock() == this) enterDimDoor(world, up, entity);
+            if (world.getBlockState(up).getBlock() == this) {
+                enterDimDoor(world, up, entity);
+            }
         }
-	}	
+    }
 
-	@Override
-	public void placeLink(World world, BlockPos pos) {
-	}
-	
-	@Override
-	public Item getItemDoor() {return null;}
+    @Override
+    public void placeLink(World world, BlockPos pos) {
+    }
 
-	@Override
-	public boolean isCollidable() {return false;}
+    @Override
+    public Item getItemDoor() {
+        return null;
+    }
+
+    @Override
+    public boolean isCollidable() {
+        return false;
+    }
 }

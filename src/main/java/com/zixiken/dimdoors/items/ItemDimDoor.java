@@ -10,19 +10,22 @@ import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 
 public class ItemDimDoor extends ItemDoorBase {
-	public static final String ID = "itemDimDoor";
 
-	public ItemDimDoor() {
-  	    super(ModBlocks.blockDimDoor, (ItemDoor)Items.IRON_DOOR);
+    public static final String ID = "itemDimDoor";
+
+    public ItemDimDoor() {
+        super(ModBlocks.blockDimDoor, (ItemDoor) Items.IRON_DOOR);
         setUnlocalizedName(ID);
         setRegistryName(ID);
     }
 
-	@Override
-	public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         translateAndAdd("info.dimDoor", tooltip);
-	}
+    }
 
-	@Override
-	protected BlockDimDoorBase getDoorBlock() {return ModBlocks.blockDimDoor;}
+    @Override
+    protected BlockDimDoorBase getDoorBlock() {
+        return ModBlocks.blockDimDoor;
+    }
 }

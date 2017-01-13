@@ -10,7 +10,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-
 public class DDProxyClient extends DDProxyCommon {
 
     @Override

@@ -31,7 +31,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 	public float growth = 0;
 	
 	public TileEntityRift(World world) {
-            super(world);
+        super(world);
 		// Vary the update times of rifts to prevent all the rifts in a cluster
 		// from updating at the same time.
 		updateTimer = random.nextInt(UPDATE_PERIOD);

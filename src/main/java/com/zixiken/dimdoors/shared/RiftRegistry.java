@@ -18,7 +18,7 @@ import net.minecraft.world.World;
  * @author Robijnvogel
  */
 public class RiftRegistry {
-    
+
     public static final RiftRegistry Instance = new RiftRegistry();
 
     // Privates
@@ -46,7 +46,7 @@ public class RiftRegistry {
                 NBTTagCompound riftNBT = riftsNBT.getCompoundTag(tag);
                 Location riftLocation = Location.readFromNBT(riftNBT);
                 riftList.put(i, riftLocation);
-                
+
                 i++;
                 tag = "" + i;
             }
@@ -64,10 +64,10 @@ public class RiftRegistry {
 
     public int registerNewRift(DDTileEntityBase rift) {
         riftList.put(nextRiftID, Location.getLocation(rift));
-        
+
         nextRiftID++;
         RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
-        return nextRiftID -1;
+        return nextRiftID - 1;
     }
 
     public void removeRift(int riftID, World world) {
@@ -80,7 +80,7 @@ public class RiftRegistry {
     public Location getRiftLocation(int ID) {
         return riftList.get(ID);
     }
-    
+
     public void pair(int riftID, int riftID2) {
         Location location = riftList.get(riftID);
         TileEntity tileEntity = location.getTileEntity(); //@todo this method might need to be in another class?
@@ -89,7 +89,7 @@ public class RiftRegistry {
             rift.pair(riftID2);
         }
     }
-    
+
     public void unpair(int riftID) {
         Location location = riftList.get(riftID);
         TileEntity tileEntity = location.getTileEntity();

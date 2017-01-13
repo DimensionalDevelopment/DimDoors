@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import com.zixiken.dimdoors.blocks.ModBlocks;
 
 public class ModItems {
+
     public static ItemDimDoorGold itemDimDoorGold;
     public static ItemDoorGold itemDoorGold;
     public static ItemWorldThread itemWorldThread;

@@ -15,7 +15,7 @@ import net.minecraft.world.World;
  * @author Robijnvogel
  */
 public class PocketRegistry {
-    
+
     public static final PocketRegistry Instance = new PocketRegistry();
 
     // Privates
@@ -43,7 +43,7 @@ public class PocketRegistry {
                 NBTTagCompound pocketNBT = pocketsNBT.getCompoundTag(tag);
                 Pocket pocket = Pocket.readFromNBT(i, pocketNBT);
                 pocketList.put(i, pocket);
-                
+
                 i++;
                 tag = "" + i;
             }
@@ -60,11 +60,11 @@ public class PocketRegistry {
     }
 
     public int registerNewPocket(Pocket pocket, World world) {
-        pocketList.put(nextUnusedID, pocket);        
-        
+        pocketList.put(nextUnusedID, pocket);
+
         nextUnusedID++;
         PocketSavedData.get(world).markDirty(); //Notify that this needs to be saved on world save
-        return nextUnusedID -1;
+        return nextUnusedID - 1;
     }
 
     public void removePocket(int pocketID, World world) {

@@ -10,23 +10,28 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BlockDimDoorGold extends BlockDimDoorBase {
+
     public static final String ID = "blockDimDoorGold";
 
-	public BlockDimDoorGold() {
-		super(Material.IRON);
+    public BlockDimDoorGold() {
+        super(Material.IRON);
         setHardness(1.0F);
         setUnlocalizedName(ID);
         setRegistryName(ID);
-	}
+    }
 
-	@Override
-	public void placeLink(World world, BlockPos pos) {
-	}
+    @Override
+    public void placeLink(World world, BlockPos pos) {
+    }
 
-	@Override
-	public Item getItemDoor() {return ModItems.itemDimDoorGold;}
-	
-	@Override
-	public TileEntity createNewTileEntity(World world, int metadata) {return new TileEntityDimDoorGold(world);}
+    @Override
+    public Item getItemDoor() {
+        return ModItems.itemDimDoorGold;
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World world, int metadata) {
+        return new TileEntityDimDoorGold(world);
+    }
 
 }

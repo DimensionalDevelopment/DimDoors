@@ -7,19 +7,22 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BlockDimDoorWarp extends BlockDimDoorBase {
+
     public static final String ID = "blockDimDoorWarp";
 
-	public BlockDimDoorWarp() {
-		super(Material.WOOD);
+    public BlockDimDoorWarp() {
+        super(Material.WOOD);
         setHardness(1.0F);
         setUnlocalizedName(ID);
         setRegistryName(ID);
-	}
+    }
 
-	@Override
-	public void placeLink(World world, BlockPos pos) {
-	}
-	
-	@Override
-	public Item getItemDoor() {return ModItems.itemDimDoorWarp;}
+    @Override
+    public void placeLink(World world, BlockPos pos) {
+    }
+
+    @Override
+    public Item getItemDoor() {
+        return ModItems.itemDimDoorWarp;
+    }
 }

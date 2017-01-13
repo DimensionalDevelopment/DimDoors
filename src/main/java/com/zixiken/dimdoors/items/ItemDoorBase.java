@@ -22,168 +22,190 @@ import net.minecraft.world.World;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 
 public abstract class ItemDoorBase extends ItemDoor {
-	// Maps non-dimensional door items to their corresponding dimensional door item
-	// Also maps dimensional door items to themselves for simplicity
-	private static HashMap<ItemDoor, ItemDoorBase> doorItemMapping = new HashMap<ItemDoor, ItemDoorBase>();
+    // Maps non-dimensional door items to their corresponding dimensional door item
+    // Also maps dimensional door items to themselves for simplicity
 
-	/**
-	 * door represents the non-dimensional door this item is associated with. Leave null for none.
-	 * @param vanillaDoor
-	 */
-	public ItemDoorBase(Block block, ItemDoor vanillaDoor) {
-		super(block);
-		this.setMaxStackSize(64);
-		this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
-		
-		doorItemMapping.put(this, this);
-		if (vanillaDoor != null)
-			doorItemMapping.put(vanillaDoor, this);
-	}
-
-	@Override
-	public abstract void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced);
-
-	/**
-	 * Overriden in subclasses to specify which door block that door item will
-	 * place
-	 * 
-	 * @return
-	 */
-	protected abstract BlockDimDoorBase getDoorBlock();
+    private static HashMap<ItemDoor, ItemDoorBase> doorItemMapping = new HashMap<ItemDoor, ItemDoorBase>();
 
     /**
-	 * Overriden here to remove vanilla block placement functionality from
-	 * dimensional doors, we handle this in the EventHookContainer
-	 */
-	@Override
-	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {return EnumActionResult.FAIL;}
+     * door represents the non-dimensional door this item is associated with.
+     * Leave null for none.
+     *
+     * @param vanillaDoor
+     */
+    public ItemDoorBase(Block block, ItemDoor vanillaDoor) {
+        super(block);
+        this.setMaxStackSize(64);
+        this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
 
-	/**
-	 * Tries to place a door as a dimensional door
-	 * 
-	 * @param stack
-	 * @param player
-	 * @param world
-	 * @param side
-	 * @return
-	 */
-	public static boolean tryToPlaceDoor(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
-		if (world.isRemote) return false;
+        doorItemMapping.put(this, this);
+        if (vanillaDoor != null) {
+            doorItemMapping.put(vanillaDoor, this);
+        }
+    }
 
-		// Retrieve the actual door type that we want to use here.
-		// It's okay if stack isn't an ItemDoor. In that case, the lookup will
-		// return null, just as if the item was an unrecognized door type.
-		ItemDoorBase mappedItem = doorItemMapping.get(stack.getItem());
-		if (mappedItem == null) return false;
-		BlockDimDoorBase doorBlock = mappedItem.getDoorBlock();
-		return ItemDoorBase.placeDoorOnBlock(doorBlock, stack, player, world, pos, side) ||
-				ItemDoorBase.placeDoorOnRift(doorBlock, world, player, stack);
-	}
+    @Override
+    public abstract void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced);
 
-	/**
-	 * try to place a door block on a block
-	 * @param doorBlock
-	 * @param stack
-	 * @param player
-	 * @param world
-	 * @param pos
-	 * @param side
-	 * @return
-	 */
-	public static boolean placeDoorOnBlock(Block doorBlock, ItemStack stack, EntityPlayer player,
-                                           World world, BlockPos pos, EnumFacing side) {
-		if (world.isRemote) return false;
+    /**
+     * Overriden in subclasses to specify which door block that door item will
+     * place
+     *
+     * @return
+     */
+    protected abstract BlockDimDoorBase getDoorBlock();
 
-		// Only place doors on top of blocks - check if we're targeting the top
-		// side
-		if (side == EnumFacing.UP) {
-			Block block = world.getBlockState(pos).getBlock();
-			if (!world.getBlockState(pos).equals(Blocks.AIR) && !block.isReplaceable(world, pos)) pos = pos.up();
+    /**
+     * Overriden here to remove vanilla block placement functionality from
+     * dimensional doors, we handle this in the EventHookContainer
+     */
+    @Override
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        return EnumActionResult.FAIL;
+    }
+
+    /**
+     * Tries to place a door as a dimensional door
+     *
+     * @param stack
+     * @param player
+     * @param world
+     * @param side
+     * @return
+     */
+    public static boolean tryToPlaceDoor(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
+        if (world.isRemote) {
+            return false;
+        }
+
+        // Retrieve the actual door type that we want to use here.
+        // It's okay if stack isn't an ItemDoor. In that case, the lookup will
+        // return null, just as if the item was an unrecognized door type.
+        ItemDoorBase mappedItem = doorItemMapping.get(stack.getItem());
+        if (mappedItem == null) {
+            return false;
+        }
+        BlockDimDoorBase doorBlock = mappedItem.getDoorBlock();
+        return ItemDoorBase.placeDoorOnBlock(doorBlock, stack, player, world, pos, side)
+                || ItemDoorBase.placeDoorOnRift(doorBlock, world, player, stack);
+    }
+
+    /**
+     * try to place a door block on a block
+     *
+     * @param doorBlock
+     * @param stack
+     * @param player
+     * @param world
+     * @param pos
+     * @param side
+     * @return
+     */
+    public static boolean placeDoorOnBlock(Block doorBlock, ItemStack stack, EntityPlayer player,
+            World world, BlockPos pos, EnumFacing side) {
+        if (world.isRemote) {
+            return false;
+        }
+
+        // Only place doors on top of blocks - check if we're targeting the top
+        // side
+        if (side == EnumFacing.UP) {
+            Block block = world.getBlockState(pos).getBlock();
+            if (!world.getBlockState(pos).equals(Blocks.AIR) && !block.isReplaceable(world, pos)) {
+                pos = pos.up();
+            }
 
             BlockPos upPos = pos.up();
-			if (canPlace(world, pos) && canPlace(world, upPos) && player.canPlayerEdit(pos, side, stack)
-					&& player.canPlayerEdit(upPos, side, stack) && stack.stackSize > 0
-					&& stack.getItem() instanceof ItemDoorBase) {
-				placeDoor(world, pos, EnumFacing.fromAngle(player.rotationYaw), doorBlock, true);
-				if (!player.capabilities.isCreativeMode) stack.stackSize--;
-				return true;
-			}
-		}
-		return false;
-	}
+            if (canPlace(world, pos) && canPlace(world, upPos) && player.canPlayerEdit(pos, side, stack)
+                    && player.canPlayerEdit(upPos, side, stack) && stack.stackSize > 0
+                    && stack.getItem() instanceof ItemDoorBase) {
+                placeDoor(world, pos, EnumFacing.fromAngle(player.rotationYaw), doorBlock, true);
+                if (!player.capabilities.isCreativeMode) {
+                    stack.stackSize--;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * uses a raytrace to try and place a door on a rift
-	 * 
-	 * @param doorBlock
-	 * @param world
-	 * @param player
-	 * @param stack
-	 * @return
-	 */
-	public static boolean placeDoorOnRift(Block doorBlock, World world, EntityPlayer player, ItemStack stack) {
-		if (world.isRemote) return false;
+    /**
+     * uses a raytrace to try and place a door on a rift
+     *
+     * @param doorBlock
+     * @param world
+     * @param player
+     * @param stack
+     * @return
+     */
+    public static boolean placeDoorOnRift(Block doorBlock, World world, EntityPlayer player, ItemStack stack) {
+        if (world.isRemote) {
+            return false;
+        }
 
-		RayTraceResult hit = ItemDoorBase.doRayTrace(world, player, true);
-		if (hit != null) {
+        RayTraceResult hit = ItemDoorBase.doRayTrace(world, player, true);
+        if (hit != null) {
             BlockPos pos = hit.getBlockPos();
-			if (world.getBlockState(pos).getBlock() == ModBlocks.blockRift) {
+            if (world.getBlockState(pos).getBlock() == ModBlocks.blockRift) {
                 BlockPos downPos = pos.down();
-                if (player.canPlayerEdit(pos, hit.sideHit, stack) &&
-                        player.canPlayerEdit(downPos, hit.sideHit, stack) &&
-                        canPlace(world, pos) && canPlace(world, downPos)) {
+                if (player.canPlayerEdit(pos, hit.sideHit, stack)
+                        && player.canPlayerEdit(downPos, hit.sideHit, stack)
+                        && canPlace(world, pos) && canPlace(world, downPos)) {
                     placeDoor(world, downPos, EnumFacing.fromAngle(player.rotationYaw), doorBlock, true);
-                    if (!(stack.getItem() instanceof ItemDoorBase))
+                    if (!(stack.getItem() instanceof ItemDoorBase)) {
                         ((TileEntityDimDoor) world.getTileEntity(pos)).hasGennedPair = true;
-                    if (!player.capabilities.isCreativeMode) stack.stackSize--;
+                    }
+                    if (!player.capabilities.isCreativeMode) {
+                        stack.stackSize--;
+                    }
                     return true;
                 }
-			}
-		}
-		return false;
-	}
+            }
+        }
+        return false;
+    }
 
-	public static boolean canPlace(World world, BlockPos pos) {
-		IBlockState state = world.getBlockState(pos);
+    public static boolean canPlace(World world, BlockPos pos) {
+        IBlockState state = world.getBlockState(pos);
 
-		return (state.getBlock() == ModBlocks.blockRift || state.equals(Blocks.AIR) || state.getMaterial().isReplaceable());
-	}
+        return (state.getBlock() == ModBlocks.blockRift || state.equals(Blocks.AIR) || state.getMaterial().isReplaceable());
+    }
 
-	/**
-	 * Copied from minecraft Item.class
-	 * TODO we probably can improve this
-	 * 
-	 * @param world
-	 * @param player
-	 * @param useLiquids
-	 * @return
-	 */
+    /**
+     * Copied from minecraft Item.class TODO we probably can improve this
+     *
+     * @param world
+     * @param player
+     * @param useLiquids
+     * @return
+     */
     protected static RayTraceResult doRayTrace(World world, EntityPlayer player, boolean useLiquids) {
         float f = player.rotationPitch;
         float f1 = player.rotationYaw;
         double d0 = player.posX;
-        double d1 = player.posY + (double)player.getEyeHeight();
+        double d1 = player.posY + (double) player.getEyeHeight();
         double d2 = player.posZ;
         Vec3d vec3 = new Vec3d(d0, d1, d2);
-        float f2 = MathHelper.cos(-f1 * 0.017453292F - (float)Math.PI);
-        float f3 = MathHelper.sin(-f1 * 0.017453292F - (float)Math.PI);
+        float f2 = MathHelper.cos(-f1 * 0.017453292F - (float) Math.PI);
+        float f3 = MathHelper.sin(-f1 * 0.017453292F - (float) Math.PI);
         float f4 = -MathHelper.cos(-f * 0.017453292F);
         float f5 = MathHelper.sin(-f * 0.017453292F);
         float f6 = f3 * f4;
         float f7 = f2 * f4;
         double d3 = 5.0D;
-        if (player instanceof EntityPlayerMP)
-            d3 = ((EntityPlayerMP)player).interactionManager.getBlockReachDistance();
-        Vec3d vec31 = vec3.addVector((double)f6 * d3, (double)f5 * d3, (double)f7 * d3);
+        if (player instanceof EntityPlayerMP) {
+            d3 = ((EntityPlayerMP) player).interactionManager.getBlockReachDistance();
+        }
+        Vec3d vec31 = vec3.addVector((double) f6 * d3, (double) f5 * d3, (double) f7 * d3);
         return world.rayTraceBlocks(vec3, vec31, useLiquids, !useLiquids, false);
     }
 
-	public void translateAndAdd(String key, List<String> list) {
-		for(int i=0;i<10;i++) {
-			/*if(StatCollector.canTranslate(key+Integer.toString(i))) {
+    public void translateAndAdd(String key, List<String> list) {
+        for (int i = 0; i < 10; i++) {
+            /*if(StatCollector.canTranslate(key+Integer.toString(i))) {
 				String line = StatCollector.translateToLocal(key + Integer.toString(i));
 				list.add(line);
 			} else */ break;
-		}
-	}
+        }
+    }
 }
