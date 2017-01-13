@@ -163,9 +163,10 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
             world.setBlockToAir(pos2);
         } else {
             ((DDTileEntityBase) world.getTileEntity(pos)).writeToNBT(origRiftTag);
+            
         }
         super.breakBlock(world, pos, state);
-        ModBlocks.blockRift.tryPlacingRift(world, pos2); //@todo, this seems to not happen?
+        world.setBlockState(pos2, ModBlocks.blockRift.getDefaultState());
         DDTileEntityBase newRift = (DDTileEntityBase) world.getTileEntity(pos2);
         newRift.readFromNBT(origRiftTag);
     }
