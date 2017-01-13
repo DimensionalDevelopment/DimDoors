@@ -3,9 +3,9 @@ package com.zixiken.dimdoors.blocks;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, ITileEntityProvider {
 
@@ -132,6 +133,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
                 enterDimDoor(world, up, entity);
             }
         }
+        DimDoors.log("RiftID = " + getRiftTile(world, pos, world.getBlockState(pos)).riftID);
     }
 
     public boolean isUpperDoorBlock(IBlockState state) {
@@ -150,12 +152,31 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     }
 
     @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+    public void breakBlock(World world, BlockPos pos, IBlockState state) { //@todo troubleshoot this
+        NBTTagCompound origRiftTag = new NBTTagCompound(); //might as well use NBTTags to transfer this information?
+        BlockPos pos2 = pos;
         // This function runs on the server side after a block is replaced
         // We MUST call super.breakBlock() since it involves removing tile entities
         if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER) {
-            world.setBlockToAir(pos.up());
+            pos2 = pos.up();
+            ((DDTileEntityBase) world.getTileEntity(pos2)).writeToNBT(origRiftTag);
+            world.setBlockToAir(pos2);
+        } else {
+            ((DDTileEntityBase) world.getTileEntity(pos)).writeToNBT(origRiftTag);
         }
         super.breakBlock(world, pos, state);
+        ModBlocks.blockRift.tryPlacingRift(world, pos2); //@todo, this seems to not happen?
+        DDTileEntityBase newRift = (DDTileEntityBase) world.getTileEntity(pos2);
+        newRift.readFromNBT(origRiftTag);
+    }
+
+    public DDTileEntityBase getRiftTile(World world, BlockPos pos, IBlockState state) {
+        TileEntity tileEntity;
+        if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER) {
+            tileEntity = world.getTileEntity(pos.up());
+        } else {
+            tileEntity = world.getTileEntity(pos);
+        }
+        return (DDTileEntityBase) tileEntity;
     }
 }

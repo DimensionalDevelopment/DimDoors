@@ -158,10 +158,13 @@ public abstract class ItemDoorBase extends ItemDoor {
                 if (player.canPlayerEdit(pos, hit.sideHit, stack)
                         && player.canPlayerEdit(downPos, hit.sideHit, stack)
                         && canPlace(world, pos) && canPlace(world, downPos)) {
+                    DDTileEntityBase riftOrig = (DDTileEntityBase) world.getTileEntity(pos);
                     placeDoor(world, downPos, EnumFacing.fromAngle(player.rotationYaw), doorBlock, true);
-                    if (!(stack.getItem() instanceof ItemDoorBase)) {
-                        ((TileEntityDimDoor) world.getTileEntity(pos)).hasGennedPair = true;
+                    TileEntityDimDoor newRift = (TileEntityDimDoor) world.getTileEntity(pos);
+                    if (!(stack.getItem() instanceof ItemDoorBase)) { //@todo why does THIS if statement mean that THAT field should be true?
+                        newRift.hasGennedPair = true;
                     }
+                    newRift.loadDataFrom(riftOrig); //take over the data from the original Rift
                     if (!player.capabilities.isCreativeMode) {
                         stack.stackSize--;
                     }

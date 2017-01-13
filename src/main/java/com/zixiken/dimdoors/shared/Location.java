@@ -1,6 +1,5 @@
 package com.zixiken.dimdoors.shared;
 
-import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;

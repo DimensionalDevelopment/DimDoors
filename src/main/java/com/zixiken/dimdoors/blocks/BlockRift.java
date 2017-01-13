@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.blocks;
 
+import com.zixiken.dimdoors.DimDoors;
 import java.util.*;
 
 import com.zixiken.dimdoors.client.ClosingRiftFX;
@@ -26,6 +27,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
 import com.zixiken.dimdoors.client.GoggleRiftFX;
+import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
+import net.minecraft.block.BlockDoor;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -153,7 +156,8 @@ public class BlockRift extends Block implements ITileEntityProvider {
     }
 
     public boolean tryPlacingRift(World world, BlockPos pos) {
-        return world != null && !isBlockImmune(world, pos) && world.setBlockState(pos, getDefaultState());
+        return world != null && !isBlockImmune(world, pos) &&
+                world.setBlockState(pos, getDefaultState()); //@todo This returns false, because this block does not have blockstates configured correctly. !isBlockImmune doesn't seem to be ture either though...
     }
 
     public boolean isBlockImmune(World world, BlockPos pos) {
@@ -194,5 +198,9 @@ public class BlockRift extends Block implements ITileEntityProvider {
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         world.removeTileEntity(pos);
+    }
+
+    public DDTileEntityBase getRiftTile(World world, BlockPos pos, IBlockState state) {
+        return (DDTileEntityBase) world.getTileEntity(pos);
     }
 }
