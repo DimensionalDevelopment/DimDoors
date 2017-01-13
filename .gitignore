@@ -10,4 +10,5 @@ out/
 forge-*-changelog.txt
 
 #Netbeans
-.nb-gradle/private/cache/
+.nb-gradle/
+.nb-gradle-properties
