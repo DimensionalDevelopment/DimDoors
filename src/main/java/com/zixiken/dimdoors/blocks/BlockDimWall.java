@@ -59,14 +59,6 @@ public class BlockDimWall extends Block {
     }
 
     @Override
-    public boolean isReplaceable(IBlockAccess world, BlockPos pos) {
-        if (world.getBlockState(pos).getValue(TYPE) == 1) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public int getMetaFromState(IBlockState state) {
         return state.getValue(TYPE);
     }
@@ -122,5 +114,31 @@ public class BlockDimWall extends Block {
     @Override
     public int quantityDropped(Random par1Random) {
         return 0;
+    }
+
+    /**
+     * replaces the block clicked with the held block, instead of placing the
+     * block on top of it. Shift click to disable.
+     */
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        //Check if the metadata value is 0 -- we don't want the user to replace Ancient Fabric
+        if (heldItem != null && state.getValue(TYPE) != 1) {
+            Block block = Block.getBlockFromItem(heldItem.getItem());
+            if (!state.isNormalCube() || block.hasTileEntity(block.getDefaultState())
+                    || block == this //this also keeps it from being replaced by Ancient Fabric
+                    || player.isSneaking()) {
+                return false;
+            }
+            if (!world.isRemote) { //@todo on a server, returning false or true determines where the block gets placed?
+                if (!player.capabilities.isCreativeMode) {
+                    heldItem.stackSize--;
+                }
+                world.setBlockState(pos, block.getStateForPlacement(
+                        world, pos, side, hitX, hitY, hitZ, 0, player, heldItem)); //choosing getStateForPlacement over getDefaultState, because it will cause directional blocks, like logs to rotate correctly
+            }
+            return true;
+        }
+        return false;
     }
 }
