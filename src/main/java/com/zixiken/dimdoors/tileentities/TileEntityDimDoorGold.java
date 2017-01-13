@@ -1,12 +1,17 @@
 package com.zixiken.dimdoors.tileentities;
 
 import com.zixiken.dimdoors.IChunkLoader;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
 public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLoader {
 	private Ticket chunkTicket;
 	private boolean initialized = false;
+
+    public TileEntityDimDoorGold(World world) {
+        super(world);
+    }
 	
 	@Override
 	public boolean isInitialized() {

@@ -3,6 +3,7 @@ package com.zixiken.dimdoors.tileentities;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import java.util.Random;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -18,6 +19,12 @@ public abstract class DDTileEntityBase extends TileEntity
 	 * @return an array of floats representing RGBA color where 1.0 = 255.
 	 */
 	public abstract float[] getRenderColor(Random rand);
+        
+        DDTileEntityBase(World world) { //@todo what is the difference between a TileEntity instance being created on Block placement and on world-load?
+            super();
+            this.setWorld(world);
+            register();
+        }
 
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
@@ -36,6 +43,7 @@ public abstract class DDTileEntityBase extends TileEntity
             pairedRiftID = otherRiftID;
             RiftRegistry.Instance.pair(pairedRiftID, riftID);                    
             isPaired = true;
+            this.markDirty();
         }
         
         public void unpair() {
@@ -46,9 +54,30 @@ public abstract class DDTileEntityBase extends TileEntity
                 isPaired = false;
                 RiftRegistry.Instance.unpair(pairedRiftID);
             }
+            this.markDirty();
         }
         
         private void register() {
             riftID = RiftRegistry.Instance.registerNewRift(this);
+            this.markDirty();
         }
+        
+        @Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+		try {
+			this.isPaired = nbt.getBoolean("isPaired");
+			this.riftID = nbt.getInteger("riftID");
+			this.pairedRiftID = nbt.getInteger("pairedRiftID");
+		} catch (Exception e) {}
+	}
+        
+        @Override
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+		super.writeToNBT(nbt);
+		nbt.setBoolean("isPaired", this.isPaired);
+		nbt.setInteger("riftID", this.riftID);
+		nbt.setInteger("pairedRiftID", this.pairedRiftID);
+		return nbt;
+	}
 }

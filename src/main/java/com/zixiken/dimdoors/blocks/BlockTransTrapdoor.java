@@ -75,7 +75,7 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int metadata) {return new TileEntityTransTrapdoor();}
+	public TileEntity createNewTileEntity(World world, int metadata) {return new TileEntityTransTrapdoor(world);}
 
 	@Override
 	public void placeLink(World world, BlockPos pos) {

@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class TileEntityRift extends DDTileEntityBase implements ITickable {
 	private static final int ENDERMAN_SPAWNING_CHANCE = 1;
@@ -29,7 +30,8 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 	public int riftRotation = random.nextInt(360);
 	public float growth = 0;
 	
-	public TileEntityRift() {
+	public TileEntityRift(World world) {
+            super(world);
 		// Vary the update times of rifts to prevent all the rifts in a cluster
 		// from updating at the same time.
 		updateTimer = random.nextInt(UPDATE_PERIOD);

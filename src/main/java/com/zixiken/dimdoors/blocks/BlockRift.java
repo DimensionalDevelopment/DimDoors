@@ -180,7 +180,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
     @Override
 	public TileEntity createNewTileEntity(World world, int metadata)
 	{
-		return new TileEntityRift();
+		return new TileEntityRift(world);
 	}
 	
 	@Override

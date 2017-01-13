@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
 
 public class TileEntityDimDoor extends DDTileEntityBase
@@ -14,6 +15,10 @@ public class TileEntityDimDoor extends DDTileEntityBase
 	public byte lockStatus;
 	public boolean isDungeonChainLink;
 	public boolean hasGennedPair=false;
+
+    public TileEntityDimDoor(World world) {
+        super(world);
+    }
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
