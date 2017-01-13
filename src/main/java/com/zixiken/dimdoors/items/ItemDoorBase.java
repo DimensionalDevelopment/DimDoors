@@ -165,6 +165,7 @@ public abstract class ItemDoorBase extends ItemDoor {
                         newRift.hasGennedPair = true;
                     }
                     newRift.loadDataFrom(riftOrig); //take over the data from the original Rift
+                    //DimDoors.log("" +newRift.riftID);
                     if (!player.capabilities.isCreativeMode) {
                         stack.stackSize--;
                     }

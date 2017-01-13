@@ -126,6 +126,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
                     && entity instanceof EntityPlayer
                     && isEntityFacingDoor(state, (EntityLivingBase) entity)) {
                 this.toggleDoor(world, pos, false);
+                //DimDoors.log("RiftID = " + getRiftTile(world, pos, world.getBlockState(pos)).riftID);
             }
         } else {
             BlockPos up = pos.up();
@@ -133,7 +134,6 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
                 enterDimDoor(world, up, entity);
             }
         }
-        DimDoors.log("RiftID = " + getRiftTile(world, pos, world.getBlockState(pos)).riftID);
     }
 
     public boolean isUpperDoorBlock(IBlockState state) {
@@ -152,23 +152,23 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     }
 
     @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) { //@todo troubleshoot this
-        NBTTagCompound origRiftTag = new NBTTagCompound(); //might as well use NBTTags to transfer this information?
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+        DDTileEntityBase origRift;
         BlockPos pos2 = pos;
         // This function runs on the server side after a block is replaced
         // We MUST call super.breakBlock() since it involves removing tile entities
         if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER) {
             pos2 = pos.up();
-            ((DDTileEntityBase) world.getTileEntity(pos2)).writeToNBT(origRiftTag);
+            origRift = (DDTileEntityBase) world.getTileEntity(pos2);
             world.setBlockToAir(pos2);
         } else {
-            ((DDTileEntityBase) world.getTileEntity(pos)).writeToNBT(origRiftTag);
-            
+            origRift = (DDTileEntityBase) world.getTileEntity(pos);
         }
         super.breakBlock(world, pos, state);
         world.setBlockState(pos2, ModBlocks.blockRift.getDefaultState());
         DDTileEntityBase newRift = (DDTileEntityBase) world.getTileEntity(pos2);
-        newRift.readFromNBT(origRiftTag);
+        newRift.loadDataFrom(origRift);
+        //DimDoors.log("" +newRift.riftID);
     }
 
     public DDTileEntityBase getRiftTile(World world, BlockPos pos, IBlockState state) {
