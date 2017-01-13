@@ -5,10 +5,12 @@
  */
 package com.zixiken.dimdoors.shared;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 /**
@@ -20,30 +22,30 @@ public class RiftRegistry {
     public static final RiftRegistry Instance = new RiftRegistry();
 
     // Privates
-    private int nextUnusedID;
-    private final Map<Integer, DDTileEntityBase> riftList;
+    private int nextRiftID;
+    private final Map<Integer, Location> riftList;
 
     // Methods
     public RiftRegistry() {
-        nextUnusedID = 0;
+        nextRiftID = 0;
         riftList = new HashMap();
     }
 
     public void reset() {
-        nextUnusedID = 0;
+        nextRiftID = 0;
         riftList.clear();
     }
 
     public void readFromNBT(NBTTagCompound nbt) {
-        nextUnusedID = nbt.getInteger("nextUnusedID");
+        nextRiftID = nbt.getInteger("nextUnusedID");
         if (nbt.hasKey("riftData")) {
             NBTTagCompound riftsNBT = nbt.getCompoundTag("riftData");
             int i = 1;
             String tag = "" + i;
             while (riftsNBT.hasKey(tag)) {
                 NBTTagCompound riftNBT = riftsNBT.getCompoundTag(tag);
-                DDTileEntityBase rift = DDTileEntityBase.readFromNBT(i, riftNBT);
-                riftList.put(i, rift);
+                Location riftLocation = Location.readFromNBT(riftNBT);
+                riftList.put(i, riftLocation);
                 
                 i++;
                 tag = "" + i;
@@ -52,30 +54,48 @@ public class RiftRegistry {
     }
 
     public void writeToNBT(NBTTagCompound nbt) {
-        nbt.setInteger("nextUnusedID", nextUnusedID);
+        nbt.setInteger("nextUnusedID", nextRiftID);
         NBTTagCompound riftsNBT = new NBTTagCompound();
-        for (Map.Entry<Integer, DDTileEntityBase> entry : riftList.entrySet()) {
-            riftsNBT.setTag("" + entry.getKey(), DDTileEntityBase.writeToNBT(entry.getValue()));
+        for (Map.Entry<Integer, Location> entry : riftList.entrySet()) {
+            riftsNBT.setTag("" + entry.getKey(), Location.writeToNBT(entry.getValue()));
         }
         nbt.setTag("riftData", riftsNBT);
     }
 
-    public int registerNewRift(DDTileEntityBase rift, World world) {
-        riftList.put(nextUnusedID, rift);        
+    public int registerNewRift(DDTileEntityBase rift) {
+        riftList.put(nextRiftID, Location.getLocation(rift));
         
-        nextUnusedID++;
-        RiftSavedData.get(world).markDirty(); //Notify that this needs to be saved on world save
-        return nextUnusedID -1;
+        nextRiftID++;
+        RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
+        return nextRiftID -1;
     }
 
     public void removeRift(int riftID, World world) {
         if (riftList.containsKey(riftID)) {
             riftList.remove(riftID);
-            RiftSavedData.get(world).markDirty(); //Notify that this needs to be saved on world save
+            RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
         }
     }
 
-    public DDTileEntityBase getRift(int ID) {
+    public Location getRiftLocation(int ID) {
         return riftList.get(ID);
+    }
+    
+    public void pair(int riftID, int riftID2) {
+        Location location = riftList.get(riftID);
+        TileEntity tileEntity = location.getTileEntity(); //@todo this method might need to be in another class?
+        if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
+            DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
+            rift.pair(riftID2);
+        }
+    }
+    
+    public void unpair(int riftID) {
+        Location location = riftList.get(riftID);
+        TileEntity tileEntity = location.getTileEntity();
+        if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
+            DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
+            rift.unpair();
+        }
     }
 }

@@ -5,7 +5,6 @@
  */
 package com.zixiken.dimdoors.shared;
 
-import com.zixiken.dimdoors.DimDoors;
 import java.io.File;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
