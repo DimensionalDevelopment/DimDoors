@@ -188,7 +188,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        return new TileEntityRift(world);
+        return new TileEntityRift();
     }
 
     @Override

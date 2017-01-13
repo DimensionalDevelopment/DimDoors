@@ -1,13 +1,8 @@
 package com.zixiken.dimdoors.tileentities;
 
 import java.util.Random;
-import net.minecraft.world.World;
 
 public class TileEntityTransTrapdoor extends DDTileEntityBase {
-
-    public TileEntityTransTrapdoor(World world) {
-        super(world);
-    }
 
     @Override
     public float[] getRenderColor(Random rand) {

@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 public abstract class DDTileEntityBase extends TileEntity {
 
     public boolean isPaired = false;
-    public int riftID;
+    public int riftID = -1; //should not start at 0
     public int pairedRiftID;
 
     /**
@@ -19,18 +19,12 @@ public abstract class DDTileEntityBase extends TileEntity {
      * @return an array of floats representing RGBA color where 1.0 = 255.
      */
     public abstract float[] getRenderColor(Random rand);
-    
-    DDTileEntityBase(World world) { //@todo what is the difference between a TileEntity instance being created on Block placement and on world-load?
-        super();
-        this.setWorld(world);
-        register();
-    }
-    
+
     @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
         return oldState.getBlock() != newSate.getBlock();
     }
-    
+
     public void pair(int otherRiftID) {
         if (isPaired) {
             if (otherRiftID == pairedRiftID) {
@@ -40,11 +34,11 @@ public abstract class DDTileEntityBase extends TileEntity {
             }
         }
         pairedRiftID = otherRiftID;
-        RiftRegistry.Instance.pair(pairedRiftID, riftID);        
+        RiftRegistry.Instance.pair(pairedRiftID, riftID);
         isPaired = true;
         this.markDirty();
     }
-    
+
     public void unpair() {
         if (!isPaired) {
             return;
@@ -54,12 +48,14 @@ public abstract class DDTileEntityBase extends TileEntity {
         }
         this.markDirty();
     }
-    
-    private void register() {
-        riftID = RiftRegistry.Instance.registerNewRift(this);
-        this.markDirty();
+
+    public void register() {
+        if (riftID == -1) {
+            riftID = RiftRegistry.Instance.registerNewRift(this);
+            this.markDirty();
+        }
     }
-    
+
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
@@ -70,7 +66,7 @@ public abstract class DDTileEntityBase extends TileEntity {
         } catch (Exception e) {
         }
     }
-    
+
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);

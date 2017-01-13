@@ -6,6 +6,7 @@ import java.util.List;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.blocks.ModBlocks;
+import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +21,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
+import net.minecraft.tileentity.TileEntity;
 
 public abstract class ItemDoorBase extends ItemDoor {
     // Maps non-dimensional door items to their corresponding dimensional door item
@@ -118,8 +120,13 @@ public abstract class ItemDoorBase extends ItemDoor {
             BlockPos upPos = pos.up();
             if (canPlace(world, pos) && canPlace(world, upPos) && player.canPlayerEdit(pos, side, stack)
                     && player.canPlayerEdit(upPos, side, stack) && stack.stackSize > 0
-                    && stack.getItem() instanceof ItemDoorBase) {
+                    && stack.getItem() instanceof ItemDoorBase && world.getBlockState(pos.down()).isSideSolid(world, pos, side)) {
                 placeDoor(world, pos, EnumFacing.fromAngle(player.rotationYaw), doorBlock, true);
+                TileEntity tileEntity = world.getTileEntity(pos.up());
+                if (tileEntity instanceof DDTileEntityBase) {
+                    DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
+                    rift.register();
+                }
                 if (!player.capabilities.isCreativeMode) {
                     stack.stackSize--;
                 }

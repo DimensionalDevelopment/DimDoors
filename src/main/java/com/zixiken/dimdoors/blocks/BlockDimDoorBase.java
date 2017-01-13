@@ -113,7 +113,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        return new TileEntityDimDoor(world);
+        return new TileEntityDimDoor();
     }
 
     @Override

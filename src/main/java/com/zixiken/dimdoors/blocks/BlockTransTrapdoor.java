@@ -83,7 +83,7 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        return new TileEntityTransTrapdoor(world);
+        return new TileEntityTransTrapdoor();
     }
 
     @Override

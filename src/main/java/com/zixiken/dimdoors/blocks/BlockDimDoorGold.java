@@ -31,7 +31,7 @@ public class BlockDimDoorGold extends BlockDimDoorBase {
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        return new TileEntityDimDoorGold(world);
+        return new TileEntityDimDoorGold();
     }
 
 }
