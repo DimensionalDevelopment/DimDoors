@@ -64,7 +64,7 @@ public class RiftRegistry {
 
     public int registerNewRift(DDTileEntityBase rift) {
         riftList.put(nextRiftID, Location.getLocation(rift));
-
+        //DimDoors.log("Rift registered as ID: " + nextRiftID);
         nextRiftID++;
         RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
         return nextRiftID - 1;

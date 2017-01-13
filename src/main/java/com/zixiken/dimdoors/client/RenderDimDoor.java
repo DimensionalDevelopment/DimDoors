@@ -24,7 +24,6 @@ import net.minecraft.util.ResourceLocation;
 
 import static org.lwjgl.opengl.GL11.*;
 
-@SideOnly(Side.CLIENT)
 public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> {
 
     private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);

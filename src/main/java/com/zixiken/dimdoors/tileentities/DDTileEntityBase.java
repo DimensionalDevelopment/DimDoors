@@ -12,7 +12,7 @@ public abstract class DDTileEntityBase extends TileEntity {
 
     public boolean isPaired = false;
     public int riftID = -1; //should not start at 0
-    public int pairedRiftID;
+    public int pairedRiftID = -1;
 
     /**
      *
@@ -74,5 +74,14 @@ public abstract class DDTileEntityBase extends TileEntity {
         nbt.setInteger("riftID", this.riftID);
         nbt.setInteger("pairedRiftID", this.pairedRiftID);
         return nbt;
+    }
+
+    public void loadDataFrom(DDTileEntityBase rift2) {
+        if (rift2.riftID != -1) {
+            isPaired = rift2.isPaired;
+            riftID = rift2.riftID; //should not start at 0
+            pairedRiftID = rift2.pairedRiftID;
+            this.markDirty();
+        }
     }
 }
