@@ -145,11 +145,11 @@ public class BlockRift extends Block implements ITileEntityProvider {
         TileEntityRift tile = (TileEntityRift) worldIn.getTileEntity(pos);
         //renders an extra little blob on top of the actual rift location so its easier to find.
         // Eventually will only render if the player has the goggles.
-        FMLClientHandler.instance().getClient().effectRenderer.addEffect(new GoggleRiftFX(
+        /*FMLClientHandler.instance().getClient().effectRenderer.addEffect(new GoggleRiftFX(
                 worldIn,
                 x + .5, y + .5, z + .5,
                 rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
-
+        */
         if (tile.shouldClose) //renders an opposite color effect if it is being closed by the rift remover
         {
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(
