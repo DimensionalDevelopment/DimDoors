@@ -8,8 +8,10 @@ package com.zixiken.dimdoors.items;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
+import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,50 +30,72 @@ import net.minecraft.world.World;
  */
 public class ItemRiftConnectionTool extends ItemTool {
 
-    ItemRiftConnectionTool(float attackDamageIn, float attackSpeedIn, Item.ToolMaterial materialIn, Set<Block> effectiveBlocksIn) {
-        super(attackDamageIn, attackSpeedIn, materialIn, effectiveBlocksIn);
+    public static final String ID = "itemRiftConnectionTool";
+
+    ItemRiftConnectionTool() {
+        super(1.0F, -2.8F, ToolMaterial.WOOD, new HashSet());
         //@todo add extra stuff?
+        setUnlocalizedName(ID);
+        setRegistryName(ID);
     }
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World worldIn, EntityPlayer playerIn, EnumHand hand) {
-        RayTraceResult hit = ItemDoorBase.doRayTrace(worldIn, playerIn, true);
-        if (hit != null) {
-            BlockPos pos = hit.getBlockPos();
-            if (worldIn.getTileEntity(pos) instanceof DDTileEntityBase) {
-                DDTileEntityBase rift = (DDTileEntityBase) worldIn.getTileEntity(pos);
-                if (!playerIn.isSneaking()) {
-                    selectPrimaryRift(stack, rift);
-                } else {
-                    selectSecondaryRiftAndTakeAction(stack, rift);
-                }
-                return new ActionResult(EnumActionResult.PASS, stack);
-            }
+        if (!stack.hasTagCompound()) {
+            NBTTagCompound compound = new NBTTagCompound();
+            compound.setBoolean("isInConnectMode", true);
+            stack.setTagCompound(compound);
         }
+
+        RayTraceResult hit = ItemDoorBase.doRayTrace(worldIn, playerIn, true);
+        if (hit != null && worldIn.getTileEntity(hit.getBlockPos()) instanceof DDTileEntityBase) {
+            DDTileEntityBase rift = (DDTileEntityBase) worldIn.getTileEntity(hit.getBlockPos());
+            if (playerIn.isSneaking()) {
+                return selectRift(stack, worldIn, rift, playerIn); //new ActionResult(EnumActionResult.PASS, stack));
+            }
+        } else {
+            return changeMode(stack);
+        }
+
         return new ActionResult(EnumActionResult.FAIL, stack);
     }
 
-    private void selectPrimaryRift(ItemStack stack, DDTileEntityBase rift) {
+    private ActionResult<ItemStack> selectRift(ItemStack stack, World worldIn, DDTileEntityBase rift, EntityPlayer playerIn) {
+        DimDoors.log(this.getClass(), "Selecting rift with ID: " + rift.riftID);
         NBTTagCompound compound = stack.getTagCompound();
-        compound.setInteger("primaryRiftID", rift.riftID);
-    }
-
-    private void selectSecondaryRiftAndTakeAction(ItemStack stack, DDTileEntityBase rift) {
-        NBTTagCompound compound = stack.getTagCompound();
-        if (!compound.hasKey("isInConnectMode")) {
-            compound.setBoolean("isInConnectMode", true);
-        }
         if (compound.getBoolean("isInConnectMode")) {
-            if (compound.hasKey("primaryRiftID")) {
-                int primaryRiftID = compound.getInteger("primaryRiftID");
+            if (compound.hasKey("RiftID")) {
+                int primaryRiftID = compound.getInteger("RiftID");
                 int secondaryRiftID = rift.riftID;
-                RiftRegistry.Instance.pair(primaryRiftID, secondaryRiftID);
+                if (!worldIn.isRemote) {
+                    DimDoors.log(this.getClass(), "Pairing rifts with IDs: " + primaryRiftID + " and " + secondaryRiftID);
+                    RiftRegistry.Instance.pair(primaryRiftID, secondaryRiftID);
+                }
+                compound.removeTag("RiftID");
+                stack.damageItem(1, playerIn);
             } else {
-                DimDoors.log(this.getClass(), "Primary Rift not selected. First select a primary rift by right-clicking without sneaking.");
+                compound.setInteger("RiftID", rift.riftID);
             }
         } else {
-            int secondaryRiftID = rift.riftID;
-            RiftRegistry.Instance.unpair(secondaryRiftID);
+            if (!worldIn.isRemote) {
+                RiftRegistry.Instance.unpair(rift.riftID);
+            }
+            stack.damageItem(1, playerIn);
         }
+        return new ActionResult(EnumActionResult.SUCCESS, stack);
+    }
+
+    private ActionResult<ItemStack> changeMode(ItemStack stack) {
+        NBTTagCompound compound = stack.getTagCompound();
+        if (compound.getBoolean("isInConnectMode")) {
+            compound.setBoolean("isInConnectMode", false);
+            if (compound.hasKey("RiftID")) {
+                compound.removeTag("RiftID");
+            }
+        } else {
+            compound.setBoolean("isInConnectMode", true);
+        }
+        DimDoors.log(this.getClass(), "isInConnectMode set to: " + compound.getBoolean("isInConnectMode"));
+        return new ActionResult(EnumActionResult.SUCCESS, stack);
     }
 }

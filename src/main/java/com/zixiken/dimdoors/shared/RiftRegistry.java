@@ -42,7 +42,7 @@ public class RiftRegistry {
         nextRiftID = nbt.getInteger("nextUnusedID");
         if (nbt.hasKey("riftData")) {
             NBTTagCompound riftsNBT = nbt.getCompoundTag("riftData");
-            int i = 1;
+            int i = 0;
             String tag = "" + i;
             while (riftsNBT.hasKey(tag)) {
                 NBTTagCompound riftNBT = riftsNBT.getCompoundTag(tag);
@@ -66,13 +66,13 @@ public class RiftRegistry {
 
     public int registerNewRift(DDTileEntityBase rift) {
         riftList.put(nextRiftID, Location.getLocation(rift));
-        //DimDoors.log("Rift registered as ID: " + nextRiftID);
+        DimDoors.log(this.getClass(), "Rift registered as ID: " + nextRiftID);
         nextRiftID++;
         RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
         return nextRiftID - 1;
     }
 
-    public void removeRift(int riftID, World world) {
+    public void unregisterRift(int riftID, World world) {
         if (riftList.containsKey(riftID)) {
             riftList.remove(riftID);
             RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
@@ -84,6 +84,10 @@ public class RiftRegistry {
     }
 
     public void pair(int riftID, int riftID2) {
+        if (riftID < 0 || riftID2 < 0) {
+            return;
+        }
+        DimDoors.log(this.getClass(), "pairing rift with ID " + riftID + " to rift with ID " + riftID2);
         Location location = riftList.get(riftID);
         TileEntity tileEntity = location.getTileEntity(); //@todo this method might need to be in another class?
         if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
@@ -93,7 +97,13 @@ public class RiftRegistry {
     }
 
     public void unpair(int riftID) {
+        if (riftID < 0) {
+            return;
+        }
         Location location = riftList.get(riftID);
+        if (location == null) {
+            DimDoors.log(this.getClass(), "riftID with null location = " + riftID);
+        }
         TileEntity tileEntity = location.getTileEntity();
         if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
             DDTileEntityBase rift = (DDTileEntityBase) tileEntity;

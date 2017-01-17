@@ -34,8 +34,8 @@ public abstract class DDTileEntityBase extends TileEntity {
             }
         }
         pairedRiftID = otherRiftID;
-        RiftRegistry.Instance.pair(pairedRiftID, riftID);
         isPaired = true;
+        RiftRegistry.Instance.pair(pairedRiftID, riftID);
         this.markDirty();
     }
 
