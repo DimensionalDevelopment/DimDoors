@@ -2,6 +2,7 @@ package com.zixiken.dimdoors;
 
 import com.zixiken.dimdoors.items.ModItems;
 import com.zixiken.dimdoors.shared.PocketSavedData;
+import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.RiftSavedData;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -47,6 +48,7 @@ public class DimDoors {
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
         //@todo event.registerServerCommand( new DDCommand() ); //to register commands that this mod offers?
+        RiftRegistry.Instance.reset();
         PocketSavedData.get(getDefWorld());
         RiftSavedData.get(getDefWorld());
     }
@@ -63,7 +65,7 @@ public class DimDoors {
         return proxy.getDefWorld(); //gets the server or client world dim 0 handler
     }
 
-    public static void log(String text) {
-        FMLLog.info("[DimDoors] " + text, 0);
+    public static void log(Class classFiredFrom, String text) {
+        FMLLog.info("[DimDoors] " + text + " (" + classFiredFrom.toString() + " )", 0);
     }
 }

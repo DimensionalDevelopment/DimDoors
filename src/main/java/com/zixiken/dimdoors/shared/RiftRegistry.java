@@ -19,6 +19,7 @@ import net.minecraft.world.World;
  */
 public class RiftRegistry {
 
+    private DDTileEntityBase lastBrokenRift = null; //@todo, redo this functionality in a more refined way
     public static final RiftRegistry Instance = new RiftRegistry();
 
     // Privates
@@ -26,7 +27,7 @@ public class RiftRegistry {
     private final Map<Integer, Location> riftList;
 
     // Methods
-    public RiftRegistry() {
+    private RiftRegistry() {
         nextRiftID = 0;
         riftList = new HashMap();
     }
@@ -34,6 +35,7 @@ public class RiftRegistry {
     public void reset() {
         nextRiftID = 0;
         riftList.clear();
+        lastBrokenRift = null;
     }
 
     public void readFromNBT(NBTTagCompound nbt) {
@@ -97,5 +99,13 @@ public class RiftRegistry {
             DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
             rift.unpair();
         }
+    }
+
+    public void setLastChangedRift(DDTileEntityBase origRift) {
+        lastBrokenRift = origRift;
+    }
+
+    public DDTileEntityBase getLastChangedRift() {
+        return lastBrokenRift;
     }
 }

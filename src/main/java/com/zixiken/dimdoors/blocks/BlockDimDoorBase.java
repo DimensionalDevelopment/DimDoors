@@ -3,9 +3,10 @@ package com.zixiken.dimdoors.blocks;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
-
+import javax.annotation.Nullable;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -13,6 +14,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -23,9 +25,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import javax.annotation.Nullable;
-import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, ITileEntityProvider {
 
@@ -153,22 +152,19 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        DDTileEntityBase origRift;
-        BlockPos pos2 = pos;
-        // This function runs on the server side after a block is replaced
-        // We MUST call super.breakBlock() since it involves removing tile entities
-        if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER) {
-            pos2 = pos.up();
-            origRift = (DDTileEntityBase) world.getTileEntity(pos2);
-            world.setBlockToAir(pos2);
-        } else {
+        DDTileEntityBase origRift = null;
+        boolean isTopHalf = state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER;
+        if (isTopHalf) {
             origRift = (DDTileEntityBase) world.getTileEntity(pos);
+            RiftRegistry.Instance.setLastChangedRift(origRift);
         }
         super.breakBlock(world, pos, state);
-        world.setBlockState(pos2, ModBlocks.blockRift.getDefaultState());
-        DDTileEntityBase newRift = (DDTileEntityBase) world.getTileEntity(pos2);
-        newRift.loadDataFrom(origRift);
-        //DimDoors.log("" +newRift.riftID);
+        if (isTopHalf) {
+            world.setBlockState(pos, ModBlocks.blockRift.getDefaultState());
+            DDTileEntityBase newRift = (DDTileEntityBase) world.getTileEntity(pos);
+            newRift.loadDataFrom(origRift);
+            DimDoors.log(this.getClass(), "New Rift rift-ID after breaking door " + newRift.riftID);
+        }
     }
 
     public DDTileEntityBase getRiftTile(World world, BlockPos pos, IBlockState state) {
@@ -179,5 +175,22 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
             tileEntity = world.getTileEntity(pos);
         }
         return (DDTileEntityBase) tileEntity;
+    }
+
+    @Override
+    public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
+        IBlockState stateBot = worldIn.getBlockState(pos);
+        IBlockState stateTop = worldIn.getBlockState(pos.up());
+        return pos.getY() >= worldIn.getHeight() - 1 ? false
+                : worldIn.getBlockState(pos.down()).isSideSolid(worldIn, pos.down(), EnumFacing.UP)
+                && canPlaceBottomAt(worldIn, pos, stateBot) && canPlaceTopAt(worldIn, pos, stateTop);
+    }
+
+    private boolean canPlaceBottomAt(World worldIn, BlockPos pos, IBlockState state) {
+        return (state.equals(Blocks.AIR) || state.getBlock().isReplaceable(worldIn, pos));
+    }
+
+    private boolean canPlaceTopAt(World worldIn, BlockPos pos, IBlockState state) {
+        return (state.getBlock() == ModBlocks.blockRift || state.equals(Blocks.AIR) || state.getMaterial().isReplaceable());
     }
 }

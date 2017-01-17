@@ -28,7 +28,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
 import com.zixiken.dimdoors.client.GoggleRiftFX;
 import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
-import net.minecraft.block.BlockDoor;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -68,6 +67,11 @@ public class BlockRift extends Block implements ITileEntityProvider {
         blocksImmuneToRift.add(Blocks.GOLD_BLOCK);
         blocksImmuneToRift.add(Blocks.DIAMOND_BLOCK);
         blocksImmuneToRift.add(Blocks.EMERALD_BLOCK);
+    }
+    
+    @Override
+    public boolean isReplaceable(IBlockAccess worldIn, BlockPos pos) {
+        return false;
     }
 
     @Override
@@ -156,8 +160,8 @@ public class BlockRift extends Block implements ITileEntityProvider {
     }
 
     public boolean tryPlacingRift(World world, BlockPos pos) {
-        return world != null && !isBlockImmune(world, pos) &&
-                world.setBlockState(pos, getDefaultState()); //@todo This returns false, because this block does not have blockstates configured correctly. !isBlockImmune doesn't seem to be ture either though...
+        return world != null && !isBlockImmune(world, pos)
+                && world.setBlockState(pos, getDefaultState()); //@todo This returns false, because this block does not have blockstates configured correctly. !isBlockImmune doesn't seem to be true either though...
     }
 
     public boolean isBlockImmune(World world, BlockPos pos) {

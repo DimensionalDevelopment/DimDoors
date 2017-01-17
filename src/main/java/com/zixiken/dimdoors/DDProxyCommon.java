@@ -22,7 +22,6 @@ public abstract class DDProxyCommon implements IDDProxy {
 
     @Override
     public void onPreInitialization(FMLPreInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(new EventHookContainer());
         ModBlocks.registerBlocks();
         ModItems.registerItems();
 

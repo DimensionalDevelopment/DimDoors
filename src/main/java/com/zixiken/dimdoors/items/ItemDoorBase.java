@@ -20,7 +20,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
+import net.minecraft.block.SoundType;
+import static net.minecraft.item.ItemDoor.placeDoor;
 import net.minecraft.tileentity.TileEntity;
 
 public abstract class ItemDoorBase extends ItemDoor {
@@ -50,130 +51,90 @@ public abstract class ItemDoorBase extends ItemDoor {
     public abstract void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced);
 
     /**
-     * Overriden in subclasses to specify which door block that door item will
+     * Overridden in subclasses to specify which door block that door item will
      * place
      *
      * @return
      */
     protected abstract BlockDimDoorBase getDoorBlock();
 
-    /**
-     * Overriden here to remove vanilla block placement functionality from
-     * dimensional doors, we handle this in the EventHookContainer
-     */
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World worldIn, EntityPlayer playerIn, EnumHand hand) {
+        RayTraceResult hit = ItemDoorBase.doRayTrace(worldIn, playerIn, true);
+        if (hit != null) {
+            DimDoors.log(this.getClass(), "Hit is not null");
+            BlockPos pos = hit.getBlockPos();
+            if (worldIn.getBlockState(pos).getBlock() == ModBlocks.blockRift) {
+                DimDoors.log(this.getClass(), "Block is a blockRift");
+                EnumActionResult canDoorBePlacedOnGroundBelowRift
+                        = onItemUse(stack, playerIn, worldIn, pos.down(2), hand, EnumFacing.UP,
+                                (float) hit.hitVec.xCoord, (float) hit.hitVec.yCoord, (float) hit.hitVec.zCoord);
+                return new ActionResult(canDoorBePlacedOnGroundBelowRift, stack);
+            }
+        }
+        DimDoors.log(this.getClass(), "Hit is null");
+        return new ActionResult(EnumActionResult.PASS, stack);
+    }
+
     @Override
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        return EnumActionResult.FAIL;
-    }
-
-    /**
-     * Tries to place a door as a dimensional door
-     *
-     * @param stack
-     * @param player
-     * @param world
-     * @param side
-     * @return
-     */
-    public static boolean tryToPlaceDoor(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side) {
-        if (world.isRemote) {
-            return false;
+        //@todo also check for rift raytracing replacement;
+        if (worldIn.isRemote) {
+            return EnumActionResult.FAIL;
         }
+        IBlockState iblockstate = worldIn.getBlockState(pos);
+        Block block = iblockstate.getBlock();
+        if (side != EnumFacing.UP || block == Blocks.AIR) {
+            return EnumActionResult.FAIL;
+        } else {
 
-        // Retrieve the actual door type that we want to use here.
-        // It's okay if stack isn't an ItemDoor. In that case, the lookup will
-        // return null, just as if the item was an unrecognized door type.
-        ItemDoorBase mappedItem = doorItemMapping.get(stack.getItem());
-        if (mappedItem == null) {
-            return false;
-        }
-        BlockDimDoorBase doorBlock = mappedItem.getDoorBlock();
-        return ItemDoorBase.placeDoorOnBlock(doorBlock, stack, player, world, pos, side)
-                || ItemDoorBase.placeDoorOnRift(doorBlock, world, player, stack);
-    }
-
-    /**
-     * try to place a door block on a block
-     *
-     * @param doorBlock
-     * @param stack
-     * @param player
-     * @param world
-     * @param pos
-     * @param side
-     * @return
-     */
-    public static boolean placeDoorOnBlock(Block doorBlock, ItemStack stack, EntityPlayer player,
-            World world, BlockPos pos, EnumFacing side) {
-        if (world.isRemote) {
-            return false;
-        }
-
-        // Only place doors on top of blocks - check if we're targeting the top
-        // side
-        if (side == EnumFacing.UP) {
-            Block block = world.getBlockState(pos).getBlock();
-            if (!world.getBlockState(pos).equals(Blocks.AIR) && !block.isReplaceable(world, pos)) {
-                pos = pos.up();
+            if (!block.isReplaceable(worldIn, pos)) {
+                pos = pos.offset(side); //we know that (side == EnumFacing.UP)
             }
 
-            BlockPos upPos = pos.up();
-            if (canPlace(world, pos) && canPlace(world, upPos) && player.canPlayerEdit(pos, side, stack)
-                    && player.canPlayerEdit(upPos, side, stack) && stack.stackSize > 0
-                    && stack.getItem() instanceof ItemDoorBase && world.getBlockState(pos.down()).isSideSolid(world, pos, side)) {
-                placeDoor(world, pos, EnumFacing.fromAngle(player.rotationYaw), doorBlock, true);
-                TileEntity tileEntity = world.getTileEntity(pos.up());
-                if (tileEntity instanceof DDTileEntityBase) {
-                    DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
-                    rift.register();
+            // Retrieve the actual door type that we want to use here.
+            // It's okay if stack isn't an ItemDoor. In that case, the lookup will
+            // return null, just as if the item was an unrecognized door type.
+            ItemDoorBase mappedItem = doorItemMapping.get(stack.getItem());
+            if (mappedItem == null) {
+                return EnumActionResult.FAIL;
+            }
+            BlockDimDoorBase doorBlock = mappedItem.getDoorBlock();
+
+            if (playerIn.canPlayerEdit(pos, side, stack) && playerIn.canPlayerEdit(pos.up(), side, stack)
+                    && doorBlock.canPlaceBlockAt(worldIn, pos)) {
+
+                TileEntity possibleOldRift = worldIn.getTileEntity(pos.up());
+                //start logging code
+                if (possibleOldRift instanceof DDTileEntityBase) { //
+                    DDTileEntityBase oldRift = (DDTileEntityBase) possibleOldRift;
+                    DimDoors.log(this.getClass(), "Old Rift rift-ID before placement: " + oldRift.riftID);
                 }
-                if (!player.capabilities.isCreativeMode) {
-                    stack.stackSize--;
+                //end of logging code
+                EnumFacing enumfacing = EnumFacing.fromAngle((double) playerIn.rotationYaw);
+                int i = enumfacing.getFrontOffsetX();
+                int j = enumfacing.getFrontOffsetZ();
+                boolean flag = i < 0 && hitZ < 0.5F || i > 0 && hitZ > 0.5F || j < 0 && hitX > 0.5F || j > 0 && hitX < 0.5F;
+                placeDoor(worldIn, pos, enumfacing, doorBlock, flag);
+                SoundType soundtype = worldIn.getBlockState(pos).getBlock().getSoundType(worldIn.getBlockState(pos), worldIn, pos, playerIn);
+                worldIn.playSound(playerIn, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                --stack.stackSize;
+
+                DDTileEntityBase newTileEntityDimDoor = (DDTileEntityBase) worldIn.getTileEntity(pos.up());
+                if (possibleOldRift instanceof DDTileEntityBase) { //
+                    DDTileEntityBase oldRift = (DDTileEntityBase) possibleOldRift;
+                    DimDoors.log(this.getClass(), "Old Rift rift-ID after placement: " + oldRift.riftID);
+                    newTileEntityDimDoor.loadDataFrom(oldRift);
+                } else {
+                    newTileEntityDimDoor.register();
                 }
-                return true;
+                DimDoors.log(this.getClass(), "New Door rift-ID after placement: " + newTileEntityDimDoor.riftID);
+
+                return EnumActionResult.SUCCESS;
+            } else {
+                return EnumActionResult.FAIL;
             }
         }
-        return false;
-    }
-
-    /**
-     * uses a raytrace to try and place a door on a rift
-     *
-     * @param doorBlock
-     * @param world
-     * @param player
-     * @param stack
-     * @return
-     */
-    public static boolean placeDoorOnRift(Block doorBlock, World world, EntityPlayer player, ItemStack stack) {
-        if (world.isRemote) {
-            return false;
-        }
-
-        RayTraceResult hit = ItemDoorBase.doRayTrace(world, player, true);
-        if (hit != null) {
-            BlockPos pos = hit.getBlockPos();
-            if (world.getBlockState(pos).getBlock() == ModBlocks.blockRift) {
-                BlockPos downPos = pos.down();
-                if (player.canPlayerEdit(pos, hit.sideHit, stack)
-                        && player.canPlayerEdit(downPos, hit.sideHit, stack)
-                        && canPlace(world, pos) && canPlace(world, downPos)) {
-                    DDTileEntityBase riftOrig = (DDTileEntityBase) world.getTileEntity(pos);
-                    placeDoor(world, downPos, EnumFacing.fromAngle(player.rotationYaw), doorBlock, true);
-                    TileEntityDimDoor newRift = (TileEntityDimDoor) world.getTileEntity(pos);
-                    if (!(stack.getItem() instanceof ItemDoorBase)) { //@todo why does THIS if statement mean that THAT field should be true?
-                        newRift.hasGennedPair = true;
-                    }
-                    newRift.loadDataFrom(riftOrig); //take over the data from the original Rift
-                    //DimDoors.log("" +newRift.riftID);
-                    if (!player.capabilities.isCreativeMode) {
-                        stack.stackSize--;
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public static boolean canPlace(World world, BlockPos pos) {
@@ -218,5 +179,18 @@ public abstract class ItemDoorBase extends ItemDoor {
 				list.add(line);
 			} else */ break;
         }
+    }
+
+    private boolean canDoorBePlacedOnRift(World worldIn, EntityPlayer playerIn) {
+        RayTraceResult hit = ItemDoorBase.doRayTrace(worldIn, playerIn, true);
+        if (hit != null) {
+            DimDoors.log(this.getClass(), "Hit is not null");
+            BlockPos pos = hit.getBlockPos();
+            if (worldIn.getBlockState(pos).getBlock() == ModBlocks.blockRift) {
+                return true;
+            }
+        }
+        DimDoors.log(this.getClass(), "Hit is null, or block at pos is not blockRift");
+        return false;
     }
 }
