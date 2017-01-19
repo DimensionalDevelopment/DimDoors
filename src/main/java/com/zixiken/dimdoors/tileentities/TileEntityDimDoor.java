@@ -60,10 +60,10 @@ public class TileEntityDimDoor extends DDTileEntityBase {
     }
 
     @Override
-    public Location getTeleportTarget() {
-        EnumFacing facing = getWorld().getBlockState(getPos()).getValue(BlockDimDoor.FACING);
+    public Location getTeleportTargetLocation() {
+        EnumFacing facing = getWorld().getBlockState(getPos()).getValue(BlockDimDoor.FACING).getOpposite(); //@todo this will allways return South after world-load?
 
-        return new Location(world, pos.offset(facing));
+        return new Location(this.getWorld().provider.getDimension(), this.getPos().offset(facing));
     }
 
     @Override
@@ -71,7 +71,6 @@ public class TileEntityDimDoor extends DDTileEntityBase {
         if (!isPaired()) {
             //@todo try to automatically pair this door somehow
         }
-        RiftRegistry.Instance.teleportEntityToRift(entity, getPairedRiftID());
-        return true;
+        return RiftRegistry.Instance.teleportEntityToRift(entity, getPairedRiftID());
     }
 }

@@ -81,6 +81,7 @@ public class RiftRegistry {
     }
 
     public Location getRiftLocation(int ID) {
+        DimDoors.log(this.getClass(), "Fetching rift location of rift with ID: " + ID);
         return riftList.get(ID);
     }
 
@@ -120,7 +121,11 @@ public class RiftRegistry {
         return lastBrokenRift;
     }
 
-    public void teleportEntityToRift(Entity entity, int pairedRiftID) {
-        TeleportHelper.teleport(entity, ((DDTileEntityBase) getRiftLocation(pairedRiftID).getTileEntity()).getTeleportTarget());
+    public boolean teleportEntityToRift(Entity entity, int pairedRiftID) {
+        if (pairedRiftID < 0) {
+            return false;
+        }
+        DDTileEntityBase destinationRift = (DDTileEntityBase) getRiftLocation(pairedRiftID).getTileEntity();
+        return TeleportHelper.teleport(entity, destinationRift.getTeleportTargetLocation());
     }
 }

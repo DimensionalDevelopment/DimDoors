@@ -1,6 +1,7 @@
 package com.zixiken.dimdoors.tileentities;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.blocks.BlockDimDoor;
 import com.zixiken.dimdoors.shared.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import java.util.Random;
@@ -106,7 +107,7 @@ public abstract class DDTileEntityBase extends TileEntity {
         return isPaired;
     }
 
-    public Location getTeleportTarget() {
+    public Location getTeleportTargetLocation() {
         return new Location(this.getWorld().provider.getDimension(), this.getPos());
     }
 

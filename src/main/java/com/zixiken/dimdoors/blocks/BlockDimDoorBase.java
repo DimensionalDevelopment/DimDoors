@@ -35,17 +35,15 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     @Override
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
         IBlockState down = world.getBlockState(pos.down());
-        if (!world.isRemote && down.getBlock() == this) {
+        if (!world.isRemote && down.getBlock() == this) { //@todo should only teleport when colliding with top part of the door?
             if (down.getValue(BlockDoor.OPEN)
-                    && entity instanceof EntityPlayer
+                    && entity instanceof EntityPlayer //@todo remove this so any entity can go through?
+                    && (entity.timeUntilPortal < 1) //to prevent the player from teleporting all over the place we have a 150-tick cooldown
                     && isEntityFacingDoor(down, (EntityLivingBase) entity)) {
                 this.toggleDoor(world, pos, false);
+                DimDoors.log(this.getClass(), "Facing direction of Door-block that was just entered by an entity is: "
+                + world.getBlockState(pos).getValue(BlockDoor.FACING));
                 enterDimDoor(world, pos, entity);
-            }
-        } else {
-            BlockPos up = pos.up();
-            if (world.getBlockState(up).getBlock() == this) {
-                enterDimDoor(world, up, entity);
             }
         }
     }
@@ -125,8 +123,10 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     public void enterDimDoor(World world, BlockPos pos, Entity entity) {
         DDTileEntityBase riftTile = getRiftTile(world, pos, world.getBlockState(pos));
         if (riftTile.tryTeleport(entity)) {
+            DimDoors.log(this.getClass(), "Entity was teleported succesfully");
             //player is succesfully teleported
         } else {
+            DimDoors.log(this.getClass(), "Entity was NOT teleported succesfully");
             //@todo some kind of message that teleporting wasn't successfull
             //probably should only happen on personal dimdoors
         }
