@@ -1,12 +1,9 @@
 package com.zixiken.dimdoors.tileentities;
 
-import java.util.Random;
-
-import com.zixiken.dimdoors.blocks.BlockDimDoor;
-import com.zixiken.dimdoors.shared.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
+import java.util.Random;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
 public class TileEntityDimDoor extends DDTileEntityBase {
@@ -66,4 +63,13 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
         return new Location(world, pos.offset(facing));
     }*/
+
+    @Override
+    public boolean tryTeleport(Entity entity) {
+        if (!isPaired) {
+            //@todo try to automatically pair this door somehow
+        }
+        RiftRegistry.Instance.teleportEntityToRift(entity, pairedRiftID);
+        return true;
+    }
 }

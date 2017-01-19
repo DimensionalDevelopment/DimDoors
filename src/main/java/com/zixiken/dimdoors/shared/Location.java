@@ -47,14 +47,14 @@ public class Location {
     }
 
     public World getWorld() {
-        return DimensionManager.getWorld(dimensionID); //@todo HOW?
+        return DimensionManager.getWorld(dimensionID);
     }
 
     public int getDimensionID() {
         return dimensionID;
     }
 
-    static Location getLocation(TileEntity tileEntity) {
+    static Location getLocation(TileEntity tileEntity) {//@todo Location is not yet comparable, so a Location begotten by this method, can not be used to find a rift ID in the RiftRegistry
         World world = tileEntity.getWorld();
         int dimID = world.provider.getDimension();
         BlockPos blockPos = tileEntity.getPos();

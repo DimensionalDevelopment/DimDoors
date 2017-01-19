@@ -3,9 +3,7 @@ package com.zixiken.dimdoors.blocks;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
-import com.zixiken.dimdoors.shared.TeleportHelper;
 import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 import javax.annotation.Nullable;
@@ -24,7 +22,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -42,9 +39,8 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
             if (down.getValue(BlockDoor.OPEN)
                     && entity instanceof EntityPlayer
                     && isEntityFacingDoor(down, (EntityLivingBase) entity)) {
-                enterDimDoor(world, pos, entity);
                 this.toggleDoor(world, pos, false);
-                DimDoors.log(BlockDimDoorBase.class, "RiftID = " + getRiftTile(world, pos, world.getBlockState(pos)).riftID + " Derp");
+                enterDimDoor(world, pos, entity);
             }
         } else {
             BlockPos up = pos.up();
@@ -128,26 +124,17 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        TileEntityDimDoor dimDoor = new TileEntityDimDoor();
-        updateAttachedTile(world, dimDoor.getPos());
-        placeLink(new Location(world, dimDoor.getPos()));
-
-        return dimDoor;
+        return new TileEntityDimDoor();
     }
 
     @Override
     public void enterDimDoor(World world, BlockPos pos, Entity entity) {
-        TileEntity te = world.getTileEntity(pos);
-
-        if(te != null && te instanceof DDTileEntityBase) {
-            DDTileEntityBase base = (DDTileEntityBase) te;
-            Location loc = RiftRegistry.Instance.getRiftLocation(base.pairedRiftID);
-
-            if(loc != null && loc.getTileEntity() instanceof DDTileEntityBase) {
-                loc = ((DDTileEntityBase) loc.getTileEntity()).getTeleportTarget();
-
-                TeleportHelper.teleport(entity, loc);
-            }
+        DDTileEntityBase riftTile = getRiftTile(world, pos, world.getBlockState(pos));
+        if (riftTile.tryTeleport(entity)) {
+            //player is succesfully teleported
+        } else {
+            //@todo some kind of message that teleporting wasn't successfull
+            //probably should only happen on personal dimdoors
         }
     }
 
@@ -183,6 +170,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
         }
     }
 
+    //returns the DDTileEntityBase that is the tile entity belonging to the door block "state" at this "pos" in the "world"
     public DDTileEntityBase getRiftTile(World world, BlockPos pos, IBlockState state) {
         TileEntity tileEntity;
         if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER) {

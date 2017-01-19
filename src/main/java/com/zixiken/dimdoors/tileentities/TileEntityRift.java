@@ -142,4 +142,9 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
     public float[] getRenderColor(Random rand) {
         return null;
     }
+
+    @Override
+    public boolean tryTeleport(Entity entity) {
+        return false; //@todo, rift blade functionality?
+    }
 }

@@ -4,6 +4,7 @@ import com.zixiken.dimdoors.shared.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import java.util.Random;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -89,4 +90,6 @@ public abstract class DDTileEntityBase extends TileEntity {
     public Location getTeleportTarget() {
         return new Location(this.getWorld().provider.getDimension(), this.getPos());
     }
+
+    public abstract boolean tryTeleport(Entity entity);
 }

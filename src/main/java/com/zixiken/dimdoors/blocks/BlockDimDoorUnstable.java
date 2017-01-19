@@ -1,15 +1,11 @@
 package com.zixiken.dimdoors.blocks;
 
 import com.zixiken.dimdoors.items.ModItems;
-import com.zixiken.dimdoors.shared.Location;
+import java.util.Random;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import java.util.Random;
 
 public class BlockDimDoorUnstable extends BlockDimDoorBase {
 
@@ -21,10 +17,6 @@ public class BlockDimDoorUnstable extends BlockDimDoorBase {
         setUnlocalizedName(ID);
         setRegistryName(ID);
         setLightLevel(.0F);
-    }
-
-    @Override
-    public void placeLink(Location location) {
     }
 
     @Override
