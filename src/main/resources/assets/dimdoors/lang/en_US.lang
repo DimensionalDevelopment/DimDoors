@@ -23,6 +23,7 @@ item.itemDimDoor.name=Dimensional Door
 item.itemDimDoorWarp.name=Warp Door
 item.itemLinkSignature.name=Rift Signature
 item.itemStabilizedRiftSig.name=Stabilized Rift Signature
+item.itemRiftConnectionTool.name=Below Average Rift Connection Tool
 item.itemRiftRemover.name=Rift Remover
 item.itemStableFabric.name=Stable Fabric
 item.itemChaosDoor.name=Unstable Door

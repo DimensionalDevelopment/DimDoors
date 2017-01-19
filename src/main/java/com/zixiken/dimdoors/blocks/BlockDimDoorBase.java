@@ -41,8 +41,6 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
                     && (entity.timeUntilPortal < 1) //to prevent the player from teleporting all over the place we have a 150-tick cooldown
                     && isEntityFacingDoor(down, (EntityLivingBase) entity)) {
                 this.toggleDoor(world, pos, false);
-                DimDoors.log(this.getClass(), "Facing direction of Door-block that was just entered by an entity is: "
-                + world.getBlockState(pos).getValue(BlockDoor.FACING));
                 enterDimDoor(world, pos, entity);
             }
         }
@@ -123,12 +121,13 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     public void enterDimDoor(World world, BlockPos pos, Entity entity) {
         DDTileEntityBase riftTile = getRiftTile(world, pos, world.getBlockState(pos));
         if (riftTile.tryTeleport(entity)) {
-            DimDoors.log(this.getClass(), "Entity was teleported succesfully");
             //player is succesfully teleported
         } else {
-            DimDoors.log(this.getClass(), "Entity was NOT teleported succesfully");
-            //@todo some kind of message that teleporting wasn't successfull
             //probably should only happen on personal dimdoors
+            if (entity instanceof EntityPlayer) {
+                EntityPlayer entityPlayer = (EntityPlayer) entity;
+                DimDoors.chat(entityPlayer, "[DimDoors:] Teleporting failed, please report this to the mod authors.");
+            }
         }
     }
 
@@ -160,7 +159,6 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
             world.setBlockState(pos, ModBlocks.blockRift.getDefaultState());
             DDTileEntityBase newRift = (DDTileEntityBase) world.getTileEntity(pos);
             newRift.loadDataFrom(origRift);
-            DimDoors.log(this.getClass(), "New Rift rift-ID after breaking door " + newRift.getRiftID());
         }
     }
 

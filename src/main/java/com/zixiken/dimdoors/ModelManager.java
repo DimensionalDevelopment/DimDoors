@@ -2,6 +2,7 @@ package com.zixiken.dimdoors;
 
 import com.zixiken.dimdoors.blocks.ModBlocks;
 import com.zixiken.dimdoors.items.ModItems;
+import static com.zixiken.dimdoors.items.ModItems.itemRiftConnectionTool;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -35,6 +36,7 @@ public class ModelManager {
         register(ModItems.itemDimDoorChaos);
         register(ModItems.itemDimDoorWarp);
         register(ModItems.itemWorldThread);
+        register(ModItems.itemRiftConnectionTool);
     }
 
     public static void registerModelVariants() {

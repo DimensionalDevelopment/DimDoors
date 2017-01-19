@@ -5,7 +5,9 @@ import com.zixiken.dimdoors.shared.PocketSavedData;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.RiftSavedData;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
@@ -63,6 +65,10 @@ public class DimDoors {
 
     public static World getDefWorld() {
         return proxy.getDefWorld(); //gets the server or client world dim 0 handler
+    }
+    
+    public static void chat(EntityPlayer player, String text) {
+        player.sendMessage(new TextComponentString(text));
     }
 
     public static void log(Class classFiredFrom, String text) {

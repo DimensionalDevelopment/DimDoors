@@ -81,7 +81,6 @@ public class RiftRegistry {
     }
 
     public Location getRiftLocation(int ID) {
-        DimDoors.log(this.getClass(), "Fetching rift location of rift with ID: " + ID);
         return riftList.get(ID);
     }
 
@@ -89,7 +88,6 @@ public class RiftRegistry {
         if (riftID < 0 || riftID2 < 0) {
             return;
         }
-        DimDoors.log(this.getClass(), "pairing rift with ID " + riftID + " to rift with ID " + riftID2);
         Location location = riftList.get(riftID);
         TileEntity tileEntity = location.getTileEntity(); //@todo this method might need to be in another class?
         if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
@@ -104,7 +102,7 @@ public class RiftRegistry {
         }
         Location location = riftList.get(riftID);
         if (location == null) {
-            DimDoors.log(this.getClass(), "riftID with null location = " + riftID);
+            DimDoors.log(this.getClass(), "RiftID with null location = " + riftID);
         }
         TileEntity tileEntity = location.getTileEntity();
         if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {

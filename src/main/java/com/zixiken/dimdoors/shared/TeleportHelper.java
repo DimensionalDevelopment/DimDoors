@@ -26,7 +26,7 @@ public class TeleportHelper extends Teleporter {
 
     public static boolean teleport(Entity entity, Location newLocation) {
         if (entity instanceof EntityPlayerSP) {
-            DimDoors.log(TeleportHelper.class, "Not teleporting, because EntityPlayerSP.");
+            //DimDoors.log(TeleportHelper.class, "Not teleporting, because EntityPlayerSP.");
             return false;
         }
 
@@ -35,10 +35,10 @@ public class TeleportHelper extends Teleporter {
         int newDimID = newLocation.getDimensionID();
         WorldServer oldWorldServer = DimDoors.proxy.getWorldServer(oldDimID);
         WorldServer newWorldServer = DimDoors.proxy.getWorldServer(newDimID);
-        DimDoors.log(TeleportHelper.class, "Starting teleporting now:");
+        //DimDoors.log(TeleportHelper.class, "Starting teleporting now:");
         if (oldDimID == newDimID) {
             if (entity instanceof EntityPlayer) {
-                DimDoors.log(TeleportHelper.class, "Using teleport method 1");
+                //DimDoors.log(TeleportHelper.class, "Using teleport method 1");
                 EntityPlayerMP player = (EntityPlayerMP) entity;
 
                 player.setPositionAndUpdate(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
@@ -46,7 +46,7 @@ public class TeleportHelper extends Teleporter {
                 //player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
                 player.timeUntilPortal = 150;
             } else {
-                DimDoors.log(TeleportHelper.class, "Using teleport method 2");
+                //DimDoors.log(TeleportHelper.class, "Using teleport method 2");
                 WorldServer world = (WorldServer) entity.world;
 
                 entity.setPosition(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
@@ -55,14 +55,14 @@ public class TeleportHelper extends Teleporter {
             }
         } else {
             if (entity instanceof EntityPlayer) {
-                DimDoors.log(TeleportHelper.class, "Using teleport method 3");
+                //DimDoors.log(TeleportHelper.class, "Using teleport method 3");
                 EntityPlayerMP player = (EntityPlayerMP) entity;
                 player.changeDimension(newDimID); //@todo, this only works for Vanilla dimensions, I've heard?
                 player.setPositionAndUpdate(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
                 player.world.updateEntityWithOptionalForce(player, false);
                 //player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
             } else if (!entity.world.isRemote) {
-                DimDoors.log(TeleportHelper.class, "Using teleport method 4");
+                //DimDoors.log(TeleportHelper.class, "Using teleport method 4");
                 entity.changeDimension(newDimID);
                 entity.setPosition(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
                 oldWorldServer.resetUpdateEntityTick();

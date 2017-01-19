@@ -17,12 +17,6 @@ public abstract class DDTileEntityBase extends TileEntity {
     private int riftID = -1; //should not start at 0
     private int pairedRiftID = -1;
 
-    public DDTileEntityBase() {
-        super();
-        DimDoors.log(this.getClass(), "Printing stacktrace for debugging purposes:");
-        Thread.dumpStack();
-    }
-
     /**
      *
      * @return an array of floats representing RGBA color where 1.0 = 255.

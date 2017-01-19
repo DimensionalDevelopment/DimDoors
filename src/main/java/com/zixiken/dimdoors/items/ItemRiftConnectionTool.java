@@ -54,38 +54,42 @@ public class ItemRiftConnectionTool extends ItemTool {
                 return selectRift(stack, worldIn, rift, playerIn); //new ActionResult(EnumActionResult.PASS, stack));
             }
         } else {
-            return changeMode(stack);
+            return changeMode(stack, playerIn);
         }
 
         return new ActionResult(EnumActionResult.FAIL, stack);
     }
 
     private ActionResult<ItemStack> selectRift(ItemStack stack, World worldIn, DDTileEntityBase rift, EntityPlayer playerIn) {
-        DimDoors.log(this.getClass(), "Selecting rift with ID: " + rift.getRiftID());
         NBTTagCompound compound = stack.getTagCompound();
         if (compound.getBoolean("isInConnectMode")) {
             if (compound.hasKey("RiftID")) {
                 int primaryRiftID = compound.getInteger("RiftID");
                 int secondaryRiftID = rift.getRiftID();
                 if (!worldIn.isRemote) {
-                    DimDoors.log(this.getClass(), "Pairing rifts with IDs: " + primaryRiftID + " and " + secondaryRiftID);
+                    DimDoors.chat(playerIn, "Pairing rift " + primaryRiftID
+                            + " with rift " + secondaryRiftID + ".");
                     RiftRegistry.Instance.pair(primaryRiftID, secondaryRiftID);
                 }
                 compound.removeTag("RiftID");
                 stack.damageItem(1, playerIn);
             } else {
-                compound.setInteger("RiftID", rift.getRiftID());
+                int riftID = rift.getRiftID();
+                compound.setInteger("RiftID", riftID);
+                DimDoors.chat(playerIn, "Rift " + riftID + " stored for connecting.");
             }
         } else {
             if (!worldIn.isRemote) {
-                RiftRegistry.Instance.unpair(rift.getRiftID());
+                int riftID = rift.getRiftID();
+                RiftRegistry.Instance.unpair(riftID);
+                DimDoors.chat(playerIn, "Rift " + riftID + " and its paired rift are now disconnected.");
             }
             stack.damageItem(1, playerIn);
         }
         return new ActionResult(EnumActionResult.SUCCESS, stack);
     }
 
-    private ActionResult<ItemStack> changeMode(ItemStack stack) {
+    private ActionResult<ItemStack> changeMode(ItemStack stack, EntityPlayer player) {
         NBTTagCompound compound = stack.getTagCompound();
         if (compound.getBoolean("isInConnectMode")) {
             compound.setBoolean("isInConnectMode", false);
@@ -95,7 +99,8 @@ public class ItemRiftConnectionTool extends ItemTool {
         } else {
             compound.setBoolean("isInConnectMode", true);
         }
-        DimDoors.log(this.getClass(), "isInConnectMode set to: " + compound.getBoolean("isInConnectMode"));
+        DimDoors.chat(player, "Connection tool mode set to: "
+                + (compound.getBoolean("isInConnectMode") ? "Connect" : "Disconnect"));
         return new ActionResult(EnumActionResult.SUCCESS, stack);
     }
 }

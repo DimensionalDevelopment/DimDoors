@@ -67,17 +67,14 @@ public abstract class ItemDoorBase extends ItemDoor {
         }
         RayTraceResult hit = ItemDoorBase.doRayTrace(worldIn, playerIn, true);
         if (hit != null) {
-            DimDoors.log(this.getClass(), "Raytrace hit is not null");
             BlockPos pos = hit.getBlockPos();
             if (worldIn.getBlockState(pos).getBlock() == ModBlocks.blockRift) {
-                DimDoors.log(this.getClass(), "Raytrace hit Block is a BlockRift");
                 EnumActionResult canDoorBePlacedOnGroundBelowRift
                         = onItemUse(stack, playerIn, worldIn, pos.down(2), hand, EnumFacing.UP,
                                 (float) hit.hitVec.xCoord, (float) hit.hitVec.yCoord, (float) hit.hitVec.zCoord);
                 return new ActionResult(canDoorBePlacedOnGroundBelowRift, stack);
             }
         }
-        DimDoors.log(this.getClass(), "Raytrace hit is null, or doesn't hit a BlockRift");
         return new ActionResult(EnumActionResult.PASS, stack);
     }
 
@@ -110,16 +107,9 @@ public abstract class ItemDoorBase extends ItemDoor {
                     && doorBlock.canPlaceBlockAt(worldIn, pos)) {
 
                 TileEntity possibleOldRift = worldIn.getTileEntity(pos.up());
-                //start logging code
-                if (possibleOldRift instanceof DDTileEntityBase) { //
-                    DDTileEntityBase oldRift = (DDTileEntityBase) possibleOldRift;
-                    DimDoors.log(this.getClass(), "Old Rift rift-ID before placement: " + oldRift.getRiftID());
-                }
-                //end of logging code
                 EnumFacing enumfacing = EnumFacing.fromAngle((double) playerIn.rotationYaw);
                 int i = enumfacing.getFrontOffsetX();
                 int j = enumfacing.getFrontOffsetZ();
-                DimDoors.log(this.getClass(), "Facing direction of door is being set to: " + enumfacing);
                 boolean flag = i < 0 && hitZ < 0.5F || i > 0 && hitZ > 0.5F || j < 0 && hitX > 0.5F || j > 0 && hitX < 0.5F;
                 placeDoor(worldIn, pos, enumfacing, doorBlock, flag);
                 SoundType soundtype = worldIn.getBlockState(pos).getBlock().getSoundType(worldIn.getBlockState(pos), worldIn, pos, playerIn);
@@ -129,14 +119,10 @@ public abstract class ItemDoorBase extends ItemDoor {
                 DDTileEntityBase newTileEntityDimDoor = (DDTileEntityBase) worldIn.getTileEntity(pos.up());
                 if (possibleOldRift instanceof DDTileEntityBase) { //
                     DDTileEntityBase oldRift = (DDTileEntityBase) possibleOldRift;
-                    DimDoors.log(this.getClass(), "Old Rift rift-ID after placement: " + oldRift.getRiftID());
                     newTileEntityDimDoor.loadDataFrom(oldRift);
                 } else {
                     newTileEntityDimDoor.register();
                 }
-                DimDoors.log(this.getClass(), "New Door rift-ID after placement: " + newTileEntityDimDoor.getRiftID());
-                DimDoors.log(this.getClass(), "Facing direction of Door-block at pos of this Rift tile entity is: "
-                        + newTileEntityDimDoor.getWorld().getBlockState(newTileEntityDimDoor.getPos()).getValue(BlockDimDoor.FACING));
                 if (newTileEntityDimDoor instanceof TileEntityDimDoor) {
                     TileEntityDimDoor tileEntityDimDoor = (TileEntityDimDoor) newTileEntityDimDoor;
                     tileEntityDimDoor.orientation
