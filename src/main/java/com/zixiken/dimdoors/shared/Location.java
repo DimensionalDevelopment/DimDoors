@@ -32,7 +32,7 @@ public class Location {
 
     public Location(int dimID, BlockPos pos) {
         this.dimensionID = dimID;
-        this.pos = pos.up(0); //copyOf
+        this.pos = pos; //copyOf
     }
 
     public TileEntity getTileEntity() {

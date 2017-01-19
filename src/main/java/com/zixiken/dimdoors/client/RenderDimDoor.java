@@ -264,7 +264,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
         World world = te.getWorld();
         BlockPos pos = te.getPos();
         ((BlockDimDoorBase) world.getBlockState(pos).getBlock()).updateAttachedTile(world, pos);
-        if (te.openOrClosed) {
+        if (te.doorIsOpen) {
             renderDimDoorTileEntity(te, x, y, z);
             if (te.lockStatus >= 1) {
                 for (int i = 0; i < 1 + te.lockStatus; i++) {

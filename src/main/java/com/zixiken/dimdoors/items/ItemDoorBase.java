@@ -8,6 +8,7 @@ import com.zixiken.dimdoors.blocks.BlockDimDoor;
 import com.zixiken.dimdoors.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.blocks.ModBlocks;
 import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
+import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -135,8 +136,13 @@ public abstract class ItemDoorBase extends ItemDoor {
                 }
                 DimDoors.log(this.getClass(), "New Door rift-ID after placement: " + newTileEntityDimDoor.getRiftID());
                 DimDoors.log(this.getClass(), "Facing direction of Door-block at pos of this Rift tile entity is: "
-                + newTileEntityDimDoor.getWorld().getBlockState(newTileEntityDimDoor.getPos()).getValue(BlockDimDoor.FACING));
-
+                        + newTileEntityDimDoor.getWorld().getBlockState(newTileEntityDimDoor.getPos()).getValue(BlockDimDoor.FACING));
+                if (newTileEntityDimDoor instanceof TileEntityDimDoor) {
+                    TileEntityDimDoor tileEntityDimDoor = (TileEntityDimDoor) newTileEntityDimDoor;
+                    tileEntityDimDoor.orientation
+                            = newTileEntityDimDoor.getWorld().getBlockState(newTileEntityDimDoor.getPos()).getValue(BlockDimDoor.FACING).getOpposite();
+                    //storing the orientation inside the tile-entity, because that thing can actually save the orientation in the worldsave, unlike the block itself, which fucks up somehow
+                }
                 return EnumActionResult.SUCCESS;
             } else {
                 return EnumActionResult.FAIL;

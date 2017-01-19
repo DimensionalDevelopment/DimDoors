@@ -125,7 +125,8 @@ public class RiftRegistry {
         if (pairedRiftID < 0) {
             return false;
         }
-        DDTileEntityBase destinationRift = (DDTileEntityBase) getRiftLocation(pairedRiftID).getTileEntity();
+        Location destinationRiftLocation = getRiftLocation(pairedRiftID);
+        DDTileEntityBase destinationRift = (DDTileEntityBase) destinationRiftLocation.getTileEntity();
         return TeleportHelper.teleport(entity, destinationRift.getTeleportTargetLocation());
     }
 }

@@ -1,14 +1,10 @@
 package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.DimDoors;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketUpdateHealth;
-import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
@@ -28,21 +24,21 @@ public class TeleportHelper extends Teleporter {
         entityIn.setPositionAndUpdate(pos.getX() + .5, pos.getY() + .05, pos.getZ() + .5);
     }
 
-    public static boolean teleport(Entity entity, Location location) {
+    public static boolean teleport(Entity entity, Location newLocation) {
         if (entity instanceof EntityPlayerSP) {
-            DimDoors.log(location.getClass(), "Not teleporting, because EntityPlayerSP.");
+            DimDoors.log(TeleportHelper.class, "Not teleporting, because EntityPlayerSP.");
             return false;
         }
 
-        BlockPos newPos = location.getPos();
+        BlockPos newPos = newLocation.getPos();
         int oldDimID = entity.dimension;
-        int newDimID = location.getDimensionID();
+        int newDimID = newLocation.getDimensionID();
         WorldServer oldWorldServer = DimDoors.proxy.getWorldServer(oldDimID);
         WorldServer newWorldServer = DimDoors.proxy.getWorldServer(newDimID);
-        DimDoors.log(location.getClass(), "Starting teleporting now:");
+        DimDoors.log(TeleportHelper.class, "Starting teleporting now:");
         if (oldDimID == newDimID) {
             if (entity instanceof EntityPlayer) {
-                DimDoors.log(location.getClass(), "Using teleport method 1");
+                DimDoors.log(TeleportHelper.class, "Using teleport method 1");
                 EntityPlayerMP player = (EntityPlayerMP) entity;
 
                 player.setPositionAndUpdate(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
@@ -50,7 +46,7 @@ public class TeleportHelper extends Teleporter {
                 //player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
                 player.timeUntilPortal = 150;
             } else {
-                DimDoors.log(location.getClass(), "Using teleport method 2");
+                DimDoors.log(TeleportHelper.class, "Using teleport method 2");
                 WorldServer world = (WorldServer) entity.world;
 
                 entity.setPosition(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
@@ -59,22 +55,22 @@ public class TeleportHelper extends Teleporter {
             }
         } else {
             if (entity instanceof EntityPlayer) {
-                DimDoors.log(location.getClass(), "Using teleport method 3");
+                DimDoors.log(TeleportHelper.class, "Using teleport method 3");
                 EntityPlayerMP player = (EntityPlayerMP) entity;
                 player.changeDimension(newDimID); //@todo, this only works for Vanilla dimensions, I've heard?
                 player.setPositionAndUpdate(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
                 player.world.updateEntityWithOptionalForce(player, false);
                 //player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
             } else if (!entity.world.isRemote) {
-                DimDoors.log(location.getClass(), "Using teleport method 4");
+                DimDoors.log(TeleportHelper.class, "Using teleport method 4");
                 entity.changeDimension(newDimID);
                 entity.setPosition(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
                 oldWorldServer.resetUpdateEntityTick();
                 newWorldServer.resetUpdateEntityTick();
             } else {
                 //does this statement ever get reached though?
+                return false;
             }
-            return false;
         }
         entity.timeUntilPortal = 150;
         return true;

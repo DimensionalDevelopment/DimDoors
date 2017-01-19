@@ -1,6 +1,5 @@
 package com.zixiken.dimdoors.tileentities;
 
-import com.zixiken.dimdoors.blocks.BlockDimDoor;
 import com.zixiken.dimdoors.shared.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import java.util.Random;
@@ -10,11 +9,11 @@ import net.minecraft.util.EnumFacing;
 
 public class TileEntityDimDoor extends DDTileEntityBase {
 
-    public boolean openOrClosed;
+    public boolean doorIsOpen = false;
     public EnumFacing orientation = EnumFacing.SOUTH;
-    public boolean hasExit;
-    public byte lockStatus;
-    public boolean isDungeonChainLink;
+    public boolean hasExit = false;
+    public byte lockStatus = 1;
+    public boolean isDungeonChainLink = false;
     public boolean hasGennedPair = false;
 
     @Override
@@ -22,7 +21,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
         super.readFromNBT(nbt);
 
         try {
-            this.openOrClosed = nbt.getBoolean("openOrClosed");
+            this.doorIsOpen = nbt.getBoolean("doorIsOpen");
             this.orientation = EnumFacing.getFront(nbt.getInteger("orientation"));
             this.hasExit = nbt.getBoolean("hasExit");
             this.isDungeonChainLink = nbt.getBoolean("isDungeonChainLink");
@@ -33,9 +32,9 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-          super.writeToNBT(nbt);
+        super.writeToNBT(nbt);
 
-        nbt.setBoolean("openOrClosed", this.openOrClosed);
+        nbt.setBoolean("doorIsOpen", this.doorIsOpen);
         nbt.setBoolean("hasExit", this.hasExit);
         nbt.setInteger("orientation", this.orientation.getIndex());
         nbt.setBoolean("isDungeonChainLink", isDungeonChainLink);
@@ -61,9 +60,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
     @Override
     public Location getTeleportTargetLocation() {
-        EnumFacing facing = getWorld().getBlockState(getPos()).getValue(BlockDimDoor.FACING).getOpposite(); //@todo this will allways return South after world-load?
-
-        return new Location(this.getWorld().provider.getDimension(), this.getPos().offset(facing));
+        return new Location(this.getWorld().provider.getDimension(), this.getPos().offset(orientation));
     }
 
     @Override
