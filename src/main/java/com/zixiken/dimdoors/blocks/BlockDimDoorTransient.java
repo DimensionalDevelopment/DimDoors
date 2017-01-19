@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.blocks;
 
+import com.zixiken.dimdoors.shared.Location;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -41,7 +42,7 @@ public class BlockDimDoorTransient extends BlockDimDoorBase {
     }
 
     @Override
-    public void placeLink(World world, BlockPos pos) {
+    public void placeLink(Location location) {
     }
 
     @Override

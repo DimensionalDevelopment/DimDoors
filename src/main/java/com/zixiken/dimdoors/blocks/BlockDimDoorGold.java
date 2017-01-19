@@ -1,6 +1,7 @@
 package com.zixiken.dimdoors.blocks;
 
 import com.zixiken.dimdoors.items.ModItems;
+import com.zixiken.dimdoors.shared.Location;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoorGold;
 
 import net.minecraft.block.material.Material;
@@ -21,7 +22,7 @@ public class BlockDimDoorGold extends BlockDimDoorBase {
     }
 
     @Override
-    public void placeLink(World world, BlockPos pos) {
+    public void placeLink(Location location) {
     }
 
     @Override

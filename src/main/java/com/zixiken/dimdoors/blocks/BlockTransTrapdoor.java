@@ -3,6 +3,7 @@ package com.zixiken.dimdoors.blocks;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.Location;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.ITileEntityProvider;
@@ -77,7 +78,7 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 
     @Override
     public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
-        this.placeLink(world, pos);
+        this.placeLink(new Location(world, pos));
         world.setTileEntity(pos, createNewTileEntity(world, getMetaFromState(state)));
     }
 
@@ -87,7 +88,7 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
     }
 
     @Override
-    public void placeLink(World world, BlockPos pos) {
+    public void placeLink(Location location) {
     }
 
     @Override

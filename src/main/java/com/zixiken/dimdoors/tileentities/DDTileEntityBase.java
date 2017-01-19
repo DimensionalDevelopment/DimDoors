@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.tileentities;
 
+import com.zixiken.dimdoors.shared.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import java.util.Random;
 import net.minecraft.block.state.IBlockState;
@@ -83,5 +84,9 @@ public abstract class DDTileEntityBase extends TileEntity {
             pairedRiftID = rift2.pairedRiftID;
             this.markDirty();
         }
+    }
+
+    public Location getTeleportTarget() {
+        return new Location(this.getWorld().provider.getDimension(), this.getPos());
     }
 }

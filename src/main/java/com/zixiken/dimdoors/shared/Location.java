@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.shared;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -13,22 +14,44 @@ import net.minecraftforge.common.DimensionManager;
  */
 public class Location {
 
-    public int dimensionID;
-    public BlockPos pos;
+    private int dimensionID;
+    private BlockPos pos;
 
-    Location(int dimID, int x, int y, int z) {
-        this.dimensionID = dimID;
-        pos = new BlockPos(x, y, z);
+    public Location(World world, BlockPos pos) {
+        this(world.provider.getDimension(), pos);
     }
 
-    Location(int dimID, BlockPos pos) {
+    public Location(World world, int x, int y, int z) {
+        this(world, new BlockPos(x,y,z));
+    }
+
+    public Location(int dimID, int x, int y, int z) {
+        this(dimID, new BlockPos(x, y, z));
+    }
+
+    public Location(int dimID, BlockPos pos) {
         this.dimensionID = dimID;
         this.pos = pos.up(0); //copyOf
     }
 
     public TileEntity getTileEntity() {
-        World world = DimensionManager.getWorld(dimensionID); //@todo HOW?
-        return world.getTileEntity(pos);
+        return getWorld().getTileEntity(pos);
+    }
+
+    public IBlockState getBlockState() {
+        return getWorld().getBlockState(getPos());
+    }
+
+    public BlockPos getPos() {
+        return pos;
+    }
+
+    public World getWorld() {
+        return DimensionManager.getWorld(dimensionID); //@todo HOW?
+    }
+
+    public int getDimensionID() {
+        return dimensionID;
     }
 
     static Location getLocation(TileEntity tileEntity) {

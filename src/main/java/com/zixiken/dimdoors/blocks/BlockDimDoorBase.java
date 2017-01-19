@@ -3,7 +3,9 @@ package com.zixiken.dimdoors.blocks;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
+import com.zixiken.dimdoors.shared.TeleportHelper;
 import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 import javax.annotation.Nullable;
@@ -22,6 +24,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -34,7 +37,21 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 
     @Override
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
-        enterDimDoor(world, pos, entity);
+        IBlockState down = world.getBlockState(pos.down());
+        if (!world.isRemote && down.getBlock() == this) {
+            if (down.getValue(BlockDoor.OPEN)
+                    && entity instanceof EntityPlayer
+                    && isEntityFacingDoor(down, (EntityLivingBase) entity)) {
+                enterDimDoor(world, pos, entity);
+                this.toggleDoor(world, pos, false);
+                DimDoors.log(BlockDimDoorBase.class, "RiftID = " + getRiftTile(world, pos, world.getBlockState(pos)).riftID + " Derp");
+            }
+        } else {
+            BlockPos up = pos.up();
+            if (world.getBlockState(up).getBlock() == this) {
+                enterDimDoor(world, up, entity);
+            }
+        }
     }
 
     @Override
@@ -66,8 +83,6 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     @Override
     public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
         if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER) {
-            world.setTileEntity(pos, createNewTileEntity(world, 0));
-            updateAttachedTile(world, pos);
         }
     }
 
@@ -113,24 +128,25 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        return new TileEntityDimDoor();
+        TileEntityDimDoor dimDoor = new TileEntityDimDoor();
+        updateAttachedTile(world, dimDoor.getPos());
+        placeLink(new Location(world, dimDoor.getPos()));
+
+        return dimDoor;
     }
 
     @Override
     public void enterDimDoor(World world, BlockPos pos, Entity entity) {
-        // Check that this is the top block of the door
-        IBlockState state = world.getBlockState(pos.down());
-        if (!world.isRemote && state.getBlock() == this) {
-            if (state.getValue(BlockDoor.OPEN)
-                    && entity instanceof EntityPlayer
-                    && isEntityFacingDoor(state, (EntityLivingBase) entity)) {
-                this.toggleDoor(world, pos, false);
-                //DimDoors.log("RiftID = " + getRiftTile(world, pos, world.getBlockState(pos)).riftID);
-            }
-        } else {
-            BlockPos up = pos.up();
-            if (world.getBlockState(up).getBlock() == this) {
-                enterDimDoor(world, up, entity);
+        TileEntity te = world.getTileEntity(pos);
+
+        if(te != null && te instanceof DDTileEntityBase) {
+            DDTileEntityBase base = (DDTileEntityBase) te;
+            Location loc = RiftRegistry.Instance.getRiftLocation(base.pairedRiftID);
+
+            if(loc != null && loc.getTileEntity() instanceof DDTileEntityBase) {
+                loc = ((DDTileEntityBase) loc.getTileEntity()).getTeleportTarget();
+
+                TeleportHelper.teleport(entity, loc);
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.zixiken.dimdoors.blocks;
 
 import com.zixiken.dimdoors.items.ModItems;
+import com.zixiken.dimdoors.shared.Location;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
@@ -23,7 +24,7 @@ public class BlockDimDoorUnstable extends BlockDimDoorBase {
     }
 
     @Override
-    public void placeLink(World world, BlockPos pos) {
+    public void placeLink(Location location) {
     }
 
     @Override
