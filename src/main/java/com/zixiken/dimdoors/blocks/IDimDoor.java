@@ -2,7 +2,6 @@ package com.zixiken.dimdoors.blocks;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -19,16 +18,6 @@ public interface IDimDoor {
      * @param entity
      */
     public void enterDimDoor(World world, BlockPos pos, Entity entity);
-
-    /**
-     * called when a door is placed to determine how it will place a link
-     *
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     */
-    public void placeLink(World world, BlockPos pos);
 
     public Item getItemDoor();
 

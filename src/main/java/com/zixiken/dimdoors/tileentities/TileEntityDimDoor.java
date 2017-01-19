@@ -1,14 +1,15 @@
 package com.zixiken.dimdoors.tileentities;
 
+import com.zixiken.dimdoors.shared.RiftRegistry;
 import java.util.Random;
-
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
 public class TileEntityDimDoor extends DDTileEntityBase {
 
     public boolean openOrClosed;
-    public EnumFacing orientation;
+    public EnumFacing orientation = EnumFacing.SOUTH;
     public boolean hasExit;
     public byte lockStatus;
     public boolean isDungeonChainLink;
@@ -30,7 +31,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        super.writeToNBT(nbt);
+          super.writeToNBT(nbt);
 
         nbt.setBoolean("openOrClosed", this.openOrClosed);
         nbt.setBoolean("hasExit", this.hasExit);
@@ -54,5 +55,21 @@ public class TileEntityDimDoor extends DDTileEntityBase {
         }
 
         return rgbaColor;
+    }
+
+    /*@Override
+    public Location getTeleportTarget() {
+        EnumFacing facing = getWorld().getBlockState(getPos()).getValue(BlockDimDoor.FACING);
+
+        return new Location(world, pos.offset(facing));
+    }*/
+
+    @Override
+    public boolean tryTeleport(Entity entity) {
+        if (!isPaired()) {
+            //@todo try to automatically pair this door somehow
+        }
+        RiftRegistry.Instance.teleportEntityToRift(entity, getPairedRiftID());
+        return true;
     }
 }

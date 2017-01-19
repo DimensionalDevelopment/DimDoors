@@ -9,6 +9,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import java.util.HashMap;
 import java.util.Map;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -117,5 +118,9 @@ public class RiftRegistry {
 
     public DDTileEntityBase getLastChangedRift() {
         return lastBrokenRift;
+    }
+
+    public void teleportEntityToRift(Entity entity, int pairedRiftID) {
+        TeleportHelper.teleport(entity, getRiftLocation(pairedRiftID));
     }
 }

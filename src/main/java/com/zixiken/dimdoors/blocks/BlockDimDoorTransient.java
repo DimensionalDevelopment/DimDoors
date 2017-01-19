@@ -6,7 +6,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -38,10 +37,6 @@ public class BlockDimDoorTransient extends BlockDimDoorBase {
                 enterDimDoor(world, up, entity);
             }
         }
-    }
-
-    @Override
-    public void placeLink(World world, BlockPos pos) {
     }
 
     @Override

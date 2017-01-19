@@ -1,9 +1,11 @@
 package com.zixiken.dimdoors.tileentities;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import java.util.Random;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -11,9 +13,9 @@ import net.minecraft.world.World;
 
 public abstract class DDTileEntityBase extends TileEntity {
 
-    public boolean isPaired = false;
-    public int riftID = -1; //should not start at 0
-    public int pairedRiftID = -1;
+    private boolean isPaired = false;
+    private int riftID = -1; //should not start at 0
+    private int pairedRiftID = -1;
 
     public DDTileEntityBase() {
         super();
@@ -91,4 +93,22 @@ public abstract class DDTileEntityBase extends TileEntity {
             this.markDirty();
         }
     }
+
+    public int getRiftID() {
+        return riftID;
+    }
+
+    public int getPairedRiftID() {
+        return pairedRiftID;
+    }
+
+    public boolean isPaired() {
+        return isPaired;
+    }
+
+    public Location getTeleportTarget() {
+        return new Location(this.getWorld().provider.getDimension(), this.getPos());
+    }
+
+    public abstract boolean tryTeleport(Entity entity);
 }

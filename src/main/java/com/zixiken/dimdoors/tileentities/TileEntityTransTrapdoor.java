@@ -1,6 +1,7 @@
 package com.zixiken.dimdoors.tileentities;
 
 import java.util.Random;
+import net.minecraft.entity.Entity;
 
 public class TileEntityTransTrapdoor extends DDTileEntityBase {
 
@@ -17,5 +18,11 @@ public class TileEntityTransTrapdoor extends DDTileEntityBase {
             rgbaColor[2] = world.rand.nextFloat() * 0.6F + 0.5F;
         }
         return rgbaColor;
+    }
+
+    @Override
+    public boolean tryTeleport(Entity entity) {
+        //@todo teleport the player somewhere to the Overworld?
+        return false;
     }
 }

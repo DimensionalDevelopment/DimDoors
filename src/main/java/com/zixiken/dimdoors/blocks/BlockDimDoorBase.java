@@ -34,7 +34,20 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 
     @Override
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
-        enterDimDoor(world, pos, entity);
+        IBlockState down = world.getBlockState(pos.down());
+        if (!world.isRemote && down.getBlock() == this) {
+            if (down.getValue(BlockDoor.OPEN)
+                    && entity instanceof EntityPlayer
+                    && isEntityFacingDoor(down, (EntityLivingBase) entity)) {
+                this.toggleDoor(world, pos, false);
+                enterDimDoor(world, pos, entity);
+            }
+        } else {
+            BlockPos up = pos.up();
+            if (world.getBlockState(up).getBlock() == this) {
+                enterDimDoor(world, up, entity);
+            }
+        }
     }
 
     @Override
@@ -110,20 +123,12 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 
     @Override
     public void enterDimDoor(World world, BlockPos pos, Entity entity) {
-        // Check that this is the top block of the door
-        IBlockState state = world.getBlockState(pos.down());
-        if (!world.isRemote && state.getBlock() == this) {
-            if (state.getValue(BlockDoor.OPEN)
-                    && entity instanceof EntityPlayer
-                    && isEntityFacingDoor(state, (EntityLivingBase) entity)) {
-                this.toggleDoor(world, pos, false);
-                //DimDoors.log("RiftID = " + getRiftTile(world, pos, world.getBlockState(pos)).riftID);
-            }
+        DDTileEntityBase riftTile = getRiftTile(world, pos, world.getBlockState(pos));
+        if (riftTile.tryTeleport(entity)) {
+            //player is succesfully teleported
         } else {
-            BlockPos up = pos.up();
-            if (world.getBlockState(up).getBlock() == this) {
-                enterDimDoor(world, up, entity);
-            }
+            //@todo some kind of message that teleporting wasn't successfull
+            //probably should only happen on personal dimdoors
         }
     }
 
@@ -155,10 +160,11 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
             world.setBlockState(pos, ModBlocks.blockRift.getDefaultState());
             DDTileEntityBase newRift = (DDTileEntityBase) world.getTileEntity(pos);
             newRift.loadDataFrom(origRift);
-            DimDoors.log(this.getClass(), "New Rift rift-ID after breaking door " + newRift.riftID);
+            DimDoors.log(this.getClass(), "New Rift rift-ID after breaking door " + newRift.getRiftID());
         }
     }
 
+    //returns the DDTileEntityBase that is the tile entity belonging to the door block "state" at this "pos" in the "world"
     public DDTileEntityBase getRiftTile(World world, BlockPos pos, IBlockState state) {
         TileEntity tileEntity;
         if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER) {
