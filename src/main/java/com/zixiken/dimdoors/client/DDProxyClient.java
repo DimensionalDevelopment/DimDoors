@@ -7,7 +7,7 @@ import com.zixiken.dimdoors.tileentities.TileEntityTransTrapdoor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -38,6 +38,11 @@ public class DDProxyClient extends DDProxyCommon {
 
     @Override
     public World getDefWorld() {
-        return Minecraft.getMinecraft().getIntegratedServer().worldServerForDimension(0); //gets the client world dim 0 handler
+        return getWorldServer(0); //gets the client world dim 0 handler
+    }
+
+    @Override
+    public WorldServer getWorldServer(int dimId) {
+        return Minecraft.getMinecraft().getIntegratedServer().worldServerForDimension(dimId);
     }
 }

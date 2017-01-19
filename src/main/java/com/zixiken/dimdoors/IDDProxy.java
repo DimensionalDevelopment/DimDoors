@@ -7,6 +7,7 @@ package com.zixiken.dimdoors;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -23,6 +24,8 @@ public interface IDDProxy {
     public void onInitialization(FMLInitializationEvent event);
 
     public EntityPlayer getLocalPlayer();
+    
+    public WorldServer getWorldServer(int dimId);
 
     public World getDefWorld();
 }
