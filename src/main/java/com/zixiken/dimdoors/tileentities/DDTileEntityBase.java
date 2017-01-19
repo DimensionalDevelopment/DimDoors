@@ -12,9 +12,9 @@ import net.minecraft.world.World;
 
 public abstract class DDTileEntityBase extends TileEntity {
 
-    public boolean isPaired = false;
-    public int riftID = -1; //should not start at 0
-    public int pairedRiftID = -1;
+    private boolean isPaired = false;
+    private int riftID = -1; //should not start at 0
+    private int pairedRiftID = -1;
 
     /**
      *
@@ -85,6 +85,18 @@ public abstract class DDTileEntityBase extends TileEntity {
             pairedRiftID = rift2.pairedRiftID;
             this.markDirty();
         }
+    }
+
+    public int getRiftID() {
+        return riftID;
+    }
+
+    public int getPairedRiftID() {
+        return pairedRiftID;
+    }
+
+    public boolean isPaired() {
+        return isPaired;
     }
 
     public Location getTeleportTarget() {

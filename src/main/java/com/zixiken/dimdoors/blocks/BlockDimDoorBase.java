@@ -166,7 +166,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
             world.setBlockState(pos, ModBlocks.blockRift.getDefaultState());
             DDTileEntityBase newRift = (DDTileEntityBase) world.getTileEntity(pos);
             newRift.loadDataFrom(origRift);
-            DimDoors.log(this.getClass(), "New Rift rift-ID after breaking door " + newRift.riftID);
+            DimDoors.log(this.getClass(), "New Rift rift-ID after breaking door " + newRift.getRiftID());
         }
     }
 

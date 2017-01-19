@@ -108,7 +108,7 @@ public abstract class ItemDoorBase extends ItemDoor {
                 //start logging code
                 if (possibleOldRift instanceof DDTileEntityBase) { //
                     DDTileEntityBase oldRift = (DDTileEntityBase) possibleOldRift;
-                    DimDoors.log(this.getClass(), "Old Rift rift-ID before placement: " + oldRift.riftID);
+                    DimDoors.log(this.getClass(), "Old Rift rift-ID before placement: " + oldRift.getRiftID());
                 }
                 //end of logging code
                 EnumFacing enumfacing = EnumFacing.fromAngle((double) playerIn.rotationYaw);
@@ -123,12 +123,12 @@ public abstract class ItemDoorBase extends ItemDoor {
                 DDTileEntityBase newTileEntityDimDoor = (DDTileEntityBase) worldIn.getTileEntity(pos.up());
                 if (possibleOldRift instanceof DDTileEntityBase) { //
                     DDTileEntityBase oldRift = (DDTileEntityBase) possibleOldRift;
-                    DimDoors.log(this.getClass(), "Old Rift rift-ID after placement: " + oldRift.riftID);
+                    DimDoors.log(this.getClass(), "Old Rift rift-ID after placement: " + oldRift.getRiftID());
                     newTileEntityDimDoor.loadDataFrom(oldRift);
                 } else {
                     newTileEntityDimDoor.register();
                 }
-                DimDoors.log(this.getClass(), "New Door rift-ID after placement: " + newTileEntityDimDoor.riftID);
+                DimDoors.log(this.getClass(), "New Door rift-ID after placement: " + newTileEntityDimDoor.getRiftID());
 
                 return EnumActionResult.SUCCESS;
             } else {

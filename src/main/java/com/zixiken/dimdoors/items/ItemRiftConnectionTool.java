@@ -61,12 +61,12 @@ public class ItemRiftConnectionTool extends ItemTool {
     }
 
     private ActionResult<ItemStack> selectRift(ItemStack stack, World worldIn, DDTileEntityBase rift, EntityPlayer playerIn) {
-        DimDoors.log(this.getClass(), "Selecting rift with ID: " + rift.riftID);
+        DimDoors.log(this.getClass(), "Selecting rift with ID: " + rift.getRiftID());
         NBTTagCompound compound = stack.getTagCompound();
         if (compound.getBoolean("isInConnectMode")) {
             if (compound.hasKey("RiftID")) {
                 int primaryRiftID = compound.getInteger("RiftID");
-                int secondaryRiftID = rift.riftID;
+                int secondaryRiftID = rift.getRiftID();
                 if (!worldIn.isRemote) {
                     DimDoors.log(this.getClass(), "Pairing rifts with IDs: " + primaryRiftID + " and " + secondaryRiftID);
                     RiftRegistry.Instance.pair(primaryRiftID, secondaryRiftID);
@@ -74,11 +74,11 @@ public class ItemRiftConnectionTool extends ItemTool {
                 compound.removeTag("RiftID");
                 stack.damageItem(1, playerIn);
             } else {
-                compound.setInteger("RiftID", rift.riftID);
+                compound.setInteger("RiftID", rift.getRiftID());
             }
         } else {
             if (!worldIn.isRemote) {
-                RiftRegistry.Instance.unpair(rift.riftID);
+                RiftRegistry.Instance.unpair(rift.getRiftID());
             }
             stack.damageItem(1, playerIn);
         }
