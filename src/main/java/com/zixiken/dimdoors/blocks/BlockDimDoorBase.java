@@ -63,14 +63,6 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
         return state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER;
     }
 
-    @Override
-    public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
-        if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER) {
-            world.setTileEntity(pos, createNewTileEntity(world, 0));
-            updateAttachedTile(world, pos);
-        }
-    }
-
     //Called to update the render information on the tile entity. Could probably implement a data watcher,
     //but this works fine and is more versatile I think. 
     public BlockDimDoorBase updateAttachedTile(World world, BlockPos pos) {

@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.tileentities;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import java.util.Random;
 import net.minecraft.block.state.IBlockState;
@@ -13,6 +14,12 @@ public abstract class DDTileEntityBase extends TileEntity {
     public boolean isPaired = false;
     public int riftID = -1; //should not start at 0
     public int pairedRiftID = -1;
+
+    public DDTileEntityBase() {
+        super();
+        DimDoors.log(this.getClass(), "Printing stacktrace for debugging purposes:");
+        Thread.dumpStack();
+    }
 
     /**
      *

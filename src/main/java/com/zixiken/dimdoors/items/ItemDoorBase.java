@@ -60,6 +60,9 @@ public abstract class ItemDoorBase extends ItemDoor {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World worldIn, EntityPlayer playerIn, EnumHand hand) {
+        if (worldIn.isRemote) {
+            return new ActionResult(EnumActionResult.FAIL, stack);
+        }
         RayTraceResult hit = ItemDoorBase.doRayTrace(worldIn, playerIn, true);
         if (hit != null) {
             DimDoors.log(this.getClass(), "Hit is not null");
@@ -179,18 +182,5 @@ public abstract class ItemDoorBase extends ItemDoor {
 				list.add(line);
 			} else */ break;
         }
-    }
-
-    private boolean canDoorBePlacedOnRift(World worldIn, EntityPlayer playerIn) {
-        RayTraceResult hit = ItemDoorBase.doRayTrace(worldIn, playerIn, true);
-        if (hit != null) {
-            DimDoors.log(this.getClass(), "Hit is not null");
-            BlockPos pos = hit.getBlockPos();
-            if (worldIn.getBlockState(pos).getBlock() == ModBlocks.blockRift) {
-                return true;
-            }
-        }
-        DimDoors.log(this.getClass(), "Hit is null, or block at pos is not blockRift");
-        return false;
     }
 }
