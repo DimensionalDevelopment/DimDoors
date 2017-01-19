@@ -121,6 +121,6 @@ public class RiftRegistry {
     }
 
     public void teleportEntityToRift(Entity entity, int pairedRiftID) {
-        TeleportHelper.teleport(entity, getRiftLocation(pairedRiftID));
+        TeleportHelper.teleport(entity, ((DDTileEntityBase) getRiftLocation(pairedRiftID).getTileEntity()).getTeleportTarget());
     }
 }
