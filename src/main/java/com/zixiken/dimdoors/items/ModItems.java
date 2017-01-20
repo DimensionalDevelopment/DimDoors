@@ -17,6 +17,7 @@ public class ModItems {
     public static ItemDimDoorPersonal itemDimDoorPersonal;
     public static ItemBlockDimWall itemBlockDimWall;
     public static ItemRiftConnectionTool itemRiftConnectionTool;
+    public static ItemRiftBlade itemRiftBlade;
 
     public static void registerItems() {
         GameRegistry.register(itemDoorQuartz = new ItemDoorQuartz());
@@ -29,6 +30,7 @@ public class ModItems {
         GameRegistry.register(itemDimDoorChaos = new ItemDimDoorUnstable());
         GameRegistry.register(itemWorldThread = new ItemWorldThread());
         GameRegistry.register(itemRiftConnectionTool = new ItemRiftConnectionTool());
+        GameRegistry.register(itemRiftBlade = new ItemRiftBlade());
 
         //ItemBlocks
         GameRegistry.register(itemBlockDimWall = new ItemBlockDimWall());
