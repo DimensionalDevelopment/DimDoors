@@ -11,11 +11,8 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
     public boolean doorIsOpen = false;
     public EnumFacing orientation = EnumFacing.SOUTH;
-    public boolean hasExit = false;
     public byte lockStatus = 1;
-    public boolean isDungeonChainLink = false;
-    public boolean hasGennedPair = false;
-
+    
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
@@ -23,9 +20,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
         try {
             this.doorIsOpen = nbt.getBoolean("doorIsOpen");
             this.orientation = EnumFacing.getFront(nbt.getInteger("orientation"));
-            this.hasExit = nbt.getBoolean("hasExit");
-            this.isDungeonChainLink = nbt.getBoolean("isDungeonChainLink");
-            this.hasGennedPair = nbt.getBoolean("hasGennedPair");
+            this.lockStatus = nbt.getByte("lockStatus");
         } catch (Exception e) {
         }
     }
@@ -35,10 +30,8 @@ public class TileEntityDimDoor extends DDTileEntityBase {
         super.writeToNBT(nbt);
 
         nbt.setBoolean("doorIsOpen", this.doorIsOpen);
-        nbt.setBoolean("hasExit", this.hasExit);
         nbt.setInteger("orientation", this.orientation.getIndex());
-        nbt.setBoolean("isDungeonChainLink", isDungeonChainLink);
-        nbt.setBoolean("hasGennedPair", hasGennedPair);
+        nbt.setByte("lockStatus", lockStatus);
         return nbt;
     }
 
