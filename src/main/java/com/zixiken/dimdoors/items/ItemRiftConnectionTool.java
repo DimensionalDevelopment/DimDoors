@@ -35,6 +35,7 @@ public class ItemRiftConnectionTool extends ItemTool {
     ItemRiftConnectionTool() {
         super(1.0F, -2.8F, ToolMaterial.WOOD, new HashSet());
         //@todo add extra stuff?
+        this.setMaxDamage(16);
         setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setUnlocalizedName(ID);
         setRegistryName(ID);
