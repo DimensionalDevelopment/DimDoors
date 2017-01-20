@@ -36,6 +36,15 @@ public class CraftingManager {
                 "yxy", 'y', ModItems.itemDoorQuartz, 'x', ModItems.itemStableFabric);
 
         GameRegistry.addRecipe(new ShapedOreRecipe(ModItems.itemDoorQuartz,
-                "yy", "yy", "yy", 'y', "oreQuartz"));
+                "yy", "yy", "yy", 'y', "quartz"));
+        
+        GameRegistry.addRecipe(new ItemStack(ModItems.itemRiftBlade),
+                "y", "y", "x", 'y', ModItems.itemStableFabric, 'x', Items.IRON_SWORD);
+        
+        GameRegistry.addRecipe(new ItemStack(ModItems.itemRiftBlade),
+                "y", "y", "x", 'y', ModItems.itemStableFabric, 'x', Items.IRON_SWORD);
+        
+        GameRegistry.addRecipe(new ItemStack(ModItems.itemRiftConnectionTool),
+                " w ", "xyx", "xzx", 'z', Items.DIAMOND_SHOVEL, 'y', ModItems.itemStableFabric, 'x', ModItems.itemWorldThread, 'w', Items.DIAMOND);
     }
 }

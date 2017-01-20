@@ -1,11 +1,10 @@
 package com.zixiken.dimdoors.blocks;
 
-import com.zixiken.dimdoors.DimDoors;
-import java.util.*;
-
 import com.zixiken.dimdoors.client.ClosingRiftFX;
 import com.zixiken.dimdoors.items.ModItems;
+import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import com.zixiken.dimdoors.tileentities.TileEntityRift;
+import java.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.ITileEntityProvider;
@@ -26,8 +25,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
-import com.zixiken.dimdoors.client.GoggleRiftFX;
-import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -68,7 +65,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
         blocksImmuneToRift.add(Blocks.DIAMOND_BLOCK);
         blocksImmuneToRift.add(Blocks.EMERALD_BLOCK);
     }
-    
+
     @Override
     public boolean isReplaceable(IBlockAccess worldIn, BlockPos pos) {
         return false;
@@ -149,7 +146,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
                 worldIn,
                 x + .5, y + .5, z + .5,
                 rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
-        */
+         */
         if (tile.shouldClose) //renders an opposite color effect if it is being closed by the rift remover
         {
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(
