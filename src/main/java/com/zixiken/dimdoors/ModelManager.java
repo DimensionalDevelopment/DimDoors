@@ -37,6 +37,7 @@ public class ModelManager {
         register(ModItems.itemDimDoorWarp);
         register(ModItems.itemWorldThread);
         register(ModItems.itemRiftConnectionTool);
+        register(ModItems.itemRiftBlade);
     }
 
     public static void registerModelVariants() {
