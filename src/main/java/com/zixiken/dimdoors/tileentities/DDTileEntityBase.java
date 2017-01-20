@@ -28,7 +28,7 @@ public abstract class DDTileEntityBase extends TileEntity {
         return oldState.getBlock() != newSate.getBlock();
     }
 
-    public void pair(int otherRiftID) {
+    public void pair(int otherRiftID) { //should only ever be called from the RiftRegistry.pair method
         if (isPaired) {
             if (otherRiftID == pairedRiftID) {
                 return;
@@ -42,7 +42,7 @@ public abstract class DDTileEntityBase extends TileEntity {
         this.markDirty();
     }
 
-    public void unpair() {
+    public void unpair() { //should only ever be called from the RiftRegistry.unpair method
         if (!isPaired) {
             return;
         } else {

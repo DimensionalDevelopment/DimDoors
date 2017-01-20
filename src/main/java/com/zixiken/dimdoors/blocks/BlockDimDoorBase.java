@@ -126,7 +126,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
             //probably should only happen on personal dimdoors
             if (entity instanceof EntityPlayer) {
                 EntityPlayer entityPlayer = (EntityPlayer) entity;
-                DimDoors.chat(entityPlayer, "[DimDoors:] Teleporting failed, please report this to the mod authors.");
+                DimDoors.chat(entityPlayer, "Teleporting failed, but since mod is still in alpha, stuff like that might simply happen.");
             }
         }
     }

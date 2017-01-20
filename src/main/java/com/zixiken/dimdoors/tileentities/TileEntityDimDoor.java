@@ -66,6 +66,11 @@ public class TileEntityDimDoor extends DDTileEntityBase {
     @Override
     public boolean tryTeleport(Entity entity) {
         if (!isPaired()) {
+            int randomPairedRiftID =  RiftRegistry.Instance.getRandomUnpairedRiftID(getRiftID());
+            if (randomPairedRiftID < 0) {
+                return false;
+            }
+            RiftRegistry.Instance.pair(getRiftID(),randomPairedRiftID);
             //@todo try to automatically pair this door somehow
         }
         return RiftRegistry.Instance.teleportEntityToRift(entity, getPairedRiftID());
