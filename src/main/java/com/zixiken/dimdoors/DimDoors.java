@@ -40,6 +40,7 @@ public class DimDoors {
     @Mod.EventHandler
     public void onPreInitialization(FMLPreInitializationEvent event) {
         proxy.onPreInitialization(event);
+        DDConfig.loadConfig(event);
     }
 
     @Mod.EventHandler

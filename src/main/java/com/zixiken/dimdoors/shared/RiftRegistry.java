@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Random;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -23,17 +24,18 @@ import net.minecraft.world.World;
  */
 public class RiftRegistry {
 
-    private int maximumDungeonDepth = 2;
     private DDTileEntityBase lastBrokenRift = null; //@todo, redo this functionality in a more refined way
     public static final RiftRegistry Instance = new RiftRegistry();
 
     // Privates
     private int nextRiftID;
+    private int maximumDungeonDepth = 2;
     private final Map<Integer, Location> riftList; //maps all rifts in the world to their ID
     //@todo somehow remove rifts from this list even if they are removed in creative
     private final Map<Integer, Location> unpairedRiftList; //maps of all rifts in the world that are not paired to their ID
     private final List<Map<Integer, Location>> unpairedDepthRiftList; //List of all "unpairedRiftList s" per Dungeon Depth. Depth 0 is almost anything outside the dungeon dimension
     //@todo, once we have a dungeon dimension this List should be implemented (for determining what doors an unpaired door can link to)
+    //when adding any new variables, don't forget to add them to the write and load functions
 
     // Methods
     private RiftRegistry() {
@@ -58,30 +60,82 @@ public class RiftRegistry {
 
     public void readFromNBT(NBTTagCompound nbt) {
         nextRiftID = nbt.getInteger("nextUnusedID");
-        if (nbt.hasKey("riftData")) {
-            NBTTagCompound riftsNBT = nbt.getCompoundTag("riftData");
-            int i = 0;
-            String tag = "" + i;
-            while (riftsNBT.hasKey(tag)) {
-                NBTTagCompound riftNBT = riftsNBT.getCompoundTag(tag);
-                Location riftLocation = Location.readFromNBT(riftNBT);
-                riftList.put(i, riftLocation);
 
-                i++;
-                tag = "" + i;
+        if (nbt.hasKey("riftList")) {
+            NBTTagList riftsNBT = (NBTTagList) nbt.getTag("riftList");
+            for (int i = 0; i < riftsNBT.tagCount(); i++) {
+                NBTTagCompound riftTag = riftsNBT.getCompoundTagAt(i);
+                int riftID = riftTag.getInteger("riftID");
+                NBTTagCompound locationTag = riftTag.getCompoundTag("location");
+                Location riftLocation = Location.readFromNBT(locationTag);
+                riftList.put(riftID, riftLocation);
             }
         }
-        //@todo code for loading the other rift lists
+
+        if (nbt.hasKey("unpairedRiftList")) {
+            NBTTagList riftsNBT = (NBTTagList) nbt.getTag("unpairedRiftList");
+            for (int i = 0; i < riftsNBT.tagCount(); i++) {
+                NBTTagCompound riftTag = riftsNBT.getCompoundTagAt(i);
+                int riftID = riftTag.getInteger("riftID");
+                NBTTagCompound locationTag = riftTag.getCompoundTag("location");
+                Location riftLocation = Location.readFromNBT(locationTag);
+                unpairedRiftList.put(riftID, riftLocation);
+            }
+        }
+
+        if (nbt.hasKey("unpairedDepthRiftList")) {
+            unpairedDepthRiftList.clear(); //because its "maximum depth" (or in other words, "size()") could be re-determined by this action
+
+            NBTTagList riftListsNBT = (NBTTagList) nbt.getTag("unpairedDepthRiftList");
+            maximumDungeonDepth = riftListsNBT.tagCount(); //makes sure both are synched
+            for (int i = 0; i < riftListsNBT.tagCount(); i++) {
+                unpairedDepthRiftList.add(new HashMap());
+                NBTTagList riftsNBT = (NBTTagList) riftListsNBT.get(i);
+                for (int j = 0; j < riftsNBT.tagCount(); j++) {
+                    NBTTagCompound riftTag = riftsNBT.getCompoundTagAt(j);
+                    int riftID = riftTag.getInteger("riftID");
+                    NBTTagCompound locationTag = riftTag.getCompoundTag("location");
+                    Location riftLocation = Location.readFromNBT(locationTag);
+                    unpairedDepthRiftList.get(i).put(riftID, riftLocation);
+                }
+            }
+        }
     }
 
     public void writeToNBT(NBTTagCompound nbt) {
+        nbt.setInteger("maximumDungeonDepth", maximumDungeonDepth);
         nbt.setInteger("nextUnusedID", nextRiftID);
-        NBTTagCompound riftsNBT = new NBTTagCompound();
+
+        NBTTagList riftsNBT = new NBTTagList();
         for (Map.Entry<Integer, Location> entry : riftList.entrySet()) {
-            riftsNBT.setTag("" + entry.getKey(), Location.writeToNBT(entry.getValue()));
+            NBTTagCompound riftTag = new NBTTagCompound();
+            riftTag.setInteger("riftID", entry.getKey());
+            riftTag.setTag("location", Location.writeToNBT(entry.getValue()));
+            riftsNBT.appendTag(riftTag);
         }
-        nbt.setTag("riftData", riftsNBT);
-        //@todo code for loading the other rift lists
+        nbt.setTag("riftList", riftsNBT);
+
+        NBTTagList unpairedRiftsNBT = new NBTTagList();
+        for (Map.Entry<Integer, Location> entry : unpairedRiftList.entrySet()) {
+            NBTTagCompound riftTag = new NBTTagCompound();
+            riftTag.setInteger("riftID", entry.getKey());
+            riftTag.setTag("location", Location.writeToNBT(entry.getValue()));
+            unpairedRiftsNBT.appendTag(riftTag);
+        }
+        nbt.setTag("unpairedRiftList", unpairedRiftsNBT);
+
+        NBTTagList unpairedRiftListsNBT = new NBTTagList();
+        for (Map<Integer, Location> arrayEntry : unpairedDepthRiftList) {
+            NBTTagList unpairedRiftsNBT2 = new NBTTagList();
+            for (Map.Entry<Integer, Location> mapEntry : arrayEntry.entrySet()) {
+                NBTTagCompound riftTag = new NBTTagCompound();
+                riftTag.setInteger("riftID", mapEntry.getKey());
+                riftTag.setTag("location", Location.writeToNBT(mapEntry.getValue()));
+                unpairedRiftsNBT2.appendTag(riftTag);
+            }
+            unpairedRiftListsNBT.appendTag(unpairedRiftsNBT2);
+        }
+        nbt.setTag("unpairedDepthRiftList", unpairedRiftListsNBT);
     }
 
     public int registerNewRift(DDTileEntityBase rift) {
@@ -95,8 +149,9 @@ public class RiftRegistry {
         return nextRiftID - 1;
     }
 
-    public void unregisterRift(int riftID, World world) {
+    public void unregisterRift(int riftID) {
         if (riftList.containsKey(riftID)) {
+            unpair(riftID);
             riftList.remove(riftID);
             RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
         }

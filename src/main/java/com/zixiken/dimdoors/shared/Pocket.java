@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 
 /**
  *
@@ -16,30 +19,66 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 class Pocket {
 
-    private int ID;
-    private int size; //in chunks
-    private int depth;
-    private int typeID;
-    private Object coords; //0,0 should be 0,0, 1,1 should be 128,128 etc
+    private final int ID;
+    private final int size; //in chunks
+    private final int depth;
+    private final int typeID; // dungeon, pocket, or personal pocket
+    private final int x; //pocket-relative 0 coordinate, should be at x * PocketRegistry.Instance.gridSize * 16
+    private final int z; //pocket-relative 0 coordinate, should be at z * PocketRegistry.Instance.gridSize * 16
     private final List<String> playerUUIDs;
-    private final List<Integer> doorIDs;
+    private final List<Integer> doorIDs; //first one of these should be the entrance door? Does that even matter?
+    private final int entranceDoorID;
+    //when adding any new variables, don't forget to add them to the write and load functions
 
-    Pocket() {
+    public Pocket(int ID, int size, int depth, int typeID, int x, int z, int entranceDoorID) {
+        this.ID = ID;
+        this.size = size;
+        this.depth = depth;
+        this.typeID = typeID;
+        this.x = x;
+        this.z = z;
+        this.entranceDoorID = entranceDoorID; //keeping this stored after pocket generation for personal pocket dimensions mostly
         playerUUIDs = new ArrayList();
         doorIDs = new ArrayList();
     }
 
-    static Pocket readFromNBT(int ID, NBTTagCompound pocketNBT) {
-        Pocket pocket = new Pocket();
-        pocket.ID = ID;
-        pocket.size = pocketNBT.getInteger("size");
-        pocket.depth = pocketNBT.getInteger("depth");
-        pocket.typeID = pocketNBT.getInteger("typeID");
+    public int getID() {
+        return ID;
+    }
+    
+    public int getX() {
+        return x;
+    }
+    
+    public int getZ() {
+        return z;
+    }
 
-        //@todo pocket.coords = pocketNBT.get;
-        NBTTagCompound playersNBT = pocketNBT.getCompoundTag("players");
-        NBTTagCompound doorsNBT = pocketNBT.getCompoundTag("doors");
-        //@todo iterate through above two compound tags
+    int getEntranceDoorID() {
+        return entranceDoorID;
+    }
+
+    static Pocket readFromNBT(NBTTagCompound pocketNBT) {
+        int ID = pocketNBT.getInteger("ID");;
+        int size = pocketNBT.getInteger("size");
+        int depth = pocketNBT.getInteger("depth");
+        int typeID = pocketNBT.getInteger("typeID");
+        int x = pocketNBT.getInteger("x");
+        int z = pocketNBT.getInteger("z");
+        int entranceDoorID = pocketNBT.getInteger("entranceDoorID");
+        Pocket pocket = new Pocket(ID, size, depth, typeID, x, z, entranceDoorID);
+
+        NBTTagList playersTagList = (NBTTagList) pocketNBT.getTag("playerUUIDs");
+        for (int i = 0; i < playersTagList.tagCount(); i++) {
+            String playerUUID = playersTagList.getStringTagAt(i);
+            pocket.playerUUIDs.add(playerUUID);
+        }
+
+        NBTTagList doorsTagList = (NBTTagList) pocketNBT.getTag("doorIDs");
+        for (int i = 0; i < doorsTagList.tagCount(); i++) {
+            int doorID = doorsTagList.getIntAt(i);
+            pocket.doorIDs.add(doorID);
+        }
 
         return pocket;
     }
@@ -47,8 +86,28 @@ class Pocket {
     static NBTBase writeToNBT(Pocket pocket) {
         NBTTagCompound pocketNBT = new NBTTagCompound();
 
-        //@todo implement shit;
+        pocketNBT.setInteger("ID", pocket.ID);
+        pocketNBT.setInteger("size", pocket.size);
+        pocketNBT.setInteger("depth", pocket.depth);
+        pocketNBT.setInteger("typeID", pocket.typeID);
+        pocketNBT.setInteger("x", pocket.x);
+        pocketNBT.setInteger("z", pocket.z);
+        pocketNBT.setInteger("entranceDoorID", pocket.entranceDoorID);
+
+        NBTTagList playersTagList = new NBTTagList();
+        for (int i = 0; i < pocket.playerUUIDs.size(); i++) {
+            NBTTagString playerTag = new NBTTagString(pocket.playerUUIDs.get(i));
+            playersTagList.appendTag(playerTag);
+        }
+        pocketNBT.setTag("playerUUIDs", playersTagList);
+
+        NBTTagList doorsTagList = new NBTTagList();
+        for (int i = 0; i < pocket.doorIDs.size(); i++) {
+            NBTTagInt doorTag = new NBTTagInt(pocket.doorIDs.get(i));
+            doorsTagList.appendTag(doorTag);
+        }
+        pocketNBT.setTag("doorIDs", doorsTagList);
+
         return pocketNBT;
     }
-
 }

@@ -48,8 +48,7 @@ public class RiftSavedData extends DDSavedData {
         NBTTagCompound rifts = new NBTTagCompound();
         RiftRegistry.Instance.writeToNBT(rifts);
         riftnbt.setTag("rifts", rifts);
-
-        //@todo? saveNBTToPath(getSaveLocation(DimDoors.getDefWorld()), riftnbt);
+        
         return riftnbt;
     }
 
