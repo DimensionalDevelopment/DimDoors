@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.block.SoundType;
 import static net.minecraft.item.ItemDoor.placeDoor;
@@ -169,14 +170,5 @@ public abstract class ItemDoorBase extends ItemDoor {
         }
         Vec3d vec31 = vec3.addVector((double) f6 * d3, (double) f5 * d3, (double) f7 * d3);
         return world.rayTraceBlocks(vec3, vec31, useLiquids, !useLiquids, false);
-    }
-
-    public void translateAndAdd(String key, List<String> list) {
-        for (int i = 0; i < 10; i++) {
-            /*if(StatCollector.canTranslate(key+Integer.toString(i))) {
-				String line = StatCollector.translateToLocal(key + Integer.toString(i));
-				list.add(line);
-			} else */ break;
-        }
     }
 }

@@ -10,6 +10,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 
+import static com.zixiken.dimdoors.DimDoors.translateAndAdd;
+
 public class ItemDimDoorWarp extends ItemDoorBase {
 
     public static final String ID = "itemDimDoorWarp";
