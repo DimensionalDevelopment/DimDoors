@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 /**
@@ -24,6 +23,19 @@ public class DDConfig {
     private static int publicPocketSize = 2;
     private static String[] dungeonSchematicNames = {"", ""}; //@todo set default dungeon names
 
+    private static int setConfigIntWithMaxAndMin(Configuration config, String category, String key, int defaultValue, String comment, int minValue, int maxValue) {
+        Property prop = config.get(category, key, defaultValue,
+                comment, minValue, maxValue);
+        int value = prop.getInt(defaultValue);
+        if (value < minValue) {
+            value = minValue;
+        } else if (value > maxValue) {
+            value = maxValue;
+        }
+        prop.set(value);
+        return value;
+    }
+
     public static void loadConfig(FMLPreInitializationEvent event) {
 
         // Load config
@@ -32,26 +44,24 @@ public class DDConfig {
 
         // Setup general
         //@todo a comment in the config files about how these values only influence new worlds
-        Property prop = config.get(Configuration.CATEGORY_GENERAL, "pocketGridSize", pocketGridSize,
-                "Sets how many chunks apart all pockets in pocket dimensions should be placed. [min: 4, max: 16, default: 8]", 4, 8);
-        pocketGridSize = prop.getInt(pocketGridSize);
+        Property prop;
+        pocketGridSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "pocketGridSize", pocketGridSize,
+                "Sets how many chunks apart all pockets in pocket dimensions should be placed. [min: 4, max: 16, default: 8]", 4, 16);
+        DimDoors.log(DDConfig.class, "pocketGridSize was set to " + pocketGridSize);
 
-        prop = config.get(Configuration.CATEGORY_GENERAL, "maxPocketSize", maxPocketSize,
+        maxPocketSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "maxPocketSize", maxPocketSize,
                 "Sets how many deep and wide any pocket can be. [min: 1, max: pocketGridSize/2, default: 4]", 1, (int) (((double) pocketGridSize / 2) - 0.5));
-        maxPocketSize = prop.getInt(maxPocketSize);
 
-        prop = config.get(Configuration.CATEGORY_GENERAL, "privatePocketSize", privatePocketSize,
+        privatePocketSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "privatePocketSize", privatePocketSize,
                 "Sets how many deep and wide any personal pocket can be. [min: 1, max: maxPocketsSize, default: 3]", 1, maxPocketSize);
-        privatePocketSize = prop.getInt(privatePocketSize);
 
-        prop = config.get(Configuration.CATEGORY_GENERAL, "publicPocketSize", publicPocketSize,
+        publicPocketSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "publicPocketSize", publicPocketSize,
                 "Sets how many deep and wide any public pocket can be. [min: 1, max: maxPocketsSize, default: 2]", 1, maxPocketSize);
-        publicPocketSize = prop.getInt(publicPocketSize);
 
-        prop = config.get(Configuration.CATEGORY_GENERAL, "dungeonSchematicNames", dungeonSchematicNames, 
+        prop = config.get(Configuration.CATEGORY_GENERAL, "dungeonSchematicNames", dungeonSchematicNames,
                 "List of names of Pockets' jSon- and Schematic file names excluding extention. Custom json and schematic files can be dropped in the corresponding folders.");
         dungeonSchematicNames = prop.getStringList();
-        
+
         // Save config
         config.save();
     }

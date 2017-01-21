@@ -40,9 +40,10 @@ public class SchematicHandler {
         personalPocketSchematic = loadSchematic("defaultPersonal", PocketRegistry.Instance.getPrivatePocketSize());
         publicPocketSchematic = loadSchematic("defaultPublic", PocketRegistry.Instance.getPublicPocketSize());
         dungeonSchematics = new ArrayList();
-        List<String> dungeonSchematicNameStrings = DDConfig.getDungeonSchematicNames(); //@todo load default dungeon schematics AND user-added schematics
+        List<String> dungeonSchematicNameStrings = DDConfig.getDungeonSchematicNames();
+        int maxPocketSize = PocketRegistry.Instance.getMaxPocketSize();
         for (String nameString : dungeonSchematicNameStrings) {
-            PocketPlacer schematic = loadSchematic(nameString, PocketRegistry.Instance.getMaxPocketSize()); //should keep in mind the globally set maximum schematic size
+            PocketPlacer schematic = loadSchematic(nameString, maxPocketSize);
             if (schematic != null) {
                 dungeonSchematics.add(schematic);
             }
