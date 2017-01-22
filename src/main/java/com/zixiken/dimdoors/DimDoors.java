@@ -4,6 +4,7 @@ import com.zixiken.dimdoors.items.ModItems;
 import com.zixiken.dimdoors.shared.PocketSavedData;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.RiftSavedData;
+import com.zixiken.dimdoors.shared.SchematicHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -54,6 +55,7 @@ public class DimDoors {
         RiftRegistry.Instance.reset();
         PocketSavedData.get(getDefWorld());
         RiftSavedData.get(getDefWorld());
+        SchematicHandler.Instance.loadSchematics();
     }
 
     public static boolean isClient() {

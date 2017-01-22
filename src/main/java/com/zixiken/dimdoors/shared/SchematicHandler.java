@@ -16,43 +16,40 @@ import java.util.List;
 public class SchematicHandler {
 
     public static final SchematicHandler Instance = new SchematicHandler();
-    private PocketPlacer personalPocketSchematic;
-    private PocketPlacer publicPocketSchematic;
-    private List<PocketPlacer> dungeonSchematics;
+    private PocketTemplate personalPocketSchematic;
+    private PocketTemplate publicPocketSchematic;
+    private List<PocketTemplate> dungeonSchematics;
 
-    private SchematicHandler() {
-        loadSchematics();
-    }
-
-    PocketPlacer getPersonalPocketSchematic(int maxPocketSize) {
+    PocketTemplate getPersonalPocketSchematic(int maxPocketSize) {
         return personalPocketSchematic;
     }
 
-    PocketPlacer getPublicPocketSchematic(int maxPocketSize) {
+    PocketTemplate getPublicPocketSchematic(int maxPocketSize) {
         return publicPocketSchematic;
     }
 
-    PocketPlacer getRandomDungeonSchematic(int depth, int maxPocketSize) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    PocketTemplate getRandomDungeonSchematic(int depth, int maxPocketSize) {
+
     }
 
-    private void loadSchematics() {
-        personalPocketSchematic = loadSchematic("defaultPersonal", PocketRegistry.Instance.getPrivatePocketSize());
-        publicPocketSchematic = loadSchematic("defaultPublic", PocketRegistry.Instance.getPublicPocketSize());
+    public void loadSchematics() {
+        personalPocketSchematic = loadSchematicsFromJson("defaultPersonal", PocketRegistry.Instance.getPrivatePocketSize()).get(0);
+        publicPocketSchematic = loadSchematicsFromJson("defaultPublic", PocketRegistry.Instance.getPublicPocketSize()).get(0);
         dungeonSchematics = new ArrayList();
         List<String> dungeonSchematicNameStrings = DDConfig.getDungeonSchematicNames();
         int maxPocketSize = PocketRegistry.Instance.getMaxPocketSize();
         for (String nameString : dungeonSchematicNameStrings) {
-            PocketPlacer schematic = loadSchematic(nameString, maxPocketSize);
-            if (schematic != null) {
-                dungeonSchematics.add(schematic);
+            List<PocketTemplate> schematics = loadSchematicsFromJson(nameString, maxPocketSize);
+            if (schematics != null) {
+                for (PocketTemplate schematic : schematics) {
+                    dungeonSchematics.add(schematic);
+                }
             }
         }
     }
 
-    private PocketPlacer loadSchematic(String nameString, int maxPocketSize) {
+    private List<PocketTemplate> loadSchematicsFromJson(String nameString, int maxPocketSize) { //depending on the "jSonType" value in the jSon, this might load several variations of a pocket at once
         //check for json files in both directories (inside the mod jar, and inside the dimdoors config folder)
         //check if the json has a "variant" with the correct pocket size, if it doesn't, pick the largest smaller variant. If there's only bigger variants, cancel
     }
-
 }

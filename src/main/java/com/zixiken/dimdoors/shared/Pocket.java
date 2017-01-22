@@ -22,7 +22,7 @@ class Pocket {
     private final int ID;
     private final int size; //in chunks
     private final int depth;
-    private final int typeID; // dungeon, pocket, or personal pocket
+    private final EnumPocketType typeID; // dungeon, pocket, or personal pocket
     private final int x; //pocket-relative 0 coordinate, should be at x * PocketRegistry.Instance.gridSize * 16
     private final int z; //pocket-relative 0 coordinate, should be at z * PocketRegistry.Instance.gridSize * 16
     private final List<String> playerUUIDs;
@@ -30,7 +30,7 @@ class Pocket {
     private final int entranceDoorID;
     //when adding any new variables, don't forget to add them to the write and load functions
 
-    public Pocket(int ID, int size, int depth, int typeID, int x, int z, int entranceDoorID) {
+    public Pocket(int ID, int size, int depth, EnumPocketType typeID, int x, int z, int entranceDoorID) {
         this.ID = ID;
         this.size = size;
         this.depth = depth;
@@ -62,7 +62,7 @@ class Pocket {
         int ID = pocketNBT.getInteger("ID");;
         int size = pocketNBT.getInteger("size");
         int depth = pocketNBT.getInteger("depth");
-        int typeID = pocketNBT.getInteger("typeID");
+        EnumPocketType typeID = EnumPocketType.getFromInt(pocketNBT.getInteger("typeID"));
         int x = pocketNBT.getInteger("x");
         int z = pocketNBT.getInteger("z");
         int entranceDoorID = pocketNBT.getInteger("entranceDoorID");
@@ -89,7 +89,7 @@ class Pocket {
         pocketNBT.setInteger("ID", pocket.ID);
         pocketNBT.setInteger("size", pocket.size);
         pocketNBT.setInteger("depth", pocket.depth);
-        pocketNBT.setInteger("typeID", pocket.typeID);
+        pocketNBT.setInteger("typeID", pocket.typeID.getIntValue());
         pocketNBT.setInteger("x", pocket.x);
         pocketNBT.setInteger("z", pocket.z);
         pocketNBT.setInteger("entranceDoorID", pocket.entranceDoorID);

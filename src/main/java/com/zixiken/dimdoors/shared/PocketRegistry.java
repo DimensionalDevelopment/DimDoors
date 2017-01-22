@@ -33,19 +33,19 @@ public class PocketRegistry {
     private PocketRegistry() {
         pocketList = new HashMap();
     }
-    
+
     public int getGridSize() {
         return gridSize;
     }
-    
+
     public int getMaxPocketSize() {
         return maxPocketSize;
     }
-    
+
     public int getPrivatePocketSize() {
         return privatePocketSize;
     }
-    
+
     public int getPublicPocketSize() {
         return publicPocketSize;
     }
@@ -112,7 +112,7 @@ public class PocketRegistry {
         return pocketList.get(ID);
     }
 
-    public int getEntranceDoorIDOfNewPocket(int typeID, int depth) {//should return the riftID of the entrance door of the newly generated pocket
+    public int getEntranceDoorIDOfNewPocket(EnumPocketType typeID, int depth) {//should return the riftID of the entrance door of the newly generated pocket
         Location shortenedLocation = getGenerationlocation(nextUnusedID, typeID);
         int x = shortenedLocation.getPos().getX();
         int z = shortenedLocation.getPos().getZ();
@@ -123,14 +123,14 @@ public class PocketRegistry {
         return entranceDoorID;
     }
 
-    private Pocket generateRandomPocketAt(int typeID, int depth, Location shortenedLocation) {
+    private Pocket generateRandomPocketAt(EnumPocketType typeID, int depth, Location shortenedLocation) {
         int x = shortenedLocation.getPos().getX();
         int z = shortenedLocation.getPos().getZ();
         int actualX = x * gridSize * 16;
         int actualZ = z * gridSize * 16;
         int dimID = shortenedLocation.getDimensionID();
 
-        PocketPlacer pocketPlacer = getPocketPlacer(typeID, depth, maxPocketSize);
+        PocketTemplate pocketPlacer = getPocketTemplate(typeID, depth, maxPocketSize);
 
         int entranceDoorID = pocketPlacer.place(actualX, 0, actualZ, dimID);
 
@@ -143,7 +143,7 @@ public class PocketRegistry {
         throw new UnsupportedOperationException("Not supported yet."); //@todo
     }
 
-    private Location getGenerationlocation(int nextUnusedID, int typeID) { //typeID is for determining the dimension
+    private Location getGenerationlocation(int nextUnusedID, EnumPocketType typeID) { //typeID is for determining the dimension
         int x = getSimpleX(nextUnusedID);
         int y = 0;
         int z = getSimpleZ(nextUnusedID);;
@@ -153,13 +153,15 @@ public class PocketRegistry {
         return location;
     }
 
-    private PocketPlacer getPocketPlacer(int typeID, int depth, int maxPocketSize) {
-        if (typeID == 0) {
-            return SchematicHandler.Instance.getPersonalPocketSchematic(maxPocketSize);
-        } else if (typeID == 1) {
-            return SchematicHandler.Instance.getPublicPocketSchematic(maxPocketSize);
-        } else {
-            return SchematicHandler.Instance.getRandomDungeonSchematic(depth, maxPocketSize);
+    private PocketTemplate getPocketTemplate(EnumPocketType typeID, int depth, int maxPocketSize) {
+        switch (typeID) {
+            case PRIVATE:
+                return SchematicHandler.Instance.getPersonalPocketSchematic(maxPocketSize);
+            case PUBLIC:
+                return SchematicHandler.Instance.getPublicPocketSchematic(maxPocketSize);
+            case DUNGEON:
+            default:
+                return SchematicHandler.Instance.getRandomDungeonSchematic(depth, maxPocketSize);
         }
     }
 
