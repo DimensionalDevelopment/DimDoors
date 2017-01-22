@@ -7,7 +7,9 @@ package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.DDConfig;
 import com.zixiken.dimdoors.DimDoors;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -25,13 +27,17 @@ public class PocketRegistry {
     private int maxPocketSize;
     private int privatePocketSize;
     private int publicPocketSize;
-    private int nextUnusedID = -1;
+    private int nextUnusedID = 0;
+    private final Map<String, Integer> privatePockets; //maps the UUID's of players to their private pocket's ID
     private final Map<Integer, Pocket> pocketList;
     //when adding any new variables, don't forget to add them to the write and load functions
+    private final List<Map<Integer, Pocket>> pocketListsPerDepth;
 
     // Methods
     private PocketRegistry() {
+        privatePockets = new HashMap();
         pocketList = new HashMap();
+        pocketListsPerDepth = new ArrayList();
     }
 
     public int getGridSize() {
@@ -113,12 +119,11 @@ public class PocketRegistry {
     }
 
     public int getEntranceDoorIDOfNewPocket(EnumPocketType typeID, int depth) {//should return the riftID of the entrance door of the newly generated pocket
-        Location shortenedLocation = getGenerationlocation(nextUnusedID, typeID);
+        Location shortenedLocation = getGenerationlocation(nextUnusedID, typeID); //@todo, we should have different values of "nextUnusedID"  for different pocket-types
         int x = shortenedLocation.getPos().getX();
         int z = shortenedLocation.getPos().getZ();
         Pocket pocket = generateRandomPocketAt(typeID, depth, shortenedLocation);
-        registerNewPocket(pocket);
-        nextUnusedID++;
+        registerNewPocket(pocket); //nextUnusedID++
         int entranceDoorID = pocket.getEntranceDoorID();
         return entranceDoorID;
     }
@@ -135,7 +140,6 @@ public class PocketRegistry {
         int entranceDoorID = pocketPlacer.place(actualX, 0, actualZ, dimID);
 
         Pocket pocket = new Pocket(nextUnusedID, pocketPlacer.getSize(), depth, typeID, x, z, entranceDoorID);
-
         return pocket;
     }
 
@@ -161,7 +165,7 @@ public class PocketRegistry {
                 return SchematicHandler.Instance.getPublicPocketSchematic(maxPocketSize);
             case DUNGEON:
             default:
-                return SchematicHandler.Instance.getRandomDungeonSchematic(depth, maxPocketSize);
+                return SchematicHandler.Instance.getRandomDungeonPocketTemplate(depth, maxPocketSize);
         }
     }
 

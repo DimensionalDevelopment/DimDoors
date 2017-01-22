@@ -23,7 +23,7 @@ import net.minecraft.world.World;
  */
 class PocketTemplate { //there is exactly one pocket placer for each different schematic that is loaded into the game (a Json might load several schematics though)
 
-    private final int[] weights;
+    private final int[] weights; //weights for chanced generation of dungeons per depth level | weights[0] is the weight for depth "minDepth"
     private final int minDepth;
     private final int maxDepth;
     private final int size;
@@ -55,6 +55,22 @@ class PocketTemplate { //there is exactly one pocket placer for each different s
     //this class should contain the actual schematic info, as well as some of the Json info (placement of Rifts and stuff)
     int getSize() {
         return size;
+    }
+
+    int getMinDepth() {
+        return minDepth;
+    }
+
+    int getMaxDepth() {
+        return maxDepth;
+    }
+    
+    int getWeight(int depth) {
+        int index = depth - minDepth;
+        if (index >= 0 && index < weights.length) {
+            return weights[index];
+        }
+        return 0; //do not generate
     }
 
     int place(int xBase, int yBase, int zBase, int dimID) { //returns the riftID of the entrance DimDoor
@@ -186,5 +202,4 @@ class PocketTemplate { //there is exactly one pocket placer for each different s
             return EnumFacing.NORTH;
         }
     }
-
 }

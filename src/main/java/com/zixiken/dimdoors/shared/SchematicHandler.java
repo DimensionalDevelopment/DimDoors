@@ -8,6 +8,7 @@ package com.zixiken.dimdoors.shared;
 import com.zixiken.dimdoors.DDConfig;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -28,8 +29,27 @@ public class SchematicHandler {
         return publicPocketSchematic;
     }
 
-    PocketTemplate getRandomDungeonSchematic(int depth, int maxPocketSize) {
-
+    PocketTemplate getRandomDungeonPocketTemplate(int depth, int maxPocketSize) {
+        List<PocketTemplate> validTemplates = new ArrayList();
+        int totalWeight = 0;
+        for (PocketTemplate template : dungeonSchematics) {
+            if (template.getMinDepth() > depth || template.getMaxDepth() < depth) {
+                //do nothing
+            } else {
+                validTemplates.add(template);
+                totalWeight += template.getWeight(depth);
+            }
+        }
+        
+        Random random = new Random();
+        int chosenTemplatePointer = random.nextInt(totalWeight);
+        for (PocketTemplate template : validTemplates) {
+            if (chosenTemplatePointer < 0) {            
+                return template;
+            }
+            chosenTemplatePointer -= template.getWeight(depth);
+        }
+        return null;
     }
 
     public void loadSchematics() {
