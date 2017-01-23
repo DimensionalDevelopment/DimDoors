@@ -5,8 +5,12 @@
  */
 package com.zixiken.dimdoors;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -17,11 +21,12 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
  */
 public class DDConfig {
 
+    public static File configurationFolder;
     private static int pocketGridSize = 8;
     private static int maxPocketSize = 4;
     private static int privatePocketSize = 3;
     private static int publicPocketSize = 2;
-    private static String[] dungeonSchematicNames = {"", ""}; //@todo set default dungeon names
+    private static String[] dungeonSchematicNames = {}; //@todo set default dungeon names
 
     private static int setConfigIntWithMaxAndMin(Configuration config, String category, String key, int defaultValue, String comment, int minValue, int maxValue) {
         Property prop = config.get(category, key, defaultValue,
@@ -39,6 +44,14 @@ public class DDConfig {
     public static void loadConfig(FMLPreInitializationEvent event) {
 
         // Load config
+        configurationFolder = new File(event.getModConfigurationDirectory(), "/DimDoors");
+        if (!configurationFolder.exists()) {
+            try {
+                configurationFolder.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(DDConfig.class.getName()).log(Level.SEVERE, "Dimdoors config folder could not be created.", ex);
+            }
+        }
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();
 
