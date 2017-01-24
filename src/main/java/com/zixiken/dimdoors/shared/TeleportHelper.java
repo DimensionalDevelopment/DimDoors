@@ -25,7 +25,7 @@ public class TeleportHelper extends Teleporter {
     }
 
     public static boolean teleport(Entity entity, Location newLocation) {
-        if (entity instanceof EntityPlayerSP) {
+        if (DimDoors.isClient()) {
             //DimDoors.log(TeleportHelper.class, "Not teleporting, because EntityPlayerSP.");
             return false;
         }
