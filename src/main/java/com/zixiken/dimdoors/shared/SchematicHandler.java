@@ -20,9 +20,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompressedStreamTools;
 
 /**
  *
@@ -68,8 +69,6 @@ public class SchematicHandler {
     }
 
     public void loadSchematics() {
-        
-        StructureLoader.loadStructures(DimDoors.getDefWorld()); //@todo change this to get the DimDoors Dimension?
         personalPocketTemplate = loadTemplatesFromJson("defaultPersonal", PocketRegistry.Instance.getPrivatePocketSize()).get(0);
         publicPocketTemplate = loadTemplatesFromJson("defaultPublic", PocketRegistry.Instance.getPublicPocketSize()).get(0);
         dungeonTemplates = new ArrayList();
@@ -90,6 +89,7 @@ public class SchematicHandler {
     private List<PocketTemplate> loadTemplatesFromJson(String nameString, int maxPocketSize) { //depending on the "jSonType" value in the jSon, this might load several variations of a pocket at once, hence loadTemplate -->s<--
         File jsonFolder = new File(DDConfig.configurationFolder, "/Jsons");
         File jsonFile = new File(jsonFolder, "/" + nameString + ".json");
+        File schematicFolder = new File(DDConfig.configurationFolder, "/Schematics");
         String jsonString = null;
         try {
             jsonString = readFile(jsonFile.getAbsolutePath(), StandardCharsets.UTF_8);
@@ -102,9 +102,20 @@ public class SchematicHandler {
         List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate, maxPocketSize);
 
         for (PocketTemplate template : validTemplates) { //it's okay to "tap" this for-loop, even if validTemplates is empty.
-            Schematic schematic = StructureLoader.loadedSchemas.get(template.getName());
+            File schematicFile = new File(schematicFolder, "/" + template.getName() + ".schem");
+            NBTTagCompound schematicNBT;
+            Schematic schematic = null;
+            try {
+                schematicNBT = CompressedStreamTools.read(schematicFile);
+                schematic = Schematic.loadFromNBT(schematicNBT);
+            } catch (IOException ex) {
+                Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for schematic " + template.getName() + " was not found in template folder.", ex);
+            }
+            if (schematic != null && (schematic.width > (template.getSize()) * 16 || schematic.length > (template.getSize()) * 16)) {
+                schematic = null;
+                DimDoors.log(this.getClass(), "Schematic " + template.getName() + ".schem was bigger than specified in " + nameString + ".json and therefore wasn't loaded");
+            }
             template.setSchematic(schematic);
-            //@todo make sure that the dungeon content fits inside the pocket walls (and floor and roof) and otherwise ¿crop it?
         }
         //@todo check for json files in both directories (inside the mod jar, and inside the dimdoors config folder)
         return validTemplates;
@@ -139,12 +150,6 @@ public class SchematicHandler {
             if (chosenVariation != null) {
                 //this block equals
                 String variantName = chosenVariation.get("variantName").getAsString();
-                int entranceDoorX = chosenVariation.get("entranceDoorX").getAsInt();
-                int entranceDoorY = chosenVariation.get("entranceDoorY").getAsInt();
-                int entranceDoorZ = chosenVariation.get("entranceDoorZ").getAsInt();
-                int wallThickness = chosenVariation.get("wallThickness").getAsInt();
-                int floorThickness = chosenVariation.get("floorThickness").getAsInt();
-                int roofThickness = chosenVariation.get("roofThickness").getAsInt();
                 EnumPocketType typeID = EnumPocketType.getFromInt(chosenVariation.get("typeID").getAsInt());
                 int minDepth = chosenVariation.get("minDepth").getAsInt();
                 int maxDepth = chosenVariation.get("maxDepth").getAsInt();
@@ -153,8 +158,7 @@ public class SchematicHandler {
                 for (int i = 0; i < weightsJsonArray.size(); i++) {
                     weights[i] = weightsJsonArray.get(i).getAsInt();
                 }
-                PocketTemplate pocketTemplate = new PocketTemplate(variantName, chosenVariationSize, entranceDoorX, entranceDoorY, entranceDoorZ,
-                        wallThickness, floorThickness, roofThickness, typeID, minDepth, maxDepth, weights);
+                PocketTemplate pocketTemplate = new PocketTemplate(variantName, chosenVariationSize, typeID, minDepth, maxDepth, weights);
                 pocketTemplates.add(pocketTemplate);
                 ///this block equals
             }
@@ -165,12 +169,6 @@ public class SchematicHandler {
                 if (variationSize <= maxPocketSize) {
                     //this block
                     String variantName = variation.get("variantName").getAsString();
-                    int entranceDoorX = variation.get("entranceDoorX").getAsInt();
-                    int entranceDoorY = variation.get("entranceDoorY").getAsInt();
-                    int entranceDoorZ = variation.get("entranceDoorZ").getAsInt();
-                    int wallThickness = variation.get("wallThickness").getAsInt();
-                    int floorThickness = variation.get("floorThickness").getAsInt();
-                    int roofThickness = variation.get("roofThickness").getAsInt();
                     EnumPocketType typeID = EnumPocketType.getFromInt(variation.get("typeID").getAsInt());
                     int minDepth = variation.get("minDepth").getAsInt();
                     int maxDepth = variation.get("maxDepth").getAsInt();
@@ -179,8 +177,7 @@ public class SchematicHandler {
                     for (int j = 0; j < weightsJsonArray.size(); j++) {
                         weights[j] = weightsJsonArray.get(j).getAsInt();
                     }
-                    PocketTemplate pocketTemplate = new PocketTemplate(variantName, variationSize, entranceDoorX, entranceDoorY, entranceDoorZ,
-                            wallThickness, floorThickness, roofThickness, typeID, minDepth, maxDepth, weights);
+                    PocketTemplate pocketTemplate = new PocketTemplate(variantName, variationSize, typeID, minDepth, maxDepth, weights);
                     pocketTemplates.add(pocketTemplate);
                     ///this block
                 }

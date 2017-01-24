@@ -19,7 +19,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameData;
 
 /**
  *
@@ -44,7 +43,7 @@ class Schematic {
     private Schematic() {
     }
 
-    Schematic loadFromNBT(NBTTagCompound nbt) {
+    static Schematic loadFromNBT(NBTTagCompound nbt) {
         Schematic schematic = new Schematic();
 
         schematic.version = nbt.getInteger("Version");
@@ -93,7 +92,7 @@ class Schematic {
                 blockstate = getBlockStateWithProperties(block, properties); //@todo get the blockState from string
             } else {
             }
-            pallette.add(blockstate);
+            schematic.pallette.add(blockstate);
         }
 
         byte[] blockDataIntArray = nbt.getByteArray("BlockData");
@@ -115,7 +114,7 @@ class Schematic {
         return schematic;
     }
 
-    private IBlockState getBlockStateWithProperties(Block block, String[] properties) {
+    private static IBlockState getBlockStateWithProperties(Block block, String[] properties) {
         Map<String, String> propertyAndBlockStringsMap = new HashMap();
         for (int i = 0; i < properties.length; i++) {
             String propertyString = properties[i];
