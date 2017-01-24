@@ -14,6 +14,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
@@ -21,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraft.block.SoundType;
 import static net.minecraft.item.ItemDoor.placeDoor;
@@ -65,7 +67,7 @@ public abstract class ItemDoorBase extends ItemDoor {
         if (worldIn.isRemote) {
             return new ActionResult(EnumActionResult.FAIL, stack);
         }
-        RayTraceResult hit = ItemDoorBase.doRayTrace(worldIn, playerIn, true);
+        RayTraceResult hit = rayTrace(worldIn, playerIn, true);
         if (hit != null) {
             BlockPos pos = hit.getBlockPos();
             if (worldIn.getBlockState(pos).getBlock() == ModBlocks.blockRift) {
@@ -140,43 +142,5 @@ public abstract class ItemDoorBase extends ItemDoor {
         IBlockState state = world.getBlockState(pos);
 
         return (state.getBlock() == ModBlocks.blockRift || state.equals(Blocks.AIR) || state.getMaterial().isReplaceable());
-    }
-
-    /**
-     * Copied from minecraft Item.class TODO we probably can improve this
-     *
-     * @param world
-     * @param player
-     * @param useLiquids
-     * @return
-     */
-    protected static RayTraceResult doRayTrace(World world, EntityPlayer player, boolean useLiquids) {
-        float f = player.rotationPitch;
-        float f1 = player.rotationYaw;
-        double d0 = player.posX;
-        double d1 = player.posY + (double) player.getEyeHeight();
-        double d2 = player.posZ;
-        Vec3d vec3 = new Vec3d(d0, d1, d2);
-        float f2 = MathHelper.cos(-f1 * 0.017453292F - (float) Math.PI);
-        float f3 = MathHelper.sin(-f1 * 0.017453292F - (float) Math.PI);
-        float f4 = -MathHelper.cos(-f * 0.017453292F);
-        float f5 = MathHelper.sin(-f * 0.017453292F);
-        float f6 = f3 * f4;
-        float f7 = f2 * f4;
-        double d3 = 5.0D;
-        if (player instanceof EntityPlayerMP) {
-            d3 = ((EntityPlayerMP) player).interactionManager.getBlockReachDistance();
-        }
-        Vec3d vec31 = vec3.addVector((double) f6 * d3, (double) f5 * d3, (double) f7 * d3);
-        return world.rayTraceBlocks(vec3, vec31, useLiquids, !useLiquids, false);
-    }
-
-    public void translateAndAdd(String key, List<String> list) {
-        for (int i = 0; i < 10; i++) {
-            /*if(StatCollector.canTranslate(key+Integer.toString(i))) {
-				String line = StatCollector.translateToLocal(key + Integer.toString(i));
-				list.add(line);
-			} else */ break;
-        }
     }
 }

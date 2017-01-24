@@ -7,6 +7,8 @@ import com.zixiken.dimdoors.blocks.ModBlocks;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
+import static com.zixiken.dimdoors.DimDoors.translateAndAdd;
+
 public class ItemDimDoorGold extends ItemDoorBase {
 
     public static final String ID = "itemDimDoorGold";

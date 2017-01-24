@@ -24,9 +24,6 @@ public abstract class DDProxyCommon implements IDDProxy {
         ModBlocks.registerBlocks();
         ModItems.registerItems();
 
-        ModelManager.registerModelVariants();
-        ModelManager.addCustomStateMappers();
-
         GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
         GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
         GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityDimHatch");
@@ -36,7 +33,6 @@ public abstract class DDProxyCommon implements IDDProxy {
     @Override
     public void onInitialization(FMLInitializationEvent event) {
         CraftingManager.registerRecipes();
-        ModelManager.registerModels();
     }
 
     public void updateDoorTE(BlockDimDoorBase door, World world, BlockPos pos) {
