@@ -19,8 +19,6 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import vazkii.pillar.schema.StructureSchema;
-import vazkii.pillar.StructureGenerator;
 
 /**
  *
@@ -29,7 +27,7 @@ import vazkii.pillar.StructureGenerator;
 class PocketTemplate { //there is exactly one pocket placer for each different schematic that is loaded into the game (a Json might load several schematics though)
 
     //generation parameters
-    private StructureSchema schematic;
+    private Schematic schematic;
     private final int size;
     private final int entranceDoorX;
     private final int entranceDoorY;
@@ -45,7 +43,7 @@ class PocketTemplate { //there is exactly one pocket placer for each different s
     private final int[] weights; //weights for chanced generation of dungeons per depth level | weights[0] is the weight for depth "minDepth"
 
     //this class should contain the actual schematic info, as well as some of the Json info (placement of Rifts and stuff)
-    public PocketTemplate(String variantName, StructureSchema schematic, int size, int entranceDoorX, int entranceDoorY, int entranceDoorZ, int wallThickness, int floorThickness, int roofThickness, EnumPocketType typeID,
+    public PocketTemplate(String variantName, Schematic schematic, int size, int entranceDoorX, int entranceDoorY, int entranceDoorZ, int wallThickness, int floorThickness, int roofThickness, EnumPocketType typeID,
             int minDepth, int maxDepth, int[] weights) {
         this.variantName = variantName;
         this.weights = weights; //chance that this Pocket will get generated
@@ -95,11 +93,19 @@ class PocketTemplate { //there is exactly one pocket placer for each different s
         return schematic;
     }
 
-    void setSchematic(StructureSchema schematic) {
+    void setSchematic(Schematic schematic) {
         this.schematic = schematic;
     }
 
     int place(int xBase, int yBase, int zBase, int dimID) { //returns the riftID of the entrance DimDoor
+        if (schematic == null) {
+            DimDoors.log(this.getClass(), "The schematic for variant " + variantName + " somehow didn't load correctly against despite all precautions.");
+        }
+        //@todo make sure that the door tile entities get registered!
+        
+        //String tileEntityID = tileEntityTagCompound.getString("id");
+        
+
         IBlockState outerWallBlock = ModBlocks.blockDimWall.getStateFromMeta(2); //@todo, does this return the correct wall?
         IBlockState innerWallBlock;
         IBlockState entryDoorBlock;

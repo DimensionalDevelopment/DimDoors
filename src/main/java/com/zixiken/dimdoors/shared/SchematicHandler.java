@@ -23,8 +23,6 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import vazkii.pillar.StructureLoader;
-import vazkii.pillar.schema.StructureSchema;
 
 /**
  *
@@ -70,7 +68,7 @@ public class SchematicHandler {
     }
 
     public void loadSchematics() {
-        //@todo, extend the Pillar StructureLoader, so we can load the structures from a different location?
+        
         StructureLoader.loadStructures(DimDoors.getDefWorld()); //@todo change this to get the DimDoors Dimension?
         personalPocketTemplate = loadTemplatesFromJson("defaultPersonal", PocketRegistry.Instance.getPrivatePocketSize()).get(0);
         publicPocketTemplate = loadTemplatesFromJson("defaultPublic", PocketRegistry.Instance.getPublicPocketSize()).get(0);
@@ -104,7 +102,7 @@ public class SchematicHandler {
         List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate, maxPocketSize);
 
         for (PocketTemplate template : validTemplates) { //it's okay to "tap" this for-loop, even if validTemplates is empty.
-            StructureSchema schematic = StructureLoader.loadedSchemas.get(template.getName());
+            Schematic schematic = StructureLoader.loadedSchemas.get(template.getName());
             template.setSchematic(schematic);
             //@todo make sure that the dungeon content fits inside the pocket walls (and floor and roof) and otherwise ¿crop it?
         }
