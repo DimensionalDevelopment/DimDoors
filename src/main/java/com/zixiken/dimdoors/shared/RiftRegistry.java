@@ -30,7 +30,7 @@ public class RiftRegistry {
     // Privates
     private int nextRiftID;
     private int maximumDungeonDepth = 2;
-    private final Map<Integer, Location> riftList; //maps all rifts in the world to their ID
+    private final Map<Integer, Location> riftList; //maps all rifts in the world to their ID //@todo, make this a List of (comparable) locations?
     //@todo somehow remove rifts from this list even if they are removed in creative
     private final Map<Integer, Location> unpairedRiftList; //maps of all rifts in the world that are not paired to their ID
     private final List<Map<Integer, Location>> unpairedDepthRiftList; //List of all "unpairedRiftList s" per Dungeon Depth. Depth 0 is almost anything outside the dungeon dimension

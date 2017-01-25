@@ -84,7 +84,7 @@ class Schematic {
                 blockString = blockStateString;
                 stateString = "";
             }
-            Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString)); //@todo is this okay?
+            Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString));
 
             IBlockState blockstate = block.getDefaultState();
             if (!stateString.equals("")) {
@@ -119,31 +119,26 @@ class Schematic {
         for (int i = 0; i < properties.length; i++) {
             String propertyString = properties[i];
             String[] propertyAndBlockStrings = propertyString.split("=");
-            String propertyName = propertyAndBlockStrings[0];
-            String blockValue = propertyAndBlockStrings[1];
-            propertyAndBlockStringsMap.put(propertyName, blockValue);
+            propertyAndBlockStringsMap.put(propertyAndBlockStrings[0], propertyAndBlockStrings[1]);
         }
         BlockStateContainer container = block.getBlockState();
         Collection<IBlockState> possibleBlockStates = container.getValidStates();
-
+int newInt = possibleBlockStates.size();
         IBlockState chosenState = block.getDefaultState();
-        for (IBlockState blockState : possibleBlockStates) {
-            for (Entry<String, String> entry : propertyAndBlockStringsMap.entrySet()) {
-                IProperty<?> property = container.getProperty(entry.getKey());
-                if (property != null) {
-                    Comparable<?> value = null;
-                    for (Comparable<?> object : property.getAllowedValues()) {
-                        if (object.equals(entry.getValue())) {
-                            value = object;
-                            break;
-                        }
-                    }
-                    if (value != null) {
-                        chosenState = chosenState.withProperty((IProperty) property, (Comparable) value);
+        for (Entry<String, String> entry : propertyAndBlockStringsMap.entrySet()) {
+            IProperty<?> property = container.getProperty(entry.getKey());
+            if (property != null) {
+                Comparable<?> value = null;
+                for (Comparable<?> object : property.getAllowedValues()) {
+                    if (object.equals(entry.getValue())) {
+                        value = object;
+                        break;
                     }
                 }
+                if (value != null) {
+                    chosenState = chosenState.withProperty((IProperty) property, (Comparable) value);
+                }
             }
-            
         }
         return chosenState;
     }

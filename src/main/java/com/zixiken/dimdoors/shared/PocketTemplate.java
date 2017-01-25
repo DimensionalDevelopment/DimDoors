@@ -81,9 +81,13 @@ class PocketTemplate { //there is exactly one pocket placer for each different s
         this.schematic = schematic;
     }
 
-    int place(int xBase, int yBase, int zBase, int dimID) { //returns the riftID of the entrance DimDoor
+    Pocket place(int shortenedX, int yBase, int shortenedZ, int gridSize, int dimID, int pocketID, int depth, EnumPocketType pocketTypeID) { //returns the riftID of the entrance DimDoor
+        int xBase = shortenedX * gridSize * 16;
+        int zBase = shortenedZ * gridSize * 16;
+
         if (schematic == null) {
             DimDoors.log(this.getClass(), "The schematic for variant " + variantName + " somehow didn't load correctly against despite all precautions.");
+            return null;
         }
         //@todo make sure that the door tile entities get registered!
         WorldServer world = DimDoors.proxy.getWorldServer(dimID);
@@ -100,11 +104,13 @@ class PocketTemplate { //there is exactly one pocket placer for each different s
         List<DDTileEntityBase> rifts = new ArrayList();
         for (NBTTagCompound tileEntityNBT : schematic.tileEntities) {
             BlockPos pos = new BlockPos(xBase + tileEntityNBT.getInteger("x"), yBase + tileEntityNBT.getInteger("y"), zBase + tileEntityNBT.getInteger("z"));
-            IBlockState state = world.getBlockState(pos);
-            state.getBlock().createTileEntity(world, state);
+            //IBlockState state = world.getBlockState(pos);
+            //state.getBlock().createTileEntity(world, state); //this should not be needed. The blocks will already have created their respecitve tile-entities
             TileEntity tileEntity = world.getTileEntity(pos);
-            tileEntity.readFromNBT(tileEntityNBT);
-            tileEntity.markDirty();
+            if (tileEntity != null) {
+                tileEntity.readFromNBT(tileEntityNBT);
+                tileEntity.markDirty();
+            }
 
             if (tileEntity instanceof DDTileEntityBase) {
                 DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
@@ -112,23 +118,14 @@ class PocketTemplate { //there is exactly one pocket placer for each different s
             }
         }
 
-        List<TileEntityDimDoor> dimDoorTiles = new ArrayList();
+        List<Integer> riftIDs = new ArrayList();
         for (DDTileEntityBase rift : rifts) {
+            rift.setIsInDungeon(true);
             rift.register();
-            if (rift instanceof TileEntityDimDoor) {
-                TileEntityDimDoor dimDoorTile = (TileEntityDimDoor) rift;
-                dimDoorTiles.add(dimDoorTile);
-            }
+            RiftRegistry.Instance.registerRiftAtDepth(rift.getRiftID(), depth);            
+            riftIDs.add(rift.getRiftID());
         }
-
-        if (dimDoorTiles.isEmpty()) {
-            return -1;
-        } else if (dimDoorTiles.size() == 1) {
-            return dimDoorTiles.get(0).getRiftID();
-        } else {
-            Random random = new Random();
-            int index = random.nextInt(dimDoorTiles.size());
-            return dimDoorTiles.get(index).getRiftID();
-        }
+        
+        return new Pocket(size, depth, pocketTypeID, shortenedX, shortenedZ, riftIDs);
     }
 }

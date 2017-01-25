@@ -1,10 +1,13 @@
 package com.zixiken.dimdoors.tileentities;
 
+import com.zixiken.dimdoors.blocks.BlockDimDoor;
 import com.zixiken.dimdoors.shared.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import java.util.Random;
+import javax.annotation.Nullable;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
 public class TileEntityDimDoor extends DDTileEntityBase {
@@ -66,13 +69,26 @@ public class TileEntityDimDoor extends DDTileEntityBase {
     @Override
     public boolean tryTeleport(Entity entity) {
         if (!isPaired()) {
-            int randomPairedRiftID =  RiftRegistry.Instance.getRandomUnpairedRiftID(getRiftID());
+            int randomPairedRiftID = RiftRegistry.Instance.getRandomUnpairedRiftID(getRiftID());
             if (randomPairedRiftID < 0) {
                 return false;
             }
-            RiftRegistry.Instance.pair(getRiftID(),randomPairedRiftID);
+            RiftRegistry.Instance.pair(getRiftID(), randomPairedRiftID);
             //@todo try to automatically pair this door somehow
         }
         return RiftRegistry.Instance.teleportEntityToRift(entity, getPairedRiftID());
+    }
+
+    public void uponDoorPlacement(@Nullable TileEntity possibleOldRift) {
+        if (possibleOldRift instanceof DDTileEntityBase) {
+            DDTileEntityBase oldRift = (DDTileEntityBase) possibleOldRift;
+            //load data from old rift (that must already have been registered)
+            loadDataFrom(oldRift);
+        } else {
+            //default data and set register this rift in the registry
+            register();
+        }
+        //storing the orientation inside the tile-entity, because that thing can actually save the orientation in the worldsave, unlike the block itself, which fail at that stuff somehow
+        this.orientation = this.getWorld().getBlockState(this.getPos()).getValue(BlockDimDoor.FACING).getOpposite();
     }
 }

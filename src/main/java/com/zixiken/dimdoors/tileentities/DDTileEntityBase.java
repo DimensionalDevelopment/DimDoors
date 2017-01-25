@@ -1,6 +1,5 @@
 package com.zixiken.dimdoors.tileentities;
 
-import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import java.util.Random;
@@ -63,11 +62,12 @@ public abstract class DDTileEntityBase extends TileEntity {
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         try {
-            this.isPaired = nbt.getBoolean("isPaired");
-            this.riftID = nbt.getInteger("riftID");
-            this.pairedRiftID = nbt.getInteger("pairedRiftID");
+            isPaired = nbt.getBoolean("isPaired");
+            riftID = nbt.getInteger("riftID");
+            pairedRiftID = nbt.getInteger("pairedRiftID");
         } catch (Exception e) {
         }
+        register(); //only actually gets registered if riftID == -1
     }
 
     @Override

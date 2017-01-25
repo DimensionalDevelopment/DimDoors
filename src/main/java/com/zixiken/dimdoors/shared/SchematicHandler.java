@@ -133,56 +133,49 @@ public class SchematicHandler {
         JsonArray variations = jsonTemplate.getAsJsonArray("variations");
 
         List<PocketTemplate> pocketTemplates = new ArrayList();
-        if (jsonType.equals("Singular")) { //@todo, make sure there is only one Json-reader block, instead of one and its copy
-            JsonObject chosenVariation = null;
-            int chosenVariationSize = 0;
-            for (int i = 0; i < variations.size(); i++) {
-                JsonObject variation = variations.get(i).getAsJsonObject();
-                int variationSize = variation.get("size").getAsInt();
-                if (variationSize <= maxPocketSize && variationSize > chosenVariationSize) {
+        JsonObject chosenVariation = null; //only applicable if jsonType == "Singular"
+        int chosenVariationSize = 0; //only applicable if jsonType == "Singular"
+        List<JsonObject> validVariations = new ArrayList();
+        //put all valid variation JsonObjects into an array list
+        for (int i = 0; i < variations.size(); i++) {
+            JsonObject variation = variations.get(i).getAsJsonObject();
+            int variationSize = variation.get("size").getAsInt();
+
+            if (variationSize > maxPocketSize) {
+                //do not add it
+            } else if (jsonType.equals("Singular")) {
+                if (variationSize > chosenVariationSize) {
                     chosenVariationSize = variationSize;
                     chosenVariation = variation;
                     if (variationSize == maxPocketSize) {
                         break; //this one gets chosen
                     }
                 }
+            } else if (jsonType.equals("Multiple")) {
+                validVariations.add(variation);
+            } else { //@todo more options?
+                DimDoors.log(this.getClass(), "JsonType " + jsonType + " is not a valid JsonType. Json was not loaded.");
             }
-            if (chosenVariation != null) {
-                //this block equals
-                String variantName = chosenVariation.get("variantName").getAsString();
-                EnumPocketType typeID = EnumPocketType.getFromInt(chosenVariation.get("typeID").getAsInt());
-                int minDepth = chosenVariation.get("minDepth").getAsInt();
-                int maxDepth = chosenVariation.get("maxDepth").getAsInt();
-                JsonArray weightsJsonArray = chosenVariation.get("weights").getAsJsonArray();
-                int[] weights = new int[weightsJsonArray.size()];
-                for (int i = 0; i < weightsJsonArray.size(); i++) {
-                    weights[i] = weightsJsonArray.get(i).getAsInt();
-                }
-                PocketTemplate pocketTemplate = new PocketTemplate(variantName, chosenVariationSize, typeID, minDepth, maxDepth, weights);
-                pocketTemplates.add(pocketTemplate);
-                ///this block equals
+        }
+        if (chosenVariation != null) {
+            validVariations.add(chosenVariation);
+        }
+
+        //convert the valid variations arraylist to a list of pocket templates
+        for (JsonObject variation : validVariations) {
+            String variantName = variation.get("variantName").getAsString();
+            int variationSize = variation.get("size").getAsInt();
+            int minDepth = variation.get("minDepth").getAsInt();
+            int maxDepth = variation.get("maxDepth").getAsInt();
+            JsonArray weightsJsonArray = variation.get("weights").getAsJsonArray();
+            int[] weights = new int[weightsJsonArray.size()];
+            for (int j = 0; j < weightsJsonArray.size(); j++) {
+                weights[j] = weightsJsonArray.get(j).getAsInt();
             }
-        } else if (jsonType.equals("Multiple")) {
-            for (int i = 0; i < variations.size(); i++) {
-                JsonObject variation = variations.get(i).getAsJsonObject();
-                int variationSize = variation.get("size").getAsInt();
-                if (variationSize <= maxPocketSize) {
-                    //this block
-                    String variantName = variation.get("variantName").getAsString();
-                    EnumPocketType typeID = EnumPocketType.getFromInt(variation.get("typeID").getAsInt());
-                    int minDepth = variation.get("minDepth").getAsInt();
-                    int maxDepth = variation.get("maxDepth").getAsInt();
-                    JsonArray weightsJsonArray = variation.get("weights").getAsJsonArray();
-                    int[] weights = new int[weightsJsonArray.size()];
-                    for (int j = 0; j < weightsJsonArray.size(); j++) {
-                        weights[j] = weightsJsonArray.get(j).getAsInt();
-                    }
-                    PocketTemplate pocketTemplate = new PocketTemplate(variantName, variationSize, typeID, minDepth, maxDepth, weights);
-                    pocketTemplates.add(pocketTemplate);
-                    ///this block
-                }
-            }
-        } //@todo, more options?
+            PocketTemplate pocketTemplate = new PocketTemplate(variantName, variationSize, pocketType, minDepth, maxDepth, weights);
+            pocketTemplates.add(pocketTemplate);
+        }
+
         return pocketTemplates;
     }
 }

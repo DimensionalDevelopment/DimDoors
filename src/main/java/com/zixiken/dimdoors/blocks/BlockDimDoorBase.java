@@ -113,8 +113,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int metadata) {
-        Thread.currentThread().getStackTrace();
+    public TileEntity createNewTileEntity(World world, int metadata) { //gets called upon world load as well
         return new TileEntityDimDoor();
     }
 
@@ -175,12 +174,13 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     }
 
     @Override
-    public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
-        IBlockState stateBot = worldIn.getBlockState(pos);
-        IBlockState stateTop = worldIn.getBlockState(pos.up());
-        return pos.getY() >= worldIn.getHeight() - 1 ? false
-                : worldIn.getBlockState(pos.down()).isSideSolid(worldIn, pos.down(), EnumFacing.UP)
-                && canPlaceBottomAt(worldIn, pos, stateBot) && canPlaceTopAt(worldIn, pos, stateTop);
+    public boolean canPlaceBlockAt(World worldIn, BlockPos pos) { //returns whether or not the entire door (2 blocks tall) can be placed at this pos. pos is the position of the bottom half of the door
+        IBlockState groundState = worldIn.getBlockState(pos.down());
+        IBlockState bottomState = worldIn.getBlockState(pos);
+        IBlockState topState = worldIn.getBlockState(pos.up());
+        return pos.up().getY() > worldIn.getHeight() - 1 || pos.getY() < 1 ? false //top half can never be placed above buildHeight (255), (worldIn.getHeight() should return 256) and bottom half can never be placed below y=1
+                : groundState.isSideSolid(worldIn, pos.down(), EnumFacing.UP)
+                && canPlaceBottomAt(worldIn, pos, bottomState) && canPlaceTopAt(worldIn, pos, topState);
     }
 
     private boolean canPlaceBottomAt(World worldIn, BlockPos pos, IBlockState state) {
