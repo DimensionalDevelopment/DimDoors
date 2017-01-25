@@ -49,7 +49,7 @@ public class ItemRiftConnectionTool extends ItemTool {
             stack.setTagCompound(compound);
         }
 
-        RayTraceResult hit = ItemDoorBase.doRayTrace(worldIn, playerIn, true);
+        RayTraceResult hit = rayTrace(worldIn, playerIn, true);
         if (hit != null && worldIn.getTileEntity(hit.getBlockPos()) instanceof DDTileEntityBase) {
             DDTileEntityBase rift = (DDTileEntityBase) worldIn.getTileEntity(hit.getBlockPos());
             if (playerIn.isSneaking()) {

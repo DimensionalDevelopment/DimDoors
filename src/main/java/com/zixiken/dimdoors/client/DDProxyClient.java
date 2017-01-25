@@ -1,6 +1,8 @@
 package com.zixiken.dimdoors.client;
 
+import com.zixiken.dimdoors.CraftingManager;
 import com.zixiken.dimdoors.DDProxyCommon;
+import com.zixiken.dimdoors.ModelManager;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 import com.zixiken.dimdoors.tileentities.TileEntityRift;
 import com.zixiken.dimdoors.tileentities.TileEntityTransTrapdoor;
@@ -9,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @SuppressWarnings({"MethodCallSideOnly", "NewExpressionSideOnly"})
@@ -17,7 +20,17 @@ public class DDProxyClient extends DDProxyCommon {
     @Override
     public void onPreInitialization(FMLPreInitializationEvent event) {
         super.onPreInitialization(event);
+
+        ModelManager.registerModelVariants();
+        ModelManager.addCustomStateMappers();
+
         registerRenderers();
+    }
+
+    @Override
+    public void onInitialization(FMLInitializationEvent event) {
+        super.onInitialization(event);
+        ModelManager.registerModels();
     }
 
     public void registerRenderers() {

@@ -15,6 +15,8 @@ public abstract class DDTileEntityBase extends TileEntity {
     private boolean isPaired = false;
     private int riftID = -1; //should not start at 0
     private int pairedRiftID = -1;
+    private boolean isInPocket = false;
+    private int pocketID = -1;
 
     /**
      *
@@ -65,6 +67,8 @@ public abstract class DDTileEntityBase extends TileEntity {
             isPaired = nbt.getBoolean("isPaired");
             riftID = nbt.getInteger("riftID");
             pairedRiftID = nbt.getInteger("pairedRiftID");
+            isInPocket = nbt.getBoolean("isInPocket");
+            pocketID = nbt.getInteger("pocketID");
         } catch (Exception e) {
         }
         register(); //only actually gets registered if riftID == -1
@@ -76,6 +80,8 @@ public abstract class DDTileEntityBase extends TileEntity {
         nbt.setBoolean("isPaired", this.isPaired);
         nbt.setInteger("riftID", this.riftID);
         nbt.setInteger("pairedRiftID", this.pairedRiftID);
+        nbt.setBoolean("isInPocket", this.isInPocket);
+        nbt.setInteger("pocketID", this.pocketID);
         return nbt;
     }
 

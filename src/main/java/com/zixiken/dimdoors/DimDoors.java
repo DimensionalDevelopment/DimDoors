@@ -9,6 +9,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
@@ -16,6 +17,8 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 @Mod(modid = DimDoors.MODID, name = "Dimensional Doors", version = DimDoors.VERSION)
 public class DimDoors {
@@ -76,5 +79,15 @@ public class DimDoors {
 
     public static void log(Class classFiredFrom, String text) {
         FMLLog.info("[DimDoors] " + text + " (" + classFiredFrom.toString() + " )", 0);
+    }
+
+    public static void translateAndAdd(String key, List<String> list) {
+        for (int i = 0; i < 10; i++) {
+            if(I18n.canTranslate(key+Integer.toString(i))) {
+                String line = I18n.translateToLocal(key + Integer.toString(i));
+                list.add(line);
+            } else
+                break;
+        }
     }
 }
