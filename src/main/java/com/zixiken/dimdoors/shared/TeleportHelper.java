@@ -43,10 +43,10 @@ public class TeleportHelper extends Teleporter {
                 DimDoors.log(TeleportHelper.class, "Teleporting Player within same dimension.");
                 EntityPlayerMP player = (EntityPlayerMP) entity;
 
-                player.setLocationAndAngles(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5, player.getRotationYawHead(), player.getRotatedYaw(Rotation.CLOCKWISE_180)); //@todo, instead of following line
-                player.setPositionAndUpdate(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
+                //player.setLocationAndAngles(newPos.getX() + 0.5, newPos.getY() + 0.05, newPos.getZ() + 0.5, player.getRotationYawHead(), player.getRotatedYaw(Rotation.CLOCKWISE_180)); //@todo, instead of following line
+                player.setPositionAndUpdate(newPos.getX() + 0.5, newPos.getY() + 0.05, newPos.getZ() + 0.5);
                 player.world.updateEntityWithOptionalForce(player, false);
-                player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
+                //player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
             } else {
                 DimDoors.log(TeleportHelper.class, "Teleporting non-Player within same dimension.");
                 WorldServer world = (WorldServer) entity.world;

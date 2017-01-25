@@ -39,7 +39,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
     private final ArrayList<Block> modBlocksImmuneToRift; // List of DD blocks immune to rifts
 
     public BlockRift() {
-        super(Material.FIRE);
+        super(Material.LEAVES); //Fire is replacable. We do not want this block to be replacable. We do want to walf through it though...
         setTickRandomly(true);
         setHardness(1.0F);
         setUnlocalizedName(ID);
@@ -102,7 +102,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
      */
     @Override
     public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
-        return true;
+        return false;
     }
 
     @Override

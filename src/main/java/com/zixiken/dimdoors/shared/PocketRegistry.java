@@ -202,7 +202,7 @@ public class PocketRegistry {
         }
     }
 
-    private int getDiffToPreviousGroup(int ID) {
+    private static int getDiffToPreviousGroup(int ID) {
         int temp = 0;
         int group;
         for (group = 1; temp <= ID; group++) {

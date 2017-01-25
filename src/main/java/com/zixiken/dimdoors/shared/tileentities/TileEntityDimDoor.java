@@ -57,7 +57,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
     @Override
     public Location getTeleportTargetLocation() {
-        return new Location(this.getWorld().provider.getDimension(), this.getPos().offset(orientation));
+        return new Location(this.getWorld().provider.getDimension(), this.getPos().offset(orientation).down());
     }
 
     @Override
