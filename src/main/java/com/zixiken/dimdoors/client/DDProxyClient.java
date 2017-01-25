@@ -1,11 +1,10 @@
 package com.zixiken.dimdoors.client;
 
-import com.zixiken.dimdoors.CraftingManager;
-import com.zixiken.dimdoors.DDProxyCommon;
-import com.zixiken.dimdoors.ModelManager;
-import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
-import com.zixiken.dimdoors.tileentities.TileEntityRift;
-import com.zixiken.dimdoors.tileentities.TileEntityTransTrapdoor;
+import com.zixiken.dimdoors.shared.DDProxyCommon;
+import com.zixiken.dimdoors.shared.ModelManager;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityTransTrapdoor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;

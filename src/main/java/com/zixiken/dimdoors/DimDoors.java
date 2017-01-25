@@ -1,6 +1,8 @@
 package com.zixiken.dimdoors;
 
-import com.zixiken.dimdoors.items.ModItems;
+import com.zixiken.dimdoors.shared.DDConfig;
+import com.zixiken.dimdoors.shared.DDProxyCommon;
+import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.PocketSavedData;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.RiftSavedData;
@@ -23,7 +25,7 @@ import java.util.List;
 @Mod(modid = DimDoors.MODID, name = "Dimensional Doors", version = DimDoors.VERSION)
 public class DimDoors {
 
-    public static final String VERSION = "3.0.0-a1";
+    public static final String VERSION = "${version}";
     public static final String MODID = "dimdoors";
 
     @SidedProxy(clientSide = "com.zixiken.dimdoors.client.DDProxyClient",
@@ -72,12 +74,12 @@ public class DimDoors {
     public static World getDefWorld() {
         return proxy.getDefWorld(); //gets the server or client world dim 0 handler
     }
-    
+
     public static void chat(EntityPlayer player, String text) {
         player.sendMessage(new TextComponentString("[DimDoors] " + text));
     }
-    
-    public static void warning(Class classFiredFrom, String text) {
+
+    public static void warn(Class classFiredFrom, String text) {
         FMLLog.warning("[DimDoors] " + text + " (" + classFiredFrom.toString() + " )", 0);
     }
 
@@ -87,11 +89,12 @@ public class DimDoors {
 
     public static void translateAndAdd(String key, List<String> list) {
         for (int i = 0; i < 10; i++) {
-            if(I18n.canTranslate(key+Integer.toString(i))) {
+            if (I18n.canTranslate(key + Integer.toString(i))) {
                 String line = I18n.translateToLocal(key + Integer.toString(i));
                 list.add(line);
-            } else
+            } else {
                 break;
+            }
         }
     }
 }

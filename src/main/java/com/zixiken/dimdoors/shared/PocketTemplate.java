@@ -5,13 +5,11 @@
  */
 package com.zixiken.dimdoors.shared;
 
+import com.zixiken.dimdoors.shared.util.Schematic;
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
-import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
+import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -93,19 +91,19 @@ class PocketTemplate { //there is exactly one pocket placer for each different s
         WorldServer world = DimDoors.proxy.getWorldServer(dimID);
 
         //Place the Dungeon content structure
-        for (int x = 0; x < schematic.width; x++) {
-            for (int y = 0; y < schematic.height; y++) {
-                for (int z = 0; z < schematic.width; z++) {
-                    world.setBlockState(new BlockPos(xBase + x, yBase + y, zBase + z), schematic.pallette.get(schematic.blockData[x][y][z]));
+        for (int x = 0; x < schematic.getWidth(); x++) {
+            for (int y = 0; y < schematic.getHeight(); y++) {
+                for (int z = 0; z < schematic.getWidth(); z++) {
+                    world.setBlockState(new BlockPos(xBase + x, yBase + y, zBase + z), schematic.getPallette().get(schematic.getBlockData()[x][y][z]));
                 }
             }
         }
         //Place TileEntities
         List<DDTileEntityBase> rifts = new ArrayList();
-        for (NBTTagCompound tileEntityNBT : schematic.tileEntities) {
+        for (NBTTagCompound tileEntityNBT : schematic.getTileEntities()) {
             BlockPos pos = new BlockPos(xBase + tileEntityNBT.getInteger("x"), yBase + tileEntityNBT.getInteger("y"), zBase + tileEntityNBT.getInteger("z"));
             //IBlockState state = world.getBlockState(pos);
-            //state.getBlock().createTileEntity(world, state); //this should not be needed. The blocks will already have created their respecitve tile-entities
+            //state.getBlock().createTileEntity(world, state); //this should not be needed. The blocks will already have created their respecitve tile-entities upon placement
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity != null) {
                 tileEntity.readFromNBT(tileEntityNBT);

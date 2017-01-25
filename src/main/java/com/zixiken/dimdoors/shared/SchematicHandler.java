@@ -5,11 +5,11 @@
  */
 package com.zixiken.dimdoors.shared;
 
+import com.zixiken.dimdoors.shared.util.Schematic;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.zixiken.dimdoors.DDConfig;
 import com.zixiken.dimdoors.DimDoors;
 import java.io.File;
 import java.io.IOException;
@@ -111,7 +111,7 @@ public class SchematicHandler {
             } catch (IOException ex) {
                 Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for schematic " + template.getName() + " was not found in template folder.", ex);
             }
-            if (schematic != null && (schematic.width > (template.getSize()) * 16 || schematic.length > (template.getSize()) * 16)) {
+            if (schematic != null && (schematic.getWidth() > (template.getSize()) * 16 || schematic.getLength() > (template.getSize()) * 16)) {
                 schematic = null;
                 DimDoors.log(this.getClass(), "Schematic " + template.getName() + ".schem was bigger than specified in " + nameString + ".json and therefore wasn't loaded");
             }

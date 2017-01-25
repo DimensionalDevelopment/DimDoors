@@ -1,7 +1,7 @@
 package com.zixiken.dimdoors.shared;
 
+import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.DimDoors;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -30,6 +30,7 @@ public class TeleportHelper extends Teleporter {
         if (DimDoors.getDefWorld().isRemote) {
             return false;
         }
+        entity.timeUntilPortal = 50;
 
         BlockPos newPos = newLocation.getPos();
         int oldDimID = entity.dimension;
@@ -46,15 +47,15 @@ public class TeleportHelper extends Teleporter {
                 player.setPositionAndUpdate(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
                 player.world.updateEntityWithOptionalForce(player, false);
                 player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
-                player.timeUntilPortal = 150;
             } else {
                 DimDoors.log(TeleportHelper.class, "Teleporting non-Player within same dimension.");
                 WorldServer world = (WorldServer) entity.world;
 
                 entity.setPosition(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
-                entity.timeUntilPortal = 150;
+                entity.timeUntilPortal = 50;
                 world.resetUpdateEntityTick();
             }
+            entity.timeUntilPortal = 50;
         } else {
             if (entity instanceof EntityPlayer) {
                 DimDoors.log(TeleportHelper.class, "Teleporting Player to new dimension.");
@@ -73,8 +74,8 @@ public class TeleportHelper extends Teleporter {
                 //does this statement ever get reached though?
                 return false;
             }
+            entity.timeUntilPortal = 150;
         }
-        entity.timeUntilPortal = 150;
         return true;
         //@todo set player angle in front of and facing away from the door
     }

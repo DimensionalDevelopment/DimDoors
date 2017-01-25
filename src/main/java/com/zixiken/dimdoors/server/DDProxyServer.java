@@ -5,7 +5,7 @@
  */
 package com.zixiken.dimdoors.server;
 
-import com.zixiken.dimdoors.DDProxyCommon;
+import com.zixiken.dimdoors.shared.DDProxyCommon;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;

@@ -5,7 +5,7 @@
  */
 package com.zixiken.dimdoors.shared;
 
-import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
+import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

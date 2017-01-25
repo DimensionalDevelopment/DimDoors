@@ -6,16 +6,14 @@ import java.nio.FloatBuffer;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.blocks.BlockDimDoorBase;
-import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
+import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;

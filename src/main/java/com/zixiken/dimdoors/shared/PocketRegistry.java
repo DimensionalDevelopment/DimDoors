@@ -5,7 +5,7 @@
  */
 package com.zixiken.dimdoors.shared;
 
-import com.zixiken.dimdoors.DDConfig;
+import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.DimDoors;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -5,8 +5,9 @@
  */
 package com.zixiken.dimdoors.shared;
 
+import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
+import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 
 /**
  *
@@ -222,15 +222,15 @@ public class RiftRegistry {
     }
 
     public boolean teleportEntityToRift(Entity entity, int pairedRiftID) {
-        DimDoors.log(this.getClass(), "RiftID of rift that entity is teleporting to is " + pairedRiftID + ".");
+        DimDoors.log(this.getClass(), "RiftID of rift that the entity trying to teleport to is " + pairedRiftID + ".");
         if (pairedRiftID < 0) {
-            DimDoors.warning(this.getClass(), "RiftID of rift that entity is teleporting to seems to be lower than 0 and it shouldn't.");
+            DimDoors.warn(this.getClass(), "RiftID of rift that entity trying to teleport to seems to be lower than 0 and it shouldn't.");
             return false;
         }
         Location destinationRiftLocation = getRiftLocation(pairedRiftID);
         DDTileEntityBase destinationRift = (DDTileEntityBase) destinationRiftLocation.getTileEntity();
         if (destinationRift == null) {
-            DimDoors.warning(this.getClass(), "The rift that an entity is trying to teleport to seems to be null.");
+            DimDoors.warn(this.getClass(), "The rift that an entity is trying to teleport to seems to be null.");
         }
         return TeleportHelper.teleport(entity, destinationRift.getTeleportTargetLocation());
     }
