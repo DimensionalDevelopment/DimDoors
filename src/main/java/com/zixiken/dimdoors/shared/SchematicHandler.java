@@ -6,8 +6,16 @@
 package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.DDConfig;
+import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
+import net.minecraft.nbt.CompressedStreamTools;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -53,6 +61,7 @@ public class SchematicHandler {
     private PocketPlacer loadSchematic(String nameString, int maxPocketSize) {
         //check for json files in both directories (inside the mod jar, and inside the dimdoors config folder)
         //check if the json has a "variant" with the correct pocket size, if it doesn't, pick the largest smaller variant. If there's only bigger variants, cancel
+        return null;
     }
 
 }

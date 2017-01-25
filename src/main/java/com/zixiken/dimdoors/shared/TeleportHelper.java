@@ -1,6 +1,8 @@
 package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.DimDoors;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,6 +24,10 @@ public class TeleportHelper extends Teleporter {
     public void placeInPortal(Entity entityIn, float rotationYaw) {
         BlockPos pos = location.getPos();
         entityIn.setPositionAndUpdate(pos.getX() + .5, pos.getY() + .05, pos.getZ() + .5);
+    }
+
+    public IBlockState toBlockState(String id) {
+        String[] list = id.split("[");
     }
 
     public static boolean teleport(Entity entity, Location newLocation) {
