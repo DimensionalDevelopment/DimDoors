@@ -120,9 +120,8 @@ class PocketTemplate { //there is exactly one pocket placer for each different s
 
         List<Integer> riftIDs = new ArrayList();
         for (DDTileEntityBase rift : rifts) {
-            rift.setIsInDungeon(true);
-            rift.register();
-            RiftRegistry.Instance.registerRiftAtDepth(rift.getRiftID(), depth);            
+            rift.register(depth);
+            rift.setIsInPocket();
             riftIDs.add(rift.getRiftID());
         }
         

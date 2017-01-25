@@ -10,6 +10,7 @@ public class ModItems {
     public static ItemDoorGold itemDoorGold;
     public static ItemWorldThread itemWorldThread;
     public static ItemDimDoor itemDimDoor;
+    public static ItemDimDoorTransient itemDimDoorTransient;
     public static ItemDimDoorWarp itemDimDoorWarp;
     public static ItemStableFabric itemStableFabric;
     public static ItemDimDoorUnstable itemDimDoorChaos;
@@ -25,6 +26,7 @@ public class ModItems {
         GameRegistry.register(itemDoorGold = new ItemDoorGold());
         GameRegistry.register(itemDimDoorGold = new ItemDimDoorGold());
         GameRegistry.register(itemDimDoor = new ItemDimDoor());
+        GameRegistry.register(itemDimDoorTransient = new ItemDimDoorTransient());
         GameRegistry.register(itemDimDoorWarp = new ItemDimDoorWarp());
         GameRegistry.register(itemStableFabric = new ItemStableFabric());
         GameRegistry.register(itemDimDoorChaos = new ItemDimDoorUnstable());

@@ -21,7 +21,7 @@ import net.minecraft.nbt.NBTTagString;
  */
 class Pocket {
 
-    private int ID; //this gets reset every session
+    private int ID; //this gets reset every server-load
     private final int size; //in chunks
     private final int depth;
     private final EnumPocketType typeID; // dungeon, pocket, or personal pocket
@@ -40,8 +40,8 @@ class Pocket {
         this.riftIDs = riftIDs;
         playerUUIDs = new ArrayList();
         PocketRegistry.Instance.registerNewPocket(this);
-        
-        for(int riftID: riftIDs) {
+
+        for (int riftID : riftIDs) {
             DDTileEntityBase rift = (DDTileEntityBase) RiftRegistry.Instance.getRiftLocation(riftID).getTileEntity();
             rift.setPocketID(this.ID); //set the rift's pocket ID to this pocket's pocket ID;
         }
@@ -70,7 +70,7 @@ class Pocket {
             return riftIDs.get(index);
         }
     }
-    
+
     public void setID(int newID) {
         ID = newID;
     }
@@ -94,7 +94,7 @@ class Pocket {
             String playerUUID = playersTagList.getStringTagAt(i);
             pocket.playerUUIDs.add(playerUUID);
         }
-        
+
         PocketRegistry.Instance.registerNewPocket(pocket);
     }
 
@@ -105,7 +105,7 @@ class Pocket {
         pocketNBT.setInteger("typeID", pocket.typeID.getIntValue());
         pocketNBT.setInteger("x", pocket.x);
         pocketNBT.setInteger("z", pocket.z);
-        
+
         NBTTagList doorsTagList = new NBTTagList();
         for (int i = 0; i < pocket.riftIDs.size(); i++) {
             NBTTagInt doorTag = new NBTTagInt(pocket.riftIDs.get(i));
@@ -118,7 +118,7 @@ class Pocket {
             NBTTagString playerTag = new NBTTagString(pocket.playerUUIDs.get(i));
             playersTagList.appendTag(playerTag);
         }
-        
+
         pocketNBT.setTag("playerUUIDs", playersTagList);
         return pocketNBT;
     }

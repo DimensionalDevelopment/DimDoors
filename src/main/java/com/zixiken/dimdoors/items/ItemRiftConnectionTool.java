@@ -6,6 +6,7 @@
 package com.zixiken.dimdoors.items;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.RayTraceHelper;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import java.util.HashSet;
@@ -50,7 +51,7 @@ public class ItemRiftConnectionTool extends ItemTool {
         }
 
         RayTraceResult hit = rayTrace(worldIn, playerIn, true);
-        if (hit != null && worldIn.getTileEntity(hit.getBlockPos()) instanceof DDTileEntityBase) {
+        if (RayTraceHelper.isRift(hit, worldIn)) {
             DDTileEntityBase rift = (DDTileEntityBase) worldIn.getTileEntity(hit.getBlockPos());
             if (playerIn.isSneaking()) {
                 return selectRift(stack, worldIn, rift, playerIn); //new ActionResult(EnumActionResult.PASS, stack));

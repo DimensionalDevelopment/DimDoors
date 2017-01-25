@@ -17,6 +17,7 @@ public abstract class DDTileEntityBase extends TileEntity {
     private int pairedRiftID = -1;
     private boolean isInPocket = false;
     private int pocketID = -1;
+    private int depth = 0; //depth of the pocket it is in (not in a pocket -> 0)
 
     /**
      *
@@ -53,9 +54,9 @@ public abstract class DDTileEntityBase extends TileEntity {
         this.markDirty();
     }
 
-    public void register() {
+    public void register(int depth) {
         if (riftID == -1) {
-            riftID = RiftRegistry.Instance.registerNewRift(this);
+            riftID = RiftRegistry.Instance.registerNewRift(this, depth);
             this.markDirty();
         }
     }
@@ -71,7 +72,6 @@ public abstract class DDTileEntityBase extends TileEntity {
             pocketID = nbt.getInteger("pocketID");
         } catch (Exception e) {
         }
-        register(); //only actually gets registered if riftID == -1
     }
 
     @Override
@@ -106,9 +106,21 @@ public abstract class DDTileEntityBase extends TileEntity {
         return isPaired;
     }
 
+    public int getDepth() {
+        return depth;
+    }
+
     public Location getTeleportTargetLocation() {
         return new Location(this.getWorld().provider.getDimension(), this.getPos());
     }
 
     public abstract boolean tryTeleport(Entity entity);
+
+    public void setPocketID(int ID) {
+        pocketID = ID;
+    }
+
+    public void setIsInPocket() {
+        isInPocket = true;
+    }
 }

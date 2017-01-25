@@ -79,7 +79,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
             loadDataFrom(oldRift);
         } else {
             //default data and set register this rift in the registry
-            register();
+            register(0); //@todo check if it's in a pocket and register it at that depth instead if applicable
         }
         //storing the orientation inside the tile-entity, because that thing can actually save the orientation in the worldsave, unlike the block itself, which fail at that stuff somehow
         this.orientation = this.getWorld().getBlockState(this.getPos()).getValue(BlockDimDoor.FACING).getOpposite();

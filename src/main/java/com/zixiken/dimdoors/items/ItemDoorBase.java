@@ -7,6 +7,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.blocks.BlockDimDoor;
 import com.zixiken.dimdoors.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.blocks.ModBlocks;
+import com.zixiken.dimdoors.shared.RayTraceHelper;
 import com.zixiken.dimdoors.tileentities.DDTileEntityBase;
 import com.zixiken.dimdoors.tileentities.TileEntityDimDoor;
 import net.minecraft.block.Block;
@@ -68,14 +69,11 @@ public abstract class ItemDoorBase extends ItemDoor {
             return new ActionResult(EnumActionResult.FAIL, stack);
         }
         RayTraceResult hit = rayTrace(worldIn, playerIn, true);
-        if (hit != null) {
-            BlockPos pos = hit.getBlockPos();
-            if (worldIn.getBlockState(pos).getBlock() == ModBlocks.blockRift) {
-                EnumActionResult canDoorBePlacedOnGroundBelowRift
-                        = tryPlaceDoorOnTopOfBlock(stack, playerIn, worldIn, pos.down(2), hand,
-                                (float) hit.hitVec.xCoord, (float) hit.hitVec.yCoord, (float) hit.hitVec.zCoord); //stack may be changed by this method
-                return new ActionResult(canDoorBePlacedOnGroundBelowRift, stack);
-            }
+        if (RayTraceHelper.isRift(hit, worldIn)) {
+            EnumActionResult canDoorBePlacedOnGroundBelowRift
+                    = tryPlaceDoorOnTopOfBlock(stack, playerIn, worldIn, hit.getBlockPos().down(2), hand,
+                            (float) hit.hitVec.xCoord, (float) hit.hitVec.yCoord, (float) hit.hitVec.zCoord); //stack may be changed by this method
+            return new ActionResult(canDoorBePlacedOnGroundBelowRift, stack);
         }
         return new ActionResult(EnumActionResult.FAIL, stack); //@todo, should return onItemUse(params) here? will door placement on block not work otherwise?
     }
@@ -101,7 +99,7 @@ public abstract class ItemDoorBase extends ItemDoor {
     }
 //pos = position of block, the door gets placed on
 
-    private EnumActionResult tryPlaceDoorOnTopOfBlock(ItemStack stack, EntityPlayer playerIn, World world, BlockPos pos, EnumHand hand, float hitX, float hitY, float hitZ) {
+    static EnumActionResult tryPlaceDoorOnTopOfBlock(ItemStack stack, EntityPlayer playerIn, World world, BlockPos pos, EnumHand hand, float hitX, float hitY, float hitZ) {
         // Retrieve the actual door type that we want to use here.
         // It's okay if stack isn't an ItemDoor. In that case, the lookup will
         // return null, just as if the item was an unrecognized door type.
