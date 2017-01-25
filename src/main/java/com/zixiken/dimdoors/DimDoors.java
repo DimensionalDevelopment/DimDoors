@@ -76,6 +76,10 @@ public class DimDoors {
     public static void chat(EntityPlayer player, String text) {
         player.sendMessage(new TextComponentString("[DimDoors] " + text));
     }
+    
+    public static void warning(Class classFiredFrom, String text) {
+        FMLLog.warning("[DimDoors] " + text + " (" + classFiredFrom.toString() + " )", 0);
+    }
 
     public static void log(Class classFiredFrom, String text) {
         FMLLog.info("[DimDoors] " + text + " (" + classFiredFrom.toString() + " )", 0);

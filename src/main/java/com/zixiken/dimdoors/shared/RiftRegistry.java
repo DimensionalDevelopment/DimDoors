@@ -184,10 +184,14 @@ public class RiftRegistry {
         TileEntity tileEntity = location.getTileEntity(); //@todo this method might need to be in another class?
         if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
             DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
-            rift.pair(riftID2);
+            DimDoors.log(this.getClass(), "RiftRegistry trying to connect rift " + riftID + " to rift " + riftID2 + ".");
+            boolean alreadyPaired = rift.pair(riftID2);
+            if (!alreadyPaired) {
+                DimDoors.log(this.getClass(), "RiftRegistry unregistering rift " + riftID + " from unPairedRiftRegistry.");
+                unpairedRiftList.remove((Integer) riftID);
+                //@todo remove the riftID from the depth list as well
+            }
         }
-        unpairedRiftList.remove((Integer) riftID);
-        //@todo remove the riftID from the depth list as well
     }
 
     public void unpair(int riftID) {
@@ -201,10 +205,12 @@ public class RiftRegistry {
         TileEntity tileEntity = location.getTileEntity();
         if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
             DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
-            rift.unpair();
+            boolean alreadyUnPaired = rift.unpair();
+            if (!alreadyUnPaired) {
+                unpairedRiftList.add(riftID);
+                //@todo add the riftID from the depth list as well, maybe move this to the tileEntityRift class itself though?
+            }
         }
-        unpairedRiftList.add(riftID);
-        //@todo add the riftID from the depth list as well, maybe move this to the tileEntityRift class itself though?
     }
 
     public void setLastChangedRift(DDTileEntityBase origRift) {
@@ -216,11 +222,16 @@ public class RiftRegistry {
     }
 
     public boolean teleportEntityToRift(Entity entity, int pairedRiftID) {
+        DimDoors.log(this.getClass(), "RiftID of rift that entity is teleporting to is " + pairedRiftID + ".");
         if (pairedRiftID < 0) {
+            DimDoors.warning(this.getClass(), "RiftID of rift that entity is teleporting to seems to be lower than 0 and it shouldn't.");
             return false;
         }
         Location destinationRiftLocation = getRiftLocation(pairedRiftID);
         DDTileEntityBase destinationRift = (DDTileEntityBase) destinationRiftLocation.getTileEntity();
+        if (destinationRift == null) {
+            DimDoors.warning(this.getClass(), "The rift that an entity is trying to teleport to seems to be null.");
+        }
         return TeleportHelper.teleport(entity, destinationRift.getTeleportTargetLocation());
     }
 

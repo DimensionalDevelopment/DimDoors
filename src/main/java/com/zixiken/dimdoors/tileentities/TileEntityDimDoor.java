@@ -61,15 +61,21 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
     @Override
     public boolean tryTeleport(Entity entity) {
+        //DimDoors.log(this.getClass(), "Trying to teleport from rift " + getRiftID() + ".");
         if (!isPaired()) {
+            //DimDoors.log(this.getClass(), "Trying to find suitable destination rift.");
             int randomPairedRiftID = RiftRegistry.Instance.getRandomUnpairedRiftID(getRiftID());
             if (randomPairedRiftID < 0) {
+                //DimDoors.log(this.getClass(), "No suitable destination rift was found.");
                 return false;
             }
             RiftRegistry.Instance.pair(getRiftID(), randomPairedRiftID);
             //@todo try to automatically pair this door somehow
+        } else {
+            //DimDoors.log(this.getClass(), "This rift was already paired correctly.");
         }
-        return RiftRegistry.Instance.teleportEntityToRift(entity, getPairedRiftID());
+        //DimDoors.log(this.getClass(), "Starting teleportation.");
+        return RiftRegistry.Instance.teleportEntityToRift(entity, getPairedRiftID()); //this seems to return false...
     }
 
     public void uponDoorPlacement(@Nullable TileEntity possibleOldRift) {

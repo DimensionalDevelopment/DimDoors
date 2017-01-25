@@ -1,21 +1,21 @@
 {
-"modListVersion":2,
-"modList":
-[
-{
-"modid": "dimdoors",
-"name": "Dimensional Doors",
-"description": "Bend and twist reality itself, creating pocket dimensions, rifts, and much more",
-"version": "3.0.0-a1",
-"credits": "Created by StevenRS11, Coded by StevenRS11 and SenseiKiwi, Logo and Testing by Jaitsu, Recent updates by Zixiken and Waterpicker",
-"logoFile": "/dimdoors_logo.png",
-"mcversion": "1.10.2",
-"url": "http://www.minecraftforum.net/topic/1650007",
-"updateUrl": "",
-"authorList": [ "StevenRS11", "SenseiKiwi", "Zixiken", "WaterPicker" ],
-"parent":"",
-"screenshots": [],
-"dependencies": [ "Forge"]
-}
-]
+    "modListVersion":2,
+    "modList":
+    [
+        {
+            "modid": "dimdoors",
+            "name": "Dimensional Doors",
+            "description": "Bend and twist reality itself, creating pocket dimensions, rifts, and much more",
+            "version": "${version}",
+            "credits": "Created by StevenRS11, Coded by StevenRS11 and SenseiKiwi, Logo and Testing by Jaitsu, Recent updates by Zixiken and Waterpicker",
+            "logoFile": "/dimdoors_logo.png",
+            "mcversion": "1.10.2",
+            "url": "http://www.minecraftforum.net/topic/1650007",
+            "updateUrl": "",
+            "authorList": [ "StevenRS11", "SenseiKiwi", "Zixiken", "WaterPicker", "Robijnvogel" ],
+            "parent":"",
+            "screenshots": [],
+            "dependencies": [ "Forge"]
+        }
+    ]
 }

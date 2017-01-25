@@ -5,6 +5,8 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.play.server.SPacketUpdateHealth;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
@@ -25,8 +27,7 @@ public class TeleportHelper extends Teleporter {
     }
 
     public static boolean teleport(Entity entity, Location newLocation) {
-        if (DimDoors.isClient()) {
-            //DimDoors.log(TeleportHelper.class, "Not teleporting, because EntityPlayerSP.");
+        if (DimDoors.getDefWorld().isRemote) {
             return false;
         }
 
@@ -38,15 +39,16 @@ public class TeleportHelper extends Teleporter {
         //DimDoors.log(TeleportHelper.class, "Starting teleporting now:");
         if (oldDimID == newDimID) {
             if (entity instanceof EntityPlayer) {
-                //DimDoors.log(TeleportHelper.class, "Using teleport method 1");
+                DimDoors.log(TeleportHelper.class, "Teleporting Player within same dimension.");
                 EntityPlayerMP player = (EntityPlayerMP) entity;
 
+                player.setLocationAndAngles(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5, player.getRotationYawHead(), player.getRotatedYaw(Rotation.CLOCKWISE_180)); //@todo, instead of following line
                 player.setPositionAndUpdate(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
                 player.world.updateEntityWithOptionalForce(player, false);
-                //player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
+                player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
                 player.timeUntilPortal = 150;
             } else {
-                //DimDoors.log(TeleportHelper.class, "Using teleport method 2");
+                DimDoors.log(TeleportHelper.class, "Teleporting non-Player within same dimension.");
                 WorldServer world = (WorldServer) entity.world;
 
                 entity.setPosition(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
@@ -55,14 +57,14 @@ public class TeleportHelper extends Teleporter {
             }
         } else {
             if (entity instanceof EntityPlayer) {
-                //DimDoors.log(TeleportHelper.class, "Using teleport method 3");
+                DimDoors.log(TeleportHelper.class, "Teleporting Player to new dimension.");
                 EntityPlayerMP player = (EntityPlayerMP) entity;
                 player.changeDimension(newDimID); //@todo, this only works for Vanilla dimensions, I've heard?
                 player.setPositionAndUpdate(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
                 player.world.updateEntityWithOptionalForce(player, false);
                 //player.connection.sendPacket(new SPacketUpdateHealth(player.getHealth(), player.getFoodStats().getFoodLevel(), player.getFoodStats().getSaturationLevel()));
             } else if (!entity.world.isRemote) {
-                //DimDoors.log(TeleportHelper.class, "Using teleport method 4");
+                DimDoors.log(TeleportHelper.class, "Teleporting non-Player to new dimension.");
                 entity.changeDimension(newDimID);
                 entity.setPosition(newPos.getX() + 0.5, newPos.getY() + 0.5, newPos.getZ() + 0.5);
                 oldWorldServer.resetUpdateEntityTick();

@@ -44,6 +44,9 @@ public class ItemRiftConnectionTool extends ItemTool {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World worldIn, EntityPlayer playerIn, EnumHand hand) {
+        if (worldIn.isRemote) {
+            return new ActionResult(EnumActionResult.FAIL, stack);
+        }
         if (!stack.hasTagCompound()) {
             NBTTagCompound compound = new NBTTagCompound();
             compound.setBoolean("isInConnectMode", true);
@@ -51,7 +54,7 @@ public class ItemRiftConnectionTool extends ItemTool {
         }
 
         RayTraceResult hit = rayTrace(worldIn, playerIn, true);
-        if (RayTraceHelper.isRift(hit, worldIn)) {
+        if (RayTraceHelper.isAbstractRift(hit, worldIn)) {
             DDTileEntityBase rift = (DDTileEntityBase) worldIn.getTileEntity(hit.getBlockPos());
             if (playerIn.isSneaking()) {
                 return selectRift(stack, worldIn, rift, playerIn); //new ActionResult(EnumActionResult.PASS, stack));
@@ -69,11 +72,9 @@ public class ItemRiftConnectionTool extends ItemTool {
             if (compound.hasKey("RiftID")) {
                 int primaryRiftID = compound.getInteger("RiftID");
                 int secondaryRiftID = rift.getRiftID();
-                if (!worldIn.isRemote) {
-                    DimDoors.chat(playerIn, "Pairing rift " + primaryRiftID
-                            + " with rift " + secondaryRiftID + ".");
-                    RiftRegistry.Instance.pair(primaryRiftID, secondaryRiftID);
-                }
+                DimDoors.chat(playerIn, "Pairing rift " + primaryRiftID
+                        + " with rift " + secondaryRiftID + ".");
+                RiftRegistry.Instance.pair(primaryRiftID, secondaryRiftID);
                 compound.removeTag("RiftID");
                 stack.damageItem(1, playerIn);
             } else {

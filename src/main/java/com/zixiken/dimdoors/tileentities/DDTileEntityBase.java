@@ -30,10 +30,10 @@ public abstract class DDTileEntityBase extends TileEntity {
         return oldState.getBlock() != newSate.getBlock();
     }
 
-    public void pair(int otherRiftID) { //should only ever be called from the RiftRegistry.pair method
+    public boolean pair(int otherRiftID) { //should only ever be called from the RiftRegistry.pair method
         if (isPaired) {
             if (otherRiftID == pairedRiftID) {
-                return;
+                return true;
             } else {
                 RiftRegistry.Instance.unpair(pairedRiftID);
             }
@@ -42,16 +42,18 @@ public abstract class DDTileEntityBase extends TileEntity {
         isPaired = true;
         RiftRegistry.Instance.pair(pairedRiftID, riftID);
         this.markDirty();
+        return false;
     }
 
-    public void unpair() { //should only ever be called from the RiftRegistry.unpair method
+    public boolean unpair() { //should only ever be called from the RiftRegistry.unpair method
         if (!isPaired) {
-            return;
+            return true;
         } else {
             isPaired = false;
             RiftRegistry.Instance.unpair(pairedRiftID);
         }
         this.markDirty();
+        return false;
     }
 
     public void register(int depth) {
