@@ -14,6 +14,8 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 ext.modversion = "3.0.0-a1"
 ext.mcversion = "1.10.2"
 ext.forgeversion = "12.18.3.2221"
+ext.spongeSchematicVersion = "1"
+
 version = mcversion + "-" + modversion
 group= "com.zixiken.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "dimdoors"
@@ -28,6 +30,7 @@ minecraft {
     runDir = "run"
     mappings = "stable_29"
     replace '${version}', project.version
+    replace '${spongeSchematicVersion}', ext.spongeSchematicVersion
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 

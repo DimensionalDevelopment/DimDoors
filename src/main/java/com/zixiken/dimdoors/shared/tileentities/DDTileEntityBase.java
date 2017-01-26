@@ -72,7 +72,9 @@ public abstract class DDTileEntityBase extends TileEntity {
             pairedRiftID = nbt.getInteger("pairedRiftID");
             isInPocket = nbt.getBoolean("isInPocket");
             pocketID = nbt.getInteger("pocketID");
+            depth = nbt.getInteger("depth");
         } catch (Exception e) {
+            //reading these values should only fail on loading old saves, or loading old schematics, in which case the default values will do 
         }
     }
 
@@ -84,6 +86,7 @@ public abstract class DDTileEntityBase extends TileEntity {
         nbt.setInteger("pairedRiftID", this.pairedRiftID);
         nbt.setBoolean("isInPocket", this.isInPocket);
         nbt.setInteger("pocketID", this.pocketID);
+        nbt.setInteger("depth", this.depth);
         return nbt;
     }
 

@@ -15,7 +15,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
     public boolean doorIsOpen = false;
     public EnumFacing orientation = EnumFacing.SOUTH;
-    public byte lockStatus = 1;
+    public byte lockStatus = 0;
     
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
