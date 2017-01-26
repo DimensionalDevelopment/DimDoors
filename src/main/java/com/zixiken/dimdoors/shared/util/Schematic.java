@@ -26,12 +26,12 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
  * @author Robijnvogel
  */
 public class Schematic {
-    
+
     private static final String[] oldDimDoorBlockNames = new String[]{
         "Fabric of RealityPerm",
         "Fabric of Reality",
         "Warp Door"};
-    
+
     private static final String[] newDimDoorBlockNames = new String[]{
         "blockDoorQuartz",
         "blockDoorGold",
@@ -58,17 +58,17 @@ public class Schematic {
     List<IBlockState> pallette = new ArrayList();
     int[][][] blockData; //[x][y][z]
     List<NBTTagCompound> tileEntities = new ArrayList();
-    
+
     private Schematic() {
     }
-    
+
     public static Schematic loadFromNBT(NBTTagCompound nbt) {
         if (!nbt.hasKey("Metadata")) {
-            return loadOldDimDoorSchematicFromNBT(nbt);         
+            return loadOldDimDoorSchematicFromNBT(nbt);
         }
-        
+
         Schematic schematic = new Schematic();
-        
+
         schematic.version = nbt.getInteger("Version");
         NBTTagCompound metadataCompound = nbt.getCompoundTag("Metadata").getCompoundTag(".");
         schematic.author = metadataCompound.getString("Author");
@@ -86,7 +86,7 @@ public class Schematic {
         schematic.length = nbt.getShort("Length");
         schematic.offset = nbt.getIntArray("Offset");
         schematic.paletteMax = nbt.getInteger("PaletteMax");
-        
+
         NBTTagCompound paletteNBT = nbt.getCompoundTag("Palette");
         Map<Integer, String> paletteMap = new HashMap();
         for (String key : paletteNBT.getKeySet()) {
@@ -108,7 +108,7 @@ public class Schematic {
                 stateString = "";
             }
             Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString));
-            
+
             IBlockState blockstate = block.getDefaultState();
             if (!stateString.equals("")) {
                 String[] properties = stateString.split(",");
@@ -117,7 +117,7 @@ public class Schematic {
             }
             schematic.pallette.add(blockstate);
         }
-        
+
         byte[] blockDataIntArray = nbt.getByteArray("BlockData");
         schematic.blockData = new int[schematic.width][schematic.height][schematic.length];
         for (int x = 0; x < schematic.width; x++) {
@@ -127,19 +127,19 @@ public class Schematic {
                 }
             }
         }
-        
+
         NBTTagList tileEntitiesTagList = (NBTTagList) nbt.getTag("TileEntities");
         for (int i = 0; i < tileEntitiesTagList.tagCount(); i++) {
             NBTTagCompound tileEntityTagCompound = tileEntitiesTagList.getCompoundTagAt(i);
             schematic.tileEntities.add(tileEntityTagCompound);
         }
-        
+
         return schematic;
     }
-    
+
     public static NBTTagCompound saveToNBT(Schematic schematic) {
         NBTTagCompound nbt = new NBTTagCompound();
-        
+
         nbt.setInteger("Version", schematic.version);
         NBTTagCompound metadataCompound = new NBTTagCompound();
         metadataCompound.setString("Author", schematic.author);
@@ -151,13 +151,13 @@ public class Schematic {
         }
         metadataCompound.setTag("RequiredMods", requiredModsTagList);
         nbt.setTag("Metadata", metadataCompound);
-        
+
         nbt.setShort("Width", schematic.width);
         nbt.setShort("Height", schematic.height);
         nbt.setShort("Length", schematic.length);
         nbt.setIntArray("Offset", schematic.offset);
         nbt.setInteger("PaletteMax", schematic.paletteMax);
-        
+
         NBTTagCompound paletteNBT = new NBTTagCompound();
         Map<Integer, String> paletteMap = new HashMap();
         for (int i = 0; i < schematic.pallette.size(); i++) {
@@ -166,7 +166,7 @@ public class Schematic {
             paletteNBT.setInteger(blockStateString, i);
         }
         nbt.setTag("Palette", paletteNBT);
-        
+
         byte[] blockDataIntArray = new byte[schematic.width * schematic.height * schematic.length];
         for (int x = 0; x < schematic.width; x++) {
             for (int y = 0; y < schematic.height; y++) {
@@ -176,17 +176,17 @@ public class Schematic {
             }
         }
         nbt.setByteArray("BlockData", blockDataIntArray);
-        
+
         NBTTagList tileEntitiesTagList = new NBTTagList();
         for (int i = 0; i < schematic.tileEntities.size(); i++) {
             NBTTagCompound tileEntityTagCompound = schematic.tileEntities.get(i);
             tileEntitiesTagList.appendTag(tileEntityTagCompound);
         }
         nbt.setTag("TileEntities", tileEntitiesTagList);
-        
+
         return nbt;
     }
-    
+
     private static IBlockState getBlockStateWithProperties(Block block, String[] properties) {
         Map<String, String> propertyAndBlockStringsMap = new HashMap();
         for (int i = 0; i < properties.length; i++) {
@@ -213,7 +213,7 @@ public class Schematic {
         }
         return chosenState;
     }
-    
+
     private static String getBlockStateStringFromState(IBlockState state) {
         String blockNameString = state.getBlock().getLocalizedName(); //@todo, check if this is the correct method
         String blockStateString = "";
@@ -234,73 +234,73 @@ public class Schematic {
         }
         return totalString;
     }
-    
+
     public int getVersion() {
         return version;
     }
-    
+
     public String getAuthor() {
         return author;
     }
-    
+
     public String getSchematicName() {
         return schematicName;
     }
-    
+
     public long getCreationDate() {
         return creationDate;
     }
-    
+
     public String[] getRequiredMods() {
         return requiredMods;
     }
-    
+
     public short getWidth() {
         return width;
     }
-    
+
     public short getHeight() {
         return height;
     }
-    
+
     public short getLength() {
         return length;
     }
-    
+
     public int[] getOffset() {
         return offset;
     }
-    
+
     public int getPaletteMax() {
         return paletteMax;
     }
-    
+
     public List<IBlockState> getPallette() {
         return pallette;
     }
-    
+
     public int[][][] getBlockData() {
         return blockData;
     }
-    
+
     public List<NBTTagCompound> getTileEntities() {
         return tileEntities;
     }
-    
+
     public static Schematic loadOldDimDoorSchematicFromNBT(NBTTagCompound nbt) { //@todo, maybe make this a separate class, so values can be final so they HAVE TO  be set in a newly designed constructor
         Schematic schematic = new Schematic();
-        
+
         schematic.version = Integer.parseInt("${spongeSchematicVersion}"); //set in build.gradle
         schematic.author = "Robijnvogel";
         schematic.schematicName = "This schematic was converted from an MC 1.7.10 DimDoors schematic";
         schematic.creationDate = System.currentTimeMillis();
         schematic.requiredMods = new String[0];
-        
+
         schematic.width = nbt.getShort("Width");
         schematic.height = nbt.getShort("Height");
         schematic.length = nbt.getShort("Length");
         schematic.offset = new int[]{0, 0, 0};
-        
+
         NBTTagList paletteNBT = (NBTTagList) nbt.getTag("Palette");
         for (int i = 0; i <= paletteNBT.tagCount(); i++) {
             String blockString = paletteNBT.getStringTagAt(i);
@@ -326,8 +326,8 @@ public class Schematic {
                     if (metadata != 0) {
                         IBlockState basesState = schematic.pallette.get(blockInt); //this is needed for the various "types" that a block can have
                         IBlockState additionalState = basesState.getBlock().getStateFromMeta(metadata);
-                        for (IProperty property: basesState.getProperties().keySet()) {
-                            Comparable value = basesState.getProperties().get(property);                            
+                        for (IProperty property : basesState.getProperties().keySet()) {
+                            Comparable value = basesState.getProperties().get(property);
                             additionalState = additionalState.withProperty(property, value);
                         }
                         if (schematic.pallette.contains(additionalState)) {
@@ -342,22 +342,22 @@ public class Schematic {
             }
         }
         schematic.paletteMax = schematic.pallette.size() - 1;
-        
+
         NBTTagList tileEntitiesTagList = (NBTTagList) nbt.getTag("TileEntities");
         for (int i = 0; i < tileEntitiesTagList.tagCount(); i++) {
             NBTTagCompound tileEntityTagCompound = tileEntitiesTagList.getCompoundTagAt(i);
             schematic.tileEntities.add(tileEntityTagCompound);
         }
-        
+
         return schematic;
     }
-    
+
     private static String convertOldDimDoorsBlockNameToNewDimDoorsBlockName(String dimdoorsBlockName) {
         if (oldDimDoorBlockNames.length != newDimDoorBlockNames.length) {
             DimDoors.warn(Schematic.class, "The array of old dimdoors block names, somehow isn't the same length as the array of new names, therefore the dimdoors blocks in this schematic will not be loaded.");
             return null;
         }
-        
+
         int i = 0;
         for (; i < oldDimDoorBlockNames.length; i++) {
             if (oldDimDoorBlockNames[i].equals(dimdoorsBlockName)) {
