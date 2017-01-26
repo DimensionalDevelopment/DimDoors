@@ -2,6 +2,7 @@ package com.zixiken.dimdoors;
 
 import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.DDProxyCommon;
+import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.PocketSavedData;
 import com.zixiken.dimdoors.shared.RiftRegistry;
@@ -58,8 +59,9 @@ public class DimDoors {
     public void serverLoad(FMLServerStartingEvent event) {
         //@todo event.registerServerCommand( new DDCommand() ); //to register commands that this mod offers?
         RiftRegistry.Instance.reset();
-        PocketSavedData.get(getDefWorld());
+        PocketRegistry.Instance.reset();
         RiftSavedData.get(getDefWorld());
+        PocketSavedData.get(getDefWorld());
         SchematicHandler.Instance.loadSchematics();
     }
 

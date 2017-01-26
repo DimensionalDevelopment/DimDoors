@@ -11,8 +11,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.zixiken.dimdoors.DimDoors;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -22,8 +25,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -86,38 +91,100 @@ public class SchematicHandler {
         }
     }
 
-    private List<PocketTemplate> loadTemplatesFromJson(String nameString, int maxPocketSize) { //depending on the "jSonType" value in the jSon, this might load several variations of a pocket at once, hence loadTemplate -->s<--
+    private static List<PocketTemplate> loadTemplatesFromJson(String nameString, int maxPocketSize) { //depending on the "jSonType" value in the jSon, this might load several variations of a pocket at once, hence loadTemplate -->s<--
+        InputStream jsonJarStream = DimDoors.class.getResourceAsStream("/assets/dimdoors/pockets/json/" + nameString + ".json");
+        String schematicJarDirectory = "/assets/dimdoors/pockets/schematic/";
+        //init jsons config folder
         File jsonFolder = new File(DDConfig.configurationFolder, "/Jsons");
-        File jsonFile = new File(jsonFolder, "/" + nameString + ".json");
+        if (!jsonFolder.exists()) {
+            jsonFolder.mkdirs();
+        }
+        File jsonFile = new File(jsonFolder, "/" + nameString + ".json"); //@todo this could probably be moved a few lines down
+        //init schematics config folder
         File schematicFolder = new File(DDConfig.configurationFolder, "/Schematics");
-        String jsonString = null;
-        try {
-            jsonString = readFile(jsonFile.getAbsolutePath(), StandardCharsets.UTF_8);
-        } catch (IOException ex) {
-            Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Template Json file for template " + nameString + " was not found in template folder.", ex);
+        if (!schematicFolder.exists()) {
+            schematicFolder.mkdirs();
+        }
+
+        //load the json and convert it to a JsonObject
+        String jsonString;
+        if (jsonJarStream != null) {
+            StringWriter writer = new StringWriter();
+            try {
+                IOUtils.copy(jsonJarStream, writer, StandardCharsets.UTF_8);
+            } catch (IOException ex) {
+                Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Json-file " + nameString + ".json did not load correctly from jar. Skipping loading of this template.", ex);
+                return new ArrayList();
+            }
+            jsonString = writer.toString();
+        } else if (jsonFile.exists()) {
+            DimDoors.log(SchematicHandler.class, "Json-file " + nameString + ".json was not found in the jar. Loading from config directory instead.");
+            try {
+                jsonString = readFile(jsonFile.getAbsolutePath(), StandardCharsets.UTF_8);
+            } catch (IOException ex) {
+                Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Json-file " + nameString + ".json did not load correctly from config folder. Skipping loading of this template.", ex);
+                return new ArrayList();
+            }
+        } else {
+            DimDoors.warn(SchematicHandler.class, "Json-file " + nameString + ".json was not found in the jar or config directory. Skipping loading of this template.");
+            return new ArrayList();
         }
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(jsonString);
         JsonObject jsonTemplate = jsonElement.getAsJsonObject();
+        DimDoors.log(SchematicHandler.class, "Checkpoint 1 reached");
+        //Generate and get templates (without a schematic) of all variations that are valid for the current "maxPocketSize" 
         List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate, maxPocketSize);
+        DimDoors.log(SchematicHandler.class, "Checkpoint 4 reached; " + validTemplates.size() + " templates were loaded");
 
         for (PocketTemplate template : validTemplates) { //it's okay to "tap" this for-loop, even if validTemplates is empty.
+            InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + template.getName() + ".schem"); //@todo also check for other schematics
+            InputStream oldVersionSchematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + template.getName() + ".schematic"); //@todo also check for other schematics
             File schematicFile = new File(schematicFolder, "/" + template.getName() + ".schem");
+            File oldVersionSchematicFile = new File(schematicFolder, "/" + template.getName() + ".schem");
             NBTTagCompound schematicNBT;
+
             Schematic schematic = null;
-            try {
-                schematicNBT = CompressedStreamTools.read(schematicFile);
-                schematic = Schematic.loadFromNBT(schematicNBT);
-            } catch (IOException ex) {
-                Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for schematic " + template.getName() + " was not found in template folder.", ex);
+            if (schematicStream != null) {
+                try {
+                    GZIPInputStream schematicZipStream = new GZIPInputStream(schematicStream);
+                    schematicNBT = CompressedStreamTools.read(new DataInputStream(schematicZipStream));
+                    schematic = Schematic.loadFromNBT(schematicNBT);
+                } catch (IOException ex) {
+                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schem did not load correctly from jar.", ex);
+                }
+            } else if (oldVersionSchematicStream != null) {
+                try {
+                    GZIPInputStream schematicZipStream = new GZIPInputStream(oldVersionSchematicStream);
+                    schematicNBT = CompressedStreamTools.read(new DataInputStream(schematicZipStream));
+                    schematic = Schematic.loadFromNBT(schematicNBT);
+                } catch (IOException ex) {
+                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schematic did not load correctly from jar.", ex);
+                }
+            } else if (schematicFile.exists()) {
+                try {
+                    schematicNBT = CompressedStreamTools.read(schematicFile);
+                    schematic = Schematic.loadFromNBT(schematicNBT);
+                } catch (IOException ex) {
+                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schem did not load correctly from config folder.", ex);
+                }
+            } else if (oldVersionSchematicFile.exists()) {
+                try {
+                    schematicNBT = CompressedStreamTools.read(oldVersionSchematicFile);
+                    schematic = Schematic.loadFromNBT(schematicNBT);
+                } catch (IOException ex) {
+                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schematic did not load correctly from config folder.", ex);
+                }
+            } else {
+                DimDoors.warn(SchematicHandler.class, "Schematic '" + template.getName() + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
             }
-            if (schematic != null && (schematic.getWidth() > (template.getSize()) * 16 || schematic.getLength() > (template.getSize()) * 16)) {
+            if (schematic != null
+                    && (schematic.getWidth() > (template.getSize()) * 16 || schematic.getLength() > (template.getSize()) * 16)) {
                 schematic = null;
-                DimDoors.log(this.getClass(), "Schematic " + template.getName() + ".schem was bigger than specified in " + nameString + ".json and therefore wasn't loaded");
+                DimDoors.log(Schematic.class, "Schematic " + template.getName() + " was bigger than specified in " + nameString + ".json and therefore wasn't loaded");
             }
             template.setSchematic(schematic);
         }
-        //@todo check for json files in both directories (inside the mod jar, and inside the dimdoors config folder)
         return validTemplates;
     }
 
@@ -127,14 +194,14 @@ public class SchematicHandler {
         return new String(encoded, encoding);
     }
 
-    private List<PocketTemplate> getAllValidVariations(JsonObject jsonTemplate, int maxPocketSize) {
+    private static List<PocketTemplate> getAllValidVariations(JsonObject jsonTemplate, int maxPocketSize) {
         String jsonType = jsonTemplate.get("jsonType").getAsString();
         EnumPocketType pocketType = EnumPocketType.getFromInt(jsonTemplate.get("pocketType").getAsInt());
         JsonArray variations = jsonTemplate.getAsJsonArray("variations");
 
         List<PocketTemplate> pocketTemplates = new ArrayList();
         JsonObject chosenVariation = null; //only applicable if jsonType == "Singular"
-        int chosenVariationSize = 0; //only applicable if jsonType == "Singular"
+        int chosenVariationSize = -1; //only applicable if jsonType == "Singular"
         List<JsonObject> validVariations = new ArrayList();
         //put all valid variation JsonObjects into an array list
         for (int i = 0; i < variations.size(); i++) {
@@ -142,6 +209,7 @@ public class SchematicHandler {
             int variationSize = variation.get("size").getAsInt();
 
             if (variationSize > maxPocketSize) {
+                DimDoors.log(SchematicHandler.class, "Checkpoint 2 reached; Variation size " + variationSize + " is bigger than maxPocketSize " + maxPocketSize + ".");
                 //do not add it
             } else if (jsonType.equals("Singular")) {
                 if (variationSize > chosenVariationSize) {
@@ -154,12 +222,13 @@ public class SchematicHandler {
             } else if (jsonType.equals("Multiple")) {
                 validVariations.add(variation);
             } else { //@todo more options?
-                DimDoors.log(this.getClass(), "JsonType " + jsonType + " is not a valid JsonType. Json was not loaded.");
+                DimDoors.log(SchematicHandler.class, "JsonType " + jsonType + " is not a valid JsonType. Json was not loaded.");
             }
         }
         if (chosenVariation != null) {
             validVariations.add(chosenVariation);
         }
+        DimDoors.log(SchematicHandler.class, "Checkpoint 3 reached; " + validVariations.size() + " variations were selected.");
 
         //convert the valid variations arraylist to a list of pocket templates
         for (JsonObject variation : validVariations) {

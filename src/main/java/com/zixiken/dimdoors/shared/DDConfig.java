@@ -47,11 +47,7 @@ public class DDConfig {
         // Load config
         configurationFolder = new File(event.getModConfigurationDirectory(), "/DimDoors");
         if (!configurationFolder.exists()) {
-            try {
-                configurationFolder.createNewFile();
-            } catch (IOException ex) {
-                Logger.getLogger(DDConfig.class.getName()).log(Level.SEVERE, "Dimdoors config folder could not be created.", ex);
-            }
+            configurationFolder.mkdirs();
         }
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
         config.load();

@@ -54,9 +54,6 @@ public class PocketSavedData extends DDSavedData {
 
     @Override
     public void readFromNBT(NBTTagCompound pocketnbt) {
-        // Reset
-        PocketRegistry.Instance.reset();
-
         // Load NBT
         if (pocketnbt != null) {
             if (pocketnbt.hasKey("pockets")) {

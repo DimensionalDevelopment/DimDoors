@@ -30,7 +30,15 @@ public class Schematic {
     private static final String[] oldDimDoorBlockNames = new String[]{
         "Fabric of RealityPerm",
         "Fabric of Reality",
-        "Warp Door"};
+        "Warp Door",
+        "Dummy",
+        "Dummy",
+        "Dummy",
+        "Dummy",
+        "Dummy",
+        "Dummy",
+        "Dummy",
+    "Dummy"};
 
     private static final String[] newDimDoorBlockNames = new String[]{
         "blockDoorQuartz",
@@ -290,7 +298,7 @@ public class Schematic {
     public static Schematic loadOldDimDoorSchematicFromNBT(NBTTagCompound nbt) { //@todo, maybe make this a separate class, so values can be final so they HAVE TO  be set in a newly designed constructor
         Schematic schematic = new Schematic();
 
-        schematic.version = Integer.parseInt("${spongeSchematicVersion}"); //set in build.gradle
+        schematic.version = Integer.parseInt("1"); //@todo set in build.gradle ${spongeSchematicVersion}
         schematic.author = "Robijnvogel";
         schematic.schematicName = "This schematic was converted from an MC 1.7.10 DimDoors schematic";
         schematic.creationDate = System.currentTimeMillis();

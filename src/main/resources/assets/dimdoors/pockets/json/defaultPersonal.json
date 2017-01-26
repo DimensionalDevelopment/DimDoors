@@ -1,0 +1,13 @@
+{
+    "jsonType": "Singular",
+    "pocketType" : 0,
+    "variations": [
+        {
+            "variantName": "defaultPersonal_3",
+            "size": 3,
+            "minDepth": 0,
+            "maxDepth": 0,
+            "weights": [100]
+        }
+    ]
+}
