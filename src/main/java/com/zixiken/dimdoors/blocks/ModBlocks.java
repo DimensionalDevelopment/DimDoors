@@ -15,6 +15,7 @@ public class ModBlocks {
     public static BlockTransTrapdoor blockDimHatch;
     public static BlockDimWall blockDimWall;
     public static BlockRift blockRift;
+    public static BlockLimbo blockLimbo;
 
     public static void registerBlocks() {
         GameRegistry.register(blockDoorQuartz = new BlockDoorQuartz());
@@ -28,5 +29,6 @@ public class ModBlocks {
         GameRegistry.register(blockDimWall = new BlockDimWall());
         GameRegistry.register(blockDimDoorTransient = new BlockDimDoorTransient());
         GameRegistry.register(blockRift = new BlockRift());
+        GameRegistry.register(blockLimbo = new BlockLimbo());
     }
 }

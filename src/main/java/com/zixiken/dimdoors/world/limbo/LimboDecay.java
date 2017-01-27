@@ -34,7 +34,7 @@ public class LimboDecay {
     public static IBlockState[] getDecaySequence() {
         if (decaySequence == null) {
             decaySequence = new IBlockState[] {
-                    mod_pocketDim.blockLimbo,
+                    ModBlocks.blockLimbo.getDefaultState(),
                     Blocks.GRAVEL.getDefaultState(),
                     Blocks.COBBLESTONE.getDefaultState(),
                     Blocks.STONE.getDefaultState()
@@ -47,16 +47,16 @@ public class LimboDecay {
     public static IBlockState[] getBlocksImmuneToDecay() {
         if (blocksImmuneToDecay == null) {
             blocksImmuneToDecay = new IBlockState[] {
-                    mod_pocketDim.blockLimbo,
+                    ModBlocks.blockLimbo.getDefaultState(),
                     ModBlocks.blockDimWall.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.ANCIENT),
                     ModBlocks.blockDimDoorTransient.getDefaultState(),
                     ModBlocks.blockDimDoor.getDefaultState(),
                     ModBlocks.blockDimDoorWarp.getDefaultState(),
                     ModBlocks.blockRift.getDefaultState(),
                     ModBlocks.blockDimDoorChaos.getDefaultState(),
-                    ModBlocks.blockDoorGold,
-                    ModBlocks.blockDoorQuartz,
-                    ModBlocks.blockDimDoorGold
+                    ModBlocks.blockDoorGold.getDefaultState(),
+                    ModBlocks.blockDoorQuartz.getDefaultState(),
+                    ModBlocks.blockDimDoorGold.getDefaultState()
             };
         }
 
@@ -67,8 +67,7 @@ public class LimboDecay {
      * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
      * and applies Limbo decay to them. This gives the impression that decay spreads outward from Unraveled Fabric.
      */
-    public void applySpreadDecay(World world, BlockPos pos)
-    {
+    public static void applySpreadDecay(World world, BlockPos pos) {
         //Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
         //full spread decay checks, which can also shift its performance impact on the game.
         if (random.nextInt(MAX_DECAY_SPREAD_CHANCE) < DECAY_SPREAD_CHANCE) {
@@ -87,7 +86,7 @@ public class LimboDecay {
      * Picks random blocks from each active chunk in Limbo and, if decay is applicable, converts them directly to Unraveled Fabric.
      * This decay method is designed to stop players from avoiding Limbo decay by building floating structures.
      */
-    public void applyRandomFastDecay()
+    public static void applyRandomFastDecay()
     {
         int x, y, z;
         int sectionY;
@@ -118,10 +117,10 @@ public class LimboDecay {
     /**
      * Checks if a block can be decayed and, if so, changes it directly into Unraveled Fabric.
      */
-    private boolean decayBlockFast(World world, BlockPos pos) {
+    private static boolean decayBlockFast(World world, BlockPos pos) {
         IBlockState block = world.getBlockState(pos);
         if (canDecayBlock(block, world, pos)) {
-            world.setBlockState(pos, mod_pocketDim.blockLimbo);
+            world.setBlockState(pos, ModBlocks.blockLimbo.getDefaultState());
             return true;
         }
         return false;
@@ -130,7 +129,7 @@ public class LimboDecay {
     /**
      * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
      */
-    private boolean decayBlock(World world, BlockPos pos) {
+    private static boolean decayBlock(World world, BlockPos pos) {
         int index;
         IBlockState block = world.getBlockState(pos);
         if (canDecayBlock(block, world, pos)) {
@@ -157,7 +156,7 @@ public class LimboDecay {
     /**
      * Checks if a block can decay. We will not decay air, certain DD blocks, or containers.
      */
-    private boolean canDecayBlock(IBlockState block, World world, BlockPos pos) {
+    private static boolean canDecayBlock(IBlockState block, World world, BlockPos pos) {
         if (world.isAirBlock(pos )) {
             return false;
         }

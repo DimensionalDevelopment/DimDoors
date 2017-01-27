@@ -53,6 +53,7 @@ public class DimDoors {
 
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
+        event.registerServerCommand(new TeleportCommand());
         //@todo event.registerServerCommand( new DDCommand() ); //to register commands that this mod offers?
         RiftRegistry.Instance.reset();
         PocketSavedData.get(getDefWorld());

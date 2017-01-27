@@ -1,7 +1,10 @@
 package com.zixiken.dimdoors.world.limbo;
 
+import com.zixiken.dimdoors.blocks.BlockDimWall;
+import com.zixiken.dimdoors.blocks.ModBlocks;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Biomes;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -14,6 +17,7 @@ import net.minecraft.world.gen.structure.MapGenScatteredFeature;
 import net.minecraftforge.common.BiomeManager;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -51,7 +55,7 @@ public class LimboGenerator implements IChunkGenerator
     private MapGenScatteredFeature scatteredFeatureGenerator = new MapGenScatteredFeature();
 
     /** The biomes that are used to generate the chunk */
-    private Biome[] biomesForGeneration = new Biome[1];
+    private Biome[] biomesForGeneration = { new LimboBiome() };
 
     /** A double array that hold terrain noise from noiseGen3 */
     double[] noise3;
@@ -78,9 +82,8 @@ public class LimboGenerator implements IChunkGenerator
     }
     //private CustomLimboPopulator spawner;
 
-    public LimboGenerator(World world, long seed, /*CustomLimboPopulator spawner*/) {
+    public LimboGenerator(World world, long seed /*CustomLimboPopulator spawner*/) {
         this.worldObj = world;
-        BiomeManager
         LimboGenerator.rand = new Random(seed);
         this.noiseGen1 = new NoiseGeneratorOctaves(LimboGenerator.rand, 16); //base terrain
         this.noiseGen2 = new NoiseGeneratorOctaves(LimboGenerator.rand, 16); //hillyness
@@ -102,7 +105,7 @@ public class LimboGenerator implements IChunkGenerator
 
         this.worldObj = world;
 
-        this.spawner = spawner;
+        //this.spawner = spawner;
     }
 
     @Override
@@ -111,7 +114,7 @@ public class LimboGenerator implements IChunkGenerator
         //TODO: Wtf? Why do you reinitialize the seed when we already initialized it in the constructor?! ~SenseiKiwi
         LimboGenerator.rand.setSeed(chunkX * 341873128712L + chunkZ * 132897987541L);
         ChunkPrimer primer = new ChunkPrimer();
-        this.setBlocksInChunk(chunkX, chunkZ, primer);
+        this.scale(chunkX, chunkZ, primer);
         Chunk chunk = new Chunk(this.worldObj, primer, chunkX, chunkZ);
         chunk.generateSkylightMap();
 
@@ -255,62 +258,70 @@ public class LimboGenerator implements IChunkGenerator
         return par1ArrayOfDouble;
     }
 
-    public void setBlocksInChunk(int x, int z, ChunkPrimer blocks) {
-        byte var4 = 4;
-        byte var5 = 16;
-        byte var6 = 19;
-        int var7 = var4 + 1;
-        byte var8 = 17;
-        int var9 = var4 + 1;
-        this.biomesForGeneration = this.worldObj.getBiomeProvider().getBiomes(this.biomesForGeneration, x * 4 - 2, z * 4 - 2, var7 + 5, var9 + 5);
-        this.noiseArray = this.initializeNoiseField(this.noiseArray, x * var4, 0, z * var4, var7, var8, var9);
+    public void scale(int x, int z, ChunkPrimer primer) { //Coursty of
+        // TODO: this:
+        this.biomesForGeneration = this.worldObj.getBiomeProvider().getBiomesForGeneration(this.biomesForGeneration, x * 4 - 2, z * 4 - 2, 10, 10);
+        this.noiseArray = this.initializeNoiseField(this.noiseArray, x * 4, 0, z * 4, 5, 17, 5);
 
-        for (int var10 = 0; var10 < var4; ++var10) {
-            for (int var11 = 0; var11 < var4; ++var11) {
-                for (int var12 = 0; var12 < var5; ++var12) {
-                    double var13 = 0.125D;
-                    double var15 = this.noiseArray[((((var10) * var9) + var11) * var8) + var12];
-                    double var17 = this.noiseArray[((var10) * var9 + var11 + 1) * var8 + var12];
-                    double var19 = this.noiseArray[((var10 + 1) * var9 + var11) * var8 + var12];
-                    double var21 = this.noiseArray[((var10 + 1) * var9 + var11 + 1) * var8 + var12];
-                    double var23 = (this.noiseArray[((var10) * var9 + var11) * var8 + var12 + 1] - var15) * var13;
-                    double var25 = (this.noiseArray[((var10) * var9 + var11 + 1) * var8 + var12 + 1] - var17) * var13;
-                    double var27 = (this.noiseArray[((var10 + 1) * var9 + var11) * var8 + var12 + 1] - var19) * var13;
-                    double var29 = (this.noiseArray[((var10 + 1) * var9 + var11 + 1) * var8 + var12 + 1] - var21) * var13;
+        int xzSections = 4;
+        int xzSectionSize = 4;
+        int ySections = 16;
+        int ySectionSize = 8;
 
-                    for (int var31 = 0; var31 < 8; ++var31) {
-                        double var32 = 0.25D;
-                        double var34 = var15;
-                        double var36 = var17;
-                        double var38 = (var19 - var15) * var32;
-                        double var40 = (var21 - var17) * var32;
+        double xzScale = 1.0 / xzSectionSize;
+        double yScale = 1.0 / ySectionSize;
+        for (int sectionX = 0; sectionX < xzSections; ++sectionX) {
+            int xSectionPart = sectionX * xzSectionSize;
+            int i0__ = sectionX * (xzSections + 1);
+            int i1__ = (sectionX + 1) * (xzSections + 1);
 
-                        for (int var42 = 0; var42 < 4; ++var42) {
-                            int var43 = var42 + var10 * 4 << 11 | 0 + var11 * 4 << 7 | var12 * 8 + var31;
-                            short var44 = 128;
-                            var43 -= var44;
-                            double var45 = 0.25D;
-                            double var49 = (var36 - var34) * var45;
-                            double var47 = var34 - var49;
+            for (int sectionZ = 0; sectionZ < xzSections; ++sectionZ) {
+                int zSectionPart = sectionZ * xzSectionSize;
+                int i0_0 = (i0__ + sectionZ) * (ySections + 1);
+                int i0_1 = (i0__ + sectionZ + 1) * (ySections + 1);
+                int i1_0 = (i1__ + sectionZ) * (ySections + 1);
+                int i1_1 = (i1__ + sectionZ + 1) * (ySections + 1);
 
-                            for (int var51 = 0; var51 < 4; ++var51) {
-                                if ((var47 += var49) > 0.0D) {
-                                    blocks[var43 += var44] = mod_pocketDim.blockLimbo;
-                                } else if (var12 * 8 + var31 < var6) {
-                                    blocks[var43 += var44] = mod_pocketDim.blockDimWallPerm;
-                                } else {
-                                    blocks[var43 += var44] = Blocks.air;
+                for (int sectionY = 0; sectionY < ySections; ++sectionY) {
+                    int ySectionPart = sectionY * ySectionSize;
+                    double v0y0 = this.noiseArray[i0_0 + sectionY];
+                    double v0y1 = this.noiseArray[i0_1 + sectionY];
+                    double v1y0 = this.noiseArray[i1_0 + sectionY];
+                    double v1y1 = this.noiseArray[i1_1 + sectionY];
+                    double d0y0 = (this.noiseArray[i0_0 + sectionY + 1] - v0y0) * yScale;
+                    double d0y1 = (this.noiseArray[i0_1 + sectionY + 1] - v0y1) * yScale;
+                    double d1y0 = (this.noiseArray[i1_0 + sectionY + 1] - v1y0) * yScale;
+                    double d1y1 = (this.noiseArray[i1_1 + sectionY + 1] - v1y1) * yScale;
+
+                    for (int yRel = 0; yRel < ySectionSize; ++yRel) {
+                        int yCoord = ySectionPart + yRel;
+                        double vxy0 = v0y0;
+                        double vxy1 = v0y1;
+                        double dxy0 = (v1y0 - v0y0) * xzScale;
+                        double dxy1 = (v1y1 - v0y1) * xzScale;
+
+                        for (int xRel = 0; xRel < xzSectionSize; ++xRel) {
+                            int xCoord = xSectionPart + xRel;
+                            double dxyz = (vxy1 - vxy0) * xzScale;
+                            double vxyz = vxy0 - dxyz;
+
+                            for (int zRel = 0; zRel < xzSectionSize; ++zRel) {
+                                int zCoord = zSectionPart + zRel;
+                                if(vxyz > 0) {
+                                    primer.setBlockState(xCoord, yCoord, zCoord, ModBlocks.blockLimbo.getDefaultState());
+                                } else if(yCoord < 6) {
+                                    primer.setBlockState(xCoord, yCoord, zCoord, ModBlocks.blockDimWall.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.ANCIENT));
                                 }
                             }
 
-                            var34 += var38;
-                            var36 += var40;
+                            vxy0 += dxy0;
+                            vxy1 += dxy1;
                         }
 
-                        var15 += var23;
-                        var17 += var25;
-                        var19 += var27;
-                        var21 += var29;
+                        v0y0 += d0y0;
+                        v0y1 += d0y1;
+                        v1y0 += d1y0;
+                        v1y1 += d1y1;
                     }
                 }
             }
@@ -319,9 +330,7 @@ public class LimboGenerator implements IChunkGenerator
 
     @Override
     public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType par1EnumCreatureType, BlockPos pos) {
-
-        Biome biomegenbase = this.worldObj.getBiomeForCoordsBody(pos);
-        return biomegenbase == Biomes.SWAMPLAND && par1EnumCreatureType == EnumCreatureType.MONSTER && this.scatteredFeatureGenerator.isInsideStructure(pos) ? this.scatteredFeatureGenerator.getScatteredFeatureSpawnList() : biomegenbase.getSpawnableList(par1EnumCreatureType);
+        return new ArrayList<Biome.SpawnListEntry>();
     }
 
     @Nullable

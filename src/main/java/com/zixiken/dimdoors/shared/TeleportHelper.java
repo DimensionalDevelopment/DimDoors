@@ -26,10 +26,6 @@ public class TeleportHelper extends Teleporter {
         entityIn.setPositionAndUpdate(pos.getX() + .5, pos.getY() + .05, pos.getZ() + .5);
     }
 
-    public IBlockState toBlockState(String id) {
-        String[] list = id.split("[");
-    }
-
     public static boolean teleport(Entity entity, Location newLocation) {
         if (DimDoors.isClient()) {
             //DimDoors.log(TeleportHelper.class, "Not teleporting, because EntityPlayerSP.");

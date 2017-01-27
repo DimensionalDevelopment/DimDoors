@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.world.limbo;
 
+import com.zixiken.dimdoors.blocks.ModBlocks;
 import com.zixiken.dimdoors.client.CloudRenderBlank;
 import com.zixiken.dimdoors.shared.Location;
 import com.zixiken.dimdoors.world.DimDoorDimensions;
@@ -20,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WorldProviderLimbo extends WorldProvider {
     private IRenderHandler skyRenderer;
-    private CustomLimboPopulator spawner;
+    //private CustomLimboPopulator spawner;
 
     public WorldProviderLimbo() {
         this.hasNoSky = false;
@@ -82,16 +83,15 @@ public class WorldProviderLimbo extends WorldProvider {
         return 4;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
     public String getSaveFolder() {
-        return (getDimension() == 0 ? null : "dimdoors/limbo" + getDimension());
+        return (getDimension() == 0 ? null : "limbo" + getDimension());
     }
 
     @Override
     public boolean canCoordinateBeSpawn(int x, int z) {
         BlockPos pos = this.world.getTopSolidOrLiquidBlock(new BlockPos(x, 0, z));
-        return world.getBlockState(pos).equals(mod_pocketDim.blockLimbo);
+        return world.getBlockState(pos).equals(ModBlocks.blockLimbo.getDefaultState());
     }
 
     @Override
@@ -140,7 +140,6 @@ public class WorldProviderLimbo extends WorldProvider {
         int z = MathHelper.clamp(this.world.rand.nextInt(), -500, 500);
         return new BlockPos(x, 700, z);
     }
-}
 
     @Override
     public DimensionType getDimensionType() {

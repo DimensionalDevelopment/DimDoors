@@ -1,4 +1,4 @@
-package com.zixiken.dimdoors.world;
+package com.zixiken.dimdoors.world.pocket;
 
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.math.BlockPos;
@@ -9,6 +9,7 @@ import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.chunk.IChunkGenerator;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PocketGenerator implements IChunkGenerator {
@@ -46,7 +47,7 @@ public class PocketGenerator implements IChunkGenerator {
 
     @Override
     public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {
-        return null;
+        return new ArrayList<Biome.SpawnListEntry>();
     }
 
     @Nullable
