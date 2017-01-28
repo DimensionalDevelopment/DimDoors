@@ -2,7 +2,6 @@ package com.zixiken.dimdoors.shared.world.pocket;
 
 import com.zixiken.dimdoors.client.CloudRenderBlank;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
-import net.minecraft.client.renderer.Vector3d;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
@@ -10,7 +9,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.chunk.IChunkGenerator;
-import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -26,7 +24,7 @@ public class WorldProviderPocket extends WorldProvider {
 
     @Override
     public String getSaveFolder() {
-        return (getDimension() == 0 ? null : "private");
+        return ("DIM" + getDimension() + "DimDoorsDungeon");
     }
 
     @SideOnly(Side.CLIENT)

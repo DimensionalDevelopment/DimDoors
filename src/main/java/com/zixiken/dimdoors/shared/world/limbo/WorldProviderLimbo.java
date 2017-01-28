@@ -85,7 +85,7 @@ public class WorldProviderLimbo extends WorldProvider {
 
     @Override
     public String getSaveFolder() {
-        return (getDimension() == 0 ? null : "limbo" + getDimension());
+        return ("DIM" + getDimension() + "DimDoorsLimbo");
     }
 
     @Override

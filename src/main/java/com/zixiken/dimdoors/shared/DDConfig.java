@@ -7,11 +7,8 @@ package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.DimDoors;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -74,7 +71,7 @@ public class DDConfig {
         dungeonSchematicNames = prop.getStringList();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "baseDimID", baseDimID,
-                "Dimension ID of the first Dimensional Doors pocket-containing dimension. Other pocket-containing dimensions will use consecutive IDs. [default: 684]");
+                "Dimension ID of the first Dimensional Doors dimension. Other dimensions will use consecutive IDs. NB: If you change this after creating a world, you may lose these dimensions. [default: 684]");
         baseDimID = prop.getInt(baseDimID);
 
         // Save config
@@ -103,5 +100,9 @@ public class DDConfig {
             dungeonSchematicNamesArrayList.add(dungeonSchematicName);
         }
         return dungeonSchematicNamesArrayList;
+    }
+    
+    public static int getBaseDimID() {
+        return baseDimID;
     }
 }

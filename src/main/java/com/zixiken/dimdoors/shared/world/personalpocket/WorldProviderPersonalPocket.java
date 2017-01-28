@@ -50,7 +50,7 @@ public class WorldProviderPersonalPocket extends WorldProviderPocket {
 
     @Override
     public String getSaveFolder() {
-        return (getDimension() == 0 ? null : "personal");
+        return ("DIM" + getDimension() + "DimDoorsPersonal");
     }
 
     @Override

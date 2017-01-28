@@ -6,7 +6,7 @@ import net.minecraft.world.DimensionType;
 public class WorldProviderPublicPocket extends WorldProviderPocket {
     @Override
     public String getSaveFolder() {
-        return (getDimension() == 0 ? null : "public");
+        return ("DIM" + getDimension() + "DimDoorsPublic");
     }
 
     @Override
