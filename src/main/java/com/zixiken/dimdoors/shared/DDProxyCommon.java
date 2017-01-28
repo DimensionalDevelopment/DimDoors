@@ -7,6 +7,7 @@ import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorGold;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityTransTrapdoor;
+import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -20,6 +21,7 @@ public abstract class DDProxyCommon implements IDDProxy {
 
     @Override
     public void onPreInitialization(FMLPreInitializationEvent event) {
+        DimDoorDimensions.init();
         ModBlocks.registerBlocks();
         ModItems.registerItems();
 

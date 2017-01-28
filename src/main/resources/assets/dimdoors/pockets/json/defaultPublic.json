@@ -4,7 +4,7 @@
     "variations": [
         {
             "variantName": "defaultPublic_3",
-            "size": 3,
+            "size": 1,
             "minDepth": 0,
             "maxDepth": 0,
             "weights": [100]
