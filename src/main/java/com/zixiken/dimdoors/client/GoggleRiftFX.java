@@ -1,7 +1,6 @@
 package com.zixiken.dimdoors.client;
 
 import net.minecraft.client.particle.ParticleCloud;
-import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

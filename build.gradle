@@ -11,7 +11,12 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
 
-version = "3.0.0-a1"
+ext.modversion = "3.0.0-a1"
+ext.mcversion = "1.10.2"
+ext.forgeversion = "12.18.3.2221"
+//spongeSchematicVersion = "1"
+
+version = mcversion + "-" + modversion
 group= "com.zixiken.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "dimdoors"
 
@@ -21,20 +26,20 @@ compileJava {
 }
 
 minecraft {
-    version = "1.10.2-12.18.3.2185"
+    version = mcversion + "-" + forgeversion
     runDir = "run"
-    
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not allways work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "stable_29"
+    replace '${version}', project.version
+    //replace '${spongeSchematicVersion}', spongeSchematicVersion
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
+configurations {
+    includeInJar
+}
 dependencies {
-    compile 'com.flowpowered:flow-math:1.0.3'
+    includeInJar 'com.flowpowered:flow-math:1.0.3'
+    compile configurations.includeInJar
 }
 
 processResources

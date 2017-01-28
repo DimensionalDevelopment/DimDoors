@@ -1,10 +1,8 @@
 package com.zixiken.dimdoors.client;
 
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

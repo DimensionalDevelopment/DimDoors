@@ -5,9 +5,11 @@
  */
 package com.zixiken.dimdoors.shared;
 
-import com.zixiken.dimdoors.DDConfig;
+import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.DimDoors;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -25,27 +27,31 @@ public class PocketRegistry {
     private int maxPocketSize;
     private int privatePocketSize;
     private int publicPocketSize;
-    private int nextUnusedID = -1;
+    private int nextUnusedID = 0;
+    private final Map<String, Integer> privatePockets; //maps the UUID's of players to their private pocket's ID
     private final Map<Integer, Pocket> pocketList;
     //when adding any new variables, don't forget to add them to the write and load functions
+    private final List<Map<Integer, Pocket>> pocketListsPerDepth;
 
     // Methods
     private PocketRegistry() {
+        privatePockets = new HashMap();
         pocketList = new HashMap();
+        pocketListsPerDepth = new ArrayList();
     }
-    
+
     public int getGridSize() {
         return gridSize;
     }
-    
+
     public int getMaxPocketSize() {
         return maxPocketSize;
     }
-    
+
     public int getPrivatePocketSize() {
         return privatePocketSize;
     }
-    
+
     public int getPublicPocketSize() {
         return publicPocketSize;
     }
@@ -66,13 +72,12 @@ public class PocketRegistry {
             maxPocketSize = nbt.getInteger("maxPocketSize");
             privatePocketSize = nbt.getInteger("privatePocketSize");
             publicPocketSize = nbt.getInteger("publicPocketSize");
-            nextUnusedID = nbt.getInteger("nextUnusedID");
+            nextUnusedID = nbt.getInteger("nextUnusedID"); //@todo, we might not need to save this
             if (nbt.hasKey("pocketData")) {
                 NBTTagList pocketTagList = (NBTTagList) nbt.getTag("pocketData");
                 for (int i = 0; i < pocketTagList.tagCount(); i++) {
                     NBTTagCompound pocketTag = pocketTagList.getCompoundTagAt(i);
-                    Pocket pocket = Pocket.readFromNBT(pocketTag);
-                    pocketList.put(pocket.getID(), pocket);
+                    Pocket.readFromNBT(pocketTag); //this also re-registers the pocket
                 }
             }
         } else { //load privates from config
@@ -95,6 +100,7 @@ public class PocketRegistry {
 
     public int registerNewPocket(Pocket pocket) {
         pocketList.put(nextUnusedID, pocket);
+        pocket.setID(nextUnusedID);
 
         nextUnusedID++;
         PocketSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
@@ -112,30 +118,25 @@ public class PocketRegistry {
         return pocketList.get(ID);
     }
 
-    public int getEntranceDoorIDOfNewPocket(int typeID, int depth) {//should return the riftID of the entrance door of the newly generated pocket
-        Location shortenedLocation = getGenerationlocation(nextUnusedID, typeID);
+    public int getEntranceDoorIDOfNewPocket(EnumPocketType typeID, int depth) {//should return the riftID of the entrance door of the newly generated pocket
+        Location shortenedLocation = getGenerationlocation(nextUnusedID, typeID); //@todo, we should have different values of "nextUnusedID"  for different pocket-types
         int x = shortenedLocation.getPos().getX();
         int z = shortenedLocation.getPos().getZ();
         Pocket pocket = generateRandomPocketAt(typeID, depth, shortenedLocation);
-        registerNewPocket(pocket);
-        nextUnusedID++;
+        registerNewPocket(pocket); //nextUnusedID++
         int entranceDoorID = pocket.getEntranceDoorID();
         return entranceDoorID;
     }
 
-    private Pocket generateRandomPocketAt(int typeID, int depth, Location shortenedLocation) {
-        int x = shortenedLocation.getPos().getX();
-        int z = shortenedLocation.getPos().getZ();
-        int actualX = x * gridSize * 16;
-        int actualZ = z * gridSize * 16;
+    private Pocket generateRandomPocketAt(EnumPocketType typeID, int depth, Location shortenedLocation) {
+        int shortenedX = shortenedLocation.getPos().getX();
+        int shortenedZ = shortenedLocation.getPos().getZ();
         int dimID = shortenedLocation.getDimensionID();
 
-        PocketPlacer pocketPlacer = getPocketPlacer(typeID, depth, maxPocketSize);
+        PocketTemplate pocketTemplate = getRandomPocketTemplate(typeID, depth, maxPocketSize);
 
-        int entranceDoorID = pocketPlacer.place(actualX, 0, actualZ, dimID);
-
-        Pocket pocket = new Pocket(nextUnusedID, pocketPlacer.getSize(), depth, typeID, x, z, entranceDoorID);
-
+        Pocket pocket = pocketTemplate.place(shortenedX, 0, shortenedZ, gridSize, dimID, nextUnusedID, depth, typeID);
+        nextUnusedID++;
         return pocket;
     }
 
@@ -143,7 +144,7 @@ public class PocketRegistry {
         throw new UnsupportedOperationException("Not supported yet."); //@todo
     }
 
-    private Location getGenerationlocation(int nextUnusedID, int typeID) { //typeID is for determining the dimension
+    private Location getGenerationlocation(int nextUnusedID, EnumPocketType typeID) { //typeID is for determining the dimension
         int x = getSimpleX(nextUnusedID);
         int y = 0;
         int z = getSimpleZ(nextUnusedID);;
@@ -153,13 +154,15 @@ public class PocketRegistry {
         return location;
     }
 
-    private PocketPlacer getPocketPlacer(int typeID, int depth, int maxPocketSize) {
-        if (typeID == 0) {
-            return SchematicHandler.Instance.getPersonalPocketSchematic(maxPocketSize);
-        } else if (typeID == 1) {
-            return SchematicHandler.Instance.getPublicPocketSchematic(maxPocketSize);
-        } else {
-            return SchematicHandler.Instance.getRandomDungeonSchematic(depth, maxPocketSize);
+    private PocketTemplate getRandomPocketTemplate(EnumPocketType typeID, int depth, int maxPocketSize) {
+        switch (typeID) {
+            case PRIVATE:
+                return SchematicHandler.Instance.getPersonalPocketSchematic(maxPocketSize);
+            case PUBLIC:
+                return SchematicHandler.Instance.getPublicPocketSchematic(maxPocketSize);
+            case DUNGEON:
+            default:
+                return SchematicHandler.Instance.getRandomDungeonPocketTemplate(depth, maxPocketSize);
         }
     }
 
@@ -199,7 +202,7 @@ public class PocketRegistry {
         }
     }
 
-    private int getDiffToPreviousGroup(int ID) {
+    private static int getDiffToPreviousGroup(int ID) {
         int temp = 0;
         int group;
         for (group = 1; temp <= ID; group++) {

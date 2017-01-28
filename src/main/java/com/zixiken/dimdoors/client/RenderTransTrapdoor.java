@@ -4,8 +4,8 @@ import java.nio.FloatBuffer;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.blocks.BlockTransTrapdoor;
-import com.zixiken.dimdoors.tileentities.TileEntityTransTrapdoor;
+import com.zixiken.dimdoors.shared.blocks.BlockTransTrapdoor;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityTransTrapdoor;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
