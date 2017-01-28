@@ -201,6 +201,11 @@ public class BlockRift extends Block implements ITileEntityProvider {
         world.removeTileEntity(pos);
     }
 
+    @Override
+    public boolean causesSuffocation() {
+        return false;
+    }
+
     public DDTileEntityBase getRiftTile(World world, BlockPos pos, IBlockState state) {
         return (DDTileEntityBase) world.getTileEntity(pos);
     }

@@ -13,6 +13,7 @@ import com.google.gson.JsonParser;
 import com.zixiken.dimdoors.DimDoors;
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -163,14 +164,16 @@ public class SchematicHandler {
                 }
             } else if (schematicFile.exists()) {
                 try {
-                    schematicNBT = CompressedStreamTools.read(schematicFile);
+                    GZIPInputStream schematicZipStream = new GZIPInputStream(new FileInputStream(schematicFile));
+                    schematicNBT = CompressedStreamTools.read(new DataInputStream(schematicZipStream));
                     schematic = Schematic.loadFromNBT(schematicNBT);
                 } catch (IOException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schem did not load correctly from config folder.", ex);
                 }
             } else if (oldVersionSchematicFile.exists()) {
                 try {
-                    schematicNBT = CompressedStreamTools.read(oldVersionSchematicFile);
+                    GZIPInputStream schematicZipStream = new GZIPInputStream(new FileInputStream(oldVersionSchematicFile));
+                    schematicNBT = CompressedStreamTools.read(new DataInputStream(schematicZipStream));
                     schematic = Schematic.loadFromNBT(schematicNBT);
                 } catch (IOException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schematic did not load correctly from config folder.", ex);

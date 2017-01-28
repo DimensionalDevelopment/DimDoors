@@ -27,6 +27,7 @@ public class DDConfig {
     private static int maxPocketSize = 4;
     private static int privatePocketSize = 3;
     private static int publicPocketSize = 2;
+    private static int baseDimID = 684;
     private static String[] dungeonSchematicNames = {}; //@todo set default dungeon names
 
     private static int setConfigIntWithMaxAndMin(Configuration config, String category, String key, int defaultValue, String comment, int minValue, int maxValue) {
@@ -71,6 +72,10 @@ public class DDConfig {
         prop = config.get(Configuration.CATEGORY_GENERAL, "dungeonSchematicNames", dungeonSchematicNames,
                 "List of names of Pockets' jSon- and Schematic file names excluding extention. Custom json and schematic files can be dropped in the corresponding folders.");
         dungeonSchematicNames = prop.getStringList();
+
+        prop = config.get(Configuration.CATEGORY_GENERAL, "baseDimID", baseDimID,
+                "Dimension ID of the first Dimensional Doors pocket-containing dimension. Other pocket-containing dimensions will use consecutive IDs. [default: 684]");
+        baseDimID = prop.getInt(baseDimID);
 
         // Save config
         config.save();

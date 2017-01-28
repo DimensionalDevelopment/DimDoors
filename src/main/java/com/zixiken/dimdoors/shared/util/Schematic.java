@@ -27,41 +27,27 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
  */
 public class Schematic {
 
-    private static final String[] oldDimDoorBlockNames = new String[]{
-        "Fabric of RealityPerm",
+    private static final String[] OLDDIMDOORBLOCKNAMES = new String[]{
+        "Dimensional Door",
         "Fabric of Reality",
-        "Warp Door",
-        "Dummy",
-        "Dummy",
-        "Dummy",
-        "Dummy",
-        "Dummy",
-        "Dummy",
-        "Dummy",
-    "Dummy"};
+        "transientDoor", //only used in the two old Overworld gateway (worldgen) structures
+        "Warp Door"};
 
-    private static final String[] newDimDoorBlockNames = new String[]{
-        "blockDoorQuartz",
-        "blockDoorGold",
-        "blockDimDoorPersonal",
-        "blockDimDoorTransient",
-        "blockDimDoorWarp",
-        "blockDimDoorGold",
-        "blockDimDoorChaos",
+    private static final String[] NEWDIMDOORBLOCKNAMES = new String[]{
         "blockDimDoor",
-        "blockDimHatch",
-        "blockDimWall",
-        "blockRift"}; //@todo make these lists complete, possibly with specific blockstate as well?
+        "blockDimWall", //I think [type=fabric] is the default blockstate
+        "blockDimDoorTransient",
+        "blockDimDoorWarp"}; //@todo make these lists complete, possibly with specific blockstate as well?
 
-    int version;
-    String author;
-    String schematicName;
+    int version = Integer.parseInt("1"); //@todo set in build.gradle ${spongeSchematicVersion}
+    String author = "DimDoors"; //@todo set in build.gradle ${modID}
+    String schematicName = "Unknown";
     long creationDate;
-    String[] requiredMods;
+    String[] requiredMods = new String[0];
     short width;
     short height;
     short length;
-    int[] offset = new int[3];
+    int[] offset = new int[]{0, 0, 0};
     int paletteMax;
     List<IBlockState> pallette = new ArrayList();
     int[][][] blockData; //[x][y][z]
@@ -71,37 +57,49 @@ public class Schematic {
     }
 
     public static Schematic loadFromNBT(NBTTagCompound nbt) {
-        if (!nbt.hasKey("Metadata")) {
+        if (!nbt.hasKey("Version")) {
             return loadOldDimDoorSchematicFromNBT(nbt);
         }
 
         Schematic schematic = new Schematic();
+        schematic.version = nbt.getInteger("Version"); //Version is required
 
-        schematic.version = nbt.getInteger("Version");
-        NBTTagCompound metadataCompound = nbt.getCompoundTag("Metadata").getCompoundTag(".");
-        schematic.author = metadataCompound.getString("Author");
-        schematic.schematicName = metadataCompound.getString("Name");
-        schematic.creationDate = metadataCompound.getLong("Date");
-        NBTTagList requiredModsTagList = ((NBTTagList) metadataCompound.getTag("RequiredMods"));
-        schematic.requiredMods = new String[requiredModsTagList.tagCount()];
-        for (int i = 0; i < requiredModsTagList.tagCount(); i++) {
-            schematic.requiredMods[i] = requiredModsTagList.getStringTagAt(i);
+        schematic.creationDate = System.currentTimeMillis();
+        if (nbt.hasKey("Metadata")) { //Metadata is not required
+            NBTTagCompound metadataCompound = nbt.getCompoundTag("Metadata").getCompoundTag(".");
+            if (nbt.hasKey("Author")) { //Author is not required
+                schematic.author = metadataCompound.getString("Author");
+            }
+            if (nbt.hasKey("Name")) { //Name is not required
+                schematic.schematicName = metadataCompound.getString("Name");
+            }
+            if (nbt.hasKey("Date")) { //Date is not required
+                schematic.creationDate = metadataCompound.getLong("Date");
+            }
+            if (nbt.hasKey("RequiredMods")) { //RequiredMods is not required (ironically)
+                NBTTagList requiredModsTagList = ((NBTTagList) metadataCompound.getTag("RequiredMods"));
+                schematic.requiredMods = new String[requiredModsTagList.tagCount()];
+                for (int i = 0; i < requiredModsTagList.tagCount(); i++) {
+                    schematic.requiredMods[i] = requiredModsTagList.getStringTagAt(i);
+                }
+            }
         }
 
-        //@todo, check if the needed mods are loade; otherwise abort
-        schematic.width = nbt.getShort("Width");
-        schematic.height = nbt.getShort("Height");
-        schematic.length = nbt.getShort("Length");
-        schematic.offset = nbt.getIntArray("Offset");
-        schematic.paletteMax = nbt.getInteger("PaletteMax");
+        //@todo, check if the required mods are loaded, otherwise abort
+        schematic.width = nbt.getShort("Width"); //Width is required
+        schematic.height = nbt.getShort("Height"); //Height is required
+        schematic.length = nbt.getShort("Length"); //Length is required
+        if (nbt.hasKey("Offset")) { //Offset is not required
+            schematic.offset = nbt.getIntArray("Offset");
+        }
 
-        NBTTagCompound paletteNBT = nbt.getCompoundTag("Palette");
+        NBTTagCompound paletteNBT = nbt.getCompoundTag("Palette"); //Palette is not required, however since we assume that the schematic contains at least some blocks, we can also assume that thee has to be a Palette
         Map<Integer, String> paletteMap = new HashMap();
         for (String key : paletteNBT.getKeySet()) {
             int paletteID = paletteNBT.getInteger(key);
-            paletteMap.put(paletteID, key); //basically use the reversed order
+            paletteMap.put(paletteID, key); //basically use the reversed order (key becomes value and value becomes key)
         }
-        for (int i = 0; i <= schematic.paletteMax; i++) {
+        for (int i = 0; i <= paletteMap.size(); i++) {
             String blockStateString = paletteMap.get(i);
             char lastBlockStateStringChar = blockStateString.charAt(blockStateString.length() - 1);
             String blockString;
@@ -120,13 +118,18 @@ public class Schematic {
             IBlockState blockstate = block.getDefaultState();
             if (!stateString.equals("")) {
                 String[] properties = stateString.split(",");
-                blockstate = getBlockStateWithProperties(block, properties); //@todo get the blockState from string
+                blockstate = getBlockStateWithProperties(block, properties);
             } else {
             }
             schematic.pallette.add(blockstate);
         }
+        if (nbt.hasKey("PaletteMax")) { //PaletteMax is not required
+            schematic.paletteMax = nbt.getInteger("PaletteMax");
+        } else {
+            schematic.paletteMax = schematic.pallette.size() - 1;
+        }
 
-        byte[] blockDataIntArray = nbt.getByteArray("BlockData");
+        byte[] blockDataIntArray = nbt.getByteArray("BlockData"); //BlockData is required
         schematic.blockData = new int[schematic.width][schematic.height][schematic.length];
         for (int x = 0; x < schematic.width; x++) {
             for (int y = 0; y < schematic.height; y++) {
@@ -136,10 +139,12 @@ public class Schematic {
             }
         }
 
-        NBTTagList tileEntitiesTagList = (NBTTagList) nbt.getTag("TileEntities");
-        for (int i = 0; i < tileEntitiesTagList.tagCount(); i++) {
-            NBTTagCompound tileEntityTagCompound = tileEntitiesTagList.getCompoundTagAt(i);
-            schematic.tileEntities.add(tileEntityTagCompound);
+        if (nbt.hasKey("TileEntities")) { //TileEntities is not required
+            NBTTagList tileEntitiesTagList = (NBTTagList) nbt.getTag("TileEntities");
+            for (int i = 0; i < tileEntitiesTagList.tagCount(); i++) {
+                NBTTagCompound tileEntityTagCompound = tileEntitiesTagList.getCompoundTagAt(i);
+                schematic.tileEntities.add(tileEntityTagCompound);
+            }
         }
 
         return schematic;
@@ -298,27 +303,38 @@ public class Schematic {
     public static Schematic loadOldDimDoorSchematicFromNBT(NBTTagCompound nbt) { //@todo, maybe make this a separate class, so values can be final so they HAVE TO  be set in a newly designed constructor
         Schematic schematic = new Schematic();
 
-        schematic.version = Integer.parseInt("1"); //@todo set in build.gradle ${spongeSchematicVersion}
-        schematic.author = "Robijnvogel";
+        //schematic.version = 1; //already the default value
+        //schematic.author = "DimDoors"; //already the default value
         schematic.schematicName = "This schematic was converted from an MC 1.7.10 DimDoors schematic";
         schematic.creationDate = System.currentTimeMillis();
-        schematic.requiredMods = new String[0];
+        schematic.requiredMods = new String[]{DimDoors.MODID};
 
         schematic.width = nbt.getShort("Width");
         schematic.height = nbt.getShort("Height");
         schematic.length = nbt.getShort("Length");
-        schematic.offset = new int[]{0, 0, 0};
+        //schematic.offset = new int[]{0, 0, 0}; //already the default value
 
         NBTTagList paletteNBT = (NBTTagList) nbt.getTag("Palette");
         for (int i = 0; i <= paletteNBT.tagCount(); i++) {
             String blockString = paletteNBT.getStringTagAt(i);
+            boolean isAncientFabric = false;
             if (blockString.startsWith("dimdoors")) {
                 String dimdoorsBlockName = blockString.split(":")[1];
-                dimdoorsBlockName = convertOldDimDoorsBlockNameToNewDimDoorsBlockName(dimdoorsBlockName);
-                blockString = "dimdoors:" + dimdoorsBlockName;
+                if (dimdoorsBlockName.equals("Fabric of RealityPerm")) { //only special case, because this is now another state of another block
+                    isAncientFabric = true;
+                } else {
+                    dimdoorsBlockName = convertOldDimDoorsBlockNameToNewDimDoorsBlockName(dimdoorsBlockName);
+                    blockString = "dimdoors:" + dimdoorsBlockName;
+                }
             }
-            Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString));
-            IBlockState blockstate = block.getDefaultState();
+            IBlockState blockstate;
+            if (!isAncientFabric) {
+                Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString));
+                blockstate = block.getDefaultState();
+            } else {
+                Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("blockDimWall"));
+                blockstate = getBlockStateWithProperties(block, new String[]{"type=ancient"});
+            }
             schematic.pallette.add(blockstate);
         }
 
@@ -361,22 +377,21 @@ public class Schematic {
     }
 
     private static String convertOldDimDoorsBlockNameToNewDimDoorsBlockName(String dimdoorsBlockName) {
-        if (oldDimDoorBlockNames.length != newDimDoorBlockNames.length) {
+        if (OLDDIMDOORBLOCKNAMES.length != NEWDIMDOORBLOCKNAMES.length) {
             DimDoors.warn(Schematic.class, "The array of old dimdoors block names, somehow isn't the same length as the array of new names, therefore the dimdoors blocks in this schematic will not be loaded.");
             return null;
         }
 
         int i = 0;
-        for (; i < oldDimDoorBlockNames.length; i++) {
-            if (oldDimDoorBlockNames[i].equals(dimdoorsBlockName)) {
-                break;
+        for (; i < OLDDIMDOORBLOCKNAMES.length; i++) {
+            if (OLDDIMDOORBLOCKNAMES[i].equals(dimdoorsBlockName)) {
+                return NEWDIMDOORBLOCKNAMES[i];
             } else {
-                if (i == oldDimDoorBlockNames.length - 1) {
+                if (i == OLDDIMDOORBLOCKNAMES.length - 1) {
                     DimDoors.warn(Schematic.class, dimdoorsBlockName + " as an old dimdoors block name is unknown.");
-                    return null;
                 }
             }
         }
-        return newDimDoorBlockNames[i];
+        return null;
     }
 }
