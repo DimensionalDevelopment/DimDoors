@@ -10,7 +10,6 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
-
 ext.modversion = "3.0.0-a1"
 ext.mcversion = "1.10.2"
 ext.forgeversion = "12.18.3.2221"

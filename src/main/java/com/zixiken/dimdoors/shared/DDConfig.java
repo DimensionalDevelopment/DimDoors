@@ -19,6 +19,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
  */
 public class DDConfig {
 
+    public static final boolean haveConfigDefaultsBeenCheckedForCorrectness = false; //@todo check this at each non-alpha release. This field does not have a use in the mod itself, but should ensure that the developers of this mod, don't forget to reset the config defaults to the right values before releasing a non-alpha release
+
     public static File configurationFolder;
     private static int pocketGridSize = 8;
     private static int maxPocketSize = 4;
@@ -101,7 +103,7 @@ public class DDConfig {
         }
         return dungeonSchematicNamesArrayList;
     }
-    
+
     public static int getBaseDimID() {
         return baseDimID;
     }
