@@ -39,7 +39,7 @@ class Pocket {
         this.z = z;
         this.riftIDs = riftIDs;
         playerUUIDs = new ArrayList();
-        PocketRegistry.Instance.registerNewPocket(this);
+        PocketRegistry.Instance.registerNewPocket(this, typeID);
 
         for (int riftID : riftIDs) {
             DDTileEntityBase rift = (DDTileEntityBase) RiftRegistry.Instance.getRiftLocation(riftID).getTileEntity();
@@ -87,15 +87,13 @@ class Pocket {
             int doorID = doorsTagList.getIntAt(i);
             riftIDs.add(doorID);
         }
-        Pocket pocket = new Pocket(size, depth, typeID, x, z, riftIDs);
+        Pocket pocket = new Pocket(size, depth, typeID, x, z, riftIDs); //registers the new pocket as well
 
         NBTTagList playersTagList = (NBTTagList) pocketNBT.getTag("playerUUIDs"); //@todo, maybe it is bad practice to put this behind the creation statement of the Pocket?
         for (int i = 0; i < playersTagList.tagCount(); i++) {
             String playerUUID = playersTagList.getStringTagAt(i);
             pocket.playerUUIDs.add(playerUUID);
         }
-
-        PocketRegistry.Instance.registerNewPocket(pocket);
     }
 
     static NBTBase writeToNBT(Pocket pocket) {

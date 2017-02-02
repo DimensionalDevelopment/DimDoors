@@ -1,0 +1,21 @@
+Version 1
+Types:
+SimpleHall
+ComplexHall
+Maze
+
+Settings:
+AllowDuplicatesInChain = false
+AllowPackChangeOut = false
+DistortDoorCoordinates = false
+
+## Prevent this pack from being selected for transitioning in once we've transitioned out
+AllowPackChangeIn = false
+
+Rules:
+
+Maze ? ? ? ? ? ? ? ? ? -> Maze
+
+? -> SimpleHall ComplexHall
+
+-> Maze

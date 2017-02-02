@@ -142,7 +142,7 @@ public class SchematicHandler {
             InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + template.getName() + ".schem"); //@todo also check for other schematics
             InputStream oldVersionSchematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + template.getName() + ".schematic"); //@todo also check for other schematics
             File schematicFile = new File(schematicFolder, "/" + template.getName() + ".schem");
-            File oldVersionSchematicFile = new File(schematicFolder, "/" + template.getName() + ".schem");
+            File oldVersionSchematicFile = new File(schematicFolder, "/" + template.getName() + ".schematic");
             NBTTagCompound schematicNBT;
 
             Schematic schematic = null;

@@ -1,7 +1,7 @@
 package com.zixiken.dimdoors.shared.blocks;
 
-import com.zixiken.dimdoors.shared.world.limbo.LimboDecay;
-import com.zixiken.dimdoors.shared.world.limbo.WorldProviderLimbo;
+import com.zixiken.dimdoors.shared.world.limbodimension.LimboDecay;
+import com.zixiken.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;

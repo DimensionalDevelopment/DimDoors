@@ -3,8 +3,43 @@
     "pocketType" : 0,
     "variations": [
         {
-            "variantName": "defaultPersonal_3",
+            "variantName": "defaultPersonal_0",
+            "size": 0,
+            "minDepth": 0,
+            "maxDepth": 0,
+            "weights": [100]
+        },
+        {
+            "variantName": "defaultPersonal_1",
             "size": 1,
+            "minDepth": 0,
+            "maxDepth": 0,
+            "weights": [100]
+        },
+        {
+            "variantName": "defaultPersonal_2",
+            "size": 2,
+            "minDepth": 0,
+            "maxDepth": 0,
+            "weights": [100]
+        },
+        {
+            "variantName": "defaultPersonal_3",
+            "size": 3,
+            "minDepth": 0,
+            "maxDepth": 0,
+            "weights": [100]
+        },
+        {
+            "variantName": "defaultPersonal_4",
+            "size": 4,
+            "minDepth": 0,
+            "maxDepth": 0,
+            "weights": [100]
+        },
+        {
+            "variantName": "defaultPersonal_5",
+            "size": 5,
             "minDepth": 0,
             "maxDepth": 0,
             "weights": [100]

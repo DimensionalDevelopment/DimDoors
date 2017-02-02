@@ -99,13 +99,13 @@ public class Schematic {
             int paletteID = paletteNBT.getInteger(key);
             paletteMap.put(paletteID, key); //basically use the reversed order (key becomes value and value becomes key)
         }
-        for (int i = 0; i <= paletteMap.size(); i++) {
+        for (int i = 0; i < paletteMap.size(); i++) {
             String blockStateString = paletteMap.get(i);
             char lastBlockStateStringChar = blockStateString.charAt(blockStateString.length() - 1);
             String blockString;
             String stateString;
             if (lastBlockStateStringChar == ']') {
-                String[] blockAndStateStrings = blockStateString.split("[");
+                String[] blockAndStateStrings = blockStateString.split("\\[");
                 blockString = blockAndStateStrings[0];
                 stateString = blockAndStateStrings[1];
                 stateString = stateString.substring(0, stateString.length() - 1); //remove the "]" at the end
