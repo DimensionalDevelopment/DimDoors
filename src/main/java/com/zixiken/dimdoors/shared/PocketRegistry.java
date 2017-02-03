@@ -85,19 +85,25 @@ public class PocketRegistry {
             privatePocketSize = nbt.getInteger("privatePocketSize");
             publicPocketSize = nbt.getInteger("publicPocketSize");
             if (nbt.hasKey("nextUnusedIDs")) { //@todo should not be doing this, since all pockets re-register on world-load
-                NBTTagList nextUnusedIDTagList = (NBTTagList) nbt.getTag("nextUnusedIDs");
-                for (int i = 0; i < nextUnusedIDTagList.tagCount(); i++) {
-                    int nextUnusedID = nextUnusedIDTagList.getIntAt(i);
-                    nextUnusedIDs.put(EnumPocketType.getFromInt(i), nextUnusedID);
+                NBTTagCompound nextUnusedIDTagCompound = nbt.getCompoundTag("nextUnusedIDs");
+                for (EnumPocketType pocketType : EnumPocketType.values()) {
+                    String tagListName = pocketType.toString();
+                    if (nextUnusedIDTagCompound.hasKey(tagListName)) {
+                        int nextUnusedID = nextUnusedIDTagCompound.getInteger(tagListName);
+                        nextUnusedIDs.put(pocketType, nextUnusedID);
+                    }
                 }
             }
             if (nbt.hasKey("pocketData")) {
-                NBTTagList pocketsTagList = (NBTTagList) nbt.getTag("pocketData");
-                for (int i = 0; i < pocketsTagList.tagCount(); i++) {
-                    NBTTagList pocketTagList = (NBTTagList) pocketsTagList.get(i);
-                    for (int j = 0; j < pocketTagList.tagCount(); j++) {
-                        NBTTagCompound pocketTag = pocketTagList.getCompoundTagAt(j);
-                        Pocket.readFromNBT(pocketTag); //this also re-registers the pocket
+                NBTTagCompound pocketsTagCompound = nbt.getCompoundTag("pocketData");
+                for (EnumPocketType pocketType : EnumPocketType.values()) {
+                    String tagListName = pocketType.toString();
+                    if (pocketsTagCompound.hasKey(tagListName)) {
+                        NBTTagList pocketTagList = (NBTTagList) pocketsTagCompound.getTag(tagListName);
+                        for (int j = 0; j < pocketTagList.tagCount(); j++) {
+                            NBTTagCompound pocketTag = pocketTagList.getCompoundTagAt(j);
+                            Pocket.readFromNBT(pocketTag); //this also re-registers the pocket @todo, should it?
+                        }
                     }
                 }
             }
@@ -112,29 +118,22 @@ public class PocketRegistry {
         nbt.setInteger("privatePocketSize", privatePocketSize);
         nbt.setInteger("publicPocketSize", publicPocketSize);
 
-        int[] nextUnusedIDArray = new int[nextUnusedIDs.size()]; //@todo do not have to do this, since all pockets re-register on world-load
+        NBTTagCompound nextUnusedIDTagCompound = new NBTTagCompound(); //@todo do not have to do this, since all pockets re-register on world-load
         for (EnumPocketType pocketType : nextUnusedIDs.keySet()) {
-            nextUnusedIDArray[pocketType.getIntValue()] = nextUnusedIDs.get(pocketType); //this is an extra ensurance that all the IDs end up at the right index in the TagList
+            nextUnusedIDTagCompound.setInteger(pocketType.toString(), nextUnusedIDs.get(pocketType));
         }
-        NBTTagList nextUnusedIDTagList = new NBTTagList();
-        for (int nextUnusedID : nextUnusedIDArray) {
-            nextUnusedIDTagList.appendTag(new NBTTagInt(nextUnusedID));
-        }
-        nbt.setTag("nextUnusedIDs", nextUnusedIDTagList);
+        nbt.setTag("nextUnusedIDs", nextUnusedIDTagCompound);
 
-        Map<Integer, Pocket>[] pocketListsArray = new Map[pocketLists.size()];
+        NBTTagCompound pocketsTagCompound = new NBTTagCompound();
         for (EnumPocketType pocketType : pocketLists.keySet()) {
-            pocketListsArray[pocketType.getIntValue()] = pocketLists.get(pocketType);
-        }
-        NBTTagList pocketsTagList = new NBTTagList();
-        for (Map<Integer, Pocket> pocketList : pocketListsArray) { //this is an extra ensurance that all the IDs end up at the right index in the TagList
+            Map<Integer, Pocket> pocketList = pocketLists.get(pocketType);
             NBTTagList pocketTagList = new NBTTagList();
-            for (Map.Entry<Integer, Pocket> entry : pocketList.entrySet()) {
-                pocketTagList.appendTag(Pocket.writeToNBT(entry.getValue()));
+            for (int i : pocketList.keySet()) {
+                pocketTagList.appendTag(Pocket.writeToNBT(pocketList.get(i)));
             }
-            pocketsTagList.appendTag(pocketTagList);
+            pocketsTagCompound.setTag(pocketType.toString(), pocketTagList);
         }
-        nbt.setTag("pocketData", pocketsTagList);
+        nbt.setTag("pocketData", pocketsTagCompound);
     }
 
     public int registerNewPocket(Pocket pocket, EnumPocketType pocketType) {
