@@ -19,7 +19,7 @@ import net.minecraft.nbt.NBTTagString;
  *
  * @author Robijnvogel
  */
-class Pocket {
+public class Pocket {
 
     private int ID; //this gets reset every server-load
     private final int size; //in chunks

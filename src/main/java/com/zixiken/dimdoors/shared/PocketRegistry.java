@@ -194,9 +194,9 @@ public class PocketRegistry {
     private PocketTemplate getRandomPocketTemplate(EnumPocketType typeID, int depth, int maxPocketSize) {
         switch (typeID) {
             case PRIVATE:
-                return SchematicHandler.Instance.getPersonalPocketSchematic(maxPocketSize);
+                return SchematicHandler.Instance.getPersonalPocketTemplate();
             case PUBLIC:
-                return SchematicHandler.Instance.getPublicPocketSchematic(maxPocketSize);
+                return SchematicHandler.Instance.getPublicPocketTemplate();
             case DUNGEON:
             default:
                 return SchematicHandler.Instance.getRandomDungeonPocketTemplate(depth, maxPocketSize);

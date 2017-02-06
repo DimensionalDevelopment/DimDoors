@@ -12,8 +12,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.zixiken.dimdoors.DimDoors;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -27,6 +29,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
 import org.apache.commons.io.IOUtils;
@@ -42,14 +45,6 @@ public class SchematicHandler {
     private PocketTemplate publicPocketTemplate;
     private List<PocketTemplate> dungeonTemplates;
     //@todo, sort templates by depth over here? that'd mean that that doesn't have to be done on pocket placement each and every time
-
-    PocketTemplate getPersonalPocketSchematic(int maxPocketSize) {
-        return personalPocketTemplate;
-    }
-
-    PocketTemplate getPublicPocketSchematic(int maxPocketSize) {
-        return publicPocketTemplate;
-    }
 
     PocketTemplate getRandomDungeonPocketTemplate(int depth, int maxPocketSize) {
         List<PocketTemplate> validTemplates = new ArrayList();
@@ -249,5 +244,45 @@ public class SchematicHandler {
         }
 
         return pocketTemplates;
+    }
+
+    /**
+     * @return the personalPocketTemplate
+     */
+    public PocketTemplate getPersonalPocketTemplate() {
+        return personalPocketTemplate;
+    }
+
+    /**
+     * @return the publicPocketTemplate
+     */
+    public PocketTemplate getPublicPocketTemplate() {
+        return publicPocketTemplate;
+    }
+
+    /**
+     * @return the dungeonTemplates
+     */
+    public List<PocketTemplate> getDungeonTemplates() {
+        return dungeonTemplates;
+    }
+
+    public void saveSchematic(Schematic schematic, String name) {
+        NBTTagCompound schematicNBT = Schematic.saveToNBT(schematic);
+        File saveFolder = new File(DDConfig.configurationFolder, "/Schematics/Saved");
+        if (!saveFolder.exists()) {
+            saveFolder.mkdirs();
+        }
+
+        File saveFile = new File(saveFolder.getAbsolutePath() + "/" + name + ".schem");
+        try {
+            saveFile.createNewFile();
+            GZIPOutputStream schematicZipStream = new GZIPOutputStream(new FileOutputStream(saveFile));
+            CompressedStreamTools.write(schematicNBT, new DataOutputStream(schematicZipStream));
+            schematicZipStream.flush();
+            schematicZipStream.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

@@ -19,7 +19,7 @@ import net.minecraft.world.WorldServer;
  *
  * @author Robijnvogel
  */
-class PocketTemplate { //there is exactly one pocket placer for each different schematic that is loaded into the game (a Json might load several schematics though)
+public class PocketTemplate { //there is exactly one pocket placer for each different schematic that is loaded into the game (a Json might load several schematics though)
 
     //generation parameters
     private Schematic schematic;
@@ -71,7 +71,7 @@ class PocketTemplate { //there is exactly one pocket placer for each different s
         return variantName;
     }
 
-    Object getSchematic() {
+    Schematic getSchematic() {
         return schematic;
     }
 
@@ -79,7 +79,8 @@ class PocketTemplate { //there is exactly one pocket placer for each different s
         this.schematic = schematic;
     }
 
-    Pocket place(int shortenedX, int yBase, int shortenedZ, int gridSize, int dimID, int pocketID, int depth, EnumPocketType pocketTypeID) { //returns the riftID of the entrance DimDoor
+    //@todo make sure that the "pocketID" parameter gets used, or remove it.
+    public Pocket place(int shortenedX, int yBase, int shortenedZ, int gridSize, int dimID, int pocketID, int depth, EnumPocketType pocketTypeID) { //returns the riftID of the entrance DimDoor
         int xBase = shortenedX * gridSize * 16;
         int zBase = shortenedZ * gridSize * 16;
 
@@ -122,7 +123,7 @@ class PocketTemplate { //there is exactly one pocket placer for each different s
             rift.setIsInPocket();
             riftIDs.add(rift.getRiftID());
         }
-        
+
         return new Pocket(size, depth, pocketTypeID, shortenedX, shortenedZ, riftIDs);
     }
 }
