@@ -95,7 +95,7 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         for (int x = 0; x < schematic.getWidth(); x++) {
             for (int y = 0; y < schematic.getHeight(); y++) {
                 for (int z = 0; z < schematic.getWidth(); z++) {
-                    world.setBlockState(new BlockPos(xBase + x, yBase + y, zBase + z), schematic.getPallette().get(schematic.getBlockData()[x][y][z]));
+                    world.setBlockState(new BlockPos(xBase + x, yBase + y, zBase + z), schematic.getPallette().get(schematic.getBlockData()[x][y][z]), 2); //the "2" is to make non-default door-halves not break upon placement
                 }
             }
         }

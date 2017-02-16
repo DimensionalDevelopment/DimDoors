@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
 import org.apache.commons.io.IOUtils;
@@ -140,42 +138,50 @@ public class SchematicHandler {
             File oldVersionSchematicFile = new File(schematicFolder, "/" + template.getName() + ".schematic");
             NBTTagCompound schematicNBT;
 
+            //@todo make the following block less repetitious.
+            //try to load the schematic from 4 different locations/formats
             Schematic schematic = null;
             if (schematicStream != null) {
                 try {
-                    GZIPInputStream schematicZipStream = new GZIPInputStream(schematicStream);
-                    schematicNBT = CompressedStreamTools.read(new DataInputStream(schematicZipStream));
-                    schematic = Schematic.loadFromNBT(schematicNBT);
+                    try (DataInputStream schematicDataStream = new DataInputStream(schematicStream)) {
+                        schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
+                        schematic = Schematic.loadFromNBT(schematicNBT);
+                    }
                 } catch (IOException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schem did not load correctly from jar.", ex);
+                } finally {
                 }
             } else if (oldVersionSchematicStream != null) {
                 try {
-                    GZIPInputStream schematicZipStream = new GZIPInputStream(oldVersionSchematicStream);
-                    schematicNBT = CompressedStreamTools.read(new DataInputStream(schematicZipStream));
-                    schematic = Schematic.loadFromNBT(schematicNBT);
+                    try (DataInputStream schematicDataStream = new DataInputStream(oldVersionSchematicStream)) {
+                        schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
+                        schematic = Schematic.loadFromNBT(schematicNBT);
+                    }
                 } catch (IOException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schematic did not load correctly from jar.", ex);
                 }
             } else if (schematicFile.exists()) {
                 try {
-                    GZIPInputStream schematicZipStream = new GZIPInputStream(new FileInputStream(schematicFile));
-                    schematicNBT = CompressedStreamTools.read(new DataInputStream(schematicZipStream));
-                    schematic = Schematic.loadFromNBT(schematicNBT);
+                    try (DataInputStream schematicDataStream = new DataInputStream(new FileInputStream(schematicFile))) {
+                        schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
+                        schematic = Schematic.loadFromNBT(schematicNBT);
+                    }
                 } catch (IOException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schem did not load correctly from config folder.", ex);
                 }
             } else if (oldVersionSchematicFile.exists()) {
                 try {
-                    GZIPInputStream schematicZipStream = new GZIPInputStream(new FileInputStream(oldVersionSchematicFile));
-                    schematicNBT = CompressedStreamTools.read(new DataInputStream(schematicZipStream));
-                    schematic = Schematic.loadFromNBT(schematicNBT);
+                    try (DataInputStream schematicDataStream = new DataInputStream(new FileInputStream(oldVersionSchematicFile))) {
+                        schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
+                        schematic = Schematic.loadFromNBT(schematicNBT);
+                    }
                 } catch (IOException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schematic did not load correctly from config folder.", ex);
                 }
             } else {
                 DimDoors.warn(SchematicHandler.class, "Schematic '" + template.getName() + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
             }
+
             if (schematic != null
                     && (schematic.getWidth() > (template.getSize()) * 16 || schematic.getLength() > (template.getSize()) * 16)) {
                 schematic = null;
@@ -277,10 +283,10 @@ public class SchematicHandler {
         File saveFile = new File(saveFolder.getAbsolutePath() + "/" + name + ".schem");
         try {
             saveFile.createNewFile();
-            GZIPOutputStream schematicZipStream = new GZIPOutputStream(new FileOutputStream(saveFile));
-            CompressedStreamTools.write(schematicNBT, new DataOutputStream(schematicZipStream));
-            schematicZipStream.flush();
-            schematicZipStream.close();
+            DataOutputStream schematicDataStream = new DataOutputStream(new FileOutputStream(saveFile));
+            CompressedStreamTools.writeCompressed(schematicNBT, schematicDataStream);
+            schematicDataStream.flush();
+            schematicDataStream.close();
         } catch (IOException ex) {
             Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 
 public abstract class DDTileEntityBase extends TileEntity {
 
+    public boolean canRiftBePaired = true;
     private boolean isPaired = false;
     private int riftID = -1; //should not start at 0
     private int pairedRiftID = -1;

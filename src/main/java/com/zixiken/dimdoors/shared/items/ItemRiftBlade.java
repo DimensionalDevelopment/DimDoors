@@ -50,6 +50,7 @@ public class ItemRiftBlade extends ItemSword {
         if (world.isRemote) {
             return new ActionResult(EnumActionResult.FAIL, stack);
         }
+        //SchematicHandler.Instance.getPersonalPocketTemplate().place(0, 20, 0, 20, 0, 0, 1, EnumPocketType.DUNGEON); //this line can be activated for testing purposes
         RayTraceResult hit = rayTrace(world, player, true);
         if (RayTraceHelper.isRift(hit, world)) {
             EnumActionResult canDoorBePlacedOnGroundBelowRift
@@ -59,7 +60,7 @@ public class ItemRiftBlade extends ItemSword {
                 stack.damageItem(1, player);
             }
             return new ActionResult(canDoorBePlacedOnGroundBelowRift, stack);
-            
+
         } else if (RayTraceHelper.isLivingEntity(hit)) {
             TeleportHelper.teleport(player, new Location(world, hit.getBlockPos())); //@todo teleport to a location 1 or 2 blocks distance from the entity
             return new ActionResult(EnumActionResult.PASS, stack);
