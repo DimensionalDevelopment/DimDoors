@@ -8,6 +8,8 @@ package com.zixiken.dimdoors.shared;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorChaos;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorPersonal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,29 +32,31 @@ public class RiftRegistry {
     // Privates
     private int nextRiftID;
     private int maximumDungeonDepth = 2; //@todo make this configurable
-    private final Map<Integer, Location> riftList; //maps all rifts in the world to their ID //@todo, make this a List of (comparable) locations?
-    //@todo somehow remove rifts from this list even if they are removed in creative
-    private final List<Integer> unpairedRiftList; //maps of all rifts in the world that are not paired to their ID
-    private final List<List<Integer>> unpairedDepthRiftList; //List of all "unpairedRiftList s" per Dungeon Depth. Depth 0 is almost anything outside the dungeon dimension
-    //@todo, once we have a dungeon dimension this List should be implemented (for determining what doors an unpaired door can link to)
-    //when adding any new variables, don't forget to add them to the write and load functions
+    private final Map<Integer, Location> rifts; //maps all rifts in the world to their ID //@todo, make this a List of (comparable) locations?
+    private final List<Integer> personalDoors; //list of all personal door rifts in the world, by riftID
+    private final List<Integer> unpairedRifts; //list of all pairable rifts in the world that are not paired, by riftID
+    private final List<List<Integer>> unpairedRiftsPerDepth; //List of all "unpairedRiftList s" per Dungeon Depth. Depth 0 is anything outside the dungeon dimension
+    //@todo somehow remove rifts from these lists even if they are removed in creative
 
+    //when adding any new variables, don't forget to add them to the write and load functions
     // Methods
     private RiftRegistry() {
         nextRiftID = 0;
-        riftList = new HashMap();
-        unpairedRiftList = new ArrayList();
-        unpairedDepthRiftList = new ArrayList();
-        for (int i = 0; i < maximumDungeonDepth; i++) {
-            unpairedDepthRiftList.add(new ArrayList());
+        rifts = new HashMap();
+        personalDoors = new ArrayList(); //@todo read from and write to NBT
+        unpairedRifts = new ArrayList();
+        unpairedRiftsPerDepth = new ArrayList();
+        for (int i = 0; i <= maximumDungeonDepth; i++) {
+            unpairedRiftsPerDepth.add(new ArrayList());
         }
     }
 
     public void reset() {
         nextRiftID = 0;
-        riftList.clear();
-        unpairedRiftList.clear();
-        for (List<Integer> dimensionSpecificUnpairedRiftList : unpairedDepthRiftList) {
+        rifts.clear();
+        personalDoors.clear();
+        unpairedRifts.clear();
+        for (List<Integer> dimensionSpecificUnpairedRiftList : unpairedRiftsPerDepth) {
             dimensionSpecificUnpairedRiftList.clear();
         }
         lastBrokenRift = null;
@@ -68,7 +72,7 @@ public class RiftRegistry {
                 int riftID = riftTag.getInteger("riftID");
                 NBTTagCompound locationTag = riftTag.getCompoundTag("location");
                 Location riftLocation = Location.readFromNBT(locationTag);
-                riftList.put(riftID, riftLocation);
+                rifts.put(riftID, riftLocation);
             }
         }
 
@@ -77,22 +81,22 @@ public class RiftRegistry {
             for (int i = 0; i < riftsNBT.tagCount(); i++) {
                 NBTTagCompound riftTag = riftsNBT.getCompoundTagAt(i);
                 int riftID = riftTag.getInteger("riftID");
-                unpairedRiftList.add(riftID);
+                unpairedRifts.add(riftID);
             }
         }
 
         if (nbt.hasKey("unpairedDepthRiftList")) {
-            unpairedDepthRiftList.clear(); //because its "maximum depth" (or in other words, "size()") could be re-determined by this action
+            unpairedRiftsPerDepth.clear(); //because its "maximum depth" (or in other words, "size()") could be re-determined by this action
 
             NBTTagList riftListsNBT = (NBTTagList) nbt.getTag("unpairedDepthRiftList");
             maximumDungeonDepth = riftListsNBT.tagCount(); //makes sure both are synched
             for (int i = 0; i < riftListsNBT.tagCount(); i++) {
-                unpairedDepthRiftList.add(new ArrayList());
+                unpairedRiftsPerDepth.add(new ArrayList());
                 NBTTagList riftsNBT = (NBTTagList) riftListsNBT.get(i);
                 for (int j = 0; j < riftsNBT.tagCount(); j++) {
                     NBTTagCompound riftTag = riftsNBT.getCompoundTagAt(j);
                     int riftID = riftTag.getInteger("riftID");
-                    unpairedDepthRiftList.get(i).add(riftID);
+                    unpairedRiftsPerDepth.get(i).add(riftID);
                 }
             }
         }
@@ -103,7 +107,7 @@ public class RiftRegistry {
         nbt.setInteger("nextUnusedID", nextRiftID);
 
         NBTTagList riftsNBT = new NBTTagList();
-        for (Map.Entry<Integer, Location> entry : riftList.entrySet()) {
+        for (Map.Entry<Integer, Location> entry : rifts.entrySet()) {
             NBTTagCompound riftTag = new NBTTagCompound();
             riftTag.setInteger("riftID", entry.getKey());
             riftTag.setTag("location", Location.writeToNBT(entry.getValue()));
@@ -112,7 +116,7 @@ public class RiftRegistry {
         nbt.setTag("riftList", riftsNBT);
 
         NBTTagList unpairedRiftsNBT = new NBTTagList();
-        for (int riftID : unpairedRiftList) {
+        for (int riftID : unpairedRifts) {
             NBTTagCompound riftTag = new NBTTagCompound();
             riftTag.setInteger("riftID", riftID);
             unpairedRiftsNBT.appendTag(riftTag);
@@ -120,7 +124,7 @@ public class RiftRegistry {
         nbt.setTag("unpairedRiftList", unpairedRiftsNBT);
 
         NBTTagList unpairedRiftListsNBT = new NBTTagList();
-        for (List<Integer> unpairedRiftListAtDepth : unpairedDepthRiftList) {
+        for (List<Integer> unpairedRiftListAtDepth : unpairedRiftsPerDepth) {
             NBTTagList unpairedRiftsNBT2 = new NBTTagList();
             for (int riftID : unpairedRiftListAtDepth) {
                 NBTTagCompound riftTag = new NBTTagCompound();
@@ -134,53 +138,62 @@ public class RiftRegistry {
 
     public int registerNewRift(DDTileEntityBase rift, int depth) {
         Location riftLocation = Location.getLocation(rift);
-        riftList.put(nextRiftID, riftLocation);
-        unpairedRiftList.add(nextRiftID);
-        registerRiftAtDepth(nextRiftID, depth);
+        rifts.put(nextRiftID, riftLocation);
+        if (rift instanceof TileEntityDimDoorPersonal || rift instanceof TileEntityDimDoorChaos) {
+            if (rift instanceof TileEntityDimDoorPersonal) {
+                personalDoors.add(nextRiftID);
+            }
+        } else {
+            unpairedRifts.add(nextRiftID);
+            registerUnpairedRiftAtDepth(nextRiftID, depth);
+        }
         DimDoors.log(this.getClass(), "Rift registered as ID: " + nextRiftID);
+
         nextRiftID++;
         RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
         return nextRiftID - 1;
     }
 
     public void unregisterRift(int riftID) {
-        if (riftList.containsKey(riftID)) {
+        if (rifts.containsKey(riftID)) {
             unpair(riftID);
-            riftList.remove(riftID);
-            unpairedRiftList.remove((Integer) riftID);
-            unRegisterRiftAtDepth(riftID);
+
+            unRegisterUnpairedRiftAtDepth(riftID); //@todo, will this crash if it doesn't find that value?
+            unpairedRifts.remove((Integer) riftID);
+            personalDoors.remove((Integer) riftID);
+            rifts.remove((Integer) riftID);
             RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
         }
     }
 
-    void registerRiftAtDepth(int riftID, int depth) {
+    void registerUnpairedRiftAtDepth(int riftID, int depth) {
         if (depth < maximumDungeonDepth) {
-            List<Integer> unpairedRiftListAtDepth = unpairedDepthRiftList.get(depth);
+            List<Integer> unpairedRiftListAtDepth = unpairedRiftsPerDepth.get(depth);
             unpairedRiftListAtDepth.add(riftID);
         }
     }
 
-    void unRegisterRiftAtDepth(int riftID) {
-        TileEntity tileEntity = riftList.get(riftID).getTileEntity();
+    void unRegisterUnpairedRiftAtDepth(int riftID) {
+        TileEntity tileEntity = rifts.get(riftID).getTileEntity();
         if (tileEntity instanceof DDTileEntityBase) {
             DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
             int depth = rift.getDepth();
             if (depth < maximumDungeonDepth) {
-                List<Integer> unpairedRiftListAtDepth = unpairedDepthRiftList.get(depth);
+                List<Integer> unpairedRiftListAtDepth = unpairedRiftsPerDepth.get(depth);
                 unpairedRiftListAtDepth.remove((Integer) riftID);
             }
         }
     }
 
     public Location getRiftLocation(int ID) {
-        return riftList.get(ID);
+        return rifts.get(ID);
     }
 
     public void pair(int riftID, int riftID2) {
         if (riftID < 0 || riftID2 < 0) {
             return;
         }
-        Location location = riftList.get(riftID);
+        Location location = rifts.get(riftID);
         TileEntity tileEntity = location.getTileEntity(); //@todo this method might need to be in another class?
         if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
             DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
@@ -188,8 +201,8 @@ public class RiftRegistry {
             boolean alreadyPaired = rift.pair(riftID2);
             if (!alreadyPaired) {
                 DimDoors.log(this.getClass(), "RiftRegistry unregistering rift " + riftID + " from unPairedRiftRegistry.");
-                unpairedRiftList.remove((Integer) riftID);
-                //@todo remove the riftID from the depth list as well
+                unpairedRifts.remove((Integer) riftID);
+                unRegisterUnpairedRiftAtDepth(riftID);
             }
         }
     }
@@ -198,17 +211,17 @@ public class RiftRegistry {
         if (riftID < 0) {
             return;
         }
-        Location location = riftList.get(riftID);
+        Location location = rifts.get(riftID);
         if (location == null) {
-            DimDoors.log(this.getClass(), "RiftID with null location: rift " + riftID);
+            DimDoors.warn(this.getClass(), "RiftID with null location: rift " + riftID);
         }
         TileEntity tileEntity = location.getTileEntity();
         if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
             DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
             boolean alreadyUnPaired = rift.unpair();
             if (!alreadyUnPaired) {
-                unpairedRiftList.add(riftID);
-                //@todo add the riftID from the depth list as well, maybe move this to the tileEntityRift class itself though?
+                unpairedRifts.add(riftID);
+                registerUnpairedRiftAtDepth(riftID, rift.getDepth());
             }
         }
     }
@@ -224,7 +237,7 @@ public class RiftRegistry {
     public boolean teleportEntityToRift(Entity entity, int pairedRiftID) {
         DimDoors.log(this.getClass(), "RiftID of rift that the entity trying to teleport to is " + pairedRiftID + ".");
         if (pairedRiftID < 0) {
-            DimDoors.warn(this.getClass(), "RiftID of rift that entity trying to teleport to seems to be lower than 0 and it shouldn't.");
+            DimDoors.warn(this.getClass(), "RiftID of rift that entity " + entity + " is trying to teleport to seems to be lower than 0 and it shouldn't.");
             return false;
         }
         Location destinationRiftLocation = getRiftLocation(pairedRiftID);
@@ -235,18 +248,104 @@ public class RiftRegistry {
         return TeleportHelper.teleport(entity, destinationRift.getTeleportTargetLocation());
     }
 
+    //@todo are we ever going to use this method?
     public int getRandomUnpairedRiftID(int origRiftID) {
-        if (!unpairedRiftList.isEmpty()) {
-            int numberOfUnpairedRifts = unpairedRiftList.size();
-            if (numberOfUnpairedRifts != 1) {//should only be the "original Rift" then
+        if (!unpairedRifts.isEmpty()) {
+            int numberOfUnpairedRifts = unpairedRifts.size();
+            if (numberOfUnpairedRifts != 1) {//should not only be the "original Rift" then
                 Random random = new Random();
-                int indexOforigRiftID = unpairedRiftList.indexOf(origRiftID);
+                int indexOforigRiftID = unpairedRifts.indexOf(origRiftID);
                 int randomRiftIDIndex = random.nextInt(numberOfUnpairedRifts - 1); //-1 because we do not want to include the key of the original rift, so it will not randomly pair to itself
                 if (randomRiftIDIndex >= indexOforigRiftID) {
                     randomRiftIDIndex++;
                 }
-                return unpairedRiftList.get(randomRiftIDIndex);
+                return unpairedRifts.get(randomRiftIDIndex);
             }
+        }
+        return -1;
+    }
+
+    public int getRandomUnpairedRiftIDAtDepth(int origRiftID, int depth) {
+        int returnID = -1;
+        if (unpairedRiftsPerDepth.size() > depth) {
+            List<Integer> rifts = unpairedRiftsPerDepth.get(depth);
+            int numberOfUnpairedRifts = rifts.size();
+            if (numberOfUnpairedRifts > 0) {
+                Random random = new Random();
+                int indexOforigRiftID = -1;
+                int randomRiftIDIndex;
+                boolean origRiftIsOnSameDepth = rifts.contains(origRiftID);
+                if (origRiftIsOnSameDepth) {
+                    indexOforigRiftID = rifts.indexOf(origRiftID);
+                    randomRiftIDIndex = random.nextInt(numberOfUnpairedRifts - 1); //-1 because we do not want to include the key of the original rift, so it will not randomly pair to itself
+                    if (randomRiftIDIndex >= indexOforigRiftID) {
+                        randomRiftIDIndex++;
+                    }
+                } else {
+                    randomRiftIDIndex = random.nextInt(numberOfUnpairedRifts);
+                }
+                returnID = rifts.get(randomRiftIDIndex);
+            }
+        }
+        return returnID;
+    }
+
+    public int getRandomUnpairedRiftIDAroundDepth(int origRiftID, int depth) {
+        int returnID = -1;
+        if (unpairedRiftsPerDepth.size() > depth) {
+            int[] weights = getWeightSizeProducts(unpairedRiftsPerDepth, depth - 2, new int[]{15, 25, 30, 20, 10});
+            if (getArraySum(weights) == 0) {
+                //@todo there is no unpaired rift around that depth
+            } else {
+                int chosenDepth = pickRandom(weights) + depth - 2;
+                returnID = getRandomUnpairedRiftIDAtDepth(origRiftID, chosenDepth);
+            }
+        }
+        return returnID;
+    }
+
+    public int[] getWeightSizeProducts(List<List<Integer>> nestedList, int minListIndex, int[] weights) { //@todo put this in a utility class
+        int[] returnArray = new int[weights.length];
+        for (int i = 0; i < weights.length; i++) {
+            int listIndex = minListIndex + i;
+            if (listIndex > 0 && listIndex < nestedList.size()) {
+                returnArray[i] = nestedList.get(listIndex).size() * weights[i];
+            } else {
+                returnArray[i] = 0;
+            }
+        }
+        return returnArray;
+    }
+
+    private int getArraySum(int[] integers) { //@todo put this in a utility class
+        int returnValue = 0;
+        for (int i : integers) {
+            returnValue += i;
+        }
+        return returnValue;
+    }
+
+    private int pickRandom(int[] integers) { //@todo put this in a utility class
+        Random random = new Random();
+        int pointer = random.nextInt(getArraySum(integers));
+        for (int i = 0; i < integers.length; i++) {
+            if (pointer < integers[i]) {
+                return i;
+            }
+            pointer -= integers[i];
+        }
+        return -1; //should not be reachable if implementation is correct and getArraySum(integers) does not return 0
+    }
+
+    public int getRandomNonPersonalRiftID() {
+        List<Integer> nonPersonalRiftIDs = new ArrayList(rifts.keySet());
+        for (int persRiftID : personalDoors) {
+            nonPersonalRiftIDs.remove((Integer) persRiftID);
+        }
+        if (nonPersonalRiftIDs.size() > 0) {
+            Random random = new Random();
+            int index = random.nextInt(nonPersonalRiftIDs.size());
+            return nonPersonalRiftIDs.get(index);
         }
         return -1;
     }

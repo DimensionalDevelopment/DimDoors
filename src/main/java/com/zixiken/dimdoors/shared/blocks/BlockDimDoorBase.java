@@ -38,7 +38,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
         if (!world.isRemote && down.getBlock() == this) { //@todo should only teleport when colliding with top part of the door?
             if (down.getValue(BlockDoor.OPEN)
                     && entity instanceof EntityPlayer //@todo remove this so any entity can go through?
-                    && (entity.timeUntilPortal < 1) //to prevent the player from teleporting all over the place we have a 150-tick cooldown
+                    && (entity.timeUntilPortal < 1) //to prevent the player from teleporting all over the place we have a 50-tick cooldown
                     && isEntityFacingDoor(down, (EntityLivingBase) entity)) {
                 this.toggleDoor(world, pos, false);
                 enterDimDoor(world, pos, entity);
@@ -123,7 +123,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
         if (riftTile.tryTeleport(entity)) {
             //player is succesfully teleported
         } else {
-            //probably should only happen on personal dimdoors
+            //probably should only happen on personal dimdoors?
             if (entity instanceof EntityPlayer) {
                 EntityPlayer entityPlayer = (EntityPlayer) entity;
                 DimDoors.chat(entityPlayer, "Teleporting failed, but since mod is still in alpha, stuff like that might simply happen.");

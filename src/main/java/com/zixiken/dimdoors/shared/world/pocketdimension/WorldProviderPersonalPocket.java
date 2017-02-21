@@ -43,7 +43,7 @@ public class WorldProviderPersonalPocket extends WorldProviderPublicPocket {
     }
     
     @Override
-    EnumPocketType getPocketType() {
+    public EnumPocketType getPocketType() {
         return EnumPocketType.PRIVATE;
     }
 

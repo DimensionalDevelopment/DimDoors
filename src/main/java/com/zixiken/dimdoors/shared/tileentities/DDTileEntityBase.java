@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.shared.tileentities;
 
+import com.zixiken.dimdoors.shared.EnumPocketType;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import java.util.Random;
@@ -12,13 +13,14 @@ import net.minecraft.world.World;
 
 public abstract class DDTileEntityBase extends TileEntity {
 
-    public boolean canRiftBePaired = true;
-    private boolean isPaired = false;
-    private int riftID = -1; //should not start at 0
-    private int pairedRiftID = -1;
-    private boolean isInPocket = false;
-    private int pocketID = -1;
-    private int depth = 0; //depth of the pocket it is in (not in a pocket -> 0)
+    protected boolean canRiftBePaired = true;
+    protected boolean isPaired = false;
+    protected int riftID = -1; //should not start at 0
+    protected int pairedRiftID = -1;
+    protected boolean isInPocket = false;
+    protected int pocketID = -1;
+    protected EnumPocketType pocketType;
+    protected int depth = 0; //depth of the pocket it is in (not in a pocket -> 0)
 
     /**
      *
@@ -73,6 +75,9 @@ public abstract class DDTileEntityBase extends TileEntity {
             pairedRiftID = nbt.getInteger("pairedRiftID");
             isInPocket = nbt.getBoolean("isInPocket");
             pocketID = nbt.getInteger("pocketID");
+            if (nbt.hasKey("pocketType")) {
+                pocketType = EnumPocketType.valueOf(nbt.getString("pocketType"));
+            }
             depth = nbt.getInteger("depth");
         } catch (Exception e) {
             //reading these values should only fail on loading old saves, or loading old schematics, in which case the default values will do 
@@ -87,6 +92,9 @@ public abstract class DDTileEntityBase extends TileEntity {
         nbt.setInteger("pairedRiftID", this.pairedRiftID);
         nbt.setBoolean("isInPocket", this.isInPocket);
         nbt.setInteger("pocketID", this.pocketID);
+        if (pocketType != null) {
+            nbt.setString("pocketType", this.pocketType.name());
+        }
         nbt.setInteger("depth", this.depth);
         return nbt;
     }
@@ -128,5 +136,9 @@ public abstract class DDTileEntityBase extends TileEntity {
 
     public void setIsInPocket() {
         isInPocket = true;
+    }
+    
+    protected EnumPocketType getPocketType() {
+        return pocketType;
     }
 }

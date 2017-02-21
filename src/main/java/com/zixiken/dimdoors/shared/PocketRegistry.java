@@ -7,13 +7,15 @@ package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumFacing;
 
 /**
  *
@@ -157,23 +159,38 @@ public class PocketRegistry {
         return pocketLists.get(pocketType).get(ID);
     }
 
-    public int getEntranceDoorIDOfNewPocket(EnumPocketType typeID, int depth) {//should return the riftID of the entrance door of the newly generated pocket
-        Location shortenedLocation = getGenerationlocation(nextUnusedIDs.get(typeID), typeID); //@todo, we should have different values of "nextUnusedID"  for different pocket-types
+    public int getEntranceDoorIDOfNewPocket(EnumPocketType typeID, int depth, Location origRiftLocation) {//should return the riftID of the entrance door of the newly generated pocket
+        Location shortenedLocation = getGenerationlocation(nextUnusedIDs.get(typeID), typeID);
         int x = shortenedLocation.getPos().getX();
         int z = shortenedLocation.getPos().getZ();
-        Pocket pocket = generateRandomPocketAt(typeID, depth, shortenedLocation); //registers the pocket as well
+        Pocket pocket = generateRandomPocketAt(typeID, depth, shortenedLocation, origRiftLocation); //registers the pocket as well
         int entranceDoorID = pocket.getEntranceDoorID();
         return entranceDoorID;
     }
 
-    private Pocket generateRandomPocketAt(EnumPocketType typeID, int depth, Location shortenedLocation) {
+    private Pocket generateRandomPocketAt(EnumPocketType typeID, int depth, Location shortenedLocation, Location origRiftLocation) {
         int shortenedX = shortenedLocation.getPos().getX();
         int shortenedZ = shortenedLocation.getPos().getZ();
         int dimID = shortenedLocation.getDimensionID();
 
-        PocketTemplate pocketTemplate = getRandomPocketTemplate(typeID, depth, maxPocketSize);
+        //correction just in case
+        if (typeID == EnumPocketType.DUNGEON) {
+            if (depth <= 0) {
+                depth = 1;
+            }
+        } else {
+            depth = 0;
+        }
 
-        Pocket pocket = pocketTemplate.place(shortenedX, 0, shortenedZ, gridSize, dimID, nextUnusedIDs.get(typeID), depth, typeID);
+        PocketTemplate pocketTemplate = getRandomPocketTemplate(typeID, depth, maxPocketSize);
+        Location depthZeroLocation;
+        if (typeID != EnumPocketType.PRIVATE) {
+            depthZeroLocation = transformLocationRandomly(depth, origRiftLocation);
+        } else {
+            depthZeroLocation = origRiftLocation;
+        }
+
+        Pocket pocket = pocketTemplate.place(shortenedX, 0, shortenedZ, gridSize, dimID, nextUnusedIDs.get(typeID), depth, typeID, depthZeroLocation);
         return pocket;
     }
 
@@ -185,7 +202,7 @@ public class PocketRegistry {
         int x = getSimpleX(nextUnusedID, typeID);
         int y = 0;
         int z = getSimpleZ(nextUnusedID, typeID);;
-        int dimID = 0; //@todo should be fetched using typeID
+        int dimID = DimDoorDimensions.getPocketDimensionType(typeID).getId();
 
         Location location = new Location(x, y, z, dimID);
         return location;
@@ -251,5 +268,12 @@ public class PocketRegistry {
             group = (group * 2) - 1;
         }
         return group;
+    }
+
+    private Location transformLocationRandomly(int depth, Location origLocation) {
+        Random random = new Random();
+        int xOffset = ((64 * depth) ^ (9 / 7)) * (random.nextBoolean() ? 1 : -1);
+        int zOffset = ((64 * depth) ^ (9 / 7)) * (random.nextBoolean() ? 1 : -1);
+        return new Location(origLocation.getWorld(), origLocation.getPos().offset(EnumFacing.EAST, xOffset).offset(EnumFacing.SOUTH, zOffset));
     }
 }

@@ -1,6 +1,12 @@
 package com.zixiken.dimdoors.shared.tileentities;
 
+import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.EnumPocketType;
 import com.zixiken.dimdoors.shared.IChunkLoader;
+import com.zixiken.dimdoors.shared.PocketRegistry;
+import com.zixiken.dimdoors.shared.RiftRegistry;
+import com.zixiken.dimdoors.shared.util.Location;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
@@ -56,5 +62,24 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
     public void invalidate() {
         ForgeChunkManager.releaseTicket(chunkTicket);
         super.invalidate();
+    }
+
+    @Override
+    protected int getNewTeleportDestination() {
+        //DimDoors.log(this.getClass(), "Trying to find suitable destination rift.");
+        int otherRiftID = RiftRegistry.Instance.getRandomUnpairedRiftIDAtDepth(getRiftID(), depth);
+        if (otherRiftID < 0) {
+            Location locationOfThisRift = RiftRegistry.Instance.getRiftLocation(this.riftID);
+            otherRiftID = PocketRegistry.Instance.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomisedDepth(), locationOfThisRift);
+        }
+        
+        if (otherRiftID < 0) {
+            DimDoors.warn(this.getClass(), "No suitable destination rift was found. This probably means that a pocket was created without any Doors.");
+        } else {
+            //@todo (should the other rift get loaded?)
+            RiftRegistry.Instance.pair(getRiftID(), otherRiftID);
+        }
+        
+        return otherRiftID;
     }
 }

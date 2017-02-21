@@ -90,7 +90,7 @@ public class WorldProviderPublicPocket extends WorldProvider {//@todo, we might 
         return 256;
     }
 
-    EnumPocketType getPocketType() {
+    public EnumPocketType getPocketType() {
         return EnumPocketType.PUBLIC;
     }
 

@@ -1,7 +1,6 @@
 package com.zixiken.dimdoors.shared.util;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -62,7 +61,7 @@ public class Location {
         return new Location(dimID, blockPos);
     }
 
-    public static NBTBase writeToNBT(Location location) {
+    public static NBTTagCompound writeToNBT(Location location) {
         NBTTagCompound locationNBT = new NBTTagCompound();
         locationNBT.setInteger("worldID", location.dimensionID);
         locationNBT.setInteger("x", location.pos.getX());

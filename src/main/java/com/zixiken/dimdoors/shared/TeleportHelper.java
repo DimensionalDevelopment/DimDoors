@@ -14,7 +14,7 @@ public class TeleportHelper extends Teleporter {
     private final Location location;
 
     public TeleportHelper(Location location) {//@todo make TeleportHelper static
-        super((WorldServer) location.getWorld());
+        super(location.getWorld());
         this.location = location;
     }
 

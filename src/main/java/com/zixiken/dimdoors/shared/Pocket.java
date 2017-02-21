@@ -6,6 +6,8 @@
 package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorWarp;
+import com.zixiken.dimdoors.shared.util.Location;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  *
@@ -28,16 +31,18 @@ public class Pocket {
     private final int x; //pocket-relative 0 coordinate, should be at x * PocketRegistry.Instance.gridSize * 16
     private final int z; //pocket-relative 0 coordinate, should be at z * PocketRegistry.Instance.gridSize * 16
     private final List<String> playerUUIDs;
-    private final List<Integer> riftIDs; //@todo first one of these should be the entrance door id? Does that even matter?
+    private final List<Integer> riftIDs;
+    private final Location depthZeroLocation;
     //when adding any new variables, don't forget to add them to the write and load functions
 
-    public Pocket(int size, int depth, EnumPocketType typeID, int x, int z, List<Integer> riftIDs) {
+    public Pocket(int size, int depth, EnumPocketType typeID, int x, int z, List<Integer> riftIDs, Location depthZeroLocation) {
         this.size = size;
         this.depth = depth;
         this.typeID = typeID;
         this.x = x;
         this.z = z;
         this.riftIDs = riftIDs;
+        this.depthZeroLocation = depthZeroLocation;
         playerUUIDs = new ArrayList();
         PocketRegistry.Instance.registerNewPocket(this, typeID);
 
@@ -65,8 +70,11 @@ public class Pocket {
         } else if (riftIDs.size() == 1) {
             return riftIDs.get(0);
         } else {
-            Random random = new Random();
-            int index = random.nextInt(riftIDs.size());
+            int index = findWarpDoorIndex(riftIDs);
+            if (index == -1) {
+                Random random = new Random();
+                index = random.nextInt(riftIDs.size());
+            }
             return riftIDs.get(index);
         }
     }
@@ -87,7 +95,8 @@ public class Pocket {
             int doorID = doorsTagList.getIntAt(i);
             riftIDs.add(doorID);
         }
-        Pocket pocket = new Pocket(size, depth, typeID, x, z, riftIDs); //registers the new pocket as well
+        Location depthZeroLocation = Location.readFromNBT(pocketNBT.getCompoundTag("depthZeroLocation"));
+        Pocket pocket = new Pocket(size, depth, typeID, x, z, riftIDs, depthZeroLocation); //registers the new pocket as well
 
         NBTTagList playersTagList = (NBTTagList) pocketNBT.getTag("playerUUIDs"); //@todo, maybe it is bad practice to put this behind the creation statement of the Pocket?
         for (int i = 0; i < playersTagList.tagCount(); i++) {
@@ -110,14 +119,36 @@ public class Pocket {
             doorsTagList.appendTag(doorTag);
         }
         pocketNBT.setTag("doorIDs", doorsTagList);
+        
+        NBTTagCompound depthZeroLocCompound = Location.writeToNBT(pocket.depthZeroLocation);
+        pocketNBT.setTag("depthZeroLocation", depthZeroLocCompound);
 
         NBTTagList playersTagList = new NBTTagList();
         for (int i = 0; i < pocket.playerUUIDs.size(); i++) {
             NBTTagString playerTag = new NBTTagString(pocket.playerUUIDs.get(i));
             playersTagList.appendTag(playerTag);
         }
-
-        pocketNBT.setTag("playerUUIDs", playersTagList);
+        pocketNBT.setTag("playerUUIDs", playersTagList);        
+        
         return pocketNBT;
+    }
+
+    private static int findWarpDoorIndex(List<Integer> riftIDs) { //used to find the entrance door to this pocket
+        int index = -1;
+        for (int i = 0; i < riftIDs.size(); i++) {
+            TileEntity tileEntity = RiftRegistry.Instance.getRiftLocation(i).getTileEntity();
+            if (tileEntity != null && tileEntity instanceof TileEntityDimDoorWarp) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * @return the depthZeroLocation
+     */
+    public Location getDepthZeroLocation() {
+        return depthZeroLocation;
     }
 }

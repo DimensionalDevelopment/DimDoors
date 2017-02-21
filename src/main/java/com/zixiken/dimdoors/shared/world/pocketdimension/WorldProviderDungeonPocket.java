@@ -5,7 +5,7 @@ import com.zixiken.dimdoors.shared.EnumPocketType;
 public class WorldProviderDungeonPocket extends WorldProviderPublicPocket {
 
     @Override
-    EnumPocketType getPocketType() {
+    public EnumPocketType getPocketType() {
         return EnumPocketType.DUNGEON;
     }
     
