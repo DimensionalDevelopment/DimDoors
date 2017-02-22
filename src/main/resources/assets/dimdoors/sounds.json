@@ -1,0 +1,15 @@
+{
+    "crack": {"category":"hostile", "sounds":[{"name":"crack","stream":false}]},
+    "creepy": {"category":"ambient", "sounds":[{"name":"creepy","stream":true}]},
+    "doorLocked": {"category":"player", "sounds":[{"name":"doorLocked","stream":false}]},
+    "doorLockRemoved": {"category":"player", "sounds":[{"name":"doorLockRemoved","stream":false}]},
+    "keyLock": {"category":"player", "sounds":[{"name":"keyLock","stream":false}]},
+    "keyUnlock": {"category":"player", "sounds":[{"name":"keyUnlock", "stream":false}]},
+    "monk": {"category":"hostile", "sounds":[{"name":"monk", "stream":false}]},
+    "rift": {"category":"master", "sounds":[{"name":"rift", "stream":false}]},
+    "riftClose": {"category":"player", "sounds":[{"name":"riftClose", "stream":false}]},
+    "riftDoor": {"category":"player", "sounds":[{"name":"riftDoor", "stream":false}]},
+    "riftEnd": {"category":"player", "sounds":[{"name":"riftEnd", "stream":false}]},
+    "riftStart": {"category":"player", "sounds":[{"name":"riftStart", "stream":false}]},
+    "tearing": {"category":"hostile", "sounds":[{"name":"tearing", "stream":false}]}
+}
