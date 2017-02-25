@@ -1,10 +1,12 @@
 package com.zixiken.dimdoors.shared.util;
 
+import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 
@@ -47,7 +49,7 @@ public class Location {
     }
 
     public WorldServer getWorld() {
-        return DimensionManager.getWorld(dimensionID);
+        return DimDoors.proxy.getWorldServer(dimensionID);
     }
 
     public int getDimensionID() {
@@ -77,6 +79,11 @@ public class Location {
         int z = locationNBT.getInteger("z");
         BlockPos blockPos = new BlockPos(x, y, z);
         return new Location(worldID, blockPos);
+    }
+    
+    @Override
+    public String toString() {
+        return "Location: dimID: " + this.dimensionID + " position: " + this.pos.toString();
     }
 
 }

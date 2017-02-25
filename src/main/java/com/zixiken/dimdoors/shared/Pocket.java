@@ -5,6 +5,7 @@
  */
 package com.zixiken.dimdoors.shared;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorWarp;
 import com.zixiken.dimdoors.shared.util.Location;
@@ -17,6 +18,7 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.WorldServer;
 
 /**
  *
@@ -47,8 +49,14 @@ public class Pocket {
         PocketRegistry.Instance.registerNewPocket(this, typeID);
 
         for (int riftID : riftIDs) {
-            DDTileEntityBase rift = (DDTileEntityBase) RiftRegistry.Instance.getRiftLocation(riftID).getTileEntity();
-            rift.setPocketID(this.ID); //set the rift's pocket ID to this pocket's pocket ID;
+            Location riftLocation = RiftRegistry.Instance.getRiftLocation(riftID);
+            WorldServer worldServer = DimDoors.proxy.getWorldServer(riftLocation.getDimensionID());
+            if (!worldServer.isRemote) {
+                
+                DDTileEntityBase rift = (DDTileEntityBase) riftLocation.getTileEntity();
+                rift.setPocket(this.ID, this.typeID); //set the rift's pocket ID to this pocket's pocket ID;
+
+            }
         }
     }
 
@@ -119,7 +127,7 @@ public class Pocket {
             doorsTagList.appendTag(doorTag);
         }
         pocketNBT.setTag("doorIDs", doorsTagList);
-        
+
         NBTTagCompound depthZeroLocCompound = Location.writeToNBT(pocket.depthZeroLocation);
         pocketNBT.setTag("depthZeroLocation", depthZeroLocCompound);
 
@@ -128,8 +136,8 @@ public class Pocket {
             NBTTagString playerTag = new NBTTagString(pocket.playerUUIDs.get(i));
             playersTagList.appendTag(playerTag);
         }
-        pocketNBT.setTag("playerUUIDs", playersTagList);        
-        
+        pocketNBT.setTag("playerUUIDs", playersTagList);
+
         return pocketNBT;
     }
 

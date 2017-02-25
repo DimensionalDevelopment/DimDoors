@@ -204,7 +204,7 @@ public class PocketRegistry {
         int z = getSimpleZ(nextUnusedID, typeID);;
         int dimID = DimDoorDimensions.getPocketDimensionType(typeID).getId();
 
-        Location location = new Location(x, y, z, dimID);
+        Location location = new Location(dimID, x, y, z);
         return location;
     }
 

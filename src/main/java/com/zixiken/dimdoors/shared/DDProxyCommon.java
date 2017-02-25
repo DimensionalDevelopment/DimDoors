@@ -5,6 +5,7 @@ import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorGold;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorPersonal;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityTransTrapdoor;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
@@ -31,6 +32,8 @@ public abstract class DDProxyCommon implements IDDProxy {
         GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
         GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityDimHatch");
         GameRegistry.registerTileEntity(TileEntityDimDoorGold.class, "TileEntityDimDoorGold");
+        GameRegistry.registerTileEntity(TileEntityDimDoorPersonal.class, "TileEntityDimDoorPersonal");
+        //@todo register other TileEntities
     }
 
     @Override

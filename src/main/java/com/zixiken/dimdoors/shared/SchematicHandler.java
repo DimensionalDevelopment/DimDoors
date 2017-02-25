@@ -68,7 +68,7 @@ public class SchematicHandler {
     }
 
     public void loadSchematics() {
-        personalPocketTemplate = loadTemplatesFromJson("defaultPersonal", PocketRegistry.Instance.getPrivatePocketSize()).get(0);
+        personalPocketTemplate = loadTemplatesFromJson("defaultPrivate", PocketRegistry.Instance.getPrivatePocketSize()).get(0);
         publicPocketTemplate = loadTemplatesFromJson("defaultPublic", PocketRegistry.Instance.getPublicPocketSize()).get(0);
         dungeonTemplates = new ArrayList();
         List<String> dungeonSchematicNameStrings = DDConfig.getDungeonSchematicNames();
@@ -183,9 +183,9 @@ public class SchematicHandler {
             }
 
             if (schematic != null
-                    && (schematic.getWidth() > (template.getSize()) * 16 || schematic.getLength() > (template.getSize()) * 16)) {
+                    && (schematic.getWidth() > (template.getSize() + 1) * 16 || schematic.getLength() > (template.getSize() + 1) * 16)) {
                 schematic = null;
-                DimDoors.log(Schematic.class, "Schematic " + template.getName() + " was bigger than specified in " + nameString + ".json and therefore wasn't loaded");
+                DimDoors.log(SchematicHandler.class, "Schematic " + template.getName() + " was bigger than specified in " + nameString + ".json and therefore wasn't loaded");
             }
             template.setSchematic(schematic);
         }

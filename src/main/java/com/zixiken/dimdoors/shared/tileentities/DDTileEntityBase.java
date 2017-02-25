@@ -130,8 +130,10 @@ public abstract class DDTileEntityBase extends TileEntity {
 
     public abstract boolean tryTeleport(Entity entity);
 
-    public void setPocketID(int ID) {
+    public void setPocket(int ID, EnumPocketType type) {
         pocketID = ID;
+        pocketType = type;
+        isInPocket = true;
     }
 
     public void setIsInPocket() {

@@ -43,7 +43,7 @@ public class BlockDimWall extends Block {
         setHardness(0.1F);
         setUnlocalizedName(ID);
         setRegistryName(ID);
-        setDefaultState(blockState.getBaseState().withProperty(TYPE, EnumType.FABRIC));
+        setDefaultState(blockState.getBaseState().withProperty(TYPE, EnumType.REALITY));
         setSoundType(SoundType.STONE);
     }
 
@@ -141,7 +141,7 @@ public class BlockDimWall extends Block {
     }
 
     public static enum EnumType implements IStringSerializable {
-        FABRIC("fabric"),
+        REALITY("fabric"),
         ANCIENT("ancient"),
         ALTERED("altered");
 

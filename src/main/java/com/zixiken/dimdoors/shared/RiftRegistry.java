@@ -234,7 +234,7 @@ public class RiftRegistry {
         return lastBrokenRift;
     }
 
-    public boolean teleportEntityToRift(Entity entity, int pairedRiftID) {
+    public boolean teleportEntityToRift(Entity entity, int pairedRiftID) { //@todo implement this code in the sending rift tiles instead
         DimDoors.log(this.getClass(), "RiftID of rift that the entity trying to teleport to is " + pairedRiftID + ".");
         if (pairedRiftID < 0) {
             DimDoors.warn(this.getClass(), "RiftID of rift that entity " + entity + " is trying to teleport to seems to be lower than 0 and it shouldn't.");

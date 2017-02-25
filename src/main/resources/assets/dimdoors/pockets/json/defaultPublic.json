@@ -43,6 +43,20 @@
             "minDepth": 0,
             "maxDepth": 0,
             "weights": [100]
+        },
+        {
+            "variantName": "defaultPublic_6",
+            "size": 6,
+            "minDepth": 0,
+            "maxDepth": 0,
+            "weights": [100]
+        },
+        {
+            "variantName": "defaultPublic_7",
+            "size": 7,
+            "minDepth": 0,
+            "maxDepth": 0,
+            "weights": [100]
         }
     ]
 }

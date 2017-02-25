@@ -87,14 +87,13 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         int zBase = shortenedZ * gridSize * 16;
 
         if (schematic == null) {
-            DimDoors.log(this.getClass(), "The schematic for variant " + variantName + " somehow didn't load correctly against despite all precautions.");
+            DimDoors.log(this.getClass(), "The schematic for variant " + variantName + " somehow didn't load correctly despite all precautions.");
             return null;
         }
         //@todo make sure that the door tile entities get registered!
         WorldServer world = DimDoors.proxy.getWorldServer(dimID);
 
         //Place the Dungeon content structure
-        
         List<IBlockState> palette = schematic.getPallette();
         int[][][] blockData = schematic.getBlockData();
         for (int x = 0; x < blockData.length; x++) {
