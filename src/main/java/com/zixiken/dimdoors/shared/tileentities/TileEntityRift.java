@@ -1,7 +1,10 @@
 package com.zixiken.dimdoors.shared.tileentities;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.RiftRegistry;
+import com.zixiken.dimdoors.shared.TeleportHelper;
+import com.zixiken.dimdoors.shared.util.Location;
 import java.util.List;
 import java.util.Random;
 import net.minecraft.entity.Entity;
@@ -145,6 +148,15 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 
     @Override
     public boolean tryTeleport(Entity entity) {
-        return false; //@todo, rift blade functionality?
+        int otherRiftID = -1;
+        if (!isPaired()) {
+            DimDoors.warn(this.getClass(), "Rift " + this.getRiftID() + " was not paired and thus, should not exist as a Rift, unless it was unpaired after the door was destroyed.");
+            return false;
+        } else {
+            otherRiftID = getPairedRiftID();
+        }
+        Location tpLocation = RiftRegistry.Instance.getTeleportLocation(otherRiftID);
+        RiftRegistry.Instance.validatePlayerPocketEntry(entity, otherRiftID);
+        return TeleportHelper.teleport(entity, tpLocation); //@todo this seems to return false?
     }
 }

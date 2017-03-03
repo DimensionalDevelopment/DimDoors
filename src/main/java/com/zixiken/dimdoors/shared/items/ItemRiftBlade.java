@@ -4,6 +4,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RayTraceHelper;
 import com.zixiken.dimdoors.shared.TeleportHelper;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -53,17 +54,20 @@ public class ItemRiftBlade extends ItemSword {
         //SchematicHandler.Instance.getPersonalPocketTemplate().place(0, 20, 0, 20, 0, 0, 1, EnumPocketType.DUNGEON); //this line can be activated for testing purposes
         RayTraceResult hit = rayTrace(world, player, true);
         if (RayTraceHelper.isRift(hit, world)) {
-            EnumActionResult canDoorBePlacedOnGroundBelowRift
-                    = ItemDimDoorTransient.tryPlaceDoorOnTopOfBlock(new ItemStack(ModItems.itemDimDoorTransient, 1, 0), player, world, hit.getBlockPos().down(2), hand,
-                            (float) hit.hitVec.xCoord, (float) hit.hitVec.yCoord, (float) hit.hitVec.zCoord); //stack may be changed by this method
-            if (canDoorBePlacedOnGroundBelowRift == EnumActionResult.SUCCESS) {
+            TileEntityRift rift = (TileEntityRift) world.getTileEntity(hit.getBlockPos());
+            EnumActionResult teleportResult = rift.tryTeleport(player) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+
+            if (teleportResult == EnumActionResult.SUCCESS) {
                 stack.damageItem(1, player);
             }
-            return new ActionResult(canDoorBePlacedOnGroundBelowRift, stack);
+            return new ActionResult(teleportResult, stack);
 
         } else if (RayTraceHelper.isLivingEntity(hit)) {
-            TeleportHelper.teleport(player, new Location(world, hit.getBlockPos())); //@todo teleport to a location 1 or 2 blocks distance from the entity
-            return new ActionResult(EnumActionResult.PASS, stack);
+            EnumActionResult teleportResult = TeleportHelper.teleport(player, new Location(world, hit.getBlockPos())) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL; //@todo teleport to a location 1 or 2 blocks distance from the entity
+            if (teleportResult == EnumActionResult.SUCCESS) {
+                stack.damageItem(1, player);
+            }
+            return new ActionResult(teleportResult, stack);
         }
 
         return new ActionResult(EnumActionResult.FAIL, stack);

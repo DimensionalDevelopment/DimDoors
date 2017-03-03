@@ -12,6 +12,7 @@ import com.zixiken.dimdoors.shared.util.Location;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
@@ -52,7 +53,7 @@ public class Pocket {
             Location riftLocation = RiftRegistry.Instance.getRiftLocation(riftID);
             WorldServer worldServer = DimDoors.proxy.getWorldServer(riftLocation.getDimensionID());
             if (!worldServer.isRemote) {
-                
+
                 DDTileEntityBase rift = (DDTileEntityBase) riftLocation.getTileEntity();
                 rift.setPocket(this.ID, this.typeID); //set the rift's pocket ID to this pocket's pocket ID;
 
@@ -158,5 +159,15 @@ public class Pocket {
      */
     public Location getDepthZeroLocation() {
         return depthZeroLocation;
+    }
+
+    public void validatePlayerEntry(EntityPlayer player) {
+        String playerUUID = player.getCachedUniqueIdString();
+        for (String allowedPlayerUUID : playerUUIDs) {
+            if (allowedPlayerUUID.equals(playerUUID)) {
+                return;
+            }
+        }
+        playerUUIDs.add(playerUUID);
     }
 }

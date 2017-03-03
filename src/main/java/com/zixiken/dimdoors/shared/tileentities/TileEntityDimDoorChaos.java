@@ -22,8 +22,9 @@ public class TileEntityDimDoorChaos extends TileEntityDimDoor {
 
     @Override
     public boolean tryTeleport(Entity entity) { //this door is never paired
-        Location tpLocation = RiftRegistry.Instance.getRiftLocation(RiftRegistry.Instance.getRandomNonPersonalRiftID());
-        //@todo, this teleports to the location of the rift, not in front of the rift, like it should
+        int otherRiftID = RiftRegistry.Instance.getRandomNonPersonalRiftID();
+        Location tpLocation = RiftRegistry.Instance.getTeleportLocation(otherRiftID);
+        RiftRegistry.Instance.validatePlayerPocketEntry(entity, otherRiftID);
         return TeleportHelper.teleport(entity, tpLocation);
     }
 }

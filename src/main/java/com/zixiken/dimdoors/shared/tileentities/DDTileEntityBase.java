@@ -1,11 +1,14 @@
 package com.zixiken.dimdoors.shared.tileentities;
 
 import com.zixiken.dimdoors.shared.EnumPocketType;
+import com.zixiken.dimdoors.shared.Pocket;
+import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import java.util.Random;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -54,8 +57,8 @@ public abstract class DDTileEntityBase extends TileEntity {
         } else {
             isPaired = false;
             RiftRegistry.Instance.unpair(pairedRiftID);
+            this.markDirty();
         }
-        this.markDirty();
         return false;
     }
 
@@ -139,8 +142,17 @@ public abstract class DDTileEntityBase extends TileEntity {
     public void setIsInPocket() {
         isInPocket = true;
     }
-    
+
     protected EnumPocketType getPocketType() {
         return pocketType;
+    }
+
+    public void validatePlayerPocketEntry(EntityPlayer player) {
+        if (!isInPocket || pocketType == EnumPocketType.PRIVATE) {
+            return;
+        } else {
+            Pocket pocket = PocketRegistry.Instance.getPocket(pocketID, pocketType);
+            pocket.validatePlayerEntry(player);
+        }
     }
 }

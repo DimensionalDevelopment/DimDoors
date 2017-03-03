@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -103,6 +104,7 @@ public class RiftRegistry {
     }
 
     public void writeToNBT(NBTTagCompound nbt) {
+        lastBrokenRift = null; //@todo this really should not be a part of this method, but I do not know of a better way to guaranteedly dereference it once every so often.
         nbt.setInteger("maximumDungeonDepth", maximumDungeonDepth);
         nbt.setInteger("nextUnusedID", nextRiftID);
 
@@ -155,15 +157,14 @@ public class RiftRegistry {
     }
 
     public void unregisterRift(int riftID) {
-        if (rifts.containsKey(riftID)) {
-            unpair(riftID);
+        DimDoors.log(this.getClass(), "unregistering rift " + riftID);
+        unpair(riftID);
 
-            unRegisterUnpairedRiftAtDepth(riftID); //@todo, will this crash if it doesn't find that value?
-            unpairedRifts.remove((Integer) riftID);
-            personalDoors.remove((Integer) riftID);
-            rifts.remove((Integer) riftID);
-            RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
-        }
+        unRegisterUnpairedRiftAtDepth(riftID); //@todo, will this crash if it doesn't find that value?
+        unpairedRifts.remove((Integer) riftID);
+        personalDoors.remove((Integer) riftID);
+        rifts.remove((Integer) riftID);
+        RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
     }
 
     void registerUnpairedRiftAtDepth(int riftID, int depth) {
@@ -182,6 +183,14 @@ public class RiftRegistry {
                 List<Integer> unpairedRiftListAtDepth = unpairedRiftsPerDepth.get(depth);
                 unpairedRiftListAtDepth.remove((Integer) riftID);
             }
+        }
+    }
+
+    void unRegisterUnpairedRiftAtDepth(DDTileEntityBase rift) {
+        int depth = rift.getDepth();
+        if (depth < maximumDungeonDepth) {
+            List<Integer> unpairedRiftListAtDepth = unpairedRiftsPerDepth.get(depth);
+            unpairedRiftListAtDepth.remove((Integer) rift.getRiftID());
         }
     }
 
@@ -214,14 +223,15 @@ public class RiftRegistry {
         Location location = rifts.get(riftID);
         if (location == null) {
             DimDoors.warn(this.getClass(), "RiftID with null location: rift " + riftID);
-        }
-        TileEntity tileEntity = location.getTileEntity();
-        if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
-            DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
-            boolean alreadyUnPaired = rift.unpair();
-            if (!alreadyUnPaired) {
-                unpairedRifts.add(riftID);
-                registerUnpairedRiftAtDepth(riftID, rift.getDepth());
+        } else {
+            TileEntity tileEntity = location.getTileEntity();
+            if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
+                DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
+                boolean alreadyUnPaired = rift.unpair();
+                if (!alreadyUnPaired) {
+                    unpairedRifts.add(riftID);
+                    registerUnpairedRiftAtDepth(riftID, rift.getDepth());
+                }
             }
         }
     }
@@ -270,7 +280,7 @@ public class RiftRegistry {
         if (unpairedRiftsPerDepth.size() > depth) {
             List<Integer> rifts = unpairedRiftsPerDepth.get(depth);
             int numberOfUnpairedRifts = rifts.size();
-            if (numberOfUnpairedRifts > 0) {
+            if (numberOfUnpairedRifts > 1) {
                 Random random = new Random();
                 int indexOforigRiftID = -1;
                 int randomRiftIDIndex;
@@ -348,5 +358,42 @@ public class RiftRegistry {
             return nonPersonalRiftIDs.get(index);
         }
         return -1;
+    }
+
+    public Location getTeleportLocation(int riftId) {
+        if (riftId < 0) {
+            DimDoors.warn(this.getClass(), "RiftID of rift that entity is trying to teleport to seems to be lower than 0 and it shouldn't.");
+            return null;
+        }
+        Location destinationRiftLocation = getRiftLocation(riftId);
+        DDTileEntityBase destinationRift = (DDTileEntityBase) destinationRiftLocation.getTileEntity();
+        if (destinationRift == null) {
+            DimDoors.warn(this.getClass(), "The rift that an entity is trying to teleport to seems to be null.");
+        }
+        return destinationRift.getTeleportTargetLocation();
+    }
+
+    public void validatePlayerPocketEntry(Entity entity, int riftID) {
+        if (entity instanceof EntityPlayer && riftID >= 0) {
+            Location riftLocation = getRiftLocation(riftID);
+            if (riftLocation != null) {
+                TileEntity tileEntity = riftLocation.getTileEntity();
+                if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
+                    DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
+                    EntityPlayer player = (EntityPlayer) entity;
+                    rift.validatePlayerPocketEntry(player);
+                }
+            }
+        }
+    }
+
+    public void unregisterLastChangedRift() {
+        if (lastBrokenRift != null) {
+            RiftRegistry.Instance.unregisterRift(lastBrokenRift.getRiftID());
+            //@todo The rest is all pretty Crude. The only reason why this is needed, is because Vanilla Minecraft keeps destroying the rift blocks, before they can place down their TileEntities, if a player breaks them in creative.
+            RiftRegistry.Instance.unRegisterUnpairedRiftAtDepth(lastBrokenRift);
+            lastBrokenRift.unpair();
+            lastBrokenRift = null;
+        }
     }
 }

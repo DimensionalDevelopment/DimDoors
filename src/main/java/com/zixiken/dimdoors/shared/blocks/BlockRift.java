@@ -1,6 +1,7 @@
 package com.zixiken.dimdoors.shared.blocks;
 
 import com.zixiken.dimdoors.client.ClosingRiftFX;
+import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
@@ -147,13 +148,13 @@ public class BlockRift extends Block implements ITileEntityProvider {
                 x + .5, y + .5, z + .5,
                 rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
          */
-        if (tile.shouldClose) //renders an opposite color effect if it is being closed by the rift remover{
+        if (tile.shouldClose) {//renders an opposite color effect if it is being closed by the rift remover
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(
                     worldIn,
                     x + .5, y + .5, z + .5,
                     rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
+        }
     }
-
 
     public boolean tryPlacingRift(World world, BlockPos pos) {
         return world != null && !isBlockImmune(world, pos)
@@ -197,6 +198,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
+        RiftRegistry.Instance.unregisterLastChangedRift();
         world.removeTileEntity(pos);
     }
 

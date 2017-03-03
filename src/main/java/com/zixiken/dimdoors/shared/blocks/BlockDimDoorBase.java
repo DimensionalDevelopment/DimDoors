@@ -150,15 +150,21 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         DDTileEntityBase origRift = null;
         boolean isTopHalf = state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER;
+        boolean shouldPlaceRift = false;
         if (isTopHalf) {
             origRift = (DDTileEntityBase) world.getTileEntity(pos);
-            RiftRegistry.Instance.setLastChangedRift(origRift);
+            if (origRift.isPaired()) {
+                shouldPlaceRift = true;
+                RiftRegistry.Instance.setLastChangedRift(origRift); //@todo this is a crude workaround
+            } else {
+                RiftRegistry.Instance.unregisterRift(origRift.getRiftID());
+            }
         }
         super.breakBlock(world, pos, state);
-        if (isTopHalf) {
+        if (shouldPlaceRift) {
             world.setBlockState(pos, ModBlocks.blockRift.getDefaultState());
             DDTileEntityBase newRift = (DDTileEntityBase) world.getTileEntity(pos);
-            newRift.loadDataFrom(origRift);
+            newRift.loadDataFrom(origRift); //@todo this does not work here, or does it?
         }
     }
 

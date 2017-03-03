@@ -6,6 +6,7 @@ import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoor;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
+import com.zixiken.dimdoors.shared.TeleportHelper;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import java.util.Random;
 import javax.annotation.Nullable;
@@ -65,16 +66,15 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
     @Override
     public boolean tryTeleport(Entity entity) {
-        //DimDoors.log(this.getClass(), "Trying to teleport from rift " + getRiftID() + ".");
         int otherRiftID = -1;
         if (!isPaired()) {
             otherRiftID = getNewTeleportDestination();
         } else {
             otherRiftID = getPairedRiftID();
-            //DimDoors.log(this.getClass(), "This rift was already paired correctly.");
         }
-        //DimDoors.log(this.getClass(), "Starting teleportation.");
-        return RiftRegistry.Instance.teleportEntityToRift(entity, otherRiftID); //@todo this seems to return false?
+        Location tpLocation = RiftRegistry.Instance.getTeleportLocation(otherRiftID);
+        RiftRegistry.Instance.validatePlayerPocketEntry(entity, otherRiftID);
+        return TeleportHelper.teleport(entity, tpLocation); //@todo this seems to return false?
     }
 
     public void uponDoorPlacement(@Nullable TileEntity possibleOldRift) {

@@ -1,5 +1,10 @@
 package com.zixiken.dimdoors.shared.tileentities;
 
+import com.zixiken.dimdoors.shared.Pocket;
+import com.zixiken.dimdoors.shared.PocketRegistry;
+import com.zixiken.dimdoors.shared.RiftRegistry;
+import com.zixiken.dimdoors.shared.TeleportHelper;
+import com.zixiken.dimdoors.shared.util.Location;
 import java.util.Random;
 import net.minecraft.entity.Entity;
 
@@ -19,10 +24,25 @@ public class TileEntityTransTrapdoor extends DDTileEntityBase {
         }
         return rgbaColor;
     }
+    
+    @Override
+    public Location getTeleportTargetLocation() {
+        return new Location(this.getWorld().provider.getDimension(), this.getPos().up());
+    }
 
     @Override
     public boolean tryTeleport(Entity entity) {
-        //@todo teleport the player somewhere to the Overworld?
-        return false;
+        Location teleportLocation;
+        if (isPaired()) {
+            int otherRiftID = getPairedRiftID();
+            teleportLocation = RiftRegistry.Instance.getTeleportLocation(otherRiftID);
+            RiftRegistry.Instance.validatePlayerPocketEntry(entity, otherRiftID);
+        } else if (!(this.isInPocket)) {
+            return false;
+        } else {
+            Pocket pocket = PocketRegistry.Instance.getPocket(this.pocketID, this.getPocketType());
+            teleportLocation = pocket.getDepthZeroLocation();
+        }
+        return TeleportHelper.teleport(entity, teleportLocation);
     }
 }
