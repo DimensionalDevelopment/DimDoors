@@ -12,6 +12,7 @@ import java.util.List;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import scala.actors.threadpool.Arrays;
 
 /**
  *
@@ -19,7 +20,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
  */
 public class DDConfig {
 
-    public static final boolean haveConfigDefaultsBeenCheckedForCorrectness = false; //@todo check this at each non-alpha release. This field does not have a use in the mod itself, but should ensure that the developers of this mod, don't forget to reset the config defaults to the right values before releasing a non-alpha release
+    public static final boolean HAVE_CONFIG_DEFAULTS_BEEN_CHECKED_FOR_CORRECTNESS = false; //@todo check this at each non-alpha release. This field does not have a use in the mod itself, but should ensure that the developers of this mod, don't forget to reset the config defaults to the right values before releasing a non-alpha release
 
     public static File configurationFolder;
     private static int pocketGridSize = 8;
@@ -28,6 +29,11 @@ public class DDConfig {
     private static int publicPocketSize = 2;
     private static int baseDimID = 684;
     private static String[] dungeonSchematicNames = {}; //@todo set default dungeon names
+    private static int maxDungeonDepth = 8;
+    private static int owCoordinateOffsetBase = 64;
+    private static double owCoordinateOffsetPower = 1.3;
+    private static int[] doorRelativeDepths = new int[]{-1, 0, 1};
+    private static int[] doorRelativeDepthWeights = new int[]{20, 30, 50};
 
     private static int setConfigIntWithMaxAndMin(Configuration config, String category, String key, int defaultValue, String comment, int minValue, int maxValue) {
         Property prop = config.get(category, key, defaultValue,
@@ -60,24 +66,62 @@ public class DDConfig {
         DimDoors.log(DDConfig.class, "pocketGridSize was set to " + pocketGridSize);
 
         maxPocketSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "maxPocketSize", maxPocketSize,
-                "Sets how many deep and wide any pocket can be. [min: 1, max: pocketGridSize/2, default: 4]", 1, (int) (((double) pocketGridSize / 2) - 0.5));
+                "Sets how deep and wide any pocket can be. [min: 1, max: pocketGridSize/2, default: 4]", 1, (int) (((double) pocketGridSize / 2) - 0.5));
 
         privatePocketSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "privatePocketSize", privatePocketSize,
-                "Sets how many deep and wide any personal pocket can be. [min: 1, max: maxPocketsSize, default: 3]", 1, maxPocketSize);
+                "Sets how deep and wide any personal pocket can be. [min: 1, max: maxPocketsSize, default: 3]", 1, maxPocketSize);
 
         publicPocketSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "publicPocketSize", publicPocketSize,
-                "Sets how many deep and wide any public pocket can be. [min: 1, max: maxPocketsSize, default: 2]", 1, maxPocketSize);
+                "Sets how deep and wide any public pocket can be. [min: 1, max: maxPocketsSize, default: 2]", 1, maxPocketSize);
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "dungeonSchematicNames", dungeonSchematicNames,
-                "List of names of Pockets' jSon- and Schematic file names excluding extention. Custom json and schematic files can be dropped in the corresponding folders.");
+                "List of names of Pockets' jSon- and Schematic file names excluding extension. Custom json and schematic files can be dropped in the corresponding folders.");
         dungeonSchematicNames = prop.getStringList();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "baseDimID", baseDimID,
                 "Dimension ID of the first Dimensional Doors dimension. Other dimensions will use consecutive IDs. NB: If you change this after creating a world, you may lose these dimensions. [default: 684]");
         baseDimID = prop.getInt(baseDimID);
 
+        maxDungeonDepth = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "maxDungeonDepth", maxDungeonDepth,
+                "Sets the maximum (deepest) depth that a dungeon pocket can be at. [min: 1, max: 32, default: 8]", 1, 32);
+
+        owCoordinateOffsetBase = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "owCoordinateOffsetBase", owCoordinateOffsetBase,
+                "Determines how heavy the depth weighs when determining the overworld coordinates corresponding to a dungeon pocket. [min: 1, max: 128, default: 64]", 1, 128);
+
+        prop = config.get(Configuration.CATEGORY_GENERAL, "owCoordinateOffsetPower", owCoordinateOffsetPower,
+                "Determines how heavy the depth weighs when determining the overworld coordinates corresponding to a dungeon pocket. [default: 1.3]"
+                + System.getProperty("line.separator") + "max offset = (depth * owCoordinateOffsetBase)^owCoordinateOffsetPower");
+        owCoordinateOffsetPower = prop.getDouble(owCoordinateOffsetPower);
+
+        prop = config.get(Configuration.CATEGORY_GENERAL, "doorRelativeDepths", doorRelativeDepths,
+                "List of possible depths that a new dungeon Pocket can generate at, relative to the origin door.");
+        doorRelativeDepths = prop.getIntList();
+
+        prop = config.get(Configuration.CATEGORY_GENERAL, "doorRelativeDepthWeights", doorRelativeDepthWeights,
+                "List of weights (chances) of the relative depths in doorRelativeDepths. This list needs to have the same size.");
+        doorRelativeDepthWeights = prop.getIntList();
+
+        checkAndCorrectDoorRelativeDepths(config);
+
         // Save config
         config.save();
+    }
+
+    private static void checkAndCorrectDoorRelativeDepths(Configuration config) {
+        int d = doorRelativeDepths.length;
+        int dw = doorRelativeDepthWeights.length;
+        if (d != dw) {
+            Property prop;
+            if (d > dw) {
+                doorRelativeDepths = Arrays.copyOf(doorRelativeDepths, dw);
+                prop = config.get(Configuration.CATEGORY_GENERAL, "doorRelativeDepths", doorRelativeDepths); //I hope that this works (not a disaster if it doesn't).
+                prop.set(doorRelativeDepths);
+            } else {
+                doorRelativeDepthWeights = Arrays.copyOf(doorRelativeDepthWeights, d);
+                prop = config.get(Configuration.CATEGORY_GENERAL, "doorRelativeDepthWeights", doorRelativeDepthWeights);
+                prop.set(doorRelativeDepthWeights);
+            }
+        }
     }
 
     public static int getPocketGridSize() {
@@ -106,5 +150,40 @@ public class DDConfig {
 
     public static int getBaseDimID() {
         return baseDimID;
+    }
+
+    /**
+     * @return the owCoordinateOffsetBase
+     */
+    public static int getOwCoordinateOffsetBase() {
+        return owCoordinateOffsetBase;
+    }
+
+    /**
+     * @return the owCoordinateOffsetPower
+     */
+    public static double getOwCoordinateOffsetPower() {
+        return owCoordinateOffsetPower;
+    }
+
+    /**
+     * @return the doorRelativeDepths
+     */
+    public static int[] getDoorRelativeDepths() {
+        return doorRelativeDepths;
+    }
+
+    /**
+     * @return the doorRelativeDepthWeights
+     */
+    public static int[] getDoorRelativeDepthWeights() {
+        return doorRelativeDepthWeights;
+    }
+
+    /**
+     * @return the maxDungeonDepth
+     */
+    public static int getMaxDungeonDepth() {
+        return maxDungeonDepth;
     }
 }

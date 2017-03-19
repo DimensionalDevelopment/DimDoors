@@ -47,7 +47,7 @@ public class Pocket {
         this.riftIDs = riftIDs;
         this.depthZeroLocation = depthZeroLocation;
         playerUUIDs = new ArrayList();
-        PocketRegistry.Instance.registerNewPocket(this, typeID);
+        PocketRegistry.INSTANCE.registerNewPocket(this, typeID); //@todo, maybe not register pockets inside their own constructor?
 
         for (int riftID : riftIDs) {
             Location riftLocation = RiftRegistry.Instance.getRiftLocation(riftID);

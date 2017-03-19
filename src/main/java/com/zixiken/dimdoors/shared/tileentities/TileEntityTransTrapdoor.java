@@ -40,7 +40,7 @@ public class TileEntityTransTrapdoor extends DDTileEntityBase {
         } else if (!(this.isInPocket)) {
             return false;
         } else {
-            Pocket pocket = PocketRegistry.Instance.getPocket(this.pocketID, this.getPocketType());
+            Pocket pocket = PocketRegistry.INSTANCE.getPocket(this.pocketID, this.getPocketType());
             teleportLocation = pocket.getDepthZeroLocation();
         }
         return TeleportHelper.teleport(entity, teleportLocation);

@@ -31,9 +31,9 @@ public class TileEntityDimDoorPersonal extends TileEntityDimDoor {
         if (entity instanceof EntityPlayer) {
             EntityPlayer entityPlayer = (EntityPlayer) entity;
             if (locationOfThisRift.getDimensionID() == DimDoorDimensions.getPocketDimensionType(EnumPocketType.PRIVATE).getId()) {
-                tpLocation = PocketRegistry.Instance.getPocket(this.pocketID, EnumPocketType.PRIVATE).getDepthZeroLocation();
+                tpLocation = PocketRegistry.INSTANCE.getPocket(this.pocketID, EnumPocketType.PRIVATE).getDepthZeroLocation();
             } else {
-                tpLocation = RiftRegistry.Instance.getTeleportLocation(PocketRegistry.Instance.getPrivateDimDoorID(entityPlayer.getCachedUniqueIdString()));
+                tpLocation = RiftRegistry.Instance.getTeleportLocation(PocketRegistry.INSTANCE.getPrivateDimDoorID(entityPlayer.getCachedUniqueIdString()));
             }
         } else {
             return false;

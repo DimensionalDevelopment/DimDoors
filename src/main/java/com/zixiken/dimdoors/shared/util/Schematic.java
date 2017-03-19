@@ -443,7 +443,7 @@ public class Schematic {
                             || y == 0 || y == maxbound - 1
                             || z == 0 || z == maxbound - 1) {
                         schematic.blockData[x][y][z] = 1; //outer dim wall
-                    } else if (withinDistanceOf(new int[]{x, y, z}, 6, new int[]{0, maxbound})) {
+                    } else if (DDMathUtils.withinDistanceOf(new int[]{x, y, z}, 6, new int[]{0, maxbound})) {
                         if (z == 4 && x == (maxbound - 1) / 2 && y > 4 && y < 7) {
                             if (y == 5) {
                                 schematic.blockData[x][y][z] = 3; //door bottom
@@ -471,16 +471,4 @@ public class Schematic {
         SchematicHandler.Instance.saveSchematic(schematic, schematic.schematicName);
     }
      */
-
-    private static boolean withinDistanceOf(int[] setOne, int difference, int[] setTwo) { //@todo add to a utilityclass
-        for (int One : setOne) {
-            for (int Two : setTwo) {
-                if ((Math.max(One, Two) - Math.min(One, Two)) < difference) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
 }

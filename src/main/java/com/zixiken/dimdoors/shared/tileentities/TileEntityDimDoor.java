@@ -1,12 +1,14 @@
 package com.zixiken.dimdoors.shared.tileentities;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.EnumPocketType;
 import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoor;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.TeleportHelper;
+import com.zixiken.dimdoors.shared.util.DDRandomUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import java.util.Random;
 import javax.annotation.Nullable;
@@ -91,21 +93,21 @@ public class TileEntityDimDoor extends DDTileEntityBase {
     }
 
     protected int getNewTeleportDestination() {
-        int otherRiftID = -1;
+        int otherRiftID;
         Location locationOfThisRift = RiftRegistry.Instance.getRiftLocation(this.riftID);
-        if (locationOfThisRift.getDimensionID() == DimDoorDimensions.getPocketDimensionType(EnumPocketType.DUNGEON).getId()) { //if this dimdoor is in a pocket Dungeon
-            //@todo choose between generating a new pocket or connecting to another door on a similar or close depth
-            if (randomBooleanChoice(20, 80)) {
+        if (locationOfThisRift.getDimensionID() == DimDoorDimensions.getPocketDimensionType(EnumPocketType.DUNGEON).getId()) { //if this dimdoor is a pocket Dungeon
+            //choose between generating a new pocket or connecting to another door on a similar or close depth
+            if (DDRandomUtils.weightedBoolean(20, 80)) { //@todo make this configurable
                 otherRiftID = RiftRegistry.Instance.getRandomUnpairedRiftIDAroundDepth(getRiftID(), depth);
-                if (otherRiftID < 0) {
+                if (otherRiftID < 0) { //ergo: no other rift can be found
                     //@todo, this should rarely happen. Put in an easter egg?
-                    otherRiftID = PocketRegistry.Instance.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomisedDepth(), locationOfThisRift);
+                    otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), locationOfThisRift);
                 }
             } else {
-                otherRiftID = PocketRegistry.Instance.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomisedDepth(), locationOfThisRift);
+                otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), locationOfThisRift);
             }
         } else {
-            otherRiftID = PocketRegistry.Instance.getEntranceDoorIDOfNewPocket(EnumPocketType.PUBLIC, 0, locationOfThisRift); //@todo should this depth be 1 instead?
+            otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.PUBLIC, 0, locationOfThisRift); //@todo should this depth be 1 instead?
         }
 
         if (otherRiftID < 0) {
@@ -118,17 +120,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
         return otherRiftID;
     }
 
-    private boolean randomBooleanChoice(int trueWeight, int falseWeight) { //@todo make this a utility function
-        if (trueWeight <= 0 || falseWeight <= 0) {
-            throw new IllegalArgumentException("Either of both weights was 0 or lower. Both should be at least 1.");
-        }
-        Random random = new Random();
-        return (random.nextInt(trueWeight + falseWeight) < trueWeight);
-    }
-
-    protected int getRandomisedDepth() {
-        Random random = new Random();
-        int choice = random.nextInt(100);
-        return (choice < 20 ? depth - 1 : choice < 50 ? depth : depth + 1); //@todo get rid of hardcoded stuff
+    protected int getRandomlyTransFormedDepth() {
+        return DDRandomUtils.transformRandomly(depth, DDConfig.getDoorRelativeDepths(), DDConfig.getDoorRelativeDepthWeights());
     }
 }

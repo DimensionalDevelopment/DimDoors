@@ -151,7 +151,7 @@ public abstract class DDTileEntityBase extends TileEntity {
         if (!isInPocket || pocketType == EnumPocketType.PRIVATE) {
             return;
         } else {
-            Pocket pocket = PocketRegistry.Instance.getPocket(pocketID, pocketType);
+            Pocket pocket = PocketRegistry.INSTANCE.getPocket(pocketID, pocketType);
             pocket.validatePlayerEntry(player);
         }
     }

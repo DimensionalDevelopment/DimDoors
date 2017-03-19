@@ -20,7 +20,7 @@ public class DDEventHandler {
     @SubscribeEvent
     public void onPlayerJoinWorld(EntityJoinWorldEvent event) { //@todo, probably move this to another class
         //check if config default values have been checked
-        if (!DDConfig.haveConfigDefaultsBeenCheckedForCorrectness) {
+        if (!DDConfig.HAVE_CONFIG_DEFAULTS_BEEN_CHECKED_FOR_CORRECTNESS) {
             if (!DimDoors.VERSION.contains("a")) { //if it is not an alpha version
                 Entity entity = event.getEntity();
                 if (entity instanceof EntityPlayer) {

@@ -46,7 +46,7 @@ public class PocketSavedData extends DDSavedData {
     public NBTTagCompound writeToNBT(NBTTagCompound pocketnbt) {
 
         NBTTagCompound pockets = new NBTTagCompound();
-        PocketRegistry.Instance.writeToNBT(pockets);
+        PocketRegistry.INSTANCE.writeToNBT(pockets);
         pocketnbt.setTag("pockets", pockets);
 
         return pocketnbt;
@@ -58,7 +58,7 @@ public class PocketSavedData extends DDSavedData {
         if (pocketnbt != null) {
             if (pocketnbt.hasKey("pockets")) {
                 NBTTagCompound pockets = pocketnbt.getCompoundTag("pockets");
-                PocketRegistry.Instance.readFromNBT(pockets);
+                PocketRegistry.INSTANCE.readFromNBT(pockets);
             }
         }
     }

@@ -68,11 +68,11 @@ public class SchematicHandler {
     }
 
     public void loadSchematics() {
-        personalPocketTemplate = loadTemplatesFromJson("defaultPrivate", PocketRegistry.Instance.getPrivatePocketSize()).get(0);
-        publicPocketTemplate = loadTemplatesFromJson("defaultPublic", PocketRegistry.Instance.getPublicPocketSize()).get(0);
+        personalPocketTemplate = loadTemplatesFromJson("defaultPrivate", PocketRegistry.INSTANCE.getPrivatePocketSize()).get(0);
+        publicPocketTemplate = loadTemplatesFromJson("defaultPublic", PocketRegistry.INSTANCE.getPublicPocketSize()).get(0);
         dungeonTemplates = new ArrayList();
         List<String> dungeonSchematicNameStrings = DDConfig.getDungeonSchematicNames();
-        int maxPocketSize = PocketRegistry.Instance.getMaxPocketSize();
+        int maxPocketSize = PocketRegistry.INSTANCE.getMaxPocketSize();
         for (String nameString : dungeonSchematicNameStrings) {
             List<PocketTemplate> templates = loadTemplatesFromJson(nameString, maxPocketSize);
             if (templates != null) {

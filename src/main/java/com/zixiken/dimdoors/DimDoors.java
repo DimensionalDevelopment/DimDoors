@@ -61,7 +61,7 @@ public class DimDoors {
         event.registerServerCommand(new TeleportCommand());
         //@todo event.registerServerCommand( new DDCommand() ); //to register commands that this mod offers?
         RiftRegistry.Instance.reset();
-        PocketRegistry.Instance.reset();
+        PocketRegistry.INSTANCE.reset();
         RiftSavedData.get(getDefWorld());
         PocketSavedData.get(getDefWorld());
         SchematicHandler.Instance.loadSchematics();
