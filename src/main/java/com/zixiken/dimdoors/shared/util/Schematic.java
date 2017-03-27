@@ -443,11 +443,11 @@ public class Schematic {
                             || y == 0 || y == maxbound - 1
                             || z == 0 || z == maxbound - 1) {
                         schematic.blockData[x][y][z] = 1; //outer dim wall
-                    } else if (DDMathUtils.withinDistanceOf(new int[]{x, y, z}, 6, new int[]{0, maxbound})) {
+                    } else if (DDMathUtils.withinDistanceOf(new int[]{x, y, z}, 5, new int[]{0, maxbound})) {
                         if (z == 4 && x == (maxbound - 1) / 2 && y > 4 && y < 7) {
                             if (y == 5) {
                                 schematic.blockData[x][y][z] = 3; //door bottom
-                            } else {
+                            } else { // y == 6
                                 schematic.blockData[x][y][z] = 4; //door top
                             }
                         } else {

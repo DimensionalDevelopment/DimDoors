@@ -185,9 +185,11 @@ public class PocketRegistry {
         int shortenedZ = shortenedLocation.getPos().getZ();
         int dimID = shortenedLocation.getDimensionID();
         Location depthZeroLocation;
-        if (typeID != EnumPocketType.PRIVATE) {
+        if (typeID == EnumPocketType.DUNGEON) {
             depthZeroLocation = DDRandomUtils.transformLocationRandomly(DDConfig.getOwCoordinateOffsetBase(), DDConfig.getOwCoordinateOffsetPower(), depth, origRiftLocation);
-        } else {
+        } else if (typeID == EnumPocketType.PUBLIC) {
+            depthZeroLocation = DDRandomUtils.transformLocationRandomly(DDConfig.getOwCoordinateOffsetBase(), DDConfig.getOwCoordinateOffsetPower(), 1, origRiftLocation);
+        } else { //PRIVATE
             depthZeroLocation = origRiftLocation;
         }
         

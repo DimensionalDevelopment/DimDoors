@@ -7,7 +7,7 @@ import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoor;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
-import com.zixiken.dimdoors.shared.TeleportHelper;
+import com.zixiken.dimdoors.shared.TeleporterDimDoors;
 import com.zixiken.dimdoors.shared.util.DDRandomUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import java.util.Random;
@@ -76,7 +76,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
         }
         Location tpLocation = RiftRegistry.Instance.getTeleportLocation(otherRiftID);
         RiftRegistry.Instance.validatePlayerPocketEntry(entity, otherRiftID);
-        return TeleportHelper.teleport(entity, tpLocation); //@todo this seems to return false?
+        return TeleporterDimDoors.instance().teleport(entity, tpLocation); //@todo this seems to return false?
     }
 
     public void uponDoorPlacement(@Nullable TileEntity possibleOldRift) {

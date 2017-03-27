@@ -34,11 +34,16 @@ minecraft {
 }
 
 configurations {
-    includeInJar
+    embed 
+    compile.extendsFrom(embed)
 }
+
 dependencies {
-    includeInJar 'com.flowpowered:flow-math:1.0.3'
-    compile configurations.includeInJar
+    embed 'com.flowpowered:flow-math:1.0.3'
+}
+
+jar {
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 processResources

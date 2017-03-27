@@ -6,7 +6,7 @@
 package com.zixiken.dimdoors.shared.tileentities;
 
 import com.zixiken.dimdoors.shared.RiftRegistry;
-import com.zixiken.dimdoors.shared.TeleportHelper;
+import com.zixiken.dimdoors.shared.TeleporterDimDoors;
 import com.zixiken.dimdoors.shared.util.Location;
 import net.minecraft.entity.Entity;
 
@@ -25,6 +25,6 @@ public class TileEntityDimDoorChaos extends TileEntityDimDoor {
         int otherRiftID = RiftRegistry.Instance.getRandomNonPersonalRiftID();
         Location tpLocation = RiftRegistry.Instance.getTeleportLocation(otherRiftID);
         RiftRegistry.Instance.validatePlayerPocketEntry(entity, otherRiftID);
-        return TeleportHelper.teleport(entity, tpLocation);
+        return TeleporterDimDoors.instance().teleport(entity, tpLocation);
     }
 }

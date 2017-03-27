@@ -40,11 +40,11 @@ public class DDMathUtils {
     /**
      * Returns the sum of the values of all integer elements in an integer array
      *
-     * @param intArray
+     * @param intArray the integers to calculate the sum of
      * @param flag this flag is meant to check if all elements in the array must
-     * be positive, negative, or it doesn't matter
+     * be positive (0), negative(1), or it doesn't matter (anything else)
      * @pre
-     * {@code flag == 0 || (flag == 1 && (\forall i; intArray.has(i); i >= 0)) || (flag == 2 && (\forall i; intArray.has(i); i <= 0))}
+     * {@code (flag != 0 && flag != 1) || (flag == 0 && (\forall i; intArray.has(i); i >= 0)) || (flag == 1 && (\forall i; intArray.has(i); i <= 0))}
      * @throws IllegalArgumentException if precondition is violated
      * @return {@code sum(i = 0; intArray.has(i); intArray[i]) }
      */
@@ -53,6 +53,8 @@ public class DDMathUtils {
         for (int i : intArray) { //check flag
             if (flag == 0 && i < 0) { //
                 throw new IllegalArgumentException("all integers in array must be positive");
+            } else if (flag == 1 && i > 0) { //
+                throw new IllegalArgumentException("all integers in array must be negative");
             }
             r += i;
         }

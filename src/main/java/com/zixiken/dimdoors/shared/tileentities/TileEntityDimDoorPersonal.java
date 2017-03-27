@@ -8,7 +8,7 @@ package com.zixiken.dimdoors.shared.tileentities;
 import com.zixiken.dimdoors.shared.EnumPocketType;
 import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.RiftRegistry;
-import com.zixiken.dimdoors.shared.TeleportHelper;
+import com.zixiken.dimdoors.shared.TeleporterDimDoors;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.entity.Entity;
@@ -38,7 +38,7 @@ public class TileEntityDimDoorPersonal extends TileEntityDimDoor {
         } else {
             return false;
         }
-        return TeleportHelper.teleport(entity, tpLocation);
+        return TeleporterDimDoors.instance().teleport(entity, tpLocation);
     }
 
 }

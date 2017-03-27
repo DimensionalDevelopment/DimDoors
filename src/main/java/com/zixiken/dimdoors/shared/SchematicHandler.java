@@ -83,6 +83,7 @@ public class SchematicHandler {
                 }
             }
         }
+        //Schematic.TempGenerateDefaultSchematics();
     }
 
     private static List<PocketTemplate> loadTemplatesFromJson(String nameString, int maxPocketSize) { //depending on the "jSonType" value in the jSon, this might load several variations of a pocket at once, hence loadTemplate -->s<--

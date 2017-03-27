@@ -1,6 +1,8 @@
 package com.zixiken.dimdoors.shared.util;
 
 import com.zixiken.dimdoors.DimDoors;
+import java.io.Serializable;
+import java.util.Objects;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -12,7 +14,7 @@ import net.minecraft.world.WorldServer;
  *
  * @author Robijnvogel
  */
-public class Location {
+public class Location implements Serializable {
 
     private int dimensionID;
     private BlockPos pos;
@@ -22,7 +24,7 @@ public class Location {
     }
 
     public Location(World world, int x, int y, int z) {
-        this(world, new BlockPos(x,y,z));
+        this(world, new BlockPos(x, y, z));
     }
 
     public Location(int dimID, int x, int y, int z) {
@@ -78,7 +80,24 @@ public class Location {
         BlockPos blockPos = new BlockPos(x, y, z);
         return new Location(worldID, blockPos);
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof Location)) {
+            return false;
+        }
+        Location other = (Location) o;
+        return other.dimensionID == this.dimensionID && other.pos.equals(this.pos);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 89 * hash + this.dimensionID;
+        hash = 89 * hash + Objects.hashCode(this.pos);
+        return hash;
+    }
+
     @Override
     public String toString() {
         return "Location: dimID: " + this.dimensionID + " position: " + this.pos.toString();

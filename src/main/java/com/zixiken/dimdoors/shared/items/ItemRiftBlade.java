@@ -3,7 +3,7 @@ package com.zixiken.dimdoors.shared.items;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RayTraceHelper;
-import com.zixiken.dimdoors.shared.TeleportHelper;
+import com.zixiken.dimdoors.shared.TeleporterDimDoors;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -63,7 +63,7 @@ public class ItemRiftBlade extends ItemSword {
             return new ActionResult(teleportResult, stack);
 
         } else if (RayTraceHelper.isLivingEntity(hit)) {
-            EnumActionResult teleportResult = TeleportHelper.teleport(player, new Location(world, hit.getBlockPos())) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL; //@todo teleport to a location 1 or 2 blocks distance from the entity
+            EnumActionResult teleportResult = TeleporterDimDoors.instance().teleport(player, new Location(world, hit.getBlockPos())) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL; //@todo teleport to a location 1 or 2 blocks distance from the entity
             if (teleportResult == EnumActionResult.SUCCESS) {
                 stack.damageItem(1, player);
             }

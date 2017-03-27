@@ -255,7 +255,7 @@ public class RiftRegistry {
         if (destinationRift == null) {
             DimDoors.warn(this.getClass(), "The rift that an entity is trying to teleport to seems to be null.");
         }
-        return TeleportHelper.teleport(entity, destinationRift.getTeleportTargetLocation());
+        return TeleporterDimDoors.instance().teleport(entity, destinationRift.getTeleportTargetLocation());
     }
 
     //@todo are we ever going to use this method?

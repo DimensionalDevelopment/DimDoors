@@ -13,10 +13,10 @@ import java.util.List;
  * Created by Jared Johnson on 1/26/2017.
  */
 public class TeleportCommand extends CommandBase {
+
     private final List aliases;
 
-    public TeleportCommand()
-    {
+    public TeleportCommand() {
         aliases = new ArrayList();
 
         aliases.add("dimteleport");
@@ -43,8 +43,7 @@ public class TeleportCommand extends CommandBase {
         int id = Integer.parseInt(args[0]);
 
         if (sender instanceof EntityPlayerMP) {
-            server.getPlayerList().transferPlayerToDimension((EntityPlayerMP) sender, Integer.parseInt(args[0]), new TeleportHelper(new Location(id, 0,300,0)));
-
+            server.getPlayerList().transferPlayerToDimension((EntityPlayerMP) sender, Integer.parseInt(args[0]), TeleporterDimDoors.instance());
         }
     }
 }

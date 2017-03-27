@@ -3,7 +3,7 @@ package com.zixiken.dimdoors.shared.tileentities;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.RiftRegistry;
-import com.zixiken.dimdoors.shared.TeleportHelper;
+import com.zixiken.dimdoors.shared.TeleporterDimDoors;
 import com.zixiken.dimdoors.shared.util.Location;
 import java.util.List;
 import java.util.Random;
@@ -157,6 +157,6 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
         }
         Location tpLocation = RiftRegistry.Instance.getTeleportLocation(otherRiftID);
         RiftRegistry.Instance.validatePlayerPocketEntry(entity, otherRiftID);
-        return TeleportHelper.teleport(entity, tpLocation); //@todo this seems to return false?
+        return TeleporterDimDoors.instance().teleport(entity, tpLocation); //@todo this seems to return false?
     }
 }
