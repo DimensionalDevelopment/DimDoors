@@ -1,4 +1,5 @@
-# Dimensional Doors [![forthebadge](http://forthebadge.com/images/badges/designed-in-etch-a-sketch.svg)]()
+# Dimensional Doors
+[![forthebadge](http://forthebadge.com/images/badges/designed-in-etch-a-sketch.svg)](*) [![forthebadge](http://forthebadge.com/images/badges/built-with-science.svg)](*) [![forthebadge](http://forthebadge.com/images/badges/as-seen-on-tv.svg)](*)
 ## Overview
 This is the main team page for the recode of Dimensional Doors. This repository will contain the up-to-date code base and commits submitted, unless told otherwise, by the Dimensional Development team. Currently, the recode is in progress with an Alpha in the works. This and other projects will come out eventually, please be patient.
 
