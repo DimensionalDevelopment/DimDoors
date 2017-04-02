@@ -15,7 +15,7 @@ Experiencing a bug or just have a suggestion that is in-line with the mod's lore
  
 ## Discord Server
 For the main bits, we have a Discord server made specifically for talking about Dimensional Doors. It's also the place where the devs meet to discuss current progress on certain aspects, and get feedback from the team.
-###Discord Server: [Click](https://discord.gg/zBbK9dZ) to open in browser or client, if installed
+### Discord Server: [Click](https://discord.gg/zBbK9dZ) to open in browser or client, if installed
 
 ## Team Applications
 Dimensional Development is always looking to expand (there is currently only 3 of us) and introduce new members to the team and community.
