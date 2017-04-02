@@ -22,10 +22,10 @@ Dimensional Development is always looking to expand (there is currently only 3 o
 
 ### Want to join?
 **Artists:**
-We will be looking for artists, artists will be a priority eventually, but feel free to submit an app anyway!
+We will be looking for artists, artists will be a priority eventually, but feel free to submit an app anyway! You will need a background and resume of your art to have a chance of being accepted.
 #### Application Link: **COMING SOON**
 
 **Developers:**
-It is recommended that you do a few PRs before you recommend, and have some background in Java and Forge mods.
+It is recommended that you do a few PRs before you apply, and have some background in Java and Forge mods.
 Currently, there is no link available, but once we have one, you will be able to leave contact info, a resume of your history with mods and Java, and your dedication time to the team. As long as you can commit at least once a week, you have a chance.
 #### Application Link: **COMING SOON**
