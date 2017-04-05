@@ -28,7 +28,7 @@ import net.minecraft.tileentity.TileEntity;
 public class RiftRegistry {
 
     private DDTileEntityBase lastBrokenRift = null; //@todo, redo this functionality in a more refined way
-    public static final RiftRegistry Instance = new RiftRegistry();
+    public static final RiftRegistry INSTANCE = new RiftRegistry();
 
     // Privates
     private int nextRiftID;
@@ -61,6 +61,7 @@ public class RiftRegistry {
             dimensionSpecificUnpairedRiftList.clear();
         }
         lastBrokenRift = null;
+        RiftSavedData.get(DimDoors.getDefWorld()).markDirty();
     }
 
     public void readFromNBT(NBTTagCompound nbt) {
@@ -140,20 +141,22 @@ public class RiftRegistry {
 
     public int registerNewRift(DDTileEntityBase rift, int depth) {
         Location riftLocation = Location.getLocation(rift);
-        rifts.put(nextRiftID, riftLocation);
+        int assignedID = nextRiftID;
+        DimDoors.log(this.getClass(), "Starting registering rift as ID: " + assignedID);
+
+        rifts.put(assignedID, riftLocation);
         if (rift instanceof TileEntityDimDoorPersonal || rift instanceof TileEntityDimDoorChaos) {
             if (rift instanceof TileEntityDimDoorPersonal) {
-                personalDoors.add(nextRiftID);
+                personalDoors.add(assignedID);
             }
         } else {
-            unpairedRifts.add(nextRiftID);
-            registerUnpairedRiftAtDepth(nextRiftID, depth);
+            unpairedRifts.add(assignedID);
+            registerUnpairedRiftAtDepth(assignedID, depth);
         }
-        DimDoors.log(this.getClass(), "Rift registered as ID: " + nextRiftID);
 
         nextRiftID++;
         RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
-        return nextRiftID - 1;
+        return assignedID;
     }
 
     public void unregisterRift(int riftID) {
@@ -200,7 +203,7 @@ public class RiftRegistry {
 
     public void pair(int riftID, int riftID2) {
         if (riftID < 0 || riftID2 < 0) {
-            return;
+            return; //@todo throw a proper error
         }
         Location location = rifts.get(riftID);
         TileEntity tileEntity = location.getTileEntity(); //@todo this method might need to be in another class?
@@ -389,9 +392,9 @@ public class RiftRegistry {
 
     public void unregisterLastChangedRift() {
         if (lastBrokenRift != null) {
-            RiftRegistry.Instance.unregisterRift(lastBrokenRift.getRiftID());
+            RiftRegistry.INSTANCE.unregisterRift(lastBrokenRift.getRiftID());
             //@todo The rest is all pretty Crude. The only reason why this is needed, is because Vanilla Minecraft keeps destroying the rift blocks, before they can place down their TileEntities, if a player breaks them in creative.
-            RiftRegistry.Instance.unRegisterUnpairedRiftAtDepth(lastBrokenRift);
+            RiftRegistry.INSTANCE.unRegisterUnpairedRiftAtDepth(lastBrokenRift);
             lastBrokenRift.unpair();
             lastBrokenRift = null;
         }

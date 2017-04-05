@@ -35,8 +35,8 @@ public class TileEntityTransTrapdoor extends DDTileEntityBase {
         Location tpLocation;
         if (isPaired()) {
             int otherRiftID = getPairedRiftID();
-            tpLocation = RiftRegistry.Instance.getTeleportLocation(otherRiftID);
-            RiftRegistry.Instance.validatePlayerPocketEntry(entity, otherRiftID);
+            tpLocation = RiftRegistry.INSTANCE.getTeleportLocation(otherRiftID);
+            RiftRegistry.INSTANCE.validatePlayerPocketEntry(entity, otherRiftID);
         } else if (!(this.isInPocket)) {
             return false;
         } else {

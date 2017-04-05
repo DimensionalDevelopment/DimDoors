@@ -68,14 +68,14 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
     @Override
     public boolean tryTeleport(Entity entity) {
-        int otherRiftID = -1;
+        int otherRiftID;
         if (!isPaired()) {
             otherRiftID = getNewTeleportDestination();
         } else {
             otherRiftID = getPairedRiftID();
         }
-        Location tpLocation = RiftRegistry.Instance.getTeleportLocation(otherRiftID);
-        RiftRegistry.Instance.validatePlayerPocketEntry(entity, otherRiftID);
+        Location tpLocation = RiftRegistry.INSTANCE.getTeleportLocation(otherRiftID);
+        RiftRegistry.INSTANCE.validatePlayerPocketEntry(entity, otherRiftID);
         return TeleporterDimDoors.instance().teleport(entity, tpLocation); //@todo this seems to return false?
     }
 
@@ -94,11 +94,11 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
     protected int getNewTeleportDestination() {
         int otherRiftID;
-        Location locationOfThisRift = RiftRegistry.Instance.getRiftLocation(this.riftID);
+        Location locationOfThisRift = RiftRegistry.INSTANCE.getRiftLocation(this.riftID);
         if (locationOfThisRift.getDimensionID() == DimDoorDimensions.getPocketDimensionType(EnumPocketType.DUNGEON).getId()) { //if this dimdoor is a pocket Dungeon
             //choose between generating a new pocket or connecting to another door on a similar or close depth
             if (DDRandomUtils.weightedBoolean(20, 80)) { //@todo make this configurable
-                otherRiftID = RiftRegistry.Instance.getRandomUnpairedRiftIDAroundDepth(getRiftID(), depth);
+                otherRiftID = RiftRegistry.INSTANCE.getRandomUnpairedRiftIDAroundDepth(getRiftID(), depth);
                 if (otherRiftID < 0) { //ergo: no other rift can be found
                     //@todo, this should rarely happen. Put in an easter egg?
                     otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), locationOfThisRift);
@@ -114,7 +114,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
             DimDoors.warn(this.getClass(), "No suitable destination rift was found. This probably means that a pocket was created without any Doors.");
         } else {
             //@todo (should the other rift get loaded?)
-            RiftRegistry.Instance.pair(getRiftID(), otherRiftID);
+            RiftRegistry.INSTANCE.pair(getRiftID(), otherRiftID);
         }
 
         return otherRiftID;

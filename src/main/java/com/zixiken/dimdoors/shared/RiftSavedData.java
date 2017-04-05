@@ -46,7 +46,7 @@ public class RiftSavedData extends DDSavedData {
     public NBTTagCompound writeToNBT(NBTTagCompound riftnbt) {
 
         NBTTagCompound rifts = new NBTTagCompound();
-        RiftRegistry.Instance.writeToNBT(rifts);
+        RiftRegistry.INSTANCE.writeToNBT(rifts);
         riftnbt.setTag("rifts", rifts);
         
         return riftnbt;
@@ -54,14 +54,11 @@ public class RiftSavedData extends DDSavedData {
 
     @Override
     public void readFromNBT(NBTTagCompound riftnbt) {
-        // Reset
-        RiftRegistry.Instance.reset();
-
         // Load NBT
         if (riftnbt != null) {
             if (riftnbt.hasKey("rifts")) {
                 NBTTagCompound rifts = riftnbt.getCompoundTag("rifts");
-                RiftRegistry.Instance.readFromNBT(rifts);
+                RiftRegistry.INSTANCE.readFromNBT(rifts);
             }
         }
     }

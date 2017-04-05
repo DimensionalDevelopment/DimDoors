@@ -26,14 +26,14 @@ public class TileEntityDimDoorPersonal extends TileEntityDimDoor {
 
     @Override
     public boolean tryTeleport(Entity entity) { //this door is never paired
-        Location locationOfThisRift = RiftRegistry.Instance.getRiftLocation(this.riftID);
+        Location locationOfThisRift = RiftRegistry.INSTANCE.getRiftLocation(this.riftID);
         Location tpLocation;
         if (entity instanceof EntityPlayer) {
             EntityPlayer entityPlayer = (EntityPlayer) entity;
             if (locationOfThisRift.getDimensionID() == DimDoorDimensions.getPocketDimensionType(EnumPocketType.PRIVATE).getId()) {
                 tpLocation = PocketRegistry.INSTANCE.getPocket(this.pocketID, EnumPocketType.PRIVATE).getDepthZeroLocation();
             } else {
-                tpLocation = RiftRegistry.Instance.getTeleportLocation(PocketRegistry.INSTANCE.getPrivateDimDoorID(entityPlayer.getCachedUniqueIdString()));
+                tpLocation = RiftRegistry.INSTANCE.getTeleportLocation(PocketRegistry.INSTANCE.getPrivateDimDoorID(entityPlayer.getCachedUniqueIdString()));
             }
         } else {
             return false;

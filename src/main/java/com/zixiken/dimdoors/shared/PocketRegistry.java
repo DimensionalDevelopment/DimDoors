@@ -85,7 +85,7 @@ public class PocketRegistry {
             maxPocketSize = nbt.getInteger("maxPocketSize");
             privatePocketSize = nbt.getInteger("privatePocketSize");
             publicPocketSize = nbt.getInteger("publicPocketSize");
-            if (nbt.hasKey("nextUnusedIDs")) { //@todo should not be doing this, since all pockets re-register on world-load
+            if (nbt.hasKey("nextUnusedIDs")) {
                 NBTTagCompound nextUnusedIDTagCompound = nbt.getCompoundTag("nextUnusedIDs");
                 for (EnumPocketType pocketType : EnumPocketType.values()) {
                     String tagListName = pocketType.toString();
@@ -97,14 +97,17 @@ public class PocketRegistry {
             }
             if (nbt.hasKey("pocketData")) {
                 NBTTagCompound pocketsTagCompound = nbt.getCompoundTag("pocketData");
+                pocketLists.clear();
                 for (EnumPocketType pocketType : EnumPocketType.values()) {
                     String tagListName = pocketType.toString();
                     if (pocketsTagCompound.hasKey(tagListName)) {
+                        Map<Integer, Pocket> pocketList = new HashMap();
                         NBTTagList pocketTagList = (NBTTagList) pocketsTagCompound.getTag(tagListName);
-                        for (int j = 0; j < pocketTagList.tagCount(); j++) {
+                        for (int j = 0; j < pocketTagList.tagCount(); j++) { //@todo this defeats the purpose of a Map over a List (pocketList)
                             NBTTagCompound pocketTag = pocketTagList.getCompoundTagAt(j);
-                            Pocket.readFromNBT(pocketTag); //this also re-registers the pocket @todo, should it?
+                            pocketList.put(j, Pocket.readFromNBT(pocketTag));
                         }
+                        pocketLists.put(pocketType, pocketList);
                     }
                 }
             }
@@ -137,13 +140,13 @@ public class PocketRegistry {
         nbt.setTag("pocketData", pocketsTagCompound);
     }
 
-    public int registerNewPocket(Pocket pocket, EnumPocketType pocketType) {
-        pocketLists.get(pocketType).put(nextUnusedIDs.get(pocketType), pocket);
-        pocket.setID(nextUnusedIDs.get(pocketType));
+    public void registerNewPocket(Pocket pocket, EnumPocketType pocketType) {
+        int assignedID = nextUnusedIDs.get(pocketType);
+        pocketLists.get(pocketType).put(assignedID, pocket);
+        pocket.setID(assignedID);
 
-        nextUnusedIDs.put(pocketType, nextUnusedIDs.get(pocketType) + 1); //increase the counter
+        nextUnusedIDs.put(pocketType, assignedID + 1); //increase the counter
         PocketSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
-        return nextUnusedIDs.get(pocketType) - 1;
     }
 
     public void removePocket(int pocketID, EnumPocketType pocketType) { //probably will never ever get used, but meh...
@@ -159,7 +162,7 @@ public class PocketRegistry {
     }
 
     public int getEntranceDoorIDOfNewPocket(EnumPocketType typeID, int depth, Location origRiftLocation) {//should return the riftID of the entrance door of the newly generated pocket
-        Pocket pocket = generateRandomPocketAt(typeID, depth, origRiftLocation); //@todo registers the pocket as well in constructor (should probably be changed)
+        Pocket pocket = generateRandomPocketAt(typeID, depth, origRiftLocation);
         int entranceDoorID = pocket.getEntranceDoorID();
         return entranceDoorID;
     }
@@ -194,6 +197,7 @@ public class PocketRegistry {
         }
         
         Pocket pocket = pocketTemplate.place(shortenedX, 0, shortenedZ, gridSize, dimID, nextUnusedIDs.get(typeID), depth, typeID, depthZeroLocation);
+        registerNewPocket(pocket, typeID);
         return pocket;
     }
 
@@ -201,10 +205,10 @@ public class PocketRegistry {
         throw new UnsupportedOperationException("Not supported yet."); //@todo
     }
 
-    private Location getGenerationlocation(int nextUnusedID, EnumPocketType typeID) { //typeID is for determining the dimension
-        int x = getSimpleX(nextUnusedID, typeID);
+    private Location getGenerationlocation(int nextUnusedID, EnumPocketType typeID) {
+        int x = getSimpleX(nextUnusedID);
         int y = 0;
-        int z = getSimpleZ(nextUnusedID, typeID);
+        int z = getSimpleZ(nextUnusedID);
         int dimID = DimDoorDimensions.getPocketDimensionType(typeID).getId();
 
         Location location = new Location(dimID, x, y, z);
@@ -214,20 +218,21 @@ public class PocketRegistry {
     private PocketTemplate getRandomPocketTemplate(EnumPocketType typeID, int depth, int maxPocketSize) {
         switch (typeID) {
             case PRIVATE:
-                return SchematicHandler.Instance.getPersonalPocketTemplate();
+                return SchematicHandler.INSTANCE.getPersonalPocketTemplate();
             case PUBLIC:
-                return SchematicHandler.Instance.getPublicPocketTemplate();
+                return SchematicHandler.INSTANCE.getPublicPocketTemplate();
             case DUNGEON:
             default:
-                return SchematicHandler.Instance.getRandomDungeonPocketTemplate(depth, maxPocketSize);
+                return SchematicHandler.INSTANCE.getRandomDungeonPocketTemplate(depth, maxPocketSize);
         }
     }
 
-    private int getSimpleX(int ID, EnumPocketType typeID) { //we can get the previous x from the last entry of the PocketRegistry :D
+    private int getSimpleX(int ID) {
+        //@todo check for smaller than 0
         if (ID == 0) {
             return 0;
         } else {
-            int baseX = pocketLists.get(typeID).get(ID - 1).getX();
+            int baseX = getSimpleX(ID - 1);
             int group = getDiffToPreviousGroup(ID);
             if (group % 2 == 0) {//even
                 return baseX;
@@ -241,11 +246,11 @@ public class PocketRegistry {
         }
     }
 
-    private int getSimpleZ(int ID, EnumPocketType typeID) {
+    private int getSimpleZ(int ID) {
         if (ID == 0) {
             return 0;
         } else {
-            int baseZ = pocketLists.get(typeID).get(ID - 1).getZ();
+            int baseZ = getSimpleZ(ID - 1);
             int group = getDiffToPreviousGroup(ID);
             if (group % 2 == 1) {//uneven
                 return baseZ;

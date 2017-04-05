@@ -69,7 +69,7 @@ public class ItemRiftConnectionTool extends ItemTool {
                 int secondaryRiftID = rift.getRiftID();
                 DimDoors.chat(playerIn, "Pairing rift " + primaryRiftID
                         + " with rift " + secondaryRiftID + ".");
-                RiftRegistry.Instance.pair(primaryRiftID, secondaryRiftID);
+                RiftRegistry.INSTANCE.pair(primaryRiftID, secondaryRiftID);
                 compound.removeTag("RiftID");
                 stack.damageItem(1, playerIn);
             } else {
@@ -80,7 +80,7 @@ public class ItemRiftConnectionTool extends ItemTool {
         } else {
             if (!worldIn.isRemote) {
                 int riftID = rift.getRiftID();
-                RiftRegistry.Instance.unpair(riftID);
+                RiftRegistry.INSTANCE.unpair(riftID);
                 DimDoors.chat(playerIn, "Rift " + riftID + " and its paired rift are now disconnected.");
             }
             stack.damageItem(1, playerIn);

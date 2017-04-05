@@ -38,7 +38,7 @@ import org.apache.commons.io.IOUtils;
  */
 public class SchematicHandler {
 
-    public static final SchematicHandler Instance = new SchematicHandler();
+    public static final SchematicHandler INSTANCE = new SchematicHandler();
     private PocketTemplate personalPocketTemplate;
     private PocketTemplate publicPocketTemplate;
     private List<PocketTemplate> dungeonTemplates;
@@ -127,10 +127,10 @@ public class SchematicHandler {
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(jsonString);
         JsonObject jsonTemplate = jsonElement.getAsJsonObject();
-        DimDoors.log(SchematicHandler.class, "Checkpoint 1 reached");
+        //DimDoors.log(SchematicHandler.class, "Checkpoint 1 reached");
         //Generate and get templates (without a schematic) of all variations that are valid for the current "maxPocketSize" 
         List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate, maxPocketSize);
-        DimDoors.log(SchematicHandler.class, "Checkpoint 4 reached; " + validTemplates.size() + " templates were loaded");
+        //DimDoors.log(SchematicHandler.class, "Checkpoint 4 reached; " + validTemplates.size() + " templates were loaded");
 
         for (PocketTemplate template : validTemplates) { //it's okay to "tap" this for-loop, even if validTemplates is empty.
             InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + template.getName() + ".schem"); //@todo also check for other schematics
@@ -214,7 +214,7 @@ public class SchematicHandler {
             int variationSize = variation.get("size").getAsInt();
 
             if (variationSize > maxPocketSize) {
-                DimDoors.log(SchematicHandler.class, "Checkpoint 2 reached; Variation size " + variationSize + " is bigger than maxPocketSize " + maxPocketSize + ".");
+                //DimDoors.log(SchematicHandler.class, "Checkpoint 2 reached; Variation size " + variationSize + " is bigger than maxPocketSize " + maxPocketSize + ".");
                 //do not add it
             } else if (jsonType.equals("Singular")) {
                 if (variationSize > chosenVariationSize) {
@@ -233,7 +233,7 @@ public class SchematicHandler {
         if (chosenVariation != null) {
             validVariations.add(chosenVariation);
         }
-        DimDoors.log(SchematicHandler.class, "Checkpoint 3 reached; " + validVariations.size() + " variations were selected.");
+        //DimDoors.log(SchematicHandler.class, "Checkpoint 3 reached; " + validVariations.size() + " variations were selected.");
 
         //convert the valid variations arraylist to a list of pocket templates
         for (JsonObject variation : validVariations) {

@@ -5,9 +5,7 @@ import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.DDProxyCommon;
 import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.items.ModItems;
-import com.zixiken.dimdoors.shared.PocketSavedData;
 import com.zixiken.dimdoors.shared.RiftRegistry;
-import com.zixiken.dimdoors.shared.RiftSavedData;
 import com.zixiken.dimdoors.shared.SchematicHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -60,11 +58,9 @@ public class DimDoors {
     public void serverLoad(FMLServerStartingEvent event) {
         event.registerServerCommand(new TeleportCommand());
         //@todo event.registerServerCommand( new DDCommand() ); //to register commands that this mod offers?
-        RiftRegistry.Instance.reset();
+        RiftRegistry.INSTANCE.reset();
         PocketRegistry.INSTANCE.reset();
-        RiftSavedData.get(getDefWorld());
-        PocketSavedData.get(getDefWorld());
-        SchematicHandler.Instance.loadSchematics();
+        SchematicHandler.INSTANCE.loadSchematics();
     }
 
     public static boolean isClient() {

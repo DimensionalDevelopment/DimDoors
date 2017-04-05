@@ -198,7 +198,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        RiftRegistry.Instance.unregisterLastChangedRift();
+        RiftRegistry.INSTANCE.unregisterLastChangedRift();
         world.removeTileEntity(pos);
     }
 

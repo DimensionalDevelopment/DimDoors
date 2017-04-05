@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.shared.tileentities;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.EnumPocketType;
 import com.zixiken.dimdoors.shared.Pocket;
 import com.zixiken.dimdoors.shared.PocketRegistry;
@@ -41,12 +42,12 @@ public abstract class DDTileEntityBase extends TileEntity {
             if (otherRiftID == pairedRiftID) {
                 return true;
             } else {
-                RiftRegistry.Instance.unpair(pairedRiftID);
+                RiftRegistry.INSTANCE.unpair(pairedRiftID);
             }
         }
         pairedRiftID = otherRiftID;
         isPaired = true;
-        RiftRegistry.Instance.pair(pairedRiftID, riftID);
+        RiftRegistry.INSTANCE.pair(pairedRiftID, riftID); //make sure it gets paired the other way around
         this.markDirty();
         return false;
     }
@@ -56,7 +57,7 @@ public abstract class DDTileEntityBase extends TileEntity {
             return true;
         } else {
             isPaired = false;
-            RiftRegistry.Instance.unpair(pairedRiftID);
+            RiftRegistry.INSTANCE.unpair(pairedRiftID);
             this.markDirty();
         }
         return false;
@@ -64,7 +65,9 @@ public abstract class DDTileEntityBase extends TileEntity {
 
     public void register(int depth) {
         if (riftID == -1) {
-            riftID = RiftRegistry.Instance.registerNewRift(this, depth);
+            riftID = RiftRegistry.INSTANCE.registerNewRift(this, depth);
+            DimDoors.log(this.getClass(), "Finished registering rift as ID: " + riftID);
+            
             this.markDirty();
         }
     }
@@ -137,10 +140,12 @@ public abstract class DDTileEntityBase extends TileEntity {
         pocketID = ID;
         pocketType = type;
         isInPocket = true;
+        this.markDirty();
     }
 
     public void setIsInPocket() {
         isInPocket = true;
+        this.markDirty();
     }
 
     protected EnumPocketType getPocketType() {

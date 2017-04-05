@@ -23,7 +23,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
     private static final int MAX_HOSTILE_ENDERMAN_CHANCE = 3;
     private static final int UPDATE_PERIOD = 200; //10 seconds
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     private int updateTimer;
     public BlockPos offset = BlockPos.ORIGIN;
@@ -33,11 +33,9 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
     public int riftRotation = random.nextInt(360);
     public float growth = 0;
 
-    private static int temp = 0;
-
     public TileEntityRift() {
         super();
-        this.loadDataFrom(RiftRegistry.Instance.getLastChangedRift());
+        this.loadDataFrom(RiftRegistry.INSTANCE.getLastChangedRift());
 
         // Vary the update times of rifts to prevent all the rifts in a cluster
         // from updating at the same time.
@@ -148,15 +146,15 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 
     @Override
     public boolean tryTeleport(Entity entity) {
-        int otherRiftID = -1;
+        int otherRiftID;
         if (!isPaired()) {
-            DimDoors.warn(this.getClass(), "Rift " + this.getRiftID() + " was not paired and thus, should not exist as a Rift, unless it was unpaired after the door was destroyed.");
+            DimDoors.warn(this.getClass(), "Rift " + this.getRiftID() + " was not paired and thus, should not exist as a Rift, unless it was unpaired after the door was destroyed, in which case you should contact the developers and tell them to fix stuff.");
             return false;
         } else {
             otherRiftID = getPairedRiftID();
         }
-        Location tpLocation = RiftRegistry.Instance.getTeleportLocation(otherRiftID);
-        RiftRegistry.Instance.validatePlayerPocketEntry(entity, otherRiftID);
+        Location tpLocation = RiftRegistry.INSTANCE.getTeleportLocation(otherRiftID);
+        RiftRegistry.INSTANCE.validatePlayerPocketEntry(entity, otherRiftID);
         return TeleporterDimDoors.instance().teleport(entity, tpLocation); //@todo this seems to return false?
     }
 }

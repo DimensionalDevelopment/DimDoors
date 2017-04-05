@@ -35,7 +35,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     @Override
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
         IBlockState down = world.getBlockState(pos.down());
-        if (!world.isRemote && down.getBlock() == this) { //@todo should only teleport when colliding with top part of the door?
+        if (!world.isRemote && down.getBlock() == this) { //should only teleport when colliding with top part of the door to prevent double teleportation from being triggered
             if (down.getValue(BlockDoor.OPEN)
                     && entity instanceof EntityPlayer //@todo remove this so any entity can go through?
                     && (entity.timeUntilPortal < 1) //to prevent the player from teleporting all over the place we have a 50-tick cooldown
@@ -155,9 +155,9 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
             origRift = (DDTileEntityBase) world.getTileEntity(pos);
             if (origRift.isPaired()) {
                 shouldPlaceRift = true;
-                RiftRegistry.Instance.setLastChangedRift(origRift); //@todo this is a crude workaround
+                RiftRegistry.INSTANCE.setLastChangedRift(origRift); //@todo this is a crude workaround
             } else {
-                RiftRegistry.Instance.unregisterRift(origRift.getRiftID());
+                RiftRegistry.INSTANCE.unregisterRift(origRift.getRiftID());
             }
         }
         super.breakBlock(world, pos, state);

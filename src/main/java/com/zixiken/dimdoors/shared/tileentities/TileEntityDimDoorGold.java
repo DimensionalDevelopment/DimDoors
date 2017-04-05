@@ -67,16 +67,16 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
     @Override
     protected int getNewTeleportDestination() {
         //DimDoors.log(this.getClass(), "Trying to find suitable destination rift.");
-        int otherRiftID = RiftRegistry.Instance.getRandomUnpairedRiftIDAtDepth(getRiftID(), depth);
+        int otherRiftID = RiftRegistry.INSTANCE.getRandomUnpairedRiftIDAtDepth(getRiftID(), depth);
         if (otherRiftID < 0) {
-            Location locationOfThisRift = RiftRegistry.Instance.getRiftLocation(this.riftID);
+            Location locationOfThisRift = RiftRegistry.INSTANCE.getRiftLocation(this.riftID);
             otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), locationOfThisRift);
         }
 
         if (otherRiftID < 0) {
             DimDoors.warn(this.getClass(), "No suitable destination rift was found. This probably means that a pocket was created without any Doors.");
         } else {
-            RiftRegistry.Instance.pair(getRiftID(), otherRiftID);
+            RiftRegistry.INSTANCE.pair(getRiftID(), otherRiftID);
         }
 
         return otherRiftID;

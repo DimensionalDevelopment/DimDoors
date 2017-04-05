@@ -31,8 +31,8 @@ public class Pocket {
     private final int size; //in chunks
     private final int depth;
     private final EnumPocketType typeID; // dungeon, pocket, or personal pocket
-    private final int x; //pocket-relative 0 coordinate, should be at x * PocketRegistry.Instance.gridSize * 16
-    private final int z; //pocket-relative 0 coordinate, should be at z * PocketRegistry.Instance.gridSize * 16
+    private final int x; //pocket-relative 0 coordinate, should be at x * PocketRegistry.INSTANCE.gridSize * 16
+    private final int z; //pocket-relative 0 coordinate, should be at z * PocketRegistry.INSTANCE.gridSize * 16
     private final List<String> playerUUIDs;
     private final List<Integer> riftIDs;
     private final Location depthZeroLocation;
@@ -47,18 +47,6 @@ public class Pocket {
         this.riftIDs = riftIDs;
         this.depthZeroLocation = depthZeroLocation;
         playerUUIDs = new ArrayList();
-        PocketRegistry.INSTANCE.registerNewPocket(this, typeID); //@todo, maybe not register pockets inside their own constructor?
-
-        for (int riftID : riftIDs) {
-            Location riftLocation = RiftRegistry.Instance.getRiftLocation(riftID);
-            WorldServer worldServer = DimDoors.proxy.getWorldServer(riftLocation.getDimensionID());
-            if (!worldServer.isRemote) {
-
-                DDTileEntityBase rift = (DDTileEntityBase) riftLocation.getTileEntity();
-                rift.setPocket(this.ID, this.typeID); //set the rift's pocket ID to this pocket's pocket ID;
-
-            }
-        }
     }
 
     public int getID() {
@@ -90,9 +78,19 @@ public class Pocket {
 
     public void setID(int newID) {
         ID = newID;
+        
+        //propagate this ID to the rifts in this pocket
+        for (int riftID : riftIDs) {
+            Location riftLocation = RiftRegistry.INSTANCE.getRiftLocation(riftID);
+            WorldServer worldServer = DimDoors.proxy.getWorldServer(riftLocation.getDimensionID());
+            if (!worldServer.isRemote) {
+                DDTileEntityBase rift = (DDTileEntityBase) riftLocation.getTileEntity();
+                rift.setPocket(this.ID, this.typeID); //set the rift's pocket ID to this pocket's pocket ID;
+            }
+        }
     }
 
-    static void readFromNBT(NBTTagCompound pocketNBT) {
+    static Pocket readFromNBT(NBTTagCompound pocketNBT) {
         int size = pocketNBT.getInteger("size");
         int depth = pocketNBT.getInteger("depth");
         EnumPocketType typeID = EnumPocketType.getFromInt(pocketNBT.getInteger("typeID"));
@@ -105,17 +103,21 @@ public class Pocket {
             riftIDs.add(doorID);
         }
         Location depthZeroLocation = Location.readFromNBT(pocketNBT.getCompoundTag("depthZeroLocation"));
-        Pocket pocket = new Pocket(size, depth, typeID, x, z, riftIDs, depthZeroLocation); //registers the new pocket as well
-
-        NBTTagList playersTagList = (NBTTagList) pocketNBT.getTag("playerUUIDs"); //@todo, maybe it is bad practice to put this behind the creation statement of the Pocket?
+        
+        Pocket pocket = new Pocket(size, depth, typeID, x, z, riftIDs, depthZeroLocation);
+        
+        pocket.setID(pocketNBT.getInteger("ID")); //basically re-register the pocket        
+        NBTTagList playersTagList = (NBTTagList) pocketNBT.getTag("playerUUIDs");
         for (int i = 0; i < playersTagList.tagCount(); i++) {
             String playerUUID = playersTagList.getStringTagAt(i);
             pocket.playerUUIDs.add(playerUUID);
         }
+        return pocket;
     }
 
     static NBTBase writeToNBT(Pocket pocket) {
         NBTTagCompound pocketNBT = new NBTTagCompound();
+        pocketNBT.setInteger("ID", pocket.ID);
         pocketNBT.setInteger("size", pocket.size);
         pocketNBT.setInteger("depth", pocket.depth);
         pocketNBT.setInteger("typeID", pocket.typeID.getIntValue());
@@ -145,7 +147,7 @@ public class Pocket {
     private static int findWarpDoorIndex(List<Integer> riftIDs) { //used to find the entrance door to this pocket
         int index = -1;
         for (int i = 0; i < riftIDs.size(); i++) {
-            TileEntity tileEntity = RiftRegistry.Instance.getRiftLocation(i).getTileEntity();
+            TileEntity tileEntity = RiftRegistry.INSTANCE.getRiftLocation(i).getTileEntity();
             if (tileEntity != null && tileEntity instanceof TileEntityDimDoorWarp) {
                 index = i;
                 break;
