@@ -150,6 +150,7 @@ public class RiftRegistry {
                 personalDoors.add(assignedID);
             }
         } else {
+            DimDoors.log(this.getClass(), "Registering rift in unpairedRiftRegistry. ID = " + assignedID);
             unpairedRifts.add(assignedID);
             registerUnpairedRiftAtDepth(assignedID, depth);
         }
@@ -284,6 +285,7 @@ public class RiftRegistry {
             List<Integer> rifts = unpairedRiftsPerDepth.get(depth);
             int numberOfUnpairedRifts = rifts.size();
             if (numberOfUnpairedRifts > 1) {
+                DimDoors.log(this.getClass(), "There's more than 1 unpaired rift at this depth.");
                 Random random = new Random();
                 int indexOforigRiftID = -1;
                 int randomRiftIDIndex;
@@ -300,6 +302,7 @@ public class RiftRegistry {
                 returnID = rifts.get(randomRiftIDIndex);
             }
         }
+        DimDoors.log(this.getClass(), "Rift to pair to chosen: returnID = " + returnID);
         return returnID;
     }
 
@@ -398,5 +401,10 @@ public class RiftRegistry {
             lastBrokenRift.unpair();
             lastBrokenRift = null;
         }
+    }
+    
+    public int getPocketID(int riftID) {
+        DDTileEntityBase rift = (DDTileEntityBase) rifts.get(riftID).getTileEntity();
+        return rift.getPocketID();
     }
 }

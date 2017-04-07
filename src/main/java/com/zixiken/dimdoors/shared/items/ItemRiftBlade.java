@@ -55,12 +55,11 @@ public class ItemRiftBlade extends ItemSword {
         RayTraceResult hit = rayTrace(world, player, true);
         if (RayTraceHelper.isRift(hit, world)) {
             TileEntityRift rift = (TileEntityRift) world.getTileEntity(hit.getBlockPos());
-            EnumActionResult teleportResult = rift.tryTeleport(player) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL;
+            rift.isTeleporting = true;
+            rift.teleportingEntity = player;
 
-            if (teleportResult == EnumActionResult.SUCCESS) {
-                stack.damageItem(1, player);
-            }
-            return new ActionResult(teleportResult, stack);
+            stack.damageItem(1, player);
+            return new ActionResult(EnumActionResult.SUCCESS, stack);
 
         } else if (RayTraceHelper.isLivingEntity(hit)) {
             EnumActionResult teleportResult = TeleporterDimDoors.instance().teleport(player, new Location(world, hit.getBlockPos())) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL; //@todo teleport to a location 1 or 2 blocks distance from the entity

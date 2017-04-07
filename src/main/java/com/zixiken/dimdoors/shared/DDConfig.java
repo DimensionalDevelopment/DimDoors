@@ -28,7 +28,10 @@ public class DDConfig {
     private static int privatePocketSize = 3;
     private static int publicPocketSize = 2;
     private static int baseDimID = 684;
-    private static String[] dungeonSchematicNames = {}; //@todo set default dungeon names
+    private static String[] dungeonSchematicNames = {
+        "defaultDungeonNormal",
+        "defaultDungeonNether"
+    }; //@todo set default dungeon names
     private static int maxDungeonDepth = 8;
     private static int owCoordinateOffsetBase = 64;
     private static double owCoordinateOffsetPower = 1.3;

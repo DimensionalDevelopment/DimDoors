@@ -86,6 +86,7 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         int xBase = shortenedX * gridSize * 16;
         int zBase = shortenedZ * gridSize * 16;
         DimDoors.log(this.getClass(), "Placing new pocket at x = " + xBase + ", z = " + zBase);
+        DimDoors.log(this.getClass(), "Name of new pocket schematic is " + schematic.getSchematicName());
 
         if (schematic == null) {
             DimDoors.log(this.getClass(), "The schematic for variant " + variantName + " somehow didn't load correctly despite all precautions.");
@@ -109,7 +110,7 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         List<DDTileEntityBase> rifts = new ArrayList();
         for (NBTTagCompound tileEntityNBT : schematic.getTileEntities()) {
             BlockPos pos = new BlockPos(xBase + tileEntityNBT.getInteger("x"), yBase + tileEntityNBT.getInteger("y"), zBase + tileEntityNBT.getInteger("z"));
-            DimDoors.log(this.getClass(), "Re-loading rift at blockPos: " + pos.toString());
+            DimDoors.log(this.getClass(), "Re-loading tile-entity at blockPos: " + pos.toString());
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity != null) {
                 tileEntity.readFromNBT(tileEntityNBT); //this reads in the wrong blockPos
@@ -118,6 +119,7 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
             }
 
             if (tileEntity instanceof DDTileEntityBase) {
+                DimDoors.log(this.getClass(), "Rift found in schematic: " + pos.toString());
                 DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
                 rifts.add(rift);
             }

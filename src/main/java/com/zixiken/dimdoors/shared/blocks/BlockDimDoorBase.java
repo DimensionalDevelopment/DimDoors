@@ -120,15 +120,8 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     @Override
     public void enterDimDoor(World world, BlockPos pos, Entity entity) {
         DDTileEntityBase riftTile = getRiftTile(world, pos, world.getBlockState(pos));
-        if (riftTile.tryTeleport(entity)) {
-            //player is succesfully teleported
-        } else {
-            //probably should only happen on personal dimdoors?
-            if (entity instanceof EntityPlayer) {
-                EntityPlayer entityPlayer = (EntityPlayer) entity;
-                DimDoors.chat(entityPlayer, "Teleporting failed, but since mod is still in alpha, stuff like that might simply happen.");
-            }
-        }
+        riftTile.isTeleporting = true; //flick trigger switch
+        riftTile.teleportingEntity = entity;
     }
 
     public boolean isUpperDoorBlock(IBlockState state) {

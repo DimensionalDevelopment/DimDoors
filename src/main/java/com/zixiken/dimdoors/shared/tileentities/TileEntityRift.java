@@ -25,11 +25,11 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 
     private static final Random random = new Random();
 
+    //Need to be saved:
     private int updateTimer;
     public BlockPos offset = BlockPos.ORIGIN;
     public boolean shouldClose = false;
     public int spawnedEndermenID = 0;
-
     public int riftRotation = random.nextInt(360);
     public float growth = 0;
 

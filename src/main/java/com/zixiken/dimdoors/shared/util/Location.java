@@ -102,5 +102,9 @@ public class Location implements Serializable {
     public String toString() {
         return "Location: dimID: " + this.dimensionID + " position: " + this.pos.toString();
     }
-
+    
+    public void loadfrom(Location location) {
+        this.dimensionID = location.dimensionID;
+        this.pos = location.pos;
+    }
 }

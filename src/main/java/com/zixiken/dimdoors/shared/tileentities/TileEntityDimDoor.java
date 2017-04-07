@@ -32,6 +32,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
             this.orientation = EnumFacing.getFront(nbt.getInteger("orientation"));
             this.lockStatus = nbt.getByte("lockStatus");
         } catch (Exception e) {
+            DimDoors.warn(this.getClass(), "An error occured while trying to read this object from NBT.");
         }
     }
 

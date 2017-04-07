@@ -6,18 +6,27 @@ import com.zixiken.dimdoors.shared.Pocket;
 import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
+import com.zixiken.dimdoors.shared.blocks.IDimDoor;
 import java.util.Random;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class DDTileEntityBase extends TileEntity {
+public abstract class DDTileEntityBase extends TileEntity implements ITickable {
 
+    //Short life fields
+    public boolean isTeleporting = false;
+    public Entity teleportingEntity;
+
+    //Class specific value fields
     protected boolean canRiftBePaired = true;
+
+    //Need to be saved:
     protected boolean isPaired = false;
     protected int riftID = -1; //should not start at 0
     protected int pairedRiftID = -1;
@@ -67,7 +76,7 @@ public abstract class DDTileEntityBase extends TileEntity {
         if (riftID == -1) {
             riftID = RiftRegistry.INSTANCE.registerNewRift(this, depth);
             DimDoors.log(this.getClass(), "Finished registering rift as ID: " + riftID);
-            
+
             this.markDirty();
         }
     }
@@ -110,6 +119,12 @@ public abstract class DDTileEntityBase extends TileEntity {
             isPaired = rift2.isPaired;
             riftID = rift2.riftID; //should not start at 0
             pairedRiftID = rift2.pairedRiftID;
+
+            isInPocket = rift2.isInPocket;
+            pocketID = rift2.pocketID;
+            pocketType = rift2.pocketType;
+            depth = rift2.depth;
+
             this.markDirty();
         }
     }
@@ -159,5 +174,27 @@ public abstract class DDTileEntityBase extends TileEntity {
             Pocket pocket = PocketRegistry.INSTANCE.getPocket(pocketID, pocketType);
             pocket.validatePlayerEntry(player);
         }
+    }
+
+    @Override
+    public void update() {
+        if (isTeleporting && teleportingEntity != null) {
+            IDimDoor door = (IDimDoor) this.world.getBlockState(this.pos).getBlock();
+            if (tryTeleport(teleportingEntity)) {
+                //player is succesfully teleported
+            } else {
+                //probably should only happen on personal dimdoors?
+                if (teleportingEntity instanceof EntityPlayer) {
+                    EntityPlayer entityPlayer = (EntityPlayer) teleportingEntity;
+                    DimDoors.chat(entityPlayer, "Teleporting failed, but since mod is still in alpha, stuff like that might simply happen.");
+                }
+            }
+            isTeleporting = false;
+            teleportingEntity = null;
+        }
+    }
+
+    public int getPocketID() {
+        return isInPocket ? pocketID : -1;
     }
 }

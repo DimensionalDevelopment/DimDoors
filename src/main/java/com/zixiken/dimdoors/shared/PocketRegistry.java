@@ -25,6 +25,7 @@ public class PocketRegistry {
     public static final PocketRegistry INSTANCE = new PocketRegistry();
 
     // Privates
+    //Need to be saved:
     private int gridSize; //determines how much pockets in their dimension are spaced
     private int maxPocketSize;
     private int privatePocketSize;
@@ -32,8 +33,7 @@ public class PocketRegistry {
     private final Map<EnumPocketType, Integer> nextUnusedIDs;
     private final Map<String, Integer> privatePockets; //maps the UUID's of players to their private pocket's ID (ID for EnumPocketType.PRIVATE in pocketLists)
     private final Map<EnumPocketType, Map<Integer, Pocket>> pocketLists;
-    //when adding any new variables, don't forget to add them to the write and load functions
-    private final List<Map<Integer, Pocket>> pocketListsPerDepth;
+    private final List<Map<Integer, Pocket>> pocketListsPerDepth; //@todo not being used or saved yet.
 
     // Methods
     private PocketRegistry() {
@@ -95,6 +95,13 @@ public class PocketRegistry {
                     }
                 }
             }
+            if (nbt.hasKey("privatePockets")) {
+                NBTTagCompound privatePocketsTagCompound = nbt.getCompoundTag("privatePockets");
+                privatePockets.clear();
+                for (String UUID : privatePocketsTagCompound.getKeySet()) {
+                    privatePockets.put(UUID, privatePocketsTagCompound.getInteger(UUID));
+                }
+            }
             if (nbt.hasKey("pocketData")) {
                 NBTTagCompound pocketsTagCompound = nbt.getCompoundTag("pocketData");
                 pocketLists.clear();
@@ -122,12 +129,18 @@ public class PocketRegistry {
         nbt.setInteger("privatePocketSize", privatePocketSize);
         nbt.setInteger("publicPocketSize", publicPocketSize);
 
-        NBTTagCompound nextUnusedIDTagCompound = new NBTTagCompound(); //@todo do not have to do this, since all pockets re-register on world-load
+        NBTTagCompound nextUnusedIDTagCompound = new NBTTagCompound();
         for (EnumPocketType pocketType : nextUnusedIDs.keySet()) {
             nextUnusedIDTagCompound.setInteger(pocketType.toString(), nextUnusedIDs.get(pocketType));
         }
         nbt.setTag("nextUnusedIDs", nextUnusedIDTagCompound);
 
+        NBTTagCompound privatePocketsTagCompound = new NBTTagCompound();
+        for (String UUID: privatePockets.keySet()) {
+            privatePocketsTagCompound.setInteger(UUID, privatePockets.get(UUID));
+        }
+        nbt.setTag("privatePockets", privatePocketsTagCompound);
+        
         NBTTagCompound pocketsTagCompound = new NBTTagCompound();
         for (EnumPocketType pocketType : pocketLists.keySet()) {
             Map<Integer, Pocket> pocketList = pocketLists.get(pocketType);
@@ -178,7 +191,7 @@ public class PocketRegistry {
         } else {
             depth = 0;
         }
-        
+
         //Fetching the pocket template
         PocketTemplate pocketTemplate = getRandomPocketTemplate(typeID, depth, maxPocketSize);
 
@@ -195,14 +208,20 @@ public class PocketRegistry {
         } else { //PRIVATE
             depthZeroLocation = origRiftLocation;
         }
-        
+
         Pocket pocket = pocketTemplate.place(shortenedX, 0, shortenedZ, gridSize, dimID, nextUnusedIDs.get(typeID), depth, typeID, depthZeroLocation);
         registerNewPocket(pocket, typeID);
         return pocket;
     }
 
     public int getPrivateDimDoorID(String playerUUID) {
-        throw new UnsupportedOperationException("Not supported yet."); //@todo
+        if (!privatePockets.containsKey(playerUUID)) {
+            //generate a new private pocket
+            int doorID = getEntranceDoorIDOfNewPocket(EnumPocketType.PRIVATE, 0, new Location(0,0,0,0)); //Location doesn't really matter in this case
+            privatePockets.put(playerUUID, doorID);
+            return doorID;
+        } 
+        return privatePockets.get(playerUUID);
     }
 
     private Location getGenerationlocation(int nextUnusedID, EnumPocketType typeID) {

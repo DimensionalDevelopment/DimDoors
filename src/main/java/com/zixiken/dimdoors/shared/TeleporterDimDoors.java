@@ -25,7 +25,7 @@ public class TeleporterDimDoors extends Teleporter {
      * Teleporter isn't static, so TeleporterDimDoors can't be static, so we're
      * using the the Singleton Design Pattern instead
      */
-    private static TeleporterDimDoors instance;
+    private static TeleporterDimDoors INSTANCE;
 
     private TeleporterDimDoors(WorldServer world) {
         super(world);
@@ -47,10 +47,10 @@ public class TeleporterDimDoors extends Teleporter {
     }
 
     public static TeleporterDimDoors instance() {
-        if (instance == null) {
-            instance = new TeleporterDimDoors(DimDoors.proxy.getWorldServer(0));
+        if (INSTANCE == null) {
+            INSTANCE = new TeleporterDimDoors(DimDoors.proxy.getWorldServer(0));
         }
-        return instance;
+        return INSTANCE;
     }
 
     @Override
@@ -138,8 +138,10 @@ public class TeleporterDimDoors extends Teleporter {
 
     private void teleportLocal(Entity entity, BlockPos pos) {
         WorldServer worldserver = (WorldServer) entity.world;
+
         if (entity instanceof EntityPlayer) {
-            DimDoors.log(TeleporterDimDoors.class, "Teleporting Player within same dimension.");
+            DimDoors.log(TeleporterDimDoors.class,
+                    "Teleporting Player within same dimension.");
             EntityPlayerMP player = (EntityPlayerMP) entity;
 
             float playerRotationYaw = player.rotationYaw; //@todo make this a parameter?
@@ -149,11 +151,14 @@ public class TeleporterDimDoors extends Teleporter {
             worldserver.theProfiler.startSection("moving");
             player.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 0.05, pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
             //playerList.preparePlayer(player, worldserver); //This makes the player stutter heavily on teleport
-            player.connection.setPlayerLocation(pos.getX() + 0.5, pos.getY() + 0.05, pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch, EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class));
+            player.connection.setPlayerLocation(pos.getX() + 0.5, pos.getY() + 0.05, pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch, EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class
+            ));
             worldserver.theProfiler.endSection();
             player.connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
+
         } else {
-            DimDoors.log(TeleporterDimDoors.class, "Teleporting non-Player within same dimension.");
+            DimDoors.log(TeleporterDimDoors.class,
+                    "Teleporting non-Player within same dimension.");
 
             entity.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
             worldserver.resetUpdateEntityTick();

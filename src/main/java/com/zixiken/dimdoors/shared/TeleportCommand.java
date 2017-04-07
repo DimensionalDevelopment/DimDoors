@@ -43,7 +43,7 @@ public class TeleportCommand extends CommandBase {
         int id = Integer.parseInt(args[0]);
 
         if (sender instanceof EntityPlayerMP) {
-            server.getPlayerList().transferPlayerToDimension((EntityPlayerMP) sender, Integer.parseInt(args[0]), TeleporterDimDoors.instance());
+            server.getPlayerList().transferPlayerToDimension((EntityPlayerMP) sender, id, TeleporterDimDoors.instance());
         }
     }
 }

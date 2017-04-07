@@ -172,4 +172,8 @@ public class Pocket {
         }
         playerUUIDs.add(playerUUID);
     }
+
+    public void setDepthZeroLocation(Location teleportTargetLocation) {
+        depthZeroLocation.loadfrom(teleportTargetLocation);
+    }
 }
