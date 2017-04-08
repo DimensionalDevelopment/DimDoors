@@ -129,11 +129,10 @@ public class BlockDimWall extends Block {
                 return false;
             }
             if (!world.isRemote) { //@todo on a server, returning false or true determines where the block gets placed?
-                if (!player.capabilities.isCreativeMode) {
+                if (!player.isCreative()) {
                     heldItem.stackSize--;
                 }
-                world.setBlockState(pos, block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, 0, player, heldItem)); //choosing getStateForPlacement over getDefaultState, because it will cause directional blocks, like logs to rotate correctly
-                heldItem.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
+                world.setBlockState(pos, block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, heldItem.getMetadata(), player, heldItem)); //choosing getStateForPlacement over getDefaultState, because it will cause directional blocks, like logs to rotate correctly
             }
             return true;
         }
