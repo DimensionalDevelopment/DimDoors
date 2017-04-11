@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.items.ItemDimDoor;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -14,6 +16,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -122,31 +125,33 @@ public class BlockDimWall extends Block {
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         //Check if the metadata value is 0 -- we don't want the user to replace Ancient Fabric
         if (heldItem != null && !state.getValue(TYPE).equals(EnumType.ANCIENT)) {
-            Block block = Block.getBlockFromItem(heldItem.getItem());
-            if (!state.isNormalCube() || block.hasTileEntity(block.getDefaultState())
-                    || block == this //this also keeps it from being replaced by Ancient Fabric
-                    || player.isSneaking()) {
-                return false;
-            }
-            if (!world.isRemote) { //@todo on a server, returning false or true determines where the block gets placed?
-                if (!player.isCreative()) {
-                    heldItem.stackSize--;
+            if(heldItem.getItem() instanceof ItemBlock) {
+                Block block = Block.getBlockFromItem(heldItem.getItem());
+                if (!state.isNormalCube() || block.hasTileEntity(block.getDefaultState())
+                        || block == this //this also keeps it from being replaced by Ancient Fabric
+                        || player.isSneaking()) {
+                    return false;
                 }
-                world.setBlockState(pos, block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, heldItem.getMetadata(), player, heldItem)); //choosing getStateForPlacement over getDefaultState, because it will cause directional blocks, like logs to rotate correctly
+                if (!world.isRemote) { //@todo on a server, returning false or true determines where the block gets placed?
+                    if (!player.isCreative()) {
+                        heldItem.stackSize--;
+                    }
+                    world.setBlockState(pos, block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, heldItem.getMetadata(), player, heldItem)); //choosing getStateForPlacement over getDefaultState, because it will cause directional blocks, like logs to rotate correctly
+                }
+                return true;
             }
-            return true;
         }
         return false;
     }
 
-    public static enum EnumType implements IStringSerializable {
+    public enum EnumType implements IStringSerializable {
         REALITY("fabric"),
         ANCIENT("ancient"),
         ALTERED("altered");
 
         private final String name;
 
-        private EnumType(String name) {
+        EnumType(String name) {
             this.name = name;
         }
 
