@@ -1,5 +1,5 @@
 {
-  "parent": "dimdoors:block/blockDimWallAncient",
+  "parent": "dimdoors:block/blockFabricEternal",
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],

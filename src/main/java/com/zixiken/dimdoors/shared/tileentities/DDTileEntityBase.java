@@ -37,6 +37,7 @@ public abstract class DDTileEntityBase extends TileEntity implements ITickable {
 
     /**
      *
+     * @param rand
      * @return an array of floats representing RGBA color where 1.0 = 255.
      */
     public abstract float[] getRenderColor(Random rand);

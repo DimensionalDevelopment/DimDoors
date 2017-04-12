@@ -8,10 +8,10 @@ import net.minecraft.item.ItemStack;
 
 public class ItemBlockDimWall extends ItemBlock {
 
-    private final static String[] subNames = {"", "Ancient", "Altered"};
+    private final static String[] subNames = {"Reality", "Ancient", "Altered", "Unraveled", "Eternal"};
 
     public ItemBlockDimWall() {
-        super(ModBlocks.blockDimWall);
+        super(ModBlocks.blockFabric);
         setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setMaxDamage(0);
         setHasSubtypes(true);
@@ -23,6 +23,7 @@ public class ItemBlockDimWall extends ItemBlock {
         return damageValue;
     }
 
+    @Override
     public String getUnlocalizedName(ItemStack stack) {
         return super.getUnlocalizedName() + subNames[this.getDamage(stack)];
     }

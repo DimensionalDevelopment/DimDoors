@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "type=reality": { "model": "dimdoors:blockFabricReality" },
+    "type=ancient": { "model": "dimdoors:blockFabricAncient" },
+    "type=altered": { "model": "dimdoors:blockFabricAltered" },
+    "type=unraveled": { "model": "dimdoors:blockFabricUnraveled" },
+    "type=eternal": { "model": "dimdoors:blockFabricEternal" }        
+  }
+}

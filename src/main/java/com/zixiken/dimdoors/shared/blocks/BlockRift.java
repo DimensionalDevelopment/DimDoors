@@ -47,7 +47,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
         setRegistryName(ID);
 
         modBlocksImmuneToRift = new ArrayList<Block>();
-        modBlocksImmuneToRift.add(ModBlocks.blockDimWall);
+        modBlocksImmuneToRift.add(ModBlocks.blockFabric);
         modBlocksImmuneToRift.add(ModBlocks.blockDimDoor);
         modBlocksImmuneToRift.add(ModBlocks.blockDimDoorWarp);
         modBlocksImmuneToRift.add(ModBlocks.blockDimHatch);

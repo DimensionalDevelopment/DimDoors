@@ -18,9 +18,11 @@ public class ModelManager {
 
     public static void registerModels() {
         //ItemBlock registration
-        register(getItemFromBlock(ModBlocks.blockDimWall));
-        register(getItemFromBlock(ModBlocks.blockDimWall), 1, "Ancient");
-        register(getItemFromBlock(ModBlocks.blockDimWall), 2, "Altered");
+        register(getItemFromBlock(ModBlocks.blockFabric), 0, "Reality");
+        register(getItemFromBlock(ModBlocks.blockFabric), 1, "Ancient");
+        register(getItemFromBlock(ModBlocks.blockFabric), 2, "Altered");
+        register(getItemFromBlock(ModBlocks.blockFabric), 3, "Unraveled");
+        register(getItemFromBlock(ModBlocks.blockFabric), 4, "Eternal");
 
         register(getItemFromBlock(ModBlocks.blockRift));
         register(getItemFromBlock(ModBlocks.blockDimHatch));
@@ -40,10 +42,12 @@ public class ModelManager {
     }
 
     public static void registerModelVariants() {
-        ModelBakery.registerItemVariants(getItemFromBlock(ModBlocks.blockDimWall),
-                ModBlocks.blockDimWall.getRegistryName(),
-                new ResourceLocation(ModBlocks.blockDimWall.getRegistryName() + "Ancient"),
-                new ResourceLocation(ModBlocks.blockDimWall.getRegistryName() + "Altered"));
+        ModelBakery.registerItemVariants(getItemFromBlock(ModBlocks.blockFabric),
+                new ResourceLocation(ModBlocks.blockFabric.getRegistryName() + "Reality"),
+                new ResourceLocation(ModBlocks.blockFabric.getRegistryName() + "Ancient"),
+                new ResourceLocation(ModBlocks.blockFabric.getRegistryName() + "Altered"),
+                new ResourceLocation(ModBlocks.blockFabric.getRegistryName() + "Unraveled"),
+                new ResourceLocation(ModBlocks.blockFabric.getRegistryName() + "Eternal"));
     }
 
     private static void register(Item item) {

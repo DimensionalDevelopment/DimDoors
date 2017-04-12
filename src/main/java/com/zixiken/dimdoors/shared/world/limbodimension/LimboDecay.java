@@ -34,7 +34,7 @@ public class LimboDecay {
     public static IBlockState[] getDecaySequence() {
         if (decaySequence == null) {
             decaySequence = new IBlockState[] {
-                    ModBlocks.blockLimbo.getDefaultState(),
+                    ModBlocks.blockFabric.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.UNRAVELED),
                     Blocks.GRAVEL.getDefaultState(),
                     Blocks.COBBLESTONE.getDefaultState(),
                     Blocks.STONE.getDefaultState()
@@ -47,8 +47,8 @@ public class LimboDecay {
     public static IBlockState[] getBlocksImmuneToDecay() {
         if (blocksImmuneToDecay == null) {
             blocksImmuneToDecay = new IBlockState[] {
-                    ModBlocks.blockLimbo.getDefaultState(),
-                    ModBlocks.blockDimWall.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.ANCIENT),
+                    ModBlocks.blockFabric.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.UNRAVELED),
+                    ModBlocks.blockFabric.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.ETERNAL),
                     ModBlocks.blockDimDoorTransient.getDefaultState(),
                     ModBlocks.blockDimDoor.getDefaultState(),
                     ModBlocks.blockDimDoorWarp.getDefaultState(),
@@ -120,7 +120,7 @@ public class LimboDecay {
     private static boolean decayBlockFast(World world, BlockPos pos) {
         IBlockState block = world.getBlockState(pos);
         if (canDecayBlock(block, world, pos)) {
-            world.setBlockState(pos, ModBlocks.blockLimbo.getDefaultState());
+            world.setBlockState(pos, ModBlocks.blockFabric.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.UNRAVELED));
             return true;
         }
         return false;
