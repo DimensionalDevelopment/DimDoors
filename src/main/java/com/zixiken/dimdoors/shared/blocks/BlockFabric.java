@@ -35,15 +35,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nullable;
 
 @SuppressWarnings("deprecation")
-public class BlockDimWall extends Block {
+public class BlockFabric extends Block {
 
     public static final String ID = "blockFabric";
-    public static final PropertyEnum<BlockDimWall.EnumType> TYPE = PropertyEnum.<BlockDimWall.EnumType>create("type", BlockDimWall.EnumType.class);
+    public static final PropertyEnum<BlockFabric.EnumType> TYPE = PropertyEnum.<BlockFabric.EnumType>create("type", BlockFabric.EnumType.class);
 
     private static final float SUPER_HIGH_HARDNESS = 10000000000000F;
     private static final float SUPER_EXPLOSION_RESISTANCE = 18000000F;
 
-    public BlockDimWall() {
+    public BlockFabric() {
         super(Material.IRON);
         this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setLightLevel(1.0F);

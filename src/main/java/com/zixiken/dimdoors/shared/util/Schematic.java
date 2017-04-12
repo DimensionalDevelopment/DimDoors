@@ -35,7 +35,7 @@ public class Schematic {
 
     private static final String[] NEWDIMDOORBLOCKNAMES = new String[]{
         "blockDimDoor",
-        "blockDimWall", //[type=fabric] is the default blockstate
+        "blockFabric", //[type=fabric] is the default blockstate
         "blockDimDoorTransient",
         "blockDimDoorWarp"};
 
@@ -341,7 +341,7 @@ public class Schematic {
                 Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString));
                 blockstate = block.getDefaultState();
             } else {
-                Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("dimdoors:blockDimWall"));
+                Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("dimdoors:blockFabric"));
                 blockstate = getBlockStateWithProperties(block, new String[]{"type=ancient"});
             }
             schematic.pallette.add(blockstate);
@@ -407,8 +407,8 @@ public class Schematic {
     /*
     public static void TempGenerateDefaultSchematics() {
         for (int pocketSize = 0; pocketSize < 8; pocketSize++) {
-            generateDefaultSchematic("defaultPublic", pocketSize, ModBlocks.blockDimWall.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.REALITY), ModBlocks.blockDimDoor);
-            generateDefaultSchematic("defaultPrivate", pocketSize, ModBlocks.blockDimWall.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.ALTERED), ModBlocks.blockDimDoorPersonal);
+            generateDefaultSchematic("defaultPublic", pocketSize, ModBlocks.blockFabric.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY), ModBlocks.blockDimDoor);
+            generateDefaultSchematic("defaultPrivate", pocketSize, ModBlocks.blockFabric.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ALTERED), ModBlocks.blockDimDoorPersonal);
         }
     }
 
@@ -430,7 +430,7 @@ public class Schematic {
         schematic.paletteMax = 4;
         schematic.pallette = new ArrayList();
         schematic.pallette.add(Blocks.AIR.getDefaultState());
-        schematic.pallette.add(ModBlocks.blockDimWall.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.ANCIENT));
+        schematic.pallette.add(ModBlocks.blockFabric.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT));
         schematic.pallette.add(innerWallBlockState);
         schematic.pallette.add(doorBlock.getDefaultState().withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.LOWER)); //bottom
         schematic.pallette.add(doorBlock.getDefaultState().withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER)); //top

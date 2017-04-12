@@ -1,7 +1,7 @@
 package com.zixiken.dimdoors.shared.world.limbodimension;
 
 import com.zixiken.dimdoors.client.CloudRenderBlank;
-import com.zixiken.dimdoors.shared.blocks.BlockDimWall;
+import com.zixiken.dimdoors.shared.blocks.BlockFabric;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
@@ -92,7 +92,7 @@ public class WorldProviderLimbo extends WorldProvider {
     @Override
     public boolean canCoordinateBeSpawn(int x, int z) {
         BlockPos pos = this.world.getTopSolidOrLiquidBlock(new BlockPos(x, 0, z));
-        return world.getBlockState(pos).equals(ModBlocks.blockFabric.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.UNRAVELED));
+        return world.getBlockState(pos).equals(ModBlocks.blockFabric.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED));
     }
 
     @Override

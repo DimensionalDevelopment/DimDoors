@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.shared.world.limbodimension;
 
-import com.zixiken.dimdoors.shared.blocks.BlockDimWall;
+import com.zixiken.dimdoors.shared.blocks.BlockFabric;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Biomes;
@@ -307,10 +307,10 @@ public class LimboGenerator implements IChunkGenerator
                                 int zCoord = zSectionPart + zRel;
                                 if(vxyz > 0) {
                                     primer.setBlockState(xCoord, yCoord, zCoord, 
-                                            ModBlocks.blockFabric.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.UNRAVELED));
+                                            ModBlocks.blockFabric.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED));
                                 } else if(yCoord < 6) {
                                     primer.setBlockState(xCoord, yCoord, zCoord, 
-                                            ModBlocks.blockFabric.getDefaultState().withProperty(BlockDimWall.TYPE, BlockDimWall.EnumType.ETERNAL));
+                                            ModBlocks.blockFabric.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ETERNAL));
                                 }
                             }
 
