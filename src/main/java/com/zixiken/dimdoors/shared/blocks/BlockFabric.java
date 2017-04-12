@@ -190,7 +190,8 @@ public class BlockFabric extends Block {
     }
 
     @Override
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) { //@todo move this to update or updateTick, because of the teleport and because you now have to fall through the block in order to teleport (wouldn't that be nice though?)
+    public void onEntityWalk(World world, BlockPos pos, Entity entity) {
+        IBlockState state = world.getBlockState(pos);
         if (state.getValue(TYPE) == EnumType.ETERNAL && world.provider instanceof WorldProviderLimbo && entity instanceof EntityPlayer) {
             Location origLocation = new Location(world, pos);
             Location transFormedLocation = DDRandomUtils.transformLocationRandomly(DDConfig.getOwCoordinateOffsetBase(), DDConfig.getOwCoordinateOffsetPower(), DDConfig.getMaxDungeonDepth(), origLocation);
