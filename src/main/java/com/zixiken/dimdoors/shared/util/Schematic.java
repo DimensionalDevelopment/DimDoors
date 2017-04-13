@@ -468,7 +468,7 @@ public class Schematic {
         tileNBT.setInteger("z", 4);
         schematic.tileEntities.add(tileNBT);
 
-        SchematicHandler.Instance.saveSchematic(schematic, schematic.schematicName);
+        SchematicHandler.INSTANCE.saveSchematic(schematic, schematic.schematicName);
     }
      */
 }
