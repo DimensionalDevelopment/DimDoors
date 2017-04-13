@@ -128,15 +128,18 @@ public class SchematicHandler {
         JsonElement jsonElement = parser.parse(jsonString);
         JsonObject jsonTemplate = jsonElement.getAsJsonObject();
         //DimDoors.log(SchematicHandler.class, "Checkpoint 1 reached");
+        
         //Generate and get templates (without a schematic) of all variations that are valid for the current "maxPocketSize" 
         List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate, maxPocketSize);
         //DimDoors.log(SchematicHandler.class, "Checkpoint 4 reached; " + validTemplates.size() + " templates were loaded");
 
         for (PocketTemplate template : validTemplates) { //it's okay to "tap" this for-loop, even if validTemplates is empty.
-            InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + template.getName() + ".schem"); //@todo also check for other schematics
-            InputStream oldVersionSchematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + template.getName() + ".schematic"); //@todo also check for other schematics
-            File schematicFile = new File(schematicFolder, "/" + template.getName() + ".schem");
-            File oldVersionSchematicFile = new File(schematicFolder, "/" + template.getName() + ".schematic");
+            String subDirectory = jsonTemplate.get("directory").getAsString(); //subfolder in which the schematics are stored
+            String extendedTemplatelocation = subDirectory.equals("") ? template.getName() : subDirectory + "/" + template.getName();
+            InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + extendedTemplatelocation + ".schem"); //@todo also check for other schematics
+            InputStream oldVersionSchematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + extendedTemplatelocation + ".schematic"); //@todo also check for other schematics
+            File schematicFile = new File(schematicFolder, "/" + extendedTemplatelocation + ".schem");
+            File oldVersionSchematicFile = new File(schematicFolder, "/" + extendedTemplatelocation + ".schematic");
             NBTTagCompound schematicNBT;
 
             //@todo make the following block less repetitious.
