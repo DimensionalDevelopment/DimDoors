@@ -66,14 +66,14 @@ public class WorldProviderPublicPocket extends WorldProvider {//@todo, we might 
         return false;
     }
 
-    @Override
+    /*@Override
     protected void generateLightBrightnessTable() {
         for (int steps = 0; steps <= 15; ++steps) {
             float var3 = (float) (Math.pow(steps, 1.5) / Math.pow(15.0F, 1.5));
             this.lightBrightnessTable[15 - steps] = var3;
             System.out.println(this.lightBrightnessTable[steps] + "light");
         }
-    }
+    }*/
 
     @Override
     public int getRespawnDimension(EntityPlayerMP player) {

@@ -19,12 +19,12 @@ public class WorldProviderPersonalPocket extends WorldProviderPublicPocket {
         return new Vec3d(1, 1, 1);
     }
 
-    @Override
+    /*@Override
     protected void generateLightBrightnessTable() {
         for (int i = 0; i <= 15; ++i) {
             this.lightBrightnessTable[i] = (15);
         }
-    }
+    }*/
 
     @Override
     public double getHorizon() {
