@@ -95,7 +95,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
     protected int getNewTeleportDestination() {
         int otherRiftID;
-        Location locationOfThisRift = RiftRegistry.INSTANCE.getRiftLocation(this.riftID);
+        Location locationOfThisRift = RiftRegistry.INSTANCE.getRiftLocation(this.riftID); //returns null if this rift isn't registered
         if (locationOfThisRift.getDimensionID() == DimDoorDimensions.getPocketDimensionType(EnumPocketType.DUNGEON).getId()) { //if this dimdoor is a pocket Dungeon
             //choose between generating a new pocket or connecting to another door on a similar or close depth
             if (DDRandomUtils.weightedBoolean(20, 80)) { //@todo make this configurable

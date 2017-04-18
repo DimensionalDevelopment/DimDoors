@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 ext.modversion = "3.0.0-a1"
 ext.mcversion = "1.10.2"
-ext.forgeversion = "12.18.3.2221"
+ext.forgeversion = "12.18.3.2281"
 //spongeSchematicVersion = "1"
 
 version = mcversion + "-" + modversion
