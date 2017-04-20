@@ -23,6 +23,8 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
     private static final int MAX_HOSTILE_ENDERMAN_CHANCE = 3;
     private static final int UPDATE_PERIOD = 200; //10 seconds
 
+    public boolean placingDoorOnRift = false; //to track whether a Rift is getting broken because it is replaced by a door (do not unregister in this case) or because it is being broken another way (do unregister in this case)
+
     private static final Random random = new Random();
 
     //Need to be saved:
@@ -35,7 +37,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 
     public TileEntityRift() {
         super();
-        this.loadDataFrom(RiftRegistry.INSTANCE.getLastChangedRift());
+        this.loadDataFrom(RiftRegistry.INSTANCE.getLastChangedRift()); //@todo this should absolutely not be done in this constructor...
 
         // Vary the update times of rifts to prevent all the rifts in a cluster
         // from updating at the same time.

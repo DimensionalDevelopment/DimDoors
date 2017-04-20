@@ -4,8 +4,10 @@ import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorChaos;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorGold;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorPersonal;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorWarp;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityTransTrapdoor;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
@@ -30,10 +32,11 @@ public abstract class DDProxyCommon implements IDDProxy {
 
         GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
         GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
-        GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityDimHatch");
+        GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityTransTrapdoor");
         GameRegistry.registerTileEntity(TileEntityDimDoorGold.class, "TileEntityDimDoorGold");
         GameRegistry.registerTileEntity(TileEntityDimDoorPersonal.class, "TileEntityDimDoorPersonal");
-        //@todo register other TileEntities
+        GameRegistry.registerTileEntity(TileEntityDimDoorChaos.class, "TileEntityDimDoorChaos");
+        GameRegistry.registerTileEntity(TileEntityDimDoorWarp.class, "TileEntityDimDoorWarp");
     }
 
     @Override

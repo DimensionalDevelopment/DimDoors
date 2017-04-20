@@ -3,6 +3,7 @@ build/
 .gradle/
 .idea/
 run/
+libs/
 out/
 *.iml
 *.ipr

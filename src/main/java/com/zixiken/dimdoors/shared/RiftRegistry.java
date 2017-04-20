@@ -374,7 +374,7 @@ public class RiftRegistry {
         Location destinationRiftLocation = getRiftLocation(riftId);
         DDTileEntityBase destinationRift = (DDTileEntityBase) destinationRiftLocation.getTileEntity();
         if (destinationRift == null) {
-            DimDoors.warn(this.getClass(), "The rift that an entity is trying to teleport to seems to be null.");
+            DimDoors.warn(this.getClass(), "The rift that an entity is trying to teleport to seems to be null. RiftID: " + riftId + ". Expecting to crash in 3... 2... 1..");
         }
         return destinationRift.getTeleportTargetLocation();
     }
@@ -402,7 +402,7 @@ public class RiftRegistry {
             lastBrokenRift = null;
         }
     }
-    
+
     public int getPocketID(int riftID) {
         DDTileEntityBase rift = (DDTileEntityBase) rifts.get(riftID).getTileEntity();
         return rift.getPocketID();

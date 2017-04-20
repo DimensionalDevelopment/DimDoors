@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.shared.blocks;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.client.ClosingRiftFX;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.items.ModItems;
@@ -198,7 +199,14 @@ public class BlockRift extends Block implements ITileEntityProvider {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        RiftRegistry.INSTANCE.unregisterLastChangedRift();
+        TileEntityRift riftTile = (TileEntityRift) world.getTileEntity(pos);
+        if (riftTile == null || !riftTile.placingDoorOnRift) {
+            DimDoors.log(this.getClass(), "Unregistering rift at position " + pos.toString() + ", because it is destroyed (creative) or has closed.");
+            RiftRegistry.INSTANCE.unregisterLastChangedRift();
+        } else {
+            DimDoors.log(this.getClass(), "Not unregistering rift at position " + pos.toString() + ", because it is being replaced by a door.");
+            riftTile.placingDoorOnRift = false; //probably not needed, but it shouldn't hurt to do this
+        }
         world.removeTileEntity(pos);
     }
 

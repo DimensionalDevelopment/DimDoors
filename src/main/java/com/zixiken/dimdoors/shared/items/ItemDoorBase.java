@@ -7,6 +7,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.shared.RayTraceHelper;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -67,6 +68,8 @@ public abstract class ItemDoorBase extends ItemDoor {
             return new ActionResult(canDoorBePlacedOnGroundBelowRift, stack);
         }
         return new ActionResult(EnumActionResult.FAIL, stack); //@todo, should return onItemUse(params) here? will door placement on block not work otherwise?
+        
+        //@todo personal and chaos doors can be placed on top of a rift? Should not be possible
     }
 
     @Override
@@ -109,6 +112,10 @@ public abstract class ItemDoorBase extends ItemDoor {
             boolean flag = i < 0 && hitZ < 0.5F || i > 0 && hitZ > 0.5F || j < 0 && hitX > 0.5F || j > 0 && hitX < 0.5F; //Vanilla Minecraft code not consistently using EnumFacing
             //fetch "the" tile entity at the top block of where the door is going to be placed
             TileEntity possibleOldRift = world.getTileEntity(pos.up());
+            if (possibleOldRift != null && possibleOldRift instanceof TileEntityRift) {
+                TileEntityRift oldRift = (TileEntityRift) possibleOldRift;
+                oldRift.placingDoorOnRift = true;
+            }
             //place the door
             placeDoor(world, pos, enumfacing, doorBlock, flag);
             SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, playerIn);
