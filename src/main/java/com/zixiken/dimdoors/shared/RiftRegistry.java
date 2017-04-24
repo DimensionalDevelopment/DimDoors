@@ -77,11 +77,20 @@ public class RiftRegistry {
                 rifts.put(riftID, riftLocation);
             }
         }
+        
+        if (nbt.hasKey("personalDoorsList")) {
+            NBTTagList persRiftsNBT = (NBTTagList) nbt.getTag("personalDoorsList");
+            for (int i = 0; i < persRiftsNBT.tagCount(); i++) {
+                NBTTagCompound riftTag = persRiftsNBT.getCompoundTagAt(i);
+                int riftID = riftTag.getInteger("riftID");
+                personalDoors.add(riftID);
+            }
+        }
 
         if (nbt.hasKey("unpairedRiftList")) {
-            NBTTagList riftsNBT = (NBTTagList) nbt.getTag("unpairedRiftList");
-            for (int i = 0; i < riftsNBT.tagCount(); i++) {
-                NBTTagCompound riftTag = riftsNBT.getCompoundTagAt(i);
+            NBTTagList unpRiftsNBT = (NBTTagList) nbt.getTag("unpairedRiftList");
+            for (int i = 0; i < unpRiftsNBT.tagCount(); i++) {
+                NBTTagCompound riftTag = unpRiftsNBT.getCompoundTagAt(i);
                 int riftID = riftTag.getInteger("riftID");
                 unpairedRifts.add(riftID);
             }
@@ -118,6 +127,14 @@ public class RiftRegistry {
         }
         nbt.setTag("riftList", riftsNBT);
 
+        NBTTagList personalDoorsNBT = new NBTTagList();
+        for (int riftID : personalDoors) {
+            NBTTagCompound riftTag = new NBTTagCompound();
+            riftTag.setInteger("riftID", riftID);
+            personalDoorsNBT.appendTag(riftTag);
+        }
+        nbt.setTag("personalDoorsList", personalDoorsNBT);
+        
         NBTTagList unpairedRiftsNBT = new NBTTagList();
         for (int riftID : unpairedRifts) {
             NBTTagCompound riftTag = new NBTTagCompound();
@@ -141,7 +158,7 @@ public class RiftRegistry {
 
     public int registerNewRift(DDTileEntityBase rift, int depth) {
         Location riftLocation = Location.getLocation(rift);
-        int assignedID = nextRiftID;
+        final int assignedID = nextRiftID;
         DimDoors.log(this.getClass(), "Starting registering rift as ID: " + assignedID);
 
         rifts.put(assignedID, riftLocation);
@@ -356,7 +373,9 @@ public class RiftRegistry {
     public int getRandomNonPersonalRiftID() {
         List<Integer> nonPersonalRiftIDs = new ArrayList(rifts.keySet());
         for (int persRiftID : personalDoors) {
+            //DimDoors.log(this.getClass(), "Removing personal rift: " + persRiftID + " from nonPersonalRiftIDs. nPRI size = " + nonPersonalRiftIDs.size());
             nonPersonalRiftIDs.remove((Integer) persRiftID);
+            //DimDoors.log(this.getClass(), "Removed personal rift: " + persRiftID + " from nonPersonalRiftIDs. nPRI size = " + nonPersonalRiftIDs.size());
         }
         if (nonPersonalRiftIDs.size() > 0) {
             Random random = new Random();

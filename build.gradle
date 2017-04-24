@@ -65,3 +65,6 @@ processResources
         exclude 'mcmod.info'
     }
 }
+//if (!hasProperty('mainClass')) {
+//    ext.mainClass = 'GradleStart'
+//}
