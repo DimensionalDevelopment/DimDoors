@@ -1,0 +1,21 @@
+{
+    "directory": "ruins",
+    "jsonType": "Multiple",
+    "pocketType" : 2,
+    "variations": [
+        {
+            "variantName": "ComplexHall_Balgor0-CrumbledHall_Closed_75",
+            "size": 2,
+            "minDepth": 1,
+            "maxDepth": 6,
+            "weights": [10, 20, 10, 10, 10, 10]
+        },
+        {
+            "variantName": "ComplexHall_Cere-JumpPass_Open_75",
+            "size": 1,
+            "minDepth": 1,
+            "maxDepth": 8,
+            "weights": [10, 10, 20, 10, 10, 10, 5, 5]
+        }
+    ]
+}

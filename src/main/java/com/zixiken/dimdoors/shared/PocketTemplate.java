@@ -7,7 +7,9 @@ package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.shared.util.Schematic;
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
 import com.zixiken.dimdoors.shared.util.Location;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +107,7 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
                 }
             }
         }
-        
+
         //Load TileEntity Data
         List<DDTileEntityBase> rifts = new ArrayList();
         for (NBTTagCompound tileEntityNBT : schematic.getTileEntities()) {
@@ -113,15 +115,18 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
             DimDoors.log(this.getClass(), "Re-loading tile-entity at blockPos: " + pos.toString());
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity != null) {
-                tileEntity.readFromNBT(tileEntityNBT); //this reads in the wrong blockPos
-                tileEntity.setPos(pos); //correct position again
+                if (tileEntity instanceof DDTileEntityBase) {
+                    DimDoors.log(this.getClass(), "Rift found in schematic: " + pos.toString());
+                    DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
+                    rifts.add(rift);
+                    if (rift instanceof TileEntityDimDoor) {
+                        DimDoors.proxy.updateDoorTE((BlockDimDoorBase) world.getBlockState(pos).getBlock(), world, pos);
+                    }
+                } else {
+                    tileEntity.readFromNBT(tileEntityNBT); //this reads in the wrong blockPos
+                }
+                tileEntity.setPos(pos); //correct the position
                 tileEntity.markDirty();
-            }
-
-            if (tileEntity instanceof DDTileEntityBase) {
-                DimDoors.log(this.getClass(), "Rift found in schematic: " + pos.toString());
-                DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
-                rifts.add(rift);
             }
         }
 
@@ -129,6 +134,9 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         for (DDTileEntityBase rift : rifts) {
             rift.register(depth);
             rift.setIsInPocket();
+            rift.setPocket(pocketID, pocketTypeID);
+            rift.setDepth(depth);
+
             riftIDs.add(rift.getRiftID());
         }
 

@@ -74,12 +74,12 @@ public abstract class DDTileEntityBase extends TileEntity implements ITickable {
     }
 
     public void register(int depth) {
-        if (riftID == -1) {
+        //if (riftID == -1) { //this check only causes problems?
             riftID = RiftRegistry.INSTANCE.registerNewRift(this, depth);
             DimDoors.log(this.getClass(), "Finished registering rift as ID: " + riftID);
 
             this.markDirty();
-        }
+        //}
     }
 
     @Override
@@ -161,6 +161,11 @@ public abstract class DDTileEntityBase extends TileEntity implements ITickable {
 
     public void setIsInPocket() {
         isInPocket = true;
+        this.markDirty();
+    }
+    
+    public void setDepth(int depth) {
+        this.depth = depth;
         this.markDirty();
     }
 

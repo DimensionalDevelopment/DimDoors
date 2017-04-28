@@ -27,6 +27,7 @@ import net.minecraft.tileentity.TileEntity;
  */
 public class RiftRegistry {
 
+    private int lastGeneratedEntranceDoorID = -1;
     private DDTileEntityBase lastBrokenRift = null; //@todo, redo this functionality in a more refined way
     public static final RiftRegistry INSTANCE = new RiftRegistry();
 
@@ -77,7 +78,7 @@ public class RiftRegistry {
                 rifts.put(riftID, riftLocation);
             }
         }
-        
+
         if (nbt.hasKey("personalDoorsList")) {
             NBTTagList persRiftsNBT = (NBTTagList) nbt.getTag("personalDoorsList");
             for (int i = 0; i < persRiftsNBT.tagCount(); i++) {
@@ -134,7 +135,7 @@ public class RiftRegistry {
             personalDoorsNBT.appendTag(riftTag);
         }
         nbt.setTag("personalDoorsList", personalDoorsNBT);
-        
+
         NBTTagList unpairedRiftsNBT = new NBTTagList();
         for (int riftID : unpairedRifts) {
             NBTTagCompound riftTag = new NBTTagCompound();
@@ -156,7 +157,7 @@ public class RiftRegistry {
         nbt.setTag("unpairedDepthRiftList", unpairedRiftListsNBT);
     }
 
-    public int registerNewRift(DDTileEntityBase rift, int depth) {
+    public int registerNewRift(DDTileEntityBase rift, final int depth) {
         Location riftLocation = Location.getLocation(rift);
         final int assignedID = nextRiftID;
         DimDoors.log(this.getClass(), "Starting registering rift as ID: " + assignedID);
@@ -167,7 +168,7 @@ public class RiftRegistry {
                 personalDoors.add(assignedID);
             }
         } else {
-            DimDoors.log(this.getClass(), "Registering rift in unpairedRiftRegistry. ID = " + assignedID);
+            DimDoors.log(this.getClass(), "Registering rift in unpairedRiftRegistry. ID = " + assignedID + " at depth: " + depth);
             unpairedRifts.add(assignedID);
             registerUnpairedRiftAtDepth(assignedID, depth);
         }
@@ -199,16 +200,13 @@ public class RiftRegistry {
         TileEntity tileEntity = rifts.get(riftID).getTileEntity();
         if (tileEntity instanceof DDTileEntityBase) {
             DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
-            int depth = rift.getDepth();
-            if (depth < maximumDungeonDepth) {
-                List<Integer> unpairedRiftListAtDepth = unpairedRiftsPerDepth.get(depth);
-                unpairedRiftListAtDepth.remove((Integer) riftID);
-            }
+            unRegisterUnpairedRiftAtDepth(rift);
         }
     }
 
     void unRegisterUnpairedRiftAtDepth(DDTileEntityBase rift) {
         int depth = rift.getDepth();
+        DimDoors.log(this.getClass(), "unregistering rift "+ rift.getRiftID() + " as unpaired at depth " + depth);
         if (depth < maximumDungeonDepth) {
             List<Integer> unpairedRiftListAtDepth = unpairedRiftsPerDepth.get(depth);
             unpairedRiftListAtDepth.remove((Integer) rift.getRiftID());
@@ -298,6 +296,14 @@ public class RiftRegistry {
 
     public int getRandomUnpairedRiftIDAtDepth(int origRiftID, int depth) {
         int returnID = -1;
+        
+        //After using a command to generate a particular schematic as a pocket to be the next non-random Golden (and randomly Iron) Dimdoor destination
+        if (this.lastGeneratedEntranceDoorID != -1) {
+            returnID = lastGeneratedEntranceDoorID;
+            lastGeneratedEntranceDoorID = -1;
+            return returnID;
+        }
+        
         if (unpairedRiftsPerDepth.size() > depth) {
             List<Integer> rifts = unpairedRiftsPerDepth.get(depth);
             int numberOfUnpairedRifts = rifts.size();
@@ -319,16 +325,16 @@ public class RiftRegistry {
                 returnID = rifts.get(randomRiftIDIndex);
             }
         }
-        DimDoors.log(this.getClass(), "Rift to pair to chosen: returnID = " + returnID);
+        DimDoors.log(this.getClass(), "Rift to pair to was chosen: returnID = " + returnID);
         return returnID;
     }
 
     public int getRandomUnpairedRiftIDAroundDepth(int origRiftID, int depth) {
         int returnID = -1;
         if (unpairedRiftsPerDepth.size() > depth) {
-            int[] weights = getWeightSizeProducts(unpairedRiftsPerDepth, depth - 2, new int[]{15, 25, 30, 20, 10});
+            int[] weights = getWeightSizeProducts(unpairedRiftsPerDepth, depth - 2, new int[]{15, 25, 30, 20, 10}); //@todo put these values in config
             if (getArraySum(weights) == 0) {
-                //@todo there is no unpaired rift around that depth
+                //@todo there is no unpaired rift around those depths
             } else {
                 int chosenDepth = pickRandom(weights) + depth - 2;
                 returnID = getRandomUnpairedRiftIDAtDepth(origRiftID, chosenDepth);

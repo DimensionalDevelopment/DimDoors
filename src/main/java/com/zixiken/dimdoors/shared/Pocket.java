@@ -147,7 +147,9 @@ public class Pocket {
     private static int findWarpDoorIndex(List<Integer> riftIDs) { //used to find the entrance door to this pocket
         int index = -1;
         for (int i = 0; i < riftIDs.size(); i++) {
-            TileEntity tileEntity = RiftRegistry.INSTANCE.getRiftLocation(i).getTileEntity();
+            int riftID = riftIDs.get(i);
+            //DimDoors.log(Pocket.class, "findWarpDoorIndex: i = " + i + " riftID = " + riftID); //for troubleshooting purposes
+            TileEntity tileEntity = RiftRegistry.INSTANCE.getRiftLocation(riftID).getTileEntity();
             if (tileEntity != null && tileEntity instanceof TileEntityDimDoorWarp) {
                 index = i;
                 break;

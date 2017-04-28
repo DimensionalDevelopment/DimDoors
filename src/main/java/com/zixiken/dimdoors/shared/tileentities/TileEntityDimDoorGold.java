@@ -5,7 +5,6 @@ import com.zixiken.dimdoors.shared.EnumPocketType;
 import com.zixiken.dimdoors.shared.IChunkLoader;
 import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.RiftRegistry;
-import com.zixiken.dimdoors.shared.util.DDRandomUtils;
 import com.zixiken.dimdoors.shared.util.Location;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;

@@ -15,6 +15,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,15 +56,17 @@ public class SchematicHandler {
                 totalWeight += template.getWeight(depth);
             }
         }
+        DimDoors.log(this.getClass(), "depth = " + depth + ". totalWeight = " + totalWeight);
 
         Random random = new Random();
         int chosenTemplatePointer = random.nextInt(totalWeight);
         for (PocketTemplate template : validTemplates) {
+            chosenTemplatePointer -= template.getWeight(depth);
             if (chosenTemplatePointer < 0) {
                 return template;
             }
-            chosenTemplatePointer -= template.getWeight(depth);
         }
+        DimDoors.warn(this.getClass(), "No valid dungeon could be chosen for this depth. What have you done to make this happen? Now crashing:");
         return null;
     }
 
@@ -128,62 +131,57 @@ public class SchematicHandler {
         JsonElement jsonElement = parser.parse(jsonString);
         JsonObject jsonTemplate = jsonElement.getAsJsonObject();
         //DimDoors.log(SchematicHandler.class, "Checkpoint 1 reached");
-        
+
         //Generate and get templates (without a schematic) of all variations that are valid for the current "maxPocketSize" 
         List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate, maxPocketSize);
         //DimDoors.log(SchematicHandler.class, "Checkpoint 4 reached; " + validTemplates.size() + " templates were loaded");
 
         for (PocketTemplate template : validTemplates) { //it's okay to "tap" this for-loop, even if validTemplates is empty.
-            String subDirectory = jsonTemplate.get("directory").getAsString(); //subfolder in which the schematics are stored
-            String extendedTemplatelocation = subDirectory.equals("") ? template.getName() : subDirectory + "/" + template.getName();
-            InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + extendedTemplatelocation + ".schem"); //@todo also check for other schematics
+            String subDirectory = jsonTemplate.get("directory").getAsString(); //get the subfolder in which the schematics are stored
+            String extendedTemplatelocation = subDirectory.equals("") ? template.getName() : subDirectory + "/" + template.getName(); //transform the filename accordingly
+
+            //Initialising the possible locations/formats for the schematic file
+            InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + extendedTemplatelocation + ".schem");
             InputStream oldVersionSchematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + extendedTemplatelocation + ".schematic"); //@todo also check for other schematics
             File schematicFile = new File(schematicFolder, "/" + extendedTemplatelocation + ".schem");
             File oldVersionSchematicFile = new File(schematicFolder, "/" + extendedTemplatelocation + ".schematic");
-            NBTTagCompound schematicNBT;
 
-            //@todo make the following block less repetitious.
-            //try to load the schematic from 4 different locations/formats
-            Schematic schematic = null;
+            //determine which location to load the schematic file from (and what format)
+            DataInputStream schematicDataStream = null;
             if (schematicStream != null) {
-                try {
-                    try (DataInputStream schematicDataStream = new DataInputStream(schematicStream)) {
-                        schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                        schematic = Schematic.loadFromNBT(schematicNBT);
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schem did not load correctly from jar.", ex);
-                } finally {
-                }
+                schematicDataStream = new DataInputStream(schematicStream);
             } else if (oldVersionSchematicStream != null) {
-                try {
-                    try (DataInputStream schematicDataStream = new DataInputStream(oldVersionSchematicStream)) {
-                        schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                        schematic = Schematic.loadFromNBT(schematicNBT);
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schematic did not load correctly from jar.", ex);
-                }
+                schematicDataStream = new DataInputStream(oldVersionSchematicStream);
             } else if (schematicFile.exists()) {
                 try {
-                    try (DataInputStream schematicDataStream = new DataInputStream(new FileInputStream(schematicFile))) {
-                        schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                        schematic = Schematic.loadFromNBT(schematicNBT);
-                    }
-                } catch (IOException ex) {
+                    schematicDataStream = new DataInputStream(new FileInputStream(schematicFile));
+                } catch (FileNotFoundException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schem did not load correctly from config folder.", ex);
                 }
             } else if (oldVersionSchematicFile.exists()) {
                 try {
-                    try (DataInputStream schematicDataStream = new DataInputStream(new FileInputStream(oldVersionSchematicFile))) {
-                        schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                        schematic = Schematic.loadFromNBT(schematicNBT);
-                    }
-                } catch (IOException ex) {
+                    schematicDataStream = new DataInputStream(new FileInputStream(oldVersionSchematicFile));
+                } catch (FileNotFoundException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schematic did not load correctly from config folder.", ex);
                 }
             } else {
                 DimDoors.warn(SchematicHandler.class, "Schematic '" + template.getName() + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
+            }
+
+            NBTTagCompound schematicNBT;
+            Schematic schematic = null;
+            try {
+                schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
+                schematic = Schematic.loadFromNBT(schematicNBT);
+                schematicDataStream.close();
+            } catch (IOException ex) {
+                Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + template.getName() + " could not be read as a valid schematic NBT file.", ex);
+            } finally {
+                try {
+                    schematicDataStream.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Error occured while closing schematicDataStream", ex);
+                }
             }
 
             if (schematic != null
@@ -292,7 +290,7 @@ public class SchematicHandler {
             schematicDataStream.flush();
             schematicDataStream.close();
         } catch (IOException ex) {
-            Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Something went wrong while saving " + saveFile.getAbsolutePath() + " to disk.", ex);
         }
     }
 }

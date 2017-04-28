@@ -324,7 +324,7 @@ public class Schematic {
 
         NBTTagList paletteNBT = (NBTTagList) nbt.getTag("Palette");
         for (int i = 0; i < paletteNBT.tagCount(); i++) {
-            DimDoors.log(Schematic.class, "reading pallete from schematic... i = " + i);
+            //DimDoors.log(Schematic.class, "reading pallete from schematic... i = " + i);
             String blockString = paletteNBT.getStringTagAt(i);
             boolean isAncientFabric = false;
             if (blockString.startsWith("dimdoors")) {
