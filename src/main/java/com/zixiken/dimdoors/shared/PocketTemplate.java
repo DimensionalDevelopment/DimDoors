@@ -69,7 +69,7 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         return 0; //do not generate
     }
 
-    String getName() {
+    public String getName() {
         return variantName;
     }
 

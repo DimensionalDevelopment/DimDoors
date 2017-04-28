@@ -1,26 +1,25 @@
-package com.zixiken.dimdoors.shared;
+package com.zixiken.dimdoors.shared.commands;
 
-import com.zixiken.dimdoors.shared.util.Location;
+import com.zixiken.dimdoors.shared.PocketTemplate;
+import com.zixiken.dimdoors.shared.SchematicHandler;
+import com.zixiken.dimdoors.shared.TeleporterDimDoors;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Jared Johnson on 1/26/2017.
- */
 public class TeleportCommand extends CommandBase {
 
-    private final List aliases;
+    private final List<String> aliases;
 
     public TeleportCommand() {
-        aliases = new ArrayList();
+        aliases = new ArrayList<>();
 
         aliases.add("dimteleport");
-
     }
 
     @Override

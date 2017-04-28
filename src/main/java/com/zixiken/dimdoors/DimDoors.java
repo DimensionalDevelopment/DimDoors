@@ -1,6 +1,7 @@
 package com.zixiken.dimdoors;
 
-import com.zixiken.dimdoors.shared.TeleportCommand;
+import com.zixiken.dimdoors.shared.commands.PocketCommand;
+import com.zixiken.dimdoors.shared.commands.TeleportCommand;
 import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.DDProxyCommon;
 import com.zixiken.dimdoors.shared.PocketRegistry;
@@ -56,11 +57,16 @@ public class DimDoors {
 
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
-        event.registerServerCommand(new TeleportCommand());
-        //@todo event.registerServerCommand( new DDCommand() ); //to register commands that this mod offers?
+        registerCommands(event);
         RiftRegistry.INSTANCE.reset();
         PocketRegistry.INSTANCE.reset();
         SchematicHandler.INSTANCE.loadSchematics();
+    }
+
+    private void registerCommands(FMLServerStartingEvent event) {
+        event.registerServerCommand(new TeleportCommand());
+        event.registerServerCommand(new PocketCommand());
+        //@todo event.registerServerCommand( new DDCommand() ); //to register commands that this mod offers?
     }
 
     public static boolean isClient() {
