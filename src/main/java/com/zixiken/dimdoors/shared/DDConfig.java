@@ -38,6 +38,9 @@ public class DDConfig {
     private static int[] doorRelativeDepths = new int[]{-1, 0, 1};
     private static int[] doorRelativeDepthWeights = new int[]{20, 30, 50};
 
+    private static boolean DangerousLimboMonolithsDisabled = true;
+    private static boolean MonolithTeleportationEnabled = true;
+
     private static int setConfigIntWithMaxAndMin(Configuration config, String category, String key, int defaultValue, String comment, int minValue, int maxValue) {
         Property prop = config.get(category, key, defaultValue,
                 comment, minValue, maxValue);
@@ -104,6 +107,12 @@ public class DDConfig {
                 "List of weights (chances) of the relative depths in doorRelativeDepths. This list needs to have the same size.");
         doorRelativeDepthWeights = prop.getIntList();
 
+        prop = config.get(Configuration.CATEGORY_GENERAL, "dangerousLimboMonolithsDisabled", DangerousLimboMonolithsDisabled,
+                "Is Monoliths Dangerous in Limbo disabled?");
+
+        prop = config.get(Configuration.CATEGORY_GENERAL, "dangerousLimboMonolithsDisabled", MonolithTeleportationEnabled,
+                "Is Monolith Teleportation disabled?");
+
         checkAndCorrectDoorRelativeDepths(config);
 
         // Save config
@@ -144,7 +153,7 @@ public class DDConfig {
     }
 
     public static List<String> getDungeonSchematicNames() {
-        List<String> dungeonSchematicNamesArrayList = new ArrayList();
+        List<String> dungeonSchematicNamesArrayList = new ArrayList<>();
         for (String dungeonSchematicName : dungeonSchematicNames) {
             dungeonSchematicNamesArrayList.add(dungeonSchematicName);
         }
@@ -188,5 +197,13 @@ public class DDConfig {
      */
     public static int getMaxDungeonDepth() {
         return maxDungeonDepth;
+    }
+
+    public static boolean isDangerousLimboMonolithsDisabled() {
+        return DangerousLimboMonolithsDisabled;
+    }
+
+    public static boolean isMonolithTeleportationEnabled() {
+        return MonolithTeleportationEnabled;
     }
 }

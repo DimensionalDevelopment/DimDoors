@@ -1,7 +1,9 @@
 package com.zixiken.dimdoors.shared;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
+import com.zixiken.dimdoors.shared.entities.MobMonolith;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorChaos;
@@ -13,12 +15,14 @@ import com.zixiken.dimdoors.shared.tileentities.TileEntityTransTrapdoor;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public abstract class DDProxyCommon implements IDDProxy {
@@ -41,6 +45,9 @@ public abstract class DDProxyCommon implements IDDProxy {
 
     @Override
     public void onInitialization(FMLInitializationEvent event) {
+        EntityRegistry.registerModEntity(MobMonolith.class, "Monolith", 0, DimDoors.instance, 70, 1, true);
+        EntityRegistry.registerEgg(MobMonolith.class, 0, 0xffffff);
+
         CraftingManager.registerRecipes();
     }
 
