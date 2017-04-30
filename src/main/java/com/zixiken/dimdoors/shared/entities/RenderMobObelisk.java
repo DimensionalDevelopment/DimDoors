@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class RenderMobObelisk extends RenderLiving {
+public class RenderMobObelisk extends RenderLiving<MobMonolith> {
     protected ModelMobObelisk obeliskModel;
 
     protected static final List<ResourceLocation> monolith_textures = Arrays.asList(
@@ -43,16 +43,15 @@ public class RenderMobObelisk extends RenderLiving {
             new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith17.png"),
             new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith18.png"));
 
-    public RenderMobObelisk(float f) {
-        super(Minecraft.getMinecraft().getRenderManager(), new ModelMobObelisk(), f);
+    public RenderMobObelisk(RenderManager manager, float f) {
+        super(manager, new ModelMobObelisk(), f);
         this.obeliskModel = (ModelMobObelisk)this.mainModel;
     }
 
     @Override
-    public void doRender(EntityLiving entity, double x, double y, double z, float par8, float par9) {
+    public void doRender(MobMonolith monolith, double x, double y, double z, float par8, float par9) {
         final float minScaling = 0;
         final float maxScaling = 0.1f;
-        MobMonolith monolith = ((MobMonolith) entity);
 
         float aggroScaling = 0;
         if (monolith.isDangerous()) {
@@ -69,11 +68,11 @@ public class RenderMobObelisk extends RenderLiving {
         double zJitter = aggroScaling * Math.sin(1.3f * time) * Math.sin(0.7f * time);
 
         // Render with jitter
-        this.render(entity, x + xJitter, y + yJitter, z + zJitter, par8, par9);
+        this.render(monolith, x + xJitter, y + yJitter, z + zJitter, par8, par9);
         //this.renderLeash(entity, x, y, z, par8, par9);
     }
 
-    public void render(EntityLiving par1EntityLivingBase, double x, double y, double z, float par8, float par9)
+    public void render(MobMonolith par1EntityLivingBase, double x, double y, double z, float par8, float par9)
     {
         if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre(par1EntityLivingBase, this, x, y, z))) return;
         GL11.glPushMatrix();
@@ -124,11 +123,7 @@ public class RenderMobObelisk extends RenderLiving {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Entity entity) {
-        MobMonolith monolith = (MobMonolith) entity;
-
-        System.out.println("Monolith isn't null. " + monolith.getTextureState());
-
+    protected ResourceLocation getEntityTexture(MobMonolith monolith) {
         return monolith_textures.get(monolith.getTextureState()); //return new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith" + monolith.getTextureState() + ".png");
     }
 }
