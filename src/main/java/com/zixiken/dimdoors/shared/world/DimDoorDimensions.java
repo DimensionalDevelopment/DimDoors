@@ -17,7 +17,7 @@ import net.minecraftforge.common.DimensionManager;
 public class DimDoorDimensions {
 
     public static DimensionType LIMBO;
-    private static Map<EnumPocketType, DimensionType> pocketDimensionTypes = new HashMap();
+    private static Map<EnumPocketType, DimensionType> pocketDimensionTypes = new HashMap<>();
     public static List<DimensionType> CUSTOM;
 
     public static void init() {
@@ -35,7 +35,7 @@ public class DimDoorDimensions {
             registerDimension(pocketDimensionTypes.get(pocketType));
         }
 
-        CUSTOM = new ArrayList();
+        CUSTOM = new ArrayList<>();
         for (int i = 0; i < 0; i++) { //@todo: For future use? Like, server owners can add their own set of DimDoors DimensionTypes via the configs? Or is this nonsense?
             dimID++;
             DimensionType tempType = DimensionType.register("Name", "_name", dimID, WorldProvider.class, false);
