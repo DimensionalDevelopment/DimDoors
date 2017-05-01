@@ -76,6 +76,10 @@ public class TileEntityDimDoor extends DDTileEntityBase {
             otherRiftID = getPairedRiftID();
         }
         Location tpLocation = RiftRegistry.INSTANCE.getTeleportLocation(otherRiftID);
+        if (tpLocation == null) {
+            DimDoors.warn(this.getClass(), "Location of rift teleporting to is null.");
+            return false;
+        }
         RiftRegistry.INSTANCE.validatePlayerPocketEntry(entity, otherRiftID);
         return TeleporterDimDoors.instance().teleport(entity, tpLocation); //@todo this seems to return false?
     }

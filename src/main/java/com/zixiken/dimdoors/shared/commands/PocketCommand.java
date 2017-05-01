@@ -1,19 +1,13 @@
 package com.zixiken.dimdoors.shared.commands;
 
 import com.zixiken.dimdoors.shared.*;
-import com.zixiken.dimdoors.shared.blocks.ModBlocks;
-import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
-import com.zixiken.dimdoors.shared.util.Location;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
