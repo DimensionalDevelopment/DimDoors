@@ -1,16 +1,20 @@
 package com.zixiken.dimdoors.shared.commands;
 
-import com.zixiken.dimdoors.shared.PocketRegistry;
-import com.zixiken.dimdoors.shared.PocketTemplate;
-import com.zixiken.dimdoors.shared.SchematicHandler;
-import com.zixiken.dimdoors.shared.TeleporterDimDoors;
+import com.zixiken.dimdoors.shared.*;
+import com.zixiken.dimdoors.shared.blocks.ModBlocks;
+import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
+import com.zixiken.dimdoors.shared.util.Location;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -44,9 +48,14 @@ public class PocketCommand extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        String name  = args[0];
-        sender.sendMessage(new TextComponentString("Hello I need to be implmented. Also you selected " + name + "!"));
-        //Give this command functionality.
+
+        if(sender instanceof EntityPlayerMP) {
+            EntityPlayerMP player = getCommandSenderAsPlayer(sender);
+            BlockPos pos = player.getPosition();
+            World world = player.world;
+
+            TileEntityDimDoor newRift = (TileEntityDimDoor) world.getTileEntity(pos);
+        }
     }
 
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
