@@ -56,9 +56,9 @@ public class Schematic {
     private Schematic() {
     }
 
-    public static Schematic loadFromNBT(NBTTagCompound nbt) {
+    public static Schematic loadFromNBT(NBTTagCompound nbt, String parName) {
         if (!nbt.hasKey("Version")) {
-            return loadOldDimDoorSchematicFromNBT(nbt);
+            return loadOldDimDoorSchematicFromNBT(nbt, parName);
         }
 
         Schematic schematic = new Schematic();
@@ -70,9 +70,9 @@ public class Schematic {
             if (nbt.hasKey("Author")) { //Author is not required
                 schematic.author = metadataCompound.getString("Author");
             }
-            if (nbt.hasKey("Name")) { //Name is not required
-                schematic.schematicName = metadataCompound.getString("Name");
-            }
+            //Name is not required (may be null)
+            schematic.schematicName = (parName == null || parName.equals("")) && nbt.hasKey("Name") ? metadataCompound.getString("Name") : parName;
+
             if (nbt.hasKey("Date")) { //Date is not required
                 schematic.creationDate = metadataCompound.getLong("Date");
             }
@@ -308,12 +308,12 @@ public class Schematic {
         return tileEntities;
     }
 
-    public static Schematic loadOldDimDoorSchematicFromNBT(NBTTagCompound nbt) { //@todo, maybe make this a separate class, so values can be final so they HAVE TO  be set in a newly designed constructor?
+    public static Schematic loadOldDimDoorSchematicFromNBT(NBTTagCompound nbt, String parName) { //@todo, maybe make this a separate class, so values can be final so they HAVE TO  be set in a newly designed constructor?
         Schematic schematic = new Schematic();
 
         //schematic.version = 1; //already the default value
         //schematic.author = "DimDoors"; //already the default value
-        schematic.schematicName = "This schematic was converted from an MC 1.7.10 DimDoors schematic";
+        schematic.schematicName = parName.equals("") ? "Auto-converted-DimDoors-for-MC-1.7.10-schematic" : parName;
         schematic.creationDate = System.currentTimeMillis();
         schematic.requiredMods = new String[]{DimDoors.MODID};
 

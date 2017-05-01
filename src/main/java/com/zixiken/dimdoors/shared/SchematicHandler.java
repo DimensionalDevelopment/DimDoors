@@ -25,8 +25,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,7 +45,8 @@ public class SchematicHandler {
     public static final SchematicHandler INSTANCE = new SchematicHandler();
     private PocketTemplate personalPocketTemplate;
     private PocketTemplate publicPocketTemplate;
-    private List<PocketTemplate> dungeonTemplates;
+    private List<PocketTemplate> dungeonTemplates; //@todo should this be a Map? Does it need to? It gets reloaded from scratch on ServerStart every time, so...
+    final private Map<String, Map<String, Integer>> dungeonNameMap = new HashMap();
     //@todo, sort templates by depth over here? that'd mean that that doesn't have to be done on pocket placement each and every time
 
     PocketTemplate getRandomDungeonPocketTemplate(int depth, int maxPocketSize) {
@@ -86,7 +90,34 @@ public class SchematicHandler {
                 }
             }
         }
+        constructDungeonNameMap();
+
         //Schematic.TempGenerateDefaultSchematics();
+    }
+
+    private void constructDungeonNameMap() {
+        //init
+        dungeonNameMap.clear();
+        //to prevent having to use too many getters
+        String bufferedDirectory = null;
+        Map<String, Integer> bufferedMap = null;
+
+        for (PocketTemplate template : dungeonTemplates) {
+            String dirName = template.getDirName();
+            if (dirName != null && dirName.equals(bufferedDirectory)) { //null check not needed
+                bufferedMap.put(template.getName(), dungeonTemplates.indexOf(template));
+            } else {
+                bufferedDirectory = dirName;
+                if (dungeonNameMap.containsKey(dirName)) { //this will only happen if you have two json files referring to the same directory being loaded non-consecutively
+                    bufferedMap = dungeonNameMap.get(dirName);
+                    bufferedMap.put(template.getName(), dungeonTemplates.indexOf(template));
+                } else {
+                    bufferedMap = new HashMap();
+                    bufferedMap.put(template.getName(), dungeonTemplates.indexOf(template));
+                    dungeonNameMap.put(dirName, bufferedMap);
+                }
+            }
+        }
     }
 
     private static List<PocketTemplate> loadTemplatesFromJson(String nameString, int maxPocketSize) { //depending on the "jSonType" value in the jSon, this might load several variations of a pocket at once, hence loadTemplate -->s<--
@@ -136,8 +167,9 @@ public class SchematicHandler {
         List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate, maxPocketSize);
         //DimDoors.log(SchematicHandler.class, "Checkpoint 4 reached; " + validTemplates.size() + " templates were loaded");
 
+        String subDirectory = jsonTemplate.get("directory").getAsString(); //get the subfolder in which the schematics are stored
+        
         for (PocketTemplate template : validTemplates) { //it's okay to "tap" this for-loop, even if validTemplates is empty.
-            String subDirectory = jsonTemplate.get("directory").getAsString(); //get the subfolder in which the schematics are stored
             String extendedTemplatelocation = subDirectory.equals("") ? template.getName() : subDirectory + "/" + template.getName(); //transform the filename accordingly
 
             //Initialising the possible locations/formats for the schematic file
@@ -172,7 +204,7 @@ public class SchematicHandler {
             Schematic schematic = null;
             try {
                 schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                schematic = Schematic.loadFromNBT(schematicNBT);
+                schematic = Schematic.loadFromNBT(schematicNBT, template.getName());
                 schematicDataStream.close();
             } catch (IOException ex) {
                 Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + template.getName() + " could not be read as a valid schematic NBT file.", ex);
@@ -201,9 +233,10 @@ public class SchematicHandler {
     }
 
     private static List<PocketTemplate> getAllValidVariations(JsonObject jsonTemplate, int maxPocketSize) {
-        String jsonType = jsonTemplate.get("jsonType").getAsString();
-        EnumPocketType pocketType = EnumPocketType.getFromInt(jsonTemplate.get("pocketType").getAsInt());
-        JsonArray variations = jsonTemplate.getAsJsonArray("variations");
+        final String directory = jsonTemplate.get("directory").getAsString();
+        final String jsonType = jsonTemplate.get("jsonType").getAsString();
+        final EnumPocketType pocketType = EnumPocketType.getFromInt(jsonTemplate.get("pocketType").getAsInt());
+        final JsonArray variations = jsonTemplate.getAsJsonArray("variations");
 
         List<PocketTemplate> pocketTemplates = new ArrayList();
         JsonObject chosenVariation = null; //only applicable if jsonType == "Singular"
@@ -247,7 +280,7 @@ public class SchematicHandler {
             for (int j = 0; j < weightsJsonArray.size(); j++) {
                 weights[j] = weightsJsonArray.get(j).getAsInt();
             }
-            PocketTemplate pocketTemplate = new PocketTemplate(variantName, variationSize, pocketType, minDepth, maxDepth, weights);
+            PocketTemplate pocketTemplate = new PocketTemplate(directory, variantName, variationSize, pocketType, minDepth, maxDepth, weights);
             pocketTemplates.add(pocketTemplate);
         }
 
@@ -266,6 +299,26 @@ public class SchematicHandler {
      */
     public PocketTemplate getPublicPocketTemplate() {
         return publicPocketTemplate;
+    }
+
+    /**
+     * @param directory file directory of the template schematic
+     * @param name filename of the template schematic
+     * @return the dungeonTemplate that was loaded from folder {@code directory}
+     * with filename {@code name}
+     */
+    public PocketTemplate getDungeonTemplate(String directory, String name) {
+        //@todo nullcheck on the parameters
+        int index = dungeonNameMap.get(directory).get(name);
+        return dungeonTemplates.get(index);
+    }
+
+    public ArrayList<String> getDungeonTemplateGroups() {
+        return new ArrayList(dungeonNameMap.keySet());
+    }
+
+    public ArrayList<String> getDungeonTemplateNames(String directory) {
+        return new ArrayList(dungeonNameMap.get(directory).keySet());
     }
 
     /**

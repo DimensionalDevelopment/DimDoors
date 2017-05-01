@@ -432,4 +432,11 @@ public class RiftRegistry {
         DDTileEntityBase rift = (DDTileEntityBase) rifts.get(riftID).getTileEntity();
         return rift.getPocketID();
     }
+
+    /**
+     * @param ID the lastGeneratedEntranceDoorID to set
+     */
+    public void setLastGeneratedEntranceDoorID(int ID) {
+        this.lastGeneratedEntranceDoorID = ID;
+    }
 }

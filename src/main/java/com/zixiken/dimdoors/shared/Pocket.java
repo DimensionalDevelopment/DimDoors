@@ -61,7 +61,7 @@ public class Pocket {
         return z;
     }
 
-    int getEntranceDoorID() {
+    public int getEntranceDoorID() {
         if (riftIDs.isEmpty()) {
             return -1;
         } else if (riftIDs.size() == 1) {

@@ -1,7 +1,9 @@
 package com.zixiken.dimdoors.shared.commands;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.*;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
+import com.zixiken.dimdoors.shared.util.Location;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -13,7 +15,6 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PocketCommand extends CommandBase {
 
@@ -32,7 +33,7 @@ public class PocketCommand extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "dimpocket <name>";
+        return "dimpocket <group> <name>";
     }
 
     @Override
@@ -43,16 +44,60 @@ public class PocketCommand extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 
-        if(sender instanceof EntityPlayerMP) {
+        if (sender instanceof EntityPlayerMP) {
             EntityPlayerMP player = getCommandSenderAsPlayer(sender);
-            BlockPos pos = player.getPosition();
-            World world = player.world;
+            if (areArgumentsValid(args, player)) {
+                DimDoors.log(this.getClass(), "Executing command");
 
-            TileEntityDimDoor newRift = (TileEntityDimDoor) world.getTileEntity(pos);
+                BlockPos pos = player.getPosition();
+                World world = player.world;
+                Location playerLoc = new Location(world, pos);
+
+                PocketTemplate template = SchematicHandler.INSTANCE.getDungeonTemplate(args[0], args[1]);
+                Pocket pocket = PocketRegistry.INSTANCE.generatePocketAt(EnumPocketType.DUNGEON, 1, playerLoc, template);
+                int entranceDoorID = pocket.getEntranceDoorID();
+                RiftRegistry.INSTANCE.setLastGeneratedEntranceDoorID(entranceDoorID);
+            }
+        } else {
+            DimDoors.log(this.getClass(), "Not executing command, because it wasn't sent by a player.");
         }
     }
 
+    @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
-        return SchematicHandler.INSTANCE.getDungeonTemplates().stream().map(PocketTemplate::getName).collect(Collectors.toList());
+        if (args == null || args.length < 2) { //counts an empty ("") argument as an argument as well...
+            return SchematicHandler.INSTANCE.getDungeonTemplateGroups();
+        } else if (args.length == 2) {
+            return SchematicHandler.INSTANCE.getDungeonTemplateNames(args[0]);
+        } else if (args.length == 3) {
+            List<String> list = new ArrayList();
+            list.add("Remove_this");
+            return list;
+        } else { 
+            List<String> list = new ArrayList();
+            list.add("No_seriously");
+            return list;
+        }
+    }
+
+    private boolean areArgumentsValid(String[] args, EntityPlayerMP player) {
+        if (args.length < 2) {
+            DimDoors.chat(player, "Too few arguments.");
+            return false;
+        } else if (args.length > 2) {
+            DimDoors.chat(player, "Too many arguments.");
+            return false;
+        } else { //exactly 2 arguments
+            if (!SchematicHandler.INSTANCE.getDungeonTemplateGroups().contains(args[0])) {
+                DimDoors.chat(player, "Group not found.");
+                return false;
+            } else if (!SchematicHandler.INSTANCE.getDungeonTemplateNames(args[0]).contains(args[1])) {
+                DimDoors.chat(player, "Schematic not found.");
+                return false;
+            } else {
+                DimDoors.chat(player, "Generating schematic " + args[1]);
+                return true;
+            }
+        }
     }
 }

@@ -195,6 +195,10 @@ public class PocketRegistry {
         //Fetching the pocket template
         PocketTemplate pocketTemplate = getRandomPocketTemplate(typeID, depth, maxPocketSize);
 
+        return generatePocketAt(typeID, depth, origRiftLocation, pocketTemplate);
+    }
+    
+    public Pocket generatePocketAt(EnumPocketType typeID, int depth, Location origRiftLocation, PocketTemplate pocketTemplate) {
         //Getting the physical grid-location and the Overworld coordinates
         Location shortenedLocation = getGenerationlocation(nextUnusedIDs.get(typeID), typeID);
         int shortenedX = shortenedLocation.getPos().getX();
