@@ -130,7 +130,11 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
                         DimDoors.proxy.updateDoorTE((BlockDimDoorBase) world.getBlockState(pos).getBlock(), world, pos);
                     }
                 } else {
-                    tileEntity.readFromNBT(tileEntityNBT); //this reads in the wrong blockPos
+                    try {
+                        tileEntity.readFromNBT(tileEntityNBT); //this reads in the wrong blockPos
+                    } catch(Exception e) {
+                        DimDoors.warn(this.getClass(), "Loading in the data for TileEntity of type " + tileEntity.toString() + " went wrong. Details: " + e.getLocalizedMessage());
+                    }
                 }
                 tileEntity.setPos(pos); //correct the position
                 tileEntity.markDirty();
