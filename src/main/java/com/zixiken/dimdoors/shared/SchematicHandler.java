@@ -49,7 +49,7 @@ public class SchematicHandler {
     final private Map<String, Map<String, Integer>> dungeonNameMap = new HashMap();
     //@todo, sort templates by depth over here? that'd mean that that doesn't have to be done on pocket placement each and every time
 
-    PocketTemplate getRandomDungeonPocketTemplate(int depth, int maxPocketSize) {
+    PocketTemplate getRandomDungeonPocketTemplate(int depth, int maxPocketSize) { //@todo maxPocketSize is passed for no reason at all here; pockets exceeding maxPocketSize have not been loaded in the first place...
         List<PocketTemplate> validTemplates = new ArrayList();
         int totalWeight = 0;
         for (PocketTemplate template : dungeonTemplates) {
@@ -168,7 +168,7 @@ public class SchematicHandler {
         //DimDoors.log(SchematicHandler.class, "Checkpoint 4 reached; " + validTemplates.size() + " templates were loaded");
 
         String subDirectory = jsonTemplate.get("directory").getAsString(); //get the subfolder in which the schematics are stored
-        
+
         for (PocketTemplate template : validTemplates) { //it's okay to "tap" this for-loop, even if validTemplates is empty.
             String extendedTemplatelocation = subDirectory.equals("") ? template.getName() : subDirectory + "/" + template.getName(); //transform the filename accordingly
 
@@ -180,19 +180,24 @@ public class SchematicHandler {
 
             //determine which location to load the schematic file from (and what format)
             DataInputStream schematicDataStream = null;
+            boolean streamOpened = false;
             if (schematicStream != null) {
                 schematicDataStream = new DataInputStream(schematicStream);
+                streamOpened = true;
             } else if (oldVersionSchematicStream != null) {
                 schematicDataStream = new DataInputStream(oldVersionSchematicStream);
+                streamOpened = true;
             } else if (schematicFile.exists()) {
                 try {
                     schematicDataStream = new DataInputStream(new FileInputStream(schematicFile));
+                    streamOpened = true;
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schem did not load correctly from config folder.", ex);
                 }
             } else if (oldVersionSchematicFile.exists()) {
                 try {
                     schematicDataStream = new DataInputStream(new FileInputStream(oldVersionSchematicFile));
+                    streamOpened = true;
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schematic did not load correctly from config folder.", ex);
                 }
@@ -202,17 +207,19 @@ public class SchematicHandler {
 
             NBTTagCompound schematicNBT;
             Schematic schematic = null;
-            try {
-                schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                schematic = Schematic.loadFromNBT(schematicNBT, template.getName());
-                schematicDataStream.close();
-            } catch (IOException ex) {
-                Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + template.getName() + " could not be read as a valid schematic NBT file.", ex);
-            } finally {
+            if (streamOpened) {
                 try {
+                    schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
+                    schematic = Schematic.loadFromNBT(schematicNBT, template.getName());
                     schematicDataStream.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Error occured while closing schematicDataStream", ex);
+                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + template.getName() + " could not be read as a valid schematic NBT file.", ex);
+                } finally {
+                    try {
+                        schematicDataStream.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Error occured while closing schematicDataStream", ex);
+                    }
                 }
             }
 

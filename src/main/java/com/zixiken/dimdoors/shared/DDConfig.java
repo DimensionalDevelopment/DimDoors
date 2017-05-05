@@ -23,8 +23,8 @@ public class DDConfig {
     public static final boolean HAVE_CONFIG_DEFAULTS_BEEN_CHECKED_FOR_CORRECTNESS = false; //@todo check this at each non-alpha release. This field does not have a use in the mod itself, but should ensure that the developers of this mod, don't forget to reset the config defaults to the right values before releasing a non-alpha release
 
     public static File configurationFolder;
-    private static int pocketGridSize = 8;
-    private static int maxPocketSize = 4;
+    private static int pocketGridSize = 32;
+    private static int maxPocketSize = 15;
     private static int privatePocketSize = 3;
     private static int publicPocketSize = 2;
     private static int baseDimID = 684;
@@ -68,17 +68,17 @@ public class DDConfig {
         //@todo a comment in the config files about how these values only influence new worlds
         Property prop;
         pocketGridSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "pocketGridSize", pocketGridSize,
-                "Sets how many chunks apart all pockets in pocket dimensions should be placed. [min: 4, max: 16, default: 8]", 4, 16);
+                "Sets how many chunks apart all pockets in pocket dimensions should be placed. [min: 4, max: 32, default: 32]", 4, 32);
         DimDoors.log(DDConfig.class, "pocketGridSize was set to " + pocketGridSize);
 
         maxPocketSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "maxPocketSize", maxPocketSize,
-                "Sets how deep and wide any pocket can be. [min: 1, max: pocketGridSize/2, default: 4]", 1, (int) (((double) pocketGridSize / 2) - 0.5));
+                "Sets how deep and wide any pocket can be. [min: 0, max: pocketGridSize/2, default: 4]", 0, (int) (((double) pocketGridSize / 2) - 0.5));
 
         privatePocketSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "privatePocketSize", privatePocketSize,
-                "Sets how deep and wide any personal pocket can be. [min: 1, max: maxPocketsSize, default: 3]", 1, maxPocketSize);
+                "Sets how deep and wide any personal pocket can be. [min: 0, max: maxPocketsSize, default: 3]", 0, maxPocketSize);
 
         publicPocketSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "publicPocketSize", publicPocketSize,
-                "Sets how deep and wide any public pocket can be. [min: 1, max: maxPocketsSize, default: 2]", 1, maxPocketSize);
+                "Sets how deep and wide any public pocket can be. [min: 0, max: maxPocketsSize, default: 2]", 0, maxPocketSize);
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "dungeonSchematicNames", dungeonSchematicNames,
                 "List of names of Pockets' jSon- and Schematic file names excluding extension. Custom json and schematic files can be dropped in the corresponding folders.");
@@ -109,9 +109,11 @@ public class DDConfig {
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "dangerousLimboMonolithsDisabled", DangerousLimboMonolithsDisabled,
                 "Is Monoliths Dangerous in Limbo disabled?");
+        DangerousLimboMonolithsDisabled = prop.getBoolean();
 
         prop = config.get(Configuration.CATEGORY_GENERAL, "dangerousLimboMonolithsDisabled", MonolithTeleportationEnabled,
                 "Is Monolith Teleportation disabled?");
+        MonolithTeleportationEnabled = prop.getBoolean();
 
         checkAndCorrectDoorRelativeDepths(config);
 

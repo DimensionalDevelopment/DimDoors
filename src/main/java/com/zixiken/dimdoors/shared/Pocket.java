@@ -28,7 +28,7 @@ import net.minecraft.world.WorldServer;
 public class Pocket {
 
     private int ID; //this gets reset every server-load
-    private final int size; //in chunks
+    private final int size; //in chunks 0 -> 1*1 chunk, 1 -> 2*2 chunks
     private final int depth;
     private final EnumPocketType typeID; // dungeon, pocket, or personal pocket
     private final int x; //pocket-relative 0 coordinate, should be at x * PocketRegistry.INSTANCE.gridSize * 16
@@ -78,7 +78,7 @@ public class Pocket {
 
     public void setID(int newID) {
         ID = newID;
-        
+
         //propagate this ID to the rifts in this pocket
         for (int riftID : riftIDs) {
             Location riftLocation = RiftRegistry.INSTANCE.getRiftLocation(riftID);
@@ -103,9 +103,9 @@ public class Pocket {
             riftIDs.add(doorID);
         }
         Location depthZeroLocation = Location.readFromNBT(pocketNBT.getCompoundTag("depthZeroLocation"));
-        
+
         Pocket pocket = new Pocket(size, depth, typeID, x, z, riftIDs, depthZeroLocation);
-        
+
         pocket.setID(pocketNBT.getInteger("ID")); //basically re-register the pocket        
         NBTTagList playersTagList = (NBTTagList) pocketNBT.getTag("playerUUIDs");
         for (int i = 0; i < playersTagList.tagCount(); i++) {
@@ -167,15 +167,34 @@ public class Pocket {
 
     public void validatePlayerEntry(EntityPlayer player) {
         String playerUUID = player.getCachedUniqueIdString();
-        for (String allowedPlayerUUID : playerUUIDs) {
-            if (allowedPlayerUUID.equals(playerUUID)) {
-                return;
-            }
+        if (!playerUUIDs.contains(playerUUID)) { //the 'contains' method uses the 'equals' method to check, so for Strings, this should work.
+            playerUUIDs.add(playerUUID);
         }
-        playerUUIDs.add(playerUUID);
+    }
+
+    public boolean isPlayerAllowedInPocket(EntityPlayer player) {
+        String playerUUID = player.getCachedUniqueIdString();
+        return playerUUIDs.contains(playerUUID);
     }
 
     public void setDepthZeroLocation(Location teleportTargetLocation) {
         depthZeroLocation.loadfrom(teleportTargetLocation);
+    }
+
+    boolean isLocationWithinPocketBounds(final Location location, final int gridSize) {
+        int locX = location.getPos().getX();
+        int locZ = location.getPos().getY();
+        //minimum bounds of the pocket
+        int pocX = x * gridSize;
+        int pocZ = z * gridSize;
+        if (pocX <= locX && pocZ <= locZ) {
+            //convert to maximum bounds of the pocket
+            pocX = pocX + (size + 1) * 16;
+            pocZ = pocZ + (size + 1) * 16;
+            if (locX < pocX && locZ < pocZ) {
+                return true;
+            }
+        }
+        return false;
     }
 }

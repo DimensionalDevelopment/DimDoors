@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -136,11 +137,11 @@ public class PocketRegistry {
         nbt.setTag("nextUnusedIDs", nextUnusedIDTagCompound);
 
         NBTTagCompound privatePocketsTagCompound = new NBTTagCompound();
-        for (String UUID: privatePockets.keySet()) {
+        for (String UUID : privatePockets.keySet()) {
             privatePocketsTagCompound.setInteger(UUID, privatePockets.get(UUID));
         }
         nbt.setTag("privatePockets", privatePocketsTagCompound);
-        
+
         NBTTagCompound pocketsTagCompound = new NBTTagCompound();
         for (EnumPocketType pocketType : pocketLists.keySet()) {
             Map<Integer, Pocket> pocketList = pocketLists.get(pocketType);
@@ -197,7 +198,7 @@ public class PocketRegistry {
 
         return generatePocketAt(typeID, depth, origRiftLocation, pocketTemplate);
     }
-    
+
     public Pocket generatePocketAt(EnumPocketType typeID, int depth, Location origRiftLocation, PocketTemplate pocketTemplate) {
         //Getting the physical grid-location and the Overworld coordinates
         Location shortenedLocation = getGenerationlocation(nextUnusedIDs.get(typeID), typeID);
@@ -221,19 +222,32 @@ public class PocketRegistry {
     public int getPrivateDimDoorID(String playerUUID) {
         if (!privatePockets.containsKey(playerUUID)) {
             //generate a new private pocket
-            int doorID = getEntranceDoorIDOfNewPocket(EnumPocketType.PRIVATE, 0, new Location(0,0,0,0)); //Location doesn't really matter in this case
+            int doorID = getEntranceDoorIDOfNewPocket(EnumPocketType.PRIVATE, 0, new Location(0, 0, 0, 0)); //Location doesn't really matter in this case
             privatePockets.put(playerUUID, doorID);
             return doorID;
-        } 
+        }
         return privatePockets.get(playerUUID);
     }
 
-    private Location getGenerationlocation(int nextUnusedID, EnumPocketType typeID) {
-        int x = getSimpleX(nextUnusedID);
+    private Location getGenerationlocation(final int nextUnusedID, EnumPocketType typeID) {
+        int x;
         int y = 0;
-        int z = getSimpleZ(nextUnusedID);
+        int z;
         int dimID = DimDoorDimensions.getPocketDimensionType(typeID).getId();
-
+        if (nextUnusedID == 0) {
+            x = 0;
+            z = 0;
+        } else {
+            int radius = (int) Math.sqrt(nextUnusedID); //casting to int rounds down the double resulting from taking the square root
+            int radiusNumber = nextUnusedID - (radius * radius);
+            double splitter = ((double) radiusNumber) / ((double) radius); //always between 0 and 2
+            DimDoors.log(this.getClass(), "id is " + nextUnusedID);
+            DimDoors.log(this.getClass(), "Radius is " + radius);
+            DimDoors.log(this.getClass(), "Radius number is " + radiusNumber);
+            DimDoors.log(this.getClass(), "Splitter is " + splitter);
+            x = splitter <= 1.0 ? radius : radius - (radiusNumber - radius);
+            z = splitter >= 1.0 ? radius : radiusNumber;
+        }
         Location location = new Location(dimID, x, y, z);
         return location;
     }
@@ -250,6 +264,7 @@ public class PocketRegistry {
         }
     }
 
+    /*
     private int getSimpleX(int ID) {
         //@todo check for smaller than 0
         if (ID == 0) {
@@ -299,5 +314,39 @@ public class PocketRegistry {
             group = (group * 2) - 1;
         }
         return group;
+    }
+     */
+    private int getPocketIDFromCoords(Location location) {
+        final int dimID = location.getDimensionID();
+        if (DimDoorDimensions.isPocketDimensionID(dimID)) {
+            int x = location.getPos().getX();
+            int z = location.getPos().getZ();
+            int shortX = x / (gridSize * 16);
+            int shortZ = z / (gridSize * 16);
+            if (shortX >= shortZ) {
+                return shortX * shortX + shortZ;
+            } else {
+                return (shortZ + 2) * shortZ - shortX;
+            }
+        }
+        return -1; //not in a pocket dimension
+    }
+
+    public boolean isPlayerAllowedToBeHere(final EntityPlayerMP player, final Location location) {
+        if (player.isCreative()) {
+            return true;
+        } else {
+            int pocketID = getPocketIDFromCoords(location);
+            if (pocketID < 0) { //not in a pocket dimension
+                return true;
+            } else {
+                EnumPocketType type = DimDoorDimensions.getPocketType(location.getDimensionID());
+                Pocket pocket = pocketLists.get(type).get(pocketID);
+                if (pocket.isPlayerAllowedInPocket(player) && pocket.isLocationWithinPocketBounds(location, gridSize)) {
+                    return true;
+                }
+                return false;
+            }
+        }
     }
 }

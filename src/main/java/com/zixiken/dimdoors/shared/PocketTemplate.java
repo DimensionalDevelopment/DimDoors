@@ -44,7 +44,7 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         this.weights = weights; //chance that this Pocket will get generated
         this.minDepth = minDepth; //pocket will only be generated from this Pocket-depth
         this.maxDepth = maxDepth; //to this pocket depth
-        this.size = size; //size of content of pocket in chunks (walls are 5 thick, so size 0 will be 6*6 blocks, size 1 will be 22*22 blocks, etc.
+        this.size = size; //size of pocket in chunks (0 -> 1*1 chunk, 1 -> 2*2 chunks etc.)
         this.schematic = schematic;
         this.typeID = typeID;
     }
