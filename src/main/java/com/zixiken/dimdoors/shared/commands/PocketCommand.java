@@ -3,6 +3,7 @@ package com.zixiken.dimdoors.shared.commands;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.*;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
+import com.zixiken.dimdoors.shared.util.DDStringUtils;
 import com.zixiken.dimdoors.shared.util.Location;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -65,19 +66,19 @@ public class PocketCommand extends CommandBase {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+        List<String> list = new ArrayList();
         if (args == null || args.length < 2) { //counts an empty ("") argument as an argument as well...
-            return SchematicHandler.INSTANCE.getDungeonTemplateGroups();
+            list = SchematicHandler.INSTANCE.getDungeonTemplateGroups();
+            list = DDStringUtils.getMatchingStrings(args[0], list, false);
         } else if (args.length == 2) {
-            return SchematicHandler.INSTANCE.getDungeonTemplateNames(args[0]);
+            list = SchematicHandler.INSTANCE.getDungeonTemplateNames(args[0]);
+            list = DDStringUtils.getMatchingStrings(args[1], list, false);
         } else if (args.length == 3) {
-            List<String> list = new ArrayList();
             list.add("Remove_this");
-            return list;
-        } else { 
-            List<String> list = new ArrayList();
+        } else {
             list.add("No_seriously");
-            return list;
         }
+        return list;
     }
 
     private boolean areArgumentsValid(String[] args, EntityPlayerMP player) {
