@@ -79,7 +79,8 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
         return this;
     }
 
-    public boolean isDoorOnRift(World world, BlockPos pos) {
+    @Override
+    public boolean isDoorOnRift(World world, BlockPos pos) { //@todo what does this even mean?
         return true;
     }
 

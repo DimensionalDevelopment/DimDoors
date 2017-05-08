@@ -5,6 +5,7 @@ import com.zixiken.dimdoors.shared.*;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
 import com.zixiken.dimdoors.shared.util.DDStringUtils;
 import com.zixiken.dimdoors.shared.util.Location;
+import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -52,10 +53,18 @@ public class PocketCommand extends CommandBase {
 
                 BlockPos pos = player.getPosition();
                 World world = player.world;
-                Location playerLoc = new Location(world, pos);
+                Location origLoc = new Location(world, pos);
+
+                int dimID = origLoc.getDimensionID();
+                if (DimDoorDimensions.isPocketDimensionID(dimID)) {
+                    int pocketID = PocketRegistry.INSTANCE.getPocketIDFromCoords(origLoc);
+                    EnumPocketType type = DimDoorDimensions.getPocketType(dimID);
+                    Pocket oldPocket = PocketRegistry.INSTANCE.getPocket(pocketID, type);
+                    origLoc = oldPocket.getDepthZeroLocation();
+                }
 
                 PocketTemplate template = SchematicHandler.INSTANCE.getDungeonTemplate(args[0], args[1]);
-                Pocket pocket = PocketRegistry.INSTANCE.generatePocketAt(EnumPocketType.DUNGEON, 1, playerLoc, template);
+                Pocket pocket = PocketRegistry.INSTANCE.generatePocketAt(EnumPocketType.DUNGEON, 1, origLoc, template);
                 int entranceDoorID = pocket.getEntranceDoorID();
                 RiftRegistry.INSTANCE.setLastGeneratedEntranceDoorID(entranceDoorID);
             }

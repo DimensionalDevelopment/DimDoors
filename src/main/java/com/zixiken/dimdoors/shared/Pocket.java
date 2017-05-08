@@ -34,7 +34,7 @@ public class Pocket {
     private final int x; //pocket-relative 0 coordinate, should be at x * PocketRegistry.INSTANCE.gridSize * 16
     private final int z; //pocket-relative 0 coordinate, should be at z * PocketRegistry.INSTANCE.gridSize * 16
     private final List<String> playerUUIDs;
-    private final List<Integer> riftIDs;
+    private final List<Integer> riftIDs; //@todo these aren't being used after the entrance door has been paired, I believe
     private final Location depthZeroLocation;
     //when adding any new variables, don't forget to add them to the write and load functions
 
@@ -159,10 +159,21 @@ public class Pocket {
     }
 
     /**
+     * @return the depth
+     */
+    public int getDepth() {
+        return depth;
+    }
+
+    /**
      * @return the depthZeroLocation
      */
     public Location getDepthZeroLocation() {
         return depthZeroLocation;
+    }
+    
+    public void addRiftID(int id) {
+        riftIDs.add(id);
     }
 
     public void validatePlayerEntry(EntityPlayer player) {

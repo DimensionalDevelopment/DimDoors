@@ -6,6 +6,7 @@ import com.zixiken.dimdoors.shared.IChunkLoader;
 import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.util.Location;
+import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 
@@ -68,8 +69,11 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
         //DimDoors.log(this.getClass(), "Trying to find suitable destination rift.");
         int otherRiftID = RiftRegistry.INSTANCE.getRandomUnpairedRiftIDAtDepth(getRiftID(), depth);
         if (otherRiftID < 0) {
-            Location locationOfThisRift = RiftRegistry.INSTANCE.getRiftLocation(this.riftID);
-            otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), locationOfThisRift);
+            Location origLocation = RiftRegistry.INSTANCE.getRiftLocation(this.riftID);
+            if (origLocation.getDimensionID() == DimDoorDimensions.getPocketDimensionType(EnumPocketType.DUNGEON).getId()) { //if this dimdoor is a pocket Dungeon
+                origLocation = PocketRegistry.INSTANCE.getPocket(pocketID, pocketType).getDepthZeroLocation();
+            }
+            otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), origLocation);
         }
 
         if (otherRiftID < 0) {

@@ -4,6 +4,7 @@ import com.zixiken.dimdoors.DimDoors;
 import java.io.Serializable;
 import java.util.Objects;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -56,11 +57,16 @@ public class Location implements Serializable {
         return dimensionID;
     }
 
-    public static Location getLocation(TileEntity tileEntity) {//@todo Location is not yet comparable, so a Location begotten by this method, can not be used to find a rift ID in the RiftRegistry
+    public static Location getLocation(TileEntity tileEntity) {
         World world = tileEntity.getWorld();
-        int dimID = world.provider.getDimension();
         BlockPos blockPos = tileEntity.getPos();
-        return new Location(dimID, blockPos);
+        return new Location(world, blockPos);
+    }
+
+    public static Location getLocation(Entity entity) {
+        World world = entity.world;
+        BlockPos blockPos = entity.getPosition();
+        return new Location(world, blockPos);
     }
 
     public static NBTTagCompound writeToNBT(Location location) {

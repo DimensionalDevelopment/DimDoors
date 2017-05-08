@@ -3,6 +3,7 @@ package com.zixiken.dimdoors.shared.tileentities;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.EnumPocketType;
+import com.zixiken.dimdoors.shared.Pocket;
 import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoor;
 import com.zixiken.dimdoors.shared.util.Location;
@@ -90,26 +91,42 @@ public class TileEntityDimDoor extends DDTileEntityBase {
             //load data from old rift (that must already have been registered)
             loadDataFrom(oldRift);
         } else {
+            Location locationOfThisRift = new Location(world, pos);
+            pocketID = PocketRegistry.INSTANCE.getPocketIDFromCoords(locationOfThisRift);
+
+            if (pocketID >= 0) {
+                isInPocket = true;
+                pocketType = DimDoorDimensions.getPocketType(locationOfThisRift.getDimensionID());
+                Pocket pocket = PocketRegistry.INSTANCE.getPocket(pocketID, pocketType);
+                depth = pocket.getDepth();
+            }
             //default data and set register this rift in the registry
-            register(0); //@todo check if it's in a pocket and register it at that depth instead if applicable
+            register(depth); //depth is 0 by default; registration sets this rift's riftID
+
+            if (pocketID >= 0) {
+                Pocket pocket = PocketRegistry.INSTANCE.getPocket(pocketID, pocketType);
+                pocket.addRiftID(riftID); //@todo not used yet?
+            }
         }
         //storing the orientation inside the tile-entity, because that thing can actually save the orientation in the worldsave, unlike the block itself, which fail at that stuff somehow
-        this.orientation = this.getWorld().getBlockState(this.getPos()).getValue(BlockDimDoor.FACING).getOpposite();
+        this.orientation = this.getWorld().getBlockState(this.getPos()).getValue(BlockDimDoor.FACING).getOpposite(); //@todo since this is used to determine the render of the "portal, this gets reset to the "wrong" side every time the door gets updated
     }
 
     protected int getNewTeleportDestination() {
         int otherRiftID;
         Location locationOfThisRift = RiftRegistry.INSTANCE.getRiftLocation(this.riftID); //returns null if this rift isn't registered
-        if (locationOfThisRift.getDimensionID() == DimDoorDimensions.getPocketDimensionType(EnumPocketType.DUNGEON).getId()) { //if this dimdoor is a pocket Dungeon
+        
+        if (this.isInPocket && this.pocketType ==EnumPocketType.DUNGEON) {
+            Location origLocation = PocketRegistry.INSTANCE.getPocket(pocketID, pocketType).getDepthZeroLocation();
             //choose between generating a new pocket or connecting to another door on a similar or close depth
             if (DDRandomUtils.weightedBoolean(20, 80)) { //@todo make this configurable
                 otherRiftID = RiftRegistry.INSTANCE.getRandomUnpairedRiftIDAroundDepth(getRiftID(), depth);
                 if (otherRiftID < 0) { //ergo: no other rift can be found
                     //@todo, this should rarely happen. Put in an easter egg?
-                    otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), locationOfThisRift);
+                    otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), origLocation);
                 }
             } else {
-                otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), locationOfThisRift);
+                otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), origLocation);
             }
         } else {
             otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.PUBLIC, 0, locationOfThisRift); //@todo should this depth be 1 instead?

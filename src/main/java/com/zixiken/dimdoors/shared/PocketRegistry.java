@@ -316,7 +316,7 @@ public class PocketRegistry {
         return group;
     }
      */
-    private int getPocketIDFromCoords(Location location) {
+    public int getPocketIDFromCoords(Location location) {
         final int dimID = location.getDimensionID();
         if (DimDoorDimensions.isPocketDimensionID(dimID)) {
             int x = location.getPos().getX();

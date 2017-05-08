@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-@Mod(modid = DimDoors.MODID, name = "Dimensional Doors", version = DimDoors.VERSION)
+@Mod(modid = DimDoors.MODID, name = "Dimensional Doors", version = DimDoors.VERSION, dependencies = "required-after:Forge@[12.18.3.2281,)")
 public class DimDoors {
 
     public static final String VERSION = "${version}";
