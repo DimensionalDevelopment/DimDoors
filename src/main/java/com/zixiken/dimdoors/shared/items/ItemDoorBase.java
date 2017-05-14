@@ -10,7 +10,6 @@ import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
@@ -55,6 +54,7 @@ public abstract class ItemDoorBase extends ItemDoor {
      */
     protected abstract BlockDimDoorBase getDoorBlock();
 
+    //onItemUse gets fired before onItemRightClick and if it returns "success", onItemRightClick gets skipped.
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World worldIn, EntityPlayer playerIn, EnumHand hand) {
         if (worldIn.isRemote) {
@@ -68,28 +68,26 @@ public abstract class ItemDoorBase extends ItemDoor {
             return new ActionResult(canDoorBePlacedOnGroundBelowRift, stack);
         }
         return new ActionResult(EnumActionResult.FAIL, stack); //@todo, should return onItemUse(params) here? will door placement on block not work otherwise?
-        
+
         //@todo personal and chaos doors can be placed on top of a rift? Should not be possible
     }
 
     @Override
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) {
-            return EnumActionResult.FAIL; //@todo, is this needed, or does this always get called from the onItemRightClick(params) method?
+            return EnumActionResult.SUCCESS;
         }
-
+        
         Block block = world.getBlockState(pos).getBlock();
-        if (block.isReplaceable(world, pos) && block != Blocks.AIR) { //why are we even checking for Blocks.AIR here? How would one use an item on an air block. It has no hitbox, does it?
+        if (!block.isReplaceable(world, pos)) {
+            if (side != EnumFacing.UP) {
+                return EnumActionResult.FAIL;
+            }
+        } else {
             pos = pos.offset(EnumFacing.DOWN); //the bottom part of the door can replace this block, so we will try to place it on the block under it
-            block = world.getBlockState(pos).getBlock(); //update the block to be placed on
-            side = EnumFacing.UP; //make sure that the next if-statement returns true
         }
 
-        if (side != EnumFacing.UP || block == Blocks.AIR) { //only place the door if the item is "used" on the top of the block it is to be placed on and we might as well check if that block is air or not even though I do not think it is needed (isSideSolid gets checked later)
-            return EnumActionResult.FAIL;
-        } else {
-            return tryPlaceDoorOnTopOfBlock(stack, playerIn, world, pos, hand, hitX, hitY, hitZ);
-        }
+        return tryPlaceDoorOnTopOfBlock(stack, playerIn, world, pos, hand, hitX, hitY, hitZ);
     }
 //pos = position of block, the door gets placed on
 
@@ -99,8 +97,10 @@ public abstract class ItemDoorBase extends ItemDoor {
         // return null, just as if the item was an unrecognized door type.
         ItemDoorBase mappedItem = doorItemMapping.get(stack.getItem());
         if (mappedItem == null) {
+            DimDoors.warn(ItemDoorBase.class, "Item " + stack.getItem().toString() + " does not seem to have a valid mapped ItemDoor.");
             return EnumActionResult.FAIL;
         }
+
         pos = pos.up(); //change pos to position the bottom half of the door gets placed at
         BlockDimDoorBase doorBlock = mappedItem.getDoorBlock();
         if (playerIn.canPlayerEdit(pos, EnumFacing.UP, stack) && playerIn.canPlayerEdit(pos.up(), EnumFacing.UP, stack)
@@ -120,7 +120,9 @@ public abstract class ItemDoorBase extends ItemDoor {
             placeDoor(world, pos, enumfacing, doorBlock, flag);
             SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, playerIn);
             world.playSound(playerIn, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-            --stack.stackSize;
+            if (!playerIn.isCreative()) {
+                --stack.stackSize;
+            }
 
             //fetch the TileEntityDimDoor at the top block of where the door has just been placed
             TileEntityDimDoor newTileEntityDimDoor = (TileEntityDimDoor) world.getTileEntity(pos.up());

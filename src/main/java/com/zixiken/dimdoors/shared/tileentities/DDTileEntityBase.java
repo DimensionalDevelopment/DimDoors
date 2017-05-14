@@ -185,7 +185,6 @@ public abstract class DDTileEntityBase extends TileEntity implements ITickable {
     @Override
     public void update() {
         if (isTeleporting && teleportingEntity != null) {
-            IDimDoor door = (IDimDoor) this.world.getBlockState(this.pos).getBlock();
             if (tryTeleport(teleportingEntity)) {
                 //player is succesfully teleported
             } else {

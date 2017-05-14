@@ -63,6 +63,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
             state = state.cycleProperty(BlockDoor.OPEN);
             world.setBlockState(pos, state, 2);
             world.markBlockRangeForRenderUpdate(pos, pos.up());
+            world.playEvent(player, (state.getValue(OPEN)) ? this.getOpenSound() : this.getCloseSound(), pos, 0);
             return true;
         }
     }
@@ -178,16 +179,26 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
         IBlockState groundState = worldIn.getBlockState(pos.down());
         IBlockState bottomState = worldIn.getBlockState(pos);
         IBlockState topState = worldIn.getBlockState(pos.up());
-        return pos.up().getY() > worldIn.getHeight() - 1 || pos.getY() < 1 ? false //top half can never be placed above buildHeight (255), (worldIn.getHeight() should return 256) and bottom half can never be placed below y=1
-                : groundState.isSideSolid(worldIn, pos.down(), EnumFacing.UP)
-                && canPlaceBottomAt(worldIn, pos, bottomState) && canPlaceTopAt(worldIn, pos, topState);
+        return !(pos.up().getY() > worldIn.getHeight() - 1 || pos.getY() < 1) //top half can never be placed above buildHeight (255), (worldIn.getHeight() should return 256) and bottom half can never be placed below y=1
+                && groundState.isSideSolid(worldIn, pos.down(), EnumFacing.UP)
+                && canPlaceBottomAt(bottomState) && canPlaceTopAt(topState);
     }
 
-    private boolean canPlaceBottomAt(World worldIn, BlockPos pos, IBlockState state) {
-        return (state.equals(Blocks.AIR) || state.getBlock().isReplaceable(worldIn, pos));
+    private boolean canPlaceBottomAt(IBlockState state) {
+        return (state.equals(Blocks.AIR) || state.getMaterial().isReplaceable());
     }
 
-    private boolean canPlaceTopAt(World worldIn, BlockPos pos, IBlockState state) {
+    private boolean canPlaceTopAt(IBlockState state) {
         return (state.getBlock() == ModBlocks.blockRift || state.equals(Blocks.AIR) || state.getMaterial().isReplaceable());
+    }
+    
+    protected int getCloseSound()
+    {
+        return this.blockMaterial == Material.IRON ? 1011 : 1012;
+    }
+
+    protected int getOpenSound()
+    {
+        return this.blockMaterial == Material.IRON ? 1005 : 1006;
     }
 }
