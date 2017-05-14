@@ -57,7 +57,7 @@ public abstract class DDProxyCommon implements IDDProxy {
             TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
             IBlockState state = world.getBlockState(pos.down());
             dimTile.orientation = state.getBlock() instanceof BlockDimDoorBase
-                    ? state.getValue(BlockDoor.FACING).rotateY() //@todo the rotateY here is very counter intuitive but seems needed for the render?
+                    ? state.getValue(BlockDoor.FACING).getOpposite()
                     : ModBlocks.blockDimDoor.getDefaultState().getValue(BlockDoor.FACING);
             dimTile.doorIsOpen = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(world.getBlockState(pos));
             dimTile.lockStatus = 0; //@todo

@@ -69,7 +69,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
             GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_LINEAR);
             GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_LINEAR);
 
-            EnumFacing orientation = EnumFacing.getHorizontal((tile.orientation.getHorizontalIndex() % 4) + 4);
+            EnumFacing orientation = tile.orientation.rotateYCCW();
 
             switch (orientation) {
                 case SOUTH:
@@ -121,7 +121,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
             float[] color = tile.getRenderColor(rand);
             GlStateManager.color(color[0] * var17, color[1] * var17, color[2] * var17, color[3]);
 
-            switch (tile.orientation) {
+            switch (orientation) {
                 case SOUTH:
                     worldRenderer.pos(x + .01, y - 1, z).endVertex();
                     worldRenderer.pos(x + .01, y - 1, z + 1.0D).endVertex();
