@@ -38,7 +38,7 @@ public class DDConfig {
     private static int[] doorRelativeDepths = new int[]{-1, 0, 1};
     private static int[] doorRelativeDepthWeights = new int[]{20, 30, 50};
 
-    private static boolean DangerousLimboMonolithsDisabled = true;
+    private static boolean DangerousLimboMonolithsEnabled = false;
     private static boolean MonolithTeleportationEnabled = true;
 
     private static int setConfigIntWithMaxAndMin(Configuration config, String category, String key, int defaultValue, String comment, int minValue, int maxValue) {
@@ -65,57 +65,61 @@ public class DDConfig {
         config.load();
 
         // Setup general
-        //@todo a comment in the config files about how these values only influence new worlds
-        Property prop;
-        pocketGridSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "pocketGridSize", pocketGridSize,
-                "Sets how many chunks apart all pockets in pocket dimensions should be placed. [min: 4, max: 32, default: 32]", 4, 32);
-        DimDoors.log(DDConfig.class, "pocketGridSize was set to " + pocketGridSize);
-
-        maxPocketSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "maxPocketSize", maxPocketSize,
-                "Sets how deep and wide any pocket can be. [min: 0, max: pocketGridSize/2, default: 4]", 0, (int) (((double) pocketGridSize / 2) - 0.5));
-
-        privatePocketSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "privatePocketSize", privatePocketSize,
-                "Sets how deep and wide any personal pocket can be. [min: 0, max: maxPocketsSize, default: 3]", 0, maxPocketSize);
-
-        publicPocketSize = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "publicPocketSize", publicPocketSize,
-                "Sets how deep and wide any public pocket can be. [min: 0, max: maxPocketsSize, default: 2]", 0, maxPocketSize);
-
-        prop = config.get(Configuration.CATEGORY_GENERAL, "dungeonSchematicNames", dungeonSchematicNames,
-                "List of names of Pockets' jSon- and Schematic file names excluding extension. Custom json and schematic files can be dropped in the corresponding folders.");
-        dungeonSchematicNames = prop.getStringList();
-
-        prop = config.get(Configuration.CATEGORY_GENERAL, "baseDimID", baseDimID,
+        config.addCustomCategoryComment("aa_general", "General configuration options.");
+        Property prop = config.get("aa_general", "baseDimID", baseDimID,
                 "Dimension ID of the first Dimensional Doors dimension. Other dimensions will use consecutive IDs. NB: If you change this after creating a world, you may lose these dimensions. [default: 684]");
         baseDimID = prop.getInt(baseDimID);
 
-        maxDungeonDepth = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "maxDungeonDepth", maxDungeonDepth,
+        //Dungeons
+        config.addCustomCategoryComment("dungeons", "The following options will determine the depths, wandering offsets and contents of Dungeon Pockets.");
+        prop = config.get("dungeons", "dungeonSchematicNames", dungeonSchematicNames,
+                "List of names of Dungeon Pockets' jSon- file names excluding extension. Custom json and schematic files can be dropped in the corresponding config folders.");
+        dungeonSchematicNames = prop.getStringList();
+
+        maxDungeonDepth = setConfigIntWithMaxAndMin(config, "dungeons", "maxDungeonDepth", maxDungeonDepth,
                 "Sets the maximum (deepest) depth that a dungeon pocket can be at. [min: 1, max: 32, default: 8]", 1, 32);
 
-        owCoordinateOffsetBase = setConfigIntWithMaxAndMin(config, Configuration.CATEGORY_GENERAL, "owCoordinateOffsetBase", owCoordinateOffsetBase,
+        owCoordinateOffsetBase = setConfigIntWithMaxAndMin(config, "dungeons", "owCoordinateOffsetBase", owCoordinateOffsetBase,
                 "Determines how heavy the depth weighs when determining the overworld coordinates corresponding to a dungeon pocket. [min: 1, max: 128, default: 64]", 1, 128);
 
-        prop = config.get(Configuration.CATEGORY_GENERAL, "owCoordinateOffsetPower", owCoordinateOffsetPower,
+        prop = config.get("dungeons", "owCoordinateOffsetPower", owCoordinateOffsetPower,
                 "Determines how heavy the depth weighs when determining the overworld coordinates corresponding to a dungeon pocket. [default: 1.3]"
                 + System.getProperty("line.separator") + "max offset = (depth * owCoordinateOffsetBase)^owCoordinateOffsetPower");
         owCoordinateOffsetPower = prop.getDouble(owCoordinateOffsetPower);
 
-        prop = config.get(Configuration.CATEGORY_GENERAL, "doorRelativeDepths", doorRelativeDepths,
+        prop = config.get("dungeons", "doorRelativeDepths", doorRelativeDepths,
                 "List of possible depths that a new dungeon Pocket can generate at, relative to the origin door.");
         doorRelativeDepths = prop.getIntList();
 
-        prop = config.get(Configuration.CATEGORY_GENERAL, "doorRelativeDepthWeights", doorRelativeDepthWeights,
-                "List of weights (chances) of the relative depths in doorRelativeDepths. This list needs to have the same size.");
+        prop = config.get("dungeons", "doorRelativeDepthWeights", doorRelativeDepthWeights,
+                "List of weights (chances) of the relative depths in doorRelativeDepths. This list needs to have the same size as doorRelativeDepths.");
         doorRelativeDepthWeights = prop.getIntList();
-
-        prop = config.get(Configuration.CATEGORY_GENERAL, "dangerousLimboMonolithsDisabled", DangerousLimboMonolithsDisabled,
-                "Is Monoliths Dangerous in Limbo disabled?");
-        DangerousLimboMonolithsDisabled = prop.getBoolean();
-
-        prop = config.get(Configuration.CATEGORY_GENERAL, "dangerousLimboMonolithsDisabled", MonolithTeleportationEnabled,
-                "Is Monolith Teleportation disabled?");
-        MonolithTeleportationEnabled = prop.getBoolean();
-
         checkAndCorrectDoorRelativeDepths(config);
+
+        //Monoliths
+        config.addCustomCategoryComment("monoliths", "How dangerous are Monoliths");
+        prop = config.get("monoliths", "dangerousLimboMonolithsDisabled", DangerousLimboMonolithsEnabled,
+                "Are Monoliths in Limbo Dangerous? [default: false]");
+        DangerousLimboMonolithsEnabled = prop.getBoolean();
+
+        prop = config.get("monoliths", "monolithTeleportationEnabled", MonolithTeleportationEnabled,
+                "Is Monolith Teleportation enabled? [default: true]");
+        MonolithTeleportationEnabled = prop.getBoolean();
+        
+        //Pocket_Dimensions
+        config.addCustomCategoryComment("pocket_dimension", "The following values determine the maximum sizes of different kinds of pockets. These values will only influence new worlds.");
+        pocketGridSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "pocketGridSize", pocketGridSize,
+                "Sets how many chunks apart all pockets in pocket dimensions should be placed. [min: 4, max: 32, default: 32]", 4, 32);
+        DimDoors.log(DDConfig.class, "pocketGridSize was set to " + pocketGridSize);
+
+        maxPocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "maxPocketSize", maxPocketSize,
+                "Sets how deep and wide any pocket can be. [min: 0, max: pocketGridSize/2, default: 4]", 0, (int) (((double) pocketGridSize / 2) - 0.5));
+
+        privatePocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "privatePocketSize", privatePocketSize,
+                "Sets how deep and wide any personal pocket can be. [min: 0, max: maxPocketsSize, default: 3]", 0, maxPocketSize);
+
+        publicPocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "publicPocketSize", publicPocketSize,
+                "Sets how deep and wide any public pocket can be. [min: 0, max: maxPocketsSize, default: 2]", 0, maxPocketSize);
 
         // Save config
         config.save();
@@ -202,7 +206,7 @@ public class DDConfig {
     }
 
     public static boolean isDangerousLimboMonolithsDisabled() {
-        return DangerousLimboMonolithsDisabled;
+        return DangerousLimboMonolithsEnabled;
     }
 
     public static boolean isMonolithTeleportationEnabled() {
