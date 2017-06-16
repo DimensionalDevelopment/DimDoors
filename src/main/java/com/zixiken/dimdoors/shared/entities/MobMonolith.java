@@ -7,6 +7,7 @@ import com.zixiken.dimdoors.shared.TeleporterDimDoors;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.world.PocketProvider;
 import com.zixiken.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
+import com.zixiken.dimdoors.shared.world.pocketdimension.WorldProviderPublicPocket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -293,7 +294,7 @@ public class MobMonolith extends EntityFlying implements IMob
             }
 
         }
-        else if(world.provider instanceof PocketProvider)
+        else if(world.provider instanceof WorldProviderPublicPocket)
         {
             if (list.size() > 5 || world.canBlockSeeSky(new BlockPos(posX, posY, posZ))) {
                 return false;
