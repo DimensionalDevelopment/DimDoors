@@ -4,15 +4,15 @@ buildscript {
         maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
 ext.modversion = "3.0.0-a3"
-ext.mcversion = "1.10.2"
-ext.forgeversion = "12.18.3.2281"
+ext.mcversion = "1.12.2"
+ext.forgeversion = "14.23.0.2517"
 //spongeSchematicVersion = "1"
 
 version = mcversion + "-" + modversion
@@ -25,9 +25,9 @@ compileJava {
 }
 
 minecraft {
-    version = mcversion + "-" + forgeversion
+    version = "14.23.0.2517"
     runDir = "run"
-    mappings = "stable_29"
+    mappings = "snapshot_20171028"
     replace '${version}', project.version
     //replace '${spongeSchematicVersion}', spongeSchematicVersion
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
@@ -65,6 +65,3 @@ processResources
         exclude 'mcmod.info'
     }
 }
-//if (!hasProperty('mainClass')) {
-//    ext.mainClass = 'GradleStart'
-//}
