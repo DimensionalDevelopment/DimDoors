@@ -7,9 +7,9 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.item.EntityItem;
@@ -163,7 +163,7 @@ public class RenderRift extends TileEntitySpecialRenderer<TileEntityRift> {
         GlStateManager.scale(0.25,0.25,0.25);
 
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer worldRenderer = tessellator.getBuffer();
+        BufferBuilder worldRenderer = tessellator.getBuffer();
 
         for (int i = 0; i < tesseract.length; i+=4) {
             worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
@@ -196,7 +196,7 @@ public class RenderRift extends TileEntitySpecialRenderer<TileEntityRift> {
                 z * TrigMath.sin(angle) + w * TrigMath.cos(angle));
     }
 
-    private void project(VertexBuffer buffer, Vector4f vector, int u, int v) {
+    private void project(BufferBuilder buffer, Vector4f vector, int u, int v) {
         double scalar = 1d/(vector.getW()+1d);
         Vector3f center = Vector3f.from(0.5f);
         Vector3f vector1 = vector.toVector3().mul(scalar);

@@ -47,11 +47,10 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (!checkCanOpen(world, pos, player)) {
             return false;
         }
-
         if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER) {
             pos = pos.down();
             state = world.getBlockState(pos);

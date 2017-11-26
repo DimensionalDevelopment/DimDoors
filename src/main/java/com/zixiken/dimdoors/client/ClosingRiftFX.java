@@ -1,7 +1,7 @@
 package com.zixiken.dimdoors.client;
 
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -29,7 +29,7 @@ public class ClosingRiftFX extends Particle {
     }
 
     @Override
-    public void renderParticle(VertexBuffer worldRenderer, Entity entityIn, float partialTicks, float p_180434_4_,
+    public void renderParticle(BufferBuilder worldRenderer, Entity entityIn, float partialTicks, float p_180434_4_,
             float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_) {
         if (!this.twinkle
                 || this.particleAge < this.particleMaxAge / 3
@@ -39,8 +39,8 @@ public class ClosingRiftFX extends Particle {
         }
     }
 
-    public void doRenderParticle(VertexBuffer worldRenderer, float par2, float par3, float par4,
-            float par5, float par6, float par7) {
+    public void doRenderParticle(BufferBuilder worldRenderer, float par2, float par3, float par4,
+                                 float par5, float par6, float par7) {
         float var8 = super.particleTextureIndexX % 16 / 16.0F;
         float var9 = var8 + 0.0624375F;
         float var10 = this.particleTextureIndexX / 16 / 16.0F;

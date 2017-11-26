@@ -11,6 +11,7 @@ import com.zixiken.dimdoors.shared.SchematicHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
@@ -39,8 +40,8 @@ public class DimDoors {
     public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") {
         @Override
         @SideOnly(Side.CLIENT)
-        public Item getTabIconItem() {
-            return ModItems.itemDimDoor;
+        public ItemStack getTabIconItem() {
+            return new ItemStack(ModItems.itemDimDoor);
         }
     };
 

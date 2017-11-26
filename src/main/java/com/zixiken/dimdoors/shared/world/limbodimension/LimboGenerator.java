@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.chunk.IChunkGenerator;
+import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import net.minecraft.world.gen.structure.MapGenScatteredFeature;
 
@@ -107,8 +107,7 @@ public class LimboGenerator implements IChunkGenerator
     }
 
     @Override
-    public Chunk provideChunk(int chunkX, int chunkZ)
-    {
+    public Chunk generateChunk(int chunkX, int chunkZ) {
         //TODO: Wtf? Why do you reinitialize the seed when we already initialized it in the constructor?! ~SenseiKiwi
         LimboGenerator.rand.setSeed(chunkX * 341873128712L + chunkZ * 132897987541L);
         ChunkPrimer primer = new ChunkPrimer();
@@ -335,12 +334,17 @@ public class LimboGenerator implements IChunkGenerator
 
     @Nullable
     @Override
-    public BlockPos getStrongholdGen(World worldIn, String structureName, BlockPos position) {
+    public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position, boolean findUnexplored) {
         return null;
     }
 
     @Override
     public void recreateStructures(Chunk chunkIn, int x, int z) {
 
+    }
+
+    @Override
+    public boolean isInsideStructure(World worldIn, String structureName, BlockPos pos) {
+        return false;
     }
 }

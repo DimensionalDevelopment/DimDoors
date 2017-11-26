@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
@@ -106,9 +107,9 @@ public class BlockFabric extends Block {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
-        for (int i = 0; i < 5; i++) {
-            subItems.add(new ItemStack(itemIn, 1, i));
+    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> subItems) {
+        for(BlockFabric.EnumType type : EnumType.values()) {
+            subItems.add(new ItemStack(this, 1));
         }
     }
 
@@ -136,7 +137,6 @@ public class BlockFabric extends Block {
      * @param state the state this block is in
      * @param player the player right-clicking the block
      * @param hand the hand the player is using
-     * @param heldItem the item the player is holding in that hand
      * @param side the side of the block that is being clicked
      * @param hitX the x coordinate of the exact place the player is clicking on
      * the block
@@ -146,7 +146,9 @@ public class BlockFabric extends Block {
      * not?
      */
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        ItemStack heldItem = player.getHeldItem(hand);
+
         if (heldItem != null && heldItem.getItem() instanceof ItemBlock
                 && (state.getValue(TYPE).equals(EnumType.REALITY) || state.getValue(TYPE).equals(EnumType.ALTERED))) {
             Block block = Block.getBlockFromItem(heldItem.getItem());
@@ -157,9 +159,9 @@ public class BlockFabric extends Block {
             }
             if (!world.isRemote) { //@todo on a server, returning false or true determines where the block gets placed?
                 if (!player.isCreative()) {
-                    heldItem.stackSize--;
+                    heldItem.setCount(heldItem.getCount()-1);
                 }
-                world.setBlockState(pos, block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, heldItem.getMetadata(), player, heldItem)); //choosing getStateForPlacement over getDefaultState, because it will cause directional blocks, like logs to rotate correctly
+                world.setBlockState(pos, block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, heldItem.getMetadata(), player)); //choosing getStateForPlacement over getDefaultState, because it will cause directional blocks, like logs to rotate correctly
             }
             return true;
         }

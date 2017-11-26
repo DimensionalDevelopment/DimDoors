@@ -16,7 +16,6 @@ import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.network.play.server.SPacketRespawn;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.management.PlayerList;
-import net.minecraft.stats.AchievementList;
 
 //ref: https://github.com/WayofTime/BloodMagic/blob/1.11/src/main/java/WayofTime/bloodmagic/ritual/portal/Teleports.java
 public class TeleporterDimDoors extends Teleporter {
@@ -99,11 +98,11 @@ public class TeleporterDimDoors extends Teleporter {
             player.isDead = false;
 
             //Placing the player in the new world
-            oldWorldserver.theProfiler.startSection("moving");
+            oldWorldserver.profiler.startSection("moving");
             player.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 0.05, pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
-            oldWorldserver.theProfiler.endSection();
+            oldWorldserver.profiler.endSection();
 
-            oldWorldserver.theProfiler.startSection("placing");
+            oldWorldserver.profiler.startSection("placing");
             if (player.isEntityAlive()) {
                 DimDoors.log(this.getClass(), "Placing the player entity at " + pos.toString());
                 player.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 0.05, pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
@@ -112,7 +111,7 @@ public class TeleporterDimDoors extends Teleporter {
                 newWorldserver.spawnEntity(player);
                 newWorldserver.updateEntityWithOptionalForce(player, false);
             }
-            oldWorldserver.theProfiler.endSection();
+            oldWorldserver.profiler.endSection();
 
             player.setWorld(newWorldserver);
 
@@ -148,12 +147,12 @@ public class TeleporterDimDoors extends Teleporter {
             PlayerList playerList = player.mcServer.getPlayerList();
 
             player.dismountRidingEntity();
-            worldserver.theProfiler.startSection("moving");
+            worldserver.profiler.startSection("moving");
             player.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 0.05, pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
             //playerList.preparePlayer(player, worldserver); //This makes the player stutter heavily on teleport
             player.connection.setPlayerLocation(pos.getX() + 0.5, pos.getY() + 0.05, pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch, EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class
             ));
-            worldserver.theProfiler.endSection();
+            worldserver.profiler.endSection();
             player.connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
 
         } else {
@@ -166,7 +165,7 @@ public class TeleporterDimDoors extends Teleporter {
     }
 
     private void processAchievements(EntityPlayerMP player, int dimID) {
-        if (player.dimension == 1 && dimID == 1) {
+        /*if (player.dimension == 1 && dimID == 1) {
             player.world.removeEntity(player);
 
             if (!player.playerConqueredTheEnd) {
@@ -183,6 +182,6 @@ public class TeleporterDimDoors extends Teleporter {
             player.addStat(AchievementList.THE_END);
         } else if (dimID == -1) {
             player.addStat(AchievementList.PORTAL);
-        }
+        }*/
     }
 }

@@ -1,9 +1,11 @@
 package com.zixiken.dimdoors.shared.items;
 
 import com.zixiken.dimdoors.DimDoors;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class ItemLinkSignature extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
+    public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag advanced) {
         translateAndAdd("info.riftSignature.unbound", list);
     }
 }

@@ -9,12 +9,13 @@ import com.zixiken.dimdoors.shared.tileentities.TileEntityTransTrapdoor;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -100,7 +101,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
             }
 
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer worldrenderer = tessellator.getBuffer();
+            BufferBuilder worldrenderer = tessellator.getBuffer();
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
             if (BlockTransTrapdoor.isTrapdoorSetLow(state)) {

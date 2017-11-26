@@ -3,7 +3,6 @@ package com.zixiken.dimdoors.shared.world;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -48,9 +47,9 @@ public class CustomSkyProvider extends IRenderHandler {
         if (mc.world.provider.isSurfaceWorld()) {
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             final Vec3d vec3 = world.getSkyColor(mc.getRenderViewEntity(), par1);
-            float f1 = (float) vec3.xCoord;
-            float f2 = (float) vec3.yCoord;
-            float f3 = (float) vec3.zCoord;
+            float f1 = (float) vec3.x;
+            float f2 = (float) vec3.y;
+            float f3 = (float) vec3.z;
             float f4;
 
             if (mc.gameSettings.anaglyph) {
@@ -64,7 +63,7 @@ public class CustomSkyProvider extends IRenderHandler {
 
             GL11.glColor3f(f1, f2, f3);
             final Tessellator tessellator = Tessellator.getInstance();
-            final VertexBuffer buffer = tessellator.getBuffer();
+            final BufferBuilder buffer = tessellator.getBuffer();
             GL11.glDepthMask(false);
             GL11.glEnable(GL11.GL_FOG);
             GL11.glColor3f(f1, f2, f3);
@@ -167,7 +166,7 @@ public class CustomSkyProvider extends IRenderHandler {
             GL11.glPopMatrix();
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glColor3f(0.0F, 0.0F, 0.0F);
-            double d0 = mc.player.getLook(par1).yCoord - world.getHorizon();
+            double d0 = mc.player.getLook(par1).y - world.getHorizon();
 
             if (d0 < 0.0D) {
                 GL11.glPushMatrix();

@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.chunk.IChunkGenerator;
+import net.minecraft.world.gen.IChunkGenerator;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class PocketChunkGenerator implements IChunkGenerator {
     }
 
     @Override
-    public Chunk provideChunk(int chunkX, int chunkZ) {
+    public Chunk generateChunk(int chunkX, int chunkZ) {
         ChunkPrimer primer = new ChunkPrimer();
         Chunk chunk = new Chunk(worldObj, primer, chunkX, chunkZ);
 
@@ -52,12 +52,17 @@ public class PocketChunkGenerator implements IChunkGenerator {
 
     @Nullable
     @Override
-    public BlockPos getStrongholdGen(World worldIn, String structureName, BlockPos position) {
+    public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position, boolean findUnexplored) {
         return null;
     }
 
     @Override
     public void recreateStructures(Chunk chunkIn, int x, int z) {
 
+    }
+
+    @Override
+    public boolean isInsideStructure(World worldIn, String structureName, BlockPos pos) {
+        return false;
     }
 }

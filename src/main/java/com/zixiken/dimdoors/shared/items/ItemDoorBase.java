@@ -9,6 +9,7 @@ import com.zixiken.dimdoors.shared.RayTraceHelper;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
@@ -44,7 +45,7 @@ public abstract class ItemDoorBase extends ItemDoor {
     }
 
     @Override
-    public abstract void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced);
+    public abstract void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag advanced);
 
     /**
      * Overridden in subclasses to specify which door block that door item will
@@ -56,24 +57,26 @@ public abstract class ItemDoorBase extends ItemDoor {
 
     //onItemUse gets fired before onItemRightClick and if it returns "success", onItemRightClick gets skipped.
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World worldIn, EntityPlayer playerIn, EnumHand hand) {
-        if (worldIn.isRemote) {
-            return new ActionResult(EnumActionResult.FAIL, stack);
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+
+        if (world.isRemote) {
+            return new ActionResult<>(EnumActionResult.FAIL, stack);
         }
-        RayTraceResult hit = rayTrace(worldIn, playerIn, true);
-        if (RayTraceHelper.isRift(hit, worldIn)) {
+        RayTraceResult hit = rayTrace(world, player, true);
+        if (RayTraceHelper.isRift(hit, world)) {
             EnumActionResult canDoorBePlacedOnGroundBelowRift
-                    = tryPlaceDoorOnTopOfBlock(stack, playerIn, worldIn, hit.getBlockPos().down(2), hand,
-                            (float) hit.hitVec.xCoord, (float) hit.hitVec.yCoord, (float) hit.hitVec.zCoord); //stack may be changed by this method
-            return new ActionResult(canDoorBePlacedOnGroundBelowRift, stack);
+                    = tryPlaceDoorOnTopOfBlock(stack, player, world, hit.getBlockPos().down(2), hand,
+                            (float) hit.hitVec.x, (float) hit.hitVec.y, (float) hit.hitVec.z); //stack may be changed by this method
+            return new ActionResult<>(canDoorBePlacedOnGroundBelowRift, stack);
         }
-        return new ActionResult(EnumActionResult.FAIL, stack); //@todo, should return onItemUse(params) here? will door placement on block not work otherwise?
+        return new ActionResult<>(EnumActionResult.FAIL, stack); //@todo, should return onItemUse(params) here? will door placement on block not work otherwise?
 
         //@todo personal and chaos doors can be placed on top of a rift? Should not be possible
     }
 
     @Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) {
             return EnumActionResult.SUCCESS;
         }
@@ -87,7 +90,7 @@ public abstract class ItemDoorBase extends ItemDoor {
             pos = pos.offset(EnumFacing.DOWN); //the bottom part of the door can replace this block, so we will try to place it on the block under it
         }
 
-        return tryPlaceDoorOnTopOfBlock(stack, playerIn, world, pos, hand, hitX, hitY, hitZ);
+        return tryPlaceDoorOnTopOfBlock(player.getHeldItem(hand), player, world, pos, hand, hitX, hitY, hitZ);
     }
 //pos = position of block, the door gets placed on
 
@@ -121,7 +124,7 @@ public abstract class ItemDoorBase extends ItemDoor {
             SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, playerIn);
             world.playSound(playerIn, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
             if (!playerIn.isCreative()) {
-                --stack.stackSize;
+                stack.setCount(stack.getCount()-1);
             }
 
             //fetch the TileEntityDimDoor at the top block of where the door has just been placed

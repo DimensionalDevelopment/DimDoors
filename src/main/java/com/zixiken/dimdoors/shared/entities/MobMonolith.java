@@ -66,7 +66,7 @@ public class MobMonolith extends EntityFlying implements IMob
 
     @Override
     public boolean attackEntityFrom(DamageSource damageSource, float par2) {
-        if (damageSource != DamageSource.inWall) {
+        if (damageSource != DamageSource.IN_WALL) {
             this.aggro = MAX_AGGRO;
         }
         return false;

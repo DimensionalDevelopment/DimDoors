@@ -38,9 +38,11 @@ public class ItemRiftConnectionTool extends ItemTool {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World worldIn, EntityPlayer playerIn, EnumHand hand) {
-        if (worldIn.isRemote) {
-            return new ActionResult(EnumActionResult.FAIL, stack);
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+
+        if (world.isRemote) {
+            return new ActionResult<>(EnumActionResult.FAIL, stack);
         }
         if (!stack.hasTagCompound()) {
             NBTTagCompound compound = new NBTTagCompound();
@@ -48,17 +50,17 @@ public class ItemRiftConnectionTool extends ItemTool {
             stack.setTagCompound(compound);
         }
 
-        RayTraceResult hit = rayTrace(worldIn, playerIn, true);
-        if (RayTraceHelper.isAbstractRift(hit, worldIn)) {
-            DDTileEntityBase rift = (DDTileEntityBase) worldIn.getTileEntity(hit.getBlockPos());
-            if (playerIn.isSneaking()) {
-                return selectRift(stack, worldIn, rift, playerIn); //new ActionResult(EnumActionResult.PASS, stack));
+        RayTraceResult hit = rayTrace(world, player, true);
+        if (RayTraceHelper.isAbstractRift(hit, world)) {
+            DDTileEntityBase rift = (DDTileEntityBase) world.getTileEntity(hit.getBlockPos());
+            if (player.isSneaking()) {
+                return selectRift(stack, world, rift, player); //new ActionResult(EnumActionResult.PASS, stack));
             }
         } else {
-            return changeMode(stack, playerIn);
+            return changeMode(stack, player);
         }
 
-        return new ActionResult(EnumActionResult.FAIL, stack);
+        return new ActionResult<>(EnumActionResult.FAIL, stack);
     }
 
     private ActionResult<ItemStack> selectRift(ItemStack stack, World worldIn, DDTileEntityBase rift, EntityPlayer playerIn) {
@@ -100,6 +102,6 @@ public class ItemRiftConnectionTool extends ItemTool {
         }
         DimDoors.chat(player, "Connection tool mode set to: "
                 + (compound.getBoolean("isInConnectMode") ? "Connect" : "Disconnect"));
-        return new ActionResult(EnumActionResult.SUCCESS, stack);
+        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 }

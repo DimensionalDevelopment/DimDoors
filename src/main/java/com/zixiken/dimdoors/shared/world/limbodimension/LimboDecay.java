@@ -105,8 +105,8 @@ public class LimboDecay {
                 //Loop through each chunk section and fast-decay a random block
                 //Apply the changes using the world object instead of directly to the chunk so that clients are always notified.
                 for (sectionY = 0; sectionY < limboHeight; sectionY += SECTION_HEIGHT) {
-                    BlockPos pos = new BlockPos(chunkPos.chunkXPos * CHUNK_SIZE + random.nextInt(CHUNK_SIZE),
-                                                chunkPos.chunkZPos * CHUNK_SIZE + random.nextInt(CHUNK_SIZE),
+                    BlockPos pos = new BlockPos(chunkPos.x * CHUNK_SIZE + random.nextInt(CHUNK_SIZE),
+                                                chunkPos.z * CHUNK_SIZE + random.nextInt(CHUNK_SIZE),
                                                 sectionY + random.nextInt(SECTION_HEIGHT));
                     decayBlockFast(world, pos);
                 }

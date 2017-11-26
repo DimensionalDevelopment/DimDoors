@@ -5,6 +5,7 @@ import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RayTraceHelper;
 import com.zixiken.dimdoors.shared.TeleporterDimDoors;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -47,9 +48,11 @@ public class ItemRiftBlade extends ItemSword {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+
         if (world.isRemote) {
-            return new ActionResult(EnumActionResult.FAIL, stack);
+            return new ActionResult<>(EnumActionResult.FAIL, stack);
         }
         //SchematicHandler.Instance.getPersonalPocketTemplate().place(0, 20, 0, 20, 0, 0, 1, EnumPocketType.DUNGEON); //this line can be activated for testing purposes
         RayTraceResult hit = rayTrace(world, player, true);
@@ -59,21 +62,21 @@ public class ItemRiftBlade extends ItemSword {
             rift.teleportingEntity = player;
 
             stack.damageItem(1, player);
-            return new ActionResult(EnumActionResult.SUCCESS, stack);
+            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 
         } else if (RayTraceHelper.isLivingEntity(hit)) {
             EnumActionResult teleportResult = TeleporterDimDoors.instance().teleport(player, new Location(world, hit.getBlockPos())) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL; //@todo teleport to a location 1 or 2 blocks distance from the entity
             if (teleportResult == EnumActionResult.SUCCESS) {
                 stack.damageItem(1, player);
             }
-            return new ActionResult(teleportResult, stack);
+            return new ActionResult<>(teleportResult, stack);
         }
 
-        return new ActionResult(EnumActionResult.FAIL, stack);
+        return new ActionResult<>(EnumActionResult.FAIL, stack);
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
+    public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag advanced) {
         DimDoors.translateAndAdd("info.riftblade", list);
     }
 }

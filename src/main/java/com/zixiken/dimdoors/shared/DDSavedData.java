@@ -7,7 +7,7 @@ package com.zixiken.dimdoors.shared;
 
 import java.io.File;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldSavedData;
+import net.minecraft.world.storage.WorldSavedData;
 
 /**
  *
