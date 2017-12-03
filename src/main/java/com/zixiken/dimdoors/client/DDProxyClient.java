@@ -33,7 +33,6 @@ public class DDProxyClient extends DDProxyCommon {
         ModelManager.addCustomStateMappers();
 
         registerRenderers();
-        System.out.println("adsaf");
     }
 
     @Override

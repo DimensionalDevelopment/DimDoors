@@ -22,11 +22,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WorldProviderLimbo extends WorldProvider {
     private IRenderHandler skyRenderer;
-    //private CustomLimboPopulator spawner;
+    private LimboBiome limboBiome;
 
     public WorldProviderLimbo() {
         this.hasSkyLight = false;
         this.skyRenderer = new LimboSkyProvider();
+        limboBiome = new LimboBiome();
         //this.spawner
     }
 
@@ -38,7 +39,7 @@ public class WorldProviderLimbo extends WorldProvider {
 
     @Override
     public Biome getBiomeForCoords(BlockPos pos) {
-        return new LimboBiome();
+        return limboBiome;
     }
 
     @Override
@@ -129,10 +130,10 @@ public class WorldProviderLimbo extends WorldProvider {
         return false;
     }
 
-    public static Location getLimboSkySpawn(EntityPlayer player, World world) {
+    public static Location getLimboSkySpawn(EntityPlayer player) {
         int x = (int) (player.posX) + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); //-properties.LimboEntryRange, properties.LimboEntryRange);
         int z = (int) (player.posZ) + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); //-properties.LimboEntryRange, properties.LimboEntryRange);
-        return new Location(world, x, 700, z);
+        return new Location(DimDoorDimensions.LIMBO.getId(), x, 700, z);
     }
 
     @Override
