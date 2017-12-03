@@ -99,13 +99,13 @@ public class TeleporterDimDoors extends Teleporter {
 
             //Placing the player in the new world
             oldWorldserver.profiler.startSection("moving");
-            player.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 0.05, pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
+            player.setLocationAndAngles(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
             oldWorldserver.profiler.endSection();
 
             oldWorldserver.profiler.startSection("placing");
             if (player.isEntityAlive()) {
                 DimDoors.log(this.getClass(), "Placing the player entity at " + pos.toString());
-                player.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 0.05, pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
+                player.setLocationAndAngles(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
                 player.motionX = 0;
                 player.motionZ = 0;
                 newWorldserver.spawnEntity(player);
@@ -117,7 +117,7 @@ public class TeleporterDimDoors extends Teleporter {
 
             //Synching the client
             playerList.preparePlayer(player, oldWorldserver);
-            player.connection.setPlayerLocation(pos.getX() + 0.5, pos.getY() + 0.05, pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
+            player.connection.setPlayerLocation(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
             player.interactionManager.setWorld(newWorldserver);
             player.connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
             playerList.updateTimeAndWeatherForPlayer(player, newWorldserver);
@@ -148,9 +148,9 @@ public class TeleporterDimDoors extends Teleporter {
 
             player.dismountRidingEntity();
             worldserver.profiler.startSection("moving");
-            player.setLocationAndAngles(pos.getX() + 0.5, pos.getY() + 0.05, pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
+            player.setLocationAndAngles(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
             //playerList.preparePlayer(player, worldserver); //This makes the player stutter heavily on teleport
-            player.connection.setPlayerLocation(pos.getX() + 0.5, pos.getY() + 0.05, pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch, EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class
+            player.connection.setPlayerLocation(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch, EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class
             ));
             worldserver.profiler.endSection();
             player.connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
