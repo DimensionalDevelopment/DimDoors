@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.client;
 
+import com.zixiken.dimdoors.server.sound.DDSounds;
 import com.zixiken.dimdoors.shared.DDProxyCommon;
 import com.zixiken.dimdoors.shared.ModelManager;
 import com.zixiken.dimdoors.shared.entities.MobMonolith;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -25,11 +27,13 @@ public class DDProxyClient extends DDProxyCommon {
     @Override
     public void onPreInitialization(FMLPreInitializationEvent event) {
         super.onPreInitialization(event);
+        MinecraftForge.EVENT_BUS.register(DDSounds.class);
 
         ModelManager.registerModelVariants();
         ModelManager.addCustomStateMappers();
 
         registerRenderers();
+        System.out.println("adsaf");
     }
 
     @Override

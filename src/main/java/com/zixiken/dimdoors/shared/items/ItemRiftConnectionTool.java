@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
@@ -26,7 +27,7 @@ import net.minecraft.world.World;
  */
 public class ItemRiftConnectionTool extends ItemTool {
 
-    public static final String ID = "itemRiftConnectionTool";
+    public static final String ID = "rift_connection_tool";
 
     ItemRiftConnectionTool() {
         super(1.0F, -2.8F, ToolMaterial.WOOD, new HashSet());
@@ -34,7 +35,7 @@ public class ItemRiftConnectionTool extends ItemTool {
         this.setMaxDamage(16);
         setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setUnlocalizedName(ID);
-        setRegistryName(ID);
+        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
     @Override

@@ -1,59 +1,79 @@
-itemGroup.dimDoorsCreativeTab=Dimensional Doors oggetti
-tile.doorGold.name=Porta d'oro
-tile.transientDoor.name=Porta transitoria
-tile.dimDoorGold.name=Porta d'oro dimensionale
-tile.doorQuartz.name=Porta di quarzo
-tile.dimDoorPersonal.name=Porta dimensionale personale
-tile.blockDimWall.name=Tessuto della realtà
-tile.blockAlteredWall.name=Tessuto alterato
-tile.blockAncientWall.name=Tessuto antico
-tile.blockDimWallPerm.name=Tessuto eterno
-tile.dimDoorWarp.name=Porta distorta
+itemGroup.dimensional_doors_creative_tab=Dimensional Doors oggetti
+
+tile.gold_door.name=Porta d'oro
+tile.quartz_door.name=Porta di quarzo
+
+tile.dimensional_door.name=Porta dimensionale
+tile.gold_dimensional_door.name=Porta d'oro dimensionale
+tile.quartz_dimensional_door.name=Porta dimensionale personale
+tile.unstable_dimensional_door.name=Porta instabile
+tile.warp_dimensional_door.name=Porta distorta
+tile.dimensional_trapdoor.name=Botola transdimensionale
+tile.transient_dimensional_door.name=Porta transitoria
+
+tile.fabric_reality.name=Tessuto della realtà
+tile.fabric_altered.name=Tessuto alterato
+tile.fabric_ancient.name=Tessuto antico
+tile.fabric_eternal.name=Tessuto eterno
+tile.fabric_unraveled.name=Tessuto disfatto
 tile.rift.name=Frattura
-tile.BlockLimbo.name=Tessuto disfatto
-tile.chaosDoor.name=Porta instabile
-tile.dimDoor.name=Porta dimensionale
-tile.dimHatch.name=Botola transdimensionale
-item.itemGoldDoor.name=Porta d'oro
-item.itemDDKey=Chiave per frattura
-item.itemQuartzDoor.name=Porta di quarzo
-item.itemQuartzDimDoor.name=Porta dimensionale personale
-item.itemGoldDimDoor.name=Porta d'oro dimensionale
-item.itemDimDoor.name=Porta dimensionale
-item.itemDimDoorWarp.name=Porta distorta
-item.itemLinkSignature.name=Segno di frattura
-item.itemStabilizedRiftSig.name=Segno di frattura stabilizzato
-item.itemRiftRemover.name=Rimovitore di frattura
-item.itemStableFabric.name=Tessuto stabile
-item.itemChaosDoor.name=Porta instabile
-item.ItemRiftBlade.name=Lama dimensionale
-item.itemWorldThread.name=Filo di mondo
-info.riftkey.bound=Legato
-info.riftkey.unbound=Non legato
-info.dimDoor0=Piazzalo sul blocco sotto una
-info.dimDoor1=frattura per attivarla o piazzalo
-info.dimDoor2=da qualunque altra parte per creare
-info.dimDoor3=una dimensione tascabile.
-info.goldDimDoor0=Simile a una Porta dimensionale
-info.goldDimDoor1=ma tiene la dimensione tascabile
-info.goldDimDoor2=caricata se piazzata all'interno.
-info.personalDimDoor0=Crea un sentiero alla
-info.personalDimDoor1=tua dimensione tascabile
-info.riftblade0=Apre porte temporanee su fratture
-info.riftblade1=e ha un colpo che teletrasporta.
-info.riftRemover0=Usalo presso una frattura
-info.riftRemover1=esposta per rimuovere quello
-info.riftRemover2=e altre fratture vicine.
-info.riftSignature.bound=Porta a (%d, %d, %d) nella dimensione #%d
-info.riftSignature.unbound0=Al primo clic salva la posizione; al
-info.riftSignature.unbound1=secondo clic crea un paio di fratture
-info.riftSignature.unbound2=che collegano le due posizioni.
-info.riftSignature.stable0=Al primo clic salva la posizione; al
-info.riftSignature.stable1=secondo clic crea fratture che
-info.riftSignature.stable2=collegano la prima e ultima posizione.
-info.chaosDoor=Attenziione: Porta a una destinazione casuale
-info.warpDoor0=Piazzalo sul blocco sotto una
-info.warpDoor1=frattura per creare un portale,
-info.warpDoor2=o piazzalo da qualunque altra parte
-info.warpDoor3=in una dimensione tascabile per uscire.
-entity.dimdoors.Monolith.name=Monolito
+
+item.gold_door.name=Porta d'oro
+item.quartz_door.name=Porta di quarzo
+
+item.dimensional_door.name=Porta dimensionale
+item.gold_dimensional_door.name=Porta d'oro dimensionale
+item.quartz_dimensional_door.name=Porta dimensionale personale
+item.unstable_dimensional_door.name=Porta instabile
+item.warp_dimensional_door.name=Porta distorta
+
+item.rift_key=Chiave per frattura
+item.rift_signature.name=Segno di frattura
+item.stabilized_rift_signature.name=Segno di frattura stabilizzato
+item.rift_connection_tool.name=Below Average Rift Connection Tool
+item.rift_remover.name=Rimovitore di frattura
+item.rift_blade.name=Lama dimensionale
+
+item.world_thread.name=Filo di mondo
+item.stable_fabric.name=Tessuto stabile
+
+info.rift_key.bound=Legato
+info.rift_key.unbound=Non legato
+
+info.dimensional_door0=Piazzalo sul blocco sotto una
+info.dimensional_door1=frattura per attivarla o piazzalo
+info.dimensional_door2=da qualunque altra parte per creare
+info.dimensional_door3=una dimensione tascabile.
+
+info.gold_dimensional_door0=Simile a una Porta dimensionale
+info.gold_dimensional_door1=ma tiene la dimensione tascabile
+info.gold_dimensional_door2=caricata se piazzata all'interno.
+
+info.quartz_dimensional_door0=Crea un sentiero alla
+info.quartz_dimensional_door1=tua dimensione tascabile
+
+info.rift_blade0=Apre porte temporanee su fratture
+info.rift_blade1=e ha un colpo che teletrasporta.
+
+info.rift_remover0=Usalo presso una frattura
+info.rift_remover1=esposta per rimuovere quello
+info.rift_remover2=e altre fratture vicine.
+
+info.rift_signature.bound=Porta a (%d, %d, %d) nella dimensione #%d
+
+info.rift_signature.unbound0=Al primo clic salva la posizione; al
+info.rift_signature.unbound1=secondo clic crea un paio di fratture
+info.rift_signature.unbound2=che collegano le due posizioni.
+
+info.rift_signature.stable0=Al primo clic salva la posizione; al
+info.rift_signature.stable1=secondo clic crea fratture che
+info.rift_signature.stable2=collegano la prima e ultima posizione.
+
+info.unstable_dimensional_door=Attenziione: Porta a una destinazione casuale
+
+info.warp_dimensional_door0=Piazzalo sul blocco sotto una
+info.warp_dimensional_door1=frattura per creare un portale,
+info.warp_dimensional_door2=o piazzalo da qualunque altra parte
+info.warp_dimensional_door3=in una dimensione tascabile per uscire.
+
+entity.dimdoors.monolith.name=Monolito

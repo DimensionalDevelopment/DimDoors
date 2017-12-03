@@ -1,0 +1,7 @@
+{
+    "parent": "block/door_bottom",
+    "textures": {
+        "bottom": "dimdoors:blocks/gold_door_lower",
+        "top": "dimdoors:blocks/gold_door_upper"
+    }
+}

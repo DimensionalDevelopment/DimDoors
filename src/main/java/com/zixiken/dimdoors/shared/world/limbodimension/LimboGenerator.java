@@ -306,10 +306,10 @@ public class LimboGenerator implements IChunkGenerator
                                 int zCoord = zSectionPart + zRel;
                                 if(vxyz > 0) {
                                     primer.setBlockState(xCoord, yCoord, zCoord, 
-                                            ModBlocks.blockFabric.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED));
+                                            ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED));
                                 } else if(yCoord < 6) {
                                     primer.setBlockState(xCoord, yCoord, zCoord, 
-                                            ModBlocks.blockFabric.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ETERNAL));
+                                            ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ETERNAL));
                                 }
                             }
 

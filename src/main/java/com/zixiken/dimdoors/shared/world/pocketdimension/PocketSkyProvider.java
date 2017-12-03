@@ -10,11 +10,11 @@ public class PocketSkyProvider extends CustomSkyProvider {
 
     @Override
     public ResourceLocation getMoonRenderPath() {
-        return new ResourceLocation("DimDoors:textures/other/limboMoon.png");
+        return new ResourceLocation("DimDoors:textures/other/limbo_moon.png");
     }
 
     @Override
     public ResourceLocation getSunRenderPath() {
-        return new ResourceLocation("DimDoors:textures/other/limboSun.png");
+        return new ResourceLocation("DimDoors:textures/other/limbo_sun.png");
     }
 }

@@ -15,8 +15,8 @@ import com.zixiken.dimdoors.shared.tileentities.TileEntityTransTrapdoor;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,9 +30,11 @@ public abstract class DDProxyCommon implements IDDProxy {
     @Override
     public void onPreInitialization(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new DDEventHandler());
+        MinecraftForge.EVENT_BUS.register(ModBlocks.class);
+        MinecraftForge.EVENT_BUS.register(ModItems.class);
+        MinecraftForge.EVENT_BUS.register(CraftingManager.class);
+
         DimDoorDimensions.init();
-        ModBlocks.registerBlocks();
-        ModItems.registerItems();
 
         GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
         GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
@@ -45,10 +47,8 @@ public abstract class DDProxyCommon implements IDDProxy {
 
     @Override
     public void onInitialization(FMLInitializationEvent event) {
-        EntityRegistry.registerModEntity(MobMonolith.class, "Monolith", 0, DimDoors.instance, 70, 1, true);
-        EntityRegistry.registerEgg(MobMonolith.class, 0, 0xffffff);
-
-        CraftingManager.registerRecipes();
+        EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), MobMonolith.class, "monolith", 0, DimDoors.instance, 70, 1, true);
+        EntityRegistry.registerEgg(new ResourceLocation(DimDoors.MODID, "mob_monolith"), 0, 0xffffff);
     }
 
     public void updateDoorTE(BlockDimDoorBase door, World world, BlockPos pos) {
@@ -58,7 +58,7 @@ public abstract class DDProxyCommon implements IDDProxy {
             IBlockState state = world.getBlockState(pos.down());
             dimTile.orientation = state.getBlock() instanceof BlockDimDoorBase
                     ? state.getValue(BlockDoor.FACING).getOpposite()
-                    : ModBlocks.blockDimDoor.getDefaultState().getValue(BlockDoor.FACING);
+                    : ModBlocks.DIMENSIONAL_DOOR.getDefaultState().getValue(BlockDoor.FACING);
             dimTile.doorIsOpen = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(world.getBlockState(pos));
             dimTile.lockStatus = 0; //@todo
             dimTile.markDirty();

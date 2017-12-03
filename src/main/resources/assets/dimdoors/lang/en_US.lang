@@ -1,60 +1,79 @@
-itemGroup.dimDoorsCreativeTab=Dimensional Doors Items
-tile.doorGold.name=Golden Door
-tile.transientDoor.name=Transient Door
-tile.dimDoorGold.name=Golden Dimensional Door
-tile.doorQuartz.name=Quartz Door
-tile.dimDoorPersonal.name=Personal Dimensional Door
-tile.blockFabricReality.name=Fabric of Reality
-tile.blockFabricAltered.name=Altered Fabric
-tile.blockFabricAncient.name=Ancient Fabric
-tile.blockFabricEternal.name=Eternal Fabric
-tile.blockFabricUnraveled.name=Unraveled Fabric
-tile.dimDoorWarp.name=Warp Door
-tile.blockRift.name=Rift
-tile.chaosDoor.name=Chaos Door
-tile.dimDoor.name=Dimensional Door
-tile.blockDimHatch.name=Transdimensional Trapdoor
-item.itemDoorGold.name=Golden Door
-item.itemDDKey=Rift Key
-item.itemDoorQuartz.name=Quartz Door
-item.itemDimDoorQuartz.name=Personal Dimensional Door
-item.itemDimDoorGold.name=Golden Dimensional Door
-item.itemDimDoor.name=Dimensional Door
-item.itemDimDoorWarp.name=Warp Door
-item.itemLinkSignature.name=Rift Signature
-item.itemStabilizedRiftSig.name=Stabilized Rift Signature
-item.itemRiftConnectionTool.name=Below Average Rift Connection Tool
-item.itemRiftRemover.name=Rift Remover
-item.itemStableFabric.name=Stable Fabric
-item.itemDimDoorChaos.name=Chaos Door
-item.itemRiftBlade.name=Rift Blade
-item.itemWorldThread.name=World Thread
-info.riftkey.bound=Bound
-info.riftkey.unbound=Unbound
-info.dimDoor0=Place on the block under a rift
-info.dimDoor1=to activate that rift or place
-info.dimDoor2=anywhere else to create a
-info.dimDoor3=pocket dimension.
-info.goldDimDoor0=Similar to a Dimensional Door
-info.goldDimDoor1=but keeps a pocket dimension
-info.goldDimDoor2=loaded if placed on the inside.
-info.personalDimDoor0=Creates a pathway to
-info.personalDimDoor1=your personal pocket
-info.riftblade0=Opens temporary doors on rifts
-info.riftblade1=and has a teleport attack.
-info.riftRemover0=Use near exposed rift
-info.riftRemover1=to remove it and
-info.riftRemover2=any nearby rifts.
-info.riftSignature.bound=Leads to (%d, %d, %d) at dimension #%d
-info.riftSignature.unbound0=First click stores a location;
-info.riftSignature.unbound1=second click creates a pair of
-info.riftSignature.unbound2=rifts linking the two locations.
-info.riftSignature.stable0=First click stores a location,
-info.riftSignature.stable1=other clicks create rifts linking
-info.riftSignature.stable2=the first and last locations together.
-info.chaosDoor=Caution: Leads to random destination
-info.warpDoor0=Place on the block under
-info.warpDoor1=a rift to create a portal,
-info.warpDoor2=or place anywhere in a
-info.warpDoor3=pocket dimension to exit.
-entity.dimdoors.Monolith.name=Monolith
+itemGroup.dimensional_doors_creative_tab=Dimensional Doors Items
+
+tile.gold_door.name=Golden Door
+tile.quartz_door.name=Quartz Door
+
+tile.dimensional_door.name=Dimensional Door
+tile.gold_dimensional_door.name=Golden Dimensional Door
+tile.quartz_dimensional_door.name=Personal Dimensional Door
+tile.unstable_dimensional_door.name=Unstable Door
+tile.warp_dimensional_door.name=Warp Door
+tile.dimensional_trapdoor.name=Transdimensional Trapdoor
+tile.transient_dimensional_door.name=Transient Door
+
+tile.fabric_reality.name=Fabric of Reality
+tile.fabric_altered.name=Altered Fabric
+tile.fabric_ancient.name=Ancient Fabric
+tile.fabric_eternal.name=Eternal Fabric
+tile.fabric_unraveled.name=Unraveled Fabric
+tile.rift.name=Rift
+
+item.gold_door.name=Golden Door
+item.quartz_door.name=Quartz Door
+
+item.dimensional_door.name=Dimensional Door
+item.gold_dimensional_door.name=Golden Dimensional Door
+item.quartz_dimensional_door.name=Personal Dimensional Door
+item.unstable_dimensional_door.name=Unstable Door
+item.warp_dimensional_door.name=Warp Door
+
+item.rift_key=Rift Key
+item.rift_signature.name=Rift Signature
+item.stabilized_rift_signature.name=Stabilized Rift Signature
+item.rift_connection_tool.name=Below Average Rift Connection Tool
+item.rift_remover.name=Rift Remover
+item.rift_blade.name=Rift Blade
+
+item.world_thread.name=World Thread
+item.stable_fabric.name=Stable Fabric
+
+info.rift_key.bound=Bound
+info.rift_key.unbound=Unbound
+
+info.dimensional_door0=Place on the block under a rift
+info.dimensional_door1=to activate that rift or place
+info.dimensional_door2=anywhere else to create a
+info.dimensional_door3=pocket dimension.
+
+info.gold_dimensional_door0=Similar to a Dimensional Door
+info.gold_dimensional_door1=but keeps a pocket dimension
+info.gold_dimensional_door2=loaded if placed on the inside.
+
+info.quartz_dimensional_door0=Creates a pathway to
+info.quartz_dimensional_door1=your personal pocket
+
+info.rift_blade0=Opens temporary doors on rifts
+info.rift_blade1=and has a teleport attack.
+
+info.rift_remover0=Use near exposed rift
+info.rift_remover1=to remove it and
+info.rift_remover2=any nearby rifts.
+
+info.rift_signature.bound=Leads to (%d, %d, %d) at dimension #%d
+
+info.rift_signature.unbound0=First click stores a location;
+info.rift_signature.unbound1=second click creates a pair of
+info.rift_signature.unbound2=rifts linking the two locations.
+
+info.rift_signature.stable0=First click stores a location,
+info.rift_signature.stable1=other clicks create rifts linking
+info.rift_signature.stable2=the first and last locations together.
+
+info.unstable_dimensional_door=Caution: Leads to random destination
+
+info.warp_dimensional_door0=Place on the block under
+info.warp_dimensional_door1=a rift to create a portal,
+info.warp_dimensional_door2=or place anywhere in a
+info.warp_dimensional_door3=pocket dimension to exit.
+
+entity.dimdoors.monolith.name=Monolith

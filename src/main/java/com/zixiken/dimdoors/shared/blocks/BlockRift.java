@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -35,7 +36,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class BlockRift extends Block implements ITileEntityProvider {
 
     private static final float MIN_IMMUNE_RESISTANCE = 5000.0F;
-    public static final String ID = "blockRift";
+    public static final String ID = "rift";
 
     private final ArrayList<Block> blocksImmuneToRift;	// List of Vanilla blocks immune to rifts
     private final ArrayList<Block> modBlocksImmuneToRift; // List of DD blocks immune to rifts
@@ -45,20 +46,20 @@ public class BlockRift extends Block implements ITileEntityProvider {
         setTickRandomly(true);
         setHardness(1.0F);
         setUnlocalizedName(ID);
-        setRegistryName(ID);
+        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
 
         modBlocksImmuneToRift = new ArrayList<Block>();
-        modBlocksImmuneToRift.add(ModBlocks.blockFabric);
-        modBlocksImmuneToRift.add(ModBlocks.blockDimDoor);
-        modBlocksImmuneToRift.add(ModBlocks.blockDimDoorWarp);
-        modBlocksImmuneToRift.add(ModBlocks.blockDimHatch);
-        modBlocksImmuneToRift.add(ModBlocks.blockDimDoorChaos);
-        modBlocksImmuneToRift.add(ModBlocks.blockRift);
-        modBlocksImmuneToRift.add(ModBlocks.blockDimDoorTransient);
-        modBlocksImmuneToRift.add(ModBlocks.blockDimDoorGold);
-        modBlocksImmuneToRift.add(ModBlocks.blockDoorGold);
-        modBlocksImmuneToRift.add(ModBlocks.blockDimDoorPersonal);
-        modBlocksImmuneToRift.add(ModBlocks.blockDoorQuartz);
+        modBlocksImmuneToRift.add(ModBlocks.FABRIC);
+        modBlocksImmuneToRift.add(ModBlocks.DIMENSIONAL_DOOR);
+        modBlocksImmuneToRift.add(ModBlocks.WARP_DIMENSIONAL_DOOR);
+        modBlocksImmuneToRift.add(ModBlocks.DIMENSIONAL_TRAPDOOR);
+        modBlocksImmuneToRift.add(ModBlocks.UNSTABLE_DIMENSIONAL_DOOR);
+        modBlocksImmuneToRift.add(ModBlocks.RIFT);
+        modBlocksImmuneToRift.add(ModBlocks.TRANSIENT_DIMENSIONAL_DOOR);
+        modBlocksImmuneToRift.add(ModBlocks.GOLD_DIMENSIONAL_DOOR);
+        modBlocksImmuneToRift.add(ModBlocks.GOLD_DOOR);
+        modBlocksImmuneToRift.add(ModBlocks.PERSONAL_DIMENSIONAL_DOOR);
+        modBlocksImmuneToRift.add(ModBlocks.QUARTZ_DOOR);
 
         blocksImmuneToRift = new ArrayList<Block>();
         blocksImmuneToRift.add(Blocks.LAPIS_BLOCK);
@@ -84,7 +85,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState state, World world, BlockPos pos) {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         return null;
     }
 
@@ -98,12 +99,12 @@ public class BlockRift extends Block implements ITileEntityProvider {
     }
 
     /**
-     * Returns Returns true if the given side of this block type should be
+     * Returns true if the given side of this block type should be
      * rendered (if it's solid or not), if the adjacent block is at the given
      * coordinates. Args: blockAccess, x, y, z, side
      */
     @Override
-    public boolean isBlockSolid(IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+    public boolean isSideSolid(IBlockState base_state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
         return false;
     }
 
@@ -116,7 +117,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
         Block block = world.getBlockState(pos).getBlock();
 
         if (!world.getBlockState(pos).equals(Blocks.AIR) && !(block instanceof BlockLiquid || block instanceof IFluidBlock)) {
-            ItemStack thread = new ItemStack(ModItems.itemWorldThread, 1);
+            ItemStack thread = new ItemStack(ModItems.WORLD_THREAD, 1);
             world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), thread));
         }
     }
@@ -211,7 +212,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public boolean causesSuffocation() {
+    public boolean causesSuffocation(IBlockState state) {
         return false;
     }
 

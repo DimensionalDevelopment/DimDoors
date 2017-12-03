@@ -23,25 +23,25 @@ public class RenderMobObelisk extends RenderLiving<MobMonolith> {
     protected ModelMobObelisk obeliskModel;
 
     protected static final List<ResourceLocation> monolith_textures = Arrays.asList(
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith0.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith1.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith2.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith3.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith4.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith5.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith6.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith7.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith8.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith9.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith10.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith11.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith12.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith13.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith14.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith15.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith16.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith17.png"),
-            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith18.png"));
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith0.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith1.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith2.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith3.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith4.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith5.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith6.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith7.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith8.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith9.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith10.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith11.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith12.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith13.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith14.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith15.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith16.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith17.png"),
+            new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith18.png"));
 
     public RenderMobObelisk(RenderManager manager, float f) {
         super(manager, new ModelMobObelisk(), f);
@@ -124,6 +124,6 @@ public class RenderMobObelisk extends RenderLiving<MobMonolith> {
 
     @Override
     protected ResourceLocation getEntityTexture(MobMonolith monolith) {
-        return monolith_textures.get(monolith.getTextureState()); //return new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/Monolith" + monolith.getTextureState() + ".png");
+        return monolith_textures.get(monolith.getTextureState()); //return new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith" + monolith.getTextureState() + ".png");
     }
 }

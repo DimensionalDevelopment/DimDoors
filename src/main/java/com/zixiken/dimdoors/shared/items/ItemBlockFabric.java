@@ -8,10 +8,10 @@ import net.minecraft.item.ItemStack;
 
 public class ItemBlockFabric extends ItemBlock {
 
-    private final static String[] subNames = {"Reality", "Ancient", "Altered", "Unraveled", "Eternal"};
+    private final static String[] subNames = {"_reality", "_ancient", "_altered", "_unraveled", "_eternal"};
 
     public ItemBlockFabric() {
-        super(ModBlocks.blockFabric);
+        super(ModBlocks.FABRIC);
         setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setMaxDamage(0);
         setHasSubtypes(true);

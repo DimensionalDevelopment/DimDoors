@@ -8,8 +8,8 @@ import net.minecraft.util.ResourceLocation;
  * Created by Jared Johnson on 1/24/2017.
  */
 public class LimboSkyProvider extends CustomSkyProvider {
-    private static final ResourceLocation limboMoonResourceLoc = new ResourceLocation(DimDoors.MODID + ":textures/other/limboMoon.png");
-    private static final ResourceLocation limboSunResourceLoc = new ResourceLocation(DimDoors.MODID + ":textures/other/limboSun.png");
+    private static final ResourceLocation limboMoonResourceLoc = new ResourceLocation(DimDoors.MODID + ":textures/other/limbo_moon.png");
+    private static final ResourceLocation limboSunResourceLoc = new ResourceLocation(DimDoors.MODID + ":textures/other/limbo_sun.png");
 
     @Override
     public ResourceLocation getMoonRenderPath() {
