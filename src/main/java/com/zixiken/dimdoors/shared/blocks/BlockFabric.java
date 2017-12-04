@@ -22,10 +22,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
@@ -38,7 +35,7 @@ import javax.annotation.Nullable;
 @SuppressWarnings("deprecation")
 public class BlockFabric extends Block {
 
-    public static final String ID = "blockFabric";
+    public static final String ID = "fabric";
     public static final PropertyEnum<BlockFabric.EnumType> TYPE = PropertyEnum.<BlockFabric.EnumType>create("type", BlockFabric.EnumType.class);
 
     private static final float SUPER_HIGH_HARDNESS = 10000000000000F;
@@ -50,8 +47,7 @@ public class BlockFabric extends Block {
         setLightLevel(1.0F);
         setHardness(0.1F);
         setUnlocalizedName(ID);
-        setRegistryName(ID);
-        setDefaultState(blockState.getBaseState().withProperty(TYPE, EnumType.REALITY));
+        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setSoundType(SoundType.STONE);
 
         setTickRandomly(true);

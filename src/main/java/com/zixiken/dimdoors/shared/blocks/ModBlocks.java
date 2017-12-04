@@ -1,32 +1,40 @@
 package com.zixiken.dimdoors.shared.blocks;
 
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraft.block.Block;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ModBlocks {
 
-    public static BlockDoorQuartz blockDoorQuartz;
-    public static BlockDoorGold blockDoorGold;
-    public static BlockDimDoorPersonal blockDimDoorPersonal;
-    public static BlockDimDoorTransient blockDimDoorTransient;
-    public static BlockDimDoorWarp blockDimDoorWarp;
-    public static BlockDimDoorGold blockDimDoorGold;
-    public static BlockDimDoorChaos blockDimDoorChaos;
-    public static BlockDimDoor blockDimDoor;
-    public static BlockTransTrapdoor blockDimHatch;
-    public static BlockFabric blockFabric;
-    public static BlockRift blockRift;
+    // Regular doors
+    public final static BlockDoorGold GOLD_DOOR = new BlockDoorGold();
+    public final static BlockDoorQuartz QUARTZ_DOOR = new BlockDoorQuartz();
 
-    public static void registerBlocks() {
-        GameRegistry.register(blockDoorQuartz = new BlockDoorQuartz());
-        GameRegistry.register(blockDimDoorPersonal = new BlockDimDoorPersonal());
-        GameRegistry.register(blockDoorGold = new BlockDoorGold());
-        GameRegistry.register(blockDimDoorGold = new BlockDimDoorGold());
-        GameRegistry.register(blockDimDoorChaos = new BlockDimDoorChaos());
-        GameRegistry.register(blockDimDoorWarp = new BlockDimDoorWarp());
-        GameRegistry.register(blockDimDoor = new BlockDimDoor());
-        GameRegistry.register(blockDimHatch = new BlockTransTrapdoor());
-        GameRegistry.register(blockFabric = new BlockFabric());
-        GameRegistry.register(blockDimDoorTransient = new BlockDimDoorTransient());
-        GameRegistry.register(blockRift = new BlockRift());
+    // Dimensional doors
+    public final static BlockDimDoor DIMENSIONAL_DOOR = new BlockDimDoor();
+    public final static BlockDimDoorGold GOLD_DIMENSIONAL_DOOR = new BlockDimDoorGold();
+    public final static BlockDimDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new BlockDimDoorPersonal();
+    public final static BlockDimDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new BlockDimDoorUnstable();
+    public final static BlockDimDoorTransient TRANSIENT_DIMENSIONAL_DOOR = new BlockDimDoorTransient();
+    public final static BlockDimDoorWarp WARP_DIMENSIONAL_DOOR = new BlockDimDoorWarp();
+    public final static BlockTransTrapdoor DIMENSIONAL_TRAPDOOR = new BlockTransTrapdoor();
+
+    // Blocks
+    public final static BlockFabric FABRIC = new BlockFabric();
+    public final static BlockRift RIFT = new BlockRift();
+
+    @SubscribeEvent
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+        event.getRegistry().register(QUARTZ_DOOR);
+        event.getRegistry().register(PERSONAL_DIMENSIONAL_DOOR);
+        event.getRegistry().register(GOLD_DOOR);
+        event.getRegistry().register(GOLD_DIMENSIONAL_DOOR);
+        event.getRegistry().register(UNSTABLE_DIMENSIONAL_DOOR);
+        event.getRegistry().register(WARP_DIMENSIONAL_DOOR);
+        event.getRegistry().register(DIMENSIONAL_DOOR);
+        event.getRegistry().register(DIMENSIONAL_TRAPDOOR);
+        event.getRegistry().register(FABRIC);
+        event.getRegistry().register(TRANSIENT_DIMENSIONAL_DOOR);
+        event.getRegistry().register(RIFT);
     }
 }

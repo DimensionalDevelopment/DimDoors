@@ -24,9 +24,9 @@ import static org.lwjgl.opengl.GL11.*;
 public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> {
 
     private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
-    private ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/WARP.png");
+    private ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/warp.png");
     private ResourceLocation keyPath = new ResourceLocation(DimDoors.MODID + ":textures/other/keyhole.png");
-    private ResourceLocation KeyholeLight = new ResourceLocation(DimDoors.MODID + ":textures/other/keyholeLight.png");
+    private ResourceLocation keyholeLight = new ResourceLocation(DimDoors.MODID + ":textures/other/keyhole_light.png");
 
     /**
      * Renders the dimdoor.
@@ -226,7 +226,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
         GL11.glEnable(GL11.GL_BLEND);
 
         if (i == 1) {
-            bindTexture(KeyholeLight);
+            bindTexture(keyholeLight);
             GlStateManager.color(1, 1, 1, .7f);
             GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_COLOR);
         } else {
@@ -257,7 +257,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
     }
 
     @Override
-    public void renderTileEntityAt(TileEntityDimDoor te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileEntityDimDoor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         World world = te.getWorld();
         BlockPos pos = te.getPos();
         ((BlockDimDoorBase) world.getBlockState(pos).getBlock()).updateAttachedTile(world, pos);

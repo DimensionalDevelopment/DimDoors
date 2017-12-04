@@ -29,8 +29,8 @@ public class DDConfig {
     private static int publicPocketSize = 2;
     private static int baseDimID = 684;
     private static String[] dungeonSchematicNames = {
-        "defaultDungeonNormal",
-        "defaultDungeonNether"
+        "default_dungeon_normal",
+        "default_dungeon_nether"
     }; //@todo set default dungeon names
     private static int maxDungeonDepth = 8;
     private static int owCoordinateOffsetBase = 64;
@@ -38,8 +38,8 @@ public class DDConfig {
     private static int[] doorRelativeDepths = new int[]{-1, 0, 1};
     private static int[] doorRelativeDepthWeights = new int[]{20, 30, 50};
 
-    private static boolean DangerousLimboMonolithsEnabled = false;
-    private static boolean MonolithTeleportationEnabled = true;
+    private static boolean dangerousLimboMonolithsEnabled = false;
+    private static boolean monolithTeleportationEnabled = true;
 
     private static int setConfigIntWithMaxAndMin(Configuration config, String category, String key, int defaultValue, String comment, int minValue, int maxValue) {
         Property prop = config.get(category, key, defaultValue,
@@ -98,13 +98,13 @@ public class DDConfig {
 
         //Monoliths
         config.addCustomCategoryComment("monoliths", "How dangerous are Monoliths");
-        prop = config.get("monoliths", "dangerousLimboMonolithsDisabled", DangerousLimboMonolithsEnabled,
+        prop = config.get("monoliths", "dangerousLimboMonolithsDisabled", dangerousLimboMonolithsEnabled,
                 "Are Monoliths in Limbo Dangerous? [default: false]");
-        DangerousLimboMonolithsEnabled = prop.getBoolean();
+        dangerousLimboMonolithsEnabled = prop.getBoolean();
 
-        prop = config.get("monoliths", "monolithTeleportationEnabled", MonolithTeleportationEnabled,
+        prop = config.get("monoliths", "monolithTeleportationEnabled", monolithTeleportationEnabled,
                 "Is Monolith Teleportation enabled? [default: true]");
-        MonolithTeleportationEnabled = prop.getBoolean();
+        monolithTeleportationEnabled = prop.getBoolean();
         
         //Pocket_Dimensions
         config.addCustomCategoryComment("pocket_dimension", "The following values determine the maximum sizes of different kinds of pockets. These values will only influence new worlds.");
@@ -206,10 +206,10 @@ public class DDConfig {
     }
 
     public static boolean isDangerousLimboMonolithsDisabled() {
-        return DangerousLimboMonolithsEnabled;
+        return dangerousLimboMonolithsEnabled;
     }
 
     public static boolean isMonolithTeleportationEnabled() {
-        return MonolithTeleportationEnabled;
+        return monolithTeleportationEnabled;
     }
 }

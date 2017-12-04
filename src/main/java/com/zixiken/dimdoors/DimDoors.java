@@ -24,7 +24,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-@Mod(modid = DimDoors.MODID, name = "Dimensional Doors", version = DimDoors.VERSION, dependencies = "required-after:Forge@[12.18.3.2281,)")
+@Mod(modid = DimDoors.MODID, name = "Dimensional Doors", version = DimDoors.VERSION, dependencies = "required-after:forge@[14.23.0.2517,)")
 public class DimDoors {
 
     public static final String VERSION = "${version}";
@@ -37,11 +37,11 @@ public class DimDoors {
     @Mod.Instance(DimDoors.MODID)
     public static DimDoors instance;
 
-    public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") {
+    public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimensional_doors_creative_tab") {
         @Override
         @SideOnly(Side.CLIENT)
         public ItemStack getTabIconItem() {
-            return new ItemStack(ModItems.itemDimDoor);
+            return new ItemStack(ModItems.DIMENSIONAL_DOOR);
         }
     };
 

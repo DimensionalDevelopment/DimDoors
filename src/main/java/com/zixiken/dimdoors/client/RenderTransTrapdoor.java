@@ -26,13 +26,13 @@ import org.lwjgl.opengl.GL11;
 public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTransTrapdoor> {
 
     private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
-    private ResourceLocation riftPath = new ResourceLocation(DimDoors.MODID + ":textures/other/RIFT.png");
-    private ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/WARP.png");
+    private ResourceLocation riftPath = new ResourceLocation(DimDoors.MODID + ":textures/other/rift.png");
+    private ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/warp.png");
 
     /**
      * Renders the dimdoor.
      */
-    public void renderTransTrapdoorTileEntity(TileEntityTransTrapdoor tile, double x, double y, double z, float partialTicks) {
+    public void renderTransTrapdoorTileEntity(TileEntityTransTrapdoor tile, double x, double y, double z, float partialTicks, float alpha) {
         GlStateManager.disableLighting();
         Random random = new Random(31100L);
         IBlockState state = tile.getWorld().getBlockState(tile.getPos());
@@ -151,7 +151,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
     }
 
     @Override
-    public void renderTileEntityAt(TileEntityTransTrapdoor te, double x, double y, double z, float partialTicks, int destroyStage) {
-        this.renderTransTrapdoorTileEntity(te, x, y, z, partialTicks);
+    public void render(TileEntityTransTrapdoor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+        this.renderTransTrapdoorTileEntity(te, x, y, z, partialTicks, alpha);
     }
 }

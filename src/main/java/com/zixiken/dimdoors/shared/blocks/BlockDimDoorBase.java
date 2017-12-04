@@ -6,7 +6,6 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
-import javax.annotation.Nullable;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -156,7 +155,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
         }
         super.breakBlock(world, pos, state);
         if (shouldPlaceRift) {
-            world.setBlockState(pos, ModBlocks.blockRift.getDefaultState());
+            world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
             DDTileEntityBase newRift = (DDTileEntityBase) world.getTileEntity(pos);
             newRift.loadDataFrom(origRift); //@todo this does not work here, or does it?
         }
@@ -188,7 +187,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     }
 
     private boolean canPlaceTopAt(IBlockState state) {
-        return (state.getBlock() == ModBlocks.blockRift || state.equals(Blocks.AIR) || state.getMaterial().isReplaceable());
+        return (state.getBlock() == ModBlocks.RIFT || state.equals(Blocks.AIR) || state.getMaterial().isReplaceable());
     }
     
     protected int getCloseSound()

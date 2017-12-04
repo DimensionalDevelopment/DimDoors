@@ -34,7 +34,7 @@ public class LimboDecay {
     public static IBlockState[] getDecaySequence() {
         if (decaySequence == null) {
             decaySequence = new IBlockState[] {
-                    ModBlocks.blockFabric.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED),
+                    ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED),
                     Blocks.GRAVEL.getDefaultState(),
                     Blocks.COBBLESTONE.getDefaultState(),
                     Blocks.STONE.getDefaultState()
@@ -47,16 +47,16 @@ public class LimboDecay {
     public static IBlockState[] getBlocksImmuneToDecay() {
         if (blocksImmuneToDecay == null) {
             blocksImmuneToDecay = new IBlockState[] {
-                    ModBlocks.blockFabric.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED),
-                    ModBlocks.blockFabric.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ETERNAL),
-                    ModBlocks.blockDimDoorTransient.getDefaultState(),
-                    ModBlocks.blockDimDoor.getDefaultState(),
-                    ModBlocks.blockDimDoorWarp.getDefaultState(),
-                    ModBlocks.blockRift.getDefaultState(),
-                    ModBlocks.blockDimDoorChaos.getDefaultState(),
-                    ModBlocks.blockDoorGold.getDefaultState(),
-                    ModBlocks.blockDoorQuartz.getDefaultState(),
-                    ModBlocks.blockDimDoorGold.getDefaultState()
+                    ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED),
+                    ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ETERNAL),
+                    ModBlocks.TRANSIENT_DIMENSIONAL_DOOR.getDefaultState(),
+                    ModBlocks.DIMENSIONAL_DOOR.getDefaultState(),
+                    ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState(),
+                    ModBlocks.RIFT.getDefaultState(),
+                    ModBlocks.UNSTABLE_DIMENSIONAL_DOOR.getDefaultState(),
+                    ModBlocks.GOLD_DOOR.getDefaultState(),
+                    ModBlocks.QUARTZ_DOOR.getDefaultState(),
+                    ModBlocks.GOLD_DIMENSIONAL_DOOR.getDefaultState()
             };
         }
 
@@ -120,7 +120,7 @@ public class LimboDecay {
     private static boolean decayBlockFast(World world, BlockPos pos) {
         IBlockState block = world.getBlockState(pos);
         if (canDecayBlock(block, world, pos)) {
-            world.setBlockState(pos, ModBlocks.blockFabric.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED));
+            world.setBlockState(pos, ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED));
             return true;
         }
         return false;

@@ -1,0 +1,7 @@
+{
+    "parent": "block/door_bottom",
+    "textures": {
+        "bottom": "blocks/door_iron_lower",
+        "top": "dimdoors:blocks/unstable_dimensional_door_upper"
+    }
+}

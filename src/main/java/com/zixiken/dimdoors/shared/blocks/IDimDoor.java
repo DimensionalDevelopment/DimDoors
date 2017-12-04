@@ -12,9 +12,7 @@ public interface IDimDoor {
      * player collides with an open door
      *
      * @param world
-     * @param x
-     * @param y
-     * @param z
+     * @param pos
      * @param entity
      */
     public void enterDimDoor(World world, BlockPos pos, Entity entity);
@@ -22,12 +20,10 @@ public interface IDimDoor {
     public Item getItemDoor();
 
     /**
-     * checks if any of this doors blocks are overlapping with a rift
+     * Checks if any of this doors blocks are overlapping with a rift
      *
      * @param world
-     * @param x
-     * @param y
-     * @param z
+     * @param pos
      * @return
      */
     public boolean isDoorOnRift(World world, BlockPos pos);

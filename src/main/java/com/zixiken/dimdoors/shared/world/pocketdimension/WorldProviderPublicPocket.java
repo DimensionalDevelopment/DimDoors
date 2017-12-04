@@ -76,11 +76,6 @@ public class WorldProviderPublicPocket extends WorldProvider {//@todo, we might 
     }*/
 
     @Override
-    public int getRespawnDimension(EntityPlayerMP player) {
-        return getDimension();
-    }
-
-    @Override
     public boolean canRespawnHere() {
         return false;
     }

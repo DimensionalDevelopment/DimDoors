@@ -18,36 +18,36 @@ public class ModelManager {
 
     public static void registerModels() {
         //ItemBlock registration
-        register(getItemFromBlock(ModBlocks.blockFabric), 0, "Reality");
-        register(getItemFromBlock(ModBlocks.blockFabric), 1, "Ancient");
-        register(getItemFromBlock(ModBlocks.blockFabric), 2, "Altered");
-        register(getItemFromBlock(ModBlocks.blockFabric), 3, "Unraveled");
-        register(getItemFromBlock(ModBlocks.blockFabric), 4, "Eternal");
+        register(getItemFromBlock(ModBlocks.FABRIC), 0, "reality");
+        register(getItemFromBlock(ModBlocks.FABRIC), 1, "ancient");
+        register(getItemFromBlock(ModBlocks.FABRIC), 2, "altered");
+        register(getItemFromBlock(ModBlocks.FABRIC), 3, "unraveled");
+        register(getItemFromBlock(ModBlocks.FABRIC), 4, "eternal");
 
-        register(getItemFromBlock(ModBlocks.blockRift));
-        register(getItemFromBlock(ModBlocks.blockDimHatch));
+        register(getItemFromBlock(ModBlocks.RIFT));
+        register(getItemFromBlock(ModBlocks.DIMENSIONAL_TRAPDOOR));
 
         //Item registration
-        register(ModItems.itemDimDoor);
-        register(ModItems.itemDimDoorGold);
-        register(ModItems.itemDoorGold);
-        register(ModItems.itemDimDoorPersonal);
-        register(ModItems.itemDoorQuartz);
-        register(ModItems.itemStableFabric);
-        register(ModItems.itemDimDoorChaos);
-        register(ModItems.itemDimDoorWarp);
-        register(ModItems.itemWorldThread);
-        register(ModItems.itemRiftConnectionTool);
-        register(ModItems.itemRiftBlade);
+        register(ModItems.DIMENSIONAL_DOOR);
+        register(ModItems.GOLD_DIMENSIONAL_DOOR);
+        register(ModItems.GOLD_DOOR);
+        register(ModItems.PERSONAL_DIMENSIONAL_DOOR);
+        register(ModItems.QUARTZ_DOOR);
+        register(ModItems.STABLE_FABRIC);
+        register(ModItems.UNSTABLE_DIMENSIONAL_DOOR);
+        register(ModItems.WARP_DIMENSIONAL_DOOR);
+        register(ModItems.WORLD_THREAD);
+        register(ModItems.RIFT_CONNECTION_TOOL);
+        register(ModItems.RIFT_BLADE);
     }
 
     public static void registerModelVariants() {
-        ModelBakery.registerItemVariants(getItemFromBlock(ModBlocks.blockFabric),
-                new ResourceLocation(ModBlocks.blockFabric.getRegistryName() + "Reality"),
-                new ResourceLocation(ModBlocks.blockFabric.getRegistryName() + "Ancient"),
-                new ResourceLocation(ModBlocks.blockFabric.getRegistryName() + "Altered"),
-                new ResourceLocation(ModBlocks.blockFabric.getRegistryName() + "Unraveled"),
-                new ResourceLocation(ModBlocks.blockFabric.getRegistryName() + "Eternal"));
+        ModelBakery.registerItemVariants(getItemFromBlock(ModBlocks.FABRIC),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_reality"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_ancient"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_altered"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_unraveled"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_eternal"));
     }
 
     private static void register(Item item) {
@@ -57,22 +57,22 @@ public class ModelManager {
 
     private static void register(Item item, int meta, String name) {
         Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, meta,
-                new ModelResourceLocation(item.getRegistryName() + name, "inventory"));
+                new ModelResourceLocation(item.getRegistryName() + "_" + name, "inventory"));
     }
 
     @SuppressWarnings("LocalVariableDeclarationSideOnly")
     public static void addCustomStateMappers() {
         StateMap map = new StateMap.Builder().ignore(BlockDoor.POWERED).build();
 
-        ModelLoader.setCustomStateMapper(ModBlocks.blockDoorGold, map);
-        ModelLoader.setCustomStateMapper(ModBlocks.blockDoorQuartz, map);
-        ModelLoader.setCustomStateMapper(ModBlocks.blockDimDoorGold, map);
-        ModelLoader.setCustomStateMapper(ModBlocks.blockDimDoor, map);
-        ModelLoader.setCustomStateMapper(ModBlocks.blockDimDoorPersonal, map);
-        ModelLoader.setCustomStateMapper(ModBlocks.blockDimDoorChaos, map);
-        ModelLoader.setCustomStateMapper(ModBlocks.blockDimDoorWarp, map);
+        ModelLoader.setCustomStateMapper(ModBlocks.GOLD_DOOR, map);
+        ModelLoader.setCustomStateMapper(ModBlocks.QUARTZ_DOOR, map);
+        ModelLoader.setCustomStateMapper(ModBlocks.GOLD_DIMENSIONAL_DOOR, map);
+        ModelLoader.setCustomStateMapper(ModBlocks.DIMENSIONAL_DOOR, map);
+        ModelLoader.setCustomStateMapper(ModBlocks.PERSONAL_DIMENSIONAL_DOOR, map);
+        ModelLoader.setCustomStateMapper(ModBlocks.UNSTABLE_DIMENSIONAL_DOOR, map);
+        ModelLoader.setCustomStateMapper(ModBlocks.WARP_DIMENSIONAL_DOOR, map);
 
-        ModelLoader.setCustomStateMapper(ModBlocks.blockDimDoorTransient, new StateMap.Builder().ignore(
+        ModelLoader.setCustomStateMapper(ModBlocks.TRANSIENT_DIMENSIONAL_DOOR, new StateMap.Builder().ignore(
                 BlockDoor.FACING, BlockDoor.HALF, BlockDoor.HINGE, BlockDoor.OPEN, BlockDoor.POWERED).build());
     }
 }

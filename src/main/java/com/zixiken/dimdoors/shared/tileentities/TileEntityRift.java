@@ -46,7 +46,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
 
     @Override
     public void update() {
-        if (world.getBlockState(pos).getBlock() != ModBlocks.blockRift) {
+        if (world.getBlockState(pos).getBlock() != ModBlocks.RIFT) {
             invalidate();
             return;
         }

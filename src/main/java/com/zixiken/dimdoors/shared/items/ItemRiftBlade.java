@@ -12,6 +12,7 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,13 +25,13 @@ import java.util.List;
  */
 public class ItemRiftBlade extends ItemSword {
 
-    public static final String ID = "itemRiftBlade";
+    public static final String ID = "rift_blade";
 
     public ItemRiftBlade() {
         super(ToolMaterial.DIAMOND);
         setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setUnlocalizedName(ID);
-        setRegistryName(ID);
+        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
     @Override
@@ -44,7 +45,7 @@ public class ItemRiftBlade extends ItemSword {
      */
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        return ModItems.itemStableFabric == repair.getItem();
+        return ModItems.STABLE_FABRIC == repair.getItem();
     }
 
     @Override
@@ -77,6 +78,6 @@ public class ItemRiftBlade extends ItemSword {
 
     @Override
     public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag advanced) {
-        DimDoors.translateAndAdd("info.riftblade", list);
+        DimDoors.translateAndAdd("info.rift_blade", list);
     }
 }

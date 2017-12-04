@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -26,14 +27,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntityProvider {
 
-    public static final String ID = "blockDimHatch";
+    public static final String ID = "dimensional_trapdoor";
 
     public BlockTransTrapdoor() {
         super(Material.WOOD);
         this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setHardness(1.0F);
         setUnlocalizedName(ID);
-        setRegistryName(ID);
+        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setSoundType(SoundType.WOOD);
     }
 
@@ -58,9 +59,9 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock) {
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
         if (checkCanOpen(worldIn, pos)) {
-            super.neighborChanged(state, worldIn, pos, neighborBlock);
+            super.neighborChanged(state, worldIn, pos, neighborBlock, fromPos);
         }
     }
 
@@ -93,7 +94,7 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 
     @Override
     public Item getItemDoor() {
-        return Item.getItemFromBlock(ModBlocks.blockDimHatch);
+        return Item.getItemFromBlock(ModBlocks.DIMENSIONAL_TRAPDOOR);
     }
 
     public static boolean isTrapdoorSetLow(IBlockState state) {

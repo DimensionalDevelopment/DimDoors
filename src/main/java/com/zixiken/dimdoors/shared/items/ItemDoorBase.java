@@ -22,9 +22,9 @@ import static net.minecraft.item.ItemDoor.placeDoor;
 import net.minecraft.tileentity.TileEntity;
 
 public abstract class ItemDoorBase extends ItemDoor {
+
     // Maps non-dimensional door items to their corresponding dimensional door item
     // Also maps dimensional door items to themselves for simplicity
-
     private static HashMap<ItemDoor, ItemDoorBase> doorItemMapping = new HashMap<ItemDoor, ItemDoorBase>();
 
     /**

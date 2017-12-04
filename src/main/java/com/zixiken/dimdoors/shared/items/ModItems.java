@@ -1,42 +1,52 @@
 package com.zixiken.dimdoors.shared.items;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 
 public class ModItems {
 
-    public static ItemDimDoorGold itemDimDoorGold;
-    public static ItemDoorGold itemDoorGold;
-    public static ItemWorldThread itemWorldThread;
-    public static ItemDimDoor itemDimDoor;
-    public static ItemDimDoorWarp itemDimDoorWarp;
-    public static ItemStableFabric itemStableFabric;
-    public static ItemDimDoorUnstable itemDimDoorChaos;
-    public static ItemDoorQuartz itemDoorQuartz;
-    public static ItemDimDoorPersonal itemDimDoorPersonal;
-    public static ItemBlockFabric itemBlockFabric;
-    public static ItemRiftConnectionTool itemRiftConnectionTool;
-    public static ItemRiftBlade itemRiftBlade;
+    // Regular doors
+    public final static ItemDoorGold GOLD_DOOR = new ItemDoorGold();
+    public final static ItemDoorQuartz QUARTZ_DOOR = new ItemDoorQuartz();
 
-    public static void registerItems() {
-        GameRegistry.register(itemDoorQuartz = new ItemDoorQuartz());
-        GameRegistry.register(itemDimDoorPersonal = new ItemDimDoorPersonal());
-        GameRegistry.register(itemDoorGold = new ItemDoorGold());
-        GameRegistry.register(itemDimDoorGold = new ItemDimDoorGold());
-        GameRegistry.register(itemDimDoor = new ItemDimDoor());
-        GameRegistry.register(itemDimDoorWarp = new ItemDimDoorWarp());
-        GameRegistry.register(itemStableFabric = new ItemStableFabric());
-        GameRegistry.register(itemDimDoorChaos = new ItemDimDoorUnstable());
-        GameRegistry.register(itemWorldThread = new ItemWorldThread());
-        GameRegistry.register(itemRiftConnectionTool = new ItemRiftConnectionTool());
-        GameRegistry.register(itemRiftBlade = new ItemRiftBlade());
+    // Dimensional doors
+    public final static ItemDimDoor DIMENSIONAL_DOOR = new ItemDimDoor();
+    public final static ItemDimDoorGold GOLD_DIMENSIONAL_DOOR = new ItemDimDoorGold();
+    public final static ItemDimDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new ItemDimDoorPersonal();
+    public final static ItemDimDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new ItemDimDoorUnstable();
+    public final static ItemDimDoorWarp WARP_DIMENSIONAL_DOOR = new ItemDimDoorWarp();
 
-        //ItemBlocks
-        GameRegistry.register(itemBlockFabric = new ItemBlockFabric());
-        GameRegistry.register(new ItemBlock(ModBlocks.blockDimHatch)
-                .setRegistryName(ModBlocks.blockDimHatch.getRegistryName()));
-        GameRegistry.register(new ItemBlock(ModBlocks.blockRift)
-                .setRegistryName(ModBlocks.blockRift.getRegistryName()));
+    // Fabric
+    public final static ItemWorldThread WORLD_THREAD = new ItemWorldThread();
+    public final static ItemBlockFabric FABRIC = new ItemBlockFabric();
+    public final static ItemStableFabric STABLE_FABRIC = new ItemStableFabric();
+
+    // Tools
+    public final static ItemRiftConnectionTool RIFT_CONNECTION_TOOL = new ItemRiftConnectionTool();
+    public final static ItemRiftBlade RIFT_BLADE = new ItemRiftBlade();
+
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        event.getRegistry().register(QUARTZ_DOOR);
+        event.getRegistry().register(PERSONAL_DIMENSIONAL_DOOR);
+        event.getRegistry().register(GOLD_DOOR);
+        event.getRegistry().register(GOLD_DIMENSIONAL_DOOR);
+        event.getRegistry().register(DIMENSIONAL_DOOR);
+        event.getRegistry().register(WARP_DIMENSIONAL_DOOR);
+        event.getRegistry().register(STABLE_FABRIC);
+        event.getRegistry().register(UNSTABLE_DIMENSIONAL_DOOR);
+        event.getRegistry().register(WORLD_THREAD);
+        event.getRegistry().register(RIFT_CONNECTION_TOOL);
+        event.getRegistry().register(RIFT_BLADE);
+
+        // ItemBlocks
+        event.getRegistry().register(FABRIC);
+        event.getRegistry().register(new ItemBlock(ModBlocks.DIMENSIONAL_TRAPDOOR)
+                .setRegistryName(ModBlocks.DIMENSIONAL_TRAPDOOR.getRegistryName()));
+        event.getRegistry().register(new ItemBlock(ModBlocks.RIFT)
+                .setRegistryName(ModBlocks.RIFT.getRegistryName()));
     }
 }

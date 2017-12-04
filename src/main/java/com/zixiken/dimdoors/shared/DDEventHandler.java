@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 
@@ -37,6 +38,14 @@ public class DDEventHandler {
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onLivingFall(LivingFallEvent event) {
+        Entity entity = event.getEntity();
+        if (entity.dimension == DimDoorDimensions.LIMBO.getId()) {
+            event.setCanceled(true); // no fall damage in limbo
         }
     }
 

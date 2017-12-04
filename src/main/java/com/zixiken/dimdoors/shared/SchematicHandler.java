@@ -75,8 +75,8 @@ public class SchematicHandler {
     }
 
     public void loadSchematics() {
-        personalPocketTemplate = loadTemplatesFromJson("defaultPrivate", PocketRegistry.INSTANCE.getPrivatePocketSize()).get(0);
-        publicPocketTemplate = loadTemplatesFromJson("defaultPublic", PocketRegistry.INSTANCE.getPublicPocketSize()).get(0);
+        personalPocketTemplate = loadTemplatesFromJson("default_private", PocketRegistry.INSTANCE.getPrivatePocketSize()).get(0);
+        publicPocketTemplate = loadTemplatesFromJson("default_public", PocketRegistry.INSTANCE.getPublicPocketSize()).get(0);
         dungeonTemplates = new ArrayList();
         List<String> dungeonSchematicNameStrings = DDConfig.getDungeonSchematicNames();
         int maxPocketSize = PocketRegistry.INSTANCE.getMaxPocketSize();
@@ -92,7 +92,7 @@ public class SchematicHandler {
         }
         constructDungeonNameMap();
 
-        //Schematic.TempGenerateDefaultSchematics();
+        // Schematic.tempGenerateDefaultSchematics();
     }
 
     private void constructDungeonNameMap() {

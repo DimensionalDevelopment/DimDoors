@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL11;
 
 
 public class RenderRift extends TileEntitySpecialRenderer<TileEntityRift> {
-    private static final EntityItem ITEM = new EntityItem(Minecraft.getMinecraft().world, 0,0,0, new ItemStack(ModItems.itemStableFabric));
+    private static final EntityItem ITEM = new EntityItem(Minecraft.getMinecraft().world, 0,0,0, new ItemStack(ModItems.STABLE_FABRIC));
     private static ResourceLocation tesseract_path = new ResourceLocation(DimDoors.MODID + ":textures/other/tesseract.png");
 
     private static Vector4f tesseract[] = {
@@ -150,7 +150,7 @@ public class RenderRift extends TileEntitySpecialRenderer<TileEntityRift> {
      * Renders the rift.
      */
     @Override
-    public void renderTileEntityAt(TileEntityRift te, double x, double y, double z, float partialTicks, int destroyStage) {
+    public void render(TileEntityRift te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         double radian = update(partialTicks) * TrigMath.DEG_TO_RAD;
 
         GlStateManager.enableLighting();
