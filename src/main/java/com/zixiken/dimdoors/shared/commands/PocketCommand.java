@@ -60,7 +60,7 @@ public class PocketCommand extends CommandBase {
                     origLoc = oldPocket.getDepthZeroLocation();
                 }
 
-                PocketTemplate template = SchematicHandler.INSTANCE.getDungeonTemplate(args[0], args[1]);
+                PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(args[0], args[1]);
                 Pocket pocket = PocketRegistry.INSTANCE.generatePocketAt(EnumPocketType.DUNGEON, 1, origLoc, template);
                 int entranceDoorID = pocket.getEntranceDoorID();
                 RiftRegistry.INSTANCE.setLastGeneratedEntranceDoorID(entranceDoorID);
@@ -74,10 +74,10 @@ public class PocketCommand extends CommandBase {
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         List<String> list = new ArrayList<>();
         if (args.length < 2) { //counts an empty ("") argument as an argument as well...
-            list = SchematicHandler.INSTANCE.getDungeonTemplateGroups();
+            list = SchematicHandler.INSTANCE.getTemplateGroups();
             list = StringUtils.getMatchingStrings(args[0], list, false);
         } else if (args.length == 2) {
-            list = SchematicHandler.INSTANCE.getDungeonTemplateNames(args[0]);
+            list = SchematicHandler.INSTANCE.getTemplateNames(args[0]);
             list = StringUtils.getMatchingStrings(args[1], list, false);
         }
         return list;
@@ -91,10 +91,10 @@ public class PocketCommand extends CommandBase {
             DimDoors.chat(player, "Too many arguments.");
             return false;
         } else { //exactly 2 arguments
-            if (!SchematicHandler.INSTANCE.getDungeonTemplateGroups().contains(args[0])) {
+            if (!SchematicHandler.INSTANCE.getTemplateGroups().contains(args[0])) {
                 DimDoors.chat(player, "Group not found.");
                 return false;
-            } else if (!SchematicHandler.INSTANCE.getDungeonTemplateNames(args[0]).contains(args[1])) {
+            } else if (!SchematicHandler.INSTANCE.getTemplateNames(args[0]).contains(args[1])) {
                 DimDoors.chat(player, "Schematic not found.");
                 return false;
             } else {

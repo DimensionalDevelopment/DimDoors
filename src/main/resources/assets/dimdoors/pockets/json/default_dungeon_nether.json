@@ -1,6 +1,5 @@
 {
-    "directory": "nether",
-    "jsonType": "Multiple",
+    "group": "nether",
     "pocketType" : 2,
     "variations": [
         {

@@ -44,6 +44,7 @@ public abstract class DDProxyCommon implements IDDProxy {
 
     @Override
     public void onInitialization(FMLInitializationEvent event) {
+        SchematicHandler.INSTANCE.loadSchematics();
     }
 
     public void updateDoorTE(BlockDimDoorBase door, World world, BlockPos pos) {

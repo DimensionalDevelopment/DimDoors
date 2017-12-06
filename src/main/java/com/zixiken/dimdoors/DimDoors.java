@@ -60,7 +60,6 @@ public class DimDoors {
         registerCommands(event);
         RiftRegistry.INSTANCE.reset();
         PocketRegistry.INSTANCE.reset();
-        SchematicHandler.INSTANCE.loadSchematics();
     }
 
     private void registerCommands(FMLServerStartingEvent event) {

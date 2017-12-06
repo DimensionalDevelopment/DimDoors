@@ -1,6 +1,5 @@
 {
-    "directory": "public",
-    "jsonType": "Singular",
+    "group": "public",
     "pocketType" : 1,
     "variations": [
         {

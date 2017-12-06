@@ -5,6 +5,9 @@
  */
 package com.zixiken.dimdoors.shared.util;
 
+import java.util.Map;
+import java.util.Random;
+
 /**
  *
  * @author Robijnvogel
@@ -59,5 +62,19 @@ public class MathUtils {
             r += i;
         }
         return r;
+    }
+
+    public static <T> T weightedRandom(Map<T, Integer> weights) {
+        int totalWeight = 0;
+        for (Integer weight : weights.values()) {
+            totalWeight += weight;
+        }
+        Random random = new Random();
+        int i = random.nextInt(totalWeight);
+        for (Map.Entry<T, Integer> e : weights.entrySet()) {
+            i -= e.getValue();
+            if (i < 0) return e.getKey();
+        }
+        return null;
     }
 }

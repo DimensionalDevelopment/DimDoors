@@ -8,6 +8,7 @@ package com.zixiken.dimdoors.shared;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.util.RandomUtils;
+import com.zixiken.dimdoors.shared.util.Schematic;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,7 +177,7 @@ public class PocketRegistry {
     }
 
     public Pocket generateRandomPocketAt(EnumPocketType typeID, int depth, Location origRiftLocation) {
-        //Correcting the depth. Just in case...
+        // Correcting the depth. Just in case...
         if (typeID == EnumPocketType.DUNGEON) {
             if (depth <= 0) {
                 depth = 1;
@@ -188,8 +189,19 @@ public class PocketRegistry {
         }
 
         // Fetch the pocket template
-        PocketTemplate pocketTemplate = getRandomPocketTemplate(typeID, depth, maxPocketSize);
-
+        PocketTemplate pocketTemplate;
+        switch (typeID) {
+            case DUNGEON:
+                pocketTemplate = SchematicHandler.INSTANCE.getDungeonTemplate(depth / 50, depth);
+                break;
+            case PUBLIC:
+                pocketTemplate = SchematicHandler.INSTANCE.getPublicPocketTemplate();
+                break;
+            case PRIVATE:
+            default:
+                pocketTemplate = SchematicHandler.INSTANCE.getPersonalPocketTemplate();
+                break;
+        }
         return generatePocketAt(typeID, depth, origRiftLocation, pocketTemplate);
     }
 
@@ -250,17 +262,7 @@ public class PocketRegistry {
         return new Location(dimID, x, y, z);
     }
 
-    private PocketTemplate getRandomPocketTemplate(EnumPocketType typeID, int depth, int maxPocketSize) {
-        switch (typeID) {
-            case PRIVATE:
-                return SchematicHandler.INSTANCE.getPersonalPocketTemplate();
-            case PUBLIC:
-                return SchematicHandler.INSTANCE.getPublicPocketTemplate();
-            case DUNGEON:
-            default:
-                return SchematicHandler.INSTANCE.getRandomDungeonPocketTemplate(depth, maxPocketSize);
-        }
-    }
+
 
     /*
     private int getSimpleX(int ID) {
@@ -337,6 +339,7 @@ public class PocketRegistry {
         } else {
             EnumPocketType type = DimDoorDimensions.getPocketType(location.getDimensionID());
             Pocket pocket = pocketLists.get(type).get(pocketID);
+            if (pocket == null) return true; // TODO: why is this happening?
             return pocket.isPlayerAllowedInPocket(player) && pocket.isLocationWithinPocketBounds(location, gridSize);
         }
     }

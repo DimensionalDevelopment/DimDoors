@@ -5,6 +5,8 @@
  */
 package com.zixiken.dimdoors.shared;
 
+import com.zixiken.dimdoors.shared.util.MathUtils;
+import com.zixiken.dimdoors.shared.util.RandomUtils;
 import com.zixiken.dimdoors.shared.util.Schematic;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -19,152 +21,84 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
 import org.apache.commons.io.IOUtils;
+import scala.tools.nsc.Global;
 
 /**
  *
  * @author Robijnvogel
  */
 public class SchematicHandler {
-
     public static final SchematicHandler INSTANCE = new SchematicHandler();
-    private PocketTemplate personalPocketTemplate;
-    private PocketTemplate publicPocketTemplate;
-    private List<PocketTemplate> dungeonTemplates; //@todo should this be a Map? Does it need to? It gets reloaded from scratch on ServerStart every time, so...
-    final private Map<String, Map<String, Integer>> dungeonNameMap = new HashMap<>();
-    //@todo, sort templates by depth over here? that'd mean that that doesn't have to be done on pocket placement each and every time
 
-    PocketTemplate getRandomDungeonPocketTemplate(int depth, int maxPocketSize) { //@todo maxPocketSize is passed for no reason at all here; pockets exceeding maxPocketSize have not been loaded in the first place...
-        List<PocketTemplate> validTemplates = new ArrayList<>();
-        int totalWeight = 0;
-        for (PocketTemplate template : dungeonTemplates) {
-            if (depth >= template.getMinDepth() && depth <= template.getMaxDepth()) {
-                validTemplates.add(template);
-                totalWeight += template.getWeight(depth);
-            }
-        }
-        DimDoors.log(getClass(), "depth = " + depth + ". totalWeight = " + totalWeight);
+    private List<PocketTemplate> templates;
+    private Map<String, Map<String, Integer>> nameMap; // group -> name -> index in templates
 
-        Random random = new Random();
-        int chosenTemplatePointer = random.nextInt(totalWeight);
-        for (PocketTemplate template : validTemplates) {
-            chosenTemplatePointer -= template.getWeight(depth);
-            if (chosenTemplatePointer < 0) {
-                return template;
-            }
-        }
-        DimDoors.warn(getClass(), "No valid dungeon could be chosen for this depth. What have you done to make this happen? Now crashing:");
-        return null;
-    }
+    // LOADING CODE STARTS HERE <editor-fold>
 
     public void loadSchematics() {
-        personalPocketTemplate = loadTemplatesFromJson("default_private", PocketRegistry.INSTANCE.getPrivatePocketSize()).get(0);
-        publicPocketTemplate = loadTemplatesFromJson("default_public", PocketRegistry.INSTANCE.getPublicPocketSize()).get(0);
-        dungeonTemplates = new ArrayList<>();
-        List<String> dungeonSchematicNameStrings = DDConfig.getDungeonSchematicNames();
-        int maxPocketSize = PocketRegistry.INSTANCE.getMaxPocketSize();
-        for (String nameString : dungeonSchematicNameStrings) {
-            List<PocketTemplate> templates = loadTemplatesFromJson(nameString, maxPocketSize);
-            if (templates != null) {
-                for (PocketTemplate template : templates) {
-                    if (template != null && template.getSchematic() != null) {
-                        dungeonTemplates.add(template);
-                    }
-                }
+        templates = new ArrayList<>();
+
+        String[] names = {"default_dungeon_normal", "default_dungeon_nether", "default_private", "default_public"}; // TODO: don't hardcode
+        for (String name : names) {
+            try {
+                URL resource = DimDoors.class.getResource("/assets/dimdoors/pockets/json/" + name + ".json");
+                String jsonString = IOUtils.toString(resource, StandardCharsets.UTF_8);
+                templates.addAll(loadTemplatesFromJson(jsonString));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
-        constructDungeonNameMap();
 
-        // Schematic.tempGenerateDefaultSchematics();
-    }
-
-    private void constructDungeonNameMap() {
-        //init
-        dungeonNameMap.clear();
-        //to prevent having to use too many getters
-        String bufferedDirectory = null;
-        Map<String, Integer> bufferedMap = null;
-
-        for (PocketTemplate template : dungeonTemplates) {
-            String dirName = template.getDirName();
-            if (dirName != null && dirName.equals(bufferedDirectory)) { //null check not needed
-                bufferedMap.put(template.getName(), dungeonTemplates.indexOf(template));
-            } else {
-                bufferedDirectory = dirName;
-                if (dungeonNameMap.containsKey(dirName)) { //this will only happen if you have two json files referring to the same directory being loaded non-consecutively
-                    bufferedMap = dungeonNameMap.get(dirName);
-                    bufferedMap.put(template.getName(), dungeonTemplates.indexOf(template));
-                } else {
-                    bufferedMap = new HashMap<>();
-                    bufferedMap.put(template.getName(), dungeonTemplates.indexOf(template));
-                    dungeonNameMap.put(dirName, bufferedMap);
-                }
-            }
-        }
-    }
-
-    private static List<PocketTemplate> loadTemplatesFromJson(String nameString, int maxPocketSize) { //depending on the "jSonType" value in the jSon, this might load several variations of a pocket at once, hence loadTemplate -->s<--
-        InputStream jsonJarStream = DimDoors.class.getResourceAsStream("/assets/dimdoors/pockets/json/" + nameString + ".json");
-        String schematicJarDirectory = "/assets/dimdoors/pockets/schematic/";
-        //init jsons config folder
-        File jsonFolder = new File(DDConfig.configurationFolder, "/Jsons");
+        // Load config jsons
+        File jsonFolder = new File(DDConfig.configurationFolder, "/jsons");
         if (!jsonFolder.exists()) {
             jsonFolder.mkdirs();
         }
-        File jsonFile = new File(jsonFolder, "/" + nameString + ".json"); //@todo this could probably be moved a few lines down
-        //init schematics config folder
-        File schematicFolder = new File(DDConfig.configurationFolder, "/Schematics");
+        // Init schematics config folder
+        File schematicFolder = new File(DDConfig.configurationFolder, "/schematics");
         if (!schematicFolder.exists()) {
             schematicFolder.mkdirs();
         }
 
-        //load the json and convert it to a JsonObject
-        String jsonString;
-        if (jsonJarStream != null) {
-            StringWriter writer = new StringWriter();
+        for (File file : jsonFolder.listFiles()) {
             try {
-                IOUtils.copy(jsonJarStream, writer, StandardCharsets.UTF_8);
-            } catch (IOException ex) {
-                Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Json-file " + nameString + ".json did not load correctly from jar. Skipping loading of this template.", ex);
-                return new ArrayList<>();
+                String jsonString = IOUtils.toString(file.toURI(), StandardCharsets.UTF_8);
+                templates.addAll(loadTemplatesFromJson(jsonString));
+            } catch (IOException e) {
+                DimDoors.warn("Error reading file " + file.toURI() + ". The following exception occured: ");
             }
-            jsonString = writer.toString();
-        } else if (jsonFile.exists()) {
-            DimDoors.log(SchematicHandler.class, "Json-file " + nameString + ".json was not found in the jar. Loading from config directory instead.");
-            try {
-                jsonString = readFile(jsonFile.getAbsolutePath(), StandardCharsets.UTF_8);
-            } catch (IOException ex) {
-                Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Json-file " + nameString + ".json did not load correctly from config folder. Skipping loading of this template.", ex);
-                return new ArrayList<>();
-            }
-        } else {
-            DimDoors.warn(SchematicHandler.class, "Json-file " + nameString + ".json was not found in the jar or config directory. Skipping loading of this template.");
-            return new ArrayList<>();
         }
+
+        DimDoors.log("Loaded " + templates.size() + " templates.");
+
+        constructNameMap();
+
+        // Schematic.tempGenerateDefaultSchematics();
+    }
+
+    private static List<PocketTemplate> loadTemplatesFromJson(String jsonString) {
+        String schematicJarDirectory = "/assets/dimdoors/pockets/schematic/";
+        File schematicFolder = new File(DDConfig.configurationFolder, "/schematics");
+
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(jsonString);
         JsonObject jsonTemplate = jsonElement.getAsJsonObject();
         //DimDoors.log(SchematicHandler.class, "Checkpoint 1 reached");
 
         //Generate and get templates (without a schematic) of all variations that are valid for the current "maxPocketSize" 
-        List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate, maxPocketSize);
+        List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate);
         //DimDoors.log(SchematicHandler.class, "Checkpoint 4 reached; " + validTemplates.size() + " templates were loaded");
 
-        String subDirectory = jsonTemplate.get("directory").getAsString(); //get the subfolder in which the schematics are stored
+        String subDirectory = jsonTemplate.get("group").getAsString(); //get the subfolder in which the schematics are stored
 
         for (PocketTemplate template : validTemplates) { //it's okay to "tap" this for-loop, even if validTemplates is empty.
             String extendedTemplatelocation = subDirectory.equals("") ? template.getName() : subDirectory + "/" + template.getName(); //transform the filename accordingly
@@ -223,58 +157,23 @@ public class SchematicHandler {
             if (schematic != null
                     && (schematic.getWidth() > (template.getSize() + 1) * 16 || schematic.getLength() > (template.getSize() + 1) * 16)) {
                 schematic = null;
-                DimDoors.log(SchematicHandler.class, "Schematic " + template.getName() + " was bigger than specified in " + nameString + ".json and therefore wasn't loaded");
+                DimDoors.log(SchematicHandler.class, "Schematic " + template.getName() + " was bigger than specified in its json file and therefore wasn't loaded");
             }
             template.setSchematic(schematic);
         }
         return validTemplates;
     }
 
-    static String readFile(String path, Charset encoding)
-            throws IOException {
-        byte[] encoded = Files.readAllBytes(Paths.get(path));
-        return new String(encoded, encoding);
-    }
+    private static List<PocketTemplate> getAllValidVariations(JsonObject jsonTemplate) {
+        List<PocketTemplate> pocketTemplates = new ArrayList<>();
 
-    private static List<PocketTemplate> getAllValidVariations(JsonObject jsonTemplate, int maxPocketSize) {
-        final String directory = jsonTemplate.get("directory").getAsString();
-        final String jsonType = jsonTemplate.get("jsonType").getAsString();
+        final String directory = jsonTemplate.get("group").getAsString();
         final EnumPocketType pocketType = EnumPocketType.getFromInt(jsonTemplate.get("pocketType").getAsInt());
         final JsonArray variations = jsonTemplate.getAsJsonArray("variations");
 
-        List<PocketTemplate> pocketTemplates = new ArrayList<>();
-        JsonObject chosenVariation = null; //only applicable if jsonType == "Singular"
-        int chosenVariationSize = -1; //only applicable if jsonType == "Singular"
-        List<JsonObject> validVariations = new ArrayList<>();
-        //put all valid variation JsonObjects into an array list
-        for (int i = 0; i < variations.size(); i++) {
-            JsonObject variation = variations.get(i).getAsJsonObject();
-            int variationSize = variation.get("size").getAsInt();
-
-            if (variationSize > maxPocketSize) {
-                //DimDoors.log(SchematicHandler.class, "Checkpoint 2 reached; Variation size " + variationSize + " is bigger than maxPocketSize " + maxPocketSize + ".");
-                //do not add it
-            } else if (jsonType.equals("Singular")) {
-                if (variationSize > chosenVariationSize) {
-                    chosenVariationSize = variationSize;
-                    chosenVariation = variation;
-                    if (variationSize == maxPocketSize) {
-                        break; //this one gets chosen
-                    }
-                }
-            } else if (jsonType.equals("Multiple")) {
-                validVariations.add(variation);
-            } else { //@todo more options?
-                DimDoors.log(SchematicHandler.class, "JsonType " + jsonType + " is not a valid JsonType. Json was not loaded.");
-            }
-        }
-        if (chosenVariation != null) {
-            validVariations.add(chosenVariation);
-        }
-        //DimDoors.log(SchematicHandler.class, "Checkpoint 3 reached; " + validVariations.size() + " variations were selected.");
-
-        //convert the valid variations arraylist to a list of pocket templates
-        for (JsonObject variation : validVariations) {
+        //convert the variations arraylist to a list of pocket templates
+        for (JsonElement variationElement : variations) {
+            JsonObject variation = variationElement.getAsJsonObject();
             String variantName = variation.get("variantName").getAsString();
             int variationSize = variation.get("size").getAsInt();
             int minDepth = variation.get("minDepth").getAsInt();
@@ -291,45 +190,114 @@ public class SchematicHandler {
         return pocketTemplates;
     }
 
+    private void constructNameMap() {
+        nameMap = new HashMap<String, Map<String, Integer>>();
+        //to prevent having to use too many getters
+        String bufferedDirectory = null;
+        Map<String, Integer> bufferedMap = null;
+
+        for (PocketTemplate template : templates) {
+            String dirName = template.getGroupName();
+            if (dirName != null && dirName.equals(bufferedDirectory)) { //null check not needed
+                bufferedMap.put(template.getName(), templates.indexOf(template));
+            } else {
+                bufferedDirectory = dirName;
+                if (nameMap.containsKey(dirName)) { //this will only happen if you have two json files referring to the same directory being loaded non-consecutively
+                    bufferedMap = nameMap.get(dirName);
+                    bufferedMap.put(template.getName(), templates.indexOf(template));
+                } else {
+                    bufferedMap = new HashMap<>();
+                    bufferedMap.put(template.getName(), templates.indexOf(template));
+                    nameMap.put(dirName, bufferedMap);
+                }
+            }
+        }
+    }
+
+    // LOADING CODE ENDS HERE </editor-fold>
+
+    public ArrayList<String> getTemplateGroups() {
+        return new ArrayList<>(nameMap.keySet());
+    }
+
+    public ArrayList<String> getTemplateNames(String group) {
+        return new ArrayList<>(nameMap.get(group).keySet());
+    }
+
     /**
-     * @return the personalPocketTemplate
+     * Gets a loaded PocketTemplate by its group and name.
+     *
+     * @param group Template group
+     * @param name Template name
+     * @return The dungeon template with that group and name, or null if it wasn't found
      */
+    public PocketTemplate getTemplate(String group, String name) {
+        Map<String, Integer> groupMap = nameMap.get(group);
+        if(groupMap == null) return null;
+        Integer index = groupMap.get(name);
+        if(index == null) return null;
+        return templates.get(index);
+    }
+
+
+    /**
+     * Gets a random template matching certain criteria.
+     *
+     * @param groupWeights
+     * @param depth
+     * @param maxSize
+     * @param getLargest
+     * @return A random template matching those criteria, or null if none were found
+     */
+    public PocketTemplate getRandomTemplate(Map<String, Integer> groupWeights, int depth, int maxSize, boolean getLargest) { // TODO: useful?
+        String group = MathUtils.weightedRandom(groupWeights);
+        return getRandomTemplate(group, depth, maxSize, getLargest);
+    }
+
+    /**
+     * Gets a random template matching certain criteria.
+     *
+     * @param group
+     * @param depth
+     * @param maxSize Maximum size the template can be.
+     * @param getLargest Setting this to true will always get the largest template size in that group, but still randomly out of the templates with that size (ex. for private pockets)
+     * @return A random template matching those criteria, or null if none were found
+     */
+    public PocketTemplate getRandomTemplate(String group, int depth, int maxSize, boolean getLargest) {
+        // TODO: cache this for faster calls:
+        Map<PocketTemplate, Integer> weightedTemplates = new HashMap<>();
+        int largestSize = 0;
+        for (PocketTemplate template : templates) {
+            if (template.getGroupName().equals(group)
+                    && (depth == -1 || depth >= template.getMinDepth() && (depth <= template.getMaxDepth() || template.getMaxDepth() == -1))
+                    && (maxSize == -1 || template.getSize() < maxSize)) {
+                if (getLargest && template.getSize() > largestSize) {
+                    weightedTemplates = new HashMap<>();
+                    largestSize = template.getSize();
+                }
+                weightedTemplates.put(template, template.getWeight(depth));
+            }
+        }
+        if (weightedTemplates.size() == 0) {
+            DimDoors.warn("getRandomTemplate failed, no templates matching those criteria were found.");
+            return null; // TODO: switch to exception system
+        }
+
+        return MathUtils.weightedRandom(weightedTemplates);
+    }
+
     public PocketTemplate getPersonalPocketTemplate() {
-        return personalPocketTemplate;
+        return getRandomTemplate("private", -1, DDConfig.getMaxPocketsSize(), true); // TODO: config option for getLargest
     }
 
-    /**
-     * @return the publicPocketTemplate
-     */
     public PocketTemplate getPublicPocketTemplate() {
-        return publicPocketTemplate;
+        return getRandomTemplate("private", -1, DDConfig.getMaxPocketsSize(), true); // TODO: config option for getLargest
     }
 
-    /**
-     * @param directory file directory of the template schematic
-     * @param name filename of the template schematic
-     * @return the dungeonTemplate that was loaded from folder {@code directory}
-     * with filename {@code name}
-     */
-    public PocketTemplate getDungeonTemplate(String directory, String name) {
-        //@todo nullcheck on the parameters
-        int index = dungeonNameMap.get(directory).get(name);
-        return dungeonTemplates.get(index);
-    }
-
-    public ArrayList<String> getDungeonTemplateGroups() {
-        return new ArrayList<>(dungeonNameMap.keySet());
-    }
-
-    public ArrayList<String> getDungeonTemplateNames(String directory) {
-        return new ArrayList<>(dungeonNameMap.get(directory).keySet());
-    }
-
-    /**
-     * @return the dungeonTemplates
-     */
-    public List<PocketTemplate> getDungeonTemplates() {
-        return dungeonTemplates;
+    public PocketTemplate getDungeonTemplate(float netherProbability, int depth) {
+        Random random = new Random();
+        String group = (random.nextFloat() < netherProbability) ? "nether" : "ruins";
+        return getRandomTemplate(group, depth, DDConfig.getMaxPocketsSize(), false);
     }
 
     public void saveSchematic(Schematic schematic, String name) {

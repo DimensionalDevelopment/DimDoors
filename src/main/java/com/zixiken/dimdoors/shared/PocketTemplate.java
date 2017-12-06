@@ -30,16 +30,17 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
     private final int size;
     private final EnumPocketType typeID;
     //selection parameters
-    private final String directoryName;
+    private final String groupName;
     private final String variantName;
+    private String variantType;
     private final int minDepth;
     private final int maxDepth;
     private final int[] weights; //weights for chanced generation of dungeons per depth level | weights[0] is the weight for depth "minDepth"
 
     //this class should contain the actual schematic info, as well as some of the Json info (placement of Rifts and stuff)
-    public PocketTemplate(String directoryName, String variantName, Schematic schematic, int size,
-            EnumPocketType typeID, int minDepth, int maxDepth, int[] weights) {
-        this.directoryName = directoryName; 
+    public PocketTemplate(String groupName, String variantName, Schematic schematic, int size,
+                          EnumPocketType typeID, int minDepth, int maxDepth, int[] weights) {
+        this.groupName = groupName;
         this.variantName = variantName;
         this.weights = weights; //chance that this Pocket will get generated
         this.minDepth = minDepth; //pocket will only be generated from this Pocket-depth
@@ -49,9 +50,9 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         this.typeID = typeID;
     }
 
-    public PocketTemplate(String directoryName, String variantName, int size, 
-            EnumPocketType typeID, int minDepth, int maxDepth, int[] weights) {
-        this(directoryName, variantName, null, size, typeID, minDepth, maxDepth, weights);
+    public PocketTemplate(String groupName, String variantName, int size,
+                          EnumPocketType typeID, int minDepth, int maxDepth, int[] weights) {
+        this(groupName, variantName, null, size, typeID, minDepth, maxDepth, weights);
     }
 
     int getSize() {
@@ -71,15 +72,19 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         if (index >= 0 && index < weights.length) {
             return weights[index];
         }
-        return 0; //do not generate
+        return weights[weights.length - 1]; // return last weight
     }
 
-    String getDirName() {
-        return directoryName;
+    String getGroupName() {
+        return groupName;
     }
 
     public String getName() {
         return variantName;
+    }
+
+    public String getType() {
+        return variantType;
     }
 
     Schematic getSchematic() {

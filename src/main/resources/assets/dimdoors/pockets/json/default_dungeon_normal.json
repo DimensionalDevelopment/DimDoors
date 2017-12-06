@@ -1,6 +1,5 @@
 {
-    "directory": "ruins",
-    "jsonType": "Multiple",
+    "group": "ruins",
     "pocketType" : 2,
     "variations": [
         {
