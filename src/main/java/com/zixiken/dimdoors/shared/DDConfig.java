@@ -28,7 +28,7 @@ public class DDConfig {
     private static int maxPocketSize = 15;
     private static int privatePocketSize = 3;
     private static int publicPocketSize = 2;
-    private static int baseDimID = 684;
+    private static int baseDimID = 1000;
     private static String[] dungeonSchematicNames = {
         "default_dungeon_normal",
         "default_dungeon_nether"
@@ -68,7 +68,7 @@ public class DDConfig {
         // Setup general
         config.addCustomCategoryComment("aa_general", "General configuration options.");
         Property prop = config.get("aa_general", "baseDimID", baseDimID,
-                "Dimension ID of the first Dimensional Doors dimension. Other dimensions will use consecutive IDs. NB: If you change this after creating a world, you may lose these dimensions. [default: 684]");
+                "Dimension ID of the first Dimensional Doors dimension. Other dimensions will use consecutive IDs. NB: If you change this after creating a world, you may lose these dimensions. [default: 1000]");
         baseDimID = prop.getInt(baseDimID);
 
         //Dungeons
