@@ -337,6 +337,10 @@ public class PocketRegistry {
         } else {
             EnumPocketType type = DimDoorDimensions.getPocketType(location.getDimensionID());
             Pocket pocket = pocketLists.get(type).get(pocketID);
+            if (pocket == null) {
+                DimDoors.warn(PocketRegistry.class,"pocket was null in isPlayerAllowedToBeHere!"); // TODO: why is this happening
+                return true;
+            }
             return pocket.isPlayerAllowedInPocket(player) && pocket.isLocationWithinPocketBounds(location, gridSize);
         }
     }
