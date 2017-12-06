@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.shared.entities;
 
-import com.zixiken.dimdoors.server.sound.DDSounds;
+import com.zixiken.dimdoors.client.sound.DDSounds;
 import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.TeleporterDimDoors;
 import com.zixiken.dimdoors.shared.util.Location;

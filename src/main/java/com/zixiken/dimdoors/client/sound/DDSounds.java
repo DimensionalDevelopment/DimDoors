@@ -1,4 +1,4 @@
-package com.zixiken.dimdoors.server.sound;
+package com.zixiken.dimdoors.client.sound;
 
 import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.util.ResourceLocation;
