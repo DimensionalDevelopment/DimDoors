@@ -1,5 +1,5 @@
 # Dimensional Doors
-[![forthebadge](http://forthebadge.com/images/badges/designed-in-etch-a-sketch.svg)](http://forthebadge.com/) [![forthebadge](http://forthebadge.com/images/badges/built-with-science.svg)](http://forthebadge.com/) [![forthebadge](http://forthebadge.com/images/badges/as-seen-on-tv.svg)](http://forthebadge.com/)
+[![forthebadge](https://api.travis-ci.org/DimensionalDevelopment/DimDoors.svg)](https://travis-ci.org/DimensionalDevelopment/DimDoors/builds) [![forthebadge](http://forthebadge.com/images/badges/designed-in-etch-a-sketch.svg)](http://forthebadge.com/) [![forthebadge](http://forthebadge.com/images/badges/built-with-science.svg)](http://forthebadge.com/) [![forthebadge](http://forthebadge.com/images/badges/as-seen-on-tv.svg)](http://forthebadge.com/)
 ## Overview
 This is the main team page for the recode of Dimensional Doors. This repository will contain the up-to-date code base and commits submitted, unless told otherwise, by the Dimensional Development team. Currently, the recode is in progress with an Alpha in the works. This and other projects will come out eventually, please be patient.
 
