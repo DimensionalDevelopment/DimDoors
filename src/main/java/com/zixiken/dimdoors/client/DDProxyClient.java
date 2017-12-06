@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.client;
 
-import com.zixiken.dimdoors.server.sound.DDSounds;
+import com.zixiken.dimdoors.client.sound.DDSounds;
 import com.zixiken.dimdoors.shared.DDProxyCommon;
 import com.zixiken.dimdoors.shared.ModelManager;
 import com.zixiken.dimdoors.shared.entities.MobMonolith;
