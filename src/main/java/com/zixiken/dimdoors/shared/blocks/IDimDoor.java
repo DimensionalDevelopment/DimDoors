@@ -27,5 +27,4 @@ public interface IDimDoor {
      * @return
      */
     public boolean isDoorOnRift(World world, BlockPos pos);
-
 }

@@ -1,6 +1,5 @@
 package com.zixiken.dimdoors.shared.entities;
 
-
 import java.util.Random;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -13,22 +12,24 @@ import net.minecraft.entity.Entity;
 
 @SideOnly(Side.CLIENT)
 public class ModelMobObelisk extends ModelBase {
-    ModelRenderer wholemonolith;
+
+    ModelRenderer wholeMonolith;
     Random rand = new Random();
 
     public ModelMobObelisk() {
         textureWidth = 256;
         textureHeight = 256;
 
-        wholemonolith = new ModelRenderer(this, 0, 0);
-        wholemonolith.addBox(-24F,-108F/1.3F, -6F, 48, 108, 12);
+        wholeMonolith = new ModelRenderer(this, 0, 0);
+        wholeMonolith.addBox(-24F,-108F/1.3F, -6F, 48, 108, 12);
     }
 
     @Override
-    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        this.setRotationAngles(0,  0,  0,  0,  0,0,  entity);
+    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        MobMonolith monolith = (MobMonolith) entityIn;
 
-        GL11.glScalef(((MobMonolith) entity).getRenderSizeModifier(), ((MobMonolith) entity).getRenderSizeModifier(), ((MobMonolith) entity).getRenderSizeModifier());
-        wholemonolith.render(scale);
+        setRotationAngles(0,  0,  0,  0,  0,0, monolith);
+        GL11.glScalef(monolith.getRenderSizeModifier(), monolith.getRenderSizeModifier(), monolith.getRenderSizeModifier());
+        wholeMonolith.render(scale);
     }
 }

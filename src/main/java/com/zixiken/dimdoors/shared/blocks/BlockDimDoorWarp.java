@@ -26,7 +26,7 @@ public class BlockDimDoorWarp extends BlockDimDoorBase {
     }
     
     @Override
-    public TileEntity createNewTileEntity(World world, int metadata) {
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
         return new TileEntityDimDoorWarp();
     }
 }

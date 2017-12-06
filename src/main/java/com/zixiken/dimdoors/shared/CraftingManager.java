@@ -16,6 +16,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.registries.GameData;
 
 public class CraftingManager {
+
     public static ResourceLocation getNameForRecipe(ItemStack output) {
         ResourceLocation baseLoc = new ResourceLocation(DimDoors.MODID, output.getItem().getRegistryName().getResourcePath());
         ResourceLocation recipeLoc = baseLoc;
@@ -45,7 +46,7 @@ public class CraftingManager {
     }
 
     @SubscribeEvent
-    public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
+    public static void registerRecipes(RegistryEvent.Register<IRecipe> event) { // TODO
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.STABLE_FABRIC, 1),
                 "yxy", 'x', Items.ENDER_PEARL, 'y', ModItems.WORLD_THREAD));
 

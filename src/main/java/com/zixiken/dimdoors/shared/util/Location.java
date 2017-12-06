@@ -33,7 +33,7 @@ public class Location implements Serializable {
     }
 
     public Location(int dimID, BlockPos pos) {
-        this.dimensionID = dimID;
+        dimensionID = dimID;
         this.pos = pos; //copyOf
     }
 
@@ -88,29 +88,29 @@ public class Location implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null || !(o instanceof Location)) {
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Location)) {
             return false;
         }
-        Location other = (Location) o;
-        return other.dimensionID == this.dimensionID && other.pos.equals(this.pos);
+        Location other = (Location) obj;
+        return other.dimensionID == dimensionID && other.pos.equals(pos);
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 89 * hash + this.dimensionID;
-        hash = 89 * hash + Objects.hashCode(this.pos);
+        hash = 89 * hash + dimensionID;
+        hash = 89 * hash + Objects.hashCode(pos);
         return hash;
     }
 
     @Override
     public String toString() {
-        return "Location: dimID: " + this.dimensionID + " position: " + this.pos.toString();
+        return "Location: dimID: " + dimensionID + " position: " + pos;
     }
     
     public void loadfrom(Location location) {
-        this.dimensionID = location.dimensionID;
-        this.pos = location.pos;
+        dimensionID = location.dimensionID;
+        pos = location.pos;
     }
 }

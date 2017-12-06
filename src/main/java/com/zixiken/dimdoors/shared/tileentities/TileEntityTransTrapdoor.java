@@ -13,7 +13,7 @@ public class TileEntityTransTrapdoor extends DDTileEntityBase {
     @Override
     public float[] getRenderColor(Random rand) {
         float[] rgbaColor = {1, 1, 1, 1};
-        if (this.world.provider.getDimension() == -1) {
+        if (world.provider.getDimension() == -1) {
             rgbaColor[0] = world.rand.nextFloat() * 0.5F + 0.4F;
             rgbaColor[1] = world.rand.nextFloat() * 0.05F;
             rgbaColor[2] = world.rand.nextFloat() * 0.05F;
@@ -27,7 +27,7 @@ public class TileEntityTransTrapdoor extends DDTileEntityBase {
     
     @Override
     public Location getTeleportTargetLocation() {
-        return new Location(this.getWorld().provider.getDimension(), this.getPos().up());
+        return new Location(getWorld().provider.getDimension(), getPos().up());
     }
 
     @Override
@@ -37,10 +37,10 @@ public class TileEntityTransTrapdoor extends DDTileEntityBase {
             int otherRiftID = getPairedRiftID();
             tpLocation = RiftRegistry.INSTANCE.getTeleportLocation(otherRiftID);
             RiftRegistry.INSTANCE.validatePlayerPocketEntry(entity, otherRiftID);
-        } else if (!(this.isInPocket)) {
+        } else if (!isInPocket) {
             return false;
         } else {
-            Pocket pocket = PocketRegistry.INSTANCE.getPocket(this.pocketID, this.getPocketType());
+            Pocket pocket = PocketRegistry.INSTANCE.getPocket(pocketID, getPocketType());
             tpLocation = pocket.getDepthZeroLocation();
         }
         return TeleporterDimDoors.instance().teleport(entity, tpLocation);

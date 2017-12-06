@@ -30,19 +30,19 @@ public class ItemRiftConnectionTool extends ItemTool {
     public static final String ID = "rift_connection_tool";
 
     ItemRiftConnectionTool() {
-        super(1.0F, -2.8F, ToolMaterial.WOOD, new HashSet());
+        super(1.0F, -2.8F, ToolMaterial.WOOD, new HashSet<>());
         //@todo add extra stuff?
-        this.setMaxDamage(16);
+        setMaxDamage(16);
         setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        ItemStack stack = playerIn.getHeldItem(handIn);
 
-        if (world.isRemote) {
+        if (worldIn.isRemote) {
             return new ActionResult<>(EnumActionResult.FAIL, stack);
         }
         if (!stack.hasTagCompound()) {
@@ -51,14 +51,14 @@ public class ItemRiftConnectionTool extends ItemTool {
             stack.setTagCompound(compound);
         }
 
-        RayTraceResult hit = rayTrace(world, player, true);
-        if (RayTraceHelper.isAbstractRift(hit, world)) {
-            DDTileEntityBase rift = (DDTileEntityBase) world.getTileEntity(hit.getBlockPos());
-            if (player.isSneaking()) {
-                return selectRift(stack, world, rift, player); //new ActionResult(EnumActionResult.PASS, stack));
+        RayTraceResult hit = rayTrace(worldIn, playerIn, true);
+        if (RayTraceHelper.isAbstractRift(hit, worldIn)) {
+            DDTileEntityBase rift = (DDTileEntityBase) worldIn.getTileEntity(hit.getBlockPos());
+            if (playerIn.isSneaking()) {
+                return selectRift(stack, worldIn, rift, playerIn); //new ActionResult(EnumActionResult.PASS, stack));
             }
         } else {
-            return changeMode(stack, player);
+            return changeMode(stack, playerIn);
         }
 
         return new ActionResult<>(EnumActionResult.FAIL, stack);
@@ -88,7 +88,7 @@ public class ItemRiftConnectionTool extends ItemTool {
             }
             stack.damageItem(1, playerIn);
         }
-        return new ActionResult(EnumActionResult.SUCCESS, stack);
+        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
     }
 
     private ActionResult<ItemStack> changeMode(ItemStack stack, EntityPlayer player) {

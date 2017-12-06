@@ -8,6 +8,7 @@ package com.zixiken.dimdoors.shared;
 import com.zixiken.dimdoors.DimDoors;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -35,8 +36,8 @@ public class DDConfig {
     private static int maxDungeonDepth = 8;
     private static int owCoordinateOffsetBase = 64;
     private static double owCoordinateOffsetPower = 1.3;
-    private static int[] doorRelativeDepths = new int[]{-1, 0, 1};
-    private static int[] doorRelativeDepthWeights = new int[]{20, 30, 50};
+    private static int[] doorRelativeDepths = {-1, 0, 1};
+    private static int[] doorRelativeDepthWeights = {20, 30, 50};
 
     private static boolean dangerousLimboMonolithsEnabled = false;
     private static boolean monolithTeleportationEnabled = true;
@@ -113,7 +114,7 @@ public class DDConfig {
         DimDoors.log(DDConfig.class, "pocketGridSize was set to " + pocketGridSize);
 
         maxPocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "maxPocketSize", maxPocketSize,
-                "Sets how deep and wide any pocket can be. [min: 0, max: pocketGridSize/2, default: 4]", 0, (int) (((double) pocketGridSize / 2) - 0.5));
+                "Sets how deep and wide any pocket can be. [min: 0, max: pocketGridSize/2, default: 4]", 0, (int) ((double) pocketGridSize / 2 - 0.5));
 
         privatePocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "privatePocketSize", privatePocketSize,
                 "Sets how deep and wide any personal pocket can be. [min: 0, max: maxPocketsSize, default: 3]", 0, maxPocketSize);
@@ -160,9 +161,7 @@ public class DDConfig {
 
     public static List<String> getDungeonSchematicNames() {
         List<String> dungeonSchematicNamesArrayList = new ArrayList<>();
-        for (String dungeonSchematicName : dungeonSchematicNames) {
-            dungeonSchematicNamesArrayList.add(dungeonSchematicName);
-        }
+        Collections.addAll(dungeonSchematicNamesArrayList, dungeonSchematicNames);
         return dungeonSchematicNamesArrayList;
     }
 

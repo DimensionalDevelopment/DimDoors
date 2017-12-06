@@ -36,8 +36,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
     public float growth = 0;
 
     public TileEntityRift() {
-        super();
-        this.loadDataFrom(RiftRegistry.INSTANCE.getLastChangedRift()); //@todo this should absolutely not be done in this constructor...
+        loadDataFrom(RiftRegistry.INSTANCE.getLastChangedRift()); //@todo this should absolutely not be done in this constructor...
 
         // Vary the update times of rifts to prevent all the rifts in a cluster
         // from updating at the same time.
@@ -74,8 +73,8 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
         }
 
         // Ensure that this rift is only spawning one Enderman at a time, to prevent hordes of Endermen
-        Entity entity = world.getEntityByID(this.spawnedEndermenID);
-        if (entity != null && entity instanceof EntityEnderman) {
+        Entity entity = world.getEntityByID(spawnedEndermenID);
+        if (entity instanceof EntityEnderman) {
             return;
         }
 
@@ -91,7 +90,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
                     world.spawnEntity(enderman);
 
                     if (random.nextInt(MAX_HOSTILE_ENDERMAN_CHANCE) < HOSTILE_ENDERMAN_CHANCE) {
-                        EntityPlayer player = this.world.getClosestPlayerToEntity(enderman, 50);
+                        EntityPlayer player = world.getClosestPlayerToEntity(enderman, 50);
                         if (player != null) {
                             enderman.setAttackTarget(player);
                         }
@@ -118,25 +117,25 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        this.updateTimer = nbt.getInteger("updateTimer");
-        this.offset = new BlockPos(nbt.getInteger("xOffset"), nbt.getInteger("yOffset"), nbt.getInteger("zOffset"));
-        this.shouldClose = nbt.getBoolean("shouldClose");
-        this.spawnedEndermenID = nbt.getInteger("spawnedEndermenID");
-        this.riftRotation = nbt.getInteger("riftRotation");
-        this.growth = nbt.getFloat("growth");
+        updateTimer = nbt.getInteger("updateTimer");
+        offset = new BlockPos(nbt.getInteger("xOffset"), nbt.getInteger("yOffset"), nbt.getInteger("zOffset"));
+        shouldClose = nbt.getBoolean("shouldClose");
+        spawnedEndermenID = nbt.getInteger("spawnedEndermenID");
+        riftRotation = nbt.getInteger("riftRotation");
+        growth = nbt.getFloat("growth");
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        nbt.setInteger("updateTimer", this.updateTimer);
-        nbt.setInteger("xOffset", this.offset.getX());
-        nbt.setInteger("yOffset", this.offset.getY());
-        nbt.setInteger("zOffset", this.offset.getZ());
-        nbt.setBoolean("shouldClose", this.shouldClose);
-        nbt.setInteger("spawnedEndermenID", this.spawnedEndermenID);
-        nbt.setInteger("riftRotation", this.riftRotation);
-        nbt.setFloat("growth", this.growth);
+        nbt.setInteger("updateTimer", updateTimer);
+        nbt.setInteger("xOffset", offset.getX());
+        nbt.setInteger("yOffset", offset.getY());
+        nbt.setInteger("zOffset", offset.getZ());
+        nbt.setBoolean("shouldClose", shouldClose);
+        nbt.setInteger("spawnedEndermenID", spawnedEndermenID);
+        nbt.setInteger("riftRotation", riftRotation);
+        nbt.setFloat("growth", growth);
 
         return nbt;
     }
@@ -150,7 +149,7 @@ public class TileEntityRift extends DDTileEntityBase implements ITickable {
     public boolean tryTeleport(Entity entity) {
         int otherRiftID;
         if (!isPaired()) {
-            DimDoors.warn(this.getClass(), "Rift " + this.getRiftID() + " was not paired and thus, should not exist as a Rift, unless it was unpaired after the door was destroyed, in which case you should contact the developers and tell them to fix stuff.");
+            DimDoors.warn(getClass(), "Rift " + getRiftID() + " was not paired and thus, should not exist as a Rift, unless it was unpaired after the door was destroyed, in which case you should contact the developers and tell them to fix stuff.");
             return false;
         } else {
             otherRiftID = getPairedRiftID();

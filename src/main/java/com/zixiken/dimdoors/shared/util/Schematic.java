@@ -34,31 +34,31 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
  */
 public class Schematic {
 
-    private static final String[] OLDDIMDOORBLOCKNAMES = new String[]{
-        "Dimensional Door",
-        "Fabric of Reality",
-        "transientDoor", //only used in the two old Overworld gateway (worldgen) structures
-        "Warp Door"};
+    private static final String[] OLDDIMDOORBLOCKNAMES = {
+            "Dimensional Door",
+            "Fabric of Reality",
+            "transientDoor", //only used in the two old Overworld gateway (worldgen) structures
+            "Warp Door"};
 
-    private static final String[] NEWDIMDOORBLOCKNAMES = new String[]{
-        "dimensional_door",
-        "fabric", //[type=fabric] is the default blockstate
-        "transient_dimensional_door",
-        "warp_dimensional_door"};
+    private static final String[] NEWDIMDOORBLOCKNAMES = {
+            "dimensional_door",
+            "fabric", //[type=fabric] is the default blockstate
+            "transient_dimensional_door",
+            "warp_dimensional_door"};
 
     int version = Integer.parseInt("1"); //@todo set in build.gradle ${spongeSchematicVersion}
     String author = "DimDoors"; //@todo set in build.gradle ${modID}
     String schematicName = "Unknown";
     long creationDate;
-    String[] requiredMods = new String[0];
+    String[] requiredMods = {};
     short width;
     short height;
     short length;
-    int[] offset = new int[]{0, 0, 0};
+    int[] offset = {0, 0, 0};
     int paletteMax;
-    List<IBlockState> pallette = new ArrayList();
+    List<IBlockState> pallette = new ArrayList<>();
     int[][][] blockData; //[x][y][z]
-    List<NBTTagCompound> tileEntities = new ArrayList();
+    List<NBTTagCompound> tileEntities = new ArrayList<>();
 
     private Schematic() {
     }
@@ -84,7 +84,7 @@ public class Schematic {
                 schematic.creationDate = metadataCompound.getLong("Date");
             }
             if (nbt.hasKey("RequiredMods")) { //RequiredMods is not required (ironically)
-                NBTTagList requiredModsTagList = ((NBTTagList) metadataCompound.getTag("RequiredMods"));
+                NBTTagList requiredModsTagList = (NBTTagList) metadataCompound.getTag("RequiredMods");
                 schematic.requiredMods = new String[requiredModsTagList.tagCount()];
                 for (int i = 0; i < requiredModsTagList.tagCount(); i++) {
                     schematic.requiredMods[i] = requiredModsTagList.getStringTagAt(i);
@@ -101,7 +101,7 @@ public class Schematic {
         }
 
         NBTTagCompound paletteNBT = nbt.getCompoundTag("Palette"); //Palette is not required, however since we assume that the schematic contains at least some blocks, we can also assume that thee has to be a Palette
-        Map<Integer, String> paletteMap = new HashMap();
+        Map<Integer, String> paletteMap = new HashMap<>();
         for (String key : paletteNBT.getKeySet()) {
             int paletteID = paletteNBT.getInteger(key);
             paletteMap.put(paletteID, key); //basically use the reversed order (key becomes value and value becomes key)
@@ -126,7 +126,6 @@ public class Schematic {
             if (!stateString.equals("")) {
                 String[] properties = stateString.split(",");
                 blockstate = getBlockStateWithProperties(block, properties);
-            } else {
             }
             schematic.pallette.add(blockstate); //@todo, can we assume that a schematic file always has all palette integers used from 0 to pallettemax-1?
         }
@@ -179,10 +178,9 @@ public class Schematic {
         nbt.setInteger("PaletteMax", schematic.paletteMax);
 
         NBTTagCompound paletteNBT = new NBTTagCompound();
-        Map<Integer, String> paletteMap = new HashMap();
         for (int i = 0; i < schematic.pallette.size(); i++) {
             IBlockState state = schematic.pallette.get(i);
-            DimDoors.log(Schematic.class, "Saving BlockState: " + state.toString());
+            DimDoors.log(Schematic.class, "Saving BlockState: " + state);
             String blockStateString = getBlockStateStringFromState(state);
             paletteNBT.setInteger(blockStateString, i);
         }
@@ -209,10 +207,9 @@ public class Schematic {
     }
 
     private static IBlockState getBlockStateWithProperties(Block block, String[] properties) {
-        Map<String, String> propertyAndBlockStringsMap = new HashMap();
-        for (int i = 0; i < properties.length; i++) {
-            String propertyString = properties[i];
-            String[] propertyAndBlockStrings = propertyString.split("=");
+        Map<String, String> propertyAndBlockStringsMap = new HashMap<>();
+        for (String property : properties) {
+            String[] propertyAndBlockStrings = property.split("=");
             propertyAndBlockStringsMap.put(propertyAndBlockStrings[0], propertyAndBlockStrings[1]);
         }
         BlockStateContainer container = block.getBlockState();
@@ -238,7 +235,7 @@ public class Schematic {
     private static String getBlockStateStringFromState(IBlockState state) {
         Block block = state.getBlock();
         String blockNameString = "" + Block.REGISTRY.getNameForObject(block);
-        String blockStateString = "";
+        StringBuilder blockStateString = new StringBuilder();
         String totalString;
         IBlockState defaultState = block.getDefaultState();
         if (state == defaultState) {
@@ -248,16 +245,14 @@ public class Schematic {
             for (IProperty property : container.getProperties()) { //for every property that is valid for this type of Block
                 String defaultPropertyValue = defaultState.getProperties().get(property).toString();
                 String thisPropertyValue = state.getProperties().get(property).toString();
-                if (defaultPropertyValue.equals(thisPropertyValue)) {
-                    //do nothing
-                } else {
+                if (!defaultPropertyValue.equals(thisPropertyValue)) {
                     String firstHalf = property.getName();
                     String secondHalf = state.getProperties().get(property).toString();
                     String propertyString = firstHalf + "=" + secondHalf;
-                    blockStateString += propertyString + ",";
+                    blockStateString.append(propertyString).append(",");
                 }
             }
-            blockStateString = blockStateString.substring(0, blockStateString.length() - 1); //removes the last comma
+            blockStateString = new StringBuilder(blockStateString.substring(0, blockStateString.length() - 1)); //removes the last comma
             totalString = blockNameString + "[" + blockStateString + "]";
         }
         return totalString;
@@ -365,12 +360,12 @@ public class Schematic {
 
                     IBlockState baseState = schematic.pallette.get(blockInt); //this is the default blockstate except for ancient fabric
                     if (baseState == baseState.getBlock().getDefaultState()) { //should only be false if {@code baseState} is ancient fabric
-                        IBlockState additionalState = baseState.getBlock().getStateFromMeta(metadata);
+                        IBlockState additionalState = baseState.getBlock().getStateFromMeta(metadata); // TODO: this was getStateFromMeta(metadata), but that method got deprecated and just calls getDefaultState(). Is this right?
                         if (schematic.pallette.contains(additionalState)) { //check whether or not this blockstate is already in the list
                             blockInt = schematic.pallette.indexOf(additionalState);
                         } else {
                             schematic.pallette.add(additionalState);
-                            DimDoors.log(Schematic.class, "New blockstate detected. Original blockInt = " + blockInt + " and baseState is " + baseState.toString());
+                            DimDoors.log(Schematic.class, "New blockstate detected. Original blockInt = " + blockInt + " and baseState is " + baseState);
                             blockInt = schematic.pallette.size() - 1;
                         }
                     } else { //if this is ancient fabric
@@ -419,7 +414,7 @@ public class Schematic {
     }
 
     private static void generateDefaultSchematic(String baseName, int pocketSize, IBlockState innerWallBlockState, Block doorBlock) {
-        int maxbound = ((pocketSize + 1) * 16) - 1;
+        int maxbound = (pocketSize + 1) * 16 - 1;
 
         Schematic schematic = new Schematic();
         schematic.version = 1;
@@ -434,7 +429,7 @@ public class Schematic {
         schematic.offset = new int[]{0, 0, 0};
 
         schematic.paletteMax = 4;
-        schematic.pallette = new ArrayList();
+        schematic.pallette = new ArrayList<>();
         schematic.pallette.add(Blocks.AIR.getDefaultState());
         schematic.pallette.add(ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT));
         schematic.pallette.add(innerWallBlockState);
@@ -449,7 +444,7 @@ public class Schematic {
                             || y == 0 || y == maxbound - 1
                             || z == 0 || z == maxbound - 1) {
                         schematic.blockData[x][y][z] = 1; //outer dim wall
-                    } else if (DDMathUtils.withinDistanceOf(new int[]{x, y, z}, 5, new int[]{0, maxbound})) {
+                    } else if (MathUtils.withinDistanceOf(new int[]{x, y, z}, 5, new int[]{0, maxbound})) {
                         if (z == 4 && x == (maxbound - 1) / 2 && y > 4 && y < 7) {
                             if (y == 5) {
                                 schematic.blockData[x][y][z] = 3; //door bottom
@@ -466,7 +461,7 @@ public class Schematic {
             }
         }
 
-        schematic.tileEntities = new ArrayList();
+        schematic.tileEntities = new ArrayList<>();
         TileEntity tileEntity = doorBlock.createTileEntity(DimDoors.proxy.getDefWorld(), doorBlock.getDefaultState());
         NBTTagCompound tileNBT = tileEntity.serializeNBT();
         tileNBT.setInteger("x", (maxbound - 1) / 2);

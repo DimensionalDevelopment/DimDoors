@@ -6,7 +6,6 @@ import com.zixiken.dimdoors.shared.Pocket;
 import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
-import com.zixiken.dimdoors.shared.blocks.IDimDoor;
 import java.util.Random;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -58,7 +57,7 @@ public abstract class DDTileEntityBase extends TileEntity implements ITickable {
         pairedRiftID = otherRiftID;
         isPaired = true;
         RiftRegistry.INSTANCE.pair(pairedRiftID, riftID); //make sure it gets paired the other way around
-        this.markDirty();
+        markDirty();
         return false;
     }
 
@@ -68,7 +67,7 @@ public abstract class DDTileEntityBase extends TileEntity implements ITickable {
         } else {
             isPaired = false;
             RiftRegistry.INSTANCE.unpair(pairedRiftID);
-            this.markDirty();
+            markDirty();
         }
         return false;
     }
@@ -76,25 +75,25 @@ public abstract class DDTileEntityBase extends TileEntity implements ITickable {
     public void register(int depth) {
         //if (riftID == -1) { //this check only causes problems?
             riftID = RiftRegistry.INSTANCE.registerNewRift(this, depth);
-            DimDoors.log(this.getClass(), "Finished registering rift as ID: " + riftID);
+            DimDoors.log(getClass(), "Finished registering rift as ID: " + riftID);
 
-            this.markDirty();
+        markDirty();
         //}
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-        super.readFromNBT(nbt);
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
         try {
-            isPaired = nbt.getBoolean("isPaired");
-            riftID = nbt.getInteger("riftID");
-            pairedRiftID = nbt.getInteger("pairedRiftID");
-            isInPocket = nbt.getBoolean("isInPocket");
-            pocketID = nbt.getInteger("pocketID");
-            if (nbt.hasKey("pocketType")) {
-                pocketType = EnumPocketType.valueOf(nbt.getString("pocketType"));
+            isPaired = compound.getBoolean("isPaired");
+            riftID = compound.getInteger("riftID");
+            pairedRiftID = compound.getInteger("pairedRiftID");
+            isInPocket = compound.getBoolean("isInPocket");
+            pocketID = compound.getInteger("pocketID");
+            if (compound.hasKey("pocketType")) {
+                pocketType = EnumPocketType.valueOf(compound.getString("pocketType"));
             }
-            depth = nbt.getInteger("depth");
+            depth = compound.getInteger("depth");
         } catch (Exception e) {
             //reading these values should only fail on loading old saves, or loading old schematics, in which case the default values will do 
         }
@@ -103,15 +102,15 @@ public abstract class DDTileEntityBase extends TileEntity implements ITickable {
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
-        nbt.setBoolean("isPaired", this.isPaired);
-        nbt.setInteger("riftID", this.riftID);
-        nbt.setInteger("pairedRiftID", this.pairedRiftID);
-        nbt.setBoolean("isInPocket", this.isInPocket);
-        nbt.setInteger("pocketID", this.pocketID);
+        nbt.setBoolean("isPaired", isPaired);
+        nbt.setInteger("riftID", riftID);
+        nbt.setInteger("pairedRiftID", pairedRiftID);
+        nbt.setBoolean("isInPocket", isInPocket);
+        nbt.setInteger("pocketID", pocketID);
         if (pocketType != null) {
-            nbt.setString("pocketType", this.pocketType.name());
+            nbt.setString("pocketType", pocketType.name());
         }
-        nbt.setInteger("depth", this.depth);
+        nbt.setInteger("depth", depth);
         return nbt;
     }
 
@@ -126,7 +125,7 @@ public abstract class DDTileEntityBase extends TileEntity implements ITickable {
             pocketType = rift2.pocketType;
             depth = rift2.depth;
 
-            this.markDirty();
+            markDirty();
         }
     }
 
@@ -147,26 +146,26 @@ public abstract class DDTileEntityBase extends TileEntity implements ITickable {
     }
 
     public Location getTeleportTargetLocation() {
-        return new Location(this.getWorld().provider.getDimension(), this.getPos());
+        return new Location(getWorld().provider.getDimension(), getPos());
     }
 
     public abstract boolean tryTeleport(Entity entity);
 
-    public void setPocket(int ID, EnumPocketType type) {
-        pocketID = ID;
+    public void setPocket(int id, EnumPocketType type) {
+        pocketID = id;
         pocketType = type;
         isInPocket = true;
-        this.markDirty();
+        markDirty();
     }
 
     public void setIsInPocket() {
         isInPocket = true;
-        this.markDirty();
+        markDirty();
     }
     
     public void setDepth(int depth) {
         this.depth = depth;
-        this.markDirty();
+        markDirty();
     }
 
     protected EnumPocketType getPocketType() {
@@ -174,9 +173,7 @@ public abstract class DDTileEntityBase extends TileEntity implements ITickable {
     }
 
     public void validatePlayerPocketEntry(EntityPlayer player) {
-        if (!isInPocket || pocketType == EnumPocketType.PRIVATE) {
-            return;
-        } else {
+        if (isInPocket && pocketType != EnumPocketType.PRIVATE) {
             Pocket pocket = PocketRegistry.INSTANCE.getPocket(pocketID, pocketType);
             pocket.validatePlayerEntry(player);
         }
@@ -185,13 +182,11 @@ public abstract class DDTileEntityBase extends TileEntity implements ITickable {
     @Override
     public void update() {
         if (isTeleporting && teleportingEntity != null) {
-            if (tryTeleport(teleportingEntity)) {
-                //player is succesfully teleported
-            } else {
-                //probably should only happen on personal dimdoors?
+            if (!tryTeleport(teleportingEntity)) {
                 if (teleportingEntity instanceof EntityPlayer) {
                     EntityPlayer entityPlayer = (EntityPlayer) teleportingEntity;
                     DimDoors.chat(entityPlayer, "Teleporting failed, but since mod is still in alpha, stuff like that might simply happen.");
+                    // TODO: It's normal for teleportation to sometimes fail, for example for an unlinked warp door. Change this to an exception-based system to print error only when it really fails?
                 }
             }
             isTeleporting = false;

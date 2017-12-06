@@ -5,10 +5,10 @@
  */
 package com.zixiken.dimdoors.shared;
 
+import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorUnstable;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorChaos;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorPersonal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,12 +44,12 @@ public class RiftRegistry {
     // Methods
     private RiftRegistry() {
         nextRiftID = 0;
-        rifts = new HashMap();
-        personalDoors = new ArrayList(); //@todo read from and write to NBT
-        unpairedRifts = new ArrayList();
-        unpairedRiftsPerDepth = new ArrayList();
+        rifts = new HashMap<>();
+        personalDoors = new ArrayList<>(); //@todo read from and write to NBT
+        unpairedRifts = new ArrayList<>();
+        unpairedRiftsPerDepth = new ArrayList<>();
         for (int i = 0; i <= maximumDungeonDepth; i++) {
-            unpairedRiftsPerDepth.add(new ArrayList());
+            unpairedRiftsPerDepth.add(new ArrayList<>());
         }
     }
 
@@ -103,7 +103,7 @@ public class RiftRegistry {
             NBTTagList riftListsNBT = (NBTTagList) nbt.getTag("unpairedDepthRiftList");
             maximumDungeonDepth = riftListsNBT.tagCount(); //makes sure both are synched
             for (int i = 0; i < riftListsNBT.tagCount(); i++) {
-                unpairedRiftsPerDepth.add(new ArrayList());
+                unpairedRiftsPerDepth.add(new ArrayList<>());
                 NBTTagList riftsNBT = (NBTTagList) riftListsNBT.get(i);
                 for (int j = 0; j < riftsNBT.tagCount(); j++) {
                     NBTTagCompound riftTag = riftsNBT.getCompoundTagAt(j);
@@ -160,15 +160,15 @@ public class RiftRegistry {
     public int registerNewRift(DDTileEntityBase rift, final int depth) {
         Location riftLocation = Location.getLocation(rift);
         final int assignedID = nextRiftID;
-        DimDoors.log(this.getClass(), "Starting registering rift as ID: " + assignedID);
+        DimDoors.log(getClass(), "Starting registering rift as ID: " + assignedID);
 
         rifts.put(assignedID, riftLocation);
-        if (rift instanceof TileEntityDimDoorPersonal || rift instanceof TileEntityDimDoorChaos) {
+        if (rift instanceof TileEntityDimDoorPersonal || rift instanceof TileEntityDimDoorUnstable) {
             if (rift instanceof TileEntityDimDoorPersonal) {
                 personalDoors.add(assignedID);
             }
         } else {
-            DimDoors.log(this.getClass(), "Registering rift in unpairedRiftRegistry. ID = " + assignedID + " at depth: " + depth);
+            DimDoors.log(getClass(), "Registering rift in unpairedRiftRegistry. ID = " + assignedID + " at depth: " + depth);
             unpairedRifts.add(assignedID);
             registerUnpairedRiftAtDepth(assignedID, depth);
         }
@@ -179,13 +179,13 @@ public class RiftRegistry {
     }
 
     public void unregisterRift(int riftID) {
-        DimDoors.log(this.getClass(), "unregistering rift " + riftID);
+        DimDoors.log(getClass(), "unregistering rift " + riftID);
         unpair(riftID);
 
         unRegisterUnpairedRiftAtDepth(riftID); //@todo, will this crash if it doesn't find that value?
         unpairedRifts.remove((Integer) riftID);
         personalDoors.remove((Integer) riftID);
-        rifts.remove((Integer) riftID);
+        rifts.remove(riftID);
         RiftSavedData.get(DimDoors.getDefWorld()).markDirty(); //Notify that this needs to be saved on world save
     }
 
@@ -206,15 +206,15 @@ public class RiftRegistry {
 
     void unRegisterUnpairedRiftAtDepth(DDTileEntityBase rift) {
         int depth = rift.getDepth();
-        DimDoors.log(this.getClass(), "unregistering rift "+ rift.getRiftID() + " as unpaired at depth " + depth);
+        DimDoors.log(getClass(), "unregistering rift "+ rift.getRiftID() + " as unpaired at depth " + depth);
         if (depth < maximumDungeonDepth) {
             List<Integer> unpairedRiftListAtDepth = unpairedRiftsPerDepth.get(depth);
             unpairedRiftListAtDepth.remove((Integer) rift.getRiftID());
         }
     }
 
-    public Location getRiftLocation(int ID) {
-        return rifts.get(ID);
+    public Location getRiftLocation(int id) {
+        return rifts.get(id);
     }
 
     public void pair(int riftID, int riftID2) {
@@ -223,12 +223,12 @@ public class RiftRegistry {
         }
         Location location = rifts.get(riftID);
         TileEntity tileEntity = location.getTileEntity(); //@todo this method might need to be in another class?
-        if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
+        if (tileEntity instanceof DDTileEntityBase) {
             DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
-            DimDoors.log(this.getClass(), "RiftRegistry trying to connect rift " + riftID + " to rift " + riftID2 + ".");
+            DimDoors.log(getClass(), "RiftRegistry trying to connect rift " + riftID + " to rift " + riftID2 + ".");
             boolean alreadyPaired = rift.pair(riftID2);
             if (!alreadyPaired) {
-                DimDoors.log(this.getClass(), "RiftRegistry unregistering rift " + riftID + " from unPairedRiftRegistry.");
+                DimDoors.log(getClass(), "RiftRegistry unregistering rift " + riftID + " from unPairedRiftRegistry.");
                 unpairedRifts.remove((Integer) riftID);
                 unRegisterUnpairedRiftAtDepth(riftID);
             }
@@ -241,10 +241,10 @@ public class RiftRegistry {
         }
         Location location = rifts.get(riftID);
         if (location == null) {
-            DimDoors.warn(this.getClass(), "RiftID with null location: rift " + riftID);
+            DimDoors.warn(getClass(), "RiftID with null location: rift " + riftID);
         } else {
             TileEntity tileEntity = location.getTileEntity();
-            if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
+            if (tileEntity instanceof DDTileEntityBase) {
                 DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
                 boolean alreadyUnPaired = rift.unpair();
                 if (!alreadyUnPaired) {
@@ -264,15 +264,15 @@ public class RiftRegistry {
     }
 
     public boolean teleportEntityToRift(Entity entity, int pairedRiftID) { //@todo implement this code in the sending rift tiles instead
-        DimDoors.log(this.getClass(), "RiftID of rift that the entity trying to teleport to is " + pairedRiftID + ".");
+        DimDoors.log(getClass(), "RiftID of rift that the entity trying to teleport to is " + pairedRiftID + ".");
         if (pairedRiftID < 0) {
-            DimDoors.warn(this.getClass(), "RiftID of rift that entity " + entity + " is trying to teleport to seems to be lower than 0 and it shouldn't.");
+            DimDoors.warn(getClass(), "RiftID of rift that entity " + entity + " is trying to teleport to seems to be lower than 0 and it shouldn't.");
             return false;
         }
         Location destinationRiftLocation = getRiftLocation(pairedRiftID);
         DDTileEntityBase destinationRift = (DDTileEntityBase) destinationRiftLocation.getTileEntity();
         if (destinationRift == null) {
-            DimDoors.warn(this.getClass(), "The rift that an entity is trying to teleport to seems to be null.");
+            DimDoors.warn(getClass(), "The rift that an entity is trying to teleport to seems to be null.");
         }
         return TeleporterDimDoors.instance().teleport(entity, destinationRift.getTeleportTargetLocation());
     }
@@ -298,7 +298,7 @@ public class RiftRegistry {
         int returnID = -1;
         
         //After using a command to generate a particular schematic as a pocket to be the next non-random Golden (and randomly Iron) Dimdoor destination
-        if (this.lastGeneratedEntranceDoorID != -1) {
+        if (lastGeneratedEntranceDoorID != -1) {
             returnID = lastGeneratedEntranceDoorID;
             lastGeneratedEntranceDoorID = -1;
             return returnID;
@@ -308,15 +308,14 @@ public class RiftRegistry {
             List<Integer> rifts = unpairedRiftsPerDepth.get(depth);
             int numberOfUnpairedRifts = rifts.size();
             if (numberOfUnpairedRifts > 1) {
-                DimDoors.log(this.getClass(), "There's more than 1 unpaired rift at this depth.");
+                DimDoors.log(getClass(), "There's more than 1 unpaired rift at this depth.");
                 Random random = new Random();
-                int indexOforigRiftID = -1;
                 int randomRiftIDIndex;
                 boolean origRiftIsOnSameDepth = rifts.contains(origRiftID);
                 if (origRiftIsOnSameDepth) {
-                    indexOforigRiftID = rifts.indexOf(origRiftID);
+                    int indexOfOrigRiftID = rifts.indexOf(origRiftID);
                     randomRiftIDIndex = random.nextInt(numberOfUnpairedRifts - 1); //-1 because we do not want to include the key of the original rift, so it will not randomly pair to itself
-                    if (randomRiftIDIndex >= indexOforigRiftID) {
+                    if (randomRiftIDIndex >= indexOfOrigRiftID) {
                         randomRiftIDIndex++;
                     }
                 } else {
@@ -325,7 +324,7 @@ public class RiftRegistry {
                 returnID = rifts.get(randomRiftIDIndex);
             }
         }
-        DimDoors.log(this.getClass(), "Rift to pair to was chosen: returnID = " + returnID);
+        DimDoors.log(getClass(), "Rift to pair to was chosen: returnID = " + returnID);
         return returnID;
     }
 
@@ -377,7 +376,7 @@ public class RiftRegistry {
     }
 
     public int getRandomNonPersonalRiftID() {
-        List<Integer> nonPersonalRiftIDs = new ArrayList(rifts.keySet());
+        List<Integer> nonPersonalRiftIDs = new ArrayList<>(rifts.keySet());
         for (int persRiftID : personalDoors) {
             //DimDoors.log(this.getClass(), "Removing personal rift: " + persRiftID + " from nonPersonalRiftIDs. nPRI size = " + nonPersonalRiftIDs.size());
             nonPersonalRiftIDs.remove((Integer) persRiftID);
@@ -393,13 +392,13 @@ public class RiftRegistry {
 
     public Location getTeleportLocation(int riftId) {
         if (riftId < 0) {
-            DimDoors.warn(this.getClass(), "RiftID of rift that entity is trying to teleport to seems to be lower than 0 and it shouldn't.");
+            DimDoors.warn(getClass(), "RiftID of rift that entity is trying to teleport to seems to be lower than 0 and it shouldn't.");
             return null;
         }
         Location destinationRiftLocation = getRiftLocation(riftId);
         DDTileEntityBase destinationRift = (DDTileEntityBase) destinationRiftLocation.getTileEntity();
         if (destinationRift == null) {
-            DimDoors.warn(this.getClass(), "The rift that an entity is trying to teleport to seems to be null. RiftID: " + riftId + ". Expecting to crash in 3... 2... 1..");
+            DimDoors.warn(getClass(), "The rift that an entity is trying to teleport to seems to be null. RiftID: " + riftId + ". Expecting to crash in 3... 2... 1..");
         }
         return destinationRift.getTeleportTargetLocation();
     }
@@ -409,7 +408,7 @@ public class RiftRegistry {
             Location riftLocation = getRiftLocation(riftID);
             if (riftLocation != null) {
                 TileEntity tileEntity = riftLocation.getTileEntity();
-                if (tileEntity != null && tileEntity instanceof DDTileEntityBase) {
+                if (tileEntity instanceof DDTileEntityBase) {
                     DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
                     EntityPlayer player = (EntityPlayer) entity;
                     rift.validatePlayerPocketEntry(player);
@@ -434,9 +433,9 @@ public class RiftRegistry {
     }
 
     /**
-     * @param ID the lastGeneratedEntranceDoorID to set
+     * @param id the lastGeneratedEntranceDoorID to set
      */
-    public void setLastGeneratedEntranceDoorID(int ID) {
-        this.lastGeneratedEntranceDoorID = ID;
+    public void setLastGeneratedEntranceDoorID(int id) {
+        lastGeneratedEntranceDoorID = id;
     }
 }

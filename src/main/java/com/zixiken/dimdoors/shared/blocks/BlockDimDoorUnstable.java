@@ -2,7 +2,7 @@ package com.zixiken.dimdoors.shared.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.items.ModItems;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorChaos;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorUnstable;
 import java.util.Random;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -30,12 +30,12 @@ public class BlockDimDoorUnstable extends BlockDimDoorBase {
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random random, int fortune) {
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         return Items.IRON_DOOR;
     }
     
     @Override
-    public TileEntity createNewTileEntity(World world, int metadata) {
-        return new TileEntityDimDoorChaos();
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new TileEntityDimDoorUnstable();
     }
 }

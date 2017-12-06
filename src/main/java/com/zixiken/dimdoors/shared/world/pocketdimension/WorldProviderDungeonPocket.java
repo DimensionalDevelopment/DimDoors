@@ -13,7 +13,7 @@ public class WorldProviderDungeonPocket extends WorldProviderPublicPocket {
     
     @Override
     public String getSaveFolder() {
-        return ("DIM" + getDimension() + "DimDoorsDungeon");
+        return "DIM" + getDimension() + "DimDoorsDungeon";
     }
 
     @Override

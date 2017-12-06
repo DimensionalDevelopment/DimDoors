@@ -9,7 +9,7 @@ package com.zixiken.dimdoors.shared.util;
  *
  * @author Robijnvogel
  */
-public class DDMathUtils {
+public class MathUtils {
 
     /**
      * Compares the integers in two arrays and returns true if any integer in
@@ -27,9 +27,9 @@ public class DDMathUtils {
         if (difference < 0) {
             throw new IllegalArgumentException("precondition was violated");
         }
-        for (int One : setOne) {
-            for (int Two : setTwo) {
-                if ((Math.max(One, Two) - Math.min(One, Two)) < difference) {
+        for (int one : setOne) {
+            for (int two : setTwo) {
+                if (Math.max(one, two) - Math.min(one, two) < difference) {
                     return true;
                 }
             }
@@ -51,9 +51,9 @@ public class DDMathUtils {
     public static int arraySum(int[] intArray, short flag) {
         int r = 0;
         for (int i : intArray) { //check flag
-            if (flag == 0 && i < 0) { //
+            if (flag == 0 && i < 0) {
                 throw new IllegalArgumentException("all integers in array must be positive");
-            } else if (flag == 1 && i > 0) { //
+            } else if (flag == 1 && i > 0) {
                 throw new IllegalArgumentException("all integers in array must be negative");
             }
             r += i;

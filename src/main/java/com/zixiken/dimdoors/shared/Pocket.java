@@ -27,7 +27,7 @@ import net.minecraft.world.WorldServer;
  */
 public class Pocket {
 
-    private int ID; //this gets reset every server-load
+    private int id; //this gets reset every server-load
     private final int size; //in chunks 0 -> 1*1 chunk, 1 -> 2*2 chunks
     private final int depth;
     private final EnumPocketType typeID; // dungeon, pocket, or personal pocket
@@ -46,11 +46,11 @@ public class Pocket {
         this.z = z;
         this.riftIDs = riftIDs;
         this.depthZeroLocation = depthZeroLocation;
-        playerUUIDs = new ArrayList();
+        playerUUIDs = new ArrayList<>();
     }
 
     public int getID() {
-        return ID;
+        return id;
     }
 
     public int getX() {
@@ -77,15 +77,15 @@ public class Pocket {
     }
 
     public void setID(int newID) {
-        ID = newID;
+        id = newID;
 
-        //propagate this ID to the rifts in this pocket
+        //propagate this id to the rifts in this pocket
         for (int riftID : riftIDs) {
             Location riftLocation = RiftRegistry.INSTANCE.getRiftLocation(riftID);
             WorldServer worldServer = DimDoors.proxy.getWorldServer(riftLocation.getDimensionID());
             if (!worldServer.isRemote) {
                 DDTileEntityBase rift = (DDTileEntityBase) riftLocation.getTileEntity();
-                rift.setPocket(this.ID, this.typeID); //set the rift's pocket ID to this pocket's pocket ID;
+                rift.setPocket(id, typeID); //set the rift's pocket id to this pocket's pocket id;
             }
         }
     }
@@ -96,7 +96,7 @@ public class Pocket {
         EnumPocketType typeID = EnumPocketType.getFromInt(pocketNBT.getInteger("typeID"));
         int x = pocketNBT.getInteger("x");
         int z = pocketNBT.getInteger("z");
-        List<Integer> riftIDs = new ArrayList();
+        List<Integer> riftIDs = new ArrayList<>();
         NBTTagList doorsTagList = (NBTTagList) pocketNBT.getTag("doorIDs");
         for (int i = 0; i < doorsTagList.tagCount(); i++) {
             int doorID = doorsTagList.getIntAt(i);
@@ -106,7 +106,7 @@ public class Pocket {
 
         Pocket pocket = new Pocket(size, depth, typeID, x, z, riftIDs, depthZeroLocation);
 
-        pocket.setID(pocketNBT.getInteger("ID")); //basically re-register the pocket        
+        pocket.setID(pocketNBT.getInteger("id")); //basically re-register the pocket
         NBTTagList playersTagList = (NBTTagList) pocketNBT.getTag("playerUUIDs");
         for (int i = 0; i < playersTagList.tagCount(); i++) {
             String playerUUID = playersTagList.getStringTagAt(i);
@@ -117,7 +117,7 @@ public class Pocket {
 
     static NBTBase writeToNBT(Pocket pocket) {
         NBTTagCompound pocketNBT = new NBTTagCompound();
-        pocketNBT.setInteger("ID", pocket.ID);
+        pocketNBT.setInteger("id", pocket.id);
         pocketNBT.setInteger("size", pocket.size);
         pocketNBT.setInteger("depth", pocket.depth);
         pocketNBT.setInteger("typeID", pocket.typeID.getIntValue());
@@ -150,7 +150,7 @@ public class Pocket {
             int riftID = riftIDs.get(i);
             //DimDoors.log(Pocket.class, "findWarpDoorIndex: i = " + i + " riftID = " + riftID); //for troubleshooting purposes
             TileEntity tileEntity = RiftRegistry.INSTANCE.getRiftLocation(riftID).getTileEntity();
-            if (tileEntity != null && tileEntity instanceof TileEntityDimDoorWarp) {
+            if (tileEntity instanceof TileEntityDimDoorWarp) {
                 index = i;
                 break;
             }
@@ -195,17 +195,11 @@ public class Pocket {
     boolean isLocationWithinPocketBounds(final Location location, final int gridSize) {
         int locX = location.getPos().getX();
         int locZ = location.getPos().getY();
-        //minimum bounds of the pocket
-        int pocX = x * gridSize;
-        int pocZ = z * gridSize;
-        if (pocX <= locX && pocZ <= locZ) {
-            //convert to maximum bounds of the pocket
-            pocX = pocX + (size + 1) * 16;
-            pocZ = pocZ + (size + 1) * 16;
-            if (locX < pocX && locZ < pocZ) {
-                return true;
-            }
-        }
-        return false;
+        // pocket bounds
+        int pocMinX = x * gridSize;
+        int pocMinZ = z * gridSize;
+        int pocMaxX = pocMinX + (size + 1) * 16;
+        int pocMaxZ = pocMinX + (size + 1) * 16;
+        return pocMinX <= locX && pocMinZ <= locZ && locX < pocMaxX && locZ < pocMaxZ;
     }
 }

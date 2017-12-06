@@ -13,20 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PocketChunkGenerator implements IChunkGenerator {
+
     private World worldObj;
 
     //private CustomLimboPopulator spawner;
 
     public PocketChunkGenerator(World world, long seed /*CustomLimboPopulator spawner*/) {
-        this.worldObj = world;
+        worldObj = world;
 
         //this.spawner = spawner;
     }
 
     @Override
-    public Chunk generateChunk(int chunkX, int chunkZ) {
+    public Chunk generateChunk(int x, int z) {
         ChunkPrimer primer = new ChunkPrimer();
-        Chunk chunk = new Chunk(worldObj, primer, chunkX, chunkZ);
+        Chunk chunk = new Chunk(worldObj, primer, x, z);
 
         if(!chunk.isTerrainPopulated()) {
             chunk.setTerrainPopulated(true);
@@ -36,7 +37,7 @@ public class PocketChunkGenerator implements IChunkGenerator {
     }
 
     @Override
-    public void populate(int chunkX, int chunkZ) {
+    public void populate(int x, int z) {
 
     }
 
@@ -47,7 +48,7 @@ public class PocketChunkGenerator implements IChunkGenerator {
 
     @Override
     public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {
-        return new ArrayList();
+        return new ArrayList<>();
     }
 
     @Nullable

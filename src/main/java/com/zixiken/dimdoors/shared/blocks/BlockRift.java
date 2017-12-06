@@ -35,7 +35,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SuppressWarnings("deprecation")
 public class BlockRift extends Block implements ITileEntityProvider {
 
-    private static final float MIN_IMMUNE_RESISTANCE = 5000.0F;
     public static final String ID = "rift";
 
     private final ArrayList<Block> blocksImmuneToRift;	// List of Vanilla blocks immune to rifts
@@ -48,7 +47,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
 
-        modBlocksImmuneToRift = new ArrayList<Block>();
+        modBlocksImmuneToRift = new ArrayList<>();
         modBlocksImmuneToRift.add(ModBlocks.FABRIC);
         modBlocksImmuneToRift.add(ModBlocks.DIMENSIONAL_DOOR);
         modBlocksImmuneToRift.add(ModBlocks.WARP_DIMENSIONAL_DOOR);
@@ -61,7 +60,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
         modBlocksImmuneToRift.add(ModBlocks.PERSONAL_DIMENSIONAL_DOOR);
         modBlocksImmuneToRift.add(ModBlocks.QUARTZ_DOOR);
 
-        blocksImmuneToRift = new ArrayList<Block>();
+        blocksImmuneToRift = new ArrayList<>();
         blocksImmuneToRift.add(Blocks.LAPIS_BLOCK);
         blocksImmuneToRift.add(Blocks.IRON_BLOCK);
         blocksImmuneToRift.add(Blocks.GOLD_BLOCK);
@@ -85,7 +84,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
         return null;
     }
 
@@ -104,7 +103,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
      * coordinates. Args: blockAccess, x, y, z, side
      */
     @Override
-    public boolean isSideSolid(IBlockState base_state, IBlockAccess worldIn, BlockPos pos, EnumFacing side) {
+    public boolean isSideSolid(IBlockState base_state, IBlockAccess world, BlockPos pos, EnumFacing side) {
         return false;
     }
 
@@ -137,7 +136,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
      */
     @Override
     @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(IBlockState state, World worldIn, BlockPos pos, Random rand) {
+    public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand) {
         //ArrayList<BlockPos> targets = findReachableBlocks(worldIn, pos, 2, false);
         //TODO: implement the parts specified in the method comment?
         int x = pos.getX(), y = pos.getY(), z = pos.getZ();
@@ -170,10 +169,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
         // may have low hardness to make them easier to build with. However, block.getExplosionResistance()
         // is designed to receive an entity, the source of the blast. We have no entity so
         // I've set this to access blockResistance directly. Might need changing later.
-        return block != null
-                /*&&
-                (block >= MIN_IMMUNE_RESISTANCE*/ || modBlocksImmuneToRift.contains(block)
-                || blocksImmuneToRift.contains(block);
+        return block != null /* && block >= MIN_IMMUNE_RESISTANCE */ || modBlocksImmuneToRift.contains(block) || blocksImmuneToRift.contains(block);
     }
 
     public boolean isModBlockImmune(World world, BlockPos pos) {
@@ -194,21 +190,21 @@ public class BlockRift extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int metadata) {
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
         return new TileEntityRift();
     }
 
     @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        TileEntityRift riftTile = (TileEntityRift) world.getTileEntity(pos);
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        TileEntityRift riftTile = (TileEntityRift) worldIn.getTileEntity(pos);
         if (riftTile == null || !riftTile.placingDoorOnRift) {
-            DimDoors.log(this.getClass(), "Unregistering rift at position " + pos.toString() + ", because it is destroyed (creative) or has closed.");
+            DimDoors.log(getClass(), "Unregistering rift at position " + pos + ", because it is destroyed (creative) or has closed.");
             RiftRegistry.INSTANCE.unregisterLastChangedRift();
         } else {
-            DimDoors.log(this.getClass(), "Not unregistering rift at position " + pos.toString() + ", because it is being replaced by a door.");
+            DimDoors.log(getClass(), "Not unregistering rift at position " + pos + ", because it is being replaced by a door.");
             riftTile.placingDoorOnRift = false; //probably not needed, but it shouldn't hurt to do this
         }
-        world.removeTileEntity(pos);
+        worldIn.removeTileEntity(pos);
     }
 
     @Override

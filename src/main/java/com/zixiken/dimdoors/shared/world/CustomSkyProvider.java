@@ -30,11 +30,11 @@ public class CustomSkyProvider extends IRenderHandler {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void render(float par1, WorldClient world, Minecraft mc) {
+    public void render(float partialTicks, WorldClient world, Minecraft mc) {
 
         starGLCallList = GLAllocation.generateDisplayLists(3);
-        glSkyList = this.starGLCallList + 1;
-        glSkyList2 = this.starGLCallList + 2;
+        glSkyList = starGLCallList + 1;
+        glSkyList2 = starGLCallList + 2;
         GL11.glDisable(GL11.GL_FOG);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
         GL11.glEnable(GL11.GL_BLEND);
@@ -42,11 +42,11 @@ public class CustomSkyProvider extends IRenderHandler {
         RenderHelper.disableStandardItemLighting();
         GL11.glDepthMask(false);
 
-        mc.renderEngine.bindTexture((locationEndSkyPng));
+        mc.renderEngine.bindTexture(locationEndSkyPng);
 
         if (mc.world.provider.isSurfaceWorld()) {
             GL11.glDisable(GL11.GL_TEXTURE_2D);
-            final Vec3d vec3 = world.getSkyColor(mc.getRenderViewEntity(), par1);
+            final Vec3d vec3 = world.getSkyColor(mc.getRenderViewEntity(), partialTicks);
             float f1 = (float) vec3.x;
             float f2 = (float) vec3.y;
             float f3 = (float) vec3.z;
@@ -67,13 +67,13 @@ public class CustomSkyProvider extends IRenderHandler {
             GL11.glDepthMask(false);
             GL11.glEnable(GL11.GL_FOG);
             GL11.glColor3f(f1, f2, f3);
-            GL11.glCallList(this.glSkyList);
+            GL11.glCallList(glSkyList);
             GL11.glDisable(GL11.GL_FOG);
             GL11.glDisable(GL11.GL_ALPHA_TEST);
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             RenderHelper.disableStandardItemLighting();
-            float[] afloat = world.provider.calcSunriseSunsetColors(world.getCelestialAngle(par1), par1);
+            float[] afloat = world.provider.calcSunriseSunsetColors(world.getCelestialAngle(partialTicks), partialTicks);
             float f7;
             float f8;
             float f9;
@@ -84,7 +84,7 @@ public class CustomSkyProvider extends IRenderHandler {
                 GL11.glShadeModel(GL11.GL_SMOOTH);
                 GL11.glPushMatrix();
                 GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(MathHelper.sin(world.getCelestialAngleRadians(par1)) < 0.0F ? 180.0F : 0.0F, 0.0F, 0.0F, 1.0F);
+                GL11.glRotatef(MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) < 0.0F ? 180.0F : 0.0F, 0.0F, 0.0F, 1.0F);
                 GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
                 f4 = afloat[0];
                 f7 = afloat[1];
@@ -119,16 +119,16 @@ public class CustomSkyProvider extends IRenderHandler {
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
             GL11.glPushMatrix();
-            f4 = 1.0F - world.getRainStrength(par1);
+            f4 = 1.0F - world.getRainStrength(partialTicks);
             f7 = 0.0F;
             f8 = 0.0F;
             f9 = 0.0F;
             GL11.glColor4f(1.0F, 1.0F, 1.0F, f4);
             GL11.glTranslatef(f7, f8, f9);
             GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(world.getCelestialAngle(par1) * 360.0F, 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(world.getCelestialAngle(partialTicks) * 360.0F, 1.0F, 0.0F, 0.0F);
             f10 = 30.0F;
-            mc.renderEngine.bindTexture(this.getSunRenderPath());
+            mc.renderEngine.bindTexture(getSunRenderPath());
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
             buffer.pos(-f10, 100, -f10).tex(0, 0).endVertex();
             buffer.pos(f10, 100, -f10).tex(1, 0).endVertex();
@@ -137,26 +137,24 @@ public class CustomSkyProvider extends IRenderHandler {
             tessellator.draw();
 
             f10 = 20.0F;
-            mc.renderEngine.bindTexture(this.getMoonRenderPath());
+            mc.renderEngine.bindTexture(getMoonRenderPath());
             int k = world.getMoonPhase();
-            int l = k % 4;
+            int i = k % 4;
             int i1 = k / 4 % 2;
-            float f14 = l + 0;
-            float f15 = i1 + 0;
-            float f16 = l + 1;
+            float f16 = i + 1;
             float f17 = i1 + 1;
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
             buffer.pos(-f10, -100, f10).tex(f16, f17).endVertex();
-            buffer.pos(f10, -100, f10).tex(f14, f17).endVertex();
-            buffer.pos(f10, -100, -f10).tex(f14, f15).endVertex();
-            buffer.pos(-f10, -100, -f10).tex(f16, f15).endVertex();
+            buffer.pos(f10, -100, f10).tex((float) i, f17).endVertex();
+            buffer.pos(f10, -100, -f10).tex((float) i, (float) i1).endVertex();
+            buffer.pos(-f10, -100, -f10).tex(f16, (float) i1).endVertex();
             tessellator.draw();
             GL11.glDisable(GL11.GL_TEXTURE_2D);
-            float f18 = world.getStarBrightness(par1) * f4;
+            float f18 = world.getStarBrightness(partialTicks) * f4;
 
             if (f18 > 0.0F) {
                 GL11.glColor4f(f18, f18, f18, f18);
-                GL11.glCallList(this.starGLCallList);
+                GL11.glCallList(starGLCallList);
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -166,12 +164,12 @@ public class CustomSkyProvider extends IRenderHandler {
             GL11.glPopMatrix();
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glColor3f(0.0F, 0.0F, 0.0F);
-            double d0 = mc.player.getLook(par1).y - world.getHorizon();
+            double d0 = mc.player.getLook(partialTicks).y - world.getHorizon();
 
             if (d0 < 0.0D) {
                 GL11.glPushMatrix();
                 GL11.glTranslatef(0.0F, 12.0F, 0.0F);
-                GL11.glCallList(this.glSkyList2);
+                GL11.glCallList(glSkyList2);
                 GL11.glPopMatrix();
                 f8 = 1.0F;
                 f9 = -((float) (d0 + 65.0D));
@@ -209,11 +207,10 @@ public class CustomSkyProvider extends IRenderHandler {
 
             GL11.glPushMatrix();
             GL11.glTranslatef(0.0F, -((float) (d0 - 16.0D)), 0.0F);
-            GL11.glCallList(this.glSkyList2);
+            GL11.glCallList(glSkyList2);
             GL11.glPopMatrix();
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             GL11.glDepthMask(true);
         }
-
     }
 }

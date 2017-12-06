@@ -36,7 +36,7 @@ public class ItemRiftBlade extends ItemSword {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean hasEffect(ItemStack par1ItemStack) {
+    public boolean hasEffect(ItemStack stack) {
         return true;
     }
 
@@ -49,26 +49,26 @@ public class ItemRiftBlade extends ItemSword {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        ItemStack stack = playerIn.getHeldItem(handIn);
 
-        if (world.isRemote) {
+        if (worldIn.isRemote) {
             return new ActionResult<>(EnumActionResult.FAIL, stack);
         }
         //SchematicHandler.Instance.getPersonalPocketTemplate().place(0, 20, 0, 20, 0, 0, 1, EnumPocketType.DUNGEON); //this line can be activated for testing purposes
-        RayTraceResult hit = rayTrace(world, player, true);
-        if (RayTraceHelper.isRift(hit, world)) {
-            TileEntityRift rift = (TileEntityRift) world.getTileEntity(hit.getBlockPos());
+        RayTraceResult hit = rayTrace(worldIn, playerIn, true);
+        if (RayTraceHelper.isRift(hit, worldIn)) {
+            TileEntityRift rift = (TileEntityRift) worldIn.getTileEntity(hit.getBlockPos());
             rift.isTeleporting = true;
-            rift.teleportingEntity = player;
+            rift.teleportingEntity = playerIn;
 
-            stack.damageItem(1, player);
+            stack.damageItem(1, playerIn);
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 
         } else if (RayTraceHelper.isLivingEntity(hit)) {
-            EnumActionResult teleportResult = TeleporterDimDoors.instance().teleport(player, new Location(world, hit.getBlockPos())) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL; //@todo teleport to a location 1 or 2 blocks distance from the entity
+            EnumActionResult teleportResult = TeleporterDimDoors.instance().teleport(playerIn, new Location(worldIn, hit.getBlockPos())) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL; //@todo teleport to a location 1 or 2 blocks distance from the entity
             if (teleportResult == EnumActionResult.SUCCESS) {
-                stack.damageItem(1, player);
+                stack.damageItem(1, playerIn);
             }
             return new ActionResult<>(teleportResult, stack);
         }
@@ -77,7 +77,7 @@ public class ItemRiftBlade extends ItemSword {
     }
 
     @Override
-    public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag advanced) {
-        DimDoors.translateAndAdd("info.rift_blade", list);
+    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        DimDoors.translateAndAdd("info.rift_blade", tooltip);
     }
 }

@@ -22,7 +22,7 @@ public class ItemDimDoorGold extends ItemDoorBase {
     }
 
     @Override
-    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag advanced) {
+    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         translateAndAdd("info.gold_dimensional_door", tooltip);
     }
 

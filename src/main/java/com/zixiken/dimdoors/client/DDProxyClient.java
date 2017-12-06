@@ -9,19 +9,14 @@ import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityTransTrapdoor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@SuppressWarnings({"MethodCallSideOnly", "NewExpressionSideOnly"})
 public class DDProxyClient extends DDProxyCommon {
 
     @Override
@@ -45,13 +40,7 @@ public class DDProxyClient extends DDProxyCommon {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDimDoor.class, new RenderDimDoor());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTransTrapdoor.class, new RenderTransTrapdoor());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRift.class, new RenderRift());
-        RenderingRegistry.registerEntityRenderingHandler(MobMonolith.class, new IRenderFactory<MobMonolith>()
-        {
-            @Override
-            public Render<? super MobMonolith> createRenderFor(RenderManager manager) {
-                return new RenderMobObelisk(manager, 0.5f);
-            }
-        });
+        RenderingRegistry.registerEntityRenderingHandler(MobMonolith.class, manager -> new RenderMobObelisk(manager, 0.5f));
     }
 
     @Override
@@ -62,11 +51,6 @@ public class DDProxyClient extends DDProxyCommon {
     @Override
     public EntityPlayer getLocalPlayer() {
         return Minecraft.getMinecraft().player;
-    }
-
-    @Override
-    public World getDefWorld() {
-        return getWorldServer(0); //gets the client world dim 0 handler
     }
 
     @Override

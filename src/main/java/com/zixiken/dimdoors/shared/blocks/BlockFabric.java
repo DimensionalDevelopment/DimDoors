@@ -1,12 +1,11 @@
 package com.zixiken.dimdoors.shared.blocks;
 
-import java.util.List;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.TeleporterDimDoors;
-import com.zixiken.dimdoors.shared.util.DDRandomUtils;
+import com.zixiken.dimdoors.shared.util.RandomUtils;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.world.limbodimension.LimboDecay;
 import com.zixiken.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
@@ -30,20 +29,18 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
-
 @SuppressWarnings("deprecation")
 public class BlockFabric extends Block {
 
     public static final String ID = "fabric";
-    public static final PropertyEnum<BlockFabric.EnumType> TYPE = PropertyEnum.<BlockFabric.EnumType>create("type", BlockFabric.EnumType.class);
+    public static final PropertyEnum<BlockFabric.EnumType> TYPE = PropertyEnum.create("type", BlockFabric.EnumType.class);
 
     private static final float SUPER_HIGH_HARDNESS = 10000000000000F;
     private static final float SUPER_EXPLOSION_RESISTANCE = 18000000F;
 
     public BlockFabric() {
         super(Material.IRON);
-        this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
+        setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setLightLevel(1.0F);
         setHardness(0.1F);
         setUnlocalizedName(ID);
@@ -73,11 +70,11 @@ public class BlockFabric extends Block {
     }
 
     @Override
-    public float getBlockHardness(IBlockState state, World world, BlockPos pos) {
-        if (state.getValue(TYPE).equals(EnumType.ANCIENT) || state.getValue(TYPE).equals(EnumType.ETERNAL)) {
+    public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {
+        if (blockState.getValue(TYPE).equals(EnumType.ANCIENT) || blockState.getValue(TYPE).equals(EnumType.ETERNAL)) {
             return SUPER_HIGH_HARDNESS;
         } else {
-            return this.blockHardness;
+            return blockHardness;
         }
     }
 
@@ -103,9 +100,9 @@ public class BlockFabric extends Block {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> subItems) {
+    public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
         for(BlockFabric.EnumType type : EnumType.values()) {
-            subItems.add(new ItemStack(this, 1));
+            items.add(new ItemStack(this, 1));
         }
     }
 
@@ -120,7 +117,7 @@ public class BlockFabric extends Block {
     }
 
     @Override
-    public int quantityDropped(Random par1Random) {
+    public int quantityDropped(Random random) {
         return 0;
     }
 
@@ -128,12 +125,12 @@ public class BlockFabric extends Block {
      * replaces the block clicked with the held block, instead of placing the
      * block on top of it. Shift click to disable.
      *
-     * @param world the world that this block is in
+     * @param worldIn the world that this block is in
      * @param pos the position this block is at
      * @param state the state this block is in
-     * @param player the player right-clicking the block
+     * @param playerIn the player right-clicking the block
      * @param hand the hand the player is using
-     * @param side the side of the block that is being clicked
+     * @param facing the side of the block that is being clicked
      * @param hitX the x coordinate of the exact place the player is clicking on
      * the block
      * @param hitY the y coordinate ...
@@ -142,22 +139,22 @@ public class BlockFabric extends Block {
      * not?
      */
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
-        ItemStack heldItem = player.getHeldItem(hand);
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        ItemStack heldItem = playerIn.getHeldItem(hand);
 
-        if (heldItem != null && heldItem.getItem() instanceof ItemBlock
+        if (heldItem.getItem() instanceof ItemBlock
                 && (state.getValue(TYPE).equals(EnumType.REALITY) || state.getValue(TYPE).equals(EnumType.ALTERED))) {
             Block block = Block.getBlockFromItem(heldItem.getItem());
             if (!state.isNormalCube() || block.hasTileEntity(block.getDefaultState())
                     || block == this //this also keeps it from being replaced by Ancient Fabric
-                    || player.isSneaking()) {
+                    || playerIn.isSneaking()) {
                 return false;
             }
-            if (!world.isRemote) { //@todo on a server, returning false or true determines where the block gets placed?
-                if (!player.isCreative()) {
+            if (!worldIn.isRemote) { //@todo on a server, returning false or true determines where the block gets placed?
+                if (!playerIn.isCreative()) {
                     heldItem.setCount(heldItem.getCount()-1);
                 }
-                world.setBlockState(pos, block.getStateForPlacement(world, pos, side, hitX, hitY, hitZ, heldItem.getMetadata(), player)); //choosing getStateForPlacement over getDefaultState, because it will cause directional blocks, like logs to rotate correctly
+                worldIn.setBlockState(pos, block.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, heldItem.getMetadata(), playerIn)); //choosing getStateForPlacement over getDefaultState, because it will cause directional blocks, like logs to rotate correctly
             }
             return true;
         }
@@ -178,33 +175,33 @@ public class BlockFabric extends Block {
         }
 
         public String toString() {
-            return this.name;
+            return name;
         }
 
         @Override
         public String getName() {
-            return this.name;
+            return name;
         }
     }
 
     @Override
-    public void onEntityWalk(World world, BlockPos pos, Entity entity) {
-        IBlockState state = world.getBlockState(pos);
-        if (state.getValue(TYPE) == EnumType.ETERNAL && world.provider instanceof WorldProviderLimbo && entity instanceof EntityPlayer) {
-            Location origLocation = new Location(world, pos);
-            Location transFormedLocation = DDRandomUtils.transformLocationRandomly(DDConfig.getOwCoordinateOffsetBase(), DDConfig.getOwCoordinateOffsetPower(), DDConfig.getMaxDungeonDepth(), origLocation);
+    public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
+        IBlockState state = worldIn.getBlockState(pos);
+        if (state.getValue(TYPE) == EnumType.ETERNAL && worldIn.provider instanceof WorldProviderLimbo && entityIn instanceof EntityPlayer) {
+            Location origLocation = new Location(worldIn, pos);
+            Location transFormedLocation = RandomUtils.transformLocationRandomly(DDConfig.getOwCoordinateOffsetBase(), DDConfig.getOwCoordinateOffsetPower(), DDConfig.getMaxDungeonDepth(), origLocation);
 
             BlockPos correctedPos = DimDoors.proxy.getWorldServer(0).getTopSolidOrLiquidBlock(transFormedLocation.getPos());
             Location correctedLocation = new Location(0, correctedPos);
-            TeleporterDimDoors.instance().teleport(entity, correctedLocation);
+            TeleporterDimDoors.instance().teleport(entityIn, correctedLocation);
         }
     }
 
     @Override
-    public void updateTick(World world, BlockPos pos, IBlockState state, Random random) { //if this creates more problems, because everything ticks, we should probably move this to its own class again
+    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) { //if this creates more problems, because everything ticks, we should probably move this to its own class again
         //Make sure this block is unraveled fabric in Limbo
-        if (state.getValue(TYPE) == EnumType.UNRAVELED && world.provider instanceof WorldProviderLimbo) {
-            LimboDecay.applySpreadDecay(world, pos);
+        if (state.getValue(TYPE) == EnumType.UNRAVELED && worldIn.provider instanceof WorldProviderLimbo) {
+            LimboDecay.applySpreadDecay(worldIn, pos);
         }
     }
 }

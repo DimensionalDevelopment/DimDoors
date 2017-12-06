@@ -4,7 +4,6 @@ import com.zixiken.dimdoors.client.CloudRenderBlank;
 import com.zixiken.dimdoors.shared.EnumPocketType;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
@@ -14,13 +13,13 @@ import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WorldProviderPublicPocket extends WorldProvider {//@todo, we might want an abstract super class to this one?
+public class WorldProviderPublicPocket extends WorldProvider { //@todo, we might want an abstract super class to this one?
 
     //protected CustomLimboPopulator spawner;
     protected IRenderHandler skyRenderer;
 
     public WorldProviderPublicPocket() {
-        this.hasSkyLight = true;
+        hasSkyLight = true;
     }
 
     @SideOnly(Side.CLIENT)
@@ -32,7 +31,7 @@ public class WorldProviderPublicPocket extends WorldProvider {//@todo, we might 
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Vec3d getFogColor(float par1, float par2) {
+    public Vec3d getFogColor(float p_76562_1_, float p_76562_2_) {
         return Vec3d.ZERO;
     }
 
@@ -47,7 +46,7 @@ public class WorldProviderPublicPocket extends WorldProvider {//@todo, we might 
     }
 
     @Override
-    public boolean canSnowAt(BlockPos pos, boolean light) {
+    public boolean canSnowAt(BlockPos pos, boolean checkLight) {
         return false;
     }
 
@@ -57,7 +56,7 @@ public class WorldProviderPublicPocket extends WorldProvider {//@todo, we might 
     }
 
     @Override
-    public float calculateCelestialAngle(long par1, float par3) {
+    public float calculateCelestialAngle(long worldTime, float partialTicks) {
         return .5F;
     }
 
@@ -91,7 +90,7 @@ public class WorldProviderPublicPocket extends WorldProvider {//@todo, we might 
 
     @Override
     public String getSaveFolder() {
-        return ("DIM" + getDimension() + "DimDoorsPublic");
+        return "DIM" + getDimension() + "DimDoorsPublic";
     }
 
     @Override

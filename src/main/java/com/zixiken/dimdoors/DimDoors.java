@@ -10,7 +10,6 @@ import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.SchematicHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
@@ -27,11 +26,11 @@ import java.util.List;
 @Mod(modid = DimDoors.MODID, name = "Dimensional Doors", version = DimDoors.VERSION, dependencies = "required-after:forge@[14.23.0.2517,)")
 public class DimDoors {
 
-    public static final String VERSION = "${version}";
     public static final String MODID = "dimdoors";
+    public static final String VERSION = "${version}";
 
     @SidedProxy(clientSide = "com.zixiken.dimdoors.client.DDProxyClient",
-            serverSide = "com.zixiken.dimdoors.server.DDProxyServer")
+                serverSide = "com.zixiken.dimdoors.server.DDProxyServer")
     public static DDProxyCommon proxy;
 
     @Mod.Instance(DimDoors.MODID)
@@ -67,7 +66,6 @@ public class DimDoors {
     private void registerCommands(FMLServerStartingEvent event) {
         event.registerServerCommand(new TeleportCommand());
         event.registerServerCommand(new PocketCommand());
-        //@todo event.registerServerCommand( new DDCommand() ); //to register commands that this mod offers?
     }
 
     public static boolean isClient() {
@@ -86,14 +84,31 @@ public class DimDoors {
         player.sendMessage(new TextComponentString("[DimDoors] " + text));
     }
 
-    public static void warn(Class classFiredFrom, String text) {
-        FMLLog.warning("[DimDoors] " + text + " (" + classFiredFrom.toString() + " )", 0);
+    public static void warn(String text) {
+        warn(null, text);
     }
 
-    public static void log(Class classFiredFrom, String text) {
-        FMLLog.info("[DimDoors] " + text + " (" + classFiredFrom.toString() + " )", 0);
+    public static void warn(Class<?> classFiredFrom, String text) {
+        if(classFiredFrom != null) {
+            FMLLog.log.warn("[DimDoors] " + text + " (" + classFiredFrom + " )", 0);
+        } else {
+            FMLLog.log.warn("[DimDoors] " + text, 0);
+        }
     }
 
+    public static void log(String text) {
+        log(null, text);
+    }
+
+    public static void log(Class<?> classFiredFrom, String text) {
+        if(classFiredFrom != null) {
+            FMLLog.log.info("[DimDoors] " + text + " (" + classFiredFrom + " )", 0);
+        } else {
+            FMLLog.log.info("[DimDoors] " + text, 0);
+        }
+    }
+
+    // TODO: I18n is deprecated, convert to TextComponentTranslation
     public static void translateAndAdd(String key, List<String> list) {
         for (int i = 0; i < 10; i++) {
             if (I18n.canTranslate(key + Integer.toString(i))) {

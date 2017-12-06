@@ -23,5 +23,4 @@ abstract class DDSavedData extends WorldSavedData {
         File saveDir = world.getSaveHandler().getWorldDirectory();
         return new File(saveDir, "dimdoors/");
     }
-
 }

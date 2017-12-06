@@ -13,7 +13,7 @@ import net.minecraft.util.EnumFacing;
  *
  * @author Robijnvogel
  */
-public class DDRandomUtils {
+public class RandomUtils {
 
     /**
      * Returns either true or false, based on a weighted random, taking in
@@ -32,7 +32,7 @@ public class DDRandomUtils {
             throw new IllegalArgumentException("Either of both weights were 0 or lower. Both should be at least 1.");
         }
         Random random = new Random();
-        return (random.nextInt(trueWeight + falseWeight) < trueWeight);
+        return random.nextInt(trueWeight + falseWeight) < trueWeight;
     }
 
     /**
@@ -43,7 +43,7 @@ public class DDRandomUtils {
      * @param transformations the possible transformations
      * @param weights the chance-weight of those transformations
      * @pre {@code transformations.length = weights.length} && {@code (\forall i; intArray.has(i); i >= 0)}
-     * && {@code DDMathUtils.arraySum(weights, 1) > 0}
+     * && {@code MathUtils.arraySum(weights, 1) > 0}
      * @throws IllegalArgumentException if precondition is violated
      * @return the sum of {@code base} and the value of an element in
      * {@code transformations}
@@ -53,9 +53,9 @@ public class DDRandomUtils {
             throw new IllegalArgumentException("pre was violated, transformations.length != weights.length");
         }
         Random random = new Random();
-        int weightSum = DDMathUtils.arraySum(weights, (short) 0);
+        int weightSum = MathUtils.arraySum(weights, (short) 0);
         if (weightSum <= 0) {
-            throw new IllegalArgumentException("pre was violated, DDMathUtils.arraySum(weights, 1) <= 0");
+            throw new IllegalArgumentException("pre was violated, MathUtils.arraySum(weights, 1) <= 0");
         }
         int choice = random.nextInt(weightSum);
         for (int i = 0; i < weights.length; i++) {
@@ -90,10 +90,9 @@ public class DDRandomUtils {
             throw new IllegalArgumentException("pre was violated");
         }
         Random random = new Random();
-        DimDoors.log(DDRandomUtils.class, "base = " + base + ", power = " + power + ", depth = " + depth + " and power is " + Math.pow(base * depth, power));
+        DimDoors.log(RandomUtils.class, "base = " + base + ", power = " + power + ", depth = " + depth + " and power is " + Math.pow(base * depth, power));
         int xOffset = random.nextInt((int) Math.pow(base * depth, power)) * (random.nextBoolean() ? 1 : -1);
         int zOffset = random.nextInt((int) Math.pow(base * depth, power)) * (random.nextBoolean() ? 1 : -1);
         return new Location(origLocation.getWorld(), origLocation.getPos().offset(EnumFacing.EAST, xOffset).offset(EnumFacing.SOUTH, zOffset));
     }
-
 }
