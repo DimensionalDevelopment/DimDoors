@@ -12,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.IChunkGenerator;
@@ -21,12 +20,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WorldProviderLimbo extends WorldProvider {
+
     private IRenderHandler skyRenderer;
     private LimboBiome limboBiome;
 
     public WorldProviderLimbo() {
-        this.hasSkyLight = false;
-        this.skyRenderer = new LimboSkyProvider();
+        hasSkyLight = false;
+        skyRenderer = new LimboSkyProvider();
         limboBiome = new LimboBiome();
         //this.spawner
     }
@@ -43,8 +43,7 @@ public class WorldProviderLimbo extends WorldProvider {
     }
 
     @Override
-    public boolean canRespawnHere()
-    {
+    public boolean canRespawnHere() {
         return false; //properties.HardcoreLimboEnabled;
     }
 
@@ -65,18 +64,18 @@ public class WorldProviderLimbo extends WorldProvider {
 
         for (int steps = 0; steps <= 15; ++steps) {
             float var3 = 1.0F - steps / 15.0F;
-            this.lightBrightnessTable[steps] = ((0.0F + var3) / (var3 * 3.0F + 1.0F) * (1.0F - modifier) + modifier)*3;
+            lightBrightnessTable[steps] = ((0.0F + var3) / (var3 * 3.0F + 1.0F) * (1.0F - modifier) + modifier)*3;
             //     System.out.println( this.lightBrightnessTable[steps]+"light");
         }
     }
 
     @Override
     public BlockPos getSpawnPoint() {
-        return this.getRandomizedSpawnPoint();
+        return getRandomizedSpawnPoint();
     }
 
     @Override
-    public float calculateCelestialAngle(long par1, float par3) {
+    public float calculateCelestialAngle(long worldTime, float partialTicks) {
         return 0;
     }
 
@@ -87,18 +86,18 @@ public class WorldProviderLimbo extends WorldProvider {
 
     @Override
     public String getSaveFolder() {
-        return ("DIM" + getDimension() + "DimDoorsLimbo");
+        return "DIM" + getDimension() + "DimDoorsLimbo";
     }
 
     @Override
     public boolean canCoordinateBeSpawn(int x, int z) {
-        BlockPos pos = this.world.getTopSolidOrLiquidBlock(new BlockPos(x, 0, z));
+        BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(x, 0, z));
         return world.getBlockState(pos).equals(ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED));
     }
 
     @Override
     public double getHorizon() {
-        return world.getHeight()/4-800;
+        return (double) world.getHeight() / 4 - 800;
     }
 
     @SideOnly(Side.CLIENT)
@@ -111,7 +110,7 @@ public class WorldProviderLimbo extends WorldProvider {
     }
     @SideOnly(Side.CLIENT)
     @Override
-    public Vec3d getFogColor(float par1, float par2) {
+    public Vec3d getFogColor(float p_76562_1_, float p_76562_2_) {
         return new Vec3d(.2, .2, .2);
     }
 
@@ -131,15 +130,15 @@ public class WorldProviderLimbo extends WorldProvider {
     }
 
     public static Location getLimboSkySpawn(EntityPlayer player) {
-        int x = (int) (player.posX) + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); //-properties.LimboEntryRange, properties.LimboEntryRange);
-        int z = (int) (player.posZ) + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); //-properties.LimboEntryRange, properties.LimboEntryRange);
+        int x = (int) player.posX + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); //-properties.LimboEntryRange, properties.LimboEntryRange);
+        int z = (int) player.posZ + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); //-properties.LimboEntryRange, properties.LimboEntryRange);
         return new Location(DimDoorDimensions.LIMBO.getId(), x, 700, z);
     }
 
     @Override
     public BlockPos getRandomizedSpawnPoint() {
-        int x = MathHelper.clamp(this.world.rand.nextInt(), -500, 500);
-        int z = MathHelper.clamp(this.world.rand.nextInt(), -500, 500);
+        int x = MathHelper.clamp(world.rand.nextInt(), -500, 500);
+        int z = MathHelper.clamp(world.rand.nextInt(), -500, 500);
         return new BlockPos(x, 700, z);
     }
 

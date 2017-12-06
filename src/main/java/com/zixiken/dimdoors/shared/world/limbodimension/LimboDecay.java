@@ -167,6 +167,6 @@ public class LimboDecay {
             }
         }
 
-        return (block == null || !(block instanceof BlockContainer));
+        return !(block instanceof BlockContainer);
     }
 }

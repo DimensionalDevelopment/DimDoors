@@ -32,36 +32,36 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     }
 
     @Override
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
-        IBlockState down = world.getBlockState(pos.down());
-        if (!world.isRemote && down.getBlock() == this) { //should only teleport when colliding with top part of the door to prevent double teleportation from being triggered
+    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn) {
+        IBlockState down = worldIn.getBlockState(pos.down());
+        if (!worldIn.isRemote && down.getBlock() == this) { //should only teleport when colliding with top part of the door to prevent double teleportation from being triggered
             if (down.getValue(BlockDoor.OPEN)
-                    && entity instanceof EntityPlayer //@todo remove this so any entity can go through?
-                    && (entity.timeUntilPortal < 1) //to prevent the player from teleporting all over the place we have a 50-tick cooldown
-                    && isEntityFacingDoor(down, (EntityLivingBase) entity)) {
-                this.toggleDoor(world, pos, false);
-                enterDimDoor(world, pos, entity);
+                    && entityIn instanceof EntityPlayer //@todo remove this so any entity can go through?
+                    && entityIn.timeUntilPortal < 1 //to prevent the player from teleporting all over the place we have a 50-tick cooldown
+                    && isEntityFacingDoor(down, (EntityLivingBase) entityIn)) {
+                toggleDoor(worldIn, pos, false);
+                enterDimDoor(worldIn, pos, entityIn);
             }
         }
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!checkCanOpen(world, pos, player)) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (!checkCanOpen(worldIn, pos, playerIn)) {
             return false;
         }
         if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER) {
             pos = pos.down();
-            state = world.getBlockState(pos);
+            state = worldIn.getBlockState(pos);
         }
 
         if (state.getBlock() != this) {
             return false;
         } else {
             state = state.cycleProperty(BlockDoor.OPEN);
-            world.setBlockState(pos, state, 2);
-            world.markBlockRangeForRenderUpdate(pos, pos.up());
-            world.playEvent(player, (state.getValue(OPEN)) ? this.getOpenSound() : this.getCloseSound(), pos, 0);
+            worldIn.setBlockState(pos, state, 2);
+            worldIn.markBlockRangeForRenderUpdate(pos, pos.up());
+            worldIn.playEvent(playerIn, state.getValue(OPEN) ? getOpenSound() : getCloseSound(), pos, 0);
             return true;
         }
     }
@@ -73,9 +73,8 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 
     //Called to update the render information on the tile entity. Could probably implement a data watcher,
     //but this works fine and is more versatile I think. 
-    public BlockDimDoorBase updateAttachedTile(World world, BlockPos pos) {
+    public void updateAttachedTile(World world, BlockPos pos) {
         DimDoors.proxy.updateDoorTE(this, world, pos);
-        return this;
     }
 
     @Override
@@ -84,8 +83,8 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     }
 
     @Override
-    public void updateTick(World par1World, BlockPos pos, IBlockState state, Random rand) {
-        updateAttachedTile(par1World, pos);
+    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
+        updateAttachedTile(worldIn, pos);
     }
 
     /**
@@ -95,25 +94,25 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     @Override
     @SideOnly(Side.CLIENT)
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
-        return new ItemStack(this.getItemDoor(), 1, 0);
+        return new ItemStack(getItemDoor(), 1, 0);
     }
 
     /**
      * Returns the ID of the items to drop on destruction.
      */
     @Override
-    public Item getItemDropped(IBlockState state, Random random, int fortune) {
-        return isUpperDoorBlock(state) ? null : this.getItemDoor();
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+        return isUpperDoorBlock(state) ? null : getItemDoor();
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public ItemStack getItem(World world, BlockPos pos, IBlockState state) {
-        return new ItemStack(this.getItemDoor(), 1, 0);
+    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
+        return new ItemStack(getItemDoor(), 1, 0);
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int metadata) { //gets called upon world load as well
+    public TileEntity createNewTileEntity(World worldIn, int meta) { //gets called upon world load as well
         return new TileEntityDimDoor();
     }
 
@@ -136,16 +135,16 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
         // Although any entity has the proper fields for this check,
         // we should only apply it to living entities since things
         // like Minecarts might come in backwards.
-        return (state.getValue(BlockDoor.FACING) == EnumFacing.fromAngle(entity.rotationYaw));
+        return state.getValue(BlockDoor.FACING) == EnumFacing.fromAngle(entity.rotationYaw);
     }
 
     @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         DDTileEntityBase origRift = null;
         boolean isTopHalf = state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER;
         boolean shouldPlaceRift = false;
         if (isTopHalf) {
-            origRift = (DDTileEntityBase) world.getTileEntity(pos);
+            origRift = (DDTileEntityBase) worldIn.getTileEntity(pos);
             if (origRift.isPaired()) {
                 shouldPlaceRift = true;
                 RiftRegistry.INSTANCE.setLastChangedRift(origRift); //@todo this is a crude workaround
@@ -153,10 +152,10 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
                 RiftRegistry.INSTANCE.unregisterRift(origRift.getRiftID());
             }
         }
-        super.breakBlock(world, pos, state);
+        super.breakBlock(worldIn, pos, state);
         if (shouldPlaceRift) {
-            world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
-            DDTileEntityBase newRift = (DDTileEntityBase) world.getTileEntity(pos);
+            worldIn.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
+            DDTileEntityBase newRift = (DDTileEntityBase) worldIn.getTileEntity(pos);
             newRift.loadDataFrom(origRift); //@todo this does not work here, or does it?
         }
     }
@@ -183,20 +182,18 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
     }
 
     private boolean canPlaceBottomAt(IBlockState state) {
-        return (state.equals(Blocks.AIR) || state.getMaterial().isReplaceable());
+        return state.equals(Blocks.AIR) || state.getMaterial().isReplaceable();
     }
 
     private boolean canPlaceTopAt(IBlockState state) {
-        return (state.getBlock() == ModBlocks.RIFT || state.equals(Blocks.AIR) || state.getMaterial().isReplaceable());
+        return state.getBlock() == ModBlocks.RIFT || state.equals(Blocks.AIR) || state.getMaterial().isReplaceable();
     }
     
-    protected int getCloseSound()
-    {
-        return this.blockMaterial == Material.IRON ? 1011 : 1012;
+    protected int getCloseSound() {
+        return blockMaterial == Material.IRON ? 1011 : 1012;
     }
 
-    protected int getOpenSound()
-    {
-        return this.blockMaterial == Material.IRON ? 1005 : 1006;
+    protected int getOpenSound() {
+        return blockMaterial == Material.IRON ? 1005 : 1006;
     }
 }

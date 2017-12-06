@@ -5,13 +5,7 @@ import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.entities.MobMonolith;
 import com.zixiken.dimdoors.shared.items.ModItems;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorChaos;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorGold;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorPersonal;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorWarp;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityTransTrapdoor;
+import com.zixiken.dimdoors.shared.tileentities.*;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
@@ -36,19 +30,20 @@ public abstract class DDProxyCommon implements IDDProxy {
 
         DimDoorDimensions.init();
 
-        GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor");
+        GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor"); // TODO: use new registry
         GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
         GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityTransTrapdoor");
         GameRegistry.registerTileEntity(TileEntityDimDoorGold.class, "TileEntityDimDoorGold");
         GameRegistry.registerTileEntity(TileEntityDimDoorPersonal.class, "TileEntityDimDoorPersonal");
-        GameRegistry.registerTileEntity(TileEntityDimDoorChaos.class, "TileEntityDimDoorChaos");
+        GameRegistry.registerTileEntity(TileEntityDimDoorUnstable.class, "TileEntityDimDoorUnstable");
         GameRegistry.registerTileEntity(TileEntityDimDoorWarp.class, "TileEntityDimDoorWarp");
+
+        EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), MobMonolith.class, "monolith", 0, DimDoors.instance, 70, 1, true);
+        EntityRegistry.registerEgg(new ResourceLocation(DimDoors.MODID, "mob_monolith"), 0, 0xffffff);
     }
 
     @Override
     public void onInitialization(FMLInitializationEvent event) {
-        EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), MobMonolith.class, "monolith", 0, DimDoors.instance, 70, 1, true);
-        EntityRegistry.registerEgg(new ResourceLocation(DimDoors.MODID, "mob_monolith"), 0, 0xffffff);
     }
 
     public void updateDoorTE(BlockDimDoorBase door, World world, BlockPos pos) {
@@ -66,5 +61,7 @@ public abstract class DDProxyCommon implements IDDProxy {
     }
 
     @Override
-    public abstract boolean isClient();
+    public World getDefWorld() {
+        return getWorldServer(0); //gets the client world dim 0 handler
+    }
 }

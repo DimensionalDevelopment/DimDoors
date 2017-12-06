@@ -43,21 +43,21 @@ public class PocketSavedData extends DDSavedData {
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound pocketnbt) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 
         NBTTagCompound pockets = new NBTTagCompound();
         PocketRegistry.INSTANCE.writeToNBT(pockets);
-        pocketnbt.setTag("pockets", pockets);
+        nbt.setTag("pockets", pockets);
 
-        return pocketnbt;
+        return nbt;
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound pocketnbt) {
+    public void readFromNBT(NBTTagCompound nbt) {
         // Load NBT
-        if (pocketnbt != null) {
-            if (pocketnbt.hasKey("pockets")) {
-                NBTTagCompound pockets = pocketnbt.getCompoundTag("pockets");
+        if (nbt != null) {
+            if (nbt.hasKey("pockets")) {
+                NBTTagCompound pockets = nbt.getCompoundTag("pockets");
                 PocketRegistry.INSTANCE.readFromNBT(pockets);
             }
         }

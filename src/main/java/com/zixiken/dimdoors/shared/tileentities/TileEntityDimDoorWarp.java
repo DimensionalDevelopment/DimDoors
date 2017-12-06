@@ -16,10 +16,10 @@ public class TileEntityDimDoorWarp extends TileEntityDimDoor {
             int otherRiftID = getPairedRiftID();
             tpLocation = RiftRegistry.INSTANCE.getTeleportLocation(otherRiftID);
             RiftRegistry.INSTANCE.validatePlayerPocketEntry(entity, otherRiftID);
-        } else if (!(this.isInPocket)) {
+        } else if (!isInPocket) {
             return false;
         } else {
-            Pocket pocket = PocketRegistry.INSTANCE.getPocket(this.pocketID, this.getPocketType());
+            Pocket pocket = PocketRegistry.INSTANCE.getPocket(pocketID, getPocketType());
             tpLocation = pocket.getDepthZeroLocation();
         }
         return TeleporterDimDoors.instance().teleport(entity, tpLocation);

@@ -7,34 +7,35 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ModBlocks {
 
     // Regular doors
-    public final static BlockDoorGold GOLD_DOOR = new BlockDoorGold();
-    public final static BlockDoorQuartz QUARTZ_DOOR = new BlockDoorQuartz();
+    public static final BlockDoorGold GOLD_DOOR = new BlockDoorGold();
+    public static final BlockDoorQuartz QUARTZ_DOOR = new BlockDoorQuartz();
 
     // Dimensional doors
-    public final static BlockDimDoor DIMENSIONAL_DOOR = new BlockDimDoor();
-    public final static BlockDimDoorGold GOLD_DIMENSIONAL_DOOR = new BlockDimDoorGold();
-    public final static BlockDimDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new BlockDimDoorPersonal();
-    public final static BlockDimDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new BlockDimDoorUnstable();
-    public final static BlockDimDoorTransient TRANSIENT_DIMENSIONAL_DOOR = new BlockDimDoorTransient();
-    public final static BlockDimDoorWarp WARP_DIMENSIONAL_DOOR = new BlockDimDoorWarp();
-    public final static BlockTransTrapdoor DIMENSIONAL_TRAPDOOR = new BlockTransTrapdoor();
+    public static final BlockDimDoor DIMENSIONAL_DOOR = new BlockDimDoor();
+    public static final BlockDimDoorGold GOLD_DIMENSIONAL_DOOR = new BlockDimDoorGold();
+    public static final BlockDimDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new BlockDimDoorPersonal();
+    public static final BlockDimDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new BlockDimDoorUnstable();
+    public static final BlockDimDoorTransient TRANSIENT_DIMENSIONAL_DOOR = new BlockDimDoorTransient();
+    public static final BlockDimDoorWarp WARP_DIMENSIONAL_DOOR = new BlockDimDoorWarp();
+    public static final BlockTransTrapdoor DIMENSIONAL_TRAPDOOR = new BlockTransTrapdoor();
 
     // Blocks
-    public final static BlockFabric FABRIC = new BlockFabric();
-    public final static BlockRift RIFT = new BlockRift();
+    public static final BlockFabric FABRIC = new BlockFabric();
+    public static final BlockRift RIFT = new BlockRift();
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().register(QUARTZ_DOOR);
-        event.getRegistry().register(PERSONAL_DIMENSIONAL_DOOR);
-        event.getRegistry().register(GOLD_DOOR);
-        event.getRegistry().register(GOLD_DIMENSIONAL_DOOR);
-        event.getRegistry().register(UNSTABLE_DIMENSIONAL_DOOR);
-        event.getRegistry().register(WARP_DIMENSIONAL_DOOR);
-        event.getRegistry().register(DIMENSIONAL_DOOR);
-        event.getRegistry().register(DIMENSIONAL_TRAPDOOR);
-        event.getRegistry().register(FABRIC);
-        event.getRegistry().register(TRANSIENT_DIMENSIONAL_DOOR);
-        event.getRegistry().register(RIFT);
+        event.getRegistry().registerAll(
+                GOLD_DOOR,
+                QUARTZ_DOOR,
+                DIMENSIONAL_DOOR,
+                GOLD_DIMENSIONAL_DOOR,
+                PERSONAL_DIMENSIONAL_DOOR,
+                UNSTABLE_DIMENSIONAL_DOOR,
+                TRANSIENT_DIMENSIONAL_DOOR,
+                WARP_DIMENSIONAL_DOOR,
+                DIMENSIONAL_TRAPDOOR,
+                FABRIC,
+                RIFT);
     }
 }

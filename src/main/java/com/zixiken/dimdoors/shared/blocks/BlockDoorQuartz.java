@@ -33,7 +33,7 @@ public class BlockDoorQuartz extends BlockDoor {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public ItemStack getItem(World world, BlockPos pos, IBlockState state) {
+    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
         return new ItemStack(ModItems.QUARTZ_DOOR);
     }
 }

@@ -4,25 +4,20 @@ import com.flowpowered.math.TrigMath;
 import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector4f;
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 
 public class RenderRift extends TileEntitySpecialRenderer<TileEntityRift> {
-    private static final EntityItem ITEM = new EntityItem(Minecraft.getMinecraft().world, 0,0,0, new ItemStack(ModItems.STABLE_FABRIC));
     private static ResourceLocation tesseract_path = new ResourceLocation(DimDoors.MODID + ":textures/other/tesseract.png");
 
-    private static Vector4f tesseract[] = {
+    private static Vector4f[] tesseract = {
             new Vector4f(-0.5f,-0.5f,-0.5f,-0.5f),
             new Vector4f(0.5f,-0.5f,-0.5f,-0.5f),
             new Vector4f(0.5f,-0.5f,0.5f,-0.5f),
@@ -157,7 +152,7 @@ public class RenderRift extends TileEntitySpecialRenderer<TileEntityRift> {
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
 
-        this.bindTexture(tesseract_path);
+        bindTexture(tesseract_path);
 
         GlStateManager.translate(x+0.5,y+0.5,z+0.5);
         GlStateManager.scale(0.25,0.25,0.25);
@@ -180,7 +175,8 @@ public class RenderRift extends TileEntitySpecialRenderer<TileEntityRift> {
     }
 
     private double update(float partialTicks) {
-        return (angle = (angle + 3*partialTicks) % 360);
+        angle = (angle + 3 * partialTicks) % 360;
+        return angle;
     }
 
     private Vector4f rotation(Vector4f v, double angle) {

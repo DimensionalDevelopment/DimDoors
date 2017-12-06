@@ -33,7 +33,7 @@ public class WorldProviderPersonalPocket extends WorldProviderPublicPocket {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public Vec3d getFogColor(float par1, float par2) {
+    public Vec3d getFogColor(float p_76562_1_, float p_76562_2_) {
         return new Vec3d(1, 1, 1);
     }
 
@@ -49,6 +49,6 @@ public class WorldProviderPersonalPocket extends WorldProviderPublicPocket {
 
     @Override
     public String getSaveFolder() {
-        return ("DIM" + getDimension() + "DimDoorsPersonal");
+        return "DIM" + getDimension() + "DimDoorsPersonal";
     }
 }

@@ -26,35 +26,35 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
         chunkTicket = ticket;
 
         /*
-		// Only do anything if this function is running on the server side
-		// NOTE: We don't have to check whether this block is the upper door
-		// block or the lower one because only one of them should have a
-		// link associated with it.
-		if (!worldObj.isRemote) {
-			DimData dimension = PocketManager.createDimensionData(worldObj);
+        // Only do anything if this function is running on the server side
+        // NOTE: We don't have to check whether this block is the upper door
+        // block or the lower one because only one of them should have a
+        // link associated with it.
+        if (!worldObj.isRemote) {
+            DimData dimension = PocketManager.createDimensionData(worldObj);
 
-			// Check whether a ticket has already been assigned to this door
-			if (chunkTicket == null) {
-				// No ticket yet.
-				// Check if this area should be loaded and request a new ticket.
-				if (isValidChunkLoaderSetup(dimension)) {
-					chunkTicket = ChunkLoaderHelper.createTicket(pos, worldObj);
-				}
-			} else {
-				// A ticket has already been provided.
-				// Check if this area should be loaded. If not, release the ticket.
-				if (!isValidChunkLoaderSetup(dimension)) {
-					ForgeChunkManager.releaseTicket(chunkTicket);
-					chunkTicket = null;
-				}
-			}
+            // Check whether a ticket has already been assigned to this door
+            if (chunkTicket == null) {
+                // No ticket yet.
+                // Check if this area should be loaded and request a new ticket.
+                if (isValidChunkLoaderSetup(dimension)) {
+                    chunkTicket = ChunkLoaderHelper.createTicket(pos, worldObj);
+                }
+            } else {
+                // A ticket has already been provided.
+                // Check if this area should be loaded. If not, release the ticket.
+                if (!isValidChunkLoaderSetup(dimension)) {
+                    ForgeChunkManager.releaseTicket(chunkTicket);
+                    chunkTicket = null;
+                }
+            }
 
-			// If chunkTicket isn't null at this point, then this is a valid door setup.
-			// The last step is to request force loading of the pocket's chunks.
-			if (chunkTicket != null) {
-				ChunkLoaderHelper.forcePocketChunks(dimension, chunkTicket);
-			}
-		}
+            // If chunkTicket isn't null at this point, then this is a valid door setup.
+            // The last step is to request force loading of the pocket's chunks.
+            if (chunkTicket != null) {
+                ChunkLoaderHelper.forcePocketChunks(dimension, chunkTicket);
+            }
+        }
          */
     }
 
@@ -69,15 +69,15 @@ public class TileEntityDimDoorGold extends TileEntityDimDoor implements IChunkLo
         //DimDoors.log(this.getClass(), "Trying to find suitable destination rift.");
         int otherRiftID = RiftRegistry.INSTANCE.getRandomUnpairedRiftIDAtDepth(getRiftID(), depth);
         if (otherRiftID < 0) {
-            Location origLocation = RiftRegistry.INSTANCE.getRiftLocation(this.riftID);
+            Location origLocation = RiftRegistry.INSTANCE.getRiftLocation(riftID);
             if (origLocation.getDimensionID() == DimDoorDimensions.getPocketDimensionType(EnumPocketType.DUNGEON).getId()) { //if this dimdoor is a pocket Dungeon
                 origLocation = PocketRegistry.INSTANCE.getPocket(pocketID, pocketType).getDepthZeroLocation();
             }
-            otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), origLocation);
+            otherRiftID = PocketRegistry.INSTANCE.generateRandomPocketAt(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), origLocation).getEntranceDoorID();
         }
 
         if (otherRiftID < 0) {
-            DimDoors.warn(this.getClass(), "No suitable destination rift was found. This probably means that a pocket was created without any Doors.");
+            DimDoors.warn(getClass(), "No suitable destination rift was found. This probably means that a pocket was created without any Doors.");
         } else {
             RiftRegistry.INSTANCE.pair(getRiftID(), otherRiftID);
         }

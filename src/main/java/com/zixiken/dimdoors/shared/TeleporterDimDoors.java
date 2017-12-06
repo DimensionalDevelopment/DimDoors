@@ -4,9 +4,7 @@ import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.DimDoors;
 import java.util.EnumSet;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.SPacketChangeGameState;
 import net.minecraft.network.play.server.SPacketEntityEffect;
 import net.minecraft.network.play.server.SPacketPlayerAbilities;
 import net.minecraft.util.math.BlockPos;
@@ -16,6 +14,7 @@ import net.minecraft.network.play.server.SPacketPlayerPosLook;
 import net.minecraft.network.play.server.SPacketRespawn;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.management.PlayerList;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 //ref: https://github.com/WayofTime/BloodMagic/blob/1.11/src/main/java/WayofTime/bloodmagic/ritual/portal/Teleports.java
 public class TeleporterDimDoors extends Teleporter {
@@ -31,7 +30,7 @@ public class TeleporterDimDoors extends Teleporter {
     }
 
     @Override
-    public boolean makePortal(Entity entity) {
+    public boolean makePortal(Entity entityIn) {
         return true;
     }
 
@@ -53,7 +52,7 @@ public class TeleporterDimDoors extends Teleporter {
     }
 
     @Override
-    public void placeInPortal(Entity entity, float rotationYaw) {
+    public void placeInPortal(Entity entityIn, float rotationYaw) {
     }
 
     public boolean teleport(Entity entity, Location location) { //@todo add float playerRotationYaw as a parameter
@@ -81,7 +80,7 @@ public class TeleporterDimDoors extends Teleporter {
         int oldDimID = entity.dimension;
         WorldServer oldWorldserver = DimDoors.proxy.getWorldServer(oldDimID);
         WorldServer newWorldserver = DimDoors.proxy.getWorldServer(newDimID);
-        if (entity instanceof EntityPlayer) {
+        if (entity instanceof EntityPlayerMP) { // TODO: this was EntityPlayer, but I changed this to EntityPlayerMP because that's what the cast assumes
             DimDoors.log(TeleporterDimDoors.class, "Teleporting Player to new dimension.");
             EntityPlayerMP player = (EntityPlayerMP) entity;
             float playerRotationYaw = player.rotationYaw; //@todo make this a parameter?
@@ -104,7 +103,7 @@ public class TeleporterDimDoors extends Teleporter {
 
             oldWorldserver.profiler.startSection("placing");
             if (player.isEntityAlive()) {
-                DimDoors.log(this.getClass(), "Placing the player entity at " + pos.toString());
+                DimDoors.log(getClass(), "Placing the player entity at " + pos);
                 player.setLocationAndAngles(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
                 player.motionX = 0;
                 player.motionZ = 0;
@@ -125,7 +124,7 @@ public class TeleporterDimDoors extends Teleporter {
             for (PotionEffect potioneffect : player.getActivePotionEffects()) {
                 player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), potioneffect));
             }
-            net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDimID, newDimID);
+            FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDimID, newDimID);
 
         } else {
             DimDoors.log(TeleporterDimDoors.class, "Teleporting non-Player to new dimension.");
@@ -138,7 +137,7 @@ public class TeleporterDimDoors extends Teleporter {
     private void teleportLocal(Entity entity, BlockPos pos) {
         WorldServer worldserver = (WorldServer) entity.world;
 
-        if (entity instanceof EntityPlayer) {
+        if (entity instanceof EntityPlayerMP) { // TODO: this was EntityPlayer, but I changed this to EntityPlayerMP because that's what the cast assumes
             DimDoors.log(TeleporterDimDoors.class,
                     "Teleporting Player within same dimension.");
             EntityPlayerMP player = (EntityPlayerMP) entity;
@@ -150,7 +149,7 @@ public class TeleporterDimDoors extends Teleporter {
             worldserver.profiler.startSection("moving");
             player.setLocationAndAngles(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch);
             //playerList.preparePlayer(player, worldserver); //This makes the player stutter heavily on teleport
-            player.connection.setPlayerLocation(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch, EnumSet.<SPacketPlayerPosLook.EnumFlags>noneOf(SPacketPlayerPosLook.EnumFlags.class
+            player.connection.setPlayerLocation(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, playerRotationYaw, player.rotationPitch, EnumSet.noneOf(SPacketPlayerPosLook.EnumFlags.class
             ));
             worldserver.profiler.endSection();
             player.connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));

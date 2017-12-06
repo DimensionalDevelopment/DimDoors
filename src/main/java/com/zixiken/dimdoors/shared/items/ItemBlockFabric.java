@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 public class ItemBlockFabric extends ItemBlock {
 
-    private final static String[] subNames = {"_reality", "_ancient", "_altered", "_unraveled", "_eternal"};
+    private static final String[] subNames = {"_reality", "_ancient", "_altered", "_unraveled", "_eternal"};
 
     public ItemBlockFabric() {
         super(ModBlocks.FABRIC);
@@ -19,12 +19,12 @@ public class ItemBlockFabric extends ItemBlock {
     }
 
     @Override
-    public int getMetadata(int damageValue) {
-        return damageValue;
+    public int getMetadata(int damage) {
+        return damage;
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        return super.getUnlocalizedName() + subNames[this.getDamage(stack)];
+        return super.getUnlocalizedName() + subNames[getDamage(stack)];
     }
 }

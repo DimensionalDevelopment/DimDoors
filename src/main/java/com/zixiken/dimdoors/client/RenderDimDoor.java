@@ -1,7 +1,5 @@
 package com.zixiken.dimdoors.client;
 
-import static org.lwjgl.opengl.GL11.GL_LIGHTING;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
 import java.nio.FloatBuffer;
 import java.util.Random;
 
@@ -42,7 +40,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
             float var16 = 0.2625F;
             float var17 = 1.0F / (var15 + .80F);
 
-            this.bindTexture(warpPath);
+            bindTexture(warpPath);
             GlStateManager.enableBlend();
 
             if (count == 0) {
@@ -72,28 +70,28 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
 
             switch (orientation) {
                 case SOUTH:
-                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.15F));
+                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, getFloatBuffer(1.0F, 0.0F, 0.0F, 0.15F));
                     break;
                 case WEST:
-                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.15F));
+                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 1.0F, 0.15F));
                     break;
                 case NORTH:
-                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, -0.15F));
+                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, getFloatBuffer(1.0F, 0.0F, 0.0F, -0.15F));
                     break;
                 case EAST:
-                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, -0.15F));
+                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 1.0F, -0.15F));
                     break;
             }
 
@@ -146,29 +144,29 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
                     worldRenderer.pos(x, y + 1, z + .99).endVertex();
                     break;
                 /*case 4:
-					GL11.glVertex3d(x + .15F, y - 1 , z);
-					GL11.glVertex3d(x + .15, y - 1, z + 1.0D);
-					GL11.glVertex3d(x + .15, y + 1, z + 1.0D);
-					GL11.glVertex3d(x + .15, y + 1, z);
-					break;
-				case 5:
-					GL11.glVertex3d(x, y + 1, z + .15);
-					GL11.glVertex3d(x + 1, y + 1, z + .15);
-					GL11.glVertex3d(x + 1, y - 1, z + .15);
-					GL11.glVertex3d(x, y - 1, z + .15);
-					break;
-				case 6:
-					GL11.glVertex3d(x + .85, y + 1, z);
-					GL11.glVertex3d(x + .85, y + 1, z + 1.0D);
-					GL11.glVertex3d(x + .85, y - 1, z + 1.0D);
-					GL11.glVertex3d(x + .85, y - 1, z);
-					break;
-				case 7:
-					GL11.glVertex3d(x, y - 1, z + .85);
-					GL11.glVertex3d(x + 1, y - 1, z + .85);
-					GL11.glVertex3d(x + 1, y + 1, z + .85);
-					GL11.glVertex3d(x, y + 1, z + .85);
-					break;*/
+                    GL11.glVertex3d(x + .15F, y - 1 , z);
+                    GL11.glVertex3d(x + .15, y - 1, z + 1.0D);
+                    GL11.glVertex3d(x + .15, y + 1, z + 1.0D);
+                    GL11.glVertex3d(x + .15, y + 1, z);
+                    break;
+                case 5:
+                    GL11.glVertex3d(x, y + 1, z + .15);
+                    GL11.glVertex3d(x + 1, y + 1, z + .15);
+                    GL11.glVertex3d(x + 1, y - 1, z + .15);
+                    GL11.glVertex3d(x, y - 1, z + .15);
+                    break;
+                case 6:
+                    GL11.glVertex3d(x + .85, y + 1, z);
+                    GL11.glVertex3d(x + .85, y + 1, z + 1.0D);
+                    GL11.glVertex3d(x + .85, y - 1, z + 1.0D);
+                    GL11.glVertex3d(x + .85, y - 1, z);
+                    break;
+                case 7:
+                    GL11.glVertex3d(x, y - 1, z + .85);
+                    GL11.glVertex3d(x + 1, y - 1, z + .85);
+                    GL11.glVertex3d(x + 1, y + 1, z + .85);
+                    GL11.glVertex3d(x, y + 1, z + .85);
+                    break;*/
             }
 
             tessellator.draw();
@@ -265,7 +263,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
             renderDimDoorTileEntity(te, x, y, z);
             if (te.lockStatus >= 1) {
                 for (int i = 0; i < 1 + te.lockStatus; i++) {
-                    this.renderKeyHole(te, x, y, z, i);
+                    renderKeyHole(te, x, y, z, i);
                 }
             }
 

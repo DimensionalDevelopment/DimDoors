@@ -10,6 +10,7 @@ package com.zixiken.dimdoors.shared;
  * @author s101426
  */
 public enum EnumPocketType {
+
     PRIVATE, PUBLIC, DUNGEON;
 
     static EnumPocketType getFromInt(int integer) {

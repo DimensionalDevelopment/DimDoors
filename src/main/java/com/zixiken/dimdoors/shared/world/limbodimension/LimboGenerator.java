@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class LimboGenerator implements IChunkGenerator
-{
-    private static Random rand;
+public class LimboGenerator implements IChunkGenerator {
+
+    private Random rand;
 
     /** A NoiseGeneratorOctaves used in generating terrain */
     private NoiseGeneratorOctaves noiseGen1;
@@ -75,44 +75,44 @@ public class LimboGenerator implements IChunkGenerator
      */
     float[] parabolicField;
     int[][] field_73219_j = new int[32][32];
-    {
-        //     caveGenerator = TerrainGen.getModdedMapGen(caveGenerator, CAVE);
-    }
+    //{
+    //         caveGenerator = TerrainGen.getModdedMapGen(caveGenerator, CAVE);
+    //}
     //private CustomLimboPopulator spawner;
 
     public LimboGenerator(World world, long seed /*CustomLimboPopulator spawner*/) {
-        this.worldObj = world;
-        LimboGenerator.rand = new Random(seed);
-        this.noiseGen1 = new NoiseGeneratorOctaves(LimboGenerator.rand, 16); //base terrain
-        this.noiseGen2 = new NoiseGeneratorOctaves(LimboGenerator.rand, 16); //hillyness
-        this.noiseGen3 = new NoiseGeneratorOctaves(LimboGenerator.rand, 80);  //seems to adjust the size of features, how stretched things are -default 8
-        this.noiseGen4 = new NoiseGeneratorOctaves(LimboGenerator.rand, 4);
-        this.noiseGen5 = new NoiseGeneratorOctaves(LimboGenerator.rand, 10);
-        this.noiseGen6 = new NoiseGeneratorOctaves(LimboGenerator.rand, 16);
-        this.mobSpawnerNoise = new NoiseGeneratorOctaves(LimboGenerator.rand, 8);
+        worldObj = world;
+        rand = new Random(seed);
+        noiseGen1 = new NoiseGeneratorOctaves(rand, 16); //base terrain
+        noiseGen2 = new NoiseGeneratorOctaves(rand, 16); //hillyness
+        noiseGen3 = new NoiseGeneratorOctaves(rand, 80);  //seems to adjust the size of features, how stretched things are -default 8
+        noiseGen4 = new NoiseGeneratorOctaves(rand, 4);
+        noiseGen5 = new NoiseGeneratorOctaves(rand, 10);
+        noiseGen6 = new NoiseGeneratorOctaves(rand, 16);
+        mobSpawnerNoise = new NoiseGeneratorOctaves(rand, 8);
 
         NoiseGeneratorOctaves[] noiseGens = {noiseGen1, noiseGen2, noiseGen3, noiseGen4, noiseGen5, noiseGen6, mobSpawnerNoise};
         //     noiseGens = TerrainGen.getModdedNoiseGenerators(par1World, this.rand, noiseGens);
-        this.noiseGen1 = noiseGens[0];
-        this.noiseGen2 = noiseGens[1];
-        this.noiseGen3 = noiseGens[2];
-        this.noiseGen4 = noiseGens[3];
-        this.noiseGen5 = noiseGens[4];
-        this.noiseGen6 = noiseGens[5];
-        this.mobSpawnerNoise = noiseGens[6];
+        noiseGen1 = noiseGens[0];
+        noiseGen2 = noiseGens[1];
+        noiseGen3 = noiseGens[2];
+        noiseGen4 = noiseGens[3];
+        noiseGen5 = noiseGens[4];
+        noiseGen6 = noiseGens[5];
+        mobSpawnerNoise = noiseGens[6];
 
-        this.worldObj = world;
+        worldObj = world;
 
         //this.spawner = spawner;
     }
 
     @Override
-    public Chunk generateChunk(int chunkX, int chunkZ) {
+    public Chunk generateChunk(int x, int z) {
         //TODO: Wtf? Why do you reinitialize the seed when we already initialized it in the constructor?! ~SenseiKiwi
-        LimboGenerator.rand.setSeed(chunkX * 341873128712L + chunkZ * 132897987541L);
+        rand.setSeed(x * 341873128712L + z * 132897987541L);
         ChunkPrimer primer = new ChunkPrimer();
-        this.scale(chunkX, chunkZ, primer);
-        Chunk chunk = new Chunk(this.worldObj, primer, chunkX, chunkZ);
+        scale(x, z, primer);
+        Chunk chunk = new Chunk(worldObj, primer, x, z);
         chunk.generateSkylightMap();
 
         if (!chunk.isTerrainPopulated()) {
@@ -124,7 +124,7 @@ public class LimboGenerator implements IChunkGenerator
     }
 
     @Override
-    public void populate(int var2, int var3) {
+    public void populate(int x, int z) {
 
     }
 
@@ -138,24 +138,24 @@ public class LimboGenerator implements IChunkGenerator
             par1ArrayOfDouble = new double[par5 * par6 * par7];
         }
 
-        if (this.parabolicField == null) {
-            this.parabolicField = new float[25];
+        if (parabolicField == null) {
+            parabolicField = new float[25];
 
             for (int var8 = -2; var8 <= 2; ++var8) {
                 for (int var9 = -2; var9 <= 2; ++var9) {
                     float var10 = 10.0F / MathHelper.sqrt(var8 * var8 + var9 * var9 + 0.2F);
-                    this.parabolicField[var8 + 2 + (var9 + 2) * 5] = var10;
+                    parabolicField[var8 + 2 + (var9 + 2) * 5] = var10;
                 }
             }
         }
 
         double var44 = 884.412D; //large values here create spiky land. add a 0, good -default 884
         double var45 = 9840.412D; //large values here make sheets- default - 684
-        this.noise5 = this.noiseGen5.generateNoiseOctaves(this.noise5, par2, par4, par5, par7, 1.121D, 1.121D, 0.5D);
-        this.noise6 = this.noiseGen6.generateNoiseOctaves(this.noise6, par2, par4, par5, par7, 200.0D, 200.0D, 0.5D);
-        this.noise3 = this.noiseGen3.generateNoiseOctaves(this.noise3, par2, par3, par4, par5, par6, par7, var44 / 80.0D, var45 / 160.0D, var44 / 80.0D);
-        this.noise1 = this.noiseGen1.generateNoiseOctaves(this.noise1, par2, par3, par4, par5, par6, par7, var44, var45, var44);
-        this.noise2 = this.noiseGen2.generateNoiseOctaves(this.noise2, par2, par3, par4, par5, par6, par7, var44, var45, var44);
+        noise5 = noiseGen5.generateNoiseOctaves(noise5, par2, par4, par5, par7, 1.121D, 1.121D, 0.5D);
+        noise6 = noiseGen6.generateNoiseOctaves(noise6, par2, par4, par5, par7, 200.0D, 200.0D, 0.5D);
+        noise3 = noiseGen3.generateNoiseOctaves(noise3, par2, par3, par4, par5, par6, par7, var44 / 80.0D, var45 / 160.0D, var44 / 80.0D);
+        noise1 = noiseGen1.generateNoiseOctaves(noise1, par2, par3, par4, par5, par6, par7, var44, var45, var44);
+        noise2 = noiseGen2.generateNoiseOctaves(noise2, par2, par3, par4, par5, par6, par7, var44, var45, var44);
 
         int var12 = 0;
         int var13 = 0;
@@ -169,7 +169,7 @@ public class LimboGenerator implements IChunkGenerator
 
                 for (int var21 = -var19; var21 <= var19; ++var21) {
                     for (int var22 = -var19; var22 <= var19; ++var22) {
-                        float var24 = this.parabolicField[var21 + 2 + (var22 + 2) * 5] / (Biomes.PLAINS.getBaseHeight() + 9.0F);
+                        float var24 = parabolicField[var21 + 2 + (var22 + 2) * 5] / (Biomes.PLAINS.getBaseHeight() + 9.0F);
 
 
                         //this adjusts the height of the terrain
@@ -182,9 +182,9 @@ public class LimboGenerator implements IChunkGenerator
 
                 var16 /= var18;
                 var17 /= var18;
-                var16 =  (var16 * 0.9F + 0.1F);
+                var16 = var16 * 0.9F + 0.1F;
                 var17 = (var17 * 4.0F - 1.0F) / 8.0F;
-                double var47 = this.noise6[var13] / 8000.0D;
+                double var47 = noise6[var13] / 8000.0D;
 
                 if (var47 < 0.0D) {
                     var47 = -var47 * 0.3D;
@@ -214,20 +214,19 @@ public class LimboGenerator implements IChunkGenerator
 
                 for (int var46 = 0; var46 < par6; ++var46) {
                     double var48 = var17;
-                    double var26 = var16;
                     var48 += var47 * 0.2D;
                     var48 = var48 * par6 / 16.0D;
                     double var28 = par6 / 2.0D + var48 * 4.0D;
-                    double var30 = 0.0D;
-                    double var32 = (var46 - var28) * 12.0D * 128.0D / 128.0D / var26;
+                    double var30;
+                    double var32 = (var46 - var28) * 12.0D * 128.0D / 128.0D / (double) var16;
 
                     if (var32 < 0.0D) {
                         var32 *= 4.0D;
                     }
 
-                    double var34 = this.noise1[var12] / 512.0D;
-                    double var36 = this.noise2[var12] / 512.0D;
-                    double var38 = (this.noise3[var12] / 10.0D + 1.0D) / 2.0D;
+                    double var34 = noise1[var12] / 512.0D;
+                    double var36 = noise2[var12] / 512.0D;
+                    double var38 = (noise3[var12] / 10.0D + 1.0D) / 2.0D;
 
                     if (var38 < 0.0D) {
                         var30 = var34;
@@ -257,8 +256,8 @@ public class LimboGenerator implements IChunkGenerator
 
     public void scale(int x, int z, ChunkPrimer primer) { //Coursty of
         // TODO: this:
-        this.biomesForGeneration = this.worldObj.getBiomeProvider().getBiomesForGeneration(this.biomesForGeneration, x * 4 - 2, z * 4 - 2, 10, 10);
-        this.noiseArray = this.initializeNoiseField(this.noiseArray, x * 4, 0, z * 4, 5, 17, 5);
+        biomesForGeneration = worldObj.getBiomeProvider().getBiomesForGeneration(biomesForGeneration, x * 4 - 2, z * 4 - 2, 10, 10);
+        noiseArray = initializeNoiseField(noiseArray, x * 4, 0, z * 4, 5, 17, 5);
 
         int xzSections = 4;
         int xzSectionSize = 4;
@@ -281,14 +280,14 @@ public class LimboGenerator implements IChunkGenerator
 
                 for (int sectionY = 0; sectionY < ySections; ++sectionY) {
                     int ySectionPart = sectionY * ySectionSize;
-                    double v0y0 = this.noiseArray[i0_0 + sectionY];
-                    double v0y1 = this.noiseArray[i0_1 + sectionY];
-                    double v1y0 = this.noiseArray[i1_0 + sectionY];
-                    double v1y1 = this.noiseArray[i1_1 + sectionY];
-                    double d0y0 = (this.noiseArray[i0_0 + sectionY + 1] - v0y0) * yScale;
-                    double d0y1 = (this.noiseArray[i0_1 + sectionY + 1] - v0y1) * yScale;
-                    double d1y0 = (this.noiseArray[i1_0 + sectionY + 1] - v1y0) * yScale;
-                    double d1y1 = (this.noiseArray[i1_1 + sectionY + 1] - v1y1) * yScale;
+                    double v0y0 = noiseArray[i0_0 + sectionY];
+                    double v0y1 = noiseArray[i0_1 + sectionY];
+                    double v1y0 = noiseArray[i1_0 + sectionY];
+                    double v1y1 = noiseArray[i1_1 + sectionY];
+                    double d0y0 = (noiseArray[i0_0 + sectionY + 1] - v0y0) * yScale;
+                    double d0y1 = (noiseArray[i0_1 + sectionY + 1] - v0y1) * yScale;
+                    double d1y0 = (noiseArray[i1_0 + sectionY + 1] - v1y0) * yScale;
+                    double d1y1 = (noiseArray[i1_1 + sectionY + 1] - v1y1) * yScale;
 
                     for (int yRel = 0; yRel < ySectionSize; ++yRel) {
                         int yCoord = ySectionPart + yRel;
@@ -328,8 +327,8 @@ public class LimboGenerator implements IChunkGenerator
     }
 
     @Override
-    public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType par1EnumCreatureType, BlockPos pos) {
-        return new ArrayList<Biome.SpawnListEntry>();
+    public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {
+        return new ArrayList<>();
     }
 
     @Nullable

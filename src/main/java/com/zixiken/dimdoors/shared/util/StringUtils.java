@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Robijnvogel
  */
-public class DDStringUtils {
+public class StringUtils {
 
     public static char flipCase(char in) {
         if (Character.isUpperCase(in)) {
@@ -23,7 +23,7 @@ public class DDStringUtils {
     }
 
     public static List<String> getAsStringList(Integer[] integers) {
-        List<String> list = new ArrayList();
+        List<String> list = new ArrayList<>();
         for (int integer : integers) {
             list.add("" + integer);
         }
@@ -34,7 +34,7 @@ public class DDStringUtils {
         if (template.equals("")) {
             return comparables;
         }
-        List<String> results = new ArrayList();
+        List<String> results = new ArrayList<>();
         for (String comparable : comparables) {
             if (isStartOfString(template, comparable, caseSensitive)) {
                 results.add(comparable);
@@ -53,11 +53,7 @@ public class DDStringUtils {
         for (int i = 0; i < template.length(); i++) {
             char tChar = template.charAt(i);
             char cChar = comparable.charAt(i);
-            if (tChar == cChar) {
-                //this matches, so continue the loop
-            } else if (!caseSensitive && flipCase(tChar) == cChar) {
-                //this matches, so continue the loop
-            } else {
+            if (tChar != cChar && !caseSensitive && flipCase(tChar) == cChar) {
                 return false;
             }
         }

@@ -31,7 +31,7 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 
     public BlockTransTrapdoor() {
         super(Material.WOOD);
-        this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
+        setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setHardness(1.0F);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
@@ -40,12 +40,12 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 
     //Teleports the player to the exit link of that dimension, assuming it is a pocket
     @Override
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
-        enterDimDoor(world, pos, entity);
+    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn) {
+        enterDimDoor(worldIn, pos, entityIn);
     }
 
     public boolean checkCanOpen(World world, BlockPos pos) {
-        return this.checkCanOpen(world, pos, null);
+        return checkCanOpen(world, pos, null);
     }
 
     public boolean checkCanOpen(World world, BlockPos pos, EntityPlayer player) {
@@ -53,15 +53,15 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         return checkCanOpen(worldIn, pos, playerIn)
-                && super.onBlockActivated(worldIn, pos, state, playerIn, hand, side, hitX, hitY, hitZ);
+                && super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock, BlockPos fromPos) {
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
         if (checkCanOpen(worldIn, pos)) {
-            super.neighborChanged(state, worldIn, pos, neighborBlock, fromPos);
+            super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
         }
     }
 
@@ -77,18 +77,18 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int metadata) {
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
         return new TileEntityTransTrapdoor();
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
-        return new ItemStack(this.getItemDoor(), 1, 0);
+        return new ItemStack(getItemDoor(), 1, 0);
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random random, int fortuneLevel) {
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         return Item.getItemFromBlock(Blocks.TRAPDOOR);
     }
 
@@ -107,9 +107,9 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
     }
 
     @Override
-    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         // This function runs on the server side after a block is replaced
         // We MUST call super.breakBlock() since it involves removing tile entities
-        super.breakBlock(world, pos, state);
+        super.breakBlock(worldIn, pos, state);
     }
 }

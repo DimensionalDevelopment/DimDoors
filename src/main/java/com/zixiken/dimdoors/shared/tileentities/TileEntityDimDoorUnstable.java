@@ -14,9 +14,9 @@ import net.minecraft.entity.Entity;
  *
  * @author Robijnvogel
  */
-public class TileEntityDimDoorChaos extends TileEntityDimDoor {
+public class TileEntityDimDoorUnstable extends TileEntityDimDoor {
 
-    public TileEntityDimDoorChaos() {
+    public TileEntityDimDoorUnstable() {
         canRiftBePaired = false;
     }
 

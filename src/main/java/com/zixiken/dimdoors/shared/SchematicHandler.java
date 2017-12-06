@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.minecraft.nbt.NBTTagCompound;
@@ -46,21 +45,19 @@ public class SchematicHandler {
     private PocketTemplate personalPocketTemplate;
     private PocketTemplate publicPocketTemplate;
     private List<PocketTemplate> dungeonTemplates; //@todo should this be a Map? Does it need to? It gets reloaded from scratch on ServerStart every time, so...
-    final private Map<String, Map<String, Integer>> dungeonNameMap = new HashMap();
+    final private Map<String, Map<String, Integer>> dungeonNameMap = new HashMap<>();
     //@todo, sort templates by depth over here? that'd mean that that doesn't have to be done on pocket placement each and every time
 
     PocketTemplate getRandomDungeonPocketTemplate(int depth, int maxPocketSize) { //@todo maxPocketSize is passed for no reason at all here; pockets exceeding maxPocketSize have not been loaded in the first place...
-        List<PocketTemplate> validTemplates = new ArrayList();
+        List<PocketTemplate> validTemplates = new ArrayList<>();
         int totalWeight = 0;
         for (PocketTemplate template : dungeonTemplates) {
-            if (template.getMinDepth() > depth || template.getMaxDepth() < depth) {
-                //do nothing
-            } else {
+            if (depth >= template.getMinDepth() && depth <= template.getMaxDepth()) {
                 validTemplates.add(template);
                 totalWeight += template.getWeight(depth);
             }
         }
-        DimDoors.log(this.getClass(), "depth = " + depth + ". totalWeight = " + totalWeight);
+        DimDoors.log(getClass(), "depth = " + depth + ". totalWeight = " + totalWeight);
 
         Random random = new Random();
         int chosenTemplatePointer = random.nextInt(totalWeight);
@@ -70,14 +67,14 @@ public class SchematicHandler {
                 return template;
             }
         }
-        DimDoors.warn(this.getClass(), "No valid dungeon could be chosen for this depth. What have you done to make this happen? Now crashing:");
+        DimDoors.warn(getClass(), "No valid dungeon could be chosen for this depth. What have you done to make this happen? Now crashing:");
         return null;
     }
 
     public void loadSchematics() {
         personalPocketTemplate = loadTemplatesFromJson("default_private", PocketRegistry.INSTANCE.getPrivatePocketSize()).get(0);
         publicPocketTemplate = loadTemplatesFromJson("default_public", PocketRegistry.INSTANCE.getPublicPocketSize()).get(0);
-        dungeonTemplates = new ArrayList();
+        dungeonTemplates = new ArrayList<>();
         List<String> dungeonSchematicNameStrings = DDConfig.getDungeonSchematicNames();
         int maxPocketSize = PocketRegistry.INSTANCE.getMaxPocketSize();
         for (String nameString : dungeonSchematicNameStrings) {
@@ -112,7 +109,7 @@ public class SchematicHandler {
                     bufferedMap = dungeonNameMap.get(dirName);
                     bufferedMap.put(template.getName(), dungeonTemplates.indexOf(template));
                 } else {
-                    bufferedMap = new HashMap();
+                    bufferedMap = new HashMap<>();
                     bufferedMap.put(template.getName(), dungeonTemplates.indexOf(template));
                     dungeonNameMap.put(dirName, bufferedMap);
                 }
@@ -143,7 +140,7 @@ public class SchematicHandler {
                 IOUtils.copy(jsonJarStream, writer, StandardCharsets.UTF_8);
             } catch (IOException ex) {
                 Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Json-file " + nameString + ".json did not load correctly from jar. Skipping loading of this template.", ex);
-                return new ArrayList();
+                return new ArrayList<>();
             }
             jsonString = writer.toString();
         } else if (jsonFile.exists()) {
@@ -152,11 +149,11 @@ public class SchematicHandler {
                 jsonString = readFile(jsonFile.getAbsolutePath(), StandardCharsets.UTF_8);
             } catch (IOException ex) {
                 Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Json-file " + nameString + ".json did not load correctly from config folder. Skipping loading of this template.", ex);
-                return new ArrayList();
+                return new ArrayList<>();
             }
         } else {
             DimDoors.warn(SchematicHandler.class, "Json-file " + nameString + ".json was not found in the jar or config directory. Skipping loading of this template.");
-            return new ArrayList();
+            return new ArrayList<>();
         }
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(jsonString);
@@ -245,10 +242,10 @@ public class SchematicHandler {
         final EnumPocketType pocketType = EnumPocketType.getFromInt(jsonTemplate.get("pocketType").getAsInt());
         final JsonArray variations = jsonTemplate.getAsJsonArray("variations");
 
-        List<PocketTemplate> pocketTemplates = new ArrayList();
+        List<PocketTemplate> pocketTemplates = new ArrayList<>();
         JsonObject chosenVariation = null; //only applicable if jsonType == "Singular"
         int chosenVariationSize = -1; //only applicable if jsonType == "Singular"
-        List<JsonObject> validVariations = new ArrayList();
+        List<JsonObject> validVariations = new ArrayList<>();
         //put all valid variation JsonObjects into an array list
         for (int i = 0; i < variations.size(); i++) {
             JsonObject variation = variations.get(i).getAsJsonObject();
@@ -321,11 +318,11 @@ public class SchematicHandler {
     }
 
     public ArrayList<String> getDungeonTemplateGroups() {
-        return new ArrayList(dungeonNameMap.keySet());
+        return new ArrayList<>(dungeonNameMap.keySet());
     }
 
     public ArrayList<String> getDungeonTemplateNames(String directory) {
-        return new ArrayList(dungeonNameMap.get(directory).keySet());
+        return new ArrayList<>(dungeonNameMap.get(directory).keySet());
     }
 
     /**

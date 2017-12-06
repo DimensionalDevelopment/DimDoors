@@ -38,14 +38,14 @@
             "maxDepth": 0,
             "weights": [100]
         },
-		{
+        {
             "variantName": "defaultPrivate_5",
             "size": 5,
             "minDepth": 0,
             "maxDepth": 0,
             "weights": [100]
         },
-		{
+        {
             "variantName": "defaultPrivate_6",
             "size": 6,
             "minDepth": 0,

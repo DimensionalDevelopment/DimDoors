@@ -7,7 +7,7 @@ package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.util.DDRandomUtils;
+import com.zixiken.dimdoors.shared.util.RandomUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,16 +38,16 @@ public class PocketRegistry {
 
     // Methods
     private PocketRegistry() {
-        nextUnusedIDs = new HashMap();
+        nextUnusedIDs = new HashMap<>();
         for (EnumPocketType pocketType : EnumPocketType.values()) {
             nextUnusedIDs.put(pocketType, 0);
         }
-        privatePockets = new HashMap();
-        pocketLists = new HashMap();
+        privatePockets = new HashMap<>();
+        pocketLists = new HashMap<>();
         for (EnumPocketType pocketType : EnumPocketType.values()) {
-            pocketLists.put(pocketType, new HashMap());
+            pocketLists.put(pocketType, new HashMap<>());
         }
-        pocketListsPerDepth = new ArrayList();
+        pocketListsPerDepth = new ArrayList<>();
     }
 
     public int getGridSize() {
@@ -99,8 +99,8 @@ public class PocketRegistry {
             if (nbt.hasKey("privatePockets")) {
                 NBTTagCompound privatePocketsTagCompound = nbt.getCompoundTag("privatePockets");
                 privatePockets.clear();
-                for (String UUID : privatePocketsTagCompound.getKeySet()) {
-                    privatePockets.put(UUID, privatePocketsTagCompound.getInteger(UUID));
+                for (String uuid : privatePocketsTagCompound.getKeySet()) {
+                    privatePockets.put(uuid, privatePocketsTagCompound.getInteger(uuid));
                 }
             }
             if (nbt.hasKey("pocketData")) {
@@ -109,7 +109,7 @@ public class PocketRegistry {
                 for (EnumPocketType pocketType : EnumPocketType.values()) {
                     String tagListName = pocketType.toString();
                     if (pocketsTagCompound.hasKey(tagListName)) {
-                        Map<Integer, Pocket> pocketList = new HashMap();
+                        Map<Integer, Pocket> pocketList = new HashMap<>();
                         NBTTagList pocketTagList = (NBTTagList) pocketsTagCompound.getTag(tagListName);
                         for (int j = 0; j < pocketTagList.tagCount(); j++) { //@todo this defeats the purpose of a Map over a List (pocketList)
                             NBTTagCompound pocketTag = pocketTagList.getCompoundTagAt(j);
@@ -137,8 +137,8 @@ public class PocketRegistry {
         nbt.setTag("nextUnusedIDs", nextUnusedIDTagCompound);
 
         NBTTagCompound privatePocketsTagCompound = new NBTTagCompound();
-        for (String UUID : privatePockets.keySet()) {
-            privatePocketsTagCompound.setInteger(UUID, privatePockets.get(UUID));
+        for (String uuid : privatePockets.keySet()) {
+            privatePocketsTagCompound.setInteger(uuid, privatePockets.get(uuid));
         }
         nbt.setTag("privatePockets", privatePocketsTagCompound);
 
@@ -171,17 +171,11 @@ public class PocketRegistry {
         }
     }
 
-    public Pocket getPocket(int ID, EnumPocketType pocketType) {
-        return pocketLists.get(pocketType).get(ID);
+    public Pocket getPocket(int id, EnumPocketType pocketType) {
+        return pocketLists.get(pocketType).get(id); // TODO: null pointer
     }
 
-    public int getEntranceDoorIDOfNewPocket(EnumPocketType typeID, int depth, Location origRiftLocation) {//should return the riftID of the entrance door of the newly generated pocket
-        Pocket pocket = generateRandomPocketAt(typeID, depth, origRiftLocation);
-        int entranceDoorID = pocket.getEntranceDoorID();
-        return entranceDoorID;
-    }
-
-    private Pocket generateRandomPocketAt(EnumPocketType typeID, int depth, Location origRiftLocation) {
+    public Pocket generateRandomPocketAt(EnumPocketType typeID, int depth, Location origRiftLocation) {
         //Correcting the depth. Just in case...
         if (typeID == EnumPocketType.DUNGEON) {
             if (depth <= 0) {
@@ -193,7 +187,7 @@ public class PocketRegistry {
             depth = 0;
         }
 
-        //Fetching the pocket template
+        // Fetch the pocket template
         PocketTemplate pocketTemplate = getRandomPocketTemplate(typeID, depth, maxPocketSize);
 
         return generatePocketAt(typeID, depth, origRiftLocation, pocketTemplate);
@@ -206,12 +200,17 @@ public class PocketRegistry {
         int shortenedZ = shortenedLocation.getPos().getZ();
         int dimID = shortenedLocation.getDimensionID();
         Location depthZeroLocation;
-        if (typeID == EnumPocketType.DUNGEON) {
-            depthZeroLocation = DDRandomUtils.transformLocationRandomly(DDConfig.getOwCoordinateOffsetBase(), DDConfig.getOwCoordinateOffsetPower(), depth, origRiftLocation);
-        } else if (typeID == EnumPocketType.PUBLIC) {
-            depthZeroLocation = DDRandomUtils.transformLocationRandomly(DDConfig.getOwCoordinateOffsetBase(), DDConfig.getOwCoordinateOffsetPower(), 1, origRiftLocation);
-        } else { //PRIVATE
-            depthZeroLocation = origRiftLocation;
+        switch (typeID) {
+            case DUNGEON:
+                depthZeroLocation = RandomUtils.transformLocationRandomly(DDConfig.getOwCoordinateOffsetBase(), DDConfig.getOwCoordinateOffsetPower(), depth, origRiftLocation);
+                break;
+            case PUBLIC:
+                depthZeroLocation = RandomUtils.transformLocationRandomly(DDConfig.getOwCoordinateOffsetBase(), DDConfig.getOwCoordinateOffsetPower(), 1, origRiftLocation);
+                break;
+            case PRIVATE:
+            default:
+                depthZeroLocation = origRiftLocation;
+                break;
         }
 
         Pocket pocket = pocketTemplate.place(shortenedX, 0, shortenedZ, gridSize, dimID, nextUnusedIDs.get(typeID), depth, typeID, depthZeroLocation);
@@ -222,7 +221,7 @@ public class PocketRegistry {
     public int getPrivateDimDoorID(String playerUUID) {
         if (!privatePockets.containsKey(playerUUID)) {
             //generate a new private pocket
-            int doorID = getEntranceDoorIDOfNewPocket(EnumPocketType.PRIVATE, 0, new Location(0, 0, 0, 0)); //Location doesn't really matter in this case
+            int doorID = generateRandomPocketAt(EnumPocketType.PRIVATE, 0, new Location(0, 0, 0, 0)).getEntranceDoorID(); //Location doesn't really matter in this case
             privatePockets.put(playerUUID, doorID);
             return doorID;
         }
@@ -239,17 +238,16 @@ public class PocketRegistry {
             z = 0;
         } else {
             int radius = (int) Math.sqrt(nextUnusedID); //casting to int rounds down the double resulting from taking the square root
-            int radiusNumber = nextUnusedID - (radius * radius);
-            double splitter = ((double) radiusNumber) / ((double) radius); //always between 0 and 2
-            DimDoors.log(this.getClass(), "id is " + nextUnusedID);
-            DimDoors.log(this.getClass(), "Radius is " + radius);
-            DimDoors.log(this.getClass(), "Radius number is " + radiusNumber);
-            DimDoors.log(this.getClass(), "Splitter is " + splitter);
+            int radiusNumber = nextUnusedID - radius * radius;
+            double splitter = (double) radiusNumber / (double) radius; //always between 0 and 2
+            DimDoors.log(getClass(), "id is " + nextUnusedID);
+            DimDoors.log(getClass(), "Radius is " + radius);
+            DimDoors.log(getClass(), "Radius number is " + radiusNumber);
+            DimDoors.log(getClass(), "Splitter is " + splitter);
             x = splitter <= 1.0 ? radius : radius - (radiusNumber - radius);
             z = splitter >= 1.0 ? radius : radiusNumber;
         }
-        Location location = new Location(dimID, x, y, z);
-        return location;
+        return new Location(dimID, x, y, z);
     }
 
     private PocketTemplate getRandomPocketTemplate(EnumPocketType typeID, int depth, int maxPocketSize) {
@@ -333,20 +331,13 @@ public class PocketRegistry {
     }
 
     public boolean isPlayerAllowedToBeHere(final EntityPlayerMP player, final Location location) {
-        if (player.isCreative()) {
+        int pocketID = getPocketIDFromCoords(location);
+        if (pocketID < 0) { // not in a pocket dimension
             return true;
         } else {
-            int pocketID = getPocketIDFromCoords(location);
-            if (pocketID < 0) { //not in a pocket dimension
-                return true;
-            } else {
-                EnumPocketType type = DimDoorDimensions.getPocketType(location.getDimensionID());
-                Pocket pocket = pocketLists.get(type).get(pocketID);
-                if (pocket.isPlayerAllowedInPocket(player) && pocket.isLocationWithinPocketBounds(location, gridSize)) {
-                    return true;
-                }
-                return false;
-            }
+            EnumPocketType type = DimDoorDimensions.getPocketType(location.getDimensionID());
+            Pocket pocket = pocketLists.get(type).get(pocketID);
+            return pocket.isPlayerAllowedInPocket(player) && pocket.isLocationWithinPocketBounds(location, gridSize);
         }
     }
 }

@@ -10,13 +10,13 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
-ext.modversion = "3.0.0-a3"
+ext.modversion = "3.0.0-a4"
 ext.mcversion = "1.12.2"
 ext.forgeversion = "14.23.1.2555"
 //spongeSchematicVersion = "1"
 
 version = mcversion + "-" + modversion
-group= "com.zixiken.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "com.zixiken.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "dimdoors"
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
@@ -46,8 +46,7 @@ jar {
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
-processResources
-{
+processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version

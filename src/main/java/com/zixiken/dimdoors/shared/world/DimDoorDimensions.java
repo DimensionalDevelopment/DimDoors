@@ -11,12 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.DimensionManager;
 
 public class DimDoorDimensions {
 
-    public static DimensionType LIMBO;
+    public static DimensionType LIMBO = null;
     private static int minPocketDimID;
     private static int maxPocketDimID;
     private static final List<EnumPocketType> pocketTypes = new ArrayList<>();
@@ -43,12 +42,13 @@ public class DimDoorDimensions {
             registerDimension(pocketDimensionTypes.get(pocketType));
         }
 
-        for (int i = 0; i < 0; i++) { //@todo: For future use? Like, server owners can add their own set of DimDoors DimensionTypes via the configs? Or is this nonsense?
-            dimID++;
-            DimensionType tempType = DimensionType.register("Name", "_name", dimID, WorldProvider.class, false);
-            CUSTOM.add(tempType);
-            registerDimension(tempType);
-        }
+        // TODO: For future use? Like, server owners can add their own set of DimDoors DimensionTypes via the configs? Or is this nonsense?
+        // for (int i = 0; i < 0; i++) {
+        //    dimID++;
+        //    DimensionType tempType = DimensionType.register("Name", "_name", dimID, WorldProvider.class, false);
+        //    CUSTOM.add(tempType);
+        //    registerDimension(tempType);
+        //}
     }
 
     public static void registerDimension(DimensionType dimension) {

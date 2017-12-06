@@ -19,23 +19,19 @@ public class ClosingRiftFX extends Particle {
     private boolean hasFadeColour;
 
     public ClosingRiftFX(World world, double x, double y, double z, double motionX, double motionY, double motionZ) {
-
         super(world, x, y, z);
         this.motionX = motionX;
         this.motionY = motionY;
         this.motionZ = motionZ;
-        this.particleScale *= .55F;
-        this.particleMaxAge = 30 + this.rand.nextInt(16);
+        particleScale *= .55F;
+        particleMaxAge = 30 + rand.nextInt(16);
     }
 
     @Override
-    public void renderParticle(BufferBuilder worldRenderer, Entity entityIn, float partialTicks, float p_180434_4_,
-            float p_180434_5_, float p_180434_6_, float p_180434_7_, float p_180434_8_) {
-        if (!this.twinkle
-                || this.particleAge < this.particleMaxAge / 3
-                || (this.particleAge + this.particleMaxAge) / 3 % 2 == 0) {
-            this.doRenderParticle(worldRenderer, partialTicks, p_180434_4_,
-                    p_180434_5_, p_180434_6_, p_180434_7_, p_180434_8_);
+    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX,
+                               float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        if (!twinkle || particleAge < particleMaxAge / 3  || (particleAge + particleMaxAge) / 3 % 2 == 0) {
+            doRenderParticle(buffer, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
         }
     }
 
@@ -43,29 +39,29 @@ public class ClosingRiftFX extends Particle {
                                  float par5, float par6, float par7) {
         float var8 = super.particleTextureIndexX % 16 / 16.0F;
         float var9 = var8 + 0.0624375F;
-        float var10 = this.particleTextureIndexX / 16 / 16.0F;
+        float var10 = particleTextureIndexX / 16 / 16.0F;
         float var11 = var10 + 0.0624375F;
-        float var12 = 0.1F * this.particleScale;
-        float var13 = (float) (this.prevPosX + (this.posX - this.prevPosX) * par2 - interpPosX);
-        float var14 = (float) (this.prevPosY + (this.posY - this.prevPosY) * par2 - interpPosY);
-        float var15 = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * par2 - interpPosZ);
+        float var12 = 0.1F * particleScale;
+        float var13 = (float) (prevPosX + (posX - prevPosX) * par2 - interpPosX);
+        float var14 = (float) (prevPosY + (posY - prevPosY) * par2 - interpPosY);
+        float var15 = (float) (prevPosZ + (posZ - prevPosZ) * par2 - interpPosZ);
         float var16 = 0.8F;
 
         worldRenderer.pos(var13 - par3 * var12 - par6 * var12, var14 - par4 * var12, var15 - par5 * var12 - par7 * var12)
                 .tex(var9, var11)
-                .color(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7)
+                .color(particleRed * var16, particleGreen * var16, particleBlue * var16, (float) .7)
                 .endVertex();
         worldRenderer.pos(var13 - par3 * var12 + par6 * var12, var14 + par4 * var12, var15 - par5 * var12 + par7 * var12)
                 .tex(var9, var10)
-                .color(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7)
+                .color(particleRed * var16, particleGreen * var16, particleBlue * var16, (float) .7)
                 .endVertex();
         worldRenderer.pos(var13 + par3 * var12 + par6 * var12, var14 + par4 * var12, var15 + par5 * var12 + par7 * var12)
                 .tex(var8, var10)
-                .color(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7)
+                .color(particleRed * var16, particleGreen * var16, particleBlue * var16, (float) .7)
                 .endVertex();
         worldRenderer.pos(var13 + par3 * var12 - par6 * var12, var14 - par4 * var12, var15 + par5 * var12 - par7 * var12)
                 .tex(var8, var11)
-                .color(this.particleRed * var16, this.particleGreen * var16, this.particleBlue * var16, (float) .7)
+                .color(particleRed * var16, particleGreen * var16, particleBlue * var16, (float) .7)
                 .endVertex();
     }
 
@@ -74,48 +70,49 @@ public class ClosingRiftFX extends Particle {
      */
     @Override
     public void onUpdate() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        prevPosX = posX;
+        prevPosY = posY;
+        prevPosZ = posZ;
+        particleAge++;
 
-        if (this.particleAge++ >= this.particleMaxAge) {
-            this.setExpired();
+        if (particleAge >= particleMaxAge) {
+            setExpired();
         }
-        if (this.particleAge > this.particleMaxAge / 2) {
-            this.setAlphaF(1.0F - ((float) this.particleAge - (float) (this.particleMaxAge / 2)) / this.particleMaxAge);
+        if (particleAge > particleMaxAge / 2) {
+            setAlphaF(1.0F - ((float) particleAge - (float) (particleMaxAge / 2)) / particleMaxAge);
 
-            if (this.hasFadeColour) {
-                this.particleRed += (this.fadeColourRed - this.particleRed) * 0.2F;
-                this.particleGreen += (this.fadeColourGreen - this.particleGreen) * 0.2F;
-                this.particleBlue += (this.fadeColourBlue - this.particleBlue) * 0.2F;
+            if (hasFadeColour) {
+                particleRed += (fadeColourRed - particleRed) * 0.2F;
+                particleGreen += (fadeColourGreen - particleGreen) * 0.2F;
+                particleBlue += (fadeColourBlue - particleBlue) * 0.2F;
             }
         }
 
-        this.setParticleTextureIndex(this.baseTextureIndex + (7 - this.particleAge * 8 / this.particleMaxAge));
+        setParticleTextureIndex(baseTextureIndex + 7 - particleAge * 8 / particleMaxAge);
         // this.motionY -= 0.004D;
-        this.move(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9100000262260437D;
-        this.motionY *= 0.9100000262260437D;
-        this.motionZ *= 0.9100000262260437D;
+        move(motionX, motionY, motionZ);
+        motionX *= 0.9100000262260437D;
+        motionY *= 0.9100000262260437D;
+        motionZ *= 0.9100000262260437D;
 
-        if (this.trail && this.particleAge < this.particleMaxAge / 2 && (this.particleAge + this.particleMaxAge) % 2 == 0) {
-            ClosingRiftFX var1 = new ClosingRiftFX(this.world, this.posX, this.posY, this.posZ, 0.0D, 0.0D, 0.0D);
-            var1.setRBGColorF(this.particleRed, this.particleGreen, this.particleBlue);
+        if (trail && particleAge < particleMaxAge / 2 && (particleAge + particleMaxAge) % 2 == 0) {
+            ClosingRiftFX var1 = new ClosingRiftFX(world, posX, posY, posZ, 0.0D, 0.0D, 0.0D);
+            var1.setRBGColorF(particleRed, particleGreen, particleBlue);
             var1.particleAge = var1.particleMaxAge / 2;
 
-            if (this.hasFadeColour) {
+            if (hasFadeColour) {
                 var1.hasFadeColour = true;
-                var1.fadeColourRed = this.fadeColourRed;
-                var1.fadeColourGreen = this.fadeColourGreen;
-                var1.fadeColourBlue = this.fadeColourBlue;
+                var1.fadeColourRed = fadeColourRed;
+                var1.fadeColourGreen = fadeColourGreen;
+                var1.fadeColourBlue = fadeColourBlue;
             }
 
-            var1.twinkle = this.twinkle;
+            var1.twinkle = twinkle;
         }
     }
 
     @Override
-    public int getBrightnessForRender(float par1) {
+    public int getBrightnessForRender(float p_189214_1_) {
         return 15728880;
     }
 }

@@ -9,7 +9,6 @@ public class ItemWorldThread extends Item {
     public static final String ID = "world_thread";
 
     public ItemWorldThread() {
-        super();
         setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));

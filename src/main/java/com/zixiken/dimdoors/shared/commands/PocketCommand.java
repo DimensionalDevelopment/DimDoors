@@ -2,8 +2,7 @@ package com.zixiken.dimdoors.shared.commands;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.*;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
-import com.zixiken.dimdoors.shared.util.DDStringUtils;
+import com.zixiken.dimdoors.shared.util.StringUtils;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.command.CommandBase;
@@ -24,7 +23,6 @@ public class PocketCommand extends CommandBase {
 
     public PocketCommand() {
         aliases = new ArrayList<>();
-
         aliases.add("dimpocket");
     }
 
@@ -45,11 +43,10 @@ public class PocketCommand extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-
         if (sender instanceof EntityPlayerMP) {
             EntityPlayerMP player = getCommandSenderAsPlayer(sender);
             if (areArgumentsValid(args, player)) {
-                DimDoors.log(this.getClass(), "Executing command");
+                DimDoors.log(getClass(), "Executing command");
 
                 BlockPos pos = player.getPosition();
                 World world = player.world;
@@ -69,23 +66,19 @@ public class PocketCommand extends CommandBase {
                 RiftRegistry.INSTANCE.setLastGeneratedEntranceDoorID(entranceDoorID);
             }
         } else {
-            DimDoors.log(this.getClass(), "Not executing command, because it wasn't sent by a player.");
+            DimDoors.log("Not executing command /" + getName() + " because it wasn't sent by a player.");
         }
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
-        List<String> list = new ArrayList();
-        if (args == null || args.length < 2) { //counts an empty ("") argument as an argument as well...
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+        List<String> list = new ArrayList<>();
+        if (args.length < 2) { //counts an empty ("") argument as an argument as well...
             list = SchematicHandler.INSTANCE.getDungeonTemplateGroups();
-            list = DDStringUtils.getMatchingStrings(args[0], list, false);
+            list = StringUtils.getMatchingStrings(args[0], list, false);
         } else if (args.length == 2) {
             list = SchematicHandler.INSTANCE.getDungeonTemplateNames(args[0]);
-            list = DDStringUtils.getMatchingStrings(args[1], list, false);
-        } else if (args.length == 3) {
-            list.add("Remove_this");
-        } else {
-            list.add("No_seriously");
+            list = StringUtils.getMatchingStrings(args[1], list, false);
         }
         return list;
     }

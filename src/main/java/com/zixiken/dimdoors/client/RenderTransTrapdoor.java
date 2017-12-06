@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fml.relauncher.Side;
@@ -45,7 +44,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
             float var17 = 1.0F / (var15 + 1.0F);
 
             if (count == 0) {
-                this.bindTexture(riftPath);
+                bindTexture(riftPath);
                 var17 = 0.1F;
                 var15 = 25.0F;
                 var16 = 0.125F;
@@ -54,7 +53,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
             }
 
             if (count == 1) {
-                this.bindTexture(warpPath);
+                bindTexture(warpPath);
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
                 var16 = .5F;
@@ -70,10 +69,10 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
             GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_LINEAR);
             GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_LINEAR);
 
-            GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
-            GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
-            GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, this.getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-            GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_PLANE, this.getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
+            GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
+            GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
+            GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+            GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_PLANE, getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
 
             GlStateManager.enableTexGenCoord(GlStateManager.TexGen.S);
             GlStateManager.enableTexGenCoord(GlStateManager.TexGen.T);
@@ -144,14 +143,14 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
     }
 
     private FloatBuffer getFloatBuffer(float par1, float par2, float par3, float par4) {
-        this.buffer.clear();
-        this.buffer.put(par1).put(par2).put(par3).put(par4);
-        this.buffer.flip();
-        return this.buffer;
+        buffer.clear();
+        buffer.put(par1).put(par2).put(par3).put(par4);
+        buffer.flip();
+        return buffer;
     }
 
     @Override
     public void render(TileEntityTransTrapdoor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        this.renderTransTrapdoorTileEntity(te, x, y, z, partialTicks, alpha);
+        renderTransTrapdoorTileEntity(te, x, y, z, partialTicks, alpha);
     }
 }

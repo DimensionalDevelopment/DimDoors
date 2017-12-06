@@ -9,7 +9,7 @@ import com.zixiken.dimdoors.shared.blocks.BlockDimDoor;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.TeleporterDimDoors;
-import com.zixiken.dimdoors.shared.util.DDRandomUtils;
+import com.zixiken.dimdoors.shared.util.RandomUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import java.util.Random;
 import javax.annotation.Nullable;
@@ -29,11 +29,11 @@ public class TileEntityDimDoor extends DDTileEntityBase {
         super.readFromNBT(nbt);
 
         try {
-            this.doorIsOpen = nbt.getBoolean("doorIsOpen");
-            this.orientation = EnumFacing.getFront(nbt.getInteger("orientation"));
-            this.lockStatus = nbt.getByte("lockStatus");
+            doorIsOpen = nbt.getBoolean("doorIsOpen");
+            orientation = EnumFacing.getFront(nbt.getInteger("orientation"));
+            lockStatus = nbt.getByte("lockStatus");
         } catch (Exception e) {
-            DimDoors.warn(this.getClass(), "An error occured while trying to read this object from NBT.");
+            DimDoors.warn(getClass(), "An error occured while trying to read this object from NBT.");
         }
     }
 
@@ -41,8 +41,8 @@ public class TileEntityDimDoor extends DDTileEntityBase {
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
 
-        nbt.setBoolean("doorIsOpen", this.doorIsOpen);
-        nbt.setInteger("orientation", this.orientation.getIndex());
+        nbt.setBoolean("doorIsOpen", doorIsOpen);
+        nbt.setInteger("orientation", orientation.getIndex());
         nbt.setByte("lockStatus", lockStatus);
         return nbt;
     }
@@ -50,7 +50,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
     @Override
     public float[] getRenderColor(Random rand) {
         float[] rgbaColor = {1, 1, 1, 1};
-        if (this.world.provider.getDimension() == -1) {
+        if (world.provider.getDimension() == -1) {
             rgbaColor[0] = rand.nextFloat() * 0.5F + 0.4F;
             rgbaColor[1] = rand.nextFloat() * 0.05F;
             rgbaColor[2] = rand.nextFloat() * 0.05F;
@@ -65,7 +65,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
 
     @Override
     public Location getTeleportTargetLocation() {
-        return new Location(this.getWorld().provider.getDimension(), this.getPos().offset(orientation).down());
+        return new Location(getWorld().provider.getDimension(), getPos().offset(orientation).down());
     }
 
     @Override
@@ -78,7 +78,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
         }
         Location tpLocation = RiftRegistry.INSTANCE.getTeleportLocation(otherRiftID);
         if (tpLocation == null) {
-            DimDoors.warn(this.getClass(), "Location of rift teleporting to is null.");
+            DimDoors.warn(getClass(), "Location of rift teleporting to is null.");
             return false;
         }
         RiftRegistry.INSTANCE.validatePlayerPocketEntry(entity, otherRiftID);
@@ -109,31 +109,31 @@ public class TileEntityDimDoor extends DDTileEntityBase {
             }
         }
         //storing the orientation inside the tile-entity, because that thing can actually save the orientation in the worldsave, unlike the block itself, which fail at that stuff somehow
-        this.orientation = this.getWorld().getBlockState(this.getPos()).getValue(BlockDimDoor.FACING).getOpposite(); //@todo since this is used to determine the render of the "portal, this gets reset to the "wrong" side every time the door gets updated
+        orientation = getWorld().getBlockState(getPos()).getValue(BlockDimDoor.FACING).getOpposite(); //@todo since this is used to determine the render of the "portal, this gets reset to the "wrong" side every time the door gets updated
     }
 
     protected int getNewTeleportDestination() {
         int otherRiftID;
-        Location locationOfThisRift = RiftRegistry.INSTANCE.getRiftLocation(this.riftID); //returns null if this rift isn't registered
+        Location locationOfThisRift = RiftRegistry.INSTANCE.getRiftLocation(riftID); //returns null if this rift isn't registered
         
-        if (this.isInPocket && this.pocketType ==EnumPocketType.DUNGEON) {
+        if (isInPocket && pocketType == EnumPocketType.DUNGEON) {
             Location origLocation = PocketRegistry.INSTANCE.getPocket(pocketID, pocketType).getDepthZeroLocation();
             //choose between generating a new pocket or connecting to another door on a similar or close depth
-            if (DDRandomUtils.weightedBoolean(20, 80)) { //@todo make this configurable
+            if (RandomUtils.weightedBoolean(20, 80)) { //@todo make this configurable
                 otherRiftID = RiftRegistry.INSTANCE.getRandomUnpairedRiftIDAroundDepth(getRiftID(), depth);
                 if (otherRiftID < 0) { //ergo: no other rift can be found
                     //@todo, this should rarely happen. Put in an easter egg?
-                    otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), origLocation);
+                    otherRiftID = PocketRegistry.INSTANCE.generateRandomPocketAt(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), origLocation).getEntranceDoorID();
                 }
             } else {
-                otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), origLocation);
+                otherRiftID = PocketRegistry.INSTANCE.generateRandomPocketAt(EnumPocketType.DUNGEON, getRandomlyTransFormedDepth(), origLocation).getEntranceDoorID();
             }
         } else {
-            otherRiftID = PocketRegistry.INSTANCE.getEntranceDoorIDOfNewPocket(EnumPocketType.PUBLIC, 0, locationOfThisRift); //@todo should this depth be 1 instead?
+            otherRiftID = PocketRegistry.INSTANCE.generateRandomPocketAt(EnumPocketType.PUBLIC, 0, locationOfThisRift).getEntranceDoorID(); //@todo should this depth be 1 instead?
         }
 
         if (otherRiftID < 0) {
-            DimDoors.warn(this.getClass(), "No suitable destination rift was found. This probably means that a pocket was created without any Doors.");
+            DimDoors.warn(getClass(), "No suitable destination rift was found. This probably means that a pocket was created without any Doors.");
         } else {
             //@todo (should the other rift get loaded?)
             RiftRegistry.INSTANCE.pair(getRiftID(), otherRiftID);
@@ -143,6 +143,6 @@ public class TileEntityDimDoor extends DDTileEntityBase {
     }
 
     protected int getRandomlyTransFormedDepth() {
-        return DDRandomUtils.transformRandomly(depth, DDConfig.getDoorRelativeDepths(), DDConfig.getDoorRelativeDepthWeights());
+        return RandomUtils.transformRandomly(depth, DDConfig.getDoorRelativeDepths(), DDConfig.getDoorRelativeDepthWeights());
     }
 }

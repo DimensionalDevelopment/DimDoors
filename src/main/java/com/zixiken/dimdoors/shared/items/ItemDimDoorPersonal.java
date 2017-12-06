@@ -22,7 +22,7 @@ public class ItemDimDoorPersonal extends ItemDoorBase {
     }
 
     @Override
-    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag advanced) {
+    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         translateAndAdd("info.quartz_dimensional_door", tooltip);
     }
 

@@ -13,7 +13,6 @@ import net.minecraftforge.client.model.ModelLoader;
 
 import static net.minecraft.item.Item.getItemFromBlock;
 
-@SuppressWarnings({"MethodCallSideOnly", "NewExpressionSideOnly"})
 public class ModelManager {
 
     public static void registerModels() {
@@ -60,7 +59,6 @@ public class ModelManager {
                 new ModelResourceLocation(item.getRegistryName() + "_" + name, "inventory"));
     }
 
-    @SuppressWarnings("LocalVariableDeclarationSideOnly")
     public static void addCustomStateMappers() {
         StateMap map = new StateMap.Builder().ignore(BlockDoor.POWERED).build();
 

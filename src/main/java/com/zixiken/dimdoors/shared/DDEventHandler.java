@@ -16,27 +16,16 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 
-/**
- *
- * @author Robijnvogel
- */
 public class DDEventHandler {
 
     @SubscribeEvent
     public void onPlayerJoinWorld(EntityJoinWorldEvent event) {
-        //check if config default values have been checked
-        if (!DDConfig.HAVE_CONFIG_DEFAULTS_BEEN_CHECKED_FOR_CORRECTNESS) {
-            if (!DimDoors.VERSION.contains("a")) { //if it is not an alpha version
-                Entity entity = event.getEntity();
-                World world = entity.world;
-                if (!world.isRemote) {
-                    if (entity instanceof EntityPlayer) {
-                        EntityPlayer player = (EntityPlayer) entity;
-                        DimDoors.chat(player, "The default values for the config files fo this non-alpha version of DimDoors have not been sufficiently checked on correctness. Please notify the developer about this IF no newer version of this mod is available.");
-                    }
-                }
+        Entity entity = event.getEntity();
+        if(entity instanceof EntityPlayer && !entity.world.isRemote) { // check that it's a player first to avoid calling String.contains for every entity
+            if (!DDConfig.HAVE_CONFIG_DEFAULTS_BEEN_CHECKED_FOR_CORRECTNESS && !DimDoors.VERSION.contains("a")) { // default values were not checked in non-alpha version
+                EntityPlayer player = (EntityPlayer) entity;
+                DimDoors.chat(player, "The default values for the config files for this non-alpha version of DimDoors have not been sufficiently checked on correctness. Please notify the developer about this ONLY IF no newer version of this mod is available.");
             }
         }
     }
@@ -50,42 +39,16 @@ public class DDEventHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerChangedDim(PlayerChangedDimensionEvent event) {
-        EntityPlayer player = event.player;
-        int dimID = event.toDim;
-        World world = player.world;
-        if (!world.isRemote && DimDoorDimensions.isPocketDimensionID(dimID)) {
-            if (player instanceof EntityPlayerMP) {
-                EntityPlayerMP playerMP = (EntityPlayerMP) player;
-                checkPlayerLocationPermission(playerMP);
-            }
-        }
-    }
-    
-    @SubscribeEvent
     public void onEntityEnterChunk(EntityEvent.EnteringChunk event) {
         Entity entity = event.getEntity();
         if (entity instanceof EntityPlayerMP) {
+            EntityPlayerMP player = (EntityPlayerMP) entity;
             World world = entity.world;
-            if (!world.isRemote && DimDoorDimensions.isPocketDimensionID(world.provider.getDimension())) {
-                EntityPlayerMP player = (EntityPlayerMP) entity;
-                checkPlayerLocationPermission(player);
-            }
-        }
-    }
-
-    /**
-     *
-     * @param player the player entity to check for permissions
-     * @pre {@code (entity instanceof EntityPlayerMP)}
-     */
-    private void checkPlayerLocationPermission(EntityPlayerMP player) {
-        if (!player.isDead && !(player.getPosition().getY() < 1)) {
-            Location location = Location.getLocation(player);
-            DimDoors.log(this.getClass(), "A player just entered a new chunk in a DimDoors dimension.");
-            if (!PocketRegistry.INSTANCE.isPlayerAllowedToBeHere(player, location)) {
-                //@todo this doesn't really work yet.
-                //DimDoors.chat(player, "You are not supposed to be here. In future version of this mod, you will be teleported to Limbo if you go here.");
+            if (!world.isRemote && !player.isDead && !PocketRegistry.INSTANCE.isPlayerAllowedToBeHere(player, Location.getLocation(player))) {
+                // TODO: Avoid players even getting here by making a maximum build distance that's smaller than the pocket size
+                // TODO: This doesn't really work yet.
+                // DimDoors.chat(player, "You travelled too far into the void and have been sent to Limbo.");
+                // PocketRegistry.sendToLimbo(player); // TODO
             }
         }
     }
