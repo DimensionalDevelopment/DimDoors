@@ -5,6 +5,7 @@
  */
 package com.zixiken.dimdoors.shared;
 
+import com.zixiken.dimdoors.shared.util.DefaultSchematicGenerator;
 import com.zixiken.dimdoors.shared.util.MathUtils;
 import com.zixiken.dimdoors.shared.util.RandomUtils;
 import com.zixiken.dimdoors.shared.util.Schematic;
@@ -77,12 +78,9 @@ public class SchematicHandler {
                 DimDoors.warn("Error reading file " + file.toURI() + ". The following exception occured: ");
             }
         }
-
-        DimDoors.log("Loaded " + templates.size() + " templates.");
-
         constructNameMap();
 
-        // Schematic.tempGenerateDefaultSchematics();
+        DimDoors.log("Loaded " + templates.size() + " templates.");
     }
 
     private static List<PocketTemplate> loadTemplatesFromJson(String jsonString) {

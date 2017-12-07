@@ -74,6 +74,7 @@ public class DefaultSchematicGenerator {
         }
 
         schematic.tileEntities = new ArrayList<>();
+        // TODO: DimDoors.proxy.getDefWorld() prevents running this before world load
         TileEntity tileEntity = doorBlock.createTileEntity(DimDoors.proxy.getDefWorld(), doorBlock.getDefaultState());
         NBTTagCompound tileNBT = tileEntity.serializeNBT();
         tileNBT.setInteger("x", (maxbound - 1) / 2);

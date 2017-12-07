@@ -8,6 +8,7 @@ import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.SchematicHandler;
+import com.zixiken.dimdoors.shared.util.DefaultSchematicGenerator;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -60,6 +61,8 @@ public class DimDoors {
         registerCommands(event);
         RiftRegistry.INSTANCE.reset();
         PocketRegistry.INSTANCE.reset();
+
+        //DefaultSchematicGenerator.tempGenerateDefaultSchematics();
     }
 
     private void registerCommands(FMLServerStartingEvent event) {
