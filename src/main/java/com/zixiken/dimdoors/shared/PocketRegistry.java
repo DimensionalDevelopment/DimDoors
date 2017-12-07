@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.Getter;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -28,10 +30,10 @@ public class PocketRegistry {
 
     // Privates
     //Need to be saved:
-    private int gridSize; //determines how much pockets in their dimension are spaced
-    private int maxPocketSize;
-    private int privatePocketSize;
-    private int publicPocketSize;
+    @Getter private int gridSize; //determines how much pockets in their dimension are spaced
+    @Getter private int maxPocketSize;
+    @Getter private int privatePocketSize;
+    @Getter private int publicPocketSize;
     private final Map<EnumPocketType, Integer> nextUnusedIDs;
     private final Map<String, Integer> privatePockets; //maps the UUID's of players to their private pocket's ID (ID for EnumPocketType.PRIVATE in pocketLists)
     private final Map<EnumPocketType, Map<Integer, Pocket>> pocketLists;
@@ -49,22 +51,6 @@ public class PocketRegistry {
             pocketLists.put(pocketType, new HashMap<>());
         }
         pocketListsPerDepth = new ArrayList<>();
-    }
-
-    public int getGridSize() {
-        return gridSize;
-    }
-
-    public int getMaxPocketSize() {
-        return maxPocketSize;
-    }
-
-    public int getPrivatePocketSize() {
-        return privatePocketSize;
-    }
-
-    public int getPublicPocketSize() {
-        return publicPocketSize;
     }
 
     public void reset() {
@@ -262,60 +248,6 @@ public class PocketRegistry {
         return new Location(dimID, x, y, z);
     }
 
-
-
-    /*
-    private int getSimpleX(int ID) {
-        //@todo check for smaller than 0
-        if (ID == 0) {
-            return 0;
-        } else {
-            int baseX = getSimpleX(ID - 1);
-            int group = getDiffToPreviousGroup(ID);
-            if (group % 2 == 0) {//even
-                return baseX;
-            } else { //uneven
-                if (group % 4 == 1) { //power of four + 1
-                    return baseX + 1;
-                } else { //power of four - 1
-                    return baseX - 1;
-                }
-            }
-        }
-    }
-
-    private int getSimpleZ(int ID) {
-        if (ID == 0) {
-            return 0;
-        } else {
-            int baseZ = getSimpleZ(ID - 1);
-            int group = getDiffToPreviousGroup(ID);
-            if (group % 2 == 1) {//uneven
-                return baseZ;
-            } else { //uneven
-                if (group % 4 == 0) { //power of four
-                    return baseZ - 1;
-                } else { //"4-uneven"
-                    return baseZ + 1;
-                }
-            }
-        }
-    }
-
-    private static int getDiffToPreviousGroup(int ID) {
-        int temp = 0;
-        int group;
-        for (group = 1; temp <= ID; group++) {
-            temp += group * 2;
-        }
-        if (temp - group < ID) {
-            group *= 2;
-        } else {
-            group = (group * 2) - 1;
-        }
-        return group;
-    }
-     */
     public int getPocketIDFromCoords(Location location) {
         final int dimID = location.getDimensionID();
         if (DimDoorDimensions.isPocketDimensionID(dimID)) {

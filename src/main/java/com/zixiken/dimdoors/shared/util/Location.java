@@ -3,6 +3,8 @@ package com.zixiken.dimdoors.shared.util;
 import com.zixiken.dimdoors.DimDoors;
 import java.io.Serializable;
 import java.util.Objects;
+
+import lombok.Getter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,8 +19,8 @@ import net.minecraft.world.WorldServer;
  */
 public class Location implements Serializable {
 
-    private int dimensionID;
-    private BlockPos pos;
+    @Getter private int dimensionID;
+    @Getter private BlockPos pos;
 
     public Location(World world, BlockPos pos) {
         this(world.provider.getDimension(), pos);
@@ -45,16 +47,8 @@ public class Location implements Serializable {
         return getWorld().getBlockState(getPos());
     }
 
-    public BlockPos getPos() {
-        return pos;
-    }
-
     public WorldServer getWorld() {
         return DimDoors.proxy.getWorldServer(dimensionID);
-    }
-
-    public int getDimensionID() {
-        return dimensionID;
     }
 
     public static Location getLocation(TileEntity tileEntity) {

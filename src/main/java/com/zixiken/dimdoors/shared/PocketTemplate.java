@@ -13,6 +13,10 @@ import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
 import com.zixiken.dimdoors.shared.util.Location;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -26,22 +30,22 @@ import net.minecraft.world.WorldServer;
 public class PocketTemplate { //there is exactly one pocket placer for each different schematic that is loaded into the game (a Json might load several schematics though)
 
     //generation parameters
-    private Schematic schematic;
-    private final int size;
-    private final EnumPocketType typeID;
+    @Getter @Setter(value = AccessLevel.PACKAGE) private Schematic schematic; // TODO: access level
+    @Getter private final int size;
+    @Getter private final EnumPocketType typeID;
     //selection parameters
-    private final String groupName;
-    private final String variantName;
+    @Getter private final String groupName;
+    @Getter private final String name;
     private String variantType;
-    private final int minDepth;
-    private final int maxDepth;
+    @Getter private final int minDepth;
+    @Getter private final int maxDepth;
     private final int[] weights; //weights for chanced generation of dungeons per depth level | weights[0] is the weight for depth "minDepth"
 
     //this class should contain the actual schematic info, as well as some of the Json info (placement of Rifts and stuff)
-    public PocketTemplate(String groupName, String variantName, Schematic schematic, int size,
+    public PocketTemplate(String groupName, String name, Schematic schematic, int size,
                           EnumPocketType typeID, int minDepth, int maxDepth, int[] weights) {
         this.groupName = groupName;
-        this.variantName = variantName;
+        this.name = name;
         this.weights = weights; //chance that this Pocket will get generated
         this.minDepth = minDepth; //pocket will only be generated from this Pocket-depth
         this.maxDepth = maxDepth; //to this pocket depth
@@ -50,21 +54,9 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         this.typeID = typeID;
     }
 
-    public PocketTemplate(String groupName, String variantName, int size,
+    public PocketTemplate(String groupName, String name, int size,
                           EnumPocketType typeID, int minDepth, int maxDepth, int[] weights) {
-        this(groupName, variantName, null, size, typeID, minDepth, maxDepth, weights);
-    }
-
-    int getSize() {
-        return size;
-    }
-
-    int getMinDepth() {
-        return minDepth;
-    }
-
-    int getMaxDepth() {
-        return maxDepth;
+        this(groupName, name, null, size, typeID, minDepth, maxDepth, weights);
     }
 
     int getWeight(int depth) {
@@ -75,26 +67,6 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         return weights[weights.length - 1]; // return last weight
     }
 
-    String getGroupName() {
-        return groupName;
-    }
-
-    public String getName() {
-        return variantName;
-    }
-
-    public String getType() {
-        return variantType;
-    }
-
-    Schematic getSchematic() {
-        return schematic;
-    }
-
-    void setSchematic(Schematic schematic) {
-        this.schematic = schematic;
-    }
-
     //@todo make sure that the "pocketID" parameter gets used, or remove it.
     public Pocket place(int shortenedX, int yBase, int shortenedZ, int gridSize, int dimID, int pocketID, int depth, EnumPocketType pocketTypeID, Location depthZeroLocation) { //returns the riftID of the entrance DimDoor
         int xBase = shortenedX * gridSize * 16;
@@ -103,7 +75,7 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         DimDoors.log(getClass(), "Name of new pocket schematic is " + schematic.getSchematicName());
 
         if (schematic == null) {
-            DimDoors.log(getClass(), "The schematic for variant " + variantName + " somehow didn't load correctly despite all precautions.");
+            DimDoors.log(getClass(), "The schematic for variant " + name + " somehow didn't load correctly despite all precautions.");
             return null;
         }
         //@todo make sure that the door tile entities get registered!

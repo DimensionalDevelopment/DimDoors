@@ -9,18 +9,16 @@ import net.minecraft.util.ResourceLocation;
  */
 public class LimboSkyProvider extends CustomSkyProvider {
 
-    private static final ResourceLocation limboMoonResourceLoc = new ResourceLocation(DimDoors.MODID + ":textures/other/limbo_moon.png");
-    private static final ResourceLocation limboSunResourceLoc = new ResourceLocation(DimDoors.MODID + ":textures/other/limbo_sun.png");
+    private static final ResourceLocation moonRenderPath = new ResourceLocation(DimDoors.MODID + ":textures/other/limbo_moon.png");
+    private static final ResourceLocation sunRenderPath = new ResourceLocation(DimDoors.MODID + ":textures/other/limbo_sun.png");
 
     @Override
     public ResourceLocation getMoonRenderPath() {
-        return limboMoonResourceLoc;
+        return moonRenderPath;
     }
 
     @Override
     public ResourceLocation getSunRenderPath() {
-        return limboSunResourceLoc;
+        return sunRenderPath;
     }
-
-
 }
