@@ -3,7 +3,7 @@ notifications:
   email: false
 before_install: chmod +x gradlew
 install: "./gradlew setupCIWorkspace -s"
-script: "./gradlew build -s && find $HOME"
+script: "./gradlew build -s"
 jdk:
 - oraclejdk8
 before_cache:
