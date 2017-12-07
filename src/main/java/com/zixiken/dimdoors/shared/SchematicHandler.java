@@ -5,9 +5,7 @@
  */
 package com.zixiken.dimdoors.shared;
 
-import com.zixiken.dimdoors.shared.util.DefaultSchematicGenerator;
 import com.zixiken.dimdoors.shared.util.MathUtils;
-import com.zixiken.dimdoors.shared.util.RandomUtils;
 import com.zixiken.dimdoors.shared.util.Schematic;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -22,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -31,7 +28,6 @@ import java.util.logging.Logger;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
 import org.apache.commons.io.IOUtils;
-import scala.tools.nsc.Global;
 
 /**
  *
@@ -285,17 +281,17 @@ public class SchematicHandler {
     }
 
     public PocketTemplate getPersonalPocketTemplate() {
-        return getRandomTemplate("private", -1, DDConfig.getMaxPocketsSize(), true); // TODO: config option for getLargest
+        return getRandomTemplate("private", -1, DDConfig.getMaxPocketSize(), true); // TODO: config option for getLargest
     }
 
     public PocketTemplate getPublicPocketTemplate() {
-        return getRandomTemplate("private", -1, DDConfig.getMaxPocketsSize(), true); // TODO: config option for getLargest
+        return getRandomTemplate("private", -1, DDConfig.getMaxPocketSize(), true); // TODO: config option for getLargest
     }
 
     public PocketTemplate getDungeonTemplate(float netherProbability, int depth) {
         Random random = new Random();
         String group = (random.nextFloat() < netherProbability) ? "nether" : "ruins";
-        return getRandomTemplate(group, depth, DDConfig.getMaxPocketsSize(), false);
+        return getRandomTemplate(group, depth, DDConfig.getMaxPocketSize(), false);
     }
 
     public void saveSchematic(Schematic schematic, String name) {

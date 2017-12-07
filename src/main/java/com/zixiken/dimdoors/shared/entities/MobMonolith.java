@@ -55,7 +55,7 @@ public class MobMonolith extends EntityFlying implements IMob {
     }
 
     public boolean isDangerous() {
-        return DDConfig.isMonolithTeleportationEnabled() && (world.provider instanceof WorldProviderLimbo || !DDConfig.isDangerousLimboMonolithsDisabled());
+        return DDConfig.isMonolithTeleportationEnabled() && (world.provider instanceof WorldProviderLimbo || DDConfig.isDangerousLimboMonolithsEnabled());
     }
 
     @Override

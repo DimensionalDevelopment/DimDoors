@@ -10,6 +10,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import lombok.Getter;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -24,27 +26,26 @@ public class DDConfig {
     public static final boolean HAVE_CONFIG_DEFAULTS_BEEN_CHECKED_FOR_CORRECTNESS = false; //@todo check this at each non-alpha release. This field does not have a use in the mod itself, but should ensure that the developers of this mod, don't forget to reset the config defaults to the right values before releasing a non-alpha release
 
     public static File configurationFolder;
-    private static int pocketGridSize = 32;
-    private static int maxPocketSize = 15;
-    private static int privatePocketSize = 3;
-    private static int publicPocketSize = 2;
-    private static int baseDimID = 684;
+    @Getter private static int pocketGridSize = 32;
+    @Getter private static int maxPocketSize = 15;
+    @Getter private static int privatePocketSize = 3;
+    @Getter private static int publicPocketSize = 2;
+    @Getter private static int baseDimID = 684;
     private static String[] dungeonSchematicNames = {
         "default_dungeon_normal",
         "default_dungeon_nether"
     }; //@todo set default dungeon names
-    private static int maxDungeonDepth = 8;
-    private static int owCoordinateOffsetBase = 64;
-    private static double owCoordinateOffsetPower = 1.3;
-    private static int[] doorRelativeDepths = {-1, 0, 1};
-    private static int[] doorRelativeDepthWeights = {20, 30, 50};
+    @Getter private static int maxDungeonDepth = 100;
+    @Getter private static int owCoordinateOffsetBase = 64;
+    @Getter private static double owCoordinateOffsetPower = 1.3;
+    @Getter private static int[] doorRelativeDepths = {-1, 0, 1};
+    @Getter private static int[] doorRelativeDepthWeights = {20, 30, 50};
 
-    private static boolean dangerousLimboMonolithsEnabled = false;
-    private static boolean monolithTeleportationEnabled = true;
+    @Getter private static boolean dangerousLimboMonolithsEnabled = false;
+    @Getter private static boolean monolithTeleportationEnabled = true;
 
     private static int setConfigIntWithMaxAndMin(Configuration config, String category, String key, int defaultValue, String comment, int minValue, int maxValue) {
-        Property prop = config.get(category, key, defaultValue,
-                comment, minValue, maxValue);
+        Property prop = config.get(category, key, defaultValue, comment, minValue, maxValue);
         int value = prop.getInt(defaultValue);
         if (value < minValue) {
             value = minValue;
@@ -56,7 +57,6 @@ public class DDConfig {
     }
 
     public static void loadConfig(FMLPreInitializationEvent event) {
-
         // Load config
         configurationFolder = new File(event.getModConfigurationDirectory(), "/DimDoors");
         if (!configurationFolder.exists()) {
@@ -99,11 +99,11 @@ public class DDConfig {
 
         //Monoliths
         config.addCustomCategoryComment("monoliths", "How dangerous are Monoliths");
-        prop = config.get("monoliths", "dangerousLimboMonolithsDisabled", dangerousLimboMonolithsEnabled,
+        prop = config.get("monoliths", "dangerousLimboMonoliths", dangerousLimboMonolithsEnabled,
                 "Are Monoliths in Limbo Dangerous? [default: false]");
         dangerousLimboMonolithsEnabled = prop.getBoolean();
 
-        prop = config.get("monoliths", "monolithTeleportationEnabled", monolithTeleportationEnabled,
+        prop = config.get("monoliths", "monolithTeleportation", monolithTeleportationEnabled,
                 "Is Monolith Teleportation enabled? [default: true]");
         monolithTeleportationEnabled = prop.getBoolean();
         
@@ -117,10 +117,10 @@ public class DDConfig {
                 "Sets how deep and wide any pocket can be. [min: 0, max: pocketGridSize/2, default: 4]", 0, (int) ((double) pocketGridSize / 2 - 0.5));
 
         privatePocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "privatePocketSize", privatePocketSize,
-                "Sets how deep and wide any personal pocket can be. [min: 0, max: maxPocketsSize, default: 3]", 0, maxPocketSize);
+                "Sets how deep and wide any personal pocket can be. [min: 0, max: maxPocketSize, default: 3]", 0, maxPocketSize);
 
         publicPocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "publicPocketSize", publicPocketSize,
-                "Sets how deep and wide any public pocket can be. [min: 0, max: maxPocketsSize, default: 2]", 0, maxPocketSize);
+                "Sets how deep and wide any public pocket can be. [min: 0, max: maxPocketSize, default: 2]", 0, maxPocketSize);
 
         // Save config
         config.save();
@@ -141,74 +141,5 @@ public class DDConfig {
                 prop.set(doorRelativeDepthWeights);
             }
         }
-    }
-
-    public static int getPocketGridSize() {
-        return pocketGridSize;
-    }
-
-    public static int getMaxPocketsSize() {
-        return maxPocketSize;
-    }
-
-    public static int getPrivatePocketSize() {
-        return privatePocketSize;
-    }
-
-    public static int getPublicPocketSize() {
-        return publicPocketSize;
-    }
-
-    public static List<String> getDungeonSchematicNames() {
-        List<String> dungeonSchematicNamesArrayList = new ArrayList<>();
-        Collections.addAll(dungeonSchematicNamesArrayList, dungeonSchematicNames);
-        return dungeonSchematicNamesArrayList;
-    }
-
-    public static int getBaseDimID() {
-        return baseDimID;
-    }
-
-    /**
-     * @return the owCoordinateOffsetBase
-     */
-    public static int getOwCoordinateOffsetBase() {
-        return owCoordinateOffsetBase;
-    }
-
-    /**
-     * @return the owCoordinateOffsetPower
-     */
-    public static double getOwCoordinateOffsetPower() {
-        return owCoordinateOffsetPower;
-    }
-
-    /**
-     * @return the doorRelativeDepths
-     */
-    public static int[] getDoorRelativeDepths() {
-        return doorRelativeDepths;
-    }
-
-    /**
-     * @return the doorRelativeDepthWeights
-     */
-    public static int[] getDoorRelativeDepthWeights() {
-        return doorRelativeDepthWeights;
-    }
-
-    /**
-     * @return the maxDungeonDepth
-     */
-    public static int getMaxDungeonDepth() {
-        return maxDungeonDepth;
-    }
-
-    public static boolean isDangerousLimboMonolithsDisabled() {
-        return dangerousLimboMonolithsEnabled;
-    }
-
-    public static boolean isMonolithTeleportationEnabled() {
-        return monolithTeleportationEnabled;
     }
 }

@@ -8,7 +8,6 @@ package com.zixiken.dimdoors.shared;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.util.RandomUtils;
-import com.zixiken.dimdoors.shared.util.Schematic;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,14 +60,14 @@ public class PocketRegistry {
             pocketLists.get(pocketType).clear();
         }
         gridSize = DDConfig.getPocketGridSize();
-        maxPocketSize = DDConfig.getMaxPocketsSize();
+        maxPocketSize = DDConfig.getMaxPocketSize();
         privatePocketSize = DDConfig.getPrivatePocketSize();
         publicPocketSize = DDConfig.getPublicPocketSize();
         PocketSavedData.get(DimDoors.getDefWorld()).markDirty();
     }
 
     public void readFromNBT(NBTTagCompound nbt) {
-        if (nbt.hasKey("gridSize")) { //if this info has been saved before
+        if (nbt.hasKey("gridSize")) {
             gridSize = nbt.getInteger("gridSize");
             maxPocketSize = nbt.getInteger("maxPocketSize");
             privatePocketSize = nbt.getInteger("privatePocketSize");
