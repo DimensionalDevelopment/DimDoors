@@ -30,13 +30,9 @@ public abstract class DDProxyCommon implements IDDProxy {
 
         DimDoorDimensions.init();
 
-        GameRegistry.registerTileEntity(TileEntityDimDoor.class, "TileEntityDimDoor"); // TODO: use new registry
-        GameRegistry.registerTileEntity(TileEntityRift.class, "TileEntityRift");
-        GameRegistry.registerTileEntity(TileEntityTransTrapdoor.class, "TileEntityTransTrapdoor");
-        GameRegistry.registerTileEntity(TileEntityDimDoorGold.class, "TileEntityDimDoorGold");
-        GameRegistry.registerTileEntity(TileEntityDimDoorPersonal.class, "TileEntityDimDoorPersonal");
-        GameRegistry.registerTileEntity(TileEntityDimDoorUnstable.class, "TileEntityDimDoorUnstable");
-        GameRegistry.registerTileEntity(TileEntityDimDoorWarp.class, "TileEntityDimDoorWarp");
+        GameRegistry.registerTileEntity(TileEntityVerticalEntranceRift.class, "TileEntityVerticalEntranceRift"); // TODO: use new registry
+        GameRegistry.registerTileEntity(TileEntityFloatingRift.class, "TileEntityFloatingRift");
+        GameRegistry.registerTileEntity(TileEntityHorizontalEntranceRift.class, "TileEntityHorizontalEntranceRift");
 
         EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), MobMonolith.class, "monolith", 0, DimDoors.instance, 70, 1, true);
         EntityRegistry.registerEgg(new ResourceLocation(DimDoors.MODID, "mob_monolith"), 0, 0xffffff);
@@ -49,8 +45,8 @@ public abstract class DDProxyCommon implements IDDProxy {
 
     public void updateDoorTE(BlockDimDoorBase door, World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile instanceof TileEntityDimDoor) {
-            TileEntityDimDoor dimTile = (TileEntityDimDoor) tile;
+        if (tile instanceof TileEntityVerticalEntranceRift) {
+            TileEntityVerticalEntranceRift dimTile = (TileEntityVerticalEntranceRift) tile;
             IBlockState state = world.getBlockState(pos.down());
             dimTile.orientation = state.getBlock() instanceof BlockDimDoorBase
                     ? state.getValue(BlockDoor.FACING).getOpposite()

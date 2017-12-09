@@ -3,9 +3,8 @@ package com.zixiken.dimdoors.shared.blocks;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.RiftRegistry;
-import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -113,12 +112,12 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) { //gets called upon world load as well
-        return new TileEntityDimDoor();
+        return new TileEntityVerticalEntranceRift();
     }
 
     @Override
     public void enterDimDoor(World world, BlockPos pos, Entity entity) {
-        DDTileEntityBase riftTile = getRiftTile(world, pos, world.getBlockState(pos));
+        TileEntityRift riftTile = getRiftTile(world, pos, world.getBlockState(pos));
         riftTile.isTeleporting = true; //flick trigger switch
         riftTile.teleportingEntity = entity;
     }
@@ -140,35 +139,35 @@ public abstract class BlockDimDoorBase extends BlockDoor implements IDimDoor, IT
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-        DDTileEntityBase origRift = null;
+        TileEntityRift origRift = null;
         boolean isTopHalf = state.getValue(BlockDoor.HALF) == EnumDoorHalf.UPPER;
         boolean shouldPlaceRift = false;
         if (isTopHalf) {
-            origRift = (DDTileEntityBase) worldIn.getTileEntity(pos);
-            if (origRift.isPaired()) {
-                shouldPlaceRift = true;
-                RiftRegistry.INSTANCE.setLastChangedRift(origRift); //@todo this is a crude workaround
-            } else {
-                RiftRegistry.INSTANCE.unregisterRift(origRift.getRiftID());
-            }
+            origRift = (TileEntityRift) worldIn.getTileEntity(pos);
+            //if (origRift.isPaired()) {
+            //    shouldPlaceRift = true;
+            //    RiftRegistry.INSTANCE.setLastChangedRift(origRift); // TODO
+            //} else {
+            //    RiftRegistry.INSTANCE.unregisterRift(origRift.getRiftID());
+            //}
         }
         super.breakBlock(worldIn, pos, state);
         if (shouldPlaceRift) {
             worldIn.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
-            DDTileEntityBase newRift = (DDTileEntityBase) worldIn.getTileEntity(pos);
-            newRift.loadDataFrom(origRift); //@todo this does not work here, or does it?
+            TileEntityRift newRift = (TileEntityRift) worldIn.getTileEntity(pos);
+            newRift.copyFrom(origRift); //@todo this does not work here, or does it?
         }
     }
 
-    //returns the DDTileEntityBase that is the tile entity belonging to the door block "state" at this "pos" in the "world"
-    public DDTileEntityBase getRiftTile(World world, BlockPos pos, IBlockState state) {
+    //returns the TileEntityRift that is the tile entity belonging to the door block "state" at this "pos" in the "world"
+    public TileEntityRift getRiftTile(World world, BlockPos pos, IBlockState state) {
         TileEntity tileEntity;
         if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER) {
             tileEntity = world.getTileEntity(pos.up());
         } else {
             tileEntity = world.getTileEntity(pos);
         }
-        return (DDTileEntityBase) tileEntity;
+        return (TileEntityRift) tileEntity;
     }
 
     @Override

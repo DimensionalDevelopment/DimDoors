@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.entity.Entity;
@@ -44,7 +40,8 @@ public class DDEventHandler {
         if (entity instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) entity;
             World world = entity.world;
-            if (!world.isRemote && !player.isDead && !PocketRegistry.INSTANCE.isPlayerAllowedToBeHere(player, Location.getLocation(player))) {
+            int dimID = world.provider.getDimension();
+            if (!world.isRemote && !player.isDead && DimDoorDimensions.isPocketDimensionID(dimID) && !PocketRegistry.getForDim(dimID).isPlayerAllowedToBeHere(player, Location.getLocation(player))) {
                 // TODO: Avoid players even getting here by making a maximum build distance that's smaller than the pocket size
                 // TODO: This doesn't really work yet.
                 // DimDoors.chat(player, "You travelled too far into the void and have been sent to Limbo.");

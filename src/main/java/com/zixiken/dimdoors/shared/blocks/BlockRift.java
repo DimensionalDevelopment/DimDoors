@@ -1,11 +1,9 @@
 package com.zixiken.dimdoors.shared.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.client.ClosingRiftFX;
-import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.items.ModItems;
-import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
+
 import java.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -28,7 +26,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -41,7 +38,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
     private final ArrayList<Block> modBlocksImmuneToRift; // List of DD blocks immune to rifts
 
     public BlockRift() {
-        super(Material.LEAVES); //Fire is replacable. We do not want this block to be replacable. We do want to walf through it though...
+        super(Material.LEAVES); //Fire is replacable. We do not want this block to be replacable. We do want to walk through it though...
         setTickRandomly(true);
         setHardness(1.0F);
         setUnlocalizedName(ID);
@@ -130,7 +127,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
     }
 
     /**
-     * regulates the render effect, especially when multiple rifts start to link
+     * regulates the renderDoorRift effect, especially when multiple rifts start to link
      * up. Has 3 main parts- Grows toward and away from nearest rift, bends
      * toward it, and a randomization function
      */
@@ -141,20 +138,20 @@ public class BlockRift extends Block implements ITileEntityProvider {
         //TODO: implement the parts specified in the method comment?
         int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 
-        TileEntityRift tile = (TileEntityRift) worldIn.getTileEntity(pos);
+        TileEntityFloatingRift tile = (TileEntityFloatingRift) worldIn.getTileEntity(pos);
         //renders an extra little blob on top of the actual rift location so its easier to find.
-        // Eventually will only render if the player has the goggles.
+        // Eventually will only renderDoorRift if the player has the goggles.
         /*FMLClientHandler.instance().getClient().effectRenderer.addEffect(new GoggleRiftFX(
                 worldIn,
                 x + .5, y + .5, z + .5,
                 rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
          */
-        if (tile.shouldClose) {//renders an opposite color effect if it is being closed by the rift remover
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(
-                    worldIn,
-                    x + .5, y + .5, z + .5,
-                    rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
-        }
+        //if (tile.shouldClose) {//renders an opposite color effect if it is being closed by the rift remover
+        //    FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(
+        //            worldIn,
+        //            x + .5, y + .5, z + .5,
+        //            rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
+        //} // TODO
     }
 
     public boolean tryPlacingRift(World world, BlockPos pos) {
@@ -191,20 +188,13 @@ public class BlockRift extends Block implements ITileEntityProvider {
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileEntityRift();
+        return new TileEntityFloatingRift();
     }
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-        TileEntityRift riftTile = (TileEntityRift) worldIn.getTileEntity(pos);
-        if (riftTile == null || !riftTile.placingDoorOnRift) {
-            DimDoors.log(getClass(), "Unregistering rift at position " + pos + ", because it is destroyed (creative) or has closed.");
-            RiftRegistry.INSTANCE.unregisterLastChangedRift();
-        } else {
-            DimDoors.log(getClass(), "Not unregistering rift at position " + pos + ", because it is being replaced by a door.");
-            riftTile.placingDoorOnRift = false; //probably not needed, but it shouldn't hurt to do this
-        }
-        worldIn.removeTileEntity(pos);
+        TileEntityFloatingRift riftTile = (TileEntityFloatingRift) worldIn.getTileEntity(pos);
+
     }
 
     @Override
@@ -212,7 +202,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
         return false;
     }
 
-    public DDTileEntityBase getRiftTile(World world, BlockPos pos, IBlockState state) {
-        return (DDTileEntityBase) world.getTileEntity(pos);
+    public TileEntityFloatingRift getRiftTile(World world, BlockPos pos, IBlockState state) {
+        return (TileEntityFloatingRift) world.getTileEntity(pos);
     }
 }

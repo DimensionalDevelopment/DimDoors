@@ -4,7 +4,7 @@ import com.flowpowered.math.TrigMath;
 import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector4f;
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 
-public class RenderRift extends TileEntitySpecialRenderer<TileEntityRift> {
+public class RenderRift extends TileEntitySpecialRenderer<TileEntityFloatingRift> {
     private static ResourceLocation tesseract_path = new ResourceLocation(DimDoors.MODID + ":textures/other/tesseract.png");
 
     private static Vector4f[] tesseract = {
@@ -145,7 +145,7 @@ public class RenderRift extends TileEntitySpecialRenderer<TileEntityRift> {
      * Renders the rift.
      */
     @Override
-    public void render(TileEntityRift te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    public void render(TileEntityFloatingRift te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         double radian = update(partialTicks) * TrigMath.DEG_TO_RAD;
 
         GlStateManager.enableLighting();

@@ -1,7 +1,7 @@
 package com.zixiken.dimdoors.shared.world.pocketdimension;
 
 import com.zixiken.dimdoors.client.CloudRenderBlank;
-import com.zixiken.dimdoors.shared.EnumPocketType;
+import com.zixiken.dimdoors.shared.pockets.EnumPocketType;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;

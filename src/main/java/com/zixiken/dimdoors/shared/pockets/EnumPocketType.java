@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.zixiken.dimdoors.shared;
+package com.zixiken.dimdoors.shared.pockets;
 
 /**
  *
@@ -13,7 +13,7 @@ public enum EnumPocketType {
 
     PRIVATE, PUBLIC, DUNGEON;
 
-    static EnumPocketType getFromInt(int integer) {
+    public static EnumPocketType getFromInt(int integer) {
         switch (integer) {
             case 0:
                 return EnumPocketType.PRIVATE;
@@ -25,7 +25,7 @@ public enum EnumPocketType {
         }
     }
 
-    int getIntValue() {
+    public int getIntValue() {
         switch (this) {
             case PRIVATE:
                 return 0;

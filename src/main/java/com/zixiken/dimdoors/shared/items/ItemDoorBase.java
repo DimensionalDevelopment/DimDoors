@@ -6,8 +6,8 @@ import java.util.List;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.shared.RayTraceHelper;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -114,8 +114,8 @@ public abstract class ItemDoorBase extends ItemDoor {
             boolean flag = i < 0 && hitZ < 0.5F || i > 0 && hitZ > 0.5F || j < 0 && hitX > 0.5F || j > 0 && hitX < 0.5F; //Vanilla Minecraft code not consistently using EnumFacing
             //fetch "the" tile entity at the top block of where the door is going to be placed
             TileEntity possibleOldRift = world.getTileEntity(pos.up());
-            if (possibleOldRift instanceof TileEntityRift) {
-                TileEntityRift oldRift = (TileEntityRift) possibleOldRift;
+            if (possibleOldRift instanceof TileEntityFloatingRift) {
+                TileEntityFloatingRift oldRift = (TileEntityFloatingRift) possibleOldRift;
                 oldRift.placingDoorOnRift = true;
             }
             //place the door
@@ -126,10 +126,10 @@ public abstract class ItemDoorBase extends ItemDoor {
                 stack.setCount(stack.getCount()-1);
             }
 
-            //fetch the TileEntityDimDoor at the top block of where the door has just been placed
-            TileEntityDimDoor newTileEntityDimDoor = (TileEntityDimDoor) world.getTileEntity(pos.up());
+            //fetch the TileEntityVerticalEntranceRift at the top block of where the door has just been placed
+            TileEntityVerticalEntranceRift newTileEntityVerticalEntranceRift = (TileEntityVerticalEntranceRift) world.getTileEntity(pos.up());
             //set the tile-entity's initial data
-            newTileEntityDimDoor.uponDoorPlacement(possibleOldRift);
+            // newTileEntityVerticalEntranceRift.uponDoorPlacement(possibleOldRift); // TODO
             return EnumActionResult.SUCCESS;
         } else {
             return EnumActionResult.FAIL;

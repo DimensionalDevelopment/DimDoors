@@ -17,7 +17,7 @@ public class ModBlocks {
     public static final BlockDimDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new BlockDimDoorUnstable();
     public static final BlockDimDoorTransient TRANSIENT_DIMENSIONAL_DOOR = new BlockDimDoorTransient();
     public static final BlockDimDoorWarp WARP_DIMENSIONAL_DOOR = new BlockDimDoorWarp();
-    public static final BlockTransTrapdoor DIMENSIONAL_TRAPDOOR = new BlockTransTrapdoor();
+    public static final BlockDimTrapdoor DIMENSIONAL_TRAPDOOR = new BlockDimTrapdoor();
 
     // Blocks
     public static final BlockFabric FABRIC = new BlockFabric();

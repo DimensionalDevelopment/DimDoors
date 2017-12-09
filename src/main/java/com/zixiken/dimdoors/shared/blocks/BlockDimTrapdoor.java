@@ -3,7 +3,7 @@ package com.zixiken.dimdoors.shared.blocks;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityTransTrapdoor;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityHorizontalEntranceRift;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.ITileEntityProvider;
@@ -25,11 +25,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntityProvider {
+public class BlockDimTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntityProvider {
 
     public static final String ID = "dimensional_trapdoor";
 
-    public BlockTransTrapdoor() {
+    public BlockDimTrapdoor() {
         super(Material.WOOD);
         setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setHardness(1.0F);
@@ -78,7 +78,7 @@ public class BlockTransTrapdoor extends BlockTrapDoor implements IDimDoor, ITile
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileEntityTransTrapdoor();
+        return new TileEntityHorizontalEntranceRift();
     }
 
     @Override

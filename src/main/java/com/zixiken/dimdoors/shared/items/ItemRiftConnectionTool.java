@@ -7,8 +7,8 @@ package com.zixiken.dimdoors.shared.items;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.RayTraceHelper;
-import com.zixiken.dimdoors.shared.RiftRegistry;
-import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
+
 import java.util.HashSet;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -53,7 +53,7 @@ public class ItemRiftConnectionTool extends ItemTool {
 
         RayTraceResult hit = rayTrace(worldIn, playerIn, true);
         if (RayTraceHelper.isAbstractRift(hit, worldIn)) {
-            DDTileEntityBase rift = (DDTileEntityBase) worldIn.getTileEntity(hit.getBlockPos());
+            TileEntityFloatingRift rift = (TileEntityFloatingRift) worldIn.getTileEntity(hit.getBlockPos());
             if (playerIn.isSneaking()) {
                 return selectRift(stack, worldIn, rift, playerIn); //new ActionResult(EnumActionResult.PASS, stack));
             }
@@ -64,27 +64,27 @@ public class ItemRiftConnectionTool extends ItemTool {
         return new ActionResult<>(EnumActionResult.FAIL, stack);
     }
 
-    private ActionResult<ItemStack> selectRift(ItemStack stack, World worldIn, DDTileEntityBase rift, EntityPlayer playerIn) {
+    private ActionResult<ItemStack> selectRift(ItemStack stack, World worldIn, TileEntityFloatingRift rift, EntityPlayer playerIn) {
         NBTTagCompound compound = stack.getTagCompound();
         if (compound.getBoolean("isInConnectMode")) {
             if (compound.hasKey("RiftID")) {
                 int primaryRiftID = compound.getInteger("RiftID");
-                int secondaryRiftID = rift.getRiftID();
-                DimDoors.chat(playerIn, "Pairing rift " + primaryRiftID
-                        + " with rift " + secondaryRiftID + ".");
-                RiftRegistry.INSTANCE.pair(primaryRiftID, secondaryRiftID);
+                //int secondaryRiftID = rift.getRiftID(); TODO rift
+                //DimDoors.chat(playerIn, "Pairing rift " + primaryRiftID
+                //        + " with rift " + secondaryRiftID + ".");
+                //RiftRegistry.INSTANCE.pair(primaryRiftID, secondaryRiftID); TODO rift
                 compound.removeTag("RiftID");
                 stack.damageItem(1, playerIn);
             } else {
-                int riftID = rift.getRiftID();
-                compound.setInteger("RiftID", riftID);
-                DimDoors.chat(playerIn, "Rift " + riftID + " stored for connecting.");
+                //int riftID = rift.getRiftID();
+                //compound.setInteger("RiftID", riftID);
+                //DimDoors.chat(playerIn, "Rift " + riftID + " stored for connecting.");
             }
         } else {
             if (!worldIn.isRemote) {
-                int riftID = rift.getRiftID();
-                RiftRegistry.INSTANCE.unpair(riftID);
-                DimDoors.chat(playerIn, "Rift " + riftID + " and its paired rift are now disconnected.");
+                //int riftID = rift.getRiftID();
+                //RiftRegistry.INSTANCE.unpair(riftID);
+                //DimDoors.chat(playerIn, "Rift " + riftID + " and its paired rift are now disconnected.");
             }
             stack.damageItem(1, playerIn);
         }

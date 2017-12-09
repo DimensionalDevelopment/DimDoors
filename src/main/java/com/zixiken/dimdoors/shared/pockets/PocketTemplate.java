@@ -3,18 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.zixiken.dimdoors.shared;
+package com.zixiken.dimdoors.shared.pockets;
 
+import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import com.zixiken.dimdoors.shared.util.Schematic;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
-import com.zixiken.dimdoors.shared.tileentities.DDTileEntityBase;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
-import com.zixiken.dimdoors.shared.util.Location;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.block.state.IBlockState;
@@ -29,21 +28,19 @@ import net.minecraft.world.WorldServer;
  */
 public class PocketTemplate { //there is exactly one pocket placer for each different schematic that is loaded into the game (a Json might load several schematics though)
 
+    // TODO: access levels
     //generation parameters
-    @Getter @Setter(value = AccessLevel.PACKAGE) private Schematic schematic; // TODO: access level
+    @Getter @Setter private Schematic schematic;
     @Getter private final int size;
-    @Getter private final EnumPocketType typeID;
     //selection parameters
     @Getter private final String groupName;
     @Getter private final String name;
-    private String variantType;
     @Getter private final int minDepth;
     @Getter private final int maxDepth;
     private final int[] weights; //weights for chanced generation of dungeons per depth level | weights[0] is the weight for depth "minDepth"
 
     //this class should contain the actual schematic info, as well as some of the Json info (placement of Rifts and stuff)
-    public PocketTemplate(String groupName, String name, Schematic schematic, int size,
-                          EnumPocketType typeID, int minDepth, int maxDepth, int[] weights) {
+    public PocketTemplate(String groupName, String name, Schematic schematic, int size, int minDepth, int maxDepth, int[] weights) {
         this.groupName = groupName;
         this.name = name;
         this.weights = weights; //chance that this Pocket will get generated
@@ -51,15 +48,13 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         this.maxDepth = maxDepth; //to this pocket depth
         this.size = size; //size of pocket in chunks (0 -> 1*1 chunk, 1 -> 2*2 chunks etc.)
         this.schematic = schematic;
-        this.typeID = typeID;
     }
 
-    public PocketTemplate(String groupName, String name, int size,
-                          EnumPocketType typeID, int minDepth, int maxDepth, int[] weights) {
-        this(groupName, name, null, size, typeID, minDepth, maxDepth, weights);
+    public PocketTemplate(String groupName, String name, int size, int minDepth, int maxDepth, int[] weights) {
+        this(groupName, name, null, size, minDepth, maxDepth, weights);
     }
 
-    int getWeight(int depth) {
+    public int getWeight(int depth) {
         int index = depth - minDepth;
         if (index >= 0 && index < weights.length) {
             return weights[index];
@@ -67,10 +62,12 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         return weights[weights.length - 1]; // return last weight
     }
 
-    //@todo make sure that the "pocketID" parameter gets used, or remove it.
-    public Pocket place(int shortenedX, int yBase, int shortenedZ, int gridSize, int dimID, int pocketID, int depth, EnumPocketType pocketTypeID, Location depthZeroLocation) { //returns the riftID of the entrance DimDoor
-        int xBase = shortenedX * gridSize * 16;
-        int zBase = shortenedZ * gridSize * 16;
+    public Pocket place(Pocket pocket, int yBase) { //returns the riftID of the entrance DimDoor
+        pocket.setSize(size); // TODO: check that this works properly
+        int gridSize = PocketRegistry.getForDim(pocket.dimID).getGridSize();
+        int dimID = pocket.dimID;
+        int xBase = pocket.getX() * gridSize * 16;
+        int zBase = pocket.getZ() * gridSize * 16;
         DimDoors.log(getClass(), "Placing new pocket at x = " + xBase + ", z = " + zBase);
         DimDoors.log(getClass(), "Name of new pocket schematic is " + schematic.getSchematicName());
 
@@ -93,17 +90,17 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         }
 
         //Load TileEntity Data
-        List<DDTileEntityBase> rifts = new ArrayList<>();
+        List<TileEntityRift> rifts = new ArrayList<>();
         for (NBTTagCompound tileEntityNBT : schematic.getTileEntities()) {
             BlockPos pos = new BlockPos(xBase + tileEntityNBT.getInteger("x"), yBase + tileEntityNBT.getInteger("y"), zBase + tileEntityNBT.getInteger("z"));
             DimDoors.log(getClass(), "Re-loading tile-entity at blockPos: " + pos);
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity != null) {
-                if (tileEntity instanceof DDTileEntityBase) {
+                if (tileEntity instanceof TileEntityRift) {
                     DimDoors.log(getClass(), "Rift found in schematic: " + pos);
-                    DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
+                    TileEntityRift rift = (TileEntityRift) tileEntity;
                     rifts.add(rift);
-                    if (rift instanceof TileEntityDimDoor) {
+                    if (rift instanceof TileEntityVerticalEntranceRift) {
                         DimDoors.proxy.updateDoorTE((BlockDimDoorBase) world.getBlockState(pos).getBlock(), world, pos);
                     }
                 } else {
@@ -118,16 +115,8 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
             }
         }
 
-        List<Integer> riftIDs = new ArrayList<>();
-        for (DDTileEntityBase rift : rifts) {
-            rift.register(depth);
-            rift.setIsInPocket();
-            rift.setPocket(pocketID, pocketTypeID);
-            rift.setDepth(depth);
+        // TODO: rifts!
 
-            riftIDs.add(rift.getRiftID());
-        }
-
-        return new Pocket(size, depth, pocketTypeID, shortenedX, shortenedZ, riftIDs, depthZeroLocation);
+        return pocket;
     }
 }

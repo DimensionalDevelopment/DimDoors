@@ -1,10 +1,10 @@
 package com.zixiken.dimdoors.shared.items;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RayTraceHelper;
 import com.zixiken.dimdoors.shared.TeleporterDimDoors;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -58,7 +58,7 @@ public class ItemRiftBlade extends ItemSword {
         //SchematicHandler.Instance.getPersonalPocketTemplate().place(0, 20, 0, 20, 0, 0, 1, EnumPocketType.DUNGEON); //this line can be activated for testing purposes
         RayTraceResult hit = rayTrace(worldIn, playerIn, true);
         if (RayTraceHelper.isRift(hit, worldIn)) {
-            TileEntityRift rift = (TileEntityRift) worldIn.getTileEntity(hit.getBlockPos());
+            TileEntityFloatingRift rift = (TileEntityFloatingRift) worldIn.getTileEntity(hit.getBlockPos());
             rift.isTeleporting = true;
             rift.teleportingEntity = playerIn;
 

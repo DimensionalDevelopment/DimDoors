@@ -2,8 +2,9 @@ package com.zixiken.dimdoors.shared.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.items.ModItems;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoorUnstable;
 import java.util.Random;
+
+import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
@@ -36,6 +37,6 @@ public class BlockDimDoorUnstable extends BlockDimDoorBase {
     
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileEntityDimDoorUnstable();
+        return new TileEntityVerticalEntranceRift();
     }
 }

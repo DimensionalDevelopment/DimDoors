@@ -1,10 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.zixiken.dimdoors.shared;
 
+import com.zixiken.dimdoors.shared.pockets.EnumPocketType;
+import com.zixiken.dimdoors.shared.pockets.PocketTemplate;
 import com.zixiken.dimdoors.shared.util.MathUtils;
 import com.zixiken.dimdoors.shared.util.Schematic;
 import com.google.gson.JsonArray;
@@ -33,8 +30,8 @@ import org.apache.commons.io.IOUtils;
  *
  * @author Robijnvogel
  */
-public class SchematicHandler {
-    public static final SchematicHandler INSTANCE = new SchematicHandler();
+public class SchematicHandler { // TODO: make this more general (not dimdoors-related)
+    public static final SchematicHandler INSTANCE = new SchematicHandler(); // TODO: make static
 
     private List<PocketTemplate> templates;
     private Map<String, Map<String, Integer>> nameMap; // group -> name -> index in templates
@@ -162,7 +159,6 @@ public class SchematicHandler {
         List<PocketTemplate> pocketTemplates = new ArrayList<>();
 
         final String directory = jsonTemplate.get("group").getAsString();
-        final EnumPocketType pocketType = EnumPocketType.getFromInt(jsonTemplate.get("pocketType").getAsInt());
         final JsonArray variations = jsonTemplate.getAsJsonArray("variations");
 
         //convert the variations arraylist to a list of pocket templates
@@ -177,7 +173,7 @@ public class SchematicHandler {
             for (int j = 0; j < weightsJsonArray.size(); j++) {
                 weights[j] = weightsJsonArray.get(j).getAsInt();
             }
-            PocketTemplate pocketTemplate = new PocketTemplate(directory, variantName, variationSize, pocketType, minDepth, maxDepth, weights);
+            PocketTemplate pocketTemplate = new PocketTemplate(directory, variantName, variationSize, minDepth, maxDepth, weights);
             pocketTemplates.add(pocketTemplate);
         }
 
@@ -185,7 +181,7 @@ public class SchematicHandler {
     }
 
     private void constructNameMap() {
-        nameMap = new HashMap<String, Map<String, Integer>>();
+        nameMap = new HashMap<>();
         //to prevent having to use too many getters
         String bufferedDirectory = null;
         Map<String, Integer> bufferedMap = null;
@@ -215,7 +211,7 @@ public class SchematicHandler {
     }
 
     public ArrayList<String> getTemplateNames(String group) {
-        return new ArrayList<>(nameMap.get(group).keySet());
+        return new ArrayList<>(nameMap.get(group).keySet()); // TODO: null pointer here
     }
 
     /**
@@ -286,12 +282,6 @@ public class SchematicHandler {
 
     public PocketTemplate getPublicPocketTemplate() {
         return getRandomTemplate("private", -1, DDConfig.getMaxPocketSize(), true); // TODO: config option for getLargest
-    }
-
-    public PocketTemplate getDungeonTemplate(float netherProbability, int depth) {
-        Random random = new Random();
-        String group = (random.nextFloat() < netherProbability) ? "nether" : "ruins";
-        return getRandomTemplate(group, depth, DDConfig.getMaxPocketSize(), false);
     }
 
     public void saveSchematic(Schematic schematic, String name) {

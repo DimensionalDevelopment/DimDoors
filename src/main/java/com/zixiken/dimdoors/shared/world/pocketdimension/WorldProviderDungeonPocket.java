@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.shared.world.pocketdimension;
 
-import com.zixiken.dimdoors.shared.EnumPocketType;
+import com.zixiken.dimdoors.shared.pockets.EnumPocketType;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.entity.player.EntityPlayerMP;
 

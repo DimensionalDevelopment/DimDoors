@@ -1,15 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.DimDoors;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import lombok.Getter;
 import net.minecraftforge.common.config.Configuration;
@@ -23,7 +15,7 @@ import scala.actors.threadpool.Arrays;
  */
 public class DDConfig {
 
-    public static final boolean HAVE_CONFIG_DEFAULTS_BEEN_CHECKED_FOR_CORRECTNESS = false; //@todo check this at each non-alpha release. This field does not have a use in the mod itself, but should ensure that the developers of this mod, don't forget to reset the config defaults to the right values before releasing a non-alpha release
+    public static final boolean HAVE_CONFIG_DEFAULTS_BEEN_CHECKED_FOR_CORRECTNESS = false; //@todo check this at each non-alpha release. This field does not have a use in the mod itself, but should ensure that the developers of this mod, don't forget to resetToConfigDefaults the config defaults to the right values before releasing a non-alpha release
 
     public static File configurationFolder;
     @Getter private static int pocketGridSize = 32;
@@ -31,10 +23,6 @@ public class DDConfig {
     @Getter private static int privatePocketSize = 3;
     @Getter private static int publicPocketSize = 2;
     @Getter private static int baseDimID = 684;
-    private static String[] dungeonSchematicNames = {
-        "default_dungeon_normal",
-        "default_dungeon_nether"
-    }; //@todo set default dungeon names
     @Getter private static int maxDungeonDepth = 100;
     @Getter private static int owCoordinateOffsetBase = 64;
     @Getter private static double owCoordinateOffsetPower = 1.3;
@@ -66,16 +54,13 @@ public class DDConfig {
         config.load();
 
         // Setup general
-        config.addCustomCategoryComment("aa_general", "General configuration options.");
-        Property prop = config.get("aa_general", "baseDimID", baseDimID,
+        config.addCustomCategoryComment("general", "General configuration options.");
+        Property prop = config.get("general", "baseDimID", baseDimID,
                 "Dimension ID of the first Dimensional Doors dimension. Other dimensions will use consecutive IDs. NB: If you change this after creating a world, you may lose these dimensions. [default: 684]");
         baseDimID = prop.getInt(baseDimID);
 
         //Dungeons
         config.addCustomCategoryComment("dungeons", "The following options will determine the depths, wandering offsets and contents of Dungeon Pockets.");
-        prop = config.get("dungeons", "dungeonSchematicNames", dungeonSchematicNames,
-                "List of names of Dungeon Pockets' jSon- file names excluding extension. Custom json and schematic files can be dropped in the corresponding config folders.");
-        dungeonSchematicNames = prop.getStringList();
 
         maxDungeonDepth = setConfigIntWithMaxAndMin(config, "dungeons", "maxDungeonDepth", maxDungeonDepth,
                 "Sets the maximum (deepest) depth that a dungeon pocket can be at. [min: 1, max: 32, default: 8]", 1, 32);

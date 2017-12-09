@@ -4,8 +4,8 @@ import java.nio.FloatBuffer;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.blocks.BlockTransTrapdoor;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityTransTrapdoor;
+import com.zixiken.dimdoors.shared.blocks.BlockDimTrapdoor;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityHorizontalEntranceRift;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTransTrapdoor> {
+public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityHorizontalEntranceRift> {
 
     private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
     private ResourceLocation riftPath = new ResourceLocation(DimDoors.MODID + ":textures/other/rift.png");
@@ -31,7 +31,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
     /**
      * Renders the dimdoor.
      */
-    public void renderTransTrapdoorTileEntity(TileEntityTransTrapdoor tile, double x, double y, double z, float partialTicks, float alpha) {
+    public void renderTransTrapdoorTileEntity(TileEntityHorizontalEntranceRift tile, double x, double y, double z, float partialTicks, float alpha) {
         GlStateManager.disableLighting();
         Random random = new Random(31100L);
         IBlockState state = tile.getWorld().getBlockState(tile.getPos());
@@ -103,7 +103,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
             BufferBuilder worldrenderer = tessellator.getBuffer();
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-            if (BlockTransTrapdoor.isTrapdoorSetLow(state)) {
+            if (BlockDimTrapdoor.isTrapdoorSetLow(state)) {
                 if (state.getValue(BlockTrapDoor.OPEN)) {
                     worldrenderer.pos(x, y + 0.2, z).color(r, g, b, 1.0F).endVertex();
                     worldrenderer.pos(x, y + 0.2, z + 1).color(r, g, b, 1.0F).endVertex();
@@ -150,7 +150,7 @@ public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityTra
     }
 
     @Override
-    public void render(TileEntityTransTrapdoor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    public void render(TileEntityHorizontalEntranceRift te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         renderTransTrapdoorTileEntity(te, x, y, z, partialTicks, alpha);
     }
 }

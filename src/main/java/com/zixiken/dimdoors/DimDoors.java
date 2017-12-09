@@ -4,11 +4,7 @@ import com.zixiken.dimdoors.shared.commands.PocketCommand;
 import com.zixiken.dimdoors.shared.commands.TeleportCommand;
 import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.DDProxyCommon;
-import com.zixiken.dimdoors.shared.PocketRegistry;
 import com.zixiken.dimdoors.shared.items.ModItems;
-import com.zixiken.dimdoors.shared.RiftRegistry;
-import com.zixiken.dimdoors.shared.SchematicHandler;
-import com.zixiken.dimdoors.shared.util.DefaultSchematicGenerator;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -59,9 +55,7 @@ public class DimDoors {
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
         registerCommands(event);
-        RiftRegistry.INSTANCE.reset();
-        PocketRegistry.INSTANCE.reset();
-
+        // RiftRegistry.INSTANCE.reset();
         //DefaultSchematicGenerator.tempGenerateDefaultSchematics();
     }
 

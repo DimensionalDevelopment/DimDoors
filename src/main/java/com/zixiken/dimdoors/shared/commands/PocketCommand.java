@@ -2,6 +2,7 @@ package com.zixiken.dimdoors.shared.commands;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.*;
+import com.zixiken.dimdoors.shared.pockets.*;
 import com.zixiken.dimdoors.shared.util.StringUtils;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
@@ -54,16 +55,15 @@ public class PocketCommand extends CommandBase {
 
                 int dimID = origLoc.getDimensionID();
                 if (DimDoorDimensions.isPocketDimensionID(dimID)) {
-                    int pocketID = PocketRegistry.INSTANCE.getPocketIDFromCoords(origLoc);
-                    EnumPocketType type = DimDoorDimensions.getPocketType(dimID);
-                    Pocket oldPocket = PocketRegistry.INSTANCE.getPocket(pocketID, type);
-                    origLoc = oldPocket.getDepthZeroLocation();
+                    int pocketID = PocketRegistry.getForDim(dimID).getIDFromLocation(origLoc);
+                    Pocket oldPocket = PocketRegistry.getForDim(dimID).getPocket(pocketID);
                 }
 
                 PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(args[0], args[1]);
-                Pocket pocket = PocketRegistry.INSTANCE.generatePocketAt(EnumPocketType.DUNGEON, 1, origLoc, template);
-                int entranceDoorID = pocket.getEntranceDoorID();
-                RiftRegistry.INSTANCE.setLastGeneratedEntranceDoorID(entranceDoorID);
+                Pocket pocket = PocketGenerator.generatePocketFromTemplate(dimID, 0, template, 0);
+                int entranceDoorID = pocket.getEntranceRiftID();
+                //RiftRegistry.INSTANCE.setLastGeneratedEntranceDoorID(entranceDoorID);
+                // TODO: teleport the player
             }
         } else {
             DimDoors.log("Not executing command /" + getName() + " because it wasn't sent by a player.");

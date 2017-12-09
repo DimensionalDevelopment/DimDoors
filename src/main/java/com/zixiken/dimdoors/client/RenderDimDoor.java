@@ -5,7 +5,7 @@ import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityDimDoor;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.*;
 import net.minecraft.util.EnumFacing;
@@ -19,7 +19,7 @@ import net.minecraft.util.ResourceLocation;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> {
+public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityVerticalEntranceRift> {
 
     private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
     private ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/warp.png");
@@ -29,7 +29,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
     /**
      * Renders the dimdoor.
      */
-    public void renderDimDoorTileEntity(TileEntityDimDoor tile, double x, double y, double z) {
+    public void renderDimDoorTileEntity(TileEntityVerticalEntranceRift tile, double x, double y, double z) {
         GL11.glDisable(GL11.GL_LIGHTING);
         Random rand = new Random(31100L);
 
@@ -115,7 +115,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
             BufferBuilder worldRenderer = tessellator.getBuffer();
             worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 
-            float[] color = tile.getRenderColor(rand);
+            float[] color = tile.getEntranceRenderColor(rand);
             GlStateManager.color(color[0] * var17, color[1] * var17, color[2] * var17, color[3]);
 
             switch (orientation) {
@@ -190,7 +190,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
         return buffer;
     }
 
-    private void renderKeyHole(TileEntityDimDoor tile, double x, double y, double z, int i) {
+    private void renderKeyHole(TileEntityVerticalEntranceRift tile, double x, double y, double z, int i) {
         EnumFacing rotation = EnumFacing.getHorizontal((tile.orientation.getHorizontalIndex() + 3) % 4);
 
         GlStateManager.pushMatrix();
@@ -255,7 +255,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityDimDoor> 
     }
 
     @Override
-    public void render(TileEntityDimDoor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    public void render(TileEntityVerticalEntranceRift te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         World world = te.getWorld();
         BlockPos pos = te.getPos();
         ((BlockDimDoorBase) world.getBlockState(pos).getBlock()).updateAttachedTile(world, pos);
