@@ -9,6 +9,8 @@ import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.RiftRegistry;
 import com.zixiken.dimdoors.shared.SchematicHandler;
 import com.zixiken.dimdoors.shared.util.DefaultSchematicGenerator;
+import com.zixiken.dimdoors.shared.world.gateways.GatewayGenerator;
+import lombok.Getter;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -19,6 +21,7 @@ import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -29,6 +32,7 @@ public class DimDoors {
 
     public static final String MODID = "dimdoors";
     public static final String VERSION = "${version}";
+    @Getter private GatewayGenerator gatewayGenerator;
 
     @SidedProxy(clientSide = "com.zixiken.dimdoors.client.DDProxyClient",
                 serverSide = "com.zixiken.dimdoors.server.DDProxyServer")
@@ -45,6 +49,7 @@ public class DimDoors {
         }
     };
 
+
     @Mod.EventHandler
     public void onPreInitialization(FMLPreInitializationEvent event) {
         proxy.onPreInitialization(event);
@@ -54,6 +59,8 @@ public class DimDoors {
     @Mod.EventHandler
     public void onInitialization(FMLInitializationEvent event) {
         proxy.onInitialization(event);
+        gatewayGenerator = new GatewayGenerator();
+        GameRegistry.registerWorldGenerator(gatewayGenerator, 0);
     }
 
     @Mod.EventHandler
