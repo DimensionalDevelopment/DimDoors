@@ -22,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.zixiken.dimdoors.shared.util.SchematicConverter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
 import org.apache.commons.io.IOUtils;
@@ -132,7 +134,11 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
             if (streamOpened) {
                 try {
                     schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                    schematic = Schematic.loadFromNBT(schematicNBT, template.getName());
+                    if (!schematicNBT.hasKey("Version")) {
+                        schematic = SchematicConverter.loadOldDimDoorSchematicFromNBT(schematicNBT, template.getName());
+                    } else {
+                        schematic = Schematic.loadFromNBT(schematicNBT, template.getName());
+                    }
                     schematicDataStream.close();
                 } catch (IOException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + template.getName() + " could not be read as a valid schematic NBT file.", ex);
