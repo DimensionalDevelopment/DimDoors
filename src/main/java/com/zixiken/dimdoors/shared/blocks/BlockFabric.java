@@ -101,8 +101,8 @@ public class BlockFabric extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
-        for (int i = 0; i < 5; i++) {
-            items.add(new ItemStack(this, 1, i));
+        for (BlockFabric.EnumType type : EnumType.values()) {
+            items.add(new ItemStack(this, 1, type.getMeta()));
         }
     }
 
@@ -162,17 +162,16 @@ public class BlockFabric extends Block {
     }
 
     public enum EnumType implements IStringSerializable {
-        REALITY("reality"),
-        ANCIENT("ancient"),
-        ALTERED("altered"),
-        UNRAVELED("unraveled"),
-        ETERNAL("eternal");
+        REALITY("reality", 0),
+        ANCIENT("ancient", 1),
+        ALTERED("altered", 2),
+        UNRAVELED("unraveled", 3),
+        ETERNAL("eternal", 4);
 
         private final String name;
+        private final int meta;
 
-        EnumType(String name) {
-            this.name = name;
-        }
+        EnumType(String name, int meta) { this.name = name; this.meta = meta; }
 
         public String toString() {
             return name;
@@ -182,6 +181,8 @@ public class BlockFabric extends Block {
         public String getName() {
             return name;
         }
+        
+        public int getMeta() { return meta; }
     }
 
     @Override
