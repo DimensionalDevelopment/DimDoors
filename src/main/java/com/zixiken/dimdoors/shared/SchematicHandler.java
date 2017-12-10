@@ -137,8 +137,11 @@ public class SchematicHandler {
             if (streamOpened) {
                 try {
                     schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                    if (!schematicNBT.hasKey("Version")) schematic = SchematicConverter.loadOldDimDoorSchematicFromNBT(schematicNBT, template.getName());
-                    schematic = Schematic.loadFromNBT(schematicNBT, template.getName());
+                    if (!schematicNBT.hasKey("Version")) {
+                        schematic = SchematicConverter.loadOldDimDoorSchematicFromNBT(schematicNBT, template.getName());
+                    } else {
+                        schematic = Schematic.loadFromNBT(schematicNBT, template.getName());
+                    }
                     schematicDataStream.close();
                 } catch (IOException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + template.getName() + " could not be read as a valid schematic NBT file.", ex);
