@@ -101,8 +101,8 @@ public class BlockFabric extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
-        for(BlockFabric.EnumType type : EnumType.values()) {
-            items.add(new ItemStack(this, 1));
+        for (int i = 0; i < 5; i++) {
+            items.add(new ItemStack(this, 1, i));
         }
     }
 
