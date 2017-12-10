@@ -25,6 +25,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.zixiken.dimdoors.shared.util.SchematicConverter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
 import org.apache.commons.io.IOUtils;
@@ -135,6 +137,7 @@ public class SchematicHandler {
             if (streamOpened) {
                 try {
                     schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
+                    if (!schematicNBT.hasKey("Version")) schematic = SchematicConverter.loadOldDimDoorSchematicFromNBT(schematicNBT, template.getName());
                     schematic = Schematic.loadFromNBT(schematicNBT, template.getName());
                     schematicDataStream.close();
                 } catch (IOException ex) {

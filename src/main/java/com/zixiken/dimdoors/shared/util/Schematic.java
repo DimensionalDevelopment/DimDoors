@@ -1,32 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.zixiken.dimdoors.shared.util;
 
-import com.zixiken.dimdoors.DimDoors;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.zixiken.dimdoors.shared.SchematicHandler;
-import com.zixiken.dimdoors.shared.blocks.BlockFabric;
-import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import lombok.Getter;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDoor;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 /**
@@ -35,9 +26,8 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
  */
 public class Schematic {
 
-    // TODO: make public?
-    @Getter int version = Integer.parseInt("1"); //@todo set in build.gradle ${spongeSchematicVersion}
-    @Getter String author = "DimDoors"; //@todo set in build.gradle ${modID}
+    @Getter int version = 1;
+    @Getter String author = null;
     @Getter String schematicName = "Unknown";
     @Getter long creationDate;
     @Getter String[] requiredMods = {};
@@ -50,11 +40,7 @@ public class Schematic {
     @Getter int[][][] blockData; //[x][y][z]
     @Getter List<NBTTagCompound> tileEntities = new ArrayList<>();
 
-    public static Schematic loadFromNBT(NBTTagCompound nbt, String parName) {
-        if (!nbt.hasKey("Version")) {
-            return SchematicConverter.loadOldDimDoorSchematicFromNBT(nbt, parName);
-        }
-
+    public static Schematic loadFromNBT(NBTTagCompound nbt, String name) {
         Schematic schematic = new Schematic();
         schematic.version = nbt.getInteger("Version"); //Version is required
 
@@ -65,7 +51,7 @@ public class Schematic {
                 schematic.author = metadataCompound.getString("Author");
             }
             //Name is not required (may be null)
-            schematic.schematicName = (parName == null || parName.equals("")) && nbt.hasKey("Name") ? metadataCompound.getString("Name") : parName;
+            schematic.schematicName = (name == null || name.equals("")) && nbt.hasKey("Name") ? metadataCompound.getString("Name") : name;
 
             if (nbt.hasKey("Date")) { //Date is not required
                 schematic.creationDate = metadataCompound.getLong("Date");
@@ -148,7 +134,7 @@ public class Schematic {
 
         nbt.setInteger("Version", schematic.version);
         NBTTagCompound metadataCompound = new NBTTagCompound();
-        metadataCompound.setString("Author", schematic.author);
+        if (schematic.author != null) metadataCompound.setString("Author", schematic.author); // Author is not required
         metadataCompound.setString("Name", schematic.schematicName);
         metadataCompound.setLong("Date", schematic.creationDate);
         NBTTagList requiredModsTagList = new NBTTagList();
@@ -167,7 +153,6 @@ public class Schematic {
         NBTTagCompound paletteNBT = new NBTTagCompound();
         for (int i = 0; i < schematic.pallette.size(); i++) {
             IBlockState state = schematic.pallette.get(i);
-            DimDoors.log(Schematic.class, "Saving BlockState: " + state);
             String blockStateString = getBlockStateStringFromState(state);
             paletteNBT.setInteger(blockStateString, i);
         }
@@ -229,7 +214,7 @@ public class Schematic {
             totalString = blockNameString;
         } else { //there is at least one property not equal to the default state's property
             BlockStateContainer container = block.getBlockState();
-            for (IProperty property : container.getProperties()) { //for every property that is valid for this type of Block
+            for (IProperty<?> property : container.getProperties()) { //for every property that is valid for this type of Block
                 String defaultPropertyValue = defaultState.getProperties().get(property).toString();
                 String thisPropertyValue = state.getProperties().get(property).toString();
                 if (!defaultPropertyValue.equals(thisPropertyValue)) {
@@ -245,4 +230,27 @@ public class Schematic {
         return totalString;
     }
 
+    public static void place(Schematic schematic, World world, int xBase, int yBase, int zBase) {
+        // Place the schematic's blocks
+        List<IBlockState> palette = schematic.getPallette();
+        int[][][] blockData = schematic.getBlockData();
+        for (int x = 0; x < blockData.length; x++) {
+            for (int y = 0; y < blockData[x].length; y++) {
+                for (int z = 0; z < blockData[x][y].length; z++) {
+                    world.setBlockState(new BlockPos(xBase + x, yBase + y, zBase + z), palette.get(blockData[x][y][z]), 2); //the "2" is to make non-default door-halves not break upon placement
+                }
+            }
+        }
+
+        // Set TileEntity data
+        for (NBTTagCompound tileEntityNBT : schematic.getTileEntities()) {
+            BlockPos pos = new BlockPos(xBase + tileEntityNBT.getInteger("x"), yBase + tileEntityNBT.getInteger("y"), zBase + tileEntityNBT.getInteger("z"));
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity != null) {
+                tileEntity.readFromNBT(tileEntityNBT); //this reads in the wrong blockPos
+                tileEntity.setPos(pos); //correct the position
+                tileEntity.markDirty();
+            }
+        }
+    }
 }
