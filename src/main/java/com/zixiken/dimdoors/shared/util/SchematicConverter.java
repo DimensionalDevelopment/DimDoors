@@ -1,12 +1,18 @@
 package com.zixiken.dimdoors.shared.util;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -39,32 +45,66 @@ public class SchematicConverter {
         schematic.length = nbt.getShort("Length");
         //schematic.offset = new int[]{0, 0, 0}; //already the default value
 
-        NBTTagList paletteNBT = (NBTTagList) nbt.getTag("Palette");
-        for (int i = 0; i < paletteNBT.tagCount(); i++) {
-            //DimDoors.log(Schematic.class, "reading pallete from schematic... i = " + i);
-            String blockString = paletteNBT.getStringTagAt(i);
-            boolean isAncientFabric = false;
-            if (blockString.startsWith("dimdoors")) {
-                String dimdoorsBlockName = blockString.split(":")[1];
-                if (dimdoorsBlockName.equals("Fabric of RealityPerm")) { //only special case, because this is now another state of another block
-                    isAncientFabric = true;
+        byte[] blockIntArray = nbt.getByteArray("Blocks");
+        if (nbt.hasKey("Palette")) {
+            NBTTagList paletteNBT = (NBTTagList) nbt.getTag("Palette");
+            for (int i = 0; i < paletteNBT.tagCount(); i++) {
+                //DimDoors.log(Schematic.class, "reading pallete from schematic... i = " + i);
+                String blockString = paletteNBT.getStringTagAt(i);
+                boolean isAncientFabric = false;
+                if (blockString.startsWith("dimdoors")) {
+                    String dimdoorsBlockName = blockString.split(":")[1];
+                    if (dimdoorsBlockName.equals("Fabric of RealityPerm")) { //only special case, because this is now another state of another block
+                        isAncientFabric = true;
+                    } else {
+                        dimdoorsBlockName = convertOldDimDoorsBlockNameToNewDimDoorsBlockName(dimdoorsBlockName);
+                        blockString = "dimdoors:" + dimdoorsBlockName;
+                    }
+                }
+                IBlockState blockstate;
+                if (!isAncientFabric) {
+                    Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString));
+                    blockstate = block.getDefaultState();
                 } else {
-                    dimdoorsBlockName = convertOldDimDoorsBlockNameToNewDimDoorsBlockName(dimdoorsBlockName);
-                    blockString = "dimdoors:" + dimdoorsBlockName;
+                    Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("dimdoors:FABRIC"));
+                    blockstate = Schematic.getBlockStateWithProperties(block, new String[]{"type=ancient"});
+                }
+                schematic.pallette.add(blockstate);
+            }
+        } else {
+            byte[] addId = nbt.getByteArray("AddBlocks");
+            Map<Integer, Byte> palletteMap = new HashMap<>(); // block ID -> pallette index
+            byte currentPalletteIndex = 0;
+            for (int i = 0; i < blockIntArray.length; i++) {
+                int id = ((addId[i >> 1] & 0x0F) << 8) + (blockIntArray[i] & 0xFF);
+                if (palletteMap.containsKey(id)) {
+                    blockIntArray[i] = palletteMap.get(id);
+                } else {
+                    Block block = Block.getBlockById(id);
+                    switch (id) {
+                        case 1975:
+                            block = ModBlocks.WARP_DIMENSIONAL_DOOR;
+                            break;
+                        case 1970:
+                            block = ModBlocks.DIMENSIONAL_DOOR;
+                            break;
+                        case 1979:
+                            block = ModBlocks.TRANSIENT_DIMENSIONAL_DOOR;
+                            break;
+                        case 1792:
+                            break;
+                        case 1816:
+                            break;
+                    }
+                    //if (id != 0  && block.getRegistryName().toString().equals("minecraft:air")) throw new RuntimeException("Change conversion code!");
+                    schematic.pallette.add(block.getDefaultState());
+                    palletteMap.put(id, currentPalletteIndex);
+                    blockIntArray[i] = currentPalletteIndex;
+                    currentPalletteIndex++;
                 }
             }
-            IBlockState blockstate;
-            if (!isAncientFabric) {
-                Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString));
-                blockstate = block.getDefaultState();
-            } else {
-                Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("dimdoors:FABRIC"));
-                blockstate = Schematic.getBlockStateWithProperties(block, new String[]{"type=ancient"});
-            }
-            schematic.pallette.add(blockstate);
         }
 
-        byte[] blockIntArray = nbt.getByteArray("Blocks");
         byte[] dataIntArray = nbt.getByteArray("Data");
         schematic.blockData = new int[schematic.width][schematic.height][schematic.length];
         for (int x = 0; x < schematic.width; x++) {
