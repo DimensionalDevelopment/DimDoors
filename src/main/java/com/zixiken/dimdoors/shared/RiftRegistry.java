@@ -197,7 +197,9 @@ public class RiftRegistry {
     }
 
     void unRegisterUnpairedRiftAtDepth(int riftID) {
-        TileEntity tileEntity = rifts.get(riftID).getTileEntity();
+        Location rift1 = rifts.get(riftID);
+        if (rift1 == null) return;
+        TileEntity tileEntity = rift1.getTileEntity();
         if (tileEntity instanceof DDTileEntityBase) {
             DDTileEntityBase rift = (DDTileEntityBase) tileEntity;
             unRegisterUnpairedRiftAtDepth(rift);

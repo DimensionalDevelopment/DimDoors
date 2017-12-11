@@ -4,6 +4,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
@@ -76,7 +77,14 @@ public class SchematicConverter {
             Map<Integer, Byte> palletteMap = new HashMap<>(); // block ID -> pallette index
             byte currentPalletteIndex = 0;
             for (int i = 0; i < blockIntArray.length; i++) {
-                int id = ((addId[i >> 1] & 0x0F) << 8) + (blockIntArray[i] & 0xFF);
+                int id;
+                if (i >> 1 >= addId.length) {
+                    id = (short) (blockIntArray[i] & 0xFF);
+                } else if ((i & 1) == 0) {
+                    id = (short) (((addId[i >> 1] & 0x0F) << 8) + (blockIntArray[i] & 0xFF));
+                } else {
+                    id = (short) (((addId[i >> 1] & 0xF0) << 4) + (blockIntArray[i] & 0xFF));
+                }
                 if (palletteMap.containsKey(id)) {
                     blockIntArray[i] = palletteMap.get(id);
                 } else {
@@ -90,10 +98,6 @@ public class SchematicConverter {
                             break;
                         case 1979:
                             block = ModBlocks.TRANSIENT_DIMENSIONAL_DOOR;
-                            break;
-                        case 1792:
-                            break;
-                        case 1816:
                             break;
                     }
                     //if (id != 0  && block.getRegistryName().toString().equals("minecraft:air")) throw new RuntimeException("Change conversion code!");
