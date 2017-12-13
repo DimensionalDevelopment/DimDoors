@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -26,7 +27,7 @@ public class PocketRegistry extends WorldSavedData {
     @Getter private int maxPocketSize;
     @Getter private int privatePocketSize;
     @Getter private int publicPocketSize;
-    private Map<String, Integer> privatePocketMap; // Player UUID -> Pocket ID
+    private Map<String, Integer> privatePocketMap; // Player UUID -> Pocket ID, in pocket dim only
     @Getter private Map<Integer, Pocket> pockets; // TODO: remove getter?
 
     @Getter private int dimID;
@@ -41,7 +42,7 @@ public class PocketRegistry extends WorldSavedData {
     }
 
     public static PocketRegistry getForDim(int dimID) {
-        if (!DimDoorDimensions.isPocketDimensionID(dimID)) throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
+        if (!DimDoorDimensions.isPocketDimension(dimID)) throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
 
         MapStorage storage = WorldUtils.getWorld(dimID).getPerWorldStorage();
         PocketRegistry instance = (PocketRegistry) storage.getOrLoadData(PocketRegistry.class, DATA_NAME);
@@ -218,24 +219,34 @@ public class PocketRegistry extends WorldSavedData {
     /**
      * Calculates the ID of a pocket based on the Location.
      *
-     * @param location The location of the pocket
+     * @param x The x coordinate of the player.
+     * @param y The y coordinate of the player.
+     * @param z The z coordinate of the player.
      * @return The ID of the pocket, or -1 if there is no pocket at that location
      */
-    public int getIDFromLocation(Location location) {
-        if (location != null && location.getDimensionID() != dimID) throw new RuntimeException("Wrong registry for this world!");
-        int x = location.getPos().getX();
-        int z = location.getPos().getZ();
+    public int getIDFromLocation(int x, int y, int z) {
         int id = getIDFromGridPos(new GridUtils.GridPos(x / (gridSize * 16), z / (gridSize * 16)));
         return pockets.containsKey(id) ? id : -1;
     }
 
-    public boolean isPlayerAllowedToBeHere(EntityPlayerMP player, Location location) { // TODO see getLocationFromID
-        int pocketID = getIDFromLocation(location);
+    public Pocket getPocketFromLocation(int x, int y, int z) {
+        return getPocket(getIDFromLocation(x, y, z));
+    }
+
+    public void allowPlayerAtLocation(EntityPlayer player, int x, int y, int z) {
+        Pocket pocket = getPocketFromLocation(x, y, z);
+        if (pocket != null) {
+            pocket.allowPlayer(player);
+        }
+    }
+
+    public boolean isPlayerAllowedToBeHere(EntityPlayerMP player, int x, int y, int z) { // TODO see getLocationFromID
+        int pocketID = getIDFromLocation(x, y, z);
         if (pocketID == -1) { // outside of a pocket
             return false;
         } else {
             Pocket pocket = pockets.get(pocketID);
-            return pocket.isPlayerAllowedInPocket(player) && pocket.isLocationWithinPocketBounds(location, gridSize);
+            return pocket.isPlayerAllowedInPocket(player) && pocket.isLocationWithinPocketBounds(x, y, z, gridSize);
         }
     }
 }

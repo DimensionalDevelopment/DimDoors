@@ -3,7 +3,7 @@ package com.zixiken.dimdoors.shared.items;
 import java.util.List;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.blocks.BlockDimDoor;
+import com.zixiken.dimdoors.shared.blocks.BlockDimDoorIron;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import net.minecraft.client.util.ITooltipFlag;
@@ -19,8 +19,8 @@ public class ItemDimDoor extends ItemDoorBase {
 
     public ItemDimDoor() {
         super(ModBlocks.DIMENSIONAL_DOOR, (ItemDoor) Items.IRON_DOOR);
-        setUnlocalizedName(BlockDimDoor.ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimDoor.ID));
+        setUnlocalizedName(BlockDimDoorIron.ID);
+        setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimDoorIron.ID));
     }
 
     @Override

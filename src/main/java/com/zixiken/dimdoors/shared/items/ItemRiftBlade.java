@@ -59,8 +59,7 @@ public class ItemRiftBlade extends ItemSword {
         RayTraceResult hit = rayTrace(worldIn, playerIn, true);
         if (RayTraceHelper.isRift(hit, worldIn)) {
             TileEntityFloatingRift rift = (TileEntityFloatingRift) worldIn.getTileEntity(hit.getBlockPos());
-            rift.isTeleporting = true;
-            rift.teleportingEntity = playerIn;
+            rift.teleport(playerIn); // TODO: is this right?
 
             stack.damageItem(1, playerIn);
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);

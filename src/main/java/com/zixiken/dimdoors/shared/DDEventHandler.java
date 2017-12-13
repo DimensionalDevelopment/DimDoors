@@ -2,7 +2,6 @@ package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
-import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,7 +40,7 @@ public class DDEventHandler {
             EntityPlayerMP player = (EntityPlayerMP) entity;
             World world = entity.world;
             int dimID = world.provider.getDimension();
-            if (!world.isRemote && !player.isDead && DimDoorDimensions.isPocketDimensionID(dimID) && !PocketRegistry.getForDim(dimID).isPlayerAllowedToBeHere(player, Location.getLocation(player))) {
+            if (!world.isRemote && !player.isDead && DimDoorDimensions.isPocketDimension(dimID) && !PocketRegistry.getForDim(dimID).isPlayerAllowedToBeHere(player, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ())) {
                 // TODO: Avoid players even getting here by making a maximum build distance that's smaller than the pocket size
                 // TODO: This doesn't really work yet.
                 // DimDoors.chat(player, "You travelled too far into the void and have been sent to Limbo.");

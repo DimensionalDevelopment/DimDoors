@@ -4,7 +4,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.*;
 import com.zixiken.dimdoors.shared.pockets.*;
 import com.zixiken.dimdoors.shared.util.StringUtils;
-import com.zixiken.dimdoors.shared.util.Location;
+import com.zixiken.dimdoors.shared.util.WorldUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -12,7 +12,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -43,27 +42,18 @@ public class PocketCommand extends CommandBase {
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException { // TODO: option to replace current pocket
         if (sender instanceof EntityPlayerMP) {
             EntityPlayerMP player = getCommandSenderAsPlayer(sender);
             if (areArgumentsValid(args, player)) {
-                DimDoors.log(getClass(), "Executing command");
-
-                BlockPos pos = player.getPosition();
-                World world = player.world;
-                Location origLoc = new Location(world, pos);
-
-                int dimID = origLoc.getDimensionID();
-                if (DimDoorDimensions.isPocketDimensionID(dimID)) {
-                    int pocketID = PocketRegistry.getForDim(dimID).getIDFromLocation(origLoc);
-                    Pocket oldPocket = PocketRegistry.getForDim(dimID).getPocket(pocketID);
+                int dim = WorldUtils.getDim(player.world);
+                if (DimDoorDimensions.isPocketDimension(dim)) {
+                    PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(args[0], args[1]);
+                    Pocket pocket = PocketGenerator.generatePocketFromTemplate(dim, 0, template, new VirtualLocation(0, 0, 0, 0,0));
+                    // TODO: teleport the player
+                } else {
+                    DimDoors.chat(player, "You must be in a pocket dimension to use this command!");
                 }
-
-                PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(args[0], args[1]);
-                Pocket pocket = PocketGenerator.generatePocketFromTemplate(dimID, 0, template, 0);
-                int entranceDoorID = pocket.getEntranceRiftID();
-                //RiftRegistry.INSTANCE.setLastGeneratedEntranceDoorID(entranceDoorID);
-                // TODO: teleport the player
             }
         } else {
             DimDoors.log("Not executing command /" + getName() + " because it wasn't sent by a player.");

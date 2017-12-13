@@ -11,7 +11,7 @@ public class ModBlocks {
     public static final BlockDoorQuartz QUARTZ_DOOR = new BlockDoorQuartz();
 
     // Dimensional doors
-    public static final BlockDimDoor DIMENSIONAL_DOOR = new BlockDimDoor();
+    public static final BlockDimDoorIron DIMENSIONAL_DOOR = new BlockDimDoorIron();
     public static final BlockDimDoorGold GOLD_DIMENSIONAL_DOOR = new BlockDimDoorGold();
     public static final BlockDimDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new BlockDimDoorPersonal();
     public static final BlockDimDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new BlockDimDoorUnstable();

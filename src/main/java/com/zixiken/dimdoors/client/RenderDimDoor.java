@@ -115,7 +115,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityVerticalE
             BufferBuilder worldRenderer = tessellator.getBuffer();
             worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 
-            float[] color = tile.getEntranceRenderColor(rand);
+            float[] color = tile.getEntranceRenderColor(rand); // TODO: cache this since it's constant
             GlStateManager.color(color[0] * var17, color[1] * var17, color[2] * var17, color[3]);
 
             switch (orientation) {
@@ -259,7 +259,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityVerticalE
         World world = te.getWorld();
         BlockPos pos = te.getPos();
         ((BlockDimDoorBase) world.getBlockState(pos).getBlock()).updateAttachedTile(world, pos);
-        if (te.doorIsOpen) {
+        if (te.doorShouldRender) {
             renderDimDoorTileEntity(te, x, y, z);
             if (te.lockStatus >= 1) {
                 for (int i = 0; i < 1 + te.lockStatus; i++) {

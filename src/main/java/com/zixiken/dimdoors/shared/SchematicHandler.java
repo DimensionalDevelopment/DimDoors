@@ -1,6 +1,5 @@
 package com.zixiken.dimdoors.shared;
 
-import com.zixiken.dimdoors.shared.pockets.EnumPocketType;
 import com.zixiken.dimdoors.shared.pockets.PocketTemplate;
 import com.zixiken.dimdoors.shared.util.MathUtils;
 import com.zixiken.dimdoors.shared.util.Schematic;
@@ -175,9 +174,9 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
             int minDepth = variation.get("minDepth").getAsInt();
             int maxDepth = variation.get("maxDepth").getAsInt();
             JsonArray weightsJsonArray = variation.get("weights").getAsJsonArray();
-            int[] weights = new int[weightsJsonArray.size()];
+            float[] weights = new float[weightsJsonArray.size()];
             for (int j = 0; j < weightsJsonArray.size(); j++) {
-                weights[j] = weightsJsonArray.get(j).getAsInt();
+                weights[j] = weightsJsonArray.get(j).getAsFloat();
             }
             PocketTemplate pocketTemplate = new PocketTemplate(directory, variantName, variationSize, minDepth, maxDepth, weights);
             pocketTemplates.add(pocketTemplate);
@@ -245,7 +244,7 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
      * @param getLargest
      * @return A random template matching those criteria, or null if none were found
      */
-    public PocketTemplate getRandomTemplate(Map<String, Integer> groupWeights, int depth, int maxSize, boolean getLargest) { // TODO: useful?
+    public PocketTemplate getRandomTemplate(Map<String, Float> groupWeights, int depth, int maxSize, boolean getLargest) { // TODO: useful?
         String group = MathUtils.weightedRandom(groupWeights);
         return getRandomTemplate(group, depth, maxSize, getLargest);
     }
@@ -261,7 +260,7 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
      */
     public PocketTemplate getRandomTemplate(String group, int depth, int maxSize, boolean getLargest) {
         // TODO: cache this for faster calls:
-        Map<PocketTemplate, Integer> weightedTemplates = new HashMap<>();
+        Map<PocketTemplate, Float> weightedTemplates = new HashMap<>();
         int largestSize = 0;
         for (PocketTemplate template : templates) {
             if (template.getGroupName().equals(group)

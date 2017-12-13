@@ -26,7 +26,7 @@ public class BlockDimDoorUnstable extends BlockDimDoorBase {
     }
 
     @Override
-    public Item getItemDoor() {
+    public Item getItem() {
         return ModItems.UNSTABLE_DIMENSIONAL_DOOR;
     }
 

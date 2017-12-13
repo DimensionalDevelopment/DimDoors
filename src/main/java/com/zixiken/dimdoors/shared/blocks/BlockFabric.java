@@ -9,7 +9,6 @@ import com.zixiken.dimdoors.shared.util.RandomUtils;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.world.limbodimension.LimboDecay;
 import com.zixiken.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
-import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -26,7 +25,6 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,26 +38,8 @@ public class BlockFabric extends Block {
     private static final float SUPER_HIGH_HARDNESS = 10000000000000F;
     private static final float SUPER_EXPLOSION_RESISTANCE = 18000000F;
 
-    public enum EnumType implements IStringSerializable {
-        REALITY("reality", 0),
-        ANCIENT("ancient", 1),
-        ALTERED("altered", 2),
-        UNRAVELED("unraveled", 3),
-        ETERNAL("eternal", 4);
-
-        @Getter private final String name;
-        @Getter private final int meta;
-
-        EnumType(String name, int meta) { this.name = name; this.meta = meta; }
-
-        public String toString() {
-            return name;
-        }
-
-    }
-
     public BlockFabric() {
-        super(Material.CLOTH);
+        super(Material.IRON);
         setCreativeTab(DimDoors.dimDoorsCreativeTab);
         setLightLevel(1.0F);
         setHardness(0.1F);
@@ -68,19 +48,6 @@ public class BlockFabric extends Block {
         setSoundType(SoundType.STONE);
 
         setTickRandomly(true);
-    }
-
-    /**
-     * Theoretically, this shouldn't be needed, but just for precautions
-     * this is added just incase
-     * @param world world the block is in
-     * @param pos block position
-     * @param face the block face
-     * @return fire begone!
-     */
-    @Override
-    public boolean isFlammable(IBlockAccess world, BlockPos pos, EnumFacing face) {
-        return false;
     }
 
     @Override
@@ -131,15 +98,6 @@ public class BlockFabric extends Block {
         }
     }
 
-    /**
-     * Adds sub blocks to the creative tab based on type.
-     * This method has been optimized to add future sub blocks
-     * without major code editing.
-     *
-     * @param itemIn the creative tab blocks are getting dropped into
-     * @param items the list that holds items that are registered to the creative
-     *              tab
-     */
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items) {
@@ -164,7 +122,7 @@ public class BlockFabric extends Block {
     }
 
     /**
-     * Replaces the block clicked with the held block, instead of placing the
+     * replaces the block clicked with the held block, instead of placing the
      * block on top of it. Shift click to disable.
      *
      * @param worldIn the world that this block is in
@@ -174,7 +132,7 @@ public class BlockFabric extends Block {
      * @param hand the hand the player is using
      * @param facing the side of the block that is being clicked
      * @param hitX the x coordinate of the exact place the player is clicking on
-     *             the block
+     * the block
      * @param hitY the y coordinate ...
      * @param hitZ the z coordinate ...
      * @return whether or not the item in the player's hand should be used or
@@ -201,6 +159,30 @@ public class BlockFabric extends Block {
             return true;
         }
         return false;
+    }
+
+    public enum EnumType implements IStringSerializable {
+        REALITY("reality", 0),
+        ANCIENT("ancient", 1),
+        ALTERED("altered", 2),
+        UNRAVELED("unraveled", 3),
+        ETERNAL("eternal", 4);
+
+        private final String name;
+        private final int meta;
+
+        EnumType(String name, int meta) { this.name = name; this.meta = meta; }
+
+        public String toString() {
+            return name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+        
+        public int getMeta() { return meta; }
     }
 
     @Override

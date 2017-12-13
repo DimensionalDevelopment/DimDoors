@@ -2,9 +2,9 @@ package com.zixiken.dimdoors.shared.util;
 
 import com.zixiken.dimdoors.DimDoors;
 import java.io.Serializable;
-import java.util.Objects;
 
 import lombok.Getter;
+import lombok.ToString;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -17,9 +17,10 @@ import net.minecraft.world.WorldServer;
  *
  * @author Robijnvogel
  */
+@ToString
 public class Location implements Serializable {
 
-    @Getter private int dimensionID;
+    @Getter private int dimID;
     @Getter private BlockPos pos;
 
     public Location(World world, BlockPos pos) {
@@ -35,7 +36,7 @@ public class Location implements Serializable {
     }
 
     public Location(int dimID, BlockPos pos) {
-        dimensionID = dimID;
+        this.dimID = dimID;
         this.pos = pos; //copyOf
     }
 
@@ -48,7 +49,7 @@ public class Location implements Serializable {
     }
 
     public WorldServer getWorld() {
-        return DimDoors.proxy.getWorldServer(dimensionID);
+        return DimDoors.proxy.getWorldServer(dimID);
     }
 
     public static Location getLocation(TileEntity tileEntity) {
@@ -65,7 +66,7 @@ public class Location implements Serializable {
 
     public static NBTTagCompound writeToNBT(Location location) {
         NBTTagCompound locationNBT = new NBTTagCompound();
-        locationNBT.setInteger("worldID", location.dimensionID);
+        locationNBT.setInteger("worldID", location.dimID);
         locationNBT.setInteger("x", location.pos.getX());
         locationNBT.setInteger("y", location.pos.getY());
         locationNBT.setInteger("z", location.pos.getZ());
@@ -87,24 +88,16 @@ public class Location implements Serializable {
             return false;
         }
         Location other = (Location) obj;
-        return other.dimensionID == dimensionID && other.pos.equals(pos);
+        return other.dimID == dimID && other.pos.equals(pos);
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 89 * hash + dimensionID;
-        hash = 89 * hash + Objects.hashCode(pos);
-        return hash;
-    }
-
-    @Override
-    public String toString() {
-        return "Location: dimID: " + dimensionID + " position: " + pos;
+        return pos.hashCode() * 31 + dimID; // TODO
     }
     
     public void loadfrom(Location location) {
-        dimensionID = location.dimensionID;
+        dimID = location.dimID;
         pos = location.pos;
     }
 }

@@ -4,6 +4,7 @@ import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import java.util.List;
 import java.util.Random;
 
+import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;

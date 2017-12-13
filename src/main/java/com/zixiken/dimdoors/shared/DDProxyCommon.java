@@ -51,14 +51,9 @@ public abstract class DDProxyCommon implements IDDProxy {
             dimTile.orientation = state.getBlock() instanceof BlockDimDoorBase
                     ? state.getValue(BlockDoor.FACING).getOpposite()
                     : ModBlocks.DIMENSIONAL_DOOR.getDefaultState().getValue(BlockDoor.FACING);
-            dimTile.doorIsOpen = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(world.getBlockState(pos));
+            // dimTile.doorShouldRender = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(world.getBlockState(pos));
             dimTile.lockStatus = 0; //@todo
             dimTile.markDirty();
         }
-    }
-
-    @Override
-    public World getDefWorld() {
-        return getWorldServer(0); //gets the client world dim 0 handler
     }
 }

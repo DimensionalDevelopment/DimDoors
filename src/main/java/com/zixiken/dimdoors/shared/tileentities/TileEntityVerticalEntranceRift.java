@@ -1,11 +1,13 @@
 package com.zixiken.dimdoors.shared.tileentities;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 public class TileEntityVerticalEntranceRift extends TileEntityEntranceRift {
 
-    public boolean doorIsOpen = false;
+    public boolean doorShouldRender = true;
     public EnumFacing orientation = EnumFacing.SOUTH;
     public byte lockStatus = 0;
 
@@ -13,7 +15,7 @@ public class TileEntityVerticalEntranceRift extends TileEntityEntranceRift {
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
 
-        doorIsOpen = nbt.getBoolean("doorIsOpen");
+        doorShouldRender = nbt.getBoolean("doorShouldRender");
         orientation = EnumFacing.getFront(nbt.getInteger("orientation"));
         lockStatus = nbt.getByte("lockStatus");
     }
@@ -22,9 +24,16 @@ public class TileEntityVerticalEntranceRift extends TileEntityEntranceRift {
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
 
-        nbt.setBoolean("doorIsOpen", doorIsOpen);
+        nbt.setBoolean("doorShouldRender", doorShouldRender);
         nbt.setInteger("orientation", orientation.getIndex());
         nbt.setByte("lockStatus", lockStatus);
         return nbt;
+    }
+
+    @Override
+    public void teleportTo(Entity entity) {
+        super.teleportTo(entity);
+        BlockPos offsetPos = entity.getPosition().offset(orientation);
+        entity.setPosition(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
     }
 }

@@ -1,10 +1,14 @@
 package com.zixiken.dimdoors.shared.pockets;
 
+import com.zixiken.dimdoors.shared.VirtualLocation;
+import com.zixiken.dimdoors.shared.rifts.RiftDestination;
+import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
+import com.zixiken.dimdoors.shared.rifts.WeightedRiftDestination;
 import com.zixiken.dimdoors.shared.util.Location;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
+import java.util.*;
+
+import com.zixiken.dimdoors.shared.util.MathUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,9 +31,10 @@ public class Pocket { // TODO: better visibilities
     @Getter private int z; // Grid y
     @Getter private int depth;
     @Getter @Setter private int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
-    @Getter @Setter private int originalDim; // The non-pocket dimension from which this dungeon was created
+    @Getter @Setter private VirtualLocation virtualLocation; // The non-pocket dimension from which this dungeon was created
     private List<Integer> riftIDs;
     private List<String> playerUUIDs;
+    @Getter Location entrance;
 
     private Pocket() {}
 
@@ -50,7 +55,7 @@ public class Pocket { // TODO: better visibilities
         pocket.z = pocketNBT.getInteger("z");
         pocket.depth = pocketNBT.getInteger("depth");
         pocket.size = pocketNBT.getInteger("size");
-        pocket.originalDim = pocketNBT.getInteger("originalDim");
+        pocket.virtualLocation = VirtualLocation.readFromNBT(pocketNBT.getCompoundTag("originalDim"));
 
         pocket.riftIDs = new ArrayList<>();
         NBTTagList riftIDsTagList = (NBTTagList) pocketNBT.getTag("riftIDs");
@@ -74,7 +79,7 @@ public class Pocket { // TODO: better visibilities
         pocketNBT.setInteger("z", pocket.z);
         pocketNBT.setInteger("depth", pocket.depth);
         pocketNBT.setInteger("size", pocket.size);
-        pocketNBT.setInteger("originalDim", pocket.originalDim);
+        pocketNBT.setTag("originalDim", pocket.virtualLocation.writeToNBT());
 
         NBTTagList riftIDsTagList = new NBTTagList();
         for (int i = 0; i < pocket.riftIDs.size(); i++) {
@@ -93,30 +98,7 @@ public class Pocket { // TODO: better visibilities
         return pocketNBT;
     }
 
-    public void addRiftID(int id) {
-        riftIDs.add(id);
-    }
-
-    public int getEntranceRiftID() {
-        if (riftIDs.isEmpty()) {
-            return -1;
-        } else if (riftIDs.size() == 1) {
-            return riftIDs.get(0);
-        } else {
-            for (Integer riftID : riftIDs) {
-                //TileEntity tileEntity = RiftRegistry.INSTANCE.getRiftLocation(riftID).getTileEntity(); // TODO rift
-                //if (tileEntity instanceof TileEntityDimDoorWarp) {
-                //    return riftID;
-                //}
-            }
-            Random random = new Random(); // TODO: weighted random?
-            return riftIDs.get(random.nextInt(riftIDs.size()));
-        }
-    }
-
-    boolean isLocationWithinPocketBounds(final Location location, final int gridSize) {
-        int locX = location.getPos().getX();
-        int locZ = location.getPos().getY();
+    boolean isLocationWithinPocketBounds(int locX, int locY, int locZ, int gridSize) {
         // pocket bounds
         int pocMinX = x * gridSize;
         int pocMinZ = z * gridSize;
@@ -125,7 +107,8 @@ public class Pocket { // TODO: better visibilities
         return pocMinX <= locX && pocMinZ <= locZ && locX < pocMaxX && locZ < pocMaxZ;
     }
 
-    public void validatePlayerEntry(EntityPlayer player) { // TODO
+    // TODO better allow/deny player system. Just because a player is allowed in two adjacent pockets doesn't mean he should be able to cross through the void to the other pocket
+    public void allowPlayer(EntityPlayer player) {
         String playerUUID = player.getCachedUniqueIdString();
         if (!playerUUIDs.contains(playerUUID)) {
             playerUUIDs.add(playerUUID);
@@ -135,5 +118,74 @@ public class Pocket { // TODO: better visibilities
     public boolean isPlayerAllowedInPocket(EntityPlayer player) { // TODO
         String playerUUID = player.getCachedUniqueIdString();
         return playerUUIDs.contains(playerUUID);
+    }
+
+    public List<TileEntityRift> getRifts() {
+        return null; // TODO
+    }
+
+    public void selectEntrance() { // Always call after creating a pocket except when building the pocket TODO: more general setup method
+        List<TileEntityRift> rifts = getRifts();
+
+        HashMap<Integer, Float> entranceIndexWeights = new HashMap<>();
+
+        int index = 0;
+        for (TileEntityRift rift : rifts) { // Find an entrance
+            for (WeightedRiftDestination weightedPocketEntranceDest : rift.getDestinations()) {
+                if (weightedPocketEntranceDest.getDestination().getType() == RiftDestination.DestinationType.POCKET_ENTRANCE) {
+                    entranceIndexWeights.put(index, weightedPocketEntranceDest.getWeight());
+                    rift.markDirty();
+                    index++;
+                }
+            }
+        }
+        if (entranceIndexWeights.size() == 0) return;
+        int selectedEntranceIndex = MathUtils.weightedRandom(entranceIndexWeights);
+
+        index = 0;
+        for (TileEntityRift rift : rifts) { // Replace entrances with appropriate items
+            Iterator<WeightedRiftDestination> destIterator = rift.getDestinations().iterator();
+            while (destIterator.hasNext()) {
+                WeightedRiftDestination wdest = destIterator.next();
+                RiftDestination dest = wdest.getDestination();
+                if (dest.getType() == RiftDestination.DestinationType.POCKET_ENTRANCE) {
+                    destIterator.remove();
+                    if (index == selectedEntranceIndex) {
+                        entrance = new Location(rift.getWorld(), rift.getPos());
+                        List<WeightedRiftDestination> ifDestinations = ((RiftDestination.PocketEntranceDestination) dest).getIfDestinations();
+                        for (WeightedRiftDestination ifDestination : ifDestinations) {
+                            rift.addDestination(ifDestination.getDestination(), ifDestination.getWeight() / wdest.getWeight(), ifDestination.getGroup());
+                        }
+                    } else {
+                        List<WeightedRiftDestination> otherwiseDestinations = ((RiftDestination.PocketEntranceDestination) dest).getOtherwiseDestinations();
+                        for (WeightedRiftDestination otherwiseDestination : otherwiseDestinations) {
+                            rift.addDestination(otherwiseDestination.getDestination(), otherwiseDestination.getWeight() / wdest.getWeight(), otherwiseDestination.getGroup());
+                        }
+                    }
+                    index++;
+                }
+            }
+        }
+    }
+
+    public void linkPocketTo(RiftDestination linkTo) {
+        List<TileEntityRift> rifts = getRifts();
+
+        for (TileEntityRift rift : rifts) { // Link pocket exits back
+            Iterator<WeightedRiftDestination> destIterator = rift.getDestinations().iterator();
+            while (destIterator.hasNext()) {
+                WeightedRiftDestination wdest = destIterator.next();
+                RiftDestination dest = wdest.getDestination();
+                if (dest.getType() == RiftDestination.DestinationType.POCKET_EXIT) {
+                    destIterator.remove();
+                    linkTo.toBuilder().oldDestination(dest);
+                    rift.addDestination(linkTo, wdest.getWeight(), wdest.getGroup());
+                }
+            }
+        }
+    }
+
+    public void unlinkPocket() {
+        // TODO
     }
 }

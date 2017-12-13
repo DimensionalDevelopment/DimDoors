@@ -21,7 +21,7 @@ public class BlockDimDoorPersonal extends BlockDimDoorBase {
     }
 
     @Override
-    public Item getItemDoor() {
+    public Item getItem() {
         return ModItems.PERSONAL_DIMENSIONAL_DOOR;
     }
     

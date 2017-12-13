@@ -67,7 +67,7 @@ public class DimDoorDimensions {
         return pocketDimensionTypes.get(pocketType);
     }
 
-    public static boolean isPocketDimensionID(int id) {
+    public static boolean isPocketDimension(int id) {
         return id >= minPocketDimID && id <= maxPocketDimID;
     }
 

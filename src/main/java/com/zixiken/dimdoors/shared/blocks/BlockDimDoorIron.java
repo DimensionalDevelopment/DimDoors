@@ -6,11 +6,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockDimDoor extends BlockDimDoorBase {
+public class BlockDimDoorIron extends BlockDimDoorBase {
 
     public static final String ID = "dimensional_door";
 
-    public BlockDimDoor() {
+    public BlockDimDoorIron() {
         super(Material.IRON);
         setHardness(1.0F);
         setResistance(2000.0F);
@@ -19,7 +19,7 @@ public class BlockDimDoor extends BlockDimDoorBase {
     }
 
     @Override
-    public Item getItemDoor() {
+    public Item getItem() {
         return ModItems.DIMENSIONAL_DOOR;
     }
 }

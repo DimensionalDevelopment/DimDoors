@@ -6,7 +6,7 @@
 package com.zixiken.dimdoors.shared.pockets;
 
 import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
+import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
 import com.zixiken.dimdoors.shared.util.Schematic;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
@@ -37,10 +37,10 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
     @Getter private final String name;
     @Getter private final int minDepth;
     @Getter private final int maxDepth;
-    private final int[] weights; //weights for chanced generation of dungeons per depth level | weights[0] is the weight for depth "minDepth"
+    private final float[] weights; //weights for chanced generation of dungeons per depth level | weights[0] is the weight for depth "minDepth"
 
     //this class should contain the actual schematic info, as well as some of the Json info (placement of Rifts and stuff)
-    public PocketTemplate(String groupName, String name, Schematic schematic, int size, int minDepth, int maxDepth, int[] weights) {
+    public PocketTemplate(String groupName, String name, Schematic schematic, int size, int minDepth, int maxDepth, float[] weights) {
         this.groupName = groupName;
         this.name = name;
         this.weights = weights; //chance that this Pocket will get generated
@@ -50,11 +50,11 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         this.schematic = schematic;
     }
 
-    public PocketTemplate(String groupName, String name, int size, int minDepth, int maxDepth, int[] weights) {
+    public PocketTemplate(String groupName, String name, int size, int minDepth, int maxDepth, float[] weights) {
         this(groupName, name, null, size, minDepth, maxDepth, weights);
     }
 
-    public int getWeight(int depth) {
+    public float getWeight(int depth) {
         int index = depth - minDepth;
         if (index >= 0 && index < weights.length) {
             return weights[index];

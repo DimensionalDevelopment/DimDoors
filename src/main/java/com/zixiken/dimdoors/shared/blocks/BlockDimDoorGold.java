@@ -21,7 +21,7 @@ public class BlockDimDoorGold extends BlockDimDoorBase {
     }
 
     @Override
-    public Item getItemDoor() {
+    public Item getItem() {
         return ModItems.GOLD_DIMENSIONAL_DOOR;
     }
 

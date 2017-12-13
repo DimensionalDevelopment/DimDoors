@@ -10,7 +10,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -70,10 +69,6 @@ public class DimDoors {
 
     public static boolean isServer() {
         return !isClient();
-    }
-
-    public static World getDefWorld() {
-        return proxy.getDefWorld(); //gets the server or client world dim 0 handler
     }
 
     public static void chat(EntityPlayer player, String text) {

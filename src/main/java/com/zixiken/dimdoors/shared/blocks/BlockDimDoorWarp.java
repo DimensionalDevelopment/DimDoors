@@ -21,7 +21,7 @@ public class BlockDimDoorWarp extends BlockDimDoorBase {
     }
 
     @Override
-    public Item getItemDoor() {
+    public Item getItem() {
         return ModItems.WARP_DIMENSIONAL_DOOR;
     }
     

@@ -8,39 +8,39 @@ import java.util.Random;
 
 public class PocketGenerator {
 
-    public static Pocket generatePocketFromTemplate(int dimID, int depth, PocketTemplate pocketTemplate, int originalDim) {
-        DimDoors.log("depth = " + depth + " originalDim = " + originalDim);
+    public static Pocket generatePocketFromTemplate(int dimID, int depth, PocketTemplate pocketTemplate, VirtualLocation virtualLocation) {
+        DimDoors.log("depth = " + depth + " originalDim = " + virtualLocation);
 
         PocketRegistry registry = PocketRegistry.getForDim(dimID);
         Pocket pocket = registry.newPocket(depth);
         pocketTemplate.place(pocket, 0); // TODO: config option for yBase or maybe param?
-        pocket.setOriginalDim(originalDim);
+        pocket.setVirtualLocation(virtualLocation);
         return pocket;
     }
 
-    public Pocket generatePrivatePocket(int originalDim) {
+    public static Pocket generatePrivatePocket(VirtualLocation virtualLocation) {
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getPersonalPocketTemplate();
-        return generatePocketFromTemplate(DimDoorDimensions.getPrivateDimID(), 0, pocketTemplate, originalDim);
+        return generatePocketFromTemplate(DimDoorDimensions.getPrivateDimID(), 0, pocketTemplate, virtualLocation);
     }
 
-    public Pocket generatePublicPocket(int originalDim) {
+    public static Pocket generatePublicPocket(VirtualLocation virtualLocation) {
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getPersonalPocketTemplate();
-        return generatePocketFromTemplate(DimDoorDimensions.getPrivateDimID(), 0, pocketTemplate, originalDim);
+        return generatePocketFromTemplate(DimDoorDimensions.getPrivateDimID(), 0, pocketTemplate, virtualLocation);
     }
 
     /**
      * Create a dungeon pocket at a certain depth.
      *
      * @param depth The depth of the dungeon
-     * @param originalDim The non-pocket dimension from which this dungeon was created
+     * @param virtualLocation The virtual location of the pocket
      * @return The newly-generated dungeon pocket
      */
-    public Pocket generateDungeonPocket(int depth, int originalDim) { // TODO: Add rift for linking!
-        float netherProbability = originalDim == -1 ? 1 : (float) depth / 50; // TODO: improve nether probability
+    public Pocket generateDungeonPocket(int depth, VirtualLocation virtualLocation) { // TODO: Add rift for linking!
+        float netherProbability = virtualLocation.getDimID() == -1 ? 1 : (float) depth / 50; // TODO: improve nether probability
         Random random = new Random();
         String group = random.nextFloat() < netherProbability ? "nether" : "ruins";
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getRandomTemplate(group, depth, DDConfig.getMaxPocketSize(), false);
 
-        return generatePocketFromTemplate(DimDoorDimensions.getDungeonDimID(), depth, pocketTemplate, originalDim);
+        return generatePocketFromTemplate(DimDoorDimensions.getDungeonDimID(), depth, pocketTemplate, virtualLocation);
     }
 }

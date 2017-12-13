@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.shared;
 
-import com.zixiken.dimdoors.shared.tileentities.TileEntityRift;
+import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.RayTraceResult;

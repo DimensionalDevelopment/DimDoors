@@ -62,7 +62,7 @@ public class TeleporterDimDoors extends Teleporter {
 
         BlockPos newPos = location.getPos();
         int oldDimID = entity.dimension;
-        int newDimID = location.getDimensionID();
+        int newDimID = location.getDimID();
         //DimDoors.log(TeleportHelper.class, "Starting teleporting now:");
         if (oldDimID == newDimID) {
             teleportLocal(entity, newPos);
