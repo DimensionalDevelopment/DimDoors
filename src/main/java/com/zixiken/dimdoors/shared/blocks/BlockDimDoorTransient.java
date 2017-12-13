@@ -25,6 +25,6 @@ public class BlockDimDoorTransient extends BlockDimDoorBase { // TODO: convert t
 
     @Override
     public boolean isCollidable() {
-        return false;
+        return true;
     }
 }

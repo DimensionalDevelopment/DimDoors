@@ -3,6 +3,8 @@ package com.zixiken.dimdoors.shared;
 import com.zixiken.dimdoors.DimDoors;
 import java.io.File;
 
+import com.zixiken.dimdoors.shared.world.gateways.DimensionFilter;
+import com.zixiken.dimdoors.shared.world.gateways.GatewayGenerator;
 import lombok.Getter;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -31,6 +33,18 @@ public class DDConfig {
 
     @Getter private static boolean dangerousLimboMonolithsEnabled = false;
     @Getter private static boolean monolithTeleportationEnabled = true;
+
+    @Getter private static int clusterGenerationChance;
+    @Getter private static int gatewayGenerationChance;
+
+    @Getter private static boolean limboEscapeEnabled;
+    @Getter private static boolean universalLimboEnabled;
+
+    @Getter private static DimensionFilter riftClusterDimensions;
+    @Getter private static DimensionFilter riftGatewayDimensions;
+
+    //Names of categories
+    private static final String CATEGORY_WORLD_GENERATION = "world generation";
 
     private static int setConfigIntWithMaxAndMin(Configuration config, String category, String key, int defaultValue, String comment, int minValue, int maxValue) {
         Property prop = config.get(category, key, defaultValue, comment, minValue, maxValue);
@@ -107,6 +121,35 @@ public class DDConfig {
         publicPocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "publicPocketSize", publicPocketSize,
                 "Sets how deep and wide any public pocket can be. [min: 0, max: maxPocketSize, default: 2]", 0, maxPocketSize);
 
+        clusterGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Cluster Generation Chance", 2,
+                "Sets the chance (out of " + GatewayGenerator.MAX_CLUSTER_GENERATION_CHANCE + ") that a cluster of rifts will " +
+                        "generate in a given chunk. The default chance is 2.").getInt();
+
+        gatewayGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Gateway Generation Chance", 15,
+                "Sets the chance (out of " + GatewayGenerator.MAX_GATEWAY_GENERATION_CHANCE + ") that a Rift Gateway will " +
+                        "generate in a given chunk. The default chance is 15.").getInt();
+
+        //World Generation
+        config.addCustomCategoryComment(CATEGORY_WORLD_GENERATION,
+                "The following settings require lists of dimensions in a specific format. " +
+                        "A list must consist of ranges separated by commas. A range may be a single number to indicate " +
+                        "just one dimension or two numbers in the form \"X - Y\". Spaces are permitted " +
+                        "but not required. Example: -100, -10 - -1, 20 - 30");
+
+        riftClusterDimensions = loadFilter(config, "Rift Cluster", "Rift Clusters");
+        riftGatewayDimensions = loadFilter(config, "Rift Gateway", "Rift Gateways");
+
+        limboEscapeEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Limbo Escape", true,
+                "Sets whether players are teleported out of Limbo when walking over the Eternal Fabric that " +
+                        "generates near the bottom of the dimension. If disabled, players could still leave through " +
+                        "dungeons in Limbo or by dying (if Hardcore Limbo is disabled). The default value is true.").getBoolean(true);
+
+        universalLimboEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Universal Limbo", false,
+                "Sets whether players are teleported to Limbo when they die in any dimension (except Limbo). " +
+                        "Normally, players only go to Limbo if they die in a pocket dimension. This setting will not " +
+                        "affect deaths in Limbo, which can be set with the Hardcore Limbo option. " +
+                        "The default value is false.").getBoolean(false);
+
         // Save config
         config.save();
     }
@@ -125,6 +168,29 @@ public class DDConfig {
                 prop = config.get(Configuration.CATEGORY_GENERAL, "doorRelativeDepthWeights", doorRelativeDepthWeights);
                 prop.set(doorRelativeDepthWeights);
             }
+        }
+    }
+
+    private static DimensionFilter loadFilter(Configuration config, String prefix, String description) {
+        boolean enableBlacklist = config.get(CATEGORY_WORLD_GENERATION, "Enable " + prefix + " Blacklist", true,
+                "Sets whether " + description + " will not generate in certain blacklisted dimensions. " +
+                        "If set to false, then " + description + " will follow a whitelist instead.").getBoolean(true);
+
+        String whitelist = config.get(CATEGORY_WORLD_GENERATION, prefix + " Whitelist", "",
+                "A list of the only dimensions in which " + description + " may generate.").getString();
+
+        String blacklist = config.get(CATEGORY_WORLD_GENERATION, prefix + " Blacklist", "",
+                "A list of dimensions in which " + description + " may not generate.").getString();
+
+        try {
+            if (enableBlacklist) {
+                return DimensionFilter.parseBlacklist(blacklist);
+            } else {
+                return DimensionFilter.parseWhitelist(whitelist);
+            }
+        } catch (Exception inner) {
+            throw new RuntimeException("An error occurred while loading a whitelist or blacklist setting for " +
+                    description + ". Please make sure that your configuration file is set up correctly.", inner);
         }
     }
 }
