@@ -200,7 +200,7 @@ public class BlockFabric extends Block {
     @Override
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) { //if this creates more problems, because everything ticks, we should probably move this to its own class again
         //Make sure this block is unraveled fabric in Limbo
-        if (state.getValue(TYPE) == EnumType.UNRAVELED && worldIn.provider instanceof WorldProviderLimbo) {
+        if (state.getValue(TYPE) == EnumType.ANCIENT && worldIn.provider instanceof WorldProviderLimbo) {
             LimboDecay.applySpreadDecay(worldIn, pos);
         }
     }
