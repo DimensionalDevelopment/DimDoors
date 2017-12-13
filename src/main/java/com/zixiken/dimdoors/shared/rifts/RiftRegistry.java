@@ -33,8 +33,8 @@ public class RiftRegistry extends WorldSavedData {
     @Getter private int dim;
     private World world;
 
-    @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode
-    public static class RiftInfo implements INBTStorable {
+    @lombok.AllArgsConstructor @lombok.NoArgsConstructor @lombok.EqualsAndHashCode
+    public static class RiftInfo implements com.zixiken.dimdoors.shared.util.INBTStorable {
         @Getter private List<AvailableLinkInfo> availableLinks = new LinkedList<>();
         @Getter private Set<Location> sources = new HashSet<>();
         @Getter private Set<Location> destinations = new HashSet<>();

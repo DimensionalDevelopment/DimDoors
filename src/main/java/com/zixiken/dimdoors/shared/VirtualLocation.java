@@ -1,12 +1,13 @@
 package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.shared.util.Location;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
 import net.minecraft.nbt.NBTTagCompound;
 
-@Value @ToString @Builder(toBuilder = true)
+@Value @ToString @AllArgsConstructor @Builder(toBuilder = true)
 public class VirtualLocation {
     int dimID;
     int x;

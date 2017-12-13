@@ -178,7 +178,7 @@ public class Pocket { // TODO: better visibilities
                 RiftDestination dest = wdest.getDestination();
                 if (dest.getType() == RiftDestination.DestinationType.POCKET_EXIT) {
                     destIterator.remove();
-                    linkTo.toBuilder().oldDestination(dest);
+                    linkTo.withOldDestination(dest);
                     rift.addDestination(linkTo, wdest.getWeight(), wdest.getGroup());
                 }
             }
