@@ -12,10 +12,10 @@ import java.util.List;
 
 @Getter @ToString @EqualsAndHashCode @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix lombok and make this abstract
-    @Getter private DestinationType type;
+    @Getter private EnumType type;
     @Wither @Getter private RiftDestination oldDestination;
 
-    public enum DestinationType {
+    public enum EnumType {
         RELATIVE, LOCAL, GLOBAL, NEW_PUBLIC, PRIVATE, LIMBO, RANDOM_RIFT_LINK, POCKET_ENTRANCE, POCKET_EXIT, PRIVATE_POCKET_EXIT, ESCAPE;
     }
 
@@ -24,7 +24,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
 
     public static RiftDestination readDestinationNBT(NBTTagCompound nbt) { // TODO: store old RANDOM_RIFT_LINK
         RiftDestination destination = null;
-        DestinationType type = DestinationType.valueOf(nbt.getString("type"));
+        EnumType type = EnumType.valueOf(nbt.getString("type"));
         switch (type) {
             case RELATIVE:
                 destination = new RelativeDestination();
@@ -93,7 +93,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", DestinationType.RELATIVE.name());
+            nbt.setString("type", EnumType.RELATIVE.name());
             nbt.setInteger("xOffset", xOffset);
             nbt.setInteger("yOffset", yOffset);
             nbt.setInteger("yOffset", zOffset);
@@ -120,7 +120,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", DestinationType.LOCAL.name());
+            nbt.setString("type", EnumType.LOCAL.name());
             nbt.setInteger("x", x);
             nbt.setInteger("y", y);
             nbt.setInteger("y", z);
@@ -149,7 +149,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", DestinationType.GLOBAL.name());
+            nbt.setString("type", EnumType.GLOBAL.name());
             nbt.setInteger("dim", dim);
             nbt.setInteger("x", x);
             nbt.setInteger("y", y);
@@ -171,7 +171,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", DestinationType.NEW_PUBLIC.name());
+            nbt.setString("type", EnumType.NEW_PUBLIC.name());
             return nbt;
         }
     }
@@ -189,7 +189,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", DestinationType.PRIVATE.name());
+            nbt.setString("type", EnumType.PRIVATE.name());
             return nbt;
         }
     }
@@ -207,7 +207,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", DestinationType.PRIVATE.name());
+            nbt.setString("type", EnumType.PRIVATE.name());
             return nbt;
         }
     }
@@ -243,7 +243,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", DestinationType.RANDOM_RIFT_LINK.name());
+            nbt.setString("type", EnumType.RANDOM_RIFT_LINK.name());
             nbt.setFloat("newDungeonRiftProbability", newDungeonRiftProbability);
             nbt.setFloat("depthPenalization", depthPenalization);
             nbt.setFloat("distancePenalization", distancePenalization);
@@ -286,7 +286,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", DestinationType.POCKET_ENTRANCE.name());
+            nbt.setString("type", EnumType.POCKET_ENTRANCE.name());
             nbt.setFloat("weight", weight);
 
             NBTTagList ifDestinationsNBT = new NBTTagList();
@@ -318,7 +318,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", DestinationType.POCKET_EXIT.name());
+            nbt.setString("type", EnumType.POCKET_EXIT.name());
             return nbt;
         }
     }
@@ -336,7 +336,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", DestinationType.PRIVATE_POCKET_EXIT.name());
+            nbt.setString("type", EnumType.PRIVATE_POCKET_EXIT.name());
             return nbt;
         }
     }
@@ -352,7 +352,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", DestinationType.ESCAPE.name());
+            nbt.setString("type", EnumType.ESCAPE.name());
             return nbt;
         }
     }

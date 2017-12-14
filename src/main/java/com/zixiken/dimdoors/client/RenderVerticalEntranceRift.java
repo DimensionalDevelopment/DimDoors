@@ -6,6 +6,9 @@ import java.util.Random;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
+import com.zixiken.dimdoors.shared.util.RGBA;
+import net.minecraft.block.BlockDoor;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.*;
 import net.minecraft.util.EnumFacing;
@@ -19,7 +22,7 @@ import net.minecraft.util.ResourceLocation;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityVerticalEntranceRift> {
+public class RenderVerticalEntranceRift extends TileEntitySpecialRenderer<TileEntityVerticalEntranceRift> {
 
     private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
     private ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/warp.png");
@@ -32,6 +35,11 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityVerticalE
     public void renderDimDoorTileEntity(TileEntityVerticalEntranceRift tile, double x, double y, double z) {
         GL11.glDisable(GL11.GL_LIGHTING);
         Random rand = new Random(31100L);
+
+        EnumFacing orientation = tile.orientation;
+        IBlockState state = tile.getWorld().getBlockState(tile.getPos());
+        if (state.getBlock() instanceof BlockDoor && state.getValue(BlockDoor.HALF) == BlockDoor.EnumDoorHalf.LOWER) y += 1;
+        // TODO: option for non-doors in the TileEntityEntranceRift
 
         for (int count = 0; count < 16; ++count) {
             GlStateManager.pushMatrix();
@@ -66,32 +74,30 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityVerticalE
             GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_LINEAR);
             GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_LINEAR);
 
-            EnumFacing orientation = tile.orientation.rotateYCCW();
-
             switch (orientation) {
                 case SOUTH:
+                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 1.0F, -0.15F));
+                    break;
+                case WEST:
                     GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, getFloatBuffer(1.0F, 0.0F, 0.0F, 0.15F));
                     break;
-                case WEST:
+                case NORTH:
                     GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 1.0F, 0.15F));
                     break;
-                case NORTH:
+                case EAST:
                     GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, getFloatBuffer(1.0F, 0.0F, 0.0F, -0.15F));
-                    break;
-                case EAST:
-                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 1.0F, -0.15F));
                     break;
             }
 
@@ -115,58 +121,34 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityVerticalE
             BufferBuilder worldRenderer = tessellator.getBuffer();
             worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 
-            float[] color = tile.getEntranceRenderColor(rand); // TODO: cache this since it's constant
-            GlStateManager.color(color[0] * var17, color[1] * var17, color[2] * var17, color[3]);
+            RGBA color = tile.getEntranceRenderColor(rand); // TODO: cache this since it's constant
+            GlStateManager.color(color.getRed() * var17, color.getGreen() * var17, color.getBlue() * var17, color.getAlpha());
 
             switch (orientation) {
                 case SOUTH:
-                    worldRenderer.pos(x + .01, y - 1, z).endVertex();
-                    worldRenderer.pos(x + .01, y - 1, z + 1.0D).endVertex();
-                    worldRenderer.pos(x + .01, y + 1, z + 1.0D).endVertex();
-                    worldRenderer.pos(x + .01, y + 1, z).endVertex();
-                    break;
-                case WEST:
-                    worldRenderer.pos(x, y + 1, z + .01).endVertex();
-                    worldRenderer.pos(x + 1, y + 1, z + .01).endVertex();
-                    worldRenderer.pos(x + 1, y - 1, z + .01).endVertex();
-                    worldRenderer.pos(x, y - 1, z + .01).endVertex();
-                    break;
-                case NORTH:
-                    worldRenderer.pos(x + .99, y + 1, z).endVertex();
-                    worldRenderer.pos(x + .99, y + 1, z + 1.0D).endVertex();
-                    worldRenderer.pos(x + .99, y - 1, z + 1.0D).endVertex();
-                    worldRenderer.pos(x + .99, y - 1, z).endVertex();
-                    break;
-                case EAST:
                     worldRenderer.pos(x, y - 1, z + .99).endVertex();
                     worldRenderer.pos(x + 1, y - 1, z + .99).endVertex();
                     worldRenderer.pos(x + 1, y + 1, z + .99).endVertex();
                     worldRenderer.pos(x, y + 1, z + .99).endVertex();
                     break;
-                /*case 4:
-                    GL11.glVertex3d(x + .15F, y - 1 , z);
-                    GL11.glVertex3d(x + .15, y - 1, z + 1.0D);
-                    GL11.glVertex3d(x + .15, y + 1, z + 1.0D);
-                    GL11.glVertex3d(x + .15, y + 1, z);
+                case WEST:
+                    worldRenderer.pos(x + .01, y - 1, z).endVertex();
+                    worldRenderer.pos(x + .01, y - 1, z + 1.0D).endVertex();
+                    worldRenderer.pos(x + .01, y + 1, z + 1.0D).endVertex();
+                    worldRenderer.pos(x + .01, y + 1, z).endVertex();
                     break;
-                case 5:
-                    GL11.glVertex3d(x, y + 1, z + .15);
-                    GL11.glVertex3d(x + 1, y + 1, z + .15);
-                    GL11.glVertex3d(x + 1, y - 1, z + .15);
-                    GL11.glVertex3d(x, y - 1, z + .15);
+                case NORTH:
+                    worldRenderer.pos(x, y + 1, z + .01).endVertex();
+                    worldRenderer.pos(x + 1, y + 1, z + .01).endVertex();
+                    worldRenderer.pos(x + 1, y - 1, z + .01).endVertex();
+                    worldRenderer.pos(x, y - 1, z + .01).endVertex();
                     break;
-                case 6:
-                    GL11.glVertex3d(x + .85, y + 1, z);
-                    GL11.glVertex3d(x + .85, y + 1, z + 1.0D);
-                    GL11.glVertex3d(x + .85, y - 1, z + 1.0D);
-                    GL11.glVertex3d(x + .85, y - 1, z);
+                case EAST:
+                    worldRenderer.pos(x + .99, y + 1, z).endVertex();
+                    worldRenderer.pos(x + .99, y + 1, z + 1.0D).endVertex();
+                    worldRenderer.pos(x + .99, y - 1, z + 1.0D).endVertex();
+                    worldRenderer.pos(x + .99, y - 1, z).endVertex();
                     break;
-                case 7:
-                    GL11.glVertex3d(x, y - 1, z + .85);
-                    GL11.glVertex3d(x + 1, y - 1, z + .85);
-                    GL11.glVertex3d(x + 1, y + 1, z + .85);
-                    GL11.glVertex3d(x, y + 1, z + .85);
-                    break;*/
             }
 
             tessellator.draw();
@@ -207,16 +189,17 @@ public class RenderDimDoor extends TileEntitySpecialRenderer<TileEntityVerticalE
 
         switch (rotation) {
             case SOUTH:
-                GL11.glTranslatef(-0.5F, 0, -0.03F);
+                GL11.glTranslatef(0.5F, 0F, -0.03F);
                 break;
             case WEST:
-                GL11.glTranslatef(-.5F, 0F, .97F);
+                GL11.glTranslatef(-0.5F, 0, -0.03F);
                 break;
             case NORTH:
-                GL11.glTranslatef(.5F, 0F, .97F);
+                GL11.glTranslatef(-.5F, 0F, .97F);
                 break;
             case EAST:
-                GL11.glTranslatef(0.5F, 0F, -0.03F);
+                GL11.glTranslatef(.5F, 0F, .97F);
+                break;
         }
 
         GL11.glDisable(GL_LIGHTING);

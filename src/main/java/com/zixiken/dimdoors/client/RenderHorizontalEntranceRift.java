@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderTransTrapdoor extends TileEntitySpecialRenderer<TileEntityHorizontalEntranceRift> {
+public class RenderHorizontalEntranceRift extends TileEntitySpecialRenderer<TileEntityHorizontalEntranceRift> {
 
     private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
     private ResourceLocation riftPath = new ResourceLocation(DimDoors.MODID + ":textures/other/rift.png");

@@ -16,8 +16,6 @@ public class BlockDimDoorTransient extends BlockDimDoorBase { // TODO: convert t
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
-    // TODO: close after use
-
     @Override
     public Item getItem() {
         return null;
@@ -25,6 +23,6 @@ public class BlockDimDoorTransient extends BlockDimDoorBase { // TODO: convert t
 
     @Override
     public boolean isCollidable() {
-        return true;
+        return false;
     }
 }

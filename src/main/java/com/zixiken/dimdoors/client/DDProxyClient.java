@@ -37,8 +37,8 @@ public class DDProxyClient extends DDProxyCommon {
     }
 
     public void registerRenderers() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityVerticalEntranceRift.class, new RenderDimDoor());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityHorizontalEntranceRift.class, new RenderTransTrapdoor());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityVerticalEntranceRift.class, new RenderVerticalEntranceRift());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityHorizontalEntranceRift.class, new RenderHorizontalEntranceRift());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFloatingRift.class, new RenderRift());
         RenderingRegistry.registerEntityRenderingHandler(MobMonolith.class, manager -> new RenderMobObelisk(manager, 0.5f));
     }

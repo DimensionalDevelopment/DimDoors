@@ -19,6 +19,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -75,7 +77,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
 
         NBTTagList destinationsNBT = (NBTTagList) nbt.getTag("destinations");
         destinations = new ArrayList<>();
-        for (NBTBase destinationNBT : destinationsNBT) {
+        if (destinationsNBT != null) for (NBTBase destinationNBT : destinationsNBT) {
             WeightedRiftDestination destination = new WeightedRiftDestination();
             destination.readFromNBT((NBTTagCompound) destinationNBT);
             destinations.add(destination);
@@ -91,12 +93,13 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
 
-        nbt.setTag("virtualLocation", virtualLocation.writeToNBT());
+        if (virtualLocation != null) nbt.setTag("virtualLocation", virtualLocation.writeToNBT());
 
         NBTTagList destinationsNBT = new NBTTagList();
         for (WeightedRiftDestination destination : destinations) {
             destinationsNBT.appendTag(destination.writeToNBT(nbt));
         }
+        nbt.setTag("destinations", destinationsNBT);
 
         nbt.setBoolean("makeDestinationPermanent", makeDestinationPermanent);
         nbt.setBoolean("preserveRotation", preserveRotation);
@@ -134,7 +137,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
         Iterator<WeightedRiftDestination> destinationIterator = destinations.iterator();
         while (destinationIterator.hasNext()) {
             RiftDestination dest = destinationIterator.next().getDestination();
-            if (dest.getType() == DestinationType.GLOBAL) {
+            if (dest.getType() == EnumType.GLOBAL) {
                 GlobalDestination globalDest = (GlobalDestination) dest;
                 if (globalDest.getDim() == location.getDimID()
                  && globalDest.getX() == location.getPos().getX()
@@ -144,7 +147,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                     destinationIterator.remove();
                 }
                 if (location.getDimID() == WorldUtils.getDim(world)) {
-                    if (dest.getType() == DestinationType.LOCAL) {
+                    if (dest.getType() == EnumType.LOCAL) {
                         LocalDestination localDest = (LocalDestination) dest;
                         if (localDest.getX() == location.getPos().getX()
                          && localDest.getY() == location.getPos().getY()
@@ -152,7 +155,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                             unregisterDest(dest);
                             destinationIterator.remove();
                         }
-                    } else if (dest.getType() == DestinationType.RELATIVE) {
+                    } else if (dest.getType() == EnumType.RELATIVE) {
                         RelativeDestination relativeDest = (RelativeDestination) dest;
                         if (location.getPos().equals(pos.add(relativeDest.getXOffset(), relativeDest.getYOffset(), relativeDest.getZOffset()))) {
                             unregisterDest(dest);
@@ -301,7 +304,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                 if (uuid != null) {
                     RiftRegistry privateRiftRegistry = RiftRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
                     destLoc = RiftRegistry.getEscapeRift(uuid);
-                    if (dest.getType() == DestinationType.PRIVATE_POCKET_EXIT) {
+                    if (dest.getType() == EnumType.PRIVATE_POCKET_EXIT) {
                         privateRiftRegistry.setPrivatePocketEntrance(uuid, new Location(world, pos)); // Remember which exit was used for next time the pocket is entered
                     }
                     if (destLoc == null) return false; // TODO: The player probably teleported into the dungeon/private pocket and is now trying to escape... What should we do? Limbo?
@@ -367,5 +370,25 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
     @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
         return oldState.getBlock() != newSate.getBlock();
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        return serializeNBT();
+    }
+
+    @Override
+    public void handleUpdateTag(NBTTagCompound tag) {
+        deserializeNBT(tag);
+    }
+
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        return new SPacketUpdateTileEntity(getPos(), 1, serializeNBT());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        deserializeNBT(pkt.getNbtCompound());
     }
 }

@@ -124,11 +124,11 @@ public class SchematicConverter {
                             blockInt = schematic.pallette.indexOf(additionalState);
                         } else {
                             schematic.pallette.add(additionalState);
-                            DimDoors.log(Schematic.class, "New blockstate detected. Original blockInt = " + blockInt + " and baseState is " + baseState);
+                            // DimDoors.log(Schematic.class, "New blockstate detected. Original blockInt = " + blockInt + " and baseState is " + baseState);
                             blockInt = schematic.pallette.size() - 1;
                         }
                     } else { //if this is ancient fabric
-                        //DimDoors.log(Schematic.class, "Non-default blockstate in palette detected. Original blockInt = " + blockInt + " and baseState is " + baseState.toString()); //@todo should only print a line on load of ancient fabric
+                        // DimDoors.log(Schematic.class, "Non-default blockstate in palette detected. Original blockInt = " + blockInt + " and baseState is " + baseState.toString()); //@todo should only print a line on load of ancient fabric
                         blockInt = schematic.pallette.indexOf(baseState);
                     }
                     schematic.blockData[x][y][z] = blockInt;

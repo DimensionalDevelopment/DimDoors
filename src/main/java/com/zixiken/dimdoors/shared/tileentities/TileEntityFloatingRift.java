@@ -26,7 +26,7 @@ public class TileEntityFloatingRift extends TileEntityRift implements ITickable 
 
     //Need to be saved:
     private int updateTimer;
-    public boolean shouldClose = false;
+    public boolean shouldClose = false; // TODO
     public int spawnedEndermenID = 0;
     public float growth = 0;
 

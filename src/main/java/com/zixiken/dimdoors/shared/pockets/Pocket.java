@@ -132,7 +132,7 @@ public class Pocket { // TODO: better visibilities
         int index = 0;
         for (TileEntityRift rift : rifts) { // Find an entrance
             for (WeightedRiftDestination weightedPocketEntranceDest : rift.getDestinations()) {
-                if (weightedPocketEntranceDest.getDestination().getType() == RiftDestination.DestinationType.POCKET_ENTRANCE) {
+                if (weightedPocketEntranceDest.getDestination().getType() == RiftDestination.EnumType.POCKET_ENTRANCE) {
                     entranceIndexWeights.put(index, weightedPocketEntranceDest.getWeight());
                     rift.markDirty();
                     index++;
@@ -148,7 +148,7 @@ public class Pocket { // TODO: better visibilities
             while (destIterator.hasNext()) {
                 WeightedRiftDestination wdest = destIterator.next();
                 RiftDestination dest = wdest.getDestination();
-                if (dest.getType() == RiftDestination.DestinationType.POCKET_ENTRANCE) {
+                if (dest.getType() == RiftDestination.EnumType.POCKET_ENTRANCE) {
                     destIterator.remove();
                     if (index == selectedEntranceIndex) {
                         entrance = new Location(rift.getWorld(), rift.getPos());
@@ -176,7 +176,7 @@ public class Pocket { // TODO: better visibilities
             while (destIterator.hasNext()) {
                 WeightedRiftDestination wdest = destIterator.next();
                 RiftDestination dest = wdest.getDestination();
-                if (dest.getType() == RiftDestination.DestinationType.POCKET_EXIT) {
+                if (dest.getType() == RiftDestination.EnumType.POCKET_EXIT) {
                     destIterator.remove();
                     linkTo.withOldDestination(dest);
                     rift.addDestination(linkTo, wdest.getWeight(), wdest.getGroup());

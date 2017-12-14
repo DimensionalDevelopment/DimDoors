@@ -24,9 +24,4 @@ public class BlockDimDoorPersonal extends BlockDimDoorBase {
     public Item getItem() {
         return ModItems.PERSONAL_DIMENSIONAL_DOOR;
     }
-    
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileEntityVerticalEntranceRift();
-    }
 }

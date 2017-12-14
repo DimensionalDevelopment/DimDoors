@@ -31,11 +31,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SuppressWarnings("deprecation")
 public class BlockFabric extends Block {
 
     public static final String ID = "fabric";
-    public static final PropertyEnum<BlockFabric.EnumType> TYPE = PropertyEnum.create("type", BlockFabric.EnumType.class);
+    public static final PropertyEnum<EnumType> TYPE = PropertyEnum.create("type", BlockFabric.EnumType.class);
 
     private static final float SUPER_HIGH_HARDNESS = 10000000000000F;
     private static final float SUPER_EXPLOSION_RESISTANCE = 18000000F;
@@ -55,7 +54,6 @@ public class BlockFabric extends Block {
         public String toString() {
             return name;
         }
-
     }
 
     public BlockFabric() {

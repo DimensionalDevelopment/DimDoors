@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
-public class TileEntityVerticalEntranceRift extends TileEntityEntranceRift {
+public class TileEntityVerticalEntranceRift extends TileEntityEntranceRift { // TODO: make builder?
 
     public boolean doorShouldRender = true;
     public EnumFacing orientation = EnumFacing.SOUTH;
@@ -34,6 +34,8 @@ public class TileEntityVerticalEntranceRift extends TileEntityEntranceRift {
     public void teleportTo(Entity entity) {
         super.teleportTo(entity);
         BlockPos offsetPos = entity.getPosition().offset(orientation);
-        entity.setPosition(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
+        entity.setPositionAndRotation(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ(), orientation.getHorizontalAngle(), 0); // TODO: let TileEntityRift handle rotation?
     }
+
+
 }

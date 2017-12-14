@@ -6,6 +6,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -21,7 +22,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityProvider {
+public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityProvider { // TODO: implement RiftProvider
 
     public BlockDimDoorBase(Material material) {
         super(material);
@@ -31,12 +32,15 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
     public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn) {
         if (state.getValue(HALF) == EnumDoorHalf.UPPER) pos = pos.down();
         IBlockState doorState = worldIn.getBlockState(pos);
+        if (!(doorState.getBlock() instanceof BlockDoor)) return;
         if (doorState.getValue(BlockDoor.OPEN) && entityIn.timeUntilPortal == 0) {
             entityIn.timeUntilPortal = 50; // 2.5s
             toggleDoor(worldIn, pos, false);
-            TileEntityRift rift = getRiftTile(worldIn, pos, worldIn.getBlockState(pos));
-            if(!rift.teleport(entityIn) && entityIn instanceof EntityPlayer) {
+            TileEntityEntranceRift rift = getRift(worldIn, pos, state);
+            if (!rift.teleport(entityIn) && entityIn instanceof EntityPlayer) {
                 DimDoors.chat((EntityPlayer) entityIn, "Teleporting failed because this entrance has no destinations!");
+            } else if (rift.isCloseAfterPassThrough()) { // TODO: move logic to TileEntityEntranceRift?
+                worldIn.destroyBlock(pos, false);
             }
         }
     }
@@ -53,9 +57,22 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
         if (iblockstate.getBlock() != this) {
             return false;
         } else {
-            super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
+            state = iblockstate.cycleProperty(OPEN);
+            worldIn.setBlockState(blockpos, state, 10);
+            worldIn.markBlockRangeForRenderUpdate(blockpos, pos);
+            worldIn.playEvent(playerIn, state.getValue(OPEN) ? getOpenSound() : getCloseSound(), pos, 0);
             return true;
         }
+    }
+
+    private int getCloseSound()
+    {
+        return blockMaterial == Material.IRON ? 1011 : 1012;
+    }
+
+    private int getOpenSound()
+    {
+        return blockMaterial == Material.IRON ? 1005 : 1006;
     }
 
     public boolean checkCanOpen(World world, BlockPos pos, EntityPlayer player) { // TODO: locking system
@@ -88,31 +105,44 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
         return new ItemStack(getItem());
     }
 
+    @Override
+    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
+        super.onBlockAdded(worldIn, pos, state);
+        if (hasTileEntity(state)) {
+            TileEntityVerticalEntranceRift rift = createNewTileEntity(worldIn, getMetaFromState(state));
+            rift.orientation = state.getValue(BlockDoor.FACING).getOpposite();
+            worldIn.setTileEntity(pos, rift);
+            rift.markDirty();
+        }
+    }
+
 
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public TileEntityVerticalEntranceRift createNewTileEntity(World worldIn, int meta) {
         return new TileEntityVerticalEntranceRift();
     }
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         if (!hasTileEntity(state)) return;
-
-        TileEntityEntranceRift origRift = (TileEntityEntranceRift) worldIn.getTileEntity(pos);
+        TileEntityEntranceRift origRift = getRift(worldIn, pos, state);
         super.breakBlock(worldIn, pos, state);
         if (origRift.isPlaceRiftOnBreak()) {
             worldIn.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
             TileEntityRift newRift = (TileEntityRift) worldIn.getTileEntity(pos);
-            newRift.copyFrom(origRift); // TODO: make sure this works
+            newRift.copyFrom(origRift);
+            worldIn.setBlockState(pos, ModBlocks.RIFT.getDefaultState()); // TODO: send the TileEntity
         }
     }
 
-    public TileEntityEntranceRift getRiftTile(World world, BlockPos pos, IBlockState state) {
+    public TileEntityEntranceRift getRift(World world, BlockPos pos, IBlockState state) {
         TileEntity tileEntity;
         if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER) {
-            tileEntity = world.getTileEntity(pos.up());
+            tileEntity = world.getTileEntity(pos);
+            if (!(tileEntity instanceof TileEntityRift)) tileEntity = world.getTileEntity(pos.up());
         } else {
             tileEntity = world.getTileEntity(pos);
+            if (!(tileEntity instanceof TileEntityRift)) tileEntity = world.getTileEntity(pos.down());
         }
         return (TileEntityEntranceRift) tileEntity;
     }

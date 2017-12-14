@@ -1,11 +1,14 @@
 package com.zixiken.dimdoors.shared.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.client.ClosingRiftFX;
+import com.zixiken.dimdoors.client.GoggleRiftFX;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
 import java.util.*;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.EnumPushReaction;
@@ -19,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -26,16 +30,15 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.IFluidBlock;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SuppressWarnings("deprecation")
 public class BlockRift extends Block implements ITileEntityProvider {
 
     public static final String ID = "rift";
 
-    private final ArrayList<Block> blocksImmuneToRift;	// List of Vanilla blocks immune to rifts
-    private final ArrayList<Block> modBlocksImmuneToRift; // List of DD blocks immune to rifts
+    private final ArrayList<Block> blocksImmuneToRift; // TODO
 
     public BlockRift() {
         super(Material.LEAVES); //Fire is replacable. We do not want this block to be replacable. We do want to walk through it though...
@@ -44,20 +47,19 @@ public class BlockRift extends Block implements ITileEntityProvider {
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
 
-        modBlocksImmuneToRift = new ArrayList<>();
-        modBlocksImmuneToRift.add(ModBlocks.FABRIC);
-        modBlocksImmuneToRift.add(ModBlocks.DIMENSIONAL_DOOR);
-        modBlocksImmuneToRift.add(ModBlocks.WARP_DIMENSIONAL_DOOR);
-        modBlocksImmuneToRift.add(ModBlocks.DIMENSIONAL_TRAPDOOR);
-        modBlocksImmuneToRift.add(ModBlocks.UNSTABLE_DIMENSIONAL_DOOR);
-        modBlocksImmuneToRift.add(ModBlocks.RIFT);
-        modBlocksImmuneToRift.add(ModBlocks.TRANSIENT_DIMENSIONAL_DOOR);
-        modBlocksImmuneToRift.add(ModBlocks.GOLD_DIMENSIONAL_DOOR);
-        modBlocksImmuneToRift.add(ModBlocks.GOLD_DOOR);
-        modBlocksImmuneToRift.add(ModBlocks.PERSONAL_DIMENSIONAL_DOOR);
-        modBlocksImmuneToRift.add(ModBlocks.QUARTZ_DOOR);
-
         blocksImmuneToRift = new ArrayList<>();
+        blocksImmuneToRift.add(ModBlocks.FABRIC);
+        blocksImmuneToRift.add(ModBlocks.DIMENSIONAL_DOOR);
+        blocksImmuneToRift.add(ModBlocks.WARP_DIMENSIONAL_DOOR);
+        blocksImmuneToRift.add(ModBlocks.DIMENSIONAL_TRAPDOOR);
+        blocksImmuneToRift.add(ModBlocks.UNSTABLE_DIMENSIONAL_DOOR);
+        blocksImmuneToRift.add(ModBlocks.RIFT);
+        blocksImmuneToRift.add(ModBlocks.TRANSIENT_DIMENSIONAL_DOOR);
+        blocksImmuneToRift.add(ModBlocks.GOLD_DIMENSIONAL_DOOR);
+        blocksImmuneToRift.add(ModBlocks.GOLD_DOOR);
+        blocksImmuneToRift.add(ModBlocks.PERSONAL_DIMENSIONAL_DOOR);
+        blocksImmuneToRift.add(ModBlocks.QUARTZ_DOOR);
+
         blocksImmuneToRift.add(Blocks.LAPIS_BLOCK);
         blocksImmuneToRift.add(Blocks.IRON_BLOCK);
         blocksImmuneToRift.add(Blocks.GOLD_BLOCK);
@@ -141,39 +143,19 @@ public class BlockRift extends Block implements ITileEntityProvider {
         TileEntityFloatingRift tile = (TileEntityFloatingRift) worldIn.getTileEntity(pos);
         //renders an extra little blob on top of the actual rift location so its easier to find.
         // Eventually will only renderDoorRift if the player has the goggles.
-        /*FMLClientHandler.instance().getClient().effectRenderer.addEffect(new GoggleRiftFX(
-                worldIn,
+        //FMLClientHandler.instance().getClient().effectRenderer.addEffect(new GoggleRiftFX(
+        /*        worldIn,
                 x + .5, y + .5, z + .5,
-                rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
-         */
-        //if (tile.shouldClose) {//renders an opposite color effect if it is being closed by the rift remover
-        //    FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(
-        //            worldIn,
-        //            x + .5, y + .5, z + .5,
-        //            rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
-        //} // TODO
-    }
+                rand.nextGaussian() * 0.01D,
+                rand.nextGaussian() * 0.01D,
+                rand.nextGaussian() * 0.01D));*/
 
-    public boolean tryPlacingRift(World world, BlockPos pos) {
-        return world != null && !isBlockImmune(world, pos)
-                && world.setBlockState(pos, getDefaultState()); //@todo This returns false, because this block does not have blockstates configured correctly. !isBlockImmune doesn't seem to be true either though...
-    }
-
-    public boolean isBlockImmune(World world, BlockPos pos) {
-        Block block = world.getBlockState(pos).getBlock();
-        // SenseiKiwi: I've switched to using the block's blast resistance instead of its
-        // hardness since most defensive blocks are meant to defend against explosions and
-        // may have low hardness to make them easier to build with. However, block.getExplosionResistance()
-        // is designed to receive an entity, the source of the blast. We have no entity so
-        // I've set this to access blockResistance directly. Might need changing later.
-        return block != null /* && block >= MIN_IMMUNE_RESISTANCE */ || modBlocksImmuneToRift.contains(block) || blocksImmuneToRift.contains(block);
-    }
-
-    public boolean isModBlockImmune(World world, BlockPos pos) {
-        // Check whether the block at the specified location is one of the
-        // rift-resistant blocks from DD.
-        Block block = world.getBlockState(pos).getBlock();
-        return block != null && modBlocksImmuneToRift.contains(block);
+        if (tile.shouldClose) {//renders an opposite color effect if it is being closed by the rift remover
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(
+                    worldIn,
+                    x + .5, y + .5, z + .5,
+                    rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
+        }
     }
 
     @Override
@@ -193,8 +175,8 @@ public class BlockRift extends Block implements ITileEntityProvider {
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-        TileEntityFloatingRift riftTile = (TileEntityFloatingRift) worldIn.getTileEntity(pos);
-
+        TileEntityFloatingRift rift = (TileEntityFloatingRift) worldIn.getTileEntity(pos);
+        super.breakBlock(worldIn, pos, state);
     }
 
     @Override
@@ -204,5 +186,10 @@ public class BlockRift extends Block implements ITileEntityProvider {
 
     public TileEntityFloatingRift getRiftTile(World world, BlockPos pos, IBlockState state) {
         return (TileEntityFloatingRift) world.getTileEntity(pos);
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        return false; // TODO
     }
 }

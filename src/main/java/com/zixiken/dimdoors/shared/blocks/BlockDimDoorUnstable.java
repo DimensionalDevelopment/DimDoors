@@ -5,6 +5,7 @@ import com.zixiken.dimdoors.shared.items.ModItems;
 import java.util.Random;
 
 import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
@@ -22,7 +23,7 @@ public class BlockDimDoorUnstable extends BlockDimDoorBase {
         setHardness(.2F);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setLightLevel(.0F);
+        setLightLevel(0.0F);
     }
 
     @Override
@@ -32,11 +33,6 @@ public class BlockDimDoorUnstable extends BlockDimDoorBase {
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return Items.IRON_DOOR;
-    }
-    
-    @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileEntityVerticalEntranceRift();
+        return state.getValue(HALF) == BlockDoor.EnumDoorHalf.UPPER ? Items.AIR : Items.IRON_DOOR;
     }
 }

@@ -48,9 +48,9 @@ public abstract class DDProxyCommon implements IDDProxy {
         if (tile instanceof TileEntityVerticalEntranceRift) {
             TileEntityVerticalEntranceRift dimTile = (TileEntityVerticalEntranceRift) tile;
             IBlockState state = world.getBlockState(pos.down());
-            dimTile.orientation = state.getBlock() instanceof BlockDimDoorBase
-                    ? state.getValue(BlockDoor.FACING).getOpposite()
-                    : ModBlocks.DIMENSIONAL_DOOR.getDefaultState().getValue(BlockDoor.FACING);
+            //dimTile.orientation = state.getBlock() instanceof BlockDimDoorBase
+            //        ? state.getValue(BlockDoor.FACING).getOpposite()
+            //        : ModBlocks.DIMENSIONAL_DOOR.getDefaultState().getValue(BlockDoor.FACING);
             // dimTile.doorShouldRender = door.isDoorOnRift(world, pos) && door.isUpperDoorBlock(world.getBlockState(pos));
             dimTile.lockStatus = 0; //@todo
             dimTile.markDirty();
