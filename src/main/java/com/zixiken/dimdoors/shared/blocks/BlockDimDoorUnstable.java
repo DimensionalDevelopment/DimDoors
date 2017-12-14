@@ -20,7 +20,7 @@ public class BlockDimDoorUnstable extends BlockDimDoorBase {
 
     public BlockDimDoorUnstable() {
         super(Material.IRON);
-        setHardness(.2F);
+        setHardness(0.2F);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setLightLevel(0.0F);
@@ -34,5 +34,10 @@ public class BlockDimDoorUnstable extends BlockDimDoorBase {
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         return state.getValue(HALF) == BlockDoor.EnumDoorHalf.UPPER ? Items.AIR : Items.IRON_DOOR;
+    }
+
+    @Override
+    protected void setupRift(TileEntityVerticalEntranceRift rift) {
+        // TODO
     }
 }

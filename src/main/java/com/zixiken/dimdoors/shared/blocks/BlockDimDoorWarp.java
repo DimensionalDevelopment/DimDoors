@@ -24,4 +24,9 @@ public class BlockDimDoorWarp extends BlockDimDoorBase {
     public Item getItem() {
         return ModItems.WARP_DIMENSIONAL_DOOR;
     }
+
+    @Override
+    protected void setupRift(TileEntityVerticalEntranceRift rift) {
+        // TODO
+    }
 }

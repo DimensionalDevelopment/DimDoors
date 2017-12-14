@@ -24,4 +24,9 @@ public class BlockDimDoorPersonal extends BlockDimDoorBase {
     public Item getItem() {
         return ModItems.PERSONAL_DIMENSIONAL_DOOR;
     }
+
+    @Override
+    protected void setupRift(TileEntityVerticalEntranceRift rift) {
+        // TODO
+    }
 }

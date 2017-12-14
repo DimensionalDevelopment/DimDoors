@@ -3,6 +3,7 @@ package com.zixiken.dimdoors.shared.commands;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.*;
 import com.zixiken.dimdoors.shared.pockets.*;
+import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
 import com.zixiken.dimdoors.shared.util.StringUtils;
 import com.zixiken.dimdoors.shared.util.WorldUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
@@ -50,7 +51,10 @@ public class PocketCommand extends CommandBase {
                 if (DimDoorDimensions.isPocketDimension(dim)) {
                     PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(args[0], args[1]);
                     Pocket pocket = PocketGenerator.generatePocketFromTemplate(dim, 0, template, new VirtualLocation(0, 0, 0, 0,0));
-                    // TODO: teleport the player
+                    // TODO: options for linking back/not setting entrance
+                    pocket.selectEntrance();
+                    TileEntityRift entrance = (TileEntityRift) player.world.getTileEntity(pocket.getEntrance().getPos());
+                    entrance.teleportTo(player);
                 } else {
                     DimDoors.chat(player, "You must be in a pocket dimension to use this command!");
                 }

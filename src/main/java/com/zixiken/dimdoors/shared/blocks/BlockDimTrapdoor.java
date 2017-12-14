@@ -2,10 +2,7 @@ package com.zixiken.dimdoors.shared.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityHorizontalEntranceRift;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockTrapDoor;
-import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -23,10 +20,10 @@ public class BlockDimTrapdoor extends BlockTrapDoor implements ITileEntityProvid
 
     public BlockDimTrapdoor() {
         super(Material.WOOD);
-        setCreativeTab(DimDoors.dimDoorsCreativeTab);
-        setHardness(1.0F);
-        setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setUnlocalizedName(ID);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setHardness(1.0F);
         setSoundType(SoundType.WOOD);
     }
 
@@ -47,22 +44,25 @@ public class BlockDimTrapdoor extends BlockTrapDoor implements ITileEntityProvid
         }
     }
 
+    public boolean checkCanOpen(World world, BlockPos pos, EntityPlayer player) {
+        return true; // TODO: locking system
+    }
+
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
         return new TileEntityHorizontalEntranceRift();
+    }
+
+
+    @Override
+    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
+        super.onBlockAdded(worldIn, pos, state);
+        // TODO
     }
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         // TODO
         super.breakBlock(worldIn, pos, state);
-    }
-
-    public boolean checkCanOpen(World world, BlockPos pos, EntityPlayer player) {
-        return true; // TODO: locking system
-    }
-
-    public static boolean isTrapdoorSetLow(IBlockState state) {
-        return state.getValue(BlockTrapDoor.HALF) == DoorHalf.BOTTOM;
     }
 }

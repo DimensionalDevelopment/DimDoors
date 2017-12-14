@@ -9,7 +9,7 @@ public class ItemStableFabric extends Item {
     public static final String ID = "stable_fabric";
 
     public ItemStableFabric() {
-        setCreativeTab(DimDoors.dimDoorsCreativeTab);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }

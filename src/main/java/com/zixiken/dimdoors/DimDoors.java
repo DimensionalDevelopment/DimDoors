@@ -36,7 +36,7 @@ public class DimDoors {
     @Mod.Instance(DimDoors.MODID)
     public static DimDoors instance;
 
-    public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimensional_doors_creative_tab") {
+    public static final CreativeTabs DIM_DOORS_CREATIVE_TAB = new CreativeTabs("dimensional_doors_creative_tab") {
         @Override
         @SideOnly(Side.CLIENT)
         public ItemStack getTabIconItem() {

@@ -29,7 +29,7 @@ public class ItemRiftBlade extends ItemSword {
 
     public ItemRiftBlade() {
         super(ToolMaterial.DIAMOND);
-        setCreativeTab(DimDoors.dimDoorsCreativeTab);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }

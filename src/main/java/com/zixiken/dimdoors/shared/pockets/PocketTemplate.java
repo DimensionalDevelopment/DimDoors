@@ -95,9 +95,6 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
                     DimDoors.log(getClass(), "Rift found in schematic: " + pos);
                     TileEntityRift rift = (TileEntityRift) tileEntity;
                     rifts.add(rift);
-                    if (rift instanceof TileEntityVerticalEntranceRift) {
-                        DimDoors.proxy.updateDoorTE((BlockDimDoorBase) world.getBlockState(pos).getBlock(), world, pos);
-                    }
                 } else {
                     try {
                         tileEntity.readFromNBT(tileEntityNBT); //this reads in the wrong blockPos

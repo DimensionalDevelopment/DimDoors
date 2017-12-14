@@ -241,7 +241,6 @@ public class RenderVerticalEntranceRift extends TileEntitySpecialRenderer<TileEn
     public void render(TileEntityVerticalEntranceRift te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         World world = te.getWorld();
         BlockPos pos = te.getPos();
-        ((BlockDimDoorBase) world.getBlockState(pos).getBlock()).updateAttachedTile(world, pos);
         if (te.doorShouldRender) {
             renderDimDoorTileEntity(te, x, y, z);
             if (te.lockStatus >= 1) {

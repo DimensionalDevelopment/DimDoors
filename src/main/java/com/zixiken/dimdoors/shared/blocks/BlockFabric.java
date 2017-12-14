@@ -36,9 +36,6 @@ public class BlockFabric extends Block {
     public static final String ID = "fabric";
     public static final PropertyEnum<EnumType> TYPE = PropertyEnum.create("type", BlockFabric.EnumType.class);
 
-    private static final float SUPER_HIGH_HARDNESS = 10000000000000F;
-    private static final float SUPER_EXPLOSION_RESISTANCE = 18000000F;
-
     public enum EnumType implements IStringSerializable {
         REALITY("reality", 0),
         ANCIENT("ancient", 1),
@@ -58,26 +55,18 @@ public class BlockFabric extends Block {
 
     public BlockFabric() {
         super(Material.CLOTH);
-        setCreativeTab(DimDoors.dimDoorsCreativeTab);
-        setLightLevel(1.0F);
-        setHardness(0.1F);
-        setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setUnlocalizedName(ID);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setHardness(0.1F);
+        setLightLevel(1.0F);
         setSoundType(SoundType.STONE);
 
         setTickRandomly(true);
     }
 
-    /**
-     * Theoretically, this shouldn't be needed, but just for precautions
-     * this is added just incase
-     * @param world world the block is in
-     * @param pos block position
-     * @param face the block face
-     * @return fire begone!
-     */
     @Override
-    public boolean isFlammable(IBlockAccess world, BlockPos pos, EnumFacing face) {
+    public boolean isFlammable(IBlockAccess world, BlockPos pos, EnumFacing face) { // Just in case
         return false;
     }
 
@@ -103,7 +92,7 @@ public class BlockFabric extends Block {
     @Override
     public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {
         if (blockState.getValue(TYPE).equals(EnumType.ANCIENT) || blockState.getValue(TYPE).equals(EnumType.ETERNAL)) {
-            return SUPER_HIGH_HARDNESS;
+            return -1; // unbreakable
         } else {
             return blockHardness;
         }
@@ -113,7 +102,7 @@ public class BlockFabric extends Block {
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
         IBlockState state = world.getBlockState(pos);
         if (state.getValue(TYPE).equals(EnumType.ANCIENT) || state.getValue(TYPE).equals(EnumType.ETERNAL)) {
-            return SUPER_EXPLOSION_RESISTANCE;
+            return 6000000.0F / 5;
         } else {
             return super.getExplosionResistance(world, pos, exploder, explosion);
         }
@@ -121,12 +110,7 @@ public class BlockFabric extends Block {
 
     @Override
     public int damageDropped(IBlockState state) {
-        if (state.getValue(TYPE).equals(EnumType.ANCIENT) || state.getValue(TYPE).equals(EnumType.ETERNAL)) {
-            //Return 0 to avoid dropping Ancient or Eternal Fabric even if the player somehow manages to break it
-            return EnumType.REALITY.ordinal();
-        } else {
-            return state.getValue(TYPE).ordinal();
-        }
+        return state.getValue(TYPE).ordinal();
     }
 
     /**
@@ -217,7 +201,7 @@ public class BlockFabric extends Block {
     @Override
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) { //if this creates more problems, because everything ticks, we should probably move this to its own class again
         //Make sure this block is unraveled fabric in Limbo
-        if (state.getValue(TYPE) == EnumType.ANCIENT && worldIn.provider instanceof WorldProviderLimbo) {
+        if (state.getValue(TYPE) == EnumType.UNRAVELED && worldIn.provider instanceof WorldProviderLimbo) {
             LimboDecay.applySpreadDecay(worldIn, pos);
         }
     }

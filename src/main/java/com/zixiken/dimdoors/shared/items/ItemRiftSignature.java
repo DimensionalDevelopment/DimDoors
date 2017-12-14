@@ -15,7 +15,7 @@ public class ItemRiftSignature extends Item {
     public static final String ID = "rift_signature";
 
     public ItemRiftSignature() {
-        setCreativeTab(DimDoors.dimDoorsCreativeTab);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }

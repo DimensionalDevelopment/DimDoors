@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
 import net.minecraft.block.Block;
@@ -22,7 +23,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityProvider { // TODO: implement RiftProvider
+public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityProvider { // TODO: implement RiftProvider as an interface of both doors and trapdoors
 
     public BlockDimDoorBase(Material material) {
         super(material);
@@ -75,24 +76,20 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
         return blockMaterial == Material.IRON ? 1005 : 1006;
     }
 
-    public boolean checkCanOpen(World world, BlockPos pos, EntityPlayer player) { // TODO: locking system
-        return true;
+    @Override
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
+        if (checkCanOpen(worldIn, pos, null)) {
+            super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
+        }
+    }
+
+    public boolean checkCanOpen(World world, BlockPos pos, EntityPlayer player) {
+        return true; // TODO: locking system
     }
 
     @Override
     public boolean hasTileEntity(IBlockState state) {
         return state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER;
-    }
-
-    // Called to update the render information on the tile entity. Could probably implement a data watcher,
-    // but this works fine and is more versatile I think.
-    public void updateAttachedTile(World world, BlockPos pos) { // TODO
-        DimDoors.proxy.updateDoorTE(this, world, pos);
-    }
-
-    @Override
-    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
-        updateAttachedTile(worldIn, pos);
     }
 
     @Override
@@ -106,32 +103,35 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
     }
 
     @Override
+    public TileEntityVerticalEntranceRift createNewTileEntity(World worldIn, int meta) {
+        return new TileEntityVerticalEntranceRift();
+    }
+
+    @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
         super.onBlockAdded(worldIn, pos, state);
         if (hasTileEntity(state)) {
             TileEntityVerticalEntranceRift rift = createNewTileEntity(worldIn, getMetaFromState(state));
             rift.orientation = state.getValue(BlockDoor.FACING).getOpposite();
             worldIn.setTileEntity(pos, rift);
+            setupRift(rift);
             rift.markDirty();
+            rift.register();
         }
-    }
-
-
-    @Override
-    public TileEntityVerticalEntranceRift createNewTileEntity(World worldIn, int meta) {
-        return new TileEntityVerticalEntranceRift();
     }
 
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         if (!hasTileEntity(state)) return;
-        TileEntityEntranceRift origRift = getRift(worldIn, pos, state);
+        TileEntityEntranceRift rift = getRift(worldIn, pos, state);
         super.breakBlock(worldIn, pos, state);
-        if (origRift.isPlaceRiftOnBreak()) {
-            worldIn.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
-            TileEntityRift newRift = (TileEntityRift) worldIn.getTileEntity(pos);
-            newRift.copyFrom(origRift);
-            worldIn.setBlockState(pos, ModBlocks.RIFT.getDefaultState()); // TODO: send the TileEntity
+        if (rift.isPlaceRiftOnBreak()) {
+            TileEntityRift newRift = new TileEntityFloatingRift();
+            newRift.copyFrom(rift);
+            worldIn.setBlockState(rift.getPos(), ModBlocks.RIFT.getDefaultState());
+            worldIn.setTileEntity(rift.getPos(), newRift);
+        } else {
+            rift.unregister();
         }
     }
 
@@ -148,4 +148,6 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
     }
 
     public abstract Item getItem();
+
+    protected abstract void setupRift(TileEntityVerticalEntranceRift rift);
 }

@@ -41,11 +41,11 @@ public class BlockRift extends Block implements ITileEntityProvider {
     private final ArrayList<Block> blocksImmuneToRift; // TODO
 
     public BlockRift() {
-        super(Material.LEAVES); //Fire is replacable. We do not want this block to be replacable. We do want to walk through it though...
-        setTickRandomly(true);
-        setHardness(1.0F);
-        setUnlocalizedName(ID);
+        super(Material.LEAVES); //Fire is replacable. We do not want this block to be replacable. We do want to walk through it though... TODO
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setUnlocalizedName(ID);
+        setTickRandomly(true);
+        setBlockUnbreakable();
 
         blocksImmuneToRift = new ArrayList<>();
         blocksImmuneToRift.add(ModBlocks.FABRIC);
@@ -112,9 +112,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
     }
 
     public void dropWorldThread(World world, BlockPos pos, Random random) {
-        Block block = world.getBlockState(pos).getBlock();
-
-        if (!world.getBlockState(pos).equals(Blocks.AIR) && !(block instanceof BlockLiquid || block instanceof IFluidBlock)) {
+        if (!world.getBlockState(pos).equals(Blocks.AIR)) {
             ItemStack thread = new ItemStack(ModItems.WORLD_THREAD, 1);
             world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), thread));
         }
@@ -150,7 +148,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
                 rand.nextGaussian() * 0.01D,
                 rand.nextGaussian() * 0.01D));*/
 
-        if (tile.shouldClose) {//renders an opposite color effect if it is being closed by the rift remover
+        if (tile.shouldClose) { //renders an opposite color effect if it is being closed by the rift remover
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(
                     worldIn,
                     x + .5, y + .5, z + .5,

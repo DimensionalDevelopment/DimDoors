@@ -35,7 +35,7 @@ public abstract class ItemDoorBase extends ItemDoor {
     public ItemDoorBase(Block block, ItemDoor vanillaDoor) {
         super(block);
         setMaxStackSize(64);
-        setCreativeTab(DimDoors.dimDoorsCreativeTab);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
 
         doorItemMapping.put(this, this); //@todo Why?
         if (vanillaDoor != null) {

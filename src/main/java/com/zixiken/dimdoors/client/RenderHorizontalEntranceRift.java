@@ -103,7 +103,7 @@ public class RenderHorizontalEntranceRift extends TileEntitySpecialRenderer<Tile
             BufferBuilder worldrenderer = tessellator.getBuffer();
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-            if (BlockDimTrapdoor.isTrapdoorSetLow(state)) {
+            if (state.getValue(BlockTrapDoor.HALF) == BlockTrapDoor.DoorHalf.BOTTOM) {
                 if (state.getValue(BlockTrapDoor.OPEN)) {
                     worldrenderer.pos(x, y + 0.2, z).color(r, g, b, 1.0F).endVertex();
                     worldrenderer.pos(x, y + 0.2, z + 1).color(r, g, b, 1.0F).endVertex();

@@ -24,4 +24,9 @@ public class BlockDimDoorGold extends BlockDimDoorBase {
     public Item getItem() {
         return ModItems.GOLD_DIMENSIONAL_DOOR;
     }
+
+    @Override
+    protected void setupRift(TileEntityVerticalEntranceRift rift) {
+        // TODO
+    }
 }

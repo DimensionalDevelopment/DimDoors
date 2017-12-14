@@ -198,12 +198,12 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
 
     public void registerDest(RiftDestination dest) {
         Location destLoc = translateDestCoordinates(dest);
-        if (destLoc != null) RiftRegistry.registerNewLink(new Location(world, pos), destLoc);
+        if (destLoc != null) RiftRegistry.addLink(new Location(world, pos), destLoc);
     }
 
     public void unregisterDest(RiftDestination dest) {
         Location destLoc = translateDestCoordinates(dest);
-        if (destLoc != null) RiftRegistry.deleteLink(new Location(world, pos), destLoc);
+        if (destLoc != null) RiftRegistry.removeLink(new Location(world, pos), destLoc);
     }
 
     public void register() { // registers or reregisters the rift
@@ -214,8 +214,8 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
         }
     }
 
-    public void destroyRift() {
-        RiftRegistry.deleteRift(new Location(world, pos));
+    public void unregister() {
+        RiftRegistry.removeRift(new Location(world, pos));
         // TODO: inform pocket that entrance was destroyed (we'll probably need an isPrivate field on the pocket)
     }
 

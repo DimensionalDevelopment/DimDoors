@@ -76,5 +76,4 @@ public abstract class TileEntityEntranceRift extends TileEntityRift {
         }
         return new RGBA(red, green, blue, 1);
     }
-
 }

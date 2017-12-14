@@ -194,25 +194,7 @@ public class RiftRegistry extends WorldSavedData {
         registry.markDirty();
     }
 
-    public static void registerNewLink(Location from, Location to) {
-        RiftRegistry registryFrom = getRegistry(from);
-        RiftRegistry registryTo = getRegistry(to);
-        registryFrom.rifts.get(from).destinations.add(to);
-        registryTo.rifts.get(to).destinations.add(from);
-        registryFrom.markDirty();
-        registryTo.markDirty();
-    }
-
-    public static void deleteLink(Location from, Location to) {
-        RiftRegistry registryFrom = getRegistry(from);
-        RiftRegistry registryTo = getRegistry(to);
-        registryFrom.rifts.get(from).destinations.remove(to);
-        registryTo.rifts.get(to).destinations.remove(from);
-        registryFrom.markDirty();
-        registryTo.markDirty();
-    }
-
-    public static void deleteRift(Location rift) {
+    public static void removeRift(Location rift) {
         RiftRegistry registry = getRegistry(rift);
         RiftInfo oldRift = registry.rifts.remove(rift);
         if (oldRift == null) return;
@@ -231,6 +213,24 @@ public class RiftRegistry extends WorldSavedData {
             riftEntity.checkIfNeeded();
         }
         registry.markDirty();
+    }
+
+    public static void addLink(Location from, Location to) {
+        RiftRegistry registryFrom = getRegistry(from);
+        RiftRegistry registryTo = getRegistry(to);
+        registryFrom.rifts.get(from).destinations.add(to);
+        registryTo.rifts.get(to).destinations.add(from);
+        registryFrom.markDirty();
+        registryTo.markDirty();
+    }
+
+    public static void removeLink(Location from, Location to) {
+        RiftRegistry registryFrom = getRegistry(from);
+        RiftRegistry registryTo = getRegistry(to);
+        registryFrom.rifts.get(from).destinations.remove(to);
+        registryTo.rifts.get(to).destinations.remove(from);
+        registryFrom.markDirty();
+        registryTo.markDirty();
     }
 
     public static void addAvailableLink(Location rift, AvailableLinkInfo link) { // TODO cache rifts with availableLinks
