@@ -15,6 +15,7 @@ public class BlockDimDoorTransient extends BlockDimDoorBase { // TODO: convert t
         setHardness(1.0F);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setDefaultState(super.getDefaultState().withProperty(OPEN, true));
     }
 
     @Override
