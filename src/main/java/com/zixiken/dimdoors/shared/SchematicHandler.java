@@ -286,7 +286,7 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
     }
 
     public PocketTemplate getPublicPocketTemplate() {
-        return getRandomTemplate("private", -1, DDConfig.getMaxPocketSize(), true); // TODO: config option for getLargest
+        return getRandomTemplate("public", -1, DDConfig.getMaxPocketSize(), true); // TODO: config option for getLargest
     }
 
     public void saveSchematic(Schematic schematic, String name) {

@@ -24,8 +24,8 @@ public class PocketGenerator {
     }
 
     public static Pocket generatePublicPocket(VirtualLocation virtualLocation) {
-        PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getPersonalPocketTemplate();
-        return generatePocketFromTemplate(DimDoorDimensions.getPrivateDimID(), 0, pocketTemplate, virtualLocation);
+        PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getPublicPocketTemplate();
+        return generatePocketFromTemplate(DimDoorDimensions.getPublicDimID(), 0, pocketTemplate, virtualLocation);
     }
 
     /**

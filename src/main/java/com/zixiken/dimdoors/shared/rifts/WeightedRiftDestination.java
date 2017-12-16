@@ -6,22 +6,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.UUID;
+
 @NoArgsConstructor @AllArgsConstructor
-public class WeightedRiftDestination implements INBTStorable {
+public class
+WeightedRiftDestination implements INBTStorable { // TODO: generics
     @Getter private RiftDestination destination;
     @Getter private float weight;
     @Getter private int group;
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        destination = RiftDestination.readDestinationNBT(nbt.getCompoundTag("destination"));
+        destination = RiftDestination.readDestinationNBT(nbt); // TODO: subtag?
         weight = nbt.getFloat("weight");
         group = nbt.getInteger("group");
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        nbt.setTag("destination", destination.writeToNBT(nbt));
+        nbt = destination.writeToNBT(nbt);
         nbt.setFloat("weight", weight);
         nbt.setInteger("group", group);
         return nbt;

@@ -1,5 +1,7 @@
 package com.zixiken.dimdoors.shared.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -72,5 +74,11 @@ public class MathUtils {
             if (f < 0) return e.getKey();
         }
         return null;
+    }
+
+    public static <T> List<T> listFrom(T element) {
+        List<T> list = new ArrayList<>();
+        list.add(element);
+        return list;
     }
 }

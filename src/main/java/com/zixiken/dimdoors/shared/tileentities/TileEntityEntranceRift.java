@@ -46,14 +46,9 @@ public abstract class TileEntityEntranceRift extends TileEntityRift {
     public void setPlaceRiftOnBreak(boolean placeRiftOnBreak) { this.placeRiftOnBreak = placeRiftOnBreak; markDirty(); }
 
     @Override
-    public boolean isEntrance() {
-        return true;
-    }
-
-    @Override
     public boolean teleport(Entity entity) {
         boolean status = super.teleport(entity);
-        if (riftStateChanged /*|| TODO: get links from registry */) {
+        if (riftStateChanged && !alwaysDelete) {
             placeRiftOnBreak = true;
             markDirty();
         }
@@ -75,5 +70,10 @@ public abstract class TileEntityEntranceRift extends TileEntityRift {
                 break;
         }
         return new RGBA(red, green, blue, 1);
+    }
+
+    @Override
+    public boolean isEntrance() {
+        return true;
     }
 }

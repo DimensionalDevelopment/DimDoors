@@ -4,6 +4,9 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.SchematicHandler;
 import com.zixiken.dimdoors.shared.blocks.BlockFabric;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
+import com.zixiken.dimdoors.shared.rifts.RiftDestination;
+import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
+import com.zixiken.dimdoors.shared.rifts.WeightedRiftDestination;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
@@ -18,14 +21,14 @@ import java.util.ArrayList;
  * @author Robijnvogel
  */
 public class DefaultSchematicGenerator {
-    public static void tempGenerateDefaultSchematics() {
+    public static void generateDefaultSchematics() {
         for (int pocketSize = 0; pocketSize < 8; pocketSize++) {
-            generateDefaultSchematic("defaultPublic", pocketSize, ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY), ModBlocks.DIMENSIONAL_DOOR);
-            generateDefaultSchematic("defaultPrivate", pocketSize, ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ALTERED), ModBlocks.PERSONAL_DIMENSIONAL_DOOR);
+            generateDefaultSchematic("defaultPublic", pocketSize, ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY), ModBlocks.DIMENSIONAL_DOOR, RiftDestination.PocketExitDestination.builder().build());
+            generateDefaultSchematic("defaultPrivate", pocketSize, ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ALTERED), ModBlocks.PERSONAL_DIMENSIONAL_DOOR, RiftDestination.PrivatePocketExitDestination.builder().build());
         }
     }
 
-    private static void generateDefaultSchematic(String baseName, int pocketSize, IBlockState innerWallBlockState, Block doorBlock) {
+    private static void generateDefaultSchematic(String baseName, int pocketSize, IBlockState innerWallBlockState, Block doorBlock, RiftDestination exitDest) {
         int maxbound = (pocketSize + 1) * 16 - 1;
 
         Schematic schematic = new Schematic();
@@ -74,11 +77,14 @@ public class DefaultSchematicGenerator {
         }
 
         schematic.tileEntities = new ArrayList<>();
-        // TODO: DimDoors.proxy.getDefWorld() prevents running this before world load
-        TileEntity tileEntity = doorBlock.createTileEntity(DimDoors.proxy.getWorldServer(0), doorBlock.getDefaultState());
-        NBTTagCompound tileNBT = tileEntity.serializeNBT();
+        TileEntityRift rift = (TileEntityRift) doorBlock.createTileEntity(null, doorBlock.getDefaultState());
+        rift.setSingleDestination(RiftDestination.PocketEntranceDestination.builder()
+                .ifDestinations(MathUtils.listFrom(new WeightedRiftDestination(exitDest, 1, 0)))
+                .build());
+
+        NBTTagCompound tileNBT = rift.serializeNBT();
         tileNBT.setInteger("x", (maxbound - 1) / 2);
-        tileNBT.setInteger("y", 6);
+        tileNBT.setInteger("y", 5);
         tileNBT.setInteger("z", 4);
         schematic.tileEntities.add(tileNBT);
 

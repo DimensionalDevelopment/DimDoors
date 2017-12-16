@@ -5,6 +5,7 @@ import com.zixiken.dimdoors.shared.commands.TeleportCommand;
 import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.DDProxyCommon;
 import com.zixiken.dimdoors.shared.items.ModItems;
+import com.zixiken.dimdoors.shared.util.DefaultSchematicGenerator;
 import com.zixiken.dimdoors.shared.world.gateways.GatewayGenerator;
 import lombok.Getter;
 import net.minecraft.creativetab.CreativeTabs;
@@ -61,8 +62,6 @@ public class DimDoors {
     @Mod.EventHandler
     public void serverLoad(FMLServerStartingEvent event) {
         registerCommands(event);
-        // RiftRegistry.INSTANCE.reset();
-        //DefaultSchematicGenerator.tempGenerateDefaultSchematics();
     }
 
     private void registerCommands(FMLServerStartingEvent event) {

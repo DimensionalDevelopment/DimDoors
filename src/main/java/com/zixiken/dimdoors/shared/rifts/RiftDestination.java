@@ -1,28 +1,56 @@
 package com.zixiken.dimdoors.shared.rifts;
 
 import com.zixiken.dimdoors.shared.util.INBTStorable;
+import com.zixiken.dimdoors.shared.util.Location;
+import com.zixiken.dimdoors.shared.util.NBTUtils;
 import lombok.*;
 import lombok.experimental.Wither;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter @ToString @EqualsAndHashCode @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix lombok and make this abstract
     @Getter private EnumType type;
-    @Wither @Getter private RiftDestination oldDestination;
+    @Getter protected RiftDestination oldDestination;
 
     public enum EnumType {
-        RELATIVE, LOCAL, GLOBAL, NEW_PUBLIC, PRIVATE, LIMBO, RANDOM_RIFT_LINK, POCKET_ENTRANCE, POCKET_EXIT, PRIVATE_POCKET_EXIT, ESCAPE;
+        RELATIVE, LOCAL, GLOBAL, NEW_PUBLIC, PRIVATE, LIMBO, AVAILABLE_LINK, POCKET_ENTRANCE, POCKET_EXIT, PRIVATE_POCKET_EXIT, ESCAPE;
     }
 
-    private RiftDestination() {}
+    private RiftDestination() {
+        if (this instanceof RelativeDestination) {
+            type = EnumType.RELATIVE;
+        } else if (this instanceof LocalDestination) {
+            type = EnumType.LOCAL;
+        } else if (this instanceof GlobalDestination) {
+            type = EnumType.GLOBAL;
+        } else if (this instanceof NewPublicDestination) {
+            type = EnumType.NEW_PUBLIC;
+        } else if (this instanceof PrivateDestination) {
+            type = EnumType.PRIVATE;
+        } else if (this instanceof LimboDestination) {
+            type = EnumType.LIMBO;
+        } else if (this instanceof AvailableLinkDestination) {
+            type = EnumType.AVAILABLE_LINK;
+        } else if (this instanceof PocketEntranceDestination) {
+            type = EnumType.POCKET_ENTRANCE;
+        } else if (this instanceof PocketExitDestination) {
+            type = EnumType.POCKET_EXIT;
+        } else if (this instanceof PrivatePocketExitDestination) {
+            type = EnumType.PRIVATE_POCKET_EXIT;
+        } else if (this instanceof EscapeDestination) {
+            type = EnumType.ESCAPE;
+        }
+    }
 
-
-    public static RiftDestination readDestinationNBT(NBTTagCompound nbt) { // TODO: store old RANDOM_RIFT_LINK
+    public static RiftDestination readDestinationNBT(NBTTagCompound nbt) { // TODO: store old AVAILABLE_LINK
         RiftDestination destination = null;
         EnumType type = EnumType.valueOf(nbt.getString("type"));
         switch (type) {
@@ -31,6 +59,9 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
                 break;
             case LOCAL:
                 destination = new LocalDestination();
+                break;
+            case GLOBAL:
+                destination = new GlobalDestination();
                 break;
             case NEW_PUBLIC:
                 destination = new NewPublicDestination();
@@ -41,8 +72,8 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
             case LIMBO:
                 destination = new LimboDestination();
                 break;
-            case RANDOM_RIFT_LINK:
-                destination = new RandomRiftLinkDestination();
+            case AVAILABLE_LINK:
+                destination = new AvailableLinkDestination();
                 break;
             case POCKET_ENTRANCE:
                 destination = new PocketEntranceDestination();
@@ -62,6 +93,45 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         return destination;
     }
 
+    public RiftDestination withOldDestination(RiftDestination oldDestination) {
+        RiftDestination dest = null;
+        if (this instanceof RelativeDestination) { // TODO: use type switch
+            dest = ((RelativeDestination) this).toBuilder().build();
+            dest.oldDestination = oldDestination;
+        } else if (this instanceof LocalDestination) {
+            dest = ((LocalDestination) this).toBuilder().build();
+            dest.oldDestination = oldDestination;
+        } else if (this instanceof GlobalDestination) {
+            dest = ((GlobalDestination) this).toBuilder().build();
+            dest.oldDestination = oldDestination;
+        } else if (this instanceof NewPublicDestination) {
+            dest = ((NewPublicDestination) this).toBuilder().build();
+            dest.oldDestination = oldDestination;
+        } else if (this instanceof PrivateDestination) {
+            dest = ((PrivateDestination) this).toBuilder().build();
+            dest.oldDestination = oldDestination;
+        } else if (this instanceof LimboDestination) {
+            dest = ((LimboDestination) this).toBuilder().build();
+            dest.oldDestination = oldDestination;
+        } else if (this instanceof AvailableLinkDestination) {
+            dest = ((AvailableLinkDestination) this).toBuilder().build();
+            dest.oldDestination = oldDestination;
+        } else if (this instanceof PocketEntranceDestination) {
+            dest = ((PocketEntranceDestination) this).toBuilder().build();
+            dest.oldDestination = oldDestination;
+        } else if (this instanceof PocketExitDestination) {
+            dest = ((PocketExitDestination) this).toBuilder().build();
+            dest.oldDestination = oldDestination;
+        } else if (this instanceof PrivatePocketExitDestination) {
+            dest = ((PrivatePocketExitDestination) this).toBuilder().build();
+            dest.oldDestination = oldDestination;
+        } else if (this instanceof EscapeDestination) {
+            dest = ((EscapeDestination) this).toBuilder().build();
+            dest.oldDestination = oldDestination;
+        }
+        return dest;
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         if (nbt.hasKey("oldDestination")) oldDestination = readDestinationNBT(nbt.getCompoundTag("oldDestination"));
@@ -70,97 +140,73 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         if (oldDestination != null) nbt.setTag("oldDestination", oldDestination.writeToNBT(new NBTTagCompound()));
+        nbt.setString("type", type.name());
         return nbt;
     }
 
 
     @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
     public static class RelativeDestination extends RiftDestination { // TODO: use Vec3i
-        private int xOffset;
-        private int yOffset;
-        private int zOffset;
+        private Vec3i offset;
 
         private RelativeDestination() {}
 
         @Override
         public void readFromNBT(NBTTagCompound nbt) {
             super.readFromNBT(nbt);
-            xOffset = nbt.getInteger("xOffset");
-            yOffset = nbt.getInteger("yOffset");
-            zOffset = nbt.getInteger("zOffset");
+            offset = NBTUtils.readVec3i(nbt.getCompoundTag("offset"));
         }
 
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", EnumType.RELATIVE.name());
-            nbt.setInteger("xOffset", xOffset);
-            nbt.setInteger("yOffset", yOffset);
-            nbt.setInteger("yOffset", zOffset);
+            nbt.setTag("offset", NBTUtils.writeVec3i(offset));
             return nbt;
         }
     }
 
     @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
     public static class LocalDestination extends RiftDestination { // TODO: use BlockPos
-        private int x;
-        private int y;
-        private int z;
+        private BlockPos pos;
 
         private LocalDestination() {}
 
         @Override
         public void readFromNBT(NBTTagCompound nbt) {
             super.readFromNBT(nbt);
-            x = nbt.getInteger("x");
-            y = nbt.getInteger("y");
-            z = nbt.getInteger("z");
+            pos = new BlockPos(NBTUtils.readVec3i(nbt.getCompoundTag("pos")));
         }
 
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", EnumType.LOCAL.name());
-            nbt.setInteger("x", x);
-            nbt.setInteger("y", y);
-            nbt.setInteger("y", z);
+            nbt.setTag("pos", NBTUtils.writeVec3i(pos));
             return nbt;
         }
     }
 
     @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
-    public static class GlobalDestination extends RiftDestination { // TODO: use Location
-        private int dim;
-        private int x;
-        private int y;
-        private int z;
+    public static class GlobalDestination extends RiftDestination { // TODO: location directly in nbt like minecraft?
+        private Location loc;
 
         private GlobalDestination() {};
 
         @Override
         public void readFromNBT(NBTTagCompound nbt) {
             super.readFromNBT(nbt);
-            dim = nbt.getInteger("dim");
-            x = nbt.getInteger("x");
-            y = nbt.getInteger("y");
-            z = nbt.getInteger("z");
+            loc = Location.readFromNBT(nbt.getCompoundTag("loc"));
         }
 
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", EnumType.GLOBAL.name());
-            nbt.setInteger("dim", dim);
-            nbt.setInteger("x", x);
-            nbt.setInteger("y", y);
-            nbt.setInteger("y", z);
+            nbt.setTag("loc", Location.writeToNBT(loc));
             return nbt;
         }
     }
 
     @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
-    public static class NewPublicDestination extends RiftDestination {
-
+    public static class NewPublicDestination extends RiftDestination { // TODO: more config options such as non-default size, etc.
         //private NewPublicDestination() {}
 
         @Override
@@ -171,7 +217,6 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", EnumType.NEW_PUBLIC.name());
             return nbt;
         }
     }
@@ -189,7 +234,6 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", EnumType.PRIVATE.name());
             return nbt;
         }
     }
@@ -207,13 +251,12 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", EnumType.PRIVATE.name());
             return nbt;
         }
     }
 
     @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
-    public static class RandomRiftLinkDestination extends RiftDestination { // TODO
+    public static class AvailableLinkDestination extends RiftDestination { // TODO
         private float newDungeonRiftProbability;
         private float depthPenalization; // TODO: these make the equation assymetric
         private float distancePenalization;
@@ -224,9 +267,14 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         private boolean unstable;
         private float entranceLinkWeight;
         private float floatingRiftWeight;
+
+        private boolean noLinkBack;
+        // private int maxLinks;
+
+        @Builder.Default private UUID uuid = UUID.randomUUID();
         // TODO: add a "safe" option to link only to a rift destination that has a non-zero weight
 
-        private RandomRiftLinkDestination() {}
+        private AvailableLinkDestination() {}
 
         @Override
         public void readFromNBT(NBTTagCompound nbt) {
@@ -238,12 +286,14 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
             dungeonRiftsOnly = nbt.getBoolean("dungeonRiftsOnly");
             overworldRifts = nbt.getBoolean("overworldRifts");
             unstable = nbt.getBoolean("unstable");
+            noLinkBack = nbt.getBoolean("noLinkBack");
+            // maxLinks = nbt.getInteger("maxLinks");
+            uuid = nbt.getUniqueId("uuid");
         }
 
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", EnumType.RANDOM_RIFT_LINK.name());
             nbt.setFloat("newDungeonRiftProbability", newDungeonRiftProbability);
             nbt.setFloat("depthPenalization", depthPenalization);
             nbt.setFloat("distancePenalization", distancePenalization);
@@ -251,6 +301,9 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
             nbt.setBoolean("dungeonRiftsOnly", dungeonRiftsOnly);
             nbt.setBoolean("overworldRifts", overworldRifts);
             nbt.setBoolean("unstable", unstable);
+            nbt.setBoolean("noLinkBack", noLinkBack);
+            // nbt.setInteger("maxLinks", maxLinks);
+            nbt.setUniqueId("uuid", uuid);
             return nbt;
         }
     }
@@ -258,8 +311,8 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
     @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
     public static class PocketEntranceDestination extends RiftDestination {
         private float weight;
-        private List<WeightedRiftDestination> ifDestinations = new LinkedList<>();
-        private List<WeightedRiftDestination> otherwiseDestinations = new LinkedList<>();
+        @Builder.Default private List<WeightedRiftDestination> ifDestinations = new LinkedList<>(); // TODO addIfDestination method in builder
+        @Builder.Default private List<WeightedRiftDestination> otherwiseDestinations = new LinkedList<>(); // TODO addIfDestination method in builder
 
         private PocketEntranceDestination() {}
 
@@ -268,13 +321,15 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
             super.readFromNBT(nbt);
             weight = nbt.getFloat("weight");
 
+            ifDestinations = new LinkedList<>();
             NBTTagList ifDestinationsNBT = (NBTTagList) nbt.getTag("ifDestinations");
             for (NBTBase ifDestinationNBT : ifDestinationsNBT) {
                 WeightedRiftDestination ifDestination = new WeightedRiftDestination();
                 ifDestination.readFromNBT((NBTTagCompound) ifDestinationNBT);
-                otherwiseDestinations.add(ifDestination);
+                ifDestinations.add(ifDestination);
             }
 
+            otherwiseDestinations = new LinkedList<>();
             NBTTagList otherwiseDestinationsNBT = (NBTTagList) nbt.getTag("otherwiseDestinations");
             for (NBTBase otherwiseDestinationNBT : otherwiseDestinationsNBT) {
                 WeightedRiftDestination otherwiseDestination = new WeightedRiftDestination();
@@ -286,7 +341,6 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", EnumType.POCKET_ENTRANCE.name());
             nbt.setFloat("weight", weight);
 
             NBTTagList ifDestinationsNBT = new NBTTagList();
@@ -318,7 +372,6 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", EnumType.POCKET_EXIT.name());
             return nbt;
         }
     }
@@ -336,7 +389,6 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", EnumType.PRIVATE_POCKET_EXIT.name());
             return nbt;
         }
     }
@@ -352,7 +404,6 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             nbt = super.writeToNBT(nbt);
-            nbt.setString("type", EnumType.ESCAPE.name());
             return nbt;
         }
     }

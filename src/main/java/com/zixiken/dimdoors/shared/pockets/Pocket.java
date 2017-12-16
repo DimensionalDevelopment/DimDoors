@@ -12,11 +12,8 @@ import com.zixiken.dimdoors.shared.util.MathUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.*;
+import net.minecraft.tileentity.TileEntity;
 
 /**
  *
@@ -27,14 +24,13 @@ public class Pocket { // TODO: better visibilities
     @Getter int id; // Not saved
     @Getter /*private*/ int dimID; // Not saved
 
-    @Getter private int x; // Grid x
+    @Getter private int x; // Grid x TODO: rename to gridX and gridY
     @Getter private int z; // Grid y
-    @Getter private int depth;
     @Getter @Setter private int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
     @Getter @Setter private VirtualLocation virtualLocation; // The non-pocket dimension from which this dungeon was created
-    private List<Integer> riftIDs;
     private List<String> playerUUIDs;
     @Getter Location entrance;
+    @Getter List<Location> riftLocations;
 
     private Pocket() {}
 
@@ -43,59 +39,54 @@ public class Pocket { // TODO: better visibilities
         this.dimID = dimID;
         this.x = x;
         this.z = z;
-        this.depth = depth;
-        riftIDs = new ArrayList<>();
         playerUUIDs  = new ArrayList<>();
+        riftLocations = new ArrayList<>();
     }
 
-    static Pocket readFromNBT(NBTTagCompound pocketNBT) {
+    static Pocket readFromNBT(NBTTagCompound nbt) {
         Pocket pocket = new Pocket();
-        pocket.id = pocketNBT.getInteger("id");
-        pocket.x = pocketNBT.getInteger("x");
-        pocket.z = pocketNBT.getInteger("z");
-        pocket.depth = pocketNBT.getInteger("depth");
-        pocket.size = pocketNBT.getInteger("size");
-        pocket.virtualLocation = VirtualLocation.readFromNBT(pocketNBT.getCompoundTag("originalDim"));
+        pocket.id = nbt.getInteger("id");
+        pocket.x = nbt.getInteger("x");
+        pocket.z = nbt.getInteger("z");
+        pocket.size = nbt.getInteger("size");
+        if (nbt.hasKey("virtualLocation")) pocket.virtualLocation = VirtualLocation.readFromNBT(nbt.getCompoundTag("virtualLocation"));
 
-        pocket.riftIDs = new ArrayList<>();
-        NBTTagList riftIDsTagList = (NBTTagList) pocketNBT.getTag("riftIDs");
-        for (int i = 0; i < riftIDsTagList.tagCount(); i++) {
-            pocket.riftIDs.add(riftIDsTagList.getIntAt(i));
+        pocket.playerUUIDs = new ArrayList<>();
+        NBTTagList playerUUIDsNBT = (NBTTagList) nbt.getTag("playerUUIDs");
+        for (int i = 0; i < playerUUIDsNBT.tagCount(); i++) { // TODO: convert to foreach
+            pocket.playerUUIDs.add(playerUUIDsNBT.getStringTagAt(i));
         }
 
-        pocket.playerUUIDs  = new ArrayList<>();
-        NBTTagList playersTagList = (NBTTagList) pocketNBT.getTag("playerUUIDs");
-        for (int i = 0; i < playersTagList.tagCount(); i++) {
-            pocket.playerUUIDs.add(playersTagList.getStringTagAt(i));
+        pocket.riftLocations = new ArrayList<>();
+        NBTTagList riftLocationsNBT = (NBTTagList) nbt.getTag("riftLocations");
+        for (NBTBase riftLocationNBT : riftLocationsNBT) {
+            pocket.riftLocations.add(Location.readFromNBT((NBTTagCompound) riftLocationNBT));
         }
 
         return pocket;
     }
 
     static NBTBase writeToNBT(Pocket pocket) {
-        NBTTagCompound pocketNBT = new NBTTagCompound();
-        pocketNBT.setInteger("id", pocket.id);
-        pocketNBT.setInteger("x", pocket.x);
-        pocketNBT.setInteger("z", pocket.z);
-        pocketNBT.setInteger("depth", pocket.depth);
-        pocketNBT.setInteger("size", pocket.size);
-        pocketNBT.setTag("originalDim", pocket.virtualLocation.writeToNBT());
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setInteger("id", pocket.id);
+        nbt.setInteger("x", pocket.x);
+        nbt.setInteger("z", pocket.z);
+        nbt.setInteger("size", pocket.size);
+        if (pocket.virtualLocation != null) nbt.setTag("virtualLocation", pocket.virtualLocation.writeToNBT());
 
-        NBTTagList riftIDsTagList = new NBTTagList();
-        for (int i = 0; i < pocket.riftIDs.size(); i++) {
-            NBTTagInt doorTag = new NBTTagInt(pocket.riftIDs.get(i));
-            riftIDsTagList.appendTag(doorTag);
-        }
-        pocketNBT.setTag("riftIDs", riftIDsTagList);
-
-        NBTTagList playersTagList = new NBTTagList();
+        NBTTagList playerUUIDsNBT = new NBTTagList();
         for (int i = 0; i < pocket.playerUUIDs.size(); i++) {
-            NBTTagString playerTag = new NBTTagString(pocket.playerUUIDs.get(i));
-            playersTagList.appendTag(playerTag);
+            playerUUIDsNBT.appendTag(new NBTTagString(pocket.playerUUIDs.get(i)));
         }
-        pocketNBT.setTag("playerUUIDs", playersTagList);
+        nbt.setTag("playerUUIDs", playerUUIDsNBT);
 
-        return pocketNBT;
+        NBTTagList riftLocationsNBT = new NBTTagList();
+        for (Location loc : pocket.riftLocations) {
+            riftLocationsNBT.appendTag(Location.writeToNBT(loc));
+        }
+        nbt.setTag("riftLocations", riftLocationsNBT);
+
+        return nbt;
     }
 
     boolean isLocationWithinPocketBounds(int locX, int locY, int locZ, int gridSize) {
@@ -121,10 +112,19 @@ public class Pocket { // TODO: better visibilities
     }
 
     public List<TileEntityRift> getRifts() {
-        return null; // TODO
+        List<TileEntityRift> rifts = new ArrayList<>(riftLocations.size()); // TODO: make immutable
+        for (Location riftLocation : riftLocations) {
+            TileEntity tileEntity = riftLocation.getWorld().getTileEntity(riftLocation.getPos());
+            if (tileEntity instanceof TileEntityRift) {
+                rifts.add((TileEntityRift) tileEntity);
+            } else {
+                throw new RuntimeException("The rift locations array was wrong, check the schematic placing function to see why!");
+            }
+        }
+        return rifts;
     }
 
-    public void selectEntrance() { // Always call after creating a pocket except when building the pocket TODO: more general setup method
+    public void setup() { // Always call after creating a pocket except when building the pocket
         List<TileEntityRift> rifts = getRifts();
 
         HashMap<Integer, Float> entranceIndexWeights = new HashMap<>();
@@ -142,9 +142,10 @@ public class Pocket { // TODO: better visibilities
         if (entranceIndexWeights.size() == 0) return;
         int selectedEntranceIndex = MathUtils.weightedRandom(entranceIndexWeights);
 
+        // Replace entrances with appropriate destinations
         index = 0;
-        for (TileEntityRift rift : rifts) { // Replace entrances with appropriate items
-            Iterator<WeightedRiftDestination> destIterator = rift.getDestinations().iterator();
+        for (TileEntityRift rift : rifts) {
+            ListIterator<WeightedRiftDestination> destIterator = rift.getDestinations().listIterator();
             while (destIterator.hasNext()) {
                 WeightedRiftDestination wdest = destIterator.next();
                 RiftDestination dest = wdest.getDestination();
@@ -154,32 +155,43 @@ public class Pocket { // TODO: better visibilities
                         entrance = new Location(rift.getWorld(), rift.getPos());
                         List<WeightedRiftDestination> ifDestinations = ((RiftDestination.PocketEntranceDestination) dest).getIfDestinations();
                         for (WeightedRiftDestination ifDestination : ifDestinations) {
-                            rift.addDestination(ifDestination.getDestination(), ifDestination.getWeight() / wdest.getWeight(), ifDestination.getGroup());
+                            destIterator.add(new WeightedRiftDestination(ifDestination.getDestination(), ifDestination.getWeight() / wdest.getWeight(), ifDestination.getGroup()));
+                            destIterator.previous(); // An entrance destination shouldn't be in an if/otherwise destination, but just in case, pass over it too
                         }
                     } else {
                         List<WeightedRiftDestination> otherwiseDestinations = ((RiftDestination.PocketEntranceDestination) dest).getOtherwiseDestinations();
                         for (WeightedRiftDestination otherwiseDestination : otherwiseDestinations) {
-                            rift.addDestination(otherwiseDestination.getDestination(), otherwiseDestination.getWeight() / wdest.getWeight(), otherwiseDestination.getGroup());
+                            destIterator.add(new WeightedRiftDestination(otherwiseDestination.getDestination(), otherwiseDestination.getWeight() / wdest.getWeight(), otherwiseDestination.getGroup()));
+                            destIterator.previous(); // An entrance destination shouldn't be in an if/otherwise destination, but just in case, pass over it too
                         }
                     }
                     index++;
                 }
             }
         }
+
+        // set virtual locations and register rifts
+        for (TileEntityRift rift : rifts) {
+            // TODO: put a rift on door break?
+            rift.setVirtualLocation(virtualLocation);
+            rift.register();
+        }
     }
 
     public void linkPocketTo(RiftDestination linkTo) {
         List<TileEntityRift> rifts = getRifts();
 
-        for (TileEntityRift rift : rifts) { // Link pocket exits back
-            Iterator<WeightedRiftDestination> destIterator = rift.getDestinations().iterator();
+        // Link pocket exits back
+        for (TileEntityRift rift : rifts) {
+            ListIterator<WeightedRiftDestination> destIterator = rift.getDestinations().listIterator();
             while (destIterator.hasNext()) {
                 WeightedRiftDestination wdest = destIterator.next();
                 RiftDestination dest = wdest.getDestination();
                 if (dest.getType() == RiftDestination.EnumType.POCKET_EXIT) {
                     destIterator.remove();
-                    linkTo.withOldDestination(dest);
-                    rift.addDestination(linkTo, wdest.getWeight(), wdest.getGroup());
+                    destIterator.add(new WeightedRiftDestination(linkTo.withOldDestination(dest), wdest.getWeight(), wdest.getGroup()));
+                    rift.notifyStateChanged();
+                    rift.markDirty();
                 }
             }
         }

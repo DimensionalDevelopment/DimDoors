@@ -6,6 +6,7 @@ import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.entities.MobMonolith;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.tileentities.*;
+import com.zixiken.dimdoors.shared.util.DefaultSchematicGenerator;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
@@ -41,5 +42,6 @@ public abstract class DDProxyCommon implements IDDProxy {
     @Override
     public void onInitialization(FMLInitializationEvent event) {
         SchematicHandler.INSTANCE.loadSchematics();
+        DefaultSchematicGenerator.generateDefaultSchematics();
     }
 }

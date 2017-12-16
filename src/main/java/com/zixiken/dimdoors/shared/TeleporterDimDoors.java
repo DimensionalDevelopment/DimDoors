@@ -17,7 +17,7 @@ import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
 //ref: https://github.com/WayofTime/BloodMagic/blob/1.11/src/main/java/WayofTime/bloodmagic/ritual/portal/Teleports.java
-public class TeleporterDimDoors extends Teleporter {
+public class TeleporterDimDoors extends Teleporter { // TODO
 
     /**
      * Teleporter isn't static, so TeleporterDimDoors can't be static, so we're
@@ -80,7 +80,7 @@ public class TeleporterDimDoors extends Teleporter {
         int oldDimID = entity.dimension;
         WorldServer oldWorldserver = DimDoors.proxy.getWorldServer(oldDimID);
         WorldServer newWorldserver = DimDoors.proxy.getWorldServer(newDimID);
-        if (entity instanceof EntityPlayerMP) { // TODO: this was EntityPlayer, but I changed this to EntityPlayerMP because that's what the cast assumes
+        if (entity instanceof EntityPlayerMP) {
             DimDoors.log(TeleporterDimDoors.class, "Teleporting Player to new dimension.");
             EntityPlayerMP player = (EntityPlayerMP) entity;
             float playerRotationYaw = player.rotationYaw; //@todo make this a parameter?
@@ -137,7 +137,7 @@ public class TeleporterDimDoors extends Teleporter {
     private void teleportLocal(Entity entity, BlockPos pos) {
         WorldServer worldserver = (WorldServer) entity.world;
 
-        if (entity instanceof EntityPlayerMP) { // TODO: this was EntityPlayer, but I changed this to EntityPlayerMP because that's what the cast assumes
+        if (entity instanceof EntityPlayerMP) {
             DimDoors.log(TeleporterDimDoors.class,
                     "Teleporting Player within same dimension.");
             EntityPlayerMP player = (EntityPlayerMP) entity;

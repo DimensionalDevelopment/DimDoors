@@ -22,7 +22,7 @@ import net.minecraft.util.ResourceLocation;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class RenderVerticalEntranceRift extends TileEntitySpecialRenderer<TileEntityVerticalEntranceRift> {
+public class TileEntityVerticalEntranceRiftRenderer extends TileEntitySpecialRenderer<TileEntityVerticalEntranceRift> {
 
     private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
     private ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/warp.png");

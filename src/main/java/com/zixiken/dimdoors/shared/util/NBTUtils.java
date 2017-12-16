@@ -1,6 +1,7 @@
 package com.zixiken.dimdoors.shared.util;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.Vec3i;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,5 +20,17 @@ public class NBTUtils {
             tagCompound.setInteger(str, map.get(str));
         }
         return tagCompound;
+    }
+
+    public static Vec3i readVec3i(NBTTagCompound nbt) {
+        return new Vec3i(nbt.getInteger("x"), nbt.getInteger("y"), nbt.getInteger("z"));
+    }
+
+    public static NBTTagCompound writeVec3i(Vec3i vec) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setInteger("x", vec.getX());
+        nbt.setInteger("y", vec.getY());
+        nbt.setInteger("z", vec.getZ());
+        return nbt;
     }
 }

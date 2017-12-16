@@ -6,10 +6,7 @@ import com.zixiken.dimdoors.shared.rifts.RiftRegistry.RiftInfo.AvailableLinkInfo
 import com.zixiken.dimdoors.shared.util.INBTStorable;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.util.WorldUtils;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Wither;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -33,35 +30,47 @@ public class RiftRegistry extends WorldSavedData {
     @Getter private int dim;
     private World world;
 
-    @lombok.AllArgsConstructor @lombok.NoArgsConstructor @lombok.EqualsAndHashCode
+    @lombok.AllArgsConstructor @lombok.EqualsAndHashCode @lombok.Builder(toBuilder = true)
     public static class RiftInfo implements com.zixiken.dimdoors.shared.util.INBTStorable {
-        @Getter private List<AvailableLinkInfo> availableLinks = new LinkedList<>();
-        @Getter private Set<Location> sources = new HashSet<>();
-        @Getter private Set<Location> destinations = new HashSet<>();
+        @Builder.Default @Getter private Set<AvailableLinkInfo> availableLinks = new HashSet<>(); // ignore intellij warnings, builder needs these
+        @Builder.Default @Getter private Set<Location> sources = new HashSet<>();
+        @Builder.Default @Getter private Set<Location> destinations = new HashSet<>();
 
-        @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode
+        @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
         public static class AvailableLinkInfo implements INBTStorable {
-            @Getter private float weight;
+            @Getter @Setter private float weight;
             @Getter private VirtualLocation virtualLocation;
             @Getter @Wither private Location location;
+            @Getter private UUID uuid;
 
             @Override
             public void readFromNBT(NBTTagCompound nbt) {
                 weight = nbt.getFloat("weight");
                 virtualLocation = VirtualLocation.readFromNBT(nbt.getCompoundTag("virtualLocation"));
+                uuid = nbt.getUniqueId("uuid");
             }
 
             @Override
             public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
                 nbt.setFloat("weight", weight);
                 nbt.setTag("virtualLocation", virtualLocation.writeToNBT());
+                nbt.setUniqueId("uuid", uuid);
                 return nbt;
             }
+        }
+
+        public RiftInfo() {
+            availableLinks = new HashSet<>();
+            sources = new HashSet<>();
+            destinations = new HashSet<>();
         }
 
         @Override
         public void readFromNBT(NBTTagCompound nbt) {
             NBTTagList availableLinksNBT = (NBTTagList) nbt.getTag("availableLinks");
+            if (availableLinksNBT == null) {
+                throw new RuntimeException();
+            }
             for (NBTBase availableLinkNBT : availableLinksNBT) {
                 AvailableLinkInfo link = new AvailableLinkInfo();
                 link.readFromNBT((NBTTagCompound) availableLinkNBT);
@@ -147,7 +156,7 @@ public class RiftRegistry extends WorldSavedData {
             NBTTagCompound riftNBTC = (NBTTagCompound) riftNBT;
             Location location = Location.readFromNBT(riftNBTC.getCompoundTag("location"));
             RiftInfo riftInfo = new RiftInfo();
-            riftInfo.readFromNBT(nbt);
+            riftInfo.readFromNBT(riftNBTC);
             rifts.put(location, riftInfo);
         }
     }
@@ -210,7 +219,7 @@ public class RiftRegistry extends WorldSavedData {
             destinationRegistry.rifts.get(destination).sources.remove(rift);
             destinationRegistry.markDirty();
             TileEntityRift riftEntity = (TileEntityRift) destinationRegistry.world.getTileEntity(destination.getPos());
-            riftEntity.checkIfNeeded();
+            riftEntity.allSourcesGone();
         }
         registry.markDirty();
     }
@@ -239,10 +248,26 @@ public class RiftRegistry extends WorldSavedData {
         registry.markDirty();
     }
 
-    public void removeAvailableLink(Location rift, AvailableLinkInfo link) {
+    public static void removeAvailableLink(Location rift, AvailableLinkInfo link) {
         RiftRegistry registry = getRegistry(rift);
         registry.rifts.get(rift).availableLinks.remove(link);
         registry.markDirty();
+    }
+
+    public static void clearAvailableLinks(Location rift) {
+        RiftRegistry registry = getRegistry(rift);
+        registry.rifts.get(rift).availableLinks.clear();
+        registry.markDirty();
+    }
+
+    public static void removeAvailableLinkByUUID(Location rift, UUID uuid) {
+        RiftRegistry registry = getRegistry(rift);
+        for (AvailableLinkInfo link : registry.rifts.get(rift).availableLinks) {
+            if (link.uuid.equals(uuid)) {
+                removeAvailableLink(rift, link);
+                return;
+            }
+        }
     }
 
     public static RiftRegistry getRegistry(Location rift) {

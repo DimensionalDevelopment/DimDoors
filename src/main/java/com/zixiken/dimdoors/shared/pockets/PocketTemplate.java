@@ -2,6 +2,7 @@ package com.zixiken.dimdoors.shared.pockets;
 
 import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
+import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.util.Schematic;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.BlockDimDoorBase;
@@ -33,6 +34,7 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
     @Getter private final int minDepth;
     @Getter private final int maxDepth;
     private final float[] weights; //weights for chanced generation of dungeons per depth level | weights[0] is the weight for depth "minDepth"
+    public static boolean schematicBeingPlaced = false;
 
     //this class should contain the actual schematic info, as well as some of the Json info (placement of Rifts and stuff)
     public PocketTemplate(String groupName, String name, Schematic schematic, int size, int minDepth, int maxDepth, float[] weights) {
@@ -57,8 +59,8 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         return weights[weights.length - 1]; // return last weight
     }
 
-    public Pocket place(Pocket pocket, int yBase) { //returns the riftID of the entrance DimDoor
-        pocket.setSize(size); // TODO: check that this works properly
+    public Pocket place(Pocket pocket, int yBase) { //returns the riftID of the entrance DimDoor TODO: use place method in schematic
+        pocket.setSize(size);
         int gridSize = PocketRegistry.getForDim(pocket.dimID).getGridSize();
         int dimID = pocket.dimID;
         int xBase = pocket.getX() * gridSize * 16;
@@ -74,6 +76,7 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
         WorldServer world = DimDoors.proxy.getWorldServer(dimID);
 
         //Place the Dungeon content structure
+        schematicBeingPlaced = true; // TODO: Find a better system. What happens if the world is left before schematic is placed and this static field stays true?
         List<IBlockState> palette = schematic.getPallette();
         int[][][] blockData = schematic.getBlockData();
         for (int x = 0; x < blockData.length; x++) {
@@ -83,32 +86,27 @@ public class PocketTemplate { //there is exactly one pocket placer for each diff
                 }
             }
         }
+        schematicBeingPlaced = false;
 
         //Load TileEntity Data
-        List<TileEntityRift> rifts = new ArrayList<>();
+        List<Location> riftLocations = new ArrayList<>();
         for (NBTTagCompound tileEntityNBT : schematic.getTileEntities()) {
             BlockPos pos = new BlockPos(xBase + tileEntityNBT.getInteger("x"), yBase + tileEntityNBT.getInteger("y"), zBase + tileEntityNBT.getInteger("z"));
             DimDoors.log(getClass(), "Re-loading tile-entity at blockPos: " + pos);
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity != null) {
-                if (tileEntity instanceof TileEntityRift) {
-                    DimDoors.log(getClass(), "Rift found in schematic: " + pos);
-                    TileEntityRift rift = (TileEntityRift) tileEntity;
-                    rifts.add(rift);
-                } else {
-                    try {
-                        tileEntity.readFromNBT(tileEntityNBT); //this reads in the wrong blockPos
-                    } catch(Exception e) {
-                        DimDoors.warn(getClass(), "Loading in the data for TileEntity of type " + tileEntity + " went wrong. Details: " + e.getLocalizedMessage());
-                    }
-                }
+                tileEntity.readFromNBT(tileEntityNBT);
+                tileEntity.setWorld(world); // TODO: necessary?
                 tileEntity.setPos(pos); //correct the position
+
+                if (tileEntity instanceof TileEntityRift) {
+                    DimDoors.log(getClass(), "Rift found in schematic at " + pos);
+                    riftLocations.add(new Location(world, pos));
+                }
                 tileEntity.markDirty();
             }
         }
-
-        // TODO: rifts!
-
+        pocket.riftLocations = riftLocations;
         return pocket;
     }
 }

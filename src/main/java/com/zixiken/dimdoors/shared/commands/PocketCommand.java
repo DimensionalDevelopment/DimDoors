@@ -52,7 +52,7 @@ public class PocketCommand extends CommandBase {
                     PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(args[0], args[1]);
                     Pocket pocket = PocketGenerator.generatePocketFromTemplate(dim, 0, template, new VirtualLocation(0, 0, 0, 0,0));
                     // TODO: options for linking back/not setting entrance
-                    pocket.selectEntrance();
+                    pocket.setup();
                     TileEntityRift entrance = (TileEntityRift) player.world.getTileEntity(pocket.getEntrance().getPos());
                     entrance.teleportTo(player);
                 } else {

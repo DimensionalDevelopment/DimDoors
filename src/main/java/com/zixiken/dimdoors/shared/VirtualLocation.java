@@ -8,7 +8,7 @@ import lombok.Value;
 import net.minecraft.nbt.NBTTagCompound;
 
 @Value @ToString @AllArgsConstructor @Builder(toBuilder = true)
-public class VirtualLocation {
+public class VirtualLocation { // TODO: use BlockPos/Location
     int dimID;
     int x;
     int y;

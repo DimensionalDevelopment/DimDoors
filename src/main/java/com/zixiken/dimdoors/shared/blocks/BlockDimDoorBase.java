@@ -3,10 +3,18 @@ package com.zixiken.dimdoors.shared.blocks;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.VirtualLocation;
+import com.zixiken.dimdoors.shared.pockets.Pocket;
+import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
+import com.zixiken.dimdoors.shared.pockets.PocketTemplate;
+import com.zixiken.dimdoors.shared.rifts.RiftRegistry;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
+import com.zixiken.dimdoors.shared.util.Location;
+import com.zixiken.dimdoors.shared.util.WorldUtils;
+import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.ITileEntityProvider;
@@ -23,7 +31,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityProvider { // TODO: implement RiftProvider as an interface of both doors and trapdoors
+public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityProvider {
+    // TODO: implement RiftProvider as an interface of both doors and trapdoors
 
     public BlockDimDoorBase(Material material) {
         super(material);
@@ -31,6 +40,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
 
     @Override
     public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn) {
+        if (worldIn.isRemote) return;
         if (state.getValue(HALF) == EnumDoorHalf.UPPER) pos = pos.down();
         IBlockState doorState = worldIn.getBlockState(pos);
         if (!(doorState.getBlock() instanceof BlockDoor)) return;
@@ -104,17 +114,37 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
 
     @Override
     public TileEntityVerticalEntranceRift createNewTileEntity(World worldIn, int meta) {
-        return new TileEntityVerticalEntranceRift();
+        TileEntityVerticalEntranceRift rift = new TileEntityVerticalEntranceRift();
+        rift.orientation = getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite();
+        return rift;
     }
 
     @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
         super.onBlockAdded(worldIn, pos, state);
-        if (hasTileEntity(state)) {
+        if (hasTileEntity(state) && !PocketTemplate.schematicBeingPlaced) { // TODO: better check for schematicBeingPlaced (support other plugins such as WorldEdit, support doors being placed while schematics are being placed)
             TileEntityVerticalEntranceRift rift = createNewTileEntity(worldIn, getMetaFromState(state));
-            rift.orientation = state.getValue(BlockDoor.FACING).getOpposite();
-            worldIn.setTileEntity(pos, rift);
+
+            // Set the virtual location based on where the door was placed
+            VirtualLocation virtualLocation = null;
+            if (DimDoorDimensions.isPocketDimension(WorldUtils.getDim(worldIn))) {
+                Pocket pocket = PocketRegistry.getForDim(WorldUtils.getDim(worldIn)).getPocketFromLocation(pos.getY(), pos.getY(), pos.getZ());
+                if (pocket != null) {
+                    virtualLocation = pocket.getVirtualLocation();
+                } else {
+                    virtualLocation = new VirtualLocation(0, 0, 0, 0, 0); // TODO: door was placed in a pocket dim but outside of a pocket...
+                }
+            }
+            if (virtualLocation == null) {
+                virtualLocation = new VirtualLocation(WorldUtils.getDim(worldIn), pos.getX(), pos.getY(), pos.getZ(), 0);
+            }
+            rift.setVirtualLocation(virtualLocation);
+
+            // Configure the rift to its default functionality
             setupRift(rift);
+
+            // Set the tile entity and register it
+            worldIn.setTileEntity(pos, rift);
             rift.markDirty();
             rift.register();
         }
@@ -125,9 +155,10 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
         if (!hasTileEntity(state)) return;
         TileEntityEntranceRift rift = getRift(worldIn, pos, state);
         super.breakBlock(worldIn, pos, state);
-        if (rift.isPlaceRiftOnBreak()) {
+        if (rift.isPlaceRiftOnBreak() || rift.isRegistered() && RiftRegistry.getRiftInfo(new Location(worldIn, pos)).getSources().size() > 0 && !rift.isAlwaysDelete()) {
             TileEntityRift newRift = new TileEntityFloatingRift();
             newRift.copyFrom(rift);
+            newRift.updateAvailableLinks();
             worldIn.setBlockState(rift.getPos(), ModBlocks.RIFT.getDefaultState());
             worldIn.setTileEntity(rift.getPos(), newRift);
         } else {

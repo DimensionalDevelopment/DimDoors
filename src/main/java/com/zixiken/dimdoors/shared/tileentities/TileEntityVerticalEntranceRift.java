@@ -1,5 +1,7 @@
 package com.zixiken.dimdoors.shared.tileentities;
 
+import com.zixiken.dimdoors.shared.TeleporterDimDoors;
+import com.zixiken.dimdoors.shared.util.Location;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -36,6 +38,4 @@ public class TileEntityVerticalEntranceRift extends TileEntityEntranceRift { // 
         BlockPos offsetPos = entity.getPosition().offset(orientation);
         entity.setPositionAndRotation(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ(), orientation.getHorizontalAngle(), 0); // TODO: let TileEntityRift handle rotation?
     }
-
-
 }
