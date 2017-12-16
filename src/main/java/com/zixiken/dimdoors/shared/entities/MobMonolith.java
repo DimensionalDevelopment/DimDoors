@@ -2,8 +2,8 @@ package com.zixiken.dimdoors.shared.entities;
 
 import com.zixiken.dimdoors.client.sound.DDSounds;
 import com.zixiken.dimdoors.shared.DDConfig;
-import com.zixiken.dimdoors.shared.TeleporterDimDoors;
 import com.zixiken.dimdoors.shared.util.Location;
+import com.zixiken.dimdoors.shared.util.TeleportUtils;
 import com.zixiken.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import com.zixiken.dimdoors.shared.world.pocketdimension.WorldProviderDungeonPocket;
 import com.zixiken.dimdoors.shared.world.pocketdimension.WorldProviderPublicPocket;
@@ -158,8 +158,8 @@ public class MobMonolith extends EntityFlying implements IMob {
                 // Teleport the target player if various conditions are met
                 if (aggro >= MAX_AGGRO && !world.isRemote && DDConfig.isMonolithTeleportationEnabled() && !player.capabilities.isCreativeMode && isDangerous()) {
                     aggro = 0;
-                    Location destination = WorldProviderLimbo.getLimboSkySpawn(player);
-                    TeleporterDimDoors.instance().teleport(player, destination);
+                    Location destination = WorldProviderLimbo.getLimboSkySpawn(player); // TODO: teleportToLimbo method
+                    TeleportUtils.teleport(player, destination, 0, 0);
                     player.world.playSound(player, player.getPosition(), DDSounds.CRACK, SoundCategory.HOSTILE, 13, 1);
                 }
             }

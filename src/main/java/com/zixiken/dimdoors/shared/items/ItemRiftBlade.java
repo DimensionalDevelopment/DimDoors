@@ -4,7 +4,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.RayTraceHelper;
-import com.zixiken.dimdoors.shared.TeleporterDimDoors;
+import com.zixiken.dimdoors.shared.util.TeleportUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -65,11 +65,9 @@ public class ItemRiftBlade extends ItemSword {
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 
         } else if (RayTraceHelper.isLivingEntity(hit)) {
-            EnumActionResult teleportResult = TeleporterDimDoors.instance().teleport(playerIn, new Location(worldIn, hit.getBlockPos())) ? EnumActionResult.SUCCESS : EnumActionResult.FAIL; //@todo teleport to a location 1 or 2 blocks distance from the entity
-            if (teleportResult == EnumActionResult.SUCCESS) {
-                stack.damageItem(1, playerIn);
-            }
-            return new ActionResult<>(teleportResult, stack);
+            TeleportUtils.teleport(playerIn, new Location(worldIn, hit.getBlockPos()), playerIn.rotationYaw, playerIn.rotationPitch); //@todo teleport to a location 1 or 2 blocks distance from the entity
+            stack.damageItem(1, playerIn); // TODO: check if successful
+            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
 
         return new ActionResult<>(EnumActionResult.FAIL, stack);

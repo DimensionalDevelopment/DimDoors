@@ -4,9 +4,9 @@ import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.DDConfig;
-import com.zixiken.dimdoors.shared.TeleporterDimDoors;
 import com.zixiken.dimdoors.shared.util.RandomUtils;
 import com.zixiken.dimdoors.shared.util.Location;
+import com.zixiken.dimdoors.shared.util.TeleportUtils;
 import com.zixiken.dimdoors.shared.world.limbodimension.LimboDecay;
 import com.zixiken.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import lombok.Getter;
@@ -194,7 +194,7 @@ public class BlockFabric extends Block {
 
             BlockPos correctedPos = DimDoors.proxy.getWorldServer(0).getTopSolidOrLiquidBlock(transFormedLocation.getPos());
             Location correctedLocation = new Location(0, correctedPos);
-            TeleporterDimDoors.instance().teleport(entityIn, correctedLocation);
+            TeleportUtils.teleport(entityIn, correctedLocation, 0, 0);
         }
     }
 

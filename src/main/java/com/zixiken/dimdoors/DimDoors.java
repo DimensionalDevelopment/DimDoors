@@ -1,11 +1,10 @@
 package com.zixiken.dimdoors;
 
 import com.zixiken.dimdoors.shared.commands.PocketCommand;
-import com.zixiken.dimdoors.shared.commands.TeleportCommand;
+import com.zixiken.dimdoors.shared.commands.CommandDimTeleport;
 import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.DDProxyCommon;
 import com.zixiken.dimdoors.shared.items.ModItems;
-import com.zixiken.dimdoors.shared.util.DefaultSchematicGenerator;
 import com.zixiken.dimdoors.shared.world.gateways.GatewayGenerator;
 import lombok.Getter;
 import net.minecraft.creativetab.CreativeTabs;
@@ -65,7 +64,7 @@ public class DimDoors {
     }
 
     private void registerCommands(FMLServerStartingEvent event) {
-        event.registerServerCommand(new TeleportCommand());
+        event.registerServerCommand(new CommandDimTeleport());
         event.registerServerCommand(new PocketCommand());
     }
 

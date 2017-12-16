@@ -1,7 +1,6 @@
 package com.zixiken.dimdoors.shared.rifts;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.TeleporterDimDoors;
 import com.zixiken.dimdoors.shared.VirtualLocation;
 import com.zixiken.dimdoors.shared.pockets.Pocket;
 import com.zixiken.dimdoors.shared.pockets.PocketGenerator;
@@ -10,6 +9,7 @@ import com.zixiken.dimdoors.shared.rifts.RiftDestination.*;
 import com.zixiken.dimdoors.shared.rifts.RiftRegistry.RiftInfo.AvailableLinkInfo;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.util.MathUtils;
+import com.zixiken.dimdoors.shared.util.TeleportUtils;
 import com.zixiken.dimdoors.shared.util.WorldUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import lombok.Getter;
@@ -17,7 +17,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -239,8 +238,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
             newYaw = yaw;
             newPitch = pitch;
         }
-        TeleporterDimDoors.instance().teleport(entity, new Location(world, pos));
-        entity.setPositionAndRotation(pos.getX(), pos.getY(), pos.getZ(), newYaw, newPitch);
+        TeleportUtils.teleport(entity, new Location(world, pos), newPitch, newYaw);
 
         int dim = WorldUtils.getDim(world);
         if (entity instanceof EntityPlayer && DimDoorDimensions.isPocketDimension(dim)) { // TODO
