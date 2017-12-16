@@ -200,4 +200,6 @@ public class Pocket { // TODO: better visibilities
     public void unlinkPocket() {
         // TODO
     }
+
+    // TODO: method to erase a pocket
 }

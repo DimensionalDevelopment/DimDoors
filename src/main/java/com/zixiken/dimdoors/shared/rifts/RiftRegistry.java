@@ -25,7 +25,7 @@ public class RiftRegistry extends WorldSavedData {
 
     @Getter private Map<Location, RiftInfo> rifts = new HashMap<>(); // TODO: store relative locations too (better location class supporting relative, etc)
     @Getter private Map<String, Location> privatePocketEntrances = new HashMap<>(); // TODO: more general group-group linking
-    @Getter private Map<String, Location> escapeRift = new HashMap<>();
+    @Getter private Map<String, Location> escapeRifts = new HashMap<>();
 
     @Getter private int dim;
     private World world;
@@ -159,6 +159,22 @@ public class RiftRegistry extends WorldSavedData {
             riftInfo.readFromNBT(riftNBTC);
             rifts.put(location, riftInfo);
         }
+
+        NBTTagList privatePocketEntrancesNBT = (NBTTagList) nbt.getTag("privatePocketEntrances");
+        for (NBTBase privatePocketEntranceNBT : privatePocketEntrancesNBT) { // TODO: move to NBTUtils
+            NBTTagCompound privatePocketEntranceNBTC = (NBTTagCompound) privatePocketEntranceNBT;
+            String uuid = privatePocketEntranceNBTC.getString("uuid");
+            Location rift = Location.readFromNBT(privatePocketEntranceNBTC.getCompoundTag("location"));
+            privatePocketEntrances.put(uuid, rift);
+        }
+
+        NBTTagList escapeRiftsNBT = (NBTTagList) nbt.getTag("escapeRifts");
+        for (NBTBase escapeRiftNBT : escapeRiftsNBT) { // TODO: move to NBTUtils
+            NBTTagCompound escapeRiftNBTC = (NBTTagCompound) escapeRiftNBT;
+            String uuid = escapeRiftNBTC.getString("uuid");
+            Location rift = Location.readFromNBT(escapeRiftNBTC.getCompoundTag("location"));
+            escapeRifts.put(uuid, rift);
+        }
     }
 
     private static boolean upgradeRegistry(NBTTagCompound nbt, int oldVersion) {
@@ -189,6 +205,26 @@ public class RiftRegistry extends WorldSavedData {
             riftsNBT.appendTag(riftNBT);
         }
         nbt.setTag("rifts", riftsNBT);
+
+        NBTTagList privatePocketEntrancesNBT = new NBTTagList();
+        for (HashMap.Entry<String, Location> privatePocketEntrance : privatePocketEntrances.entrySet()) { // TODO: move to NBTUtils
+            if (privatePocketEntrance.getValue() == null) continue;
+            NBTTagCompound privatePocketEntranceNBT = new NBTTagCompound();
+            privatePocketEntranceNBT.setString("uuid", privatePocketEntrance.getKey());
+            privatePocketEntranceNBT.setTag("location", Location.writeToNBT(privatePocketEntrance.getValue()));
+            riftsNBT.appendTag(privatePocketEntranceNBT);
+        }
+        nbt.setTag("privatePocketEntrances", privatePocketEntrancesNBT);
+
+        NBTTagList escapeRiftsNBT = new NBTTagList();
+        for (HashMap.Entry<String, Location> escapeRift : escapeRifts.entrySet()) {
+            if (escapeRift.getValue() == null) continue;
+            NBTTagCompound escapeRiftNBT = new NBTTagCompound();
+            escapeRiftNBT.setString("uuid", escapeRift.getKey());
+            escapeRiftNBT.setTag("location", Location.writeToNBT(escapeRift.getValue()));
+            riftsNBT.appendTag(escapeRiftNBT);
+        }
+        nbt.setTag("escapeRifts", escapeRiftsNBT);
 
         return nbt;
     }
@@ -283,11 +319,11 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public static Location getEscapeRift(String playerUUID) { // TODO: since this is per-world, move to different registry?
-        return getForDim(0).escapeRift.get(playerUUID); // store in overworld, since that's where per-world player data is stored
+        return getForDim(0).escapeRifts.get(playerUUID); // store in overworld, since that's where per-world player data is stored
     }
 
     public static void setEscapeRift(String playerUUID, Location rift) {
-        getForDim(0).escapeRift.put(playerUUID, rift);
+        getForDim(0).escapeRifts.put(playerUUID, rift);
     }
 
     public static List<AvailableLinkInfo> getAvailableLinks() { // TODO: cache this

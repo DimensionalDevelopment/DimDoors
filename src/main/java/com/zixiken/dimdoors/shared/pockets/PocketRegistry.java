@@ -194,6 +194,7 @@ public class PocketRegistry extends WorldSavedData {
 
     public void setPrivatePocketID(String playerUUID, int id) {
         privatePocketMap.put(playerUUID, id);
+        markDirty();
     }
 
     public GridUtils.GridPos getGridPosFromID(int id) {
@@ -237,6 +238,7 @@ public class PocketRegistry extends WorldSavedData {
         Pocket pocket = getPocketFromLocation(x, y, z);
         if (pocket != null) {
             pocket.allowPlayer(player);
+            markDirty();
         }
     }
 

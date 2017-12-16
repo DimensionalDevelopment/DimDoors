@@ -51,6 +51,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
         preserveRotation = true;
         pitch = 0;
         alwaysDelete = false;
+        chaosWeight = 1;
     }
 
     public void copyFrom(TileEntityRift oldRift) {
@@ -289,11 +290,13 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                     if (privatePocket == null) { // generate the private pocket and get its entrance
                         privatePocket = PocketGenerator.generatePrivatePocket(virtualLocation != null ? virtualLocation.toBuilder().depth(-2).build() : null); // set to where the pocket was first created TODO: private pocket deletion
                         privatePocket.setup();
+                        privatePocketRegistry.setPrivatePocketID(uuid, privatePocket.getId());
                         destLoc = privatePocket.getEntrance();
                     } else {
                         destLoc = privateRiftRegistry.getPrivatePocketEntrance(uuid); // get the last used entrance
                         if (destLoc == null) destLoc = privatePocket.getEntrance(); // if there's none, then set the target to the main entrance
                     }
+                    privateRiftRegistry.setPrivatePocketEntrance(uuid, null); // forget the last entered entrance
                 } else {
                     return false; // TODO: There should be a way to get other entities into your private pocket, though. Add API for other mods.
                 }
@@ -306,8 +309,12 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                 if (uuid != null) {
                     RiftRegistry privateRiftRegistry = RiftRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
                     destLoc = RiftRegistry.getEscapeRift(uuid);
+                    RiftRegistry.setEscapeRift(uuid, null); // forget the last used escape rift
                     if (dest.getType() == EnumType.PRIVATE_POCKET_EXIT) {
                         privateRiftRegistry.setPrivatePocketEntrance(uuid, new Location(world, pos)); // Remember which exit was used for next time the pocket is entered
+                    } else if (dest.getType() == EnumType.ESCAPE) {
+                        // TODO: teleport the player to random coordinates based on depth around destLoc
+                        return true;
                     }
                     if (destLoc == null) return false; // TODO: The player probably teleported into the dungeon/private pocket and is now trying to escape... What should we do? Limbo?
                 } else {
@@ -372,6 +379,10 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
         TileEntity tileEntityAtLoc = destLoc.getWorld().getTileEntity(destLoc.getPos());
         if (!(tileEntityAtLoc instanceof TileEntityRift)) throw new RuntimeException("The rift referenced by this rift does not exist, this is a bug.");
         TileEntityRift destRift = (TileEntityRift) tileEntityAtLoc;
+        if (entity instanceof EntityPlayer && !DimDoorDimensions.isPocketDimension(WorldUtils.getDim(world))) { // TODO: What about player-owned entities? We should store their exit rift separately to avoid having problems if they enter different rifts
+            String uuid = entity.getUniqueID().toString(); // TODO: More configuration on which worlds should be considered normal worlds. Other mods might add mostly void worlds, causing problems with random coordinates
+            RiftRegistry.setEscapeRift(uuid, new Location(world, pos));
+        }
         destRift.teleportTo(entity);
         return true;
 
@@ -446,5 +457,11 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
         deserializeNBT(pkt.getNbtCompound());
     }
 
+    public void setChaosWeight(int chaosWeight) {
+        this.chaosWeight = chaosWeight;
+        markDirty();
+    }
+
     public abstract boolean isEntrance(); // TODO: replace with chooseWeight function
+
 }

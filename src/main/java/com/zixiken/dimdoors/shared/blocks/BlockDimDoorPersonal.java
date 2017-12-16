@@ -30,5 +30,6 @@ public class BlockDimDoorPersonal extends BlockDimDoorBase {
     protected void setupRift(TileEntityVerticalEntranceRift rift) {
         RiftDestination.PrivateDestination destination = RiftDestination.PrivateDestination.builder().build();
         rift.setSingleDestination(destination);
+        rift.setChaosWeight(0);
     }
 }

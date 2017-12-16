@@ -13,7 +13,7 @@ public class PocketGenerator {
 
         PocketRegistry registry = PocketRegistry.getForDim(dimID);
         Pocket pocket = registry.newPocket(depth);
-        pocketTemplate.place(pocket, 0); // TODO: config option for yBase or maybe param?
+        pocketTemplate.place(pocket, 10); // Sky starts getting dark (because of void) below y = 10 TODO: config option for yBase or maybe param?
         pocket.setVirtualLocation(virtualLocation);
         return pocket;
     }
