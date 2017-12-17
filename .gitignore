@@ -1,15 +1,30 @@
-eclipse/
-build/
-.gradle/
-.idea/
-run/
-libs/
-out/
-*.iml
+# eclipse
+eclipse
+bin
+*.launch
+.settings
+.metadata
+.classpath
+.project
+
+# idea
+out
 *.ipr
 *.iws
-forge-*-changelog.txt
+*.iml
+.idea
+
+# gradle
+build
+.gradle
 
 #Netbeans
-.nb-gradle/
+.nb-gradle
 .nb-gradle-properties
+
+# other
+run
+libs
+forge-*-changelog.txt
+.DS_Store
+Thumbs.db
