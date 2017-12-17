@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.shared.entities;
 
-import com.zixiken.dimdoors.client.sound.DDSounds;
+import com.zixiken.dimdoors.shared.sound.ModSounds;
 import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.util.TeleportUtils;
@@ -27,7 +27,7 @@ import java.util.List;
 
 import static net.minecraft.network.datasync.DataSerializers.*;
 
-public class MobMonolith extends EntityFlying implements IMob {
+public class EntityMonolith extends EntityFlying implements IMob {
 
     private static final int MAX_AGGRO = 250;
     private static final int MAX_AGGRO_CAP = 100;
@@ -35,7 +35,7 @@ public class MobMonolith extends EntityFlying implements IMob {
     private static final int MAX_TEXTURE_STATE = 18;
     private static final int MAX_SOUND_COOLDOWN = 200;
     private static final int MAX_AGGRO_RANGE = 35;
-    private static final DataParameter<Integer> AGGRO = EntityDataManager.createKey(MobMonolith.class, VARINT);
+    private static final DataParameter<Integer> AGGRO = EntityDataManager.createKey(EntityMonolith.class, VARINT);
 
     private static final float WIDTH = 3f;
     private static final float HEIGHT = 3f;
@@ -46,7 +46,7 @@ public class MobMonolith extends EntityFlying implements IMob {
     private int soundTime = 0;
     private final int aggroCap;
 
-    public MobMonolith(World world)
+    public EntityMonolith(World world)
     {
         super(world);
         setSize(WIDTH, HEIGHT);
@@ -160,7 +160,7 @@ public class MobMonolith extends EntityFlying implements IMob {
                     aggro = 0;
                     Location destination = WorldProviderLimbo.getLimboSkySpawn(player); // TODO: teleportToLimbo method
                     TeleportUtils.teleport(player, destination, 0, 0);
-                    player.world.playSound(player, player.getPosition(), DDSounds.CRACK, SoundCategory.HOSTILE, 13, 1);
+                    player.world.playSound(player, player.getPosition(), ModSounds.CRACK, SoundCategory.HOSTILE, 13, 1);
                 }
             }
         }
@@ -220,16 +220,16 @@ public class MobMonolith extends EntityFlying implements IMob {
         float aggroPercent = getAggroProgress();
         if (soundTime <= 0)
         {
-            playSound(DDSounds.MONK, 1F, 1F);
+            playSound(ModSounds.MONK, 1F, 1F);
             soundTime = 100;
         }
         if (aggroPercent > 0.70 && soundTime < 100)
         {
-            world.playSound(entityPlayer, entityPlayer.getPosition(), DDSounds.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + rand.nextGaussian()));
+            world.playSound(entityPlayer, entityPlayer.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + rand.nextGaussian()));
             soundTime = 100 + rand.nextInt(75);
         }
         if (aggroPercent > 0.80 && soundTime < MAX_SOUND_COOLDOWN) {
-            world.playSound(entityPlayer, entityPlayer.getPosition(), DDSounds.TEARING, SoundCategory.HOSTILE, 7, 1F);
+            world.playSound(entityPlayer, entityPlayer.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 7, 1F);
             soundTime = 250;
         }
         soundTime--;

@@ -17,9 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class RenderMobObelisk extends RenderLiving<MobMonolith> {
+public class RenderMonolith extends RenderLiving<EntityMonolith> {
 
-    protected ModelMobObelisk obeliskModel;
+    protected ModelMonolith obeliskModel;
 
     protected static final List<ResourceLocation> monolith_textures = Arrays.asList(
             new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith0.png"),
@@ -42,13 +42,13 @@ public class RenderMobObelisk extends RenderLiving<MobMonolith> {
             new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith17.png"),
             new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith18.png"));
 
-    public RenderMobObelisk(RenderManager manager, float f) {
-        super(manager, new ModelMobObelisk(), f);
-        obeliskModel = (ModelMobObelisk) mainModel;
+    public RenderMonolith(RenderManager manager, float f) {
+        super(manager, new ModelMonolith(), f);
+        obeliskModel = (ModelMonolith) mainModel;
     }
 
     @Override
-    public void doRender(MobMonolith monolith, double x, double y, double z, float entityYaw, float partialTicks) {
+    public void doRender(EntityMonolith monolith, double x, double y, double z, float entityYaw, float partialTicks) {
         final float minScaling = 0;
         final float maxScaling = 0.1f;
 
@@ -71,7 +71,7 @@ public class RenderMobObelisk extends RenderLiving<MobMonolith> {
         //this.renderLeash(entity, x, y, z, par8, par9);
     }
 
-    public void render(MobMonolith par1EntityLivingBase, double x, double y, double z, float par8, float par9)
+    public void render(EntityMonolith par1EntityLivingBase, double x, double y, double z, float par8, float par9)
     {
         if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre<>(par1EntityLivingBase, this, 1, x, y, z))) return;
         GL11.glPushMatrix();
@@ -122,7 +122,7 @@ public class RenderMobObelisk extends RenderLiving<MobMonolith> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(MobMonolith monolith) {
+    protected ResourceLocation getEntityTexture(EntityMonolith monolith) {
         return monolith_textures.get(monolith.getTextureState()); //return new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith" + monolith.getTextureState() + ".png");
     }
 }

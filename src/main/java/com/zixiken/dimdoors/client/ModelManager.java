@@ -1,7 +1,8 @@
-package com.zixiken.dimdoors.shared;
+package com.zixiken.dimdoors.client;
 
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.items.ModItems;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -10,9 +11,12 @@ import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import static net.minecraft.item.Item.getItemFromBlock;
 
+@SideOnly(Side.CLIENT)
 public class ModelManager {
 
     public static void registerModels() {
@@ -41,7 +45,7 @@ public class ModelManager {
     }
 
     public static void registerModelVariants() {
-        ModelBakery.registerItemVariants(getItemFromBlock(ModBlocks.FABRIC),
+        ModelBakery.registerItemVariants(ModItems.FABRIC, // we can't use getItemForBlock yet since items have not yet been registered (and this can't be run later)
                 new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_reality"),
                 new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_ancient"),
                 new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_altered"),

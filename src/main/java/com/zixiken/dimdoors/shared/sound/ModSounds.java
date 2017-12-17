@@ -1,4 +1,4 @@
-package com.zixiken.dimdoors.client.sound;
+package com.zixiken.dimdoors.shared.sound;
 
 import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.util.ResourceLocation;
@@ -6,13 +6,14 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class DDSounds {
+public class ModSounds {
 
+    // Don't forget to change sounds.json too if you're changing an ID!
     public static final SoundEvent CRACK = create("crack");
     public static final SoundEvent CREEPY = create("creepy");
     public static final SoundEvent DOOR_LOCKED = create("door_locked");
     public static final SoundEvent DOOR_LOCK_REMOVED = create("door_lock_removed");
-    public static final SoundEvent KEY_LOCK = create("key");
+    public static final SoundEvent KEY_LOCK = create("key_lock");
     public static final SoundEvent KEY_UNLOCKED = create("key_unlock");
     public static final SoundEvent MONK = create("monk");
     public static final SoundEvent RIFT = create("rift");

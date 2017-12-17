@@ -11,12 +11,12 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 @SideOnly(Side.CLIENT)
-public class ModelMobObelisk extends ModelBase {
+public class ModelMonolith extends ModelBase {
 
     ModelRenderer wholeMonolith;
     Random rand = new Random();
 
-    public ModelMobObelisk() {
+    public ModelMonolith() {
         textureWidth = 256;
         textureHeight = 256;
 
@@ -26,7 +26,7 @@ public class ModelMobObelisk extends ModelBase {
 
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        MobMonolith monolith = (MobMonolith) entityIn;
+        EntityMonolith monolith = (EntityMonolith) entityIn;
 
         setRotationAngles(0,  0,  0,  0,  0,0, monolith);
         GL11.glScalef(monolith.getRenderSizeModifier(), monolith.getRenderSizeModifier(), monolith.getRenderSizeModifier());

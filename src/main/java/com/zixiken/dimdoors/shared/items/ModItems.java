@@ -27,6 +27,9 @@ public class ModItems {
     public static final ItemRiftConnectionTool RIFT_CONNECTION_TOOL = new ItemRiftConnectionTool();
     public static final ItemRiftBlade RIFT_BLADE = new ItemRiftBlade();
 
+    // This needs to exist to be used in ModelManager.java before items are registered (preinitialization)
+    public static final ItemBlockFabric FABRIC = new ItemBlockFabric();
+
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
@@ -44,7 +47,7 @@ public class ModItems {
 
         // ItemBlocks
         event.getRegistry().registerAll(
-                new ItemBlockFabric(),
+                FABRIC,
                 new ItemBlock(ModBlocks.DIMENSIONAL_TRAPDOOR).setRegistryName(ModBlocks.DIMENSIONAL_TRAPDOOR.getRegistryName()),
                 new ItemBlock(ModBlocks.RIFT).setRegistryName(ModBlocks.RIFT.getRegistryName()));
     }

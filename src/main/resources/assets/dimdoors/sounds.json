@@ -1,15 +1,15 @@
 {
     "crack" : { "sounds" : [ "dimdoors:crack"] },
     "creepy" : { "sounds" : ["dimdoors:creepy" ] },
-    "doorLocked": { "sounds": [ "dimdoors:door_locked" ] },
-    "doorLockRemoved": { "sounds": [ "dimdoors:door_lock_removed" ] },
-    "keyLock" : { "sounds" : [ "dimdoors:key_lock" ] },
-    "keyUnlock" : { "sounds": [ "dimdoors:key_unlock" ] },
+    "door_locked": { "sounds": [ "dimdoors:door_locked" ] },
+    "door_lock_removed": { "sounds": [ "dimdoors:door_lock_removed" ] },
+    "key_lock" : { "sounds" : [ "dimdoors:key_lock" ] },
+    "key_unlock" : { "sounds": [ "dimdoors:key_unlock" ] },
     "monk" : { "sounds" : [ "dimdoors:monk" ] },
     "rift" : { "sounds" : [ "dimdoors:rift" ] },
-    "riftClose" : { "sounds" : [ "dimdoors:rift_close" ] },
-    "riftDoor": { "sounds" : [ "dimdoors:rift_door" ] },
-    "riftEnd": { "sounds" : [ "dimdoors:rift_end" ] },
-    "riftStart": { "sounds" : [ "dimdoors:rift_start" ] },
+    "rift_close" : { "sounds" : [ "dimdoors:rift_close" ] },
+    "rift_door": { "sounds" : [ "dimdoors:rift_door" ] },
+    "rift_end": { "sounds" : [ "dimdoors:rift_end" ] },
+    "rift_start": { "sounds" : [ "dimdoors:rift_start" ] },
     "tearing": { "sounds" : [ "dimdoors:tearing"] }
 }

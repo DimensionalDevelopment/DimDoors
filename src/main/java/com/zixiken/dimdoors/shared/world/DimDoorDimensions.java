@@ -30,19 +30,20 @@ public class DimDoorDimensions {
     @Getter private static int dungeonDimID;
 
     public static void init() {
+        // Lowercase names because all minecraft dimensions are lowercase, _pockets suffix to make it clear what the world is
         minPocketDimID = DDConfig.getBaseDimID();
         int dimID = minPocketDimID;
-        LIMBO = DimensionType.register("Limbo", "_limbo", dimID, WorldProviderLimbo.class, false);
+        LIMBO = DimensionType.register("limbo", "_limbo", dimID, WorldProviderLimbo.class, false);
         limboDimID = dimID++;
         pocketTypes.add(EnumPocketType.PRIVATE);
-        pocketDimensionTypes.put(EnumPocketType.PRIVATE, DimensionType.register("Private", "_private", dimID, WorldProviderPersonalPocket.class, false));
+        pocketDimensionTypes.put(EnumPocketType.PRIVATE, DimensionType.register("private_pockets", "_private", dimID, WorldProviderPersonalPocket.class, false));
         privateDimID = dimID++;
         pocketTypes.add(EnumPocketType.PUBLIC);
-        pocketDimensionTypes.put(EnumPocketType.PUBLIC, DimensionType.register("Public", "_public", dimID, WorldProviderPublicPocket.class, false));
+        pocketDimensionTypes.put(EnumPocketType.PUBLIC, DimensionType.register("public_pockets", "_public", dimID, WorldProviderPublicPocket.class, false));
         publicDimID = dimID++;
         maxPocketDimID = dimID;
         pocketTypes.add(EnumPocketType.DUNGEON);
-        pocketDimensionTypes.put(EnumPocketType.DUNGEON, DimensionType.register("Dungeon", "_dungeon", dimID, WorldProviderDungeonPocket.class, false));
+        pocketDimensionTypes.put(EnumPocketType.DUNGEON, DimensionType.register("dungeon_pockets", "_dungeon", dimID, WorldProviderDungeonPocket.class, false));
         dungeonDimID = dimID;
 
         registerDimension(LIMBO);

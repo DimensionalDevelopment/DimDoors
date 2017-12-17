@@ -67,7 +67,7 @@ public class RiftRegistry extends WorldSavedData {
 
         @Override
         public void readFromNBT(NBTTagCompound nbt) {
-            NBTTagList availableLinksNBT = (NBTTagList) nbt.getTag("availableLinks");
+            NBTTagList availableLinksNBT = (NBTTagList) nbt.getTag("availableLinks"); // TODO: figure out why this is sometimes null
             for (NBTBase availableLinkNBT : availableLinksNBT) {
                 AvailableLinkInfo link = new AvailableLinkInfo();
                 link.readFromNBT((NBTTagCompound) availableLinkNBT);

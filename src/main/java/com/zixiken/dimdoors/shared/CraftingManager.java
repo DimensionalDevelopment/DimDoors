@@ -25,7 +25,6 @@ public class CraftingManager {
             index++;
             recipeLoc = new ResourceLocation(DimDoors.MODID, baseLoc.getResourcePath() + "_" + index);
         }
-        DimDoors.log(CraftingManager.class, "Registered recipe " + recipeLoc);
         return recipeLoc;
     }
 
@@ -41,7 +40,6 @@ public class CraftingManager {
         ResourceLocation location = getNameForRecipe(output);
         ShapedOreRecipe recipe = new ShapedOreRecipe(location, output, params);
         recipe.setRegistryName(location);
-        GameData.register_impl(recipe);
         return recipe;
     }
 
@@ -73,7 +71,7 @@ public class CraftingManager {
 
         event.getRegistry().register(makeShapedOreRecipe(new ItemStack(ModItems.QUARTZ_DOOR, 1),
                 "yy", "yy", "yy", 'y', "quartz"));
-        
+
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.RIFT_BLADE),
                 "y", "y", "x", 'y', ModItems.STABLE_FABRIC, 'x', Items.IRON_SWORD));
         
