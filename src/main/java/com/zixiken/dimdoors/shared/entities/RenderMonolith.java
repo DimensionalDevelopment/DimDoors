@@ -108,7 +108,7 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
 
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         } catch (Exception e) {
-            e.printStackTrace();
+            DimDoors.log.error(e);
         }
 
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);

@@ -19,22 +19,26 @@ import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
-@Mod(modid = DimDoors.MODID, name = "Dimensional Doors", version = DimDoors.VERSION, dependencies = "required-after:forge@[14.23.0.2517,)")
+@Mod(modid = DimDoors.MODID, name = "Dimensional Doors",
+     version = DimDoors.VERSION,
+     dependencies = "required-after:forge@[14.23.0.2517,)")
 public class DimDoors {
 
     public static final String MODID = "dimdoors";
     public static final String VERSION = "${version}";
-    @Getter private GatewayGenerator gatewayGenerator;
+
+    @Mod.Instance(DimDoors.MODID)
+    public static DimDoors instance;
+
+    public static Logger log; // TODO: make non-static?
 
     @SidedProxy(clientSide = "com.zixiken.dimdoors.client.DDProxyClient",
                 serverSide = "com.zixiken.dimdoors.server.DDProxyServer")
     public static DDProxyCommon proxy;
-
-    @Mod.Instance(DimDoors.MODID)
-    public static DimDoors instance;
 
     public static final CreativeTabs DIM_DOORS_CREATIVE_TAB = new CreativeTabs("dimensional_doors_creative_tab") {
         @Override
@@ -44,9 +48,13 @@ public class DimDoors {
         }
     };
 
+    @Getter private GatewayGenerator gatewayGenerator;
+
+    public static boolean disableRiftSetup = false; // TODO: Find a better system.
 
     @Mod.EventHandler
     public void onPreInitialization(FMLPreInitializationEvent event) {
+        log = event.getModLog();
         proxy.onPreInitialization(event);
         DDConfig.loadConfig(event);
     }
@@ -78,30 +86,6 @@ public class DimDoors {
 
     public static void chat(EntityPlayer player, String text) {
         player.sendMessage(new TextComponentString("[DimDoors] " + text));
-    }
-
-    public static void warn(String text) {
-        warn(null, text);
-    }
-
-    public static void warn(Class<?> classFiredFrom, String text) {
-        if(classFiredFrom != null) {
-            FMLLog.log.warn("[DimDoors] " + text + " (" + classFiredFrom + " )", 0);
-        } else {
-            FMLLog.log.warn("[DimDoors] " + text, 0);
-        }
-    }
-
-    public static void log(String text) {
-        log(null, text);
-    }
-
-    public static void log(Class<?> classFiredFrom, String text) {
-        if(classFiredFrom != null) {
-            FMLLog.log.info("[DimDoors] " + text + " (" + classFiredFrom + " )", 0);
-        } else {
-            FMLLog.log.info("[DimDoors] " + text, 0);
-        }
     }
 
     // TODO: I18n is deprecated, convert to TextComponentTranslation

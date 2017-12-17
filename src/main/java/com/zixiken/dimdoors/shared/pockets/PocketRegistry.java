@@ -75,7 +75,7 @@ public class PocketRegistry extends WorldSavedData {
             if (upgradeRegistry(nbt, version == null ? -1 : version)) {
                 markDirty();
             } else {
-                DimDoors.warn("Failed to upgrade the pocket registry, you'll have to recreate your world!");
+                DimDoors.log.fatal("Failed to upgrade the pocket registry, you'll have to recreate your world!");
                 throw new RuntimeException("Couldn't upgrade registry"); // TODO: better exceptions
             }
         }

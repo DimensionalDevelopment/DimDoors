@@ -110,7 +110,7 @@ public class DDConfig {
         config.addCustomCategoryComment("pocket_dimension", "The following values determine the maximum sizes of different kinds of pockets. These values will only influence new worlds.");
         pocketGridSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "pocketGridSize", pocketGridSize,
                 "Sets how many chunks apart all pockets in pocket dimensions should be placed. [min: 4, max: 32, default: 32]", 4, 32);
-        DimDoors.log(DDConfig.class, "pocketGridSize was set to " + pocketGridSize);
+        DimDoors.log.info("pocketGridSize was set to " + pocketGridSize);
 
         maxPocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "maxPocketSize", maxPocketSize,
                 "Sets how deep and wide any pocket can be. [min: 0, max: pocketGridSize/2, default: 4]", 0, (int) ((double) pocketGridSize / 2 - 0.5));

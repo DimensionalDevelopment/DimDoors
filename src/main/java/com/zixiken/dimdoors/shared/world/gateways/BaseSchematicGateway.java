@@ -1,7 +1,6 @@
 package com.zixiken.dimdoors.shared.world.gateways;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.SchematicHandler;
 import com.zixiken.dimdoors.shared.util.Schematic;
 import com.zixiken.dimdoors.shared.util.SchematicConverter;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -11,8 +10,6 @@ import net.minecraft.world.World;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class BaseSchematicGateway extends BaseGateway {
     private Schematic schematic;
@@ -30,23 +27,23 @@ public abstract class BaseSchematicGateway extends BaseGateway {
             schematicDataStream = new DataInputStream(oldVersionSchematicStream);
             streamOpened = true;
         } else {
-            DimDoors.warn(SchematicHandler.class, "Schematic '" + name + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
+            DimDoors.log.warn("Schematic '" + name + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
         }
 
         NBTTagCompound schematicNBT;
-        this.schematic = null;
+        schematic = null;
         if (streamOpened) {
             try {
                 schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
                 schematic = SchematicConverter.loadOldDimDoorSchematicFromNBT(schematicNBT, name);
                 schematicDataStream.close();
             } catch (IOException ex) {
-                Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + name + " could not be read as a valid schematic NBT file.", ex);
+                DimDoors.log.error("Schematic file for " + name + " could not be read as a valid schematic NBT file.", ex);
             } finally {
                 try {
                     schematicDataStream.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Error occured while closing schematicDataStream", ex);
+                    DimDoors.log.error("Error occured while closing schematicDataStream", ex);
                 }
             }
         }
@@ -55,7 +52,7 @@ public abstract class BaseSchematicGateway extends BaseGateway {
     @Override
     public boolean generate(World world, int x, int y, int z) {
         Schematic.place(schematic, world, x, y, z);
-        this.generateRandomBits(world, x, y, z);
+        generateRandomBits(world, x, y, z);
 
 
         return true;

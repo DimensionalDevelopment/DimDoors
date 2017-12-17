@@ -6,7 +6,6 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.VirtualLocation;
 import com.zixiken.dimdoors.shared.pockets.Pocket;
 import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
-import com.zixiken.dimdoors.shared.pockets.PocketTemplate;
 import com.zixiken.dimdoors.shared.rifts.RiftRegistry;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
@@ -122,7 +121,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
     @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
         super.onBlockAdded(worldIn, pos, state);
-        if (hasTileEntity(state) && !PocketTemplate.schematicBeingPlaced) { // TODO: better check for schematicBeingPlaced (support other plugins such as WorldEdit, support doors being placed while schematics are being placed)
+        if (hasTileEntity(state) && !DimDoors.disableRiftSetup) { // TODO: better check for disableRiftSetup (support other plugins such as WorldEdit, support doors being placed while schematics are being placed)
             TileEntityVerticalEntranceRift rift = createNewTileEntity(worldIn, getMetaFromState(state));
 
             // Set the virtual location based on where the door was placed

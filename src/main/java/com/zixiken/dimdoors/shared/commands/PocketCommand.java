@@ -60,7 +60,7 @@ public class PocketCommand extends CommandBase {
                 }
             }
         } else {
-            DimDoors.log("Not executing command /" + getName() + " because it wasn't sent by a player.");
+            DimDoors.log.info("Not executing command /" + getName() + " because it wasn't sent by a player.");
         }
     }
 

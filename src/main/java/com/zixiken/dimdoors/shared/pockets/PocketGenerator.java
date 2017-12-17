@@ -9,7 +9,7 @@ import java.util.Random;
 public class PocketGenerator {
 
     public static Pocket generatePocketFromTemplate(int dimID, int depth, PocketTemplate pocketTemplate, VirtualLocation virtualLocation) {
-        DimDoors.log("depth = " + depth + " originalDim = " + virtualLocation);
+        DimDoors.log.info("depth = " + depth + " originalDim = " + virtualLocation);
 
         PocketRegistry registry = PocketRegistry.getForDim(dimID);
         Pocket pocket = registry.newPocket(depth);

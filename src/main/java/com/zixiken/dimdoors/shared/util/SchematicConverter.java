@@ -50,7 +50,7 @@ public class SchematicConverter {
         if (nbt.hasKey("Palette")) {
             NBTTagList paletteNBT = (NBTTagList) nbt.getTag("Palette");
             for (int i = 0; i < paletteNBT.tagCount(); i++) {
-                //DimDoors.log(Schematic.class, "reading pallete from schematic... i = " + i);
+                //DimDoors.log.info("reading pallete from schematic... i = " + i);
                 String blockString = paletteNBT.getStringTagAt(i);
                 boolean isAncientFabric = false;
                 if (blockString.startsWith("dimdoors")) {
@@ -124,11 +124,11 @@ public class SchematicConverter {
                             blockInt = schematic.pallette.indexOf(additionalState);
                         } else {
                             schematic.pallette.add(additionalState);
-                            // DimDoors.log(Schematic.class, "New blockstate detected. Original blockInt = " + blockInt + " and baseState is " + baseState);
+                            // DimDoors.log.info("New blockstate detected. Original blockInt = " + blockInt + " and baseState is " + baseState);
                             blockInt = schematic.pallette.size() - 1;
                         }
                     } else { //if this is ancient fabric
-                        // DimDoors.log(Schematic.class, "Non-default blockstate in palette detected. Original blockInt = " + blockInt + " and baseState is " + baseState.toString()); //@todo should only print a line on load of ancient fabric
+                        // DimDoors.log.info("Non-default blockstate in palette detected. Original blockInt = " + blockInt + " and baseState is " + baseState.toString()); //@todo should only print a line on load of ancient fabric
                         blockInt = schematic.pallette.indexOf(baseState);
                     }
                     schematic.blockData[x][y][z] = blockInt;
@@ -148,7 +148,7 @@ public class SchematicConverter {
 
     private static String convertOldDimDoorsBlockNameToNewDimDoorsBlockName(String dimdoorsBlockName) {
         if (OLDDIMDOORBLOCKNAMES.length != NEWDIMDOORBLOCKNAMES.length) {
-            DimDoors.warn(Schematic.class, "The array of old DimDoors block names somehow isn't the same length as the array of new names, therefore the dimdoors blocks in this schematic will not be loaded. This is a bug in the DimDoors mod itself.");
+            DimDoors.log.error("The array of old DimDoors block names somehow isn't the same length as the array of new names, therefore the dimdoors blocks in this schematic will not be loaded. This is a bug in the DimDoors mod itself.");
             return null;
         }
 
@@ -158,7 +158,7 @@ public class SchematicConverter {
                 return NEWDIMDOORBLOCKNAMES[i];
             } else {
                 if (i == OLDDIMDOORBLOCKNAMES.length - 1) {
-                    DimDoors.warn(Schematic.class, dimdoorsBlockName + " as an old dimdoors block name is unknown.");
+                    DimDoors.log.warn(dimdoorsBlockName + " as an old dimdoors block name is unknown.");
                 }
             }
         }

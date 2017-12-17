@@ -69,12 +69,12 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
                 String jsonString = IOUtils.toString(file.toURI(), StandardCharsets.UTF_8);
                 templates.addAll(loadTemplatesFromJson(jsonString));
             } catch (IOException e) {
-                DimDoors.warn("Error reading file " + file.toURI() + ". The following exception occured: ");
+                DimDoors.log.error("Error reading file " + file.toURI() + ". The following exception occured: ", e);
             }
         }
         constructNameMap();
 
-        DimDoors.log("Loaded " + templates.size() + " templates.");
+        DimDoors.log.info("Loaded " + templates.size() + " templates.");
     }
 
     private static List<PocketTemplate> loadTemplatesFromJson(String jsonString) {
@@ -84,11 +84,11 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(jsonString);
         JsonObject jsonTemplate = jsonElement.getAsJsonObject();
-        //DimDoors.log(SchematicHandler.class, "Checkpoint 1 reached");
+        //DimDoors.log.info("Checkpoint 1 reached");
 
         //Generate and get templates (without a schematic) of all variations that are valid for the current "maxPocketSize" 
         List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate);
-        //DimDoors.log(SchematicHandler.class, "Checkpoint 4 reached; " + validTemplates.size() + " templates were loaded");
+        //DimDoors.log.info("Checkpoint 4 reached; " + validTemplates.size() + " templates were loaded");
 
         String subDirectory = jsonTemplate.get("group").getAsString(); //get the subfolder in which the schematics are stored
 
@@ -115,17 +115,17 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
                     schematicDataStream = new DataInputStream(new FileInputStream(schematicFile));
                     streamOpened = true;
                 } catch (FileNotFoundException ex) {
-                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schem did not load correctly from config folder.", ex);
+                    DimDoors.log.error("Schematic file " + template.getName() + ".schem did not load correctly from config folder.", ex);
                 }
             } else if (oldVersionSchematicFile.exists()) {
                 try {
                     schematicDataStream = new DataInputStream(new FileInputStream(oldVersionSchematicFile));
                     streamOpened = true;
                 } catch (FileNotFoundException ex) {
-                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file " + template.getName() + ".schematic did not load correctly from config folder.", ex);
+                    DimDoors.log.error("Schematic file " + template.getName() + ".schematic did not load correctly from config folder.", ex);
                 }
             } else {
-                DimDoors.warn(SchematicHandler.class, "Schematic '" + template.getName() + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
+                DimDoors.log.warn("Schematic '" + template.getName() + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
             }
 
             NBTTagCompound schematicNBT;
@@ -153,9 +153,10 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
             if (schematic != null
                     && (schematic.getWidth() > (template.getSize() + 1) * 16 || schematic.getLength() > (template.getSize() + 1) * 16)) {
                 schematic = null;
-                DimDoors.log(SchematicHandler.class, "Schematic " + template.getName() + " was bigger than specified in its json file and therefore wasn't loaded");
+                DimDoors.log.warn("Schematic " + template.getName() + " was bigger than specified in its json file and therefore wasn't loaded");
             }
             template.setSchematic(schematic);
+            // TODO: delete from validTemplates if schematic is null
         }
         return validTemplates;
     }
@@ -274,7 +275,7 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
             }
         }
         if (weightedTemplates.size() == 0) {
-            DimDoors.warn("getRandomTemplate failed, no templates matching those criteria were found.");
+            DimDoors.log.warn("getRandomTemplate failed, no templates matching those criteria were found.");
             return null; // TODO: switch to exception system
         }
 

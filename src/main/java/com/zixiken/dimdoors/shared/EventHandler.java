@@ -12,10 +12,10 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class DDEventHandler {
+public class EventHandler {
 
     @SubscribeEvent
-    public void onPlayerJoinWorld(EntityJoinWorldEvent event) {
+    public static void onPlayerJoinWorld(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
         if(entity instanceof EntityPlayer && !entity.world.isRemote) { // check that it's a player first to avoid calling String.contains for every entity
             if (!DDConfig.HAVE_CONFIG_DEFAULTS_BEEN_CHECKED_FOR_CORRECTNESS && !DimDoors.VERSION.contains("a")) { // default values were not checked in non-alpha version
@@ -26,7 +26,7 @@ public class DDEventHandler {
     }
 
     @SubscribeEvent
-    public void onLivingFall(LivingFallEvent event) {
+    public static void onLivingFall(LivingFallEvent event) {
         Entity entity = event.getEntity();
         if (entity.dimension == DimDoorDimensions.LIMBO.getId()) {
             event.setCanceled(true); // no fall damage in limbo
@@ -34,7 +34,7 @@ public class DDEventHandler {
     }
 
     @SubscribeEvent
-    public void onEntityEnterChunk(EntityEvent.EnteringChunk event) {
+    public static void onEntityEnterChunk(EntityEvent.EnteringChunk event) {
         Entity entity = event.getEntity();
         if (entity instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) entity;

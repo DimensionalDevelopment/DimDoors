@@ -365,9 +365,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                 break;
             case POCKET_ENTRANCE:
             case POCKET_EXIT:
-                if (entity instanceof EntityPlayer) {
-                    DimDoors.chat((EntityPlayer) entity, "The entrance/exit of this dungeon has not been linked. Either this is a bug or you are in dungeon-building mode.");
-                }
+                if (entity instanceof EntityPlayer) DimDoors.chat((EntityPlayer) entity, "The entrance/exit of this dungeon has not been linked. Either this is a bug or you are in dungeon-building mode.");
                 return false;
             default:
                 throw new RuntimeException("That rift type is not implemented in TileRiftEntity.teleport, this is a bug.");
@@ -388,7 +386,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
 
         } catch (Exception e) {
             if (entity instanceof EntityPlayer) DimDoors.chat((EntityPlayer) entity, "There was an exception while teleporting!");
-            e.printStackTrace();
+            DimDoors.log.error("Teleporting failed with the following exception: ", e);
             return false;
         }
     }
@@ -464,5 +462,4 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
     }
 
     public abstract boolean isEntrance(); // TODO: replace with chooseWeight function
-
 }

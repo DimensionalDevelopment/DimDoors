@@ -85,7 +85,7 @@ public class RandomUtils {
             throw new IllegalArgumentException("pre was violated");
         }
         Random random = new Random();
-        DimDoors.log(RandomUtils.class, "base = " + base + ", power = " + power + ", depth = " + depth + " and power is " + Math.pow(base * depth, power));
+        DimDoors.log.info("base = " + base + ", power = " + power + ", depth = " + depth + " and power is " + Math.pow(base * depth, power));
         int xOffset = random.nextInt((int) Math.pow(base * depth, power)) * (random.nextBoolean() ? 1 : -1);
         int zOffset = random.nextInt((int) Math.pow(base * depth, power)) * (random.nextBoolean() ? 1 : -1);
         return new Location(origLocation.getWorld(), origLocation.getPos().offset(EnumFacing.EAST, xOffset).offset(EnumFacing.SOUTH, zOffset));

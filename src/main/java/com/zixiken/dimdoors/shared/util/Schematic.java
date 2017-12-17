@@ -244,10 +244,14 @@ public class Schematic {
 
         // Set TileEntity data
         for (NBTTagCompound tileEntityNBT : schematic.getTileEntities()) {
-            BlockPos pos = new BlockPos(xBase + tileEntityNBT.getInteger("x"), yBase + tileEntityNBT.getInteger("y"), zBase + tileEntityNBT.getInteger("z"));
+            BlockPos pos = new BlockPos(
+                    xBase + tileEntityNBT.getInteger("x"),
+                    yBase + tileEntityNBT.getInteger("y"),
+                    zBase + tileEntityNBT.getInteger("z"));
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity != null) {
                 tileEntity.readFromNBT(tileEntityNBT); //this reads in the wrong blockPos
+                tileEntity.setWorld(world); // TODO: necessary?
                 tileEntity.setPos(pos); //correct the position
                 tileEntity.markDirty();
             }

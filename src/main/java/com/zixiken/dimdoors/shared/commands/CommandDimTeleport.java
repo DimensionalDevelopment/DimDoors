@@ -65,7 +65,7 @@ public class CommandDimTeleport extends CommandBase { // TODO: localization
         if (sender instanceof Entity) {
             TeleportUtils.teleport((Entity) sender, new Location(dimension, new BlockPos(x, y, z)), yaw, pitch);
         } else {
-            DimDoors.log("Not executing command /" + getName() + " because it wasn't sent by a player.");
+            DimDoors.log.info("Not executing command /" + getName() + " because it wasn't sent by a player.");
         }
     }
 
