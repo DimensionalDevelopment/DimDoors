@@ -17,6 +17,7 @@ public class ItemDimDoorUnstable extends ItemDoor {
 
     public ItemDimDoorUnstable() {
         super(ModBlocks.UNSTABLE_DIMENSIONAL_DOOR);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setUnlocalizedName(BlockDimDoorUnstable.ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimDoorUnstable.ID));
     }

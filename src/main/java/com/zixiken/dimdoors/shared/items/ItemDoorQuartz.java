@@ -10,6 +10,7 @@ public class ItemDoorQuartz extends ItemDoor {
 
     public ItemDoorQuartz() {
         super(ModBlocks.QUARTZ_DOOR);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setUnlocalizedName(BlockDoorQuartz.ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDoorQuartz.ID));
     }

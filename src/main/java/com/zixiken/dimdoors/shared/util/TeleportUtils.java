@@ -6,11 +6,13 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.EnumSet;
@@ -28,6 +30,10 @@ public class TeleportUtils {
 
         int oldDimension = entity.dimension;
         int newDimension = location.getDimID();
+
+        if (entity instanceof EntityPlayerMP) {
+            entity.noClip = true;
+        }
 
         if (oldDimension == newDimension) { // Based on CommandTeleport.doTeleport
             if (entity instanceof EntityPlayerMP) {
@@ -49,25 +55,37 @@ public class TeleportUtils {
             WorldServer newServer = server.getWorld(newDimension);
 
             // Allow other mods to cancel the event
-            if (!ForgeHooks.onTravelToDimension(entity, newDimension)) return entity; // TODO: Original code returns null, but that might be a bug
+            if (!ForgeHooks.onTravelToDimension(entity, newDimension)) return entity;
 
             if (entity instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) entity;
-                // TODO: set invulnerableDimensionChange like in EntityPlayerMP?
+                try {
+                    Field invulnerableDimensionChange = EntityPlayerMP.class.getDeclaredField("invulnerableDimensionChange"); // Prevents cancelling the position change in survival. TODO: necessary?
+                    invulnerableDimensionChange.setAccessible(true);
+                    invulnerableDimensionChange.setBoolean(player, true); // without this, there's a chance that the new player position gets cancelled
+                } catch (NoSuchFieldException|IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+                // player.enteredNetherPosition = null;
                 player.dimension = newDimension;
+                player.connection.sendPacket(new SPacketRespawn(player.dimension, newServer.getDifficulty(), newServer.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
 
                 // Remove from old world
-                player.connection.sendPacket(new SPacketRespawn(player.dimension, newServer.getDifficulty(), newServer.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
                 player.mcServer.getPlayerList().updatePermissionLevel(player);
                 oldServer.removeEntityDangerously(player);
                 player.isDead = false;
 
                 // Move to new world
-                player.moveToBlockPosAndAngles(location.getPos(), yaw, pitch);
-                oldServer.updateEntityWithOptionalForce(entity, false);
-                player.setWorld(newServer);
-                newServer.spawnEntity(player); // TODO: necessary?
+                oldServer.profiler.startSection("moving");
+                player.moveToBlockPosAndAngles(location.getPos(), yaw, pitch); // TODO: clamp to world border or -29999872, 29999872 like in original code?
+                if (entity.isEntityAlive()) oldServer.updateEntityWithOptionalForce(entity, false);
+                oldServer.profiler.endSection();
+
+                oldServer.profiler.startSection("placing");
+                newServer.spawnEntity(player);
                 newServer.updateEntityWithOptionalForce(player, false);
+                oldServer.profiler.endSection();
+                player.setWorld(newServer);
 
                 // Sync the player
                 player.mcServer.getPlayerList().preparePlayer(player, oldServer);
@@ -81,6 +99,13 @@ public class TeleportUtils {
                 }
 
                 FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDimension, newDimension);
+
+                player.connection.sendPacket(new SPacketEffect(1032, BlockPos.ORIGIN, 0, false));
+
+                //player.prevBlockpos = null; // For frost walk. Is this needed? What about other fields?
+                /*player.lastExperience = -1;
+                player.lastHealth = -1.0F;
+                player.lastFoodLevel = -1;*/
                 return entity;
             } else {
                 entity.world.profiler.startSection("changeDimension");

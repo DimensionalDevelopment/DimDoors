@@ -209,7 +209,7 @@ public class RiftRegistry extends WorldSavedData {
             NBTTagCompound privatePocketEntranceNBT = new NBTTagCompound();
             privatePocketEntranceNBT.setString("uuid", privatePocketEntrance.getKey());
             privatePocketEntranceNBT.setTag("location", Location.writeToNBT(privatePocketEntrance.getValue()));
-            riftsNBT.appendTag(privatePocketEntranceNBT);
+            privatePocketEntrancesNBT.appendTag(privatePocketEntranceNBT);
         }
         nbt.setTag("privatePocketEntrances", privatePocketEntrancesNBT);
 
@@ -219,7 +219,7 @@ public class RiftRegistry extends WorldSavedData {
             NBTTagCompound escapeRiftNBT = new NBTTagCompound();
             escapeRiftNBT.setString("uuid", escapeRift.getKey());
             escapeRiftNBT.setTag("location", Location.writeToNBT(escapeRift.getValue()));
-            riftsNBT.appendTag(escapeRiftNBT);
+            escapeRiftsNBT.appendTag(escapeRiftNBT);
         }
         nbt.setTag("escapeRifts", escapeRiftsNBT);
 
@@ -313,6 +313,7 @@ public class RiftRegistry extends WorldSavedData {
 
     public void setPrivatePocketEntrance(String playerUUID, Location rift) {
         privatePocketEntrances.put(playerUUID, rift);
+        markDirty();
     }
 
     public static Location getEscapeRift(String playerUUID) { // TODO: since this is per-world, move to different registry?
@@ -321,6 +322,7 @@ public class RiftRegistry extends WorldSavedData {
 
     public static void setEscapeRift(String playerUUID, Location rift) {
         getForDim(0).escapeRifts.put(playerUUID, rift);
+        getForDim(0).markDirty();
     }
 
     public static List<AvailableLinkInfo> getAvailableLinks() { // TODO: cache this

@@ -12,9 +12,10 @@ public class ItemBlockFabric extends ItemBlock {
 
     public ItemBlockFabric() {
         super(ModBlocks.FABRIC);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setMaxDamage(0);
         setHasSubtypes(true);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setUnlocalizedName(BlockFabric.ID);
         setRegistryName(BlockFabric.ID);
     }
 

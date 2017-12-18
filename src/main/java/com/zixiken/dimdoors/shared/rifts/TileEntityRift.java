@@ -250,7 +250,10 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
 
     public boolean teleport(Entity entity) { try { // TODO: return failiure message string rather than boolean
         riftStateChanged = false;
-        if (destinations.size() == 0) return false;
+        if (destinations.size() == 0) {
+            if (entity instanceof EntityPlayer) DimDoors.chat((EntityPlayer) entity, "This rift has no destinations!");
+            return false;
+        }
 
         Map<WeightedRiftDestination, Float> weightMap = new HashMap<>(); // TODO: cache this, faster implementation of single rift
         for (WeightedRiftDestination destination : destinations) {
@@ -273,10 +276,10 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                 destLoc = destinationToLocation(dest);
                 break;
             case NEW_PUBLIC:
-                Pocket publicPocket = PocketGenerator.generatePublicPocket(virtualLocation != null ? virtualLocation.toBuilder().depth(-1).build() : null); // TODO: random transform
-                publicPocket.setup();
-                publicPocket.linkPocketTo(destHere);
-                destLoc = publicPocket.getEntrance();
+                Pocket pocket = PocketGenerator.generatePublicPocket(virtualLocation != null ? virtualLocation.toBuilder().depth(-1).build() : null); // TODO: random transform
+                pocket.setup();
+                pocket.linkPocketTo(destHere);
+                destLoc = pocket.getEntrance();
                 if (destLoc != null) makeDestinationPermanent(weightedDestination, destLoc);
                 break;
             case PRIVATE: // TODO: move logic to PrivatePocketTeleportDestination
@@ -286,17 +289,17 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                 if (uuid != null) {
                     PocketRegistry privatePocketRegistry = PocketRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
                     RiftRegistry privateRiftRegistry = RiftRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
-                    Pocket privatePocket = privatePocketRegistry.getPocket(privatePocketRegistry.getPrivatePocketID(uuid));
-                    if (privatePocket == null) { // generate the private pocket and get its entrance
-                        privatePocket = PocketGenerator.generatePrivatePocket(virtualLocation != null ? virtualLocation.toBuilder().depth(-2).build() : null); // set to where the pocket was first created TODO: private pocket deletion
-                        privatePocket.setup();
-                        privatePocketRegistry.setPrivatePocketID(uuid, privatePocket.getId());
-                        destLoc = privatePocket.getEntrance();
+                    /*Pocket*/ pocket = privatePocketRegistry.getPocket(privatePocketRegistry.getPrivatePocketID(uuid));
+                    if (pocket == null) { // generate the private pocket and get its entrance
+                        pocket = PocketGenerator.generatePrivatePocket(virtualLocation != null ? virtualLocation.toBuilder().depth(-2).build() : null); // set to where the pocket was first created TODO: private pocket deletion
+                        pocket.setup();
+                        privatePocketRegistry.setPrivatePocketID(uuid, pocket.getId());
+                        destLoc = pocket.getEntrance();
                     } else {
                         destLoc = privateRiftRegistry.getPrivatePocketEntrance(uuid); // get the last used entrance
-                        if (destLoc == null) destLoc = privatePocket.getEntrance(); // if there's none, then set the target to the main entrance
+                        if (destLoc == null) destLoc = pocket.getEntrance(); // if there's none, then set the target to the main entrance
                     }
-                    privateRiftRegistry.setPrivatePocketEntrance(uuid, null); // forget the last entered entrance
+                    // privateRiftRegistry.setPrivatePocketEntrance(uuid, null); // --forget the last entered entrance-- Actually, remember it. We'll eventually store it only in the rift registry, not in the pocket.
                 } else {
                     return false; // TODO: There should be a way to get other entities into your private pocket, though. Add API for other mods.
                 }
@@ -316,7 +319,10 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                         // TODO: teleport the player to random coordinates based on depth around destLoc
                         return true;
                     }
-                    if (destLoc == null) return false; // TODO: The player probably teleported into the dungeon/private pocket and is now trying to escape... What should we do? Limbo?
+                    if (destLoc == null) {
+                        if (entity instanceof EntityPlayer) DimDoors.chat((EntityPlayer) entity, "You tried to escape a pocket or leave your private pocket, but you teleported into it!");
+                        return false; // TODO: limbo?
+                    }
                 } else {
                     return false; // Non-player/owned entity tried to escape/leave private pocket
                 }
@@ -440,7 +446,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
         deserializeNBT(tag);
     }
 
-    public void notifyStateChanged() {
+    public void markStateChanged() {
         riftStateChanged = true;
         markDirty();
     }

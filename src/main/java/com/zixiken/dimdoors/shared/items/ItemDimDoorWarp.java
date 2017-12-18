@@ -17,6 +17,7 @@ public class ItemDimDoorWarp extends ItemDoor {
 
     public ItemDimDoorWarp() {
         super(ModBlocks.WARP_DIMENSIONAL_DOOR);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setUnlocalizedName(BlockDimDoorWarp.ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimDoorWarp.ID));
     }

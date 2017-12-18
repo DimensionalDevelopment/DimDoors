@@ -50,6 +50,7 @@ public class Pocket { // TODO: better visibilities
         pocket.z = nbt.getInteger("z");
         pocket.size = nbt.getInteger("size");
         if (nbt.hasKey("virtualLocation")) pocket.virtualLocation = VirtualLocation.readFromNBT(nbt.getCompoundTag("virtualLocation"));
+        if (nbt.hasKey("entrance")) pocket.entrance = Location.readFromNBT(nbt.getCompoundTag("entrance"));
 
         pocket.playerUUIDs = new ArrayList<>();
         NBTTagList playerUUIDsNBT = (NBTTagList) nbt.getTag("playerUUIDs");
@@ -73,6 +74,7 @@ public class Pocket { // TODO: better visibilities
         nbt.setInteger("z", pocket.z);
         nbt.setInteger("size", pocket.size);
         if (pocket.virtualLocation != null) nbt.setTag("virtualLocation", pocket.virtualLocation.writeToNBT());
+        if (pocket.entrance != null) nbt.setTag("entrance", Location.writeToNBT(pocket.entrance));
 
         NBTTagList playerUUIDsNBT = new NBTTagList();
         for (int i = 0; i < pocket.playerUUIDs.size(); i++) {
@@ -153,6 +155,7 @@ public class Pocket { // TODO: better visibilities
                     destIterator.remove();
                     if (index == selectedEntranceIndex) {
                         entrance = new Location(rift.getWorld(), rift.getPos());
+                        PocketRegistry.getForDim(dimID).markDirty();
                         List<WeightedRiftDestination> ifDestinations = ((RiftDestination.PocketEntranceDestination) dest).getIfDestinations();
                         for (WeightedRiftDestination ifDestination : ifDestinations) {
                             destIterator.add(new WeightedRiftDestination(ifDestination.getDestination(), ifDestination.getWeight() / wdest.getWeight(), ifDestination.getGroup()));
@@ -190,7 +193,7 @@ public class Pocket { // TODO: better visibilities
                 if (dest.getType() == RiftDestination.EnumType.POCKET_EXIT) {
                     destIterator.remove();
                     destIterator.add(new WeightedRiftDestination(linkTo.withOldDestination(dest), wdest.getWeight(), wdest.getGroup()));
-                    rift.notifyStateChanged();
+                    rift.markStateChanged();
                     rift.markDirty();
                 }
             }

@@ -17,6 +17,7 @@ public class ItemDimDoorPersonal extends ItemDoor {
 
     public ItemDimDoorPersonal() {
         super(ModBlocks.PERSONAL_DIMENSIONAL_DOOR);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setUnlocalizedName(BlockDimDoorPersonal.ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimDoorPersonal.ID));
     }

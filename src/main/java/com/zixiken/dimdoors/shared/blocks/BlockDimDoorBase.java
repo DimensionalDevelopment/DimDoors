@@ -45,12 +45,12 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
         if (!(doorState.getBlock() instanceof BlockDoor)) return;
         if (doorState.getValue(BlockDoor.OPEN) && entityIn.timeUntilPortal == 0) {
             entityIn.timeUntilPortal = 50; // 2.5s
-            toggleDoor(worldIn, pos, false);
             TileEntityEntranceRift rift = getRift(worldIn, pos, state);
-            if (!rift.teleport(entityIn) && entityIn instanceof EntityPlayer) {
-                DimDoors.chat((EntityPlayer) entityIn, "Teleporting failed because this entrance has no destinations!");
-            } else if (rift.isCloseAfterPassThrough()) { // TODO: move logic to TileEntityEntranceRift?
-                worldIn.destroyBlock(pos, false);
+            boolean successful = rift.teleport(entityIn);
+            if (successful)entityIn.timeUntilPortal = 0;
+            if (successful && entityIn instanceof EntityPlayer) {
+                if(!state.getValue(POWERED)) toggleDoor(worldIn, pos, false); // TODO: config option playerClosesDoorBehind
+                if (rift.isCloseAfterPassThrough()) worldIn.destroyBlock(pos, false);
             }
         }
     }

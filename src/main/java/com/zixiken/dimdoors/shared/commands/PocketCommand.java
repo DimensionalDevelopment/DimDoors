@@ -53,7 +53,7 @@ public class PocketCommand extends CommandBase {
                     Pocket pocket = PocketGenerator.generatePocketFromTemplate(dim, 0, template, new VirtualLocation(0, 0, 0, 0,0));
                     // TODO: options for linking back/not setting entrance
                     pocket.setup();
-                    TileEntityRift entrance = (TileEntityRift) player.world.getTileEntity(pocket.getEntrance().getPos());
+                    TileEntityRift entrance = (TileEntityRift) player.world.getTileEntity(pocket.getEntrance().getPos()); // TODO: what about no entrances?
                     entrance.teleportTo(player);
                 } else {
                     DimDoors.chat(player, "You must be in a pocket dimension to use this command!");

@@ -17,6 +17,7 @@ public class ItemDimDoor extends ItemDoor {
 
     public ItemDimDoor() {
         super(ModBlocks.DIMENSIONAL_DOOR);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setUnlocalizedName(BlockDimDoorIron.ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimDoorIron.ID));
     }
