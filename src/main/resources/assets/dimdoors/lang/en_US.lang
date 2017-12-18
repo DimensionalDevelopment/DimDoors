@@ -14,6 +14,7 @@ tile.transient_dimensional_door.name=Transient Door
 tile.fabric_reality.name=Fabric of Reality
 tile.fabric_altered.name=Altered Fabric
 tile.fabric_ancient.name=Ancient Fabric
+tile.fabric_ancient_altered.name=Ancient Altered Fabric
 tile.fabric_eternal.name=Eternal Fabric
 tile.fabric_unraveled.name=Unraveled Fabric
 tile.rift.name=Rift

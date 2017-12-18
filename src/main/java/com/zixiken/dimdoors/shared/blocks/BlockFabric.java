@@ -40,8 +40,9 @@ public class BlockFabric extends Block {
         REALITY("reality", 0),
         ANCIENT("ancient", 1),
         ALTERED("altered", 2),
-        UNRAVELED("unraveled", 3),
-        ETERNAL("eternal", 4);
+        ANCIENT_ALTERED("ancient_altered", 3),
+        UNRAVELED("unraveled", 4),
+        ETERNAL("eternal", 5);
 
         @Getter private final String name;
         @Getter private final int meta;
@@ -91,7 +92,7 @@ public class BlockFabric extends Block {
 
     @Override
     public float getBlockHardness(IBlockState blockState, World worldIn, BlockPos pos) {
-        if (blockState.getValue(TYPE).equals(EnumType.ANCIENT) || blockState.getValue(TYPE).equals(EnumType.ETERNAL)) {
+        if (blockState.getValue(TYPE).equals(EnumType.ANCIENT)|| blockState.getValue(TYPE).equals(EnumType.ANCIENT_ALTERED) || blockState.getValue(TYPE).equals(EnumType.ETERNAL)) {
             return -1; // unbreakable
         } else {
             return blockHardness;
@@ -101,7 +102,7 @@ public class BlockFabric extends Block {
     @Override
     public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
         IBlockState state = world.getBlockState(pos);
-        if (state.getValue(TYPE).equals(EnumType.ANCIENT) || state.getValue(TYPE).equals(EnumType.ETERNAL)) {
+        if (state.getValue(TYPE).equals(EnumType.ANCIENT) || state.getValue(TYPE).equals(EnumType.ANCIENT_ALTERED) || state.getValue(TYPE).equals(EnumType.ETERNAL)) {
             return 6000000.0F / 5;
         } else {
             return super.getExplosionResistance(world, pos, exploder, explosion);

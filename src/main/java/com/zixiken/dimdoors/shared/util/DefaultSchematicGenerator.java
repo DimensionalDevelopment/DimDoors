@@ -12,7 +12,6 @@ import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 
 import java.util.ArrayList;
 
@@ -23,12 +22,12 @@ import java.util.ArrayList;
 public class DefaultSchematicGenerator {
     public static void generateDefaultSchematics() {
         for (int pocketSize = 0; pocketSize < 8; pocketSize++) {
-            generateDefaultSchematic("defaultPublic", pocketSize, ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY), ModBlocks.DIMENSIONAL_DOOR, RiftDestination.PocketExitDestination.builder().build());
-            generateDefaultSchematic("defaultPrivate", pocketSize, ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ALTERED), ModBlocks.PERSONAL_DIMENSIONAL_DOOR, RiftDestination.PrivatePocketExitDestination.builder().build());
+            generateDefaultSchematic("defaultPublic", pocketSize, ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT), ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY), ModBlocks.DIMENSIONAL_DOOR, RiftDestination.PocketExitDestination.builder().build());
+            generateDefaultSchematic("defaultPrivate", pocketSize, ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT_ALTERED), ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ALTERED), ModBlocks.PERSONAL_DIMENSIONAL_DOOR, RiftDestination.PrivatePocketExitDestination.builder().build());
         }
     }
 
-    private static void generateDefaultSchematic(String baseName, int pocketSize, IBlockState innerWallBlockState, Block doorBlock, RiftDestination exitDest) {
+    private static void generateDefaultSchematic(String baseName, int pocketSize, IBlockState outerWallBlockState, IBlockState innerWallBlockState, Block doorBlock, RiftDestination exitDest) {
         int maxbound = (pocketSize + 1) * 16 - 1;
 
         Schematic schematic = new Schematic();
@@ -46,7 +45,7 @@ public class DefaultSchematicGenerator {
         schematic.paletteMax = 4;
         schematic.pallette = new ArrayList<>();
         schematic.pallette.add(Blocks.AIR.getDefaultState());
-        schematic.pallette.add(ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT));
+        schematic.pallette.add(outerWallBlockState);
         schematic.pallette.add(innerWallBlockState);
         schematic.pallette.add(doorBlock.getDefaultState().withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.LOWER)); //bottom
         schematic.pallette.add(doorBlock.getDefaultState().withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER)); //top

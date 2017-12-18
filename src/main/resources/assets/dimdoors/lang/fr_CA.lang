@@ -14,6 +14,7 @@ tile.transient_dimensional_door.name=Porte transitoire
 tile.fabric_reality.name=Étoffe de la réalité
 tile.fabric_altered.name=Étoffe altérée
 tile.fabric_ancient.name=Étoffe ancienne
+tile.fabric_ancient_altered.name=Étoffe altérée ancienne
 tile.fabric_eternal.name=Étoffe éternelle
 tile.fabric_unraveled.name=Étoffe effilochée
 tile.rift.name=Fissure

@@ -24,8 +24,9 @@ public class ModelManager {
         register(getItemFromBlock(ModBlocks.FABRIC), 0, "reality");
         register(getItemFromBlock(ModBlocks.FABRIC), 1, "ancient");
         register(getItemFromBlock(ModBlocks.FABRIC), 2, "altered");
-        register(getItemFromBlock(ModBlocks.FABRIC), 3, "unraveled");
-        register(getItemFromBlock(ModBlocks.FABRIC), 4, "eternal");
+        register(getItemFromBlock(ModBlocks.FABRIC), 3, "ancient_altered");
+        register(getItemFromBlock(ModBlocks.FABRIC), 4, "unraveled");
+        register(getItemFromBlock(ModBlocks.FABRIC), 5, "eternal");
 
         register(getItemFromBlock(ModBlocks.RIFT));
         register(getItemFromBlock(ModBlocks.DIMENSIONAL_TRAPDOOR));
@@ -49,6 +50,7 @@ public class ModelManager {
                 new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_reality"),
                 new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_ancient"),
                 new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_altered"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_ancient_altered"),
                 new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_unraveled"),
                 new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_eternal"));
     }

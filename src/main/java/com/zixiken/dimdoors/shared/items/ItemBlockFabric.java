@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 public class ItemBlockFabric extends ItemBlock {
 
-    private static final String[] subNames = {"_reality", "_ancient", "_altered", "_unraveled", "_eternal"};
+    private static final String[] subNames = {"_reality", "_ancient", "_altered", "_ancient_altered", "_unraveled", "_eternal"};
 
     public ItemBlockFabric() {
         super(ModBlocks.FABRIC);
