@@ -13,6 +13,7 @@ import java.util.Map;
 import lombok.Getter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.storage.MapStorage;
@@ -29,9 +30,9 @@ public class PocketRegistry extends WorldSavedData {
     @Getter private int publicPocketSize;
     private Map<String, Integer> privatePocketMap; // Player UUID -> Pocket ID, in pocket dim only
     @Getter private Map<Integer, Pocket> pockets; // TODO: remove getter?
+    @Getter private int nextID;
 
     @Getter private int dimID;
-    @Getter private int nextFreeID;
 
     public PocketRegistry() {
         super(DATA_NAME);
@@ -63,7 +64,7 @@ public class PocketRegistry extends WorldSavedData {
         privatePocketSize = DDConfig.getPrivatePocketSize();
         publicPocketSize = DDConfig.getPublicPocketSize();
 
-        nextFreeID = 0;
+        nextID = 0;
         pockets = new HashMap<>();
         privatePocketMap = new HashMap<>();
     }
@@ -85,15 +86,13 @@ public class PocketRegistry extends WorldSavedData {
         privatePocketSize = nbt.getInteger("privatePocketSize");
         publicPocketSize = nbt.getInteger("publicPocketSize");
         privatePocketMap = NBTUtils.readMapStringInteger(nbt.getCompoundTag("privatePocketMap"));
+        nextID = nbt.getInteger("nextID");
 
-        NBTTagList pocketsTagList = (NBTTagList) nbt.getTag("pockets");
         pockets = new HashMap<>();
-        for (int id = 0; id < pocketsTagList.tagCount(); id++) { // TODO: convert to map to be able to skip IDs efficiently
-            NBTTagCompound pocketTag = pocketsTagList.getCompoundTagAt(id);
-            if (!pocketTag.getBoolean("nullPocket")) {
-                Pocket pocket = Pocket.readFromNBT(pocketTag);
-                pockets.put(id, pocket);
-            }
+        NBTTagList pocketsNBT = (NBTTagList) nbt.getTag("pockets");
+        for (NBTBase pocketNBT : pocketsNBT) { // TODO: convert to map to be able to skip IDs efficiently
+            NBTTagCompound pocketNBTC = (NBTTagCompound) pocketNBT;
+            pockets.put(pocketNBTC.getInteger("id"), Pocket.readFromNBT(pocketNBTC));
         }
 
         for (Pocket pocket : pockets.values()) {
@@ -126,19 +125,16 @@ public class PocketRegistry extends WorldSavedData {
         nbt.setInteger("privatePocketSize", privatePocketSize);
         nbt.setInteger("publicPocketSize", publicPocketSize);
         nbt.setTag("privatePocketMap", NBTUtils.writeMapStringInteger(privatePocketMap));
+        nbt.setInteger("nextID", nextID);
 
-        NBTTagList pocketsTagList = new NBTTagList();
-        for (int i = 0; i < nextFreeID; i++) {
-            Pocket pocket = pockets.get(i);
-            if (pocket == null) {
-                NBTTagCompound nullPocket = new NBTTagCompound();
-                nullPocket.setBoolean("nullPocket", true);
-                pocketsTagList.appendTag(nullPocket);
-            } else {
-                pocketsTagList.appendTag(Pocket.writeToNBT(pocket));
-            }
+        NBTTagList pocketsNBT = new NBTTagList();
+        for (Map.Entry<Integer, Pocket> pocketEntry : pockets.entrySet()) {
+            if (pocketEntry.getValue() == null) continue;
+            NBTTagCompound pocketNBT = (NBTTagCompound) Pocket.writeToNBT(pocketEntry.getValue());
+            pocketNBT.setInteger("id", pocketEntry.getKey()); // TODO: store separately?
+            pocketsNBT.appendTag(pocketNBT);
         }
-        nbt.setTag("pockets", pocketsTagList);
+        nbt.setTag("pockets", pocketsNBT);
 
         return nbt;
     }
@@ -150,7 +146,7 @@ public class PocketRegistry extends WorldSavedData {
      */
     public Pocket newPocket(int depth) {
         Pocket pocket = null;
-        while(pocket == null) pocket = newPocket(nextFreeID++, depth); // TODO: config option to reuse IDs (start at 0 rather than nextFreePocket)
+        while(pocket == null) pocket = newPocket(nextID++, depth); // TODO: config option to reuse IDs (start at 0 rather than nextFreePocket)
         return pocket;
     }
 
@@ -165,7 +161,7 @@ public class PocketRegistry extends WorldSavedData {
         GridUtils.GridPos pos = getGridPosFromID(id);
         Pocket pocket = new Pocket(id, dimID, pos.getX(), pos.getZ(), depth);
         pockets.put(id, pocket);
-        if (id >= nextFreeID) nextFreeID = id + 1;
+        if (id >= nextID) nextID = id + 1;
         markDirty();
         return pocket;
     }

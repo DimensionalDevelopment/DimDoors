@@ -49,6 +49,7 @@ public class LimboDecay {
             blocksImmuneToDecay = new IBlockState[] {
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED),
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ETERNAL),
+                    ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT),
                     ModBlocks.TRANSIENT_DIMENSIONAL_DOOR.getDefaultState(),
                     ModBlocks.DIMENSIONAL_DOOR.getDefaultState(),
                     ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState(),

@@ -15,13 +15,18 @@ import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import lombok.Getter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IEntityOwnable;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.*;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
@@ -269,6 +274,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
         RiftDestination dest = weightedDestination.getDestination();
         Location destLoc;
         GlobalDestination destHere = new GlobalDestination(new Location(world, pos)); // TODO: local if possible
+        String uuid = getEntityOwnerUUID(entity);
         switch (dest.getType()) {
             case RELATIVE:
             case LOCAL:
@@ -283,9 +289,6 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                 if (destLoc != null) makeDestinationPermanent(weightedDestination, destLoc);
                 break;
             case PRIVATE: // TODO: move logic to PrivatePocketTeleportDestination
-                String uuid = null;
-                if (entity instanceof EntityPlayer) uuid = entity.getUniqueID().toString();
-                if (entity instanceof IEntityOwnable && ((IEntityOwnable) entity).getOwnerId() != null) uuid = ((IEntityOwnable) entity).getOwnerId().toString();
                 if (uuid != null) {
                     PocketRegistry privatePocketRegistry = PocketRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
                     RiftRegistry privateRiftRegistry = RiftRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
@@ -312,9 +315,6 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                 break;
             case ESCAPE:
             case PRIVATE_POCKET_EXIT:
-                /*String*/ uuid = null;
-                if (entity instanceof EntityPlayer) uuid = entity.getUniqueID().toString();
-                if (entity instanceof IEntityOwnable && ((IEntityOwnable) entity).getOwnerId() != null) uuid = ((IEntityOwnable) entity).getOwnerId().toString();
                 if (uuid != null) {
                     RiftRegistry privateRiftRegistry = RiftRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
                     destLoc = RiftRegistry.getEscapeRift(uuid);
@@ -390,7 +390,6 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
         if (!(tileEntityAtLoc instanceof TileEntityRift)) throw new RuntimeException("The rift referenced by this rift does not exist, this is a bug.");
         TileEntityRift destRift = (TileEntityRift) tileEntityAtLoc;
         if (entity instanceof EntityPlayer && !DimDoorDimensions.isPocketDimension(WorldUtils.getDim(world))) { // TODO: What about player-owned entities? We should store their exit rift separately to avoid having problems if they enter different rifts
-            String uuid = entity.getUniqueID().toString(); // TODO: More configuration on which worlds should be considered normal worlds. Other mods might add mostly void worlds, causing problems with random coordinates
             RiftRegistry.setEscapeRift(uuid, new Location(world, pos));
         }
         destRift.teleportTo(entity);
@@ -401,6 +400,27 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
             DimDoors.log.error("Teleporting failed with the following exception: ", e);
             return false;
         }
+    }
+
+    public String getEntityOwnerUUID(Entity entity) { // TODO: make this recursive, move to utils
+        if (entity instanceof EntityThrowable) entity = ((EntityThrowable) entity).getThrower();
+        if (entity instanceof EntityArrow) entity = ((EntityArrow) entity).shootingEntity;
+        if (entity instanceof EntityFireball) entity = ((EntityFireball) entity).shootingEntity;
+        if (entity instanceof EntityLlamaSpit) entity = ((EntityLlamaSpit) entity).owner; // Llamas are ownable
+        if (entity.getControllingPassenger() != null && !(entity instanceof EntityPlayer)) entity = entity.getControllingPassenger();
+        if (entity.getPassengers().size() > 0) entity.getPassengers().get(0);
+        if (entity instanceof EntityFishHook) entity = ((EntityFishHook) entity).getAngler();
+        if (entity instanceof EntityLiving && ((EntityLiving) entity).getLeashed()) entity = ((EntityLiving) entity).getLeashHolder();
+        if (entity instanceof EntityItem) {
+            String playerName = ((EntityItem) entity).getThrower();
+            EntityPlayer player = null;
+            if (playerName != null) player = entity.world.getPlayerEntityByName(((EntityItem) entity).getThrower());
+            if (player != null) entity = player;
+        }
+
+        if (entity instanceof IEntityOwnable && ((IEntityOwnable) entity).getOwnerId() != null) return ((IEntityOwnable) entity).getOwnerId().toString();
+        if (entity instanceof EntityPlayer) return entity.getUniqueID().toString(); // ownable players shouldn't be a problem, but just in case we have a slave mod, check their owner's uuid first to send them to their owner's pocket :)
+        return null;
     }
 
     private void makeDestinationPermanent(WeightedRiftDestination weightedDestination, Location destLoc) {
