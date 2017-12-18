@@ -22,14 +22,13 @@ public class DimDoorDimensions {
     @Getter private static int maxPocketDimID;
     private static final List<EnumPocketType> pocketTypes = new ArrayList<>();
     private static final Map<EnumPocketType, DimensionType> pocketDimensionTypes = new HashMap<>();
-    private static final List<DimensionType> CUSTOM = new ArrayList<>();
 
     @Getter private static int limboDimID;
     @Getter private static int privateDimID;
     @Getter private static int publicDimID;
     @Getter private static int dungeonDimID;
 
-    public static void init() {
+    public static void registerDimensions() { // TODO: new forge registry system?
         // Lowercase names because all minecraft dimensions are lowercase, _pockets suffix to make it clear what the world is
         minPocketDimID = DDConfig.getBaseDimID();
         int dimID = minPocketDimID;
@@ -50,14 +49,6 @@ public class DimDoorDimensions {
         for (EnumPocketType pocketType : pocketDimensionTypes.keySet()) {
             registerDimension(pocketDimensionTypes.get(pocketType));
         }
-
-        // TODO: For future use? Like, server owners can add their own set of DimDoors DimensionTypes via the configs? Or is this nonsense?
-        // for (int i = 0; i < 0; i++) {
-        //    dimID++;
-        //    DimensionType tempType = DimensionType.register("Name", "_name", dimID, WorldProvider.class, false);
-        //    CUSTOM.add(tempType);
-        //    registerDimension(tempType);
-        //}
     }
 
     public static void registerDimension(DimensionType dimension) {
@@ -68,7 +59,7 @@ public class DimDoorDimensions {
         return pocketDimensionTypes.get(pocketType);
     }
 
-    public static boolean isPocketDimension(int id) {
+    public static boolean isPocketDimension(int id) { // TODO: also add isPocketDimension(World)?
         return id >= minPocketDimID && id <= maxPocketDimID;
     }
 

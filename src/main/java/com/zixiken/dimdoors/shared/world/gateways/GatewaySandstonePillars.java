@@ -8,6 +8,7 @@ public class GatewaySandstonePillars extends BaseSchematicGateway {
         super("sandstonePillars");
     }
 
+    @Override
     public Biome[] getBiomes() {
         return new Biome[] {Biomes.DESERT, Biomes.DESERT_HILLS, Biomes.MUTATED_DESERT};
     }

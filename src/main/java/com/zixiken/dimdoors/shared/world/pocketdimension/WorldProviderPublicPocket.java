@@ -2,24 +2,24 @@ package com.zixiken.dimdoors.shared.world.pocketdimension;
 
 import com.zixiken.dimdoors.client.CloudRenderBlank;
 import com.zixiken.dimdoors.shared.pockets.EnumPocketType;
-import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
+import com.zixiken.dimdoors.shared.world.ModBiomes;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.WorldProvider;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraftforge.client.IRenderHandler;
+import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WorldProviderPublicPocket extends WorldProvider { //@todo, we might want an abstract super class to this one?
+public class WorldProviderPublicPocket extends WorldProviderPocket {
 
-    //protected CustomLimboPopulator spawner;
-    protected IRenderHandler skyRenderer;
+    @Override
+    public void init() {
+        super.init();
+        biomeProvider = new BiomeProviderSingle(ModBiomes.BLACK_VOID);
+    }
 
-    public WorldProviderPublicPocket() {
-        hasSkyLight = true;
+    @Override
+    public EnumPocketType getPocketType() {
+        return EnumPocketType.PUBLIC;
     }
 
     @SideOnly(Side.CLIENT)
@@ -29,72 +29,9 @@ public class WorldProviderPublicPocket extends WorldProvider { //@todo, we might
         return Vec3d.ZERO;
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    @Override
-    public Vec3d getFogColor(float p_76562_1_, float p_76562_2_) {
+    public Vec3d getFogColor(float celestialAngle, float partialTicks) {
         return Vec3d.ZERO;
-    }
-
-    @Override
-    public double getHorizon() {
-        return world.getHeight();
-    }
-
-    @Override
-    public IChunkGenerator createChunkGenerator() {
-        return new PocketChunkGenerator(world, 0); //, spawner);
-    }
-
-    @Override
-    public boolean canSnowAt(BlockPos pos, boolean checkLight) {
-        return false;
-    }
-
-    @Override
-    public boolean canBlockFreeze(BlockPos pos, boolean byWater) {
-        return false;
-    }
-
-    @Override
-    public float calculateCelestialAngle(long worldTime, float partialTicks) {
-        return .5F;
-    }
-
-    @Override
-    public boolean isSurfaceWorld() {
-        return false;
-    }
-
-    /*@Override
-    protected void generateLightBrightnessTable() {
-        for (int steps = 0; steps <= 15; ++steps) {
-            float var3 = (float) (Math.pow(steps, 1.5) / Math.pow(15.0F, 1.5));
-            this.lightBrightnessTable[15 - steps] = var3;
-            System.out.println(this.lightBrightnessTable[steps] + "light");
-        }
-    }*/
-
-    @Override
-    public boolean canRespawnHere() {
-        return false;
-    }
-
-    @Override
-    public int getActualHeight() {
-        return 256;
-    }
-
-    public EnumPocketType getPocketType() {
-        return EnumPocketType.PUBLIC;
-    }
-
-    @Override
-    public String getSaveFolder() {
-        return "DIM" + getDimension() + "DimDoorsPublic";
-    }
-
-    @Override
-    public DimensionType getDimensionType() {
-        return DimDoorDimensions.getPocketDimensionType(getPocketType());
     }
 }

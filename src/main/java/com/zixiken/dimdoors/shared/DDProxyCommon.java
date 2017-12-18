@@ -8,7 +8,9 @@ import com.zixiken.dimdoors.shared.sound.ModSounds;
 import com.zixiken.dimdoors.shared.tileentities.*;
 import com.zixiken.dimdoors.shared.util.DefaultSchematicGenerator;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
+import com.zixiken.dimdoors.shared.world.ModBiomes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -24,10 +26,11 @@ public abstract class DDProxyCommon implements IDDProxy {
         MinecraftForge.EVENT_BUS.register(ModItems.class);
         MinecraftForge.EVENT_BUS.register(CraftingManager.class); // TODO: ModRecipes?
         MinecraftForge.EVENT_BUS.register(ModSounds.class);
+        MinecraftForge.EVENT_BUS.register(ModBiomes.class);
 
-        DimDoorDimensions.init();
+        DimDoorDimensions.registerDimensions();
 
-        GameRegistry.registerTileEntity(TileEntityVerticalEntranceRift.class, "TileEntityVerticalEntranceRift"); // TODO: use new registry
+        GameRegistry.registerTileEntity(TileEntityVerticalEntranceRift.class, "TileEntityVerticalEntranceRift"); // TODO: new forge registry system?
         GameRegistry.registerTileEntity(TileEntityFloatingRift.class, "TileEntityFloatingRift");
         GameRegistry.registerTileEntity(TileEntityHorizontalEntranceRift.class, "TileEntityHorizontalEntranceRift");
 
@@ -37,6 +40,7 @@ public abstract class DDProxyCommon implements IDDProxy {
 
     @Override
     public void onInitialization(FMLInitializationEvent event) {
+
         SchematicHandler.INSTANCE.loadSchematics();
         DefaultSchematicGenerator.generateDefaultSchematics();
     }

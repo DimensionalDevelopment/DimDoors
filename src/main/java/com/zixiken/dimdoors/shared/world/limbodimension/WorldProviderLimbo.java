@@ -5,6 +5,7 @@ import com.zixiken.dimdoors.shared.blocks.BlockFabric;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
+import com.zixiken.dimdoors.shared.world.ModBiomes;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -13,7 +14,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -21,41 +22,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WorldProviderLimbo extends WorldProvider {
 
-    private IRenderHandler skyRenderer;
-    private LimboBiome limboBiome;
+    @SideOnly(Side.CLIENT) private final IRenderHandler skyRenderer = new LimboSkyProvider();
+    @SideOnly(Side.CLIENT) private final IRenderHandler cloudRenderer = new CloudRenderBlank();
 
-    public WorldProviderLimbo() {
+    @Override
+    public void init() {
         hasSkyLight = false;
-        skyRenderer = new LimboSkyProvider();
-        limboBiome = new LimboBiome();
-        //this.spawner
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IRenderHandler getSkyRenderer() {
-        return skyRenderer;
-    }
-
-    @Override
-    public Biome getBiomeForCoords(BlockPos pos) {
-        return limboBiome;
+        biomeProvider = new BiomeProviderSingle(ModBiomes.LIMBO);
     }
 
     @Override
     public boolean canRespawnHere() {
-        return false; //properties.HardcoreLimboEnabled;
-    }
-
-    @Override
-    public boolean isBlockHighHumidity(BlockPos pos)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean canSnowAt(BlockPos pos, boolean checkLight) {
-        return false;
+        return false; // TODO: properties.HardcoreLimboEnabled;
     }
 
     @Override
@@ -64,8 +42,7 @@ public class WorldProviderLimbo extends WorldProvider {
 
         for (int steps = 0; steps <= 15; ++steps) {
             float var3 = 1.0F - steps / 15.0F;
-            lightBrightnessTable[steps] = ((0.0F + var3) / (var3 * 3.0F + 1.0F) * (1.0F - modifier) + modifier)*3;
-            //     System.out.println( this.lightBrightnessTable[steps]+"light");
+            lightBrightnessTable[steps] = ((0.0F + var3) / (var3 * 3.0F + 1.0F) * (1.0F - modifier) + modifier) * 3;
         }
     }
 
@@ -79,14 +56,10 @@ public class WorldProviderLimbo extends WorldProvider {
         return 0;
     }
 
-    @SideOnly(Side.CLIENT)
-    public int getMoonPhase(long par1, float par3) {
-        return 4;
-    }
-
     @Override
-    public String getSaveFolder() {
-        return "DIM" + getDimension() + "DimDoorsLimbo";
+    @SideOnly(Side.CLIENT)
+    public int getMoonPhase(long worldTime) {
+        return 4;
     }
 
     @Override
@@ -100,20 +73,6 @@ public class WorldProviderLimbo extends WorldProvider {
         return (double) world.getHeight() / 4 - 800;
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public Vec3d getSkyColor(Entity cameraEntity, float partialTicks)
-    {
-        setCloudRenderer( new CloudRenderBlank());
-        return Vec3d.ZERO;
-
-    }
-    @SideOnly(Side.CLIENT)
-    @Override
-    public Vec3d getFogColor(float p_76562_1_, float p_76562_2_) {
-        return new Vec3d(.2, .2, .2);
-    }
-
     @Override
     public int getRespawnDimension(EntityPlayerMP player) {
         return 0;
@@ -121,17 +80,12 @@ public class WorldProviderLimbo extends WorldProvider {
 
     @Override
     public IChunkGenerator createChunkGenerator() {
-        return new LimboGenerator(world, 45);
-    }
-
-    @Override
-    public boolean canBlockFreeze(BlockPos pos, boolean byWater) {
-        return false;
+        return new LimboGenerator(world, world.getSeed());
     }
 
     public static Location getLimboSkySpawn(EntityPlayer player) {
-        int x = (int) player.posX + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); //-properties.LimboEntryRange, properties.LimboEntryRange);
-        int z = (int) player.posZ + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); //-properties.LimboEntryRange, properties.LimboEntryRange);
+        int x = (int) player.posX + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); // TODO: -properties.LimboEntryRange, properties.LimboEntryRange);
+        int z = (int) player.posZ + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); // TODO: -properties.LimboEntryRange, properties.LimboEntryRange);
         return new Location(DimDoorDimensions.LIMBO.getId(), x, 700, z);
     }
 
@@ -145,5 +99,30 @@ public class WorldProviderLimbo extends WorldProvider {
     @Override
     public DimensionType getDimensionType() {
         return DimDoorDimensions.LIMBO;
+    }
+
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public Vec3d getSkyColor(Entity cameraEntity, float partialTicks) {
+        return Vec3d.ZERO;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public Vec3d getFogColor(float celestialAngle, float partialTicks) {
+        return new Vec3d(.2, .2, .2);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IRenderHandler getSkyRenderer() {
+        return skyRenderer;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IRenderHandler getCloudRenderer() {
+        return cloudRenderer;
     }
 }

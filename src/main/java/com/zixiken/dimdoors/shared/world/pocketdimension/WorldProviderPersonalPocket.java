@@ -2,27 +2,30 @@ package com.zixiken.dimdoors.shared.world.pocketdimension;
 
 import com.zixiken.dimdoors.client.CloudRenderBlank;
 import com.zixiken.dimdoors.shared.pockets.EnumPocketType;
+import com.zixiken.dimdoors.shared.world.ModBiomes;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-/**
- * Created by Jared Johnson on 1/24/2017.
- */
-public class WorldProviderPersonalPocket extends WorldProviderPublicPocket {
-    
-    @SideOnly(Side.CLIENT)
+public class WorldProviderPersonalPocket extends WorldProviderPocket {
+
     @Override
-    public Vec3d getSkyColor(Entity cameraEntity, float partialTicks) {
-        setCloudRenderer(new CloudRenderBlank());
-        return new Vec3d(1, 1, 1);
+    public void init() {
+        super.init();
+        biomeProvider = new BiomeProviderSingle(ModBiomes.WHITE_VOID);
+    }
+
+    @Override
+    public EnumPocketType getPocketType() {
+        return EnumPocketType.PRIVATE;
     }
 
     @Override
     protected void generateLightBrightnessTable() {
         for (int i = 0; i <= 15; ++i) {
-            this.lightBrightnessTable[i] = (15);
+            lightBrightnessTable[i] = 15;
         }
     }
 
@@ -31,24 +34,20 @@ public class WorldProviderPersonalPocket extends WorldProviderPublicPocket {
         return world.getHeight() - 256;
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public Vec3d getFogColor(float p_76562_1_, float p_76562_2_) {
-        return new Vec3d(1, 1, 1);
-    }
-
     @Override
     public int getActualHeight() {
         return -256;
     }
-    
+
+    @SideOnly(Side.CLIENT)
     @Override
-    public EnumPocketType getPocketType() {
-        return EnumPocketType.PRIVATE;
+    public Vec3d getSkyColor(Entity cameraEntity, float partialTicks) {
+        return new Vec3d(1, 1, 1);
     }
 
     @Override
-    public String getSaveFolder() {
-        return "DIM" + getDimension() + "DimDoorsPersonal";
+    @SideOnly(Side.CLIENT)
+    public Vec3d getFogColor(float celestialAngle, float partialTicks) {
+        return new Vec3d(1, 1, 1);
     }
 }

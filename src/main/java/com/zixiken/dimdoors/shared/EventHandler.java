@@ -6,10 +6,13 @@ import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class EventHandler {
@@ -25,11 +28,11 @@ public class EventHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void onLivingFall(LivingFallEvent event) {
+    @SubscribeEvent(priority = EventPriority.LOWEST) // don't let other mods do something based on the event
+    public static void onLivingHurt(LivingHurtEvent event) {
         Entity entity = event.getEntity();
-        if (entity.dimension == DimDoorDimensions.LIMBO.getId()) {
-            event.setCanceled(true); // no fall damage in limbo
+        if (entity.dimension == DimDoorDimensions.LIMBO.getId() && event.getSource() == DamageSource.FALL) {
+            event.setCanceled(true);// no fall damage in LIMBO
         }
     }
 

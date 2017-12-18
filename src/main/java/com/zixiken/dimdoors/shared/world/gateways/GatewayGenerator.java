@@ -2,7 +2,7 @@ package com.zixiken.dimdoors.shared.world.gateways;
 
 import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
-import com.zixiken.dimdoors.shared.world.PocketProvider;
+import com.zixiken.dimdoors.shared.world.pocketdimension.WorldProviderPocket;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -51,7 +51,7 @@ public class GatewayGenerator implements IWorldGenerator
         // Also don't generate anything in the Nether, The End, or in Witchery's Spirit World.
         // We only match against Spirit World using hashing to speed up the process a little (hopefully).
         int dimensionID = world.provider.getDimension();
-        if (world.isRemote || (world.provider instanceof PocketProvider) || (dimensionID == END_DIMENSION_ID) || (dimensionID == NETHER_DIMENSION_ID)) {
+        if (world.isRemote || (world.provider instanceof WorldProviderPocket) || (dimensionID == END_DIMENSION_ID) || (dimensionID == NETHER_DIMENSION_ID)) {
             return;
         }
 

@@ -291,13 +291,19 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                     RiftRegistry privateRiftRegistry = RiftRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
                     /*Pocket*/ pocket = privatePocketRegistry.getPocket(privatePocketRegistry.getPrivatePocketID(uuid));
                     if (pocket == null) { // generate the private pocket and get its entrance
-                        pocket = PocketGenerator.generatePrivatePocket(virtualLocation != null ? virtualLocation.toBuilder().depth(-2).build() : null); // set to where the pocket was first created TODO: private pocket deletion
+                        pocket = PocketGenerator.generatePrivatePocket(virtualLocation != null ? virtualLocation.toBuilder().depth(-2).build() : null); // set to where the pocket was first created
                         pocket.setup();
                         privatePocketRegistry.setPrivatePocketID(uuid, pocket.getId());
                         destLoc = pocket.getEntrance();
                     } else {
                         destLoc = privateRiftRegistry.getPrivatePocketEntrance(uuid); // get the last used entrance
                         if (destLoc == null) destLoc = pocket.getEntrance(); // if there's none, then set the target to the main entrance
+                        if (destLoc == null) { // if the pocket entrance is gone, then create a new private pocket
+                            pocket = PocketGenerator.generatePrivatePocket(virtualLocation != null ? virtualLocation.toBuilder().depth(-2).build() : null);
+                            pocket.setup();
+                            privatePocketRegistry.setPrivatePocketID(uuid, pocket.getId());
+                            destLoc = pocket.getEntrance();
+                        }
                     }
                     // privateRiftRegistry.setPrivatePocketEntrance(uuid, null); // --forget the last entered entrance-- Actually, remember it. We'll eventually store it only in the rift registry, not in the pocket.
                 } else {
@@ -321,7 +327,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                     }
                     if (destLoc == null) {
                         if (entity instanceof EntityPlayer) DimDoors.chat((EntityPlayer) entity, "You tried to escape a pocket or leave your private pocket, but you teleported into it!");
-                        return false; // TODO: limbo?
+                        return false; // TODO: LIMBO?
                     }
                 } else {
                     return false; // Non-player/owned entity tried to escape/leave private pocket

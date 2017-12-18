@@ -2,6 +2,7 @@ package com.zixiken.dimdoors.shared.world.limbodimension;
 
 import com.zixiken.dimdoors.shared.blocks.BlockFabric;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
+import com.zixiken.dimdoors.shared.world.ModBiomes;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
@@ -53,7 +54,7 @@ public class LimboGenerator implements IChunkGenerator {
     private MapGenScatteredFeature scatteredFeatureGenerator = new MapGenScatteredFeature();
 
     /** The biomes that are used to generate the chunk */
-    private Biome[] biomesForGeneration = { new LimboBiome() };
+    private Biome[] biomesForGeneration = { ModBiomes.LIMBO };
 
     /** A double array that hold terrain noise from noiseGen3 */
     double[] noise3;
