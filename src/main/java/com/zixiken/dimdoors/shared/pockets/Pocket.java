@@ -34,7 +34,7 @@ public class Pocket { // TODO: better visibilities
 
     private Pocket() {}
 
-    Pocket(int id, int dimID, int x, int z, int depth) {
+    Pocket(int id, int dimID, int x, int z) {
         this.id = id;
         this.dimID = dimID;
         this.x = x;

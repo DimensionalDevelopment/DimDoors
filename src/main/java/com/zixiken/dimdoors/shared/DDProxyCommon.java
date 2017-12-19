@@ -10,7 +10,9 @@ import com.zixiken.dimdoors.shared.util.DefaultSchematicGenerator;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import com.zixiken.dimdoors.shared.world.ModBiomes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -44,4 +46,9 @@ public abstract class DDProxyCommon implements IDDProxy {
         SchematicHandler.INSTANCE.loadSchematics();
         DefaultSchematicGenerator.generateDefaultSchematics();
     }
+
+
+    abstract public void setCloudRenderer(WorldProvider provider, IRenderHandler renderer);
+
+    abstract public void setSkyRenderer(WorldProvider provider, IRenderHandler renderer);
 }

@@ -8,7 +8,9 @@ import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityHorizontalEntranceRift;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -53,5 +55,15 @@ public class DDProxyClient extends DDProxyCommon {
     @Override
     public WorldServer getWorldServer(int dimId) {
         return Minecraft.getMinecraft().getIntegratedServer().getWorld(dimId);
+    }
+
+    @Override
+    public void setCloudRenderer(WorldProvider provider, IRenderHandler renderer) {
+        provider.setCloudRenderer(renderer);
+    }
+
+    @Override
+    public void setSkyRenderer(WorldProvider provider, IRenderHandler renderer) {
+        provider.setSkyRenderer(renderer);
     }
 }

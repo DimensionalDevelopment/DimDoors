@@ -7,7 +7,9 @@ package com.zixiken.dimdoors.server;
 
 import com.zixiken.dimdoors.shared.DDProxyCommon;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.common.DimensionManager;
 
 /**
@@ -30,4 +32,10 @@ public class DDProxyServer extends DDProxyCommon {
     public WorldServer getWorldServer(int dimId) {
         return DimensionManager.getWorld(dimId);
     }
+
+    @Override
+    public void setCloudRenderer(WorldProvider provider, IRenderHandler renderer) {}
+
+    @Override
+    public void setSkyRenderer(WorldProvider provider, IRenderHandler renderer) {}
 }

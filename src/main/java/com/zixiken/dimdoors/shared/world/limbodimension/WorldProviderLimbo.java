@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.shared.world.limbodimension;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.client.CloudRenderBlank;
 import com.zixiken.dimdoors.shared.blocks.BlockFabric;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
@@ -22,13 +23,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WorldProviderLimbo extends WorldProvider {
 
-    @SideOnly(Side.CLIENT) private final IRenderHandler skyRenderer = new LimboSkyProvider();
-    @SideOnly(Side.CLIENT) private final IRenderHandler cloudRenderer = new CloudRenderBlank();
-
     @Override
     public void init() {
         hasSkyLight = false;
         biomeProvider = new BiomeProviderSingle(ModBiomes.LIMBO);
+        DimDoors.proxy.setCloudRenderer(this, new CloudRenderBlank());
+        DimDoors.proxy.setSkyRenderer(this, new LimboSkyProvider());
     }
 
     @Override
@@ -112,17 +112,5 @@ public class WorldProviderLimbo extends WorldProvider {
     @Override
     public Vec3d getFogColor(float celestialAngle, float partialTicks) {
         return new Vec3d(.2, .2, .2);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IRenderHandler getSkyRenderer() {
-        return skyRenderer;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IRenderHandler getCloudRenderer() {
-        return cloudRenderer;
     }
 }

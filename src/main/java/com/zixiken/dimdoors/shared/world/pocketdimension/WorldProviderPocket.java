@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.shared.world.pocketdimension;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.client.CloudRenderBlank;
 import com.zixiken.dimdoors.shared.pockets.EnumPocketType;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
@@ -8,7 +9,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -16,12 +16,11 @@ import javax.annotation.Nullable;
 
 public abstract class WorldProviderPocket extends WorldProvider {
 
-    @SideOnly(Side.CLIENT) private final IRenderHandler cloudRenderer = new CloudRenderBlank();
-
     @Override
     public void init() {
         // TODO: save pocket registry nbt here? (see WorldProviderEnd)
         hasSkyLight = true;
+        DimDoors.proxy.setCloudRenderer(this, new CloudRenderBlank());
     }
 
     @Override
@@ -49,12 +48,6 @@ public abstract class WorldProviderPocket extends WorldProvider {
     @Override @Nullable
     @SideOnly(Side.CLIENT) public float[] calcSunriseSunsetColors(float celestialAngle, float partialTicks) { return null; }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IRenderHandler getCloudRenderer() {
-        return cloudRenderer;
-    }
-
     @Override @SideOnly(Side.CLIENT) public boolean doesXZShowFog(int x, int z) {
         return false; // TODO: set this to true outside of pockets
     }
@@ -67,5 +60,12 @@ public abstract class WorldProviderPocket extends WorldProvider {
 
     @Override @SideOnly(Side.CLIENT) public Vec3d getFogColor(float celestialAngle, float partialTicks) { return Vec3d.ZERO; }
 
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getVoidFogYFactor() {
+        return 1;
+    }
+
     public abstract EnumPocketType getPocketType();
+
 }

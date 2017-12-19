@@ -47,6 +47,13 @@ public class CommandDimTeleport extends CommandBase { // TODO: localization
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        // Check correct number of arguments
+        if (args.length < 4 || args.length > 6) {
+            sender.sendMessage(new TextComponentString("[DimDoors] Usage: /" + getUsage(sender)));
+            return;
+        }
+
+        // Parse arguments
         int dimension, x, y, z;
         int yaw = 0; // TODO: keep old yaw and pitch?
         int pitch = 0;
@@ -57,11 +64,12 @@ public class CommandDimTeleport extends CommandBase { // TODO: localization
             z = Integer.parseInt(args[3]);
             if (args.length >= 5) yaw = Integer.parseInt(args[4]);
             if (args.length >= 6) pitch = Integer.parseInt(args[5]);
-        } catch (ArrayIndexOutOfBoundsException|NumberFormatException e) {
-            sender.sendMessage(new TextComponentString("[DimDoors] Incorrect usage."));
+        } catch (NumberFormatException e) {
+            sender.sendMessage(new TextComponentString("[DimDoors] Usage: /" + getUsage(sender)));
             return;
         }
 
+        // Teleport if it's a player
         if (sender instanceof Entity) {
             TeleportUtils.teleport((Entity) sender, new Location(dimension, new BlockPos(x, y, z)), yaw, pitch);
         } else {
@@ -72,7 +80,7 @@ public class CommandDimTeleport extends CommandBase { // TODO: localization
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         List<String> list = new ArrayList<>();
-        if (args.length < 2) { //counts an empty ("") argument as an argument as well...
+        if (args.length == 1) {
             list = StringUtils.getAsStringList(DimensionManager.getIDs());
             list = StringUtils.getMatchingStrings(args[0], list, false);
         }

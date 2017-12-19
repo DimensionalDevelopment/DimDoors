@@ -29,16 +29,6 @@ public class WorldProviderPersonalPocket extends WorldProviderPocket {
         }
     }
 
-    @Override
-    public double getHorizon() {
-        return world.getHeight() - 256;
-    }
-
-    @Override
-    public int getActualHeight() {
-        return -256;
-    }
-
     @SideOnly(Side.CLIENT)
     @Override
     public Vec3d getSkyColor(Entity cameraEntity, float partialTicks) {

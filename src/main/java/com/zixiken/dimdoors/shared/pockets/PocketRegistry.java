@@ -144,9 +144,9 @@ public class PocketRegistry extends WorldSavedData {
      *
      * @return The newly created Pocket
      */
-    public Pocket newPocket(int depth) {
+    public Pocket newPocket() {
         Pocket pocket = null;
-        while(pocket == null) pocket = newPocket(nextID++, depth); // TODO: config option to reuse IDs (start at 0 rather than nextFreePocket)
+        while(pocket == null) pocket = newPocket(nextID++); // TODO: config option to reuse IDs (start at 0 rather than nextFreePocket)
         return pocket;
     }
 
@@ -156,10 +156,10 @@ public class PocketRegistry extends WorldSavedData {
      *
      * @return The newly created Pocket, or null if that ID is taken already.
      */
-    public Pocket newPocket(int id, int depth) {
+    public Pocket newPocket(int id) {
         if (pockets.get(id) != null) return null;
         GridUtils.GridPos pos = getGridPosFromID(id);
-        Pocket pocket = new Pocket(id, dimID, pos.getX(), pos.getZ(), depth);
+        Pocket pocket = new Pocket(id, dimID, pos.getX(), pos.getZ());
         pockets.put(id, pocket);
         if (id >= nextID) nextID = id + 1;
         markDirty();

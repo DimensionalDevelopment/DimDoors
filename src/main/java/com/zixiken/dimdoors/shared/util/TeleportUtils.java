@@ -19,7 +19,23 @@ import java.util.EnumSet;
 
 public class TeleportUtils {
 
-    public static Entity teleport(Entity entity, Location location, float yaw, float pitch) { // TODO float position?
+    public static Entity teleport(Entity entity, Location location) {
+        return teleport(entity, location, entity.rotationYaw, entity.rotationPitch);
+    }
+
+    public static Entity teleport(Entity entity, Location location, float yaw, float pitch) {
+        return teleport(entity, location.getDimID(), location.getPos().getX(), location.getPos().getY(), location.getPos().getZ(), yaw, pitch);
+    }
+
+    public static Entity teleport(Entity entity, BlockPos pos, float yaw, float pitch) {
+        return teleport(entity, WorldUtils.getDim(entity.getEntityWorld()), pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
+    }
+
+    public static Entity teleport(Entity entity, double x, double y, double z, float yaw, float pitch) {
+        return teleport(entity, WorldUtils.getDim(entity.getEntityWorld()), x, y, z, yaw, pitch);
+    }
+
+    public static Entity teleport(Entity entity, int newDimension, double x, double y, double z, float yaw, float pitch) {
         if (entity.world.isRemote || !(entity.world instanceof WorldServer) || entity.isDead) return entity; // dead means inactive, not a dead player
 
         yaw = MathHelper.wrapDegrees(yaw);
@@ -29,7 +45,7 @@ public class TeleportUtils {
         entity.removePassengers();
 
         int oldDimension = entity.dimension;
-        int newDimension = location.getDimID();
+        // int newDimension = dim;
 
         if (entity instanceof EntityPlayerMP) {
             entity.noClip = true;
@@ -38,14 +54,14 @@ public class TeleportUtils {
         if (oldDimension == newDimension) { // Based on CommandTeleport.doTeleport
             if (entity instanceof EntityPlayerMP) {
                 ((EntityPlayerMP) entity).connection.setPlayerLocation(
-                        location.getPos().getX(),
-                        location.getPos().getY(),
-                        location.getPos().getZ(),
+                        x,
+                        y,
+                        z,
                         yaw,
                         pitch,
                         EnumSet.noneOf(SPacketPlayerPosLook.EnumFlags.class));
             } else {
-                entity.setLocationAndAngles(location.getPos().getX(), location.getPos().getY(), location.getPos().getZ(), yaw, pitch);
+                entity.setLocationAndAngles(x, y, z, yaw, pitch);
             }
             entity.setRotationYawHead(yaw);
             return entity;
@@ -60,7 +76,7 @@ public class TeleportUtils {
             if (entity instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) entity;
                 try {
-                    Field invulnerableDimensionChange = EntityPlayerMP.class.getDeclaredField("invulnerableDimensionChange"); // Prevents cancelling the position change in survival. TODO: necessary?
+                    Field invulnerableDimensionChange = EntityPlayerMP.class.getDeclaredField("invulnerableDimensionChange"); // Prevents cancelling the position change in survival.
                     invulnerableDimensionChange.setAccessible(true);
                     invulnerableDimensionChange.setBoolean(player, true); // without this, there's a chance that the new player position gets cancelled
                 } catch (NoSuchFieldException|IllegalAccessException e) {
@@ -77,7 +93,7 @@ public class TeleportUtils {
 
                 // Move to new world
                 oldServer.profiler.startSection("moving");
-                player.moveToBlockPosAndAngles(location.getPos(), yaw, pitch); // TODO: clamp to world border or -29999872, 29999872 like in original code?
+                player.setLocationAndAngles(x, y, z, yaw, pitch); // TODO: clamp to world border or -29999872, 29999872 like in original code?
                 if (entity.isEntityAlive()) oldServer.updateEntityWithOptionalForce(entity, false);
                 oldServer.profiler.endSection();
 
@@ -100,7 +116,7 @@ public class TeleportUtils {
 
                 FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDimension, newDimension);
 
-                player.connection.sendPacket(new SPacketEffect(1032, BlockPos.ORIGIN, 0, false));
+                //player.connection.sendPacket(new SPacketEffect(1032, BlockPos.ORIGIN, 0, false)); // TODO
 
                 //player.prevBlockpos = null; // For frost walk. Is this needed? What about other fields?
                 /*player.lastExperience = -1;
@@ -127,7 +143,7 @@ public class TeleportUtils {
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
-                    newEntity.moveToBlockPosAndAngles(location.getPos(), yaw, pitch);
+                    newEntity.setPositionAndRotation(x, y, z, yaw, pitch);
                     boolean oldForceSpawn = newEntity.forceSpawn;
                     newEntity.forceSpawn = true;
                     newServer.spawnEntity(newEntity);
