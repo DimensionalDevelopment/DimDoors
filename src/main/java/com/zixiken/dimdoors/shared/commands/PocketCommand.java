@@ -46,9 +46,9 @@ public class PocketCommand extends CommandBase {
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException { // TODO: option to replace current pocket
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException { // TODO: more pocket commands (replace pocket, get ID, teleport to pocket, etc.)
         // Check correct number of arguments
-        if (args.length > 2 || args.length > 3) {
+        if (args.length < 2 || args.length > 3) {
             sender.sendMessage(new TextComponentString("[DimDoors] Usage: /" + getUsage(sender)));
             return;
         }
@@ -79,24 +79,26 @@ public class PocketCommand extends CommandBase {
             }
 
             // Check if the schematic exists
-            if (!SchematicHandler.INSTANCE.getTemplateGroups().contains(name)) {
+            if (!SchematicHandler.INSTANCE.getTemplateGroups().contains(group)) {
                 DimDoors.chat(player, "Group " + group + " not found");
                 return;
-            } else if (!SchematicHandler.INSTANCE.getTemplateNames(name).contains(group)) {
+            } else if (!SchematicHandler.INSTANCE.getTemplateNames(group).contains(name)) {
                 DimDoors.chat(player, "Schematic " + name + " not found in group " + group);
                 return;
             }
 
-            // Generate the schematic and teleport the player to it
-            DimDoors.chat(player, "Generating schematic " + args[1]);
-            PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(args[0], args[1]);
+            // Generate the schematic
+            DimDoors.chat(player, "Generating schematic " + name);
+            PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(group, name);
             Pocket pocket = PocketGenerator.generatePocketFromTemplate(WorldUtils.getDim(player.world), template, new VirtualLocation(0, 0, 0, 0,0));
             if (setup) pocket.setup();
+
+            // Teleport the player there
             if (pocket.getEntrance() != null) {
                 TileEntityRift entrance = (TileEntityRift) player.world.getTileEntity(pocket.getEntrance().getPos());
                 entrance.teleportTo(player);
             } else {
-                TeleportUtils.teleport(player, new Location(player.world, pocket.getX(), 0, pocket.getZ()), 0, 0);
+                TeleportUtils.teleport(player, new Location(player.world, pocket.getX(), 20, pocket.getZ()), 0, 0);
             }
         } else {
             DimDoors.log.info("Not executing command /" + getName() + " because it wasn't sent by a player.");

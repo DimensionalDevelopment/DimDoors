@@ -31,38 +31,8 @@ public class ClosingRiftFX extends Particle {
     public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX,
                                float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         if (!twinkle || particleAge < particleMaxAge / 3  || (particleAge + particleMaxAge) / 3 % 2 == 0) {
-            doRenderParticle(buffer, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
+            super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
         }
-    }
-
-    public void doRenderParticle(BufferBuilder worldRenderer, float par2, float par3, float par4,
-                                 float par5, float par6, float par7) {
-        float var8 = super.particleTextureIndexX % 16 / 16.0F;
-        float var9 = var8 + 0.0624375F;
-        float var10 = particleTextureIndexX / 16 / 16.0F;
-        float var11 = var10 + 0.0624375F;
-        float var12 = 0.1F * particleScale;
-        float var13 = (float) (prevPosX + (posX - prevPosX) * par2 - interpPosX);
-        float var14 = (float) (prevPosY + (posY - prevPosY) * par2 - interpPosY);
-        float var15 = (float) (prevPosZ + (posZ - prevPosZ) * par2 - interpPosZ);
-        float var16 = 0.8F;
-
-        worldRenderer.pos(var13 - par3 * var12 - par6 * var12, var14 - par4 * var12, var15 - par5 * var12 - par7 * var12)
-                .tex(var9, var11)
-                .color(particleRed * var16, particleGreen * var16, particleBlue * var16, (float) .7)
-                .endVertex();
-        worldRenderer.pos(var13 - par3 * var12 + par6 * var12, var14 + par4 * var12, var15 - par5 * var12 + par7 * var12)
-                .tex(var9, var10)
-                .color(particleRed * var16, particleGreen * var16, particleBlue * var16, (float) .7)
-                .endVertex();
-        worldRenderer.pos(var13 + par3 * var12 + par6 * var12, var14 + par4 * var12, var15 + par5 * var12 + par7 * var12)
-                .tex(var8, var10)
-                .color(particleRed * var16, particleGreen * var16, particleBlue * var16, (float) .7)
-                .endVertex();
-        worldRenderer.pos(var13 + par3 * var12 - par6 * var12, var14 - par4 * var12, var15 + par5 * var12 - par7 * var12)
-                .tex(var8, var11)
-                .color(particleRed * var16, particleGreen * var16, particleBlue * var16, (float) .7)
-                .endVertex();
     }
 
     /**

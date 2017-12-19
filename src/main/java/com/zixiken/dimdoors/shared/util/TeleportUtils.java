@@ -24,7 +24,7 @@ public class TeleportUtils {
     }
 
     public static Entity teleport(Entity entity, Location location, float yaw, float pitch) {
-        return teleport(entity, location.getDimID(), location.getPos().getX(), location.getPos().getY(), location.getPos().getZ(), yaw, pitch);
+        return teleport(entity, location.getDimID(), location.getPos().getX() + .5, location.getPos().getY(), location.getPos().getZ() + .5, yaw, pitch);
     }
 
     public static Entity teleport(Entity entity, BlockPos pos, float yaw, float pitch) {
@@ -76,9 +76,14 @@ public class TeleportUtils {
             if (entity instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) entity;
                 try {
-                    Field invulnerableDimensionChange = EntityPlayerMP.class.getDeclaredField("invulnerableDimensionChange"); // Prevents cancelling the position change in survival.
+                    Field invulnerableDimensionChange;
+                    try {
+                        invulnerableDimensionChange = EntityPlayerMP.class.getDeclaredField("field_184851_cj"); // If this breaks, check that Minecraft didn't rename the field
+                    } catch (NoSuchFieldException e) { // Running on deobfuscated Minecraft
+                        invulnerableDimensionChange = EntityPlayerMP.class.getDeclaredField("invulnerableDimensionChange");
+                    }
                     invulnerableDimensionChange.setAccessible(true);
-                    invulnerableDimensionChange.setBoolean(player, true); // without this, there's a chance that the new player position gets cancelled
+                    invulnerableDimensionChange.setBoolean(player, true); // Prevent Minecraft from cancelling the position change being too big if the player is not in creative
                 } catch (NoSuchFieldException|IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
