@@ -28,3 +28,4 @@ libs
 forge-*-changelog.txt
 .DS_Store
 Thumbs.db
+logs

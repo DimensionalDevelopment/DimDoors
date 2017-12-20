@@ -28,7 +28,7 @@ public class TeleportUtils {
     }
 
     public static Entity teleport(Entity entity, BlockPos pos, float yaw, float pitch) {
-        return teleport(entity, WorldUtils.getDim(entity.getEntityWorld()), pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
+        return teleport(entity, WorldUtils.getDim(entity.getEntityWorld()), pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, yaw, pitch);
     }
 
     public static Entity teleport(Entity entity, double x, double y, double z, float yaw, float pitch) {

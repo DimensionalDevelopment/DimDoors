@@ -24,6 +24,7 @@ ext.forgeversion = "14.23.1.2555"
 version = mcversion + "-" + modversion
 group = "com.zixiken.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "dimdoors"
+jar.archiveName = "dimdoors.jar" // Constant name for travis
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
@@ -69,4 +70,11 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+task generatePocketSchematics(dependsOn: jar, type: JavaExec, group: "dimdoors") {
+    classpath = files('build/libs/dimdoors.jar')
+    classpath += sourceSets.main.runtimeClasspath
+    main = "com.zixiken.dimdoors.shared.util.PocketSchematicGenerator"
+    args "src/main/resources/assets/dimdoors/pockets/schematic"
 }

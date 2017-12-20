@@ -6,12 +6,10 @@ import com.zixiken.dimdoors.shared.entities.EntityMonolith;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.sound.ModSounds;
 import com.zixiken.dimdoors.shared.tileentities.*;
-import com.zixiken.dimdoors.shared.util.DefaultSchematicGenerator;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import com.zixiken.dimdoors.shared.world.ModBiomes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -30,11 +28,8 @@ public abstract class DDProxyCommon implements IDDProxy {
         MinecraftForge.EVENT_BUS.register(ModSounds.class);
         MinecraftForge.EVENT_BUS.register(ModBiomes.class);
 
+        registerTileEntities();
         DimDoorDimensions.registerDimensions();
-
-        GameRegistry.registerTileEntity(TileEntityVerticalEntranceRift.class, "TileEntityVerticalEntranceRift"); // TODO: new forge registry system?
-        GameRegistry.registerTileEntity(TileEntityFloatingRift.class, "TileEntityFloatingRift");
-        GameRegistry.registerTileEntity(TileEntityHorizontalEntranceRift.class, "TileEntityHorizontalEntranceRift");
 
         EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), EntityMonolith.class, "monolith", 0, DimDoors.instance, 70, 1, true);
         EntityRegistry.registerEgg(new ResourceLocation(DimDoors.MODID, "mob_monolith"), 0, 0xffffff);
@@ -42,11 +37,14 @@ public abstract class DDProxyCommon implements IDDProxy {
 
     @Override
     public void onInitialization(FMLInitializationEvent event) {
-
         SchematicHandler.INSTANCE.loadSchematics();
-        DefaultSchematicGenerator.generateDefaultSchematics();
     }
 
+    public void registerTileEntities() { // TODO: new registry system
+        GameRegistry.registerTileEntity(TileEntityVerticalEntranceRift.class, "TileEntityVerticalEntranceRift"); // TODO: new forge registry system?
+        GameRegistry.registerTileEntity(TileEntityFloatingRift.class, "TileEntityFloatingRift");
+        GameRegistry.registerTileEntity(TileEntityHorizontalEntranceRift.class, "TileEntityHorizontalEntranceRift");
+    }
 
     abstract public void setCloudRenderer(WorldProvider provider, IRenderHandler renderer);
 
