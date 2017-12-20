@@ -1,17 +1,35 @@
 package com.zixiken.dimdoors.shared.tileentities;
 
+import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
+import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.util.RGBA;
+import com.zixiken.dimdoors.shared.util.TeleportUtils;
+import com.zixiken.dimdoors.shared.util.WorldUtils;
+import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import lombok.Getter;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 
 import java.util.Random;
 
 // TODO: merge horizontal and vertical entrances' render code into one, and support custom sizes
-public abstract class TileEntityEntranceRift extends TileEntityRift {
+public class TileEntityEntranceRift extends TileEntityRift {
     @Getter private boolean placeRiftOnBreak = false;
     @Getter private boolean closeAfterPassThrough = false;
+    @Getter public boolean shouldRender = true;
+    @Getter public byte lockStatus = 0;
+
+    // Set by the block, not saved and not synced to the client
+    public EnumFacing orientation;
+    public int tpOffset = 1; // TODO: float?
+    public double extendUp = 0.5; // Use += to set these. TODO: @SideOnly client?
+    public double extendDown = 0.5;
+    public double extendLeft = 0.5;
+    public double extendRight = 0.5;
+    public double pushIn = 0.01; // TODO: set to 0, and set on door
 
     @Override
     public void copyFrom(TileEntityRift oldRift) {
@@ -28,6 +46,15 @@ public abstract class TileEntityEntranceRift extends TileEntityRift {
         super.readFromNBT(nbt);
         placeRiftOnBreak = nbt.getBoolean("placeRiftOnBreak");
         closeAfterPassThrough = nbt.getBoolean("closeAfterPassThrough");
+        shouldRender = nbt.getBoolean("shouldRender");
+        lockStatus = nbt.getByte("lockStatus");
+
+        orientation = EnumFacing.byName(nbt.getString("orientation")); // TODO: avoid having to save these and generate on load based on blockstate
+        tpOffset = nbt.getInteger("tpOffset");
+        extendUp = nbt.getDouble("extendUp");
+        extendDown = nbt.getDouble("extendDown");
+        extendLeft = nbt.getDouble("extendLeft");
+        extendRight = nbt.getDouble("extendRight");
     }
 
     @Override
@@ -35,6 +62,16 @@ public abstract class TileEntityEntranceRift extends TileEntityRift {
         super.writeToNBT(nbt);
         nbt.setBoolean("placeRiftOnBreak", placeRiftOnBreak);
         nbt.setBoolean("closeAfterPassThrough", closeAfterPassThrough);
+        nbt.setBoolean("shouldRender", shouldRender);
+        nbt.setByte("lockStatus", lockStatus);
+
+        nbt.setString("orientation", orientation.getName());
+        nbt.setInteger("tpOffset", tpOffset);
+        nbt.setDouble("extendUp", extendUp);
+        nbt.setDouble("extendDown", extendDown);
+        nbt.setDouble("extendLeft", extendLeft);
+        nbt.setDouble("extendRight", extendRight);
+
         return nbt;
     }
 
@@ -44,6 +81,8 @@ public abstract class TileEntityEntranceRift extends TileEntityRift {
     }
 
     public void setPlaceRiftOnBreak(boolean placeRiftOnBreak) { this.placeRiftOnBreak = placeRiftOnBreak; markDirty(); }
+    public void setShouldRender(boolean shouldRender) { this.shouldRender = shouldRender; markDirty(); }
+    public void setLockStatus(byte lockStatus) { this.lockStatus = lockStatus; markDirty(); }
 
     @Override
     public boolean teleport(Entity entity) {
@@ -53,6 +92,16 @@ public abstract class TileEntityEntranceRift extends TileEntityRift {
             markDirty();
         }
         return status;
+    }
+
+    @Override
+    public void teleportTo(Entity entity) {
+        TeleportUtils.teleport(entity, new Location(world, pos.offset(orientation, tpOffset)), orientation.getHorizontalAngle(), 0);
+
+        int dim = WorldUtils.getDim(world);
+        if (entity instanceof EntityPlayer && DimDoorDimensions.isPocketDimension(dim)) { // TODO
+            PocketRegistry.getForDim(dim).allowPlayerAtLocation((EntityPlayer) entity, pos.getX(), pos.getY(), pos.getZ());
+        }
     }
 
     public RGBA getEntranceRenderColor(Random rand) { // TODO: custom color

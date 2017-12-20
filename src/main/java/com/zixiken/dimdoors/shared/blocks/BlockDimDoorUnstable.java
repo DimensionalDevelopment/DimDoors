@@ -4,15 +4,13 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import java.util.Random;
 
-import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
 public class BlockDimDoorUnstable extends BlockDimDoorBase {
 
@@ -37,7 +35,7 @@ public class BlockDimDoorUnstable extends BlockDimDoorBase {
     }
 
     @Override
-    protected void setupRift(TileEntityVerticalEntranceRift rift) {
+    protected void setupRift(TileEntityEntranceRift rift) {
         // TODO
     }
 }

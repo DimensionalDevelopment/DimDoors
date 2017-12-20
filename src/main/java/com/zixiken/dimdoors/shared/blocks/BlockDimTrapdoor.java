@@ -1,7 +1,7 @@
 package com.zixiken.dimdoors.shared.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityHorizontalEntranceRift;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -50,9 +50,10 @@ public class BlockDimTrapdoor extends BlockTrapDoor implements ITileEntityProvid
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
-        return new TileEntityHorizontalEntranceRift();
+        TileEntityEntranceRift rift = new TileEntityEntranceRift();
+        rift.orientation = EnumFacing.UP;
+        return rift;
     }
-
 
     @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {

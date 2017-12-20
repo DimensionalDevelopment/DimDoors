@@ -41,9 +41,8 @@ public abstract class DDProxyCommon implements IDDProxy {
     }
 
     public void registerTileEntities() { // TODO: new registry system
-        GameRegistry.registerTileEntity(TileEntityVerticalEntranceRift.class, "TileEntityVerticalEntranceRift"); // TODO: new forge registry system?
+        GameRegistry.registerTileEntity(TileEntityEntranceRift.class, "TileEntityEntranceRift");
         GameRegistry.registerTileEntity(TileEntityFloatingRift.class, "TileEntityFloatingRift");
-        GameRegistry.registerTileEntity(TileEntityHorizontalEntranceRift.class, "TileEntityHorizontalEntranceRift");
     }
 
     abstract public void setCloudRenderer(WorldProvider provider, IRenderHandler renderer);

@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.util.UUID;
-
 @NoArgsConstructor @AllArgsConstructor
 public class
 WeightedRiftDestination implements INBTStorable { // TODO: generics

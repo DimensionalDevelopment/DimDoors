@@ -2,12 +2,10 @@ package com.zixiken.dimdoors.shared.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.items.ModItems;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 
 public class BlockDimDoorGold extends BlockDimDoorBase {
 
@@ -26,7 +24,7 @@ public class BlockDimDoorGold extends BlockDimDoorBase {
     }
 
     @Override
-    protected void setupRift(TileEntityVerticalEntranceRift rift) {
+    protected void setupRift(TileEntityEntranceRift rift) {
         // TODO
     }
 }

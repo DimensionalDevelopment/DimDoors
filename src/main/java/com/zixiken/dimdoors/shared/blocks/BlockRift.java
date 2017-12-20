@@ -26,7 +26,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -134,14 +133,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
         //ArrayList<BlockPos> targets = findReachableBlocks(worldIn, pos, 2, false); // TODO
         TileEntityFloatingRift rift = (TileEntityFloatingRift) worldIn.getTileEntity(pos);
 
-        if (true) {
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.Rift( // TODO: this effect was unfinished in the 1.6.4 mod too
-                    worldIn,
-                    pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5,
-                    rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
-        }
-
-        if (false) {
+        if (0 < 0) {
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.GogglesRiftEffect( // TODO: this effect was unfinished in the 1.6.4 mod too
                     worldIn,
                     pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5,

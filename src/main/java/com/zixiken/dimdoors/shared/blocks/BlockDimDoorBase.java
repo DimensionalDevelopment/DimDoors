@@ -9,7 +9,6 @@ import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
 import com.zixiken.dimdoors.shared.rifts.RiftRegistry;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.util.WorldUtils;
@@ -112,9 +111,10 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
     }
 
     @Override
-    public TileEntityVerticalEntranceRift createNewTileEntity(World worldIn, int meta) {
-        TileEntityVerticalEntranceRift rift = new TileEntityVerticalEntranceRift();
+    public TileEntityEntranceRift createNewTileEntity(World worldIn, int meta) {
+        TileEntityEntranceRift rift = new TileEntityEntranceRift();
         rift.orientation = getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite();
+        rift.extendUp += 1;
         return rift;
     }
 
@@ -122,7 +122,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
         super.onBlockAdded(worldIn, pos, state);
         if (hasTileEntity(state) && !DimDoors.disableRiftSetup) { // TODO: better check for disableRiftSetup (support other plugins such as WorldEdit, support doors being placed while schematics are being placed)
-            TileEntityVerticalEntranceRift rift = createNewTileEntity(worldIn, getMetaFromState(state));
+            TileEntityEntranceRift rift = createNewTileEntity(worldIn, getMetaFromState(state));
 
             // Set the virtual location based on where the door was placed
             VirtualLocation virtualLocation = null;
@@ -179,5 +179,5 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
 
     public abstract Item getItem();
 
-    protected abstract void setupRift(TileEntityVerticalEntranceRift rift);
+    protected abstract void setupRift(TileEntityEntranceRift rift);
 }

@@ -2,7 +2,6 @@ package com.zixiken.dimdoors.client;
 
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.items.ModItems;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;

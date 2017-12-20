@@ -3,9 +3,8 @@ package com.zixiken.dimdoors.client;
 import com.zixiken.dimdoors.shared.DDProxyCommon;
 import com.zixiken.dimdoors.shared.entities.EntityMonolith;
 import com.zixiken.dimdoors.shared.entities.RenderMonolith;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityVerticalEntranceRift;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
-import com.zixiken.dimdoors.shared.tileentities.TileEntityHorizontalEntranceRift;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldProvider;
@@ -36,8 +35,7 @@ public class DDProxyClient extends DDProxyCommon {
     }
 
     public void registerRenderers() {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityVerticalEntranceRift.class, new TileEntityVerticalEntranceRiftRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityHorizontalEntranceRift.class, new TileEntityHorizontalEntranceRiftRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEntranceRift.class, new TileEntityEntranceRiftRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFloatingRift.class, new TileEntityFloatingRiftRenderer());
         RenderingRegistry.registerEntityRenderingHandler(EntityMonolith.class, manager -> new RenderMonolith(manager, 0.5f));
     }

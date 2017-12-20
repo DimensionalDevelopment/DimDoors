@@ -2,7 +2,6 @@ package com.zixiken.dimdoors.shared.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.PotionEffect;

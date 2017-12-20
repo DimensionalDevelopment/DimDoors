@@ -4,7 +4,6 @@ import com.zixiken.dimdoors.shared.util.INBTStorable;
 import com.zixiken.dimdoors.shared.util.Location;
 import com.zixiken.dimdoors.shared.util.NBTUtils;
 import lombok.*;
-import lombok.experimental.Wither;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

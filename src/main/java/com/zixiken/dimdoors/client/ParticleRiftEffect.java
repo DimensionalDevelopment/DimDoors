@@ -2,7 +2,6 @@ package com.zixiken.dimdoors.client;
 
 import com.zixiken.dimdoors.shared.util.WorldUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
-import net.minecraft.client.particle.ParticleFirework;
 import net.minecraft.client.particle.ParticleSimpleAnimated;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
