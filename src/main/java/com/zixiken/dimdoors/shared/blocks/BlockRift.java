@@ -1,15 +1,12 @@
 package com.zixiken.dimdoors.shared.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.client.ClosingRiftFX;
-import com.zixiken.dimdoors.client.GoggleRiftFX;
+import com.zixiken.dimdoors.client.ParticleRiftEffect;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
 import java.util.*;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDoor;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
@@ -134,24 +131,27 @@ public class BlockRift extends Block implements ITileEntityProvider {
     @Override
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand) {
-        //ArrayList<BlockPos> targets = findReachableBlocks(worldIn, pos, 2, false);
-        //TODO: implement the parts specified in the method comment?
-        int x = pos.getX(), y = pos.getY(), z = pos.getZ();
+        //ArrayList<BlockPos> targets = findReachableBlocks(worldIn, pos, 2, false); // TODO
+        TileEntityFloatingRift rift = (TileEntityFloatingRift) worldIn.getTileEntity(pos);
 
-        TileEntityFloatingRift tile = (TileEntityFloatingRift) worldIn.getTileEntity(pos);
-        //renders an extra little blob on top of the actual rift location so its easier to find.
-        // Eventually will only renderDoorRift if the player has the goggles.
-        //FMLClientHandler.instance().getClient().effectRenderer.addEffect(new GoggleRiftFX(
-        /*        worldIn,
-                x + .5, y + .5, z + .5,
-                rand.nextGaussian() * 0.01D,
-                rand.nextGaussian() * 0.01D,
-                rand.nextGaussian() * 0.01D));*/
-
-        if (tile.shouldClose) { //renders an opposite color effect if it is being closed by the rift remover
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ClosingRiftFX(
+        if (true) {
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.Rift( // TODO: this effect was unfinished in the 1.6.4 mod too
                     worldIn,
-                    x + .5, y + .5, z + .5,
+                    pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5,
+                    rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
+        }
+
+        if (false) {
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.GogglesRiftEffect( // TODO: this effect was unfinished in the 1.6.4 mod too
+                    worldIn,
+                    pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5,
+                    rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
+        }
+
+        if (rift.shouldClose) { // Renders an opposite color effect if it is being closed by the rift remover
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.ClosingRiftEffect(
+                    worldIn,
+                    pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5,
                     rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
         }
     }

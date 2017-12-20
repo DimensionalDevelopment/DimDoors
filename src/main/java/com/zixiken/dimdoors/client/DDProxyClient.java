@@ -18,13 +18,13 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@SideOnly(Side.CLIENT) // 8 4
 public class DDProxyClient extends DDProxyCommon {
 
     @Override
     public void onPreInitialization(FMLPreInitializationEvent event) {
         super.onPreInitialization(event);
-        //ModelManager.addCustomStateMappers();
+        // ModelManager.addCustomStateMappers(); // TODO: fix this
         ModelManager.registerModelVariants();
         registerRenderers();
     }

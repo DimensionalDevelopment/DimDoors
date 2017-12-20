@@ -2,6 +2,7 @@ package com.zixiken.dimdoors.shared.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.PotionEffect;
@@ -76,13 +77,7 @@ public class TeleportUtils {
             if (entity instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) entity;
                 try {
-                    Field invulnerableDimensionChange;
-                    try {
-                        invulnerableDimensionChange = EntityPlayerMP.class.getDeclaredField("field_184851_cj"); // If this breaks, check that Minecraft didn't rename the field
-                    } catch (NoSuchFieldException e) { // Running on deobfuscated Minecraft
-                        invulnerableDimensionChange = EntityPlayerMP.class.getDeclaredField("invulnerableDimensionChange");
-                    }
-                    invulnerableDimensionChange.setAccessible(true);
+                    Field invulnerableDimensionChange = MCPReflection.getMCPField(EntityPlayerMP.class, "invulnerableDimensionChange", "field_184851_cj");
                     invulnerableDimensionChange.setBoolean(player, true); // Prevent Minecraft from cancelling the position change being too big if the player is not in creative
                 } catch (NoSuchFieldException|IllegalAccessException e) {
                     throw new RuntimeException(e);
@@ -142,8 +137,7 @@ public class TeleportUtils {
 
                 if (newEntity != null) {
                     try {
-                        Method copyDataFromOld = Entity.class.getDeclaredMethod("copyDataFromOld", Entity.class);
-                        copyDataFromOld.setAccessible(true);
+                        Method copyDataFromOld = MCPReflection.getMCPMethod(Entity.class,"copyDataFromOld", "func_180432_n", Entity.class);
                         copyDataFromOld.invoke(newEntity, entity);
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         throw new RuntimeException(e);

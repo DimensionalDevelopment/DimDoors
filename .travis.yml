@@ -1,6 +1,8 @@
 language: java
 notifications:
   email: false
+if: tag IS blank
+
 before_install: chmod +x gradlew
 install: "./gradlew setupCIWorkspace"
 script: "./gradlew build"
@@ -13,6 +15,7 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
 sudo: false
+
 deploy:
   skip_cleanup: true
   provider: releases
