@@ -46,8 +46,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
     private int soundTime = 0;
     private final int aggroCap;
 
-    public EntityMonolith(World world)
-    {
+    public EntityMonolith(World world) {
         super(world);
         setSize(WIDTH, HEIGHT);
         noClip = true;
@@ -59,7 +58,8 @@ public class EntityMonolith extends EntityFlying implements IMob {
     }
 
     @Override
-    protected void damageEntity(DamageSource damageSrc, float damageAmount) {}
+    protected void damageEntity(DamageSource damageSrc, float damageAmount) {
+    }
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount) {
@@ -113,8 +113,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
     }
 
     @Override
-    public boolean isEntityAlive()
-    {
+    public boolean isEntityAlive() {
         return false;
     }
 
@@ -135,11 +134,9 @@ public class EntityMonolith extends EntityFlying implements IMob {
         updateAggroLevel(player, visibility);
 
         // Change orientation and face a player if one is in range
-        if (player != null)
-        {
+        if (player != null) {
             facePlayer(player);
-            if (!world.isRemote && isDangerous())
-            {
+            if (!world.isRemote && isDangerous()) {
                 // Play sounds on the server side, if the player isn't in Limbo.
                 // Limbo is excluded to avoid drowning out its background music.
                 // Also, since it's a large open area with many Monoliths, some
@@ -148,8 +145,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
                 playSounds(player);
             }
 
-            if (visibility)
-            {
+            if (visibility) {
                 // Only spawn particles on the client side and outside Limbo
                 if (world.isRemote && isDangerous()) {
                     spawnParticles(player);
@@ -197,7 +193,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
                 }
             }
             // Clamp the aggro level
-            int maxAggro = isDangerous()?MAX_AGGRO:180;
+            int maxAggro = isDangerous() ? MAX_AGGRO : 180;
             aggro = (short) MathHelper.clamp(aggro, 0, maxAggro);
             dataManager.set(AGGRO, aggro);
         } else {
@@ -213,18 +209,16 @@ public class EntityMonolith extends EntityFlying implements IMob {
 
     /**
      * Plays sounds at different levels of aggro, using soundTime to prevent too many sounds at once.
+     *
      * @param entityPlayer
      */
-    private void playSounds(EntityPlayer entityPlayer)
-    {
+    private void playSounds(EntityPlayer entityPlayer) {
         float aggroPercent = getAggroProgress();
-        if (soundTime <= 0)
-        {
+        if (soundTime <= 0) {
             playSound(ModSounds.MONK, 1F, 1F);
             soundTime = 100;
         }
-        if (aggroPercent > 0.70 && soundTime < 100)
-        {
+        if (aggroPercent > 0.70 && soundTime < 100) {
             world.playSound(entityPlayer, entityPlayer.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + rand.nextGaussian()));
             soundTime = 100 + rand.nextInt(75);
         }
@@ -235,11 +229,9 @@ public class EntityMonolith extends EntityFlying implements IMob {
         soundTime--;
     }
 
-    private void spawnParticles(EntityPlayer player)
-    {
+    private void spawnParticles(EntityPlayer player) {
         int count = 10 * aggro / MAX_AGGRO;
-        for (int i = 1; i < count; ++i)
-        {
+        for (int i = 1; i < count; ++i) {
             player.world.spawnParticle(EnumParticleTypes.PORTAL, player.posX + (rand.nextDouble() - 0.5D) * width,
                     player.posY + rand.nextDouble() * player.height - 0.75D,
                     player.posZ + (rand.nextDouble() - 0.5D) * player.width,
@@ -248,19 +240,17 @@ public class EntityMonolith extends EntityFlying implements IMob {
         }
     }
 
-    public float getAggroProgress()
-    {
+    public float getAggroProgress() {
         return (float) aggro / MAX_AGGRO;
     }
 
-    private void facePlayer(EntityPlayer player)
-    {
+    private void facePlayer(EntityPlayer player) {
         double d0 = player.posX - posX;
         double d1 = player.posZ - posZ;
         double d2 = player.posY + player.getEyeHeight() - (posY + getEyeHeight());
         double d3 = MathHelper.sqrt(d0 * d0 + d1 * d1);
-        float f2 = (float)(Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
-        pitchLevel = (float) -(Math.atan(d2/d3) * 180.0D / Math.PI);
+        float f2 = (float) (Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
+        pitchLevel = (float) -(Math.atan(d2 / d3) * 180.0D / Math.PI);
         rotationYaw = f2;
         rotationYawHead = f2;
         renderYawOffset = rotationYaw;
@@ -273,8 +263,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbt)
-    {
+    public void readEntityFromNBT(NBTTagCompound nbt) {
         super.readEntityFromNBT(nbt);
 
         // Load Monoliths with half aggro so they don't teleport players instantly
@@ -283,13 +272,13 @@ public class EntityMonolith extends EntityFlying implements IMob {
 
     @Override
     public boolean getCanSpawnHere() {
-        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(posX -15, posY-4, posZ -15, posX +15, posY +15, posZ +15));
+        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(posX - 15, posY - 4, posZ - 15, posX + 15, posY + 15, posZ + 15));
 
         if (world.provider instanceof WorldProviderLimbo) {
-            if(list.size() > 0) {
+            if (list.size() > 0) {
                 return false;
             }
-        } else if(world.provider instanceof WorldProviderPublicPocket) {
+        } else if (world.provider instanceof WorldProviderPublicPocket) {
             if (list.size() > 5 || world.canBlockSeeSky(new BlockPos(posX, posY, posZ))) {
                 return false;
             }

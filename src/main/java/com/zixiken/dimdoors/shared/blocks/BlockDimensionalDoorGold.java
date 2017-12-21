@@ -7,11 +7,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockDimDoorGold extends BlockDimDoorBase {
+public class BlockDimensionalDoorGold extends BlockDimensionalDoor {
 
     public static final String ID = "gold_dimensional_door";
 
-    public BlockDimDoorGold() {
+    public BlockDimensionalDoorGold() {
         super(Material.IRON);
         setHardness(1.0F);
         setUnlocalizedName(ID);
@@ -24,7 +24,7 @@ public class BlockDimDoorGold extends BlockDimDoorBase {
     }
 
     @Override
-    protected void setupRift(TileEntityEntranceRift rift) {
+    public void setupRift(TileEntityEntranceRift rift) {
         // TODO
     }
 }

@@ -5,7 +5,6 @@ import java.util.Random;
 import net.minecraft.util.EnumFacing;
 
 /**
- *
  * @author Robijnvogel
  */
 public class RandomUtils {

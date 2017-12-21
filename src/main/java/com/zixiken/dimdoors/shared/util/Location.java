@@ -20,7 +20,7 @@ import net.minecraft.world.WorldServer;
 @ToString
 public class Location implements Serializable {
 
-    @Getter private int dimID;
+    @Getter private int dimID; // TODO: remove getter and make final?
     @Getter private BlockPos pos;
 
     public Location(World world, BlockPos pos) {

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.zixiken.dimdoors.server;
 
 import com.zixiken.dimdoors.shared.DDProxyCommon;
@@ -13,7 +8,6 @@ import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.common.DimensionManager;
 
 /**
- *
  * @author Robijnvogel
  */
 public class DDProxyServer extends DDProxyCommon {

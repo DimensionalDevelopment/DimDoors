@@ -1,7 +1,9 @@
 package com.zixiken.dimdoors.shared;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
@@ -21,4 +23,7 @@ public interface IDDProxy {
 
     public WorldServer getWorldServer(int dimId);
 
+    public void setCloudRenderer(WorldProvider provider, IRenderHandler renderer);
+
+    public void setSkyRenderer(WorldProvider provider, IRenderHandler renderer);
 }

@@ -6,11 +6,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockDimDoorTransient extends BlockDimDoorBase { // TODO: convert to a more general entrance block (like nether portals)
+public class BlockDimensionalDoorTransient extends BlockDimensionalDoor { // TODO: convert to a more general entrance block (like nether portals)
 
     public static final String ID = "transient_dimensional_door";
 
-    public BlockDimDoorTransient() {
+    public BlockDimensionalDoorTransient() {
         super(Material.IRON);
         setHardness(1.0F);
         setUnlocalizedName(ID);
@@ -29,7 +29,7 @@ public class BlockDimDoorTransient extends BlockDimDoorBase { // TODO: convert t
     }
 
     @Override
-    protected void setupRift(TileEntityEntranceRift rift) {
+    public void setupRift(TileEntityEntranceRift rift) {
         // TODO
     }
 }

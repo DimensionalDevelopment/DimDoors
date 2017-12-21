@@ -15,7 +15,6 @@ import com.zixiken.dimdoors.shared.util.WorldUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -29,36 +28,35 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityProvider {
-    // TODO: implement RiftProvider as an interface of both doors and trapdoors
+public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftProvider<TileEntityEntranceRift> {
 
-    public BlockDimDoorBase(Material material) {
+    public BlockDimensionalDoor(Material material) {
         super(material);
     }
 
     @Override
-    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn) {
-        if (worldIn.isRemote) return;
+    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
+        if (world.isRemote) return;
         if (state.getValue(HALF) == EnumDoorHalf.UPPER) pos = pos.down();
-        IBlockState doorState = worldIn.getBlockState(pos);
+        IBlockState doorState = world.getBlockState(pos);
         if (!(doorState.getBlock() instanceof BlockDoor)) return;
-        if (doorState.getValue(BlockDoor.OPEN) && entityIn.timeUntilPortal == 0) {
-            entityIn.timeUntilPortal = 50; // 2.5s
-            TileEntityEntranceRift rift = getRift(worldIn, pos, state);
-            boolean successful = rift.teleport(entityIn);
-            if (successful)entityIn.timeUntilPortal = 0;
-            if (successful && entityIn instanceof EntityPlayer) {
-                if(!state.getValue(POWERED)) toggleDoor(worldIn, pos, false); // TODO: config option playerClosesDoorBehind
-                if (rift.isCloseAfterPassThrough()) worldIn.destroyBlock(pos, false);
+
+        // Check that it's a door and that the entity portal timer is 0
+        if (doorState.getValue(BlockDoor.OPEN) && entity.timeUntilPortal == 0) {
+            entity.timeUntilPortal = 50; // Disable another teleport for that entity for 2.5s
+            TileEntityEntranceRift rift = getRift(world, pos, state);
+            boolean successful = rift.teleport(entity);
+            if (successful) entity.timeUntilPortal = 0; // Allow the entity to teleport if successful
+            if (successful && entity instanceof EntityPlayer) {
+                if (!state.getValue(POWERED)) toggleDoor(world, pos, false); // TODO: config option playerClosesDoorBehind
+                if (rift.isCloseAfterPassThrough()) world.destroyBlock(pos, false);
             }
         }
     }
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!checkCanOpen(worldIn, pos, playerIn)) {
-            return false;
-        }
+        if (!canOpen(worldIn, pos, playerIn)) return false;
 
         BlockPos blockpos = state.getValue(HALF) == BlockDoor.EnumDoorHalf.LOWER ? pos : pos.down();
         IBlockState iblockstate = pos.equals(blockpos) ? state : worldIn.getBlockState(blockpos);
@@ -74,24 +72,22 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
         }
     }
 
-    private int getCloseSound()
-    {
+    private int getCloseSound() {
         return blockMaterial == Material.IRON ? 1011 : 1012;
     }
 
-    private int getOpenSound()
-    {
+    private int getOpenSound() {
         return blockMaterial == Material.IRON ? 1005 : 1006;
     }
 
     @Override
     public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-        if (checkCanOpen(worldIn, pos, null)) {
+        if (canOpen(worldIn, pos, null)) {
             super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
         }
     }
 
-    public boolean checkCanOpen(World world, BlockPos pos, EntityPlayer player) {
+    public boolean canOpen(World world, BlockPos pos, EntityPlayer player) {
         return true; // TODO: locking system
     }
 
@@ -165,6 +161,7 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
         }
     }
 
+    @Override
     public TileEntityEntranceRift getRift(World world, BlockPos pos, IBlockState state) {
         TileEntity tileEntity;
         if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER) {
@@ -178,6 +175,4 @@ public abstract class BlockDimDoorBase extends BlockDoor implements ITileEntityP
     }
 
     public abstract Item getItem();
-
-    protected abstract void setupRift(TileEntityEntranceRift rift);
 }

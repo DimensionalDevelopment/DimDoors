@@ -89,13 +89,13 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
                     GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, getFloatBuffer(1.0F, 0.0F, 0.0F, -0.15F));
                     break;
-                case DOWN:
+                case UP:
                     GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getFloatBuffer(1.0F, 0.0F, 0.0F, 0.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 1.0F, 0.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getFloatBuffer(0.0F, 0.0F, 0.0F, 1.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_PLANE, getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
                     break;
-                case UP:
+                case DOWN:
                     // TODO: logic for UP
             }
 
@@ -131,6 +131,11 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
             double od = orientation == EnumFacing.NORTH || orientation == EnumFacing.WEST || orientation == EnumFacing.DOWN ? pushIn : 1 - pushIn;
             switch (orientation) {
                 case NORTH:
+                    worldRenderer.pos(x + ohs, y + ovs, z + od).endVertex();
+                    worldRenderer.pos(x + ohs, y + ove, z + od).endVertex();
+                    worldRenderer.pos(x + ohe, y + ove, z + od).endVertex();
+                    worldRenderer.pos(x + ohe, y + ovs, z + od).endVertex();
+                    break;
                 case SOUTH:
                     worldRenderer.pos(x + ohs, y + ovs, z + od).endVertex();
                     worldRenderer.pos(x + ohe, y + ovs, z + od).endVertex();
@@ -138,6 +143,11 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
                     worldRenderer.pos(x + ohs, y + ove, z + od).endVertex();
                     break;
                 case WEST:
+                    worldRenderer.pos(x + od, y + ovs, z + ohs).endVertex();
+                    worldRenderer.pos(x + od, y + ovs, z + ohe).endVertex();
+                    worldRenderer.pos(x + od, y + ove, z + ohe).endVertex();
+                    worldRenderer.pos(x + od, y + ove, z + ohs).endVertex();
+                    break;
                 case EAST:
                     worldRenderer.pos(x + od, y + ovs, z + ohs).endVertex();
                     worldRenderer.pos(x + od, y + ove, z + ohs).endVertex();
@@ -145,6 +155,11 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
                     worldRenderer.pos(x + od, y + ovs, z + ohe).endVertex();
                     break;
                 case UP:
+                    worldRenderer.pos(x + ovs, y + od, z + ohs).endVertex();
+                    worldRenderer.pos(x + ohs, y + od, z + ohe).endVertex();
+                    worldRenderer.pos(x + ohe, y + od, z + ohe).endVertex();
+                    worldRenderer.pos(x + ohe, y + od, z + ohs).endVertex();
+                    break;
                 case DOWN:
                     worldRenderer.pos(x + ovs, y + od, z + ohs).endVertex();
                     worldRenderer.pos(x + ohe, y + od, z + ohs).endVertex();

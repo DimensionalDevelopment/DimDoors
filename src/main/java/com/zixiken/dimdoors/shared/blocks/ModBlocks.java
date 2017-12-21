@@ -11,17 +11,17 @@ public class ModBlocks {
     public static final BlockDoorQuartz QUARTZ_DOOR = new BlockDoorQuartz();
 
     // Dimensional doors
-    public static final BlockDimDoorIron DIMENSIONAL_DOOR = new BlockDimDoorIron();
-    public static final BlockDimDoorGold GOLD_DIMENSIONAL_DOOR = new BlockDimDoorGold();
-    public static final BlockDimDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new BlockDimDoorPersonal();
-    public static final BlockDimDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new BlockDimDoorUnstable();
-    public static final BlockDimDoorTransient TRANSIENT_DIMENSIONAL_DOOR = new BlockDimDoorTransient();
-    public static final BlockDimDoorWarp WARP_DIMENSIONAL_DOOR = new BlockDimDoorWarp();
-    public static final BlockDimTrapdoor DIMENSIONAL_TRAPDOOR = new BlockDimTrapdoor();
+    public static final BlockDimensionalDoorIron DIMENSIONAL_DOOR = new BlockDimensionalDoorIron();
+    public static final BlockDimensionalDoorGold GOLD_DIMENSIONAL_DOOR = new BlockDimensionalDoorGold();
+    public static final BlockDimensionalDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new BlockDimensionalDoorPersonal();
+    public static final BlockDimensionalDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new BlockDimensionalDoorUnstable();
+    public static final BlockDimensionalDoorTransient TRANSIENT_DIMENSIONAL_DOOR = new BlockDimensionalDoorTransient();
+    public static final BlockDimensionalDoorWarp WARP_DIMENSIONAL_DOOR = new BlockDimensionalDoorWarp();
+    public static final BlockDimTrapdoorWood DIMENSIONAL_TRAPDOOR = new BlockDimTrapdoorWood();
 
     // Blocks
     public static final BlockFabric FABRIC = new BlockFabric();
-    public static final BlockRift RIFT = new BlockRift();
+    public static final BlockFloatingRift RIFT = new BlockFloatingRift();
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {

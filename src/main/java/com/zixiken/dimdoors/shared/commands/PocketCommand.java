@@ -27,17 +27,17 @@ public class PocketCommand extends CommandBase {
 
     public PocketCommand() {
         aliases = new ArrayList<>();
-        aliases.add("dimpocket");
+        aliases.add("pocket");
     }
 
     @Override
     public String getName() {
-        return "dimpocket";
+        return "pocket";
     }
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "dimpocket <group> <name> [setup]";
+        return "pocket <group> <name> [setup]";
     }
 
     @Override

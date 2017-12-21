@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT) // 8 4
+@SideOnly(Side.CLIENT)
 public class DDProxyClient extends DDProxyCommon {
 
     @Override

@@ -7,11 +7,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockDimDoorWarp extends BlockDimDoorBase {
+public class BlockDimensionalDoorWarp extends BlockDimensionalDoor {
 
     public static final String ID = "warp_dimensional_door";
 
-    public BlockDimDoorWarp() {
+    public BlockDimensionalDoorWarp() {
         super(Material.WOOD);
         setHardness(1.0F);
         setUnlocalizedName(ID);
@@ -24,7 +24,7 @@ public class BlockDimDoorWarp extends BlockDimDoorBase {
     }
 
     @Override
-    protected void setupRift(TileEntityEntranceRift rift) {
+    public void setupRift(TileEntityEntranceRift rift) {
         // TODO
     }
 }

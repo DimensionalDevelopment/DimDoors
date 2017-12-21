@@ -1,9 +1,9 @@
 package com.zixiken.dimdoors.shared.blocks;
 
-import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.items.ModItems;
 import java.util.Random;
 
+import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
@@ -12,11 +12,11 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockDimDoorUnstable extends BlockDimDoorBase {
+public class BlockDimensionalDoorUnstable extends BlockDimensionalDoor {
 
     public static final String ID = "unstable_dimensional_door";
 
-    public BlockDimDoorUnstable() {
+    public BlockDimensionalDoorUnstable() {
         super(Material.IRON);
         setHardness(0.2F);
         setUnlocalizedName(ID);
@@ -35,7 +35,7 @@ public class BlockDimDoorUnstable extends BlockDimDoorBase {
     }
 
     @Override
-    protected void setupRift(TileEntityEntranceRift rift) {
+    public void setupRift(TileEntityEntranceRift rift) {
         // TODO
     }
 }

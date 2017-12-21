@@ -53,7 +53,7 @@ public class CommandDimTeleport extends CommandBase { // TODO: localization
 
         // Parse arguments
         int dimension, x, y, z;
-        int yaw = 0; // TODO: keep old yaw and pitch?
+        int yaw = 0;
         int pitch = 0;
         try {
             dimension = Integer.parseInt(args[0]);

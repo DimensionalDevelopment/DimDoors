@@ -65,7 +65,7 @@ public class TileEntityEntranceRift extends TileEntityRift {
         nbt.setBoolean("shouldRender", shouldRender);
         nbt.setByte("lockStatus", lockStatus);
 
-        nbt.setString("orientation", orientation.getName());
+        if (orientation != null) nbt.setString("orientation", orientation.getName()); // TODO: why is this sometimes null on generated transient entrances?
         nbt.setInteger("tpOffset", tpOffset);
         nbt.setDouble("extendUp", extendUp);
         nbt.setDouble("extendDown", extendDown);

@@ -8,26 +8,26 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockDimDoorIron extends BlockDimDoorBase {
+public class BlockDimensionalDoorPersonal extends BlockDimensionalDoor {
 
-    public static final String ID = "dimensional_door";
+    public static final String ID = "quartz_dimensional_door";
 
-    public BlockDimDoorIron() {
-        super(Material.IRON);
-        setHardness(1.0F);
-        setResistance(2000.0F);
+    public BlockDimensionalDoorPersonal() {
+        super(Material.ROCK);
+        setHardness(0.1F);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
     @Override
     public Item getItem() {
-        return ModItems.DIMENSIONAL_DOOR;
+        return ModItems.PERSONAL_DIMENSIONAL_DOOR;
     }
 
     @Override
-    protected void setupRift(TileEntityEntranceRift rift) {
-        RiftDestination.NewPublicDestination destination = RiftDestination.NewPublicDestination.builder().build();
+    public void setupRift(TileEntityEntranceRift rift) {
+        RiftDestination.PrivateDestination destination = RiftDestination.PrivateDestination.builder().build();
         rift.setSingleDestination(destination);
+        rift.setChaosWeight(0);
     }
 }

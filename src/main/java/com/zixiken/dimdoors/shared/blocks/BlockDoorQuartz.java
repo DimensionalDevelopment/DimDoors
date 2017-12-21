@@ -14,8 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockDoorQuartz extends BlockDoor {
 
@@ -35,7 +33,6 @@ public class BlockDoorQuartz extends BlockDoor {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
     public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
         return new ItemStack(ModItems.QUARTZ_DOOR);
     }
