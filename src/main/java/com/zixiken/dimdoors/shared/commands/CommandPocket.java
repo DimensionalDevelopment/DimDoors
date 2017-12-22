@@ -4,10 +4,10 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.*;
 import com.zixiken.dimdoors.shared.pockets.*;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
-import com.zixiken.dimdoors.shared.util.Location;
-import com.zixiken.dimdoors.shared.util.StringUtils;
-import com.zixiken.dimdoors.shared.util.TeleportUtils;
-import com.zixiken.dimdoors.shared.util.WorldUtils;
+import ddutils.Location;
+import ddutils.StringUtils;
+import ddutils.TeleportUtils;
+import ddutils.WorldUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -21,11 +21,11 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PocketCommand extends CommandBase {
+public class CommandPocket extends CommandBase {
 
     private final List<String> aliases;
 
-    public PocketCommand() {
+    public CommandPocket() {
         aliases = new ArrayList<>();
         aliases.add("pocket");
     }

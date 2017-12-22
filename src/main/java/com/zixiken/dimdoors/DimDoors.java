@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors;
 
-import com.zixiken.dimdoors.shared.commands.PocketCommand;
+import com.zixiken.dimdoors.shared.commands.CommandPocket;
 import com.zixiken.dimdoors.shared.commands.CommandDimTeleport;
 import com.zixiken.dimdoors.shared.DDConfig;
 import com.zixiken.dimdoors.shared.DDProxyCommon;
@@ -72,7 +72,7 @@ public class DimDoors {
 
     private void registerCommands(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandDimTeleport());
-        event.registerServerCommand(new PocketCommand());
+        event.registerServerCommand(new CommandPocket());
     }
 
     public static boolean isClient() {

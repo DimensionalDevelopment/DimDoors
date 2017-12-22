@@ -3,10 +3,9 @@ package com.zixiken.dimdoors.shared.blocks;
 import java.util.Random;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.DDConfig;
-import com.zixiken.dimdoors.shared.util.RandomUtils;
-import com.zixiken.dimdoors.shared.util.Location;
-import com.zixiken.dimdoors.shared.util.TeleportUtils;
+import com.zixiken.dimdoors.shared.VirtualLocation;
+import ddutils.Location;
+import ddutils.TeleportUtils;
 import com.zixiken.dimdoors.shared.world.limbodimension.LimboDecay;
 import com.zixiken.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import lombok.Getter;
@@ -175,15 +174,13 @@ public class BlockFabric extends Block {
     }
 
     @Override
-    public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
-        IBlockState state = worldIn.getBlockState(pos);
-        if (state.getValue(TYPE) == EnumType.ETERNAL && worldIn.provider instanceof WorldProviderLimbo && entityIn instanceof EntityPlayer) {
-            Location origLocation = new Location(worldIn, pos);
-            Location transFormedLocation = RandomUtils.transformLocationRandomly(DDConfig.getOwCoordinateOffsetBase(), DDConfig.getOwCoordinateOffsetPower(), DDConfig.getMaxDungeonDepth(), origLocation);
-
-            BlockPos correctedPos = DimDoors.proxy.getWorldServer(0).getTopSolidOrLiquidBlock(transFormedLocation.getPos());
-            Location correctedLocation = new Location(0, correctedPos);
-            TeleportUtils.teleport(entityIn, correctedLocation, 0, 0);
+    public void onEntityWalk(World world, BlockPos pos, Entity entityIn) {
+        IBlockState state = world.getBlockState(pos);
+        if (state.getValue(TYPE) == EnumType.ETERNAL && world.provider instanceof WorldProviderLimbo && entityIn instanceof EntityPlayer) {
+            Location loc = VirtualLocation.fromLocation(new Location(world, pos)).projectToWorld();
+            BlockPos correctedPos = loc.getWorld().getTopSolidOrLiquidBlock(loc.getPos());
+            Random random = new Random();
+            TeleportUtils.teleport(entityIn, new Location(loc.getDim(), correctedPos), random.nextFloat() * 360, random.nextFloat() * 360);
         }
     }
 

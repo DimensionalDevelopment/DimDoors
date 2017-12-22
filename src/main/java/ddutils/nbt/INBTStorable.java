@@ -1,4 +1,4 @@
-package com.zixiken.dimdoors.shared.util;
+package ddutils.nbt;
 
 import net.minecraft.nbt.NBTTagCompound;
 

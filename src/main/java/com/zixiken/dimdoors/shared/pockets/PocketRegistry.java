@@ -1,11 +1,11 @@
 package com.zixiken.dimdoors.shared.pockets;
 
 import com.zixiken.dimdoors.shared.DDConfig;
-import com.zixiken.dimdoors.shared.VirtualLocation;
-import com.zixiken.dimdoors.shared.util.Location;
+import ddutils.math.GridUtils;
+import ddutils.Location;
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.util.NBTUtils;
-import com.zixiken.dimdoors.shared.util.WorldUtils;
+import ddutils.nbt.NBTUtils;
+import ddutils.WorldUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 
 import java.util.HashMap;
@@ -247,22 +247,5 @@ public class PocketRegistry extends WorldSavedData {
             Pocket pocket = pockets.get(pocketID);
             return pocket.isPlayerAllowedInPocket(player) && pocket.isLocationWithinPocketBounds(x, y, z, gridSize);
         }
-    }
-
-    // TODO: move to VirtualLocation
-    public static VirtualLocation locationToVirtualLocation(Location location) { // TODO: reverse function too
-        VirtualLocation virtualLocation = null;
-        if (DimDoorDimensions.isPocketDimension(location.getDimID())) {
-            Pocket pocket = PocketRegistry.getForDim(location.getDimID()).getPocketFromLocation(location.getPos().getY(), location.getPos().getY(), location.getPos().getZ());
-            if (pocket != null) {
-                virtualLocation = pocket.getVirtualLocation();
-            } else {
-                virtualLocation = new VirtualLocation(0, 0, 0, 0, 0); // TODO: door was placed in a pocket dim but outside of a pocket...
-            }
-        }
-        if (virtualLocation == null) {
-            virtualLocation = new VirtualLocation(WorldUtils.getDim(location.getWorld()), location.getPos().getX(), location.getPos().getY(), location.getPos().getZ(), 0);
-        }
-        return virtualLocation;
     }
 }

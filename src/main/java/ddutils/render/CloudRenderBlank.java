@@ -1,4 +1,4 @@
-package com.zixiken.dimdoors.client;
+package ddutils.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;

@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.shared.world.pocketdimension;
 
-import com.zixiken.dimdoors.client.CloudRenderBlank;
+import ddutils.render.CloudRenderBlank;
 import com.zixiken.dimdoors.shared.pockets.EnumPocketType;
 import com.zixiken.dimdoors.shared.world.ModBiomes;
 import net.minecraft.entity.Entity;

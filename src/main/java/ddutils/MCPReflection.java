@@ -1,4 +1,4 @@
-package com.zixiken.dimdoors.shared.util;
+package ddutils;
 
 import net.minecraft.entity.Entity;
 

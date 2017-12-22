@@ -5,7 +5,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 public abstract class BaseGateway {
-    public BaseGateway() { }
+    public BaseGateway() {}
 
     /**
      * Generates the gateway centered on the given coordinates
@@ -22,7 +22,7 @@ public abstract class BaseGateway {
      * @return <code>true</code> true if the specified biome is a valid for generating this gateway, otherwise <code>false</code>
      */
     protected boolean isBiomeValid(Biome biome) {
-        Biome[] biomes = this.getBiomes();
+        Biome[] biomes = getBiomes();
         if (biomes != null) {
             for (Biome b : biomes) {
                 if (b.equals(biome)) {

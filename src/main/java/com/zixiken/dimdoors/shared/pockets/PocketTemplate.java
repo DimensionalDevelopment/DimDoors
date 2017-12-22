@@ -1,8 +1,8 @@
 package com.zixiken.dimdoors.shared.pockets;
 
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
-import com.zixiken.dimdoors.shared.util.Location;
-import com.zixiken.dimdoors.shared.util.Schematic;
+import ddutils.Location;
+import ddutils.schem.Schematic;
 import com.zixiken.dimdoors.DimDoors;
 
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class PocketTemplate {
         int dimID = pocket.dimID;
         int xBase = pocket.getX() * gridSize * 16;
         int zBase = pocket.getZ() * gridSize * 16;
-        DimDoors.log.info("Placing new pocket using schematic " + schematic.getSchematicName() + " at x = " + xBase + ", z = " + zBase);
+        DimDoors.log.info("Placing new pocket using schematic " + schematic.schematicName + " at x = " + xBase + ", z = " + zBase);
 
         WorldServer world = DimDoors.proxy.getWorldServer(dimID);
         DimDoors.disableRiftSetup = true;
@@ -53,7 +53,7 @@ public class PocketTemplate {
 
         // Set pocket riftLocations
         pocket.riftLocations = new ArrayList<>();
-        for (NBTTagCompound tileEntityNBT : schematic.getTileEntities()) {
+        for (NBTTagCompound tileEntityNBT : schematic.tileEntities) {
             BlockPos pos = new BlockPos(
                     xBase + tileEntityNBT.getInteger("x"),
                     yBase + tileEntityNBT.getInteger("y"),

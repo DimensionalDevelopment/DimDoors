@@ -1,10 +1,9 @@
-package com.zixiken.dimdoors.shared.util;
+package ddutils;
 
-import com.zixiken.dimdoors.DimDoors;
 import java.io.Serializable;
 
-import lombok.Getter;
 import lombok.ToString;
+import lombok.Value;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,16 +11,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 
 /**
- *
  * @author Robijnvogel
  */
-@ToString
+@ToString @Value
 public class Location implements Serializable {
 
-    @Getter private int dimID; // TODO: remove getter and make final?
-    @Getter private BlockPos pos;
+    int dim;
+    private BlockPos pos;
 
     public Location(World world, BlockPos pos) {
         this(world.provider.getDimension(), pos);
@@ -31,14 +30,18 @@ public class Location implements Serializable {
         this(world, new BlockPos(x, y, z));
     }
 
-    public Location(int dimID, int x, int y, int z) {
-        this(dimID, new BlockPos(x, y, z));
+    public Location(int dim, int x, int y, int z) {
+        this(dim, new BlockPos(x, y, z));
     }
 
-    public Location(int dimID, BlockPos pos) {
-        this.dimID = dimID;
-        this.pos = pos; //copyOf
+    public Location(int dim, BlockPos pos) {
+        this.dim = dim;
+        this.pos = pos;
     }
+
+    public int getX() { return pos.getX(); }
+    public int getY() { return pos.getY(); }
+    public int getZ() { return pos.getZ(); }
 
     public TileEntity getTileEntity() {
         return getWorld().getTileEntity(pos);
@@ -49,7 +52,7 @@ public class Location implements Serializable {
     }
 
     public WorldServer getWorld() {
-        return DimDoors.proxy.getWorldServer(dimID);
+        return DimensionManager.getWorld(dim);
     }
 
     public static Location getLocation(TileEntity tileEntity) {
@@ -66,7 +69,7 @@ public class Location implements Serializable {
 
     public static NBTTagCompound writeToNBT(Location location) {
         NBTTagCompound locationNBT = new NBTTagCompound();
-        locationNBT.setInteger("worldID", location.dimID);
+        locationNBT.setInteger("worldID", location.dim);
         locationNBT.setInteger("x", location.pos.getX());
         locationNBT.setInteger("y", location.pos.getY());
         locationNBT.setInteger("z", location.pos.getZ());
@@ -88,16 +91,11 @@ public class Location implements Serializable {
             return false;
         }
         Location other = (Location) obj;
-        return other.dimID == dimID && other.pos.equals(pos);
+        return other.dim == dim && other.pos.equals(pos);
     }
 
     @Override
     public int hashCode() {
-        return pos.hashCode() * 31 + dimID; // TODO
-    }
-    
-    public void loadfrom(Location location) {
-        dimID = location.dimID;
-        pos = location.pos;
+        return pos.hashCode() * 31 + dim; // TODO
     }
 }

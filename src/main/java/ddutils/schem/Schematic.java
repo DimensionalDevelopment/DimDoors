@@ -1,4 +1,4 @@
-package com.zixiken.dimdoors.shared.util;
+package ddutils.schem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -21,24 +20,23 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 /**
- *
  * @author Robijnvogel
  */
 public class Schematic {
 
-    @Getter int version = 1;
-    @Getter String author = null;
-    @Getter String schematicName = "Unknown";
-    @Getter long creationDate;
-    @Getter String[] requiredMods = {};
-    @Getter short width;
-    @Getter short height;
-    @Getter short length;
-    @Getter int[] offset = {0, 0, 0};
-    @Getter int paletteMax;
-    @Getter List<IBlockState> pallette = new ArrayList<>();
-    @Getter int[][][] blockData; //[x][y][z]
-    @Getter List<NBTTagCompound> tileEntities = new ArrayList<>();
+    public int version = 1;
+    public String author = null;
+    public String schematicName = "Unknown";
+    public long creationDate;
+    public String[] requiredMods = {};
+    public short width;
+    public short height;
+    public short length;
+    public int[] offset = {0, 0, 0};
+    public int paletteMax;
+    public List<IBlockState> pallette = new ArrayList<>();
+    public int[][][] blockData; //[x][y][z]
+    public List<NBTTagCompound> tileEntities = new ArrayList<>();
 
     public static Schematic loadFromNBT(NBTTagCompound nbt, String name) {
         Schematic schematic = new Schematic();
@@ -65,7 +63,6 @@ public class Schematic {
             }
         }
 
-        //@todo, check if the required mods are loaded, otherwise abort
         schematic.width = nbt.getShort("Width"); //Width is required
         schematic.height = nbt.getShort("Height"); //Height is required
         schematic.length = nbt.getShort("Length"); //Length is required
@@ -232,8 +229,8 @@ public class Schematic {
 
     public static void place(Schematic schematic, World world, int xBase, int yBase, int zBase) {
         // Place the schematic's blocks
-        List<IBlockState> palette = schematic.getPallette();
-        int[][][] blockData = schematic.getBlockData();
+        List<IBlockState> palette = schematic.pallette;
+        int[][][] blockData = schematic.blockData;
         for (int x = 0; x < blockData.length; x++) {
             for (int y = 0; y < blockData[x].length; y++) {
                 for (int z = 0; z < blockData[x][y].length; z++) {
@@ -243,15 +240,17 @@ public class Schematic {
         }
 
         // Set TileEntity data
-        for (NBTTagCompound tileEntityNBT : schematic.getTileEntities()) {
+        for (NBTTagCompound tileEntityNBT : schematic.tileEntities) {
             BlockPos pos = new BlockPos(
                     xBase + tileEntityNBT.getInteger("x"),
                     yBase + tileEntityNBT.getInteger("y"),
                     zBase + tileEntityNBT.getInteger("z"));
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity != null) {
-                tileEntity.readFromNBT(tileEntityNBT); //this reads in the wrong blockPos
-                tileEntity.setWorld(world); // TODO: necessary?
+                tileEntity.readFromNBT(tileEntityNBT);
+
+                // Correct the position
+                tileEntity.setWorld(world);
                 tileEntity.setPos(pos); //correct the position
                 tileEntity.markDirty();
             }

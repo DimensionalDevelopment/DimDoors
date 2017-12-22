@@ -9,8 +9,6 @@ import com.zixiken.dimdoors.shared.tileentities.*;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import com.zixiken.dimdoors.shared.world.ModBiomes;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.WorldProvider;
-import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

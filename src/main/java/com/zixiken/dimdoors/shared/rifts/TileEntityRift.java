@@ -7,10 +7,10 @@ import com.zixiken.dimdoors.shared.pockets.PocketGenerator;
 import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
 import com.zixiken.dimdoors.shared.rifts.RiftDestination.*;
 import com.zixiken.dimdoors.shared.rifts.RiftRegistry.RiftInfo.AvailableLinkInfo;
-import com.zixiken.dimdoors.shared.util.Location;
-import com.zixiken.dimdoors.shared.util.MathUtils;
-import com.zixiken.dimdoors.shared.util.TeleportUtils;
-import com.zixiken.dimdoors.shared.util.WorldUtils;
+import ddutils.Location;
+import ddutils.math.MathUtils;
+import ddutils.TeleportUtils;
+import ddutils.WorldUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import lombok.Getter;
 import net.minecraft.block.state.IBlockState;
@@ -325,7 +325,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                     }
                     if (destLoc == null) {
                         if (entity instanceof EntityPlayer) DimDoors.chat((EntityPlayer) entity, "You tried to escape a pocket or leave your private pocket, but you teleported into it!");
-                        return false; // TODO: LIMBO?
+                        return false; // TODO: limbo?
                     }
                 } else {
                     return false; // Non-player/owned entity tried to escape/leave private pocket
@@ -424,7 +424,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
     private void makeDestinationPermanent(WeightedRiftDestination weightedDestination, Location destLoc) {
         riftStateChanged = true;
         RiftDestination newDest;
-        if (WorldUtils.getDim(world) == destLoc.getDimID()) {
+        if (WorldUtils.getDim(world) == destLoc.getDim()) {
             newDest = new LocalDestination(destLoc.getPos()); // TODO: RelativeDestination instead?
         } else {
             newDest = new GlobalDestination(destLoc);

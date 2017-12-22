@@ -2,7 +2,6 @@ package com.zixiken.dimdoors.client;
 
 import com.zixiken.dimdoors.shared.DDProxyCommon;
 import com.zixiken.dimdoors.shared.entities.EntityMonolith;
-import com.zixiken.dimdoors.shared.entities.RenderMonolith;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import net.minecraft.client.Minecraft;

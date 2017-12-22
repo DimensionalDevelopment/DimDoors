@@ -1,4 +1,4 @@
-package com.zixiken.dimdoors.shared.pockets;
+package ddutils.math;
 
 import lombok.Value;
 

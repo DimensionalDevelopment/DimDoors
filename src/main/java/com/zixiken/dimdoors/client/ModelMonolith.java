@@ -1,7 +1,8 @@
-package com.zixiken.dimdoors.shared.entities;
+package com.zixiken.dimdoors.client;
 
 import java.util.Random;
 
+import com.zixiken.dimdoors.shared.entities.EntityMonolith;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -21,14 +22,14 @@ public class ModelMonolith extends ModelBase {
         textureHeight = 256;
 
         wholeMonolith = new ModelRenderer(this, 0, 0);
-        wholeMonolith.addBox(-24F,-108F/1.3F, -6F, 48, 108, 12);
+        wholeMonolith.addBox(-24F, -108F / 1.3F, -6F, 48, 108, 12);
     }
 
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         EntityMonolith monolith = (EntityMonolith) entityIn;
 
-        setRotationAngles(0,  0,  0,  0,  0,0, monolith);
+        setRotationAngles(0, 0, 0, 0, 0, 0, monolith);
         GL11.glScalef(monolith.getRenderSizeModifier(), monolith.getRenderSizeModifier(), monolith.getRenderSizeModifier());
         wholeMonolith.render(scale);
     }

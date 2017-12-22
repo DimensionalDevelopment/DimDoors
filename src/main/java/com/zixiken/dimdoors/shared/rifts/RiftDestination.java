@@ -1,8 +1,8 @@
 package com.zixiken.dimdoors.shared.rifts;
 
-import com.zixiken.dimdoors.shared.util.INBTStorable;
-import com.zixiken.dimdoors.shared.util.Location;
-import com.zixiken.dimdoors.shared.util.NBTUtils;
+import ddutils.nbt.INBTStorable;
+import ddutils.Location;
+import ddutils.nbt.NBTUtils;
 import lombok.*;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,13 +14,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("EmptyMethod")
 @Getter @ToString @EqualsAndHashCode @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix lombok and make this abstract
     @Getter private EnumType type;
     @Getter protected RiftDestination oldDestination;
 
     public enum EnumType {
-        RELATIVE, LOCAL, GLOBAL, NEW_PUBLIC, PRIVATE, LIMBO, AVAILABLE_LINK, POCKET_ENTRANCE, POCKET_EXIT, PRIVATE_POCKET_EXIT, ESCAPE;
+        RELATIVE, LOCAL, GLOBAL, NEW_PUBLIC, PRIVATE, LIMBO, AVAILABLE_LINK, POCKET_ENTRANCE, POCKET_EXIT, PRIVATE_POCKET_EXIT, ESCAPE
     }
 
     private RiftDestination() {
@@ -188,7 +189,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
     public static class GlobalDestination extends RiftDestination { // TODO: location directly in nbt like minecraft?
         private Location loc;
 
-        private GlobalDestination() {};
+        private GlobalDestination() {}
 
         @Override
         public void readFromNBT(NBTTagCompound nbt) {

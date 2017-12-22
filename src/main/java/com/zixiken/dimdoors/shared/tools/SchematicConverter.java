@@ -1,7 +1,9 @@
-package com.zixiken.dimdoors.shared.util;
+package com.zixiken.dimdoors.shared.tools;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.blocks.BlockFabric;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
+import ddutils.schem.Schematic;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,60 +15,47 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author Robijnvogel
  */
 public class SchematicConverter {
 
-    private static final String[] OLDDIMDOORBLOCKNAMES = {
-            "Dimensional Door",
-            "Fabric of Reality",
-            "transientDoor", //only used in the two old Overworld gateway (worldgen) structures
-            "Warp Door"};
-    private static final String[] NEWDIMDOORBLOCKNAMES = {
-            "dimensional_door",
-            "fabric", //[type=fabric] is the default blockstate
-            "transient_dimensional_door",
-            "warp_dimensional_door"};
+    private static final Map<String, IBlockState> stateMap = new HashMap<>();
+    static {
+        stateMap.put("dimdoors:Dimensional Door", ModBlocks.DIMENSIONAL_DOOR.getDefaultState());
+        stateMap.put("dimdoors:Fabric of Reality", ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY));
+        stateMap.put("dimdoors:Fabric of RealityPerm", ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT));
+        stateMap.put("dimdoors:transientDoor", ModBlocks.TRANSIENT_DIMENSIONAL_DOOR.getDefaultState());
+        stateMap.put("dimdoors:Warp Door", ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState());
+    }
 
-    public static Schematic loadOldDimDoorSchematicFromNBT(NBTTagCompound nbt, String parName) { //@todo, maybe make this a separate class, so values can be final so they HAVE TO  be set in a newly designed constructor?
+    public static Schematic convertSchematic(NBTTagCompound nbt, String name) { //@todo, maybe make this a separate class, so values can be final so they HAVE TO  be set in a newly designed constructor?
         Schematic schematic = new Schematic();
 
-        //schematic.version = 1; //already the default value
-        //schematic.author = "DimDoors"; //already the default value
-        schematic.schematicName = parName.equals("") ? "Auto-converted-DimDoors-for-MC-1.7.10-schematic" : parName;
+        schematic.version = 1; //already the default value
+        schematic.author = "DimDoors"; // TODO: didn't the old schematics have an author?
+        schematic.schematicName = name.equals("") ? "Unknown" : name;
         schematic.creationDate = System.currentTimeMillis();
         schematic.requiredMods = new String[]{DimDoors.MODID};
 
         schematic.width = nbt.getShort("Width");
         schematic.height = nbt.getShort("Height");
         schematic.length = nbt.getShort("Length");
-        //schematic.offset = new int[]{0, 0, 0}; //already the default value
+        schematic.offset = new int[]{0, 0, 0}; // TODO: center them
 
         byte[] blockIntArray = nbt.getByteArray("Blocks");
         if (nbt.hasKey("Palette")) {
             NBTTagList paletteNBT = (NBTTagList) nbt.getTag("Palette");
             for (int i = 0; i < paletteNBT.tagCount(); i++) {
-                //DimDoors.log.info("reading pallete from schematic... i = " + i);
                 String blockString = paletteNBT.getStringTagAt(i);
-                boolean isAncientFabric = false;
-                if (blockString.startsWith("dimdoors")) {
-                    String dimdoorsBlockName = blockString.split(":")[1];
-                    if (dimdoorsBlockName.equals("Fabric of RealityPerm")) { //only special case, because this is now another state of another block
-                        isAncientFabric = true;
-                    } else {
-                        dimdoorsBlockName = convertOldDimDoorsBlockNameToNewDimDoorsBlockName(dimdoorsBlockName);
-                        blockString = "dimdoors:" + dimdoorsBlockName;
-                    }
-                }
                 IBlockState blockstate;
-                if (!isAncientFabric) {
-                    Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString));
-                    blockstate = block.getDefaultState();
+
+                // Get the correct block state
+                if (blockString.startsWith("dimdoors")) {
+                    blockstate = stateMap.get(blockString);
                 } else {
-                    Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation("dimdoors:FABRIC"));
-                    blockstate = Schematic.getBlockStateWithProperties(block, new String[]{"type=ancient"});
+                    blockstate = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString)).getDefaultState();
                 }
+
                 schematic.pallette.add(blockstate);
             }
         } else {
@@ -97,7 +86,7 @@ public class SchematicConverter {
                             block = ModBlocks.TRANSIENT_DIMENSIONAL_DOOR;
                             break;
                     }
-                    //if (id != 0  && block.getRegistryName().toString().equals("minecraft:air")) throw new RuntimeException("Change conversion code!");
+                    if (id != 0  && block.getRegistryName().toString().equals("minecraft:air")) throw new RuntimeException("Change conversion code!");
                     schematic.pallette.add(block.getDefaultState());
                     palletteMap.put(id, currentPalletteIndex);
                     blockIntArray[i] = currentPalletteIndex;
@@ -116,7 +105,7 @@ public class SchematicConverter {
 
                     IBlockState baseState = schematic.pallette.get(blockInt); //this is the default blockstate except for ancient fabric
                     if (baseState == baseState.getBlock().getDefaultState()) { //should only be false if {@code baseState} is ancient fabric
-                        IBlockState additionalState = baseState.getBlock().getStateFromMeta(metadata); // TODO: this was getStateFromMeta(metadata), but that method got deprecated and just calls getDefaultState(). Is this right?
+                        IBlockState additionalState = baseState.getBlock().getStateFromMeta(metadata);
                         if (schematic.pallette.contains(additionalState)) { //check whether or not this blockstate is already in the list
                             blockInt = schematic.pallette.indexOf(additionalState);
                         } else {
@@ -124,7 +113,7 @@ public class SchematicConverter {
                             // DimDoors.log.info("New blockstate detected. Original blockInt = " + blockInt + " and baseState is " + baseState);
                             blockInt = schematic.pallette.size() - 1;
                         }
-                    } else { //if this is ancient fabric
+                    } else { // if this is ancient fabric
                         // DimDoors.log.info("Non-default blockstate in palette detected. Original blockInt = " + blockInt + " and baseState is " + baseState.toString()); //@todo should only print a line on load of ancient fabric
                         blockInt = schematic.pallette.indexOf(baseState);
                     }
@@ -141,24 +130,5 @@ public class SchematicConverter {
         }
 
         return schematic;
-    }
-
-    private static String convertOldDimDoorsBlockNameToNewDimDoorsBlockName(String dimdoorsBlockName) {
-        if (OLDDIMDOORBLOCKNAMES.length != NEWDIMDOORBLOCKNAMES.length) {
-            DimDoors.log.error("The array of old DimDoors block names somehow isn't the same length as the array of new names, therefore the dimdoors blocks in this schematic will not be loaded. This is a bug in the DimDoors mod itself.");
-            return null;
-        }
-
-        int i = 0;
-        for (; i < OLDDIMDOORBLOCKNAMES.length; i++) {
-            if (OLDDIMDOORBLOCKNAMES[i].equals(dimdoorsBlockName)) {
-                return NEWDIMDOORBLOCKNAMES[i];
-            } else {
-                if (i == OLDDIMDOORBLOCKNAMES.length - 1) {
-                    DimDoors.log.warn(dimdoorsBlockName + " as an old dimdoors block name is unknown.");
-                }
-            }
-        }
-        return null;
     }
 }

@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.shared.rifts;
 
-import com.zixiken.dimdoors.shared.util.INBTStorable;
+import ddutils.nbt.INBTStorable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

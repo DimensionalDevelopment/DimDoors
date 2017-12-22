@@ -1,6 +1,8 @@
-package com.zixiken.dimdoors.shared.entities;
+package com.zixiken.dimdoors.client;
 
 import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.client.ModelMonolith;
+import com.zixiken.dimdoors.shared.entities.EntityMonolith;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderLiving;

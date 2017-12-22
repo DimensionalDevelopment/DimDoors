@@ -1,10 +1,9 @@
-package com.zixiken.dimdoors.shared.util;
+package ddutils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Robijnvogel
  */
 public class StringUtils {

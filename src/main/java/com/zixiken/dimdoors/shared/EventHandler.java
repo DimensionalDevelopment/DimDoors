@@ -30,8 +30,8 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST) // don't let other mods do something based on the event
     public static void onLivingHurt(LivingHurtEvent event) {
         Entity entity = event.getEntity();
-        if (entity.dimension == DimDoorDimensions.LIMBO.getId() && event.getSource() == DamageSource.FALL) {
-            event.setCanceled(true);// no fall damage in LIMBO
+        if (entity.dimension == DimDoorDimensions.limbo.getId() && event.getSource() == DamageSource.FALL) {
+            event.setCanceled(true);// no fall damage in limbo
         }
     }
 

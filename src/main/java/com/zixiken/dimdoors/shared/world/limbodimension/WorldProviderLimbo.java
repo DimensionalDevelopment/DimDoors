@@ -1,10 +1,10 @@
 package com.zixiken.dimdoors.shared.world.limbodimension;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.client.CloudRenderBlank;
+import ddutils.render.CloudRenderBlank;
 import com.zixiken.dimdoors.shared.blocks.BlockFabric;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
-import com.zixiken.dimdoors.shared.util.Location;
+import ddutils.Location;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import com.zixiken.dimdoors.shared.world.ModBiomes;
 import net.minecraft.entity.Entity;
@@ -85,7 +85,7 @@ public class WorldProviderLimbo extends WorldProvider {
     public static Location getLimboSkySpawn(EntityPlayer player) {
         int x = (int) player.posX + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); // TODO: -properties.LimboEntryRange, properties.LimboEntryRange);
         int z = (int) player.posZ + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); // TODO: -properties.LimboEntryRange, properties.LimboEntryRange);
-        return new Location(DimDoorDimensions.LIMBO.getId(), x, 700, z);
+        return new Location(DimDoorDimensions.limbo.getId(), x, 700, z);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class WorldProviderLimbo extends WorldProvider {
 
     @Override
     public DimensionType getDimensionType() {
-        return DimDoorDimensions.LIMBO;
+        return DimDoorDimensions.limbo;
     }
 
 

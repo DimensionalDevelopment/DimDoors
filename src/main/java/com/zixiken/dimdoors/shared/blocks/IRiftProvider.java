@@ -1,9 +1,9 @@
 package com.zixiken.dimdoors.shared.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
+import com.zixiken.dimdoors.shared.VirtualLocation;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
-import com.zixiken.dimdoors.shared.util.Location;
+import ddutils.Location;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
@@ -25,7 +25,7 @@ public interface IRiftProvider<T extends TileEntityRift> extends ITileEntityProv
             T rift = createNewTileEntity(world, state.getBlock().getMetaFromState(state));
 
             // Set the rift's virtual position
-            rift.setVirtualLocation(PocketRegistry.locationToVirtualLocation(new Location(rift.getWorld(), rift.getPos())));
+            rift.setVirtualLocation(VirtualLocation.fromLocation(new Location(rift.getWorld(), rift.getPos())));
 
             // Configure the rift to its default functionality
             setupRift(rift);

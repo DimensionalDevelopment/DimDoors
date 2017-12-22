@@ -93,7 +93,7 @@ public class LimboDecay {
         int x, y, z;
         int sectionY;
         int limboHeight;
-        int[] limbo = DimensionManager.getDimensions(DimDoorDimensions.LIMBO);
+        int[] limbo = DimensionManager.getDimensions(DimDoorDimensions.limbo);
 
 
         for (Integer i : limbo){

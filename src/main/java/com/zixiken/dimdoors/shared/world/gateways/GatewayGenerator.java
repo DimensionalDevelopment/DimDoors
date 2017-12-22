@@ -33,7 +33,7 @@ public class GatewayGenerator implements IWorldGenerator
     private BaseGateway defaultGateway;
 
     public GatewayGenerator() {
-        this.initialize();
+        initialize();
     }
 
     private void initialize() {
@@ -51,7 +51,7 @@ public class GatewayGenerator implements IWorldGenerator
         // Also don't generate anything in the Nether, The End, or in Witchery's Spirit World.
         // We only match against Spirit World using hashing to speed up the process a little (hopefully).
         int dimensionID = world.provider.getDimension();
-        if (world.isRemote || (world.provider instanceof WorldProviderPocket) || (dimensionID == END_DIMENSION_ID) || (dimensionID == NETHER_DIMENSION_ID)) {
+        if (world.isRemote || world.provider instanceof WorldProviderPocket || dimensionID == END_DIMENSION_ID || dimensionID == NETHER_DIMENSION_ID) {
             return;
         }
 
@@ -99,7 +99,7 @@ public class GatewayGenerator implements IWorldGenerator
 
             // Build the gateway if we found a valid location
             if (valid) {
-                ArrayList<BaseGateway> validGateways = new ArrayList<BaseGateway>();
+                ArrayList<BaseGateway> validGateways = new ArrayList<>();
                 for (BaseGateway gateway : gateways) {
                     if (gateway.isLocationValid(world, x, y, z)) {
                         validGateways.add(gateway);
@@ -119,11 +119,11 @@ public class GatewayGenerator implements IWorldGenerator
         //Check if the point is within the acceptable altitude range, the block above that point is empty,
         //and the block two levels down is opaque and has a reasonable material. Plus that we're not building
         //on top of bedrock.
-        return (pos.getY() >= MIN_RIFT_Y && pos.getY() <= MAX_RIFT_Y &&
+        return pos.getY() >= MIN_RIFT_Y && pos.getY() <= MAX_RIFT_Y &&
                 world.isAirBlock(pos.up()) &&
                 world.getBlockState(pos).getBlock() != Blocks.BEDROCK &&	//<-- Stops Nether roof spawning. DO NOT REMOVE!
                 world.getBlockState(pos.down()) != Blocks.BEDROCK &&
-                checkFoundationMaterial(world, pos.down()));
+                checkFoundationMaterial(world, pos.down());
     }
 
     private static boolean checkFoundationMaterial(World world, BlockPos pos) {
@@ -131,7 +131,7 @@ public class GatewayGenerator implements IWorldGenerator
         //or on top of strange things like tall grass, water, slabs, or torches.
         //We also want to avoid generating things on top of the Nether's bedrock!
         Material material = world.getBlockState(pos).getMaterial();
-        return (material != Material.LEAVES && material != Material.WOOD && material != Material.GOURD
-                && world.isBlockNormalCube(pos, false) && world.getBlockState(pos).getBlock() != Blocks.BEDROCK);
+        return material != Material.LEAVES && material != Material.WOOD && material != Material.GOURD
+                && world.isBlockNormalCube(pos, false) && world.getBlockState(pos).getBlock() != Blocks.BEDROCK;
     }
 }

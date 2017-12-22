@@ -1,8 +1,8 @@
 package com.zixiken.dimdoors.shared.world.gateways;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.util.Schematic;
-import com.zixiken.dimdoors.shared.util.SchematicConverter;
+import ddutils.schem.Schematic;
+import com.zixiken.dimdoors.shared.tools.SchematicConverter;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -35,7 +35,7 @@ public abstract class BaseSchematicGateway extends BaseGateway {
         if (streamOpened) {
             try {
                 schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                schematic = SchematicConverter.loadOldDimDoorSchematicFromNBT(schematicNBT, name);
+                schematic = SchematicConverter.convertSchematic(schematicNBT, name);
                 schematicDataStream.close();
             } catch (IOException ex) {
                 DimDoors.log.error("Schematic file for " + name + " could not be read as a valid schematic NBT file.", ex);

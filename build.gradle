@@ -75,6 +75,7 @@ processResources {
 task generatePocketSchematics(dependsOn: jar, type: JavaExec, group: "dimdoors") {
     classpath = files('build/libs/dimdoors.jar')
     classpath += sourceSets.main.runtimeClasspath
-    main = "com.zixiken.dimdoors.shared.util.PocketSchematicGenerator"
+    main = "com.zixiken.dimdoors.shared.tools.PocketSchematicGenerator"
+    //noinspection GroovyAssignabilityCheck (IntelliJ is wrong)
     args "src/main/resources/assets/dimdoors/pockets/schematic"
 }

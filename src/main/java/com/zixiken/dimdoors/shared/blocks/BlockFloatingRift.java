@@ -6,6 +6,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.client.ParticleRiftEffect;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
+import ddutils.blocks.BlockSpecialAir;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;

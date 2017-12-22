@@ -17,7 +17,7 @@ import net.minecraftforge.common.DimensionManager;
 
 public class DimDoorDimensions {
 
-    public static DimensionType LIMBO = null;
+    public static DimensionType limbo = null;
     @Getter private static int minPocketDimID;
     @Getter private static int maxPocketDimID;
     private static final List<EnumPocketType> pocketTypes = new ArrayList<>();
@@ -32,7 +32,7 @@ public class DimDoorDimensions {
         // Lowercase names because all minecraft dimensions are lowercase, _pockets suffix to make it clear what the world is
         minPocketDimID = DDConfig.getBaseDimID();
         int dimID = minPocketDimID;
-        LIMBO = DimensionType.register("limbo", "_limbo", dimID, WorldProviderLimbo.class, false);
+        limbo = DimensionType.register("limbo", "_limbo", dimID, WorldProviderLimbo.class, false);
         limboDimID = dimID++;
         pocketTypes.add(EnumPocketType.PRIVATE);
         pocketDimensionTypes.put(EnumPocketType.PRIVATE, DimensionType.register("private_pockets", "_private", dimID, WorldProviderPersonalPocket.class, false));
@@ -45,7 +45,7 @@ public class DimDoorDimensions {
         pocketDimensionTypes.put(EnumPocketType.DUNGEON, DimensionType.register("dungeon_pockets", "_dungeon", dimID, WorldProviderDungeonPocket.class, false));
         dungeonDimID = dimID;
 
-        registerDimension(LIMBO);
+        registerDimension(limbo);
         for (EnumPocketType pocketType : pocketDimensionTypes.keySet()) {
             registerDimension(pocketDimensionTypes.get(pocketType));
         }

@@ -2,9 +2,9 @@ package com.zixiken.dimdoors.shared.items;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
-import com.zixiken.dimdoors.shared.util.Location;
+import ddutils.Location;
 import com.zixiken.dimdoors.shared.RayTraceHelper;
-import com.zixiken.dimdoors.shared.util.TeleportUtils;
+import ddutils.TeleportUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

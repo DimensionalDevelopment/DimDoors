@@ -4,11 +4,11 @@ import com.zixiken.dimdoors.shared.VirtualLocation;
 import com.zixiken.dimdoors.shared.rifts.RiftDestination;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
 import com.zixiken.dimdoors.shared.rifts.WeightedRiftDestination;
-import com.zixiken.dimdoors.shared.util.Location;
+import ddutils.Location;
 
 import java.util.*;
 
-import com.zixiken.dimdoors.shared.util.MathUtils;
+import ddutils.math.MathUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;

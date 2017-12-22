@@ -1,6 +1,6 @@
 package com.zixiken.dimdoors.shared.world.gateways;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -14,8 +14,6 @@ public class GatewayTwoPillars extends BaseSchematicGateway {
 
     @Override
     protected void generateRandomBits(World world, int x, int y, int z) {
-        IBlockState state = Blocks.STONEBRICK.getDefaultState();
-
         //Replace some of the ground around the gateway with bricks
         for (int xc = -GATEWAY_RADIUS; xc <= GATEWAY_RADIUS; xc++) {
             for (int zc = -GATEWAY_RADIUS; zc <= GATEWAY_RADIUS; zc++) {
@@ -27,10 +25,10 @@ public class GatewayTwoPillars extends BaseSchematicGateway {
                     //chances of placing a block decrease as we get farther from the gateway's center.
                     if (Math.abs(xc) + Math.abs(zc) < world.rand.nextInt(2) + 3) {
                         //Place Stone Bricks
-                        world.setBlockState(new BlockPos(x + xc, y, z + zc), state);
+                        world.setBlockState(new BlockPos(x + xc, y, z + zc), Blocks.STONEBRICK.getDefaultState());
                     } else if (Math.abs(xc) + Math.abs(zc) < world.rand.nextInt(3) + 3) {
                         //Place Cracked Stone Bricks
-                        world.setBlockState(new BlockPos(x + xc, y, z + zc), state); //TODO find out what the data for cracked Stonebrick is.
+                        world.setBlockState(new BlockPos(x + xc, y, z + zc), Blocks.STONEBRICK.getDefaultState().withProperty(BlockStoneBrick.VARIANT, BlockStoneBrick.EnumType.CRACKED));
                     }
                 }
             }

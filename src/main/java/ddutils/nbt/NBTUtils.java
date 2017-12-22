@@ -1,10 +1,11 @@
-package com.zixiken.dimdoors.shared.util;
+package ddutils.nbt;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.HashMap;
 import java.util.Map;
+
 public class NBTUtils {
     public static Map<String, Integer> readMapStringInteger(NBTTagCompound nbt) {
         HashMap<String, Integer> map = new HashMap<>();

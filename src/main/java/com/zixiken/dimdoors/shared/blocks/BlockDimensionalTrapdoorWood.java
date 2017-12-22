@@ -6,11 +6,11 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockDimTrapdoorWood extends BlockDimensionalTrapdoor {
+public class BlockDimensionalTrapdoorWood extends BlockDimensionalTrapdoor {
 
     public static final String ID = "dimensional_trapdoor";
 
-    public BlockDimTrapdoorWood() {
+    public BlockDimensionalTrapdoorWood() {
         super(Material.WOOD);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setUnlocalizedName(ID);

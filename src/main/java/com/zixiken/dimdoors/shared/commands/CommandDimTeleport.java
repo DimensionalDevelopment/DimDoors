@@ -1,13 +1,13 @@
 package com.zixiken.dimdoors.shared.commands;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.util.Location;
-import com.zixiken.dimdoors.shared.util.StringUtils;
+import ddutils.Location;
+import ddutils.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 
-import com.zixiken.dimdoors.shared.util.TeleportUtils;
+import ddutils.TeleportUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

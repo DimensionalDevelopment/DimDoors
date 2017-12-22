@@ -1,11 +1,11 @@
-package com.zixiken.dimdoors.shared.util;
+package ddutils;
 
-import com.zixiken.dimdoors.DimDoors;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 
 public class WorldUtils {
     public static World getWorld(int dim) {
-        return DimDoors.proxy.getWorldServer(dim);
+        return DimensionManager.getWorld(dim);
     }
 
     public static int getDim(World world) {

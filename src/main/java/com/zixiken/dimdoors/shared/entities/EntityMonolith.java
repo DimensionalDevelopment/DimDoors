@@ -2,8 +2,8 @@ package com.zixiken.dimdoors.shared.entities;
 
 import com.zixiken.dimdoors.shared.sound.ModSounds;
 import com.zixiken.dimdoors.shared.DDConfig;
-import com.zixiken.dimdoors.shared.util.Location;
-import com.zixiken.dimdoors.shared.util.TeleportUtils;
+import ddutils.Location;
+import ddutils.TeleportUtils;
 import com.zixiken.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import com.zixiken.dimdoors.shared.world.pocketdimension.WorldProviderDungeonPocket;
 import com.zixiken.dimdoors.shared.world.pocketdimension.WorldProviderPublicPocket;
@@ -51,14 +51,11 @@ public class EntityMonolith extends EntityFlying implements IMob {
         setSize(WIDTH, HEIGHT);
         noClip = true;
         aggroCap = MathHelper.getInt(rand, MIN_AGGRO_CAP, MAX_AGGRO_CAP);
+        setEntityInvulnerable(true);
     }
 
     public boolean isDangerous() {
         return DDConfig.isMonolithTeleportationEnabled() && (world.provider instanceof WorldProviderLimbo || DDConfig.isDangerousLimboMonolithsEnabled());
-    }
-
-    @Override
-    protected void damageEntity(DamageSource damageSrc, float damageAmount) {
     }
 
     @Override
@@ -119,7 +116,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
 
     @Override
     public void onEntityUpdate() {
-        // Remove this Monolith if it's not in Limbo or in a pocket dungeon TODO: any pocket dim?
+        // Remove this Monolith if it's not in Limbo or in a pocket dungeon
         if (!(world.provider instanceof WorldProviderLimbo || world.provider instanceof WorldProviderDungeonPocket)) {
             setDead();
             super.onEntityUpdate();
@@ -154,7 +151,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
                 // Teleport the target player if various conditions are met
                 if (aggro >= MAX_AGGRO && !world.isRemote && DDConfig.isMonolithTeleportationEnabled() && !player.capabilities.isCreativeMode && isDangerous()) {
                     aggro = 0;
-                    Location destination = WorldProviderLimbo.getLimboSkySpawn(player); // TODO: teleportToLimbo method
+                    Location destination = WorldProviderLimbo.getLimboSkySpawn(player);
                     TeleportUtils.teleport(player, destination, 0, 0);
                     player.world.playSound(player, player.getPosition(), ModSounds.CRACK, SoundCategory.HOSTILE, 13, 1);
                 }

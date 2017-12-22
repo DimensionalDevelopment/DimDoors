@@ -1,8 +1,8 @@
 package com.zixiken.dimdoors.shared;
 
 import com.zixiken.dimdoors.shared.pockets.PocketTemplate;
-import com.zixiken.dimdoors.shared.util.MathUtils;
-import com.zixiken.dimdoors.shared.util.Schematic;
+import ddutils.math.MathUtils;
+import ddutils.schem.Schematic;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -22,13 +22,12 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.zixiken.dimdoors.shared.util.SchematicConverter;
+import com.zixiken.dimdoors.shared.tools.SchematicConverter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
 import org.apache.commons.io.IOUtils;
 
 /**
- *
  * @author Robijnvogel
  */
 public class SchematicHandler { // TODO: make this more general (not dimdoors-related)
@@ -134,7 +133,7 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
                 try {
                     schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
                     if (!schematicNBT.hasKey("Version")) {
-                        schematic = SchematicConverter.loadOldDimDoorSchematicFromNBT(schematicNBT, template.getName());
+                        schematic = SchematicConverter.convertSchematic(schematicNBT, template.getName());
                     } else {
                         schematic = Schematic.loadFromNBT(schematicNBT, template.getName());
                     }
@@ -151,7 +150,7 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
             }
 
             if (schematic != null
-                    && (schematic.getWidth() > (template.getSize() + 1) * 16 || schematic.getLength() > (template.getSize() + 1) * 16)) {
+                    && (schematic.width > (template.getSize() + 1) * 16 || schematic.length > (template.getSize() + 1) * 16)) {
                 schematic = null;
                 DimDoors.log.warn("Schematic " + template.getName() + " was bigger than specified in its json file and therefore wasn't loaded");
             }
@@ -234,7 +233,6 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
         if(index == null) return null;
         return templates.get(index);
     }
-
 
     /**
      * Gets a random template matching certain criteria.

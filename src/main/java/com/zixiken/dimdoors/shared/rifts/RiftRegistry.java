@@ -3,9 +3,9 @@ package com.zixiken.dimdoors.shared.rifts;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.VirtualLocation;
 import com.zixiken.dimdoors.shared.rifts.RiftRegistry.RiftInfo.AvailableLinkInfo;
-import com.zixiken.dimdoors.shared.util.INBTStorable;
-import com.zixiken.dimdoors.shared.util.Location;
-import com.zixiken.dimdoors.shared.util.WorldUtils;
+import ddutils.nbt.INBTStorable;
+import ddutils.Location;
+import ddutils.WorldUtils;
 import lombok.*;
 import lombok.experimental.Wither;
 import net.minecraft.nbt.NBTBase;
@@ -31,7 +31,7 @@ public class RiftRegistry extends WorldSavedData {
     private World world;
 
     @lombok.AllArgsConstructor @lombok.EqualsAndHashCode @lombok.Builder(toBuilder = true)
-    public static class RiftInfo implements com.zixiken.dimdoors.shared.util.INBTStorable {
+    public static class RiftInfo implements ddutils.nbt.INBTStorable {
         @Builder.Default @Getter private Set<AvailableLinkInfo> availableLinks = new HashSet<>(); // ignore intellij warnings, builder needs these
         @Builder.Default @Getter private Set<Location> sources = new HashSet<>();
         @Builder.Default @Getter private Set<Location> destinations = new HashSet<>();
@@ -133,7 +133,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public void initNewRegistry() {
-
+        // TODO
     }
 
     @Override
@@ -304,7 +304,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public static RiftRegistry getRegistry(Location rift) {
-        return getForDim(rift.getDimID());
+        return getForDim(rift.getDim());
     }
 
     public Location getPrivatePocketEntrance(String playerUUID) {

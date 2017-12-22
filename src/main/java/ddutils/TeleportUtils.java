@@ -1,4 +1,4 @@
-package com.zixiken.dimdoors.shared.util;
+package ddutils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -24,7 +24,7 @@ public class TeleportUtils {
     }
 
     public static Entity teleport(Entity entity, Location location, float yaw, float pitch) {
-        return teleport(entity, location.getDimID(), location.getPos().getX() + .5, location.getPos().getY(), location.getPos().getZ() + .5, yaw, pitch);
+        return teleport(entity, location.getDim(), location.getPos().getX() + .5, location.getPos().getY(), location.getPos().getZ() + .5, yaw, pitch);
     }
 
     public static Entity teleport(Entity entity, BlockPos pos, float yaw, float pitch) {

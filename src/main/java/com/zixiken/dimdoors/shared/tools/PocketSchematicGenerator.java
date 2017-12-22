@@ -1,4 +1,4 @@
-package com.zixiken.dimdoors.shared.util;
+package com.zixiken.dimdoors.shared.tools;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.server.DDProxyServer;
@@ -7,6 +7,7 @@ import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.rifts.RiftDestination;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
 import com.zixiken.dimdoors.shared.rifts.WeightedRiftDestination;
+import ddutils.schem.Schematic;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
@@ -21,6 +22,7 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.RegistryManager;
+import ddutils.math.MathUtils;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -32,7 +34,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
  * @author Robijnvogel
  */
 public class PocketSchematicGenerator {

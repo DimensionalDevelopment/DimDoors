@@ -2,10 +2,10 @@ package com.zixiken.dimdoors.shared.tileentities;
 
 import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
-import com.zixiken.dimdoors.shared.util.Location;
-import com.zixiken.dimdoors.shared.util.RGBA;
-import com.zixiken.dimdoors.shared.util.TeleportUtils;
-import com.zixiken.dimdoors.shared.util.WorldUtils;
+import ddutils.Location;
+import ddutils.render.RGBA;
+import ddutils.TeleportUtils;
+import ddutils.WorldUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import lombok.Getter;
 import net.minecraft.entity.Entity;
