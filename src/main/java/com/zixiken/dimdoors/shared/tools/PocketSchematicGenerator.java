@@ -136,7 +136,7 @@ public class PocketSchematicGenerator {
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
                 for (int z = 0; z < size; z++) {
-                    int layer = Collections.min(Arrays.asList(x, y, z, size - x, size - y, size - z));
+                    int layer = Collections.min(Arrays.asList(x, y, z, size - 1 - x, size - 1 - y, size - 1 - z));
                     if (layer == 0) {
                         schematic.blockData[x][y][z] = 1; // outer wall
                     } else if (layer < 5) {
