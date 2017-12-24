@@ -229,7 +229,8 @@ public class PocketRegistry extends WorldSavedData {
     }
 
     public boolean isPlayerAllowedToBeHere(EntityPlayerMP player, BlockPos pos) {
-        Pocket pocket = getPocketAt(pos);
-        return pocket != null && pocket.isInBounds(pos);
+        return true; // TODO: fix this
+        //Pocket pocket = getPocketAt(pos);
+        //return pocket != null && pocket.isInBounds(pos);
     }
 }

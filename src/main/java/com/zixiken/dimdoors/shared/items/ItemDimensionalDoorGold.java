@@ -5,13 +5,14 @@ import java.util.List;
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.BlockDimensionalDoorGold;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
+import ddutils.I18nUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-
-import static com.zixiken.dimdoors.DimDoors.translateAndAdd;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemDimensionalDoorGold extends ItemDoor {
 
@@ -23,7 +24,8 @@ public class ItemDimensionalDoorGold extends ItemDoor {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        translateAndAdd("info.gold_dimensional_door", tooltip);
+        I18nUtils.translateAndAdd("info.gold_dimensional_door", tooltip);
     }
 }

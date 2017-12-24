@@ -32,9 +32,10 @@ public class RiftRegistry extends WorldSavedData {
 
     @AllArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
     public static class RiftInfo implements INBTStorable {
-        @Builder.Default @Getter private Set<AvailableLinkInfo> availableLinks = new HashSet<>(); // ignore intellij warnings, builder needs these
-        @Builder.Default @Getter private Set<Location> sources = new HashSet<>();
-        @Builder.Default @Getter private Set<Location> destinations = new HashSet<>();
+        // IntelliJ warnings are wrong, Builder needs these initializers!
+        @SuppressWarnings("UnusedAssignment") @Builder.Default @Getter private Set<AvailableLinkInfo> availableLinks = new HashSet<>();
+        @SuppressWarnings("UnusedAssignment") @Builder.Default @Getter private Set<Location> sources = new HashSet<>();
+        @SuppressWarnings("UnusedAssignment") @Builder.Default @Getter private Set<Location> destinations = new HashSet<>();
 
         @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
         public static class AvailableLinkInfo implements INBTStorable {

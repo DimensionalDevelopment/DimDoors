@@ -2,6 +2,7 @@ package com.zixiken.dimdoors.shared.items;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
+import ddutils.I18nUtils;
 import ddutils.Location;
 import com.zixiken.dimdoors.shared.RayTraceHelper;
 import ddutils.TeleportUtils;
@@ -75,6 +76,6 @@ public class ItemRiftBlade extends ItemSword {
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        DimDoors.translateAndAdd("info.rift_blade", tooltip);
+        I18nUtils.translateAndAdd("info.rift_blade", tooltip);
     }
 }

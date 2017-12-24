@@ -11,20 +11,17 @@ import java.util.*;
 import ddutils.math.MathUtils;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
 public class Pocket { // TODO: better visibilities
 
-
     @Getter private int id;
     @Getter private int x; // Grid x TODO: rename to gridX and gridY
     @Getter private int z; // Grid y
     @Getter @Setter private int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
     @Getter @Setter private VirtualLocation virtualLocation; // The non-pocket dimension from which this dungeon was created
-    private List<String> playerUUIDs;
     @Getter Location entrance;
     @Getter List<Location> riftLocations;
 
@@ -37,7 +34,6 @@ public class Pocket { // TODO: better visibilities
         this.dimID = dimID;
         this.x = x;
         this.z = z;
-        playerUUIDs  = new ArrayList<>();
         riftLocations = new ArrayList<>();
     }
 
@@ -49,12 +45,6 @@ public class Pocket { // TODO: better visibilities
         pocket.size = nbt.getInteger("size");
         if (nbt.hasKey("virtualLocation")) pocket.virtualLocation = VirtualLocation.readFromNBT(nbt.getCompoundTag("virtualLocation"));
         if (nbt.hasKey("entrance")) pocket.entrance = Location.readFromNBT(nbt.getCompoundTag("entrance"));
-
-        pocket.playerUUIDs = new ArrayList<>();
-        NBTTagList playerUUIDsNBT = (NBTTagList) nbt.getTag("playerUUIDs");
-        for (int i = 0; i < playerUUIDsNBT.tagCount(); i++) { // TODO: convert to foreach
-            pocket.playerUUIDs.add(playerUUIDsNBT.getStringTagAt(i));
-        }
 
         pocket.riftLocations = new ArrayList<>();
         NBTTagList riftLocationsNBT = (NBTTagList) nbt.getTag("riftLocations");
@@ -74,12 +64,6 @@ public class Pocket { // TODO: better visibilities
         if (pocket.virtualLocation != null) nbt.setTag("virtualLocation", pocket.virtualLocation.writeToNBT());
         if (pocket.entrance != null) nbt.setTag("entrance", Location.writeToNBT(pocket.entrance));
 
-        NBTTagList playerUUIDsNBT = new NBTTagList();
-        for (int i = 0; i < pocket.playerUUIDs.size(); i++) {
-            playerUUIDsNBT.appendTag(new NBTTagString(pocket.playerUUIDs.get(i)));
-        }
-        nbt.setTag("playerUUIDs", playerUUIDsNBT);
-
         NBTTagList riftLocationsNBT = new NBTTagList();
         for (Location loc : pocket.riftLocations) {
             riftLocationsNBT.appendTag(Location.writeToNBT(loc));
@@ -97,14 +81,6 @@ public class Pocket { // TODO: better visibilities
         int pocMaxX = pocMinX + (size + 1) * 16;
         int pocMaxZ = pocMinX + (size + 1) * 16;
         return pocMinX <= pos.getX() && pocMinZ <= pos.getZ() && pos.getX() < pocMaxX && pos.getZ() < pocMaxZ;
-    }
-
-    // TODO better allow/deny player system. Just because a player is allowed in two adjacent pockets doesn't mean he should be able to cross through the void to the other pocket
-    public void allowPlayer(EntityPlayer player) {
-        String playerUUID = player.getCachedUniqueIdString();
-        if (!playerUUIDs.contains(playerUUID)) {
-            playerUUIDs.add(playerUUID);
-        }
     }
 
     public List<TileEntityRift> getRifts() {

@@ -7,11 +7,11 @@ import com.zixiken.dimdoors.shared.DDProxyCommon;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.world.gateways.GatewayGenerator;
 import lombok.Getter;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
@@ -83,17 +83,5 @@ public class DimDoors {
 
     public static void chat(EntityPlayer player, String text) {
         player.sendMessage(new TextComponentString("[DimDoors] " + text));
-    }
-
-    // TODO: I18n is deprecated, convert to TextComponentTranslation
-    public static void translateAndAdd(String key, List<String> list) { // TODO: move to utils?
-        for (int i = 0; i < 10; i++) {
-            if (I18n.canTranslate(key + Integer.toString(i))) {
-                String line = I18n.translateToLocal(key + Integer.toString(i));
-                list.add(line);
-            } else {
-                break;
-            }
-        }
     }
 }
