@@ -6,8 +6,10 @@ import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
 import ddutils.Location;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 
 public interface IRiftProvider<T extends TileEntityRift> extends ITileEntityProvider {
 
@@ -21,11 +23,11 @@ public interface IRiftProvider<T extends TileEntityRift> extends ITileEntityProv
     public T createNewTileEntity(World world, int meta);
 
     public default void handleRiftPlaced(World world, BlockPos pos, IBlockState state) {
-        if (hasTileEntity(state) && !DimDoors.disableRiftSetup) { // TODO: better check for disableRiftSetup (support other plugins such as WorldEdit, support doors being placed while schematics are being placed)
+        if (hasTileEntity(state) && !DimDoors.disableRiftSetup) {
             T rift = createNewTileEntity(world, state.getBlock().getMetaFromState(state));
 
             // Set the rift's virtual position
-            rift.setVirtualLocation(VirtualLocation.fromLocation(new Location(rift.getWorld(), rift.getPos())));
+            rift.setVirtualLocation(VirtualLocation.fromLocation(new Location(world, pos)));
 
             // Configure the rift to its default functionality
             setupRift(rift);

@@ -26,6 +26,7 @@ public class BlockDimensionalDoorPersonal extends BlockDimensionalDoor {
 
     @Override
     public void setupRift(TileEntityEntranceRift rift) {
+        DimDoors.log.info("Setting up the rift!");
         RiftDestination.PrivateDestination destination = RiftDestination.PrivateDestination.builder().build();
         rift.setSingleDestination(destination);
         rift.setChaosWeight(0);

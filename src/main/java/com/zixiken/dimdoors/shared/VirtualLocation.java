@@ -53,7 +53,6 @@ public class VirtualLocation { // TODO: use BlockPos/Location
         return nbt;
     }
 
-    // TODO: move to VirtualLocation
     public static VirtualLocation fromLocation(Location location) { // TODO: reverse function too
         VirtualLocation virtualLocation = null;
         if (DimDoorDimensions.isPocketDimension(location.getDim())) {

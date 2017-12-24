@@ -117,32 +117,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
         super.onBlockAdded(worldIn, pos, state);
-        if (hasTileEntity(state) && !DimDoors.disableRiftSetup) { // TODO: better check for disableRiftSetup (support other plugins such as WorldEdit, support doors being placed while schematics are being placed)
-            TileEntityEntranceRift rift = createNewTileEntity(worldIn, getMetaFromState(state));
-
-            // Set the virtual location based on where the door was placed
-            VirtualLocation virtualLocation = null;
-            if (DimDoorDimensions.isPocketDimension(WorldUtils.getDim(worldIn))) {
-                Pocket pocket = PocketRegistry.getForDim(WorldUtils.getDim(worldIn)).getPocketFromLocation(pos.getY(), pos.getY(), pos.getZ());
-                if (pocket != null) {
-                    virtualLocation = pocket.getVirtualLocation();
-                } else {
-                    virtualLocation = new VirtualLocation(0, 0, 0, 0, 0); // TODO: door was placed in a pocket dim but outside of a pocket...
-                }
-            }
-            if (virtualLocation == null) {
-                virtualLocation = new VirtualLocation(WorldUtils.getDim(worldIn), pos.getX(), pos.getY(), pos.getZ(), 0);
-            }
-            rift.setVirtualLocation(virtualLocation);
-
-            // Configure the rift to its default functionality
-            setupRift(rift);
-
-            // Set the tile entity and register it
-            worldIn.setTileEntity(pos, rift);
-            rift.markDirty();
-            rift.register();
-        }
+        handleRiftPlaced(worldIn, pos, state);
     }
 
     @Override

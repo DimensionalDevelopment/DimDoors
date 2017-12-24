@@ -34,7 +34,7 @@ compileJava {
 minecraft {
     version = "1.12.2-14.23.1.2555"
     runDir = "run"
-    mappings = "snapshot_20171216"
+    mappings = "snapshot_20171007"
     replace '${version}', project.version
     //replace '${spongeSchematicVersion}', spongeSchematicVersion
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
