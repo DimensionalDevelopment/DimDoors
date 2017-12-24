@@ -13,11 +13,11 @@ public class ModItems {
     public static final ItemDoorQuartz QUARTZ_DOOR = new ItemDoorQuartz();
 
     // Dimensional doors
-    public static final ItemDimDoor DIMENSIONAL_DOOR = new ItemDimDoor();
-    public static final ItemDimDoorGold GOLD_DIMENSIONAL_DOOR = new ItemDimDoorGold();
-    public static final ItemDimDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new ItemDimDoorPersonal();
-    public static final ItemDimDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new ItemDimDoorUnstable();
-    public static final ItemDimDoorWarp WARP_DIMENSIONAL_DOOR = new ItemDimDoorWarp();
+    public static final ItemDimensionalDoorIron DIMENSIONAL_DOOR = new ItemDimensionalDoorIron();
+    public static final ItemDimensionalDoorGold GOLD_DIMENSIONAL_DOOR = new ItemDimensionalDoorGold();
+    public static final ItemDimensionalDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new ItemDimensionalDoorPersonal();
+    public static final ItemDimensionalDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new ItemDimensionalDoorUnstable();
+    public static final ItemDimensionalDoorWarp WARP_DIMENSIONAL_DOOR = new ItemDimensionalDoorWarp();
 
     // Fabric
     public static final ItemWorldThread WORLD_THREAD = new ItemWorldThread();
@@ -27,8 +27,9 @@ public class ModItems {
     public static final ItemRiftConnectionTool RIFT_CONNECTION_TOOL = new ItemRiftConnectionTool();
     public static final ItemRiftBlade RIFT_BLADE = new ItemRiftBlade();
 
-    // This needs to exist to be used in ModelManager.java before items are registered (preinitialization)
-    public static final ItemBlockFabric FABRIC = new ItemBlockFabric();
+    // ItemBlocks
+    public static final ItemFabric FABRIC = new ItemFabric();
+    public static final ItemDimensionalTrapdoorWood WOOD_DIMENSIONAL_TRAPDOOR = new ItemDimensionalTrapdoorWood();
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
@@ -48,7 +49,7 @@ public class ModItems {
         // ItemBlocks
         event.getRegistry().registerAll(
                 FABRIC,
-                new ItemBlock(ModBlocks.DIMENSIONAL_TRAPDOOR).setRegistryName(ModBlocks.DIMENSIONAL_TRAPDOOR.getRegistryName()),
+                WOOD_DIMENSIONAL_TRAPDOOR,
                 new ItemBlock(ModBlocks.RIFT).setRegistryName(ModBlocks.RIFT.getRegistryName()));
     }
 }

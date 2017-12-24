@@ -1,29 +1,29 @@
 package com.zixiken.dimdoors.shared.items;
 
-import java.util.List;
-
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.BlockDimensionalDoorIron;
+import com.zixiken.dimdoors.shared.blocks.BlockDimensionalTrapdoorWood;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 import static com.zixiken.dimdoors.DimDoors.translateAndAdd;
 
-public class ItemDimDoor extends ItemDoor {
+public class ItemDimensionalTrapdoorWood extends ItemDimensionalTrapdoor {
 
-    public ItemDimDoor() {
-        super(ModBlocks.DIMENSIONAL_DOOR);
+    public ItemDimensionalTrapdoorWood() {
+        super(ModBlocks.WOOD_DIMENSIONAL_TRAPDOOR);
         setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
-        setUnlocalizedName(BlockDimensionalDoorIron.ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimensionalDoorIron.ID));
+        setUnlocalizedName(BlockDimensionalTrapdoorWood.ID);
+        setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimensionalTrapdoorWood.ID));
     }
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        translateAndAdd("info.dimensional_door", tooltip);
+        translateAndAdd("info.wood_dimensional_trapdoor", tooltip);
     }
 }

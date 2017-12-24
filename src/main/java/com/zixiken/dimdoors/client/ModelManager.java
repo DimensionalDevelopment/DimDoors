@@ -28,7 +28,7 @@ public class ModelManager {
         register(getItemFromBlock(ModBlocks.FABRIC), 5, "eternal");
 
         register(getItemFromBlock(ModBlocks.RIFT));
-        register(getItemFromBlock(ModBlocks.DIMENSIONAL_TRAPDOOR));
+        register(getItemFromBlock(ModBlocks.WOOD_DIMENSIONAL_TRAPDOOR));
 
         //Item registration
         register(ModItems.DIMENSIONAL_DOOR);

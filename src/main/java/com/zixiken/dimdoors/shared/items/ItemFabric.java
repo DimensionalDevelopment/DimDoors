@@ -6,11 +6,11 @@ import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class ItemBlockFabric extends ItemBlock {
+public class ItemFabric extends ItemBlock {
 
     private static final String[] subNames = {"_reality", "_ancient", "_altered", "_ancient_altered", "_unraveled", "_eternal"};
 
-    public ItemBlockFabric() {
+    public ItemFabric() {
         super(ModBlocks.FABRIC);
         setMaxDamage(0);
         setHasSubtypes(true);

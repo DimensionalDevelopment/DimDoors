@@ -49,8 +49,6 @@ public class DimDoors {
 
     @Getter private GatewayGenerator gatewayGenerator;
 
-    public static boolean disableRiftSetup = false; // TODO: Find a better system.
-
     @Mod.EventHandler
     public void onPreInitialization(FMLPreInitializationEvent event) {
         log = event.getModLog();
@@ -88,7 +86,7 @@ public class DimDoors {
     }
 
     // TODO: I18n is deprecated, convert to TextComponentTranslation
-    public static void translateAndAdd(String key, List<String> list) {
+    public static void translateAndAdd(String key, List<String> list) { // TODO: move to utils?
         for (int i = 0; i < 10; i++) {
             if (I18n.canTranslate(key + Integer.toString(i))) {
                 String line = I18n.translateToLocal(key + Integer.toString(i));

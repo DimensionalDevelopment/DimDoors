@@ -63,12 +63,6 @@ public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements 
     }
 
     @Override
-    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
-        super.onBlockAdded(worldIn, pos, state);
-        handleRiftPlaced(worldIn, pos, state);
-    }
-
-    @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         getRift(world, pos, state).unregister();
         super.breakBlock(world, pos, state);

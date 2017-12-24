@@ -47,9 +47,7 @@ public class PocketTemplate {
         DimDoors.log.info("Placing new pocket using schematic " + schematic.schematicName + " at x = " + xBase + ", z = " + zBase);
 
         WorldServer world = DimDoors.proxy.getWorldServer(dimID);
-        DimDoors.disableRiftSetup = true;
         Schematic.place(schematic, world, xBase, yBase, zBase);
-        DimDoors.disableRiftSetup = false;
 
         // Set pocket riftLocations
         pocket.riftLocations = new ArrayList<>();

@@ -56,7 +56,7 @@ public class CraftingManager {
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WARP_DIMENSIONAL_DOOR, 1),
                 "yxy", 'x', Items.ENDER_PEARL, 'y', Items.OAK_DOOR));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModBlocks.DIMENSIONAL_TRAPDOOR, 1),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModBlocks.WOOD_DIMENSIONAL_TRAPDOOR, 1),
                 "y", "x", "y", 'x', Items.ENDER_PEARL, 'y', Blocks.TRAPDOOR));
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.GOLD_DIMENSIONAL_DOOR, 1),

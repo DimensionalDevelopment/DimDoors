@@ -2,17 +2,11 @@ package com.zixiken.dimdoors.shared.blocks;
 
 import java.util.Random;
 
-import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.VirtualLocation;
-import com.zixiken.dimdoors.shared.pockets.Pocket;
-import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
 import com.zixiken.dimdoors.shared.rifts.RiftRegistry;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
 import ddutils.Location;
-import ddutils.WorldUtils;
-import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
@@ -112,12 +106,6 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
         rift.orientation = getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite();
         rift.extendUp += 1;
         return rift;
-    }
-
-    @Override
-    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
-        super.onBlockAdded(worldIn, pos, state);
-        handleRiftPlaced(worldIn, pos, state);
     }
 
     @Override
