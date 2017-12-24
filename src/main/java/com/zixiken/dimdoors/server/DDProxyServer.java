@@ -23,8 +23,8 @@ public class DDProxyServer extends DDProxyCommon {
     }
 
     @Override
-    public WorldServer getWorldServer(int dimId) {
-        return DimensionManager.getWorld(dimId);
+    public WorldServer getWorldServer(int dim) {
+        return DimensionManager.getWorld(0).getMinecraftServer().getWorld(dim);
     }
 
     @Override

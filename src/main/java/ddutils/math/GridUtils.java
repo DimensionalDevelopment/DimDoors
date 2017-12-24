@@ -42,5 +42,5 @@ public class GridUtils {
         }
     }
 
-    // TODO: add more modes, such as spiral, triangle, etc.?
+    // TODO: add more modes: hexagonal sphere packing and maybe spiral, triangle
 }

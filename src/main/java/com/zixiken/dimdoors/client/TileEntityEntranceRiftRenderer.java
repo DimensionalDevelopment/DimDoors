@@ -11,6 +11,8 @@ import ddutils.render.RGBA;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.*;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -19,6 +21,7 @@ import net.minecraft.util.ResourceLocation;
 
 import static org.lwjgl.opengl.GL11.*;
 
+@SideOnly(Side.CLIENT)
 public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<TileEntityEntranceRift> { // TODO: see TileEntityEndGatewayRenderer
 
     private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
@@ -96,7 +99,7 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
                     GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_PLANE, getFloatBuffer(0.0F, 1.0F, 0.0F, 0.0F));
                     break;
                 case DOWN:
-                    // TODO: logic for UP
+                    // TODO: logic for DOWN
             }
 
             GlStateManager.enableTexGenCoord(GlStateManager.TexGen.S);
@@ -128,7 +131,7 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
             double ovs = 0.5 - extendDown;
             double ove = 0.5 + extendUp;
             // Render the rectangle based on the orientation
-            double od = orientation == EnumFacing.NORTH || orientation == EnumFacing.WEST || orientation == EnumFacing.DOWN ? pushIn : 1 - pushIn;
+            double od = orientation == EnumFacing.NORTH || orientation == EnumFacing.WEST || orientation == EnumFacing.UP ? pushIn : 1 - pushIn;
             switch (orientation) {
                 case NORTH:
                     worldRenderer.pos(x + ohs, y + ovs, z + od).endVertex();

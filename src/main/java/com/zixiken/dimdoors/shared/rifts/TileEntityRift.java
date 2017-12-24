@@ -38,7 +38,7 @@ import java.util.*;
 public abstract class TileEntityRift extends TileEntity implements ITickable { // TODO: implement ITeleportSource and ITeleportDestination
 
     @Getter protected VirtualLocation virtualLocation;
-    @Nonnull @Getter protected List<WeightedRiftDestination> destinations;
+    @Nonnull @Getter protected List<WeightedRiftDestination> destinations; // Not using a set because we can have duplicate destinations. Maybe use Multiset from Guava?
     @Getter protected boolean makeDestinationPermanent;
     @Getter protected boolean preserveRotation;
     @Getter protected float yaw;
@@ -244,11 +244,6 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
             newPitch = pitch;
         }
         TeleportUtils.teleport(entity, new Location(world, pos), newPitch, newYaw);
-
-        int dim = WorldUtils.getDim(world);
-        if (entity instanceof EntityPlayer && DimDoorDimensions.isPocketDimension(dim)) { // TODO
-            PocketRegistry.getForDim(dim).allowPlayerAtLocation((EntityPlayer) entity, pos.getX(), pos.getY(), pos.getZ());
-        }
     }
 
     public boolean teleport(Entity entity) { try { // TODO: return failiure message string rather than boolean

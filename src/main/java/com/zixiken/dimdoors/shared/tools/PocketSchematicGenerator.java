@@ -154,7 +154,7 @@ public class PocketSchematicGenerator {
         schematic.tileEntities = new ArrayList<>();
         TileEntityRift rift = (TileEntityRift) doorBlock.createTileEntity(null, doorBlock.getDefaultState());
         rift.setSingleDestination(RiftDestination.PocketEntranceDestination.builder()
-                .ifDestinations(MathUtils.listFrom(new WeightedRiftDestination(exitDest, 1, 0)))
+                .ifDestinations(Collections.singletonList(new WeightedRiftDestination(exitDest, 1, 0)))
                 .build());
         NBTTagCompound tileNBT = rift.serializeNBT();
         tileNBT.setInteger("x", (size - 1) / 2);

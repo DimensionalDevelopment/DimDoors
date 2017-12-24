@@ -42,10 +42,10 @@ public class EventHandler {
             EntityPlayerMP player = (EntityPlayerMP) entity;
             World world = entity.world;
             int dimID = world.provider.getDimension();
-            if (!world.isRemote && !player.isDead && DimDoorDimensions.isPocketDimension(dimID) && !PocketRegistry.getForDim(dimID).isPlayerAllowedToBeHere(player, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ())) {
+            if (!world.isRemote && !player.isDead && DimDoorDimensions.isPocketDimension(dimID) && !PocketRegistry.getForDim(dimID).isPlayerAllowedToBeHere(player, player.getPosition())) {
                 // TODO: Avoid players even getting here by making a maximum build distance that's smaller than the pocket size
                 // TODO: This doesn't really work yet.
-                // DimDoors.chat(player, "You travelled too far into the void and have been sent to Limbo.");
+                DimDoors.chat(player, "You travelled too far into the void and have been sent to Limbo.");
                 // PocketRegistry.sendToLimbo(player); // TODO
             }
         }

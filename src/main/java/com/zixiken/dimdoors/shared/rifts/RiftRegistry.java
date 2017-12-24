@@ -1,13 +1,13 @@
 package com.zixiken.dimdoors.shared.rifts;
 
-import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.VirtualLocation;
-import com.zixiken.dimdoors.shared.rifts.RiftRegistry.RiftInfo.AvailableLinkInfo;
-import ddutils.nbt.INBTStorable;
+import ddutils.nbt.INBTStorable; // Don't change imports order! (Gradle bug): https://stackoverflow.com/questions/26557133/
 import ddutils.Location;
 import ddutils.WorldUtils;
 import lombok.*;
 import lombok.experimental.Wither;
+import com.zixiken.dimdoors.DimDoors;
+import com.zixiken.dimdoors.shared.VirtualLocation;
+import com.zixiken.dimdoors.shared.rifts.RiftRegistry.RiftInfo.AvailableLinkInfo;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -30,8 +30,8 @@ public class RiftRegistry extends WorldSavedData {
     @Getter private int dim;
     private World world;
 
-    @lombok.AllArgsConstructor @lombok.EqualsAndHashCode @lombok.Builder(toBuilder = true)
-    public static class RiftInfo implements ddutils.nbt.INBTStorable {
+    @AllArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
+    public static class RiftInfo implements INBTStorable {
         @Builder.Default @Getter private Set<AvailableLinkInfo> availableLinks = new HashSet<>(); // ignore intellij warnings, builder needs these
         @Builder.Default @Getter private Set<Location> sources = new HashSet<>();
         @Builder.Default @Getter private Set<Location> destinations = new HashSet<>();
@@ -174,6 +174,7 @@ public class RiftRegistry extends WorldSavedData {
         }
     }
 
+    @SuppressWarnings("unused")
     private static boolean upgradeRegistry(NBTTagCompound nbt, int oldVersion) {
         if (oldVersion > DATA_VERSION) throw new RuntimeException("Upgrade the mod!"); // TODO: better exceptions
         switch (oldVersion) {

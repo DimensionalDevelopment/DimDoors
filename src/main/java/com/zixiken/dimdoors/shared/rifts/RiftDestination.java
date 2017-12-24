@@ -3,12 +3,12 @@ package com.zixiken.dimdoors.shared.rifts;
 import ddutils.nbt.INBTStorable;
 import ddutils.Location;
 import ddutils.nbt.NBTUtils;
-import lombok.*;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import lombok.*;  // Don't change import order! (Gradle bug): https://stackoverflow.com/questions/26557133/
 
 import java.util.LinkedList;
 import java.util.List;
@@ -145,7 +145,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
     }
 
 
-    @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
+    @Getter @AllArgsConstructor @Builder(toBuilder = true)
     public static class RelativeDestination extends RiftDestination { // TODO: use Vec3i
         private Vec3i offset;
 
@@ -165,7 +165,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         }
     }
 
-    @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
+    @Getter @AllArgsConstructor @Builder(toBuilder = true)
     public static class LocalDestination extends RiftDestination { // TODO: use BlockPos
         private BlockPos pos;
 
@@ -185,7 +185,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         }
     }
 
-    @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
+    @Getter @AllArgsConstructor @Builder(toBuilder = true)
     public static class GlobalDestination extends RiftDestination { // TODO: location directly in nbt like minecraft?
         private Location loc;
 
@@ -205,7 +205,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         }
     }
 
-    @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
+    @Getter @AllArgsConstructor @Builder(toBuilder = true)
     public static class NewPublicDestination extends RiftDestination { // TODO: more config options such as non-default size, etc.
         //private NewPublicDestination() {}
 
@@ -221,7 +221,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         }
     }
 
-    @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
+    @Getter @AllArgsConstructor @Builder(toBuilder = true)
     public static class PrivateDestination extends RiftDestination {
 
         //private PrivateDestination() {}
@@ -238,7 +238,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         }
     }
 
-    @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
+    @Getter @AllArgsConstructor @Builder(toBuilder = true)
     public static class LimboDestination extends RiftDestination {
 
         //private LimboDestination() {}
@@ -255,7 +255,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         }
     }
 
-    @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
+    @Getter @AllArgsConstructor @Builder(toBuilder = true)
     public static class AvailableLinkDestination extends RiftDestination { // TODO
         private float newDungeonRiftProbability;
         private float depthPenalization; // TODO: these make the equation assymetric
@@ -308,7 +308,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         }
     }
 
-    @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
+    @Getter @AllArgsConstructor @Builder(toBuilder = true)
     public static class PocketEntranceDestination extends RiftDestination {
         private float weight;
         @Builder.Default private List<WeightedRiftDestination> ifDestinations = new LinkedList<>(); // TODO addIfDestination method in builder
@@ -359,7 +359,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         }
     }
 
-    @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
+    @Getter @AllArgsConstructor @Builder(toBuilder = true)
     public static class PocketExitDestination extends RiftDestination {
 
         //private PocketExitDestination() {}
@@ -376,7 +376,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         }
     }
 
-    @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
+    @Getter @AllArgsConstructor @Builder(toBuilder = true)
     public static class PrivatePocketExitDestination extends RiftDestination { // TODO: merge into PocketExit or Escape?
 
         //private PrivatePocketExitDestination() {}
@@ -393,7 +393,7 @@ public /*abstract*/ class RiftDestination implements INBTStorable { // TODO: fix
         }
     }
 
-    @Getter @AllArgsConstructor @lombok.Builder(toBuilder = true)
+    @Getter @AllArgsConstructor @Builder(toBuilder = true)
     public static class EscapeDestination extends RiftDestination {
 
         @Override

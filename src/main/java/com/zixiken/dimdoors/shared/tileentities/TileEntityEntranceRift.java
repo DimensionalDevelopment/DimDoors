@@ -97,11 +97,6 @@ public class TileEntityEntranceRift extends TileEntityRift {
     @Override
     public void teleportTo(Entity entity) {
         TeleportUtils.teleport(entity, new Location(world, pos.offset(orientation, tpOffset)), orientation.getHorizontalAngle(), 0);
-
-        int dim = WorldUtils.getDim(world);
-        if (entity instanceof EntityPlayer && DimDoorDimensions.isPocketDimension(dim)) { // TODO
-            PocketRegistry.getForDim(dim).allowPlayerAtLocation((EntityPlayer) entity, pos.getX(), pos.getY(), pos.getZ());
-        }
     }
 
     public RGBA getEntranceRenderColor(Random rand) { // TODO: custom color

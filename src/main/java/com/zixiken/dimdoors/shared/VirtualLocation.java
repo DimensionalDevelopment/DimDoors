@@ -56,15 +56,15 @@ public class VirtualLocation { // TODO: use BlockPos/Location
     public static VirtualLocation fromLocation(Location location) { // TODO: reverse function too
         VirtualLocation virtualLocation = null;
         if (DimDoorDimensions.isPocketDimension(location.getDim())) {
-            Pocket pocket = PocketRegistry.getForDim(location.getDim()).getPocketFromLocation(location.getPos().getY(), location.getPos().getY(), location.getPos().getZ());
+            Pocket pocket = PocketRegistry.getForDim(location.getDim()).getPocketAt(location.getPos());
             if (pocket != null) {
-                virtualLocation = pocket.getVirtualLocation();
+                virtualLocation = pocket.getVirtualLocation(); // TODO: pocket-relative coordinates
             } else {
                 virtualLocation = new VirtualLocation(0, 0, 0, 0, 0); // TODO: door was placed in a pocket dim but outside of a pocket...
             }
         }
         if (virtualLocation == null) {
-            virtualLocation = new VirtualLocation(WorldUtils.getDim(location.getWorld()), location.getPos().getX(), location.getPos().getY(), location.getPos().getZ(), 0);
+            virtualLocation = new VirtualLocation(location, 0);
         }
         return virtualLocation;
     }

@@ -6,8 +6,11 @@ import net.minecraft.client.particle.ParticleSimpleAnimated;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 // This has exactly the same appearence as the 1.6.4 mod.
+@SideOnly(Side.CLIENT)
 public class ParticleRiftEffect extends ParticleSimpleAnimated { // TODO: colors, density
 
     private float colorMultiplier;

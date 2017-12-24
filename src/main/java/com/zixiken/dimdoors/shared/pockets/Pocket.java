@@ -14,16 +14,12 @@ import lombok.Setter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.*;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 
-/**
- *
- * @author Robijnvogel
- */
 public class Pocket { // TODO: better visibilities
 
-    @Getter int id; // Not saved
-    @Getter /*private*/ int dimID; // Not saved
 
+    @Getter private int id;
     @Getter private int x; // Grid x TODO: rename to gridX and gridY
     @Getter private int z; // Grid y
     @Getter @Setter private int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
@@ -31,6 +27,8 @@ public class Pocket { // TODO: better visibilities
     private List<String> playerUUIDs;
     @Getter Location entrance;
     @Getter List<Location> riftLocations;
+
+    @Getter int dimID; // Not saved
 
     private Pocket() {}
 
@@ -91,13 +89,14 @@ public class Pocket { // TODO: better visibilities
         return nbt;
     }
 
-    boolean isLocationWithinPocketBounds(int locX, int locY, int locZ, int gridSize) {
+    boolean isInBounds(BlockPos pos) {
         // pocket bounds
+        int gridSize = PocketRegistry.getForDim(dimID).getGridSize();
         int pocMinX = x * gridSize;
         int pocMinZ = z * gridSize;
         int pocMaxX = pocMinX + (size + 1) * 16;
         int pocMaxZ = pocMinX + (size + 1) * 16;
-        return pocMinX <= locX && pocMinZ <= locZ && locX < pocMaxX && locZ < pocMaxZ;
+        return pocMinX <= pos.getX() && pocMinZ <= pos.getZ() && pos.getX() < pocMaxX && pos.getZ() < pocMaxZ;
     }
 
     // TODO better allow/deny player system. Just because a player is allowed in two adjacent pockets doesn't mean he should be able to cross through the void to the other pocket
@@ -106,11 +105,6 @@ public class Pocket { // TODO: better visibilities
         if (!playerUUIDs.contains(playerUUID)) {
             playerUUIDs.add(playerUUID);
         }
-    }
-
-    public boolean isPlayerAllowedInPocket(EntityPlayer player) { // TODO
-        String playerUUID = player.getCachedUniqueIdString();
-        return playerUUIDs.contains(playerUUID);
     }
 
     public List<TileEntityRift> getRifts() {
@@ -175,8 +169,8 @@ public class Pocket { // TODO: better visibilities
 
         // set virtual locations and register rifts
         for (TileEntityRift rift : rifts) {
-            // TODO: put a rift on door break?
             rift.setVirtualLocation(virtualLocation);
+            rift.markStateChanged();
             rift.register();
         }
     }
@@ -202,6 +196,11 @@ public class Pocket { // TODO: better visibilities
 
     public void unlinkPocket() {
         // TODO
+    }
+
+    public BlockPos getOrigin() {
+        int gridSize = PocketRegistry.getForDim(dimID).getGridSize();
+        return new BlockPos(x * gridSize, 0, z * gridSize); // TODO: configurable yBase?
     }
 
     // TODO: method to erase a pocket

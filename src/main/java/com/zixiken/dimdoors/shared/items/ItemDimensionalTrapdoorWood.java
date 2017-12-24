@@ -1,7 +1,6 @@
 package com.zixiken.dimdoors.shared.items;
 
 import com.zixiken.dimdoors.DimDoors;
-import com.zixiken.dimdoors.shared.blocks.BlockDimensionalDoorIron;
 import com.zixiken.dimdoors.shared.blocks.BlockDimensionalTrapdoorWood;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import net.minecraft.client.util.ITooltipFlag;

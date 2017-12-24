@@ -22,8 +22,9 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         EnumActionResult result = super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
         if (result == EnumActionResult.SUCCESS) {
-            IBlockState state = world.getBlockState(pos.offset(facing));
-            ((IRiftProvider<?>) state.getBlock()).handleRiftSetup(world, pos.offset(facing), state);
+            if (!world.getBlockState(pos).getBlock().isReplaceable(world, pos)) pos = pos.offset(facing);
+            IBlockState state = world.getBlockState(pos);
+            ((IRiftProvider<?>) state.getBlock()).handleRiftSetup(world, pos, state);
         }
         return result;
     }

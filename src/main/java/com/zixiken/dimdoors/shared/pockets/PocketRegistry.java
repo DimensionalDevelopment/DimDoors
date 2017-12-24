@@ -2,7 +2,6 @@ package com.zixiken.dimdoors.shared.pockets;
 
 import com.zixiken.dimdoors.shared.DDConfig;
 import ddutils.math.GridUtils;
-import ddutils.Location;
 import com.zixiken.dimdoors.DimDoors;
 import ddutils.nbt.NBTUtils;
 import ddutils.WorldUtils;
@@ -12,11 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 
@@ -101,6 +100,7 @@ public class PocketRegistry extends WorldSavedData {
         }
     }
 
+    @SuppressWarnings("unused")
     private static boolean upgradeRegistry(NBTTagCompound nbt, int oldVersion) {
         if (oldVersion > DATA_VERSION) throw new RuntimeException("Upgrade the mod!"); // TODO: better exceptions
         switch (oldVersion) {
@@ -143,7 +143,7 @@ public class PocketRegistry extends WorldSavedData {
     /**
      * Create a new blank pocket.
      *
-     * @return The newly created Pocket
+     * @return The newly created pocket
      */
     public Pocket newPocket() {
         Pocket pocket = null;
@@ -152,14 +152,13 @@ public class PocketRegistry extends WorldSavedData {
     }
 
     /**
-     * Create a new pocket with a specific ID. IMPORTANT: This generates data for all pockets with an ID below, so don't set
-     * too high!
+     * Create a new pocket with a specific ID.
      *
-     * @return The newly created Pocket, or null if that ID is taken already.
+     * @return The newly created Pocket, or null if that ID is already taken.
      */
     public Pocket newPocket(int id) {
         if (pockets.get(id) != null) return null;
-        GridUtils.GridPos pos = getGridPosFromID(id);
+        GridUtils.GridPos pos = idToGridPos(id);
         Pocket pocket = new Pocket(id, dimID, pos.getX(), pos.getZ());
         pockets.put(id, pocket);
         if (id >= nextID) nextID = id + 1;
@@ -183,6 +182,7 @@ public class PocketRegistry extends WorldSavedData {
         return pockets.get(id);
     }
 
+    // TODO: these should be per-map rather than per-world
     public int getPrivatePocketID(String playerUUID) {
         Integer id = privatePocketMap.get(playerUUID);
         if (id == null) return -1;
@@ -194,58 +194,42 @@ public class PocketRegistry extends WorldSavedData {
         markDirty();
     }
 
-    public GridUtils.GridPos getGridPosFromID(int id) {
+    public GridUtils.GridPos idToGridPos(int id) {
         return GridUtils.numToPos(id);
     }
 
-    public int getIDFromGridPos(GridUtils.GridPos pos) {
+    public int gridPosToID(GridUtils.GridPos pos) {
         return GridUtils.posToNum(pos);
     }
 
     /**
-     * Calculates the default Location where a pocket should be based on the ID. Use this only for placing
+     * Calculates the default BlockPos where a pocket should be based on the ID. Use this only for placing
      * pockets, and use Pocket.getGridPos() for getting the position
      *
      * @param id The ID of the pocket
-     * @return The Location of the pocket
+     * @return The BlockPos of the pocket
      */
-    public Location getLocationFromID(int id) {
-        GridUtils.GridPos pos = getGridPosFromID(id);
-        return new Location(dimID, pos.getX() * gridSize * 16, 0, pos.getZ() * gridSize * 16);
+    public BlockPos idToPos(int id) {
+        GridUtils.GridPos pos = idToGridPos(id);
+        return new BlockPos(pos.getX() * gridSize * 16, 0, pos.getZ() * gridSize * 16);
     }
 
     /**
-     * Calculates the ID of a pocket based on the Location.
+     * Calculates the ID of a pocket at a certain BlockPos.
      *
-     * @param x The x coordinate of the player.
-     * @param y The y coordinate of the player.
-     * @param z The z coordinate of the player.
+     * @param pos The position
      * @return The ID of the pocket, or -1 if there is no pocket at that location
      */
-    public int getIDFromLocation(int x, int y, int z) {
-        int id = getIDFromGridPos(new GridUtils.GridPos(x / (gridSize * 16), z / (gridSize * 16)));
-        return pockets.containsKey(id) ? id : -1;
+    public int posToID(BlockPos pos) {
+        return gridPosToID(new GridUtils.GridPos(pos.getX() / (gridSize * 16), pos.getZ() / (gridSize * 16)));
     }
 
-    public Pocket getPocketFromLocation(int x, int y, int z) { // TODO: use BlockPos
-        return getPocket(getIDFromLocation(x, y, z));
+    public Pocket getPocketAt(BlockPos pos) { // TODO: use BlockPos
+        return getPocket(posToID(pos));
     }
 
-    public void allowPlayerAtLocation(EntityPlayer player, int x, int y, int z) {
-        Pocket pocket = getPocketFromLocation(x, y, z);
-        if (pocket != null) {
-            pocket.allowPlayer(player);
-            markDirty();
-        }
-    }
-
-    public boolean isPlayerAllowedToBeHere(EntityPlayerMP player, int x, int y, int z) { // TODO see getLocationFromID
-        int pocketID = getIDFromLocation(x, y, z);
-        if (pocketID == -1) { // outside of a pocket
-            return false;
-        } else {
-            Pocket pocket = pockets.get(pocketID);
-            return pocket.isPlayerAllowedInPocket(player) && pocket.isLocationWithinPocketBounds(x, y, z, gridSize);
-        }
+    public boolean isPlayerAllowedToBeHere(EntityPlayerMP player, BlockPos pos) {
+        Pocket pocket = getPocketAt(pos);
+        return pocket != null && pocket.isInBounds(pos);
     }
 }
