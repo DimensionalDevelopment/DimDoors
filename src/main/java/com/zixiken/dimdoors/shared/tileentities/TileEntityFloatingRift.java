@@ -126,7 +126,7 @@ public class TileEntityFloatingRift extends TileEntityRift implements ITickable 
     }
 
     @Override
-    public boolean isEntrance() {
-        return false;
+    public boolean isFloating() {
+        return true;
     }
 }

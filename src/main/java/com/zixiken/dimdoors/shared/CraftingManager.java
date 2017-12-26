@@ -14,7 +14,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-public class CraftingManager {
+public final class CraftingManager {
 
     public static ResourceLocation getNameForRecipe(ItemStack output) {
         ResourceLocation baseLoc = new ResourceLocation(DimDoors.MODID, output.getItem().getRegistryName().getResourcePath());

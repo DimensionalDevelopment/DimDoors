@@ -2,7 +2,7 @@ package ddutils.math;
 
 import lombok.Value;
 
-public class GridUtils {
+public final class GridUtils {
     @Value
     public static class GridPos {
         private int x;

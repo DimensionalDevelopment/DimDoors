@@ -18,7 +18,7 @@ import java.util.Random;
  * Provides methods for applying Limbo decay. Limbo decay refers to the effect that most blocks placed in Limbo
  * naturally change into stone, then cobble, then gravel, and finally Unraveled Fabric as time passes.
  */
-public class LimboDecay {
+public final class LimboDecay {
 
     private static final int MAX_DECAY_SPREAD_CHANCE = 100;
     private static final int DECAY_SPREAD_CHANCE = 50;

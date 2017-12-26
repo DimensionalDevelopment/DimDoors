@@ -6,7 +6,7 @@ import net.minecraft.util.math.Vec3i;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NBTUtils {
+public final class NBTUtils {
     public static Map<String, Integer> readMapStringInteger(NBTTagCompound nbt) {
         HashMap<String, Integer> map = new HashMap<>();
         for (String str : nbt.getKeySet()) {

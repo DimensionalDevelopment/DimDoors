@@ -77,11 +77,10 @@ public class CommandDimTeleport extends CommandBase { // TODO: localization
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        List<String> list = new ArrayList<>();
         if (args.length == 1) {
-            list = StringUtils.getAsStringList(DimensionManager.getIDs());
-            list = StringUtils.getMatchingStrings(args[0], list, false);
+            List<String> list = StringUtils.getAsStringList(DimensionManager.getIDs());
+            return StringUtils.getMatchingStrings(args[0], list, false);
         }
-        return list;
+        return new ArrayList<>();
     }
 }

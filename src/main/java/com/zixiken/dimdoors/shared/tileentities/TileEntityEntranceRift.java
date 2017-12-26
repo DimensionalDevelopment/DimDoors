@@ -1,15 +1,11 @@
 package com.zixiken.dimdoors.shared.tileentities;
 
-import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
 import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
 import ddutils.Location;
 import ddutils.render.RGBA;
 import ddutils.TeleportUtils;
-import ddutils.WorldUtils;
-import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import lombok.Getter;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 
@@ -117,7 +113,7 @@ public class TileEntityEntranceRift extends TileEntityRift {
     }
 
     @Override
-    public boolean isEntrance() {
-        return true;
+    public boolean isFloating() {
+        return false;
     }
 }

@@ -1,5 +1,8 @@
 package com.zixiken.dimdoors.shared.rifts;
 
+import com.google.common.collect.ConcurrentHashMultiset;
+import com.google.common.collect.Multiset;
+import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import ddutils.nbt.INBTStorable; // Don't change imports order! (Gradle bug): https://stackoverflow.com/questions/26557133/
 import ddutils.Location;
 import ddutils.WorldUtils;
@@ -23,9 +26,9 @@ public class RiftRegistry extends WorldSavedData {
     private static final String DATA_NAME = DimDoors.MODID + "_rifts";
     @Getter private static final int DATA_VERSION = 0; // IMPORTANT: Update this and upgradeRegistry when making changes.
 
-    @Getter private Map<Location, RiftInfo> rifts = new HashMap<>(); // TODO: store relative locations too (better location class supporting relative, etc)
-    @Getter private Map<String, Location> privatePocketEntrances = new HashMap<>(); // TODO: more general group-group linking
-    @Getter private Map<String, Location> escapeRifts = new HashMap<>();
+    @Getter private final Map<Location, RiftInfo> rifts = new HashMap<>(); // TODO: store relative locations too (better location class supporting relative, etc)
+    @Getter private final Map<String, Location> privatePocketEntrances = new HashMap<>(); // TODO: more general group-group linking
+    @Getter private final Map<String, Location> overworldRifts = new HashMap<>();
 
     @Getter private int dim;
     private World world;
@@ -33,9 +36,9 @@ public class RiftRegistry extends WorldSavedData {
     @AllArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
     public static class RiftInfo implements INBTStorable {
         // IntelliJ warnings are wrong, Builder needs these initializers!
-        @SuppressWarnings("UnusedAssignment") @Builder.Default @Getter private Set<AvailableLinkInfo> availableLinks = new HashSet<>();
-        @SuppressWarnings("UnusedAssignment") @Builder.Default @Getter private Set<Location> sources = new HashSet<>();
-        @SuppressWarnings("UnusedAssignment") @Builder.Default @Getter private Set<Location> destinations = new HashSet<>();
+        @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter private Set<AvailableLinkInfo> availableLinks = new HashSet<>(); // TODO: multiset?
+        @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter private Multiset<Location> sources = ConcurrentHashMultiset.create();
+        @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter private Multiset<Location> destinations = ConcurrentHashMultiset.create();
 
         @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
         public static class AvailableLinkInfo implements INBTStorable {
@@ -62,8 +65,8 @@ public class RiftRegistry extends WorldSavedData {
 
         public RiftInfo() {
             availableLinks = new HashSet<>();
-            sources = new HashSet<>();
-            destinations = new HashSet<>();
+            sources = ConcurrentHashMultiset.create();
+            destinations = ConcurrentHashMultiset.create();
         }
 
         @Override
@@ -166,12 +169,12 @@ public class RiftRegistry extends WorldSavedData {
             privatePocketEntrances.put(uuid, rift);
         }
 
-        NBTTagList escapeRiftsNBT = (NBTTagList) nbt.getTag("escapeRifts");
-        for (NBTBase escapeRiftNBT : escapeRiftsNBT) { // TODO: move to NBTUtils
-            NBTTagCompound escapeRiftNBTC = (NBTTagCompound) escapeRiftNBT;
-            String uuid = escapeRiftNBTC.getString("uuid");
-            Location rift = Location.readFromNBT(escapeRiftNBTC.getCompoundTag("location"));
-            escapeRifts.put(uuid, rift);
+        NBTTagList overworldRiftsNBT = (NBTTagList) nbt.getTag("overworldRifts");
+        for (NBTBase overworldRiftNBT : overworldRiftsNBT) { // TODO: move to NBTUtils
+            NBTTagCompound overworldRiftNBTC = (NBTTagCompound) overworldRiftNBT;
+            String uuid = overworldRiftNBTC.getString("uuid");
+            Location rift = Location.readFromNBT(overworldRiftNBTC.getCompoundTag("location"));
+            overworldRifts.put(uuid, rift);
         }
     }
 
@@ -215,15 +218,15 @@ public class RiftRegistry extends WorldSavedData {
         }
         nbt.setTag("privatePocketEntrances", privatePocketEntrancesNBT);
 
-        NBTTagList escapeRiftsNBT = new NBTTagList();
-        for (HashMap.Entry<String, Location> escapeRift : escapeRifts.entrySet()) {
-            if (escapeRift.getValue() == null) continue;
-            NBTTagCompound escapeRiftNBT = new NBTTagCompound();
-            escapeRiftNBT.setString("uuid", escapeRift.getKey());
-            escapeRiftNBT.setTag("location", Location.writeToNBT(escapeRift.getValue()));
-            escapeRiftsNBT.appendTag(escapeRiftNBT);
+        NBTTagList overworldRiftsNBT = new NBTTagList();
+        for (HashMap.Entry<String, Location> overworldRift : overworldRifts.entrySet()) {
+            if (overworldRift.getValue() == null) continue;
+            NBTTagCompound overworldRiftNBT = new NBTTagCompound();
+            overworldRiftNBT.setString("uuid", overworldRift.getKey());
+            overworldRiftNBT.setTag("location", Location.writeToNBT(overworldRift.getValue()));
+            overworldRiftsNBT.appendTag(overworldRiftNBT);
         }
-        nbt.setTag("escapeRifts", escapeRiftsNBT);
+        nbt.setTag("overworldRifts", overworldRiftsNBT);
 
         return nbt;
     }
@@ -253,9 +256,11 @@ public class RiftRegistry extends WorldSavedData {
             RiftRegistry destinationRegistry = getRegistry(destination);
             destinationRegistry.rifts.get(destination).sources.remove(rift);
             destinationRegistry.markDirty();
-            TileEntityRift riftEntity = (TileEntityRift) destinationRegistry.world.getTileEntity(destination.getPos());
-            riftEntity.allSourcesGone();
+            //TileEntityRift riftEntity = (TileEntityRift) destinationRegistry.world.getTileEntity(destination.getPos());
+            //riftEntity.allSourcesGone(); // TODO
         }
+        getForDim(DimDoorDimensions.getPrivateDimID()).privatePocketEntrances.entrySet().removeIf(e -> e.getValue().equals(rift));
+        getForDim(0).overworldRifts.entrySet().removeIf(e -> e.getValue().equals(rift));
         registry.markDirty();
     }
 
@@ -318,12 +323,12 @@ public class RiftRegistry extends WorldSavedData {
         markDirty();
     }
 
-    public static Location getEscapeRift(String playerUUID) { // TODO: since this is per-world, move to different registry?
-        return getForDim(0).escapeRifts.get(playerUUID); // store in overworld, since that's where per-world player data is stored
+    public static Location getOverworldRift(String playerUUID) { // TODO: since this is per-world, move to different registry?
+        return getForDim(0).overworldRifts.get(playerUUID); // store in overworld, since that's where per-world player data is stored
     }
 
-    public static void setEscapeRift(String playerUUID, Location rift) {
-        getForDim(0).escapeRifts.put(playerUUID, rift);
+    public static void setOverworldRift(String playerUUID, Location rift) {
+        getForDim(0).overworldRifts.put(playerUUID, rift);
         getForDim(0).markDirty();
     }
 

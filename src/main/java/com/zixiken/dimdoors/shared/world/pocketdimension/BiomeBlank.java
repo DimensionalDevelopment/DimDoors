@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class BiomeBlank extends Biome {
 
-    private boolean white;
+    private final boolean white;
 
     public BiomeBlank(boolean white, boolean monoliths) { // TODO: split this class
         super(new BiomeProperties((monoliths ? "Dangerous " : "") + (white ? "White" : "Black") + " Void")

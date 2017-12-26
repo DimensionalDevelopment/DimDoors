@@ -7,7 +7,6 @@ import com.zixiken.dimdoors.shared.blocks.BlockDimensionalDoorWarp;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import ddutils.I18nUtils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;

@@ -4,6 +4,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.entities.EntityMonolith;
 import com.zixiken.dimdoors.shared.items.ModItems;
+import com.zixiken.dimdoors.shared.rifts.*;
 import com.zixiken.dimdoors.shared.sound.ModSounds;
 import com.zixiken.dimdoors.shared.tileentities.*;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
@@ -31,6 +32,21 @@ public abstract class DDProxyCommon implements IDDProxy {
 
         EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), EntityMonolith.class, "monolith", 0, DimDoors.instance, 70, 1, true);
         EntityRegistry.registerEgg(new ResourceLocation(DimDoors.MODID, "mob_monolith"), 0, 0xffffff);
+        registerRiftDestinations();
+    }
+
+    public void registerRiftDestinations() {
+        RiftDestination.destinationRegistry.put("available_link", AvailableLinkDestination.class);
+        RiftDestination.destinationRegistry.put("escape", EscapeDestination.class);
+        RiftDestination.destinationRegistry.put("global", GlobalDestination.class);
+        RiftDestination.destinationRegistry.put("limbo", LimboDestination.class);
+        RiftDestination.destinationRegistry.put("local", LocalDestination.class);
+        RiftDestination.destinationRegistry.put("new_public", NewPublicDestination.class);
+        RiftDestination.destinationRegistry.put("pocket_entrance", PocketEntranceDestination.class);
+        RiftDestination.destinationRegistry.put("pocket_exit", PocketExitDestination.class);
+        RiftDestination.destinationRegistry.put("private", PrivateDestination.class);
+        RiftDestination.destinationRegistry.put("private_pocket_exit", PrivatePocketExitDestination.class);
+        RiftDestination.destinationRegistry.put("relative", RelativeDestination.class);
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ChunkGeneratorBlank implements IChunkGenerator {
 
-    private World world;
+    private final World world;
 
     public ChunkGeneratorBlank(World world, long seed) {
         this.world = world;

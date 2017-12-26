@@ -17,7 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.EnumSet;
 
-public class TeleportUtils {
+public final class TeleportUtils {
 
     public static Entity teleport(Entity entity, Location location) {
         return teleport(entity, location, entity.rotationYaw, entity.rotationPitch);
@@ -65,7 +65,7 @@ public class TeleportUtils {
             }
             entity.setRotationYawHead(yaw);
             return entity;
-        } else { // Based on Entity.changeDimension
+        } else { // Based on EntityUtils.changeDimension
             MinecraftServer server = entity.getServer();
             WorldServer oldServer = server.getWorld(oldDimension);
             WorldServer newServer = server.getWorld(newDimension);

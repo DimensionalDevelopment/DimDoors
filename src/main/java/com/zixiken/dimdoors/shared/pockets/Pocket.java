@@ -1,9 +1,8 @@
 package com.zixiken.dimdoors.shared.pockets;
 
 import com.zixiken.dimdoors.shared.VirtualLocation;
-import com.zixiken.dimdoors.shared.rifts.RiftDestination;
-import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
-import com.zixiken.dimdoors.shared.rifts.WeightedRiftDestination;
+import com.zixiken.dimdoors.shared.rifts.*;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import ddutils.Location;
 
 import java.util.*;
@@ -22,7 +21,7 @@ public class Pocket { // TODO: better visibilities
     @Getter private int z; // Grid y
     @Getter @Setter private int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
     @Getter @Setter private VirtualLocation virtualLocation; // The non-pocket dimension from which this dungeon was created
-    @Getter Location entrance;
+    @Getter @Setter Location entrance; // TODO: multiple entrances
     @Getter List<Location> riftLocations;
 
     @Getter int dimID; // Not saved
@@ -104,7 +103,7 @@ public class Pocket { // TODO: better visibilities
         int index = 0;
         for (TileEntityRift rift : rifts) { // Find an entrance
             for (WeightedRiftDestination weightedPocketEntranceDest : rift.getDestinations()) {
-                if (weightedPocketEntranceDest.getDestination().getType() == RiftDestination.EnumType.POCKET_ENTRANCE) {
+                if (weightedPocketEntranceDest.getDestination() instanceof PocketEntranceDestination) {
                     entranceIndexWeights.put(index, weightedPocketEntranceDest.getWeight());
                     rift.markDirty();
                     index++;
@@ -121,18 +120,18 @@ public class Pocket { // TODO: better visibilities
             while (destIterator.hasNext()) {
                 WeightedRiftDestination wdest = destIterator.next();
                 RiftDestination dest = wdest.getDestination();
-                if (dest.getType() == RiftDestination.EnumType.POCKET_ENTRANCE) {
+                if (dest instanceof PocketEntranceDestination) {
                     destIterator.remove();
                     if (index == selectedEntranceIndex) {
                         entrance = new Location(rift.getWorld(), rift.getPos());
                         PocketRegistry.getForDim(dimID).markDirty();
-                        List<WeightedRiftDestination> ifDestinations = ((RiftDestination.PocketEntranceDestination) dest).getIfDestinations();
+                        List<WeightedRiftDestination> ifDestinations = ((PocketEntranceDestination) dest).getIfDestinations();
                         for (WeightedRiftDestination ifDestination : ifDestinations) {
                             destIterator.add(new WeightedRiftDestination(ifDestination.getDestination(), ifDestination.getWeight() / wdest.getWeight(), ifDestination.getGroup()));
                             destIterator.previous(); // An entrance destination shouldn't be in an if/otherwise destination, but just in case, pass over it too
                         }
                     } else {
-                        List<WeightedRiftDestination> otherwiseDestinations = ((RiftDestination.PocketEntranceDestination) dest).getOtherwiseDestinations();
+                        List<WeightedRiftDestination> otherwiseDestinations = ((PocketEntranceDestination) dest).getOtherwiseDestinations();
                         for (WeightedRiftDestination otherwiseDestination : otherwiseDestinations) {
                             destIterator.add(new WeightedRiftDestination(otherwiseDestination.getDestination(), otherwiseDestination.getWeight() / wdest.getWeight(), otherwiseDestination.getGroup()));
                             destIterator.previous(); // An entrance destination shouldn't be in an if/otherwise destination, but just in case, pass over it too
@@ -146,7 +145,6 @@ public class Pocket { // TODO: better visibilities
         // set virtual locations and register rifts
         for (TileEntityRift rift : rifts) {
             rift.setVirtualLocation(virtualLocation);
-            rift.markStateChanged();
             rift.register();
         }
     }
@@ -160,10 +158,10 @@ public class Pocket { // TODO: better visibilities
             while (destIterator.hasNext()) {
                 WeightedRiftDestination wdest = destIterator.next();
                 RiftDestination dest = wdest.getDestination();
-                if (dest.getType() == RiftDestination.EnumType.POCKET_EXIT) {
+                if (dest instanceof PocketExitDestination) {
                     destIterator.remove();
-                    destIterator.add(new WeightedRiftDestination(linkTo.withOldDestination(dest), wdest.getWeight(), wdest.getGroup()));
-                    rift.markStateChanged();
+                    destIterator.add(new WeightedRiftDestination(linkTo, wdest.getWeight(), wdest.getGroup(), dest));
+                    if (rift instanceof TileEntityEntranceRift) ((TileEntityEntranceRift) rift).setPlaceRiftOnBreak(true);
                     rift.markDirty();
                 }
             }

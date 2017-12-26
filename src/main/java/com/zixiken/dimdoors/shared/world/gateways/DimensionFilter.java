@@ -5,7 +5,8 @@ import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
 
 public class DimensionFilter {
-    private RangeSet<Integer> blacklist;
+
+    private final RangeSet<Integer> blacklist;
 
     private DimensionFilter(RangeSet<Integer> blacklist) {
         this.blacklist = blacklist;

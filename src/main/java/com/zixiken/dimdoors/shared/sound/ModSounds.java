@@ -6,7 +6,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class ModSounds {
+public final class ModSounds {
 
     // Don't forget to change sounds.json too if you're changing an ID!
     public static final SoundEvent CRACK = create("crack");

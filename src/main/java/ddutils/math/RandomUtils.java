@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * @author Robijnvogel
  */
-public class RandomUtils { // These utils aren't being used by DimDoors!
+public final class RandomUtils { // These utils aren't being used by DimDoors!
 
     /**
      * Compares the integers in two arrays and returns true if any integer in

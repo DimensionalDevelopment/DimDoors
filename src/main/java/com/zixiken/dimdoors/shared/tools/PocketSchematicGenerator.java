@@ -4,9 +4,7 @@ import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.server.DDProxyServer;
 import com.zixiken.dimdoors.shared.blocks.BlockFabric;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
-import com.zixiken.dimdoors.shared.rifts.RiftDestination;
-import com.zixiken.dimdoors.shared.rifts.TileEntityRift;
-import com.zixiken.dimdoors.shared.rifts.WeightedRiftDestination;
+import com.zixiken.dimdoors.shared.rifts.*;
 import ddutils.schem.Schematic;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
@@ -22,7 +20,6 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.RegistryManager;
-import ddutils.math.MathUtils;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -36,7 +33,7 @@ import java.util.List;
 /**
  * @author Robijnvogel
  */
-public class PocketSchematicGenerator {
+public final class PocketSchematicGenerator {
 
     // Run "gradlew generatePocketSchematics" to generate the pocket schematics
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
@@ -50,6 +47,7 @@ public class PocketSchematicGenerator {
         Loader.instance().setActiveModContainer(mc);
         ModBlocks.registerBlocks(new RegistryEvent.Register(GameData.BLOCKS, RegistryManager.ACTIVE.getRegistry(GameData.BLOCKS)));
         new DDProxyServer().registerTileEntities();
+        new DDProxyServer().registerRiftDestinations();
         Loader.instance().setActiveModContainer(null);
 
         // Parse arguments
@@ -94,19 +92,21 @@ public class PocketSchematicGenerator {
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT), // outer wall
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY), // inner wall
                     ModBlocks.DIMENSIONAL_DOOR, // door
-                    RiftDestination.PocketExitDestination.builder().build())); // exit rift destination
+                    PocketExitDestination.builder().build(),
+                    1)); // exit rift destination
             schematics.add(generatePocketSchematic(
                     "private_pocket", // base name
                     pocketSize, // size
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT_ALTERED), // outer wall
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ALTERED), // inner wall
                     ModBlocks.PERSONAL_DIMENSIONAL_DOOR, // door
-                    RiftDestination.PrivatePocketExitDestination.builder().build())); // exit rift destination
+                    PrivatePocketExitDestination.builder().build(),
+                    0)); // exit rift destination
         }
         return schematics;
     }
 
-    private static Schematic generatePocketSchematic(String baseName, int pocketSize, IBlockState outerWallBlockState, IBlockState innerWallBlockState, Block doorBlock, RiftDestination exitDest) {
+    private static Schematic generatePocketSchematic(String baseName, int pocketSize, IBlockState outerWallBlockState, IBlockState innerWallBlockState, Block doorBlock, RiftDestination exitDest, float chaosWeight) {
         int size = (pocketSize + 1) * 16 - 1; // -1 so that the door can be centered
 
         // Set schematic info
@@ -153,9 +153,10 @@ public class PocketSchematicGenerator {
         // Generate the rift TileEntities
         schematic.tileEntities = new ArrayList<>();
         TileEntityRift rift = (TileEntityRift) doorBlock.createTileEntity(null, doorBlock.getDefaultState());
-        rift.setSingleDestination(RiftDestination.PocketEntranceDestination.builder()
+        rift.setSingleDestination(PocketEntranceDestination.builder()
                 .ifDestinations(Collections.singletonList(new WeightedRiftDestination(exitDest, 1, 0)))
                 .build());
+        rift.setChaosWeight(0);
         NBTTagCompound tileNBT = rift.serializeNBT();
         tileNBT.setInteger("x", (size - 1) / 2);
         tileNBT.setInteger("y", 5);

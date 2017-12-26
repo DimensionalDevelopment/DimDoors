@@ -16,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import static net.minecraft.item.Item.getItemFromBlock;
 
 @SideOnly(Side.CLIENT)
-public class ModelManager {
+public final class ModelManager {
 
     public static void registerModels() {
         //ItemBlock registration

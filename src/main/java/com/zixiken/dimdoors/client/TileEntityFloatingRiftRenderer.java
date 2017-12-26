@@ -17,9 +17,9 @@ import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<TileEntityFloatingRift> {
-    private static ResourceLocation tesseract_path = new ResourceLocation(DimDoors.MODID + ":textures/other/tesseract.png");
+    private static final ResourceLocation tesseract_path = new ResourceLocation(DimDoors.MODID + ":textures/other/tesseract.png");
 
-    private static Vector4f[] tesseract = {
+    private static final Vector4f[] tesseract = {
             new Vector4f(-0.5f,-0.5f,-0.5f,-0.5f),
             new Vector4f(0.5f,-0.5f,-0.5f,-0.5f),
             new Vector4f(0.5f,-0.5f,0.5f,-0.5f),

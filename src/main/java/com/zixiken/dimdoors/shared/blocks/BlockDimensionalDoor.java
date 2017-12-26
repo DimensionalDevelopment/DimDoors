@@ -113,7 +113,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
         if (!hasTileEntity(state)) return;
         TileEntityEntranceRift rift = getRift(worldIn, pos, state);
         super.breakBlock(worldIn, pos, state);
-        if (rift.isPlaceRiftOnBreak() || rift.isRegistered() && RiftRegistry.getRiftInfo(new Location(worldIn, pos)).getSources().size() > 0 && !rift.isAlwaysDelete()) {
+        if (rift.isPlaceRiftOnBreak() || rift.isRegistered() && RiftRegistry.getRiftInfo(rift.getLocation()).getSources().size() > 0 && !rift.isAlwaysDelete()) {
             TileEntityRift newRift = new TileEntityFloatingRift();
             newRift.copyFrom(rift);
             newRift.updateAvailableLinks();
@@ -126,15 +126,11 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
 
     @Override
     public TileEntityEntranceRift getRift(World world, BlockPos pos, IBlockState state) {
-        TileEntity tileEntity;
         if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER) {
-            tileEntity = world.getTileEntity(pos);
-            if (!(tileEntity instanceof TileEntityRift)) tileEntity = world.getTileEntity(pos.up());
+            return (TileEntityEntranceRift) world.getTileEntity(pos);
         } else {
-            tileEntity = world.getTileEntity(pos);
-            if (!(tileEntity instanceof TileEntityRift)) tileEntity = world.getTileEntity(pos.down());
+            return (TileEntityEntranceRift) world.getTileEntity(pos.down());
         }
-        return (TileEntityEntranceRift) tileEntity;
     }
 
     public abstract Item getItem();

@@ -6,7 +6,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 
-public class ModItems {
+public final class ModItems {
 
     // Regular doors
     public static final ItemDoorGold GOLD_DOOR = new ItemDoorGold();

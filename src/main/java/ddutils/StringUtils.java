@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * @author Robijnvogel
  */
-public class StringUtils {
+public final class StringUtils {
 
     public static char flipCase(char in) {
         if (Character.isUpperCase(in)) {
@@ -19,7 +19,7 @@ public class StringUtils {
     public static List<String> getAsStringList(Integer[] integers) {
         List<String> list = new ArrayList<>();
         for (int integer : integers) {
-            list.add("" + integer);
+            list.add(String.valueOf(integer));
         }
         return list;
     }

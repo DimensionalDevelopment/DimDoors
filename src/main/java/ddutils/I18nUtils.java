@@ -6,7 +6,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class I18nUtils {
+public final class I18nUtils {
     @SideOnly(Side.CLIENT)
     public static void translateAndAdd(String key, List<String> list) { // TODO: move to utils?
         int i = 0;

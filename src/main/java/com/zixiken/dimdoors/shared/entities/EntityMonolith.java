@@ -244,7 +244,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
     private void facePlayer(EntityPlayer player) {
         double d0 = player.posX - posX;
         double d1 = player.posZ - posZ;
-        double d2 = player.posY + player.getEyeHeight() - (posY + getEyeHeight());
+        double d2 = player.posY + player.getEyeHeight() - (posY + EYE_HEIGHT);
         double d3 = MathHelper.sqrt(d0 * d0 + d1 * d1);
         float f2 = (float) (Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
         pitchLevel = (float) -(Math.atan(d2 / d3) * 180.0D / Math.PI);

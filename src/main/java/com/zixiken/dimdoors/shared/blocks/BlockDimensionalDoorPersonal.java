@@ -2,8 +2,11 @@ package com.zixiken.dimdoors.shared.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.items.ModItems;
+import com.zixiken.dimdoors.shared.rifts.PrivateDestination;
+import com.zixiken.dimdoors.shared.rifts.PrivatePocketExitDestination;
 import com.zixiken.dimdoors.shared.rifts.RiftDestination;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
+import com.zixiken.dimdoors.shared.world.pocketdimension.WorldProviderPersonalPocket;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -26,9 +29,13 @@ public class BlockDimensionalDoorPersonal extends BlockDimensionalDoor {
 
     @Override
     public void setupRift(TileEntityEntranceRift rift) {
-        DimDoors.log.info("Setting up the rift!");
-        RiftDestination.PrivateDestination destination = RiftDestination.PrivateDestination.builder().build();
+        RiftDestination destination;
+        if (rift.getWorld().provider instanceof WorldProviderPersonalPocket) {
+            destination = PrivatePocketExitDestination.builder().build(); // exit
+        } else {
+            destination = PrivateDestination.builder().build(); // entrance
+        }
         rift.setSingleDestination(destination);
-        rift.setChaosWeight(0);
+        rift.setChaosWeight(0); // TODO: generated schematic exits too
     }
 }

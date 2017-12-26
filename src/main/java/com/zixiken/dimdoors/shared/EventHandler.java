@@ -14,7 +14,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class EventHandler {
+public final class EventHandler {
 
     @SubscribeEvent
     public static void onPlayerJoinWorld(EntityJoinWorldEvent event) {

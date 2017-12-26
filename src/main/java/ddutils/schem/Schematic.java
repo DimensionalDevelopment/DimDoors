@@ -203,7 +203,7 @@ public class Schematic {
 
     private static String getBlockStateStringFromState(IBlockState state) {
         Block block = state.getBlock();
-        String blockNameString = "" + Block.REGISTRY.getNameForObject(block);
+        String blockNameString = String.valueOf(Block.REGISTRY.getNameForObject(block));
         StringBuilder blockStateString = new StringBuilder();
         String totalString;
         IBlockState defaultState = block.getDefaultState();

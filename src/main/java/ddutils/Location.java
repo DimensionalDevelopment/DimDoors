@@ -48,7 +48,7 @@ public class Location implements Serializable {
     }
 
     public IBlockState getBlockState() {
-        return getWorld().getBlockState(getPos());
+        return getWorld().getBlockState(this.pos);
     }
 
     public WorldServer getWorld() {

@@ -7,7 +7,6 @@ import com.zixiken.dimdoors.shared.DDProxyCommon;
 import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.world.gateways.GatewayGenerator;
 import lombok.Getter;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -19,8 +18,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
-
-import java.util.List;
 
 @Mod(modid = DimDoors.MODID, name = "Dimensional Doors",
      version = DimDoors.VERSION,

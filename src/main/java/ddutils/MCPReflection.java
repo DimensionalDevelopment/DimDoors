@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-public class MCPReflection {
+public final class MCPReflection {
     public static Field getMCPField(Class<?> class0, String deobfuscatedName, String obfuscatedName) throws NoSuchFieldException {
         Field field;
         try {
@@ -20,11 +20,10 @@ public class MCPReflection {
             Field modifiers = Field.class.getDeclaredField("modifiers");
             modifiers.setAccessible(true);
             modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+            return field;
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-
-        return field;
     }
 
     public static Method getMCPMethod(Class<?> class0, String deobfuscatedName, String obfuscatedName, Class<?> args) throws NoSuchMethodException {

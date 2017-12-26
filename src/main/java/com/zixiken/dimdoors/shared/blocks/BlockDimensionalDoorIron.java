@@ -2,7 +2,7 @@ package com.zixiken.dimdoors.shared.blocks;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.items.ModItems;
-import com.zixiken.dimdoors.shared.rifts.RiftDestination;
+import com.zixiken.dimdoors.shared.rifts.NewPublicDestination;
 import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
@@ -27,7 +27,7 @@ public class BlockDimensionalDoorIron extends BlockDimensionalDoor {
 
     @Override
     public void setupRift(TileEntityEntranceRift rift) {
-        RiftDestination.NewPublicDestination destination = RiftDestination.NewPublicDestination.builder().build();
+        NewPublicDestination destination = NewPublicDestination.builder().build();
         rift.setSingleDestination(destination);
     }
 }

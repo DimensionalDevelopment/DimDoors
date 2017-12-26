@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * @author Robijnvogel
  */
-public class SchematicConverter {
+public final class SchematicConverter {
 
     private static final Map<String, IBlockState> stateMap = new HashMap<>();
     static {

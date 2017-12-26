@@ -14,8 +14,7 @@ import net.minecraft.entity.Entity;
 @SideOnly(Side.CLIENT)
 public class ModelMonolith extends ModelBase {
 
-    ModelRenderer wholeMonolith;
-    Random rand = new Random();
+    private final ModelRenderer wholeMonolith;
 
     public ModelMonolith() {
         textureWidth = 256;

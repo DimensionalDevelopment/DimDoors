@@ -24,11 +24,11 @@ import static org.lwjgl.opengl.GL11.*;
 @SideOnly(Side.CLIENT)
 public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<TileEntityEntranceRift> { // TODO: see TileEntityEndGatewayRenderer
 
-    private FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
-    private ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/warp.png");
-    private ResourceLocation keyPath = new ResourceLocation(DimDoors.MODID + ":textures/other/keyhole.png");
-    private ResourceLocation keyholeLight = new ResourceLocation(DimDoors.MODID + ":textures/other/keyhole_light.png");
-    Map<TileEntityEntranceRift, RGBA[]> colorMap = new HashMap<>();
+    private final FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
+    private final ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/warp.png");
+    private final ResourceLocation keyPath = new ResourceLocation(DimDoors.MODID + ":textures/other/keyhole.png");
+    private final ResourceLocation keyholeLight = new ResourceLocation(DimDoors.MODID + ":textures/other/keyhole_light.png");
+    private final Map<TileEntityEntranceRift, RGBA[]> colorMap = new HashMap<>();
 
     // TODO: allow any angle, make static and in a separate class
     public void renderDimensionalWall(double x, double y, double z, RGBA[] colors, EnumFacing orientation, double extendUp, double extendDown, double extendLeft, double extendRight, double pushIn) {

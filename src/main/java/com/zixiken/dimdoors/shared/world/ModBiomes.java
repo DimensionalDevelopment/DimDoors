@@ -9,7 +9,8 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class ModBiomes {
+public final class ModBiomes {
+
     public static final BiomeLimbo LIMBO = new BiomeLimbo();
     public static final BiomeBlank WHITE_VOID = new BiomeBlank(true, false);
     public static final BiomeBlank BLACK_VOID = new BiomeBlank(false, false);

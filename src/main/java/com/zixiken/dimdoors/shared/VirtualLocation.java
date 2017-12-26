@@ -3,7 +3,6 @@ package com.zixiken.dimdoors.shared;
 import com.zixiken.dimdoors.shared.pockets.Pocket;
 import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
 import ddutils.Location;
-import ddutils.WorldUtils;
 import com.zixiken.dimdoors.shared.world.DimDoorDimensions;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -80,6 +79,6 @@ public class VirtualLocation { // TODO: use BlockPos/Location
     }
 
     public Location projectToWorld() {
-        return transformDepth(0).getLocation();
+        return transformDepth(0).location;
     }
 }

@@ -15,7 +15,7 @@ import lombok.Getter;
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.common.DimensionManager;
 
-public class DimDoorDimensions {
+public final class DimDoorDimensions {
 
     public static DimensionType limbo = null;
     @Getter private static int minPocketDimID;
@@ -59,7 +59,7 @@ public class DimDoorDimensions {
         return pocketDimensionTypes.get(pocketType);
     }
 
-    public static boolean isPocketDimension(int id) { // TODO: also add isPocketDimension(World)?
+    public static boolean isPocketDimension(int id) { // TODO: convert some calls to world.provider instanceof (compatibility with other mods that will use PocketLib), and rename to isDimDoorsPoketDimension
         return id >= minPocketDimID && id <= maxPocketDimID;
     }
 

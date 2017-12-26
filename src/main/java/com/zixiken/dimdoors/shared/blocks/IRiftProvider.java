@@ -22,6 +22,7 @@ public interface IRiftProvider<T extends TileEntityRift> extends ITileEntityProv
 
     // Call only once per structure (on item place)!
     public default void handleRiftSetup(World world, BlockPos pos, IBlockState state) {
+        if (world.isRemote) return;
         T rift = getRift(world, pos, state);
 
         // Set the rift's virtual position
@@ -31,8 +32,9 @@ public interface IRiftProvider<T extends TileEntityRift> extends ITileEntityProv
         setupRift(rift);
 
         // Set the tile entity and register it
-        world.setTileEntity(pos, rift);
+        //world.setTileEntity(pos, rift);
         rift.markDirty();
         rift.register();
+        T rift2 = getRift(world, pos, state);
     }
 }

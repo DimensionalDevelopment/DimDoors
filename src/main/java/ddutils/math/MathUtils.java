@@ -3,7 +3,7 @@ package ddutils.math;
 import java.util.Map;
 import java.util.Random;
 
-public class MathUtils {
+public final class MathUtils {
 
     public static <T> T weightedRandom(Map<T, Float> weights) {
         if (weights.size() == 0) return null;
