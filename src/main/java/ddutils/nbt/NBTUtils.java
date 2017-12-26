@@ -1,14 +1,24 @@
 package ddutils.nbt;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public final class NBTUtils {
+public final class NBTUtils { // TODO: make these fill rather than return a map
     public static Map<String, Integer> readMapStringInteger(NBTTagCompound nbt) {
         HashMap<String, Integer> map = new HashMap<>();
+        for (String str : nbt.getKeySet()) {
+            map.put(str, nbt.getInteger(str));
+        }
+        return map;
+    }
+
+    public static BiMap<String, Integer> readBiMapStringInteger(NBTTagCompound nbt) {
+        BiMap<String, Integer> map = HashBiMap.create();
         for (String str : nbt.getKeySet()) {
             map.put(str, nbt.getInteger(str));
         }

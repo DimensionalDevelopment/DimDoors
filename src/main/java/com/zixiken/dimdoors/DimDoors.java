@@ -8,6 +8,7 @@ import com.zixiken.dimdoors.shared.items.ModItems;
 import com.zixiken.dimdoors.shared.world.gateways.GatewayGenerator;
 import lombok.Getter;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
@@ -78,7 +79,7 @@ public class DimDoors {
         return !isClient();
     }
 
-    public static void chat(EntityPlayer player, String text) {
-        player.sendMessage(new TextComponentString("[DimDoors] " + text));
+    public static void chat(Entity entity, String text) {
+        entity.sendMessage(new TextComponentString("[DimDoors] " + text));
     }
 }

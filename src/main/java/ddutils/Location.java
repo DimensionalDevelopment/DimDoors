@@ -52,7 +52,7 @@ public class Location implements Serializable {
     }
 
     public WorldServer getWorld() {
-        return DimensionManager.getWorld(dim);
+        return WorldUtils.getWorld(dim);
     }
 
     public static Location getLocation(TileEntity tileEntity) {

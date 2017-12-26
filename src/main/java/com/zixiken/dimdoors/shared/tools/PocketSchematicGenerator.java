@@ -2,11 +2,12 @@ package com.zixiken.dimdoors.shared.tools;
 
 import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.server.DDProxyServer;
+import com.zixiken.dimdoors.shared.blocks.BlockDimensionalDoor;
 import com.zixiken.dimdoors.shared.blocks.BlockFabric;
 import com.zixiken.dimdoors.shared.blocks.ModBlocks;
 import com.zixiken.dimdoors.shared.rifts.*;
+import com.zixiken.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import ddutils.schem.Schematic;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -106,7 +107,7 @@ public final class PocketSchematicGenerator {
         return schematics;
     }
 
-    private static Schematic generatePocketSchematic(String baseName, int pocketSize, IBlockState outerWallBlockState, IBlockState innerWallBlockState, Block doorBlock, RiftDestination exitDest, float chaosWeight) {
+    private static Schematic generatePocketSchematic(String baseName, int pocketSize, IBlockState outerWallBlockState, IBlockState innerWallBlockState, BlockDimensionalDoor doorBlock, RiftDestination exitDest, float chaosWeight) {
         int size = (pocketSize + 1) * 16 - 1; // -1 so that the door can be centered
 
         // Set schematic info
@@ -152,11 +153,13 @@ public final class PocketSchematicGenerator {
 
         // Generate the rift TileEntities
         schematic.tileEntities = new ArrayList<>();
-        TileEntityRift rift = (TileEntityRift) doorBlock.createTileEntity(null, doorBlock.getDefaultState());
+        TileEntityEntranceRift rift = (TileEntityEntranceRift) doorBlock.createTileEntity(null, doorBlock.getDefaultState());
         rift.setSingleDestination(PocketEntranceDestination.builder()
                 .ifDestinations(Collections.singletonList(new WeightedRiftDestination(exitDest, 1, 0)))
                 .build());
-        rift.setChaosWeight(0);
+        rift.setChaosWeight(chaosWeight);
+
+        rift.setPlaceRiftOnBreak(true);
         NBTTagCompound tileNBT = rift.serializeNBT();
         tileNBT.setInteger("x", (size - 1) / 2);
         tileNBT.setInteger("y", 5);

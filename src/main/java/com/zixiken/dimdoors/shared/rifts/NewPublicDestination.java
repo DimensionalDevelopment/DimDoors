@@ -25,7 +25,7 @@ public class NewPublicDestination extends RiftDestination { // TODO: more config
 
     @Override
     public boolean teleport(TileEntityRift rift, Entity entity) {
-        Pocket pocket = PocketGenerator.generatePublicPocket(rift.virtualLocation != null ? rift.virtualLocation.toBuilder().depth(-1).build() : null); // TODO: random transform
+        Pocket pocket = PocketGenerator.generatePublicPocket(rift.virtualLocation != null ? rift.virtualLocation.randomTransformDepth() : null); // TODO: random transform
         pocket.setup();
         pocket.linkPocketTo(new GlobalDestination(rift.getLocation()));
         rift.makeDestinationPermanent(weightedDestination, pocket.getEntrance());

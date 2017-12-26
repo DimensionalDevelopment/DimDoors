@@ -27,7 +27,9 @@ public class RiftRegistry extends WorldSavedData {
     @Getter private static final int DATA_VERSION = 0; // IMPORTANT: Update this and upgradeRegistry when making changes.
 
     @Getter private final Map<Location, RiftInfo> rifts = new HashMap<>(); // TODO: store relative locations too (better location class supporting relative, etc)
-    @Getter private final Map<String, Location> privatePocketEntrances = new HashMap<>(); // TODO: more general group-group linking
+    @Getter private final Map<String, Location> privatePocketEntrances = new HashMap<>(); // Player UUID -> last rift used to exit pocket TODO: split into PrivatePocketRiftRegistry subclass
+    @Getter private final Map<String, List<Location>> privatePocketEntranceLists = new HashMap<>(); // Player UUID -> private pocket entrances TODO: split into PrivatePocketRiftRegistry subclass
+    @Getter private final Map<String, Location> privatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
     @Getter private final Map<String, Location> overworldRifts = new HashMap<>();
 
     @Getter private int dim;
@@ -168,6 +170,26 @@ public class RiftRegistry extends WorldSavedData {
             Location rift = Location.readFromNBT(privatePocketEntranceNBTC.getCompoundTag("location"));
             privatePocketEntrances.put(uuid, rift);
         }
+        
+        NBTTagList privatePocketEntranceListsNBT = (NBTTagList) nbt.getTag("privatePocketEntranceLists");
+        for (NBTBase privatePocketEntranceListNBT : privatePocketEntranceListsNBT) { // TODO: move to NBTUtils
+            NBTTagCompound privatePocketEntranceListNBTC = (NBTTagCompound) privatePocketEntranceListNBT;
+            String uuid = privatePocketEntranceListNBTC.getString("uuid");
+            NBTTagList entrancesNBT = (NBTTagList) privatePocketEntranceListNBTC.getTag("locationList");
+            for (NBTBase entranceNBT : entrancesNBT) {
+                NBTTagCompound entranceNBTC = (NBTTagCompound) entranceNBT;
+                Location rift = Location.readFromNBT(entranceNBTC);
+                privatePocketEntranceLists.get(uuid).add(rift);
+            }
+        }
+
+        NBTTagList privatePocketExitsNBT = (NBTTagList) nbt.getTag("privatePocketExits");
+        for (NBTBase privatePocketExitNBT : privatePocketExitsNBT) { // TODO: move to NBTUtils
+            NBTTagCompound privatePocketExitNBTC = (NBTTagCompound) privatePocketExitNBT;
+            String uuid = privatePocketExitNBTC.getString("uuid");
+            Location rift = Location.readFromNBT(privatePocketExitNBTC.getCompoundTag("location"));
+            privatePocketExits.put(uuid, rift);
+        }
 
         NBTTagList overworldRiftsNBT = (NBTTagList) nbt.getTag("overworldRifts");
         for (NBTBase overworldRiftNBT : overworldRiftsNBT) { // TODO: move to NBTUtils
@@ -178,8 +200,7 @@ public class RiftRegistry extends WorldSavedData {
         }
     }
 
-    @SuppressWarnings("unused")
-    private static boolean upgradeRegistry(NBTTagCompound nbt, int oldVersion) {
+    private static boolean upgradeRegistry(@SuppressWarnings("unused") NBTTagCompound nbt, int oldVersion) {
         if (oldVersion > DATA_VERSION) throw new RuntimeException("Upgrade the mod!"); // TODO: better exceptions
         switch (oldVersion) {
             case -1: // No version tag
@@ -217,7 +238,31 @@ public class RiftRegistry extends WorldSavedData {
             privatePocketEntrancesNBT.appendTag(privatePocketEntranceNBT);
         }
         nbt.setTag("privatePocketEntrances", privatePocketEntrancesNBT);
-
+        
+        NBTTagList privatePocketEntranceListsNBT = new NBTTagList();
+        for (HashMap.Entry<String, List<Location>> privatePocketEntranceList : privatePocketEntranceLists.entrySet()) { // TODO: move to NBTUtils
+            if (privatePocketEntranceList.getValue() == null) continue;
+            NBTTagCompound privatePocketEntranceListNBT = new NBTTagCompound();
+            privatePocketEntranceListNBT.setString("uuid", privatePocketEntranceList.getKey());
+            NBTTagList entranceListNBT = new NBTTagList();
+            for (Location entrance : privatePocketEntranceList.getValue()) {
+                entranceListNBT.appendTag(Location.writeToNBT(entrance));
+            }
+            privatePocketEntranceListNBT.setTag("locationList", entranceListNBT);
+            privatePocketEntranceListsNBT.appendTag(privatePocketEntranceListNBT);
+        }
+        nbt.setTag("privatePocketEntranceLists", privatePocketEntranceListsNBT);
+        
+        NBTTagList privatePocketExitsNBT = new NBTTagList();
+        for (HashMap.Entry<String, Location> privatePocketExit : privatePocketExits.entrySet()) { // TODO: move to NBTUtils
+            if (privatePocketExit.getValue() == null) continue;
+            NBTTagCompound privatePocketExitNBT = new NBTTagCompound();
+            privatePocketExitNBT.setString("uuid", privatePocketExit.getKey());
+            privatePocketExitNBT.setTag("location", Location.writeToNBT(privatePocketExit.getValue()));
+            privatePocketExitsNBT.appendTag(privatePocketExitNBT);
+        }
+        nbt.setTag("privatePocketExits", privatePocketExitsNBT);
+        
         NBTTagList overworldRiftsNBT = new NBTTagList();
         for (HashMap.Entry<String, Location> overworldRift : overworldRifts.entrySet()) {
             if (overworldRift.getValue() == null) continue;
@@ -315,11 +360,35 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public Location getPrivatePocketEntrance(String playerUUID) {
-        return privatePocketEntrances.get(playerUUID);
+        Location entrance = privatePocketEntrances.get(playerUUID);
+        List<Location> entrances = privatePocketEntranceLists.computeIfAbsent(playerUUID, k -> new ArrayList<>());
+        while ((entrance == null || !(entrance.getTileEntity() instanceof TileEntityRift)) && entrances.size() > 0) {
+            if (entrance != null) entrances.remove(entrance);
+            entrance = entrances.get(0);
+        }
+        privatePocketEntrances.put(playerUUID, entrance);
+        return entrance;
+    }
+
+    public void addPrivatePocketEntrance(String playerUUID, Location rift) {
+        privatePocketEntranceLists.computeIfAbsent(playerUUID, k -> new ArrayList<>()).add(rift);
     }
 
     public void setPrivatePocketEntrance(String playerUUID, Location rift) {
         privatePocketEntrances.put(playerUUID, rift);
+        markDirty();
+    }
+
+    public Location getPrivatePocketExit(String playerUUID) {
+        return privatePocketExits.get(playerUUID);
+    }
+
+    public void setPrivatePocketExit(String playerUUID, Location rift) {
+        if (rift != null) {
+            privatePocketExits.put(playerUUID, rift);
+        } else {
+            privatePocketExits.remove(playerUUID);
+        }
         markDirty();
     }
 
@@ -328,7 +397,11 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public static void setOverworldRift(String playerUUID, Location rift) {
-        getForDim(0).overworldRifts.put(playerUUID, rift);
+        if (rift != null) {
+            getForDim(0).overworldRifts.put(playerUUID, rift);
+        } else {
+            getForDim(0).overworldRifts.remove(playerUUID);
+        }
         getForDim(0).markDirty();
     }
 

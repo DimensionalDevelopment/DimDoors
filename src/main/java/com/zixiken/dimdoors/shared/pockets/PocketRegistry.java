@@ -1,5 +1,7 @@
 package com.zixiken.dimdoors.shared.pockets;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.zixiken.dimdoors.shared.DDConfig;
 import ddutils.math.GridUtils;
 import com.zixiken.dimdoors.DimDoors;
@@ -19,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 
-public class PocketRegistry extends WorldSavedData {
+public class PocketRegistry extends WorldSavedData { // TODO: unregister pocket entrances, private pocket entrances/exits
 
     private static final String DATA_NAME = DimDoors.MODID + "_pockets";
     @Getter private static final int DATA_VERSION = 0; // IMPORTANT: Update this and upgradeRegistry when making changes.
@@ -28,7 +30,7 @@ public class PocketRegistry extends WorldSavedData {
     @Getter private int maxPocketSize;
     @Getter private int privatePocketSize;
     @Getter private int publicPocketSize;
-    private Map<String, Integer> privatePocketMap; // Player UUID -> Pocket ID, in pocket dim only
+    private BiMap<String, Integer> privatePocketMap; // Player UUID -> Pocket ID, in pocket dim only
     @Getter private Map<Integer, Pocket> pockets; // TODO: remove getter?
     @Getter private int nextID;
 
@@ -66,7 +68,7 @@ public class PocketRegistry extends WorldSavedData {
 
         nextID = 0;
         pockets = new HashMap<>();
-        privatePocketMap = new HashMap<>();
+        privatePocketMap = HashBiMap.create();
     }
 
     @Override
@@ -85,7 +87,7 @@ public class PocketRegistry extends WorldSavedData {
         maxPocketSize = nbt.getInteger("maxPocketSize");
         privatePocketSize = nbt.getInteger("privatePocketSize");
         publicPocketSize = nbt.getInteger("publicPocketSize");
-        privatePocketMap = NBTUtils.readMapStringInteger(nbt.getCompoundTag("privatePocketMap"));
+        privatePocketMap = NBTUtils.readBiMapStringInteger(nbt.getCompoundTag("privatePocketMap"));
         nextID = nbt.getInteger("nextID");
 
         pockets = new HashMap<>();
@@ -187,6 +189,10 @@ public class PocketRegistry extends WorldSavedData {
         Integer id = privatePocketMap.get(playerUUID);
         if (id == null) return -1;
         return id;
+    }
+
+    public String getPrivatePocketOwner(int id) {
+        return privatePocketMap.inverse().get(id);
     }
 
     public void setPrivatePocketID(String playerUUID, int id) {

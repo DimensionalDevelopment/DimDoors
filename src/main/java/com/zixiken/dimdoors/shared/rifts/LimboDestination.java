@@ -1,5 +1,7 @@
 package com.zixiken.dimdoors.shared.rifts;
 
+import com.zixiken.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
+import ddutils.TeleportUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +25,7 @@ public class LimboDestination extends RiftDestination {
 
     @Override
     public boolean teleport(TileEntityRift rift, Entity entity) {
-        throw new RuntimeException("Not yet implemented!");
+        TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity)); // TODO: do we really want to spam Limbo with items?
+        return false;
     }
 }

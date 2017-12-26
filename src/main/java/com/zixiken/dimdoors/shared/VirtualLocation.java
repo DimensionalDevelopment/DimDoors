@@ -68,6 +68,7 @@ public class VirtualLocation { // TODO: use BlockPos/Location
         return virtualLocation;
     }
 
+    // TODO: world-seed based transformations and pocket selections?
     public VirtualLocation transformDepth(int depth) { // TODO: Config option for block ratio between depths (see video of removed features)
         Random random = new Random();
         int depthDiff = Math.abs(this.depth - depth);
@@ -76,6 +77,20 @@ public class VirtualLocation { // TODO: use BlockPos/Location
         int xOffset = random.nextInt((int) Math.pow(base * depthDiff, power)) * (random.nextBoolean() ? 1 : -1);
         int zOffset = random.nextInt((int) Math.pow(base * depthDiff, power)) * (random.nextBoolean() ? 1 : -1);
         return new VirtualLocation(getDim(), getPos().offset(EnumFacing.EAST, xOffset).offset(EnumFacing.SOUTH, zOffset), depth);
+    }
+
+    public VirtualLocation randomTransformDepth() {
+        float r = new Random().nextFloat();
+        int newDepth;
+        if (r > 0.9) { // TODO: per-rift probabilities
+            newDepth = depth - 1;
+        } else if (r > 0.75) {
+            newDepth = depth;
+        } else {
+            newDepth = depth + 1;
+        }
+        if (newDepth < 1) newDepth = 1;
+        return transformDepth(newDepth);
     }
 
     public Location projectToWorld() {

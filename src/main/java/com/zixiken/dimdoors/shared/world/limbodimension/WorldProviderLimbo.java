@@ -82,9 +82,9 @@ public class WorldProviderLimbo extends WorldProvider {
         return new LimboGenerator(world, world.getSeed());
     }
 
-    public static Location getLimboSkySpawn(EntityPlayer player) {
-        int x = (int) player.posX + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); // TODO: -properties.LimboEntryRange, properties.LimboEntryRange);
-        int z = (int) player.posZ + MathHelper.clamp(player.world.rand.nextInt(), -100, 100); // TODO: -properties.LimboEntryRange, properties.LimboEntryRange);
+    public static Location getLimboSkySpawn(Entity entity) { // TODO: move this into projectToLimbo
+        int x = (int) entity.posX + MathHelper.clamp(entity.world.rand.nextInt(), -100, 100); // TODO: -properties.LimboEntryRange, properties.LimboEntryRange);
+        int z = (int) entity.posZ + MathHelper.clamp(entity.world.rand.nextInt(), -100, 100); // TODO: -properties.LimboEntryRange, properties.LimboEntryRange);
         return new Location(DimDoorDimensions.limbo.getId(), x, 700, z);
     }
 
@@ -99,7 +99,6 @@ public class WorldProviderLimbo extends WorldProvider {
     public DimensionType getDimensionType() {
         return DimDoorDimensions.limbo;
     }
-
 
     @SideOnly(Side.CLIENT)
     @Override

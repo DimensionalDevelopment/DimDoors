@@ -65,7 +65,7 @@ public class PocketEntranceDestination extends RiftDestination {
 
     @Override
     public boolean teleport(TileEntityRift rift, Entity entity) {
-        if (entity instanceof EntityPlayer) DimDoors.chat((EntityPlayer) entity, "The entrance of this dungeon has not been linked. Either this is a bug or you are in dungeon-building mode.");
+        if (entity instanceof EntityPlayer) DimDoors.chat((EntityPlayer) entity, "The entrances of this dungeon has not been linked. Either this is a bug or you are in dungeon-building mode.");
         return false;
     }
 }

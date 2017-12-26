@@ -12,12 +12,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import scala.actors.threadpool.Arrays;
 
 /**
- *
  * @author Robijnvogel
  */
 public final class DDConfig {
-
-    public static final boolean HAVE_CONFIG_DEFAULTS_BEEN_CHECKED_FOR_CORRECTNESS = false; //@todo check this at each non-alpha release. This field does not have a use in the mod itself, but should ensure that the developers of this mod, don't forget to resetToConfigDefaults the config defaults to the right values before releasing a non-alpha release
 
     public static File configurationFolder;
     @Getter private static int pocketGridSize = 32;

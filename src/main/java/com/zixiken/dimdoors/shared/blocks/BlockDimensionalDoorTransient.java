@@ -6,7 +6,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockDimensionalDoorTransient extends BlockDimensionalDoor { // TODO: convert to a more general entrance block (like nether portals)
+public class BlockDimensionalDoorTransient extends BlockDimensionalDoor { // TODO: convert to a more general entrances block (like nether portals)
 
     public static final String ID = "transient_dimensional_door";
 

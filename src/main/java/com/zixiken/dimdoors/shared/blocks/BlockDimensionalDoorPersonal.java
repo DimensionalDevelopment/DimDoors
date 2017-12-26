@@ -33,7 +33,7 @@ public class BlockDimensionalDoorPersonal extends BlockDimensionalDoor {
         if (rift.getWorld().provider instanceof WorldProviderPersonalPocket) {
             destination = PrivatePocketExitDestination.builder().build(); // exit
         } else {
-            destination = PrivateDestination.builder().build(); // entrance
+            destination = PrivateDestination.builder().build(); // entrances
         }
         rift.setSingleDestination(destination);
         rift.setChaosWeight(0); // TODO: generated schematic exits too

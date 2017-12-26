@@ -1,5 +1,6 @@
 package com.zixiken.dimdoors.shared.rifts;
 
+import com.zixiken.dimdoors.DimDoors;
 import com.zixiken.dimdoors.shared.pockets.Pocket;
 import com.zixiken.dimdoors.shared.pockets.PocketGenerator;
 import com.zixiken.dimdoors.shared.pockets.PocketRegistry;
@@ -35,25 +36,27 @@ public class PrivateDestination extends RiftDestination {
             PocketRegistry privatePocketRegistry = PocketRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
             RiftRegistry privateRiftRegistry = RiftRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
             Pocket pocket = privatePocketRegistry.getPocket(privatePocketRegistry.getPrivatePocketID(uuid));
-            if (pocket == null) { // generate the private pocket and get its entrance // TODO: use VirtualLocation.fromLoc vvv
-                pocket = PocketGenerator.generatePrivatePocket(rift.virtualLocation != null ? rift.virtualLocation.toBuilder().depth(-2).build() : null); // set to where the pocket was first created
+            if (pocket == null) { // generate the private pocket and get its entrances
+                pocket = PocketGenerator.generatePrivatePocket(rift.virtualLocation != null ? rift.virtualLocation.toBuilder().depth(-1).build() : null); // set to where the pocket was first created
                 pocket.setup();
                 privatePocketRegistry.setPrivatePocketID(uuid, pocket.getId());
                 ((TileEntityRift) pocket.getEntrance().getTileEntity()).teleportTo(entity);
+                privateRiftRegistry.setPrivatePocketExit(uuid, rift.getLocation());
                 return true;
             } else {
-                Location destLoc = privateRiftRegistry.getPrivatePocketEntrance(uuid); // get the last used entrance
-                if (destLoc == null) destLoc = pocket.getEntrance(); // if there's none, then set the target to the main entrance
-                if (destLoc == null) { // if the pocket entrance is gone, then create a new private pocket
-                    pocket = PocketGenerator.generatePrivatePocket(rift.virtualLocation != null ? rift.virtualLocation.toBuilder().depth(-2).build() : null);
+                Location destLoc = privateRiftRegistry.getPrivatePocketEntrance(uuid); // get the last used entrances
+                if (destLoc == null) destLoc = pocket.getEntrance(); // if there's none, then set the target to the main entrances
+                if (destLoc == null) { // if the pocket entrances is gone, then create a new private pocket
+                    DimDoors.log.info("All entrances are gone, creating a new private pocket!");
+                    pocket = PocketGenerator.generatePrivatePocket(rift.virtualLocation != null ? rift.virtualLocation.toBuilder().depth(-1).build() : null);
                     pocket.setup();
                     privatePocketRegistry.setPrivatePocketID(uuid, pocket.getId());
                     destLoc = pocket.getEntrance();
                 }
                 ((TileEntityRift) destLoc.getTileEntity()).teleportTo(entity);
+                privateRiftRegistry.setPrivatePocketExit(uuid, rift.getLocation());
                 return true;
             }
-            // privateRiftRegistry.setPrivatePocketEntrance(uuid, null); // --forget the last entered entrance-- Actually, remember it. We'll eventually store it only in the rift registry, not in the pocket.
         } else {
             return false; // TODO: There should be a way to get other entities into your private pocket, though. Add API for other mods.
         }

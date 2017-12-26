@@ -21,7 +21,7 @@ public class Pocket { // TODO: better visibilities
     @Getter private int z; // Grid y
     @Getter @Setter private int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
     @Getter @Setter private VirtualLocation virtualLocation; // The non-pocket dimension from which this dungeon was created
-    @Getter @Setter Location entrance; // TODO: multiple entrances
+    @Getter @Setter Location entrance;
     @Getter List<Location> riftLocations;
 
     @Getter int dimID; // Not saved
@@ -161,7 +161,9 @@ public class Pocket { // TODO: better visibilities
                 if (dest instanceof PocketExitDestination) {
                     destIterator.remove();
                     destIterator.add(new WeightedRiftDestination(linkTo, wdest.getWeight(), wdest.getGroup(), dest));
-                    if (rift instanceof TileEntityEntranceRift) ((TileEntityEntranceRift) rift).setPlaceRiftOnBreak(true);
+                    if (rift instanceof TileEntityEntranceRift && !rift.isAlwaysDelete()) {
+                        ((TileEntityEntranceRift) rift).setPlaceRiftOnBreak(true); // We modified the door's state
+                    }
                     rift.markDirty();
                 }
             }

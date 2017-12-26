@@ -37,7 +37,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
     @Getter protected boolean preserveRotation;
     @Getter protected float yaw;
     @Getter protected float pitch;
-    @Getter protected boolean alwaysDelete; // Delete the rift when an entrance rift is broken even if the state was changed or destinations link there.
+    @Getter protected boolean alwaysDelete; // Delete the rift when an entrances rift is broken even if the state was changed or destinations link there.
     @Getter protected float chaosWeight;
     // TODO: option to convert to door on teleportTo?
 
@@ -178,7 +178,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
         addDestination(destination, 1, 0);
     }
 
-    public void setChaosWeight(int chaosWeight) {
+    public void setChaosWeight(float chaosWeight) {
         this.chaosWeight = chaosWeight;
         markDirty();
     }
@@ -226,7 +226,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                 pocketRegistry.markDirty();
             }
         }
-        // TODO: inform pocket that entrance was destroyed (we'll probably need an isPrivate field on the pocket)
+        // TODO: inform pocket that entrances was destroyed (we'll probably need an isPrivate field on the pocket)
     }
 
     public void updateAvailableLinks() { // Update available link info on rift type change or on virtualLocation change
