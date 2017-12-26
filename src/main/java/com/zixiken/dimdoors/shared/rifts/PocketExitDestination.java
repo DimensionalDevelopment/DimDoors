@@ -4,11 +4,12 @@ import com.zixiken.dimdoors.DimDoors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
-@Getter @AllArgsConstructor @Builder(toBuilder = true)
+@Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 public class PocketExitDestination extends RiftDestination {
     //public PocketExitDestination() {}
 

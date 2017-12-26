@@ -158,10 +158,17 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
         markDirty();
     }
 
-    public void removeDestination(int index) {
+    public void addDestination(RiftDestination destination, float weight, int group, RiftDestination oldDestination) {
         riftStateChanged = true;
-        RiftDestination dest = destinations.remove(index).getDestination();
-        if (isRegistered()) dest.unregister(this);
+        destinations.add(new WeightedRiftDestination(destination, weight, group, oldDestination));
+        if (isRegistered()) destination.register(this);
+        markDirty();
+    }
+
+    public void removeDestination(WeightedRiftDestination dest) {
+        riftStateChanged = true;
+        destinations.remove(dest);
+        if (isRegistered()) dest.getDestination().unregister(this);
         markDirty();
     }
 
@@ -196,8 +203,8 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
         } else {
             newDest = new GlobalDestination(destLoc);
         }
-        destinations.remove(weightedDestination);
-        destinations.add(new WeightedRiftDestination(newDest, weightedDestination.getWeight(), weightedDestination.getGroup(), weightedDestination.getDestination()));
+        removeDestination(weightedDestination);
+        addDestination(newDest, weightedDestination.getWeight(), weightedDestination.getGroup(), weightedDestination.getDestination());
         markDirty();
     }
 
@@ -217,7 +224,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
 
     public void unregister() {
         if (!isRegistered()) return;
-        RiftRegistry.removeRift(new Location(world, pos));
+        RiftRegistry.removeRift(new Location(world, pos)); // TODO: unregister destinations
         if (DimDoorDimensions.isPocketDimension(WorldUtils.getDim(world))) {
             PocketRegistry pocketRegistry = PocketRegistry.getForDim(WorldUtils.getDim(world));
             Pocket pocket = pocketRegistry.getPocketAt(pos);
@@ -246,10 +253,11 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
             WeightedRiftDestination wdest = wdestIterator.next();
             RiftDestination dest = wdest.getDestination();
             if (loc.equals(dest.getReferencedRift(getLocation()))) {
-                wdestIterator.remove();
+                wdestIterator.remove(); // TODO: unregister*
                 RiftDestination oldDest = wdest.getOldDestination();
                 if (oldDest != null) {
                     wdestIterator.add(new WeightedRiftDestination(oldDest, wdest.getWeight(), wdest.getGroup()));
+                    if (isRegistered()) oldDest.register(this);
                 }
             }
         }
@@ -262,7 +270,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
 
         // Check that the rift has destinations
         if (destinations.size() == 0) {
-            if (entity instanceof EntityPlayer) DimDoors.chat((EntityPlayer) entity, "This rift has no destinations!");
+            DimDoors.chat(entity, "This rift has no destinations!");
             return false;
         }
 
@@ -290,7 +298,7 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
                 return true;
             }
         } catch (Exception e) {
-            if (entity instanceof EntityPlayer) DimDoors.chat((EntityPlayer) entity, "There was an exception while teleporting!");
+            DimDoors.chat(entity, "There was an exception while teleporting!");
             DimDoors.log.error("Teleporting failed with the following exception: ", e);
         }
         return false;

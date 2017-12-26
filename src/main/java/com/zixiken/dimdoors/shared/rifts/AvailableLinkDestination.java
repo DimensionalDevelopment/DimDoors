@@ -6,6 +6,7 @@ import ddutils.math.MathUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -15,7 +16,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 
-@Getter @AllArgsConstructor @Builder(toBuilder = true)
+@Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 public class AvailableLinkDestination extends RiftDestination { // TODO
     private float newDungeonRiftProbability;
     private float depthPenalization; // TODO: these make the equation assymetric

@@ -10,7 +10,7 @@ import lombok.*;  // Don't change import order! (Gradle bug): https://stackoverf
 
 import java.lang.reflect.InvocationTargetException;
 
-@Getter @ToString @EqualsAndHashCode
+@Getter @EqualsAndHashCode @ToString
 public abstract class RiftDestination implements INBTStorable {
 
     /*private*/ public static final BiMap<String, Class<? extends RiftDestination>> destinationRegistry = HashBiMap.create(); // TODO: move to RiftDestinationRegistry

@@ -5,10 +5,11 @@ import ddutils.TeleportUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 
-@Getter @AllArgsConstructor @Builder(toBuilder = true)
+@Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 public class LimboDestination extends RiftDestination {
     //public LimboDestination() {}
 

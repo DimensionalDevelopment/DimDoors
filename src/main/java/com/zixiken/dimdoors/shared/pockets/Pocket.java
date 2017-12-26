@@ -160,7 +160,9 @@ public class Pocket { // TODO: better visibilities
                 RiftDestination dest = wdest.getDestination();
                 if (dest instanceof PocketExitDestination) {
                     destIterator.remove();
+                    if (rift.isRegistered()) dest.unregister(rift);
                     destIterator.add(new WeightedRiftDestination(linkTo, wdest.getWeight(), wdest.getGroup(), dest));
+                    if (rift.isRegistered()) linkTo.register(rift);
                     if (rift instanceof TileEntityEntranceRift && !rift.isAlwaysDelete()) {
                         ((TileEntityEntranceRift) rift).setPlaceRiftOnBreak(true); // We modified the door's state
                     }

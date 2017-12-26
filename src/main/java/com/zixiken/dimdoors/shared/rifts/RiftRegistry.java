@@ -313,7 +313,7 @@ public class RiftRegistry extends WorldSavedData {
         RiftRegistry registryFrom = getRegistry(from);
         RiftRegistry registryTo = getRegistry(to);
         registryFrom.rifts.get(from).destinations.add(to);
-        registryTo.rifts.get(to).destinations.add(from);
+        registryTo.rifts.get(to).sources.add(from);
         registryFrom.markDirty();
         registryTo.markDirty();
     }
@@ -322,7 +322,7 @@ public class RiftRegistry extends WorldSavedData {
         RiftRegistry registryFrom = getRegistry(from);
         RiftRegistry registryTo = getRegistry(to);
         registryFrom.rifts.get(from).destinations.remove(to);
-        registryTo.rifts.get(to).destinations.remove(from);
+        registryTo.rifts.get(to).sources.remove(from);
         registryFrom.markDirty();
         registryTo.markDirty();
     }

@@ -24,7 +24,9 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
         if (result == EnumActionResult.SUCCESS) {
             if (!world.getBlockState(pos).getBlock().isReplaceable(world, pos)) pos = pos.offset(facing);
             IBlockState state = world.getBlockState(pos);
-            ((IRiftProvider<?>) state.getBlock()).handleRiftSetup(world, pos, state);
+            if (state.getBlock() instanceof IRiftProvider<?>) { // In case the door is placed on glass/leaves
+                ((IRiftProvider<?>) state.getBlock()).handleRiftSetup(world, pos, state);
+            }
         }
         return result;
     }
