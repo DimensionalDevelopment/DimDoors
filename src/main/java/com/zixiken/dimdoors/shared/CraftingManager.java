@@ -79,5 +79,11 @@ public final class CraftingManager {
         
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.RIFT_CONNECTION_TOOL),
                 " w ", "xyx", "xzx", 'z', Items.DIAMOND_SHOVEL, 'y', ModItems.STABLE_FABRIC, 'x', ModItems.WORLD_THREAD, 'w', Items.DIAMOND));
+
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.RIFT_REMOVER),
+                " x ", "xyx", " x ", 'x', Items.GOLD_INGOT, 'y', Items.ENDER_PEARL));
+
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.RIFT_REMOVER),
+                "xxx", "xyx", "xxx", 'x', Items.GOLD_INGOT, 'y', ModItems.STABLE_FABRIC));
     }
 }
