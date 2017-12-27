@@ -8,7 +8,7 @@ import java.util.List;
 
 public final class I18nUtils {
     @SideOnly(Side.CLIENT)
-    public static void translateAndAdd(String key, List<String> list) { // TODO: move to utils?
+    public static void translateAndAdd(String key, List<String> list) {
         int i = 0;
         while (I18n.hasKey(key + Integer.toString(i))) {
             list.add(I18n.format(key + Integer.toString(i)));

@@ -211,12 +211,16 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
 
     // LOADING CODE ENDS HERE </editor-fold>
 
-    public ArrayList<String> getTemplateGroups() {
-        return new ArrayList<>(nameMap.keySet());
+    public Set<String> getTemplateGroups() {
+        return nameMap.keySet();
     }
 
-    public ArrayList<String> getTemplateNames(String group) {
-        return new ArrayList<>(nameMap.get(group).keySet()); // TODO: null pointer here
+    public Set<String> getTemplateNames(String group) {
+        if (nameMap.containsKey(group)) {
+            return nameMap.get(group).keySet();
+        } else {
+            return new HashSet<>();
+        }
     }
 
     /**

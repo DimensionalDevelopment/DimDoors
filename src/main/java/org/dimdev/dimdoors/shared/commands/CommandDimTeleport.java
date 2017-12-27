@@ -2,9 +2,11 @@ package org.dimdev.dimdoors.shared.commands;
 
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.Location;
-import org.dimdev.ddutils.StringUtils;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import org.dimdev.ddutils.TeleportUtils;
@@ -78,9 +80,12 @@ public class CommandDimTeleport extends CommandBase { // TODO: localization
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         if (args.length == 1) {
-            List<String> list = StringUtils.getAsStringList(DimensionManager.getIDs());
-            return StringUtils.getMatchingStrings(args[0], list, false);
+            return Arrays.stream(DimensionManager.getIDs())
+                    .map(Object::toString)
+                    .filter(s -> s.toLowerCase().startsWith(args[0].toLowerCase()))
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
     }
 }

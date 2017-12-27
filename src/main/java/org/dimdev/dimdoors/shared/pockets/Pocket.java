@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.pockets;
 
+import org.dimdev.ddutils.nbt.INBTStorable;
 import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.rifts.*;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
@@ -14,7 +15,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
-public class Pocket { // TODO: better visibilities
+public class Pocket implements INBTStorable{ // TODO: better visibilities
 
     @Getter private int id;
     @Getter private int x; // Grid x TODO: rename to gridX and gridY
@@ -26,9 +27,9 @@ public class Pocket { // TODO: better visibilities
 
     @Getter int dimID; // Not saved
 
-    private Pocket() {}
+    public Pocket() {}
 
-    Pocket(int id, int dimID, int x, int z) {
+    public Pocket(int id, int dimID, int x, int z) {
         this.id = id;
         this.dimID = dimID;
         this.x = x;
@@ -36,35 +37,33 @@ public class Pocket { // TODO: better visibilities
         riftLocations = new ArrayList<>();
     }
 
-    static Pocket readFromNBT(NBTTagCompound nbt) {
-        Pocket pocket = new Pocket();
-        pocket.id = nbt.getInteger("id");
-        pocket.x = nbt.getInteger("x");
-        pocket.z = nbt.getInteger("z");
-        pocket.size = nbt.getInteger("size");
-        if (nbt.hasKey("virtualLocation")) pocket.virtualLocation = VirtualLocation.readFromNBT(nbt.getCompoundTag("virtualLocation"));
-        if (nbt.hasKey("entrance")) pocket.entrance = Location.readFromNBT(nbt.getCompoundTag("entrance"));
+    @Override
+    public /*static Pocket*/ void readFromNBT(NBTTagCompound nbt) {
+        id = nbt.getInteger("id");
+        x = nbt.getInteger("x");
+        z = nbt.getInteger("z");
+        size = nbt.getInteger("size");
+        if (nbt.hasKey("virtualLocation")) virtualLocation = VirtualLocation.readFromNBT(nbt.getCompoundTag("virtualLocation"));
+        if (nbt.hasKey("entrance")) entrance = Location.readFromNBT(nbt.getCompoundTag("entrance"));
 
-        pocket.riftLocations = new ArrayList<>();
+        riftLocations = new ArrayList<>();
         NBTTagList riftLocationsNBT = (NBTTagList) nbt.getTag("riftLocations");
         for (NBTBase riftLocationNBT : riftLocationsNBT) {
-            pocket.riftLocations.add(Location.readFromNBT((NBTTagCompound) riftLocationNBT));
+            riftLocations.add(Location.readFromNBT((NBTTagCompound) riftLocationNBT));
         }
-
-        return pocket;
     }
 
-    static NBTBase writeToNBT(Pocket pocket) {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setInteger("id", pocket.id);
-        nbt.setInteger("x", pocket.x);
-        nbt.setInteger("z", pocket.z);
-        nbt.setInteger("size", pocket.size);
-        if (pocket.virtualLocation != null) nbt.setTag("virtualLocation", pocket.virtualLocation.writeToNBT());
-        if (pocket.entrance != null) nbt.setTag("entrance", Location.writeToNBT(pocket.entrance));
+    @Override
+    public /*static*/ NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        nbt.setInteger("id", id);
+        nbt.setInteger("x", x);
+        nbt.setInteger("z", z);
+        nbt.setInteger("size", size);
+        if (virtualLocation != null) nbt.setTag("virtualLocation", virtualLocation.writeToNBT());
+        if (entrance != null) nbt.setTag("entrance", Location.writeToNBT(entrance));
 
         NBTTagList riftLocationsNBT = new NBTTagList();
-        for (Location loc : pocket.riftLocations) {
+        for (Location loc : riftLocations) {
             riftLocationsNBT.appendTag(Location.writeToNBT(loc));
         }
         nbt.setTag("riftLocations", riftLocationsNBT);

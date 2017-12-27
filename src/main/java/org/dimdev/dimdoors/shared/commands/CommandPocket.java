@@ -5,7 +5,6 @@ import org.dimdev.dimdoors.shared.*;
 import org.dimdev.dimdoors.shared.pockets.*;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.ddutils.Location;
-import org.dimdev.ddutils.StringUtils;
 import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
@@ -20,6 +19,7 @@ import net.minecraft.util.text.TextComponentString;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandPocket extends CommandBase {
 
@@ -110,16 +110,18 @@ public class CommandPocket extends CommandBase {
         List<String> list = new ArrayList<>();
         switch (args.length) {
             case 1:
-                list = SchematicHandler.INSTANCE.getTemplateGroups();
+                list = new ArrayList<>(SchematicHandler.INSTANCE.getTemplateGroups());
                 break;
             case 2:
-                list = SchematicHandler.INSTANCE.getTemplateNames(args[0]);
+                list = new ArrayList<>(SchematicHandler.INSTANCE.getTemplateNames(args[0]));
                 break;
             case 3:
                 list.add("true");
                 list.add("false");
                 break;
         }
-        return StringUtils.getMatchingStrings(args[0], list, false);
+        return list.stream()
+                .filter(s -> s.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+                .collect(Collectors.toList());
     }
 }

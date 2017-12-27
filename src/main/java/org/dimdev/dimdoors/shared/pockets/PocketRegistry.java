@@ -87,14 +87,14 @@ public class PocketRegistry extends WorldSavedData { // TODO: unregister pocket 
         maxPocketSize = nbt.getInteger("maxPocketSize");
         privatePocketSize = nbt.getInteger("privatePocketSize");
         publicPocketSize = nbt.getInteger("publicPocketSize");
-        privatePocketMap = NBTUtils.readBiMapStringInteger(nbt.getCompoundTag("privatePocketMap"));
+        privatePocketMap = NBTUtils.readMapStringInteger(nbt.getCompoundTag("privatePocketMap"), HashBiMap.create());
         nextID = nbt.getInteger("nextID");
 
         pockets = new HashMap<>();
         NBTTagList pocketsNBT = (NBTTagList) nbt.getTag("pockets");
         for (NBTBase pocketNBT : pocketsNBT) { // TODO: convert to map to be able to skip IDs efficiently
             NBTTagCompound pocketNBTC = (NBTTagCompound) pocketNBT;
-            pockets.put(pocketNBTC.getInteger("id"), Pocket.readFromNBT(pocketNBTC));
+            pockets.put(pocketNBTC.getInteger("id"), NBTUtils.readNBTStorable(new Pocket(), (NBTTagCompound) pocketNBT));
         }
 
         for (Pocket pocket : pockets.values()) {
@@ -133,7 +133,7 @@ public class PocketRegistry extends WorldSavedData { // TODO: unregister pocket 
         NBTTagList pocketsNBT = new NBTTagList();
         for (Map.Entry<Integer, Pocket> pocketEntry : pockets.entrySet()) {
             if (pocketEntry.getValue() == null) continue;
-            NBTTagCompound pocketNBT = (NBTTagCompound) Pocket.writeToNBT(pocketEntry.getValue());
+            NBTTagCompound pocketNBT = (NBTTagCompound) pocketEntry.getValue().writeToNBT(new NBTTagCompound());
             pocketNBT.setInteger("id", pocketEntry.getKey()); // TODO: store separately?
             pocketsNBT.appendTag(pocketNBT);
         }

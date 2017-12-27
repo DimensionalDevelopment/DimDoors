@@ -32,15 +32,14 @@ public final class GridUtils {
      * @param pos The location on the grid
      * @return The location on the grid
      */
-    public static int posToNum(GridPos pos) { // TODO: comments
+    public static int posToNum(GridPos pos) {
         int x = pos.getX();
         int z = pos.getZ();
-        if (x >= z) {
-            return x * x + z;
-        } else {
-            return (z + 2) * z - z;
+        if (x >= z) { // First side
+            return x * x + z; // (number of points in the square x * x) + (z points on the top layer)
+        } else { // Second side
+            return (z + 1) * z + z - x; // (number of points in the rectangle (z + 1) * z) + (z - x points on the top layer)
         }
     }
-
     // TODO: add more modes: hexagonal sphere packing and maybe spiral, triangle
 }
