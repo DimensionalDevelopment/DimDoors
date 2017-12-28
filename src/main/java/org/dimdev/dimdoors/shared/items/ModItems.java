@@ -27,6 +27,7 @@ public final class ModItems {
     public static final ItemRiftConnectionTool RIFT_CONNECTION_TOOL = new ItemRiftConnectionTool();
     public static final ItemRiftBlade RIFT_BLADE = new ItemRiftBlade();
     public static final ItemRiftRemover RIFT_REMOVER = new ItemRiftRemover();
+    public static final ItemRiftSignature RIFT_SIGNATURE = new ItemRiftSignature();
 
     // ItemBlocks
     public static final ItemFabric FABRIC = new ItemFabric();
@@ -46,7 +47,8 @@ public final class ModItems {
                 WORLD_THREAD,
                 RIFT_CONNECTION_TOOL,
                 RIFT_BLADE,
-                RIFT_REMOVER);
+                RIFT_REMOVER,
+                RIFT_SIGNATURE);
 
         // ItemBlocks
         event.getRegistry().registerAll(
