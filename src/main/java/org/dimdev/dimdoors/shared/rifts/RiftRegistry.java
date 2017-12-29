@@ -163,10 +163,16 @@ import java.util.*;
     public static void addLink(Location from, Location to) {
         RiftRegistry registryFrom = getRegistry(from);
         RiftRegistry registryTo = getRegistry(to);
-        registryFrom.rifts.get(from).destinations.add(to);
-        registryTo.rifts.get(to).sources.add(from);
-        registryFrom.markDirty();
-        registryTo.markDirty();
+        RiftInfo riftInfoFrom = registryFrom.rifts.get(from);
+        RiftInfo riftInfoTo = registryTo.rifts.get(to);
+        if (riftInfoFrom != null) {
+            riftInfoFrom.destinations.add(to);
+            registryFrom.markDirty();
+        }
+        if (riftInfoTo != null) {
+            registryTo.rifts.get(to).sources.add(from);
+            registryTo.markDirty();
+        }
     }
 
     public static void removeLink(Location from, Location to) {

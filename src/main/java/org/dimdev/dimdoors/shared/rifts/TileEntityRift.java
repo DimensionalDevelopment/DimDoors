@@ -111,7 +111,12 @@ import java.util.*;
     public void setRotation(float yaw, float pitch) {
         this.yaw = yaw;
         this.pitch = pitch;
+        preserveRotation = false;
         markDirty();
+    }
+
+    public void clearRotation() {
+        preserveRotation = true;
     }
 
     public void addDestination(RiftDestination destination, float weight, int group) {

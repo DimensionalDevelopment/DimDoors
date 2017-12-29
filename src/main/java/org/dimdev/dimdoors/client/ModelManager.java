@@ -43,6 +43,7 @@ public final class ModelManager {
         register(ModItems.RIFT_CONNECTION_TOOL);
         register(ModItems.RIFT_BLADE);
         register(ModItems.RIFT_REMOVER);
+        register(ModItems.RIFT_SIGNATURE);
     }
 
     public static void registerModelVariants() {

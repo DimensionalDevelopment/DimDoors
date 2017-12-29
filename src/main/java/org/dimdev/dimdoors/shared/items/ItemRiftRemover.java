@@ -25,7 +25,8 @@ public class ItemRiftRemover extends Item {
         setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        maxStackSize = 1;
+        setMaxStackSize(1);
+        setMaxDamage(100);
     }
 
     @Override
@@ -34,18 +35,19 @@ public class ItemRiftRemover extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer playerIn, EnumHand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer playerIn, EnumHand handIn) { // TODO: permissions
         ItemStack stack = playerIn.getHeldItem(handIn);
 
         if (world.isRemote) {
             return new ActionResult<>(EnumActionResult.FAIL, stack);
         }
+
         RayTraceResult hit = rayTrace(world, playerIn, true);
         if (RayTraceHelper.isRift(hit, world)) {
             TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(hit.getBlockPos());
             world.setBlockState(rift.getPos(), Blocks.AIR.getDefaultState());
 
-            stack.damageItem(1, playerIn);
+            stack.damageItem(10, playerIn);
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
         return new ActionResult<>(EnumActionResult.FAIL, stack);

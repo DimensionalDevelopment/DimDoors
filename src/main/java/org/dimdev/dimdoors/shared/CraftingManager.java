@@ -81,9 +81,15 @@ public final class CraftingManager {
                 " w ", "xyx", "xzx", 'z', Items.DIAMOND_SHOVEL, 'y', ModItems.STABLE_FABRIC, 'x', ModItems.WORLD_THREAD, 'w', Items.DIAMOND));
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.RIFT_REMOVER),
-                " x ", "xyx", " x ", 'x', Items.GOLD_INGOT, 'y', Items.ENDER_PEARL));
+                " x ", "xyx", " x ", 'x', Items.GOLD_INGOT, 'y', Items.ENDER_PEARL)); // TODO: this uses to be 8 ingots in Steven's mod
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.RIFT_REMOVER),
                 "xxx", "xyx", "xxx", 'x', Items.GOLD_INGOT, 'y', ModItems.STABLE_FABRIC));
+
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.RIFT_SIGNATURE),
+                " x ", "xyx", " x ", 'x', Items.GOLD_INGOT, 'y', Items.ENDER_PEARL));
+
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.RIFT_SIGNATURE),
+                " x ", "xyx", "xxx", 'x', Items.GOLD_INGOT, 'y', ModItems.STABLE_FABRIC));
     }
 }

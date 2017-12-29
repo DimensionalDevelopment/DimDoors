@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.shared.items;
 
-import lombok.ToString;
-import lombok.Value;
+import lombok.*;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,6 +11,9 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.ddutils.Location;
+import org.dimdev.ddutils.nbt.INBTStorable;
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.ddutils.nbt.SavedToNBT;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.I18nUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -33,56 +35,44 @@ public class ItemRiftSignature extends Item {
     public static final String ID = "rift_signature";
 
     public ItemRiftSignature() {
-        super();
-        this.setMaxStackSize(1);
-        this.setMaxDamage(0);
-        this.hasSubtypes = true;
-        this.setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
-        this.setUnlocalizedName(ID);
-        this.setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setMaxStackSize(1);
+        setMaxDamage(10000);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setUnlocalizedName(ID);
+        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public boolean hasEffect(ItemStack stack) {
-        return stack.getItemDamage() != 0;
+        return stack.getTagCompound() != null && stack.getTagCompound().hasKey("destination");
     }
 
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
-        // We must use onItemUseFirst() instead of onItemUse() because Minecraft checks
-        // whether the user is in creative mode after calling onItemUse() and undoes any
-        // damage we might set to indicate the rift sig has been activated. Otherwise,
-        // we would need to rely on checking NBT tags for hasEffect() and that function
-        // gets called constantly. Avoiding NBT lookups reduces our performance impact.
-
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        ItemStack stack = player.getHeldItem(hand);
         // Return false on the client side to pass this request to the server
         if (world.isRemote) {
             return EnumActionResult.FAIL;
         }
 
-        ItemStack stack = player.getHeldItem(hand);
-
-        //Increase y by 2 to place the rift at head level
-        BlockPos adjustedPos = adjustYForSpecialBlocks(world, pos.up(2));
-        if (!player.canPlayerEdit(adjustedPos, side, stack)) {
+        // Fail if the player can't place a block there TODO: spawn protection, other plugin support
+        if (!player.canPlayerEdit(pos, side.getOpposite(), stack)) {
             return EnumActionResult.PASS;
         }
+        pos = pos.offset(side);
 
         Transform source = getSource(stack);
-        int orientation = MathHelper.floor(((player.rotationYaw + 180.0F) * 4.0F / 360.0F) - 0.5D);
 
         if (source != null) {
-
-            // Try placing a rift at the destination point
-            world.setBlockState(adjustedPos, ModBlocks.RIFT.getDefaultState());
-            TileEntityRift rift1 = (TileEntityRift) source.getLocation().getTileEntity();
+            // Place a rift at the destination point
+            world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
+            TileEntityRift rift1 = (TileEntityRift) world.getTileEntity(pos);
             rift1.setSingleDestination(new GlobalDestination(source.getLocation()));
             rift1.setRotation(source.getYaw(), 0);
             rift1.register();
 
-            // Try placing a rift at the source point
-            // We don't need to check if sourceWorld is null - that's already handled.
+            // Place a rift at the destination point
             World sourceWorld = source.getLocation().getWorld();
             sourceWorld.setBlockState(source.location.getPos(), ModBlocks.RIFT.getDefaultState());
             TileEntityRift rift2 = (TileEntityRift) source.getLocation().getTileEntity();
@@ -90,17 +80,14 @@ public class ItemRiftSignature extends Item {
             rift2.setRotation(source.getYaw(), 0);
             rift2.register();
 
-
-            if (!player.capabilities.isCreativeMode) {
-                stack.setCount(stack.getCount() - 1);
-            }
+            stack.damageItem(5000, player); // TODO: calculate damage based on position
 
             clearSource(stack);
             DimDoors.chat(player, "Rift Created");
             world.playSound(player, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
-            //The link signature has not been used. Store its current target as the first location.
-            setSource(stack, new Transform(new Location(world, adjustedPos), orientation));
+            // The link signature has not been used. Store its current target as the first location.
+            setSource(stack, new Transform(new Location(world, pos), player.rotationYaw));
             DimDoors.chat(player, "Location Stored in Rift Signature");
             world.playSound(player, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         }
@@ -109,100 +96,43 @@ public class ItemRiftSignature extends Item {
     }
 
     public static void setSource(ItemStack itemStack, Transform destination) {
-        NBTTagCompound tag = new NBTTagCompound();
-
-        tag.setTag("destination", Transform.writeToNBT(destination));
-
-        itemStack.setTagCompound(tag);
-        itemStack.setItemDamage(1);
+        if (!itemStack.hasTagCompound()) itemStack.setTagCompound(new NBTTagCompound());
+        itemStack.getTagCompound().setTag("destination", destination.writeToNBT(new NBTTagCompound()));
     }
 
     public static void clearSource(ItemStack itemStack) {
-        //Don't just set the tag to null since there may be other data there (e.g. for renamed items)
-        NBTTagCompound tag = itemStack.getTagCompound();
-        tag.removeTag("destination");
-        itemStack.setItemDamage(0);
+        if (itemStack.hasTagCompound()) {
+            itemStack.getTagCompound().removeTag("destination");
+        }
     }
 
     public static Transform getSource(ItemStack itemStack) {
-        if (itemStack.getItemDamage() != 0) {
-            if (itemStack.hasTagCompound()) {
-                NBTTagCompound tag = itemStack.getTagCompound();
-
-                Transform transform = Transform.readFromNBT(tag.getCompoundTag("destination"));
-
-                return transform;
-            }
-
-            // Mark the item as uninitialized if its source couldn't be read
-            itemStack.setItemDamage(0);
+        if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("destination")) {
+            Transform transform = new Transform();
+            transform.readFromNBT(itemStack.getTagCompound().getCompoundTag("destination"));
+            return transform;
+        } else {
+            return null;
         }
-
-        return null;
     }
 
-    public static BlockPos adjustYForSpecialBlocks(World world, BlockPos pos) {
-        BlockPos target = pos.down(2); // Get the block the player actually clicked on
-        Block block = world.getBlockState(target).getBlock();
-        if (block == null) {
-            return target.up(2);
-        }
-        if (block.isReplaceable(world, pos)) {
-            return target.up(); // Move block placement down (-2+1) one so its directly over things like snow
-        }
-        if (block instanceof IRiftProvider) {
-            if (((IRiftProvider) block).hasTileEntity(world.getBlockState(target))) {
-                return target; // Move rift placement down two so its in the right place on the door.
-            }
-            // Move rift placement down one so its in the right place on the door.
-            return target.up();
-        }
-        return target.up(2);
-    }
-
-    @SideOnly(Side.CLIENT)
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         Transform transform = getSource(stack);
-
-        if (transform != null)
+        if (transform != null) {
             tooltip.add(I18n.translateToLocalFormatted("info.rift_signature.bound", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
-        else translateAndAdd("info.rift_signature.unbound", tooltip);
+        } else {
+            translateAndAdd("info.rift_signature.unbound", tooltip);
+        }
     }
 
-    @ToString
-    @Value
-    public static class Transform {
-        private Location location;
-        private int yaw;
+    @ToString @AllArgsConstructor @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @SavedToNBT public static class Transform implements INBTStorable {
+        @Getter @SavedToNBT /*private*/ Location location;
+        @Getter @SavedToNBT /*private*/ float yaw;
 
-        public Transform(Location location, int yaw) {
-            this.location = location;
-            this.yaw = yaw;
-        }
-
-        public Location getLocation() {
-            return location;
-        }
-
-        public int getYaw() {
-            return yaw;
-        }
-
-        public static NBTTagCompound writeToNBT(Transform transform) {
-            NBTTagCompound transformNBT = new NBTTagCompound();
-
-            transformNBT.setTag("location", Location.writeToNBT(transform.getLocation()));
-            transformNBT.setInteger("yaw", transform.getYaw());
-            return transformNBT;
-        }
-
-        public static Transform readFromNBT(NBTTagCompound transformNBT) {
-            Location location = Location.readFromNBT(transformNBT);
-            int yaw = transformNBT.getInteger("yaw");
-
-            return new Transform(location, yaw);
-        }
-
+        @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
+        @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
     }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "dimdoors:items/link_signature"
+    "layer0": "dimdoors:items/rift_signature"
   }
 }
