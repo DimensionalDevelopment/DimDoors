@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.shared.rifts;
 
 import com.google.common.collect.ConcurrentHashMultiset;
 import com.google.common.collect.Multiset;
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.ddutils.nbt.SavedToNBT;
 import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
 import org.dimdev.ddutils.nbt.INBTStorable; // Don't change imports order! (Gradle bug): https://stackoverflow.com/questions/26557133/
 import org.dimdev.ddutils.Location;
@@ -21,48 +23,36 @@ import net.minecraftforge.common.DimensionManager;
 
 import java.util.*;
 
-public class RiftRegistry extends WorldSavedData {
+@SavedToNBT public class RiftRegistry extends WorldSavedData {
 
     private static final String DATA_NAME = DimDoors.MODID + "_rifts";
     @Getter private static final int DATA_VERSION = 0; // IMPORTANT: Update this and upgradeRegistry when making changes.
 
-    @Getter private final Map<Location, RiftInfo> rifts = new HashMap<>(); // TODO: store relative locations too (better location class supporting relative, etc)
-    @Getter private final Map<String, Location> privatePocketEntrances = new HashMap<>(); // Player UUID -> last rift used to exit pocket TODO: split into PrivatePocketRiftRegistry subclass
-    @Getter private final Map<String, List<Location>> privatePocketEntranceLists = new HashMap<>(); // Player UUID -> private pocket entrances TODO: split into PrivatePocketRiftRegistry subclass
-    @Getter private final Map<String, Location> privatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
-    @Getter private final Map<String, Location> overworldRifts = new HashMap<>();
+    @SavedToNBT @Getter /*package-private*/ /*final*/ Map<Location, RiftInfo> rifts = new HashMap<>(); // TODO: store relative locations too (better location class supporting relative, etc)
+    @SavedToNBT @Getter /*package-private*/ /*final*/ Map<String, Location> privatePocketEntrances = new HashMap<>(); // Player UUID -> last rift used to exit pocket TODO: split into PrivatePocketRiftRegistry subclass
+    @SavedToNBT @Getter /*package-private*/ /*final*/ Map<String, List<Location>> privatePocketEntranceLists = new HashMap<>(); // Player UUID -> private pocket entrances TODO: split into PrivatePocketRiftRegistry subclass
+    @SavedToNBT @Getter /*package-private*/ /*final*/ Map<String, Location> privatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
+    @SavedToNBT @Getter /*package-private*/ /*final*/ Map<String, Location> overworldRifts = new HashMap<>();
 
     @Getter private int dim;
     private World world;
 
     @AllArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
-    public static class RiftInfo implements INBTStorable {
+    @SavedToNBT public static class RiftInfo implements INBTStorable {
         // IntelliJ warnings are wrong, Builder needs these initializers!
-        @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter private Set<AvailableLinkInfo> availableLinks = new HashSet<>(); // TODO: multiset?
-        @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter private Multiset<Location> sources = ConcurrentHashMultiset.create();
-        @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter private Multiset<Location> destinations = ConcurrentHashMultiset.create();
+        @SavedToNBT @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter /*package-private*/ Set<AvailableLinkInfo> availableLinks = new HashSet<>(); // TODO: multiset?
+        @SavedToNBT @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter /*package-private*/ Multiset<Location> sources = ConcurrentHashMultiset.create();
+        @SavedToNBT @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter /*package-private*/ Multiset<Location> destinations = ConcurrentHashMultiset.create();
 
         @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
         public static class AvailableLinkInfo implements INBTStorable {
-            @Getter @Setter private float weight;
-            @Getter private VirtualLocation virtualLocation;
-            @Getter @Wither private Location location;
-            @Getter private UUID uuid;
+            @SavedToNBT @Getter @Setter /*package-private*/ float weight;
+            @SavedToNBT @Getter /*package-private*/ VirtualLocation virtualLocation;
+            @SavedToNBT @Getter @Wither /*package-private*/ Location location;
+            @SavedToNBT @Getter /*package-private*/ UUID uuid;
 
-            @Override
-            public void readFromNBT(NBTTagCompound nbt) {
-                weight = nbt.getFloat("weight");
-                virtualLocation = VirtualLocation.readFromNBT(nbt.getCompoundTag("virtualLocation"));
-                uuid = nbt.getUniqueId("uuid");
-            }
-
-            @Override
-            public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-                nbt.setFloat("weight", weight);
-                nbt.setTag("virtualLocation", virtualLocation.writeToNBT());
-                nbt.setUniqueId("uuid", uuid);
-                return nbt;
-            }
+            @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
+            @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
         }
 
         public RiftInfo() {
@@ -71,48 +61,8 @@ public class RiftRegistry extends WorldSavedData {
             destinations = ConcurrentHashMultiset.create();
         }
 
-        @Override
-        public void readFromNBT(NBTTagCompound nbt) {
-            NBTTagList availableLinksNBT = (NBTTagList) nbt.getTag("availableLinks"); // TODO: figure out why this is sometimes null
-            for (NBTBase availableLinkNBT : availableLinksNBT) {
-                AvailableLinkInfo link = new AvailableLinkInfo();
-                link.readFromNBT((NBTTagCompound) availableLinkNBT);
-                availableLinks.add(link);
-            }
-
-            NBTTagList sourcesNBT = (NBTTagList) nbt.getTag("sources");
-            for (NBTBase sourceNBT : sourcesNBT) {
-                sources.add(Location.readFromNBT((NBTTagCompound) sourceNBT));
-            }
-
-            NBTTagList destinationsNBT = (NBTTagList) nbt.getTag("destinations");
-            for (NBTBase destinationNBT : destinationsNBT) {
-                destinations.add(Location.readFromNBT((NBTTagCompound) destinationNBT));
-            }
-        }
-
-        @Override
-        public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-            NBTTagList availableLinksNBT = new NBTTagList();
-            for (AvailableLinkInfo availableLink : availableLinks) {
-                availableLinksNBT.appendTag(availableLink.writeToNBT(new NBTTagCompound()));
-            }
-            nbt.setTag("availableLinks", availableLinksNBT);
-
-            NBTTagList sourcesNBT = new NBTTagList();
-            for (Location source : sources) {
-                sourcesNBT.appendTag(Location.writeToNBT(source));
-            }
-            nbt.setTag("sources", sourcesNBT);
-
-            NBTTagList destinationsNBT = new NBTTagList();
-            for (Location destination : destinations) {
-                destinationsNBT.appendTag(Location.writeToNBT(destination));
-            }
-            nbt.setTag("destinations", sourcesNBT);
-
-            return nbt;
-        }
+        @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
+        @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
     }
 
     public RiftRegistry() {
@@ -154,50 +104,7 @@ public class RiftRegistry extends WorldSavedData {
             }
         }
 
-        NBTTagList riftsNBT = (NBTTagList) nbt.getTag("rifts");
-        for (NBTBase riftNBT : riftsNBT) {
-            NBTTagCompound riftNBTC = (NBTTagCompound) riftNBT;
-            Location location = Location.readFromNBT(riftNBTC.getCompoundTag("location"));
-            RiftInfo riftInfo = new RiftInfo();
-            riftInfo.readFromNBT(riftNBTC);
-            rifts.put(location, riftInfo);
-        }
-
-        NBTTagList privatePocketEntrancesNBT = (NBTTagList) nbt.getTag("privatePocketEntrances");
-        for (NBTBase privatePocketEntranceNBT : privatePocketEntrancesNBT) { // TODO: move to NBTUtils
-            NBTTagCompound privatePocketEntranceNBTC = (NBTTagCompound) privatePocketEntranceNBT;
-            String uuid = privatePocketEntranceNBTC.getString("uuid");
-            Location rift = Location.readFromNBT(privatePocketEntranceNBTC.getCompoundTag("location"));
-            privatePocketEntrances.put(uuid, rift);
-        }
-        
-        NBTTagList privatePocketEntranceListsNBT = (NBTTagList) nbt.getTag("privatePocketEntranceLists");
-        for (NBTBase privatePocketEntranceListNBT : privatePocketEntranceListsNBT) { // TODO: move to NBTUtils
-            NBTTagCompound privatePocketEntranceListNBTC = (NBTTagCompound) privatePocketEntranceListNBT;
-            String uuid = privatePocketEntranceListNBTC.getString("uuid");
-            NBTTagList entrancesNBT = (NBTTagList) privatePocketEntranceListNBTC.getTag("locationList");
-            for (NBTBase entranceNBT : entrancesNBT) {
-                NBTTagCompound entranceNBTC = (NBTTagCompound) entranceNBT;
-                Location rift = Location.readFromNBT(entranceNBTC);
-                privatePocketEntranceLists.get(uuid).add(rift);
-            }
-        }
-
-        NBTTagList privatePocketExitsNBT = (NBTTagList) nbt.getTag("privatePocketExits");
-        for (NBTBase privatePocketExitNBT : privatePocketExitsNBT) { // TODO: move to NBTUtils
-            NBTTagCompound privatePocketExitNBTC = (NBTTagCompound) privatePocketExitNBT;
-            String uuid = privatePocketExitNBTC.getString("uuid");
-            Location rift = Location.readFromNBT(privatePocketExitNBTC.getCompoundTag("location"));
-            privatePocketExits.put(uuid, rift);
-        }
-
-        NBTTagList overworldRiftsNBT = (NBTTagList) nbt.getTag("overworldRifts");
-        for (NBTBase overworldRiftNBT : overworldRiftsNBT) { // TODO: move to NBTUtils
-            NBTTagCompound overworldRiftNBTC = (NBTTagCompound) overworldRiftNBT;
-            String uuid = overworldRiftNBTC.getString("uuid");
-            Location rift = Location.readFromNBT(overworldRiftNBTC.getCompoundTag("location"));
-            overworldRifts.put(uuid, rift);
-        }
+        NBTUtils.readFromNBT(this, nbt);
     }
 
     private static boolean upgradeRegistry(@SuppressWarnings("unused") NBTTagCompound nbt, int oldVersion) {
@@ -219,61 +126,7 @@ public class RiftRegistry extends WorldSavedData {
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         nbt.setInteger("version", DATA_VERSION);
-
-        NBTTagList riftsNBT = new NBTTagList();
-        for (HashMap.Entry<Location, RiftInfo> rift : rifts.entrySet()) {
-            NBTTagCompound riftNBT = new NBTTagCompound();
-            riftNBT.setTag("location", Location.writeToNBT(rift.getKey()));
-            riftNBT = rift.getValue().writeToNBT(riftNBT);
-            riftsNBT.appendTag(riftNBT);
-        }
-        nbt.setTag("rifts", riftsNBT);
-
-        NBTTagList privatePocketEntrancesNBT = new NBTTagList();
-        for (HashMap.Entry<String, Location> privatePocketEntrance : privatePocketEntrances.entrySet()) { // TODO: move to NBTUtils
-            if (privatePocketEntrance.getValue() == null) continue;
-            NBTTagCompound privatePocketEntranceNBT = new NBTTagCompound();
-            privatePocketEntranceNBT.setString("uuid", privatePocketEntrance.getKey());
-            privatePocketEntranceNBT.setTag("location", Location.writeToNBT(privatePocketEntrance.getValue()));
-            privatePocketEntrancesNBT.appendTag(privatePocketEntranceNBT);
-        }
-        nbt.setTag("privatePocketEntrances", privatePocketEntrancesNBT);
-        
-        NBTTagList privatePocketEntranceListsNBT = new NBTTagList();
-        for (HashMap.Entry<String, List<Location>> privatePocketEntranceList : privatePocketEntranceLists.entrySet()) { // TODO: move to NBTUtils
-            if (privatePocketEntranceList.getValue() == null) continue;
-            NBTTagCompound privatePocketEntranceListNBT = new NBTTagCompound();
-            privatePocketEntranceListNBT.setString("uuid", privatePocketEntranceList.getKey());
-            NBTTagList entranceListNBT = new NBTTagList();
-            for (Location entrance : privatePocketEntranceList.getValue()) {
-                entranceListNBT.appendTag(Location.writeToNBT(entrance));
-            }
-            privatePocketEntranceListNBT.setTag("locationList", entranceListNBT);
-            privatePocketEntranceListsNBT.appendTag(privatePocketEntranceListNBT);
-        }
-        nbt.setTag("privatePocketEntranceLists", privatePocketEntranceListsNBT);
-        
-        NBTTagList privatePocketExitsNBT = new NBTTagList();
-        for (HashMap.Entry<String, Location> privatePocketExit : privatePocketExits.entrySet()) { // TODO: move to NBTUtils
-            if (privatePocketExit.getValue() == null) continue;
-            NBTTagCompound privatePocketExitNBT = new NBTTagCompound();
-            privatePocketExitNBT.setString("uuid", privatePocketExit.getKey());
-            privatePocketExitNBT.setTag("location", Location.writeToNBT(privatePocketExit.getValue()));
-            privatePocketExitsNBT.appendTag(privatePocketExitNBT);
-        }
-        nbt.setTag("privatePocketExits", privatePocketExitsNBT);
-        
-        NBTTagList overworldRiftsNBT = new NBTTagList();
-        for (HashMap.Entry<String, Location> overworldRift : overworldRifts.entrySet()) {
-            if (overworldRift.getValue() == null) continue;
-            NBTTagCompound overworldRiftNBT = new NBTTagCompound();
-            overworldRiftNBT.setString("uuid", overworldRift.getKey());
-            overworldRiftNBT.setTag("location", Location.writeToNBT(overworldRift.getValue()));
-            overworldRiftsNBT.appendTag(overworldRiftNBT);
-        }
-        nbt.setTag("overworldRifts", overworldRiftsNBT);
-
-        return nbt;
+        return NBTUtils.writeToNBT(this, nbt);
     }
 
     public static RiftInfo getRiftInfo(Location rift) {

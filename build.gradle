@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
-ext.modversion = "3.0.0-b1"
+ext.modversion = "3.0.0-b2"
 ext.mcversion = "1.12.2"
 ext.forgeversion = "14.23.1.2555"
 //spongeSchematicVersion = "1"
@@ -29,6 +29,10 @@ jar.archiveName = "dimdoors.jar" // Constant name for travis
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
     sourceCompatibility = targetCompatibility = "1.8"
+    options.compilerArgs += [
+            //"-proc:only", // TODO: have generated code available for debugging
+            "-processor", "org.dimdev.ddutils.nbt.SavedToNBTProcessor,lombok.launch.AnnotationProcessorHider\$AnnotationProcessor"
+    ]
 }
 
 minecraft {
@@ -41,12 +45,13 @@ minecraft {
 }
 
 configurations {
-    embed 
+    embed
     compile.extendsFrom(embed)
 }
 
 dependencies {
     embed 'com.flowpowered:flow-math:1.0.3'
+    compile project(':AnnotatedNBT')
 }
 
 jar {
@@ -61,7 +66,6 @@ processResources {
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
         // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }

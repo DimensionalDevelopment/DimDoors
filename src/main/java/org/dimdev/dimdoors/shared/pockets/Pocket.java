@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.shared.pockets;
 
 import org.dimdev.ddutils.nbt.INBTStorable;
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.ddutils.nbt.SavedToNBT;
 import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.rifts.*;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
@@ -15,15 +17,15 @@ import net.minecraft.nbt.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
-public class Pocket implements INBTStorable{ // TODO: better visibilities
+@SavedToNBT public class Pocket implements INBTStorable { // TODO: better visibilities
 
-    @Getter private int id;
-    @Getter private int x; // Grid x TODO: rename to gridX and gridY
-    @Getter private int z; // Grid y
-    @Getter @Setter private int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
-    @Getter @Setter private VirtualLocation virtualLocation; // The non-pocket dimension from which this dungeon was created
-    @Getter @Setter Location entrance;
-    @Getter List<Location> riftLocations;
+    @SavedToNBT @Getter /*package-private*/ int id;
+    @SavedToNBT @Getter /*package-private*/ int x; // Grid x TODO: rename to gridX and gridY
+    @SavedToNBT @Getter /*package-private*/ int z; // Grid y
+    @SavedToNBT @Getter @Setter /*package-private*/ int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
+    @SavedToNBT @Getter @Setter /*package-private*/ VirtualLocation virtualLocation; // The non-pocket dimension from which this dungeon was created
+    @SavedToNBT @Getter @Setter /*package-private*/ Location entrance;
+    @SavedToNBT @Getter /*package-private*/ List<Location> riftLocations;
 
     @Getter int dimID; // Not saved
 
@@ -37,39 +39,9 @@ public class Pocket implements INBTStorable{ // TODO: better visibilities
         riftLocations = new ArrayList<>();
     }
 
-    @Override
-    public /*static Pocket*/ void readFromNBT(NBTTagCompound nbt) {
-        id = nbt.getInteger("id");
-        x = nbt.getInteger("x");
-        z = nbt.getInteger("z");
-        size = nbt.getInteger("size");
-        if (nbt.hasKey("virtualLocation")) virtualLocation = VirtualLocation.readFromNBT(nbt.getCompoundTag("virtualLocation"));
-        if (nbt.hasKey("entrance")) entrance = Location.readFromNBT(nbt.getCompoundTag("entrance"));
-
-        riftLocations = new ArrayList<>();
-        NBTTagList riftLocationsNBT = (NBTTagList) nbt.getTag("riftLocations");
-        for (NBTBase riftLocationNBT : riftLocationsNBT) {
-            riftLocations.add(Location.readFromNBT((NBTTagCompound) riftLocationNBT));
-        }
-    }
-
-    @Override
-    public /*static*/ NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        nbt.setInteger("id", id);
-        nbt.setInteger("x", x);
-        nbt.setInteger("z", z);
-        nbt.setInteger("size", size);
-        if (virtualLocation != null) nbt.setTag("virtualLocation", virtualLocation.writeToNBT());
-        if (entrance != null) nbt.setTag("entrance", Location.writeToNBT(entrance));
-
-        NBTTagList riftLocationsNBT = new NBTTagList();
-        for (Location loc : riftLocations) {
-            riftLocationsNBT.appendTag(Location.writeToNBT(loc));
-        }
-        nbt.setTag("riftLocations", riftLocationsNBT);
-
-        return nbt;
-    }
+    // TODO: make these static?
+    @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
 
     boolean isInBounds(BlockPos pos) {
         // pocket bounds

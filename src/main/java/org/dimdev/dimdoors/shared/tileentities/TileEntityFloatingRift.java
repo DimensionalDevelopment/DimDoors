@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.ddutils.nbt.SavedToNBT;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import java.util.List;
 import java.util.Random;
@@ -12,7 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 
-public class TileEntityFloatingRift extends TileEntityRift implements ITickable {
+@SavedToNBT public class TileEntityFloatingRift extends TileEntityRift implements ITickable {
 
     private static final int ENDERMAN_SPAWNING_CHANCE = 1;
     private static final int MAX_ENDERMAN_SPAWNING_CHANCE = 32;
@@ -20,15 +22,13 @@ public class TileEntityFloatingRift extends TileEntityRift implements ITickable 
     private static final int MAX_HOSTILE_ENDERMAN_CHANCE = 3;
     private static final int UPDATE_PERIOD = 200; //10 seconds
 
-    public boolean placingDoorOnRift = false; //to track whether a Rift is getting broken because it is replaced by a door (do not unregister in this case) or because it is being broken another way (do unregister in this case)
-
     private static final Random random = new Random();
 
     //Need to be saved:
-    private int updateTimer;
-    public boolean shouldClose = false; // TODO
-    public int spawnedEndermenID = 0;
-    public float growth = 0;
+    @SavedToNBT /*package-private*/ int updateTimer;
+    @SavedToNBT public boolean shouldClose = false; // TODO
+    @SavedToNBT public int spawnedEndermenID = 0;
+    @SavedToNBT public float growth = 0;
 
     public TileEntityFloatingRift() {
         updateTimer = random.nextInt(UPDATE_PERIOD);
@@ -105,25 +105,8 @@ public class TileEntityFloatingRift extends TileEntityRift implements ITickable 
         return pass == 1;
     }
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-        super.readFromNBT(nbt);
-        updateTimer = nbt.getInteger("updateTimer");
-        shouldClose = nbt.getBoolean("shouldClose");
-        spawnedEndermenID = nbt.getInteger("spawnedEndermenID");
-        growth = nbt.getFloat("growth");
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        super.writeToNBT(nbt);
-        nbt.setInteger("updateTimer", updateTimer);
-        nbt.setBoolean("shouldClose", shouldClose);
-        nbt.setInteger("spawnedEndermenID", spawnedEndermenID);
-        nbt.setFloat("growth", growth);
-
-        return nbt;
-    }
+    @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
 
     @Override
     public boolean isFloating() {

@@ -67,24 +67,6 @@ public class Location implements Serializable {
         return new Location(world, blockPos);
     }
 
-    public static NBTTagCompound writeToNBT(Location location) {
-        NBTTagCompound locationNBT = new NBTTagCompound();
-        locationNBT.setInteger("worldID", location.dim);
-        locationNBT.setInteger("x", location.pos.getX());
-        locationNBT.setInteger("y", location.pos.getY());
-        locationNBT.setInteger("z", location.pos.getZ());
-        return locationNBT;
-    }
-
-    public static Location readFromNBT(NBTTagCompound locationNBT) {
-        int worldID = locationNBT.getInteger("worldID");
-        int x = locationNBT.getInteger("x");
-        int y = locationNBT.getInteger("y");
-        int z = locationNBT.getInteger("z");
-        BlockPos blockPos = new BlockPos(x, y, z);
-        return new Location(worldID, blockPos);
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Location)) {

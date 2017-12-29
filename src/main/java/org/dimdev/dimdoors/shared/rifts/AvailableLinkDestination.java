@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.shared.rifts;
 
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.ddutils.nbt.SavedToNBT;
 import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.math.MathUtils;
@@ -17,19 +19,19 @@ import java.util.Map;
 import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-public class AvailableLinkDestination extends RiftDestination { // TODO
-    private float newDungeonRiftProbability;
-    private float depthPenalization; // TODO: these make the equation assymetric
-    private float distancePenalization;
-    private float closenessPenalization;
+@SavedToNBT public class AvailableLinkDestination extends RiftDestination { // TODO
+    @SavedToNBT /*package-private*/ float newDungeonRiftProbability;
+    @SavedToNBT /*package-private*/ float depthPenalization; // TODO: these make the equation assymetric
+    @SavedToNBT /*package-private*/ float distancePenalization;
+    @SavedToNBT /*package-private*/ float closenessPenalization;
 
-    private boolean dungeonRiftsOnly;
-    private boolean overworldRifts;
-    private boolean unstable;
-    private float nonFloatingRiftWeight;
-    private float floatingRiftWeight;
+    @SavedToNBT /*package-private*/ boolean dungeonRiftsOnly;
+    @SavedToNBT /*package-private*/ boolean overworldRifts;
+    @SavedToNBT /*package-private*/ boolean unstable;
+    @SavedToNBT /*package-private*/ float nonFloatingRiftWeight;
+    @SavedToNBT /*package-private*/ float floatingRiftWeight;
 
-    private boolean noLinkBack;
+    @SavedToNBT /*package-private*/ boolean noLinkBack;
     // private int maxLinks;
 
     @Builder.Default private UUID uuid = UUID.randomUUID();
@@ -37,40 +39,8 @@ public class AvailableLinkDestination extends RiftDestination { // TODO
 
     AvailableLinkDestination() {}
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-        super.readFromNBT(nbt);
-        newDungeonRiftProbability = nbt.getFloat("newDungeonRiftProbability");
-        depthPenalization = nbt.getFloat("depthPenalization");
-        distancePenalization = nbt.getFloat("distancePenalization");
-        closenessPenalization = nbt.getFloat("closenessPenalization");
-        dungeonRiftsOnly = nbt.getBoolean("dungeonRiftsOnly");
-        overworldRifts = nbt.getBoolean("overworldRifts");
-        unstable = nbt.getBoolean("unstable");
-        noLinkBack = nbt.getBoolean("noLinkBack");
-        nonFloatingRiftWeight = nbt.getFloat("nonFloatingRiftWeight");
-        floatingRiftWeight = nbt.getFloat("floatingRiftWeight");
-        // maxLinks = nbt.getInteger("maxLinks");
-        uuid = nbt.getUniqueId("uuid");
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        nbt = super.writeToNBT(nbt);
-        nbt.setFloat("newDungeonRiftProbability", newDungeonRiftProbability);
-        nbt.setFloat("depthPenalization", depthPenalization);
-        nbt.setFloat("distancePenalization", distancePenalization);
-        nbt.setFloat("closenessPenalization", closenessPenalization);
-        nbt.setBoolean("dungeonRiftsOnly", dungeonRiftsOnly);
-        nbt.setBoolean("overworldRifts", overworldRifts);
-        nbt.setBoolean("unstable", unstable);
-        nbt.setBoolean("noLinkBack", noLinkBack);
-        nbt.setFloat("nonFloatingRiftWeight", nonFloatingRiftWeight);
-        nbt.setFloat("floatingRiftWeight", floatingRiftWeight);
-        // nbt.setInteger("maxLinks", maxLinks);
-        nbt.setUniqueId("uuid", uuid);
-        return nbt;
-    }
+    @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
 
     @Override
     public boolean teleport(TileEntityRift rift, Entity entity) {

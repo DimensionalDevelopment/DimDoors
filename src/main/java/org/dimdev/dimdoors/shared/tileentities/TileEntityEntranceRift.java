@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.ddutils.nbt.SavedToNBT;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.render.RGBA;
@@ -12,20 +14,20 @@ import net.minecraft.util.EnumFacing;
 import java.util.Random;
 
 // TODO: merge horizontal and vertical entrances' render code into one, and support custom sizes
-public class TileEntityEntranceRift extends TileEntityRift {
-    @Getter private boolean placeRiftOnBreak = false;
-    @Getter private boolean closeAfterPassThrough = false;
-    @Getter public boolean shouldRender = true;
-    @Getter public byte lockStatus = 0;
+@SavedToNBT public class TileEntityEntranceRift extends TileEntityRift {
+    @SavedToNBT @Getter /*package-private*/ boolean placeRiftOnBreak = false;
+    @SavedToNBT @Getter /*package-private*/ boolean closeAfterPassThrough = false;
+    @SavedToNBT @Getter public boolean shouldRender = true;
+    @SavedToNBT @Getter public byte lockStatus = 0;
 
     // Set by the block, not saved and not synced to the client
-    public EnumFacing orientation;
-    public int tpOffset = 1; // TODO: float?
-    public double extendUp = 0.5; // Use += to set these. TODO: @SideOnly client?
-    public double extendDown = 0.5;
-    public double extendLeft = 0.5;
-    public double extendRight = 0.5;
-    public double pushIn = 0.01; // TODO: set to 0, and set on door
+    @SavedToNBT public EnumFacing orientation;
+    @SavedToNBT public int tpOffset = 1; // TODO: float?
+    @SavedToNBT public double extendUp = 0.5; // Use += to set these. TODO: @SideOnly client?
+    @SavedToNBT public double extendDown = 0.5;
+    @SavedToNBT public double extendLeft = 0.5;
+    @SavedToNBT public double extendRight = 0.5;
+    @SavedToNBT public double pushIn = 0.01; // TODO: set to 0, and set on door
 
     @Override
     public void copyFrom(TileEntityRift oldRift) {
@@ -37,38 +39,10 @@ public class TileEntityEntranceRift extends TileEntityRift {
         placeRiftOnBreak = true;
     }
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-        super.readFromNBT(nbt);
-        placeRiftOnBreak = nbt.getBoolean("placeRiftOnBreak");
-        closeAfterPassThrough = nbt.getBoolean("closeAfterPassThrough");
-        shouldRender = nbt.getBoolean("shouldRender");
-        lockStatus = nbt.getByte("lockStatus");
-
-        orientation = EnumFacing.byName(nbt.getString("orientation")); // TODO: avoid having to save these and generate on load based on blockstate
-        tpOffset = nbt.getInteger("tpOffset");
-        extendUp = nbt.getDouble("extendUp");
-        extendDown = nbt.getDouble("extendDown");
-        extendLeft = nbt.getDouble("extendLeft");
-        extendRight = nbt.getDouble("extendRight");
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        super.writeToNBT(nbt);
-        nbt.setBoolean("placeRiftOnBreak", placeRiftOnBreak);
-        nbt.setBoolean("closeAfterPassThrough", closeAfterPassThrough);
-        nbt.setBoolean("shouldRender", shouldRender);
-        nbt.setByte("lockStatus", lockStatus);
-
-        if (orientation != null) nbt.setString("orientation", orientation.getName()); // TODO: why is this sometimes null on generated transient entrances?
-        nbt.setInteger("tpOffset", tpOffset);
-        nbt.setDouble("extendUp", extendUp);
-        nbt.setDouble("extendDown", extendDown);
-        nbt.setDouble("extendLeft", extendLeft);
-        nbt.setDouble("extendRight", extendRight);
-
-        return nbt;
+    @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        nbt = super.writeToNBT(nbt);
+        return NBTUtils.writeToNBT(this, nbt);
     }
 
     @Override

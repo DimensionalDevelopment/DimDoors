@@ -7,6 +7,7 @@ import org.dimdev.ddutils.nbt.INBTStorable;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import lombok.*;  // Don't change import order! (Gradle bug): https://stackoverflow.com/questions/26557133/
+import org.dimdev.ddutils.nbt.SavedToNBT;
 
 import java.lang.reflect.InvocationTargetException;
 

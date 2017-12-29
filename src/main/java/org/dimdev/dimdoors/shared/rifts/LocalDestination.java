@@ -9,25 +9,16 @@ import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import org.dimdev.ddutils.nbt.SavedToNBT;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-public class LocalDestination extends RiftDestination { // TODO: use BlockPos
-    private BlockPos pos;
+@SavedToNBT public class LocalDestination extends RiftDestination { // TODO: use BlockPos
+    @SavedToNBT /*package-private*/ BlockPos pos;
 
     public LocalDestination() {}
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-        super.readFromNBT(nbt);
-        pos = new BlockPos(NBTUtils.readVec3i(nbt.getCompoundTag("pos")));
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        nbt = super.writeToNBT(nbt);
-        nbt.setTag("pos", NBTUtils.writeVec3i(pos));
-        return nbt;
-    }
+    @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
 
     @Override
     public boolean teleport(TileEntityRift rift, Entity entity) {

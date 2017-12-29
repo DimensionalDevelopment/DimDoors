@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.shared.pockets;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import org.dimdev.ddutils.nbt.SavedToNBT;
 import org.dimdev.dimdoors.shared.DDConfig;
 import org.dimdev.ddutils.math.GridUtils;
 import org.dimdev.dimdoors.DimDoors;
@@ -21,18 +22,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 
-public class PocketRegistry extends WorldSavedData { // TODO: unregister pocket entrances, private pocket entrances/exits
+@SavedToNBT public class PocketRegistry extends WorldSavedData { // TODO: unregister pocket entrances, private pocket entrances/exits
 
     private static final String DATA_NAME = DimDoors.MODID + "_pockets";
     @Getter private static final int DATA_VERSION = 0; // IMPORTANT: Update this and upgradeRegistry when making changes.
 
-    @Getter private int gridSize; // Determines how much pockets in their dimension are spaced
-    @Getter private int maxPocketSize;
-    @Getter private int privatePocketSize;
-    @Getter private int publicPocketSize;
-    private BiMap<String, Integer> privatePocketMap; // Player UUID -> Pocket ID, in pocket dim only
-    @Getter private Map<Integer, Pocket> pockets; // TODO: remove getter?
-    @Getter private int nextID;
+    @SavedToNBT @Getter /*package-private*/ int gridSize; // Determines how much pockets in their dimension are spaced
+    @SavedToNBT @Getter /*package-private*/ int maxPocketSize;
+    @SavedToNBT @Getter /*package-private*/ int privatePocketSize;
+    @SavedToNBT @Getter /*package-private*/ int publicPocketSize;
+    @SavedToNBT /*package-private*/ BiMap<String, Integer> privatePocketMap; // Player UUID -> Pocket ID, in pocket dim only
+    @SavedToNBT @Getter /*package-private*/ Map<Integer, Pocket> pockets; // TODO: remove getter?
+    @SavedToNBT @Getter /*package-private*/ int nextID;
 
     @Getter private int dimID;
 
@@ -82,24 +83,7 @@ public class PocketRegistry extends WorldSavedData { // TODO: unregister pocket 
                 throw new RuntimeException("Couldn't upgrade registry"); // TODO: better exceptions
             }
         }
-
-        gridSize = nbt.getInteger("gridSize");
-        maxPocketSize = nbt.getInteger("maxPocketSize");
-        privatePocketSize = nbt.getInteger("privatePocketSize");
-        publicPocketSize = nbt.getInteger("publicPocketSize");
-        privatePocketMap = NBTUtils.readMapStringInteger(nbt.getCompoundTag("privatePocketMap"), HashBiMap.create());
-        nextID = nbt.getInteger("nextID");
-
-        pockets = new HashMap<>();
-        NBTTagList pocketsNBT = (NBTTagList) nbt.getTag("pockets");
-        for (NBTBase pocketNBT : pocketsNBT) { // TODO: convert to map to be able to skip IDs efficiently
-            NBTTagCompound pocketNBTC = (NBTTagCompound) pocketNBT;
-            pockets.put(pocketNBTC.getInteger("id"), NBTUtils.readNBTStorable(new Pocket(), (NBTTagCompound) pocketNBT));
-        }
-
-        for (Pocket pocket : pockets.values()) {
-            pocket.dimID = dimID;
-        }
+        NBTUtils.readFromNBT(this, nbt);
     }
 
     @SuppressWarnings("unused")
@@ -122,24 +106,7 @@ public class PocketRegistry extends WorldSavedData { // TODO: unregister pocket 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         nbt.setInteger("version", DATA_VERSION);
-
-        nbt.setInteger("gridSize", gridSize);
-        nbt.setInteger("maxPocketSize", maxPocketSize);
-        nbt.setInteger("privatePocketSize", privatePocketSize);
-        nbt.setInteger("publicPocketSize", publicPocketSize);
-        nbt.setTag("privatePocketMap", NBTUtils.writeMapStringInteger(privatePocketMap));
-        nbt.setInteger("nextID", nextID);
-
-        NBTTagList pocketsNBT = new NBTTagList();
-        for (Map.Entry<Integer, Pocket> pocketEntry : pockets.entrySet()) {
-            if (pocketEntry.getValue() == null) continue;
-            NBTTagCompound pocketNBT = (NBTTagCompound) pocketEntry.getValue().writeToNBT(new NBTTagCompound());
-            pocketNBT.setInteger("id", pocketEntry.getKey()); // TODO: store separately?
-            pocketsNBT.appendTag(pocketNBT);
-        }
-        nbt.setTag("pockets", pocketsNBT);
-
-        return nbt;
+        return NBTUtils.writeToNBT(this, nbt);
     }
 
     /**

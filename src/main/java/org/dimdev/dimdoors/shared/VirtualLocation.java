@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared;
 
+import org.dimdev.ddutils.nbt.INBTStorable;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
 import org.dimdev.ddutils.Location;
@@ -32,25 +33,6 @@ public class VirtualLocation { // TODO: use BlockPos/Location
     public int getX() { return location.getX(); }
     public int getY() { return location.getY(); }
     public int getZ() { return location.getZ(); }
-
-    public static VirtualLocation readFromNBT(NBTTagCompound nbt) {
-        int dim = nbt.getInteger("dim");
-        int x = nbt.getInteger("x");
-        int y = nbt.getInteger("y");
-        int z = nbt.getInteger("z");
-        int depth = nbt.getInteger("depth");
-        return new VirtualLocation(dim, x, y, z, depth);
-    }
-
-    public NBTTagCompound writeToNBT() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setInteger("dim", location.getDim());
-        nbt.setInteger("x", location.getPos().getX());
-        nbt.setInteger("y", location.getPos().getY());
-        nbt.setInteger("z", location.getPos().getZ());
-        nbt.setInteger("depth", depth);
-        return nbt;
-    }
 
     public static VirtualLocation fromLocation(Location location) { // TODO: reverse function too
         VirtualLocation virtualLocation = null;

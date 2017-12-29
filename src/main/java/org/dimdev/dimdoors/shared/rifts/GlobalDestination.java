@@ -7,25 +7,17 @@ import lombok.Getter;
 import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.ddutils.nbt.SavedToNBT;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-public class GlobalDestination extends RiftDestination { // TODO: location directly in nbt like minecraft?
-    private Location loc;
+@SavedToNBT public class GlobalDestination extends RiftDestination { // TODO: location directly in nbt like minecraft?
+    @SavedToNBT @Getter /*package-private*/ Location loc;
 
     public GlobalDestination() {}
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-        super.readFromNBT(nbt);
-        loc = Location.readFromNBT(nbt.getCompoundTag("loc"));
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        nbt = super.writeToNBT(nbt);
-        nbt.setTag("loc", Location.writeToNBT(loc));
-        return nbt;
-    }
+    @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
 
     @Override
     public boolean teleport(TileEntityRift rift, Entity entity) {

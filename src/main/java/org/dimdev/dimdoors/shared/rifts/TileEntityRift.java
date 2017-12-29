@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.shared.rifts;
 
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.ddutils.nbt.SavedToNBT;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
@@ -29,16 +31,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-public abstract class TileEntityRift extends TileEntity implements ITickable { // TODO: implement ITeleportSource and ITeleportDestination
+@SavedToNBT public abstract class TileEntityRift extends TileEntity implements ITickable { // TODO: implement ITeleportSource and ITeleportDestination
 
-    @Getter protected VirtualLocation virtualLocation;
-    @Nonnull @Getter protected List<WeightedRiftDestination> destinations; // Not using a set because we can have duplicate destinations. Maybe use Multiset from Guava?
-    @Getter protected boolean makeDestinationPermanent;
-    @Getter protected boolean preserveRotation;
-    @Getter protected float yaw;
-    @Getter protected float pitch;
-    @Getter protected boolean alwaysDelete; // Delete the rift when an entrances rift is broken even if the state was changed or destinations link there.
-    @Getter protected float chaosWeight;
+    @SavedToNBT@Getter protected VirtualLocation virtualLocation;
+    @SavedToNBT @Nonnull @Getter protected List<WeightedRiftDestination> destinations; // Not using a set because we can have duplicate destinations. Maybe use Multiset from Guava?
+    @SavedToNBT @Getter protected boolean makeDestinationPermanent;
+    @SavedToNBT @Getter protected boolean preserveRotation;
+    @SavedToNBT @Getter protected float yaw;
+    @SavedToNBT @Getter protected float pitch;
+    @SavedToNBT @Getter protected boolean alwaysDelete; // Delete the rift when an entrances rift is broken even if the state was changed or destinations link there.
+    @SavedToNBT @Getter protected float chaosWeight;
     // TODO: option to convert to door on teleportTo?
 
     protected boolean riftStateChanged; // not saved
@@ -64,49 +66,10 @@ public abstract class TileEntityRift extends TileEntity implements ITickable { /
         markDirty();
     }
 
-    // Reading/writing to NBT
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-        super.readFromNBT(nbt);
-
-        if (nbt.hasKey("virtualLocation")) virtualLocation = VirtualLocation.readFromNBT(nbt.getCompoundTag("virtualLocation"));
-
-        NBTTagList destinationsNBT = (NBTTagList) nbt.getTag("destinations");
-        destinations = new ArrayList<>();
-        if (destinationsNBT != null) for (NBTBase destinationNBT : destinationsNBT) {
-            WeightedRiftDestination destination = new WeightedRiftDestination();
-            destination.readFromNBT((NBTTagCompound) destinationNBT);
-            destinations.add(destination);
-        }
-
-        makeDestinationPermanent = nbt.getBoolean("makeDestinationPermanent");
-        preserveRotation = nbt.getBoolean("preserveRotation");
-        yaw = nbt.getFloat("yaw");
-        pitch = nbt.getFloat("pitch");
-        alwaysDelete = nbt.getBoolean("alwaysDelete");
-        chaosWeight = nbt.getFloat("chaosWeight");
-    }
-
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        super.writeToNBT(nbt);
-
-        if (virtualLocation != null) nbt.setTag("virtualLocation", virtualLocation.writeToNBT());
-
-        NBTTagList destinationsNBT = new NBTTagList();
-        for (WeightedRiftDestination destination : destinations) {
-            destinationsNBT.appendTag(destination.writeToNBT(new NBTTagCompound()));
-        }
-        nbt.setTag("destinations", destinationsNBT);
-
-        nbt.setBoolean("makeDestinationPermanent", makeDestinationPermanent);
-        nbt.setBoolean("preserveRotation", preserveRotation);
-        nbt.setFloat("yaw", yaw);
-        nbt.setFloat("pitch", pitch);
-        nbt.setBoolean("alwaysDelete", alwaysDelete);
-        nbt.setFloat("chaosWeight", chaosWeight);
-
-        return nbt;
+    @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        nbt = super.writeToNBT(nbt);
+        return NBTUtils.writeToNBT(this, nbt);
     }
 
     @Override
