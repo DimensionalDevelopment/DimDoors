@@ -25,7 +25,10 @@ repositories {
     mavenCentral()
 }
 
+genIntellijRuns {}
+
 minecraft {
+    runDir = "run"
     version = "1.12.2-14.23.1.2555"
     mappings = "snapshot_20171007"
 }
