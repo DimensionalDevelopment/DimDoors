@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        jcenter()
+        //jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
@@ -9,24 +9,20 @@ buildscript {
 }
 
 plugins {
-    id 'io.franzbecker.gradle-lombok'
+    id 'io.franzbecker.gradle-lombok' /*version '1.11'*/
     id 'java'
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'java'
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 group 'org.dimdev.annotatednbt'
-version '1.0'
+version '1.0.0-beta'
 
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-}
-
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 minecraft {

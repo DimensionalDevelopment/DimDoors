@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.tools;
 
+import net.minecraft.block.Block;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.server.DDProxyServer;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
@@ -46,7 +47,7 @@ public final class PocketSchematicGenerator {
         ModContainer mc = new DummyModContainer(md);
         Loader.instance().setupTestHarness(mc);
         Loader.instance().setActiveModContainer(mc);
-        ModBlocks.registerBlocks(new RegistryEvent.Register(GameData.BLOCKS, RegistryManager.ACTIVE.getRegistry(GameData.BLOCKS)));
+        ModBlocks.registerBlocks(new RegistryEvent.Register<Block>(GameData.BLOCKS, RegistryManager.ACTIVE.getRegistry(GameData.BLOCKS)));
         new DDProxyServer().registerTileEntities();
         new DDProxyServer().registerRiftDestinations();
         Loader.instance().setActiveModContainer(null);

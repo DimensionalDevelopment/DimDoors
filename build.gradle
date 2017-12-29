@@ -13,22 +13,35 @@ plugins {
     id 'java'
 }
 
+apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle.forge'
-//Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
-ext.modversion = "3.0.0-b2"
+// Version info
+String baseversion = "3.0.0" // Set beta to 0 after changing this
+int beta = 2 // Set this to 0 for a non-beta release
 ext.mcversion = "1.12.2"
 ext.forgeversion = "14.23.1.2555"
-//spongeSchematicVersion = "1"
+String mcpversion = "snapshot_20171007"
 
-version = mcversion + "-" + modversion
-group = "org.dimdev.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+String suffix = ""
+String shortSuffix = ""
+if (beta != 0) {
+    suffix += "-beta$beta"
+    shortSuffix = suffix
+    if (System.getenv("TRAVIS_BUILD_NUMBER") != null && beta != 0) {
+        suffix += "+${System.getenv("TRAVIS_BUILD_NUMBER")}"
+    } else {
+        suffix += "+UNOFFICIAL"
+    }
+}
+version = ext.modversion = baseversion + suffix
+
+group = "org.dimdev.dimdoors"
 archivesBaseName = "dimdoors"
 jar.archiveName = "dimdoors.jar" // Constant name for travis
 
-sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
+sourceCompatibility = "1.8"
 compileJava {
-    sourceCompatibility = targetCompatibility = "1.8"
     options.compilerArgs += [
             //"-proc:only", // TODO: have generated code available for debugging
             "-processor", "org.dimdev.ddutils.nbt.SavedToNBTProcessor,lombok.launch.AnnotationProcessorHider\$AnnotationProcessor"
@@ -36,11 +49,10 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12.2-14.23.1.2555"
+    version = "$mcversion-$forgeversion"
     runDir = "run"
-    mappings = "snapshot_20171007"
-    replace '${version}', project.version
-    //replace '${spongeSchematicVersion}', spongeSchematicVersion
+    mappings = mcpversion
+    replace '${version}', baseversion + shortSuffix
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 

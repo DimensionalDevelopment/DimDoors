@@ -6,7 +6,6 @@ import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
-import org.dimdev.ddutils.Location;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
@@ -16,7 +15,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -31,9 +29,8 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     @Override
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
         if (world.isRemote) return;
-        if (state.getValue(HALF) == EnumDoorHalf.UPPER) pos = pos.down();
-        IBlockState doorState = world.getBlockState(pos);
-        if (!(doorState.getBlock() instanceof BlockDoor)) return;
+
+        IBlockState doorState = world.getBlockState(state.getValue(HALF) == EnumDoorHalf.UPPER ? pos.down() : pos); // .down() because only the bottom block has open=true
 
         // Check that it's a door and that the entity portal timer is 0
         if (doorState.getValue(BlockDoor.OPEN) && entity.timeUntilPortal == 0) {

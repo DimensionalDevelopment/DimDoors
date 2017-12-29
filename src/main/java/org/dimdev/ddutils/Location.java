@@ -6,12 +6,10 @@ import lombok.ToString;
 import lombok.Value;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
 
 /**
  * @author Robijnvogel
@@ -48,7 +46,7 @@ public class Location implements Serializable {
     }
 
     public IBlockState getBlockState() {
-        return getWorld().getBlockState(this.pos);
+        return getWorld().getBlockState(pos);
     }
 
     public WorldServer getWorld() {

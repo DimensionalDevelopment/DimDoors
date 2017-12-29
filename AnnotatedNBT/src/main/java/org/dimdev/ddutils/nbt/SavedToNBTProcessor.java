@@ -37,7 +37,6 @@ public class SavedToNBTProcessor extends AbstractProcessor {
 
     private Map<String, Integer> varCounter = new HashMap<>();
 
-    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) { // TODO: generics, inheritance, different exception for error type
         roundEnv.getElementsAnnotatedWith(SavedToNBT.class);

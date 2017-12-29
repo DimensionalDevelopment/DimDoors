@@ -13,9 +13,7 @@ import lombok.experimental.Wither;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.rifts.RiftRegistry.RiftInfo.AvailableLinkInfo;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
@@ -217,7 +215,7 @@ import java.util.*;
         List<Location> entrances = privatePocketEntranceLists.computeIfAbsent(playerUUID, k -> new ArrayList<>());
         while ((entrance == null || !(entrance.getTileEntity() instanceof TileEntityRift)) && entrances.size() > 0) {
             if (entrance != null) entrances.remove(entrance);
-            entrance = entrances.get(0);
+            if (entrances.size() > 0) entrance = entrances.get(0);
         }
         privatePocketEntrances.put(playerUUID, entrance);
         return entrance;
