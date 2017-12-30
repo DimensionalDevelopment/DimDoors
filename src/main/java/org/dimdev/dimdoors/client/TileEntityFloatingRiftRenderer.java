@@ -141,7 +141,7 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
             new Vector4f(0.5f,0.5f,-0.5f,0.5f)
     };
 
-    private static double angle = 0;
+    private double angle = 0;
 
     /**
      * Renders the rift.
@@ -177,7 +177,7 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
     }
 
     private double update(float partialTicks) {
-        angle = (angle + 3 * partialTicks) % 360;
+        angle = (angle + 1 * partialTicks) % 360;
         return angle;
     }
 
