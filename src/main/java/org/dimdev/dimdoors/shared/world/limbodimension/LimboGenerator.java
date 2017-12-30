@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class LimboGenerator implements IChunkGenerator { // TODO: make limbo a biome that can also be outside the limbo world
+// TODO: Deobfuscate the original Minecraft code too, compare differences,
+// TODO: check if LimboGenerator can be converted to a biome
+public class LimboGenerator implements IChunkGenerator {
 
     private Random rand;
 
@@ -27,36 +29,26 @@ public class LimboGenerator implements IChunkGenerator { // TODO: make limbo a b
     private NoiseGeneratorOctaves minLimitPerlinNoise;
     private NoiseGeneratorOctaves maxLimitPerlinNoise;
     private NoiseGeneratorOctaves mainPerlinNoise;
-    private NoiseGeneratorOctaves surfaceNoise;
-    public NoiseGeneratorOctaves scaleNoise;
+    //private NoiseGeneratorOctaves surfaceNoise;
+    //public NoiseGeneratorOctaves scaleNoise;
     public NoiseGeneratorOctaves depthNoise;
-    public NoiseGeneratorOctaves mobSpawnerNoise; // TODO: right name?
+    //public NoiseGeneratorOctaves mobSpawnerNoise; // TODO: right name?
 
     // Noise regions
     double[] mainNoiseRegion;
     double[] minLimitRegion;
     double[] maxLimitRegion;
-    double[] scaleNoseRegion; // TODO: right name?
+    //double[] scaleNoiseRegion;
 
     private World world;
-    private double[] noiseArray;
+    private double[] heightMap;
 
-    /**
-     * The biomes that are used to generate the chunk
-     */
+
     private Biome[] biomesForGeneration = {ModBiomes.LIMBO};
 
-
-    /**
-     * A double array that holds terrain noise from depthNoise
-     */
     double[] depthRegion;
-
-    /**
-     * Used to store the 5x5 parabolic field that is used during terrain generation.
-     */
-    float[] parabolicField;
-    int[][] field_73219_j = new int[32][32];
+    float[] parabolicField; // This is actually a better name than the new MCP name biomeWeights (except that it's not a parabola)
+    //int[][] field_73219_j = new int[32][32];
 
     public LimboGenerator(World world, long seed) {
         this.world = world;
@@ -64,10 +56,10 @@ public class LimboGenerator implements IChunkGenerator { // TODO: make limbo a b
         minLimitPerlinNoise = new NoiseGeneratorOctaves(rand, 16); //base terrain
         maxLimitPerlinNoise = new NoiseGeneratorOctaves(rand, 16); //hillyness
         mainPerlinNoise = new NoiseGeneratorOctaves(rand, 80);  //seems to adjust the size of features, how stretched things are -default 8
-        surfaceNoise = new NoiseGeneratorOctaves(rand, 4);
-        scaleNoise = new NoiseGeneratorOctaves(rand, 10);
+        //surfaceNoise = new NoiseGeneratorOctaves(rand, 4);
+        //scaleNoise = new NoiseGeneratorOctaves(rand, 10);
         depthNoise = new NoiseGeneratorOctaves(rand, 16);
-        mobSpawnerNoise = new NoiseGeneratorOctaves(rand, 8); // TODO: is this named right?
+        //mobSpawnerNoise = new NoiseGeneratorOctaves(rand, 8); // TODO: is this named right?
 
         this.world = world;
     }
@@ -98,157 +90,160 @@ public class LimboGenerator implements IChunkGenerator { // TODO: make limbo a b
         return false;
     }
 
-    private double[] initializeNoiseField(double[] par1ArrayOfDouble, int par2, int par3, int par4, int par5, int par6, int par7) {
-        if (par1ArrayOfDouble == null) {
-            par1ArrayOfDouble = new double[par5 * par6 * par7];
-        }
+    private double[] generateHeightmap(double[] heightMap, int xOffset, int yOffset, int zOffset, int xSize, int ySize, int zSize) {
+        if (heightMap == null) heightMap = new double[xSize * ySize * zSize];
 
+        // Generate the "5x5" parabolicField array, acting as weights for a weighted average between biomes
         if (parabolicField == null) {
             parabolicField = new float[25];
 
-            for (int var8 = -2; var8 <= 2; ++var8) {
-                for (int var9 = -2; var9 <= 2; ++var9) {
-                    float var10 = 10.0F / MathHelper.sqrt(var8 * var8 + var9 * var9 + 0.2F);
-                    parabolicField[var8 + 2 + (var9 + 2) * 5] = var10;
+            for (int fieldX = -2; fieldX <= 2; ++fieldX) {
+                for (int fieldY = -2; fieldY <= 2; ++fieldY) {
+                    float value = 10.0F / MathHelper.sqrt(fieldX * fieldX + fieldY * fieldY + 0.2F);
+                    parabolicField[fieldX + 2 + (fieldY + 2) * 5] = value;
                 }
             }
         }
 
-        double var44 = 884.412D; //large values here create spiky land. add a 0, good -default 884
-        double var45 = 9840.412D; //large values here make sheets- default - 684
-        scaleNoseRegion = scaleNoise.generateNoiseOctaves(scaleNoseRegion, par2, par4, par5, par7, 1.121D, 1.121D, 0.5D);
-        depthRegion = depthNoise.generateNoiseOctaves(depthRegion, par2, par4, par5, par7, 200.0D, 200.0D, 0.5D);
-        mainNoiseRegion = mainPerlinNoise.generateNoiseOctaves(mainNoiseRegion, par2, par3, par4, par5, par6, par7, var44 / 80.0D, var45 / 160.0D, var44 / 80.0D);
-        minLimitRegion = minLimitPerlinNoise.generateNoiseOctaves(minLimitRegion, par2, par3, par4, par5, par6, par7, var44, var45, var44);
-        maxLimitRegion = maxLimitPerlinNoise.generateNoiseOctaves(maxLimitRegion, par2, par3, par4, par5, par6, par7, var44, var45, var44);
+        double xzScale = 884.412D; //large values here create spiky land. add a 0, good -default 884, these are configurable in vanilla
+        double yScale = 9840.412D; //large values here make sheets- default - 684
+        //scaleNoiseRegion = scaleNoise.generateNoiseOctaves(scaleNoiseRegion, xOffset, zOffset, xSize, zSize, 1.121D, 1.121D, 0.5D);
 
-        int var12 = 0;
-        int var13 = 0;
+        depthRegion = depthNoise.generateNoiseOctaves(depthRegion, xOffset, zOffset, xSize, zSize, 200.0D, 200.0D, 0.5D);
+        mainNoiseRegion = mainPerlinNoise.generateNoiseOctaves(mainNoiseRegion, xOffset, yOffset, zOffset, xSize, ySize, zSize, xzScale / 80.0D, yScale / 160.0D, xzScale / 80.0D);
+        minLimitRegion = minLimitPerlinNoise.generateNoiseOctaves(minLimitRegion, xOffset, yOffset, zOffset, xSize, ySize, zSize, xzScale, yScale, xzScale);
+        maxLimitRegion = maxLimitPerlinNoise.generateNoiseOctaves(maxLimitRegion, xOffset, yOffset, zOffset, xSize, ySize, zSize, xzScale, yScale, xzScale);
 
-        for (int var14 = 0; var14 < par5; ++var14) {
-            for (int var15 = 0; var15 < par7; ++var15) {
-                float var16 = 0.0F;
-                float var17 = 0.0F;
-                float var18 = 0.0F;
-                byte var19 = 2;
+        int heightMapIndex = 0;
+        int depthRegionIndex = 0;
+        for (int x = 0; x < xSize; x++) {
+            for (int z = 0; z < zSize; z++) {
+                float averageScale = 0.0F;
+                float averageDepth = 0.0F;
+                float totalWeight = 0.0F;
 
-                for (int var21 = -var19; var21 <= var19; ++var21) {
-                    for (int var22 = -var19; var22 <= var19; ++var22) {
-                        float var24 = parabolicField[var21 + 2 + (var22 + 2) * 5] / (Biomes.PLAINS.getBaseHeight() + 9.0F);
+                // TODO: why not just remove all of this since it's constant (only 1 biome in limbo)?
+                // Seems to be used to blend in two different biomes' map
+                for (int fieldX = -2; fieldX <= 2; fieldX++) {
+                    for (int fieldY = -2; fieldY <= 2; fieldY++) {
+                        int index = fieldX + 2 + (fieldY + 2) * 5; // Index in the "5x5" parabolicField array
 
+                        // This adjusts the height of the terrain
+                        int depthOffset = -1;
+                        int scaleOffset = 4;
 
-                        //this adjusts the height of the terrain
+                        // Vanilla is + 2.0F rather than + 9.0F
+                        float weight = parabolicField[index] / (Biomes.PLAINS.getBaseHeight() + 9.0F);
 
-                        var16 += Biomes.PLAINS.getHeightVariation() * var24 + 4;
-                        var17 += Biomes.PLAINS.getBaseHeight() * var24 - 1;
-                        var18 += var24;
+                        // biomeDepthWeight = biomeScaleWeight = 1 since we have only 1 biome
+                        // TODO: There are missing parentheses around the addition, this was
+                        // TODO: obviously a mistake when simplifying the vanila code, otherwise
+                        // TODO: we're not calculating a weighted average. We should re-add these
+                        // TODO: without changing the appearance of limbo.
+                        averageScale += scaleOffset + Biomes.PLAINS.getHeightVariation() * weight;
+                        averageDepth += depthOffset + Biomes.PLAINS.getBaseHeight() * weight;
+                        totalWeight += weight;
                     }
                 }
 
-                var16 /= var18;
-                var17 /= var18;
-                var16 = var16 * 0.9F + 0.1F;
-                var17 = (var17 * 4.0F - 1.0F) / 8.0F;
-                double var47 = depthRegion[var13] / 8000.0D;
+                averageScale /= totalWeight;
+                averageDepth /= totalWeight;
+                averageScale = averageScale * 0.9F + 0.1F;
+                averageDepth = (averageDepth * 4.0F - 1.0F) / 8.0F;
 
-                if (var47 < 0.0D) {
-                    var47 = -var47 * 0.3D;
-                }
-
-                var47 = var47 * 3.0D - 2.0D;
-
-                if (var47 < 0.0D) {
-                    var47 /= 2.0D;
-
-                    if (var47 < -1.0D) {
-                        var47 = -1.0D;
-                    }
-
-                    var47 /= 1.4D;
-                    var47 /= 2.0D;
+                double depthOffset = depthRegion[depthRegionIndex] / 8000.0D; // TODO: is depthOffset a right name?
+                // Transform depthOffset based on this function (https://goo.gl/ZDXra8)
+                // Values of d outside the interval (-10/3, 1) are clamped to 1/8
+                // The range is [-5/14, 1/8], with the minimum being at 0
+                if (depthOffset < 0.0D) depthOffset = -depthOffset * 0.3D;
+                depthOffset = depthOffset * 3.0D - 2.0D;
+                if (depthOffset < 0.0D) {
+                    depthOffset /= 2.0D;
+                    if (depthOffset < -1.0D) depthOffset = -1.0D; // Not possible
+                    depthOffset /= 1.4D;
+                    depthOffset /= 2.0D;
                 } else {
-                    if (var47 > 1.0D) {
-                        var47 = 1.0D;
-                    }
-
-                    var47 /= 8.0D;
+                    if (depthOffset > 1.0D) depthOffset = 1.0D;
+                    depthOffset /= 8.0D;
                 }
+                depthRegionIndex++;
 
-                ++var13;
+                for (int y = 0; y < ySize; y++) {
+                    double depth = averageDepth;
+                    depth += depthOffset * 0.2D;
+                    depth = depth * ySize / 16.0D;
+                    depth = ySize / 2.0D + depth * 4.0D; // This was a separate double var28 in vanilla
 
-                for (int var46 = 0; var46 < par6; ++var46) {
-                    double var48 = var17;
-                    var48 += var47 * 0.2D;
-                    var48 = var48 * par6 / 16.0D;
-                    double var28 = par6 / 2.0D + var48 * 4.0D;
-                    double var30;
-                    double var32 = (var46 - var28) * 12.0D * 128.0D / 128.0D / (double) var16;
+                    // TODO: is heightOffset named right?
+                    double heightOffset = (y - depth) * 12.0D * 128.0D / 128.0D / (double) averageScale; // Vanilla was * 128D / 256D, configurable
 
-                    if (var32 < 0.0D) {
-                        var32 *= 4.0D;
+                    if (heightOffset < 0.0D) {
+                        heightOffset *= 4.0D;
                     }
 
-                    double var34 = minLimitRegion[var12] / 512.0D;
-                    double var36 = maxLimitRegion[var12] / 512.0D;
-                    double var38 = (mainNoiseRegion[var12] / 10.0D + 1.0D) / 2.0D;
+                    double minLimit = minLimitRegion[heightMapIndex] / 512.0D;
+                    double maxLimit = maxLimitRegion[heightMapIndex] / 512.0D;
+                    double mainNoise = (mainNoiseRegion[heightMapIndex] / 10.0D + 1.0D) / 2.0D;
 
-                    if (var38 < 0.0D) {
-                        var30 = var34;
-                    } else if (var38 > 1.0D) {
-                        var30 = var36;
+                    double height;
+                    if (mainNoise < 0.0D) {
+                        height = minLimit;
+                    } else if (mainNoise > 1.0D) {
+                        height = maxLimit;
                     } else {
-                        var30 = var34 + (var36 - var34) * var38;
+                        height = minLimit + (maxLimit - minLimit) * mainNoise;
                     }
 
-                    var30 -= var32;
+                    height -= heightOffset;
 
-                    if (var46 > par6 - 4) {
-                        double var40 = (var46 - (par6 - 4)) / 3.0F;
-                        var30 = var30 * (1.0D - var40) + -10.0D * var40;
+                    if (y > ySize - 4) {
+                        double var40 = (y - (ySize - 4)) / 3.0F; // TODO: what does this do?
+                        height = height * (1.0D - var40) + -10.0D * var40;
                     }
 
-                    par1ArrayOfDouble[var12] = var30;
-                    ++var12;
+                    heightMap[heightMapIndex] = height;
+                    heightMapIndex++;
                 }
             }
         }
 
-        return par1ArrayOfDouble;
+        return heightMap;
     }
 
+    @SuppressWarnings("LocalVariableNamingConvention")
     public void setBlocksInChunk(int x, int z, ChunkPrimer primer) {
         biomesForGeneration = world.getBiomeProvider().getBiomesForGeneration(biomesForGeneration, x * 4 - 2, z * 4 - 2, 10, 10);
-        noiseArray = initializeNoiseField(noiseArray, x * 4, 0, z * 4, 5, 17, 5);
+        heightMap = generateHeightmap(heightMap, x * 4, 0, z * 4, 5, 17, 5); // TODO: vanilla ySize is 33
 
-        int xzSections = 4;
+        int xzSectionCount = 4;
         int xzSectionSize = 4;
-        int ySections = 16;
+        int ySectionCount = 16;
         int ySectionSize = 8;
 
         double xzScale = 1.0 / xzSectionSize;
         double yScale = 1.0 / ySectionSize;
-        for (int sectionX = 0; sectionX < xzSections; ++sectionX) {
+        for (int sectionX = 0; sectionX < xzSectionCount; sectionX++) {
             int xSectionPart = sectionX * xzSectionSize;
-            int i0__ = sectionX * (xzSections + 1);
-            int i1__ = (sectionX + 1) * (xzSections + 1);
+            int i0__ = sectionX * (xzSectionCount + 1);
+            int i1__ = (sectionX + 1) * (xzSectionCount + 1);
 
-            for (int sectionZ = 0; sectionZ < xzSections; ++sectionZ) {
+            for (int sectionZ = 0; sectionZ < xzSectionCount; sectionZ++) {
                 int zSectionPart = sectionZ * xzSectionSize;
-                int i0_0 = (i0__ + sectionZ) * (ySections + 1);
-                int i0_1 = (i0__ + sectionZ + 1) * (ySections + 1);
-                int i1_0 = (i1__ + sectionZ) * (ySections + 1);
-                int i1_1 = (i1__ + sectionZ + 1) * (ySections + 1);
+                int i0_0 = (i0__ + sectionZ) * (ySectionCount + 1);
+                int i0_1 = (i0__ + sectionZ + 1) * (ySectionCount + 1);
+                int i1_0 = (i1__ + sectionZ) * (ySectionCount + 1);
+                int i1_1 = (i1__ + sectionZ + 1) * (ySectionCount + 1);
 
-                for (int sectionY = 0; sectionY < ySections; ++sectionY) {
+                for (int sectionY = 0; sectionY < ySectionCount; sectionY++) {
                     int ySectionPart = sectionY * ySectionSize;
-                    double v0y0 = noiseArray[i0_0 + sectionY];
-                    double v0y1 = noiseArray[i0_1 + sectionY];
-                    double v1y0 = noiseArray[i1_0 + sectionY];
-                    double v1y1 = noiseArray[i1_1 + sectionY];
-                    double d0y0 = (noiseArray[i0_0 + sectionY + 1] - v0y0) * yScale;
-                    double d0y1 = (noiseArray[i0_1 + sectionY + 1] - v0y1) * yScale;
-                    double d1y0 = (noiseArray[i1_0 + sectionY + 1] - v1y0) * yScale;
-                    double d1y1 = (noiseArray[i1_1 + sectionY + 1] - v1y1) * yScale;
+                    double v0y0 = heightMap[i0_0 + sectionY];
+                    double v0y1 = heightMap[i0_1 + sectionY];
+                    double v1y0 = heightMap[i1_0 + sectionY];
+                    double v1y1 = heightMap[i1_1 + sectionY];
+                    double d0y0 = (heightMap[i0_0 + sectionY + 1] - v0y0) * yScale;
+                    double d0y1 = (heightMap[i0_1 + sectionY + 1] - v0y1) * yScale;
+                    double d1y0 = (heightMap[i1_0 + sectionY + 1] - v1y0) * yScale;
+                    double d1y1 = (heightMap[i1_1 + sectionY + 1] - v1y1) * yScale;
 
                     for (int yRel = 0; yRel < ySectionSize; ++yRel) {
                         int yCoord = ySectionPart + yRel;

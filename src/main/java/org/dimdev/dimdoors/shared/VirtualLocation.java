@@ -56,8 +56,8 @@ public class VirtualLocation { // TODO: use BlockPos/Location
         int depthDiff = Math.abs(this.depth - depth);
         int base = DDConfig.getOwCoordinateOffsetBase();
         double power = DDConfig.getOwCoordinateOffsetPower();
-        int xOffset = random.nextInt((int) Math.pow(base * depthDiff, power)) * (random.nextBoolean() ? 1 : -1);
-        int zOffset = random.nextInt((int) Math.pow(base * depthDiff, power)) * (random.nextBoolean() ? 1 : -1);
+        int xOffset = random.nextInt((int) Math.pow(base * (depthDiff + 1), power)) * (random.nextBoolean() ? 1 : -1);
+        int zOffset = random.nextInt((int) Math.pow(base * (depthDiff + 1), power)) * (random.nextBoolean() ? 1 : -1);
         return new VirtualLocation(getDim(), getPos().offset(EnumFacing.EAST, xOffset).offset(EnumFacing.SOUTH, zOffset), depth);
     }
 
