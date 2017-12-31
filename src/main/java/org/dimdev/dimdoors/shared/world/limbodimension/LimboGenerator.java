@@ -264,7 +264,7 @@ public class LimboGenerator implements IChunkGenerator {
                                             ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED));
                                 } else if (yCoord < 6) {
                                     primer.setBlockState(xCoord, yCoord, zCoord,
-                                            ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT));
+                                            ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ETERNAL));
                                 }
                             }
 

@@ -26,7 +26,7 @@ import java.util.*;
     private static final String DATA_NAME = DimDoors.MODID + "_rifts";
     @Getter private static final int DATA_VERSION = 0; // IMPORTANT: Update this and upgradeRegistry when making changes.
 
-    @SavedToNBT @Getter /*package-private*/ /*final*/ Map<Location, RiftInfo> rifts = new HashMap<>(); // TODO: store relative locations too (better location class supporting relative, etc)
+    @SavedToNBT @Getter /*package-private*/ /*final*/ Map<Location, RiftInfo> rifts = new HashMap<>(); // TODO: convert to a static directed graph, but store links per-world
     @SavedToNBT @Getter /*package-private*/ /*final*/ Map<String, Location> privatePocketEntrances = new HashMap<>(); // Player UUID -> last rift used to exit pocket TODO: split into PrivatePocketRiftRegistry subclass
     @SavedToNBT @Getter /*package-private*/ /*final*/ Map<String, List<Location>> privatePocketEntranceLists = new HashMap<>(); // Player UUID -> private pocket entrances TODO: split into PrivatePocketRiftRegistry subclass
     @SavedToNBT @Getter /*package-private*/ /*final*/ Map<String, Location> privatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
@@ -87,7 +87,7 @@ import java.util.*;
     }
 
     public void initNewRegistry() {
-        // TODO
+        // Nothing to do
     }
 
     @Override

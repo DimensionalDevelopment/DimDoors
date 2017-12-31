@@ -37,11 +37,9 @@ public class WorldProviderLimbo extends WorldProvider {
 
     @Override
     protected void generateLightBrightnessTable() {
-        float modifier = 0.0F;
-
-        for (int steps = 0; steps <= 15; ++steps) {
-            float var3 = 1.0F - steps / 15.0F;
-            lightBrightnessTable[steps] = ((0.0F + var3) / (var3 * 3.0F + 1.0F) * (1.0F - modifier) + modifier) * 3;
+        for (int i = 0; i <= 15; ++i) {
+            float var3 = 1.0F - i / 15.0F;
+            lightBrightnessTable[i] = (0.0F + var3) / (var3 * 3.0F + 1.0F) * 1.0F * 3;
         }
     }
 

@@ -21,10 +21,11 @@ public class WorldProviderPersonalPocket extends WorldProviderPocket {
         return EnumPocketType.PRIVATE;
     }
 
+    // TODO: disable this to allow dark places in public pockets
     @Override
     protected void generateLightBrightnessTable() {
         for (int i = 0; i <= 15; ++i) {
-            lightBrightnessTable[i] = 15;
+            lightBrightnessTable[i] = 1;
         }
     }
 

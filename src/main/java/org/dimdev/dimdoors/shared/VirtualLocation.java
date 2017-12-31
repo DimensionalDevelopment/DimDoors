@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.shared;
 
-import org.dimdev.ddutils.nbt.INBTStorable;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
 import org.dimdev.ddutils.Location;
@@ -9,14 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 
 import java.util.Random;
 
 @Value @ToString @AllArgsConstructor @Builder(toBuilder = true)
-public class VirtualLocation { // TODO: use BlockPos/Location
+public class VirtualLocation {
     Location location;
     int depth;
 
@@ -34,7 +33,7 @@ public class VirtualLocation { // TODO: use BlockPos/Location
     public int getY() { return location.getY(); }
     public int getZ() { return location.getZ(); }
 
-    public static VirtualLocation fromLocation(Location location) { // TODO: reverse function too
+    public static VirtualLocation fromLocation(Location location) {
         VirtualLocation virtualLocation = null;
         if (DimDoorDimensions.isPocketDimension(location.getDim())) {
             Pocket pocket = PocketRegistry.getForDim(location.getDim()).getPocketAt(location.getPos());
@@ -43,6 +42,8 @@ public class VirtualLocation { // TODO: use BlockPos/Location
             } else {
                 virtualLocation = new VirtualLocation(0, 0, 0, 0, 0); // TODO: door was placed in a pocket dim but outside of a pocket...
             }
+        } else if (location.getWorld().provider instanceof WorldProviderLimbo) {
+            virtualLocation = new VirtualLocation(location, DDConfig.getMaxDungeonDepth());
         }
         if (virtualLocation == null) {
             virtualLocation = new VirtualLocation(location, 0);
@@ -50,7 +51,7 @@ public class VirtualLocation { // TODO: use BlockPos/Location
         return virtualLocation;
     }
 
-    // TODO: world-seed based transformations and pocket selections?
+    // TODO: world-seed based transformations and pocket selections
     public VirtualLocation transformDepth(int depth) { // TODO: Config option for block ratio between depths (see video of removed features)
         Random random = new Random();
         int depthDiff = Math.abs(this.depth - depth);

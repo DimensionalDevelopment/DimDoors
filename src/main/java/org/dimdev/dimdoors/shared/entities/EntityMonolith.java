@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.entities;
 
+import net.minecraft.block.Block;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.DDConfig;
 import org.dimdev.ddutils.Location;
@@ -73,7 +74,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        return null;
+        return Block.NULL_AABB; // TODO: Is this right? Why check if it intersects anything if it is?
     }
 
     @Override
@@ -275,7 +276,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
             if (list.size() > 0) {
                 return false;
             }
-        } else if (world.provider instanceof WorldProviderPublicPocket) {
+        } else if (world.provider instanceof WorldProviderPublicPocket) { // TODO
             if (list.size() > 5 || world.canBlockSeeSky(new BlockPos(posX, posY, posZ))) {
                 return false;
             }
