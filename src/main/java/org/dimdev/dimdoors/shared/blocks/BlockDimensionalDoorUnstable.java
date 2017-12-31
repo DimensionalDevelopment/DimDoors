@@ -2,13 +2,12 @@ package org.dimdev.dimdoors.shared.blocks;
 
 import java.util.Random;
 
+import net.minecraft.init.Blocks;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
-import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
@@ -31,7 +30,7 @@ public class BlockDimensionalDoorUnstable extends BlockDimensionalDoor {
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return state.getValue(HALF) == BlockDoor.EnumDoorHalf.UPPER ? Items.AIR : Items.IRON_DOOR;
+        return Blocks.IRON_DOOR.getItemDropped(state, rand, fortune);
     }
 
     @Override

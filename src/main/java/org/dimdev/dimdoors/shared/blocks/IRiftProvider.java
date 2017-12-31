@@ -35,6 +35,5 @@ public interface IRiftProvider<T extends TileEntityRift> extends ITileEntityProv
         //world.setTileEntity(pos, rift);
         rift.markDirty();
         rift.register();
-        T rift2 = getRift(world, pos, state);
     }
 }

@@ -1,15 +1,17 @@
 package org.dimdev.dimdoors.shared.blocks;
 
+import net.minecraft.block.state.IBlockState;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import org.dimdev.dimdoors.shared.rifts.PrivateDestination;
 import org.dimdev.dimdoors.shared.rifts.PrivatePocketExitDestination;
-import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPersonalPocket;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+
+import java.util.Random;
 
 public class BlockDimensionalDoorPersonal extends BlockDimensionalDoor {
 
@@ -25,6 +27,11 @@ public class BlockDimensionalDoorPersonal extends BlockDimensionalDoor {
     @Override
     public Item getItem() {
         return ModItems.PERSONAL_DIMENSIONAL_DOOR;
+    }
+
+    @Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+        return ModBlocks.QUARTZ_DOOR.getItemDropped(state, rand, fortune);
     }
 
     @Override

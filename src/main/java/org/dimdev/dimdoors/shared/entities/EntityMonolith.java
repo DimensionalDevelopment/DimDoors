@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.shared.entities;
 
-import net.minecraft.block.Block;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.DDConfig;
 import org.dimdev.ddutils.Location;
@@ -74,7 +73,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        return Block.NULL_AABB; // TODO: Is this right? Why check if it intersects anything if it is?
+        return null; // TODO: Is this right? Why check if it intersects anything if it is?
     }
 
     @Override
@@ -282,6 +281,8 @@ public class EntityMonolith extends EntityFlying implements IMob {
             }
         }
 
-        return world.checkNoEntityCollision(getCollisionBoundingBox()) && world.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !world.containsAnyLiquid(getCollisionBoundingBox());
+        return true;
+        // TODO: this would throw a null pointer exception if enabled (the bounding box is null)
+        //return world.checkNoEntityCollision(getCollisionBoundingBox()) && world.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !world.containsAnyLiquid(getCollisionBoundingBox());
     }
 }
