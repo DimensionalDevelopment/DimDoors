@@ -16,17 +16,7 @@ Experiencing a bug or just have a suggestion that is in-line with the mod's lore
  
 ## Discord Server
 For the main bits, we have a Discord server made specifically for talking about Dimensional Doors. It's also the place where the devs meet to discuss current progress on certain aspects, and get feedback from the team.
-### Discord Server: [Click](https://discord.gg/zBbK9dZ) to open in browser or client, if installed
+### Discord Server: [Click](https://discord.gg/f27hdrM) to open in browser or client, if installed
 
-## Team Applications
-Dimensional Development is always looking to expand (there is currently only 3 of us) and introduce new members to the team and community.
-
-### Want to join?
-**Artists:**
-We will be looking for artists, artists will be a priority eventually, but feel free to submit an app anyway! You will need a background and resume of your art to have a chance of being accepted.
-#### Application Link: **COMING SOON**
-
-**Developers:**
-It is recommended that you do a few PRs before you apply, and have some background in Java and Forge mods.
-Currently, there is no link available, but once we have one, you will be able to leave contact info, a resume of your history with mods and Java, and your dedication time to the team. As long as you can commit at least once a week, you have a chance.
-#### Application Link: **COMING SOON**
+## Join the Team
+Dimensional Development is always looking to expand (there is currently only 4 of us) and introduce new members to the team and community. Join our Discord and talk to us! Tell us how you can help.
