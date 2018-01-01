@@ -38,6 +38,11 @@ item.rift_blade.name=Rift Blade
 item.world_thread.name=World Thread
 item.stable_fabric.name=Stable Fabric
 
+item.boots_woven_world_thread.name=Woven World Thread Boots
+item.helmet_woven_world_thread.name=Woven World Thread Helmet
+item.leggings_woven_world_thread.name=Woven World Thread Leggings
+item.chestplate_woven_world_thread.name=Woven World Thread Chestplate
+
 info.rift_key.bound=Bound
 info.rift_key.unbound=Unbound
 

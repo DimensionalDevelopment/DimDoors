@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.items;
 
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.event.RegistryEvent;
@@ -29,6 +30,12 @@ public final class ModItems {
     public static final ItemRiftRemover RIFT_REMOVER = new ItemRiftRemover();
     public static final ItemRiftSignature RIFT_SIGNATURE = new ItemRiftSignature();
 
+    // Armors
+    public static ItemWovenWorldThreadArmor HELMET_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("helmet_woven_world_thread", 1, EntityEquipmentSlot.HEAD);
+    public static ItemWovenWorldThreadArmor CHESTPLATE_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("chestplate_woven_world_thread", 1, EntityEquipmentSlot.CHEST);
+    public static ItemWovenWorldThreadArmor LEGGINGS_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("leggings_woven_world_thread", 2, EntityEquipmentSlot.LEGS);
+    public static ItemWovenWorldThreadArmor BOOTS_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("boots_woven_world_thread", 1, EntityEquipmentSlot.FEET);
+
     // ItemBlocks
     public static final ItemFabric FABRIC = new ItemFabric();
     public static final ItemDimensionalTrapdoorWood WOOD_DIMENSIONAL_TRAPDOOR = new ItemDimensionalTrapdoorWood();
@@ -48,7 +55,11 @@ public final class ModItems {
                 RIFT_CONNECTION_TOOL,
                 RIFT_BLADE,
                 RIFT_REMOVER,
-                RIFT_SIGNATURE);
+                RIFT_SIGNATURE,
+                HELMET_WOVEN_WORLD_THREAD,
+                CHESTPLATE_WOVEN_WORLD_THREAD,
+                LEGGINGS_WOVEN_WORLD_THREAD,
+                BOOTS_WOVEN_WORLD_THREAD);
 
         // ItemBlocks
         event.getRegistry().registerAll(
