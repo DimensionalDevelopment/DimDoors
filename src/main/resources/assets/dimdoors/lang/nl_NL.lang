@@ -60,14 +60,14 @@ info.rift_remover1=om het te verwijderen en
 info.rift_remover2=alle dichtbijzijnde scheuren.
 
 info.rift_signature.bound=Leidt naar (%d, %d, %d) in dimensie #%d
-
 info.rift_signature.unbound0=De eerste klik slaat een locatie op;
 info.rift_signature.unbound1=de tweede creëert een paar scheuren
 info.rift_signature.unbound2=die beide locaties met elkaar verbinden.
 
-info.rift_signature.stable0=De eerste klik slaat een locatie op,
-info.rift_signature.stable1=andere klikken creëren scheuren die de eerste
-info.rift_signature.stable2=en laatste locaties met elkaar verbinden.
+info.stabilized_rift_signature.bound=Leidt naar (%d, %d, %d) in dimensie #%d
+info.stabilized_rift_signature.unbound0=De eerste klik slaat een locatie op,
+info.stabilized_rift_signature.unbound1=andere klikken creëren scheuren die de eerste
+info.stabilized_rift_signature.unbound2=en laatste locaties met elkaar verbinden.
 
 info.unstable_dimensional_door=Pas op: Leidt naar een willekeurige bestemming
 

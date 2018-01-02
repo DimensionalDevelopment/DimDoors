@@ -66,14 +66,14 @@ info.rift_remover1=to remove it and
 info.rift_remover2=any nearby rifts.
 
 info.rift_signature.bound=Leads to (%d, %d, %d) at dimension #%d
-
 info.rift_signature.unbound0=First click stores a location;
 info.rift_signature.unbound1=second click creates a pair of
 info.rift_signature.unbound2=rifts linking the two locations.
 
-info.rift_signature.stable0=First click stores a location,
-info.rift_signature.stable1=other clicks create rifts linking
-info.rift_signature.stable2=the first and last locations together.
+info.stabilized_rift_signature.bound=Leads to (%d, %d, %d) at dimension #%d
+info.stabilized_rift_signature.unbound0=First click stores a location,
+info.stabilized_rift_signature.unbound1=other clicks create rifts linking
+info.stabilized_rift_signature.unbound2=the first and last locations together.
 
 info.unstable_dimensional_door=Caution: Leads to random destination
 

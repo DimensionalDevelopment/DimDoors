@@ -60,14 +60,14 @@ info.rift_remover1=чтобы убрать его и
 info.rift_remover2=другие ближайшие разломы.
 
 info.rift_signature.bound=Ведёт в (%d, %d, %d) в измерение #%d
-
 info.rift_signature.unbound0=Первое нажатие сохраняет расположение;
 info.rift_signature.unbound1=второе нажатие создаёт пару
 info.rift_signature.unbound2=разломов, соединяющих два расположения.
 
-info.rift_signature.stable0=Первое нажатие сохраняет расположение,
-info.rift_signature.stable1=остальные нажатия создают разломы, соединяющие
-info.rift_signature.stable2=первое и последнее расположения вместе.
+info.stabilized_rift_signature.bound=Ведёт в (%d, %d, %d) в измерение #%d
+info.stabilized_rift_signature.unbound0=Первое нажатие сохраняет расположение,
+info.stabilized_rift_signature.unbound1=остальные нажатия создают разломы, соединяющие
+info.stabilized_rift_signature.unbound2=первое и последнее расположения вместе.
 
 info.unstable_dimensional_door=Внимание: Ведёт неизвестно куда
 

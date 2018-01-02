@@ -60,14 +60,14 @@ info.rift_remover1=esposta per rimuovere quello
 info.rift_remover2=e altre fratture vicine.
 
 info.rift_signature.bound=Porta a (%d, %d, %d) nella dimensione #%d
-
 info.rift_signature.unbound0=Al primo clic salva la posizione; al
 info.rift_signature.unbound1=secondo clic crea un paio di fratture
 info.rift_signature.unbound2=che collegano le due posizioni.
 
-info.rift_signature.stable0=Al primo clic salva la posizione; al
-info.rift_signature.stable1=secondo clic crea fratture che
-info.rift_signature.stable2=collegano la prima e ultima posizione.
+info.stabilized_rift_signature.bound=Porta a (%d, %d, %d) nella dimensione #%d
+info.stabilized_rift_signature.unbound0=Al primo clic salva la posizione; al
+info.stabilized_rift_signature.unbound1=secondo clic crea fratture che
+info.stabilized_rift_signature.unbound2=collegano la prima e ultima posizione.
 
 info.unstable_dimensional_door=Attenziione: Porta a una destinazione casuale
 

@@ -44,6 +44,7 @@ public final class ModelManager {
         register(ModItems.RIFT_BLADE);
         register(ModItems.RIFT_REMOVER);
         register(ModItems.RIFT_SIGNATURE);
+        register(ModItems.STABILIZED_RIFT_SIGNATURE);
         register(ModItems.BOOTS_WOVEN_WORLD_THREAD);
         register(ModItems.CHESTPLATE_WOVEN_WORLD_THREAD);
         register(ModItems.HELMET_WOVEN_WORLD_THREAD);

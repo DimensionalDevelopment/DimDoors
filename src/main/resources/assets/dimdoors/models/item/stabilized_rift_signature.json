@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "dimdoors:items/stabilized_rift_signature"
+  }
+}

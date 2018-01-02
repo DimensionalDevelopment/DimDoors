@@ -91,5 +91,8 @@ public final class CraftingManager {
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.RIFT_SIGNATURE),
                 " x ", "xyx", "xxx", 'x', Items.GOLD_INGOT, 'y', ModItems.STABLE_FABRIC));
+
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.STABILIZED_RIFT_SIGNATURE),
+                " x ", "xyx", "xxx", 'x', ModItems.STABLE_FABRIC, 'y', ModItems.RIFT_SIGNATURE));
     }
 }

@@ -60,14 +60,14 @@ info.rift_remover1=来移除它以及附近的其他
 info.rift_remover2=裂痕.
 
 info.rift_signature.bound=指向(%d, %d, %d) 位于#%d
-
 info.rift_signature.unbound0=第一次点击记录一个位置;
 info.rift_signature.unbound1=第二次点击在两地间创造
 info.rift_signature.unbound2=一对相互连接的裂痕.
 
-info.rift_signature.stable0=首次点击记录一个位置,
-info.rift_signature.stable1=再次点击生成连接两地的
-info.rift_signature.stable2=裂痕.
+info.stabilized_rift_signature.bound=指向(%d, %d, %d) 位于#%d
+info.stabilized_rift_signature.unbound0=首次点击记录一个位置,
+info.stabilized_rift_signature.unbound1=再次点击生成连接两地的
+info.stabilized_rift_signature.unbound2=裂痕.
 
 info.unstable_dimensional_door=注意: 将会随机传送
 

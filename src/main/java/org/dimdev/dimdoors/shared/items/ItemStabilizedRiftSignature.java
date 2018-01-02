@@ -1,18 +1,18 @@
 package org.dimdev.dimdoors.shared.items;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.DimDoors;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import org.dimdev.dimdoors.shared.RotatedLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.rifts.GlobalDestination;
@@ -23,12 +23,12 @@ import java.util.List;
 
 import static org.dimdev.ddutils.I18nUtils.translateAndAdd;
 
-public class ItemRiftSignature extends Item {
-    public static final String ID = "rift_signature";
+public class ItemStabilizedRiftSignature extends Item { // TODO: common superclass with rift signature
+    public static final String ID = "stabilized_rift_signature";
 
-    public ItemRiftSignature() {
+    public ItemStabilizedRiftSignature() {
         setMaxStackSize(1);
-        setMaxDamage(1);
+        setMaxDamage(20);
         setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
@@ -65,16 +65,16 @@ public class ItemRiftSignature extends Item {
             rift1.register();
 
             // Place a rift at the source point
-            World sourceWorld = source.getLocation().getWorld();
-            sourceWorld.setBlockState(source.getLocation().getPos(), ModBlocks.RIFT.getDefaultState());
-            TileEntityRift rift2 = (TileEntityRift) source.getLocation().getTileEntity();
-            rift2.setSingleDestination(new GlobalDestination(rift1.getLocation()));
-            rift2.setRotation(source.getYaw(), 0);
-            rift2.register();
+            if (!source.getLocation().getBlockState().getBlock().equals(ModBlocks.RIFT)) {
+                World sourceWorld = source.getLocation().getWorld();
+                sourceWorld.setBlockState(source.getLocation().getPos(), ModBlocks.RIFT.getDefaultState());
+                TileEntityRift rift2 = (TileEntityRift) source.getLocation().getTileEntity();
+                rift2.setRotation(source.getYaw(), 0);
+                rift2.register();
+            }
 
-            stack.damageItem(1, player); // TODO: calculate damage based on position?
+            stack.damageItem(1, player);
 
-            clearSource(stack);
             DimDoors.chat(player, "Rift Created");
             world.playSound(player, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
@@ -113,9 +113,9 @@ public class ItemRiftSignature extends Item {
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         RotatedLocation transform = getSource(stack);
         if (transform != null) {
-            tooltip.add(I18n.translateToLocalFormatted("info.rift_signature.bound", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
+            tooltip.add(I18n.translateToLocalFormatted("info.stabilized_rift_signature.bound", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
         } else {
-            translateAndAdd("info.rift_signature.unbound", tooltip);
+            translateAndAdd("info.stabilized_rift_signature.unbound", tooltip);
         }
     }
 }

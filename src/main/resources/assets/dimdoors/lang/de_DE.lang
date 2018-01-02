@@ -60,14 +60,14 @@ info.rift_remover1=um ihn und jegliche Spalte
 info.rift_remover2=in der Nähe zu entfernen.
 
 info.rift_signature.bound=Führt zu(%d, %d, %d) in Dimension #%d
-
 info.rift_signature.unbound0=Erster Klick speichert die Position;
 info.rift_signature.unbound1=zweiter Klick kreiert ein Paar von Spalten,
 info.rift_signature.unbound2=welche zu den zwei Positionen führen.
 
-info.rift_signature.stable0=Erster Klick speichert die Position,
-info.rift_signature.stable1=weitere Klicks kreieren Spalte, die
-info.rift_signature.stable2=die erste und die aktuelle Position verbinden.
+info.stabilized_rift_signature.bound=Führt zu(%d, %d, %d) in Dimension #%d
+info.stabilized_rift_signature.unbound0=Erster Klick speichert die Position,
+info.stabilized_rift_signature.unbound1=weitere Klicks kreieren Spalte, die
+info.stabilized_rift_signature.unbound2=die erste und die aktuelle Position verbinden.
 
 info.unstable_dimensional_door=Vorsicht: Führt zu einem zufälligen Ziel
 

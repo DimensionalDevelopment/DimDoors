@@ -62,14 +62,14 @@ info.rift_remover1=expusa pentru a sterge acea
 info.rift_remover2=fisură și ori ce fisuri apropiate.
 
 info.rift_signature.bound=Duce la (%d, %d, %d) în dimensiunea #%d
-
 info.rift_signature.unbound0=Primul clic stochează o locație;
 info.rift_signature.unbound1=al doilea clic crează o pereche
 info.rift_signature.unbound2=de fisuri conectând cele doua locații.
 
-info.rift_signature.stable0=Primul clic stochează o locație;
-info.rift_signature.stable1=alte clicuri crează fisuri conectând
-info.rift_signature.stable2=prima și ultima conectiuni împreună.
+info.stabilized_rift_signature.bound=Duce la (%d, %d, %d) în dimensiunea #%d
+info.stabilized_rift_signature.unbound0=Primul clic stochează o locație;
+info.stabilized_rift_signature.unbound1=alte clicuri crează fisuri conectând
+info.stabilized_rift_signature.unbound2=prima și ultima conectiuni împreună.
 
 info.unstable_dimensional_door=Atenție: Duce la o destinație aleatorie
 
