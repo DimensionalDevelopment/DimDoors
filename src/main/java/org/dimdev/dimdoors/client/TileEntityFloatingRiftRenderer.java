@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.client;
 import com.flowpowered.math.TrigMath;
 import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector4f;
+import org.dimdev.ddutils.RGBA;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -149,10 +150,13 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
     @Override
     public void render(TileEntityFloatingRift te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         double radian = update(partialTicks) * TrigMath.DEG_TO_RAD;
+        RGBA color = te.getColor();
+        if (color == null) color = new RGBA(1, 0.5f, 1, 1);
 
         GlStateManager.enableLighting();
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
+        GlStateManager.enableBlend();
 
         bindTexture(tesseract_path);
 
@@ -164,13 +168,15 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
 
         for (int i = 0; i < tesseract.length; i+=4) {
             worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            project(worldRenderer, rotation(tesseract[i], radian),0,0);
-            project(worldRenderer, rotation(tesseract[i+1], radian),0,1);
-            project(worldRenderer, rotation(tesseract[i+2], radian),1,1);
-            project(worldRenderer, rotation(tesseract[i+3], radian),1,0);
+            GlStateManager.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+            project(worldRenderer, rotation(tesseract[i], radian),0,0, color);
+            project(worldRenderer, rotation(tesseract[i+1], radian),0,1, color);
+            project(worldRenderer, rotation(tesseract[i+2], radian),1,1, color);
+            project(worldRenderer, rotation(tesseract[i+3], radian),1,0, color);
             tessellator.draw();
         }
 
+        GlStateManager.disableBlend();
         GlStateManager.enableCull();
         GlStateManager.popMatrix();
         GlStateManager.enableLighting();
@@ -194,11 +200,11 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
                 z * TrigMath.sin(angle) + w * TrigMath.cos(angle));
     }
 
-    private void project(BufferBuilder buffer, Vector4f vector, int u, int v) {
+    private void project(BufferBuilder buffer, Vector4f vector, int u, int v, RGBA color) {
         double scalar = 1d/(vector.getW()+1d);
         Vector3f center = Vector3f.from(0.5f);
         Vector3f vector1 = vector.toVector3().mul(scalar);
 
-        buffer.pos(vector1.getX(), vector1.getY(), vector1.getZ()).tex(u,v).color(1f,1f,1f,1f).endVertex();
+        buffer.pos(vector1.getX(), vector1.getY(), vector1.getZ()).tex(u,v).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
     }
 }

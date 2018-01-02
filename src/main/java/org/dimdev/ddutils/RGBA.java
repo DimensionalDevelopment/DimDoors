@@ -1,4 +1,4 @@
-package org.dimdev.ddutils.render;
+package org.dimdev.ddutils;
 
 import lombok.Value;
 

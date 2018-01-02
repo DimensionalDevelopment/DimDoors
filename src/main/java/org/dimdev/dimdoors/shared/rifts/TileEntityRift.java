@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.shared.rifts;
 
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.ddutils.RGBA;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
@@ -39,6 +40,8 @@ import java.util.*;
     @SavedToNBT @Getter protected float pitch;
     @SavedToNBT @Getter protected boolean alwaysDelete; // Delete the rift when an entrances rift is broken even if the state was changed or destinations link there.
     @SavedToNBT @Getter protected float chaosWeight;
+    @SavedToNBT @Getter protected boolean forcedColor;
+    @SavedToNBT @Getter protected RGBA color = null; // TODO: update AnnotatedNBT to be able to save these
     // TODO: option to convert to door on teleportTo?
 
     protected boolean riftStateChanged; // not saved
@@ -157,6 +160,12 @@ import java.util.*;
         markDirty();
     }
 
+    public void setColor(RGBA color) {
+        forcedColor = color != null;
+        this.color = color;
+        markDirty();
+    }
+
     public void markStateChanged() {
         riftStateChanged = true;
         markDirty();
@@ -187,6 +196,7 @@ import java.util.*;
         for (WeightedRiftDestination weightedDest : destinations) {
             weightedDest.getDestination().register(this);
         }
+        updateColor();
     }
 
     public void unregister() {
@@ -229,6 +239,7 @@ import java.util.*;
             }
         }
         destinations.removeIf(weightedRiftDestination -> loc.equals(weightedRiftDestination.getDestination().getReferencedRift(getLocation())));
+        markDirty();
     }
 
     // Teleport logic
@@ -280,6 +291,44 @@ import java.util.*;
             newPitch = pitch;
         }
         TeleportUtils.teleport(entity, new Location(world, pos), newPitch, newYaw);
+    }
+
+    public void updateColor() { // TODO: have the registry call this method too
+        if (!isRegistered()) {
+            color = new RGBA(0, 0, 0, 1);
+            return;
+        }
+        if (destinations.size() == 0) {
+            color = new RGBA(0.7f, 0.7f, 0.7f, 1);
+            return;
+        }
+        boolean safe = true;
+        for (WeightedRiftDestination weightedDestination : destinations) {
+            boolean destSafe = false;
+            RiftDestination destination = weightedDestination.getDestination();
+            if (destination instanceof PrivateDestination
+                || destination instanceof PocketExitDestination
+                || destination instanceof PrivatePocketExitDestination) destSafe = true;
+
+            if (!destSafe && destination.getReferencedRift(getLocation()) != null) {
+                RiftRegistry.RiftInfo riftInfo = RiftRegistry.getRiftInfo(destination.getReferencedRift(getLocation()));
+                destSafe = riftInfo != null
+                    && riftInfo.destinations.size() == 1
+                    && riftInfo.destinations.iterator().next().equals(getLocation());
+            }
+            safe &= destSafe;
+        }
+        if (safe) {
+            color = new RGBA(0, 1, 0, 1);
+        } else {
+            color = new RGBA(1, 0, 0, 1);
+        }
+    }
+
+    @Override
+    public void markDirty() {
+        if (!forcedColor) updateColor();
+        super.markDirty();
     }
 
     // Info

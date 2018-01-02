@@ -173,6 +173,8 @@ import java.util.*;
             registryTo.rifts.get(to).sources.add(from);
             registryTo.markDirty();
         }
+        if (to.getTileEntity() instanceof TileEntityRift) ((TileEntityRift) to.getTileEntity()).updateColor();
+        if (from.getTileEntity() instanceof TileEntityRift) ((TileEntityRift) from.getTileEntity()).updateColor();
     }
 
     public static void removeLink(Location from, Location to) {
@@ -182,6 +184,8 @@ import java.util.*;
         registryTo.rifts.get(to).sources.remove(from);
         registryFrom.markDirty();
         registryTo.markDirty();
+        if (to.getTileEntity() instanceof TileEntityRift) ((TileEntityRift) to.getTileEntity()).updateColor();
+        if (from.getTileEntity() instanceof TileEntityRift) ((TileEntityRift) from.getTileEntity()).updateColor();
     }
 
     public static void addAvailableLink(Location rift, AvailableLinkInfo link) { // TODO cache rifts with availableLinks

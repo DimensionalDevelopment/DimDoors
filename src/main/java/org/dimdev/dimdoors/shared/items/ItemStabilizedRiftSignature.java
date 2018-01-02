@@ -54,24 +54,24 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
         }
         pos = pos.offset(side);
 
-        RotatedLocation source = getSource(stack);
+        RotatedLocation target = getTarget(stack);
 
-        if (source != null) {
-            // Place a rift at the destination point
-            world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
-            TileEntityRift rift1 = (TileEntityRift) world.getTileEntity(pos);
-            rift1.setSingleDestination(new GlobalDestination(source.getLocation()));
-            rift1.setRotation(player.rotationYaw, 0);
-            rift1.register();
-
-            // Place a rift at the source point
-            if (!source.getLocation().getBlockState().getBlock().equals(ModBlocks.RIFT)) {
-                World sourceWorld = source.getLocation().getWorld();
-                sourceWorld.setBlockState(source.getLocation().getPos(), ModBlocks.RIFT.getDefaultState());
-                TileEntityRift rift2 = (TileEntityRift) source.getLocation().getTileEntity();
-                rift2.setRotation(source.getYaw(), 0);
-                rift2.register();
+        if (target != null) {
+            // Place a rift at the target point
+            if (!target.getLocation().getBlockState().getBlock().equals(ModBlocks.RIFT)) {
+                World targetWorld = target.getLocation().getWorld();
+                targetWorld.setBlockState(target.getLocation().getPos(), ModBlocks.RIFT.getDefaultState());
+                TileEntityRift rift1 = (TileEntityRift) target.getLocation().getTileEntity();
+                rift1.setRotation(target.getYaw(), 0);
+                rift1.register();
             }
+
+            // Place a rift at the target point
+            world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
+            TileEntityRift rift2 = (TileEntityRift) world.getTileEntity(pos);
+            rift2.setSingleDestination(new GlobalDestination(target.getLocation()));
+            rift2.setRotation(player.rotationYaw, 0);
+            rift2.register();
 
             stack.damageItem(1, player);
 
@@ -98,7 +98,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
         }
     }
 
-    public static RotatedLocation getSource(ItemStack itemStack) {
+    public static RotatedLocation getTarget(ItemStack itemStack) {
         if (itemStack.hasTagCompound() && itemStack.getTagCompound().hasKey("destination")) {
             RotatedLocation transform = new RotatedLocation();
             transform.readFromNBT(itemStack.getTagCompound().getCompoundTag("destination"));
@@ -111,7 +111,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        RotatedLocation transform = getSource(stack);
+        RotatedLocation transform = getTarget(stack);
         if (transform != null) {
             tooltip.add(I18n.translateToLocalFormatted("info.stabilized_rift_signature.bound", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
         } else {

@@ -4,7 +4,7 @@ import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.ddutils.nbt.SavedToNBT;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.ddutils.Location;
-import org.dimdev.ddutils.render.RGBA;
+import org.dimdev.ddutils.RGBA;
 import org.dimdev.ddutils.TeleportUtils;
 import lombok.Getter;
 import net.minecraft.entity.Entity;

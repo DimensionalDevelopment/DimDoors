@@ -128,12 +128,12 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
         if (!hasTileEntity(state)) return;
         TileEntityEntranceRift rift = getRift(worldIn, pos, state);
         super.breakBlock(worldIn, pos, state);
+        if (worldIn.isRemote) return;
         if (rift.isPlaceRiftOnBreak() || rift.isRegistered() && RiftRegistry.getRiftInfo(rift.getLocation()).getSources().size() > 0 && !rift.isAlwaysDelete()) {
-            TileEntityRift newRift = new TileEntityFloatingRift();
+            worldIn.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
+            TileEntityFloatingRift newRift = (TileEntityFloatingRift) worldIn.getTileEntity(pos);
             newRift.copyFrom(rift);
             newRift.updateAvailableLinks();
-            worldIn.setBlockState(rift.getPos(), ModBlocks.RIFT.getDefaultState());
-            worldIn.setTileEntity(rift.getPos(), newRift);
         } else {
             rift.unregister();
         }

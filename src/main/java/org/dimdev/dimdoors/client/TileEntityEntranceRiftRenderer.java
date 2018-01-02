@@ -7,7 +7,7 @@ import java.util.Random;
 
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
-import org.dimdev.ddutils.render.RGBA;
+import org.dimdev.ddutils.RGBA;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.*;
 import net.minecraft.util.EnumFacing;
