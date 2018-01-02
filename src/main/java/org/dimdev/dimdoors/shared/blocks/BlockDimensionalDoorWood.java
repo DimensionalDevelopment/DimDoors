@@ -11,11 +11,11 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.Random;
 
-public class BlockDimensionalDoorWarp extends BlockDimensionalDoor {
+public class BlockDimensionalDoorWood extends BlockDimensionalDoor {
 
     public static final String ID = "warp_dimensional_door";
 
-    public BlockDimensionalDoorWarp() {
+    public BlockDimensionalDoorWood() {
         super(Material.WOOD);
         setHardness(1.0F);
         setUnlocalizedName(ID);
@@ -35,5 +35,10 @@ public class BlockDimensionalDoorWarp extends BlockDimensionalDoor {
     @Override
     public void setupRift(TileEntityEntranceRift rift) {
         // TODO
+    }
+
+    @Override
+    public boolean canBePlacedOnRift() {
+        return true;
     }
 }

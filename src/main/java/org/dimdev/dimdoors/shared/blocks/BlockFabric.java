@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 
 public class BlockFabric extends Block {
 
-    public static final Material FIREPROOF_FABRIC = new Material(MapColor.BLACK);
+    public static final Material FABRIC = new Material(MapColor.BLACK);
     public static final String ID = "fabric";
     public static final PropertyEnum<EnumType> TYPE = PropertyEnum.create("type", BlockFabric.EnumType.class);
 
@@ -56,7 +56,7 @@ public class BlockFabric extends Block {
     }
 
     public BlockFabric() {
-        super(FIREPROOF_FABRIC);
+        super(FABRIC);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setUnlocalizedName(ID);
         setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);

@@ -32,4 +32,9 @@ public class BlockDimensionalDoorTransient extends BlockDimensionalDoor { // TOD
     public void setupRift(TileEntityEntranceRift rift) {
         // TODO
     }
+
+    @Override
+    public boolean canBePlacedOnRift() {
+        return false;
+    }
 }

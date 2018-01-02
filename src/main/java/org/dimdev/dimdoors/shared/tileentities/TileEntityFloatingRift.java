@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
+import lombok.Setter;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.ddutils.nbt.SavedToNBT;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
@@ -29,6 +30,8 @@ import net.minecraft.util.math.AxisAlignedBB;
     @SavedToNBT public boolean shouldClose = false; // TODO
     @SavedToNBT public int spawnedEndermenID = 0;
     @SavedToNBT public float growth = 0;
+
+    @Setter private boolean unregisterDisabled = false;
 
     public TileEntityFloatingRift() {
         updateTimer = random.nextInt(UPDATE_PERIOD);
@@ -111,5 +114,10 @@ import net.minecraft.util.math.AxisAlignedBB;
     @Override
     public boolean isFloating() {
         return true;
+    }
+
+    @Override
+    public void unregister() {
+        if (!unregisterDisabled) super.unregister();
     }
 }

@@ -39,4 +39,9 @@ public class BlockDimensionalDoorIron extends BlockDimensionalDoor {
         NewPublicDestination destination = NewPublicDestination.builder().build();
         rift.setSingleDestination(destination);
     }
+
+    @Override
+    public boolean canBePlacedOnRift() {
+        return true;
+    }
 }

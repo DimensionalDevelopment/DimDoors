@@ -61,7 +61,7 @@ public class ItemRiftSignature extends Item {
             world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
             TileEntityRift rift1 = (TileEntityRift) world.getTileEntity(pos);
             rift1.setSingleDestination(new GlobalDestination(source.getLocation()));
-            rift1.setRotation(source.getYaw(), 0);
+            rift1.setRotation(player.rotationYaw, 0);
             rift1.register();
 
             // Place a rift at the source point

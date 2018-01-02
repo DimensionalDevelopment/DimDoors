@@ -16,7 +16,7 @@ public final class ModBlocks {
     public static final BlockDimensionalDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new BlockDimensionalDoorPersonal();
     public static final BlockDimensionalDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new BlockDimensionalDoorUnstable();
     public static final BlockDimensionalDoorTransient TRANSIENT_DIMENSIONAL_DOOR = new BlockDimensionalDoorTransient();
-    public static final BlockDimensionalDoorWarp WARP_DIMENSIONAL_DOOR = new BlockDimensionalDoorWarp();
+    public static final BlockDimensionalDoorWood WARP_DIMENSIONAL_DOOR = new BlockDimensionalDoorWood();
     public static final BlockDimensionalTrapdoorWood WOOD_DIMENSIONAL_TRAPDOOR = new BlockDimensionalTrapdoorWood();
 
     // Blocks

@@ -37,4 +37,9 @@ public class BlockDimensionalDoorUnstable extends BlockDimensionalDoor {
     public void setupRift(TileEntityEntranceRift rift) {
         // TODO
     }
+
+    @Override
+    public boolean canBePlacedOnRift() {
+        return false;
+    }
 }

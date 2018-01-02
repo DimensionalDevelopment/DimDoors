@@ -59,6 +59,7 @@ import java.util.*;
         preserveRotation = oldRift.preserveRotation;
         yaw = oldRift.yaw;
         pitch = oldRift.pitch;
+        chaosWeight = oldRift.chaosWeight;
         if (oldRift.isFloating() != isFloating()) updateAvailableLinks();
 
         markDirty();

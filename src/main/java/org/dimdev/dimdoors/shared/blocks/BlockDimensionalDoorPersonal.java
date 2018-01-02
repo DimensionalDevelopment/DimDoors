@@ -43,4 +43,9 @@ public class BlockDimensionalDoorPersonal extends BlockDimensionalDoor {
         }
         rift.setChaosWeight(0); // TODO: generated schematic exits too
     }
+
+    @Override
+    public boolean canBePlacedOnRift() {
+        return false;
+    }
 }

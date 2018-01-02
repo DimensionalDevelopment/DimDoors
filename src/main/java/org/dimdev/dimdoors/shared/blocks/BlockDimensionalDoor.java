@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.shared.blocks;
 
 import java.util.Random;
 
+import net.minecraft.block.state.BlockFaceShape;
 import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
@@ -88,6 +89,23 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     }
 
     @Override
+    public boolean canPlaceBlockAt(World world, BlockPos pos) {
+        if (canBePlacedOnRift()) {
+            if (pos.getY() >= world.getHeight() - 1) {
+                return false;
+            } else {
+                IBlockState state = world.getBlockState(pos.down());
+                return (state.isSideSolid(world, pos, EnumFacing.UP)
+                        || state.getBlockFaceShape(world, pos.down(), EnumFacing.UP) == BlockFaceShape.SOLID)
+                       && (world.getBlockState(pos).getBlock().isReplaceable(world, pos) || world.getBlockState(pos).getBlock().equals(ModBlocks.RIFT))
+                       && world.getBlockState(pos).getBlock().isReplaceable(world, pos.up());
+            }
+        } else {
+            return super.canPlaceBlockAt(world, pos.down());
+        }
+    }
+
+    @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         return state.getValue(HALF) == BlockDoor.EnumDoorHalf.UPPER ? Items.AIR : getItem();
     }
@@ -131,4 +149,6 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     }
 
     public abstract Item getItem();
+
+    public abstract boolean canBePlacedOnRift();
 }

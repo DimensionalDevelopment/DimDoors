@@ -35,4 +35,9 @@ public class BlockDimensionalDoorGold extends BlockDimensionalDoor {
     public void setupRift(TileEntityEntranceRift rift) {
         // TODO
     }
+
+    @Override
+    public boolean canBePlacedOnRift() {
+        return true;
+    }
 }

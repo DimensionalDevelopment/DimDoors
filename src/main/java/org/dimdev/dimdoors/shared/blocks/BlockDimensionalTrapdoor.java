@@ -72,4 +72,6 @@ public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements 
     public TileEntityEntranceRift getRift(World world, BlockPos pos, IBlockState state) {
         return (TileEntityEntranceRift) world.getTileEntity(pos);
     }
+
+    public abstract boolean canBePlacedOnRift(); // TODO
 }

@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.shared.items;
 import java.util.List;
 
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoorWarp;
+import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoorWood;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.ddutils.I18nUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -18,8 +18,8 @@ public class ItemDimensionalDoorWarp extends ItemDimensionalDoor {
     public ItemDimensionalDoorWarp() {
         super(ModBlocks.WARP_DIMENSIONAL_DOOR);
         setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
-        setUnlocalizedName(BlockDimensionalDoorWarp.ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimensionalDoorWarp.ID));
+        setUnlocalizedName(BlockDimensionalDoorWood.ID);
+        setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimensionalDoorWood.ID));
     }
 
     @Override
