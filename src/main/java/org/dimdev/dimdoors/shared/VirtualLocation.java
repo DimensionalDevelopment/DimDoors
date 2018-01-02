@@ -77,6 +77,6 @@ public class VirtualLocation {
     }
 
     public Location projectToWorld() {
-        return transformDepth(0).location;
+        return new Location(0, transformDepth(0).getPos());
     }
 }

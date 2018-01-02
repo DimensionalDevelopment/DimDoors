@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.shared.rifts;
 
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.VirtualLocation;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.TeleportUtils;
@@ -29,6 +30,10 @@ public class EscapeDestination extends RiftDestination {
 
     @Override
     public boolean teleport(TileEntityRift rift, Entity entity) {
+        if (!ModDimensions.isDimDoorsPocketDimension(entity.world)) {
+            DimDoors.chat(entity, "Can't escape from a non-pocket dimension!");
+            return false;
+        }
         String uuid = entity.getCachedUniqueIdString();
         if (uuid != null) {
             Location destLoc = RiftRegistry.getOverworldRift(uuid);

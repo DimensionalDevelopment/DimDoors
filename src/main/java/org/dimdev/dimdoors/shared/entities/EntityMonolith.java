@@ -6,7 +6,6 @@ import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderDungeonPocket;
-import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPublicPocket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -207,20 +206,20 @@ public class EntityMonolith extends EntityFlying implements IMob {
     /**
      * Plays sounds at different levels of aggro, using soundTime to prevent too many sounds at once.
      *
-     * @param entityPlayer
+     * @param player
      */
-    private void playSounds(EntityPlayer entityPlayer) {
+    private void playSounds(EntityPlayer player) {
         float aggroPercent = getAggroProgress();
         if (soundTime <= 0) {
             playSound(ModSounds.MONK, 1F, 1F);
             soundTime = 100;
         }
         if (aggroPercent > 0.70 && soundTime < 100) {
-            world.playSound(entityPlayer, entityPlayer.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + rand.nextGaussian()));
+            world.playSound(player, player.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + rand.nextGaussian()));
             soundTime = 100 + rand.nextInt(75);
         }
         if (aggroPercent > 0.80 && soundTime < MAX_SOUND_COOLDOWN) {
-            world.playSound(entityPlayer, entityPlayer.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 7, 1F);
+            world.playSound(player, player.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 7, 1F);
             soundTime = 250;
         }
         soundTime--;
@@ -272,13 +271,9 @@ public class EntityMonolith extends EntityFlying implements IMob {
         List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(posX - 15, posY - 4, posZ - 15, posX + 15, posY + 15, posZ + 15));
 
         if (world.provider instanceof WorldProviderLimbo) {
-            if (list.size() > 0) {
-                return false;
-            }
-        } else if (world.provider instanceof WorldProviderPublicPocket) { // TODO
-            if (list.size() > 5 || world.canBlockSeeSky(new BlockPos(posX, posY, posZ))) {
-                return false;
-            }
+            return list.size() <= 0;
+        } else if (world.provider instanceof WorldProviderDungeonPocket) { // TODO
+            return list.size() <= 5 && !world.canBlockSeeSky(new BlockPos(posX, posY, posZ));
         }
 
         return true;
