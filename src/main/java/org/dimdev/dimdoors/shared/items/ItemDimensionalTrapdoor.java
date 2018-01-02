@@ -21,9 +21,10 @@ public abstract class ItemDimensionalTrapdoor extends ItemBlock {
     // TODO: endermen/block placers should set up blocks too, but this method doesn't get called when they place the block
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        boolean replaceable = world.getBlockState(pos).getBlock().isReplaceable(world, pos); // Check this before calling super, since that changes the block
         EnumActionResult result = super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
         if (result == EnumActionResult.SUCCESS) {
-            if (!world.getBlockState(pos).getBlock().isReplaceable(world, pos)) pos = pos.offset(facing);
+            if (!replaceable) pos = pos.offset(facing);
             IBlockState state = world.getBlockState(pos);
             ((IRiftProvider<?>) state.getBlock()).handleRiftSetup(world, pos, state);
         }

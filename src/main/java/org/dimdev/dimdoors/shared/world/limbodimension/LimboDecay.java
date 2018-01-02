@@ -33,7 +33,7 @@ public final class LimboDecay {
 
     public static IBlockState[] getDecaySequence() {
         if (decaySequence == null) {
-            decaySequence = new IBlockState[] {
+            decaySequence = new IBlockState[]{
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED),
                     Blocks.GRAVEL.getDefaultState(),
                     Blocks.COBBLESTONE.getDefaultState(),
@@ -46,7 +46,7 @@ public final class LimboDecay {
 
     public static IBlockState[] getBlocksImmuneToDecay() {
         if (blocksImmuneToDecay == null) {
-            blocksImmuneToDecay = new IBlockState[] {
+            blocksImmuneToDecay = new IBlockState[]{
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED),
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ETERNAL),
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT),
@@ -88,15 +88,14 @@ public final class LimboDecay {
      * Picks random blocks from each active chunk in Limbo and, if decay is applicable, converts them directly to Unraveled Fabric.
      * This decay method is designed to stop players from avoiding Limbo decay by building floating structures.
      */
-    public static void applyRandomFastDecay()
-    {
+    public static void applyRandomFastDecay() {
         int x, y, z;
         int sectionY;
         int limboHeight;
         int[] limbo = DimensionManager.getDimensions(ModDimensions.LIMBO);
 
 
-        for (Integer i : limbo){
+        for (Integer i : limbo) {
             World world = DimensionManager.getWorld(i);
 
             limboHeight = world.getHeight();
@@ -107,9 +106,10 @@ public final class LimboDecay {
                 //Loop through each chunk section and fast-decay a random block
                 //Apply the changes using the world object instead of directly to the chunk so that clients are always notified.
                 for (sectionY = 0; sectionY < limboHeight; sectionY += SECTION_HEIGHT) {
-                    BlockPos pos = new BlockPos(chunkPos.x * CHUNK_SIZE + random.nextInt(CHUNK_SIZE),
-                                                chunkPos.z * CHUNK_SIZE + random.nextInt(CHUNK_SIZE),
-                                                sectionY + random.nextInt(SECTION_HEIGHT));
+                    BlockPos pos = new BlockPos(
+                            chunkPos.x * CHUNK_SIZE + random.nextInt(CHUNK_SIZE),
+                            chunkPos.z * CHUNK_SIZE + random.nextInt(CHUNK_SIZE),
+                            sectionY + random.nextInt(SECTION_HEIGHT));
                     decayBlockFast(world, pos);
                 }
             }
@@ -122,7 +122,11 @@ public final class LimboDecay {
     private static boolean decayBlockFast(World world, BlockPos pos) {
         IBlockState block = world.getBlockState(pos);
         if (canDecayBlock(block, world, pos)) {
-            world.setBlockState(pos, ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED));
+            if (block.isNormalCube()) {
+                world.setBlockState(pos, ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED));
+            } else {
+                world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            }
             return true;
         }
         return false;
@@ -137,19 +141,23 @@ public final class LimboDecay {
         if (canDecayBlock(block, world, pos)) {
             //Loop over the block IDs that decay can go through.
             //Find an index matching the current blockID, if any.
-            for (index = 0; index < getDecaySequence().length; index++) {
-                if (getDecaySequence()[index].equals(block)) {
-                    break;
+            if (block.isNormalCube()) {
+                for (index = 0; index < getDecaySequence().length; index++) {
+                    if (getDecaySequence()[index].equals(block)) {
+                        break;
+                    }
                 }
+
+                //Since the decay sequence is a reversed list, the block ID in the index before our match
+                //is the block ID we should change this block into. A trick in this approach is that if
+                //we loop over the array without finding a match, then (index - 1) will contain the
+                //last ID in the array, which is the first one that all blocks decay into.
+                //We assume that Unraveled Fabric is NOT decayable. Otherwise, this will go out of bounds!
+
+                world.setBlockState(pos, getDecaySequence()[index - 1]);
+            } else {
+                world.setBlockState(pos, Blocks.AIR.getDefaultState());
             }
-
-            //Since the decay sequence is a reversed list, the block ID in the index before our match
-            //is the block ID we should change this block into. A trick in this approach is that if
-            //we loop over the array without finding a match, then (index - 1) will contain the
-            //last ID in the array, which is the first one that all blocks decay into.
-            //We assume that Unraveled Fabric is NOT decayable. Otherwise, this will go out of bounds!
-
-            world.setBlockState(pos, getDecaySequence()[index - 1]);
             return true;
         }
         return false;
@@ -159,7 +167,7 @@ public final class LimboDecay {
      * Checks if a block can decay. We will not decay air, certain DD blocks, or containers.
      */
     private static boolean canDecayBlock(IBlockState block, World world, BlockPos pos) {
-        if (world.isAirBlock(pos )) {
+        if (world.isAirBlock(pos)) {
             return false;
         }
 
