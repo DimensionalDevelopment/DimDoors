@@ -4,7 +4,7 @@ import com.google.common.collect.ConcurrentHashMultiset;
 import com.google.common.collect.Multiset;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.ddutils.nbt.SavedToNBT;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.ddutils.nbt.INBTStorable; // Don't change imports order! (Gradle bug): https://stackoverflow.com/questions/26557133/
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.WorldUtils;
@@ -71,8 +71,8 @@ import java.util.*;
         super(s);
     }
 
-    public static RiftRegistry getForDim(int dimID) {
-        MapStorage storage = WorldUtils.getWorld(dimID).getPerWorldStorage();
+    public static RiftRegistry getForDim(int dim) {
+        MapStorage storage = WorldUtils.getWorld(dim).getPerWorldStorage();
         RiftRegistry instance = (RiftRegistry) storage.getOrLoadData(RiftRegistry.class, DATA_NAME);
 
         if (instance == null) {
@@ -81,8 +81,8 @@ import java.util.*;
             storage.setData(DATA_NAME, instance);
         }
 
-        instance.world = WorldUtils.getWorld(dimID);
-        instance.dim = dimID;
+        instance.world = WorldUtils.getWorld(dim);
+        instance.dim = dim;
         return instance;
     }
 
@@ -155,7 +155,7 @@ import java.util.*;
             //TileEntityRift riftEntity = (TileEntityRift) destinationRegistry.world.getTileEntity(destination.getPos());
             //riftEntity.allSourcesGone(); // TODO
         }
-        getForDim(DimDoorDimensions.getPrivateDimID()).privatePocketEntrances.entrySet().removeIf(e -> e.getValue().equals(rift));
+        getForDim(ModDimensions.getPrivateDim()).privatePocketEntrances.entrySet().removeIf(e -> e.getValue().equals(rift));
         getForDim(0).overworldRifts.entrySet().removeIf(e -> e.getValue().equals(rift));
         registry.markDirty();
     }

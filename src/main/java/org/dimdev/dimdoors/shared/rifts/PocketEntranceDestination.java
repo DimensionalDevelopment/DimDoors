@@ -9,9 +9,7 @@ import lombok.Getter;
 import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +27,7 @@ import java.util.List;
 
     @Override
     public boolean teleport(TileEntityRift rift, Entity entity) {
-        if (entity instanceof EntityPlayer) DimDoors.chat((EntityPlayer) entity, "The entrances of this dungeon has not been linked. Either this is a bug or you are in dungeon-building mode.");
+        if (entity instanceof EntityPlayer) DimDoors.chat(entity, "The entrances of this dungeon has not been linked. Either this is a bug or you are in dungeon-building mode.");
         return false;
     }
 }

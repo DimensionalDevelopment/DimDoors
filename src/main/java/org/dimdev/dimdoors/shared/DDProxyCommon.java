@@ -7,7 +7,7 @@ import org.dimdev.dimdoors.shared.items.ModItems;
 import org.dimdev.dimdoors.shared.rifts.*;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.*;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.ModBiomes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,7 +28,7 @@ public abstract class DDProxyCommon implements IDDProxy {
         MinecraftForge.EVENT_BUS.register(ModBiomes.class);
 
         registerTileEntities();
-        DimDoorDimensions.registerDimensions();
+        ModDimensions.registerDimensions();
 
         EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), EntityMonolith.class, "monolith", 0, DimDoors.instance, 70, 1, true);
         EntityRegistry.registerEgg(new ResourceLocation(DimDoors.MODID, "mob_monolith"), 0, 0xffffff);

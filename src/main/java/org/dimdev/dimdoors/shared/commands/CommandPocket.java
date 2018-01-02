@@ -7,7 +7,7 @@ import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.ddutils.WorldUtils;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -73,7 +73,7 @@ public class CommandPocket extends CommandBase {
         if (sender instanceof EntityPlayerMP) {
             EntityPlayerMP player = getCommandSenderAsPlayer(sender);
             // Make sure the player is in a pocket world
-            if (!DimDoorDimensions.isPocketDimension(WorldUtils.getDim(player.world))) {
+            if (!ModDimensions.isDimDoorsPocketDimension(player.world)) {
                 DimDoors.chat(player, "You must be in a pocket dimension to use this command!");
                 return;
             }

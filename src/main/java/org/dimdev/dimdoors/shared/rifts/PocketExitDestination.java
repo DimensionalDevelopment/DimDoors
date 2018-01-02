@@ -26,7 +26,7 @@ public class PocketExitDestination extends RiftDestination {
 
     @Override
     public boolean teleport(TileEntityRift rift, Entity entity) {
-        if (entity instanceof EntityPlayer) DimDoors.chat((EntityPlayer) entity, "The exit of this dungeon has not been linked. Either this is a bug or you are in dungeon-building mode.");
+        if (entity instanceof EntityPlayer) DimDoors.chat(entity, "The exit of this dungeon has not been linked. Either this is a bug or you are in dungeon-building mode.");
         return false;
     }
 }

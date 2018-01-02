@@ -27,13 +27,13 @@ import net.minecraft.util.math.BlockPos;
     @SavedToNBT @Getter @Setter /*package-private*/ Location entrance;
     @SavedToNBT @Getter /*package-private*/ List<Location> riftLocations;
 
-    @Getter int dimID; // Not saved
+    @Getter int dim; // Not saved
 
     public Pocket() {}
 
-    public Pocket(int id, int dimID, int x, int z) {
+    public Pocket(int id, int dim, int x, int z) {
         this.id = id;
-        this.dimID = dimID;
+        this.dim = dim;
         this.x = x;
         this.z = z;
         riftLocations = new ArrayList<>();
@@ -45,12 +45,12 @@ import net.minecraft.util.math.BlockPos;
 
     boolean isInBounds(BlockPos pos) {
         // pocket bounds
-        int gridSize = PocketRegistry.getForDim(dimID).getGridSize();
-        int pocMinX = x * gridSize;
-        int pocMinZ = z * gridSize;
-        int pocMaxX = pocMinX + (size + 1) * 16;
-        int pocMaxZ = pocMinX + (size + 1) * 16;
-        return pocMinX <= pos.getX() && pocMinZ <= pos.getZ() && pos.getX() < pocMaxX && pos.getZ() < pocMaxZ;
+        int gridSize = PocketRegistry.getForDim(dim).getGridSize();
+        int minX = x * gridSize;
+        int minZ = z * gridSize;
+        int maxX = minX + (size + 1) * 16;
+        int maxZ = minX + (size + 1) * 16;
+        return minX <= pos.getX() && minZ <= pos.getZ() && pos.getX() < maxX && pos.getZ() < maxZ;
     }
 
     public List<TileEntityRift> getRifts() {
@@ -95,7 +95,7 @@ import net.minecraft.util.math.BlockPos;
                     destIterator.remove();
                     if (index == selectedEntranceIndex) {
                         entrance = new Location(rift.getWorld(), rift.getPos());
-                        PocketRegistry.getForDim(dimID).markDirty();
+                        PocketRegistry.getForDim(dim).markDirty();
                         List<WeightedRiftDestination> ifDestinations = ((PocketEntranceDestination) dest).getIfDestinations();
                         for (WeightedRiftDestination ifDestination : ifDestinations) {
                             destIterator.add(new WeightedRiftDestination(ifDestination.getDestination(), ifDestination.getWeight() / wdest.getWeight(), ifDestination.getGroup()));
@@ -148,7 +148,7 @@ import net.minecraft.util.math.BlockPos;
     }
 
     public BlockPos getOrigin() {
-        int gridSize = PocketRegistry.getForDim(dimID).getGridSize();
+        int gridSize = PocketRegistry.getForDim(dim).getGridSize();
         return new BlockPos(x * gridSize, 0, z * gridSize); // TODO: configurable yBase?
     }
 

@@ -43,7 +43,7 @@ public class ItemRiftRemover extends Item {
         }
 
         RayTraceResult hit = rayTrace(world, playerIn, true);
-        if (RayTraceHelper.isRift(hit, world)) {
+        if (RayTraceHelper.isFloatingRift(hit, world)) {
             TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(hit.getBlockPos());
             world.setBlockState(rift.getPos(), Blocks.AIR.getDefaultState());
 

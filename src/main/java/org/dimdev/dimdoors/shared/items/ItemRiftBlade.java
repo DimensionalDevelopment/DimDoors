@@ -58,7 +58,7 @@ public class ItemRiftBlade extends ItemSword {
         }
         //SchematicHandler.Instance.getPersonalPocketTemplate().place(0, 20, 0, 20, 0, 0, 1, EnumPocketType.DUNGEON); //this line can be activated for testing purposes
         RayTraceResult hit = rayTrace(worldIn, playerIn, true);
-        if (RayTraceHelper.isRift(hit, worldIn)) {
+        if (RayTraceHelper.isFloatingRift(hit, worldIn)) {
             TileEntityFloatingRift rift = (TileEntityFloatingRift) worldIn.getTileEntity(hit.getBlockPos());
             rift.teleport(playerIn);
 

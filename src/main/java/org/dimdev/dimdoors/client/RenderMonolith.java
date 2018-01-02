@@ -20,7 +20,7 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class RenderMonolith extends RenderLiving<EntityMonolith> {
 
-    protected ModelMonolith obeliskModel;
+    protected ModelMonolith monolithModel;
 
     protected static final List<ResourceLocation> monolith_textures = Arrays.asList(
             new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith0.png"),
@@ -45,7 +45,7 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
 
     public RenderMonolith(RenderManager manager, float f) {
         super(manager, new ModelMonolith(), f);
-        obeliskModel = (ModelMonolith) mainModel;
+        monolithModel = (ModelMonolith) mainModel;
     }
 
     @Override
@@ -72,8 +72,7 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
         //this.renderLeash(entity, x, y, z, par8, par9);
     }
 
-    public void render(EntityMonolith par1EntityLivingBase, double x, double y, double z, float par8, float par9)
-    {
+    public void render(EntityMonolith par1EntityLivingBase, double x, double y, double z, float par8, float par9) {
         if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre<>(par1EntityLivingBase, this, 1, x, y, z))) return;
         GL11.glPushMatrix();
         GL11.glDisable(GL11.GL_CULL_FACE);
@@ -97,7 +96,7 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
 
             GL11.glScalef(-1.0F, -1.0F, 1.0F);
             preRenderCallback(par1EntityLivingBase, par9);
-            GL11.glRotatef(par1EntityLivingBase.pitchLevel , 1.0F, 0.0F, 0.0F);
+            GL11.glRotatef(par1EntityLivingBase.pitchLevel, 1.0F, 0.0F, 0.0F);
             GL11.glTranslatef(0.0F, 24.0F * f6 - 0.0078125F, 0.0F);
 
 
@@ -124,6 +123,7 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
 
     @Override
     protected ResourceLocation getEntityTexture(EntityMonolith monolith) {
-        return monolith_textures.get(monolith.getTextureState()); //return new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith" + monolith.getTextureState() + ".png");
+        return monolith_textures.get(monolith.getTextureState());
+        //return new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith" + monolith.getTextureState() + ".png");
     }
 }

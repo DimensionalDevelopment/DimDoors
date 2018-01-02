@@ -8,16 +8,14 @@ import org.dimdev.ddutils.math.GridUtils;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.ddutils.WorldUtils;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
@@ -35,7 +33,7 @@ import net.minecraft.world.storage.WorldSavedData;
     @SavedToNBT @Getter /*package-private*/ Map<Integer, Pocket> pockets; // TODO: remove getter?
     @SavedToNBT @Getter /*package-private*/ int nextID;
 
-    @Getter private int dimID;
+    @Getter private int dim;
 
     public PocketRegistry() {
         super(DATA_NAME);
@@ -45,10 +43,10 @@ import net.minecraft.world.storage.WorldSavedData;
         super(s);
     }
 
-    public static PocketRegistry getForDim(int dimID) {
-        if (!DimDoorDimensions.isPocketDimension(dimID)) throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
+    public static PocketRegistry getForDim(int dim) {
+        if (!ModDimensions.isDimDoorsPocketDimension(dim)) throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
 
-        MapStorage storage = WorldUtils.getWorld(dimID).getPerWorldStorage();
+        MapStorage storage = WorldUtils.getWorld(dim).getPerWorldStorage();
         PocketRegistry instance = (PocketRegistry) storage.getOrLoadData(PocketRegistry.class, DATA_NAME);
 
         if (instance == null) {
@@ -57,7 +55,11 @@ import net.minecraft.world.storage.WorldSavedData;
             storage.setData(DATA_NAME, instance);
         }
 
-        instance.dimID = dimID;
+        instance.dim = dim;
+        for (Pocket pocket : instance.pockets.values()) {
+            pocket.dim = dim;
+        }
+
         return instance;
     }
 
@@ -128,7 +130,7 @@ import net.minecraft.world.storage.WorldSavedData;
     public Pocket newPocket(int id) {
         if (pockets.get(id) != null) return null;
         GridUtils.GridPos pos = idToGridPos(id);
-        Pocket pocket = new Pocket(id, dimID, pos.getX(), pos.getZ());
+        Pocket pocket = new Pocket(id, dim, pos.getX(), pos.getZ());
         pockets.put(id, pocket);
         if (id >= nextID) nextID = id + 1;
         markDirty();
@@ -202,8 +204,7 @@ import net.minecraft.world.storage.WorldSavedData;
     }
 
     public boolean isPlayerAllowedToBeHere(EntityPlayerMP player, BlockPos pos) {
-        return true; // TODO: fix this
-        //Pocket pocket = getPocketAt(pos);
-        //return pocket != null && pocket.isInBounds(pos);
+        Pocket pocket = getPocketAt(pos);
+        return pocket != null && pocket.isInBounds(pos);
     }
 }

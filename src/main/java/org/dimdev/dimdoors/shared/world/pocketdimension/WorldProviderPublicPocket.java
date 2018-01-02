@@ -1,7 +1,8 @@
 package org.dimdev.dimdoors.shared.world.pocketdimension;
 
+import net.minecraft.world.DimensionType;
 import org.dimdev.ddutils.render.CloudRenderBlank;
-import org.dimdev.dimdoors.shared.pockets.EnumPocketType;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.ModBiomes;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
@@ -17,16 +18,15 @@ public class WorldProviderPublicPocket extends WorldProviderPocket {
         biomeProvider = new BiomeProviderSingle(ModBiomes.BLACK_VOID);
     }
 
-    @Override
-    public EnumPocketType getPocketType() {
-        return EnumPocketType.PUBLIC;
-    }
-
     @SideOnly(Side.CLIENT)
     @Override
     public Vec3d getSkyColor(Entity cameraEntity, float partialTicks) {
         setCloudRenderer(new CloudRenderBlank());
         return Vec3d.ZERO;
+    }
+
+    @Override public DimensionType getDimensionType() {
+        return ModDimensions.PUBLIC;
     }
 
     @Override

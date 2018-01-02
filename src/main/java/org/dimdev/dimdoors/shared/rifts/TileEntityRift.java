@@ -11,14 +11,12 @@ import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.math.MathUtils;
 import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.ddutils.WorldUtils;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import lombok.Getter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -193,7 +191,7 @@ import java.util.*;
     public void unregister() {
         if (!isRegistered()) return;
         RiftRegistry.removeRift(new Location(world, pos)); // TODO: unregister destinations
-        if (DimDoorDimensions.isPocketDimension(WorldUtils.getDim(world))) {
+        if (ModDimensions.isDimDoorsPocketDimension(world)) {
             PocketRegistry pocketRegistry = PocketRegistry.getForDim(WorldUtils.getDim(world));
             Pocket pocket = pocketRegistry.getPocketAt(pos);
             if (pocket != null && pocket.getEntrance() != null && pocket.getEntrance().getPos().equals(pos)) {
@@ -259,8 +257,9 @@ import java.util.*;
         try {
             if (weightedDestination.getDestination().teleport(this, entity)) {
                 // Set last used rift if necessary
+                // TODO: What about player-owned entities? We should store their exit rift separately to avoid having problems if they enter different rifts
                 // TODO: use entity UUID rather than player UUID!
-                if (entity instanceof EntityPlayer && !DimDoorDimensions.isPocketDimension(WorldUtils.getDim(world))) { // TODO: What about player-owned entities? We should store their exit rift separately to avoid having problems if they enter different rifts
+                if (entity instanceof EntityPlayer && !ModDimensions.isDimDoorsPocketDimension(WorldUtils.getDim(world))) {
                     RiftRegistry.setOverworldRift(EntityUtils.getEntityOwnerUUID(entity), new Location(world, pos));
                 }
                 return true;

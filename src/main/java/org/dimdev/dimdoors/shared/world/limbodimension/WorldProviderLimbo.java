@@ -5,10 +5,9 @@ import org.dimdev.ddutils.render.CloudRenderBlank;
 import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.ddutils.Location;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.ModBiomes;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -83,7 +82,7 @@ public class WorldProviderLimbo extends WorldProvider {
     public static Location getLimboSkySpawn(Entity entity) { // TODO: move this into projectToLimbo
         int x = (int) entity.posX + MathHelper.clamp(entity.world.rand.nextInt(), -100, 100); // TODO: -properties.LimboEntryRange, properties.LimboEntryRange);
         int z = (int) entity.posZ + MathHelper.clamp(entity.world.rand.nextInt(), -100, 100); // TODO: -properties.LimboEntryRange, properties.LimboEntryRange);
-        return new Location(DimDoorDimensions.limbo.getId(), x, 700, z);
+        return new Location(ModDimensions.LIMBO.getId(), x, 700, z);
     }
 
     @Override
@@ -95,7 +94,7 @@ public class WorldProviderLimbo extends WorldProvider {
 
     @Override
     public DimensionType getDimensionType() {
-        return DimDoorDimensions.limbo;
+        return ModDimensions.LIMBO;
     }
 
     @SideOnly(Side.CLIENT)

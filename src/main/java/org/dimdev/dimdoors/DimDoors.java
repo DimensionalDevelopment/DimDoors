@@ -29,7 +29,6 @@ public class DimDoors {
 
     @Mod.Instance(DimDoors.MODID)
     public static DimDoors instance;
-
     public static Logger log; // TODO: make non-static?
 
     @SidedProxy(clientSide = "org.dimdev.dimdoors.client.DDProxyClient",
@@ -68,14 +67,6 @@ public class DimDoors {
     private void registerCommands(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandDimTeleport());
         event.registerServerCommand(new CommandPocket());
-    }
-
-    public static boolean isClient() {
-        return proxy.isClient();
-    }
-
-    public static boolean isServer() {
-        return !isClient();
     }
 
     public static void chat(Entity entity, String text) {

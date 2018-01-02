@@ -2,11 +2,8 @@ package org.dimdev.dimdoors.shared.world.pocketdimension;
 
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.render.CloudRenderBlank;
-import org.dimdev.dimdoors.shared.pockets.EnumPocketType;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.relauncher.Side;
@@ -28,10 +25,12 @@ public abstract class WorldProviderPocket extends WorldProvider {
         return new ChunkGeneratorBlank(world, world.getSeed());
     }
 
+    /*
     @Override
     public DimensionType getDimensionType() {
-        return DimDoorDimensions.getPocketDimensionType(getPocketType());
+        return ModDimensions.getPocketDimensionType(getPocketType());
     }
+    */
 
     @Override public float calculateCelestialAngle(long worldTime, float partialTicks) { return 0.0F; }
 
@@ -65,7 +64,4 @@ public abstract class WorldProviderPocket extends WorldProvider {
     public double getVoidFogYFactor() {
         return 1;
     }
-
-    public abstract EnumPocketType getPocketType();
-
 }

@@ -21,7 +21,7 @@ public interface IDDProxy {
 
     public EntityPlayer getLocalPlayer();
 
-    public WorldServer getWorldServer(int dimId);
+    public WorldServer getWorldServer(int dim);
 
     public void setCloudRenderer(WorldProvider provider, IRenderHandler renderer);
 

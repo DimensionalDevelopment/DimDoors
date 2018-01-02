@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.client;
 
-import org.dimdev.ddutils.WorldUtils;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import net.minecraft.client.particle.ParticleSimpleAnimated;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
@@ -23,7 +22,7 @@ public class ParticleRiftEffect extends ParticleSimpleAnimated { // TODO: colors
 
         particleScale *= scale;
         particleMaxAge = size - spread / 2 + rand.nextInt(spread);
-        colorMultiplier = DimDoorDimensions.isPocketDimension(WorldUtils.getDim(world)) ? pocketColorMultiplier : nonPocketColorMultiplier;
+        colorMultiplier = ModDimensions.isDimDoorsPocketDimension(world) ? pocketColorMultiplier : nonPocketColorMultiplier;
     }
 
     @Override

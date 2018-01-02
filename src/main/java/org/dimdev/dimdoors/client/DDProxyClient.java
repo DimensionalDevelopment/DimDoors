@@ -50,8 +50,8 @@ public class DDProxyClient extends DDProxyCommon {
     }
 
     @Override
-    public WorldServer getWorldServer(int dimId) {
-        return Minecraft.getMinecraft().getIntegratedServer().getWorld(dimId);
+    public WorldServer getWorldServer(int dim) {
+        return Minecraft.getMinecraft().getIntegratedServer().getWorld(dim);
     }
 
     @Override

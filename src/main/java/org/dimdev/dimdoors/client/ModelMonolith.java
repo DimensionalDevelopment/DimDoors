@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.client;
 
-import java.util.Random;
-
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

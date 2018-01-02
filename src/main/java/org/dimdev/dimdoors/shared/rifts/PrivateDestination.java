@@ -4,7 +4,7 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
 import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.ddutils.EntityUtils;
 import org.dimdev.ddutils.Location;
 import lombok.AllArgsConstructor;
@@ -33,8 +33,8 @@ public class PrivateDestination extends RiftDestination {
     public boolean teleport(TileEntityRift rift, Entity entity) {
         String uuid = EntityUtils.getEntityOwnerUUID(entity);
         if (uuid != null) {
-            PocketRegistry privatePocketRegistry = PocketRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
-            RiftRegistry privateRiftRegistry = RiftRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
+            PocketRegistry privatePocketRegistry = PocketRegistry.getForDim(ModDimensions.getPrivateDim());
+            RiftRegistry privateRiftRegistry = RiftRegistry.getForDim(ModDimensions.getPrivateDim());
             Pocket pocket = privatePocketRegistry.getPocket(privatePocketRegistry.getPrivatePocketID(uuid));
             if (pocket == null) { // generate the private pocket and get its entrances
                 pocket = PocketGenerator.generatePrivatePocket(rift.virtualLocation != null ? rift.virtualLocation.toBuilder().depth(-1).build() : null); // set to where the pocket was first created

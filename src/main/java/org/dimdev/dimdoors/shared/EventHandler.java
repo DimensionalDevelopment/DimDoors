@@ -1,9 +1,5 @@
 package org.dimdev.dimdoors.shared;
 
-import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
-import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
@@ -13,36 +9,41 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
+import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 public final class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST) // don't let other mods do something based on the event
     public static void onLivingHurt(LivingHurtEvent event) {
         Entity entity = event.getEntity();
-        if (entity.dimension == DimDoorDimensions.limbo.getId() && event.getSource() == DamageSource.FALL) {
+        if (entity.dimension == ModDimensions.LIMBO.getId() && event.getSource() == DamageSource.FALL) {
             event.setCanceled(true);// no fall damage in limbo
         }
     }
 
     @SubscribeEvent
     public static void onEntityEnterChunk(EntityEvent.EnteringChunk event) {
+        // TODO: Pass to PocketLib
         Entity entity = event.getEntity();
         if (entity instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) entity;
             World world = entity.world;
-            int dimID = world.provider.getDimension();
-            if (!world.isRemote && !player.isDead && DimDoorDimensions.isPocketDimension(dimID) && !PocketRegistry.getForDim(dimID).isPlayerAllowedToBeHere(player, player.getPosition())) {
-                // TODO: Avoid players even getting here by making a maximum build distance that's smaller than the pocket size
-                // TODO: This doesn't really work yet.
-                DimDoors.chat(player, "You travelled too far into the void and have been sent to Limbo.");
-                // PocketRegistry.sendToLimbo(player); // TODO
+            int dim = world.provider.getDimension();
+            if (!world.isRemote
+                && !player.isDead
+                && ModDimensions.isDimDoorsPocketDimension(world)
+                && !PocketRegistry.getForDim(dim).isPlayerAllowedToBeHere(player, player.getPosition())) {
+                // TODO: make the world circular
             }
         }
     }
 
-    @SubscribeEvent(priority=EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (DimDoorDimensions.isPocketDimension(event.fromDim) && !DimDoorDimensions.isPocketDimension(event.toDim)) {
+        // TODO: PocketLib compatibility
+        if (ModDimensions.isDimDoorsPocketDimension(event.fromDim) && !ModDimensions.isDimDoorsPocketDimension(event.toDim)) {
             RiftRegistry.setOverworldRift(event.player.getCachedUniqueIdString(), null);
         }
     }

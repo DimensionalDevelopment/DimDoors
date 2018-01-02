@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.shared;
 
-import org.dimdev.dimdoors.DimDoors;
 import java.io.File;
 
 import org.dimdev.dimdoors.shared.world.gateways.DimensionFilter;
@@ -21,7 +20,7 @@ public final class DDConfig {
     @Getter private static int maxPocketSize = 15;
     @Getter private static int privatePocketSize = 3;
     @Getter private static int publicPocketSize = 2;
-    @Getter private static int baseDimID = 684;
+    @Getter private static int baseDim = 684;
     @Getter private static int maxDungeonDepth = 100;
     @Getter private static int owCoordinateOffsetBase = 64;
     @Getter private static double owCoordinateOffsetPower = 1.3;
@@ -66,9 +65,9 @@ public final class DDConfig {
 
         // Setup general
         config.addCustomCategoryComment("general", "General configuration options.");
-        Property prop = config.get("general", "baseDimID", baseDimID,
+        Property prop = config.get("general", "baseDim", baseDim,
                 "Dimension ID of the first Dimensional Doors dimension. Other dimensions will use consecutive IDs. NB: If you change this after creating a world, you may lose these dimensions. [default: 684]");
-        baseDimID = prop.getInt(baseDimID);
+        baseDim = prop.getInt(baseDim);
 
         //Dungeons
         config.addCustomCategoryComment("dungeons", "The following options will determine the depths, wandering offsets and contents of Dungeon Pockets.");
@@ -103,11 +102,10 @@ public final class DDConfig {
                 "Is Monolith Teleportation enabled? [default: true]");
         monolithTeleportationEnabled = prop.getBoolean();
         
-        //Pocket_Dimensions
+        //Pocket Dimensions
         config.addCustomCategoryComment("pocket_dimension", "The following values determine the maximum sizes of different kinds of pockets. These values will only influence new worlds.");
         pocketGridSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "pocketGridSize", pocketGridSize,
                 "Sets how many chunks apart all pockets in pocket dimensions should be placed. [min: 4, max: 32, default: 32]", 4, 32);
-        DimDoors.log.info("pocketGridSize was set to " + pocketGridSize);
 
         maxPocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "maxPocketSize", maxPocketSize,
                 "Sets how deep and wide any pocket can be. [min: 0, max: pocketGridSize/2, default: 4]", 0, (int) ((double) pocketGridSize / 2 - 0.5));

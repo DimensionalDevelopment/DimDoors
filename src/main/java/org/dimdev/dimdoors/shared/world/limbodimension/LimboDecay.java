@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.shared.world.limbodimension;
 
 import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -93,7 +93,7 @@ public final class LimboDecay {
         int x, y, z;
         int sectionY;
         int limboHeight;
-        int[] limbo = DimensionManager.getDimensions(DimDoorDimensions.limbo);
+        int[] limbo = DimensionManager.getDimensions(ModDimensions.LIMBO);
 
 
         for (Integer i : limbo){

@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.shared.rifts;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPersonalPocket;
 import org.dimdev.ddutils.EntityUtils;
@@ -14,7 +14,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
@@ -37,8 +36,8 @@ public class PrivatePocketExitDestination extends RiftDestination { // TODO: mer
         Location destLoc;
         String uuid = EntityUtils.getEntityOwnerUUID(entity);
         if (uuid != null) {
-            PocketRegistry privatePocketRegistry = PocketRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
-            RiftRegistry privateRiftRegistry = RiftRegistry.getForDim(DimDoorDimensions.getPrivateDimID());
+            PocketRegistry privatePocketRegistry = PocketRegistry.getForDim(ModDimensions.getPrivateDim());
+            RiftRegistry privateRiftRegistry = RiftRegistry.getForDim(ModDimensions.getPrivateDim());
             destLoc = privateRiftRegistry.getPrivatePocketExit(uuid);
             if (rift.getWorld().provider instanceof WorldProviderPersonalPocket && privatePocketRegistry.getPrivatePocketID(uuid) == privatePocketRegistry.posToID(rift.getPos())) {
                 privateRiftRegistry.setPrivatePocketEntrance(uuid, rift.getLocation()); // Remember which exit was used for next time the pocket is entered
@@ -66,7 +65,7 @@ public class PrivatePocketExitDestination extends RiftDestination { // TODO: mer
         Pocket pocket = privatePocketRegistry.getPocketAt(rift.getPos());
         String uuid = privatePocketRegistry.getPrivatePocketOwner(pocket.getId());
         if (uuid != null) {
-            RiftRegistry.getForDim(DimDoorDimensions.getPrivateDimID()).addPrivatePocketEntrance(uuid, rift.getLocation());
+            RiftRegistry.getForDim(ModDimensions.getPrivateDim()).addPrivatePocketEntrance(uuid, rift.getLocation());
         }
     }
 

@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.shared.world.pocketdimension;
 
-import org.dimdev.dimdoors.shared.pockets.EnumPocketType;
+import net.minecraft.world.DimensionType;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.ModBiomes;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
@@ -16,17 +17,16 @@ public class WorldProviderPersonalPocket extends WorldProviderPocket {
         biomeProvider = new BiomeProviderSingle(ModBiomes.WHITE_VOID);
     }
 
-    @Override
-    public EnumPocketType getPocketType() {
-        return EnumPocketType.PRIVATE;
-    }
-
     // TODO: disable this to allow dark places in public pockets
     @Override
     protected void generateLightBrightnessTable() {
         for (int i = 0; i <= 15; ++i) {
             lightBrightnessTable[i] = 1;
         }
+    }
+
+    @Override public DimensionType getDimensionType() {
+        return ModDimensions.PRIVATE;
     }
 
     @SideOnly(Side.CLIENT)

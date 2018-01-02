@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.shared;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
 import org.dimdev.ddutils.Location;
-import org.dimdev.dimdoors.shared.world.DimDoorDimensions;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.ToString;
@@ -35,7 +35,7 @@ public class VirtualLocation {
 
     public static VirtualLocation fromLocation(Location location) {
         VirtualLocation virtualLocation = null;
-        if (DimDoorDimensions.isPocketDimension(location.getDim())) {
+        if (ModDimensions.isDimDoorsPocketDimension(location.getDim())) {
             Pocket pocket = PocketRegistry.getForDim(location.getDim()).getPocketAt(location.getPos());
             if (pocket != null) {
                 virtualLocation = pocket.getVirtualLocation(); // TODO: pocket-relative coordinates

@@ -31,10 +31,10 @@ public final class ModItems {
     public static final ItemRiftSignature RIFT_SIGNATURE = new ItemRiftSignature();
 
     // Armors
-    public static ItemWovenWorldThreadArmor HELMET_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("helmet_woven_world_thread", 1, EntityEquipmentSlot.HEAD);
-    public static ItemWovenWorldThreadArmor CHESTPLATE_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("chestplate_woven_world_thread", 1, EntityEquipmentSlot.CHEST);
-    public static ItemWovenWorldThreadArmor LEGGINGS_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("leggings_woven_world_thread", 2, EntityEquipmentSlot.LEGS);
-    public static ItemWovenWorldThreadArmor BOOTS_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("boots_woven_world_thread", 1, EntityEquipmentSlot.FEET);
+    public static final ItemWovenWorldThreadArmor HELMET_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("helmet_woven_world_thread", 1, EntityEquipmentSlot.HEAD);
+    public static final ItemWovenWorldThreadArmor CHESTPLATE_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("chestplate_woven_world_thread", 1, EntityEquipmentSlot.CHEST);
+    public static final ItemWovenWorldThreadArmor LEGGINGS_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("leggings_woven_world_thread", 2, EntityEquipmentSlot.LEGS);
+    public static final ItemWovenWorldThreadArmor BOOTS_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("boots_woven_world_thread", 1, EntityEquipmentSlot.FEET);
 
     // ItemBlocks
     public static final ItemFabric FABRIC = new ItemFabric();

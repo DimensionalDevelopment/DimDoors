@@ -40,13 +40,13 @@ public class PocketTemplate {
 
     public void place(Pocket pocket, int yBase) {
         pocket.setSize(size);
-        int gridSize = PocketRegistry.getForDim(pocket.dimID).getGridSize();
-        int dimID = pocket.dimID;
+        int gridSize = PocketRegistry.getForDim(pocket.dim).getGridSize();
+        int dim = pocket.dim;
         int xBase = pocket.getX() * gridSize * 16;
         int zBase = pocket.getZ() * gridSize * 16;
         DimDoors.log.info("Placing new pocket using schematic " + schematic.schematicName + " at x = " + xBase + ", z = " + zBase);
 
-        WorldServer world = DimDoors.proxy.getWorldServer(dimID);
+        WorldServer world = DimDoors.proxy.getWorldServer(dim);
         Schematic.place(schematic, world, xBase, yBase, zBase);
 
         // Set pocket riftLocations
