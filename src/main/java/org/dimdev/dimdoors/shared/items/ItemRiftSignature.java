@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.shared.items;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -54,22 +55,27 @@ public class ItemRiftSignature extends Item {
         }
         pos = pos.offset(side);
 
-        RotatedLocation source = getSource(stack);
+        RotatedLocation target = getSource(stack);
 
-        if (source != null) {
-            // Place a rift at the destination point
+        if (target != null) {
+            // Place a rift at the saved point TODO: check that the player still has permission
+            if (!target.getLocation().getBlockState().equals(ModBlocks.RIFT)) {
+                if (!target.getLocation().getBlockState().getBlock().equals(Blocks.AIR)) {
+                    return EnumActionResult.FAIL; // TODO: send a message
+                }
+                World sourceWorld = target.getLocation().getWorld();
+                sourceWorld.setBlockState(target.getLocation().getPos(), ModBlocks.RIFT.getDefaultState());
+                TileEntityRift rift1 = (TileEntityRift) target.getLocation().getTileEntity();
+                rift1.setSingleDestination(new GlobalDestination(new Location(world, pos)));
+                rift1.register();
+                rift1.setRotation(target.getYaw(), 0);
+            }
+
+            // Place a rift at the target point
             world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
-            TileEntityRift rift1 = (TileEntityRift) world.getTileEntity(pos);
-            rift1.setSingleDestination(new GlobalDestination(source.getLocation()));
-            rift1.setRotation(player.rotationYaw, 0);
-            rift1.register();
-
-            // Place a rift at the source point
-            World sourceWorld = source.getLocation().getWorld();
-            sourceWorld.setBlockState(source.getLocation().getPos(), ModBlocks.RIFT.getDefaultState());
-            TileEntityRift rift2 = (TileEntityRift) source.getLocation().getTileEntity();
-            rift2.setSingleDestination(new GlobalDestination(rift1.getLocation()));
-            rift2.setRotation(source.getYaw(), 0);
+            TileEntityRift rift2 = (TileEntityRift) world.getTileEntity(pos);
+            rift2.setSingleDestination(new GlobalDestination(target.getLocation()));
+            rift2.setRotation(player.rotationYaw, 0);
             rift2.register();
 
             stack.damageItem(1, player); // TODO: calculate damage based on position?

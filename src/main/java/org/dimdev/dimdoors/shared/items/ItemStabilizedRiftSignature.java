@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.shared.items;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -59,6 +60,9 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
         if (target != null) {
             // Place a rift at the target point
             if (!target.getLocation().getBlockState().getBlock().equals(ModBlocks.RIFT)) {
+                if (!target.getLocation().getBlockState().getBlock().equals(Blocks.AIR)) {
+                    return EnumActionResult.FAIL; // TODO: send a message
+                }
                 World targetWorld = target.getLocation().getWorld();
                 targetWorld.setBlockState(target.getLocation().getPos(), ModBlocks.RIFT.getDefaultState());
                 TileEntityRift rift1 = (TileEntityRift) target.getLocation().getTileEntity();
@@ -66,7 +70,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
                 rift1.register();
             }
 
-            // Place a rift at the target point
+            // Place a rift at the source point
             world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
             TileEntityRift rift2 = (TileEntityRift) world.getTileEntity(pos);
             rift2.setSingleDestination(new GlobalDestination(target.getLocation()));

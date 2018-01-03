@@ -2,22 +2,22 @@ package org.dimdev.dimdoors.shared.rifts;
 
 import com.google.common.collect.ConcurrentHashMultiset;
 import com.google.common.collect.Multiset;
-import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.ddutils.nbt.SavedToNBT;
-import org.dimdev.dimdoors.shared.world.ModDimensions;
-import org.dimdev.ddutils.nbt.INBTStorable; // Don't change imports order! (Gradle bug): https://stackoverflow.com/questions/26557133/
-import org.dimdev.ddutils.Location;
-import org.dimdev.ddutils.WorldUtils;
 import lombok.*;
 import lombok.experimental.Wither;
-import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.VirtualLocation;
-import org.dimdev.dimdoors.shared.rifts.RiftRegistry.RiftInfo.AvailableLinkInfo;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.DimensionManager;
+import org.dimdev.ddutils.Location;
+import org.dimdev.ddutils.WorldUtils;
+import org.dimdev.ddutils.nbt.INBTStorable;
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.VirtualLocation;
+import org.dimdev.dimdoors.shared.rifts.RiftRegistry.RiftInfo.AvailableLinkInfo;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 import java.util.*;
 
@@ -50,6 +50,7 @@ import java.util.*;
             @SavedToNBT @Getter /*package-private*/ UUID uuid;
 
             @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
+
             @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
         }
 
@@ -60,6 +61,7 @@ import java.util.*;
         }
 
         @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
+
         @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
     }
 
@@ -116,7 +118,7 @@ import java.util.*;
                 // Upgrade to 2 or return false
             case 2:
                 // Upgrade to 3 or return false
-            // ...
+                // ...
         }
         return true;
     }
@@ -132,28 +134,37 @@ import java.util.*;
     }
 
     public static void addRift(Location rift) {
+        DimDoors.log.info("Rift added at " + rift);
         RiftRegistry registry = getRegistry(rift);
-        registry.rifts.put(rift, new RiftInfo());
+        registry.rifts.computeIfAbsent(rift, k -> new RiftInfo());
         registry.markDirty();
     }
 
     public static void removeRift(Location rift) {
+        DimDoors.log.info("Rift removed at " + rift);
         RiftRegistry registry = getRegistry(rift);
         RiftInfo oldRift = registry.rifts.remove(rift);
         if (oldRift == null) return;
+        List<TileEntityRift> updateQueue = new ArrayList<>();
         for (Location source : oldRift.sources) {
             RiftRegistry sourceRegistry = getRegistry(source);
             sourceRegistry.rifts.get(source).destinations.remove(rift);
             sourceRegistry.markDirty();
             TileEntityRift riftEntity = (TileEntityRift) sourceRegistry.world.getTileEntity(source.getPos());
             riftEntity.destinationGone(rift);
+            updateQueue.add(riftEntity);
         }
         for (Location destination : oldRift.destinations) {
             RiftRegistry destinationRegistry = getRegistry(destination);
             destinationRegistry.rifts.get(destination).sources.remove(rift);
             destinationRegistry.markDirty();
-            //TileEntityRift riftEntity = (TileEntityRift) destinationRegistry.world.getTileEntity(destination.getPos());
+            TileEntityRift riftEntity = (TileEntityRift) destinationRegistry.world.getTileEntity(destination.getPos());
+            updateQueue.add(riftEntity);
             //riftEntity.allSourcesGone(); // TODO
+        }
+        for (TileEntityRift riftEntity : updateQueue) {
+            //riftEntity.updateColor();
+            riftEntity.markDirty();
         }
         getForDim(ModDimensions.getPrivateDim()).privatePocketEntrances.entrySet().removeIf(e -> e.getValue().equals(rift));
         getForDim(0).overworldRifts.entrySet().removeIf(e -> e.getValue().equals(rift));
@@ -161,23 +172,21 @@ import java.util.*;
     }
 
     public static void addLink(Location from, Location to) {
+        DimDoors.log.info("Link added " + from + " -> " + to);
         RiftRegistry registryFrom = getRegistry(from);
         RiftRegistry registryTo = getRegistry(to);
-        RiftInfo riftInfoFrom = registryFrom.rifts.get(from);
-        RiftInfo riftInfoTo = registryTo.rifts.get(to);
-        if (riftInfoFrom != null) {
-            riftInfoFrom.destinations.add(to);
-            registryFrom.markDirty();
-        }
-        if (riftInfoTo != null) {
-            registryTo.rifts.get(to).sources.add(from);
-            registryTo.markDirty();
-        }
+        RiftInfo riftInfoFrom = registryFrom.rifts.computeIfAbsent(from, k -> new RiftInfo());
+        RiftInfo riftInfoTo = registryTo.rifts.computeIfAbsent(to, k -> new RiftInfo());
+        riftInfoFrom.destinations.add(to);
+        registryFrom.markDirty();
+        riftInfoTo.sources.add(from);
+        registryTo.markDirty();
         if (to.getTileEntity() instanceof TileEntityRift) ((TileEntityRift) to.getTileEntity()).updateColor();
         if (from.getTileEntity() instanceof TileEntityRift) ((TileEntityRift) from.getTileEntity()).updateColor();
     }
 
     public static void removeLink(Location from, Location to) {
+        DimDoors.log.info("Link removed " + from + " -> " + to);
         RiftRegistry registryFrom = getRegistry(from);
         RiftRegistry registryTo = getRegistry(to);
         registryFrom.rifts.get(from).destinations.remove(to);
@@ -189,24 +198,28 @@ import java.util.*;
     }
 
     public static void addAvailableLink(Location rift, AvailableLinkInfo link) { // TODO cache rifts with availableLinks
+        DimDoors.log.info("AvailableLink added at " + rift);
         RiftRegistry registry = getRegistry(rift);
         registry.rifts.get(rift).availableLinks.add(link);
         registry.markDirty();
     }
 
     public static void removeAvailableLink(Location rift, AvailableLinkInfo link) {
+        DimDoors.log.info("AvailableLink removed at " + rift);
         RiftRegistry registry = getRegistry(rift);
         registry.rifts.get(rift).availableLinks.remove(link);
         registry.markDirty();
     }
 
     public static void clearAvailableLinks(Location rift) {
+        DimDoors.log.info("AvailableLink cleared at " + rift);
         RiftRegistry registry = getRegistry(rift);
         registry.rifts.get(rift).availableLinks.clear();
         registry.markDirty();
     }
 
     public static void removeAvailableLinkByUUID(Location rift, UUID uuid) {
+        DimDoors.log.info("AvailableLink with uuid " + uuid + " removed at " + rift);
         RiftRegistry registry = getRegistry(rift);
         for (AvailableLinkInfo link : registry.rifts.get(rift).availableLinks) {
             if (link.uuid.equals(uuid)) {
@@ -232,10 +245,12 @@ import java.util.*;
     }
 
     public void addPrivatePocketEntrance(String playerUUID, Location rift) {
+        DimDoors.log.info("Private pocket entrance added for " + playerUUID + " at " + rift);
         privatePocketEntranceLists.computeIfAbsent(playerUUID, k -> new ArrayList<>()).add(rift);
     }
 
     public void setPrivatePocketEntrance(String playerUUID, Location rift) {
+        DimDoors.log.info("Last private pocket entrance set for " + playerUUID + " at " + rift);
         privatePocketEntrances.put(playerUUID, rift);
         markDirty();
     }
@@ -245,6 +260,7 @@ import java.util.*;
     }
 
     public void setPrivatePocketExit(String playerUUID, Location rift) {
+        DimDoors.log.info("Last private pocket exit set for " + playerUUID + " at " + rift);
         if (rift != null) {
             privatePocketExits.put(playerUUID, rift);
         } else {
@@ -258,6 +274,7 @@ import java.util.*;
     }
 
     public static void setOverworldRift(String playerUUID, Location rift) {
+        DimDoors.log.info("Overworld rift set for " + playerUUID + " at " + rift);
         if (rift != null) {
             getForDim(0).overworldRifts.put(playerUUID, rift);
         } else {

@@ -5,6 +5,8 @@ import org.dimdev.ddutils.nbt.SavedToNBT;
 import org.dimdev.ddutils.RGBA;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.VirtualLocation;
+import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
+import org.dimdev.dimdoors.shared.blocks.BlockFloatingRift;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
 import org.dimdev.ddutils.EntityUtils;
@@ -99,7 +101,11 @@ import java.util.*;
     // Use vanilla behavior of refreshing only when block changes, not state (otherwise, opening the door would destroy the tile entity)
     @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-        return oldState.getBlock() != newSate.getBlock();
+        // newState is not accurate if we change the state during onBlockBreak
+        newSate = world.getBlockState(pos);
+        return oldState.getBlock() != newSate.getBlock() &&
+                !(oldState.getBlock() instanceof BlockDimensionalDoor
+                  && newSate.getBlock() instanceof BlockFloatingRift);
     }
 
     // Modification functions
@@ -290,7 +296,7 @@ import java.util.*;
             newYaw = yaw;
             newPitch = pitch;
         }
-        TeleportUtils.teleport(entity, new Location(world, pos), newPitch, newYaw);
+        TeleportUtils.teleport(entity, new Location(world, pos), newYaw, newPitch);
     }
 
     public void updateColor() { // TODO: have the registry call this method too
