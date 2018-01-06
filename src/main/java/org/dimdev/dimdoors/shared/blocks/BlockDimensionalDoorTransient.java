@@ -1,5 +1,9 @@
 package org.dimdev.dimdoors.shared.blocks;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import net.minecraft.block.material.Material;
@@ -26,6 +30,11 @@ public class BlockDimensionalDoorTransient extends BlockDimensionalDoor { // TOD
     @Override
     public boolean isCollidable() {
         return false;
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return null;
     }
 
     @Override
