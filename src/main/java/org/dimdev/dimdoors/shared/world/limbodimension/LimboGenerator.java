@@ -86,7 +86,7 @@ public class LimboGenerator implements IChunkGenerator {
     }
 
     @Override
-    public boolean generateStructures(Chunk chunkIn, int x, int z) {
+    public boolean generateStructures(Chunk chunk, int x, int z) {
         return false;
     }
 
@@ -289,17 +289,17 @@ public class LimboGenerator implements IChunkGenerator {
 
     @Nullable
     @Override
-    public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position, boolean findUnexplored) {
+    public BlockPos getNearestStructurePos(World world, String structureName, BlockPos position, boolean findUnexplored) {
         return null;
     }
 
     @Override
-    public void recreateStructures(Chunk chunkIn, int x, int z) {
+    public void recreateStructures(Chunk chunk, int x, int z) {
 
     }
 
     @Override
-    public boolean isInsideStructure(World worldIn, String structureName, BlockPos pos) {
+    public boolean isInsideStructure(World world, String structureName, BlockPos pos) {
         return false;
     }
 }

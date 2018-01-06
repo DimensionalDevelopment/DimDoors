@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.pockets;
 
+import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.schem.Schematic;
@@ -46,7 +47,7 @@ public class PocketTemplate {
         int zBase = pocket.getZ() * gridSize * 16;
         DimDoors.log.info("Placing new pocket using schematic " + schematic.schematicName + " at x = " + xBase + ", z = " + zBase);
 
-        WorldServer world = DimDoors.proxy.getWorldServer(dim);
+        WorldServer world = WorldUtils.getWorld(dim);
         Schematic.place(schematic, world, xBase, yBase, zBase);
 
         // Set pocket riftLocations

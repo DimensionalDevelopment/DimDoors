@@ -30,7 +30,7 @@ item.warp_dimensional_door.name=Warp-Tür
 item.rift_key=Spaltschlüssel
 item.rift_signature.name=Spaltsignatur
 item.stabilized_rift_signature.name=Stabilisierte Spaltsignatur
-item.rift_connection_tool.name=Below Average Rift Connection Tool
+item.rift_configuration_tool.name=Rift Configuration Tool
 item.rift_remover.name=Spaltentferner
 item.rift_blade.name=Spaltklinge
 

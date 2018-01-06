@@ -30,7 +30,7 @@ item.warp_dimensional_door.name=Verdraaideur
 item.rift_key=Scheur Sleutel
 item.rift_signature.name=Scheurtekening
 item.stabilized_rift_signature.name=Gestabiliseerde Scheurtekening
-item.rift_connection_tool.name=Ondergemiddeld Scheurverbindingsgereedschap
+item.rift_configuration_tool.name=Ondergemiddeld Scheurverbindingsgereedschap
 item.rift_remover.name=Scheurverwijderaar
 item.rift_blade.name=Scheurkling
 

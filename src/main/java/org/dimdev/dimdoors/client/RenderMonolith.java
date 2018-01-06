@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.client;
 
+import net.minecraft.client.renderer.GlStateManager;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import net.minecraft.client.Minecraft;
@@ -12,7 +13,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.util.Arrays;
 import java.util.List;
@@ -74,11 +74,11 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
 
     public void render(EntityMonolith par1EntityLivingBase, double x, double y, double z, float par8, float par9) {
         if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre<>(par1EntityLivingBase, this, 1, x, y, z))) return;
-        GL11.glPushMatrix();
-        GL11.glDisable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.pushMatrix();
+        GlStateManager.disableCull();
+        GlStateManager.disableLighting();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         mainModel.swingProgress = getSwingProgress(par1EntityLivingBase, par9);
 
         try {
@@ -92,32 +92,32 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
             applyRotations(par1EntityLivingBase, rotation, interpolatedYaw, par9);
 
             float f6 = 0.0625F;
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GlStateManager.enableRescaleNormal();
 
-            GL11.glScalef(-1.0F, -1.0F, 1.0F);
+            GlStateManager.scale(-1.0F, -1.0F, 1.0F);
             preRenderCallback(par1EntityLivingBase, par9);
-            GL11.glRotatef(par1EntityLivingBase.pitchLevel, 1.0F, 0.0F, 0.0F);
-            GL11.glTranslatef(0.0F, 24.0F * f6 - 0.0078125F, 0.0F);
+            GlStateManager.rotate(par1EntityLivingBase.pitchLevel, 1.0F, 0.0F, 0.0F);
+            GlStateManager.translate(0.0F, 24.0F * f6 - 0.0078125F, 0.0F);
 
 
             renderModel(par1EntityLivingBase, 0, 0, rotation, interpolatedYaw, pitch, f6);
 
             OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GlStateManager.disableTexture2D();
             OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
 
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            GlStateManager.disableRescaleNormal();
         } catch (Exception e) {
             DimDoors.log.error(e);
         }
 
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GlStateManager.enableTexture2D();
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glPopMatrix();
+        GlStateManager.enableCull();
+        GlStateManager.enableLighting();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post<>(par1EntityLivingBase, this, 1, x, y, z));
     }
 

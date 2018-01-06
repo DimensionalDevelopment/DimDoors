@@ -31,7 +31,7 @@ item.warp_dimensional_door.name=Porte-raccourci
 item.rift_key=Clé de fissure
 item.rift_signature.name=Signature de fissure
 item.stabilized_rift_signature.name=Signature de fissure stabilisée
-item.rift_connection_tool.name=Outil de connexion de fissures sous la moyenne
+item.rift_configuration_tool.name=Outil de connexion de fissures sous la moyenne
 item.rift_remover.name=Enleveur de fissure
 item.rift_blade.name=Lame de fissure
 

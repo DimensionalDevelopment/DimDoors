@@ -31,7 +31,7 @@ item.warp_dimensional_door.name=Warp Door
 item.rift_key=Rift Key
 item.rift_signature.name=Rift Signature
 item.stabilized_rift_signature.name=Stabilized Rift Signature
-item.rift_connection_tool.name=Below Average Rift Connection Tool
+item.rift_configuration_tool.name=Rift Configuration Tool
 item.rift_remover.name=Rift Remover
 item.rift_blade.name=Rift Blade
 

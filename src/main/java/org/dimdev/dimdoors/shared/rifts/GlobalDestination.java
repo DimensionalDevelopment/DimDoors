@@ -12,7 +12,7 @@ import org.dimdev.ddutils.nbt.SavedToNBT;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 @SavedToNBT public class GlobalDestination extends RiftDestination { // TODO: location directly in nbt like minecraft?
-    @SavedToNBT @Getter /*package-private*/ Location loc;
+    @SavedToNBT @Getter protected Location loc;
 
     public GlobalDestination() {}
 

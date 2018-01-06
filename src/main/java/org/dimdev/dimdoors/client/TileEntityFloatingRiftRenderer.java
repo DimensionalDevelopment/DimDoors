@@ -202,7 +202,6 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
 
     private void project(BufferBuilder buffer, Vector4f vector, int u, int v, RGBA color) {
         double scalar = 1d/(vector.getW()+1d);
-        Vector3f center = Vector3f.from(0.5f);
         Vector3f vector1 = vector.toVector3().mul(scalar);
 
         buffer.pos(vector1.getX(), vector1.getY(), vector1.getZ()).tex(u,v).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();

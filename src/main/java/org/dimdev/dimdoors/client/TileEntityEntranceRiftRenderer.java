@@ -19,8 +19,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
 
-import static org.lwjgl.opengl.GL11.*;
-
 @SideOnly(Side.CLIENT)
 public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<TileEntityEntranceRift> { // TODO: see TileEntityEndGatewayRenderer
 
@@ -32,7 +30,7 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
 
     // TODO: allow any angle, make static and in a separate class
     public void renderDimensionalWall(double x, double y, double z, RGBA[] colors, EnumFacing orientation, double extendUp, double extendDown, double extendLeft, double extendRight, double pushIn) {
-        GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.disableLighting();
 
         for (int pass = 0; pass < 16; pass++) {
             GlStateManager.pushMatrix();
@@ -212,36 +210,36 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
         //z = ActiveRenderInfo.getPosition().zCoord;
 
         GlStateManager.rotate(180.0F - 90 * rotation.getHorizontalIndex(), 0.0F, 1.0F, 0.0F);
-        //GL11.glRotatef((float)(-90 * rotation), 0.0F, 0.0F, 1.0F);
+        // GlStateManager.rotate((float)(-90 * rotation), 0.0F, 0.0F, 1.0F);
 
         GlStateManager.translate(0.007F, .25F, 0F);
 
         switch (rotation) {
             case SOUTH:
-                GL11.glTranslatef(0.5F, 0F, -0.03F);
+                GlStateManager.translate(0.5F, 0F, -0.03F);
                 break;
             case WEST:
-                GL11.glTranslatef(-0.5F, 0, -0.03F);
+                GlStateManager.translate(-0.5F, 0, -0.03F);
                 break;
             case NORTH:
-                GL11.glTranslatef(-.5F, 0F, .97F);
+                GlStateManager.translate(-.5F, 0F, .97F);
                 break;
             case EAST:
-                GL11.glTranslatef(.5F, 0F, .97F);
+                GlStateManager.translate(.5F, 0F, .97F);
                 break;
         }
 
-        GL11.glDisable(GL_LIGHTING);
+        GlStateManager.disableLighting();
 
-        GL11.glEnable(GL11.GL_BLEND);
+        GlStateManager.enableBlend();
 
         if (i == 1) {
             bindTexture(keyholeLight);
             GlStateManager.color(1, 1, 1, .7f);
-            GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_COLOR);
+            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_DST_COLOR);
         } else {
             bindTexture(keyPath);
-            GlStateManager.blendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
+            GlStateManager.blendFunc(GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_SRC_ALPHA);
         }
 
         GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);

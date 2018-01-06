@@ -35,9 +35,9 @@ public class BiomeLimbo extends Biome {
 
     @Override public BiomeDecorator createBiomeDecorator() { return null; }
 
-    @Override public void decorate(World worldIn, Random rand, BlockPos pos) {}
+    @Override public void decorate(World world, Random rand, BlockPos pos) {}
 
-    @Override public void genTerrainBlocks(World worldIn, Random rand, ChunkPrimer chunkPrimerIn, int x, int z, double noiseVal) {}
+    @Override public void genTerrainBlocks(World world, Random rand, ChunkPrimer chunkPrimer, int x, int z, double noiseVal) {}
 
     @Override
     @SideOnly(Side.CLIENT)

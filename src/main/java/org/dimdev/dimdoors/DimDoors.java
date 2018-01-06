@@ -2,8 +2,8 @@ package org.dimdev.dimdoors;
 
 import org.dimdev.dimdoors.shared.commands.CommandPocket;
 import org.dimdev.dimdoors.shared.commands.CommandDimTeleport;
-import org.dimdev.dimdoors.shared.DDConfig;
-import org.dimdev.dimdoors.shared.DDProxyCommon;
+import org.dimdev.dimdoors.shared.Config;
+import org.dimdev.dimdoors.shared.CommonProxy;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import org.dimdev.dimdoors.shared.world.gateways.GatewayGenerator;
 import lombok.Getter;
@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 @Mod(modid = DimDoors.MODID, name = "Dimensional Doors",
      version = DimDoors.VERSION,
-     dependencies = "required-after:forge@[14.23.0.2517,)")
+     dependencies = "required-after:forge@[14.23.0.2517,)") // TODO
 public class DimDoors {
 
     public static final String MODID = "dimdoors";
@@ -31,9 +31,9 @@ public class DimDoors {
     public static DimDoors instance;
     public static Logger log; // TODO: make non-static?
 
-    @SidedProxy(clientSide = "org.dimdev.dimdoors.client.DDProxyClient",
-                serverSide = "org.dimdev.dimdoors.server.DDProxyServer")
-    public static DDProxyCommon proxy;
+    @SidedProxy(clientSide = "org.dimdev.dimdoors.client.ClientProxy",
+                serverSide = "org.dimdev.dimdoors.server.ServerProxy")
+    public static CommonProxy proxy;
 
     public static final CreativeTabs DIM_DOORS_CREATIVE_TAB = new CreativeTabs("dimensional_doors_creative_tab") {
         @Override
@@ -49,7 +49,7 @@ public class DimDoors {
     public void onPreInitialization(FMLPreInitializationEvent event) {
         log = event.getModLog();
         proxy.onPreInitialization(event);
-        DDConfig.loadConfig(event);
+        Config.loadConfig(event);
     }
 
     @Mod.EventHandler

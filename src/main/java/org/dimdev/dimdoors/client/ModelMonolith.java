@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.client;
 
+import net.minecraft.client.renderer.GlStateManager;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -23,11 +23,11 @@ public class ModelMonolith extends ModelBase {
     }
 
     @Override
-    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        EntityMonolith monolith = (EntityMonolith) entityIn;
+    public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        EntityMonolith monolith = (EntityMonolith) entity;
 
         setRotationAngles(0, 0, 0, 0, 0, 0, monolith);
-        GL11.glScalef(monolith.getRenderSizeModifier(), monolith.getRenderSizeModifier(), monolith.getRenderSizeModifier());
+        GlStateManager.scale(monolith.getRenderSizeModifier(), monolith.getRenderSizeModifier(), monolith.getRenderSizeModifier());
         wholeMonolith.render(scale);
     }
 }

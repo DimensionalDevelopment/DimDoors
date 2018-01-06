@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.shared.world.gateways;
 
-import org.dimdev.dimdoors.shared.DDConfig;
+import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPocket;
 import net.minecraft.block.material.Material;
@@ -61,7 +61,7 @@ public class GatewayGenerator implements IWorldGenerator
 
         // Check if we're allowed to generate rift clusters in this dimension.
         // If so, randomly decide whether to one.
-        if (DDConfig.getRiftClusterDimensions().isAccepted(dimensionID) && random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < DDConfig.getClusterGenerationChance()) {
+        if (Config.getRiftClusterDimensions().isAccepted(dimensionID) && random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < Config.getClusterGenerationChance()) {
             do {
                 //Pick a random point on the surface of the chunk
                 x = chunkX * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
@@ -84,7 +84,7 @@ public class GatewayGenerator implements IWorldGenerator
 
         // Check if we can place a Rift Gateway in this dimension, then randomly decide whether to place one.
         // This only happens if a rift cluster was NOT generated.
-        else if (DDConfig.getRiftGatewayDimensions().isAccepted(dimensionID) && random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < DDConfig.getGatewayGenerationChance()) {
+        else if (Config.getRiftGatewayDimensions().isAccepted(dimensionID) && random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < Config.getGatewayGenerationChance()) {
             valid = false;
             x = y = z = 0; //Stop the compiler from freaking out
 

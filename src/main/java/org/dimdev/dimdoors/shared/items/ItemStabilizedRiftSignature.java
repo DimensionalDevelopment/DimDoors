@@ -12,17 +12,16 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.dimdev.ddutils.I18nUtils;
 import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.RotatedLocation;
+import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.rifts.GlobalDestination;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 
 import java.util.List;
-
-import static org.dimdev.ddutils.I18nUtils.translateAndAdd;
 
 public class ItemStabilizedRiftSignature extends Item { // TODO: common superclass with rift signature
     public static final String ID = "stabilized_rift_signature";
@@ -80,12 +79,12 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
             stack.damageItem(1, player);
 
             DimDoors.chat(player, "Rift Created");
-            world.playSound(player, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
+            world.playSound(null, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
             // The link signature has not been used. Store its current target as the first location.
-            setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw));
+            setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw, 0));
             DimDoors.chat(player, "Location Stored in Rift Signature");
-            world.playSound(player, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
+            world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         }
 
         return EnumActionResult.SUCCESS;
@@ -114,12 +113,12 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
         RotatedLocation transform = getTarget(stack);
         if (transform != null) {
             tooltip.add(I18n.translateToLocalFormatted("info.stabilized_rift_signature.bound", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
         } else {
-            translateAndAdd("info.stabilized_rift_signature.unbound", tooltip);
+            tooltip.addAll(I18nUtils.translateMultiline("info.stabilized_rift_signature.unbound"));
         }
     }
 }

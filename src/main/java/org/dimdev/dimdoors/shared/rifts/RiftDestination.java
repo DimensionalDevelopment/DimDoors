@@ -15,7 +15,7 @@ public abstract class RiftDestination implements INBTStorable {
 
     /*private*/ public static final BiMap<String, Class<? extends RiftDestination>> destinationRegistry = HashBiMap.create(); // TODO: move to RiftDestinationRegistry
     //private String type;
-    /*package-private*/ WeightedRiftDestination weightedDestination;
+    protected WeightedRiftDestination weightedDestination;
 
     public RiftDestination() {
       //type = destinationRegistry.inverse().get(getClass());

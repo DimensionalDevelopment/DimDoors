@@ -26,7 +26,7 @@ public class ParticleRiftEffect extends ParticleSimpleAnimated { // TODO: colors
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         if (particleAge < particleMaxAge / 3 || (particleAge + particleMaxAge) / 3 % 2 == 0) {
             float oldRed = particleRed;
             float oldGreen = particleGreen;
@@ -34,7 +34,7 @@ public class ParticleRiftEffect extends ParticleSimpleAnimated { // TODO: colors
             float oldAlpha = particleAlpha;
             setRBGColorF(colorMultiplier * particleRed, colorMultiplier * particleGreen, colorMultiplier * particleBlue);
             setAlphaF(0.7f);
-            super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
+            super.renderParticle(buffer, entity, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
             setRBGColorF(oldRed, oldGreen, oldBlue);
             setAlphaF(oldAlpha);
         }

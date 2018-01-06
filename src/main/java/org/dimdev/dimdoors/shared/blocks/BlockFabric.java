@@ -131,7 +131,7 @@ public class BlockFabric extends Block {
 
     @Override
     @SuppressWarnings("deprecation")
-    public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public MapColor getMapColor(IBlockState state, IBlockAccess world, BlockPos pos) {
         switch (state.getValue(TYPE)) {
             case REALITY:
             case ANCIENT:
@@ -174,21 +174,21 @@ public class BlockFabric extends Block {
     }
 
     @Override
-    public void onEntityWalk(World world, BlockPos pos, Entity entityIn) {
+    public void onEntityWalk(World world, BlockPos pos, Entity entity) {
         IBlockState state = world.getBlockState(pos);
-        if (state.getValue(TYPE) == EnumType.ETERNAL && world.provider instanceof WorldProviderLimbo && entityIn instanceof EntityPlayer) {
+        if (state.getValue(TYPE) == EnumType.ETERNAL && world.provider instanceof WorldProviderLimbo && entity instanceof EntityPlayer) {
             Location loc = VirtualLocation.fromLocation(new Location(world, pos)).projectToWorld();
             BlockPos correctedPos = loc.getWorld().getTopSolidOrLiquidBlock(loc.getPos());
             Random random = new Random();
-            TeleportUtils.teleport(entityIn, new Location(loc.getDim(), correctedPos), random.nextFloat() * 360, random.nextFloat() * 360);
+            TeleportUtils.teleport(entity, new Location(loc.getDim(), correctedPos), random.nextFloat() * 360, random.nextFloat() * 360);
         }
     }
 
     @Override
-    public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand) {
+    public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
         // Spread unravelled fabric decay in Limbo
-        if (state.getValue(TYPE) == EnumType.UNRAVELED && worldIn.provider instanceof WorldProviderLimbo) {
-            LimboDecay.applySpreadDecay(worldIn, pos);
+        if (state.getValue(TYPE) == EnumType.UNRAVELED && world.provider instanceof WorldProviderLimbo) {
+            LimboDecay.applySpreadDecay(world, pos);
         }
     }
 }

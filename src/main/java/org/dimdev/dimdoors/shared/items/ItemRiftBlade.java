@@ -50,24 +50,24 @@ public class ItemRiftBlade extends ItemSword {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-        ItemStack stack = playerIn.getHeldItem(handIn);
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
 
-        if (worldIn.isRemote) {
+        if (world.isRemote) {
             return new ActionResult<>(EnumActionResult.FAIL, stack);
         }
         //SchematicHandler.Instance.getPersonalPocketTemplate().place(0, 20, 0, 20, 0, 0, 1, EnumPocketType.DUNGEON); //this line can be activated for testing purposes
-        RayTraceResult hit = rayTrace(worldIn, playerIn, true);
-        if (RayTraceHelper.isFloatingRift(hit, worldIn)) {
-            TileEntityFloatingRift rift = (TileEntityFloatingRift) worldIn.getTileEntity(hit.getBlockPos());
-            rift.teleport(playerIn);
+        RayTraceResult hit = rayTrace(world, player, true);
+        if (RayTraceHelper.isFloatingRift(hit, world)) {
+            TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(hit.getBlockPos());
+            rift.teleport(player);
 
-            stack.damageItem(1, playerIn);
+            stack.damageItem(1, player);
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 
         } else if (RayTraceHelper.isLivingEntity(hit)) {
-            TeleportUtils.teleport(playerIn, new Location(worldIn, hit.getBlockPos()), playerIn.rotationYaw, playerIn.rotationPitch); //@todo teleport to a location 1 or 2 blocks distance from the entity
-            stack.damageItem(1, playerIn); // TODO: check if successful
+            TeleportUtils.teleport(player, new Location(world, hit.getBlockPos()), player.rotationYaw, player.rotationPitch); //@todo teleport to a location 1 or 2 blocks distance from the entity
+            stack.damageItem(1, player); // TODO: check if successful
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
 
@@ -75,7 +75,7 @@ public class ItemRiftBlade extends ItemSword {
     }
 
     @Override
-    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        I18nUtils.translateAndAdd("info.rift_blade", tooltip);
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
+        tooltip.addAll(I18nUtils.translateMultiline("info.rift_blade"));
     }
 }

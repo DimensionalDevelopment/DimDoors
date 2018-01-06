@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.shared.entities;
 
 import org.dimdev.dimdoors.shared.sound.ModSounds;
-import org.dimdev.dimdoors.shared.DDConfig;
+import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
@@ -54,7 +54,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
     }
 
     public boolean isDangerous() {
-        return DDConfig.isMonolithTeleportationEnabled() && (world.provider instanceof WorldProviderLimbo  || DDConfig.isDangerousLimboMonolithsEnabled());
+        return Config.isMonolithTeleportationEnabled() && (world.provider instanceof WorldProviderLimbo || Config.isDangerousLimboMonolithsEnabled());
     }
 
     @Override
@@ -148,7 +148,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
                 }
 
                 // Teleport the target player if various conditions are met
-                if (aggro >= MAX_AGGRO && !world.isRemote && DDConfig.isMonolithTeleportationEnabled() && !player.capabilities.isCreativeMode && isDangerous()) {
+                if (aggro >= MAX_AGGRO && !world.isRemote && Config.isMonolithTeleportationEnabled() && !player.isCreative() && isDangerous()) {
                     aggro = 0;
                     Location destination = WorldProviderLimbo.getLimboSkySpawn(player);
                     TeleportUtils.teleport(player, destination, 0, 0);
@@ -214,7 +214,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
             playSound(ModSounds.MONK, 1F, 1F);
             soundTime = 100;
         }
-        if (aggroPercent > 0.70 && soundTime < 100) {
+        if (aggroPercent > 0.70 && soundTime < 100) { // TODO: null rather than player?
             world.playSound(player, player.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + rand.nextGaussian()));
             soundTime = 100 + rand.nextInt(75);
         }
@@ -277,7 +277,5 @@ public class EntityMonolith extends EntityFlying implements IMob {
         }
 
         return true;
-        // TODO: this would throw a null pointer exception if enabled (the bounding box is null)
-        //return world.checkNoEntityCollision(getCollisionBoundingBox()) && world.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !world.containsAnyLiquid(getCollisionBoundingBox());
     }
 }

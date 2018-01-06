@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.shared;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.WorldProvider;
+import net.minecraftforge.client.IRenderHandler;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
@@ -16,9 +19,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
-public abstract class DDProxyCommon implements IDDProxy {
+public abstract class CommonProxy {
 
-    @Override
     public void onPreInitialization(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(EventHandler.class);
         MinecraftForge.EVENT_BUS.register(ModBlocks.class);
@@ -49,7 +51,6 @@ public abstract class DDProxyCommon implements IDDProxy {
         RiftDestination.destinationRegistry.put("relative", RelativeDestination.class);
     }
 
-    @Override
     public void onInitialization(FMLInitializationEvent event) {
         SchematicHandler.INSTANCE.loadSchematics();
     }
@@ -58,4 +59,12 @@ public abstract class DDProxyCommon implements IDDProxy {
         GameRegistry.registerTileEntity(TileEntityEntranceRift.class, "TileEntityEntranceRift");
         GameRegistry.registerTileEntity(TileEntityFloatingRift.class, "TileEntityFloatingRift");
     }
+
+    public abstract boolean isClient();
+
+    public abstract EntityPlayer getLocalPlayer();
+
+    public abstract void setCloudRenderer(WorldProvider provider, IRenderHandler renderer);
+
+    public abstract void setSkyRenderer(WorldProvider provider, IRenderHandler renderer);
 }

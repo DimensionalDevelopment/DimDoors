@@ -30,15 +30,15 @@ public class ChunkGeneratorBlank implements IChunkGenerator {
     public void populate(int x, int z) {}
 
     @Override
-    public boolean generateStructures(Chunk chunkIn, int x, int z) {
+    public boolean generateStructures(Chunk chunk, int x, int z) {
         return false;
     }
 
-    @Override @Nullable public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position, boolean findUnexplored) { return null; }
+    @Override @Nullable public BlockPos getNearestStructurePos(World world, String structureName, BlockPos position, boolean findUnexplored) { return null; }
 
-    @Override public void recreateStructures(Chunk chunkIn, int x, int z) {}
+    @Override public void recreateStructures(Chunk chunk, int x, int z) {}
 
-    @Override public boolean isInsideStructure(World worldIn, String structureName, BlockPos pos) { return false; }
+    @Override public boolean isInsideStructure(World world, String structureName, BlockPos pos) { return false; }
 
     @Override
     public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {

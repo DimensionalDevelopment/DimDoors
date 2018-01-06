@@ -21,8 +21,8 @@ public class BiomeBlank extends Biome {
                 .setBaseHeight(0F)
                 .setHeightVariation(0F)
                 .setRainDisabled()
-                .setRainfall(0));
-        // TODO: set water color too?
+                .setRainfall(0)
+                .setWaterColor(white ? 0xFFFFFF : 0x111111));
         this.white = white;
 
         topBlock = Blocks.AIR.getDefaultState();
@@ -39,14 +39,14 @@ public class BiomeBlank extends Biome {
 
     @Override public BiomeDecorator createBiomeDecorator() { return null; } // For efficiency
 
-    @Override public void decorate(World worldIn, Random rand, BlockPos pos) {}
+    @Override public void decorate(World world, Random rand, BlockPos pos) {}
 
-    @Override public void genTerrainBlocks(World worldIn, Random rand, ChunkPrimer chunkPrimerIn, int x, int z, double noiseVal) {}
+    @Override public void genTerrainBlocks(World world, Random rand, ChunkPrimer chunkPrimer, int x, int z, double noiseVal) {}
 
     @Override
     @SideOnly(Side.CLIENT)
     public int getSkyColorByTemp(float currentTemperature) {
-        return white ? 0xFFFFFF : 0x000000;
+        return white ? 0xFCFCFC : 0x000000; // https://bugs.mojang.com/projects/MC/issues/MC-123703
     }
 
     // TODO: check that black/white grass and foliage in getModdedBiomeGrassColor is compatible with other mods such as Quark's greener grass option

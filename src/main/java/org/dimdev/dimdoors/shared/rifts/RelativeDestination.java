@@ -13,7 +13,7 @@ import org.dimdev.ddutils.nbt.SavedToNBT;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 @SavedToNBT public class RelativeDestination extends RiftDestination { // TODO: use Vec3i
-    @SavedToNBT /*package-private*/ Vec3i offset;
+    @SavedToNBT protected Vec3i offset;
 
     public RelativeDestination() {}
 

@@ -24,7 +24,7 @@ public class ItemDimensionalDoorPersonal extends ItemDimensionalDoor {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        I18nUtils.translateAndAdd("info.quartz_dimensional_door", tooltip);
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
+        tooltip.addAll(I18nUtils.translateMultiline("info.quartz_dimensional_door"));
     }
 }

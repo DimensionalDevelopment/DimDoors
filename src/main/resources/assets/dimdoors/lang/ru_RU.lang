@@ -30,7 +30,7 @@ item.warp_dimensional_door.name=Дверь искажения
 item.rift_key=Ключ разлома
 item.rift_signature.name=Подписыватель разлома
 item.stabilized_rift_signature.name=Стабилизированный подписыватель разлома
-item.rift_connection_tool.name=Below Average Rift Connection Tool
+item.rift_configuration_tool.name=Rift Configuration Tool
 item.rift_remover.name=Уничтожитель разломов
 item.rift_blade.name=Клинок разлома
 

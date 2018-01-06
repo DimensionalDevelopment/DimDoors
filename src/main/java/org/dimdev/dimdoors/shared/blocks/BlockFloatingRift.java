@@ -37,22 +37,22 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
     }
 
     @Override
-    public TileEntityFloatingRift createNewTileEntity(World worldIn, int meta) {
+    public TileEntityFloatingRift createNewTileEntity(World world, int meta) {
         return new TileEntityFloatingRift();
     }
 
     @Override
     @SuppressWarnings("deprecation")
-    public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public MapColor getMapColor(IBlockState state, IBlockAccess world, BlockPos pos) {
         return MapColor.BLUE;
     }
 
     // Unregister the rift on break
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-        TileEntityFloatingRift rift = (TileEntityFloatingRift) worldIn.getTileEntity(pos);
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+        TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(pos);
         rift.unregister();
-        super.breakBlock(worldIn, pos, state);
+        super.breakBlock(world, pos, state);
     }
 
     @Override
@@ -77,20 +77,20 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
     // Render rift effects
     @Override
     @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand) { // TODO
-        //ArrayList<BlockPos> targets = findReachableBlocks(worldIn, pos, 2, false);
-        TileEntityFloatingRift rift = (TileEntityFloatingRift) worldIn.getTileEntity(pos);
+    public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand) { // TODO
+        //ArrayList<BlockPos> targets = findReachableBlocks(world, pos, 2, false);
+        TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(pos);
 
         if (0 > 0) {
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.GogglesRiftEffect(
-                    worldIn,
+                    world,
                     pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5,
                     rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
         }
 
         if (rift.shouldClose) { // Renders an opposite color effect if it is being closed by the rift remover
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.ClosingRiftEffect(
-                    worldIn,
+                    world,
                     pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5,
                     rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
         }

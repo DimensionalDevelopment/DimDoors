@@ -4,7 +4,7 @@ import lombok.Getter;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import org.dimdev.dimdoors.shared.DDConfig;
+import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderDungeonPocket;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPersonalPocket;
@@ -26,7 +26,7 @@ public final class ModDimensions {
 
     public static void registerDimensions() {
         // TODO: more than 1 dimension/dimension type
-        int dim = DDConfig.getBaseDim();
+        int dim = Config.getBaseDim();
         limboDim = dim++;
         privateDim = dim++;
         publicDim = dim++;

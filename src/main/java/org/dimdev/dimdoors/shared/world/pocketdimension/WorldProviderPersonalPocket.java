@@ -32,12 +32,12 @@ public class WorldProviderPersonalPocket extends WorldProviderPocket {
     @SideOnly(Side.CLIENT)
     @Override
     public Vec3d getSkyColor(Entity cameraEntity, float partialTicks) {
-        return new Vec3d(1, 1, 1);
+        return new Vec3d(0.99, 0.99, 0.99); // https://bugs.mojang.com/projects/MC/issues/MC-123703
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public Vec3d getFogColor(float celestialAngle, float partialTicks) {
-        return new Vec3d(1, 1, 1);
+        return new Vec3d(0.99, 0.99, 0.99); // https://bugs.mojang.com/projects/MC/issues/MC-123703
     }
 }

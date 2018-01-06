@@ -13,7 +13,7 @@ import scala.actors.threadpool.Arrays;
 /**
  * @author Robijnvogel
  */
-public final class DDConfig {
+public final class Config {
 
     public static File configurationFolder;
     @Getter private static int pocketGridSize = 32;

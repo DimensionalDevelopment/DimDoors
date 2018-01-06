@@ -16,9 +16,9 @@ import java.util.List;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 @SavedToNBT public class PocketEntranceDestination extends RiftDestination {
-    @SavedToNBT /*package-private*/ float weight;
-    @SavedToNBT @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default /*package-private*/ List<WeightedRiftDestination> ifDestinations = new LinkedList<>(); // TODO addIfDestination method in builder
-    @SavedToNBT @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default /*package-private*/ List<WeightedRiftDestination> otherwiseDestinations = new LinkedList<>(); // TODO addOtherwiseDestination method in builder
+    @SavedToNBT protected float weight;
+    @SavedToNBT @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default protected List<WeightedRiftDestination> ifDestinations = new LinkedList<>(); // TODO addIfDestination method in builder
+    @SavedToNBT @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default protected List<WeightedRiftDestination> otherwiseDestinations = new LinkedList<>(); // TODO addOtherwiseDestination method in builder
 
     public PocketEntranceDestination() {}
 

@@ -13,7 +13,7 @@ import org.dimdev.ddutils.nbt.SavedToNBT;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 @SavedToNBT public class LocalDestination extends RiftDestination { // TODO: use BlockPos
-    @SavedToNBT /*package-private*/ BlockPos pos;
+    @SavedToNBT protected BlockPos pos;
 
     public LocalDestination() {}
 

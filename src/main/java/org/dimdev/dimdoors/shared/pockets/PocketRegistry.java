@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.shared.pockets;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.dimdev.ddutils.nbt.SavedToNBT;
-import org.dimdev.dimdoors.shared.DDConfig;
+import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.ddutils.math.GridUtils;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.nbt.NBTUtils;
@@ -64,10 +64,10 @@ import net.minecraft.world.storage.WorldSavedData;
     }
 
     public void initNewRegistry() {
-        gridSize = DDConfig.getPocketGridSize();
-        maxPocketSize = DDConfig.getMaxPocketSize();
-        privatePocketSize = DDConfig.getPrivatePocketSize();
-        publicPocketSize = DDConfig.getPublicPocketSize();
+        gridSize = Config.getPocketGridSize();
+        maxPocketSize = Config.getMaxPocketSize();
+        privatePocketSize = Config.getPrivatePocketSize();
+        publicPocketSize = Config.getPublicPocketSize();
 
         nextID = 0;
         pockets = new HashMap<>();

@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors.shared.items;
 
+import net.minecraft.util.*;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.RayTraceHelper;
+import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import org.dimdev.ddutils.I18nUtils;
 import net.minecraft.client.util.ITooltipFlag;
@@ -9,10 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
@@ -30,24 +28,26 @@ public class ItemRiftRemover extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        I18nUtils.translateAndAdd("info.rift_remover", tooltip);
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
+        tooltip.addAll(I18nUtils.translateMultiline("info.rift_remover"));
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer playerIn, EnumHand handIn) { // TODO: permissions
-        ItemStack stack = playerIn.getHeldItem(handIn);
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand handIn) { // TODO: permissions
+        ItemStack stack = player.getHeldItem(handIn);
 
         if (world.isRemote) {
             return new ActionResult<>(EnumActionResult.FAIL, stack);
         }
 
-        RayTraceResult hit = rayTrace(world, playerIn, true);
+        RayTraceResult hit = rayTrace(world, player, true);
         if (RayTraceHelper.isFloatingRift(hit, world)) {
             TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(hit.getBlockPos());
             world.setBlockState(rift.getPos(), Blocks.AIR.getDefaultState());
+            world.playSound(null, player.getPosition(), ModSounds.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
+            // TODO: render rift removing animation
 
-            stack.damageItem(10, playerIn);
+            stack.damageItem(10, player);
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
         return new ActionResult<>(EnumActionResult.FAIL, stack);

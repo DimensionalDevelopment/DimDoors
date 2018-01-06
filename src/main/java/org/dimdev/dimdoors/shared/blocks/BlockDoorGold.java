@@ -33,7 +33,7 @@ public class BlockDoorGold extends BlockDoor {
     }
 
     @Override
-    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
+    public ItemStack getItem(World world, BlockPos pos, IBlockState state) {
         return new ItemStack(ModItems.GOLD_DOOR);
     }
 }

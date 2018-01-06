@@ -1,7 +1,7 @@
 {
     "parent": "builtin/generated",
     "textures": {
-        "layer0": "dimdoors:items/rift_connection_tool"
+        "layer0": "dimdoors:items/rift_configuration_tool"
     },
     "display": {
         "thirdperson": {

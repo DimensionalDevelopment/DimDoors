@@ -18,8 +18,8 @@ public class ItemWovenWorldThreadArmor extends ItemArmor {
             1.0f)
             .setRepairItem(new ItemStack(ModItems.WORLD_THREAD));
 
-    public ItemWovenWorldThreadArmor(String name, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
-        super(WOVEN_WORLD_THREAD, renderIndexIn, equipmentSlotIn);
+    public ItemWovenWorldThreadArmor(String name, int renderIndex, EntityEquipmentSlot equipmentSlotIn) {
+        super(WOVEN_WORLD_THREAD, renderIndex, equipmentSlotIn);
         setUnlocalizedName(name);
         setRegistryName(DimDoors.MODID, name);
         setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);

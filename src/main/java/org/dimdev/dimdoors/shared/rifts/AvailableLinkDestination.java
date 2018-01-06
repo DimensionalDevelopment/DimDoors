@@ -20,18 +20,18 @@ import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 @SavedToNBT public class AvailableLinkDestination extends RiftDestination { // TODO
-    @SavedToNBT /*package-private*/ float newDungeonRiftProbability;
-    @SavedToNBT /*package-private*/ float depthPenalization; // TODO: these make the equation assymetric
-    @SavedToNBT /*package-private*/ float distancePenalization;
-    @SavedToNBT /*package-private*/ float closenessPenalization;
+    @SavedToNBT protected float newDungeonRiftProbability;
+    @SavedToNBT protected float depthPenalization; // TODO: these make the equation assymetric
+    @SavedToNBT protected float distancePenalization;
+    @SavedToNBT protected float closenessPenalization;
 
-    @SavedToNBT /*package-private*/ boolean dungeonRiftsOnly;
-    @SavedToNBT /*package-private*/ boolean overworldRifts;
-    @SavedToNBT /*package-private*/ boolean unstable;
-    @SavedToNBT /*package-private*/ float nonFloatingRiftWeight;
-    @SavedToNBT /*package-private*/ float floatingRiftWeight;
+    @SavedToNBT protected boolean dungeonRiftsOnly;
+    @SavedToNBT protected boolean overworldRifts;
+    @SavedToNBT protected boolean unstable;
+    @SavedToNBT protected float nonFloatingRiftWeight;
+    @SavedToNBT protected float floatingRiftWeight;
 
-    @SavedToNBT /*package-private*/ boolean noLinkBack;
+    @SavedToNBT protected boolean noLinkBack;
     // private int maxLinks;
 
     @Builder.Default private UUID uuid = UUID.randomUUID();

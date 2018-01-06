@@ -30,7 +30,7 @@ item.warp_dimensional_door.name=Porta distorta
 item.rift_key=Chiave per frattura
 item.rift_signature.name=Segno di frattura
 item.stabilized_rift_signature.name=Segno di frattura stabilizzato
-item.rift_connection_tool.name=Below Average Rift Connection Tool
+item.rift_configuration_tool.name=Rift Configuration Tool
 item.rift_remover.name=Rimovitore di frattura
 item.rift_blade.name=Lama dimensionale
 

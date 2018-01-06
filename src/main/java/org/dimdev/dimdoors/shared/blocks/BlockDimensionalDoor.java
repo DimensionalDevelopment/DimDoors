@@ -6,7 +6,6 @@ import net.minecraft.block.state.BlockFaceShape;
 import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
@@ -47,19 +46,19 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!canOpen(worldIn, pos, playerIn)) return false;
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (!canOpen(world, pos, player)) return false;
 
         BlockPos blockpos = state.getValue(HALF) == BlockDoor.EnumDoorHalf.LOWER ? pos : pos.down();
-        IBlockState iblockstate = pos.equals(blockpos) ? state : worldIn.getBlockState(blockpos);
+        IBlockState iblockstate = pos.equals(blockpos) ? state : world.getBlockState(blockpos);
 
         if (iblockstate.getBlock() != this) {
             return false;
         } else {
             state = iblockstate.cycleProperty(OPEN);
-            worldIn.setBlockState(blockpos, state, 10);
-            worldIn.markBlockRangeForRenderUpdate(blockpos, pos);
-            worldIn.playEvent(playerIn, state.getValue(OPEN) ? getOpenSound() : getCloseSound(), pos, 0);
+            world.setBlockState(blockpos, state, 10);
+            world.markBlockRangeForRenderUpdate(blockpos, pos);
+            world.playEvent(player, state.getValue(OPEN) ? getOpenSound() : getCloseSound(), pos, 0);
             return true;
         }
     }
@@ -73,9 +72,9 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-        if (canOpen(worldIn, pos, null)) {
-            super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {
+        if (canOpen(world, pos, null)) {
+            super.neighborChanged(state, world, pos, block, fromPos);
         }
     }
 
@@ -101,7 +100,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
                        && world.getBlockState(pos).getBlock().isReplaceable(world, pos.up());
             }
         } else {
-            return super.canPlaceBlockAt(world, pos.down());
+            return super.canPlaceBlockAt(world, pos);
         }
     }
 
@@ -111,12 +110,12 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     }
 
     @Override
-    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) { // TODO: use BLOCK_ITEM map
+    public ItemStack getItem(World world, BlockPos pos, IBlockState state) { // TODO: use BLOCK_ITEM map
         return new ItemStack(getItem());
     }
 
     @Override
-    public TileEntityEntranceRift createNewTileEntity(World worldIn, int meta) {
+    public TileEntityEntranceRift createNewTileEntity(World world, int meta) {
         TileEntityEntranceRift rift = new TileEntityEntranceRift();
         rift.orientation = getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite();
         rift.extendUp += 1;
@@ -124,14 +123,14 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     }
 
     @Override
-    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
         if (!hasTileEntity(state)) return;
-        TileEntityEntranceRift rift = getRift(worldIn, pos, state);
-        super.breakBlock(worldIn, pos, state);
-        if (worldIn.isRemote) return;
+        TileEntityEntranceRift rift = getRift(world, pos, state);
+        super.breakBlock(world, pos, state);
+        if (world.isRemote) return;
         if (rift.isPlaceRiftOnBreak() || rift.isRegistered() && RiftRegistry.getRiftInfo(rift.getLocation()).getSources().size() > 0 && !rift.isAlwaysDelete()) {
-            worldIn.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
-            TileEntityFloatingRift newRift = (TileEntityFloatingRift) worldIn.getTileEntity(pos);
+            world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
+            TileEntityFloatingRift newRift = (TileEntityFloatingRift) world.getTileEntity(pos);
             newRift.copyFrom(rift);
             newRift.updateAvailableLinks();
         } else {

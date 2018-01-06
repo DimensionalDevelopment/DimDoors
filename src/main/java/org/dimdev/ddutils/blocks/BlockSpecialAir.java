@@ -5,6 +5,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumBlockRenderType;
@@ -59,20 +60,21 @@ public abstract class BlockSpecialAir extends Block { // TODO: make water and pi
 
     @Override
     @SuppressWarnings("deprecation")
-    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess world, BlockPos pos) {
         return null;
     }
 
-    // Disable raytrace hitting this block unless the hitIfLiquid flag is true
+    // Disable raytrace hitting this block in survival unless the hitIfLiquid flag is true
     @Override
     public boolean canCollideCheck(IBlockState state, boolean hitIfLiquid) {
-        return hitIfLiquid;
+        //EntityPlayer player = DimDoors.proxy.getLocalPlayer();
+        return /*player != null && player.isCreative() ||*/ hitIfLiquid; // TODO: re-enable this later
     }
 
     // Disable dropping/picking item
     @Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
-        return null;
+        return new ItemStack(Items.AIR);
     }
 
     @Override

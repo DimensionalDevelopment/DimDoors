@@ -1,28 +1,27 @@
 package org.dimdev.dimdoors.shared.items;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.dimdev.ddutils.I18nUtils;
 import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.DimDoors;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.shared.RotatedLocation;
+import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.rifts.GlobalDestination;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 
 import java.util.List;
-
-import static org.dimdev.ddutils.I18nUtils.translateAndAdd;
 
 public class ItemRiftSignature extends Item {
     public static final String ID = "rift_signature";
@@ -59,7 +58,7 @@ public class ItemRiftSignature extends Item {
 
         if (target != null) {
             // Place a rift at the saved point TODO: check that the player still has permission
-            if (!target.getLocation().getBlockState().equals(ModBlocks.RIFT)) {
+            if (!target.getLocation().getBlockState().getBlock().equals(ModBlocks.RIFT)) {
                 if (!target.getLocation().getBlockState().getBlock().equals(Blocks.AIR)) {
                     return EnumActionResult.FAIL; // TODO: send a message
                 }
@@ -82,12 +81,13 @@ public class ItemRiftSignature extends Item {
 
             clearSource(stack);
             DimDoors.chat(player, "Rift Created");
-            world.playSound(player, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
+            // null = send sound to the player too, we have to do this because this code is not run client-side
+            world.playSound(null, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
             // The link signature has not been used. Store its current target as the first location.
-            setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw));
+            setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw, 0));
             DimDoors.chat(player, "Location Stored in Rift Signature");
-            world.playSound(player, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
+            world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         }
 
         return EnumActionResult.SUCCESS;
@@ -116,12 +116,12 @@ public class ItemRiftSignature extends Item {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
         RotatedLocation transform = getSource(stack);
         if (transform != null) {
-            tooltip.add(I18n.translateToLocalFormatted("info.rift_signature.bound", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
+            tooltip.add(I18n.format("info.rift_signature.bound", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
         } else {
-            translateAndAdd("info.rift_signature.unbound", tooltip);
+            tooltip.addAll(I18nUtils.translateMultiline("info.rift_signature.unbound"));
         }
     }
 }

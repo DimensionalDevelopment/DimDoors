@@ -1,13 +1,12 @@
 package org.dimdev.dimdoors.client;
 
-import org.dimdev.dimdoors.shared.DDProxyCommon;
+import org.dimdev.dimdoors.shared.CommonProxy;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldProvider;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -17,7 +16,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class DDProxyClient extends DDProxyCommon {
+public class ClientProxy extends CommonProxy {
 
     @Override
     public void onPreInitialization(FMLPreInitializationEvent event) {
@@ -47,11 +46,6 @@ public class DDProxyClient extends DDProxyCommon {
     @Override
     public EntityPlayer getLocalPlayer() {
         return Minecraft.getMinecraft().player;
-    }
-
-    @Override
-    public WorldServer getWorldServer(int dim) {
-        return Minecraft.getMinecraft().getIntegratedServer().getWorld(dim);
     }
 
     @Override

@@ -43,7 +43,7 @@ public class VirtualLocation {
                 virtualLocation = new VirtualLocation(0, 0, 0, 0, 0); // TODO: door was placed in a pocket dim but outside of a pocket...
             }
         } else if (location.getWorld().provider instanceof WorldProviderLimbo) {
-            virtualLocation = new VirtualLocation(location, DDConfig.getMaxDungeonDepth());
+            virtualLocation = new VirtualLocation(location, Config.getMaxDungeonDepth());
         }
         if (virtualLocation == null) {
             virtualLocation = new VirtualLocation(location, 0);
@@ -55,8 +55,8 @@ public class VirtualLocation {
     public VirtualLocation transformDepth(int depth) { // TODO: Config option for block ratio between depths (see video of removed features)
         Random random = new Random();
         int depthDiff = Math.abs(this.depth - depth);
-        int base = DDConfig.getOwCoordinateOffsetBase();
-        double power = DDConfig.getOwCoordinateOffsetPower();
+        int base = Config.getOwCoordinateOffsetBase();
+        double power = Config.getOwCoordinateOffsetPower();
         int xOffset = random.nextInt((int) Math.pow(base * (depthDiff + 1), power)) * (random.nextBoolean() ? 1 : -1);
         int zOffset = random.nextInt((int) Math.pow(base * (depthDiff + 1), power)) * (random.nextBoolean() ? 1 : -1);
         return new VirtualLocation(getDim(), getPos().offset(EnumFacing.EAST, xOffset).offset(EnumFacing.SOUTH, zOffset), depth);

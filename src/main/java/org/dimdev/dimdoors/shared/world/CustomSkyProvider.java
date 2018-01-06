@@ -35,17 +35,17 @@ public class CustomSkyProvider extends IRenderHandler {
         starGLCallList = GLAllocation.generateDisplayLists(3);
         glSkyList = starGLCallList + 1;
         glSkyList2 = starGLCallList + 2;
-        GL11.glDisable(GL11.GL_FOG);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.disableFog();
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         RenderHelper.disableStandardItemLighting();
-        GL11.glDepthMask(false);
+        GlStateManager.depthMask(false);
 
         mc.renderEngine.bindTexture(locationEndSkyPng);
 
         if (mc.world.provider.isSurfaceWorld()) {
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GlStateManager.disableTexture2D();
             final Vec3d vec3 = world.getSkyColor(mc.getRenderViewEntity(), partialTicks);
             float f1 = (float) vec3.x;
             float f2 = (float) vec3.y;
@@ -61,17 +61,17 @@ public class CustomSkyProvider extends IRenderHandler {
                 f3 = f4;
             }
 
-            GL11.glColor3f(f1, f2, f3);
+            GlStateManager.color(f1, f2, f3);
             final Tessellator tessellator = Tessellator.getInstance();
             final BufferBuilder buffer = tessellator.getBuffer();
-            GL11.glDepthMask(false);
-            GL11.glEnable(GL11.GL_FOG);
-            GL11.glColor3f(f1, f2, f3);
-            GL11.glCallList(glSkyList);
-            GL11.glDisable(GL11.GL_FOG);
-            GL11.glDisable(GL11.GL_ALPHA_TEST);
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GlStateManager.depthMask(false);
+            GlStateManager.enableFog();
+            GlStateManager.color(f1, f2, f3);
+            GlStateManager.callList(glSkyList);
+            GlStateManager.disableFog();
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             RenderHelper.disableStandardItemLighting();
             float[] afloat = world.provider.calcSunriseSunsetColors(world.getCelestialAngle(partialTicks), partialTicks);
             float f7;
@@ -80,12 +80,12 @@ public class CustomSkyProvider extends IRenderHandler {
             float f10;
 
             if (afloat != null) {
-                GL11.glDisable(GL11.GL_TEXTURE_2D);
-                GL11.glShadeModel(GL11.GL_SMOOTH);
-                GL11.glPushMatrix();
-                GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) < 0.0F ? 180.0F : 0.0F, 0.0F, 0.0F, 1.0F);
-                GL11.glRotatef(90.0F, 0.0F, 0.0F, 1.0F);
+                GlStateManager.disableTexture2D();
+                GlStateManager.shadeModel(GL11.GL_SMOOTH);
+                GlStateManager.pushMatrix();
+                GlStateManager.rotate(90.0F, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(MathHelper.sin(world.getCelestialAngleRadians(partialTicks)) < 0.0F ? 180.0F : 0.0F, 0.0F, 0.0F, 1.0F);
+                GlStateManager.rotate(90.0F, 0.0F, 0.0F, 1.0F);
                 f4 = afloat[0];
                 f7 = afloat[1];
                 f8 = afloat[2];
@@ -112,21 +112,21 @@ public class CustomSkyProvider extends IRenderHandler {
                 }
 
                 tessellator.draw();
-                GL11.glPopMatrix();
-                GL11.glShadeModel(GL11.GL_FLAT);
+                GlStateManager.popMatrix();
+                GlStateManager.shadeModel(GL11.GL_FLAT);
             }
 
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-            GL11.glPushMatrix();
+            GlStateManager.enableTexture2D();
+            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+            GlStateManager.pushMatrix();
             f4 = 1.0F - world.getRainStrength(partialTicks);
             f7 = 0.0F;
             f8 = 0.0F;
             f9 = 0.0F;
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, f4);
-            GL11.glTranslatef(f7, f8, f9);
-            GL11.glRotatef(-90.0F, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(world.getCelestialAngle(partialTicks) * 360.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, f4);
+            GlStateManager.translate(f7, f8, f9);
+            GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(world.getCelestialAngle(partialTicks) * 360.0F, 1.0F, 0.0F, 0.0F);
             f10 = 30.0F;
             mc.renderEngine.bindTexture(getSunRenderPath());
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
@@ -149,28 +149,28 @@ public class CustomSkyProvider extends IRenderHandler {
             buffer.pos(f10, -100, -f10).tex((float) i, (float) i1).endVertex();
             buffer.pos(-f10, -100, -f10).tex(f16, (float) i1).endVertex();
             tessellator.draw();
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GlStateManager.disableTexture2D();
             float f18 = world.getStarBrightness(partialTicks) * f4;
 
             if (f18 > 0.0F) {
-                GL11.glColor4f(f18, f18, f18, f18);
-                GL11.glCallList(starGLCallList);
+                GlStateManager.color(f18, f18, f18, f18);
+                GlStateManager.callList(starGLCallList);
             }
 
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glEnable(GL11.GL_ALPHA_TEST);
-            GL11.glEnable(GL11.GL_FOG);
-            GL11.glPopMatrix();
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glColor3f(0.0F, 0.0F, 0.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlpha();
+            GlStateManager.enableFog();
+            GlStateManager.popMatrix();
+            GlStateManager.disableTexture2D();
+            GlStateManager.color(0.0F, 0.0F, 0.0F);
             double d0 = mc.player.getLook(partialTicks).y - world.getHorizon();
 
             if (d0 < 0.0D) {
-                GL11.glPushMatrix();
-                GL11.glTranslatef(0.0F, 12.0F, 0.0F);
-                GL11.glCallList(glSkyList2);
-                GL11.glPopMatrix();
+                GlStateManager.pushMatrix();
+                GlStateManager.translate(0.0F, 12.0F, 0.0F);
+                GlStateManager.callList(glSkyList2);
+                GlStateManager.popMatrix();
                 f8 = 1.0F;
                 f9 = -((float) (d0 + 65.0D));
                 f10 = -f8;
@@ -200,17 +200,17 @@ public class CustomSkyProvider extends IRenderHandler {
             }
 
             if (world.provider.isSkyColored()) {
-                GL11.glColor3f(f1 * 0.2F + 0.04F, f2 * 0.2F + 0.04F, f3 * 0.6F + 0.1F);
+                GlStateManager.color(f1 * 0.2F + 0.04F, f2 * 0.2F + 0.04F, f3 * 0.6F + 0.1F);
             } else {
-                GL11.glColor3f(f1, f2, f3);
+                GlStateManager.color(f1, f2, f3);
             }
 
-            GL11.glPushMatrix();
-            GL11.glTranslatef(0.0F, -((float) (d0 - 16.0D)), 0.0F);
-            GL11.glCallList(glSkyList2);
-            GL11.glPopMatrix();
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glDepthMask(true);
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0.0F, -((float) (d0 - 16.0D)), 0.0F);
+            GlStateManager.callList(glSkyList2);
+            GlStateManager.popMatrix();
+            GlStateManager.enableTexture2D();
+            GlStateManager.depthMask(true);
         }
     }
 }

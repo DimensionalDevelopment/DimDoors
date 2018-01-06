@@ -24,7 +24,7 @@ public class ItemDimensionalDoorUnstable extends ItemDimensionalDoor {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        I18nUtils.translateAndAdd("info.unstable_dimensional_door", tooltip);
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
+        tooltip.addAll(I18nUtils.translateMultiline("info.unstable_dimensional_door"));
     }
 }

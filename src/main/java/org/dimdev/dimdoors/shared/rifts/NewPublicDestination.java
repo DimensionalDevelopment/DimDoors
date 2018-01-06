@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.rifts;
 
+import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,13 @@ public class NewPublicDestination extends RiftDestination { // TODO: more config
 
     @Override
     public boolean teleport(TileEntityRift rift, Entity entity) {
-        Pocket pocket = PocketGenerator.generatePublicPocket(rift.virtualLocation != null ? rift.virtualLocation.randomTransformDepth() : null); // TODO: random transform
+        VirtualLocation newVirtualLocation = null;
+        if (rift.virtualLocation != null) {
+            int depth = rift.virtualLocation.getDepth();
+            if (depth == 0) depth++;
+            newVirtualLocation = new VirtualLocation(rift.virtualLocation.getLocation(), depth);
+        }
+        Pocket pocket = PocketGenerator.generatePublicPocket(newVirtualLocation);
         pocket.setup();
         pocket.linkPocketTo(new GlobalDestination(rift.getLocation()));
         rift.makeDestinationPermanent(weightedDestination, pocket.getEntrance());

@@ -25,7 +25,7 @@ public final class ModItems {
     public static final ItemStableFabric STABLE_FABRIC = new ItemStableFabric();
 
     // Tools
-    public static final ItemRiftConnectionTool RIFT_CONNECTION_TOOL = new ItemRiftConnectionTool();
+    public static final ItemRiftConfigurationTool RIFT_CONNECTION_TOOL = new ItemRiftConfigurationTool();
     public static final ItemRiftBlade RIFT_BLADE = new ItemRiftBlade();
     public static final ItemRiftRemover RIFT_REMOVER = new ItemRiftRemover();
     public static final ItemRiftSignature RIFT_SIGNATURE = new ItemRiftSignature();

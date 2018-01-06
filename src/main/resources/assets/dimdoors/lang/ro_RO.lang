@@ -31,7 +31,7 @@ item.warp_dimensional_door.name=Ușă de distorsiune
 item.rift_key=Cheie de fisură
 item.rift_signature.name=Semnătură de fisură
 item.stabilized_rift_signature.name=Semnătură de fisură stabilizată
-item.rift_connection_tool.name=Sculă pentru conectarea fisurilor sub medie
+item.rift_configuration_tool.name=Sculă pentru configurarea fisurilor
 item.rift_remover.name=Închizator de fisură
 item.rift_blade.name=Lamă de fisură
 

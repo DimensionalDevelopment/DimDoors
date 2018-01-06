@@ -35,19 +35,19 @@ public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements 
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!canOpen(worldIn, pos, playerIn)) return false;
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (!canOpen(world, pos, player)) return false;
 
         state = state.cycleProperty(OPEN);
-        worldIn.setBlockState(pos, state, 2);
-        playSound(playerIn, worldIn, pos, state.getValue(OPEN));
+        world.setBlockState(pos, state, 2);
+        playSound(player, world, pos, state.getValue(OPEN));
         return true;
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos) {
-        if (canOpen(worldIn, pos, null)) {
-            super.neighborChanged(state, worldIn, pos, blockIn, fromPos);
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {
+        if (canOpen(world, pos, null)) {
+            super.neighborChanged(state, world, pos, block, fromPos);
         }
     }
 
@@ -56,7 +56,7 @@ public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements 
     }
 
     @Override
-    public TileEntityEntranceRift createNewTileEntity(World worldIn, int meta) {
+    public TileEntityEntranceRift createNewTileEntity(World world, int meta) {
         TileEntityEntranceRift rift = new TileEntityEntranceRift();
         rift.orientation = EnumFacing.UP;
         return rift;

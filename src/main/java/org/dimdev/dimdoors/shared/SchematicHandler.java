@@ -53,12 +53,12 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
         }
 
         // Load config jsons
-        File jsonFolder = new File(DDConfig.configurationFolder, "/jsons");
+        File jsonFolder = new File(Config.configurationFolder, "/jsons");
         if (!jsonFolder.exists()) {
             jsonFolder.mkdirs();
         }
         // Init schematics config folder
-        File schematicFolder = new File(DDConfig.configurationFolder, "/schematics");
+        File schematicFolder = new File(Config.configurationFolder, "/schematics");
         if (!schematicFolder.exists()) {
             schematicFolder.mkdirs();
         }
@@ -78,7 +78,7 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
 
     private static List<PocketTemplate> loadTemplatesFromJson(String jsonString) {
         String schematicJarDirectory = "/assets/dimdoors/pockets/schematic/";
-        File schematicFolder = new File(DDConfig.configurationFolder, "/schematics");
+        File schematicFolder = new File(Config.configurationFolder, "/schematics");
 
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(jsonString);
@@ -285,16 +285,16 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
     }
 
     public PocketTemplate getPersonalPocketTemplate() {
-        return getRandomTemplate("private", -1, DDConfig.getMaxPocketSize(), true); // TODO: config option for getLargest
+        return getRandomTemplate("private", -1, Config.getMaxPocketSize(), true); // TODO: config option for getLargest
     }
 
     public PocketTemplate getPublicPocketTemplate() {
-        return getRandomTemplate("public", -1, DDConfig.getMaxPocketSize(), true); // TODO: config option for getLargest
+        return getRandomTemplate("public", -1, Config.getMaxPocketSize(), true); // TODO: config option for getLargest
     }
 
     public void saveSchematic(Schematic schematic, String name) {
         NBTTagCompound schematicNBT = Schematic.saveToNBT(schematic);
-        File saveFolder = new File(DDConfig.configurationFolder, "/Schematics/Saved");
+        File saveFolder = new File(Config.configurationFolder, "/Schematics/Saved");
         if (!saveFolder.exists()) {
             saveFolder.mkdirs();
         }

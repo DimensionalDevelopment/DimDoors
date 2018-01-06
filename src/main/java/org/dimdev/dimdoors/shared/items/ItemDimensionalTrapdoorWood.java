@@ -25,7 +25,7 @@ public class ItemDimensionalTrapdoorWood extends ItemDimensionalTrapdoor {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        I18nUtils.translateAndAdd("info.wood_dimensional_trapdoor", tooltip);
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+        tooltip.addAll(I18nUtils.translateMultiline("info.wood_dimensional_trapdoor"));
     }
 }
