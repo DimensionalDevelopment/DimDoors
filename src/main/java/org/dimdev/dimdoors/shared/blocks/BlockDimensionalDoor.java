@@ -1,14 +1,9 @@
 package org.dimdev.dimdoors.shared.blocks;
 
-import java.util.Random;
-
-import net.minecraft.block.state.BlockFaceShape;
-import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
-import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
-import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,6 +14,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
+
+import java.util.Random;
 
 public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftProvider<TileEntityEntranceRift> {
 
@@ -39,7 +39,8 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
             boolean successful = rift.teleport(entity);
             if (successful) entity.timeUntilPortal = 0; // Allow the entity to teleport if successful
             if (successful && entity instanceof EntityPlayer) {
-                if (!state.getValue(POWERED)) toggleDoor(world, pos, false); // TODO: config option playerClosesDoorBehind
+                if (!state.getValue(POWERED))
+                    toggleDoor(world, pos, false); // TODO: config option playerClosesDoorBehind
                 if (rift.isCloseAfterPassThrough()) world.destroyBlock(pos, false);
             }
         }
@@ -129,7 +130,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
         super.breakBlock(world, pos, state);
         if (world.isRemote) return;
         if (rift.isPlaceRiftOnBreak() || rift.isRegistered() && RiftRegistry.getRiftInfo(rift.getLocation()).getSources().size() > 0 && !rift.isAlwaysDelete()) {
-            world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
+            world.setBlockState(rift.getPos(), ModBlocks.RIFT.getDefaultState());
             TileEntityFloatingRift newRift = (TileEntityFloatingRift) world.getTileEntity(pos);
             newRift.copyFrom(rift);
             newRift.updateAvailableLinks();
@@ -137,6 +138,9 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
             rift.unregister();
         }
     }
+
+    // Let vanilla handle breaking the block. If we break it here, the rift we place will later be broken.
+    @Override public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {}
 
     @Override
     public TileEntityEntranceRift getRift(World world, BlockPos pos, IBlockState state) {

@@ -149,7 +149,7 @@ import net.minecraft.util.math.BlockPos;
 
     public BlockPos getOrigin() {
         int gridSize = PocketRegistry.getForDim(dim).getGridSize();
-        return new BlockPos(x * gridSize, 0, z * gridSize); // TODO: configurable yBase?
+        return new BlockPos(x * gridSize * 16, 0, z * gridSize * 16); // TODO: configurable yBase?
     }
 
     // TODO: method to erase a pocket
