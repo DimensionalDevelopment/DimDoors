@@ -1,15 +1,10 @@
 package org.dimdev.ddutils.schem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -17,7 +12,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author Robijnvogel
@@ -234,10 +237,23 @@ public class Schematic {
         for (int x = 0; x < blockData.length; x++) {
             for (int y = 0; y < blockData[x].length; y++) {
                 for (int z = 0; z < blockData[x][y].length; z++) {
-                    world.setBlockState(new BlockPos(xBase + x, yBase + y, zBase + z), palette.get(blockData[x][y][z]), 2); //the "2" is to make non-default door-halves not break upon placement
+                    // Set the block in the chunk without calling any place events (otherwise torches will break, and also over 100x faster)
+                    IBlockState state = palette.get(blockData[x][y][z]);
+                    BlockPos pos = new BlockPos(xBase + x, yBase + y, zBase + z);
+
+                    Chunk chunk = world.getChunkFromBlockCoords(pos);
+                    ExtendedBlockStorage[] storageArray = chunk.getBlockStorageArray();
+                    ExtendedBlockStorage storage = storageArray[pos.getY() >> 4];
+                    if (storage == Chunk.NULL_BLOCK_STORAGE && state.getBlock() != Blocks.AIR) {
+                        storage = new ExtendedBlockStorage(pos.getY() >> 4 << 4, world.provider.hasSkyLight());
+                        storageArray[pos.getY() >> 4] = storage;
+                    }
+                    if (storage != null) storage.set(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15, state);
+                    chunk.markDirty();
                 }
             }
         }
+        // TODO: we might need relight the chunks if they had already been generated before
 
         // Set TileEntity data
         for (NBTTagCompound tileEntityNBT : schematic.tileEntities) {
