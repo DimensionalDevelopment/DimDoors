@@ -18,7 +18,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 // Version info
 String baseversion = "3.0.0" // Set beta to 0 after changing this
-int beta = 3 // Set this to 0 for a non-beta release
+int beta = 4 // Set this to 0 for a non-beta release
 ext.mcversion = "1.12.2"
 ext.forgeversion = "14.23.1.2555"
 String mcpversion = "snapshot_20171007"

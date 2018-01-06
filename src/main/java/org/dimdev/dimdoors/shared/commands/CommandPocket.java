@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.commands;
 
+import net.minecraft.util.EnumFacing;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.*;
 import org.dimdev.dimdoors.shared.pockets.*;
@@ -98,7 +99,7 @@ public class CommandPocket extends CommandBase {
                 TileEntityRift entrance = (TileEntityRift) player.world.getTileEntity(pocket.getEntrance().getPos());
                 entrance.teleportTo(player);
             } else {
-                TeleportUtils.teleport(player, new Location(player.world, pocket.getX(), 20, pocket.getZ()), 0, 0);
+                TeleportUtils.teleport(player, new Location(player.world, pocket.getOrigin().offset(EnumFacing.UP, 20)));
             }
         } else {
             DimDoors.log.info("Not executing command /" + getName() + " because it wasn't sent by a player.");
