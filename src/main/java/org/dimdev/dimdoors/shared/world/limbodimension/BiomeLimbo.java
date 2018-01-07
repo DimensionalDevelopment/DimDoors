@@ -29,11 +29,20 @@ public class BiomeLimbo extends Biome {
         spawnableMonsterList.add(new SpawnListEntry(EntityMonolith.class, 100, 4, 4));
 
         flowers.clear();
+
+        decorator.extraTreeChance = 0;
+        decorator.flowersPerChunk = 0;
+        decorator.grassPerChunk = 0;
+        decorator.gravelPatchesPerChunk = 0;
+        decorator.sandPatchesPerChunk = 0;
+        decorator.clayPerChunk = 0;
+        decorator.generateFalls = false;
     }
 
     // TODO: move generation here
 
-    @Override public BiomeDecorator createBiomeDecorator() { return null; }
+    // Some mods like RFTools rely on the decorator being present, so we need to create one even if we don't use it.
+    //@Override public BiomeDecorator createBiomeDecorator() { return null; }
 
     @Override public void decorate(World world, Random rand, BlockPos pos) {}
 

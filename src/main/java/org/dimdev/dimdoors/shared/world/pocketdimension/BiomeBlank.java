@@ -5,7 +5,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeDecorator;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -35,9 +34,18 @@ public class BiomeBlank extends Biome {
         if (monoliths) spawnableMonsterList.add(new SpawnListEntry(EntityMonolith.class, 100, 4, 4));
 
         flowers.clear();
+
+        decorator.extraTreeChance = 0;
+        decorator.flowersPerChunk = 0;
+        decorator.grassPerChunk = 0;
+        decorator.gravelPatchesPerChunk = 0;
+        decorator.sandPatchesPerChunk = 0;
+        decorator.clayPerChunk = 0;
+        decorator.generateFalls = false;
     }
 
-    @Override public BiomeDecorator createBiomeDecorator() { return null; } // For efficiency
+    // Some mods like RFTools rely on the decorator being present, so we need to create one even if we don't use it.
+    //@Override public BiomeDecorator createBiomeDecorator() { return null; }
 
     @Override public void decorate(World world, Random rand, BlockPos pos) {}
 
