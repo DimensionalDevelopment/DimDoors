@@ -94,5 +94,17 @@ public final class CraftingManager {
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.STABILIZED_RIFT_SIGNATURE),
                 " x ", "xyx", "xxx", 'x', ModItems.STABLE_FABRIC, 'y', ModItems.RIFT_SIGNATURE));
+
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.HELMET_WOVEN_WORLD_THREAD),
+                "xxx", "x x", 'x', ModItems.WORLD_THREAD));
+
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.CHESTPLATE_WOVEN_WORLD_THREAD),
+                "x x", "xxx", "xxx", 'x', ModItems.WORLD_THREAD));
+
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.LEGGINGS_WOVEN_WORLD_THREAD),
+                "xxx", "x x", "x x", 'x', ModItems.WORLD_THREAD));
+
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.BOOTS_WOVEN_WORLD_THREAD),
+                "x x", "x x", 'x', ModItems.WORLD_THREAD));
     }
 }
