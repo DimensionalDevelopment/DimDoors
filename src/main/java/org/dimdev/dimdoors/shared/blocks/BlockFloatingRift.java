@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.shared.blocks;
 
 import java.util.*;
 
+import net.minecraft.tileentity.TileEntity;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.client.ParticleRiftEffect;
 import org.dimdev.dimdoors.shared.items.ModItems;
@@ -79,8 +80,10 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand) { // TODO
         //ArrayList<BlockPos> targets = findReachableBlocks(world, pos, 2, false);
-        TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(pos);
-
+        TileEntity tileEntity = world.getTileEntity(pos);
+        // Workaround minecraft/forge bug where this is called even before the TileEntity is created in multiplayer
+        if (!(tileEntity instanceof TileEntityFloatingRift)) return;
+        TileEntityFloatingRift rift = (TileEntityFloatingRift) tileEntity;
         if (0 > 0) {
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.GogglesRiftEffect(
                     world,

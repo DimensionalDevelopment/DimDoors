@@ -1,7 +1,8 @@
 package org.dimdev.dimdoors.shared.rifts;
 
 import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.dimdoors.DimDoors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,10 +16,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-@SavedToNBT public class PocketEntranceDestination extends RiftDestination {
-    @SavedToNBT protected float weight;
-    @SavedToNBT @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default protected List<WeightedRiftDestination> ifDestinations = new LinkedList<>(); // TODO addIfDestination method in builder
-    @SavedToNBT @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default protected List<WeightedRiftDestination> otherwiseDestinations = new LinkedList<>(); // TODO addOtherwiseDestination method in builder
+@NBTSerializable public class PocketEntranceDestination extends RiftDestination {
+    @Saved protected float weight;
+    @Saved @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default protected List<WeightedRiftDestination> ifDestinations = new LinkedList<>(); // TODO addIfDestination method in builder
+    @Saved @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default protected List<WeightedRiftDestination> otherwiseDestinations = new LinkedList<>(); // TODO addOtherwiseDestination method in builder
 
     public PocketEntranceDestination() {}
 

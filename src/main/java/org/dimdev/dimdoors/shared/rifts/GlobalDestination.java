@@ -8,11 +8,12 @@ import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.annotatednbt.NBTSerializable;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-@SavedToNBT public class GlobalDestination extends RiftDestination { // TODO: location directly in nbt like minecraft?
-    @SavedToNBT @Getter protected Location loc;
+@NBTSerializable public class GlobalDestination extends RiftDestination { // TODO: location directly in nbt like minecraft?
+    @Saved @Getter protected Location loc;
 
     public GlobalDestination() {}
 

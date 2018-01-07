@@ -1,7 +1,8 @@
 package org.dimdev.dimdoors.shared.rifts;
 
 import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.math.MathUtils;
@@ -19,19 +20,19 @@ import java.util.Map;
 import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-@SavedToNBT public class AvailableLinkDestination extends RiftDestination { // TODO
-    @SavedToNBT protected float newDungeonRiftProbability;
-    @SavedToNBT protected float depthPenalization; // TODO: these make the equation assymetric
-    @SavedToNBT protected float distancePenalization;
-    @SavedToNBT protected float closenessPenalization;
+@NBTSerializable public class AvailableLinkDestination extends RiftDestination { // TODO
+    @Saved protected float newDungeonRiftProbability;
+    @Saved protected float depthPenalization; // TODO: these make the equation assymetric
+    @Saved protected float distancePenalization;
+    @Saved protected float closenessPenalization;
 
-    @SavedToNBT protected boolean dungeonRiftsOnly;
-    @SavedToNBT protected boolean overworldRifts;
-    @SavedToNBT protected boolean unstable;
-    @SavedToNBT protected float nonFloatingRiftWeight;
-    @SavedToNBT protected float floatingRiftWeight;
+    @Saved protected boolean dungeonRiftsOnly;
+    @Saved protected boolean overworldRifts;
+    @Saved protected boolean unstable;
+    @Saved protected float nonFloatingRiftWeight;
+    @Saved protected float floatingRiftWeight;
 
-    @SavedToNBT protected boolean noLinkBack;
+    @Saved protected boolean noLinkBack;
     // private int maxLinks;
 
     @Builder.Default private UUID uuid = UUID.randomUUID();

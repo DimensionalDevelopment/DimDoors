@@ -9,11 +9,12 @@ import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
-import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.annotatednbt.NBTSerializable;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-@SavedToNBT public class LocalDestination extends RiftDestination { // TODO: use BlockPos
-    @SavedToNBT protected BlockPos pos;
+@NBTSerializable public class LocalDestination extends RiftDestination { // TODO: use BlockPos
+    @Saved protected BlockPos pos;
 
     public LocalDestination() {}
 

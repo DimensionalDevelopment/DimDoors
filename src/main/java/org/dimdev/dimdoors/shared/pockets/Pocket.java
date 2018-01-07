@@ -2,7 +2,8 @@ package org.dimdev.dimdoors.shared.pockets;
 
 import org.dimdev.ddutils.nbt.INBTStorable;
 import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.rifts.*;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
@@ -17,15 +18,15 @@ import net.minecraft.nbt.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 
-@SavedToNBT public class Pocket implements INBTStorable { // TODO: better visibilities
+@NBTSerializable public class Pocket implements INBTStorable { // TODO: better visibilities
 
-    @SavedToNBT @Getter /*package-private*/ int id;
-    @SavedToNBT @Getter /*package-private*/ int x; // Grid x TODO: rename to gridX and gridY
-    @SavedToNBT @Getter /*package-private*/ int z; // Grid y
-    @SavedToNBT @Getter @Setter /*package-private*/ int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
-    @SavedToNBT @Getter @Setter /*package-private*/ VirtualLocation virtualLocation; // The non-pocket dimension from which this dungeon was created
-    @SavedToNBT @Getter @Setter /*package-private*/ Location entrance;
-    @SavedToNBT @Getter /*package-private*/ List<Location> riftLocations;
+    @Saved @Getter /*package-private*/ int id;
+    @Saved @Getter /*package-private*/ int x; // Grid x TODO: rename to gridX and gridY
+    @Saved @Getter /*package-private*/ int z; // Grid y
+    @Saved @Getter @Setter /*package-private*/ int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
+    @Saved @Getter @Setter /*package-private*/ VirtualLocation virtualLocation; // The non-pocket dimension from which this dungeon was created
+    @Saved @Getter @Setter /*package-private*/ Location entrance;
+    @Saved @Getter /*package-private*/ List<Location> riftLocations;
 
     @Getter int dim; // Not saved
 

@@ -2,7 +2,8 @@ package org.dimdev.dimdoors.shared.pockets;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.ddutils.math.GridUtils;
 import org.dimdev.dimdoors.DimDoors;
@@ -20,18 +21,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 
-@SavedToNBT public class PocketRegistry extends WorldSavedData { // TODO: unregister pocket entrances, private pocket entrances/exits
+@NBTSerializable public class PocketRegistry extends WorldSavedData { // TODO: unregister pocket entrances, private pocket entrances/exits
 
     private static final String DATA_NAME = DimDoors.MODID + "_pockets";
     @Getter private static final int DATA_VERSION = 0; // IMPORTANT: Update this and upgradeRegistry when making changes.
 
-    @SavedToNBT @Getter /*package-private*/ int gridSize; // Determines how much pockets in their dimension are spaced
-    @SavedToNBT @Getter /*package-private*/ int maxPocketSize;
-    @SavedToNBT @Getter /*package-private*/ int privatePocketSize;
-    @SavedToNBT @Getter /*package-private*/ int publicPocketSize;
-    @SavedToNBT /*package-private*/ BiMap<String, Integer> privatePocketMap; // Player UUID -> Pocket ID, in pocket dim only
-    @SavedToNBT @Getter /*package-private*/ Map<Integer, Pocket> pockets; // TODO: remove getter?
-    @SavedToNBT @Getter /*package-private*/ int nextID;
+    @Saved @Getter /*package-private*/ int gridSize; // Determines how much pockets in their dimension are spaced
+    @Saved @Getter /*package-private*/ int maxPocketSize;
+    @Saved @Getter /*package-private*/ int privatePocketSize;
+    @Saved @Getter /*package-private*/ int publicPocketSize;
+    @Saved /*package-private*/ BiMap<String, Integer> privatePocketMap; // Player UUID -> Pocket ID, in pocket dim only
+    @Saved @Getter /*package-private*/ Map<Integer, Pocket> pockets; // TODO: remove getter?
+    @Saved @Getter /*package-private*/ int nextID;
 
     @Getter private int dim;
 

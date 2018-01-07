@@ -13,7 +13,8 @@ import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.ddutils.nbt.INBTStorable;
 import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.rifts.RiftRegistry.RiftInfo.AvailableLinkInfo;
@@ -21,33 +22,33 @@ import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 import java.util.*;
 
-@SavedToNBT public class RiftRegistry extends WorldSavedData {
+@NBTSerializable public class RiftRegistry extends WorldSavedData {
 
     private static final String DATA_NAME = DimDoors.MODID + "_rifts";
     @Getter private static final int DATA_VERSION = 0; // IMPORTANT: Update this and upgradeRegistry when making changes.
 
-    @SavedToNBT @Getter protected /*final*/ Map<Location, RiftInfo> rifts = new HashMap<>(); // TODO: convert to a static directed graph, but store links per-world
-    @SavedToNBT @Getter protected /*final*/ Map<String, Location> privatePocketEntrances = new HashMap<>(); // Player UUID -> last rift used to exit pocket TODO: split into PrivatePocketRiftRegistry subclass
-    @SavedToNBT @Getter protected /*final*/ Map<String, List<Location>> privatePocketEntranceLists = new HashMap<>(); // Player UUID -> private pocket entrances TODO: split into PrivatePocketRiftRegistry subclass
-    @SavedToNBT @Getter protected /*final*/ Map<String, Location> privatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
-    @SavedToNBT @Getter protected /*final*/ Map<String, Location> overworldRifts = new HashMap<>();
+    @Saved @Getter protected /*final*/ Map<Location, RiftInfo> rifts = new HashMap<>(); // TODO: convert to a static directed graph, but store links per-world
+    @Saved @Getter protected /*final*/ Map<String, Location> privatePocketEntrances = new HashMap<>(); // Player UUID -> last rift used to exit pocket TODO: split into PrivatePocketRiftRegistry subclass
+    @Saved @Getter protected /*final*/ Map<String, List<Location>> privatePocketEntranceLists = new HashMap<>(); // Player UUID -> private pocket entrances TODO: split into PrivatePocketRiftRegistry subclass
+    @Saved @Getter protected /*final*/ Map<String, Location> privatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
+    @Saved @Getter protected /*final*/ Map<String, Location> overworldRifts = new HashMap<>();
 
     @Getter private int dim;
     private World world;
 
     @AllArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
-    @SavedToNBT public static class RiftInfo implements INBTStorable {
+    @NBTSerializable public static class RiftInfo implements INBTStorable {
         // IntelliJ warnings are wrong, Builder needs these initializers!
-        @SavedToNBT @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter /*package-private*/ Set<AvailableLinkInfo> availableLinks = new HashSet<>(); // TODO: multiset?
-        @SavedToNBT @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter /*package-private*/ Multiset<Location> sources = ConcurrentHashMultiset.create();
-        @SavedToNBT @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter /*package-private*/ Multiset<Location> destinations = ConcurrentHashMultiset.create();
+        @Saved @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter /*package-private*/ Set<AvailableLinkInfo> availableLinks = new HashSet<>(); // TODO: multiset?
+        @Saved @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter /*package-private*/ Multiset<Location> sources = ConcurrentHashMultiset.create();
+        @Saved @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter /*package-private*/ Multiset<Location> destinations = ConcurrentHashMultiset.create();
 
-        @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
+        @NBTSerializable @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
         public static class AvailableLinkInfo implements INBTStorable {
-            @SavedToNBT @Getter @Setter /*package-private*/ float weight;
-            @SavedToNBT @Getter /*package-private*/ VirtualLocation virtualLocation;
-            @SavedToNBT @Getter @Wither /*package-private*/ Location location;
-            @SavedToNBT @Getter /*package-private*/ UUID uuid;
+            @Saved @Getter @Setter /*package-private*/ float weight;
+            @Saved @Getter /*package-private*/ VirtualLocation virtualLocation;
+            @Saved @Getter @Wither /*package-private*/ Location location;
+            @Saved @Getter /*package-private*/ UUID uuid;
 
             @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
 

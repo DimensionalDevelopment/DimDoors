@@ -2,7 +2,8 @@ package org.dimdev.dimdoors.shared.tileentities;
 
 import lombok.Setter;
 import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 
-@SavedToNBT public class TileEntityFloatingRift extends TileEntityRift implements ITickable {
+@NBTSerializable public class TileEntityFloatingRift extends TileEntityRift implements ITickable {
 
     private static final int ENDERMAN_SPAWNING_CHANCE = 1;
     private static final int MAX_ENDERMAN_SPAWNING_CHANCE = 32;
@@ -26,10 +27,10 @@ import net.minecraft.util.math.AxisAlignedBB;
     private static final Random random = new Random();
 
     //Need to be saved:
-    @SavedToNBT /*package-private*/ int updateTimer;
-    @SavedToNBT public boolean shouldClose = false; // TODO
-    @SavedToNBT public int spawnedEndermenID = 0;
-    @SavedToNBT public float growth = 0;
+    @Saved /*package-private*/ int updateTimer;
+    @Saved public boolean shouldClose = false; // TODO
+    @Saved public int spawnedEndermenID = 0;
+    @Saved public float growth = 0;
 
     @Setter private boolean unregisterDisabled = false;
 

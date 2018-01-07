@@ -16,6 +16,10 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle.forge'
 
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
 // Version info
 String baseversion = "3.0.0" // Set beta to 0 after changing this
 int beta = 4 // Set this to 0 for a non-beta release
@@ -42,10 +46,7 @@ jar.archiveName = "dimdoors.jar" // Constant name for travis
 
 sourceCompatibility = "1.8"
 compileJava {
-    options.compilerArgs += [
-            //"-proc:only", // TODO: have generated code available for debugging
-            "-processor", "org.dimdev.ddutils.nbt.SavedToNBTProcessor,lombok.launch.AnnotationProcessorHider\$AnnotationProcessor"
-    ]
+    //options.compilerArgs += "-proc:only"
 }
 
 minecraft {
@@ -63,7 +64,7 @@ configurations {
 
 dependencies {
     embed 'com.flowpowered:flow-math:1.0.3'
-    compile project(':AnnotatedNBT')
+    compile 'com.github.DimensionalDevelopment:AnnotatedNBT:master-SNAPSHOT'
 }
 
 jar {
@@ -79,9 +80,9 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
-        
+
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
@@ -94,4 +95,8 @@ task generatePocketSchematics(dependsOn: jar, type: JavaExec, group: "dimdoors")
     main = "org.dimdev.dimdoors.shared.tools.PocketSchematicGenerator"
     //noinspection GroovyAssignabilityCheck (IntelliJ is wrong)
     args "src/main/resources/assets/dimdoors/pockets/schematic"
+}
+
+runClient {
+    args '--username', 'Runemoro'
 }

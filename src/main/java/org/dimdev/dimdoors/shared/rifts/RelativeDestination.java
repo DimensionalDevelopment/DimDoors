@@ -9,11 +9,12 @@ import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3i;
-import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.annotatednbt.NBTSerializable;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-@SavedToNBT public class RelativeDestination extends RiftDestination { // TODO: use Vec3i
-    @SavedToNBT protected Vec3i offset;
+@NBTSerializable public class RelativeDestination extends RiftDestination { // TODO: use Vec3i
+    @Saved protected Vec3i offset;
 
     public RelativeDestination() {}
 

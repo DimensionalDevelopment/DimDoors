@@ -1,7 +1,8 @@
 package org.dimdev.dimdoors.shared.rifts;
 
 import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.ddutils.RGBA;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.VirtualLocation;
@@ -32,18 +33,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-@SavedToNBT public abstract class TileEntityRift extends TileEntity implements ITickable { // TODO: implement ITeleportSource and ITeleportDestination
+@NBTSerializable public abstract class TileEntityRift extends TileEntity implements ITickable { // TODO: implement ITeleportSource and ITeleportDestination
 
-    @SavedToNBT@Getter protected VirtualLocation virtualLocation;
-    @SavedToNBT @Nonnull @Getter protected List<WeightedRiftDestination> destinations; // Not using a set because we can have duplicate destinations. Maybe use Multiset from Guava?
-    @SavedToNBT @Getter protected boolean makeDestinationPermanent;
-    @SavedToNBT @Getter protected boolean preserveRotation;
-    @SavedToNBT @Getter protected float yaw;
-    @SavedToNBT @Getter protected float pitch;
-    @SavedToNBT @Getter protected boolean alwaysDelete; // Delete the rift when an entrances rift is broken even if the state was changed or destinations link there.
-    @SavedToNBT @Getter protected float chaosWeight;
-    @SavedToNBT @Getter protected boolean forcedColor;
-    @SavedToNBT @Getter protected RGBA color = null; // TODO: update AnnotatedNBT to be able to save these
+    @Saved @Getter protected VirtualLocation virtualLocation;
+    @Saved @Nonnull @Getter protected List<WeightedRiftDestination> destinations; // Not using a set because we can have duplicate destinations. Maybe use Multiset from Guava?
+    @Saved @Getter protected boolean makeDestinationPermanent;
+    @Saved @Getter protected boolean preserveRotation;
+    @Saved @Getter protected float yaw;
+    @Saved @Getter protected float pitch;
+    @Saved @Getter protected boolean alwaysDelete; // Delete the rift when an entrances rift is broken even if the state was changed or destinations link there.
+    @Saved @Getter protected float chaosWeight;
+    @Saved @Getter protected boolean forcedColor;
+    @Saved @Getter protected RGBA color = null; // TODO: update AnnotatedNBT to be able to save these
     // TODO: option to convert to door on teleportTo?
 
     protected boolean riftStateChanged; // not saved

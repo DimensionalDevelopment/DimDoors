@@ -159,7 +159,7 @@ public class BlockFabric extends Block {
 
         if (heldItem.getItem() instanceof ItemBlock && (state.getValue(TYPE).equals(EnumType.REALITY) || state.getValue(TYPE).equals(EnumType.ALTERED))) {
             Block block = Block.getBlockFromItem(heldItem.getItem());
-            if (!state.isNormalCube() || block.hasTileEntity(block.getDefaultState())
+            if (!block.getDefaultState().isNormalCube() || block.hasTileEntity(block.getDefaultState())
                     || block == this // this also keeps it from being replaced by Ancient Fabric
                     || player.isSneaking()) { // TODO: what if the player is holding shift but not sneaking?
                 return false;

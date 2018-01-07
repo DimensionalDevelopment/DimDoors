@@ -1,7 +1,8 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
 import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.ddutils.nbt.SavedToNBT;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.RGBA;
@@ -14,20 +15,20 @@ import net.minecraft.util.EnumFacing;
 import java.util.Random;
 
 // TODO: merge horizontal and vertical entrances' render code into one, and support custom sizes
-@SavedToNBT public class TileEntityEntranceRift extends TileEntityRift {
-    @SavedToNBT @Getter /*package-private*/ boolean placeRiftOnBreak = false;
-    @SavedToNBT @Getter /*package-private*/ boolean closeAfterPassThrough = false;
-    @SavedToNBT @Getter public boolean shouldRender = true;
-    @SavedToNBT @Getter public byte lockStatus = 0;
+@NBTSerializable public class TileEntityEntranceRift extends TileEntityRift {
+    @Saved @Getter /*package-private*/ boolean placeRiftOnBreak = false;
+    @Saved @Getter /*package-private*/ boolean closeAfterPassThrough = false;
+    @Saved @Getter public boolean shouldRender = true;
+    @Saved @Getter public byte lockStatus = 0;
 
     // Set by the block, not saved and not synced to the client
-    @SavedToNBT public EnumFacing orientation;
-    @SavedToNBT public int tpOffset = 1; // TODO: float?
-    @SavedToNBT public double extendUp = 0.5; // Use += to set these. TODO: @SideOnly client?
-    @SavedToNBT public double extendDown = 0.5;
-    @SavedToNBT public double extendLeft = 0.5;
-    @SavedToNBT public double extendRight = 0.5;
-    @SavedToNBT public double pushIn = 0.01; // TODO: set to 0, and set on door
+    @Saved public EnumFacing orientation;
+    @Saved public int tpOffset = 1; // TODO: float?
+    @Saved public double extendUp = 0.5; // Use += to set these. TODO: @SideOnly client?
+    @Saved public double extendDown = 0.5;
+    @Saved public double extendLeft = 0.5;
+    @Saved public double extendRight = 0.5;
+    @Saved public double pushIn = 0.01; // TODO: set to 0, and set on door
 
     @Override
     public void copyFrom(TileEntityRift oldRift) {
