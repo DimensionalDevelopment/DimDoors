@@ -1,7 +1,9 @@
-package org.dimdev.dimdoors.shared.rifts;
+package org.dimdev.dimdoors.shared.rifts.destinations;
 
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.VirtualLocation;
+import org.dimdev.dimdoors.shared.rifts.RiftDestination;
+import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
+import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import org.dimdev.ddutils.Location;
@@ -38,7 +40,8 @@ public class EscapeDestination extends RiftDestination {
         if (uuid != null) {
             Location destLoc = RiftRegistry.getOverworldRift(uuid);
             if (destLoc != null && destLoc.getTileEntity() instanceof TileEntityRift) {
-                TeleportUtils.teleport(entity, new VirtualLocation(destLoc, rift.virtualLocation.getDepth()).projectToWorld()); // TODO
+                //TeleportUtils.teleport(entity, new VirtualLocation(destLoc, rift.virtualLocation.getDepth()).projectToWorld()); // TODO
+                // TODO
                 return true;
             } else {
                 if (destLoc == null) {

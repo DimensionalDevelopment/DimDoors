@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.shared.rifts;
+package org.dimdev.dimdoors.shared.rifts.destinations;
 
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.nbt.NBTUtils;
@@ -11,6 +11,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.NBTSerializable;
+import org.dimdev.dimdoors.shared.rifts.RiftDestination;
+import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 @NBTSerializable public class LocalDestination extends RiftDestination { // TODO: use BlockPos

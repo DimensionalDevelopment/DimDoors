@@ -133,7 +133,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
             world.setBlockState(rift.getPos(), ModBlocks.RIFT.getDefaultState());
             TileEntityFloatingRift newRift = (TileEntityFloatingRift) world.getTileEntity(pos);
             newRift.copyFrom(rift);
-            newRift.updateAvailableLinks();
+            newRift.updateType();
             world.notifyBlockUpdate(rift.getPos(), state, world.getBlockState(pos), 0); // TODO: does this work?
         } else {
             rift.unregister();

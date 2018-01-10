@@ -1,16 +1,22 @@
 package org.dimdev.dimdoors.shared.rifts;
 
+import lombok.AllArgsConstructor;
 import org.dimdev.ddutils.nbt.INBTStorable;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import net.minecraft.nbt.NBTTagCompound;
 
-@NoArgsConstructor
+import java.util.UUID;
+
 public class WeightedRiftDestination implements INBTStorable { // TODO: generics
     @Getter private RiftDestination destination;
     @Getter private float weight;
     @Getter private int group;
     @Getter private RiftDestination oldDestination; // TODO: move to RiftDestination?
+    @Getter private UUID id;
+
+    public WeightedRiftDestination() {
+        id = UUID.randomUUID();
+    }
 
     public WeightedRiftDestination(RiftDestination destination, float weight, int group, RiftDestination oldDestination) {
         this();
@@ -20,6 +26,11 @@ public class WeightedRiftDestination implements INBTStorable { // TODO: generics
         this.oldDestination = oldDestination;
         if (destination != null) destination.weightedDestination = this;
         if (oldDestination != null) oldDestination.weightedDestination = this;
+    }
+
+    public WeightedRiftDestination(RiftDestination destination, float weight, int group, RiftDestination oldDestination, UUID id) {
+        this(destination, weight, group, oldDestination);
+        this.id = id;
     }
 
     public WeightedRiftDestination(RiftDestination destination, float weight, int group) {

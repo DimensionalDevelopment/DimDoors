@@ -6,6 +6,8 @@ import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.rifts.*;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.ddutils.Location;
 
@@ -121,7 +123,7 @@ import net.minecraft.util.math.BlockPos;
         }
     }
 
-    public void linkPocketTo(RiftDestination linkTo) {
+    public void linkPocketTo(RiftDestination linkTo, RiftDestination oldDest, AvailableLink availableLink) {
         List<TileEntityRift> rifts = getRifts();
 
         // Link pocket exits back
@@ -133,7 +135,8 @@ import net.minecraft.util.math.BlockPos;
                 if (dest instanceof PocketExitDestination) {
                     destIterator.remove();
                     if (rift.isRegistered()) dest.unregister(rift);
-                    destIterator.add(new WeightedRiftDestination(linkTo, wdest.getWeight(), wdest.getGroup(), dest));
+                    if (linkTo != null) rift.addAvailableLink(availableLink.toBuilder().build());
+                    if (linkTo != null) destIterator.add(new WeightedRiftDestination(linkTo, wdest.getWeight(), wdest.getGroup(), oldDest));
                     if (rift.isRegistered()) linkTo.register(rift);
                     if (rift instanceof TileEntityEntranceRift && !rift.isAlwaysDelete()) {
                         ((TileEntityEntranceRift) rift).setPlaceRiftOnBreak(true); // We modified the door's state

@@ -4,7 +4,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.rifts.EscapeDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.EscapeDestination;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;

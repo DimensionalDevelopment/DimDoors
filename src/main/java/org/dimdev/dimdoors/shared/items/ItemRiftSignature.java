@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import org.dimdev.dimdoors.shared.rifts.GlobalDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.GlobalDestination;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 

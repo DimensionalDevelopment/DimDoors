@@ -64,7 +64,7 @@ configurations {
 
 dependencies {
     embed 'com.flowpowered:flow-math:1.0.3'
-    compile 'com.github.DimensionalDevelopment:AnnotatedNBT:master-SNAPSHOT'
+    compile 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
 }
 
 jar {
@@ -95,8 +95,4 @@ task generatePocketSchematics(dependsOn: jar, type: JavaExec, group: "dimdoors")
     main = "org.dimdev.dimdoors.shared.tools.PocketSchematicGenerator"
     //noinspection GroovyAssignabilityCheck (IntelliJ is wrong)
     args "src/main/resources/assets/dimdoors/pockets/schematic"
-}
-
-runClient {
-    args '--username', 'Runemoro'
 }

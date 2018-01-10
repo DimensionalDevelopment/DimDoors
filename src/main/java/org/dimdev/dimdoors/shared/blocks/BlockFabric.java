@@ -173,6 +173,8 @@ public class BlockFabric extends Block {
         return false;
     }
 
+    // TODO
+    /*
     @Override
     public void onEntityWalk(World world, BlockPos pos, Entity entity) {
         IBlockState state = world.getBlockState(pos);
@@ -183,6 +185,7 @@ public class BlockFabric extends Block {
             TeleportUtils.teleport(entity, new Location(loc.getDim(), correctedPos), random.nextFloat() * 360, random.nextFloat() * 360);
         }
     }
+    */
 
     @Override
     public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {

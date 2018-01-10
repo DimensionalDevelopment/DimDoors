@@ -1,8 +1,11 @@
-package org.dimdev.dimdoors.shared.rifts;
+package org.dimdev.dimdoors.shared.rifts.destinations;
 
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
+import org.dimdev.dimdoors.shared.rifts.RiftDestination;
+import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
+import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPersonalPocket;

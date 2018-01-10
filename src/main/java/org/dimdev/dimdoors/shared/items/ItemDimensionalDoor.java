@@ -43,7 +43,7 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
                 // Copy from the old rift
                 TileEntityEntranceRift newRift = (TileEntityEntranceRift) world.getTileEntity(pos);
                 newRift.copyFrom(rift);
-                newRift.updateAvailableLinks();
+                newRift.updateType();
             }
         } else if (rift != null) {
             rift.setUnregisterDisabled(false);

@@ -8,6 +8,7 @@ import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import org.dimdev.dimdoors.shared.rifts.*;
+import org.dimdev.dimdoors.shared.rifts.destinations.*;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.*;
 import org.dimdev.dimdoors.shared.world.ModDimensions;

@@ -17,7 +17,6 @@ import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.VirtualLocation;
-import org.dimdev.dimdoors.shared.rifts.RiftRegistry.RiftInfo.AvailableLinkInfo;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 import java.util.*;
@@ -28,6 +27,7 @@ import java.util.*;
     @Getter private static final int DATA_VERSION = 0; // IMPORTANT: Update this and upgradeRegistry when making changes.
 
     @Saved @Getter protected /*final*/ Map<Location, RiftInfo> rifts = new HashMap<>(); // TODO: convert to a static directed graph, but store links per-world
+
     @Saved @Getter protected /*final*/ Map<String, Location> privatePocketEntrances = new HashMap<>(); // Player UUID -> last rift used to exit pocket TODO: split into PrivatePocketRiftRegistry subclass
     @Saved @Getter protected /*final*/ Map<String, List<Location>> privatePocketEntranceLists = new HashMap<>(); // Player UUID -> private pocket entrances TODO: split into PrivatePocketRiftRegistry subclass
     @Saved @Getter protected /*final*/ Map<String, Location> privatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
@@ -39,21 +39,12 @@ import java.util.*;
     @AllArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
     @NBTSerializable public static class RiftInfo implements INBTStorable {
         // IntelliJ warnings are wrong, Builder needs these initializers!
-        @Saved @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter /*package-private*/ Set<AvailableLinkInfo> availableLinks = new HashSet<>(); // TODO: multiset?
-        @Saved @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter /*package-private*/ Multiset<Location> sources = ConcurrentHashMultiset.create();
-        @Saved @SuppressWarnings({"UnusedAssignment", "RedundantSuppression"}) @Builder.Default @Getter /*package-private*/ Multiset<Location> destinations = ConcurrentHashMultiset.create();
-
-        @NBTSerializable @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true)
-        public static class AvailableLinkInfo implements INBTStorable {
-            @Saved @Getter @Setter /*package-private*/ float weight;
-            @Saved @Getter /*package-private*/ VirtualLocation virtualLocation;
-            @Saved @Getter @Wither /*package-private*/ Location location;
-            @Saved @Getter /*package-private*/ UUID uuid;
-
-            @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
-
-            @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
-        }
+        @Saved @Getter public VirtualLocation virtualLocation;
+        @Saved @Getter @Wither public Location location;
+        @Saved @Getter public boolean isEntrance;
+        @Builder.Default @Getter public Set<AvailableLink> availableLinks = new HashSet<>();
+        @Builder.Default @Getter public Multiset<Location> sources = ConcurrentHashMultiset.create();
+        @Builder.Default @Getter public Multiset<Location> destinations = ConcurrentHashMultiset.create();
 
         public RiftInfo() {
             availableLinks = new HashSet<>();
@@ -62,7 +53,6 @@ import java.util.*;
         }
 
         @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
-
         @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
     }
 
@@ -198,14 +188,14 @@ import java.util.*;
         if (from.getTileEntity() instanceof TileEntityRift) ((TileEntityRift) from.getTileEntity()).updateColor();
     }
 
-    public static void addAvailableLink(Location rift, AvailableLinkInfo link) { // TODO cache rifts with availableLinks
+    public static void addAvailableLink(Location rift, AvailableLink link) { // TODO cache rifts with availableLinks
         DimDoors.log.info("AvailableLink added at " + rift);
         RiftRegistry registry = getRegistry(rift);
         registry.rifts.get(rift).availableLinks.add(link);
         registry.markDirty();
     }
 
-    public static void removeAvailableLink(Location rift, AvailableLinkInfo link) {
+    public static void removeAvailableLink(Location rift, AvailableLink link) {
         DimDoors.log.info("AvailableLink removed at " + rift);
         RiftRegistry registry = getRegistry(rift);
         registry.rifts.get(rift).availableLinks.remove(link);
@@ -219,16 +209,17 @@ import java.util.*;
         registry.markDirty();
     }
 
-    public static void removeAvailableLinkByUUID(Location rift, UUID uuid) {
-        DimDoors.log.info("AvailableLink with uuid " + uuid + " removed at " + rift);
+    /*
+    public static void removeAvailableLinkByID(Location rift, int id) {
+        DimDoors.log.info("AvailableLink with id " + id + " removed at " + rift);
         RiftRegistry registry = getRegistry(rift);
         for (AvailableLinkInfo link : registry.rifts.get(rift).availableLinks) {
-            if (link.uuid.equals(uuid)) {
+            if (link.id.equals(id)) {
                 removeAvailableLink(rift, link);
                 return;
             }
         }
-    }
+    }*/
 
     public static RiftRegistry getRegistry(Location rift) {
         return getForDim(rift.getDim());
@@ -284,13 +275,13 @@ import java.util.*;
         getForDim(0).markDirty();
     }
 
-    public static List<AvailableLinkInfo> getAvailableLinks() { // TODO: cache this
-        List<AvailableLinkInfo> availableLinks = new ArrayList<>();
-        for (World world : DimensionManager.getWorlds()) {
-            RiftRegistry registry = getForDim(WorldUtils.getDim(world));
+    public static List<AvailableLink> getAvailableLinks() { // TODO: cache this
+        List<AvailableLink> availableLinks = new ArrayList<>();
+        for (int dim: DimensionManager.getStaticDimensionIDs()) { // TODO: don't create worlds
+            RiftRegistry registry = getForDim(dim);
             for (Map.Entry<Location, RiftInfo> rift : registry.rifts.entrySet()) {
-                for (AvailableLinkInfo availableLink : rift.getValue().availableLinks) {
-                    availableLinks.add(availableLink.withLocation(rift.getKey()));
+                for (AvailableLink availableLink : rift.getValue().availableLinks) {
+                    availableLinks.add(availableLink.withRift(rift.getKey()));
                 }
             }
         }

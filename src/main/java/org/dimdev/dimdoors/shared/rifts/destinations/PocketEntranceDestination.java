@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.shared.rifts;
+package org.dimdev.dimdoors.shared.rifts.destinations;
 
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.annotatednbt.Saved;
@@ -11,6 +11,9 @@ import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import org.dimdev.dimdoors.shared.rifts.RiftDestination;
+import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
+import org.dimdev.dimdoors.shared.rifts.WeightedRiftDestination;
 
 import java.util.LinkedList;
 import java.util.List;

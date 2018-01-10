@@ -91,7 +91,7 @@ public class CommandPocket extends CommandBase {
             // Generate the schematic
             DimDoors.chat(player, "Generating schematic " + name);
             PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(group, name);
-            Pocket pocket = PocketGenerator.generatePocketFromTemplate(WorldUtils.getDim(player.world), template, new VirtualLocation(0, 0, 0, 0,0));
+            Pocket pocket = PocketGenerator.generatePocketFromTemplate(WorldUtils.getDim(player.world), template, null);
             if (setup) pocket.setup();
 
             // Teleport the player there

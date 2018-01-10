@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemDimensionalDoorGold extends ItemDoor {
+public class ItemDimensionalDoorGold extends ItemDimensionalDoor {
 
     public ItemDimensionalDoorGold() {
         super(ModBlocks.GOLD_DIMENSIONAL_DOOR);

@@ -15,6 +15,7 @@ import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.math.MathUtils;
 import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.ddutils.WorldUtils;
+import org.dimdev.dimdoors.shared.rifts.destinations.*;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import lombok.Getter;
 import net.minecraft.block.state.IBlockState;
@@ -35,7 +36,7 @@ import java.util.*;
 
 @NBTSerializable public abstract class TileEntityRift extends TileEntity implements ITickable { // TODO: implement ITeleportSource and ITeleportDestination
 
-    @Saved @Getter protected VirtualLocation virtualLocation;
+    @Saved@Getter protected VirtualLocation virtualLocation;
     @Saved @Nonnull @Getter protected List<WeightedRiftDestination> destinations; // Not using a set because we can have duplicate destinations. Maybe use Multiset from Guava?
     @Saved @Getter protected boolean makeDestinationPermanent;
     @Saved @Getter protected boolean preserveRotation;
@@ -45,6 +46,7 @@ import java.util.*;
     @Saved @Getter protected float chaosWeight;
     @Saved @Getter protected boolean forcedColor;
     @Saved @Getter protected RGBA color = null; // TODO: update AnnotatedNBT to be able to save these
+    @Saved @Getter protected Set<AvailableLink> availableLinks;
     // TODO: option to convert to door on teleportTo?
 
     protected boolean riftStateChanged; // not saved
@@ -56,6 +58,7 @@ import java.util.*;
         pitch = 0;
         alwaysDelete = false;
         chaosWeight = 1;
+        availableLinks = new HashSet<>();
     }
 
     public void copyFrom(TileEntityRift oldRift) {
@@ -66,7 +69,7 @@ import java.util.*;
         yaw = oldRift.yaw;
         pitch = oldRift.pitch;
         chaosWeight = oldRift.chaosWeight;
-        if (oldRift.isFloating() != isFloating()) updateAvailableLinks();
+        if (oldRift.isFloating() != isFloating()) updateType();
 
         markDirty();
     }
@@ -112,7 +115,7 @@ import java.util.*;
     // Modification functions
     public void setVirtualLocation(VirtualLocation virtualLocation) {
         this.virtualLocation = virtualLocation;
-        updateAvailableLinks();
+        updateType();
         // TODO: update available link virtual locations
         markDirty();
     }
@@ -126,6 +129,11 @@ import java.util.*;
 
     public void clearRotation() {
         preserveRotation = true;
+    }
+
+    public void addWeightedDestination(WeightedRiftDestination destination) {
+        destinations.add(destination);
+        markDirty();
     }
 
     public void addDestination(RiftDestination destination, float weight, int group) {
@@ -173,6 +181,18 @@ import java.util.*;
         markDirty();
     }
 
+    public void registerAvailableLink(AvailableLink link) {
+        if (!isRegistered()) return;
+        RiftRegistry.addAvailableLink(getLocation(), link);
+    }
+
+    public void addAvailableLink(AvailableLink link) {
+        availableLinks.add(link);
+        link.rift = getLocation();
+        registerAvailableLink(link);
+        markDirty();
+    }
+
     public void markStateChanged() {
         riftStateChanged = true;
         markDirty();
@@ -200,8 +220,12 @@ import java.util.*;
         if (isRegistered()) return;
         Location loc = new Location(world, pos);
         RiftRegistry.addRift(loc);
+        RiftRegistry.getRiftInfo(loc).virtualLocation = virtualLocation;
         for (WeightedRiftDestination weightedDest : destinations) {
             weightedDest.getDestination().register(this);
+        }
+        for (AvailableLink link : availableLinks) {
+            registerAvailableLink(link);
         }
         updateColor();
     }
@@ -220,15 +244,10 @@ import java.util.*;
         // TODO: inform pocket that entrances was destroyed (we'll probably need an isPrivate field on the pocket)
     }
 
-    public void updateAvailableLinks() { // Update available link info on rift type change or on virtualLocation change
+    public void updateType() {
         if (!isRegistered()) return;
-        RiftRegistry.clearAvailableLinks(new Location(world, pos));
-        for (WeightedRiftDestination wdest : destinations) {
-            RiftDestination dest = wdest.getDestination();
-            if (dest instanceof AvailableLinkDestination) {
-                dest.register(this);
-            }
-        }
+        RiftRegistry.getRiftInfo(getLocation()).isEntrance = !isFloating();
+        RiftRegistry.getForDim(getLocation().getDim()).markDirty();
     }
 
     public void destinationGone(Location loc) {
@@ -343,5 +362,21 @@ import java.util.*;
 
     public Location getLocation() {
         return new Location(world, pos);
+    }
+
+    public WeightedRiftDestination getDestination(UUID id) {
+        for (WeightedRiftDestination wdest : destinations) {
+            if (wdest.getId().equals(id)) {
+                return wdest;
+            }
+        }
+        return null;
+    }
+
+    public AvailableLink getAvailableLink(UUID linkId) {
+        for (AvailableLink link : availableLinks) {
+            if (link.id.equals(linkId)) return link;
+        }
+        return null;
     }
 }

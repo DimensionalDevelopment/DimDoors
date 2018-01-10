@@ -6,7 +6,7 @@ import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 import java.util.Random;
 
-public class PocketGenerator {
+public final class PocketGenerator {
 
     public static Pocket generatePocketFromTemplate(int dim, PocketTemplate pocketTemplate, VirtualLocation virtualLocation) {
         DimDoors.log.info("Generating pocket from template " + pocketTemplate.getName() + " at virtual location " + virtualLocation);
@@ -34,7 +34,7 @@ public class PocketGenerator {
      * @param virtualLocation The virtual location of the pocket
      * @return The newly-generated dungeon pocket
      */
-    public Pocket generateDungeonPocket(VirtualLocation virtualLocation) {
+    public static Pocket generateDungeonPocket(VirtualLocation virtualLocation) {
         int depth = virtualLocation.getDepth();
         float netherProbability = virtualLocation.getDim() == -1 ? 1 : (float) depth / 50; // TODO: improve nether probability
         Random random = new Random();
