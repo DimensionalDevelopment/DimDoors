@@ -152,7 +152,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
                     aggro = 0;
                     Location destination = WorldProviderLimbo.getLimboSkySpawn(player);
                     TeleportUtils.teleport(player, destination, 0, 0);
-                    player.world.playSound(player, player.getPosition(), ModSounds.CRACK, SoundCategory.HOSTILE, 13, 1);
+                    player.world.playSound(null, player.getPosition(), ModSounds.CRACK, SoundCategory.HOSTILE, 13, 1);
                 }
             }
         }
@@ -215,11 +215,11 @@ public class EntityMonolith extends EntityFlying implements IMob {
             soundTime = 100;
         }
         if (aggroPercent > 0.70 && soundTime < 100) { // TODO: null rather than player?
-            world.playSound(player, player.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + rand.nextGaussian()));
+            world.playSound(null, player.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + rand.nextGaussian()));
             soundTime = 100 + rand.nextInt(75);
         }
         if (aggroPercent > 0.80 && soundTime < MAX_SOUND_COOLDOWN) {
-            world.playSound(player, player.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 7, 1F);
+            world.playSound(null, player.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 7, 1F);
             soundTime = 250;
         }
         soundTime--;
