@@ -15,11 +15,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import org.dimdev.dimdoors.DimDoors;
+import org.lwjgl.Sys;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -234,6 +233,8 @@ public class Schematic {
         // Place the schematic's blocks
         List<IBlockState> palette = schematic.pallette;
         int[][][] blockData = schematic.blockData;
+        Set<Chunk> changedChunks = new HashSet<>();
+        long start = System.currentTimeMillis();
         for (int x = 0; x < blockData.length; x++) {
             for (int y = 0; y < blockData[x].length; y++) {
                 for (int z = 0; z < blockData[x][y].length; z++) {
@@ -250,10 +251,21 @@ public class Schematic {
                     }
                     if (storage != null) storage.set(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15, state);
                     chunk.markDirty();
+                    changedChunks.add(chunk);
                 }
             }
         }
-        // TODO: we might need relight the chunks if they had already been generated before
+        DimDoors.log.info("Setting block states took " + (System.currentTimeMillis() - start) + " ms");
+
+        start = System.currentTimeMillis();
+        // Relight changed chunks
+        for (Chunk chunk : changedChunks) {
+            chunk.setLightPopulated(false);
+            chunk.resetRelightChecks();
+            chunk.checkLight();
+        }
+        world.markBlockRangeForRenderUpdate(xBase, yBase, zBase, xBase + schematic.width, yBase + schematic.height, zBase + schematic.length);
+        DimDoors.log.info("Relighting took " + (System.currentTimeMillis() - start) + " ms");
 
         // Set TileEntity data
         for (NBTTagCompound tileEntityNBT : schematic.tileEntities) {
@@ -267,7 +279,7 @@ public class Schematic {
 
                 // Correct the position
                 tileEntity.setWorld(world);
-                tileEntity.setPos(pos); //correct the position
+                tileEntity.setPos(pos);
                 tileEntity.markDirty();
             }
         }

@@ -1,15 +1,15 @@
 package org.dimdev.dimdoors.shared.tools;
 
-import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.blocks.BlockFabric;
-import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import org.dimdev.ddutils.schem.Schematic;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import org.dimdev.ddutils.schem.Schematic;
+import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.blocks.BlockFabric;
+import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +20,7 @@ import java.util.Map;
 public final class SchematicConverter {
 
     private static final Map<String, IBlockState> stateMap = new HashMap<>();
+
     static {
         stateMap.put("dimdoors:Dimensional Door", ModBlocks.DIMENSIONAL_DOOR.getDefaultState());
         stateMap.put("dimdoors:Fabric of Reality", ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY));
@@ -40,7 +41,7 @@ public final class SchematicConverter {
         schematic.width = nbt.getShort("Width");
         schematic.height = nbt.getShort("Height");
         schematic.length = nbt.getShort("Length");
-        schematic.offset = new int[]{0, 0, 0}; // TODO: center them
+        schematic.offset = new int[]{0, 0, 0};
 
         byte[] blockIntArray = nbt.getByteArray("Blocks");
         if (nbt.hasKey("Palette")) {
@@ -86,7 +87,8 @@ public final class SchematicConverter {
                             block = ModBlocks.TRANSIENT_DIMENSIONAL_DOOR;
                             break;
                     }
-                    if (id != 0  && block.getRegistryName().toString().equals("minecraft:air")) throw new RuntimeException("Change conversion code!");
+                    if (id != 0 && block.getRegistryName().toString().equals("minecraft:air"))
+                        throw new RuntimeException("Change conversion code!");
                     schematic.pallette.add(block.getDefaultState());
                     palletteMap.put(id, currentPalletteIndex);
                     blockIntArray[i] = currentPalletteIndex;
@@ -110,23 +112,60 @@ public final class SchematicConverter {
                             blockInt = schematic.pallette.indexOf(additionalState);
                         } else {
                             schematic.pallette.add(additionalState);
-                            // DimDoors.log.info("New blockstate detected. Original blockInt = " + blockInt + " and baseState is " + baseState);
+                            //DimDoors.log.info("New blockstate detected. Original blockInt = " + blockInt + " and baseState is " + baseState);
                             blockInt = schematic.pallette.size() - 1;
                         }
                     } else { // if this is ancient fabric
-                        // DimDoors.log.info("Non-default blockstate in palette detected. Original blockInt = " + blockInt + " and baseState is " + baseState.toString()); //@todo should only print a line on load of ancient fabric
                         blockInt = schematic.pallette.indexOf(baseState);
                     }
+                    assert blockInt >= 0;
                     schematic.blockData[x][y][z] = blockInt;
                 }
             }
         }
         schematic.paletteMax = schematic.pallette.size() - 1;
 
-        NBTTagList tileEntitiesTagList = (NBTTagList) nbt.getTag("TileEntities");
-        for (int i = 0; i < tileEntitiesTagList.tagCount(); i++) {
-            NBTTagCompound tileEntityTagCompound = tileEntitiesTagList.getCompoundTagAt(i);
-            schematic.tileEntities.add(tileEntityTagCompound);
+        NBTTagList tileEntitiesNBT = (NBTTagList) nbt.getTag("TileEntities");
+        for (int i = 0; i < tileEntitiesNBT.tagCount(); i++) {
+            NBTTagCompound tileEntityNBT = tileEntitiesNBT.getCompoundTagAt(i);
+            int x = tileEntityNBT.getInteger("x");
+            int y = tileEntityNBT.getInteger("y");
+            int z = tileEntityNBT.getInteger("z");
+            switch (tileEntityNBT.getString("id")) {
+                case "TileEntityDimDoor":
+                    tileEntityNBT = new NBTTagCompound();
+                    tileEntityNBT.setString("id", "EntranceRift");
+                    tileEntityNBT.setInteger("x", x);
+                    tileEntityNBT.setInteger("y", y);
+                    tileEntityNBT.setInteger("z", z);
+                    // TODO
+                    break;
+                case "TileEntityRift":
+                    tileEntityNBT = new NBTTagCompound();
+                    tileEntityNBT.setString("id", "FloatingRift");
+                    tileEntityNBT.setInteger("x", x);
+                    tileEntityNBT.setInteger("y", y);
+                    tileEntityNBT.setInteger("z", z);
+                    // TODO
+                    break;
+                case "Sign":
+                    DimDoors.log.info("Sign: "
+                                      + tileEntityNBT.getString("Text1") + "|"
+                                      + tileEntityNBT.getString("Text2") + "|"
+                                      + tileEntityNBT.getString("Text3") + "|"
+                                      + tileEntityNBT.getString("Text4"));
+                    tileEntityNBT.setString("Text1", "{\"text\":\"" + tileEntityNBT.getString("Text1") + "\"}");
+                    tileEntityNBT.setString("Text2", "{\"text\":\"" + tileEntityNBT.getString("Text2") + "\"}");
+                    tileEntityNBT.setString("Text3", "{\"text\":\"" + tileEntityNBT.getString("Text3") + "\"}");
+                    tileEntityNBT.setString("Text4", "{\"text\":\"" + tileEntityNBT.getString("Text4") + "\"}");
+                    break;
+                case "Chest":
+                    break;
+                default:
+                    DimDoors.log.info("TileEntity found: " + tileEntityNBT.getString("id"));
+                    break;
+            }
+            schematic.tileEntities.add(tileEntityNBT);
         }
 
         return schematic;

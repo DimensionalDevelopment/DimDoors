@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.blocks;
 
+import net.minecraft.block.material.EnumPushReaction;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
@@ -66,6 +67,12 @@ public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements 
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         getRift(world, pos, state).unregister();
         super.breakBlock(world, pos, state);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public EnumPushReaction getMobilityFlag(IBlockState state) {
+        return EnumPushReaction.BLOCK;
     }
 
     @Override

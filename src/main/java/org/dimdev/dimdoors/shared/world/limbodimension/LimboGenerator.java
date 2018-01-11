@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.world.limbodimension;
 
+import net.minecraft.world.WorldEntitySpawner;
 import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.world.ModBiomes;
@@ -82,7 +83,9 @@ public class LimboGenerator implements IChunkGenerator {
 
     @Override
     public void populate(int x, int z) {
-
+        // TODO: custom spawning?
+        Biome biome = world.getBiome(new BlockPos(x * 16 + 16, 0, z * 16 + 16));
+        WorldEntitySpawner.performWorldGenSpawning(world, biome, x * 16 + 8, z * 16 + 8, 16, 16, rand);
     }
 
     @Override
@@ -284,7 +287,9 @@ public class LimboGenerator implements IChunkGenerator {
 
     @Override
     public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {
-        return new ArrayList<>();
+        // TODO: custom spawning?
+        Biome biome = world.getBiome(pos);
+        return biome.getSpawnableList(creatureType);
     }
 
     @Nullable

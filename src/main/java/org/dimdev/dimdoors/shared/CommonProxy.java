@@ -57,8 +57,8 @@ public abstract class CommonProxy {
     }
 
     public void registerTileEntities() { // TODO: new registry system
-        GameRegistry.registerTileEntity(TileEntityEntranceRift.class, "TileEntityEntranceRift");
-        GameRegistry.registerTileEntity(TileEntityFloatingRift.class, "TileEntityFloatingRift");
+        GameRegistry.registerTileEntity(TileEntityEntranceRift.class, "EntranceRift");
+        GameRegistry.registerTileEntity(TileEntityFloatingRift.class, "FloatingRift");
     }
 
     public abstract boolean isClient();

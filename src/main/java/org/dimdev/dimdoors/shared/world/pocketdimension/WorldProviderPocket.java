@@ -16,7 +16,7 @@ public abstract class WorldProviderPocket extends WorldProvider {
     @Override
     public void init() {
         // TODO: save pocket registry nbt here? (see WorldProviderEnd)
-        hasSkyLight = false; // TODO: this is only a temporary fix
+        //hasSkyLight = false; // TODO: this is only a temporary fix
         generateLightBrightnessTable();
         DimDoors.proxy.setCloudRenderer(this, new CloudRenderBlank());
     }

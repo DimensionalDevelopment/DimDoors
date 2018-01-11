@@ -135,7 +135,7 @@ import net.minecraft.util.math.BlockPos;
                 if (dest instanceof PocketExitDestination) {
                     destIterator.remove();
                     if (rift.isRegistered()) dest.unregister(rift);
-                    if (linkTo != null) rift.addAvailableLink(availableLink.toBuilder().build());
+                    if (availableLink != null) rift.addAvailableLink(availableLink.toBuilder().build());
                     if (linkTo != null) destIterator.add(new WeightedRiftDestination(linkTo, wdest.getWeight(), wdest.getGroup(), oldDest));
                     if (rift.isRegistered()) linkTo.register(rift);
                     if (rift instanceof TileEntityEntranceRift && !rift.isAlwaysDelete()) {

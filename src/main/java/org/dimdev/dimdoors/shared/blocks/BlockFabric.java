@@ -3,9 +3,6 @@ package org.dimdev.dimdoors.shared.blocks;
 import java.util.Random;
 
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.VirtualLocation;
-import org.dimdev.ddutils.Location;
-import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.dimdoors.shared.world.limbodimension.LimboDecay;
 import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import lombok.Getter;
@@ -61,7 +58,6 @@ public class BlockFabric extends Block {
         setUnlocalizedName(ID);
         setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setHardness(0.1F);
-        setLightLevel(1.0F);
         setSoundType(SoundType.STONE);
         setDefaultState(getDefaultState().withProperty(TYPE, EnumType.REALITY));
 
@@ -103,6 +99,11 @@ public class BlockFabric extends Block {
     }
 
     // Block properties
+    // TODO: Maybe we should split this into several classes, since different fabrics have very little in common other than the name:
+    //  1. Reality/Altered
+    //  2. Ancient/Altered Ancient
+    //  3. Unravelled
+    //  4. Eternal (which we should make a liquid)
 
     @Override
     @SuppressWarnings("deprecation")
@@ -121,6 +122,20 @@ public class BlockFabric extends Block {
             return 6000000.0F / 5;
         } else {
             return super.getExplosionResistance(world, pos, exploder, explosion);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getLightValue(IBlockState state) {
+        switch (state.getValue(TYPE)) {
+            case REALITY:
+            case ALTERED:
+            case ANCIENT:
+            case ANCIENT_ALTERED:
+                return 1;
+            default:
+                return 0;
         }
     }
 

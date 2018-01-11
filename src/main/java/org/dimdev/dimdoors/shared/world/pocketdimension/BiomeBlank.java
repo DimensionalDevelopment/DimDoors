@@ -31,7 +31,7 @@ public class BiomeBlank extends Biome {
         spawnableCreatureList.clear();
         spawnableWaterCreatureList.clear();
         spawnableCaveCreatureList.clear();
-        if (monoliths) spawnableMonsterList.add(new SpawnListEntry(EntityMonolith.class, 100, 4, 4));
+        //if (monoliths) spawnableMonsterList.add(new SpawnListEntry(EntityMonolith.class, 100, 4, 4));
 
         flowers.clear();
 

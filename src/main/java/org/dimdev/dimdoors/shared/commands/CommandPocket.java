@@ -99,7 +99,7 @@ public class CommandPocket extends CommandBase {
                 TileEntityRift entrance = (TileEntityRift) player.world.getTileEntity(pocket.getEntrance().getPos());
                 entrance.teleportTo(player);
             } else {
-                TeleportUtils.teleport(player, new Location(player.world, pocket.getOrigin().offset(EnumFacing.UP, 20)));
+                TeleportUtils.teleport(player, new Location(player.world, pocket.getOrigin().add(30, 30, 30)));
             }
         } else {
             DimDoors.log.info("Not executing command /" + getName() + " because it wasn't sent by a player.");

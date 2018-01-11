@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.shared.blocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
@@ -134,7 +135,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
             TileEntityFloatingRift newRift = (TileEntityFloatingRift) world.getTileEntity(pos);
             newRift.copyFrom(rift);
             newRift.updateType();
-            world.notifyBlockUpdate(rift.getPos(), state, world.getBlockState(pos), 0); // TODO: does this work?
+            //world.notifyBlockUpdate(rift.getPos(), state, world.getBlockState(pos), 0); // TODO: does this work?
         } else {
             rift.unregister();
         }
@@ -142,6 +143,11 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
 
     // Let vanilla handle breaking the block. If we break it here, the rift we place will later be broken.
     @Override public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {}
+
+    @Override
+    public EnumPushReaction getMobilityFlag(IBlockState state) {
+        return EnumPushReaction.BLOCK;
+    }
 
     @Override
     public TileEntityEntranceRift getRift(World world, BlockPos pos, IBlockState state) {

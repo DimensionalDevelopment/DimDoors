@@ -26,7 +26,7 @@ public class BiomeLimbo extends Biome {
         spawnableCreatureList.clear();
         spawnableWaterCreatureList.clear();
         spawnableCaveCreatureList.clear();
-        spawnableMonsterList.add(new SpawnListEntry(EntityMonolith.class, 100, 4, 4));
+        spawnableMonsterList.add(new SpawnListEntry(EntityMonolith.class, 100, 1, 1));
 
         flowers.clear();
 
@@ -65,5 +65,10 @@ public class BiomeLimbo extends Biome {
     @SideOnly(Side.CLIENT)
     public int getFoliageColorAtPos(BlockPos pos) {
         return getModdedBiomeFoliageColor(0x000000);
+    }
+
+    @Override
+    public float getSpawningChance() {
+        return 0.5F;
     }
 }
