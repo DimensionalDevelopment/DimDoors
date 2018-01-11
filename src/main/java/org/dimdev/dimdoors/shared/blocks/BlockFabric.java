@@ -133,7 +133,7 @@ public class BlockFabric extends Block {
             case ALTERED:
             case ANCIENT:
             case ANCIENT_ALTERED:
-                return 1;
+                return 15;
             default:
                 return 0;
         }

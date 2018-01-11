@@ -69,6 +69,6 @@ public class BiomeLimbo extends Biome {
 
     @Override
     public float getSpawningChance() {
-        return 0.5F;
+        return 0.1F;
     }
 }

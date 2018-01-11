@@ -36,10 +36,10 @@ public class WorldProviderLimbo extends WorldProvider {
 
     @Override
     protected void generateLightBrightnessTable() {
+        // Brightness decreases with light level in limbo
         for (int i = 0; i <= 15; ++i) {
-            //float var3 = 1.0F - i / 15.0F;
-            //lightBrightnessTable[i] = (0.0F + var3) / (var3 * 3.0F + 1.0F) * 1.0F * 3;
-            lightBrightnessTable[i] = 1;
+            float f1 = 1.0F - i / 15.0F;
+            lightBrightnessTable[i] = f1 / (f1 * 3.0F + 1.0F) * 1.0F * 3;
         }
     }
 
@@ -108,5 +108,11 @@ public class WorldProviderLimbo extends WorldProvider {
     @Override
     public Vec3d getFogColor(float celestialAngle, float partialTicks) {
         return new Vec3d(.2, .2, .2);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean doesXZShowFog(int x, int z) {
+        return true;
     }
 }

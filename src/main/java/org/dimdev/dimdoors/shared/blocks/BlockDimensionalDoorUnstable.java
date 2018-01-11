@@ -11,7 +11,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockDimensionalDoorUnstable extends BlockDimensionalDoor {
+public class BlockDimensionalDoorUnstable extends BlockDimensionalDoor { // TODO: different entrance color
 
     public static final String ID = "unstable_dimensional_door";
 
