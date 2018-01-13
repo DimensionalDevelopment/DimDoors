@@ -19,13 +19,13 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = DimDoors.MODID, name = "Dimensional Doors",
-     version = DimDoors.VERSION,
-     dependencies = "required-after:forge@[14.23.0.2517,)") // TODO
+@Mod(modid = DimDoors.MODID, name = DimDoors.MODNAME, version = DimDoors.VERSION, dependencies = DimDoors.DEPENDENCIES)
 public class DimDoors {
 
     public static final String MODID = "dimdoors";
+    public static final String MODNAME = "Dimensional Doors";
     public static final String VERSION = "${version}";
+    public static final String DEPENDENCIES = "required-after:forge@[14.23.0.2517,)"; //TODO make the forge version here change depending on a field in build.gradle
 
     @Mod.Instance(DimDoors.MODID)
     public static DimDoors instance;
