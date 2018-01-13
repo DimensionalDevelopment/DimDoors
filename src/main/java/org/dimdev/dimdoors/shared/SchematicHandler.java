@@ -26,18 +26,20 @@ import org.dimdev.dimdoors.shared.tools.SchematicConverter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
 import org.apache.commons.io.IOUtils;
+import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 /**
  * @author Robijnvogel
  */
 public class SchematicHandler { // TODO: make this more general (not dimdoors-related)
+
     public static final SchematicHandler INSTANCE = new SchematicHandler(); // TODO: make static
 
     private List<PocketTemplate> templates;
     private Map<String, Map<String, Integer>> nameMap; // group -> name -> index in templates
 
     // LOADING CODE STARTS HERE <editor-fold>
-
     public void loadSchematics() {
         templates = new ArrayList<>();
 
@@ -83,11 +85,9 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(jsonString);
         JsonObject jsonTemplate = jsonElement.getAsJsonObject();
-        //DimDoors.log.info("Checkpoint 1 reached");
 
         //Generate and get templates (without a schematic) of all variations that are valid for the current "maxPocketSize" 
         List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate);
-        //DimDoors.log.info("Checkpoint 4 reached; " + validTemplates.size() + " templates were loaded");
 
         String subDirectory = jsonTemplate.get("group").getAsString(); //get the subfolder in which the schematics are stored
 
@@ -139,7 +139,7 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
                     }
                     schematicDataStream.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + template.getName() + " could not be read as a valid schematic NBT file.", ex);
+                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + template.getName() + " could not be read as a valid schematic NBT file.", ex); // TODO: consistently use one type of logger for this.
                 } finally {
                     try {
                         schematicDataStream.close();
@@ -164,6 +164,21 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
         List<PocketTemplate> pocketTemplates = new ArrayList<>();
 
         final String directory = jsonTemplate.get("group").getAsString();
+        int maxSize = -1;
+        if (!Config.isLoadAllSchematics()) {
+            switch (directory) {
+                case "public":
+                    maxSize = Config.getPublicPocketSize(); // TODO: hardcode?¿
+                    break;
+                case "private":
+                    maxSize = Config.getPrivatePocketSize();
+                    break;
+                default:
+                    maxSize = Config.getMaxPocketSize();
+                    break;
+            }
+        }
+
         final JsonArray variations = jsonTemplate.getAsJsonArray("variations");
 
         //convert the variations arraylist to a list of pocket templates
@@ -171,6 +186,9 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
             JsonObject variation = variationElement.getAsJsonObject();
             String variantName = variation.get("variantName").getAsString();
             int variationSize = variation.get("size").getAsInt();
+            if (maxSize >= 0 && variationSize > maxSize) {
+                continue;
+            }
             int minDepth = variation.get("minDepth").getAsInt();
             int maxDepth = variation.get("maxDepth").getAsInt();
             JsonArray weightsJsonArray = variation.get("weights").getAsJsonArray();
@@ -210,7 +228,6 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
     }
 
     // LOADING CODE ENDS HERE </editor-fold>
-
     public Set<String> getTemplateGroups() {
         return nameMap.keySet();
     }
@@ -232,9 +249,13 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
      */
     public PocketTemplate getTemplate(String group, String name) {
         Map<String, Integer> groupMap = nameMap.get(group);
-        if(groupMap == null) return null;
+        if (groupMap == null) {
+            return null;
+        }
         Integer index = groupMap.get(name);
-        if(index == null) return null;
+        if (index == null) {
+            return null;
+        }
         return templates.get(index);
     }
 
@@ -258,7 +279,8 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
      * @param group
      * @param depth
      * @param maxSize Maximum size the template can be.
-     * @param getLargest Setting this to true will always get the largest template size in that group, but still randomly out of the templates with that size (ex. for private pockets)
+     * @param getLargest Setting this to true will always get the largest template size in that group, 
+     * but still randomly out of the templates with that size (ex. for private and public pockets)
      * @return A random template matching those criteria, or null if none were found
      */
     public PocketTemplate getRandomTemplate(String group, int depth, int maxSize, boolean getLargest) {
@@ -268,7 +290,7 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
         for (PocketTemplate template : templates) {
             if (template.getGroupName().equals(group)
                     && (depth == -1 || depth >= template.getMinDepth() && (depth <= template.getMaxDepth() || template.getMaxDepth() == -1))
-                    && (maxSize == -1 || template.getSize() < maxSize)) {
+                    && (maxSize == -1 || template.getSize() <= maxSize)) {
                 if (getLargest && template.getSize() > largestSize) {
                     weightedTemplates = new HashMap<>();
                     largestSize = template.getSize();
@@ -276,7 +298,7 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
                 weightedTemplates.put(template, template.getWeight(depth));
             }
         }
-        if (weightedTemplates.size() == 0) {
+        if (weightedTemplates.isEmpty()) {
             DimDoors.log.warn("getRandomTemplate failed, no templates matching those criteria were found.");
             return null; // TODO: switch to exception system
         }
@@ -285,11 +307,11 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
     }
 
     public PocketTemplate getPersonalPocketTemplate() {
-        return getRandomTemplate("private", -1, Config.getMaxPocketSize(), true); // TODO: config option for getLargest
+        return getRandomTemplate("private", -1, Math.min(Config.getPrivatePocketSize(), PocketRegistry.getForDim(ModDimensions.getPrivateDim()).getPrivatePocketSize()), true);
     }
 
     public PocketTemplate getPublicPocketTemplate() {
-        return getRandomTemplate("public", -1, Config.getMaxPocketSize(), true); // TODO: config option for getLargest
+        return getRandomTemplate("public", -1, Math.min(Config.getPublicPocketSize(), PocketRegistry.getForDim(ModDimensions.getPublicDim()).getPublicPocketSize()), true);
     }
 
     public void saveSchematic(Schematic schematic, String name) {

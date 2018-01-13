@@ -20,7 +20,7 @@ public class DimensionFilter {
         return blacklist.contains(dimensionID);
     }
 
-    private static RangeSet<Integer> parseRangeSet(String list) {
+    private static RangeSet<Integer> parseRangeSet(String[] list) {
         int index;
         int start;
         int end;
@@ -29,22 +29,25 @@ public class DimensionFilter {
         String[] intervals;
         RangeSet<Integer> ranges = TreeRangeSet.create();
 
-        // Strip out all whitespace characters
-        list = list.replaceAll("\\s", "");
-        if (list.isEmpty()) {
-            return ranges;
-        }
-        intervals = list.split(",");
-
         // Iterate over all the interval strings
-        for (String interval : intervals) {
+        for (String interval : list) {
+            if (interval == null) {
+                continue;
+            }
+            
+            // Strip out all whitespace characters
+            interval.replaceAll("\\s", "");
+            if (interval.isEmpty()) {
+                continue;
+            }
             // Check if the interval contains a minus sign after the first character
             // That indicates that we're dealing with an interval and not a single number
             if (interval.length() > 1) {
                 index = interval.indexOf("-", 1);
             } else {
                 index = -1;
-            } try {
+            }
+            try {
                 if (index >= 0) {
                     // Parse this as a range with two values as endpoints
                     startPart = interval.substring(0, index);
@@ -57,7 +60,7 @@ public class DimensionFilter {
                     end = start;
                 }
                 // Add the interval to the set of intervals
-                ranges.add( Range.closed(start, end) );
+                ranges.add(Range.closed(start, end));
             } catch (Exception e) {
                 throw new IllegalArgumentException("\"" + interval + "\" is not a valid value or range for dimension IDs");
             }
@@ -66,11 +69,11 @@ public class DimensionFilter {
         return ranges;
     }
 
-    public static DimensionFilter parseWhitelist(String list) {
+    public static DimensionFilter parseWhitelist(String[] list) {
         return new DimensionFilter(parseRangeSet(list).complement());
     }
 
-    public static DimensionFilter parseBlacklist(String list) {
+    public static DimensionFilter parseBlacklist(String[] list) {
         return new DimensionFilter(parseRangeSet(list));
     }
 }
