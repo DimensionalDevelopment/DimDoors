@@ -75,6 +75,7 @@ public class ItemRiftBlade extends ItemSword {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.addAll(I18nUtils.translateMultiline("info.rift_blade"));
     }

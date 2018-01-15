@@ -78,12 +78,12 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
 
             stack.damageItem(1, player);
 
-            DimDoors.chat(player, "Rift Created");
+            DimDoors.sendMessage(player, "Rift Created");
             world.playSound(null, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
             // The link signature has not been used. Store its current target as the first location.
             setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw, 0));
-            DimDoors.chat(player, "Location Stored in Rift Signature");
+            DimDoors.sendMessage(player, "Location Stored in Rift Signature");
             world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         }
 

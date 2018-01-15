@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import org.dimdev.dimdoors.shared.commands.CommandPocket;
 import org.dimdev.dimdoors.shared.commands.CommandDimTeleport;
 import org.dimdev.dimdoors.shared.Config;
@@ -69,7 +70,11 @@ public class DimDoors {
         event.registerServerCommand(new CommandPocket());
     }
 
-    public static void chat(Entity entity, String text) {
-        entity.sendMessage(new TextComponentString("[DimDoors] " + text));
+    public static void sendMessage(Entity entity, String text) {
+        if(true) {
+            EntityPlayerMP player = (EntityPlayerMP) entity;
+            player.sendStatusMessage(new TextComponentString(text), true);
+        } else
+            entity.sendMessage(new TextComponentString("[DimDoors] " + text));
     }
 }
