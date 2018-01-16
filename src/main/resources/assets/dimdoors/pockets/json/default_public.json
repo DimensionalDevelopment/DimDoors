@@ -7,56 +7,56 @@
             "size": 0,
             "minDepth": 0,
             "maxDepth": 0,
-            "weights": [100]
+            "baseWeight": 1
         },
         {
             "variantName": "public_pocket_1",
             "size": 1,
             "minDepth": 0,
             "maxDepth": 0,
-            "weights": [100]
+            "baseWeight": 1
         },
         {
             "variantName": "public_pocket_2",
             "size": 2,
             "minDepth": 0,
             "maxDepth": 0,
-            "weights": [100]
+            "baseWeight": 1
         },
         {
             "variantName": "public_pocket_3",
             "size": 3,
             "minDepth": 0,
             "maxDepth": 0,
-            "weights": [100]
+            "baseWeight": 1
         },
         {
             "variantName": "public_pocket_4",
             "size": 4,
             "minDepth": 0,
             "maxDepth": 0,
-            "weights": [100]
+            "baseWeight": 1
         },
         {
             "variantName": "public_pocket_5",
             "size": 5,
             "minDepth": 0,
             "maxDepth": 0,
-            "weights": [100]
+            "baseWeight": 1
         },
         {
             "variantName": "public_pocket_6",
             "size": 6,
             "minDepth": 0,
             "maxDepth": 0,
-            "weights": [100]
+            "baseWeight": 1
         },
         {
             "variantName": "public_pocket_7",
             "size": 7,
             "minDepth": 0,
             "maxDepth": 0,
-            "weights": [100]
+            "baseWeight": 1
         }
     ]
 }

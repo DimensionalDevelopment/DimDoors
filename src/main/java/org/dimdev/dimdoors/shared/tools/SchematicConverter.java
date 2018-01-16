@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.shared.tools;
 
+import java.util.Arrays;
+import java.util.Collections;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,7 +14,14 @@ import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.UUID;
+import net.minecraft.block.BlockDoor;
+import net.minecraft.init.Blocks;
+import org.dimdev.dimdoors.shared.rifts.AvailableLink;
+import org.dimdev.dimdoors.shared.rifts.WeightedRiftDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.AvailableLinkDestination;
 
 /**
  * @author Robijnvogel
@@ -27,9 +36,11 @@ public final class SchematicConverter {
         stateMap.put("dimdoors:Fabric of RealityPerm", ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT));
         stateMap.put("dimdoors:transientDoor", ModBlocks.TRANSIENT_DIMENSIONAL_DOOR.getDefaultState());
         stateMap.put("dimdoors:Warp Door", ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState());
+        stateMap.put("minecraft:iron_door", ModBlocks.DIMENSIONAL_DOOR.getDefaultState());
+        stateMap.put("minecraft:wooden_door", ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState());
     }
 
-    public static Schematic convertSchematic(NBTTagCompound nbt, String name) { //@todo, maybe make this a separate class, so values can be final so they HAVE TO  be set in a newly designed constructor?
+    public static Schematic convertSchematic(NBTTagCompound nbt, String name) {
         Schematic schematic = new Schematic();
 
         schematic.version = 1; //already the default value
@@ -51,7 +62,7 @@ public final class SchematicConverter {
                 IBlockState blockstate;
 
                 // Get the correct block state
-                if (blockString.startsWith("dimdoors")) {
+                if (blockString.startsWith("dimdoors") || blockString.equals("minecraft:iron_door") || blockString.equals("minecraft:wooden_door")) {
                     blockstate = stateMap.get(blockString);
                 } else {
                     blockstate = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString)).getDefaultState();
@@ -87,14 +98,43 @@ public final class SchematicConverter {
                             block = ModBlocks.TRANSIENT_DIMENSIONAL_DOOR;
                             break;
                     }
-                    if (id != 0 && block.getRegistryName().toString().equals("minecraft:air"))
+                    if (id != 0 && block.getRegistryName().toString().equals("minecraft:air")) {
                         throw new RuntimeException("Change conversion code!");
+                    }
                     schematic.pallette.add(block.getDefaultState());
                     palletteMap.put(id, currentPalletteIndex);
                     blockIntArray[i] = currentPalletteIndex;
                     currentPalletteIndex++;
                 }
             }
+        }
+
+        NBTTagList tileEntitiesNBT = (NBTTagList) nbt.getTag("TileEntities");
+        for (int i = 0; i < tileEntitiesNBT.tagCount(); i++) {
+            NBTTagCompound tileEntityNBT = tileEntitiesNBT.getCompoundTagAt(i);
+            switch (tileEntityNBT.getString("id")) {
+                case "TileEntityDimDoor":
+                case "TileEntityRift":
+                    continue;
+                case "Sign":
+                    DimDoors.log.info("Sign: "
+                            + tileEntityNBT.getString("Text1") + "|"
+                            + tileEntityNBT.getString("Text2") + "|"
+                            + tileEntityNBT.getString("Text3") + "|"
+                            + tileEntityNBT.getString("Text4"));
+                    tileEntityNBT.setString("Text1", "{\"text\":\"" + tileEntityNBT.getString("Text1") + "\"}");
+                    tileEntityNBT.setString("Text2", "{\"text\":\"" + tileEntityNBT.getString("Text2") + "\"}");
+                    tileEntityNBT.setString("Text3", "{\"text\":\"" + tileEntityNBT.getString("Text3") + "\"}");
+                    tileEntityNBT.setString("Text4", "{\"text\":\"" + tileEntityNBT.getString("Text4") + "\"}");
+                    break;
+                case "Chest":
+                    // TODO: still need to be repaired?
+                    break;
+                default:
+                    DimDoors.log.info("TileEntity found: " + tileEntityNBT.getString("id"));
+                    break;
+            }
+            schematic.tileEntities.add(tileEntityNBT);
         }
 
         byte[] dataIntArray = nbt.getByteArray("Data");
@@ -115,6 +155,76 @@ public final class SchematicConverter {
                             //DimDoors.log.info("New blockstate detected. Original blockInt = " + blockInt + " and baseState is " + baseState);
                             blockInt = schematic.pallette.size() - 1;
                         }
+
+                        if (baseState.getBlock().equals(ModBlocks.DIMENSIONAL_DOOR) || baseState.getBlock().equals(ModBlocks.WARP_DIMENSIONAL_DOOR)) {
+                            //DimDoors.log.info("Door found: " + baseState.getBlock().getUnlocalizedName());
+                            if (additionalState.getProperties().get(BlockDoor.HALF).equals(BlockDoor.EnumDoorHalf.UPPER)) {
+                                NBTTagCompound tileNBT = new NBTTagCompound();
+                                tileNBT.setString("id", "EntranceRift");
+                                tileNBT.setInteger("x", x);
+                                tileNBT.setInteger("y", y);
+                                tileNBT.setInteger("z", z);
+
+                                //availableLinks
+                                NBTTagList availableLinks = new NBTTagList();
+                                AvailableLink link = AvailableLink.builder()
+                                        .groups(new HashSet<>(Arrays.asList(0, 1)))
+                                        .linksRemaining(1)
+                                        .replaceDestination(UUID.randomUUID()).build();
+                                availableLinks.appendTag(link.writeToNBT(new NBTTagCompound()));
+                                tileNBT.setTag("availableLinks", availableLinks);
+
+                                //destinations
+                                NBTTagList destinations = new NBTTagList();
+                                AvailableLinkDestination destination;
+                                if (baseState.equals(ModBlocks.DIMENSIONAL_DOOR)) {
+                                    destination = AvailableLinkDestination.builder()
+                                            .acceptedGroups(Collections.singleton(0))
+                                            .coordFactor(1)
+                                            .negativeDepthFactor(10000)
+                                            .positiveDepthFactor(80)
+                                            .weightMaximum(100)
+                                            .linkId(link.id)
+                                            .noLink(false)
+                                            .newRiftWeight(1).build();
+                                } else { //if (baseState.equals(ModBlocks.WARP_DIMENSIONAL_DOOR))
+                                    int blockIntTwoDown = schematic.blockData[x][y - 2][z];
+                                    IBlockState baseStateTwoDown = schematic.pallette.get(blockIntTwoDown);
+                                    if (baseStateTwoDown.getBlock().equals(Blocks.SANDSTONE)) {
+                                        destination = AvailableLinkDestination.builder()
+                                                .acceptedGroups(Collections.singleton(0))
+                                                .coordFactor(1)
+                                                .negativeDepthFactor(Double.MIN_VALUE)
+                                                .positiveDepthFactor(Double.POSITIVE_INFINITY)
+                                                .weightMaximum(100)
+                                                .linkId(link.id)
+                                                .noLink(false)
+                                                .newRiftWeight(1).build();
+                                        //change the sandstone to the block below it.
+                                        if (y > 2) {
+                                            schematic.blockData[x][y - 2][z] = schematic.blockData[x][y - 3][z];
+                                        } else {
+                                            DimDoors.log.error("Someone placed a door on a sandstone block at the bottom of a schematic. This causes problems and should be remedied. Schematic name: " + schematic.schematicName);
+                                        }
+                                    } else {
+                                        destination = AvailableLinkDestination.builder()
+                                                .acceptedGroups(Collections.singleton(0))
+                                                .coordFactor(1)
+                                                .negativeDepthFactor(80)
+                                                .positiveDepthFactor(10000)
+                                                .weightMaximum(100)
+                                                .linkId(link.id)
+                                                .noLink(false)
+                                                .newRiftWeight(1).build();
+                                    }
+                                }
+                                destinations.appendTag(new WeightedRiftDestination(destination, 1, 0, null, link.replaceDestination).writeToNBT(new NBTTagCompound()));
+                                tileNBT.setTag("destinations", destinations);
+
+                                schematic.tileEntities.add(tileNBT);
+                            }
+                        }
+
                     } else { // if this is ancient fabric
                         blockInt = schematic.pallette.indexOf(baseState);
                     }
@@ -124,49 +234,6 @@ public final class SchematicConverter {
             }
         }
         schematic.paletteMax = schematic.pallette.size() - 1;
-
-        NBTTagList tileEntitiesNBT = (NBTTagList) nbt.getTag("TileEntities");
-        for (int i = 0; i < tileEntitiesNBT.tagCount(); i++) {
-            NBTTagCompound tileEntityNBT = tileEntitiesNBT.getCompoundTagAt(i);
-            int x = tileEntityNBT.getInteger("x");
-            int y = tileEntityNBT.getInteger("y");
-            int z = tileEntityNBT.getInteger("z");
-            switch (tileEntityNBT.getString("id")) {
-                case "TileEntityDimDoor":
-                    tileEntityNBT = new NBTTagCompound();
-                    tileEntityNBT.setString("id", "EntranceRift");
-                    tileEntityNBT.setInteger("x", x);
-                    tileEntityNBT.setInteger("y", y);
-                    tileEntityNBT.setInteger("z", z);
-                    // TODO
-                    break;
-                case "TileEntityRift":
-                    tileEntityNBT = new NBTTagCompound();
-                    tileEntityNBT.setString("id", "FloatingRift");
-                    tileEntityNBT.setInteger("x", x);
-                    tileEntityNBT.setInteger("y", y);
-                    tileEntityNBT.setInteger("z", z);
-                    // TODO
-                    break;
-                case "Sign":
-                    DimDoors.log.info("Sign: "
-                                      + tileEntityNBT.getString("Text1") + "|"
-                                      + tileEntityNBT.getString("Text2") + "|"
-                                      + tileEntityNBT.getString("Text3") + "|"
-                                      + tileEntityNBT.getString("Text4"));
-                    tileEntityNBT.setString("Text1", "{\"text\":\"" + tileEntityNBT.getString("Text1") + "\"}");
-                    tileEntityNBT.setString("Text2", "{\"text\":\"" + tileEntityNBT.getString("Text2") + "\"}");
-                    tileEntityNBT.setString("Text3", "{\"text\":\"" + tileEntityNBT.getString("Text3") + "\"}");
-                    tileEntityNBT.setString("Text4", "{\"text\":\"" + tileEntityNBT.getString("Text4") + "\"}");
-                    break;
-                case "Chest":
-                    break;
-                default:
-                    DimDoors.log.info("TileEntity found: " + tileEntityNBT.getString("id"));
-                    break;
-            }
-            schematic.tileEntities.add(tileEntityNBT);
-        }
 
         return schematic;
     }

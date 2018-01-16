@@ -18,8 +18,8 @@ public final class Config {
     public static File configurationFolder;
     @Getter private static int pocketGridSize = 32;
     @Getter private static int maxPocketSize = 15;
-    @Getter private static int privatePocketSize = 3;
-    @Getter private static int publicPocketSize = 2;
+    @Getter private static int privatePocketSize = 2;
+    @Getter private static int publicPocketSize = 1;
     @Getter private static boolean loadAllSchematics = false;
     
     @Getter private static int baseDim = 684;

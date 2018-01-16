@@ -29,14 +29,12 @@ public class PocketTemplate {
     @Getter private final int size; // size in chunks (n*n chunks)
     @Getter private final int minDepth;
     @Getter private final int maxDepth;
-    private final float[] weights; // weight per-level
+    @Getter private final int baseWeight;
+    //private final float[] weights; // weight per-level
 
     public float getWeight(int depth) {
-        if (depth < 0) return 100; // TODO: get rid of this later
-        if (maxDepth - minDepth + 1 != weights.length) throw new IllegalStateException("This PocetTemplate wasn't set up correctly!");
-        if (depth < minDepth) return 0;
-        if (depth > maxDepth) return weights[weights.length - 1];
-        return weights[depth - minDepth];
+        return baseWeight;
+        // TODO: make this actually dependend on the depth
     }
 
     public void place(Pocket pocket, int yBase) {
