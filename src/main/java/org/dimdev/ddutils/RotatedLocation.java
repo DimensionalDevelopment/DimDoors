@@ -8,7 +8,7 @@ import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.NBTSerializable;
 
 @ToString @AllArgsConstructor @NoArgsConstructor
-@NBTSerializable public class RotatedLocation implements INBTStorable {
+@NBTSerializable public class RotatedLocation implements INBTStorable { // TODO: extend Location
     @Getter @Saved /*private*/ Location location;
     @Getter @Saved /*private*/ float yaw;
     @Getter @Saved /*private*/ float pitch;

@@ -15,7 +15,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
+import org.dimdev.ddutils.Location;
+import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
@@ -130,7 +131,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
         TileEntityEntranceRift rift = getRift(world, pos, state);
         super.breakBlock(world, pos, state);
         if (world.isRemote) return;
-        if (rift.isPlaceRiftOnBreak() || rift.isRegistered() && RiftRegistry.getRiftInfo(rift.getLocation()).getSources().size() > 0 && !rift.isAlwaysDelete()) {
+        if (rift.isPlaceRiftOnBreak() || rift.isRegistered() && RiftRegistry.instance().getSources(new Location(rift.getWorld(), rift.getPos())).size() > 0 && !rift.isAlwaysDelete()) {
             world.setBlockState(rift.getPos(), ModBlocks.RIFT.getDefaultState());
             TileEntityFloatingRift newRift = (TileEntityFloatingRift) world.getTileEntity(pos);
             newRift.copyFrom(rift);

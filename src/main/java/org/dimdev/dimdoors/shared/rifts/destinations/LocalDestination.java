@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.shared.rifts.destinations;
 
 import org.dimdev.ddutils.Location;
+import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,13 +25,13 @@ import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
 
     @Override
-    public boolean teleport(TileEntityRift rift, Entity entity) {
-        ((TileEntityRift) rift.getWorld().getTileEntity(pos)).teleportTo(entity);
+    public boolean teleport(RotatedLocation loc, Entity entity) {
+        ((TileEntityRift) loc.getLocation().getWorld().getTileEntity(pos)).teleportTo(entity, loc.getYaw(), loc.getPitch());
         return true;
     }
 
     @Override
-    public Location getReferencedRift(Location rift) {
-        return new Location(rift.getDim(), pos);
+    public Location getFixedTarget(Location location) {
+        return new Location(location.getDim(), pos);
     }
 }

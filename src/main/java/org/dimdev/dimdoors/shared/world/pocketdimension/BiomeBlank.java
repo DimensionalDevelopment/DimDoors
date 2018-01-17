@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.shared.world.pocketdimension;
 
-import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

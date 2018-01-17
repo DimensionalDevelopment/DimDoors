@@ -32,7 +32,7 @@ public class BlockDimensionalTrapdoorWood extends BlockDimensionalTrapdoor {
 
     @Override
     public void setupRift(TileEntityEntranceRift rift) {
-        rift.setSingleDestination(new EscapeDestination());
+        rift.setDestination(new EscapeDestination());
     }
 
     @Override public boolean canBePlacedOnRift() {

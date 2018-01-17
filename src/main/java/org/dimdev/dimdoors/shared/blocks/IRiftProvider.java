@@ -25,9 +25,6 @@ public interface IRiftProvider<T extends TileEntityRift> extends ITileEntityProv
         if (world.isRemote) return;
         T rift = getRift(world, pos, state);
 
-        // Set the rift's virtual position
-        rift.setVirtualLocation(VirtualLocation.fromLocation(new Location(world, pos)));
-
         // Configure the rift to its default functionality
         setupRift(rift);
 

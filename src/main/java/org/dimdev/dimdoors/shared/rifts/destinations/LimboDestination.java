@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.shared.rifts.destinations;
 
+import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
 import org.dimdev.ddutils.TeleportUtils;
 import lombok.AllArgsConstructor;
@@ -27,7 +27,7 @@ public class LimboDestination extends RiftDestination {
     }
 
     @Override
-    public boolean teleport(TileEntityRift rift, Entity entity) {
+    public boolean teleport(RotatedLocation loc, Entity entity) {
         TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity)); // TODO: do we really want to spam Limbo with items?
         return false;
     }

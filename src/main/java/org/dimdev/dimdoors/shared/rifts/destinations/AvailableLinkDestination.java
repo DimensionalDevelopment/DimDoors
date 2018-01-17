@@ -11,6 +11,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.annotatednbt.Saved;
+import org.dimdev.ddutils.Location;
+import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.ddutils.math.MathUtils;
 import org.dimdev.ddutils.nbt.NBTUtils;
@@ -18,10 +20,10 @@ import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
-import org.dimdev.dimdoors.shared.rifts.AvailableLink;
-import org.dimdev.dimdoors.shared.rifts.RiftDestination;
-import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
+import org.dimdev.dimdoors.shared.rifts.*;
+import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
+import org.dimdev.dimdoors.shared.rifts.registry.Rift;
+import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
 import java.util.HashMap;
@@ -30,7 +32,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-@NBTSerializable public class AvailableLinkDestination extends RiftDestination { // TODO: increase link count on unregister
+@NBTSerializable public class AvailableLinkDestination extends RiftDestination {
     @Saved protected float newRiftWeight;
     @Saved protected double weightMaximum;
     @Saved protected double coordFactor;
@@ -39,7 +41,7 @@ import java.util.UUID;
     @Saved protected Set<Integer> acceptedGroups; // TODO: this should be immutable
     @Saved protected boolean noLink;
     @Builder.Default @Saved protected boolean noLinkBack;
-    @Builder.Default @Saved protected UUID linkId = UUID.randomUUID();
+    // TODO: better depth calculation
 
     public AvailableLinkDestination() {}
 
@@ -47,25 +49,23 @@ import java.util.UUID;
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
 
     @Override
-    public boolean teleport(TileEntityRift rift, Entity entity) {
-        if (rift.getVirtualLocation() == null) return false;
-        AvailableLink thisLink = rift.getAvailableLink(linkId);
-        thisLink.linksRemaining--;
-        RiftRegistry.getRegistry(rift.getLocation()).markDirty();
-        Map<AvailableLink, Float> possibleDestWeightMap = new HashMap<>();
-        if (newRiftWeight > 0) possibleDestWeightMap.put(null, newRiftWeight);
+    public boolean teleport(RotatedLocation location, Entity entity) {
+        VirtualLocation virtualLocationHere = VirtualLocation.fromLocation(location.getLocation());
 
-        for (AvailableLink link : RiftRegistry.getAvailableLinks()) {
-            RiftRegistry.RiftInfo otherRift = RiftRegistry.getRiftInfo(link.rift);
-            double otherWeight = otherRift.isEntrance ? link.entranceWeight : link.floatingWeight;
-            if (otherWeight == 0 || Sets.intersection(acceptedGroups, link.groups).isEmpty()) continue;
+        Map<Location, Float> riftWeights = new HashMap<>();
+        if (newRiftWeight > 0) riftWeights.put(null, newRiftWeight);
+
+        for (Rift otherRift : RiftRegistry.instance().getRifts()) {
+            VirtualLocation otherVirtualLocation = VirtualLocation.fromLocation(otherRift.location);
+            double otherWeight = otherRift.isFloating ? otherRift.properties.floatingWeight : otherRift.properties.entranceWeight;
+            if (otherWeight == 0 || Sets.intersection(acceptedGroups, otherRift.properties.groups).isEmpty()) continue;
 
             // Calculate the distance as sqrt((coordFactor * coordDistance)^2 + (depthFactor * depthDifference)^2)
-            if (otherRift.virtualLocation == null || link.linksRemaining == 0) continue;
-            double depthDifference = otherRift.virtualLocation.getDepth() - rift.getVirtualLocation().getDepth();
-            double coordDistance = Math.sqrt(sq(rift.getVirtualLocation().getX() - otherRift.virtualLocation.getX())
-                                             + sq(rift.getVirtualLocation().getZ() - otherRift.virtualLocation.getZ()));
-            double depthFactor = depthDifference > 0 ? positiveDepthFactor : negativeDepthFactor; // TODO: (|depthDiff| - depthFavor * depthDiff)?
+            if (otherVirtualLocation == null || otherRift.properties.linksRemaining == 0) continue;
+            double depthDifference = otherVirtualLocation.getDepth() - virtualLocationHere.getDepth();
+            double coordDistance = Math.sqrt(sq(otherVirtualLocation.getX() - virtualLocationHere.getX())
+                                             + sq(otherVirtualLocation.getZ() - virtualLocationHere.getZ()));
+            double depthFactor = depthDifference > 0 ? positiveDepthFactor : negativeDepthFactor;
             double distance = sq(coordFactor * coordDistance) + sq(depthFactor * depthDifference);
 
             // Calculate the weight as 4m/pi w/(m^2/d + d)^2. This is similar to how gravitational/electromagnetic attraction
@@ -77,18 +77,18 @@ import java.util.UUID;
             // of 1 is equivalent to having a total link weight of 1 distributed equally across all layers.
             // TODO: We might want an a larger than 1 to make the function closer to 1/d^2
             double weight = 4 * weightMaximum / Math.PI * otherWeight / sq(sq(weightMaximum) / distance + distance);
-            possibleDestWeightMap.put(link, (float) weight);
+            riftWeights.put(otherRift.location, (float) weight);
         }
 
-        AvailableLink selectedLink;
-        if (possibleDestWeightMap.size() == 0) {
+        Location selectedLink;
+        if (riftWeights.size() == 0) {
             if (newRiftWeight == -1) {
                 selectedLink = null;
             } else {
                 return false;
             }
         } else {
-            selectedLink = MathUtils.weightedRandom(possibleDestWeightMap);
+            selectedLink = MathUtils.weightedRandom(riftWeights);
         }
 
         // Check if we have to generate a new rift
@@ -121,10 +121,10 @@ import java.util.UUID;
             depth /= depth > 0 ? positiveDepthFactor : negativeDepthFactor;
             double x = Math.cos(theta) * Math.cos(phi) * distance / coordFactor;
             double z = Math.cos(theta) * Math.sin(phi) * distance / coordFactor;
-            VirtualLocation virtualLocation = new VirtualLocation(rift.getVirtualLocation().getDim(),
-                    rift.getVirtualLocation().getX() + (int) Math.round(x),
-                    rift.getVirtualLocation().getZ() + (int) Math.round(z),
-                    rift.getVirtualLocation().getDepth() + (int) Math.round(depth));
+            VirtualLocation virtualLocation = new VirtualLocation(virtualLocationHere.getDim(),
+                    virtualLocationHere.getX() + (int) Math.round(x),
+                    virtualLocationHere.getZ() + (int) Math.round(z),
+                    virtualLocationHere.getDepth() + (int) Math.round(depth));
 
             if (virtualLocation.getDepth() <= 0) {
                 // This will lead to the overworld
@@ -132,42 +132,50 @@ import java.util.UUID;
                 BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
                 world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
 
+                TileEntityRift thisRift = (TileEntityRift) location.getLocation().getTileEntity();
                 TileEntityFloatingRift riftEntity = (TileEntityFloatingRift) world.getTileEntity(pos);
                 // TODO: Should the rift not be configured like the other link
-                rift.markDirty();
-                AvailableLink newLink = thisLink.toBuilder().linksRemaining(0).id(UUID.randomUUID()).build();
-                riftEntity.addAvailableLink(newLink);
-                if (!noLinkBack) riftEntity.addDestination(new GlobalDestination(rift.getLocation()), 1, 0, toBuilder().linkId(newLink.id).build());
-                if (!noLink) rift.makeDestinationPermanent(weightedDestination, riftEntity.getLocation());
-                riftEntity.teleportTo(entity);
+                riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).id(UUID.randomUUID()).build());
+
+                if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(selectedLink, location.getLocation());
+                if (!noLink) linkRifts(location.getLocation(), selectedLink);
+                riftEntity.teleportTo(entity, thisRift.getYaw(), thisRift.getPitch());
             } else {
                 // Make a new dungeon pocket
                 //Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation);
                 Pocket pocket = PocketGenerator.generatePublicPocket(virtualLocation);
                 pocket.setup();
-                rift.markDirty();
-                AvailableLink newLink = thisLink.toBuilder().linksRemaining(0).build();
-                pocket.linkPocketTo(new GlobalDestination(/*noLinkBack ? null :*/ rift.getLocation()), toBuilder().linkId(newLink.id).build(), newLink); // TODO: linkId
-                if (!noLink) rift.makeDestinationPermanent(weightedDestination, pocket.getEntrance());
-                ((TileEntityRift) pocket.getEntrance().getTileEntity()).teleportTo(entity);
+
+                // Link the pocket back
+                TileEntityRift thisRift = (TileEntityRift) location.getLocation().getTileEntity();
+                TileEntityRift riftEntity = (TileEntityRift) pocket.getEntrance().getTileEntity();
+                LinkProperties newLink = thisRift.getProperties().toBuilder().linksRemaining(0).id(UUID.randomUUID()).build();
+                pocket.linkPocketTo(new GlobalDestination(!noLinkBack && !riftEntity.getProperties().oneWay ? location.getLocation() : null), newLink); // TODO: linkId
+
+                // Link the rift if necessary and teleport the entity
+                if (!noLink) linkRifts(location.getLocation(), selectedLink);
+                ((TileEntityRift) pocket.getEntrance().getTileEntity()).teleportTo(entity, location.getYaw(), location.getPitch());
             }
         } else {
             // An existing rift was selected
-            TileEntityRift riftEntity = (TileEntityRift) selectedLink.rift.getTileEntity();
+            TileEntityRift riftEntity = (TileEntityRift) selectedLink.getTileEntity();
 
-            selectedLink.linksRemaining--;
-            RiftRegistry.getRegistry(riftEntity.getLocation()).markDirty();
-
-            // Link the selected rift back if necessary
-            if (selectedLink.replaceDestination != null) {
-                riftEntity.makeDestinationPermanent(riftEntity.getDestination(selectedLink.replaceDestination), rift.getLocation());
-            }
-
-            // Link this rift if necessary and teleport the entity
-            if (!noLink) rift.makeDestinationPermanent(weightedDestination, selectedLink.rift);
-            riftEntity.teleportTo(entity);
+            // Link the rifts if necessary and teleport the entity
+            if (!noLink) linkRifts(location.getLocation(), selectedLink);
+            if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(selectedLink, location.getLocation());
+            riftEntity.teleportTo(entity, location.getYaw(), location.getPitch());
         }
         return true;
+    }
+
+    private static void linkRifts(Location from, Location to) {
+        TileEntityRift tileEntityFrom = (TileEntityRift) from.getTileEntity();
+        TileEntityRift tileEntityTo = (TileEntityRift) to.getTileEntity();
+        tileEntityFrom.setDestination(new GlobalDestination(to)); // TODO: local if possible
+        tileEntityTo.getProperties().linksRemaining--;
+        tileEntityTo.updateProperties();
+        tileEntityFrom.markDirty();
+        tileEntityTo.markDirty();
     }
 
     private double sq(double a) { return a * a; }

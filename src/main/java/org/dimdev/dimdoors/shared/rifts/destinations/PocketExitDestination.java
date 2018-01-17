@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.rifts.destinations;
 
+import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.DimDoors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +10,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-public class PocketExitDestination extends RiftDestination {
+public class PocketExitDestination extends RiftDestination { // TODO: not exactly a destination
     //public PocketExitDestination() {}
 
     @Override
@@ -27,7 +27,7 @@ public class PocketExitDestination extends RiftDestination {
     }
 
     @Override
-    public boolean teleport(TileEntityRift rift, Entity entity) {
+    public boolean teleport(RotatedLocation loc, Entity entity) {
         if (entity instanceof EntityPlayer) DimDoors.chat(entity, "The exit of this dungeon has not been linked. Either this is a bug or you are in dungeon-building mode.");
         return false;
     }

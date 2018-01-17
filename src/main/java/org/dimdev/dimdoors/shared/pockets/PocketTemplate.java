@@ -17,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 
 /**
- *
  * @author Robijnvogel
  */
 @AllArgsConstructor @RequiredArgsConstructor// TODO: use @Builder?
@@ -33,22 +32,23 @@ public class PocketTemplate {
 
     public float getWeight(int depth) {
         if (depth < 0) return 100; // TODO: get rid of this later
-        if (maxDepth - minDepth + 1 != weights.length) throw new IllegalStateException("This PocetTemplate wasn't set up correctly!");
+        if (maxDepth - minDepth + 1 != weights.length) throw new IllegalStateException("This PocketTemplate wasn't set up correctly!");
         if (depth < minDepth) return 0;
         if (depth > maxDepth) return weights[weights.length - 1];
         return weights[depth - minDepth];
     }
 
-    public void place(Pocket pocket, int yBase) {
+    public void place(Pocket pocket) {
         pocket.setSize(size);
-        int gridSize = PocketRegistry.getForDim(pocket.dim).getGridSize();
+        int gridSize = PocketRegistry.instance(pocket.dim).getGridSize();
         int dim = pocket.dim;
         int xBase = pocket.getX() * gridSize * 16;
+        int yBase = 0;
         int zBase = pocket.getZ() * gridSize * 16;
         DimDoors.log.info("Placing new pocket using schematic " + schematic.schematicName + " at x = " + xBase + ", z = " + zBase);
 
         WorldServer world = WorldUtils.getWorld(dim);
-        Schematic.place(schematic, world, xBase, yBase, zBase);
+        Schematic.place(schematic, world, xBase, 0, zBase);
 
         // Set pocket riftLocations
         pocket.riftLocations = new ArrayList<>();

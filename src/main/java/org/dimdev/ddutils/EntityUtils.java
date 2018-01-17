@@ -7,9 +7,11 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.*;
 
+import java.util.UUID;
+
 public final class EntityUtils {
 
-    public static String getEntityOwnerUUID(Entity entity) { // TODO: make this recursive
+    public static UUID getEntityOwnerUUID(Entity entity) { // TODO: make this recursive
         if (entity instanceof EntityThrowable) entity = ((EntityThrowable) entity).getThrower();
         if (entity instanceof EntityArrow) entity = ((EntityArrow) entity).shootingEntity;
         if (entity instanceof EntityFireball) entity = ((EntityFireball) entity).shootingEntity;
@@ -25,8 +27,8 @@ public final class EntityUtils {
             if (player != null) entity = player;
         }
 
-        if (entity instanceof IEntityOwnable && ((IEntityOwnable) entity).getOwnerId() != null) return ((IEntityOwnable) entity).getOwnerId().toString();
-        if (entity instanceof EntityPlayer) return entity.getUniqueID().toString(); // ownable players shouldn't be a problem, but just in case we have a slave mod, check their owner's uuid first to send them to their owner's pocket :)
+        if (entity instanceof IEntityOwnable && ((IEntityOwnable) entity).getOwnerId() != null) return ((IEntityOwnable) entity).getOwnerId();
+        if (entity instanceof EntityPlayer) return entity.getUniqueID(); // ownable players shouldn't be a problem, but just in case we have a slave mod, check their owner's uuid first to send them to their owner's pocket :)
         return null;
     }
 }

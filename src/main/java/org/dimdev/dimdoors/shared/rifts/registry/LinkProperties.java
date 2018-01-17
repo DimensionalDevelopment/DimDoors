@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.shared.rifts;
+package org.dimdev.dimdoors.shared.rifts.registry;
 
 import lombok.*;
 import lombok.experimental.Wither;
@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @NBTSerializable @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true) @ToString
-public class AvailableLink implements INBTStorable {
+public class LinkProperties implements INBTStorable {
     @Wither public Location rift;
 
     @Saved @Builder.Default public UUID id = UUID.randomUUID();
@@ -23,6 +23,7 @@ public class AvailableLink implements INBTStorable {
     @Saved @Builder.Default public Set<Integer> groups = new HashSet<>();
     @Saved public UUID replaceDestination;
     @Saved @Builder.Default public int linksRemaining = 1;
+    @Saved @Builder.Default public boolean oneWay = false;
 
     @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }

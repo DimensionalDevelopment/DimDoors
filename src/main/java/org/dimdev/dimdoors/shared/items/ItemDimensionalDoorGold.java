@@ -7,7 +7,6 @@ import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoorGold;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.ddutils.I18nUtils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemDoor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;

@@ -4,7 +4,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.items.ModItems;
-import org.dimdev.dimdoors.shared.rifts.destinations.NewPublicDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.PublicPocketDestination;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
@@ -36,8 +36,8 @@ public class BlockDimensionalDoorIron extends BlockDimensionalDoor {
 
     @Override
     public void setupRift(TileEntityEntranceRift rift) {
-        NewPublicDestination destination = NewPublicDestination.builder().build();
-        rift.setSingleDestination(destination);
+        PublicPocketDestination destination = PublicPocketDestination.builder().build();
+        rift.setDestination(destination);
     }
 
     @Override

@@ -3,23 +3,23 @@ package org.dimdev.dimdoors.shared.rifts;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.dimdev.ddutils.Location;
+import org.dimdev.ddutils.RGBA;
+import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.ddutils.nbt.INBTStorable;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import lombok.*;  // Don't change import order! (Gradle bug): https://stackoverflow.com/questions/26557133/
+import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 
-@Getter @EqualsAndHashCode @ToString
+@EqualsAndHashCode @ToString
 public abstract class RiftDestination implements INBTStorable {
 
-    /*private*/ public static final BiMap<String, Class<? extends RiftDestination>> destinationRegistry = HashBiMap.create(); // TODO: move to RiftDestinationRegistry
-    //private String type;
-    protected WeightedRiftDestination weightedDestination;
+    public static final BiMap<String, Class<? extends RiftDestination>> destinationRegistry = HashBiMap.create(); // TODO: move to RiftDestinationRegistry
 
-    public RiftDestination() {
-      //type = destinationRegistry.inverse().get(getClass());
-    }
+    public RiftDestination() {}
 
     public static RiftDestination readDestinationNBT(NBTTagCompound nbt) {
         String type = nbt.getString("type");
@@ -28,7 +28,6 @@ public abstract class RiftDestination implements INBTStorable {
         try {
             RiftDestination destination = destinationClass.getConstructor().newInstance();
             destination.readFromNBT(nbt);
-            //destination.type = type;
             return destination;
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException("The class registered for type " + type + " must have a public no-args constructor.", e);
@@ -38,7 +37,7 @@ public abstract class RiftDestination implements INBTStorable {
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound nbt) { }
+    public void readFromNBT(NBTTagCompound nbt) {}
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
@@ -48,19 +47,30 @@ public abstract class RiftDestination implements INBTStorable {
         return nbt;
     }
 
-    public Location getReferencedRift(Location rift) { // TODO: change to getReferencedRifts
+    public abstract boolean teleport(RotatedLocation rift, Entity entity);
+
+    public Location getFixedTarget(Location location) {
         return null;
     }
 
-    public void register(TileEntityRift rift) {
-        Location loc = getReferencedRift(rift.getLocation());
-        if (loc != null) RiftRegistry.addLink(rift.getLocation(), loc);
+    public void register(Location location) {
+        RiftRegistry.instance().addLink(location, getFixedTarget(location));
     }
 
-    public void unregister(TileEntityRift rift) {
-        Location loc = getReferencedRift(rift.getLocation());
-        if (loc != null) RiftRegistry.removeLink(rift.getLocation(), loc);
+    public void unregister(Location location) {
+        RiftRegistry.instance().removeLink(location, getFixedTarget(location));
     }
 
-    public abstract boolean teleport(TileEntityRift rift, Entity entity);
+    public boolean keepAfterTargetGone(Location location) {
+        return true;
+    }
+
+    public RGBA getColor(Location location) {
+        Location target = getFixedTarget(location);
+        if (target != null && RiftRegistry.instance().isRiftAt(target)) {
+            Set<Location> otherRiftTargets = RiftRegistry.instance().getTargets(target);
+            if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(location)) return new RGBA(0, 1, 0, 1);
+        }
+        return new RGBA(1, 0, 0, 1);
+    }
 }

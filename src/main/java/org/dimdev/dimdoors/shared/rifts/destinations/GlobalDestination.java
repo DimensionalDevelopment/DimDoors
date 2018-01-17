@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.NBTSerializable;
@@ -15,7 +16,7 @@ import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 @NBTSerializable public class GlobalDestination extends RiftDestination { // TODO: location directly in nbt like minecraft?
-    @Saved @Getter protected Location loc;
+    @Saved protected Location loc;
 
     public GlobalDestination() {}
 
@@ -23,13 +24,13 @@ import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
 
     @Override
-    public boolean teleport(TileEntityRift rift, Entity entity) {
-        ((TileEntityRift) loc.getTileEntity()).teleportTo(entity);
+    public boolean teleport(RotatedLocation loc, Entity entity) {
+        ((TileEntityRift) this.loc.getTileEntity()).teleportTo(entity, loc.getYaw(), loc.getPitch());
         return true;
     }
 
     @Override
-    public Location getReferencedRift(Location rift) {
+    public Location getFixedTarget(Location location) {
         return loc;
     }
 }

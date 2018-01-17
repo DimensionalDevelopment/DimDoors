@@ -19,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.DimensionManager;
 
-public class CommandDimTeleport extends CommandBase { // TODO: localization
+public class CommandDimTeleport extends CommandBase { // TODO: localization, CommandException
 
     private final List<String> aliases;
 
@@ -47,7 +47,7 @@ public class CommandDimTeleport extends CommandBase { // TODO: localization
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        // Check correct number of arguments
+        // Check that the number of arguments is correct
         if (args.length < 4 || args.length > 6) {
             sender.sendMessage(new TextComponentString("[DimDoors] Usage: /" + getUsage(sender)));
             return;

@@ -1,8 +1,9 @@
 package org.dimdev.dimdoors.shared.rifts.destinations;
 
+import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
-import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
+import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
@@ -14,6 +15,8 @@ import lombok.Getter;
 import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 public class EscapeDestination extends RiftDestination {
@@ -31,14 +34,14 @@ public class EscapeDestination extends RiftDestination {
     }
 
     @Override
-    public boolean teleport(TileEntityRift rift, Entity entity) {
+    public boolean teleport(RotatedLocation loc, Entity entity) {
         if (!ModDimensions.isDimDoorsPocketDimension(entity.world)) {
             DimDoors.chat(entity, "Can't escape from a non-pocket dimension!");
             return false;
         }
-        String uuid = entity.getCachedUniqueIdString();
+        UUID uuid = entity.getUniqueID();
         if (uuid != null) {
-            Location destLoc = RiftRegistry.getOverworldRift(uuid);
+            Location destLoc = RiftRegistry.instance().getOverworldRift(uuid);
             if (destLoc != null && destLoc.getTileEntity() instanceof TileEntityRift) {
                 //TeleportUtils.teleport(entity, new VirtualLocation(destLoc, rift.virtualLocation.getDepth()).projectToWorld()); // TODO
                 // TODO

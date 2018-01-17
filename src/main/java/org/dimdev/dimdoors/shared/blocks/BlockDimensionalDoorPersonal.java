@@ -37,11 +37,10 @@ public class BlockDimensionalDoorPersonal extends BlockDimensionalDoor {
     @Override
     public void setupRift(TileEntityEntranceRift rift) {
         if (rift.getWorld().provider instanceof WorldProviderPersonalPocket) {
-            rift.setSingleDestination(new PrivatePocketExitDestination()); // exit
+            rift.setDestination(new PrivatePocketExitDestination()); // exit
         } else {
-            rift.setSingleDestination(new PrivateDestination()); // entrances
+            rift.setDestination(new PrivateDestination()); // entrances
         }
-        rift.setChaosWeight(0); // TODO: generated schematic exits too
     }
 
     @Override

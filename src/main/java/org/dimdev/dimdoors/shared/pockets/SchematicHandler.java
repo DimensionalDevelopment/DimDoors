@@ -1,6 +1,6 @@
-package org.dimdev.dimdoors.shared;
+package org.dimdev.dimdoors.shared.pockets;
 
-import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
+import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.ddutils.math.MathUtils;
 import org.dimdev.ddutils.schem.Schematic;
 import com.google.gson.JsonArray;

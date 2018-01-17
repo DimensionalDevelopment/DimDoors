@@ -10,6 +10,7 @@ import org.dimdev.dimdoors.shared.rifts.*;
 import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
 import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
 import org.dimdev.dimdoors.shared.rifts.destinations.PrivatePocketExitDestination;
+import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.ddutils.schem.Schematic;
 import net.minecraft.block.BlockDoor;
@@ -30,10 +31,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Robijnvogel
@@ -158,10 +156,15 @@ public final class PocketSchematicGenerator {
         // Generate the rift TileEntities
         schematic.tileEntities = new ArrayList<>();
         TileEntityEntranceRift rift = (TileEntityEntranceRift) doorBlock.createTileEntity(null, doorBlock.getDefaultState());
-        rift.setSingleDestination(PocketEntranceDestination.builder()
-                .ifDestinations(Collections.singletonList(new WeightedRiftDestination(exitDest, 1, 0)))
+        rift.setDestination(PocketEntranceDestination.builder()
+                .ifDestination(exitDest)
                 .build());
-        rift.setChaosWeight(chaosWeight);
+        rift.setProperties(LinkProperties.builder()
+                .groups(Collections.singleton(1))
+                .linksRemaining(1)
+                .entranceWeight(chaosWeight)
+                .floatingWeight(chaosWeight)
+                .build());
 
         rift.setPlaceRiftOnBreak(true);
         NBTTagCompound tileNBT = rift.serializeNBT();

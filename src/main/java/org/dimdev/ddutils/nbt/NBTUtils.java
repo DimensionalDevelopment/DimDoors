@@ -19,7 +19,7 @@ public final class NBTUtils {
         }
     }
 
-    public static void readFromNBT(Object obj, NBTTagCompound nbt) {
+    public static <T> T readFromNBT(T obj, NBTTagCompound nbt) {
         try {
             Class<?> callingClass = Class.forName(new Exception().getStackTrace()[1].getClassName());
             Class<?> nbtWriter = Class.forName(callingClass.getPackage().getName() + "." + callingClass.getSimpleName() + "NBTWriter");
@@ -28,5 +28,6 @@ public final class NBTUtils {
         } catch (ClassNotFoundException|NoSuchMethodException|IllegalAccessException|InvocationTargetException e) {
             throw new RuntimeException(e);
         }
+        return obj;
     }
 }

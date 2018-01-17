@@ -11,9 +11,9 @@ public final class PocketGenerator {
     public static Pocket generatePocketFromTemplate(int dim, PocketTemplate pocketTemplate, VirtualLocation virtualLocation) {
         DimDoors.log.info("Generating pocket from template " + pocketTemplate.getName() + " at virtual location " + virtualLocation);
 
-        PocketRegistry registry = PocketRegistry.getForDim(dim);
+        PocketRegistry registry = PocketRegistry.instance(dim);
         Pocket pocket = registry.newPocket();
-        pocketTemplate.place(pocket, 0); // TODO: config option for yBase
+        pocketTemplate.place(pocket);
         pocket.setVirtualLocation(virtualLocation);
         return pocket;
     }

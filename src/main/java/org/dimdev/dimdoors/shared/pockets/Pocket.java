@@ -1,34 +1,37 @@
 package org.dimdev.dimdoors.shared.pockets;
 
-import org.dimdev.ddutils.nbt.INBTStorable;
-import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.annotatednbt.NBTSerializable;
-import org.dimdev.dimdoors.shared.VirtualLocation;
-import org.dimdev.dimdoors.shared.rifts.*;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
-import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
-import org.dimdev.ddutils.Location;
-
-import java.util.*;
-
-import org.dimdev.ddutils.math.MathUtils;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import org.dimdev.annotatednbt.NBTSerializable;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.ddutils.Location;
+import org.dimdev.ddutils.math.MathUtils;
+import org.dimdev.ddutils.nbt.INBTStorable;
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.dimdoors.shared.VirtualLocation;
+import org.dimdev.dimdoors.shared.rifts.RiftDestination;
+import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
+import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @NBTSerializable public class Pocket implements INBTStorable { // TODO: better visibilities
 
-    @Saved @Getter /*package-private*/ int id;
-    @Saved @Getter /*package-private*/ int x; // Grid x TODO: rename to gridX and gridY
-    @Saved @Getter /*package-private*/ int z; // Grid y
-    @Saved @Getter @Setter /*package-private*/ int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
-    @Saved @Getter @Setter /*package-private*/ VirtualLocation virtualLocation; // The non-pocket dimension from which this dungeon was created
-    @Saved @Getter @Setter /*package-private*/ Location entrance;
-    @Saved @Getter /*package-private*/ List<Location> riftLocations;
+    @Saved @Getter protected int id;
+    @Saved @Getter protected int x; // Grid x TODO: rename to gridX and gridY, or just convert to non-grid dependant coordinates
+    @Saved @Getter protected int z; // Grid y
+    @Saved @Getter @Setter protected int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
+    @Saved @Getter @Setter protected VirtualLocation virtualLocation;
+    @Saved @Getter @Setter protected Location entrance; // TODO: move this to the rift registry (pocketlib)
+    @Saved @Getter protected List<Location> riftLocations; // TODO: convert to a list of all tile entities (for chests, and to make it independant of pocketlib)
 
     @Getter int dim; // Not saved
 
@@ -44,11 +47,12 @@ import net.minecraft.util.math.BlockPos;
 
     // TODO: make these static?
     @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
+
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
 
     boolean isInBounds(BlockPos pos) {
         // pocket bounds
-        int gridSize = PocketRegistry.getForDim(dim).getGridSize();
+        int gridSize = PocketRegistry.instance(dim).getGridSize();
         int minX = x * gridSize;
         int minZ = z * gridSize;
         int maxX = minX + (size + 1) * 16;
@@ -72,89 +76,57 @@ import net.minecraft.util.math.BlockPos;
     public void setup() { // Always call after creating a pocket except when building the pocket
         List<TileEntityRift> rifts = getRifts();
 
-        HashMap<Integer, Float> entranceIndexWeights = new HashMap<>();
+        HashMap<TileEntityRift, Float> entranceIndexWeights = new HashMap<>();
 
-        int index = 0;
         for (TileEntityRift rift : rifts) { // Find an entrance
-            for (WeightedRiftDestination weightedPocketEntranceDest : rift.getDestinations()) {
-                if (weightedPocketEntranceDest.getDestination() instanceof PocketEntranceDestination) {
-                    entranceIndexWeights.put(index, weightedPocketEntranceDest.getWeight());
-                    rift.markDirty();
-                    index++;
-                }
+            if (rift.getDestination() instanceof PocketEntranceDestination) {
+                entranceIndexWeights.put(rift, ((PocketEntranceDestination) rift.getDestination()).getWeight());
+                rift.markDirty();
             }
         }
+
         if (entranceIndexWeights.size() == 0) return;
-        int selectedEntranceIndex = MathUtils.weightedRandom(entranceIndexWeights);
+        TileEntityRift selectedEntrance = MathUtils.weightedRandom(entranceIndexWeights);
 
         // Replace entrances with appropriate destinations
-        index = 0;
         for (TileEntityRift rift : rifts) {
-            ListIterator<WeightedRiftDestination> destIterator = rift.getDestinations().listIterator();
-            while (destIterator.hasNext()) {
-                WeightedRiftDestination wdest = destIterator.next();
-                RiftDestination dest = wdest.getDestination();
-                if (dest instanceof PocketEntranceDestination) {
-                    destIterator.remove();
-                    if (index == selectedEntranceIndex) {
-                        entrance = new Location(rift.getWorld(), rift.getPos());
-                        PocketRegistry.getForDim(dim).markDirty();
-                        List<WeightedRiftDestination> ifDestinations = ((PocketEntranceDestination) dest).getIfDestinations();
-                        for (WeightedRiftDestination ifDestination : ifDestinations) {
-                            destIterator.add(new WeightedRiftDestination(ifDestination.getDestination(), ifDestination.getWeight() / wdest.getWeight(), ifDestination.getGroup()));
-                            destIterator.previous(); // An entrance destination shouldn't be in an if/otherwise destination, but just in case, pass over it too
-                        }
-                    } else {
-                        List<WeightedRiftDestination> otherwiseDestinations = ((PocketEntranceDestination) dest).getOtherwiseDestinations();
-                        for (WeightedRiftDestination otherwiseDestination : otherwiseDestinations) {
-                            destIterator.add(new WeightedRiftDestination(otherwiseDestination.getDestination(), otherwiseDestination.getWeight() / wdest.getWeight(), otherwiseDestination.getGroup()));
-                            destIterator.previous(); // An entrance destination shouldn't be in an if/otherwise destination, but just in case, pass over it too
-                        }
-                    }
-                    index++;
+            RiftDestination dest = rift.getDestination();
+            if (dest instanceof PocketEntranceDestination) {
+                if (rift == selectedEntrance) {
+                    entrance = new Location(rift.getWorld(), rift.getPos());
+                    PocketRegistry.instance(dim).markDirty();
+                    rift.setDestination(((PocketEntranceDestination) dest).getIfDestination());
+                } else {
+                    rift.setDestination(((PocketEntranceDestination) dest).getOtherwiseDestination());
                 }
             }
         }
 
-        // set virtual locations and register rifts
+        // register the rifts
         for (TileEntityRift rift : rifts) {
-            rift.setVirtualLocation(virtualLocation);
             rift.register();
         }
     }
 
-    public void linkPocketTo(RiftDestination linkTo, RiftDestination oldDest, AvailableLink availableLink) {
+    public void linkPocketTo(RiftDestination linkTo, LinkProperties linkProperties) {
         List<TileEntityRift> rifts = getRifts();
 
         // Link pocket exits back
         for (TileEntityRift rift : rifts) {
-            ListIterator<WeightedRiftDestination> destIterator = rift.getDestinations().listIterator();
-            while (destIterator.hasNext()) {
-                WeightedRiftDestination wdest = destIterator.next();
-                RiftDestination dest = wdest.getDestination();
-                if (dest instanceof PocketExitDestination) {
-                    destIterator.remove();
-                    if (rift.isRegistered()) dest.unregister(rift);
-                    if (availableLink != null) rift.addAvailableLink(availableLink.toBuilder().build());
-                    if (linkTo != null) destIterator.add(new WeightedRiftDestination(linkTo, wdest.getWeight(), wdest.getGroup(), oldDest));
-                    if (rift.isRegistered()) linkTo.register(rift);
-                    if (rift instanceof TileEntityEntranceRift && !rift.isAlwaysDelete()) {
-                        ((TileEntityEntranceRift) rift).setPlaceRiftOnBreak(true); // We modified the door's state
-                    }
-                    rift.markDirty();
+            RiftDestination dest = rift.getDestination();
+            if (dest instanceof PocketExitDestination) {
+                if (linkProperties != null) rift.setProperties(linkProperties);
+                rift.setDestination(linkTo);
+                if (rift instanceof TileEntityEntranceRift && !rift.isAlwaysDelete()) {
+                    ((TileEntityEntranceRift) rift).setPlaceRiftOnBreak(true); // We modified the door's state
                 }
+                rift.markDirty();
             }
         }
     }
 
-    public void unlinkPocket() {
-        // TODO
-    }
-
     public BlockPos getOrigin() {
-        int gridSize = PocketRegistry.getForDim(dim).getGridSize();
+        int gridSize = PocketRegistry.instance(dim).getGridSize();
         return new BlockPos(x * gridSize * 16, 0, z * gridSize * 16); // TODO: configurable yBase?
     }
-
-    // TODO: method to erase a pocket
 }

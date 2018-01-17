@@ -72,7 +72,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
             // Place a rift at the source point
             world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
             TileEntityRift rift2 = (TileEntityRift) world.getTileEntity(pos);
-            rift2.setSingleDestination(new GlobalDestination(target.getLocation()));
+            rift2.setDestination(new GlobalDestination(target.getLocation()));
             rift2.setRotation(player.rotationYaw, 0);
             rift2.register();
 

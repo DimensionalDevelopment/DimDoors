@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
-import org.dimdev.dimdoors.shared.rifts.RiftRegistry;
+import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 public final class EventHandler {
@@ -34,7 +34,7 @@ public final class EventHandler {
             if (!world.isRemote
                 && !player.isDead
                 && ModDimensions.isDimDoorsPocketDimension(world)
-                && !PocketRegistry.getForDim(dim).isPlayerAllowedToBeHere(player, player.getPosition())) {
+                && !PocketRegistry.instance(dim).isPlayerAllowedToBeHere(player, player.getPosition())) {
                 // TODO: make the world circular
             }
         }
@@ -44,7 +44,7 @@ public final class EventHandler {
     public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
         // TODO: PocketLib compatibility
         if (ModDimensions.isDimDoorsPocketDimension(event.fromDim) && !ModDimensions.isDimDoorsPocketDimension(event.toDim)) {
-            RiftRegistry.setOverworldRift(event.player.getCachedUniqueIdString(), null);
+            RiftRegistry.instance().setOverworldRift(event.player.getUniqueID(), null);
         }
     }
 }

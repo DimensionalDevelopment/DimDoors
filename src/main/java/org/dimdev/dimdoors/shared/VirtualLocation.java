@@ -25,11 +25,11 @@ import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
     public static VirtualLocation fromLocation(Location location) {
         VirtualLocation virtualLocation = null;
         if (ModDimensions.isDimDoorsPocketDimension(location.getDim())) {
-            Pocket pocket = PocketRegistry.getForDim(location.getDim()).getPocketAt(location.getPos());
+            Pocket pocket = PocketRegistry.instance(location.getDim()).getPocketAt(location.getPos());
             if (pocket != null) {
                 virtualLocation = pocket.getVirtualLocation(); // TODO: pocket-relative coordinates
             } else {
-                virtualLocation = new VirtualLocation(0, 0, 0, 0); // TODO: door was placed in a pocket dim but outside of a pocket...
+                virtualLocation = null; // TODO: door was placed in a pocket dim but outside of a pocket...
             }
         } else if (location.getWorld().provider instanceof WorldProviderLimbo) {
             virtualLocation = new VirtualLocation(location.getDim(), location.getX(), location.getZ(), Config.getMaxDungeonDepth());

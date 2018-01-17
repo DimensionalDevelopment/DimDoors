@@ -7,6 +7,7 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import org.dimdev.dimdoors.shared.items.ModItems;
+import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
 import org.dimdev.dimdoors.shared.rifts.*;
 import org.dimdev.dimdoors.shared.rifts.destinations.*;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
@@ -44,7 +45,7 @@ public abstract class CommonProxy {
         RiftDestination.destinationRegistry.put("global", GlobalDestination.class);
         RiftDestination.destinationRegistry.put("limbo", LimboDestination.class);
         RiftDestination.destinationRegistry.put("local", LocalDestination.class);
-        RiftDestination.destinationRegistry.put("new_public", NewPublicDestination.class);
+        RiftDestination.destinationRegistry.put("public_pocket", PublicPocketDestination.class);
         RiftDestination.destinationRegistry.put("pocket_entrance", PocketEntranceDestination.class);
         RiftDestination.destinationRegistry.put("pocket_exit", PocketExitDestination.class);
         RiftDestination.destinationRegistry.put("private", PrivateDestination.class);

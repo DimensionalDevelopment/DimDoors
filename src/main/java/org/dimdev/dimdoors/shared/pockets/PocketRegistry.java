@@ -13,6 +13,7 @@ import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import lombok.Getter;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,7 +22,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
 
-@NBTSerializable public class PocketRegistry extends WorldSavedData { // TODO: unregister pocket entrances, private pocket entrances/exits
+@NBTSerializable public class
+PocketRegistry extends WorldSavedData { // TODO: unregister pocket entrances, private pocket entrances/exits
 
     private static final String DATA_NAME = DimDoors.MODID + "_pockets";
     @Getter private static final int DATA_VERSION = 0; // IMPORTANT: Update this and upgradeRegistry when making changes.
@@ -30,7 +32,7 @@ import net.minecraft.world.storage.WorldSavedData;
     @Saved @Getter /*package-private*/ int maxPocketSize;
     @Saved @Getter /*package-private*/ int privatePocketSize;
     @Saved @Getter /*package-private*/ int publicPocketSize;
-    @Saved /*package-private*/ BiMap<String, Integer> privatePocketMap; // Player UUID -> Pocket ID, in pocket dim only
+    @Saved /*package-private*/ BiMap<UUID, Integer> privatePocketMap; // Player UUID -> Pocket ID, in pocket dim only TODO: move this out of pocketlib
     @Saved @Getter /*package-private*/ Map<Integer, Pocket> pockets; // TODO: remove getter?
     @Saved @Getter /*package-private*/ int nextID;
 
@@ -44,7 +46,7 @@ import net.minecraft.world.storage.WorldSavedData;
         super(s);
     }
 
-    public static PocketRegistry getForDim(int dim) {
+    public static PocketRegistry instance(int dim) {
         if (!ModDimensions.isDimDoorsPocketDimension(dim)) throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
 
         MapStorage storage = WorldUtils.getWorld(dim).getPerWorldStorage();
@@ -155,17 +157,17 @@ import net.minecraft.world.storage.WorldSavedData;
     }
 
     // TODO: these should be per-map rather than per-world
-    public int getPrivatePocketID(String playerUUID) {
+    public int getPrivatePocketID(UUID playerUUID) {
         Integer id = privatePocketMap.get(playerUUID);
         if (id == null) return -1;
         return id;
     }
 
-    public String getPrivatePocketOwner(int id) {
+    public UUID getPrivatePocketOwner(int id) {
         return privatePocketMap.inverse().get(id);
     }
 
-    public void setPrivatePocketID(String playerUUID, int id) {
+    public void setPrivatePocketID(UUID playerUUID, int id) {
         privatePocketMap.put(playerUUID, id);
         markDirty();
     }

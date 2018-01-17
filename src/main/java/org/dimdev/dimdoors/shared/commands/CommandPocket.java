@@ -1,8 +1,6 @@
 package org.dimdev.dimdoors.shared.commands;
 
-import net.minecraft.util.EnumFacing;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.*;
 import org.dimdev.dimdoors.shared.pockets.*;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.ddutils.Location;
@@ -48,7 +46,7 @@ public class CommandPocket extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException { // TODO: more pocket commands (replace pocket, get ID, teleport to pocket, etc.)
-        // Check correct number of arguments
+        // Check that the number of arguments is correct
         if (args.length < 2 || args.length > 3) {
             sender.sendMessage(new TextComponentString("[DimDoors] Usage: /" + getUsage(sender)));
             return;
