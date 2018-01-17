@@ -11,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.annotatednbt.NBTSerializable;
@@ -29,9 +30,9 @@ import javax.annotation.Nonnull;
 
 @NBTSerializable public abstract class TileEntityRift extends TileEntity implements ITickable { // TODO: implement ITeleportSource and ITeleportDestination
 
-    @Saved @Nonnull @Getter protected RiftDestination destination;
+    /*@Saved*/ @Nonnull @Getter protected RiftDestination destination;
     @Saved @Getter protected boolean relativeRotation;
-    @Saved @Getter protected float yaw;
+    @Saved @Getter public float yaw;
     @Saved @Getter protected float pitch;
     @Saved @Getter protected boolean alwaysDelete; // Delete the rift when an entrances rift is broken even if the state was changed or destinations link there.
     @Saved @Getter protected boolean forcedColor;
@@ -57,9 +58,17 @@ import javax.annotation.Nonnull;
     }
 
     // NBT
-    @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
+    @Override public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
+        NBTUtils.readFromNBT(this, nbt);
+        destination = nbt.hasKey("destination") ? RiftDestination.readDestinationNBT(nbt.getCompoundTag("destination")) : null;
+    }
 
-    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        nbt = super.writeToNBT(nbt);
+        if (destination != null) nbt.setTag("destination", destination.writeToNBT(new NBTTagCompound()));
+        return NBTUtils.writeToNBT(this, nbt);
+    }
 
     @Override
     public NBTTagCompound getUpdateTag() {
@@ -108,10 +117,13 @@ import javax.annotation.Nonnull;
     }
 
     public void setDestination(RiftDestination destination) {
-        if (this.destination != null) {
+        if (this.destination != null && isRegistered()) {
             this.destination.unregister(new Location(world, pos));
         }
         this.destination = destination;
+        if (destination != null) {
+            if (isRegistered()) destination.register(new Location(world, pos));
+        }
         markDirty();
         updateColor();
     }
@@ -136,14 +148,16 @@ import javax.annotation.Nonnull;
     // Registry TODO: merge most of these into one single updateRegistry() method
 
     public boolean isRegistered() {
-        return RiftRegistry.instance().isRiftAt(new Location(world, pos));
+        // The DimensionManager.getWorld(0) != null check is to be able to run this without having to start minecraft
+        // (for GeneratePocketSchematics, for example)
+        return DimensionManager.getWorld(0) != null && RiftRegistry.instance().isRiftAt(new Location(world, pos));
     }
 
     public void register() {
         if (isRegistered()) return;
         Location loc = new Location(world, pos);
         RiftRegistry.instance().addRift(loc);
-        destination.register(new Location(world, pos));
+        if (destination != null) destination.register(new Location(world, pos));
         updateProperties();
         updateColor();
     }
@@ -167,7 +181,10 @@ import javax.annotation.Nonnull;
     }
 
     public void targetGone(Location loc) {
-        if (!destination.keepAfterTargetGone(new Location(world, pos), loc)) setDestination(null);
+        if (!destination.keepAfterTargetGone(new Location(world, pos), loc)) {
+            destination = null;
+            markDirty();
+        }
         updateColor();
     }
 
@@ -187,14 +204,7 @@ import javax.annotation.Nonnull;
 
         // Attempt a teleport
         try {
-            if (destination.teleport(new RotatedLocation(new Location(world, pos), yaw, pitch), entity)) {
-                // Set last used rift for players (don't set for other entities to avoid filling the registry too much)
-                // TODO: it should maybe be set for some non-player entities too
-                if (!ModDimensions.isDimDoorsPocketDimension(WorldUtils.getDim(world)) && entity instanceof EntityPlayer) {
-                    RiftRegistry.instance().setOverworldRift(entity.getUniqueID(), new Location(world, pos));
-                }
-                return true;
-            }
+            return destination.teleport(new RotatedLocation(new Location(world, pos), yaw, pitch), entity);
         } catch (Exception e) {
             DimDoors.sendMessage(entity, "There was an exception while teleporting!");
             DimDoors.log.error("Teleporting failed with the following exception: ", e);
@@ -202,12 +212,12 @@ import javax.annotation.Nonnull;
         return false;
     }
 
-    public void teleportTo(Entity entity, float fromYaw, float fromPitch) {
-        if (relativeRotation) {
-            TeleportUtils.teleport(entity, new Location(world, pos), yaw + entity.rotationYaw - fromYaw, pitch + entity.rotationPitch - fromPitch);
-        } else {
-            TeleportUtils.teleport(entity, new Location(world, pos), yaw, pitch);
-        }
+    public void teleportTo(Entity entity, float fromYaw, float fromPitch) { // TODO
+        //if (relativeRotation) {
+        //    TeleportUtils.teleport(entity, new Location(world, pos), yaw + entity.rotationYaw - fromYaw, pitch + entity.rotationPitch - fromPitch);
+        //} else {
+        TeleportUtils.teleport(entity, new Location(world, pos), yaw, pitch);
+        //}
     }
 
     public void teleportTo(Entity entity) {
@@ -215,6 +225,7 @@ import javax.annotation.Nonnull;
     }
 
     public void updateColor() {
+        //DimDoors.log.info("Updating color of rift at " + new Location(world, pos));
         if (forcedColor) return;
         if (!isRegistered()) {
             color = new RGBA(0, 0, 0, 1);
@@ -222,7 +233,7 @@ import javax.annotation.Nonnull;
             color = new RGBA(0.7f, 0.7f, 0.7f, 1);
         } else {
             RGBA newColor = destination.getColor(new Location(world, pos));
-            if (!color.equals(newColor)) {
+            if (color == null && newColor != null || !color.equals(newColor)) {
                 color = newColor;
                 markDirty();
             }
@@ -231,7 +242,6 @@ import javax.annotation.Nonnull;
 
     @Override
     public void markDirty() {
-        if (!forcedColor) updateColor();
         super.markDirty();
     }
 

@@ -29,7 +29,6 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 @NBTSerializable public class AvailableLinkDestination extends RiftDestination {
@@ -40,7 +39,7 @@ import java.util.UUID;
     @Saved protected double negativeDepthFactor;
     @Saved protected Set<Integer> acceptedGroups; // TODO: this should be immutable
     @Saved protected boolean noLink;
-    @Builder.Default @Saved protected boolean noLinkBack;
+    @Saved protected boolean noLinkBack;
     // TODO: better depth calculation
 
     public AvailableLinkDestination() {}
@@ -135,7 +134,7 @@ import java.util.UUID;
                 TileEntityRift thisRift = (TileEntityRift) location.getLocation().getTileEntity();
                 TileEntityFloatingRift riftEntity = (TileEntityFloatingRift) world.getTileEntity(pos);
                 // TODO: Should the rift not be configured like the other link
-                riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).id(UUID.randomUUID()).build());
+                riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).build());
 
                 if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(selectedLink, location.getLocation());
                 if (!noLink) linkRifts(location.getLocation(), selectedLink);
@@ -149,7 +148,7 @@ import java.util.UUID;
                 // Link the pocket back
                 TileEntityRift thisRift = (TileEntityRift) location.getLocation().getTileEntity();
                 TileEntityRift riftEntity = (TileEntityRift) pocket.getEntrance().getTileEntity();
-                LinkProperties newLink = thisRift.getProperties().toBuilder().linksRemaining(0).id(UUID.randomUUID()).build();
+                LinkProperties newLink = thisRift.getProperties().toBuilder().linksRemaining(0).build();
                 pocket.linkPocketTo(new GlobalDestination(!noLinkBack && !riftEntity.getProperties().oneWay ? location.getLocation() : null), newLink); // TODO: linkId
 
                 // Link the rift if necessary and teleport the entity

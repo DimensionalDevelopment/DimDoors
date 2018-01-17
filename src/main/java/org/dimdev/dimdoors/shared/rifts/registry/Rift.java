@@ -2,12 +2,16 @@ package org.dimdev.dimdoors.shared.rifts.registry;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import net.minecraft.nbt.NBTTagCompound;
 import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.ddutils.Location;
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor @AllArgsConstructor @ToString
 @NBTSerializable public class Rift extends RegistryVertex {
     public @Saved Location location;
     public @Saved boolean isFloating;
@@ -25,7 +29,6 @@ import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
         if (source instanceof Rift) {
             riftTileEntity.sourceGone(((Rift) source).location);
         }
-        riftTileEntity.updateColor();
     }
 
     @Override
@@ -38,20 +41,19 @@ import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
         riftTileEntity.updateColor();
     }
 
-    @Override
-    public void sourceAdded(RegistryVertex source) {
-        super.sourceAdded(source);
+    public void targetChanged(RegistryVertex target) {
+        DimDoors.log.info("Rift " + this + " notified of target " + target + " having changed. Updating color.");
         ((TileEntityRift) location.getTileEntity()).updateColor();
     }
 
-    @Override
-    public void targetAdded(RegistryVertex target) {
-        super.targetAdded(target);
-        ((TileEntityRift) location.getTileEntity()).updateColor();
-    }
-
-    public void markDirty() {
+    public void markDirty() { // TODO: better name
         RiftRegistry.instance().markSubregistryDirty(dim);
         ((TileEntityRift) location.getTileEntity()).updateColor();
+        for (Location location : RiftRegistry.instance().getSources(location)) {
+            RiftRegistry.instance().getRift(location).targetChanged(this);
+        }
     }
+
+    @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
 }

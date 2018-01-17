@@ -37,8 +37,7 @@ public class BlockDimensionalDoorGold extends BlockDimensionalDoor {
     public void setupRift(TileEntityEntranceRift rift) {
         rift.setProperties(LinkProperties.builder()
                 .groups(new HashSet<>(Arrays.asList(0, 1)))
-                .linksRemaining(1)
-                .replaceDestination(UUID.randomUUID()).build());
+                .linksRemaining(1).build());
         rift.setDestination(AvailableLinkDestination.builder()
                 .acceptedGroups(Collections.singleton(0))
                 .coordFactor(1)

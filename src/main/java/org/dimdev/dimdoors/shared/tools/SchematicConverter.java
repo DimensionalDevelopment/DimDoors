@@ -4,7 +4,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.*;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
@@ -33,7 +36,7 @@ public final class SchematicConverter {
         Schematic schematic = new Schematic();
 
         schematic.version = 1; //already the default value
-        schematic.author = "DimDoors"; // TODO: didn't the old schematics have an author?
+        schematic.author = "DimDoors"; // Old schematics didn't have an author
         schematic.schematicName = name.equals("") ? "Unknown" : name;
         schematic.creationDate = System.currentTimeMillis();
         schematic.requiredMods = new String[]{DimDoors.MODID};
@@ -128,46 +131,49 @@ public final class SchematicConverter {
         NBTTagList tileEntitiesNBT = (NBTTagList) nbt.getTag("TileEntities");
         for (int i = 0; i < tileEntitiesNBT.tagCount(); i++) {
             NBTTagCompound tileEntityNBT = tileEntitiesNBT.getCompoundTagAt(i);
-            int x = tileEntityNBT.getInteger("x");
-            int y = tileEntityNBT.getInteger("y");
-            int z = tileEntityNBT.getInteger("z");
             switch (tileEntityNBT.getString("id")) {
                 case "TileEntityDimDoor":
-                    tileEntityNBT = new NBTTagCompound();
-                    tileEntityNBT.setString("id", "EntranceRift");
-                    tileEntityNBT.setInteger("x", x);
-                    tileEntityNBT.setInteger("y", y);
-                    tileEntityNBT.setInteger("z", z);
-                    // TODO
-                    break;
                 case "TileEntityRift":
-                    tileEntityNBT = new NBTTagCompound();
-                    tileEntityNBT.setString("id", "FloatingRift");
-                    tileEntityNBT.setInteger("x", x);
-                    tileEntityNBT.setInteger("y", y);
-                    tileEntityNBT.setInteger("z", z);
-                    // TODO
-                    break;
+                    continue;
                 case "Sign":
-                    DimDoors.log.info("Sign: "
-                                      + tileEntityNBT.getString("Text1") + "|"
-                                      + tileEntityNBT.getString("Text2") + "|"
-                                      + tileEntityNBT.getString("Text3") + "|"
-                                      + tileEntityNBT.getString("Text4"));
-                    tileEntityNBT.setString("Text1", "{\"text\":\"" + tileEntityNBT.getString("Text1") + "\"}");
-                    tileEntityNBT.setString("Text2", "{\"text\":\"" + tileEntityNBT.getString("Text2") + "\"}");
-                    tileEntityNBT.setString("Text3", "{\"text\":\"" + tileEntityNBT.getString("Text3") + "\"}");
-                    tileEntityNBT.setString("Text4", "{\"text\":\"" + tileEntityNBT.getString("Text4") + "\"}");
+                    tileEntityNBT.setString("Text1", ITextComponent.Serializer.componentToJson(new TextComponentString(tileEntityNBT.getString("Text1"))));
+                    tileEntityNBT.setString("Text2", ITextComponent.Serializer.componentToJson(new TextComponentString(tileEntityNBT.getString("Text2"))));
+                    tileEntityNBT.setString("Text3", ITextComponent.Serializer.componentToJson(new TextComponentString(tileEntityNBT.getString("Text3"))));
+                    tileEntityNBT.setString("Text4", ITextComponent.Serializer.componentToJson(new TextComponentString(tileEntityNBT.getString("Text4"))));
                     break;
                 case "Chest":
+                    // TODO
                     break;
                 default:
-                    DimDoors.log.info("TileEntity found: " + tileEntityNBT.getString("id"));
                     break;
             }
+            tileEntityNBT.setString("id", translateId(tileEntityNBT.getString("id")).toString());
             schematic.tileEntities.add(tileEntityNBT);
         }
 
+        // TODO: entities (and replace end portal frame with monoliths)
+
         return schematic;
+    }
+
+    private static ResourceLocation translateId(String id) { // TODO
+        switch (id) {
+            case "Sign":
+                return TileEntity.getKey(TileEntitySign.class);
+            case "Music":
+                return TileEntity.getKey(TileEntityNote.class);
+            case "Trap":
+                return TileEntity.getKey(TileEntityDispenser.class);
+            case "Comparator":
+                return TileEntity.getKey(TileEntityComparator.class);
+            case "Hopper":
+                return TileEntity.getKey(TileEntityHopper.class);
+            case "Furnace":
+                return TileEntity.getKey(TileEntityFurnace.class);
+            case "Chest":
+                return TileEntity.getKey(TileEntityChest.class);
+            default:
+                throw new RuntimeException("Tile entity ID " + id + " not supported by conversion code");
+        }
     }
 }

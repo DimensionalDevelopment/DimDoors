@@ -11,16 +11,23 @@ public abstract class LinkingDestination extends RiftDestination {
 
     private RiftDestination wrappedDestination;
 
-    @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); }
-    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return nbt; }
+    @Override public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
+        wrappedDestination = nbt.hasKey("wrappedDestination") ? RiftDestination.readDestinationNBT(nbt.getCompoundTag("wrappedDestination")) : null;
+    }
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        nbt = super.writeToNBT(nbt);
+        if (wrappedDestination != null) nbt.setTag("wrappedDestination", wrappedDestination.writeToNBT(new NBTTagCompound()));
+        return nbt;
+    }
 
     @Override
     public boolean teleport(RotatedLocation loc, Entity entity) {
-        if (wrappedDestination != null) wrappedDestination.teleport(loc, entity);
+        if (wrappedDestination != null) return wrappedDestination.teleport(loc, entity);
 
         Location linkTarget = makeLinkTarget(loc, entity);
         if (linkTarget != null) {
-            wrappedDestination = new GlobalDestination();
+            wrappedDestination = new GlobalDestination(linkTarget);
             wrappedDestination.register(loc.getLocation());
 
             wrappedDestination.teleport(loc, entity);

@@ -9,8 +9,9 @@ import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
 
-@Getter @AllArgsConstructor @NoArgsConstructor @Builder(toBuilder = true) @ToString
+@Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 public class PublicPocketDestination extends LinkingDestination {
+    // public PublicPocketDestination() {}
 
     @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); }
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return nbt; }
@@ -20,12 +21,11 @@ public class PublicPocketDestination extends LinkingDestination {
         VirtualLocation riftVirtualLocation = VirtualLocation.fromLocation(loc.getLocation());
         VirtualLocation newVirtualLocation = null;
         if (riftVirtualLocation != null) {
-            int depth = Math.min(riftVirtualLocation.getDepth(), 1);
+            int depth = Math.max(riftVirtualLocation.getDepth(), 1);
             newVirtualLocation = riftVirtualLocation.toBuilder().depth(depth).build();
         }
         Pocket pocket = PocketGenerator.generatePublicPocket(newVirtualLocation);
         pocket.setup();
-
         pocket.linkPocketTo(new GlobalDestination(loc.getLocation()), null);
 
         return pocket.getEntrance();

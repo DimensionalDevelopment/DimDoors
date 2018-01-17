@@ -49,16 +49,18 @@ public abstract class RiftDestination implements INBTStorable {
 
     public abstract boolean teleport(RotatedLocation rift, Entity entity);
 
-    public Location getFixedTarget(Location location) {
+    public Location getFixedTarget(Location location) { // TODO: this should only be available for local/global/relative destinations, maybe make a superclass for them
         return null;
     }
 
     public void register(Location location) {
-        RiftRegistry.instance().addLink(location, getFixedTarget(location));
+        Location fixedTarget = getFixedTarget(location);
+        if (fixedTarget != null) RiftRegistry.instance().addLink(location, getFixedTarget(location));
     }
 
     public void unregister(Location location) {
-        RiftRegistry.instance().removeLink(location, getFixedTarget(location));
+        Location fixedTarget = getFixedTarget(location);
+        if (fixedTarget != null) RiftRegistry.instance().removeLink(location, fixedTarget);
     }
 
     public boolean keepAfterTargetGone(Location location, Location target) {

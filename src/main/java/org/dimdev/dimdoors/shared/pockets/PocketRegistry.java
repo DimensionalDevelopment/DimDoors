@@ -32,7 +32,7 @@ PocketRegistry extends WorldSavedData { // TODO: unregister pocket entrances, pr
     @Saved @Getter /*package-private*/ int maxPocketSize;
     @Saved @Getter /*package-private*/ int privatePocketSize;
     @Saved @Getter /*package-private*/ int publicPocketSize;
-    @Saved /*package-private*/ BiMap<UUID, Integer> privatePocketMap; // Player UUID -> Pocket ID, in pocket dim only TODO: move this out of pocketlib
+    @Saved /*package-private*/ BiMap<String, Integer> privatePocketMap; // Player UUID -> Pocket ID, in pocket dim only TODO: move this out of pocketlib
     @Saved @Getter /*package-private*/ Map<Integer, Pocket> pockets; // TODO: remove getter?
     @Saved @Getter /*package-private*/ int nextID;
 
@@ -158,17 +158,17 @@ PocketRegistry extends WorldSavedData { // TODO: unregister pocket entrances, pr
 
     // TODO: these should be per-map rather than per-world
     public int getPrivatePocketID(UUID playerUUID) {
-        Integer id = privatePocketMap.get(playerUUID);
+        Integer id = privatePocketMap.get(playerUUID.toString());
         if (id == null) return -1;
         return id;
     }
 
     public UUID getPrivatePocketOwner(int id) {
-        return privatePocketMap.inverse().get(id);
+        return UUID.fromString(privatePocketMap.inverse().get(id));
     }
 
     public void setPrivatePocketID(UUID playerUUID, int id) {
-        privatePocketMap.put(playerUUID, id);
+        privatePocketMap.put(playerUUID.toString(), id);
         markDirty();
     }
 

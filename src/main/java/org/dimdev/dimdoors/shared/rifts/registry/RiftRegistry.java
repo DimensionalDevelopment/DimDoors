@@ -8,7 +8,6 @@ import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.DimensionManager;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.WorldUtils;
-import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.ddutils.GraphUtils;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
@@ -59,7 +58,8 @@ public class RiftRegistry extends WorldSavedData {
             // Read rifts in this dimension
             NBTTagList riftsNBT = (NBTTagList) nbt.getTag("rifts");
             for (NBTBase riftNBT : riftsNBT) {
-                Rift rift = NBTUtils.readFromNBT(new Rift(), (NBTTagCompound) riftNBT);
+                Rift rift = new Rift();
+                rift.readFromNBT((NBTTagCompound) riftNBT);
                 rift.dim = dim;
                 graph.addVertex(rift);
                 uuidMap.put(rift.id, rift);
@@ -68,7 +68,8 @@ public class RiftRegistry extends WorldSavedData {
 
             NBTTagList pocketsNBT = (NBTTagList) nbt.getTag("pockets");
             for (NBTBase pocketNBT : pocketsNBT) {
-                PocketEntrancePointer pocket = NBTUtils.readFromNBT(new PocketEntrancePointer(), (NBTTagCompound) pocketNBT);
+                PocketEntrancePointer pocket = new PocketEntrancePointer();
+                pocket.readFromNBT((NBTTagCompound) pocketNBT);
                 pocket.dim = dim;
                 graph.addVertex(pocket);
                 uuidMap.put(pocket.id, pocket);
@@ -96,7 +97,7 @@ public class RiftRegistry extends WorldSavedData {
             NBTTagList pocketsNBT = new NBTTagList();
             for (RegistryVertex vertex : graph.vertexSet()) {
                 if (vertex.dim == dim) {
-                    NBTTagCompound vertexNBT = NBTUtils.writeToNBT(vertex, new NBTTagCompound());
+                    NBTTagCompound vertexNBT = vertex.writeToNBT(new NBTTagCompound());
                     if (vertex instanceof Rift) {
                         riftsNBT.appendTag(vertexNBT);
                     } else if (vertex instanceof PocketEntrancePointer) {
@@ -118,11 +119,10 @@ public class RiftRegistry extends WorldSavedData {
                     NBTTagCompound linkNBT = new NBTTagCompound();
                     linkNBT.setUniqueId("from", from.id);
                     linkNBT.setUniqueId("to", to.id);
-                    NBTUtils.writeToNBT(edge, linkNBT); // Write in both registries, we might want to notify when there's a missing world later
                     linksNBT.appendTag(linkNBT);
                 }
             }
-            nbt.setTag("links", riftsNBT);
+            nbt.setTag("links", linksNBT);
 
             return nbt;
         }
@@ -227,7 +227,8 @@ public class RiftRegistry extends WorldSavedData {
     // </editor-fold>
 
     public boolean isRiftAt(Location location) {
-        return locationMap.get(location) != null;
+        Rift possibleRift = locationMap.get(location);
+        return possibleRift != null && !(possibleRift instanceof RiftPlaceholder);
     }
 
     public Rift getRift(Location location) {
@@ -236,11 +237,27 @@ public class RiftRegistry extends WorldSavedData {
         return rift;
     }
 
+    private Rift getRiftOrPlaceholder(Location location) {
+        Rift rift = locationMap.get(location);
+        if (rift == null) {
+            DimDoors.log.info("Creating a rift placeholder at " + location);
+            rift = new RiftPlaceholder();
+            rift.dim = location.getDim();
+            rift.location = location;
+            locationMap.put(location, rift);
+            uuidMap.put(rift.id, rift);
+            graph.addVertex(rift);
+            markSubregistryDirty(rift.dim);
+        }
+        return rift;
+    }
+
     public void addRift(Location location) {
         DimDoors.log.info("Adding rift at " + location);
-        RegistryVertex currentRift = getRift(location);
+        RegistryVertex currentRift = locationMap.get(location);
         Rift rift;
         if (currentRift instanceof RiftPlaceholder) {
+            DimDoors.log.info("Converting a rift placeholder at " + location + " into a rift");
             rift = new Rift(location);
             rift.dim = location.getDim();
             rift.id = currentRift.id;
@@ -262,18 +279,37 @@ public class RiftRegistry extends WorldSavedData {
 
         Rift rift = getRift(location);
 
-        // Notify the adjacent vertices of the change
-        for (DefaultEdge edge : graph.incomingEdgesOf(rift)) graph.getEdgeSource(edge).targetGone(rift);
-        for (DefaultEdge edge : graph.outgoingEdgesOf(rift)) graph.getEdgeTarget(edge).sourceGone(rift);
+        Set<DefaultEdge> incomingEdges = graph.incomingEdgesOf(rift);
+        Set<DefaultEdge> outgoingEdges = graph.outgoingEdgesOf(rift);
 
         graph.removeVertex(rift);
         locationMap.remove(location);
         uuidMap.remove(rift.id);
-        rift.markDirty();
+        markSubregistryDirty(rift.dim);
+
+        // Notify the adjacent vertices of the change
+        for (DefaultEdge edge : incomingEdges) graph.getEdgeSource(edge).targetGone(rift);
+        for (DefaultEdge edge : outgoingEdges) graph.getEdgeTarget(edge).sourceGone(rift);
     }
 
     private void addEdge(RegistryVertex from, RegistryVertex to) {
         graph.addEdge(from, to);
+        if (from instanceof PlayerRiftPointer) {
+            markDirty();
+        } else if (from instanceof Rift) {
+            ((Rift) from).markDirty();
+        } else {
+            markSubregistryDirty(from.dim);
+        }
+        if (to instanceof Rift) {
+            ((Rift) to).markDirty();
+        } else {
+            markSubregistryDirty(to.dim);
+        }
+    }
+
+    private void removeEdge(RegistryVertex from, RegistryVertex to) {
+        graph.removeEdge(from, to);
         if (from instanceof PlayerRiftPointer) {
             markDirty();
         } else {
@@ -284,15 +320,17 @@ public class RiftRegistry extends WorldSavedData {
 
     public void addLink(Location locationFrom, Location locationTo) {
         DimDoors.log.info("Adding link " + locationFrom + " -> " + locationTo);
-        Rift from = getRift(locationFrom);
 
-        Rift to = getRift(locationTo);
+        Rift from = getRiftOrPlaceholder(locationFrom);
+        Rift to = getRiftOrPlaceholder(locationTo);
 
         addEdge(from, to);
 
         // Notify the linked vertices of the change
-        from.targetAdded(to);
-        to.sourceAdded(from);
+        if (!(from instanceof RiftPlaceholder) && !(to instanceof RiftPlaceholder)) {
+            from.targetAdded(to);
+            to.sourceAdded(from);
+        }
     }
 
     public void removeLink(Location locationFrom, Location locationTo) {
@@ -301,7 +339,7 @@ public class RiftRegistry extends WorldSavedData {
         Rift from = getRift(locationFrom);
         Rift to = getRift(locationTo);
 
-        addEdge(from, to);
+        removeEdge(from, to);
 
         // Notify the linked vertices of the change
         from.targetGone(to);
@@ -356,15 +394,18 @@ public class RiftRegistry extends WorldSavedData {
 
     private void setPlayerRiftPointer(UUID playerUUID, Location rift, Map<UUID, PlayerRiftPointer> map) {
         PlayerRiftPointer pointer = map.get(playerUUID);
-        if (pointer == null) {
+        if (pointer != null) {
+            graph.removeVertex(pointer);
+            map.remove(playerUUID);
+            uuidMap.remove(pointer.id);
+        }
+        if (rift != null) {
             pointer = new PlayerRiftPointer(playerUUID);
             graph.addVertex(pointer);
             map.put(playerUUID, pointer);
             uuidMap.put(pointer.id, pointer);
-        } else {
-            graph.removeAllEdges(graph.outgoingEdgesOf(pointer));
+            addEdge(pointer, getRift(rift));
         }
-        addEdge(pointer, getRift(rift));
     }
 
     public void setLastPrivatePocketEntrance(UUID playerUUID, Location rift) {
@@ -375,7 +416,7 @@ public class RiftRegistry extends WorldSavedData {
     public Location getPrivatePocketExit(UUID playerUUID) {
         PlayerRiftPointer entrancePointer = lastPrivatePocketExits.get(playerUUID);
         Rift entrance = (Rift) GraphUtils.followPointer(graph, entrancePointer);
-        return entrance.location;
+        return entrance != null ? entrance.location : null;
     }
 
     public void setLastPrivatePocketExit(UUID playerUUID, Location rift) {
@@ -399,7 +440,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public Set<Location> getTargets(Location location) {
-        return graph.outgoingEdgesOf(locationMap.get(location)).stream()
+        return graph.outgoingEdgesOf(getRift(location)).stream()
                 .map(graph::getEdgeTarget)
                 .map(Rift.class::cast)
                 .map(rift -> rift.location)
@@ -407,7 +448,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public Set<Location> getSources(Location location) {
-        return graph.incomingEdgesOf(locationMap.get(location)).stream()
+        return graph.incomingEdgesOf(getRift(location)).stream()
                 .map(graph::getEdgeTarget)
                 .map(Rift.class::cast)
                 .map(rift -> rift.location)

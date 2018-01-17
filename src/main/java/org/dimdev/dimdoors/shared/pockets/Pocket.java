@@ -76,17 +76,16 @@ import java.util.List;
     public void setup() { // Always call after creating a pocket except when building the pocket
         List<TileEntityRift> rifts = getRifts();
 
-        HashMap<TileEntityRift, Float> entranceIndexWeights = new HashMap<>();
+        HashMap<TileEntityRift, Float> entranceWeights = new HashMap<>();
 
         for (TileEntityRift rift : rifts) { // Find an entrance
             if (rift.getDestination() instanceof PocketEntranceDestination) {
-                entranceIndexWeights.put(rift, ((PocketEntranceDestination) rift.getDestination()).getWeight());
-                rift.markDirty();
+                entranceWeights.put(rift, ((PocketEntranceDestination) rift.getDestination()).getWeight());
             }
         }
 
-        if (entranceIndexWeights.size() == 0) return;
-        TileEntityRift selectedEntrance = MathUtils.weightedRandom(entranceIndexWeights);
+        if (entranceWeights.size() == 0) return;
+        TileEntityRift selectedEntrance = MathUtils.weightedRandom(entranceWeights);
 
         // Replace entrances with appropriate destinations
         for (TileEntityRift rift : rifts) {

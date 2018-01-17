@@ -17,14 +17,23 @@ import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 @NBTSerializable public class PocketEntranceDestination extends RiftDestination { // TODO: not exactly a destination
     @Builder.Default @Saved protected float weight = 1;
-    @Saved protected RiftDestination ifDestination;
-    @Saved protected RiftDestination otherwiseDestination;
-    @Saved boolean hasBeenChosen;
+    /*@Saved*/ protected RiftDestination ifDestination;
+    /*@Saved*/ protected RiftDestination otherwiseDestination;
 
     public PocketEntranceDestination() {}
 
-    @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
-    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
+    @Override public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
+        ifDestination = nbt.hasKey("ifDestination") ? RiftDestination.readDestinationNBT(nbt.getCompoundTag("ifDestination")) : null;
+        otherwiseDestination = nbt.hasKey("otherwiseDestination") ? RiftDestination.readDestinationNBT(nbt.getCompoundTag("otherwiseDestination")) : null;
+        NBTUtils.readFromNBT(this, nbt);
+    }
+    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        nbt = super.writeToNBT(nbt);
+        if (ifDestination != null) nbt.setTag("ifDestination", ifDestination.writeToNBT(new NBTTagCompound()));
+        if (otherwiseDestination != null) nbt.setTag("otherwiseDestination", otherwiseDestination.writeToNBT(new NBTTagCompound()));
+        return NBTUtils.writeToNBT(this, nbt);
+    }
 
     @Override
     public boolean teleport(RotatedLocation loc, Entity entity) {

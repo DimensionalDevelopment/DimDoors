@@ -30,4 +30,28 @@ public final class NBTUtils {
         }
         return obj;
     }
+
+    public static NBTTagCompound writeToNBTNormal(Object obj, NBTTagCompound nbt) {
+        try {
+            Class<?> objClass = obj.getClass();
+            Class<?> nbtWriter = Class.forName(objClass.getPackage().getName() + "." + objClass.getSimpleName() + "NBTWriter");
+            Method write = nbtWriter.getMethod("writeToNBT", objClass, NBTTagCompound.class);
+            write.invoke(null, obj, nbt);
+            return nbt;
+        } catch (ClassNotFoundException|NoSuchMethodException|IllegalAccessException|InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> T readFromNBTNormal(T obj, NBTTagCompound nbt) {
+        try {
+            Class<?> objClass = obj.getClass();
+            Class<?> nbtWriter = Class.forName(objClass.getPackage().getName() + "." + objClass.getSimpleName() + "NBTWriter");
+            Method read = nbtWriter.getMethod("readFromNBT", objClass, NBTTagCompound.class);
+            read.invoke(null, obj, nbt);
+        } catch (ClassNotFoundException|NoSuchMethodException|IllegalAccessException|InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+        return obj;
+    }
 }

@@ -1,27 +1,20 @@
 package org.dimdev.dimdoors.shared.rifts.registry;
 
 import lombok.*;
-import lombok.experimental.Wither;
 import net.minecraft.nbt.NBTTagCompound;
 import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.annotatednbt.Saved;
-import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.nbt.INBTStorable;
 import org.dimdev.ddutils.nbt.NBTUtils;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @NBTSerializable @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode @Builder(toBuilder = true) @ToString
 public class LinkProperties implements INBTStorable {
-    @Wither public Location rift;
-
-    @Saved @Builder.Default public UUID id = UUID.randomUUID();
     @Saved @Builder.Default public float floatingWeight = 1;
     @Saved @Builder.Default public float entranceWeight = 1;
     @Saved @Builder.Default public Set<Integer> groups = new HashSet<>();
-    @Saved public UUID replaceDestination;
     @Saved @Builder.Default public int linksRemaining = 1;
     @Saved @Builder.Default public boolean oneWay = false;
 

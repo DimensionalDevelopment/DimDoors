@@ -57,9 +57,9 @@ public abstract class CommonProxy {
         SchematicHandler.INSTANCE.loadSchematics();
     }
 
-    public void registerTileEntities() { // TODO: new registry system
-        GameRegistry.registerTileEntity(TileEntityEntranceRift.class, "EntranceRift");
-        GameRegistry.registerTileEntity(TileEntityFloatingRift.class, "FloatingRift");
+    public void registerTileEntities() {
+        GameRegistry.registerTileEntity(TileEntityEntranceRift.class, "dimdoors:entrance_rift");
+        GameRegistry.registerTileEntity(TileEntityFloatingRift.class, "dimdoors:floating_rift");
     }
 
     public abstract boolean isClient();

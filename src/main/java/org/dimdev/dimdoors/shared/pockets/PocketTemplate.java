@@ -48,7 +48,7 @@ public class PocketTemplate {
         DimDoors.log.info("Placing new pocket using schematic " + schematic.schematicName + " at x = " + xBase + ", z = " + zBase);
 
         WorldServer world = WorldUtils.getWorld(dim);
-        Schematic.place(schematic, world, xBase, 0, zBase);
+        Schematic.place(schematic, world, xBase, yBase, zBase);
 
         // Set pocket riftLocations
         pocket.riftLocations = new ArrayList<>();

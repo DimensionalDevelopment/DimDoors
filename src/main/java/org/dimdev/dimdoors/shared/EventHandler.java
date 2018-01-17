@@ -42,9 +42,9 @@ public final class EventHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
+    public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) { // TODO: what about non-players (EntityTravelToDimensionEvent)?
         // TODO: PocketLib compatibility
-        if (ModDimensions.isDimDoorsPocketDimension(event.fromDim) && !ModDimensions.isDimDoorsPocketDimension(event.toDim)) {
+        if (!ModDimensions.isDimDoorsPocketDimension(event.fromDim) && ModDimensions.isDimDoorsPocketDimension(event.toDim)) {
             RiftRegistry.instance().setOverworldRift(event.player.getUniqueID(), null);
         }
     }
