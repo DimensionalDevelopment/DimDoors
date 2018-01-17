@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
 
 public class BlockDimensionalDoorTransient extends BlockDimensionalDoor { // TODO: convert to a more general entrances block (like nether portals)
 
@@ -29,7 +30,7 @@ public class BlockDimensionalDoorTransient extends BlockDimensionalDoor { // TOD
 
     @Override
     public boolean isCollidable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -41,6 +42,7 @@ public class BlockDimensionalDoorTransient extends BlockDimensionalDoor { // TOD
     @Override
     public void setupRift(TileEntityEntranceRift rift) {
         // TODO
+        PocketEntranceDestination destination = PocketEntranceDestination.builder().build();
     }
 
     @Override

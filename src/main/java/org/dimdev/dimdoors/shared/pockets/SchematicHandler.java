@@ -190,12 +190,8 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
             }
             int minDepth = variation.get("minDepth").getAsInt();
             int maxDepth = variation.get("maxDepth").getAsInt();
-            JsonArray weightsJsonArray = variation.get("weights").getAsJsonArray();
-            float[] weights = new float[weightsJsonArray.size()];
-            for (int j = 0; j < weightsJsonArray.size(); j++) {
-                weights[j] = weightsJsonArray.get(j).getAsFloat();
-            }
-            PocketTemplate pocketTemplate = new PocketTemplate(directory, variantName, variationSize, minDepth, maxDepth, weights);
+            int baseWeight = variation.get("baseWeight").getAsInt();
+            PocketTemplate pocketTemplate = new PocketTemplate(directory, variantName, variationSize, minDepth, maxDepth, baseWeight);
             pocketTemplates.add(pocketTemplate);
         }
 
