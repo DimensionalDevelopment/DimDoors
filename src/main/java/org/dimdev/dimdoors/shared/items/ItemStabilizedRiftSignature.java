@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.items;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -8,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -116,7 +116,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
         RotatedLocation transform = getTarget(stack);
         if (transform != null) {
-            tooltip.add(I18n.translateToLocalFormatted("info.stabilized_rift_signature.bound", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
+            tooltip.add(I18n.format("info.stabilized_rift_signature.bound", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
         } else {
             tooltip.addAll(I18nUtils.translateMultiline("info.stabilized_rift_signature.unbound"));
         }

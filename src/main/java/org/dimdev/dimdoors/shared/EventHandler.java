@@ -31,6 +31,7 @@ public final class EventHandler {
             EntityPlayerMP player = (EntityPlayerMP) entity;
             World world = entity.world;
             int dim = world.provider.getDimension();
+            //noinspection StatementWithEmptyBody
             if (!world.isRemote
                 && !player.isDead
                 && ModDimensions.isDimDoorsPocketDimension(world)

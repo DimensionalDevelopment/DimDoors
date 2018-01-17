@@ -1,8 +1,6 @@
 package org.dimdev.dimdoors.shared.blocks;
 
-import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
-import org.dimdev.ddutils.Location;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;

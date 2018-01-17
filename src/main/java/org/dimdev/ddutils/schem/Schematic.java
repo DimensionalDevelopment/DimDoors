@@ -16,7 +16,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.dimdev.dimdoors.DimDoors;
-import org.lwjgl.Sys;
 
 import java.util.*;
 import java.util.Map.Entry;

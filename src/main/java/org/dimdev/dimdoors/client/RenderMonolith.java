@@ -83,7 +83,6 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
 
         try {
             float interpolatedYaw = interpolateRotation(par1EntityLivingBase.prevRenderYawOffset, par1EntityLivingBase.renderYawOffset, par9);
-            float interpolatedYawHead = interpolateRotation(par1EntityLivingBase.prevRotationYawHead, par1EntityLivingBase.rotationYawHead, par9);
             float rotation;
             float pitch = par1EntityLivingBase.prevRotationPitch + (par1EntityLivingBase.rotationPitch - par1EntityLivingBase.prevRotationPitch) * par9;
             renderLivingAt(par1EntityLivingBase, x, y, z);
@@ -98,7 +97,6 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
             preRenderCallback(par1EntityLivingBase, par9);
             GlStateManager.rotate(par1EntityLivingBase.pitchLevel, 1.0F, 0.0F, 0.0F);
             GlStateManager.translate(0.0F, 24.0F * f6 - 0.0078125F, 0.0F);
-
 
             renderModel(par1EntityLivingBase, 0, 0, rotation, interpolatedYaw, pitch, f6);
 

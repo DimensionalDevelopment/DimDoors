@@ -31,8 +31,8 @@ public abstract class LinkingDestination extends RiftDestination {
     }
 
     @Override
-    public boolean keepAfterTargetGone(Location location) {
-        if (!wrappedDestination.keepAfterTargetGone(location)) {
+    public boolean keepAfterTargetGone(Location location, Location target) {
+        if (!wrappedDestination.keepAfterTargetGone(location, target)) {
             wrappedDestination.unregister(location);
         }
         return true;

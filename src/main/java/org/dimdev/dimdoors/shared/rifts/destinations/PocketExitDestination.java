@@ -28,7 +28,7 @@ public class PocketExitDestination extends RiftDestination { // TODO: not exactl
 
     @Override
     public boolean teleport(RotatedLocation loc, Entity entity) {
-        if (entity instanceof EntityPlayer) DimDoors.chat(entity, "The exit of this dungeon has not been linked. Either this is a bug or you are in dungeon-building mode.");
+        if (entity instanceof EntityPlayer) DimDoors.sendMessage(entity, "The exit of this dungeon has not been linked. Either this is a bug or you are in dungeon-building mode.");
         return false;
     }
 }

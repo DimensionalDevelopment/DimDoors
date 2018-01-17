@@ -61,8 +61,8 @@ public abstract class RiftDestination implements INBTStorable {
         RiftRegistry.instance().removeLink(location, getFixedTarget(location));
     }
 
-    public boolean keepAfterTargetGone(Location location) {
-        return true;
+    public boolean keepAfterTargetGone(Location location, Location target) {
+        return !target.equals(getFixedTarget(location));
     }
 
     public RGBA getColor(Location location) {

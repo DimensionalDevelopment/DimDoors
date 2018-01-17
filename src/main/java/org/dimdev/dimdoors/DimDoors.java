@@ -71,7 +71,7 @@ public class DimDoors {
     }
 
     public static void sendMessage(Entity entity, String text) {
-        if(true) {
+        if (/* TODO: config option && */ entity instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) entity;
             player.sendStatusMessage(new TextComponentString(text), true);
         } else

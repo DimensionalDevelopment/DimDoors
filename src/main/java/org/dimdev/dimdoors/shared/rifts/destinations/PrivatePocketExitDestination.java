@@ -46,9 +46,9 @@ public class PrivatePocketExitDestination extends RiftDestination {
             }
             if (destLoc == null || !(destLoc.getTileEntity() instanceof TileEntityRift)) {
                 if (destLoc == null) {
-                    DimDoors.chat(entity, "You did not use a rift to enter this pocket so you ended up in limbo!");
+                    DimDoors.sendMessage(entity, "You did not use a rift to enter this pocket so you ended up in limbo!");
                 } else {
-                    DimDoors.chat(entity, "The rift you entered through no longer exists so you ended up in limbo!");
+                    DimDoors.sendMessage(entity, "The rift you entered through no longer exists so you ended up in limbo!");
                 }
                 TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity));
                 return false;

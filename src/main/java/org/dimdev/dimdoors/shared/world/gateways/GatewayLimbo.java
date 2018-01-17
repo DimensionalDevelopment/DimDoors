@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 
 public class GatewayLimbo extends BaseGateway {
     @Override
-    public boolean generate(World world, int x, int y, int z)
+    public void generate(World world, int x, int y, int z)
     {
         IBlockState limbo = ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.UNRAVELED);
         // Build the gateway out of Unraveled Fabric. Since nearly all the blocks in Limbo are of
@@ -26,7 +26,6 @@ public class GatewayLimbo extends BaseGateway {
         world.setBlockState(new BlockPos(x, y + 1, z + 1), limbo);
 
         ItemDoor.placeDoor(world, new BlockPos(x, y + 1, z), EnumFacing.getHorizontal(0), ModBlocks.TRANSIENT_DIMENSIONAL_DOOR, false);
-        return true;
     }
 
     @Override

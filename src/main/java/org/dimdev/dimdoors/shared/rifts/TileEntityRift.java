@@ -167,7 +167,7 @@ import javax.annotation.Nonnull;
     }
 
     public void targetGone(Location loc) {
-        if (!destination.keepAfterTargetGone(loc)) setDestination(null);
+        if (!destination.keepAfterTargetGone(new Location(world, pos), loc)) setDestination(null);
         updateColor();
     }
 
@@ -181,7 +181,7 @@ import javax.annotation.Nonnull;
 
         // Check that the rift has as destination
         if (destination == null) {
-            DimDoors.chat(entity, "This rift has no destination!");
+            DimDoors.sendMessage(entity, "This rift has no destination!");
             return false;
         }
 
@@ -196,7 +196,7 @@ import javax.annotation.Nonnull;
                 return true;
             }
         } catch (Exception e) {
-            DimDoors.chat(entity, "There was an exception while teleporting!");
+            DimDoors.sendMessage(entity, "There was an exception while teleporting!");
             DimDoors.log.error("Teleporting failed with the following exception: ", e);
         }
         return false;

@@ -138,7 +138,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
                 // Also, since it's a large open area with many Monoliths, some
                 // of the sounds that would usually play for a moment would
                 // keep playing constantly and would get very annoying.
-                playSounds(player);
+                playSounds(player.getPosition());
             }
 
             if (visibility) {
@@ -206,20 +206,20 @@ public class EntityMonolith extends EntityFlying implements IMob {
     /**
      * Plays sounds at different levels of aggro, using soundTime to prevent too many sounds at once.
      *
-     * @param player
+     * @param pos The position to play the sounds at
      */
-    private void playSounds(EntityPlayer player) {
+    private void playSounds(BlockPos pos) {
         float aggroPercent = getAggroProgress();
         if (soundTime <= 0) {
             playSound(ModSounds.MONK, 1F, 1F);
             soundTime = 100;
         }
         if (aggroPercent > 0.70 && soundTime < 100) { // TODO: null rather than player?
-            world.playSound(null, player.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + rand.nextGaussian()));
+            world.playSound(null, pos, ModSounds.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + rand.nextGaussian()));
             soundTime = 100 + rand.nextInt(75);
         }
         if (aggroPercent > 0.80 && soundTime < MAX_SOUND_COOLDOWN) {
-            world.playSound(null, player.getPosition(), ModSounds.TEARING, SoundCategory.HOSTILE, 7, 1F);
+            world.playSound(null, pos, ModSounds.TEARING, SoundCategory.HOSTILE, 7, 1F);
             soundTime = 250;
         }
         soundTime--;

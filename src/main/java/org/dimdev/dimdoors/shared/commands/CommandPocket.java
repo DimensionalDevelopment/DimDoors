@@ -73,21 +73,21 @@ public class CommandPocket extends CommandBase {
             EntityPlayerMP player = getCommandSenderAsPlayer(sender);
             // Make sure the player is in a pocket world
             if (!ModDimensions.isDimDoorsPocketDimension(player.world)) {
-                DimDoors.chat(player, "You must be in a pocket dimension to use this command!");
+                DimDoors.sendMessage(player, "You must be in a pocket dimension to use this command!");
                 return;
             }
 
             // Check if the schematic exists
             if (!SchematicHandler.INSTANCE.getTemplateGroups().contains(group)) {
-                DimDoors.chat(player, "Group " + group + " not found");
+                DimDoors.sendMessage(player, "Group " + group + " not found");
                 return;
             } else if (!SchematicHandler.INSTANCE.getTemplateNames(group).contains(name)) {
-                DimDoors.chat(player, "Schematic " + name + " not found in group " + group);
+                DimDoors.sendMessage(player, "Schematic " + name + " not found in group " + group);
                 return;
             }
 
             // Generate the schematic
-            DimDoors.chat(player, "Generating schematic " + name);
+            DimDoors.sendMessage(player, "Generating schematic " + name);
             PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(group, name);
             Pocket pocket = PocketGenerator.generatePocketFromTemplate(WorldUtils.getDim(player.world), template, null);
             if (setup) pocket.setup();

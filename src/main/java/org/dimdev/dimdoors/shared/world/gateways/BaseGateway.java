@@ -14,7 +14,7 @@ public abstract class BaseGateway {
      * @param y - the y-coordinate of the block on which the gateway may be built
      * @param z - the z-coordinate at which to center the gateway; usually where the door is placed
      */
-    public abstract boolean generate(World world, int x, int y, int z);
+    public abstract void generate(World world, int x, int y, int z);
 
     /**
      * Determines whether the specified biome is a valid biome in which to generate this gateway

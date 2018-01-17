@@ -26,7 +26,6 @@ public class DimensionFilter {
         int end;
         String startPart;
         String endPart;
-        String[] intervals;
         RangeSet<Integer> ranges = TreeRangeSet.create();
 
         // Iterate over all the interval strings

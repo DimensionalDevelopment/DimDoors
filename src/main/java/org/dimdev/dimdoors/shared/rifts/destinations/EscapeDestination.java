@@ -36,7 +36,7 @@ public class EscapeDestination extends RiftDestination {
     @Override
     public boolean teleport(RotatedLocation loc, Entity entity) {
         if (!ModDimensions.isDimDoorsPocketDimension(entity.world)) {
-            DimDoors.chat(entity, "Can't escape from a non-pocket dimension!");
+            DimDoors.sendMessage(entity, "Can't escape from a non-pocket dimension!");
             return false;
         }
         UUID uuid = entity.getUniqueID();
@@ -48,9 +48,9 @@ public class EscapeDestination extends RiftDestination {
                 return true;
             } else {
                 if (destLoc == null) {
-                    DimDoors.chat(entity, "You didn't use a rift to enter so you ended up in Limbo!"); // TODO: better messages, localization
+                    DimDoors.sendMessage(entity, "You didn't use a rift to enter so you ended up in Limbo!"); // TODO: better messages, localization
                 } else {
-                    DimDoors.chat(entity, "The rift you used to enter has closed so you ended up in Limbo!");
+                    DimDoors.sendMessage(entity, "The rift you used to enter has closed so you ended up in Limbo!");
                 }
                 TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity)); // TODO: do we really want to spam limbo with items?
                 return true;

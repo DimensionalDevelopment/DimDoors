@@ -26,7 +26,6 @@ import org.dimdev.dimdoors.shared.tools.SchematicConverter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
 import org.apache.commons.io.IOUtils;
-import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 /**
@@ -262,10 +261,6 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
     /**
      * Gets a random template matching certain criteria.
      *
-     * @param groupWeights
-     * @param depth
-     * @param maxSize
-     * @param getLargest
      * @return A random template matching those criteria, or null if none were found
      */
     public PocketTemplate getRandomTemplate(Map<String, Float> groupWeights, int depth, int maxSize, boolean getLargest) { // TODO: useful?
@@ -276,8 +271,6 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
     /**
      * Gets a random template matching certain criteria.
      *
-     * @param group
-     * @param depth
      * @param maxSize Maximum size the template can be.
      * @param getLargest Setting this to true will always get the largest template size in that group, 
      * but still randomly out of the templates with that size (ex. for private and public pockets)
@@ -307,11 +300,11 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
     }
 
     public PocketTemplate getPersonalPocketTemplate() {
-        return getRandomTemplate("private", -1, Math.min(Config.getPrivatePocketSize(), PocketRegistry.getForDim(ModDimensions.getPrivateDim()).getPrivatePocketSize()), true);
+        return getRandomTemplate("private", -1, Math.min(Config.getPrivatePocketSize(), PocketRegistry.instance(ModDimensions.getPrivateDim()).getPrivatePocketSize()), true);
     }
 
     public PocketTemplate getPublicPocketTemplate() {
-        return getRandomTemplate("public", -1, Math.min(Config.getPublicPocketSize(), PocketRegistry.getForDim(ModDimensions.getPublicDim()).getPublicPocketSize()), true);
+        return getRandomTemplate("public", -1, Math.min(Config.getPublicPocketSize(), PocketRegistry.instance(ModDimensions.getPublicDim()).getPublicPocketSize()), true);
     }
 
     public void saveSchematic(Schematic schematic, String name) {

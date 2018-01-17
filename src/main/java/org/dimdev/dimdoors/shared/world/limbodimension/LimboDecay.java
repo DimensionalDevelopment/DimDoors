@@ -89,13 +89,11 @@ public final class LimboDecay {
      * This decay method is designed to stop players from avoiding Limbo decay by building floating structures.
      */
     public static void applyRandomFastDecay() {
-        int x, y, z;
         int sectionY;
         int limboHeight;
         int[] limbo = DimensionManager.getDimensions(ModDimensions.LIMBO);
 
-
-        for (Integer i : limbo) {
+        for (int i : limbo) {
             World world = DimensionManager.getWorld(i);
 
             limboHeight = world.getHeight();
