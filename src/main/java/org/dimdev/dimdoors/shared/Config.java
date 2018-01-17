@@ -20,7 +20,11 @@ public final class Config {
     @Getter private static int maxPocketSize = 15;
     @Getter private static int privatePocketSize = 3;
     @Getter private static int publicPocketSize = 2;
+    @Getter private static boolean loadAllSchematics = false;
+    
     @Getter private static int baseDim = 684;
+    
+    // TODO: Remove these config options?
     @Getter private static int maxDungeonDepth = 100;
     @Getter private static int owCoordinateOffsetBase = 64;
     @Getter private static double owCoordinateOffsetPower = 1.3;
@@ -30,12 +34,13 @@ public final class Config {
     @Getter private static boolean dangerousLimboMonolithsEnabled = false;
     @Getter private static boolean monolithTeleportationEnabled = true;
 
-    @Getter private static int clusterGenerationChance;
-    @Getter private static int gatewayGenerationChance;
+    @Getter private static int clusterGenerationChance = 2;
+    @Getter private static int gatewayGenerationChance = 15;
 
-    @Getter private static boolean limboEscapeEnabled;
-    @Getter private static boolean universalLimboEnabled;
+    @Getter private static boolean limboEscapeEnabled = true;
+    @Getter private static boolean universalLimboEnabled = false;
 
+    // TODO: more complex functionality should be moved from the config class
     @Getter private static DimensionFilter riftClusterDimensions;
     @Getter private static DimensionFilter riftGatewayDimensions;
 
@@ -66,20 +71,20 @@ public final class Config {
         // Setup general
         config.addCustomCategoryComment("general", "General configuration options.");
         Property prop = config.get("general", "baseDim", baseDim,
-                "Dimension ID of the first Dimensional Doors dimension. Other dimensions will use consecutive IDs. NB: If you change this after creating a world, you may lose these dimensions. [default: 684]");
+                "Dimension ID of the first Dimensional Doors dimension. Other dimensions will use consecutive IDs. NB: If you change this after creating a world, you may lose these dimensions. [default: "+baseDim+"]");
         baseDim = prop.getInt(baseDim);
 
         //Dungeons
         config.addCustomCategoryComment("dungeons", "The following options will determine the depths, wandering offsets and contents of Dungeon Pockets.");
 
         maxDungeonDepth = setConfigIntWithMaxAndMin(config, "dungeons", "maxDungeonDepth", maxDungeonDepth,
-                "Sets the maximum (deepest) depth that a dungeon pocket can be at. [min: 1, max: 32, default: 8]", 1, 32);
+                "Sets the maximum (deepest) depth that a dungeon pocket can be at. [min: 1, max: 128, default: "+maxDungeonDepth+"]", 1, 128);
 
         owCoordinateOffsetBase = setConfigIntWithMaxAndMin(config, "dungeons", "owCoordinateOffsetBase", owCoordinateOffsetBase,
-                "Determines how heavy the depth weighs when determining the overworld coordinates corresponding to a dungeon pocket. [min: 1, max: 128, default: 64]", 1, 128);
+                "Determines how heavy the depth weighs when determining the overworld coordinates corresponding to a dungeon pocket. [min: 1, max: 128, default: "+owCoordinateOffsetBase+"]", 1, 128);
 
         prop = config.get("dungeons", "owCoordinateOffsetPower", owCoordinateOffsetPower,
-                "Determines how heavy the depth weighs when determining the overworld coordinates corresponding to a dungeon pocket. [default: 1.3]"
+                "Determines how heavy the depth weighs when determining the overworld coordinates corresponding to a dungeon pocket. [default: "+owCoordinateOffsetPower+"]"
                 + System.getProperty("line.separator") + "max offset = (depth * owCoordinateOffsetBase)^owCoordinateOffsetPower");
         owCoordinateOffsetPower = prop.getDouble(owCoordinateOffsetPower);
 
@@ -95,55 +100,62 @@ public final class Config {
         //Monoliths
         config.addCustomCategoryComment("monoliths", "How dangerous are Monoliths");
         prop = config.get("monoliths", "dangerousLimboMonoliths", dangerousLimboMonolithsEnabled,
-                "Are Monoliths in Limbo Dangerous? [default: false]");
+                "Are Monoliths in Limbo Dangerous? [default: "+dangerousLimboMonolithsEnabled+"]");
         dangerousLimboMonolithsEnabled = prop.getBoolean();
 
         prop = config.get("monoliths", "monolithTeleportation", monolithTeleportationEnabled,
-                "Is Monolith Teleportation enabled? [default: true]");
+                "Is Monolith Teleportation enabled? [default: "+monolithTeleportationEnabled+"]");
         monolithTeleportationEnabled = prop.getBoolean();
         
         //Pocket Dimensions
         config.addCustomCategoryComment("pocket_dimension", "The following values determine the maximum sizes of different kinds of pockets. These values will only influence new worlds.");
         pocketGridSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "pocketGridSize", pocketGridSize,
-                "Sets how many chunks apart all pockets in pocket dimensions should be placed. [min: 4, max: 32, default: 32]", 4, 32);
+                "Sets how many chunks apart all pockets in pocket dimensions should be placed. [min: 4, max: 32, default: "+pocketGridSize+"]", 4, 32);
 
         maxPocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "maxPocketSize", maxPocketSize,
-                "Sets how deep and wide any pocket can be. [min: 0, max: pocketGridSize/2, default: 4]", 0, (int) ((double) pocketGridSize / 2 - 0.5));
+                "Sets how deep and wide any pocket can be. [min: 0, max: pocketGridSize/2, default: "+maxPocketSize+"]", 0, (int) ((double) pocketGridSize / 2 - 0.5));
 
         privatePocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "privatePocketSize", privatePocketSize,
-                "Sets how deep and wide any personal pocket can be. [min: 0, max: maxPocketSize, default: 3]", 0, maxPocketSize);
+                "Sets how deep and wide any personal pocket can be. [min: 0, max: maxPocketSize, default: "+privatePocketSize+"]", 0, maxPocketSize);
 
         publicPocketSize = setConfigIntWithMaxAndMin(config, "pocket_dimension", "publicPocketSize", publicPocketSize,
-                "Sets how deep and wide any public pocket can be. [min: 0, max: maxPocketSize, default: 2]", 0, maxPocketSize);
+                "Sets how deep and wide any public pocket can be. [min: 0, max: maxPocketSize, default: "+publicPocketSize+"]", 0, maxPocketSize);
+        
+        loadAllSchematics =config.get("pocket_dimension", "loadAllSchematics", loadAllSchematics,
+                "Forces all available pocket schematics to load on game-start even if the configured maximum sizes mean that these " + 
+                        "schematics will never be placed in any naturally generated pockets. This is meant for testing purposes, " +
+                        "because the //pocket command can be used to force generate these pockets. " +
+                        "The default value is "+loadAllSchematics+".").getBoolean(loadAllSchematics);
 
-        clusterGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Cluster Generation Chance", 2,
+        clusterGenerationChance = config.get(CATEGORY_WORLD_GENERATION, "clusterGenerationChance", clusterGenerationChance,
                 "Sets the chance (out of " + GatewayGenerator.MAX_CLUSTER_GENERATION_CHANCE + ") that a cluster of rifts will " +
-                        "generate in a given chunk. The default chance is 2.").getInt();
+                        "generate in a given chunk. The default chance is "+clusterGenerationChance+".").getInt(clusterGenerationChance);
 
-        gatewayGenerationChance = config.get(Configuration.CATEGORY_GENERAL, "Gateway Generation Chance", 15,
+        gatewayGenerationChance = config.get(CATEGORY_WORLD_GENERATION, "gatewayGenerationChance", gatewayGenerationChance,
                 "Sets the chance (out of " + GatewayGenerator.MAX_GATEWAY_GENERATION_CHANCE + ") that a Rift Gateway will " +
-                        "generate in a given chunk. The default chance is 15.").getInt();
+                        "generate in a given chunk. The default chance is "+gatewayGenerationChance+".").getInt(gatewayGenerationChance);
 
         //World Generation
         config.addCustomCategoryComment(CATEGORY_WORLD_GENERATION,
-                "The following settings require lists of dimensions in a specific format. " +
-                        "A list must consist of ranges separated by commas. A range may be a single number to indicate " +
-                        "just one dimension or two numbers in the form \"X - Y\". Spaces are permitted " +
-                        "but not required. Example: -100, -10 - -1, 20 - 30");
+                "The following settings require lists of dimension ranges in a specific format. "
+                        + "A dimension range may be a single number to indicate just one dimension "
+                        + "or two numbers in the form \"X - Y\". Spaces are permitted but not required. "
+                        + "Examples: -1, 1, -1 - 1, -1-1. "
+                        + "Separate dimension ranges need to be on a new line.");
 
-        riftClusterDimensions = loadFilter(config, "Rift Cluster", "Rift Clusters");
-        riftGatewayDimensions = loadFilter(config, "Rift Gateway", "Rift Gateways");
+        riftClusterDimensions = loadFilter(config, "cluster", "Rift Clusters");
+        riftGatewayDimensions = loadFilter(config, "gateway", "Rift Gateways");
 
-        limboEscapeEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Limbo Escape", true,
+        limboEscapeEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Limbo Escape", limboEscapeEnabled,
                 "Sets whether players are teleported out of Limbo when walking over the Eternal Fabric that " +
                         "generates near the bottom of the dimension. If disabled, players could still leave through " +
-                        "dungeons in Limbo or by dying (if Hardcore Limbo is disabled). The default value is true.").getBoolean(true);
+                        "dungeons in Limbo or by dying (if Hardcore Limbo is disabled). The default value is "+limboEscapeEnabled+".").getBoolean(limboEscapeEnabled);
 
-        universalLimboEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Universal Limbo", false,
+        universalLimboEnabled = config.get(Configuration.CATEGORY_GENERAL, "Enable Universal Limbo", universalLimboEnabled,
                 "Sets whether players are teleported to Limbo when they die in any dimension (except Limbo). " +
                         "Normally, players only go to Limbo if they die in a pocket dimension. This setting will not " +
                         "affect deaths in Limbo, which can be set with the Hardcore Limbo option. " +
-                        "The default value is false.").getBoolean(false);
+                        "The default value is "+universalLimboEnabled+".").getBoolean(universalLimboEnabled);
 
         // Save config
         config.save();
@@ -166,26 +178,28 @@ public final class Config {
         }
     }
 
-    private static DimensionFilter loadFilter(Configuration config, String prefix, String description) {
-        boolean enableBlacklist = config.get(CATEGORY_WORLD_GENERATION, "Enable " + prefix + " Blacklist", true,
-                "Sets whether " + description + " will not generate in certain blacklisted dimensions. " +
-                        "If set to false, then " + description + " will follow a whitelist instead.").getBoolean(true);
+    private static DimensionFilter loadFilter(Configuration config, String prefix, String featureName) {
+        //default values
+        boolean enableBlacklist = true;
+        String enableName = prefix + "Blacklist";
+        String listName = prefix + "DimRangeList";
+        String[] list = new String[0];
+        
+        enableBlacklist = config.get(CATEGORY_WORLD_GENERATION, enableName, enableBlacklist,
+                "Sets whether " + listName + " is a blacklist or not." + "The default value is "+enableBlacklist+".").getBoolean(enableBlacklist);
 
-        String whitelist = config.get(CATEGORY_WORLD_GENERATION, prefix + " Whitelist", "",
-                "A list of the only dimensions in which " + description + " may generate.").getString();
-
-        String blacklist = config.get(CATEGORY_WORLD_GENERATION, prefix + " Blacklist", "",
-                "A list of dimensions in which " + description + " may not generate.").getString();
+        list = config.get(CATEGORY_WORLD_GENERATION, listName, list,
+                "A list including/excluding the dimensions in which " + featureName + " may generate, depending on " + enableName + ".").getStringList();
 
         try {
             if (enableBlacklist) {
-                return DimensionFilter.parseBlacklist(blacklist);
+                return DimensionFilter.parseBlacklist(list);
             } else {
-                return DimensionFilter.parseWhitelist(whitelist);
+                return DimensionFilter.parseWhitelist(list);
             }
         } catch (Exception inner) {
             throw new RuntimeException("An error occurred while loading a whitelist or blacklist setting for " +
-                    description + ". Please make sure that your configuration file is set up correctly.", inner);
+                    featureName + ". Please make sure that your configuration file is set up correctly.", inner);
         }
     }
 }

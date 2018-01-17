@@ -34,7 +34,8 @@ public class BlockDimensionalDoorTransient extends BlockDimensionalDoor { // TOD
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        return null;
+        return new AxisAlignedBB(0,0,0,0,0,0); //patches entities trying to pathfind through this block, however makes them spin like crazy if they end up in this block.
+        //NULL_AABB, the same as BlockAir, or straight up null seem to crash the server.
     }
 
     @Override

@@ -3,9 +3,11 @@ package org.dimdev.ddutils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.WorldServer;
@@ -64,6 +66,9 @@ public final class TeleportUtils {
                 entity.setLocationAndAngles(x, y, z, yaw, pitch);
             }
             entity.setRotationYawHead(yaw);
+            entity.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1f, 1f);
+            WorldUtils.getWorld(newDimension).playSound(null, new BlockPos(x,y,z), SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0f, 1.0f);
+
             return entity;
         } else { // Based on EntityUtils.changeDimension
             MinecraftServer server = entity.getServer();
@@ -121,6 +126,9 @@ public final class TeleportUtils {
                 /*player.lastExperience = -1;
                 player.lastHealth = -1.0F;
                 player.lastFoodLevel = -1;*/
+                entity.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1f, 1f);
+                WorldUtils.getWorld(newDimension).playSound(null, new BlockPos(x,y,z), SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0f, 1.0f);
+
                 return entity;
             } else {
                 entity.world.profiler.startSection("changeDimension");
@@ -155,6 +163,9 @@ public final class TeleportUtils {
                 oldServer.resetUpdateEntityTick();
                 newServer.resetUpdateEntityTick();
                 entity.world.profiler.endSection();
+
+                entity.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1f, 1f);
+                WorldUtils.getWorld(newDimension).playSound(null, new BlockPos(x,y,z), SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0f, 1.0f);
 
                 return newEntity;
             }

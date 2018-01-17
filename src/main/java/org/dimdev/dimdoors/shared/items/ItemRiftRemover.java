@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.shared.items;
 
 import net.minecraft.util.*;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.RayTraceHelper;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
@@ -28,6 +30,7 @@ public class ItemRiftRemover extends Item {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
         tooltip.addAll(I18nUtils.translateMultiline("info.rift_remover"));
     }
@@ -48,6 +51,7 @@ public class ItemRiftRemover extends Item {
             // TODO: render rift removing animation
 
             stack.damageItem(10, player);
+            DimDoors.sendMessage(player, "Rift Removed");
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
         return new ActionResult<>(EnumActionResult.FAIL, stack);

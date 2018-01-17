@@ -6,6 +6,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.ddutils.I18nUtils;
@@ -80,13 +81,13 @@ public class ItemRiftSignature extends Item {
             stack.damageItem(1, player); // TODO: calculate damage based on position?
 
             clearSource(stack);
-            DimDoors.chat(player, "Rift Created");
+            DimDoors.sendMessage(player, "Rift Created");
             // null = send sound to the player too, we have to do this because this code is not run client-side
             world.playSound(null, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
             // The link signature has not been used. Store its current target as the first location.
             setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw, 0));
-            DimDoors.chat(player, "Location Stored in Rift Signature");
+            DimDoors.sendMessage(player, "Location Stored in Rift Signature");
             world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         }
 
