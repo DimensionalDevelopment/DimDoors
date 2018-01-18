@@ -35,7 +35,7 @@ public abstract class BaseSchematicGateway extends BaseGateway {
         if (streamOpened) {
             try {
                 schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                schematic = SchematicConverter.convertSchematic(schematicNBT, name);
+                schematic = SchematicConverter.convertSchematic(schematicNBT, name, null);
                 schematicDataStream.close();
             } catch (IOException ex) {
                 DimDoors.log.error("Schematic file for " + name + " could not be read as a valid schematic NBT file.", ex);

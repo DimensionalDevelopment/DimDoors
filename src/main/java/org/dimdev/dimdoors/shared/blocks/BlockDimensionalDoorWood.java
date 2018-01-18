@@ -1,14 +1,16 @@
 package org.dimdev.dimdoors.shared.blocks;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.items.ModItems;
-import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.items.ModItems;
+import org.dimdev.dimdoors.shared.rifts.destinations.AvailableLinkDestination;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
+import java.util.Collections;
 import java.util.Random;
 
 public class BlockDimensionalDoorWood extends BlockDimensionalDoor {
@@ -34,7 +36,13 @@ public class BlockDimensionalDoorWood extends BlockDimensionalDoor {
 
     @Override
     public void setupRift(TileEntityEntranceRift rift) {
-        // TODO
+        rift.setDestination(AvailableLinkDestination.builder()
+                .acceptedGroups(Collections.singleton(0))
+                .coordFactor(1)
+                .negativeDepthFactor(80)
+                .positiveDepthFactor(Double.MAX_VALUE)
+                .weightMaximum(100)
+                .noLink(false).newRiftWeight(1).build());
     }
 
     @Override

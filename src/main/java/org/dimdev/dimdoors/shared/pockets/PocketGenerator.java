@@ -9,7 +9,7 @@ import java.util.Random;
 public final class PocketGenerator {
 
     public static Pocket generatePocketFromTemplate(int dim, PocketTemplate pocketTemplate, VirtualLocation virtualLocation) {
-        DimDoors.log.info("Generating pocket from template " + pocketTemplate.getName() + " at virtual location " + virtualLocation);
+        DimDoors.log.info("Generating pocket from template " + pocketTemplate.getId() + " at virtual location " + virtualLocation);
 
         PocketRegistry registry = PocketRegistry.instance(dim);
         Pocket pocket = registry.newPocket();
@@ -23,6 +23,7 @@ public final class PocketGenerator {
         return generatePocketFromTemplate(ModDimensions.getPrivateDim(), pocketTemplate, virtualLocation);
     }
 
+    // TODO: size of public pocket should increase with depth
     public static Pocket generatePublicPocket(VirtualLocation virtualLocation) {
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getPublicPocketTemplate();
         return generatePocketFromTemplate(ModDimensions.getPublicDim(), pocketTemplate, virtualLocation);
@@ -36,7 +37,7 @@ public final class PocketGenerator {
      */
     public static Pocket generateDungeonPocket(VirtualLocation virtualLocation) {
         int depth = virtualLocation.getDepth();
-        float netherProbability = virtualLocation.getDim() == -1 ? 1 : (float) depth / 50; // TODO: improve nether probability
+        float netherProbability = virtualLocation.getDim() == -1 ? 1 : (float) depth / 200; // TODO: improve nether probability
         Random random = new Random();
         String group = random.nextFloat() < netherProbability ? "nether" : "ruins";
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getRandomTemplate(group, depth, Config.getMaxPocketSize(), false);

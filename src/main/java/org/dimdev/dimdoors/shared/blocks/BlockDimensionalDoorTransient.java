@@ -9,7 +9,6 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
 
 public class BlockDimensionalDoorTransient extends BlockDimensionalDoor { // TODO: convert to a more general entrances block (like nether portals)
 
@@ -35,15 +34,12 @@ public class BlockDimensionalDoorTransient extends BlockDimensionalDoor { // TOD
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        return new AxisAlignedBB(0,0,0,0,0,0); //patches entities trying to pathfind through this block, however makes them spin like crazy if they end up in this block.
-        //NULL_AABB, the same as BlockAir, or straight up null seem to crash the server.
+        // Patches entities trying to pathfind through this block, however makes them spin like crazy if they end up in this block.
+        return new AxisAlignedBB(0, 0, 0, 0, 0, 0);
     }
 
     @Override
-    public void setupRift(TileEntityEntranceRift rift) {
-        // TODO
-        PocketEntranceDestination destination = PocketEntranceDestination.builder().build();
-    }
+    public void setupRift(TileEntityEntranceRift rift) {}
 
     @Override
     public boolean canBePlacedOnRift() {

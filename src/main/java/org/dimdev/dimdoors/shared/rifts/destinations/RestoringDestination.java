@@ -7,7 +7,7 @@ import org.dimdev.ddutils.RGBA;
 import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 
-public abstract class LinkingDestination extends RiftDestination {
+public abstract class RestoringDestination extends RiftDestination {
 
     private RiftDestination wrappedDestination;
 

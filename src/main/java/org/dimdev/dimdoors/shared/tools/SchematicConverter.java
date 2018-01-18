@@ -2,11 +2,13 @@ package org.dimdev.dimdoors.shared.tools;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
+import net.minecraft.block.BlockEndPortalFrame;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.*;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -16,6 +18,7 @@ import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
+import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import org.dimdev.dimdoors.shared.rifts.destinations.AvailableLinkDestination;
 import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
 import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
@@ -41,12 +44,12 @@ public final class SchematicConverter {
         stateMap.put("minecraft:wooden_door", ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState());
     }
 
-    public static Schematic convertSchematic(NBTTagCompound nbt, String name) {
+    public static Schematic convertSchematic(NBTTagCompound nbt, String name, String author) {
         Schematic schematic = new Schematic();
 
         schematic.version = 1; //already the default value
-        schematic.author = "DimDoors"; // Old schematics didn't have an author
-        schematic.name = name.equals("") ? "Unknown" : name;
+        schematic.author = author;
+        schematic.name = name;
         schematic.creationDate = System.currentTimeMillis();
         schematic.requiredMods = new String[]{DimDoors.MODID};
 
@@ -54,6 +57,13 @@ public final class SchematicConverter {
         schematic.height = nbt.getShort("Height");
         schematic.length = nbt.getShort("Length");
         schematic.offset = new int[]{0, 0, 0};
+
+        // Schematic info
+        int ironDoors = 0;
+        int woodDoors = 0;
+        int sandstoneDoors = 0;
+        int monoliths = 0;
+        int chests = 0;
 
         byte[] blockIntArray = nbt.getByteArray("Blocks");
         if (nbt.hasKey("Palette")) {
@@ -149,6 +159,8 @@ public final class SchematicConverter {
                             blockInt = schematic.pallette.size() - 1;
                         }
 
+                        if (baseState.getBlock().equals(Blocks.CHEST)) chests++;
+
                         if (baseState.getBlock().equals(ModBlocks.DIMENSIONAL_DOOR) || baseState.getBlock().equals(ModBlocks.WARP_DIMENSIONAL_DOOR)) {
                             //DimDoors.log.info("Door found: " + baseState.getBlock().getUnlocalizedName());
                             if (blockState.getProperties().get(BlockDoor.HALF).equals(BlockDoor.EnumDoorHalf.LOWER)) {
@@ -160,6 +172,7 @@ public final class SchematicConverter {
                                         .linksRemaining(1).build());
 
                                 if (baseState.equals(ModBlocks.DIMENSIONAL_DOOR)) {
+                                    ironDoors++;
                                     rift.setDestination(AvailableLinkDestination.builder()
                                             .acceptedGroups(Collections.singleton(0))
                                             .coordFactor(1)
@@ -171,10 +184,12 @@ public final class SchematicConverter {
                                 } else { //if (baseState.equals(ModBlocks.WARP_DIMENSIONAL_DOOR))
                                     IBlockState stateBelow = schematic.pallette.get(schematic.blockData[x][y - 1][z]);
                                     if (stateBelow.getBlock().equals(Blocks.SANDSTONE)) {
+                                        sandstoneDoors++;
+                                        rift.setProperties(null); // TODO: this should be removed once the linking equations are made symmetric
                                         rift.setDestination(AvailableLinkDestination.builder()
                                                 .acceptedGroups(Collections.singleton(0))
                                                 .coordFactor(1)
-                                                .negativeDepthFactor(0.00000000001)
+                                                .negativeDepthFactor(0.00000000001) // The division result is cast to an int, so Double.MIN_VALUE would cause an overflow
                                                 .positiveDepthFactor(Double.POSITIVE_INFINITY)
                                                 .weightMaximum(100)
                                                 .noLink(false)
@@ -186,6 +201,7 @@ public final class SchematicConverter {
                                             DimDoors.log.error("Someone placed a door on a sandstone block at the bottom of a schematic. This causes problems and should be remedied. Schematic name: " + schematic.name);
                                         }
                                     } else {
+                                        woodDoors++;
                                         rift.setDestination(PocketEntranceDestination.builder()
                                                 .weight(1)
                                                 .ifDestination(PocketExitDestination.builder().build())
@@ -201,6 +217,17 @@ public final class SchematicConverter {
 
                                 schematic.tileEntities.add(rift.serializeNBT());
                             }
+
+                        }
+
+                        if (blockState.getBlock().equals(Blocks.END_PORTAL_FRAME)) {
+                            monoliths++;
+                            // I think it's safe to assume that air is present
+                            blockInt = schematic.pallette.indexOf(Blocks.AIR.getDefaultState());
+                            EntityMonolith monolith = new EntityMonolith(null);
+                            EnumFacing facing = blockState.getValue(BlockEndPortalFrame.FACING);
+                            monolith.setLocationAndAngles(x + 0.5d, y, z + 0.5d, facing.getHorizontalAngle(), 0);
+                            schematic.entities.add(monolith.serializeNBT());
                         }
                     } else { // if this is ancient fabric
                         blockInt = schematic.pallette.indexOf(baseState);
@@ -210,9 +237,10 @@ public final class SchematicConverter {
                 }
             }
         }
+        if (!nbt.getTag("Entities").hasNoTags()) throw new RuntimeException("Schematic contains entities, but those aren't implemented in the conversion code");
         schematic.paletteMax = schematic.pallette.size() - 1;
 
-        // TODO: entities (and replace end portal frame with monoliths)
+        DimDoors.log.info(schematic.name + "," + ironDoors + "," + woodDoors + "," + sandstoneDoors + "," + monoliths + "," + chests);
 
         return schematic;
     }

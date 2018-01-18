@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.shared.rifts;
 import lombok.Getter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -25,7 +24,6 @@ import org.dimdev.dimdoors.shared.blocks.BlockFloatingRift;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.rifts.registry.Rift;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
-import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 import javax.annotation.Nonnull;
 
@@ -53,6 +51,7 @@ import javax.annotation.Nonnull;
         yaw = oldRift.yaw;
         pitch = oldRift.pitch;
         properties = oldRift.properties;
+        destination = oldRift.destination;
         if (oldRift.isFloating() != isFloating()) updateType();
 
         markDirty();
@@ -212,7 +211,7 @@ import javax.annotation.Nonnull;
                 return true;
             }
         } catch (Exception e) {
-            DimDoors.sendMessage(entity, "There was an exception while teleporting!");
+            DimDoors.chat(entity, "There was an exception while teleporting, please report this bug.");
             DimDoors.log.error("Teleporting failed with the following exception: ", e);
         }
         return false;

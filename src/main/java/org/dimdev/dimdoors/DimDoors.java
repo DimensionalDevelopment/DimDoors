@@ -74,7 +74,12 @@ public class DimDoors {
         if (/* TODO: config option && */ entity instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) entity;
             player.sendStatusMessage(new TextComponentString(text), true);
-        } else
-            entity.sendMessage(new TextComponentString("[DimDoors] " + text));
+        } else {
+            chat(entity, text);
+        }
+    }
+
+    public static void chat(Entity entity, String text) {
+        entity.sendMessage(new TextComponentString("[DimDoors] " + text));
     }
 }

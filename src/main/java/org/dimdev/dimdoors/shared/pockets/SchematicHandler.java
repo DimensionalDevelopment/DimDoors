@@ -31,14 +31,13 @@ import org.dimdev.dimdoors.shared.world.ModDimensions;
 /**
  * @author Robijnvogel
  */
-public class SchematicHandler { // TODO: make this more general (not dimdoors-related)
+public class SchematicHandler {
 
     public static final SchematicHandler INSTANCE = new SchematicHandler(); // TODO: make static
 
     private List<PocketTemplate> templates;
     private Map<String, Map<String, Integer>> nameMap; // group -> name -> index in templates
 
-    // LOADING CODE STARTS HERE <editor-fold>
     public void loadSchematics() {
         templates = new ArrayList<>();
 
@@ -91,7 +90,7 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
         String subDirectory = jsonTemplate.get("group").getAsString(); //get the subfolder in which the schematics are stored
 
         for (PocketTemplate template : validTemplates) { //it's okay to "tap" this for-loop, even if validTemplates is empty.
-            String extendedTemplatelocation = subDirectory.equals("") ? template.getName() : subDirectory + "/" + template.getName(); //transform the filename accordingly
+            String extendedTemplatelocation = subDirectory.equals("") ? template.getId() : subDirectory + "/" + template.getId(); //transform the filename accordingly
 
             //Initialising the possible locations/formats for the schematic file
             InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + extendedTemplatelocation + ".schem");
@@ -113,17 +112,17 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
                     schematicDataStream = new DataInputStream(new FileInputStream(schematicFile));
                     streamOpened = true;
                 } catch (FileNotFoundException ex) {
-                    DimDoors.log.error("Schematic file " + template.getName() + ".schem did not load correctly from config folder.", ex);
+                    DimDoors.log.error("Schematic file " + template.getId() + ".schem did not load correctly from config folder.", ex);
                 }
             } else if (oldVersionSchematicFile.exists()) {
                 try {
                     schematicDataStream = new DataInputStream(new FileInputStream(oldVersionSchematicFile));
                     streamOpened = true;
                 } catch (FileNotFoundException ex) {
-                    DimDoors.log.error("Schematic file " + template.getName() + ".schematic did not load correctly from config folder.", ex);
+                    DimDoors.log.error("Schematic file " + template.getId() + ".schematic did not load correctly from config folder.", ex);
                 }
             } else {
-                DimDoors.log.warn("Schematic '" + template.getName() + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
+                DimDoors.log.warn("Schematic '" + template.getId() + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
             }
 
             NBTTagCompound schematicNBT;
@@ -132,13 +131,13 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
                 try {
                     schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
                     if (!schematicNBT.hasKey("Version")) {
-                        schematic = SchematicConverter.convertSchematic(schematicNBT, template.getName());
+                        schematic = SchematicConverter.convertSchematic(schematicNBT, template.getName(), template.getAuthor());
                     } else {
-                        schematic = Schematic.loadFromNBT(schematicNBT, template.getName());
+                        schematic = Schematic.loadFromNBT(schematicNBT);
                     }
                     schematicDataStream.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + template.getName() + " could not be read as a valid schematic NBT file.", ex); // TODO: consistently use one type of logger for this.
+                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + template.getId() + " could not be read as a valid schematic NBT file.", ex); // TODO: consistently use one type of logger for this.
                 } finally {
                     try {
                         schematicDataStream.close();
@@ -151,10 +150,9 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
             if (schematic != null
                     && (schematic.width > (template.getSize() + 1) * 16 || schematic.length > (template.getSize() + 1) * 16)) {
                 schematic = null;
-                DimDoors.log.warn("Schematic " + template.getName() + " was bigger than specified in its json file and therefore wasn't loaded");
+                DimDoors.log.warn("Schematic " + template.getId() + " was bigger than specified in its json file and therefore wasn't loaded");
             }
             template.setSchematic(schematic);
-            // TODO: delete from validTemplates if schematic is null
         }
         return validTemplates;
     }
@@ -162,37 +160,21 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
     private static List<PocketTemplate> getAllValidVariations(JsonObject jsonTemplate) {
         List<PocketTemplate> pocketTemplates = new ArrayList<>();
 
-        final String directory = jsonTemplate.get("group").getAsString();
-        int maxSize = -1;
-        if (!Config.isLoadAllSchematics()) {
-            switch (directory) {
-                case "public":
-                    maxSize = Config.getPublicPocketSize(); // TODO: hardcode?¿
-                    break;
-                case "private":
-                    maxSize = Config.getPrivatePocketSize();
-                    break;
-                default:
-                    maxSize = Config.getMaxPocketSize();
-                    break;
-            }
-        }
+        final String group = jsonTemplate.get("group").getAsString();
 
-        final JsonArray variations = jsonTemplate.getAsJsonArray("variations");
+        final JsonArray pockets = jsonTemplate.getAsJsonArray("pockets");
 
         //convert the variations arraylist to a list of pocket templates
-        for (JsonElement variationElement : variations) {
-            JsonObject variation = variationElement.getAsJsonObject();
-            String variantName = variation.get("variantName").getAsString();
-            int variationSize = variation.get("size").getAsInt();
-            if (maxSize >= 0 && variationSize > maxSize) {
-                continue;
-            }
-            int minDepth = variation.get("minDepth").getAsInt();
-            int maxDepth = variation.get("maxDepth").getAsInt();
-            int baseWeight = variation.get("baseWeight").getAsInt();
-            PocketTemplate pocketTemplate = new PocketTemplate(directory, variantName, variationSize, minDepth, maxDepth, baseWeight);
-            pocketTemplates.add(pocketTemplate);
+        for (JsonElement pocketElement : pockets) {
+            JsonObject pocket = pocketElement.getAsJsonObject();
+            String id = pocket.get("id").getAsString();
+            String type = pocket.has("type") ? pocket.get("type").getAsString() : null;
+            String name = pocket.has("name") ? pocket.get("name").getAsString() : null;
+            String author = pocket.has("author") ? pocket.get("author").getAsString() : null;
+            int size = pocket.get("size").getAsInt();
+            if (Config.isLoadAllSchematics() && size > Config.getMaxPocketSize()) continue;
+            int baseWeight = pocket.has("baseWeight") ? pocket.get("baseWeight").getAsInt() : 100;
+            pocketTemplates.add(new PocketTemplate(group, id, type, name, author, size, baseWeight));
         }
 
         return pocketTemplates;
@@ -205,24 +187,23 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
         Map<String, Integer> bufferedMap = null;
 
         for (PocketTemplate template : templates) {
-            String dirName = template.getGroupName();
+            String dirName = template.getGroup();
             if (dirName != null && dirName.equals(bufferedDirectory)) { //null check not needed
-                bufferedMap.put(template.getName(), templates.indexOf(template));
+                bufferedMap.put(template.getId(), templates.indexOf(template));
             } else {
                 bufferedDirectory = dirName;
                 if (nameMap.containsKey(dirName)) { //this will only happen if you have two json files referring to the same directory being loaded non-consecutively
                     bufferedMap = nameMap.get(dirName);
-                    bufferedMap.put(template.getName(), templates.indexOf(template));
+                    bufferedMap.put(template.getId(), templates.indexOf(template));
                 } else {
                     bufferedMap = new HashMap<>();
-                    bufferedMap.put(template.getName(), templates.indexOf(template));
+                    bufferedMap.put(template.getId(), templates.indexOf(template));
                     nameMap.put(dirName, bufferedMap);
                 }
             }
         }
     }
 
-    // LOADING CODE ENDS HERE </editor-fold>
     public Set<String> getTemplateGroups() {
         return nameMap.keySet();
     }
@@ -257,29 +238,18 @@ public class SchematicHandler { // TODO: make this more general (not dimdoors-re
     /**
      * Gets a random template matching certain criteria.
      *
-     * @return A random template matching those criteria, or null if none were found
-     */
-    public PocketTemplate getRandomTemplate(Map<String, Float> groupWeights, int depth, int maxSize, boolean getLargest) { // TODO: useful?
-        String group = MathUtils.weightedRandom(groupWeights);
-        return getRandomTemplate(group, depth, maxSize, getLargest);
-    }
-
-    /**
-     * Gets a random template matching certain criteria.
-     *
+     * @param group The template group to choose from.
      * @param maxSize Maximum size the template can be.
      * @param getLargest Setting this to true will always get the largest template size in that group, 
      * but still randomly out of the templates with that size (ex. for private and public pockets)
      * @return A random template matching those criteria, or null if none were found
      */
-    public PocketTemplate getRandomTemplate(String group, int depth, int maxSize, boolean getLargest) {
+    public PocketTemplate getRandomTemplate(String group, int depth, int maxSize, boolean getLargest) { // TODO: multiple groups
         // TODO: cache this for faster calls:
         Map<PocketTemplate, Float> weightedTemplates = new HashMap<>();
         int largestSize = 0;
         for (PocketTemplate template : templates) {
-            if (template.getGroupName().equals(group)
-                    && (depth == -1 || depth >= template.getMinDepth() && (depth <= template.getMaxDepth() || template.getMaxDepth() == -1))
-                    && (maxSize == -1 || template.getSize() <= maxSize)) {
+            if (template.getGroup().equals(group) && (maxSize == -1 || template.getSize() <= maxSize)) {
                 if (getLargest && template.getSize() > largestSize) {
                     weightedTemplates = new HashMap<>();
                     largestSize = template.getSize();

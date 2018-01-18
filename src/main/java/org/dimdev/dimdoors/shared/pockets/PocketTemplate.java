@@ -19,26 +19,25 @@ import net.minecraft.world.WorldServer;
 /**
  * @author Robijnvogel
  */
-@AllArgsConstructor @RequiredArgsConstructor// TODO: use @Builder?
+@AllArgsConstructor @RequiredArgsConstructor
 public class PocketTemplate {
 
-    @Getter private final String groupName;
+    @Getter private final String group;
+    @Getter private final String id;
+    @Getter private final String type;
     @Getter private final String name;
+    @Getter private final String author;
     @Getter @Setter private Schematic schematic;
     @Getter private final int size; // size in chunks (n*n chunks)
-    @Getter private final int minDepth;
-    @Getter private final int maxDepth;
     @Getter private final int baseWeight;
-    //private final float[] weights; // weight per-level
 
     public float getWeight(int depth) {
-        /*if (depth < 0) return 100; // TODO: get rid of this line later
-        if (maxDepth - minDepth + 1 != weights.length) throw new IllegalStateException("This PocketTemplate wasn't set up correctly!");
-        if (depth < minDepth) return 0;
-        if (depth > maxDepth) return weights[weights.length - 1];
-        return weights[depth - minDepth];*/
-        return baseWeight;
-        // TODO: make this actually dependend on the depth
+        //noinspection IfStatementWithIdenticalBranches
+        if (depth == -1) {
+            return baseWeight;
+        } else {
+            return baseWeight; // TODO: make this actually dependend on the depth
+        }
     }
 
     public void place(Pocket pocket) {

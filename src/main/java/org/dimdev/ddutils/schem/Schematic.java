@@ -30,7 +30,7 @@ public class Schematic {
 
     public int version = 1;
     public String author = null;
-    public String name = "Unknown";
+    public String name = null;
     public long creationDate;
     public String[] requiredMods = {};
     public short width;
@@ -43,7 +43,7 @@ public class Schematic {
     public List<NBTTagCompound> tileEntities = new ArrayList<>();
     public List<NBTTagCompound> entities = new ArrayList<>(); // Not in the specification, but we need this
 
-    public static Schematic loadFromNBT(NBTTagCompound nbt, String name) {
+    public static Schematic loadFromNBT(NBTTagCompound nbt) {
         Schematic schematic = new Schematic();
         schematic.version = nbt.getInteger("Version"); //Version is required
 
@@ -54,7 +54,7 @@ public class Schematic {
                 schematic.author = metadataCompound.getString("Author");
             }
             //Name is not required (may be null)
-            schematic.name = (name == null || name.equals("")) && nbt.hasKey("Name") ? metadataCompound.getString("Name") : name;
+            schematic.name = metadataCompound.getString("Name");
 
             if (nbt.hasKey("Date")) { //Date is not required
                 schematic.creationDate = metadataCompound.getLong("Date");
@@ -131,8 +131,8 @@ public class Schematic {
         if (nbt.hasKey("Entities")) { //Entities is not required
             NBTTagList entitiesTagList = (NBTTagList) nbt.getTag("Entities");
             for (int i = 0; i < entitiesTagList.tagCount(); i++) {
-                NBTTagCompound tileEntityTagCompound = entitiesTagList.getCompoundTagAt(i);
-                schematic.tileEntities.add(tileEntityTagCompound);
+                NBTTagCompound entityTagCompound = entitiesTagList.getCompoundTagAt(i);
+                schematic.entities.add(entityTagCompound);
             }
         }
 
@@ -279,6 +279,7 @@ public class Schematic {
         // Relight changed chunks
         for (Chunk chunk : changedChunks) {
             chunk.setLightPopulated(false);
+            chunk.setTerrainPopulated(true);
             chunk.resetRelightChecks();
             chunk.checkLight();
         }
@@ -310,17 +311,19 @@ public class Schematic {
             }
         }
 
-        // Set Entity data
+        // Spawn entities
         for (NBTTagCompound entityNBT : schematic.entities) {
+            // Correct the position and UUID
             NBTTagList posNBT = (NBTTagList) entityNBT.getTag("Pos");
             NBTTagList newPosNBT = new NBTTagList();
             newPosNBT.appendTag(new NBTTagDouble(posNBT.getDoubleAt(0) + xBase));
             newPosNBT.appendTag(new NBTTagDouble(posNBT.getDoubleAt(1) + yBase));
             newPosNBT.appendTag(new NBTTagDouble(posNBT.getDoubleAt(2) + zBase));
-            entityNBT.setTag("Pos", newPosNBT);
-            entityNBT.setUniqueId("UUID", UUID.randomUUID());
+            NBTTagCompound adjustedEntityNBT = entityNBT.copy();
+            adjustedEntityNBT.setTag("Pos", newPosNBT);
+            adjustedEntityNBT.setUniqueId("UUID", UUID.randomUUID());
 
-            Entity entity = EntityList.createEntityFromNBT(entityNBT, world);
+            Entity entity = EntityList.createEntityFromNBT(adjustedEntityNBT, world);
             world.spawnEntity(entity);
         }
     }

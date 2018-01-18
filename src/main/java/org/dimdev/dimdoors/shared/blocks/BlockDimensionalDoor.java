@@ -35,7 +35,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
         IBlockState doorState = world.getBlockState(state.getValue(HALF) == EnumDoorHalf.UPPER ? pos.down() : pos); // .down() because only the bottom block has open=true
 
         // Check that it's a door and that the entity portal timer is 0
-        if (doorState.getValue(BlockDoor.OPEN) && entity.timeUntilPortal == 0) {
+        if (doorState.getBlock().equals(this) && doorState.getValue(BlockDoor.OPEN) && entity.timeUntilPortal == 0) {
             entity.timeUntilPortal = 50; // Disable another teleport for that entity for 2.5s
             TileEntityEntranceRift rift = getRift(world, pos, state);
             boolean successful = rift.teleport(entity);
@@ -99,7 +99,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
                 return (state.isSideSolid(world, pos, EnumFacing.UP)
                         || state.getBlockFaceShape(world, pos.down(), EnumFacing.UP) == BlockFaceShape.SOLID)
                        && (world.getBlockState(pos).getBlock().isReplaceable(world, pos) || world.getBlockState(pos).getBlock().equals(ModBlocks.RIFT))
-                       && world.getBlockState(pos).getBlock().isReplaceable(world, pos.up());
+                       && world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up());
             }
         } else {
             return super.canPlaceBlockAt(world, pos);
@@ -135,7 +135,6 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
             TileEntityFloatingRift newRift = (TileEntityFloatingRift) world.getTileEntity(pos);
             newRift.copyFrom(rift);
             newRift.updateType();
-            //world.notifyBlockUpdate(rift.getPos(), state, world.getBlockState(pos), 0); // TODO: does this work?
         } else {
             rift.unregister();
         }

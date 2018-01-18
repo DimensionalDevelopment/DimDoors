@@ -1,125 +1,152 @@
 {
     "group": "nether",
-    "pocketType" : 2,
-    "variations": [
+    "pockets": [
         {
-            "variantName": "ComplexHall_SK-CourtyardAmbush_Open_100",
+            "id": "ComplexHall_SK-CourtyardAmbush_Open_100",
+            "type": "complex_hall",
+            "name": "Courtyard Ambush",
+            "author": "SK",
+            "open": true,
             "size": 4,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 100
         },
         {
-            "variantName": "ComplexHall_SK-Intersection_Open_100",
+            "id": "ComplexHall_SK-Intersection_Open_100",
+            "type": "complex_hall",
+            "name": "Intersection",
+            "author": "SK",
+            "open": true,
             "size": 2,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 100
         },
         {
-            "variantName": "ComplexHall_SK-SoulWastes_Open_100",
+            "id": "ComplexHall_SK-SoulWastes_Open_100",
+            "type": "complex_hall",
+            "name": "Soul Wastes",
+            "author": "SK",
+            "open": true,
             "size": 5,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 100
         },
         {
-            "variantName": "ComplexHall_SK-Starfall_Open_100",
+            "id": "ComplexHall_SK-Starfall_Open_100",
+            "type": "complex_hall",
+            "name": "Starfall",
+            "author": "SK",
+            "open": true,
             "size": 3,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 100
         },
         {
-            "variantName": "ComplexHall_SK-TheCauldron_Open_100",
+            "id": "ComplexHall_SK-TheCauldron_Open_100",
+            "type": "complex_hall",
+            "name": "The Cauldron",
+            "author": "SK",
+            "open": true,
             "size": 4,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 100
         },
         {
-            "variantName": "Maze_SK-BrimstoneMines_Open_80",
+            "id": "Maze_SK-BrimstoneMines_Open_80",
+            "type": "maze",
+            "name": "Brimstone Mines",
+            "author": "SK",
+            "open": true,
             "size": 6,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 80
         },
         {
-            "variantName": "Maze_SK-QuartzfoldCave_Open_40",
+            "id": "Maze_SK-QuartzfoldCave_Open_40",
+            "type": "maze",
+            "name": "Quartzfold Cave",
+            "author": "SK",
+            "open": true,
             "size": 5,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 40
         },
         {
-            "variantName": "Maze_SK-SwirlsUponSwirls_Open_40",
+            "id": "Maze_SK-SwirlsUponSwirls_Open_40",
+            "type": "maze",
+            "name": "Swirls Upon Swirls",
+            "author": "SK",
+            "open": true,
             "size": 5,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 40
         },
         {
-            "variantName": "Maze_SK-Tangle_Open_80",
+            "id": "Maze_SK-Tangle_Open_80",
+            "type": "maze",
+            "name": "Tangle",
+            "author": "SK",
+            "open": true,
             "size": 3,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 80
         },
         {
-            "variantName": "SimpleHall_SK-AnvilValley_Open_100",
+            "id": "SimpleHall_SK-AnvilValley_Open_100",
+            "type": "simple_hall",
+            "name": "Anvil Valley",
+            "author": "SK",
+            "open": true,
             "size": 5,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 100
         },
         {
-            "variantName": "SimpleHall_SK-Arena_Open_100",
+            "id": "SimpleHall_SK-Arena_Open_100",
+            "type": "simple_hall",
+            "name": "Arena",
+            "author": "SK",
+            "open": true,
             "size": 3,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 100
         },
         {
-            "variantName": "SimpleHall_SK-DarkPathLeft_Open_50",
+            "id": "SimpleHall_SK-DarkPathLeft_Open_50",
+            "type": "simple_hall",
+            "author": "SK",
+            "open": true,
             "size": 1,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 50
         },
         {
-            "variantName": "SimpleHall_SK-DarkPathRight_Open_50",
+            "id": "SimpleHall_SK-DarkPathRight_Open_50",
+            "type": "simple_hall",
+            "author": "SK",
+            "open": true,
             "size": 1,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 50
         },
         {
-            "variantName": "SimpleHall_SK-DiamondRoom_Open_100",
+            "id": "SimpleHall_SK-DiamondRoom_Open_100",
+            "type": "simple_hall",
+            "author": "SK",
+            "open": true,
             "size": 1,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 100
         },
         {
-            "variantName": "SimpleHall_SK-LongBridge_Open_100",
+            "id": "SimpleHall_SK-LongBridge_Open_100",
+            "type": "simple_hall",
+            "author": "SK",
+            "open": true,
             "size": 4,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 100
         },
         {
-            "variantName": "SimpleHall_SK-SpiralStairsDown_Open_100",
+            "id": "SimpleHall_SK-SpiralStairsDown_Open_100",
+            "type": "simple_hall",
+            "author": "SK",
+            "open": true,
             "size": 0,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 100
         },
         {
-            "variantName": "SimpleHall_SK-TheFurnace_Open_100",
+            "id": "SimpleHall_SK-TheFurnace_Open_100",
+            "type": "simple_hall",
+            "author": "SK",
+            "open": true,
             "size": 3,
-            "minDepth": 1,
-            "maxDepth": 1000,
-            "baseWeight": 10
+            "baseWeight": 100
         }
     ]
 }

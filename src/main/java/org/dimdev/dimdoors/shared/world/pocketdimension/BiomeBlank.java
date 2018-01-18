@@ -20,7 +20,7 @@ public class BiomeBlank extends Biome {
                 .setHeightVariation(0F)
                 .setRainDisabled()
                 .setRainfall(0)
-                .setWaterColor(white ? 0xFFFFFF : 0x111111));
+                .setWaterColor(white ? 0xFFFFFF : 0x000055));
         this.white = white;
 
         topBlock = Blocks.AIR.getDefaultState();
@@ -60,12 +60,12 @@ public class BiomeBlank extends Biome {
     @Override
     @SideOnly(Side.CLIENT)
     public int getGrassColorAtPos(BlockPos pos) {
-        return getModdedBiomeGrassColor(white ? 0xFFFFFF : 0x111111);
+        return getModdedBiomeGrassColor(white ? 0xFFFFFF : 0x003300);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public int getFoliageColorAtPos(BlockPos pos) {
-        return getModdedBiomeFoliageColor(white ? 0xFFFFFF : 0x111111);
+        return getModdedBiomeFoliageColor(white ? 0xFFFFFF : 0x003300);
     }
 }

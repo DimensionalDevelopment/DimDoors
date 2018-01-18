@@ -10,7 +10,7 @@ import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-public class PublicPocketDestination extends LinkingDestination {
+public class PublicPocketDestination extends RestoringDestination {
     // public PublicPocketDestination() {}
 
     @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); }
