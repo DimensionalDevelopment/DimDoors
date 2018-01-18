@@ -19,6 +19,7 @@ import org.dimdev.annotatednbt.Saved;
 import org.dimdev.ddutils.*;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
 import org.dimdev.dimdoors.shared.blocks.BlockFloatingRift;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
@@ -124,6 +125,7 @@ import javax.annotation.Nonnull;
         if (destination != null) {
             if (isRegistered()) destination.register(new Location(world, pos));
         }
+        riftStateChanged = true;
         markDirty();
         updateColor();
     }
@@ -204,7 +206,11 @@ import javax.annotation.Nonnull;
 
         // Attempt a teleport
         try {
-            return destination.teleport(new RotatedLocation(new Location(world, pos), yaw, pitch), entity);
+            if (destination.teleport(new RotatedLocation(new Location(world, pos), yaw, pitch), entity)) {
+                VirtualLocation vloc = VirtualLocation.fromLocation(new Location(entity.world, entity.getPosition()));
+                DimDoors.sendMessage(entity, "You are at x = " + vloc.getX() + ", y = ?, z = " + vloc.getZ() + ", w = " + vloc.getDepth());
+                return true;
+            }
         } catch (Exception e) {
             DimDoors.sendMessage(entity, "There was an exception while teleporting!");
             DimDoors.log.error("Teleporting failed with the following exception: ", e);

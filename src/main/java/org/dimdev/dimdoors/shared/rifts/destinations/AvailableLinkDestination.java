@@ -56,6 +56,7 @@ import java.util.Set;
 
         for (Rift otherRift : RiftRegistry.instance().getRifts()) {
             VirtualLocation otherVirtualLocation = VirtualLocation.fromLocation(otherRift.location);
+            if (otherRift.properties == null) continue;
             double otherWeight = otherRift.isFloating ? otherRift.properties.floatingWeight : otherRift.properties.entranceWeight;
             if (otherWeight == 0 || Sets.intersection(acceptedGroups, otherRift.properties.groups).isEmpty()) continue;
 
@@ -129,6 +130,10 @@ import java.util.Set;
                 // This will lead to the overworld
                 World world = WorldUtils.getWorld(virtualLocation.getDim());
                 BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
+                if (pos.getY() == -1) {
+                    // No blocks at that XZ (hole in bedrock)
+                    pos = new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ());
+                }
                 world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
 
                 TileEntityRift thisRift = (TileEntityRift) location.getLocation().getTileEntity();
@@ -136,13 +141,12 @@ import java.util.Set;
                 // TODO: Should the rift not be configured like the other link
                 riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).build());
 
-                if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(selectedLink, location.getLocation());
-                if (!noLink) linkRifts(location.getLocation(), selectedLink);
+                if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(new Location(world, pos), location.getLocation());
+                if (!noLink) linkRifts(location.getLocation(), new Location(world, pos));
                 riftEntity.teleportTo(entity, thisRift.getYaw(), thisRift.getPitch());
             } else {
                 // Make a new dungeon pocket
-                //Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation);
-                Pocket pocket = PocketGenerator.generatePublicPocket(virtualLocation);
+                Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation);
                 pocket.setup();
 
                 // Link the pocket back
@@ -152,7 +156,7 @@ import java.util.Set;
                 pocket.linkPocketTo(new GlobalDestination(!noLinkBack && !riftEntity.getProperties().oneWay ? location.getLocation() : null), newLink); // TODO: linkId
 
                 // Link the rift if necessary and teleport the entity
-                if (!noLink) linkRifts(location.getLocation(), selectedLink);
+                if (!noLink) linkRifts(location.getLocation(), pocket.getEntrance());
                 ((TileEntityRift) pocket.getEntrance().getTileEntity()).teleportTo(entity, location.getYaw(), location.getPitch());
             }
         } else {

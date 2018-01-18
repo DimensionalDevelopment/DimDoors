@@ -87,7 +87,6 @@ public class CommandPocket extends CommandBase {
             }
 
             // Generate the schematic
-            DimDoors.sendMessage(player, "Generating schematic " + name);
             PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(group, name);
             Pocket pocket = PocketGenerator.generatePocketFromTemplate(WorldUtils.getDim(player.world), template, null);
             if (setup) pocket.setup();

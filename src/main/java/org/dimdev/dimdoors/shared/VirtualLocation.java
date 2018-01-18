@@ -6,6 +6,7 @@ import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.ddutils.nbt.INBTStorable;
 import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
 import org.dimdev.ddutils.Location;
@@ -29,13 +30,15 @@ import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
             if (pocket != null) {
                 virtualLocation = pocket.getVirtualLocation(); // TODO: pocket-relative coordinates
             } else {
+                DimDoors.log.warn("Tried to get VirtualLocation at " + location + " which is inside a pocket dimension but outside of a pocket");
                 virtualLocation = null; // TODO: door was placed in a pocket dim but outside of a pocket...
             }
         } else if (location.getWorld().provider instanceof WorldProviderLimbo) {
             virtualLocation = new VirtualLocation(location.getDim(), location.getX(), location.getZ(), Config.getMaxDungeonDepth());
         }
         if (virtualLocation == null) {
-            virtualLocation = new VirtualLocation(location.getDim(), location.getX(), location.getZ(), 0);
+            virtualLocation = new VirtualLocation(0, location.getX(), location.getZ(), 5); // TODO
+            DimDoors.log.warn("VirtualLocation was null at " + location);
         }
         return virtualLocation;
     }

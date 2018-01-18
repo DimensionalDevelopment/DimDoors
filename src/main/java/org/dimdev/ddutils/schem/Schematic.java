@@ -4,8 +4,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
@@ -27,7 +30,7 @@ public class Schematic {
 
     public int version = 1;
     public String author = null;
-    public String schematicName = "Unknown";
+    public String name = "Unknown";
     public long creationDate;
     public String[] requiredMods = {};
     public short width;
@@ -38,6 +41,7 @@ public class Schematic {
     public List<IBlockState> pallette = new ArrayList<>();
     public int[][][] blockData; //[x][y][z]
     public List<NBTTagCompound> tileEntities = new ArrayList<>();
+    public List<NBTTagCompound> entities = new ArrayList<>(); // Not in the specification, but we need this
 
     public static Schematic loadFromNBT(NBTTagCompound nbt, String name) {
         Schematic schematic = new Schematic();
@@ -50,7 +54,7 @@ public class Schematic {
                 schematic.author = metadataCompound.getString("Author");
             }
             //Name is not required (may be null)
-            schematic.schematicName = (name == null || name.equals("")) && nbt.hasKey("Name") ? metadataCompound.getString("Name") : name;
+            schematic.name = (name == null || name.equals("")) && nbt.hasKey("Name") ? metadataCompound.getString("Name") : name;
 
             if (nbt.hasKey("Date")) { //Date is not required
                 schematic.creationDate = metadataCompound.getLong("Date");
@@ -124,6 +128,14 @@ public class Schematic {
             }
         }
 
+        if (nbt.hasKey("Entities")) { //Entities is not required
+            NBTTagList entitiesTagList = (NBTTagList) nbt.getTag("Entities");
+            for (int i = 0; i < entitiesTagList.tagCount(); i++) {
+                NBTTagCompound tileEntityTagCompound = entitiesTagList.getCompoundTagAt(i);
+                schematic.tileEntities.add(tileEntityTagCompound);
+            }
+        }
+
         return schematic;
     }
 
@@ -133,7 +145,7 @@ public class Schematic {
         nbt.setInteger("Version", schematic.version);
         NBTTagCompound metadataCompound = new NBTTagCompound();
         if (schematic.author != null) metadataCompound.setString("Author", schematic.author); // Author is not required
-        metadataCompound.setString("Name", schematic.schematicName);
+        metadataCompound.setString("Name", schematic.name);
         metadataCompound.setLong("Date", schematic.creationDate);
         NBTTagList requiredModsTagList = new NBTTagList();
         for (String requiredMod : schematic.requiredMods) {
@@ -172,6 +184,13 @@ public class Schematic {
             tileEntitiesTagList.appendTag(tileEntityTagCompound);
         }
         nbt.setTag("TileEntities", tileEntitiesTagList);
+
+        NBTTagList entitiesTagList = new NBTTagList();
+        for (int i = 0; i < schematic.entities.size(); i++) {
+            NBTTagCompound entityTagCompound = schematic.entities.get(i);
+            entitiesTagList.appendTag(entityTagCompound);
+        }
+        nbt.setTag("Entities", entitiesTagList);
 
         return nbt;
     }
@@ -274,13 +293,35 @@ public class Schematic {
                     zBase + tileEntityNBT.getInteger("z"));
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity != null) {
-                tileEntity.readFromNBT(tileEntityNBT);
+                String schematicTileEntityId = tileEntityNBT.getString("id");
+                String blockTileEntityId = TileEntity.getKey(tileEntity.getClass()).toString();
+                if (schematicTileEntityId.equals(blockTileEntityId)) {
+                    tileEntity.readFromNBT(tileEntityNBT);
 
-                // Correct the position
-                tileEntity.setWorld(world);
-                tileEntity.setPos(pos);
-                tileEntity.markDirty();
+                    // Correct the position
+                    tileEntity.setWorld(world);
+                    tileEntity.setPos(pos);
+                    tileEntity.markDirty();
+                } else {
+                    throw new RuntimeException("Schematic contained TileEntity " + schematicTileEntityId + " at " + pos + " but the TileEntity of that block (" + world.getBlockState(pos) + ") must be " + blockTileEntityId);
+                }
+            } else {
+                throw new RuntimeException("Schematic contained TileEntity info at "  + pos + "but the block there (" + world.getBlockState(pos) + ") has no TileEntity.");
             }
+        }
+
+        // Set Entity data
+        for (NBTTagCompound entityNBT : schematic.entities) {
+            NBTTagList posNBT = (NBTTagList) entityNBT.getTag("Pos");
+            NBTTagList newPosNBT = new NBTTagList();
+            newPosNBT.appendTag(new NBTTagDouble(posNBT.getDoubleAt(0) + xBase));
+            newPosNBT.appendTag(new NBTTagDouble(posNBT.getDoubleAt(1) + yBase));
+            newPosNBT.appendTag(new NBTTagDouble(posNBT.getDoubleAt(2) + zBase));
+            entityNBT.setTag("Pos", newPosNBT);
+            entityNBT.setUniqueId("UUID", UUID.randomUUID());
+
+            Entity entity = EntityList.createEntityFromNBT(entityNBT, world);
+            world.spawnEntity(entity);
         }
     }
 }

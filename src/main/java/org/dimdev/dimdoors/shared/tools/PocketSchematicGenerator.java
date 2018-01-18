@@ -75,7 +75,7 @@ public final class PocketSchematicGenerator {
         boolean isPublic = true;
         for (Schematic schematic : schematics) {
             NBTTagCompound schematicNBT = Schematic.saveToNBT(schematic);
-            File saveFile = new File(schematicDir, (isPublic ? "public/" : "private/") + schematic.schematicName + ".schem");
+            File saveFile = new File(schematicDir, (isPublic ? "public/" : "private/") + schematic.name + ".schem");
             saveFile.getParentFile().mkdirs();
             DataOutputStream schematicDataStream = new DataOutputStream(new FileOutputStream(saveFile));
             CompressedStreamTools.writeCompressed(schematicNBT, schematicDataStream);
@@ -116,7 +116,7 @@ public final class PocketSchematicGenerator {
         Schematic schematic = new Schematic();
         schematic.version = 1;
         schematic.author = "Robijnvogel"; //@todo set in build.gradle ${modID}
-        schematic.schematicName = baseName + "_" + pocketSize;
+        schematic.name = baseName + "_" + pocketSize;
         schematic.creationDate = System.currentTimeMillis();
         schematic.requiredMods = new String[1];
         schematic.requiredMods[0] = DimDoors.MODID;

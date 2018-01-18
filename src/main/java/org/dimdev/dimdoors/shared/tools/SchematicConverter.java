@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.shared.tools;
 
-import java.util.Arrays;
-import java.util.Collections;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.*;
@@ -16,15 +16,13 @@ import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import net.minecraft.block.BlockDoor;
-import net.minecraft.init.Blocks;
 import org.dimdev.dimdoors.shared.rifts.destinations.AvailableLinkDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
+
+import java.util.*;
 
 /**
  * @author Robijnvogel
@@ -48,7 +46,7 @@ public final class SchematicConverter {
 
         schematic.version = 1; //already the default value
         schematic.author = "DimDoors"; // Old schematics didn't have an author
-        schematic.schematicName = name.equals("") ? "Unknown" : name;
+        schematic.name = name.equals("") ? "Unknown" : name;
         schematic.creationDate = System.currentTimeMillis();
         schematic.requiredMods = new String[]{DimDoors.MODID};
 
@@ -142,19 +140,19 @@ public final class SchematicConverter {
 
                     IBlockState baseState = schematic.pallette.get(blockInt); //this is the default blockstate except for ancient fabric
                     if (baseState == baseState.getBlock().getDefaultState()) { //should only be false if {@code baseState} is ancient fabric
-                        IBlockState additionalState = baseState.getBlock().getStateFromMeta(metadata);
-                        if (schematic.pallette.contains(additionalState)) { //check whether or not this blockstate is already in the list
-                            blockInt = schematic.pallette.indexOf(additionalState);
+                        IBlockState blockState = baseState.getBlock().getStateFromMeta(metadata);
+                        if (schematic.pallette.contains(blockState)) { //check whether or not this blockstate is already in the list
+                            blockInt = schematic.pallette.indexOf(blockState);
                         } else {
-                            schematic.pallette.add(additionalState);
+                            schematic.pallette.add(blockState);
                             //DimDoors.log.info("New blockstate detected. Original blockInt = " + blockInt + " and baseState is " + baseState);
                             blockInt = schematic.pallette.size() - 1;
                         }
 
                         if (baseState.getBlock().equals(ModBlocks.DIMENSIONAL_DOOR) || baseState.getBlock().equals(ModBlocks.WARP_DIMENSIONAL_DOOR)) {
                             //DimDoors.log.info("Door found: " + baseState.getBlock().getUnlocalizedName());
-                            if (additionalState.getProperties().get(BlockDoor.HALF).equals(BlockDoor.EnumDoorHalf.UPPER)) {
-                                TileEntityEntranceRift rift = new TileEntityEntranceRift();
+                            if (blockState.getProperties().get(BlockDoor.HALF).equals(BlockDoor.EnumDoorHalf.LOWER)) {
+                                TileEntityEntranceRift rift = (TileEntityEntranceRift) baseState.getBlock().createTileEntity(null, blockState);
                                 rift.setPos(new BlockPos(x, y, z));
 
                                 rift.setProperties(LinkProperties.builder()
@@ -171,38 +169,39 @@ public final class SchematicConverter {
                                             .noLink(false)
                                             .newRiftWeight(1).build());
                                 } else { //if (baseState.equals(ModBlocks.WARP_DIMENSIONAL_DOOR))
-                                    IBlockState baseStateTwoDown = schematic.pallette.get(schematic.blockData[x][y - 2][z]);
-                                    if (baseStateTwoDown.getBlock().equals(Blocks.SANDSTONE)) {
+                                    IBlockState stateBelow = schematic.pallette.get(schematic.blockData[x][y - 1][z]);
+                                    if (stateBelow.getBlock().equals(Blocks.SANDSTONE)) {
                                         rift.setDestination(AvailableLinkDestination.builder()
                                                 .acceptedGroups(Collections.singleton(0))
                                                 .coordFactor(1)
-                                                .negativeDepthFactor(Double.MIN_VALUE)
+                                                .negativeDepthFactor(0.00000000001)
                                                 .positiveDepthFactor(Double.POSITIVE_INFINITY)
                                                 .weightMaximum(100)
                                                 .noLink(false)
                                                 .newRiftWeight(1).build());
                                         //change the sandstone to the block below it.
-                                        if (y > 2) {
-                                            schematic.blockData[x][y - 2][z] = schematic.blockData[x][y - 3][z];
+                                        if (y >= 2) {
+                                            schematic.blockData[x][y - 1][z] = schematic.blockData[x][y - 2][z];
                                         } else {
-                                            DimDoors.log.error("Someone placed a door on a sandstone block at the bottom of a schematic. This causes problems and should be remedied. Schematic name: " + schematic.schematicName);
+                                            DimDoors.log.error("Someone placed a door on a sandstone block at the bottom of a schematic. This causes problems and should be remedied. Schematic name: " + schematic.name);
                                         }
                                     } else {
-                                        rift.setDestination(AvailableLinkDestination.builder()
-                                                .acceptedGroups(Collections.singleton(0))
-                                                .coordFactor(1)
-                                                .negativeDepthFactor(80)
-                                                .positiveDepthFactor(10000)
-                                                .weightMaximum(100)
-                                                .noLink(false)
-                                                .newRiftWeight(1).build());
+                                        rift.setDestination(PocketEntranceDestination.builder()
+                                                .weight(1)
+                                                .ifDestination(PocketExitDestination.builder().build())
+                                                .otherwiseDestination(AvailableLinkDestination.builder()
+                                                        .acceptedGroups(Collections.singleton(0))
+                                                        .coordFactor(1)
+                                                        .negativeDepthFactor(80)
+                                                        .positiveDepthFactor(10000)
+                                                        .weightMaximum(100)
+                                                        .noLink(false).newRiftWeight(1).build()).build());
                                     }
                                 }
 
                                 schematic.tileEntities.add(rift.serializeNBT());
                             }
                         }
-
                     } else { // if this is ancient fabric
                         blockInt = schematic.pallette.indexOf(baseState);
                     }

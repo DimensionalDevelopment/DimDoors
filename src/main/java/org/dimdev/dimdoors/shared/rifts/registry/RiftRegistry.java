@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 
 public class RiftRegistry extends WorldSavedData {
 
-    private static final String DATA_NAME = DimDoors.MODID + "_global_rifts"; // TODO: can we use the same name as subregistries?
+    // Both are saved in the "data" folder, so we can't use the same name
+    private static final String DATA_NAME = DimDoors.MODID + "_global_rifts";
     private static final String SUBREGISTRY_DATA_NAME = DimDoors.MODID + "_rifts";
 
     protected Map<Integer, RiftSubregistry> subregistries = new HashMap<>();
@@ -40,8 +41,9 @@ public class RiftRegistry extends WorldSavedData {
 
     // <editor-fold defaultstate="collapsed" desc="Code for reading/writing/getting the registry">
 
-    public class RiftSubregistry extends WorldSavedData {
+    public static class RiftSubregistry extends WorldSavedData {
         private int dim;
+        RiftRegistry riftRegistry = (RiftRegistry) WorldUtils.getWorld(0).getMapStorage().getOrLoadData(RiftRegistry.class, DATA_NAME);
 
         public RiftSubregistry() {
             super(SUBREGISTRY_DATA_NAME);
@@ -53,7 +55,7 @@ public class RiftRegistry extends WorldSavedData {
 
         @Override public void readFromNBT(NBTTagCompound nbt) {
             // Registry is already loaded
-            if (subregistries.get(dim) != null) return;
+            if (riftRegistry.subregistries.get(dim) != null) return;
 
             // Read rifts in this dimension
             NBTTagList riftsNBT = (NBTTagList) nbt.getTag("rifts");
@@ -61,9 +63,9 @@ public class RiftRegistry extends WorldSavedData {
                 Rift rift = new Rift();
                 rift.readFromNBT((NBTTagCompound) riftNBT);
                 rift.dim = dim;
-                graph.addVertex(rift);
-                uuidMap.put(rift.id, rift);
-                locationMap.put(rift.location, rift);
+                riftRegistry.graph.addVertex(rift);
+                riftRegistry.uuidMap.put(rift.id, rift);
+                riftRegistry.locationMap.put(rift.location, rift);
             }
 
             NBTTagList pocketsNBT = (NBTTagList) nbt.getTag("pockets");
@@ -71,18 +73,18 @@ public class RiftRegistry extends WorldSavedData {
                 PocketEntrancePointer pocket = new PocketEntrancePointer();
                 pocket.readFromNBT((NBTTagCompound) pocketNBT);
                 pocket.dim = dim;
-                graph.addVertex(pocket);
-                uuidMap.put(pocket.id, pocket);
-                pocketEntranceMap.put(PocketRegistry.instance(pocket.dim).getPocket(pocket.pocketId), pocket);
+                riftRegistry.graph.addVertex(pocket);
+                riftRegistry.uuidMap.put(pocket.id, pocket);
+                riftRegistry.pocketEntranceMap.put(PocketRegistry.instance(pocket.dim).getPocket(pocket.pocketId), pocket);
             }
 
             // Read the connections between links that have a source or destination in this dimension
             NBTTagList linksNBT = (NBTTagList) nbt.getTag("links");
             for (NBTBase linkNBT : linksNBT) {
-                RegistryVertex from = uuidMap.get(((NBTTagCompound) linkNBT).getUniqueId("from"));
-                RegistryVertex to = uuidMap.get(((NBTTagCompound) linkNBT).getUniqueId("to"));
+                RegistryVertex from = riftRegistry.uuidMap.get(((NBTTagCompound) linkNBT).getUniqueId("from"));
+                RegistryVertex to = riftRegistry.uuidMap.get(((NBTTagCompound) linkNBT).getUniqueId("to"));
                 if (from != null && to != null) {
-                    graph.addEdge(from, to);
+                    riftRegistry.graph.addEdge(from, to);
                     // We need a system for detecting links that are incomplete after processing them in the other subregistry too
                 }
             }
@@ -95,7 +97,7 @@ public class RiftRegistry extends WorldSavedData {
             // Write rifts in this dimension
             NBTTagList riftsNBT = new NBTTagList();
             NBTTagList pocketsNBT = new NBTTagList();
-            for (RegistryVertex vertex : graph.vertexSet()) {
+            for (RegistryVertex vertex : riftRegistry.graph.vertexSet()) {
                 if (vertex.dim == dim) {
                     NBTTagCompound vertexNBT = vertex.writeToNBT(new NBTTagCompound());
                     if (vertex instanceof Rift) {
@@ -112,9 +114,9 @@ public class RiftRegistry extends WorldSavedData {
 
             // Write the connections between links that have a source or destination in this dimension
             NBTTagList linksNBT = new NBTTagList();
-            for (DefaultEdge edge : graph.edgeSet()) {
-                RegistryVertex from = graph.getEdgeSource(edge);
-                RegistryVertex to = graph.getEdgeTarget(edge);
+            for (DefaultEdge edge : riftRegistry.graph.edgeSet()) {
+                RegistryVertex from = riftRegistry.graph.getEdgeSource(edge);
+                RegistryVertex to = riftRegistry.graph.getEdgeTarget(edge);
                 if (from.dim == dim || to.dim == dim && !(from instanceof PlayerRiftPointer)) {
                     NBTTagCompound linkNBT = new NBTTagCompound();
                     linkNBT.setUniqueId("from", from.id);
@@ -155,6 +157,7 @@ public class RiftRegistry extends WorldSavedData {
         // done last since links are only in the subregistries.
         // TODO: If non-dirty but new WorldSavedDatas aren't automatically saved, then create the subregistries here
         // TODO: rather then in the markSubregistryDirty method.
+        // TODO: try to get rid of this code:
         for (int dim : DimensionManager.getStaticDimensionIDs()) {
             MapStorage storage = WorldUtils.getWorld(dim).getPerWorldStorage();
             RiftSubregistry instance = (RiftSubregistry) storage.getOrLoadData(RiftSubregistry.class, SUBREGISTRY_DATA_NAME);

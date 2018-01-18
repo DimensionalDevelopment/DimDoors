@@ -41,8 +41,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
             boolean successful = rift.teleport(entity);
             if (successful) entity.timeUntilPortal = 0; // Allow the entity to teleport if successful
             if (successful && entity instanceof EntityPlayer) {
-                if (!state.getValue(POWERED))
-                    toggleDoor(world, pos, false); // TODO: config option playerClosesDoorBehind
+                if (!state.getValue(POWERED)) toggleDoor(world, pos, false); // TODO: config option playerClosesDoorBehind
                 if (rift.isCloseAfterPassThrough()) world.destroyBlock(pos, false);
             }
         }

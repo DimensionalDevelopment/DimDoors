@@ -11,6 +11,7 @@ import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.math.MathUtils;
 import org.dimdev.ddutils.nbt.INBTStorable;
 import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.VirtualLocation;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
@@ -84,7 +85,10 @@ import java.util.List;
             }
         }
 
-        if (entranceWeights.size() == 0) return;
+        if (entranceWeights.size() == 0) {
+            DimDoors.log.warn("Pocket had no possible entrance in schematic!");
+            return;
+        }
         TileEntityRift selectedEntrance = MathUtils.weightedRandom(entranceWeights);
 
         // Replace entrances with appropriate destinations

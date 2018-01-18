@@ -48,7 +48,7 @@ public class PocketTemplate {
         int xBase = pocket.getX() * gridSize * 16;
         int yBase = 0;
         int zBase = pocket.getZ() * gridSize * 16;
-        DimDoors.log.info("Placing new pocket using schematic " + schematic.schematicName + " at x = " + xBase + ", z = " + zBase);
+        DimDoors.log.info("Placing new pocket using schematic " + schematic.name + " at x = " + xBase + ", z = " + zBase);
 
         WorldServer world = WorldUtils.getWorld(dim);
         Schematic.place(schematic, world, xBase, yBase, zBase);
