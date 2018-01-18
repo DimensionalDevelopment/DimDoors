@@ -152,7 +152,7 @@ import java.util.Set;
                 // Link the pocket back
                 TileEntityRift thisRift = (TileEntityRift) location.getLocation().getTileEntity();
                 TileEntityRift riftEntity = (TileEntityRift) pocket.getEntrance().getTileEntity();
-                LinkProperties newLink = thisRift.getProperties().toBuilder().linksRemaining(0).build();
+                LinkProperties newLink = thisRift.getProperties() != null ? thisRift.getProperties().toBuilder().linksRemaining(0).build() : null;
                 pocket.linkPocketTo(new GlobalDestination(!noLinkBack && !riftEntity.getProperties().oneWay ? location.getLocation() : null), newLink); // TODO: linkId
 
                 // Link the rift if necessary and teleport the entity

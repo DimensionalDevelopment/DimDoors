@@ -14,11 +14,11 @@ import java.io.InputStream;
 public abstract class BaseSchematicGateway extends BaseGateway {
     private Schematic schematic;
 
-    public BaseSchematicGateway(String name) {
+    public BaseSchematicGateway(String id) {
         String schematicJarDirectory = "/assets/dimdoors/gateways/";
 
         //Initialising the possible locations/formats for the schematic file
-        InputStream oldVersionSchematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + name + ".schematic"); //@todo also check for other schematics
+        InputStream oldVersionSchematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + id + ".schematic"); //@todo also check for other schematics
 
         //determine which location to load the schematic file from (and what format)
         DataInputStream schematicDataStream = null;
@@ -27,7 +27,7 @@ public abstract class BaseSchematicGateway extends BaseGateway {
             schematicDataStream = new DataInputStream(oldVersionSchematicStream);
             streamOpened = true;
         } else {
-            DimDoors.log.warn("Schematic '" + name + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
+            DimDoors.log.warn("Schematic '" + id + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
         }
 
         NBTTagCompound schematicNBT;
@@ -35,10 +35,10 @@ public abstract class BaseSchematicGateway extends BaseGateway {
         if (streamOpened) {
             try {
                 schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                schematic = SchematicConverter.convertSchematic(schematicNBT, name, null);
+                schematic = SchematicConverter.convertSchematic(schematicNBT, id, null, null);
                 schematicDataStream.close();
             } catch (IOException ex) {
-                DimDoors.log.error("Schematic file for " + name + " could not be read as a valid schematic NBT file.", ex);
+                DimDoors.log.error("Schematic file for " + id + " could not be read as a valid schematic NBT file.", ex);
             } finally {
                 try {
                     schematicDataStream.close();

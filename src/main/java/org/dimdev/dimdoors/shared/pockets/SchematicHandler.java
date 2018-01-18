@@ -131,7 +131,7 @@ public class SchematicHandler {
                 try {
                     schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
                     if (!schematicNBT.hasKey("Version")) {
-                        schematic = SchematicConverter.convertSchematic(schematicNBT, template.getName(), template.getAuthor());
+                        schematic = SchematicConverter.convertSchematic(schematicNBT, template.getId(), template.getName(), template.getAuthor());
                     } else {
                         schematic = Schematic.loadFromNBT(schematicNBT);
                     }

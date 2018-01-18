@@ -13,7 +13,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockFabric;
@@ -32,19 +31,7 @@ import java.util.*;
  */
 public final class SchematicConverter {
 
-    private static final Map<String, IBlockState> stateMap = new HashMap<>();
-
-    static {
-        stateMap.put("dimdoors:Dimensional Door", ModBlocks.DIMENSIONAL_DOOR.getDefaultState());
-        stateMap.put("dimdoors:Fabric of Reality", ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY));
-        stateMap.put("dimdoors:Fabric of RealityPerm", ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT));
-        stateMap.put("dimdoors:transientDoor", ModBlocks.TRANSIENT_DIMENSIONAL_DOOR.getDefaultState());
-        stateMap.put("dimdoors:Warp Door", ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState());
-        stateMap.put("minecraft:iron_door", ModBlocks.DIMENSIONAL_DOOR.getDefaultState());
-        stateMap.put("minecraft:wooden_door", ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState());
-    }
-
-    public static Schematic convertSchematic(NBTTagCompound nbt, String name, String author) {
+    public static Schematic convertSchematic(NBTTagCompound nbt, String schematicId, String name, String author) {
         Schematic schematic = new Schematic();
 
         schematic.version = 1; //already the default value
@@ -65,58 +52,53 @@ public final class SchematicConverter {
         int monoliths = 0;
         int chests = 0;
 
-        byte[] blockIntArray = nbt.getByteArray("Blocks");
-        if (nbt.hasKey("Palette")) {
-            NBTTagList paletteNBT = (NBTTagList) nbt.getTag("Palette");
-            for (int i = 0; i < paletteNBT.tagCount(); i++) {
-                String blockString = paletteNBT.getStringTagAt(i);
-                IBlockState blockstate;
-
-                // Get the correct block state
-                if (blockString.startsWith("dimdoors") || blockString.equals("minecraft:iron_door") || blockString.equals("minecraft:wooden_door")) {
-                    blockstate = stateMap.get(blockString);
-                } else {
-                    blockstate = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString)).getDefaultState();
-                }
-
-                schematic.pallette.add(blockstate);
+        byte[] blockIdArray = nbt.getByteArray("Blocks");
+        byte[] addId = nbt.getByteArray("AddBlocks");
+        Map<Integer, Byte> palletteMap = new HashMap<>(); // block ID -> pallette index
+        byte currentPalletteIndex = 0;
+        for (int i = 0; i < blockIdArray.length; i++) {
+            int id;
+            if (i >> 1 >= addId.length) {
+                id = (short) (blockIdArray[i] & 0xFF);
+            } else if ((i & 1) == 0) {
+                id = (short) (((addId[i >> 1] & 0x0F) << 8) + (blockIdArray[i] & 0xFF));
+            } else {
+                id = (short) (((addId[i >> 1] & 0xF0) << 4) + (blockIdArray[i] & 0xFF));
             }
-        } else {
-            byte[] addId = nbt.getByteArray("AddBlocks");
-            Map<Integer, Byte> palletteMap = new HashMap<>(); // block ID -> pallette index
-            byte currentPalletteIndex = 0;
-            for (int i = 0; i < blockIntArray.length; i++) {
-                int id;
-                if (i >> 1 >= addId.length) {
-                    id = (short) (blockIntArray[i] & 0xFF);
-                } else if ((i & 1) == 0) {
-                    id = (short) (((addId[i >> 1] & 0x0F) << 8) + (blockIntArray[i] & 0xFF));
-                } else {
-                    id = (short) (((addId[i >> 1] & 0xF0) << 4) + (blockIntArray[i] & 0xFF));
+            if (palletteMap.containsKey(id)) {
+                blockIdArray[i] = palletteMap.get(id);
+            } else {
+                IBlockState block = id <= 159 ? Block.getBlockById(id).getDefaultState() : Blocks.AIR.getDefaultState();
+                switch (id) {
+                    case 1973:
+                        block = ModBlocks.FABRIC.getDefaultState();
+                        break;
+                    case 1975:
+                        block = ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState();
+                        break;
+                    case 1970:
+                        block = ModBlocks.DIMENSIONAL_DOOR.getDefaultState();
+                        break;
+                    case 1979:
+                        block = ModBlocks.TRANSIENT_DIMENSIONAL_DOOR.getDefaultState();
+                        break;
+                    case 220:
+                        block = ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY);
+                        break;
+                    case 95: // Locked chest's ID was replaced with stained glass in 1.7.2
+                        DimDoors.log.error("Schematic contained a locked chest, which was removed in 1.7.2.");
+                        block = Blocks.AIR.getDefaultState();
+                        break;
                 }
-                if (palletteMap.containsKey(id)) {
-                    blockIntArray[i] = palletteMap.get(id);
-                } else {
-                    Block block = Block.getBlockById(id);
-                    switch (id) {
-                        case 1975:
-                            block = ModBlocks.WARP_DIMENSIONAL_DOOR;
-                            break;
-                        case 1970:
-                            block = ModBlocks.DIMENSIONAL_DOOR;
-                            break;
-                        case 1979:
-                            block = ModBlocks.TRANSIENT_DIMENSIONAL_DOOR;
-                            break;
-                    }
-                    if (id != 0 && block.getRegistryName().toString().equals("minecraft:air")) {
-                        throw new RuntimeException("Change conversion code!");
-                    }
-                    schematic.pallette.add(block.getDefaultState());
-                    palletteMap.put(id, currentPalletteIndex);
-                    blockIntArray[i] = currentPalletteIndex;
-                    currentPalletteIndex++;
+                if (id != 0 && block.getBlock().getRegistryName().toString().equals("minecraft:air")) {
+                    throw new RuntimeException("Unknown ID " + id + " in schematic " + schematicId);
                 }
+                if (block.equals(Blocks.IRON_DOOR)) block = ModBlocks.DIMENSIONAL_DOOR.getDefaultState();
+                if (block.equals(Blocks.OAK_DOOR)) block = ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState();
+                schematic.pallette.add(block);
+                palletteMap.put(id, currentPalletteIndex);
+                blockIdArray[i] = currentPalletteIndex;
+                currentPalletteIndex++;
             }
         }
 
@@ -145,7 +127,7 @@ public final class SchematicConverter {
         for (int x = 0; x < schematic.width; x++) {
             for (int y = 0; y < schematic.height; y++) {
                 for (int z = 0; z < schematic.length; z++) {
-                    int blockInt = blockIntArray[x + z * schematic.width + y * schematic.width * schematic.length]; //according to the documentation on https://github.com/SpongePowered/Schematic-Specification/blob/master/versions/schematic-1.md
+                    int blockInt = blockIdArray[x + z * schematic.width + y * schematic.width * schematic.length]; //according to the documentation on https://github.com/SpongePowered/Schematic-Specification/blob/master/versions/schematic-1.md
                     int metadata = dataIntArray[x + z * schematic.width + y * schematic.width * schematic.length]; //according to the documentation on https://github.com/SpongePowered/Schematic-Specification/blob/master/versions/schematic-1.md
 
                     IBlockState baseState = schematic.pallette.get(blockInt); //this is the default blockstate except for ancient fabric
@@ -171,7 +153,7 @@ public final class SchematicConverter {
                                         .groups(new HashSet<>(Arrays.asList(0, 1)))
                                         .linksRemaining(1).build());
 
-                                if (baseState.equals(ModBlocks.DIMENSIONAL_DOOR)) {
+                                if (baseState.getBlock().equals(ModBlocks.DIMENSIONAL_DOOR)) {
                                     ironDoors++;
                                     rift.setDestination(AvailableLinkDestination.builder()
                                             .acceptedGroups(Collections.singleton(0))
@@ -198,7 +180,7 @@ public final class SchematicConverter {
                                         if (y >= 2) {
                                             schematic.blockData[x][y - 1][z] = schematic.blockData[x][y - 2][z];
                                         } else {
-                                            DimDoors.log.error("Someone placed a door on a sandstone block at the bottom of a schematic. This causes problems and should be remedied. Schematic name: " + schematic.name);
+                                            DimDoors.log.error("Someone placed a door on a sandstone block at the bottom of a schematic. This causes problems and should be remedied. Schematic name: " + schematicId);
                                         }
                                     } else {
                                         woodDoors++;
@@ -217,7 +199,6 @@ public final class SchematicConverter {
 
                                 schematic.tileEntities.add(rift.serializeNBT());
                             }
-
                         }
 
                         if (blockState.getBlock().equals(Blocks.END_PORTAL_FRAME)) {
@@ -237,10 +218,11 @@ public final class SchematicConverter {
                 }
             }
         }
-        if (!nbt.getTag("Entities").hasNoTags()) throw new RuntimeException("Schematic contains entities, but those aren't implemented in the conversion code");
+        if (!nbt.getTag("Entities").hasNoTags())
+            throw new RuntimeException("Schematic contains entities, but those aren't implemented in the conversion code");
         schematic.paletteMax = schematic.pallette.size() - 1;
 
-        DimDoors.log.info(schematic.name + "," + ironDoors + "," + woodDoors + "," + sandstoneDoors + "," + monoliths + "," + chests);
+        DimDoors.log.info(schematicId + "," + schematic.name + "," + ironDoors + "," + woodDoors + "," + sandstoneDoors + "," + monoliths + "," + chests);
 
         return schematic;
     }

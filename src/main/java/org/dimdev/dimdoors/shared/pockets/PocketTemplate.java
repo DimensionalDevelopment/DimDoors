@@ -68,13 +68,13 @@ public class PocketTemplate {
             if (tile instanceof TileEntityRift) {
                 DimDoors.log.info("Rift found in schematic at " + pos);
                 pocket.riftLocations.add(new Location(world, pos));
-            } else if (tile instanceof TileEntityChest){
+            } else if (tile instanceof TileEntityChest) {
                 DimDoors.log.info("Now populating chest.");
                 TileEntityChest chest = (TileEntityChest) tile;
-                LootTable table = world.getLootTableManager().getLootTableFromLocation(new ResourceLocation(DimDoors.MODID+":dungeon_chest"));
+                LootTable table = world.getLootTableManager().getLootTableFromLocation(new ResourceLocation(DimDoors.MODID + ":dungeon_chest"));
                 LootContext ctx = new LootContext.Builder(world).build();
                 table.fillInventory(chest, world.rand, ctx);
-                DimDoors.log.info("Chest should be populated now. Chest is: " + (chest.isEmpty()? "emtpy.":"filled."));
+                DimDoors.log.info("Chest should be populated now. Chest is: " + (chest.isEmpty() ? "emtpy." : "filled."));
             }
         }
     }
