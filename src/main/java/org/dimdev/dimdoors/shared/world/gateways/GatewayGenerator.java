@@ -16,8 +16,8 @@ import java.util.Random;
 
 public class GatewayGenerator implements IWorldGenerator
 {
-    public static final int MAX_GATEWAY_GENERATION_CHANCE = 10000;
-    public static final int MAX_CLUSTER_GENERATION_CHANCE = 10000;
+    public static final int MAX_GATEWAY_GENERATION_CHANCE = 10;
+    public static final int MAX_CLUSTER_GENERATION_CHANCE = 10;
     private static final int CLUSTER_GROWTH_CHANCE = 80;
     private static final int MAX_CLUSTER_GROWTH_CHANCE = 100;
     private static final int MIN_RIFT_Y = 4;

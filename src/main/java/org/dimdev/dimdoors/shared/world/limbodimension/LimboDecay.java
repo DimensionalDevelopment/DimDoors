@@ -51,7 +51,7 @@ public final class LimboDecay {
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ETERNAL),
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT),
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT_ALTERED),
-                    ModBlocks.TRANSIENT_DIMENSIONAL_DOOR.getDefaultState(),
+                    ModBlocks.DIMENSIONAL_PORTAL.getDefaultState(),
                     ModBlocks.DIMENSIONAL_DOOR.getDefaultState(),
                     ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState(),
                     ModBlocks.RIFT.getDefaultState(),

@@ -25,7 +25,7 @@ public class GatewayLimbo extends BaseGateway {
         world.setBlockState(new BlockPos(x, y + 1, z - 1), limbo);
         world.setBlockState(new BlockPos(x, y + 1, z + 1), limbo);
 
-        ItemDoor.placeDoor(world, new BlockPos(x, y + 1, z), EnumFacing.getHorizontal(0), ModBlocks.TRANSIENT_DIMENSIONAL_DOOR, false);
+        ItemDoor.placeDoor(world, new BlockPos(x, y + 1, z), EnumFacing.getHorizontal(0), ModBlocks.DIMENSIONAL_PORTAL, false);
     }
 
     @Override

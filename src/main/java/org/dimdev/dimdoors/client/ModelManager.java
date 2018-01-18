@@ -82,7 +82,7 @@ public final class ModelManager {
         ModelLoader.setCustomStateMapper(ModBlocks.UNSTABLE_DIMENSIONAL_DOOR, map);
         ModelLoader.setCustomStateMapper(ModBlocks.WARP_DIMENSIONAL_DOOR, map);
 
-        ModelLoader.setCustomStateMapper(ModBlocks.TRANSIENT_DIMENSIONAL_DOOR, new StateMap.Builder().ignore(
+        ModelLoader.setCustomStateMapper(ModBlocks.DIMENSIONAL_PORTAL, new StateMap.Builder().ignore(
                 BlockDoor.FACING, BlockDoor.HALF, BlockDoor.HINGE, BlockDoor.OPEN, BlockDoor.POWERED).build());
     }
 }

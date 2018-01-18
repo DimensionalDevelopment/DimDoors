@@ -80,7 +80,7 @@ public final class SchematicConverter {
                         block = ModBlocks.DIMENSIONAL_DOOR.getDefaultState();
                         break;
                     case 1979:
-                        block = ModBlocks.TRANSIENT_DIMENSIONAL_DOOR.getDefaultState();
+                        block = ModBlocks.DIMENSIONAL_PORTAL.getDefaultState();
                         break;
                     case 220:
                         block = ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY);
@@ -137,23 +137,23 @@ public final class SchematicConverter {
                             blockInt = schematic.pallette.indexOf(blockState);
                         } else {
                             schematic.pallette.add(blockState);
-                            //DimDoors.log.info("New blockstate detected. Original blockInt = " + blockInt + " and baseState is " + baseState);
+                            //DimDoors.log.info("New blockstate detected. Original blockInt = " + blockInt + " and blockState is " + blockState);
                             blockInt = schematic.pallette.size() - 1;
                         }
 
-                        if (baseState.getBlock().equals(Blocks.CHEST)) chests++;
+                        if (blockState.getBlock().equals(Blocks.CHEST)) chests++;
 
-                        if (baseState.getBlock().equals(ModBlocks.DIMENSIONAL_DOOR) || baseState.getBlock().equals(ModBlocks.WARP_DIMENSIONAL_DOOR)) {
-                            //DimDoors.log.info("Door found: " + baseState.getBlock().getUnlocalizedName());
+                        if (blockState.getBlock().equals(ModBlocks.DIMENSIONAL_DOOR) || blockState.getBlock().equals(ModBlocks.WARP_DIMENSIONAL_DOOR) || blockState.getBlock().equals(ModBlocks.DIMENSIONAL_PORTAL)) {
+                            //DimDoors.log.info("Door found: " + blockState.getBlock().getUnlocalizedName());
                             if (blockState.getProperties().get(BlockDoor.HALF).equals(BlockDoor.EnumDoorHalf.LOWER)) {
-                                TileEntityEntranceRift rift = (TileEntityEntranceRift) baseState.getBlock().createTileEntity(null, blockState);
+                                TileEntityEntranceRift rift = (TileEntityEntranceRift) blockState.getBlock().createTileEntity(null, blockState);
                                 rift.setPos(new BlockPos(x, y, z));
 
                                 rift.setProperties(LinkProperties.builder()
                                         .groups(new HashSet<>(Arrays.asList(0, 1)))
                                         .linksRemaining(1).build());
 
-                                if (baseState.getBlock().equals(ModBlocks.DIMENSIONAL_DOOR)) {
+                                if (blockState.getBlock().equals(ModBlocks.DIMENSIONAL_DOOR)) {
                                     ironDoors++;
                                     rift.setDestination(AvailableLinkDestination.builder()
                                             .acceptedGroups(Collections.singleton(0))
@@ -161,9 +161,8 @@ public final class SchematicConverter {
                                             .negativeDepthFactor(10000)
                                             .positiveDepthFactor(80)
                                             .weightMaximum(100)
-                                            .noLink(false)
                                             .newRiftWeight(1).build());
-                                } else { //if (baseState.equals(ModBlocks.WARP_DIMENSIONAL_DOOR))
+                                } else if (blockState.getBlock().equals(ModBlocks.WARP_DIMENSIONAL_DOOR)) {
                                     IBlockState stateBelow = schematic.pallette.get(schematic.blockData[x][y - 1][z]);
                                     if (stateBelow.getBlock().equals(Blocks.SANDSTONE)) {
                                         sandstoneDoors++;
@@ -174,7 +173,6 @@ public final class SchematicConverter {
                                                 .negativeDepthFactor(0.00000000001) // The division result is cast to an int, so Double.MIN_VALUE would cause an overflow
                                                 .positiveDepthFactor(Double.POSITIVE_INFINITY)
                                                 .weightMaximum(100)
-                                                .noLink(false)
                                                 .newRiftWeight(1).build());
                                         //change the sandstone to the block below it.
                                         if (y >= 2) {
@@ -193,8 +191,21 @@ public final class SchematicConverter {
                                                         .negativeDepthFactor(80)
                                                         .positiveDepthFactor(10000)
                                                         .weightMaximum(100)
-                                                        .noLink(false).newRiftWeight(1).build()).build());
+                                                        .newRiftWeight(1).build()).build());
                                     }
+                                } else if (blockState.getBlock().equals(ModBlocks.DIMENSIONAL_PORTAL)) {
+                                    rift.setProperties(LinkProperties.builder()
+                                            .groups(new HashSet<>(Arrays.asList(0, 1)))
+                                            .entranceWeight(50)
+                                            .linksRemaining(1).build());
+                                    rift.setDestination(AvailableLinkDestination.builder()
+                                            .acceptedGroups(Collections.singleton(0))
+                                            .coordFactor(1) // TODO: lower value?
+                                            .negativeDepthFactor(Double.POSITIVE_INFINITY)
+                                            .positiveDepthFactor(80) // TODO: lower value?
+                                            .weightMaximum(300) // Link further away
+                                            .newRiftWeight(1)
+                                            .build());
                                 }
 
                                 schematic.tileEntities.add(rift.serializeNBT());
