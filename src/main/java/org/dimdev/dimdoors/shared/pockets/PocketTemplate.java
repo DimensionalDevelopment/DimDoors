@@ -13,8 +13,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootTable;
 
 /**
  * @author Robijnvogel
@@ -59,9 +64,17 @@ public class PocketTemplate {
                     xBase + tileEntityNBT.getInteger("x"),
                     yBase + tileEntityNBT.getInteger("y"),
                     zBase + tileEntityNBT.getInteger("z"));
-            if (world.getTileEntity(pos) instanceof TileEntityRift) {
+            TileEntity tile = world.getTileEntity(pos);
+            if (tile instanceof TileEntityRift) {
                 DimDoors.log.info("Rift found in schematic at " + pos);
                 pocket.riftLocations.add(new Location(world, pos));
+            } else if (tile instanceof TileEntityChest){
+                DimDoors.log.info("Now populating chest.");
+                TileEntityChest chest = (TileEntityChest) tile;
+                LootTable table = world.getLootTableManager().getLootTableFromLocation(new ResourceLocation(DimDoors.MODID+":dungeon_chest"));
+                LootContext ctx = new LootContext.Builder(world).build();
+                table.fillInventory(chest, world.rand, ctx);
+                DimDoors.log.info("Chest should be populated now. Chest is: " + (chest.isEmpty()? "emtpy.":"filled."));
             }
         }
     }

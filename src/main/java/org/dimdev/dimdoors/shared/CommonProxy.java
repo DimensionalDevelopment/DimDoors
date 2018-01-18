@@ -15,6 +15,7 @@ import org.dimdev.dimdoors.shared.tileentities.*;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.ModBiomes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -55,6 +56,7 @@ public abstract class CommonProxy {
 
     public void onInitialization(FMLInitializationEvent event) {
         SchematicHandler.INSTANCE.loadSchematics();
+        LootTableList.register(new ResourceLocation(DimDoors.MODID, "dungeon_chest"));
     }
 
     public void registerTileEntities() {
