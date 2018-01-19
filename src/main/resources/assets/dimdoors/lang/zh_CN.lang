@@ -6,7 +6,7 @@ tile.quartz_door.name=石英门
 tile.dimensional_door.name=次元门
 tile.gold_dimensional_door.name=金制次元门
 tile.quartz_dimensional_door.name=私人次元门
-tile.unstable_dimensional_door.name=不稳定的门
+tile.chaos_dimensional_door.name=不稳定的门
 tile.warp_dimensional_door.name=扭曲之门
 tile.dimensional_trapdoor.name=空间活板门
 tile.dimensional_portal.name=瞬息之门
@@ -24,7 +24,7 @@ item.quartz_door.name=石英门
 item.dimensional_door.name=次元门
 item.gold_dimensional_door.name=金制次元门
 item.quartz_dimensional_door.name=私人次元门
-item.unstable_dimensional_door.name=不稳定的门
+item.chaos_dimensional_door.name=不稳定的门
 item.warp_dimensional_door.name=扭曲之门
 
 item.rift_key=裂痕钥匙
@@ -69,7 +69,7 @@ info.stabilized_rift_signature.unbound0=首次点击记录一个位置,
 info.stabilized_rift_signature.unbound1=再次点击生成连接两地的
 info.stabilized_rift_signature.unbound2=裂痕.
 
-info.unstable_dimensional_door=注意: 将会随机传送
+info.chaos_dimensional_door=注意: 将会随机传送
 
 info.warp_dimensional_door0=放在裂痕下方的方块上
 info.warp_dimensional_door1=来制造传送门,

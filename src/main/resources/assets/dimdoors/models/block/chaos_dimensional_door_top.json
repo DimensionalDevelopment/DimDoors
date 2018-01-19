@@ -1,0 +1,7 @@
+{
+    "parent": "block/door_top",
+    "textures": {
+        "bottom": "dimdoors:blocks/chaos_dimensional_door_lower",
+        "top": "dimdoors:blocks/chaos_dimensional_door_upper"
+    }
+}

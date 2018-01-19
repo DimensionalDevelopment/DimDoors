@@ -19,7 +19,7 @@ public final class ModItems {
     public static final ItemDimensionalDoorIron DIMENSIONAL_DOOR = new ItemDimensionalDoorIron();
     public static final ItemDimensionalDoorGold GOLD_DIMENSIONAL_DOOR = new ItemDimensionalDoorGold();
     public static final ItemDimensionalDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new ItemDimensionalDoorPersonal();
-    public static final ItemDimensionalDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new ItemDimensionalDoorUnstable();
+    public static final ItemDimensionalDoorChaos CHAOS_DOOR = new ItemDimensionalDoorChaos();
     public static final ItemDimensionalDoorWarp WARP_DIMENSIONAL_DOOR = new ItemDimensionalDoorWarp();
 
     // Fabric
@@ -49,15 +49,14 @@ public final class ModItems {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().registerAll(
-                QUARTZ_DOOR,
+        event.getRegistry().registerAll(QUARTZ_DOOR,
                 PERSONAL_DIMENSIONAL_DOOR,
                 GOLD_DOOR,
                 GOLD_DIMENSIONAL_DOOR,
                 DIMENSIONAL_DOOR,
                 WARP_DIMENSIONAL_DOOR,
                 STABLE_FABRIC,
-                UNSTABLE_DIMENSIONAL_DOOR,
+                CHAOS_DOOR,
                 WORLD_THREAD,
                 RIFT_CONNECTION_TOOL,
                 RIFT_BLADE,

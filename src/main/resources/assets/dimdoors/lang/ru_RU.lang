@@ -6,7 +6,7 @@ tile.quartz_door.name=Кварцевая дверь
 tile.dimensional_door.name=Пространственная дверь
 tile.gold_dimensional_door.name=Золотая пространственная дверь
 tile.quartz_dimensional_door.name=Личная пространственная дверь
-tile.unstable_dimensional_door.name=Нестабильная дверь
+tile.chaos_dimensional_door.name=Нестабильная дверь
 tile.warp_dimensional_door.name=Дверь искажения
 tile.dimensional_trapdoor.name=Межпространственный люк
 tile.dimensional_portal.name=Временная дверь
@@ -24,7 +24,7 @@ item.quartz_door.name=Кварцевая дверь
 item.dimensional_door.name=Пространственная дверь
 item.gold_dimensional_door.name=Золотая пространственная дверь
 item.quartz_dimensional_door.name=Личная пространственная дверь
-item.unstable_dimensional_door.name=Нестабильная дверь
+item.chaos_dimensional_door.name=Нестабильная дверь
 item.warp_dimensional_door.name=Дверь искажения
 
 item.rift_key=Ключ разлома
@@ -69,7 +69,7 @@ info.stabilized_rift_signature.unbound0=Первое нажатие сохран
 info.stabilized_rift_signature.unbound1=остальные нажатия создают разломы, соединяющие
 info.stabilized_rift_signature.unbound2=первое и последнее расположения вместе.
 
-info.unstable_dimensional_door=Внимание: Ведёт неизвестно куда
+info.chaos_dimensional_door=Внимание: Ведёт неизвестно куда
 
 info.warp_dimensional_door0=Поставьте на блок под
 info.warp_dimensional_door1=разломом, чтобы создать портал

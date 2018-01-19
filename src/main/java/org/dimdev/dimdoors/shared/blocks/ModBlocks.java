@@ -14,7 +14,7 @@ public final class ModBlocks {
     public static final BlockDimensionalDoorIron DIMENSIONAL_DOOR = new BlockDimensionalDoorIron();
     public static final BlockDimensionalDoorGold GOLD_DIMENSIONAL_DOOR = new BlockDimensionalDoorGold();
     public static final BlockDimensionalDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new BlockDimensionalDoorPersonal();
-    public static final BlockDimensionalDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new BlockDimensionalDoorUnstable();
+    public static final BlockDimensionalDoorChaos CHAOS_DOOR = new BlockDimensionalDoorChaos();
     public static final BlockDimensionalPortal DIMENSIONAL_PORTAL = new BlockDimensionalPortal();
     public static final BlockDimensionalDoorWood WARP_DIMENSIONAL_DOOR = new BlockDimensionalDoorWood();
     public static final BlockDimensionalTrapdoorWood WOOD_DIMENSIONAL_TRAPDOOR = new BlockDimensionalTrapdoorWood();
@@ -28,13 +28,12 @@ public final class ModBlocks {
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(
-                GOLD_DOOR,
+        event.getRegistry().registerAll(GOLD_DOOR,
                 QUARTZ_DOOR,
                 DIMENSIONAL_DOOR,
                 GOLD_DIMENSIONAL_DOOR,
                 PERSONAL_DIMENSIONAL_DOOR,
-                UNSTABLE_DIMENSIONAL_DOOR,
+                CHAOS_DOOR,
                 DIMENSIONAL_PORTAL,
                 WARP_DIMENSIONAL_DOOR,
                 WOOD_DIMENSIONAL_TRAPDOOR,

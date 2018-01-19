@@ -6,7 +6,7 @@ tile.quartz_door.name=Quarztür
 tile.dimensional_door.name=Dimensionaltür
 tile.gold_dimensional_door.name=Goldene Dimensionaltür
 tile.quartz_dimensional_door.name=Persönliche Dimensionaltür
-tile.unstable_dimensional_door.name=Instabile Tür
+tile.chaos_dimensional_door.name=Instabile Tür
 tile.warp_dimensional_door.name=Warp-Tür
 tile.dimensional_trapdoor.name=Transdimensionale Falltür
 tile.dimensional_portal.name=Vergängliche Tür
@@ -24,7 +24,7 @@ item.quartz_door.name=Quarztür
 item.dimensional_door.name=Dimensionaltür
 item.gold_dimensional_door.name=Goldene Dimensionaltür
 item.quartz_dimensional_door.name=Persönliche Dimensionaltür
-item.unstable_dimensional_door.name=Instabile Tür
+item.chaos_dimensional_door.name=Instabile Tür
 item.warp_dimensional_door.name=Warp-Tür
 
 item.rift_key=Spaltschlüssel
@@ -69,7 +69,7 @@ info.stabilized_rift_signature.unbound0=Erster Klick speichert die Position,
 info.stabilized_rift_signature.unbound1=weitere Klicks kreieren Spalte, die
 info.stabilized_rift_signature.unbound2=die erste und die aktuelle Position verbinden.
 
-info.unstable_dimensional_door=Vorsicht: Führt zu einem zufälligen Ziel
+info.chaos_dimensional_door=Vorsicht: Führt zu einem zufälligen Ziel
 
 info.warp_dimensional_door0=Platziere auf dem Block unterhalb eines
 info.warp_dimensional_door1=Spalts, um ein Portal zu erstellen,

@@ -6,7 +6,7 @@ tile.quartz_door.name=Porta di quarzo
 tile.dimensional_door.name=Porta dimensionale
 tile.gold_dimensional_door.name=Porta d'oro dimensionale
 tile.quartz_dimensional_door.name=Porta dimensionale personale
-tile.unstable_dimensional_door.name=Porta instabile
+tile.chaos_dimensional_door.name=Porta instabile
 tile.warp_dimensional_door.name=Porta distorta
 tile.dimensional_trapdoor.name=Botola transdimensionale
 tile.dimensional_portal.name=Porta transitoria
@@ -24,7 +24,7 @@ item.quartz_door.name=Porta di quarzo
 item.dimensional_door.name=Porta dimensionale
 item.gold_dimensional_door.name=Porta d'oro dimensionale
 item.quartz_dimensional_door.name=Porta dimensionale personale
-item.unstable_dimensional_door.name=Porta instabile
+item.chaos_dimensional_door.name=Porta instabile
 item.warp_dimensional_door.name=Porta distorta
 
 item.rift_key=Chiave per frattura
@@ -69,7 +69,7 @@ info.stabilized_rift_signature.unbound0=Al primo clic salva la posizione; al
 info.stabilized_rift_signature.unbound1=secondo clic crea fratture che
 info.stabilized_rift_signature.unbound2=collegano la prima e ultima posizione.
 
-info.unstable_dimensional_door=Attenziione: Porta a una destinazione casuale
+info.chaos_dimensional_door=Attenziione: Porta a una destinazione casuale
 
 info.warp_dimensional_door0=Piazzalo sul blocco sotto una
 info.warp_dimensional_door1=frattura per creare un portale,

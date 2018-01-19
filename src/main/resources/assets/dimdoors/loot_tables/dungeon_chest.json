@@ -115,6 +115,10 @@
                                 "min": 16,
                                 "max": 64
                             }
+                        },
+                        {
+                            "function": "set_data",
+                            "data": 15
                         }
                     ],
                     "weight": 2

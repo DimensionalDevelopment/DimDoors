@@ -6,7 +6,7 @@ tile.quartz_door.name=Porte de quartz
 tile.dimensional_door.name=Porte dimensionnelle
 tile.gold_dimensional_door.name=Porte dorée dimensionnelle
 tile.quartz_dimensional_door.name=Porte dimensionnelle personnelle
-tile.unstable_dimensional_door.name=Porte instable
+tile.chaos_dimensional_door.name=Porte instable
 tile.warp_dimensional_door.name=Porte-raccourci
 tile.dimensional_trapdoor.name=Trappe transdimensionnelle
 tile.dimensional_portal.name=Portail dimensionel
@@ -41,7 +41,7 @@ item.quartz_door.name=Porte de quartz
 item.dimensional_door.name=Porte dimensionnelle
 item.gold_dimensional_door.name=Porte dorée dimensionnelle
 item.quartz_dimensional_door.name=Porte dimensionnelle personnelle
-item.unstable_dimensional_door.name=Porte instable
+item.chaos_dimensional_door.name=Porte instable
 item.warp_dimensional_door.name=Porte-raccourci
 
 item.rift_key=Clé de fissure
@@ -86,7 +86,7 @@ info.stabilized_rift_signature.unbound0=Le premier clic stocke un emplacement,
 info.stabilized_rift_signature.unbound1=les autres clics créent des fissurent qui lient
 info.stabilized_rift_signature.unbound2=le premier et les derniers emplacements ensemble.
 
-info.unstable_dimensional_door=Attention : mène vers une destination aléatoire
+info.chaos_dimensional_door=Attention : mène vers une destination aléatoire
 
 info.warp_dimensional_door0=Placez sur le bloc sous une
 info.warp_dimensional_door1=fissure pour créer un portail,

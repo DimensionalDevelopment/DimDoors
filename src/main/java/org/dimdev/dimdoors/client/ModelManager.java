@@ -37,7 +37,7 @@ public final class ModelManager {
         register(ModItems.PERSONAL_DIMENSIONAL_DOOR);
         register(ModItems.QUARTZ_DOOR);
         register(ModItems.STABLE_FABRIC);
-        register(ModItems.UNSTABLE_DIMENSIONAL_DOOR);
+        register(ModItems.CHAOS_DOOR);
         register(ModItems.WARP_DIMENSIONAL_DOOR);
         register(ModItems.WORLD_THREAD);
         register(ModItems.RIFT_CONNECTION_TOOL);
@@ -108,7 +108,7 @@ public final class ModelManager {
         ModelLoader.setCustomStateMapper(ModBlocks.GOLD_DIMENSIONAL_DOOR, map);
         ModelLoader.setCustomStateMapper(ModBlocks.DIMENSIONAL_DOOR, map);
         ModelLoader.setCustomStateMapper(ModBlocks.PERSONAL_DIMENSIONAL_DOOR, map);
-        ModelLoader.setCustomStateMapper(ModBlocks.UNSTABLE_DIMENSIONAL_DOOR, map);
+        ModelLoader.setCustomStateMapper(ModBlocks.CHAOS_DOOR, map);
         ModelLoader.setCustomStateMapper(ModBlocks.WARP_DIMENSIONAL_DOOR, map);
 
         ModelLoader.setCustomStateMapper(ModBlocks.DIMENSIONAL_PORTAL, new StateMap.Builder().ignore(BlockDoor.FACING, BlockDoor.HALF, BlockDoor.HINGE, BlockDoor.OPEN, BlockDoor.POWERED).build());

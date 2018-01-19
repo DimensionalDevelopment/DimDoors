@@ -6,25 +6,56 @@ tile.quartz_door.name=Kwartsen Deur
 tile.dimensional_door.name=Dimensiedeur
 tile.gold_dimensional_door.name=Gouden Dimensiedeur
 tile.quartz_dimensional_door.name=Persoonlijke Dimensiedeur
-tile.unstable_dimensional_door.name=Chaos Deur
+tile.chaos_dimensional_door.name=Chaos Deur
 tile.warp_dimensional_door.name=Verdraaideur
 tile.dimensional_trapdoor.name=Transdimensionale Valdeur
-tile.dimensional_portal.name=Vergankelijke Deur
+tile.dimensional_portal.name=Vergankelijk Portaal
 
-tile.fabric.black.name=Werkelijkheidsweefsel
 tile.fabric.white.name=Veranderd Weefsel
-tile.ancient_fabric.black.name=Aloud Weefsel
+tile.fabric.orange.name=Oranje Getint Weefsel
+tile.fabric.magenta.name=Magenta Getint Weefsel
+tile.fabric.lightBlue.name=Lichtblauw Getint Weefsel
+tile.fabric.yellow.name=Geel Getint Weefsel
+tile.fabric.lime.name=Limoen Getint Weefsel
+tile.fabric.pink.name=Roze Getint Weefsel
+tile.fabric.gray.name=Grijs Getint Weefsel
+tile.fabric.silver.name=Lichtgrijs Getint Weefsel
+tile.fabric.cyan.name=Cyaan Getint Weefsel
+tile.fabric.purple.name=Paars Getint Weefsel
+tile.fabric.blue.name=Blauw Getint Weefsel
+tile.fabric.brown.name=Bruin Getint Weefsel
+tile.fabric.green.name=Groen Getint Weefsel
+tile.fabric.red.name=Rood Getint Weefsel
+tile.fabric.black.name=Werkelijkheidsweefsel
+
+tile.ancient_fabric.white.name=Onverslijtbaar Veranderd Weefsel
+tile.ancient_fabric.orange.name=Oranje Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.magenta.name=Magenta Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.lightBlue.name=Lichtblauw Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.yellow.name=Geel Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.lime.name=Limoen Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.pink.name=Roze Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.gray.name=Grijs Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.silver.name=Lichtgrijs Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.cyan.name=Cyaan Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.purple.name=Paars Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.blue.name=Blauw Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.brown.name=Bruin Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.green.name=Groen Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.red.name=Rood Getint Onverslijtbaar Weefsel
+tile.ancient_fabric.black.name=Onverslijtbaar Weefsel
+
 tile.eternal_fabric.name=Oneindig Weefsel
 tile.unravelled_fabric.name=Ontraveld Weefsel
-tile.rift.name=Scheur
+tile.rift.name=Scheur Wond
 
-item.gold_door.name=Golden Door
-item.quartz_door.name=Quartz Door
+item.gold_door.name=Gouden Deur
+item.quartz_door.name=Kwartsen Deur
 
 item.dimensional_door.name=Dimensiedeur
 item.gold_dimensional_door.name=Gouden Dimensiedeur
 item.quartz_dimensional_door.name=Persoonlijke Dimensiedeur
-item.unstable_dimensional_door.name=Chaos Deur
+item.chaos_dimensional_door.name=Chaos Deur
 item.warp_dimensional_door.name=Verdraaideur
 
 item.rift_key=Scheur Sleutel
@@ -69,7 +100,7 @@ info.stabilized_rift_signature.unbound0=De eerste klik slaat een locatie op,
 info.stabilized_rift_signature.unbound1=andere klikken creëren scheuren die de eerste
 info.stabilized_rift_signature.unbound2=en laatste locaties met elkaar verbinden.
 
-info.unstable_dimensional_door=Pas op: Leidt naar een willekeurige bestemming
+info.chaos_dimensional_door=Pas op: Leidt naar een willekeurige bestemming
 
 info.warp_dimensional_door0=Plaats op het blok onder een scheur
 info.warp_dimensional_door1=om een portaal te creëren,

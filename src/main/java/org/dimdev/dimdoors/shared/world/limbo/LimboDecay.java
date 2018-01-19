@@ -53,7 +53,7 @@ public final class LimboDecay {
                     ModBlocks.DIMENSIONAL_DOOR,
                     ModBlocks.WARP_DIMENSIONAL_DOOR,
                     ModBlocks.RIFT,
-                    ModBlocks.UNSTABLE_DIMENSIONAL_DOOR,
+                    ModBlocks.CHAOS_DOOR,
                     ModBlocks.GOLD_DOOR,
                     ModBlocks.QUARTZ_DOOR,
                     ModBlocks.GOLD_DIMENSIONAL_DOOR

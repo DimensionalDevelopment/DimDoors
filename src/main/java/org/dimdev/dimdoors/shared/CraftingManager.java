@@ -50,7 +50,7 @@ public final class CraftingManager {
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.DIMENSIONAL_DOOR, 1),
                 "yxy", 'x', ModItems.STABLE_FABRIC, 'y', Items.IRON_DOOR));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.UNSTABLE_DIMENSIONAL_DOOR, 1),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.CHAOS_DOOR, 1),
                 "yxy", 'x', Items.ENDER_EYE, 'y', ModItems.DIMENSIONAL_DOOR));
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WARP_DIMENSIONAL_DOOR, 1),

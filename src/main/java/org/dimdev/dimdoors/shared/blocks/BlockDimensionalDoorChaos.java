@@ -11,11 +11,11 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-public class BlockDimensionalDoorUnstable extends BlockDimensionalDoor { // TODO: different entrance color
+public class BlockDimensionalDoorChaos extends BlockDimensionalDoor { // TODO: different entrance color
 
-    public static final String ID = "unstable_dimensional_door";
+    public static final String ID = "chaos_dimensional_door";
 
-    public BlockDimensionalDoorUnstable() {
+    public BlockDimensionalDoorChaos() {
         super(Material.IRON);
         setHardness(0.2F);
         setUnlocalizedName(ID);
@@ -25,7 +25,7 @@ public class BlockDimensionalDoorUnstable extends BlockDimensionalDoor { // TODO
 
     @Override
     public Item getItem() {
-        return ModItems.UNSTABLE_DIMENSIONAL_DOOR;
+        return ModItems.CHAOS_DOOR;
     }
 
     @Override
