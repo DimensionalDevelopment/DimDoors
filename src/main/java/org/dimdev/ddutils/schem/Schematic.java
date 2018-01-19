@@ -2,12 +2,14 @@ package org.dimdev.ddutils.schem;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.collect.ArrayListMultimap;
+import javafx.geometry.BoundingBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
@@ -15,6 +17,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -275,7 +278,7 @@ public class Schematic {
                     IBlockState state = world.getBlockState(pos);
                     String id = getBlockStateStringFromState(state);
                     if(id.contains(":")) mods.add(id.split(":")[0]);
-                    states.put(state, pos);
+                    states.put(state, new BlockPos(x,y,z));
 
                     Optional.ofNullable(world.getTileEntity(pos)).ifPresent(tileEntity -> schematic.tileEntities.add(tileEntity.serializeNBT()));
                 }
@@ -292,11 +295,24 @@ public class Schematic {
             schematic.pallette.add(i, keys[i]);
         }
 
-        schematic.requiredMods = mods.toArray(new String[0]);
+        for(Entity entity : world.getEntitiesInAABBexcluding(null, getBoundingBox(pos1, pos2), entity -> !(entity instanceof EntityPlayerMP))) {
+            try {
+                schematic.entities.add(entity.serializeNBT());
+                System.out.println(entity.getName() + " has serialized. Skipping.");
+            } catch (Exception e) {
+                System.out.println(entity.getName() + " has failed to serialize. Skipping.");
+            }
+        }
 
+        schematic.requiredMods = mods.toArray(new String[0]);
+        schematic.paletteMax = keys.length;
         schematic.creationDate = System.currentTimeMillis();
 
         return schematic;
+    }
+
+    private static AxisAlignedBB getBoundingBox(Vector3i pos1, Vector3i pos2) {
+        return new AxisAlignedBB(new BlockPos(pos1.getX(), pos1.getY(), pos1.getZ()), new BlockPos(pos2.getX(), pos2.getY(), pos2.getZ()));
     }
 
     public static void place(Schematic schematic, World world, int xBase, int yBase, int zBase) {
