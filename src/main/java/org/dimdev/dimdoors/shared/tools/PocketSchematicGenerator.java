@@ -99,16 +99,16 @@ public final class PocketSchematicGenerator {
                     ModBlocks.ANCIENT_FABRIC.getDefaultState(), // outer wall
                     ModBlocks.FABRIC.getDefaultState(), // inner wall
                     ModBlocks.DIMENSIONAL_DOOR, // door
-                    PocketExitDestination.builder().build(),
-                    1)); // exit rift destination
+                    PocketExitDestination.builder().build(),// exit rift destination
+                    1)); // TODO: pass destination rather than just chaos weight
             schematics.add(generatePocketSchematic(
                     "private_pocket", // base name
                     pocketSize, // size
                     ModBlocks.ANCIENT_FABRIC.getDefaultState().withProperty(BlockFabricAncient.COLOR, EnumDyeColor.WHITE), // outer wall
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabricAncient.COLOR, EnumDyeColor.WHITE), // inner wall
                     ModBlocks.PERSONAL_DIMENSIONAL_DOOR, // door
-                    PrivatePocketExitDestination.builder().build(),
-                    0)); // exit rift destination
+                    PrivatePocketExitDestination.builder().build(),// exit rift destination
+                    0));
         }
         return schematics;
     }

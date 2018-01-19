@@ -14,6 +14,7 @@ public class WorldProviderPersonalPocket extends WorldProviderPocket {
     @Override
     public void init() {
         super.init();
+        hasSkyLight = false; // TODO: figure out why relighting takes so long with private pockets only...
         biomeProvider = new BiomeProviderSingle(ModBiomes.WHITE_VOID);
     }
 

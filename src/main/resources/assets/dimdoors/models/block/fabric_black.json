@@ -1,4 +1,4 @@
 {
-  "parent": "block/cube_all",
+  "parent": "dimdoors:block/fullbright",
   "textures": { "all": "dimdoors:blocks/fabric_black" }
 }
