@@ -12,9 +12,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import net.minecraft.block.BlockDispenser;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.tileentity.TileEntityDispenser;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
@@ -75,6 +80,25 @@ public class PocketTemplate {
                 LootContext ctx = new LootContext.Builder(world).build();
                 table.fillInventory(chest, world.rand, ctx);
                 DimDoors.log.info("Chest should be populated now. Chest is: " + (chest.isEmpty() ? "emtpy." : "filled."));
+            } else if (tile instanceof TileEntityDispenser) {
+                DimDoors.log.info("Now populating dispenser.");
+                TileEntityDispenser dispenser = (TileEntityDispenser) tile;
+                IBlockState blockState = world.getBlockState(pos);
+                if (!blockState.getBlock().equals(Blocks.DISPENSER)) {
+                    DimDoors.log.error("Wanted to place a TileEntityDispenser at a position, after generating a schematic, but the block doesn't seem to be a dispenser. Something is terribly wrong!");
+                } else {
+                    LootTable table;
+                    IBlockState fireState1 = Blocks.DISPENSER.getDefaultState().withProperty(BlockDispenser.FACING, EnumFacing.DOWN).withProperty(BlockDispenser.TRIGGERED, false);
+                    IBlockState fireState2 = Blocks.DISPENSER.getDefaultState().withProperty(BlockDispenser.FACING, EnumFacing.DOWN).withProperty(BlockDispenser.TRIGGERED, true);
+                    if (blockState.equals(fireState1) || blockState.equals(fireState2)) {
+                        table = world.getLootTableManager().getLootTableFromLocation(new ResourceLocation(DimDoors.MODID + ":dispenser_fire"));
+                    } else {
+                        table = world.getLootTableManager().getLootTableFromLocation(new ResourceLocation(DimDoors.MODID + ":dispenser_projectiles"));
+                    }
+                    LootContext ctx = new LootContext.Builder(world).build();
+                    table.fillInventory(dispenser, world.rand, ctx);
+                }
+                DimDoors.log.info("Dispenser should be populated now. Dispenser is: " + (dispenser.isEmpty() ? "emtpy." : "filled."));
             }
         }
     }

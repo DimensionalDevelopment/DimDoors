@@ -2,7 +2,7 @@
     "pools": [
         {
             "name": "default",
-			"rolls": {
+            "rolls": {
                 "min": 2,
                 "max": 6
             },
@@ -135,7 +135,7 @@
                 }
             ]
         },
-		{
+        {
             "name": "ench_book",
             "rolls": 1,
             "entries": [
@@ -151,12 +151,12 @@
                         }
                     ]
                 },
-				{
+                {
                     "type": "empty",
                     "name": "minecraft:air",
                     "weight": 14
-				}
-			]
-		}
+                }
+            ]
+        }
     ]
 }

@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.shared;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.client.IRenderHandler;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
@@ -60,6 +59,8 @@ public abstract class CommonProxy {
     public void onInitialization(FMLInitializationEvent event) {
         SchematicHandler.INSTANCE.loadSchematics();
         LootTableList.register(new ResourceLocation(DimDoors.MODID, "dungeon_chest"));
+        LootTableList.register(new ResourceLocation(DimDoors.MODID, "dispenser_projectiles"));
+        LootTableList.register(new ResourceLocation(DimDoors.MODID, "dispenser_fire"));
     }
 
     public void registerTileEntities() {
