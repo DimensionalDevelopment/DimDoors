@@ -16,12 +16,15 @@ cache:
   - "$HOME/.gradle/wrapper/"
 sudo: false
 
+before_deploy:
+  - export RELEASE_FILE_LIST=$(ls ./build/libs/* | tr '\n' ', ')
 deploy:
   skip_cleanup: true
   provider: releases
   api_key:
     secure: A26twoR4XbarXTCxNIlKr4zbDRw6B+u879+6BWEKmavgAnjhGkPb9PkmR3tPm7iQDp9K9dlkez5KGUJEX/tCMYqL2gQnjlt9BfcVu7YJ4SXhZ6Zcck1/+1jhDox8QHLT2zvgYhmmEWdDD78FHJfO+2+ejhdxDMt6xxVtn47426rs0d0I1L9KDlC8EVoe42c+142Dedk5IaI2GCU07nOKaZFtAnR0NIk/Cf5P7rtecd+jNR3kaAu24U/WPoUMH2cCCf1+ViK/oJgu4FgdEGp1kec0gZnwWqJ+bYvywGiohmbN9B0JsjrwVixYgmzEw00cvdcV8uZHY/RXfOVtDh3ex9xaQYu6Fiq7L8pnw/pN6wsr7kFE0HvhSDAILIAOHFt5jlocAUfjEV/wFQyZUhxZx6Qclx7rdwYt4+iwtB+DPXR71JaaeSLtuQ7Q6HbFxrnjo1biS2ERkdOJobNBHEZvH2A9O1+bx4q9z1+LAP/XXxK2+KpzVZzkDXVUMl81oyAycuipXZQVTyDQdp9XB+waj7xclL57Cibs/DfwOw9l8DKR981h2Q784jBVlJyv/s+vZDgouxLqeTJdsK2cKOuYKl/fMhio6FIJs7p8U7l2OiXbvAg5jY1sJj69ePn7hTiMn2QHVihVM0t3W3/ppp7U0XKo++hB2VXwT/fSS8E5aXs=
-  file: ./build/libs/*
+  file_glob: true
+  file: "{$RELEASE_FILE_LIST}"
   on:
     repo: DimensionalDevelopment/DimDoors
     branch: 1.12-WIP
