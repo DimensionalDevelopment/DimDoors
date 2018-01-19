@@ -56,16 +56,12 @@ public class CommandSaveSchem extends CommandBase {
         if (sender instanceof EntityPlayerMP) {
             EntityPlayerMP player = getCommandSenderAsPlayer(sender);
 
-            PocketRegistry registry;
-
-            try {
-                registry = PocketRegistry.instance(player.dimension);
-            } catch (Exception e) {
+            if(ModDimensions.isDimDoorsPocketDimension(player.world)) {
                 player.sendMessage(new TextComponentString("Current Dimension isn't a pocket dimension"));
                 return;
             }
 
-            Pocket pocket = registry.getPocketAt(player.getPosition());
+            Pocket pocket = PocketRegistry.instance(player.dimension).getPocketAt(player.getPosition());
 
             Schematic schematic = Schematic.createFromWorld(args[0], player.getName(), player.world, toVector3i(pocket.getOrigin()), toVector3i(pocket.getOrigin()).add(Vector3i.from(pocket.getSize()*16)));
 
