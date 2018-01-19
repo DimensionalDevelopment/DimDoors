@@ -23,7 +23,9 @@ public final class ModDimensions {
     @Getter private static int privateDim;
     @Getter private static int publicDim;
     @Getter private static int dungeonDim;
+    @Getter private static int dungeonMakingDim;
 
+    @SuppressWarnings("UnusedAssignment")
     public static void registerDimensions() {
         // TODO: more than 1 dimension/dimension type
         int dim = Config.getBaseDim();
@@ -31,10 +33,12 @@ public final class ModDimensions {
         privateDim = dim++;
         publicDim = dim++;
         dungeonDim = dim++;
+        dungeonMakingDim = dim++;
         DimensionManager.registerDimension(limboDim, LIMBO);
         DimensionManager.registerDimension(privateDim, PRIVATE);
         DimensionManager.registerDimension(publicDim, PUBLIC);
         DimensionManager.registerDimension(dungeonDim, DUNGEON);
+        DimensionManager.registerDimension(dungeonMakingDim, DUNGEON);
     }
 
     public static boolean isDimDoorsPocketDimension(int id) {

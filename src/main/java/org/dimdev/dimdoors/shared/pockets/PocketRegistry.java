@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.shared.pockets;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import net.minecraft.world.World;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.dimdoors.shared.Config;
@@ -9,7 +10,6 @@ import org.dimdev.ddutils.math.GridUtils;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.ddutils.WorldUtils;
-import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
+import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPocket;
 
 @NBTSerializable public class
 PocketRegistry extends WorldSavedData { // TODO: unregister pocket entrances, private pocket entrances/exits
@@ -47,9 +48,13 @@ PocketRegistry extends WorldSavedData { // TODO: unregister pocket entrances, pr
     }
 
     public static PocketRegistry instance(int dim) {
-        if (!ModDimensions.isDimDoorsPocketDimension(dim)) throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
+        World world = WorldUtils.getWorld(dim);
 
-        MapStorage storage = WorldUtils.getWorld(dim).getPerWorldStorage();
+        if (!(world.provider instanceof WorldProviderPocket)) {
+            throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions (asked for dim " + dim + ")!");
+        }
+
+        MapStorage storage = world.getPerWorldStorage();
         PocketRegistry instance = (PocketRegistry) storage.getOrLoadData(PocketRegistry.class, DATA_NAME);
 
         if (instance == null) {

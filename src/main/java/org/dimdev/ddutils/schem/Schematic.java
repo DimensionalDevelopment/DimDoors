@@ -2,7 +2,6 @@ package org.dimdev.ddutils.schem;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.collect.ArrayListMultimap;
-import javafx.geometry.BoundingBox;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -252,14 +251,12 @@ public class Schematic {
         return totalString;
     }
 
-    public static Schematic createFromWorld(String name, String author, World world, Vector3i pos1, Vector3i pos2) {
+    public static Schematic createFromWorld(World world, Vector3i from, Vector3i to) {
         Schematic schematic = new Schematic();
-        schematic.author = author;
-        schematic.name = name;
 
-        Vector3i min = pos1.min(pos2);
-        Vector3i max = pos1.max(pos2);
-        Vector3i dimensions = max.sub(min);
+        Vector3i min = from.min(to);
+        Vector3i max = from.max(to);
+        Vector3i dimensions = max.sub(min).add(1, 1, 1);
 
         schematic.width = (short) dimensions.getX();
         schematic.height = (short) dimensions.getY();
@@ -273,38 +270,50 @@ public class Schematic {
         for (int x = 0; x < dimensions.getX(); x++) {
             for (int y = 0; y < dimensions.getY(); y++) {
                 for (int z = 0; z < dimensions.getZ(); z++) {
-                    BlockPos pos = new BlockPos(min.getX()+x, min.getY()+y, min.getZ()+z);
+                    BlockPos pos = new BlockPos(min.getX() + x, min.getY() + y, min.getZ() + z);
 
                     IBlockState state = world.getBlockState(pos);
                     String id = getBlockStateStringFromState(state);
-                    if(id.contains(":")) mods.add(id.split(":")[0]);
-                    states.put(state, new BlockPos(x,y,z));
+                    if (id.contains(":")) mods.add(id.split(":")[0]);
+                    states.put(state, new BlockPos(x, y, z));
 
-                    Optional.ofNullable(world.getTileEntity(pos)).ifPresent(tileEntity -> schematic.tileEntities.add(tileEntity.serializeNBT()));
+                    TileEntity tileEntity = world.getChunkFromBlockCoords(pos).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
+                    if (tileEntity != null) {
+                        NBTTagCompound tileEntityNBT = tileEntity.serializeNBT();
+                        tileEntityNBT.setInteger("x", tileEntityNBT.getInteger("x") - min.getX());
+                        tileEntityNBT.setInteger("y", tileEntityNBT.getInteger("y") - min.getY());
+                        tileEntityNBT.setInteger("z", tileEntityNBT.getInteger("z") - min.getZ());
+
+                        schematic.tileEntities.add(tileEntityNBT);
+                    }
                 }
             }
         }
 
-        IBlockState[] keys = states.keySet().toArray(new IBlockState[0]);
+        IBlockState[] keys = states.keySet().toArray(new IBlockState[states.keySet().size()]);
 
         for (int i = 0; i < keys.length; i++) {
-            for(BlockPos pos : states.get(keys[i])) {
+            for (BlockPos pos : states.get(keys[i])) {
                 schematic.blockData[pos.getX()][pos.getY()][pos.getZ()] = i;
             }
 
             schematic.pallette.add(i, keys[i]);
         }
 
-        for(Entity entity : world.getEntitiesInAABBexcluding(null, getBoundingBox(pos1, pos2), entity -> !(entity instanceof EntityPlayerMP))) {
-            try {
-                schematic.entities.add(entity.serializeNBT());
-                System.out.println(entity.getName() + " has serialized. Skipping.");
-            } catch (Exception e) {
-                System.out.println(entity.getName() + " has failed to serialize. Skipping.");
-            }
+        for (Entity entity : world.getEntitiesInAABBexcluding(null, getBoundingBox(from, to), entity -> !(entity instanceof EntityPlayerMP))) {
+            NBTTagCompound entityNBT = entity.serializeNBT();
+
+            NBTTagList posNBT = (NBTTagList) entityNBT.getTag("Pos");
+            NBTTagList newPosNBT = new NBTTagList();
+            newPosNBT.appendTag(new NBTTagDouble(posNBT.getDoubleAt(0) - from.getX()));
+            newPosNBT.appendTag(new NBTTagDouble(posNBT.getDoubleAt(1) - from.getY()));
+            newPosNBT.appendTag(new NBTTagDouble(posNBT.getDoubleAt(2) - from.getZ()));
+            entityNBT.setTag("Pos", newPosNBT);
+
+            schematic.entities.add(entityNBT);
         }
 
-        schematic.requiredMods = mods.toArray(new String[0]);
+        schematic.requiredMods = mods.toArray(new String[mods.size()]);
         schematic.paletteMax = keys.length;
         schematic.creationDate = System.currentTimeMillis();
 
@@ -315,7 +324,7 @@ public class Schematic {
         return new AxisAlignedBB(new BlockPos(pos1.getX(), pos1.getY(), pos1.getZ()), new BlockPos(pos2.getX(), pos2.getY(), pos2.getZ()));
     }
 
-    public static void place(Schematic schematic, World world, int xBase, int yBase, int zBase) {
+    public static void place(Schematic schematic, World world, int xBase, int yBase, int zBase) { // TODO: check if entities and tileentities are within pocket bounds
         // Place the schematic's blocks
         List<IBlockState> palette = schematic.pallette;
         int[][][] blockData = schematic.blockData;
@@ -375,7 +384,7 @@ public class Schematic {
                     throw new RuntimeException("Schematic contained TileEntity " + schematicTileEntityId + " at " + pos + " but the TileEntity of that block (" + world.getBlockState(pos) + ") must be " + blockTileEntityId);
                 }
             } else {
-                throw new RuntimeException("Schematic contained TileEntity info at "  + pos + "but the block there (" + world.getBlockState(pos) + ") has no TileEntity.");
+                throw new RuntimeException("Schematic contained TileEntity info at " + pos + " but the block there (" + world.getBlockState(pos) + ") has no TileEntity.");
             }
         }
 
