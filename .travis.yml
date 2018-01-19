@@ -17,7 +17,7 @@ cache:
 sudo: false
 
 before_deploy:
-  - "rm build/libs/*.sources.jar"
+  - "rm build/libs/*-sources.jar"
   - export RELEASE_PKG_FILE=$(ls ./build/libs/*)
   - echo "deploying $RELEASE_PKG_FILE to GitHub releases"
 deploy:
