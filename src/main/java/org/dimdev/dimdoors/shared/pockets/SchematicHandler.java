@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.dimdev.dimdoors.shared.tools.SchematicConverter;
 import net.minecraft.nbt.NBTTagCompound;
@@ -39,9 +40,11 @@ public class SchematicHandler {
     private Map<String, Map<String, Integer>> nameMap; // group -> name -> index in templates
 
     public void loadSchematics() {
+        long startTime = System.currentTimeMillis();
+
         templates = new ArrayList<>();
 
-        String[] names = {"default_dungeon_normal", "default_dungeon_nether", "default_private", "default_public"}; // TODO: don't hardcode
+        String[] names = {"default_dungeon_nether", "default_dungeon_normal", "default_private", "default_public"}; // TODO: don't hardcode
         for (String name : names) {
             try {
                 URL resource = DimDoors.class.getResource("/assets/dimdoors/pockets/json/" + name + ".json");
@@ -73,7 +76,7 @@ public class SchematicHandler {
         }
         constructNameMap();
 
-        DimDoors.log.info("Loaded " + templates.size() + " templates.");
+        DimDoors.log.info("Loaded " + templates.size() + " templates in " + (System.currentTimeMillis() - startTime) + " ms.");
     }
 
     private static List<PocketTemplate> loadTemplatesFromJson(String jsonString) {
@@ -84,7 +87,7 @@ public class SchematicHandler {
         JsonElement jsonElement = parser.parse(jsonString);
         JsonObject jsonTemplate = jsonElement.getAsJsonObject();
 
-        //Generate and get templates (without a schematic) of all variations that are valid for the current "maxPocketSize" 
+        //Generate and get templates (without a schematic) of all variations that are valid for the current "maxPocketSize"
         List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate);
 
         String subDirectory = jsonTemplate.get("group").getAsString(); //get the subfolder in which the schematics are stored
@@ -177,7 +180,7 @@ public class SchematicHandler {
             pocketTemplates.add(new PocketTemplate(group, id, type, name, author, size, baseWeight));
         }
 
-        return pocketTemplates;
+        return pocketTemplates.stream().sorted(Comparator.comparing(PocketTemplate::getId)).collect(Collectors.toList());
     }
 
     private void constructNameMap() {
