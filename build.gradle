@@ -22,8 +22,8 @@ repositories {
 
 // Version info
 String baseversion = "3.0" // Set beta to 0 after changing this
-int beta = 5 // Set this to 0 for a non-beta release
-int betaSub = 2
+int beta = 6 // Set this to 0 for a non-beta release
+int betaSub = 0
 ext.mcversion = "1.12.2"
 ext.forgeversion = "14.23.1.2598"
 String mcpversion = "snapshot_20180113"
