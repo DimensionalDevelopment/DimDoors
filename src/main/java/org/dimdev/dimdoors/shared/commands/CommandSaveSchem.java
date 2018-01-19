@@ -13,10 +13,7 @@ import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.pockets.Pocket;
-import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
-import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
-import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
+import org.dimdev.dimdoors.shared.pockets.*;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 
@@ -38,7 +35,7 @@ public class CommandSaveSchem extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "saveschem <name> <amount>";
+        return "saveschem <name>";
     }
 
     @Override
@@ -49,7 +46,7 @@ public class CommandSaveSchem extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException { // TODO: more pocket commands (replace pocket, get ID, teleport to pocket, etc.)
         // Check that the number of arguments is correct
-        if (args.length > 2) {
+        if (args.length > 1) {
             sender.sendMessage(new TextComponentString("[DimDoors] Usage: /" + getUsage(sender)));
             return;
         }
@@ -59,11 +56,18 @@ public class CommandSaveSchem extends CommandBase {
         if (sender instanceof EntityPlayerMP) {
             EntityPlayerMP player = getCommandSenderAsPlayer(sender);
 
-            Vector3i center = toVector3i(player.getPosition());
+            PocketRegistry registry;
 
-            Vector3i amount = Vector3i.from(Integer.parseInt(args[1]));
+            try {
+                registry = PocketRegistry.instance(player.dimension);
+            } catch (Exception e) {
+                player.sendMessage(new TextComponentString("Current Dimension isn't a pocket dimension"));
+                return;
+            }
 
-            Schematic schematic = Schematic.createFromWorld(args[0], player.getName(), player.world, center.sub(amount), center.add(amount));
+            Pocket pocket = registry.getPocketAt(player.getPosition());
+
+            Schematic schematic = Schematic.createFromWorld(args[0], player.getName(), player.world, toVector3i(pocket.getOrigin()), toVector3i(pocket.getOrigin()).add(Vector3i.from(pocket.getSize()*16)));
 
             SchematicHandler.INSTANCE.saveSchematic(schematic, args[0]);
 
