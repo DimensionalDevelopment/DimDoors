@@ -1,5 +1,7 @@
 package org.dimdev.ddutils.schem;
 
+import com.flowpowered.math.vector.Vector3i;
+import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -245,6 +247,56 @@ public class Schematic {
             totalString = blockNameString + "[" + blockStateString + "]";
         }
         return totalString;
+    }
+
+    public static Schematic createFromWorld(String name, String author, World world, Vector3i pos1, Vector3i pos2) {
+        Schematic schematic = new Schematic();
+        schematic.author = author;
+        schematic.name = name;
+
+        Vector3i min = pos1.min(pos2);
+        Vector3i max = pos1.max(pos2);
+        Vector3i dimensions = max.sub(min);
+
+        schematic.width = (short) dimensions.getX();
+        schematic.height = (short) dimensions.getY();
+        schematic.length = (short) dimensions.getZ();
+
+        schematic.blockData = new int[schematic.width][schematic.height][schematic.length];
+
+        ArrayListMultimap<IBlockState, BlockPos> states = ArrayListMultimap.create();
+        Set<String> mods = new HashSet<>();
+
+        for (int x = 0; x < dimensions.getX(); x++) {
+            for (int y = 0; y < dimensions.getY(); y++) {
+                for (int z = 0; z < dimensions.getZ(); z++) {
+                    BlockPos pos = new BlockPos(min.getX()+x, min.getY()+y, min.getZ()+z);
+
+                    IBlockState state = world.getBlockState(pos);
+                    String id = getBlockStateStringFromState(state);
+                    if(id.contains(":")) mods.add(id.split(":")[0]);
+                    states.put(state, pos);
+
+                    Optional.ofNullable(world.getTileEntity(pos)).ifPresent(tileEntity -> schematic.tileEntities.add(tileEntity.serializeNBT()));
+                }
+            }
+        }
+
+        IBlockState[] keys = states.keySet().toArray(new IBlockState[0]);
+
+        for (int i = 0; i < keys.length; i++) {
+            for(BlockPos pos : states.get(keys[i])) {
+                schematic.blockData[pos.getX()][pos.getY()][pos.getZ()] = i;
+            }
+
+            schematic.pallette.add(i, keys[i]);
+        }
+
+        schematic.requiredMods = mods.toArray(new String[0]);
+
+        schematic.creationDate = System.currentTimeMillis();
+
+        return schematic;
     }
 
     public static void place(Schematic schematic, World world, int xBase, int yBase, int zBase) {
