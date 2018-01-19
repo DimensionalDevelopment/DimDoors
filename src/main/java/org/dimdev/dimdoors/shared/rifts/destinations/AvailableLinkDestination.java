@@ -66,7 +66,7 @@ import java.util.Set;
             double coordDistance = Math.sqrt(sq(otherVirtualLocation.getX() - virtualLocationHere.getX())
                                              + sq(otherVirtualLocation.getZ() - virtualLocationHere.getZ()));
             double depthFactor = depthDifference > 0 ? positiveDepthFactor : negativeDepthFactor;
-            double distance = sq(coordFactor * coordDistance) + sq(depthFactor * depthDifference);
+            double distance = Math.sqrt(sq(coordFactor * coordDistance) + sq(depthFactor * depthDifference));
 
             // Calculate the weight as 4m/pi w/(m^2/d + d)^2. This is similar to how gravitational/electromagnetic attraction
             // works in physics (G m1 m2/d^2 and k_e m1 m2/d^2). Even though we add a depth dimension to the world, we keep

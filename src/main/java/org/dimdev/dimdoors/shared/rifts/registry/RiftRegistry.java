@@ -42,7 +42,6 @@ public class RiftRegistry extends WorldSavedData {
 
     // <editor-fold defaultstate="collapsed" desc="Code for reading/writing/getting the registry">
 
-
     public static class RiftSubregistry extends WorldSavedData {
         private int dim;
 
@@ -57,6 +56,7 @@ public class RiftRegistry extends WorldSavedData {
         @Override public void readFromNBT(NBTTagCompound nbt) {
             // Registry is already loaded
             if (riftRegistry.subregistries.get(dim) != null) return;
+            if (riftRegistry == null) RiftRegistry.instance();
 
             // Read rifts in this dimension
             NBTTagList riftsNBT = (NBTTagList) nbt.getTag("rifts");
@@ -95,6 +95,7 @@ public class RiftRegistry extends WorldSavedData {
         // method rather than RiftSubregistry) and save each in the appropriate registry, we can't do this because it is not
         // always the case that all worlds will be saved at once.
         @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+            if (riftRegistry == null) RiftRegistry.instance();
             // Write rifts in this dimension
             NBTTagList riftsNBT = new NBTTagList();
             NBTTagList pocketsNBT = new NBTTagList();
