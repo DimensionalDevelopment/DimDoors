@@ -1,10 +1,15 @@
 package org.dimdev.dimdoors.shared.world.limbodimension;
 
+import net.minecraft.client.audio.MusicTicker;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.client.EnumHelperClient;
+import net.minecraftforge.common.util.EnumHelper;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.render.CloudRenderBlank;
 import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.ddutils.Location;
+import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.ModBiomes;
 import net.minecraft.entity.Entity;
@@ -20,6 +25,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WorldProviderLimbo extends WorldProvider {
+    @SideOnly(Side.CLIENT)
+    public static final MusicTicker.MusicType music = EnumHelper.addEnum(MusicTicker.MusicType.class, "limbo", new Class[] { SoundEvent.class, int.class, int.class }, ModSounds.CREEPY, 0,0);
 
     @Override
     public void init() {
@@ -114,5 +121,13 @@ public class WorldProviderLimbo extends WorldProvider {
     @SideOnly(Side.CLIENT)
     public boolean doesXZShowFog(int x, int z) {
         return true;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public MusicTicker.MusicType getMusicType() {
+        System.out.println("Derp " + (music != null)
+        );
+        return music;
     }
 }
