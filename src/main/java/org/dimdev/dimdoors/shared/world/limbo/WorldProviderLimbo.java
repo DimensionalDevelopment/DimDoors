@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors.shared.world.limbo;
 
+import net.minecraft.client.audio.MusicTicker;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -9,16 +11,20 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.render.CloudRenderBlank;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
+import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.world.ModBiomes;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 public class WorldProviderLimbo extends WorldProvider {
+    @SideOnly(Side.CLIENT)
+    public static final MusicTicker.MusicType music = EnumHelper.addEnum(MusicTicker.MusicType.class, "limbo", new Class<?>[] {SoundEvent.class, int.class, int.class}, ModSounds.CREEPY, 0, 0);
 
     @Override
     public void init() {
@@ -113,5 +119,11 @@ public class WorldProviderLimbo extends WorldProvider {
     @SideOnly(Side.CLIENT)
     public boolean doesXZShowFog(int x, int z) {
         return true;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public MusicTicker.MusicType getMusicType() {
+        return music;
     }
 }
