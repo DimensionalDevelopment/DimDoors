@@ -122,7 +122,7 @@ public class SchematicHandler {
                     DimDoors.log.error("Schematic file " + template.getId() + ".schematic did not load correctly from config folder.", ex);
                 }
             } else {
-                DimDoors.log.warn("Schematic '" + template.getId() + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
+                DimDoors.log.error("Schematic \"" + template.getId() + "\" was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
             }
 
             NBTTagCompound schematicNBT;

@@ -2,613 +2,716 @@
     "group": "ruins",
     "pockets": [
         {
-            "id": "ComplexHall_Balgor0-CrumbledHall_Closed_75",
+            "id": "crumbled_hall",
             "type": "complex_hall",
+            "name": "Hall of Ruin",
+            "author": "Balgor0",
+            "open": false,
             "size": 2,
             "baseWeight": 75
         },
         {
-            "id": "ComplexHall_Cere-JumpPass_Open_75",
+            "id": "jump_pass",
             "type": "complex_hall",
+            "name": "Jumping Run",
+            "author": "Cere",
+            "open": true,
             "size": 1,
             "baseWeight": 75
         },
         {
-            "id": "complexHall_buggyTopEntry1_open_100",
+            "id": "buggy_top_entry",
             "type": "complex_hall",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "ComplexHall_Cere-PuzzleWall_Open_75",
+            "id": "puzzle_wall",
             "type": "complex_hall",
+            "name": "Puzzle Wall",
+            "author": "Cere",
+            "open": true,
             "size": 2,
             "baseWeight": 75
         },
         {
-            "id": "ComplexHall_Cere-TransferTunnel_Closed_100",
+            "id": "transfer_tunnel",
             "type": "complex_hall",
+            "name": "Transfer",
+            "author": "Cere",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "complexHall_exitRuinsWithHiddenDoor_open_100",
+            "id": "exit_ruins_with_hidden_door",
             "type": "complex_hall",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "complexHall_hallwayHiddenTreasure_closed_100",
+            "id": "hallway_hidden_treasure_a",
             "type": "complex_hall",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "complexHall_largeBrokenHall_closed_100",
+            "id": "large_broken_hall",
             "type": "complex_hall",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "complexHall_mediumPillarStairs_open_100",
+            "id": "medium_pillar_stairs",
             "type": "complex_hall",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "complexHall_pitStairs_open_100",
+            "id": "pit_stairs",
             "type": "complex_hall",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "complexHall_ruinsO_open_100",
+            "id": "ruins",
             "type": "complex_hall",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "ComplexHall_SK-AnchoredDescent_Open_50",
+            "id": "anchored_descent",
             "type": "complex_hall",
             "author": "SK",
+            "open": true,
             "size": 1,
             "baseWeight": 50
         },
         {
-            "id": "ComplexHall_SK-HallwayHiddenTreasure-B_Closed_50",
+            "id": "hallway_hidden_treasure_b",
             "type": "complex_hall",
             "author": "SK",
+            "open": false,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "ComplexHall_SK-HiddenStairs_Open_100",
+            "id": "hidden_stairs",
             "type": "complex_hall",
             "author": "SK",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "ComplexHall_SK-LostGarden_Open_40",
+            "id": "lost_garden",
             "type": "complex_hall",
             "author": "SK",
+            "open": true,
             "size": 2,
             "baseWeight": 40
         },
         {
-            "id": "ComplexHall_SK-RuinsOhNo_Open_50",
+            "id": "ruins_oh_no",
             "type": "complex_hall",
             "author": "SK",
+            "open": true,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "complexHall_smallBranchWithExit_closed_100",
+            "id": "small_branch_with_exit",
             "type": "complex_hall",
             "author": "SK",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "complexHall_smallRotundaWithExit_closed_100",
+            "id": "small_rotunda_with_exit",
             "type": "complex_hall",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "complexHall_tntPuzzleTrap_closed_50",
+            "id": "tnt_puzzle_trap",
             "type": "complex_hall",
             "author": "SK",
+            "open": false,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "deadEnd_azersDungeonO_closed_100",
+            "id": "azers_dungeon",
             "type": "dead_end",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "DeadEnd_Balgor0-ArrowHall_Closed_75",
+            "id": "arrow_hall",
             "type": "dead_end",
             "author": "Balgor0",
+            "open": false,
             "size": 2,
             "baseWeight": 75
         },
         {
-            "id": "deadEnd_brokenPillarsO_open_100",
+            "id": "broken_pillars",
             "type": "dead_end",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "DeadEnd_Cere-FloatingAltar_Open_75",
+            "id": "floating_altar",
             "type": "dead_end",
             "author": "Cere",
+            "open": true,
             "size": 2,
             "baseWeight": 75
         },
         {
-            "id": "deadEnd_diamondTowerTemple1_open_100",
+            "id": "diamond_tower_temple",
             "type": "dead_end",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "deadEnd_fallingTrapO_open_100",
+            "id": "falling_trap",
             "type": "dead_end",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "deadEnd_hiddenStaircaseO_open_100",
+            "id": "hidden_staircase",
             "type": "dead_end",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "deadEnd_lavaTrapO_open_100",
+            "id": "lava_trap",
             "type": "dead_end",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "deadEnd_randomTree_open_75",
+            "id": "random_tree",
             "type": "dead_end",
+            "open": true,
             "size": 2,
             "baseWeight": 75
         },
         {
-            "id": "DeadEnd_SK-EyesOfTricksters_Open_50",
+            "id": "eyes_of_tricksters",
             "type": "dead_end",
             "author": "SK",
+            "open": true,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "DeadEnd_SK-FarAwayInTheDark_Open_100",
+            "id": "far_away_in_the_dark",
             "type": "dead_end",
             "author": "SK",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "DeadEnd_SK-UnstableDesert_Open_50",
+            "id": "unstable_desert",
             "type": "dead_end",
             "author": "SK",
+            "open": true,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "deadEnd_smallDesert_open_75",
+            "id": "small_desert",
             "type": "dead_end",
+            "open": true,
             "size": 2,
             "baseWeight": 75
         },
         {
-            "id": "deadEnd_smallHiddenTowerO_open_100",
+            "id": "small_hidden_tower",
             "type": "dead_end",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "deadEnd_smallPond_open_75",
+            "id": "small_pond",
             "type": "dead_end",
+            "open": true,
             "size": 2,
             "baseWeight": 75
         },
         {
-            "id": "deadEnd_smallSilverfishRoom_closed_100",
+            "id": "small_silverfish_room",
             "type": "dead_end",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "deadEnd_tntTrapO_open_100",
+            "id": "tnt_trap",
             "type": "dead_end",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "exit_exitCube_open_100",
+            "id": "exit_cube",
             "type": "exit",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "exit_lockingExitHall_closed_100",
+            "id": "locking_exit_hall",
             "type": "exit",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "Exit_SK-HotSuspense_Open_75",
+            "id": "hot_suspense",
             "type": "exit",
             "author": "SK",
+            "open": true,
             "size": 2,
             "baseWeight": 75
         },
         {
-            "id": "Exit_SK-LockingExitTrap_Closed_50",
+            "id": "locking_exit_trap",
             "type": "exit",
             "author": "SK",
+            "open": false,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "exit_smallExitPrison_open_100",
+            "id": "small_exit_prison",
             "type": "exit",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "Exit_XombyCraft-RopeBridge_Open_100",
+            "id": "rope_bridge",
             "type": "exit",
-            "author": "XombyCraft",
+            "author": "Xomby_craft",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "hub_4WayBasicHall_closed_200",
+            "id": "four_way_basic_hall",
             "type": "hub",
+            "open": false,
             "size": 2,
             "baseWeight": 200
         },
         {
-            "id": "hub_4WayHallExit_closed_200",
+            "id": "four_way_hall_exit",
             "type": "hub",
+            "open": false,
             "size": 2,
             "baseWeight": 200
         },
         {
-            "id": "Hub_Balgor0-OmniMaze_Open_50",
+            "id": "omni_maze",
             "type": "hub",
             "author": "Balgor0",
+            "open": true,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "Hub_Cere-GreatHall_Open_40",
+            "id": "great_hall",
             "type": "hub",
             "author": "Cere",
+            "open": true,
             "size": 3,
             "baseWeight": 40
         },
         {
-            "id": "hub_doorTotemRuins_open_100",
+            "id": "door_totem_ruins",
             "type": "hub",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "hub_fortRuins_open_100",
+            "id": "fort_ruins",
             "type": "hub",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "hub_hallwayTrapRooms1_closed_100",
+            "id": "hallway_trap_rooms",
             "type": "hub",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "hub_longDoorHallway_closed_100",
+            "id": "long_door_hallway",
             "type": "hub",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "Hub_SK-Claustrophobia_Open_40",
+            "id": "claustrophobia",
             "type": "hub",
             "author": "SK",
+            "open": true,
             "size": 4,
             "baseWeight": 40
         },
         {
-            "id": "Hub_SK-FractalCage_Open_40",
+            "id": "fractal_cage",
             "type": "hub",
             "author": "SK",
+            "open": true,
             "size": 3,
             "baseWeight": 40
         },
         {
-            "id": "Hub_SK-HeartOfDisorder_Open_50",
+            "id": "heart_of_disorder",
             "type": "hub",
             "author": "SK",
+            "open": true,
             "size": 4,
             "baseWeight": 50
         },
         {
-            "id": "Hub_SK-RandomSnow_Open_75",
+            "id": "random_snow",
             "type": "hub",
             "author": "SK",
+            "open": true,
             "size": 2,
             "baseWeight": 75
         },
         {
-            "id": "Hub_SK-RandomSwamp_Open_75",
+            "id": "random_swamp",
             "type": "hub",
             "author": "SK",
+            "open": true,
             "size": 2,
             "baseWeight": 75
         },
         {
-            "id": "Hub_SK-TheNexus_Open_40",
+            "id": "the_nexus",
             "type": "hub",
             "author": "SK",
+            "open": true,
             "size": 3,
             "baseWeight": 40
         },
         {
-            "id": "hub_smallMultilevelMaze_closed_100",
+            "id": "small_multilevel_maze",
             "type": "hub",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "maze_smallMaze1_closed_100",
+            "id": "small_maze",
             "type": "maze",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "simpleHall_collapsedSingleTunnel1_closed_100",
+            "id": "collapsed_single_tunnel",
             "type": "simple_hall",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "simpleHall_simpleDropHall_closed_100",
+            "id": "simple_drop_hall",
             "type": "simple_hall",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "simpleHall_simpleSmallT1_closed_100",
+            "id": "simple_small_t",
             "type": "simple_hall",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "simpleHall_simpleStairsDown_closed_100",
+            "id": "simple_stairs_down",
             "type": "simple_hall",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "simpleHall_simpleStairsUp_closed_100",
+            "id": "simple_stairs_up",
             "type": "simple_hall",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "simpleHall_singleStraightHall1_closed_100",
+            "id": "single_straight_hall",
             "type": "simple_hall",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "SimpleHall_SK-LeftDownStairs_Open_50",
+            "id": "left_down_stairs",
             "type": "simple_hall",
             "author": "SK",
+            "open": true,
             "size": 1,
             "baseWeight": 50
         },
         {
-            "id": "SimpleHall_SK-LeftUpPath_Open_50",
+            "id": "left_up_path",
             "type": "simple_hall",
             "author": "SK",
+            "open": true,
             "size": 1,
             "baseWeight": 50
         },
         {
-            "id": "SimpleHall_SK-RightDownStairs_Open_50",
+            "id": "right_down_stairs",
             "type": "simple_hall",
             "author": "SK",
+            "open": true,
             "size": 1,
             "baseWeight": 50
         },
         {
-            "id": "SimpleHall_SK-RightUpPath_Open_50",
+            "id": "right_up_path",
             "type": "simple_hall",
             "author": "SK",
+            "open": true,
             "size": 1,
             "baseWeight": 50
         },
         {
-            "id": "SimpleHall_SK-SpiralHallway_Open_100",
+            "id": "spiral_hallway",
             "type": "simple_hall",
             "author": "SK",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "SimpleHall_SK-UTurnLeft_Open_50",
+            "id": "u_turn_left",
             "type": "simple_hall",
             "author": "SK",
+            "open": true,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "SimpleHall_SK-UTurnRight_Open_50",
+            "id": "u_turn_right",
             "type": "simple_hall",
             "author": "SK",
+            "open": true,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "SimpleHall_SK-WatchedForkLeft_Closed_80",
+            "id": "watched_fork_left",
             "type": "simple_hall",
             "author": "SK",
+            "open": false,
             "size": 2,
             "baseWeight": 80
         },
         {
-            "id": "SimpleHall_SK-WatchedForkRight_Closed_80",
+            "id": "watched_fork_right",
             "type": "simple_hall",
             "author": "SK",
+            "open": false,
             "size": 2,
             "baseWeight": 80
         },
         {
-            "id": "simpleHall_smallSimpleLeft_closed_100",
+            "id": "small_simple_left",
             "type": "simple_hall",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "simpleHall_smallSimpleRight_closed_100",
+            "id": "small_simple_right",
             "type": "simple_hall",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "trap_fakeTNTTrap_closed_100",
+            "id": "fake_tnt_trap_a",
             "type": "trap",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "trap_hallwayPitFallTrap_closed_200",
+            "id": "hallway_pit_fall_trap",
             "type": "trap",
+            "open": false,
             "size": 2,
             "baseWeight": 200
         },
         {
-            "id": "trap_lavaPyramid_open_100",
+            "id": "lava_pyramid",
             "type": "trap",
+            "open": true,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "trap_pistonFallRuins_open_75",
+            "id": "piston_fall_ruins",
             "type": "trap",
+            "open": true,
             "size": 2,
             "baseWeight": 75
         },
         {
-            "id": "trap_pistonFloorHall_closed_150",
+            "id": "piston_floor_hall",
             "type": "trap",
+            "open": false,
             "size": 2,
             "baseWeight": 150
         },
         {
-            "id": "trap_pistonFloorPlatform_closed_100",
+            "id": "piston_floor_platform_a",
             "type": "trap",
+            "open": false,
             "size": 4,
             "baseWeight": 100
         },
         {
-            "id": "trap_pistonFloorPlatform2_closed_100",
+            "id": "piston_floor_platform_b",
             "type": "trap",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "trap_pistonHallway_closed_100",
+            "id": "piston_hallway",
             "type": "trap",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "trap_pistonSmasherHall_closed_100",
+            "id": "piston_smasher_hall",
             "type": "trap",
+            "open": false,
             "size": 2,
             "baseWeight": 100
         },
         {
-            "id": "trap_raceTheTNTHall_closed_1",
+            "id": "race_the_tnt_hall",
             "type": "trap",
+            "open": false,
             "size": 2,
             "baseWeight": 1
         },
         {
-            "id": "Trap_SK-FakeTNTTrap-B_Closed_50",
+            "id": "fake_tnt_trap_b",
             "type": "trap",
             "author": "SK",
+            "open": false,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "Trap_SK-NicolesTower_Open_50",
+            "id": "nicoles_tower",
             "type": "trap",
             "author": "SK",
+            "open": true,
             "size": 0,
             "baseWeight": 50
         },
         {
-            "id": "Trap_SK-RaceTheLight_Closed_50",
+            "id": "race_the_light",
             "type": "trap",
             "author": "SK",
+            "open": false,
             "size": 1,
             "baseWeight": 50
         },
         {
-            "id": "Trap_SK-RestlessCorridor_Open_40",
+            "id": "restless_corridor",
             "type": "trap",
             "author": "SK",
+            "open": true,
             "size": 4,
             "baseWeight": 40
         },
         {
-            "id": "Trap_SK-SimpleLeftTrap_Closed_50",
+            "id": "simple_left_trap",
             "type": "trap",
             "author": "SK",
-            "size": 2,
-            "baseWeight": 10
-        },
-        {
-            "id": "Trap_SK-SimpleRightTrap_Closed_50",
-            "type": "trap",
-            "author": "SK",
+            "open": false,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "Trap_SK-TrappedStairsDown_Closed_50",
+            "id": "simple_right_trap",
             "type": "trap",
             "author": "SK",
+            "open": false,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "Trap_SK-TrappedStairsUp_Closed_50",
+            "id": "trapped_stairs_down",
             "type": "trap",
             "author": "SK",
+            "open": false,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "Trap_SK-UTrapRight_Open_50",
+            "id": "trapped_stairs_up",
             "type": "trap",
             "author": "SK",
+            "open": false,
             "size": 2,
             "baseWeight": 50
         },
         {
-            "id": "trap_wallFallcomboPistonHall_closed_200",
+            "id": "u_trap_right",
             "type": "trap",
+            "author": "SK",
+            "open": true,
+            "size": 2,
+            "baseWeight": 50
+        },
+        {
+            "id": "wall_fallcombo_piston_hall",
+            "type": "trap",
+            "open": false,
             "size": 2,
             "baseWeight": 200
         }

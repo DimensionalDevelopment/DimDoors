@@ -2,7 +2,7 @@
     "group": "nether",
     "pockets": [
         {
-            "id": "ComplexHall_SK-CourtyardAmbush_Open_100",
+            "id": "courtyard_ambush",
             "type": "complex_hall",
             "name": "Courtyard Ambush",
             "author": "SK",
@@ -11,7 +11,7 @@
             "baseWeight": 100
         },
         {
-            "id": "ComplexHall_SK-Intersection_Open_100",
+            "id": "intersection",
             "type": "complex_hall",
             "name": "Intersection",
             "author": "SK",
@@ -20,7 +20,7 @@
             "baseWeight": 100
         },
         {
-            "id": "ComplexHall_SK-SoulWastes_Open_100",
+            "id": "soul_wastes",
             "type": "complex_hall",
             "name": "Soul Wastes",
             "author": "SK",
@@ -29,7 +29,7 @@
             "baseWeight": 100
         },
         {
-            "id": "ComplexHall_SK-Starfall_Open_100",
+            "id": "starfall",
             "type": "complex_hall",
             "name": "Starfall",
             "author": "SK",
@@ -38,7 +38,7 @@
             "baseWeight": 100
         },
         {
-            "id": "ComplexHall_SK-TheCauldron_Open_100",
+            "id": "the_cauldron",
             "type": "complex_hall",
             "name": "The Cauldron",
             "author": "SK",
@@ -47,7 +47,7 @@
             "baseWeight": 100
         },
         {
-            "id": "Maze_SK-BrimstoneMines_Open_80",
+            "id": "brimstone_mines",
             "type": "maze",
             "name": "Brimstone Mines",
             "author": "SK",
@@ -56,7 +56,7 @@
             "baseWeight": 80
         },
         {
-            "id": "Maze_SK-QuartzfoldCave_Open_40",
+            "id": "quartzfold_cave",
             "type": "maze",
             "name": "Quartzfold Cave",
             "author": "SK",
@@ -65,7 +65,7 @@
             "baseWeight": 40
         },
         {
-            "id": "Maze_SK-SwirlsUponSwirls_Open_40",
+            "id": "swirls_upon_swirls",
             "type": "maze",
             "name": "Swirls Upon Swirls",
             "author": "SK",
@@ -74,7 +74,7 @@
             "baseWeight": 40
         },
         {
-            "id": "Maze_SK-Tangle_Open_80",
+            "id": "tangle",
             "type": "maze",
             "name": "Tangle",
             "author": "SK",
@@ -83,7 +83,7 @@
             "baseWeight": 80
         },
         {
-            "id": "SimpleHall_SK-AnvilValley_Open_100",
+            "id": "anvil_valley",
             "type": "simple_hall",
             "name": "Anvil Valley",
             "author": "SK",
@@ -92,7 +92,7 @@
             "baseWeight": 100
         },
         {
-            "id": "SimpleHall_SK-Arena_Open_100",
+            "id": "arena",
             "type": "simple_hall",
             "name": "Arena",
             "author": "SK",
@@ -101,7 +101,7 @@
             "baseWeight": 100
         },
         {
-            "id": "SimpleHall_SK-DarkPathLeft_Open_50",
+            "id": "dark_path_left",
             "type": "simple_hall",
             "author": "SK",
             "open": true,
@@ -109,7 +109,7 @@
             "baseWeight": 50
         },
         {
-            "id": "SimpleHall_SK-DarkPathRight_Open_50",
+            "id": "dark_path_right",
             "type": "simple_hall",
             "author": "SK",
             "open": true,
@@ -117,7 +117,7 @@
             "baseWeight": 50
         },
         {
-            "id": "SimpleHall_SK-DiamondRoom_Open_100",
+            "id": "diamond_room",
             "type": "simple_hall",
             "author": "SK",
             "open": true,
@@ -125,7 +125,7 @@
             "baseWeight": 100
         },
         {
-            "id": "SimpleHall_SK-LongBridge_Open_100",
+            "id": "long_bridge",
             "type": "simple_hall",
             "author": "SK",
             "open": true,
@@ -133,7 +133,7 @@
             "baseWeight": 100
         },
         {
-            "id": "SimpleHall_SK-SpiralStairsDown_Open_100",
+            "id": "spiral_stairs_down",
             "type": "simple_hall",
             "author": "SK",
             "open": true,
@@ -141,7 +141,7 @@
             "baseWeight": 100
         },
         {
-            "id": "SimpleHall_SK-TheFurnace_Open_100",
+            "id": "the_furnace",
             "type": "simple_hall",
             "author": "SK",
             "open": true,
