@@ -24,8 +24,13 @@ import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 public class WorldProviderLimbo extends WorldProvider {
     @SideOnly(Side.CLIENT)
-    private static final MusicTicker.MusicType music = DimDoors.proxy.isClient() ? EnumHelper.addEnum(MusicTicker.MusicType.class, "limbo", new Class<?>[] {SoundEvent.class, int.class, int.class}, ModSounds.CREEPY, 0, 0) : null;
-
+    public static MusicTicker.MusicType music;
+    static {
+        if (DimDoors.proxy.isClient()) {
+            music = EnumHelper.addEnum(MusicTicker.MusicType.class, "limbo", new Class<?>[] {SoundEvent.class, int.class, int.class}, ModSounds.CREEPY, 0, 0);
+        }
+    }
+    
     @Override
     public void init() {
         hasSkyLight = false;

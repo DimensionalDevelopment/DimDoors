@@ -21,8 +21,8 @@ repositories {
 }
 
 // Version info
-String baseversion = "3.0.0" // Set beta to 0 after changing this
-int beta = 5 // Set this to 0 for a non-beta release
+String baseversion = "3.0" // Set beta to 0 after changing this
+int beta = 5.2 // Set this to 0 for a non-beta release
 ext.mcversion = "1.12.2"
 ext.forgeversion = "14.23.1.2598"
 String mcpversion = "snapshot_20180113"
@@ -30,7 +30,7 @@ String mcpversion = "snapshot_20180113"
 String suffix = ""
 String shortSuffix = ""
 if (beta != 0) {
-    suffix += "-beta$beta"
+    suffix += ".$beta" + "-b"
     shortSuffix = suffix
     if (System.getenv("TRAVIS_BUILD_NUMBER") != null && beta != 0) {
         suffix += "+${System.getenv("TRAVIS_BUILD_NUMBER")}"
@@ -41,8 +41,8 @@ if (beta != 0) {
 version = ext.modversion = baseversion + suffix
 
 group = "org.dimdev.dimdoors"
-archivesBaseName = "dimdoors"
-jar.archiveName = "dimdoors.jar" // Constant name for travis
+archivesBaseName = "Dimdoors"
+jar.archiveName = "Dimdoors-" + version + ".jar" // Constant name for travis
 
 sourceCompatibility = "1.8"
 compileJava {
