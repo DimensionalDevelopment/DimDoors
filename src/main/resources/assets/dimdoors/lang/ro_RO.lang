@@ -13,6 +13,22 @@ tile.dimensional_portal.name=Portal dimensional
 
 tile.fabric.black.name=Țesutul realiții
 tile.fabric.white.name=Țesut alterat
+
+tile.fabric.orange.name=Țesut alterat portocaliu
+tile.fabric.magenta.name=Țesut alterat magenta
+tile.fabric.lightBlue.name=Țesut alterat albastru deschis
+tile.fabric.yellow.name=Țesut alterat galben
+tile.fabric.lime.name=Țesut alterat lima
+tile.fabric.pink.name=Țesut alterat roz
+tile.fabric.gray.name=Țesut alterat gri
+tile.fabric.silver.name=Țesut alterat argintiu
+tile.fabric.cyan.name=Țesut alterat cyan
+tile.fabric.purple.name=Țesut alterat mov
+tile.fabric.blue.name=Țesut alterat albastru
+tile.fabric.brown.name=Țesut alterat maro
+tile.fabric.green.name=Țesut alterat verde
+tile.fabric.red.name=Țesut alterat roșu
+
 tile.ancient_fabric.black.name=Țesut antic
 tile.ancient_fabric.white.name=Țesut alterat antic
 tile.eternal_fabric.name=Țesut etern

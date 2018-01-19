@@ -13,6 +13,22 @@ tile.dimensional_portal.name=Portail dimensionel
 
 tile.fabric.black.name=Étoffe de la réalité
 tile.fabric.white.name=Étoffe altérée
+
+tile.fabric.orange.name=Étoffe altérée orange
+tile.fabric.magenta.name=Étoffe altérée magenta
+tile.fabric.lightBlue.name=Étoffe altérée bleue pale
+tile.fabric.yellow.name=Étoffe altérée jaune
+tile.fabric.lime.name=Étoffe altérée lime
+tile.fabric.pink.name=Étoffe altérée rose
+tile.fabric.gray.name=Étoffe altérée grise
+tile.fabric.silver.name=Étoffe altérée argentée
+tile.fabric.cyan.name=Étoffe altérée cyan
+tile.fabric.purple.name=Étoffe altérée mauve
+tile.fabric.blue.name=Étoffe altérée bleue
+tile.fabric.brown.name=Étoffe altérée brune
+tile.fabric.green.name=Étoffe altérée verte
+tile.fabric.red.name=Étoffe altérée rouge
+
 tile.ancient_fabric.black.name=Étoffe ancienne
 tile.ancient_fabric.white.name=Étoffe altérée ancienne
 tile.eternal_fabric.name=Étoffe éternelle
