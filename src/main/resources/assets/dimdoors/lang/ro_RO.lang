@@ -11,12 +11,12 @@ tile.warp_dimensional_door.name=Ușă de distorsiune
 tile.dimensional_trapdoor.name=Trapă transdimensională
 tile.dimensional_portal.name=Portal dimensional
 
-tile.fabric_reality.name=Țesutul realiții
-tile.fabric_altered.name=Țesut alterat
-tile.fabric_ancient.name=Țesut antic
-tile.fabric_ancient_altered.name=Țesut alterat antic
-tile.fabric_eternal.name=Țesut etern
-tile.fabric_unraveled.name=Țesut destrămat
+tile.fabric.black.name=Țesutul realiții
+tile.fabric.white.name=Țesut alterat
+tile.ancient_fabric.black.name=Țesut antic
+tile.ancient_fabric.white.name=Țesut alterat antic
+tile.eternal_fabric.name=Țesut etern
+tile.unravelled_fabric.name=Țesut destrămat
 tile.rift.name=Fisură
 
 item.gold_door.name=Ușă de aur

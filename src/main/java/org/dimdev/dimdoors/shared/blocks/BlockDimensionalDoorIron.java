@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.blocks;
 
+import net.minecraft.block.BlockStainedHardenedClay;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import org.dimdev.dimdoors.DimDoors;

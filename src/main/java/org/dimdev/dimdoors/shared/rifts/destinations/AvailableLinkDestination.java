@@ -146,7 +146,7 @@ import java.util.Set;
                 riftEntity.teleportTo(entity, thisRift.getYaw(), thisRift.getPitch());
             } else {
                 // Make a new dungeon pocket
-                Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation);
+                Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation); // TODO make the generated dungeon of the same type, but in the overworld
                 pocket.setup();
 
                 // Link the pocket back

@@ -9,7 +9,7 @@ import net.minecraftforge.common.DimensionManager;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.ddutils.GraphUtils;
+import org.dimdev.ddutils.GraphUtils;
 import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
 import org.dimdev.dimdoors.shared.world.ModDimensions;

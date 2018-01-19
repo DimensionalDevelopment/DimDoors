@@ -11,11 +11,11 @@ tile.warp_dimensional_door.name=扭曲之门
 tile.dimensional_trapdoor.name=空间活板门
 tile.dimensional_portal.name=瞬息之门
 
-tile.fabric_reality.name=现实之壁
-tile.fabric_altered.name=变化之壁
-tile.fabric_ancient.name=远古之壁
-tile.fabric_eternal.name=永恒之壁
-tile.fabric_unraveled.name=边境之壁
+tile.fabric.black.name=现实之壁
+tile.fabric.white.name=变化之壁
+tile.ancient_fabric.black.name=远古之壁
+tile.eternal_fabric.name=永恒之壁
+tile.unravelled_fabric.name=边境之壁
 tile.rift.name=裂痕
 
 item.gold_door.name=金门

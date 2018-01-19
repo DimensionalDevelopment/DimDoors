@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.shared.rifts.destinations;
 
 import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
-import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
+import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
 import org.dimdev.ddutils.TeleportUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

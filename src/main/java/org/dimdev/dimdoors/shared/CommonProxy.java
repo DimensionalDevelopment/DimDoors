@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.shared;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.client.IRenderHandler;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
@@ -40,6 +41,8 @@ public abstract class CommonProxy {
         registerRiftDestinations();
     }
 
+    public void afterItemsRegistered() {}
+
     public void registerRiftDestinations() {
         RiftDestination.destinationRegistry.put("available_link", AvailableLinkDestination.class);
         RiftDestination.destinationRegistry.put("escape", EscapeDestination.class);
@@ -71,4 +74,5 @@ public abstract class CommonProxy {
     public abstract void setCloudRenderer(WorldProvider provider, IRenderHandler renderer);
 
     public abstract void setSkyRenderer(WorldProvider provider, IRenderHandler renderer);
+
 }

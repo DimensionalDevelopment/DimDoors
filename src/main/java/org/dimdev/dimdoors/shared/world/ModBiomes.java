@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.shared.world;
 
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.world.limbodimension.BiomeLimbo;
+import org.dimdev.dimdoors.shared.world.limbo.BiomeLimbo;
 import org.dimdev.dimdoors.shared.world.pocketdimension.BiomeBlank;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;

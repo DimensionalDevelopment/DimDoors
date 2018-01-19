@@ -4,7 +4,7 @@ import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.TeleportUtils;
-import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
+import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderDungeonPocket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;

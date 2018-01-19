@@ -1,22 +1,11 @@
 package org.dimdev.dimdoors.shared.tools;
 
 import net.minecraft.block.Block;
-import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.server.ServerProxy;
-import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
-import org.dimdev.dimdoors.shared.blocks.BlockFabric;
-import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import org.dimdev.dimdoors.shared.rifts.*;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
-import org.dimdev.dimdoors.shared.rifts.destinations.PrivatePocketExitDestination;
-import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
-import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
-import org.dimdev.ddutils.schem.Schematic;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Bootstrap;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.event.RegistryEvent;
@@ -26,12 +15,27 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.RegistryManager;
+import org.dimdev.ddutils.schem.Schematic;
+import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.server.ServerProxy;
+import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
+import org.dimdev.dimdoors.shared.blocks.BlockFabricAncient;
+import org.dimdev.dimdoors.shared.blocks.ModBlocks;
+import org.dimdev.dimdoors.shared.rifts.RiftDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.PrivatePocketExitDestination;
+import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Robijnvogel
@@ -92,16 +96,16 @@ public final class PocketSchematicGenerator {
             schematics.add(generatePocketSchematic(
                     "public_pocket", // base name
                     pocketSize, // size
-                    ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT), // outer wall
-                    ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY), // inner wall
+                    ModBlocks.ANCIENT_FABRIC.getDefaultState(), // outer wall
+                    ModBlocks.FABRIC.getDefaultState(), // inner wall
                     ModBlocks.DIMENSIONAL_DOOR, // door
                     PocketExitDestination.builder().build(),
                     1)); // exit rift destination
             schematics.add(generatePocketSchematic(
                     "private_pocket", // base name
                     pocketSize, // size
-                    ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ANCIENT_ALTERED), // outer wall
-                    ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.ALTERED), // inner wall
+                    ModBlocks.ANCIENT_FABRIC.getDefaultState().withProperty(BlockFabricAncient.COLOR, EnumDyeColor.WHITE), // outer wall
+                    ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabricAncient.COLOR, EnumDyeColor.WHITE), // inner wall
                     ModBlocks.PERSONAL_DIMENSIONAL_DOOR, // door
                     PrivatePocketExitDestination.builder().build(),
                     0)); // exit rift destination
@@ -150,8 +154,8 @@ public final class PocketSchematicGenerator {
                 }
             }
         }
-        schematic.blockData[(size - 1)/2][5][4] = 3; // door bottom
-        schematic.blockData[(size - 1)/2][6][4] = 4; // door top
+        schematic.blockData[(size - 1) / 2][5][4] = 3; // door bottom
+        schematic.blockData[(size - 1) / 2][6][4] = 4; // door top
 
         // Generate the rift TileEntities
         schematic.tileEntities = new ArrayList<>();

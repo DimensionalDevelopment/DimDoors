@@ -15,7 +15,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import org.dimdev.dimdoors.shared.rifts.destinations.AvailableLinkDestination;
@@ -83,7 +82,7 @@ public final class SchematicConverter {
                         block = ModBlocks.DIMENSIONAL_PORTAL.getDefaultState();
                         break;
                     case 220:
-                        block = ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.TYPE, BlockFabric.EnumType.REALITY);
+                        block = ModBlocks.ANCIENT_FABRIC.getDefaultState();
                         break;
                     case 95: // Locked chest's ID was replaced with stained glass in 1.7.2
                         DimDoors.log.error("Schematic contained a locked chest, which was removed in 1.7.2.");

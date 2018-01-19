@@ -7,7 +7,6 @@ import org.dimdev.dimdoors.shared.items.ModItems;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,7 +22,7 @@ public class BlockDoorQuartz extends BlockDoor {
         super(Material.ROCK);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setUnlocalizedName(ID);
-        setCreativeTab(CreativeTabs.REDSTONE);
+        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setHardness(0.1F);
     }
 

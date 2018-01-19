@@ -3,8 +3,10 @@ package org.dimdev.dimdoors.shared.items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemColored;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 
 public final class ModItems {
@@ -38,7 +40,11 @@ public final class ModItems {
     public static final ItemWovenWorldThreadArmor BOOTS_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("boots_woven_world_thread", 1, EntityEquipmentSlot.FEET);
 
     // ItemBlocks
-    public static final ItemFabric FABRIC = new ItemFabric();
+    public static final Item FABRIC = new ItemColored(ModBlocks.FABRIC, true).setSubtypeNames(new String[] {"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"}).setRegistryName(ModBlocks.FABRIC.getRegistryName());
+    public static final Item ANCIENT_FABRIC = new ItemColored(ModBlocks.ANCIENT_FABRIC, true).setSubtypeNames(new String[] {"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"}).setRegistryName(ModBlocks.ANCIENT_FABRIC.getRegistryName());
+    public static final Item UNRAVELLED_FABRIC = new ItemBlock(ModBlocks.UNRAVELLED_FABRIC).setRegistryName(ModBlocks.UNRAVELLED_FABRIC.getRegistryName());
+    public static final Item ETERNAL_FABRIC = new ItemBlock(ModBlocks.ETERNAL_FABRIC).setRegistryName(ModBlocks.ETERNAL_FABRIC.getRegistryName());
+    public static final Item RIFT = new ItemBlock(ModBlocks.RIFT).setRegistryName(ModBlocks.RIFT.getRegistryName());
     public static final ItemDimensionalTrapdoorWood WOOD_DIMENSIONAL_TRAPDOOR = new ItemDimensionalTrapdoorWood();
 
     @SubscribeEvent
@@ -61,12 +67,14 @@ public final class ModItems {
                 HELMET_WOVEN_WORLD_THREAD,
                 CHESTPLATE_WOVEN_WORLD_THREAD,
                 LEGGINGS_WOVEN_WORLD_THREAD,
-                BOOTS_WOVEN_WORLD_THREAD);
-
-        // ItemBlocks
-        event.getRegistry().registerAll(
+                BOOTS_WOVEN_WORLD_THREAD,
                 FABRIC,
+                ANCIENT_FABRIC,
+                UNRAVELLED_FABRIC,
+                ETERNAL_FABRIC,
                 WOOD_DIMENSIONAL_TRAPDOOR,
-                new ItemBlock(ModBlocks.RIFT).setRegistryName(ModBlocks.RIFT.getRegistryName()));
+                RIFT);
+
+        DimDoors.proxy.afterItemsRegistered();
     }
 }

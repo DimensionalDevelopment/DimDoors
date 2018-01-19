@@ -11,12 +11,12 @@ tile.warp_dimensional_door.name=Porte-raccourci
 tile.dimensional_trapdoor.name=Trappe transdimensionnelle
 tile.dimensional_portal.name=Portail dimensionel
 
-tile.fabric_reality.name=Étoffe de la réalité
-tile.fabric_altered.name=Étoffe altérée
-tile.fabric_ancient.name=Étoffe ancienne
-tile.fabric_ancient_altered.name=Étoffe altérée ancienne
-tile.fabric_eternal.name=Étoffe éternelle
-tile.fabric_unraveled.name=Étoffe effilochée
+tile.fabric.black.name=Étoffe de la réalité
+tile.fabric.white.name=Étoffe altérée
+tile.ancient_fabric.black.name=Étoffe ancienne
+tile.ancient_fabric.white.name=Étoffe altérée ancienne
+tile.eternal_fabric.name=Étoffe éternelle
+tile.unravelled_fabric.name=Étoffe effilochée
 tile.rift.name=Fissure
 
 item.gold_door.name=Porte dorée

@@ -14,7 +14,7 @@ import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
-import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
+import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPersonalPocket;
 
 import java.util.UUID;

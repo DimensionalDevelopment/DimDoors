@@ -11,12 +11,12 @@ tile.warp_dimensional_door.name=Warp Door
 tile.dimensional_trapdoor.name=Transdimensional Trapdoor
 tile.dimensional_portal.name=Dimensional Portal
 
-tile.fabric_reality.name=Fabric of Reality
-tile.fabric_altered.name=Altered Fabric
-tile.fabric_ancient.name=Ancient Fabric
-tile.fabric_ancient_altered.name=Ancient Altered Fabric
-tile.fabric_eternal.name=Eternal Fabric
-tile.fabric_unraveled.name=Unraveled Fabric
+tile.fabric.black.name=Fabric of Reality
+tile.fabric.white.name=Altered Fabric
+tile.ancient_fabric.black.name=Ancient Fabric
+tile.ancient_fabric.white.name=Ancient Altered Fabric
+tile.eternal_fabric.name=Eternal Fabric
+tile.unravelled_fabric.name=Unraveled Fabric
 tile.rift.name=Rift
 
 item.gold_door.name=Golden Door

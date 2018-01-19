@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "color=white": { "model": "dimdoors:ancient_fabric_white" },
+    "color=orange": { "model": "dimdoors:ancient_fabric_orange" },
+    "color=magenta": { "model": "dimdoors:ancient_fabric_magenta" },
+    "color=light_blue": { "model": "dimdoors:ancient_fabric_light_blue" },
+    "color=yellow": { "model": "dimdoors:ancient_fabric_yellow" },
+    "color=lime": { "model": "dimdoors:ancient_fabric_lime" },
+    "color=pink": { "model": "dimdoors:ancient_fabric_pink" },
+    "color=gray": { "model": "dimdoors:ancient_fabric_gray" },
+    "color=silver": { "model": "dimdoors:ancient_fabric_silver" },
+    "color=cyan": { "model": "dimdoors:ancient_fabric_cyan" },
+    "color=purple": { "model": "dimdoors:ancient_fabric_purple" },
+    "color=blue": { "model": "dimdoors:ancient_fabric_blue" },
+    "color=brown": { "model": "dimdoors:ancient_fabric_brown" },
+    "color=green": { "model": "dimdoors:ancient_fabric_green" },
+    "color=red": { "model": "dimdoors:ancient_fabric_red" },
+    "color=black": { "model": "dimdoors:ancient_fabric_black" }
+  }
+}

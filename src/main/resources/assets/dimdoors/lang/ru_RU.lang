@@ -11,11 +11,11 @@ tile.warp_dimensional_door.name=Дверь искажения
 tile.dimensional_trapdoor.name=Межпространственный люк
 tile.dimensional_portal.name=Временная дверь
 
-tile.fabric_reality.name=Ткань Мироздания
-tile.fabric_altered.name=Изменённая ткань
-tile.fabric_ancient.name=Древняя ткань
-tile.fabric_eternal.name=Вечная ткань
-tile.fabric_unraveled.name=Распутанная ткань
+tile.fabric.black.name=Ткань Мироздания
+tile.fabric.white.name=Изменённая ткань
+tile.ancient_fabric.black.name=Древняя ткань
+tile.eternal_fabric.name=Вечная ткань
+tile.unravelled_fabric.name=Распутанная ткань
 tile.rift.name=Разлом
 
 item.gold_door.name=Золотая дверь

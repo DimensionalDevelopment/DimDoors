@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.client;
 
+import net.minecraft.item.EnumDyeColor;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import net.minecraft.block.BlockDoor;
@@ -19,13 +20,12 @@ import static net.minecraft.item.Item.getItemFromBlock;
 public final class ModelManager {
 
     public static void registerModels() {
-        //ItemBlock registration
-        register(getItemFromBlock(ModBlocks.FABRIC), 0, "reality");
-        register(getItemFromBlock(ModBlocks.FABRIC), 1, "ancient");
-        register(getItemFromBlock(ModBlocks.FABRIC), 2, "altered");
-        register(getItemFromBlock(ModBlocks.FABRIC), 3, "ancient_altered");
-        register(getItemFromBlock(ModBlocks.FABRIC), 4, "unraveled");
-        register(getItemFromBlock(ModBlocks.FABRIC), 5, "eternal");
+        for (EnumDyeColor color : EnumDyeColor.values()) {
+            register(getItemFromBlock(ModBlocks.FABRIC), color.getMetadata(), color.getName());
+            register(getItemFromBlock(ModBlocks.ANCIENT_FABRIC), color.getMetadata(), color.getName());
+        }
+        register(getItemFromBlock(ModBlocks.UNRAVELLED_FABRIC));
+        register(getItemFromBlock(ModBlocks.ETERNAL_FABRIC));
 
         register(getItemFromBlock(ModBlocks.RIFT));
         register(getItemFromBlock(ModBlocks.WOOD_DIMENSIONAL_TRAPDOOR));
@@ -52,13 +52,42 @@ public final class ModelManager {
     }
 
     public static void registerModelVariants() {
-        ModelBakery.registerItemVariants(ModItems.FABRIC, // we can't use getItemForBlock yet since items have not yet been registered (and this can't be run later)
-                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_reality"),
-                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_ancient"),
-                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_altered"),
-                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_ancient_altered"),
-                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_unraveled"),
-                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_eternal"));
+
+        ModelBakery.registerItemVariants(ModItems.FABRIC,
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_white"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_orange"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_magenta"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_light_blue"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_yellow"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_lime"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_pink"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_gray"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_silver"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_cyan"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_purple"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_blue"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_brown"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_green"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_red"),
+                new ResourceLocation(ModBlocks.FABRIC.getRegistryName() + "_black"));
+
+        ModelBakery.registerItemVariants(ModItems.ANCIENT_FABRIC,
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_white"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_orange"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_magenta"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_light_blue"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_yellow"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_lime"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_pink"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_gray"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_silver"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_cyan"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_purple"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_blue"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_brown"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_green"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_red"),
+                new ResourceLocation(ModBlocks.ANCIENT_FABRIC.getRegistryName() + "_black"));
     }
 
     private static void register(Item item) {
@@ -82,7 +111,6 @@ public final class ModelManager {
         ModelLoader.setCustomStateMapper(ModBlocks.UNSTABLE_DIMENSIONAL_DOOR, map);
         ModelLoader.setCustomStateMapper(ModBlocks.WARP_DIMENSIONAL_DOOR, map);
 
-        ModelLoader.setCustomStateMapper(ModBlocks.DIMENSIONAL_PORTAL, new StateMap.Builder().ignore(
-                BlockDoor.FACING, BlockDoor.HALF, BlockDoor.HINGE, BlockDoor.OPEN, BlockDoor.POWERED).build());
+        ModelLoader.setCustomStateMapper(ModBlocks.DIMENSIONAL_PORTAL, new StateMap.Builder().ignore(BlockDoor.FACING, BlockDoor.HALF, BlockDoor.HINGE, BlockDoor.OPEN, BlockDoor.POWERED).build());
     }
 }

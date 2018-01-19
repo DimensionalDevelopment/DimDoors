@@ -11,7 +11,7 @@ import org.dimdev.dimdoors.shared.pockets.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
 import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
-import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
+import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
 
 /*@Value*/ @ToString @AllArgsConstructor @NoArgsConstructor @Builder(toBuilder = true)
 @NBTSerializable public class VirtualLocation implements INBTStorable { // TODO: fix AnnotatedNBT and rename this class back to VirtualLocation

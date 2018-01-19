@@ -42,7 +42,7 @@ public class BlockDimensionalDoorWood extends BlockDimensionalDoor {
                 .negativeDepthFactor(80)
                 .positiveDepthFactor(Double.MAX_VALUE)
                 .weightMaximum(100)
-                .noLink(false).newRiftWeight(1).build());
+                .noLink(false).newRiftWeight(0).build());
     }
 
     @Override

@@ -11,11 +11,11 @@ tile.warp_dimensional_door.name=Verdraaideur
 tile.dimensional_trapdoor.name=Transdimensionale Valdeur
 tile.dimensional_portal.name=Vergankelijke Deur
 
-tile.fabric_reality.name=Werkelijkheidsweefsel
-tile.fabric_altered.name=Veranderd Weefsel
-tile.fabric_ancient.name=Aloud Weefsel
-tile.fabric_eternal.name=Oneindig Weefsel
-tile.fabric_unraveled.name=Ontraveld Weefsel
+tile.fabric.black.name=Werkelijkheidsweefsel
+tile.fabric.white.name=Veranderd Weefsel
+tile.ancient_fabric.black.name=Aloud Weefsel
+tile.eternal_fabric.name=Oneindig Weefsel
+tile.unravelled_fabric.name=Ontraveld Weefsel
 tile.rift.name=Scheur
 
 item.gold_door.name=Golden Door

@@ -5,7 +5,7 @@ import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import org.dimdev.dimdoors.shared.Config;
-import org.dimdev.dimdoors.shared.world.limbodimension.WorldProviderLimbo;
+import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderDungeonPocket;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPersonalPocket;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPublicPocket;

@@ -11,11 +11,11 @@ tile.warp_dimensional_door.name=Warp-Tür
 tile.dimensional_trapdoor.name=Transdimensionale Falltür
 tile.dimensional_portal.name=Vergängliche Tür
 
-tile.fabric_reality.name=Stoff der Realität
-tile.fabric_altered.name=Veränderter Stoff
-tile.fabric_ancient.name=Antiker Stoff
-tile.fabric_eternal.name=Ewiger Stoff
-tile.fabric_unraveled.name=Entwirrter Stoff
+tile.fabric.black.name=Stoff der Realität
+tile.fabric.white.name=Veränderter Stoff
+tile.ancient_fabric.black.name=Antiker Stoff
+tile.eternal_fabric.name=Ewiger Stoff
+tile.unravelled_fabric.name=Entwirrter Stoff
 tile.rift.name=Spalt
 
 item.gold_door.name=Goldtür

@@ -21,6 +21,9 @@ public final class ModBlocks {
 
     // Blocks
     public static final BlockFabric FABRIC = new BlockFabric();
+    public static final BlockFabricAncient ANCIENT_FABRIC = new BlockFabricAncient();
+    public static final BlockFabricEternal ETERNAL_FABRIC = new BlockFabricEternal();
+    public static final BlockFabricUnravelled UNRAVELLED_FABRIC = new BlockFabricUnravelled();
     public static final BlockFloatingRift RIFT = new BlockFloatingRift();
 
     @SubscribeEvent
@@ -36,6 +39,9 @@ public final class ModBlocks {
                 WARP_DIMENSIONAL_DOOR,
                 WOOD_DIMENSIONAL_TRAPDOOR,
                 FABRIC,
+                ANCIENT_FABRIC,
+                UNRAVELLED_FABRIC,
+                ETERNAL_FABRIC,
                 RIFT);
     }
 }

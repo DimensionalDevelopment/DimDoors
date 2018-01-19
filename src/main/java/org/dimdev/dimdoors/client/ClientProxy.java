@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.client;
 
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import org.dimdev.dimdoors.shared.CommonProxy;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
@@ -21,9 +22,18 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void onPreInitialization(FMLPreInitializationEvent event) {
         super.onPreInitialization(event);
-        // ModelManager.addCustomStateMappers(); // TODO: fix this
-        ModelManager.registerModelVariants();
         registerRenderers();
+    }
+
+    @Override
+    public void afterItemsRegistered() {
+        // Model variants can't be registered from onInitialization because that's too late (models have
+        // already been loaded by minecraft), but they can't be registered from the onPreInitialization
+        // event because that's too early (items haven't been registered yet, so RegistryDelegate.name == null.
+        // causing all item variants to be added to the same item (RegistryDelegate.equals compares the names
+        // of the delegates only).
+        ModelManager.registerModelVariants();
+        // ModelManager.addCustomStateMappers(); // TODO: fix this
     }
 
     @Override
