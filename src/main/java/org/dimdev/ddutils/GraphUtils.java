@@ -13,7 +13,7 @@ public final class GraphUtils {
     public static <V, E> V followPointer(Graph<V, E> graph, V pointer) {
         if (pointer != null) {
             E edge = graph.outgoingEdgesOf(pointer).stream().findFirst().orElse(null);
-            return graph.getEdgeTarget(edge);
+            return edge != null ? graph.getEdgeTarget(edge) : null;
         }
         return null;
     }

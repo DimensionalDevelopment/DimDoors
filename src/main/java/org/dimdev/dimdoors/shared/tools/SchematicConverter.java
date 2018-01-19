@@ -130,8 +130,13 @@ public final class SchematicConverter {
                     int metadata = dataIntArray[x + z * schematic.width + y * schematic.width * schematic.length]; //according to the documentation on https://github.com/SpongePowered/Schematic-Specification/blob/master/versions/schematic-1.md
 
                     IBlockState baseState = schematic.pallette.get(blockInt); //this is the default blockstate except for ancient fabric
-                    if (baseState == baseState.getBlock().getDefaultState()) { //should only be false if {@code baseState} is ancient fabric
-                        IBlockState blockState = baseState.getBlock().getStateFromMeta(metadata);
+                    if (baseState == baseState.getBlock().getDefaultState() || baseState.getBlock().equals(ModBlocks.FABRIC) || baseState.getBlock().equals(ModBlocks.ANCIENT_FABRIC)) { //should only be false if {@code baseState} is ancient fabric
+                        IBlockState blockState;
+                        if (baseState.getBlock().equals(ModBlocks.FABRIC) || baseState.getBlock().equals(ModBlocks.ANCIENT_FABRIC)) {
+                            blockState = baseState;
+                        } else {
+                            blockState = baseState.getBlock().getStateFromMeta(metadata);
+                        }
                         if (schematic.pallette.contains(blockState)) { //check whether or not this blockstate is already in the list
                             blockInt = schematic.pallette.indexOf(blockState);
                         } else {

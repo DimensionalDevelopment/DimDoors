@@ -433,8 +433,8 @@ public class RiftRegistry extends WorldSavedData {
 
     public Location getOverworldRift(UUID playerUUID) {
         PlayerRiftPointer entrancePointer = overworldRifts.get(playerUUID);
-        Rift entrance = (Rift) GraphUtils.followPointer(graph, entrancePointer);
-        return entrance.location;
+        Rift rift = (Rift) GraphUtils.followPointer(graph, entrancePointer);
+        return rift != null ? rift.location : null;
     }
 
     public void setOverworldRift(UUID playerUUID, Location rift) {
