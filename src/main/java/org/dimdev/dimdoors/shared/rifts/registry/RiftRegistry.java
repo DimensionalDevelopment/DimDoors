@@ -10,9 +10,9 @@ import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.GraphUtils;
-import org.dimdev.dimdoors.shared.pockets.Pocket;
-import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
-import org.dimdev.dimdoors.shared.world.ModDimensions;
+import org.dimdev.pocketlib.PrivatePocketData;
+import org.dimdev.pocketlib.Pocket;
+import org.dimdev.pocketlib.PocketRegistry;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
@@ -374,6 +374,10 @@ public class RiftRegistry extends WorldSavedData {
         }
     }
 
+    public Location getPocketEntrance(Pocket pocket) {
+        return getPocketEntrances(pocket).stream().findFirst().orElse(null);
+    }
+
     public void addPocketEntrance(Pocket pocket, Location location) {
         DimDoors.log.info("Adding pocket entrance for pocket " + pocket.getId() + " in dimension " + pocket.getDim() + " at " + location);
         PocketEntrancePointer pointer = pocketEntranceMap.get(pocket);
@@ -394,10 +398,8 @@ public class RiftRegistry extends WorldSavedData {
         Rift entrance = (Rift) GraphUtils.followPointer(graph, entrancePointer);
         if (entrance != null) return entrance.location;
 
-        // If there was no last used private entrance, get one of the player's private pocket entrances
-        PocketRegistry privatePocketRegistry = PocketRegistry.instance(ModDimensions.getPrivateDim());
-        Pocket pocket = privatePocketRegistry.getPocket(privatePocketRegistry.getPrivatePocketID(playerUUID));
-        return getPocketEntrances(pocket).stream().findFirst().orElse(null);
+        // If there was no last used private entrance, get the first player's private pocket entrance
+        return getPocketEntrance(PrivatePocketData.instance().getPrivatePocket(playerUUID));
     }
 
     private void setPlayerRiftPointer(UUID playerUUID, Location rift, Map<UUID, PlayerRiftPointer> map) {

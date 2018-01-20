@@ -6,6 +6,7 @@ import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.ddutils.WorldUtils;
+import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -14,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import org.dimdev.pocketlib.Pocket;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -88,12 +90,11 @@ public class CommandPocket extends CommandBase {
 
             // Generate the schematic
             PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(group, name);
-            Pocket pocket = PocketGenerator.generatePocketFromTemplate(WorldUtils.getDim(player.world), template, null);
-            if (setup) pocket.setup();
+            Pocket pocket = PocketGenerator.generatePocketFromTemplate(WorldUtils.getDim(player.world), template, null, setup);
 
             // Teleport the player there
-            if (pocket.getEntrance() != null) {
-                TileEntityRift entrance = (TileEntityRift) player.world.getTileEntity(pocket.getEntrance().getPos());
+            if (RiftRegistry.instance().getPocketEntrance(pocket) != null) {
+                TileEntityRift entrance = (TileEntityRift) player.world.getTileEntity(RiftRegistry.instance().getPocketEntrance(pocket).getPos());
                 entrance.teleportTo(player);
             } else {
                 int size = (pocket.getSize() + 1) * 16;

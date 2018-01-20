@@ -28,11 +28,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
 import org.apache.commons.io.IOUtils;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
+import org.dimdev.pocketlib.PocketRegistry;
 
 /**
  * @author Robijnvogel
  */
-public class SchematicHandler {
+public class SchematicHandler { // TODO: parts of this should be moved to the org.dimdev.ddutils.schem package
 
     private static final String SAVED_POCKETS_GROUP_NAME = "saved_pockets";
     public static final SchematicHandler INSTANCE = new SchematicHandler();

@@ -5,7 +5,7 @@ import net.minecraft.util.math.Vec3i;
 import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.ddutils.Location;
-import org.dimdev.dimdoors.shared.pockets.Pocket;
+import org.dimdev.pocketlib.Pocket;
 
 import java.util.ArrayList;
 import java.util.List;

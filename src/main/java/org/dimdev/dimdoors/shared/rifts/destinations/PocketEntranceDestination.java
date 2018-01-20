@@ -37,7 +37,7 @@ import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 
     @Override
     public boolean teleport(RotatedLocation loc, Entity entity) {
-        if (entity instanceof EntityPlayer) DimDoors.chat(entity, "The entrances of this dungeon has not been linked. Either this is a bug or you are in dungeon-building mode.");
+        if (entity instanceof EntityPlayer) DimDoors.chat(entity, "The entrance of this dungeon has not been converted. If this is a normally generated pocket, please report this bug.");
         return false;
     }
 }
