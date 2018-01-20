@@ -11,6 +11,7 @@ import net.minecraft.tileentity.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import org.dimdev.ddutils.schem.Schematic;
@@ -105,14 +106,14 @@ public final class SchematicConverter {
             }
         }
 
-        NBTTagList tileEntitiesNBT = (NBTTagList) nbt.getTag("TileEntities");
+        List<Vec3i> tileEntityPositions = new ArrayList<>();
+
+        NBTTagList tileEntitiesNBT = nbt.getTagList("TileEntities", 1); // 1 = NBTTagCompound
         for (int i = 0; i < tileEntitiesNBT.tagCount(); i++) {
             NBTTagCompound tileEntityNBT = tileEntitiesNBT.getCompoundTagAt(i);
             switch (tileEntityNBT.getString("id")) {
                 case "TileEntityDimDoor":
                 case "TileEntityRift":
-                case "TileEntityChest":
-                case "TileEntityDispenser":
                     continue; // remove all Rifts and containers from the TileEntities. These will get added back later
                 case "Sign":
                     tileEntityNBT.setString("Text1", ITextComponent.Serializer.componentToJson(new TextComponentString(tileEntityNBT.getString("Text1"))));
@@ -124,6 +125,7 @@ public final class SchematicConverter {
                     break;
             }
             tileEntityNBT.setString("id", translateId(tileEntityNBT.getString("id")).toString());
+            tileEntityPositions.add(new Vec3i(tileEntityNBT.getInteger("x"), tileEntityNBT.getInteger("y"), tileEntityNBT.getInteger("z")));
             schematic.tileEntities.add(tileEntityNBT);
         }
 
@@ -157,17 +159,6 @@ public final class SchematicConverter {
                             goldBlocks++;
                         } else if (block.equals(Blocks.IRON_BLOCK)) {
                             ironBlocks++;
-                        } else if (block.equals(Blocks.CHEST)) {
-                            chests++;
-                            TileEntityChest chest = new TileEntityChest();
-                            chest.setPos(new BlockPos(x, y, z));
-                            schematic.tileEntities.add(chest.serializeNBT());
-                        } else if (block.equals(Blocks.DISPENSER)) {
-                            dispensers++;
-                            // TODO: Are some dispensers achtually already pre-filled? And if so, what should I actually be doing here?
-                            TileEntityDispenser dispenser = new TileEntityDispenser();
-                            dispenser.setPos(new BlockPos(x, y, z));
-                            schematic.tileEntities.add(dispenser.serializeNBT());
                         } else if (block.equals(Blocks.END_PORTAL_FRAME)) {
                             monoliths++;
                             // I think it's safe to assume that air is present
@@ -243,9 +234,7 @@ public final class SchematicConverter {
 
                                 schematic.tileEntities.add(rift.serializeNBT());
                             }
-                        }
-
-                        if (blockState.getBlock().equals(Blocks.END_PORTAL_FRAME)) {
+                        } else if (blockState.getBlock().equals(Blocks.END_PORTAL_FRAME)) {
                             monoliths++;
                             // I think it's safe to assume that air is present
                             blockInt = schematic.palette.indexOf(Blocks.AIR.getDefaultState());
@@ -253,7 +242,16 @@ public final class SchematicConverter {
                             EnumFacing facing = blockState.getValue(BlockEndPortalFrame.FACING);
                             monolith.setLocationAndAngles(x + 0.5d, y, z + 0.5d, facing.getHorizontalAngle(), 0);
                             schematic.entities.add(monolith.serializeNBT());
+                        } else if (blockState.getBlock().hasTileEntity(blockState) && !tileEntityPositions.contains(new Vec3i(x, y, z))) {
+                            TileEntity tileEntity = block.createTileEntity(null, blockState);
+                            tileEntity.setPos(new BlockPos(x, y, z));
+                            tileEntitiesNBT.appendTag(tileEntity.serializeNBT());
+                            DimDoors.log.info("Adding missing tile entity at " + new Vec3i(x, y, z) + " (state = " + blockState + ")");
                         }
+
+                        if (block.equals(Blocks.CHEST)) chests++;
+                        if (block.equals(Blocks.DISPENSER)) dispensers++;
+
                     } else { // if this is ancient fabric
                         blockInt = schematic.palette.indexOf(baseState);
                     }
