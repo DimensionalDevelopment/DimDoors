@@ -5,6 +5,7 @@ import org.dimdev.dimdoors.shared.commands.CommandPocket;
 import org.dimdev.dimdoors.shared.commands.CommandDimTeleport;
 import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.dimdoors.shared.CommonProxy;
+import org.dimdev.dimdoors.shared.commands.CommandSaveSchem;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import org.dimdev.dimdoors.shared.world.gateways.GatewayGenerator;
 import lombok.Getter;
@@ -68,6 +69,7 @@ public class DimDoors {
     private void registerCommands(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandDimTeleport());
         event.registerServerCommand(new CommandPocket());
+        event.registerServerCommand(new CommandSaveSchem());
     }
 
     public static void sendMessage(Entity entity, String text) {

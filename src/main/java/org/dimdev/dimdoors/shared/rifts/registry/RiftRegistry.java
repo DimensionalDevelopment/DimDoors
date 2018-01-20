@@ -95,7 +95,7 @@ public class RiftRegistry extends WorldSavedData {
         // method rather than RiftSubregistry) and save each in the appropriate registry, we can't do this because it is not
         // always the case that all worlds will be saved at once.
         @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-            if (riftRegistry == null) RiftRegistry.instance();
+            if (riftRegistry == null) riftRegistry = RiftRegistry.instance();
             // Write rifts in this dimension
             NBTTagList riftsNBT = new NBTTagList();
             NBTTagList pocketsNBT = new NBTTagList();

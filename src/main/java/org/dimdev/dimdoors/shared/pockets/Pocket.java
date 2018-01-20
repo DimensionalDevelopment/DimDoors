@@ -29,7 +29,7 @@ import java.util.List;
     @Saved @Getter protected int id;
     @Saved @Getter protected int x; // Grid x TODO: rename to gridX and gridY, or just convert to non-grid dependant coordinates
     @Saved @Getter protected int z; // Grid y
-    @Saved @Getter @Setter protected int size; // In chunks TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
+    @Saved @Getter @Setter protected int size; // TODO: size = sizeInChunks - 1 ???!!! TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
     @Saved @Getter @Setter protected VirtualLocation virtualLocation;
     @Saved @Getter @Setter protected Location entrance; // TODO: move this to the rift registry (pocketlib)
     @Saved @Getter protected List<Location> riftLocations; // TODO: convert to a list of all tile entities (for chests, and to make it independant of pocketlib)

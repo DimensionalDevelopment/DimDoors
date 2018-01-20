@@ -34,7 +34,8 @@ import org.dimdev.dimdoors.shared.world.ModDimensions;
  */
 public class SchematicHandler {
 
-    public static final SchematicHandler INSTANCE = new SchematicHandler(); // TODO: make static
+    private static final String SAVED_POCKETS_GROUP_NAME = "saved_pockets";
+    public static final SchematicHandler INSTANCE = new SchematicHandler();
 
     private List<PocketTemplate> templates;
     private Map<String, Map<String, Integer>> nameMap; // group -> name -> index in templates
@@ -44,7 +45,7 @@ public class SchematicHandler {
 
         templates = new ArrayList<>();
 
-        String[] names = {"default_dungeon_nether", "default_dungeon_normal", "default_private", "default_public"}; // TODO: don't hardcode
+        String[] names = {"default_dungeon_nether", "default_dungeon_normal", "default_private", "default_public", "default_blank"}; // TODO: don't hardcode
         for (String name : names) {
             try {
                 URL resource = DimDoors.class.getResource("/assets/dimdoors/pockets/json/" + name + ".json");
@@ -74,6 +75,21 @@ public class SchematicHandler {
                 DimDoors.log.error("Error reading file " + file.toURI() + ". The following exception occured: ", e);
             }
         }
+
+        // Load saved schematics
+        File saveFolder = new File(Config.configurationFolder, "/schematics/saved");
+        if (saveFolder.exists()) {
+            for (File file : saveFolder.listFiles()) {
+                if (file.isDirectory() || !file.getName().endsWith(".schem")) continue;
+                try {
+                    Schematic schematic = Schematic.loadFromNBT(CompressedStreamTools.readCompressed(new FileInputStream(file)));
+                    templates.add(new PocketTemplate(SAVED_POCKETS_GROUP_NAME, file.getName(), null, null, null, schematic, -1, 0));
+                } catch (IOException e) {
+                    DimDoors.log.error("Error reading schematic " + file.getName() + ": " + e);
+                }
+            }
+        }
+
         constructNameMap();
 
         DimDoors.log.info("Loaded " + templates.size() + " templates in " + (System.currentTimeMillis() - startTime) + " ms.");
@@ -205,6 +221,8 @@ public class SchematicHandler {
                 }
             }
         }
+
+        nameMap.put(SAVED_POCKETS_GROUP_NAME, new HashMap<>());
     }
 
     public Set<String> getTemplateGroups() {
@@ -276,14 +294,14 @@ public class SchematicHandler {
         return getRandomTemplate("public", -1, Math.min(Config.getPublicPocketSize(), PocketRegistry.instance(ModDimensions.getPublicDim()).getPublicPocketSize()), true);
     }
 
-    public void saveSchematic(Schematic schematic, String name) {
+    public void saveSchematic(Schematic schematic, String id) {
         NBTTagCompound schematicNBT = Schematic.saveToNBT(schematic);
-        File saveFolder = new File(Config.configurationFolder, "/Schematics/Saved");
+        File saveFolder = new File(Config.configurationFolder, "/schematics/saved");
         if (!saveFolder.exists()) {
             saveFolder.mkdirs();
         }
 
-        File saveFile = new File(saveFolder.getAbsolutePath() + "/" + name + ".schem");
+        File saveFile = new File(saveFolder.getAbsolutePath() + "/" + id + ".schem");
         try {
             saveFile.createNewFile();
             DataOutputStream schematicDataStream = new DataOutputStream(new FileOutputStream(saveFile));
@@ -293,5 +311,17 @@ public class SchematicHandler {
         } catch (IOException ex) {
             Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Something went wrong while saving " + saveFile.getAbsolutePath() + " to disk.", ex);
         }
+
+        if (!nameMap.containsKey(SAVED_POCKETS_GROUP_NAME)) {
+            nameMap.put(SAVED_POCKETS_GROUP_NAME, new HashMap<>());
+        }
+
+        Map<String, Integer> savedDungeons = nameMap.get(SAVED_POCKETS_GROUP_NAME);
+        if (savedDungeons.containsKey(id)) {
+            templates.remove((int) savedDungeons.remove(id));
+        }
+
+        templates.add(new PocketTemplate(SAVED_POCKETS_GROUP_NAME, id, null, null, null, schematic, -1, 0));
+        nameMap.get(SAVED_POCKETS_GROUP_NAME).put(id, templates.size() - 1);
     }
 }
