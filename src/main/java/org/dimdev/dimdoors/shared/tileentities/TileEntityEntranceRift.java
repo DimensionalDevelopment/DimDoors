@@ -54,6 +54,7 @@ import java.util.Random;
     public void setPlaceRiftOnBreak(boolean placeRiftOnBreak) { this.placeRiftOnBreak = placeRiftOnBreak; markDirty(); }
     public void setShouldRender(boolean shouldRender) { this.shouldRender = shouldRender; markDirty(); }
     public void setLockStatus(byte lockStatus) { this.lockStatus = lockStatus; markDirty(); }
+    public void setCloseAfterPassThrough(boolean closeAfterPassThrough) { this.closeAfterPassThrough = closeAfterPassThrough; markDirty(); }
 
     @Override
     public boolean teleport(Entity entity) {

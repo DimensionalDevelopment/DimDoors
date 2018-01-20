@@ -3,7 +3,9 @@ package org.dimdev.dimdoors.shared.rifts.registry;
 import lombok.ToString;
 import net.minecraft.nbt.NBTTagCompound;
 import org.dimdev.annotatednbt.NBTSerializable;
+import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
 @ToString
 @NBTSerializable public class RiftPlaceholder extends Rift { // TODO: don't extend rift
@@ -19,14 +21,19 @@ import org.dimdev.dimdoors.DimDoors;
     @Override public void targetChanged(RegistryVertex target) {}
 
     @Override
+    public void markDirty() {
+        RiftRegistry.instance().markSubregistryDirty(dim);
+    }
+
+    @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        DimDoors.log.warn("Reading a rift placeholder from NBT!");
+        DimDoors.log.error("Reading a rift placeholder from NBT!");
         super.readFromNBT(nbt);
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        DimDoors.log.warn("Writing a rift placeholder from NBT!");
+        DimDoors.log.error("Writing a rift placeholder from NBT!");
         return super.writeToNBT(nbt);
     }
 }

@@ -36,7 +36,7 @@ public final class SchematicConverter {
 
         schematic.version = 1; //already the default value
         schematic.author = author;
-        schematic.name = name; // TODO: this is still null at the moment
+        schematic.name = name; // This is passed as an argument by the SchematicHandler. The name is taken from the JSONs
         schematic.creationDate = System.currentTimeMillis();
         schematic.requiredMods = new String[]{DimDoors.MODID};
 
@@ -186,6 +186,7 @@ public final class SchematicConverter {
                                             .positiveDepthFactor(80)
                                             .weightMaximum(100)
                                             .newRiftWeight(1).build());
+                                    rift.markStateChanged();
                                 } else if (block.equals(ModBlocks.WARP_DIMENSIONAL_DOOR)) {
                                     IBlockState stateBelow = schematic.palette.get(schematic.blockData[x][y - 1][z]);
                                     if (stateBelow.getBlock().equals(Blocks.SANDSTONE)) {
@@ -198,6 +199,7 @@ public final class SchematicConverter {
                                                 .positiveDepthFactor(Double.POSITIVE_INFINITY)
                                                 .weightMaximum(100)
                                                 .newRiftWeight(1).build());
+                                        rift.markStateChanged();
                                         //change the sandstone to the block below it.
                                         if (y >= 2) {
                                             schematic.blockData[x][y - 1][z] = schematic.blockData[x][y - 2][z];
@@ -216,6 +218,7 @@ public final class SchematicConverter {
                                                         .positiveDepthFactor(10000)
                                                         .weightMaximum(100)
                                                         .newRiftWeight(1).build()).build());
+                                        rift.markStateChanged();
                                     }
                                 } else if (block.equals(ModBlocks.DIMENSIONAL_PORTAL)) {
                                     rift.setProperties(LinkProperties.builder()
@@ -230,6 +233,7 @@ public final class SchematicConverter {
                                             .weightMaximum(300) // Link further away
                                             .newRiftWeight(1)
                                             .build());
+                                    rift.setCloseAfterPassThrough(false);
                                 }
 
                                 schematic.tileEntities.add(rift.serializeNBT());
