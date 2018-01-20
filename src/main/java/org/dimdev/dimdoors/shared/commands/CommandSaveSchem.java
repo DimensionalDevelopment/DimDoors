@@ -59,7 +59,7 @@ public class CommandSaveSchem extends CommandBase {
             }
 
             Pocket pocket = PocketRegistry.instance(player.dimension).getPocketAt(player.getPosition());
-            Schematic schematic = Schematic.createFromWorld(player.world, toVector3i(pocket.getOrigin()), toVector3i(pocket.getOrigin()).add(Vector3i.from((pocket.getSize() + 1) * 16)));
+            Schematic schematic = Schematic.createFromWorld(player.world, toVector3i(pocket.getOrigin()), toVector3i(pocket.getOrigin()).add(Vector3i.from((pocket.getSize() + 1) * 16 - 1)));
             schematic.name = args[0];
             schematic.author = player.getName();
 

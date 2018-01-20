@@ -42,7 +42,7 @@ public class SchematicHandler {
     public void loadSchematics() {
         templates = new ArrayList<>();
 
-        String[] names = {"default_dungeon_normal", "default_dungeon_nether", "default_private", "default_public"}; // TODO: don't hardcode
+        String[] names = {"default_dungeon_normal", "default_dungeon_nether", "default_private", "default_public", "default_blank"}; // TODO: don't hardcode
         for (String name : names) {
             try {
                 URL resource = DimDoors.class.getResource("/assets/dimdoors/pockets/json/" + name + ".json");

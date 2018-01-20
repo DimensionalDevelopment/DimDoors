@@ -42,10 +42,31 @@ public class Schematic {
     public short length;
     public int[] offset = {0, 0, 0};
     public int paletteMax;
-    public List<IBlockState> pallette = new ArrayList<>();
+    public List<IBlockState> palette = new ArrayList<>();
     public int[][][] blockData; //[x][y][z]
     public List<NBTTagCompound> tileEntities = new ArrayList<>();
     public List<NBTTagCompound> entities = new ArrayList<>(); // Not in the specification, but we need this
+
+    public Schematic() {
+        paletteMax = -1;
+    }
+
+    public Schematic(short width, short height, short length) {
+        this();
+        this.width = width;
+        this.height = height;
+        this.length = length;
+        blockData = new int[width][length][height];
+        palette.add(Blocks.AIR.getDefaultState());
+        paletteMax++;
+        creationDate = System.currentTimeMillis();
+    }
+
+    public Schematic(String name, String author, short width, short height, short length) {
+        this(width, height, length);
+        this.name = name;
+        this.author = author;
+    }
 
     public static Schematic loadFromNBT(NBTTagCompound nbt) {
         Schematic schematic = new Schematic();
@@ -106,12 +127,12 @@ public class Schematic {
                 String[] properties = stateString.split(",");
                 blockstate = getBlockStateWithProperties(block, properties);
             }
-            schematic.pallette.add(blockstate); //@todo, can we assume that a schematic file always has all palette integers used from 0 to pallettemax-1?
+            schematic.palette.add(blockstate); //@todo, can we assume that a schematic file always has all palette integers used from 0 to pallettemax-1?
         }
         if (nbt.hasKey("PaletteMax")) { //PaletteMax is not required
             schematic.paletteMax = nbt.getInteger("PaletteMax");
         } else {
-            schematic.paletteMax = schematic.pallette.size() - 1;
+            schematic.paletteMax = schematic.palette.size() - 1;
         }
 
         byte[] blockDataIntArray = nbt.getByteArray("BlockData"); //BlockData is required
@@ -165,8 +186,8 @@ public class Schematic {
         nbt.setInteger("PaletteMax", schematic.paletteMax);
 
         NBTTagCompound paletteNBT = new NBTTagCompound();
-        for (int i = 0; i < schematic.pallette.size(); i++) {
-            IBlockState state = schematic.pallette.get(i);
+        for (int i = 0; i < schematic.palette.size(); i++) {
+            IBlockState state = schematic.palette.get(i);
             String blockStateString = getBlockStateStringFromState(state);
             paletteNBT.setInteger(blockStateString, i);
         }
@@ -251,6 +272,7 @@ public class Schematic {
         return totalString;
     }
 
+    // TODO: use the setBlockState method
     public static Schematic createFromWorld(World world, Vector3i from, Vector3i to) {
         Schematic schematic = new Schematic();
 
@@ -297,7 +319,7 @@ public class Schematic {
                 schematic.blockData[pos.getX()][pos.getY()][pos.getZ()] = i;
             }
 
-            schematic.pallette.add(i, keys[i]);
+            schematic.palette.add(i, keys[i]);
         }
 
         for (Entity entity : world.getEntitiesInAABBexcluding(null, getBoundingBox(from, to), entity -> !(entity instanceof EntityPlayerMP))) {
@@ -314,7 +336,7 @@ public class Schematic {
         }
 
         schematic.requiredMods = mods.toArray(new String[mods.size()]);
-        schematic.paletteMax = keys.length;
+        schematic.paletteMax = keys.length - 1;
         schematic.creationDate = System.currentTimeMillis();
 
         return schematic;
@@ -326,7 +348,7 @@ public class Schematic {
 
     public static void place(Schematic schematic, World world, int xBase, int yBase, int zBase) { // TODO: check if entities and tileentities are within pocket bounds
         // Place the schematic's blocks
-        List<IBlockState> palette = schematic.pallette;
+        List<IBlockState> palette = schematic.palette;
         int[][][] blockData = schematic.blockData;
         Set<Chunk> changedChunks = new HashSet<>();
         long start = System.currentTimeMillis();
@@ -402,6 +424,15 @@ public class Schematic {
 
             Entity entity = EntityList.createEntityFromNBT(adjustedEntityNBT, world);
             world.spawnEntity(entity);
+        }
+    }
+
+    public void setBlockState(int x, int y, int z, IBlockState state) {
+        if (palette.contains(state)) {
+            blockData[x][y][z] = palette.indexOf(state); // TODO: optimize this (there must be some efficient list implementations)
+        } else {
+            palette.add(state);
+            blockData[x][y][z] = ++paletteMax;
         }
     }
 }

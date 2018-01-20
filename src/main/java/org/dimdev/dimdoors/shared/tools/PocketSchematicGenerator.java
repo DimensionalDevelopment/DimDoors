@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.shared.tools;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Bootstrap;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -19,6 +18,7 @@ import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.server.ServerProxy;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
+import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.BlockFabricAncient;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
@@ -73,102 +73,102 @@ public final class PocketSchematicGenerator {
         }
 
         // Generate the schematics
-        List<Schematic> schematics = generatePocketSchematics(8);
+        List<Schematic> schematics = generatePocketSchematics();
 
         // Save the schematics
-        boolean isPublic = true;
+        String[] saveFolders = {"public/", "private/", "blank/", "blank/"};
+        int i = 0;
         for (Schematic schematic : schematics) {
             NBTTagCompound schematicNBT = Schematic.saveToNBT(schematic);
-            File saveFile = new File(schematicDir, (isPublic ? "public/" : "private/") + schematic.name + ".schem");
+            File saveFile = new File(schematicDir, saveFolders[i++ % saveFolders.length] + schematic.name + ".schem");
             saveFile.getParentFile().mkdirs();
             DataOutputStream schematicDataStream = new DataOutputStream(new FileOutputStream(saveFile));
             CompressedStreamTools.writeCompressed(schematicNBT, schematicDataStream);
             schematicDataStream.flush();
             schematicDataStream.close();
-            isPublic = !isPublic;
         }
         // TODO: also generate JSON files
     }
 
-    public static List<Schematic> generatePocketSchematics(int maxPocketSize) {
+    public static List<Schematic> generatePocketSchematics() {
         List<Schematic> schematics = new ArrayList<>();
-        for (int pocketSize = 0; pocketSize < maxPocketSize; pocketSize++) {
-            schematics.add(generatePocketSchematic(
+        for (int pocketSize = 0; pocketSize < 8; pocketSize++) {
+            schematics.add(generateBlankWithDoor(
                     "public_pocket", // base name
                     pocketSize, // size
                     ModBlocks.ANCIENT_FABRIC.getDefaultState(), // outer wall
                     ModBlocks.FABRIC.getDefaultState(), // inner wall
                     ModBlocks.DIMENSIONAL_DOOR, // door
                     PocketExitDestination.builder().build(),// exit rift destination
-                    1)); // TODO: pass destination rather than just chaos weight
-            schematics.add(generatePocketSchematic(
+                    LinkProperties.builder()
+                            .groups(Collections.singleton(1))
+                            .linksRemaining(1)
+                            .entranceWeight(1)
+                            .floatingWeight(1)
+                            .build()));
+
+            schematics.add(generateBlankWithDoor(
                     "private_pocket", // base name
                     pocketSize, // size
                     ModBlocks.ANCIENT_FABRIC.getDefaultState().withProperty(BlockFabricAncient.COLOR, EnumDyeColor.WHITE), // outer wall
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabricAncient.COLOR, EnumDyeColor.WHITE), // inner wall
                     ModBlocks.PERSONAL_DIMENSIONAL_DOOR, // door
                     PrivatePocketExitDestination.builder().build(),// exit rift destination
-                    0));
+                    null));
+
+            schematics.add(generateBlank("blank_pocket",
+                    pocketSize,
+                    ModBlocks.ANCIENT_FABRIC.getDefaultState(),
+                    ModBlocks.FABRIC.getDefaultState()));
+
+            schematics.add(generateFrame("void_pocket",
+                    pocketSize,
+                    ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.COLOR, EnumDyeColor.LIGHT_BLUE)));
         }
         return schematics;
     }
 
-    private static Schematic generatePocketSchematic(String baseName, int pocketSize, IBlockState outerWallBlockState, IBlockState innerWallBlockState, BlockDimensionalDoor doorBlock, RiftDestination exitDest, float chaosWeight) {
-        int size = (pocketSize + 1) * 16 - 1; // -1 so that the door can be centered
+    private static Schematic generateBlank(String baseName, int pocketSize, IBlockState outerWall, IBlockState innerWall) {
+        short size = (short) ((pocketSize + 1) * 16 - 1); // -1 so that the door can be centered
 
         // Set schematic info
-        Schematic schematic = new Schematic();
-        schematic.version = 1;
-        schematic.author = "Robijnvogel"; //@todo set in build.gradle ${modID}
-        schematic.name = baseName + "_" + pocketSize;
-        schematic.creationDate = System.currentTimeMillis();
-        schematic.requiredMods = new String[1];
-        schematic.requiredMods[0] = DimDoors.MODID;
-        schematic.width = (short) size;
-        schematic.height = (short) size;
-        schematic.length = (short) size;
-        schematic.offset = new int[]{0, 0, 0}; // TODO: center pockets
-
-        // Generate the pallette
-        schematic.paletteMax = 4;
-        schematic.pallette = new ArrayList<>();
-        schematic.pallette.add(Blocks.AIR.getDefaultState());
-        schematic.pallette.add(outerWallBlockState);
-        schematic.pallette.add(innerWallBlockState);
-        schematic.pallette.add(doorBlock.getDefaultState().withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.LOWER)); //bottom
-        schematic.pallette.add(doorBlock.getDefaultState().withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER)); //top
+        Schematic schematic = new Schematic(baseName + "_" + pocketSize, "DimDoors", size, size, size);
+        schematic.requiredMods = new String[] { DimDoors.MODID };
 
         // Set block data
-        schematic.blockData = new int[size][size][size]; //[x][y][z]
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
                 for (int z = 0; z < size; z++) {
                     int layer = Collections.min(Arrays.asList(x, y, z, size - 1 - x, size - 1 - y, size - 1 - z));
                     if (layer == 0) {
-                        schematic.blockData[x][y][z] = 1; // outer wall
+                        schematic.setBlockState(x, y, z, outerWall);
                     } else if (layer < 5) {
-                        schematic.blockData[x][y][z] = 2; // inner wall
-                    } else {
-                        schematic.blockData[x][y][z] = 0; // air
+                        schematic.setBlockState(x, y, z, innerWall);
                     }
                 }
             }
         }
-        schematic.blockData[(size - 1) / 2][5][4] = 3; // door bottom
-        schematic.blockData[(size - 1) / 2][6][4] = 4; // door top
 
-        // Generate the rift TileEntities
+        return schematic;
+    }
+
+    private static Schematic generateBlankWithDoor(String baseName, int pocketSize, IBlockState outerWall, IBlockState innerWall, BlockDimensionalDoor doorBlock, RiftDestination exitDest, LinkProperties link) {
+        short size = (short) ((pocketSize + 1) * 16 - 1); // -1 so that the door can be centered
+
+        // Make the schematic
+        Schematic schematic = generateBlank(baseName, pocketSize, outerWall, innerWall);
+
+        // Add the door
+        schematic.setBlockState((size - 1) / 2, 5, 4, doorBlock.getDefaultState().withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.LOWER));
+        schematic.setBlockState((size - 1) / 2, 6, 4, doorBlock.getDefaultState().withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER));
+
+        // Set the rift entities
         schematic.tileEntities = new ArrayList<>();
         TileEntityEntranceRift rift = (TileEntityEntranceRift) doorBlock.createTileEntity(null, doorBlock.getDefaultState());
         rift.setDestination(PocketEntranceDestination.builder()
                 .ifDestination(exitDest)
                 .build());
-        rift.setProperties(LinkProperties.builder()
-                .groups(Collections.singleton(1))
-                .linksRemaining(1)
-                .entranceWeight(chaosWeight)
-                .floatingWeight(chaosWeight)
-                .build());
+        rift.setProperties(link);
 
         rift.setPlaceRiftOnBreak(true);
         NBTTagCompound tileNBT = rift.serializeNBT();
@@ -176,6 +176,32 @@ public final class PocketSchematicGenerator {
         tileNBT.setInteger("y", 5);
         tileNBT.setInteger("z", 4);
         schematic.tileEntities.add(tileNBT);
+
+        return schematic;
+    }
+
+    private static Schematic generateFrame(String baseName, int chunkSize, IBlockState frame) {
+        short size = (short) ((chunkSize + 1) * 16 - 1); // -1 so that the door can be centered
+
+        // Set schematic info
+        Schematic schematic = new Schematic(baseName + "_" + chunkSize, "DimDoors", size, size, size);
+        schematic.requiredMods = new String[] { DimDoors.MODID };
+
+        // Set block data
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                for (int z = 0; z < size; z++) {
+                    int sides = 0;
+                    if (x == 0 || x == size - 1) sides++;
+                    if (y == 0 || y == size - 1) sides++;
+                    if (z == 0 || z == size - 1) sides++;
+
+                    if (sides >= 2) {
+                        schematic.setBlockState(x, y, z, frame);
+                    }
+                }
+            }
+        }
 
         return schematic;
     }
