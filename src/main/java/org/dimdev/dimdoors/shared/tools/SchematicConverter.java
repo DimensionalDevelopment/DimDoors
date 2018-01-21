@@ -222,7 +222,19 @@ public final class SchematicConverter {
                         default:
                             break;
                     }
-                    tileEntityNBT.setString("id", translateId(tileEntityNBT.getString("id")).toString());
+                    String oldID = tileEntityNBT.getString("id");
+                    ResourceLocation resLoc = translateId(oldID);
+                    if (resLoc == null) {
+                        DimDoors.log.error("Resourcelocation of TileEntity with old ID: " + oldID + " was null. If you want to complain about log spam; " + (oldID.equals("Hopper") ? "it is very likely that it's FoamFix causing this." : "we have no idea what causes this, so please report it."));
+                        if (oldID.equals("Hopper")) {
+                            resLoc = new ResourceLocation("minecraft:hopper");
+                        }
+                    }
+                    if (resLoc != null) {
+                        String newID = resLoc.toString();
+                        //DimDoors.log.info("Resourcelocation succesfully translated from old ID: " + oldID + " into: " + newID + ".");
+                        tileEntityNBT.setString("id", newID);
+                    }
                     tileEntityPositions.add(new Vec3i(x, y, z));
                     schematic.tileEntities.add(tileEntityNBT);
                 }
