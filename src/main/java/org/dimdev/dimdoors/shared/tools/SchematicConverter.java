@@ -186,7 +186,7 @@ public final class SchematicConverter {
                                             item = Item.getItemById(oldID);
                                             NBTTagCompound subTag = itemTag.getCompoundTag("tag");
                                             NBTTagList oldPages = subTag.getTagList("pages", STRING_TAG_ID);
-                                            DimDoors.log.info("Written book has " + oldPages.tagCount() + " pages." + (oldPages.tagCount() == 0 ? " STRING_TAG_ID is " + STRING_TAG_ID : ""));
+                                            //DimDoors.log.info("Written book has " + oldPages.tagCount() + " pages." + (oldPages.tagCount() == 0 ? " STRING_TAG_ID is " + STRING_TAG_ID : ""));
                                             NBTTagList newPages = new NBTTagList();
                                             for (NBTBase pageNBTBase : oldPages) {
                                                 NBTTagString oldPageNBT = (NBTTagString) pageNBTBase;
@@ -195,7 +195,7 @@ public final class SchematicConverter {
                                                 String newPage = ITextComponent.Serializer.componentToJson(new TextComponentString(oldPage)); //substitutes paragraph break characters with "\n"
                                                 NBTTagString newPageNBT = new NBTTagString(newPage); //this HAS to be created new, because a change doesn't propagate up to pageNBTBase completely. Only the first word gets read from the tag list eventually. I don't know why, but it does.
                                                 newPages.appendTag(newPageNBT);
-                                                DimDoors.log.info("Converted written book page: \n{ " + oldPage + "\n into: \n" + newPageNBT.getString() + "\n.");
+                                                //DimDoors.log.info("Converted written book page: \n{ " + oldPage + "\n into: \n" + newPageNBT.getString() + "\n.");
                                             }
                                             subTag.setTag("pages", newPages);
                                             break;
@@ -216,7 +216,7 @@ public final class SchematicConverter {
                                 if (oldMeta != newMeta) {
                                     itemTag.setInteger("Damage", newMeta);
                                 }
-                                DimDoors.log.info("ID of itemstack in inventory set from " + oldID + " to '" + newID + "'.");
+                                //DimDoors.log.info("ID of itemstack in inventory set from " + oldID + " to '" + newID + "'.");
                             }
                             break;
                         case "Sign":
@@ -415,7 +415,7 @@ public final class SchematicConverter {
                 throw new RuntimeException("Tile entity ID " + id + " not supported by conversion code");
         }
         if (location == null) {
-            DimDoors.log.error("Resourcelocation of TileEntity with old ID: " + id + " was null. If you want to complain about log spam; " + (id.equals("Hopper") ? "it is very likely that it's FoamFix causing this." : "we have no idea what causes this, so please report it."));
+            DimDoors.log.error("Resourcelocation of TileEntity with old ID: " + id + " was null. If you want to complain about log spam; " + (id.equals("Hopper") ? "it is very likely that it's FoamFix causing this. Please update it to at least version 0.9.0-1.12.2!" : "we have no idea what causes this, so please report it."));
             location = translateIdCrude(id);
         } else {
             //DimDoors.log.info("Resourcelocation succesfully translated from old ID: " + oldID + " into: " + newID + ".");
