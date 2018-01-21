@@ -69,7 +69,8 @@ configurations {
 dependencies {
     embed 'com.flowpowered:flow-math:1.0.3'
     embed 'org.jgrapht:jgrapht-core:1.1.0'
-    compile 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
+    compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
+    compileOnly 'com.github.OpenCubicChunks:CubicChunks:MC_1.12-SNAPSHOT'
 }
 
 jar {

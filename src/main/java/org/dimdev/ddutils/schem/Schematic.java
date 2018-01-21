@@ -2,6 +2,8 @@ package org.dimdev.ddutils.schem;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.google.common.collect.ArrayListMultimap;
+import cubicchunks.world.ICubicWorld;
+import cubicchunks.world.cube.Cube;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -21,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.dimdev.dimdoors.DimDoors;
 
@@ -31,6 +34,8 @@ import java.util.Map.Entry;
  * @author Robijnvogel
  */
 public class Schematic {
+
+    private static final boolean cubicChunks = Loader.isModLoaded("cubicchunks");
 
     public int version = 1;
     public String author = null;
@@ -348,42 +353,7 @@ public class Schematic {
 
     public static void place(Schematic schematic, World world, int xBase, int yBase, int zBase) { // TODO: check if entities and tileentities are within pocket bounds
         // Place the schematic's blocks
-        List<IBlockState> palette = schematic.palette;
-        int[][][] blockData = schematic.blockData;
-        Set<Chunk> changedChunks = new HashSet<>();
-        long start = System.currentTimeMillis();
-        for (int x = 0; x < blockData.length; x++) {
-            for (int y = 0; y < blockData[x].length; y++) {
-                for (int z = 0; z < blockData[x][y].length; z++) {
-                    // Set the block in the chunk without calling any place events (otherwise torches will break, and also over 100x faster)
-                    IBlockState state = palette.get(blockData[x][y][z]);
-                    BlockPos pos = new BlockPos(xBase + x, yBase + y, zBase + z);
-
-                    Chunk chunk = world.getChunkFromBlockCoords(pos);
-                    ExtendedBlockStorage[] storageArray = chunk.getBlockStorageArray();
-                    ExtendedBlockStorage storage = storageArray[pos.getY() >> 4];
-                    if (storage == Chunk.NULL_BLOCK_STORAGE && state.getBlock() != Blocks.AIR) {
-                        storage = new ExtendedBlockStorage(pos.getY() >> 4 << 4, world.provider.hasSkyLight());
-                        storageArray[pos.getY() >> 4] = storage;
-                    }
-                    if (storage != null) storage.set(pos.getX() & 15, pos.getY() & 15, pos.getZ() & 15, state);
-                    chunk.markDirty();
-                    changedChunks.add(chunk);
-                }
-            }
-        }
-        DimDoors.log.info("Setting block states took " + (System.currentTimeMillis() - start) + " ms");
-
-        start = System.currentTimeMillis();
-        // Relight changed chunks
-        for (Chunk chunk : changedChunks) {
-            chunk.setLightPopulated(false);
-            chunk.setTerrainPopulated(true);
-            chunk.resetRelightChecks();
-            chunk.checkLight();
-        }
-        world.markBlockRangeForRenderUpdate(xBase, yBase, zBase, xBase + schematic.width, yBase + schematic.height, zBase + schematic.length);
-        DimDoors.log.info("Relighting took " + (System.currentTimeMillis() - start) + " ms");
+        setBlocks(schematic, world, xBase, yBase, zBase);
 
         // Set TileEntity data
         for (NBTTagCompound tileEntityNBT : schematic.tileEntities) {
@@ -403,10 +373,10 @@ public class Schematic {
                     tileEntity.setPos(pos);
                     tileEntity.markDirty();
                 } else {
-                    throw new RuntimeException("Schematic contained TileEntity " + schematicTileEntityId + " at " + pos + " but the TileEntity of that block (" + world.getBlockState(pos) + ") must be " + blockTileEntityId);
+                    //throw new RuntimeException("Schematic contained TileEntity " + schematicTileEntityId + " at " + pos + " but the TileEntity of that block (" + world.getBlockState(pos) + ") must be " + blockTileEntityId);
                 }
             } else {
-                throw new RuntimeException("Schematic contained TileEntity info at " + pos + " but the block there (" + world.getBlockState(pos) + ") has no TileEntity.");
+                //throw new RuntimeException("Schematic contained TileEntity info at " + pos + " but the block there (" + world.getBlockState(pos) + ") has no TileEntity.");
             }
         }
 
@@ -434,5 +404,88 @@ public class Schematic {
             palette.add(state);
             blockData[x][y][z] = ++paletteMax;
         }
+    }
+
+    private static void setBlocks(Schematic schematic, World world, int xBase, int yBase, int zBase) {
+        long setTime = 0;
+        long relightTime = 0;
+        // CubicChunks makes cubic worlds implement ICubicWorld
+        // Just "world instanceof ICubicWorld" would throw a class not found exception
+        //noinspection InstanceofIncompatibleInterface
+        if (cubicChunks && world instanceof ICubicWorld) {
+            DimDoors.log.info("Setting cube blockstates");
+            ICubicWorld cubicWorld = (ICubicWorld) world;
+            for (int cubeX = 0; cubeX < (schematic.width - 1 >> 4) + 1; cubeX++) {
+                for (int cubeY = 0; cubeY < (schematic.length - 1 >> 4) + 1; cubeY++) {
+                    for (int cubeZ = 0; cubeZ < (schematic.height - 1 >> 4) + 1; cubeZ++) {
+                        long setStart = System.nanoTime();
+                        // Get the cube only once for efficiency
+                        Cube cube = cubicWorld.getCubeFromCubeCoords((xBase << 4) + cubeX, (yBase << 4) + cubeY, (zBase << 4) + cubeZ);
+                        ExtendedBlockStorage storage = cube.getStorage();
+                        for (int x = 0; x < 16; x++) {
+                            for (int y = 0; y < 16; y++) {
+                                for (int z = 0; z < 16; z++) {
+                                    if ((cubeX << 4) + x < schematic.width && (cubeY << 4) + y < schematic.height && (cubeZ << 4) + z < schematic.length) {
+                                        IBlockState state = schematic.palette.get(schematic.blockData[(cubeX << 4) + x][(cubeY << 4) + y][(cubeZ << 4) + z]);
+                                        if (!state.getBlock().equals(Blocks.AIR)) {
+                                            if (storage == null) {
+                                                cube.setStorage(storage = new ExtendedBlockStorage(cube.getY() << 4, world.provider.hasSkyLight()));
+                                            }
+                                            storage.set(x, y, z, state);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        setTime += System.nanoTime() - setStart;
+                        long relightStart = System.nanoTime();
+                        // TODO: It's possible to relight a whole region at once, and immediately (this might not even work
+                        // TODO: if the cube is already loaded) using this, according to Foghrye4: https://hastebin.com/hociqufabe.java
+                        cube.setInitialLightingDone(false);
+                        relightTime += System.nanoTime() - relightStart;
+                        cube.markDirty();
+                    }
+                }
+            }
+        } else {
+            DimDoors.log.info("Setting chunk blockstates");
+            for (int chunkX = 0; chunkX < (schematic.width - 1 >> 4) + 1; chunkX++) {
+                for (int chunkZ = 0; chunkZ < (schematic.length - 1 >> 4) + 1; chunkZ++) {
+                    long setStart = System.nanoTime();
+                    // Get the chunk only once for efficiency
+                    Chunk chunk = world.getChunkFromChunkCoords((xBase >> 4) + chunkX, (zBase >> 4) + chunkZ);
+                    ExtendedBlockStorage[] storageArray = chunk.getBlockStorageArray();
+                    for (int storageY = 0; storageY < (schematic.height - 1 >> 4) + 1; storageY++) {
+                        // Get the storage only once for eficiency
+                        ExtendedBlockStorage storage = storageArray[(yBase >> 4) + storageY];
+                        for (int x = 0; x < 16; x++) {
+                            for (int y = 0; y < 16; y++) {
+                                for (int z = 0; z < 16; z++) {
+                                    if ((chunkX << 4) + x < schematic.width && (storageY << 4) + y < schematic.height && (chunkZ << 4) + z < schematic.length) {
+                                        IBlockState state = schematic.palette.get(schematic.blockData[(chunkX << 4) + x][(storageY << 4) + y][(chunkZ << 4) + z]);
+                                        if (!state.getBlock().equals(Blocks.AIR)) {
+                                            if (storage == null) {
+                                                storageArray[storageY] = storage = new ExtendedBlockStorage(storageY >> 4, world.provider.hasSkyLight());
+                                            }
+                                            storage.set(x, y, z, state);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    setTime += System.nanoTime() - setStart;
+                    long relightStart = System.nanoTime();
+                    chunk.markDirty();
+                    chunk.setLightPopulated(false);
+                    chunk.setTerrainPopulated(true);
+                    chunk.resetRelightChecks();
+                    relightTime += System.nanoTime() - relightStart;
+                    chunk.checkLight();
+                }
+            }
+        }
+        world.markBlockRangeForRenderUpdate(xBase, yBase, zBase, xBase + schematic.width, yBase + schematic.height, zBase + schematic.length);
+        DimDoors.log.info("Set block states in " + setTime / 1000000 + " ms and relit chunks/cubes in " + relightTime / 1000000);
     }
 }
