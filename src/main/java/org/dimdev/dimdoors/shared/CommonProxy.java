@@ -60,6 +60,8 @@ public abstract class CommonProxy {
         SchematicHandler.INSTANCE.loadSchematics();
         LootTableList.register(new ResourceLocation(DimDoors.MODID, "dungeon_chest"));
         LootTableList.register(new ResourceLocation(DimDoors.MODID, "dispenser_projectiles"));
+        LootTableList.register(new ResourceLocation(DimDoors.MODID, "dispenser_splash_potions"));
+        LootTableList.register(new ResourceLocation(DimDoors.MODID, "dispenser_potion_arrows"));
     }
 
     public void registerTileEntities() {
