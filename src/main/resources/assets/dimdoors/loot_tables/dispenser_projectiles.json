@@ -37,17 +37,7 @@
                 },
                 {
                     "type": "item",
-                    "name": "minecraft:water_bucket",
-                    "weight": 5
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:lava_bucket",
-                    "weight": 2
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:splash_potion",
+                    "name": "minecraft:spectral_arrow",
                     "functions": [
                         {
                             "function": "set_count",
@@ -57,6 +47,40 @@
                             }
                         }
                     ],
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:snowball",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 4,
+                                "max": 16
+                            }
+                        }
+                    ],
+                    "weight": 10
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:water_bucket",
+                    "weight": 5
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:lava_bucket",
+                    "weight": 2
+                },
+                {   
+                    "type": "loot_table",
+                    "name": "dimdoors:dispenser_splash_potions",
+                    "weight": 15
+                },
+                {   
+                    "type": "loot_table",
+                    "name": "dimdoors:dispenser_potion_arrows",
                     "weight": 15
                 }
             ]
