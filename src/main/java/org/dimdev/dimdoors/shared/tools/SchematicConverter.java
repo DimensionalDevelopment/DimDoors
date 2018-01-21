@@ -6,8 +6,11 @@ import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockEndPortalFrame;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.tileentity.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -20,6 +23,7 @@ import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
+import org.dimdev.dimdoors.shared.items.ModItems;
 import org.dimdev.dimdoors.shared.rifts.destinations.AvailableLinkDestination;
 import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
 import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
@@ -31,8 +35,14 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
  */
 public final class SchematicConverter {
 
+    private final static int LOCKED_CHEST_ID = 95;
+    private final static int POTION_ID = 373;
+    private final static int WRITTEN_BOOK_ID = 387;
+
+    private final static int NBT_COMPOUND_TAG_ID = NBTUtils.getNBT_COMPOUND_TAG_ID();
+    private final static int STRING_TAG_ID = NBTUtils.getSTRING_TAG_ID();
+
     public static Schematic convertSchematic(NBTTagCompound nbt, String schematicId, String name, String author) {
-        int nbtCompoundID = NBTUtils.getNbtCompoundID();
         Schematic schematic = new Schematic();
 
         schematic.version = 1; //already the default value
@@ -74,28 +84,33 @@ public final class SchematicConverter {
             if (palletteMap.containsKey(id)) {
                 blockIdArray[i] = palletteMap.get(id);
             } else {
-                IBlockState block = id <= 159 ? Block.getBlockById(id).getDefaultState() : Blocks.AIR.getDefaultState();
-                switch (id) {
-                    case 1973:
-                        block = ModBlocks.FABRIC.getDefaultState();
-                        break;
-                    case 1975:
-                        block = ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState();
-                        break;
-                    case 1970:
-                        block = ModBlocks.DIMENSIONAL_DOOR.getDefaultState();
-                        break;
-                    case 1979:
-                        block = ModBlocks.DIMENSIONAL_PORTAL.getDefaultState();
-                        break;
-                    case 220:
-                        block = ModBlocks.ANCIENT_FABRIC.getDefaultState();
-                        break;
-                    case 95: // Locked chest's ID was replaced with stained glass in 1.7.2
-                        DimDoors.log.error("Schematic contained a locked chest, which was removed in 1.7.2.");
-                        block = Blocks.AIR.getDefaultState();
-                        break;
+
+                IBlockState block = Blocks.AIR.getDefaultState(); //air is the default
+                if (id <= 159 && id != LOCKED_CHEST_ID) {
+                    block = Block.getBlockById(id).getDefaultState();
+                } else {
+                    switch (id) {
+                        case 1973:
+                            block = ModBlocks.FABRIC.getDefaultState();
+                            break;
+                        case 1975:
+                            block = ModBlocks.WARP_DIMENSIONAL_DOOR.getDefaultState();
+                            break;
+                        case 1970:
+                            block = ModBlocks.DIMENSIONAL_DOOR.getDefaultState();
+                            break;
+                        case 1979:
+                            block = ModBlocks.DIMENSIONAL_PORTAL.getDefaultState();
+                            break;
+                        case 220:
+                            block = ModBlocks.ANCIENT_FABRIC.getDefaultState();
+                            break;
+                        case LOCKED_CHEST_ID: // Locked chest's ID was replaced with stained glass in 1.7.2
+                            DimDoors.log.error("Schematic contained a locked chest, which was removed in 1.7.2.");
+                            break;
+                    }
                 }
+
                 if (id != 0 && block.getBlock().getRegistryName().toString().equals("minecraft:air")) {
                     throw new RuntimeException("Unknown ID " + id + " in schematic " + schematicId);
                 }
@@ -114,7 +129,7 @@ public final class SchematicConverter {
 
         List<Vec3i> tileEntityPositions = new ArrayList<>();
         if (nbt.hasKey("TileEntities")) {
-            NBTTagList tileEntitiesNBT = nbt.getTagList("TileEntities", nbtCompoundID);
+            NBTTagList tileEntitiesNBT = nbt.getTagList("TileEntities", NBT_COMPOUND_TAG_ID);
             if (!tileEntitiesNBT.hasNoTags()) {
                 for (int i = 0; i < tileEntitiesNBT.tagCount(); i++) {
                     NBTTagCompound tileEntityNBT = tileEntitiesNBT.getCompoundTagAt(i);
@@ -124,9 +139,80 @@ public final class SchematicConverter {
                     switch (tileEntityNBT.getString("id")) {
                         case "TileEntityDimDoor":
                         case "TileEntityRift":
-                            //case "Chest":
-                            //case "Trap":
                             continue; // remove all Rifts from the Doors. These will get added back later
+                        case "Chest":
+                        case "Trap":
+                        case "Hopper":
+                        case "Furnace": //there aren't any other kinds of inventories in the old schematics. At least not with contents
+                            NBTTagList items = tileEntityNBT.getTagList("Items", NBT_COMPOUND_TAG_ID);
+                            for (int j = 0; j < items.tagCount(); j++) {
+                                NBTTagCompound itemTag = items.getCompoundTagAt(j);
+                                int oldID = itemTag.getInteger("id");
+                                if (oldID == 0) { //if the slot is empty
+                                    //whatever
+                                    continue;
+                                }
+                                int oldMeta = itemTag.getInteger("Damage");
+
+                                Item item = Item.getItemById(0); //air is the default
+                                int newMeta = oldMeta;
+                                if (isValidItemIDForSimpleConversion(oldID)) {
+                                    item = Item.getItemById(oldID);
+                                } else {
+                                    switch (oldID) {
+                                        case 1973:
+                                            item = ModItems.FABRIC;
+                                            newMeta = (oldMeta == 0) ? 15 : 0;
+                                            break;
+                                        case 1975:
+                                            item = ModItems.WARP_DIMENSIONAL_DOOR;
+                                            break;
+                                        case 1970:
+                                            item = ModItems.DIMENSIONAL_DOOR;
+                                            break;
+                                        case 1979: //Transient Portal
+                                            break;
+                                        case 220:
+                                            item = ModItems.ANCIENT_FABRIC;
+                                            newMeta = (oldMeta == 0) ? 15 : 0;
+                                            break;
+                                        case WRITTEN_BOOK_ID:
+                                            item = Item.getItemById(oldID);
+                                            NBTTagCompound subTag = itemTag.getCompoundTag("tag");
+                                            NBTTagList oldPages = subTag.getTagList("pages", STRING_TAG_ID);
+                                            DimDoors.log.info("Written book has " + oldPages.tagCount() + " pages." + (oldPages.tagCount() == 0 ? " STRING_TAG_ID is " + STRING_TAG_ID : ""));
+                                            NBTTagList newPages = new NBTTagList();
+                                            for (NBTBase pageNBTBase : oldPages) {
+                                                NBTTagString oldPageNBT = (NBTTagString) pageNBTBase;
+                                                String oldPage = oldPageNBT.getString();
+                                                //String newPage = "{\"text\":\"" + oldPage + "\"}"; //works as well, but leaves in actual paragraph break characters
+                                                String newPage = ITextComponent.Serializer.componentToJson(new TextComponentString(oldPage)); //substitutes paragraph break characters with "\n"
+                                                NBTTagString newPageNBT = new NBTTagString(newPage); //this HAS to be created new, because a change doesn't propagate up to pageNBTBase completely. Only the first word gets read from the tag list eventually. I don't know why, but it does.
+                                                newPages.appendTag(newPageNBT);
+                                                DimDoors.log.info("Converted written book page: \n{ " + oldPage + "\n into: \n" + newPageNBT.getString() + "\n.");
+                                            }
+                                            subTag.setTag("pages", newPages);
+                                            break;
+                                        case POTION_ID:
+                                            DimDoors.log.error("An inventory in this Schematic contained a potion. Potions were split into normal and splash potions after Minecraft 1.7. If this error shows, please contact a DimDoors developer.");
+                                            //Luckily none of the old schematics seem to contain any potions, so we don't have to handle this.
+                                            break;
+                                        case LOCKED_CHEST_ID: // Locked chest's ID was replaced with stained glass in 1.7.2
+                                            DimDoors.log.error("An inventory in this Schematic contained a locked chest. Locked Chests were removed in 1.7.2. If this error shows, please contact a DimDoors developer.");
+                                            //Luckily none of the old schematics seem to contain any locked chest, so we don't have to handle this.
+                                            break;
+                                    }
+                                }
+
+                                itemTag.removeTag("id"); //not sure if needed, but just to be sure...
+                                String newID = item.getRegistryName().toString(); //item.getItemStackDisplayName(ItemStack.EMPTY);
+                                itemTag.setString("id", newID);
+                                if (oldMeta != newMeta) {
+                                    itemTag.setInteger("Damage", newMeta);
+                                }
+                                DimDoors.log.info("ID of itemstack in inventory set from " + oldID + " to '" + newID + "'.");
+                            }
+                            break;
                         case "Sign":
                             tileEntityNBT.setString("Text1", ITextComponent.Serializer.componentToJson(new TextComponentString(tileEntityNBT.getString("Text1"))));
                             tileEntityNBT.setString("Text2", ITextComponent.Serializer.componentToJson(new TextComponentString(tileEntityNBT.getString("Text2"))));
@@ -313,4 +399,23 @@ public final class SchematicConverter {
                 throw new RuntimeException("Tile entity ID " + id + " not supported by conversion code");
         }
     }
+
+    private static boolean isValidItemIDForSimpleConversion(int id) {
+        if (0 <= id) {
+            if (id == LOCKED_CHEST_ID || id == POTION_ID || id == WRITTEN_BOOK_ID) {
+                return false;
+            }
+            if (id <= 159) { //0-159 Block ids
+                return true;
+            }
+            if (256 <= id && id <= 422) { //256-422 Item ids
+                return true;
+            }
+            if (2256 <= id && id <= 2267) { //2256-2267 Music Disk ids
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
