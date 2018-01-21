@@ -89,7 +89,7 @@
         {
             "id": "anchored_descent",
             "type": "complex_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 1,
             "baseWeight": 50
@@ -97,7 +97,7 @@
         {
             "id": "hallway_hidden_treasure_b",
             "type": "complex_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": false,
             "size": 2,
             "baseWeight": 50
@@ -105,7 +105,7 @@
         {
             "id": "hidden_stairs",
             "type": "complex_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 100
@@ -113,7 +113,7 @@
         {
             "id": "lost_garden",
             "type": "complex_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 40
@@ -121,7 +121,7 @@
         {
             "id": "ruins_oh_no",
             "type": "complex_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 50
@@ -129,7 +129,7 @@
         {
             "id": "small_branch_with_exit",
             "type": "complex_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": false,
             "size": 2,
             "baseWeight": 100
@@ -144,7 +144,7 @@
         {
             "id": "tnt_puzzle_trap",
             "type": "complex_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": false,
             "size": 2,
             "baseWeight": 50
@@ -217,7 +217,7 @@
         {
             "id": "eyes_of_tricksters",
             "type": "dead_end",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 50
@@ -225,7 +225,7 @@
         {
             "id": "far_away_in_the_dark",
             "type": "dead_end",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 100
@@ -233,7 +233,7 @@
         {
             "id": "unstable_desert",
             "type": "dead_end",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 50
@@ -290,7 +290,7 @@
         {
             "id": "hot_suspense",
             "type": "exit",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 75
@@ -298,7 +298,7 @@
         {
             "id": "locking_exit_trap",
             "type": "exit",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": false,
             "size": 2,
             "baseWeight": 50
@@ -379,7 +379,7 @@
         {
             "id": "claustrophobia",
             "type": "hub",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 4,
             "baseWeight": 40
@@ -387,7 +387,7 @@
         {
             "id": "fractal_cage",
             "type": "hub",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 3,
             "baseWeight": 40
@@ -395,7 +395,7 @@
         {
             "id": "heart_of_disorder",
             "type": "hub",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 4,
             "baseWeight": 50
@@ -403,7 +403,7 @@
         {
             "id": "random_snow",
             "type": "hub",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 75
@@ -411,7 +411,7 @@
         {
             "id": "random_swamp",
             "type": "hub",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 75
@@ -419,7 +419,7 @@
         {
             "id": "the_nexus",
             "type": "hub",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 3,
             "baseWeight": 40
@@ -483,7 +483,7 @@
         {
             "id": "left_down_stairs",
             "type": "simple_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 1,
             "baseWeight": 50
@@ -491,7 +491,7 @@
         {
             "id": "left_up_path",
             "type": "simple_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 1,
             "baseWeight": 50
@@ -499,7 +499,7 @@
         {
             "id": "right_down_stairs",
             "type": "simple_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 1,
             "baseWeight": 50
@@ -507,7 +507,7 @@
         {
             "id": "right_up_path",
             "type": "simple_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 1,
             "baseWeight": 50
@@ -515,7 +515,7 @@
         {
             "id": "spiral_hallway",
             "type": "simple_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 100
@@ -523,7 +523,7 @@
         {
             "id": "u_turn_left",
             "type": "simple_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 50
@@ -531,7 +531,7 @@
         {
             "id": "u_turn_right",
             "type": "simple_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 50
@@ -539,7 +539,7 @@
         {
             "id": "watched_fork_left",
             "type": "simple_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": false,
             "size": 2,
             "baseWeight": 80
@@ -547,7 +547,7 @@
         {
             "id": "watched_fork_right",
             "type": "simple_hall",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": false,
             "size": 2,
             "baseWeight": 80
@@ -639,7 +639,7 @@
         {
             "id": "fake_tnt_trap_b",
             "type": "trap",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": false,
             "size": 2,
             "baseWeight": 50
@@ -647,7 +647,7 @@
         {
             "id": "nicoles_tower",
             "type": "trap",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 0,
             "baseWeight": 50
@@ -655,7 +655,7 @@
         {
             "id": "race_the_light",
             "type": "trap",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": false,
             "size": 1,
             "baseWeight": 50
@@ -663,7 +663,7 @@
         {
             "id": "restless_corridor",
             "type": "trap",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 4,
             "baseWeight": 40
@@ -671,7 +671,7 @@
         {
             "id": "simple_left_trap",
             "type": "trap",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": false,
             "size": 2,
             "baseWeight": 50
@@ -679,7 +679,7 @@
         {
             "id": "simple_right_trap",
             "type": "trap",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": false,
             "size": 2,
             "baseWeight": 50
@@ -687,7 +687,7 @@
         {
             "id": "trapped_stairs_down",
             "type": "trap",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": false,
             "size": 2,
             "baseWeight": 50
@@ -695,7 +695,7 @@
         {
             "id": "trapped_stairs_up",
             "type": "trap",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": false,
             "size": 2,
             "baseWeight": 50
@@ -703,7 +703,7 @@
         {
             "id": "u_trap_right",
             "type": "trap",
-            "author": "SK",
+            "author": "SenseiKiwi",
             "open": true,
             "size": 2,
             "baseWeight": 50

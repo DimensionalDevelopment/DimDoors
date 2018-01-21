@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.shared.tools;
 
 import java.util.*;
+import javax.annotation.Nonnull;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockEndPortalFrame;
@@ -136,6 +137,8 @@ public final class SchematicConverter {
                     int x = tileEntityNBT.getInteger("x");
                     int y = tileEntityNBT.getInteger("y");
                     int z = tileEntityNBT.getInteger("z");
+                    tileEntityPositions.add(new Vec3i(x, y, z));
+
                     switch (tileEntityNBT.getString("id")) {
                         case "TileEntityDimDoor":
                         case "TileEntityRift":
@@ -160,6 +163,13 @@ public final class SchematicConverter {
                                     item = Item.getItemById(oldID);
                                 } else {
                                     switch (oldID) {
+                                        case 220:
+                                            item = ModItems.ANCIENT_FABRIC;
+                                            newMeta = (oldMeta == 0) ? 15 : 0;
+                                            break;
+                                        case 1970:
+                                            item = ModItems.DIMENSIONAL_DOOR;
+                                            break;
                                         case 1973:
                                             item = ModItems.FABRIC;
                                             newMeta = (oldMeta == 0) ? 15 : 0;
@@ -167,14 +177,10 @@ public final class SchematicConverter {
                                         case 1975:
                                             item = ModItems.WARP_DIMENSIONAL_DOOR;
                                             break;
-                                        case 1970:
-                                            item = ModItems.DIMENSIONAL_DOOR;
-                                            break;
                                         case 1979: //Transient Portal
                                             break;
-                                        case 220:
-                                            item = ModItems.ANCIENT_FABRIC;
-                                            newMeta = (oldMeta == 0) ? 15 : 0;
+                                        case 5936:
+                                            item = ModItems.WORLD_THREAD;
                                             break;
                                         case WRITTEN_BOOK_ID:
                                             item = Item.getItemById(oldID);
@@ -223,19 +229,8 @@ public final class SchematicConverter {
                             break;
                     }
                     String oldID = tileEntityNBT.getString("id");
-                    ResourceLocation resLoc = translateId(oldID);
-                    if (resLoc == null) {
-                        DimDoors.log.error("Resourcelocation of TileEntity with old ID: " + oldID + " was null. If you want to complain about log spam; " + (oldID.equals("Hopper") ? "it is very likely that it's FoamFix causing this." : "we have no idea what causes this, so please report it."));
-                        if (oldID.equals("Hopper")) {
-                            resLoc = new ResourceLocation("minecraft:hopper");
-                        }
-                    }
-                    if (resLoc != null) {
-                        String newID = resLoc.toString();
-                        //DimDoors.log.info("Resourcelocation succesfully translated from old ID: " + oldID + " into: " + newID + ".");
-                        tileEntityNBT.setString("id", newID);
-                    }
-                    tileEntityPositions.add(new Vec3i(x, y, z));
+                    String newID = translateId(oldID);
+                    tileEntityNBT.setString("id", newID);
                     schematic.tileEntities.add(tileEntityNBT);
                 }
             }
@@ -391,24 +386,62 @@ public final class SchematicConverter {
         return schematic;
     }
 
-    private static ResourceLocation translateId(String id) { // TODO
+    @Nonnull
+    private static String translateId(String id) { // TODO
+        ResourceLocation location;
         switch (id) {
             case "Sign":
-                return TileEntity.getKey(TileEntitySign.class);
+                location = TileEntity.getKey(TileEntitySign.class);
+                break;
             case "Music":
-                return TileEntity.getKey(TileEntityNote.class);
+                location = TileEntity.getKey(TileEntityNote.class);
+                break;
             case "Trap":
-                return TileEntity.getKey(TileEntityDispenser.class);
+                location = TileEntity.getKey(TileEntityDispenser.class);
+                break;
             case "Comparator":
-                return TileEntity.getKey(TileEntityComparator.class);
+                location = TileEntity.getKey(TileEntityComparator.class);
+                break;
             case "Hopper":
-                return TileEntity.getKey(TileEntityHopper.class);
+                location = TileEntity.getKey(TileEntityHopper.class);
+                break;
             case "Furnace":
-                return TileEntity.getKey(TileEntityFurnace.class);
+                location = TileEntity.getKey(TileEntityFurnace.class);
+                break;
             case "Chest":
-                return TileEntity.getKey(TileEntityChest.class);
+                location = TileEntity.getKey(TileEntityChest.class);
+                break;
             default:
                 throw new RuntimeException("Tile entity ID " + id + " not supported by conversion code");
+        }
+        if (location == null) {
+            DimDoors.log.error("Resourcelocation of TileEntity with old ID: " + id + " was null. If you want to complain about log spam; " + (id.equals("Hopper") ? "it is very likely that it's FoamFix causing this." : "we have no idea what causes this, so please report it."));
+            location = translateIdCrude(id);
+        } else {
+            //DimDoors.log.info("Resourcelocation succesfully translated from old ID: " + oldID + " into: " + newID + ".");
+        }
+        return location.toString();
+    }
+
+    @Nonnull
+    private static ResourceLocation translateIdCrude(String id) { // TODO
+        ResourceLocation location;
+        switch (id) {
+            case "Sign":
+                return new ResourceLocation("minecraft:sign");
+            case "Music":
+                return new ResourceLocation("minecraft:noteblock");
+            case "Trap":
+                return new ResourceLocation("minecraft:dispenser");
+            case "Comparator":
+                return new ResourceLocation("minecraft:comparator");
+            case "Hopper":
+                return new ResourceLocation("minecraft:hopper");
+            case "Furnace":
+                return new ResourceLocation("minecraft:furnace");
+            case "Chest":
+            default:
+                return new ResourceLocation("minecraft:chest");
         }
     }
 
