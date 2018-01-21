@@ -5,8 +5,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.RotatedLocation;
-import org.dimdev.dimdoors.shared.VirtualLocation;
-import org.dimdev.dimdoors.shared.pockets.Pocket;
+import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
+import org.dimdev.pocketlib.VirtualLocation;
+import org.dimdev.pocketlib.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
@@ -24,10 +25,8 @@ public class PublicPocketDestination extends RestoringDestination {
             int depth = Math.max(riftVirtualLocation.getDepth(), 1);
             newVirtualLocation = riftVirtualLocation.toBuilder().depth(depth).build();
         }
-        Pocket pocket = PocketGenerator.generatePublicPocket(newVirtualLocation);
-        pocket.setup();
-        pocket.linkPocketTo(new GlobalDestination(loc.getLocation()), null);
+        Pocket pocket = PocketGenerator.generatePublicPocket(newVirtualLocation, new GlobalDestination(loc.getLocation()), null);
 
-        return pocket.getEntrance();
+        return RiftRegistry.instance().getPocketEntrance(pocket);
     }
 }

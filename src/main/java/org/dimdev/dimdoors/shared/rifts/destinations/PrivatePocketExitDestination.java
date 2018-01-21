@@ -8,12 +8,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import org.dimdev.ddutils.*;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.pockets.Pocket;
-import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
+import org.dimdev.pocketlib.PrivatePocketData;
+import org.dimdev.pocketlib.Pocket;
+import org.dimdev.pocketlib.PocketRegistry;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
-import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPersonalPocket;
 
@@ -39,9 +39,9 @@ public class PrivatePocketExitDestination extends RiftDestination {
         Location destLoc;
         UUID uuid = EntityUtils.getEntityOwnerUUID(entity);
         if (uuid != null) {
-            PocketRegistry privatePocketRegistry = PocketRegistry.instance(ModDimensions.getPrivateDim());
             destLoc = RiftRegistry.instance().getPrivatePocketExit(uuid);
-            if (loc.getLocation().getWorld().provider instanceof WorldProviderPersonalPocket && privatePocketRegistry.getPrivatePocketID(uuid) == privatePocketRegistry.posToID(loc.getLocation().getPos())) {
+            Pocket pocket = PrivatePocketData.instance().getPrivatePocket(uuid);
+            if (loc.getLocation().getWorld().provider instanceof WorldProviderPersonalPocket && pocket != null && PocketRegistry.instance(pocket.getDim()).getPocketAt(loc.getLocation().getPos()).equals(pocket)) {
                 RiftRegistry.instance().setLastPrivatePocketEntrance(uuid, loc.getLocation()); // Remember which exit was used for next time the pocket is entered
             }
             if (destLoc == null || !(destLoc.getTileEntity() instanceof TileEntityRift)) {

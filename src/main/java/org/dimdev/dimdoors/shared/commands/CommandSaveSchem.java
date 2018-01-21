@@ -10,8 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.pockets.Pocket;
-import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
+import org.dimdev.pocketlib.Pocket;
+import org.dimdev.pocketlib.PocketRegistry;
 import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPocket;
 

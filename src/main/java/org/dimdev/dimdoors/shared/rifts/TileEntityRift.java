@@ -18,7 +18,7 @@ import org.dimdev.annotatednbt.Saved;
 import org.dimdev.ddutils.*;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.VirtualLocation;
+import org.dimdev.pocketlib.VirtualLocation;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
 import org.dimdev.dimdoors.shared.blocks.BlockFloatingRift;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;

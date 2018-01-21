@@ -3,9 +3,7 @@ package org.dimdev.dimdoors.shared.rifts.registry;
 import lombok.ToString;
 import net.minecraft.nbt.NBTTagCompound;
 import org.dimdev.annotatednbt.NBTSerializable;
-import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
 @ToString
 @NBTSerializable public class RiftPlaceholder extends Rift { // TODO: don't extend rift

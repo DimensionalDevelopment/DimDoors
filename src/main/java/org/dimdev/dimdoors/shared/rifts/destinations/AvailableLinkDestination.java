@@ -16,9 +16,9 @@ import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.ddutils.math.MathUtils;
 import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.dimdoors.shared.VirtualLocation;
+import org.dimdev.pocketlib.VirtualLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import org.dimdev.dimdoors.shared.pockets.Pocket;
+import org.dimdev.pocketlib.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
 import org.dimdev.dimdoors.shared.rifts.*;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
@@ -146,18 +146,13 @@ import java.util.Set;
                 riftEntity.teleportTo(entity, thisRift.getYaw(), thisRift.getPitch());
             } else {
                 // Make a new dungeon pocket
-                Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation); // TODO make the generated dungeon of the same type, but in the overworld
-                pocket.setup();
-
-                // Link the pocket back
                 TileEntityRift thisRift = (TileEntityRift) location.getLocation().getTileEntity();
-                TileEntityRift riftEntity = (TileEntityRift) pocket.getEntrance().getTileEntity();
                 LinkProperties newLink = thisRift.getProperties() != null ? thisRift.getProperties().toBuilder().linksRemaining(0).build() : null;
-                pocket.linkPocketTo(new GlobalDestination(!noLinkBack && !riftEntity.getProperties().oneWay ? location.getLocation() : null), newLink); // TODO: linkId
+                Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation, new GlobalDestination(!noLinkBack ? location.getLocation() : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
 
                 // Link the rift if necessary and teleport the entity
-                if (!noLink) linkRifts(location.getLocation(), pocket.getEntrance());
-                ((TileEntityRift) pocket.getEntrance().getTileEntity()).teleportTo(entity, location.getYaw(), location.getPitch());
+                if (!noLink) linkRifts(location.getLocation(), RiftRegistry.instance().getPocketEntrance(pocket));
+                ((TileEntityRift) RiftRegistry.instance().getPocketEntrance(pocket).getTileEntity()).teleportTo(entity, location.getYaw(), location.getPitch());
             }
         } else {
             // An existing rift was selected

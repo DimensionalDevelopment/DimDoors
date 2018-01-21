@@ -9,7 +9,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import org.dimdev.dimdoors.shared.pockets.PocketRegistry;
+import org.dimdev.pocketlib.PocketRegistry;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 
@@ -35,7 +35,7 @@ public final class EventHandler {
             if (!world.isRemote
                 && !player.isDead
                 && ModDimensions.isDimDoorsPocketDimension(world)
-                && !PocketRegistry.instance(dim).isPlayerAllowedToBeHere(player, player.getPosition())) {
+                && !PocketRegistry.instance(dim).isPlayerAllowedToBeAt(player, player.getPosition())) {
                 // TODO: make the world circular
             }
         }
