@@ -67,7 +67,7 @@ public class PocketTemplate {
         int zBase = pocket.getZ() * gridSize * 16;
 
         // Place the schematic
-        DimDoors.log.info("Placing new pocket using schematic " + schematic.name + " at x = " + xBase + ", z = " + zBase);
+        DimDoors.log.info("Placing new pocket using schematic " + id + " at x = " + xBase + ", z = " + zBase);
         Schematic.place(schematic, world, xBase, yBase, zBase);
     }
 

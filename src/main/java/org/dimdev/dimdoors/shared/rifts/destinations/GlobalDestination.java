@@ -16,7 +16,7 @@ import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 @NBTSerializable public class GlobalDestination extends RiftDestination { // TODO: location directly in nbt like minecraft?
-    @Saved protected Location loc;
+    @Saved protected Location target;
 
     public GlobalDestination() {}
 
@@ -25,12 +25,12 @@ import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
     @Override
     public boolean teleport(RotatedLocation loc, Entity entity) {
-        ((TileEntityRift) this.loc.getTileEntity()).teleportTo(entity, loc.getYaw(), loc.getPitch());
+        ((TileEntityRift) target.getTileEntity()).teleportTo(entity, loc.getYaw(), loc.getPitch());
         return true;
     }
 
     @Override
     public Location getFixedTarget(Location location) {
-        return loc;
+        return target;
     }
 }

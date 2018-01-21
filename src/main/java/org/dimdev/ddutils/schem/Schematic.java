@@ -48,7 +48,7 @@ public class Schematic {
     public int[] offset = {0, 0, 0};
     public int paletteMax;
     public List<IBlockState> palette = new ArrayList<>();
-    public int[][][] blockData; //[x][y][z]
+    public short[][][] blockData; //[x][y][z]
     public List<NBTTagCompound> tileEntities = new ArrayList<>();
     public List<NBTTagCompound> entities = new ArrayList<>(); // Not in the specification, but we need this
 
@@ -61,7 +61,7 @@ public class Schematic {
         this.width = width;
         this.height = height;
         this.length = length;
-        blockData = new int[width][length][height];
+        blockData = new short[width][length][height];
         palette.add(Blocks.AIR.getDefaultState());
         paletteMax++;
         creationDate = System.currentTimeMillis();
@@ -141,7 +141,7 @@ public class Schematic {
         }
 
         byte[] blockDataIntArray = nbt.getByteArray("BlockData"); //BlockData is required
-        schematic.blockData = new int[schematic.width][schematic.height][schematic.length];
+        schematic.blockData = new short[schematic.width][schematic.height][schematic.length];
         for (int x = 0; x < schematic.width; x++) {
             for (int y = 0; y < schematic.height; y++) {
                 for (int z = 0; z < schematic.length; z++) {
@@ -289,7 +289,7 @@ public class Schematic {
         schematic.height = (short) dimensions.getY();
         schematic.length = (short) dimensions.getZ();
 
-        schematic.blockData = new int[schematic.width][schematic.height][schematic.length];
+        schematic.blockData = new short[schematic.width][schematic.height][schematic.length];
 
         ArrayListMultimap<IBlockState, BlockPos> states = ArrayListMultimap.create();
         Set<String> mods = new HashSet<>();
@@ -319,7 +319,7 @@ public class Schematic {
 
         IBlockState[] keys = states.keySet().toArray(new IBlockState[states.keySet().size()]);
 
-        for (int i = 0; i < keys.length; i++) {
+        for (short i = 0; i < keys.length; i++) {
             for (BlockPos pos : states.get(keys[i])) {
                 schematic.blockData[pos.getX()][pos.getY()][pos.getZ()] = i;
             }
@@ -373,10 +373,10 @@ public class Schematic {
                     tileEntity.setPos(pos);
                     tileEntity.markDirty();
                 } else {
-                    //throw new RuntimeException("Schematic contained TileEntity " + schematicTileEntityId + " at " + pos + " but the TileEntity of that block (" + world.getBlockState(pos) + ") must be " + blockTileEntityId);
+                    throw new RuntimeException("Schematic contained TileEntity " + schematicTileEntityId + " at " + pos + " but the TileEntity of that block (" + world.getBlockState(pos) + ") must be " + blockTileEntityId);
                 }
             } else {
-                //throw new RuntimeException("Schematic contained TileEntity info at " + pos + " but the block there (" + world.getBlockState(pos) + ") has no TileEntity.");
+                throw new RuntimeException("Schematic contained TileEntity info at " + pos + " but the block there (" + world.getBlockState(pos) + ") has no TileEntity.");
             }
         }
 
@@ -399,10 +399,10 @@ public class Schematic {
 
     public void setBlockState(int x, int y, int z, IBlockState state) {
         if (palette.contains(state)) {
-            blockData[x][y][z] = palette.indexOf(state); // TODO: optimize this (there must be some efficient list implementations)
+            blockData[x][y][z] = (short) palette.indexOf(state); // TODO: optimize this (there must be some efficient list implementations)
         } else {
             palette.add(state);
-            blockData[x][y][z] = ++paletteMax;
+            blockData[x][y][z] = (short) ++paletteMax;
         }
     }
 
@@ -410,7 +410,7 @@ public class Schematic {
         long setTime = 0;
         long relightTime = 0;
         // CubicChunks makes cubic worlds implement ICubicWorld
-        // Just "world instanceof ICubicWorld" would throw a class not found exception
+        // Just "world instanceof ICubicWorld" would throw a class not found error
         //noinspection InstanceofIncompatibleInterface
         if (cubicChunks && world instanceof ICubicWorld) {
             DimDoors.log.info("Setting cube blockstates");
@@ -465,7 +465,7 @@ public class Schematic {
                                         IBlockState state = schematic.palette.get(schematic.blockData[(chunkX << 4) + x][(storageY << 4) + y][(chunkZ << 4) + z]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
                                             if (storage == null) {
-                                                storageArray[storageY] = storage = new ExtendedBlockStorage(storageY >> 4, world.provider.hasSkyLight());
+                                                storageArray[storageY] = storage = new ExtendedBlockStorage(storageY << 4, world.provider.hasSkyLight());
                                             }
                                             storage.set(x, y, z, state);
                                         }
@@ -476,12 +476,12 @@ public class Schematic {
                     }
                     setTime += System.nanoTime() - setStart;
                     long relightStart = System.nanoTime();
-                    chunk.markDirty();
                     chunk.setLightPopulated(false);
                     chunk.setTerrainPopulated(true);
                     chunk.resetRelightChecks();
-                    relightTime += System.nanoTime() - relightStart;
                     chunk.checkLight();
+                    relightTime += System.nanoTime() - relightStart;
+                    chunk.markDirty();
                 }
             }
         }

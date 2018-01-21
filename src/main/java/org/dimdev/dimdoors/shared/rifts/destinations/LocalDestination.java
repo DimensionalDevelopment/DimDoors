@@ -17,7 +17,7 @@ import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 @NBTSerializable public class LocalDestination extends RiftDestination { // TODO: use BlockPos
-    @Saved protected BlockPos pos;
+    @Saved protected BlockPos target;
 
     public LocalDestination() {}
 
@@ -26,12 +26,12 @@ import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
     @Override
     public boolean teleport(RotatedLocation loc, Entity entity) {
-        ((TileEntityRift) loc.getLocation().getWorld().getTileEntity(pos)).teleportTo(entity, loc.getYaw(), loc.getPitch());
+        ((TileEntityRift) loc.getLocation().getWorld().getTileEntity(target)).teleportTo(entity, loc.getYaw(), loc.getPitch());
         return true;
     }
 
     @Override
     public Location getFixedTarget(Location location) {
-        return new Location(location.getDim(), pos);
+        return new Location(location.getDim(), target);
     }
 }

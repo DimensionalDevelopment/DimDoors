@@ -237,7 +237,7 @@ public final class SchematicConverter {
         }
 
         byte[] dataIntArray = nbt.getByteArray("Data");
-        schematic.blockData = new int[schematic.width][schematic.height][schematic.length];
+        schematic.blockData = new short[schematic.width][schematic.height][schematic.length];
         for (int x = 0; x < schematic.width; x++) {
             for (int y = 0; y < schematic.height; y++) {
                 for (int z = 0; z < schematic.length; z++) {
@@ -371,7 +371,7 @@ public final class SchematicConverter {
                         blockInt = schematic.palette.indexOf(baseState);
                     }
                     assert blockInt >= 0;
-                    schematic.blockData[x][y][z] = blockInt;
+                    schematic.blockData[x][y][z] = (short) blockInt;
                 }
             }
         }

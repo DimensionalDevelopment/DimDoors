@@ -76,7 +76,7 @@ public final class PocketSchematicGenerator {
         List<Schematic> schematics = generatePocketSchematics();
 
         // Save the schematics
-        String[] saveFolders = {"public/", "private/", "blank/", "blank/"};
+        String[] saveFolders = {"public/", "private/", "blank/", "blank/", "blank/"};
         int i = 0;
         for (Schematic schematic : schematics) {
             NBTTagCompound schematicNBT = Schematic.saveToNBT(schematic);
@@ -92,7 +92,7 @@ public final class PocketSchematicGenerator {
 
     public static List<Schematic> generatePocketSchematics() {
         List<Schematic> schematics = new ArrayList<>();
-        for (int pocketSize = 0; pocketSize < 8; pocketSize++) {
+        for (int pocketSize = 0; pocketSize < 8; pocketSize++) { // Changing to 8 to 16 would cause out of memory (256^3*4 bytes = 64MB/schematic)
             schematics.add(generateBlankWithDoor(
                     "public_pocket", // base name
                     pocketSize, // size
@@ -124,6 +124,10 @@ public final class PocketSchematicGenerator {
             schematics.add(generateFrame("void_pocket",
                     pocketSize,
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.COLOR, EnumDyeColor.LIGHT_BLUE)));
+
+            schematics.add(generateResizableFrame("resizable_pocket",
+                    pocketSize,
+                    ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.COLOR, EnumDyeColor.ORANGE)));
         }
         return schematics;
     }
@@ -197,6 +201,37 @@ public final class PocketSchematicGenerator {
                     if (z == 0 || z == size - 1) sides++;
 
                     if (sides >= 2) {
+                        schematic.setBlockState(x, y, z, frame);
+                    }
+                }
+            }
+        }
+
+        return schematic;
+    }
+
+    private static Schematic generateResizableFrame(String baseName, int chunkSize, IBlockState frame) {
+        short size = (short) ((chunkSize + 1) * 16);
+
+        // Set schematic info
+        Schematic schematic = new Schematic(baseName + "_" + chunkSize, "DimDoors", size, size, size);
+        schematic.requiredMods = new String[] { DimDoors.MODID };
+
+        // Set block data
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                for (int z = 0; z < size; z++) {
+                    int sides = 0;
+                    if (x % 16 == 0) sides++;
+                    if (y % 16 == 0) sides++;
+                    if (z % 16 == 0) sides++;
+                    int cubeSides = 3;
+                    int cubeSize = Math.max(x, Math.max(y, z));
+                    if (cubeSize - x != 0) cubeSides--;
+                    if (cubeSize - y != 0) cubeSides--;
+                    if (cubeSize - z != 0) cubeSides--;
+
+                    if (sides >= 2 && cubeSides >= 2) {
                         schematic.setBlockState(x, y, z, frame);
                     }
                 }
