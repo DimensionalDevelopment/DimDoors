@@ -28,7 +28,7 @@ public class DimDoors {
     public static final String MODNAME = "Dimensional Doors";
     public static final String VERSION = "${version}";
     // TODO: make the forge version here change depending on a field in build.gradle
-    public static final String DEPENDENCIES = "required-after:forge@[14.23.0.2517,);before:csb_ench_table"; // before:csb_ench_table as a workaround for https://github.com/crazysnailboy/EnchantingTable/issues/7
+    public static final String DEPENDENCIES = "required-after:forge@[14.23.0.2517,);after:csb_ench_table"; // after:csb_ench_table as a workaround for https://github.com/crazysnailboy/EnchantingTable/issues/7
 
     @Mod.Instance(DimDoors.MODID)
     public static DimDoors instance;
