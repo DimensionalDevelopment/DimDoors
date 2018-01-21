@@ -34,8 +34,8 @@ public final class Config {
     @Getter private static boolean dangerousLimboMonolithsEnabled = false;
     @Getter private static boolean monolithTeleportationEnabled = true;
 
-    @Getter private static int clusterGenerationChance = 2;
-    @Getter private static int gatewayGenerationChance = 15;
+    @Getter private static double clusterGenerationChance = 0.0002;
+    @Getter private static double gatewayGenerationChance = 0.0015;
 
     @Getter private static boolean limboEscapeEnabled = true;
     @Getter private static boolean universalLimboEnabled = false;
@@ -128,12 +128,12 @@ public final class Config {
                         "The default value is "+loadAllSchematics+".").getBoolean(loadAllSchematics);
 
         clusterGenerationChance = config.get(CATEGORY_WORLD_GENERATION, "clusterGenerationChance", clusterGenerationChance,
-                "Sets the chance (out of " + GatewayGenerator.MAX_CLUSTER_GENERATION_CHANCE + ") that a cluster of rifts will " +
-                        "generate in a given chunk. The default chance is "+clusterGenerationChance+".").getInt(clusterGenerationChance);
+                "Sets the chance (out of 1.0) that a cluster of rifts will " +
+                        "generate in a given chunk. The default chance is "+clusterGenerationChance+".").getDouble(clusterGenerationChance);
 
         gatewayGenerationChance = config.get(CATEGORY_WORLD_GENERATION, "gatewayGenerationChance", gatewayGenerationChance,
-                "Sets the chance (out of " + GatewayGenerator.MAX_GATEWAY_GENERATION_CHANCE + ") that a Rift Gateway will " +
-                        "generate in a given chunk. The default chance is "+gatewayGenerationChance+".").getInt(gatewayGenerationChance);
+                "Sets the chance (out of 1.0) that a Rift Gateway will " +
+                        "generate in a given chunk. The default chance is "+gatewayGenerationChance+".").getDouble(gatewayGenerationChance);
 
         //World Generation
         config.addCustomCategoryComment(CATEGORY_WORLD_GENERATION,

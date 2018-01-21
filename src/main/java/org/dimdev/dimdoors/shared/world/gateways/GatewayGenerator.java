@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GatewayGenerator implements IWorldGenerator {
-    public static final int MAX_GATEWAY_GENERATION_CHANCE = 10000;
-    public static final int MAX_CLUSTER_GENERATION_CHANCE = 10000;
+
     private static final int CLUSTER_GROWTH_CHANCE = 80;
     private static final int MAX_CLUSTER_GROWTH_CHANCE = 100;
     private static final int MIN_RIFT_Y = 4;
@@ -59,56 +58,70 @@ public class GatewayGenerator implements IWorldGenerator {
 
         // Check if we're allowed to generate rift clusters in this dimension.
         // If so, randomly decide whether to one.
-        if (Config.getRiftClusterDimensions().isAccepted(dimensionID) && random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < Config.getClusterGenerationChance()) {
-            do {
-                //Pick a random point on the surface of the chunk
-                x = chunkX * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
-                z = chunkZ * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
-                y = world.getHeight(x, z);
+        boolean clusterGenerated = false;
+        if (Config.getRiftClusterDimensions().isAccepted(dimensionID)) {
+            double clusterGenChance = Config.getClusterGenerationChance();
+            while (clusterGenChance > 0.0) {
+                if (random.nextDouble() < clusterGenChance) {
+                    do {
+                        //Pick a random point on the surface of the chunk
+                        x = chunkX * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
+                        z = chunkZ * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
+                        y = world.getHeight(x, z);
 
-                //If the point is within the acceptable altitude range, the block above is empty, and we're
-                //not building on bedrock, then generate a rift there
-                if (y >= MIN_RIFT_Y && y <= MAX_RIFT_Y && world.isAirBlock(new BlockPos(x, y + 1, z)) &&
-                        world.getBlockState(new BlockPos(x, y, z)).getBlock() != Blocks.BEDROCK &&	//<-- Stops Nether roof spawning. DO NOT REMOVE!
-                        world.getBlockState(new BlockPos(x, y - 1, z)).getBlock() != Blocks.BEDROCK &&
-                        world.getBlockState(new BlockPos(x, y - 2, z)).getBlock() != Blocks.BEDROCK) {
-                    //Create a link. If this is not the first time, create a child link and connect it to the first link.
-                    world.setBlockState(new BlockPos(x,y,z), ModBlocks.RIFT.getDefaultState());
+                        //If the point is within the acceptable altitude range, the block above is empty, and we're
+                        //not building on bedrock, then generate a rift there
+                        if (y >= MIN_RIFT_Y && y <= MAX_RIFT_Y && world.isAirBlock(new BlockPos(x, y + 1, z))
+                                && world.getBlockState(new BlockPos(x, y, z)).getBlock() != Blocks.BEDROCK
+                                && //<-- Stops Nether roof spawning. DO NOT REMOVE!
+                                world.getBlockState(new BlockPos(x, y - 1, z)).getBlock() != Blocks.BEDROCK
+                                && world.getBlockState(new BlockPos(x, y - 2, z)).getBlock() != Blocks.BEDROCK) {
+                            //Create a link. If this is not the first time, create a child link and connect it to the first link.
+                            world.setBlockState(new BlockPos(x, y, z), ModBlocks.RIFT.getDefaultState());
+                        }
+                    } //Randomly decide whether to repeat the process and add another rift to the cluster
+                    while (random.nextInt(MAX_CLUSTER_GROWTH_CHANCE) < CLUSTER_GROWTH_CHANCE);
+                    clusterGenerated = true;
                 }
+                clusterGenChance -= 1.0;
             }
-            //Randomly decide whether to repeat the process and add another rift to the cluster
-            while (random.nextInt(MAX_CLUSTER_GROWTH_CHANCE) < CLUSTER_GROWTH_CHANCE);
         }
 
         // Check if we can place a Rift Gateway in this dimension, then randomly decide whether to place one.
         // This only happens if a rift cluster was NOT generated.
-        else if (Config.getRiftGatewayDimensions().isAccepted(dimensionID) && random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < Config.getGatewayGenerationChance()) {
-            valid = false;
-            x = y = z = 0; //Stop the compiler from freaking out
+        else if (!clusterGenerated && Config.getRiftGatewayDimensions().isAccepted(dimensionID)) {
+            double gatewayGenChance = Config.getGatewayGenerationChance();
+            while (gatewayGenChance > 0.0) {
+                if (random.nextDouble() < gatewayGenChance) {
+                    valid = false;
+                    x = y = z = 0; //Stop the compiler from freaking out
 
-            //Check locations for the gateway until we are satisfied or run out of attempts.
-            for (attempts = 0; attempts < MAX_GATEWAY_GENERATION_ATTEMPTS && !valid; attempts++) {
-                //Pick a random point on the surface of the chunk and check its materials
-                x = chunkX * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
-                z = chunkZ * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
-                y = world.getHeight(x, z);
-                valid = checkGatewayLocation(world, new BlockPos(x, y, z));
-            }
+                    //Check locations for the gateway until we are satisfied or run out of attempts.
+                    for (attempts = 0; attempts < MAX_GATEWAY_GENERATION_ATTEMPTS && !valid; attempts++) {
+                        //Pick a random point on the surface of the chunk and check its materials
+                        x = chunkX * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
+                        z = chunkZ * CHUNK_LENGTH + random.nextInt(CHUNK_LENGTH);
+                        y = world.getHeight(x, z);
+                        valid = checkGatewayLocation(world, new BlockPos(x, y, z));
+                    }
 
-            // Build the gateway if we found a valid location
-            if (valid) {
-                ArrayList<BaseGateway> validGateways = new ArrayList<>();
-                for (BaseGateway gateway : gateways) {
-                    if (gateway.isLocationValid(world, x, y, z)) {
-                        validGateways.add(gateway);
+                    // Build the gateway if we found a valid location
+                    if (valid) {
+                        ArrayList<BaseGateway> validGateways = new ArrayList<>();
+                        for (BaseGateway gateway : gateways) {
+                            if (gateway.isLocationValid(world, x, y, z)) {
+                                validGateways.add(gateway);
+                            }
+                        }
+                        // Add the default gateway if the rest were rejected
+                        if (validGateways.isEmpty()) {
+                            validGateways.add(defaultGateway);
+                        }
+                        // Randomly select a gateway from the pool of viable gateways
+                        validGateways.get(random.nextInt(validGateways.size())).generate(world, x, y - 1, z);
                     }
                 }
-                // Add the default gateway if the rest were rejected
-                if (validGateways.isEmpty()) {
-                    validGateways.add(defaultGateway);
-                }
-                // Randomly select a gateway from the pool of viable gateways
-                validGateways.get(random.nextInt(validGateways.size())).generate(world, x, y - 1, z);
+                gatewayGenChance -= 1.0;
             }
         }
     }
@@ -117,11 +130,12 @@ public class GatewayGenerator implements IWorldGenerator {
         //Check if the point is within the acceptable altitude range, the block above that point is empty,
         //and the block two levels down is opaque and has a reasonable material. Plus that we're not building
         //on top of bedrock.
-        return pos.getY() >= MIN_RIFT_Y && pos.getY() <= MAX_RIFT_Y &&
-                world.isAirBlock(pos.up()) &&
-                world.getBlockState(pos).getBlock() != Blocks.BEDROCK &&	//<-- Stops Nether roof spawning. DO NOT REMOVE!
-                world.getBlockState(pos.down()) != Blocks.BEDROCK &&
-                checkFoundationMaterial(world, pos.down());
+        return pos.getY() >= MIN_RIFT_Y && pos.getY() <= MAX_RIFT_Y
+                && world.isAirBlock(pos.up())
+                && world.getBlockState(pos).getBlock() != Blocks.BEDROCK
+                && //<-- Stops Nether roof spawning. DO NOT REMOVE!
+                world.getBlockState(pos.down()) != Blocks.BEDROCK
+                && checkFoundationMaterial(world, pos.down());
     }
 
     private static boolean checkFoundationMaterial(World world, BlockPos pos) {
