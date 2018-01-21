@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import org.dimdev.dimdoors.shared.commands.CommandFabricConvert;
 import org.dimdev.dimdoors.shared.commands.CommandPocket;
 import org.dimdev.dimdoors.shared.commands.CommandDimTeleport;
 import org.dimdev.dimdoors.shared.Config;
@@ -74,6 +75,7 @@ public class DimDoors {
         event.registerServerCommand(new CommandDimTeleport());
         event.registerServerCommand(new CommandPocket());
         event.registerServerCommand(new CommandSaveSchem());
+        event.registerServerCommand(new CommandFabricConvert());
     }
 
     public static void sendMessage(Entity entity, String text) {
