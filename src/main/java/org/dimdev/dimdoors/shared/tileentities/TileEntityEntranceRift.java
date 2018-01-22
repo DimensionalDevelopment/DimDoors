@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.NBTSerializable;
@@ -79,6 +82,14 @@ import java.util.Random;
         TeleportUtils.teleport(entity, new Location(world, pos.offset(orientation, tpOffset)), orientation.getHorizontalAngle(), 0);
     }
 
+    // Use vanilla behavior of refreshing only when block changes, not state (otherwise, opening the door would destroy the tile entity)
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+        // newState is not accurate if we change the state during onBlockBreak
+        newSate = world.getBlockState(pos);
+        return oldState.getBlock() != newSate.getBlock();
+    }
+
     public RGBA getEntranceRenderColor(Random rand) { // TODO: custom color
         float red, green, blue;
         switch(world.provider.getDimension()) {
@@ -100,4 +111,6 @@ import java.util.Random;
     public boolean isFloating() {
         return false;
     }
+
+
 }

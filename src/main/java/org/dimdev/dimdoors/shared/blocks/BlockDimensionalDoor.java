@@ -6,8 +6,10 @@ import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,6 +17,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.Chunk;
 import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
@@ -135,10 +139,8 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
             DimDoors.log.error("Rift tile entity was null when breaking block at " + new Location(world, pos) + ", please report this error.");
         }
         if (rift.isPlaceRiftOnBreak() || rift.isRegistered() && RiftRegistry.instance().getSources(new Location(rift.getWorld(), rift.getPos())).size() > 0 && !rift.isAlwaysDelete()) {
-            IBlockState oldState = world.getBlockState(rift.getPos());
-            world.setBlockState(rift.getPos(), ModBlocks.RIFT.getDefaultState(), 2);
-            //world.notifyBlockUpdate(rift.getPos(), oldState, ModBlocks.RIFT.getDefaultState(), 3);
-            world.markBlockRangeForRenderUpdate(rift.getPos(), rift.getPos());
+            world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
+            // This isn't run when we change the block from within block break
             TileEntityFloatingRift newRift = (TileEntityFloatingRift) world.getTileEntity(pos);
             newRift.copyFrom(rift);
             newRift.updateType();

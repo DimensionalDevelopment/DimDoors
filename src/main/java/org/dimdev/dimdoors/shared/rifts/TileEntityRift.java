@@ -1,15 +1,12 @@
 package org.dimdev.dimdoors.shared.rifts;
 
 import lombok.Getter;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -19,8 +16,6 @@ import org.dimdev.ddutils.*;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.pocketlib.VirtualLocation;
-import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
-import org.dimdev.dimdoors.shared.blocks.BlockFloatingRift;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.rifts.registry.Rift;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
@@ -89,18 +84,6 @@ import javax.annotation.Nonnull;
     @SideOnly(Side.CLIENT)
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         deserializeNBT(pkt.getNbtCompound());
-    }
-
-    // Tile entity properties
-
-    // Use vanilla behavior of refreshing only when block changes, not state (otherwise, opening the door would destroy the tile entity)
-    @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-        // newState is not accurate if we change the state during onBlockBreak
-        newSate = world.getBlockState(pos);
-        return oldState.getBlock() != newSate.getBlock() &&
-               !(oldState.getBlock() instanceof BlockDimensionalDoor
-                 && newSate.getBlock() instanceof BlockFloatingRift);
     }
 
     // Modification functions
@@ -241,6 +224,7 @@ import javax.annotation.Nonnull;
             if (color == null && newColor != null || !color.equals(newColor)) {
                 color = newColor;
                 markDirty();
+                world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
             }
         }
     }
