@@ -40,7 +40,7 @@ public abstract class WorldProviderPocket extends WorldProvider {
 
     @Override public boolean canCoordinateBeSpawn(int x, int z) { return true; } // Spawn is set even if it canCoordinateBeSpawn is false after 1000 tries anyway
 
-    @Override public int getAverageGroundLevel() { return 15; } // TODO: set this to 10 + yBase in the config
+    @Override public int getAverageGroundLevel() { return 0; } // Pocket worlds are mostly void-filled
 
     @Override public boolean shouldMapSpin(String entity, double x, double z, double rotation) { return true; }
 

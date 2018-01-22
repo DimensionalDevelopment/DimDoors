@@ -19,7 +19,7 @@ public final class DimensionalWallRenderer {
     private static final FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
     private static final ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/warp.png");
 
-    // TODO: any angle
+    // TODO: any renderAngle
     /**
      * @param x           The x coordinate of the wall's center.
      * @param y           The y coordinate of the wall's center.
@@ -33,6 +33,7 @@ public final class DimensionalWallRenderer {
      */
     public static void renderDimensionalWall(double x, double y, double z, EnumFacing orientation, double width, double height, RGBA[] colors) {
         GlStateManager.disableLighting();
+        GlStateManager.disableCull();
 
         for (int pass = 0; pass < 16; pass++) {
             GlStateManager.pushMatrix();
@@ -175,6 +176,7 @@ public final class DimensionalWallRenderer {
         GlStateManager.disableTexGenCoord(GlStateManager.TexGen.T);
         GlStateManager.disableTexGenCoord(GlStateManager.TexGen.R);
         GlStateManager.disableTexGenCoord(GlStateManager.TexGen.Q);
+        GlStateManager.enableCull();
         GlStateManager.enableLighting();
     }
 

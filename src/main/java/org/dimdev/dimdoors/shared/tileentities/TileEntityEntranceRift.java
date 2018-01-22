@@ -111,6 +111,4 @@ import java.util.Random;
     public boolean isFloating() {
         return false;
     }
-
-
 }

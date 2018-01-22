@@ -142,14 +142,12 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
             new Vector4f(0.5f,0.5f,-0.5f,0.5f)
     };
 
-    private double angle = 0;
-
     /**
      * Renders the rift.
      */
     @Override
     public void render(TileEntityFloatingRift te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        double radian = update(partialTicks) * TrigMath.DEG_TO_RAD;
+        double radian = update(te, partialTicks) * TrigMath.DEG_TO_RAD;
         RGBA color = te.getColor();
         if (color == null) color = new RGBA(1, 0.5f, 1, 1);
 
@@ -182,9 +180,9 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
         GlStateManager.enableLighting();
     }
 
-    private double update(float partialTicks) {
-        angle = (angle + 1 * partialTicks) % 360;
-        return angle;
+    private double update(TileEntityFloatingRift te, float partialTicks) {
+        te.renderAngle = (te.renderAngle + 1 * partialTicks) % 360;
+        return te.renderAngle;
     }
 
     private Vector4f rotation(Vector4f v, double angle) {

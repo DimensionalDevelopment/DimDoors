@@ -4,6 +4,8 @@ import lombok.Setter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.NBTSerializable;
@@ -37,6 +39,9 @@ import net.minecraft.util.math.AxisAlignedBB;
     @Saved public float growth = 0;
 
     @Setter private boolean unregisterDisabled = false;
+
+    @SideOnly(Side.CLIENT)
+    public double renderAngle = 0;
 
     public TileEntityFloatingRift() {
         updateTimer = random.nextInt(UPDATE_PERIOD);
