@@ -426,9 +426,9 @@ public class Schematic {
                         for (int x = 0; x < 16; x++) {
                             for (int y = 0; y < 16; y++) {
                                 for (int z = 0; z < 16; z++) {
-                                    int sx = (cubeX << 4) + x - (xBase & 0xFF);
-                                    int sy = (cubeY << 4) + y - (yBase & 0xFF);
-                                    int sz = (cubeZ << 4) + z - (zBase & 0xFF);
+                                    int sx = (cubeX << 4) + x - (xBase & 0x0F);
+                                    int sy = (cubeY << 4) + y - (yBase & 0x0F);
+                                    int sz = (cubeZ << 4) + z - (zBase & 0x0F);
                                     if (sx >= 0 && sy >= 0 && sz >= 0 && sx < schematic.width && sy < schematic.height && sz < schematic.length) {
                                         IBlockState state = schematic.palette.get(schematic.blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
@@ -468,9 +468,9 @@ public class Schematic {
                         for (int x = 0; x < 16; x++) {
                             for (int y = 0; y < 16; y++) {
                                 for (int z = 0; z < 16; z++) {
-                                    int sx = (chunkX << 4) + x - (xBase & 0xFF);
-                                    int sy = (storageY << 4) + y - (yBase & 0xFF);
-                                    int sz = (chunkZ << 4) + z - (zBase & 0xFF);
+                                    int sx = (chunkX << 4) + x - (xBase & 0x0F);
+                                    int sy = (storageY << 4) + y - (yBase & 0x0F);
+                                    int sz = (chunkZ << 4) + z - (zBase & 0x0F);
                                     if (sx >= 0 && sy >= 0 && sz >= 0 && sx < schematic.width && sy < schematic.height && sz < schematic.length) {
                                         IBlockState state = schematic.palette.get(schematic.blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
