@@ -89,7 +89,7 @@ public class GatewayGenerator implements IWorldGenerator {
 
         // Check if we can place a Rift Gateway in this dimension, then randomly decide whether to place one.
         // This only happens if a rift cluster was NOT generated.
-        else if (!clusterGenerated && Config.getRiftGatewayDimensions().isAccepted(dimensionID)) {
+        if (!clusterGenerated && Config.getRiftGatewayDimensions().isAccepted(dimensionID)) {
             double gatewayGenChance = Config.getGatewayGenerationChance();
             while (gatewayGenChance > 0.0) {
                 if (random.nextDouble() < gatewayGenChance) {
