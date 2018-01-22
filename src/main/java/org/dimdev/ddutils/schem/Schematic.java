@@ -415,22 +415,28 @@ public class Schematic {
         if (cubicChunks && world instanceof ICubicWorld) {
             DimDoors.log.info("Setting cube blockstates");
             ICubicWorld cubicWorld = (ICubicWorld) world;
-            for (int cubeX = 0; cubeX < (schematic.width - 1 >> 4) + 1; cubeX++) {
-                for (int cubeY = 0; cubeY < (schematic.length - 1 >> 4) + 1; cubeY++) {
-                    for (int cubeZ = 0; cubeZ < (schematic.height - 1 >> 4) + 1; cubeZ++) {
+            for (int cubeX = 0; cubeX <= (schematic.width >> 4) + 1; cubeX++) {
+                for (int cubeY = 0; cubeY <= (schematic.length >> 4) + 1; cubeY++) {
+                    for (int cubeZ = 0; cubeZ <= (schematic.height >> 4) + 1; cubeZ++) {
                         long setStart = System.nanoTime();
                         // Get the cube only once for efficiency
                         Cube cube = cubicWorld.getCubeFromCubeCoords((xBase << 4) + cubeX, (yBase << 4) + cubeY, (zBase << 4) + cubeZ);
                         ExtendedBlockStorage storage = cube.getStorage();
+                        boolean setAir = storage != null;
                         for (int x = 0; x < 16; x++) {
                             for (int y = 0; y < 16; y++) {
                                 for (int z = 0; z < 16; z++) {
-                                    if ((cubeX << 4) + x < schematic.width && (cubeY << 4) + y < schematic.height && (cubeZ << 4) + z < schematic.length) {
-                                        IBlockState state = schematic.palette.get(schematic.blockData[(cubeX << 4) + x][(cubeY << 4) + y][(cubeZ << 4) + z]);
+                                    int sx = (cubeX << 4) + x - (xBase & 0xFF);
+                                    int sy = (cubeY << 4) + y - (yBase & 0xFF);
+                                    int sz = (cubeZ << 4) + z - (zBase & 0xFF);
+                                    if (sx >= 0 && sy >= 0 && sz >= 0 && sx < schematic.width && sy < schematic.height && sz < schematic.length) {
+                                        IBlockState state = schematic.palette.get(schematic.blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
                                             if (storage == null) {
                                                 cube.setStorage(storage = new ExtendedBlockStorage(cube.getY() << 4, world.provider.hasSkyLight()));
                                             }
+                                            storage.set(x, y, z, state);
+                                        } else if (setAir) {
                                             storage.set(x, y, z, state);
                                         }
                                     }
@@ -439,8 +445,8 @@ public class Schematic {
                         }
                         setTime += System.nanoTime() - setStart;
                         long relightStart = System.nanoTime();
-                        // TODO: It's possible to relight a whole region at once, and immediately (this might not even work
-                        // TODO: if the cube is already loaded) using this, according to Foghrye4: https://hastebin.com/hociqufabe.java
+                        // TODO: It's possible to relight a whole region at once, and immediately using this, according
+                        // TODO: to Foghrye4: https://hastebin.com/hociqufabe.java
                         cube.setInitialLightingDone(false);
                         relightTime += System.nanoTime() - relightStart;
                         cube.markDirty();
@@ -449,24 +455,30 @@ public class Schematic {
             }
         } else {
             DimDoors.log.info("Setting chunk blockstates");
-            for (int chunkX = 0; chunkX < (schematic.width - 1 >> 4) + 1; chunkX++) {
-                for (int chunkZ = 0; chunkZ < (schematic.length - 1 >> 4) + 1; chunkZ++) {
+            for (int chunkX = 0; chunkX <= (schematic.width >> 4) + 1; chunkX++) {
+                for (int chunkZ = 0; chunkZ <= (schematic.length >> 4) + 1; chunkZ++) {
                     long setStart = System.nanoTime();
                     // Get the chunk only once for efficiency
                     Chunk chunk = world.getChunkFromChunkCoords((xBase >> 4) + chunkX, (zBase >> 4) + chunkZ);
                     ExtendedBlockStorage[] storageArray = chunk.getBlockStorageArray();
-                    for (int storageY = 0; storageY < (schematic.height - 1 >> 4) + 1; storageY++) {
+                    for (int storageY = 0; storageY <= (schematic.height >> 4) + 1; storageY++) {
                         // Get the storage only once for eficiency
                         ExtendedBlockStorage storage = storageArray[(yBase >> 4) + storageY];
+                        boolean setAir = storage != null;
                         for (int x = 0; x < 16; x++) {
                             for (int y = 0; y < 16; y++) {
                                 for (int z = 0; z < 16; z++) {
-                                    if ((chunkX << 4) + x < schematic.width && (storageY << 4) + y < schematic.height && (chunkZ << 4) + z < schematic.length) {
-                                        IBlockState state = schematic.palette.get(schematic.blockData[(chunkX << 4) + x][(storageY << 4) + y][(chunkZ << 4) + z]);
+                                    int sx = (chunkX << 4) + x - (xBase & 0xFF);
+                                    int sy = (storageY << 4) + y - (yBase & 0xFF);
+                                    int sz = (chunkZ << 4) + z - (zBase & 0xFF);
+                                    if (sx >= 0 && sy >= 0 && sz >= 0 && sx < schematic.width && sy < schematic.height && sz < schematic.length) {
+                                        IBlockState state = schematic.palette.get(schematic.blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
                                             if (storage == null) {
                                                 storageArray[storageY] = storage = new ExtendedBlockStorage(storageY << 4, world.provider.hasSkyLight());
                                             }
+                                            storage.set(x, y, z, state);
+                                        } else if (setAir) {
                                             storage.set(x, y, z, state);
                                         }
                                     }

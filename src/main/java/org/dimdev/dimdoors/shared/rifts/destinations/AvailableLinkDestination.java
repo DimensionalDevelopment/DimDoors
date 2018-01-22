@@ -170,10 +170,12 @@ import java.util.Set;
         TileEntityRift tileEntityFrom = (TileEntityRift) from.getTileEntity();
         TileEntityRift tileEntityTo = (TileEntityRift) to.getTileEntity();
         tileEntityFrom.setDestination(new GlobalDestination(to)); // TODO: local if possible
-        tileEntityTo.getProperties().linksRemaining--;
-        tileEntityTo.updateProperties();
         tileEntityFrom.markDirty();
-        tileEntityTo.markDirty();
+        if (tileEntityTo.getProperties() != null) {
+            tileEntityTo.getProperties().linksRemaining--;
+            tileEntityTo.updateProperties();
+            tileEntityTo.markDirty();
+        }
     }
 
     private double sq(double a) { return a * a; }

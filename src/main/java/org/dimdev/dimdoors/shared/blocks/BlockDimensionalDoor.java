@@ -135,7 +135,10 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
             DimDoors.log.error("Rift tile entity was null when breaking block at " + new Location(world, pos) + ", please report this error.");
         }
         if (rift.isPlaceRiftOnBreak() || rift.isRegistered() && RiftRegistry.instance().getSources(new Location(rift.getWorld(), rift.getPos())).size() > 0 && !rift.isAlwaysDelete()) {
-            world.setBlockState(rift.getPos(), ModBlocks.RIFT.getDefaultState());
+            IBlockState oldState = world.getBlockState(rift.getPos());
+            world.setBlockState(rift.getPos(), ModBlocks.RIFT.getDefaultState(), 2);
+            //world.notifyBlockUpdate(rift.getPos(), oldState, ModBlocks.RIFT.getDefaultState(), 3);
+            world.markBlockRangeForRenderUpdate(rift.getPos(), rift.getPos());
             TileEntityFloatingRift newRift = (TileEntityFloatingRift) world.getTileEntity(pos);
             newRift.copyFrom(rift);
             newRift.updateType();
