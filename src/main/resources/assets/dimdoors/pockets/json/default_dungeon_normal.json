@@ -714,6 +714,42 @@
             "open": false,
             "size": 2,
             "baseWeight": 200
+        },
+        {
+            "id": "abc",
+            "type": "simple_hall",
+            "author": "SenseiKiwi",
+            "comment": "https://github.com/cwbit/DimDoorsDungeons/commit/0ed3a736e3992df9b2fe8b897d3bca2c5a45e707",
+            "open": true,
+            "size": 2,
+            "baseWeight": 100
+        },
+        {
+            "id": "xyz",
+            "type": "simple_hall",
+            "author": "SenseiKiwi",
+            "comment": "https://github.com/cwbit/DimDoorsDungeons/commit/0ed3a736e3992df9b2fe8b897d3bca2c5a45e707",
+            "open": true,
+            "size": 2,
+            "baseWeight": 100
+        },
+        {
+            "id": "piston_hall",
+            "type": "trap",
+            "author": "SenseiKiwi",
+            "comment": "https://github.com/cwbit/DimDoorsDungeons/commit/0ed3a736e3992df9b2fe8b897d3bca2c5a45e707",
+            "open": true,
+            "size": 2,
+            "baseWeight": 100
+        },
+        {
+            "id": "water_slide",
+            "type": "trap",
+            "author": "SenseiKiwi",
+            "comment": "https://github.com/cwbit/DimDoorsDungeons/commit/0ed3a736e3992df9b2fe8b897d3bca2c5a45e707",
+            "open": true,
+            "size": 2,
+            "baseWeight": 100
         }
     ]
 }
