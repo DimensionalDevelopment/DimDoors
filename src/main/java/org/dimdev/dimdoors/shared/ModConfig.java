@@ -25,9 +25,9 @@ public final class ModConfig {
     public static Dungeons dungeon = new Dungeons();
     @Comment({"Monolith Config Options",
                      "How dangerous are Monoliths"})
-
     public static Monoliths monolith = new Monoliths();
-
+    @Comment({"Limbo Config Options",
+                     "This controls various limbo aspects"})
     public static Limbo limbo = new Limbo();
 
     public static class General {
@@ -53,7 +53,7 @@ public final class ModConfig {
     public static class Pocket {
         @Name("Pocket Grid Size")
         @Comment({"Sets how many chunks apart all pockets in pocket dimensions should be placed.",
-                         "Default: 32 [Minimum = 4] [Maximum = 32]"})
+                         "Default: 32"})
         @RangeInt(min=4, max=32)
         public int pocketGridSize = 32;
 
@@ -64,14 +64,14 @@ public final class ModConfig {
 
         @Name("Private Pocket Size")
         @Comment({"Sets how large a personal pocket is when initially created.",
-                         "Default: 2 [Minimum = 0] [Maximum = 7]"})
+                         "Default: 2"})
         @RangeInt(min = 0, max = 7)
         public int initialPrivatePocketSize = 2;
 
         @Name("Public Pocket Size")
         @Comment({"Sets how deep a public pocket created in the overworld will be on average.",
                          "Pockets created at a deeper depth will have larger sizes.",
-                         "Default: 1 [Minimum = 0] [Maximum = Max Pocket Size]"})
+                         "Default: 1"})
         public int basePublicPocketSize = 1;
 
         @Name("Load All Schematics")
@@ -85,7 +85,7 @@ public final class ModConfig {
     public static class WorldGen {
         @Name("Rift Cluster Generation Chance")
         @Comment({"Sets the chance (out of 1.0) that a cluster of rifts will generate in a given chunk.",
-                         "Default: 0.0002 [Minimum = 0] [Maximum = 1]"})
+                         "Default: 0.0002"})
         @RangeDouble(min=0, max=1)
         public double clusterGenerationChance = 0.0002;
 
@@ -96,7 +96,7 @@ public final class ModConfig {
 
         @Name("Gateway Generation Chance")
         @Comment({"Sets the chance (out of 1.0) that a Rift Gateway will generate in a given chunk.",
-                         "Default: 0.0015 [Minimum = 0] [Maximum = 1]"})
+                         "Default: 0.0015"})
         @RangeDouble(min=0, max=1)
         public double gatewayGenerationChance = 0.0015;
 
