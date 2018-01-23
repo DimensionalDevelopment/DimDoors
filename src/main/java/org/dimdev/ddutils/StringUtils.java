@@ -7,7 +7,6 @@ package org.dimdev.ddutils;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.dimdev.dimdoors.DimDoors;
 
 /**
  *

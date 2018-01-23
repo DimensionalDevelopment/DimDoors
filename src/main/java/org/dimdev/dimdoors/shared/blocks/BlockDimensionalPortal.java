@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.blocks;
 
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -64,4 +65,14 @@ public class BlockDimensionalPortal extends BlockDimensionalDoor { // TODO: conv
             }
         }
     }
+
+    @Override
+    public TileEntityEntranceRift createNewTileEntity(World world, int meta) {
+        TileEntityEntranceRift rift = new TileEntityEntranceRift();
+        rift.orientation = getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite();
+        rift.extendUp += 1;
+        rift.pushIn = 0.5;
+        return rift;
+    }
+
 }

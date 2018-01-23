@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.shared;
 import java.io.File;
 
 import org.dimdev.dimdoors.shared.world.gateways.DimensionFilter;
-import org.dimdev.dimdoors.shared.world.gateways.GatewayGenerator;
 import lombok.Getter;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;

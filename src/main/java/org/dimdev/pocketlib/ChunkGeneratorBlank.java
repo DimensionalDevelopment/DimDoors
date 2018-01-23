@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.shared.world.pocketdimension;
+package org.dimdev.pocketlib;
 
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.math.BlockPos;
@@ -38,7 +38,7 @@ public class ChunkGeneratorBlank implements IChunkGenerator {
 
     @Override public void recreateStructures(Chunk chunk, int x, int z) {}
 
-    @Override public boolean isInsideStructure(World world, String structureName, BlockPos pos) { return false; }
+    @Override public boolean isInsideStructure(World world, String structureName, BlockPos pos) { return false; } // TODO: make this return true for pockets?
 
     @Override
     public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {

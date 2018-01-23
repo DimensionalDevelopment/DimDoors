@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.shared.commands;
 
-import com.flowpowered.math.vector.Vector3i;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -9,12 +8,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
-import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockFabric;
-import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
-import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPocket;
+import org.dimdev.pocketlib.WorldProviderPocket;
 import org.dimdev.pocketlib.Pocket;
 import org.dimdev.pocketlib.PocketRegistry;
 

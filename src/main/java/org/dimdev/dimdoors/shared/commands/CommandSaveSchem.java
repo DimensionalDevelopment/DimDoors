@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.pocketlib.Pocket;
 import org.dimdev.pocketlib.PocketRegistry;
 import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
-import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPocket;
+import org.dimdev.pocketlib.WorldProviderPocket;
 
 import java.util.ArrayList;
 import java.util.List;

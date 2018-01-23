@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.shared.world.gateways;
 
 import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPocket;
+import org.dimdev.pocketlib.WorldProviderPocket;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;

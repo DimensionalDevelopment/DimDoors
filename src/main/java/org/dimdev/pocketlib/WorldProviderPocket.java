@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.shared.world.pocketdimension;
+package org.dimdev.pocketlib;
 
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.render.CloudRenderBlank;
@@ -24,13 +24,6 @@ public abstract class WorldProviderPocket extends WorldProvider {
     public IChunkGenerator createChunkGenerator() {
         return new ChunkGeneratorBlank(world, world.getSeed());
     }
-
-    /*
-    @Override
-    public DimensionType getDimensionType() {
-        return ModDimensions.getPocketDimensionType(getPocketType());
-    }
-    */
 
     @Override public float calculateCelestialAngle(long worldTime, float partialTicks) { return 0.0F; }
 

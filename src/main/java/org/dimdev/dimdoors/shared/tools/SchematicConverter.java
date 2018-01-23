@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.shared.tools;
 
-import java.util.*;
-import javax.annotation.Nonnull;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockEndPortalFrame;
@@ -30,6 +28,9 @@ import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
 import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
+
+import javax.annotation.Nonnull;
+import java.util.*;
 
 /**
  * @author Robijnvogel
@@ -165,14 +166,14 @@ public final class SchematicConverter {
                                     switch (oldID) {
                                         case 220:
                                             item = ModItems.ANCIENT_FABRIC;
-                                            newMeta = (oldMeta == 0) ? 15 : 0;
+                                            newMeta = oldMeta == 0 ? 15 : 0;
                                             break;
                                         case 1970:
                                             item = ModItems.DIMENSIONAL_DOOR;
                                             break;
                                         case 1973:
                                             item = ModItems.FABRIC;
-                                            newMeta = (oldMeta == 0) ? 15 : 0;
+                                            newMeta = oldMeta == 0 ? 15 : 0;
                                             break;
                                         case 1975:
                                             item = ModItems.WARP_DIMENSIONAL_DOOR;
@@ -381,7 +382,7 @@ public final class SchematicConverter {
         schematic.paletteMax = schematic.palette.size() - 1;
 
         DimDoors.log.info(schematicId + "," + ironDimDoors + "," + warpDoors + "," + monoliths + "," + chests + ","
-                + dispensers + "," + allPistonBases + "," + tnt + "," + diamondBlocks + "," + goldBlocks + "," + ironBlocks);
+                          + dispensers + "," + allPistonBases + "," + tnt + "," + diamondBlocks + "," + goldBlocks + "," + ironBlocks);
 
         return schematic;
     }
@@ -424,8 +425,7 @@ public final class SchematicConverter {
     }
 
     @Nonnull
-    private static ResourceLocation translateIdCrude(String id) { // TODO
-        ResourceLocation location;
+    private static ResourceLocation translateIdCrude(String id) {
         switch (id) {
             case "Sign":
                 return new ResourceLocation("minecraft:sign");
@@ -446,21 +446,9 @@ public final class SchematicConverter {
     }
 
     private static boolean isValidItemIDForSimpleConversion(int id) {
-        if (0 <= id) {
-            if (id == LOCKED_CHEST_ID || id == POTION_ID || id == WRITTEN_BOOK_ID) {
-                return false;
-            }
-            if (id <= 159) { //0-159 Block ids
-                return true;
-            }
-            if (256 <= id && id <= 422) { //256-422 Item ids
-                return true;
-            }
-            if (2256 <= id && id <= 2267) { //2256-2267 Music Disk ids
-                return true;
-            }
-        }
-        return false;
+        return id > 0 && id != LOCKED_CHEST_ID && id != POTION_ID && id != WRITTEN_BOOK_ID &&
+               (id <= 159 // 1.6.4 blocks
+                || 256 <= id && id <= 422 // 1.6.4 items
+                || 2256 <= id && id <= 2267); // 1.6.4 music discs
     }
-
 }

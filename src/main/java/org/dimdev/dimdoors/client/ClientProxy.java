@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.client;
 
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import org.dimdev.dimdoors.shared.CommonProxy;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;

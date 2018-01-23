@@ -9,7 +9,6 @@ import org.dimdev.ddutils.nbt.INBTStorable;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
-import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPocket;
 
 /*@Value*/ @ToString @AllArgsConstructor @NoArgsConstructor @Builder(toBuilder = true)
 @NBTSerializable public class VirtualLocation implements INBTStorable {

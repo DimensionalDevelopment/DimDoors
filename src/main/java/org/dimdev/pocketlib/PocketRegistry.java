@@ -17,7 +17,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
-import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderPocket;
 
 @NBTSerializable public class PocketRegistry extends WorldSavedData {
 

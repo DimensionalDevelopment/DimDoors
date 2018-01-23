@@ -19,7 +19,7 @@ public final class DimensionalWallRenderer {
     private static final FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
     private static final ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/warp.png");
 
-    // TODO: any renderAngle
+    // TODO: any render angle
     /**
      * @param x           The x coordinate of the wall's center.
      * @param y           The y coordinate of the wall's center.
