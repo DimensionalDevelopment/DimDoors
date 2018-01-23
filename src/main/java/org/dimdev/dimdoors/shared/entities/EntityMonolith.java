@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.shared.entities;
 
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
-import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
@@ -54,7 +54,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
     }
 
     public boolean isDangerous() {
-        return Config.isMonolithTeleportationEnabled() && (world.provider instanceof WorldProviderLimbo || Config.isDangerousLimboMonolithsEnabled());
+        return ModConfig.monolith.isMonolithTeleportationEnabled() && (world.provider instanceof WorldProviderLimbo || ModConfig.monolith.isDangerousLimboMonolithsEnabled());
     }
 
     @Override
@@ -148,7 +148,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
                 }
 
                 // Teleport the target player if various conditions are met
-                if (aggro >= MAX_AGGRO && !world.isRemote && Config.isMonolithTeleportationEnabled() && !player.isCreative() && isDangerous()) {
+                if (aggro >= MAX_AGGRO && !world.isRemote && ModConfig.monolith.isMonolithTeleportationEnabled() && !player.isCreative() && isDangerous()) {
                     aggro = 0;
                     Location destination = WorldProviderLimbo.getLimboSkySpawn(player);
                     TeleportUtils.teleport(player, destination, 0, 0);

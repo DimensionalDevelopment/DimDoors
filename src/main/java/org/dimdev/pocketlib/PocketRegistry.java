@@ -3,7 +3,6 @@ package org.dimdev.pocketlib;
 import net.minecraft.world.World;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.NBTSerializable;
-import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.ddutils.math.GridUtils;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.ddutils.WorldUtils;
@@ -17,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldSavedData;
+import org.dimdev.dimdoors.shared.ModConfig;
 
 @NBTSerializable public class PocketRegistry extends WorldSavedData {
 
@@ -63,9 +63,9 @@ import net.minecraft.world.storage.WorldSavedData;
     }
 
     public void initNewRegistry() {
-        gridSize = Config.getPocketGridSize();
-        privatePocketSize = Config.getPrivatePocketSize();
-        publicPocketSize = Config.getPublicPocketSize();
+        gridSize = ModConfig.pocket.getPocketGridSize();
+        privatePocketSize = ModConfig.pocket.getPrivatePocketSize();
+        publicPocketSize = ModConfig.pocket.getPublicPocketSize();
 
         nextID = 0;
         pockets = new HashMap<>();

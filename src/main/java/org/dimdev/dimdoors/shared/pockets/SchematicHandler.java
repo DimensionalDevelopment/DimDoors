@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.shared.pockets;
 
-import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.ddutils.math.MathUtils;
 import org.dimdev.ddutils.schem.Schematic;
 import com.google.gson.JsonArray;
@@ -23,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.tools.SchematicConverter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -58,12 +58,12 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         }
 
         // Load config jsons
-        File jsonFolder = new File(Config.configurationFolder, "/jsons");
+        File jsonFolder = new File(DimDoors.getConfigurationFolder(), "/jsons");
         if (!jsonFolder.exists()) {
             jsonFolder.mkdirs();
         }
         // Init schematics config folder
-        File schematicFolder = new File(Config.configurationFolder, "/schematics");
+        File schematicFolder = new File(DimDoors.getConfigurationFolder(), "/schematics");
         if (!schematicFolder.exists()) {
             schematicFolder.mkdirs();
         }
@@ -78,7 +78,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         }
 
         // Load saved schematics
-        File saveFolder = new File(Config.configurationFolder, "/schematics/saved");
+        File saveFolder = new File(DimDoors.getConfigurationFolder(), "/schematics/saved");
         if (saveFolder.exists()) {
             for (File file : saveFolder.listFiles()) {
                 if (file.isDirectory() || !file.getName().endsWith(".schem")) continue;
@@ -98,7 +98,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
 
     private static List<PocketTemplate> loadTemplatesFromJson(String jsonString) {
         String schematicJarDirectory = "/assets/dimdoors/pockets/schematic/";
-        File schematicFolder = new File(Config.configurationFolder, "/schematics");
+        File schematicFolder = new File(DimDoors.getConfigurationFolder(), "/schematics");
 
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(jsonString);
@@ -192,7 +192,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             String name = pocket.has("name") ? pocket.get("name").getAsString() : null;
             String author = pocket.has("author") ? pocket.get("author").getAsString() : null;
             int size = pocket.get("size").getAsInt();
-            if (Config.isLoadAllSchematics() && size > Config.getMaxPocketSize()) continue;
+            if (ModConfig.pocket.isLoadAllSchematics() && size > ModConfig.pocket.getMaxPocketSize()) continue;
             int baseWeight = pocket.has("baseWeight") ? pocket.get("baseWeight").getAsInt() : 100;
             pocketTemplates.add(new PocketTemplate(group, id, type, name, author, size, baseWeight));
         }
@@ -288,16 +288,16 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     }
 
     public PocketTemplate getPersonalPocketTemplate() {
-        return getRandomTemplate("private", -1, Math.min(Config.getPrivatePocketSize(), PocketRegistry.instance(ModDimensions.getPrivateDim()).getPrivatePocketSize()), true);
+        return getRandomTemplate("private", -1, Math.min(ModConfig.pocket.getPrivatePocketSize(), PocketRegistry.instance(ModDimensions.getPrivateDim()).getPrivatePocketSize()), true);
     }
 
     public PocketTemplate getPublicPocketTemplate() {
-        return getRandomTemplate("public", -1, Math.min(Config.getPublicPocketSize(), PocketRegistry.instance(ModDimensions.getPublicDim()).getPublicPocketSize()), true);
+        return getRandomTemplate("public", -1, Math.min(ModConfig.pocket.getPublicPocketSize(), PocketRegistry.instance(ModDimensions.getPublicDim()).getPublicPocketSize()), true);
     }
 
     public void saveSchematic(Schematic schematic, String id) {
         NBTTagCompound schematicNBT = Schematic.saveToNBT(schematic);
-        File saveFolder = new File(Config.configurationFolder, "/schematics/saved");
+        File saveFolder = new File(DimDoors.getConfigurationFolder(), "/schematics/saved");
         if (!saveFolder.exists()) {
             saveFolder.mkdirs();
         }

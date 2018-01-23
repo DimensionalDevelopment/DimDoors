@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.shared.world.gateways;
 
-import org.dimdev.dimdoors.shared.Config;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.pocketlib.WorldProviderPocket;
 import net.minecraft.block.material.Material;
@@ -12,10 +12,12 @@ import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class GatewayGenerator implements IWorldGenerator {
-
+    public static final int MAX_GATEWAY_GENERATION_CHANCE = 10000;
+    public static final int MAX_CLUSTER_GENERATION_CHANCE = 10000;
     private static final int CLUSTER_GROWTH_CHANCE = 80;
     private static final int MAX_CLUSTER_GROWTH_CHANCE = 100;
     private static final int MIN_RIFT_Y = 4;
@@ -59,8 +61,8 @@ public class GatewayGenerator implements IWorldGenerator {
         // Check if we're allowed to generate rift clusters in this dimension.
         // If so, randomly decide whether to one.
         boolean clusterGenerated = false;
-        if (Config.getRiftClusterDimensions().isAccepted(dimensionID)) {
-            double clusterGenChance = Config.getClusterGenerationChance();
+        if (!Arrays.asList(ModConfig.world.getRiftClusterDimensionBlacklist()).contains(world.provider.getDimensionType().getId()) && random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < ModConfig.world.getClusterGenerationChance()) {
+            double clusterGenChance = ModConfig.world.getClusterGenerationChance();
             while (clusterGenChance > 0.0) {
                 if (random.nextDouble() < clusterGenChance) {
                     do {
@@ -89,8 +91,8 @@ public class GatewayGenerator implements IWorldGenerator {
 
         // Check if we can place a Rift Gateway in this dimension, then randomly decide whether to place one.
         // This only happens if a rift cluster was NOT generated.
-        if (!clusterGenerated && Config.getRiftGatewayDimensions().isAccepted(dimensionID)) {
-            double gatewayGenChance = Config.getGatewayGenerationChance();
+        if (!clusterGenerated && !Arrays.asList(ModConfig.world.getGatewayDimensionBlacklist()).contains(world.provider.getDimensionType().getId()) && random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < ModConfig.world.getGatewayGenerationChance()) {
+            double gatewayGenChance = ModConfig.world.getGatewayGenerationChance();
             while (gatewayGenChance > 0.0) {
                 if (random.nextDouble() < gatewayGenChance) {
                     valid = false;

@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.commands.CommandFabricConvert;
 import org.dimdev.dimdoors.shared.commands.CommandPocket;
 import org.dimdev.dimdoors.shared.commands.CommandDimTeleport;
@@ -21,6 +22,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+
 import static org.dimdev.dimdoors.DimDoors.*;
 
 @Mod(modid = MODID, name = MODNAME, version = VERSION, acceptedMinecraftVersions = MCVERSIONS, dependencies = DEPENDENCIES)
@@ -51,12 +55,16 @@ public class DimDoors {
     };
 
     @Getter private GatewayGenerator gatewayGenerator;
+    @Getter public static File configurationFolder;
 
     @Mod.EventHandler
     public void onPreInitialization(FMLPreInitializationEvent event) {
         log = event.getModLog();
         proxy.onPreInitialization(event);
-        Config.loadConfig(event);
+        configurationFolder = new File(event.getModConfigurationDirectory(), "/DimDoors");
+        if (getConfigurationFolder().exists()) {
+            getConfigurationFolder().mkdirs();
+        }
     }
 
     @Mod.EventHandler
