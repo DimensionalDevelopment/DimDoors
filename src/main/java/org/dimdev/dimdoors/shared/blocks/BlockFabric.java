@@ -17,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 import java.util.Random;
 
@@ -53,13 +54,12 @@ public class BlockFabric extends BlockColored {
         Block block = Block.getBlockFromItem(heldItem.getItem());
         if (!block.getDefaultState().isNormalCube() || block.hasTileEntity(block.getDefaultState())
             || block == this
-            || player.isSneaking()) { // TODO: what if the player is holding shift but not sneaking?
+            || player.isSneaking()
+            || !ModDimensions.isDimDoorsPocketDimension(world)) {
             return false;
         }
-        if (!world.isRemote) { //@todo on a server, returning false or true determines where the block gets placed?
-            if (!player.isCreative()) heldItem.setCount(heldItem.getCount() - 1);
-            world.setBlockState(pos, block.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, heldItem.getMetadata(), player, hand)); //choosing getStateForPlacement over getDefaultState, because it will cause directional blocks, like logs to rotate correctly
-        }
+        if (!player.isCreative()) heldItem.shrink(1);
+        world.setBlockState(pos, block.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, heldItem.getMetadata(), player, hand)); //choosing getStateForPlacement over getDefaultState, because it will cause directional blocks, like logs to rotate correctly
         return true;
     }
 }

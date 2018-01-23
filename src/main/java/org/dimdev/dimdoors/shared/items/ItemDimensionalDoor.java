@@ -20,7 +20,6 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
         super(block);
     }
 
-    // TODO: endermen/block placers should set up blocks too, but this method doesn't get called when they place the block
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (world.isRemote) return EnumActionResult.FAIL;

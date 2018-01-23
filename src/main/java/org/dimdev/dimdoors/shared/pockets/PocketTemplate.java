@@ -21,8 +21,8 @@ import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceMarker;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitMarker;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
@@ -119,8 +119,8 @@ public class PocketTemplate {
         HashMap<TileEntityRift, Float> entranceWeights = new HashMap<>();
 
         for (TileEntityRift rift : rifts) { // Find an entrance
-            if (rift.getDestination() instanceof PocketEntranceDestination) {
-                entranceWeights.put(rift, ((PocketEntranceDestination) rift.getDestination()).getWeight());
+            if (rift.getDestination() instanceof PocketEntranceMarker) {
+                entranceWeights.put(rift, ((PocketEntranceMarker) rift.getDestination()).getWeight());
             }
         }
 
@@ -133,14 +133,14 @@ public class PocketTemplate {
         // Replace entrances with appropriate destinations
         for (TileEntityRift rift : rifts) {
             RiftDestination dest = rift.getDestination();
-            if (dest instanceof PocketEntranceDestination) {
+            if (dest instanceof PocketEntranceMarker) {
                 if (rift == selectedEntrance) {
                     PocketRegistry.instance(dim).markDirty();
-                    rift.setDestination(((PocketEntranceDestination) dest).getIfDestination());
+                    rift.setDestination(((PocketEntranceMarker) dest).getIfDestination());
                     rift.register();
                     RiftRegistry.instance().addPocketEntrance(pocket, new Location(rift.getWorld(), rift.getPos()));
                 } else {
-                    rift.setDestination(((PocketEntranceDestination) dest).getOtherwiseDestination());
+                    rift.setDestination(((PocketEntranceMarker) dest).getOtherwiseDestination());
                 }
             }
         }
@@ -150,7 +150,7 @@ public class PocketTemplate {
         // Link pocket exits back
         for (TileEntityRift rift : rifts) {
             RiftDestination dest = rift.getDestination();
-            if (dest instanceof PocketExitDestination) {
+            if (dest instanceof PocketExitMarker) {
                 if (linkProperties != null) rift.setProperties(linkProperties);
                 rift.setDestination(rift.getProperties() == null || !rift.getProperties().oneWay ? linkTo : null);
                 if (rift instanceof TileEntityEntranceRift && !rift.isAlwaysDelete()) {

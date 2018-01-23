@@ -15,12 +15,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-@NBTSerializable public class PocketEntranceDestination extends RiftDestination { // TODO: not exactly a destination
+@NBTSerializable public class PocketEntranceMarker extends RiftDestination {
     @Builder.Default @Saved protected float weight = 1;
     /*@Saved*/ protected RiftDestination ifDestination;
     /*@Saved*/ protected RiftDestination otherwiseDestination;
 
-    public PocketEntranceDestination() {}
+    public PocketEntranceMarker() {}
 
     @Override public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);

@@ -31,7 +31,7 @@ import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
                 virtualLocation = null; // TODO: door was placed in a pocket dim but outside of a pocket...
             }
         } else if (location.getWorld().provider instanceof WorldProviderLimbo) { // TODO: convert to interface on worldprovider
-            virtualLocation = new VirtualLocation(location.getDim(), location.getX(), location.getZ(), ModConfig.dungeon.getMaxDungeonDepth());
+            virtualLocation = new VirtualLocation(location.getDim(), location.getX(), location.getZ(), ModConfig.dungeon.maxDungeonDepth);
         } // TODO: nether coordinate transform
         if (virtualLocation == null) {
             virtualLocation = new VirtualLocation(0, location.getX(), location.getZ(), 5); // TODO

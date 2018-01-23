@@ -55,7 +55,7 @@ public class PrivateDestination extends RiftDestination {
                 return true;
             }
         } else {
-            return false; // TODO: There should be a way to get other entities into your private pocket, though. Add API for other mods.
+            return false;
         }
     }
 

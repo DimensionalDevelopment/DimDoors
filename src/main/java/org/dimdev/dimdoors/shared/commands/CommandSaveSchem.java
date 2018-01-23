@@ -42,7 +42,7 @@ public class CommandSaveSchem extends CommandBase {
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException { // TODO: more pocket commands (replace pocket, get ID, teleport to pocket, etc.)
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         // Check that the number of arguments is correct
         if (args.length != 1) {
             sender.sendMessage(new TextComponentString("[DimDoors] Usage: /" + getUsage(sender)));

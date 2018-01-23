@@ -27,8 +27,6 @@ import org.dimdev.dimdoors.shared.tools.SchematicConverter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
 import org.apache.commons.io.IOUtils;
-import org.dimdev.dimdoors.shared.world.ModDimensions;
-import org.dimdev.pocketlib.PocketRegistry;
 
 /**
  * @author Robijnvogel
@@ -192,7 +190,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             String name = pocket.has("name") ? pocket.get("name").getAsString() : null;
             String author = pocket.has("author") ? pocket.get("author").getAsString() : null;
             int size = pocket.get("size").getAsInt();
-            if (ModConfig.pocket.isLoadAllSchematics() && size > ModConfig.pocket.getMaxPocketSize()) continue;
+            if (ModConfig.pocket.loadAllSchematics && size > ModConfig.pocket.maxPocketSize) continue;
             int baseWeight = pocket.has("baseWeight") ? pocket.get("baseWeight").getAsInt() : 100;
             pocketTemplates.add(new PocketTemplate(group, id, type, name, author, size, baseWeight));
         }
@@ -288,11 +286,11 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     }
 
     public PocketTemplate getPersonalPocketTemplate() {
-        return getRandomTemplate("private", -1, Math.min(ModConfig.pocket.getPrivatePocketSize(), PocketRegistry.instance(ModDimensions.getPrivateDim()).getPrivatePocketSize()), true);
+        return getRandomTemplate("private", -1, ModConfig.pocket.initialPrivatePocketSize, true);
     }
 
     public PocketTemplate getPublicPocketTemplate() {
-        return getRandomTemplate("public", -1, Math.min(ModConfig.pocket.getPublicPocketSize(), PocketRegistry.instance(ModDimensions.getPublicDim()).getPublicPocketSize()), true);
+        return getRandomTemplate("public", -1, ModConfig.pocket.basePublicPocketSize, true);
     }
 
     public void saveSchematic(Schematic schematic, String id) {

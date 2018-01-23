@@ -90,7 +90,7 @@ import java.util.Random;
         return oldState.getBlock() != newSate.getBlock();
     }
 
-    public RGBA getEntranceRenderColor(Random rand) { // TODO: custom color
+    public RGBA getEntranceRenderColor(Random rand) {
         float red, green, blue;
         switch(world.provider.getDimension()) {
             case -1: // Nether

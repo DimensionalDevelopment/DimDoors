@@ -32,7 +32,7 @@ public class ClientProxy extends CommonProxy {
         // causing all item variants to be added to the same item (RegistryDelegate.equals compares the names
         // of the delegates only).
         ModelManager.registerModelVariants();
-        // ModelManager.addCustomStateMappers(); // TODO: fix this
+        ModelManager.addCustomStateMappers();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.commands.CommandFabricConvert;
 import org.dimdev.dimdoors.shared.commands.CommandPocket;
 import org.dimdev.dimdoors.shared.commands.CommandDimTeleport;
@@ -60,8 +61,8 @@ public class DimDoors {
         log = event.getModLog();
         proxy.onPreInitialization(event);
         configurationFolder = new File(event.getModConfigurationDirectory(), "/DimDoors");
-        if (getConfigurationFolder().exists()) {
-            getConfigurationFolder().mkdirs();
+        if (configurationFolder.exists()) {
+            configurationFolder.mkdirs();
         }
     }
 
@@ -85,7 +86,7 @@ public class DimDoors {
     }
 
     public static void sendMessage(Entity entity, String text) {
-        if (/* TODO: config option && */ entity instanceof EntityPlayerMP) {
+        if (ModConfig.general.useStatusBar && entity instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) entity;
             player.sendStatusMessage(new TextComponentString(text), true);
         } else {

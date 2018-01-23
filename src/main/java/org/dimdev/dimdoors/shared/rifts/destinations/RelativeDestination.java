@@ -16,7 +16,7 @@ import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-@NBTSerializable public class RelativeDestination extends RiftDestination { // TODO: use Vec3i
+@NBTSerializable public class RelativeDestination extends RiftDestination {
     @Saved protected Vec3i offset;
 
     public RelativeDestination() {}

@@ -22,8 +22,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.List;
-
 import static net.minecraft.network.datasync.DataSerializers.*;
 
 public class EntityMonolith extends EntityFlying implements IMob {
@@ -54,7 +52,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
     }
 
     public boolean isDangerous() {
-        return ModConfig.monolith.isMonolithTeleportationEnabled() && (world.provider instanceof WorldProviderLimbo || ModConfig.monolith.isDangerousLimboMonolithsEnabled());
+        return ModConfig.monolith.monolithTeleportationEnabled && (world.provider instanceof WorldProviderLimbo || ModConfig.monolith.dangerousLimboMonolithsEnabled);
     }
 
     @Override
@@ -72,7 +70,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        return null; // TODO: Is this right? Why check if it intersects anything if it is?
+        return null;
     }
 
     @Override
@@ -148,7 +146,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
                 }
 
                 // Teleport the target player if various conditions are met
-                if (aggro >= MAX_AGGRO && !world.isRemote && ModConfig.monolith.isMonolithTeleportationEnabled() && !player.isCreative() && isDangerous()) {
+                if (aggro >= MAX_AGGRO && !world.isRemote && ModConfig.monolith.monolithTeleportationEnabled && !player.isCreative() && isDangerous()) {
                     aggro = 0;
                     Location destination = WorldProviderLimbo.getLimboSkySpawn(player);
                     TeleportUtils.teleport(player, destination, 0, 0);
@@ -214,7 +212,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
             playSound(ModSounds.MONK, 1F, 1F);
             soundTime = 100;
         }
-        if (aggroPercent > 0.70 && soundTime < 100) { // TODO: null rather than player?
+        if (aggroPercent > 0.70 && soundTime < 100) {
             world.playSound(null, pos, ModSounds.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + rand.nextGaussian()));
             soundTime = 100 + rand.nextInt(75);
         }
@@ -252,30 +250,19 @@ public class EntityMonolith extends EntityFlying implements IMob {
         renderYawOffset = rotationYaw;
     }
 
+
     @Override
     public void writeEntityToNBT(NBTTagCompound nbt) {
         super.writeEntityToNBT(nbt);
+        // Store aggro to prevent the player from relogging in to reset monolith aggro
         nbt.setInteger("Aggro", aggro);
     }
 
     @Override
     public void readEntityFromNBT(NBTTagCompound nbt) {
         super.readEntityFromNBT(nbt);
-
-        // Load Monoliths with half aggro so they don't teleport players instantly
-        aggro = nbt.getInteger("Aggro") / 2;
-    }
-
-    @Override
-    public boolean getCanSpawnHere() {
-        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(posX - 15, posY - 4, posZ - 15, posX + 15, posY + 15, posZ + 15));
-
-        if (world.provider instanceof WorldProviderLimbo) {
-            return list.size() <= 0;
-        } else if (world.provider instanceof WorldProviderDungeonPocket) { // TODO
-            return list.size() <= 5 && !world.canBlockSeeSky(new BlockPos(posX, posY, posZ));
-        }
-
-        return true;
+        // This was aggro / 2 in the old mod to prevent instant teleportation, but players
+        // could relogin to halve the aggro. Otherwise, why even store aggro?
+        aggro = nbt.getInteger("Aggro");
     }
 }

@@ -12,8 +12,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-public class PocketExitDestination extends RiftDestination { // TODO: not exactly a destination
-    //public PocketExitDestination() {}
+public class PocketExitMarker extends RiftDestination {
+    //public PocketExitMarker() {}
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {

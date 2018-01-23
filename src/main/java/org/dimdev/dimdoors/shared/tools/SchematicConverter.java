@@ -24,8 +24,8 @@ import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import org.dimdev.dimdoors.shared.rifts.destinations.AvailableLinkDestination;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceMarker;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitMarker;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
@@ -331,9 +331,9 @@ public final class SchematicConverter {
                                             //DimDoors.log.error("Someone placed a door on a sandstone block at the bottom of a schematic. This causes problems and should be remedied. Schematic name: " + schematicId);
                                         }
                                     } else {
-                                        rift.setDestination(PocketEntranceDestination.builder()
+                                        rift.setDestination(PocketEntranceMarker.builder()
                                                 .weight(1)
-                                                .ifDestination(PocketExitDestination.builder().build())
+                                                .ifDestination(PocketExitMarker.builder().build())
                                                 .otherwiseDestination(AvailableLinkDestination.builder()
                                                         .acceptedGroups(Collections.singleton(0))
                                                         .coordFactor(1)

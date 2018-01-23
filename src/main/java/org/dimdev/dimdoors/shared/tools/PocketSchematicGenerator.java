@@ -22,8 +22,8 @@ import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.BlockFabricAncient;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceDestination;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitDestination;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceMarker;
+import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitMarker;
 import org.dimdev.dimdoors.shared.rifts.destinations.PrivatePocketExitDestination;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
@@ -99,7 +99,7 @@ public final class PocketSchematicGenerator {
                     ModBlocks.ANCIENT_FABRIC.getDefaultState(), // outer wall
                     ModBlocks.FABRIC.getDefaultState(), // inner wall
                     ModBlocks.DIMENSIONAL_DOOR, // door
-                    PocketExitDestination.builder().build(),// exit rift destination
+                    PocketExitMarker.builder().build(),// exit rift destination
                     LinkProperties.builder()
                             .groups(Collections.singleton(1))
                             .linksRemaining(1)
@@ -169,7 +169,7 @@ public final class PocketSchematicGenerator {
         // Set the rift entities
         schematic.tileEntities = new ArrayList<>();
         TileEntityEntranceRift rift = (TileEntityEntranceRift) doorBlock.createTileEntity(null, doorBlock.getDefaultState());
-        rift.setDestination(PocketEntranceDestination.builder()
+        rift.setDestination(PocketEntranceMarker.builder()
                 .ifDestination(exitDest)
                 .build());
         rift.setProperties(link);

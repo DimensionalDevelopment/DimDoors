@@ -38,8 +38,6 @@ public class BiomeLimbo extends Biome {
         decorator.generateFalls = false;
     }
 
-    // TODO: move generation here
-
     // Some mods like RFTools rely on the decorator being present, so we need to create one even if we don't use it.
     //@Override public BiomeDecorator createBiomeDecorator() { return null; }
 

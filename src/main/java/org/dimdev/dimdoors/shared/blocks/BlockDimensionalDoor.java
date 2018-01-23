@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
@@ -42,7 +43,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
             boolean successful = rift.teleport(entity);
             if (successful) entity.timeUntilPortal = 0; // Allow the entity to teleport if successful
             if (successful && entity instanceof EntityPlayer) {
-                if (!state.getValue(POWERED)) toggleDoor(world, pos, false); // TODO: config option playerClosesDoorBehind
+                if (ModConfig.general.closeDoorBehind && !state.getValue(POWERED)) toggleDoor(world, pos, false);
                 if (rift.isCloseAfterPassThrough()) world.destroyBlock(pos, false);
             }
         }
@@ -113,7 +114,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     }
 
     @Override
-    public ItemStack getItem(World world, BlockPos pos, IBlockState state) { // TODO: use BLOCK_ITEM map
+    public ItemStack getItem(World world, BlockPos pos, IBlockState state) {
         return new ItemStack(getItem());
     }
 

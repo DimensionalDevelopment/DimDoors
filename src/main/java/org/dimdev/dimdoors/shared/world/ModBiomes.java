@@ -27,7 +27,7 @@ public final class ModBiomes {
                 WHITE_VOID,
                 BLACK_VOID,
                 DANGEROUS_BLACK_VOID);
-        BiomeDictionary.addTypes(LIMBO, BiomeDictionary.Type.VOID); // TODO: check that this prevents other mods' worldgen (ex. Biomes O' Plenty)
+        BiomeDictionary.addTypes(LIMBO, BiomeDictionary.Type.VOID);
         BiomeDictionary.addTypes(WHITE_VOID, BiomeDictionary.Type.VOID);
         BiomeDictionary.addTypes(BLACK_VOID, BiomeDictionary.Type.VOID);
         BiomeDictionary.addTypes(DANGEROUS_BLACK_VOID, BiomeDictionary.Type.VOID);

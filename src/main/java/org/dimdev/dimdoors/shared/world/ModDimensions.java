@@ -28,7 +28,7 @@ public final class ModDimensions {
     @SuppressWarnings("UnusedAssignment")
     public static void registerDimensions() {
         // TODO: more than 1 dimension/dimension type
-        int dim = ModConfig.general.getDimensionID();
+        int dim = ModConfig.general.baseDimensionID;
         limboDim = dim++;
         privateDim = dim++;
         publicDim = dim++;

@@ -17,6 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.render.CloudRenderBlank;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.world.ModBiomes;
@@ -41,7 +42,7 @@ public class WorldProviderLimbo extends WorldProvider {
 
     @Override
     public boolean canRespawnHere() {
-        return false; // TODO: properties.HardcoreLimboEnabled;
+        return ModConfig.limbo.hardcoreLimboEnabled;
     }
 
     @Override
@@ -90,9 +91,9 @@ public class WorldProviderLimbo extends WorldProvider {
         return new LimboGenerator(world, world.getSeed());
     }
 
-    public static Location getLimboSkySpawn(Entity entity) { // TODO: move this into projectToLimbo
-        int x = (int) entity.posX + MathHelper.clamp(entity.world.rand.nextInt(), -100, 100); // TODO: -properties.LimboEntryRange, properties.LimboEntryRange);
-        int z = (int) entity.posZ + MathHelper.clamp(entity.world.rand.nextInt(), -100, 100); // TODO: -properties.LimboEntryRange, properties.LimboEntryRange);
+    public static Location getLimboSkySpawn(Entity entity) { // TODO: move this somewhere else
+        int x = (int) entity.posX + MathHelper.clamp(entity.world.rand.nextInt(), 100, 100);
+        int z = (int) entity.posZ + MathHelper.clamp(entity.world.rand.nextInt(), -100, 100);
         return new Location(ModDimensions.LIMBO.getId(), x, 700, z);
     }
 

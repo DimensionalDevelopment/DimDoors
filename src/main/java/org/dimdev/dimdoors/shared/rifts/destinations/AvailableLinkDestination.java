@@ -37,7 +37,7 @@ import java.util.Set;
     @Saved protected double coordFactor;
     @Saved protected double positiveDepthFactor;
     @Saved protected double negativeDepthFactor;
-    @Saved protected Set<Integer> acceptedGroups; // TODO: this should be immutable
+    @Saved protected Set<Integer> acceptedGroups;
     @Saved protected boolean noLink;
     @Saved protected boolean noLinkBack;
     // TODO: better depth calculation

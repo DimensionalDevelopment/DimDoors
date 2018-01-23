@@ -14,7 +14,7 @@ public class BiomeBlank extends Biome {
 
     private final boolean white;
 
-    public BiomeBlank(boolean white, boolean monoliths) { // TODO: split this class
+    public BiomeBlank(boolean white, boolean monoliths) {
         super(new BiomeProperties((monoliths ? "Dangerous " : "") + (white ? "White" : "Black") + " Void")
                 .setBaseHeight(0F)
                 .setHeightVariation(0F)
@@ -56,7 +56,6 @@ public class BiomeBlank extends Biome {
         return white ? 0xFCFCFC : 0x000000; // https://bugs.mojang.com/projects/MC/issues/MC-123703
     }
 
-    // TODO: check that black/white grass and foliage in getModdedBiomeGrassColor is compatible with other mods such as Quark's greener grass option
     @Override
     @SideOnly(Side.CLIENT)
     public int getGrassColorAtPos(BlockPos pos) {

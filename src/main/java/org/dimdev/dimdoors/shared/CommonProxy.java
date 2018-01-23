@@ -49,8 +49,8 @@ public abstract class CommonProxy {
         RiftDestination.destinationRegistry.put("limbo", LimboDestination.class);
         RiftDestination.destinationRegistry.put("local", LocalDestination.class);
         RiftDestination.destinationRegistry.put("public_pocket", PublicPocketDestination.class);
-        RiftDestination.destinationRegistry.put("pocket_entrance", PocketEntranceDestination.class);
-        RiftDestination.destinationRegistry.put("pocket_exit", PocketExitDestination.class);
+        RiftDestination.destinationRegistry.put("pocket_entrance", PocketEntranceMarker.class);
+        RiftDestination.destinationRegistry.put("pocket_exit", PocketExitMarker.class);
         RiftDestination.destinationRegistry.put("private", PrivateDestination.class);
         RiftDestination.destinationRegistry.put("private_pocket_exit", PrivatePocketExitDestination.class);
         RiftDestination.destinationRegistry.put("relative", RelativeDestination.class);

@@ -48,7 +48,7 @@ public final class PocketGenerator {
         float netherProbability = virtualLocation.getDim() == -1 ? 1 : (float) depth / 200; // TODO: improve nether probability
         Random random = new Random();
         String group = random.nextFloat() < netherProbability ? "nether" : "ruins";
-        PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getRandomTemplate(group, depth, ModConfig.pocket.getMaxPocketSize(), false);
+        PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getRandomTemplate(group, depth, ModConfig.pocket.maxPocketSize, false);
 
         Pocket pocket = generatePocketFromTemplate(ModDimensions.getDungeonDim(), pocketTemplate, virtualLocation, false);
         pocketTemplate.setup(pocket, linkTo, linkProperties);

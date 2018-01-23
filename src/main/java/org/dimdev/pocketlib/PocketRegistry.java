@@ -63,9 +63,7 @@ import org.dimdev.dimdoors.shared.ModConfig;
     }
 
     public void initNewRegistry() {
-        gridSize = ModConfig.pocket.getPocketGridSize();
-        privatePocketSize = ModConfig.pocket.getPrivatePocketSize();
-        publicPocketSize = ModConfig.pocket.getPublicPocketSize();
+        gridSize = ModConfig.pocket.pocketGridSize;
 
         nextID = 0;
         pockets = new HashMap<>();

@@ -1,9 +1,7 @@
 package org.dimdev.dimdoors.shared.world.limbo;
 
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
@@ -18,8 +16,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-// TODO: Deobfuscate the original Minecraft code too, compare differences,
-// TODO: check if LimboGenerator can be converted to a biome
 public class LimboGenerator implements IChunkGenerator {
 
     private Random rand;
@@ -28,16 +24,11 @@ public class LimboGenerator implements IChunkGenerator {
     private NoiseGeneratorOctaves minLimitPerlinNoise;
     private NoiseGeneratorOctaves maxLimitPerlinNoise;
     private NoiseGeneratorOctaves mainPerlinNoise;
-    //private NoiseGeneratorOctaves surfaceNoise;
-    //public NoiseGeneratorOctaves scaleNoise;
     public NoiseGeneratorOctaves depthNoise;
-    //public NoiseGeneratorOctaves mobSpawnerNoise; // TODO: right name?
 
-    // Noise regions
     double[] mainNoiseRegion;
     double[] minLimitRegion;
     double[] maxLimitRegion;
-    //double[] scaleNoiseRegion;
 
     private World world;
     private double[] heightMap;
@@ -45,8 +36,6 @@ public class LimboGenerator implements IChunkGenerator {
     private Biome[] biomesForGeneration = {ModBiomes.LIMBO};
 
     double[] depthRegion;
-    float[] parabolicField; // This is actually a better name than the new MCP name biomeWeights (except that it's not a parabola)
-    //int[][] field_73219_j = new int[32][32];
 
     public LimboGenerator(World world, long seed) {
         this.world = world;
@@ -54,10 +43,7 @@ public class LimboGenerator implements IChunkGenerator {
         minLimitPerlinNoise = new NoiseGeneratorOctaves(rand, 16); //base terrain
         maxLimitPerlinNoise = new NoiseGeneratorOctaves(rand, 16); //hillyness
         mainPerlinNoise = new NoiseGeneratorOctaves(rand, 80);  //seems to adjust the size of features, how stretched things are -default 8
-        //surfaceNoise = new NoiseGeneratorOctaves(rand, 4);
-        //scaleNoise = new NoiseGeneratorOctaves(rand, 10);
         depthNoise = new NoiseGeneratorOctaves(rand, 16);
-        //mobSpawnerNoise = new NoiseGeneratorOctaves(rand, 8); // TODO: is this named right?
 
         this.world = world;
     }
@@ -72,7 +58,6 @@ public class LimboGenerator implements IChunkGenerator {
 
         if (!chunk.isTerrainPopulated()) {
             chunk.setTerrainPopulated(true);
-            //spawner.registerChunkForPopulation(properties.LimboDimensionID, chunkX, chunkZ);
         }
 
         return chunk;
@@ -80,7 +65,6 @@ public class LimboGenerator implements IChunkGenerator {
 
     @Override
     public void populate(int x, int z) {
-        // TODO: custom spawning?
         Biome biome = world.getBiome(new BlockPos(x * 16 + 16, 0, z * 16 + 16));
         WorldEntitySpawner.performWorldGenSpawning(world, biome, x * 16 + 8, z * 16 + 8, 16, 16, rand);
     }
@@ -93,21 +77,8 @@ public class LimboGenerator implements IChunkGenerator {
     private double[] generateHeightmap(double[] heightMap, int xOffset, int yOffset, int zOffset, int xSize, int ySize, int zSize) {
         if (heightMap == null) heightMap = new double[xSize * ySize * zSize];
 
-        // Generate the "5x5" parabolicField array, acting as weights for a weighted average between biomes
-        if (parabolicField == null) {
-            parabolicField = new float[25];
-
-            for (int fieldX = -2; fieldX <= 2; ++fieldX) {
-                for (int fieldY = -2; fieldY <= 2; ++fieldY) {
-                    float value = 10.0F / MathHelper.sqrt(fieldX * fieldX + fieldY * fieldY + 0.2F);
-                    parabolicField[fieldX + 2 + (fieldY + 2) * 5] = value;
-                }
-            }
-        }
-
         double xzScale = 884.412D; //large values here create spiky land. add a 0, good -default 884, these are configurable in vanilla
         double yScale = 9840.412D; //large values here make sheets- default - 684
-        //scaleNoiseRegion = scaleNoise.generateNoiseOctaves(scaleNoiseRegion, xOffset, zOffset, xSize, zSize, 1.121D, 1.121D, 0.5D);
 
         depthRegion = depthNoise.generateNoiseOctaves(depthRegion, xOffset, zOffset, xSize, zSize, 200.0D, 200.0D, 0.5D);
         mainNoiseRegion = mainPerlinNoise.generateNoiseOctaves(mainNoiseRegion, xOffset, yOffset, zOffset, xSize, ySize, zSize, xzScale / 80.0D, yScale / 160.0D, xzScale / 80.0D);
@@ -118,38 +89,13 @@ public class LimboGenerator implements IChunkGenerator {
         int depthRegionIndex = 0;
         for (int x = 0; x < xSize; x++) {
             for (int z = 0; z < zSize; z++) {
-                float averageScale = 0.0F;
-                float averageDepth = 0.0F;
-                float totalWeight = 0.0F;
+                // These were were static but calculated by some wrongly-converted biome blend code (which is unnecessary
+                // since there is only one biome in limbo)
+                float heightVariation = 5.959498f;
+                float baseHeight = -1.3523747f;
 
-                // TODO: why not just remove all of this since it's constant (only 1 biome in limbo)?
-                // Seems to be used to blend in two different biomes' map
-                for (int fieldX = -2; fieldX <= 2; fieldX++) {
-                    for (int fieldY = -2; fieldY <= 2; fieldY++) {
-                        int index = fieldX + 2 + (fieldY + 2) * 5; // Index in the "5x5" parabolicField array
-
-                        // This adjusts the height of the terrain
-                        int depthOffset = -1;
-                        int scaleOffset = 4;
-
-                        // Vanilla is + 2.0F rather than + 9.0F
-                        float weight = parabolicField[index] / (Biomes.PLAINS.getBaseHeight() + 9.0F);
-
-                        // biomeDepthWeight = biomeScaleWeight = 1 since we have only 1 biome
-                        // TODO: There are missing parentheses around the addition, this was
-                        // TODO: obviously a mistake when simplifying the vanila code, otherwise
-                        // TODO: we're not calculating a weighted average. We should re-add these
-                        // TODO: without changing the appearance of limbo.
-                        averageScale += scaleOffset + Biomes.PLAINS.getHeightVariation() * weight;
-                        averageDepth += depthOffset + Biomes.PLAINS.getBaseHeight() * weight;
-                        totalWeight += weight;
-                    }
-                }
-
-                averageScale /= totalWeight;
-                averageDepth /= totalWeight;
-                averageScale = averageScale * 0.9F + 0.1F;
-                averageDepth = (averageDepth * 4.0F - 1.0F) / 8.0F;
+                heightVariation = heightVariation * 0.9F + 0.1F;
+                baseHeight = (baseHeight * 4.0F - 1.0F) / 8.0F;
 
                 double depthOffset = depthRegion[depthRegionIndex] / 8000.0D; // TODO: is depthOffset a right name?
                 // Transform depthOffset based on this function (https://goo.gl/ZDXra8)
@@ -169,13 +115,13 @@ public class LimboGenerator implements IChunkGenerator {
                 depthRegionIndex++;
 
                 for (int y = 0; y < ySize; y++) {
-                    double depth = averageDepth;
+                    double depth = baseHeight;
                     depth += depthOffset * 0.2D;
                     depth = depth * ySize / 16.0D;
                     depth = ySize / 2.0D + depth * 4.0D; // This was a separate double var28 in vanilla
 
                     // TODO: is heightOffset named right?
-                    double heightOffset = (y - depth) * 12.0D * 128.0D / 128.0D / (double) averageScale; // Vanilla was * 128D / 256D, configurable
+                    double heightOffset = (y - depth) * 12.0D * 128.0D / 128.0D / (double) heightVariation; // Vanilla was * 128D / 256D, configurable
 
                     if (heightOffset < 0.0D) {
                         heightOffset *= 4.0D;
@@ -213,7 +159,7 @@ public class LimboGenerator implements IChunkGenerator {
     @SuppressWarnings("LocalVariableNamingConvention")
     public void setBlocksInChunk(int x, int z, ChunkPrimer primer) {
         biomesForGeneration = world.getBiomeProvider().getBiomesForGeneration(biomesForGeneration, x * 4 - 2, z * 4 - 2, 10, 10);
-        heightMap = generateHeightmap(heightMap, x * 4, 0, z * 4, 5, 17, 5); // TODO: vanilla ySize is 33
+        heightMap = generateHeightmap(heightMap, x * 4, 0, z * 4, 5, 17, 5); // vanilla ySize is 33
 
         int xzSectionCount = 4;
         int xzSectionSize = 4;
@@ -282,7 +228,6 @@ public class LimboGenerator implements IChunkGenerator {
 
     @Override
     public List<Biome.SpawnListEntry> getPossibleCreatures(EnumCreatureType creatureType, BlockPos pos) {
-        // TODO: custom spawning?
         Biome biome = world.getBiome(pos);
         return biome.getSpawnableList(creatureType);
     }

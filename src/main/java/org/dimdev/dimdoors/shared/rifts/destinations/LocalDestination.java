@@ -16,7 +16,7 @@ import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-@NBTSerializable public class LocalDestination extends RiftDestination { // TODO: use BlockPos
+@NBTSerializable public class LocalDestination extends RiftDestination {
     @Saved protected BlockPos target;
 
     public LocalDestination() {}
