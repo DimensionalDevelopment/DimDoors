@@ -1,11 +1,9 @@
 package org.dimdev.dimdoors;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.commands.CommandFabricConvert;
 import org.dimdev.dimdoors.shared.commands.CommandPocket;
 import org.dimdev.dimdoors.shared.commands.CommandDimTeleport;
-import org.dimdev.dimdoors.shared.Config;
 import org.dimdev.dimdoors.shared.CommonProxy;
 import org.dimdev.dimdoors.shared.commands.CommandSaveSchem;
 import org.dimdev.dimdoors.shared.items.ModItems;
