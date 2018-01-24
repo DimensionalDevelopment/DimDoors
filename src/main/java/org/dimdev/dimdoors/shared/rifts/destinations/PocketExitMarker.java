@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 

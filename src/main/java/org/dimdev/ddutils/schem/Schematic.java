@@ -1,7 +1,6 @@
 package org.dimdev.ddutils.schem;
 
-import com.flowpowered.math.vector.Vector3i;
-import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
 import cubicchunks.world.ICubicWorld;
 import cubicchunks.world.cube.Cube;
 import net.minecraft.block.Block;
@@ -20,6 +19,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -169,55 +169,53 @@ public class Schematic {
         return schematic;
     }
 
-    public static NBTTagCompound saveToNBT(Schematic schematic) {
+    public NBTTagCompound saveToNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
 
-        nbt.setInteger("Version", schematic.version);
+        nbt.setInteger("Version", version);
         NBTTagCompound metadataCompound = new NBTTagCompound();
-        if (schematic.author != null) metadataCompound.setString("Author", schematic.author); // Author is not required
-        metadataCompound.setString("Name", schematic.name);
-        metadataCompound.setLong("Date", schematic.creationDate);
+        if (author != null) metadataCompound.setString("Author", author); // Author is not required
+        metadataCompound.setString("Name", name);
+        metadataCompound.setLong("Date", creationDate);
         NBTTagList requiredModsTagList = new NBTTagList();
-        for (String requiredMod : schematic.requiredMods) {
+        for (String requiredMod : requiredMods) {
             requiredModsTagList.appendTag(new NBTTagString(requiredMod));
         }
         metadataCompound.setTag("RequiredMods", requiredModsTagList);
         nbt.setTag("Metadata", metadataCompound);
 
-        nbt.setShort("Width", schematic.width);
-        nbt.setShort("Height", schematic.height);
-        nbt.setShort("Length", schematic.length);
-        nbt.setIntArray("Offset", schematic.offset);
-        nbt.setInteger("PaletteMax", schematic.paletteMax);
+        nbt.setShort("Width", width);
+        nbt.setShort("Height", height);
+        nbt.setShort("Length", length);
+        nbt.setIntArray("Offset", offset);
+        nbt.setInteger("PaletteMax", paletteMax);
 
         NBTTagCompound paletteNBT = new NBTTagCompound();
-        for (int i = 0; i < schematic.palette.size(); i++) {
-            IBlockState state = schematic.palette.get(i);
+        for (int i = 0; i < palette.size(); i++) {
+            IBlockState state = palette.get(i);
             String blockStateString = getBlockStateStringFromState(state);
             paletteNBT.setInteger(blockStateString, i);
         }
         nbt.setTag("Palette", paletteNBT);
 
-        byte[] blockDataIntArray = new byte[schematic.width * schematic.height * schematic.length];
-        for (int x = 0; x < schematic.width; x++) {
-            for (int y = 0; y < schematic.height; y++) {
-                for (int z = 0; z < schematic.length; z++) {
-                    blockDataIntArray[x + z * schematic.width + y * schematic.width * schematic.length] = (byte) schematic.blockData[x][y][z]; //according to the documentation on https://github.com/SpongePowered/Schematic-Specification/blob/master/versions/schematic-1.md
+        byte[] blockDataIntArray = new byte[width * height * length];
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                for (int z = 0; z < length; z++) {
+                    blockDataIntArray[x + z * width + y * width * length] = (byte) blockData[x][y][z]; //according to the documentation on https://github.com/SpongePowered/Schematic-Specification/blob/master/versions/schematic-1.md
                 }
             }
         }
         nbt.setByteArray("BlockData", blockDataIntArray);
 
         NBTTagList tileEntitiesTagList = new NBTTagList();
-        for (int i = 0; i < schematic.tileEntities.size(); i++) {
-            NBTTagCompound tileEntityTagCompound = schematic.tileEntities.get(i);
+        for (NBTTagCompound tileEntityTagCompound : tileEntities) {
             tileEntitiesTagList.appendTag(tileEntityTagCompound);
         }
         nbt.setTag("TileEntities", tileEntitiesTagList);
 
         NBTTagList entitiesTagList = new NBTTagList();
-        for (int i = 0; i < schematic.entities.size(); i++) {
-            NBTTagCompound entityTagCompound = schematic.entities.get(i);
+        for (NBTTagCompound entityTagCompound : entities) {
             entitiesTagList.appendTag(entityTagCompound);
         }
         nbt.setTag("Entities", entitiesTagList);
@@ -277,54 +275,33 @@ public class Schematic {
         return totalString;
     }
 
-    // TODO: use the setBlockState method
-    public static Schematic createFromWorld(World world, Vector3i from, Vector3i to) {
-        Schematic schematic = new Schematic();
+    public static Schematic createFromWorld(World world, BlockPos from, BlockPos to) {
+        BlockPos dimensions = to.subtract(from).add(1, 1, 1);
+        Schematic schematic = new Schematic((short) dimensions.getX(), (short) dimensions.getY(), (short) dimensions.getZ());
 
-        Vector3i min = from.min(to);
-        Vector3i max = from.max(to);
-        Vector3i dimensions = max.sub(min).add(1, 1, 1);
-
-        schematic.width = (short) dimensions.getX();
-        schematic.height = (short) dimensions.getY();
-        schematic.length = (short) dimensions.getZ();
-
-        schematic.blockData = new short[schematic.width][schematic.height][schematic.length];
-
-        ArrayListMultimap<IBlockState, BlockPos> states = ArrayListMultimap.create();
         Set<String> mods = new HashSet<>();
 
         for (int x = 0; x < dimensions.getX(); x++) {
             for (int y = 0; y < dimensions.getY(); y++) {
                 for (int z = 0; z < dimensions.getZ(); z++) {
-                    BlockPos pos = new BlockPos(min.getX() + x, min.getY() + y, min.getZ() + z);
+                    BlockPos pos = new BlockPos(from.getX() + x, from.getY() + y, from.getZ() + z);
 
                     IBlockState state = world.getBlockState(pos);
                     String id = getBlockStateStringFromState(state);
                     if (id.contains(":")) mods.add(id.split(":")[0]);
-                    states.put(state, new BlockPos(x, y, z));
+                    schematic.setBlockState(x, y, z, state);
 
                     TileEntity tileEntity = world.getChunkFromBlockCoords(pos).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
                     if (tileEntity != null) {
                         NBTTagCompound tileEntityNBT = tileEntity.serializeNBT();
-                        tileEntityNBT.setInteger("x", tileEntityNBT.getInteger("x") - min.getX());
-                        tileEntityNBT.setInteger("y", tileEntityNBT.getInteger("y") - min.getY());
-                        tileEntityNBT.setInteger("z", tileEntityNBT.getInteger("z") - min.getZ());
+                        tileEntityNBT.setInteger("x", tileEntityNBT.getInteger("x") - from.getX());
+                        tileEntityNBT.setInteger("y", tileEntityNBT.getInteger("y") - from.getY());
+                        tileEntityNBT.setInteger("z", tileEntityNBT.getInteger("z") - from.getZ());
 
                         schematic.tileEntities.add(tileEntityNBT);
                     }
                 }
             }
-        }
-
-        IBlockState[] keys = states.keySet().toArray(new IBlockState[states.keySet().size()]);
-
-        for (short i = 0; i < keys.length; i++) {
-            for (BlockPos pos : states.get(keys[i])) {
-                schematic.blockData[pos.getX()][pos.getY()][pos.getZ()] = i;
-            }
-
-            schematic.palette.add(i, keys[i]);
         }
 
         for (Entity entity : world.getEntitiesInAABBexcluding(null, getBoundingBox(from, to), entity -> !(entity instanceof EntityPlayerMP))) {
@@ -341,26 +318,23 @@ public class Schematic {
         }
 
         schematic.requiredMods = mods.toArray(new String[mods.size()]);
-        schematic.paletteMax = keys.length - 1;
         schematic.creationDate = System.currentTimeMillis();
 
         return schematic;
     }
 
-    private static AxisAlignedBB getBoundingBox(Vector3i pos1, Vector3i pos2) {
-        return new AxisAlignedBB(new BlockPos(pos1.getX(), pos1.getY(), pos1.getZ()), new BlockPos(pos2.getX(), pos2.getY(), pos2.getZ()));
+    private static AxisAlignedBB getBoundingBox(Vec3i from, Vec3i to) {
+        return new AxisAlignedBB(new BlockPos(from.getX(), from.getY(), from.getZ()), new BlockPos(to.getX(), to.getY(), to.getZ()));
     }
 
-    public static void place(Schematic schematic, World world, int xBase, int yBase, int zBase) { // TODO: check if entities and tileentities are within pocket bounds
+    public void place(World world, int xBase, int yBase, int zBase) {
         // Place the schematic's blocks
-        setBlocks(schematic, world, xBase, yBase, zBase);
+        setBlocks(world, xBase, yBase, zBase);
 
         // Set TileEntity data
-        for (NBTTagCompound tileEntityNBT : schematic.tileEntities) {
-            BlockPos pos = new BlockPos(
-                    xBase + tileEntityNBT.getInteger("x"),
-                    yBase + tileEntityNBT.getInteger("y"),
-                    zBase + tileEntityNBT.getInteger("z"));
+        for (NBTTagCompound tileEntityNBT : tileEntities) {
+            Vec3i schematicPos = new BlockPos(tileEntityNBT.getInteger("x"), tileEntityNBT.getInteger("y"), tileEntityNBT.getInteger("z"));
+            BlockPos pos = new BlockPos(xBase, yBase, zBase).add(schematicPos);
             TileEntity tileEntity = world.getTileEntity(pos);
             if (tileEntity != null) {
                 String schematicTileEntityId = tileEntityNBT.getString("id");
@@ -381,7 +355,7 @@ public class Schematic {
         }
 
         // Spawn entities
-        for (NBTTagCompound entityNBT : schematic.entities) {
+        for (NBTTagCompound entityNBT : entities) {
             // Correct the position and UUID
             NBTTagList posNBT = (NBTTagList) entityNBT.getTag("Pos");
             NBTTagList newPosNBT = new NBTTagList();
@@ -406,7 +380,7 @@ public class Schematic {
         }
     }
 
-    private static void setBlocks(Schematic schematic, World world, int xBase, int yBase, int zBase) {
+    private void setBlocks(World world, int xBase, int yBase, int zBase) {
         long setTime = 0;
         long relightTime = 0;
         // CubicChunks makes cubic worlds implement ICubicWorld
@@ -415,9 +389,9 @@ public class Schematic {
         if (cubicChunks && world instanceof ICubicWorld) {
             DimDoors.log.info("Setting cube blockstates");
             ICubicWorld cubicWorld = (ICubicWorld) world;
-            for (int cubeX = 0; cubeX <= (schematic.width >> 4) + 1; cubeX++) {
-                for (int cubeY = 0; cubeY <= (schematic.length >> 4) + 1; cubeY++) {
-                    for (int cubeZ = 0; cubeZ <= (schematic.height >> 4) + 1; cubeZ++) {
+            for (int cubeX = 0; cubeX <= (width >> 4) + 1; cubeX++) {
+                for (int cubeY = 0; cubeY <= (length >> 4) + 1; cubeY++) {
+                    for (int cubeZ = 0; cubeZ <= (height >> 4) + 1; cubeZ++) {
                         long setStart = System.nanoTime();
                         // Get the cube only once for efficiency
                         Cube cube = cubicWorld.getCubeFromCubeCoords((xBase << 4) + cubeX, (yBase << 4) + cubeY, (zBase << 4) + cubeZ);
@@ -429,8 +403,8 @@ public class Schematic {
                                     int sx = (cubeX << 4) + x - (xBase & 0x0F);
                                     int sy = (cubeY << 4) + y - (yBase & 0x0F);
                                     int sz = (cubeZ << 4) + z - (zBase & 0x0F);
-                                    if (sx >= 0 && sy >= 0 && sz >= 0 && sx < schematic.width && sy < schematic.height && sz < schematic.length) {
-                                        IBlockState state = schematic.palette.get(schematic.blockData[sx][sy][sz]);
+                                    if (sx >= 0 && sy >= 0 && sz >= 0 && sx < width && sy < height && sz < length) {
+                                        IBlockState state = palette.get(blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
                                             if (storage == null) {
                                                 cube.setStorage(storage = new ExtendedBlockStorage(cube.getY() << 4, world.provider.hasSkyLight()));
@@ -455,13 +429,13 @@ public class Schematic {
             }
         } else {
             DimDoors.log.info("Setting chunk blockstates");
-            for (int chunkX = 0; chunkX <= (schematic.width >> 4) + 1; chunkX++) {
-                for (int chunkZ = 0; chunkZ <= (schematic.length >> 4) + 1; chunkZ++) {
+            for (int chunkX = 0; chunkX <= (width >> 4) + 1; chunkX++) {
+                for (int chunkZ = 0; chunkZ <= (length >> 4) + 1; chunkZ++) {
                     long setStart = System.nanoTime();
                     // Get the chunk only once for efficiency
                     Chunk chunk = world.getChunkFromChunkCoords((xBase >> 4) + chunkX, (zBase >> 4) + chunkZ);
                     ExtendedBlockStorage[] storageArray = chunk.getBlockStorageArray();
-                    for (int storageY = 0; storageY <= (schematic.height >> 4) + 1; storageY++) {
+                    for (int storageY = 0; storageY <= (height >> 4) + 1; storageY++) {
                         // Get the storage only once for eficiency
                         ExtendedBlockStorage storage = storageArray[(yBase >> 4) + storageY];
                         boolean setAir = storage != null;
@@ -471,8 +445,8 @@ public class Schematic {
                                     int sx = (chunkX << 4) + x - (xBase & 0x0F);
                                     int sy = (storageY << 4) + y - (yBase & 0x0F);
                                     int sz = (chunkZ << 4) + z - (zBase & 0x0F);
-                                    if (sx >= 0 && sy >= 0 && sz >= 0 && sx < schematic.width && sy < schematic.height && sz < schematic.length) {
-                                        IBlockState state = schematic.palette.get(schematic.blockData[sx][sy][sz]);
+                                    if (sx >= 0 && sy >= 0 && sz >= 0 && sx < width && sy < height && sz < length) {
+                                        IBlockState state = palette.get(blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
                                             if (storage == null) {
                                                 storageArray[storageY] = storage = new ExtendedBlockStorage(storageY << 4, world.provider.hasSkyLight());
@@ -497,7 +471,7 @@ public class Schematic {
                 }
             }
         }
-        world.markBlockRangeForRenderUpdate(xBase, yBase, zBase, xBase + schematic.width, yBase + schematic.height, zBase + schematic.length);
+        world.markBlockRangeForRenderUpdate(xBase, yBase, zBase, xBase + width, yBase + height, zBase + length);
         DimDoors.log.info("Set block states in " + setTime / 1000000 + " ms and relit chunks/cubes in " + relightTime / 1000000);
     }
 }

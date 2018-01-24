@@ -79,7 +79,7 @@ public final class PocketSchematicGenerator {
         String[] saveFolders = {"public/", "private/", "blank/", "blank/", "blank/"};
         int i = 0;
         for (Schematic schematic : schematics) {
-            NBTTagCompound schematicNBT = Schematic.saveToNBT(schematic);
+            NBTTagCompound schematicNBT = schematic.saveToNBT();
             File saveFile = new File(schematicDir, saveFolders[i++ % saveFolders.length] + schematic.name + ".schem");
             saveFile.getParentFile().mkdirs();
             DataOutputStream schematicDataStream = new DataOutputStream(new FileOutputStream(saveFile));

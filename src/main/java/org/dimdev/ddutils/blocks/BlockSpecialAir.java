@@ -24,7 +24,7 @@ import java.util.Random;
  * method of the block that would have been hit if the block wasn't there. Left clicks pass through the
  * block (or maybe add an onLeftClick method).
  */ // TODO
-public abstract class BlockSpecialAir extends Block { // TODO: make water and pistons pass through but not destroy
+public abstract class BlockSpecialAir extends Block {
 
     public BlockSpecialAir() {
         // This is the only way to make it collide with water but not other entities, but still have a collision box for raytracing.
@@ -67,8 +67,7 @@ public abstract class BlockSpecialAir extends Block { // TODO: make water and pi
     // Disable raytrace hitting this block in survival unless the hitIfLiquid flag is true
     @Override
     public boolean canCollideCheck(IBlockState state, boolean hitIfLiquid) {
-        //EntityPlayer player = DimDoors.proxy.getLocalPlayer();
-        return /*player != null && player.isCreative() ||*/ hitIfLiquid; // TODO: re-enable this later
+        return hitIfLiquid;
     }
 
     // Disable dropping/picking item

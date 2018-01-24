@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
-import java.awt.*;
 import java.util.List;
 
 public class ItemRiftRemover extends Item {

@@ -41,5 +41,4 @@ public final class GridUtils {
             return (z + 1) * z + z - x; // (number of points in the rectangle (z + 1) * z) + (z - x points on the top layer)
         }
     }
-    // TODO: add more modes: hexagonal sphere packing and maybe spiral, triangle
 }

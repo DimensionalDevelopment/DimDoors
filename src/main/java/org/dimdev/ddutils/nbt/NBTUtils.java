@@ -4,7 +4,7 @@ import net.minecraft.nbt.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import lombok.Getter;
+
 import org.dimdev.ddutils.StringUtils;
 
 public final class NBTUtils {

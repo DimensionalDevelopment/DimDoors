@@ -112,10 +112,7 @@ info.stabilized_rift_signature.unbound2=the first and last locations together.
 
 info.chaos_dimensional_door=Caution: Leads to random destination
 
-info.warp_dimensional_door0=Place on the block under
-info.warp_dimensional_door1=a rift to create a portal,
-info.warp_dimensional_door2=or place anywhere in a
-info.warp_dimensional_door3=pocket dimension to exit.
+info.warp_dimensional_door0=Place on the block under a rift to create a portal, or place anywhere in a pocket dimension to exit.
 
 entity.dimdoors.monolith.name=Monolith
 
@@ -123,10 +120,10 @@ commands.dimteleport.usage=/dimteleport <dimension> <x> <y> <z> [yaw] [pitch]
 commands.fabricconvert.usage=/fabricconvert
 commands.fabricconvert.success=All fabric of reality has been converted to black.
 commands.pocket.usage=/pocket <group> <name> [setup]
-commands.pocket.groupnotfound=Group %s not found
-commands.pocket.templatenotfound=Template %s not found
+commands.pocket.group_not_found=Group %s not found
+commands.pocket.template_not_found=Template %s not found
 commands.saveschem.usage=/saveschem <name>
-commands.saveshcem.success=Pocket %s has been successfully saved
+commands.saveschem.success=Pocket %s has been successfully saved
 commands.generic.dimdoors.not_in_pocket_dim=You must be in a pocket dimension to use this command.
 commands.generic.dimdoors.not_in_pocket=You must be in a pocket to use this command.
 

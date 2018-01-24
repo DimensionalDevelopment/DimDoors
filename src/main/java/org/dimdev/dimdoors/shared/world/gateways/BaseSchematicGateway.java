@@ -51,7 +51,7 @@ public abstract class BaseSchematicGateway extends BaseGateway {
 
     @Override
     public void generate(World world, int x, int y, int z) {
-        Schematic.place(schematic, world, x, y, z);
+        schematic.place(world, x, y, z);
         generateRandomBits(world, x, y, z);
     }
 

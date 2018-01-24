@@ -68,7 +68,7 @@ public class PocketTemplate {
 
         // Place the schematic
         DimDoors.log.info("Placing new pocket using schematic " + id + " at x = " + xBase + ", z = " + zBase);
-        Schematic.place(schematic, world, xBase, yBase, zBase);
+        schematic.place(world, xBase, yBase, zBase);
     }
 
     public void setup(Pocket pocket, RiftDestination linkTo, LinkProperties linkProperties) {

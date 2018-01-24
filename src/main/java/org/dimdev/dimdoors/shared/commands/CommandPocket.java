@@ -27,12 +27,12 @@ public class CommandPocket extends CommandBase {
 
     @Override
     public String getName() {
-        return "pockets";
+        return "pocket";
     }
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "commands.pockets.usage";
+        return "commands.pocket.usage";
     }
 
     @Override
@@ -41,7 +41,7 @@ public class CommandPocket extends CommandBase {
 
         // Check that the number of arguments is correct
         if (args.length < 2 || args.length > 3) {
-            throw new WrongUsageException("commands.pockets.usage");
+            throw new WrongUsageException("commands.pocket.usage");
         }
 
         // Make sure the player is in a pocket world
@@ -54,12 +54,12 @@ public class CommandPocket extends CommandBase {
 
         // Check if the schematic exists
         if (!SchematicHandler.INSTANCE.getTemplateGroups().contains(group)) {
-            throw new CommandException("commands.pockets.groupnotfound", group);
+            throw new CommandException("commands.pocket.group_not_found", group);
         } else if (!SchematicHandler.INSTANCE.getTemplateNames(group).contains(name)) {
-            throw new CommandException("commands.pockets.templatenotfound", group);
+            throw new CommandException("commands.pocket.template_not_found", name);
         }
 
-        boolean setup = parseBoolean(args[3]);
+        boolean setup = args.length < 3 || parseBoolean(args[2]);
 
         // Generate the schematic
         PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(group, name);

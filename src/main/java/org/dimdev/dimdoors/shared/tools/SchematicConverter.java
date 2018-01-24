@@ -252,6 +252,7 @@ public final class SchematicConverter {
                         if (baseState.getBlock().equals(ModBlocks.FABRIC) || baseState.getBlock().equals(ModBlocks.ANCIENT_FABRIC)) {
                             blockState = baseState;
                         } else {
+                            //noinspection deprecation
                             blockState = baseState.getBlock().getStateFromMeta(metadata);
                         }
                         if (schematic.palette.contains(blockState)) { //check whether or not this blockstate is already in the list

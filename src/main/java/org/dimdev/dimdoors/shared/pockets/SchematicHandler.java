@@ -220,8 +220,6 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 }
             }
         }
-
-        nameMap.put(SAVED_POCKETS_GROUP_NAME, new HashMap<>());
     }
 
     public Set<String> getTemplateGroups() {
@@ -294,7 +292,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     }
 
     public void saveSchematic(Schematic schematic, String id) {
-        NBTTagCompound schematicNBT = Schematic.saveToNBT(schematic);
+        NBTTagCompound schematicNBT = schematic.saveToNBT();
         File saveFolder = new File(DimDoors.getConfigurationFolder(), "/schematics/saved");
         if (!saveFolder.exists()) {
             saveFolder.mkdirs();
