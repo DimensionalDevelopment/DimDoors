@@ -190,7 +190,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             String name = pocket.has("name") ? pocket.get("name").getAsString() : null;
             String author = pocket.has("author") ? pocket.get("author").getAsString() : null;
             int size = pocket.get("size").getAsInt();
-            if (ModConfig.pocket.loadAllSchematics && size > ModConfig.pocket.maxPocketSize) continue;
+            if (ModConfig.pockets.loadAllSchematics && size > ModConfig.pockets.maxPocketSize) continue;
             int baseWeight = pocket.has("baseWeight") ? pocket.get("baseWeight").getAsInt() : 100;
             pocketTemplates.add(new PocketTemplate(group, id, type, name, author, size, baseWeight));
         }
@@ -286,11 +286,11 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     }
 
     public PocketTemplate getPersonalPocketTemplate() {
-        return getRandomTemplate("private", -1, ModConfig.pocket.initialPrivatePocketSize, true);
+        return getRandomTemplate("private", -1, ModConfig.pockets.initialPrivatePocketSize, true);
     }
 
     public PocketTemplate getPublicPocketTemplate() {
-        return getRandomTemplate("public", -1, ModConfig.pocket.basePublicPocketSize, true);
+        return getRandomTemplate("public", -1, ModConfig.pockets.basePublicPocketSize, true);
     }
 
     public void saveSchematic(Schematic schematic, String id) {

@@ -41,8 +41,9 @@ public final class SchematicConverter {
     private final static int POTION_ID = 373;
     private final static int WRITTEN_BOOK_ID = 387;
 
-    private final static int NBT_COMPOUND_TAG_ID = NBTUtils.getNBT_COMPOUND_TAG_ID();
-    private final static int STRING_TAG_ID = NBTUtils.getSTRING_TAG_ID();
+    private final static int NBT_COMPOUND_TAG_ID = NBTUtils.NBT_COMPOUND_TAG_ID;
+    private final static int STRING_TAG_ID = NBTUtils.NBT_COMPOUND_TAG_ID;
+    private static final boolean GENERATE_DUNGEON_INFO = false;
 
     public static Schematic convertSchematic(NBTTagCompound nbt, String schematicId, String name, String author) {
         Schematic schematic = new Schematic();
@@ -381,8 +382,10 @@ public final class SchematicConverter {
         }
         schematic.paletteMax = schematic.palette.size() - 1;
 
-        DimDoors.log.info(schematicId + "," + ironDimDoors + "," + warpDoors + "," + monoliths + "," + chests + ","
-                          + dispensers + "," + allPistonBases + "," + tnt + "," + diamondBlocks + "," + goldBlocks + "," + ironBlocks);
+        if (GENERATE_DUNGEON_INFO) {
+            DimDoors.log.info(schematicId + "," + ironDimDoors + "," + warpDoors + "," + monoliths + "," + chests + ","
+                              + dispensers + "," + allPistonBases + "," + tnt + "," + diamondBlocks + "," + goldBlocks + "," + ironBlocks);
+        }
 
         return schematic;
     }
@@ -418,8 +421,6 @@ public final class SchematicConverter {
         if (location == null) {
             DimDoors.log.error("Resourcelocation of TileEntity with old ID: " + id + " was null. If you want to complain about log spam; " + (id.equals("Hopper") ? "it is very likely that it's FoamFix causing this. Please update it to at least version 0.9.0-1.12.2!" : "we have no idea what causes this, so please report it."));
             location = translateIdCrude(id);
-        } else {
-            //DimDoors.log.info("Resourcelocation succesfully translated from old ID: " + oldID + " into: " + newID + ".");
         }
         return location.toString();
     }

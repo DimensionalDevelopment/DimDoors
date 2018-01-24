@@ -8,22 +8,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockFabric;
-import org.dimdev.pocketlib.WorldProviderPocket;
 import org.dimdev.pocketlib.Pocket;
 import org.dimdev.pocketlib.PocketRegistry;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.dimdev.pocketlib.WorldProviderPocket;
 
 public class CommandFabricConvert extends CommandBase {
-    private final List<String> aliases;
-
-    public CommandFabricConvert() {
-        aliases = new ArrayList<>();
-        aliases.add("fabricconvert");
-    }
 
     @Override
     public String getName() {
@@ -32,45 +22,32 @@ public class CommandFabricConvert extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "fabricconvert";
-    }
-
-    @Override
-    public List<String> getAliases() {
-        return aliases;
+        return "commands.fabricconvert.usage";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        // Execute only if it's a player
-        if (sender instanceof EntityPlayerMP) {
-            EntityPlayerMP player = getCommandSenderAsPlayer(sender);
+        EntityPlayerMP player = getCommandSenderAsPlayer(sender);
 
-            if (!(player.world.provider instanceof WorldProviderPocket)) {
-                DimDoors.chat(player, "Current Dimension isn't a pocket dimension");
-                return;
-            }
+        if (!(player.world.provider instanceof WorldProviderPocket)) throw new CommandException("commands.generic.dimdoors.not_in_pocket");
+        Pocket pocket = PocketRegistry.instance(player.dimension).getPocketAt(player.getPosition());
+        if (pocket == null) throw new CommandException("commands.generic.dimdoors.not_in_pocket");
 
-            Pocket pocket = PocketRegistry.instance(player.dimension).getPocketAt(player.getPosition());
+        BlockPos origin = pocket.getOrigin();
+        int size = (pocket.getSize() + 1) * 16 - 1;
 
-            BlockPos origin = pocket.getOrigin();
-            int size = (pocket.getSize() + 1) * 16 - 1;
+        for (int x = 0; x < size; x++) {
+            for (int y = 0; y < size; y++) {
+                for (int z = 0; z < size; z++) {
+                    IBlockState state = player.world.getBlockState(new BlockPos(origin.getX() + x, origin.getY() + y, origin.getZ() + z));
 
-            for (int x = 0; x < size; x++) {
-                for (int y = 0; y < size; y++) {
-                    for (int z = 0; z < size; z++) {
-                        IBlockState state = player.world.getBlockState(new BlockPos(origin.getX() + x, origin.getY() + y, origin.getZ() + z));
-
-                        if (state.getBlock() instanceof BlockFabric) {
-                            player.world.setBlockState(origin, state.withProperty(BlockFabric.COLOR, EnumDyeColor.BLACK));
-                        }
+                    if (state.getBlock() instanceof BlockFabric) {
+                        player.world.setBlockState(origin, state.withProperty(BlockFabric.COLOR, EnumDyeColor.BLACK));
                     }
                 }
             }
-
-            DimDoors.chat(player, "All fabric's of reality have been converted to black.");
-        } else {
-            DimDoors.log.info("Not executing command /" + getName() + " because it wasn't sent by a player.");
         }
+
+        notifyCommandListener(sender, this, "commands.fabricconvert.success");
     }
 }

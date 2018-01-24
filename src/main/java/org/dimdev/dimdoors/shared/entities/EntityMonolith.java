@@ -52,7 +52,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
     }
 
     public boolean isDangerous() {
-        return ModConfig.monolith.monolithTeleportationEnabled && (world.provider instanceof WorldProviderLimbo || ModConfig.monolith.dangerousLimboMonolithsEnabled);
+        return ModConfig.monoliths.monolithTeleportationEnabled && (world.provider instanceof WorldProviderLimbo || ModConfig.monoliths.dangerousLimboMonolithsEnabled);
     }
 
     @Override
@@ -146,7 +146,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
                 }
 
                 // Teleport the target player if various conditions are met
-                if (aggro >= MAX_AGGRO && !world.isRemote && ModConfig.monolith.monolithTeleportationEnabled && !player.isCreative() && isDangerous()) {
+                if (aggro >= MAX_AGGRO && !world.isRemote && ModConfig.monoliths.monolithTeleportationEnabled && !player.isCreative() && isDangerous()) {
                     aggro = 0;
                     Location destination = WorldProviderLimbo.getLimboSkySpawn(player);
                     TeleportUtils.teleport(player, destination, 0, 0);

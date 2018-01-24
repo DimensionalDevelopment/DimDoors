@@ -122,6 +122,5 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
     @Override
     protected ResourceLocation getEntityTexture(EntityMonolith monolith) {
         return monolith_textures.get(monolith.getTextureState());
-        //return new ResourceLocation(DimDoors.MODID + ":textures/mobs/monolith/monolith" + monolith.getTextureState() + ".png");
     }
 }

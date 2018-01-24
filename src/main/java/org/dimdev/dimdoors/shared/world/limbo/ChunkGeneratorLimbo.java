@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-public class LimboGenerator implements IChunkGenerator {
+public class ChunkGeneratorLimbo implements IChunkGenerator {
 
     private Random rand;
 
@@ -37,7 +37,7 @@ public class LimboGenerator implements IChunkGenerator {
 
     double[] depthRegion;
 
-    public LimboGenerator(World world, long seed) {
+    public ChunkGeneratorLimbo(World world, long seed) {
         this.world = world;
         rand = new Random(seed);
         minLimitPerlinNoise = new NoiseGeneratorOctaves(rand, 16); //base terrain

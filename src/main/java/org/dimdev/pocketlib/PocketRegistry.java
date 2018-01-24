@@ -63,7 +63,7 @@ import org.dimdev.dimdoors.shared.ModConfig;
     }
 
     public void initNewRegistry() {
-        gridSize = ModConfig.pocket.pocketGridSize;
+        gridSize = ModConfig.pockets.pocketGridSize;
 
         nextID = 0;
         pockets = new HashMap<>();
@@ -75,7 +75,7 @@ import org.dimdev.dimdoors.shared.ModConfig;
     /**
      * Create a new blank pocket.
      *
-     * @return The newly created pocket
+     * @return The newly created pockets
      */
     public Pocket newPocket() {
         Pocket pocket = null;
@@ -84,7 +84,7 @@ import org.dimdev.dimdoors.shared.ModConfig;
     }
 
     /**
-     * Create a new pocket with a specific ID.
+     * Create a new pockets with a specific ID.
      *
      * @return The newly created Pocket, or null if that ID is already taken.
      */

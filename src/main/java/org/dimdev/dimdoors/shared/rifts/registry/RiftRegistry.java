@@ -32,7 +32,7 @@ public class RiftRegistry extends WorldSavedData {
 
     // Caches to avoid looping through vertices to find specific vertices
     protected Map<Location, Rift> locationMap = new HashMap<>();
-    protected Map<Pocket, PocketEntrancePointer> pocketEntranceMap = new HashMap<>(); // TODO: We're going to want to move all pocket entrance info to the rift registry later to make PocketLib independent of DimDoors.
+    protected Map<Pocket, PocketEntrancePointer> pocketEntranceMap = new HashMap<>();
     protected Map<UUID, RegistryVertex> uuidMap = new HashMap<>();
 
     // These are stored in the main registry

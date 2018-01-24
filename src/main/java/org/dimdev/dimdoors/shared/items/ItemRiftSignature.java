@@ -6,6 +6,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.ddutils.I18nUtils;
@@ -56,7 +57,12 @@ public class ItemRiftSignature extends Item {
 
         RotatedLocation target = getSource(stack);
 
-        if (target != null) {
+        if (target == null) {
+            // The link signature has not been used. Store its current target as the first location.
+            setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw, 0));
+            player.sendStatusMessage(new TextComponentTranslation("item.rift_signature.stored"), true);
+            world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
+        } else {
             // Place a rift at the saved point TODO: check that the player still has permission
             if (!target.getLocation().getBlockState().getBlock().equals(ModBlocks.RIFT)) {
                 if (!target.getLocation().getBlockState().getBlock().equals(Blocks.AIR)) {
@@ -80,14 +86,9 @@ public class ItemRiftSignature extends Item {
             stack.damageItem(1, player); // TODO: calculate damage based on position?
 
             clearSource(stack);
-            DimDoors.sendMessage(player, "Rift Created");
+            player.sendStatusMessage(new TextComponentTranslation("item.rift_signature.created"), true);
             // null = send sound to the player too, we have to do this because this code is not run client-side
             world.playSound(null, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
-        } else {
-            // The link signature has not been used. Store its current target as the first location.
-            setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw, 0));
-            DimDoors.sendMessage(player, "Location Stored in Rift Signature");
-            world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         }
 
         return EnumActionResult.SUCCESS;

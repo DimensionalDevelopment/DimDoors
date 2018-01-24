@@ -88,7 +88,7 @@ public class WorldProviderLimbo extends WorldProvider {
 
     @Override
     public IChunkGenerator createChunkGenerator() {
-        return new LimboGenerator(world, world.getSeed());
+        return new ChunkGeneratorLimbo(world, world.getSeed());
     }
 
     public static Location getLimboSkySpawn(Entity entity) { // TODO: move this somewhere else

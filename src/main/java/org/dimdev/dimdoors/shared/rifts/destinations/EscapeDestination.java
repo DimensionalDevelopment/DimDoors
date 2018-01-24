@@ -36,7 +36,11 @@ public class EscapeDestination extends RiftDestination {
     @Override
     public boolean teleport(RotatedLocation loc, Entity entity) {
         if (!ModDimensions.isDimDoorsPocketDimension(entity.world)) {
-            DimDoors.sendMessage(entity, "Can't escape from a non-pocket dimension!");
+            if (entity.world.provider instanceof WorldProviderLimbo) {
+                DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.cannot_escape_limbo");
+            } else {
+                DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.not_in_pocket_dim");
+            }
             return false;
         }
         UUID uuid = entity.getUniqueID();
@@ -44,15 +48,14 @@ public class EscapeDestination extends RiftDestination {
             Location destLoc = RiftRegistry.instance().getOverworldRift(uuid);
             if (destLoc != null && destLoc.getTileEntity() instanceof TileEntityRift) {
                 //TeleportUtils.teleport(entity, new VirtualLocation(destLoc, rift.virtualLocation.getDepth()).projectToWorld()); // TODO
-                // TODO
                 return true;
             } else {
                 if (destLoc == null) {
-                    DimDoors.sendMessage(entity, "You didn't use a rift to enter so you ended up in Limbo!"); // TODO: better messages, localization
+                    DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.did_not_use_rift");
                 } else {
-                    DimDoors.sendMessage(entity, "The rift you used to enter has closed so you ended up in Limbo!");
+                    DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.rift_has_closed");
                 }
-                TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity)); // TODO: do we really want to spam limbo with items?
+                TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity));
                 return true;
             }
         } else {

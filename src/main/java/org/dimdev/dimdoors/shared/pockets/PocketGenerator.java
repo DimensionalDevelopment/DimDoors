@@ -14,7 +14,7 @@ import java.util.Random;
 public final class PocketGenerator {
 
     public static Pocket generatePocketFromTemplate(int dim, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
-        DimDoors.log.info("Generating pocket from template " + pocketTemplate.getId() + " at virtual location " + virtualLocation);
+        DimDoors.log.info("Generating pockets from template " + pocketTemplate.getId() + " at virtual location " + virtualLocation);
 
         PocketRegistry registry = PocketRegistry.instance(dim);
         Pocket pocket = registry.newPocket();
@@ -29,7 +29,7 @@ public final class PocketGenerator {
         return generatePocketFromTemplate(ModDimensions.getPrivateDim(), pocketTemplate, virtualLocation, true);
     }
 
-    // TODO: size of public pocket should increase with depth
+    // TODO: size of public pockets should increase with depth
     public static Pocket generatePublicPocket(VirtualLocation virtualLocation, RiftDestination linkTo, LinkProperties linkProperties) {
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getPublicPocketTemplate();
         Pocket pocket = generatePocketFromTemplate(ModDimensions.getPublicDim(), pocketTemplate, virtualLocation, false);
@@ -38,17 +38,17 @@ public final class PocketGenerator {
     }
 
     /**
-     * Create a dungeon pocket at a certain depth.
+     * Create a dungeon pockets at a certain depth.
      *
-     * @param virtualLocation The virtual location of the pocket
-     * @return The newly-generated dungeon pocket
+     * @param virtualLocation The virtual location of the pockets
+     * @return The newly-generated dungeon pockets
      */
     public static Pocket generateDungeonPocket(VirtualLocation virtualLocation, RiftDestination linkTo, LinkProperties linkProperties) {
         int depth = virtualLocation.getDepth();
         float netherProbability = virtualLocation.getDim() == -1 ? 1 : (float) depth / 200; // TODO: improve nether probability
         Random random = new Random();
         String group = random.nextFloat() < netherProbability ? "nether" : "ruins";
-        PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getRandomTemplate(group, depth, ModConfig.pocket.maxPocketSize, false);
+        PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getRandomTemplate(group, depth, ModConfig.pockets.maxPocketSize, false);
 
         Pocket pocket = generatePocketFromTemplate(ModDimensions.getDungeonDim(), pocketTemplate, virtualLocation, false);
         pocketTemplate.setup(pocket, linkTo, linkProperties);

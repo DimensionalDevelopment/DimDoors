@@ -5,7 +5,7 @@ import net.minecraft.world.biome.Biome;
 
 public class GatewaySandstonePillars extends BaseSchematicGateway {
     public GatewaySandstonePillars() {
-        super("sandstonePillars");
+        super("sandstone_pillars");
     }
 
     @Override

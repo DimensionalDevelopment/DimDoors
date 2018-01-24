@@ -28,7 +28,7 @@ public class LimboDestination extends RiftDestination {
 
     @Override
     public boolean teleport(RotatedLocation loc, Entity entity) {
-        TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity)); // TODO: do we really want to spam Limbo with items?
+        TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity));
         return false;
     }
 }

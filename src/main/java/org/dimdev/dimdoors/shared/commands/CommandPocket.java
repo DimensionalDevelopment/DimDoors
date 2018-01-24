@@ -1,20 +1,21 @@
 package org.dimdev.dimdoors.shared.commands;
 
-import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.pockets.*;
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
-import org.dimdev.ddutils.Location;
-import org.dimdev.ddutils.TeleportUtils;
-import org.dimdev.ddutils.WorldUtils;
-import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
-import org.dimdev.dimdoors.shared.world.ModDimensions;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import org.dimdev.ddutils.Location;
+import org.dimdev.ddutils.TeleportUtils;
+import org.dimdev.ddutils.WorldUtils;
+import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
+import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
+import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
+import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
+import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.pocketlib.Pocket;
 
 import javax.annotation.Nullable;
@@ -24,84 +25,53 @@ import java.util.stream.Collectors;
 
 public class CommandPocket extends CommandBase {
 
-    private final List<String> aliases;
-
-    public CommandPocket() {
-        aliases = new ArrayList<>();
-        aliases.add("pocket");
-    }
-
     @Override
     public String getName() {
-        return "pocket";
+        return "pockets";
     }
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "pocket <group> <name> [setup]";
+        return "commands.pockets.usage";
     }
 
     @Override
-    public List<String> getAliases() {
-        return aliases;
-    }
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        EntityPlayerMP player = getCommandSenderAsPlayer(sender);
 
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException { // TODO: more pocket commands (replace pocket, get ID, teleport to pocket, etc.)
         // Check that the number of arguments is correct
         if (args.length < 2 || args.length > 3) {
-            sender.sendMessage(new TextComponentString("[DimDoors] Usage: /" + getUsage(sender)));
-            return;
+            throw new WrongUsageException("commands.pockets.usage");
         }
+
+        // Make sure the player is in a pocket world
+        if (!ModDimensions.isDimDoorsPocketDimension(player.world)) {
+            throw new CommandException("commands.generic.dimdoors.not_in_pocket_dim");
+        }
+
         String group = args[0];
         String name = args[1];
-        boolean setup = true;
-        if (args.length >= 3) {
-            switch (args[2]) {
-                case "true":
-                    setup = true;
-                    break;
-                case "false":
-                    setup = false;
-                    break;
-                default:
-                    sender.sendMessage(new TextComponentString("[DimDoors] Usage: /" + getUsage(sender)));
-                    return;
-            }
+
+        // Check if the schematic exists
+        if (!SchematicHandler.INSTANCE.getTemplateGroups().contains(group)) {
+            throw new CommandException("commands.pockets.groupnotfound", group);
+        } else if (!SchematicHandler.INSTANCE.getTemplateNames(group).contains(name)) {
+            throw new CommandException("commands.pockets.templatenotfound", group);
         }
 
-        // Execute only if it's a player
-        if (sender instanceof EntityPlayerMP) {
-            EntityPlayerMP player = getCommandSenderAsPlayer(sender);
-            // Make sure the player is in a pocket world
-            if (!ModDimensions.isDimDoorsPocketDimension(player.world)) {
-                DimDoors.chat(player, "You must be in a pocket dimension to use this command!");
-                return;
-            }
+        boolean setup = parseBoolean(args[3]);
 
-            // Check if the schematic exists
-            if (!SchematicHandler.INSTANCE.getTemplateGroups().contains(group)) {
-                DimDoors.chat(player, "Group " + group + " not found");
-                return;
-            } else if (!SchematicHandler.INSTANCE.getTemplateNames(group).contains(name)) {
-                DimDoors.chat(player, "Schematic " + name + " not found in group " + group);
-                return;
-            }
+        // Generate the schematic
+        PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(group, name);
+        Pocket pocket = PocketGenerator.generatePocketFromTemplate(WorldUtils.getDim(player.world), template, null, setup);
 
-            // Generate the schematic
-            PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(group, name);
-            Pocket pocket = PocketGenerator.generatePocketFromTemplate(WorldUtils.getDim(player.world), template, null, setup);
-
-            // Teleport the player there
-            if (RiftRegistry.instance().getPocketEntrance(pocket) != null) {
-                TileEntityRift entrance = (TileEntityRift) player.world.getTileEntity(RiftRegistry.instance().getPocketEntrance(pocket).getPos());
-                entrance.teleportTo(player);
-            } else {
-                int size = (pocket.getSize() + 1) * 16;
-                TeleportUtils.teleport(player, new Location(player.world, pocket.getOrigin().add(size / 2, size / 2, size / 2)));
-            }
+        // Teleport the player there
+        if (RiftRegistry.instance().getPocketEntrance(pocket) != null) {
+            TileEntityRift entrance = (TileEntityRift) player.world.getTileEntity(RiftRegistry.instance().getPocketEntrance(pocket).getPos());
+            entrance.teleportTo(player);
         } else {
-            DimDoors.log.info("Not executing command /" + getName() + " because it wasn't sent by a player.");
+            int size = (pocket.getSize() + 1) * 16;
+            TeleportUtils.teleport(player, new Location(player.world, pocket.getOrigin().add(size / 2, size / 2, size / 2)));
         }
     }
 

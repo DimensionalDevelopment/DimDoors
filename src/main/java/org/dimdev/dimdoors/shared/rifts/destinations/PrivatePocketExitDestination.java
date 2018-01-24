@@ -46,9 +46,9 @@ public class PrivatePocketExitDestination extends RiftDestination {
             }
             if (destLoc == null || !(destLoc.getTileEntity() instanceof TileEntityRift)) {
                 if (destLoc == null) {
-                    DimDoors.sendMessage(entity, "You did not use a rift to enter this pocket so you ended up in limbo!");
+                    DimDoors.sendTranslatedMessage(entity, "rifts.destinations.private_pocket_exit.did_not_use_rift");
                 } else {
-                    DimDoors.sendMessage(entity, "The rift you entered through no longer exists so you ended up in limbo!");
+                    DimDoors.sendTranslatedMessage(entity, "rifts.destinations.private_pocket_exit.rift_has_closed");
                 }
                 TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity));
                 return false;

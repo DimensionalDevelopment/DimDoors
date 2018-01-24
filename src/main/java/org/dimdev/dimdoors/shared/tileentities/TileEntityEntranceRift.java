@@ -74,9 +74,10 @@ import java.util.Random;
         if (relativeRotation) {
             TeleportUtils.teleport(entity, new Location(world, pos.offset(orientation, tpOffset)), orientation.getHorizontalAngle() + entity.rotationYaw - fromYaw, entity.rotationPitch - fromPitch);
         } else {
-            TeleportUtils.teleport(entity, new Location(world, pos.offset(orientation, tpOffset)), orientation.getHorizontalAngle(), 0);
+            teleportTo(entity);
         }
     }
+
     @Override
     public void teleportTo(Entity entity) {
         TeleportUtils.teleport(entity, new Location(world, pos.offset(orientation, tpOffset)), orientation.getHorizontalAngle(), 0);

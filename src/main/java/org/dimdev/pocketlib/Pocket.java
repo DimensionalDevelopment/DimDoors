@@ -32,7 +32,7 @@ import org.dimdev.ddutils.nbt.NBTUtils;
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
 
     boolean isInBounds(BlockPos pos) {
-        // pocket bounds
+        // pockets bounds
         int gridSize = PocketRegistry.instance(dim).getGridSize();
         int minX = x * gridSize;
         int minZ = z * gridSize;
@@ -46,5 +46,5 @@ import org.dimdev.ddutils.nbt.NBTUtils;
         return new BlockPos(x * gridSize * 16, 0, z * gridSize * 16);
     }
 
-    // TODO: more pocket methods
+    // TODO: more pockets methods
 }

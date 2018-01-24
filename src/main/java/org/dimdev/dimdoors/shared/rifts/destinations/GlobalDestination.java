@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-@NBTSerializable public class GlobalDestination extends RiftDestination { // TODO: location directly in nbt like minecraft?
+@NBTSerializable public class GlobalDestination extends RiftDestination {
     @Saved protected Location target;
 
     public GlobalDestination() {}

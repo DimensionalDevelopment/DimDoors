@@ -1,8 +1,5 @@
 package org.dimdev.dimdoors.shared.world.gateways;
 
-import org.dimdev.dimdoors.shared.ModConfig;
-import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import org.dimdev.pocketlib.WorldProviderPocket;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -10,6 +7,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
+import org.dimdev.dimdoors.shared.ModConfig;
+import org.dimdev.dimdoors.shared.blocks.ModBlocks;
+import org.dimdev.pocketlib.WorldProviderPocket;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +23,6 @@ public class GatewayGenerator implements IWorldGenerator {
     private static final int MIN_RIFT_Y = 4;
     private static final int MAX_RIFT_Y = 240;
     private static final int CHUNK_LENGTH = 16;
-    // private static final int GATEWAY_RADIUS = 4; // TODO: what did this do in the old mod?
     private static final int MAX_GATEWAY_GENERATION_ATTEMPTS = 10;
     private static final int NETHER_DIMENSION_ID = -1;
     private static final int END_DIMENSION_ID = 1;
@@ -74,10 +73,10 @@ public class GatewayGenerator implements IWorldGenerator {
                         //If the point is within the acceptable altitude range, the block above is empty, and we're
                         //not building on bedrock, then generate a rift there
                         if (y >= MIN_RIFT_Y && y <= MAX_RIFT_Y && world.isAirBlock(new BlockPos(x, y + 1, z))
-                                && world.getBlockState(new BlockPos(x, y, z)).getBlock() != Blocks.BEDROCK
-                                && //<-- Stops Nether roof spawning. DO NOT REMOVE!
-                                world.getBlockState(new BlockPos(x, y - 1, z)).getBlock() != Blocks.BEDROCK
-                                && world.getBlockState(new BlockPos(x, y - 2, z)).getBlock() != Blocks.BEDROCK) {
+                            && world.getBlockState(new BlockPos(x, y, z)).getBlock() != Blocks.BEDROCK
+                            && //<-- Stops Nether roof spawning. DO NOT REMOVE!
+                            world.getBlockState(new BlockPos(x, y - 1, z)).getBlock() != Blocks.BEDROCK
+                            && world.getBlockState(new BlockPos(x, y - 2, z)).getBlock() != Blocks.BEDROCK) {
                             //Create a link. If this is not the first time, create a child link and connect it to the first link.
                             world.setBlockState(new BlockPos(x, y, z), ModBlocks.RIFT.getDefaultState());
                         }
@@ -133,11 +132,10 @@ public class GatewayGenerator implements IWorldGenerator {
         //and the block two levels down is opaque and has a reasonable material. Plus that we're not building
         //on top of bedrock.
         return pos.getY() >= MIN_RIFT_Y && pos.getY() <= MAX_RIFT_Y
-                && world.isAirBlock(pos.up())
-                && world.getBlockState(pos).getBlock() != Blocks.BEDROCK
-                && //<-- Stops Nether roof spawning. DO NOT REMOVE!
-                world.getBlockState(pos.down()) != Blocks.BEDROCK
-                && checkFoundationMaterial(world, pos.down());
+               && world.isAirBlock(pos.up())
+               && world.getBlockState(pos).getBlock() != Blocks.BEDROCK
+               && world.getBlockState(pos.down()) != Blocks.BEDROCK //<-- Stops Nether roof spawning. DO NOT REMOVE!
+               && checkFoundationMaterial(world, pos.down());
     }
 
     private static boolean checkFoundationMaterial(World world, BlockPos pos) {
@@ -146,6 +144,6 @@ public class GatewayGenerator implements IWorldGenerator {
         //We also want to avoid generating things on top of the Nether's bedrock!
         Material material = world.getBlockState(pos).getMaterial();
         return material != Material.LEAVES && material != Material.WOOD && material != Material.GOURD
-                && world.isBlockNormalCube(pos, false) && world.getBlockState(pos).getBlock() != Blocks.BEDROCK;
+               && world.isBlockNormalCube(pos, false) && world.getBlockState(pos).getBlock() != Blocks.BEDROCK;
     }
 }

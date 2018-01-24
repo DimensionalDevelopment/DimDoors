@@ -182,7 +182,7 @@ import javax.annotation.Nonnull;
 
         // Check that the rift has as destination
         if (destination == null) {
-            DimDoors.sendMessage(entity, "This rift has no destination!");
+            DimDoors.sendTranslatedMessage(entity, "rifts.unlinked");
             return false;
         }
 
@@ -190,11 +190,11 @@ import javax.annotation.Nonnull;
         try {
             if (destination.teleport(new RotatedLocation(new Location(world, pos), yaw, pitch), entity)) {
                 VirtualLocation vloc = VirtualLocation.fromLocation(new Location(entity.world, entity.getPosition()));
-                DimDoors.sendMessage(entity, "You are at x = " + vloc.getX() + ", y = ?, z = " + vloc.getZ() + ", w = " + vloc.getDepth());
+                DimDoors.sendTranslatedMessage(entity, "You are at x = " + vloc.getX() + ", y = ?, z = " + vloc.getZ() + ", w = " + vloc.getDepth());
                 return true;
             }
         } catch (Exception e) {
-            DimDoors.chat(entity, "There was an exception while teleporting, please report this bug.");
+            DimDoors.chat(entity, "Something went wrong while trying to teleport you, please report this bug.");
             DimDoors.log.error("Teleporting failed with the following exception: ", e);
         }
         return false;
@@ -204,7 +204,7 @@ import javax.annotation.Nonnull;
         //if (relativeRotation) {
         //    TeleportUtils.teleport(entity, new Location(world, pos), yaw + entity.rotationYaw - fromYaw, pitch + entity.rotationPitch - fromPitch);
         //} else {
-        TeleportUtils.teleport(entity, new Location(world, pos), yaw, pitch);
+        teleportTo(entity);
         //}
     }
 

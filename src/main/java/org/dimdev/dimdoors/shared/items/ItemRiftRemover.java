@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.shared.items;
 
 import net.minecraft.util.*;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.dimdoors.DimDoors;
@@ -16,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
+import java.awt.*;
 import java.util.List;
 
 public class ItemRiftRemover extends Item {
@@ -51,7 +53,7 @@ public class ItemRiftRemover extends Item {
             // TODO: render rift removing animation
 
             stack.damageItem(10, player);
-            DimDoors.sendMessage(player, "Rift Removed");
+            player.sendStatusMessage(new TextComponentTranslation("item.rift_remover.removed"), true);
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
         return new ActionResult<>(EnumActionResult.FAIL, stack);

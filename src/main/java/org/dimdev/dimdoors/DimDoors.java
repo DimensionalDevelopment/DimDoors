@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentTranslation;
 import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.commands.CommandFabricConvert;
 import org.dimdev.dimdoors.shared.commands.CommandPocket;
@@ -13,7 +14,6 @@ import lombok.Getter;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
@@ -85,16 +85,16 @@ public class DimDoors {
         event.registerServerCommand(new CommandFabricConvert());
     }
 
-    public static void sendMessage(Entity entity, String text) {
+    public static void sendTranslatedMessage(Entity entity, String text, Object... translationArgs) {
         if (ModConfig.general.useStatusBar && entity instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) entity;
-            player.sendStatusMessage(new TextComponentString(text), true);
+            player.sendStatusMessage(new TextComponentTranslation(text, translationArgs), true);
         } else {
-            chat(entity, text);
+            chat(entity, text, translationArgs);
         }
     }
 
-    public static void chat(Entity entity, String text) {
-        entity.sendMessage(new TextComponentString("[DimDoors] " + text));
+    public static void chat(Entity entity, String text, Object... translationArgs) {
+        entity.sendMessage(new TextComponentTranslation(text, translationArgs));
     }
 }

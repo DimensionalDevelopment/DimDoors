@@ -9,7 +9,7 @@ public class GatewayTwoPillars extends BaseSchematicGateway {
     private static final int GATEWAY_RADIUS = 4;
 
     public GatewayTwoPillars() {
-        super("twoPillars");
+        super("two_pillars");
     }
 
     @Override

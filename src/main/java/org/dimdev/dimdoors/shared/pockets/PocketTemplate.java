@@ -145,8 +145,6 @@ public class PocketTemplate {
             }
         }
 
-        // Link the pocket back
-
         // Link pocket exits back
         for (TileEntityRift rift : rifts) {
             RiftDestination dest = rift.getDestination();

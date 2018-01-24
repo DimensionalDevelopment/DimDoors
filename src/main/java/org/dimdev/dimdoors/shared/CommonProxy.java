@@ -35,7 +35,7 @@ public abstract class CommonProxy {
         registerTileEntities();
         ModDimensions.registerDimensions();
 
-        EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), EntityMonolith.class, "monolith", 0, DimDoors.instance, 70, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), EntityMonolith.class, "monoliths", 0, DimDoors.instance, 70, 1, true);
         EntityRegistry.registerEgg(new ResourceLocation(DimDoors.MODID, "mob_monolith"), 0, 0xffffff);
         registerRiftDestinations();
     }

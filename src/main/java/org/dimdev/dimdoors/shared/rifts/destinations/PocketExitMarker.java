@@ -28,7 +28,7 @@ public class PocketExitMarker extends RiftDestination {
 
     @Override
     public boolean teleport(RotatedLocation loc, Entity entity) {
-        if (entity instanceof EntityPlayer) DimDoors.chat(entity, "The exit of this dungeon has not been linked. If this is a normally generated pocket, please report this bug.");
+        DimDoors.chat(entity, "The exit of this dungeon has not been linked. If this is a normally generated pocket, please report this bug.");
         return false;
     }
 }

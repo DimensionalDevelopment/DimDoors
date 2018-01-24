@@ -1,13 +1,15 @@
 package org.dimdev.pocketlib;
 
-import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.ddutils.render.CloudRenderBlank;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Biomes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.dimdev.ddutils.render.CloudRenderBlank;
+import org.dimdev.dimdoors.DimDoors;
 
 import javax.annotation.Nullable;
 
@@ -18,6 +20,7 @@ public abstract class WorldProviderPocket extends WorldProvider {
         hasSkyLight = true;
         generateLightBrightnessTable();
         DimDoors.proxy.setCloudRenderer(this, new CloudRenderBlank());
+        biomeProvider = new BiomeProviderSingle(Biomes.PLAINS);
     }
 
     @Override
