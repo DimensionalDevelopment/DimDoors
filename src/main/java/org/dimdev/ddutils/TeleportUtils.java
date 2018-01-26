@@ -2,23 +2,111 @@ package org.dimdev.ddutils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityEnderPearl;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityMinecartContainer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.end.DragonFightManager;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.dimdev.dimdoors.DimDoors;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.EnumSet;
 
 public final class TeleportUtils {
+
+    // <editor-fold defaultstate="collapsed" desc="Helper functions">
+    private static final Field invulnerableDimensionChange;
+    private static final Field thrower;
+    private static final Field enteredNetherPosition;
+    private static final Method captureCurrentPosition;
+    private static final Method copyDataFromOld;
+    private static final Method searchForOtherItemsNearby;
+    private static final Method updateplayers;
+
+    static {
+        try {
+            invulnerableDimensionChange = MCPReflection.getMCPField(EntityPlayerMP.class, "invulnerableDimensionChange", "field_184851_cj");
+            thrower = MCPReflection.getMCPField(EntityThrowable.class, "thrower", "field_145801_f");
+            enteredNetherPosition = MCPReflection.getMCPField(EntityPlayerMP.class, "enteredNetherPosition", "field_193110_cw");
+            captureCurrentPosition = MCPReflection.getMCPMethod(NetHandlerPlayServer.class, "captureCurrentPosition", "func_184342_d");
+            copyDataFromOld = MCPReflection.getMCPMethod(Entity.class, "copyDataFromOld", "func_180432_n", Entity.class);
+            searchForOtherItemsNearby = MCPReflection.getMCPMethod(EntityItem.class, "searchForOtherItemsNearby", "func_85054_d");
+            updateplayers = MCPReflection.getMCPMethod(DragonFightManager.class, "updateplayers", "func_186100_j");
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void setInvulnerableDimensionChange(EntityPlayerMP player, boolean value) {
+        try {
+            invulnerableDimensionChange.set(player, value);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void setThrower(EntityThrowable entity, EntityLivingBase value) {
+        try {
+            thrower.set(entity, value);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void setEnteredNetherPosition(EntityPlayerMP player, Vec3d value) {
+        try {
+            enteredNetherPosition.set(player, value);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void captureCurrentPosition(NetHandlerPlayServer connection) {
+        try {
+            captureCurrentPosition.invoke(connection);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void copyDataFromOld(Entity newEntity, Entity oldEntity) {
+        try {
+            copyDataFromOld.invoke(newEntity, oldEntity);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void searchForOtherItemsNearby(EntityItem item) {
+        try {
+            searchForOtherItemsNearby.invoke(item);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void updateplayers(DragonFightManager dragonFightManager) {
+        try {
+            updateplayers.invoke(dragonFightManager);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static Entity teleport(Entity entity, Location location) {
         return teleport(entity, location, entity.rotationYaw, entity.rotationPitch);
@@ -36,8 +124,16 @@ public final class TeleportUtils {
         return teleport(entity, WorldUtils.getDim(entity.getEntityWorld()), x, y, z, yaw, pitch);
     }
 
+    // </editor-fold>
+
+    /**
+     * Teleports any kind of entity to any dimension, position, and pitch/yaw. Unlike the vanilla code, this doesn't do any
+     * actions such as creating nether portals and end platforms or showing the credits when leaving the end, and ignores the
+     * world moveFactor (ex. 8 in the nether). This code is safe to call from a block collision event.
+     */
     public static Entity teleport(Entity entity, int newDimension, double x, double y, double z, float yaw, float pitch) {
-        if (entity.world.isRemote || !(entity.world instanceof WorldServer) || entity.isDead) return entity; // dead means inactive, not a dead player
+        if (entity instanceof FakePlayer) return entity;
+        if (entity.world.isRemote || entity.isDead) return null; // dead means inactive, not a dead player
 
         yaw = MathHelper.wrapDegrees(yaw);
         pitch = MathHelper.wrapDegrees(pitch);
@@ -48,87 +144,98 @@ public final class TeleportUtils {
         int oldDimension = entity.dimension;
         // int newDimension = dim;
 
-        // Workaround for https://bugs.mojang.com/browse/MC-123364
         if (entity instanceof EntityPlayerMP) {
+            // Workaround for https://bugs.mojang.com/browse/MC-123364. Disables player-in-block checking, but doesn't seem
+            // to make the player actually noclip.
             entity.noClip = true;
-        }
 
-        // Prevent Minecraft from cancelling the position change being too big if the player is not in creative
-        // This has to be done when the teleport is done from the player moved function (so any block collision event too)
-        if (entity instanceof EntityPlayerMP) {
-            EntityPlayerMP player = (EntityPlayerMP) entity;
-            try {
-                Field invulnerableDimensionChange = MCPReflection.getMCPField(EntityPlayerMP.class, "invulnerableDimensionChange", "field_184851_cj");
-                invulnerableDimensionChange.setBoolean(player, true);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+            // Prevent Minecraft from cancelling the position change being too big if the player is not in creative
+            // This has to be done when the teleport is done from the player moved function (so any block collision event too)
+            // Not doing this will cause the player to be invisible for others.
+            setInvulnerableDimensionChange((EntityPlayerMP) entity, true);
         }
 
         if (oldDimension == newDimension) { // Based on CommandTeleport.doTeleport
             if (entity instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) entity;
-                player.connection.setPlayerLocation(
-                        x,
-                        y,
-                        z,
-                        yaw,
-                        pitch,
-                        EnumSet.noneOf(SPacketPlayerPosLook.EnumFlags.class));
-                // https://bugs.mojang.com/browse/MC-98153?focusedCommentId=411524&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-411524
-                try {
-                    Method captureCurrentPosition = MCPReflection.getMCPMethod(NetHandlerPlayServer.class, "captureCurrentPosition", "func_184342_d");
-                    captureCurrentPosition.invoke(player.connection);
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
+                player.connection.setPlayerLocation(x, y, z, yaw, pitch, EnumSet.noneOf(SPacketPlayerPosLook.EnumFlags.class));
+                // Fix for https://bugs.mojang.com/browse/MC-98153. See this comment: https://bugs.mojang.com/browse/MC-98153#comment-411524
+                captureCurrentPosition(player.connection);
             } else {
                 entity.setLocationAndAngles(x, y, z, yaw, pitch);
             }
             entity.setRotationYawHead(yaw);
 
             return entity;
-        } else { // Based on EntityUtils.changeDimension
+        } else { // Based on Entity.changeDimension
             MinecraftServer server = entity.getServer();
-            WorldServer oldServer = server.getWorld(oldDimension);
-            WorldServer newServer = server.getWorld(newDimension);
+            WorldServer oldWorld = server.getWorld(oldDimension);
+            WorldServer newWorld = server.getWorld(newDimension);
 
             // Allow other mods to cancel the event
             if (!ForgeHooks.onTravelToDimension(entity, newDimension)) return entity;
 
             if (entity instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) entity;
-                // player.enteredNetherPosition = null;
+
+                // Setting this field seems to be useful for advancments. Adjusted dimension checks for non-vanilla
+                // dimension support (entering the nether from any dimension should trigger it now).
+                if (newDimension == -1) {
+                    setEnteredNetherPosition(player, new Vec3d(player.posX, player.posY, player.posZ));
+                } else if (oldDimension != -1 && newDimension != 0) {
+                    setEnteredNetherPosition(player, null);
+                }
+
+                // Send respawn packets to the player
                 player.dimension = newDimension;
-                player.connection.sendPacket(new SPacketRespawn(player.dimension, newServer.getDifficulty(), newServer.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
+                player.connection.sendPacket(new SPacketRespawn(player.dimension, newWorld.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
+                player.mcServer.getPlayerList().updatePermissionLevel(player); // Sends an SPacketEntityStatus
 
-                // Remove from old world
-                player.mcServer.getPlayerList().updatePermissionLevel(player);
-                oldServer.removeEntityDangerously(player);
+                // Remove player entity from the old world
+                oldWorld.removeEntityDangerously(player);
+
+                // Move the player entity to new world
+                // We can't use PlayerList.transferEntityToWorld since for newDimension = 1, that would first teleport the
+                // player to the dimension's spawn before quickly teleporting the player to the correct position. Unlike the vanilla
+                // code, we don't use the world provider's moveFactor (ex. 8 blocks in the nether) and don't clip to the
+                // world border.
                 player.isDead = false;
+                oldWorld.profiler.startSection("moving");
+                player.setLocationAndAngles(x, y, z, yaw, pitch);
+                // PlayerList.transferEntityToWorld does this for some reason when teleporting to the end, but it doesn't
+                // make any sense:
+                // if (entity.isEntityAlive()) oldWorld.updateEntityWithOptionalForce(entity, false);
+                oldWorld.profiler.endSection();
 
-                // Move to new world
-                oldServer.profiler.startSection("moving");
-                player.setLocationAndAngles(x, y, z, yaw, pitch); // TODO: clamp to world border or -29999872, 29999872 like in original code?
-                if (entity.isEntityAlive()) oldServer.updateEntityWithOptionalForce(entity, false);
-                oldServer.profiler.endSection();
-
-                oldServer.profiler.startSection("placing");
-                newServer.spawnEntity(player);
-                newServer.updateEntityWithOptionalForce(player, false);
-                oldServer.profiler.endSection();
-                player.setWorld(newServer);
+                oldWorld.profiler.startSection("placing");
+                newWorld.spawnEntity(player);
+                newWorld.updateEntityWithOptionalForce(player, false);
+                oldWorld.profiler.endSection();
+                player.setWorld(newWorld);
 
                 // Sync the player
-                player.mcServer.getPlayerList().preparePlayer(player, oldServer);
+                player.mcServer.getPlayerList().preparePlayer(player, oldWorld);
                 player.connection.setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
-                player.interactionManager.setWorld(newServer);
+                // Fix for https://bugs.mojang.com/browse/MC-98153. See this comment: https://bugs.mojang.com/browse/MC-98153#comment-411524
+                captureCurrentPosition(player.connection);
+                player.interactionManager.setWorld(newWorld);
                 player.connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
-                player.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(player, newServer);
+                player.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(player, newWorld);
                 player.mcServer.getPlayerList().syncPlayerInventory(player);
                 for (PotionEffect potioneffect : player.getActivePotionEffects()) {
                     player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), potioneffect));
                 }
+
+                // Force WorldProviderEnd to check if end dragon bars should be removed. Duplicate end dragon bars even
+                // happen when leaving the end using an end portal while the dragon is alive, so this might be a vanilla
+                // or Forge bug (maybe the world is unloaded before checking players?). In vanilla, updateplayers is normally
+                // called every second.
+                if (oldWorld.provider instanceof WorldProviderEnd) {
+                    DragonFightManager dragonFightManager = ((WorldProviderEnd) oldWorld.provider).getDragonFightManager();
+                    updateplayers(dragonFightManager);
+                }
+
+                // Vanilla also plays SoundEvents.BLOCK_PORTAL_TRAVEL, we won't do this.
 
                 FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDimension, newDimension);
 
@@ -139,38 +246,38 @@ public final class TeleportUtils {
 
                 return entity;
             } else {
+                if (entity instanceof EntityMinecartContainer) ((EntityMinecartContainer) entity).dropContentsWhenDead = false;
+                if (entity instanceof EntityEnderPearl) setThrower((EntityThrowable) entity, null); // Otherwise the player will be teleported to the hit position but in the same dimension
+
                 entity.world.profiler.startSection("changeDimension");
                 entity.dimension = newDimension;
                 entity.world.removeEntity(entity);
                 entity.isDead = false;
 
                 entity.world.profiler.startSection("reposition");
-                oldServer.updateEntityWithOptionalForce(entity, false);
+                oldWorld.updateEntityWithOptionalForce(entity, false);
 
                 entity.world.profiler.endStartSection("reloading");
-                Entity newEntity = EntityList.newEntity(entity.getClass(), newServer);
+                Entity newEntity = EntityList.newEntity(entity.getClass(), newWorld);
 
                 if (newEntity != null) {
-                    try {
-                        Method copyDataFromOld = MCPReflection.getMCPMethod(Entity.class,"copyDataFromOld", "func_180432_n", Entity.class);
-                        copyDataFromOld.invoke(newEntity, entity);
-                    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
+                    copyDataFromOld(newEntity, entity);
                     newEntity.setPositionAndRotation(x, y, z, yaw, pitch);
                     boolean oldForceSpawn = newEntity.forceSpawn;
                     newEntity.forceSpawn = true;
-                    newServer.spawnEntity(newEntity);
+                    newWorld.spawnEntity(newEntity);
                     newEntity.forceSpawn = oldForceSpawn;
-                    newServer.updateEntityWithOptionalForce(newEntity, false);
+                    newWorld.updateEntityWithOptionalForce(newEntity, false);
                 }
 
                 entity.isDead = true;
                 entity.world.profiler.endSection();
 
-                oldServer.resetUpdateEntityTick();
-                newServer.resetUpdateEntityTick();
+                oldWorld.resetUpdateEntityTick();
+                newWorld.resetUpdateEntityTick();
                 entity.world.profiler.endSection();
+
+                if (newEntity instanceof EntityItem) searchForOtherItemsNearby((EntityItem) newEntity); // TODO: This isn't in same-dimension teleportation in vanilla, but why?
 
                 return newEntity;
             }

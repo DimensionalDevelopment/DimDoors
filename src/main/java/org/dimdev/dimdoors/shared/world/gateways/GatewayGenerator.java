@@ -4,6 +4,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProviderEnd;
+import net.minecraft.world.WorldProviderHell;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
@@ -16,25 +18,17 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class GatewayGenerator implements IWorldGenerator {
-    public static final int MAX_GATEWAY_GENERATION_CHANCE = 10000;
-    public static final int MAX_CLUSTER_GENERATION_CHANCE = 10000;
     private static final int CLUSTER_GROWTH_CHANCE = 80;
     private static final int MAX_CLUSTER_GROWTH_CHANCE = 100;
     private static final int MIN_RIFT_Y = 4;
     private static final int MAX_RIFT_Y = 240;
     private static final int CHUNK_LENGTH = 16;
     private static final int MAX_GATEWAY_GENERATION_ATTEMPTS = 10;
-    private static final int NETHER_DIMENSION_ID = -1;
-    private static final int END_DIMENSION_ID = 1;
 
     private ArrayList<BaseGateway> gateways;
     private BaseGateway defaultGateway;
 
     public GatewayGenerator() {
-        initialize();
-    }
-
-    private void initialize() {
         gateways = new ArrayList<>();
         defaultGateway = new GatewayTwoPillars();
 
@@ -46,10 +40,8 @@ public class GatewayGenerator implements IWorldGenerator {
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         // Don't generate rifts or gateways if the current world is a pocket dimension or the world is remote.
-        // Also don't generate anything in the Nether, The End, or in Witchery's Spirit World.
-        // We only match against Spirit World using hashing to speed up the process a little (hopefully).
-        int dimensionID = world.provider.getDimension();
-        if (world.isRemote || world.provider instanceof WorldProviderPocket || dimensionID == END_DIMENSION_ID || dimensionID == NETHER_DIMENSION_ID) {
+        // Also don't generate anything in the Nether or The End.
+        if (world.isRemote || world.provider instanceof WorldProviderPocket || world.provider instanceof WorldProviderHell || world.provider instanceof WorldProviderEnd) {
             return;
         }
 
@@ -60,7 +52,7 @@ public class GatewayGenerator implements IWorldGenerator {
         // Check if we're allowed to generate rift clusters in this dimension.
         // If so, randomly decide whether to one.
         boolean clusterGenerated = false;
-        if (Arrays.binarySearch(ModConfig.world.riftClusterDimensionTypeBlacklist, world.provider.getDimensionType().getId()) != -1) {
+        if (Arrays.binarySearch(ModConfig.world.riftClusterDimensionTypeBlacklist, world.provider.getDimensionType().getId()) == -1) {
             double clusterGenChance = ModConfig.world.clusterGenerationChance;
             while (clusterGenChance > 0.0) {
                 if (random.nextDouble() < clusterGenChance) {
@@ -90,7 +82,7 @@ public class GatewayGenerator implements IWorldGenerator {
 
         // Check if we can place a Rift Gateway in this dimension, then randomly decide whether to place one.
         // This only happens if a rift cluster was NOT generated.
-        if (!clusterGenerated && Arrays.binarySearch(ModConfig.world.gatewayDimensionTypeBlacklist, world.provider.getDimensionType().getId()) != -1) {
+        if (!clusterGenerated && Arrays.binarySearch(ModConfig.world.gatewayDimensionTypeBlacklist, world.provider.getDimensionType().getId()) == -1) {
             double gatewayGenChance = ModConfig.world.gatewayGenerationChance;
             while (gatewayGenChance > 0.0) {
                 if (random.nextDouble() < gatewayGenChance) {

@@ -55,7 +55,7 @@ public abstract class BlockSpecialAir extends Block {
     @Override
     @SuppressWarnings("deprecation")
     public EnumBlockRenderType getRenderType(IBlockState state) {
-        return EnumBlockRenderType.INVISIBLE; // Tile EntityUtils Special Renderer
+        return EnumBlockRenderType.INVISIBLE; // Tile Entity Special Renderer
     }
 
     @Override
