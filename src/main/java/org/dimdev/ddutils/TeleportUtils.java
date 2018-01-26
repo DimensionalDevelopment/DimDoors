@@ -3,11 +3,10 @@ package org.dimdev.ddutils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.WorldServer;
@@ -49,25 +48,44 @@ public final class TeleportUtils {
         int oldDimension = entity.dimension;
         // int newDimension = dim;
 
+        // Workaround for https://bugs.mojang.com/browse/MC-123364
         if (entity instanceof EntityPlayerMP) {
             entity.noClip = true;
         }
 
+        // Prevent Minecraft from cancelling the position change being too big if the player is not in creative
+        // This has to be done when the teleport is done from the player moved function (so any block collision event too)
+        if (entity instanceof EntityPlayerMP) {
+            EntityPlayerMP player = (EntityPlayerMP) entity;
+            try {
+                Field invulnerableDimensionChange = MCPReflection.getMCPField(EntityPlayerMP.class, "invulnerableDimensionChange", "field_184851_cj");
+                invulnerableDimensionChange.setBoolean(player, true);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         if (oldDimension == newDimension) { // Based on CommandTeleport.doTeleport
             if (entity instanceof EntityPlayerMP) {
-                ((EntityPlayerMP) entity).connection.setPlayerLocation(
+                EntityPlayerMP player = (EntityPlayerMP) entity;
+                player.connection.setPlayerLocation(
                         x,
                         y,
                         z,
                         yaw,
                         pitch,
                         EnumSet.noneOf(SPacketPlayerPosLook.EnumFlags.class));
+                // https://bugs.mojang.com/browse/MC-98153?focusedCommentId=411524&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-411524
+                try {
+                    Method captureCurrentPosition = MCPReflection.getMCPMethod(NetHandlerPlayServer.class, "captureCurrentPosition", "func_184342_d");
+                    captureCurrentPosition.invoke(player.connection);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
             } else {
                 entity.setLocationAndAngles(x, y, z, yaw, pitch);
             }
             entity.setRotationYawHead(yaw);
-            entity.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1f, 1f);
-            WorldUtils.getWorld(newDimension).playSound(null, new BlockPos(x,y,z), SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0f, 1.0f);
 
             return entity;
         } else { // Based on EntityUtils.changeDimension
@@ -80,12 +98,6 @@ public final class TeleportUtils {
 
             if (entity instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) entity;
-                try {
-                    Field invulnerableDimensionChange = MCPReflection.getMCPField(EntityPlayerMP.class, "invulnerableDimensionChange", "field_184851_cj");
-                    invulnerableDimensionChange.setBoolean(player, true); // Prevent Minecraft from cancelling the position change being too big if the player is not in creative
-                } catch (NoSuchFieldException|IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
                 // player.enteredNetherPosition = null;
                 player.dimension = newDimension;
                 player.connection.sendPacket(new SPacketRespawn(player.dimension, newServer.getDifficulty(), newServer.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
@@ -120,14 +132,10 @@ public final class TeleportUtils {
 
                 FMLCommonHandler.instance().firePlayerChangedDimensionEvent(player, oldDimension, newDimension);
 
-                //player.connection.sendPacket(new SPacketEffect(1032, BlockPos.ORIGIN, 0, false)); // TODO
-
                 //player.prevBlockpos = null; // For frost walk. Is this needed? What about other fields?
                 /*player.lastExperience = -1;
                 player.lastHealth = -1.0F;
                 player.lastFoodLevel = -1;*/
-                entity.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1f, 1f);
-                WorldUtils.getWorld(newDimension).playSound(null, new BlockPos(x,y,z), SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0f, 1.0f);
 
                 return entity;
             } else {
@@ -163,9 +171,6 @@ public final class TeleportUtils {
                 oldServer.resetUpdateEntityTick();
                 newServer.resetUpdateEntityTick();
                 entity.world.profiler.endSection();
-
-                entity.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1f, 1f);
-                WorldUtils.getWorld(newDimension).playSound(null, new BlockPos(x,y,z), SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0f, 1.0f);
 
                 return newEntity;
             }

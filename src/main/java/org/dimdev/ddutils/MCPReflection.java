@@ -26,12 +26,12 @@ public final class MCPReflection {
         }
     }
 
-    public static Method getMCPMethod(Class<?> class0, String deobfuscatedName, String obfuscatedName, Class<?> args) throws NoSuchMethodException {
+    public static Method getMCPMethod(Class<?> class0, String deobfuscatedName, String obfuscatedName, Class<?>... args) throws NoSuchMethodException {
         Method method;
         try {
-            method = Entity.class.getDeclaredMethod(obfuscatedName, args);
+            method = class0.getDeclaredMethod(obfuscatedName, args);
         } catch (NoSuchMethodException e) { // Running on deobfuscated Minecraft
-            method = Entity.class.getDeclaredMethod(deobfuscatedName, args);
+            method = class0.getDeclaredMethod(deobfuscatedName, args);
         }
         method.setAccessible(true);
         return method;

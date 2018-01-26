@@ -43,7 +43,7 @@ public final class SchematicConverter {
 
     private final static int NBT_COMPOUND_TAG_ID = NBTUtils.NBT_COMPOUND_TAG_ID;
     private final static int STRING_TAG_ID = NBTUtils.NBT_COMPOUND_TAG_ID;
-    private static final boolean GENERATE_DUNGEON_INFO = false;
+    private static final boolean GENERATE_DUNGEON_INFO = true;
 
     public static Schematic convertSchematic(NBTTagCompound nbt, String schematicId, String name, String author) {
         Schematic schematic = new Schematic();

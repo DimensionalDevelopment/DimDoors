@@ -41,7 +41,7 @@ import net.minecraft.util.math.AxisAlignedBB;
     @Setter private boolean unregisterDisabled = false;
 
     @SideOnly(Side.CLIENT)
-    public double renderAngle = 0;
+    public double renderAngle; // This is @SideOnly(Side.CLIENT), don't initialize the field ( = 0), or class initialization won't work on the server!
 
     public TileEntityFloatingRift() {
         updateTimer = random.nextInt(UPDATE_PERIOD);
