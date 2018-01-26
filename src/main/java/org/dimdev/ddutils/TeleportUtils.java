@@ -21,7 +21,6 @@ import net.minecraft.world.end.DragonFightManager;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.dimdev.dimdoors.DimDoors;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -41,7 +40,7 @@ public final class TeleportUtils {
     static {
         try {
             invulnerableDimensionChange = MCPReflection.getMCPField(EntityPlayerMP.class, "invulnerableDimensionChange", "field_184851_cj");
-            thrower = MCPReflection.getMCPField(EntityThrowable.class, "thrower", "field_145801_f");
+            thrower = MCPReflection.getMCPField(EntityThrowable.class, "thrower", "field_70192_c");
             enteredNetherPosition = MCPReflection.getMCPField(EntityPlayerMP.class, "enteredNetherPosition", "field_193110_cw");
             captureCurrentPosition = MCPReflection.getMCPMethod(NetHandlerPlayServer.class, "captureCurrentPosition", "func_184342_d");
             copyDataFromOld = MCPReflection.getMCPMethod(Entity.class, "copyDataFromOld", "func_180432_n", Entity.class);
@@ -203,8 +202,8 @@ public final class TeleportUtils {
                 oldWorld.profiler.startSection("moving");
                 player.setLocationAndAngles(x, y, z, yaw, pitch);
                 // PlayerList.transferEntityToWorld does this for some reason when teleporting to the end, but it doesn't
-                // make any sense:
-                // if (entity.isEntityAlive()) oldWorld.updateEntityWithOptionalForce(entity, false);
+                // make any sense (without it, there seems to be some flickering between two positions):
+                if (entity.isEntityAlive()) oldWorld.updateEntityWithOptionalForce(entity, false);
                 oldWorld.profiler.endSection();
 
                 oldWorld.profiler.startSection("placing");
