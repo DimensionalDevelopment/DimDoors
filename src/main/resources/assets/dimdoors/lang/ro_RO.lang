@@ -3,11 +3,11 @@ itemGroup.dimensional_doors_creative_tab=Obiecte Dimensional Doors
 tile.gold_door.name=Ușă de aur
 tile.quartz_door.name=Ușă de cuarț
 
-tile.dimensional_door.name=Ușă dimensională
+tile.iron_dimensional_door.name=Ușă dimensională
 tile.gold_dimensional_door.name=Ușă dimensională de aur
 tile.quartz_dimensional_door.name=Ușă dimensională de cuarț
 tile.chaos_dimensional_door.name=Ușă instabilă
-tile.warp_dimensional_door.name=Ușă de distorsiune
+tile.oak_dimensional_door.name=Ușă de distorsiune
 tile.dimensional_trapdoor.name=Trapă transdimensională
 tile.dimensional_portal.name=Portal dimensional
 
@@ -38,11 +38,11 @@ tile.rift.name=Fisură
 item.gold_door.name=Ușă de aur
 item.quartz_door.name=Ușă de cuarț
 
-item.dimensional_door.name=Ușă dimensională
+item.iron_dimensional_door.name=Ușă dimensională
 item.gold_dimensional_door.name=Ușă dimensională de aur
 item.quartz_dimensional_door.name=Ușă dimensională de cuarț
 item.chaos_dimensional_door.name=Ușă instabilă
-item.warp_dimensional_door.name=Ușă de distorsiune
+item.oak_dimensional_door.name=Ușă de distorsiune
 
 item.rift_key=Cheie de fisură
 item.rift_signature.name=Semnătură de fisură
@@ -57,10 +57,10 @@ item.stable_fabric.name=Ață stabilă
 info.rift_key.bound=Legat
 info.rift_key.unbound=Dezlegat
 
-info.dimensional_door0=Plasează pe blocul de sub o fisură
-info.dimensional_door1=pentru a activa acea fisură sau
-info.dimensional_door2=oriunde altundeva pentru a crea
-info.dimensional_door3=o dimensiune de buzunar.
+info.iron_dimensional_door0=Plasează pe blocul de sub o fisură
+info.iron_dimensional_door1=pentru a activa acea fisură sau
+info.iron_dimensional_door2=oriunde altundeva pentru a crea
+info.iron_dimensional_door3=o dimensiune de buzunar.
 
 info.gold_dimensional_door0=Similară la o ușă dimensională
 info.gold_dimensional_door1=doar că păstrează o dimensiune
@@ -89,9 +89,9 @@ info.stabilized_rift_signature.unbound2=prima și ultima conectiuni împreună.
 
 info.chaos_dimensional_door=Atenție: Duce la o destinație aleatorie
 
-info.warp_dimensional_door0=Plasează pe blocul sub o fisură
-info.warp_dimensional_door1=pentru a crea un portal sau
-info.warp_dimensional_door2=plasează ori unde într-o dimensiune
-info.warp_dimensional_door3=de buzunar pentru a ieșii.
+info.oak_dimensional_door0=Plasează pe blocul sub o fisură
+info.oak_dimensional_door1=pentru a crea un portal sau
+info.oak_dimensional_door2=plasează ori unde într-o dimensiune
+info.oak_dimensional_door3=de buzunar pentru a ieșii.
 
 entity.dimdoors.monolith.name=Monolit

@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class BlockDimensionalDoorIron extends BlockDimensionalDoor {
 
-    public static final String ID = "dimensional_door";
+    public static final String ID = "iron_dimensional_door";
 
     public BlockDimensionalDoorIron() {
         super(Material.IRON);

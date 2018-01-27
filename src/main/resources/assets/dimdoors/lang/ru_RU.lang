@@ -3,11 +3,11 @@ itemGroup.dimensional_doors_creative_tab=Dimensional Doors: Предметы
 tile.gold_door.name=Золотая дверь
 tile.quartz_door.name=Кварцевая дверь
 
-tile.dimensional_door.name=Пространственная дверь
+tile.iron_dimensional_door.name=Пространственная дверь
 tile.gold_dimensional_door.name=Золотая пространственная дверь
 tile.quartz_dimensional_door.name=Личная пространственная дверь
 tile.chaos_dimensional_door.name=Нестабильная дверь
-tile.warp_dimensional_door.name=Дверь искажения
+tile.oak_dimensional_door.name=Дверь искажения
 tile.dimensional_trapdoor.name=Межпространственный люк
 tile.dimensional_portal.name=Временная дверь
 
@@ -21,11 +21,11 @@ tile.rift.name=Разлом
 item.gold_door.name=Золотая дверь
 item.quartz_door.name=Кварцевая дверь
 
-item.dimensional_door.name=Пространственная дверь
+item.iron_dimensional_door.name=Пространственная дверь
 item.gold_dimensional_door.name=Золотая пространственная дверь
 item.quartz_dimensional_door.name=Личная пространственная дверь
 item.chaos_dimensional_door.name=Нестабильная дверь
-item.warp_dimensional_door.name=Дверь искажения
+item.oak_dimensional_door.name=Дверь искажения
 
 item.rift_key=Ключ разлома
 item.rift_signature.name=Подписыватель разлома
@@ -40,10 +40,10 @@ item.stable_fabric.name=Стабильная ткань
 info.rift_key.bound=Связан
 info.rift_key.unbound=Не связан
 
-info.dimensional_door0=Поставьте на блок под разломом,
-info.dimensional_door1=чтобы активировать этот разлом или
-info.dimensional_door2=поставьте куда угодно, чтобы создать
-info.dimensional_door3=карманное измерение.
+info.iron_dimensional_door0=Поставьте на блок под разломом,
+info.iron_dimensional_door1=чтобы активировать этот разлом или
+info.iron_dimensional_door2=поставьте куда угодно, чтобы создать
+info.iron_dimensional_door3=карманное измерение.
 
 info.gold_dimensional_door0=Схожа с пространственной дверью,
 info.gold_dimensional_door1=но она также держит карманное измерение
@@ -71,9 +71,9 @@ info.stabilized_rift_signature.unbound2=первое и последнее ра�
 
 info.chaos_dimensional_door=Внимание: Ведёт неизвестно куда
 
-info.warp_dimensional_door0=Поставьте на блок под
-info.warp_dimensional_door1=разломом, чтобы создать портал
-info.warp_dimensional_door2=или поставьте куда угодно в
-info.warp_dimensional_door3=карманном измерении, чтобы выйти из него.
+info.oak_dimensional_door0=Поставьте на блок под
+info.oak_dimensional_door1=разломом, чтобы создать портал
+info.oak_dimensional_door2=или поставьте куда угодно в
+info.oak_dimensional_door3=карманном измерении, чтобы выйти из него.
 
 entity.dimdoors.monolith.name=Монолит

@@ -3,11 +3,11 @@ itemGroup.dimensional_doors_creative_tab=次元门物品
 tile.gold_door.name=金门
 tile.quartz_door.name=石英门
 
-tile.dimensional_door.name=次元门
+tile.iron_dimensional_door.name=次元门
 tile.gold_dimensional_door.name=金制次元门
 tile.quartz_dimensional_door.name=私人次元门
 tile.chaos_dimensional_door.name=不稳定的门
-tile.warp_dimensional_door.name=扭曲之门
+tile.oak_dimensional_door.name=扭曲之门
 tile.dimensional_trapdoor.name=空间活板门
 tile.dimensional_portal.name=瞬息之门
 
@@ -21,11 +21,11 @@ tile.rift.name=裂痕
 item.gold_door.name=金门
 item.quartz_door.name=石英门
 
-item.dimensional_door.name=次元门
+item.iron_dimensional_door.name=次元门
 item.gold_dimensional_door.name=金制次元门
 item.quartz_dimensional_door.name=私人次元门
 item.chaos_dimensional_door.name=不稳定的门
-item.warp_dimensional_door.name=扭曲之门
+item.oak_dimensional_door.name=扭曲之门
 
 item.rift_key=裂痕钥匙
 item.rift_signature.name=裂痕印记
@@ -40,10 +40,10 @@ item.stable_fabric.name=稳定构造
 info.rift_key.bound=绑定
 info.rift_key.unbound=取消绑定
 
-info.dimensional_door0=放在裂痕下方的方块上
-info.dimensional_door1=来激活裂痕
-info.dimensional_door2=或放在任意地点生成
-info.dimensional_door3=一个口袋次元.
+info.iron_dimensional_door0=放在裂痕下方的方块上
+info.iron_dimensional_door1=来激活裂痕
+info.iron_dimensional_door2=或放在任意地点生成
+info.iron_dimensional_door3=一个口袋次元.
 
 info.gold_dimensional_door0=类似于次元门
 info.gold_dimensional_door1=但它放在次元内部时
@@ -71,9 +71,9 @@ info.stabilized_rift_signature.unbound2=裂痕.
 
 info.chaos_dimensional_door=注意: 将会随机传送
 
-info.warp_dimensional_door0=放在裂痕下方的方块上
-info.warp_dimensional_door1=来制造传送门,
-info.warp_dimensional_door2=放在口袋次元中
-info.warp_dimensional_door3=以退出空间.
+info.oak_dimensional_door0=放在裂痕下方的方块上
+info.oak_dimensional_door1=来制造传送门,
+info.oak_dimensional_door2=放在口袋次元中
+info.oak_dimensional_door3=以退出空间.
 
 entity.dimdoors.monolith.name=巨石

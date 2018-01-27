@@ -25,6 +25,6 @@ public class ItemDimensionalDoorIron extends ItemDimensionalDoor {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.addAll(I18nUtils.translateMultiline("info.dimensional_door"));
+        tooltip.addAll(I18nUtils.translateMultiline("info.iron_dimensional_door"));
     }
 }

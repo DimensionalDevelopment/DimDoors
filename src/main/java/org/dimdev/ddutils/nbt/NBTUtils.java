@@ -5,14 +5,7 @@ import net.minecraft.nbt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.dimdev.ddutils.StringUtils;
-
 public final class NBTUtils {
-
-    public final static int NBT_COMPOUND_TAG_ID = StringUtils.simpleSearch(NBTTagCompound.NBT_TYPES, "COMPOUND");
-    public final static int STRING_TAG_ID = StringUtils.simpleSearch(NBTTagCompound.NBT_TYPES, "STRING");
-    //Arrays.binarySearch(NBTTagCompound.NBT_TYPES, "COMPOUND", new StringComparator()); does not seem to work?;
-    //netiher does Arrays.binarySearch(NBTTagCompound.NBT_TYPES, "COMPOUND", String::compareTo);
 
     public static NBTTagCompound writeToNBT(Object obj, NBTTagCompound nbt) {
         try {

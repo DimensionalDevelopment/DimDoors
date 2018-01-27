@@ -3,11 +3,11 @@ itemGroup.dimensional_doors_creative_tab=Dimensional Doors oggetti
 tile.gold_door.name=Porta d'oro
 tile.quartz_door.name=Porta di quarzo
 
-tile.dimensional_door.name=Porta dimensionale
+tile.iron_dimensional_door.name=Porta dimensionale
 tile.gold_dimensional_door.name=Porta d'oro dimensionale
 tile.quartz_dimensional_door.name=Porta dimensionale personale
 tile.chaos_dimensional_door.name=Porta instabile
-tile.warp_dimensional_door.name=Porta distorta
+tile.oak_dimensional_door.name=Porta distorta
 tile.dimensional_trapdoor.name=Botola transdimensionale
 tile.dimensional_portal.name=Porta transitoria
 
@@ -21,11 +21,11 @@ tile.rift.name=Frattura
 item.gold_door.name=Porta d'oro
 item.quartz_door.name=Porta di quarzo
 
-item.dimensional_door.name=Porta dimensionale
+item.iron_dimensional_door.name=Porta dimensionale
 item.gold_dimensional_door.name=Porta d'oro dimensionale
 item.quartz_dimensional_door.name=Porta dimensionale personale
 item.chaos_dimensional_door.name=Porta instabile
-item.warp_dimensional_door.name=Porta distorta
+item.oak_dimensional_door.name=Porta distorta
 
 item.rift_key=Chiave per frattura
 item.rift_signature.name=Segno di frattura
@@ -40,10 +40,10 @@ item.stable_fabric.name=Tessuto stabile
 info.rift_key.bound=Legato
 info.rift_key.unbound=Non legato
 
-info.dimensional_door0=Piazzalo sul blocco sotto una
-info.dimensional_door1=frattura per attivarla o piazzalo
-info.dimensional_door2=da qualunque altra parte per creare
-info.dimensional_door3=una dimensione tascabile.
+info.iron_dimensional_door0=Piazzalo sul blocco sotto una
+info.iron_dimensional_door1=frattura per attivarla o piazzalo
+info.iron_dimensional_door2=da qualunque altra parte per creare
+info.iron_dimensional_door3=una dimensione tascabile.
 
 info.gold_dimensional_door0=Simile a una Porta dimensionale
 info.gold_dimensional_door1=ma tiene la dimensione tascabile
@@ -71,9 +71,9 @@ info.stabilized_rift_signature.unbound2=collegano la prima e ultima posizione.
 
 info.chaos_dimensional_door=Attenziione: Porta a una destinazione casuale
 
-info.warp_dimensional_door0=Piazzalo sul blocco sotto una
-info.warp_dimensional_door1=frattura per creare un portale,
-info.warp_dimensional_door2=o piazzalo da qualunque altra parte
-info.warp_dimensional_door3=in una dimensione tascabile per uscire.
+info.oak_dimensional_door0=Piazzalo sul blocco sotto una
+info.oak_dimensional_door1=frattura per creare un portale,
+info.oak_dimensional_door2=o piazzalo da qualunque altra parte
+info.oak_dimensional_door3=in una dimensione tascabile per uscire.
 
 entity.dimdoors.monolith.name=Monolito

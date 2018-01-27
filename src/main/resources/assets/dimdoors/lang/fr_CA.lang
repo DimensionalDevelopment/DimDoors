@@ -3,11 +3,11 @@ itemGroup.dimensional_doors_creative_tab=Objets Dimensional Doors
 tile.gold_door.name=Porte dorée
 tile.quartz_door.name=Porte de quartz
 
-tile.dimensional_door.name=Porte dimensionnelle
+tile.iron_dimensional_door.name=Porte dimensionnelle
 tile.gold_dimensional_door.name=Porte dorée dimensionnelle
 tile.quartz_dimensional_door.name=Porte dimensionnelle personnelle
 tile.chaos_dimensional_door.name=Porte instable
-tile.warp_dimensional_door.name=Porte-raccourci
+tile.oak_dimensional_door.name=Porte-raccourci
 tile.dimensional_trapdoor.name=Trappe transdimensionnelle
 tile.dimensional_portal.name=Portail dimensionel
 
@@ -38,11 +38,11 @@ tile.rift.name=Fissure
 item.gold_door.name=Porte dorée
 item.quartz_door.name=Porte de quartz
 
-item.dimensional_door.name=Porte dimensionnelle
+item.iron_dimensional_door.name=Porte dimensionnelle
 item.gold_dimensional_door.name=Porte dorée dimensionnelle
 item.quartz_dimensional_door.name=Porte dimensionnelle personnelle
 item.chaos_dimensional_door.name=Porte instable
-item.warp_dimensional_door.name=Porte-raccourci
+item.oak_dimensional_door.name=Porte-raccourci
 
 item.rift_key=Clé de fissure
 item.rift_signature.name=Signature de fissure
@@ -57,10 +57,10 @@ item.stable_fabric.name=Étoffe stable
 info.rift_key.bound=Liée
 info.rift_key.unbound=Non liée
 
-info.dimensional_door0=Placez sur le bloc sous une fissure
-info.dimensional_door1=pour activer cette fissure ou placez
-info.dimensional_door2=n'importe où ailleurs pour créer une
-info.dimensional_door3=dimension de poche.
+info.iron_dimensional_door0=Placez sur le bloc sous une fissure
+info.iron_dimensional_door1=pour activer cette fissure ou placez
+info.iron_dimensional_door2=n'importe où ailleurs pour créer une
+info.iron_dimensional_door3=dimension de poche.
 
 info.gold_dimensional_door0=Similaire à une porte dimensionnelle
 info.gold_dimensional_door1=mais garde une dimension de poche
@@ -88,9 +88,9 @@ info.stabilized_rift_signature.unbound2=le premier et les derniers emplacements 
 
 info.chaos_dimensional_door=Attention : mène vers une destination aléatoire
 
-info.warp_dimensional_door0=Placez sur le bloc sous une
-info.warp_dimensional_door1=fissure pour créer un portail,
-info.warp_dimensional_door2=ou placez n'importe où dans une
-info.warp_dimensional_door3=dimension de poche pour sortir.
+info.oak_dimensional_door0=Placez sur le bloc sous une
+info.oak_dimensional_door1=fissure pour créer un portail,
+info.oak_dimensional_door2=ou placez n'importe où dans une
+info.oak_dimensional_door3=dimension de poche pour sortir.
 
 entity.dimdoors.monolith.name=Monolithe

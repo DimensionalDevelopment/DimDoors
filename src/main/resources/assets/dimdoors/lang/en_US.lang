@@ -3,11 +3,11 @@ itemGroup.dimensional_doors_creative_tab=Dimensional Doors Items
 tile.gold_door.name=Golden Door
 tile.quartz_door.name=Quartz Door
 
-tile.dimensional_door.name=Dimensional Door
+tile.iron_dimensional_door.name=Dimensional Door
 tile.gold_dimensional_door.name=Golden Dimensional Door
 tile.quartz_dimensional_door.name=Personal Dimensional Door
 tile.chaos_dimensional_door.name=Chaos Door
-tile.warp_dimensional_door.name=Warp Door
+tile.oak_dimensional_door.name=Warp Door
 tile.dimensional_trapdoor.name=Transdimensional Trapdoor
 tile.dimensional_portal.name=Transient Portal
 
@@ -52,11 +52,11 @@ tile.rift.name=Rift Scar
 item.gold_door.name=Golden Door
 item.quartz_door.name=Quartz Door
 
-item.dimensional_door.name=Dimensional Door
+item.iron_dimensional_door.name=Dimensional Door
 item.gold_dimensional_door.name=Golden Dimensional Door
 item.quartz_dimensional_door.name=Personal Dimensional Door
 item.chaos_dimensional_door.name=Chaos Door
-item.warp_dimensional_door.name=Warp Door
+item.oak_dimensional_door.name=Warp Door
 
 item.rift_key=Rift Key
 item.rift_signature.name=Rift Signature
@@ -81,10 +81,10 @@ item.chestplate_woven_world_thread.name=Woven World Thread Chestplate
 info.rift_key.bound=Bound
 info.rift_key.unbound=Unbound
 
-info.dimensional_door0=Place on the block under a rift
-info.dimensional_door1=to activate that rift or place
-info.dimensional_door2=anywhere else to create a
-info.dimensional_door3=pocket dimension.
+info.iron_dimensional_door0=Place on the block under a rift
+info.iron_dimensional_door1=to activate that rift or place
+info.iron_dimensional_door2=anywhere else to create a
+info.iron_dimensional_door3=pocket dimension.
 
 info.gold_dimensional_door0=Similar to a Dimensional Door
 info.gold_dimensional_door1=but keeps a pocket dimension
@@ -112,7 +112,7 @@ info.stabilized_rift_signature.unbound2=the first and last locations together.
 
 info.chaos_dimensional_door=Caution: Leads to random destination
 
-info.warp_dimensional_door0=Place on the block under a rift to create a portal, or place anywhere in a pocket dimension to exit.
+info.oak_dimensional_door0=Place on the block under a rift to create a portal, or place anywhere in a pocket dimension to exit.
 
 entity.dimdoors.monolith.name=Monolith
 

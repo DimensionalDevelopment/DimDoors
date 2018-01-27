@@ -3,11 +3,11 @@ itemGroup.dimensional_doors_creative_tab=Dimensional Doors Voorwerpen
 tile.gold_door.name=Gouden Deur
 tile.quartz_door.name=Kwartsen Deur
 
-tile.dimensional_door.name=Dimensiedeur
+tile.iron_dimensional_door.name=Dimensiedeur
 tile.gold_dimensional_door.name=Gouden Dimensiedeur
 tile.quartz_dimensional_door.name=Persoonlijke Dimensiedeur
 tile.chaos_dimensional_door.name=Chaos Deur
-tile.warp_dimensional_door.name=Verdraaideur
+tile.oak_dimensional_door.name=Verdraaideur
 tile.dimensional_trapdoor.name=Transdimensionale Valdeur
 tile.dimensional_portal.name=Vergankelijk Portaal
 
@@ -52,11 +52,11 @@ tile.rift.name=Scheur Wond
 item.gold_door.name=Gouden Deur
 item.quartz_door.name=Kwartsen Deur
 
-item.dimensional_door.name=Dimensiedeur
+item.iron_dimensional_door.name=Dimensiedeur
 item.gold_dimensional_door.name=Gouden Dimensiedeur
 item.quartz_dimensional_door.name=Persoonlijke Dimensiedeur
 item.chaos_dimensional_door.name=Chaos Deur
-item.warp_dimensional_door.name=Verdraaideur
+item.oak_dimensional_door.name=Verdraaideur
 
 item.rift_key=Scheur Sleutel
 item.rift_signature.name=Scheurtekening
@@ -71,10 +71,10 @@ item.stable_fabric.name=Stabiel Weefsel
 info.rift_key.bound=Gebonden
 info.rift_key.unbound=Ontbonden
 
-info.dimensional_door0=Plaats op het blok onder een scheur
-info.dimensional_door1=om deze scheur te activeren of
-info.dimensional_door2=op een andere plaats om een
-info.dimensional_door3=publieke broekzak-dimensie te creëren.
+info.iron_dimensional_door0=Plaats op het blok onder een scheur
+info.iron_dimensional_door1=om deze scheur te activeren of
+info.iron_dimensional_door2=op een andere plaats om een
+info.iron_dimensional_door3=publieke broekzak-dimensie te creëren.
 
 info.gold_dimensional_door0=Net als een Dimensiedeur, maar houdt
 info.gold_dimensional_door1=een broekzak dimensie geladen als
@@ -102,9 +102,9 @@ info.stabilized_rift_signature.unbound2=en laatste locaties met elkaar verbinden
 
 info.chaos_dimensional_door=Pas op: Leidt naar een willekeurige bestemming
 
-info.warp_dimensional_door0=Plaats op het blok onder een scheur
-info.warp_dimensional_door1=om een portaal te creëren,
-info.warp_dimensional_door2=of plaats het ergens in een
-info.warp_dimensional_door3=broekzak dimensie om deze te verlaten.
+info.oak_dimensional_door0=Plaats op het blok onder een scheur
+info.oak_dimensional_door1=om een portaal te creëren,
+info.oak_dimensional_door2=of plaats het ergens in een
+info.oak_dimensional_door3=broekzak dimensie om deze te verlaten.
 
 entity.dimdoors.monolith.name=Monoliet

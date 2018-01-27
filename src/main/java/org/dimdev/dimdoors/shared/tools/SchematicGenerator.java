@@ -1,22 +1,12 @@
 package org.dimdev.dimdoors.shared.tools;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Bootstrap;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.DummyModContainer;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.ModMetadata;
-import net.minecraftforge.registries.GameData;
-import net.minecraftforge.registries.RegistryManager;
 import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.server.ServerProxy;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
 import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.BlockFabricAncient;
@@ -37,25 +27,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author Robijnvogel
- */
-public final class PocketSchematicGenerator {
+public final class SchematicGenerator {
 
     // Run "gradlew generatePocketSchematics" to generate the pocket schematics
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
-    public static void main(String... args) throws IOException, NoSuchMethodException, NoSuchFieldException, IllegalAccessException {
-        // Register blocks and tile entities to be able to run this without starting Minecraft
-        Bootstrap.register();
-        ModMetadata md = new ModMetadata();
-        md.modId = DimDoors.MODID;
-        ModContainer mc = new DummyModContainer(md);
-        Loader.instance().setupTestHarness(mc);
-        Loader.instance().setActiveModContainer(mc);
-        ModBlocks.registerBlocks(new RegistryEvent.Register<Block>(GameData.BLOCKS, RegistryManager.ACTIVE.getRegistry(GameData.BLOCKS)));
-        new ServerProxy().registerTileEntities();
-        new ServerProxy().registerRiftDestinations();
-        Loader.instance().setActiveModContainer(null);
+    public static void main(String... args) throws IOException {
 
         // Parse arguments
         File schematicDir;
@@ -71,6 +47,9 @@ public final class PocketSchematicGenerator {
         } else {
             schematicDir = new File("schematics/");
         }
+
+        // Register blocks and tile entities to be able to run this without starting Minecraft
+        Initializer.initialize();
 
         // Generate the schematics
         List<Schematic> schematics = generatePocketSchematics();
@@ -116,16 +95,19 @@ public final class PocketSchematicGenerator {
                     PrivatePocketExitDestination.builder().build(),// exit rift destination
                     null));
 
-            schematics.add(generateBlank("blank_pocket",
+            schematics.add(generateBlank(
+                    "blank_pocket",
                     pocketSize,
                     ModBlocks.ANCIENT_FABRIC.getDefaultState(),
                     ModBlocks.FABRIC.getDefaultState()));
 
-            schematics.add(generateFrame("void_pocket",
+            schematics.add(generateFrame(
+                    "void_pocket",
                     pocketSize,
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.COLOR, EnumDyeColor.LIGHT_BLUE)));
 
-            schematics.add(generateResizableFrame("resizable_pocket",
+            schematics.add(generateResizableFrame(
+                    "resizable_pocket",
                     pocketSize,
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabric.COLOR, EnumDyeColor.ORANGE)));
         }
@@ -137,7 +119,7 @@ public final class PocketSchematicGenerator {
 
         // Set schematic info
         Schematic schematic = new Schematic(baseName + "_" + pocketSize, "DimDoors", size, size, size);
-        schematic.requiredMods = new String[] { DimDoors.MODID };
+        schematic.requiredMods = new String[]{DimDoors.MODID};
 
         // Set block data
         for (int x = 0; x < size; x++) {
@@ -189,7 +171,7 @@ public final class PocketSchematicGenerator {
 
         // Set schematic info
         Schematic schematic = new Schematic(baseName + "_" + chunkSize, "DimDoors", size, size, size);
-        schematic.requiredMods = new String[] { DimDoors.MODID };
+        schematic.requiredMods = new String[]{DimDoors.MODID};
 
         // Set block data
         for (int x = 0; x < size; x++) {
@@ -215,7 +197,7 @@ public final class PocketSchematicGenerator {
 
         // Set schematic info
         Schematic schematic = new Schematic(baseName + "_" + chunkSize, "DimDoors", size, size, size);
-        schematic.requiredMods = new String[] { DimDoors.MODID };
+        schematic.requiredMods = new String[]{DimDoors.MODID};
 
         // Set block data
         for (int x = 0; x < size; x++) {

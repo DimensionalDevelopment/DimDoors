@@ -3,11 +3,11 @@ itemGroup.dimensional_doors_creative_tab=Dimensional Doors: Items
 tile.gold_door.name=Goldtür
 tile.quartz_door.name=Quarztür
 
-tile.dimensional_door.name=Dimensionaltür
+tile.iron_dimensional_door.name=Dimensionaltür
 tile.gold_dimensional_door.name=Goldene Dimensionaltür
 tile.quartz_dimensional_door.name=Persönliche Dimensionaltür
 tile.chaos_dimensional_door.name=Instabile Tür
-tile.warp_dimensional_door.name=Warp-Tür
+tile.oak_dimensional_door.name=Warp-Tür
 tile.dimensional_trapdoor.name=Transdimensionale Falltür
 tile.dimensional_portal.name=Vergängliche Tür
 
@@ -21,11 +21,11 @@ tile.rift.name=Spalt
 item.gold_door.name=Goldtür
 item.quartz_door.name=Quarztür
 
-item.dimensional_door.name=Dimensionaltür
+item.iron_dimensional_door.name=Dimensionaltür
 item.gold_dimensional_door.name=Goldene Dimensionaltür
 item.quartz_dimensional_door.name=Persönliche Dimensionaltür
 item.chaos_dimensional_door.name=Instabile Tür
-item.warp_dimensional_door.name=Warp-Tür
+item.oak_dimensional_door.name=Warp-Tür
 
 item.rift_key=Spaltschlüssel
 item.rift_signature.name=Spaltsignatur
@@ -40,10 +40,10 @@ item.stable_fabric.name=Stabiler Stoff
 info.rift_key.bound=Gebunden
 info.rift_key.unbound=Nicht gebunden
 
-info.dimensional_door0=Platziere auf dem Block unterhalb eines Spalts,
-info.dimensional_door1=um diesen Spalt zu aktivieren, oder
-info.dimensional_door2=irgendwo anders, um eine
-info.dimensional_door3=kleine Dimension to erschaffen.
+info.iron_dimensional_door0=Platziere auf dem Block unterhalb eines Spalts,
+info.iron_dimensional_door1=um diesen Spalt zu aktivieren, oder
+info.iron_dimensional_door2=irgendwo anders, um eine
+info.iron_dimensional_door3=kleine Dimension to erschaffen.
 
 info.gold_dimensional_door0=Ähnlich einer Dimensionaltür,
 info.gold_dimensional_door1=aber hält die kleine Dimension geladen,
@@ -71,9 +71,9 @@ info.stabilized_rift_signature.unbound2=die erste und die aktuelle Position verb
 
 info.chaos_dimensional_door=Vorsicht: Führt zu einem zufälligen Ziel
 
-info.warp_dimensional_door0=Platziere auf dem Block unterhalb eines
-info.warp_dimensional_door1=Spalts, um ein Portal zu erstellen,
-info.warp_dimensional_door2=oder platziere irgendwo in einer
-info.warp_dimensional_door3=kleinen Dimension, um sie zu verlassen.
+info.oak_dimensional_door0=Platziere auf dem Block unterhalb eines
+info.oak_dimensional_door1=Spalts, um ein Portal zu erstellen,
+info.oak_dimensional_door2=oder platziere irgendwo in einer
+info.oak_dimensional_door3=kleinen Dimension, um sie zu verlassen.
 
 entity.dimdoors.monolith.name=Monolith

@@ -82,7 +82,9 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 if (file.isDirectory() || !file.getName().endsWith(".schem")) continue;
                 try {
                     Schematic schematic = Schematic.loadFromNBT(CompressedStreamTools.readCompressed(new FileInputStream(file)));
-                    templates.add(new PocketTemplate(SAVED_POCKETS_GROUP_NAME, file.getName(), null, null, null, schematic, -1, 0));
+                    PocketTemplate template = new PocketTemplate(SAVED_POCKETS_GROUP_NAME, file.getName(), null, null, null, schematic, -1, 0);
+                    template.replacePlaceholders();
+                    templates.add(template);
                 } catch (IOException e) {
                     DimDoors.log.error("Error reading schematic " + file.getName() + ": " + e);
                 }
@@ -149,7 +151,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 try {
                     schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
                     if (!schematicNBT.hasKey("Version")) {
-                        schematic = SchematicConverter.convertSchematic(schematicNBT, template.getId(), template.getName(), template.getAuthor());
+                        schematic = SchematicConverter.convertSchematic(schematicNBT, template.getId(), template.getAuthor());
                     } else {
                         schematic = Schematic.loadFromNBT(schematicNBT);
                     }
@@ -171,6 +173,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 DimDoors.log.warn("Schematic " + template.getId() + " was bigger than specified in its json file and therefore wasn't loaded");
             }
             template.setSchematic(schematic);
+            template.replacePlaceholders();
         }
         return validTemplates;
     }

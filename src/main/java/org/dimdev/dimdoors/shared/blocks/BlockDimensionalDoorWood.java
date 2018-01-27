@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class BlockDimensionalDoorWood extends BlockDimensionalDoor {
 
-    public static final String ID = "warp_dimensional_door";
+    public static final String ID = "oak_dimensional_door";
 
     public BlockDimensionalDoorWood() {
         super(Material.WOOD);

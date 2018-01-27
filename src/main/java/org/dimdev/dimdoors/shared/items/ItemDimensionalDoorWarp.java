@@ -25,6 +25,6 @@ public class ItemDimensionalDoorWarp extends ItemDimensionalDoor {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.addAll(I18nUtils.translateMultiline("info.warp_dimensional_door"));
+        tooltip.addAll(I18nUtils.translateMultiline("info.oak_dimensional_door"));
     }
 }

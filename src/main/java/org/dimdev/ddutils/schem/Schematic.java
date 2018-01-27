@@ -60,7 +60,7 @@ public class Schematic {
         this.width = width;
         this.height = height;
         this.length = length;
-        blockData = new short[width][length][height];
+        blockData = new short[width][height][length];
         palette.add(Blocks.AIR.getDefaultState());
         paletteMax++;
         creationDate = System.currentTimeMillis();
@@ -87,6 +87,8 @@ public class Schematic {
 
             if (nbt.hasKey("Date")) { //Date is not required
                 schematic.creationDate = metadataCompound.getLong("Date");
+            } else {
+                schematic.creationDate = -1;
             }
             if (nbt.hasKey("RequiredMods")) { //RequiredMods is not required (ironically)
                 NBTTagList requiredModsTagList = (NBTTagList) metadataCompound.getTag("RequiredMods");
@@ -175,7 +177,7 @@ public class Schematic {
         NBTTagCompound metadataCompound = new NBTTagCompound();
         if (author != null) metadataCompound.setString("Author", author); // Author is not required
         metadataCompound.setString("Name", name);
-        metadataCompound.setLong("Date", creationDate);
+        if (creationDate != -1) metadataCompound.setLong("Date", creationDate);
         NBTTagList requiredModsTagList = new NBTTagList();
         for (String requiredMod : requiredMods) {
             requiredModsTagList.appendTag(new NBTTagString(requiredMod));
@@ -366,8 +368,13 @@ public class Schematic {
             adjustedEntityNBT.setUniqueId("UUID", UUID.randomUUID());
 
             Entity entity = EntityList.createEntityFromNBT(adjustedEntityNBT, world);
+            // TODO: check if it is in pocket bounds
             world.spawnEntity(entity);
         }
+    }
+
+    public IBlockState getBlockState(int x, int y, int z) {
+        return palette.get(blockData[x][y][z]);
     }
 
     public void setBlockState(int x, int y, int z, IBlockState state) {
