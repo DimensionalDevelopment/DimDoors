@@ -28,13 +28,14 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public final class SchematicConverter {
 
     private final static int LOCKED_CHEST_ID = 95;
     private final static int POTION_ID = 373;
     private final static int WRITTEN_BOOK_ID = 387;
 
-    public static Schematic convertSchematic(NBTTagCompound nbt, String schematicId, String author) {
+    public static Schematic convertSchematic(NBTTagCompound nbt, String schematicId, String author, String group) {
         Schematic schematic = new Schematic(nbt.getShort("Width"), nbt.getShort("Height"), nbt.getShort("Length"));
 
         schematic.name = schematicId;
@@ -160,7 +161,6 @@ public final class SchematicConverter {
         byte[] addIdArray = nbt.getByteArray("AddBlocks");
         byte[] metaArray = nbt.getByteArray("Data");
         IBlockState lastWasSandstone;
-        int entranceCount = 0;
         for (int x = 0; x < schematic.width; x++) {
             for (int z = 0; z < schematic.length; z++) {
                 lastWasSandstone = null;
@@ -216,8 +216,7 @@ public final class SchematicConverter {
                             if (lastWasSandstone != null) {
                                 riftPlaceholder.setString("placeholder", "overworld_door");
                             } else {
-                                riftPlaceholder.setString("placeholder", "pocket_entrance_door");
-                                entranceCount++;
+                                riftPlaceholder.setString("placeholder", "entrance_door");
                             }
                         } else if (block == ModBlocks.DIMENSIONAL_PORTAL) {
                             riftPlaceholder.setString("placeholder", "gateway_portal");

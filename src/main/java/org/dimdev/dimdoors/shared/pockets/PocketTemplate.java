@@ -77,7 +77,7 @@ public class PocketTemplate {
                         rift.setDestination(DefaultDungeonDestinations.deeperDungeonDestination);
                         newNBT = rift.serializeNBT();
                         break;
-                    case "shallower_depth_door":
+                    case "less_deep_depth_door":
                         /*TileEntityEntranceRift*/ rift = (TileEntityEntranceRift) state.getBlock().createTileEntity(null, state);
                         rift.setPos(new BlockPos(x, y, z));
                         rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
@@ -91,7 +91,7 @@ public class PocketTemplate {
                         rift.setDestination(DefaultDungeonDestinations.overworldDestination);
                         newNBT = rift.serializeNBT();
                         break;
-                    case "pocket_entrance_door":
+                    case "entrance_door":
                         /*TileEntityEntranceRift*/ rift = (TileEntityEntranceRift) state.getBlock().createTileEntity(null, state);
                         rift.setPos(new BlockPos(x, y, z));
                         rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);

@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.dimdev.dimdoors.shared.ModConfig;
-import org.dimdev.dimdoors.shared.tools.SchematicConverter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.CompressedStreamTools;
 import org.apache.commons.io.IOUtils;
@@ -114,18 +113,13 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
 
             //Initialising the possible locations/formats for the schematic file
             InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + extendedTemplatelocation + ".schem");
-            InputStream oldVersionSchematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + extendedTemplatelocation + ".schematic"); //@todo also check for other schematics
             File schematicFile = new File(schematicFolder, "/" + extendedTemplatelocation + ".schem");
-            File oldVersionSchematicFile = new File(schematicFolder, "/" + extendedTemplatelocation + ".schematic");
 
             //determine which location to load the schematic file from (and what format)
             DataInputStream schematicDataStream = null;
             boolean streamOpened = false;
             if (schematicStream != null) {
                 schematicDataStream = new DataInputStream(schematicStream);
-                streamOpened = true;
-            } else if (oldVersionSchematicStream != null) {
-                schematicDataStream = new DataInputStream(oldVersionSchematicStream);
                 streamOpened = true;
             } else if (schematicFile.exists()) {
                 try {
@@ -134,15 +128,8 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 } catch (FileNotFoundException ex) {
                     DimDoors.log.error("Schematic file " + template.getId() + ".schem did not load correctly from config folder.", ex);
                 }
-            } else if (oldVersionSchematicFile.exists()) {
-                try {
-                    schematicDataStream = new DataInputStream(new FileInputStream(oldVersionSchematicFile));
-                    streamOpened = true;
-                } catch (FileNotFoundException ex) {
-                    DimDoors.log.error("Schematic file " + template.getId() + ".schematic did not load correctly from config folder.", ex);
-                }
             } else {
-                DimDoors.log.error("Schematic \"" + template.getId() + "\" was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
+                DimDoors.log.error("Schematic \"" + template.getId() + "\".schem was not found in the jar or config directory.");
             }
 
             NBTTagCompound schematicNBT;
@@ -150,11 +137,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             if (streamOpened) {
                 try {
                     schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                    if (!schematicNBT.hasKey("Version")) {
-                        schematic = SchematicConverter.convertSchematic(schematicNBT, template.getId(), template.getAuthor());
-                    } else {
-                        schematic = Schematic.loadFromNBT(schematicNBT);
-                    }
+                    schematic = Schematic.loadFromNBT(schematicNBT);
                     schematicDataStream.close();
                 } catch (IOException ex) {
                     Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + template.getId() + " could not be read as a valid schematic NBT file.", ex); // TODO: consistently use one type of logger for this.
@@ -294,7 +277,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         return getRandomTemplate("public", -1, ModConfig.pockets.basePublicPocketSize, true);
     }
 
-    public void saveSchematic(Schematic schematic, String id) {
+    public static void saveSchematic(Schematic schematic, String id) {
         NBTTagCompound schematicNBT = schematic.saveToNBT();
         File saveFolder = new File(DimDoors.getConfigurationFolder(), "/schematics/saved");
         if (!saveFolder.exists()) {
@@ -303,6 +286,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
 
         File saveFile = new File(saveFolder.getAbsolutePath() + "/" + id + ".schem");
         try {
+            saveFile.getParentFile().mkdirs();
             saveFile.createNewFile();
             DataOutputStream schematicDataStream = new DataOutputStream(new FileOutputStream(saveFile));
             CompressedStreamTools.writeCompressed(schematicNBT, schematicDataStream);
@@ -311,6 +295,10 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         } catch (IOException ex) {
             Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Something went wrong while saving " + saveFile.getAbsolutePath() + " to disk.", ex);
         }
+    }
+
+    public void saveSchematicForEditing(Schematic schematic, String id) {
+        saveSchematic(schematic, id);
 
         if (!nameMap.containsKey(SAVED_POCKETS_GROUP_NAME)) {
             nameMap.put(SAVED_POCKETS_GROUP_NAME, new HashMap<>());

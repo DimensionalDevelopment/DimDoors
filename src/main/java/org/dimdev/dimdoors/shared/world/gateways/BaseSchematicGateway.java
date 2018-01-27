@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.shared.world.gateways;
 
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.schem.Schematic;
-import org.dimdev.dimdoors.shared.tools.SchematicConverter;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -18,13 +17,13 @@ public abstract class BaseSchematicGateway extends BaseGateway {
         String schematicJarDirectory = "/assets/dimdoors/gateways/";
 
         //Initialising the possible locations/formats for the schematic file
-        InputStream oldVersionSchematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + id + ".schematic"); //@todo also check for other schematics
+        InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + id + ".schem");
 
         //determine which location to load the schematic file from (and what format)
         DataInputStream schematicDataStream = null;
         boolean streamOpened = false;
-        if (oldVersionSchematicStream != null) {
-            schematicDataStream = new DataInputStream(oldVersionSchematicStream);
+        if (schematicStream != null) {
+            schematicDataStream = new DataInputStream(schematicStream);
             streamOpened = true;
         } else {
             DimDoors.log.warn("Schematic '" + id + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
@@ -35,7 +34,7 @@ public abstract class BaseSchematicGateway extends BaseGateway {
         if (streamOpened) {
             try {
                 schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                schematic = SchematicConverter.convertSchematic(schematicNBT, id, null);
+                schematic = Schematic.loadFromNBT(schematicNBT);
                 schematicDataStream.close();
             } catch (IOException ex) {
                 DimDoors.log.error("Schematic file for " + id + " could not be read as a valid schematic NBT file.", ex);

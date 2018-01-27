@@ -43,7 +43,7 @@ public class CommandSaveSchem extends CommandBase {
         schematic.name = args[0];
         schematic.author = player.getName();
 
-        SchematicHandler.INSTANCE.saveSchematic(schematic, args[0]);
+        SchematicHandler.INSTANCE.saveSchematicForEditing(schematic, args[0]);
         notifyCommandListener(sender, this, "commands.saveschem.success", args[0]);
     }
 }
