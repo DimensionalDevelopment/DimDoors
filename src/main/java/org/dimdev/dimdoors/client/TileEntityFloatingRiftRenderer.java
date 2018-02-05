@@ -5,6 +5,7 @@ import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector4f;
 import org.dimdev.ddutils.RGBA;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.client.tesseract.Tesseract;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -20,127 +21,7 @@ import org.lwjgl.opengl.GL11;
 public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<TileEntityFloatingRift> {
     private static final ResourceLocation tesseract_path = new ResourceLocation(DimDoors.MODID + ":textures/other/tesseract.png");
 
-    private static final Vector4f[] tesseract = {
-            new Vector4f(-0.5f,-0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,-0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,-0.5f,0.5f,-0.5f),
-            new Vector4f(-0.5f,-0.5f,0.5f,-0.5f),
-
-            new Vector4f(-0.5f,0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,0.5f,-0.5f),
-
-            new Vector4f(-0.5f,-0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,-0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,-0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,-0.5f,-0.5f),
-
-            new Vector4f(-0.5f,-0.5f,0.5f,-0.5f),
-            new Vector4f(0.5f,-0.5f,0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,0.5f,-0.5f),
-
-            new Vector4f(-0.5f,-0.5f,-0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,-0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,0.5f,-0.5f),
-            new Vector4f(-0.5f,-0.5f,0.5f,-0.5f),
-
-            new Vector4f(0.5f,-0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,0.5f,-0.5f),
-            new Vector4f(0.5f,-0.5f,0.5f,-0.5f),
-
-            new Vector4f(-0.5f,-0.5f,-0.5f,0.5f),
-            new Vector4f(0.5f,-0.5f,-0.5f,0.5f),
-            new Vector4f(0.5f,-0.5f,0.5f,0.5f),
-            new Vector4f(-0.5f,-0.5f,0.5f,0.5f),
-
-            new Vector4f(-0.5f,0.5f,-0.5f,0.5f),
-            new Vector4f(0.5f,0.5f,-0.5f,0.5f),
-            new Vector4f(0.5f,0.5f,0.5f,0.5f),
-            new Vector4f(-0.5f,0.5f,0.5f,0.5f),
-
-            new Vector4f(-0.5f,-0.5f,-0.5f,0.5f),
-            new Vector4f(0.5f,-0.5f,-0.5f,0.5f),
-            new Vector4f(0.5f,0.5f,-0.5f,0.5f),
-            new Vector4f(-0.5f,0.5f,-0.5f,0.5f),
-
-            new Vector4f(-0.5f,-0.5f,0.5f,0.5f),
-            new Vector4f(0.5f,-0.5f,0.5f,0.5f),
-            new Vector4f(0.5f,0.5f,0.5f,0.5f),
-            new Vector4f(-0.5f,0.5f,0.5f,0.5f),
-
-            new Vector4f(-0.5f,-0.5f,-0.5f,0.5f),
-            new Vector4f(-0.5f,0.5f,-0.5f,0.5f),
-            new Vector4f(-0.5f,0.5f,0.5f,0.5f),
-            new Vector4f(-0.5f,-0.5f,0.5f,0.5f),
-
-            new Vector4f(0.5f,-0.5f,-0.5f,0.5f),
-            new Vector4f(0.5f,0.5f,-0.5f,0.5f),
-            new Vector4f(0.5f,0.5f,0.5f,0.5f),
-            new Vector4f(0.5f,-0.5f,0.5f,0.5f),
-
-            new Vector4f(-0.5f,-0.5f,-0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,-0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,-0.5f,0.5f),
-            new Vector4f(-0.5f,-0.5f,-0.5f,0.5f),
-
-            new Vector4f(-0.5f,-0.5f,0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,0.5f,0.5f),
-            new Vector4f(-0.5f,-0.5f,0.5f,0.5f),
-
-            new Vector4f(-0.5f,-0.5f,-0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,-0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,0.5f,-0.5f),
-            new Vector4f(-0.5f,-0.5f,0.5f,-0.5f),
-
-            new Vector4f(-0.5f,-0.5f,-0.5f,0.5f),
-            new Vector4f(-0.5f,0.5f,-0.5f,0.5f),
-            new Vector4f(-0.5f,0.5f,0.5f,0.5f),
-            new Vector4f(-0.5f,-0.5f,0.5f,0.5f),
-
-            new Vector4f(-0.5f,-0.5f,-0.5f,-0.5f),
-            new Vector4f(-0.5f,-0.5f,0.5f,-0.5f),
-            new Vector4f(-0.5f,-0.5f,0.5f,0.5f),
-            new Vector4f(-0.5f,-0.5f,-0.5f,0.5f),
-
-            new Vector4f(-0.5f,0.5f,-0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,0.5f,-0.5f),
-            new Vector4f(-0.5f,0.5f,0.5f,0.5f),
-            new Vector4f(-0.5f,0.5f,-0.5f,0.5f),
-
-            new Vector4f(0.5f,-0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,-0.5f,0.5f),
-            new Vector4f(0.5f,-0.5f,-0.5f,0.5f),
-
-            new Vector4f(0.5f,-0.5f,0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,0.5f,0.5f),
-            new Vector4f(0.5f,-0.5f,0.5f,0.5f),
-
-            new Vector4f(0.5f,-0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,0.5f,-0.5f),
-            new Vector4f(0.5f,-0.5f,0.5f,-0.5f),
-
-            new Vector4f(0.5f,-0.5f,-0.5f,0.5f),
-            new Vector4f(0.5f,0.5f,-0.5f,0.5f),
-            new Vector4f(0.5f,0.5f,0.5f,0.5f),
-            new Vector4f(0.5f,-0.5f,0.5f,0.5f),
-
-            new Vector4f(0.5f,-0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,-0.5f,0.5f,-0.5f),
-            new Vector4f(0.5f,-0.5f,0.5f,0.5f),
-            new Vector4f(0.5f,-0.5f,-0.5f,0.5f),
-
-            new Vector4f(0.5f,0.5f,-0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,0.5f,-0.5f),
-            new Vector4f(0.5f,0.5f,0.5f,0.5f),
-            new Vector4f(0.5f,0.5f,-0.5f,0.5f)
-    };
+    private static final Tesseract tesseract = new Tesseract();
 
     /**
      * Renders the rift.
@@ -161,18 +42,7 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
         GlStateManager.translate(x+0.5,y+0.5,z+0.5);
         GlStateManager.scale(0.25,0.25,0.25);
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder worldRenderer = tessellator.getBuffer();
-
-        for (int i = 0; i < tesseract.length; i+=4) {
-            worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            GlStateManager.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-            project(worldRenderer, rotation(tesseract[i], radian),0,0, color);
-            project(worldRenderer, rotation(tesseract[i+1], radian),0,1, color);
-            project(worldRenderer, rotation(tesseract[i+2], radian),1,1, color);
-            project(worldRenderer, rotation(tesseract[i+3], radian),1,0, color);
-            tessellator.draw();
-        }
+        tesseract.draw(color, radian);
 
         GlStateManager.disableBlend();
         GlStateManager.enableCull();
@@ -181,27 +51,7 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
     }
 
     private double update(TileEntityFloatingRift te, float partialTicks) {
-        te.renderAngle = (te.renderAngle + 1 * partialTicks) % 360;
+        te.renderAngle = (te.renderAngle + 5 * partialTicks) % 360;
         return te.renderAngle;
-    }
-
-    private Vector4f rotation(Vector4f v, double angle) {
-        double x = v.getX();
-        double y = v.getY();
-        double z = v.getZ();
-        double w = v.getW();
-
-        return new Vector4f(
-                x * TrigMath.cos(angle) - y * TrigMath.sin(angle),
-                x * TrigMath.sin(angle) + y * TrigMath.cos(angle),
-                z * TrigMath.cos(angle) - w * TrigMath.sin(angle),
-                z * TrigMath.sin(angle) + w * TrigMath.cos(angle));
-    }
-
-    private void project(BufferBuilder buffer, Vector4f vector, int u, int v, RGBA color) {
-        double scalar = 1d/(vector.getW()+1d);
-        Vector3f vector1 = vector.toVector3().mul(scalar);
-
-        buffer.pos(vector1.getX(), vector1.getY(), vector1.getZ()).tex(u,v).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
     }
 }
