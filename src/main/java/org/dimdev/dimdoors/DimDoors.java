@@ -69,7 +69,7 @@ public class DimDoors {
     @Mod.EventHandler
     public void onInitialization(FMLInitializationEvent event) {
         proxy.onInitialization(event);
-        gatewayGenerator = new GatewayGenerator();
+        gatewayGenerator = new GatewayGenerator(); //TODO put this in a proxy and structure this modularly instead of writing whole new classes per gateway type...
         GameRegistry.registerWorldGenerator(gatewayGenerator, 0);
     }
 

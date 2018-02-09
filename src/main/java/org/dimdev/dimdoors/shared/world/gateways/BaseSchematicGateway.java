@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
 
 public abstract class BaseSchematicGateway extends BaseGateway {
     private Schematic schematic;
@@ -35,6 +36,7 @@ public abstract class BaseSchematicGateway extends BaseGateway {
             try {
                 schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
                 schematic = Schematic.loadFromNBT(schematicNBT);
+                PocketTemplate.replacePlaceholders(schematic);
                 schematicDataStream.close();
             } catch (IOException ex) {
                 DimDoors.log.error("Schematic file for " + id + " could not be read as a valid schematic NBT file.", ex);

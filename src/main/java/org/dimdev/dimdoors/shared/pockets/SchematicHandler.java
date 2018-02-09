@@ -82,7 +82,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 try {
                     Schematic schematic = Schematic.loadFromNBT(CompressedStreamTools.readCompressed(new FileInputStream(file)));
                     PocketTemplate template = new PocketTemplate(SAVED_POCKETS_GROUP_NAME, file.getName(), null, null, null, schematic, -1, 0);
-                    template.replacePlaceholders();
+                    template.replacePlaceholders(schematic);
                     templates.add(template);
                 } catch (IOException e) {
                     DimDoors.log.error("Error reading schematic " + file.getName() + ": " + e);
@@ -156,7 +156,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 DimDoors.log.warn("Schematic " + template.getId() + " was bigger than specified in its json file and therefore wasn't loaded");
             }
             template.setSchematic(schematic);
-            template.replacePlaceholders();
+            template.replacePlaceholders(schematic);
         }
         return validTemplates;
     }

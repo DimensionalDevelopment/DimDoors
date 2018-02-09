@@ -57,16 +57,16 @@ public class PocketTemplate {
         }
     }
 
-    public void replacePlaceholders() { // TODO: it should be possible to place a schematic without replacing placeholders
+    public static void replacePlaceholders(Schematic parSchematic) { // TODO: it should be possible to place a schematic without replacing placeholders
         // Replace placeholders (some schematics will contain them)
         List<NBTTagCompound> tileEntities = new ArrayList<>();
-        for (NBTTagCompound tileEntityNBT : schematic.tileEntities) {
+        for (NBTTagCompound tileEntityNBT : parSchematic.tileEntities) {
             if (tileEntityNBT.hasKey("placeholder")) {
                 int x = tileEntityNBT.getInteger("x");
                 int y = tileEntityNBT.getInteger("y");
                 int z = tileEntityNBT.getInteger("z");
 
-                IBlockState state = schematic.palette.get(schematic.blockData[x][y][z]);
+                IBlockState state = parSchematic.palette.get(parSchematic.blockData[x][y][z]);
 
                 NBTTagCompound newNBT;
                 switch (tileEntityNBT.getString("placeholder")) {
@@ -115,11 +115,11 @@ public class PocketTemplate {
                 tileEntities.add(tileEntityNBT);
             }
         }
-        schematic.tileEntities = tileEntities;
+        parSchematic.tileEntities = tileEntities;
 
 
         List<NBTTagCompound> entities = new ArrayList<>();
-        for (NBTTagCompound entitiesNBT : schematic.entities) {
+        for (NBTTagCompound entitiesNBT : parSchematic.entities) {
             if (entitiesNBT.hasKey("placeholder")) {
                 double x = entitiesNBT.getDouble("x");
                 double y = entitiesNBT.getDouble("y");
@@ -143,7 +143,7 @@ public class PocketTemplate {
                 entities.add(entitiesNBT);
             }
         }
-        schematic.entities = entities;
+        parSchematic.entities = entities;
     }
 
     public void place(Pocket pocket) {
