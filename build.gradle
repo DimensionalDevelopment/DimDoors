@@ -23,7 +23,7 @@ repositories {
 // Version info
 String baseversion = "3.0" // Set beta to 0 after changing this
 int beta = 7 // Set this to 0 for a non-beta release
-int betaSub = 0
+int betaSub = 1
 ext.mcversion = "1.12.2"
 ext.forgeversion = "14.23.2.2618"
 String mcpversion = "snapshot_20180219"
@@ -98,7 +98,7 @@ processResources {
 task generatePocketSchematics(dependsOn: jar, type: JavaExec, group: "dimdoors") {
     classpath = files('build/libs/' + jar.archiveName)
     classpath += sourceSets.main.runtimeClasspath
-    main = "org.dimdev.dimdoors.shared.tools.PocketSchematicGenerator"
+    main = "org.dimdev.dimdoors.shared.tools.SchematicGenerator"
     //noinspection GroovyAssignabilityCheck (IntelliJ is wrong)
     args "src/main/resources/assets/dimdoors/pockets/schematic"
 }
