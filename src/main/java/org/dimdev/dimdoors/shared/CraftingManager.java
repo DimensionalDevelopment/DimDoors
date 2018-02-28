@@ -51,13 +51,13 @@ public final class CraftingManager {
                 "yxy", 'x', ModItems.STABLE_FABRIC, 'y', Items.IRON_DOOR));
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.CHAOS_DOOR, 1),
-                "yxy", 'x', Items.ENDER_EYE, 'y', Items.IRON_DOOR));
+                "xyx", 'x', Items.ENDER_EYE, 'y', Items.IRON_DOOR));
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WARP_DIMENSIONAL_DOOR, 1),
                 "yxy", 'x', Items.ENDER_PEARL, 'y', Items.OAK_DOOR));
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModBlocks.WOOD_DIMENSIONAL_TRAPDOOR, 1),
-                "y", "x", "y", 'x', Items.ENDER_PEARL, 'y', Blocks.TRAPDOOR));
+                "yx", Items.ENDER_PEARL, 'y', Blocks.TRAPDOOR));
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.GOLD_DIMENSIONAL_DOOR, 1),
                 "yxy", 'x', ModItems.STABLE_FABRIC, 'y', ModItems.GOLD_DOOR));
@@ -66,7 +66,7 @@ public final class CraftingManager {
                 "yy", "yy", "yy", 'y', Items.GOLD_INGOT));
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.PERSONAL_DIMENSIONAL_DOOR, 1),
-                "yxy", 'x', ModItems.STABLE_FABRIC, 'y', ModItems.QUARTZ_DOOR));
+                "yx", 'x', ModItems.STABLE_FABRIC, 'y', ModItems.QUARTZ_DOOR));
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.QUARTZ_DOOR, 1),
                 "yy", "yy", "yy", 'y', Items.QUARTZ));
