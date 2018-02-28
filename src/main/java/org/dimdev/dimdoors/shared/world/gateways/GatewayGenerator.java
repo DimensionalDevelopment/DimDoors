@@ -52,8 +52,8 @@ public class GatewayGenerator implements IWorldGenerator {
         // Check if we're allowed to generate rift clusters in this dimension.
         // If so, randomly decide whether to one.
         boolean clusterGenerated = false;
-        if (Arrays.binarySearch(ModConfig.world.riftClusterDimensionTypeBlacklist, world.provider.getDimensionType().getId()) == -1) {
-            double clusterGenChance = ModConfig.world.clusterGenerationChance;
+        if (Arrays.binarySearch(ModConfig.world.clusterDimBlacklist, world.provider.getDimensionType().getId()) == -1) {
+            double clusterGenChance = ModConfig.world.clusterGenChance;
             while (clusterGenChance > 0.0) {
                 if (random.nextDouble() < clusterGenChance) {
                     do {
@@ -82,8 +82,8 @@ public class GatewayGenerator implements IWorldGenerator {
 
         // Check if we can place a Rift Gateway in this dimension, then randomly decide whether to place one.
         // This only happens if a rift cluster was NOT generated.
-        if (!clusterGenerated && Arrays.binarySearch(ModConfig.world.gatewayDimensionTypeBlacklist, world.provider.getDimensionType().getId()) == -1) {
-            double gatewayGenChance = ModConfig.world.gatewayGenerationChance;
+        if (!clusterGenerated && Arrays.binarySearch(ModConfig.world.gatewayDimBlacklist, world.provider.getDimensionType().getId()) == -1) {
+            double gatewayGenChance = ModConfig.world.gatewayGenChance;
             while (gatewayGenChance > 0.0) {
                 if (random.nextDouble() < gatewayGenChance) {
                     valid = false;

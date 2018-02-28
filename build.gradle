@@ -25,8 +25,8 @@ String baseversion = "3.0" // Set beta to 0 after changing this
 int beta = 7 // Set this to 0 for a non-beta release
 int betaSub = 1
 ext.mcversion = "1.12.2"
-ext.forgeversion = "14.23.2.2618"
-String mcpversion = "snapshot_20180219"
+ext.forgeversion = "14.23.2.2623"
+String mcpversion = "snapshot_20180227"
 
 String suffix = ""
 String shortSuffix = ""

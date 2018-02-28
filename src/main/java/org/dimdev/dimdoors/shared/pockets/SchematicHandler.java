@@ -270,11 +270,11 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     }
 
     public PocketTemplate getPersonalPocketTemplate() {
-        return getRandomTemplate("private", -1, ModConfig.pockets.initialPrivatePocketSize, true);
+        return getRandomTemplate("private", -1, ModConfig.pockets.privatePocketSize, true);
     }
 
     public PocketTemplate getPublicPocketTemplate() {
-        return getRandomTemplate("public", -1, ModConfig.pockets.basePublicPocketSize, true);
+        return getRandomTemplate("public", -1, ModConfig.pockets.publicPocketSize, true);
     }
 
     public static void saveSchematic(Schematic schematic, String id) {

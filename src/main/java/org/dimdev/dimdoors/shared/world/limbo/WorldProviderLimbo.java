@@ -42,7 +42,7 @@ public class WorldProviderLimbo extends WorldProvider {
 
     @Override
     public boolean canRespawnHere() {
-        return ModConfig.limbo.hardcoreLimboEnabled;
+        return ModConfig.limbo.hardcoreLimbo;
     }
 
     @Override
