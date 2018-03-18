@@ -6,6 +6,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+<<<<<<< HEAD:src/main/java/org/dimdev/dimdoors/shared/tileentities/TileEntityRift.java
+=======
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
+>>>>>>> Beginning of rift render overhaul.:src/main/java/org/dimdev/dimdoors/shared/rifts/TileEntityRift.java
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

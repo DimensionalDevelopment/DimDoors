@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.client;
 
+import com.flowpowered.math.vector.Vector3d;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -7,9 +8,9 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.dimdev.ddutils.math.MathUtils;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.lwjgl.opengl.GL11;
@@ -82,14 +83,16 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
 
     @Override
     public void render(TileEntityEntranceRift entrance, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        Vec3d offset = new Vec3d(entrance.orientation.getOpposite().getDirectionVec()).scale(
+
+        Vector3d offset = MathUtils.toFlow(entrance.orientation.getOpposite().getDirectionVec()).toDouble().mul(
                 entrance.orientation == EnumFacing.NORTH ||
-                entrance.orientation == EnumFacing.WEST ||
-                entrance.orientation == EnumFacing.UP ? entrance.pushIn : entrance.pushIn - 1);
-        DimensionalPortalRenderer.renderDimensionalPortal(
-                x + offset.x,
-                y + offset.y,
-                z + offset.z,
+                        entrance.orientation == EnumFacing.WEST ||
+                        entrance.orientation == EnumFacing.UP ? entrance.pushIn : entrance.pushIn - 1);
+        //System.out.println(entrance.extendDown + entrance.extendUp);
+        DimensionalPortalRenderer.renderFoxWallAxis(
+                entrance,
+                new Vector3d(x, y, z),
+                offset,
                 //entrance.orientation.getHorizontalAngle(),
                 //entrance.orientation.getDirectionVec().getY() * 90,
                 entrance.orientation,
@@ -97,10 +100,10 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
                 entrance.extendDown + entrance.extendUp,
                 entrance.getColors(16));
 
-        if (entrance.lockStatus >= 1) {
-            for (int i = 0; i < 1 + entrance.lockStatus; i++) {
+        if (entrance.lockStatus >= 1)
+            for (int i = 0; i < 1 + entrance.lockStatus; i++)
                 renderKeyHole(entrance, x, y, z, i);
-            }
-        }
+
     }
 }
+

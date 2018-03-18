@@ -1,5 +1,10 @@
 package org.dimdev.ddutils.math;
 
+import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
+
 import java.util.Map;
 import java.util.Random;
 
@@ -18,5 +23,13 @@ public final class MathUtils {
             if (f < 0) return e.getKey();
         }
         return null;
+    }
+
+    public static Vector3d toFlow(Vec3d vec){
+        return new Vector3d(vec.x, vec.y, vec.z);
+    }
+
+    public static Vector3i toFlow(Vec3i vec){
+        return new Vector3i(vec.getX(), vec.getY(), vec.getZ());
     }
 }

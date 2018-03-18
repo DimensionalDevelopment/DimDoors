@@ -8,7 +8,8 @@ bin
 .project
 
 # idea
-out
+out/
+classes/
 *.ipr
 *.iws
 *.iml

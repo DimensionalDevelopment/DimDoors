@@ -1,7 +1,11 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
 import net.minecraft.block.state.IBlockState;
+<<<<<<< HEAD
 import net.minecraft.entity.EntityLiving;
+=======
+import net.minecraft.util.math.AxisAlignedBB;
+>>>>>>> Beginning of rift render overhaul.
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -128,6 +132,7 @@ import java.util.Random;
     }
 
     @Override
+<<<<<<< HEAD
     public float getSourceYaw(float entityYaw) {
         return orientation.getOpposite().getHorizontalAngle();
     }
@@ -145,5 +150,9 @@ import java.util.Random;
     @Override
     public float getDestinationPitch(float entityPitch) {
         return 0;
+=======
+    public AxisAlignedBB getRenderBoundingBox() {
+        return new net.minecraft.util.math.AxisAlignedBB(pos.add(-1,-1,-1), pos.add(2, 3, 2));
+>>>>>>> Beginning of rift render overhaul.
     }
 }
