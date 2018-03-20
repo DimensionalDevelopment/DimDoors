@@ -59,6 +59,12 @@ import java.util.Random;
     public void setLockStatus(byte lockStatus) { this.lockStatus = lockStatus; markDirty(); }
     public void setCloseAfterPassThrough(boolean closeAfterPassThrough) { this.closeAfterPassThrough = closeAfterPassThrough; markDirty(); }
 
+    public void setOrientation(EnumFacing orientation) {
+        this.orientation = orientation;
+        yaw = orientation.getHorizontalAngle();
+        pitch = orientation.getFrontOffsetY() * 90;
+    }
+
     @Override
     public boolean teleport(Entity entity) {
         boolean status = super.teleport(entity);
@@ -72,7 +78,8 @@ import java.util.Random;
     @Override
     public void teleportTo(Entity entity, float fromYaw, float fromPitch) {
         if (relativeRotation) {
-            TeleportUtils.teleport(entity, new Location(world, pos.offset(orientation, tpOffset)), orientation.getHorizontalAngle() + entity.rotationYaw - fromYaw, entity.rotationPitch - fromPitch);
+            TeleportUtils.teleport(entity, new Location(world, pos.offset(orientation, tpOffset)), orientation.getHorizontalAngle() + entity.rotationYaw - fromYaw, entity.rotationPitch);
+            // TODO: velocity
         } else {
             teleportTo(entity);
         }

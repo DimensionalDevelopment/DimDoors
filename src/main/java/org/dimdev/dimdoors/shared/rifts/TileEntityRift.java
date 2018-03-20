@@ -188,7 +188,7 @@ import javax.annotation.Nonnull;
 
         // Attempt a teleport
         try {
-            if (destination.teleport(new RotatedLocation(new Location(world, pos), yaw, pitch), entity)) {
+            if (destination.teleport(new RotatedLocation(new Location(world, pos), yaw, pitch), entity)) { // TODO: yaw should be player's yaw % 90 for floating rifts
                 VirtualLocation vloc = VirtualLocation.fromLocation(new Location(entity.world, entity.getPosition()));
                 DimDoors.sendTranslatedMessage(entity, "You are at x = " + vloc.getX() + ", y = ?, z = " + vloc.getZ() + ", w = " + vloc.getDepth());
                 return true;

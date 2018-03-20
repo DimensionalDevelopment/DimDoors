@@ -121,7 +121,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     @Override
     public TileEntityEntranceRift createNewTileEntity(World world, int meta) {
         TileEntityEntranceRift rift = new TileEntityEntranceRift();
-        rift.orientation = getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite();
+        rift.setOrientation(getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite());
         rift.extendUp += 1;
         return rift;
     }

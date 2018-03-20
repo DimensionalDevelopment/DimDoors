@@ -59,7 +59,7 @@ public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements 
     @Override
     public TileEntityEntranceRift createNewTileEntity(World world, int meta) {
         TileEntityEntranceRift rift = new TileEntityEntranceRift();
-        rift.orientation = EnumFacing.UP;
+        rift.setOrientation(EnumFacing.UP);
         return rift;
     }
 

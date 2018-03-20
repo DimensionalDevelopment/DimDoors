@@ -69,7 +69,7 @@ public class BlockDimensionalPortal extends BlockDimensionalDoor { // TODO: conv
     @Override
     public TileEntityEntranceRift createNewTileEntity(World world, int meta) {
         TileEntityEntranceRift rift = new TileEntityEntranceRift();
-        rift.orientation = getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite();
+        rift.setOrientation(getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite());
         rift.extendUp += 1;
         rift.pushIn = 0.5;
         return rift;
