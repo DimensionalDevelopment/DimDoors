@@ -6,9 +6,9 @@ tile.quartz_door.name=Ușă de cuarț
 tile.iron_dimensional_door.name=Ușă dimensională
 tile.gold_dimensional_door.name=Ușă dimensională de aur
 tile.quartz_dimensional_door.name=Ușă dimensională de cuarț
-tile.chaos_dimensional_door.name=Ușă instabilă
-tile.oak_dimensional_door.name=Ușă de distorsiune
-tile.dimensional_trapdoor.name=Trapă transdimensională
+tile.chaos_dimensional_door.name=Ușă dimensională instabilă
+tile.oak_dimensional_door.name=Ușă dimensională de lemn
+tile.dimensional_trapdoor.name=Trapă dimensională
 tile.dimensional_portal.name=Portal dimensional
 
 tile.fabric.black.name=Țesutul realiții

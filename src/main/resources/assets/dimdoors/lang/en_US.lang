@@ -1,17 +1,19 @@
 itemGroup.dimensional_doors_creative_tab=Dimensional Doors Items
 
-tile.gold_door.name=Golden Door
+tile.gold_door.name=Gold Door
 tile.quartz_door.name=Quartz Door
 
-tile.iron_dimensional_door.name=Dimensional Door
-tile.gold_dimensional_door.name=Golden Dimensional Door
-tile.quartz_dimensional_door.name=Personal Dimensional Door
-tile.chaos_dimensional_door.name=Chaos Door
-tile.oak_dimensional_door.name=Warp Door
-tile.dimensional_trapdoor.name=Transdimensional Trapdoor
+tile.iron_dimensional_door.name=Iron Dimensional Door
+tile.gold_dimensional_door.name=Gold Dimensional Door
+tile.quartz_dimensional_door.name=Quartz Dimensional Door
+tile.chaos_dimensional_door.name=Unstable Dimensional Door
+tile.oak_dimensional_door.name=Oak Dimensional Door
+tile.dimensional_trapdoor.name=Oak Dimensional Trapdoor
 tile.dimensional_portal.name=Transient Portal
 
+tile.fabric.black.name=Fabric of Reality
 tile.fabric.white.name=Altered Fabric
+
 tile.fabric.orange.name=Orange Altered Fabric
 tile.fabric.magenta.name=Magenta Altered Fabric
 tile.fabric.lightBlue.name=Light Blue Altered Fabric
@@ -26,9 +28,10 @@ tile.fabric.blue.name=Blue Altered Fabric
 tile.fabric.brown.name=Brown Altered Fabric
 tile.fabric.green.name=Green Altered Fabric
 tile.fabric.red.name=Red Altered Fabric
-tile.fabric.black.name=Fabric of Reality
 
-tile.ancient_fabric.white.name=Ancient Altered Fabric
+tile.ancient_fabric.black.name=Ancient Fabric
+tile.ancient_fabric.white.name=Altered Ancient Fabric
+
 tile.ancient_fabric.orange.name=Orange Altered Ancient Fabric
 tile.ancient_fabric.magenta.name=Magenta Altered Ancient Fabric
 tile.ancient_fabric.lightBlue.name=Light Blue Altered Ancient Fabric
@@ -43,20 +46,19 @@ tile.ancient_fabric.blue.name=Blue Altered Ancient Fabric
 tile.ancient_fabric.brown.name=Brown Altered Ancient Fabric
 tile.ancient_fabric.green.name=Green Altered Ancient Fabric
 tile.ancient_fabric.red.name=Red Altered Ancient Fabric
-tile.ancient_fabric.black.name=Ancient Fabric
 
 tile.eternal_fabric.name=Eternal Fabric
 tile.unravelled_fabric.name=Unraveled Fabric
 tile.rift.name=Rift Scar
 
-item.gold_door.name=Golden Door
+item.gold_door.name=Gold Door
 item.quartz_door.name=Quartz Door
 
-item.iron_dimensional_door.name=Dimensional Door
-item.gold_dimensional_door.name=Golden Dimensional Door
+item.iron_dimensional_door.name=Iron Dimensional Door
+item.gold_dimensional_door.name=Gold Dimensional Door
 item.quartz_dimensional_door.name=Personal Dimensional Door
-item.chaos_dimensional_door.name=Chaos Door
-item.oak_dimensional_door.name=Warp Door
+item.chaos_dimensional_door.name=Unstable Dimensional Door
+item.oak_dimensional_door.name=Wood Dimensional Door
 
 item.rift_key=Rift Key
 item.rift_signature.name=Rift Signature
@@ -129,25 +131,25 @@ commands.generic.dimdoors.not_in_pocket=You must be in a pocket to use this comm
 
 rifts.unlinked=This rift has no destinations
 rifts.destinations.escape.cannot_escape_limbo=Nice try, but you'll need to either die or find some eternal fabric to get out of Limbo.
-rifts.destinations.escape.not_in_pocket_dim=You can't escape from a non-pocket dimension!
-rifts.destinations.escape.did_not_use_rift=You didn't use a rift to enter and you ended up in Limbo!
-rifts.destinations.escape.rift_has_closed=The rift you used to enter has closed and you ended up in Limbo!
-rifts.destinations.private_pocket_exit.did_not_use_rift=You didn't use a rift to enter and you ended up in Limbo!
-rifts.destinations.private_pocket_exit.rift_has_closed=The rift you used to enter has closed and you ended up in Limbo!
+rifts.destinations.escape.not_in_pocket_dim=You can only use this to escape from a pocket dimension!
+rifts.destinations.escape.did_not_use_rift=You didn't use a rift to enter the pocket dimension, so you ended up in Limbo!
+rifts.destinations.escape.rift_has_closed=The rift you used to enter the pocket dimension has closed and you ended up in Limbo!
+rifts.destinations.private_pocket_exit.did_not_use_rift=You didn't use a rift to enter the pocket dimension and you ended up in Limbo!
+rifts.destinations.private_pocket_exit.rift_has_closed=The rift you used to enter the pocket dimension has closed and you ended up in Limbo!
 
 dimdoors.general=General Options
-dimdoors.general.tooltip=General configuration options for the mod.
+dimdoors.general.tooltip=General configuration options for the mod
 dimdoors.general.baseDimensionID=Base Dimension ID
 dimdoors.general.baseDimensionID.tooltip=Dimension ID of the first Dimensional Doors dimension. Other dimensions will use consecutive IDs. It is strongly recommended to leave this to the default value.
 dimdoors.general.useStatusBar.name=Status Bar Messages
-dimdoors.general.useStatusBar.comment=Use the status bar to send status messages rather than the chat.
-dimdoors.pockets=Pocket Options
-dimdoors.pockets.tooltip=Options that determine the spacing and maximum size of pockets in the pocket world.
+dimdoors.general.useStatusBar.comment=Whether to use the status bar to send messages rather than the chat.
+dimdoors.pockets=Pocket Dimension Options
+dimdoors.pockets.tooltip=Options that determine the spacing and maximum size of pockets in the pocket world
 dimdoors.world=Worldgen Options
-dimdoors.world.tooltip=Options that determine where gateways and rift clusters can be generated and at what frequency.
-dimdoors.dungeons=Dungeons Options
-dimdoors.dungeons.tooltip=Options that affect the generation of pocket dungeons.
+dimdoors.world.tooltip=Options that determine where dimensional gateways and rift clusters can be generated and at what frequency
+dimdoors.dungeons=Dungeon Options
+dimdoors.dungeons.tooltip=Options that affect the generation of pocket dungeons
 dimdoors.monoliths=Monolith Options
-dimdoors.monoliths.tooltip=Options that determine how dangerous monoliths are.
+dimdoors.monoliths.tooltip=Options that determine how dangerous monoliths are
 dimdoors.limbo=Limbo Options
-dimdoors.limbo.tooltip=Options that control various aspects of the Limbo dimension.
+dimdoors.limbo.tooltip=Options that control various aspects of the Limbo dimension
