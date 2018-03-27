@@ -7,26 +7,26 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
-import java.util.*;
+import java.util.Random;
 
-public class BlockDimensionalDoorGold extends BlockDimensionalDoor {
+public class BlockDimensionalDoorQuartz extends BlockDimensionalDoor {
 
-    public static final String ID = "gold_dimensional_door";
+    public static final String ID = "quartz_dimensional_door";
 
-    public BlockDimensionalDoorGold() {
-        super(Material.IRON);
-        setHardness(1.0F);
+    public BlockDimensionalDoorQuartz() {
+        super(Material.ROCK);
+        setHardness(0.1F);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
     @Override
     public Item getItem() {
-        return ModItems.GOLD_DIMENSIONAL_DOOR;
+        return ModItems.PERSONAL_DIMENSIONAL_DOOR;
     }
 
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-        return ModBlocks.GOLD_DOOR.getItemDropped(state, rand, fortune);
+        return ModBlocks.QUARTZ_DOOR.getItemDropped(state, rand, fortune);
     }
 }

@@ -66,8 +66,6 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
         return (TileEntityFloatingRift) world.getTileEntity(pos);
     }
 
-    @Override public void setupRift(TileEntityFloatingRift rift) {} // No default setup
-
     public void dropWorldThread(World world, BlockPos pos, Random random) {
         if (!world.getBlockState(pos).equals(Blocks.AIR)) {
             ItemStack thread = new ItemStack(ModItems.WORLD_THREAD, 1);

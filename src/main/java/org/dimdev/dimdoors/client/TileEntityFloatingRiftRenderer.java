@@ -1,21 +1,15 @@
 package org.dimdev.dimdoors.client;
 
 import com.flowpowered.math.TrigMath;
-import com.flowpowered.math.vector.Vector3f;
-import com.flowpowered.math.vector.Vector4f;
 import org.dimdev.ddutils.RGBA;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.client.tesseract.Tesseract;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<TileEntityFloatingRift> {

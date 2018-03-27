@@ -14,9 +14,9 @@ import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
-public abstract class ItemDimensionalDoor extends ItemDoor {
+public abstract class ItemDimensionalDoor extends ItemDoor { // TODO: Biomes O' Plenty doors
 
-    public <T extends Block & IRiftProvider<?>> ItemDimensionalDoor(T block) {
+    public <T extends Block & IRiftProvider<TileEntityEntranceRift>> ItemDimensionalDoor(T block) {
         super(block);
     }
 
@@ -37,7 +37,16 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
         if (result == EnumActionResult.SUCCESS) {
             IBlockState state = world.getBlockState(pos);
             if (rift == null) {
-                ((IRiftProvider<?>) state.getBlock()).handleRiftSetup(world, pos, state);
+                // Get the rift entity (not hard coded, works with any door size)
+                @SuppressWarnings("unchecked") // Guaranteed to be IRiftProvider<TileEntityEntranceRift> because of constructor
+                TileEntityEntranceRift entranceRift = ((IRiftProvider<TileEntityEntranceRift>) state.getBlock()).getRift(world, pos, state);
+
+                // Configure the rift to its default functionality
+                setupRift(entranceRift);
+
+                // Register the rift in the registry
+                entranceRift.markDirty();
+                entranceRift.register();
             } else {
                 // Copy from the old rift
                 TileEntityEntranceRift newRift = (TileEntityEntranceRift) world.getTileEntity(pos);
@@ -49,4 +58,7 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
         }
         return result;
     }
+
+    public abstract void setupRift(TileEntityEntranceRift entranceRift); // TODO: NBT-based, or maybe lambda function-based?
+    public abstract boolean canBePlacedOnRift(); // TODO: NBT-based, true when no NBT is present
 }

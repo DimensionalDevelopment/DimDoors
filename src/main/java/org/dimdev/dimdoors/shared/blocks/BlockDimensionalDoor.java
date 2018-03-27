@@ -93,18 +93,15 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
 
     @Override
     public boolean canPlaceBlockAt(World world, BlockPos pos) {
-        if (canBePlacedOnRift()) {
-            if (pos.getY() >= world.getHeight() - 1) {
-                return false;
-            } else {
-                IBlockState state = world.getBlockState(pos.down());
-                return (state.isSideSolid(world, pos, EnumFacing.UP)
-                        || state.getBlockFaceShape(world, pos.down(), EnumFacing.UP) == BlockFaceShape.SOLID)
-                       && (world.getBlockState(pos).getBlock().isReplaceable(world, pos) || world.getBlockState(pos).getBlock().equals(ModBlocks.RIFT))
-                       && world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up());
-            }
+        // Any door block can be placed on rifts now, items will enforce restrictions now.
+        if (pos.getY() >= world.getHeight() - 1) {
+            return false;
         } else {
-            return super.canPlaceBlockAt(world, pos);
+            IBlockState state = world.getBlockState(pos.down());
+            return (state.isSideSolid(world, pos, EnumFacing.UP)
+                    || state.getBlockFaceShape(world, pos.down(), EnumFacing.UP) == BlockFaceShape.SOLID)
+                    && (world.getBlockState(pos).getBlock().isReplaceable(world, pos) || world.getBlockState(pos).getBlock().equals(ModBlocks.RIFT))
+                    && world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up());
         }
     }
 
@@ -121,7 +118,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     @Override
     public TileEntityEntranceRift createNewTileEntity(World world, int meta) {
         TileEntityEntranceRift rift = new TileEntityEntranceRift();
-        rift.setOrientation(getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite());
+        rift.orientation = getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite();
         rift.extendUp += 1;
         return rift;
     }
@@ -164,6 +161,4 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     }
 
     public abstract Item getItem();
-
-    public abstract boolean canBePlacedOnRift();
 }

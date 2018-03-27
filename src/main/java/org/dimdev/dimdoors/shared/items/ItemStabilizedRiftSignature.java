@@ -19,8 +19,8 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.rifts.destinations.GlobalDestination;
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
 import java.util.List;
 
@@ -70,16 +70,16 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
                 }
                 World targetWorld = target.getLocation().getWorld();
                 targetWorld.setBlockState(target.getLocation().getPos(), ModBlocks.RIFT.getDefaultState());
-                TileEntityRift rift1 = (TileEntityRift) target.getLocation().getTileEntity();
-                rift1.setRotation(target.getYaw(), 0);
+                TileEntityFloatingRift rift1 = (TileEntityFloatingRift) target.getLocation().getTileEntity();
+                rift1.setTeleportTargetRotation(target.getYaw(), 0);
                 rift1.register();
             }
 
             // Place a rift at the source point
             world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
-            TileEntityRift rift2 = (TileEntityRift) world.getTileEntity(pos);
+            TileEntityFloatingRift rift2 = (TileEntityFloatingRift) world.getTileEntity(pos);
             rift2.setDestination(new GlobalDestination(target.getLocation()));
-            rift2.setRotation(player.rotationYaw, 0);
+            rift2.setTeleportTargetRotation(player.rotationYaw, 0);
             rift2.register();
 
             stack.damageItem(1, player);

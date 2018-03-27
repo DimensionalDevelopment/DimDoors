@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
+import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
@@ -32,11 +33,14 @@ import net.minecraft.util.math.AxisAlignedBB;
 
     private static final Random random = new Random();
 
+    // TODO: Some of these properties will need to persist when converting to door and then back to rift!
     //Need to be saved:
     @Saved /*package-private*/ int updateTimer;
     @Saved public boolean shouldClose = false; // TODO
     @Saved public int spawnedEndermenID = 0;
     @Saved public float growth = 0;
+    @Saved protected float teleportTargetYaw;
+    @Saved protected float teleportTargetPitch;
 
     @Setter private boolean unregisterDisabled = false;
 
@@ -138,5 +142,29 @@ import net.minecraft.util.math.AxisAlignedBB;
     @Override
     public void unregister() {
         if (!unregisterDisabled) super.unregister();
+    }
+
+    public void setTeleportTargetRotation(float yaw, float pitch) {
+        teleportTargetYaw = yaw;
+        teleportTargetPitch = pitch;
+        markDirty();
+    }
+
+    @Override
+    public float getSourceYaw(float entityYaw) {
+        return (int) (entityYaw / 90) * 90;
+    }
+
+    @Override
+    public float getSourcePitch(float entityPitch) {
+        return 0;
+    }
+
+    @Override public float getDestinationYaw(float entityYaw) {
+        return teleportTargetYaw;
+    }
+
+    @Override public float getDestinationPitch(float entityPitch) {
+        return teleportTargetPitch;
     }
 }

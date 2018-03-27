@@ -10,6 +10,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.dimdev.dimdoors.shared.rifts.destinations.EscapeDestination;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
 import java.util.List;
 
@@ -27,5 +29,10 @@ public class ItemDimensionalTrapdoorWood extends ItemDimensionalTrapdoor {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
         tooltip.addAll(I18nUtils.translateMultiline("info.dimensional_trapdoor"));
+    }
+
+    @Override
+    public void setupRift(TileEntityEntranceRift rift) {
+        rift.setDestination(new EscapeDestination());
     }
 }

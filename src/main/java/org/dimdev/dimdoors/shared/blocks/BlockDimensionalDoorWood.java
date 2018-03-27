@@ -7,13 +7,10 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.items.ModItems;
-import org.dimdev.dimdoors.shared.rifts.destinations.AvailableLinkDestination;
-import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
-import java.util.Collections;
 import java.util.Random;
 
-public class BlockDimensionalDoorWood extends BlockDimensionalDoor {
+public class BlockDimensionalDoorWood extends BlockDimensionalDoor { // TODO: all wood types
 
     public static final String ID = "oak_dimensional_door";
 
@@ -32,21 +29,5 @@ public class BlockDimensionalDoorWood extends BlockDimensionalDoor {
     @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         return Blocks.OAK_DOOR.getItemDropped(state, rand, fortune);
-    }
-
-    @Override
-    public void setupRift(TileEntityEntranceRift rift) {
-        rift.setDestination(AvailableLinkDestination.builder()
-                .acceptedGroups(Collections.singleton(0))
-                .coordFactor(1)
-                .negativeDepthFactor(80)
-                .positiveDepthFactor(Double.MAX_VALUE)
-                .weightMaximum(100)
-                .noLink(false).newRiftWeight(0).build());
-    }
-
-    @Override
-    public boolean canBePlacedOnRift() {
-        return true;
     }
 }

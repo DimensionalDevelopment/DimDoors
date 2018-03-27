@@ -143,7 +143,7 @@ import java.util.Set;
 
                 if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(new Location(world, pos), location.getLocation());
                 if (!noLink) linkRifts(location.getLocation(), new Location(world, pos));
-                riftEntity.teleportTo(entity, thisRift.getYaw(), thisRift.getPitch());
+                riftEntity.teleportTo(entity, location.getYaw(), location.getPitch());
             } else {
                 // Make a new dungeon pocket
                 TileEntityRift thisRift = (TileEntityRift) location.getLocation().getTileEntity();

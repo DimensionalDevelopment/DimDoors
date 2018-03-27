@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.shared.rifts;
 
 import lombok.Getter;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -24,27 +25,22 @@ import javax.annotation.Nonnull;
 
 @NBTSerializable public abstract class TileEntityRift extends TileEntity implements ITickable { // TODO: implement ITeleportSource and ITeleportDestination
 
-    /*@Saved*/ @Nonnull @Getter protected RiftDestination destination;
+    /*@Saved*/ @Nonnull @Getter protected RiftDestination destination; // How the rift acts as a source
+    @Saved @Getter protected LinkProperties properties; // How the rift acts as a target, and properties that affect how it can link to other rifts
     @Saved @Getter protected boolean relativeRotation;
-    @Saved @Getter public float yaw;
-    @Saved @Getter protected float pitch;
     @Saved @Getter protected boolean alwaysDelete; // Delete the rift when an entrances rift is broken even if the state was changed or destinations link there.
     @Saved @Getter protected boolean forcedColor;
     @Saved @Getter protected RGBA color = null;
-    @Saved @Getter protected LinkProperties properties;
 
     protected boolean riftStateChanged; // not saved
 
     public TileEntityRift() {
         relativeRotation = true;
-        pitch = 0;
         alwaysDelete = false;
     }
 
     public void copyFrom(TileEntityRift oldRift) {
         relativeRotation = oldRift.relativeRotation;
-        yaw = oldRift.yaw;
-        pitch = oldRift.pitch;
         properties = oldRift.properties;
         destination = oldRift.destination;
         if (oldRift.isFloating() != isFloating()) updateType();
@@ -87,12 +83,6 @@ import javax.annotation.Nonnull;
     }
 
     // Modification functions
-
-    public void setRotation(float yaw, float pitch) {
-        this.yaw = yaw;
-        this.pitch = pitch;
-        markDirty();
-    }
 
     public void setRelativeRotation(boolean relativeRotation) {
         this.relativeRotation = relativeRotation;
@@ -188,7 +178,7 @@ import javax.annotation.Nonnull;
 
         // Attempt a teleport
         try {
-            if (destination.teleport(new RotatedLocation(new Location(world, pos), yaw, pitch), entity)) { // TODO: yaw should be player's yaw % 90 for floating rifts
+            if (destination.teleport(new RotatedLocation(new Location(world, pos), getSourceYaw(entity.rotationYaw), getSourcePitch(entity.rotationPitch)), entity)) {
                 VirtualLocation vloc = VirtualLocation.fromLocation(new Location(entity.world, entity.getPosition()));
                 DimDoors.sendTranslatedMessage(entity, "You are at x = " + vloc.getX() + ", y = ?, z = " + vloc.getZ() + ", w = " + vloc.getDepth());
                 return true;
@@ -201,15 +191,18 @@ import javax.annotation.Nonnull;
     }
 
     public void teleportTo(Entity entity, float fromYaw, float fromPitch) { // TODO
-        //if (relativeRotation) {
-        //    TeleportUtils.teleport(entity, new Location(world, pos), yaw + entity.rotationYaw - fromYaw, pitch + entity.rotationPitch - fromPitch);
-        //} else {
-        teleportTo(entity);
-        //}
+        if (relativeRotation) {
+            float yaw = getDestinationYaw(entity.rotationYaw) + entity.rotationYaw - fromYaw;
+            float pitch = entity instanceof EntityLiving ? entity.rotationPitch : getDestinationPitch(entity.rotationPitch) + entity.rotationPitch - fromPitch;
+            TeleportUtils.teleport(entity, new Location(world, pos), yaw, pitch);
+            // TODO: velocity
+        } else {
+            teleportTo(entity);
+        }
     }
 
     public void teleportTo(Entity entity) {
-        TeleportUtils.teleport(entity, new Location(world, pos), yaw, pitch);
+        TeleportUtils.teleport(entity, new Location(world, pos), getDestinationYaw(entity.rotationYaw), getDestinationPitch(entity.rotationPitch));
     }
 
     public void updateColor() {
@@ -236,4 +229,10 @@ import javax.annotation.Nonnull;
 
     // Info
     protected abstract boolean isFloating();
+
+    public abstract float getSourceYaw(float entityYaw);
+    public abstract float getSourcePitch(float entityPitch); // Not used for players, but needed for arrows and other entities
+
+    public abstract float getDestinationYaw(float entityYaw);
+    public abstract float getDestinationPitch(float entityPitch);
 }

@@ -77,7 +77,7 @@ public final class SchematicGenerator {
                     pocketSize, // size
                     ModBlocks.ANCIENT_FABRIC.getDefaultState(), // outer wall
                     ModBlocks.FABRIC.getDefaultState(), // inner wall
-                    ModBlocks.DIMENSIONAL_DOOR, // door
+                    ModBlocks.IRON_DIMENSIONAL_DOOR, // door
                     PocketExitMarker.builder().build(),// exit rift destination
                     LinkProperties.builder()
                             .groups(Collections.singleton(1))

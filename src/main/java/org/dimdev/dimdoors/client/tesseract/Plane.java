@@ -1,11 +1,7 @@
 package org.dimdev.dimdoors.client.tesseract;
 
-import com.flowpowered.math.TrigMath;
-import com.flowpowered.math.matrix.Matrix4d;
 import com.flowpowered.math.matrix.Matrix4f;
-import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
-import com.flowpowered.math.vector.Vector4d;
 import com.flowpowered.math.vector.Vector4f;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;

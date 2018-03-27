@@ -106,9 +106,8 @@ public final class ModelManager {
         ModelLoader.setCustomStateMapper(ModBlocks.GOLD_DOOR, map);
         ModelLoader.setCustomStateMapper(ModBlocks.QUARTZ_DOOR, map);
         ModelLoader.setCustomStateMapper(ModBlocks.GOLD_DIMENSIONAL_DOOR, map);
-        ModelLoader.setCustomStateMapper(ModBlocks.DIMENSIONAL_DOOR, map);
+        ModelLoader.setCustomStateMapper(ModBlocks.IRON_DIMENSIONAL_DOOR, map);
         ModelLoader.setCustomStateMapper(ModBlocks.PERSONAL_DIMENSIONAL_DOOR, map);
-        ModelLoader.setCustomStateMapper(ModBlocks.CHAOS_DOOR, map);
         ModelLoader.setCustomStateMapper(ModBlocks.WARP_DIMENSIONAL_DOOR, map);
 
         ModelLoader.setCustomStateMapper(ModBlocks.DIMENSIONAL_PORTAL, new StateMap.Builder().ignore(BlockDoor.FACING, BlockDoor.HALF, BlockDoor.HINGE, BlockDoor.OPEN, BlockDoor.POWERED).build());

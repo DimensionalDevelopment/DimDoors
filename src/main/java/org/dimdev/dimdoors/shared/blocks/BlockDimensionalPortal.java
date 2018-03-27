@@ -43,14 +43,6 @@ public class BlockDimensionalPortal extends BlockDimensionalDoor { // TODO: conv
     }
 
     @Override
-    public void setupRift(TileEntityEntranceRift rift) {}
-
-    @Override
-    public boolean canBePlacedOnRift() {
-        return false;
-    }
-
-    @Override
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
         if (world.isRemote) return;
 
@@ -69,10 +61,9 @@ public class BlockDimensionalPortal extends BlockDimensionalDoor { // TODO: conv
     @Override
     public TileEntityEntranceRift createNewTileEntity(World world, int meta) {
         TileEntityEntranceRift rift = new TileEntityEntranceRift();
-        rift.setOrientation(getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite());
+        rift.orientation = getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite();
         rift.extendUp += 1;
         rift.pushIn = 0.5;
         return rift;
     }
-
 }

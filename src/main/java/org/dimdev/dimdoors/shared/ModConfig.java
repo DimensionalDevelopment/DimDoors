@@ -41,6 +41,11 @@ public final class ModConfig { // TODO: localize the rest
         @Comment({"When true, Dimensional Doors will automatically close when the player enters their portal.",
             "Default: " + CLOSE_DOOR_BEHIND_DEF})
         public boolean closeDoorBehind = CLOSE_DOOR_BEHIND_DEF;
+
+        @Name("closeDoorBehind")
+        @Comment("Distance in blocks to teleport the player in front of the dimensional door.")
+        @RangeDouble(min = 0.5, max = 3)
+        public double teleportOffset = 1;
     }
 
     private final static int POCKET_GRID_SIZE_MIN = 4;
@@ -120,7 +125,7 @@ public final class ModConfig { // TODO: localize the rest
             "Default: []"})
         public int[] gatewayDimBlacklist = {};
     }
-    
+
     private final static int MAX_DUNGEON_DEPTH_DEF = 2000;
     private final static int MAX_DUNGEON_DEPTH_MIN = 100;
 

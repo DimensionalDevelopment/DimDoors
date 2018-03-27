@@ -1,13 +1,16 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.NBTSerializable;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
-import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.RGBA;
 import org.dimdev.ddutils.TeleportUtils;
 import lombok.Getter;
@@ -24,14 +27,13 @@ import java.util.Random;
     @Saved @Getter public boolean shouldRender = true;
     @Saved @Getter public byte lockStatus = 0;
 
-    // Set by the block, not saved and not synced to the client
+    // Set by the block TODO: get rid of these, calculate client-side!
     @Saved public EnumFacing orientation;
-    @Saved public int tpOffset = 1; // TODO: float?
-    @Saved public double extendUp = 0.5; // Use += to set these. TODO: @SideOnly client?
+    @Saved public double extendUp = 0.5; // Use += to set these.
     @Saved public double extendDown = 0.5;
     @Saved public double extendLeft = 0.5;
     @Saved public double extendRight = 0.5;
-    @Saved public double pushIn = 0.01; // TODO: set to 0, and set on door
+    @Saved public double pushIn = 0.01;
 
     @Override
     public void copyFrom(TileEntityRift oldRift) {
@@ -59,12 +61,6 @@ import java.util.Random;
     public void setLockStatus(byte lockStatus) { this.lockStatus = lockStatus; markDirty(); }
     public void setCloseAfterPassThrough(boolean closeAfterPassThrough) { this.closeAfterPassThrough = closeAfterPassThrough; markDirty(); }
 
-    public void setOrientation(EnumFacing orientation) {
-        this.orientation = orientation;
-        yaw = orientation.getHorizontalAngle();
-        pitch = orientation.getFrontOffsetY() * 90;
-    }
-
     @Override
     public boolean teleport(Entity entity) {
         boolean status = super.teleport(entity);
@@ -76,9 +72,12 @@ import java.util.Random;
     }
 
     @Override
-    public void teleportTo(Entity entity, float fromYaw, float fromPitch) {
+    public void teleportTo(Entity entity, float fromYaw, float fromPitch) { // TODO: teleportOffset for all rifts instead?
+        Vec3d targetPos = new Vec3d(pos).addVector(0.5, 0, 0.5).add(new Vec3d(orientation.getDirectionVec()).scale(ModConfig.general.teleportOffset));
         if (relativeRotation) {
-            TeleportUtils.teleport(entity, new Location(world, pos.offset(orientation, tpOffset)), orientation.getHorizontalAngle() + entity.rotationYaw - fromYaw, entity.rotationPitch);
+            float yaw = getDestinationYaw(entity.rotationYaw) + entity.rotationYaw - fromYaw;
+            float pitch = entity instanceof EntityLiving ? entity.rotationPitch : getDestinationPitch(entity.rotationPitch) + entity.rotationPitch - fromPitch;
+            TeleportUtils.teleport(entity, WorldUtils.getDim(world), targetPos.x, targetPos.y, targetPos.z, yaw, pitch);
             // TODO: velocity
         } else {
             teleportTo(entity);
@@ -87,7 +86,8 @@ import java.util.Random;
 
     @Override
     public void teleportTo(Entity entity) {
-        TeleportUtils.teleport(entity, new Location(world, pos.offset(orientation, tpOffset)), orientation.getHorizontalAngle(), 0);
+        Vec3d targetPos = new Vec3d(pos).add(new Vec3d(orientation.getDirectionVec()).scale(ModConfig.general.teleportOffset));
+        TeleportUtils.teleport(entity, WorldUtils.getDim(world), targetPos.x, targetPos.y, targetPos.z, orientation.getHorizontalAngle(), 0);
     }
 
     // Use vanilla behavior of refreshing only when block changes, not state (otherwise, opening the door would destroy the tile entity)
@@ -118,5 +118,23 @@ import java.util.Random;
     @Override
     public boolean isFloating() {
         return false;
+    }
+
+    @Override
+    public float getSourceYaw(float entityYaw) {
+        return orientation.getOpposite().getHorizontalAngle();
+    }
+
+    @Override
+    public float getSourcePitch(float entityPitch) {
+        return orientation.getOpposite().getFrontOffsetY() * 90;
+    }
+
+    @Override public float getDestinationYaw(float entityYaw) {
+        return orientation.getHorizontalAngle();
+    }
+
+    @Override public float getDestinationPitch(float entityPitch) {
+        return 0;
     }
 }

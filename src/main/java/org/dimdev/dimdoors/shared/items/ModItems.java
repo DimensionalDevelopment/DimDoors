@@ -19,9 +19,9 @@ public final class ModItems {
     // Dimensional doors
     public static final ItemDimensionalDoorIron DIMENSIONAL_DOOR = new ItemDimensionalDoorIron();
     public static final ItemDimensionalDoorGold GOLD_DIMENSIONAL_DOOR = new ItemDimensionalDoorGold();
-    public static final ItemDimensionalDoorPersonal PERSONAL_DIMENSIONAL_DOOR = new ItemDimensionalDoorPersonal();
+    public static final ItemDimensionalDoorQuartz PERSONAL_DIMENSIONAL_DOOR = new ItemDimensionalDoorQuartz();
     public static final ItemDimensionalDoorChaos CHAOS_DOOR = new ItemDimensionalDoorChaos();
-    public static final ItemDimensionalDoorWarp WARP_DIMENSIONAL_DOOR = new ItemDimensionalDoorWarp();
+    public static final ItemDimensionalDoorWood WARP_DIMENSIONAL_DOOR = new ItemDimensionalDoorWood();
 
     // Crafting ingredients
     private static final String WORLD_THREAD_ID = "world_thread";

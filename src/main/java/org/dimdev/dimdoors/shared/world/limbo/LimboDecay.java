@@ -50,10 +50,9 @@ public final class LimboDecay {
                     ModBlocks.UNRAVELLED_FABRIC,
                     ModBlocks.ETERNAL_FABRIC,
                     ModBlocks.DIMENSIONAL_PORTAL,
-                    ModBlocks.DIMENSIONAL_DOOR,
+                    ModBlocks.IRON_DIMENSIONAL_DOOR,
                     ModBlocks.WARP_DIMENSIONAL_DOOR,
                     ModBlocks.RIFT,
-                    ModBlocks.CHAOS_DOOR,
                     ModBlocks.GOLD_DOOR,
                     ModBlocks.QUARTZ_DOOR,
                     ModBlocks.GOLD_DIMENSIONAL_DOOR
