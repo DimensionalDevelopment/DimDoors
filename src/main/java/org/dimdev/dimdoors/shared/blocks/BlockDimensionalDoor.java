@@ -119,7 +119,9 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     public TileEntityEntranceRift createNewTileEntity(World world, int meta) {
         TileEntityEntranceRift rift = new TileEntityEntranceRift();
         rift.orientation = getStateFromMeta(meta).getValue(BlockDoor.FACING).getOpposite();
-        rift.extendUp += 1;
+        if (DimDoors.proxy.isClient()) {
+            rift.extendUp += 1;
+        }
         return rift;
     }
 
@@ -132,7 +134,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
         if (rift == null) {
             DimDoors.log.error("Rift tile entity was null when breaking block at " + new Location(world, pos) + ", please report this error.");
         }
-        if (rift.isPlaceRiftOnBreak() || rift.isRegistered() && RiftRegistry.instance().getSources(new Location(rift.getWorld(), rift.getPos())).size() > 0 && !rift.isAlwaysDelete()) {
+        if (rift.isLeaveScarWhenClosed() || rift.isRegistered() && RiftRegistry.instance().getSources(new Location(rift.getWorld(), rift.getPos())).size() > 0 && !rift.isAlwaysDelete()) {
             world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
             // This isn't run when we change the block from within block break
             TileEntityFloatingRift newRift = (TileEntityFloatingRift) world.getTileEntity(pos);

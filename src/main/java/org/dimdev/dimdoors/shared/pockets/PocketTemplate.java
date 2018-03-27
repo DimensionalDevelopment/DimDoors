@@ -57,16 +57,16 @@ public class PocketTemplate {
         }
     }
 
-    public static void replacePlaceholders(Schematic parSchematic) { // TODO: it should be possible to place a schematic without replacing placeholders
+    public static void replacePlaceholders(Schematic schematic) { // TODO: rift inheritance rather than placeholders
         // Replace placeholders (some schematics will contain them)
         List<NBTTagCompound> tileEntities = new ArrayList<>();
-        for (NBTTagCompound tileEntityNBT : parSchematic.tileEntities) {
+        for (NBTTagCompound tileEntityNBT : schematic.tileEntities) {
             if (tileEntityNBT.hasKey("placeholder")) {
                 int x = tileEntityNBT.getInteger("x");
                 int y = tileEntityNBT.getInteger("y");
                 int z = tileEntityNBT.getInteger("z");
 
-                IBlockState state = parSchematic.palette.get(parSchematic.blockData[x][y][z]);
+                IBlockState state = schematic.palette.get(schematic.blockData[x][y][z]);
 
                 NBTTagCompound newNBT;
                 switch (tileEntityNBT.getString("placeholder")) {
@@ -115,11 +115,11 @@ public class PocketTemplate {
                 tileEntities.add(tileEntityNBT);
             }
         }
-        parSchematic.tileEntities = tileEntities;
+        schematic.tileEntities = tileEntities;
 
 
         List<NBTTagCompound> entities = new ArrayList<>();
-        for (NBTTagCompound entitiesNBT : parSchematic.entities) {
+        for (NBTTagCompound entitiesNBT : schematic.entities) {
             if (entitiesNBT.hasKey("placeholder")) {
                 double x = entitiesNBT.getDouble("x");
                 double y = entitiesNBT.getDouble("y");
@@ -143,7 +143,7 @@ public class PocketTemplate {
                 entities.add(entitiesNBT);
             }
         }
-        parSchematic.entities = entities;
+        schematic.entities = entities;
     }
 
     public void place(Pocket pocket) {
@@ -241,7 +241,7 @@ public class PocketTemplate {
                 if (linkProperties != null) rift.setProperties(linkProperties);
                 rift.setDestination(rift.getProperties() == null || !rift.getProperties().oneWay ? linkTo : null);
                 if (rift instanceof TileEntityEntranceRift && !rift.isAlwaysDelete()) {
-                    ((TileEntityEntranceRift) rift).setPlaceRiftOnBreak(true); // We modified the door's state
+                    ((TileEntityEntranceRift) rift).setLeaveScarWhenClosed(true); // We modified the door's state
                 }
             }
         }

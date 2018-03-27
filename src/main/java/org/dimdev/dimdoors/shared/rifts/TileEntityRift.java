@@ -7,7 +7,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ITickable;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -23,7 +22,7 @@ import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 
 import javax.annotation.Nonnull;
 
-@NBTSerializable public abstract class TileEntityRift extends TileEntity implements ITickable { // TODO: implement ITeleportSource and ITeleportDestination
+@NBTSerializable public abstract class TileEntityRift extends TileEntity { // TODO: implement ITeleportSource and ITeleportDestination
 
     /*@Saved*/ @Nonnull @Getter protected RiftDestination destination; // How the rift acts as a source
     @Saved @Getter protected LinkProperties properties; // How the rift acts as a target, and properties that affect how it can link to other rifts

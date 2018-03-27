@@ -41,12 +41,7 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
 
-        //x = ActiveRenderInfo.getPosition().xCoord;
-        //y = ActiveRenderInfo.getPosition().yCoord;
-        //z = ActiveRenderInfo.getPosition().zCoord;
-
         GlStateManager.rotate(180.0F - 90 * rotation.getHorizontalIndex(), 0.0F, 1.0F, 0.0F);
-        // GlStateManager.rotate((float)(-90 * rotation), 0.0F, 0.0F, 1.0F);
 
         GlStateManager.translate(0.007F, .25F, 0F);
 
@@ -102,25 +97,24 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
 
     @Override
     public void render(TileEntityEntranceRift entrance, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        if (entrance.shouldRender) {
-            Vec3d offset = new Vec3d(entrance.orientation.getOpposite().getDirectionVec()).scale(
-                    entrance.orientation == EnumFacing.NORTH ||
-                    entrance.orientation == EnumFacing.WEST ||
-                    entrance.orientation == EnumFacing.UP ? entrance.pushIn : entrance.pushIn - 1);
-            DimensionalWallRenderer.renderDimensionalWall(
-                    x + offset.x,
-                    y + offset.y,
-                    z + offset.z,
-                    //entrance.orientation.getHorizontalAngle(),
-                    //entrance.orientation.getDirectionVec().getY() * 90,
-                    entrance.orientation,
-                    entrance.extendLeft + entrance.extendRight,
-                    entrance.extendDown + entrance.extendUp,
-                    getColors(entrance));
-            if (entrance.lockStatus >= 1) {
-                for (int i = 0; i < 1 + entrance.lockStatus; i++) {
-                    renderKeyHole(entrance, x, y, z, i);
-                }
+        Vec3d offset = new Vec3d(entrance.orientation.getOpposite().getDirectionVec()).scale(
+                entrance.orientation == EnumFacing.NORTH ||
+                entrance.orientation == EnumFacing.WEST ||
+                entrance.orientation == EnumFacing.UP ? entrance.pushIn : entrance.pushIn - 1);
+        DimensionalWallRenderer.renderDimensionalWall(
+                x + offset.x,
+                y + offset.y,
+                z + offset.z,
+                //entrance.orientation.getHorizontalAngle(),
+                //entrance.orientation.getDirectionVec().getY() * 90,
+                entrance.orientation,
+                entrance.extendLeft + entrance.extendRight,
+                entrance.extendDown + entrance.extendUp,
+                getColors(entrance));
+
+        if (entrance.lockStatus >= 1) {
+            for (int i = 0; i < 1 + entrance.lockStatus; i++) {
+                renderKeyHole(entrance, x, y, z, i);
             }
         }
     }

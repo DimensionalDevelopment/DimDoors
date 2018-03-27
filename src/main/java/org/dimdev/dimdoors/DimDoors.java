@@ -33,13 +33,12 @@ public class DimDoors {
     public static final String MODNAME = "Dimensional Doors";
     public static final String MCVERSIONS = "[1.12,1.13)";
     public static final String VERSION = "${version}";
-    // TODO: make the forge version here change depending on a field in build.gradle
     public static final String DEPENDENCIES = "required-after:forge@[14.21.0.2320,);after:csb_ench_table";
     // after:csb_ench_table as a workaround for https://github.com/crazysnailboy/EnchantingTable/issues/7
 
     @Mod.Instance(DimDoors.MODID)
     public static DimDoors instance;
-    public static Logger log; // TODO: make non-static?
+    public static Logger log;
 
     @SidedProxy(clientSide = "org.dimdev.dimdoors.client.ClientProxy",
                 serverSide = "org.dimdev.dimdoors.server.ServerProxy")
@@ -86,11 +85,9 @@ public class DimDoors {
     }
 
     public static void sendTranslatedMessage(Entity entity, String text, Object... translationArgs) {
-        if (ModConfig.general.useStatusBar && entity instanceof EntityPlayerMP) {
+        if (entity instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP) entity;
-            player.sendStatusMessage(new TextComponentTranslation(text, translationArgs), true);
-        } else {
-            chat(entity, text, translationArgs);
+            player.sendStatusMessage(new TextComponentTranslation(text, translationArgs), ModConfig.general.useStatusBar);
         }
     }
 

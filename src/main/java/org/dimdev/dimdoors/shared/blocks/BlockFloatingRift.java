@@ -2,9 +2,12 @@ package org.dimdev.dimdoors.shared.blocks;
 
 import java.util.*;
 
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.client.ParticleRiftEffect;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import org.dimdev.ddutils.blocks.BlockSpecialAir;
@@ -57,8 +60,15 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        return false; // TODO
+    @SuppressWarnings("deprecation")
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess world, BlockPos pos) {
+        if (ModConfig.general.riftBoundingBoxInCreative) {
+            EntityPlayer player = DimDoors.proxy.getLocalPlayer();
+            if (player != null && player.isCreative()) {
+                return blockState.getBoundingBox(world, pos);
+            }
+        }
+        return null;
     }
 
     @Override

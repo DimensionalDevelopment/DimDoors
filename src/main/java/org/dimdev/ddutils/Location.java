@@ -76,6 +76,6 @@ public class Location implements Serializable {
 
     @Override
     public int hashCode() {
-        return pos.hashCode() * 31 + dim; // TODO
+        return pos.hashCode() * 31 + dim;
     }
 }

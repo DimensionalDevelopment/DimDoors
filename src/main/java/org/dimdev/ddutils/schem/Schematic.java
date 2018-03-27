@@ -243,6 +243,10 @@ public class Schematic {
                     }
                 }
                 if (value != null) {
+                    // property is IProperty<?>, value is Comparable<?>, and the ?s refer to the same type because
+                    // IProperty<T>.getAllowedValues() returns Collection<T>, but the compiler doesn't keep track of
+                    // this, so casting to raw types:
+                    //noinspection unchecked,RedundantCast,rawtypes
                     chosenState = chosenState.withProperty((IProperty) property, (Comparable) value);
                 }
             }
@@ -368,7 +372,6 @@ public class Schematic {
             adjustedEntityNBT.setUniqueId("UUID", UUID.randomUUID());
 
             Entity entity = EntityList.createEntityFromNBT(adjustedEntityNBT, world);
-            // TODO: check if it is in pocket bounds
             world.spawnEntity(entity);
         }
     }
@@ -425,8 +428,6 @@ public class Schematic {
                         }
                         setTime += System.nanoTime() - setStart;
                         long relightStart = System.nanoTime();
-                        // TODO: It's possible to relight a whole region at once, and immediately using this, according
-                        // TODO: to Foghrye4: https://hastebin.com/hociqufabe.java
                         cube.setInitialLightingDone(false);
                         relightTime += System.nanoTime() - relightStart;
                         cube.markDirty();

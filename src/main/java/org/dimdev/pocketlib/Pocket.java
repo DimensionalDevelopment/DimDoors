@@ -12,9 +12,9 @@ import org.dimdev.ddutils.nbt.NBTUtils;
 @NBTSerializable public class Pocket implements INBTStorable {
 
     @Saved @Getter protected int id;
-    @Saved @Getter protected int x; // Grid x TODO: rename to gridX and gridY, or just convert to non-grid dependant coordinates
+    @Saved @Getter protected int x; // Grid x TODO: convert to non-grid dependant coordinates
     @Saved @Getter protected int z; // Grid y
-    @Saved @Getter @Setter protected int size; // TODO: size = sizeInChunks - 1 ???!!! TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
+    @Saved @Getter @Setter protected int size; // TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
     @Saved @Getter @Setter protected VirtualLocation virtualLocation;
 
     @Getter int dim; // Not saved
