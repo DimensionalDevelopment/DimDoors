@@ -27,7 +27,7 @@ import java.util.Random;
     @Saved @Getter protected boolean closeAfterPassThrough = false; // TODO: doesn't make sense lore-wise for doors, split into separate tile entity
 
     // Set by the block on tile entity creation, can't get from the block, it's not necessarily a door
-    public EnumFacing orientation;
+    @Saved public EnumFacing orientation;
 
     // Render info, use += to change these on block tile entity creation
     @SideOnly(Side.CLIENT) public double extendUp = 0.5;
