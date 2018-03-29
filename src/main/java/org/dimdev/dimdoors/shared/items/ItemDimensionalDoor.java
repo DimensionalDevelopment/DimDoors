@@ -1,5 +1,10 @@
 package org.dimdev.dimdoors.shared.items;
 
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.dimdoors.shared.blocks.IRiftProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -13,6 +18,8 @@ import net.minecraft.world.World;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
+
+import java.util.List;
 
 public abstract class ItemDimensionalDoor extends ItemDoor { // TODO: Biomes O' Plenty doors
 
@@ -57,6 +64,14 @@ public abstract class ItemDimensionalDoor extends ItemDoor { // TODO: Biomes O' 
             rift.setUnregisterDisabled(false);
         }
         return result;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+        if (I18n.hasKey(getUnlocalizedName() + ".info")) {
+            tooltip.add(I18n.format(getUnlocalizedName() + ".info"));
+        }
     }
 
     public abstract void setupRift(TileEntityEntranceRift entranceRift); // TODO: NBT-based, or maybe lambda function-based?

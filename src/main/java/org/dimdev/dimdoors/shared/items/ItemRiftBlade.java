@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.shared.items;
 
+import net.minecraft.client.resources.I18n;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
-import org.dimdev.ddutils.I18nUtils;
 import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.shared.RayTraceHelper;
 import org.dimdev.ddutils.TeleportUtils;
@@ -76,7 +76,7 @@ public class ItemRiftBlade extends ItemSword {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.addAll(I18nUtils.translateMultiline("info.rift_blade"));
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+        tooltip.add(I18n.format(getUnlocalizedName() + ".info"));
     }
 }

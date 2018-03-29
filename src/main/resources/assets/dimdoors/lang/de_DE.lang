@@ -1,3 +1,4 @@
+#PARSE_ESCAPES
 itemGroup.dimensional_doors_creative_tab=Dimensional Doors: Items
 
 tile.gold_door.name=Goldtür
@@ -37,43 +38,19 @@ item.rift_blade.name=Spaltklinge
 item.world_thread.name=Weltenfaden
 item.stable_fabric.name=Stabiler Stoff
 
-info.rift_key.bound=Gebunden
-info.rift_key.unbound=Nicht gebunden
+item.rift_key.bound.info=Gebunden
+item.rift_key.unbound.info=Nicht gebunden
 
-info.iron_dimensional_door0=Platziere auf dem Block unterhalb eines Spalts,
-info.iron_dimensional_door1=um diesen Spalt zu aktivieren, oder
-info.iron_dimensional_door2=irgendwo anders, um eine
-info.iron_dimensional_door3=kleine Dimension to erschaffen.
-
-info.gold_dimensional_door0=Ähnlich einer Dimensionaltür,
-info.gold_dimensional_door1=aber hält die kleine Dimension geladen,
-info.gold_dimensional_door2=sollte sie in einer solchen platziert sein.
-
-info.quartz_dimensional_door0=Erstellt einen Pfad zu
-info.quartz_dimensional_door1=deiner persönlichen Dimension
-
-info.rift_blade0=Öffnet temporäre Türen auf Spalten
-info.rift_blade1=und hat einen Teleport-Angriff.
-
-info.rift_remover0=Verwende nahe eines offenen Spalts,
-info.rift_remover1=um ihn und jegliche Spalte
-info.rift_remover2=in der Nähe zu entfernen.
-
-info.rift_signature.bound=Führt zu(%d, %d, %d) in Dimension #%d
-info.rift_signature.unbound0=Erster Klick speichert die Position;
-info.rift_signature.unbound1=zweiter Klick kreiert ein Paar von Spalten,
-info.rift_signature.unbound2=welche zu den zwei Positionen führen.
-
-info.stabilized_rift_signature.bound=Führt zu(%d, %d, %d) in Dimension #%d
-info.stabilized_rift_signature.unbound0=Erster Klick speichert die Position,
-info.stabilized_rift_signature.unbound1=weitere Klicks kreieren Spalte, die
-info.stabilized_rift_signature.unbound2=die erste und die aktuelle Position verbinden.
-
-info.chaos_dimensional_door=Vorsicht: Führt zu einem zufälligen Ziel
-
-info.oak_dimensional_door0=Platziere auf dem Block unterhalb eines
-info.oak_dimensional_door1=Spalts, um ein Portal zu erstellen,
-info.oak_dimensional_door2=oder platziere irgendwo in einer
-info.oak_dimensional_door3=kleinen Dimension, um sie zu verlassen.
+item.iron_dimensional_door.info=Platziere auf dem Block unterhalb eines Spalts, \num diesen Spalt zu aktivieren, oder \nirgendwo anders, um eine \nkleine Dimension to erschaffen.
+item.gold_dimensional_door.info=Ähnlich einer Dimensionaltür, \naber hält die kleine Dimension geladen, \nsollte sie in einer solchen platziert sein.
+item.quartz_dimensional_door.info=Erstellt einen Pfad zu \ndeiner persönlichen Dimension
+item.rift_blade.info=Öffnet temporäre Türen auf Spalten \nund hat einen Teleport-Angriff.
+item.rift_remover.info=Verwende nahe eines offenen Spalts, \num ihn und jegliche Spalte \nin der Nähe zu entfernen.
+item.rift_signature.bound.info=Führt zu(%d, %d, %d) in Dimension #%d
+item.rift_signature.unbound.info=Erster Klick speichert die Position; \nzweiter Klick kreiert ein Paar von Spalten, \nwelche zu den zwei Positionen führen.
+item.stabilized_rift_signature.bound.info=Führt zu(%d, %d, %d) in Dimension #%d
+item.stabilized_rift_signature.unbound.info=Erster Klick speichert die Position, \nweitere Klicks kreieren Spalte, die \ndie erste und die aktuelle Position verbinden.
+item.chaos_dimensional_door.info=Vorsicht: Führt zu einem zufälligen Ziel
+item.oak_dimensional_door.info=Platziere auf dem Block unterhalb eines \nSpalts, um ein Portal zu erstellen, \noder platziere irgendwo in einer \nkleinen Dimension, um sie zu verlassen.
 
 entity.dimdoors.monolith.name=Monolith

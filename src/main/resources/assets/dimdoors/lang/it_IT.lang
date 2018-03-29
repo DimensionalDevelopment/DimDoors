@@ -1,3 +1,4 @@
+#PARSE_ESCAPES
 itemGroup.dimensional_doors_creative_tab=Dimensional Doors oggetti
 
 tile.gold_door.name=Porta d'oro
@@ -37,43 +38,18 @@ item.rift_blade.name=Lama dimensionale
 item.world_thread.name=Filo di mondo
 item.stable_fabric.name=Tessuto stabile
 
-info.rift_key.bound=Legato
-info.rift_key.unbound=Non legato
+item.rift_key.bound.info=Legato
+item.rift_key.unbound.info=Non legato
 
-info.iron_dimensional_door0=Piazzalo sul blocco sotto una
-info.iron_dimensional_door1=frattura per attivarla o piazzalo
-info.iron_dimensional_door2=da qualunque altra parte per creare
-info.iron_dimensional_door3=una dimensione tascabile.
-
-info.gold_dimensional_door0=Simile a una Porta dimensionale
-info.gold_dimensional_door1=ma tiene la dimensione tascabile
-info.gold_dimensional_door2=caricata se piazzata all'interno.
-
-info.quartz_dimensional_door0=Crea un sentiero alla
-info.quartz_dimensional_door1=tua dimensione tascabile
-
-info.rift_blade0=Apre porte temporanee su fratture
-info.rift_blade1=e ha un colpo che teletrasporta.
-
-info.rift_remover0=Usalo presso una frattura
-info.rift_remover1=esposta per rimuovere quello
-info.rift_remover2=e altre fratture vicine.
-
-info.rift_signature.bound=Porta a (%d, %d, %d) nella dimensione #%d
-info.rift_signature.unbound0=Al primo clic salva la posizione; al
-info.rift_signature.unbound1=secondo clic crea un paio di fratture
-info.rift_signature.unbound2=che collegano le due posizioni.
-
-info.stabilized_rift_signature.bound=Porta a (%d, %d, %d) nella dimensione #%d
-info.stabilized_rift_signature.unbound0=Al primo clic salva la posizione; al
-info.stabilized_rift_signature.unbound1=secondo clic crea fratture che
-info.stabilized_rift_signature.unbound2=collegano la prima e ultima posizione.
-
-info.chaos_dimensional_door=Attenziione: Porta a una destinazione casuale
-
-info.oak_dimensional_door0=Piazzalo sul blocco sotto una
-info.oak_dimensional_door1=frattura per creare un portale,
-info.oak_dimensional_door2=o piazzalo da qualunque altra parte
-info.oak_dimensional_door3=in una dimensione tascabile per uscire.
-
+item.iron_dimensional_door.info=Piazzalo sul blocco sotto una \nfrattura per attivarla o piazzalo \nda qualunque altra parte per creare \nuna dimensione tascabile.
+item.gold_dimensional_door.info=Simile a una Porta dimensionale \nma tiene la dimensione tascabile \ncaricata se piazzata all'interno.
+item.quartz_dimensional_door.info=Crea un sentiero alla \ntua dimensione tascabile
+item.rift_blade.info=Apre porte temporanee su fratture \ne ha un colpo che teletrasporta.
+item.rift_remover.info=Usalo presso una frattura \nesposta per rimuovere quello \ne altre fratture vicine.
+item.rift_signature.bound.info=Porta a (%d, %d, %d) nella dimensione #%d
+item.rift_signature.unbound.info=Al primo clic salva la posizione; al \nsecondo clic crea un paio di fratture \nche collegano le due posizioni.
+item.stabilized_rift_signature.bound.info=Porta a (%d, %d, %d) nella dimensione #%d
+item.stabilized_rift_signature.unbound.info=Al primo clic salva la posizione; al \nsecondo clic crea fratture che \ncollegano la prima e ultima posizione.
+item.chaos_dimensional_door.info=Attenziione: Porta a una destinazione casuale
+item.oak_dimensional_door.info=Piazzalo sul blocco sotto una \nfrattura per creare un portale, \no piazzalo da qualunque altra parte \nin una dimensione tascabile per uscire.
 entity.dimdoors.monolith.name=Monolito

@@ -1,3 +1,4 @@
+#PARSE_ESCAPES
 itemGroup.dimensional_doors_creative_tab=次元门物品
 
 tile.gold_door.name=金门
@@ -37,43 +38,18 @@ item.rift_blade.name=裂痕之刃
 item.world_thread.name=世界纤维
 item.stable_fabric.name=稳定构造
 
-info.rift_key.bound=绑定
-info.rift_key.unbound=取消绑定
+item.rift_key.bound.info=绑定
+item.rift_key.unbound.info=取消绑定
 
-info.iron_dimensional_door0=放在裂痕下方的方块上
-info.iron_dimensional_door1=来激活裂痕
-info.iron_dimensional_door2=或放在任意地点生成
-info.iron_dimensional_door3=一个口袋次元.
-
-info.gold_dimensional_door0=类似于次元门
-info.gold_dimensional_door1=但它放在次元内部时
-info.gold_dimensional_door2=会保持次元的加载.
-
-info.quartz_dimensional_door0=生成一个通向你
-info.quartz_dimensional_door1=口袋次元的路径
-
-info.rift_blade0=在裂痕上开启临时的门
-info.rift_blade1=它还拥有瞬移攻击的能力.
-
-info.rift_remover0=在外露的裂痕附近使用
-info.rift_remover1=来移除它以及附近的其他
-info.rift_remover2=裂痕.
-
-info.rift_signature.bound=指向(%d, %d, %d) 位于#%d
-info.rift_signature.unbound0=第一次点击记录一个位置;
-info.rift_signature.unbound1=第二次点击在两地间创造
-info.rift_signature.unbound2=一对相互连接的裂痕.
-
-info.stabilized_rift_signature.bound=指向(%d, %d, %d) 位于#%d
-info.stabilized_rift_signature.unbound0=首次点击记录一个位置,
-info.stabilized_rift_signature.unbound1=再次点击生成连接两地的
-info.stabilized_rift_signature.unbound2=裂痕.
-
-info.chaos_dimensional_door=注意: 将会随机传送
-
-info.oak_dimensional_door0=放在裂痕下方的方块上
-info.oak_dimensional_door1=来制造传送门,
-info.oak_dimensional_door2=放在口袋次元中
-info.oak_dimensional_door3=以退出空间.
-
+item.iron_dimensional_door.info=放在裂痕下方的方块上 \n来激活裂痕 \n或放在任意地点生成 \n一个口袋次元.
+item.gold_dimensional_door.info=类似于次元门 \n但它放在次元内部时 \n会保持次元的加载.
+item.quartz_dimensional_door.info=生成一个通向你 \n口袋次元的路径
+item.rift_blade.info=在裂痕上开启临时的门 \n它还拥有瞬移攻击的能力.
+item.rift_remover.info=在外露的裂痕附近使用 \n来移除它以及附近的其他 \n裂痕.
+item.rift_signature.bound.info=指向(%d, %d, %d) 位于#%d
+item.rift_signature.unbound.info=第一次点击记录一个位置; \n第二次点击在两地间创造 \n一对相互连接的裂痕.
+item.stabilized_rift_signature.bound.info=指向(%d, %d, %d) 位于#%d
+item.stabilized_rift_signature.unbound.info=首次点击记录一个位置, \n再次点击生成连接两地的 \n裂痕.
+item.chaos_dimensional_door.info=注意: 将会随机传送
+item.oak_dimensional_door.info=放在裂痕下方的方块上 \n来制造传送门, \n放在口袋次元中 \n以退出空间.
 entity.dimdoors.monolith.name=巨石

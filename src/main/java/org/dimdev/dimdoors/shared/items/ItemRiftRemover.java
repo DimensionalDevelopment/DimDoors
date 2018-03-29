@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared.items;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.*;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.relauncher.Side;
@@ -8,7 +9,6 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.RayTraceHelper;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
-import org.dimdev.ddutils.I18nUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -32,8 +32,10 @@ public class ItemRiftRemover extends Item {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.addAll(I18nUtils.translateMultiline("info.rift_remover"));
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+        if (I18n.hasKey(getUnlocalizedName() + ".info")) {
+            tooltip.add(I18n.format(getUnlocalizedName() + ".info"));
+        }
     }
 
     @Override

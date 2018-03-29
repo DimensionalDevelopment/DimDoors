@@ -1,3 +1,4 @@
+#PARSE_ESCAPES
 itemGroup.dimensional_doors_creative_tab=Objets Portes dimensionelles
 
 tile.gold_door.name=Porte d'or
@@ -68,45 +69,20 @@ item.rift_blade.name=Lame de fissure
 item.world_thread.name=Fil du monde
 item.stable_fabric.name=Étoffe stable
 
-info.rift_key.bound=Liée
-info.rift_key.unbound=Non liée
+item.rift_key.bound.info=Liée
+item.rift_key.unbound.info=Non liée
 
-info.iron_dimensional_door0=Placez sur le bloc sous une fissure
-info.iron_dimensional_door1=pour activer cette fissure ou placez
-info.iron_dimensional_door2=n'importe où ailleurs pour créer une
-info.iron_dimensional_door3=dimension de poche.
-
-info.gold_dimensional_door0=Similaire à une porte dimensionnelle
-info.gold_dimensional_door1=mais garde une dimension de poche
-info.gold_dimensional_door2=chargée si elle est placée à l'intérieur.
-
-info.quartz_dimensional_door0=Crée un passage vers votre
-info.quartz_dimensional_door1=dimension de poche personnelle.
-
-info.rift_blade0=Ouvre des portes temporaires sur des fissures
-info.rift_blade1=et possède une attaque de téléporation.
-
-info.rift_remover0=Utilisez près d'une fissure
-info.rift_remover1=exposée pour l'enlever ainsi
-info.rift_remover2=que celles à proximité.
-
-info.rift_signature.bound=Mène aux coordonnées (%d, %d, %d) à la dimension #%d
-info.rift_signature.unbound0=Le premier clic stocke un emplacement ;
-info.rift_signature.unbound1=le deuxième clic crée une paire de
-info.rift_signature.unbound2=fissures qui lient les deux emplacements.
-
-info.stabilized_rift_signature.bound=Mène aux coordonnées (%d, %d, %d) à la dimension #%d
-info.stabilized_rift_signature.unbound0=Le premier clic stocke un emplacement,
-info.stabilized_rift_signature.unbound1=les autres clics créent des fissurent qui lient
-info.stabilized_rift_signature.unbound2=le premier et les derniers emplacements ensemble.
-
-info.chaos_dimensional_door=Attention : mène vers une destination aléatoire
-
-info.oak_dimensional_door0=Placez sur le bloc sous une
-info.oak_dimensional_door1=fissure pour créer un portail,
-info.oak_dimensional_door2=ou placez n'importe où dans une
-info.oak_dimensional_door3=dimension de poche pour sortir.
-
+item.iron_dimensional_door.info=Placez sur le bloc sous une fissure \npour activer cette fissure ou placez \nn'importe où ailleurs pour créer une \ndimension de poche.
+item.gold_dimensional_door.info=Similaire à une porte dimensionnelle \nmais garde une dimension de poche \nchargée si elle est placée à l'intérieur.
+item.quartz_dimensional_door.info=Crée un passage vers votre \ndimension de poche personnelle.
+item.rift_blade.info=Ouvre des portes temporaires sur des fissures \net possède une attaque de téléporation.
+item.rift_remover.info=Utilisez près d'une fissure \nexposée pour l'enlever ainsi \nque celles à proximité.
+item.rift_signature.bound.info=Mène aux coordonnées (%d, %d, %d) à la dimension #%d
+item.rift_signature.unbound.info=Le premier clic stocke un emplacement ; \nle deuxième clic crée une paire de \nfissures qui lient les deux emplacements.
+item.stabilized_rift_signature.bound.info=Mène aux coordonnées (%d, %d, %d) à la dimension #%d
+item.stabilized_rift_signature.unbound.info=Le premier clic stocke un emplacement, \nles autres clics créent des fissurent qui lient \nle premier et les derniers emplacements ensemble.
+item.chaos_dimensional_door.info=Attention : mène vers une destination aléatoire
+item.oak_dimensional_door.info=Placez sur le bloc sous une \nfissure pour créer un portail, \nou placez n'importe où dans une \ndimension de poche pour sortir.
 entity.dimdoors.monolith.name=Monolithe
 
 commands.dimteleport.usage=/dimteleport <dimension> <x> <y> <z> [lacet] [tanage]

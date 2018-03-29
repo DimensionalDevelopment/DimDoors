@@ -1,3 +1,4 @@
+#PARSE_ESCAPES
 itemGroup.dimensional_doors_creative_tab=Obiecte Dimensional Doors
 
 tile.gold_door.name=Ușă de aur
@@ -54,44 +55,18 @@ item.rift_blade.name=Lamă de fisură
 item.world_thread.name=Ața lumii
 item.stable_fabric.name=Ață stabilă
 
-info.rift_key.bound=Legat
-info.rift_key.unbound=Dezlegat
+item.rift_key.bound.info=Legat
+item.rift_key.unbound.info=Dezlegat
 
-info.iron_dimensional_door0=Plasează pe blocul de sub o fisură
-info.iron_dimensional_door1=pentru a activa acea fisură sau
-info.iron_dimensional_door2=oriunde altundeva pentru a crea
-info.iron_dimensional_door3=o dimensiune de buzunar.
-
-info.gold_dimensional_door0=Similară la o ușă dimensională
-info.gold_dimensional_door1=doar că păstrează o dimensiune
-info.gold_dimensional_door2=de buzunar încărcată dacă e
-info.gold_dimensional_door3=plasată la interior.
-
-info.quartz_dimensional_door0=Crează o trecere spre dimensiunea
-info.quartz_dimensional_door1=ta de buzunar personală.
-
-info.rift_blade0=Deschide uși temporare pe fisuri
-info.rift_blade1=și are un atac de teleportare.
-
-info.rift_remover0=Folosește aproape de o fisură
-info.rift_remover1=expusa pentru a sterge acea
-info.rift_remover2=fisură și ori ce fisuri apropiate.
-
-info.rift_signature.bound=Duce la (%d, %d, %d) în dimensiunea #%d
-info.rift_signature.unbound0=Primul clic stochează o locație;
-info.rift_signature.unbound1=al doilea clic crează o pereche
-info.rift_signature.unbound2=de fisuri conectând cele doua locații.
-
-info.stabilized_rift_signature.bound=Duce la (%d, %d, %d) în dimensiunea #%d
-info.stabilized_rift_signature.unbound0=Primul clic stochează o locație;
-info.stabilized_rift_signature.unbound1=alte clicuri crează fisuri conectând
-info.stabilized_rift_signature.unbound2=prima și ultima conectiuni împreună.
-
-info.chaos_dimensional_door=Atenție: Duce la o destinație aleatorie
-
-info.oak_dimensional_door0=Plasează pe blocul sub o fisură
-info.oak_dimensional_door1=pentru a crea un portal sau
-info.oak_dimensional_door2=plasează ori unde într-o dimensiune
-info.oak_dimensional_door3=de buzunar pentru a ieșii.
-
+item.iron_dimensional_door.info=Plasează pe blocul de sub o fisură \npentru a activa acea fisură sau \noriunde altundeva pentru a crea \no dimensiune de buzunar.
+item.gold_dimensional_door.info=Similară la o ușă dimensională \ndoar că păstrează o dimensiune \nde buzunar încărcată dacă e \nplasată la interior.
+item.quartz_dimensional_door.info=Crează o trecere spre dimensiunea \nta de buzunar personală.
+item.rift_blade.info=Deschide uși temporare pe fisuri \nși are un atac de teleportare.
+item.rift_remover.info=Folosește aproape de o fisură \nexpusa pentru a sterge acea \nfisură și ori ce fisuri apropiate.
+item.rift_signature.bound.info=Duce la (%d, %d, %d) în dimensiunea #%d
+item.rift_signature.unbound.info=Primul clic stochează o locație; \nal doilea clic crează o pereche \nde fisuri conectând cele doua locații.
+item.stabilized_rift_signature.bound.info=Duce la (%d, %d, %d) în dimensiunea #%d
+item.stabilized_rift_signature.unbound.info=Primul clic stochează o locație; \nalte clicuri crează fisuri conectând \nprima și ultima conectiuni împreună.
+item.chaos_dimensional_door.info=Atenție: Duce la o destinație aleatorie
+item.oak_dimensional_door.info=Plasează pe blocul sub o fisură \npentru a crea un portal sau \nplasează ori unde într-o dimensiune \nde buzunar pentru a ieșii.
 entity.dimdoors.monolith.name=Monolit

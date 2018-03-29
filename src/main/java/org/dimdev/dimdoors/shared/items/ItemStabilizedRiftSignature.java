@@ -13,7 +13,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.dimdev.ddutils.I18nUtils;
 import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.RotatedLocation;
@@ -114,12 +113,12 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
         RotatedLocation transform = getTarget(stack);
         if (transform != null) {
-            tooltip.add(I18n.format("info.stabilized_rift_signature.bound", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
+            tooltip.add(I18n.format("item.stabilized_rift_signature.bound.info", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
         } else {
-            tooltip.addAll(I18nUtils.translateMultiline("info.stabilized_rift_signature.unbound"));
+            tooltip.add(I18n.format("item.stabilized_rift_signature.unbound.info"));
         }
     }
 }

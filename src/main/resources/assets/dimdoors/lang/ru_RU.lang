@@ -1,3 +1,4 @@
+#PARSE_ESCAPES
 itemGroup.dimensional_doors_creative_tab=Dimensional Doors: Предметы
 
 tile.gold_door.name=Золотая дверь
@@ -37,43 +38,18 @@ item.rift_blade.name=Клинок разлома
 item.world_thread.name=Мировая нить
 item.stable_fabric.name=Стабильная ткань
 
-info.rift_key.bound=Связан
-info.rift_key.unbound=Не связан
+item.rift_key.bound.info=Связан
+item.rift_key.unbound.info=Не связан
 
-info.iron_dimensional_door0=Поставьте на блок под разломом,
-info.iron_dimensional_door1=чтобы активировать этот разлом или
-info.iron_dimensional_door2=поставьте куда угодно, чтобы создать
-info.iron_dimensional_door3=карманное измерение.
-
-info.gold_dimensional_door0=Схожа с пространственной дверью,
-info.gold_dimensional_door1=но она также держит карманное измерение
-info.gold_dimensional_door2=загруженным, если она размещена внутри его.
-
-info.quartz_dimensional_door0=Создает путь к
-info.quartz_dimensional_door1=Вашему карману
-
-info.rift_blade0=Открывает временные двери на разломах
-info.rift_blade1=и наносит урон при телепортации.
-
-info.rift_remover0=Используйте рядом с разломом,
-info.rift_remover1=чтобы убрать его и
-info.rift_remover2=другие ближайшие разломы.
-
-info.rift_signature.bound=Ведёт в (%d, %d, %d) в измерение #%d
-info.rift_signature.unbound0=Первое нажатие сохраняет расположение;
-info.rift_signature.unbound1=второе нажатие создаёт пару
-info.rift_signature.unbound2=разломов, соединяющих два расположения.
-
-info.stabilized_rift_signature.bound=Ведёт в (%d, %d, %d) в измерение #%d
-info.stabilized_rift_signature.unbound0=Первое нажатие сохраняет расположение,
-info.stabilized_rift_signature.unbound1=остальные нажатия создают разломы, соединяющие
-info.stabilized_rift_signature.unbound2=первое и последнее расположения вместе.
-
-info.chaos_dimensional_door=Внимание: Ведёт неизвестно куда
-
-info.oak_dimensional_door0=Поставьте на блок под
-info.oak_dimensional_door1=разломом, чтобы создать портал
-info.oak_dimensional_door2=или поставьте куда угодно в
-info.oak_dimensional_door3=карманном измерении, чтобы выйти из него.
-
+item.iron_dimensional_door.info=Поставьте на блок под разломом, \nчтобы активировать этот разлом или \nпоставьте куда угодно, чтобы создать \nкарманное измерение.
+item.gold_dimensional_door.info=Схожа с пространственной дверью, \nно она также держит карманное измерение \nзагруженным, если она размещена внутри его.
+item.quartz_dimensional_door.info=Создает путь к \nВашему карману
+item.rift_blade.info=Открывает временные двери на разломах \nи наносит урон при телепортации.
+item.rift_remover.info=Используйте рядом с разломом, \nчтобы убрать его и \nдругие ближайшие разломы.
+item.rift_signature.bound.info=Ведёт в (%d, %d, %d) в измерение #%d
+item.rift_signature.unbound.info=Первое нажатие сохраняет расположение; \nвторое нажатие создаёт пару \nразломов, соединяющих два расположения.
+item.stabilized_rift_signature.bound.info=Ведёт в (%d, %d, %d) в измерение #%d
+item.stabilized_rift_signature.unbound.info=Первое нажатие сохраняет расположение, \nостальные нажатия создают разломы, соединяющие \nпервое и последнее расположения вместе.
+item.chaos_dimensional_door.info=Внимание: Ведёт неизвестно куда
+item.oak_dimensional_door.info=Поставьте на блок под \nразломом, чтобы создать портал \nили поставьте куда угодно в \nкарманном измерении, чтобы выйти из него.
 entity.dimdoors.monolith.name=Монолит

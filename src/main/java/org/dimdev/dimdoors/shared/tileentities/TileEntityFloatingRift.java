@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
-import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;

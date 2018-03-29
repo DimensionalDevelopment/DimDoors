@@ -1,5 +1,10 @@
 package org.dimdev.dimdoors.shared.items;
 
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.dimdoors.shared.blocks.IRiftProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -11,6 +16,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
+
+import java.util.List;
 
 public abstract class ItemDimensionalTrapdoor extends ItemBlock { // TODO: Iron dimensional trapdoor
 
@@ -38,6 +45,14 @@ public abstract class ItemDimensionalTrapdoor extends ItemBlock { // TODO: Iron 
             entranceRift.register();
         }
         return result;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+        if (I18n.hasKey(getUnlocalizedName() + ".info")) {
+            tooltip.add(I18n.format(getUnlocalizedName() + ".info"));
+        }
     }
 
     protected abstract void setupRift(TileEntityEntranceRift entranceRift); // TODO: NBT-based
