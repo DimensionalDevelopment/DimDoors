@@ -169,7 +169,7 @@ import java.util.Set;
     private static void linkRifts(Location from, Location to) {
         TileEntityRift tileEntityFrom = (TileEntityRift) from.getTileEntity();
         TileEntityRift tileEntityTo = (TileEntityRift) to.getTileEntity();
-        tileEntityFrom.setDestination(new GlobalDestination(to)); // TODO: local if possible
+        tileEntityFrom.setDestination(DestinationMaker.localIfPossible(from, to));
         tileEntityFrom.markDirty();
         if (tileEntityTo.getProperties() != null) {
             tileEntityTo.getProperties().linksRemaining--;

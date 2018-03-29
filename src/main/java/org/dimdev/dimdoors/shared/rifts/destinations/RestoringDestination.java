@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.RGBA;
 import org.dimdev.ddutils.RotatedLocation;
+import org.dimdev.dimdoors.shared.rifts.DestinationMaker;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 
 public abstract class RestoringDestination extends RiftDestination {
@@ -27,7 +28,7 @@ public abstract class RestoringDestination extends RiftDestination {
 
         Location linkTarget = makeLinkTarget(loc, entity);
         if (linkTarget != null) {
-            wrappedDestination = new GlobalDestination(linkTarget);
+            wrappedDestination = DestinationMaker.localIfPossible(loc.getLocation(), linkTarget);
             wrappedDestination.register(loc.getLocation());
 
             wrappedDestination.teleport(loc, entity);

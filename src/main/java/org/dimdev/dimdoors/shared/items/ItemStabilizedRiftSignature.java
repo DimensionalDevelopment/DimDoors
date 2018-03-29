@@ -17,6 +17,7 @@ import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
+import org.dimdev.dimdoors.shared.rifts.DestinationMaker;
 import org.dimdev.dimdoors.shared.rifts.destinations.GlobalDestination;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
@@ -77,7 +78,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
             // Place a rift at the source point
             world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
             TileEntityFloatingRift rift2 = (TileEntityFloatingRift) world.getTileEntity(pos);
-            rift2.setDestination(new GlobalDestination(target.getLocation()));
+            rift2.setDestination(DestinationMaker.relativeIfPossible(new Location(world, pos), target.getLocation()));
             rift2.setTeleportTargetRotation(player.rotationYaw, 0);
             rift2.register();
 
