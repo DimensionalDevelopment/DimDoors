@@ -11,6 +11,7 @@ import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.NBTSerializable;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.ddutils.RGBA;
@@ -30,12 +31,20 @@ import java.util.Random;
     @Saved public EnumFacing orientation;
 
     // Render info, use += to change these on block tile entity creation
-    @SideOnly(Side.CLIENT) public double extendUp = 0.5;
-    @SideOnly(Side.CLIENT) public double extendDown = 0.5;
-    @SideOnly(Side.CLIENT) public double extendLeft = 0.5;
-    @SideOnly(Side.CLIENT) public double extendRight = 0.5;
-    @SideOnly(Side.CLIENT) public double pushIn = 0.01;
-    @SideOnly(Side.CLIENT) public byte lockStatus = 0; // TODO
+    @SideOnly(Side.CLIENT) public double extendUp;
+    @SideOnly(Side.CLIENT) public double extendDown;
+    @SideOnly(Side.CLIENT) public double extendLeft;
+    @SideOnly(Side.CLIENT) public double extendRight;
+    @SideOnly(Side.CLIENT) public double pushIn;
+    @SideOnly(Side.CLIENT) public byte lockStatus; // TODO
+
+    public TileEntityEntranceRift() {
+        if (DimDoors.proxy.isClient()) {
+            extendUp = extendDown = extendLeft = extendRight = 0.5;
+            pushIn = 0.01;
+            lockStatus = 0;
+        }
+    }
 
     @Override
     public void copyFrom(TileEntityRift oldRift) {
