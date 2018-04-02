@@ -11,7 +11,6 @@ import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
@@ -49,13 +48,17 @@ public class ItemRiftRemover extends Item {
         RayTraceResult hit = rayTrace(world, player, true);
         if (RayTraceHelper.isFloatingRift(hit, world)) {
             TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(hit.getBlockPos());
-            world.setBlockState(rift.getPos(), Blocks.AIR.getDefaultState());
-            world.playSound(null, player.getPosition(), ModSounds.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
-            // TODO: render rift removing animation
+            if (!rift.closing) {
+                rift.setClosing(true);
+                world.playSound(null, player.getPosition(), ModSounds.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
+                // TODO: render rift removing animation
 
-            stack.damageItem(10, player);
-            player.sendStatusMessage(new TextComponentTranslation("item.rift_remover.removed"), true);
-            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+                stack.damageItem(10, player);
+                player.sendStatusMessage(new TextComponentTranslation("item.rift_remover.closing"), true);
+                return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+            } else {
+                player.sendStatusMessage(new TextComponentTranslation("item.rift_remover.already_closing"), true);
+            }
         }
         return new ActionResult<>(EnumActionResult.FAIL, stack);
     }

@@ -43,6 +43,11 @@ public final class ModConfig {
         @Name("riftBoundingBoxInCreative")
         @LangKey("dimdoors.general.riftBoundingBoxInCreative")
         public boolean riftBoundingBoxInCreative;
+
+        @Name("riftCloseSpeed")
+        @LangKey("dimdoors.general.riftCloseSpeed")
+        @RangeDouble(min = 0)
+        public float riftCloseSpeed = 1f;
     }
 
     public static class Pockets {

@@ -17,6 +17,7 @@ import org.dimdev.annotatednbt.Saved;
 import org.dimdev.ddutils.lsystem.LSystem;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.blocks.BlockFloatingRift;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
@@ -37,7 +38,7 @@ import java.util.Random;
     // TODO: Some of these properties will need to persist when converting to door and then back to rift!
     //Need to be saved:
     @Saved /*package-private*/ int updateTimer;
-    @Saved public boolean shouldClose = false; // TODO
+    @Saved public boolean closing = false; // TODO: maybe we could have a closingSpeed instead?
     @Saved public int spawnedEndermenID = 0;
     @Saved public float growth = 0;
     @Saved protected float teleportTargetYaw;
@@ -64,8 +65,12 @@ import java.util.Random;
 
         // Check if this rift should render white closing particles and
         // spread the closing effect to other rifts nearby.
-        if (shouldClose) {
-            closeRift();
+        if (closing) {
+            if (growth > 0) {
+                growth -= ModConfig.general.riftCloseSpeed;
+            } else {
+                world.setBlockToAir(pos);
+            }
             return;
         }
 
@@ -75,8 +80,13 @@ import java.util.Random;
         } else if (updateTimer == UPDATE_PERIOD / 2) {
             updateNearestRift();
         }
-        growth += 1F / (growth + 1);
         updateTimer++;
+
+        // Logarithmic growth
+        for (int n = 0; n < 10; n++) {
+            // TODO: growthSpeed and growthSize config options
+            growth += 1F / (growth + 1);
+        }
     }
 
     private void spawnEndermen() {
@@ -113,13 +123,15 @@ import java.util.Random;
         }
     }
 
-    private void closeRift() {
-        world.setBlockToAir(pos);
-        growth--; //@todo?
-    }
-
     public boolean updateNearestRift() {
         return false;
+    }
+
+    public void setClosing(boolean closing) {
+        this.closing = closing;
+        IBlockState state = world.getBlockState(pos);
+        world.notifyBlockUpdate(pos, state, state, 0);
+        markDirty();
     }
 
     @Override

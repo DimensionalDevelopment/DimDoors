@@ -22,91 +22,50 @@ public final class RiftCrackRenderer {
 
         // Changes how far the triangles move
         // TODO: Actually seems to control the glow around the rift
-        float motionMagnitude = 0.2F;
+        float motionMagnitude = 0.6F;
 
         // Changes how quickly the triangles move
-        float motionSpeed = 2000.0F;
+        float motionSpeed = 0.014f;
 
         // Number of individual jitter waveforms to generate
         // changes how "together" the overall motions are
-        int jCount = 5;
+        int jCount = 10;
+
 
         // Calculate jitter like for monoliths
         // Used to be: 0xF1234568 * hashCode(), this is probably to avoid syncing all rifts
-        long riftRandom = (long) (0xF1234568L * (xWorld + yWorld * (2L << 21) + zWorld * (2L << 42)));
-        float time = ((Minecraft.getSystemTime() + riftRandom) % 2000000) / motionSpeed;
+        long riftRandom = 0;//(long) (0xF1234568L * (xWorld + yWorld * (2L << 21) + zWorld * (2L << 42)));
+        float time = ((Minecraft.getSystemTime() + riftRandom) % 2000000) * motionSpeed;
         double[] jitters = new double[jCount];
 
-        // TODO: Fix jitters. This loop seems to be overwriting all but the last cos with sin
+
+        double aggroScaling = size * size * size / 700f;
+        // We use random constants here on purpose just to get different wave forms
+        double xJitter = aggroScaling * Math.sin(1.1f * time*size) * Math.sin(0.8f * time);
+        double yJitter = aggroScaling * Math.sin(1.2f * time*size) * Math.sin(0.9f * time);
+        double zJitter = aggroScaling * Math.sin(1.3f * time*size) * Math.sin(0.7f * time);
+
         // generate a series of waveforms
-        for (int i = 0; i < jCount - 1; i += 1) {
-            // TODO: Division by magnitude... Not multiplication???
-            jitters[i] = Math.sin((1F + i / 10F) * time) * Math.cos(1F - i / 10F * time) / motionMagnitude;
-            jitters[i + 1] = Math.cos((1F + i / 10F) * time) * Math.sin(1F - i / 10F * time) / motionMagnitude;
+        for (int i = 0; i < jCount; i += 1) {
+            jitters[i] = Math.sin((1F + i / 10F) * time) * Math.cos(1F - i / 10F * time) * motionMagnitude;
         }
 
-        // determines which jitter waveform we select. Modulo so the same point
-        // gets the same jitter waveform over multiple frames
-        int jIndex = 0;
-        // set the color for the render
-        GlStateManager.color(.1F, .1F, .1F, 1F);
-
-        // set the blending mode
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL_ONE_MINUS_SRC_COLOR, GL_ONE);
-        GlStateManager.glBegin(GL11.GL_TRIANGLES);
-        for (Point p : poly.points) {
-            jIndex = Math.abs((p.x + p.y) * (p.x + p.y + 1) / 2 + p.y);
-            // jIndex++;
-            // Calculate the rotation for the fractal, apply offset, and apply jitter
-            double x = (p.x + jitters[(jIndex + 1) % jCount] - offsetX) * Math.cos(Math.toRadians(riftRotation)) - jitters[(jIndex + 2) % jCount] * Math.sin(Math.toRadians(riftRotation));
-            double y = p.y + jitters[jIndex % jCount] - offsetY;
-            double z = (p.x + jitters[(jIndex + 2) % jCount] - offsetX) * Math.sin(Math.toRadians(riftRotation)) + jitters[(jIndex + 2) % jCount] * Math.cos(Math.toRadians(riftRotation));
-
-            // Apply scaling
-            x *= scale;
-            y *= scale;
-            z *= scale;
-
-            // Apply transform to center the offset origin into the middle of a block
-            x += .5;
-            y += .5;
-            z += .5;
-
-            // Draw the vertex and apply the world (screenspace) relative coordinates
-            GL11.glVertex3d(xWorld + x, yWorld + y, zWorld + z);
-        }
-        GlStateManager.glEnd();
-
-        GlStateManager.color(.3F, .3F, .3F, .2F);
-
-        glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+        GlStateManager.color(0.08f, 0.08f, 0.08f, .3F);
+        glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO); // Invert the backgrounds
 
         // Draw the next set of triangles to form a background and change their color slightly over time
         GlStateManager.glBegin(GL11.GL_TRIANGLES);
         for (Point p : poly.points) {
-            jIndex++;
+            int jIndex = Math.abs((p.x + p.y) * (p.x + p.y + 1) / 2 + p.y);
 
-            double x = (p.x - offsetX) * Math.cos(Math.toRadians(riftRotation)) - 0 * Math.sin(Math.toRadians(riftRotation));
-            double y = p.y - offsetY;
-            double z = (p.x - offsetX) * Math.sin(Math.toRadians(riftRotation)) + 0 * Math.cos(Math.toRadians(riftRotation));
-
+            double x = (p.x + jitters[(jIndex + 1) % jCount] - offsetX) * Math.cos(Math.toRadians(riftRotation)) - jitters[(jIndex + 2) % jCount] * Math.sin(Math.toRadians(riftRotation));
+            double y = p.y + jitters[jIndex % jCount] - offsetY;
+            double z = (p.x + jitters[(jIndex + 2) % jCount] - offsetZ) * Math.sin(Math.toRadians(riftRotation)) + jitters[(jIndex + 2) % jCount] * Math.cos(Math.toRadians(riftRotation));
             x *= scale;
             y *= scale;
             z *= scale;
 
-            x += .5;
-            y += .5;
-            z += .5;
-
-            // TODO: What does this do?
-            //if (jIndex % 3 == 0) {
-            //    GL11.glColor4d(1 - jitters[(jIndex + 5) % jCount] / 11,
-            //                   1 - jitters[(jIndex + 4) % jCount] / 8,
-            //                   1 - jitters[(jIndex + 3) % jCount] / 8, 1);
-            //}
-
-            GL11.glVertex3d(xWorld + x, yWorld + y, zWorld + z);
+            GL11.glVertex3d(xWorld + x + xJitter, yWorld + y + yJitter, zWorld + z + zJitter);
         }
 
         // Stop drawing triangles

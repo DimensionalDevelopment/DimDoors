@@ -71,7 +71,8 @@ item.stabilized_rift_signature.stored=Location stored
 item.stabilized_rift_signature.created=Rift created
 item.rift_configuration_tool.name=Rift Configuration Tool
 item.rift_remover.name=Rift Remover
-item.rift_remover.removed=Rift Removed
+item.rift_remover.closing=The rift will close soon
+item.rift_remover.already_closing=This rift is already closing
 item.rift_blade.name=Rift Blade
 
 item.world_thread.name=World Thread

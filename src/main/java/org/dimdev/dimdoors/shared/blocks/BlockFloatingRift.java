@@ -35,6 +35,7 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
         setUnlocalizedName(ID);
         setTickRandomly(true);
         setResistance(6000000.0F); // Same as bedrock
+        setLightLevel(0.5f);
     }
 
     @Override
@@ -96,11 +97,16 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
                     rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
         }
 
-        if (rift.shouldClose) { // Renders an opposite color effect if it is being closed by the rift remover
+        if (rift.closing) { // Renders an opposite color effect if it is being closed by the rift remover
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.ClosingRiftEffect(
                     world,
                     pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5,
                     rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
         }
+
+        FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.Rift(
+                world,
+                pos.getX() + .5, pos.getY() + 1.5, pos.getZ() + .5,
+                rand.nextGaussian() * 0.1D, rand.nextGaussian() * 0.1D, rand.nextGaussian() * 0.1D));
     }
 }

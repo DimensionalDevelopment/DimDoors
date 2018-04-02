@@ -30,6 +30,7 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
 
     private void renderCrack(TileEntityFloatingRift rift, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
         GL11.glPushMatrix();
+        // TODO: Make the sky get dark when a player approaches a rift?
 
         // Make the rift render on both sides, disable texture mapping and lighting
         GlStateManager.disableLighting();
@@ -40,7 +41,7 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
         //GlStateManager.colorLogicOp(GlStateManager.LogicOp.INVERT);
         //GlStateManager.enableColorLogic();
 
-        RiftCrackRenderer.drawCrack(rift.riftRotation, rift.getCurve(), rift.growth / 15, x, y, z);
+        RiftCrackRenderer.drawCrack(rift.riftRotation, rift.getCurve(), rift.growth / 90, x + 0.5, y + 1.5, z + 0.5);
 
         GlStateManager.disableBlend();
         GlStateManager.enableTexture2D();
