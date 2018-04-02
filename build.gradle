@@ -18,6 +18,13 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 repositories {
     maven { url "https://jitpack.io" }
+    ivy {
+        url 'https://github.com/'
+        layout 'pattern', {
+            //noinspection GroovyAssignabilityCheck (IntelliJ is wrong)
+            artifact '/[organisation]/[module]/raw/master/repository/snapshots/[revision].[ext]'
+        }
+    }
 }
 
 // Version info
@@ -69,6 +76,9 @@ configurations {
 dependencies {
     embed 'com.flowpowered:flow-math:1.0.3'
     embed 'org.jgrapht:jgrapht-core:1.1.0'
+    // TODO: Get poly2tri working with Jitpack to avoid having to manually add its dependencies
+    embed 'greenm01:poly2tri.java:poly2tri-core-0.1.1-SNAPSHOT'
+    embed group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.5.10' // poly2tri dependency
     compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
     compileOnly 'com.github.OpenCubicChunks:CubicChunks:MC_1.12-SNAPSHOT'
 }

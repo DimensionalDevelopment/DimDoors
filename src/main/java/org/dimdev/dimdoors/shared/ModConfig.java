@@ -19,6 +19,7 @@ public final class ModConfig {
     public static Dungeons dungeons = new Dungeons();
     public static Monoliths monoliths = new Monoliths();
     public static Limbo limbo = new Limbo();
+    public static Graphics graphics = new Graphics();
 
     public static class General {
         @Name("baseDimensionID")
@@ -116,6 +117,13 @@ public final class ModConfig {
         @LangKey("dimdoors.limbo.hardcoreLimbo")
         public boolean hardcoreLimbo = false;
     }
+
+    public static class Graphics {
+        @Name("tesseractRifts")
+        @LangKey("dimdoors.graphics.tesseractRifts")
+        public boolean tesseractRifts = false;
+    }
+
 
     @SubscribeEvent
     public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {

@@ -2,25 +2,27 @@ package org.dimdev.dimdoors.shared.tileentities;
 
 import lombok.Setter;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.annotatednbt.NBTSerializable;
-import org.dimdev.dimdoors.shared.blocks.BlockFloatingRift;
-import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import java.util.List;
-import java.util.Random;
-
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.dimdev.annotatednbt.NBTSerializable;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.ddutils.lsystem.LSystem;
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.blocks.BlockFloatingRift;
+import org.dimdev.dimdoors.shared.blocks.ModBlocks;
+import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
+
+import java.util.List;
+import java.util.Random;
 
 @NBTSerializable public class TileEntityFloatingRift extends TileEntityRift implements ITickable {
 
@@ -40,11 +42,14 @@ import net.minecraft.util.math.AxisAlignedBB;
     @Saved public float growth = 0;
     @Saved protected float teleportTargetYaw;
     @Saved protected float teleportTargetPitch;
+    @Saved public int curveId = random.nextInt(LSystem.curves.size());
+    @Saved public int riftRotation = random.nextInt(360);
 
     @Setter private boolean unregisterDisabled = false;
 
-    @SideOnly(Side.CLIENT)
-    public double renderAngle; // This is @SideOnly(Side.CLIENT), don't initialize the field ( = 0), or class initialization won't work on the server!
+    @SideOnly(Side.CLIENT) public double renderAngle; // This is @SideOnly(Side.CLIENT), don't initialize the field ( = 0), or class initialization won't work on the server!
+    @SideOnly(Side.CLIENT) private int cachedCurveId = -1;
+    @SideOnly(Side.CLIENT) private LSystem.PolygonStorage curve; // Cache the curve for efficiency
 
     public TileEntityFloatingRift() {
         updateTimer = random.nextInt(UPDATE_PERIOD);
@@ -88,7 +93,8 @@ import net.minecraft.util.math.AxisAlignedBB;
         if (random.nextInt(MAX_ENDERMAN_SPAWNING_CHANCE) < ENDERMAN_SPAWNING_CHANCE) {
             // Endermen will only spawn from groups of rifts
             if (updateNearestRift()) {
-                List<EntityEnderman> list = world.getEntitiesWithinAABB(EntityEnderman.class,
+                List<EntityEnderman> list = world.getEntitiesWithinAABB(
+                        EntityEnderman.class,
                         new AxisAlignedBB(pos.getX() - 9, pos.getY() - 3, pos.getZ() - 9, pos.getX() + 9, pos.getY() + 3, pos.getZ() + 9));
 
                 if (list.isEmpty()) {
@@ -131,6 +137,7 @@ import net.minecraft.util.math.AxisAlignedBB;
     }
 
     @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
+
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
 
     @Override
@@ -165,5 +172,23 @@ import net.minecraft.util.math.AxisAlignedBB;
 
     @Override public float getDestinationPitch(float entityPitch) {
         return teleportTargetPitch;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public LSystem.PolygonStorage getCurve() {
+        if (curve != null && curveId == cachedCurveId) {
+            return curve;
+        }
+
+        int numCurves = LSystem.curves.size();
+        cachedCurveId = curveId;
+        if (curveId < numCurves && curveId >= 0) {
+            curve = LSystem.curves.get(curveId);
+        } else {
+            // Don't crash if the server sends an invaild curve ID
+            DimDoors.log.error("Curve ID out of bounds (ID: " + curveId + ", number of curves: " + numCurves + ")");
+            curve = LSystem.curves.get(0);
+        }
+        return curve;
     }
 }
