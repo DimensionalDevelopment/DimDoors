@@ -6,28 +6,33 @@ import org.poly2tri.geometry.polygon.PolygonPoint;
 import org.poly2tri.triangulation.TriangulationPoint;
 import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
 
-import java.awt.Point; // TODO: wrong point class!
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.awt.*; // TODO: Wrong point class!
+import java.util.*;
+import java.util.List;
 
-public final class LSystem { // TODO: Finish cleaning up this class
-    public static ArrayList<PolygonStorage> curves = new ArrayList<>();
+public final class LSystem { // TODO: Rewrite this class
+    public static ArrayList<PolygonInfo> curves = new ArrayList<>();
 
-    /**
-     * An array containing the args to generate a curve.
-     * index 0 = rules
-     * index 1 = angle
-     * index 2 = start string
-     */
+    // https://en.wikipedia.org/wiki/L-system
+    //
+    // System: {rules, angle, start_string}
+    // Rules: rule1:rule_2:...:rule_n
+    // Rule: from_substring>to_substring
+    //
+    // Each iteration, rules are applied to the string. After, string
+    // is interpreted as commands for a pencil on a sheet of paper:
+    //   F - move forward by one step
+    //   + - turn clockwise by angle
+    //   - - turn counter-clockwise by angle
+    //   [ - save state (push to stack)
+    //   ] - restore state (pop from stack)
     public static final String[] TERDRAGON = {"F>+F----F++++F-", "60", "F"};
     public static final String[] DRAGON = {"X>X+YF:Y>FX-Y", "90", "FX"};
     public static final String[] TWINDRAGON = {"X>X+YF:Y>FX-Y", "90", "FX--FX"};
     public static final String[] VORTEX = {"X>X+YF:Y>FX-Y", "90", "FX---FX"};
 
-    static { // Used to be in mod init
-        // TODO
+    static {
+        // TODO: Move to separate class
         LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 4);
         LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 5);
         //LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 6); // degenerate
@@ -83,72 +88,22 @@ public final class LSystem { // TODO: Finish cleaning up this class
         output = generate(args[2], steps, lSystemsRule);
 
         //get the boundary of the polygon
-        PolygonStorage polygon = getBoundary(convertToPoints(angle, output, steps));
+        List<Point> polygon = getBoundary(convertToPoints(angle, output, steps));
 
         //replace the boundary of the polygon with a series of points representing triangles for rendering
-        polygon.points = tesselate(polygon);
-
-        curves.add(polygon);
-    }
-
-    /**
-     * Naively returns all of the points comprising the fractal
-     */
-    public static PolygonStorage getSpaceFillingCurve(ArrayList<double[]> input) {
-        // store max x and y values to create bounding box
-        int maxY = Integer.MIN_VALUE;
-        int maxX = Integer.MIN_VALUE;
-        int minY = Integer.MAX_VALUE;
-        int minX = Integer.MAX_VALUE;
-
-        // store confirmed duplicates here
-        HashSet<Point> duplicates = new HashSet<>();
-
-        // store possible singles here
-        HashSet<Point> singles = new HashSet<>();
-
-        // list to store confirmed singles and output in the correct order
-        ArrayList<Point> output = new ArrayList<>();
-
-        // sort into Hashmaps and hashsets to make contains operations possible,
-        // while testing for duplicates
-        for (double[] point : input) {
-            // convert doubles to ints and record min/max values
-
-            int xCoord = (int) Math.round(point[0]);
-            int yCoord = (int) Math.round(point[1]);
-
-            if (xCoord > maxX) {
-                maxX = xCoord;
-            }
-            if (xCoord < minX) {
-                minX = xCoord;
-            }
-
-            if (yCoord > maxY) {
-                maxY = yCoord;
-            }
-            if (yCoord < minY) {
-                minY = yCoord;
-            }
-            output.add(new Point(xCoord, yCoord));
-        }
-        return new PolygonStorage(output, maxX, maxY, minX, minY);
+        curves.add(new PolygonInfo(tesselate(polygon)));
     }
 
     /**
      * Takes an unordered list of points comprising a fractal curve and builds a
      * closed polygon around it
      */
-    public static PolygonStorage getBoundary(ArrayList<double[]> input) {
+    public static List<Point> getBoundary(ArrayList<double[]> input) {
         // store max x and y values to create bounding box
         int maxY = Integer.MIN_VALUE;
         int maxX = Integer.MIN_VALUE;
         int minY = Integer.MAX_VALUE;
         int minX = Integer.MAX_VALUE;
-
-        // store confirmed duplicates here
-        HashSet<Point> duplicates = new HashSet<>();
 
         // store possible singles here
         HashSet<Point> singles = new HashSet<>();
@@ -159,24 +114,14 @@ public final class LSystem { // TODO: Finish cleaning up this class
         // sort into Hashmaps and hashsets to make contains operations possible,
         // while testing for duplicates
         for (double[] point : input) {
-            // convert doubles to ints and record min/max values
-
             int xCoord = (int) Math.round(point[0]);
             int yCoord = (int) Math.round(point[1]);
 
-            if (xCoord > maxX) {
-                maxX = xCoord;
-            }
-            if (xCoord < minX) {
-                minX = xCoord;
-            }
+            if (xCoord > maxX) maxX = xCoord;
+            if (xCoord < minX) minX = xCoord;
+            if (yCoord > maxY) maxY = yCoord;
+            if (yCoord < minY) minY = yCoord;
 
-            if (yCoord > maxY) {
-                maxY = yCoord;
-            }
-            if (yCoord < minY) {
-                minY = yCoord;
-            }
             singles.add(new Point(xCoord, yCoord));
         }
 
@@ -235,7 +180,7 @@ public final class LSystem { // TODO: Finish cleaning up this class
         }
         while (!(output.get(output.size() - 1).equals(firstPoint) && output.size() > 1) && output.size() < singles.size());
 
-        return new PolygonStorage(output, maxX, maxY, minX, minY);
+        return output;
     }
 
     /**
@@ -341,30 +286,50 @@ public final class LSystem { // TODO: Finish cleaning up this class
     }
 
     // a data container class to transmit the important information about the polygon
-    public static class PolygonStorage {
-        public PolygonStorage(ArrayList<Point> points, int maxX, int maxY, int minX, int minY) {
-            this.points = points;
-            this.maxX = maxX;
-            this.maxY = maxY;
-            this.minX = minX;
-            this.minY = minY;
-        }
-
-        public ArrayList<Point> points;
+    public static class PolygonInfo {
+        public final ArrayList<Point> points;
 
         public int maxX;
-        public int maxY;
-        public int minX;
-        public int minY;
+        public final int maxY;
+        public final int minX;
+        public final int minY;
+
+        public PolygonInfo(ArrayList<Point> points) {
+            int minX, minY, maxX, maxY;
+            minX = minY = maxX = maxY = 0;
+
+            // Find bounding box of the polygon
+            this.points = points;
+            if (points.size() > 0) {
+                Point firstPoint = points.get(0);
+                minX = firstPoint.x;
+                minY = firstPoint.y;
+                maxX = firstPoint.x;
+                maxY = firstPoint.y;
+
+                for (Point point : points) {
+                    if (point.x < minX) minX = point.x;
+                    if (point.y < minY) minY = point.y;
+                    if (point.x > maxX) maxX = point.x;
+                    if (point.y > maxY) maxY = point.y;
+                }
+            }
+
+            this.minX = minX;
+            this.minY = minY;
+            this.maxX = maxX;
+            this.maxY = maxY;
+        }
     }
 
-    public static ArrayList<Point> tesselate(PolygonStorage polygon) {
+    // TODO: Use the GLU tesselator (GPU) instead of poly2tri (CPU): http://wiki.lwjgl.org/wiki/Using_GLU_Tesselator.html
+    public static ArrayList<Point> tesselate(List<Point> polygon) {
         ArrayList<Point> points = new ArrayList<>();
 
         ArrayList<PolygonPoint> polyPoints = new ArrayList<>();
 
-        for (int i = 0; i < polygon.points.size(); i++) {
-            polyPoints.add(new PolygonPoint(polygon.points.get(i).x, polygon.points.get(i).y));
+        for (Point p : polygon) {
+            polyPoints.add(new PolygonPoint(p.x, p.y));
         }
 
         Polygon poly = new Polygon(polyPoints);
@@ -379,88 +344,4 @@ public final class LSystem { // TODO: Finish cleaning up this class
         }
         return points;
     }
-
-    // TODO: Figure out what this was meant to be
-    /*
-    public static ArrayList<Point> tesselate(Polygon polygon) {
-        ArrayList<Point> points = new ArrayList<>();
-
-        Tessellator tess = new Tessellator();
-        double[] verticesC1 = new double[polygon.points.size() * 3];
-        for (int i = 0; i < verticesC1.length; i += 3) {
-            Point point = polygon.points.get(i / 3);
-            verticesC1[i] = point.x;
-            verticesC1[i + 1] = point.y;
-            verticesC1[i + 2] = 0;
-        }
-
-        tess.glBeginPolygon();
-
-        for (int i = 0; i < polygon.points.size(); i++) {
-            tess.gluTessVertex(verticesC1, i * 3, i);
-        }
-
-        tess.gluEndPolygon();
-
-
-        //Prints out the result of the tessellation.
-        for (int i = 0; i < tess.primitives.size(); i++) {
-            System.out.println(tess.primitives.get(i).toString());
-        }
-        //To draw the shape it is now a simple matter to put the vertex data you passed in initially into a VBO, and the indices returned
-        //into an IBO (Index VBO). You have the types of the primitives and the number of indices for each one. Drawing the result should
-        //be a walk in the park, as long as you have read the appropriate tutorials here or elsewhere.
-
-
-        for (int i = 0; i < tess.primitives.size(); i++) {
-
-            Primitives.Primitive prim = tess.primitives.get(i);
-            ArrayList<Integer> vIndex = prim.vertices;
-
-            if (prim.type == GL11.GL_TRIANGLE_STRIP) {
-                for (int ii = 0; ii < vIndex.size() - 1; ii++) {
-                    points.add(new Point((int) verticesC1[vIndex.get(ii) * 3], (int) verticesC1[vIndex.get(ii) * 3 + 1]));
-                    points.add(new Point((int) verticesC1[vIndex.get(ii + 1) * 3], (int) verticesC1[vIndex.get(ii + 1) * 3 + 1]));
-                }
-            }
-
-            if (prim.type == GL11.GL_TRIANGLES) {
-                for (int ii = 0; ii < vIndex.size(); ii++) {
-                    points.add(new Point((int) verticesC1[vIndex.get(ii) * 3], (int) verticesC1[vIndex.get(ii) * 3 + 1]));
-                }
-            }
-
-            if (prim.type == GL11.GL_TRIANGLE_FAN) {
-                Integer firstIndex = vIndex.get(0);
-                //	points.add(new Point((int)verticesC1[vIndex.get(firstIndex)],(int) verticesC1[vIndex.get(firstIndex)+1]));
-
-                Integer[] vertexList = new Integer[vIndex.size() * 3];
-                for (Integer ii = 0; ii < vIndex.size() - 2; ii++) {
-                    vertexList[ii * 3] = vIndex.get(0);
-                    vertexList[ii * 3 + 1] = vIndex.get(ii + 1);
-                    vertexList[ii * 3 + 2] = vIndex.get(ii + 2);
-                }
-
-                for (Integer vertex : vertexList) {
-                    if (vertex != null) {
-                        points.add(new Point((int) verticesC1[vertex * 3], (int) verticesC1[vertex * 3 + 1]));
-                    } else {
-                        break;
-                    }
-                }
-                System.out.println(vertexList);
-            }
-
-            // points.add(new Point((int)verticesC1[vIndex.get(firstIndex)],(int) verticesC1[vIndex.get(firstIndex)+1]));
-            //	points.add(new Point((int)verticesC1[vIndex.get(ii)*3],(int) verticesC1[vIndex.get(ii)+1]));
-            //	points.add(new Point((int)verticesC1[vIndex.get(ii+1)*3],(int) verticesC1[vIndex.get(ii+1)*3+1]));
-
-            //	points.add(new Point((int)verticesC1[index],(int)verticesC1[index+1]));
-            //	System.out.println(verticesC1[index]+","+verticesC1[index+1]+","+verticesC1[index+2]);
-
-
-            //System.out.println(tess.primitives.get(i).toString());
-        }
-        return points;
-    }*/
 }

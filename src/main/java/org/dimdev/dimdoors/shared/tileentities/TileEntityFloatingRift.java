@@ -37,20 +37,20 @@ import java.util.Random;
 
     // TODO: Some of these properties will need to persist when converting to door and then back to rift!
     //Need to be saved:
-    @Saved /*package-private*/ int updateTimer;
     @Saved public boolean closing = false; // TODO: maybe we could have a closingSpeed instead?
     @Saved public int spawnedEndermenID = 0;
-    @Saved public float growth = 0;
-    @Saved protected float teleportTargetYaw;
-    @Saved protected float teleportTargetPitch;
+    @Saved public float size = 0; // TODO: store size in blocks
+    @Saved public float riftYaw = random.nextInt(360);
+    @Saved protected float teleportTargetPitch; // TODO: also render rift rotated on pitch axis?
     @Saved public int curveId = random.nextInt(LSystem.curves.size());
-    @Saved public int riftRotation = random.nextInt(360);
 
+    // Don't need to be saved
     @Setter private boolean unregisterDisabled = false;
+    int updateTimer;
 
     @SideOnly(Side.CLIENT) public double renderAngle; // This is @SideOnly(Side.CLIENT), don't initialize the field ( = 0), or class initialization won't work on the server!
     @SideOnly(Side.CLIENT) private int cachedCurveId;
-    @SideOnly(Side.CLIENT) private LSystem.PolygonStorage curve; // Cache the curve for efficiency
+    @SideOnly(Side.CLIENT) private LSystem.PolygonInfo curve; // Cache the curve for efficiency
 
     public TileEntityFloatingRift() {
         updateTimer = random.nextInt(UPDATE_PERIOD);
@@ -67,8 +67,8 @@ import java.util.Random;
         // Check if this rift should render white closing particles and
         // spread the closing effect to other rifts nearby.
         if (closing) {
-            if (growth > 0) {
-                growth -= ModConfig.general.riftCloseSpeed;
+            if (size > 0) {
+                size -= ModConfig.general.riftCloseSpeed;
             } else {
                 world.setBlockToAir(pos);
             }
@@ -86,7 +86,7 @@ import java.util.Random;
         // Logarithmic growth
         for (int n = 0; n < 10; n++) {
             // TODO: growthSpeed and growthSize config options
-            growth += 1F / (growth + 1);
+            size += 1F / (size + 1);
         }
     }
 
@@ -164,7 +164,7 @@ import java.util.Random;
     }
 
     public void setTeleportTargetRotation(float yaw, float pitch) {
-        teleportTargetYaw = yaw;
+        riftYaw = yaw;
         teleportTargetPitch = pitch;
         markDirty();
     }
@@ -180,7 +180,7 @@ import java.util.Random;
     }
 
     @Override public float getDestinationYaw(float entityYaw) {
-        return teleportTargetYaw;
+        return riftYaw;
     }
 
     @Override public float getDestinationPitch(float entityPitch) {
@@ -188,7 +188,7 @@ import java.util.Random;
     }
 
     @SideOnly(Side.CLIENT)
-    public LSystem.PolygonStorage getCurve() {
+    public LSystem.PolygonInfo getCurve() {
         if (curve != null && curveId == cachedCurveId) {
             return curve;
         }

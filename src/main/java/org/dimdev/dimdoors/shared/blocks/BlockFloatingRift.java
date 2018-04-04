@@ -30,7 +30,6 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
     public static final String ID = "rift";
 
     public BlockFloatingRift() {
-        // super();
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setUnlocalizedName(ID);
         setTickRandomly(true);
@@ -58,7 +57,6 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess world, BlockPos pos) {
         if (ModConfig.general.riftBoundingBoxInCreative) {
             EntityPlayer player = DimDoors.proxy.getLocalPlayer();
@@ -104,6 +102,7 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
                     rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
         }
 
+        // TODO: depend on size, direction of particles should be rift orientation
         FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.Rift(
                 world,
                 pos.getX() + .5, pos.getY() + 1.5, pos.getZ() + .5,

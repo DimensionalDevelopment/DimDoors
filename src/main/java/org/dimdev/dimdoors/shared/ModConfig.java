@@ -124,9 +124,14 @@ public final class ModConfig {
     }
 
     public static class Graphics {
-        @Name("tesseractRifts")
-        @LangKey("dimdoors.graphics.tesseractRifts")
-        public boolean tesseractRifts = false;
+        @Name("showRiftCore")
+        @LangKey("dimdoors.graphics.showRiftCore")
+        public boolean showRiftCore = false;
+
+        @Name("highlightRiftCoreFor")
+        @LangKey("dimdoors.graphics.highlightRiftCoreFor")
+        @RangeInt(min = -1)
+        public int highlightRiftCoreFor = 15000;
     }
 
 

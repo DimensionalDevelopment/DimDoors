@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 public final class RiftCrackRenderer {
 
-    public static void drawCrack(int riftRotation, LSystem.PolygonStorage poly, double size, double xWorld, double yWorld, double zWorld) {
+    public static void drawCrack(float riftRotation, LSystem.PolygonInfo poly, double size, double xWorld, double yWorld, double zWorld) {
         // Calculate the proper size for the rift render
         double scale = size / (poly.maxX - poly.minX);
 
@@ -39,11 +39,11 @@ public final class RiftCrackRenderer {
         double[] jitters = new double[jCount];
 
 
-        double aggroScaling = size * size * size / 700f;
+        double jitterScale = size * size * size / 1300f;
         // We use random constants here on purpose just to get different wave forms
-        double xJitter = aggroScaling * Math.sin(1.1f * time*size) * Math.sin(0.8f * time);
-        double yJitter = aggroScaling * Math.sin(1.2f * time*size) * Math.sin(0.9f * time);
-        double zJitter = aggroScaling * Math.sin(1.3f * time*size) * Math.sin(0.7f * time);
+        double xJitter = jitterScale * Math.sin(1.1f * time*size) * Math.sin(0.8f * time);
+        double yJitter = jitterScale * Math.sin(1.2f * time*size) * Math.sin(0.9f * time);
+        double zJitter = jitterScale * Math.sin(1.3f * time*size) * Math.sin(0.7f * time);
 
         // generate a series of waveforms
         for (int i = 0; i < jCount; i += 1) {

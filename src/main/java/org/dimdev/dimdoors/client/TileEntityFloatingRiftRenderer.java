@@ -18,17 +18,22 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
     private static final ResourceLocation tesseract_path = new ResourceLocation(DimDoors.MODID + ":textures/other/tesseract.png");
 
     private static final Tesseract tesseract = new Tesseract();
+    public static long showRiftCoreUntil = 0;
 
     @Override
     public void render(TileEntityFloatingRift rift, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        if (ModConfig.graphics.tesseractRifts) {
-            renderTesseract(rift, x, y, z, partialTicks, destroyStage, alpha);
+        if (ModConfig.graphics.showRiftCore) {
+            renderTesseract(rift, x, y, z, partialTicks);
         } else {
-            renderCrack(rift, x, y, z, partialTicks, destroyStage, alpha);
+            long timeLeft = showRiftCoreUntil - System.currentTimeMillis();
+            if (timeLeft >= 0/*3000 || timeLeft >= 0 && timeLeft / 500 % 2 == 0*/) {
+                renderTesseract(rift, x, y, z, partialTicks);
+            }
         }
+        renderCrack(rift, x, y, z);
     }
 
-    private void renderCrack(TileEntityFloatingRift rift, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    private void renderCrack(TileEntityFloatingRift rift, double x, double y, double z) {
         GL11.glPushMatrix();
         // TODO: Make the sky get dark when a player approaches a rift?
 
@@ -37,11 +42,8 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
         GlStateManager.disableCull();
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
-        // TODO: This was commented out in the old code, what does it do?
-        //GlStateManager.colorLogicOp(GlStateManager.LogicOp.INVERT);
-        //GlStateManager.enableColorLogic();
 
-        RiftCrackRenderer.drawCrack(rift.riftRotation, rift.getCurve(), rift.growth / 90, x + 0.5, y + 1.5, z + 0.5);
+        RiftCrackRenderer.drawCrack(rift.riftYaw, rift.getCurve(), rift.size / 120, x + 0.5, y + 1.5, z + 0.5);
 
         GlStateManager.disableBlend();
         GlStateManager.enableTexture2D();
@@ -51,7 +53,7 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
         GL11.glPopMatrix();
     }
 
-    private void renderTesseract(TileEntityFloatingRift rift, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+    private void renderTesseract(TileEntityFloatingRift rift, double x, double y, double z, float partialTicks) {
         double radian = updateTesseractAngle(rift, partialTicks) * TrigMath.DEG_TO_RAD;
         RGBA color = rift.getColor();
         if (color == null) color = new RGBA(1, 0.5f, 1, 1);

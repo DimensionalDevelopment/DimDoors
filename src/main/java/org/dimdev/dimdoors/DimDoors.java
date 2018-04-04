@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentTranslation;
 import org.dimdev.dimdoors.shared.ModConfig;
@@ -85,8 +86,9 @@ public class DimDoors {
     }
 
     public static void sendTranslatedMessage(Entity entity, String text, Object... translationArgs) {
-        if (entity instanceof EntityPlayerMP) {
-            EntityPlayerMP player = (EntityPlayerMP) entity;
+        // TODO: check if too long and split into several messages?
+        if (entity instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) entity;
             player.sendStatusMessage(new TextComponentTranslation(text, translationArgs), ModConfig.general.useStatusBar);
         }
     }

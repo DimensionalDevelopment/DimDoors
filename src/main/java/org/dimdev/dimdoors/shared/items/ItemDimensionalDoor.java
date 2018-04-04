@@ -5,6 +5,9 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.client.TileEntityFloatingRiftRenderer;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.blocks.IRiftProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -21,7 +24,7 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
 import java.util.List;
 
-public abstract class ItemDimensionalDoor extends ItemDoor { // TODO: Biomes O' Plenty doors
+public abstract class ItemDimensionalDoor extends ItemDoor { // TODO: All wood types, Biome O' Plenty support
 
     public <T extends Block & IRiftProvider<TileEntityEntranceRift>> ItemDimensionalDoor(T block) {
         super(block);
@@ -29,18 +32,33 @@ public abstract class ItemDimensionalDoor extends ItemDoor { // TODO: Biomes O' 
 
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        BlockPos originalPos = pos; // super.onItemUse needs the actual position
+        if (!world.getBlockState(pos).getBlock().isReplaceable(world, pos)) pos = pos.offset(facing);
+        boolean placedOnRift = world.getBlockState(pos).getBlock().equals(ModBlocks.RIFT);
+
+        if (!placedOnRift && isRiftNear(world, pos)) {
+            if (world.isRemote) {
+                DimDoors.chat(player, "rifts.entrances.rift_too_close"); // TODO: Linebreaks don't work in status message.
+                TileEntityFloatingRiftRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.graphics.highlightRiftCoreFor;
+            }
+            return EnumActionResult.FAIL;
+        }
+
         if (world.isRemote) return EnumActionResult.FAIL;
-        boolean replaceable = world.getBlockState(pos).getBlock().isReplaceable(world, pos);
+
 
         // Store the rift entity if there's a rift block there that may be broken
         TileEntityFloatingRift rift = null;
-        if (world.getBlockState(replaceable ? pos : pos.offset(facing)).getBlock().equals(ModBlocks.RIFT)) {
-            rift = (TileEntityFloatingRift) world.getTileEntity(replaceable ? pos : pos.offset(facing));
-            rift.setUnregisterDisabled(true);
+        if (placedOnRift) {
+            if (canBePlacedOnRift()) {
+                rift = (TileEntityFloatingRift) world.getTileEntity(pos);
+                rift.setUnregisterDisabled(true);
+            } else {
+                DimDoors.sendTranslatedMessage(player, "rifts.entrances.cannot_be_placed_on_rift");
+            }
         }
 
-        EnumActionResult result = super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
-        if (!replaceable) pos = pos.offset(facing);
+        EnumActionResult result = super.onItemUse(player, world, originalPos, hand, facing, hitX, hitY, hitZ);
         if (result == EnumActionResult.SUCCESS) {
             IBlockState state = world.getBlockState(pos);
             if (rift == null) {
@@ -64,6 +82,22 @@ public abstract class ItemDimensionalDoor extends ItemDoor { // TODO: Biomes O' 
             rift.setUnregisterDisabled(false);
         }
         return result;
+    }
+
+    public static boolean isRiftNear(World world, BlockPos pos) {
+        // TODO: This is called every right click server-side! Is this efficient enough? Maybe use rift registry?
+        for (int x = pos.getX() - 5; x < pos.getX() + 5; x++) {
+            for (int y = pos.getY() - 5; y < pos.getY() + 5; y++) {
+                for (int z = pos.getZ() - 5; z < pos.getZ() + 5; z++) {
+                    BlockPos searchPos = new BlockPos(x, y, z);
+                    if (world.getBlockState(searchPos).getBlock() == ModBlocks.RIFT) {
+                        TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(searchPos);
+                        if (Math.sqrt(pos.distanceSq(searchPos)) < rift.size / 250) return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override

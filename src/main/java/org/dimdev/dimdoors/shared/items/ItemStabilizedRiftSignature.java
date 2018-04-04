@@ -18,7 +18,6 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.rifts.DestinationMaker;
-import org.dimdev.dimdoors.shared.rifts.destinations.GlobalDestination;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
