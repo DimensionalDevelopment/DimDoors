@@ -49,11 +49,12 @@ import java.util.Random;
     @Setter private boolean unregisterDisabled = false;
 
     @SideOnly(Side.CLIENT) public double renderAngle; // This is @SideOnly(Side.CLIENT), don't initialize the field ( = 0), or class initialization won't work on the server!
-    @SideOnly(Side.CLIENT) private int cachedCurveId = -1;
+    @SideOnly(Side.CLIENT) private int cachedCurveId;
     @SideOnly(Side.CLIENT) private LSystem.PolygonStorage curve; // Cache the curve for efficiency
 
     public TileEntityFloatingRift() {
         updateTimer = random.nextInt(UPDATE_PERIOD);
+        if (DimDoors.proxy.isClient()) cachedCurveId = -1;
     }
 
     @Override
