@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.DimDoors;
 
 import static net.minecraftforge.common.config.Config.*;
 
+// TODO: fix missing/removed config options automatically on load
 @Config(modid = DimDoors.MODID, name = DimDoors.MODID, category = "")
 @Mod.EventBusSubscriber(modid = DimDoors.MODID)
 public final class ModConfig {
@@ -51,7 +52,7 @@ public final class ModConfig {
 
         @Name("depthSpreadFactor")
         @LangKey("dimdoors.general.depthSpreadFactor")
-        public int depthSpreadFactor = 10;
+        public int depthSpreadFactor = 20;
     }
 
     public static class Pockets {
@@ -136,6 +137,11 @@ public final class ModConfig {
         @LangKey("dimdoors.graphics.highlightRiftCoreFor")
         @RangeInt(min = -1)
         public int highlightRiftCoreFor = 15000;
+
+        @Name("riftSize")
+        @LangKey("dimdoors.graphics.riftSize")
+        @RangeDouble(min = 0)
+        public double riftSize = 1;
     }
 
 

@@ -28,7 +28,7 @@ public abstract class CommonProxy {
         MinecraftForge.EVENT_BUS.register(EventHandler.class);
         MinecraftForge.EVENT_BUS.register(ModBlocks.class);
         MinecraftForge.EVENT_BUS.register(ModItems.class);
-        MinecraftForge.EVENT_BUS.register(CraftingManager.class); // TODO: ModRecipes?
+        MinecraftForge.EVENT_BUS.register(ModRecipes.class);
         MinecraftForge.EVENT_BUS.register(ModSounds.class);
         MinecraftForge.EVENT_BUS.register(ModBiomes.class);
 

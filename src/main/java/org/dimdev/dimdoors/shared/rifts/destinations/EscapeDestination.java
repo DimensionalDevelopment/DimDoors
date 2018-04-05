@@ -21,7 +21,7 @@ import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 public class EscapeDestination extends RiftDestination {
-    boolean canEscapeLimbo = false;
+    @Builder.Default boolean canEscapeLimbo = false;
 
     public EscapeDestination() {}
 

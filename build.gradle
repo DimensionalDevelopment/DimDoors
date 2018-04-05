@@ -35,7 +35,7 @@ dependencies {
 
 // Mod version
 version = ext.modversion = "3.0.7"
-boolean isBeta = true
+boolean isBeta = false
 group = "org.dimdev.dimdoors"
 
 // Build number

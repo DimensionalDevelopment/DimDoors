@@ -38,8 +38,7 @@ public final class RiftCrackRenderer {
         float time = ((Minecraft.getSystemTime() + riftRandom) % 2000000) * motionSpeed;
         double[] jitters = new double[jCount];
 
-
-        double jitterScale = size * size * size / 1300f;
+        double jitterScale = size * size / 1100f;
         // We use random constants here on purpose just to get different wave forms
         double xJitter = jitterScale * Math.sin(1.1f * time*size) * Math.sin(0.8f * time);
         double yJitter = jitterScale * Math.sin(1.2f * time*size) * Math.sin(0.9f * time);
