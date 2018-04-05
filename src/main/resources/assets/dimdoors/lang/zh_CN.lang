@@ -1,4 +1,5 @@
 #PARSE_ESCAPES
+
 itemGroup.dimensional_doors_creative_tab=次元门物品
 
 tile.gold_door.name=金门
@@ -7,7 +8,7 @@ tile.quartz_door.name=石英门
 tile.iron_dimensional_door.name=次元门
 tile.gold_dimensional_door.name=金制次元门
 tile.quartz_dimensional_door.name=私人次元门
-tile.chaos_dimensional_door.name=不稳定的门
+tile.unstable_dimensional_door.name=不稳定的门
 tile.oak_dimensional_door.name=扭曲之门
 tile.dimensional_trapdoor.name=空间活板门
 tile.dimensional_portal.name=瞬息之门
@@ -25,7 +26,7 @@ item.quartz_door.name=石英门
 item.iron_dimensional_door.name=次元门
 item.gold_dimensional_door.name=金制次元门
 item.quartz_dimensional_door.name=私人次元门
-item.chaos_dimensional_door.name=不稳定的门
+item.unstable_dimensional_door.name=不稳定的门
 item.oak_dimensional_door.name=扭曲之门
 
 item.rift_key=裂痕钥匙
@@ -50,6 +51,6 @@ item.rift_signature.bound.info=指向(%d, %d, %d) 位于#%d
 item.rift_signature.unbound.info=第一次点击记录一个位置; \n第二次点击在两地间创造 \n一对相互连接的裂痕.
 item.stabilized_rift_signature.bound.info=指向(%d, %d, %d) 位于#%d
 item.stabilized_rift_signature.unbound.info=首次点击记录一个位置, \n再次点击生成连接两地的 \n裂痕.
-item.chaos_dimensional_door.info=注意: 将会随机传送
+item.unstable_dimensional_door.info=注意: 将会随机传送
 item.oak_dimensional_door.info=放在裂痕下方的方块上 \n来制造传送门, \n放在口袋次元中 \n以退出空间.
 entity.dimdoors.monolith.name=巨石

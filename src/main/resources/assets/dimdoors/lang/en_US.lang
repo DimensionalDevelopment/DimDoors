@@ -8,7 +8,7 @@ tile.quartz_door.name=Quartz Door
 tile.iron_dimensional_door.name=Iron Dimensional Door
 tile.gold_dimensional_door.name=Gold Dimensional Door
 tile.quartz_dimensional_door.name=Quartz Dimensional Door
-tile.chaos_dimensional_door.name=Unstable Dimensional Door
+tile.unstable_dimensional_door.name=Unstable Dimensional Door
 tile.oak_dimensional_door.name=Oak Dimensional Door
 tile.dimensional_trapdoor.name=Oak Dimensional Trapdoor
 tile.dimensional_portal.name=Transient Portal
@@ -59,7 +59,7 @@ item.quartz_door.name=Quartz Door
 item.iron_dimensional_door.name=Iron Dimensional Door
 item.gold_dimensional_door.name=Gold Dimensional Door
 item.quartz_dimensional_door.name=Quartz Dimensional Door
-item.chaos_dimensional_door.name=Unstable Dimensional Door
+item.unstable_dimensional_door.name=Unstable Dimensional Door
 item.oak_dimensional_door.name=Wood Dimensional Door
 
 item.rift_key=Rift Key
@@ -78,10 +78,10 @@ item.rift_blade.name=Rift Blade
 item.world_thread.name=World Thread
 item.stable_fabric.name=Stable Fabric
 
-item.boots_woven_world_thread.name=Woven World Thread Boots
-item.helmet_woven_world_thread.name=Woven World Thread Helmet
-item.leggings_woven_world_thread.name=Woven World Thread Leggings
-item.chestplate_woven_world_thread.name=Woven World Thread Chestplate
+item.woven_world_thread_boots.name=Woven World Thread Boots
+item.woven_world_thread_helmet.name=Woven World Thread Helmet
+item.woven_world_thread_leggings.name=Woven World Thread Leggings
+item.woven_world_thread_chestplate.name=Woven World Thread Chestplate
 
 item.rift_key.bound.info=Bound
 item.rift_key.unbound.info=Unbound
@@ -95,7 +95,7 @@ item.rift_signature.bound.info=Leads to (%d, %d, %d) at dimension #%d
 item.rift_signature.unbound.info=First click stores a location; \nsecond click creates a pair of \nrifts linking the two locations.
 item.stabilized_rift_signature.bound.info=Leads to (%d, %d, %d) at dimension #%d
 item.stabilized_rift_signature.unbound.info=First click stores a location, \nother clicks create rifts linking \nthe first and last locations together.
-item.chaos_dimensional_door.info=Caution: Leads to random destination
+item.unstable_dimensional_door.info=Caution: Leads to random destination
 item.oak_dimensional_door.info=Place on the block under a rift \nto create a portal, or place anywhere \nin a pocket dimension to exit.
 
 entity.dimdoors.monolith.name=Monolith

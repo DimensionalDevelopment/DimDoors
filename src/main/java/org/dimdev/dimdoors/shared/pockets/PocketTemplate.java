@@ -22,7 +22,7 @@ import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceMarker;
 import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitMarker;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;

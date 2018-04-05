@@ -1,4 +1,5 @@
 #PARSE_ESCAPES
+
 itemGroup.dimensional_doors_creative_tab=Dimensional Doors: Items
 
 tile.gold_door.name=Goldtür
@@ -7,7 +8,7 @@ tile.quartz_door.name=Quarztür
 tile.iron_dimensional_door.name=Dimensionaltür
 tile.gold_dimensional_door.name=Goldene Dimensionaltür
 tile.quartz_dimensional_door.name=Persönliche Dimensionaltür
-tile.chaos_dimensional_door.name=Instabile Tür
+tile.unstable_dimensional_door.name=Instabile Tür
 tile.oak_dimensional_door.name=Warp-Tür
 tile.dimensional_trapdoor.name=Transdimensionale Falltür
 tile.dimensional_portal.name=Vergängliche Tür
@@ -25,7 +26,7 @@ item.quartz_door.name=Quarztür
 item.iron_dimensional_door.name=Dimensionaltür
 item.gold_dimensional_door.name=Goldene Dimensionaltür
 item.quartz_dimensional_door.name=Persönliche Dimensionaltür
-item.chaos_dimensional_door.name=Instabile Tür
+item.unstable_dimensional_door.name=Instabile Tür
 item.oak_dimensional_door.name=Warp-Tür
 
 item.rift_key=Spaltschlüssel
@@ -50,7 +51,7 @@ item.rift_signature.bound.info=Führt zu(%d, %d, %d) in Dimension #%d
 item.rift_signature.unbound.info=Erster Klick speichert die Position; \nzweiter Klick kreiert ein Paar von Spalten, \nwelche zu den zwei Positionen führen.
 item.stabilized_rift_signature.bound.info=Führt zu(%d, %d, %d) in Dimension #%d
 item.stabilized_rift_signature.unbound.info=Erster Klick speichert die Position, \nweitere Klicks kreieren Spalte, die \ndie erste und die aktuelle Position verbinden.
-item.chaos_dimensional_door.info=Vorsicht: Führt zu einem zufälligen Ziel
+item.unstable_dimensional_door.info=Vorsicht: Führt zu einem zufälligen Ziel
 item.oak_dimensional_door.info=Platziere auf dem Block unterhalb eines \nSpalts, um ein Portal zu erstellen, \noder platziere irgendwo in einer \nkleinen Dimension, um sie zu verlassen.
 
 entity.dimdoors.monolith.name=Monolith

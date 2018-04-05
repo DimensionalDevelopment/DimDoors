@@ -13,7 +13,7 @@ import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
 import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
 import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.pocketlib.Pocket;

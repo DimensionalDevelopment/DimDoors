@@ -19,7 +19,8 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
 import java.util.List;
 
-public abstract class ItemDimensionalTrapdoor extends ItemBlock { // TODO: Iron dimensional trapdoor
+// TODO: Iron dimensional trapdoor
+public abstract class ItemDimensionalTrapdoor extends ItemBlock {
 
     public <T extends Block & IRiftProvider<TileEntityEntranceRift>>ItemDimensionalTrapdoor(T block) {
         super(block);

@@ -1,4 +1,5 @@
 #PARSE_ESCAPES
+
 itemGroup.dimensional_doors_creative_tab=Dimensional Doors Voorwerpen
 
 tile.gold_door.name=Gouden Deur
@@ -7,7 +8,7 @@ tile.quartz_door.name=Kwartsen Deur
 tile.iron_dimensional_door.name=Dimensiedeur
 tile.gold_dimensional_door.name=Gouden Dimensiedeur
 tile.quartz_dimensional_door.name=Persoonlijke Dimensiedeur
-tile.chaos_dimensional_door.name=Chaos Deur
+tile.unstable_dimensional_door.name=Chaos Deur
 tile.oak_dimensional_door.name=Verdraaideur
 tile.dimensional_trapdoor.name=Transdimensionale Valdeur
 tile.dimensional_portal.name=Vergankelijk Portaal
@@ -56,7 +57,7 @@ item.quartz_door.name=Kwartsen Deur
 item.iron_dimensional_door.name=Dimensiedeur
 item.gold_dimensional_door.name=Gouden Dimensiedeur
 item.quartz_dimensional_door.name=Persoonlijke Dimensiedeur
-item.chaos_dimensional_door.name=Chaos Deur
+item.unstable_dimensional_door.name=Chaos Deur
 item.oak_dimensional_door.name=Verdraaideur
 
 item.rift_key=Scheur Sleutel
@@ -81,6 +82,6 @@ item.rift_signature.bound.info=Leidt naar (%d, %d, %d) in dimensie #%d
 item.rift_signature.unbound.info=De eerste klik slaat een locatie op; \nde tweede creëert een paar scheuren \ndie beide locaties met elkaar verbinden.
 item.stabilized_rift_signature.bound.info=Leidt naar (%d, %d, %d) in dimensie #%d
 item.stabilized_rift_signature.unbound.info=De eerste klik slaat een locatie op, \nandere klikken creëren scheuren die de eerste \nen laatste locaties met elkaar verbinden.
-item.chaos_dimensional_door.info=Pas op: Leidt naar een willekeurige bestemming
+item.unstable_dimensional_door.info=Pas op: Leidt naar een willekeurige bestemming
 item.oak_dimensional_door.info=Plaats op het blok onder een scheur \nom een portaal te creëren, \nof plaats het ergens in een \nbroekzak dimensie om deze te verlaten.
 entity.dimdoors.monolith.name=Monoliet

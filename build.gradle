@@ -18,54 +18,6 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 repositories {
     maven { url "https://jitpack.io" }
-    ivy {
-        url 'https://github.com/'
-        layout 'pattern', {
-            //noinspection GroovyAssignabilityCheck (IntelliJ is wrong)
-            artifact '/[organisation]/[module]/raw/master/repository/snapshots/[revision].[ext]'
-        }
-    }
-}
-
-// Version info
-String baseversion = "3.0" // Set beta to 0 after changing this
-int beta = 7 // Set this to 0 for a non-beta release
-int betaSub = 1
-ext.mcversion = "1.12.2"
-ext.forgeversion = "14.23.2.2623"
-String mcpversion = "snapshot_20180227"
-
-String suffix = ""
-String shortSuffix = ""
-if (beta != 0) {
-    suffix += ".$beta" + "-b"
-    if (betaSub != 0) {
-        suffix += "-$betaSub"
-    }
-    shortSuffix = suffix
-    if (System.getenv("TRAVIS_BUILD_NUMBER") != null && beta != 0) {
-        suffix += "+${System.getenv("TRAVIS_BUILD_NUMBER")}"
-    } else {
-        suffix += "+UNOFFICIAL"
-    }
-}
-version = ext.modversion = baseversion + suffix
-
-group = "org.dimdev.dimdoors"
-archivesBaseName = "Dimdoors"
-jar.archiveName = "Dimdoors-" + version + ".jar" // Constant name for travis
-
-sourceCompatibility = "1.8"
-compileJava {
-    //options.compilerArgs += "-proc:only"
-}
-
-minecraft {
-    version = "$mcversion-$forgeversion"
-    runDir = "run"
-    mappings = mcpversion
-    replace '${version}', baseversion + shortSuffix
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
 configurations {
@@ -79,6 +31,45 @@ dependencies {
     embed 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
     compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
     compileOnly 'com.github.OpenCubicChunks:CubicChunks:MC_1.12-SNAPSHOT'
+}
+
+// Mod version
+version = ext.modversion = "3.0.7"
+boolean isBeta = true
+group = "org.dimdev.dimdoors"
+
+// Build number
+String fullVersion = version
+if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
+    fullVersion += "+${System.getenv("TRAVIS_BUILD_NUMBER")}"
+} else {
+    fullVersion += "+UNOFFICIAL"
+}
+if (isBeta) {
+    fullVersion += "-b"
+}
+
+// Jar name format
+archivesBaseName = "DimensionalDoors"
+jar.archiveName = "DimensionalDoors-" + fullVersion + ".jar" // Constant name for travis
+
+// Minecraft, MCP, Forge, and Java versions
+sourceCompatibility = targetCompatibility = "1.8"
+ext.mcversion = "1.12.2"
+ext.forgeversion = "14.23.2.2623"
+String mcpversion = "snapshot_20180227"
+
+minecraft {
+    version = "$mcversion-$forgeversion"
+    runDir = "run"
+    mappings = mcpversion
+    replace '${version}', fullVersion
+    makeObfSourceJar = false // Unobfuscated sources jar
+}
+
+// Tasks
+compileJava {
+    //options.compilerArgs += "-proc:only" // To debug AnnotatedNBT code generation
 }
 
 jar {

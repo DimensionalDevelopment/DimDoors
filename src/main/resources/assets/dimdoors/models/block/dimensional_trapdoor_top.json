@@ -1,6 +1,6 @@
 {
-    "parent": "block/trapdoor_top",
-    "textures": {
-        "texture": "dimdoors:blocks/dimensional_trapdoor"
-    }
+  "parent": "block/trapdoor_top",
+  "textures": {
+    "texture": "dimdoors:blocks/dimensional_trapdoor"
+  }
 }

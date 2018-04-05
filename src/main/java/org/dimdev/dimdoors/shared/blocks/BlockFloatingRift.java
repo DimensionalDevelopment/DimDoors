@@ -82,8 +82,7 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
     // Render rift effects
     @Override
     @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand) { // TODO
-        //ArrayList<BlockPos> targets = findReachableBlocks(world, pos, 2, false);
+    public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand) {
         TileEntity tileEntity = world.getTileEntity(pos);
         // Workaround minecraft/forge bug where this is called even before the TileEntity is created in multiplayer
         if (!(tileEntity instanceof TileEntityFloatingRift)) return;
@@ -99,7 +98,7 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.ClosingRiftEffect(
                     world,
                     pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5,
-                    rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
+                    rand.nextGaussian() * 0.1D, rand.nextGaussian() * 0.1D, rand.nextGaussian() * 0.1D));
         }
 
         // TODO: depend on size, direction of particles should be rift orientation

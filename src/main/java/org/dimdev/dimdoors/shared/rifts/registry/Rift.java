@@ -9,7 +9,7 @@ import org.dimdev.annotatednbt.Saved;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 
 @NoArgsConstructor @AllArgsConstructor @ToString
 @NBTSerializable public class Rift extends RegistryVertex {

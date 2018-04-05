@@ -47,13 +47,13 @@ public final class CraftingManager {
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.STABLE_FABRIC, 1),
                 "yxy", 'x', Items.ENDER_PEARL, 'y', ModItems.WORLD_THREAD));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.DIMENSIONAL_DOOR, 1),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.IRON_DIMENSIONAL_DOOR, 1),
                 "yxy", 'x', ModItems.STABLE_FABRIC, 'y', Items.IRON_DOOR));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.CHAOS_DOOR, 1),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.UNSTABLE_DIMENSIONAL_DOOR, 1),
                 "xyx", 'x', Items.ENDER_EYE, 'y', Items.IRON_DOOR));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WARP_DIMENSIONAL_DOOR, 1),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WOOD_DIMENSIONAL_DOOR, 1),
                 "yxy", 'x', Items.ENDER_PEARL, 'y', Items.OAK_DOOR));
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModBlocks.WOOD_DIMENSIONAL_TRAPDOOR, 1),
@@ -65,7 +65,7 @@ public final class CraftingManager {
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.GOLD_DOOR, 1),
                 "yy", "yy", "yy", 'y', Items.GOLD_INGOT));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.PERSONAL_DIMENSIONAL_DOOR, 1),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.QUARTZ_DIMENSIONAL_DOOR, 1),
                 "yx", 'x', ModItems.STABLE_FABRIC, 'y', ModItems.QUARTZ_DOOR));
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.QUARTZ_DOOR, 1),
@@ -75,7 +75,7 @@ public final class CraftingManager {
                 "y", "y", "x", 'y', ModItems.STABLE_FABRIC, 'x', Items.IRON_SWORD));
         
         //should not be craftable
-        /*event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.RIFT_CONNECTION_TOOL),
+        /*event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.RIFT_CONFIGURATION_TOOL),
         " w ", "xyx", "xzx", 'z', Items.DIAMOND_SHOVEL, 'y', ModItems.STABLE_FABRIC, 'x', ModItems.WORLD_THREAD, 'w', Items.DIAMOND));*/
 
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.RIFT_REMOVER),
@@ -93,28 +93,28 @@ public final class CraftingManager {
         event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.STABILIZED_RIFT_SIGNATURE),
                 " x ", "xyx", " x ", 'x', ModItems.STABLE_FABRIC, 'y', ModItems.RIFT_SIGNATURE));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.HELMET_WOVEN_WORLD_THREAD),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WOVEN_WORLD_THREAD_HELMET),
                 "xxx", "x x", 'x', ModItems.WORLD_THREAD));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.CHESTPLATE_WOVEN_WORLD_THREAD),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WOVEN_WORLD_THREAD_CHESTPLATE),
                 "x x", "xxx", "xxx", 'x', ModItems.WORLD_THREAD));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.LEGGINGS_WOVEN_WORLD_THREAD),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WOVEN_WORLD_THREAD_LEGGINGS),
                 "xxx", "x x", "x x", 'x', ModItems.WORLD_THREAD));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.BOOTS_WOVEN_WORLD_THREAD),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WOVEN_WORLD_THREAD_BOOTS),
                 "x x", "x x", 'x', ModItems.WORLD_THREAD));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.HELMET_WOVEN_WORLD_THREAD),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WOVEN_WORLD_THREAD_HELMET),
                 "xyx", "x x", 'x', ModItems.WORLD_THREAD, 'y', Items.LEATHER_HELMET));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.CHESTPLATE_WOVEN_WORLD_THREAD),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WOVEN_WORLD_THREAD_CHESTPLATE),
                 "x x", "xyx", "x x", 'x', ModItems.WORLD_THREAD, 'y', Items.LEATHER_CHESTPLATE));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.LEGGINGS_WOVEN_WORLD_THREAD),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WOVEN_WORLD_THREAD_LEGGINGS),
                 "xyx", "x x", "x x", 'x', ModItems.WORLD_THREAD, 'y', Items.LEATHER_LEGGINGS));
 
-        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.BOOTS_WOVEN_WORLD_THREAD),
+        event.getRegistry().register(makeShapedRecipe(new ItemStack(ModItems.WOVEN_WORLD_THREAD_BOOTS),
                 " y ", "x x", 'x', ModItems.WORLD_THREAD, 'y', Items.LEATHER_BOOTS));
     }
 }

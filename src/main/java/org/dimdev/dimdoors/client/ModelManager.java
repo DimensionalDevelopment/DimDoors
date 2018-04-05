@@ -31,24 +31,24 @@ public final class ModelManager {
         register(getItemFromBlock(ModBlocks.WOOD_DIMENSIONAL_TRAPDOOR));
 
         //Item registration
-        register(ModItems.DIMENSIONAL_DOOR);
+        register(ModItems.IRON_DIMENSIONAL_DOOR);
         register(ModItems.GOLD_DIMENSIONAL_DOOR);
         register(ModItems.GOLD_DOOR);
-        register(ModItems.PERSONAL_DIMENSIONAL_DOOR);
+        register(ModItems.QUARTZ_DIMENSIONAL_DOOR);
         register(ModItems.QUARTZ_DOOR);
         register(ModItems.STABLE_FABRIC);
-        register(ModItems.CHAOS_DOOR);
-        register(ModItems.WARP_DIMENSIONAL_DOOR);
+        register(ModItems.UNSTABLE_DIMENSIONAL_DOOR);
+        register(ModItems.WOOD_DIMENSIONAL_DOOR);
         register(ModItems.WORLD_THREAD);
-        register(ModItems.RIFT_CONNECTION_TOOL);
+        register(ModItems.RIFT_CONFIGURATION_TOOL);
         register(ModItems.RIFT_BLADE);
         register(ModItems.RIFT_REMOVER);
         register(ModItems.RIFT_SIGNATURE);
         register(ModItems.STABILIZED_RIFT_SIGNATURE);
-        register(ModItems.BOOTS_WOVEN_WORLD_THREAD);
-        register(ModItems.CHESTPLATE_WOVEN_WORLD_THREAD);
-        register(ModItems.HELMET_WOVEN_WORLD_THREAD);
-        register(ModItems.LEGGINGS_WOVEN_WORLD_THREAD);
+        register(ModItems.WOVEN_WORLD_THREAD_BOOTS);
+        register(ModItems.WOVEN_WORLD_THREAD_CHESTPLATE);
+        register(ModItems.WOVEN_WORLD_THREAD_HELMET);
+        register(ModItems.WOVEN_WORLD_THREAD_LEGGINGS);
     }
 
     public static void registerModelVariants() {

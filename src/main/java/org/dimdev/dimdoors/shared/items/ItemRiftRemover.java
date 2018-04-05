@@ -51,8 +51,6 @@ public class ItemRiftRemover extends Item {
             if (!rift.closing) {
                 rift.setClosing(true);
                 world.playSound(null, player.getPosition(), ModSounds.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
-                // TODO: render rift removing animation
-
                 stack.damageItem(10, player);
                 player.sendStatusMessage(new TextComponentTranslation("item.rift_remover.closing"), true);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);

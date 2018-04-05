@@ -16,6 +16,7 @@ import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.ddutils.math.MathUtils;
 import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 import org.dimdev.pocketlib.VirtualLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.pocketlib.Pocket;

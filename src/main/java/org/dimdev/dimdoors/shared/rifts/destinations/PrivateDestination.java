@@ -9,7 +9,7 @@ import org.dimdev.pocketlib.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 import org.dimdev.ddutils.EntityUtils;
 import org.dimdev.ddutils.Location;
 import lombok.AllArgsConstructor;

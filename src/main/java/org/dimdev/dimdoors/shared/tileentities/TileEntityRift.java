@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.shared.rifts;
+package org.dimdev.dimdoors.shared.tileentities;
 
 import lombok.Getter;
 import net.minecraft.entity.Entity;
@@ -15,6 +15,7 @@ import org.dimdev.annotatednbt.Saved;
 import org.dimdev.ddutils.*;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 import org.dimdev.pocketlib.VirtualLocation;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.rifts.registry.Rift;

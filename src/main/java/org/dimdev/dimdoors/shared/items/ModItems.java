@@ -17,11 +17,11 @@ public final class ModItems {
     public static final ItemDoorQuartz QUARTZ_DOOR = new ItemDoorQuartz();
 
     // Dimensional doors
-    public static final ItemDimensionalDoorIron DIMENSIONAL_DOOR = new ItemDimensionalDoorIron();
+    public static final ItemDimensionalDoorIron IRON_DIMENSIONAL_DOOR = new ItemDimensionalDoorIron();
     public static final ItemDimensionalDoorGold GOLD_DIMENSIONAL_DOOR = new ItemDimensionalDoorGold();
-    public static final ItemDimensionalDoorQuartz PERSONAL_DIMENSIONAL_DOOR = new ItemDimensionalDoorQuartz();
-    public static final ItemDimensionalDoorChaos CHAOS_DOOR = new ItemDimensionalDoorChaos();
-    public static final ItemDimensionalDoorWood WARP_DIMENSIONAL_DOOR = new ItemDimensionalDoorWood();
+    public static final ItemDimensionalDoorQuartz QUARTZ_DIMENSIONAL_DOOR = new ItemDimensionalDoorQuartz();
+    public static final ItemDimensionalDoorUnstable UNSTABLE_DIMENSIONAL_DOOR = new ItemDimensionalDoorUnstable();
+    public static final ItemDimensionalDoorWood WOOD_DIMENSIONAL_DOOR = new ItemDimensionalDoorWood();
 
     // Crafting ingredients
     private static final String WORLD_THREAD_ID = "world_thread";
@@ -30,52 +30,50 @@ public final class ModItems {
     public static final Item STABLE_FABRIC = new Item().setUnlocalizedName(STABLE_FABRIC_ID).setFull3D().setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB).setRegistryName(new ResourceLocation(DimDoors.MODID, STABLE_FABRIC_ID));
 
     // Tools
-    public static final ItemRiftConfigurationTool RIFT_CONNECTION_TOOL = new ItemRiftConfigurationTool();
+    public static final ItemRiftConfigurationTool RIFT_CONFIGURATION_TOOL = new ItemRiftConfigurationTool();
     public static final ItemRiftBlade RIFT_BLADE = new ItemRiftBlade();
     public static final ItemRiftRemover RIFT_REMOVER = new ItemRiftRemover();
     public static final ItemRiftSignature RIFT_SIGNATURE = new ItemRiftSignature();
     public static final ItemStabilizedRiftSignature STABILIZED_RIFT_SIGNATURE = new ItemStabilizedRiftSignature();
 
-    // Armours
-    public static final ItemWovenWorldThreadArmor HELMET_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("helmet_woven_world_thread", 1, EntityEquipmentSlot.HEAD);
-    public static final ItemWovenWorldThreadArmor CHESTPLATE_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("chestplate_woven_world_thread", 1, EntityEquipmentSlot.CHEST);
-    public static final ItemWovenWorldThreadArmor LEGGINGS_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("leggings_woven_world_thread", 2, EntityEquipmentSlot.LEGS);
-    public static final ItemWovenWorldThreadArmor BOOTS_WOVEN_WORLD_THREAD = new ItemWovenWorldThreadArmor("boots_woven_world_thread", 1, EntityEquipmentSlot.FEET);
+    // Armors
+    public static final ItemWovenWorldThreadArmor WOVEN_WORLD_THREAD_HELMET = new ItemWovenWorldThreadArmor("woven_world_thread_helmet", 1, EntityEquipmentSlot.HEAD);
+    public static final ItemWovenWorldThreadArmor WOVEN_WORLD_THREAD_CHESTPLATE = new ItemWovenWorldThreadArmor("woven_world_thread_chestplate", 1, EntityEquipmentSlot.CHEST);
+    public static final ItemWovenWorldThreadArmor WOVEN_WORLD_THREAD_LEGGINGS = new ItemWovenWorldThreadArmor("woven_world_thread_leggings", 2, EntityEquipmentSlot.LEGS);
+    public static final ItemWovenWorldThreadArmor WOVEN_WORLD_THREAD_BOOTS = new ItemWovenWorldThreadArmor("woven_world_thread_boots", 1, EntityEquipmentSlot.FEET);
 
     // ItemBlocks
-    public static final Item FABRIC = new ItemColored(ModBlocks.FABRIC, true).setSubtypeNames(new String[]{"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"}).setRegistryName(ModBlocks.FABRIC.getRegistryName());
-    public static final Item ANCIENT_FABRIC = new ItemColored(ModBlocks.ANCIENT_FABRIC, true).setSubtypeNames(new String[]{"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"}).setRegistryName(ModBlocks.ANCIENT_FABRIC.getRegistryName());
-    public static final Item UNRAVELLED_FABRIC = new ItemBlock(ModBlocks.UNRAVELLED_FABRIC).setRegistryName(ModBlocks.UNRAVELLED_FABRIC.getRegistryName());
-    public static final Item ETERNAL_FABRIC = new ItemBlock(ModBlocks.ETERNAL_FABRIC).setRegistryName(ModBlocks.ETERNAL_FABRIC.getRegistryName());
-    public static final Item RIFT = new ItemBlock(ModBlocks.RIFT).setRegistryName(ModBlocks.RIFT.getRegistryName());
+    public static final ItemColored FABRIC = (ItemColored) new ItemColored(ModBlocks.FABRIC, true).setSubtypeNames(new String[]{"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"}).setRegistryName(ModBlocks.FABRIC.getRegistryName());
+    public static final ItemColored ANCIENT_FABRIC = (ItemColored) new ItemColored(ModBlocks.ANCIENT_FABRIC, true).setSubtypeNames(new String[]{"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"}).setRegistryName(ModBlocks.ANCIENT_FABRIC.getRegistryName());
+    public static final ItemBlock UNRAVELLED_FABRIC = (ItemBlock) new ItemBlock(ModBlocks.UNRAVELLED_FABRIC).setRegistryName(ModBlocks.UNRAVELLED_FABRIC.getRegistryName());
+    public static final ItemBlock ETERNAL_FABRIC = (ItemBlock) new ItemBlock(ModBlocks.ETERNAL_FABRIC).setRegistryName(ModBlocks.ETERNAL_FABRIC.getRegistryName());
     public static final ItemDimensionalTrapdoorWood WOOD_DIMENSIONAL_TRAPDOOR = new ItemDimensionalTrapdoorWood();
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(QUARTZ_DOOR,
-                PERSONAL_DIMENSIONAL_DOOR,
+                QUARTZ_DIMENSIONAL_DOOR,
                 GOLD_DOOR,
                 GOLD_DIMENSIONAL_DOOR,
-                DIMENSIONAL_DOOR,
-                WARP_DIMENSIONAL_DOOR,
+                IRON_DIMENSIONAL_DOOR,
+                WOOD_DIMENSIONAL_DOOR,
                 STABLE_FABRIC,
-                CHAOS_DOOR,
+                UNSTABLE_DIMENSIONAL_DOOR,
                 WORLD_THREAD,
-                RIFT_CONNECTION_TOOL,
+                RIFT_CONFIGURATION_TOOL,
                 RIFT_BLADE,
                 RIFT_REMOVER,
                 RIFT_SIGNATURE,
                 STABILIZED_RIFT_SIGNATURE,
-                HELMET_WOVEN_WORLD_THREAD,
-                CHESTPLATE_WOVEN_WORLD_THREAD,
-                LEGGINGS_WOVEN_WORLD_THREAD,
-                BOOTS_WOVEN_WORLD_THREAD,
+                WOVEN_WORLD_THREAD_HELMET,
+                WOVEN_WORLD_THREAD_CHESTPLATE,
+                WOVEN_WORLD_THREAD_LEGGINGS,
+                WOVEN_WORLD_THREAD_BOOTS,
                 FABRIC,
                 ANCIENT_FABRIC,
                 UNRAVELLED_FABRIC,
                 ETERNAL_FABRIC,
-                WOOD_DIMENSIONAL_TRAPDOOR,
-                RIFT);
+                WOOD_DIMENSIONAL_TRAPDOOR);
 
         DimDoors.proxy.afterItemsRegistered();
     }

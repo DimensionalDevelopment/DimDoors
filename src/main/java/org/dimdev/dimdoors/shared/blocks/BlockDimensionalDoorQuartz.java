@@ -22,7 +22,7 @@ public class BlockDimensionalDoorQuartz extends BlockDimensionalDoor {
 
     @Override
     public Item getItem() {
-        return ModItems.PERSONAL_DIMENSIONAL_DOOR;
+        return ModItems.QUARTZ_DIMENSIONAL_DOOR;
     }
 
     @Override

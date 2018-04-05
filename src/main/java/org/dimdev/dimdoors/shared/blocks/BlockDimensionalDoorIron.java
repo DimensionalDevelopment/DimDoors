@@ -24,7 +24,7 @@ public class BlockDimensionalDoorIron extends BlockDimensionalDoor {
 
     @Override
     public Item getItem() {
-        return ModItems.DIMENSIONAL_DOOR;
+        return ModItems.IRON_DIMENSIONAL_DOOR;
     }
 
     @Override

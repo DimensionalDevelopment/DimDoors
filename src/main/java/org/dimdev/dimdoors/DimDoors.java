@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentTranslation;
 import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.commands.CommandFabricConvert;
@@ -49,7 +48,7 @@ public class DimDoors {
         @Override
         @SideOnly(Side.CLIENT)
         public ItemStack getTabIconItem() {
-            return new ItemStack(ModItems.DIMENSIONAL_DOOR);
+            return new ItemStack(ModItems.IRON_DIMENSIONAL_DOOR);
         }
     };
 

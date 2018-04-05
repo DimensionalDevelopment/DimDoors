@@ -23,7 +23,7 @@ public class BlockDimensionalDoorWood extends BlockDimensionalDoor { // TODO: al
 
     @Override
     public Item getItem() {
-        return ModItems.WARP_DIMENSIONAL_DOOR;
+        return ModItems.WOOD_DIMENSIONAL_DOOR;
     }
 
     @Override

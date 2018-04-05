@@ -13,7 +13,6 @@ import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.ModConfig;
-import org.dimdev.dimdoors.shared.rifts.TileEntityRift;
 import org.dimdev.ddutils.RGBA;
 import org.dimdev.ddutils.TeleportUtils;
 import lombok.Getter;

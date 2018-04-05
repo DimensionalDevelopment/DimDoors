@@ -1,4 +1,5 @@
 #PARSE_ESCAPES
+
 itemGroup.dimensional_doors_creative_tab=Objets Portes dimensionelles
 
 tile.gold_door.name=Porte d'or
@@ -7,7 +8,7 @@ tile.quartz_door.name=Porte de quartz
 tile.iron_dimensional_door.name=Porte dimensionnelle de fer
 tile.gold_dimensional_door.name=Porte dimensionnelle d'or
 tile.quartz_dimensional_door.name=Porte dimensionnelle de quartz
-tile.chaos_dimensional_door.name=Porte dimensionelle instable
+tile.unstable_dimensional_door.name=Porte dimensionelle instable
 tile.oak_dimensional_door.name=Porte dimensionelle de bois
 tile.dimensional_trapdoor.name=Trappe dimensionnelle de bois
 tile.dimensional_portal.name=Portail dimensionel
@@ -56,7 +57,7 @@ item.quartz_door.name=Porte de quartz
 item.iron_dimensional_door.name=Porte dimensionnelle de fer
 item.gold_dimensional_door.name=Porte dimensionnelle d'or
 item.quartz_dimensional_door.name=Porte dimensionnelle de quartz
-item.chaos_dimensional_door.name=Porte dimensionelle instable
+item.unstable_dimensional_door.name=Porte dimensionelle instable
 item.oak_dimensional_door.name=Porte dimensionelle de bois
 
 item.rift_key=Clé de fissure
@@ -81,7 +82,7 @@ item.rift_signature.bound.info=Mène aux coordonnées (%d, %d, %d) à la dimensi
 item.rift_signature.unbound.info=Le premier clic stocke un emplacement ; \nle deuxième clic crée une paire de \nfissures qui lient les deux emplacements.
 item.stabilized_rift_signature.bound.info=Mène aux coordonnées (%d, %d, %d) à la dimension #%d
 item.stabilized_rift_signature.unbound.info=Le premier clic stocke un emplacement, \nles autres clics créent des fissurent qui lient \nle premier et les derniers emplacements ensemble.
-item.chaos_dimensional_door.info=Attention : mène vers une destination aléatoire
+item.unstable_dimensional_door.info=Attention : mène vers une destination aléatoire
 item.oak_dimensional_door.info=Placez sur le bloc sous une \nfissure pour créer un portail, \nou placez n'importe où dans une \ndimension de poche pour sortir.
 entity.dimdoors.monolith.name=Monolithe
 

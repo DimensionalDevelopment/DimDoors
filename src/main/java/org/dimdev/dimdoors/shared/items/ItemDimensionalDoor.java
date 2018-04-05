@@ -24,7 +24,8 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
 import java.util.List;
 
-public abstract class ItemDimensionalDoor extends ItemDoor { // TODO: All wood types, Biome O' Plenty support
+// TODO: All wood types, Biome O' Plenty support
+public abstract class ItemDimensionalDoor extends ItemDoor {
 
     public <T extends Block & IRiftProvider<TileEntityEntranceRift>> ItemDimensionalDoor(T block) {
         super(block);

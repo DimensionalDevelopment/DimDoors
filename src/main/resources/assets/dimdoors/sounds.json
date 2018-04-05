@@ -1,6 +1,6 @@
 {
     "crack" : { "sounds" : [ "dimdoors:crack"] },
-    "creepy" : { "sounds" : ["dimdoors:creepy_faded_rv_002" ] },
+    "creepy" : { "sounds" : ["dimdoors:creepy_faded" ] },
     "door_locked": { "sounds": [ "dimdoors:door_locked" ] },
     "door_lock_removed": { "sounds": [ "dimdoors:door_lock_removed" ] },
     "key_lock" : { "sounds" : [ "dimdoors:key_lock" ] },

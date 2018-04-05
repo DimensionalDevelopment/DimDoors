@@ -1,4 +1,5 @@
 #PARSE_ESCAPES
+
 itemGroup.dimensional_doors_creative_tab=Obiecte Dimensional Doors
 
 tile.gold_door.name=Ușă de aur
@@ -7,7 +8,7 @@ tile.quartz_door.name=Ușă de cuarț
 tile.iron_dimensional_door.name=Ușă dimensională
 tile.gold_dimensional_door.name=Ușă dimensională de aur
 tile.quartz_dimensional_door.name=Ușă dimensională de cuarț
-tile.chaos_dimensional_door.name=Ușă dimensională instabilă
+tile.unstable_dimensional_door.name=Ușă dimensională instabilă
 tile.oak_dimensional_door.name=Ușă dimensională de lemn
 tile.dimensional_trapdoor.name=Trapă dimensională
 tile.dimensional_portal.name=Portal dimensional
@@ -42,7 +43,7 @@ item.quartz_door.name=Ușă de cuarț
 item.iron_dimensional_door.name=Ușă dimensională
 item.gold_dimensional_door.name=Ușă dimensională de aur
 item.quartz_dimensional_door.name=Ușă dimensională de cuarț
-item.chaos_dimensional_door.name=Ușă instabilă
+item.unstable_dimensional_door.name=Ușă instabilă
 item.oak_dimensional_door.name=Ușă de distorsiune
 
 item.rift_key=Cheie de fisură
@@ -67,6 +68,6 @@ item.rift_signature.bound.info=Duce la (%d, %d, %d) în dimensiunea #%d
 item.rift_signature.unbound.info=Primul clic stochează o locație; \nal doilea clic crează o pereche \nde fisuri conectând cele doua locații.
 item.stabilized_rift_signature.bound.info=Duce la (%d, %d, %d) în dimensiunea #%d
 item.stabilized_rift_signature.unbound.info=Primul clic stochează o locație; \nalte clicuri crează fisuri conectând \nprima și ultima conectiuni împreună.
-item.chaos_dimensional_door.info=Atenție: Duce la o destinație aleatorie
+item.unstable_dimensional_door.info=Atenție: Duce la o destinație aleatorie
 item.oak_dimensional_door.info=Plasează pe blocul sub o fisură \npentru a crea un portal sau \nplasează ori unde într-o dimensiune \nde buzunar pentru a ieșii.
 entity.dimdoors.monolith.name=Monolit

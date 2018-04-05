@@ -24,8 +24,5 @@ build
 
 # other
 run
-libs
-forge-*-changelog.txt
 .DS_Store
 Thumbs.db
-logs
