@@ -34,9 +34,9 @@ import java.util.Random;
 
     private static final Random random = new Random();
 
-    // TODO: Some of these properties will need to persist when converting to door and then back to rift!
-    //Need to be saved:
+    // Need to be saved:
     @Saved public boolean closing = false; // TODO: maybe we could have a closingSpeed instead?
+    @Saved public boolean stabilized = false;
     @Saved public int spawnedEndermenID = 0;
     @Saved public float size = 0; // TODO: store size in blocks
     @Saved public float riftYaw = random.nextInt(360);
@@ -63,17 +63,6 @@ import java.util.Random;
             return;
         }
 
-        // Check if this rift should render white closing particles and
-        // spread the closing effect to other rifts nearby.
-        if (closing) {
-            if (size > 0) {
-                size -= ModConfig.general.riftCloseSpeed;
-            } else {
-                world.setBlockToAir(pos);
-            }
-            return;
-        }
-
         if (updateTimer >= UPDATE_PERIOD) {
             spawnEndermen();
             updateTimer = 0;
@@ -82,10 +71,20 @@ import java.util.Random;
         }
         updateTimer++;
 
-        // Logarithmic growth
-        for (int n = 0; n < 10; n++) {
-            // TODO: growthSpeed and growthSize config options
-            size += 1F / (size + 1);
+        // Check if this rift should render white closing particles and
+        // spread the closing effect to other rifts nearby.
+        if (closing) {
+            if (size > 0) {
+                size -= ModConfig.general.riftCloseSpeed;
+            } else {
+                world.setBlockToAir(pos);
+            }
+        } else if (!stabilized) {
+            // Logarithmic growth
+            for (int n = 0; n < 10; n++) {
+                // TODO: growthSpeed and growthSize config options
+                size += 1F / (size + 1);
+            }
         }
     }
 
@@ -129,6 +128,13 @@ import java.util.Random;
 
     public void setClosing(boolean closing) {
         this.closing = closing;
+        IBlockState state = world.getBlockState(pos);
+        world.notifyBlockUpdate(pos, state, state, 0);
+        markDirty();
+    }
+
+    public void setStabilized(boolean stabilized) {
+        this.stabilized = stabilized;
         IBlockState state = world.getBlockState(pos);
         world.notifyBlockUpdate(pos, state, state, 0);
         markDirty();

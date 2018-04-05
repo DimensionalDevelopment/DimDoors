@@ -1,8 +1,14 @@
 package org.dimdev.dimdoors.shared.items;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.dimdoors.DimDoors;
@@ -11,32 +17,18 @@ import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.RayTraceHelper;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemRiftRemover extends Item {
-    public static final String ID = "rift_remover";
+public class ItemRiftStabilizer extends Item {
+    public static final String ID = "rift_stabilizer";
 
-    public ItemRiftRemover() {
+    public ItemRiftStabilizer() {
+        setMaxStackSize(1);
+        setMaxDamage(6); // TODO: Add more uses and make it reduce rift growth speed instead?
         setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setMaxStackSize(1);
-        setMaxDamage(100);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        if (I18n.hasKey(getUnlocalizedName() + ".info")) {
-            tooltip.add(I18n.format(getUnlocalizedName() + ".info"));
-        }
     }
 
     @Override
@@ -54,16 +46,22 @@ public class ItemRiftRemover extends Item {
 
         if (RayTraceHelper.isFloatingRift(hit, world)) {
             TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(hit.getBlockPos());
-            if (!rift.closing) {
-                rift.setClosing(true);
-                world.playSound(null, player.getPosition(), ModSounds.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
-                stack.damageItem(10, player);
-                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".closing"), true);
+            if (!rift.stabilized && !rift.closing) {
+                rift.setStabilized(true);
+                world.playSound(null, player.getPosition(), ModSounds.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1); // TODO: different sound
+                stack.damageItem(1, player);
+                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".stabilized"), true);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
             } else {
-                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".already_closing"), true);
+                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".already_stabilized"), true);
             }
         }
         return new ActionResult<>(EnumActionResult.FAIL, stack);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+        tooltip.add(I18n.format(I18n.format(getUnlocalizedName() + ".info")));
     }
 }

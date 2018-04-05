@@ -59,7 +59,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
         if (target == null) {
             // The link signature has not been used. Store its current target as the first location.
             setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw, 0));
-            player.sendStatusMessage(new TextComponentTranslation("item.stabilized_rift_signature.stored"), true);
+            player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".stored"), true);
             world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
             // Place a rift at the target point
@@ -83,7 +83,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
 
             stack.damageItem(1, player);
 
-            player.sendStatusMessage(new TextComponentTranslation("item.stabilized_rift_signature.created"), true);
+            player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".created"), true);
             world.playSound(null, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         }
 
@@ -116,9 +116,9 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
         RotatedLocation transform = getTarget(stack);
         if (transform != null) {
-            tooltip.add(I18n.format("item.stabilized_rift_signature.bound.info", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
+            tooltip.add(I18n.format(getUnlocalizedName() + ".bound.info", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
         } else {
-            tooltip.add(I18n.format("item.stabilized_rift_signature.unbound.info"));
+            tooltip.add(I18n.format(getUnlocalizedName() + ".unbound.info"));
         }
     }
 }

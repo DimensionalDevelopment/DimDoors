@@ -59,7 +59,7 @@ public class ItemRiftSignature extends Item {
         if (target == null) {
             // The link signature has not been used. Store its current target as the first location.
             setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw, 0));
-            player.sendStatusMessage(new TextComponentTranslation("item.rift_signature.stored"), true);
+            player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".stored"), true);
             world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
             // Place a rift at the saved point TODO: check that the player still has permission
@@ -85,7 +85,7 @@ public class ItemRiftSignature extends Item {
             stack.damageItem(1, player); // TODO: calculate damage based on position?
 
             clearSource(stack);
-            player.sendStatusMessage(new TextComponentTranslation("item.rift_signature.created"), true);
+            player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".created"), true);
             // null = send sound to the player too, we have to do this because this code is not run client-side
             world.playSound(null, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         }

@@ -35,6 +35,7 @@ public final class ModItems {
     public static final ItemRiftRemover RIFT_REMOVER = new ItemRiftRemover();
     public static final ItemRiftSignature RIFT_SIGNATURE = new ItemRiftSignature();
     public static final ItemStabilizedRiftSignature STABILIZED_RIFT_SIGNATURE = new ItemStabilizedRiftSignature();
+    public static final ItemRiftStabilizer RIFT_STABILIZER = new ItemRiftStabilizer();
 
     // Armors
     public static final ItemWovenWorldThreadArmor WOVEN_WORLD_THREAD_HELMET = new ItemWovenWorldThreadArmor("woven_world_thread_helmet", 1, EntityEquipmentSlot.HEAD);
@@ -65,6 +66,7 @@ public final class ModItems {
                 RIFT_REMOVER,
                 RIFT_SIGNATURE,
                 STABILIZED_RIFT_SIGNATURE,
+                RIFT_STABILIZER,
                 WOVEN_WORLD_THREAD_HELMET,
                 WOVEN_WORLD_THREAD_CHESTPLATE,
                 WOVEN_WORLD_THREAD_LEGGINGS,

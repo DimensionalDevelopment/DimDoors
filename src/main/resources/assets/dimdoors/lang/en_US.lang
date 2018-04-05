@@ -73,6 +73,10 @@ item.rift_configuration_tool.name=Rift Configuration Tool
 item.rift_remover.name=Rift Remover
 item.rift_remover.closing=The rift will close soon
 item.rift_remover.already_closing=This rift is already closing
+item.rift_stabilizer.name=Rift Stabilizer
+item.rift_stabilizer.info=Use on a rift's core to stop its growth.
+item.rift_stabilizer.stabilized=The rift has been stabilized and will stop growing
+item.rift_stabilizer.already_stabilized=This rift is already stable
 item.rift_blade.name=Rift Blade
 
 item.world_thread.name=World Thread
@@ -121,8 +125,10 @@ rifts.destinations.private_pocket_exit.rift_has_closed=The rift you used to ente
 rifts.entrances.rift_too_close=Placing a door this close to a tear in the world would be dangerous. Shift-right-click to place anyway, or place it on the rift's core (tesseract) to bind it to the rift.
 rifts.entrances.cannot_be_placed_on_rift=This type of door can't be placed on a rift.
 
-dimdoors.general=General Options
-dimdoors.general.tooltip=General configuration options for the mod
+tools.rift_miss=You can only use this item on a rift's core (tesseract)
+
+dimdoors.general=General Settings
+dimdoors.general.tooltip=General configuration settings for the mod
 dimdoors.general.baseDimensionID=Base Dimension ID
 dimdoors.general.baseDimensionID.tooltip=Dimension ID of the first Dimensional Doors dimension. Other dimensions will use consecutive IDs. It is strongly recommended to leave this to the default value.
 dimdoors.general.useStatusBar=Status Bar Messages
@@ -131,6 +137,7 @@ dimdoors.general.closeDoorBehind=Close Door Behind
 dimdoors.general.closeDoorBehind.tooltip=When true, Dimensional Doors will automatically close when the player enters their portal.
 dimdoors.general.depthSpreadFactor=Depth Spread Factor
 dimdoors.general.depthSpreadFactor.tooltip=The scale of the dispersion when escaping from a pocket or limbo, in blocks/depth. It is important to remember that by default, limbo is treated as depth 50.
+dimdoors.general.riftCloseSpeed=Rift Close Speed
 dimdoors.general.riftCloseSpeed.tooltip=The speed at which rifts close when using the rift remover, in units of rift size per tick.
 dimdoors.general.closeDoorBehind.tooltip=When true, Dimensional Doors will automatically close when the player enters their portal.
 dimdoors.general.teleportOffset=Teleport Offset
@@ -138,8 +145,8 @@ dimdoors.general.teleportOffset.tooltip=Distance in blocks to teleport the playe
 dimdoors.general.riftBoundingBoxInCreative=Rift Bounding Box in Creative
 dimdoors.general.riftBoundingBoxInCreative.tooltip=When true, shows the bounding boxes of floating rifts when the player is in creative.
 
-dimdoors.pockets=Pocket Dimension Options
-dimdoors.pockets.tooltip=Options that determine the spacing and maximum size of pockets in the pocket world
+dimdoors.pockets=Pocket Dimension Settings
+dimdoors.pockets.tooltip=Settings that determine the spacing and maximum size of pockets in the pocket world
 dimdoors.pockets.pocketGridSize=Pocket Grid Size
 dimdoors.pockets.pocketGridSize.tooltip=Sets how many chunks apart all pockets in any pocket dimensions should be placed.
 dimdoors.pockets.maxPocketSize=Maximum Pocket Size
@@ -151,8 +158,8 @@ dimdoors.pockets.publicPocketSize.tooltip=Sets the minimum size of a newly creat
 dimdoors.pockets.loadAllSchematics=Load All Schematics
 dimdoors.pockets.loadAllSchematics.tooltip= When true, all available Pocket Schematics will be loaded on game-start, even if the gridSize and pocketSize configuration fields would exclude these schematics from being used in 'naturally generated' pockets. The /pocket command can be used to force-generate these pockets for dungeon building or testing purposes.
 
-dimdoors.world=World Generation Options
-dimdoors.world.tooltip=Options that determine where dimensional gateways and rift clusters can be generated and at what frequency
+dimdoors.world=World Generation Settings
+dimdoors.world.tooltip=Settings that determine where dimensional gateways and rift clusters can be generated and at what frequency
 dimdoors.world.clusterGenChance=Cluster Generation Chance
 dimdoors.world.clusterGenChance.tooltip=Sets the chance (out of 1.0) that a cluster of Rift Scars will generate in a given chunk.
 dimdoors.world.gatewayGenChance=Gateway Generation Chance
@@ -162,27 +169,27 @@ dimdoors.world.clusterDimBlacklist.tooltip=Dimension Blacklist for the generatio
 dimdoors.world.gatewayDimBlacklist=Gateway Dimension Blacklist
 dimdoors.world.gatewayDimBlacklist.tooltip=Dimension Blacklist for the generation of Transient Portal gateways. Add a dimension ID here to prevent generation in certain dimensions.
 
-dimdoors.dungeons=Dungeon Options
-dimdoors.dungeons.tooltip=Options that affect the generation of pocket dungeons
+dimdoors.dungeons=Dungeon Settings
+dimdoors.dungeons.tooltip=Settings that affect the generation of pocket dungeons
 dimdoors.dungeons.maxDungeonDepth=Maximum Dungeon Depth
 dimdoors.dungeons.maxDungeonDepth.tooltip=The depth at which limbo is located. If a Rift reaches any deeper than this while searching for a new destination, the player trying to enter the Rift will be sent straight to Limbo.
 
-dimdoors.monoliths=Monolith Options
-dimdoors.monoliths.tooltip=Options that determine how dangerous monoliths are
+dimdoors.monoliths=Monolith Settings
+dimdoors.monoliths.tooltip=Settings that determine how dangerous monoliths are
 dimdoors.monoliths.dangerousLimboMonoliths=Dangerous Limbo Monoliths
 dimdoors.monoliths.dangerousLimboMonoliths.tooltip=When true, Monoliths in Limbo attack the player and deal damage.
 dimdoors.monoliths.monolithTeleportation=Monolith Teleportation
 dimdoors.monoliths.monolithTeleportation.tooltip=When true, being exposed to the gaze of Monoliths for too long, will cause the player to be teleported to the void above Limbo.
 
-dimdoors.limbo=Limbo Options
-dimdoors.limbo.tooltip=Options that control various aspects of the Limbo dimension
+dimdoors.limbo=Limbo Settings
+dimdoors.limbo.tooltip=Settings that control various aspects of the Limbo dimension
 dimdoors.limbo.universalLimbo=Universal Limbo
 dimdoors.limbo.universalLimbo.tooltip=When true, players are also teleported to Limbo when they die in any non-Pocket Dimension (except Limbo itself). Otherwise, players only go to Limbo if they die in a Pocket Dimension.
 dimdoors.limbo.hardcoreLimbo=Hardcore Limbo
 dimdoors.limbo.hardcoreLimbo.tooltip=When true, a player dying in Limbo will respawn in Limbo, making Eternal Fluid or Golden Dimensional Doors the only way to escape Limbo.
 
-dimdoors.graphics=Graphics Options
-dimdoors.graphics.tooltip=Options that control the appearance of dimdoors, such as the rift animation.
+dimdoors.graphics=Graphics Settings
+dimdoors.graphics.tooltip=Settings that control the appearance of dimdoors, such as the rift animation.
 dimdoors.graphics.highlightRiftCoreFor=Time to Highlight Rift Core
 dimdoors.graphics.highlightRiftCoreFor.tooltip=How long, in milliseconds, the rift's core (tesseract animation) should be shown for when attempting to place a door near a large rift but not directly on it. Set to -1 to disable.
 dimdoors.graphics.showRiftCore=Always Show Rift Cores

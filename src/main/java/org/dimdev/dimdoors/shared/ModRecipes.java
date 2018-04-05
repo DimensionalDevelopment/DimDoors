@@ -95,16 +95,22 @@ public final class ModRecipes {
                 "xxx", "xyx", "xxx", 'x', Items.GOLD_INGOT, 'y', Items.ENDER_PEARL));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_REMOVER),
-                " x ", "xyx", " x ", 'x', Items.GOLD_INGOT, 'y', ModItems.STABLE_FABRIC));
+                "x x", " y ", "x x", 'x', Items.GOLD_INGOT, 'y', ModItems.STABLE_FABRIC));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_SIGNATURE),
                 "xxx", "xyx", "xxx", 'x', Items.IRON_INGOT, 'y', Items.ENDER_PEARL));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_SIGNATURE),
-                " x ", "xyx", " x ", 'x', Items.IRON_INGOT, 'y', ModItems.STABLE_FABRIC));
+                "x x", " y ", "x x", 'x', Items.IRON_INGOT, 'y', ModItems.STABLE_FABRIC));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.STABILIZED_RIFT_SIGNATURE),
-                " x ", "xyx", " x ", 'x', ModItems.STABLE_FABRIC, 'y', ModItems.RIFT_SIGNATURE));
+                "x x", " y ", "x x", 'x', ModItems.STABLE_FABRIC, 'y', ModItems.RIFT_SIGNATURE));
+
+        registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_STABILIZER),
+                "xxx", "xyx", "xxx", 'x', Items.DIAMOND, 'y', Items.ENDER_PEARL));
+
+        registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_STABILIZER),
+                "x x", " y ", "x x", 'x', Items.DIAMOND, 'y', ModItems.STABLE_FABRIC));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.WOVEN_WORLD_THREAD_HELMET),
                 "xxx", "x x", 'x', ModItems.WORLD_THREAD));
