@@ -118,7 +118,7 @@ rifts.destinations.escape.did_not_use_rift=You didn't use a rift to enter the po
 rifts.destinations.escape.rift_has_closed=The rift you used to enter the pocket dimension has closed and you ended up in Limbo!
 rifts.destinations.private_pocket_exit.did_not_use_rift=You didn't use a rift to enter the pocket dimension and you ended up in Limbo!
 rifts.destinations.private_pocket_exit.rift_has_closed=The rift you used to enter the pocket dimension has closed and you ended up in Limbo!
-rifts.entrances.rift_too_close=Placing a door this close to a tear in the world would be dangerous. Either place it on the rift's core (tesseract) or further away. Or use a rift signature to make a rift anyway, at your own risk!
+rifts.entrances.rift_too_close=Placing a door this close to a tear in the world would be dangerous. Shift-right-click to place anyway, or place it on the rift's core (tesseract) to bind it to the rift.
 rifts.entrances.cannot_be_placed_on_rift=This type of door can't be placed on a rift.
 
 dimdoors.general=General Options

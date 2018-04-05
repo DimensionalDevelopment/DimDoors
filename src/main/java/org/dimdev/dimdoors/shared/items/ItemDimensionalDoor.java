@@ -36,9 +36,12 @@ public abstract class ItemDimensionalDoor extends ItemDoor { // TODO: All wood t
         if (!world.getBlockState(pos).getBlock().isReplaceable(world, pos)) pos = pos.offset(facing);
         boolean placedOnRift = world.getBlockState(pos).getBlock().equals(ModBlocks.RIFT);
 
-        if (!placedOnRift && isRiftNear(world, pos)) {
+        if (!placedOnRift && !player.isSneaking() && isRiftNear(world, pos)) {
+            // Allowing on second right click would require cancelling client-side, which
+            // is impossible (see https://github.com/MinecraftForge/MinecraftForge/issues/3272)
+            // or sending fake packets.
             if (world.isRemote) {
-                DimDoors.chat(player, "rifts.entrances.rift_too_close"); // TODO: Linebreaks don't work in status message.
+                DimDoors.chat(player, "rifts.entrances.rift_too_close");
                 TileEntityFloatingRiftRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.graphics.highlightRiftCoreFor;
             }
             return EnumActionResult.FAIL;
@@ -92,7 +95,7 @@ public abstract class ItemDimensionalDoor extends ItemDoor { // TODO: All wood t
                     BlockPos searchPos = new BlockPos(x, y, z);
                     if (world.getBlockState(searchPos).getBlock() == ModBlocks.RIFT) {
                         TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(searchPos);
-                        if (Math.sqrt(pos.distanceSq(searchPos)) < rift.size / 250) return true;
+                        if (Math.sqrt(pos.distanceSq(searchPos)) < rift.size / 150) return true;
                     }
                 }
             }
