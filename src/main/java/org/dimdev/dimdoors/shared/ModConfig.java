@@ -48,6 +48,10 @@ public final class ModConfig {
         @LangKey("dimdoors.general.riftCloseSpeed")
         @RangeDouble(min = 0)
         public float riftCloseSpeed = 1f;
+
+        @Name("depthSpreadFactor")
+        @LangKey("dimdoors.general.depthSpreadFactor")
+        public int depthSpreadFactor = 10;
     }
 
     public static class Pockets {

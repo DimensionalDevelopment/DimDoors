@@ -8,12 +8,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.dimdev.ddutils.Location;
+import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.rifts.destinations.EscapeDestination;
 
 public class BlockFabricEternal extends BlockEmptyDrops { // TODO: make this a glowing red liquid
 
     public static final Material ETERNAL_FABRIC = new Material(MapColor.PINK);
     public static final String ID = "eternal_fabric";
+    public static EscapeDestination exitLimbo = new EscapeDestination(true);
 
     public BlockFabricEternal() {
         super(ETERNAL_FABRIC);
@@ -29,6 +33,6 @@ public class BlockFabricEternal extends BlockEmptyDrops { // TODO: make this a g
 
     @Override
     public void onEntityWalk(World world, BlockPos pos, Entity entity) {
-        // TODO: implement using a destination
+        exitLimbo.teleport(new RotatedLocation(new Location(world, pos), (int) (entity.rotationYaw / 90) * 90, 0), entity);
     }
 }

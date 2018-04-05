@@ -15,12 +15,15 @@ import lombok.Getter;
 import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import org.dimdev.pocketlib.VirtualLocation;
 
 import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 public class EscapeDestination extends RiftDestination {
-    //public EscapeDestination() {}
+    boolean canEscapeLimbo = false;
+
+    public EscapeDestination() {}
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
@@ -35,19 +38,20 @@ public class EscapeDestination extends RiftDestination {
 
     @Override
     public boolean teleport(RotatedLocation loc, Entity entity) {
-        if (!ModDimensions.isDimDoorsPocketDimension(entity.world)) {
-            if (entity.world.provider instanceof WorldProviderLimbo) {
-                DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.cannot_escape_limbo");
-            } else {
-                DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.not_in_pocket_dim");
-            }
+        if (!ModDimensions.isDimDoorsPocketDimension(entity.world) && !(entity.world.provider instanceof WorldProviderLimbo)) {
+            DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.not_in_pocket_dim");
             return false;
         }
+        if (entity.world.provider instanceof WorldProviderLimbo && !canEscapeLimbo) {
+            DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.cannot_escape_limbo");
+            return false;
+        }
+
         UUID uuid = entity.getUniqueID();
         if (uuid != null) {
             Location destLoc = RiftRegistry.instance().getOverworldRift(uuid);
-            if (destLoc != null && destLoc.getTileEntity() instanceof TileEntityRift) {
-                //TeleportUtils.teleport(entity, new VirtualLocation(destLoc, rift.virtualLocation.getDepth()).projectToWorld()); // TODO
+            if (destLoc != null && destLoc.getTileEntity() instanceof TileEntityRift || canEscapeLimbo) {
+                TeleportUtils.teleport(entity, VirtualLocation.fromLocation(loc.getLocation()).projectToWorld(false));
                 return true;
             } else {
                 if (destLoc == null) {
