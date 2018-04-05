@@ -34,9 +34,10 @@ dependencies {
 }
 
 // Mod version
-version = ext.modversion = "3.0.7"
+version = ext.modversion = "3.0.8"
 boolean isBeta = false
 group = "org.dimdev.dimdoors"
+archivesBaseName = "DimensionalDoors"
 
 // Build number
 String fullVersion = version
@@ -48,10 +49,7 @@ if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
 if (isBeta) {
     fullVersion += "-b"
 }
-
-// Jar name format
-archivesBaseName = "DimensionalDoors"
-jar.archiveName = "DimensionalDoors-" + fullVersion + ".jar" // Constant name for travis
+String jarVersion = fullVersion.replace("+", "-") // Github/Travis doesn't seem to support + in filenames
 
 // Minecraft, MCP, Forge, and Java versions
 sourceCompatibility = targetCompatibility = "1.8"
@@ -64,7 +62,7 @@ minecraft {
     runDir = "run"
     mappings = mcpversion
     replace '${version}', fullVersion
-    makeObfSourceJar = false // Unobfuscated sources jar
+    makeObfSourceJar = false
 }
 
 // Tasks
@@ -73,22 +71,33 @@ compileJava {
 }
 
 jar {
+    archiveName = archivesBaseName + "-" + jarVersion + ".jar"
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveName = archivesBaseName + "-" + jarVersion + "-sources.jar"
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
 processResources {
-    // this will ensure that this task is redone when the versions change.
+    // This will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
+    // Replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         // replace version and mcversion
         expand 'version': project.version, 'mcversion': project.minecraft.version
     }
 
-    // copy everything else, thats not the mcmod.info
+    // Copy everything else except mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
