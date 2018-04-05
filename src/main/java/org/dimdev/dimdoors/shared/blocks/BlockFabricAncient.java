@@ -5,12 +5,9 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import org.dimdev.dimdoors.DimDoors;
 
@@ -32,12 +29,6 @@ public class BlockFabricAncient extends BlockColored {
         disableStats();
         setSoundType(SoundType.STONE);
         setLightLevel(1);
-    }
-
-    @Override
-    public void getSubBlocks(CreativeTabs item, NonNullList<ItemStack> items) { // TODO: make textures for all colors
-        items.add(new ItemStack(this, 1, EnumDyeColor.BLACK.getMetadata()));
-        items.add(new ItemStack(this, 1, EnumDyeColor.WHITE.getMetadata()));
     }
 
     @Override

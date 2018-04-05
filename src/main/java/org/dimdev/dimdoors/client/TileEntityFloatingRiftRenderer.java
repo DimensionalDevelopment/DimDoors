@@ -58,7 +58,7 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
         RGBA color = rift.getColor();
         if (color == null) color = new RGBA(1, 0.5f, 1, 1);
 
-        GlStateManager.enableLighting();
+        GlStateManager.disableLighting();
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
         GlStateManager.enableBlend();
