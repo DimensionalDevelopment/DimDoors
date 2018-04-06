@@ -38,35 +38,38 @@ public final class DimensionalWallRenderer {
         for (int pass = 0; pass < 16; pass++) {
             GlStateManager.pushMatrix();
 
-            float var15 = 16 - pass;
-            float var16 = 0.2625F;
-            float var17 = 1.0F / (var15 + .80F);
+            float translationScale = 16 - pass;
+            float scale = 0.2625F;
+            float colorMultiplier = 1.0F / (translationScale + .80F);
 
             Minecraft.getMinecraft().getTextureManager().bindTexture(warpPath);
             GlStateManager.enableBlend();
 
             if (pass == 0) {
-                var17 = 0.1F;
-                var15 = 25.0F;
-                var16 = 0.125F;
+                colorMultiplier = 0.1F;
+                translationScale = 25.0F;
+                scale = 0.125F;
 
                 GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             }
 
             if (pass == 1) {
-                var16 = 0.5F;
+                scale = 0.5F;
                 GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
             }
 
-            GlStateManager.translate(Minecraft.getSystemTime() % 200000L / 200000.0F, 0, 0.0F);
-            GlStateManager.translate(0, Minecraft.getSystemTime() % 200000L / 200000.0F, 0.0F);
-            GlStateManager.translate(0, 0, Minecraft.getSystemTime() % 200000L / 200000.0F);
+            double offset = Minecraft.getSystemTime() % 200000L / 200000.0F;
+            GlStateManager.translate(offset, offset, offset);
 
             GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_LINEAR);
             GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_LINEAR);
             GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_LINEAR);
-            GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_LINEAR);
 
+            if (orientation == EnumFacing.UP || orientation == EnumFacing.DOWN) {
+                GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_LINEAR);
+            } else {
+                GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_LINEAR);
+            }
 
             switch (orientation) {
                 case SOUTH:
@@ -113,8 +116,8 @@ public final class DimensionalWallRenderer {
             GlStateManager.matrixMode(GL11.GL_TEXTURE);
             GlStateManager.pushMatrix();
             GlStateManager.loadIdentity();
-            GlStateManager.translate(0.0F, Minecraft.getSystemTime() % 200000L / 200000.0F * var15, 0.0F);
-            GlStateManager.scale(var16, var16, var16);
+            GlStateManager.translate(0.0F, offset * translationScale, 0.0F);
+            GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(0.5F, 0.5F, 0.5F);
             GlStateManager.rotate((pass * pass * 4321 + pass * 9) * 2.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.translate(0.5F, 0.5F, 0.5F);
@@ -124,7 +127,7 @@ public final class DimensionalWallRenderer {
             worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 
             RGBA color = colors[pass];
-            GlStateManager.color(color.getRed() * var17, color.getGreen() * var17, color.getBlue() * var17, color.getAlpha());
+            GlStateManager.color(color.getRed() * colorMultiplier, color.getGreen() * colorMultiplier, color.getBlue() * colorMultiplier, color.getAlpha());
 
             switch (orientation) {
                 case NORTH:
