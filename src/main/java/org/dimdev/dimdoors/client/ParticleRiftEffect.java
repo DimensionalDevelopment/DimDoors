@@ -37,16 +37,4 @@ public class ParticleRiftEffect extends ParticleSimpleAnimated { // TODO: colors
         setRBGColorF(oldRed, oldGreen, oldBlue);
         setAlphaF(oldAlpha);
     }
-
-    public static class Rift extends ParticleRiftEffect {
-        public Rift(World world, double x, double y, double z, double motionX, double motionY, double motionZ) {
-            super(world, x, y, z, motionX, motionY, motionZ, 0.0f, 0.7f, 0.55f, 2000, 2000);
-        }
-    }
-
-    public static class ClosingRiftEffect extends ParticleRiftEffect {
-        public ClosingRiftEffect(World world, double x, double y, double z, double motionX, double motionY, double motionZ) {
-            super(world, x, y, z, motionX, motionY, motionZ, 0.8f, 0.4f, 0.55f, 38, 16);
-        }
-    }
 }

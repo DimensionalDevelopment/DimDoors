@@ -48,8 +48,9 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
             return EnumActionResult.FAIL;
         }
 
-        if (world.isRemote) return EnumActionResult.FAIL;
-
+        if (world.isRemote) {
+            return super.onItemUse(player, world, originalPos, hand, facing, hitX, hitY, hitZ);
+        }
 
         // Store the rift entity if there's a rift block there that may be broken
         TileEntityFloatingRift rift = null;

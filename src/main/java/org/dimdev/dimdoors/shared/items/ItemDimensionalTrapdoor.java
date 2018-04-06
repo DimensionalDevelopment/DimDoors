@@ -30,7 +30,7 @@ public abstract class ItemDimensionalTrapdoor extends ItemBlock {
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (world.isRemote) {
-            return EnumActionResult.FAIL;
+            return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
         }
 
         boolean replaceable = world.getBlockState(pos).getBlock().isReplaceable(world, pos); // Check this before calling super, since that changes the block

@@ -44,14 +44,13 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
         pos = world.getBlockState(pos).getBlock().isReplaceable(world, pos) ? pos : pos.offset(side);
-        // Return false on the client side to pass this request to the server
-        if (world.isRemote) {
-            return EnumActionResult.FAIL;
-        }
-
         // Fail if the player can't place a block there TODO: spawn protection, other plugin support
         if (!player.canPlayerEdit(pos, side.getOpposite(), stack)) {
             return EnumActionResult.FAIL;
+        }
+
+        if (world.isRemote) {
+            return EnumActionResult.SUCCESS;
         }
 
         RotatedLocation target = getTarget(stack);
@@ -64,8 +63,10 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
         } else {
             // Place a rift at the target point
             if (!target.getLocation().getBlockState().getBlock().equals(ModBlocks.RIFT)) {
-                if (!target.getLocation().getBlockState().getBlock().equals(Blocks.AIR)) {
-                    return EnumActionResult.FAIL; // TODO: send a message
+                if (!target.getLocation().getBlockState().getBlock().isReplaceable(world, target.getLocation().getPos())) {
+                    DimDoors.sendTranslatedMessage(player, "tools.target_became_block");
+                    // Don't clear source, stabilized signatures always stay bound
+                    return EnumActionResult.FAIL;
                 }
                 World targetWorld = target.getLocation().getWorld();
                 targetWorld.setBlockState(target.getLocation().getPos(), ModBlocks.RIFT.getDefaultState());

@@ -44,14 +44,14 @@ public class ItemRiftSignature extends Item {
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
         pos = world.getBlockState(pos).getBlock().isReplaceable(world, pos) ? pos : pos.offset(side);
-        // Return false on the client side to pass this request to the server
-        if (world.isRemote) {
-            return EnumActionResult.FAIL;
-        }
 
         // Fail if the player can't place a block there TODO: spawn protection, other plugin support
         if (!player.canPlayerEdit(pos, side.getOpposite(), stack)) {
-            return EnumActionResult.PASS;
+            return EnumActionResult.FAIL;
+        }
+
+        if (world.isRemote) {
+            return EnumActionResult.SUCCESS;
         }
 
         RotatedLocation target = getSource(stack);
@@ -64,8 +64,10 @@ public class ItemRiftSignature extends Item {
         } else {
             // Place a rift at the saved point TODO: check that the player still has permission
             if (!target.getLocation().getBlockState().getBlock().equals(ModBlocks.RIFT)) {
-                if (!target.getLocation().getBlockState().getBlock().equals(Blocks.AIR)) {
-                    return EnumActionResult.FAIL; // TODO: send a message
+                if (!target.getLocation().getBlockState().getBlock().isReplaceable(world, target.getLocation().getPos())) {
+                    DimDoors.sendTranslatedMessage(player, "tools.target_became_block");
+                    clearSource(stack); // TODO: But is this fair? It's a rather hidden way of unbinding your signature!
+                    return EnumActionResult.FAIL;
                 }
                 World sourceWorld = target.getLocation().getWorld();
                 sourceWorld.setBlockState(target.getLocation().getPos(), ModBlocks.RIFT.getDefaultState());

@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.shared.blocks;
 
 import net.minecraft.block.material.EnumPushReaction;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
@@ -60,6 +61,10 @@ public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements 
     public TileEntityEntranceRift createNewTileEntity(World world, int meta) {
         TileEntityEntranceRift rift = new TileEntityEntranceRift();
         rift.orientation = EnumFacing.UP;
+        if (DimDoors.proxy.isClient()) {
+            // Trapdoor is on the ground
+            rift.pushIn = -0.01;
+        }
         return rift;
     }
 

@@ -88,17 +88,21 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
         if (!(tileEntity instanceof TileEntityFloatingRift)) return;
         TileEntityFloatingRift rift = (TileEntityFloatingRift) tileEntity;
 
+        // TODO: direction of particles should be rift orientation, speed should depend on size
+        double speed = 0.1d; // rift.size / 1400f;
+
         if (rift.closing) { // Renders an opposite color effect if it is being closed by the rift remover
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.ClosingRiftEffect(
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect(
                     world,
                     pos.getX() + .5, pos.getY() + 1.5, pos.getZ() + .5,
-                    rand.nextGaussian() * 0.1D, rand.nextGaussian() * 0.1D, rand.nextGaussian() * 0.1D));
+                    rand.nextGaussian() * speed, rand.nextGaussian() * speed, rand.nextGaussian() * speed,
+                    0.8f, 0.4f, 0.55f, 2000, 2000));
         }
 
-        // TODO: depend on size, stabilization status, direction of particles should be rift orientation
-        FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.Rift(
+        FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect(
                 world,
                 pos.getX() + .5, pos.getY() + 1.5, pos.getZ() + .5,
-                rand.nextGaussian() * 0.1D, rand.nextGaussian() * 0.1D, rand.nextGaussian() * 0.1D));
+                rand.nextGaussian() * speed, rand.nextGaussian() * speed, rand.nextGaussian() * speed,
+                0.0f, 0.7f, 0.55f, rift.stabilized ? 750 : 2000, rift.stabilized ? 750 : 2000));
     }
 }
