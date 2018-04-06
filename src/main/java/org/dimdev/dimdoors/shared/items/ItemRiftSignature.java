@@ -43,6 +43,7 @@ public class ItemRiftSignature extends Item {
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
+        pos = world.getBlockState(pos).getBlock().isReplaceable(world, pos) ? pos : pos.offset(side);
         // Return false on the client side to pass this request to the server
         if (world.isRemote) {
             return EnumActionResult.FAIL;
@@ -52,7 +53,6 @@ public class ItemRiftSignature extends Item {
         if (!player.canPlayerEdit(pos, side.getOpposite(), stack)) {
             return EnumActionResult.PASS;
         }
-        pos = pos.offset(side);
 
         RotatedLocation target = getSource(stack);
 

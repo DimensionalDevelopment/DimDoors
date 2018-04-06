@@ -40,8 +40,8 @@ public class ItemRiftRemover extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand handIn) { // TODO: permissions
-        ItemStack stack = player.getHeldItem(handIn);
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) { // TODO: permissions
+        ItemStack stack = player.getHeldItem(hand);
         RayTraceResult hit = rayTrace(world, player, true);
 
         if (world.isRemote) {

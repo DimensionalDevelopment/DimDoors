@@ -43,6 +43,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
+        pos = world.getBlockState(pos).getBlock().isReplaceable(world, pos) ? pos : pos.offset(side);
         // Return false on the client side to pass this request to the server
         if (world.isRemote) {
             return EnumActionResult.FAIL;
@@ -50,9 +51,8 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
 
         // Fail if the player can't place a block there TODO: spawn protection, other plugin support
         if (!player.canPlayerEdit(pos, side.getOpposite(), stack)) {
-            return EnumActionResult.PASS;
+            return EnumActionResult.FAIL;
         }
-        pos = pos.offset(side);
 
         RotatedLocation target = getTarget(stack);
 

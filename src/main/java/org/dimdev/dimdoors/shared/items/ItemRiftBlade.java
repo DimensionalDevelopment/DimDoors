@@ -1,7 +1,10 @@
 package org.dimdev.dimdoors.shared.items;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.client.TileEntityFloatingRiftRenderer;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.shared.RayTraceHelper;
@@ -41,9 +44,6 @@ public class ItemRiftBlade extends ItemSword {
         return true;
     }
 
-    /**
-     * Return whether this item is repairable in an anvil.
-     */
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
         return ModItems.STABLE_FABRIC == repair.getItem();
@@ -52,12 +52,18 @@ public class ItemRiftBlade extends ItemSword {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
+        RayTraceResult hit = rayTrace(world, player, true);
 
         if (world.isRemote) {
-            return new ActionResult<>(EnumActionResult.FAIL, stack);
+            if (RayTraceHelper.isFloatingRift(hit, world) || RayTraceHelper.isLivingEntity(hit)) {
+                return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+            } else {
+                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".rift_miss"), true);
+                TileEntityFloatingRiftRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.graphics.highlightRiftCoreFor;
+                return new ActionResult<>(EnumActionResult.FAIL, stack);
+            }
         }
-        //SchematicHandler.Instance.getPersonalPocketTemplate().place(0, 20, 0, 20, 0, 0, 1, EnumPocketType.DUNGEON); //this line can be activated for testing purposes
-        RayTraceResult hit = rayTrace(world, player, true);
+
         if (RayTraceHelper.isFloatingRift(hit, world)) {
             TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(hit.getBlockPos());
             rift.teleport(player);
@@ -66,7 +72,13 @@ public class ItemRiftBlade extends ItemSword {
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
 
         } else if (RayTraceHelper.isLivingEntity(hit)) {
-            TeleportUtils.teleport(player, new Location(world, hit.getBlockPos()), player.rotationYaw, player.rotationPitch); //@todo teleport to a location 1 or 2 blocks distance from the entity
+            BlockPos hitPos = hit.getBlockPos();
+            // TODO: gaussian, and depend on rift blade's wear
+            int xDiff = (int) (5 * (Math.random() - 0.5));
+            int zDiff = (int) (5 * (Math.random() - 0.5));
+            BlockPos tpPos = new BlockPos(hitPos.getX() + xDiff, hitPos.getY(), hitPos.getZ() + zDiff);
+            while (world.getBlockState(tpPos).getMaterial().blocksMovement()) tpPos = tpPos.up(); // TODO: move to ddutils
+            TeleportUtils.teleport(player, new Location(world, tpPos), player.rotationYaw, player.rotationPitch);
             stack.damageItem(1, player); // TODO: check if successful
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }

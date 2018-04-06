@@ -29,6 +29,10 @@ public abstract class ItemDimensionalTrapdoor extends ItemBlock {
     // TODO: placing trapdoors on rifts, merge this code with the dimdoor code/common interface
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (world.isRemote) {
+            return EnumActionResult.FAIL;
+        }
+
         boolean replaceable = world.getBlockState(pos).getBlock().isReplaceable(world, pos); // Check this before calling super, since that changes the block
         EnumActionResult result = super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
         if (result == EnumActionResult.SUCCESS) {

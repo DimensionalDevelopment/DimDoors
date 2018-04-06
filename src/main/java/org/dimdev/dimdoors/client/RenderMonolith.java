@@ -72,33 +72,33 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
         //this.renderLeash(entity, x, y, z, par8, par9);
     }
 
-    public void render(EntityMonolith par1EntityLivingBase, double x, double y, double z, float par8, float par9) {
-        if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre<>(par1EntityLivingBase, this, 1, x, y, z))) return;
+    public void render(EntityMonolith monolith, double x, double y, double z, float par8, float partialTickTime) {
+        if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre<>(monolith, this, 1, x, y, z))) return;
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        mainModel.swingProgress = getSwingProgress(par1EntityLivingBase, par9);
+        mainModel.swingProgress = getSwingProgress(monolith, partialTickTime);
 
         try {
-            float interpolatedYaw = interpolateRotation(par1EntityLivingBase.prevRenderYawOffset, par1EntityLivingBase.renderYawOffset, par9);
+            float interpolatedYaw = interpolateRotation(monolith.prevRenderYawOffset, monolith.renderYawOffset, partialTickTime);
             float rotation;
-            float pitch = par1EntityLivingBase.prevRotationPitch + (par1EntityLivingBase.rotationPitch - par1EntityLivingBase.prevRotationPitch) * par9;
-            renderLivingAt(par1EntityLivingBase, x, y, z);
+            float pitch = monolith.prevRotationPitch + (monolith.rotationPitch - monolith.prevRotationPitch) * partialTickTime;
+            renderLivingAt(monolith, x, y, z);
 
-            rotation = handleRotationFloat(par1EntityLivingBase, par9);
-            applyRotations(par1EntityLivingBase, rotation, interpolatedYaw, par9);
+            rotation = handleRotationFloat(monolith, partialTickTime);
+            applyRotations(monolith, rotation, interpolatedYaw, partialTickTime);
 
             float f6 = 0.0625F;
             GlStateManager.enableRescaleNormal();
 
             GlStateManager.scale(-1.0F, -1.0F, 1.0F);
-            preRenderCallback(par1EntityLivingBase, par9);
-            GlStateManager.rotate(par1EntityLivingBase.pitchLevel, 1.0F, 0.0F, 0.0F);
+            preRenderCallback(monolith, partialTickTime);
+            GlStateManager.rotate(monolith.pitchLevel, 1.0F, 0.0F, 0.0F);
             GlStateManager.translate(0.0F, 24.0F * f6 - 0.0078125F, 0.0F);
 
-            renderModel(par1EntityLivingBase, 0, 0, rotation, interpolatedYaw, pitch, f6);
+            renderModel(monolith, 0, 0, rotation, interpolatedYaw, pitch, f6);
 
             OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
             GlStateManager.disableTexture2D();
@@ -116,7 +116,7 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();
         GlStateManager.popMatrix();
-        MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post<>(par1EntityLivingBase, this, 1, x, y, z));
+        MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post<>(monolith, this, 1, x, y, z));
     }
 
     @Override

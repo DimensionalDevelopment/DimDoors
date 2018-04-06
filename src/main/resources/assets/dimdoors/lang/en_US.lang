@@ -78,6 +78,7 @@ item.rift_stabilizer.info=Use on a rift's core to stop its growth.
 item.rift_stabilizer.stabilized=The rift has been stabilized and will stop growing
 item.rift_stabilizer.already_stabilized=This rift is already stable
 item.rift_blade.name=Rift Blade
+item.rift_blade.rift_miss=You can only use this item on a rift's core
 
 item.world_thread.name=World Thread
 item.stable_fabric.name=Stable Fabric
@@ -125,7 +126,7 @@ rifts.destinations.private_pocket_exit.rift_has_closed=The rift you used to ente
 rifts.entrances.rift_too_close=Placing a door this close to a tear in the world would be dangerous. Shift-right-click to place anyway, or place it on the rift's core (tesseract) to bind it to the rift.
 rifts.entrances.cannot_be_placed_on_rift=This type of door can't be placed on a rift.
 
-tools.rift_miss=You can only use this item on a rift's core (tesseract)
+tools.rift_miss=You can only use this item on a rift's core
 
 dimdoors.general=General Settings
 dimdoors.general.tooltip=General configuration settings for the mod
@@ -196,3 +197,5 @@ dimdoors.graphics.showRiftCore=Always Show Rift Cores
 dimdoors.graphics.showRiftCore.tooltip=Set this to true to always show rifts' cores (tesseract animation).
 dimdoors.graphics.riftSize=Rift Size
 dimdoors.graphics.riftSize.tooltip=Multiplier affecting how large rifts should be rendered, 1 being the default size.
+dimdoors.graphics.riftJitter=Rift Jitter
+dimdoors.graphics.riftSize.tooltip=Multiplier affecting how much rifts should jitter, 1 being the default size.

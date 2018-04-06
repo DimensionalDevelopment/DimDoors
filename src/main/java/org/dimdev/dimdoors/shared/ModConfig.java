@@ -142,6 +142,11 @@ public final class ModConfig {
         @LangKey("dimdoors.graphics.riftSize")
         @RangeDouble(min = 0)
         public double riftSize = 1;
+
+        @Name("riftJitter")
+        @LangKey("dimdoors.graphics.riftJitter")
+        @RangeDouble(min=0)
+        public double riftJitter = 1;
     }
 
 

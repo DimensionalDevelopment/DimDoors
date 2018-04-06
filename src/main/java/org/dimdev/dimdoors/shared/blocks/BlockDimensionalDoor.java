@@ -146,7 +146,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     }
 
     // Let vanilla handle breaking the block. If we break it here, the rift we place will later be broken.
-    @Override public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {}
+    @Override public void onBlockHarvested(World world, BlockPos pos, IBlockState state, EntityPlayer player) {}
 
     @Override
     public EnumPushReaction getMobilityFlag(IBlockState state) {

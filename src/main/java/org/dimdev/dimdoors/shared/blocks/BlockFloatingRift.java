@@ -84,24 +84,18 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
     @SideOnly(Side.CLIENT)
     public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rand) {
         TileEntity tileEntity = world.getTileEntity(pos);
-        // Workaround minecraft/forge bug where this is called even before the TileEntity is created in multiplayer
+        // randomDisplayTick can be called before the tile entity is created in multiplayer
         if (!(tileEntity instanceof TileEntityFloatingRift)) return;
         TileEntityFloatingRift rift = (TileEntityFloatingRift) tileEntity;
-        if (0 > 0) {
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.GogglesRiftEffect(
-                    world,
-                    pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5,
-                    rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D, rand.nextGaussian() * 0.01D));
-        }
 
         if (rift.closing) { // Renders an opposite color effect if it is being closed by the rift remover
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.ClosingRiftEffect(
                     world,
-                    pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5,
+                    pos.getX() + .5, pos.getY() + 1.5, pos.getZ() + .5,
                     rand.nextGaussian() * 0.1D, rand.nextGaussian() * 0.1D, rand.nextGaussian() * 0.1D));
         }
 
-        // TODO: depend on size, direction of particles should be rift orientation
+        // TODO: depend on size, stabilization status, direction of particles should be rift orientation
         FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect.Rift(
                 world,
                 pos.getX() + .5, pos.getY() + 1.5, pos.getZ() + .5,

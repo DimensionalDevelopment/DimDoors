@@ -49,10 +49,4 @@ public class ParticleRiftEffect extends ParticleSimpleAnimated { // TODO: colors
             super(world, x, y, z, motionX, motionY, motionZ, 0.8f, 0.4f, 0.55f, 38, 16);
         }
     }
-
-    public static class GogglesRiftEffect extends ParticleRiftEffect {
-        public GogglesRiftEffect(World world, double x, double y, double z, double motionX, double motionY, double motionZ) {
-            super(world, x, y, z, motionX, motionY, motionZ, 0.0f, 0.7f, 0.55f, 38, 16);
-        }
-    }
 }

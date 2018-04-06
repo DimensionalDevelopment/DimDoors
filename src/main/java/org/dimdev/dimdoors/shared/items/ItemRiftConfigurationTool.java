@@ -9,10 +9,15 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.client.TileEntityFloatingRiftRenderer;
+import org.dimdev.dimdoors.shared.ModConfig;
+import org.dimdev.dimdoors.shared.RayTraceHelper;
 
 import java.util.List;
 
@@ -29,9 +34,18 @@ public class ItemRiftConfigurationTool extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand handIn) {
-        // TODO: reimplement this using the new registry system (open a GUI that allows configuring the rift)
-        ItemStack stack = player.getHeldItem(handIn);
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        RayTraceResult hit = rayTrace(world, player, true);
+
+        if (world.isRemote) {
+            if (!RayTraceHelper.isFloatingRift(hit, world)) {
+                player.sendStatusMessage(new TextComponentTranslation("tools.rift_miss"), true);
+                TileEntityFloatingRiftRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.graphics.highlightRiftCoreFor;
+            }
+            return new ActionResult<>(EnumActionResult.FAIL, stack);
+        }
+
         return new ActionResult<>(EnumActionResult.FAIL, stack);
     }
 

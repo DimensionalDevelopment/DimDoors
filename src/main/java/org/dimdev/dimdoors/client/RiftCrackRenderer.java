@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import org.dimdev.ddutils.lsystem.LSystem;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.Point; // TODO: wrong point class!
@@ -38,7 +39,7 @@ public final class RiftCrackRenderer {
         float time = ((Minecraft.getSystemTime() + riftRandom) % 2000000) * motionSpeed;
         double[] jitters = new double[jCount];
 
-        double jitterScale = size * size / 1100f;
+        double jitterScale = ModConfig.graphics.riftJitter * size * size * size / 2000f;
         // We use random constants here on purpose just to get different wave forms
         double xJitter = jitterScale * Math.sin(1.1f * time*size) * Math.sin(0.8f * time);
         double yJitter = jitterScale * Math.sin(1.2f * time*size) * Math.sin(0.9f * time);

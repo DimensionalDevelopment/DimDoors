@@ -74,7 +74,7 @@ public class EntityMonolith extends EntityFlying implements IMob {
     }
 
     @Override
-    public AxisAlignedBB getCollisionBox(Entity entityIn) {
+    public AxisAlignedBB getCollisionBox(Entity entity) {
         return null;
     }
 

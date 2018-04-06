@@ -32,16 +32,19 @@ public class ItemRiftStabilizer extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand handIn) { // TODO: permissions
-        ItemStack stack = player.getHeldItem(handIn);
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) { // TODO: permissions
+        ItemStack stack = player.getHeldItem(hand);
         RayTraceResult hit = rayTrace(world, player, true);
 
         if (world.isRemote) {
-            if (!RayTraceHelper.isFloatingRift(hit, world)) {
+            if (RayTraceHelper.isFloatingRift(hit, world)) {
+                // TODO: not necessarily success, fix this and all other similar cases to make arm swing correct
+                return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+            } else {
                 player.sendStatusMessage(new TextComponentTranslation("tools.rift_miss"), true);
                 TileEntityFloatingRiftRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.graphics.highlightRiftCoreFor;
+                return new ActionResult<>(EnumActionResult.FAIL, stack);
             }
-            return new ActionResult<>(EnumActionResult.FAIL, stack);
         }
 
         if (RayTraceHelper.isFloatingRift(hit, world)) {
