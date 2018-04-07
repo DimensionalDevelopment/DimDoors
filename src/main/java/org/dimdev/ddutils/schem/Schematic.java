@@ -399,8 +399,8 @@ public class Schematic {
             DimDoors.log.info("Setting cube blockstates");
             ICubicWorld cubicWorld = (ICubicWorld) world;
             for (int cubeX = 0; cubeX <= (width >> 4) + 1; cubeX++) {
-                for (int cubeY = 0; cubeY <= (length >> 4) + 1; cubeY++) {
-                    for (int cubeZ = 0; cubeZ <= (height >> 4) + 1; cubeZ++) {
+                for (int cubeY = 0; cubeY <= (height >> 4) + 1; cubeY++) {
+                    for (int cubeZ = 0; cubeZ <= (length >> 4) + 1; cubeZ++) {
                         long setStart = System.nanoTime();
                         // Get the cube only once for efficiency
                         Cube cube = cubicWorld.getCubeFromCubeCoords((xBase << 4) + cubeX, (yBase << 4) + cubeY, (zBase << 4) + cubeZ);
@@ -456,7 +456,8 @@ public class Schematic {
                                         IBlockState state = palette.get(blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
                                             if (storage == null) {
-                                                storageArray[storageY] = storage = new ExtendedBlockStorage(storageY << 4, world.provider.hasSkyLight());
+                                                storage = new ExtendedBlockStorage(((yBase >> 4) + storageY) << 4, world.provider.hasSkyLight());
+                                                storageArray[(yBase >> 4) + storageY] = storage;
                                             }
                                             storage.set(x, y, z, state);
                                         } else if (setAir) {
