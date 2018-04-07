@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.shared.items;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -29,7 +28,7 @@ public class ItemRiftSignature extends Item {
     public ItemRiftSignature() {
         setMaxStackSize(1);
         setMaxDamage(1);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
@@ -45,7 +44,7 @@ public class ItemRiftSignature extends Item {
         ItemStack stack = player.getHeldItem(hand);
         pos = world.getBlockState(pos).getBlock().isReplaceable(world, pos) ? pos : pos.offset(side);
 
-        // Fail if the player can't place a block there TODO: spawn protection, other plugin support
+        // Fail if the player can't place a block there
         if (!player.canPlayerEdit(pos, side.getOpposite(), stack)) {
             return EnumActionResult.FAIL;
         }
@@ -62,8 +61,8 @@ public class ItemRiftSignature extends Item {
             player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".stored"), true);
             world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
-            // Place a rift at the saved point TODO: check that the player still has permission
-            if (!target.getLocation().getBlockState().getBlock().equals(ModBlocks.RIFT)) {
+            // Place a rift at the saved point
+            if (target.getLocation().getBlockState().getBlock() != ModBlocks.RIFT) {
                 if (!target.getLocation().getBlockState().getBlock().isReplaceable(world, target.getLocation().getPos())) {
                     DimDoors.sendTranslatedMessage(player, "tools.target_became_block");
                     clearSource(stack); // TODO: But is this fair? It's a rather hidden way of unbinding your signature!

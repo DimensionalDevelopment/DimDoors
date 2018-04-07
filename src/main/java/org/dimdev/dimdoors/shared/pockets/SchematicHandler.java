@@ -1,31 +1,24 @@
 package org.dimdev.dimdoors.shared.pockets;
 
-import org.dimdev.ddutils.math.MathUtils;
-import org.dimdev.ddutils.schem.Schematic;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import org.apache.commons.io.IOUtils;
+import org.dimdev.ddutils.math.MathUtils;
+import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.dimdev.dimdoors.shared.ModConfig;
+
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import org.dimdev.dimdoors.shared.ModConfig;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.CompressedStreamTools;
-import org.apache.commons.io.IOUtils;
 
 /**
  * @author Robijnvogel
@@ -82,7 +75,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 try {
                     Schematic schematic = Schematic.loadFromNBT(CompressedStreamTools.readCompressed(new FileInputStream(file)));
                     PocketTemplate template = new PocketTemplate(SAVED_POCKETS_GROUP_NAME, file.getName(), null, null, null, schematic, -1, 0);
-                    template.replacePlaceholders(schematic);
+                    PocketTemplate.replacePlaceholders(schematic);
                     templates.add(template);
                 } catch (IOException e) {
                     DimDoors.log.error("Error reading schematic " + file.getName() + ": " + e);
@@ -151,12 +144,12 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             }
 
             if (schematic != null
-                    && (schematic.width > (template.getSize() + 1) * 16 || schematic.length > (template.getSize() + 1) * 16)) {
+                && (schematic.width > (template.getSize() + 1) * 16 || schematic.length > (template.getSize() + 1) * 16)) {
                 schematic = null;
                 DimDoors.log.warn("Schematic " + template.getId() + " was bigger than specified in its json file and therefore wasn't loaded");
             }
             template.setSchematic(schematic);
-            template.replacePlaceholders(schematic);
+            PocketTemplate.replacePlaceholders(schematic);
         }
         return validTemplates;
     }
@@ -224,7 +217,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
      * Gets a loaded PocketTemplate by its group and name.
      *
      * @param group Template group
-     * @param name Template name
+     * @param name  Template name
      * @return The dungeon template with that group and name, or null if it wasn't found
      */
     public PocketTemplate getTemplate(String group, String name) {
@@ -242,10 +235,10 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     /**
      * Gets a random template matching certain criteria.
      *
-     * @param group The template group to choose from.
-     * @param maxSize Maximum size the template can be.
-     * @param getLargest Setting this to true will always get the largest template size in that group, 
-     * but still randomly out of the templates with that size (ex. for private and public pockets)
+     * @param group      The template group to choose from.
+     * @param maxSize    Maximum size the template can be.
+     * @param getLargest Setting this to true will always get the largest template size in that group,
+     *                   but still randomly out of the templates with that size (ex. for private and public pockets)
      * @return A random template matching those criteria, or null if none were found
      */
     public PocketTemplate getRandomTemplate(String group, int depth, int maxSize, boolean getLargest) { // TODO: multiple groups

@@ -27,7 +27,8 @@ public final class ModBlocks {
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(GOLD_DOOR,
+        event.getRegistry().registerAll(
+                GOLD_DOOR,
                 QUARTZ_DOOR,
                 IRON_DIMENSIONAL_DOOR,
                 GOLD_DIMENSIONAL_DOOR,

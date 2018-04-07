@@ -1,11 +1,11 @@
 package org.dimdev.dimdoors.shared.blocks;
 
-import net.minecraft.block.state.IBlockState;
-import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.items.ModItems;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.items.ModItems;
 
 import java.util.Random;
 

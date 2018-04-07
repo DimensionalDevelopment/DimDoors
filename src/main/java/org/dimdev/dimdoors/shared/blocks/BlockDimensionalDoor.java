@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.shared.blocks;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
@@ -11,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -32,27 +32,32 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
 
     @Override
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
+        // Run server-side only
         if (world.isRemote) return;
 
-        IBlockState doorState = world.getBlockState(state.getValue(HALF) == EnumDoorHalf.UPPER ? pos.down() : pos); // .down() because only the bottom block has open=true
+        // Get the door's state (many door blockstates are available for the bottom door half only)
+        IBlockState doorState = world.getBlockState(state.getValue(HALF) == EnumDoorHalf.UPPER ? pos.down() : pos);
+        if (doorState.getBlock() != this) return; // The door is in a half-broken state
 
-        // Check that it's a door and that the entity portal timer is 0
-        if (doorState.getBlock().equals(this) && doorState.getValue(BlockDoor.OPEN) && entity.timeUntilPortal == 0) {
-            entity.timeUntilPortal = 50; // Disable another teleport for that entity for 2.5s
+        // Check that the door is open and the teleport timer is 0
+        if (doorState.getValue(BlockDoor.OPEN) && entity.timeUntilPortal == 0) {
+            entity.timeUntilPortal = 50; // Disable another teleport for 2.5s to avoid duplicate teleports
+
+            // Get the rift tile entity and teleport the entity
             TileEntityEntranceRift rift = getRift(world, pos, state);
             boolean successful = rift.teleport(entity);
-            if (successful) entity.timeUntilPortal = 0; // Allow the entity to teleport if successful
-            if (successful && entity instanceof EntityPlayer) {
-                if (ModConfig.general.closeDoorBehind && !state.getValue(POWERED)) toggleDoor(world, pos, false);
-                if (rift.isCloseAfterPassThrough()) world.destroyBlock(pos, false);
+
+            if (successful) entity.timeUntilPortal = 0; // Allow teleportation again
+
+            // Close the door when player passes through if enabled in config and door isn't powered
+            if (successful && entity instanceof EntityPlayer && ModConfig.general.closeDoorBehind && !doorState.getValue(POWERED)) {
+                toggleDoor(world, pos, false);
             }
         }
     }
 
-    @Override
+    @Override // Open door even if material is iron
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!canOpen(world, pos, player)) return false;
-
         BlockPos blockpos = state.getValue(HALF) == BlockDoor.EnumDoorHalf.LOWER ? pos : pos.down();
         IBlockState iblockstate = pos.equals(blockpos) ? state : world.getBlockState(blockpos);
 
@@ -76,33 +81,29 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {
-        if (canOpen(world, pos, null)) {
-            super.neighborChanged(state, world, pos, block, fromPos);
-        }
-    }
-
-    public boolean canOpen(World world, BlockPos pos, EntityPlayer player) {
-        return true; // TODO: locking system
-    }
-
-    @Override
     public boolean hasTileEntity(IBlockState state) {
         return state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER;
     }
 
     @Override
     public boolean canPlaceBlockAt(World world, BlockPos pos) {
-        // Any door block can be placed on rifts now, items will enforce restrictions now.
+        // Check that door won't exceed world height.
         if (pos.getY() >= world.getHeight() - 1) {
             return false;
-        } else {
-            IBlockState state = world.getBlockState(pos.down());
-            return (state.isSideSolid(world, pos, EnumFacing.UP)
-                    || state.getBlockFaceShape(world, pos.down(), EnumFacing.UP) == BlockFaceShape.SOLID)
-                    && (world.getBlockState(pos).getBlock().isReplaceable(world, pos) || world.getBlockState(pos).getBlock().equals(ModBlocks.RIFT))
-                    && world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up());
         }
+
+        IBlockState stateUnder = world.getBlockState(pos.down());
+
+        // Check that the bottom block is solid
+        if (!stateUnder.isSideSolid(world, pos, EnumFacing.UP) || stateUnder.getBlockFaceShape(world, pos.down(), EnumFacing.UP) != BlockFaceShape.SOLID) {
+            return false;
+        }
+
+        // Check that the bottom block is replaceable or a rift, and that the top block is replaceable
+        IBlockState stateBottom = world.getBlockState(pos);
+        IBlockState stateTop = world.getBlockState(pos.up());
+        return (stateBottom.getBlock().isReplaceable(world, pos) || stateBottom.getBlock() == ModBlocks.RIFT) &&
+               stateTop.getBlock().isReplaceable(world, pos);
     }
 
     @Override
@@ -131,10 +132,8 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
         TileEntityEntranceRift rift = getRift(world, pos, state);
         super.breakBlock(world, pos, state);
         if (world.isRemote) return;
-        if (rift == null) {
-            DimDoors.log.error("Rift tile entity was null when breaking block at " + new Location(world, pos) + ", please report this error.");
-        }
-        if (rift.isLeaveScarWhenClosed() || rift.isRegistered() && RiftRegistry.instance().getSources(new Location(rift.getWorld(), rift.getPos())).size() > 0 && !rift.isAlwaysDelete()) {
+
+        if (rift.isLeaveRiftOnBreak() || rift.isRegistered() && RiftRegistry.instance().getSources(new Location(rift.getWorld(), rift.getPos())).size() > 0 && !rift.isAlwaysDelete()) {
             world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
             // This isn't run when we change the block from within block break
             TileEntityFloatingRift newRift = (TileEntityFloatingRift) world.getTileEntity(pos);
@@ -155,10 +154,27 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
 
     @Override
     public TileEntityEntranceRift getRift(World world, BlockPos pos, IBlockState state) {
+        // Rift can be in either top or bottom block
+        TileEntity bottomEntity;
+        TileEntity topEntity;
         if (state.getValue(BlockDoor.HALF) == EnumDoorHalf.LOWER) {
-            return (TileEntityEntranceRift) world.getTileEntity(pos);
+            bottomEntity = world.getTileEntity(pos);
+            topEntity = world.getTileEntity(pos.up());
         } else {
-            return (TileEntityEntranceRift) world.getTileEntity(pos.down());
+            bottomEntity = world.getTileEntity(pos.down());
+            topEntity = world.getTileEntity(pos);
+        }
+
+        // TODO: Also notify player in case of error, don't crash
+        if (bottomEntity instanceof TileEntityEntranceRift && topEntity instanceof TileEntityEntranceRift) {
+            DimDoors.log.error("Dimensional door at " + pos + " in world " + world + " contained two rifts, please report this. Defaulting to bottom.");
+            return (TileEntityEntranceRift) bottomEntity;
+        } else if (bottomEntity instanceof TileEntityEntranceRift) {
+            return (TileEntityEntranceRift) bottomEntity;
+        } else if (topEntity instanceof TileEntityEntranceRift) {
+            return (TileEntityEntranceRift) topEntity;
+        } else {
+            throw new RuntimeException("Dimensional door at " + pos + " in world " + world + " contained no rift.");
         }
     }
 

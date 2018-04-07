@@ -156,7 +156,7 @@ public final class SchematicGenerator {
                 .build());
         rift.setProperties(link);
 
-        rift.setLeaveScarWhenClosed(true);
+        rift.setLeaveRiftOnBreak(true);
         NBTTagCompound tileNBT = rift.serializeNBT();
         tileNBT.setInteger("x", (size - 1) / 2);
         tileNBT.setInteger("y", 5);

@@ -241,7 +241,7 @@ public class PocketTemplate {
                 if (linkProperties != null) rift.setProperties(linkProperties);
                 rift.setDestination(rift.getProperties() == null || !rift.getProperties().oneWay ? linkTo : null);
                 if (rift instanceof TileEntityEntranceRift && !rift.isAlwaysDelete()) {
-                    ((TileEntityEntranceRift) rift).setLeaveScarWhenClosed(true); // We modified the door's state
+                    ((TileEntityEntranceRift) rift).setLeaveRiftOnBreak(true); // We modified the door's state
                 }
             }
         }

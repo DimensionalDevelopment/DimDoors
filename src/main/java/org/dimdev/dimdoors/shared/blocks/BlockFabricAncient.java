@@ -10,6 +10,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.items.ModCreativeTabs;
 
 import java.util.Random;
 
@@ -20,7 +21,7 @@ public class BlockFabricAncient extends BlockColored {
 
     public BlockFabricAncient() {
         super(Material.ROCK);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setUnlocalizedName(ID);
         setDefaultState(getDefaultState().withProperty(COLOR, EnumDyeColor.BLACK));

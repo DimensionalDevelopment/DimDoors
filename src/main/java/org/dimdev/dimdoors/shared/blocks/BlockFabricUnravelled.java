@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.items.ModCreativeTabs;
 import org.dimdev.dimdoors.shared.world.limbo.LimboDecay;
 import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
 
@@ -23,7 +24,7 @@ public class BlockFabricUnravelled extends BlockEmptyDrops {
         super(UNRAVELLED_FABRIC);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setUnlocalizedName(ID);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(0.1F);
         setSoundType(SoundType.STONE);
 

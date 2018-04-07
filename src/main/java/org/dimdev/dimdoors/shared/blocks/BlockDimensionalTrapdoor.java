@@ -1,9 +1,10 @@
 package org.dimdev.dimdoors.shared.blocks;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
+import net.minecraft.block.BlockTrapDoor;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.EnumPushReaction;
-import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
-import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -12,7 +13,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
+// TODO: Make this placeable on rifts
 public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements ITileEntityProvider, IRiftProvider<TileEntityEntranceRift> {
 
     public BlockDimensionalTrapdoor(Material material) {
@@ -30,31 +34,18 @@ public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements 
             boolean successful = rift.teleport(entity);
             if (successful) entity.timeUntilPortal = 0; // Allow the entity to teleport if successful
             if (successful && entity instanceof EntityPlayer) {
-                if (world.getStrongPower(pos) == 0) world.setBlockState(pos, state.withProperty(OPEN, false), 2); // TODO: config option playerClosesDoorBehind
+                if (world.getStrongPower(pos) == 0) world.setBlockState(pos, state.withProperty(OPEN, false), 2);
                 if (rift.isCloseAfterPassThrough()) world.destroyBlock(pos, false);
             }
         }
     }
 
-    @Override
+    @Override // Open trapdoor even if material is iron
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (!canOpen(world, pos, player)) return false;
-
         state = state.cycleProperty(OPEN);
         world.setBlockState(pos, state, 2);
         playSound(player, world, pos, state.getValue(OPEN));
         return true;
-    }
-
-    @Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {
-        if (canOpen(world, pos, null)) {
-            super.neighborChanged(state, world, pos, block, fromPos);
-        }
-    }
-
-    public boolean canOpen(World world, BlockPos pos, EntityPlayer player) {
-        return true; // TODO: locking system
     }
 
     @Override
@@ -85,5 +76,5 @@ public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements 
         return (TileEntityEntranceRift) world.getTileEntity(pos);
     }
 
-    public abstract boolean canBePlacedOnRift(); // TODO
+    public abstract boolean canBePlacedOnRift();
 }

@@ -45,6 +45,4 @@ import org.dimdev.ddutils.nbt.NBTUtils;
         int gridSize = PocketRegistry.instance(dim).getGridSize();
         return new BlockPos(x * gridSize * 16, 0, z * gridSize * 16);
     }
-
-    // TODO: more pockets methods
 }

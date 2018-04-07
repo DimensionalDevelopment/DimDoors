@@ -1,12 +1,13 @@
 package org.dimdev.dimdoors.shared.blocks;
 
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import org.dimdev.dimdoors.DimDoors;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
+import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.items.ModCreativeTabs;
 
 import java.util.Random;
 
@@ -18,7 +19,7 @@ public class BlockDimensionalTrapdoorWood extends BlockDimensionalTrapdoor { // 
         super(Material.WOOD);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setUnlocalizedName(ID);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(1.0F);
         setSoundType(SoundType.WOOD);
     }
@@ -28,7 +29,8 @@ public class BlockDimensionalTrapdoorWood extends BlockDimensionalTrapdoor { // 
         return Blocks.TRAPDOOR.getItemDropped(state, rand, fortune);
     }
 
-    @Override public boolean canBePlacedOnRift() {
+    @Override
+    public boolean canBePlacedOnRift() {
         return true;
     }
 }

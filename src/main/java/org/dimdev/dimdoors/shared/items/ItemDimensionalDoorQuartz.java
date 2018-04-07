@@ -13,7 +13,7 @@ public class ItemDimensionalDoorQuartz extends ItemDimensionalDoor {
 
     public ItemDimensionalDoorQuartz() {
         super(ModBlocks.PERSONAL_DIMENSIONAL_DOOR);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setUnlocalizedName(BlockDimensionalDoorQuartz.ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimensionalDoorQuartz.ID));
     }

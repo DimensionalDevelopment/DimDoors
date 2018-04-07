@@ -1,14 +1,18 @@
-package org.dimdev.dimdoors.server;
+package org.dimdev.dimdoors.proxy;
 
-import org.dimdev.dimdoors.shared.CommonProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.client.IRenderHandler;
 
-/**
- * @author Robijnvogel
- */
-public class ServerProxy extends CommonProxy {
+public class ServerProxy implements IProxy {
+
+    @Override
+    public void onPreInitialization(FMLPreInitializationEvent event) {}
+
+    @Override
+    public void onInitialization(FMLInitializationEvent event) {}
 
     @Override
     public boolean isClient() {

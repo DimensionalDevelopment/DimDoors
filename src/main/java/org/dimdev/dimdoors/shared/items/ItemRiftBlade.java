@@ -7,7 +7,6 @@ import org.dimdev.dimdoors.client.TileEntityFloatingRiftRenderer;
 import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import org.dimdev.ddutils.Location;
-import org.dimdev.dimdoors.shared.RayTraceHelper;
 import org.dimdev.ddutils.TeleportUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,16 +23,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-/**
- * Created by Jared Johnson on 1/20/2017.
- */
 public class ItemRiftBlade extends ItemSword {
 
     public static final String ID = "rift_blade";
 
     public ItemRiftBlade() {
         super(ToolMaterial.IRON);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
@@ -79,7 +75,7 @@ public class ItemRiftBlade extends ItemSword {
             BlockPos tpPos = new BlockPos(hitPos.getX() + xDiff, hitPos.getY(), hitPos.getZ() + zDiff);
             while (world.getBlockState(tpPos).getMaterial().blocksMovement()) tpPos = tpPos.up(); // TODO: move to ddutils
             TeleportUtils.teleport(player, new Location(world, tpPos), player.rotationYaw, player.rotationPitch);
-            stack.damageItem(1, player); // TODO: check if successful
+            stack.damageItem(1, player);
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
 

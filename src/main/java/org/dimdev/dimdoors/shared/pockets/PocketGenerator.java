@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.shared.pockets;
 
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.*;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.world.ModDimensions;

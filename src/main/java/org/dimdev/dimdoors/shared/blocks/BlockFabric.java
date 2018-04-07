@@ -17,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.items.ModCreativeTabs;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 import java.util.Random;
@@ -30,7 +31,7 @@ public class BlockFabric extends BlockColored {
         super(FABRIC);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setUnlocalizedName(ID);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setDefaultState(getDefaultState().withProperty(COLOR, EnumDyeColor.BLACK));
         setHardness(0.1F);
         setSoundType(SoundType.STONE);
@@ -50,16 +51,19 @@ public class BlockFabric extends BlockColored {
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         ItemStack heldItem = player.getHeldItem(hand);
-
         Block block = Block.getBlockFromItem(heldItem.getItem());
-        if (!block.getDefaultState().isNormalCube() || block.hasTileEntity(block.getDefaultState())
-            || block == this
-            || player.isSneaking()
-            || !ModDimensions.isDimDoorsPocketDimension(world)) {
-            return false;
+
+        // Replace fabric in pockets unless it's a special block or the player is sneaking
+        if (block.getDefaultState().isNormalCube()
+            && !block.hasTileEntity(block.getDefaultState())
+            && block != this && !player.isSneaking()
+            && ModDimensions.isDimDoorsPocketDimension(world)) {
+
+            if (!player.isCreative()) heldItem.shrink(1);
+            world.setBlockState(pos, block.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, heldItem.getMetadata(), player, hand));
+            return true; // Cancel the block place, and return success (swings arm)
+        } else {
+            return false; // Handle the place normally
         }
-        if (!player.isCreative()) heldItem.shrink(1);
-        world.setBlockState(pos, block.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, heldItem.getMetadata(), player, hand)); //choosing getStateForPlacement over getDefaultState, because it will cause directional blocks, like logs to rotate correctly
-        return true;
     }
 }

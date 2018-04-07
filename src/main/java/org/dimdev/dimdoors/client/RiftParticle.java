@@ -6,15 +6,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.dimdev.dimdoors.shared.world.ModDimensions;
 
-// This has exactly the same appearence as the 1.6.4 mod.
 @SideOnly(Side.CLIENT)
-public class ParticleRiftEffect extends ParticleSimpleAnimated { // TODO: colors, density
+public class RiftParticle extends ParticleSimpleAnimated {
 
-    private float colorMultiplier;
-
-    public ParticleRiftEffect(World world, double x, double y, double z, double motionX, double motionY, double motionZ, float nonPocketColorMultiplier, float pocketColorMultiplier, float scale, int averageAge, int ageSpread) {
+    public RiftParticle(World world, double x, double y, double z, double motionX, double motionY, double motionZ, float color, float scale, int averageAge, int ageSpread) {
         super(world, x, y, z, 160, 8, 0);
         this.motionX = motionX;
         this.motionY = motionY;
@@ -22,19 +18,13 @@ public class ParticleRiftEffect extends ParticleSimpleAnimated { // TODO: colors
 
         particleScale *= scale;
         particleMaxAge = averageAge - ageSpread / 2 + rand.nextInt(ageSpread);
-        colorMultiplier = ModDimensions.isDimDoorsPocketDimension(world) ? pocketColorMultiplier : nonPocketColorMultiplier;
+
+        setRBGColorF(color, color, color);
     }
 
     @Override
     public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        float oldRed = particleRed;
-        float oldGreen = particleGreen;
-        float oldBlue = particleBlue;
-        float oldAlpha = particleAlpha;
-        setRBGColorF(colorMultiplier * particleRed, colorMultiplier * particleGreen, colorMultiplier * particleBlue);
         setAlphaF(1 - (float) particleAge / particleMaxAge);
         super.renderParticle(buffer, entity, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
-        setRBGColorF(oldRed, oldGreen, oldBlue);
-        setAlphaF(oldAlpha);
     }
 }

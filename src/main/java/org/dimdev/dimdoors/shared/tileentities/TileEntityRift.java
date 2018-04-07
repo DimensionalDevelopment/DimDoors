@@ -222,11 +222,6 @@ import javax.annotation.Nonnull;
         }
     }
 
-    @Override
-    public void markDirty() {
-        super.markDirty();
-    }
-
     // Info
     protected abstract boolean isFloating();
 

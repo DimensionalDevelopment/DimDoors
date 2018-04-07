@@ -47,7 +47,7 @@ import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
         if (!limboConsideredWorld && world.provider instanceof WorldProviderLimbo) {
             world = WorldUtils.getWorld(0);
         }
-        float spread = ModConfig.general.depthSpreadFactor * depth; // TODO: gaussian spread
+        float spread = ModConfig.general.depthSpreadFactor * depth; // TODO: gaussian spread, handle air-filled/pocket world
         int newX = (int) (x + spread * 2 * (Math.random() - 0.5));
         int newZ = (int) (z + spread * 2 * (Math.random() - 0.5));
         BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(newX, 0, newZ));

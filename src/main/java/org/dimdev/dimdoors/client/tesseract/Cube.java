@@ -8,18 +8,18 @@ import org.dimdev.ddutils.RGBA;
 public class Cube {
     Plane[] planes = new Plane[6];
 
-    public Cube(Vector4f first, Vector4f second, Vector4f third, Vector4f fourth, Vector4f fifth, Vector4f sixth, Vector4f seventh, Vector4f eighth) {
-        planes[0] = new Plane(first, second, third, fourth);
-        planes[1] = new Plane(fifth, sixth, seventh, eighth);
-        planes[2] = new Plane(first, third, fifth, seventh);
-        planes[3] = new Plane(third, fourth, seventh, eighth);
-        planes[4] = new Plane(second, fourth, sixth, eighth);
-        planes[5] = new Plane(first, second, fifth, sixth);
+    public Cube(Vector4f vec1, Vector4f vec2, Vector4f vec3, Vector4f vec4, Vector4f vec5, Vector4f vec6, Vector4f vec7, Vector4f vec8) {
+        planes[0] = new Plane(vec1, vec2, vec3, vec4);
+        planes[1] = new Plane(vec5, vec6, vec7, vec8);
+        planes[2] = new Plane(vec1, vec3, vec5, vec7);
+        planes[3] = new Plane(vec3, vec4, vec7, vec8);
+        planes[4] = new Plane(vec2, vec4, vec6, vec8);
+        planes[5] = new Plane(vec1, vec2, vec5, vec6);
     }
 
     @SideOnly(Side.CLIENT)
     public void draw(RGBA color, double radian) {
-        for(Plane plane : planes) {
+        for (Plane plane : planes) {
             plane.draw(color, radian);
         }
     }

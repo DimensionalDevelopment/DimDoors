@@ -23,7 +23,7 @@ import net.minecraft.util.EnumFacing;
 import java.util.Random;
 
 @NBTSerializable public class TileEntityEntranceRift extends TileEntityRift {
-    @Saved @Getter protected boolean leaveScarWhenClosed = false;
+    @Saved @Getter protected boolean leaveRiftOnBreak = false;
     @Saved @Getter protected boolean closeAfterPassThrough = false; // TODO: doesn't make sense lore-wise for doors, split into separate tile entity
 
     // Set by the block on tile entity creation, can't get from the block, it's not necessarily a door
@@ -52,13 +52,13 @@ import java.util.Random;
             TileEntityEntranceRift oldEntranceRift = (TileEntityEntranceRift) oldRift;
             closeAfterPassThrough = oldEntranceRift.closeAfterPassThrough;
         }
-        leaveScarWhenClosed = true;
+        leaveRiftOnBreak = true;
     }
 
     @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
 
-    public void setLeaveScarWhenClosed(boolean leaveScarWhenClosed) { this.leaveScarWhenClosed = leaveScarWhenClosed; markDirty(); }
+    public void setLeaveRiftOnBreak(boolean leaveRiftOnBreak) { this.leaveRiftOnBreak = leaveRiftOnBreak; markDirty(); }
     public void setLockStatus(byte lockStatus) { this.lockStatus = lockStatus; markDirty(); }
     public void setCloseAfterPassThrough(boolean closeAfterPassThrough) { this.closeAfterPassThrough = closeAfterPassThrough; markDirty(); }
 
@@ -66,7 +66,7 @@ import java.util.Random;
     public boolean teleport(Entity entity) {
         boolean status = super.teleport(entity);
         if (riftStateChanged && !alwaysDelete) {
-            leaveScarWhenClosed = true;
+            leaveRiftOnBreak = true;
             markDirty();
         }
         return status;
@@ -99,7 +99,18 @@ import java.util.Random;
         return oldState.getBlock() != newSate.getBlock();
     }
 
-    public RGBA getEntranceRenderColor(Random rand) {
+    @SideOnly(Side.CLIENT)
+    public RGBA[] getColors(int count) { // TODO: cache this
+        Random rand = new Random(31100L);
+        RGBA[] colors = new RGBA[count];
+        for (int i = 0; i < count; i++) {
+            colors[i] = getEntranceRenderColor(rand);
+        }
+        return colors;
+    }
+
+    @SideOnly(Side.CLIENT)
+    protected RGBA getEntranceRenderColor(Random rand) {
         float red, green, blue;
         switch(world.provider.getDimension()) {
             case -1: // Nether

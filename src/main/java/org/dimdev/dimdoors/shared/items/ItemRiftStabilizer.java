@@ -14,7 +14,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.client.TileEntityFloatingRiftRenderer;
 import org.dimdev.dimdoors.shared.ModConfig;
-import org.dimdev.dimdoors.shared.RayTraceHelper;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
@@ -26,13 +25,13 @@ public class ItemRiftStabilizer extends Item {
     public ItemRiftStabilizer() {
         setMaxStackSize(1);
         setMaxDamage(6); // TODO: Add more uses and make it reduce rift growth speed instead?
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) { // TODO: permissions
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
         RayTraceResult hit = rayTrace(world, player, true);
 

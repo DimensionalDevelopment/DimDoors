@@ -17,7 +17,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.client.TileEntityFloatingRiftRenderer;
 import org.dimdev.dimdoors.shared.ModConfig;
-import org.dimdev.dimdoors.shared.RayTraceHelper;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class ItemRiftConfigurationTool extends Item {
     ItemRiftConfigurationTool() {
         setMaxStackSize(1);
         setMaxDamage(16);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }

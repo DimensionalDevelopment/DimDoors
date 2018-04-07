@@ -5,18 +5,14 @@ import java.util.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.client.ParticleRiftEffect;
+import org.dimdev.dimdoors.client.RiftParticle;
 import org.dimdev.dimdoors.shared.ModConfig;
-import org.dimdev.dimdoors.shared.items.ModItems;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import org.dimdev.ddutils.blocks.BlockSpecialAir;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -24,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityProvider, IRiftProvider<TileEntityFloatingRift> {
 
@@ -45,7 +42,7 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
     @Override
     @SuppressWarnings("deprecation")
     public MapColor getMapColor(IBlockState state, IBlockAccess world, BlockPos pos) {
-        return MapColor.BLUE;
+        return MapColor.BLACK;
     }
 
     // Unregister the rift on break
@@ -72,13 +69,6 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
         return (TileEntityFloatingRift) world.getTileEntity(pos);
     }
 
-    public void dropWorldThread(World world, BlockPos pos, Random random) {
-        if (!world.getBlockState(pos).equals(Blocks.AIR)) {
-            ItemStack thread = new ItemStack(ModItems.WORLD_THREAD, 1);
-            world.spawnEntity(new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), thread));
-        }
-    }
-
     // Render rift effects
     @Override
     @SideOnly(Side.CLIENT)
@@ -88,21 +78,21 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
         if (!(tileEntity instanceof TileEntityFloatingRift)) return;
         TileEntityFloatingRift rift = (TileEntityFloatingRift) tileEntity;
 
-        // TODO: direction of particles should be rift orientation, speed should depend on size
-        double speed = 0.1d; // rift.size / 1400f;
+        boolean outsidePocket = !ModDimensions.isDimDoorsPocketDimension(world);
+        double speed = 0.1D;
 
-        if (rift.closing) { // Renders an opposite color effect if it is being closed by the rift remover
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect(
+        if (rift.closing) {
+            FMLClientHandler.instance().getClient().effectRenderer.addEffect(new RiftParticle(
                     world,
                     pos.getX() + .5, pos.getY() + 1.5, pos.getZ() + .5,
                     rand.nextGaussian() * speed, rand.nextGaussian() * speed, rand.nextGaussian() * speed,
-                    0.8f, 0.4f, 0.55f, 2000, 2000));
+                    outsidePocket ? 0.8f : 0.4f, 0.55f, 2000, 2000));
         }
 
-        FMLClientHandler.instance().getClient().effectRenderer.addEffect(new ParticleRiftEffect(
+        FMLClientHandler.instance().getClient().effectRenderer.addEffect(new RiftParticle(
                 world,
                 pos.getX() + .5, pos.getY() + 1.5, pos.getZ() + .5,
                 rand.nextGaussian() * speed, rand.nextGaussian() * speed, rand.nextGaussian() * speed,
-                0.0f, 0.7f, 0.55f, rift.stabilized ? 750 : 2000, rift.stabilized ? 750 : 2000));
+                outsidePocket ? 0.0f : 0.7f, 0.55f, rift.stabilized ? 750 : 2000, rift.stabilized ? 750 : 2000));
     }
 }

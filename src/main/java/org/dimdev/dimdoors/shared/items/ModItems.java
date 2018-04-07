@@ -26,8 +26,8 @@ public final class ModItems {
     // Crafting ingredients
     private static final String WORLD_THREAD_ID = "world_thread";
     private static final String STABLE_FABRIC_ID = "stable_fabric";
-    public static final Item WORLD_THREAD = new Item().setUnlocalizedName(WORLD_THREAD_ID).setFull3D().setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB).setRegistryName(new ResourceLocation(DimDoors.MODID, WORLD_THREAD_ID));
-    public static final Item STABLE_FABRIC = new Item().setUnlocalizedName(STABLE_FABRIC_ID).setFull3D().setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB).setRegistryName(new ResourceLocation(DimDoors.MODID, STABLE_FABRIC_ID));
+    public static final Item WORLD_THREAD = new Item().setUnlocalizedName(WORLD_THREAD_ID).setFull3D().setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB).setRegistryName(new ResourceLocation(DimDoors.MODID, WORLD_THREAD_ID));
+    public static final Item STABLE_FABRIC = new Item().setUnlocalizedName(STABLE_FABRIC_ID).setFull3D().setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB).setRegistryName(new ResourceLocation(DimDoors.MODID, STABLE_FABRIC_ID));
 
     // Tools
     public static final ItemRiftConfigurationTool RIFT_CONFIGURATION_TOOL = new ItemRiftConfigurationTool();
@@ -52,7 +52,8 @@ public final class ModItems {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
-        event.getRegistry().registerAll(QUARTZ_DOOR,
+        event.getRegistry().registerAll(
+                QUARTZ_DOOR,
                 QUARTZ_DIMENSIONAL_DOOR,
                 GOLD_DOOR,
                 GOLD_DIMENSIONAL_DOOR,
@@ -76,7 +77,5 @@ public final class ModItems {
                 UNRAVELLED_FABRIC,
                 ETERNAL_FABRIC,
                 WOOD_DIMENSIONAL_TRAPDOOR);
-
-        DimDoors.proxy.afterItemsRegistered();
     }
 }

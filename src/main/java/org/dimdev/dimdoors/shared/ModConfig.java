@@ -3,15 +3,12 @@ package org.dimdev.dimdoors.shared;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.dimdev.dimdoors.DimDoors;
 
 import static net.minecraftforge.common.config.Config.*;
 
-// TODO: fix missing/removed config options automatically on load
 @Config(modid = DimDoors.MODID, name = DimDoors.MODID, category = "")
-@Mod.EventBusSubscriber(modid = DimDoors.MODID)
 public final class ModConfig {
 
     public static General general = new General();

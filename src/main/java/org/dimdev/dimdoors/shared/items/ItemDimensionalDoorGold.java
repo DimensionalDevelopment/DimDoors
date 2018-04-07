@@ -16,7 +16,7 @@ public class ItemDimensionalDoorGold extends ItemDimensionalDoor {
 
     public ItemDimensionalDoorGold() {
         super(ModBlocks.GOLD_DIMENSIONAL_DOOR);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setUnlocalizedName(BlockDimensionalDoorGold.ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimensionalDoorGold.ID));
     }

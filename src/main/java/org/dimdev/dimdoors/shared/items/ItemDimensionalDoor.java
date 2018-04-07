@@ -35,12 +35,13 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         BlockPos originalPos = pos; // super.onItemUse needs the actual position
         if (!world.getBlockState(pos).getBlock().isReplaceable(world, pos)) pos = pos.offset(facing);
-        boolean placedOnRift = world.getBlockState(pos).getBlock().equals(ModBlocks.RIFT);
+
+        boolean placedOnRift = world.getBlockState(pos).getBlock() == ModBlocks.RIFT;
 
         if (!placedOnRift && !player.isSneaking() && isRiftNear(world, pos)) {
             // Allowing on second right click would require cancelling client-side, which
             // is impossible (see https://github.com/MinecraftForge/MinecraftForge/issues/3272)
-            // or sending fake packets.
+            // without sending custom packets.
             if (world.isRemote) {
                 DimDoors.chat(player, "rifts.entrances.rift_too_close");
                 TileEntityFloatingRiftRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.graphics.highlightRiftCoreFor;

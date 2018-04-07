@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Getter;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.storage.MapStorage;
@@ -146,7 +145,7 @@ import org.dimdev.dimdoors.shared.ModConfig;
         return getPocket(posToID(pos));
     }
 
-    public boolean isPlayerAllowedToBeAt(EntityPlayerMP player, BlockPos pos) {
+    public boolean isWithinPocketBounds(BlockPos pos) {
         Pocket pocket = getPocketAt(pos);
         return pocket != null && pocket.isInBounds(pos);
     }

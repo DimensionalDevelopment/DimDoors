@@ -22,6 +22,6 @@ public class ItemWovenWorldThreadArmor extends ItemArmor {
         super(WOVEN_WORLD_THREAD, renderIndex, equipmentSlot);
         setUnlocalizedName(name);
         setRegistryName(DimDoors.MODID, name);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
     }
 }

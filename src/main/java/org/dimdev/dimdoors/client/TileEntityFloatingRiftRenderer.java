@@ -26,7 +26,7 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
             renderTesseract(rift, x, y, z, partialTicks);
         } else {
             long timeLeft = showRiftCoreUntil - System.currentTimeMillis();
-            if (timeLeft >= 0/*3000 || timeLeft >= 0 && timeLeft / 500 % 2 == 0*/) {
+            if (timeLeft >= 0) {
                 renderTesseract(rift, x, y, z, partialTicks);
             }
         }
@@ -35,7 +35,6 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
 
     private void renderCrack(TileEntityFloatingRift rift, double x, double y, double z) {
         GL11.glPushMatrix();
-        // TODO: Make the sky get dark when a player approaches a rift?
 
         // Make the rift render on both sides, disable texture mapping and lighting
         GlStateManager.disableLighting();

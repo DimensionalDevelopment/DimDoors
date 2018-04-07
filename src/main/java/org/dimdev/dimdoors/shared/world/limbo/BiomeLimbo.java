@@ -45,12 +45,6 @@ public class BiomeLimbo extends Biome {
 
     @Override public void genTerrainBlocks(World world, Random rand, ChunkPrimer chunkPrimer, int x, int z, double noiseVal) {}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getSkyColorByTemp(float currentTemperature) { // TODO: what does this do?
-        return super.getSkyColorByTemp(currentTemperature);
-    }
-
     // TODO: check that black/white grass and foliage in getModdedBiomeGrassColor is compatible with other mods such as Quark's greener grass option
     @Override
     @SideOnly(Side.CLIENT)

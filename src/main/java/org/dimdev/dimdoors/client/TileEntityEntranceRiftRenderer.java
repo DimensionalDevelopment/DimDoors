@@ -10,30 +10,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.dimdev.ddutils.RGBA;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.lwjgl.opengl.GL11;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
 @SideOnly(Side.CLIENT)
-public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<TileEntityEntranceRift> { // TODO: see TileEntityEndGatewayRenderer
+public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<TileEntityEntranceRift> {
 
     private final ResourceLocation keyPath = new ResourceLocation(DimDoors.MODID + ":textures/other/keyhole.png");
     private final ResourceLocation keyholeLight = new ResourceLocation(DimDoors.MODID + ":textures/other/keyhole_light.png");
-    private final Map<TileEntityEntranceRift, RGBA[]> colorMap = new HashMap<>();
-
-    private RGBA[] getColors(TileEntityEntranceRift entrance) {
-        if (colorMap.containsKey(entrance)) return colorMap.get(entrance);
-        Random rand = new Random(31100L);
-        RGBA[] colors = new RGBA[16];
-        for (int i = 0; i < 16; i++) colors[i] = entrance.getEntranceRenderColor(rand);
-        colorMap.put(entrance, colors);
-        return colors;
-    }
 
     private void renderKeyHole(TileEntityEntranceRift tile, double x, double y, double z, int i) {
         EnumFacing rotation = EnumFacing.getHorizontal((tile.orientation.getHorizontalIndex() + 3) % 4);
@@ -101,7 +86,7 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
                 entrance.orientation == EnumFacing.NORTH ||
                 entrance.orientation == EnumFacing.WEST ||
                 entrance.orientation == EnumFacing.UP ? entrance.pushIn : entrance.pushIn - 1);
-        DimensionalWallRenderer.renderDimensionalWall(
+        DimensionalPortalRenderer.renderDimensionalPortal(
                 x + offset.x,
                 y + offset.y,
                 z + offset.z,
@@ -110,7 +95,7 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
                 entrance.orientation,
                 entrance.extendLeft + entrance.extendRight,
                 entrance.extendDown + entrance.extendUp,
-                getColors(entrance));
+                entrance.getColors(16));
 
         if (entrance.lockStatus >= 1) {
             for (int i = 0; i < 1 + entrance.lockStatus; i++) {

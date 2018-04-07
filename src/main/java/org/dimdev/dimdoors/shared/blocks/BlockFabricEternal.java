@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.items.ModCreativeTabs;
 import org.dimdev.dimdoors.shared.rifts.destinations.EscapeDestination;
 
 public class BlockFabricEternal extends BlockEmptyDrops { // TODO: make this a glowing red liquid
@@ -23,7 +24,7 @@ public class BlockFabricEternal extends BlockEmptyDrops { // TODO: make this a g
         super(ETERNAL_FABRIC);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setUnlocalizedName(ID);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(-1);
         setResistance(6000000.0F);
         disableStats();

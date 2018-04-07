@@ -97,7 +97,7 @@ commands.saveschem.success=La modèle de dimension de poche %s a été sauvegard
 commands.generic.dimdoors.not_in_pocket_dim=Vous devez être dans une dimension contenant des dimension de poche pour utiliser cette commande.
 commands.generic.dimdoors.not_in_pocket=Vous devez être dans une dimension de poche pour utiliser cette commande.
 
-rifts.unlinked=Cette fissure n'a pas de destination
+rifts.unlinked=Cette fissure ne mene nulle part
 rifts.destinations.escape.cannot_escape_limbo=Bien éssayé, mais il faut soit mourrir ou trouver de l'étoffe eternelle pour s'échapper des Limbes.
 rifts.destinations.escape.not_in_pocket_dim=Vous ne pouvez utiliser cela que pour vous échapper d'une dimension de poche!
 rifts.destinations.escape.did_not_use_rift=Vouz n'avez pas utilisé une fissure pour entrer dans la dimension de poche donc vous tombez dans les Limbes!

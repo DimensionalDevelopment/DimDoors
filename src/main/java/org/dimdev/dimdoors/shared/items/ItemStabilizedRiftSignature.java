@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.shared.items;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,7 +28,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
     public ItemStabilizedRiftSignature() {
         setMaxStackSize(1);
         setMaxDamage(20);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
@@ -44,7 +43,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
         pos = world.getBlockState(pos).getBlock().isReplaceable(world, pos) ? pos : pos.offset(side);
-        // Fail if the player can't place a block there TODO: spawn protection, other plugin support
+        // Fail if the player can't place a block there
         if (!player.canPlayerEdit(pos, side.getOpposite(), stack)) {
             return EnumActionResult.FAIL;
         }
@@ -62,7 +61,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
             world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
             // Place a rift at the target point
-            if (!target.getLocation().getBlockState().getBlock().equals(ModBlocks.RIFT)) {
+            if (target.getLocation().getBlockState().getBlock() != ModBlocks.RIFT) {
                 if (!target.getLocation().getBlockState().getBlock().isReplaceable(world, target.getLocation().getPos())) {
                     DimDoors.sendTranslatedMessage(player, "tools.target_became_block");
                     // Don't clear source, stabilized signatures always stay bound

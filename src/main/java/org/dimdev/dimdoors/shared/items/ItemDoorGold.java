@@ -11,7 +11,7 @@ public class ItemDoorGold extends ItemDoor {
     public ItemDoorGold() {
         super(ModBlocks.GOLD_DOOR);
         setMaxStackSize(16);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setUnlocalizedName(BlockDoorGold.ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDoorGold.ID));
     }

@@ -14,13 +14,15 @@ import org.lwjgl.opengl.GL11;
 
 import java.nio.FloatBuffer;
 
-public final class DimensionalWallRenderer {
+public final class DimensionalPortalRenderer {
 
     private static final FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
     private static final ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/warp.png");
 
-    // TODO: any render angle
     /**
+     * Renders a dimensional portal, for use in various situations. Code is mostly based
+     * on vanilla's TileEntityEndGatewayRenderer.
+     *
      * @param x           The x coordinate of the wall's center.
      * @param y           The y coordinate of the wall's center.
      * @param z           The z coordinate of the wall's center.
@@ -31,7 +33,7 @@ public final class DimensionalWallRenderer {
      * @param height      The height of the wall.
      * @param colors      An array containing the color to use on each pass. Its length determines the number of passes to do.
      */
-    public static void renderDimensionalWall(double x, double y, double z, EnumFacing orientation, double width, double height, RGBA[] colors) {
+    public static void renderDimensionalPortal(double x, double y, double z, EnumFacing orientation, double width, double height, RGBA[] colors) { // TODO: Make this work at any angle
         GlStateManager.disableLighting();
         GlStateManager.disableCull();
 
@@ -71,7 +73,7 @@ public final class DimensionalWallRenderer {
                 GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_LINEAR);
             }
 
-            switch (orientation) {
+            switch (orientation) { // TODO: Why 0.15F? Is that a door's thickness? If yes, don't hardcode that.
                 case SOUTH:
                     GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getBuffer(0.0F, 1.0F, 0.0F, 0.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getBuffer(1.0F, 0.0F, 0.0F, 0.0F));
@@ -103,7 +105,11 @@ public final class DimensionalWallRenderer {
                     GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_PLANE, getBuffer(0.0F, 1.0F, 0.0F, 0.0F));
                     break;
                 case DOWN:
-                    // TODO: logic for DOWN
+                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getBuffer(1.0F, 0.0F, 0.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getBuffer(0.0F, 0.0F, 1.0F, 0.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_PLANE, getBuffer(0.0F, 1.0F, 0.0F, 0.0F));
+                    break;
             }
 
             GlStateManager.enableTexGenCoord(GlStateManager.TexGen.S);
@@ -183,9 +189,9 @@ public final class DimensionalWallRenderer {
         GlStateManager.enableLighting();
     }
 
-    private static FloatBuffer getBuffer(float par1, float par2, float par3, float par4) {
+    private static FloatBuffer getBuffer(float f1, float f2, float f3, float f4) {
         buffer.clear();
-        buffer.put(par1).put(par2).put(par3).put(par4);
+        buffer.put(f1).put(f2).put(f3).put(f4);
         buffer.flip();
         return buffer;
     }

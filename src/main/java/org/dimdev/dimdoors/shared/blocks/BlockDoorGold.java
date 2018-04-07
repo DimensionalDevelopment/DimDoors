@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.shared.blocks;
 import java.util.Random;
 
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.items.ModCreativeTabs;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
@@ -22,7 +23,7 @@ public class BlockDoorGold extends BlockDoor {
         super(Material.IRON);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setUnlocalizedName(ID);
-        setCreativeTab(DimDoors.DIM_DOORS_CREATIVE_TAB);
+        setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(0.1F);
     }
 
