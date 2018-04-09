@@ -4,7 +4,7 @@ import net.minecraft.util.ResourceLocation;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoorGold;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import org.dimdev.dimdoors.shared.rifts.destinations.AvailableLinkDestination;
+import org.dimdev.dimdoors.shared.rifts.targets.RandomTarget;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
@@ -26,7 +26,7 @@ public class ItemDimensionalDoorGold extends ItemDimensionalDoor {
         rift.setProperties(LinkProperties.builder()
                 .groups(new HashSet<>(Arrays.asList(0, 1)))
                 .linksRemaining(1).build());
-        rift.setDestination(AvailableLinkDestination.builder()
+        rift.setDestination(RandomTarget.builder()
                 .acceptedGroups(Collections.singleton(0))
                 .coordFactor(1)
                 .negativeDepthFactor(10000)

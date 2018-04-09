@@ -73,22 +73,17 @@ import java.util.Random;
     }
 
     @Override
-    public void teleportTo(Entity entity, float fromYaw, float fromPitch) { // TODO: teleportOffset for all rifts instead?
+    public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) { // TODO: teleportOffset for all rifts instead?
         Vec3d targetPos = new Vec3d(pos).addVector(0.5, 0, 0.5).add(new Vec3d(orientation.getDirectionVec()).scale(ModConfig.general.teleportOffset + 0.5));
         if (relativeRotation) {
-            float yaw = getDestinationYaw(entity.rotationYaw) + entity.rotationYaw - fromYaw;
-            float pitch = entity instanceof EntityLiving ? entity.rotationPitch : getDestinationPitch(entity.rotationPitch) + entity.rotationPitch - fromPitch;
+            float yaw = getDestinationYaw(entity.rotationYaw) + entity.rotationYaw - relativeYaw;
+            float pitch = entity instanceof EntityLiving ? entity.rotationPitch : getDestinationPitch(entity.rotationPitch) + entity.rotationPitch - relativePitch;
             TeleportUtils.teleport(entity, WorldUtils.getDim(world), targetPos.x, targetPos.y, targetPos.z, yaw, pitch);
             // TODO: velocity
         } else {
-            teleportTo(entity);
+            TeleportUtils.teleport(entity, WorldUtils.getDim(world), targetPos.x, targetPos.y, targetPos.z, orientation.getHorizontalAngle(), 0);
         }
-    }
-
-    @Override
-    public void teleportTo(Entity entity) {
-        Vec3d targetPos = new Vec3d(pos).add(new Vec3d(orientation.getDirectionVec()).scale(ModConfig.general.teleportOffset + 0.5));
-        TeleportUtils.teleport(entity, WorldUtils.getDim(world), targetPos.x, targetPos.y, targetPos.z, orientation.getHorizontalAngle(), 0);
+        return true;
     }
 
     // Use vanilla behavior of refreshing only when block changes, not state (otherwise, opening the door would destroy the tile entity)

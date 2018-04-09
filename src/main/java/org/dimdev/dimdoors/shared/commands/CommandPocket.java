@@ -13,7 +13,7 @@ import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
 import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
 import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
-import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
+import org.dimdev.dimdoors.shared.rifts.targets.IEntityTarget;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.pocketlib.Pocket;
@@ -67,8 +67,8 @@ public class CommandPocket extends CommandBase {
 
         // Teleport the player there
         if (RiftRegistry.instance().getPocketEntrance(pocket) != null) {
-            TileEntityRift entrance = (TileEntityRift) player.world.getTileEntity(RiftRegistry.instance().getPocketEntrance(pocket).getPos());
-            entrance.teleportTo(player);
+            IEntityTarget entrance = (IEntityTarget) player.world.getTileEntity(RiftRegistry.instance().getPocketEntrance(pocket).getPos());
+            entrance.receiveEntity(player, 0, 0);
         } else {
             int size = (pocket.getSize() + 1) * 16;
             TeleportUtils.teleport(player, new Location(player.world, pocket.getOrigin().add(size / 2, size / 2, size / 2)));

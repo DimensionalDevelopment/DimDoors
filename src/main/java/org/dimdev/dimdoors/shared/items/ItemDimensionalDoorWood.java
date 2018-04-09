@@ -6,7 +6,7 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoorWood;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import net.minecraft.util.ResourceLocation;
-import org.dimdev.dimdoors.shared.rifts.destinations.AvailableLinkDestination;
+import org.dimdev.dimdoors.shared.rifts.targets.RandomTarget;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
 public class ItemDimensionalDoorWood extends ItemDimensionalDoor {
@@ -20,7 +20,7 @@ public class ItemDimensionalDoorWood extends ItemDimensionalDoor {
 
     @Override
     public void setupRift(TileEntityEntranceRift rift) {
-        rift.setDestination(AvailableLinkDestination.builder()
+        rift.setDestination(RandomTarget.builder()
                 .acceptedGroups(Collections.singleton(0))
                 .coordFactor(1)
                 .negativeDepthFactor(80)

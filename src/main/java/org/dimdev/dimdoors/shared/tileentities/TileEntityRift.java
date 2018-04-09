@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.shared.tileentities;
 
 import lombok.Getter;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -12,20 +11,21 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.annotatednbt.Saved;
-import org.dimdev.ddutils.*;
+import org.dimdev.ddutils.Location;
+import org.dimdev.ddutils.RGBA;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.rifts.RiftDestination;
-import org.dimdev.pocketlib.VirtualLocation;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.rifts.registry.Rift;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
+import org.dimdev.dimdoors.shared.rifts.targets.*;
+import org.dimdev.pocketlib.VirtualLocation;
 
 import javax.annotation.Nonnull;
 
-@NBTSerializable public abstract class TileEntityRift extends TileEntity { // TODO: implement ITeleportSource and ITeleportDestination
+@NBTSerializable public abstract class TileEntityRift extends TileEntity implements ITarget, IEntityTarget {
 
-    /*@Saved*/ @Nonnull @Getter protected RiftDestination destination; // How the rift acts as a source
+    /*@Saved*/ @Nonnull @Getter /*protected*/ VirtualTarget destination; // How the rift acts as a source
     @Saved @Getter protected LinkProperties properties; // How the rift acts as a target, and properties that affect how it can link to other rifts
     @Saved @Getter protected boolean relativeRotation;
     @Saved @Getter protected boolean alwaysDelete; // Delete the rift when an entrances rift is broken even if the state was changed or destinations link there.
@@ -52,7 +52,7 @@ import javax.annotation.Nonnull;
     @Override public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         NBTUtils.readFromNBT(this, nbt);
-        destination = nbt.hasKey("destination") ? RiftDestination.readDestinationNBT(nbt.getCompoundTag("destination")) : null;
+        destination = nbt.hasKey("destination") ? VirtualTarget.readVirtualTargetNBT(nbt.getCompoundTag("destination")) : null;
     }
 
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
@@ -89,13 +89,16 @@ import javax.annotation.Nonnull;
         markDirty();
     }
 
-    public void setDestination(RiftDestination destination) {
+    public void setDestination(VirtualTarget destination) {
         if (this.destination != null && isRegistered()) {
-            this.destination.unregister(new Location(world, pos));
+            this.destination.unregister();
         }
         this.destination = destination;
         if (destination != null) {
-            if (isRegistered()) destination.register(new Location(world, pos));
+            if (world != null && pos != null) {
+                destination.setLocation(new Location(world, pos));
+            }
+            if (isRegistered()) destination.register();
         }
         riftStateChanged = true;
         markDirty();
@@ -131,7 +134,7 @@ import javax.annotation.Nonnull;
         if (isRegistered()) return;
         Location loc = new Location(world, pos);
         RiftRegistry.instance().addRift(loc);
-        if (destination != null) destination.register(new Location(world, pos));
+        if (destination != null) destination.register();
         updateProperties();
         updateColor();
     }
@@ -154,8 +157,8 @@ import javax.annotation.Nonnull;
         rift.markDirty();
     }
 
-    public void targetGone(Location loc) {
-        if (!destination.keepAfterTargetGone(new Location(world, pos), loc)) {
+    public void targetGone(Location location) {
+        if (destination.shouldInvalidate(location)) {
             destination = null;
             markDirty();
         }
@@ -167,18 +170,24 @@ import javax.annotation.Nonnull;
     }
 
     // Teleport logic
+
+    public ITarget getTarget() {
+        if (destination == null) {
+            return new MessageTarget("rifts.unlinked");
+        } else {
+            destination.setLocation(new Location(world, pos));
+            return destination;
+        }
+    }
+
     public boolean teleport(Entity entity) {
         riftStateChanged = false;
 
-        // Check that the rift has as destination
-        if (destination == null) {
-            DimDoors.sendTranslatedMessage(entity, "rifts.unlinked");
-            return false;
-        }
+        IEntityTarget target = getTarget().as(Targets.ENTITY);
 
         // Attempt a teleport
         try {
-            if (destination.teleport(new RotatedLocation(new Location(world, pos), getSourceYaw(entity.rotationYaw), getSourcePitch(entity.rotationPitch)), entity)) {
+            if (target.receiveEntity(entity, getSourceYaw(entity.rotationYaw), getSourcePitch(entity.rotationPitch))) {
                 VirtualLocation vloc = VirtualLocation.fromLocation(new Location(entity.world, entity.getPosition()));
                 DimDoors.sendTranslatedMessage(entity, "You are at x = " + vloc.getX() + ", y = ?, z = " + vloc.getZ() + ", w = " + vloc.getDepth());
                 return true;
@@ -190,21 +199,6 @@ import javax.annotation.Nonnull;
         return false;
     }
 
-    public void teleportTo(Entity entity, float fromYaw, float fromPitch) { // TODO
-        if (relativeRotation) {
-            float yaw = getDestinationYaw(entity.rotationYaw) + entity.rotationYaw - fromYaw;
-            float pitch = entity instanceof EntityLiving ? entity.rotationPitch : getDestinationPitch(entity.rotationPitch) + entity.rotationPitch - fromPitch;
-            TeleportUtils.teleport(entity, new Location(world, pos), yaw, pitch);
-            // TODO: velocity
-        } else {
-            teleportTo(entity);
-        }
-    }
-
-    public void teleportTo(Entity entity) {
-        TeleportUtils.teleport(entity, new Location(world, pos), getDestinationYaw(entity.rotationYaw), getDestinationPitch(entity.rotationPitch));
-    }
-
     public void updateColor() {
         //DimDoors.log.info("Updating color of rift at " + new Location(world, pos));
         if (forcedColor) return;
@@ -213,7 +207,7 @@ import javax.annotation.Nonnull;
         } else if (destination == null) {
             color = new RGBA(0.7f, 0.7f, 0.7f, 1);
         } else {
-            RGBA newColor = destination.getColor(new Location(world, pos));
+            RGBA newColor = destination.getColor();
             if (color == null && newColor != null || !color.equals(newColor)) {
                 color = newColor;
                 markDirty();

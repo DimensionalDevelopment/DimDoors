@@ -11,10 +11,10 @@ import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
 import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.BlockFabricAncient;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import org.dimdev.dimdoors.shared.rifts.RiftDestination;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceMarker;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitMarker;
-import org.dimdev.dimdoors.shared.rifts.destinations.PrivatePocketExitDestination;
+import org.dimdev.dimdoors.shared.rifts.targets.VirtualTarget;
+import org.dimdev.dimdoors.shared.rifts.targets.PocketEntranceMarker;
+import org.dimdev.dimdoors.shared.rifts.targets.PocketExitMarker;
+import org.dimdev.dimdoors.shared.rifts.targets.PrivatePocketExitTarget;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
@@ -92,7 +92,7 @@ public final class SchematicGenerator {
                     ModBlocks.ANCIENT_FABRIC.getDefaultState().withProperty(BlockFabricAncient.COLOR, EnumDyeColor.WHITE), // outer wall
                     ModBlocks.FABRIC.getDefaultState().withProperty(BlockFabricAncient.COLOR, EnumDyeColor.WHITE), // inner wall
                     ModBlocks.PERSONAL_DIMENSIONAL_DOOR, // door
-                    PrivatePocketExitDestination.builder().build(),// exit rift destination
+                    PrivatePocketExitTarget.builder().build(),// exit rift destination
                     null));
 
             schematics.add(generateBlank(
@@ -138,7 +138,7 @@ public final class SchematicGenerator {
         return schematic;
     }
 
-    private static Schematic generateBlankWithDoor(String baseName, int pocketSize, IBlockState outerWall, IBlockState innerWall, BlockDimensionalDoor doorBlock, RiftDestination exitDest, LinkProperties link) {
+    private static Schematic generateBlankWithDoor(String baseName, int pocketSize, IBlockState outerWall, IBlockState innerWall, BlockDimensionalDoor doorBlock, VirtualTarget exitDest, LinkProperties link) {
         short size = (short) ((pocketSize + 1) * 16 - 1); // -1 so that the door can be centered
 
         // Make the schematic

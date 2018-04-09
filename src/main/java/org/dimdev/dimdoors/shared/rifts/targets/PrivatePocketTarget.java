@@ -1,15 +1,12 @@
-package org.dimdev.dimdoors.shared.rifts.destinations;
+package org.dimdev.dimdoors.shared.rifts.targets;
 
 import org.dimdev.ddutils.RGBA;
-import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.pocketlib.PrivatePocketData;
 import org.dimdev.pocketlib.VirtualLocation;
 import org.dimdev.pocketlib.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
-import org.dimdev.dimdoors.shared.rifts.RiftDestination;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
-import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 import org.dimdev.ddutils.EntityUtils;
 import org.dimdev.ddutils.Location;
 import lombok.AllArgsConstructor;
@@ -22,24 +19,24 @@ import net.minecraft.nbt.NBTTagCompound;
 import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-public class PrivateDestination extends RiftDestination {
+public class PrivatePocketTarget extends VirtualTarget implements IEntityTarget {
     //public PrivateDestination() {}
 
     @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); }
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return nbt; }
 
     @Override
-    public boolean teleport(RotatedLocation loc, Entity entity) {
+    public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) {
         UUID uuid = EntityUtils.getEntityOwnerUUID(entity);
-        VirtualLocation virtualLocation = VirtualLocation.fromLocation(loc.getLocation());
+        VirtualLocation virtualLocation = VirtualLocation.fromLocation(location);
         if (uuid != null) {
             Pocket pocket = PrivatePocketData.instance().getPrivatePocket(uuid);
             if (pocket == null) { // generate the private pocket and get its entrances
                 // set to where the pocket was first created
                 pocket = PocketGenerator.generatePrivatePocket(virtualLocation != null ? virtualLocation.toBuilder().depth(-1).build() : null);
                 PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
-                ((TileEntityRift) RiftRegistry.instance().getPocketEntrance(pocket).getTileEntity()).teleportTo(entity, loc.getYaw(), loc.getPitch());
-                RiftRegistry.instance().setLastPrivatePocketExit(uuid, loc.getLocation());
+                ((IEntityTarget) RiftRegistry.instance().getPocketEntrance(pocket).getTileEntity()).receiveEntity(entity, relativeYaw, relativePitch);
+                RiftRegistry.instance().setLastPrivatePocketExit(uuid, location);
                 return true;
             } else {
                 Location destLoc = RiftRegistry.instance().getPrivatePocketEntrance(uuid); // get the last used entrances
@@ -50,8 +47,8 @@ public class PrivateDestination extends RiftDestination {
                     PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
                     destLoc = RiftRegistry.instance().getPocketEntrance(pocket);
                 }
-                ((TileEntityRift) destLoc.getTileEntity()).teleportTo(entity, loc.getYaw(), loc.getPitch());
-                RiftRegistry.instance().setLastPrivatePocketExit(uuid, loc.getLocation());
+                ((IEntityTarget) destLoc.getTileEntity()).receiveEntity(entity, relativeYaw, relativePitch);
+                RiftRegistry.instance().setLastPrivatePocketExit(uuid, location);
                 return true;
             }
         } else {
@@ -60,7 +57,7 @@ public class PrivateDestination extends RiftDestination {
     }
 
     @Override
-    public RGBA getColor(Location location) {
+    public RGBA getColor() {
         return new RGBA(0, 1, 0, 1);
     }
 }

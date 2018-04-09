@@ -1,29 +1,27 @@
-package org.dimdev.dimdoors.shared.rifts.destinations;
+package org.dimdev.dimdoors.shared.rifts.targets;
 
-import org.dimdev.ddutils.RotatedLocation;
-import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.shared.rifts.RiftDestination;
-import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
-import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
-import org.dimdev.dimdoors.shared.world.ModDimensions;
-import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
-import org.dimdev.ddutils.Location;
-import org.dimdev.ddutils.TeleportUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import org.dimdev.ddutils.Location;
+import org.dimdev.ddutils.TeleportUtils;
+import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
+import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
 import org.dimdev.pocketlib.VirtualLocation;
 
 import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-public class EscapeDestination extends RiftDestination {
-    @Builder.Default boolean canEscapeLimbo = false;
+public class EscapeTarget extends VirtualTarget implements IEntityTarget { // TODO: createRift option
+    @Builder.Default protected boolean canEscapeLimbo = false;
 
-    public EscapeDestination() {}
+    public EscapeTarget() {}
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
@@ -36,8 +34,7 @@ public class EscapeDestination extends RiftDestination {
         return nbt;
     }
 
-    @Override
-    public boolean teleport(RotatedLocation loc, Entity entity) {
+    @Override public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) {
         if (!ModDimensions.isDimDoorsPocketDimension(entity.world) && !(entity.world.provider instanceof WorldProviderLimbo)) {
             DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.not_in_pocket_dim");
             return false;
@@ -51,7 +48,7 @@ public class EscapeDestination extends RiftDestination {
         if (uuid != null) {
             Location destLoc = RiftRegistry.instance().getOverworldRift(uuid);
             if (destLoc != null && destLoc.getTileEntity() instanceof TileEntityRift || canEscapeLimbo) {
-                TeleportUtils.teleport(entity, VirtualLocation.fromLocation(loc.getLocation()).projectToWorld(false));
+                TeleportUtils.teleport(entity, VirtualLocation.fromLocation(new Location(entity.world, entity.getPosition())).projectToWorld(false));
                 return true;
             } else {
                 if (destLoc == null) {

@@ -21,10 +21,10 @@ import org.dimdev.ddutils.math.MathUtils;
 import org.dimdev.ddutils.schem.Schematic;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
-import org.dimdev.dimdoors.shared.rifts.RiftDestination;
+import org.dimdev.dimdoors.shared.rifts.targets.VirtualTarget;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceMarker;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitMarker;
+import org.dimdev.dimdoors.shared.rifts.targets.PocketEntranceMarker;
+import org.dimdev.dimdoors.shared.rifts.targets.PocketExitMarker;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
@@ -160,7 +160,7 @@ public class PocketTemplate {
         schematic.place(world, xBase, yBase, zBase);
     }
 
-    public void setup(Pocket pocket, RiftDestination linkTo, LinkProperties linkProperties) {
+    public void setup(Pocket pocket, VirtualTarget linkTo, LinkProperties linkProperties) {
         int gridSize = PocketRegistry.instance(pocket.getDim()).getGridSize();
         int dim = pocket.getDim();
         WorldServer world = WorldUtils.getWorld(dim);
@@ -179,7 +179,9 @@ public class PocketTemplate {
 
             if (tile instanceof TileEntityRift) {
                 DimDoors.log.info("Rift found in schematic at " + pos);
-                rifts.add((TileEntityRift) tile);
+                TileEntityRift rift = (TileEntityRift) tile;
+                rift.getDestination().setLocation(new Location(rift.getWorld(), rift.getPos()));
+                rifts.add(rift);
             } else if (tile instanceof IInventory) {
                 IInventory inventory = (IInventory) tile;
                 if (inventory.isEmpty()) {
@@ -221,7 +223,7 @@ public class PocketTemplate {
 
         // Replace entrances with appropriate destinations
         for (TileEntityRift rift : rifts) {
-            RiftDestination dest = rift.getDestination();
+            VirtualTarget dest = rift.getDestination();
             if (dest instanceof PocketEntranceMarker) {
                 if (rift == selectedEntrance) {
                     PocketRegistry.instance(dim).markDirty();
@@ -236,7 +238,7 @@ public class PocketTemplate {
 
         // Link pocket exits back
         for (TileEntityRift rift : rifts) {
-            RiftDestination dest = rift.getDestination();
+            VirtualTarget dest = rift.getDestination();
             if (dest instanceof PocketExitMarker) {
                 if (linkProperties != null) rift.setProperties(linkProperties);
                 rift.setDestination(rift.getProperties() == null || !rift.getProperties().oneWay ? linkTo : null);

@@ -1,18 +1,16 @@
-package org.dimdev.dimdoors.shared.rifts.destinations;
+package org.dimdev.dimdoors.shared.rifts.targets;
 
 import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.ddutils.Location;
-import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.ddutils.math.MathUtils;
 import org.dimdev.ddutils.nbt.NBTUtils;
@@ -21,7 +19,6 @@ import org.dimdev.pocketlib.VirtualLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.pocketlib.Pocket;
 import org.dimdev.dimdoors.shared.pockets.PocketGenerator;
-import org.dimdev.dimdoors.shared.rifts.*;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.rifts.registry.Rift;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
@@ -32,7 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-@NBTSerializable public class AvailableLinkDestination extends RiftDestination {
+@NBTSerializable public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTarget subclass
     @Saved protected float newRiftWeight;
     @Saved protected double weightMaximum;
     @Saved protected double coordFactor;
@@ -41,16 +38,15 @@ import java.util.Set;
     @Saved protected Set<Integer> acceptedGroups;
     @Saved protected boolean noLink;
     @Saved protected boolean noLinkBack;
-    // TODO: better depth calculation
 
-    public AvailableLinkDestination() {}
+    public RandomTarget() {}
 
     @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
 
     @Override
-    public boolean teleport(RotatedLocation location, Entity entity) {
-        VirtualLocation virtualLocationHere = VirtualLocation.fromLocation(location.getLocation());
+    public ITarget receiveOther() { // TODO: Wrap rather than replace
+        VirtualLocation virtualLocationHere = VirtualLocation.fromLocation(location);
 
         Map<Location, Float> riftWeights = new HashMap<>();
         if (newRiftWeight > 0) riftWeights.put(null, newRiftWeight);
@@ -86,7 +82,7 @@ import java.util.Set;
             if (newRiftWeight == -1) {
                 selectedLink = null;
             } else {
-                return false;
+                return null;
             }
         } else {
             selectedLink = MathUtils.weightedRandom(riftWeights);
@@ -116,6 +112,7 @@ import java.util.Set;
             double distance = weightMaximum * (2 * Math.tan(Math.PI / 2 * r) - 0.5578284481138029 * Math.sqrt(r) * Math.log(r));
 
             // Randomly split the vector into depth, x, and z components
+            // TODO: Two random angles isn't a uniformly random direction! Use random vector, normalize, add depth offset, scale xz, scale depth.
             double theta = Math.random() * Math.PI; // Angle between vector and xz plane
             double phi = Math.random() * Math.PI;  // Angle of the vector on the xz plane relative to the x axis
             double depth = distance * Math.sin(theta);
@@ -137,40 +134,39 @@ import java.util.Set;
                 }
                 world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
 
-                TileEntityRift thisRift = (TileEntityRift) location.getLocation().getTileEntity();
+                TileEntityRift thisRift = (TileEntityRift) location.getTileEntity();
                 TileEntityFloatingRift riftEntity = (TileEntityFloatingRift) world.getTileEntity(pos);
                 // TODO: Should the rift not be configured like the other link
                 riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).build());
 
-                if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(new Location(world, pos), location.getLocation());
-                if (!noLink) linkRifts(location.getLocation(), new Location(world, pos));
-                riftEntity.teleportTo(entity, location.getYaw(), location.getPitch());
+                if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(new Location(world, pos), location);
+                if (!noLink) linkRifts(location, new Location(world, pos));
+                return riftEntity.as(Targets.ENTITY);
             } else {
                 // Make a new dungeon pocket
-                TileEntityRift thisRift = (TileEntityRift) location.getLocation().getTileEntity();
+                TileEntityRift thisRift = (TileEntityRift) location.getTileEntity();
                 LinkProperties newLink = thisRift.getProperties() != null ? thisRift.getProperties().toBuilder().linksRemaining(0).build() : null;
-                Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation, new GlobalDestination(!noLinkBack ? location.getLocation() : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
+                Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation, new GlobalReference(!noLinkBack ? location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
 
                 // Link the rift if necessary and teleport the entity
-                if (!noLink) linkRifts(location.getLocation(), RiftRegistry.instance().getPocketEntrance(pocket));
-                ((TileEntityRift) RiftRegistry.instance().getPocketEntrance(pocket).getTileEntity()).teleportTo(entity, location.getYaw(), location.getPitch());
+                if (!noLink) linkRifts(location, RiftRegistry.instance().getPocketEntrance(pocket));
+                return (ITarget) RiftRegistry.instance().getPocketEntrance(pocket).getTileEntity();
             }
         } else {
             // An existing rift was selected
             TileEntityRift riftEntity = (TileEntityRift) selectedLink.getTileEntity();
 
             // Link the rifts if necessary and teleport the entity
-            if (!noLink) linkRifts(location.getLocation(), selectedLink);
-            if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(selectedLink, location.getLocation());
-            riftEntity.teleportTo(entity, location.getYaw(), location.getPitch());
+            if (!noLink) linkRifts(location, selectedLink);
+            if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(selectedLink, location);
+            return riftEntity;
         }
-        return true;
     }
 
     private static void linkRifts(Location from, Location to) {
         TileEntityRift tileEntityFrom = (TileEntityRift) from.getTileEntity();
         TileEntityRift tileEntityTo = (TileEntityRift) to.getTileEntity();
-        tileEntityFrom.setDestination(DestinationMaker.localIfPossible(from, to));
+        tileEntityFrom.setDestination(RiftReference.tryMakeLocal(from, to));
         tileEntityFrom.markDirty();
         if (tileEntityTo.getProperties() != null) {
             tileEntityTo.getProperties().linksRemaining--;

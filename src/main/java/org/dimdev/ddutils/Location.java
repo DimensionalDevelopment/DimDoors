@@ -17,8 +17,8 @@ import net.minecraft.world.WorldServer;
 @ToString @Value
 public class Location implements Serializable {
 
-    int dim;
-    private BlockPos pos;
+    public final int dim;
+    public final BlockPos pos;
 
     public Location(World world, BlockPos pos) {
         this(world.provider.getDimension(), pos);

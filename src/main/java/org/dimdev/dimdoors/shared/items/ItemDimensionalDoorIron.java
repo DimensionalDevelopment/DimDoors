@@ -4,7 +4,7 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoorIron;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import net.minecraft.util.ResourceLocation;
-import org.dimdev.dimdoors.shared.rifts.destinations.PublicPocketDestination;
+import org.dimdev.dimdoors.shared.rifts.targets.PublicPocketTarget;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
 public class ItemDimensionalDoorIron extends ItemDimensionalDoor {
@@ -18,7 +18,7 @@ public class ItemDimensionalDoorIron extends ItemDimensionalDoor {
 
     @Override
     public void setupRift(TileEntityEntranceRift rift) {
-        PublicPocketDestination destination = PublicPocketDestination.builder().build();
+        PublicPocketTarget destination = PublicPocketTarget.builder().build();
         rift.setDestination(destination);
     }
 

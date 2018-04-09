@@ -16,7 +16,7 @@ import org.dimdev.ddutils.Location;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import org.dimdev.dimdoors.shared.rifts.DestinationMaker;
+import org.dimdev.dimdoors.shared.rifts.targets.RiftReference;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
@@ -77,7 +77,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
             // Place a rift at the source point
             world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
             TileEntityFloatingRift rift2 = (TileEntityFloatingRift) world.getTileEntity(pos);
-            rift2.setDestination(DestinationMaker.relativeIfPossible(new Location(world, pos), target.getLocation()));
+            rift2.setDestination(RiftReference.tryMakeRelative(new Location(world, pos), target.getLocation()));
             rift2.setTeleportTargetRotation(player.rotationYaw, 0);
             rift2.register();
 
@@ -116,7 +116,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
         RotatedLocation transform = getTarget(stack);
         if (transform != null) {
-            tooltip.add(I18n.format(getUnlocalizedName() + ".bound.info", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim()));
+            tooltip.add(I18n.format(getUnlocalizedName() + ".bound.info", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().dim));
         } else {
             tooltip.add(I18n.format(getUnlocalizedName() + ".unbound.info"));
         }

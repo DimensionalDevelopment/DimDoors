@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.shared.pockets;
 
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.ModConfig;
-import org.dimdev.dimdoors.shared.rifts.RiftDestination;
+import org.dimdev.dimdoors.shared.rifts.targets.VirtualTarget;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.pocketlib.Pocket;
@@ -30,7 +30,7 @@ public final class PocketGenerator {
     }
 
     // TODO: size of public pockets should increase with depth
-    public static Pocket generatePublicPocket(VirtualLocation virtualLocation, RiftDestination linkTo, LinkProperties linkProperties) {
+    public static Pocket generatePublicPocket(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getPublicPocketTemplate();
         Pocket pocket = generatePocketFromTemplate(ModDimensions.getPublicDim(), pocketTemplate, virtualLocation, false);
         pocketTemplate.setup(pocket, linkTo, linkProperties);
@@ -43,7 +43,7 @@ public final class PocketGenerator {
      * @param virtualLocation The virtual location of the pockets
      * @return The newly-generated dungeon pockets
      */
-    public static Pocket generateDungeonPocket(VirtualLocation virtualLocation, RiftDestination linkTo, LinkProperties linkProperties) {
+    public static Pocket generateDungeonPocket(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
         int depth = virtualLocation.getDepth();
         float netherProbability = virtualLocation.getDim() == -1 ? 1 : (float) depth / 200; // TODO: improve nether probability
         Random random = new Random();

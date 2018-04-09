@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.shared.pockets;
 
-import org.dimdev.dimdoors.shared.rifts.RiftDestination;
-import org.dimdev.dimdoors.shared.rifts.destinations.AvailableLinkDestination;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketEntranceMarker;
-import org.dimdev.dimdoors.shared.rifts.destinations.PocketExitMarker;
+import org.dimdev.dimdoors.shared.rifts.targets.VirtualTarget;
+import org.dimdev.dimdoors.shared.rifts.targets.RandomTarget;
+import org.dimdev.dimdoors.shared.rifts.targets.PocketEntranceMarker;
+import org.dimdev.dimdoors.shared.rifts.targets.PocketExitMarker;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
             .entranceWeight(50)
             .linksRemaining(1).build();
 
-    public static final RiftDestination deeperDungeonDestination = AvailableLinkDestination.builder()
+    public static final VirtualTarget deeperDungeonDestination = RandomTarget.builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1)
             .negativeDepthFactor(10000)
@@ -29,7 +29,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
             .weightMaximum(100)
             .newRiftWeight(1).build();
 
-    public static final RiftDestination shallowerDungeonDestination = AvailableLinkDestination.builder()
+    public static final VirtualTarget shallowerDungeonDestination = RandomTarget.builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1)
             .negativeDepthFactor(160)
@@ -37,7 +37,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
             .weightMaximum(100)
             .newRiftWeight(1).build();
 
-    public static final RiftDestination overworldDestination = AvailableLinkDestination.builder()
+    public static final VirtualTarget overworldDestination = RandomTarget.builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1)
             .negativeDepthFactor(0.00000000001) // The division result is cast to an int, so Double.MIN_VALUE would cause an overflow
@@ -45,10 +45,10 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
             .weightMaximum(100)
             .newRiftWeight(1).build();
 
-    public static final RiftDestination twoWayPocketEntrance = PocketEntranceMarker.builder()
+    public static final VirtualTarget twoWayPocketEntrance = PocketEntranceMarker.builder()
             .weight(1)
             .ifDestination(PocketExitMarker.builder().build())
-            .otherwiseDestination(AvailableLinkDestination.builder()
+            .otherwiseDestination(RandomTarget.builder()
                     .acceptedGroups(Collections.singleton(0))
                     .coordFactor(1)
                     .negativeDepthFactor(80)
@@ -56,7 +56,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
                     .weightMaximum(100)
                     .newRiftWeight(1).build()).build();
 
-    public static final RiftDestination gatewayDestination = AvailableLinkDestination.builder()
+    public static final VirtualTarget gatewayDestination = RandomTarget.builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1) // TODO: lower value?
             .negativeDepthFactor(Double.POSITIVE_INFINITY)

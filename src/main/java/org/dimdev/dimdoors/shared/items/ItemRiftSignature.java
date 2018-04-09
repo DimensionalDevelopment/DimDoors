@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.dimdev.ddutils.RotatedLocation;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import org.dimdev.dimdoors.shared.rifts.DestinationMaker;
+import org.dimdev.dimdoors.shared.rifts.targets.RiftReference;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
@@ -71,7 +71,7 @@ public class ItemRiftSignature extends Item {
                 World sourceWorld = target.getLocation().getWorld();
                 sourceWorld.setBlockState(target.getLocation().getPos(), ModBlocks.RIFT.getDefaultState());
                 TileEntityFloatingRift rift1 = (TileEntityFloatingRift) target.getLocation().getTileEntity();
-                rift1.setDestination(DestinationMaker.relativeIfPossible(target.getLocation(), new Location(world, pos)));
+                rift1.setDestination(RiftReference.tryMakeRelative(target.getLocation(), new Location(world, pos)));
                 rift1.setTeleportTargetRotation(target.getYaw(), 0); // setting pitch to 0 because player is always facing down to place rift
                 rift1.register();
             }
@@ -79,7 +79,7 @@ public class ItemRiftSignature extends Item {
             // Place a rift at the target point
             world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
             TileEntityFloatingRift rift2 = (TileEntityFloatingRift) world.getTileEntity(pos);
-            rift2.setDestination(DestinationMaker.relativeIfPossible(new Location(world, pos), target.getLocation()));
+            rift2.setDestination(RiftReference.tryMakeRelative(new Location(world, pos), target.getLocation()));
             rift2.setTeleportTargetRotation(player.rotationYaw, 0);
             rift2.register();
 
@@ -120,7 +120,7 @@ public class ItemRiftSignature extends Item {
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
         RotatedLocation transform = getSource(stack);
         if (transform != null) {
-            tooltip.add(I18n.format(I18n.format(getUnlocalizedName() + ".bound.info", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().getDim())));
+            tooltip.add(I18n.format(I18n.format(getUnlocalizedName() + ".bound.info", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().dim)));
         } else {
             tooltip.add(I18n.format(getUnlocalizedName() + ".unbound.info"));
         }

@@ -27,8 +27,8 @@ import org.dimdev.dimdoors.shared.commands.CommandSaveSchem;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
-import org.dimdev.dimdoors.shared.rifts.RiftDestination;
-import org.dimdev.dimdoors.shared.rifts.destinations.*;
+import org.dimdev.dimdoors.shared.rifts.targets.VirtualTarget;
+import org.dimdev.dimdoors.shared.rifts.targets.*;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
@@ -75,17 +75,17 @@ public class DimDoors {
         MinecraftForge.EVENT_BUS.register(ModConfig.class);
 
         // Register rift destinations
-        RiftDestination.destinationRegistry.put("available_link", AvailableLinkDestination.class);
-        RiftDestination.destinationRegistry.put("escape", EscapeDestination.class);
-        RiftDestination.destinationRegistry.put("global", GlobalDestination.class);
-        RiftDestination.destinationRegistry.put("limbo", LimboDestination.class);
-        RiftDestination.destinationRegistry.put("local", LocalDestination.class);
-        RiftDestination.destinationRegistry.put("public_pocket", PublicPocketDestination.class);
-        RiftDestination.destinationRegistry.put("pocket_entrance", PocketEntranceMarker.class);
-        RiftDestination.destinationRegistry.put("pocket_exit", PocketExitMarker.class);
-        RiftDestination.destinationRegistry.put("private", PrivateDestination.class);
-        RiftDestination.destinationRegistry.put("private_pocket_exit", PrivatePocketExitDestination.class);
-        RiftDestination.destinationRegistry.put("relative", RelativeDestination.class);
+        VirtualTarget.registry.put("available_link", RandomTarget.class);
+        VirtualTarget.registry.put("escape", EscapeTarget.class);
+        VirtualTarget.registry.put("global", GlobalReference.class);
+        VirtualTarget.registry.put("limbo", LimboTarget.class);
+        VirtualTarget.registry.put("local", LocalReference.class);
+        VirtualTarget.registry.put("public_pocket", PublicPocketTarget.class);
+        VirtualTarget.registry.put("pocket_entrance", PocketEntranceMarker.class);
+        VirtualTarget.registry.put("pocket_exit", PocketExitMarker.class);
+        VirtualTarget.registry.put("private", PrivatePocketTarget.class);
+        VirtualTarget.registry.put("private_pocket_exit", PrivatePocketExitTarget.class);
+        VirtualTarget.registry.put("relative", RelativeReference.class);
 
         // Register entities
         EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), EntityMonolith.class, "monoliths", 0, DimDoors.instance, 70, 1, true);

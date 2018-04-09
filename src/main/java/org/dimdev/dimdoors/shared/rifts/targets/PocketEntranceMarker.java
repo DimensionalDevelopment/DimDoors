@@ -1,32 +1,31 @@
-package org.dimdev.dimdoors.shared.rifts.destinations;
+package org.dimdev.dimdoors.shared.rifts.targets;
 
-import org.dimdev.ddutils.RotatedLocation;
-import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.annotatednbt.NBTSerializable;
-import org.dimdev.dimdoors.DimDoors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
-import org.dimdev.dimdoors.shared.rifts.RiftDestination;
+import org.dimdev.annotatednbt.NBTSerializable;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.dimdoors.DimDoors;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
-@NBTSerializable public class PocketEntranceMarker extends RiftDestination {
+@NBTSerializable public class PocketEntranceMarker extends VirtualTarget implements IEntityTarget {
     @Builder.Default @Saved protected float weight = 1;
-    /*@Saved*/ protected RiftDestination ifDestination;
-    /*@Saved*/ protected RiftDestination otherwiseDestination;
+    /*@Saved*/ protected VirtualTarget ifDestination;
+    /*@Saved*/ protected VirtualTarget otherwiseDestination;
 
     public PocketEntranceMarker() {}
 
     @Override public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        ifDestination = nbt.hasKey("ifDestination") ? RiftDestination.readDestinationNBT(nbt.getCompoundTag("ifDestination")) : null;
-        otherwiseDestination = nbt.hasKey("otherwiseDestination") ? RiftDestination.readDestinationNBT(nbt.getCompoundTag("otherwiseDestination")) : null;
+        ifDestination = nbt.hasKey("ifDestination") ? VirtualTarget.readVirtualTargetNBT(nbt.getCompoundTag("ifDestination")) : null;
+        otherwiseDestination = nbt.hasKey("otherwiseDestination") ? VirtualTarget.readVirtualTargetNBT(nbt.getCompoundTag("otherwiseDestination")) : null;
         NBTUtils.readFromNBT(this, nbt);
     }
+
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         nbt = super.writeToNBT(nbt);
         if (ifDestination != null) nbt.setTag("ifDestination", ifDestination.writeToNBT(new NBTTagCompound()));
@@ -34,8 +33,7 @@ import org.dimdev.dimdoors.shared.rifts.RiftDestination;
         return NBTUtils.writeToNBT(this, nbt);
     }
 
-    @Override
-    public boolean teleport(RotatedLocation loc, Entity entity) {
+    @Override public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) {
         DimDoors.chat(entity, "The entrance of this dungeon has not been converted. If this is a normally generated pocket, please report this bug.");
         return false;
     }

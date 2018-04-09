@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.shared.tileentities;
 import lombok.Setter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,6 +15,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.annotatednbt.Saved;
+import org.dimdev.ddutils.Location;
+import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.ddutils.lsystem.LSystem;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.DimDoors;
@@ -172,6 +175,19 @@ import java.util.Random;
         riftYaw = yaw;
         teleportTargetPitch = pitch;
         markDirty();
+    }
+
+    @Override
+    public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) { // TODO
+        if (relativeRotation) {
+            float yaw = getDestinationYaw(entity.rotationYaw) + entity.rotationYaw - relativeYaw;
+            float pitch = entity instanceof EntityLiving ? entity.rotationPitch : getDestinationPitch(entity.rotationPitch) + entity.rotationPitch - relativePitch;
+            TeleportUtils.teleport(entity, new Location(world, pos), yaw, pitch);
+            // TODO: velocity
+        } else {
+            TeleportUtils.teleport(entity, new Location(world, pos), getDestinationYaw(entity.rotationYaw), getDestinationPitch(entity.rotationPitch));
+        }
+        return true;
     }
 
     @Override

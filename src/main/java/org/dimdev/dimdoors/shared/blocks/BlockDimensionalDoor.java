@@ -50,7 +50,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
             if (successful) entity.timeUntilPortal = 0; // Allow teleportation again
 
             // Close the door when player passes through if enabled in config and door isn't powered
-            if (successful && entity instanceof EntityPlayer && ModConfig.general.closeDoorBehind && !doorState.getValue(POWERED)) {
+            if (successful && entity instanceof EntityPlayer && !entity.isSneaking() && ModConfig.general.closeDoorBehind && !doorState.getValue(POWERED)) {
                 toggleDoor(world, pos, false);
             }
         }

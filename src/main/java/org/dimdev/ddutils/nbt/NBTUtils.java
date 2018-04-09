@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 public final class NBTUtils {
 
     public static NBTTagCompound writeToNBT(Object obj, NBTTagCompound nbt) {
-        try {
+        try { // TODO: check superclasses too
             Class<?> callingClass = Class.forName(new Exception().getStackTrace()[1].getClassName());
             Class<?> nbtWriter = Class.forName(callingClass.getPackage().getName() + "." + callingClass.getSimpleName() + "NBTWriter");
             Method write = nbtWriter.getMethod("writeToNBT", callingClass, NBTTagCompound.class);
