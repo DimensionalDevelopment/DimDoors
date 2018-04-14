@@ -83,7 +83,6 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
 
     @Override
     public void render(TileEntityEntranceRift entrance, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-
         Vector3d offset = MathUtils.toFlow(entrance.orientation.getOpposite().getDirectionVec()).toDouble().mul(
                 entrance.orientation == EnumFacing.NORTH ||
                         entrance.orientation == EnumFacing.WEST ||
@@ -99,11 +98,19 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
                 entrance.extendLeft + entrance.extendRight,
                 entrance.extendDown + entrance.extendUp,
                 entrance.getColors(16));
-
-        if (entrance.lockStatus >= 1)
-            for (int i = 0; i < 1 + entrance.lockStatus; i++)
+            /*DimensionalWallRenderer.renderDimensionalWall(
+                    x + offset.getX(), y + offset.getY(), z + offset.getZ(),
+                    //entrance.orientation.getHorizontalAngle(),
+                    //entrance.orientation.getDirectionVec().getY() * 90,
+                    entrance.orientation,
+                    entrance.extendLeft + entrance.extendRight,
+                    entrance.extendDown + entrance.extendUp,
+                    getColors(entrance));*/
+        if (entrance.lockStatus >= 1) {
+            for (int i = 0; i < 1 + entrance.lockStatus; i++) {
                 renderKeyHole(entrance, x, y, z, i);
-
+            }
+        }
     }
 }
 

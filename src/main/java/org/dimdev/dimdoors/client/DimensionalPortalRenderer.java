@@ -3,9 +3,11 @@ package org.dimdev.dimdoors.client;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector3i;
+import com.flowpowered.math.vector.VectorNi;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -18,6 +20,7 @@ import net.minecraft.client.renderer.block.statemap.BlockStateMapper;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.dimdev.ddutils.RGBA;
@@ -25,8 +28,10 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoorQuartz;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 
 import java.nio.FloatBuffer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -38,11 +43,16 @@ public final class DimensionalPortalRenderer {
     private static final ResourceLocation warpPath = new ResourceLocation(DimDoors.MODID + ":textures/other/warp.png");
     private static final PropertyBool openProperty = PropertyBool.create("open");
     private static final PropertyEnum<BlockDoor.EnumHingePosition> hingeProperty = PropertyEnum.create("hinge", BlockDoor.EnumHingePosition.class);
+    private static final PropertyDirection facingProperty = PropertyDirection.create("facing", Arrays.asList(EnumFacing.HORIZONTALS));
 
     private static final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
     private static final BlockModelShapes blockModelShapes = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes();
     private static final ModelManager modelManager = blockModelShapes.getModelManager();
     private static final BlockStateMapper blockStateMapper = blockModelShapes.getBlockStateMapper();
+
+    private static final VectorNi COLORLESS = new VectorNi(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
+
+    // TODO: any render angle
 
     /**
      * Renders a dimensional portal, for use in various situations. Code is mostly based
@@ -226,7 +236,28 @@ public final class DimensionalPortalRenderer {
                 return;
         }
 
-        final float pathLength = 15;
+        final float pathLength = 10;
+        final float doorDistanceMul = 1.5f;
+        final int endOpacity = 0;
+
+        // incoming depth function is GL_LEQUAL
+        // this means that you can redraw geometry multiple times as long as you don't translate.
+
+        /*int glDepthFunc = glGetInteger(GL_DEPTH_FUNC);
+        switch (glDepthFunc) {
+            case GL_LESS:
+                System.out.println("less");
+                break;
+            case GL_LEQUAL:
+                System.out.println("lequal");
+                break;
+            case GL_GREATER:
+                System.out.println("greater");
+                break;
+            case GL_GEQUAL:
+                System.out.println("gequal");
+                break;
+        }*/
 
         //System.out.println("RENDER");
         //System.out.println(height);
@@ -235,6 +266,8 @@ public final class DimensionalPortalRenderer {
         GlStateManager.disableTexture2D();
         GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
         GlStateManager.disableTexture2D();
+
+        GL30.glGenFramebuffers();
 
         //GlStateManager.disableCull();
         //GlStateManager.disableDepth();
@@ -250,31 +283,32 @@ public final class DimensionalPortalRenderer {
         //System.out.println(glGetInteger(GL_STENCIL_BITS));
 
         final Vector3d merged = pos.add(offset);
-        final Vector3d left, right, depth, up;
+        final Vector3d left, right, back, depth, up;
         switch (orientation) {
             case NORTH:
                 left = merged.add(width, 0, 0);//new Vector3d(x + width, y, z);
                 right = merged;
-                depth = new Vector3d(0, 0, pathLength);
+                back = new Vector3d(0, 0, 1);
                 break;
             case SOUTH:
                 left = merged;
                 right = merged.add(width, 0, 0);
-                depth = new Vector3d(0, 0, -pathLength);
+                back = new Vector3d(0, 0, -1);
                 break;
             case WEST:
                 left = merged;
                 right = merged.add(0, 0, width);
-                depth = new Vector3d(pathLength, 0, 0);
+                back = new Vector3d(1, 0, 0);
                 break;
             case EAST:
                 left = merged.add(0, 0, width);
                 right = merged;
-                depth = new Vector3d(-pathLength, 0, 0);
+                back = new Vector3d(-1, 0, 0);
                 break;
             default:
                 return;
         }
+        depth = back.mul(pathLength);
 
         up = new Vector3d(0, height, 0);
 
@@ -288,15 +322,17 @@ public final class DimensionalPortalRenderer {
         Block blockType = tileEntity.getBlockType();
         Vector3f voidColor;
         Vector3i pathColor;
+        boolean personal = blockType instanceof BlockDimensionalDoorQuartz;
 
-        if(blockType instanceof BlockDimensionalDoorQuartz){
-            voidColor = new Vector3f(1,1,1);
-            pathColor = new Vector3i(255,255,0);
+
+        if (personal) {
+            final float brightness = 0.99f;
+            voidColor = new Vector3f(brightness, brightness, brightness);
+            pathColor = new Vector3i(255, 210, 0);
         } else {
-            voidColor = new Vector3f(0,0,0);
-            pathColor = new Vector3i(0,255,255);
+            voidColor = new Vector3f(0, 0, 0);
+            pathColor = new Vector3i(50, 255, 255);
         }
-
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder worldRenderer = tessellator.getBuffer();
@@ -314,90 +350,143 @@ public final class DimensionalPortalRenderer {
         GlStateManager.disableDepth();
 
         GlStateManager.enableBlend();
+        //TODO put blendfunc back to original state
         GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         int oldShadeModel = GlStateManager.glGetInteger(GL_SHADE_MODEL);
         GlStateManager.shadeModel(GL_SMOOTH);
 
-
-        worldRenderer.begin(GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        GlStateManager.disableAlpha();
+        /*worldRenderer.begin(GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
         worldRenderer.pos(left.getX(), left.getY(), left.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 200)
+                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 127)
                 .endVertex();
         worldRenderer.pos(right.getX(), right.getY(), right.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 200)
+                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 127)
                 .endVertex();
         worldRenderer.pos(rightBack.getX(), rightBack.getY(), rightBack.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 0)
+                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity)
                 .endVertex();
         worldRenderer.pos(leftBack.getX(), leftBack.getY(), leftBack.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(),0)
+                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity)
                 .endVertex();
-        tessellator.draw();
+        tessellator.draw();*/
+
+        // Modelled path ===============================================================================================
+
+        // GlStateManager.blendFunc();
+
+        GlStateManager.enableTexture2D();
+        //GlStateManager.disableDepth();
+        textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        Block stonebrick = Blocks.STONEBRICK;
+        IBlockState stonebrickState = stonebrick.getDefaultState();
+        Map<IBlockState, ModelResourceLocation> stonebrickMap = blockStateMapper.getVariants(stonebrick);
+        GlStateManager.matrixMode(GL_MODELVIEW);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(pos.getX(), pos.getY() - 1, pos.getZ());
+        VectorNi pathColorVec = createColorVec(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255);
+        int numPathTiles = 10;
+        float deltaOp = 255f / numPathTiles;
+        for (int i = 0; i < numPathTiles; i++) {
+            int nearOp = 255 - (int) (i * deltaOp);
+            int farOp = (int) (nearOp - deltaOp);
+            VectorNi colorVec = new VectorNi(pathColorVec);
+            setOpacity(colorVec, nearOp, nearOp, farOp, farOp);
+            pathColorVec = rotateTopFaceColor(colorVec, orientation);
+            drawState(tessellator, worldRenderer, stonebrickMap, stonebrickState, EnumFacing.UP, pathColorVec);
+            GlStateManager.translate(back.getX(), 0, back.getZ());
+        }
+
+
+        GlStateManager.popMatrix();
+        GlStateManager.disableTexture2D();
 
         worldRenderer.begin(GL_LINES, DefaultVertexFormats.POSITION_COLOR);
         worldRenderer.pos(leftTop.getX(), leftTop.getY(), leftTop.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 200).endVertex();
+                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255).endVertex();
         worldRenderer.pos(leftTopBack.getX(), leftTopBack.getY(), leftTopBack.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(),0).endVertex();
+                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity).endVertex();
         worldRenderer.pos(rightTop.getX(), rightTop.getY(), rightTop.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 200).endVertex();
+                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255).endVertex();
         worldRenderer.pos(rightTopBack.getX(), rightTopBack.getY(), rightTopBack.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(),0).endVertex();
+                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity).endVertex();
+
+        worldRenderer.pos(left.getX(), left.getY(), left.getZ())
+                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255).endVertex();
+        worldRenderer.pos(leftBack.getX(), leftBack.getY(), leftBack.getZ())
+                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity).endVertex();
+        worldRenderer.pos(right.getX(), right.getY(), right.getZ())
+                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255).endVertex();
+        worldRenderer.pos(rightBack.getX(), rightBack.getY(), rightBack.getZ())
+                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity).endVertex();
         tessellator.draw();
+
+        GlStateManager.enableAlpha();
+        GlStateManager.disableBlend();
+        GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         if (blockType instanceof BlockDoor) {
             //GlStateManager.disableDepth();
             //glDisable(GL_STENCIL_TEST);
-            GlStateManager.matrixMode(GL_MODELVIEW);
+            //GlStateManager.matrixMode(GL_MODELVIEW);
             GlStateManager.pushMatrix();
 
             GlStateManager.translate(pos.getX(), pos.getY(), pos.getZ());
 
             textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-            GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-            GlStateManager.enableTexture2D();
-            GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-            GlStateManager.enableTexture2D();
-            GlStateManager.enableLighting();
 
-            Map<IBlockState, ModelResourceLocation> map = blockStateMapper.getVariants(blockType);
+            Map<IBlockState, ModelResourceLocation> doorMap = blockStateMapper.getVariants(blockType);
             IBlockState doorBottomState = tileEntity.getWorld().getBlockState(tileEntity.getPos());
             IBlockState doorTopState = tileEntity.getWorld().getBlockState(tileEntity.getPos().up());
-            //System.out.println(tileEntity.getWorld().getBlockState(tileEntity.getPos().up(3)));
             if (doorBottomState.getBlock() instanceof BlockDoor && doorTopState.getBlock() instanceof BlockDoor) {
                 doorBottomState = doorBottomState.withProperty(hingeProperty, doorTopState.getValue(hingeProperty));
-                doorTopState = doorTopState.withProperty(openProperty, doorBottomState.getValue(openProperty));
-                //System.out.println();
+//                System.out.println();
+//                System.out.println("---------------------------------------------");
+//                System.out.println(doorBottomState.getProperties());
+//                System.out.println("---------------------------------------------");
+                doorTopState = doorTopState.withProperty(openProperty, doorBottomState.getValue(openProperty))
+                        .withProperty(facingProperty, doorBottomState.getValue(facingProperty));
+                //System.out.println(doorTopState);
                 //System.out.println(doorBottomState);
+                //System.out.println(doorBottomState.getProperties());
+
+                //System.out.println();
                 //System.out.println(doorBottomState.getValue(PropertyEnum.create("hinge", BlockDoor.EnumHingePosition.class)));
+                GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+                GlStateManager.enableTexture2D();
                 if (doorBottomState.getValue(openProperty)) {
-                    drawState(tessellator, worldRenderer, map, doorBottomState, null);
+                    GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+                    if (!personal) {
+                        GlStateManager.enableTexture2D();
+                        GlStateManager.enableLighting();
+                    }
+
+                    drawState(tessellator, worldRenderer, doorMap, doorBottomState, null);
                     GlStateManager.translate(0, 1, 0);
-                    drawState(tessellator, worldRenderer, map, doorTopState, null);
+                    drawState(tessellator, worldRenderer, doorMap, doorTopState, null);
                     GlStateManager.translate(0, -1, 0);
+
+                    GlStateManager.disableTexture2D();
+                    GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+                    GlStateManager.disableLighting();
                 }
 
-                GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-                GlStateManager.disableTexture2D();
-                GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-                GlStateManager.disableLighting();
-
-                Vector3d doorDepth = depth.mul(1.2);
+                Vector3d doorDepth = depth.mul(doorDistanceMul);
                 GlStateManager.translate(doorDepth.getX(), doorDepth.getY(), doorDepth.getZ());
-                drawState(tessellator, worldRenderer, map, doorBottomState.withProperty(openProperty, false), orientation);
+                drawState(tessellator, worldRenderer, doorMap, doorBottomState.withProperty(openProperty, false), orientation);
                 GlStateManager.translate(0, 1, 0);
-                drawState(tessellator, worldRenderer, map, doorTopState.withProperty(openProperty, false), orientation);
+                drawState(tessellator, worldRenderer, doorMap, doorTopState.withProperty(openProperty, false), orientation);
 
             }
 
             GlStateManager.popMatrix();
 
 
-
         }
 
+        //GlStateManager.rotate(Quaternion);
 
         glStencilMask(0xff);
         glDisable(GL_STENCIL_TEST);
@@ -414,11 +503,17 @@ public final class DimensionalPortalRenderer {
     }
 
     private static void drawState(Tessellator tessellator, BufferBuilder worldRenderer, Map<IBlockState, ModelResourceLocation> map,
-                                  IBlockState doorBottomState, EnumFacing side) {
+                                  IBlockState blockState, EnumFacing side) {
+        drawState(tessellator, worldRenderer, map, blockState, side, COLORLESS);
+    }
+
+    private static void drawState(Tessellator tessellator, BufferBuilder worldRenderer, Map<IBlockState, ModelResourceLocation> map,
+                                  IBlockState blockState, EnumFacing side, VectorNi colors) {
+        if (colors.size() < 16) colors = COLORLESS;
         ModelResourceLocation location;
         IBakedModel model;
         List<BakedQuad> quads;
-        location = map.get(doorBottomState);
+        location = map.get(blockState);
         model = modelManager.getModel(location);
         quads = model.getQuads(null, side, 0);
         if (!quads.isEmpty()) {
@@ -429,9 +524,60 @@ public final class DimensionalPortalRenderer {
                 /*for (int i = 1; i <5 ; i++) {
                     worldRenderer.putColorMultiplier(1, 0, 0, i);
                 }*/
+                /*worldRenderer.putColorRGB_F(1, 0, 0, 4);
+                worldRenderer.putColorRGB_F(1, 1, 0, 3);
+                worldRenderer.putColorRGB_F(0, 1, 0, 2);
+                worldRenderer.putColorRGB_F(0, 0.3f, 1, 1);*/
+
+                for (int i = 0, j = 4; i < 16; i += 4, j--) {
+                    int realIndex = worldRenderer.getColorIndex(j);
+                    worldRenderer.putColorRGBA(realIndex, colors.get(i), colors.get(i + 1), colors.get(i + 2), colors.get(i + 3));
+                }
             }
             tessellator.draw();
         }
+    }
+
+
+    private static VectorNi rotateTopFaceColor(VectorNi vec, EnumFacing facing) {
+        VectorNi ret = new VectorNi(vec);
+        if (facing == null) return ret;
+        int shiftAmount;
+        switch (facing) {
+            case DOWN:
+            case UP:
+                return ret;
+            case NORTH:
+                shiftAmount = 4;
+                break;
+            case EAST:
+                shiftAmount = 8;
+                break;
+            case SOUTH:
+                shiftAmount = 12;
+                break;
+            case WEST:
+                shiftAmount = 0;
+                break;
+            default:
+                return ret;
+        }
+        for (int i = 0; i < 16; i++) {
+            ret.set(i, vec.get((i + shiftAmount) & 15));
+        }
+        return ret;
+    }
+
+    private static void setOpacity(VectorNi vec, int op1, int op2, int op3, int op4) {
+        if (vec.size() < 16) return;
+        vec.set(3, op1);
+        vec.set(7, op2);
+        vec.set(11, op3);
+        vec.set(15, op4);
+    }
+
+    private static VectorNi createColorVec(int red, int green, int blue, int alpha) {
+        return new VectorNi(red, green, blue, alpha, red, green, blue, alpha, red, green, blue, alpha, red, green, blue, alpha);
     }
 
     private static FloatBuffer getBuffer(float f1, float f2, float f3, float f4) {
