@@ -10,6 +10,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 
+import static org.dimdev.dimdoors.shared.sound.ModSounds.CREEPY;
+
 public final class ModItems {
 
     // Regular doors
@@ -50,6 +52,9 @@ public final class ModItems {
     public static final ItemBlock ETERNAL_FABRIC = (ItemBlock) new ItemBlock(ModBlocks.ETERNAL_FABRIC).setRegistryName(ModBlocks.ETERNAL_FABRIC.getRegistryName());
     public static final ItemDimensionalTrapdoorWood WOOD_DIMENSIONAL_TRAPDOOR = new ItemDimensionalTrapdoorWood();
 
+    // Records
+    public static final ItemRecord CREEPY_RECORD = new ItemRecord("creepy", CREEPY);
+
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
@@ -76,6 +81,7 @@ public final class ModItems {
                 ANCIENT_FABRIC,
                 UNRAVELLED_FABRIC,
                 ETERNAL_FABRIC,
-                WOOD_DIMENSIONAL_TRAPDOOR);
+                WOOD_DIMENSIONAL_TRAPDOOR,
+                CREEPY_RECORD);
     }
 }

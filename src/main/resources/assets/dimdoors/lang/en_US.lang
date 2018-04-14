@@ -103,6 +103,8 @@ item.stabilized_rift_signature.unbound.info=First click stores a location, \noth
 item.unstable_dimensional_door.info=Caution: Leads to random destination
 item.oak_dimensional_door.info=Place on the block under a rift \nto create a portal, or place anywhere \nin a pocket dimension to exit.
 
+item.record.creepy.desc=Creepy - The sound of Limbo
+
 entity.dimdoors.monolith.name=Monolith
 
 commands.dimteleport.usage=/dimteleport <dimension> <x> <y> <z> [yaw] [pitch]

@@ -46,6 +46,7 @@ public final class ModelManager {
         register(ModItems.WOVEN_WORLD_THREAD_CHESTPLATE);
         register(ModItems.WOVEN_WORLD_THREAD_HELMET);
         register(ModItems.WOVEN_WORLD_THREAD_LEGGINGS);
+        register(ModItems.CREEPY_RECORD);
     }
 
     @SubscribeEvent
