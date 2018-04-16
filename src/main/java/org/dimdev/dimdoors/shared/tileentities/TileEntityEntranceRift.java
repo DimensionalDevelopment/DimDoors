@@ -35,7 +35,6 @@ public class TileEntityEntranceRift extends TileEntityRift {
     // Set by the block on tile entity creation, can't get from the block, it's not necessarily a door
     @Saved
     public EnumFacing orientation;
-//<<<<<<<HEAD
 
     // Render info, use += to change these on block tile entity creation
     @SideOnly(Side.CLIENT)
