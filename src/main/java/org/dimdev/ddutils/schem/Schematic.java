@@ -403,7 +403,7 @@ public class Schematic {
                     for (int cubeZ = 0; cubeZ <= (length >> 4) + 1; cubeZ++) {
                         long setStart = System.nanoTime();
                         // Get the cube only once for efficiency
-                        Cube cube = cubicWorld.getCubeFromCubeCoords((xBase << 4) + cubeX, (yBase << 4) + cubeY, (zBase << 4) + cubeZ);
+                        Cube cube = cubicWorld.getCubeFromCubeCoords((xBase >> 4) + cubeX, (yBase >> 4) + cubeY, (zBase >> 4) + cubeZ);
                         ExtendedBlockStorage storage = cube.getStorage();
                         boolean setAir = storage != null;
                         for (int x = 0; x < 16; x++) {
@@ -456,7 +456,7 @@ public class Schematic {
                                         IBlockState state = palette.get(blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
                                             if (storage == null) {
-                                                storage = new ExtendedBlockStorage(((yBase >> 4) + storageY) << 4, world.provider.hasSkyLight());
+                                                storage = new ExtendedBlockStorage((yBase >> 4) + storageY << 4, world.provider.hasSkyLight());
                                                 storageArray[(yBase >> 4) + storageY] = storage;
                                             }
                                             storage.set(x, y, z, state);
