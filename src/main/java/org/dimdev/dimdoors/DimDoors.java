@@ -27,7 +27,6 @@ import org.dimdev.dimdoors.shared.commands.CommandSaveSchem;
 import org.dimdev.dimdoors.shared.entities.EntityMonolith;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
-import org.dimdev.dimdoors.shared.rifts.targets.VirtualTarget;
 import org.dimdev.dimdoors.shared.rifts.targets.*;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
@@ -97,6 +96,9 @@ public class DimDoors {
 
         // Register dimensions
         ModDimensions.registerDimensions();
+
+        // Register default targets
+        Targets.registerDefaultTargets();
 
         // Make config folder and check if config needs to be regenerated TODO
         configurationFolder = new File(event.getModConfigurationDirectory(), "/DimDoors");
