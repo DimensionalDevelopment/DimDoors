@@ -29,6 +29,7 @@ public abstract class RestoringTarget extends VirtualTarget {
         Location linkTarget = makeLinkTarget();
         if (linkTarget != null) {
             wrappedDestination = RiftReference.tryMakeLocal(location, linkTarget);
+            wrappedDestination.setLocation(location);
             wrappedDestination.register();
 
             return wrappedDestination;
