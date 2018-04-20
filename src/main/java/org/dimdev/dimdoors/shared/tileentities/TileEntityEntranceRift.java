@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -19,6 +21,8 @@ import lombok.Getter;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
+import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 
 import java.util.Random;
 
@@ -145,5 +149,15 @@ import java.util.Random;
     @Override
     public float getDestinationPitch(float entityPitch) {
         return 0;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        Block block = getBlockType();
+        if (block instanceof BlockDimensionalDoor) {
+            return new AxisAlignedBB(pos, pos.add(1, 2, 1));
+        }
+        return super.getRenderBoundingBox();
     }
 }

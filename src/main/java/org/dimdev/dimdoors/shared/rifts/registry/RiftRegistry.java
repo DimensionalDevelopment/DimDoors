@@ -27,6 +27,7 @@ public class RiftRegistry extends WorldSavedData {
 
     protected Map<Integer, RiftSubregistry> subregistries = new HashMap<>();
     private static RiftRegistry riftRegistry = null; // For use by RiftSubregistry only
+    private static int currentDim; // For use by RiftSubregistry only
     protected DefaultDirectedGraph<RegistryVertex, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
     // TODO: add methods that automatically add vertices/edges and mark appropriate subregistries as dirty
 
@@ -54,9 +55,8 @@ public class RiftRegistry extends WorldSavedData {
         }
 
         @Override public void readFromNBT(NBTTagCompound nbt) {
-            // Registry is already loaded
+            dim = currentDim;
             if (riftRegistry.subregistries.get(dim) != null) return;
-            if (riftRegistry == null) RiftRegistry.instance();
 
             // Read rifts in this dimension
             NBTTagList riftsNBT = (NBTTagList) nbt.getTag("rifts");
@@ -158,13 +158,14 @@ public class RiftRegistry extends WorldSavedData {
 
         // Trigger the subregistry reading code for all dimensions. It would be better if there was some way of forcing
         // them to be read from somewhere else, since this is technically more than just reading the NBT and can cause
-        // problems with recursion without riftRegistry. This has to be done last since links are only
+        // problems with recursion without riftRegistry. This has to be done first since links are only
         // in the subregistries.
         // TODO: If non-dirty but new WorldSavedDatas aren't automatically saved, then create the subregistries here
         // TODO: rather then in the markSubregistryDirty method.
         // TODO: try to get rid of this code:
         for (int dim : DimensionManager.getStaticDimensionIDs()) {
             MapStorage storage = WorldUtils.getWorld(dim).getPerWorldStorage();
+            currentDim = dim;
             RiftSubregistry instance = (RiftSubregistry) storage.getOrLoadData(RiftSubregistry.class, SUBREGISTRY_DATA_NAME);
             if (instance != null) {
                 instance.dim = dim;
@@ -430,7 +431,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public void setLastPrivatePocketExit(UUID playerUUID, Location rift) {
-        DimDoors.log.info("Setting last used private pocket entrance for " + playerUUID + " at " + rift);
+        DimDoors.log.info("Setting last used private pocket exit for " + playerUUID + " at " + rift);
         setPlayerRiftPointer(playerUUID, rift, lastPrivatePocketExits);
     }
 
@@ -441,7 +442,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public void setOverworldRift(UUID playerUUID, Location rift) {
-        DimDoors.log.info("Setting last used private pocket entrance for " + playerUUID + " at " + rift);
+        DimDoors.log.info("Setting last used overworld rift for " + playerUUID + " at " + rift);
         setPlayerRiftPointer(playerUUID, rift, overworldRifts);
     }
 

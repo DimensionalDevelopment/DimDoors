@@ -75,6 +75,7 @@ public class PocketTemplate {
                         rift.setPos(new BlockPos(x, y, z));
                         rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
                         rift.setDestination(DefaultDungeonDestinations.deeperDungeonDestination);
+                        rift.setLeaveRiftOnBreak(true);
                         newNBT = rift.serializeNBT();
                         break;
                     case "less_deep_depth_door":
@@ -82,6 +83,7 @@ public class PocketTemplate {
                         rift.setPos(new BlockPos(x, y, z));
                         rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
                         rift.setDestination(DefaultDungeonDestinations.shallowerDungeonDestination);
+                        rift.setLeaveRiftOnBreak(true);
                         newNBT = rift.serializeNBT();
                         break;
                     case "overworld_door":
@@ -89,6 +91,7 @@ public class PocketTemplate {
                         rift.setPos(new BlockPos(x, y, z));
                         rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
                         rift.setDestination(DefaultDungeonDestinations.overworldDestination);
+                        rift.setLeaveRiftOnBreak(true);
                         newNBT = rift.serializeNBT();
                         break;
                     case "entrance_door":
@@ -96,6 +99,7 @@ public class PocketTemplate {
                         rift.setPos(new BlockPos(x, y, z));
                         rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
                         rift.setDestination(DefaultDungeonDestinations.twoWayPocketEntrance);
+                        rift.setLeaveRiftOnBreak(true);
                         newNBT = rift.serializeNBT();
                         break;
                     case "gateway_portal":
@@ -104,6 +108,7 @@ public class PocketTemplate {
                         rift.setProperties(DefaultDungeonDestinations.overworldLinkProperties);
                         rift.setDestination(DefaultDungeonDestinations.gatewayDestination);
                         rift.setCloseAfterPassThrough(true);
+                        rift.setLeaveRiftOnBreak(true);
                         newNBT = rift.serializeNBT();
                         break;
                     default:

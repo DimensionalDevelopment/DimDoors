@@ -21,6 +21,7 @@ public class BlockDimensionalPortal extends BlockDimensionalDoor { // TODO: conv
     public BlockDimensionalPortal() {
         super(Material.PORTAL); // This is the only way to make it collide with water but not other entities, but still have a collision box.
         setHardness(1.0F);
+        setLightLevel(0.5F);
         setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setDefaultState(super.getDefaultState().withProperty(OPEN, true));

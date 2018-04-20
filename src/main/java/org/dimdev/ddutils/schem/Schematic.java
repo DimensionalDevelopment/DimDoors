@@ -395,7 +395,7 @@ public class Schematic {
         // CubicChunks makes cubic worlds implement ICubicWorld
         // Just "world instanceof ICubicWorld" would throw a class not found error
         //noinspection InstanceofIncompatibleInterface
-        if (cubicChunks && world instanceof ICubicWorld) {
+        if (cubicChunks && ((ICubicWorld) world).isCubicWorld()) {
             DimDoors.log.info("Setting cube blockstates");
             ICubicWorld cubicWorld = (ICubicWorld) world;
             for (int cubeX = 0; cubeX <= (width >> 4) + 1; cubeX++) {

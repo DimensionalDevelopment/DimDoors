@@ -20,6 +20,7 @@ import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class ItemRiftBlade extends ItemSword {
         RayTraceResult hit = rayTrace(world, player, true);
 
         if (world.isRemote) {
-            if (RayTraceHelper.isFloatingRift(hit, world) || RayTraceHelper.isLivingEntity(hit)) {
+            if (RayTraceHelper.isRift(hit, world) || RayTraceHelper.isLivingEntity(hit)) {
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
             } else {
                 player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".rift_miss"), true);
@@ -60,8 +61,8 @@ public class ItemRiftBlade extends ItemSword {
             }
         }
 
-        if (RayTraceHelper.isFloatingRift(hit, world)) {
-            TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(hit.getBlockPos());
+        if (RayTraceHelper.isRift(hit, world)) {
+            TileEntityRift rift = (TileEntityRift) world.getTileEntity(hit.getBlockPos());
             rift.teleport(player);
 
             stack.damageItem(1, player);

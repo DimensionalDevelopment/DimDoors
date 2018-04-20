@@ -56,7 +56,9 @@ public class WorldProviderLimbo extends WorldProvider {
 
     @Override
     public BlockPos getSpawnPoint() {
-        return getRandomizedSpawnPoint();
+        int x = MathHelper.clamp(world.rand.nextInt(), -500, 500);
+        int z = MathHelper.clamp(world.rand.nextInt(), -500, 500);
+        return new BlockPos(x, 700, z);
     }
 
     @Override

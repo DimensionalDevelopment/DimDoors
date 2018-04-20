@@ -11,7 +11,7 @@ tile.quartz_dimensional_door.name=Quartz Dimensional Door
 tile.unstable_dimensional_door.name=Unstable Dimensional Door
 tile.oak_dimensional_door.name=Oak Dimensional Door
 tile.dimensional_trapdoor.name=Oak Dimensional Trapdoor
-tile.dimensional_portal.name=Transient Portal
+tile.dimensional_portal.name=Dimensional Portal
 
 tile.fabric.black.name=Fabric of Reality
 tile.fabric.white.name=Altered Fabric
@@ -165,13 +165,13 @@ dimdoors.pockets.loadAllSchematics.tooltip= When true, all available Pocket Sche
 dimdoors.world=World Generation Settings
 dimdoors.world.tooltip=Settings that determine where dimensional gateways and rift clusters can be generated and at what frequency
 dimdoors.world.clusterGenChance=Cluster Generation Chance
-dimdoors.world.clusterGenChance.tooltip=Sets the chance (out of 1.0) that a cluster of Rift Scars will generate in a given chunk.
+dimdoors.world.clusterGenChance.tooltip=Sets the chance (out of 1) that a cluster of rifts will generate in a given chunk.
 dimdoors.world.gatewayGenChance=Gateway Generation Chance
-dimdoors.world.gatewayGenChance.tooltip=Sets the chance (out of 1.0) that a Transient Portal gateway will generate in a given chunk.
+dimdoors.world.gatewayGenChance.tooltip=Sets the chance (out of 1) that a dimensional gateway will generate in a given chunk.
 dimdoors.world.clusterDimBlacklist=Cluster Dimension Blacklist
 dimdoors.world.clusterDimBlacklist.tooltip=Dimension Blacklist for the generation of Rift Scar clusters. Add a dimension ID here to prevent generation in certain dimensions.
 dimdoors.world.gatewayDimBlacklist=Gateway Dimension Blacklist
-dimdoors.world.gatewayDimBlacklist.tooltip=Dimension Blacklist for the generation of Transient Portal gateways. Add a dimension ID here to prevent generation in certain dimensions.
+dimdoors.world.gatewayDimBlacklist.tooltip=Dimension Blacklist for the generation of Dimensional Portal gateways. Add a dimension ID here to prevent generation in certain dimensions.
 
 dimdoors.dungeons=Dungeon Settings
 dimdoors.dungeons.tooltip=Settings that affect the generation of pocket dungeons

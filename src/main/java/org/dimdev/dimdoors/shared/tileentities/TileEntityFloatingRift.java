@@ -225,4 +225,9 @@ import java.util.Random;
         }
         return curve;
     }
+    @SideOnly(Side.CLIENT)
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return new AxisAlignedBB(pos.add(-50, -50, -50), pos.add(50, 50, 50));
+    }
 }
