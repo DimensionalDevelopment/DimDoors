@@ -56,7 +56,7 @@ public class RiftRegistry extends WorldSavedData {
 
         @Override public void readFromNBT(NBTTagCompound nbt) {
             dim = currentDim;
-            if (riftRegistry.subregistries.get(dim) != null) return;
+            if (riftRegistry == null || riftRegistry.subregistries.get(dim) != null) return;
 
             // Read rifts in this dimension
             NBTTagList riftsNBT = (NBTTagList) nbt.getTag("rifts");
@@ -154,7 +154,6 @@ public class RiftRegistry extends WorldSavedData {
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        riftRegistry = this;
 
         // Trigger the subregistry reading code for all dimensions. It would be better if there was some way of forcing
         // them to be read from somewhere else, since this is technically more than just reading the NBT and can cause
@@ -163,6 +162,7 @@ public class RiftRegistry extends WorldSavedData {
         // TODO: If non-dirty but new WorldSavedDatas aren't automatically saved, then create the subregistries here
         // TODO: rather then in the markSubregistryDirty method.
         // TODO: try to get rid of this code:
+        riftRegistry = this;
         for (int dim : DimensionManager.getStaticDimensionIDs()) {
             MapStorage storage = WorldUtils.getWorld(dim).getPerWorldStorage();
             currentDim = dim;
@@ -172,6 +172,7 @@ public class RiftRegistry extends WorldSavedData {
                 subregistries.put(dim, instance);
             }
         }
+        riftRegistry = null;
 
         // Read player to rift maps (this has to be done after the uuidMap has been filled by the subregistry code)
         lastPrivatePocketEntrances = readPlayerRiftPointers((NBTTagList) nbt.getTag("lastPrivatePocketEntrances"));
