@@ -3,13 +3,8 @@ notifications:
   email: false
 if: tag IS blank
 
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-cache:
-  directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
+git:
+  depth: 5
 
 before_install: chmod +x gradlew
 install: "./gradlew setupCIWorkspace"
@@ -26,7 +21,7 @@ sudo: false
 
 before_deploy:
   - export RELEASE_FILE_LIST=$(ls ./build/libs/* | tr '\n' ', ')
-  - echo "deploying $RELEASE_FILE_LIST to GitHub releases"
+  - echo "Deploying $RELEASE_FILE_LIST to GitHub releases"
 deploy:
   skip_cleanup: true
   provider: releases
