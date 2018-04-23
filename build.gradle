@@ -2,9 +2,11 @@ buildscript {
     repositories {
         jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "http://repo.spongepowered.org/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
 
@@ -15,13 +17,20 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
 
 repositories {
-    maven { url "https://jitpack.io" }
+    maven { url = "https://jitpack.io" }
+    maven {
+        name = 'sonatype'
+        url = 'http://oss.sonatype.org/content/repositories/public/'
+    }
+    maven { url = "http://repo.spongepowered.org/maven" }
 }
 
 configurations {
     embed
+    coreShadow
     compile.extendsFrom(embed)
 }
 
@@ -30,7 +39,8 @@ dependencies {
     embed 'org.jgrapht:jgrapht-core:1.1.0'
     embed 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
     compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
-    compileOnly 'com.github.OpenCubicChunks:CubicChunks:MC_1.12-SNAPSHOT'
+    compile("org.spongepowered:mixin:0.7.8-SNAPSHOT") { transitive = false }
+    deobfProvided 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0.819.0-SNAPSHOT'
 }
 
 // Mod version
@@ -63,6 +73,19 @@ minecraft {
     mappings = mcpversion
     replace '${version}', fullVersion
     makeObfSourceJar = false
+    //noinspection GroovyUnusedAssignment
+    def args = [ // TODO: https://github.com/SpongePowered/Mixin/issues/140
+            "-Dfml.noGrab=false",
+            "-Dfml.coreMods.load=org.dimdev.vanillafix.VanillaFixCoreMod",
+            "-Dmixin.env.compatLevel=JAVA_8",
+            //"-Dmixin.debug.verbose=true",
+            //"-Dmixin.debug.export=true",
+            "-Dmixin.checks.interfaces=true"
+    ]
+}
+
+mixin {
+    add sourceSets.main, "org.dimdev.vanillafix.mixins.refmap.json"
 }
 
 // Tasks
@@ -73,6 +96,15 @@ compileJava {
 jar {
     archiveName = archivesBaseName + "-" + jarVersion + ".jar"
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+    manifest {
+        attributes(
+                "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+                "FMLCorePlugin": "org.dimdev.vanillafix.VanillaFixCoreMod",
+                "TweakOrder": 0,
+                "MixinConfigs": "org.dimdev.vanillafix.mixins.json",
+                "ForceLoadAsMod": "true"
+        )
+    }
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
