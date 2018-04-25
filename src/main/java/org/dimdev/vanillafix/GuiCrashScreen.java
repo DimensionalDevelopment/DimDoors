@@ -1,5 +1,6 @@
 package org.dimdev.vanillafix;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.crash.CrashReport;
@@ -9,6 +10,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.ddutils.HasteUpload;
+import org.dimdev.vanillafix.mixins.client.IFixedMinecraft;
+import org.dimdev.vanillafix.mixins.client.MixinMinecraft;
 
 import java.io.File;
 import java.net.URI;
@@ -39,6 +42,7 @@ public class GuiCrashScreen extends GuiScreen {
         try {
             if (button.id == 0) {
                 mc.displayGuiScreen(new GuiMainMenu());
+                ((IFixedMinecraft) mc).clearCurrentReport();
             } else if (button.id == 1) {
                 if (hasteLink == null) {
                     hasteLink = HasteUpload.uploadToHaste(HASTE_BASE_URL, "txt", report.getCompleteReport());

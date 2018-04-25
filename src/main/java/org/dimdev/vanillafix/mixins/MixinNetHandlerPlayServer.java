@@ -9,7 +9,6 @@ import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.CPacketConfirmTeleport;
 import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -117,9 +116,7 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
             // Instead, we will send another packet both here and in processConfirmTeleport if the position the client
             // was sent is no longer good (exceeds tolerance):
 
-            LOGGER.info("Player sent move packets before confirming");
             if (targetPos.squareDistanceTo(player.posX, player.posY, player.posZ) > 1.0D) {
-                LOGGER.info("Distance became too big: " + targetPos + " vs. " + new Vec3d(player.posX, player.posY, player.posY));
                 setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
             }
 
@@ -199,7 +196,6 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
                 // Entity.move already made sure that the player didn't cheat, and reverting the move would be wrong because
                 // the prevX/Y/Z is no longer good in the new dimension. This fixes MC-123364.
                 if (player.isInvulnerableDimensionChange()) {
-                    LOGGER.info("Doing teleport");
                     // A better name for invulnerableDimensionChange would be "lastBlockCollisionCausedPlayerMove". See
                     // https://github.com/ModCoderPack/MCPBot-Issues/issues/624. This happens when the move caused a
                     // collision that teleported the player elsewhere.
@@ -283,11 +279,9 @@ public abstract class MixinNetHandlerPlayServer implements INetHandlerPlayServer
 
         if (packet.getTeleportId() == teleportId) {
             if (targetPos.squareDistanceTo(player.posX, player.posY, player.posZ) > 1.0D) {
-                LOGGER.info("Position accepted no longer good");
                 // The client accepted the position change, but it's too late, something moved the player. Sync it again.
                 setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
             } else {
-                LOGGER.info("Teleport accepted");
                 targetPos = null;
             }
         }
