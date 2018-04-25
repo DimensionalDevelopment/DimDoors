@@ -207,6 +207,7 @@ import javax.annotation.Nonnull;
         } else if (destination == null) {
             color = new RGBA(0.7f, 0.7f, 0.7f, 1);
         } else {
+            destination.setLocation(new Location(world, pos));
             RGBA newColor = destination.getColor();
             if (color == null && newColor != null || !color.equals(newColor)) {
                 color = newColor;
