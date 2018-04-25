@@ -22,7 +22,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
-import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 
 import java.util.Random;
 

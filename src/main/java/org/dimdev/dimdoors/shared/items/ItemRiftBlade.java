@@ -5,7 +5,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.client.TileEntityFloatingRiftRenderer;
 import org.dimdev.dimdoors.shared.ModConfig;
-import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.TeleportUtils;
 import net.minecraft.client.util.ITooltipFlag;

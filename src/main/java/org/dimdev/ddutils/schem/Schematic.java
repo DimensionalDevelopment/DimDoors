@@ -393,8 +393,6 @@ public class Schematic {
         long setTime = 0;
         long relightTime = 0;
         // CubicChunks makes cubic worlds implement ICubicWorld
-        // Just "world instanceof ICubicWorld" would throw a class not found error
-        //noinspection InstanceofIncompatibleInterface
         if (cubicChunks && ((ICubicWorld) world).isCubicWorld()) {
             DimDoors.log.info("Setting cube blockstates");
             ICubicWorld cubicWorld = (ICubicWorld) world;

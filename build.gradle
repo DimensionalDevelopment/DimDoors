@@ -74,12 +74,13 @@ minecraft {
     replace '${version}', fullVersion
     makeObfSourceJar = false
     //noinspection GroovyUnusedAssignment
-    def args = [ // TODO: https://github.com/SpongePowered/Mixin/issues/140
+    def args = [
             "-Dfml.noGrab=false",
             "-Dfml.coreMods.load=org.dimdev.vanillafix.VanillaFixCoreMod",
             "-Dmixin.env.compatLevel=JAVA_8",
-            //"-Dmixin.debug.verbose=true",
-            //"-Dmixin.debug.export=true",
+            "-Dmixin.debug=true",
+            "-Dmixin.debug.verbose=true",
+            "-Dmixin.debug.export=true",
             "-Dmixin.checks.interfaces=true"
     ]
 }
