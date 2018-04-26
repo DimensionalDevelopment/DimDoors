@@ -201,5 +201,3 @@ dimdoors.graphics.riftSize=Rift Size
 dimdoors.graphics.riftSize.tooltip=Multiplier affecting how large rifts should be rendered, 1 being the default size.
 dimdoors.graphics.riftJitter=Rift Jitter
 dimdoors.graphics.riftJitter.tooltip=Multiplier affecting how much rifts should jitter, 1 being the default size.
-
-vanillafix.gui.getLink=Get Link

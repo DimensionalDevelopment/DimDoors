@@ -1,6 +1,5 @@
 package org.dimdev.vanillafix;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.crash.CrashReport;
@@ -11,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.ddutils.HasteUpload;
 import org.dimdev.vanillafix.mixins.client.IFixedMinecraft;
-import org.dimdev.vanillafix.mixins.client.MixinMinecraft;
 
 import java.io.File;
 import java.net.URI;
@@ -34,7 +32,7 @@ public class GuiCrashScreen extends GuiScreen {
     public void initGui() {
         buttonList.clear();
         buttonList.add(new GuiOptionButton(0, width / 2 - 155, height / 4 + 120 + 12, I18n.format("gui.toTitle")));
-        buttonList.add(new GuiOptionButton(1, width / 2 - 155 + 160, height / 4 + 120 + 12, I18n.format("vanillafix.gui.getLink")));
+        buttonList.add(new GuiOptionButton(1, width / 2 - 155 + 160, height / 4 + 120 + 12, "Get Link")); // TODO: localize
     }
 
     @Override
@@ -51,7 +49,9 @@ public class GuiCrashScreen extends GuiScreen {
                 mc.displayGuiScreen(new GuiConfirmOpenLink(this, hasteLink, 31102009, false));
             }
         } catch (Throwable e) {
-            log.error(e);
+            log.error("Exception when crash menu button clicked:", e);
+            button.displayString = "[Failed]";
+            button.enabled = false;
         }
     }
 

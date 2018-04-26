@@ -100,7 +100,8 @@ jar {
     manifest.attributes(
             "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
             "MixinConfigs": "mixins.vanillafix.json",
-            "FMLCorePlugin": "org.dimdev.vanillafix.VanillaFixCoreMod"
+            "FMLCorePlugin": "org.dimdev.vanillafix.VanillaFixCoreMod",
+            "ForceLoadAsMod": "true"
     )
 }
 

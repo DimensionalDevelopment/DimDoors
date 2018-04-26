@@ -12,7 +12,7 @@ public class VanillaFixCoreContainer extends DummyModContainer {
     public VanillaFixCoreContainer() {
         super(new ModMetadata());
         ModMetadata meta = getMetadata();
-        meta.modId = "cubicchunkscore";
+        meta.modId = "vanillafix";
         meta.name = "VanillaFix";
         meta.version = "${version}";
     }
