@@ -6,7 +6,6 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
 
@@ -17,12 +16,10 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'org.spongepowered.mixin'
 
 repositories {
     maven { url = "https://jitpack.io" }
     maven { url = 'http://oss.sonatype.org/content/repositories/public/' }
-    maven { url = "http://repo.spongepowered.org/maven" }
 }
 
 configurations {
@@ -34,7 +31,6 @@ dependencies {
     embed 'com.flowpowered:flow-math:1.0.3'
     embed 'org.jgrapht:jgrapht-core:1.1.0'
     embed 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
-    embed("org.spongepowered:mixin:0.7.8-SNAPSHOT") { transitive = false }
     compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
     compileOnly 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0.819.0-SNAPSHOT'
 }
@@ -71,20 +67,8 @@ minecraft {
     replace '${version}', fullVersion
     makeObfSourceJar = false
     ext.args = [
-            "-Dfml.noGrab=false",
-            "-Dfml.coreMods.load=org.dimdev.vanillafix.VanillaFixCoreMod",
-            "-Dmixin.env.compatLevel=JAVA_8",
-            "-Dmixin.debug=true",
-            "-Dmixin.debug.verbose=true",
-            "-Dmixin.debug.export=true",
-            "-Dmixin.checks.interfaces=true"
+            "-Dfml.noGrab=false"
     ]
-}
-
-sourceSets {
-    main {
-        ext.refMap = "mixins.vanillafix.refmap.json"
-    }
 }
 
 // Tasks
@@ -97,12 +81,6 @@ jar {
     from(configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }) {
         exclude "LICENSE.txt", "META-INF/MANIFSET.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
     }
-    manifest.attributes(
-            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
-            "MixinConfigs": "mixins.vanillafix.json",
-            "FMLCorePlugin": "org.dimdev.vanillafix.VanillaFixCoreMod",
-            "ForceLoadAsMod": "true"
-    )
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
