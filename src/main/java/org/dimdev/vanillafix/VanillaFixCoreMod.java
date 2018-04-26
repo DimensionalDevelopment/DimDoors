@@ -15,7 +15,7 @@ public class VanillaFixCoreMod implements IFMLLoadingPlugin {
 
     public VanillaFixCoreMod() {
         MixinBootstrap.init();
-        Mixins.addConfiguration("org.dimdev.vanillafix.mixins.json");
+        Mixins.addConfiguration("mixins.vanillafix.json");
     }
 
     @Override public String[] getASMTransformerClass() {

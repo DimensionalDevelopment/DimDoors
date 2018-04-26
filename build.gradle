@@ -21,26 +21,22 @@ apply plugin: 'org.spongepowered.mixin'
 
 repositories {
     maven { url = "https://jitpack.io" }
-    maven {
-        name = 'sonatype'
-        url = 'http://oss.sonatype.org/content/repositories/public/'
-    }
+    maven { url = 'http://oss.sonatype.org/content/repositories/public/' }
     maven { url = "http://repo.spongepowered.org/maven" }
 }
 
 configurations {
     embed
-    coreShadow
-    compile.extendsFrom(embed)
+    implementation.extendsFrom(embed)
 }
 
 dependencies {
     embed 'com.flowpowered:flow-math:1.0.3'
     embed 'org.jgrapht:jgrapht-core:1.1.0'
     embed 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
+    embed("org.spongepowered:mixin:0.7.8-SNAPSHOT") { transitive = false }
     compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
-    compile("org.spongepowered:mixin:0.7.8-SNAPSHOT") { transitive = false }
-    deobfProvided 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0.819.0-SNAPSHOT'
+    compileOnly 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0.819.0-SNAPSHOT'
 }
 
 // Mod version
@@ -67,14 +63,14 @@ ext.mcversion = "1.12.2"
 ext.forgeversion = "14.23.2.2623"
 String mcpversion = "snapshot_20180227"
 
+// Configuration
 minecraft {
     version = "$mcversion-$forgeversion"
     runDir = "run"
     mappings = mcpversion
     replace '${version}', fullVersion
     makeObfSourceJar = false
-    //noinspection GroovyUnusedAssignment
-    def args = [
+    ext.args = [
             "-Dfml.noGrab=false",
             "-Dfml.coreMods.load=org.dimdev.vanillafix.VanillaFixCoreMod",
             "-Dmixin.env.compatLevel=JAVA_8",
@@ -85,8 +81,10 @@ minecraft {
     ]
 }
 
-mixin {
-    add sourceSets.main, "org.dimdev.vanillafix.mixins.refmap.json"
+sourceSets {
+    main {
+        ext.refMap = "mixins.vanillafix.refmap.json"
+    }
 }
 
 // Tasks
@@ -96,16 +94,14 @@ compileJava {
 
 jar {
     archiveName = archivesBaseName + "-" + jarVersion + ".jar"
-    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
-    manifest {
-        attributes(
-                "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
-                "FMLCorePlugin": "org.dimdev.vanillafix.VanillaFixCoreMod",
-                "TweakOrder": 0,
-                "MixinConfigs": "org.dimdev.vanillafix.mixins.json",
-                "ForceLoadAsMod": "true"
-        )
+    from(configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }) {
+        exclude "LICENSE.txt", "META-INF/MANIFSET.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
     }
+    manifest.attributes(
+            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+            "MixinConfigs": "mixins.vanillafix.json",
+            "FMLCorePlugin": "org.dimdev.vanillafix.VanillaFixCoreMod"
+    )
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -126,7 +122,6 @@ processResources {
     // Replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        // replace version and mcversion
         expand 'version': project.version, 'mcversion': project.minecraft.version
     }
 
@@ -140,6 +135,5 @@ task generatePocketSchematics(dependsOn: jar, type: JavaExec, group: "dimdoors")
     classpath = files('build/libs/' + jar.archiveName)
     classpath += sourceSets.main.runtimeClasspath
     main = "org.dimdev.dimdoors.shared.tools.SchematicGenerator"
-    //noinspection GroovyAssignabilityCheck (IntelliJ is wrong)
-    args "src/main/resources/assets/dimdoors/pockets/schematic"
+    args = ["src/main/resources/assets/dimdoors/pockets/schematic"]
 }
