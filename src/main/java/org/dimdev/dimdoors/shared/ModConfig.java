@@ -50,6 +50,10 @@ public final class ModConfig {
         @Name("depthSpreadFactor")
         @LangKey("dimdoors.general.depthSpreadFactor")
         public int depthSpreadFactor = 20;
+
+        @Name("useEnderPearlsInCrafting")
+        @LangKey("dimdoors.general.useEnderPearlsInCrafting")
+        public boolean useEnderPearlsInCrafting = false;
     }
 
     public static class Pockets {

@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "item": "dimdoors:unravelled_fabric"
+    },
+    "title": {
+      "translate": "Space between Spaces"
+    },
+    "description": {
+      "translate": "advancements.end.root.description"
+    },
+    "background": "minecraft:textures/gui/advancements/backgrounds/end.png",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "entered_end": {
+      "trigger": "minecraft:changed_dimension",
+      "conditions": {
+        "to": "private_pockets"
+      }
+    }
+  }
+}

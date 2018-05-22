@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.shared;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.*;
 import net.minecraft.util.NonNullList;
@@ -57,60 +58,62 @@ public final class ModRecipes {
 
     @SubscribeEvent
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
+        Item usedItem = ModConfig.general.useEnderPearlsInCrafting ? Items.ENDER_PEARL : ModItems.STABLE_FABRIC;
+
         IForgeRegistry<IRecipe> registry = event.getRegistry();
-        registry.register(makeShapedRecipe(new ItemStack(ModItems.STABLE_FABRIC),
-                "yxy", 'x', Items.ENDER_PEARL, 'y', ModItems.WORLD_THREAD));
+
+        if(!ModConfig.general.useEnderPearlsInCrafting) {
+            registry.register(makeShapedRecipe(new ItemStack(ModItems.STABLE_FABRIC),
+                    "yxy", 'x', Items.ENDER_PEARL, 'y', ModItems.WORLD_THREAD));
+        }
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.IRON_DIMENSIONAL_DOOR),
-                "yxy", 'x', ModItems.STABLE_FABRIC, 'y', Items.IRON_DOOR));
+                "yxy", 'x',usedItem, 'y', Items.IRON_DOOR));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.UNSTABLE_DIMENSIONAL_DOOR),
                 "xyx", 'x', Items.ENDER_EYE, 'y', Items.IRON_DOOR));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.WOOD_DIMENSIONAL_DOOR),
-                "yxy", 'x', Items.ENDER_PEARL, 'y', Items.OAK_DOOR));
+                "yxy", 'x', usedItem, 'y', Items.OAK_DOOR));
 
         registry.register(makeShapedRecipe(new ItemStack(ModBlocks.WOOD_DIMENSIONAL_TRAPDOOR),
-                "yx", 'x', Items.ENDER_PEARL, 'y', Blocks.TRAPDOOR));
+                "yx", 'x', usedItem, 'y', Blocks.TRAPDOOR));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.GOLD_DIMENSIONAL_DOOR),
-                "yxy", 'x', ModItems.STABLE_FABRIC, 'y', ModItems.GOLD_DOOR));
+                "yxy", 'x', usedItem, 'y', ModItems.GOLD_DOOR));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.GOLD_DOOR),
                 "yy", "yy", "yy", 'y', Items.GOLD_INGOT));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.QUARTZ_DIMENSIONAL_DOOR),
-                "yx", 'x', ModItems.STABLE_FABRIC, 'y', ModItems.QUARTZ_DOOR));
+                "yx", 'x', usedItem, 'y', ModItems.QUARTZ_DOOR));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.QUARTZ_DOOR), "yy", "yy", "yy", 'y', Items.QUARTZ));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_BLADE),
-                "y", "y", "x", 'y', ModItems.STABLE_FABRIC, 'x', Items.IRON_SWORD));
+                "y", "y", "x", 'y', usedItem, 'x', Items.IRON_SWORD));
 
         //should not be craftable
         /*registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_CONFIGURATION_TOOL),
         " w ", "xyx", "xzx", 'z', Items.DIAMOND_SHOVEL, 'y', ModItems.STABLE_FABRIC, 'x', ModItems.WORLD_THREAD, 'w', Items.DIAMOND));*/
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_REMOVER),
-                "xxx", "xyx", "xxx", 'x', Items.GOLD_INGOT, 'y', Items.ENDER_PEARL));
+                "xxx", "xyx", "xxx", 'x', Items.GOLD_INGOT, 'y', usedItem));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_REMOVER),
-                "x x", " y ", "x x", 'x', Items.GOLD_INGOT, 'y', ModItems.STABLE_FABRIC));
+                "x x", " y ", "x x", 'x', Items.GOLD_INGOT, 'y', usedItem));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_SIGNATURE),
-                "xxx", "xyx", "xxx", 'x', Items.IRON_INGOT, 'y', Items.ENDER_PEARL));
+                "xxx", "xyx", "xxx", 'x', Items.IRON_INGOT, 'y', usedItem));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_SIGNATURE),
-                "x x", " y ", "x x", 'x', Items.IRON_INGOT, 'y', ModItems.STABLE_FABRIC));
+                "x x", " y ", "x x", 'x', Items.IRON_INGOT, 'y', usedItem));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.STABILIZED_RIFT_SIGNATURE),
-                "x x", " y ", "x x", 'x', ModItems.STABLE_FABRIC, 'y', ModItems.RIFT_SIGNATURE));
+                "x x", " y ", "x x", 'x', usedItem, 'y', ModItems.RIFT_SIGNATURE));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_STABILIZER),
-                "xxx", "xyx", "xxx", 'x', Items.DIAMOND, 'y', Items.ENDER_PEARL));
-
-        registry.register(makeShapedRecipe(new ItemStack(ModItems.RIFT_STABILIZER),
-                "x x", " y ", "x x", 'x', Items.DIAMOND, 'y', ModItems.STABLE_FABRIC));
+                "x x", " y ", "x x", 'x', Items.DIAMOND, 'y', usedItem));
 
         registry.register(makeShapedRecipe(new ItemStack(ModItems.WOVEN_WORLD_THREAD_HELMET),
                 "xxx", "x x", 'x', ModItems.WORLD_THREAD));
