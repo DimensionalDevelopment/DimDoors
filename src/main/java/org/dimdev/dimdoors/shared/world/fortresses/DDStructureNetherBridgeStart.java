@@ -22,7 +22,7 @@ public class DDStructureNetherBridgeStart extends StructureStart
 
     public DDStructureNetherBridgeStart() { }
 
-    public DDStructureNetherBridgeStart(World world, Random random, int chunkX, int chunkZ, DDProperties properties)
+    public DDStructureNetherBridgeStart(World world, Random random, int chunkX, int chunkZ)
     {
         // StructureNetherBridgeStart handles designing the fortress for us
         super(chunkX, chunkZ);
@@ -34,8 +34,8 @@ public class DDStructureNetherBridgeStart extends StructureStart
         hasGateway = false;
 
         // Randomly decide whether to build a gateway in this fortress
-        if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.FortressGatewayGenerationChance)
-        {
+        //if (random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.FortressGatewayGenerationChance)
+        //{
             // Search for all the blaze spawners in a fortress
             spawnerRooms = new ArrayList<StructureNetherBridgePieces.Throne>();
             componentIterator = this.components.iterator();
@@ -59,7 +59,7 @@ public class DDStructureNetherBridgeStart extends StructureStart
                 minY = bounds.minY;
                 minZ = bounds.minZ;
             }
-        }
+        //}
     }
 
     @Override
@@ -83,10 +83,9 @@ public class DDStructureNetherBridgeStart extends StructureStart
     }
 
     @Override
-    public void func_143020_a(World world, NBTTagCompound fortressTag)
-    {
+    public void readStructureComponentsFromNBT(World world, NBTTagCompound fortressTag) {
         // We override the function for reading NBT data to load gateway data
-        super.func_143020_a(world, fortressTag);
+        super.readStructureComponentsFromNBT(world, fortressTag);
 
         NBTTagCompound dimensionalTag = fortressTag.getCompoundTag("DimensionalDoors");
         if (dimensionalTag != null)
