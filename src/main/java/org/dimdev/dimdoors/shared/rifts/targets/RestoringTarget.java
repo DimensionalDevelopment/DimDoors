@@ -29,6 +29,7 @@ public abstract class RestoringTarget extends VirtualTarget {
         Location linkTarget = makeLinkTarget();
         if (linkTarget != null) {
             wrappedDestination = RiftReference.tryMakeLocal(location, linkTarget);
+            wrappedDestination.setLocation(location);
             wrappedDestination.register();
 
             return wrappedDestination;
@@ -61,6 +62,7 @@ public abstract class RestoringTarget extends VirtualTarget {
     @Override
     public RGBA getColor() {
         if (wrappedDestination != null) {
+            wrappedDestination.location = location;
             return wrappedDestination.getColor();
         } else {
             return getUnlinkedColor(location);

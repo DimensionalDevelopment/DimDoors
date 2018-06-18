@@ -42,7 +42,7 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
 
-        RiftCrackRenderer.drawCrack(rift.riftYaw, rift.getCurve(), ModConfig.graphics.riftSize * rift.size / 120, x + 0.5, y + 1.5, z + 0.5);
+        RiftCrackRenderer.drawCrack(rift.riftYaw, rift.getCurve(), ModConfig.graphics.riftSize * rift.size / 150, x + 0.5, y + 1.5, z + 0.5);
 
         GlStateManager.disableBlend();
         GlStateManager.enableTexture2D();
@@ -60,7 +60,6 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
         GlStateManager.disableLighting();
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
-        GlStateManager.enableBlend();
 
         bindTexture(tesseract_path);
 
@@ -69,7 +68,6 @@ public class TileEntityFloatingRiftRenderer extends TileEntitySpecialRenderer<Ti
 
         tesseract.draw(color, radian);
 
-        GlStateManager.disableBlend();
         GlStateManager.enableCull();
         GlStateManager.popMatrix();
         GlStateManager.enableLighting();

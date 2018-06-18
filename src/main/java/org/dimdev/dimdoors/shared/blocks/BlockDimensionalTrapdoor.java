@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.shared.blocks;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockTrapDoor;
 import net.minecraft.block.ITileEntityProvider;

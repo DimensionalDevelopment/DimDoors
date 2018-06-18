@@ -22,6 +22,7 @@ import org.dimdev.dimdoors.shared.rifts.targets.*;
 import org.dimdev.pocketlib.VirtualLocation;
 
 import javax.annotation.Nonnull;
+import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
 
 @NBTSerializable public abstract class TileEntityRift extends TileEntity implements ITarget, IEntityTarget {
 
@@ -127,7 +128,7 @@ import javax.annotation.Nonnull;
     public boolean isRegistered() {
         // The DimensionManager.getWorld(0) != null check is to be able to run this without having to start minecraft
         // (for GeneratePocketSchematics, for example)
-        return DimensionManager.getWorld(0) != null && RiftRegistry.instance().isRiftAt(new Location(world, pos));
+        return DimensionManager.getWorld(0) != null && !PocketTemplate.isReplacingPlaceholders() && RiftRegistry.instance().isRiftAt(new Location(world, pos));
     }
 
     public void register() {
@@ -183,10 +184,10 @@ import javax.annotation.Nonnull;
     public boolean teleport(Entity entity) {
         riftStateChanged = false;
 
-        IEntityTarget target = getTarget().as(Targets.ENTITY);
-
         // Attempt a teleport
         try {
+            IEntityTarget target = getTarget().as(Targets.ENTITY);
+
             if (target.receiveEntity(entity, getSourceYaw(entity.rotationYaw), getSourcePitch(entity.rotationPitch))) {
                 VirtualLocation vloc = VirtualLocation.fromLocation(new Location(entity.world, entity.getPosition()));
                 DimDoors.sendTranslatedMessage(entity, "You are at x = " + vloc.getX() + ", y = ?, z = " + vloc.getZ() + ", w = " + vloc.getDepth());
@@ -207,6 +208,7 @@ import javax.annotation.Nonnull;
         } else if (destination == null) {
             color = new RGBA(0.7f, 0.7f, 0.7f, 1);
         } else {
+            destination.setLocation(new Location(world, pos));
             RGBA newColor = destination.getColor();
             if (color == null && newColor != null || !color.equals(newColor)) {
                 color = newColor;

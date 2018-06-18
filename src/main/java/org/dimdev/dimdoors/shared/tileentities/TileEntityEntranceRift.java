@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
-import lombok.Getter;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -20,6 +20,13 @@ import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.ModConfig;
+import org.dimdev.ddutils.RGBA;
+import org.dimdev.ddutils.TeleportUtils;
+import lombok.Getter;
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
 
 import java.util.Random;
 
@@ -180,7 +187,13 @@ public class TileEntityEntranceRift extends TileEntityRift {
         return 0;
     }
 
+    @SideOnly(Side.CLIENT)
+    @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new net.minecraft.util.math.AxisAlignedBB(pos.add(-1, -1, -1), pos.add(2, 3, 2));
+        Block block = getBlockType();
+        if (block instanceof BlockDimensionalDoor) {
+            return new AxisAlignedBB(pos, pos.add(1, 2, 1));
+        }
+        return super.getRenderBoundingBox();
     }
 }

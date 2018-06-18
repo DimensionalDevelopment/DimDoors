@@ -53,7 +53,7 @@ public final class ModItems {
     public static final ItemDimensionalTrapdoorWood WOOD_DIMENSIONAL_TRAPDOOR = new ItemDimensionalTrapdoorWood();
 
     // Records
-    public static final ItemRecord CREEPY_RECORD = new ItemRecord("creepy", CREEPY);
+    public static final ItemModRecord CREEPY_RECORD = new ItemModRecord("creepy", CREEPY);
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> event) {

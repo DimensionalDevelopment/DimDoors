@@ -71,6 +71,6 @@ public abstract class RiftReference extends VirtualTarget {
             Set<Location> otherRiftTargets = RiftRegistry.instance().getTargets(target);
             if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(location)) return new RGBA(0, 1, 0, 1);
         }
-        return new RGBA(1, 1, 1, 1);
+        return new RGBA(1, 0, 0, 1);
     }
 }

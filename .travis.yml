@@ -3,6 +3,9 @@ notifications:
   email: false
 if: tag IS blank
 
+git:
+  depth: 5
+
 before_install: chmod +x gradlew
 install: "./gradlew setupCIWorkspace"
 script: "./gradlew clean build"
@@ -18,7 +21,7 @@ sudo: false
 
 before_deploy:
   - export RELEASE_FILE_LIST=$(ls ./build/libs/* | tr '\n' ', ')
-  - echo "deploying $RELEASE_FILE_LIST to GitHub releases"
+  - echo "Deploying $RELEASE_FILE_LIST to GitHub releases"
 deploy:
   skip_cleanup: true
   provider: releases

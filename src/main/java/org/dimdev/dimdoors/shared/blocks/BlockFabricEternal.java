@@ -32,6 +32,7 @@ public class BlockFabricEternal extends BlockEmptyDrops { // TODO: make this a g
 
     @Override
     public void onEntityWalk(World world, BlockPos pos, Entity entity) {
+        if (world.isRemote) return;
         exitLimbo.receiveEntity(entity, entity.rotationYaw / 90 * 90, 0);
     }
 }

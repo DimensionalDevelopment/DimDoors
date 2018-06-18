@@ -16,8 +16,8 @@ import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 /**
@@ -28,9 +28,22 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     private static final String SAVED_POCKETS_GROUP_NAME = "saved_pockets";
     public static final SchematicHandler INSTANCE = new SchematicHandler();
 
+    public Schematic loadSchematicFromByteArray(byte[] schematicBytecode) {
+        Schematic schematic = null;
+        try {
+            schematic = Schematic.loadFromNBT(CompressedStreamTools.readCompressed(new ByteArrayInputStream (schematicBytecode)));
+        } catch (IOException ex) {
+            //this would be EXTREMELY unlikely, since this should have been checked earlier.
+            DimDoors.log.error("Schematic file for this dungeon could not be read from byte array.", ex); 
+        }
+        return schematic;
+    }
+
     private List<PocketTemplate> templates;
     private Map<String, Map<String, Integer>> nameMap; // group -> name -> index in templates
-
+    private List<Entry<PocketTemplate, Integer>> usageList = new ArrayList(); //template and nr of usages
+    private Map<PocketTemplate, Integer> usageMap = new HashMap(); //template -> index in usageList
+    
     public void loadSchematics() {
         long startTime = System.currentTimeMillis();
 
@@ -47,7 +60,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             }
         }
 
-        // Load config jsons
+        // Init json config folder
         File jsonFolder = new File(DimDoors.getConfigurationFolder(), "/jsons");
         if (!jsonFolder.exists()) {
             jsonFolder.mkdirs();
@@ -58,7 +71,9 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             schematicFolder.mkdirs();
         }
 
+        // Load config jsons and referenced schematics
         for (File file : jsonFolder.listFiles()) {
+            if (file.isDirectory() || !file.getName().endsWith(".json")) continue;
             try {
                 String jsonString = IOUtils.toString(file.toURI(), StandardCharsets.UTF_8);
                 templates.addAll(loadTemplatesFromJson(jsonString));
@@ -73,9 +88,9 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             for (File file : saveFolder.listFiles()) {
                 if (file.isDirectory() || !file.getName().endsWith(".schem")) continue;
                 try {
-                    Schematic schematic = Schematic.loadFromNBT(CompressedStreamTools.readCompressed(new FileInputStream(file)));
-                    PocketTemplate template = new PocketTemplate(SAVED_POCKETS_GROUP_NAME, file.getName(), null, null, null, schematic, -1, 0);
-                    PocketTemplate.replacePlaceholders(schematic);
+                    byte[] schematicBytecode = IOUtils.toByteArray(new FileInputStream(file));
+                    Schematic.loadFromNBT(CompressedStreamTools.readCompressed(new ByteArrayInputStream (schematicBytecode)));
+                    PocketTemplate template = new PocketTemplate(SAVED_POCKETS_GROUP_NAME, file.getName(), null, null, null, null, schematicBytecode, -1, 0);
                     templates.add(template);
                 } catch (IOException e) {
                     DimDoors.log.error("Error reading schematic " + file.getName() + ": " + e);
@@ -97,24 +112,28 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         JsonObject jsonTemplate = jsonElement.getAsJsonObject();
 
         //Generate and get templates (without a schematic) of all variations that are valid for the current "maxPocketSize"
-        List<PocketTemplate> validTemplates = getAllValidVariations(jsonTemplate);
+        List<PocketTemplate> candidateTemplates = getAllValidVariations(jsonTemplate);
 
         String subDirectory = jsonTemplate.get("group").getAsString(); //get the subfolder in which the schematics are stored
 
-        for (PocketTemplate template : validTemplates) { //it's okay to "tap" this for-loop, even if validTemplates is empty.
-            String extendedTemplatelocation = subDirectory.equals("") ? template.getId() : subDirectory + "/" + template.getId(); //transform the filename accordingly
+        List<PocketTemplate> validTemplates = new ArrayList<>();
+        for (PocketTemplate template : candidateTemplates) { //it's okay to "tap" this for-loop, even if validTemplates is empty.
+            String extendedTemplatelocation = subDirectory.equals("") ? template.getId() : subDirectory + "/" + template.getId() + ".schem"; //transform the filename accordingly
 
             //Initialising the possible locations/formats for the schematic file
-            InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + extendedTemplatelocation + ".schem");
-            File schematicFile = new File(schematicFolder, "/" + extendedTemplatelocation + ".schem");
+            InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + extendedTemplatelocation);
+            File schematicFile = new File(schematicFolder, "/" + extendedTemplatelocation);
 
             //determine which location to load the schematic file from (and what format)
             DataInputStream schematicDataStream = null;
             boolean streamOpened = false;
+            boolean isCustomFile = false;
+            boolean isValidFormat = true;
             if (schematicStream != null) {
                 schematicDataStream = new DataInputStream(schematicStream);
                 streamOpened = true;
             } else if (schematicFile.exists()) {
+                isCustomFile = true;
                 try {
                     schematicDataStream = new DataInputStream(new FileInputStream(schematicFile));
                     streamOpened = true;
@@ -125,32 +144,44 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 DimDoors.log.error("Schematic \"" + template.getId() + ".schem\" was not found in the jar or config directory.");
             }
 
-            NBTTagCompound schematicNBT;
-            Schematic schematic = null;
+            byte[] schematicBytecode = null;
             if (streamOpened) {
                 try {
-                    schematicNBT = CompressedStreamTools.readCompressed(schematicDataStream);
-                    schematic = Schematic.loadFromNBT(schematicNBT);
+                    schematicBytecode = IOUtils.toByteArray(schematicDataStream);
                     schematicDataStream.close();
                 } catch (IOException ex) {
-                    Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Schematic file for " + template.getId() + " could not be read as a valid schematic NBT file.", ex); // TODO: consistently use one type of logger for this.
+                    DimDoors.log.error("Schematic file for " + template.getId() + " could not be read into byte array.", ex);
                 } finally {
                     try {
                         schematicDataStream.close();
                     } catch (IOException ex) {
-                        Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Error occured while closing schematicDataStream", ex);
+                        DimDoors.log.error("Error occured while closing schematicDataStream.", ex);
                     }
                 }
             }
+            
+            if (isCustomFile) {
+                Schematic schematic = null;
+                try {
+                    schematic = Schematic.loadFromNBT(CompressedStreamTools.readCompressed(new ByteArrayInputStream (schematicBytecode)));
+                } catch (Exception ex) {
+                    DimDoors.log.error("Schematic file for " + template.getId() + " could not be read as a valid schematic NBT file.", ex);
+                    isValidFormat = false;
+                }
 
-            if (schematic != null
-                && (schematic.width > (template.getSize() + 1) * 16 || schematic.length > (template.getSize() + 1) * 16)) {
-                schematic = null;
-                DimDoors.log.warn("Schematic " + template.getId() + " was bigger than specified in its json file and therefore wasn't loaded");
+                if (schematic != null
+                    && (schematic.width > (template.getSize() + 1) * 16 || schematic.length > (template.getSize() + 1) * 16)) {
+                    DimDoors.log.warn("Schematic " + template.getId() + " was bigger than specified in its json file and therefore wasn't loaded");
+                    isValidFormat = false;
+                }
             }
-            template.setSchematic(schematic);
-            PocketTemplate.replacePlaceholders(schematic);
+            
+            if (streamOpened && isValidFormat) {
+                template.setSchematicBytecode(schematicBytecode);
+                validTemplates.add(template); 
+            }
         }
+        
         return validTemplates;
     }
 
@@ -164,12 +195,12 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         //convert the variations arraylist to a list of pocket templates
         for (JsonElement pocketElement : pockets) {
             JsonObject pocket = pocketElement.getAsJsonObject();
+            int size = pocket.get("size").getAsInt();
+            if (!ModConfig.pockets.loadAllSchematics && size > ModConfig.pockets.maxPocketSize) continue;
             String id = pocket.get("id").getAsString();
             String type = pocket.has("type") ? pocket.get("type").getAsString() : null;
             String name = pocket.has("name") ? pocket.get("name").getAsString() : null;
             String author = pocket.has("author") ? pocket.get("author").getAsString() : null;
-            int size = pocket.get("size").getAsInt();
-            if (ModConfig.pockets.loadAllSchematics && size > ModConfig.pockets.maxPocketSize) continue;
             int baseWeight = pocket.has("baseWeight") ? pocket.get("baseWeight").getAsInt() : 100;
             pocketTemplates.add(new PocketTemplate(group, id, type, name, author, size, baseWeight));
         }
@@ -286,7 +317,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             schematicDataStream.flush();
             schematicDataStream.close();
         } catch (IOException ex) {
-            Logger.getLogger(SchematicHandler.class.getName()).log(Level.SEVERE, "Something went wrong while saving " + saveFile.getAbsolutePath() + " to disk.", ex);
+            DimDoors.log.error("Something went wrong while saving " + saveFile.getAbsolutePath() + " to disk.", ex);
         }
     }
 
@@ -301,8 +332,144 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         if (savedDungeons.containsKey(id)) {
             templates.remove((int) savedDungeons.remove(id));
         }
-
-        templates.add(new PocketTemplate(SAVED_POCKETS_GROUP_NAME, id, null, null, null, schematic, -1, 0));
-        nameMap.get(SAVED_POCKETS_GROUP_NAME).put(id, templates.size() - 1);
+        
+        //create byte array
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        byte[] schematicBytecode = null;
+        try {
+            CompressedStreamTools.writeCompressed(schematic.saveToNBT(), byteStream);
+            schematicBytecode = byteStream.toByteArray();
+            byteStream.close();
+        } catch (IOException ex) {
+            DimDoors.log.error("Something went wrong while converting schematic " + id + " to bytecode.", ex);
+        }
+        
+        if (schematicBytecode != null) {
+            templates.add(new PocketTemplate(SAVED_POCKETS_GROUP_NAME, id, null, null, null, schematic, schematicBytecode, -1, 0));
+            nameMap.get(SAVED_POCKETS_GROUP_NAME).put(id, templates.size() - 1);
+        }
+    }
+    
+    private int getUsage(PocketTemplate template) {
+        if (!usageMap.containsKey(template)) return -1;
+        int index = usageMap.get(template);
+        if (usageList.size() <= index) return -1;
+        PocketTemplate listTemplate = usageList.get(index).getKey();
+        if (listTemplate == template) {
+            int usage = usageList.get(index).getValue();
+            return usage;
+        } else {//should never happen, but you never really know.
+            DimDoors.log.warn("Pocket Template usage list is desynched from the usage map, re-sorting and synching now.");
+            reSortUsages();
+            return getUsage(template);
+        }
+    }
+    
+    public boolean isUsedOftenEnough(PocketTemplate template) {
+        int maxNrOfCachedSchematics = ModConfig.pockets.cachedSchematics;
+        int usageRank = usageMap.get(template);
+        return usageRank < maxNrOfCachedSchematics;
+    }
+    
+    public void incrementUsage(PocketTemplate template) {  
+        int startIndex;
+        int newUsage;
+        if (!usageMap.containsKey(template)) {
+            usageList.add(new SimpleEntry(null, 0)); //add a dummy entry at the end
+            startIndex = usageList.size()-1;
+            newUsage = 1;
+        } else {
+            startIndex = usageMap.get(template);
+            newUsage = usageList.get(startIndex).getValue() + 1;
+        }
+        
+        int insertionIndex = findFirstEqualOrLessUsage(newUsage, 0, startIndex);
+        //shift all entries inbetween the insertionIndex and the currentIndex to the right
+        PocketTemplate currentTemplate;
+        for (int i = startIndex; i > insertionIndex; i--) {
+            usageList.set(i, usageList.get(i-1));
+            currentTemplate = usageList.get(i).getKey();
+            usageMap.put(currentTemplate, i);
+        }            
+        //insert the incremented entry at the correct place
+        usageList.set(insertionIndex, new SimpleEntry(template, newUsage));
+        usageMap.put(template, insertionIndex);
+        
+        if (insertionIndex < ModConfig.pockets.cachedSchematics) { //if the schematic of this template is supposed to get cached
+            if (usageList.size() > ModConfig.pockets.cachedSchematics) { //if there are more used templates than there are schematics allowed to be cached
+                usageList.get(ModConfig.pockets.cachedSchematics).getKey().setSchematic(null); //make sure that the number of cached schematics is limited
+            }
+        }
+    }
+    
+    //uses binary search
+    private int findFirstEqualOrLessUsage(int usage, int indexMin, int indexMax) {
+        
+        if (usageList.get(indexMin).getValue() <= usage) {
+            return indexMin;
+        } 
+        int halfwayIndex = (indexMin + indexMax) / 2;
+        if (usageList.get(halfwayIndex).getValue() > usage) {
+            return findFirstEqualOrLessUsage(usage, halfwayIndex + 1, indexMax);
+        } else {
+            return findFirstEqualOrLessUsage(usage, indexMin, halfwayIndex);
+        }
+    }
+    
+    private void reSortUsages() {
+        //sort the usageList
+        usageList = mergeSortPairArrayByPairValue(usageList);
+        //make sure that everything in the usageList is actually in the usageMap
+        for (Entry<PocketTemplate, Integer> pair: usageList) {
+            usageMap.put(pair.getKey(), pair.getValue());
+        }
+        
+        //make sure that everything in the usageMap is actually in the usageList
+        for (Entry<PocketTemplate, Integer> entry: usageMap.entrySet()) {
+            PocketTemplate template = entry.getKey();
+            int index = entry.getValue();
+            PocketTemplate template2 = usageList.get(index).getKey();
+            if (index >= usageList.size() || template != template2) {
+                entry.setValue(usageList.size());
+                usageList.add(new SimpleEntry(template, 1));
+            }
+        }
+    }
+    
+    //TODO make these a more common implementation for which PocketTemplate could be anything.
+    private List<Entry<PocketTemplate, Integer>> mergeSortPairArrayByPairValue(List<Entry<PocketTemplate, Integer>> input) {
+        if (input.size() < 2) {
+            return input;
+        } else {
+            List<Entry<PocketTemplate, Integer>> a = mergeSortPairArrayByPairValue(input.subList(0, input.size()/2));
+            List<Entry<PocketTemplate, Integer>> b = mergeSortPairArrayByPairValue(input.subList(input.size()/2, input.size()));
+            return mergePairArraysByPairValue(a, b);
+        }
+    }
+    
+    private List<Entry<PocketTemplate, Integer>> mergePairArraysByPairValue(List<Entry<PocketTemplate, Integer>> a, List<Entry<PocketTemplate, Integer>> b) {
+        List<Entry<PocketTemplate, Integer>> output = new ArrayList<>();
+        int aPointer = 0;
+        int bPointer = 0;
+        while (aPointer < a.size() || bPointer < b.size()) {
+            if (aPointer >= a.size()) {
+                output.addAll(b.subList(bPointer, b.size()));
+                break;
+            } 
+            if (bPointer >= b.size()) {
+                output.addAll(a.subList(aPointer, a.size()));
+                break;
+            }
+            int aValue = a.get(aPointer).getValue();
+            int bValue = b.get(bPointer).getValue();
+            if (aValue >= bValue) {
+                output.add(a.get(aPointer));
+                aPointer++;
+            } else {
+                output.add(b.get(bPointer));
+                bPointer++;
+            }
+        }
+        return output;
     }
 }

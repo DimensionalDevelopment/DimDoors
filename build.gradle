@@ -2,6 +2,7 @@ buildscript {
     repositories {
         jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "http://repo.spongepowered.org/maven" }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -17,12 +18,13 @@ apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 repositories {
-    maven { url "https://jitpack.io" }
+    maven { url = "https://jitpack.io" }
+    maven { url = 'http://oss.sonatype.org/content/repositories/public/' }
 }
 
 configurations {
     embed
-    compile.extendsFrom(embed)
+    implementation.extendsFrom(embed)
 }
 
 dependencies {
@@ -30,11 +32,11 @@ dependencies {
     embed 'org.jgrapht:jgrapht-core:1.1.0'
     embed 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
     compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
-    compileOnly 'com.github.OpenCubicChunks:CubicChunks:MC_1.12-SNAPSHOT'
+    compileOnly 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0.819.0-SNAPSHOT'
 }
 
 // Mod version
-version = ext.modversion = "3.0.8"
+version = ext.modversion = "3.0.9"
 boolean isBeta = false
 group = "org.dimdev.dimdoors"
 archivesBaseName = "DimensionalDoors"
@@ -57,12 +59,16 @@ ext.mcversion = "1.12.2"
 ext.forgeversion = "14.23.2.2623"
 String mcpversion = "snapshot_20180227"
 
+// Configuration
 minecraft {
     version = "$mcversion-$forgeversion"
     runDir = "run"
     mappings = mcpversion
     replace '${version}', fullVersion
     makeObfSourceJar = false
+    ext.args = [
+            "-Dfml.noGrab=false"
+    ]
 }
 
 // Tasks
@@ -72,7 +78,9 @@ compileJava {
 
 jar {
     archiveName = archivesBaseName + "-" + jarVersion + ".jar"
-    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+    from(configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }) {
+        exclude "LICENSE.txt", "META-INF/MANIFSET.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
+    }
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -93,7 +101,6 @@ processResources {
     // Replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        // replace version and mcversion
         expand 'version': project.version, 'mcversion': project.minecraft.version
     }
 
@@ -107,6 +114,5 @@ task generatePocketSchematics(dependsOn: jar, type: JavaExec, group: "dimdoors")
     classpath = files('build/libs/' + jar.archiveName)
     classpath += sourceSets.main.runtimeClasspath
     main = "org.dimdev.dimdoors.shared.tools.SchematicGenerator"
-    //noinspection GroovyAssignabilityCheck (IntelliJ is wrong)
-    args "src/main/resources/assets/dimdoors/pockets/schematic"
+    args = ["src/main/resources/assets/dimdoors/pockets/schematic"]
 }

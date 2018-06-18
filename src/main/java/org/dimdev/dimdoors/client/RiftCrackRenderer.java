@@ -46,7 +46,7 @@ public final class RiftCrackRenderer {
 
         // Set color (nearly black, but inverts background)
         GlStateManager.color(0.08f, 0.08f, 0.08f, .3F);
-        glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+        GlStateManager.blendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
 
         // Draw the rift
         GlStateManager.glBegin(GL11.GL_TRIANGLES);

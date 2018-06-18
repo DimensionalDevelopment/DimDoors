@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.shared.rifts.targets;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
+import org.dimdev.dimdoors.DimDoors;
 
 // A list of the default targets provided by dimcore. Add your own in ModTargets
 public final class Targets {
@@ -11,7 +12,10 @@ public final class Targets {
     public static final Class<IRedstoneTarget> REDSTONE = IRedstoneTarget.class;
 
     public static void registerDefaultTargets() {
-        DefaultTargets.registerDefaultTarget(ENTITY, (entity, relativeYaw, relativePitch) -> false);
+        DefaultTargets.registerDefaultTarget(ENTITY, (entity, relativeYaw, relativePitch) -> {
+            DimDoors.sendTranslatedMessage(entity, "rifts.unlinked");
+            return false;
+        });
         DefaultTargets.registerDefaultTarget(ITEM, stack -> false);
 
         DefaultTargets.registerDefaultTarget(FLUID, new IFluidTarget() {
