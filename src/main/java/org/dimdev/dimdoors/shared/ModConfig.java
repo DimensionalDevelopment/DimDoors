@@ -80,6 +80,10 @@ public final class ModConfig {
         @Name("loadAllSchematics")
         @LangKey("dimdoors.pockets.loadAllSchematics")
         public boolean loadAllSchematics = false;
+        
+        @Name("cachedSchematics")
+        @LangKey("dimdoors.pockets.cachedSchematics") //TODO add lang key to lang file
+        public int cachedSchematics = 10;
     }
 
     public static class World {

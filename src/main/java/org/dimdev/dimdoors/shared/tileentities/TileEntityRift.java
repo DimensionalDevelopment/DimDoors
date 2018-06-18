@@ -22,6 +22,7 @@ import org.dimdev.dimdoors.shared.rifts.targets.*;
 import org.dimdev.pocketlib.VirtualLocation;
 
 import javax.annotation.Nonnull;
+import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
 
 @NBTSerializable public abstract class TileEntityRift extends TileEntity implements ITarget, IEntityTarget {
 
@@ -127,7 +128,7 @@ import javax.annotation.Nonnull;
     public boolean isRegistered() {
         // The DimensionManager.getWorld(0) != null check is to be able to run this without having to start minecraft
         // (for GeneratePocketSchematics, for example)
-        return DimensionManager.getWorld(0) != null && RiftRegistry.instance().isRiftAt(new Location(world, pos));
+        return DimensionManager.getWorld(0) != null && !PocketTemplate.isReplacingPlaceholders() && RiftRegistry.instance().isRiftAt(new Location(world, pos));
     }
 
     public void register() {

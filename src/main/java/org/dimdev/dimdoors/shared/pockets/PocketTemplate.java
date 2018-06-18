@@ -45,8 +45,10 @@ public class PocketTemplate {
     @Getter private final String name;
     @Getter private final String author;
     @Getter @Setter private Schematic schematic;
+    @Setter private byte[] schematicBytecode;
     @Getter private final int size; // number of chunks (16 blocks) on each side - 1
     @Getter private final int baseWeight;
+    @Getter private static boolean isReplacingPlaceholders = false;
 
     public float getWeight(int depth) {
         //noinspection IfStatementWithIdenticalBranches
@@ -59,6 +61,7 @@ public class PocketTemplate {
 
     public static void replacePlaceholders(Schematic schematic) { // TODO: rift inheritance rather than placeholders
         // Replace placeholders (some schematics will contain them)
+        isReplacingPlaceholders = true;
         List<NBTTagCompound> tileEntities = new ArrayList<>();
         for (NBTTagCompound tileEntityNBT : schematic.tileEntities) {
             if (tileEntityNBT.hasKey("placeholder")) {
@@ -149,9 +152,10 @@ public class PocketTemplate {
             }
         }
         schematic.entities = entities;
+        isReplacingPlaceholders = false;
     }
 
-    public void place(Pocket pocket) {
+    public void place(Pocket pocket, boolean setup) {
         pocket.setSize(size);
         int gridSize = PocketRegistry.instance(pocket.getDim()).getGridSize();
         int dim = pocket.getDim();
@@ -159,10 +163,23 @@ public class PocketTemplate {
         int xBase = pocket.getX() * gridSize * 16;
         int yBase = 0;
         int zBase = pocket.getZ() * gridSize * 16;
+        
+        //Converting the schematic from bytearray if needed
+        if (schematic == null) {
+            DimDoors.log.debug("Schematic is null, trying to reload from byteArray.");
+            schematic = SchematicHandler.INSTANCE.loadSchematicFromByteArray(schematicBytecode);
+            replacePlaceholders(schematic);
+        }
 
-        // Place the schematic
+        //Place the schematic
         DimDoors.log.info("Placing new pocket using schematic " + id + " at x = " + xBase + ", z = " + zBase);
         schematic.place(world, xBase, yBase, zBase);
+        
+        SchematicHandler.INSTANCE.incrementUsage(this);
+        if (!setup && !SchematicHandler.INSTANCE.isUsedOftenEnough(this)) {
+            //remove schematic from "cache"
+            schematic = null;
+        }
     }
 
     public void setup(Pocket pocket, VirtualTarget linkTo, LinkProperties linkProperties) {
@@ -257,6 +274,11 @@ public class PocketTemplate {
         for (TileEntityRift rift : rifts) {
             rift.register();
             rift.markDirty();
+        }
+        
+        if (!SchematicHandler.INSTANCE.isUsedOftenEnough(this)) {
+            //remove schematic from "cache"
+            schematic = null;
         }
     }
 }

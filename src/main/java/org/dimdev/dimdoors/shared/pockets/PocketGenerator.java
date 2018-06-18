@@ -18,7 +18,7 @@ public final class PocketGenerator {
 
         PocketRegistry registry = PocketRegistry.instance(dim);
         Pocket pocket = registry.newPocket();
-        pocketTemplate.place(pocket);
+        pocketTemplate.place(pocket, setup);
         pocket.setVirtualLocation(virtualLocation);
         if (setup) pocketTemplate.setup(pocket, null, null);
         return pocket;
