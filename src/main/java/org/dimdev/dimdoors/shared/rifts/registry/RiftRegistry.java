@@ -250,7 +250,7 @@ public class RiftRegistry extends WorldSavedData {
     private Rift getRiftOrPlaceholder(Location location) {
         Rift rift = locationMap.get(location);
         if (rift == null) {
-            DimDoors.log.info("Creating a rift placeholder at " + location);
+            DimDoors.log.debug("Creating a rift placeholder at " + location);
             rift = new RiftPlaceholder();
             rift.dim = location.getDim();
             rift.location = location;
@@ -263,7 +263,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public void addRift(Location location) {
-        DimDoors.log.info("Adding rift at " + location);
+        DimDoors.log.debug("Adding rift at " + location);
         RegistryVertex currentRift = locationMap.get(location);
         Rift rift;
         if (currentRift instanceof RiftPlaceholder) {
@@ -285,7 +285,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public void removeRift(Location location) {
-        DimDoors.log.info("Removing rift at " + location);
+        DimDoors.log.debug("Removing rift at " + location);
 
         Rift rift = getRift(location);
 
@@ -329,7 +329,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public void addLink(Location locationFrom, Location locationTo) {
-        DimDoors.log.info("Adding link " + locationFrom + " -> " + locationTo);
+        DimDoors.log.debug("Adding link " + locationFrom + " -> " + locationTo);
 
         Rift from = getRiftOrPlaceholder(locationFrom);
         Rift to = getRiftOrPlaceholder(locationTo);
@@ -344,7 +344,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public void removeLink(Location locationFrom, Location locationTo) {
-        DimDoors.log.info("Removing link " + locationFrom + " -> " + locationTo);
+        DimDoors.log.debug("Removing link " + locationFrom + " -> " + locationTo);
 
         Rift from = getRift(locationFrom);
         Rift to = getRift(locationTo);
@@ -357,7 +357,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public void setProperties(Location location, LinkProperties properties) {
-        DimDoors.log.info("Setting DungeonLinkProperties for rift at " + location + " to " + properties);
+        DimDoors.log.debug("Setting DungeonLinkProperties for rift at " + location + " to " + properties);
         Rift rift = getRift(location);
         rift.properties = properties;
         rift.markDirty();
@@ -381,7 +381,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public void addPocketEntrance(Pocket pocket, Location location) {
-        DimDoors.log.info("Adding pocket entrance for pocket " + pocket.getId() + " in dimension " + pocket.getDim() + " at " + location);
+        DimDoors.log.debug("Adding pocket entrance for pocket " + pocket.getId() + " in dimension " + pocket.getDim() + " at " + location);
         PocketEntrancePointer pointer = pocketEntranceMap.get(pocket);
         if (pointer == null) {
             pointer = new PocketEntrancePointer(pocket.getDim(), pocket.getId());
@@ -421,7 +421,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public void setLastPrivatePocketEntrance(UUID playerUUID, Location rift) {
-        DimDoors.log.info("Setting last used private pocket entrance for " + playerUUID + " at " + rift);
+        DimDoors.log.debug("Setting last used private pocket entrance for " + playerUUID + " at " + rift);
         setPlayerRiftPointer(playerUUID, rift, lastPrivatePocketEntrances);
     }
 
@@ -432,7 +432,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public void setLastPrivatePocketExit(UUID playerUUID, Location rift) {
-        DimDoors.log.info("Setting last used private pocket exit for " + playerUUID + " at " + rift);
+        DimDoors.log.debug("Setting last used private pocket exit for " + playerUUID + " at " + rift);
         setPlayerRiftPointer(playerUUID, rift, lastPrivatePocketExits);
     }
 
@@ -443,7 +443,7 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public void setOverworldRift(UUID playerUUID, Location rift) {
-        DimDoors.log.info("Setting last used overworld rift for " + playerUUID + " at " + rift);
+        DimDoors.log.debug("Setting last used overworld rift for " + playerUUID + " at " + rift);
         setPlayerRiftPointer(playerUUID, rift, overworldRifts);
     }
 

@@ -394,7 +394,7 @@ public class Schematic {
         long relightTime = 0;
         // CubicChunks makes cubic worlds implement ICubicWorld
         if (cubicChunks && ((ICubicWorld) world).isCubicWorld()) {
-            DimDoors.log.info("Setting cube blockstates");
+            DimDoors.log.debug("Setting cube blockstates");
             ICubicWorld cubicWorld = (ICubicWorld) world;
             for (int cubeX = 0; cubeX <= (width >> 4) + 1; cubeX++) {
                 for (int cubeY = 0; cubeY <= (height >> 4) + 1; cubeY++) {
@@ -433,7 +433,7 @@ public class Schematic {
                 }
             }
         } else {
-            DimDoors.log.info("Setting chunk blockstates");
+            DimDoors.log.debug("Setting chunk blockstates");
             for (int chunkX = 0; chunkX <= (width >> 4) + 1; chunkX++) {
                 for (int chunkZ = 0; chunkZ <= (length >> 4) + 1; chunkZ++) {
                     long setStart = System.nanoTime();
@@ -478,6 +478,6 @@ public class Schematic {
             }
         }
         world.markBlockRangeForRenderUpdate(xBase, yBase, zBase, xBase + width, yBase + height, zBase + length);
-        DimDoors.log.info("Set block states in " + setTime / 1000000 + " ms and relit chunks/cubes in " + relightTime / 1000000);
+        DimDoors.log.debug("Set block states in " + setTime / 1000000 + " ms and relit chunks/cubes in " + relightTime / 1000000);
     }
 }

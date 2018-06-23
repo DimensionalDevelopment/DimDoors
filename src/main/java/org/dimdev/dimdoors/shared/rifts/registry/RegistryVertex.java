@@ -16,22 +16,22 @@ import java.util.UUID;
     @Saved public UUID id = UUID.randomUUID(); // Used to create pointers to registry vertices. Should not be used for anything other than saving.
 
     public void sourceGone(RegistryVertex source) {
-        DimDoors.log.info("Notified vertex " + this + " that source " + source + " is gone");
+        DimDoors.log.debug("Notified vertex " + this + " that source " + source + " is gone");
         RiftRegistry.instance().markSubregistryDirty(dim);
     }
 
     public void targetGone(RegistryVertex target) {
-        DimDoors.log.info("Notified vertex " + this + " that target " + target + " is gone");
+        DimDoors.log.debug("Notified vertex " + this + " that target " + target + " is gone");
         RiftRegistry.instance().markSubregistryDirty(dim);
     }
 
     public void sourceAdded(RegistryVertex source) {
-        DimDoors.log.info("Notified vertex " + this + " that source " + source + " was added");
+        DimDoors.log.debug("Notified vertex " + this + " that source " + source + " was added");
         RiftRegistry.instance().markSubregistryDirty(dim);
     }
 
     public void targetAdded(RegistryVertex target) {
-        DimDoors.log.info("Notified vertex " + this + " that target " + target + " was added");
+        DimDoors.log.debug("Notified vertex " + this + " that target " + target + " was added");
         RiftRegistry.instance().markSubregistryDirty(dim);
     }
 

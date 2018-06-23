@@ -14,7 +14,7 @@ import java.util.Random;
 public final class PocketGenerator {
 
     public static Pocket generatePocketFromTemplate(int dim, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
-        DimDoors.log.info("Generating pockets from template " + pocketTemplate.getId() + " at virtual location " + virtualLocation);
+        DimDoors.log.info("Generating pocket from template " + pocketTemplate.getId() + " at virtual location " + virtualLocation);
 
         PocketRegistry registry = PocketRegistry.instance(dim);
         Pocket pocket = registry.newPocket();

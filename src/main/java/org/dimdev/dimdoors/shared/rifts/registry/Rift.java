@@ -42,7 +42,7 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
     }
 
     public void targetChanged(RegistryVertex target) {
-        DimDoors.log.info("Rift " + this + " notified of target " + target + " having changed. Updating color.");
+        DimDoors.log.debug("Rift " + this + " notified of target " + target + " having changed. Updating color.");
         ((TileEntityRift) location.getTileEntity()).updateColor();
     }
 

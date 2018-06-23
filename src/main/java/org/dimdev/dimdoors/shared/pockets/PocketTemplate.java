@@ -200,7 +200,7 @@ public class PocketTemplate {
             TileEntity tile = world.getTileEntity(pos);
 
             if (tile instanceof TileEntityRift) {
-                DimDoors.log.info("Rift found in schematic at " + pos);
+                DimDoors.log.debug("Rift found in schematic at " + pos);
                 TileEntityRift rift = (TileEntityRift) tile;
                 rift.getDestination().setLocation(new Location(rift.getWorld(), rift.getPos()));
                 rifts.add(rift);
@@ -210,15 +210,15 @@ public class PocketTemplate {
                     if (tile instanceof TileEntityChest || tile instanceof TileEntityDispenser) {
                         LootTable table;
                         if (tile instanceof TileEntityChest) {
-                            DimDoors.log.info("Now populating chest.");
+                            DimDoors.log.debug("Now populating chest.");
                             table = world.getLootTableManager().getLootTableFromLocation(new ResourceLocation(DimDoors.MODID + ":dungeon_chest"));
                         } else { //(tile instanceof TileEntityDispenser)
-                            DimDoors.log.info("Now populating dispenser.");
+                            DimDoors.log.debug("Now populating dispenser.");
                             table = world.getLootTableManager().getLootTableFromLocation(new ResourceLocation(DimDoors.MODID + ":dispenser_projectiles"));
                         }
                         LootContext ctx = new LootContext.Builder(world).build();
                         table.fillInventory(inventory, world.rand, ctx);
-                        DimDoors.log.info("Inventory should be populated now. Chest is: " + (inventory.isEmpty() ? "emtpy." : "filled."));
+                        DimDoors.log.debug("Inventory should be populated now. Chest is: " + (inventory.isEmpty() ? "emtpy." : "filled."));
                         if (inventory.isEmpty()) {
                             DimDoors.log.error(", however Inventory is: emtpy!");
                         }
