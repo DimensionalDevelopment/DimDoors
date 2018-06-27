@@ -35,14 +35,20 @@ dependencies {
     compileOnly 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0.819.0-SNAPSHOT'
 }
 
+// Minecraft, MCP, Forge, and Java versions
+sourceCompatibility = targetCompatibility = "1.8"
+ext.mcversion = "1.12.2"
+ext.forgeversion = "14.23.2.2623"
+String mcpversion = "snapshot_20180227"
+
 // Mod version
-version = ext.modversion = "3.0.9"
+version = "3.0.9"
 boolean isBeta = false
 group = "org.dimdev.dimdoors"
 archivesBaseName = "DimensionalDoors"
 
 // Build number
-String fullVersion = version
+String fullVersion = ext.mcversion + "-" + version
 if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
     fullVersion += "+${System.getenv("TRAVIS_BUILD_NUMBER")}"
 } else {
@@ -52,12 +58,6 @@ if (isBeta) {
     fullVersion += "-b"
 }
 String jarVersion = fullVersion.replace("+", "-") // Github/Travis doesn't seem to support + in filenames
-
-// Minecraft, MCP, Forge, and Java versions
-sourceCompatibility = targetCompatibility = "1.8"
-ext.mcversion = "1.12.2"
-ext.forgeversion = "14.23.2.2623"
-String mcpversion = "snapshot_20180227"
 
 // Configuration
 minecraft {
