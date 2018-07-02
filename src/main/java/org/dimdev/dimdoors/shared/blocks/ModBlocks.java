@@ -24,6 +24,7 @@ public final class ModBlocks {
     public static final BlockFabricEternal ETERNAL_FABRIC = new BlockFabricEternal();
     public static final BlockFabricUnravelled UNRAVELLED_FABRIC = new BlockFabricUnravelled();
     public static final BlockFloatingRift RIFT = new BlockFloatingRift();
+    public static final BlockMarkingPlate MARKING_PLATE = new BlockMarkingPlate();
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
@@ -40,6 +41,7 @@ public final class ModBlocks {
                 ANCIENT_FABRIC,
                 UNRAVELLED_FABRIC,
                 ETERNAL_FABRIC,
-                RIFT);
+                RIFT,
+                MARKING_PLATE);
     }
 }
