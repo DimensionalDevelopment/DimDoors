@@ -51,6 +51,7 @@ public final class ModItems {
     public static final ItemBlock UNRAVELLED_FABRIC = (ItemBlock) new ItemBlock(ModBlocks.UNRAVELLED_FABRIC).setRegistryName(ModBlocks.UNRAVELLED_FABRIC.getRegistryName());
     public static final ItemBlock ETERNAL_FABRIC = (ItemBlock) new ItemBlock(ModBlocks.ETERNAL_FABRIC).setRegistryName(ModBlocks.ETERNAL_FABRIC.getRegistryName());
     public static final ItemDimensionalTrapdoorWood WOOD_DIMENSIONAL_TRAPDOOR = new ItemDimensionalTrapdoorWood();
+    public static final ItemBlock MARKING_PLATE = (ItemBlock) new ItemBlock(ModBlocks.MARKING_PLATE).setRegistryName(ModBlocks.MARKING_PLATE.getRegistryName());
 
     // Records
     public static final ItemModRecord CREEPY_RECORD = new ItemModRecord("creepy", CREEPY);
@@ -82,6 +83,7 @@ public final class ModItems {
                 UNRAVELLED_FABRIC,
                 ETERNAL_FABRIC,
                 WOOD_DIMENSIONAL_TRAPDOOR,
-                CREEPY_RECORD);
+                CREEPY_RECORD,
+                MARKING_PLATE);
     }
 }
