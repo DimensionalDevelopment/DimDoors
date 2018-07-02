@@ -1,6 +1,8 @@
 package org.dimdev.pocketlib;
 
 import lombok.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -50,7 +52,11 @@ import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
         float spread = ModConfig.general.depthSpreadFactor * depth; // TODO: gaussian spread, handle air-filled/pocket world
         int newX = (int) (x + spread * 2 * (Math.random() - 0.5));
         int newZ = (int) (z + spread * 2 * (Math.random() - 0.5));
-        BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(newX, 0, newZ));
+        BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(newX, 0, newZ)); // Does not actually detect liquid blocks and returns the position above the surface
+        do {
+            pos = pos.up();
+        } while (world.getBlockState(pos).getMaterial() instanceof MaterialLiquid);
+        
         return new Location(world, pos);
     }
 }
