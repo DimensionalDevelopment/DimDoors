@@ -35,16 +35,20 @@ public class ItemRiftConfigurationTool extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        RayTraceResult hit = rayTrace(world, player, true);
+        RayTraceResult hit = RayTraceHelper.rayTraceForRiftTools(world, player);
 
         if (world.isRemote) {
-            if (!RayTraceHelper.isFloatingRift(hit, world)) {
+            if (!RayTraceHelper.isRift(hit, world)) {
                 player.sendStatusMessage(new TextComponentTranslation("tools.rift_miss"), true);
                 TileEntityFloatingRiftRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.graphics.highlightRiftCoreFor;
             }
             return new ActionResult<>(EnumActionResult.FAIL, stack);
         }
 
+        if (RayTraceHelper.isRift(hit, world)) {
+            //TODO: implement this tool's functionality
+            return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+        }
         return new ActionResult<>(EnumActionResult.FAIL, stack);
     }
 

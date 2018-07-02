@@ -48,7 +48,7 @@ public class ItemRiftBlade extends ItemSword {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        RayTraceResult hit = rayTrace(world, player, true);
+        RayTraceResult hit = RayTraceHelper.rayTraceForRiftTools(world, player);
 
         if (world.isRemote) {
             if (RayTraceHelper.isRift(hit, world) || RayTraceHelper.isLivingEntity(hit)) {

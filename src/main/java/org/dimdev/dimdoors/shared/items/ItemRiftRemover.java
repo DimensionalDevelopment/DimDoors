@@ -41,7 +41,7 @@ public class ItemRiftRemover extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        RayTraceResult hit = rayTrace(world, player, true);
+        RayTraceResult hit = RayTraceHelper.rayTraceForRiftTools(world, player);
 
         if (world.isRemote) {
             if (!RayTraceHelper.isFloatingRift(hit, world)) {
