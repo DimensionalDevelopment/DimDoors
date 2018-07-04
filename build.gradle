@@ -38,8 +38,8 @@ dependencies {
 // Minecraft, MCP, Forge, and Java versions
 sourceCompatibility = targetCompatibility = "1.8"
 ext.mcversion = "1.12.2"
-ext.forgeversion = "14.23.2.2623"
-String mcpversion = "snapshot_20180227"
+ext.forgeversion = "14.23.4.2707"
+String mcpversion = "snapshot_20180703"
 
 // Mod version
 version = "3.0.9"
