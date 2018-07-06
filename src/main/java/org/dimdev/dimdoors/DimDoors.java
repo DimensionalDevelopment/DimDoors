@@ -12,10 +12,12 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.proxy.IProxy;
+import org.dimdev.dimdoors.client.DDGUIHandler;
 import org.dimdev.dimdoors.shared.EventHandler;
 import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.ModRecipes;
@@ -99,6 +101,9 @@ public class DimDoors {
 
         // Register default targets
         Targets.registerDefaultTargets();
+        
+        //Register GUIhandler
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new DDGUIHandler());
 
         // Make config folder and check if config needs to be regenerated TODO
         configurationFolder = new File(event.getModConfigurationDirectory(), "/DimDoors");

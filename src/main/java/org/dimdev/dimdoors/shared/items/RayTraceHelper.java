@@ -55,10 +55,7 @@ public final class RayTraceHelper {
         RayTraceResult firstHitBlock = RayTraceHelper.rayTraceForRiftTools(world, player, range);
         if (firstHitBlock != null) {
             Vec3d hitVector = firstHitBlock.hitVec;
-            double distance = hitVector.distanceTo(playerEyesVector);
-            if (distance < range) {
-                range = distance;
-            }
+            range = hitVector.distanceTo(playerEyesVector);
         }
 
         Vec3d tempVec = playerEyesVector;
@@ -72,7 +69,7 @@ public final class RayTraceHelper {
                 }
                 AxisAlignedBB entityHitbox = entity.getEntityBoundingBox();
                 if (entityHitbox == null) {
-                    DimDoors.log.info("The hitbox of Entity: " + entity + " was null, somehow");
+                    DimDoors.log.warn("The hitbox of Entity: " + entity + " was null, somehow");
                     continue;
                 }
                 if (entityHitbox.contains(tempVec2)) {

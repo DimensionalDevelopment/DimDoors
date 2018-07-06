@@ -19,6 +19,8 @@ import org.dimdev.dimdoors.client.TileEntityFloatingRiftRenderer;
 import org.dimdev.dimdoors.shared.ModConfig;
 
 import java.util.List;
+import net.minecraft.util.math.BlockPos;
+import org.dimdev.dimdoors.client.DDGUIHandler;
 
 public class ItemRiftConfigurationTool extends Item {
 
@@ -41,6 +43,9 @@ public class ItemRiftConfigurationTool extends Item {
             if (!RayTraceHelper.isRift(hit, world)) {
                 player.sendStatusMessage(new TextComponentTranslation("tools.rift_miss"), true);
                 TileEntityFloatingRiftRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.graphics.highlightRiftCoreFor;
+            } else {
+                BlockPos hitPos = hit.getBlockPos();
+                player.openGui(DimDoors.instance, DDGUIHandler.RIFT, world, hitPos.getX(), hitPos.getY(), hitPos.getZ());
             }
             return new ActionResult<>(EnumActionResult.FAIL, stack);
         }
