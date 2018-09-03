@@ -22,6 +22,7 @@ public final class ModSounds {
     public static final SoundEvent RIFT_END = create("rift_end");
     public static final SoundEvent RIFT_START = create("rift_start");
     public static final SoundEvent TEARING = create("tearing");
+    public static final SoundEvent WHITE_VOID = create("white_void");
 
     private static SoundEvent create(String name) {
         ResourceLocation id = new ResourceLocation(DimDoors.MODID, name);
@@ -43,6 +44,7 @@ public final class ModSounds {
                 RIFT_DOOR,
                 RIFT_END,
                 RIFT_START,
-                TEARING);
+                TEARING,
+                WHITE_VOID);
     }
 }

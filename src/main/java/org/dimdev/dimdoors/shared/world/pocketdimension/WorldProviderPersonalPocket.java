@@ -1,6 +1,11 @@
 package org.dimdev.dimdoors.shared.world.pocketdimension;
 
+import net.minecraft.client.audio.MusicTicker;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.DimensionType;
+import net.minecraftforge.common.util.EnumHelper;
+import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.ModBiomes;
 import net.minecraft.entity.Entity;
@@ -11,6 +16,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.pocketlib.WorldProviderPocket;
 
 public class WorldProviderPersonalPocket extends WorldProviderPocket {
+    @SideOnly(Side.CLIENT)
+    private static MusicTicker.MusicType music;
+    static {
+        if (DimDoors.proxy.isClient()) {
+            music = EnumHelper.addEnum(MusicTicker.MusicType.class, "limbo", new Class<?>[] {SoundEvent.class, int.class, int.class}, ModSounds.WHITE_VOID, 0, 0);
+        }
+    }
 
     @Override
     public void init() {
@@ -41,5 +53,11 @@ public class WorldProviderPersonalPocket extends WorldProviderPocket {
     @SideOnly(Side.CLIENT)
     public Vec3d getFogColor(float celestialAngle, float partialTicks) {
         return new Vec3d(0.99, 0.99, 0.99); // https://bugs.mojang.com/projects/MC/issues/MC-123703
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public MusicTicker.MusicType getMusicType() {
+        return music;
     }
 }

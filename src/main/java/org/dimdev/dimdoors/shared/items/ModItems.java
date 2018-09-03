@@ -11,6 +11,7 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 
 import static org.dimdev.dimdoors.shared.sound.ModSounds.CREEPY;
+import static org.dimdev.dimdoors.shared.sound.ModSounds.WHITE_VOID;
 
 public final class ModItems {
 
