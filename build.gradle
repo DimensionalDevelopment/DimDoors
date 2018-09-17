@@ -2,7 +2,6 @@ buildscript {
     repositories {
         jcenter()
         maven { url 'https://www.dimdev.org/maven/' }
-        maven { url 'https://www.dimdev.org/maven/' }
     }
     dependencies {
         classpath 'org.dimdev:ForgeGradle:2.3-SNAPSHOT'
@@ -37,7 +36,7 @@ configurations {
 }
 
 dependencies {
-    implementation 'org.dimdev:rift:1.0.2-27:dev'
+    implementation 'org.dimdev:rift:1.0.4-66:dev'
     embed 'com.flowpowered:flow-math:1.0.3'
     embed 'org.jgrapht:jgrapht-core:1.1.0'
     embed 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
@@ -47,7 +46,7 @@ dependencies {
 
 minecraft {
     version = '1.13'
-    mappings = 'snapshot_5'
+    mappings = 'snapshot_20180908'
     runDir = 'run'
     tweakClass = 'org.dimdev.riftloader.launch.RiftLoaderTweaker'
 }
