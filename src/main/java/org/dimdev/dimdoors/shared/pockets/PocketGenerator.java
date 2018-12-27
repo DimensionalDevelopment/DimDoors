@@ -13,14 +13,24 @@ import java.util.Random;
 
 public final class PocketGenerator {
 
-    public static Pocket generatePocketFromTemplate(int dim, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
+    private static Pocket prepareAndPlacePocket(int dim, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
         DimDoors.log.info("Generating pocket from template " + pocketTemplate.getId() + " at virtual location " + virtualLocation);
 
-        PocketRegistry registry = PocketRegistry.instance(dim);
-        Pocket pocket = registry.newPocket();
-        pocketTemplate.place(pocket, setup);
-        pocket.setVirtualLocation(virtualLocation);
+        Pocket pocket = PocketRegistry.instance(dim).newPocket();
+	pocketTemplate.place(pocket, setup);
+	pocket.setVirtualLocation(virtualLocation);
+	return pocket;
+    }
+
+    public static Pocket generatePocketFromTemplate(int dim, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
+        Pocket pocket = prepareAndPlacePocket(dim, pocketTemplate, virtualLocation, setup);
         if (setup) pocketTemplate.setup(pocket, null, null);
+        return pocket;
+    }
+
+    public static Pocket generatePocketFromTemplate(int dim, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+        Pocket pocket = prepareAndPlacePocket(dim, pocketTemplate, virtualLocation, true);
+        pocketTemplate.setup(pocket, linkTo, linkProperties);
         return pocket;
     }
 
@@ -32,9 +42,7 @@ public final class PocketGenerator {
     // TODO: size of public pockets should increase with depth
     public static Pocket generatePublicPocket(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getPublicPocketTemplate();
-        Pocket pocket = generatePocketFromTemplate(ModDimensions.getPublicDim(), pocketTemplate, virtualLocation, false);
-        pocketTemplate.setup(pocket, linkTo, linkProperties);
-        return pocket;
+        return generatePocketFromTemplate(ModDimensions.getPublicDim(), pocketTemplate, virtualLocation, linkTo, linkProperties);
     }
 
     /**
@@ -50,8 +58,6 @@ public final class PocketGenerator {
         String group = random.nextFloat() < netherProbability ? "nether" : "ruins";
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getRandomTemplate(group, depth, ModConfig.pockets.maxPocketSize, false);
 
-        Pocket pocket = generatePocketFromTemplate(ModDimensions.getDungeonDim(), pocketTemplate, virtualLocation, false);
-        pocketTemplate.setup(pocket, linkTo, linkProperties);
-        return pocket;
+        return generatePocketFromTemplate(ModDimensions.getDungeonDim(), pocketTemplate, virtualLocation, linkTo, linkProperties);
     }
 }
