@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.proxy;
 
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.client.IRenderHandler;
@@ -33,6 +35,12 @@ public class ClientProxy implements IProxy {
 
         // Register monolith renderers
         RenderingRegistry.registerEntityRenderingHandler(EntityMonolith.class, manager -> new RenderMonolith(manager, 0.5f));
+
+        // Activate stencil buffer if it isn't already enabled.
+        Framebuffer framebuffer = Minecraft.getMinecraft().getFramebuffer();
+        if(!framebuffer.isStencilEnabled()){
+            framebuffer.enableStencil();
+        }
     }
 
     @Override

@@ -2,17 +2,22 @@ package org.dimdev.dimdoors.shared.tileentities;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.dimdev.annotatednbt.NBTSerializable;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.ddutils.RGBA;
+import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.ddutils.WorldUtils;
 import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.ddutils.RGBA;
@@ -25,25 +30,37 @@ import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
 
 import java.util.Random;
 
-@NBTSerializable public class TileEntityEntranceRift extends TileEntityRift {
-    @Saved @Getter protected boolean leaveRiftOnBreak = false;
-    @Saved @Getter protected boolean closeAfterPassThrough = false; // TODO: doesn't make sense lore-wise for doors, split into separate tile entity
+@NBTSerializable
+public class TileEntityEntranceRift extends TileEntityRift {
+    @Saved
+    @Getter
+    protected boolean leaveRiftOnBreak = false;
+    @Saved
+    @Getter
+    protected boolean closeAfterPassThrough = false; // TODO: doesn't make sense lore-wise for doors, split into separate tile entity
 
     // Set by the block on tile entity creation, can't get from the block, it's not necessarily a door
-    @Saved public EnumFacing orientation;
+    @Saved
+    public EnumFacing orientation;
 
     // Render info, use += to change these on block tile entity creation
-    @SideOnly(Side.CLIENT) public double extendUp;
-    @SideOnly(Side.CLIENT) public double extendDown;
-    @SideOnly(Side.CLIENT) public double extendLeft;
-    @SideOnly(Side.CLIENT) public double extendRight;
-    @SideOnly(Side.CLIENT) public double pushIn;
-    @SideOnly(Side.CLIENT) public byte lockStatus; // TODO
+    @SideOnly(Side.CLIENT)
+    public double extendUp;
+    @SideOnly(Side.CLIENT)
+    public double extendDown;
+    @SideOnly(Side.CLIENT)
+    public double extendLeft;
+    @SideOnly(Side.CLIENT)
+    public double extendRight;
+    @SideOnly(Side.CLIENT)
+    public double pushIn;
+    @SideOnly(Side.CLIENT)
+    public byte lockStatus; // TODO
 
     public TileEntityEntranceRift() {
         if (DimDoors.proxy.isClient()) {
             extendUp = extendDown = extendLeft = extendRight = 0.5;
-            pushIn = 0.01;
+            pushIn = 0.002;
             lockStatus = 0;
         }
     }
@@ -58,12 +75,32 @@ import java.util.Random;
         leaveRiftOnBreak = true;
     }
 
-    @Override public void readFromNBT(NBTTagCompound nbt) { super.readFromNBT(nbt); NBTUtils.readFromNBT(this, nbt); }
-    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { nbt = super.writeToNBT(nbt); return NBTUtils.writeToNBT(this, nbt); }
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
+        NBTUtils.readFromNBT(this, nbt);
+    }
 
-    public void setLeaveRiftOnBreak(boolean leaveRiftOnBreak) { this.leaveRiftOnBreak = leaveRiftOnBreak; markDirty(); }
-    public void setLockStatus(byte lockStatus) { this.lockStatus = lockStatus; markDirty(); }
-    public void setCloseAfterPassThrough(boolean closeAfterPassThrough) { this.closeAfterPassThrough = closeAfterPassThrough; markDirty(); }
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        nbt = super.writeToNBT(nbt);
+        return NBTUtils.writeToNBT(this, nbt);
+    }
+
+    public void setLeaveRiftOnBreak(boolean leaveRiftOnBreak) {
+        this.leaveRiftOnBreak = leaveRiftOnBreak;
+        markDirty();
+    }
+
+    public void setLockStatus(byte lockStatus) {
+        this.lockStatus = lockStatus;
+        markDirty();
+    }
+
+    public void setCloseAfterPassThrough(boolean closeAfterPassThrough) {
+        this.closeAfterPassThrough = closeAfterPassThrough;
+        markDirty();
+    }
 
     @Override
     public boolean teleport(Entity entity) {
@@ -110,7 +147,7 @@ import java.util.Random;
     @SideOnly(Side.CLIENT)
     protected RGBA getEntranceRenderColor(Random rand) {
         float red, green, blue;
-        switch(world.provider.getDimension()) {
+        switch (world.provider.getDimension()) {
             case -1: // Nether
                 red = rand.nextFloat() * 0.5F + 0.4F;
                 green = rand.nextFloat() * 0.05F;

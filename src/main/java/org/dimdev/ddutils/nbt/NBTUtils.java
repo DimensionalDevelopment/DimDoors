@@ -1,6 +1,6 @@
 package org.dimdev.ddutils.nbt;
 
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
