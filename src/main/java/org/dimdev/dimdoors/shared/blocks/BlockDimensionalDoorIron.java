@@ -18,6 +18,7 @@ public class BlockDimensionalDoorIron extends BlockDimensionalDoor {
         super(Material.IRON);
         setHardness(1.0F);
         setResistance(2000.0F);
+        setTranslationKey(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 

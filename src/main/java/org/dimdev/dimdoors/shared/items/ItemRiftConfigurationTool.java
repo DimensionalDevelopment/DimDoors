@@ -29,6 +29,7 @@ public class ItemRiftConfigurationTool extends Item {
         setMaxStackSize(1);
         setMaxDamage(16);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
+        setTranslationKey(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 

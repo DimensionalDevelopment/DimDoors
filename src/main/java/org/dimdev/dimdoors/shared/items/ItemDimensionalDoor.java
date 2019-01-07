@@ -109,8 +109,8 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        if (I18n.hasKey(getRegistryName() + ".info")) {
-            tooltip.add(I18n.format(getRegistryName() + ".info"));
+        if (I18n.hasKey(getTranslationKey() + ".info")) {
+            tooltip.add(I18n.format(getTranslationKey() + ".info"));
         }
     }
 

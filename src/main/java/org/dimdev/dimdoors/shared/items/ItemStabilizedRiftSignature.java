@@ -29,6 +29,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
         setMaxStackSize(1);
         setMaxDamage(20);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
+        setTranslationKey(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 

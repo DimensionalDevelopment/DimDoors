@@ -16,6 +16,7 @@ public class BlockDimensionalDoorQuartz extends BlockDimensionalDoor {
     public BlockDimensionalDoorQuartz() {
         super(Material.ROCK);
         setHardness(0.1F);
+        setTranslationKey(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 

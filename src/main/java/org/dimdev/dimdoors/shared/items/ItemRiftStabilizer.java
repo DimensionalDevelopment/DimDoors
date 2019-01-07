@@ -26,6 +26,7 @@ public class ItemRiftStabilizer extends Item {
         setMaxStackSize(1);
         setMaxDamage(6); // TODO: Add more uses and make it reduce rift growth speed instead?
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
+        setTranslationKey(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 

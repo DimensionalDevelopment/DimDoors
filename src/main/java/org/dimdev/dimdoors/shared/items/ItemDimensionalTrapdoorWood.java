@@ -12,6 +12,7 @@ public class ItemDimensionalTrapdoorWood extends ItemDimensionalTrapdoor {
     public ItemDimensionalTrapdoorWood() {
         super(ModBlocks.WOOD_DIMENSIONAL_TRAPDOOR);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
+        setTranslationKey(BlockDimensionalTrapdoorWood.ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimensionalTrapdoorWood.ID));
     }
 

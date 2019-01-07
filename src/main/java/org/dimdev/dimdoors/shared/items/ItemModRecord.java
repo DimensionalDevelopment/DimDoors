@@ -7,6 +7,7 @@ import org.dimdev.dimdoors.DimDoors;
 public class ItemModRecord extends ItemRecord {
     protected ItemModRecord(String recordName, SoundEvent soundIn) {
         super(recordName, soundIn);
+        setTranslationKey("record");
         setRegistryName(DimDoors.MODID, "record_" + recordName);
     }
 }

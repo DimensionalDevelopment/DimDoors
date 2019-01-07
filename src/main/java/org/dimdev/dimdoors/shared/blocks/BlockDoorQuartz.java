@@ -22,6 +22,7 @@ public class BlockDoorQuartz extends BlockDoor {
     public BlockDoorQuartz() {
         super(Material.ROCK);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setTranslationKey(ID);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(0.1F);
     }

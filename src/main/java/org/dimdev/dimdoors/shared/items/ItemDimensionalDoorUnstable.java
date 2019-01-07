@@ -11,6 +11,7 @@ public class ItemDimensionalDoorUnstable extends ItemDimensionalDoor {
     public ItemDimensionalDoorUnstable() {
         super(ModBlocks.IRON_DIMENSIONAL_DOOR);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
+        setTranslationKey("unstable_dimensional_door");
         setRegistryName(new ResourceLocation(DimDoors.MODID, "unstable_dimensional_door"));
     }
 

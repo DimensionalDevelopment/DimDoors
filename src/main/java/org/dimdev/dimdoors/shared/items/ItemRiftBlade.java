@@ -30,6 +30,7 @@ public class ItemRiftBlade extends ItemSword {
     public ItemRiftBlade() {
         super(ToolMaterial.IRON);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
+        setTranslationKey(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 

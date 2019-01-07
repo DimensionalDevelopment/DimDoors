@@ -16,6 +16,7 @@ public class BlockDimensionalDoorGold extends BlockDimensionalDoor {
     public BlockDimensionalDoorGold() {
         super(Material.IRON);
         setHardness(1.0F);
+        setTranslationKey(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
