@@ -17,6 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.client.TileEntityFloatingRiftRenderer;
 import org.dimdev.dimdoors.shared.ModConfig;
+import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 
 import java.util.List;
 
@@ -28,7 +29,6 @@ public class ItemRiftConfigurationTool extends Item {
         setMaxStackSize(1);
         setMaxDamage(16);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
@@ -46,6 +46,10 @@ public class ItemRiftConfigurationTool extends Item {
         }
 
         if (RayTraceHelper.isRift(hit, world)) {
+            TileEntityRift rift = (TileEntityRift) world.getTileEntity(hit.getBlockPos());
+
+            System.out.println(rift);
+
             //TODO: implement this tool's functionality
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
@@ -55,8 +59,8 @@ public class ItemRiftConfigurationTool extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        if (I18n.hasKey(getUnlocalizedName() + ".info")) {
-            tooltip.add(I18n.format(getUnlocalizedName() + ".info"));
+        if (I18n.hasKey(getRegistryName() + ".info")) {
+            tooltip.add(I18n.format(getRegistryName() + ".info"));
         }
     }
 }

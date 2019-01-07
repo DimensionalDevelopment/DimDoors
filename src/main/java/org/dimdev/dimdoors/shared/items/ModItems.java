@@ -29,8 +29,8 @@ public final class ModItems {
     // Crafting ingredients
     private static final String WORLD_THREAD_ID = "world_thread";
     private static final String STABLE_FABRIC_ID = "stable_fabric";
-    public static final Item WORLD_THREAD = new Item().setUnlocalizedName(WORLD_THREAD_ID).setFull3D().setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB).setRegistryName(new ResourceLocation(DimDoors.MODID, WORLD_THREAD_ID));
-    public static final Item STABLE_FABRIC = new Item().setUnlocalizedName(STABLE_FABRIC_ID).setFull3D().setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB).setRegistryName(new ResourceLocation(DimDoors.MODID, STABLE_FABRIC_ID));
+    public static final Item WORLD_THREAD = new Item().setRegistryName(DimDoors.MODID, WORLD_THREAD_ID).setFull3D().setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
+    public static final Item STABLE_FABRIC = new Item().setRegistryName(DimDoors.MODID, STABLE_FABRIC_ID).setFull3D().setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
 
     // Tools
     public static final ItemRiftConfigurationTool RIFT_CONFIGURATION_TOOL = new ItemRiftConfigurationTool();

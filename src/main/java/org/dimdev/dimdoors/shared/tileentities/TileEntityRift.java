@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
 import lombok.Getter;
+import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -24,7 +25,7 @@ import org.dimdev.pocketlib.VirtualLocation;
 import javax.annotation.Nonnull;
 import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
 
-@NBTSerializable public abstract class TileEntityRift extends TileEntity implements ITarget, IEntityTarget {
+@ToString @NBTSerializable public abstract class TileEntityRift extends TileEntity implements ITarget, IEntityTarget {
 
     /*@Saved*/ @Nonnull @Getter /*protected*/ VirtualTarget destination; // How the rift acts as a source
     @Saved @Getter protected LinkProperties properties; // How the rift acts as a target, and properties that affect how it can link to other rifts

@@ -23,7 +23,7 @@ public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements 
     }
 
     @Override
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
+    public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
         if (world.isRemote) return;
 
         // Check that it's a door and that the entity portal timer is 0
@@ -66,7 +66,7 @@ public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements 
 
     @Override
     @SuppressWarnings("deprecation")
-    public EnumPushReaction getMobilityFlag(IBlockState state) {
+    public EnumPushReaction getPushReaction(IBlockState state) {
         return EnumPushReaction.BLOCK;
     }
 

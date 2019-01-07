@@ -21,7 +21,7 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
     private final ResourceLocation keyholeLight = new ResourceLocation(DimDoors.MODID + ":textures/other/keyhole_light.png");
 
     private void renderKeyHole(TileEntityEntranceRift tile, double x, double y, double z, int i) {
-        EnumFacing rotation = EnumFacing.getHorizontal((tile.orientation.getHorizontalIndex() + 3) % 4);
+        EnumFacing rotation = EnumFacing.byHorizontalIndex((tile.orientation.getHorizontalIndex() + 3) % 4);
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);

@@ -14,7 +14,6 @@ public class ItemDimensionalDoorWood extends ItemDimensionalDoor {
     public ItemDimensionalDoorWood() {
         super(ModBlocks.WARP_DIMENSIONAL_DOOR);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setUnlocalizedName(BlockDimensionalDoorWood.ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimensionalDoorWood.ID));
     }
 

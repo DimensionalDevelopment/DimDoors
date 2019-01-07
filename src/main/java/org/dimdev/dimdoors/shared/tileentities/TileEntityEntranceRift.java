@@ -77,7 +77,7 @@ import java.util.Random;
 
     @Override
     public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) { // TODO: teleportOffset for all rifts instead?
-        Vec3d targetPos = new Vec3d(pos).addVector(0.5, 0, 0.5).add(new Vec3d(orientation.getDirectionVec()).scale(ModConfig.general.teleportOffset + 0.5));
+        Vec3d targetPos = new Vec3d(pos).add(0.5, 0, 0.5).add(new Vec3d(orientation.getDirectionVec()).scale(ModConfig.general.teleportOffset + 0.5));
         if (relativeRotation) {
             float yaw = getDestinationYaw(entity.rotationYaw) + entity.rotationYaw - relativeYaw;
             float pitch = entity instanceof EntityLiving ? entity.rotationPitch : getDestinationPitch(entity.rotationPitch) + entity.rotationPitch - relativePitch;
@@ -137,7 +137,7 @@ import java.util.Random;
 
     @Override
     public float getSourcePitch(float entityPitch) {
-        return orientation.getOpposite().getFrontOffsetY() * 90;
+        return orientation.getOpposite().getYOffset() * 90;
     }
 
     @Override

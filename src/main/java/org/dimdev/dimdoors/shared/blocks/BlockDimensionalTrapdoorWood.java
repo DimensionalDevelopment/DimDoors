@@ -18,7 +18,6 @@ public class BlockDimensionalTrapdoorWood extends BlockDimensionalTrapdoor { // 
     public BlockDimensionalTrapdoorWood() {
         super(Material.WOOD);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setUnlocalizedName(ID);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(1.0F);
         setSoundType(SoundType.WOOD);

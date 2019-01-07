@@ -24,7 +24,6 @@ public class ItemRiftRemover extends Item {
 
     public ItemRiftRemover() {
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setUnlocalizedName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setMaxStackSize(1);
         setMaxDamage(100);
@@ -33,8 +32,8 @@ public class ItemRiftRemover extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        if (I18n.hasKey(getUnlocalizedName() + ".info")) {
-            tooltip.add(I18n.format(getUnlocalizedName() + ".info"));
+        if (I18n.hasKey(getRegistryName() + ".info")) {
+            tooltip.add(I18n.format(getRegistryName() + ".info"));
         }
     }
 
@@ -57,10 +56,10 @@ public class ItemRiftRemover extends Item {
                 rift.setClosing(true);
                 world.playSound(null, player.getPosition(), ModSounds.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
                 stack.damageItem(10, player);
-                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".closing"), true);
+                player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".closing"), true);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
             } else {
-                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".already_closing"), true);
+                player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".already_closing"), true);
             }
         }
         return new ActionResult<>(EnumActionResult.FAIL, stack);

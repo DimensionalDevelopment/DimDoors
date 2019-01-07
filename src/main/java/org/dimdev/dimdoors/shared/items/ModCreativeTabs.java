@@ -9,7 +9,7 @@ public final class ModCreativeTabs {
     public static final CreativeTabs DIMENSIONAL_DOORS_CREATIVE_TAB = new CreativeTabs("dimensional_doors_creative_tab") {
         @Override
         @SideOnly(Side.CLIENT)
-        public ItemStack getTabIconItem() {
+        public ItemStack createIcon() {
             return new ItemStack(ModItems.IRON_DIMENSIONAL_DOOR);
         }
     };

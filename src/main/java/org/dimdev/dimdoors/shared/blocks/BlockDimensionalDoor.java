@@ -31,10 +31,9 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     }
 
     @Override
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
+    public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
         // Run server-side only
         if (world.isRemote) return;
-
         // Get the door's state (many door blockstates are available for the bottom door half only)
         IBlockState doorState = world.getBlockState(state.getValue(HALF) == EnumDoorHalf.UPPER ? pos.down() : pos);
         if (doorState.getBlock() != this) return; // The door is in a half-broken state
@@ -73,11 +72,11 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     }
 
     private int getCloseSound() {
-        return blockMaterial == Material.IRON ? 1011 : 1012;
+        return material == Material.IRON ? 1011 : 1012;
     }
 
     private int getOpenSound() {
-        return blockMaterial == Material.IRON ? 1005 : 1006;
+        return material == Material.IRON ? 1005 : 1006;
     }
 
     @Override
@@ -148,7 +147,7 @@ public abstract class BlockDimensionalDoor extends BlockDoor implements IRiftPro
     @Override public void onBlockHarvested(World world, BlockPos pos, IBlockState state, EntityPlayer player) {}
 
     @Override
-    public EnumPushReaction getMobilityFlag(IBlockState state) {
+    public EnumPushReaction getPushReaction(IBlockState state) {
         return EnumPushReaction.BLOCK;
     }
 
