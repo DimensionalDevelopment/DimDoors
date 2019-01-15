@@ -17,7 +17,7 @@ import org.dimdev.dimdoors.shared.pockets.PocketRules;
     @Saved @Getter protected int z; // Grid y
     @Saved @Getter @Setter protected int size; // TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
     @Saved @Getter @Setter protected VirtualLocation virtualLocation;
-    @Getter @Setter protected PocketRules rules; // TODO: make pocket rules save
+    @Setter protected PocketRules rules; // TODO: make pocket rules save
     // TODO: make method of changing rules of pockets via interface/ something similar
 
     @Getter int dim; // Not saved
@@ -47,5 +47,12 @@ import org.dimdev.dimdoors.shared.pockets.PocketRules;
     public BlockPos getOrigin() {
         int gridSize = PocketRegistry.instance(dim).getGridSize();
         return new BlockPos(x * gridSize * 16, 0, z * gridSize * 16);
+    }
+
+    public PocketRules getRules() {
+        if(rules == null) {
+            rules = new PocketRules(); //in case there are no rules
+        }
+        return rules;
     }
 }
