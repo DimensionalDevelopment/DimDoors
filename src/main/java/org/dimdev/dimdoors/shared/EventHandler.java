@@ -13,6 +13,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
+import org.dimdev.pocketlib.PocketRegistry;
+import org.dimdev.pocketlib.WorldProviderPocket;
 
 public final class EventHandler {
 
@@ -34,7 +36,7 @@ public final class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onGetBreakSpeed(BreakSpeed event) {
-        if(event.getEntityPlayer().isCreative()) {
+        if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
         if(!isPermitted(ForgeRegistries.BLOCKS.getKey(event.getEntityPlayer().getEntityWorld().getBlockState(event.getPos()).getBlock()).toString(), new String[0]/*event.getEntityPlayer().getCurrentPocket().getRules().getBreakBlockArray()*/, true/*event.getEntityPlayer().getCurrentPocket().getRules().getBreakBlockWhitelist()*/)) {
@@ -45,7 +47,7 @@ public final class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRightClickItem(RightClickItem event) {
-        if(event.getEntityPlayer().isCreative()) {
+        if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
         if(!isPermitted(ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString(), new String[0]/*event.getEntityPlayer().getCurrentPocket().getRules().getUseItemArray()*/, true/*event.getEntityPlayer().getCurrentPocket().getRules().getUseItemWhitelist()*/)) {
@@ -56,7 +58,7 @@ public final class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRightClickBlock(RightClickBlock event) {
-        if(event.getEntityPlayer().isCreative()) {
+        if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
         if(!isPermitted(ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString(), new String[0]/*event.getEntityPlayer().getCurrentPocket().getRules().getUseItemArray()*/, true/*event.getEntityPlayer().getCurrentPocket().getRules().getUseItemWhitelist()*/)) {
