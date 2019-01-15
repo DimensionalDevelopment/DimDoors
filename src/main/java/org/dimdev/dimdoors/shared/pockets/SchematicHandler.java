@@ -90,7 +90,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 try {
                     byte[] schematicBytecode = IOUtils.toByteArray(new FileInputStream(file));
                     Schematic.loadFromNBT(CompressedStreamTools.readCompressed(new ByteArrayInputStream (schematicBytecode)));
-                    PocketTemplate template = new PocketTemplate(SAVED_POCKETS_GROUP_NAME, file.getName(), null, null, null, null, schematicBytecode, -1, 0);
+                    PocketTemplate template = new PocketTemplate(SAVED_POCKETS_GROUP_NAME, file.getName(), null, null, null, null, schematicBytecode, -1, 0, null);
                     templates.add(template);
                 } catch (IOException e) {
                     DimDoors.log.error("Error reading schematic " + file.getName() + ": " + e);
@@ -202,7 +202,17 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             String name = pocket.has("name") ? pocket.get("name").getAsString() : null;
             String author = pocket.has("author") ? pocket.get("author").getAsString() : null;
             int baseWeight = pocket.has("baseWeight") ? pocket.get("baseWeight").getAsInt() : 100;
-            pocketTemplates.add(new PocketTemplate(group, id, type, name, author, size, baseWeight));
+            PocketRules rules = new PocketRules();
+            if (pocket.has("rules")) {
+                JsonObject rulesJson = pocket.get("rules").getAsJsonObject();
+                if(rulesJson.has("breakBlock")) readRule(rules.getBreakBlockRule(), rulesJson.get("breakBlock").getAsJsonObject());
+                if(rulesJson.has("interactBlock")) readRule(rules.getInteractBlockRule(), rulesJson.get("interactBlock").getAsJsonObject());
+                if(rulesJson.has("useItemOnBlock")) readRule(rules.getUseItemOnBlockRule(), rulesJson.get("useItemOnBlock").getAsJsonObject());
+                if(rulesJson.has("useItemOnAir")) readRule(rules.getUseItemOnAirRule(), rulesJson.get("useItemOnAir").getAsJsonObject());
+            }
+            PocketTemplate template = new PocketTemplate(group, id, type, name, author, size, baseWeight);
+            template.setRules(rules);
+            pocketTemplates.add(template);
         }
 
         return pocketTemplates.stream().sorted(Comparator.comparing(PocketTemplate::getId)).collect(Collectors.toList());
@@ -345,7 +355,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         }
         
         if (schematicBytecode != null) {
-            templates.add(new PocketTemplate(SAVED_POCKETS_GROUP_NAME, id, null, null, null, schematic, schematicBytecode, -1, 0));
+            templates.add(new PocketTemplate(SAVED_POCKETS_GROUP_NAME, id, null, null, null, schematic, schematicBytecode, -1, 0, null));
             nameMap.get(SAVED_POCKETS_GROUP_NAME).put(id, templates.size() - 1);
         }
     }
@@ -472,4 +482,15 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         }
         return output;
     }
+    private static void readRule(PocketRule rule, JsonObject ruleJson) {
+        if (ruleJson.has("whitelist")) rule.setWhitelist(ruleJson.get("whitelist").getAsBoolean());
+        ArrayList<String> matches = new ArrayList<String>();
+        if(ruleJson.has("matches")) {
+            for(JsonElement match : ruleJson.get("matches").getAsJsonArray()) {
+                matches.add(match.getAsString());
+            }
+        }
+        rule.setMatches(matches);
+    }
 }
+

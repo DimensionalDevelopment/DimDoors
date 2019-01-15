@@ -49,6 +49,7 @@ public class PocketTemplate {
     @Getter private final int size; // number of chunks (16 blocks) on each side - 1
     @Getter private final int baseWeight;
     @Getter private static boolean isReplacingPlaceholders = false;
+    @Getter @Setter private PocketRules rules = new PocketRules();
 
     public float getWeight(int depth) {
         //noinspection IfStatementWithIdenticalBranches

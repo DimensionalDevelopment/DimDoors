@@ -39,7 +39,7 @@ public final class EventHandler {
         if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
-        if(!isPermitted(ForgeRegistries.BLOCKS.getKey(event.getEntityPlayer().getEntityWorld().getBlockState(event.getPos()).getBlock()).toString(), new String[0]/*event.getEntityPlayer().getCurrentPocket().getRules().getBreakBlockArray()*/, true/*event.getEntityPlayer().getCurrentPocket().getRules().getBreakBlockWhitelist()*/)) {
+        if(PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getBreakBlockRule().matches(ForgeRegistries.BLOCKS.getKey(event.getEntityPlayer().getEntityWorld().getBlockState(event.getPos()).getBlock()).toString())) {
             event.setCanceled(true);
         }
         return;
@@ -50,7 +50,7 @@ public final class EventHandler {
         if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
-        if(!isPermitted(ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString(), new String[0]/*event.getEntityPlayer().getCurrentPocket().getRules().getUseItemArray()*/, true/*event.getEntityPlayer().getCurrentPocket().getRules().getUseItemWhitelist()*/)) {
+        if(PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getUseItemOnAirRule().matches(ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString())) {
             event.setCanceled(true);
         }
         return;
@@ -61,22 +61,12 @@ public final class EventHandler {
         if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
-        if(!isPermitted(ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString(), new String[0]/*event.getEntityPlayer().getCurrentPocket().getRules().getUseItemArray()*/, true/*event.getEntityPlayer().getCurrentPocket().getRules().getUseItemWhitelist()*/)) {
+        if(PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getUseItemOnBlockRule().matches(ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString())) {
             event.setUseItem(Event.Result.DENY); //Only prevent item interaction, block interaction might still be interesting
         }
-        if(!isPermitted(ForgeRegistries.BLOCKS.getKey(event.getWorld().getBlockState(event.getPos()).getBlock()).toString(), new String[0]/*event.getEntityPlayer().getCurrentPocket().getRules().getInteractBlockArray()*/, true/*event.getEntityPlayer().getCurrentPocket().getRules().getInteractBlockWhitelist()*/)) {
+        if(PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getInteractBlockRule().matches(ForgeRegistries.BLOCKS.getKey(event.getWorld().getBlockState(event.getPos()).getBlock()).toString())) {
             event.setUseBlock(Event.Result.DENY); //Only prevent block interaction, item interaction might still be interesting
         }
         return;
-    }
-
-
-    private static boolean isPermitted(String itemOrBlockName, String[] rules, boolean whitelist) {
-        for (String rule : rules) {
-            if (itemOrBlockName.matches(rule)) {
-                return whitelist;
-            }
-        }
-        return !whitelist;
     }
 }

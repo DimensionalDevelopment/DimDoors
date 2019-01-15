@@ -8,6 +8,7 @@ import org.dimdev.annotatednbt.NBTSerializable;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.ddutils.nbt.INBTStorable;
 import org.dimdev.ddutils.nbt.NBTUtils;
+import org.dimdev.dimdoors.shared.pockets.PocketRules;
 
 @NBTSerializable public class Pocket implements INBTStorable {
 
@@ -16,6 +17,8 @@ import org.dimdev.ddutils.nbt.NBTUtils;
     @Saved @Getter protected int z; // Grid y
     @Saved @Getter @Setter protected int size; // TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
     @Saved @Getter @Setter protected VirtualLocation virtualLocation;
+    @Getter @Setter protected PocketRules rules; // TODO: make pocket rules save
+    // TODO: make method of changing rules of pockets via interface/ something similar
 
     @Getter int dim; // Not saved
 
