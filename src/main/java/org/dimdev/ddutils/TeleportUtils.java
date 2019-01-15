@@ -35,7 +35,7 @@ public final class TeleportUtils {
     private static final Method captureCurrentPosition;
     private static final Method copyDataFromOld;
     private static final Method searchForOtherItemsNearby;
-    private static final Method updateplayers;
+    private static final Method updatePlayers;
 
     static {
         try {
@@ -45,7 +45,7 @@ public final class TeleportUtils {
             captureCurrentPosition = MCPReflection.getMCPMethod(NetHandlerPlayServer.class, "captureCurrentPosition", "func_184342_d");
             copyDataFromOld = MCPReflection.getMCPMethod(Entity.class, "copyDataFromOld", "func_180432_n", Entity.class);
             searchForOtherItemsNearby = MCPReflection.getMCPMethod(EntityItem.class, "searchForOtherItemsNearby", "func_85054_d");
-            updateplayers = MCPReflection.getMCPMethod(DragonFightManager.class, "updateplayers", "func_186100_j");
+            updatePlayers = MCPReflection.getMCPMethod(DragonFightManager.class, "updatePlayers", "func_186100_j");
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
@@ -99,9 +99,9 @@ public final class TeleportUtils {
         }
     }
 
-    private static void updateplayers(DragonFightManager dragonFightManager) {
+    private static void updatePlayers(DragonFightManager dragonFightManager) {
         try {
-            updateplayers.invoke(dragonFightManager);
+            updatePlayers.invoke(dragonFightManager);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
@@ -227,11 +227,11 @@ public final class TeleportUtils {
 
                 // Force WorldProviderEnd to check if end dragon bars should be removed. Duplicate end dragon bars even
                 // happen when leaving the end using an end portal while the dragon is alive, so this might be a vanilla
-                // or Forge bug (maybe the world is unloaded before checking players?). In vanilla, updateplayers is normally
+                // or Forge bug (maybe the world is unloaded before checking players?). In vanilla, updatePlayers is normally
                 // called every second.
                 if (oldWorld.provider instanceof WorldProviderEnd) {
                     DragonFightManager dragonFightManager = ((WorldProviderEnd) oldWorld.provider).getDragonFightManager();
-                    updateplayers(dragonFightManager);
+                    updatePlayers(dragonFightManager);
                 }
 
                 // Vanilla also plays SoundEvents.BLOCK_PORTAL_TRAVEL, we won't do this.
