@@ -19,7 +19,4 @@ public class PocketRule {
         }
         return whitelist;
     }
-    public PocketRule copy() {
-        return new PocketRule(this.whitelist, new ArrayList<String>(this.matches));
-    }
 }

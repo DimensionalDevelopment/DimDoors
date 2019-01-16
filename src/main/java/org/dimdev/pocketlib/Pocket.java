@@ -9,6 +9,8 @@ import org.dimdev.annotatednbt.Saved;
 import org.dimdev.ddutils.nbt.INBTStorable;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.shared.pockets.PocketRules;
+import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
+import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
 
 @NBTSerializable public class Pocket implements INBTStorable {
 
@@ -17,8 +19,8 @@ import org.dimdev.dimdoors.shared.pockets.PocketRules;
     @Saved @Getter protected int z; // Grid y
     @Saved @Getter @Setter protected int size; // TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
     @Saved @Getter @Setter protected VirtualLocation virtualLocation;
-    @Getter @Setter protected PocketRules rules = new PocketRules(); // TODO: make pocket rules save
-    // TODO: make method of changing rules of pockets via interface/ something similar
+    @Saved @Getter @Setter protected String templateGroup;
+    @Saved @Getter @Setter protected String templateId;
 
     @Getter int dim; // Not saved
 
@@ -31,8 +33,15 @@ import org.dimdev.dimdoors.shared.pockets.PocketRules;
         this.z = z;
     }
 
-    @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
-    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        NBTUtils.readFromNBT(this, nbt);
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        return NBTUtils.writeToNBT(this, nbt);
+    }
 
     boolean isInBounds(BlockPos pos) {
         // pockets bounds
@@ -47,5 +56,10 @@ import org.dimdev.dimdoors.shared.pockets.PocketRules;
     public BlockPos getOrigin() {
         int gridSize = PocketRegistry.instance(dim).getGridSize();
         return new BlockPos(x * gridSize * 16, 0, z * gridSize * 16);
+    }
+
+    public PocketRules getRules() {
+        PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(this.templateGroup, this.templateId);
+        return template.getRules();
     }
 }
