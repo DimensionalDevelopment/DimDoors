@@ -12,7 +12,7 @@ public class PocketRule {
 
     public boolean matches(String itemOrBlockName, String meta) {
         for (String match : matches) {
-            if (itemOrBlockName.matches(match) || (itemOrBlockName + ":" + meta).matches(match)) {
+            if ((itemOrBlockName + ":" + meta).matches(match)) {
                 return !whitelist;
             }
         }
