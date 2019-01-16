@@ -4,6 +4,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -59,6 +60,17 @@ public final class EventHandler {
         String itemName = ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString();
         String itemMeta = Integer.toString(event.getItemStack().getMetadata());
         PocketRule rule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getUseItemOnAirRule();
+        if(rule.matches(itemName, itemMeta)) {
+            event.setCanceled(true);
+        }
+        return;
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onUseBow(ArrowNockEvent event) {
+        String itemName = ForgeRegistries.ITEMS.getKey(event.getBow().getItem()).toString();
+        String itemMeta = Integer.toString(event.getBow().getMetadata());
+        PocketRule rule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getEntityPlayer().getPosition()).getRules().getUseItemOnAirRule();
         if(rule.matches(itemName, itemMeta)) {
             event.setCanceled(true);
         }
