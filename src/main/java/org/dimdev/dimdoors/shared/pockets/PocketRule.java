@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.shared.pockets;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -17,5 +18,8 @@ public class PocketRule {
             }
         }
         return whitelist;
+    }
+    public PocketRule copy() {
+        return new PocketRule(this.whitelist, new ArrayList<String>(this.matches));
     }
 }
