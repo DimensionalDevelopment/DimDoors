@@ -207,7 +207,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 JsonObject rulesJson = pocket.get("rules").getAsJsonObject();
                 if(rulesJson.has("breakBlock")) readRule(rules.getBreakBlockRule(), rulesJson.get("breakBlock").getAsJsonObject());
                 if(rulesJson.has("interactBlock")) readRule(rules.getInteractBlockRule(), rulesJson.get("interactBlock").getAsJsonObject());
-                if(rulesJson.has("useItem")) readRule(rules.getUseItemRule(), rulesJson.get("useItemOnBlock").getAsJsonObject());
+                if(rulesJson.has("useItem")) readRule(rules.getUseItemRule(), rulesJson.get("useItem").getAsJsonObject());
             }
             PocketTemplate template = new PocketTemplate(group, id, type, name, author, size, baseWeight);
             template.setRules(rules);
