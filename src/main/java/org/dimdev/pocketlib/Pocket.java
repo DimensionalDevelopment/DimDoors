@@ -60,6 +60,7 @@ import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
 
     public PocketRules getRules() {
         PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(this.templateGroup, this.templateId);
+        if (template == null) return PocketRules.EMPTY;
         return template.getRules();
     }
 }
