@@ -102,7 +102,7 @@ public final class EventHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onBucketUse(FillBucketEvent event) {
+    public static void onUseBucket(FillBucketEvent event) {
         if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getTarget().getBlockPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
@@ -124,7 +124,7 @@ public final class EventHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onBonemealUse(BonemealEvent event) { //is this even worth it?
+    public static void onUseBonemeal(BonemealEvent event) { //is this even worth it?
         if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
@@ -145,7 +145,7 @@ public final class EventHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onHoeUse(UseHoeEvent event) { //is this even worth it?
+    public static void onUseHoe(UseHoeEvent event) { //is this even worth it?
         if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
