@@ -17,8 +17,7 @@ public class PocketRules {
 
     @Getter @Setter private PocketRule breakBlockRule = new PocketRule(false, new ArrayList<String>());
     @Getter @Setter private PocketRule interactBlockRule = new PocketRule(false, new ArrayList<String>());
-    @Getter @Setter private PocketRule useItemOnBlockRule = new PocketRule(false, new ArrayList<String>());
-    @Getter @Setter private PocketRule useItemOnAirRule = new PocketRule(false, new ArrayList<String>());
+    @Getter @Setter private PocketRule useItemRule = new PocketRule(false, new ArrayList<String>());
 }
 
 
