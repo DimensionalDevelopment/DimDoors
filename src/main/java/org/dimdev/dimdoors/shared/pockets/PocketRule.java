@@ -13,9 +13,9 @@ public class PocketRule {
     public boolean matches(String itemOrBlockName) {
         for (String match : matches) {
             if (itemOrBlockName.matches(match)) {
-                return whitelist;
+                return !whitelist;
             }
         }
-        return !whitelist;
+        return whitelist;
     }
 }
