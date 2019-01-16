@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.shared;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -11,6 +12,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import org.dimdev.dimdoors.shared.pockets.PocketRule;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.pocketlib.PocketRegistry;
@@ -39,7 +41,11 @@ public final class EventHandler {
         if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
-        if(PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getBreakBlockRule().matches(ForgeRegistries.BLOCKS.getKey(event.getEntityPlayer().getEntityWorld().getBlockState(event.getPos()).getBlock()).toString())) {
+        IBlockState blockState = event.getEntityPlayer().getEntityWorld().getBlockState(event.getPos());
+        String blockName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock()).toString();
+        String blockMeta = Integer.toString(blockState.getBlock().getMetaFromState(blockState));
+        PocketRule rule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getBreakBlockRule();
+        if(rule.matches(blockName, blockMeta)) {
             event.setCanceled(true);
         }
         return;
@@ -50,7 +56,10 @@ public final class EventHandler {
         if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
-        if(PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getUseItemOnAirRule().matches(ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString())) {
+        String itemName = ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString();
+        String itemMeta = Integer.toString(event.getItemStack().getMetadata());
+        PocketRule rule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getUseItemOnAirRule();
+        if(rule.matches(itemName, itemMeta)) {
             event.setCanceled(true);
         }
         return;
@@ -61,10 +70,17 @@ public final class EventHandler {
         if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
-        if(PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getUseItemOnBlockRule().matches(ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString())) {
+        String itemName = ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString();
+        String itemMeta = Integer.toString(event.getItemStack().getMetadata());
+        PocketRule itemRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getUseItemOnBlockRule();
+        if(itemRule.matches(itemName, itemMeta)) {
             event.setUseItem(Event.Result.DENY); //Only prevent item interaction, block interaction might still be interesting
         }
-        if(PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getInteractBlockRule().matches(ForgeRegistries.BLOCKS.getKey(event.getWorld().getBlockState(event.getPos()).getBlock()).toString())) {
+        IBlockState blockState = event.getEntityPlayer().getEntityWorld().getBlockState(event.getPos());
+        String blockName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock()).toString();
+        String blockMeta = Integer.toString(blockState.getBlock().getMetaFromState(blockState));
+        PocketRule blockRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getInteractBlockRule();
+        if(blockRule.matches(blockName, blockMeta)) {
             event.setUseBlock(Event.Result.DENY); //Only prevent block interaction, item interaction might still be interesting
         }
         return;

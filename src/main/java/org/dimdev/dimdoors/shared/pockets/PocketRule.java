@@ -10,9 +10,9 @@ public class PocketRule {
     @Setter private boolean whitelist;
     @Setter private List<String> matches;
 
-    public boolean matches(String itemOrBlockName) {
+    public boolean matches(String itemOrBlockName, String meta) {
         for (String match : matches) {
-            if (itemOrBlockName.matches(match)) {
+            if (itemOrBlockName.matches(match) || (itemOrBlockName + ":" + meta).matches(match)) {
                 return !whitelist;
             }
         }
