@@ -46,10 +46,10 @@ import org.dimdev.dimdoors.shared.pockets.SchematicHandler;
     boolean isInBounds(BlockPos pos) {
         // pockets bounds
         int gridSize = PocketRegistry.instance(dim).getGridSize();
-        int minX = x * gridSize;
-        int minZ = z * gridSize;
+        int minX = x * gridSize*16;
+        int minZ = z * gridSize*16;
         int maxX = minX + (size + 1) * 16;
-        int maxZ = minX + (size + 1) * 16;
+        int maxZ = minZ + (size + 1) * 16;
         return minX <= pos.getX() && minZ <= pos.getZ() && pos.getX() < maxX && pos.getZ() < maxZ;
     }
 
