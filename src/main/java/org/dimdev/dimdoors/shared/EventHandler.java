@@ -5,6 +5,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
+import net.minecraftforge.event.entity.player.BonemealEvent;
+import net.minecraftforge.event.entity.player.FillBucketEvent;
+import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -94,6 +97,64 @@ public final class EventHandler {
         PocketRule blockRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getInteractBlockRule();
         if(blockRule.matches(blockName, blockMeta)) {
             event.setUseBlock(Event.Result.DENY); //Only prevent block interaction, item interaction might still be interesting
+        }
+        return;
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onBucketUse(FillBucketEvent event) {
+        if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getTarget().getBlockPos()) || event.getEntityPlayer().isCreative()) {
+            return;
+        }
+        String itemName = ForgeRegistries.ITEMS.getKey(event.getEmptyBucket().getItem()).toString();
+        PocketRule itemRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getEntityPlayer().getPosition()).getRules().getUseItemOnBlockRule();
+
+        IBlockState blockState = event.getEntityPlayer().getEntityWorld().getBlockState(event.getTarget().getBlockPos());
+        String blockName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock()).toString();
+        String blockMeta = Integer.toString(blockState.getBlock().getMetaFromState(blockState));
+        PocketRule blockRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getTarget().getBlockPos()).getRules().getInteractBlockRule();
+
+        if(itemRule.matches(itemName, "0")) {
+            event.setResult(Event.Result.DENY);
+        }
+        else if(blockRule.matches(blockName, blockMeta)) {
+            event.setResult(Event.Result.DENY);
+        }
+        return;
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onBonemealUse(BonemealEvent event) { //is this even worth it?
+        if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
+            return;
+        }
+        PocketRule itemRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getEntityPlayer().getPosition()).getRules().getUseItemOnBlockRule();
+
+        IBlockState blockState = event.getEntityPlayer().getEntityWorld().getBlockState(event.getPos());
+        String blockName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock()).toString();
+        String blockMeta = Integer.toString(blockState.getBlock().getMetaFromState(blockState));
+        PocketRule blockRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getInteractBlockRule();
+
+        if(itemRule.matches("minecraft:dye", "0")) { //TODO: make sure item name is correct in 1.13
+            event.setResult(Event.Result.DENY);
+        }
+        else if(blockRule.matches(blockName, blockMeta)) {
+            event.setResult(Event.Result.DENY);
+        }
+        return;
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onHoeUse(UseHoeEvent event) { //is this even worth it?
+        if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
+            return;
+        }
+        IBlockState blockState = event.getEntityPlayer().getEntityWorld().getBlockState(event.getPos());
+        String blockName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock()).toString();
+        String blockMeta = Integer.toString(blockState.getBlock().getMetaFromState(blockState));
+        PocketRule blockRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getInteractBlockRule();
+        if(blockRule.matches(blockName, blockMeta)) {
+            event.setResult(Event.Result.DENY);
         }
         return;
     }
