@@ -204,7 +204,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             int baseWeight = pocket.has("baseWeight") ? pocket.get("baseWeight").getAsInt() : 100;
             PocketRules rules = new PocketRules();
             if (pocket.has("rules")) {
-                JsonArray rulesArray = pocket.get("rules").getAsJsonObject().getAsJsonArray();
+                JsonArray rulesArray = pocket.get("rules").getAsJsonArray();
                 for (JsonElement ruleJson : rulesArray) {
                     JsonObject currentRule = ruleJson.getAsJsonObject();
                     if(currentRule.has("name")) {

@@ -20,7 +20,8 @@ public class PocketRules {
     }
 
     public PocketRule put(String ruleName, PocketRule rule) {
-        return rules.put(ruleName, rule);
+        rules.put(ruleName, rule);
+        return rule;
     }
 }
 
