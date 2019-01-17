@@ -208,6 +208,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 if(rulesJson.has("breakBlock")) readRule(rules.getBreakBlockRule(), rulesJson.get("breakBlock").getAsJsonObject());
                 if(rulesJson.has("interactBlock")) readRule(rules.getInteractBlockRule(), rulesJson.get("interactBlock").getAsJsonObject());
                 if(rulesJson.has("useItem")) readRule(rules.getUseItemRule(), rulesJson.get("useItem").getAsJsonObject());
+                if(rulesJson.has("banItem")) readRule(rules.getBanItemRule(), rulesJson.get("banItem").getAsJsonObject());
             }
             PocketTemplate template = new PocketTemplate(group, id, type, name, author, size, baseWeight);
             template.setRules(rules);

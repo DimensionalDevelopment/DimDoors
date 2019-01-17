@@ -14,10 +14,10 @@ import java.util.ArrayList;
 public class PocketRules {
     public static final PocketRules EMPTY = new PocketRules();
 
-
     @Getter @Setter private PocketRule breakBlockRule = new PocketRule(false, new ArrayList<String>());
     @Getter @Setter private PocketRule interactBlockRule = new PocketRule(false, new ArrayList<String>());
     @Getter @Setter private PocketRule useItemRule = new PocketRule(false, new ArrayList<String>());
+    @Getter @Setter private PocketRule banItemRule = new PocketRule(false, new ArrayList<String>());
 }
 
 
