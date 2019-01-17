@@ -204,11 +204,14 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             int baseWeight = pocket.has("baseWeight") ? pocket.get("baseWeight").getAsInt() : 100;
             PocketRules rules = new PocketRules();
             if (pocket.has("rules")) {
-                JsonObject rulesJson = pocket.get("rules").getAsJsonObject();
-                if(rulesJson.has("breakBlock")) readRule(rules.getBreakBlockRule(), rulesJson.get("breakBlock").getAsJsonObject());
-                if(rulesJson.has("interactBlock")) readRule(rules.getInteractBlockRule(), rulesJson.get("interactBlock").getAsJsonObject());
-                if(rulesJson.has("useItem")) readRule(rules.getUseItemRule(), rulesJson.get("useItem").getAsJsonObject());
-                if(rulesJson.has("banItem")) readRule(rules.getBanItemRule(), rulesJson.get("banItem").getAsJsonObject());
+                JsonArray rulesArray = pocket.get("rules").getAsJsonObject().getAsJsonArray();
+                for (JsonElement ruleJson : rulesArray) {
+                    JsonObject currentRule = ruleJson.getAsJsonObject();
+                    if(currentRule.has("name")) {
+                        String ruleName = currentRule.get("name").getAsString();
+                        readRule(rules.put(ruleName, new PocketRule()), currentRule);
+                    }
+                }
             }
             PocketTemplate template = new PocketTemplate(group, id, type, name, author, size, baseWeight);
             template.setRules(rules);

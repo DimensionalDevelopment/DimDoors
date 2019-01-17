@@ -50,7 +50,7 @@ public final class EventHandler {
         IBlockState blockState = event.getEntityPlayer().getEntityWorld().getBlockState(event.getPos());
         String blockName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock()).toString();
         String blockMeta = Integer.toString(blockState.getBlock().getMetaFromState(blockState));
-        PocketRule rule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getBreakBlockRule();
+        PocketRule rule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().get("breakBlock");
         if(rule.matches(blockName, blockMeta)) {
             event.setCanceled(true);
         }
@@ -64,7 +64,7 @@ public final class EventHandler {
         }
         String itemName = ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString();
         String itemMeta = Integer.toString(event.getItemStack().getMetadata());
-        PocketRule rule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getUseItemRule();
+        PocketRule rule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().get("useItem");
         if(rule.matches(itemName, itemMeta)) {
             event.setCanceled(true);
         }
@@ -78,7 +78,7 @@ public final class EventHandler {
         }
         String itemName = ForgeRegistries.ITEMS.getKey(event.getItem().getItem()).toString();
         String itemMeta = Integer.toString(event.getItem().getMetadata());
-        PocketRule rule = PocketRegistry.instance(event.getEntityLiving().dimension).getPocketAt(event.getEntityLiving().getPosition()).getRules().getUseItemRule();
+        PocketRule rule = PocketRegistry.instance(event.getEntityLiving().dimension).getPocketAt(event.getEntityLiving().getPosition()).getRules().get("useItem");
         if (rule.matches(itemName, itemMeta)) {
             event.setCanceled(true);
         }
@@ -92,14 +92,14 @@ public final class EventHandler {
         }
         String itemName = ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString();
         String itemMeta = Integer.toString(event.getItemStack().getMetadata());
-        PocketRule itemRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getUseItemRule();
+        PocketRule itemRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().get("useItem");
         if(itemRule.matches(itemName, itemMeta)) {
             event.setUseItem(Event.Result.DENY); //Only prevent item interaction, block interaction might still be interesting
         }
         IBlockState blockState = event.getEntityPlayer().getEntityWorld().getBlockState(event.getPos());
         String blockName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock()).toString();
         String blockMeta = Integer.toString(blockState.getBlock().getMetaFromState(blockState));
-        PocketRule blockRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().getInteractBlockRule();
+        PocketRule blockRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().get("interactBlock");
         if(blockRule.matches(blockName, blockMeta)) {
             event.setUseBlock(Event.Result.DENY); //Only prevent block interaction, item interaction might still be interesting
         }
@@ -114,7 +114,7 @@ public final class EventHandler {
             return;
         }
         EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-        PocketRule rule = PocketRegistry.instance(event.getEntityLiving().dimension).getPocketAt(event.getEntityLiving().getPosition()).getRules().getBanItemRule();
+        PocketRule rule = PocketRegistry.instance(event.getEntityLiving().dimension).getPocketAt(event.getEntityLiving().getPosition()).getRules().get("banItem");
         if (!player.getHeldItemOffhand().isEmpty() && rule.matches(ForgeRegistries.ITEMS.getKey(player.getHeldItemOffhand().getItem()).toString(), Integer.toString(player.getHeldItemOffhand().getMetadata()))) { //TODO: message player about item being blacklisted in this pocket
             if (!player.inventory.addItemStackToInventory(player.getHeldItemOffhand())) {
                 player.dropItem(player.getHeldItemOffhand(), false);

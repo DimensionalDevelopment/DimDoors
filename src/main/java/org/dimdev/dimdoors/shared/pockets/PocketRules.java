@@ -2,22 +2,26 @@ package org.dimdev.dimdoors.shared.pockets;
 
 
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.ArrayList;
-
+import java.util.HashMap;
 
 
 @NoArgsConstructor
 public class PocketRules {
     public static final PocketRules EMPTY = new PocketRules();
 
-    @Getter @Setter private PocketRule breakBlockRule = new PocketRule(false, new ArrayList<String>());
-    @Getter @Setter private PocketRule interactBlockRule = new PocketRule(false, new ArrayList<String>());
-    @Getter @Setter private PocketRule useItemRule = new PocketRule(false, new ArrayList<String>());
-    @Getter @Setter private PocketRule banItemRule = new PocketRule(false, new ArrayList<String>());
+    private final HashMap<String, PocketRule> rules = new HashMap<String, PocketRule>();
+
+    public PocketRule get(String ruleName) {
+        PocketRule rule = rules.get(ruleName);
+        if (rule == null) return PocketRule.EMPTY;
+        else return rule;
+    }
+
+    public PocketRule put(String ruleName, PocketRule rule) {
+        return rules.put(ruleName, rule);
+    }
 }
 
 
