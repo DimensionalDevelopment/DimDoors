@@ -23,6 +23,8 @@ import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.pocketlib.PocketRegistry;
 import org.dimdev.pocketlib.WorldProviderPocket;
 
+import java.util.HashMap;
+
 
 public final class EventHandler {
 
@@ -107,6 +109,7 @@ public final class EventHandler {
     }
 
     private static final ItemStack dummy = new ItemStack(new Item());
+    private static final HashMap<EntityPlayer, Integer> lastSlot = new HashMap<EntityPlayer, Integer>();
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onLivingUpdate(LivingEvent.LivingUpdateEvent event) { //TODO: check wether having different template config on the client/server causes desync
@@ -126,7 +129,7 @@ public final class EventHandler {
             int source = player.inventory.currentItem;
             int target = nextValidHotbarSlot(player, rule);
             if (target != -1) {
-                while (player.getHeldItemMainhand() != player.inventory.getStackInSlot(target)) {
+                while (player.inventory.currentItem != target) {
                     player.inventory.changeCurrentItem(-1);
                 }
             }
@@ -139,11 +142,20 @@ public final class EventHandler {
                 player.inventory.setInventorySlotContents(source, ItemStack.EMPTY);
             }
         }
+        lastSlot.put(player, player.inventory.currentItem);
     }
 
     private static int nextValidHotbarSlot(EntityPlayer player, PocketRule rule) {
-        for (int i = 0; i < 9; i++) {
-            int j = (player.inventory.currentItem + i) % 9;
+        int prev = 0;
+        if (lastSlot.get(player) != null) {
+            prev = lastSlot.get(player);
+        }
+        int direction = 1;
+        if (((player.inventory.currentItem-prev+4)%9-4) < 0) {
+            direction = -1;
+        }
+        for (int i = 1; i < 9; i++) {
+            int j = (player.inventory.currentItem + i*direction + 9) % 9;
             if (player.inventory.getStackInSlot(j).isEmpty() || !rule.matches(ForgeRegistries.ITEMS.getKey(player.inventory.getStackInSlot(j).getItem()).toString(), Integer.toString(player.inventory.getStackInSlot(j).getMetadata()))) {
                 return j;
             }
