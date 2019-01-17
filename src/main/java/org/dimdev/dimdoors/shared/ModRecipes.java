@@ -62,7 +62,7 @@ public final class ModRecipes {
 
         IForgeRegistry<IRecipe> registry = event.getRegistry();
 
-        if(!ModConfig.general.useEnderPearlsInCrafting) {
+        if (!ModConfig.general.useEnderPearlsInCrafting) {
             registry.register(makeShapedRecipe(new ItemStack(ModItems.STABLE_FABRIC),
                     "yxy", 'x', Items.ENDER_PEARL, 'y', ModItems.WORLD_THREAD));
         }

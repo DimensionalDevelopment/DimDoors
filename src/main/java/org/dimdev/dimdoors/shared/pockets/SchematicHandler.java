@@ -207,7 +207,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 JsonArray rulesArray = pocket.get("rules").getAsJsonArray();
                 for (JsonElement ruleJson : rulesArray) {
                     JsonObject currentRule = ruleJson.getAsJsonObject();
-                    if(currentRule.has("name")) {
+                    if (currentRule.has("name")) {
                         String ruleName = currentRule.get("name").getAsString();
                         readRule(rules.put(ruleName, new PocketRule()), currentRule);
                     }
@@ -488,12 +488,11 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     private static void readRule(PocketRule rule, JsonObject ruleJson) {
         if (ruleJson.has("whitelist")) rule.setWhitelist(ruleJson.get("whitelist").getAsBoolean());
         ArrayList<String> matches = new ArrayList<String>();
-        if(ruleJson.has("matches")) {
-            for(JsonElement match : ruleJson.get("matches").getAsJsonArray()) {
+        if (ruleJson.has("matches")) {
+            for (JsonElement match : ruleJson.get("matches").getAsJsonArray()) {
                 matches.add(match.getAsString());
             }
         }
         rule.setMatches(matches);
     }
 }
-

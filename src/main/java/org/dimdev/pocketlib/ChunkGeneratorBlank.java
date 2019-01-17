@@ -22,7 +22,7 @@ public class ChunkGeneratorBlank implements IChunkGenerator {
     @Override
     public Chunk generateChunk(int x, int z) {
         Chunk chunk = new Chunk(world, new ChunkPrimer(), x, z);
-        if(!chunk.isTerrainPopulated()) chunk.setTerrainPopulated(true);
+        if (!chunk.isTerrainPopulated()) chunk.setTerrainPopulated(true);
         return chunk;
     }
 

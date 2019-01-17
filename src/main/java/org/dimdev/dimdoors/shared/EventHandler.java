@@ -22,9 +22,7 @@ import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.pocketlib.PocketRegistry;
 import org.dimdev.pocketlib.WorldProviderPocket;
-
 import java.util.HashMap;
-
 
 public final class EventHandler {
 
@@ -46,14 +44,14 @@ public final class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onGetBreakSpeed(BreakSpeed event) {
-        if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
+        if (!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
         IBlockState blockState = event.getEntityPlayer().getEntityWorld().getBlockState(event.getPos());
         String blockName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock()).toString();
         String blockMeta = Integer.toString(blockState.getBlock().getMetaFromState(blockState));
         PocketRule rule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().get("breakBlock");
-        if(rule.matches(blockName, blockMeta)) {
+        if (rule.matches(blockName, blockMeta)) {
             event.setCanceled(true);
         }
         return;
@@ -61,13 +59,13 @@ public final class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRightClickItem(RightClickItem event) {
-        if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
+        if (!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
         String itemName = ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString();
         String itemMeta = Integer.toString(event.getItemStack().getMetadata());
         PocketRule rule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().get("useItem");
-        if(rule.matches(itemName, itemMeta)) {
+        if (rule.matches(itemName, itemMeta)) {
             event.setCanceled(true);
         }
         return;
@@ -75,7 +73,7 @@ public final class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onStartUsingItem(LivingEntityUseItemEvent.Start event) {
-        if(!(event.getEntityLiving() instanceof EntityPlayer) || !(event.getEntityLiving().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityLiving().dimension).isWithinPocketBounds(event.getEntityLiving().getPosition()) || ((EntityPlayer)event.getEntityLiving()).isCreative()) {
+        if (!(event.getEntityLiving() instanceof EntityPlayer) || !(event.getEntityLiving().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityLiving().dimension).isWithinPocketBounds(event.getEntityLiving().getPosition()) || ((EntityPlayer)event.getEntityLiving()).isCreative()) {
             return;
         }
         String itemName = ForgeRegistries.ITEMS.getKey(event.getItem().getItem()).toString();
@@ -89,20 +87,20 @@ public final class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRightClickBlock(RightClickBlock event) {
-        if(!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
+        if (!(event.getEntityPlayer().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityPlayer().dimension).isWithinPocketBounds(event.getPos()) || event.getEntityPlayer().isCreative()) {
             return;
         }
         String itemName = ForgeRegistries.ITEMS.getKey(event.getItemStack().getItem()).toString();
         String itemMeta = Integer.toString(event.getItemStack().getMetadata());
         PocketRule itemRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().get("useItem");
-        if(itemRule.matches(itemName, itemMeta)) {
+        if (itemRule.matches(itemName, itemMeta)) {
             event.setUseItem(Event.Result.DENY); //Only prevent item interaction, block interaction might still be interesting
         }
         IBlockState blockState = event.getEntityPlayer().getEntityWorld().getBlockState(event.getPos());
         String blockName = ForgeRegistries.BLOCKS.getKey(blockState.getBlock()).toString();
         String blockMeta = Integer.toString(blockState.getBlock().getMetaFromState(blockState));
         PocketRule blockRule = PocketRegistry.instance(event.getEntityPlayer().dimension).getPocketAt(event.getPos()).getRules().get("interactBlock");
-        if(blockRule.matches(blockName, blockMeta)) {
+        if (blockRule.matches(blockName, blockMeta)) {
             event.setUseBlock(Event.Result.DENY); //Only prevent block interaction, item interaction might still be interesting
         }
         return;
@@ -136,7 +134,7 @@ public final class EventHandler {
             else {
                 ItemStack heldItem = player.getHeldItemMainhand();
                 player.inventory.setInventorySlotContents(source, dummy);
-                if(!player.inventory.addItemStackToInventory(heldItem)) {
+                if (!player.inventory.addItemStackToInventory(heldItem)) {
                     player.dropItem(heldItem, false);
                 }
                 player.inventory.setInventorySlotContents(source, ItemStack.EMPTY);
