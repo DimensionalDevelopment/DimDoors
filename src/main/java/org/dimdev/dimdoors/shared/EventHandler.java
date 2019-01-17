@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.shared;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -105,33 +106,19 @@ public final class EventHandler {
         return;
     }
 
+    private static final ItemStack dummy = new ItemStack(new Item());
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void onLivingUpdate(LivingEvent.LivingUpdateEvent event) { //TODO: check wether having different template config on the client/server causes desync //TODO: make it try to stack instead of moving stacks to empty slots
+    public static void onLivingUpdate(LivingEvent.LivingUpdateEvent event) { //TODO: check wether having different template config on the client/server causes desync
         if (!(event.getEntityLiving() instanceof EntityPlayer) || !(event.getEntityLiving().getEntityWorld().provider instanceof WorldProviderPocket) || !PocketRegistry.instance(event.getEntityLiving().dimension).isWithinPocketBounds(event.getEntityLiving().getPosition()) || ((EntityPlayer) event.getEntityLiving()).isCreative()) {
             return;
         }
         EntityPlayer player = (EntityPlayer) event.getEntityLiving();
         PocketRule rule = PocketRegistry.instance(event.getEntityLiving().dimension).getPocketAt(event.getEntityLiving().getPosition()).getRules().getBanItemRule();
-        if (!player.getHeldItemOffhand().isEmpty() && rule.matches(ForgeRegistries.ITEMS.getKey(player.getHeldItemOffhand().getItem()).toString(), Integer.toString(player.getHeldItemOffhand().getMetadata()))) { //TODO: message player about item being blacklisted in this pocket //TODO: move logic to BannedItemHandler
-            int target = firstEmptyInventorySlot(player);
-            if (target != -1) {
-                swapWithOffhand(player, target);
-            }
-            else {
-                target = firstValidInventorySlot(player,rule);
-                if (target != -1) {
-                    swapWithOffhand(player, target);
-                }
-                else {
-                    target = firstEmptyHotbarSlot(player);
-                    if (target != -1) {
-                        swapWithOffhand(player, target);
-                    }
-                    else {
-                        player.dropItem(player.getHeldItemOffhand(), false);
-                        player.inventory.offHandInventory.set(0, ItemStack.EMPTY);
-                    }
-                }
+        if (!player.getHeldItemOffhand().isEmpty() && rule.matches(ForgeRegistries.ITEMS.getKey(player.getHeldItemOffhand().getItem()).toString(), Integer.toString(player.getHeldItemOffhand().getMetadata()))) { //TODO: message player about item being blacklisted in this pocket
+            if (!player.inventory.addItemStackToInventory(player.getHeldItemOffhand())) {
+                player.dropItem(player.getHeldItemOffhand(), false);
+                player.inventory.offHandInventory.set(0, ItemStack.EMPTY);
             }
         }
 
@@ -144,30 +131,14 @@ public final class EventHandler {
                 }
             }
             else {
-                target = firstEmptyInventorySlot(player);
-                if (target != -1) {
-                    swapSlots(player, source, target);
+                ItemStack heldItem = player.getHeldItemMainhand();
+                player.inventory.setInventorySlotContents(source, dummy);
+                if(!player.inventory.addItemStackToInventory(heldItem)) {
+                    player.dropItem(heldItem, false);
                 }
-                else {
-                    target = firstEmptyHotbarSlot(player);
-                    if (target != -1) {
-                        swapSlots(player, source, target);
-                    }
-                    else {
-                        player.dropItem(player.inventory.removeStackFromSlot(source), false);
-                    }
-                }
+                player.inventory.setInventorySlotContents(source, ItemStack.EMPTY);
             }
         }
-    }
-
-    private static int firstEmptyHotbarSlot(EntityPlayer player) {
-        for (int i = 0; i < 9; i++) {
-            if (player.inventory.getStackInSlot(i).isEmpty()) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     private static int nextValidHotbarSlot(EntityPlayer player, PocketRule rule) {
@@ -178,35 +149,5 @@ public final class EventHandler {
             }
         }
         return -1;
-    }
-
-    private static int firstEmptyInventorySlot(EntityPlayer player) {
-        for (int i = 9; i < player.inventory.mainInventory.size(); i++) {
-            if (player.inventory.getStackInSlot(i).isEmpty()) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private static int firstValidInventorySlot(EntityPlayer player, PocketRule rule) {
-        for (int i = 9; i < player.inventory.mainInventory.size(); i++) {
-            if (player.inventory.getStackInSlot(i).isEmpty() || !rule.matches(ForgeRegistries.ITEMS.getKey(player.inventory.getStackInSlot(i).getItem()).toString(), Integer.toString(player.inventory.getStackInSlot(i).getMetadata()))) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private static void swapSlots(EntityPlayer player, int slot1, int slot2) {
-        ItemStack temp = player.inventory.getStackInSlot(slot2);
-        player.inventory.setInventorySlotContents(slot2, player.inventory.getStackInSlot(slot1));
-        player.inventory.setInventorySlotContents(slot1, temp);
-    }
-
-    private static void swapWithOffhand(EntityPlayer player, int slot) {
-        ItemStack temp = player.inventory.getStackInSlot(slot);
-        player.inventory.setInventorySlotContents(slot, player.getHeldItemOffhand());
-        player.inventory.offHandInventory.set(0, temp);
     }
 }
