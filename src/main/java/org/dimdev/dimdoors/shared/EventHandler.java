@@ -149,7 +149,7 @@ public final class EventHandler {
             prev = lastSlot.get(player);
         }
         int direction = 1;
-        if (((player.inventory.currentItem-prev+4)%9-4) < 0) {
+        if (((player.inventory.currentItem-prev+13)%9-4) < 0) {
             direction = -1;
         }
         for (int i = 1; i < 9; i++) {

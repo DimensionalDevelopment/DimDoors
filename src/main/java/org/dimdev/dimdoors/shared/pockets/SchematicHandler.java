@@ -190,6 +190,19 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
 
         final String group = jsonTemplate.get("group").getAsString();
 
+        PocketRules groupRules = new PocketRules();
+
+        if (jsonTemplate.has("rules")) {
+            JsonArray rulesArray = jsonTemplate.get("rules").getAsJsonArray();
+            for (JsonElement ruleJson : rulesArray) {
+                JsonObject currentRule = ruleJson.getAsJsonObject();
+                if (currentRule.has("name")) {
+                    String ruleName = currentRule.get("name").getAsString();
+                    readRule(groupRules.put(ruleName, new PocketRule()), currentRule);
+                }
+            }
+            PocketRules.GROUPRULESMAP.put(group, groupRules);
+        }
         final JsonArray pockets = jsonTemplate.getAsJsonArray("pockets");
 
         //convert the variations arraylist to a list of pocket templates
@@ -202,7 +215,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             String name = pocket.has("name") ? pocket.get("name").getAsString() : null;
             String author = pocket.has("author") ? pocket.get("author").getAsString() : null;
             int baseWeight = pocket.has("baseWeight") ? pocket.get("baseWeight").getAsInt() : 100;
-            PocketRules rules = new PocketRules();
+            PocketRules rules = new PocketRules(group);
             if (pocket.has("rules")) {
                 JsonArray rulesArray = pocket.get("rules").getAsJsonArray();
                 for (JsonElement ruleJson : rulesArray) {
