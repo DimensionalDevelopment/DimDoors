@@ -45,7 +45,7 @@ public final class TeleportUtils {
             captureCurrentPosition = MCPReflection.getMCPMethod(NetHandlerPlayServer.class, "captureCurrentPosition", "func_184342_d");
             copyDataFromOld = MCPReflection.getMCPMethod(Entity.class, "copyDataFromOld", "func_180432_n", Entity.class);
             searchForOtherItemsNearby = MCPReflection.getMCPMethod(EntityItem.class, "searchForOtherItemsNearby", "func_85054_d");
-            updateplayers = MCPReflection.getMCPMethod(DragonFightManager.class, "updateplayers", "func_186100_j");
+            updateplayers = MCPReflection.getMCPMethod(DragonFightManager.class, "updatePlayers", "func_186100_j");
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
