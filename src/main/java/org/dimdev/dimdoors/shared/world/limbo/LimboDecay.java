@@ -1,18 +1,28 @@
 package org.dimdev.dimdoors.shared.world.limbo;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
+import net.minecraft.block.*;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.ForgeChunkManager;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.function.BiConsumer;
+
+import static net.minecraft.init.Blocks.*;
+import static org.dimdev.dimdoors.shared.blocks.ModBlocks.*;
 
 /**
  * Provides methods for applying Limbo decay. Limbo decay refers to the effect that most blocks placed in Limbo
@@ -26,36 +36,27 @@ public final class LimboDecay {
     private static final int SECTION_HEIGHT = 16;
 
     //Provides a reversed list of the block IDs that blocks cycle through during decay.
-    private static IBlockState[] decaySequence = null;
+    private static Map<IBlockState, IBlockState> decaySequence = null;
 
     private static final Random random = new Random();
     private static Block[] blocksImmuneToDecay = null;
 
-    public static IBlockState[] getDecaySequence() {
-        if (decaySequence == null) {
-            decaySequence = new IBlockState[]{
-                    ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
-                    Blocks.GRAVEL.getDefaultState(),
-                    Blocks.COBBLESTONE.getDefaultState(),
-                    Blocks.STONE.getDefaultState()
-            };
-        }
-
+    public static Map<IBlockState, IBlockState> getDecaySequence() {
         return decaySequence;
     }
 
     public static Block[] getBlocksImmuneToDecay() {
         if (blocksImmuneToDecay == null) {
             blocksImmuneToDecay = new Block[]{
-                    ModBlocks.UNRAVELLED_FABRIC,
-                    ModBlocks.ETERNAL_FABRIC,
-                    ModBlocks.DIMENSIONAL_PORTAL,
-                    ModBlocks.IRON_DIMENSIONAL_DOOR,
-                    ModBlocks.WARP_DIMENSIONAL_DOOR,
-                    ModBlocks.RIFT,
-                    ModBlocks.GOLD_DOOR,
-                    ModBlocks.QUARTZ_DOOR,
-                    ModBlocks.GOLD_DIMENSIONAL_DOOR
+                    UNRAVELLED_FABRIC,
+                    ETERNAL_FABRIC,
+                    DIMENSIONAL_PORTAL,
+                    IRON_DIMENSIONAL_DOOR,
+                    WARP_DIMENSIONAL_DOOR,
+                    RIFT,
+                    GOLD_DOOR,
+                    QUARTZ_DOOR,
+                    GOLD_DIMENSIONAL_DOOR
             };
         }
 
@@ -78,7 +79,7 @@ public final class LimboDecay {
             decayBlock(world, pos.south());
             decayBlock(world, pos.west());
             decayBlock(world, pos.east());
-        }
+    }
     }
 
     /**
@@ -118,9 +119,9 @@ public final class LimboDecay {
         IBlockState block = world.getBlockState(pos);
         if (canDecayBlock(block, world, pos)) {
             if (block.isNormalCube()) {
-                world.setBlockState(pos, ModBlocks.UNRAVELLED_FABRIC.getDefaultState());
+                world.setBlockState(pos, UNRAVELLED_FABRIC.getDefaultState());
             } else {
-                world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                world.setBlockState(pos, AIR.getDefaultState());
             }
             return true;
         }
@@ -131,27 +132,22 @@ public final class LimboDecay {
      * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
      */
     private static boolean decayBlock(World world, BlockPos pos) {
-        int index;
         IBlockState block = world.getBlockState(pos);
         if (canDecayBlock(block, world, pos)) {
             //Loop over the block IDs that decay can go through.
             //Find an index matching the current blockID, if any.
             if (block.isNormalCube()) {
-                for (index = 0; index < getDecaySequence().length; index++) {
-                    if (getDecaySequence()[index].equals(block)) {
-                        break;
-                    }
+                if(getDecaySequence().containsKey(block)) {
+                    IBlockState decay = getDecaySequence().get(block);
+
+
+                    System.out.println(I18n.format(block.getBlock().getTranslationKey()) + " -> " + I18n.format(decay.getBlock().getTranslationKey()));
+                    world.setBlockState(pos, decay);
+                } else {
+                    return false;
                 }
-
-                //Since the decay sequence is a reversed list, the block ID in the index before our match
-                //is the block ID we should change this block into. A trick in this approach is that if
-                //we loop over the array without finding a match, then (index - 1) will contain the
-                //last ID in the array, which is the first one that all blocks decay into.
-                //We assume that Unraveled Fabric is NOT decayable. Otherwise, this will go out of bounds!
-
-                world.setBlockState(pos, getDecaySequence()[index - 1]);
             } else {
-                world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                world.setBlockState(pos, AIR.getDefaultState());
             }
             return true;
         }
@@ -173,5 +169,87 @@ public final class LimboDecay {
         }
 
         return !(state instanceof BlockContainer);
+    }
+
+    static {
+        decaySequence = new HashMap<>();
+
+        BiConsumer<IBlockState, IBlockState> stateConsumer = (a,b) -> decaySequence.put(a,b);
+        BiConsumer<Block, Block> blockConsumer = (a,b) -> stateConsumer.accept(a.getDefaultState(), b.getDefaultState());
+
+        blockConsumer.accept(STONE, COBBLESTONE);
+        blockConsumer.accept(COBBLESTONE, END_STONE);
+        blockConsumer.accept(GRAVEL, SAND);
+        blockConsumer.accept(SAND, UNRAVELLED_FABRIC);
+        blockConsumer.accept(GLASS, SAND);
+        blockConsumer.accept(GRASS, DIRT);
+        blockConsumer.accept(DIRT, SAND);
+
+        for (BlockPlanks.EnumType planks : BlockPlanks.EnumType.values()) {
+            IBlockState plank = PLANKS.getDefaultState().withProperty(BlockPlanks.VARIANT, planks);
+
+            if(planks.getMetadata() < 4)
+            stateConsumer.accept(
+                    LOG.getDefaultState().withProperty(BlockOldLog.VARIANT, planks),
+                    plank);
+            else stateConsumer.accept(
+                    LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, planks),
+                    plank);
+            stateConsumer.accept(plank, GLASS.getDefaultState());
+        }
+
+        stateConsumer.accept(
+                STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.GRANITE_SMOOTH),
+                STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.GRANITE));
+        stateConsumer.accept(
+                STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.GRANITE),
+                STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.DIORITE));
+        stateConsumer.accept(
+                STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.ANDESITE_SMOOTH),
+                STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.ANDESITE));
+        stateConsumer.accept(
+                STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.DIORITE_SMOOTH),
+                STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.DIORITE));
+        stateConsumer.accept(
+                STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.DIORITE),
+                COBBLESTONE.getDefaultState());
+
+        for (EnumDyeColor color : EnumDyeColor.values()) {
+            stateConsumer.accept(
+                    STAINED_GLASS.getDefaultState().withProperty(BlockStainedGlass.COLOR, color),
+                    GLASS.getDefaultState());
+            stateConsumer.accept(
+                    CONCRETE.getDefaultState().withProperty(BlockColored.COLOR, color),
+                    CONCRETE_POWDER.getDefaultState().withProperty(BlockConcretePowder.COLOR, color));
+            stateConsumer.accept(
+                    CONCRETE_POWDER.getDefaultState().withProperty(BlockConcretePowder.COLOR, color),
+                    SAND.getDefaultState());
+        }
+
+        blockConsumer.accept(END_STONE, SAND);
+
+        stateConsumer.accept(
+                STONEBRICK.getDefaultState().withProperty(BlockStoneBrick.VARIANT, BlockStoneBrick.EnumType.CRACKED),
+                STONEBRICK.getDefaultState());
+        stateConsumer.accept(
+                STONEBRICK.getDefaultState(),
+                COBBLESTONE.getDefaultState());
+        blockConsumer.accept(REDSTONE_BLOCK, REDSTONE_ORE);
+        blockConsumer.accept(REDSTONE_ORE, STONE);
+        blockConsumer.accept(EMERALD_BLOCK, EMERALD_ORE);
+        blockConsumer.accept(EMERALD_ORE, STONE);
+        blockConsumer.accept(COAL_BLOCK, COAL_ORE);
+        blockConsumer.accept(COAL_ORE, STONE);
+        blockConsumer.accept(IRON_BLOCK, IRON_ORE);
+        blockConsumer.accept(IRON_ORE, STONE);
+        blockConsumer.accept(LAPIS_BLOCK, LAPIS_ORE);
+        blockConsumer.accept(LAPIS_ORE, STONE);
+        blockConsumer.accept(GOLD_BLOCK, GOLD_ORE);
+        blockConsumer.accept(GOLD_ORE, STONE);
+        blockConsumer.accept(SANDSTONE, SAND);
+        blockConsumer.accept(END_BRICKS, END_STONE);
+        blockConsumer.accept(GRASS_PATH, DIRT);
+        stateConsumer.accept(DIRT.getDefaultState().withProperty(BlockDirt.VARIANT, BlockDirt.DirtType.PODZOL), DIRT.getDefaultState());
+        blockConsumer.accept(FARMLAND, DIRT);
     }
 }
