@@ -1,5 +1,14 @@
 package org.dimdev.dimdoors.shared.rifts.targets;
 
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemDye;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.oredict.DyeUtils;
+import net.minecraftforge.oredict.OreDictionary;
 import org.dimdev.ddutils.RGBA;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.pocketlib.PrivatePocketData;
@@ -16,6 +25,7 @@ import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
@@ -35,8 +45,7 @@ public class PrivatePocketTarget extends VirtualTarget implements IEntityTarget 
                 // set to where the pocket was first created
                 pocket = PocketGenerator.generatePrivatePocket(virtualLocation != null ? virtualLocation.toBuilder().depth(-1).build() : null);
                 PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
-                ((IEntityTarget) RiftRegistry.instance().getPocketEntrance(pocket).getTileEntity()).receiveEntity(entity, relativeYaw, relativePitch);
-                RiftRegistry.instance().setLastPrivatePocketExit(uuid, location);
+                processEntity(pocket, RiftRegistry.instance().getPocketEntrance(pocket).getTileEntity(), entity, uuid, relativeYaw, relativePitch);
                 return true;
             } else {
                 Location destLoc = RiftRegistry.instance().getPrivatePocketEntrance(uuid); // get the last used entrances
@@ -47,12 +56,30 @@ public class PrivatePocketTarget extends VirtualTarget implements IEntityTarget 
                     PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
                     destLoc = RiftRegistry.instance().getPocketEntrance(pocket);
                 }
-                ((IEntityTarget) destLoc.getTileEntity()).receiveEntity(entity, relativeYaw, relativePitch);
-                RiftRegistry.instance().setLastPrivatePocketExit(uuid, location);
+
+                System.out.println("Herp");
+                processEntity(pocket, destLoc.getTileEntity(), entity, uuid, relativePitch, relativePitch);
                 return true;
             }
         } else {
             return false;
+        }
+    }
+
+    private void processEntity(Pocket pocket, TileEntity tileEntity, Entity entity, UUID uuid, float relativeYaw, float relativePitch) {
+        if(entity instanceof EntityItem) {
+            Optional<EnumDyeColor> dye = DyeUtils.colorFromStack(((EntityItem) entity).getItem());
+
+            System.out.println(((EntityItem) entity).getItem().getItem().getRegistryName());
+
+            if(dye.isPresent() && pocket.addDye(entity.world.getPlayerEntityByName(((EntityItem) entity).getThrower()), dye.get())) {
+                entity.setDead();
+            } else {
+                ((IEntityTarget) tileEntity).receiveEntity(entity, relativeYaw, relativePitch);
+            }
+        } else {
+            ((IEntityTarget) tileEntity).receiveEntity(entity, relativeYaw, relativePitch);
+            RiftRegistry.instance().setLastPrivatePocketExit(uuid, location);
         }
     }
 
