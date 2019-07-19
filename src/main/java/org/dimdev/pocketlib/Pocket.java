@@ -2,6 +2,7 @@ package org.dimdev.pocketlib;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import org.dimdev.annotatednbt.NBTSerializable;
@@ -16,6 +17,8 @@ import org.dimdev.ddutils.nbt.NBTUtils;
     @Saved @Getter protected int z; // Grid y
     @Saved @Getter @Setter protected int size; // TODO: non chunk-based size, better bounds such as minX, minZ, maxX, maxZ, etc.
     @Saved @Getter @Setter protected VirtualLocation virtualLocation;
+    @Saved protected EnumDyeColor color;
+    @Saved protected int count = 0;
 
     @Getter int dim; // Not saved
 
@@ -44,5 +47,14 @@ import org.dimdev.ddutils.nbt.NBTUtils;
     public BlockPos getOrigin() {
         int gridSize = PocketRegistry.instance(dim).getGridSize();
         return new BlockPos(x * gridSize * 16, 0, z * gridSize * 16);
+    }
+
+    public void addDye(EnumDyeColor color) {
+        if(this.color != null && this.color == color) {
+            count++;
+        } else {
+            this.color = color;
+            count = 1;
+        }
     }
 }
