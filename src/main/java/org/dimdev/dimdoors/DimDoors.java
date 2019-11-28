@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -53,7 +54,7 @@ public class DimDoors {
     public static Logger log;
 
     @SidedProxy(clientSide = "org.dimdev.dimdoors.proxy.ClientProxy",
-                serverSide = "org.dimdev.dimdoors.proxy.ServerProxy")
+                serverSide = "org.dimdev.dimdoors.proxy.CommonProxy")
     public static IProxy proxy;
 
     @Getter public static File configurationFolder;
@@ -143,5 +144,9 @@ public class DimDoors {
 
     public static void chat(Entity entity, String text, Object... translationArgs) {
         entity.sendMessage(new TextComponentTranslation(text, translationArgs));
+    }
+
+    static {
+        FluidRegistry.enableUniversalBucket();
     }
 }

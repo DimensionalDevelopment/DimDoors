@@ -5,11 +5,14 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.client.IRenderHandler;
+import org.dimdev.dimdoors.shared.fluids.ModFluids;
 
-public class ServerProxy implements IProxy {
+public class CommonProxy implements IProxy {
 
     @Override
-    public void onPreInitialization(FMLPreInitializationEvent event) {}
+    public void onPreInitialization(FMLPreInitializationEvent event) {
+        ModFluids.registerFluids();
+    }
 
     @Override
     public void onInitialization(FMLInitializationEvent event) {}

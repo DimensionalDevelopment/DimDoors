@@ -20,10 +20,11 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
 @SideOnly(Side.CLIENT)
-public class ClientProxy implements IProxy {
+public class ClientProxy extends CommonProxy {
 
     @Override
     public void onPreInitialization(FMLPreInitializationEvent event) {
+        super.onPreInitialization(event);
         // Register client-side event handlers
         MinecraftForge.EVENT_BUS.register(ModelManager.class);
 

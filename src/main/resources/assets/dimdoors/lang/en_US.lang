@@ -105,6 +105,8 @@ item.oak_dimensional_door.info=Place on the block under a rift \nto create a por
 
 item.record.creepy.desc=Creepy - The sound of Limbo
 
+fluid.eternal_fabric=Eternal Fabric
+
 entity.dimdoors.monolith.name=Monolith
 
 commands.dimteleport.usage=/dimteleport <dimension> <x> <y> <z> [yaw] [pitch]

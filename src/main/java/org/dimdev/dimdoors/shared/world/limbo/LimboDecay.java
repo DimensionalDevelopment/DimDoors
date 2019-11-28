@@ -70,7 +70,7 @@ public final class LimboDecay {
     public static void applySpreadDecay(World world, BlockPos pos) {
         //Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
         //full spread decay checks, which can also shift its performance impact on the game.
-        if (random.nextInt(MAX_DECAY_SPREAD_CHANCE) < DECAY_SPREAD_CHANCE) {
+        //if (random.nextInt(MAX_DECAY_SPREAD_CHANCE) < DECAY_SPREAD_CHANCE) {
             //Apply decay to the blocks above, below, and on all four sides.
             //World.getBlockId() implements bounds checking, so we don't have to worry about reaching out of the world
             decayBlock(world, pos.up());
@@ -79,7 +79,7 @@ public final class LimboDecay {
             decayBlock(world, pos.south());
             decayBlock(world, pos.west());
             decayBlock(world, pos.east());
-    }
+        //}
     }
 
     /**
@@ -136,17 +136,11 @@ public final class LimboDecay {
         if (canDecayBlock(block, world, pos)) {
             //Loop over the block IDs that decay can go through.
             //Find an index matching the current blockID, if any.
-            if (block.isNormalCube()) {
-                if(getDecaySequence().containsKey(block)) {
-                    IBlockState decay = getDecaySequence().get(block);
 
-
-                    System.out.println(I18n.format(block.getBlock().getTranslationKey()) + " -> " + I18n.format(decay.getBlock().getTranslationKey()));
-                    world.setBlockState(pos, decay);
-                } else {
-                    return false;
-                }
-            } else {
+            if(getDecaySequence().containsKey(block)) {
+                IBlockState decay = getDecaySequence().get(block);
+                world.setBlockState(pos, decay);
+            } else if (!block.isNormalCube()) {
                 world.setBlockState(pos, AIR.getDefaultState());
             }
             return true;
@@ -208,6 +202,9 @@ public final class LimboDecay {
                 STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.ANDESITE_SMOOTH),
                 STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.ANDESITE));
         stateConsumer.accept(
+                STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.ANDESITE),
+                STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.DIORITE));
+        stateConsumer.accept(
                 STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.DIORITE_SMOOTH),
                 STONE.getDefaultState().withProperty(BlockStone.VARIANT, BlockStone.EnumType.DIORITE));
         stateConsumer.accept(
@@ -235,6 +232,7 @@ public final class LimboDecay {
                 STONEBRICK.getDefaultState(),
                 COBBLESTONE.getDefaultState());
         blockConsumer.accept(REDSTONE_BLOCK, REDSTONE_ORE);
+        blockConsumer.accept(LIT_REDSTONE_ORE, STONE);
         blockConsumer.accept(REDSTONE_ORE, STONE);
         blockConsumer.accept(EMERALD_BLOCK, EMERALD_ORE);
         blockConsumer.accept(EMERALD_ORE, STONE);

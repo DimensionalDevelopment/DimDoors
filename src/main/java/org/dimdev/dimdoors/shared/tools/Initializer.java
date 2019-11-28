@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.RegistryManager;
 import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.dimdoors.proxy.ServerProxy;
+import org.dimdev.dimdoors.proxy.CommonProxy;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 
 public final class Initializer {
@@ -25,7 +25,7 @@ public final class Initializer {
         Loader.instance().setActiveModContainer(mc);
 
         DimDoors.instance = new DimDoors();
-        DimDoors.proxy = new ServerProxy();
+        DimDoors.proxy = new CommonProxy();
 
         DimDoors.instance.onPreInitialization(new FMLPreInitializationEvent());
         ModBlocks.registerBlocks(new RegistryEvent.Register<Block>(GameData.BLOCKS, RegistryManager.ACTIVE.getRegistry(GameData.BLOCKS)));

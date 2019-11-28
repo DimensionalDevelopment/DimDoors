@@ -1,20 +1,29 @@
 package org.dimdev.dimdoors.client;
 
 import net.minecraft.block.BlockDoor;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.dimdev.dimdoors.shared.blocks.BlockFabricEternal;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
+import org.dimdev.dimdoors.shared.fluids.FluidLiquid;
 import org.dimdev.dimdoors.shared.items.ModItems;
+
+import static org.dimdev.dimdoors.shared.blocks.ModBlocks.ETERNAL_FABRIC;
 
 @SideOnly(Side.CLIENT)
 public final class ModelManager {
@@ -25,7 +34,6 @@ public final class ModelManager {
         registerColored(ModItems.FABRIC);
         registerColored(ModItems.ANCIENT_FABRIC);
         register(ModItems.UNRAVELLED_FABRIC);
-        register(ModItems.ETERNAL_FABRIC);
         register(ModItems.WOOD_DIMENSIONAL_TRAPDOOR);
         register(ModItems.IRON_DIMENSIONAL_DOOR);
         register(ModItems.GOLD_DIMENSIONAL_DOOR);
@@ -64,6 +72,16 @@ public final class ModelManager {
         ModelLoader.setCustomStateMapper(ModBlocks.IRON_DIMENSIONAL_DOOR, ignorePowered);
         ModelLoader.setCustomStateMapper(ModBlocks.PERSONAL_DIMENSIONAL_DOOR, ignorePowered);
         ModelLoader.setCustomStateMapper(ModBlocks.WARP_DIMENSIONAL_DOOR, ignorePowered);
+
+        ModelLoader.setCustomStateMapper(ETERNAL_FABRIC, new StateMapperBase() {
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+                return new ModelResourceLocation("dimdoors:eternal_fabric", "fluid");
+            }
+        });
+
+        ModelLoader.setCustomMeshDefinition(ItemBlock.getItemFromBlock(ETERNAL_FABRIC), stack -> new ModelResourceLocation("dimdoors:eternal_fabric", "fluid"));
+
 
         ModelLoader.setCustomStateMapper(ModBlocks.DIMENSIONAL_PORTAL, new StateMap.Builder().ignore(BlockDoor.FACING, BlockDoor.HALF, BlockDoor.HINGE, BlockDoor.OPEN, BlockDoor.POWERED).build());
     }

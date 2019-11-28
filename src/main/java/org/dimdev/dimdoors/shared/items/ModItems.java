@@ -50,7 +50,6 @@ public final class ModItems {
     public static final ItemColored FABRIC = (ItemColored) new ItemColored(ModBlocks.FABRIC, true).setSubtypeNames(new String[]{"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"}).setRegistryName(ModBlocks.FABRIC.getRegistryName());
     public static final ItemColored ANCIENT_FABRIC = (ItemColored) new ItemColored(ModBlocks.ANCIENT_FABRIC, true).setSubtypeNames(new String[]{"white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink", "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black"}).setRegistryName(ModBlocks.ANCIENT_FABRIC.getRegistryName());
     public static final ItemBlock UNRAVELLED_FABRIC = (ItemBlock) new ItemBlock(ModBlocks.UNRAVELLED_FABRIC).setRegistryName(ModBlocks.UNRAVELLED_FABRIC.getRegistryName());
-    public static final ItemBlock ETERNAL_FABRIC = (ItemBlock) new ItemBlock(ModBlocks.ETERNAL_FABRIC).setRegistryName(ModBlocks.ETERNAL_FABRIC.getRegistryName());
     public static final ItemDimensionalTrapdoorWood WOOD_DIMENSIONAL_TRAPDOOR = new ItemDimensionalTrapdoorWood();
     public static final ItemBlock MARKING_PLATE = (ItemBlock) new ItemBlock(ModBlocks.MARKING_PLATE).setRegistryName(ModBlocks.MARKING_PLATE.getRegistryName());
 
@@ -82,7 +81,6 @@ public final class ModItems {
                 FABRIC,
                 ANCIENT_FABRIC,
                 UNRAVELLED_FABRIC,
-                ETERNAL_FABRIC,
                 WOOD_DIMENSIONAL_TRAPDOOR,
                 CREEPY_RECORD,
                 MARKING_PLATE);

@@ -8,18 +8,20 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.BlockFluidClassic;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.fluids.ModFluids;
 import org.dimdev.dimdoors.shared.items.ModCreativeTabs;
 import org.dimdev.dimdoors.shared.rifts.targets.EscapeTarget;
 
-public class BlockFabricEternal extends BlockEmptyDrops { // TODO: make this a glowing red liquid
+public class BlockFabricEternal extends BlockFluidClassic { // TODO: make this a glowing red liquid
 
     public static final Material ETERNAL_FABRIC = new Material(MapColor.PINK);
     public static final String ID = "eternal_fabric";
     public static EscapeTarget exitLimbo = new EscapeTarget(true);
 
     public BlockFabricEternal() {
-        super(ETERNAL_FABRIC);
+        super(ModFluids.ETERNAL_FABRIC, ETERNAL_FABRIC);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         setTranslationKey(ID);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
