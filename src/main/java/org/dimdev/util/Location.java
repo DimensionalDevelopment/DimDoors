@@ -49,6 +49,10 @@ public class Location implements AutoSerializable {
         return world.getBlockEntity(pos);
     }
 
+    public BlockPos getBlockPos() {
+        return pos;
+    }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Location &&

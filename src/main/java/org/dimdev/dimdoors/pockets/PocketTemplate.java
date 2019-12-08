@@ -4,12 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.CoordinateArgument;
 import net.minecraft.tileentity.TileEntityChest;
@@ -22,6 +26,9 @@ import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.loottables.ModLootTables;
 import org.dimdev.util.Location;
 import org.dimdev.util.math.MathUtil;
 import org.dimdev.util.schem.Schematic;
@@ -51,8 +58,8 @@ public class PocketTemplate {
     @Getter private final String author;
     @Getter @Setter private Schematic schematic;
     @Setter private byte[] schematicBytecode;
-    @Getter private final int size; // number of chunks (16 blocks) on each side - 1
-    @Getter private final int baseWeight;
+    @Getter private int size; // number of chunks (16 blocks) on each side - 1
+    @Getter private int baseWeight;
     @Getter private static boolean isReplacingPlaceholders = false;
 
     public float getWeight(int depth) {
@@ -69,50 +76,46 @@ public class PocketTemplate {
         isReplacingPlaceholders = true;
         List<CompoundTag> tileEntities = new ArrayList<>();
         for (CompoundTag tileEntityNBT : schematic.tileEntities) {
-            if (tileEntityNBT.hasKey("placeholder")) {
+            if (tileEntityNBT.contains("placeholder")) {
                 int x = tileEntityNBT.getInt("x");
                 int y = tileEntityNBT.getInt("y");
                 int z = tileEntityNBT.getInt("z");
 
                 BlockState state = schematic.palette.get(schematic.blockData[x][y][z]);
 
-                CompoundTag newNBT;
+                CompoundTag newNBT = new CompoundTag();
+                EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate();
                 switch (tileEntityNBT.getString("placeholder")) {
                     case "deeper_depth_door":
-                        EntranceRiftBlockEntity rift = (EntranceRiftBlockEntity) state.getBlock().createTileEntity(null, state);
                         rift.setPos(new BlockPos(x, y, z));
                         rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
                         rift.setDestination(DefaultDungeonDestinations.deeperDungeonDestination);
-                        newNBT = rift.serializeNBT();
+                        newNBT = rift.toTag(newNBT);
                         break;
                     case "less_deep_depth_door":
-                        /*TileEntityEntranceRift*/ rift = (EntranceRiftBlockEntity) state.getBlock().createTileEntity(null, state);
                         rift.setPos(new BlockPos(x, y, z));
                         rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
                         rift.setDestination(DefaultDungeonDestinations.shallowerDungeonDestination);
-                        newNBT = rift.serializeNBT();
+                        newNBT = rift.toTag(newNBT);
                         break;
                     case "overworld_door":
-                        /*TileEntityEntranceRift*/ rift = (EntranceRiftBlockEntity) state.getBlock().createTileEntity(null, state);
                         rift.setPos(new BlockPos(x, y, z));
                         rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
                         rift.setDestination(DefaultDungeonDestinations.overworldDestination);
                         rift.setLeaveRiftOnBreak(true);
-                        newNBT = rift.serializeNBT();
+                        newNBT = rift.toTag(newNBT);
                         break;
                     case "entrance_door":
-                        /*TileEntityEntranceRift*/ rift = (EntranceRiftBlockEntity) state.getBlock().createTileEntity(null, state);
                         rift.setPos(new BlockPos(x, y, z));
                         rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
                         rift.setDestination(DefaultDungeonDestinations.twoWayPocketEntrance);
-                        newNBT = rift.serializeNBT();
+                        newNBT = rift.toTag(newNBT);
                         break;
                     case "gateway_portal":
-                        /*TileEntityEntranceRift*/ rift = (EntranceRiftBlockEntity) state.getBlock().createTileEntity(null, state);
                         rift.setPos(new BlockPos(x, y, z));
                         rift.setProperties(DefaultDungeonDestinations.overworldLinkProperties);
                         rift.setDestination(DefaultDungeonDestinations.gatewayDestination);
-                        newNBT = rift.serializeNBT();
+                        newNBT = rift.toTag(newNBT);
                         break;
                     default:
                         throw new RuntimeException("Unknown tile entity placeholder: " + tileEntityNBT.getString("placeholder"));
@@ -136,14 +139,12 @@ public class PocketTemplate {
                 float pitch = entitiesNBT.getFloat("pitch");
 
                 CompoundTag newNBT;
-                switch (entitiesNBT.getString("placeholder")) {
-                    case "monolith":
-                        MonolithEntity monolith = new MonolithEntity(null);
-                        monolith.setLocationAndAngles(x, y, z, yaw, pitch);
-                        newNBT = monolith.serializeNBT();
-                        break;
-                    default:
-                        throw new RuntimeException("Unknown entity placeholder: " + entitiesNBT.getString("placeholder"));
+                if ("monolith".equals(entitiesNBT.getString("placeholder"))) {
+                    MonolithEntity monolith = ModEntityTypes.MONOLITH.create(null);
+                    monolith.setPositionAndAngles(x, y, z, yaw, pitch);
+                    newNBT = monolith.serializeNBT();
+                } else {
+                    throw new RuntimeException("Unknown entity placeholder: " + entitiesNBT.getString("placeholder"));
                 }
                 // TODO: allow overriding some placeholder properties by copying other properties (not placeholder and x/y/z) to the new nbt
                 entities.add(newNBT);
@@ -209,16 +210,16 @@ public class PocketTemplate {
                         LootTable table;
                         if (tile instanceof ChestBlockEntity) {
                             LOGGER.debug("Now populating chest.");
-                            table = world.getLootTableManager().getLootTableFromLocation(new Identifier("dimdoors:dungeon_chest"));
+                            table = world.getServer().getLootManager().getSupplier(new Identifier("dimdoors:dungeon_chest"));
                         } else { //(tile instanceof TileEntityDispenser)
                             LOGGER.debug("Now populating dispenser.");
-                            table = world.getLootTableManager().getLootTableFromLocation(new Identifier("dimdoors:dispenser_projectiles"));
+                            table = world.getServer().getLootManager().getSupplier(new Identifier("dimdoors:dispenser_projectiles"));
                         }
-                        LootContext ctx = new LootContext.Builder(world).build();
-                        table.fillInventory(inventory, world.rand, ctx);
-                        LOGGER.debug("Inventory should be populated now. Chest is: " + (inventory.isEmpty() ? "emtpy." : "filled."));
-                        if (inventory.isEmpty()) {
-                            LOGGER.error(", however Inventory is: emtpy!");
+                        LootContext ctx = new LootContext.Builder().setRandom(world.random).build(LootContextTypes.CHEST);
+                        table.supplyInventory(inventory, ctx);
+                        LOGGER.debug("Inventory should be populated now. Chest is: " + (inventory.isInvEmpty() ? "empty." : "filled."));
+                        if (inventory.isInvEmpty()) {
+                            LOGGER.error(", however Inventory is: empty!");
                         }
                     }
                 }

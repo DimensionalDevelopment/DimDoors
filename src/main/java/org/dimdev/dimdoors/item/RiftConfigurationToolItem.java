@@ -1,64 +1,68 @@
 package org.dimdev.dimdoors.item;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.metadata.ModMetadataV0;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.EggItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.HitResult;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.client.TileEntityFloatingRiftRenderer;
-import org.dimdev.dimdoors.tileentities.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
 
+import javax.annotation.Nullable;
 import java.util.List;
+
+import static net.fabricmc.api.EnvType.CLIENT;
 
 public class RiftConfigurationToolItem extends Item {
 
     public static final String ID = "rift_configuration_tool";
 
     RiftConfigurationToolItem() {
-        setMaxStackSize(1);
-        setMaxDamage(16);
-        setCreativeTab(ModItemGroups.DIMENSIONAL_DOORS);
-        setTranslationKey(ID);
-        setRegistryName(new Identifier("dimdoors", ID));
+        super(new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1).maxDamage(16));
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack stack = player.getStackInHand(hand);
         HitResult hit = player.rayTrace(RayTraceHelper.REACH_DISTANCE, 0, false);
 
         if (world.isClient) {
             if (!RayTraceHelper.hitsRift(hit, world)) {
-                player.sendStatusMessage(new TextComponentTranslation("tools.rift_miss"), true);
-                TileEntityFloatingRiftRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
+                player.addChatMessage(new TranslatableText("tools.rift_miss"), true);
+                DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
             }
-            return new ActionResult<>(ActionResult.FAIL, stack);
+            return new TypedActionResult<>(ActionResult.FAIL, stack);
         }
 
         if (RayTraceHelper.hitsRift(hit, world)) {
-            RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(hit.getBlockPos());
+            RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
 
             System.out.println(rift);
 
             //TODO: implement this tool's functionality
-            return new ActionResult<>(ActionResult.SUCCESS, stack);
+            return new TypedActionResult<>(ActionResult.SUCCESS, stack);
         }
-        return new ActionResult<>(ActionResult.FAIL, stack);
+        return new TypedActionResult<>(ActionResult.FAIL, stack);
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        if (I18n.hasKey(getRegistryName() + ".info")) {
-            tooltip.add(I18n.format(getRegistryName() + ".info"));
+    @Environment(CLIENT)
+    public void appendTooltip(ItemStack itemStack, @Nullable World world, List<Text> list, TooltipContext tooltipContext) {
+        if (I18n.hasTranslation(this.getTranslationKey() + ".info")) {
+            list.add(new TranslatableText(this.getTranslationKey() + ".info"));
         }
     }
 }

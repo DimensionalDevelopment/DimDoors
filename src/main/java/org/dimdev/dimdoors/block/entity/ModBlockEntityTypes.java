@@ -10,13 +10,13 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import java.util.function.Supplier;
 
 public class ModBlockEntityTypes {
-    public static final BlockEntityType<RiftBlockEntity> DETACHED_RIFT = register(
+    public static final BlockEntityType<DetachedRiftBlockEntity> DETACHED_RIFT = register(
             "dimdoors:detached_rift",
             DetachedRiftBlockEntity::new,
             new Block[]{ModBlocks.DETACHED_RIFT}
     );
 
-    public static final BlockEntityType<RiftBlockEntity> ENTRANCE_RIFT = register(
+    public static final BlockEntityType<EntranceRiftBlockEntity> ENTRANCE_RIFT = register(
             "dimdoors:entrance_rift",
             EntranceRiftBlockEntity::new,
             new Block[]{ModBlocks.WOOD_DIMENSIONAL_DOOR, ModBlocks.IRON_DIMENSIONAL_DOOR, ModBlocks.GOLD_DIMENSIONAL_DOOR, ModBlocks.QUARTZ_DIMENSIONAL_DOOR}

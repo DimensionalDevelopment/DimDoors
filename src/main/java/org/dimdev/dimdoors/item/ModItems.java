@@ -133,14 +133,14 @@ public final class ModItems {
 
     // Dimensional doors
 
-    public static final Item WORLD_THREAD = new Item(new Item.Settings());
-    public static final Item STABLE_FABRIC = new Item(new Item.Settings());
+    public static final Item WORLD_THREAD = new Item(new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS));
+    public static final Item STABLE_FABRIC = new Item(new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS));
     public static final Item RIFT_CONFIGURATION_TOOL = new RiftConfigurationToolItem();
-    public static final Item RIFT_BLADE = new RiftBladeItem(new Item.Settings().maxDamage(100));
-    public static final Item RIFT_REMOVER = new RiftRemoverItem(new Item.Settings().maxDamage(100));
-    public static final Item RIFT_SIGNATURE = new RiftSignatureItem(new Item.Settings().maxDamage(1));
-    public static final Item STABILIZED_RIFT_SIGNATURE = new StabilizedRiftSignatureItem(new Item.Settings().maxDamage(20));
-    public static final Item RIFT_STABILIZER = new RiftStabilizerItem(new Item.Settings().maxDamage(6));
+    public static final Item RIFT_BLADE = new RiftBladeItem(new Item.Settings().maxDamage(100).group(ModItemGroups.DIMENSIONAL_DOORS));
+    public static final Item RIFT_REMOVER = new RiftRemoverItem(new Item.Settings().maxCount(1).maxDamage(100).group(ModItemGroups.DIMENSIONAL_DOORS));
+    public static final Item RIFT_SIGNATURE = new RiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(1).group(ModItemGroups.DIMENSIONAL_DOORS));
+    public static final Item STABILIZED_RIFT_SIGNATURE = new StabilizedRiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(20).group(ModItemGroups.DIMENSIONAL_DOORS));
+    public static final Item RIFT_STABILIZER = new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(ModItemGroups.DIMENSIONAL_DOORS));
     public static final Item WOVEN_WORLD_THREAD_HELMET = new WorldThreadArmorItem("world_thread_helmet", 1, EquipmentSlot.HEAD);
     public static final Item WOVEN_WORLD_THREAD_CHESTPLATE = new WorldThreadArmorItem("world_thread_chestplate", 1, EquipmentSlot.CHEST);
     public static final Item WOVEN_WORLD_THREAD_LEGGINGS = new WorldThreadArmorItem("world_thread_leggings", 2, EquipmentSlot.LEGS);
