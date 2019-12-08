@@ -2,34 +2,28 @@ package org.dimdev.pocketlib;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.PersistentState;
+import net.minecraft.world.World;
 import net.minecraft.world.storage.MapStorage;
-import net.minecraft.world.storage.WorldSavedData;
-import org.dimdev.annotatednbt.NBTSerializable;
+import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
-import org.dimdev.ddutils.WorldUtils;
-import org.dimdev.ddutils.nbt.INBTStorable;
-import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.util.WorldUtils;
 
 import java.util.UUID;
 
-@NBTSerializable public class PrivatePocketData extends WorldSavedData {
+public class PrivatePocketData extends PersistentState {
+    protected static class PocketInfo {
+        @Saved public final World world;
+        @Saved public final int id;
 
-    @AllArgsConstructor @NoArgsConstructor @EqualsAndHashCode @ToString
-    @NBTSerializable protected static class PocketInfo implements INBTStorable {
-        @Saved protected int dim;
-        @Saved protected int id;
-
-        @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
-        @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
+        public PocketInfo(World world, int id) {
+            this.world = world;
+            this.id = id;
+        }
     }
 
-    private static final String DATA_NAME = DimDoors.MODID + "_private_pockets";
+    private static final String DATA_NAME = "dimdoors_private_pockets";
     @Saved protected BiMap<String, PocketInfo> privatePocketMap = HashBiMap.create(); // Player UUID -> Pocket Info TODO: fix AnnotatedNBT and use UUID rather than String
 
     public PrivatePocketData(String name) {
@@ -52,21 +46,29 @@ import java.util.UUID;
         return instance;
     }
 
-    @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
-    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
+    @Override
+    public void fromTag(CompoundTag nbt) {
+        AnnotatedNbt.save(this, nbt);
+    }
+
+    @Override
+    public CompoundTag toTag(CompoundTag nbt) {
+        AnnotatedNbt.load(this, nbt);
+        return nbt;
+    }
 
     public Pocket getPrivatePocket(UUID playerUUID) {
         PocketInfo pocket = privatePocketMap.get(playerUUID.toString());
         if (pocket == null) return null;
-        return PocketRegistry.instance(pocket.dim).getPocket(pocket.id);
+        return PocketRegistry.instance(pocket.world).getPocket(pocket.id);
     }
 
     public void setPrivatePocketID(UUID playerUUID, Pocket pocket) {
-        privatePocketMap.put(playerUUID.toString(), new PocketInfo(pocket.getDim(), pocket.getId()));
+        privatePocketMap.put(playerUUID.toString(), new PocketInfo(pocket.world, pocket.id));
         markDirty();
     }
 
     public UUID getPrivatePocketOwner(Pocket pocket) {
-        return UUID.fromString(privatePocketMap.inverse().get(new PocketInfo(pocket.getDim(), pocket.getId())));
+        return UUID.fromString(privatePocketMap.inverse().get(new PocketInfo(pocket.world, pocket.id)));
     }
 }

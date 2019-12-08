@@ -1,18 +1,16 @@
 package org.dimdev.dimdoors.client;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import org.dimdev.ddutils.lsystem.LSystem;
-import org.dimdev.dimdoors.shared.ModConfig;
-import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.render.VertexConsumer;
+import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.util.lsystem.LSystem;
 
 import java.awt.*;
 
 import static org.lwjgl.opengl.GL11.*;
 
 public final class RiftCrackRenderer {
-
-    public static void drawCrack(float riftRotation, LSystem.PolygonInfo poly, double size, double xWorld, double yWorld, double zWorld) {
+    public static void drawCrack(VertexConsumer vc, float riftRotation, LSystem.PolygonInfo poly, double size, long riftRandom) {
         // Calculate the proper size for the rift render
         double scale = size / (poly.maxX - poly.minX);
 
@@ -25,10 +23,9 @@ public final class RiftCrackRenderer {
         float jitterSpeed = 0.014f; // Changes how quickly the rift jitters
 
         // Calculate jitter like for monoliths, depending x, y and z coordinates to avoid all rifts syncing
-        long riftRandom = (long) (0xF1234568L * (xWorld + yWorld * (2L << 21) + zWorld * (2L << 42)));
-        float time = (Minecraft.getSystemTime() + riftRandom) % 2000000;
+        float time = (System.currentTimeMillis() + riftRandom) % 2000000;
 
-        double jitterScale = ModConfig.graphics.riftJitter * size * size * size / 2000f;
+        double jitterScale = ModConfig.GRAPHICS.riftJitter * size * size * size / 2000f;
         // We use random constants here on purpose just to get different wave forms
         double xJitter = jitterScale * Math.sin(1.1f * time * size * jitterSpeed) * Math.sin(0.8f * time * jitterSpeed);
         double yJitter = jitterScale * Math.sin(1.2f * time * size * jitterSpeed) * Math.sin(0.9f * time * jitterSpeed);
@@ -45,11 +42,10 @@ public final class RiftCrackRenderer {
         }
 
         // Set color (nearly black, but inverts background)
-        GlStateManager.color(0.08f, 0.08f, 0.08f, .3F);
-        GlStateManager.blendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+        RenderSystem.color4f(0.08f, 0.08f, 0.08f, .3F);
+        RenderSystem.blendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
 
         // Draw the rift
-        GlStateManager.glBegin(GL11.GL_TRIANGLES);
         for (Point p : poly.points) {
             // Reduces most overlap between triangles inside the rift's center
             int flutterIndex = Math.abs((p.x + p.y) * (p.x + p.y + 1) / 2 + p.y);
@@ -64,9 +60,7 @@ public final class RiftCrackRenderer {
             y *= scale;
             z *= scale;
 
-            // Draw the vertex
-            GL11.glVertex3d(xWorld + x + xJitter, yWorld + y + yJitter, zWorld + z + zJitter);
+            vc.vertex(x + xJitter, y + yJitter, z + zJitter);
         }
-        GlStateManager.glEnd();
     }
 }

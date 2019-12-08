@@ -1,118 +1,47 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
-        maven { url = "http://repo.spongepowered.org/maven" }
+        maven { url = 'https://maven.fabricmc.net/' }
     }
+
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.fabricmc:fabric-loom:0.2.6-SNAPSHOT'
     }
 }
 
-plugins {
-    id 'io.franzbecker.gradle-lombok' version '1.11'
-    id 'java'
-}
+apply plugin: "java"
+apply plugin: "fabric-loom"
 
-apply plugin: 'java'
-apply plugin: 'net.minecraftforge.gradle.forge'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
-    maven { url = "https://jitpack.io" }
-    maven { url = 'http://oss.sonatype.org/content/repositories/public/' }
-}
-
-configurations {
-    embed
-    implementation.extendsFrom(embed)
+    maven { url = 'https://maven.fabricmc.net/' }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    embed 'com.flowpowered:flow-math:1.0.3'
-    embed 'org.jgrapht:jgrapht-core:1.1.0'
-    embed 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
-    compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
-    compileOnly 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0.819.0-SNAPSHOT'
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_version}"
+    modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+    modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modCompile 'com.flowpowered:flow-math:1.0.3'
+    modCompile 'org.jgrapht:jgrapht-core:1.1.0'
+    modCompile 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
+    modCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
 }
 
-// Minecraft, MCP, Forge, and Java versions
-sourceCompatibility = targetCompatibility = "1.8"
-ext.mcversion = "1.12.2"
-ext.forgeversion = "14.23.4.2707"
-String mcpversion = "stable_39"
+version "4.0"
+archivesBaseName = "dimensional-doors"
 
-// Mod version
-version = "3.0.9"
-boolean isBeta = false
-group = "org.dimdev.dimdoors"
-archivesBaseName = "DimensionalDoors"
-
-// Build number
-String fullVersion = ext.mcversion + "-" + version
-if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
-    fullVersion += "+${System.getenv("TRAVIS_BUILD_NUMBER")}"
-} else {
-    fullVersion += "+UNOFFICIAL"
-}
-if (isBeta) {
-    fullVersion += "-b"
-}
-String jarVersion = fullVersion.replace("+", "-") // Github/Travis doesn't seem to support + in filenames
-
-// Configuration
-minecraft {
-    version = "$mcversion-$forgeversion"
-    runDir = "run"
-    mappings = mcpversion
-    replace '${version}', fullVersion
-    makeObfSourceJar = false
-    ext.args = [
-            "-Dfml.noGrab=false"
-    ]
-}
-
-// Tasks
-compileJava {
-    //options.compilerArgs += "-proc:only" // To debug AnnotatedNBT code generation
-}
-
-jar {
-    archiveName = archivesBaseName + "-" + jarVersion + ".jar"
-    from(configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }) {
-        exclude "LICENSE.txt", "META-INF/MANIFSET.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
+processResources {
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
     }
-}
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    archiveName = archivesBaseName + "-" + jarVersion + "-sources.jar"
-    classifier = 'sources'
-    from sourceSets.main.allSource
+    inputs.property "version", project.version
 }
 
 artifacts {
-    archives sourcesJar
-}
-
-processResources {
-    // This will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // Replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version': project.version, 'mcversion': project.minecraft.version
-    }
-
-    // Copy everything else except mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
-
-task generatePocketSchematics(dependsOn: jar, type: JavaExec, group: "dimdoors") {
-    classpath = files('build/libs/' + jar.archiveName)
-    classpath += sourceSets.main.runtimeClasspath
-    main = "org.dimdev.dimdoors.shared.tools.SchematicGenerator"
-    args = ["src/main/resources/assets/dimdoors/pockets/schematic"]
+    archives jar
 }

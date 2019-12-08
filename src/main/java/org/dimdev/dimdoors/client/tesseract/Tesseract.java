@@ -1,12 +1,12 @@
 package org.dimdev.dimdoors.client.tesseract;
 
 import com.flowpowered.math.vector.Vector4f;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.dimdev.ddutils.RGBA;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.render.VertexConsumer;
 
 public class Tesseract {
-    private Plane[] planes;
+    private final Plane[] planes;
 
     public Tesseract() {
         planes = new Plane[24];
@@ -180,10 +180,10 @@ public class Tesseract {
         );
     }
 
-    @SideOnly(Side.CLIENT)
-    public void draw(RGBA color, double radian) {
+    @Environment(EnvType.CLIENT)
+    public void draw(VertexConsumer vc, float[] color, double radian) {
         for (Plane plane : planes) {
-            plane.draw(color, radian);
+            plane.draw(vc, color, radian);
         }
     }
 }

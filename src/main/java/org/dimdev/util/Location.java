@@ -1,0 +1,67 @@
+package org.dimdev.util;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import org.dimdev.annotatednbt.AutoSerializable;
+import org.dimdev.annotatednbt.Saved;
+
+import java.io.Serializable;
+
+public class Location implements AutoSerializable {
+    @Saved public final World world;
+    @Saved public final BlockPos pos;
+
+    public Location(World world, BlockPos pos) {
+        this.world = world;
+        this.pos = pos;
+    }
+
+    public Location(World world, int x, int y, int z) {
+        this(world, new BlockPos(x, y, z));
+    }
+
+    public int getX() {
+        return pos.getX();
+    }
+
+    public int getY() {
+        return pos.getY();
+    }
+
+    public int getZ() {
+        return pos.getZ();
+    }
+
+    public BlockState getBlockState() {
+        return world.getBlockState(pos);
+    }
+
+    public FluidState getFluidState() {
+        return world.getFluidState(pos);
+    }
+
+    public BlockEntity getBlockEntity() {
+        return world.getBlockEntity(pos);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Location &&
+               ((Location) obj).world.equals(world) &&
+               ((Location) obj).pos.equals(pos);
+    }
+
+    @Override
+    public int hashCode() {
+        return world.hashCode() * 31 + pos.hashCode();
+    }
+
+    public Identifier getWorldId() {
+        return DimensionType.getId(world.dimension.getType());
+    }
+}

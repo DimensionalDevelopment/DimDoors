@@ -1,30 +1,37 @@
 package org.dimdev.dimdoors.client;
 
-import net.minecraft.client.particle.ParticleSimpleAnimated;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.particle.AnimatedParticle;
+import net.minecraft.client.particle.SpriteProvider;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class RiftParticle extends ParticleSimpleAnimated {
+import java.util.Random;
 
-    public RiftParticle(World world, double x, double y, double z, double motionX, double motionY, double motionZ, float color, float scale, int averageAge, int ageSpread) {
-        super(world, x, y, z, 160, 8, 0);
-        this.motionX = motionX;
-        this.motionY = motionY;
-        this.motionZ = motionZ;
+public class RiftParticle extends AnimatedParticle {
+    public RiftParticle(World world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float color, float scale, int averageAge, int ageSpread) {
+        super(world, x, y, z, new SpriteProvider() { // TODO: 160, 8
+            @Override
+            public Sprite getSprite(int i, int j) {
+                return null;
+            }
 
-        particleScale *= scale;
-        particleMaxAge = averageAge - ageSpread / 2 + rand.nextInt(ageSpread);
+            @Override
+            public Sprite getSprite(Random random) {
+                return null;
+            }
+        }, 0);
+        this.velocityX = velocityX;
+        this.velocityY = velocityY;
+        this.velocityZ = velocityZ;
 
-        setRBGColorF(color, color, color);
+        scale *= scale;
+        maxAge = averageAge - ageSpread / 2 + random.nextInt(ageSpread);
+
+        setColor(color, color, color);
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, Entity entity, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        setAlphaF(1 - (float) particleAge / particleMaxAge);
-        super.renderParticle(buffer, entity, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
+    public void tick() {
+        setColorAlpha(1 - (float) age / maxAge);
     }
 }

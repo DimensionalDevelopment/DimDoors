@@ -1,33 +1,29 @@
 package org.dimdev.pocketlib;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.MapStorage;
 import org.dimdev.annotatednbt.Saved;
-import org.dimdev.annotatednbt.NBTSerializable;
-import org.dimdev.ddutils.math.GridUtils;
-import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.ddutils.WorldUtils;
+import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.util.math.GridUtil;
+import org.dimdev.annotatednbt.AnnotatedNbt;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.storage.MapStorage;
-import net.minecraft.world.storage.WorldSavedData;
-import org.dimdev.dimdoors.shared.ModConfig;
-
-@NBTSerializable public class PocketRegistry extends WorldSavedData {
+public class PocketRegistry extends PersistentState {
 
     private static final String DATA_NAME = "pocketlib_pockets";
 
-    @Saved @Getter /*package-private*/ int gridSize; // Determines how much pockets in their dimension are spaced
-    @Saved @Getter /*package-private*/ int privatePocketSize;
-    @Saved @Getter /*package-private*/ int publicPocketSize;
-    @Saved @Getter /*package-private*/ Map<Integer, Pocket> pockets;
-    @Saved @Getter /*package-private*/ int nextID;
+    @Saved /*package-private*/ int gridSize; // Determines how much pockets in their dimension are spaced
+    @Saved /*package-private*/ int privatePocketSize;
+    @Saved /*package-private*/ int publicPocketSize;
+    @Saved /*package-private*/ Map<Integer, Pocket> pockets;
+    @Saved /*package-private*/ int nextID;
 
-    @Getter private int dim;
+    private World world;
 
     public PocketRegistry() {
         super(DATA_NAME);
@@ -37,11 +33,20 @@ import org.dimdev.dimdoors.shared.ModConfig;
         super(s);
     }
 
-    public static PocketRegistry instance(int dim) {
-        World world = WorldUtils.getWorld(dim);
+    @Override
+    public void fromTag(CompoundTag tag) {
+        AnnotatedNbt.load(this, tag);
+    }
 
-        if (!(world.provider instanceof WorldProviderPocket)) {
-            throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions (asked for dim " + dim + ")!");
+    @Override
+    public CompoundTag toTag(CompoundTag tag) {
+        AnnotatedNbt.save(this, tag);
+        return tag;
+    }
+
+    public static PocketRegistry instance(World world) {
+        if (!(world.dimension instanceof PocketWorldDimension)) {
+            throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
         }
 
         MapStorage storage = world.getPerWorldStorage();
@@ -53,23 +58,20 @@ import org.dimdev.dimdoors.shared.ModConfig;
             storage.setData(DATA_NAME, instance);
         }
 
-        instance.dim = dim;
+        instance.world = world;
         for (Pocket pocket : instance.pockets.values()) {
-            pocket.dim = dim;
+            pocket.world = world;
         }
 
         return instance;
     }
 
     public void initNewRegistry() {
-        gridSize = ModConfig.pockets.pocketGridSize;
+        gridSize = ModConfig.POCKETS.pocketGridSize;
 
         nextID = 0;
         pockets = new HashMap<>();
     }
-
-    @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
-    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
 
     /**
      * Create a new blank pocket.
@@ -78,7 +80,7 @@ import org.dimdev.dimdoors.shared.ModConfig;
      */
     public Pocket newPocket() {
         Pocket pocket = null;
-        while(pocket == null) pocket = newPocket(nextID++);
+        while (pocket == null) pocket = newPocket(nextID++);
         return pocket;
     }
 
@@ -89,8 +91,8 @@ import org.dimdev.dimdoors.shared.ModConfig;
      */
     public Pocket newPocket(int id) {
         if (pockets.get(id) != null) return null;
-        GridUtils.GridPos pos = idToGridPos(id);
-        Pocket pocket = new Pocket(id, dim, pos.getX(), pos.getZ());
+        GridUtil.GridPos pos = idToGridPos(id);
+        Pocket pocket = new Pocket(id, world, pos.x, pos.z);
         pockets.put(id, pocket);
         if (id >= nextID) nextID = id + 1;
         markDirty();
@@ -111,12 +113,12 @@ import org.dimdev.dimdoors.shared.ModConfig;
         return pockets.get(id);
     }
 
-    public GridUtils.GridPos idToGridPos(int id) {
-        return GridUtils.numToPos(id);
+    public GridUtil.GridPos idToGridPos(int id) {
+        return GridUtil.numToPos(id);
     }
 
-    public int gridPosToID(GridUtils.GridPos pos) {
-        return GridUtils.posToNum(pos);
+    public int gridPosToID(GridUtil.GridPos pos) {
+        return GridUtil.posToNum(pos);
     }
 
     /**
@@ -127,8 +129,8 @@ import org.dimdev.dimdoors.shared.ModConfig;
      * @return The BlockPos of the pocket
      */
     public BlockPos idToPos(int id) {
-        GridUtils.GridPos pos = idToGridPos(id);
-        return new BlockPos(pos.getX() * gridSize * 16, 0, pos.getZ() * gridSize * 16);
+        GridUtil.GridPos pos = idToGridPos(id);
+        return new BlockPos(pos.x * gridSize * 16, 0, pos.z * gridSize * 16);
     }
 
     /**
@@ -138,7 +140,7 @@ import org.dimdev.dimdoors.shared.ModConfig;
      * @return The ID of the pocket, or -1 if there is no pocket at that location
      */
     public int posToID(BlockPos pos) {
-        return gridPosToID(new GridUtils.GridPos(pos.getX() / (gridSize * 16), pos.getZ() / (gridSize * 16)));
+        return gridPosToID(new GridUtil.GridPos(pos.getX() / (gridSize * 16), pos.getZ() / (gridSize * 16)));
     }
 
     public Pocket getPocketAt(BlockPos pos) { // TODO: use BlockPos
@@ -149,4 +151,14 @@ import org.dimdev.dimdoors.shared.ModConfig;
         Pocket pocket = getPocketAt(pos);
         return pocket != null && pocket.isInBounds(pos);
     }
+
+    public int getGridSize() {return gridSize;}
+
+    public int getPrivatePocketSize() {return privatePocketSize;}
+
+    public int getPublicPocketSize() {return publicPocketSize;}
+
+    public Map<Integer, Pocket> getPockets() {return pockets;}
+
+    public int getNextID() {return nextID;}
 }

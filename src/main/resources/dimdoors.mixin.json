@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "org.dimdev.dimdoors.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "ExampleMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

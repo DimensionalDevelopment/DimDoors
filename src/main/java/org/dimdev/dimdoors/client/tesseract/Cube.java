@@ -1,9 +1,7 @@
 package org.dimdev.dimdoors.client.tesseract;
 
 import com.flowpowered.math.vector.Vector4f;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.dimdev.ddutils.RGBA;
+import net.minecraft.client.render.VertexConsumer;
 
 public class Cube {
     Plane[] planes = new Plane[6];
@@ -17,10 +15,9 @@ public class Cube {
         planes[5] = new Plane(vec1, vec2, vec5, vec6);
     }
 
-    @SideOnly(Side.CLIENT)
-    public void draw(RGBA color, double radian) {
+    public void draw(VertexConsumer vc, float[] color, double radian) {
         for (Plane plane : planes) {
-            plane.draw(color, radian);
+            plane.draw(vc, color, radian);
         }
     }
 }

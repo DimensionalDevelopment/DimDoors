@@ -1,62 +1,70 @@
 package org.dimdev.pocketlib;
 
-import lombok.*;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.MaterialLiquid;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
-import org.dimdev.annotatednbt.NBTSerializable;
+import net.minecraft.world.dimension.DimensionType;
+import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
-import org.dimdev.ddutils.Location;
-import org.dimdev.ddutils.WorldUtils;
-import org.dimdev.ddutils.nbt.INBTStorable;
-import org.dimdev.ddutils.nbt.NBTUtils;
-import org.dimdev.dimdoors.shared.ModConfig;
-import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
+import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.world.limbo.LimboDimension;
+import org.dimdev.util.Location;
 
-/*@Value*/ @ToString @AllArgsConstructor @NoArgsConstructor @Builder(toBuilder = true)
-@NBTSerializable public class VirtualLocation implements INBTStorable {
-    @Saved @Getter protected int dim;
-    @Saved @Getter protected int x;
-    @Saved @Getter protected int z;
-    @Saved @Getter protected int depth; // TODO: convert to doubles
+public class VirtualLocation {
+    @Saved public final World world;
+    @Saved public final int x;
+    @Saved public final int z;
+    @Saved public final int depth;
 
-    @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }
+    public VirtualLocation(World world, int x, int z, int depth) {
+        this.world = world;
+        this.x = x;
+        this.z = z;
+        this.depth = depth;
+    }
 
-    @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
+    public void fromTag(CompoundTag nbt) {
+        AnnotatedNbt.load(this, nbt);
+    }
+
+    public CompoundTag toTag(CompoundTag nbt) {
+        AnnotatedNbt.save(this, nbt);
+        return nbt;
+    }
 
     public static VirtualLocation fromLocation(Location location) {
         VirtualLocation virtualLocation = null;
-        if (location.getWorld().provider instanceof WorldProviderPocket) {
-            Pocket pocket = PocketRegistry.instance(location.getDim()).getPocketAt(location.getPos());
+
+        if (location.world.dimension instanceof PocketWorldDimension) {
+            Pocket pocket = PocketRegistry.instance(location.world).getPocketAt(location.pos);
             if (pocket != null) {
-                virtualLocation = pocket.getVirtualLocation(); // TODO: pockets-relative coordinates
+                virtualLocation = pocket.virtualLocation; // TODO: pockets-relative coordinates
             } else {
                 virtualLocation = null; // TODO: door was placed in a pockets dim but outside of a pockets...
             }
-        } else if (location.getWorld().provider instanceof WorldProviderLimbo) { // TODO: convert to interface on worldprovider
-            virtualLocation = new VirtualLocation(location.getDim(), location.getX(), location.getZ(), ModConfig.dungeons.maxDungeonDepth);
+        } else if (location.world.dimension instanceof LimboDimension) { // TODO: convert to interface on worldprovider
+            virtualLocation = new VirtualLocation(location.world, location.getX(), location.getZ(), ModConfig.DUNGEONS.maxDungeonDepth);
         } // TODO: nether coordinate transform
+
         if (virtualLocation == null) {
-            virtualLocation = new VirtualLocation(0, location.getX(), location.getZ(), 5); // TODO
+            return new VirtualLocation(location.world.getServer().getWorld(DimensionType.OVERWORLD), location.getX(), location.getZ(), 5);
         }
+
         return virtualLocation;
     }
 
-    public Location projectToWorld(boolean limboConsideredWorld) {
-        World world = WorldUtils.getWorld(dim);
-        if (!limboConsideredWorld && world.provider instanceof WorldProviderLimbo) {
-            world = WorldUtils.getWorld(0);
+    public Location projectToWorld(boolean acceptLimbo) {
+        World world = this.world;
+
+        if (!acceptLimbo && world.dimension instanceof LimboDimension) {
+            world = world.getServer().getWorld(DimensionType.OVERWORLD);
         }
-        float spread = ModConfig.general.depthSpreadFactor * depth; // TODO: gaussian spread, handle air-filled/pocket world
+
+        float spread = ModConfig.GENERAL.depthSpreadFactor * depth;
         int newX = (int) (x + spread * 2 * (Math.random() - 0.5));
         int newZ = (int) (z + spread * 2 * (Math.random() - 0.5));
-        BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(newX, 0, newZ)); // Does not actually detect liquid blocks and returns the position above the surface
-        do {
-            pos = pos.up();
-        } while (world.getBlockState(pos).getMaterial() instanceof MaterialLiquid);
-        
+        BlockPos pos = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, new BlockPos(newX, 0, newZ));
         return new Location(world, pos);
     }
 }

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "dimdoors",
+  "version": "${version}",
+  "name": "DimensionalDoors",
+  "description": "Bend and twist reality, creating rifts, pocket dimensions, and much more",
+  "authors": [
+    "StevenRS11",
+    "SenseiKiwi",
+    "Zixiken",
+    "Waterpicker",
+    "Robijnvogel",
+    "ZombieHDGaming",
+    "Runemoro"
+  ],
+  "contact": {
+    "homepage": "https://dimdoors.org/",
+    "sources": "https://github.com/DimensionalDevelopment/DimDoors"
+  },
+  "license": "MIT",
+  "icon": "assets/dimdoors/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "org.dimdev.dimdoors.DimDoors"
+    ]
+  },
+  "mixins": [
+    "dimdoors.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  }
+}
