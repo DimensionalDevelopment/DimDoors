@@ -19,7 +19,7 @@ public class FabricBlock extends Block {
     }
 
     @Override
-    @SuppressWarnings("deprecated")
+    @SuppressWarnings({"deprecation"})
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         ItemStack heldStack = hand == Hand.MAIN_HAND ? player.getMainHandStack() : player.getOffHandStack();
         Block heldBlock = Block.getBlockFromItem(heldStack.getItem());

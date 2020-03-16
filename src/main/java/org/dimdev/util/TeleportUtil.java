@@ -2,7 +2,6 @@ package org.dimdev.util;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldView;
 
@@ -25,11 +24,9 @@ public final class TeleportUtil {
 
     public static void teleport(Entity entity, WorldView world, double x, double y, double z, float yaw, float pitch) {
         FabricDimensions.teleport(entity, world.getDimension().getType());
-        entity.setPositionAndAngles(x, y, z, yaw, pitch);
+        entity.setPos(x, y, z);
+        entity.yaw = yaw;
+        entity.pitch = pitch;
         entity.setOnFireFor(0); // Workaround for https://bugs.mojang.com/browse/MC-100097
-    }
-
-    public static void teleport(PlayerEntity player, BlockPos pos) {
-
     }
 }

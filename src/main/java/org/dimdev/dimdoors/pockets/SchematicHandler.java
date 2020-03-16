@@ -204,7 +204,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             String name = pocket.has("name") ? pocket.get("name").getAsString() : null;
             String author = pocket.has("author") ? pocket.get("author").getAsString() : null;
             int baseWeight = pocket.has("baseWeight") ? pocket.get("baseWeight").getAsInt() : 100;
-            pocketTemplates.add(new PocketTemplate(group, id, type, name, author, size, baseWeight));
+            pocketTemplates.add(new PocketTemplate(group, id, type, name, author, null, null, size, baseWeight));
         }
 
         return pocketTemplates.stream().sorted(Comparator.comparing(PocketTemplate::getId)).collect(Collectors.toList());

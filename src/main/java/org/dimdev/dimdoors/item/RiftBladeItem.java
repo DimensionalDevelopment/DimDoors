@@ -4,6 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolMaterials;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -47,7 +48,7 @@ public class RiftBladeItem extends SwordItem {
             if (RayTraceHelper.hitsLivingEntity(hit) || RayTraceHelper.hitsRift(hit, world)) {
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {
-                player.addChatMessage(new TranslatableText(getTranslationKey() + ".rift_miss"), true);
+                player.sendMessage(new TranslatableText(getTranslationKey() + ".rift_miss"));
                 DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
                 return new TypedActionResult<>(ActionResult.FAIL, stack);
             }
@@ -59,14 +60,14 @@ public class RiftBladeItem extends SwordItem {
             double offsetDistance = Math.random() * damageMultiplier * 7 + 2; //TODO: make these offset distances configurable
             double offsetRotationYaw = (Math.random() - 0.5) * damageMultiplier * 360;            
             
-            Vec3d playerVec = player.getPosVector();
+            Vec3d playerVec = player.getPos();
             Vec3d entityVec = hit.getPos();
             Vec3d offsetDirection = playerVec.subtract(entityVec).normalize();
             offsetDirection = offsetDirection.rotateY((float) (offsetRotationYaw * Math.PI) / 180);
 
             BlockPos tpPos = new BlockPos(entityVec.add(offsetDirection.multiply(offsetDistance)));
             while (world.getBlockState(tpPos).getMaterial().blocksMovement()) tpPos = tpPos.up(); // TODO: move to ddutils
-            TeleportUtil.teleport(player, new Location(world, tpPos), (player.yaw - (float) offsetRotationYaw) % 360, player.pitch);
+            TeleportUtil.teleport(player, new Location((ServerWorld) world, tpPos), (player.yaw - (float) offsetRotationYaw) % 360, player.pitch);
             
             stack.damage(1, player, a -> {});
             return new TypedActionResult<>(ActionResult.SUCCESS, stack);

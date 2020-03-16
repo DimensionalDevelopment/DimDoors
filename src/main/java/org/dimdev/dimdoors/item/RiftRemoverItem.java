@@ -10,7 +10,6 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -20,7 +19,6 @@ import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class RiftRemoverItem extends Item {
@@ -31,8 +29,8 @@ public class RiftRemoverItem extends Item {
     }
 
     @Override
-    public void appendTooltip(ItemStack itemStack, @Nullable World world, List<Text> list, TooltipContext tooltipContext) {
-        if(I18n.hasTranslation(getTranslationKey() + ".info")) {
+    public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
+        if (I18n.hasTranslation(getTranslationKey() + ".info")) {
             list.add(new TranslatableText(getTranslationKey() + ".info"));
         }
     }
@@ -45,7 +43,7 @@ public class RiftRemoverItem extends Item {
 
         if (world.isClient) {
             if (!RayTraceHelper.hitsDetachedRift(hit, world)) {
-                player.addChatMessage(new TranslatableText("tools.rift_miss"), true);
+                player.sendMessage(new TranslatableText("tools.rift_miss"));
                 DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
             }
             return new TypedActionResult<>(ActionResult.FAIL, stack);
@@ -55,12 +53,12 @@ public class RiftRemoverItem extends Item {
             DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
             if (!rift.closing) {
                 rift.setClosing(true);
-                world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
+                world.playSound(null, player.getSenseCenterPos(), ModSoundEvents.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
                 stack.damage(10, player, a -> {});
-                player.addChatMessage(new TranslatableText(getTranslationKey() + ".closing"), true);
+                player.sendMessage(new TranslatableText(getTranslationKey() + ".closing"));
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {
-                player.addChatMessage(new TranslatableText(getTranslationKey() + ".already_closing"), true);
+                player.sendMessage(new TranslatableText(getTranslationKey() + ".already_closing"));
             }
         }
         return new TypedActionResult<>(ActionResult.FAIL, stack);

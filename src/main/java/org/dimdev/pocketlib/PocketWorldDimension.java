@@ -1,61 +1,11 @@
 package org.dimdev.pocketlib;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.init.Biomes;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.biome.BiomeProviderSingle;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
-import net.minecraft.world.gen.IChunkGenerator;
-import org.dimdev.dimdoors.DimDoors;
-import org.dimdev.util.render.CloudRenderBlank;
-
-import javax.annotation.Nullable;
+import net.minecraft.world.dimension.DimensionType;
 
 public abstract class PocketWorldDimension extends Dimension {
-
-    @Override
-    public void init() {
-        hasSkyLight = true;
-        generateLightBrightnessTable();
-        DimDoors.proxy.setCloudRenderer(this, new CloudRenderBlank());
-        biomeProvider = new BiomeProviderSingle(Biomes.PLAINS);
-    }
-
-    @Override
-    public IChunkGenerator createChunkGenerator() {
-        return new BlankChunkGenerator(world, world.getSeed());
-    }
-
-    @Override public float calculateCelestialAngle(long worldTime, float partialTicks) { return 0.0F; }
-
-    @Override public boolean canRespawnHere() { return false; }
-
-    @Override public boolean isSurfaceWorld() { return false; }
-
-    @Override public boolean canCoordinateBeSpawn(int x, int z) { return true; } // Spawn is set even if it canCoordinateBeSpawn is false after 1000 tries anyway
-
-    @Override public int getAverageGroundLevel() { return 0; } // Pocket worlds are mostly void-filled
-
-    @Override public boolean shouldMapSpin(String entity, double x, double z, double rotation) { return true; }
-
-    @Override @Nullable
-    @SideOnly(Side.CLIENT) public float[] calcSunriseSunsetColors(float celestialAngle, float partialTicks) { return null; }
-
-    @Override @SideOnly(Side.CLIENT) public boolean doesXZShowFog(int x, int z) {
-        return false; // TODO: set this to true outside of pockets
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public Vec3d getSkyColor(Entity cameraEntity, float partialTicks) {
-        return Vec3d.ZERO;
-    }
-
-    @Override @SideOnly(Side.CLIENT) public Vec3d getFogColor(float celestialAngle, float partialTicks) { return Vec3d.ZERO; }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public double getVoidFogYFactor() {
-        return 1;
+    public PocketWorldDimension(World world, DimensionType dimensionType, float f) {
+        super(world, dimensionType, f);
     }
 }

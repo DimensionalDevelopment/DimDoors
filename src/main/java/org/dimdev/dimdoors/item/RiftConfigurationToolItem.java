@@ -1,18 +1,15 @@
 package org.dimdev.dimdoors.item;
 
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.metadata.ModMetadataV0;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.EggItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -21,10 +18,9 @@ import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
-import static net.fabricmc.api.EnvType.CLIENT;
+import static net.fabricmc.api.EnvType.*;
 
 public class RiftConfigurationToolItem extends Item {
 
@@ -41,7 +37,7 @@ public class RiftConfigurationToolItem extends Item {
 
         if (world.isClient) {
             if (!RayTraceHelper.hitsRift(hit, world)) {
-                player.addChatMessage(new TranslatableText("tools.rift_miss"), true);
+                player.sendMessage(new TranslatableText("tools.rift_miss"));
                 DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
             }
             return new TypedActionResult<>(ActionResult.FAIL, stack);
@@ -60,7 +56,7 @@ public class RiftConfigurationToolItem extends Item {
 
     @Override
     @Environment(CLIENT)
-    public void appendTooltip(ItemStack itemStack, @Nullable World world, List<Text> list, TooltipContext tooltipContext) {
+    public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
         if (I18n.hasTranslation(this.getTranslationKey() + ".info")) {
             list.add(new TranslatableText(this.getTranslationKey() + ".info"));
         }

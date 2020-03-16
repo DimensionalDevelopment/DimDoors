@@ -5,10 +5,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ExplosiveProjectileEntity;
-import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.entity.projectile.LlamaSpitEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.entity.projectile.*;
 import net.minecraft.entity.thrown.ThrownEntity;
 import net.minecraft.server.world.ServerWorld;
 
@@ -17,10 +14,7 @@ public final class EntityUtils {
         Entity topmostEntity = null;
 
         // Thrower
-        if (entity instanceof ThrownEntity) topmostEntity = ((ThrownEntity) entity).getOwner();
-        if (entity instanceof ProjectileEntity) topmostEntity = ((ProjectileEntity) entity).getOwner();
-        if (entity instanceof ExplosiveProjectileEntity) topmostEntity = ((ExplosiveProjectileEntity) entity).owner;
-        if (entity instanceof LlamaSpitEntity) topmostEntity = ((LlamaSpitEntity) entity).owner;
+        if (entity instanceof Projectile) topmostEntity = ((Projectile) entity).getOwner();
         if (entity instanceof FishingBobberEntity) topmostEntity = ((FishingBobberEntity) entity).getOwner();
         if (entity instanceof ItemEntity) topmostEntity = ((ServerWorld) entity.getEntityWorld()).getEntity(((ItemEntity) entity).getThrower());
 

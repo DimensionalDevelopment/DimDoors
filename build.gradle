@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'net.fabricmc:fabric-loom:0.2.6-SNAPSHOT'
+        classpath 'net.fabricmc:fabric-loom:0.2.7-SNAPSHOT'
     }
 }
 
@@ -28,7 +28,6 @@ dependencies {
     modCompile 'com.flowpowered:flow-math:1.0.3'
     modCompile 'org.jgrapht:jgrapht-core:1.1.0'
     modCompile 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
-    modCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
 }
 
 version "4.0"

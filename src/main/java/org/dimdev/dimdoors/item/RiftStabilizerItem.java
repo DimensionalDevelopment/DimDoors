@@ -20,7 +20,7 @@ import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
-import javax.annotation.Nullable;
+
 import java.util.List;
 
 public class RiftStabilizerItem extends Item {
@@ -40,7 +40,7 @@ public class RiftStabilizerItem extends Item {
                 // TODO: not necessarily success, fix this and all other similar cases to make arm swing correct
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {
-                player.addChatMessage(new TranslatableText("tools.rift_miss"), true);
+                player.sendMessage(new TranslatableText("tools.rift_miss"));
                 DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
                 return new TypedActionResult<>(ActionResult.FAIL, stack);
             }
@@ -50,12 +50,12 @@ public class RiftStabilizerItem extends Item {
             DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
             if (!rift.stabilized && !rift.closing) {
                 rift.setStabilized(true);
-                world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1); // TODO: different sound
+                world.playSound(null, player.getSenseCenterPos(), ModSoundEvents.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1); // TODO: different sound
                 stack.damage(1, player, a -> {});
-                player.addChatMessage(new TranslatableText(getTranslationKey() + ".stabilized"), true);
+                player.sendMessage(new TranslatableText(getTranslationKey() + ".stabilized"));
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {
-                player.addChatMessage(new TranslatableText(getTranslationKey() + ".already_stabilized"), true);
+                player.sendMessage(new TranslatableText(getTranslationKey() + ".already_stabilized"));
             }
         }
         return new TypedActionResult<>(ActionResult.FAIL, stack);
@@ -63,7 +63,7 @@ public class RiftStabilizerItem extends Item {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendTooltip(ItemStack itemStack, @Nullable World world, List<Text> list, TooltipContext tooltipContext) {
+    public void appendTooltip(ItemStack itemStack,  World world, List<Text> list, TooltipContext tooltipContext) {
         list.add(new TranslatableText(getTranslationKey() + ".info"));
     }
 }

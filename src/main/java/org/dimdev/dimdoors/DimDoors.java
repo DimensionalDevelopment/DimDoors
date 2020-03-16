@@ -2,27 +2,22 @@ package org.dimdev.dimdoors;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.entity.Entity;
+import net.minecraft.text.TranslatableText;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.rift.targets.*;
 import org.dimdev.dimdoors.world.ModDimensions;
 
-import java.io.File;
-
 public class DimDoors implements ModInitializer {
-    public static void sendTranslatedMessage(Entity entity, String s, Object... args) {
-        // TODO
-    }
-
     public static String getConfigurationFolder() {
-        return null; // TODO
+        return "config"; // TODO
     }
 
     @Override
     public void onInitialize() {
         ModBlocks.init();
         ModItems.init();
-        ModDimensions.registerDimensions();
+        ModDimensions.init();
 
         VirtualTarget.registry.put("available_link", RandomTarget.class);
         VirtualTarget.registry.put("escape", EscapeTarget.class);

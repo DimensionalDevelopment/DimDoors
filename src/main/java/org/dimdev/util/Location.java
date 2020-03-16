@@ -3,6 +3,7 @@ package org.dimdev.util;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -13,15 +14,15 @@ import org.dimdev.annotatednbt.Saved;
 import java.io.Serializable;
 
 public class Location implements AutoSerializable {
-    @Saved public final World world;
+    @Saved public final ServerWorld world;
     @Saved public final BlockPos pos;
 
-    public Location(World world, BlockPos pos) {
+    public Location(ServerWorld world, BlockPos pos) {
         this.world = world;
         this.pos = pos;
     }
 
-    public Location(World world, int x, int y, int z) {
+    public Location(ServerWorld world, int x, int y, int z) {
         this(world, new BlockPos(x, y, z));
     }
 

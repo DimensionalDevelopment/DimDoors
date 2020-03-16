@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
-import org.dimdev.dimdoors.DimDoors;
+import net.minecraft.text.TranslatableText;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.limbo.LimboDimension;
@@ -43,9 +43,9 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
             }
             if (destLoc == null || !(destLoc.getBlockEntity() instanceof RiftBlockEntity)) {
                 if (destLoc == null) {
-                    DimDoors.sendTranslatedMessage(entity, "rifts.destinations.private_pocket_exit.did_not_use_rift");
+                    entity.sendMessage(new TranslatableText("rifts.destinations.private_pocket_exit.did_not_use_rift"));
                 } else {
-                    DimDoors.sendTranslatedMessage(entity, "rifts.destinations.private_pocket_exit.rift_has_closed");
+                    entity.sendMessage(new TranslatableText("rifts.destinations.private_pocket_exit.rift_has_closed"));
                 }
                 TeleportUtil.teleport(entity, LimboDimension.getLimboSkySpawn(entity));
                 return false;

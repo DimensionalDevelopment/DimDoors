@@ -1,14 +1,14 @@
 package org.dimdev.pocketlib;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.MapStorage;
+import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.util.math.GridUtil;
-import org.dimdev.annotatednbt.AnnotatedNbt;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,10 +23,14 @@ public class PocketRegistry extends PersistentState {
     @Saved /*package-private*/ Map<Integer, Pocket> pockets;
     @Saved /*package-private*/ int nextID;
 
-    private World world;
+    private ServerWorld world;
 
     public PocketRegistry() {
         super(DATA_NAME);
+        gridSize = ModConfig.POCKETS.pocketGridSize;
+
+        nextID = 0;
+        pockets = new HashMap<>();
     }
 
     public PocketRegistry(String s) {
@@ -44,19 +48,12 @@ public class PocketRegistry extends PersistentState {
         return tag;
     }
 
-    public static PocketRegistry instance(World world) {
+    public static PocketRegistry instance(ServerWorld world) {
         if (!(world.dimension instanceof PocketWorldDimension)) {
             throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
         }
 
-        MapStorage storage = world.getPerWorldStorage();
-        PocketRegistry instance = (PocketRegistry) storage.getOrLoadData(PocketRegistry.class, DATA_NAME);
-
-        if (instance == null) {
-            instance = new PocketRegistry();
-            instance.initNewRegistry();
-            storage.setData(DATA_NAME, instance);
-        }
+        PocketRegistry instance = world.getPersistentStateManager().get(PocketRegistry::new, DATA_NAME);
 
         instance.world = world;
         for (Pocket pocket : instance.pockets.values()) {
@@ -64,13 +61,6 @@ public class PocketRegistry extends PersistentState {
         }
 
         return instance;
-    }
-
-    public void initNewRegistry() {
-        gridSize = ModConfig.POCKETS.pocketGridSize;
-
-        nextID = 0;
-        pockets = new HashMap<>();
     }
 
     /**

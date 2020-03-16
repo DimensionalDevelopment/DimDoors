@@ -27,12 +27,6 @@ public class LinkProperties {
 
     public static LinkPropertiesBuilder builder() {return new LinkPropertiesBuilder();}
 
-    @Override
-    public void fromTag(CompoundTag nbt) { AnnotatedNbt.fromTag(this, nbt); }
-
-    @Override
-    public CompoundTag toTag(CompoundTag nbt) { return AnnotatedNbt.toTag(this, nbt); }
-
     public boolean equals(final Object o) {
         if (o == this) return true;
         if (!(o instanceof LinkProperties)) return false;

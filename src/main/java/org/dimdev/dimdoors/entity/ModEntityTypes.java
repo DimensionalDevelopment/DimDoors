@@ -15,6 +15,8 @@ public class ModEntityTypes {
             true,
             true,
             true,
+            128,
+            32,
             new EntityDimensions(3, 3, false)
     );
 
@@ -26,10 +28,12 @@ public class ModEntityTypes {
             true,
             true,
             true,
+            128,
+            32,
             new EntityDimensions(1, 1, false)
     );
 
-    private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, EntityCategory category, boolean canSpawnFar, boolean saveable, boolean summonable, boolean immuneToFire, EntityDimensions dimensions) {
-        return Registry.register(Registry.ENTITY_TYPE, id, new EntityType<>(factory, category, canSpawnFar, saveable, summonable, immuneToFire, dimensions));
+    private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, EntityCategory category, boolean canSpawnFar, boolean saveable, boolean summonable, boolean immuneToFire, int i, int j, EntityDimensions dimensions) {
+        return Registry.register(Registry.ENTITY_TYPE, id, new EntityType<>(factory, category, canSpawnFar, saveable, summonable, immuneToFire, i, j, dimensions));
     }
 }

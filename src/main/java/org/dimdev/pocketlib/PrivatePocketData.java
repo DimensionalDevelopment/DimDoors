@@ -3,9 +3,11 @@ package org.dimdev.pocketlib;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.MapStorage;
+import net.minecraft.world.dimension.DimensionType;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.util.WorldUtils;
@@ -14,10 +16,10 @@ import java.util.UUID;
 
 public class PrivatePocketData extends PersistentState {
     protected static class PocketInfo {
-        @Saved public final World world;
+        @Saved public final ServerWorld world;
         @Saved public final int id;
 
-        public PocketInfo(World world, int id) {
+        public PocketInfo(ServerWorld world, int id) {
             this.world = world;
             this.id = id;
         }
@@ -35,15 +37,7 @@ public class PrivatePocketData extends PersistentState {
     }
 
     public static PrivatePocketData instance() {
-        MapStorage storage = WorldUtils.getWorld(0).getMapStorage();
-        PrivatePocketData instance = (PrivatePocketData) storage.getOrLoadData(PrivatePocketData.class, DATA_NAME);
-
-        if (instance == null) {
-            instance = new PrivatePocketData();
-            storage.setData(DATA_NAME, instance);
-        }
-
-        return instance;
+        return WorldUtils.getWorld(DimensionType.OVERWORLD).getPersistentStateManager().get(PrivatePocketData::new, DATA_NAME);
     }
 
     @Override

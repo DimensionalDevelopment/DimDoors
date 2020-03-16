@@ -1,16 +1,15 @@
 package org.dimdev.dimdoors.world;
 
-import org.dimdev.dimdoors.world.limbo.BiomeLimbo;
-import org.dimdev.dimdoors.world.pocketdimension.BlankBiome;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.dimdev.dimdoors.world.limbo.LimboBiome;
+import org.dimdev.dimdoors.world.pocketdimension.BlankBiome;
 
 public final class ModBiomes {
-
-    public static final BiomeLimbo LIMBO = new BiomeLimbo();
+    public static final LimboBiome LIMBO = new LimboBiome();
     public static final BlankBiome WHITE_VOID = new BlankBiome(true, false);
     public static final BlankBiome BLACK_VOID = new BlankBiome(false, false);
     public static final BlankBiome DANGEROUS_BLACK_VOID = new BlankBiome(false, true);

@@ -15,11 +15,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-
-import javax.annotation.Nullable;
 
 public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
     public DimensionalDoorBlock(Settings settings) {
@@ -54,19 +51,16 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
         return super.canReplace(state, context) || state.getBlock() == ModBlocks.DETACHED_RIFT;
     }
 
-    @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockView world) {
         return new EntranceRiftBlockEntity();
     }
 
     @Override
-    public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState blockState, @Nullable BlockEntity entity, ItemStack stack) {
+    public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState blockState, BlockEntity entity, ItemStack stack) {
         if (entity instanceof EntranceRiftBlockEntity) {
-            EntranceRiftBlockEntity oldRift = (EntranceRiftBlockEntity) entity;
             world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
-            DetachedRiftBlockEntity newRift = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
-            newRift.load(oldRift.serialize());
+            ((DetachedRiftBlockEntity) world.getBlockEntity(pos)).load(((EntranceRiftBlockEntity) entity).serialize());
         }
     }
 

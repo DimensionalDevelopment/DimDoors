@@ -1,10 +1,8 @@
 package org.dimdev.annotatednbt;
 
 import net.minecraft.nbt.CompoundTag;
+import org.dimdev.dimdoors.rift.registry.PlayerRiftPointer;
 import org.dimdev.util.RotatedLocation;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public final class AnnotatedNbt {
     public static <T> T deserialize(Class<RotatedLocation> rotatedLocationClass, CompoundTag tag) {
@@ -21,5 +19,13 @@ public final class AnnotatedNbt {
 
     public static void save(Object object, CompoundTag tag) {
         // TODO
+    }
+
+    public static void fromTag(Object playerRiftPointer, CompoundTag nbt) {
+
+    }
+
+    public static CompoundTag toTag(Object playerRiftPointer, CompoundTag nbt) {
+        return null;
     }
 }

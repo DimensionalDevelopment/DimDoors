@@ -254,8 +254,8 @@ public class Schematic {
                     // property is Property<?>, value is Comparable<?>, and the ?s refer to the same type because
                     // IProperty<T>.getAllowedValues() returns Collection<T>, but the compiler doesn't keep track of
                     // this, so casting to raw types:
-                    //noinspection rawtypes
-                    chosenState = chosenState.with(property, (Comparable) value);
+                    //noinspection unchecked,RedundantCast,SingleStatementInBlock,rawtypes
+                    chosenState = chosenState.with((Property) property, (Comparable) value);
                 }
             }
         }
@@ -357,7 +357,7 @@ public class Schematic {
                     blockEntity.fromTag(BlockEntityNBT);
 
                     // Correct the position
-                    blockEntity.setWorld(world, pos);
+                    blockEntity.setLocation(world, pos);
                     blockEntity.markDirty();
                 } else {
                     throw new RuntimeException("Schematic contained BlockEntity " + id + " at " + pos + " but the BlockEntity of that block (" + world.getBlockState(pos) + ") must be " + blockBlockEntityId);
@@ -377,7 +377,7 @@ public class Schematic {
             newPosNBT.add(DoubleTag.of(posNBT.getDouble(2) + zBase));
             CompoundTag adjustedEntityTag = entityNBT.copy();
             adjustedEntityTag.put("Pos", newPosNBT);
-            adjustedEntityTag.putUuid("UUID", UUID.randomUUID());
+            adjustedEntityTag.putUuidNew("UUID", UUID.randomUUID());
 
             world.spawnEntity(EntityType.getEntityFromTag(adjustedEntityTag, world).orElseThrow(() -> new RuntimeException("missing entity type")));
         }

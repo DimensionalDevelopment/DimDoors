@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.rift.registry;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimDoors;
 
 public class RiftPlaceholder extends Rift { // TODO: don't extend rift
     private static final Logger LOGGER = LogManager.getLogger();
@@ -25,7 +24,7 @@ public class RiftPlaceholder extends Rift { // TODO: don't extend rift
 
     @Override
     public void markDirty() {
-        RiftRegistry.instance().markSubregistryDirty(dim);
+        RiftRegistry.instance().markSubregistryDirty(world);
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
@@ -46,7 +47,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
         if (uuid != null) {
             Location destLoc = RiftRegistry.instance().getOverworldRift(uuid);
             if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || canEscapeLimbo) {
-                TeleportUtil.teleport(entity, VirtualLocation.fromLocation(new Location(entity.world, entity.getBlockPos())).projectToWorld(false));
+                TeleportUtil.teleport(entity, VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getSenseCenterPos())).projectToWorld(false));
                 return true;
             } else {
                 if (destLoc == null) {

@@ -1,69 +1,79 @@
 package org.dimdev.dimdoors.pockets;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.DispenserBlockEntity;
-import net.minecraft.block.state.BlockState;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.tileentity.CoordinateArgument;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.tileentity.TileEntityDispenser;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
-import org.dimdev.dimdoors.loottables.ModLootTables;
+import org.dimdev.dimdoors.entity.MonolithEntity;
+import org.dimdev.dimdoors.rift.registry.LinkProperties;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
+import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
+import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.pocketlib.Pocket;
+import org.dimdev.pocketlib.PocketRegistry;
 import org.dimdev.util.Location;
 import org.dimdev.util.math.MathUtil;
 import org.dimdev.util.schem.Schematic;
-import org.dimdev.dimdoors.entity.MonolithEntity;
-import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
-import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
-import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.pocketlib.Pocket;
-import org.dimdev.pocketlib.PocketRegistry;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Robijnvogel
  */
-@AllArgsConstructor @RequiredArgsConstructor
 public class PocketTemplate {
     private static final Logger LOGGER = LogManager.getLogger();
-    @Getter private final String group;
-    @Getter private final String id;
-    @Getter private final String type;
-    @Getter private final String name;
-    @Getter private final String author;
-    @Getter @Setter private Schematic schematic;
-    @Setter private byte[] schematicBytecode;
-    @Getter private int size; // number of chunks (16 blocks) on each side - 1
-    @Getter private int baseWeight;
-    @Getter private static boolean isReplacingPlaceholders = false;
+    private final String group;
+    private final String id;
+    private final String type;
+    private final String name;
+    private final String author;
+    private Schematic schematic;
+    private byte[] schematicBytecode;
+    private int size; // number of chunks (16 blocks) on each side - 1
+    private int baseWeight;
+    private static boolean isReplacingPlaceholders = false;
+
+    public PocketTemplate(String group, String id, String type, String name, String author) {
+        this.group = group;
+        this.id = id;
+        this.type = type;
+        this.name = name;
+        this.author = author;
+    }
+
+    public PocketTemplate(String group, String id, String type, String name, String author, Schematic schematic, byte[] schematicBytecode, int size, int baseWeight) {
+        this.group = group;
+        this.id = id;
+        this.type = type;
+        this.name = name;
+        this.author = author;
+        this.schematic = schematic;
+        this.schematicBytecode = schematicBytecode;
+        this.size = size;
+        this.baseWeight = baseWeight;
+    }
+
+    public static boolean isReplacingPlaceholders() {return PocketTemplate.isReplacingPlaceholders;}
 
     public float getWeight(int depth) {
-        //noinspection IfStatementWithIdenticalBranches
         if (depth == -1) {
             return baseWeight;
         } else {
@@ -102,7 +112,6 @@ public class PocketTemplate {
                         rift.setPos(new BlockPos(x, y, z));
                         rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
                         rift.setDestination(DefaultDungeonDestinations.overworldDestination);
-                        rift.setLeaveRiftOnBreak(true);
                         newNBT = rift.toTag(newNBT);
                         break;
                     case "entrance_door":
@@ -131,7 +140,7 @@ public class PocketTemplate {
 
         List<CompoundTag> entities = new ArrayList<>();
         for (CompoundTag entitiesNBT : schematic.entities) {
-            if (entitiesNBT.hasKey("placeholder")) {
+            if (entitiesNBT.contains("placeholder")) {
                 double x = entitiesNBT.getDouble("x");
                 double y = entitiesNBT.getDouble("y");
                 double z = entitiesNBT.getDouble("z");
@@ -141,8 +150,10 @@ public class PocketTemplate {
                 CompoundTag newNBT;
                 if ("monolith".equals(entitiesNBT.getString("placeholder"))) {
                     MonolithEntity monolith = ModEntityTypes.MONOLITH.create(null);
-                    monolith.setPositionAndAngles(x, y, z, yaw, pitch);
-                    newNBT = monolith.serializeNBT();
+                    monolith.setPos(x, y, z);
+                    monolith.yaw = yaw;
+                    monolith.pitch = pitch;
+                    newNBT = monolith.toTag(new CompoundTag());
                 } else {
                     throw new RuntimeException("Unknown entity placeholder: " + entitiesNBT.getString("placeholder"));
                 }
@@ -163,7 +174,7 @@ public class PocketTemplate {
         int xBase = pocket.getX() * gridSize * 16;
         int yBase = 0;
         int zBase = pocket.getZ() * gridSize * 16;
-        
+
         //Converting the schematic from bytearray if needed
         if (schematic == null) {
             LOGGER.debug("Schematic is null, trying to reload from byteArray.");
@@ -174,7 +185,7 @@ public class PocketTemplate {
         //Place the schematic
         LOGGER.info("Placing new pocket using schematic " + id + " at x = " + xBase + ", z = " + zBase);
         schematic.place(world, xBase, yBase, zBase);
-        
+
         SchematicHandler.INSTANCE.incrementUsage(this);
         if (!setup && !SchematicHandler.INSTANCE.isUsedOftenEnough(this)) {
             //remove schematic from "cache"
@@ -201,7 +212,7 @@ public class PocketTemplate {
             if (tile instanceof RiftBlockEntity) {
                 LOGGER.debug("Rift found in schematic at " + pos);
                 RiftBlockEntity rift = (RiftBlockEntity) tile;
-                rift.getDestination().setLocation(new Location(rift.getWorld(), rift.getPos()));
+                rift.getDestination().setLocation(new Location((ServerWorld) rift.getWorld(), rift.getPos()));
                 rifts.add(rift);
             } else if (tile instanceof Inventory) {
                 Inventory inventory = (Inventory) tile;
@@ -250,7 +261,7 @@ public class PocketTemplate {
                     PocketRegistry.instance(world).markDirty();
                     rift.setDestination(((PocketEntranceMarker) dest).getIfDestination());
                     rift.register();
-                    RiftRegistry.instance().addPocketEntrance(pocket, new Location(rift.getWorld(), rift.getPos()));
+                    RiftRegistry.instance().addPocketEntrance(pocket, new Location((ServerWorld) rift.getWorld(), rift.getPos()));
                 } else {
                     rift.setDestination(((PocketEntranceMarker) dest).getOtherwiseDestination());
                 }
@@ -263,9 +274,6 @@ public class PocketTemplate {
             if (dest instanceof PocketExitMarker) {
                 if (linkProperties != null) rift.setProperties(linkProperties);
                 rift.setDestination(rift.getProperties() == null || !rift.getProperties().oneWay ? linkTo : null);
-                if (rift instanceof EntranceRiftBlockEntity && !rift.isAlwaysDelete()) {
-                    ((EntranceRiftBlockEntity) rift).setLeaveRiftOnBreak(true); // We modified the door's state
-                }
             }
         }
 
@@ -274,10 +282,30 @@ public class PocketTemplate {
             rift.register();
             rift.markDirty();
         }
-        
+
         if (!SchematicHandler.INSTANCE.isUsedOftenEnough(this)) {
             //remove schematic from "cache"
             schematic = null;
         }
     }
+
+    public String getGroup() {return group;}
+
+    public String getId() {return id;}
+
+    public String getType() {return type;}
+
+    public String getName() {return name;}
+
+    public String getAuthor() {return author;}
+
+    public Schematic getSchematic() {return schematic;}
+
+    public int getSize() {return size;}
+
+    public int getBaseWeight() {return baseWeight;}
+
+    public void setSchematic(Schematic schematic) {this.schematic = schematic; }
+
+    public void setSchematicBytecode(byte[] schematicBytecode) {this.schematicBytecode = schematicBytecode; }
 }

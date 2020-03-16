@@ -1,14 +1,10 @@
 package org.dimdev.util;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.dimension.DimensionType;
 
 public final class WorldUtils {
-    public static World getWorld(Identifier dimension) {
-        return null; // TODO
-    }
-
-    public static Identifier getDim(World world) {
-        return null; // TODO
+    public static ServerWorld getWorld(DimensionType personal) {
+        return null;
     }
 }

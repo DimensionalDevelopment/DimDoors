@@ -20,4 +20,8 @@ public final class ModDimensions {
                || world.dimension instanceof PersonalPocketDimension
                || world.dimension instanceof DungeonPocketDimension;
     }
+
+    public static void init() {
+        // just loads the class
+    }
 }

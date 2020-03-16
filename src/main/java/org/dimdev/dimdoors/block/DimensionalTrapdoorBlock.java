@@ -15,7 +15,6 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
-import javax.annotation.Nullable;
 
 // TODO: Make this placeable on rifts
 public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
@@ -31,7 +30,7 @@ public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvi
         }
     }
 
-    @Nullable
+
     @Override
     public BlockEntity createBlockEntity(BlockView blockView) {
         return new EntranceRiftBlockEntity();

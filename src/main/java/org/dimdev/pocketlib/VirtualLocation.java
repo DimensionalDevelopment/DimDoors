@@ -1,6 +1,7 @@
 package org.dimdev.pocketlib;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
@@ -12,12 +13,12 @@ import org.dimdev.dimdoors.world.limbo.LimboDimension;
 import org.dimdev.util.Location;
 
 public class VirtualLocation {
-    @Saved public final World world;
+    @Saved public final ServerWorld world;
     @Saved public final int x;
     @Saved public final int z;
     @Saved public final int depth;
 
-    public VirtualLocation(World world, int x, int z, int depth) {
+    public VirtualLocation(ServerWorld world, int x, int z, int depth) {
         this.world = world;
         this.x = x;
         this.z = z;
@@ -55,7 +56,7 @@ public class VirtualLocation {
     }
 
     public Location projectToWorld(boolean acceptLimbo) {
-        World world = this.world;
+        ServerWorld world = this.world;
 
         if (!acceptLimbo && world.dimension instanceof LimboDimension) {
             world = world.getServer().getWorld(DimensionType.OVERWORLD);

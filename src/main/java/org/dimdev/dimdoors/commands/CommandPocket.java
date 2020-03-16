@@ -18,7 +18,7 @@
 //import org.dimdev.dimdoors.world.ModDimensions;
 //import org.dimdev.pocketlib.Pocket;
 //
-//import javax.annotation.Nullable;
+//
 //import java.util.ArrayList;
 //import java.util.List;
 //import java.util.stream.Collectors;
@@ -76,7 +76,7 @@
 //    }
 //
 //    @Override
-//    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
+//    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,  BlockPos targetPos) {
 //        List<String> list = new ArrayList<>();
 //        switch (args.length) {
 //            case 1:

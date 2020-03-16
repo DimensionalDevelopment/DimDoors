@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import com.google.common.collect.Sets;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
@@ -137,14 +138,14 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
             depth /= depth > 0 ? positiveDepthFactor : negativeDepthFactor;
             double x = Math.cos(theta) * Math.cos(phi) * distance / coordFactor;
             double z = Math.cos(theta) * Math.sin(phi) * distance / coordFactor;
-            VirtualLocation virtualLocation = new VirtualLocation(virtualLocationHere.dimension,
+            VirtualLocation virtualLocation = new VirtualLocation(virtualLocationHere.world,
                                                                   virtualLocationHere.x + (int) Math.round(x),
                                                                   virtualLocationHere.z + (int) Math.round(z),
                                                                   virtualLocationHere.depth + (int) Math.round(depth));
 
             if (virtualLocation.depth <= 0) {
                 // This will lead to the overworld
-                World world = WorldUtils.getWorld(virtualLocation.dimension);
+                World world = virtualLocation.world;
                 BlockPos pos = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.x, 0, virtualLocation.z));
                 if (pos.getY() == -1) {
                     // No blocks at that XZ (hole in bedrock)
@@ -157,8 +158,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
                 // TODO: Should the rift not be configured like the other link
                 riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).build());
 
-                if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(new Location(world, pos), location);
-                if (!noLink) linkRifts(location, new Location(world, pos));
+                if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(new Location((ServerWorld) world, pos), location);
+                if (!noLink) linkRifts(location, new Location((ServerWorld) world, pos));
                 return riftEntity.as(Targets.ENTITY);
             } else {
                 // Make a new dungeon pocket

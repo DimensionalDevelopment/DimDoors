@@ -1,18 +1,35 @@
 package org.dimdev.dimdoors.world.limbo;
 
-import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
-import net.minecraft.world.World;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.SurfaceChunkGenerator;
 
-import java.util.Random;
+public class LimboChunkGenerator extends SurfaceChunkGenerator<LimboChunkGeneratorConfig> {
+    public LimboChunkGenerator(IWorld iWorld, BiomeSource biomeSource, int i, int j, int k, LimboChunkGeneratorConfig chunkGeneratorConfig, boolean bl) {
+        super(iWorld, biomeSource, i, j, k, chunkGeneratorConfig, bl);
+    }
 
-public class LimboChunkGenerator implements SurfaceChunkGenerator<LimboChunkGeneratorConfig> {
-    private final double[] noiseFalloff = this.buildNoiseFalloff();
-
-    private double[] buildNoiseFalloff() {
+    @Override
+    protected double[] computeNoiseRange(int i, int j) {
         return new double[0];
     }
 
+    @Override
+    protected double computeNoiseFalloff(double d, double e, int i) {
+        return 0;
+    }
+
+    @Override
+    protected void sampleNoiseColumn(double[] ds, int i, int j) {
+
+    }
+
+    @Override
+    public int getSpawnHeight() {
+        return 0;
+    }
+
+//    private final double[] noiseFalloff = this.buildNoiseFalloff();
 //
 //    @Override
 //    public int getHeightOnGround(int x, int z, Heightmap.Type type) {
@@ -97,42 +114,42 @@ public class LimboChunkGenerator implements SurfaceChunkGenerator<LimboChunkGene
 
 
     //
-    private Random rand;
+//    private Random rand;
     //
 //    // Noise generators
-    private OctavePerlinNoiseSampler minLimitPerlinNoise;
-    private OctavePerlinNoiseSampler maxLimitPerlinNoise;
-    private OctavePerlinNoiseSampler mainPerlinNoise;
-    public OctavePerlinNoiseSampler depthNoise;
-    //
-    double[] mainNoiseRegion;
-    double[] minLimitRegion;
-    double[] maxLimitRegion;
+//    private OctavePerlinNoiseSampler minLimitPerlinNoise;
+//    private OctavePerlinNoiseSampler maxLimitPerlinNoise;
+//    private OctavePerlinNoiseSampler mainPerlinNoise;
+//    public OctavePerlinNoiseSampler depthNoise;
 
-    private World world;
-    private double[] heightMap;
-
-    double[] depthRegion;
-
-    @Override
-    protected double[] computeNoiseRange(int i, int j) {
-        return new double[]{0, 0};
-    }
-
-    @Override
-    protected double computeNoiseFalloff(double d, double e, int i) {
-        return 0;
-    }
-
-    @Override
-    protected void sampleNoiseColumn(double[] ds, int i, int j) {
-
-    }
-
-    @Override
-    public int getSpawnHeight() {
-        return 0;
-    }
+//    double[] mainNoiseRegion;
+//    double[] minLimitRegion;
+//    double[] maxLimitRegion;
+//
+//    private World world;
+//    private double[] heightMap;
+//
+//    double[] depthRegion;
+//
+//    @Override
+//    protected double[] computeNoiseRange(int i, int j) {
+//        return new double[]{0, 0};
+//    }
+//
+//    @Override
+//    protected double computeNoiseFalloff(double d, double e, int i) {
+//        return 0;
+//    }
+//
+//    @Override
+//    protected void sampleNoiseColumn(double[] ds, int i, int j) {
+//
+//    }
+//
+//    @Override
+//    public int getSpawnHeight() {
+//        return 0;
+//    }
 
 //
 //    public LimboChunkGenerator(World world, long seed) {
@@ -252,7 +269,7 @@ public class LimboChunkGenerator implements SurfaceChunkGenerator<LimboChunkGene
 //        return biome.getSpawnableList(creatureType);
 //    }
 //
-//    @Nullable
+//
 //    @Override
 //    public BlockPos getNearestStructurePos(World world, String structureName, BlockPos position, boolean findUnexplored) {
 //        return null;

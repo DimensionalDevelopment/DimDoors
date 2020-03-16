@@ -62,6 +62,10 @@ public final class ModBlocks {
         return Registry.register(Registry.BLOCK, string, block);
     }
 
+    public static void init() {
+        // just loads the class
+    }
+
     private static class DoorBlock extends net.minecraft.block.DoorBlock { // TODO: use access transformer instead
         protected DoorBlock(Settings settings) {
             super(settings);

@@ -141,10 +141,10 @@ public final class ModItems {
     public static final Item RIFT_SIGNATURE = new RiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(1).group(ModItemGroups.DIMENSIONAL_DOORS));
     public static final Item STABILIZED_RIFT_SIGNATURE = new StabilizedRiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(20).group(ModItemGroups.DIMENSIONAL_DOORS));
     public static final Item RIFT_STABILIZER = new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(ModItemGroups.DIMENSIONAL_DOORS));
-    public static final Item WOVEN_WORLD_THREAD_HELMET = new WorldThreadArmorItem("world_thread_helmet", 1, EquipmentSlot.HEAD);
-    public static final Item WOVEN_WORLD_THREAD_CHESTPLATE = new WorldThreadArmorItem("world_thread_chestplate", 1, EquipmentSlot.CHEST);
-    public static final Item WOVEN_WORLD_THREAD_LEGGINGS = new WorldThreadArmorItem("world_thread_leggings", 2, EquipmentSlot.LEGS);
-    public static final Item WOVEN_WORLD_THREAD_BOOTS = new WorldThreadArmorItem("world_thread_boots", 1, EquipmentSlot.FEET);
+    public static final Item WOVEN_WORLD_THREAD_HELMET = new WorldThreadArmorItem("world_thread_helmet",  EquipmentSlot.HEAD, new Item.Settings());
+    public static final Item WOVEN_WORLD_THREAD_CHESTPLATE = new WorldThreadArmorItem("world_thread_chestplate",  EquipmentSlot.CHEST, new Item.Settings());
+    public static final Item WOVEN_WORLD_THREAD_LEGGINGS = new WorldThreadArmorItem("world_thread_leggings",  EquipmentSlot.LEGS, new Item.Settings());
+    public static final Item WOVEN_WORLD_THREAD_BOOTS = new WorldThreadArmorItem("world_thread_boots", EquipmentSlot.FEET, new Item.Settings());
     public static final Item CREEPY_RECORD = new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS));
     public static final Item WHITE_VOID_RECORD = new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS));
 
@@ -170,6 +170,10 @@ public final class ModItems {
         }
 
         return Registry.register(Registry.ITEM, identifier, item);
+    }
+
+    public static void init() {
+        // just loads the class
     }
 
     private static class MusicDiscItem extends net.minecraft.item.MusicDiscItem { // TODO: access transformers

@@ -29,7 +29,6 @@ public class DimensionalDoorItem extends TallBlockItem {
     @Override
     public ActionResult place(ItemPlacementContext context) {
         BlockPos pos = context.getBlockPos();
-        BlockPos originalPos = context.getBlockPos(); // super.onItemUse needs the actual position
 
         if (!context.getWorld().getBlockState(pos).canReplace(context)) {
             pos = pos.offset(context.getPlayerFacing());

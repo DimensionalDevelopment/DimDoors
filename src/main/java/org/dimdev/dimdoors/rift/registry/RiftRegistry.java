@@ -3,9 +3,9 @@ package org.dimdev.dimdoors.rift.registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
-import net.minecraft.world.storage.MapStorage;
-import net.minecraftforge.common.DimensionManager;
+import net.minecraft.world.dimension.DimensionType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.pocketlib.Pocket;
@@ -22,118 +22,16 @@ import java.util.stream.Collectors;
 
 public class RiftRegistry extends PersistentState {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final String DATA_NAME = "rifts";
 
-    private static final String DATA_NAME = "dimdoors_global_rifts";
-    private static final String SUBREGISTRY_DATA_NAME = "dimdoors_rifts";
-
-    protected Map<Integer, RiftSubregistry> subregistries = new HashMap<>();
-    private static RiftRegistry riftRegistry = null; // For use by RiftSubregistry only
-    private static int currentDim; // For use by RiftSubregistry only
     protected DefaultDirectedGraph<RegistryVertex, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-    // TODO: add methods that automatically add vertices/edges and mark appropriate subregistries as dirty
-
-    // Caches to avoid looping through vertices to find specific vertices
     protected Map<Location, Rift> locationMap = new HashMap<>();
     protected Map<Pocket, PocketEntrancePointer> pocketEntranceMap = new HashMap<>();
     protected Map<UUID, RegistryVertex> uuidMap = new HashMap<>();
 
-    // These are stored in the main registry
     protected Map<UUID, PlayerRiftPointer> lastPrivatePocketEntrances = new HashMap<>(); // Player UUID -> last rift used to exit pocket
     protected Map<UUID, PlayerRiftPointer> lastPrivatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
     protected Map<UUID, PlayerRiftPointer> overworldRifts = new HashMap<>(); // Player UUID -> rift used to exit the overworld
-
-    // <editor-fold defaultstate="collapsed" desc="Code for reading/writing/getting the registry">
-
-    public static class RiftSubregistry extends PersistentState {
-        private int dim;
-
-        public RiftSubregistry() {
-            super(SUBREGISTRY_DATA_NAME);
-        }
-
-        public RiftSubregistry(String s) {
-            super(s);
-        }
-
-        @Override
-        public void fromTag(CompoundTag nbt) {
-            dim = currentDim;
-            if (riftRegistry == null || riftRegistry.subregistries.get(dim) != null) return;
-
-            // Read rifts in this dimension
-            ListTag riftsNBT = (ListTag) nbt.getTag("rifts");
-            for (Tag riftNBT : riftsNBT) {
-                Rift rift = new Rift();
-                rift.fromTag((CompoundTag) riftNBT);
-                rift.dim = dim;
-                riftRegistry.graph.addVertex(rift);
-                riftRegistry.uuidMap.put(rift.id, rift);
-                riftRegistry.locationMap.put(rift.location, rift);
-            }
-
-            ListTag pocketsNBT = (ListTag) nbt.getTag("pockets");
-            for (Tag pocketNBT : pocketsNBT) {
-                PocketEntrancePointer pocket = new PocketEntrancePointer();
-                pocket.fromTag((CompoundTag) pocketNBT);
-                pocket.dim = dim;
-                riftRegistry.graph.addVertex(pocket);
-                riftRegistry.uuidMap.put(pocket.id, pocket);
-                riftRegistry.pocketEntranceMap.put(PocketRegistry.instance(pocket.dim).getPocket(pocket.pocketId), pocket);
-            }
-
-            // Read the connections between links that have a source or destination in this dimension
-            ListTag linksNBT = (ListTag) nbt.getTag("links");
-            for (Tag linkNBT : linksNBT) {
-                RegistryVertex from = riftRegistry.uuidMap.get(((CompoundTag) linkNBT).getUuid("from"));
-                RegistryVertex to = riftRegistry.uuidMap.get(((CompoundTag) linkNBT).getUuid("to"));
-                if (from != null && to != null) {
-                    riftRegistry.graph.addEdge(from, to);
-                    // We need a system for detecting links that are incomplete after processing them in the other subregistry too
-                }
-            }
-        }
-
-        // Even though it seems like we could loop only once over the vertices and edges (in the RiftRegistry's toTag
-        // method rather than RiftSubregistry) and save each in the appropriate registry, we can't do this because it is not
-        // always the case that all worlds will be saved at once.
-        @Override
-        public CompoundTag toTag(CompoundTag nbt) {
-            if (riftRegistry == null) riftRegistry = RiftRegistry.instance();
-            // Write rifts in this dimension
-            ListTag riftsNBT = new ListTag();
-            ListTag pocketsNBT = new ListTag();
-            for (RegistryVertex vertex : riftRegistry.graph.vertexSet()) {
-                if (vertex.dim == dim) {
-                    CompoundTag vertexNBT = vertex.toTag(new CompoundTag());
-                    if (vertex instanceof Rift) {
-                        riftsNBT.appendTag(vertexNBT);
-                    } else if (vertex instanceof PocketEntrancePointer) {
-                        pocketsNBT.appendTag(vertexNBT);
-                    } else if (!(vertex instanceof PlayerRiftPointer)) {
-                        throw new RuntimeException("Unsupported registry vertex type " + vertex.getClass().getName());
-                    }
-                }
-            }
-            nbt.put("rifts", riftsNBT);
-            nbt.put("pockets", pocketsNBT);
-
-            // Write the connections between links that have a source or destination in this dimension
-            ListTag linksNBT = new ListTag();
-            for (DefaultEdge edge : riftRegistry.graph.edgeSet()) {
-                RegistryVertex from = riftRegistry.graph.getEdgeSource(edge);
-                RegistryVertex to = riftRegistry.graph.getEdgeTarget(edge);
-                if (from.dim == dim || to.dim == dim && !(from instanceof PlayerRiftPointer)) {
-                    CompoundTag linkNBT = new CompoundTag();
-                    linkNBT.putUuid("from", from.id);
-                    linkNBT.putUuid("to", to.id);
-                    linksNBT.appendTag(linkNBT);
-                }
-            }
-            nbt.put("links", linksNBT);
-
-            return nbt;
-        }
-    }
 
     public RiftRegistry() {
         super(DATA_NAME);
@@ -144,47 +42,78 @@ public class RiftRegistry extends PersistentState {
     }
 
     public static RiftRegistry instance() {
-        MapStorage storage = WorldUtils.getWorld(0).getMapStorage();
-        RiftRegistry instance = (RiftRegistry) storage.getOrLoadData(RiftRegistry.class, DATA_NAME);
-
-        if (instance == null) {
-            instance = new RiftRegistry();
-            storage.setData(DATA_NAME, instance);
-        }
-
-        return instance;
+        return WorldUtils.getWorld(DimensionType.OVERWORLD).getPersistentStateManager().get(RiftRegistry::new, DATA_NAME);
     }
 
     @Override
     public void fromTag(CompoundTag nbt) {
+        // Read rifts in this dimension
 
-        // Trigger the subregistry reading code for all dimensions. It would be better if there was some way of forcing
-        // them to be read from somewhere else, since this is technically more than just reading the NBT and can cause
-        // problems with recursion without riftRegistry. This has to be done first since links are only
-        // in the subregistries.
-        // TODO: If non-dirty but new WorldSavedDatas aren't automatically saved, then create the subregistries here
-        // TODO: rather then in the markSubregistryDirty method.
-        // TODO: try to get rid of this code:
-        riftRegistry = this;
-        for (int dim : DimensionManager.getStaticDimensionIDs()) {
-            MapStorage storage = WorldUtils.getWorld(dim).getPerWorldStorage();
-            currentDim = dim;
-            RiftSubregistry instance = (RiftSubregistry) storage.getOrLoadData(RiftSubregistry.class, SUBREGISTRY_DATA_NAME);
-            if (instance != null) {
-                instance.dim = dim;
-                subregistries.put(dim, instance);
+        ListTag riftsNBT = (ListTag) nbt.get("rifts");
+        for (Tag riftNBT : riftsNBT) {
+            Rift rift = new Rift();
+            rift.fromTag((CompoundTag) riftNBT);
+            graph.addVertex(rift);
+            uuidMap.put(rift.id, rift);
+            locationMap.put(rift.location, rift);
+        }
+
+        ListTag pocketsNBT = (ListTag) nbt.get("pockets");
+        for (Tag pocketNBT : pocketsNBT) {
+            PocketEntrancePointer pocket = new PocketEntrancePointer();
+            pocket.fromTag((CompoundTag) pocketNBT);
+            graph.addVertex(pocket);
+            uuidMap.put(pocket.id, pocket);
+            pocketEntranceMap.put(PocketRegistry.instance(pocket.world).getPocket(pocket.pocketId), pocket);
+        }
+
+        // Read the connections between links that have a source or destination in this dimension
+        ListTag linksNBT = (ListTag) nbt.get("links");
+        for (Tag linkNBT : linksNBT) {
+            RegistryVertex from = uuidMap.get(((CompoundTag) linkNBT).getUuidNew("from"));
+            RegistryVertex to = uuidMap.get(((CompoundTag) linkNBT).getUuidNew("to"));
+            if (from != null && to != null) {
+                graph.addEdge(from, to);
+                // We need a system for detecting links that are incomplete after processing them in the other subregistry too
             }
         }
-        riftRegistry = null;
 
-        // Read player to rift maps (this has to be done after the uuidMap has been filled by the subregistry code)
-        lastPrivatePocketEntrances = readPlayerRiftPointers((ListTag) nbt.getTag("lastPrivatePocketEntrances"));
-        lastPrivatePocketExits = readPlayerRiftPointers((ListTag) nbt.getTag("lastPrivatePocketExits"));
-        overworldRifts = readPlayerRiftPointers((ListTag) nbt.getTag("overworldRifts"));
+        lastPrivatePocketEntrances = readPlayerRiftPointers((ListTag) nbt.get("lastPrivatePocketEntrances"));
+        lastPrivatePocketExits = readPlayerRiftPointers((ListTag) nbt.get("lastPrivatePocketExits"));
+        overworldRifts = readPlayerRiftPointers((ListTag) nbt.get("overworldRifts"));
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
+        if (this == null) {}
+        // Write rifts in this dimension
+        ListTag riftsNBT = new ListTag();
+        ListTag pocketsNBT = new ListTag();
+        for (RegistryVertex vertex : graph.vertexSet()) {
+            CompoundTag vertexNBT = vertex.toTag(new CompoundTag());
+            if (vertex instanceof Rift) {
+                riftsNBT.add(vertexNBT);
+            } else if (vertex instanceof PocketEntrancePointer) {
+                pocketsNBT.add(vertexNBT);
+            } else if (!(vertex instanceof PlayerRiftPointer)) {
+                throw new RuntimeException("Unsupported registry vertex type " + vertex.getClass().getName());
+            }
+        }
+        tag.put("rifts", riftsNBT);
+        tag.put("pockets", pocketsNBT);
+
+        // Write the connections between links that have a source or destination in this dimension
+        ListTag linksNBT = new ListTag();
+        for (DefaultEdge edge : graph.edgeSet()) {
+            RegistryVertex from = graph.getEdgeSource(edge);
+            RegistryVertex to = graph.getEdgeTarget(edge);
+            CompoundTag linkNBT = new CompoundTag();
+            linkNBT.putUuidNew("from", from.id);
+            linkNBT.putUuidNew("to", to.id);
+            linksNBT.add(linkNBT);
+        }
+        tag.put("links", linksNBT);
+
         // Subregistries are written automatically when the worlds are saved.
         tag.put("lastPrivatePocketEntrances", writePlayerRiftPointers(lastPrivatePocketEntrances));
         tag.put("lastPrivatePocketExits", writePlayerRiftPointers(lastPrivatePocketExits));
@@ -195,8 +124,8 @@ public class RiftRegistry extends PersistentState {
     private Map<UUID, PlayerRiftPointer> readPlayerRiftPointers(ListTag tag) {
         Map<UUID, PlayerRiftPointer> pointerMap = new HashMap<>();
         for (Tag entryNBT : tag) {
-            UUID player = ((CompoundTag) entryNBT).getUuid("player");
-            UUID rift = ((CompoundTag) entryNBT).getUuid("rift");
+            UUID player = ((CompoundTag) entryNBT).getUuidNew("player");
+            UUID rift = ((CompoundTag) entryNBT).getUuidNew("rift");
             PlayerRiftPointer pointer = new PlayerRiftPointer(player);
             pointerMap.put(player, pointer);
             uuidMap.put(pointer.id, pointer);
@@ -210,10 +139,10 @@ public class RiftRegistry extends PersistentState {
         ListTag pointers = new ListTag();
         for (Map.Entry<UUID, PlayerRiftPointer> entry : playerRiftPointerMap.entrySet()) {
             CompoundTag entryNBT = new CompoundTag();
-            entryNBT.putUuid("player", entry.getKey());
+            entryNBT.putUuidNew("player", entry.getKey());
             int count = 0;
             for (DefaultEdge edge : graph.outgoingEdgesOf(entry.getValue())) {
-                entryNBT.putUuid("rift", graph.getEdgeTarget(edge).id);
+                entryNBT.putUuidNew("rift", graph.getEdgeTarget(edge).id);
                 count++;
             }
             if (count != 1) throw new RuntimeException("PlayerRiftPointer points to more than one rift");
@@ -221,23 +150,6 @@ public class RiftRegistry extends PersistentState {
         }
         return pointers;
     }
-
-    public void markSubregistryDirty(int dim) {
-        RiftSubregistry subregistry = subregistries.get(dim);
-        if (subregistry != null) {
-            subregistry.markDirty();
-        } else {
-            // Create the subregistry
-            MapStorage storage = WorldUtils.getWorld(dim).getPerWorldStorage();
-            RiftSubregistry instance = new RiftSubregistry();
-            instance.dim = dim;
-            instance.markDirty();
-            storage.setData(SUBREGISTRY_DATA_NAME, instance);
-            subregistries.put(dim, instance);
-        }
-    }
-
-    // </editor-fold>
 
     public boolean isRiftAt(Location location) {
         Rift possibleRift = locationMap.get(location);
@@ -255,12 +167,11 @@ public class RiftRegistry extends PersistentState {
         if (rift == null) {
             LOGGER.debug("Creating a rift placeholder at " + location);
             rift = new RiftPlaceholder();
-            rift.dim = location.getDim();
+            rift.world = location.world;
             rift.location = location;
             locationMap.put(location, rift);
             uuidMap.put(rift.id, rift);
             graph.addVertex(rift);
-            markSubregistryDirty(rift.dim);
         }
         return rift;
     }
@@ -272,12 +183,12 @@ public class RiftRegistry extends PersistentState {
         if (currentRift instanceof RiftPlaceholder) {
             LOGGER.info("Converting a rift placeholder at " + location + " into a rift");
             rift = new Rift(location);
-            rift.dim = location.getDim();
+            rift.world = location.world;
             rift.id = currentRift.id;
             GraphUtils.replaceVertex(graph, currentRift, rift);
         } else if (currentRift == null) {
             rift = new Rift(location);
-            rift.dim = location.getDim();
+            rift.world = location.world;
             graph.addVertex(rift);
         } else {
             throw new IllegalArgumentException("There is already a rift registered at " + location);
@@ -298,7 +209,6 @@ public class RiftRegistry extends PersistentState {
         graph.removeVertex(rift);
         locationMap.remove(location);
         uuidMap.remove(rift.id);
-        markSubregistryDirty(rift.dim);
 
         // Notify the adjacent vertices of the change
         for (DefaultEdge edge : incomingEdges) graph.getEdgeSource(edge).targetGone(rift);
@@ -311,24 +221,18 @@ public class RiftRegistry extends PersistentState {
             markDirty();
         } else if (from instanceof Rift) {
             ((Rift) from).markDirty();
-        } else {
-            markSubregistryDirty(from.dim);
         }
         if (to instanceof Rift) {
             ((Rift) to).markDirty();
-        } else {
-            markSubregistryDirty(to.dim);
         }
     }
 
     private void removeEdge(RegistryVertex from, RegistryVertex to) {
         graph.removeEdge(from, to);
+
         if (from instanceof PlayerRiftPointer) {
             markDirty();
-        } else {
-            markSubregistryDirty(from.dim);
         }
-        markSubregistryDirty(to.dim);
     }
 
     public void addLink(Location locationFrom, Location locationTo) {
@@ -388,7 +292,7 @@ public class RiftRegistry extends PersistentState {
         PocketEntrancePointer pointer = pocketEntranceMap.get(pocket);
         if (pointer == null) {
             pointer = new PocketEntrancePointer(pocket.world, pocket.id);
-            pointer.dim = pocket.world;
+            pointer.world = pocket.world;
             graph.addVertex(pointer);
             pocketEntranceMap.put(pocket, pointer);
             uuidMap.put(pointer.id, pointer);

@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world.gateways;
 
-import net.minecraft.init.Biomes;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 
 public class GatewaySandstonePillars extends BaseSchematicGateway {
     public GatewaySandstonePillars() {
@@ -10,6 +10,6 @@ public class GatewaySandstonePillars extends BaseSchematicGateway {
 
     @Override
     public Biome[] getBiomes() {
-        return new Biome[] {Biomes.DESERT, Biomes.DESERT_HILLS, Biomes.MUTATED_DESERT};
+        return new Biome[]{Biomes.DESERT, Biomes.DESERT_HILLS, Biomes.DESERT_LAKES};
     }
 }

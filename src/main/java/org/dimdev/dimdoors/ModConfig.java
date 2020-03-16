@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public final class ModConfig {
     public static final General GENERAL = new General();
     public static final Pockets POCKETS = new Pockets();
@@ -33,8 +36,8 @@ public final class ModConfig {
     public static class World {
         public double clusterGenChance = 0.0002;
         public double gatewayGenChance = 0.0015;
-        public int[] clusterDimBlacklist = {};
-        public int[] gatewayDimBlacklist = {};
+        public Set<Integer> clusterDimBlacklist = new LinkedHashSet<>();
+        public Set<Integer> gatewayDimBlacklist = new LinkedHashSet<>();
     }
 
     public static class Dungeons {
