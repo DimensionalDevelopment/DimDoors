@@ -40,7 +40,7 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
     }
 
     @Override
-    public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) {
+    public boolean receiveEntity(Entity entity, float yawOffset) {
         entity.sendMessage(new TranslatableText("The entrance of this dungeon has not been converted. If this is a normally generated pocket, please report this bug."));
         return false;
     }

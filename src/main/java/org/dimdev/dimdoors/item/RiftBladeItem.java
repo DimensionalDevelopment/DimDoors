@@ -65,9 +65,10 @@ public class RiftBladeItem extends SwordItem {
             Vec3d offsetDirection = playerVec.subtract(entityVec).normalize();
             offsetDirection = offsetDirection.rotateY((float) (offsetRotationYaw * Math.PI) / 180);
 
-            BlockPos tpPos = new BlockPos(entityVec.add(offsetDirection.multiply(offsetDistance)));
-            while (world.getBlockState(tpPos).getMaterial().blocksMovement()) tpPos = tpPos.up(); // TODO: move to ddutils
-            TeleportUtil.teleport(player, new Location((ServerWorld) world, tpPos), (player.yaw - (float) offsetRotationYaw) % 360, player.pitch);
+            BlockPos teleportPosition = new BlockPos(entityVec.add(offsetDirection.multiply(offsetDistance)));
+            while (world.getBlockState(teleportPosition).getMaterial().blocksMovement()) teleportPosition = teleportPosition.up();
+            player.teleport(teleportPosition.getX(), teleportPosition.getY(), teleportPosition.getZ());
+            player.setYaw((float) (Math.random() * 2 * Math.PI));
             
             stack.damage(1, player, a -> {});
             return new TypedActionResult<>(ActionResult.SUCCESS, stack);

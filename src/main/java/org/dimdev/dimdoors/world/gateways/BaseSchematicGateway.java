@@ -5,7 +5,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.util.schem.Schematic;
 
@@ -21,7 +21,7 @@ public abstract class BaseSchematicGateway extends BaseGateway {
         String schematicJarDirectory = "/assets/dimdoors/gateways/";
 
         //Initialising the possible locations/formats for the schematic file
-        InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + id + ".schem");
+        InputStream schematicStream = DimensionalDoorsInitializer.class.getResourceAsStream(schematicJarDirectory + id + ".schem");
 
         //determine which location to load the schematic file from (and what format)
         DataInputStream schematicDataStream = null;

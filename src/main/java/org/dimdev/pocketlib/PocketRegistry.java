@@ -53,7 +53,7 @@ public class PocketRegistry extends PersistentState {
             throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
         }
 
-        PocketRegistry instance = world.getPersistentStateManager().get(PocketRegistry::new, DATA_NAME);
+        PocketRegistry instance = world.getPersistentStateManager().getOrCreate(PocketRegistry::new, DATA_NAME);
 
         instance.world = world;
         for (Pocket pocket : instance.pockets.values()) {

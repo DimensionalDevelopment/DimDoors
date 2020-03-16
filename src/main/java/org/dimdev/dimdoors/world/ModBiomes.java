@@ -16,4 +16,8 @@ public final class ModBiomes {
         Registry.register(Registry.BIOME, id, biome);
         return biome;
     }
+
+    public static void init() {
+        // just loads the class
+    }
 }

@@ -3,14 +3,13 @@ package org.dimdev.pocketlib;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
-import org.dimdev.util.WorldUtils;
 
 import java.util.UUID;
 
@@ -36,8 +35,12 @@ public class PrivatePocketData extends PersistentState {
         super(DATA_NAME);
     }
 
-    public static PrivatePocketData instance() {
-        return WorldUtils.getWorld(DimensionType.OVERWORLD).getPersistentStateManager().get(PrivatePocketData::new, DATA_NAME);
+    public static PrivatePocketData instance(World world) {
+        return instance(world.getServer());
+    }
+
+    private static PrivatePocketData instance(MinecraftServer server) {
+        return server.getWorld(DimensionType.OVERWORLD).getPersistentStateManager().getOrCreate(PrivatePocketData::new, DATA_NAME);
     }
 
     @Override

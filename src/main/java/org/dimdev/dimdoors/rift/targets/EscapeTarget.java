@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
@@ -33,7 +34,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
     }
 
     @Override
-    public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) {
+    public boolean receiveEntity(Entity entity, float yawOffset) {
         if (!ModDimensions.isDimDoorsPocketDimension(entity.world) && !(entity.world.dimension instanceof LimboDimension)) {
             entity.sendMessage(new TranslatableText("rifts.destinations.escape.not_in_pocket_dim"));
             return false;
@@ -45,9 +46,10 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 
         UUID uuid = entity.getUuid();
         if (uuid != null) {
-            Location destLoc = RiftRegistry.instance().getOverworldRift(uuid);
+            Location destLoc = RiftRegistry.instance(entity.world).getOverworldRift(uuid);
             if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || canEscapeLimbo) {
-                TeleportUtil.teleport(entity, VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getSenseCenterPos())).projectToWorld(false));
+                Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getSenseCenterPos())).projectToWorld(false);
+                TeleportUtil.teleport(entity, location.world, location.pos, 0);
                 return true;
             } else {
                 if (destLoc == null) {
@@ -55,7 +57,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
                 } else {
                     entity.sendMessage(new TranslatableText("rifts.destinations.escape.rift_has_closed"));
                 }
-                TeleportUtil.teleport(entity, LimboDimension.getLimboSkySpawn(entity));
+                FabricDimensions.teleport(entity, ModDimensions.LIMBO);
                 return true;
             }
         } else {

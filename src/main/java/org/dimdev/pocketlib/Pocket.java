@@ -1,19 +1,12 @@
 package org.dimdev.pocketlib;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.dimdev.annotatednbt.Saved;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.util.WorldUtils;
-
-import java.util.Arrays;
-import java.util.Collections;
 
 public final class Pocket {
     private static final int BLOCKS_PAINTED_PER_DYE = 1106;

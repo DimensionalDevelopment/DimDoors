@@ -91,7 +91,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
     }
 
     public boolean isRegistered() {
-        return !PocketTemplate.isReplacingPlaceholders() && RiftRegistry.instance().isRiftAt(new Location((ServerWorld) world, pos));
+        return !PocketTemplate.isReplacingPlaceholders() && RiftRegistry.instance(world).isRiftAt(new Location((ServerWorld) world, pos));
     }
 
     public void register() {
@@ -100,26 +100,26 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
         }
 
         Location loc = new Location((ServerWorld) world, pos);
-        RiftRegistry.instance().addRift(loc);
+        RiftRegistry.instance(world).addRift(loc);
         if (destination != null) destination.register();
         updateProperties();
         updateColor();
     }
 
     public void updateProperties() {
-        if (isRegistered()) RiftRegistry.instance().setProperties(new Location((ServerWorld) world, pos), properties);
+        if (isRegistered()) RiftRegistry.instance(world).setProperties(new Location((ServerWorld) world, pos), properties);
         markDirty();
     }
 
     public void unregister() {
         if (isRegistered()) {
-            RiftRegistry.instance().removeRift(new Location((ServerWorld) world, pos));
+            RiftRegistry.instance(world).removeRift(new Location((ServerWorld) world, pos));
         }
     }
 
     public void updateType() {
         if (!isRegistered()) return;
-        Rift rift = RiftRegistry.instance().getRift(new Location((ServerWorld) world, pos));
+        Rift rift = RiftRegistry.instance(world).getRift(new Location((ServerWorld) world, pos));
         rift.isDetached = isDetached();
         rift.markDirty();
     }
@@ -153,7 +153,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
         try {
             EntityTarget target = getTarget().as(Targets.ENTITY);
 
-            if (target.receiveEntity(entity, entity.yaw, entity.pitch)) {
+            if (target.receiveEntity(entity, entity.yaw)) {
                 VirtualLocation vloc = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getSenseCenterPos()));
                 entity.sendMessage(new TranslatableText("You are at x = " + vloc.x + ", y = ?, z = " + vloc.z + ", w = " + vloc.depth));
                 return true;

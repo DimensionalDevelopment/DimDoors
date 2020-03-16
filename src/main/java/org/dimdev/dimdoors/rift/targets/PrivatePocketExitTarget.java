@@ -1,18 +1,18 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.dimdoors.world.limbo.LimboDimension;
+import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocketdimension.PersonalPocketDimension;
 import org.dimdev.pocketlib.Pocket;
 import org.dimdev.pocketlib.PocketRegistry;
 import org.dimdev.pocketlib.PrivatePocketData;
 import org.dimdev.util.EntityUtils;
 import org.dimdev.util.Location;
-import org.dimdev.util.TeleportUtil;
 
 import java.util.UUID;
 
@@ -31,15 +31,15 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
     }
 
     @Override
-    public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) {
+    public boolean receiveEntity(Entity entity, float yawOffset) {
         Location destLoc;
         // TODO: make this recursive
         UUID uuid = EntityUtils.getOwner(entity).getUuid();
         if (uuid != null) {
-            destLoc = RiftRegistry.instance().getPrivatePocketExit(uuid);
-            Pocket pocket = PrivatePocketData.instance().getPrivatePocket(uuid);
+            destLoc = RiftRegistry.instance(entity.world).getPrivatePocketExit(uuid);
+            Pocket pocket = PrivatePocketData.instance(entity.world).getPrivatePocket(uuid);
             if (location.world.dimension instanceof PersonalPocketDimension && pocket != null && PocketRegistry.instance(pocket.world).getPocketAt(location.pos).equals(pocket)) {
-                RiftRegistry.instance().setLastPrivatePocketEntrance(uuid, location); // Remember which exit was used for next time the pocket is entered
+                RiftRegistry.instance(entity.world).setLastPrivatePocketEntrance(uuid, location); // Remember which exit was used for next time the pocket is entered
             }
             if (destLoc == null || !(destLoc.getBlockEntity() instanceof RiftBlockEntity)) {
                 if (destLoc == null) {
@@ -47,10 +47,10 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
                 } else {
                     entity.sendMessage(new TranslatableText("rifts.destinations.private_pocket_exit.rift_has_closed"));
                 }
-                TeleportUtil.teleport(entity, LimboDimension.getLimboSkySpawn(entity));
+                FabricDimensions.teleport(entity, ModDimensions.LIMBO);
                 return false;
             } else {
-                ((EntityTarget) destLoc.getBlockEntity()).receiveEntity(entity, relativeYaw, relativePitch);
+                ((EntityTarget) destLoc.getBlockEntity()).receiveEntity(entity, yawOffset);
                 return true;
             }
         } else {
@@ -63,7 +63,7 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
         super.register();
         PocketRegistry privatePocketRegistry = PocketRegistry.instance(location.world);
         Pocket pocket = privatePocketRegistry.getPocketAt(location.pos);
-        RiftRegistry.instance().addPocketEntrance(pocket, location);
+        RiftRegistry.instance(location.world).addPocketEntrance(pocket, location);
     }
 
     @Override

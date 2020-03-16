@@ -19,7 +19,7 @@ public class ModBlockEntityTypes {
     public static final BlockEntityType<EntranceRiftBlockEntity> ENTRANCE_RIFT = register(
             "dimdoors:entrance_rift",
             EntranceRiftBlockEntity::new,
-            new Block[]{ModBlocks.WOOD_DIMENSIONAL_DOOR, ModBlocks.IRON_DIMENSIONAL_DOOR, ModBlocks.GOLD_DIMENSIONAL_DOOR, ModBlocks.QUARTZ_DIMENSIONAL_DOOR}
+            new Block[]{ModBlocks.OAK_DIMENSIONAL_DOOR, ModBlocks.IRON_DIMENSIONAL_DOOR, ModBlocks.GOLD_DIMENSIONAL_DOOR, ModBlocks.QUARTZ_DIMENSIONAL_DOOR}
     );
 
     private static <E extends BlockEntity> BlockEntityType<E> register(String id, Supplier<? extends E> supplier, Block[] blocks) {

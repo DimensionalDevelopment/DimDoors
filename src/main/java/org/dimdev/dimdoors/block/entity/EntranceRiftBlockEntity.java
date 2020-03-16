@@ -42,10 +42,10 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     }
 
     @Override
-    public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) {
+    public boolean receiveEntity(Entity entity, float yawOffset) {
         Vec3d targetPos = Vec3d.method_24953(pos).add(Vec3d.method_24954(getOrientation().getVector()).multiply(ModConfig.GENERAL.teleportOffset + 0.5));
 
-        TeleportUtil.teleport(entity, world, targetPos.x, targetPos.y, targetPos.z, entity.yaw + relativeYaw, entity.pitch + relativePitch);
+        TeleportUtil.teleport(entity, world, targetPos, yawOffset);
         return true;
     }
 

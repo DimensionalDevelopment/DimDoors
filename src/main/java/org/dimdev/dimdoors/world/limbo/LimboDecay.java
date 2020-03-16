@@ -54,10 +54,10 @@ public final class LimboDecay {
         if (blocksImmuneToDecay == null) {
             blocksImmuneToDecay = new Block[]{
                     UNRAVELLED_FABRIC,
-                    ETERNAL_FABRIC,
+                    ETERNAL_FLUID,
                     DIMENSIONAL_PORTAL,
                     IRON_DIMENSIONAL_DOOR,
-                    WOOD_DIMENSIONAL_DOOR,
+                    OAK_DIMENSIONAL_DOOR,
                     DETACHED_RIFT,
                     GOLD_DOOR,
                     QUARTZ_DOOR,

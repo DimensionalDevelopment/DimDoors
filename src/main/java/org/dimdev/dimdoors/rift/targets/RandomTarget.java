@@ -18,7 +18,6 @@ import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.pocketlib.Pocket;
 import org.dimdev.pocketlib.VirtualLocation;
 import org.dimdev.util.Location;
-import org.dimdev.util.WorldUtils;
 import org.dimdev.util.math.MathUtil;
 
 import java.util.HashMap;
@@ -70,7 +69,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
         Map<Location, Float> riftWeights = new HashMap<>();
         if (newRiftWeight > 0) riftWeights.put(null, newRiftWeight);
 
-        for (Rift otherRift : RiftRegistry.instance().getRifts()) {
+        for (Rift otherRift : RiftRegistry.instance(location.world).getRifts()) {
             VirtualLocation otherVirtualLocation = VirtualLocation.fromLocation(otherRift.location);
             if (otherRift.properties == null) continue;
             double otherWeight = otherRift.isDetached ? otherRift.properties.floatingWeight : otherRift.properties.entranceWeight;
@@ -168,8 +167,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
                 Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation, new GlobalReference(!noLinkBack ? location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
 
                 // Link the rift if necessary and teleport the entity
-                if (!noLink) linkRifts(location, RiftRegistry.instance().getPocketEntrance(pocket));
-                return (Target) RiftRegistry.instance().getPocketEntrance(pocket).getBlockEntity();
+                if (!noLink) linkRifts(location, RiftRegistry.instance(location.world).getPocketEntrance(pocket));
+                return (Target) RiftRegistry.instance(location.world).getPocketEntrance(pocket).getBlockEntity();
             }
         } else {
             // An existing rift was selected

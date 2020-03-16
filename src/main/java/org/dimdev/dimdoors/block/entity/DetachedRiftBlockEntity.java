@@ -7,13 +7,11 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnType;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.util.Location;
 import org.dimdev.util.TeleportUtil;
 
 import java.util.Random;
@@ -98,8 +96,8 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
     }
 
     @Override
-    public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) {
-        TeleportUtil.teleport(entity, new Location((ServerWorld) world, pos), entity.yaw, entity.pitch);
+    public boolean receiveEntity(Entity entity, float yawOffset) {
+        TeleportUtil.teleport(entity, world, pos, 0);
         return true;
     }
 

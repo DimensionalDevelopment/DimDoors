@@ -29,6 +29,6 @@ public class PublicPocketTarget extends RestoringTarget {
         }
         Pocket pocket = PocketGenerator.generatePublicPocket(newVirtualLocation, new GlobalReference(location), null);
 
-        return RiftRegistry.instance().getPocketEntrance(pocket);
+        return RiftRegistry.instance(location.world).getPocketEntrance(pocket);
     }
 }

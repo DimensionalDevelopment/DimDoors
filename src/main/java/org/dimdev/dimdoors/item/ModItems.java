@@ -63,16 +63,16 @@ public final class ModItems {
             }
     ));
 
-    public static final Item UNSTABLE_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
-            ModBlocks.IRON_DIMENSIONAL_DOOR,
-            new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1),
-            rift -> {
-                // TODO
-            }
-    ));
+//    public static final Item UNSTABLE_DIMENSIONAL_DOOR = register( new DimensionalDoorItem(
+//            ModBlocks.IRON_DIMENSIONAL_DOOR,
+//            new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1),
+//            rift -> {
+//                 TODO
+//            }
+//    ));
 
-    public static final Item WOOD_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
-            ModBlocks.WOOD_DIMENSIONAL_DOOR,
+    public static final Item OAK_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
+            ModBlocks.OAK_DIMENSIONAL_DOOR,
             new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1),
             rift -> rift.setDestination(
                     RandomTarget
@@ -86,8 +86,8 @@ public final class ModItems {
             )
     ));
 
-    public static final Item WOOD_DIMENSIONAL_TRAPDOOR = register(new DimensionalTrapdoorItem(
-            ModBlocks.WOOD_DIMENSIONAL_DOOR,
+    public static final Item OAK_DIMENSIONAL_TRAPDOOR = register(new DimensionalTrapdoorItem(
+            ModBlocks.OAK_DIMENSIONAL_TRAPDOOR,
             new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1),
             rift -> rift.setDestination(new EscapeTarget(false))
     ));
@@ -126,7 +126,7 @@ public final class ModItems {
     public static final Item RED_ANCIENT_FABRIC = register(ModBlocks.RED_ANCIENT_FABRIC);
     public static final Item BLACK_ANCIENT_FABRIC = register(ModBlocks.BLACK_ANCIENT_FABRIC);
 
-    public static final Item ETERNAL_FABRIC = register(ModBlocks.ETERNAL_FABRIC);
+    public static final Item ETERNAL_FABRIC = register(ModBlocks.ETERNAL_FLUID);
     public static final Item UNRAVELLED_FABRIC = register(ModBlocks.UNRAVELLED_FABRIC);
 
     public static final Item MARKING_PLATE = register(ModBlocks.MARKING_PLATE);

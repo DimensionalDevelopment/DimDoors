@@ -10,11 +10,11 @@ import net.minecraft.util.registry.Registry;
 public final class ModBlocks {
     public static final Block GOLD_DOOR = register("dimdoors:gold_door", new DoorBlock(FabricBlockSettings.of(Material.METAL, MaterialColor.GOLD).build()));
     public static final Block QUARTZ_DOOR = register("dimdoors:quartz_door", new DoorBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.QUARTZ).build()));
-    public static final Block WOOD_DIMENSIONAL_DOOR = register("dimdoors:wood_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.WOOD, MaterialColor.WOOD).build()));
+    public static final Block OAK_DIMENSIONAL_DOOR = register("dimdoors:oak_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.WOOD, MaterialColor.WOOD).build()));
     public static final Block IRON_DIMENSIONAL_DOOR = register("dimdoors:iron_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.METAL, MaterialColor.IRON).build()));
     public static final Block GOLD_DIMENSIONAL_DOOR = register("dimdoors:gold_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.METAL, MaterialColor.GOLD).build()));
     public static final Block QUARTZ_DIMENSIONAL_DOOR = register("dimdoors:quartz_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.QUARTZ).build()));
-    public static final Block WOOD_DIMENSIONAL_TRAPDOOR = register("dimdoors:wood_dimensional_trapdoor", new DimensionalTrapdoorBlock(FabricBlockSettings.of(Material.WOOD, MaterialColor.WOOD).build()));
+    public static final Block OAK_DIMENSIONAL_TRAPDOOR = register("dimdoors:wood_dimensional_trapdoor", new DimensionalTrapdoorBlock(FabricBlockSettings.of(Material.WOOD, MaterialColor.WOOD).build()));
 
     public static final Block DIMENSIONAL_PORTAL = register("dimdoors:dimensional_portal", new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).dropsNothing().build()));
     public static final Block DETACHED_RIFT = register("dimdoors:detached_rift", new DetachedRiftBlock(FabricBlockSettings.of(Material.AIR).nonOpaque().build()));
@@ -53,10 +53,10 @@ public final class ModBlocks {
     public static final Block RED_ANCIENT_FABRIC = register("dimdoors:red_ancient_fabric", new Block(FabricBlockSettings.of(Material.STONE, DyeColor.RED).strength(-1.0F, 3600000.0F).dropsNothing().build()));
     public static final Block BLACK_ANCIENT_FABRIC = register("dimdoors:black_ancient_fabric", new Block(FabricBlockSettings.of(Material.STONE, DyeColor.BLACK).strength(-1.0F, 3600000.0F).dropsNothing().build()));
 
-    public static final Block ETERNAL_FABRIC = new EternalFluidBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.RED).build());
-    public static final Block UNRAVELLED_FABRIC = new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.BLACK).build());
+    public static final Block ETERNAL_FLUID = register("dimdoors:eternal_fluid", new EternalFluidBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.RED).build()));
+    public static final Block UNRAVELLED_FABRIC = register("dimdoors:unravelled_fabric", new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.BLACK).build()));
 
-    public static final Block MARKING_PLATE = new MarkingPlateBlock(FabricBlockSettings.of(Material.METAL, DyeColor.BLACK).build());
+    public static final Block MARKING_PLATE = register("dimdoors:marking_plate", new MarkingPlateBlock(FabricBlockSettings.of(Material.METAL, DyeColor.BLACK).build()));
 
     private static Block register(String string, Block block) {
         return Registry.register(Registry.BLOCK, string, block);

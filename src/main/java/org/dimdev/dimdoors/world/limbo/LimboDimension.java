@@ -1,14 +1,17 @@
 package org.dimdev.dimdoors.world.limbo;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.source.BiomeSourceType;
+import net.minecraft.world.biome.source.FixedBiomeSource;
+import net.minecraft.world.biome.source.FixedBiomeSourceConfig;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import org.dimdev.util.Location;
+import org.dimdev.dimdoors.world.ModBiomes;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 
 public class LimboDimension extends Dimension {
@@ -16,17 +19,16 @@ public class LimboDimension extends Dimension {
         super(world, dimensionType, 0);
     }
 
-    public static Location getLimboSkySpawn(Entity entity) {
-        return null; // TODO
-    }
-
     @Override
     public ChunkGenerator<?> createChunkGenerator() {
-        return null;
+        FixedBiomeSourceConfig biomeConfig = BiomeSourceType.FIXED.getConfig(world.getSeed()).setBiome(ModBiomes.LIMBO);
+        FixedBiomeSource biomeSource = BiomeSourceType.FIXED.applyConfig(biomeConfig);
+        LimboChunkGeneratorConfig chunkGeneratorConfig = new LimboChunkGeneratorConfig();
+        return new LimboChunkGenerator(world, biomeSource, chunkGeneratorConfig);
     }
 
     @Override
-    public BlockPos getSpawningBlockInChunk(ChunkPos chunkPos, boolean bl) {
+    public BlockPos getSpawningBlockInChunk(ChunkPos chunk, boolean bl) {
         return null;
     }
 
@@ -37,7 +39,7 @@ public class LimboDimension extends Dimension {
 
     @Override
     public float getSkyAngle(long l, float f) {
-        return 0;
+        return 0.5f;
     }
 
     @Override
@@ -57,11 +59,11 @@ public class LimboDimension extends Dimension {
 
     @Override
     public boolean isFogThick(int i, int j) {
-        return false;
+        return true;
     }
 
     @Override
     public DimensionType getType() {
-        return null;
+        return ModDimensions.LIMBO;
     }
 }

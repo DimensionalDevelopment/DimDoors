@@ -261,7 +261,7 @@ public class PocketTemplate {
                     PocketRegistry.instance(world).markDirty();
                     rift.setDestination(((PocketEntranceMarker) dest).getIfDestination());
                     rift.register();
-                    RiftRegistry.instance().addPocketEntrance(pocket, new Location((ServerWorld) rift.getWorld(), rift.getPos()));
+                    RiftRegistry.instance(world).addPocketEntrance(pocket, new Location((ServerWorld) rift.getWorld(), rift.getPos()));
                 } else {
                     rift.setDestination(((PocketEntranceMarker) dest).getOtherwiseDestination());
                 }

@@ -19,6 +19,6 @@ public class EternalFluidBlock extends FluidBlock {
 
     @Override
     public void onEntityCollision(BlockState blockState, World world, BlockPos blockPos, Entity entity) {
-        TARGET.receiveEntity(entity, entity.yaw, 0);
+        TARGET.receiveEntity(entity, entity.yaw);
     }
 }

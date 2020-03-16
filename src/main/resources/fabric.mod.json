@@ -22,7 +22,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "org.dimdev.dimdoors.DimDoors"
+      "org.dimdev.dimdoors.DimensionalDoorsInitializer"
     ]
   },
   "mixins": [

@@ -21,11 +21,11 @@ public class MessageTarget implements EntityTarget {
     }
 
     @Override
-    public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) {
+    public boolean receiveEntity(Entity entity, float yawOffset) {
         entity.sendMessage(new TranslatableText(message, messageParams));
 
         if (forwardTo != null) {
-            forwardTo.as(Targets.ENTITY).receiveEntity(entity, relativeYaw, relativePitch);
+            forwardTo.as(Targets.ENTITY).receiveEntity(entity, yawOffset);
             return true;
         } else {
             return false;

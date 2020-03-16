@@ -12,7 +12,7 @@ public final class Targets {
     public static final Class<RedstoneTarget> REDSTONE = RedstoneTarget.class;
 
     public static void registerDefaultTargets() {
-        DefaultTargets.registerDefaultTarget(ENTITY, (entity, relativeYaw, relativePitch) -> {
+        DefaultTargets.registerDefaultTarget(ENTITY, (entity, relativeYaw) -> {
             entity.sendMessage(new TranslatableText("rifts.unlinked"));
             return false;
         });

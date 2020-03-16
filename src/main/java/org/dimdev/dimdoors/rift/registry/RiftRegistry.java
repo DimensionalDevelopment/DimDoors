@@ -3,8 +3,9 @@ package org.dimdev.dimdoors.rift.registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.util.Identifier;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +14,6 @@ import org.dimdev.pocketlib.PocketRegistry;
 import org.dimdev.pocketlib.PrivatePocketData;
 import org.dimdev.util.GraphUtils;
 import org.dimdev.util.Location;
-import org.dimdev.util.WorldUtils;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
@@ -32,17 +32,19 @@ public class RiftRegistry extends PersistentState {
     protected Map<UUID, PlayerRiftPointer> lastPrivatePocketEntrances = new HashMap<>(); // Player UUID -> last rift used to exit pocket
     protected Map<UUID, PlayerRiftPointer> lastPrivatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
     protected Map<UUID, PlayerRiftPointer> overworldRifts = new HashMap<>(); // Player UUID -> rift used to exit the overworld
+    private final World overworld;
 
-    public RiftRegistry() {
+    public RiftRegistry(World overworld) {
         super(DATA_NAME);
+        this.overworld = overworld;
     }
 
-    public RiftRegistry(String s) {
-        super(s);
+    public static RiftRegistry instance(World world) {
+        return instance(world.getServer());
     }
 
-    public static RiftRegistry instance() {
-        return WorldUtils.getWorld(DimensionType.OVERWORLD).getPersistentStateManager().get(RiftRegistry::new, DATA_NAME);
+    private static RiftRegistry instance(MinecraftServer server) {
+        return server.getWorld(DimensionType.OVERWORLD).getPersistentStateManager().getOrCreate(() -> new RiftRegistry(server.getWorld(DimensionType.OVERWORLD)), DATA_NAME);
     }
 
     @Override
@@ -308,7 +310,7 @@ public class RiftRegistry extends PersistentState {
         if (entrance != null) return entrance.location;
 
         // If there was no last used private entrance, get the first player's private pocket entrance
-        return getPocketEntrance(PrivatePocketData.instance().getPrivatePocket(playerUUID));
+        return getPocketEntrance(PrivatePocketData.instance(overworld).getPrivatePocket(playerUUID));
     }
 
     private void setPlayerRiftPointer(UUID playerUUID, Location rift, Map<UUID, PlayerRiftPointer> map) {

@@ -1,23 +1,22 @@
 package org.dimdev.dimdoors;
 
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.entity.Entity;
-import net.minecraft.text.TranslatableText;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.rift.targets.*;
+import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 
-public class DimDoors implements ModInitializer {
-    public static String getConfigurationFolder() {
-        return "config"; // TODO
-    }
-
+public class DimensionalDoorsInitializer implements ModInitializer {
     @Override
     public void onInitialize() {
         ModBlocks.init();
         ModItems.init();
         ModDimensions.init();
+        ModEntityTypes.init();
+        ModBiomes.init();
 
         VirtualTarget.registry.put("available_link", RandomTarget.class);
         VirtualTarget.registry.put("escape", EscapeTarget.class);
@@ -32,5 +31,7 @@ public class DimDoors implements ModInitializer {
         VirtualTarget.registry.put("relative", RelativeReference.class);
 
         Targets.registerDefaultTargets();
+
+        SchematicHandler.INSTANCE.loadSchematics();
     }
 }

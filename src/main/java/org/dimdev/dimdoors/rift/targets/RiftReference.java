@@ -44,12 +44,12 @@ public abstract class RiftReference extends VirtualTarget {
 
     @Override
     public void register() {
-        RiftRegistry.instance().addLink(location, getReferencedLocation());
+        RiftRegistry.instance(location.world).addLink(location, getReferencedLocation());
     }
 
     @Override
     public void unregister() {
-        RiftRegistry.instance().removeLink(location, getReferencedLocation());
+        RiftRegistry.instance(location.world).removeLink(location, getReferencedLocation());
     }
 
     @Override
@@ -66,8 +66,8 @@ public abstract class RiftReference extends VirtualTarget {
     @Override
     public float[] getColor() {
         Location target = getReferencedLocation();
-        if (target != null && RiftRegistry.instance().isRiftAt(target)) {
-            Set<Location> otherRiftTargets = RiftRegistry.instance().getTargets(target);
+        if (target != null && RiftRegistry.instance(target.world).isRiftAt(target)) {
+            Set<Location> otherRiftTargets = RiftRegistry.instance(target.world).getTargets(target);
             if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(location)) {
                 return new float[]{0, 1, 0, 1};
             }

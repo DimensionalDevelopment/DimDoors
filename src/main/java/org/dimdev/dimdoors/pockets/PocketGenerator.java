@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.pockets;
 
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.ModConfig;
@@ -11,7 +10,6 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.pocketlib.Pocket;
 import org.dimdev.pocketlib.PocketRegistry;
 import org.dimdev.pocketlib.VirtualLocation;
-import org.dimdev.util.WorldUtils;
 
 import java.util.Random;
 
@@ -41,13 +39,13 @@ public final class PocketGenerator {
 
     public static Pocket generatePrivatePocket(VirtualLocation virtualLocation) {
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getPersonalPocketTemplate();
-        return generatePocketFromTemplate(WorldUtils.getWorld(ModDimensions.PERSONAL), pocketTemplate, virtualLocation, true);
+        return generatePocketFromTemplate(virtualLocation.world.getServer().getWorld(ModDimensions.PERSONAL), pocketTemplate, virtualLocation, true);
     }
 
     // TODO: size of public pockets should increase with depth
     public static Pocket generatePublicPocket(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getPublicPocketTemplate();
-        return generatePocketFromTemplate(WorldUtils.getWorld(ModDimensions.PUBLIC), pocketTemplate, virtualLocation, linkTo, linkProperties);
+        return generatePocketFromTemplate(virtualLocation.world.getServer().getWorld(ModDimensions.PUBLIC), pocketTemplate, virtualLocation, linkTo, linkProperties);
     }
 
     /**
@@ -63,6 +61,6 @@ public final class PocketGenerator {
         String group = random.nextFloat() < netherProbability ? "nether" : "ruins";
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getRandomTemplate(group, depth, ModConfig.POCKETS.maxPocketSize, false);
 
-        return generatePocketFromTemplate(WorldUtils.getWorld(ModDimensions.DUNGEON), pocketTemplate, virtualLocation, linkTo, linkProperties);
+        return generatePocketFromTemplate(virtualLocation.world.getServer().getWorld(ModDimensions.DUNGEON), pocketTemplate, virtualLocation, linkTo, linkProperties);
     }
 }

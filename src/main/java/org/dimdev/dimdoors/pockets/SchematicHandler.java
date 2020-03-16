@@ -11,7 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.util.math.MathUtil;
 import org.dimdev.util.schem.Schematic;
-import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 
 import java.io.*;
@@ -29,6 +29,10 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String SAVED_POCKETS_GROUP_NAME = "saved_pockets";
     public static final SchematicHandler INSTANCE = new SchematicHandler();
+
+    private static String getFolder() {
+        return "config"; // TODO
+    }
 
     public Schematic loadSchematicFromByteArray(byte[] schematicBytecode) {
         Schematic schematic = null;
@@ -54,7 +58,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         String[] names = {"default_dungeon_nether", "default_dungeon_normal", "default_private", "default_public", "default_blank"}; // TODO: don't hardcode
         for (String name : names) {
             try {
-                URL resource = DimDoors.class.getResource("/assets/dimdoors/pockets/json/" + name + ".json");
+                URL resource = DimensionalDoorsInitializer.class.getResource("/assets/dimdoors/pockets/json/" + name + ".json");
                 String jsonString = IOUtils.toString(resource, StandardCharsets.UTF_8);
                 templates.addAll(loadTemplatesFromJson(jsonString));
             } catch (IOException e) {
@@ -63,12 +67,12 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         }
 
         // Init json config folder
-        File jsonFolder = new File(DimDoors.getConfigurationFolder(), "/jsons");
+        File jsonFolder = new File(getFolder(), "/jsons");
         if (!jsonFolder.exists()) {
             jsonFolder.mkdirs();
         }
         // Init schematics config folder
-        File schematicFolder = new File(DimDoors.getConfigurationFolder(), "/schematics");
+        File schematicFolder = new File(getFolder(), "/schematics");
         if (!schematicFolder.exists()) {
             schematicFolder.mkdirs();
         }
@@ -85,7 +89,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         }
 
         // Load saved schematics
-        File saveFolder = new File(DimDoors.getConfigurationFolder(), "/schematics/saved");
+        File saveFolder = new File(getFolder(), "/schematics/saved");
         if (saveFolder.exists()) {
             for (File file : saveFolder.listFiles()) {
                 if (file.isDirectory() || !file.getName().endsWith(".schem")) continue;
@@ -107,7 +111,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
 
     private static List<PocketTemplate> loadTemplatesFromJson(String jsonString) {
         String schematicJarDirectory = "/assets/dimdoors/pockets/schematic/";
-        File schematicFolder = new File(DimDoors.getConfigurationFolder(), "/schematics");
+        File schematicFolder = new File(getFolder(), "/schematics");
 
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(jsonString);
@@ -123,7 +127,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             String extendedTemplatelocation = subDirectory.equals("") ? template.getId() : subDirectory + "/" + template.getId() + ".schem"; //transform the filename accordingly
 
             //Initialising the possible locations/formats for the schematic file
-            InputStream schematicStream = DimDoors.class.getResourceAsStream(schematicJarDirectory + extendedTemplatelocation);
+            InputStream schematicStream = DimensionalDoorsInitializer.class.getResourceAsStream(schematicJarDirectory + extendedTemplatelocation);
             File schematicFile = new File(schematicFolder, "/" + extendedTemplatelocation);
 
             //determine which location to load the schematic file from (and what format)
@@ -305,7 +309,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
 
     public static void saveSchematic(Schematic schematic, String id) {
         CompoundTag schematicNBT = schematic.saveToNBT();
-        File saveFolder = new File(DimDoors.getConfigurationFolder(), "/schematics/saved");
+        File saveFolder = new File(getFolder(), "/schematics/saved");
         if (!saveFolder.exists()) {
             saveFolder.mkdirs();
         }
