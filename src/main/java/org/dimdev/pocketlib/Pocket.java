@@ -28,7 +28,7 @@ public final class Pocket {
     public Pocket(int id, ServerWorld world, int x, int z) {
         this.id = id;
         this.world = world;
-        new BlockBox(x * 16, 0, z * 16, (x + 1) * 16, 255, (z + 1) * 16);
+        new BlockBox(x * 16, 0, z * 16, (x + 1) * 16, 0, (z + 1) * 16);
     }
 
     boolean isInBounds(BlockPos pos) {
@@ -98,5 +98,9 @@ public final class Pocket {
         int innerVolume = (pocket.box.getBlockCountX() - 5) * (pocket.box.getBlockCountY() - 5) * (pocket.box.getBlockCountZ() - 5);
 
         return (outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE;
+    }
+
+    public void setSize(int x, int y, int z) {
+        box = new BlockBox(box.minX, box.minY, box.minZ, box.minX + x, box.minY + y, box.minZ + z);
     }
 }

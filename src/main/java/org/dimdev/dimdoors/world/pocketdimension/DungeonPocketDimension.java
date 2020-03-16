@@ -9,8 +9,8 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import org.dimdev.pocketlib.PocketWorldDimension;
 
 public class DungeonPocketDimension extends PocketWorldDimension {
-    public DungeonPocketDimension(World world, DimensionType dimensionType, float f) {
-        super(world, dimensionType, f);
+    public DungeonPocketDimension(World world, DimensionType dimensionType) {
+        super(world, dimensionType, 0);
     }
 
     @Override

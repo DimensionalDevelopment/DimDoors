@@ -23,7 +23,11 @@ public class LimboGateway extends BaseGateway {
         world.setBlockState(new BlockPos(x, y + 1, z - 1), unravelledFabric);
         world.setBlockState(new BlockPos(x, y + 1, z + 1), unravelledFabric);
 
-        DimensionalDoorItem.placeDoor(world, new BlockPos(x, y + 1, z), Direction.NORTH, ModBlocks.DIMENSIONAL_PORTAL, false);
+        placePortal(world, new BlockPos(x, y + 1, z), Direction.NORTH);
+    }
+
+    private void placePortal(World world, BlockPos pos, Direction facing) {
+        // todo
     }
 
     @Override

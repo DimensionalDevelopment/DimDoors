@@ -24,7 +24,7 @@ public class RiftPlaceholder extends Rift { // TODO: don't extend rift
 
     @Override
     public void markDirty() {
-        RiftRegistry.instance().markSubregistryDirty(world);
+
     }
 
     @Override

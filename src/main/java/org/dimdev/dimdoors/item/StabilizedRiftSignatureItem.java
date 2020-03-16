@@ -23,7 +23,6 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.util.Location;
 import org.dimdev.util.RotatedLocation;
 
-
 import java.util.List;
 
 public class StabilizedRiftSignatureItem extends Item { // TODO: common superclass with rift signature
@@ -63,19 +62,19 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 
         if (target == null) {
             // The link signature has not been used. Store its current target as the first location.
-            setSource(stack, new RotatedLocation(world, pos, player.yaw, 0));
-            player.sendMessage(new TranslatableText(getTranslationKey() + ".stored"), true);
-            world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
+            setSource(stack, new RotatedLocation((ServerWorld) world, pos, player.yaw, 0));
+            player.sendMessage(new TranslatableText(getTranslationKey() + ".stored"));
+            world.playSound(null, player.getSenseCenterPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
             // Place a rift at the target point
             if (target.getBlockState().getBlock() != ModBlocks.DETACHED_RIFT) {
-                if (!target.getBlockState().getBlock().canReplace(world.getBlockState(((Location) target).getBlockPos()), itemPlacementContext)) {
+                if (!target.getBlockState().getBlock().canReplace(world.getBlockState(target.getBlockPos()), itemPlacementContext)) {
                     player.sendMessage(new TranslatableText("tools.target_became_block"));
                     // Don't clear source, stabilized signatures always stay bound
                     return ActionResult.FAIL;
                 }
-                World targetWorld = ((Location) target).world;
-                targetWorld.setBlockState(((Location) target).getBlockPos(), ModBlocks.DETACHED_RIFT.getDefaultState());
+                World targetWorld = target.world;
+                targetWorld.setBlockState(target.getBlockPos(), ModBlocks.DETACHED_RIFT.getDefaultState());
                 DetachedRiftBlockEntity rift1 = (DetachedRiftBlockEntity) target.getBlockEntity();
                 rift1.register();
             }
@@ -88,8 +87,8 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 
             stack.damage(1, player, playerEntity -> {});
 
-            player.sendMessage(new TranslatableText(getTranslationKey() + ".created"), true);
-            world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
+            player.sendMessage(new TranslatableText(getTranslationKey() + ".created"));
+            world.playSound(null, player.getSenseCenterPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         }
 
         return ActionResult.SUCCESS;
@@ -116,11 +115,11 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
     }
 
     @Override
-    public void appendTooltip(ItemStack itemStack,  World world, List<Text> list, TooltipContext tooltipContext) {
+    public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
         RotatedLocation transform = getTarget(itemStack);
 
         if (transform != null) {
-            list.add(new TranslatableText(getTranslationKey() + ".bound.info", transform.getX(), transform.getY(), transform.getZ(), ((Location) transform).getWorldId()));
+            list.add(new TranslatableText(getTranslationKey() + ".bound.info", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId()));
         } else {
             list.add(new TranslatableText(getTranslationKey() + ".unbound.info"));
         }

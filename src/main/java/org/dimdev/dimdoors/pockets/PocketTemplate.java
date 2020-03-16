@@ -168,12 +168,12 @@ public class PocketTemplate {
     }
 
     public void place(Pocket pocket, boolean setup) {
-        pocket.setSize(size);
+        pocket.setSize(size * 16, size * 16, size * 16);
         int gridSize = PocketRegistry.instance(pocket.world).getGridSize();
         World world = pocket.world;
-        int xBase = pocket.getX() * gridSize * 16;
-        int yBase = 0;
-        int zBase = pocket.getZ() * gridSize * 16;
+        int xBase = pocket.box.minX;
+        int yBase = pocket.box.minY;
+        int zBase = pocket.box.minZ;
 
         //Converting the schematic from bytearray if needed
         if (schematic == null) {
@@ -195,10 +195,10 @@ public class PocketTemplate {
 
     public void setup(Pocket pocket, VirtualTarget linkTo, LinkProperties linkProperties) {
         int gridSize = PocketRegistry.instance(pocket.world).getGridSize();
-        World world = pocket.world;
-        int xBase = pocket.getX() * gridSize * 16;
-        int yBase = 0;
-        int zBase = pocket.getZ() * gridSize * 16;
+        ServerWorld world = pocket.world;
+        int xBase = pocket.box.minX;
+        int yBase = pocket.box.minY;
+        int zBase = pocket.box.minZ;
 
         // Fill chests and make rift list
         List<RiftBlockEntity> rifts = new ArrayList<>();
@@ -221,12 +221,12 @@ public class PocketTemplate {
                         LootTable table;
                         if (tile instanceof ChestBlockEntity) {
                             LOGGER.debug("Now populating chest.");
-                            table = world.getServer().getLootManager().getSupplier(new Identifier("dimdoors:dungeon_chest"));
+                            table = world.getServer().getLootManager().getTable(new Identifier("dimdoors:dungeon_chest"));
                         } else { //(tile instanceof TileEntityDispenser)
                             LOGGER.debug("Now populating dispenser.");
-                            table = world.getServer().getLootManager().getSupplier(new Identifier("dimdoors:dispenser_projectiles"));
+                            table = world.getServer().getLootManager().getTable(new Identifier("dimdoors:dispenser_projectiles"));
                         }
-                        LootContext ctx = new LootContext.Builder().setRandom(world.random).build(LootContextTypes.CHEST);
+                        LootContext ctx = new LootContext.Builder(world).setRandom(world.random).build(LootContextTypes.CHEST);
                         table.supplyInventory(inventory, ctx);
                         LOGGER.debug("Inventory should be populated now. Chest is: " + (inventory.isInvEmpty() ? "empty." : "filled."));
                         if (inventory.isInvEmpty()) {

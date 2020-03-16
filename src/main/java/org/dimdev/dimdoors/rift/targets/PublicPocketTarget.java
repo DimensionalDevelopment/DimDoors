@@ -25,7 +25,7 @@ public class PublicPocketTarget extends RestoringTarget {
         VirtualLocation newVirtualLocation = null;
         if (riftVirtualLocation != null) {
             int depth = Math.max(riftVirtualLocation.depth, 1);
-            newVirtualLocation = new VirtualLocation(riftVirtualLocation.dimension, riftVirtualLocation.x, riftVirtualLocation.z, depth);
+            newVirtualLocation = new VirtualLocation(riftVirtualLocation.world, riftVirtualLocation.x, riftVirtualLocation.z, depth);
         }
         Pocket pocket = PocketGenerator.generatePublicPocket(newVirtualLocation, new GlobalReference(location), null);
 

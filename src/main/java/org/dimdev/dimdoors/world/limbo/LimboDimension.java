@@ -12,8 +12,8 @@ import org.dimdev.util.Location;
 
 
 public class LimboDimension extends Dimension {
-    public LimboDimension(World world, DimensionType dimensionType, float f) {
-        super(world, dimensionType, f);
+    public LimboDimension(World world, DimensionType dimensionType) {
+        super(world, dimensionType, 0);
     }
 
     public static Location getLimboSkySpawn(Entity entity) {

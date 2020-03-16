@@ -22,16 +22,16 @@ public final class ModItems {
     public static final Item GOLD_DOOR = register(ModBlocks.GOLD_DOOR);
     public static final Item QUARTZ_DOOR = register(ModBlocks.QUARTZ_DOOR);
 
-    public static final Item IRON_DIMENSIONAL_DOOR = new DimensionalDoorItem(
+    public static final Item IRON_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
             ModBlocks.IRON_DIMENSIONAL_DOOR,
             new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1),
             rift -> {
                 PublicPocketTarget destination = new PublicPocketTarget();
                 rift.setDestination(destination);
             }
-    );
+    ));
 
-    public static final Item GOLD_DIMENSIONAL_DOOR = new DimensionalDoorItem(
+    public static final Item GOLD_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
             ModBlocks.GOLD_DIMENSIONAL_DOOR,
             new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1),
             rift -> {
@@ -49,9 +49,9 @@ public final class ModItems {
                                                 .noLinkBack(false)
                                                 .newRiftWeight(1).build());
             }
-    );
+    ));
 
-    public static final Item QUARTZ_DIMENSIONAL_DOOR = new DimensionalDoorItem(
+    public static final Item QUARTZ_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
             ModBlocks.QUARTZ_DIMENSIONAL_DOOR,
             new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1),
             rift -> {
@@ -61,17 +61,17 @@ public final class ModItems {
                     rift.setDestination(new PrivatePocketTarget()); // entrances
                 }
             }
-    );
+    ));
 
-    public static final Item UNSTABLE_DIMENSIONAL_DOOR = new DimensionalDoorItem(
+    public static final Item UNSTABLE_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
             ModBlocks.IRON_DIMENSIONAL_DOOR,
             new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1),
             rift -> {
                 // TODO
             }
-    );
+    ));
 
-    public static final Item WOOD_DIMENSIONAL_DOOR = new DimensionalDoorItem(
+    public static final Item WOOD_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
             ModBlocks.WOOD_DIMENSIONAL_DOOR,
             new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1),
             rift -> rift.setDestination(
@@ -84,13 +84,13 @@ public final class ModItems {
                             .weightMaximum(100)
                             .noLink(false).newRiftWeight(0).build()
             )
-    );
+    ));
 
-    public static final Item WOOD_DIMENSIONAL_TRAPDOOR = new DimensionalTrapdoorItem(
+    public static final Item WOOD_DIMENSIONAL_TRAPDOOR = register(new DimensionalTrapdoorItem(
             ModBlocks.WOOD_DIMENSIONAL_DOOR,
             new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1),
             rift -> rift.setDestination(new EscapeTarget(false))
-    );
+    ));
 
     public static final Item WHITE_FABRIC = register(ModBlocks.WHITE_FABRIC);
     public static final Item ORANGE_FABRIC = register(ModBlocks.ORANGE_FABRIC);
@@ -133,20 +133,20 @@ public final class ModItems {
 
     // Dimensional doors
 
-    public static final Item WORLD_THREAD = new Item(new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS));
-    public static final Item STABLE_FABRIC = new Item(new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS));
-    public static final Item RIFT_CONFIGURATION_TOOL = new RiftConfigurationToolItem();
-    public static final Item RIFT_BLADE = new RiftBladeItem(new Item.Settings().maxDamage(100).group(ModItemGroups.DIMENSIONAL_DOORS));
-    public static final Item RIFT_REMOVER = new RiftRemoverItem(new Item.Settings().maxCount(1).maxDamage(100).group(ModItemGroups.DIMENSIONAL_DOORS));
-    public static final Item RIFT_SIGNATURE = new RiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(1).group(ModItemGroups.DIMENSIONAL_DOORS));
-    public static final Item STABILIZED_RIFT_SIGNATURE = new StabilizedRiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(20).group(ModItemGroups.DIMENSIONAL_DOORS));
-    public static final Item RIFT_STABILIZER = new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(ModItemGroups.DIMENSIONAL_DOORS));
-    public static final Item WOVEN_WORLD_THREAD_HELMET = new WorldThreadArmorItem("world_thread_helmet",  EquipmentSlot.HEAD, new Item.Settings());
-    public static final Item WOVEN_WORLD_THREAD_CHESTPLATE = new WorldThreadArmorItem("world_thread_chestplate",  EquipmentSlot.CHEST, new Item.Settings());
-    public static final Item WOVEN_WORLD_THREAD_LEGGINGS = new WorldThreadArmorItem("world_thread_leggings",  EquipmentSlot.LEGS, new Item.Settings());
-    public static final Item WOVEN_WORLD_THREAD_BOOTS = new WorldThreadArmorItem("world_thread_boots", EquipmentSlot.FEET, new Item.Settings());
-    public static final Item CREEPY_RECORD = new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS));
-    public static final Item WHITE_VOID_RECORD = new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS));
+    public static final Item WORLD_THREAD = register(new Identifier("dimdoors:world_thread"), new Item(new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS)));
+    public static final Item STABLE_FABRIC = register(new Identifier("dimdoors:stable_fabric"), new Item(new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS)));
+    public static final Item RIFT_CONFIGURATION_TOOL = register(new Identifier("dimdoors:rift_configuration_tool"), new RiftConfigurationToolItem());
+    public static final Item RIFT_BLADE = register(new Identifier("dimdoors:rift_blade"), new RiftBladeItem(new Item.Settings().maxDamage(100).group(ModItemGroups.DIMENSIONAL_DOORS)));
+    public static final Item RIFT_REMOVER = register(new Identifier("dimdoors:rift_remover"), new RiftRemoverItem(new Item.Settings().maxCount(1).maxDamage(100).group(ModItemGroups.DIMENSIONAL_DOORS)));
+    public static final Item RIFT_SIGNATURE = register(new Identifier("dimdoors:rift_signature"), new RiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(1).group(ModItemGroups.DIMENSIONAL_DOORS)));
+    public static final Item STABILIZED_RIFT_SIGNATURE = register(new Identifier("dimdoors:stabilized_rift_signature"), new StabilizedRiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(20).group(ModItemGroups.DIMENSIONAL_DOORS)));
+    public static final Item RIFT_STABILIZER = register(new Identifier("dimdoors:rift_stabilizer"), new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(ModItemGroups.DIMENSIONAL_DOORS)));
+    public static final Item WORLD_THREAD_HELMET = register(new Identifier("dimdoors:world_thread_helmet"), new WorldThreadArmorItem("world_thread_helmet", EquipmentSlot.HEAD, new Item.Settings()));
+    public static final Item WORLD_THREAD_CHESTPLATE = register(new Identifier("dimdoors:world_thread_chestplate"), new WorldThreadArmorItem("world_thread_chestplate", EquipmentSlot.CHEST, new Item.Settings()));
+    public static final Item WORLD_THREAD_LEGGINGS = register(new Identifier("dimdoors:world_thread_leggings"), new WorldThreadArmorItem("world_thread_leggings", EquipmentSlot.LEGS, new Item.Settings()));
+    public static final Item WORLD_THREAD_BOOTS = register(new Identifier("dimdoors:world_thread_boots"), new WorldThreadArmorItem("world_thread_boots", EquipmentSlot.FEET, new Item.Settings()));
+    public static final Item CREEPY_RECORD = register(new Identifier("dimdoors:creepy_record"), new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS)));
+    public static final Item WHITE_VOID_RECORD = register(new Identifier("dimdoors:white_void_record"), new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS)));
 
     private static Item register(Block block) {
         return register(new BlockItem(block, new Item.Settings()));
