@@ -1,7 +1,10 @@
 package org.dimdev.util;
 
+import com.mojang.datafixers.DataFixerUpper;
+import com.mojang.datafixers.Dynamic;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.block.pattern.BlockPattern;
+import net.minecraft.datafixer.NbtOps;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -22,6 +25,7 @@ public final class TeleportUtil {
             entity.setPos(pos.x, pos.y, pos.z);
             entity.setYaw(entity.yaw + yawOffset);
         } else {
+
             FabricDimensions.teleport(
                     entity,
                     dimension,

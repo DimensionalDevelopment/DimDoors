@@ -16,23 +16,24 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.item.ModItems;
 
 import java.util.Random;
 
 public abstract class EternalFluid extends BaseFluid {
     @Override
     public Fluid getFlowing() {
-        return Fluids.FLOWING_LAVA;
+        return ModFluids.FLOWING_ETERNAL_FLUID;
     }
 
     @Override
     public Fluid getStill() {
-        return Fluids.LAVA;
+        return ModFluids.ETERNAL_FLUID;
     }
 
     @Override
     public Item getBucketItem() {
-        return Items.LAVA_BUCKET;
+        return ModItems.ETERNAL_FLUID_BUCKET;
     }
 
     @Override
@@ -122,7 +123,7 @@ public abstract class EternalFluid extends BaseFluid {
         return 100000;
     }
 
-    public static class Flowing extends LavaFluid {
+    public static class Flowing extends EternalFluid {
         @Override
         protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
             super.appendProperties(builder);
@@ -140,7 +141,7 @@ public abstract class EternalFluid extends BaseFluid {
         }
     }
 
-    public static class Still extends LavaFluid {
+    public static class Still extends EternalFluid {
         @Override
         public int getLevel(FluidState fluidState) {
             return 8;

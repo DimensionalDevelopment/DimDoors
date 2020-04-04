@@ -23,6 +23,9 @@
   "entrypoints": {
     "main": [
       "org.dimdev.dimdoors.DimensionalDoorsInitializer"
+    ],
+    "client": [
+      "org.dimdev.dimdoors.DimensionalDoorsClientInitializer"
     ]
   },
   "mixins": [

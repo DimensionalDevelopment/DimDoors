@@ -1,10 +1,15 @@
 package org.dimdev.annotatednbt;
 
+import com.google.gson.Gson;
+import com.mojang.datafixers.Dynamic;
+import com.mojang.datafixers.types.JsonOps;
+import net.minecraft.datafixer.NbtOps;
 import net.minecraft.nbt.CompoundTag;
-import org.dimdev.dimdoors.rift.registry.PlayerRiftPointer;
+import net.minecraft.nbt.Tag;
 import org.dimdev.util.RotatedLocation;
 
 public final class AnnotatedNbt {
+    public static Gson gson = new Gson();
     public static <T> T deserialize(Class<RotatedLocation> rotatedLocationClass, CompoundTag tag) {
         return null; // TODO
     }
@@ -27,5 +32,13 @@ public final class AnnotatedNbt {
 
     public static CompoundTag toTag(Object playerRiftPointer, CompoundTag nbt) {
         return null;
+    }
+
+    public static Tag toTag(Object obj) {
+        return new Dynamic<>(JsonOps.INSTANCE, gson.toJsonTree(obj)).convert(NbtOps.INSTANCE).getValue();
+    }
+
+    public static Object fromTag(Class<?> clazz, Tag nbt) {
+        return gson.fromJson(new Dynamic<>(NbtOps.INSTANCE, nbt).convert(JsonOps.INSTANCE).getValue(), clazz);
     }
 }

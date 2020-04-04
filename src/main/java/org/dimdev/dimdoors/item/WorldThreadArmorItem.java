@@ -6,6 +6,7 @@ import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 
 public class WorldThreadArmorItem extends ArmorItem {
     public static final ArmorMaterial MATERIAL = new ArmorMaterial() {
@@ -26,7 +27,7 @@ public class WorldThreadArmorItem extends ArmorItem {
 
         @Override
         public SoundEvent getEquipSound() {
-            return null;
+            return SoundEvents.ITEM_ARMOR_EQUIP_GENERIC;
         }
 
         @Override
@@ -36,7 +37,7 @@ public class WorldThreadArmorItem extends ArmorItem {
 
         @Override
         public String getName() {
-            return "woven_world_thread";
+            return "world_thread";
         }
 
         @Override
@@ -50,7 +51,7 @@ public class WorldThreadArmorItem extends ArmorItem {
         }
     };
 
-    public WorldThreadArmorItem(String name, EquipmentSlot equipmentSlot, Item.Settings settings) {
+    public WorldThreadArmorItem(EquipmentSlot equipmentSlot, Item.Settings settings) {
         super(MATERIAL, equipmentSlot, settings);
     }
 }

@@ -41,10 +41,6 @@ public final class RiftCrackRenderer {
             flutters[i] = Math.sin((1F + i / 10F) * time * flutterSpeed) * Math.cos(1F - i / 10F * time * flutterSpeed) * flutterMagnitude;
         }
 
-        // Set color (nearly black, but inverts background)
-        RenderSystem.color4f(0.08f, 0.08f, 0.08f, .3F);
-        RenderSystem.blendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-
         // Draw the rift
         for (Point p : poly.points) {
             // Reduces most overlap between triangles inside the rift's center
@@ -60,7 +56,7 @@ public final class RiftCrackRenderer {
             y *= scale;
             z *= scale;
 
-            vc.vertex(x + xJitter, y + yJitter, z + zJitter);
+            vc.vertex(x + xJitter, y + yJitter, z + zJitter).color(0.08f, 0.08f, 0.08f, .3f).next();
         }
     }
 }
