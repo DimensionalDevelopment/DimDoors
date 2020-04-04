@@ -1,5 +1,5 @@
 {
   "variants": {
-  "normal": { "model": "dimdoors:unravelled_fabric" }
+  "": { "model": "dimdoors:blocks/unravelled_fabric" }
   }
 }

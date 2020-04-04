@@ -1,20 +1,20 @@
 {
   "variants": {
-    "color=white": { "model": "dimdoors:fabric_white" },
-    "color=orange": { "model": "dimdoors:fabric_orange" },
-    "color=magenta": { "model": "dimdoors:fabric_magenta" },
-    "color=light_blue": { "model": "dimdoors:fabric_light_blue" },
-    "color=yellow": { "model": "dimdoors:fabric_yellow" },
-    "color=lime": { "model": "dimdoors:fabric_lime" },
-    "color=pink": { "model": "dimdoors:fabric_pink" },
-    "color=gray": { "model": "dimdoors:fabric_gray" },
-    "color=silver": { "model": "dimdoors:fabric_silver" },
-    "color=cyan": { "model": "dimdoors:fabric_cyan" },
-    "color=purple": { "model": "dimdoors:fabric_purple" },
-    "color=blue": { "model": "dimdoors:fabric_blue" },
-    "color=brown": { "model": "dimdoors:fabric_brown" },
-    "color=green": { "model": "dimdoors:fabric_green" },
-    "color=red": { "model": "dimdoors:fabric_red" },
-    "color=black": { "model": "dimdoors:fabric_black" }
+    "color=white": { "model": "dimdoors:blocks/fabric_white" },
+    "color=orange": { "model": "dimdoors:blocks/fabric_orange" },
+    "color=magenta": { "model": "dimdoors:blocks/fabric_magenta" },
+    "color=light_blue": { "model": "dimdoors:blocks/fabric_light_blue" },
+    "color=yellow": { "model": "dimdoors:blocks/fabric_yellow" },
+    "color=lime": { "model": "dimdoors:blocks/fabric_lime" },
+    "color=pink": { "model": "dimdoors:blocks/fabric_pink" },
+    "color=gray": { "model": "dimdoors:blocks/fabric_gray" },
+    "color=silver": { "model": "dimdoors:blocks/fabric_silver" },
+    "color=cyan": { "model": "dimdoors:blocks/fabric_cyan" },
+    "color=purple": { "model": "dimdoors:blocks/fabric_purple" },
+    "color=blue": { "model": "dimdoors:blocks/fabric_blue" },
+    "color=brown": { "model": "dimdoors:blocks/fabric_brown" },
+    "color=green": { "model": "dimdoors:blocks/fabric_green" },
+    "color=red": { "model": "dimdoors:blocks/fabric_red" },
+    "color=black": { "model": "dimdoors:blocks/fabric_black" }
   }
 }

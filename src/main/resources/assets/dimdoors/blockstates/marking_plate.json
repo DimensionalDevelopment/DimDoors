@@ -1,5 +1,5 @@
 {
   "variants": {
-    "normal": { "model": "dimdoors:marking_plate" }
+    "": { "model": "dimdoors:blocks/marking_plate" }
   }
 }
