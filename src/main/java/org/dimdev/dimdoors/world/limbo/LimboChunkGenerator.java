@@ -15,25 +15,25 @@ public class LimboChunkGenerator extends SurfaceChunkGenerator<LimboChunkGenerat
     private final double[] noiseFalloff = buildNoiseFalloff();
 
     public LimboChunkGenerator(IWorld world, BiomeSource biomeSource, LimboChunkGeneratorConfig config) {
-        super(world, biomeSource, 4, 8, 128, config, false);
+        super(world, biomeSource, 4, 8, 256, config, false);
     }
 
     @Override
-    protected void sampleNoiseColumn(double[] ds, int i, int j) {
-        sampleNoiseColumn(ds, i, j, 684.412D, 2053.236D, 8.555150000000001D, 34.2206D, 3, -10);
+    protected void sampleNoiseColumn(double[] buffer, int x, int z) {
+        sampleNoiseColumn(buffer, x, z, 884.412D, 9740.421D, 8.555150000000001D, 20.2206D, 3, -10);
     }
 
     @Override
     protected double[] computeNoiseRange(int i, int j) {
-        return new double[]{0.0D, 0.0D};
+        return new double[] {-0.80118735, 5.4635482};
     }
 
     @Override
     protected double computeNoiseFalloff(double d, double e, int i) {
-        return noiseFalloff[i];
+        return noiseFalloff[i]/8000d;
     }
 
-    private double[] buildNoiseFalloff() {
+    private double[]  buildNoiseFalloff() {
         double[] ds = new double[getNoiseSizeY()];
 
         for (int i = 0; i < getNoiseSizeY(); ++i) {

@@ -16,9 +16,9 @@ public class LimboBiome extends Biome {
                 .configureSurfaceBuilder(
                         SurfaceBuilder.DEFAULT,
                         new TernarySurfaceConfig(
-                                ModBlocks.BLACK_FABRIC.getDefaultState(),
-                                ModBlocks.BLACK_FABRIC.getDefaultState(),
-                                ModBlocks.BLACK_FABRIC.getDefaultState()
+                                ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
+                                ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
+                                ModBlocks.ETERNAL_FLUID.getDefaultState()
                         )
                 )
                 .precipitation(Biome.Precipitation.NONE).category(Biome.Category.NETHER)
@@ -39,6 +39,6 @@ public class LimboBiome extends Biome {
                 .noises(ImmutableList.of(new Biome.MixedNoisePoint(0.0F, 0.0F, 0.0F, -0.5F, 1.0F))));
 
 
-        addSpawn(EntityCategory.MONSTER, new Biome.SpawnEntry(ModEntityTypes.MONOLITH, 100, 1, 1));
+        //addSpawn(EntityCategory.MONSTER, new Biome.SpawnEntry(ModEntityTypes.MONOLITH, 100, 1, 1));
     }
 }
