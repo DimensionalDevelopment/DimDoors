@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11;
 
 @Environment(EnvType.CLIENT)
 public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<DetachedRiftBlockEntity> {
-    private static final Identifier tesseract_path = new Identifier("dimdoors:textures/other/tesseract.png");
+    public static final Identifier tesseract_path = new Identifier("dimdoors:textures/other/tesseract.png");
 
     private static final Tesseract tesseract = new Tesseract();
     private static final LSystem.PolygonInfo CURVE = LSystem.curves.get(0);
@@ -33,56 +33,37 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
     @Override
     public void render(DetachedRiftBlockEntity rift, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcs, int breakProgress, int alpha) {
         if (ModConfig.GRAPHICS.showRiftCore) {
-            renderTesseract(vcs.getBuffer(RenderLayer.getTranslucent()), rift, tickDelta);
+            renderTesseract(vcs.getBuffer(RenderLayer.getTranslucent()), rift, matrices, tickDelta);
         } else {
             long timeLeft = showRiftCoreUntil - System.currentTimeMillis();
             if (timeLeft >= 0) {
-                renderTesseract(vcs.getBuffer(RenderLayer.getTranslucent()), rift, tickDelta);
+                renderTesseract(vcs.getBuffer(RenderLayer.getTranslucent()), rift, matrices, tickDelta);
             }
         }
 
-        renderCrack(vcs.getBuffer(RenderLayer.getTranslucent()), rift);
+        renderCrack(vcs.getBuffer(MyRenderLayer.CRACK), matrices, rift);
     }
 
-    private void renderCrack(VertexConsumer vc, DetachedRiftBlockEntity rift) {
-        GL11.glPushMatrix();
-
-        // Make the rift render on both sides, disable texture mapping and lighting
-        RenderSystem.disableLighting();
-        RenderSystem.disableCull();
-        RenderSystem.disableTexture();
-        RenderSystem.enableBlend();
-
-        RenderSystem.translated(0.5, 0.5, 0.5);
+    private void renderCrack(VertexConsumer vc, MatrixStack matricees, DetachedRiftBlockEntity rift) {
+        matricees.push();
+        matricees.translate(0.5, 0.5, 0.5);
         RiftCrackRenderer.drawCrack(vc, 0, CURVE, ModConfig.GRAPHICS.riftSize * rift.size, 0xF1234568L * rift.getPos().hashCode());
-
-        RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
-        RenderSystem.enableCull();
-        RenderSystem.enableLighting();
-
-        GL11.glPopMatrix();
+        matricees.pop();
     }
 
-    private void renderTesseract(VertexConsumer vc, DetachedRiftBlockEntity rift, float tickDelta) {
+    private void renderTesseract(VertexConsumer vc, DetachedRiftBlockEntity rift, MatrixStack matrices, float tickDelta) {
         double radian = nextAngle(rift, tickDelta) * TrigMath.DEG_TO_RAD;
         float[] color = rift.getColor();
         if (color == null) color = new float[]{1, 0.5f, 1, 1};
 
-        RenderSystem.disableLighting();
-        RenderSystem.pushMatrix();
-        RenderSystem.disableCull();
+        matrices.push();
 
-        MinecraftClient.getInstance().getTextureManager().bindTexture(tesseract_path);
-
-        RenderSystem.translated(0.5, 0.5, 0.5);
-        RenderSystem.scaled(0.25, 0.25, 0.25);
+        matrices.translate(0.5, 0.5, 0.5);
+        matrices.scale(0.25f, 0.25f, 0.25f);
 
         tesseract.draw(vc, color, radian);
 
-        RenderSystem.enableCull();
-        RenderSystem.popMatrix();
-        RenderSystem.enableLighting();
+        matrices.pop();
     }
 
     private double nextAngle(DetachedRiftBlockEntity rift, float partialTicks) {
