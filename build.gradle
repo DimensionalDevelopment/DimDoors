@@ -11,6 +11,7 @@ buildscript {
 plugins {
     id 'io.franzbecker.gradle-lombok' version '1.11'
     id 'java'
+    id "com.wynprice.cursemaven" version "2.1.1"
 }
 
 apply plugin: 'java'
@@ -30,7 +31,7 @@ dependencies {
     embed 'org.jgrapht:jgrapht-core:1.1.0'
     embed 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
     compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
-    compileOnly 'com.github.OpenCubicChunks:CubicChunks:MC_1.12-SNAPSHOT'
+    compileOnly 'curse.maven:opencubicchunks:2910783'
 }
 
 // Mod version

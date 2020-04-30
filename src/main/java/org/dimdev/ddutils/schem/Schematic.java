@@ -1,7 +1,7 @@
 package org.dimdev.ddutils.schem;
 
-import cubicchunks.world.ICubicWorld;
-import cubicchunks.world.cube.Cube;
+import io.github.opencubicchunks.cubicchunks.api.world.ICubicWorld;
+import io.github.opencubicchunks.cubicchunks.core.world.cube.Cube;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -403,7 +403,7 @@ public class Schematic {
                     for (int cubeZ = 0; cubeZ <= (height >> 4) + 1; cubeZ++) {
                         long setStart = System.nanoTime();
                         // Get the cube only once for efficiency
-                        Cube cube = cubicWorld.getCubeFromCubeCoords((xBase << 4) + cubeX, (yBase << 4) + cubeY, (zBase << 4) + cubeZ);
+                        Cube cube = (Cube) cubicWorld.getCubeFromCubeCoords((xBase << 4) + cubeX, (yBase << 4) + cubeY, (zBase << 4) + cubeZ);
                         ExtendedBlockStorage storage = cube.getStorage();
                         boolean setAir = storage != null;
                         for (int x = 0; x < 16; x++) {
@@ -416,7 +416,7 @@ public class Schematic {
                                         IBlockState state = palette.get(blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
                                             if (storage == null) {
-                                                cube.setStorage(storage = new ExtendedBlockStorage(cube.getY() << 4, world.provider.hasSkyLight()));
+                                                cube.setStorage(storage = new ExtendedBlockStorage((yBase >> 4) + cube.getY() << 4, world.provider.hasSkyLight()));
                                             }
                                             storage.set(x, y, z, state);
                                         } else if (setAir) {
@@ -456,7 +456,7 @@ public class Schematic {
                                         IBlockState state = palette.get(blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
                                             if (storage == null) {
-                                                storageArray[storageY] = storage = new ExtendedBlockStorage(storageY << 4, world.provider.hasSkyLight());
+                                                storageArray[(yBase >> 4) + storageY] = storage = new ExtendedBlockStorage(storageY << 4, world.provider.hasSkyLight());
                                             }
                                             storage.set(x, y, z, state);
                                         } else if (setAir) {
