@@ -1,7 +1,8 @@
 package org.dimdev.ddutils.schem;
 
-import cubicchunks.world.ICubicWorld;
-import cubicchunks.world.cube.Cube;
+import io.github.opencubicchunks.cubicchunks.api.world.ICube;
+import io.github.opencubicchunks.cubicchunks.api.world.ICubicWorld;
+import io.github.opencubicchunks.cubicchunks.core.world.cube.Cube;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -401,34 +402,38 @@ public class Schematic {
                     for (int cubeZ = 0; cubeZ <= (length >> 4) + 1; cubeZ++) {
                         long setStart = System.nanoTime();
                         // Get the cube only once for efficiency
-                        Cube cube = cubicWorld.getCubeFromCubeCoords((xBase >> 4) + cubeX, (yBase >> 4) + cubeY, (zBase >> 4) + cubeZ);
-                        ExtendedBlockStorage storage = cube.getStorage();
-                        boolean setAir = storage != null;
-                        for (int x = 0; x < 16; x++) {
-                            for (int y = 0; y < 16; y++) {
-                                for (int z = 0; z < 16; z++) {
-                                    int sx = (cubeX << 4) + x - (xBase & 0x0F);
-                                    int sy = (cubeY << 4) + y - (yBase & 0x0F);
-                                    int sz = (cubeZ << 4) + z - (zBase & 0x0F);
-                                    if (sx >= 0 && sy >= 0 && sz >= 0 && sx < width && sy < height && sz < length) {
-                                        IBlockState state = palette.get(blockData[sx][sy][sz]);
-                                        if (!state.getBlock().equals(Blocks.AIR)) {
-                                            if (storage == null) {
-                                                cube.setStorage(storage = new ExtendedBlockStorage(cube.getY() << 4, world.provider.hasSkyLight()));
+                        ICube c = cubicWorld.getCubeFromCubeCoords((xBase >> 4) + cubeX, (yBase >> 4) + cubeY, (zBase >> 4) + cubeZ);
+
+                        if (c instanceof Cube) {
+                            Cube cube = (Cube) c;
+                            ExtendedBlockStorage storage = cube.getStorage();
+                            boolean setAir = storage != null;
+                            for (int x = 0; x < 16; x++) {
+                                for (int y = 0; y < 16; y++) {
+                                    for (int z = 0; z < 16; z++) {
+                                        int sx = (cubeX << 4) + x - (xBase & 0x0F);
+                                        int sy = (cubeY << 4) + y - (yBase & 0x0F);
+                                        int sz = (cubeZ << 4) + z - (zBase & 0x0F);
+                                        if (sx >= 0 && sy >= 0 && sz >= 0 && sx < width && sy < height && sz < length) {
+                                            IBlockState state = palette.get(blockData[sx][sy][sz]);
+                                            if (!state.getBlock().equals(Blocks.AIR)) {
+                                                if (storage == null) {
+                                                    cube.setStorage(storage = new ExtendedBlockStorage((yBase >> 4) + cube.getY() << 4, world.provider.hasSkyLight()));
+                                                }
+                                                storage.set(x, y, z, state);
+                                            } else if (setAir) {
+                                                storage.set(x, y, z, state);
                                             }
-                                            storage.set(x, y, z, state);
-                                        } else if (setAir) {
-                                            storage.set(x, y, z, state);
                                         }
                                     }
                                 }
                             }
+                            setTime += System.nanoTime() - setStart;
+                            long relightStart = System.nanoTime();
+                            cube.setInitialLightingDone(false);
+                            relightTime += System.nanoTime() - relightStart;
+                            cube.markDirty();
                         }
-                        setTime += System.nanoTime() - setStart;
-                        long relightStart = System.nanoTime();
-                        cube.setInitialLightingDone(false);
-                        relightTime += System.nanoTime() - relightStart;
-                        cube.markDirty();
                     }
                 }
             }
@@ -454,8 +459,7 @@ public class Schematic {
                                         IBlockState state = palette.get(blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
                                             if (storage == null) {
-                                                storage = new ExtendedBlockStorage((yBase >> 4) + storageY << 4, world.provider.hasSkyLight());
-                                                storageArray[(yBase >> 4) + storageY] = storage;
+                                                storageArray[(yBase >> 4) + storageY] = storage = new ExtendedBlockStorage((yBase >> 4) + storageY << 4, world.provider.hasSkyLight());
                                             }
                                             storage.set(x, y, z, state);
                                         } else if (setAir) {

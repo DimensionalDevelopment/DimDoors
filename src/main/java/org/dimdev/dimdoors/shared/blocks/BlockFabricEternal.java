@@ -32,9 +32,10 @@ public class BlockFabricEternal extends BlockFluidClassic { // TODO: make this a
         setSoundType(SoundType.STONE);
     }
 
-    @Override
+    //This is meant to be a fix for a cubic chunks version. Currently crashes for some reason and don't want to try and fix right now.
+    /*@Override
     public void onEntityWalk(World world, BlockPos pos, Entity entity) {
         if (world.isRemote) return;
         exitLimbo.receiveEntity(entity, entity.rotationYaw / 90 * 90, 0);
-    }
+    }*/
 }

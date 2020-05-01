@@ -19,7 +19,12 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 repositories {
     maven { url = "https://jitpack.io" }
+    mavenCentral()
     maven { url = 'http://oss.sonatype.org/content/repositories/public/' }
+    maven {
+        name = 'sponge-repo'
+        url = 'https://repo.spongepowered.org/maven'
+    }
 }
 
 configurations {
@@ -32,7 +37,7 @@ dependencies {
     embed 'org.jgrapht:jgrapht-core:1.1.0'
     embed 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
     compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
-    compileOnly 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0.819.0-SNAPSHOT'
+    compileOnly 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0-SNAPSHOT'
 }
 
 // Minecraft, MCP, Forge, and Java versions
