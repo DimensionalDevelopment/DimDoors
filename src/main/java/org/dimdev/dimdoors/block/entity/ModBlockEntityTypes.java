@@ -25,4 +25,8 @@ public class ModBlockEntityTypes {
     private static <E extends BlockEntity> BlockEntityType<E> register(String id, Supplier<? extends E> supplier, Block[] blocks) {
         return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, new BlockEntityType<>(supplier, Sets.newHashSet(blocks), null));
     }
+
+    public static void init() {
+
+    }
 }

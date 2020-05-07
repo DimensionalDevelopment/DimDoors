@@ -176,7 +176,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 }
 
                 if (schematic != null
-                    && (schematic.width > (template.getSize() + 1) * 16 || schematic.length > (template.getSize() + 1) * 16)) {
+                    && (schematic.sizeX > (template.getSize() + 1) * 16 || schematic.sizeZ > (template.getSize() + 1) * 16)) {
                     LOGGER.warn("Schematic " + template.getId() + " was bigger than specified in its json file and therefore wasn't loaded");
                     isValidFormat = false;
                 }

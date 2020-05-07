@@ -1,5 +1,5 @@
 {
   "variants": {
-  "": { "model": "dimdoors:blocks/unravelled_fabric" }
+  "": { "model": "dimdoors:block/unravelled_fabric" }
   }
 }

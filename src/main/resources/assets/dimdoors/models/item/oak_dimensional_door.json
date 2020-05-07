@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "dimdoors:items/oak_dimensional_door"
+    "layer0": "dimdoors:item/oak_dimensional_door"
   }
 }

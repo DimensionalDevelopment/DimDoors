@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "dimdoors:items/rift_configuration_tool"
+    "layer0": "dimdoors:item/rift_configuration_tool"
   }
 }

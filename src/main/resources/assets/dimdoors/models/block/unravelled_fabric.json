@@ -1,0 +1,4 @@
+{
+  "parent": "block/cube_all",
+  "textures": { "all": "dimdoors:block/unravelled_fabric" }
+}

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "dimdoors:items/world_thread"
+    "layer0": "dimdoors:item/world_thread"
   }
 }

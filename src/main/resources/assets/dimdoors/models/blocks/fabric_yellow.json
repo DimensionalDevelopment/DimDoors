@@ -1,4 +1,0 @@
-{
-  "parent": "dimdoors:block/fullbright",
-  "textures": { "all": "dimdoors:blocks/fabric_yellow" }
-}

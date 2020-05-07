@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "dimdoors:items/woven_world_thread_chestplate"
+    "layer0": "dimdoors:item/woven_world_thread_chestplate"
   }
 }
