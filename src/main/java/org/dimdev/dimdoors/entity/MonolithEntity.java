@@ -1,15 +1,11 @@
 package org.dimdev.dimdoors.entity;
 
-import com.flowpowered.math.vector.Vector3f;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -20,22 +16,22 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.entity.ai.MonolithTask;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.limbo.LimboDimension;
 import org.dimdev.dimdoors.world.pocketdimension.DungeonPocketDimension;
-import org.dimdev.util.Location;
-import org.dimdev.util.TeleportUtil;
 
 import static net.minecraft.entity.attribute.EntityAttributes.MAX_HEALTH;
 
 public class MonolithEntity extends MobEntity {
-    private static final int MAX_AGGRO = 250;
+    public final EntityDimensions DIMENSIONS = EntityDimensions.fixed(3f, 3f);
+
+    public static final int MAX_AGGRO = 250;
     private static final int MAX_AGGRO_CAP = 100;
     private static final int MIN_AGGRO_CAP = 25;
     private static final int MAX_TEXTURE_STATE = 18;
     private static final int MAX_SOUND_COOLDOWN = 200;
-    private static final int MAX_AGGRO_RANGE = 35;
+    public static final int MAX_AGGRO_RANGE = 35;
     private static final TrackedData<Integer> AGGRO = DataTracker.registerData(MonolithEntity.class, TrackedDataHandlerRegistry.INTEGER);
     private static final float EYE_HEIGHT = 1.5f;
 
@@ -49,10 +45,23 @@ public class MonolithEntity extends MobEntity {
         noClip = true;
         aggroCap = MathHelper.nextInt(getRandom(), MIN_AGGRO_CAP, MAX_AGGRO_CAP);
         setNoGravity(true);
+        lookControl = new LookControl(this) {
+            @Override
+            protected boolean shouldStayHorizontal() {
+                return false;
+            }
+        };
+
+        setInvulnerable(true);
     }
 
+    public EntityDimensions getDimensions(EntityPose entityPose) {
+        return DIMENSIONS;
+    }
+
+
     public boolean isDangerous() {
-        return false; //return ModConfig.MONOLITHS.monolithTeleportation && (world.dimension instanceof LimboDimension || ModConfig.MONOLITHS.dangerousLimboMonoliths);
+        return true; //return ModConfig.MONOLITHS.monolithTeleportation && (world.dimension instanceof LimboDimension || ModConfig.MONOLITHS.dangerousLimboMonoliths);
     }
 
     @Override
@@ -61,6 +70,11 @@ public class MonolithEntity extends MobEntity {
             aggro = MAX_AGGRO;
         }
         return false;
+    }
+
+    @Override
+    public LookControl getLookControl() {
+        return super.getLookControl();
     }
 
     @Override
@@ -137,45 +151,15 @@ public class MonolithEntity extends MobEntity {
         super.mobTick();
 
         // Check for players and update aggro levels even if there are no players in range
-        PlayerEntity player = world.getClosestPlayer(this, MAX_AGGRO_RANGE);
-        boolean visibility = player != null && player.canSee(this);
-        updateAggroLevel(player, visibility);
-
-        System.out.println(String.format("Player is %s.", player));
-
-        // Change orientation and face a player if one is in range
-        if (player != null) {
-            facePlayer(player);
-            if (!world.isClient && isDangerous()) {
-                // Play sounds on the server side, if the player isn't in Limbo.
-                // Limbo is excluded to avoid drowning out its background music.
-                // Also, since it's a large open area with many Monoliths, some
-                // of the sounds that would usually play for a moment would
-                // keep playing constantly and would get very annoying.
-                playSounds(player.getPos());
-            }
-
-            if (visibility) {
-                // Only spawn particles on the client side and outside Limbo
-                if (world.isClient && isDangerous()) {
-                    spawnParticles(player);
-                }
-
-                // Teleport the target player if various conditions are met
-                if (aggro >= MAX_AGGRO && !world.isClient && ModConfig.MONOLITHS.monolithTeleportation && !player.isCreative() && isDangerous()) {
-                    aggro = 0;
-//                    Location destination = LimboDimension.getLimboSkySpawn(player);
-//                    TeleportUtil.teleport(player, destination, 0, 0);
-                    player.world.playSound(null, new BlockPos(player.getPos()), ModSoundEvents.CRACK, SoundCategory.HOSTILE, 13, 1);
-                }
-            }
-        }
+        /*
+        }*/
     }
 
-    private void updateAggroLevel(PlayerEntity player, boolean visibility) {
+    public void updateAggroLevel(PlayerEntity player, boolean visibility) {
         // If we're working on the server side, adjust aggro level
         // If we're working on the client side, retrieve aggro level from dataWatcher
         if (!world.isClient) {
+            int aggro = dataTracker.get(AGGRO);
             // Server side...
             // Rapidly increase the aggro level if this Monolith can see the player
             if (visibility) {
@@ -206,15 +190,12 @@ public class MonolithEntity extends MobEntity {
             int maxAggro = isDangerous() ? MAX_AGGRO : 180;
             aggro = (short) MathHelper.clamp(aggro, 0, maxAggro);
             dataTracker.set(AGGRO, aggro);
-        } else {
-            // Client side...
-            aggro = dataTracker.get(AGGRO);
         }
     }
 
     public int getTextureState() {
         // Determine texture state from aggro progress
-        return MathHelper.clamp(MAX_TEXTURE_STATE * aggro / MAX_AGGRO, 0, MAX_TEXTURE_STATE);
+        return MathHelper.clamp(MAX_TEXTURE_STATE * dataTracker.get(AGGRO) / MAX_AGGRO, 0, MAX_TEXTURE_STATE);
     }
 
     /**
@@ -222,7 +203,7 @@ public class MonolithEntity extends MobEntity {
      *
      * @param pos The position to play the sounds at
      */
-    private void playSounds(Vec3d pos) {
+    public void playSounds(Vec3d pos) {
         float aggroPercent = getAggroProgress();
         if (soundTime <= 0) {
             playSound(ModSoundEvents.MONK, 1F, 1F);
@@ -237,6 +218,11 @@ public class MonolithEntity extends MobEntity {
             soundTime = 250;
         }
         soundTime--;
+    }
+
+    @Override
+    public float getEyeHeight(EntityPose entityPose) {
+        return EYE_HEIGHT;
     }
 
     private void spawnParticles(PlayerEntity player) {
@@ -254,16 +240,14 @@ public class MonolithEntity extends MobEntity {
         return (float) aggro / MAX_AGGRO;
     }
 
-    private void facePlayer(PlayerEntity player) {
-        double d0 = player.getX() - getX();
-        double d1 = player.getZ() - getY();
-        double d2 = player.getY() + player.getEyeHeight(player.getPose()) - (getY() + EYE_HEIGHT);
-        double d3 = MathHelper.sqrt(d0 * d0 + d1 * d1);
-        float f2 = (float) (Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
-        setRotation((float) -(Math.atan(d2 / d3) * 180.0D / Math.PI), f2);
-        setYaw(f2);
-        setHeadYaw(f2);
-        //renderYawOffset = rotationYaw;
+    @Override
+    protected void initGoals() {
+        super.initGoals();
+        goalSelector.add(0, new MonolithTask(this, MAX_AGGRO_RANGE));
+    }
+
+    public void facePlayer(PlayerEntity player) {
+        lookControl.lookAt(player, 1.0f, 1.0f);
     }
 
     @Override
@@ -277,5 +261,13 @@ public class MonolithEntity extends MobEntity {
     public void fromTag(CompoundTag nbt) {
         super.fromTag(nbt);
         aggro = nbt.getInt("Aggro");
+    }
+
+    public int getAggro() {
+        return dataTracker.get(AGGRO);
+    }
+
+    public void setAggro(int aggro) {
+        dataTracker.set(AGGRO, aggro);
     }
 }

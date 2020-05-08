@@ -1,13 +1,8 @@
 package org.dimdev.dimdoors.entity;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import org.dimdev.dimdoors.client.MonolithModel;
 
@@ -42,6 +37,8 @@ public class MonolithRenderer extends LivingEntityRenderer<MonolithEntity, Monol
 
     @Override
     public Identifier getTexture(MonolithEntity entity) {
+        System.out.println(entity.getTextureState());
+
         return MONOLITH_TEXTURES.get(entity.getTextureState());
     }
 }

@@ -13,25 +13,22 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
     private final ModelPart body;
 
     public MonolithModel() {
-        super();
         textureWidth = 256;
         textureHeight = 256;
 
-        body = new ModelPart(this, 0, 0);
-        body.addCuboid(-24F, -108F / 1.3F, -6F, 48, 108, 12);
+        body = new ModelPart(this);
+        body.setPivot(0.0F, 24.0F, 0.0F);
+        body.setTextureOffset(0, 0).addCuboid(-24.0F, -54.0F, -6.0F, 48.0F, 108.0F, 12.0F, 0.0F, false);
     }
 
     @Override
-    public void setAngles(MonolithEntity entity, float f, float g, float h, float i, float j) {
-
+    public void render(MatrixStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+        body.render(matrixStack, buffer, packedLight, packedOverlay);
     }
 
     @Override
-    public void animateModel(MonolithEntity entity, float f, float g, float h) {
-    }
-
-    @Override
-    public void render(MatrixStack matrixStack, VertexConsumer vertexConsumer, int i, int j, float f, float g, float h, float k) {
-        this.body.render(matrixStack, vertexConsumer, i, j, f, g, h, k);
+    public void setAngles(MonolithEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
+        body.yaw = netHeadYaw * 0.017453292F;
+        body.pitch = headPitch * 0.017453292F;
     }
 }
