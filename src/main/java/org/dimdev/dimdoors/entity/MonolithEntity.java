@@ -4,10 +4,12 @@ import com.flowpowered.math.vector.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -46,6 +48,7 @@ public class MonolithEntity extends MobEntity {
         super(type, world);
         noClip = true;
         aggroCap = MathHelper.nextInt(getRandom(), MIN_AGGRO_CAP, MAX_AGGRO_CAP);
+        setNoGravity(true);
     }
 
     public boolean isDangerous() {
@@ -96,12 +99,10 @@ public class MonolithEntity extends MobEntity {
         getAttributes().get(MAX_HEALTH).setBaseValue(57005);
     }
 
-//    @Override
-//    public boolean canBePushed() {
-//        return false;
-//    }
-//
-
+    @Override
+    public boolean isPushable() {
+        return false;
+    }
 
     @Override
     public double getEyeY() {
@@ -121,6 +122,10 @@ public class MonolithEntity extends MobEntity {
     }
 
     @Override
+    public void move(MovementType movementType, Vec3d vec3d) {
+    }
+
+    @Override
     protected void mobTick() {
         // Remove this Monolith if it's not in Limbo or in a pocket dungeon
         if (!(world.dimension instanceof LimboDimension || world.dimension instanceof DungeonPocketDimension)) {
@@ -135,6 +140,8 @@ public class MonolithEntity extends MobEntity {
         PlayerEntity player = world.getClosestPlayer(this, MAX_AGGRO_RANGE);
         boolean visibility = player != null && player.canSee(this);
         updateAggroLevel(player, visibility);
+
+        System.out.println(String.format("Player is %s.", player));
 
         // Change orientation and face a player if one is in range
         if (player != null) {

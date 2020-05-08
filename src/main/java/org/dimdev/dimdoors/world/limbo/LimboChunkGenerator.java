@@ -6,10 +6,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.SurfaceChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 
 import java.util.List;
+import java.util.Random;
 
 public class LimboChunkGenerator extends SurfaceChunkGenerator<LimboChunkGeneratorConfig> {
     private final double[] noiseFalloff = buildNoiseFalloff();
@@ -80,5 +82,10 @@ public class LimboChunkGenerator extends SurfaceChunkGenerator<LimboChunkGenerat
     @Override
     public int getSeaLevel() {
         return 32;
+    }
+
+    @Override
+    protected void buildBedrock(Chunk chunk, Random random) {
+
     }
 }
