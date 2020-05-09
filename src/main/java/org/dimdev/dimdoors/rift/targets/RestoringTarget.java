@@ -7,6 +7,8 @@ public abstract class RestoringTarget extends VirtualTarget {
 
     private VirtualTarget wrappedDestination;
 
+    public RestoringTarget() {};
+
     @Override
     public void fromTag(CompoundTag nbt) {
         super.fromTag(nbt);

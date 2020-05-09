@@ -9,6 +9,8 @@ import org.dimdev.annotatednbt.AnnotatedNbt;
 public class LocalReference extends RiftReference {
     @Saved protected BlockPos target;
 
+    public LocalReference() {}
+
     public LocalReference(BlockPos target) {
         this.target = target;
     }

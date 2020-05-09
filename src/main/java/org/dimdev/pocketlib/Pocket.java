@@ -21,7 +21,7 @@ public final class Pocket {
     public Pocket(int id, ServerWorld world, int x, int z) {
         this.id = id;
         this.world = world;
-        new BlockBox(x * 16, 0, z * 16, (x + 1) * 16, 0, (z + 1) * 16);
+        box = new BlockBox(x * 16, 0, z * 16, (x + 1) * 16, 0, (z + 1) * 16);
     }
 
     boolean isInBounds(BlockPos pos) {

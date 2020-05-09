@@ -18,6 +18,8 @@ import java.util.UUID;
 public class EscapeTarget extends VirtualTarget implements EntityTarget { // TODO: createRift option
     protected boolean canEscapeLimbo = false;
 
+    public EscapeTarget() {}
+
     public EscapeTarget(boolean canEscapeLimbo) {
         this.canEscapeLimbo = canEscapeLimbo;
     }

@@ -8,6 +8,8 @@ import org.dimdev.annotatednbt.AnnotatedNbt;
 public class GlobalReference extends RiftReference {
     @Saved protected Location target;
 
+    public GlobalReference() {};
+
     public GlobalReference(Location target) {
         this.target = target;
     }

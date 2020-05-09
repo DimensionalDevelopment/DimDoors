@@ -16,6 +16,7 @@ import java.util.Set;
  * (see shouldInvalidate)
  */
 public abstract class RiftReference extends VirtualTarget {
+    public RiftReference() {}
 
     // Helper methods to create a certain type of reference, defaulting to
     // a global destination if not possible

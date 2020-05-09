@@ -212,7 +212,12 @@ public class PocketTemplate {
             if (tile instanceof RiftBlockEntity) {
                 LOGGER.debug("Rift found in schematic at " + pos);
                 RiftBlockEntity rift = (RiftBlockEntity) tile;
-                rift.getDestination().setLocation(new Location((ServerWorld) rift.getWorld(), rift.getPos()));
+                rift
+                        .getDestination()
+                        .setLocation(
+                                new Location(
+                                        (ServerWorld) rift.getWorld(),
+                                        rift.getPos()));
                 rifts.add(rift);
             } else if (tile instanceof Inventory) {
                 Inventory inventory = (Inventory) tile;
