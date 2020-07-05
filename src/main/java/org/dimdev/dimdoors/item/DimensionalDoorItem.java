@@ -43,7 +43,7 @@ public class DimensionalDoorItem extends TallBlockItem {
 
             if (context.getWorld().isClient) {
                 Object[] translationArgs = new Object[0];
-                context.getPlayer().sendMessage(new TranslatableText("rifts.entrances.rift_too_close", translationArgs));
+                context.getPlayer().sendMessage(new TranslatableText("rifts.entrances.rift_too_close", translationArgs), true);
                 DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
             }
 

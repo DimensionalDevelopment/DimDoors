@@ -4,8 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.limbo.LimboDecay;
-import org.dimdev.dimdoors.world.limbo.LimboDimension;
 
 import java.util.Random;
 
@@ -19,7 +19,7 @@ public class UnravelledFabricBlock extends Block {
     @Override
     @SuppressWarnings("deprecation")
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        if (world.dimension instanceof LimboDimension) {
+        if (ModDimensions.isLimboDimension(world)) {
             LimboDecay.applySpreadDecay(world, pos);
         }
     }

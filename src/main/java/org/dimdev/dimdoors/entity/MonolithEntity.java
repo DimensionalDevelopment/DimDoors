@@ -18,10 +18,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.entity.ai.MonolithTask;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.world.limbo.LimboDimension;
-import org.dimdev.dimdoors.world.pocketdimension.DungeonPocketDimension;
-
-import static net.minecraft.entity.attribute.EntityAttributes.MAX_HEALTH;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 public class MonolithEntity extends MobEntity {
     public final EntityDimensions DIMENSIONS = EntityDimensions.fixed(3f, 3f);
@@ -108,12 +105,6 @@ public class MonolithEntity extends MobEntity {
     }
 
     @Override
-    protected void initAttributes() {
-        super.initAttributes();
-        getAttributes().get(MAX_HEALTH).setBaseValue(57005);
-    }
-
-    @Override
     public boolean isPushable() {
         return false;
     }
@@ -142,7 +133,7 @@ public class MonolithEntity extends MobEntity {
     @Override
     protected void mobTick() {
         // Remove this Monolith if it's not in Limbo or in a pocket dungeon
-        if (!(world.dimension instanceof LimboDimension || world.dimension instanceof DungeonPocketDimension)) {
+        if (!(ModDimensions.isLimboDimension(world) || ModDimensions.isDimDoorsPocketDimension(world))) {
             remove();
             super.mobTick();
             return;
@@ -163,7 +154,7 @@ public class MonolithEntity extends MobEntity {
             // Server side...
             // Rapidly increase the aggro level if this Monolith can see the player
             if (visibility) {
-                if (world.dimension instanceof LimboDimension) {
+                if (ModDimensions.isLimboDimension(world)) {
                     if (isDangerous()) {
                         aggro++;
                     } else {

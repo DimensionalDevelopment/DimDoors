@@ -4,14 +4,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import org.dimdev.annotatednbt.AutoSerializable;
 import org.dimdev.annotatednbt.Saved;
-
-import java.io.Serializable;
 
 public class Location implements AutoSerializable {
     @Saved public final ServerWorld world;
@@ -66,7 +63,7 @@ public class Location implements AutoSerializable {
         return world.hashCode() * 31 + pos.hashCode();
     }
 
-    public Identifier getWorldId() {
-        return DimensionType.getId(world.dimension.getType());
+    public RegistryKey<World> getWorldId() {
+        return world.getRegistryKey();
     }
 }

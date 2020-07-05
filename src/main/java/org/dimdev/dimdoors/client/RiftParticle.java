@@ -3,12 +3,12 @@ package org.dimdev.dimdoors.client;
 import net.minecraft.client.particle.AnimatedParticle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.world.World;
+import net.minecraft.client.world.ClientWorld;
 
 import java.util.Random;
 
 public class RiftParticle extends AnimatedParticle {
-    public RiftParticle(World world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float color, float scale, int averageAge, int ageSpread) {
+    public RiftParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float color, float scale, int averageAge, int ageSpread) {
         super(world, x, y, z, new SpriteProvider() { // TODO: 160, 8
             @Override
             public Sprite getSprite(int i, int j) {

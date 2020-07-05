@@ -1,0 +1,10 @@
+{
+  "generator": {
+    "type": "dimdoors:blank",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "dimdoors:black_void"
+    }
+  },
+  "type": "dimdoors:void"
+}

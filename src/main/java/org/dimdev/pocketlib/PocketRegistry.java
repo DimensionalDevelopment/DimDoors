@@ -4,10 +4,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
-import net.minecraft.world.World;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.util.math.GridUtil;
 
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class PocketRegistry extends PersistentState {
     }
 
     public static PocketRegistry instance(ServerWorld world) {
-        if (!(world.dimension instanceof PocketWorldDimension)) {
+        if (!(ModDimensions.isDimDoorsPocketDimension(world))) {
             throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
         }
 

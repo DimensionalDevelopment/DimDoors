@@ -1,25 +1,15 @@
 package org.dimdev.dimdoors.commands;
 
 
-import com.google.gson.Gson;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.datafixers.types.JsonOps;
-import net.minecraft.command.arguments.*;
-import net.minecraft.command.suggestion.SuggestionProviders;
-import net.minecraft.datafixer.NbtOps;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.command.arguments.DimensionArgumentType;
+import net.minecraft.command.arguments.Vec3ArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.dimension.DimensionType;
 import org.dimdev.util.TeleportUtil;
 
 public class DimTeleportCommand {
@@ -44,9 +34,9 @@ public class DimTeleportCommand {
         );
     }
 
-    private static int teleport(ServerPlayerEntity player, DimensionType dimension, Vec3d coordinates, float yaw) {
+    private static int teleport(ServerPlayerEntity player, ServerWorld world, Vec3d coordinates, float yaw) {
         try {
-            TeleportUtil.teleport(player, dimension, coordinates, yaw);
+            TeleportUtil.teleport(player, world, coordinates, yaw);
         } catch (Exception e) {
             e.printStackTrace();
         }

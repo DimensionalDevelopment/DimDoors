@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.annotatednbt.AnnotatedNbt;
+import org.dimdev.util.EntityUtils;
 
 
 public class PocketEntranceMarker extends VirtualTarget implements EntityTarget {
@@ -41,7 +42,7 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 
     @Override
     public boolean receiveEntity(Entity entity, float yawOffset) {
-        entity.sendMessage(new TranslatableText("The entrance of this dungeon has not been converted. If this is a normally generated pocket, please report this bug."));
+        EntityUtils.chat(entity, new TranslatableText("The entrance of this dungeon has not been converted. If this is a normally generated pocket, please report this bug."));
         return false;
     }
 

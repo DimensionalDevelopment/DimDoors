@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;
+import org.dimdev.util.EntityUtils;
 
 @SuppressWarnings("OverloadedVarargsMethod")
 public class MessageTarget implements EntityTarget {
@@ -22,7 +23,7 @@ public class MessageTarget implements EntityTarget {
 
     @Override
     public boolean receiveEntity(Entity entity, float yawOffset) {
-        entity.sendMessage(new TranslatableText(message, messageParams));
+        EntityUtils.chat(entity, new TranslatableText(message, messageParams));
 
         if (forwardTo != null) {
             forwardTo.as(Targets.ENTITY).receiveEntity(entity, yawOffset);

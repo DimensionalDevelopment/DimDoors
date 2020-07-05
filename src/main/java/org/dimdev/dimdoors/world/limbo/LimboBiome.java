@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world.limbo;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.EntityCategory;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
@@ -37,8 +37,6 @@ public class LimboBiome extends Biome {
                 )
                 .parent(null)
                 .noises(ImmutableList.of(new Biome.MixedNoisePoint(0.0F, 0.0F, 0.0F, -0.5F, 1.0F))));
-
-
-        //addSpawn(EntityCategory.MONSTER, new Biome.SpawnEntry(ModEntityTypes.MONOLITH, 100, 1, 1));
+        addSpawn(SpawnGroup.MONSTER, new Biome.SpawnEntry(ModEntityTypes.MONOLITH, 100, 1, 1));
     }
 }

@@ -22,7 +22,7 @@ public class SchematicConverter {
 
     public static void reloadConversions() {
         CONVERSIONS.clear();
-        SeparateClassToAvoidIdeaLag.a();
+        //SeparateClassToAvoidIdeaLag.a();
         CONVERSIONS.put("minecraft:double_stone_slab[variant=stone_brick]", "minecraft:brick_slab[type=double]");
         CONVERSIONS.put("minecraft:double_stone_slab", "minecraft:stone_slab[type=double]");
         CONVERSIONS.put("minecraft:double_stone_slab[seamless=true]", "minecraft:smooth_stone");

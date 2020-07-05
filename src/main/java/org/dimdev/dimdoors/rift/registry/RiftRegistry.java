@@ -6,7 +6,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.pocketlib.Pocket;
@@ -19,6 +18,8 @@ import org.jgrapht.graph.DefaultEdge;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static net.minecraft.world.World.OVERWORLD;
 
 public class RiftRegistry extends PersistentState {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -44,7 +45,7 @@ public class RiftRegistry extends PersistentState {
     }
 
     private static RiftRegistry instance(MinecraftServer server) {
-        return server.getWorld(DimensionType.OVERWORLD).getPersistentStateManager().getOrCreate(() -> new RiftRegistry(server.getWorld(DimensionType.OVERWORLD)), DATA_NAME);
+        return server.getWorld(OVERWORLD).getPersistentStateManager().getOrCreate(() -> new RiftRegistry(server.getWorld(OVERWORLD)), DATA_NAME);
     }
 
     @Override
@@ -72,8 +73,8 @@ public class RiftRegistry extends PersistentState {
         // Read the connections between links that have a source or destination in this dimension
         ListTag linksNBT = (ListTag) nbt.get("links");
         for (Tag linkNBT : linksNBT) {
-            RegistryVertex from = uuidMap.get(((CompoundTag) linkNBT).getUuidNew("from"));
-            RegistryVertex to = uuidMap.get(((CompoundTag) linkNBT).getUuidNew("to"));
+            RegistryVertex from = uuidMap.get(((CompoundTag) linkNBT).getUuid("from"));
+            RegistryVertex to = uuidMap.get(((CompoundTag) linkNBT).getUuid("to"));
             if (from != null && to != null) {
                 graph.addEdge(from, to);
                 // We need a system for detecting links that are incomplete after processing them in the other subregistry too
@@ -110,8 +111,8 @@ public class RiftRegistry extends PersistentState {
             RegistryVertex from = graph.getEdgeSource(edge);
             RegistryVertex to = graph.getEdgeTarget(edge);
             CompoundTag linkNBT = new CompoundTag();
-            linkNBT.putUuidNew("from", from.id);
-            linkNBT.putUuidNew("to", to.id);
+            linkNBT.putUuid("from", from.id);
+            linkNBT.putUuid("to", to.id);
             linksNBT.add(linkNBT);
         }
         tag.put("links", linksNBT);
@@ -126,8 +127,8 @@ public class RiftRegistry extends PersistentState {
     private Map<UUID, PlayerRiftPointer> readPlayerRiftPointers(ListTag tag) {
         Map<UUID, PlayerRiftPointer> pointerMap = new HashMap<>();
         for (Tag entryNBT : tag) {
-            UUID player = ((CompoundTag) entryNBT).getUuidNew("player");
-            UUID rift = ((CompoundTag) entryNBT).getUuidNew("rift");
+            UUID player = ((CompoundTag) entryNBT).getUuid("player");
+            UUID rift = ((CompoundTag) entryNBT).getUuid("rift");
             PlayerRiftPointer pointer = new PlayerRiftPointer(player);
             pointerMap.put(player, pointer);
             uuidMap.put(pointer.id, pointer);
@@ -141,10 +142,10 @@ public class RiftRegistry extends PersistentState {
         ListTag pointers = new ListTag();
         for (Map.Entry<UUID, PlayerRiftPointer> entry : playerRiftPointerMap.entrySet()) {
             CompoundTag entryNBT = new CompoundTag();
-            entryNBT.putUuidNew("player", entry.getKey());
+            entryNBT.putUuid("player", entry.getKey());
             int count = 0;
             for (DefaultEdge edge : graph.outgoingEdgesOf(entry.getValue())) {
-                entryNBT.putUuidNew("rift", graph.getEdgeTarget(edge).id);
+                entryNBT.putUuid("rift", graph.getEdgeTarget(edge).id);
                 count++;
             }
             if (count != 1) throw new RuntimeException("PlayerRiftPointer points to more than one rift");

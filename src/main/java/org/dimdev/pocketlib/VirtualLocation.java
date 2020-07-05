@@ -4,13 +4,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.world.limbo.LimboDimension;
+import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.util.Location;
+
+import static net.minecraft.world.World.OVERWORLD;
 
 public class VirtualLocation {
     @Saved public final ServerWorld world;
@@ -37,19 +37,19 @@ public class VirtualLocation {
     public static VirtualLocation fromLocation(Location location) {
         VirtualLocation virtualLocation = null;
 
-        if (location.world.dimension instanceof PocketWorldDimension) {
+        if (ModDimensions.isDimDoorsPocketDimension(location.world)) {
             Pocket pocket = PocketRegistry.instance(location.world).getPocketAt(location.pos);
             if (pocket != null) {
                 virtualLocation = pocket.virtualLocation; // TODO: pockets-relative coordinates
             } else {
                 virtualLocation = null; // TODO: door was placed in a pockets dim but outside of a pockets...
             }
-        } else if (location.world.dimension instanceof LimboDimension) { // TODO: convert to interface on worldprovider
+        } else if (ModDimensions.isLimboDimension(location.world)) { // TODO: convert to interface on worldprovider
             virtualLocation = new VirtualLocation(location.world, location.getX(), location.getZ(), ModConfig.DUNGEONS.maxDungeonDepth);
         } // TODO: nether coordinate transform
 
         if (virtualLocation == null) {
-            return new VirtualLocation(location.world.getServer().getWorld(DimensionType.OVERWORLD), location.getX(), location.getZ(), 5);
+            return new VirtualLocation(location.world.getServer().getWorld(OVERWORLD), location.getX(), location.getZ(), 5);
         }
 
         return virtualLocation;
@@ -58,8 +58,8 @@ public class VirtualLocation {
     public Location projectToWorld(boolean acceptLimbo) {
         ServerWorld world = this.world;
 
-        if (!acceptLimbo && world.dimension instanceof LimboDimension) {
-            world = world.getServer().getWorld(DimensionType.OVERWORLD);
+        if (!acceptLimbo && ModDimensions.isLimboDimension(world)) {
+            world = world.getServer().getWorld(OVERWORLD);
         }
 
         float spread = ModConfig.GENERAL.depthSpreadFactor * depth;

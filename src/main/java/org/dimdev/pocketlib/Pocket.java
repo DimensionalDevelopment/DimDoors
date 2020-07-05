@@ -7,6 +7,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import org.dimdev.annotatednbt.Saved;
+import org.dimdev.util.EntityUtils;
 
 public final class Pocket {
     private static final int BLOCKS_PAINTED_PER_DYE = 1106;
@@ -36,7 +37,7 @@ public final class Pocket {
         int maxDye = amountOfDyeRequiredToColor(this);
 
         if (dyeColor == color) {
-            entity.sendMessage(new TranslatableText("dimdoors.pockets.dyeAlreadyAbsorbed"));
+            EntityUtils.chat(entity, new TranslatableText("dimdoors.pockets.dyeAlreadyAbsorbed"));
             return false;
         }
 
@@ -45,17 +46,17 @@ public final class Pocket {
                 dyeColor = color;
                 this.nextDyeColor = null;
                 count = 0;
-                entity.sendMessage(new TranslatableText("dimdoors.pocket.pocketHasBeenDyed", dyeColor));
+                EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.pocketHasBeenDyed", dyeColor));
                 return true;
             } else {
                 count++;
-                entity.sendMessage(new TranslatableText("dimdoors.pocket.remainingNeededDyes", count, maxDye, color));
+                EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.remainingNeededDyes", count, maxDye, color));
                 return true;
             }
         } else {
             this.nextDyeColor = color;
             count = 1;
-            entity.sendMessage(new TranslatableText("dimdoors.pocket.remainingNeededDyes", count, maxDye, color));
+            EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.remainingNeededDyes", count, maxDye, color));
             return true;
         }
     }

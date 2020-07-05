@@ -43,7 +43,7 @@ public class RiftRemoverItem extends Item {
 
         if (world.isClient) {
             if (!RayTraceHelper.hitsDetachedRift(hit, world)) {
-                player.sendMessage(new TranslatableText("tools.rift_miss"));
+                player.sendMessage(new TranslatableText("tools.rift_miss"), true);
                 DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
             }
             return new TypedActionResult<>(ActionResult.FAIL, stack);
@@ -53,12 +53,12 @@ public class RiftRemoverItem extends Item {
             DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
             if (!rift.closing) {
                 rift.setClosing(true);
-                world.playSound(null, player.getSenseCenterPos(), ModSoundEvents.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
+                world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
                 stack.damage(10, player, a -> {});
-                player.sendMessage(new TranslatableText(getTranslationKey() + ".closing"));
+                player.sendMessage(new TranslatableText(getTranslationKey() + ".closing"), true);
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {
-                player.sendMessage(new TranslatableText(getTranslationKey() + ".already_closing"));
+                player.sendMessage(new TranslatableText(getTranslationKey() + ".already_closing"), true);
             }
         }
         return new TypedActionResult<>(ActionResult.FAIL, stack);

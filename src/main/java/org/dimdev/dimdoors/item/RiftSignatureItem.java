@@ -35,7 +35,7 @@ public class RiftSignatureItem extends Item {
     }
 
     @Override
-    public boolean hasEnchantmentGlint(ItemStack stack) {
+    public boolean hasGlint(ItemStack stack) {
         return stack.getTag() != null && stack.getTag().contains("destination");
     }
 
@@ -66,13 +66,13 @@ public class RiftSignatureItem extends Item {
         if (target == null) {
             // The link signature has not been used. Store its current target as the first location.
             setSource(stack, new RotatedLocation((ServerWorld) world, pos, player.yaw, 0));
-            player.sendMessage(new TranslatableText(getTranslationKey() + ".stored"));
-            world.playSound(null, player.getSenseCenterPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
+            player.sendMessage(new TranslatableText(getTranslationKey() + ".stored"), true);
+            world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
             // Place a rift at the saved point
             if (target.getBlockState().getBlock() != ModBlocks.DETACHED_RIFT) {
                 if (!target.getBlockState().getBlock().canMobSpawnInside()) {
-                    player.sendMessage(new TranslatableText("tools.target_became_block"));
+                    player.sendMessage(new TranslatableText("tools.target_became_block"), true);
                     clearSource(stack); // TODO: But is this fair? It's a rather hidden way of unbinding your signature!
                     return ActionResult.FAIL;
                 }
@@ -92,9 +92,9 @@ public class RiftSignatureItem extends Item {
             stack.damage(1, player, a -> {}); // TODO: calculate damage based on position?
 
             clearSource(stack);
-            player.sendMessage(new TranslatableText(getTranslationKey() + ".created"));
+            player.sendMessage(new TranslatableText(getTranslationKey() + ".created"), true);
             // null = send sound to the player too, we have to do this because this code is not run client-side
-            world.playSound(null, player.getSenseCenterPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
+            world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         }
 
         return ActionResult.SUCCESS;

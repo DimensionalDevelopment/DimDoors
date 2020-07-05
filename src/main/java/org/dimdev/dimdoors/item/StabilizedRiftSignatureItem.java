@@ -33,7 +33,7 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
     }
 
     @Override
-    public boolean hasEnchantmentGlint(ItemStack stack) {
+    public boolean hasGlint(ItemStack stack) {
         return stack.getTag() != null && stack.getTag().contains("destination");
     }
 
@@ -63,13 +63,13 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
         if (target == null) {
             // The link signature has not been used. Store its current target as the first location.
             setSource(stack, new RotatedLocation((ServerWorld) world, pos, player.yaw, 0));
-            player.sendMessage(new TranslatableText(getTranslationKey() + ".stored"));
-            world.playSound(null, player.getSenseCenterPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
+            player.sendMessage(new TranslatableText(getTranslationKey() + ".stored"), true);
+            world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
             // Place a rift at the target point
             if (target.getBlockState().getBlock() != ModBlocks.DETACHED_RIFT) {
                 if (!target.getBlockState().getBlock().canReplace(world.getBlockState(target.getBlockPos()), itemPlacementContext)) {
-                    player.sendMessage(new TranslatableText("tools.target_became_block"));
+                    player.sendMessage(new TranslatableText("tools.target_became_block"), true);
                     // Don't clear source, stabilized signatures always stay bound
                     return ActionResult.FAIL;
                 }
@@ -87,8 +87,8 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 
             stack.damage(1, player, playerEntity -> {});
 
-            player.sendMessage(new TranslatableText(getTranslationKey() + ".created"));
-            world.playSound(null, player.getSenseCenterPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
+            player.sendMessage(new TranslatableText(getTranslationKey() + ".created"), true);
+            world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         }
 
         return ActionResult.SUCCESS;

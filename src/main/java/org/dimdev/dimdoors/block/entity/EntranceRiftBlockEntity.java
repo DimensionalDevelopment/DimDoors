@@ -2,10 +2,12 @@ package org.dimdev.dimdoors.block.entity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.util.TeleportUtil;
@@ -18,8 +20,8 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     }
 
     @Override
-    public void fromTag(CompoundTag nbt) {
-        super.fromTag(nbt);
+    public void fromTag(BlockState state, CompoundTag nbt) {
+        super.fromTag(state, nbt);
         AnnotatedNbt.load(this, nbt);
     }
 
@@ -43,7 +45,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
     @Override
     public boolean receiveEntity(Entity entity, float yawOffset) {
-        Vec3d targetPos = Vec3d.method_24953(pos).add(Vec3d.method_24954(getOrientation().getVector()).multiply(ModConfig.GENERAL.teleportOffset + 0.5));
+        Vec3d targetPos = Vec3d.ofCenter(pos).add(Vec3d.of(getOrientation().getVector()).multiply(ModConfig.GENERAL.teleportOffset + 0.5));
 
         TeleportUtil.teleport(entity, world, targetPos, yawOffset);
         return true;
@@ -69,7 +71,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     protected float[] getEntranceRenderColor(Random rand) {
         float red, green, blue;
 
-        if (world.dimension.isNether()) {
+        if (world.getRegistryKey() == World.NETHER) {
             red = rand.nextFloat() * 0.5F + 0.4F;
             green = rand.nextFloat() * 0.05F;
             blue = rand.nextFloat() * 0.05F;

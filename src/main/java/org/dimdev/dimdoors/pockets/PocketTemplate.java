@@ -221,7 +221,7 @@ public class PocketTemplate {
                 rifts.add(rift);
             } else if (tile instanceof Inventory) {
                 Inventory inventory = (Inventory) tile;
-                if (inventory.isInvEmpty()) {
+                if (inventory.isEmpty()) {
                     if (tile instanceof ChestBlockEntity || tile instanceof DispenserBlockEntity) {
                         LootTable table;
                         if (tile instanceof ChestBlockEntity) {
@@ -231,10 +231,10 @@ public class PocketTemplate {
                             LOGGER.debug("Now populating dispenser.");
                             table = world.getServer().getLootManager().getTable(new Identifier("dimdoors:dispenser_projectiles"));
                         }
-                        LootContext ctx = new LootContext.Builder(world).setRandom(world.random).build(LootContextTypes.CHEST);
+                        LootContext ctx = new LootContext.Builder(world).random(world.random).build(LootContextTypes.CHEST);
                         table.supplyInventory(inventory, ctx);
-                        LOGGER.debug("Inventory should be populated now. Chest is: " + (inventory.isInvEmpty() ? "empty." : "filled."));
-                        if (inventory.isInvEmpty()) {
+                        LOGGER.debug("Inventory should be populated now. Chest is: " + (inventory.isEmpty() ? "empty." : "filled."));
+                        if (inventory.isEmpty()) {
                             LOGGER.error(", however Inventory is: empty!");
                         }
                     }

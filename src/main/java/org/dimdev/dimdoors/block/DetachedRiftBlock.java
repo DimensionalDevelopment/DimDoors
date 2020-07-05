@@ -5,15 +5,16 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MaterialColor;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.EntityContext;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.client.RiftParticle;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -33,19 +34,18 @@ public class DetachedRiftBlock extends Block implements RiftProvider<DetachedRif
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public MaterialColor getMapColor(BlockState state, BlockView world, BlockPos pos) {
+    public MaterialColor getDefaultMaterialColor() {
         return MaterialColor.BLACK;
     }
 
     @Override
-    public void onBroken(IWorld world, BlockPos pos, BlockState state) {
+    public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
         ((DetachedRiftBlockEntity) world.getBlockEntity(pos)).unregister();
         super.onBroken(world, pos, state);
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState blockState, BlockView blockView, BlockPos blockPos, EntityContext entityContext) {
+    public VoxelShape getOutlineShape(BlockState blockState, BlockView blockView, BlockPos blockPos, ShapeContext entityContext) {
         return VoxelShapes.empty();
     }
 
@@ -68,7 +68,7 @@ public class DetachedRiftBlock extends Block implements RiftProvider<DetachedRif
         if (rift.closing) {
             MinecraftClient.getInstance().particleManager.addParticle(
                     new RiftParticle(
-                            world,
+                            (ClientWorld) world,
                             pos.getX() + .5, pos.getY() + 1.5, pos.getZ() + .5,
                             rand.nextGaussian() * speed, rand.nextGaussian() * speed, rand.nextGaussian() * speed,
                             outsidePocket ? 0.8f : 0.4f, 0.55f, 2000, 2000
@@ -77,7 +77,7 @@ public class DetachedRiftBlock extends Block implements RiftProvider<DetachedRif
         }
 
         MinecraftClient.getInstance().particleManager.addParticle(new RiftParticle(
-                world,
+                (ClientWorld) world,
                 pos.getX() + .5, pos.getY() + 1.5, pos.getZ() + .5,
                 rand.nextGaussian() * speed, rand.nextGaussian() * speed, rand.nextGaussian() * speed,
                 outsidePocket ? 0.0f : 0.7f, 0.55f, rift.stabilized ? 750 : 2000, rift.stabilized ? 750 : 2000)

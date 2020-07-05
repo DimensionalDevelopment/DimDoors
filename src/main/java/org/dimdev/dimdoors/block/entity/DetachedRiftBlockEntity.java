@@ -2,9 +2,10 @@ package org.dimdev.dimdoors.block.entity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Tickable;
@@ -42,7 +43,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
         }
 
         if (!world.isClient && random.nextDouble() < ModConfig.GENERAL.endermanSpawnChance) {
-            EndermanEntity enderman = EntityType.ENDERMAN.spawn(world, null, null, null, pos, SpawnType.STRUCTURE, false, false);
+            EndermanEntity enderman = EntityType.ENDERMAN.spawn(world, null, null, null, pos, SpawnReason.STRUCTURE, false, false);
 
             if (random.nextDouble() < ModConfig.GENERAL.endermanAggressiveChance) {
                 enderman.setTarget(world.getClosestPlayer(enderman, 50));
@@ -71,8 +72,8 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
-        super.fromTag(tag);
+    public void fromTag(BlockState state, CompoundTag tag) {
+        super.fromTag(state, tag);
         AnnotatedNbt.load(this, tag);
     }
 

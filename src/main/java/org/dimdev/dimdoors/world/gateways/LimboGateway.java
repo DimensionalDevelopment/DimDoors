@@ -5,8 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.item.DimensionalDoorItem;
-import org.dimdev.dimdoors.world.limbo.LimboDimension;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 public class LimboGateway extends BaseGateway {
     @Override
@@ -32,6 +31,6 @@ public class LimboGateway extends BaseGateway {
 
     @Override
     public boolean isLocationValid(World world, int x, int y, int z) {
-        return world.dimension instanceof LimboDimension;
+        return ModDimensions.isLimboDimension(world);
     }
 }

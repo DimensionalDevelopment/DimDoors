@@ -4,23 +4,24 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
-import net.minecraft.fluid.*;
+import net.minecraft.fluid.FlowableFluid;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.state.StateManager;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
 
 import java.util.Random;
 
-public abstract class EternalFluid extends BaseFluid {
+public abstract class EternalFluid extends FlowableFluid {
     @Override
     public Fluid getFlowing() {
         return ModFluids.FLOWING_ETERNAL_FLUID;
@@ -48,13 +49,13 @@ public abstract class EternalFluid extends BaseFluid {
     }
 
     @Override
-    protected void beforeBreakingBlock(IWorld iWorld, BlockPos blockPos, BlockState blockState) {
+    protected void beforeBreakingBlock(WorldAccess iWorld, BlockPos blockPos, BlockState blockState) {
 
     }
 
     @Override
-    public int method_15733(WorldView worldView) {
-        return worldView.getDimension().doesWaterVaporize() ? 4 : 2;
+    public int getFlowSpeed(WorldView worldView) {
+        return worldView.getDimension().isUltrawarm() ? 4 : 2;
     }
 
     @Override
@@ -69,7 +70,7 @@ public abstract class EternalFluid extends BaseFluid {
 
     @Override
     public int getLevelDecreasePerBlock(WorldView worldView) {
-        return worldView.getDimension().doesWaterVaporize() ? 1 : 2;
+        return worldView.getDimension().isUltrawarm() ? 1 : 2;
     }
 
     @Override
@@ -79,7 +80,7 @@ public abstract class EternalFluid extends BaseFluid {
 
     @Override
     public int getTickRate(WorldView worldView) {
-        return worldView.getDimension().isNether() ? 10 : 30;
+        return worldView.getDimension().isUltrawarm() ? 10 : 30;
     }
 
     @Override
@@ -99,9 +100,9 @@ public abstract class EternalFluid extends BaseFluid {
     }
 
     @Override
-    protected void flow(IWorld world, BlockPos pos, BlockState blockState, Direction direction, FluidState fluidState) {
+    protected void flow(WorldAccess world, BlockPos pos, BlockState blockState, Direction direction, FluidState fluidState) {
         if (direction == Direction.DOWN) {
-            if (world.getFluidState(pos).matches(FluidTags.WATER)) {
+            if (world.getFluidState(pos).isIn(FluidTags.WATER)) {
                 if (blockState.getBlock() instanceof FluidBlock) {
                     world.setBlockState(pos, ModBlocks.BLACK_ANCIENT_FABRIC.getDefaultState(), 3);
                 }

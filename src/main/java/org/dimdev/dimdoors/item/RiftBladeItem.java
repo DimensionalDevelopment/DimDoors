@@ -4,7 +4,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolMaterials;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -16,8 +15,6 @@ import net.minecraft.world.World;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
-import org.dimdev.util.Location;
-import org.dimdev.util.TeleportUtil;
 
 public class RiftBladeItem extends SwordItem {
     public static final String ID = "rift_blade";
@@ -27,7 +24,7 @@ public class RiftBladeItem extends SwordItem {
 
     }
     @Override
-    public boolean hasEnchantmentGlint(ItemStack itemStack) {
+    public boolean hasGlint(ItemStack itemStack) {
         return true;
     }
 
@@ -48,7 +45,7 @@ public class RiftBladeItem extends SwordItem {
             if (RayTraceHelper.hitsLivingEntity(hit) || RayTraceHelper.hitsRift(hit, world)) {
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {
-                player.sendMessage(new TranslatableText(getTranslationKey() + ".rift_miss"));
+                player.sendMessage(new TranslatableText(getTranslationKey() + ".rift_miss"), true);
                 DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
                 return new TypedActionResult<>(ActionResult.FAIL, stack);
             }

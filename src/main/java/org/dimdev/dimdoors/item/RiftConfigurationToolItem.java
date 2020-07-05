@@ -37,7 +37,7 @@ public class RiftConfigurationToolItem extends Item {
 
         if (world.isClient) {
             if (!RayTraceHelper.hitsRift(hit, world)) {
-                player.sendMessage(new TranslatableText("tools.rift_miss"));
+                player.sendMessage(new TranslatableText("tools.rift_miss"), true);
                 DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
             }
             return new TypedActionResult<>(ActionResult.FAIL, stack);

@@ -7,7 +7,6 @@ import net.minecraft.text.TranslatableText;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocketdimension.PersonalPocketDimension;
 import org.dimdev.pocketlib.Pocket;
 import org.dimdev.pocketlib.PocketRegistry;
 import org.dimdev.pocketlib.PrivatePocketData;
@@ -38,16 +37,16 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
         if (uuid != null) {
             destLoc = RiftRegistry.instance(entity.world).getPrivatePocketExit(uuid);
             Pocket pocket = PrivatePocketData.instance(entity.world).getPrivatePocket(uuid);
-            if (location.world.dimension instanceof PersonalPocketDimension && pocket != null && PocketRegistry.instance(pocket.world).getPocketAt(location.pos).equals(pocket)) {
+            if (ModDimensions.isDimDoorsPocketDimension(location.world) && pocket != null && PocketRegistry.instance(pocket.world).getPocketAt(location.pos).equals(pocket)) {
                 RiftRegistry.instance(entity.world).setLastPrivatePocketEntrance(uuid, location); // Remember which exit was used for next time the pocket is entered
             }
             if (destLoc == null || !(destLoc.getBlockEntity() instanceof RiftBlockEntity)) {
                 if (destLoc == null) {
-                    entity.sendMessage(new TranslatableText("rifts.destinations.private_pocket_exit.did_not_use_rift"));
+                    EntityUtils.chat(entity, new TranslatableText("rifts.destinations.private_pocket_exit.did_not_use_rift"));
                 } else {
-                    entity.sendMessage(new TranslatableText("rifts.destinations.private_pocket_exit.rift_has_closed"));
+                    EntityUtils.chat(entity, new TranslatableText("rifts.destinations.private_pocket_exit.rift_has_closed"));
                 }
-                FabricDimensions.teleport(entity, ModDimensions.LIMBO);
+                FabricDimensions.teleport(entity, entity.getServer().getWorld(ModDimensions.LIMBO));
                 return false;
             } else {
                 ((EntityTarget) destLoc.getBlockEntity()).receiveEntity(entity, yawOffset);

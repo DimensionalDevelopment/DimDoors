@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.rift.targets;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
+import org.dimdev.util.EntityUtils;
 
 public class PocketExitMarker extends VirtualTarget implements EntityTarget {
     public PocketExitMarker() {}
@@ -20,7 +21,7 @@ public class PocketExitMarker extends VirtualTarget implements EntityTarget {
 
     @Override
     public boolean receiveEntity(Entity entity, float yawOffset) {
-        entity.sendMessage(new TranslatableText("The exit of this dungeon has not been linked. If this is a normally generated pocket, please report this bug."));
+        EntityUtils.chat(entity, new TranslatableText("The exit of this dungeon has not been linked. If this is a normally generated pocket, please report this bug."));
         return false;
     }
 }

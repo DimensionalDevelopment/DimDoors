@@ -11,7 +11,7 @@ import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.*;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.world.pocketdimension.PersonalPocketDimension;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,7 +56,7 @@ public final class ModItems {
             ModBlocks.QUARTZ_DIMENSIONAL_DOOR,
             new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
             rift -> {
-                if (rift.getWorld().dimension instanceof PersonalPocketDimension) {
+                if (ModDimensions.isDimDoorsPocketDimension(rift.getWorld())) {
                     rift.setDestination(new PrivatePocketExitTarget()); // exit
                 } else {
                     rift.setDestination(new PrivatePocketTarget()); // entrances

@@ -1,12 +1,13 @@
 package org.dimdev.dimdoors.block.entity;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.LiteralText;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.annotatednbt.AnnotatedNbt;
@@ -18,6 +19,7 @@ import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.rift.targets.*;
 import org.dimdev.pocketlib.VirtualLocation;
+import org.dimdev.util.EntityUtils;
 import org.dimdev.util.Location;
 
 import java.util.Arrays;
@@ -37,17 +39,19 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
         alwaysDelete = false;
     }
 
+
     // NBT
     @Override
-    public void fromTag(CompoundTag nbt) {
-        super.fromTag(nbt);
+    public void fromTag(BlockState state, CompoundTag nbt) {
+        super.fromTag(state, nbt);
         AnnotatedNbt.load(this, nbt);
         destination = nbt.contains("destination") ? VirtualTarget.readVirtualTargetNBT(nbt.getCompound("destination")) : null;
     }
 
+
     @Override
     public void fromClientTag(CompoundTag tag) {
-        fromTag(tag);
+        fromTag(world.getBlockState(pos), tag);
     }
 
     @Override
@@ -154,12 +158,12 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
             EntityTarget target = getTarget().as(Targets.ENTITY);
 
             if (target.receiveEntity(entity, entity.yaw)) {
-                VirtualLocation vloc = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getSenseCenterPos()));
-                entity.sendMessage(new TranslatableText("You are at x = " + vloc.x + ", y = ?, z = " + vloc.z + ", w = " + vloc.depth));
+                VirtualLocation vloc = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos()));
+                EntityUtils.chat(entity, new LiteralText("You are at x = " + vloc.x + ", y = ?, z = " + vloc.z + ", w = " + vloc.depth));
                 return true;
             }
         } catch (Exception e) {
-            entity.sendMessage(new TranslatableText("Something went wrong while trying to teleport you, please report this bug."));
+            EntityUtils.chat(entity, new LiteralText("Something went wrong while trying to teleport you, please report this bug."));
             LOGGER.error("Teleporting failed with the following exception: ", e);
         }
 

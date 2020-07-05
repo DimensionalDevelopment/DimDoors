@@ -2,9 +2,9 @@ package org.dimdev.dimdoors.entity;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.registry.Registry;
 
 public class ModEntityTypes {
@@ -26,6 +26,6 @@ public class ModEntityTypes {
     }
 
     private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, int a, int b) {
-        return Registry.register(Registry.ENTITY_TYPE, id, EntityType.Builder.create(factory, EntityCategory.MONSTER).setDimensions(a, b).makeFireImmune().spawnableFarFromPlayer().build(id));
+        return Registry.register(Registry.ENTITY_TYPE, id, EntityType.Builder.create(factory, SpawnGroup.MONSTER).setDimensions(a, b).makeFireImmune().spawnableFarFromPlayer().build(id));
     }
 }

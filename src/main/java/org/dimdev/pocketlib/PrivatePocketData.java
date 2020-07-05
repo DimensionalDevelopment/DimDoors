@@ -7,11 +7,12 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 
 import java.util.UUID;
+
+import static net.minecraft.world.World.OVERWORLD;
 
 public class PrivatePocketData extends PersistentState {
     protected static class PocketInfo {
@@ -40,7 +41,7 @@ public class PrivatePocketData extends PersistentState {
     }
 
     private static PrivatePocketData instance(MinecraftServer server) {
-        return server.getWorld(DimensionType.OVERWORLD).getPersistentStateManager().getOrCreate(PrivatePocketData::new, DATA_NAME);
+        return server.getWorld(OVERWORLD).getPersistentStateManager().getOrCreate(PrivatePocketData::new, DATA_NAME);
     }
 
     @Override
