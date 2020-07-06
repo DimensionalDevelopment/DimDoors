@@ -1,9 +1,12 @@
 package org.dimdev.dimdoors.world;
 
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import org.dimdev.pocketlib.BlankChunkGenerator;
 
 public final class ModDimensions {
     public static final RegistryKey<World> LIMBO = RegistryKey.of(Registry.DIMENSION, new Identifier("dimdoors:limbo"));
@@ -21,6 +24,9 @@ public final class ModDimensions {
     }
 
     public static void init() {
+        ServerWorld world;
+        DimensionType
+        Registry.register(Registry.CHUNK_GENERATOR, new Identifier("dimdoors", "blank"), BlankChunkGenerator.CODEC);
         // just loads the class
     }
 }

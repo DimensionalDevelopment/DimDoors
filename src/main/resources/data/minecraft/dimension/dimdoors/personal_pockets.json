@@ -1,6 +1,6 @@
 {
   "generator": {
-    "type": "dimdoors:void",
+    "type": "dimdoors:blank",
     "biome_source": {
       "type": "minecraft:fixed",
       "biome": "dimdoors:white_void"
