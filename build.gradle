@@ -31,6 +31,8 @@ dependencies {
     modImplementation 'com.flowpowered:flow-math:1.0.3'
     modImplementation 'org.jgrapht:jgrapht-core:1.1.0'
     modImplementation 'com.github.DimensionalDevelopment:poly2tri.java:0.1.1'
+    modImplementation 'com.github.Waterpicker:OpenWorlds:1.0.0'
+    modRuntime 'com.github.Waterpicker:OpenWorlds:1.0.0'
 }
 
 version "4.0"

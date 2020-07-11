@@ -24,7 +24,6 @@ public final class TeleportUtil {
                     (ServerWorld) world,
                     (e, serverWorld, direction, v, v1) -> new BlockPattern.TeleportTarget(pos, e.getVelocity(), (int) (e.yaw + yawOffset))
             );
-
             entity.setOnFireFor(0); // Workaround for https://bugs.mojang.com/browse/MC-100097
         }
     }
