@@ -9,9 +9,9 @@ import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.SkyProperties;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.Fluid;
@@ -20,6 +20,8 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockRenderView;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -42,7 +44,7 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
 
         setupFluidRendering(ModFluids.ETERNAL_FLUID, ModFluids.FLOWING_ETERNAL_FLUID, new Identifier("dimdoors:eternal_fluid"));
 
-        OpenWorlds.registerSkyRenderer(ModDimensions.POCKET_TYPE, new CustomSkyProvider());
+        OpenWorlds.registerSkyRenderer(ModDimensions.POCKET_TYPE, new CustomSkyProvider(null, null, new Vec3i(0, 0, 0)));
         OpenWorlds.registerSkyRenderer(ModDimensions.LIMBO_TYPE, new LimboSkyProvider());
     }
 
@@ -59,7 +61,6 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
             registry.register(stillSpriteId);
             registry.register(flowingSpriteId);
         });
-        BlockEntityProvider
 
         final Identifier fluidId = Registry.FLUID.getId(still);
         final Identifier listenerId = new Identifier(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");
