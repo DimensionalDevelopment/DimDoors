@@ -3,6 +3,7 @@ package org.dimdev.util;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.Entity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -26,5 +27,13 @@ public final class TeleportUtil {
             );
             entity.setOnFireFor(0); // Workaround for https://bugs.mojang.com/browse/MC-100097
         }
+    }
+
+    public static void teleport(ServerPlayerEntity player, Location location) {
+        teleport(player, location.world, location.pos, 0);
+    }
+
+    public static void teleport(ServerPlayerEntity player, RotatedLocation location) {
+        teleport(player, location.world, location.pos, (int) location.yaw);
     }
 }

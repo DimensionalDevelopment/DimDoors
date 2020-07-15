@@ -3,6 +3,8 @@ package org.dimdev.dimdoors;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.commands.CommandPocket;
+import org.dimdev.dimdoors.commands.CommandSaveSchem;
 import org.dimdev.dimdoors.commands.DimTeleportCommand;
 import org.dimdev.dimdoors.commands.SchematicCommand;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -43,5 +45,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
     private void registerCommands() {
         CommandRegistry.INSTANCE.register(false, DimTeleportCommand::register);
         CommandRegistry.INSTANCE.register(false, SchematicCommand::register);
+        CommandRegistry.INSTANCE.register(false, CommandPocket::register);
+        CommandRegistry.INSTANCE.register(false, CommandSaveSchem::register);
+
     }
 }

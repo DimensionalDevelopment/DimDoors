@@ -1,11 +1,13 @@
 package org.dimdev.pocketlib;
 
+import com.flowpowered.math.vector.Vector3i;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.util.EntityUtils;
 
@@ -96,5 +98,10 @@ public final class Pocket {
 
     public void setSize(int x, int y, int z) {
         box = new BlockBox(box.minX, box.minY, box.minZ, box.minX + x, box.minY + y, box.minZ + z);
+    }
+
+    public Vector3i getSize() {
+        Vec3i dimensions = box.getDimensions();
+        return new Vector3i(dimensions.getX(), dimensions.getY(), dimensions.getZ());
     }
 }
