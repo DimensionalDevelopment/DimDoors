@@ -65,7 +65,7 @@ public final class ModItems {
 
 //    public static final Item UNSTABLE_DIMENSIONAL_DOOR = register( new DimensionalDoorItem(
 //            ModBlocks.IRON_DIMENSIONAL_DOOR,
-//            new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1),
+//            new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
 //            rift -> {
 //                 TODO
 //            }
@@ -151,7 +151,7 @@ public final class ModItems {
     // Dimensional doors
 
     private static Item register(Block block) {
-        return register(new BlockItem(block, (new Item.Settings()).group(ModItemGroups.DIMENSIONAL_DOORS)));
+        return register(new BlockItem(block, (new Item.Settings()).group(DIMENSIONAL_DOORS)));
     }
 
     private static Item register(BlockItem blockItem) {
