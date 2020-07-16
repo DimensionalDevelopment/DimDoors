@@ -8,7 +8,7 @@
   "infiniburn": "minecraft:infiniburn_overworld",
   "logical_height" : 256,
   "has_raids" : false,
-  "respawn_anchor_works": false,
+  "respawn_anchor_works": true,
   "bed_works" : false,
   "piglin_safe" : false,
   "fixed_time" : 6000
