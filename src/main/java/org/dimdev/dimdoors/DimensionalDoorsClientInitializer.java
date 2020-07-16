@@ -29,6 +29,7 @@ import net.minecraft.world.BlockRenderView;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.client.CustomSkyProvider;
 import org.dimdev.dimdoors.client.LimboSkyProvider;
+import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.world.ModDimensions;
 
@@ -38,6 +39,8 @@ import java.util.function.Function;
 public class DimensionalDoorsClientInitializer implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        ModEntityTypes.initClient();
+
         putCutout(ModBlocks.OAK_DIMENSIONAL_DOOR);
         putCutout(ModBlocks.GOLD_DIMENSIONAL_DOOR);
         putCutout(ModBlocks.IRON_DIMENSIONAL_DOOR);

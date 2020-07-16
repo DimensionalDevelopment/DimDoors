@@ -38,7 +38,7 @@ public class MonolithEntity extends MobEntity {
     private final int aggroCap;
 
     public MonolithEntity(EntityType<? extends MonolithEntity> type, World world) {
-        super(type, world);
+        super(ModEntityTypes.MONOLITH, world);
         noClip = true;
         aggroCap = MathHelper.nextInt(getRandom(), MIN_AGGRO_CAP, MAX_AGGRO_CAP);
         setNoGravity(true);

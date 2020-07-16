@@ -19,6 +19,7 @@ import java.util.HashSet;
 
 import static org.dimdev.dimdoors.item.ModItemGroups.DIMENSIONAL_DOORS;
 
+@SuppressWarnings("unused")
 public final class ModItems {
     public static final Item QUARTZ_DOOR = register(ModBlocks.QUARTZ_DOOR);
     public static final Item QUARTZ_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
