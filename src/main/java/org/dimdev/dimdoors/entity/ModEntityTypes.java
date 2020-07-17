@@ -36,7 +36,7 @@ public class ModEntityTypes {
         EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
     }
 
-    private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, int a, int b) {
-        return Registry.register(Registry.ENTITY_TYPE, id, FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, factory).dimensions(EntityDimensions.fixed(a, b)).fireImmune().spawnableFarFromPlayer().build());
+    private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, int width, int height) {
+        return Registry.register(Registry.ENTITY_TYPE, id, FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).fireImmune().build());
     }
 }

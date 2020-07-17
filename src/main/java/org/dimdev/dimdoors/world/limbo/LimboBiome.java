@@ -1,14 +1,14 @@
 package org.dimdev.dimdoors.world.limbo;
 
 import com.google.common.collect.ImmutableList;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.entity.ModEntityTypes;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 public class LimboBiome extends Biome {
     public LimboBiome() {
@@ -37,6 +37,6 @@ public class LimboBiome extends Biome {
                 )
                 .parent(null)
                 .noises(ImmutableList.of(new Biome.MixedNoisePoint(0.0F, 0.0F, 0.0F, -0.5F, 1.0F))));
-        addSpawn(SpawnGroup.MONSTER, new Biome.SpawnEntry(ModEntityTypes.MONOLITH, 100, 1, 1));
+        this.addSpawn(SpawnGroup.MONSTER, new Biome.SpawnEntry(ModEntityTypes.MONOLITH, 1, 0, 1));
     }
 }

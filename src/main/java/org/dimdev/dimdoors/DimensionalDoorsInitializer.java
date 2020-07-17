@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.registry.CommandRegistry;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.commands.CommandPocket;
 import org.dimdev.dimdoors.commands.CommandSaveSchem;
@@ -14,7 +14,12 @@ import org.dimdev.dimdoors.rift.targets.*;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 
+import net.minecraft.util.Identifier;
+
 public class DimensionalDoorsInitializer implements ModInitializer {
+
+    public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
+
     @Override
     public void onInitialize() {
         ModBlocks.init();
@@ -23,7 +28,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModEntityTypes.init();
         ModBiomes.init();
 
-        registerCommands();
+        this.registerCommands();
 
         VirtualTarget.registry.put("available_link", RandomTarget.class);
         VirtualTarget.registry.put("escape", EscapeTarget.class);
@@ -43,10 +48,11 @@ public class DimensionalDoorsInitializer implements ModInitializer {
     }
 
     private void registerCommands() {
-        CommandRegistry.INSTANCE.register(false, DimTeleportCommand::register);
-        CommandRegistry.INSTANCE.register(false, SchematicCommand::register);
-        CommandRegistry.INSTANCE.register(false, CommandPocket::register);
-        CommandRegistry.INSTANCE.register(false, CommandSaveSchem::register);
-
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated)->{
+            DimTeleportCommand.register(dispatcher);
+            SchematicCommand.register(dispatcher);
+            CommandPocket.register(dispatcher);
+            CommandSaveSchem.register(dispatcher);
+        });
     }
 }

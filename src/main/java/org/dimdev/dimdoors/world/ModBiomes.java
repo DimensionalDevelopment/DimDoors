@@ -18,7 +18,6 @@ public final class ModBiomes {
     }
 
     public static void init() {
-
         // just loads the class
     }
 }

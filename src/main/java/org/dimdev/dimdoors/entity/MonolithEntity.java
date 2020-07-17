@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.entity;
 
+import java.util.Random;
+
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.damage.DamageSource;
@@ -9,6 +11,7 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -19,6 +22,10 @@ import net.minecraft.world.World;
 import org.dimdev.dimdoors.entity.ai.MonolithTask;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.network.PacketContext;
 
 public class MonolithEntity extends MobEntity {
     public final EntityDimensions DIMENSIONS = EntityDimensions.fixed(3f, 3f);
@@ -31,6 +38,7 @@ public class MonolithEntity extends MobEntity {
     public static final int MAX_AGGRO_RANGE = 35;
     private static final TrackedData<Integer> AGGRO = DataTracker.registerData(MonolithEntity.class, TrackedDataHandlerRegistry.INTEGER);
     private static final float EYE_HEIGHT = 1.5f;
+    private static Random random;
 
     public float pitchLevel;
     private int aggro = 0;
@@ -39,6 +47,7 @@ public class MonolithEntity extends MobEntity {
 
     public MonolithEntity(EntityType<? extends MonolithEntity> type, World world) {
         super(ModEntityTypes.MONOLITH, world);
+        random = this.getRandom();
         noClip = true;
         aggroCap = MathHelper.nextInt(getRandom(), MIN_AGGRO_CAP, MAX_AGGRO_CAP);
         setNoGravity(true);
@@ -216,15 +225,21 @@ public class MonolithEntity extends MobEntity {
         return EYE_HEIGHT;
     }
 
-    private void spawnParticles(PlayerEntity player) {
-        int count = 10 * aggro / MAX_AGGRO;
-        for (int i = 1; i < count; ++i) {
-            player.world.addParticle(ParticleTypes.PORTAL, player.getX() + (getRandom().nextDouble() - 0.5D) * getWidth(),
-                    player.getY() + getRandom().nextDouble() * player.getHeight() - 0.75D,
-                    player.getZ() + (getRandom().nextDouble() - 0.5D) * player.getWidth(),
-                    (getRandom().nextDouble() - 0.5D) * 2.0D, -getRandom().nextDouble(),
-                    (getRandom().nextDouble() - 0.5D) * 2.0D);
-        }
+    @Environment(EnvType.CLIENT)
+    public static void spawnParticles(PacketContext context, PacketByteBuf data) {
+        PlayerEntity player = context.getPlayer();
+        int aggro = data.readInt();
+
+        context.getTaskQueue().execute(()->{
+            int count = 10 * aggro / MAX_AGGRO;
+            for (int i = 1; i < count; ++i) {
+                player.world.addParticle(ParticleTypes.PORTAL, player.getX() + (random.nextDouble() - 0.5D) * 3.0,
+                        player.getY() + random.nextDouble() * player.getHeight() - 0.75D,
+                        player.getZ() + (random.nextDouble() - 0.5D) * player.getWidth(),
+                        (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(),
+                        (random.nextDouble() - 0.5D) * 2.0D);
+            }
+        });
     }
 
     public float getAggroProgress() {
