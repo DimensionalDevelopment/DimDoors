@@ -37,8 +37,6 @@ public class MonolithRenderer extends LivingEntityRenderer<MonolithEntity, Monol
 
     @Override
     public Identifier getTexture(MonolithEntity entity) {
-        System.out.println(entity.getTextureState());
-
         return MONOLITH_TEXTURES.get(entity.getTextureState());
     }
 }
