@@ -3,16 +3,17 @@ package org.dimdev.dimdoors.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.waterpicker.openworlds.renderer.SkyRenderer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3i;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+@Environment(EnvType.CLIENT)
 public class CustomSkyProvider implements SkyRenderer {
     private final Identifier moon;
     private final Identifier sun;

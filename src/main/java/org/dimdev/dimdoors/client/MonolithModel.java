@@ -18,7 +18,7 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
 
         body = new ModelPart(this);
         body.setPivot(0.0F, 24.0F, 0.0F);
-        body.setTextureOffset(0, 0).addCuboid(-24.0F, -54.0F, -6.0F, 48.0F, 108.0F, 12.0F, 0.0F, false);
+        body.setTextureOffset(0, 0).addCuboid(-24.0F, -108.0F, -6.0F, 48.0F, 108.0F, 12.0F, 0.0F, false);
     }
 
     @Override

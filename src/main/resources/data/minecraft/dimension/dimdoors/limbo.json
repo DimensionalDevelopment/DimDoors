@@ -23,7 +23,7 @@
       "bedrock_floor_position": 0,
       "bedrock_roof_position": -1,
       "disable_mob_generation": false,
-      "sea_level": 0,
+      "sea_level": 32,
       "structures": {
         "structures": {}
       },
