@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.world.limbo;
 
+import java.awt.Color;
+
 import com.google.common.collect.ImmutableList;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -9,6 +11,9 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class LimboBiome extends Biome {
     public LimboBiome() {
@@ -38,5 +43,11 @@ public class LimboBiome extends Biome {
                 .parent(null)
                 .noises(ImmutableList.of(new Biome.MixedNoisePoint(0.0F, 0.0F, 0.0F, -0.5F, 1.0F))));
         this.addSpawn(SpawnGroup.MONSTER, new Biome.SpawnEntry(ModEntityTypes.MONOLITH, 1, 0, 1));
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public int getSkyColor() {
+        return 0x404040;
     }
 }
