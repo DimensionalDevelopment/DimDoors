@@ -1,24 +1,15 @@
 package org.dimdev.dimdoors.world.limbo;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.resource.Resource;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import org.dimdev.dimdoors.ModConfig;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.BiConsumer;
+import org.dimdev.dimdoors.ModConfig;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import static net.minecraft.block.Blocks.*;
 import static org.dimdev.dimdoors.block.ModBlocks.*;
@@ -30,18 +21,57 @@ import static org.dimdev.dimdoors.block.ModBlocks.*;
 public final class LimboDecay {
     private static final Map<Block, Block> DECAY_SEQUENCE = new HashMap<>();
 
-    static { // TODO: make this work on the server
-        try {
-            for (Resource resource : MinecraftClient.getInstance().getResourceManager().getAllResources(new Identifier("dimdoors:limbo_decay"))) {
-                Map<String, String> decays = new Gson().fromJson(new InputStreamReader(resource.getInputStream()), new TypeToken<Map<String, String>>() {}.getType());
+    static {
+        BiConsumer<Block, Block> blockBiConsumer = DECAY_SEQUENCE::putIfAbsent;
 
-                for (Map.Entry<String, String> decay : decays.entrySet()) {
-                    DECAY_SEQUENCE.put(Registry.BLOCK.get(new Identifier(decay.getKey())), Registry.BLOCK.get(new Identifier(decay.getValue())));
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        blockBiConsumer.accept(STONE, COBBLESTONE);
+        blockBiConsumer.accept(COBBLESTONE, END_STONE);
+        blockBiConsumer.accept(GRAVEL, SAND);
+        blockBiConsumer.accept(SAND, UNRAVELLED_FABRIC);
+        blockBiConsumer.accept(GLASS, SAND);
+        blockBiConsumer.accept(GRASS_BLOCK, DIRT);
+        blockBiConsumer.accept(DIRT, SAND);
+        blockBiConsumer.accept(REDSTONE_BLOCK, REDSTONE_ORE);
+        blockBiConsumer.accept(REDSTONE_ORE, STONE);
+        blockBiConsumer.accept(EMERALD_BLOCK, EMERALD_ORE);
+        blockBiConsumer.accept(EMERALD_ORE, STONE);
+        blockBiConsumer.accept(COAL_BLOCK, COAL_ORE);
+        blockBiConsumer.accept(COAL_ORE, STONE);
+        blockBiConsumer.accept(IRON_BLOCK, IRON_ORE);
+        blockBiConsumer.accept(IRON_ORE, STONE);
+        blockBiConsumer.accept(LAPIS_BLOCK, LAPIS_ORE);
+        blockBiConsumer.accept(LAPIS_ORE, STONE);
+        blockBiConsumer.accept(GOLD_BLOCK, GOLD_ORE);
+        blockBiConsumer.accept(GOLD_ORE, STONE);
+        blockBiConsumer.accept(SANDSTONE, SAND);
+        blockBiConsumer.accept(END_STONE_BRICKS, END_STONE);
+        blockBiConsumer.accept(GRASS_PATH, DIRT);
+        blockBiConsumer.accept(POLISHED_GRANITE, GRANITE);
+        blockBiConsumer.accept(GRANITE, DIORITE);
+        blockBiConsumer.accept(POLISHED_ANDESITE, ANDESITE);
+        blockBiConsumer.accept(ANDESITE, DIORITE);
+        blockBiConsumer.accept(POLISHED_DIORITE, DIORITE);
+        blockBiConsumer.accept(GRANITE, DIORITE);
+        blockBiConsumer.accept(DIORITE, COBBLESTONE);
+        blockBiConsumer.accept(POLISHED_BLACKSTONE, BLACKSTONE);
+        blockBiConsumer.accept(BLACKSTONE, COBBLESTONE);
+        blockBiConsumer.accept(PODZOL, DIRT);
+        blockBiConsumer.accept(FARMLAND, DIRT);
+        blockBiConsumer.accept(STONE_BRICKS, CRACKED_STONE_BRICKS);
+        blockBiConsumer.accept(CRACKED_STONE_BRICKS, DIORITE);
+        blockBiConsumer.accept(END_STONE, SAND);
+        blockBiConsumer.accept(OAK_LOG, OAK_PLANKS);
+        blockBiConsumer.accept(BIRCH_LOG, BIRCH_PLANKS);
+        blockBiConsumer.accept(SPRUCE_LOG, SPRUCE_PLANKS);
+        blockBiConsumer.accept(JUNGLE_LOG, JUNGLE_PLANKS);
+        blockBiConsumer.accept(ACACIA_LOG, ACACIA_PLANKS);
+        blockBiConsumer.accept(DARK_OAK_LOG, DARK_OAK_PLANKS);
+        blockBiConsumer.accept(OAK_WOOD, OAK_LOG);
+        blockBiConsumer.accept(BIRCH_WOOD, BIRCH_LOG);
+        blockBiConsumer.accept(SPRUCE_WOOD, SPRUCE_LOG);
+        blockBiConsumer.accept(JUNGLE_WOOD, JUNGLE_LOG);
+        blockBiConsumer.accept(ACACIA_WOOD, ACACIA_LOG);
+        blockBiConsumer.accept(DARK_OAK_WOOD, DARK_OAK_LOG);
     }
 
     private static final Random random = new Random();
