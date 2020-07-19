@@ -1,17 +1,18 @@
 package org.dimdev.dimdoors.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<EntranceRiftBlockEntity> {
@@ -24,23 +25,20 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
 
     @Override
     public void render(EntranceRiftBlockEntity entrance, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
-        /*Direction orientation = entrance.getOrientation();
-        Vec3d offset = new Vec3d(orientation.getOpposite().getUnitVector().scale(orientation == Direction.NORTH || orientation == Direction.WEST || orientation == Direction.UP ? entrance.pushIn : entrance.pushIn - 1));
+        Direction orientation = entrance.getOrientation();
+        Vector3f vec = orientation.getOpposite().getUnitVector();
+        vec.scale((float) (orientation == Direction.NORTH || orientation == Direction.WEST || orientation == Direction.UP ? 0.01 : 0.01 - 1));
+        Vec3d offset = new Vec3d(vec);
         DimensionalPortalRenderer.renderDimensionalPortal(
-                x + offset.x,
-                y + offset.y,
-                z + offset.z,
+                vertexConsumerProvider,
+                entrance.getPos().getX() + offset.x,
+                entrance.getPos().getY() + offset.y,
+                entrance.getPos().getZ() + offset.z,
                 //entrance.orientation.getHorizontalAngle(),
                 //entrance.orientation.getDirectionVec().getY() * 90,
                 orientation,
-                extendLeft + entrance.extendRight,
-                extendDown + entrance.extendUp,
-                entrance.getColors(16));*/
-
-        /*if (entrance.lockStatus >= 1) {
-            for (int i = 0; i < 1 + entrance.lockStatus; i++) {
-                renderKeyHole(entrance, x, y, z, i);
-            }
-        }*/
+                16,
+                16,
+                entrance.getColors(16));
     }
 }
