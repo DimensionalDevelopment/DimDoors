@@ -19,6 +19,10 @@ public class EternalFluidBlock extends FluidBlock {
 
     @Override
     public void onEntityCollision(BlockState blockState, World world, BlockPos blockPos, Entity entity) {
-        TARGET.receiveEntity(entity, entity.yaw);
+        try {
+            TARGET.receiveEntity(entity, entity.yaw);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 }

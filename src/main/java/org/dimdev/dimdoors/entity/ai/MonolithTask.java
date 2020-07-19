@@ -1,16 +1,22 @@
 package org.dimdev.dimdoors.entity.ai;
 
+import io.netty.buffer.Unpooled;
+
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 import java.util.EnumSet;
 
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import static net.minecraft.predicate.entity.EntityPredicates.EXCEPT_SPECTATOR;
 import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
 
@@ -57,6 +63,10 @@ public class MonolithTask extends Goal {
                 // of the sounds that would usually play for a moment would
                 // keep playing constantly and would get very annoying.
                 mob.playSounds(target.getPos());
+
+                PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+                data.writeInt(this.mob.getAggro());
+                ServerSidePacketRegistry.INSTANCE.sendToPlayer(target, DimensionalDoorsInitializer.MONOLITH_PARTICLE_PACKET, data);
             }
 
             if (visibility) {

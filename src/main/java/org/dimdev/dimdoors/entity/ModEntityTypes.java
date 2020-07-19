@@ -1,6 +1,11 @@
 package org.dimdev.dimdoors.entity;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
@@ -21,11 +26,17 @@ public class ModEntityTypes {
     );
 
     public static void init() {
+        FabricDefaultAttributeRegistry.register(MONOLITH, MonolithEntity.createMobAttributes());
+        FabricDefaultAttributeRegistry.register(MASK, MonolithEntity.createMobAttributes());
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void initClient() {
         EntityRendererRegistry.INSTANCE.register(MONOLITH, MonolithRenderer::new);
         EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
     }
 
-    private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, int a, int b) {
-        return Registry.register(Registry.ENTITY_TYPE, id, EntityType.Builder.create(factory, SpawnGroup.MONSTER).setDimensions(a, b).makeFireImmune().spawnableFarFromPlayer().build(id));
+    private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, int width, int height) {
+        return Registry.register(Registry.ENTITY_TYPE, id, FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).spawnableFarFromPlayer().fireImmune().build());
     }
 }

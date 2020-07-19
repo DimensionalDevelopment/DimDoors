@@ -8,12 +8,12 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.SkyProperties;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.fluid.Fluid;
@@ -22,13 +22,14 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockRenderView;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.client.CustomSkyProvider;
 import org.dimdev.dimdoors.client.LimboSkyProvider;
+import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.world.ModDimensions;
 
@@ -38,6 +39,8 @@ import java.util.function.Function;
 public class DimensionalDoorsClientInitializer implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        ModEntityTypes.initClient();
+
         putCutout(ModBlocks.OAK_DIMENSIONAL_DOOR);
         putCutout(ModBlocks.GOLD_DIMENSIONAL_DOOR);
         putCutout(ModBlocks.IRON_DIMENSIONAL_DOOR);
@@ -49,6 +52,8 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
 
         OpenWorlds.registerSkyRenderer(ModDimensions.POCKET_TYPE, new CustomSkyProvider(null, null, new Vec3i(0, 0, 0)));
         OpenWorlds.registerSkyRenderer(ModDimensions.LIMBO_TYPE, new LimboSkyProvider());
+
+        ClientSidePacketRegistry.INSTANCE.register(DimensionalDoorsInitializer.MONOLITH_PARTICLE_PACKET, MonolithEntity::spawnParticles);
     }
 
     private void putCutout(Block block) {

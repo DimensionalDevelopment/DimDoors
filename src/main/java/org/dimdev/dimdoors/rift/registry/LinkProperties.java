@@ -1,10 +1,9 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import net.minecraft.nbt.CompoundTag;
 import org.dimdev.annotatednbt.Saved;
-import org.dimdev.annotatednbt.AnnotatedNbt;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -36,7 +35,7 @@ public class LinkProperties {
         if (Float.compare(this.entranceWeight, other.entranceWeight) != 0) return false;
         final Object this$groups = this.groups;
         final Object other$groups = other.groups;
-        if (this$groups == null ? other$groups != null : !this$groups.equals(other$groups)) return false;
+        if (!Objects.equals(this$groups, other$groups)) return false;
         if (this.linksRemaining != other.linksRemaining) return false;
         if (this.oneWay != other.oneWay) return false;
         return true;

@@ -19,39 +19,9 @@ import java.util.HashSet;
 
 import static org.dimdev.dimdoors.item.ModItemGroups.DIMENSIONAL_DOORS;
 
+@SuppressWarnings("unused")
 public final class ModItems {
-    public static final Item GOLD_DOOR = register(ModBlocks.GOLD_DOOR);
     public static final Item QUARTZ_DOOR = register(ModBlocks.QUARTZ_DOOR);
-
-    public static final Item IRON_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
-            ModBlocks.IRON_DIMENSIONAL_DOOR,
-            new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
-            rift -> {
-                PublicPocketTarget destination = new PublicPocketTarget();
-                rift.setDestination(destination);
-            }
-    ));
-
-    public static final Item GOLD_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
-            ModBlocks.GOLD_DIMENSIONAL_DOOR,
-            new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
-            rift -> {
-                rift.setProperties(LinkProperties.builder()
-                                                 .groups(new HashSet<>(Arrays.asList(0, 1)))
-                                                 .linksRemaining(1).build());
-
-                rift.setDestination(RandomTarget.builder()
-                                                .acceptedGroups(Collections.singleton(0))
-                                                .coordFactor(1)
-                                                .negativeDepthFactor(10000)
-                                                .positiveDepthFactor(80)
-                                                .weightMaximum(100)
-                                                .noLink(false)
-                                                .noLinkBack(false)
-                                                .newRiftWeight(1).build());
-            }
-    ));
-
     public static final Item QUARTZ_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
             ModBlocks.QUARTZ_DIMENSIONAL_DOOR,
             new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
@@ -64,9 +34,39 @@ public final class ModItems {
             }
     ));
 
+    public static final Item GOLD_DOOR = register(ModBlocks.GOLD_DOOR);
+    public static final Item GOLD_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
+            ModBlocks.GOLD_DIMENSIONAL_DOOR,
+            new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
+            rift -> {
+                rift.setProperties(LinkProperties.builder()
+                        .groups(new HashSet<>(Arrays.asList(0, 1)))
+                        .linksRemaining(1).build());
+
+                rift.setDestination(RandomTarget.builder()
+                        .acceptedGroups(Collections.singleton(0))
+                        .coordFactor(1)
+                        .negativeDepthFactor(10000)
+                        .positiveDepthFactor(80)
+                        .weightMaximum(100)
+                        .noLink(false)
+                        .noLinkBack(false)
+                        .newRiftWeight(1).build());
+            }
+    ));
+
+    public static final Item IRON_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
+            ModBlocks.IRON_DIMENSIONAL_DOOR,
+            new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
+            rift -> {
+                PublicPocketTarget destination = new PublicPocketTarget();
+                rift.setDestination(destination);
+            }
+    ));
+
 //    public static final Item UNSTABLE_DIMENSIONAL_DOOR = register( new DimensionalDoorItem(
 //            ModBlocks.IRON_DIMENSIONAL_DOOR,
-//            new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1),
+//            new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
 //            rift -> {
 //                 TODO
 //            }
@@ -92,6 +92,21 @@ public final class ModItems {
             new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
             rift -> rift.setDestination(new EscapeTarget(false))
     ));
+
+    public static final Item WORLD_THREAD = register(new Identifier("dimdoors:world_thread"), new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+    public static final Item RIFT_CONFIGURATION_TOOL = register(new Identifier("dimdoors:rift_configuration_tool"), new RiftConfigurationToolItem());
+    public static final Item RIFT_BLADE = register(new Identifier("dimdoors:rift_blade"), new RiftBladeItem(new Item.Settings().maxDamage(100).group(DIMENSIONAL_DOORS)));
+    public static final Item RIFT_REMOVER = register(new Identifier("dimdoors:rift_remover"), new RiftRemoverItem(new Item.Settings().maxCount(1).maxDamage(100).group(DIMENSIONAL_DOORS)));
+    public static final Item RIFT_SIGNATURE = register(new Identifier("dimdoors:rift_signature"), new RiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(1).group(DIMENSIONAL_DOORS)));
+    public static final Item STABILIZED_RIFT_SIGNATURE = register(new Identifier("dimdoors:stabilized_rift_signature"), new StabilizedRiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(20).group(DIMENSIONAL_DOORS)));
+    public static final Item RIFT_STABILIZER = register(new Identifier("dimdoors:rift_stabilizer"), new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(DIMENSIONAL_DOORS)));
+
+    public static final Item WORLD_THREAD_HELMET = register(new Identifier("dimdoors:world_thread_helmet"), new WorldThreadArmorItem(EquipmentSlot.HEAD, new Item.Settings()));
+    public static final Item WORLD_THREAD_CHESTPLATE = register(new Identifier("dimdoors:world_thread_chestplate"), new WorldThreadArmorItem(EquipmentSlot.CHEST, new Item.Settings()));
+    public static final Item WORLD_THREAD_LEGGINGS = register(new Identifier("dimdoors:world_thread_leggings"), new WorldThreadArmorItem(EquipmentSlot.LEGS, new Item.Settings()));
+    public static final Item WORLD_THREAD_BOOTS = register(new Identifier("dimdoors:world_thread_boots"), new WorldThreadArmorItem(EquipmentSlot.FEET, new Item.Settings()));
+
+    public static final Item STABLE_FABRIC = register(new Identifier("dimdoors:stable_fabric"), new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
 
     public static final Item WHITE_FABRIC = register(ModBlocks.WHITE_FABRIC);
     public static final Item ORANGE_FABRIC = register(ModBlocks.ORANGE_FABRIC);
@@ -127,38 +142,17 @@ public final class ModItems {
     public static final Item RED_ANCIENT_FABRIC = register(ModBlocks.RED_ANCIENT_FABRIC);
     public static final Item BLACK_ANCIENT_FABRIC = register(ModBlocks.BLACK_ANCIENT_FABRIC);
 
+    public static final Item UNRAVELLED_FABRIC = register(ModBlocks.UNRAVELLED_FABRIC);
+    public static final Item CREEPY_RECORD = register(new Identifier("dimdoors:creepy_record"), new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(DIMENSIONAL_DOORS)));
+    public static final Item WHITE_VOID_RECORD = register(new Identifier("dimdoors:white_void_record"), new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(DIMENSIONAL_DOORS)));
+    public static final Item MARKING_PLATE = register(ModBlocks.MARKING_PLATE);
     public static final Item ETERNAL_FLUID = register(ModBlocks.ETERNAL_FLUID);
-    public static final Item UNRAVELLED_FABRIC = register(ModBlocks.UNRAVELLED_FABRIC, DIMENSIONAL_DOORS);
-
-    public static final Item MARKING_PLATE = register(ModBlocks.MARKING_PLATE, DIMENSIONAL_DOORS);
+    public static final Item ETERNAL_FLUID_BUCKET = register(new Identifier("dimdoors:eternal_fluid_bucket"), new BucketItem(ModFluids.ETERNAL_FLUID, new Item.Settings().group(DIMENSIONAL_DOORS).recipeRemainder(Items.BUCKET).maxCount(1)));
 
     // Dimensional doors
 
-    public static final Item WORLD_THREAD = register(new Identifier("dimdoors:world_thread"), new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
-    public static final Item STABLE_FABRIC = register(new Identifier("dimdoors:stable_fabric"), new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
-    public static final Item RIFT_CONFIGURATION_TOOL = register(new Identifier("dimdoors:rift_configuration_tool"), new RiftConfigurationToolItem());
-    public static final Item RIFT_BLADE = register(new Identifier("dimdoors:rift_blade"), new RiftBladeItem(new Item.Settings().maxDamage(100).group(DIMENSIONAL_DOORS)));
-    public static final Item RIFT_REMOVER = register(new Identifier("dimdoors:rift_remover"), new RiftRemoverItem(new Item.Settings().maxCount(1).maxDamage(100).group(DIMENSIONAL_DOORS)));
-    public static final Item RIFT_SIGNATURE = register(new Identifier("dimdoors:rift_signature"), new RiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(1).group(DIMENSIONAL_DOORS)));
-    public static final Item STABILIZED_RIFT_SIGNATURE = register(new Identifier("dimdoors:stabilized_rift_signature"), new StabilizedRiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(20).group(DIMENSIONAL_DOORS)));
-    public static final Item RIFT_STABILIZER = register(new Identifier("dimdoors:rift_stabilizer"), new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(DIMENSIONAL_DOORS)));
-
-    public static final Item WORLD_THREAD_HELMET = register(new Identifier("dimdoors:world_thread_helmet"), new WorldThreadArmorItem(EquipmentSlot.HEAD, new Item.Settings()));
-    public static final Item WORLD_THREAD_CHESTPLATE = register(new Identifier("dimdoors:world_thread_chestplate"), new WorldThreadArmorItem(EquipmentSlot.CHEST, new Item.Settings()));
-    public static final Item WORLD_THREAD_LEGGINGS = register(new Identifier("dimdoors:world_thread_leggings"), new WorldThreadArmorItem(EquipmentSlot.LEGS, new Item.Settings()));
-    public static final Item WORLD_THREAD_BOOTS = register(new Identifier("dimdoors:world_thread_boots"), new WorldThreadArmorItem(EquipmentSlot.FEET, new Item.Settings()));
-
-    public static final Item CREEPY_RECORD = register(new Identifier("dimdoors:creepy_record"), new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(DIMENSIONAL_DOORS)));
-    public static final Item WHITE_VOID_RECORD = register(new Identifier("dimdoors:white_void_record"), new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(DIMENSIONAL_DOORS)));
-
-    public static final Item ETERNAL_FLUID_BUCKET = register(new Identifier("dimdoors:eternal_fluid_bucket"), new BucketItem(ModFluids.ETERNAL_FLUID, new Item.Settings().group(DIMENSIONAL_DOORS).recipeRemainder(Items.BUCKET).maxCount(1)));
-
     private static Item register(Block block) {
-        return register(new BlockItem(block, new Item.Settings()));
-    }
-
-    private static Item register(Block block, ItemGroup itemGroup) {
-        return register(new BlockItem(block, (new Item.Settings()).group(itemGroup)));
+        return register(new BlockItem(block, (new Item.Settings()).group(DIMENSIONAL_DOORS)));
     }
 
     private static Item register(BlockItem blockItem) {
