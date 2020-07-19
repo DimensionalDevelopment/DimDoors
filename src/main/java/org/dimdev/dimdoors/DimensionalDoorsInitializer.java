@@ -13,6 +13,7 @@ import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.rift.targets.*;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.ModFeatures;
 
 import net.minecraft.util.Identifier;
 
@@ -27,6 +28,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModDimensions.init();
         ModEntityTypes.init();
         ModBiomes.init();
+        ModFeatures.init();
 
         this.registerCommands();
 
