@@ -7,6 +7,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -26,7 +27,10 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockRenderView;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.CustomSkyProvider;
+import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
+import org.dimdev.dimdoors.client.EntranceRiftBlockEntityRenderer;
 import org.dimdev.dimdoors.client.LimboSkyProvider;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.MonolithEntity;
@@ -54,6 +58,9 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
         OpenWorlds.registerSkyRenderer(ModDimensions.LIMBO_TYPE, new LimboSkyProvider());
 
         ClientSidePacketRegistry.INSTANCE.register(DimensionalDoorsInitializer.MONOLITH_PARTICLE_PACKET, MonolithEntity::spawnParticles);
+
+        BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.ENTRANCE_RIFT, EntranceRiftBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.DETACHED_RIFT, DetachedRiftBlockEntityRenderer::new);
     }
 
     private void putCutout(Block block) {

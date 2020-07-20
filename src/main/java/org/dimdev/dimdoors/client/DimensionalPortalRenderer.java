@@ -3,25 +3,24 @@ package org.dimdev.dimdoors.client;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.GlAllocationUtils;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 import org.lwjgl.opengl.GL11;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import static com.mojang.blaze3d.platform.GlStateManager.TexCoord.*;
 import static com.mojang.blaze3d.platform.GlStateManager.enableTexGen;
 
+@Environment(EnvType.CLIENT)
 public final class DimensionalPortalRenderer { // TODO
-    private static final FloatBuffer buffer = GlAllocationUtils.allocateFloatBuffer(16);
-    private static final Identifier warpPath = new Identifier("dimdoors" + ":textures/other/warp.png");
+    private static final FloatBuffer BUFFER = GlAllocationUtils.allocateFloatBuffer(16);
+    private static final Identifier WARP_TEX = new Identifier("dimdoors", "textures/other/warp.png");
 
     /**
      * Renders a dimensional portal, for use in various situations. Code is mostly based
@@ -37,7 +36,7 @@ public final class DimensionalPortalRenderer { // TODO
      * @param height      The height of the wall.
      * @param colors      An array containing the color to use on each pass. Its length determines the number of passes to do.
      */
-    public static void renderDimensionalPortal(VertexConsumer vc, double x, double y, double z, Direction orientation, double width, double height, float[][] colors) { // TODO: Make this work at any angle
+    public static void renderDimensionalPortal(VertexConsumerProvider vc, double x, double y, double z, Direction orientation, double width, double height, float[][] colors) { // TODO: Make this work at any angle
         RenderSystem.disableLighting();
         RenderSystem.disableCull();
 
@@ -48,7 +47,7 @@ public final class DimensionalPortalRenderer { // TODO
             float scale = 0.2625F;
             float colorMultiplier = 1.0F / (translationScale + .80F);
 
-            MinecraftClient.getInstance().getTextureManager().bindTexture(warpPath);
+            MinecraftClient.getInstance().getTextureManager().bindTexture(WARP_TEX);
             RenderSystem.enableBlend();
 
             if (pass == 0) {
@@ -189,9 +188,9 @@ public final class DimensionalPortalRenderer { // TODO
     }
 
     private static FloatBuffer getBuffer(float f1, float f2, float f3, float f4) {
-        buffer.clear();
-        buffer.put(f1).put(f2).put(f3).put(f4);
-        buffer.flip();
-        return buffer;
+        BUFFER.clear();
+        BUFFER.put(f1).put(f2).put(f3).put(f4);
+        BUFFER.flip();
+        return BUFFER;
     }
 }

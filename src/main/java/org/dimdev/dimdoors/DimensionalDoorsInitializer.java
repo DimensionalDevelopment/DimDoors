@@ -3,6 +3,7 @@ package org.dimdev.dimdoors;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.commands.CommandPocket;
 import org.dimdev.dimdoors.commands.CommandSaveSchem;
 import org.dimdev.dimdoors.commands.DimTeleportCommand;
@@ -29,6 +30,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModEntityTypes.init();
         ModBiomes.init();
         ModFeatures.init();
+        ModBlockEntityTypes.init();
 
         this.registerCommands();
 
