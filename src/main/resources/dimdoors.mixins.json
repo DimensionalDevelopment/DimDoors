@@ -3,9 +3,9 @@
   "package": "org.dimdev.dimdoors.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "InGameHudMixin"
   ],
   "client": [
+    "InGameHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1
