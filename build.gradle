@@ -21,6 +21,12 @@ targetCompatibility = 1.8
 repositories {
     maven { url = 'https://maven.fabricmc.net/' }
     maven { url 'https://jitpack.io' }
+    mavenCentral()
+}
+
+configurations {
+    shade
+    modImplementation.extendsFrom shade
 }
 
 dependencies {
@@ -28,14 +34,14 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:0.14.1+build.372-1.16"
-    modImplementation 'com.flowpowered:flow-math:1.0.3'
-    modImplementation 'org.jgrapht:jgrapht-core:1.1.0'
-    modImplementation 'com.github.DimensionalDevelopment:poly2tri.java:0.1.1'
+    shade 'com.flowpowered:flow-math:1.0.3'
+    shade 'org.jgrapht:jgrapht-core:1.1.0'
+    shade 'com.github.DimensionalDevelopment:poly2tri.java:0.1.1'
     modImplementation 'com.github.Waterpicker:OpenWorlds:1.0.0'
     include 'com.github.Waterpicker:OpenWorlds:1.0.0'
 }
 
-version "4.0-alpha.2"
+version "4.0-alpha.3"
 archivesBaseName = "dimensional-doors"
 
 processResources {
@@ -44,6 +50,12 @@ processResources {
     }
 
     inputs.property "version", project.version
+}
+
+jar {
+    configurations.shade.each { dep ->
+        from(project.zipTree(dep))
+    }
 }
 
 artifacts {

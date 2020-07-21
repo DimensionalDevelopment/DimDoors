@@ -76,11 +76,11 @@ public class DetachedRiftBlock extends Block implements RiftProvider<DetachedRif
             );
         }
 
-        MinecraftClient.getInstance().particleManager.addParticle(new RiftParticle(
+        /*MinecraftClient.getInstance().particleManager.addParticle(new RiftParticle(
                 (ClientWorld) world,
                 pos.getX() + .5, pos.getY() + 1.5, pos.getZ() + .5,
                 rand.nextGaussian() * speed, rand.nextGaussian() * speed, rand.nextGaussian() * speed,
                 outsidePocket ? 0.0f : 0.7f, 0.55f, rift.stabilized ? 750 : 2000, rift.stabilized ? 750 : 2000)
-        );
+        );*/
     }
 }
