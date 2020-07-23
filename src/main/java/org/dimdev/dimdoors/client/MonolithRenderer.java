@@ -1,17 +1,18 @@
 package org.dimdev.dimdoors.client;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.util.Identifier;
-import org.dimdev.dimdoors.client.MonolithModel;
-import org.dimdev.dimdoors.entity.MonolithEntity;
-
 import java.util.Arrays;
 import java.util.List;
 
+import org.dimdev.dimdoors.entity.MonolithEntity;
+
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+
 public class MonolithRenderer extends LivingEntityRenderer<MonolithEntity, MonolithModel> {
-        protected static final List<Identifier> MONOLITH_TEXTURES = Arrays.asList(
+    protected static final List<Identifier> MONOLITH_TEXTURES = Arrays.asList(
             new Identifier("dimdoors:textures/mob/monolith/monolith0.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith1.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith2.png"),

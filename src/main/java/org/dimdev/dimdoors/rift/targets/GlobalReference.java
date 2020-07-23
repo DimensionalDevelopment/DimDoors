@@ -1,12 +1,14 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.minecraft.nbt.CompoundTag;
+import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.util.Location;
-import org.dimdev.annotatednbt.AnnotatedNbt;
+
+import net.minecraft.nbt.CompoundTag;
 
 public class GlobalReference extends RiftReference {
-    @Saved protected Location target;
+    @Saved
+    protected Location target;
 
     public GlobalReference(Location target) {
         this.target = target;

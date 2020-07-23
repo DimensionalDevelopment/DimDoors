@@ -1,19 +1,15 @@
 package org.dimdev.dimdoors.block;
 
-import net.minecraft.block.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.util.ActionResult;
+import net.minecraft.block.Block;
+import net.minecraft.block.Material;
+import net.minecraft.block.MaterialColor;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import org.dimdev.dimdoors.world.ModDimensions;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
 public final class ModBlocks {
@@ -81,6 +77,21 @@ public final class ModBlocks {
 
     public static void init() {
         // just loads the class
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void initClient() {
+        putCutout(ModBlocks.OAK_DIMENSIONAL_DOOR);
+        putCutout(ModBlocks.GOLD_DIMENSIONAL_DOOR);
+        putCutout(ModBlocks.IRON_DIMENSIONAL_DOOR);
+        putCutout(ModBlocks.OAK_DIMENSIONAL_TRAPDOOR);
+        putCutout(ModBlocks.QUARTZ_DIMENSIONAL_DOOR);
+        putCutout(ModBlocks.QUARTZ_DOOR);
+    }
+
+    @Environment(EnvType.CLIENT)
+    private static void putCutout(Block block) {
+        BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());
     }
 
     private static class DoorBlock extends net.minecraft.block.DoorBlock { // TODO: use access widener instead

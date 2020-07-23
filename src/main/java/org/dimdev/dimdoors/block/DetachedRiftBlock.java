@@ -1,7 +1,11 @@
 package org.dimdev.dimdoors.block;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import java.util.Random;
+
+import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.client.RiftParticle;
+import org.dimdev.dimdoors.world.ModDimensions;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MaterialColor;
@@ -15,11 +19,9 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.client.RiftParticle;
-import org.dimdev.dimdoors.world.ModDimensions;
 
-import java.util.Random;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class DetachedRiftBlock extends Block implements RiftProvider<DetachedRiftBlockEntity> {
     public static final String ID = "rift";

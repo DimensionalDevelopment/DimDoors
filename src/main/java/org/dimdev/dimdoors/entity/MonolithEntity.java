@@ -2,6 +2,10 @@ package org.dimdev.dimdoors.entity;
 
 import java.util.Random;
 
+import org.dimdev.dimdoors.entity.ai.MonolithTask;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.world.ModDimensions;
+
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.damage.DamageSource;
@@ -20,10 +24,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
-
-import org.dimdev.dimdoors.entity.ai.MonolithTask;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -47,7 +47,7 @@ public class MonolithEntity extends MobEntity {
     private int soundTime = 0;
     private final int aggroCap;
 
-    MonolithEntity(World world){
+    MonolithEntity(World world) {
         this(ModEntityTypes.MONOLITH, world);
     }
 
@@ -218,13 +218,13 @@ public class MonolithEntity extends MobEntity {
         PlayerEntity player = context.getPlayer();
         int aggro = data.readInt();
 
-        context.getTaskQueue().execute(()->{
+        context.getTaskQueue().execute(() -> {
             int count = 10 * aggro / MAX_AGGRO;
             for (int i = 1; i < count; ++i) {
                 player.world.addParticle(ParticleTypes.PORTAL, player.getX() + (random.nextDouble() - 0.5D) * 3.0,
                         player.getY() + random.nextDouble() * player.getHeight() - 0.75D,
                         player.getZ() + (random.nextDouble() - 0.5D) * player.getWidth(),
-                        (random.nextDouble() - 0.5D) * 2.0D, - random.nextDouble(),
+                        (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(),
                         (random.nextDouble() - 0.5D) * 2.0D);
             }
         });
@@ -267,10 +267,10 @@ public class MonolithEntity extends MobEntity {
 
     @Override
     public boolean canSpawn(WorldAccess world, SpawnReason spawnReason) {
-        if(spawnReason == SpawnReason.CHUNK_GENERATION) {
+        if (spawnReason == SpawnReason.CHUNK_GENERATION) {
             return super.canSpawn(world, spawnReason);
         }
-        if(spawnReason == SpawnReason.NATURAL) {
+        if (spawnReason == SpawnReason.NATURAL) {
             return this.getRandom().nextInt(32) == 2;
         }
         return false;

@@ -14,10 +14,13 @@ import net.minecraft.nbt.*;
 
 public class NbtReader extends JsonReader {
     private static final Reader UNREADABLE_READER = new Reader() {
-        @Override public int read(char[] buffer, int offset, int count) throws IOException {
+        @Override
+        public int read(char[] buffer, int offset, int count) throws IOException {
             throw new AssertionError();
         }
-        @Override public void close() throws IOException {
+
+        @Override
+        public void close() throws IOException {
             throw new AssertionError();
         }
     };
@@ -45,14 +48,16 @@ public class NbtReader extends JsonReader {
         push(element);
     }
 
-    @Override public void beginArray() throws IOException {
+    @Override
+    public void beginArray() throws IOException {
         expect(JsonToken.BEGIN_ARRAY);
         ListTag array = (ListTag) peekStack();
         push(array.iterator());
         pathIndices[stackSize - 1] = 0;
     }
 
-    @Override public void endArray() throws IOException {
+    @Override
+    public void endArray() throws IOException {
         expect(JsonToken.END_ARRAY);
         popStack(); // empty iterator
         popStack(); // array
@@ -61,13 +66,15 @@ public class NbtReader extends JsonReader {
         }
     }
 
-    @Override public void beginObject() throws IOException {
+    @Override
+    public void beginObject() throws IOException {
         expect(JsonToken.BEGIN_OBJECT);
         CompoundTag object = (CompoundTag) peekStack();
         push(object.getKeys().stream().collect(Collectors.toMap(Function.identity(), object::getCompound)).entrySet().iterator());
     }
 
-    @Override public void endObject() throws IOException {
+    @Override
+    public void endObject() throws IOException {
         expect(JsonToken.END_OBJECT);
         popStack(); // empty iterator
         popStack(); // object
@@ -76,12 +83,14 @@ public class NbtReader extends JsonReader {
         }
     }
 
-    @Override public boolean hasNext() throws IOException {
+    @Override
+    public boolean hasNext() throws IOException {
         JsonToken token = peek();
         return token != JsonToken.END_OBJECT && token != JsonToken.END_ARRAY;
     }
 
-    @Override public JsonToken peek() throws IOException {
+    @Override
+    public JsonToken peek() throws IOException {
         if (stackSize == 0) {
             return JsonToken.END_DOCUMENT;
         }
@@ -139,7 +148,8 @@ public class NbtReader extends JsonReader {
         }
     }
 
-    @Override public String nextName() throws IOException {
+    @Override
+    public String nextName() throws IOException {
         expect(JsonToken.NAME);
         Iterator<?> i = (Iterator<?>) peekStack();
         Map.Entry<?, ?> entry = (Map.Entry<?, ?>) i.next();
@@ -149,7 +159,8 @@ public class NbtReader extends JsonReader {
         return result;
     }
 
-    @Override public String nextString() throws IOException {
+    @Override
+    public String nextString() throws IOException {
         JsonToken token = peek();
         if (token != JsonToken.STRING) {
             throw new IllegalStateException(
@@ -162,7 +173,8 @@ public class NbtReader extends JsonReader {
         return result;
     }
 
-    @Override public boolean nextBoolean() throws IOException {
+    @Override
+    public boolean nextBoolean() throws IOException {
         expect(JsonToken.BOOLEAN);
         boolean result = ((ByteTag) popStack()).getByte() != 0;
         if (stackSize > 0) {
@@ -171,7 +183,8 @@ public class NbtReader extends JsonReader {
         return result;
     }
 
-    @Override public void nextNull() throws IOException {
+    @Override
+    public void nextNull() throws IOException {
         expect(JsonToken.NULL);
         popStack();
         if (stackSize > 0) {
@@ -179,7 +192,8 @@ public class NbtReader extends JsonReader {
         }
     }
 
-    @Override public double nextDouble() throws IOException {
+    @Override
+    public double nextDouble() throws IOException {
         JsonToken token = peek();
         if (token != JsonToken.NUMBER) {
             throw new IllegalStateException(
@@ -196,7 +210,8 @@ public class NbtReader extends JsonReader {
         return result;
     }
 
-    @Override public long nextLong() throws IOException {
+    @Override
+    public long nextLong() throws IOException {
         JsonToken token = peek();
         if (token != JsonToken.NUMBER) {
             throw new IllegalStateException(
@@ -210,7 +225,8 @@ public class NbtReader extends JsonReader {
         return result;
     }
 
-    @Override public int nextInt() throws IOException {
+    @Override
+    public int nextInt() throws IOException {
         JsonToken token = peek();
         if (token != JsonToken.NUMBER) {
             throw new IllegalStateException(
@@ -224,12 +240,14 @@ public class NbtReader extends JsonReader {
         return result;
     }
 
-    @Override public void close() throws IOException {
-        stack = new Object[] { SENTINEL_CLOSED };
+    @Override
+    public void close() throws IOException {
+        stack = new Object[]{SENTINEL_CLOSED};
         stackSize = 1;
     }
 
-    @Override public void skipValue() throws IOException {
+    @Override
+    public void skipValue() throws IOException {
         if (peek() == JsonToken.NAME) {
             nextName();
             pathNames[stackSize - 2] = "null";
@@ -240,7 +258,8 @@ public class NbtReader extends JsonReader {
         pathIndices[stackSize - 1]++;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return getClass().getSimpleName();
     }
 
@@ -259,7 +278,8 @@ public class NbtReader extends JsonReader {
         stack[stackSize++] = newTop;
     }
 
-    @Override public String getPath() {
+    @Override
+    public String getPath() {
         StringBuilder result = new StringBuilder().append('$');
         for (int i = 0; i < stackSize; i++) {
             if (stack[i] instanceof CompoundTag) {

@@ -1,12 +1,13 @@
 package org.dimdev.dimdoors.item;
 
+import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.BlockView;
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
 public final class RayTraceHelper {
     public static final int REACH_DISTANCE = 5;

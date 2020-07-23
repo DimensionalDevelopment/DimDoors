@@ -1,9 +1,8 @@
 package org.dimdev.dimdoors.client;
 
-import net.minecraft.client.render.VertexConsumer;
 import org.dimdev.dimdoors.ModConfig;
 
-import java.awt.*;
+import net.minecraft.client.render.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

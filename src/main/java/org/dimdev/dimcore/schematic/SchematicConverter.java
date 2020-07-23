@@ -79,7 +79,6 @@ public class SchematicConverter {
         CONVERSIONS.put("minecraft:leaves[variant=jungle]", "minecraft:jungle_leaves[persistent=true]");
 
 
-
         CONVERSIONS.put("minecraft:powered_repeater", "minecraft:repeater[facing=north,powered=true]");
         CONVERSIONS.put("minecraft:powered_repeater[delay=1]", "minecraft:repeater[delay=1,facing=north,powered=true]");
         CONVERSIONS.put("minecraft:powered_repeater[delay=2]", "minecraft:repeater[delay=2,facing=north,powered=true]");
@@ -155,10 +154,6 @@ public class SchematicConverter {
         CONVERSIONS.put("minecraft:powered_repeater[delay=4,facing=west]", "minecraft:repeater[delay=4,facing=west,powered=true]");
 
 
-
-
-
-
         CONVERSIONS.put("minecraft:powered_comparator", "minecraft:comparator[facing=north,powered=true]");
         CONVERSIONS.put("minecraft:powered_comparator[delay=1]", "minecraft:comparator[delay=1,facing=north,powered=true]");
         CONVERSIONS.put("minecraft:powered_comparator[delay=2]", "minecraft:comparator[delay=2,facing=north,powered=true]");
@@ -232,21 +227,6 @@ public class SchematicConverter {
         CONVERSIONS.put("minecraft:powered_comparator[delay=4,facing=south]", "minecraft:comparator[delay=4,facing=south,powered=true]");
         CONVERSIONS.put("minecraft:powered_comparator[delay=4,facing=east]", "minecraft:comparator[delay=4,facing=east,powered=true]");
         CONVERSIONS.put("minecraft:powered_comparator[delay=4,facing=west]", "minecraft:comparator[delay=4,facing=west,powered=true]");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         CONVERSIONS.put("minecraft:stonebrick", "minecraft:stone_bricks");

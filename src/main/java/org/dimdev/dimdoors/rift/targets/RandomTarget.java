@@ -1,11 +1,10 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.collect.Sets;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -20,19 +19,29 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.util.Location;
 import org.dimdev.util.math.MathUtil;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.World;
 
 public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTarget subclass
-    @Saved protected float newRiftWeight;
-    @Saved protected double weightMaximum;
-    @Saved protected double coordFactor;
-    @Saved protected double positiveDepthFactor;
-    @Saved protected double negativeDepthFactor;
-    @Saved protected Set<Integer> acceptedGroups;
-    @Saved protected boolean noLink;
-    @Saved protected boolean noLinkBack;
+    @Saved
+    protected float newRiftWeight;
+    @Saved
+    protected double weightMaximum;
+    @Saved
+    protected double coordFactor;
+    @Saved
+    protected double positiveDepthFactor;
+    @Saved
+    protected double negativeDepthFactor;
+    @Saved
+    protected Set<Integer> acceptedGroups;
+    @Saved
+    protected boolean noLink;
+    @Saved
+    protected boolean noLinkBack;
 
     public RandomTarget(float newRiftWeight, double weightMaximum, double coordFactor, double positiveDepthFactor, double negativeDepthFactor, Set<Integer> acceptedGroups, boolean noLink, boolean noLinkBack) {
         this.newRiftWeight = newRiftWeight;
@@ -45,7 +54,9 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
         this.noLinkBack = noLinkBack;
     }
 
-    public static RandomTargetBuilder builder() {return new RandomTargetBuilder();}
+    public static RandomTargetBuilder builder() {
+        return new RandomTargetBuilder();
+    }
 
     @Override
     public void fromTag(CompoundTag nbt) {
@@ -77,7 +88,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
             if (otherVirtualLocation == null || otherRift.properties.linksRemaining == 0) continue;
             double depthDifference = otherVirtualLocation.depth - virtualLocationHere.depth;
             double coordDistance = Math.sqrt(sq(otherVirtualLocation.x - virtualLocationHere.x)
-                                             + sq(otherVirtualLocation.z - virtualLocationHere.z));
+                    + sq(otherVirtualLocation.z - virtualLocationHere.z));
             double depthFactor = depthDifference > 0 ? positiveDepthFactor : negativeDepthFactor;
             double distance = Math.sqrt(sq(coordFactor * coordDistance) + sq(depthFactor * depthDifference));
 
@@ -136,9 +147,9 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
             double x = Math.cos(theta) * Math.cos(phi) * distance / coordFactor;
             double z = Math.cos(theta) * Math.sin(phi) * distance / coordFactor;
             VirtualLocation virtualLocation = new VirtualLocation(virtualLocationHere.world,
-                                                                  virtualLocationHere.x + (int) Math.round(x),
-                                                                  virtualLocationHere.z + (int) Math.round(z),
-                                                                  virtualLocationHere.depth + (int) Math.round(depth));
+                    virtualLocationHere.x + (int) Math.round(x),
+                    virtualLocationHere.z + (int) Math.round(z),
+                    virtualLocationHere.depth + (int) Math.round(depth));
 
             if (virtualLocation.depth <= 0) {
                 // This will lead to the overworld
@@ -155,7 +166,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
                 // TODO: Should the rift not be configured like the other link
                 riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).build());
 
-                if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(new Location((ServerWorld) world, pos), location);
+                if (!noLinkBack && !riftEntity.getProperties().oneWay)
+                    linkRifts(new Location((ServerWorld) world, pos), location);
                 if (!noLink) linkRifts(location, new Location((ServerWorld) world, pos));
                 return riftEntity.as(Targets.ENTITY);
             } else {
@@ -191,23 +203,41 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
         }
     }
 
-    private double sq(double a) { return a * a; }
+    private double sq(double a) {
+        return a * a;
+    }
 
-    public float getNewRiftWeight() {return this.newRiftWeight;}
+    public float getNewRiftWeight() {
+        return this.newRiftWeight;
+    }
 
-    public double getWeightMaximum() {return this.weightMaximum;}
+    public double getWeightMaximum() {
+        return this.weightMaximum;
+    }
 
-    public double getCoordFactor() {return this.coordFactor;}
+    public double getCoordFactor() {
+        return this.coordFactor;
+    }
 
-    public double getPositiveDepthFactor() {return this.positiveDepthFactor;}
+    public double getPositiveDepthFactor() {
+        return this.positiveDepthFactor;
+    }
 
-    public double getNegativeDepthFactor() {return this.negativeDepthFactor;}
+    public double getNegativeDepthFactor() {
+        return this.negativeDepthFactor;
+    }
 
-    public Set<Integer> getAcceptedGroups() {return this.acceptedGroups;}
+    public Set<Integer> getAcceptedGroups() {
+        return this.acceptedGroups;
+    }
 
-    public boolean isNoLink() {return this.noLink;}
+    public boolean isNoLink() {
+        return this.noLink;
+    }
 
-    public boolean isNoLinkBack() {return this.noLinkBack;}
+    public boolean isNoLinkBack() {
+        return this.noLinkBack;
+    }
 
     public static class RandomTargetBuilder {
         private float newRiftWeight;
@@ -219,7 +249,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
         private boolean noLink;
         private boolean noLinkBack;
 
-        RandomTargetBuilder() {}
+        RandomTargetBuilder() {
+        }
 
         public RandomTarget.RandomTargetBuilder newRiftWeight(float newRiftWeight) {
             this.newRiftWeight = newRiftWeight;

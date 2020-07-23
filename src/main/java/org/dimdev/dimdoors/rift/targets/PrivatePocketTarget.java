@@ -1,11 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.Item;
-import net.minecraft.nbt.CompoundTag;
+import java.util.UUID;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
@@ -16,15 +12,23 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.util.EntityUtils;
 import org.dimdev.util.Location;
 
-import java.util.UUID;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.DyeItem;
+import net.minecraft.item.Item;
+import net.minecraft.nbt.CompoundTag;
 
 public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PrivatePocketTarget() {}
+    public PrivatePocketTarget() {
+    }
 
     @Override
-    public void fromTag(CompoundTag nbt) { super.fromTag(nbt); }
+    public void fromTag(CompoundTag nbt) {
+        super.fromTag(nbt);
+    }
 
     @Override
     public CompoundTag toTag(CompoundTag nbt) {
@@ -48,7 +52,8 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
                 return true;
             } else {
                 Location destLoc = RiftRegistry.instance(entity.world).getPrivatePocketEntrance(uuid); // get the last used entrances
-                if (destLoc == null) destLoc = RiftRegistry.instance(entity.world).getPocketEntrance(pocket); // if there's none, then set the target to the main entrances
+                if (destLoc == null)
+                    destLoc = RiftRegistry.instance(entity.world).getPocketEntrance(pocket); // if there's none, then set the target to the main entrances
                 if (destLoc == null) { // if the pocket entrances is gone, then create a new private pocket
                     LOGGER.info("All entrances are gone, creating a new private pocket!");
                     pocket = PocketGenerator.generatePrivatePocket(new VirtualLocation(virtualLocation.world, virtualLocation.x, virtualLocation.z, -1));

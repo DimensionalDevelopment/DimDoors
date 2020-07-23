@@ -1,7 +1,10 @@
 package org.dimdev.dimdoors.fluid;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import java.util.Random;
+
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.item.ModItems;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.fluid.FlowableFluid;
@@ -16,10 +19,9 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.item.ModItems;
 
-import java.util.Random;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public abstract class EternalFluid extends FlowableFluid {
     @Override

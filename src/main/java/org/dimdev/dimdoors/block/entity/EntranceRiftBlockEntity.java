@@ -1,20 +1,21 @@
 package org.dimdev.dimdoors.block.entity;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import java.util.Random;
+
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.util.RGBA;
 import org.dimdev.util.TeleportUtil;
 
-import java.util.Random;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
     public EntranceRiftBlockEntity() {

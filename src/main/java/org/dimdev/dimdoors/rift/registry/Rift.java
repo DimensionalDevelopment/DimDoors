@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.annotatednbt.AnnotatedNbt;
@@ -8,11 +7,16 @@ import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.util.Location;
 
+import net.minecraft.nbt.CompoundTag;
+
 public class Rift extends RegistryVertex {
     private static final Logger LOGGER = LogManager.getLogger();
-    @Saved public Location location;
-    @Saved public boolean isDetached;
-    @Saved public LinkProperties properties;
+    @Saved
+    public Location location;
+    @Saved
+    public boolean isDetached;
+    @Saved
+    public LinkProperties properties;
 
     public Rift(Location location) {
         this.location = location;
@@ -24,7 +28,8 @@ public class Rift extends RegistryVertex {
         this.properties = properties;
     }
 
-    public Rift() {}
+    public Rift() {
+    }
 
     @Override
     public void sourceGone(RegistryVertex source) {

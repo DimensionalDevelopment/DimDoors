@@ -5,9 +5,11 @@ public class RGBA {
     float green;
     float blue;
     float alpha;
-    public RGBA() {}
 
-    public RGBA (float red, float green, float blue, float alpha) {
+    public RGBA() {
+    }
+
+    public RGBA(float red, float green, float blue, float alpha) {
         this.red = red;
         this.green = green;
         this.blue = blue;

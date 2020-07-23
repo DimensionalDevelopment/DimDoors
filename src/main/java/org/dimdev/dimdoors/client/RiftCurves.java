@@ -1,12 +1,12 @@
 package org.dimdev.dimdoors.client;
+
+import java.util.*;
+
 import org.poly2tri.Poly2Tri;
 import org.poly2tri.geometry.polygon.Polygon;
 import org.poly2tri.geometry.polygon.PolygonPoint;
 import org.poly2tri.triangulation.TriangulationPoint;
 import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
-
-import java.util.List;
-import java.util.*;
 
 // https://en.wikipedia.org/wiki/L-system
 //

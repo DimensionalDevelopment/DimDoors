@@ -5,12 +5,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
-import net.minecraft.command.CommandException;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.TranslatableText;
 import org.dimdev.dimdoors.command.arguments.GroupArugmentType;
 import org.dimdev.dimdoors.command.arguments.NameArugmentType;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
@@ -23,16 +17,22 @@ import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.util.Location;
 import org.dimdev.util.TeleportUtil;
 
+import net.minecraft.command.CommandException;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.TranslatableText;
+
 public class PocketCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("pocket")
                 .then(CommandManager.argument("group", GroupArugmentType.group())
-                .then(CommandManager.argument("name", NameArugmentType.name())
-                .then(CommandManager
-                        .argument("setup", BoolArgumentType.bool())
-                        .executes(ctx -> pocket(ctx, false))
-                )
-                .executes(ctx -> pocket(ctx, true)))));
+                        .then(CommandManager.argument("name", NameArugmentType.name())
+                                .then(CommandManager
+                                        .argument("setup", BoolArgumentType.bool())
+                                        .executes(ctx -> pocket(ctx, false))
+                                )
+                                .executes(ctx -> pocket(ctx, true)))));
     }
 
     private static int pocket(CommandContext<ServerCommandSource> ctx, boolean setup) throws CommandSyntaxException {
@@ -45,7 +45,7 @@ public class PocketCommand {
         String group = ctx.getArgument("group", String.class);
         String name = ctx.getArgument("name", String.class);
 
-        if(!setup) {
+        if (!setup) {
             setup = BoolArgumentType.getBool(ctx, "setup");
         }
 

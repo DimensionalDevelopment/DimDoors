@@ -27,7 +27,9 @@ public final class GridUtil {
             return result;
         }
 
-        public String toString() {return "GridUtils.GridPos(x=" + this.x + ", z=" + this.z + ")";}
+        public String toString() {
+            return "GridUtils.GridPos(x=" + this.x + ", z=" + this.z + ")";
+        }
     }
 
     /**

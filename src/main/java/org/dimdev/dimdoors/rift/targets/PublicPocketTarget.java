@@ -1,17 +1,21 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.minecraft.nbt.CompoundTag;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.util.Location;
 
+import net.minecraft.nbt.CompoundTag;
+
 public class PublicPocketTarget extends RestoringTarget {
-    public PublicPocketTarget() {}
+    public PublicPocketTarget() {
+    }
 
     @Override
-    public void fromTag(CompoundTag nbt) { super.fromTag(nbt); }
+    public void fromTag(CompoundTag nbt) {
+        super.fromTag(nbt);
+    }
 
     @Override
     public CompoundTag toTag(CompoundTag nbt) {

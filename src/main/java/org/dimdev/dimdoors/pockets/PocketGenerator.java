@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.pockets;
 
-import net.minecraft.server.world.ServerWorld;
+import java.util.Random;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.ModConfig;
@@ -11,7 +12,7 @@ import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
-import java.util.Random;
+import net.minecraft.server.world.ServerWorld;
 
 public final class PocketGenerator {
     private static final Logger LOGGER = LogManager.getLogger();

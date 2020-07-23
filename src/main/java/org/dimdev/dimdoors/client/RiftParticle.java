@@ -1,11 +1,11 @@
 package org.dimdev.dimdoors.client;
 
+import java.util.Random;
+
 import net.minecraft.client.particle.AnimatedParticle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.world.ClientWorld;
-
-import java.util.Random;
 
 public class RiftParticle extends AnimatedParticle {
     public RiftParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float color, float scale, int averageAge, int ageSpread) {

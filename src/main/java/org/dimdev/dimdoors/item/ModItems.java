@@ -1,11 +1,9 @@
 package org.dimdev.dimdoors.item;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.*;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
@@ -13,9 +11,15 @@ import org.dimdev.dimdoors.rift.targets.*;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
+import net.minecraft.block.Block;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.BucketItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import static org.dimdev.dimdoors.item.ModItemGroups.DIMENSIONAL_DOORS;
 

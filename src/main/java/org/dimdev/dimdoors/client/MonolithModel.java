@@ -1,12 +1,14 @@
 package org.dimdev.dimdoors.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import org.dimdev.dimdoors.entity.MonolithEntity;
+
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import org.dimdev.dimdoors.entity.MonolithEntity;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class MonolithModel extends EntityModel<MonolithEntity> {
@@ -22,12 +24,12 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha){
+    public void render(MatrixStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         body.render(matrixStack, buffer, packedLight, packedOverlay);
     }
 
     @Override
-    public void setAngles(MonolithEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch){
+    public void setAngles(MonolithEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         body.yaw = netHeadYaw * 0.017453292F;
         body.pitch = headPitch * 0.017453292F;
     }

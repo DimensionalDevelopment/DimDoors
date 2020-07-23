@@ -3,9 +3,11 @@ package org.dimdev.dimdoors.client.tesseract;
 import com.flowpowered.math.matrix.Matrix4f;
 import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector4f;
+
 import net.minecraft.client.render.VertexConsumer;
 
-import static com.flowpowered.math.TrigMath.*;
+import static com.flowpowered.math.TrigMath.cos;
+import static com.flowpowered.math.TrigMath.sin;
 
 public class Plane {
     Vector4f[] vectors;
@@ -26,9 +28,9 @@ public class Plane {
         Vector3f scaled = vector.toVector3().mul(scalar);
 
         vc.vertex(scaled.getX(), scaled.getY(), scaled.getZ())
-          .texture(u, v)
-          .color(color[0], color[1], color[2], color[3])
-          .next();
+                .texture(u, v)
+                .color(color[0], color[1], color[2], color[3])
+                .next();
     }
 
     private static Vector4f rotXW(Vector4f v, double angle) {
@@ -37,7 +39,7 @@ public class Plane {
                 0, 1, 0, 0,
                 0, 0, 1, 0,
                 -sin(angle), 0, 0, cos(angle))
-                       .transform(v);
+                .transform(v);
     }
 
     private static Vector4f rotZW(Vector4f v, double angle) {
@@ -46,7 +48,7 @@ public class Plane {
                 0, 1, 0, 0,
                 0, 0, cos(angle), -sin(angle),
                 0, 0, sin(angle), cos(angle))
-                       .transform(v);
+                .transform(v);
     }
 
     private static Vector4f rotYW(Vector4f v, double angle) {
@@ -55,7 +57,7 @@ public class Plane {
                 0, cos(angle), 0, sin(angle),
                 0, 0, 1, 0,
                 0, -sin(angle), 0, cos(angle))
-                       .transform(v);
+                .transform(v);
     }
 
     private static Vector4f rotXY(Vector4f v, double angle) {
@@ -64,6 +66,6 @@ public class Plane {
                 sin(angle), cos(angle), 0, 0,
                 0, 0, 1, 0,
                 0, 0, 0, 1)
-                       .transform(v);
+                .transform(v);
     }
 }

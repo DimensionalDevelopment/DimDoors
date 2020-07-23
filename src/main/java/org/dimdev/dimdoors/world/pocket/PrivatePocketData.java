@@ -1,23 +1,26 @@
 package org.dimdev.dimdoors.world.pocket;
 
+import java.util.UUID;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import org.dimdev.annotatednbt.AnnotatedNbt;
+import org.dimdev.annotatednbt.Saved;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.annotatednbt.Saved;
-
-import java.util.UUID;
 
 import static net.minecraft.world.World.OVERWORLD;
 
 public class PrivatePocketData extends PersistentState {
     protected static class PocketInfo {
-        @Saved public final ServerWorld world;
-        @Saved public final int id;
+        @Saved
+        public final ServerWorld world;
+        @Saved
+        public final int id;
 
         public PocketInfo(ServerWorld world, int id) {
             this.world = world;
@@ -26,7 +29,8 @@ public class PrivatePocketData extends PersistentState {
     }
 
     private static final String DATA_NAME = "dimdoors_private_pockets";
-    @Saved protected BiMap<String, PocketInfo> privatePocketMap = HashBiMap.create(); // Player UUID -> Pocket Info TODO: fix AnnotatedNBT and use UUID rather than String
+    @Saved
+    protected BiMap<String, PocketInfo> privatePocketMap = HashBiMap.create(); // Player UUID -> Pocket Info TODO: fix AnnotatedNBT and use UUID rather than String
 
     public PrivatePocketData(String name) {
         super(name);

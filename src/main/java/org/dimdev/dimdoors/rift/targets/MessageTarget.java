@@ -1,8 +1,9 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import org.dimdev.util.EntityUtils;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;
-import org.dimdev.util.EntityUtils;
 
 @SuppressWarnings("OverloadedVarargsMethod")
 public class MessageTarget implements EntityTarget {

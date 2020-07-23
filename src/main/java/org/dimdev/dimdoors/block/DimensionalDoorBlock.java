@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.block;
 
+import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.Material;
@@ -15,8 +18,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
     public DimensionalDoorBlock(Settings settings) {

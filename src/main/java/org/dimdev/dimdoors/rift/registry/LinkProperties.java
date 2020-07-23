@@ -1,18 +1,22 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import org.dimdev.annotatednbt.Saved;
-
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.dimdev.annotatednbt.Saved;
+
 
 public class LinkProperties {
-    @Saved public float floatingWeight; // TODO: depend on rift properties (ex. size, stability, or maybe a getWeightFactor method) rather than rift type
-    @Saved public float entranceWeight;
-    @Saved public Set<Integer> groups;
-    @Saved public int linksRemaining;
-    @Saved public boolean oneWay;
+    @Saved
+    public float floatingWeight; // TODO: depend on rift properties (ex. size, stability, or maybe a getWeightFactor method) rather than rift type
+    @Saved
+    public float entranceWeight;
+    @Saved
+    public Set<Integer> groups;
+    @Saved
+    public int linksRemaining;
+    @Saved
+    public boolean oneWay;
 
     public LinkProperties(float floatingWeight, float entranceWeight, Set<Integer> groups, int linksRemaining, boolean oneWay) {
         this.floatingWeight = floatingWeight;
@@ -22,7 +26,9 @@ public class LinkProperties {
         this.oneWay = oneWay;
     }
 
-    public static LinkPropertiesBuilder builder() {return new LinkPropertiesBuilder();}
+    public static LinkPropertiesBuilder builder() {
+        return new LinkPropertiesBuilder();
+    }
 
     public boolean equals(final Object o) {
         if (o == this) return true;
@@ -39,7 +45,9 @@ public class LinkProperties {
         return true;
     }
 
-    protected boolean canEqual(final Object other) {return other instanceof LinkProperties;}
+    protected boolean canEqual(final Object other) {
+        return other instanceof LinkProperties;
+    }
 
     public int hashCode() {
         final int PRIME = 59;
@@ -53,9 +61,13 @@ public class LinkProperties {
         return result;
     }
 
-    public String toString() {return "LinkProperties(floatingWeight=" + this.floatingWeight + ", entranceWeight=" + this.entranceWeight + ", groups=" + this.groups + ", linksRemaining=" + this.linksRemaining + ", oneWay=" + this.oneWay + ")";}
+    public String toString() {
+        return "LinkProperties(floatingWeight=" + this.floatingWeight + ", entranceWeight=" + this.entranceWeight + ", groups=" + this.groups + ", linksRemaining=" + this.linksRemaining + ", oneWay=" + this.oneWay + ")";
+    }
 
-    public LinkPropertiesBuilder toBuilder() {return new LinkPropertiesBuilder().floatingWeight(this.floatingWeight).entranceWeight(this.entranceWeight).groups(this.groups).linksRemaining(this.linksRemaining).oneWay(this.oneWay);}
+    public LinkPropertiesBuilder toBuilder() {
+        return new LinkPropertiesBuilder().floatingWeight(this.floatingWeight).entranceWeight(this.entranceWeight).groups(this.groups).linksRemaining(this.linksRemaining).oneWay(this.oneWay);
+    }
 
     public static class LinkPropertiesBuilder {
         private float floatingWeight;
@@ -64,7 +76,8 @@ public class LinkProperties {
         private int linksRemaining;
         private boolean oneWay;
 
-        LinkPropertiesBuilder() {}
+        LinkPropertiesBuilder() {
+        }
 
         public LinkProperties.LinkPropertiesBuilder floatingWeight(float floatingWeight) {
             this.floatingWeight = floatingWeight;
@@ -95,6 +108,8 @@ public class LinkProperties {
             return new LinkProperties(floatingWeight, entranceWeight, groups, linksRemaining, oneWay);
         }
 
-        public String toString() {return "LinkProperties.LinkPropertiesBuilder(floatingWeight=" + this.floatingWeight + ", entranceWeight=" + this.entranceWeight + ", groups=" + this.groups + ", linksRemaining=" + this.linksRemaining + ", oneWay=" + this.oneWay + ")";}
+        public String toString() {
+            return "LinkProperties.LinkPropertiesBuilder(floatingWeight=" + this.floatingWeight + ", entranceWeight=" + this.entranceWeight + ", groups=" + this.groups + ", linksRemaining=" + this.linksRemaining + ", oneWay=" + this.oneWay + ")";
+        }
     }
 }

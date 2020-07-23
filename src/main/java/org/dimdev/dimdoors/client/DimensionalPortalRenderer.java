@@ -548,7 +548,7 @@ public final class DimensionalPortalRenderer {
                 worldRenderer.putColorRGB_F(0, 0.3f, 1, 1);*/
 
                 for (int i = 0, j = 4; i < 16; i += 4, j--) {
-                    bufferBuilder.color( colors.get(i), colors.get(i + 1), colors.get(i + 2), colors.get(i + 3));
+                    bufferBuilder.color(colors.get(i), colors.get(i + 1), colors.get(i + 2), colors.get(i + 3));
                 }
             }
             tessellator.draw();

@@ -1,10 +1,8 @@
 package org.dimdev.dimdoors;
 
-import net.fabricmc.api.ModInitializer;
-
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.command.*;
+import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.rift.targets.*;
@@ -14,6 +12,8 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.ModFeatures;
 
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.api.ModInitializer;
 
 public class DimensionalDoorsInitializer implements ModInitializer {
 

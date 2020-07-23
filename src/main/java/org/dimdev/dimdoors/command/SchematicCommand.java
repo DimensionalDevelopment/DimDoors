@@ -1,17 +1,17 @@
 package org.dimdev.dimdoors.command;
 
 
+import java.io.InputStream;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import org.dimdev.dimcore.schematic.Schematic;
+import org.dimdev.dimcore.schematic.SchematicConverter;
+
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import org.dimdev.dimcore.schematic.Schematic;
-import org.dimdev.dimcore.schematic.SchematicConverter;
-import org.dimdev.dimcore.schematic.SchematicStorage;
-
-import java.io.InputStream;
 
 public class SchematicCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {

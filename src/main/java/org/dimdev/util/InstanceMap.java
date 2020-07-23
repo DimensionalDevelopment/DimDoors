@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InstanceMap { // Type safe map between classes and instances
-    public InstanceMap() {}
+    public InstanceMap() {
+    }
 
     private final Map<Class<?>, Object> uncheckedMap = new HashMap<>();
 

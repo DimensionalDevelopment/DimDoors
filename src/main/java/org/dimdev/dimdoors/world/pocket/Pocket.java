@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.world.pocket;
 
 import com.flowpowered.math.vector.Vector3i;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.util.EntityUtils;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
@@ -8,17 +11,21 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.util.EntityUtils;
 
 public final class Pocket {
     private static final int BLOCKS_PAINTED_PER_DYE = 1106;
-    @Saved public final int id;
-    @Saved public BlockBox box;
-    @Saved public VirtualLocation virtualLocation;
-    @Saved public DyeColor dyeColor = DyeColor.WHITE;
-    @Saved public DyeColor nextDyeColor = null;
-    @Saved public int count = 0;
+    @Saved
+    public final int id;
+    @Saved
+    public BlockBox box;
+    @Saved
+    public VirtualLocation virtualLocation;
+    @Saved
+    public DyeColor dyeColor = DyeColor.WHITE;
+    @Saved
+    public DyeColor nextDyeColor = null;
+    @Saved
+    public int count = 0;
     public ServerWorld world;
 
     public Pocket(int id, ServerWorld world, int x, int z) {

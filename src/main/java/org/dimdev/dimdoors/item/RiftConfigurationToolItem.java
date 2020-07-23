@@ -1,6 +1,11 @@
 package org.dimdev.dimdoors.item;
 
-import net.fabricmc.api.Environment;
+import java.util.List;
+
+import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
+
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,13 +19,9 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
 
-import java.util.List;
-
-import static net.fabricmc.api.EnvType.*;
+import net.fabricmc.api.Environment;
+import static net.fabricmc.api.EnvType.CLIENT;
 
 public class RiftConfigurationToolItem extends Item {
 

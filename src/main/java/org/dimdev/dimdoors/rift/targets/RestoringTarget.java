@@ -1,13 +1,17 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.minecraft.nbt.CompoundTag;
 import org.dimdev.util.Location;
+
+import net.minecraft.nbt.CompoundTag;
 
 public abstract class RestoringTarget extends VirtualTarget {
 
     private VirtualTarget wrappedDestination;
 
-    public RestoringTarget() {};
+    public RestoringTarget() {
+    }
+
+    ;
 
     @Override
     public void fromTag(CompoundTag nbt) {

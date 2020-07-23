@@ -1,16 +1,17 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import java.util.UUID;
+
+import org.dimdev.annotatednbt.AnnotatedNbt;
+import org.dimdev.annotatednbt.Saved;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-
-import java.util.UUID;
 
 public abstract class RegistryVertex {
     public ServerWorld world; // The dimension to store this object in. Links are stored in both registries.
-    @Saved public UUID id = UUID.randomUUID(); // Used to create pointers to registry vertices. Should not be used for anything other than saving.
+    @Saved
+    public UUID id = UUID.randomUUID(); // Used to create pointers to registry vertices. Should not be used for anything other than saving.
 
     public void sourceGone(RegistryVertex source) {
     }
@@ -24,9 +25,15 @@ public abstract class RegistryVertex {
     public void targetAdded(RegistryVertex target) {
     }
 
-    public void fromTag(CompoundTag nbt) { AnnotatedNbt.fromTag(this, nbt); }
+    public void fromTag(CompoundTag nbt) {
+        AnnotatedNbt.fromTag(this, nbt);
+    }
 
-    public CompoundTag toTag(CompoundTag nbt) { return AnnotatedNbt.toTag(this, nbt); }
+    public CompoundTag toTag(CompoundTag nbt) {
+        return AnnotatedNbt.toTag(this, nbt);
+    }
 
-    public String toString() {return "RegistryVertex(dim=" + this.world + ", id=" + this.id + ")";}
+    public String toString() {
+        return "RegistryVertex(dim=" + this.world + ", id=" + this.id + ")";
+    }
 }

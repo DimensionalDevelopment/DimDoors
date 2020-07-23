@@ -1,17 +1,18 @@
 package org.dimdev.dimdoors.world.pocket;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.PersistentState;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.util.math.GridUtil;
 
-import java.util.HashMap;
-import java.util.Map;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.PersistentState;
 
 public class PocketRegistry extends PersistentState {
 
@@ -142,13 +143,23 @@ public class PocketRegistry extends PersistentState {
         return pocket != null && pocket.isInBounds(pos);
     }
 
-    public int getGridSize() {return gridSize;}
+    public int getGridSize() {
+        return gridSize;
+    }
 
-    public int getPrivatePocketSize() {return privatePocketSize;}
+    public int getPrivatePocketSize() {
+        return privatePocketSize;
+    }
 
-    public int getPublicPocketSize() {return publicPocketSize;}
+    public int getPublicPocketSize() {
+        return publicPocketSize;
+    }
 
-    public Map<Integer, Pocket> getPockets() {return pockets;}
+    public Map<Integer, Pocket> getPockets() {
+        return pockets;
+    }
 
-    public int getNextID() {return nextID;}
+    public int getNextID() {
+        return nextID;
+    }
 }

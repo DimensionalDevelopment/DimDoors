@@ -1,9 +1,14 @@
 package org.dimdev.dimdoors.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.waterpicker.openworlds.renderer.SkyRenderer;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Identifier;
@@ -75,7 +80,7 @@ public class CustomSkyProvider implements SkyRenderer {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
 
-        for(int i = 0; i < 6; ++i) {
+        for (int i = 0; i < 6; ++i) {
             matrices.push();
             if (i == 1) {
                 matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90.0F));

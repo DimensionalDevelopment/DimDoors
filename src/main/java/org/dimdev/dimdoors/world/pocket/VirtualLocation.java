@@ -1,22 +1,27 @@
 package org.dimdev.dimdoors.world.pocket;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Heightmap;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.util.Location;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Heightmap;
+
 import static net.minecraft.world.World.OVERWORLD;
 
 public class VirtualLocation {
-    @Saved public final ServerWorld world;
-    @Saved public final int x;
-    @Saved public final int z;
-    @Saved public final int depth;
+    @Saved
+    public final ServerWorld world;
+    @Saved
+    public final int x;
+    @Saved
+    public final int z;
+    @Saved
+    public final int depth;
 
     public VirtualLocation(ServerWorld world, int x, int z, int depth) {
         this.world = world;

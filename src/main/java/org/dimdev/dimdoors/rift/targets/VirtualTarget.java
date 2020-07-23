@@ -2,8 +2,9 @@ package org.dimdev.dimdoors.rift.targets;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.minecraft.nbt.CompoundTag;
 import org.dimdev.util.Location;
+
+import net.minecraft.nbt.CompoundTag;
 
 /**
  * A target that is not an actual object in the game such as a block or a tile
@@ -27,7 +28,8 @@ public abstract class VirtualTarget implements Target {
         }
     }
 
-    public void fromTag(CompoundTag nbt) {}
+    public void fromTag(CompoundTag nbt) {
+    }
 
     public CompoundTag toTag(CompoundTag nbt) {
         String type = registry.inverse().get(getClass());
@@ -36,9 +38,11 @@ public abstract class VirtualTarget implements Target {
         return nbt;
     }
 
-    public void register() {}
+    public void register() {
+    }
 
-    public void unregister() {}
+    public void unregister() {
+    }
 
     public boolean shouldInvalidate(Location riftDeleted) {
         return false;
@@ -50,15 +54,19 @@ public abstract class VirtualTarget implements Target {
 
     public boolean equals(Object o) {
         return o instanceof VirtualTarget &&
-               ((VirtualTarget) o).canEqual(this) &&
-               (location == null ? ((VirtualTarget) o).location == null : ((Object) location).equals(((VirtualTarget) o).location));
+                ((VirtualTarget) o).canEqual(this) &&
+                (location == null ? ((VirtualTarget) o).location == null : ((Object) location).equals(((VirtualTarget) o).location));
     }
 
-    protected boolean canEqual(Object other) {return other instanceof VirtualTarget;}
+    protected boolean canEqual(Object other) {
+        return other instanceof VirtualTarget;
+    }
 
     public int hashCode() {
         return 59 + (location == null ? 43 : location.hashCode());
     }
 
-    public void setLocation(Location location) {this.location = location; }
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }

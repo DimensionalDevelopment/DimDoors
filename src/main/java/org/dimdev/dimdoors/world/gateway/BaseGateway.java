@@ -5,7 +5,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 public abstract class BaseGateway {
-    public BaseGateway() {}
+    public BaseGateway() {
+    }
 
     public abstract void generate(World world, int x, int y, int z);
 

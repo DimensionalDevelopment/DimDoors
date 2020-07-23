@@ -1,16 +1,17 @@
 package org.dimdev.dimdoors.command.arguments;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.server.command.CommandSource;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
 
-import java.util.concurrent.CompletableFuture;
+import net.minecraft.server.command.CommandSource;
 
 public class GroupArugmentType implements ArgumentType<String> {
     @Override

@@ -1,17 +1,17 @@
 package org.dimdev.dimdoors.world.gateway;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.world.World;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.pockets.PocketTemplate;
-import org.dimdev.dimcore.schematic.Schematic;
-
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dimdev.dimcore.schematic.Schematic;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.world.World;
 
 public abstract class BaseSchematicGateway extends BaseGateway {
     private static final Logger LOGGER = LogManager.getLogger();

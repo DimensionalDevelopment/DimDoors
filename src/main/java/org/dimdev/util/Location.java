@@ -1,5 +1,8 @@
 package org.dimdev.util;
 
+import org.dimdev.annotatednbt.AutoSerializable;
+import org.dimdev.annotatednbt.Saved;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FluidState;
@@ -7,12 +10,12 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.annotatednbt.AutoSerializable;
-import org.dimdev.annotatednbt.Saved;
 
 public class Location implements AutoSerializable {
-    @Saved public final ServerWorld world;
-    @Saved public final BlockPos pos;
+    @Saved
+    public final ServerWorld world;
+    @Saved
+    public final BlockPos pos;
 
     public Location(ServerWorld world, BlockPos pos) {
         this.world = world;
@@ -54,8 +57,8 @@ public class Location implements AutoSerializable {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Location &&
-               ((Location) obj).world.equals(world) &&
-               ((Location) obj).pos.equals(pos);
+                ((Location) obj).world.equals(world) &&
+                ((Location) obj).pos.equals(pos);
     }
 
     @Override

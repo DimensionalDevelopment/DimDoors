@@ -1,12 +1,14 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import org.dimdev.util.EntityUtils;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
-import org.dimdev.util.EntityUtils;
 
 public class PocketExitMarker extends VirtualTarget implements EntityTarget {
-    public PocketExitMarker() {}
+    public PocketExitMarker() {
+    }
 
     @Override
     public void fromTag(CompoundTag nbt) {

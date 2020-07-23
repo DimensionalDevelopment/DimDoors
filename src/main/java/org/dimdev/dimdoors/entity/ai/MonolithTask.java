@@ -2,19 +2,19 @@ package org.dimdev.dimdoors.entity.ai;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.math.BlockPos;
+import java.util.EnumSet;
 
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
-import java.util.EnumSet;
+import net.minecraft.entity.ai.TargetPredicate;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import static net.minecraft.predicate.entity.EntityPredicates.EXCEPT_SPECTATOR;

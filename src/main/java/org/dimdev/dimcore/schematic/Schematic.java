@@ -1,5 +1,11 @@
 package org.dimdev.dimcore.schematic;
 
+import java.util.*;
+import java.util.Map.Entry;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -21,11 +27,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.*;
-import java.util.Map.Entry;
 
 public class Schematic implements BlockView {
     private static final Logger LOGGER = LogManager.getLogger();

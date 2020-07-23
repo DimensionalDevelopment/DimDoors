@@ -3,13 +3,15 @@ package org.dimdev.annotatednbt;
 import com.google.gson.Gson;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
+import org.dimdev.util.RotatedLocation;
+
 import net.minecraft.datafixer.NbtOps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import org.dimdev.util.RotatedLocation;
 
 public final class AnnotatedNbt {
     public static Gson gson = new Gson();
+
     public static <T> T deserialize(Class<RotatedLocation> rotatedLocationClass, CompoundTag tag) {
         return null; // TODO
     }

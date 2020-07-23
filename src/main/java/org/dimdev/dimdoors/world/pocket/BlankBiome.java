@@ -1,12 +1,13 @@
 package org.dimdev.dimdoors.world.pocket;
 
 import com.google.common.collect.ImmutableList;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
+
 import net.minecraft.block.Blocks;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 public class BlankBiome extends Biome {
     public BlankBiome(boolean white, boolean dangerous) {
@@ -35,7 +36,7 @@ public class BlankBiome extends Biome {
                 .waterColor(white ? 0xFFFFFF : 0x000000)
                 .waterFogColor(white ? 0xFFFFFF : 0x000000)
                 .fogColor(white ? 0xFFFFFF : 0x000000);
-        if(white) builder.loopSound(ModSoundEvents.WHITE_VOID);
+        if (white) builder.loopSound(ModSoundEvents.WHITE_VOID);
         return builder.build();
     }
 }
