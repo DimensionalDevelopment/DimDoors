@@ -1,10 +1,11 @@
-package org.dimdev.dimdoors.entity;
+package org.dimdev.dimdoors.client;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.util.Identifier;
 import org.dimdev.dimdoors.client.MonolithModel;
+import org.dimdev.dimdoors.entity.MonolithEntity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +32,7 @@ public class MonolithRenderer extends LivingEntityRenderer<MonolithEntity, Monol
             new Identifier("dimdoors:textures/mob/monolith/monolith17.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith18.png"));
 
-    protected MonolithRenderer(EntityRenderDispatcher dispatcher, EntityRendererRegistry.Context context) {
+    public MonolithRenderer(EntityRenderDispatcher dispatcher, EntityRendererRegistry.Context context) {
         super(dispatcher, new MonolithModel(), 0);
     }
 

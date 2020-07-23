@@ -1,4 +1,6 @@
-package org.dimdev.dimdoors.entity;
+package org.dimdev.dimdoors.client;
+
+import org.dimdev.dimdoors.entity.MaskEntity;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -8,7 +10,7 @@ import net.minecraft.util.Identifier;
 public class MaskRenderer extends EntityRenderer<MaskEntity> {
     private final EntityRendererRegistry.Context context;
 
-    protected MaskRenderer(EntityRenderDispatcher dispatcher, EntityRendererRegistry.Context context) {
+    public MaskRenderer(EntityRenderDispatcher dispatcher, EntityRendererRegistry.Context context) {
         super(dispatcher);
         this.context = context;
     }

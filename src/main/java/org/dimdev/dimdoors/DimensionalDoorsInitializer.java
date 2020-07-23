@@ -7,7 +7,6 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.*;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.rift.targets.*;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModBiomes;
@@ -45,7 +44,5 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         VirtualTarget.registry.put("relative", RelativeReference.class);
 
         Targets.registerDefaultTargets();
-
-        SchematicHandler.INSTANCE.loadSchematics();
     }
 }

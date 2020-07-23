@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.block.entity;
+package org.dimdev.dimdoors.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

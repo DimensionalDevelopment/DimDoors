@@ -11,6 +11,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.util.RGBA;
 import org.dimdev.util.TeleportUtil;
 
 import java.util.Random;
@@ -56,7 +57,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     }
 
     @Environment(EnvType.CLIENT)
-    public float[][] getColors(int count) {
+    public RGBA[] getColors(int count) {
         Random rand = new Random(31100L);
         float[][] colors = new float[count][];
 
@@ -64,7 +65,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
             colors[i] = getEntranceRenderColor(rand);
         }
 
-        return colors;
+        return RGBA.fromFloatArray(colors);
     }
 
     @Environment(EnvType.CLIENT)
