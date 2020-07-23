@@ -28,22 +28,22 @@ public final class ModBlocks {
     public static final Block DIMENSIONAL_PORTAL = register("dimdoors:dimensional_portal", new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).dropsNothing()));
     public static final Block DETACHED_RIFT = register("dimdoors:detached_rift", new DetachedRiftBlock(FabricBlockSettings.of(Material.AIR).nonOpaque()));
 
-    public static final Block WHITE_FABRIC = registerFabric("dimdoors:white_fabric");
-    public static final Block ORANGE_FABRIC = registerFabric("dimdoors:orange_fabric");
-    public static final Block MAGENTA_FABRIC = registerFabric("dimdoors:magenta_fabric");
-    public static final Block LIGHT_BLUE_FABRIC = registerFabric("dimdoors:light_blue_fabric");
-    public static final Block YELLOW_FABRIC = registerFabric("dimdoors:yellow_fabric");
-    public static final Block LIME_FABRIC = registerFabric("dimdoors:lime_fabric");
-    public static final Block PINK_FABRIC = registerFabric("dimdoors:pink_fabric");
-    public static final Block GRAY_FABRIC = registerFabric("dimdoors:gray_fabric");
-    public static final Block LIGHT_GRAY_FABRIC = registerFabric("dimdoors:light_gray_fabric");
-    public static final Block CYAN_FABRIC = registerFabric("dimdoors:cyan_fabric");
-    public static final Block PURPLE_FABRIC = registerFabric("dimdoors:purple_fabric");
-    public static final Block BLUE_FABRIC = registerFabric("dimdoors:blue_fabric");
-    public static final Block BROWN_FABRIC = registerFabric("dimdoors:brown_fabric");
-    public static final Block GREEN_FABRIC = registerFabric("dimdoors:green_fabric");
-    public static final Block RED_FABRIC = registerFabric("dimdoors:red_fabric");
-    public static final Block BLACK_FABRIC = registerFabric("dimdoors:black_fabric");
+    public static final Block WHITE_FABRIC = registerFabric("dimdoors:white_fabric", DyeColor.WHITE);
+    public static final Block ORANGE_FABRIC = registerFabric("dimdoors:orange_fabric", DyeColor.ORANGE);
+    public static final Block MAGENTA_FABRIC = registerFabric("dimdoors:magenta_fabric", DyeColor.MAGENTA);
+    public static final Block LIGHT_BLUE_FABRIC = registerFabric("dimdoors:light_blue_fabric", DyeColor.LIGHT_BLUE);
+    public static final Block YELLOW_FABRIC = registerFabric("dimdoors:yellow_fabric", DyeColor.YELLOW);
+    public static final Block LIME_FABRIC = registerFabric("dimdoors:lime_fabric", DyeColor.LIME);
+    public static final Block PINK_FABRIC = registerFabric("dimdoors:pink_fabric", DyeColor.PINK);
+    public static final Block GRAY_FABRIC = registerFabric("dimdoors:gray_fabric", DyeColor.GRAY);
+    public static final Block LIGHT_GRAY_FABRIC = registerFabric("dimdoors:light_gray_fabric", DyeColor.LIGHT_GRAY);
+    public static final Block CYAN_FABRIC = registerFabric("dimdoors:cyan_fabric", DyeColor.CYAN);
+    public static final Block PURPLE_FABRIC = registerFabric("dimdoors:purple_fabric", DyeColor.PURPLE);
+    public static final Block BLUE_FABRIC = registerFabric("dimdoors:blue_fabric", DyeColor.BLUE);
+    public static final Block BROWN_FABRIC = registerFabric("dimdoors:brown_fabric", DyeColor.BROWN);
+    public static final Block GREEN_FABRIC = registerFabric("dimdoors:green_fabric", DyeColor.GREEN);
+    public static final Block RED_FABRIC = registerFabric("dimdoors:red_fabric", DyeColor.RED);
+    public static final Block BLACK_FABRIC = registerFabric("dimdoors:black_fabric", DyeColor.BLACK);
 
     public static final Block WHITE_ANCIENT_FABRIC = registerAncientFabric("dimdoors:white_ancient_fabric", DyeColor.WHITE);
     public static final Block ORANGE_ANCIENT_FABRIC = registerAncientFabric("dimdoors:orange_ancient_fabric", DyeColor.ORANGE);
@@ -62,8 +62,8 @@ public final class ModBlocks {
     public static final Block RED_ANCIENT_FABRIC = registerAncientFabric("dimdoors:red_ancient_fabric", DyeColor.RED);
     public static final Block BLACK_ANCIENT_FABRIC = registerAncientFabric("dimdoors:black_ancient_fabric", DyeColor.BLACK);
 
-    public static final Block ETERNAL_FLUID = register("dimdoors:eternal_fluid", new EternalFluidBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.RED)));
-    public static final Block UNRAVELLED_FABRIC = register("dimdoors:unravelled_fabric", new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.BLACK)));
+    public static final Block ETERNAL_FLUID = register("dimdoors:eternal_fluid", new EternalFluidBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.RED).lightLevel(15)));
+    public static final Block UNRAVELLED_FABRIC = register("dimdoors:unravelled_fabric", new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.BLACK).lightLevel(15)));
 
     public static final Block MARKING_PLATE = register("dimdoors:marking_plate", new MarkingPlateBlock(FabricBlockSettings.of(Material.METAL, DyeColor.BLACK)));
 
@@ -75,33 +75,8 @@ public final class ModBlocks {
         return register(id, new Block(FabricBlockSettings.of(Material.STONE, color).strength(-1.0F, 3600000.0F).dropsNothing()));
     }
 
-    private static Block registerFabric(String id) {
-        return register(id, new Block(FabricBlockSettings.of(Material.STONE, DyeColor.WHITE)) {
-            @Override
-            @SuppressWarnings({"deprecation"})
-            public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-                ItemStack heldStack = hand == Hand.MAIN_HAND ? player.getMainHandStack() : player.getOffHandStack();
-                Block heldBlock = Block.getBlockFromItem(heldStack.getItem());
-
-                if (world.canPlayerModifyAt(player, pos) &&
-                        player.canPlaceOn(pos, hit.getSide(), heldStack) &&
-                        heldBlock.getDefaultState().isFullCube(world, pos) &&
-                        !heldBlock.hasBlockEntity() &&
-                        heldBlock != this &&
-                        !player.isSneaking() &&
-                        ModDimensions.isDimDoorsPocketDimension(world)) {
-
-                    if (!player.isCreative()) {
-                        heldStack.decrement(1);
-                    }
-
-                    world.setBlockState(pos, heldBlock.getPlacementState(new ItemPlacementContext(new ItemUsageContext(player, hand, hit))));
-                    return ActionResult.SUCCESS;
-                } else {
-                    return ActionResult.PASS;
-                }
-            }
-        });
+    private static Block registerFabric(String id, DyeColor color) {
+        return register(id, new FabricBlock(color));
     }
 
     public static void init() {

@@ -52,10 +52,12 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
         putCutout(ModBlocks.QUARTZ_DIMENSIONAL_DOOR);
         putCutout(ModBlocks.QUARTZ_DOOR);
 
+
         setupFluidRendering(ModFluids.ETERNAL_FLUID, ModFluids.FLOWING_ETERNAL_FLUID, new Identifier("dimdoors:eternal_fluid"));
 
         OpenWorlds.registerSkyRenderer(ModDimensions.POCKET_TYPE, new CustomSkyProvider(null, null, new Vec3i(0, 0, 0)));
         OpenWorlds.registerSkyRenderer(ModDimensions.LIMBO_TYPE, new LimboSkyProvider());
+        OpenWorlds.registerCloudRenderer(ModDimensions.LIMBO_TYPE, (minecraftClient, matrixStack, v, v1, v2, v3) -> {});
 
         ClientSidePacketRegistry.INSTANCE.register(DimensionalDoorsInitializer.MONOLITH_PARTICLE_PACKET, MonolithEntity::spawnParticles);
 
