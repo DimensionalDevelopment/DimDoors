@@ -4,7 +4,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import org.dimdev.dimdoors.world.limbo.LimboBiome;
-import org.dimdev.dimdoors.world.pocketdimension.BlankBiome;
+import org.dimdev.dimdoors.world.pocket.BlankBiome;
 
 public final class ModBiomes {
     public static final Biome LIMBO = register(new Identifier("dimdoors:limbo"), new LimboBiome());

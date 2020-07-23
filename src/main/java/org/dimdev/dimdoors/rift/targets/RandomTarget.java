@@ -15,8 +15,8 @@ import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.pocketlib.Pocket;
-import org.dimdev.pocketlib.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.util.Location;
 import org.dimdev.util.math.MathUtil;
 

@@ -1,4 +1,4 @@
-package org.dimdev.pocketlib;
+package org.dimdev.dimdoors.world.pocket;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

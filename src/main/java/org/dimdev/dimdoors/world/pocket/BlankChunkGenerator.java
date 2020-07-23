@@ -1,4 +1,4 @@
-package org.dimdev.pocketlib;
+package org.dimdev.dimdoors.world.pocket;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

@@ -8,7 +8,7 @@ import net.minecraft.text.TranslatableText;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.pocketlib.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.util.Location;
 import org.dimdev.util.TeleportUtil;
 

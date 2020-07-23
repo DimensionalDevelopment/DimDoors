@@ -11,8 +11,8 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.Vec3i;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.pocketlib.Pocket;
-import org.dimdev.pocketlib.PocketRegistry;
+import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.util.schem.Schematic;
 
 public class CommandSaveSchem {

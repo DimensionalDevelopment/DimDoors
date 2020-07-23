@@ -1,19 +1,16 @@
 package org.dimdev.gsonnbt;
 
-import com.google.gson.*;
-import com.google.gson.internal.bind.JsonTreeReader;
-import com.google.gson.internal.bind.JsonTreeWriter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import net.minecraft.nbt.*;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+
+import net.minecraft.nbt.*;
 
 public class NbtReader extends JsonReader {
     private static final Reader UNREADABLE_READER = new Reader() {

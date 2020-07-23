@@ -1,4 +1,4 @@
-package org.dimdev.pocketlib;
+package org.dimdev.dimdoors.world.pocket;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;

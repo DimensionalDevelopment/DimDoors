@@ -7,9 +7,9 @@ import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.pocketlib.Pocket;
-import org.dimdev.pocketlib.PocketRegistry;
-import org.dimdev.pocketlib.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.PocketRegistry;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import java.util.Random;
 

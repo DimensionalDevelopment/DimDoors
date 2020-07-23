@@ -7,9 +7,9 @@ import net.minecraft.text.TranslatableText;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.pocketlib.Pocket;
-import org.dimdev.pocketlib.PocketRegistry;
-import org.dimdev.pocketlib.PrivatePocketData;
+import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.PocketRegistry;
+import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
 import org.dimdev.util.EntityUtils;
 import org.dimdev.util.Location;
 

@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.pocketdimension;
+package org.dimdev.dimdoors.world.pocket;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Blocks;

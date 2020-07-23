@@ -10,9 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.pocketlib.Pocket;
-import org.dimdev.pocketlib.PrivatePocketData;
-import org.dimdev.pocketlib.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.util.EntityUtils;
 import org.dimdev.util.Location;
 
