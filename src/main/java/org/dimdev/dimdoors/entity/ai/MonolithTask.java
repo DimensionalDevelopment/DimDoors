@@ -33,13 +33,17 @@ public class MonolithTask extends Goal {
         this.targetPredicate = (new TargetPredicate()).setBaseMaxDistance(range).includeTeammates().includeInvulnerable().ignoreEntityTargetRules().setPredicate(EXCEPT_SPECTATOR::test);
     }
 
+    private PlayerEntity getTarget() {
+        PlayerEntity playerEntity = this.mob.world.getClosestPlayer(this.targetPredicate, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+        return playerEntity != null && mob.canSee(playerEntity) ? playerEntity : null;
+    }
+
     public boolean canStart() {
-        this.target = this.mob.world.getClosestPlayer(this.targetPredicate, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
-        return this.target != null;
+        return (this.target = getTarget()) != null;
     }
 
     public boolean shouldContinue() {
-        return this.mob.squaredDistanceTo(this.target) > (double)(this.range * this.range);
+        return (this.target = getTarget()) != null;
     }
 
     public void start() {
@@ -50,7 +54,7 @@ public class MonolithTask extends Goal {
     }
 
     public void tick() {
-        boolean visibility = target != null && mob.canSee(mob);
+        boolean visibility = target != null;
         mob.updateAggroLevel(target, visibility);
 
         // Change orientation and face a player if one is in range
@@ -69,19 +73,17 @@ public class MonolithTask extends Goal {
                 ServerSidePacketRegistry.INSTANCE.sendToPlayer(target, DimensionalDoorsInitializer.MONOLITH_PARTICLE_PACKET, data);
             }
 
-            if (visibility) {
-                // Only spawn particles on the client side and outside Limbo
-                 /*(world.isClient && isDangerous()) {
-                    target.spawnParticles(player);
-                }*/
+            // Only spawn particles on the client side and outside Limbo
+            /*(world.isClient && isDangerous()) {
+                   target.spawnParticles(player);
+            }*/
 
-                // Teleport the target player if various conditions are met
-                if (mob.getAggro() >= MAX_AGGRO && ModConfig.MONOLITHS.monolithTeleportation && !target.isCreative() && mob.isDangerous()) {
-                    mob.setAggro(0);
-                    //Location destination = LimboDimension.getLimboSkySpawn(player);
-                    //TeleportUtil.teleport(player, destination, 0, 0);
-                    target.world.playSound(null, new BlockPos(target.getPos()), ModSoundEvents.CRACK, SoundCategory.HOSTILE, 13, 1);
-                }
+            // Teleport the target player if various conditions are met
+            if (mob.getAggro() >= MAX_AGGRO && ModConfig.MONOLITHS.monolithTeleportation && !target.isCreative() && mob.isDangerous()) {
+                mob.setAggro(0);
+                //Location destination = LimboDimension.getLimboSkySpawn(player);
+                //TeleportUtil.teleport(player, destination, 0, 0);
+                target.world.playSound(null, new BlockPos(target.getPos()), ModSoundEvents.CRACK, SoundCategory.HOSTILE, 13, 1);
             }
         }
     }

@@ -13,8 +13,7 @@ public final class ModBiomes {
     public static final Biome DANGEROUS_BLACK_VOID = register(new Identifier("dimdoors:dangerous_black_void"), new BlankBiome(false, true));
 
     private static Biome register(Identifier id, Biome biome) {
-        Registry.register(Registry.BIOME, id, biome);
-        return biome;
+        return Registry.register(Registry.BIOME, id, biome);
     }
 
     public static void init() {
