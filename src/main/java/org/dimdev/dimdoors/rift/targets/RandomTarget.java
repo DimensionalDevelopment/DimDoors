@@ -34,8 +34,6 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
     @Saved protected boolean noLink;
     @Saved protected boolean noLinkBack;
 
-    public RandomTarget() {}
-
     public RandomTarget(float newRiftWeight, double weightMaximum, double coordFactor, double positiveDepthFactor, double negativeDepthFactor, Set<Integer> acceptedGroups, boolean noLink, boolean noLinkBack) {
         this.newRiftWeight = newRiftWeight;
         this.weightMaximum = weightMaximum;

@@ -8,11 +8,11 @@ import java.util.Set;
 
 
 public class LinkProperties {
-    @Saved public float floatingWeight = 1; // TODO: depend on rift properties (ex. size, stability, or maybe a getWeightFactor method) rather than rift type
-    @Saved public float entranceWeight = 1;
-    @Saved public Set<Integer> groups = new HashSet<>();
-    @Saved public int linksRemaining = 1;
-    @Saved public boolean oneWay = false;
+    @Saved public float floatingWeight; // TODO: depend on rift properties (ex. size, stability, or maybe a getWeightFactor method) rather than rift type
+    @Saved public float entranceWeight;
+    @Saved public Set<Integer> groups;
+    @Saved public int linksRemaining;
+    @Saved public boolean oneWay;
 
     public LinkProperties(float floatingWeight, float entranceWeight, Set<Integer> groups, int linksRemaining, boolean oneWay) {
         this.floatingWeight = floatingWeight;
@@ -21,8 +21,6 @@ public class LinkProperties {
         this.linksRemaining = linksRemaining;
         this.oneWay = oneWay;
     }
-
-    public LinkProperties() {}
 
     public static LinkPropertiesBuilder builder() {return new LinkPropertiesBuilder();}
 

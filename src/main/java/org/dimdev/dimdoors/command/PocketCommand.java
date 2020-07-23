@@ -63,7 +63,9 @@ public class PocketCommand {
             // Teleport the player there
             if (RiftRegistry.instance(player.world).getPocketEntrance(pocket) != null) {
                 EntityTarget entrance = (EntityTarget) player.world.getBlockEntity(RiftRegistry.instance(player.world).getPocketEntrance(pocket).pos);
-                entrance.receiveEntity(player, 0);
+                if (entrance != null) {
+                    entrance.receiveEntity(player, 0);
+                }
             } else {
                 Vector3i size = pocket.getSize().add(1, 1, 1).mul(15).div(2);
                 TeleportUtil.teleport(player, new Location(player.getServerWorld(), pocket.getOrigin().add(size.getX(), size.getY(), size.getZ())));

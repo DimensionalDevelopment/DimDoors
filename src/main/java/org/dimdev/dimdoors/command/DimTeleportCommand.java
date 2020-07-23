@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.command;
 
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.FloatArgumentType;
 import net.minecraft.command.arguments.DimensionArgumentType;
 import net.minecraft.command.arguments.Vec3ArgumentType;
 import net.minecraft.server.command.CommandManager;
@@ -17,29 +16,19 @@ public class DimTeleportCommand {
         dispatcher.register(CommandManager.literal("dimteleport")
                 .then(CommandManager
                         .argument("dimension", DimensionArgumentType.dimension())
-                        .executes(ctx -> {
-                            ServerPlayerEntity player = ctx.getSource().getPlayer();
-                            return teleport(player, DimensionArgumentType.getDimensionArgument(ctx, "dimension"), player.getPos(), player.getYaw(1.0f));
-                        }))
-                .then(CommandManager
-                        .argument("coordinates", Vec3ArgumentType.vec3())
-                        .executes(ctx -> {
-                            ServerPlayerEntity player = ctx.getSource().getPlayer();
-                            return teleport(player, DimensionArgumentType.getDimensionArgument(ctx, "dimension"), Vec3ArgumentType.getVec3(ctx, "coordinates"), player.getYaw(1.0f));
-                        }))
-                .then(CommandManager
-                        .argument("yaw", FloatArgumentType.floatArg())
-                        .executes(ctx -> teleport(ctx.getSource().getPlayer(), DimensionArgumentType.getDimensionArgument(ctx, "dimension"), Vec3ArgumentType.getVec3(ctx, "coordinates"), FloatArgumentType.getFloat(ctx, "yaw")))
+                        .then(CommandManager
+                                .argument("coordinates", Vec3ArgumentType.vec3())
+                                .executes(ctx -> {
+                                    ServerPlayerEntity player = ctx.getSource().getPlayer();
+                                    return teleport(player, DimensionArgumentType.getDimensionArgument(ctx, "dimension"), Vec3ArgumentType.getVec3(ctx, "coordinates"));
+                                })
+                        )
                 )
         );
     }
 
-    private static int teleport(ServerPlayerEntity player, ServerWorld world, Vec3d coordinates, float yaw) {
-        try {
-            TeleportUtil.teleport(player, world, coordinates, yaw);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private static int teleport(ServerPlayerEntity player, ServerWorld dimension, Vec3d pos) {
+        TeleportUtil.teleport(player, dimension, pos, 0);
         return 1;
     }
 }

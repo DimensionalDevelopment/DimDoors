@@ -21,7 +21,7 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
     public static final Identifier tesseract_path = new Identifier("dimdoors:textures/other/tesseract.png");
 
     private static final Tesseract tesseract = new Tesseract();
-    private static final RiftCurves.PolygonInfo CURVE = RiftCurves.curves.get(0);
+    private static final RiftCurves.PolygonInfo CURVE = RiftCurves.CURVES.get(0);
     public static long showRiftCoreUntil = 0;
 
     public DetachedRiftBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher) {

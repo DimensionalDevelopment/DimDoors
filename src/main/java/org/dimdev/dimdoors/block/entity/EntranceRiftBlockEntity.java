@@ -5,6 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -46,7 +47,6 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     @Override
     public boolean receiveEntity(Entity entity, float yawOffset) {
         Vec3d targetPos = Vec3d.ofCenter(pos).add(Vec3d.of(getOrientation().getVector()).multiply(ModConfig.GENERAL.teleportOffset + 0.5));
-
         TeleportUtil.teleport(entity, world, targetPos, yawOffset);
         return true;
     }

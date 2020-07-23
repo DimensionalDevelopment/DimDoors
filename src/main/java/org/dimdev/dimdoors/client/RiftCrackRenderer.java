@@ -5,6 +5,10 @@ import org.dimdev.dimdoors.ModConfig;
 
 import java.awt.*;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+@Environment(EnvType.CLIENT)
 public final class RiftCrackRenderer {
     public static void drawCrack(VertexConsumer vc, float riftRotation, RiftCurves.PolygonInfo poly, double size, long riftRandom) {
         // Calculate the proper size for the rift render
@@ -38,7 +42,7 @@ public final class RiftCrackRenderer {
         }
 
         // Draw the rift
-        for (Point p : poly.points) {
+        for (RiftCurves.Point p : poly.points) {
             // Reduces most overlap between triangles inside the rift's center
             int flutterIndex = Math.abs((p.x + p.y) * (p.x + p.y + 1) / 2 + p.y);
 

@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.dimcore.schematic.Schematic;
 
-public class CommandSaveSchem {
+public class SaveSchemCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("saveschem")
                 .then(CommandManager

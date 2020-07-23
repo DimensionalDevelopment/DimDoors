@@ -13,8 +13,6 @@ public class PlayerRiftPointer extends RegistryVertex {
         this.player = player;
     }
 
-    public PlayerRiftPointer() {}
-
     @Override
     public void fromTag(CompoundTag nbt) {
         super.fromTag(nbt);

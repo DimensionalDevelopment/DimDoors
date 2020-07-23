@@ -9,8 +9,6 @@ import org.dimdev.util.Location;
 public class RelativeReference extends RiftReference {
     @Saved protected Vec3i offset;
 
-    public RelativeReference() {}
-
     public RelativeReference(Vec3i offset) {
         this.offset = offset;
     }

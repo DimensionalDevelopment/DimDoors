@@ -22,11 +22,9 @@ public class PublicPocketTarget extends RestoringTarget {
     @Override
     public Location makeLinkTarget() {
         VirtualLocation riftVirtualLocation = VirtualLocation.fromLocation(location);
-        VirtualLocation newVirtualLocation = null;
-        if (riftVirtualLocation != null) {
-            int depth = Math.max(riftVirtualLocation.depth, 1);
-            newVirtualLocation = new VirtualLocation(riftVirtualLocation.world, riftVirtualLocation.x, riftVirtualLocation.z, depth);
-        }
+        VirtualLocation newVirtualLocation;
+        int depth = Math.max(riftVirtualLocation.depth, 1);
+        newVirtualLocation = new VirtualLocation(riftVirtualLocation.world, riftVirtualLocation.x, riftVirtualLocation.z, depth);
         Pocket pocket = PocketGenerator.generatePublicPocket(newVirtualLocation, new GlobalReference(location), null);
 
         return RiftRegistry.instance(location.world).getPocketEntrance(pocket);

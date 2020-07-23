@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.rift.targets.*;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.ModFeatures;
@@ -29,6 +30,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModFeatures.init();
         ModBlockEntityTypes.init();
         ModCommands.init();
+        ModSoundEvents.init();
 
         VirtualTarget.registry.put("available_link", RandomTarget.class);
         VirtualTarget.registry.put("escape", EscapeTarget.class);

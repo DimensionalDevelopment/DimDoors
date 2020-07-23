@@ -7,9 +7,9 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import org.dimdev.Generator;
 import org.dimdev.dimcore.schematic.Schematic;
 import org.dimdev.dimcore.schematic.SchematicConverter;
+import org.dimdev.dimcore.schematic.SchematicStorage;
 
 import java.io.InputStream;
 
@@ -23,7 +23,7 @@ public class SchematicCommand {
                                             ServerPlayerEntity player = ctx.getSource().getPlayer();
                                             String id = StringArgumentType.getString(ctx, "schematic_name");
 
-                                            try (InputStream in = Generator.class.getResourceAsStream("/data/dimdoors/schematic/ruins/" + id + ".schem")) {
+                                            try (InputStream in = SchematicCommand.class.getResourceAsStream("/data/dimdoors/schematic/ruins/" + id + ".schem")) {
                                                 Schematic.fromTag(NbtIo.readCompressed(in))
                                                         .place(
                                                                 player.world,
