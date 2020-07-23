@@ -1,16 +1,12 @@
 package org.dimdev.dimdoors.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.VertexConsumer;
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.util.lsystem.LSystem;
 
 import java.awt.*;
 
-import static org.lwjgl.opengl.GL11.*;
-
 public final class RiftCrackRenderer {
-    public static void drawCrack(VertexConsumer vc, float riftRotation, LSystem.PolygonInfo poly, double size, long riftRandom) {
+    public static void drawCrack(VertexConsumer vc, float riftRotation, RiftCurves.PolygonInfo poly, double size, long riftRandom) {
         // Calculate the proper size for the rift render
         double scale = size / (poly.maxX - poly.minX);
 

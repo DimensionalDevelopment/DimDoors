@@ -1,10 +1,10 @@
-package org.dimdev.dimdoors.world.gateways;
+package org.dimdev.dimdoors.world.gateway;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 
-public class GatewaySandstonePillars extends BaseSchematicGateway {
-    public GatewaySandstonePillars() {
+public class SandstonePillarsGateway extends BaseSchematicGateway {
+    public SandstonePillarsGateway() {
         super("sandstone_pillars");
     }
 

@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.gateways;
+package org.dimdev.dimdoors.world.gateway;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;

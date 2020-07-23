@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.commands.arguments;
+package org.dimdev.dimdoors.command.arguments;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -7,27 +7,24 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.server.command.CommandSource;
-import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
 
 import java.util.concurrent.CompletableFuture;
 
-public class GroupArugmentType implements ArgumentType<String> {
+public class NameArugmentType implements ArgumentType<String> {
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException {
         return reader.readUnquotedString();
     }
 
-    public static GroupArugmentType group() {
-        return new GroupArugmentType();
-    }
-
-    public static <S> PocketTemplate getPocketTemplate(CommandContext<S> context, String name) {
-        return context.getArgument(name, PocketTemplate.class);
+    public static NameArugmentType name() {
+        return new NameArugmentType();
     }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(SchematicHandler.INSTANCE.getTemplateGroups().stream(), builder);
+        String group = context.getArgument("group", String.class);
+
+        return CommandSource.suggestMatching(SchematicHandler.INSTANCE.getTemplateNames(group), builder);
     }
 }

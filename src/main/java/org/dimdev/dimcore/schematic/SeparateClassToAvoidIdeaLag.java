@@ -1,4 +1,4 @@
-//package org.dimdev.util.schem;
+//package org.dimdev.dimcore.schem.schem;
 //
 //import com.mojang.serialization.Dynamic;
 //import net.minecraft.datafixer.NbtOps;

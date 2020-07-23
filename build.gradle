@@ -33,15 +33,16 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:0.14.1+build.372-1.16"
+    modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     shade 'com.flowpowered:flow-math:1.0.3'
     shade 'org.jgrapht:jgrapht-core:1.1.0'
     shade 'com.github.DimensionalDevelopment:poly2tri.java:0.1.1'
     modImplementation 'com.github.Waterpicker:OpenWorlds:1.0.0'
     include 'com.github.Waterpicker:OpenWorlds:1.0.0'
+    compileOnly 'com.google.code.findbugs:jsr305:+'
 }
 
-version "4.0-alpha.3"
+version "4.0.0+alpha.3"
 archivesBaseName = "dimensional-doors"
 
 processResources {

@@ -29,7 +29,7 @@ import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.util.Location;
 import org.dimdev.util.math.MathUtil;
-import org.dimdev.util.schem.Schematic;
+import org.dimdev.dimcore.schematic.Schematic;
 
 import java.util.ArrayList;
 import java.util.HashMap;

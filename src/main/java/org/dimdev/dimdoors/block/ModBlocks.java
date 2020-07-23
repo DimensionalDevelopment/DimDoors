@@ -108,8 +108,8 @@ public final class ModBlocks {
         // just loads the class
     }
 
-    private static class DoorBlock extends net.minecraft.block.DoorBlock { // TODO: use access transformer instead
-        protected DoorBlock(Settings settings) {
+    private static class DoorBlock extends net.minecraft.block.DoorBlock { // TODO: use access widener instead
+        public DoorBlock(Settings settings) {
             super(settings);
         }
     }

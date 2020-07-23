@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.commands;
+package org.dimdev.dimdoors.command;
 
 
 import com.mojang.brigadier.CommandDispatcher;

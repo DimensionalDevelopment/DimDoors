@@ -1,15 +1,18 @@
-package org.dimdev.dimdoors.commands;
+package org.dimdev.dimdoors.command;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TranslatableText;
-import org.dimdev.dimdoors.commands.arguments.GroupArugmentType;
-import org.dimdev.dimdoors.commands.arguments.NameArugmentType;
+import org.dimdev.dimdoors.command.arguments.GroupArugmentType;
+import org.dimdev.dimdoors.command.arguments.NameArugmentType;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
@@ -20,43 +23,35 @@ import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.util.Location;
 import org.dimdev.util.TeleportUtil;
 
-public class CommandPocket {
+public class PocketCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("pocket")
                 .then(CommandManager.argument("group", GroupArugmentType.group())
                 .then(CommandManager.argument("name", NameArugmentType.name())
                 .then(CommandManager
                         .argument("setup", BoolArgumentType.bool())
-                        .executes(ctx -> {
-                            ServerPlayerEntity player = ctx.getSource().getPlayer();
-
-                            if (!ModDimensions.isDimDoorsPocketDimension(player.world)) {
-                                throw new CommandException(new TranslatableText("commands.generic.dimdoors.not_in_pocket"));
-                            }
-
-                            String group = ctx.getArgument("group", String.class);
-                            String name = ctx.getArgument("name", String.class);
-                            boolean setup = BoolArgumentType.getBool(ctx, "setup");
-
-                            pocket(group, name, setup, player);
-
-                            return 1;
-                        })
+                        .executes(ctx -> pocket(ctx, false))
                 )
-                .executes(ctx -> {
-                    ServerPlayerEntity player = ctx.getSource().getPlayer();
+                .executes(ctx -> pocket(ctx, true)))));
+    }
 
-                    if (!ModDimensions.isDimDoorsPocketDimension(player.world)) {
-                        throw new CommandException(new TranslatableText("commands.generic.dimdoors.not_in_pocket"));
-                    }
+    private static int pocket(CommandContext<ServerCommandSource> ctx, boolean setup) throws CommandSyntaxException {
+        ServerPlayerEntity player = ctx.getSource().getPlayer();
 
-                    String group = ctx.getArgument("group", String.class);
-                    String name = ctx.getArgument("name", String.class);
+        if (!ModDimensions.isDimDoorsPocketDimension(player.world)) {
+            throw new CommandException(new TranslatableText("commands.generic.dimdoors.not_in_pocket"));
+        }
 
-                    pocket(group, name, true, player);
+        String group = ctx.getArgument("group", String.class);
+        String name = ctx.getArgument("name", String.class);
 
-                    return 1;
-                }))));
+        if(!setup) {
+            setup = BoolArgumentType.getBool(ctx, "setup");
+        }
+
+        pocket(group, name, setup, player);
+
+        return 1;
     }
 
     public static void pocket(String group, String name, boolean setup, ServerPlayerEntity player) {

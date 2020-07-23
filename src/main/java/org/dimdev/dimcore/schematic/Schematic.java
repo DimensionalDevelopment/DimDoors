@@ -1,4 +1,4 @@
-package org.dimdev.util.schem;
+package org.dimdev.dimcore.schematic;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -17,6 +17,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
@@ -64,28 +65,28 @@ public class Schematic implements BlockView {
         this.author = author;
     }
 
-    public static Schematic loadFromNBT(CompoundTag nbt) {
+    public static Schematic fromTag(CompoundTag tag) {
         Schematic schematic = new Schematic();
-        schematic.version = nbt.getInt("Version");
+        schematic.version = tag.getInt("Version");
 
         schematic.creationDate = System.currentTimeMillis();
 
-        if (nbt.contains("Metadata")) {
-            CompoundTag metadataCompound = nbt.getCompound("Metadata").getCompound(".");
+        if (tag.contains("Metadata")) {
+            CompoundTag metadataCompound = tag.getCompound("Metadata").getCompound(".");
 
-            if (nbt.contains("Author")) {
+            if (tag.contains("Author")) {
                 schematic.author = metadataCompound.getString("Author");
             }
 
             schematic.name = metadataCompound.getString("Name");
 
-            if (nbt.contains("Date")) { //Date is not required
+            if (tag.contains("Date")) { //Date is not required
                 schematic.creationDate = metadataCompound.getLong("Date");
             } else {
                 schematic.creationDate = -1;
             }
 
-            if (nbt.contains("RequiredMods")) { //RequiredMods is not required (ironically)
+            if (tag.contains("RequiredMods")) { //RequiredMods is not required (ironically)
                 ListTag requiredModsTagList = (ListTag) metadataCompound.get("RequiredMods");
                 schematic.requiredMods = new String[requiredModsTagList.size()];
                 for (int i = 0; i < requiredModsTagList.size(); i++) {
@@ -94,15 +95,15 @@ public class Schematic implements BlockView {
             }
         }
 
-        schematic.sizeX = nbt.getShort("Width");
-        schematic.sizeY = nbt.getShort("Height");
-        schematic.sizeZ = nbt.getShort("Length");
+        schematic.sizeX = tag.getShort("Width");
+        schematic.sizeY = tag.getShort("Height");
+        schematic.sizeZ = tag.getShort("Length");
 
-        if (nbt.contains("Offset")) { // Offset is not required
-            schematic.offset = nbt.getIntArray("Offset");
+        if (tag.contains("Offset")) { // Offset is not required
+            schematic.offset = tag.getIntArray("Offset");
         }
 
-        CompoundTag paletteTag = nbt.getCompound("Palette"); //Palette is not required, however since we assume that the schematic contains at least some blocks, we can also assume that thee has to be a Palette
+        CompoundTag paletteTag = tag.getCompound("Palette"); //Palette is not required, however since we assume that the schematic contains at least some blocks, we can also assume that thee has to be a Palette
         Map<Integer, String> paletteMap = new HashMap<>();
 
         for (String key : paletteTag.getKeys()) {
@@ -141,13 +142,13 @@ public class Schematic implements BlockView {
             schematic.palette.add(blockstate); //@todo, can we assume that a schematic file always has all palette integers used from 0 to pallettemax-1?
         }
 
-        if (nbt.contains("PaletteMax")) {
-            schematic.paletteMax = nbt.getInt("PaletteMax");
+        if (tag.contains("PaletteMax")) {
+            schematic.paletteMax = tag.getInt("PaletteMax");
         } else {
             schematic.paletteMax = schematic.palette.size() - 1;
         }
 
-        byte[] blockDataIntArray = nbt.getByteArray("BlockData");
+        byte[] blockDataIntArray = tag.getByteArray("BlockData");
         schematic.blockData = new short[schematic.sizeX][schematic.sizeY][schematic.sizeZ];
         for (int x = 0; x < schematic.sizeX; x++) {
             for (int y = 0; y < schematic.sizeY; y++) {
@@ -157,15 +158,15 @@ public class Schematic implements BlockView {
             }
         }
 
-        if (nbt.contains("TileEntities")) {
-            for (Tag tag : (ListTag) nbt.get("TileEntities")) {
-                schematic.tileEntities.add((CompoundTag) tag);
+        if (tag.contains("TileEntities")) {
+            for (Tag tag1 : (ListTag) tag.get("TileEntities")) {
+                schematic.tileEntities.add((CompoundTag) tag1);
             }
         }
 
-        if (nbt.contains("Entities")) {
-            for (Tag tag : (ListTag) nbt.get("Entities")) {
-                schematic.entities.add((CompoundTag) tag);
+        if (tag.contains("Entities")) {
+            for (Tag tag1 : (ListTag) tag.get("Entities")) {
+                schematic.entities.add((CompoundTag) tag1);
             }
         }
 
@@ -442,9 +443,20 @@ public class Schematic implements BlockView {
                                     if (setAir || !state.getBlock().equals(Blocks.AIR)) {
                                         section.setBlockState(lx, ly, lz, state);
 
-                                        BlockPos pos = new BlockPos(originX + x, originY + y, originZ + z);
-                                        serverWorld.getChunkManager().markForUpdate(pos);
-                                        serverWorld.getLightingProvider().checkBlock(pos);
+//                                        BlockPos pos = new BlockPos(originX + x, originY + y, originZ + z);
+//                                        serverWorld.getChunkManager().markForUpdate(pos);
+//                                        serverWorld.getLightingProvider().checkBlock(pos);
+                                        if (y < 0 || y > 255) {
+                                            System.out.println();
+                                        }
+
+                                        chunk.getHeightmap(Heightmap.Type.MOTION_BLOCKING).trackUpdate(lx, y, lz, state);
+                                        chunk.getHeightmap(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).trackUpdate(lx, y, lz, state);
+                                        chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR).trackUpdate(lx, y, lz, state);
+                                        chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE).trackUpdate(lx, y, lz, state);
+
+                                        serverWorld.getChunkManager().markForUpdate(new BlockPos(originX + x, originY + y, originZ + z));
+                                        serverWorld.getLightingProvider().checkBlock(new BlockPos(originX + x, originY + y, originZ + z));
                                     }
                                 }
                             }
@@ -452,11 +464,11 @@ public class Schematic implements BlockView {
                     }
                 }
 
-                setTime += System.nanoTime() - setStart;
-                long relightStart = System.nanoTime();
-
-                chunk.setLightOn(false);
-                relightTime += System.nanoTime() - relightStart;
+//                setTime += System.nanoTime() - setStart;
+//                long relightStart = System.nanoTime();
+//
+//                chunk.setLightOn(false);
+//                relightTime += System.nanoTime() - relightStart;
             }
         }
 

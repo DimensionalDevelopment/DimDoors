@@ -1,13 +1,13 @@
-package org.dimdev.dimdoors.world.gateways;
+package org.dimdev.dimdoors.world.gateway;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class GatewayTwoPillars extends BaseSchematicGateway {
+public class TwoPillarsGateway extends BaseSchematicGateway {
     private static final int GATEWAY_RADIUS = 4;
 
-    public GatewayTwoPillars() {
+    public TwoPillarsGateway() {
         super("two_pillars");
     }
 

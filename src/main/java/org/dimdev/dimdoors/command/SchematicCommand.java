@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.commands;
+package org.dimdev.dimdoors.command;
 
 
 import com.mojang.brigadier.CommandDispatcher;
@@ -8,8 +8,8 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.dimdev.Generator;
-import org.dimdev.util.schem.Schematic;
-import org.dimdev.util.schem.SchematicConverter;
+import org.dimdev.dimcore.schematic.Schematic;
+import org.dimdev.dimcore.schematic.SchematicConverter;
 
 import java.io.InputStream;
 
@@ -23,8 +23,8 @@ public class SchematicCommand {
                                             ServerPlayerEntity player = ctx.getSource().getPlayer();
                                             String id = StringArgumentType.getString(ctx, "schematic_name");
 
-                                            try (InputStream in = Generator.class.getResourceAsStream("/assets/dimdoors/pockets/schematic/ruins/" + id + ".schem")) {
-                                                Schematic.loadFromNBT(NbtIo.readCompressed(in))
+                                            try (InputStream in = Generator.class.getResourceAsStream("/data/dimdoors/schematic/ruins/" + id + ".schem")) {
+                                                Schematic.fromTag(NbtIo.readCompressed(in))
                                                         .place(
                                                                 player.world,
                                                                 (int) player.getPos().x,

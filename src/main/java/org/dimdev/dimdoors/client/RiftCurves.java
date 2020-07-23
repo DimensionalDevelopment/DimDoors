@@ -1,73 +1,52 @@
-package org.dimdev.util.lsystem;
-
+package org.dimdev.dimdoors.client;
 import org.poly2tri.Poly2Tri;
 import org.poly2tri.geometry.polygon.Polygon;
 import org.poly2tri.geometry.polygon.PolygonPoint;
 import org.poly2tri.triangulation.TriangulationPoint;
 import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
 
-import java.awt.*;
 import java.util.List;
 import java.util.*;
 
-public final class LSystem { // TODO: Rewrite this class
-    public static ArrayList<PolygonInfo> curves = new ArrayList<>();
+// https://en.wikipedia.org/wiki/L-system
+//
+// System: {rules, angle, start_string}
+// Rules: rule1:rule_2:...:rule_n
+// Rule: from_substring>to_substring
+//
+// Each iteration, rules are applied to the string. After, string
+// is interpreted as commands for a pencil on a sheet of paper:
+//   F - move forward by one step
+//   + - turn clockwise by angle
+//   - - turn counter-clockwise by angle
+//   [ - save state (push to stack)
+//   ] - restore state (pop from stack)
+public final class RiftCurves {
+    public static final List<PolygonInfo> CURVES = new ArrayList<>();
 
-    // https://en.wikipedia.org/wiki/L-system
-    //
-    // System: {rules, angle, start_string}
-    // Rules: rule1:rule_2:...:rule_n
-    // Rule: from_substring>to_substring
-    //
-    // Each iteration, rules are applied to the string. After, string
-    // is interpreted as commands for a pencil on a sheet of paper:
-    //   F - move forward by one step
-    //   + - turn clockwise by angle
-    //   - - turn counter-clockwise by angle
-    //   [ - save state (push to stack)
-    //   ] - restore state (pop from stack)
     public static final String[] TERDRAGON = {"F>+F----F++++F-", "60", "F"};
     public static final String[] DRAGON = {"X>X+YF:Y>FX-Y", "90", "FX"};
     public static final String[] TWINDRAGON = {"X>X+YF:Y>FX-Y", "90", "FX--FX"};
     public static final String[] VORTEX = {"X>X+YF:Y>FX-Y", "90", "FX---FX"};
 
     static {
-        // TODO: Move to separate class
-        generateLSystem("terdragon", TERDRAGON, 4);
-        generateLSystem("terdragon", TERDRAGON, 5);
-        //LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 6); // degenerate
-        generateLSystem("terdragon", TERDRAGON, 7);
-        //LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 8);
-        //LSystem.generateLSystem("terdragon", LSystem.TERDRAGON, 9);
-
-
-        //LSystem.generateLSystem("vortex", LSystem.VORTEX, 8);
-        generateLSystem("vortex", VORTEX, 9);
-        generateLSystem("vortex", VORTEX, 10);
-        generateLSystem("vortex", VORTEX, 11);
-        //LSystem.generateLSystem("vortex", LSystem.VORTEX, 12);
-
-        generateLSystem("twindragon", TWINDRAGON, 7);
-        generateLSystem("twindragon", TWINDRAGON, 8);
-        generateLSystem("twindragon", TWINDRAGON, 9);
-        generateLSystem("twindragon", TWINDRAGON, 10);
-        //LSystem.generateLSystem("twindragon", LSystem.TWINDRAGON, 11);
-
-
-        generateLSystem("dragon", DRAGON, 8);
-        generateLSystem("dragon", DRAGON, 9);
-        generateLSystem("dragon", DRAGON, 10);
-        generateLSystem("dragon", DRAGON, 11);
-        //LSystem.generateLSystem("dragon", LSystem.DRAGON, 12);
-        //LSystem.generateLSystem("dragon", LSystem.DRAGON, 13);
+        CURVES.add(generate(TERDRAGON, 4));
+        CURVES.add(generate(TERDRAGON, 5));
+        CURVES.add(generate(TERDRAGON, 7));
+        CURVES.add(generate(VORTEX, 9));
+        CURVES.add(generate(VORTEX, 10));
+        CURVES.add(generate(VORTEX, 11));
+        CURVES.add(generate(TWINDRAGON, 7));
+        CURVES.add(generate(TWINDRAGON, 8));
+        CURVES.add(generate(TWINDRAGON, 9));
+        CURVES.add(generate(TWINDRAGON, 10));
+        CURVES.add(generate(DRAGON, 8));
+        CURVES.add(generate(DRAGON, 9));
+        CURVES.add(generate(DRAGON, 10));
+        CURVES.add(generate(DRAGON, 11));
     }
 
-    /**
-     * Generates a fractal curve
-     *
-     * @param args: 0 = rules, 1 = angle, 2 = start
-     */
-    public static void generateLSystem(String key, String[] args, int steps) {
+    private static PolygonInfo generate(String[] args, int steps) {
         //Parse the rules from the first index
         String[] rules = args[0].split(":");
         HashMap<String, String> lSystemsRule = new HashMap<>();
@@ -91,7 +70,7 @@ public final class LSystem { // TODO: Rewrite this class
         List<Point> polygon = getBoundary(convertToPoints(angle, output, steps));
 
         //replace the boundary of the polygon with a series of points representing triangles for rendering
-        curves.add(new PolygonInfo(tesselate(polygon)));
+        return new PolygonInfo(tesselate(polygon));
     }
 
     /**
@@ -127,17 +106,18 @@ public final class LSystem { // TODO: Rewrite this class
 
         // find a suitable starting point
         Point startPoint = new Point(minX, minY);
-        Point prevPoint = (Point) startPoint.clone();
+        Point prevPoint = startPoint;
 
         while (startPoint.y < maxY) {
             if (singles.contains(startPoint)) {
                 break;
             }
-            startPoint.y++;
+
+            startPoint = new Point(startPoint.x, startPoint.y + 1);
         }
 
         // record the first point so we know where to stop
-        final Point firstPoint = (Point) startPoint.clone();
+        final Point firstPoint = startPoint;
 
         // determine the direction to start searching from
         Point direction = getVector(prevPoint, startPoint);
@@ -205,12 +185,10 @@ public final class LSystem { // TODO: Rewrite this class
      * rotate a normal around the origin
      */
     public static Point rotateCounterClockwise(Point previous) {
-        Point point = new Point();
-
-        point.x = (int) (previous.x * Math.cos(Math.toRadians(90)) - previous.y * Math.sin(Math.toRadians(90)));
-        point.y = (int) (previous.x * Math.sin(Math.toRadians(90)) + previous.y * Math.cos(Math.toRadians(90)));
-
-        return point;
+        return new Point(
+                (int) (previous.x * Math.cos(Math.toRadians(90)) - previous.y * Math.sin(Math.toRadians(90))),
+                (int) (previous.x * Math.sin(Math.toRadians(90)) + previous.y * Math.cos(Math.toRadians(90)))
+        );
     }
 
     /**
@@ -343,5 +321,25 @@ public final class LSystem { // TODO: Rewrite this class
             }
         }
         return points;
+    }
+
+    public static class Point {
+        public final int x;
+        public final int y;
+
+        private Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof Point && ((Point) o).x == x && ((Point) o).y == y;
+        }
+
+        @Override
+        public int hashCode() {
+            return x * 31 + y;
+        }
     }
 }

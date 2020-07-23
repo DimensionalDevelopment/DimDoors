@@ -1,14 +1,17 @@
 package org.dimdev.gsonnbt;
 
-import com.google.gson.JsonPrimitive;
-import com.google.gson.stream.JsonWriter;
-import net.minecraft.datafixer.NbtOps;
-import net.minecraft.nbt.*;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.JsonPrimitive;
+import com.google.gson.stream.JsonWriter;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.EndTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 
 import static net.minecraft.datafixer.NbtOps.INSTANCE;
 

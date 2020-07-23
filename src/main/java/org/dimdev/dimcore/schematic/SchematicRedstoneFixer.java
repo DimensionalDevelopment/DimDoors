@@ -1,4 +1,4 @@
-package org.dimdev.util.schem;
+package org.dimdev.dimcore.schematic;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

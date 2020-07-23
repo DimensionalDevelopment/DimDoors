@@ -1,4 +1,4 @@
-package org.dimdev.util.schem;
+package org.dimdev.dimcore.schematic;
 
 import java.util.HashMap;
 import java.util.Map;

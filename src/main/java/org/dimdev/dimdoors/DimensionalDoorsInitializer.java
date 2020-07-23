@@ -1,13 +1,10 @@
 package org.dimdev.dimdoors;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.commands.CommandPocket;
-import org.dimdev.dimdoors.commands.CommandSaveSchem;
-import org.dimdev.dimdoors.commands.DimTeleportCommand;
-import org.dimdev.dimdoors.commands.SchematicCommand;
+import org.dimdev.dimdoors.command.*;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
@@ -31,8 +28,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModBiomes.init();
         ModFeatures.init();
         ModBlockEntityTypes.init();
-
-        this.registerCommands();
+        ModCommands.init();
 
         VirtualTarget.registry.put("available_link", RandomTarget.class);
         VirtualTarget.registry.put("escape", EscapeTarget.class);
@@ -49,14 +45,5 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         Targets.registerDefaultTargets();
 
         SchematicHandler.INSTANCE.loadSchematics();
-    }
-
-    private void registerCommands() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated)->{
-            DimTeleportCommand.register(dispatcher);
-            SchematicCommand.register(dispatcher);
-            CommandPocket.register(dispatcher);
-            CommandSaveSchem.register(dispatcher);
-        });
     }
 }

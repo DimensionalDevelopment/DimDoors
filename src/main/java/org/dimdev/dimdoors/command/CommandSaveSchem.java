@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.commands;
+package org.dimdev.dimdoors.command;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.mojang.brigadier.CommandDispatcher;
@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
-import org.dimdev.util.schem.Schematic;
+import org.dimdev.dimcore.schematic.Schematic;
 
 public class CommandSaveSchem {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {

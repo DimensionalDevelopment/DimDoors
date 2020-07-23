@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.gateways;
+package org.dimdev.dimdoors.world.gateway;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -7,7 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
-import org.dimdev.util.schem.Schematic;
+import org.dimdev.dimcore.schematic.Schematic;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public abstract class BaseSchematicGateway extends BaseGateway {
     private Schematic schematic;
 
     public BaseSchematicGateway(String id) {
-        String schematicJarDirectory = "/assets/dimdoors/gateways/";
+        String schematicJarDirectory = "/data/dimdoors/gateways/";
 
         //Initialising the possible locations/formats for the schematic file
         InputStream schematicStream = DimensionalDoorsInitializer.class.getResourceAsStream(schematicJarDirectory + id + ".schem");
@@ -38,8 +38,8 @@ public abstract class BaseSchematicGateway extends BaseGateway {
         if (streamOpened) {
             try {
                 schematicNBT = NbtIo.readCompressed(schematicDataStream);
-                schematic = Schematic.loadFromNBT(schematicNBT);
-                PocketTemplate.replacePlaceholders(schematic);
+                schematic = Schematic.fromTag(schematicNBT);
+                //PocketTemplate.replacePlaceholders(schematic);
                 schematicDataStream.close();
             } catch (IOException ex) {
                 LOGGER.error("Schematic file for " + id + " could not be read as a valid schematic NBT file.", ex);

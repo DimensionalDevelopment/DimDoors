@@ -10,7 +10,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.util.math.MathUtil;
-import org.dimdev.util.schem.Schematic;
+import org.dimdev.dimcore.schematic.Schematic;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 
@@ -37,7 +37,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     public Schematic loadSchematicFromByteArray(byte[] schematicBytecode) {
         Schematic schematic = null;
         try {
-            schematic = Schematic.loadFromNBT(NbtIo.readCompressed(new ByteArrayInputStream (schematicBytecode)));
+            schematic = Schematic.fromTag(NbtIo.readCompressed(new ByteArrayInputStream (schematicBytecode)));
         } catch (IOException ex) {
             //this would be EXTREMELY unlikely, since this should have been checked earlier.
             LOGGER.error("Schematic file for this dungeon could not be read from byte array.", ex);
@@ -95,7 +95,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                 if (file.isDirectory() || !file.getName().endsWith(".schem")) continue;
                 try {
                     byte[] schematicBytecode = IOUtils.toByteArray(new FileInputStream(file));
-                    Schematic.loadFromNBT(NbtIo.readCompressed(new ByteArrayInputStream (schematicBytecode)));
+                    Schematic.fromTag(NbtIo.readCompressed(new ByteArrayInputStream (schematicBytecode)));
                     PocketTemplate template = new PocketTemplate(SAVED_POCKETS_GROUP_NAME, file.getName(), null, null, null, null, schematicBytecode, -1, 0);
                     templates.add(template);
                 } catch (IOException e) {
@@ -169,7 +169,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             if (isCustomFile) {
                 Schematic schematic = null;
                 try {
-                    schematic = Schematic.loadFromNBT(NbtIo.readCompressed(new ByteArrayInputStream (schematicBytecode)));
+                    schematic = Schematic.fromTag(NbtIo.readCompressed(new ByteArrayInputStream (schematicBytecode)));
                 } catch (Exception ex) {
                     LOGGER.error("Schematic file for " + template.getId() + " could not be read as a valid schematic NBT file.", ex);
                     isValidFormat = false;
