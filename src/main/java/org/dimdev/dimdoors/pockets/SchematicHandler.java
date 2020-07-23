@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimcore.schematic.Schematic;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.util.math.MathUtil;
+import org.dimdev.dimdoors.util.math.MathUtil;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;

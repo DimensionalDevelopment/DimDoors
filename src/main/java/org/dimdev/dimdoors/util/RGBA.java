@@ -1,4 +1,4 @@
-package org.dimdev.util;
+package org.dimdev.dimdoors.util;
 
 public class RGBA {
     float red;

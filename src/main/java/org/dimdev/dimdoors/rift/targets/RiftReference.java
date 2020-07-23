@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.rift.targets;
 import java.util.Set;
 
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.util.Location;
+import org.dimdev.dimdoors.util.Location;
 
 import net.minecraft.util.math.Vec3i;
 

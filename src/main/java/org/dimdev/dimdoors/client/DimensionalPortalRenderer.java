@@ -16,7 +16,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.mixin.DirectionMixin;
-import org.dimdev.util.RGBA;
+import org.dimdev.dimdoors.util.RGBA;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.Block;

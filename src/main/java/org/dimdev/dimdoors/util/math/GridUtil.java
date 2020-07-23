@@ -1,4 +1,4 @@
-package org.dimdev.util.math;
+package org.dimdev.dimdoors.util.math;
 
 public final class GridUtil {
     public static final class GridPos {

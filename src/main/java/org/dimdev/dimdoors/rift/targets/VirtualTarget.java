@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import org.dimdev.util.Location;
+import org.dimdev.dimdoors.util.Location;
 
 import net.minecraft.nbt.CompoundTag;
 

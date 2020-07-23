@@ -1,4 +1,4 @@
-package org.dimdev.util;
+package org.dimdev.dimdoors.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;

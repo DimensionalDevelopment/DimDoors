@@ -1,4 +1,4 @@
-package org.dimdev.util;
+package org.dimdev.dimdoors.util;
 
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.AutoSerializable;

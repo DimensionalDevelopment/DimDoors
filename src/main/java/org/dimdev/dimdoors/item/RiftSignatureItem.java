@@ -6,8 +6,8 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.util.Location;
-import org.dimdev.util.RotatedLocation;
+import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.RotatedLocation;
 
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;

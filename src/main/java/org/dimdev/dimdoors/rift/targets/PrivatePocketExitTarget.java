@@ -8,8 +8,8 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
-import org.dimdev.util.EntityUtils;
-import org.dimdev.util.Location;
+import org.dimdev.dimdoors.util.EntityUtils;
+import org.dimdev.dimdoors.util.Location;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;

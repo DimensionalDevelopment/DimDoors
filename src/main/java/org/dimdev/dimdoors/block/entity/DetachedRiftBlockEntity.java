@@ -6,7 +6,7 @@ import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.util.TeleportUtil;
+import org.dimdev.dimdoors.util.TeleportUtil;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;

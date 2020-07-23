@@ -19,8 +19,8 @@ import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
-import org.dimdev.util.Location;
-import org.dimdev.util.math.MathUtil;
+import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.math.MathUtil;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;

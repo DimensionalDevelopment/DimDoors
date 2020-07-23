@@ -1,4 +1,4 @@
-package org.dimdev.util.reference;
+package org.dimdev.dimdoors.util.reference;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;

@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.util.Location;
+import org.dimdev.dimdoors.util.Location;
 
 import net.minecraft.nbt.CompoundTag;
 

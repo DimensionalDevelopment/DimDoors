@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.command;
 
 
 import com.mojang.brigadier.CommandDispatcher;
-import org.dimdev.util.TeleportUtil;
+import org.dimdev.dimdoors.util.TeleportUtil;
 
 import net.minecraft.command.arguments.DimensionArgumentType;
 import net.minecraft.command.arguments.Vec3ArgumentType;

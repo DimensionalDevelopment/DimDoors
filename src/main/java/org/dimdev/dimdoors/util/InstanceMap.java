@@ -1,4 +1,4 @@
-package org.dimdev.util;
+package org.dimdev.dimdoors.util;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -8,8 +8,8 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
-import org.dimdev.util.GraphUtils;
-import org.dimdev.util.Location;
+import org.dimdev.dimdoors.util.GraphUtils;
+import org.dimdev.dimdoors.util.Location;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 

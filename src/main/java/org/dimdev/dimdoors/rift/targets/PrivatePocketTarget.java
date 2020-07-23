@@ -9,8 +9,8 @@ import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.util.EntityUtils;
-import org.dimdev.util.Location;
+import org.dimdev.dimdoors.util.EntityUtils;
+import org.dimdev.dimdoors.util.Location;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;

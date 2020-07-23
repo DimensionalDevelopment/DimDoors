@@ -16,8 +16,8 @@ import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.util.Location;
-import org.dimdev.util.math.MathUtil;
+import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.math.MathUtil;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;

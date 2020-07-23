@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import org.dimdev.util.EntityUtils;
+import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;

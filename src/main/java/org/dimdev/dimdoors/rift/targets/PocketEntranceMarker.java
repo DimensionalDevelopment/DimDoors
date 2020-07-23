@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
-import org.dimdev.util.EntityUtils;
+import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;

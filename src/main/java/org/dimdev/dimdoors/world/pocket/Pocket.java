@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.world.pocket;
 
 import com.flowpowered.math.vector.Vector3i;
 import org.dimdev.annotatednbt.Saved;
-import org.dimdev.util.EntityUtils;
+import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;

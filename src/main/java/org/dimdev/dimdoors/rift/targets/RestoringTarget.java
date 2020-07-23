@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import org.dimdev.util.Location;
+import org.dimdev.dimdoors.util.Location;
 
 import net.minecraft.nbt.CompoundTag;
 

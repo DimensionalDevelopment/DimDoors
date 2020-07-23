@@ -6,8 +6,8 @@ import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.util.Location;
-import org.dimdev.util.TeleportUtil;
+import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.TeleportUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +15,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-import static org.dimdev.util.EntityUtils.chat;
+import static org.dimdev.dimdoors.util.EntityUtils.chat;
 
 public class EscapeTarget extends VirtualTarget implements EntityTarget { // TODO: createRift option
     protected boolean canEscapeLimbo = false;

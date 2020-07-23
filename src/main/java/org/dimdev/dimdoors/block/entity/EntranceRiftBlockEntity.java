@@ -4,8 +4,8 @@ import java.util.Random;
 
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.util.RGBA;
-import org.dimdev.util.TeleportUtil;
+import org.dimdev.dimdoors.util.RGBA;
+import org.dimdev.dimdoors.util.TeleportUtil;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;

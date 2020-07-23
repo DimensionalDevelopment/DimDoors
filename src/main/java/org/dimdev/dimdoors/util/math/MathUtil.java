@@ -1,4 +1,4 @@
-package org.dimdev.util.math;
+package org.dimdev.dimdoors.util.math;
 
 import java.util.Map;
 import java.util.Random;
