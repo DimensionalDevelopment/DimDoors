@@ -4,6 +4,7 @@ import java.util.Random;
 
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.entity.ai.MonolithTask;
+import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 
@@ -148,6 +149,10 @@ public class MonolithEntity extends MobEntity {
         // If we're working on the server side, adjust aggro level
         // If we're working on the client side, retrieve aggro level from dataWatcher
         if(player == null) {
+            return;
+        }
+
+        if((player.inventory.armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && player.inventory.armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && player.inventory.armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && player.inventory.armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
             return;
         }
 
