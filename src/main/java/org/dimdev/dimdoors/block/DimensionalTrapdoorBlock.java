@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.block;
 
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.TrapdoorBlock;
@@ -13,7 +15,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 
 // TODO: Make this placeable on rifts

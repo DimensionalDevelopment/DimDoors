@@ -1,13 +1,14 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import static org.dimdev.dimdoors.world.ModDimensions.LIMBO;
 
 public class LimboTarget extends VirtualTarget implements EntityTarget {
-    public LimboTarget() {}
+    public LimboTarget() {
+    }
 
     @Override
     public void fromTag(CompoundTag nbt) {

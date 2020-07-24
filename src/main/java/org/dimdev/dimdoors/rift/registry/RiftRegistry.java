@@ -1,23 +1,24 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.PocketRegistry;
+import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
+import org.dimdev.dimdoors.util.GraphUtils;
+import org.dimdev.dimdoors.util.Location;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.pocketlib.Pocket;
-import org.dimdev.pocketlib.PocketRegistry;
-import org.dimdev.pocketlib.PrivatePocketData;
-import org.dimdev.util.GraphUtils;
-import org.dimdev.util.Location;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 import static net.minecraft.world.World.OVERWORLD;
 
@@ -88,7 +89,8 @@ public class RiftRegistry extends PersistentState {
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        if (this == null) {}
+        if (this == null) {
+        }
         // Write rifts in this dimension
         ListTag riftsNBT = new ListTag();
         ListTag pocketsNBT = new ListTag();
@@ -279,10 +281,10 @@ public class RiftRegistry extends PersistentState {
             return Collections.emptySet();
         } else {
             return graph.outgoingEdgesOf(pointer).stream()
-                        .map(graph::getEdgeTarget)
-                        .map(Rift.class::cast)
-                        .map(rift -> rift.location)
-                        .collect(Collectors.toSet());
+                    .map(graph::getEdgeTarget)
+                    .map(Rift.class::cast)
+                    .map(rift -> rift.location)
+                    .collect(Collectors.toSet());
         }
     }
 
@@ -363,17 +365,17 @@ public class RiftRegistry extends PersistentState {
 
     public Set<Location> getTargets(Location location) {
         return graph.outgoingEdgesOf(getRift(location)).stream()
-                    .map(graph::getEdgeTarget)
-                    .map(Rift.class::cast)
-                    .map(rift -> rift.location)
-                    .collect(Collectors.toSet());
+                .map(graph::getEdgeTarget)
+                .map(Rift.class::cast)
+                .map(rift -> rift.location)
+                .collect(Collectors.toSet());
     }
 
     public Set<Location> getSources(Location location) {
         return graph.incomingEdgesOf(getRift(location)).stream()
-                    .map(graph::getEdgeTarget)
-                    .map(Rift.class::cast)
-                    .map(rift -> rift.location)
-                    .collect(Collectors.toSet());
+                .map(graph::getEdgeTarget)
+                .map(Rift.class::cast)
+                .map(rift -> rift.location)
+                .collect(Collectors.toSet());
     }
 }

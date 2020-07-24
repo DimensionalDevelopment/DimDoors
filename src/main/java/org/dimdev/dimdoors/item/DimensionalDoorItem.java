@@ -1,5 +1,14 @@
 package org.dimdev.dimdoors.item;
 
+import java.util.function.Consumer;
+
+import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.RiftProvider;
+import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
@@ -9,14 +18,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.RiftProvider;
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
-
-import java.util.function.Consumer;
 
 public class DimensionalDoorItem extends TallBlockItem {
     private final Consumer<? super EntranceRiftBlockEntity> setupFunction;

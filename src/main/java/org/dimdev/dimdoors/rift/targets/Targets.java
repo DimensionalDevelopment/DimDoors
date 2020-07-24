@@ -1,9 +1,10 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import org.dimdev.dimdoors.util.EntityUtils;
+
 import net.minecraft.fluid.Fluid;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.Direction;
-import org.dimdev.util.EntityUtils;
 
 // A list of the default targets provided by dimcore. Add your own in ModTargets
 public final class Targets {

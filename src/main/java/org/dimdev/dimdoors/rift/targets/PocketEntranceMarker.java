@@ -1,19 +1,22 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import org.dimdev.annotatednbt.AnnotatedNbt;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.dimdoors.util.EntityUtils;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.util.EntityUtils;
 
 
 public class PocketEntranceMarker extends VirtualTarget implements EntityTarget {
-    @Saved protected float weight = 1;
+    @Saved
+    protected float weight = 1;
     /*@Saved*/ protected VirtualTarget ifDestination;
     /*@Saved*/ protected VirtualTarget otherwiseDestination;
 
-    public PocketEntranceMarker() {}
+    public PocketEntranceMarker() {
+    }
 
     public PocketEntranceMarker(float weight, VirtualTarget ifDestination, VirtualTarget otherwiseDestination) {
         this.weight = weight;
@@ -21,7 +24,9 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
         this.otherwiseDestination = otherwiseDestination;
     }
 
-    public static PocketEntranceMarkerBuilder builder() {return new PocketEntranceMarkerBuilder();}
+    public static PocketEntranceMarkerBuilder builder() {
+        return new PocketEntranceMarkerBuilder();
+    }
 
     @Override
     public void fromTag(CompoundTag nbt) {
@@ -35,7 +40,8 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
     public CompoundTag toTag(CompoundTag nbt) {
         nbt = super.toTag(nbt);
         if (ifDestination != null) nbt.put("ifDestination", ifDestination.toTag(new CompoundTag()));
-        if (otherwiseDestination != null) nbt.put("otherwiseDestination", otherwiseDestination.toTag(new CompoundTag()));
+        if (otherwiseDestination != null)
+            nbt.put("otherwiseDestination", otherwiseDestination.toTag(new CompoundTag()));
         AnnotatedNbt.save(this, nbt);
         return nbt;
     }
@@ -46,24 +52,33 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
         return false;
     }
 
-    public float getWeight() {return weight;}
+    public float getWeight() {
+        return weight;
+    }
 
-    public VirtualTarget getIfDestination() {return ifDestination;}
+    public VirtualTarget getIfDestination() {
+        return ifDestination;
+    }
 
-    public VirtualTarget getOtherwiseDestination() {return otherwiseDestination;}
+    public VirtualTarget getOtherwiseDestination() {
+        return otherwiseDestination;
+    }
 
     public String toString() {
         return "PocketEntranceMarker(weight=" + getWeight() + ", ifDestination=" + getIfDestination() + ", otherwiseDestination=" + getOtherwiseDestination() + ")";
     }
 
-    public PocketEntranceMarkerBuilder toBuilder() {return new PocketEntranceMarkerBuilder().weight(weight).ifDestination(ifDestination).otherwiseDestination(otherwiseDestination);}
+    public PocketEntranceMarkerBuilder toBuilder() {
+        return new PocketEntranceMarkerBuilder().weight(weight).ifDestination(ifDestination).otherwiseDestination(otherwiseDestination);
+    }
 
     public static class PocketEntranceMarkerBuilder {
         private float weight;
         private VirtualTarget ifDestination;
         private VirtualTarget otherwiseDestination;
 
-        PocketEntranceMarkerBuilder() {}
+        PocketEntranceMarkerBuilder() {
+        }
 
         public PocketEntranceMarker.PocketEntranceMarkerBuilder weight(float weight) {
             this.weight = weight;
@@ -84,6 +99,8 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
             return new PocketEntranceMarker(weight, ifDestination, otherwiseDestination);
         }
 
-        public String toString() {return "PocketEntranceMarker.PocketEntranceMarkerBuilder(weight=" + weight + ", ifDestination=" + ifDestination + ", otherwiseDestination=" + otherwiseDestination + ")";}
+        public String toString() {
+            return "PocketEntranceMarker.PocketEntranceMarkerBuilder(weight=" + weight + ", ifDestination=" + ifDestination + ", otherwiseDestination=" + otherwiseDestination + ")";
+        }
     }
 }

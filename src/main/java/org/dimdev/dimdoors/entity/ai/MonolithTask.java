@@ -2,19 +2,22 @@ package org.dimdev.dimdoors.entity.ai;
 
 import io.netty.buffer.Unpooled;
 
-import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.math.BlockPos;
+import java.util.EnumSet;
+import java.util.Random;
 
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.entity.MonolithEntity;
+import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
-import java.util.EnumSet;
+import net.minecraft.entity.ai.TargetPredicate;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import static net.minecraft.predicate.entity.EntityPredicates.EXCEPT_SPECTATOR;
@@ -35,15 +38,15 @@ public class MonolithTask extends Goal {
 
     private PlayerEntity getTarget() {
         PlayerEntity playerEntity = this.mob.world.getClosestPlayer(this.targetPredicate, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
-        return playerEntity != null && mob.canSee(playerEntity) ? playerEntity : null;
+        return playerEntity != null && mob.canSee(playerEntity) && playerEntity.distanceTo(this.mob) < 50? playerEntity : null;
     }
 
     public boolean canStart() {
-        return (this.target = getTarget()) != null;
+        return (this.target = getTarget()) != null && target.distanceTo(this.mob) <= 50;
     }
 
     public boolean shouldContinue() {
-        return (this.target = getTarget()) != null;
+        return (this.target = getTarget()) != null && target.distanceTo(this.mob) <= 50;
     }
 
     public void start() {
@@ -51,9 +54,29 @@ public class MonolithTask extends Goal {
 
     public void stop() {
         this.target = null;
+        this.mob.setAggro(0);
     }
 
     public void tick() {
+        if(target != null && this.target.distanceTo(this.mob) > 70) {
+            this.stop();
+            return;
+        }
+
+        if(target != null && (target.inventory.armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && target.inventory.armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && target.inventory.armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && target.inventory.armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
+            Random random = new Random();
+            int i = random.nextInt(64);
+            if(this.target instanceof ServerPlayerEntity) {
+                if(i < 6) {
+                    target.inventory.armor.get(0).damage(i, random, (ServerPlayerEntity) this.target);
+                    target.inventory.armor.get(1).damage(i, random, (ServerPlayerEntity) this.target);
+                    target.inventory.armor.get(2).damage(i, random, (ServerPlayerEntity) this.target);
+                    target.inventory.armor.get(3).damage(i, random, (ServerPlayerEntity) this.target);
+                }
+            }
+            return;
+        }
+
         boolean visibility = target != null;
         mob.updateAggroLevel(target, visibility);
 
@@ -72,11 +95,6 @@ public class MonolithTask extends Goal {
                 data.writeInt(this.mob.getAggro());
                 ServerSidePacketRegistry.INSTANCE.sendToPlayer(target, DimensionalDoorsInitializer.MONOLITH_PARTICLE_PACKET, data);
             }
-
-            // Only spawn particles on the client side and outside Limbo
-            /*(world.isClient && isDangerous()) {
-                   target.spawnParticles(player);
-            }*/
 
             // Teleport the target player if various conditions are met
             if (mob.getAggro() >= MAX_AGGRO && ModConfig.MONOLITHS.monolithTeleportation && !target.isCreative() && mob.isDangerous()) {

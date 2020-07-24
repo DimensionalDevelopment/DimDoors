@@ -1,10 +1,11 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.minecraft.util.math.Vec3i;
-import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.util.Location;
-
 import java.util.Set;
+
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.util.Location;
+
+import net.minecraft.util.math.Vec3i;
 
 /**
  * Allows rifts and targets to reference another rift without having to
@@ -16,7 +17,8 @@ import java.util.Set;
  * (see shouldInvalidate)
  */
 public abstract class RiftReference extends VirtualTarget {
-    public RiftReference() {}
+    public RiftReference() {
+    }
 
     // Helper methods to create a certain type of reference, defaulting to
     // a global destination if not possible

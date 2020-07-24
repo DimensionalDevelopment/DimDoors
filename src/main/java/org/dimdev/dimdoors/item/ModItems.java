@@ -1,11 +1,9 @@
 package org.dimdev.dimdoors.item;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.*;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
@@ -13,9 +11,12 @@ import org.dimdev.dimdoors.rift.targets.*;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
+import net.minecraft.block.Block;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.*;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import static org.dimdev.dimdoors.item.ModItemGroups.DIMENSIONAL_DOORS;
 
@@ -101,10 +102,10 @@ public final class ModItems {
     public static final Item STABILIZED_RIFT_SIGNATURE = register(new Identifier("dimdoors:stabilized_rift_signature"), new StabilizedRiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(20).group(DIMENSIONAL_DOORS)));
     public static final Item RIFT_STABILIZER = register(new Identifier("dimdoors:rift_stabilizer"), new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(DIMENSIONAL_DOORS)));
 
-    public static final Item WORLD_THREAD_HELMET = register(new Identifier("dimdoors:world_thread_helmet"), new WorldThreadArmorItem(EquipmentSlot.HEAD, new Item.Settings()));
-    public static final Item WORLD_THREAD_CHESTPLATE = register(new Identifier("dimdoors:world_thread_chestplate"), new WorldThreadArmorItem(EquipmentSlot.CHEST, new Item.Settings()));
-    public static final Item WORLD_THREAD_LEGGINGS = register(new Identifier("dimdoors:world_thread_leggings"), new WorldThreadArmorItem(EquipmentSlot.LEGS, new Item.Settings()));
-    public static final Item WORLD_THREAD_BOOTS = register(new Identifier("dimdoors:world_thread_boots"), new WorldThreadArmorItem(EquipmentSlot.FEET, new Item.Settings()));
+    public static final Item WORLD_THREAD_HELMET = register(new Identifier("dimdoors:world_thread_helmet"), new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.HEAD, new Item.Settings().group(DIMENSIONAL_DOORS)));
+    public static final Item WORLD_THREAD_CHESTPLATE = register(new Identifier("dimdoors:world_thread_chestplate"), new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.CHEST, new Item.Settings().group(DIMENSIONAL_DOORS)));
+    public static final Item WORLD_THREAD_LEGGINGS = register(new Identifier("dimdoors:world_thread_leggings"), new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.LEGS, new Item.Settings().group(DIMENSIONAL_DOORS)));
+    public static final Item WORLD_THREAD_BOOTS = register(new Identifier("dimdoors:world_thread_boots"), new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.FEET, new Item.Settings().group(DIMENSIONAL_DOORS)));
 
     public static final Item STABLE_FABRIC = register(new Identifier("dimdoors:stable_fabric"), new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
 

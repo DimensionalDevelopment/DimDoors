@@ -1,18 +1,21 @@
 package org.dimdev.dimdoors.block.entity;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import java.util.Random;
+
+import org.dimdev.annotatednbt.AnnotatedNbt;
+import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.util.RGBA;
+import org.dimdev.dimdoors.util.TeleportUtil;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.util.TeleportUtil;
 
-import java.util.Random;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
     public EntranceRiftBlockEntity() {
@@ -46,7 +49,6 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     @Override
     public boolean receiveEntity(Entity entity, float yawOffset) {
         Vec3d targetPos = Vec3d.ofCenter(pos).add(Vec3d.of(getOrientation().getVector()).multiply(ModConfig.GENERAL.teleportOffset + 0.5));
-
         TeleportUtil.teleport(entity, world, targetPos, yawOffset);
         return true;
     }
@@ -56,7 +58,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     }
 
     @Environment(EnvType.CLIENT)
-    public float[][] getColors(int count) {
+    public RGBA[] getColors(int count) {
         Random rand = new Random(31100L);
         float[][] colors = new float[count][];
 
@@ -64,7 +66,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
             colors[i] = getEntranceRenderColor(rand);
         }
 
-        return colors;
+        return RGBA.fromFloatArray(colors);
     }
 
     @Environment(EnvType.CLIENT)

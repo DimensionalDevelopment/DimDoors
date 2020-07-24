@@ -1,30 +1,34 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import java.util.UUID;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.pockets.PocketGenerator;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.util.EntityUtils;
+import org.dimdev.dimdoors.util.Location;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundTag;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.pockets.PocketGenerator;
-import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.pocketlib.Pocket;
-import org.dimdev.pocketlib.PrivatePocketData;
-import org.dimdev.pocketlib.VirtualLocation;
-import org.dimdev.util.EntityUtils;
-import org.dimdev.util.Location;
-
-import java.util.UUID;
 
 public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PrivatePocketTarget() {}
+    public PrivatePocketTarget() {
+    }
 
     @Override
-    public void fromTag(CompoundTag nbt) { super.fromTag(nbt); }
+    public void fromTag(CompoundTag nbt) {
+        super.fromTag(nbt);
+    }
 
     @Override
     public CompoundTag toTag(CompoundTag nbt) {
@@ -41,23 +45,18 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
             Pocket pocket = PrivatePocketData.instance(entity.world).getPrivatePocket(uuid);
             if (pocket == null) { // generate the private pocket and get its entrances
                 // set to where the pocket was first created
-                pocket = PocketGenerator.generatePrivatePocket(virtualLocation != null ?
-                                                                       new VirtualLocation(virtualLocation.world, virtualLocation.x, virtualLocation.z, -1) :
-                                                                       null
-                );
+                pocket = PocketGenerator.generatePrivatePocket(new VirtualLocation(virtualLocation.world, virtualLocation.x, virtualLocation.z, -1));
 
                 PrivatePocketData.instance(entity.world).setPrivatePocketID(uuid, pocket);
                 processEntity(pocket, RiftRegistry.instance(entity.world).getPocketEntrance(pocket).getBlockEntity(), entity, uuid, yawOffset);
                 return true;
             } else {
                 Location destLoc = RiftRegistry.instance(entity.world).getPrivatePocketEntrance(uuid); // get the last used entrances
-                if (destLoc == null) destLoc = RiftRegistry.instance(entity.world).getPocketEntrance(pocket); // if there's none, then set the target to the main entrances
+                if (destLoc == null)
+                    destLoc = RiftRegistry.instance(entity.world).getPocketEntrance(pocket); // if there's none, then set the target to the main entrances
                 if (destLoc == null) { // if the pocket entrances is gone, then create a new private pocket
                     LOGGER.info("All entrances are gone, creating a new private pocket!");
-                    pocket = PocketGenerator.generatePrivatePocket(virtualLocation != null ?
-                                                                           new VirtualLocation(virtualLocation.world, virtualLocation.x, virtualLocation.z, -1) :
-                                                                           null
-                    );
+                    pocket = PocketGenerator.generatePrivatePocket(new VirtualLocation(virtualLocation.world, virtualLocation.x, virtualLocation.z, -1));
 
                     PrivatePocketData.instance(entity.world).setPrivatePocketID(uuid, pocket);
                     destLoc = RiftRegistry.instance(entity.world).getPocketEntrance(pocket);

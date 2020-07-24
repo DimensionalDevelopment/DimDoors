@@ -1,22 +1,25 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.TranslatableText;
+import java.util.UUID;
+
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.pocketlib.Pocket;
-import org.dimdev.pocketlib.PocketRegistry;
-import org.dimdev.pocketlib.PrivatePocketData;
-import org.dimdev.util.EntityUtils;
-import org.dimdev.util.Location;
+import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.PocketRegistry;
+import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
+import org.dimdev.dimdoors.util.EntityUtils;
+import org.dimdev.dimdoors.util.Location;
 
-import java.util.UUID;
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.TranslatableText;
+
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 
 public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarget {
-    public PrivatePocketExitTarget() {}
+    public PrivatePocketExitTarget() {
+    }
 
     @Override
     public void fromTag(CompoundTag nbt) {

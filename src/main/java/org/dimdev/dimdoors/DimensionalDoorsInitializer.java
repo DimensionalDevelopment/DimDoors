@@ -1,22 +1,19 @@
 package org.dimdev.dimdoors;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.commands.CommandPocket;
-import org.dimdev.dimdoors.commands.CommandSaveSchem;
-import org.dimdev.dimdoors.commands.DimTeleportCommand;
-import org.dimdev.dimdoors.commands.SchematicCommand;
+import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.rift.targets.*;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.ModFeatures;
 
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.api.ModInitializer;
 
 public class DimensionalDoorsInitializer implements ModInitializer {
 
@@ -31,8 +28,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModBiomes.init();
         ModFeatures.init();
         ModBlockEntityTypes.init();
-
-        this.registerCommands();
+        ModCommands.init();
+        ModSoundEvents.init();
 
         VirtualTarget.registry.put("available_link", RandomTarget.class);
         VirtualTarget.registry.put("escape", EscapeTarget.class);
@@ -47,16 +44,5 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         VirtualTarget.registry.put("relative", RelativeReference.class);
 
         Targets.registerDefaultTargets();
-
-        SchematicHandler.INSTANCE.loadSchematics();
-    }
-
-    private void registerCommands() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated)->{
-            DimTeleportCommand.register(dispatcher);
-            SchematicCommand.register(dispatcher);
-            CommandPocket.register(dispatcher);
-            CommandSaveSchem.register(dispatcher);
-        });
     }
 }

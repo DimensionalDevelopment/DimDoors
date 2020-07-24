@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.client;
 
 import com.flowpowered.math.TrigMath;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
+import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.client.tesseract.Tesseract;
+
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -12,18 +12,16 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.client.tesseract.Tesseract;
-import org.dimdev.util.lsystem.LSystem;
-import org.lwjgl.opengl.GL11;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<DetachedRiftBlockEntity> {
     public static final Identifier tesseract_path = new Identifier("dimdoors:textures/other/tesseract.png");
 
     private static final Tesseract tesseract = new Tesseract();
-    private static final LSystem.PolygonInfo CURVE = LSystem.curves.get(0);
+    private static final RiftCurves.PolygonInfo CURVE = RiftCurves.CURVES.get(0);
     public static long showRiftCoreUntil = 0;
 
     public DetachedRiftBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher) {

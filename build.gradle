@@ -1,16 +1,6 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url = 'https://maven.fabricmc.net/' }
-    }
-
-    dependencies {
-        classpath 'net.fabricmc:fabric-loom:0.4-SNAPSHOT'
-    }
-}
-
 plugins {
     id 'fabric-loom' version '0.4-SNAPSHOT'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
 }
 
 apply plugin: "java"
@@ -24,24 +14,23 @@ repositories {
     mavenCentral()
 }
 
-configurations {
-    shade
-    modImplementation.extendsFrom shade
-}
-
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:0.14.1+build.372-1.16"
-    shade 'com.flowpowered:flow-math:1.0.3'
-    shade 'org.jgrapht:jgrapht-core:1.1.0'
-    shade 'com.github.DimensionalDevelopment:poly2tri.java:0.1.1'
+    modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation 'com.flowpowered:flow-math:1.0.3'
+    shadow 'com.flowpowered:flow-math:1.0.3'
+    implementation 'org.jgrapht:jgrapht-core:1.1.0'
+    shadow 'org.jgrapht:jgrapht-core:1.1.0'
+    implementation 'com.github.DimensionalDevelopment:poly2tri.java:0.1.1'
+    shadow 'com.github.DimensionalDevelopment:poly2tri.java:0.1.1'
     modImplementation 'com.github.Waterpicker:OpenWorlds:1.0.0'
     include 'com.github.Waterpicker:OpenWorlds:1.0.0'
+    compileOnly 'com.google.code.findbugs:jsr305:+'
 }
 
-version "4.0-alpha.3"
+version "4.0.0+alpha.3"
 archivesBaseName = "dimensional-doors"
 
 processResources {
@@ -50,12 +39,6 @@ processResources {
     }
 
     inputs.property "version", project.version
-}
-
-jar {
-    configurations.shade.each { dep ->
-        from(project.zipTree(dep))
-    }
 }
 
 artifacts {

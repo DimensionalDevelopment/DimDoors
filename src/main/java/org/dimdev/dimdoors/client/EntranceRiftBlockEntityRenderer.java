@@ -30,7 +30,6 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
         vec.scale((float) (orientation == Direction.NORTH || orientation == Direction.WEST || orientation == Direction.UP ? 0.01 : 0.01 - 1));
         Vec3d offset = new Vec3d(vec);
         DimensionalPortalRenderer.renderDimensionalPortal(
-                vertexConsumerProvider,
                 entrance.getPos().getX() + offset.x,
                 entrance.getPos().getY() + offset.y,
                 entrance.getPos().getZ() + offset.z,

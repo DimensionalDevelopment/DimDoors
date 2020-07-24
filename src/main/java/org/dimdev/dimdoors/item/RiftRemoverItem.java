@@ -1,5 +1,12 @@
 package org.dimdev.dimdoors.item;
 
+import java.util.List;
+
+import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
+
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,12 +21,6 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
-
-import java.util.List;
 
 public class RiftRemoverItem extends Item {
     public static final String ID = "rift_remover";
@@ -54,7 +55,8 @@ public class RiftRemoverItem extends Item {
             if (!rift.closing) {
                 rift.setClosing(true);
                 world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
-                stack.damage(10, player, a -> {});
+                stack.damage(10, player, a -> {
+                });
                 player.sendMessage(new TranslatableText(getTranslationKey() + ".closing"), true);
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {

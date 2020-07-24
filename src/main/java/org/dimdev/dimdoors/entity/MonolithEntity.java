@@ -2,6 +2,12 @@ package org.dimdev.dimdoors.entity;
 
 import java.util.Random;
 
+import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.entity.ai.MonolithTask;
+import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.world.ModDimensions;
+
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.damage.DamageSource;
@@ -20,10 +26,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
-
-import org.dimdev.dimdoors.entity.ai.MonolithTask;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -47,7 +49,7 @@ public class MonolithEntity extends MobEntity {
     private int soundTime = 0;
     private final int aggroCap;
 
-    MonolithEntity(World world){
+    MonolithEntity(World world) {
         this(ModEntityTypes.MONOLITH, world);
     }
 
@@ -72,7 +74,7 @@ public class MonolithEntity extends MobEntity {
     }
 
     public boolean isDangerous() {
-        return true; //return ModConfig.MONOLITHS.monolithTeleportation && (world.dimension instanceof LimboDimension || ModConfig.MONOLITHS.dangerousLimboMonoliths);
+        return ModConfig.MONOLITHS.monolithTeleportation && (ModDimensions.isLimboDimension(world) || ModConfig.MONOLITHS.dangerousLimboMonoliths);
     }
 
     @Override
@@ -146,7 +148,19 @@ public class MonolithEntity extends MobEntity {
     public void updateAggroLevel(PlayerEntity player, boolean visibility) {
         // If we're working on the server side, adjust aggro level
         // If we're working on the client side, retrieve aggro level from dataWatcher
+        if(player == null) {
+            return;
+        }
+
+        if((player.inventory.armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && player.inventory.armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && player.inventory.armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && player.inventory.armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
+            return;
+        }
+
         if (!world.isClient) {
+            if(player.distanceTo(this) > 70) {
+                return;
+            }
+
             int aggro = dataTracker.get(AGGRO);
             // Server side...
             // Rapidly increase the aggro level if this Monolith can see the player
@@ -166,7 +180,7 @@ public class MonolithEntity extends MobEntity {
                     if (aggro > aggroCap) {
                         // Decrease aggro over time
                         aggro--;
-                    } else if (player != null && aggro < aggroCap) {
+                    } else if (aggro < aggroCap) {
                         // Increase aggro if a player is within range and aggro < aggroCap
                         aggro++;
                     }
@@ -218,13 +232,16 @@ public class MonolithEntity extends MobEntity {
         PlayerEntity player = context.getPlayer();
         int aggro = data.readInt();
 
-        context.getTaskQueue().execute(()->{
+        context.getTaskQueue().execute(() -> {
+            if(aggro < 120) {
+                return;
+            }
             int count = 10 * aggro / MAX_AGGRO;
             for (int i = 1; i < count; ++i) {
                 player.world.addParticle(ParticleTypes.PORTAL, player.getX() + (random.nextDouble() - 0.5D) * 3.0,
                         player.getY() + random.nextDouble() * player.getHeight() - 0.75D,
                         player.getZ() + (random.nextDouble() - 0.5D) * player.getWidth(),
-                        (random.nextDouble() - 0.5D) * 2.0D, - random.nextDouble(),
+                        (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(),
                         (random.nextDouble() - 0.5D) * 2.0D);
             }
         });
@@ -267,10 +284,10 @@ public class MonolithEntity extends MobEntity {
 
     @Override
     public boolean canSpawn(WorldAccess world, SpawnReason spawnReason) {
-        if(spawnReason == SpawnReason.CHUNK_GENERATION) {
+        if (spawnReason == SpawnReason.CHUNK_GENERATION) {
             return super.canSpawn(world, spawnReason);
         }
-        if(spawnReason == SpawnReason.NATURAL) {
+        if (spawnReason == SpawnReason.NATURAL) {
             return this.getRandom().nextInt(32) == 2;
         }
         return false;

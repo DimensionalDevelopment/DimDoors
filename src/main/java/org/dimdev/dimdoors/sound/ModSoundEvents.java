@@ -23,4 +23,8 @@ public final class ModSoundEvents {
     private static SoundEvent register(String id) {
         return Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(new Identifier(id)));
     }
+
+    public static void init() {
+        //just loads the class
+    }
 }

@@ -1,19 +1,19 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import net.minecraft.nbt.CompoundTag;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-
 import java.util.UUID;
 
+import org.dimdev.annotatednbt.AnnotatedNbt;
+import org.dimdev.annotatednbt.Saved;
+
+import net.minecraft.nbt.CompoundTag;
+
 public class PlayerRiftPointer extends RegistryVertex {
-    @Saved public UUID player;
+    @Saved
+    public UUID player;
 
     public PlayerRiftPointer(UUID player) {
         this.player = player;
     }
-
-    public PlayerRiftPointer() {}
 
     @Override
     public void fromTag(CompoundTag nbt) {
@@ -27,5 +27,7 @@ public class PlayerRiftPointer extends RegistryVertex {
         return AnnotatedNbt.toTag(this, nbt);
     }
 
-    public String toString() {return "PlayerRiftPointer(player=" + this.player + ")";}
+    public String toString() {
+        return "PlayerRiftPointer(player=" + this.player + ")";
+    }
 }

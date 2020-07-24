@@ -1,10 +1,11 @@
 package org.dimdev.dimdoors.world;
 
+import org.dimdev.dimdoors.world.limbo.LimboBiome;
+import org.dimdev.dimdoors.world.pocket.BlankBiome;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
-import org.dimdev.dimdoors.world.limbo.LimboBiome;
-import org.dimdev.dimdoors.world.pocketdimension.BlankBiome;
 
 public final class ModBiomes {
     public static final Biome LIMBO = register(new Identifier("dimdoors:limbo"), new LimboBiome());

@@ -1,5 +1,14 @@
 package org.dimdev.dimdoors.item;
 
+import java.util.List;
+
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.rift.targets.RiftReference;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.RotatedLocation;
+
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -16,14 +25,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.rift.targets.RiftReference;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.util.Location;
-import org.dimdev.util.RotatedLocation;
-
-import java.util.List;
 
 public class StabilizedRiftSignatureItem extends Item { // TODO: common superclass with rift signature
     public static final String ID = "stabilized_rift_signature";
@@ -85,7 +86,8 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
             rift2.setDestination(RiftReference.tryMakeRelative(new Location((ServerWorld) world, pos), target));
             rift2.register();
 
-            stack.damage(1, player, playerEntity -> {});
+            stack.damage(1, player, playerEntity -> {
+            });
 
             player.sendMessage(new TranslatableText(getTranslationKey() + ".created"), true);
             world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);

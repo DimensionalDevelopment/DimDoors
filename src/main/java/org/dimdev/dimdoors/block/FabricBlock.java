@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.block;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
@@ -14,7 +13,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.world.ModDimensions;
+
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
 class FabricBlock extends Block {
     FabricBlock(DyeColor color) {

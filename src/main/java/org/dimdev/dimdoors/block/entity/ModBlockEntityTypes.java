@@ -1,13 +1,20 @@
 package org.dimdev.dimdoors.block.entity;
 
+import java.util.function.Supplier;
+
 import com.google.common.collect.Sets;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
+import org.dimdev.dimdoors.client.EntranceRiftBlockEntityRenderer;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.registry.Registry;
-import org.dimdev.dimdoors.block.ModBlocks;
 
-import java.util.function.Supplier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 
 public class ModBlockEntityTypes {
     public static final BlockEntityType<DetachedRiftBlockEntity> DETACHED_RIFT = register(
@@ -27,6 +34,12 @@ public class ModBlockEntityTypes {
     }
 
     public static void init() {
+        //just loads the class
+    }
 
+    @Environment(EnvType.CLIENT)
+    public static void initClient() {
+        BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.ENTRANCE_RIFT, EntranceRiftBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.DETACHED_RIFT, DetachedRiftBlockEntityRenderer::new);
     }
 }

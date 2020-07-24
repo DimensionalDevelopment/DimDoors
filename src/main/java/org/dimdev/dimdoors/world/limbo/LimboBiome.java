@@ -1,11 +1,10 @@
 package org.dimdev.dimdoors.world.limbo;
 
-import java.awt.Color;
-
 import com.google.common.collect.ImmutableList;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
+
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;

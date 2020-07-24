@@ -1,5 +1,27 @@
 package org.dimdev.dimdoors.pockets;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dimdev.dimcore.schematic.Schematic;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.entity.MonolithEntity;
+import org.dimdev.dimdoors.rift.registry.LinkProperties;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
+import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
+import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.PocketRegistry;
+import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.math.MathUtil;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -13,27 +35,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.entity.ModEntityTypes;
-import org.dimdev.dimdoors.entity.MonolithEntity;
-import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
-import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
-import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.pocketlib.Pocket;
-import org.dimdev.pocketlib.PocketRegistry;
-import org.dimdev.util.Location;
-import org.dimdev.util.math.MathUtil;
-import org.dimdev.util.schem.Schematic;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * @author Robijnvogel
@@ -71,7 +72,9 @@ public class PocketTemplate {
         this.baseWeight = baseWeight;
     }
 
-    public static boolean isReplacingPlaceholders() {return PocketTemplate.isReplacingPlaceholders;}
+    public static boolean isReplacingPlaceholders() {
+        return PocketTemplate.isReplacingPlaceholders;
+    }
 
     public float getWeight(int depth) {
         if (depth == -1) {
@@ -294,23 +297,43 @@ public class PocketTemplate {
         }
     }
 
-    public String getGroup() {return group;}
+    public String getGroup() {
+        return group;
+    }
 
-    public String getId() {return id;}
+    public String getId() {
+        return id;
+    }
 
-    public String getType() {return type;}
+    public String getType() {
+        return type;
+    }
 
-    public String getName() {return name;}
+    public String getName() {
+        return name;
+    }
 
-    public String getAuthor() {return author;}
+    public String getAuthor() {
+        return author;
+    }
 
-    public Schematic getSchematic() {return schematic;}
+    public Schematic getSchematic() {
+        return schematic;
+    }
 
-    public int getSize() {return size;}
+    public int getSize() {
+        return size;
+    }
 
-    public int getBaseWeight() {return baseWeight;}
+    public int getBaseWeight() {
+        return baseWeight;
+    }
 
-    public void setSchematic(Schematic schematic) {this.schematic = schematic; }
+    public void setSchematic(Schematic schematic) {
+        this.schematic = schematic;
+    }
 
-    public void setSchematicBytecode(byte[] schematicBytecode) {this.schematicBytecode = schematicBytecode; }
+    public void setSchematicBytecode(byte[] schematicBytecode) {
+        this.schematicBytecode = schematicBytecode;
+    }
 }

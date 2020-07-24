@@ -1,16 +1,15 @@
 package org.dimdev.dimdoors.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.render.VertexConsumer;
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.util.lsystem.LSystem;
 
-import java.awt.*;
+import net.minecraft.client.render.VertexConsumer;
 
-import static org.lwjgl.opengl.GL11.*;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
+@Environment(EnvType.CLIENT)
 public final class RiftCrackRenderer {
-    public static void drawCrack(VertexConsumer vc, float riftRotation, LSystem.PolygonInfo poly, double size, long riftRandom) {
+    public static void drawCrack(VertexConsumer vc, float riftRotation, RiftCurves.PolygonInfo poly, double size, long riftRandom) {
         // Calculate the proper size for the rift render
         double scale = size / (poly.maxX - poly.minX);
 
@@ -42,7 +41,7 @@ public final class RiftCrackRenderer {
         }
 
         // Draw the rift
-        for (Point p : poly.points) {
+        for (RiftCurves.Point p : poly.points) {
             // Reduces most overlap between triangles inside the rift's center
             int flutterIndex = Math.abs((p.x + p.y) * (p.x + p.y + 1) / 2 + p.y);
 

@@ -1,15 +1,15 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import org.dimdev.annotatednbt.AnnotatedNbt;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.dimdoors.util.Location;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.util.Location;
-import org.dimdev.annotatednbt.AnnotatedNbt;
 
 public class LocalReference extends RiftReference {
-    @Saved protected BlockPos target;
-
-    public LocalReference() {}
+    @Saved
+    protected BlockPos target;
 
     public LocalReference(BlockPos target) {
         this.target = target;
@@ -32,5 +32,7 @@ public class LocalReference extends RiftReference {
         return new Location(location.world, target);
     }
 
-    public BlockPos getTarget() {return target;}
+    public BlockPos getTarget() {
+        return target;
+    }
 }

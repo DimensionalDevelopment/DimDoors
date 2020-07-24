@@ -1,13 +1,7 @@
 package org.dimdev.dimdoors.block.entity;
 
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
+import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.annotatednbt.AnnotatedNbt;
@@ -18,19 +12,31 @@ import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.rift.targets.*;
-import org.dimdev.pocketlib.VirtualLocation;
-import org.dimdev.util.EntityUtils;
-import org.dimdev.util.Location;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.util.EntityUtils;
+import org.dimdev.dimdoors.util.Location;
 
-import java.util.Arrays;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
+
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 
 public abstract class RiftBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Target, EntityTarget, AutoSerializable {
     private static final Logger LOGGER = LogManager.getLogger();
     /*@Saved*/ protected VirtualTarget destination; // How the rift acts as a source
-    @Saved protected LinkProperties properties;
-    @Saved protected boolean alwaysDelete;
-    @Saved protected boolean forcedColor;
-    @Saved protected float[] color = null;
+    @Saved
+    protected LinkProperties properties;
+    @Saved
+    protected boolean alwaysDelete;
+    @Saved
+    protected boolean forcedColor;
+    @Saved
+    protected float[] color = null;
 
     protected boolean riftStateChanged; // not saved
 
@@ -111,7 +117,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
     }
 
     public void updateProperties() {
-        if (isRegistered()) RiftRegistry.instance(world).setProperties(new Location((ServerWorld) world, pos), properties);
+        if (isRegistered())
+            RiftRegistry.instance(world).setProperties(new Location((ServerWorld) world, pos), properties);
         markDirty();
     }
 

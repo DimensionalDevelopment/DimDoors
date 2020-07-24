@@ -1,26 +1,32 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import net.minecraft.nbt.CompoundTag;
 
 public class RiftPlaceholder extends Rift { // TODO: don't extend rift
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
-    public void sourceGone(RegistryVertex source) {}
+    public void sourceGone(RegistryVertex source) {
+    }
 
     @Override
-    public void targetGone(RegistryVertex target) {}
+    public void targetGone(RegistryVertex target) {
+    }
 
     @Override
-    public void sourceAdded(RegistryVertex source) {}
+    public void sourceAdded(RegistryVertex source) {
+    }
 
     @Override
-    public void targetAdded(RegistryVertex target) {}
+    public void targetAdded(RegistryVertex target) {
+    }
 
     @Override
-    public void targetChanged(RegistryVertex target) {}
+    public void targetChanged(RegistryVertex target) {
+    }
 
     @Override
     public void markDirty() {

@@ -1,30 +1,37 @@
 package org.dimdev.dimdoors.block.entity;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import java.util.Random;
+
+import org.dimdev.annotatednbt.AnnotatedNbt;
+import org.dimdev.annotatednbt.Saved;
+import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.util.TeleportUtil;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.util.TeleportUtil;
 
-import java.util.Random;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 
 public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable {
     private static final Random random = new Random();
 
-    @Saved public boolean closing = false;
-    @Saved public boolean stabilized = false;
-    @Saved public int spawnedEndermanId = 0;
-    @Saved public float size = 0;
+    @Saved
+    public boolean closing = false;
+    @Saved
+    public boolean stabilized = false;
+    @Saved
+    public int spawnedEndermanId = 0;
+    @Saved
+    public float size = 0;
 
     private boolean unregisterDisabled = false;
 
@@ -98,9 +105,12 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
 
     @Override
     public boolean receiveEntity(Entity entity, float yawOffset) {
-        TeleportUtil.teleport(entity, world, pos, 0);
+        if (world instanceof ServerWorld)
+            TeleportUtil.teleport(entity, world, pos, 0);
         return true;
     }
 
-    public void setUnregisterDisabled(boolean unregisterDisabled) {this.unregisterDisabled = unregisterDisabled; }
+    public void setUnregisterDisabled(boolean unregisterDisabled) {
+        this.unregisterDisabled = unregisterDisabled;
+    }
 }

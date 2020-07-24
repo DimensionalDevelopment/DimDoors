@@ -1,13 +1,13 @@
 package org.dimdev.dimdoors.pockets;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.RandomTarget;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 
 public final class DefaultDungeonDestinations { // TODO: lower weights?
     public static final LinkProperties pocketLinkProperties = LinkProperties
@@ -53,13 +53,13 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
             .weight(1)
             .ifDestination(new PocketEntranceMarker())
             .otherwiseDestination(RandomTarget
-                                          .builder()
-                                          .acceptedGroups(Collections.singleton(0))
-                                          .coordFactor(1)
-                                          .negativeDepthFactor(80)
-                                          .positiveDepthFactor(10000)
-                                          .weightMaximum(100)
-                                          .newRiftWeight(1).build()).build();
+                    .builder()
+                    .acceptedGroups(Collections.singleton(0))
+                    .coordFactor(1)
+                    .negativeDepthFactor(80)
+                    .positiveDepthFactor(10000)
+                    .weightMaximum(100)
+                    .newRiftWeight(1).build()).build();
 
     public static final VirtualTarget gatewayDestination = RandomTarget
             .builder()
