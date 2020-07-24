@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.entity;
 
 import java.util.Random;
 
+import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.entity.ai.MonolithTask;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -72,7 +73,7 @@ public class MonolithEntity extends MobEntity {
     }
 
     public boolean isDangerous() {
-        return true; //return ModConfig.MONOLITHS.monolithTeleportation && (world.dimension instanceof LimboDimension || ModConfig.MONOLITHS.dangerousLimboMonoliths);
+        return ModConfig.MONOLITHS.monolithTeleportation && (ModDimensions.isLimboDimension(world) || ModConfig.MONOLITHS.dangerousLimboMonoliths);
     }
 
     @Override
@@ -146,7 +147,15 @@ public class MonolithEntity extends MobEntity {
     public void updateAggroLevel(PlayerEntity player, boolean visibility) {
         // If we're working on the server side, adjust aggro level
         // If we're working on the client side, retrieve aggro level from dataWatcher
+        if(player == null) {
+            return;
+        }
+
         if (!world.isClient) {
+            if(player.distanceTo(this) > 70) {
+                return;
+            }
+
             int aggro = dataTracker.get(AGGRO);
             // Server side...
             // Rapidly increase the aggro level if this Monolith can see the player
@@ -166,7 +175,7 @@ public class MonolithEntity extends MobEntity {
                     if (aggro > aggroCap) {
                         // Decrease aggro over time
                         aggro--;
-                    } else if (player != null && aggro < aggroCap) {
+                    } else if (aggro < aggroCap) {
                         // Increase aggro if a player is within range and aggro < aggroCap
                         aggro++;
                     }
@@ -219,6 +228,9 @@ public class MonolithEntity extends MobEntity {
         int aggro = data.readInt();
 
         context.getTaskQueue().execute(() -> {
+            if(aggro < 120) {
+                return;
+            }
             int count = 10 * aggro / MAX_AGGRO;
             for (int i = 1; i < count; ++i) {
                 player.world.addParticle(ParticleTypes.PORTAL, player.getX() + (random.nextDouble() - 0.5D) * 3.0,

@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.client;
 
-import java.util.Arrays;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 
 public class MonolithRenderer extends LivingEntityRenderer<MonolithEntity, MonolithModel> {
-    protected static final List<Identifier> MONOLITH_TEXTURES = Arrays.asList(
+    private static final List<Identifier> MONOLITH_TEXTURES = Lists.newArrayList(
             new Identifier("dimdoors:textures/mob/monolith/monolith0.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith1.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith2.png"),
@@ -35,6 +35,11 @@ public class MonolithRenderer extends LivingEntityRenderer<MonolithEntity, Monol
 
     public MonolithRenderer(EntityRenderDispatcher dispatcher, EntityRendererRegistry.Context context) {
         super(dispatcher, new MonolithModel(), 0);
+    }
+
+    @Override
+    protected boolean isShaking(MonolithEntity entity) {
+        return entity.getAggro() > 120;
     }
 
     @Override
