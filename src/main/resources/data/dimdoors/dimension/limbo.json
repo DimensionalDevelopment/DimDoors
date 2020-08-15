@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:limbo",
   "generator": {
-    "type": "minecraft:limbo",
+    "type": "dimdoors:limbo",
     "seed": 341873128713,
     "biome_source": {
       "type": "minecraft:multi_noise",
