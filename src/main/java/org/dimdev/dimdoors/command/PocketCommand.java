@@ -12,10 +12,10 @@ import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.rift.targets.EntityTarget;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.TeleportUtil;
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.pocket.Pocket;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.server.command.CommandManager;

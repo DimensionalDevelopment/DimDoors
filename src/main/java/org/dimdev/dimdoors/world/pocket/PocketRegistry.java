@@ -6,8 +6,8 @@ import java.util.Map;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.util.math.GridUtil;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;

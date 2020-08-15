@@ -10,7 +10,13 @@ import java.util.stream.Collectors;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.AbstractNumberTag;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.EndTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 
 public class NbtReader extends JsonReader {
     private static final Reader UNREADABLE_READER = new Reader() {

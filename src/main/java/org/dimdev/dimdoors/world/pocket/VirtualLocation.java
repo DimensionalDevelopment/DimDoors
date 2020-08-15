@@ -3,8 +3,8 @@ package org.dimdev.dimdoors.world.pocket;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;

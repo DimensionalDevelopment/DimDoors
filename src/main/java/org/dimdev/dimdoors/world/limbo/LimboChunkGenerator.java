@@ -1,18 +1,21 @@
 package org.dimdev.dimdoors.world.limbo;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.dimdev.dimdoors.mixin.ChunkGeneratorSettingsAccessor;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.SpawnGroup;
@@ -52,26 +55,26 @@ import net.minecraft.world.gen.chunk.GenerationShapeConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import org.dimdev.dimdoors.mixin.ChunkGeneratorSettingsAccessor;
-import org.jetbrains.annotations.Nullable;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 @SuppressWarnings("deprecated")
 public class LimboChunkGenerator extends ChunkGenerator {
     public static final Codec<LimboChunkGenerator> CODEC = RecordCodecBuilder.create((instance) -> instance.group(BiomeSource.CODEC.fieldOf("biome_source").forGetter((noiseChunkGenerator) -> noiseChunkGenerator.biomeSource), Codec.LONG.fieldOf("seed").stable().forGetter((noiseChunkGenerator) -> new Random().nextLong()), ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter((noiseChunkGenerator) -> noiseChunkGenerator.settings)).apply(instance, instance.stable(LimboChunkGenerator::new)));
     private static final float[] NOISE_WEIGHT_TABLE = Util.make(new float[13824], (array) -> {
-        for(int i = 0; i < 24; ++i) {
-            for(int j = 0; j < 24; ++j) {
-                for(int k = 0; k < 24; ++k) {
-                    array[i * 24 * 24 + j * 24 + k] = (float)calculateNoiseWeight(j - 12, k - 12, i - 12);
+        for (int i = 0; i < 24; ++i) {
+            for (int j = 0; j < 24; ++j) {
+                for (int k = 0; k < 24; ++k) {
+                    array[i * 24 * 24 + j * 24 + k] = (float) calculateNoiseWeight(j - 12, k - 12, i - 12);
                 }
             }
         }
 
     });
     private static final float[] BIOME_WEIGHT_TABLE = Util.make(new float[25], (fs) -> {
-        for(int i = -2; i <= 2; ++i) {
-            for(int j = -2; j <= 2; ++j) {
-                float f = 10.0F / MathHelper.sqrt((float)(i * i + j * j) + 0.2F);
+        for (int i = -2; i <= 2; ++i) {
+            for (int j = -2; j <= 2; ++j) {
+                float f = 10.0F / MathHelper.sqrt((float) (i * i + j * j) + 0.2F);
                 fs[i + 2 + (j + 2) * 5] = f;
             }
         }
@@ -151,25 +154,25 @@ public class LimboChunkGenerator extends ChunkGenerator {
         double f = 0.0D;
         double g = 1.0D;
 
-        for(int i = 0; i < 16; ++i) {
-            double h = OctavePerlinNoiseSampler.maintainPrecision((double)x * horizontalScale * g);
-            double j = OctavePerlinNoiseSampler.maintainPrecision((double)y * verticalScale * g);
-            double k = OctavePerlinNoiseSampler.maintainPrecision((double)z * horizontalScale * g);
+        for (int i = 0; i < 16; ++i) {
+            double h = OctavePerlinNoiseSampler.maintainPrecision((double) x * horizontalScale * g);
+            double j = OctavePerlinNoiseSampler.maintainPrecision((double) y * verticalScale * g);
+            double k = OctavePerlinNoiseSampler.maintainPrecision((double) z * horizontalScale * g);
             double l = verticalScale * g;
             PerlinNoiseSampler perlinNoiseSampler = this.lowerInterpolatedNoise.getOctave(i);
             if (perlinNoiseSampler != null) {
-                d += perlinNoiseSampler.sample(h, j, k, l, (double)y * l) / g;
+                d += perlinNoiseSampler.sample(h, j, k, l, (double) y * l) / g;
             }
 
             PerlinNoiseSampler perlinNoiseSampler2 = this.upperInterpolatedNoise.getOctave(i);
             if (perlinNoiseSampler2 != null) {
-                e += perlinNoiseSampler2.sample(h, j, k, l, (double)y * l) / g;
+                e += perlinNoiseSampler2.sample(h, j, k, l, (double) y * l) / g;
             }
 
             if (i < 8) {
                 PerlinNoiseSampler perlinNoiseSampler3 = this.interpolationNoise.getOctave(i);
                 if (perlinNoiseSampler3 != null) {
-                    f += perlinNoiseSampler3.sample(OctavePerlinNoiseSampler.maintainPrecision((double)x * horizontalStretch * g), OctavePerlinNoiseSampler.maintainPrecision((double)y * verticalStretch * g), OctavePerlinNoiseSampler.maintainPrecision((double)z * horizontalStretch * g), verticalStretch * g, (double)y * verticalStretch * g) / g;
+                    f += perlinNoiseSampler3.sample(OctavePerlinNoiseSampler.maintainPrecision((double) x * horizontalStretch * g), OctavePerlinNoiseSampler.maintainPrecision((double) y * verticalStretch * g), OctavePerlinNoiseSampler.maintainPrecision((double) z * horizontalStretch * g), verticalStretch * g, (double) y * verticalStretch * g) / g;
                 }
             }
 
@@ -205,8 +208,8 @@ public class LimboChunkGenerator extends ChunkGenerator {
             int k = this.getSeaLevel();
             float l = this.biomeSource.getBiomeForNoiseGen(x, k, z).getDepth();
 
-            for(int m = -2; m <= 2; ++m) {
-                for(int n = -2; n <= 2; ++n) {
+            for (int m = -2; m <= 2; ++m) {
+                for (int n = -2; n <= 2; ++n) {
                     Biome biome = this.biomeSource.getBiomeForNoiseGen(x + m, k, z + n);
                     float o = biome.getDepth();
                     float p = biome.getScale();
@@ -250,9 +253,9 @@ public class LimboChunkGenerator extends ChunkGenerator {
         double ap = generationShapeConfig.getDensityFactor();
         double aq = generationShapeConfig.getDensityOffset();
 
-        for(int ar = 0; ar <= this.noiseSizeY; ++ar) {
+        for (int ar = 0; ar <= this.noiseSizeY; ++ar) {
             double as = this.sampleNoise(x, ar, z, ae, af, ag, ah);
-            double at = 1.0D - (double)ar * 2.0D / (double)this.noiseSizeY + ao;
+            double at = 1.0D - (double) ar * 2.0D / (double) this.noiseSizeY + ao;
             double au = at * ap + aq;
             double av = (au + ac) * ad;
             if (av > 0.0D) {
@@ -263,12 +266,12 @@ public class LimboChunkGenerator extends ChunkGenerator {
 
             double ax;
             if (aj > 0.0D) {
-                ax = ((double)(this.noiseSizeY - ar) - ak) / aj;
+                ax = ((double) (this.noiseSizeY - ar) - ak) / aj;
                 as = MathHelper.clampedLerp(ai, as, ax);
             }
 
             if (am > 0.0D) {
-                ax = ((double)ar - an) / am;
+                ax = ((double) ar - an) / am;
                 as = MathHelper.clampedLerp(al, as, ax);
             }
 
@@ -305,11 +308,11 @@ public class LimboChunkGenerator extends ChunkGenerator {
         int j = Math.floorDiv(z, this.horizontalNoiseResolution);
         int k = Math.floorMod(x, this.horizontalNoiseResolution);
         int l = Math.floorMod(z, this.horizontalNoiseResolution);
-        double d = (double)k / (double)this.horizontalNoiseResolution;
-        double e = (double)l / (double)this.horizontalNoiseResolution;
+        double d = (double) k / (double) this.horizontalNoiseResolution;
+        double e = (double) l / (double) this.horizontalNoiseResolution;
         double[][] ds = new double[][]{this.sampleNoiseColumn(i, j), this.sampleNoiseColumn(i, j + 1), this.sampleNoiseColumn(i + 1, j), this.sampleNoiseColumn(i + 1, j + 1)};
 
-        for(int m = this.noiseSizeY - 1; m >= 0; --m) {
+        for (int m = this.noiseSizeY - 1; m >= 0; --m) {
             double f = ds[0][m];
             double g = ds[1][m];
             double h = ds[2][m];
@@ -319,8 +322,8 @@ public class LimboChunkGenerator extends ChunkGenerator {
             double q = ds[2][m + 1];
             double r = ds[3][m + 1];
 
-            for(int s = this.verticalNoiseResolution - 1; s >= 0; --s) {
-                double t = (double)s / (double)this.verticalNoiseResolution;
+            for (int s = this.verticalNoiseResolution - 1; s >= 0; --s) {
+                double t = (double) s / (double) this.verticalNoiseResolution;
                 double u = MathHelper.lerp3(t, d, e, f, o, h, q, g, p, n, r);
                 int v = m * this.verticalNoiseResolution + s;
                 BlockState blockState = this.getBlockState(u, v);
@@ -361,12 +364,12 @@ public class LimboChunkGenerator extends ChunkGenerator {
         int l = chunkPos2.getStartZ();
         BlockPos.Mutable mutable = new BlockPos.Mutable();
 
-        for(int m = 0; m < 16; ++m) {
-            for(int n = 0; n < 16; ++n) {
+        for (int m = 0; m < 16; ++m) {
+            for (int n = 0; n < 16; ++n) {
                 int o = k + m;
                 int p = l + n;
                 int q = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE_WG, m, n) + 1;
-                double e = this.surfaceDepthNoise.sample((double)o * 0.0625D, (double)p * 0.0625D, 0.0625D, (double)m * 0.0625D) * 15.0D;
+                double e = this.surfaceDepthNoise.sample((double) o * 0.0625D, (double) p * 0.0625D, 0.0625D, (double) m * 0.0625D) * 15.0D;
                 region.getBiome(mutable.set(k + m, q, l + n)).buildSurface(chunkRandom, chunk, o, p, q, e, this.defaultBlock, this.defaultFluid, this.getSeaLevel(), region.getSeed());
             }
         }
@@ -386,7 +389,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
         if (bl || bl2) {
             Iterator var12 = BlockPos.iterate(i, 0, j, i + 15, 0, j + 15).iterator();
 
-            while(true) {
+            while (true) {
                 BlockPos blockPos;
                 int o;
                 do {
@@ -394,17 +397,17 @@ public class LimboChunkGenerator extends ChunkGenerator {
                         return;
                     }
 
-                    blockPos = (BlockPos)var12.next();
+                    blockPos = (BlockPos) var12.next();
                     if (bl) {
-                        for(o = 0; o < 5; ++o) {
+                        for (o = 0; o < 5; ++o) {
                             if (o <= random.nextInt(5)) {
                                 chunk.setBlockState(mutable.set(blockPos.getX(), l - o, blockPos.getZ()), Blocks.BEDROCK.getDefaultState(), false);
                             }
                         }
                     }
-                } while(!bl2);
+                } while (!bl2);
 
-                for(o = 4; o >= 0; --o) {
+                for (o = 4; o >= 0; --o) {
                     if (o <= random.nextInt(5)) {
                         chunk.setBlockState(mutable.set(blockPos.getX(), k + o, blockPos.getZ()), Blocks.BEDROCK.getDefaultState(), false);
                     }
@@ -459,30 +462,30 @@ public class LimboChunkGenerator extends ChunkGenerator {
 
         double[][][] ds = new double[2][this.noiseSizeZ + 1][this.noiseSizeY + 1];
 
-        for(int m = 0; m < this.noiseSizeZ + 1; ++m) {
+        for (int m = 0; m < this.noiseSizeZ + 1; ++m) {
             ds[0][m] = new double[this.noiseSizeY + 1];
             this.sampleNoiseColumn(ds[0][m], i * this.noiseSizeX, j * this.noiseSizeZ + m);
             ds[1][m] = new double[this.noiseSizeY + 1];
         }
 
-        ProtoChunk protoChunk = (ProtoChunk)chunk;
+        ProtoChunk protoChunk = (ProtoChunk) chunk;
         Heightmap heightmap = protoChunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmap2 = protoChunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         ObjectListIterator<StructurePiece> objectListIterator = objectList.iterator();
         ObjectListIterator<JigsawJunction> objectListIterator2 = objectList2.iterator();
 
-        for(int n = 0; n < this.noiseSizeX; ++n) {
+        for (int n = 0; n < this.noiseSizeX; ++n) {
             int p;
-            for(p = 0; p < this.noiseSizeZ + 1; ++p) {
+            for (p = 0; p < this.noiseSizeZ + 1; ++p) {
                 this.sampleNoiseColumn(ds[1][p], i * this.noiseSizeX + n + 1, j * this.noiseSizeZ + p);
             }
 
-            for(p = 0; p < this.noiseSizeZ; ++p) {
+            for (p = 0; p < this.noiseSizeZ; ++p) {
                 ChunkSection chunkSection = protoChunk.getSection(15);
                 chunkSection.lock();
 
-                for(int q = this.noiseSizeY - 1; q >= 0; --q) {
+                for (int q = this.noiseSizeY - 1; q >= 0; --q) {
                     double d = ds[0][p][q];
                     double e = ds[0][p + 1][q];
                     double f = ds[1][p][q];
@@ -492,7 +495,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
                     double s = ds[1][p][q + 1];
                     double t = ds[1][p + 1][q + 1];
 
-                    for(int u = this.verticalNoiseResolution - 1; u >= 0; --u) {
+                    for (int u = this.verticalNoiseResolution - 1; u >= 0; --u) {
                         int v = q * this.verticalNoiseResolution + u;
                         int w = v & 15;
                         int x = v >> 4;
@@ -502,40 +505,40 @@ public class LimboChunkGenerator extends ChunkGenerator {
                             chunkSection.lock();
                         }
 
-                        double y = (double)u / (double)this.verticalNoiseResolution;
+                        double y = (double) u / (double) this.verticalNoiseResolution;
                         double z = MathHelper.lerp(y, d, h);
                         double aa = MathHelper.lerp(y, f, s);
                         double ab = MathHelper.lerp(y, e, r);
                         double ac = MathHelper.lerp(y, g, t);
 
-                        for(int ad = 0; ad < this.horizontalNoiseResolution; ++ad) {
+                        for (int ad = 0; ad < this.horizontalNoiseResolution; ++ad) {
                             int ae = k + n * this.horizontalNoiseResolution + ad;
                             int af = ae & 15;
-                            double ag = (double)ad / (double)this.horizontalNoiseResolution;
+                            double ag = (double) ad / (double) this.horizontalNoiseResolution;
                             double ah = MathHelper.lerp(ag, z, aa);
                             double ai = MathHelper.lerp(ag, ab, ac);
 
-                            for(int aj = 0; aj < this.horizontalNoiseResolution; ++aj) {
+                            for (int aj = 0; aj < this.horizontalNoiseResolution; ++aj) {
                                 int ak = l + p * this.horizontalNoiseResolution + aj;
                                 int al = ak & 15;
-                                double am = (double)aj / (double)this.horizontalNoiseResolution;
+                                double am = (double) aj / (double) this.horizontalNoiseResolution;
                                 double an = MathHelper.lerp(am, ah, ai);
                                 double ao = MathHelper.clamp(an / 200.0D, -1.0D, 1.0D);
 
                                 int at;
                                 int au;
                                 int ar;
-                                for(ao = ao / 2.0D - ao * ao * ao / 24.0D; objectListIterator.hasNext(); ao += getNoiseWeight(at, au, ar) * 0.8D) {
+                                for (ao = ao / 2.0D - ao * ao * ao / 24.0D; objectListIterator.hasNext(); ao += getNoiseWeight(at, au, ar) * 0.8D) {
                                     StructurePiece structurePiece = objectListIterator.next();
                                     BlockBox blockBox = structurePiece.getBoundingBox();
                                     at = Math.max(0, Math.max(blockBox.minX - ae, ae - blockBox.maxX));
-                                    au = v - (blockBox.minY + (structurePiece instanceof PoolStructurePiece ? ((PoolStructurePiece)structurePiece).getGroundLevelDelta() : 0));
+                                    au = v - (blockBox.minY + (structurePiece instanceof PoolStructurePiece ? ((PoolStructurePiece) structurePiece).getGroundLevelDelta() : 0));
                                     ar = Math.max(0, Math.max(blockBox.minZ - ak, ak - blockBox.maxZ));
                                 }
 
                                 objectListIterator.back(objectList.size());
 
-                                while(objectListIterator2.hasNext()) {
+                                while (objectListIterator2.hasNext()) {
                                     JigsawJunction jigsawJunction = objectListIterator2.next();
                                     int as = ae - jigsawJunction.getSourceX();
                                     at = v - jigsawJunction.getSourceGroundY();
@@ -576,7 +579,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
         int k = z + 12;
         if (i >= 0 && i < 24) {
             if (j >= 0 && j < 24) {
-                return k >= 0 && k < 24 ? (double)NOISE_WEIGHT_TABLE[k * 24 * 24 + i * 24 + j] : 0.0D;
+                return k >= 0 && k < 24 ? (double) NOISE_WEIGHT_TABLE[k * 24 * 24 + i * 24 + j] : 0.0D;
             } else {
                 return 0.0D;
             }
@@ -587,7 +590,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
 
     private static double calculateNoiseWeight(int x, int y, int z) {
         double d = x * x + z * z;
-        double e = (double)y + 0.5D;
+        double e = (double) y + 0.5D;
         double f = e * e;
         double g = Math.pow(2.718281828459045D, -(f / 16.0D + d / 16.0D));
         double h = -e * MathHelper.fastInverseSqrt(f / 2.0D + d / 2.0D) / 2.0D;

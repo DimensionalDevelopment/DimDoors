@@ -13,6 +13,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
+import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.DefaultSurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
@@ -28,9 +29,13 @@ public final class ModBiomes {
                     .foliageColor(0)
                     .waterFogColor(0)
                     .moodSound(new BiomeMoodSound(ModSoundEvents.CREEPY, 6000, 8, 2.0))
+                    .skyColor(0x404040)
+                    .grassColor(0)
                     .build())
             .generationSettings(new GenerationSettings.Builder()
                     .surfaceBuilder(new ConfiguredSurfaceBuilder<>(new DefaultSurfaceBuilder(TernarySurfaceConfig.CODEC), new TernarySurfaceConfig(ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.ETERNAL_FLUID.getDefaultState())))
+                    .feature(GenerationStep.Feature.UNDERGROUND_ORES, ModFeatures.LIMBO_BEDROCK_FLUID_ORE)
+                    .feature(GenerationStep.Feature.UNDERGROUND_ORES, ModFeatures.LIMBO_FABRIC_FLUID_ORE)
                     .build())
             .precipitation(Biome.Precipitation.NONE)
             .scale(0.9f)

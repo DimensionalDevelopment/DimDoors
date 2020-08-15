@@ -27,7 +27,8 @@
 //                                ModBlocks.ETERNAL_FLUID.getDefaultState()
 //                        )
 //                )
-//                .precipitation(Biome.Precipitation.NONE).category(Biome.Category.NETHER)
+//                .precipitation(Biome.Precipitation.NONE)
+//                .category(Biome.Category.NETHER)
 //                .depth(0.1F)
 //                .scale(0.2F)
 //                .temperature(2.0F)
@@ -38,7 +39,6 @@
 //                                .waterFogColor(0x000000)
 //                                .fogColor(0x000000)
 //                                .loopSound(ModSoundEvents.CREEPY)
-//                                // TODO: moodSound, additionsSound?
 //                                .build()
 //                )
 //                .parent(null)

@@ -38,7 +38,7 @@ public class MonolithTask extends Goal {
 
     private PlayerEntity getTarget() {
         PlayerEntity playerEntity = this.mob.world.getClosestPlayer(this.targetPredicate, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
-        return playerEntity != null && mob.canSee(playerEntity) && playerEntity.distanceTo(this.mob) < 50? playerEntity : null;
+        return playerEntity != null && mob.canSee(playerEntity) && playerEntity.distanceTo(this.mob) < 50 ? playerEntity : null;
     }
 
     public boolean canStart() {
@@ -58,16 +58,16 @@ public class MonolithTask extends Goal {
     }
 
     public void tick() {
-        if(target != null && this.target.distanceTo(this.mob) > 70) {
+        if (target != null && this.target.distanceTo(this.mob) > 70) {
             this.stop();
             return;
         }
 
-        if(target != null && (target.inventory.armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && target.inventory.armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && target.inventory.armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && target.inventory.armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
+        if (target != null && (target.inventory.armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && target.inventory.armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && target.inventory.armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && target.inventory.armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
             Random random = new Random();
             int i = random.nextInt(64);
-            if(this.target instanceof ServerPlayerEntity) {
-                if(i < 6) {
+            if (this.target instanceof ServerPlayerEntity) {
+                if (i < 6) {
                     target.inventory.armor.get(0).damage(i, random, (ServerPlayerEntity) this.target);
                     target.inventory.armor.get(1).damage(i, random, (ServerPlayerEntity) this.target);
                     target.inventory.armor.get(2).damage(i, random, (ServerPlayerEntity) this.target);

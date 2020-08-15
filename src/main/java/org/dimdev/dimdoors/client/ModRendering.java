@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.client;
 import java.util.function.Function;
 
 import org.dimdev.dimdoors.fluid.ModFluids;
-import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
@@ -14,7 +13,6 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockRenderView;
 

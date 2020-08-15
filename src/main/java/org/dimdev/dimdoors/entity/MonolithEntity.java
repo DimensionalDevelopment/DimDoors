@@ -8,7 +8,11 @@ import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MovementType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -21,7 +25,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -148,16 +151,16 @@ public class MonolithEntity extends MobEntity {
     public void updateAggroLevel(PlayerEntity player, boolean visibility) {
         // If we're working on the server side, adjust aggro level
         // If we're working on the client side, retrieve aggro level from dataWatcher
-        if(player == null) {
+        if (player == null) {
             return;
         }
 
-        if((player.inventory.armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && player.inventory.armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && player.inventory.armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && player.inventory.armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
+        if ((player.inventory.armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && player.inventory.armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && player.inventory.armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && player.inventory.armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
             return;
         }
 
         if (!world.isClient) {
-            if(player.distanceTo(this) > 70) {
+            if (player.distanceTo(this) > 70) {
                 return;
             }
 
@@ -233,7 +236,7 @@ public class MonolithEntity extends MobEntity {
         int aggro = data.readInt();
 
         context.getTaskQueue().execute(() -> {
-            if(aggro < 120) {
+            if (aggro < 120) {
                 return;
             }
             int count = 10 * aggro / MAX_AGGRO;

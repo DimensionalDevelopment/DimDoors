@@ -3,8 +3,6 @@ package org.dimdev.dimdoors.rift.targets;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 
-import static org.dimdev.dimdoors.world.ModDimensions.LIMBO;
-
 public class LimboTarget extends VirtualTarget implements EntityTarget {
     public LimboTarget() {
     }

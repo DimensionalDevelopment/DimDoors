@@ -1,6 +1,10 @@
 package org.dimdev.dimdoors.client;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 import org.poly2tri.Poly2Tri;
 import org.poly2tri.geometry.polygon.Polygon;

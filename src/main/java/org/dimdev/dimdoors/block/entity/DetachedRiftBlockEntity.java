@@ -44,7 +44,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
 
     @Override
     public void tick() {
-        if(world == null) {
+        if (world == null) {
             return;
         }
 
