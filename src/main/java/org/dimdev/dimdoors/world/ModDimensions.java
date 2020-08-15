@@ -30,6 +30,5 @@ public final class ModDimensions {
     public static void init() {
         Registry.register(Registry.CHUNK_GENERATOR, new Identifier("dimdoors", "blank"), BlankChunkGenerator.CODEC);
         Registry.register(Registry.CHUNK_GENERATOR, new Identifier("dimdoors", "limbo"), LimboChunkGenerator.CODEC);
-        // just loads the class
     }
 }

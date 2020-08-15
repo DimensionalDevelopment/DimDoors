@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:limbo",
   "generator": {
-    "type": "minecraft:noise",
+    "type": "minecraft:limbo",
     "seed": 341873128713,
     "biome_source": {
       "type": "minecraft:multi_noise",
@@ -10,7 +10,7 @@
         {
           "parameters": {
             "altitude": 0.00,
-            "weirdness": -0.5,
+            "weirdness": 2.5,
             "offset": 1.00,
             "temperature": 0.00,
             "humidity": 0.00

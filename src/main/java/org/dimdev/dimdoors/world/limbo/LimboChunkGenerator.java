@@ -55,16 +55,9 @@ import net.minecraft.world.gen.feature.StructureFeature;
 import org.dimdev.dimdoors.mixin.ChunkGeneratorSettingsAccessor;
 import org.jetbrains.annotations.Nullable;
 
-public final class LimboChunkGenerator extends ChunkGenerator {
-    public static final Codec<LimboChunkGenerator> CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(BiomeSource.CODEC.fieldOf("biome_source").forGetter((noiseChunkGenerator) -> {
-            return noiseChunkGenerator.biomeSource;
-        }), Codec.LONG.fieldOf("seed").stable().forGetter((noiseChunkGenerator) -> {
-            return new Random().nextLong();
-        }), ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter((noiseChunkGenerator) -> {
-            return noiseChunkGenerator.settings;
-        })).apply(instance, instance.stable(LimboChunkGenerator::new));
-    });
+@SuppressWarnings("deprecated")
+public class LimboChunkGenerator extends ChunkGenerator {
+    public static final Codec<LimboChunkGenerator> CODEC = RecordCodecBuilder.create((instance) -> instance.group(BiomeSource.CODEC.fieldOf("biome_source").forGetter((noiseChunkGenerator) -> noiseChunkGenerator.biomeSource), Codec.LONG.fieldOf("seed").stable().forGetter((noiseChunkGenerator) -> new Random().nextLong()), ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter((noiseChunkGenerator) -> noiseChunkGenerator.settings)).apply(instance, instance.stable(LimboChunkGenerator::new)));
     private static final float[] NOISE_WEIGHT_TABLE = Util.make(new float[13824], (array) -> {
         for(int i = 0; i < 24; ++i) {
             for(int j = 0; j < 24; ++j) {
@@ -104,13 +97,13 @@ public final class LimboChunkGenerator extends ChunkGenerator {
     protected final Supplier<ChunkGeneratorSettings> settings;
     private final int worldHeight;
 
-    public LimboChunkGenerator(BiomeSource biomeSource, long l, Supplier<ChunkGeneratorSettings> supplier) {
-        this(biomeSource, biomeSource, l, supplier);
+    public LimboChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> supplier) {
+        this(biomeSource, biomeSource, seed, supplier);
     }
 
-    private LimboChunkGenerator(BiomeSource biomeSource, BiomeSource biomeSource2, long worldSeed, Supplier<ChunkGeneratorSettings> supplier) {
-        super(biomeSource, biomeSource2, supplier.get().getStructuresConfig(), worldSeed);
-        this.worldSeed = worldSeed;
+    private LimboChunkGenerator(BiomeSource biomeSource, BiomeSource biomeSource2, long seed, Supplier<ChunkGeneratorSettings> supplier) {
+        super(biomeSource, biomeSource2, supplier.get().getStructuresConfig(), seed);
+        this.worldSeed = seed;
         ChunkGeneratorSettings chunkGeneratorSettings = supplier.get();
         this.settings = supplier;
         GenerationShapeConfig generationShapeConfig = chunkGeneratorSettings.getGenerationShapeConfig();
@@ -122,7 +115,7 @@ public final class LimboChunkGenerator extends ChunkGenerator {
         this.noiseSizeX = 16 / this.horizontalNoiseResolution;
         this.noiseSizeY = generationShapeConfig.getHeight() / this.verticalNoiseResolution;
         this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
-        this.random = new ChunkRandom(worldSeed);
+        this.random = new ChunkRandom(seed);
         this.lowerInterpolatedNoise = new OctavePerlinNoiseSampler(this.random, IntStream.rangeClosed(-15, 0));
         this.upperInterpolatedNoise = new OctavePerlinNoiseSampler(this.random, IntStream.rangeClosed(-15, 0));
         this.interpolationNoise = new OctavePerlinNoiseSampler(this.random, IntStream.rangeClosed(-7, 0));
@@ -130,7 +123,7 @@ public final class LimboChunkGenerator extends ChunkGenerator {
         this.random.consume(2620);
         this.densityNoise = new OctavePerlinNoiseSampler(this.random, IntStream.rangeClosed(-15, 0));
         if (generationShapeConfig.hasIslandNoiseOverride()) {
-            ChunkRandom chunkRandom = new ChunkRandom(worldSeed);
+            ChunkRandom chunkRandom = new ChunkRandom(seed);
             chunkRandom.consume(17292);
             this.islandNoise = new SimplexNoiseSampler(chunkRandom);
         } else {
@@ -148,7 +141,7 @@ public final class LimboChunkGenerator extends ChunkGenerator {
         return new LimboChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);
     }
 
-    public boolean method_28548(long l, RegistryKey<ChunkGeneratorSettings> registryKey) {
+    public boolean equals(long l, RegistryKey<ChunkGeneratorSettings> registryKey) {
         return this.worldSeed == l && this.settings.get().equals(registryKey);
     }
 
@@ -156,7 +149,6 @@ public final class LimboChunkGenerator extends ChunkGenerator {
         double d = 0.0D;
         double e = 0.0D;
         double f = 0.0D;
-        boolean bl = true;
         double g = 1.0D;
 
         for(int i = 0; i < 16; ++i) {
@@ -210,7 +202,6 @@ public final class LimboChunkGenerator extends ChunkGenerator {
             float g = 0.0F;
             float h = 0.0F;
             float i = 0.0F;
-                int j = 1;
             int k = this.getSeaLevel();
             float l = this.biomeSource.getBiomeForNoiseGen(x, k, z).getDepth();
 
@@ -368,7 +359,6 @@ public final class LimboChunkGenerator extends ChunkGenerator {
         ChunkPos chunkPos2 = chunk.getPos();
         int k = chunkPos2.getStartX();
         int l = chunkPos2.getStartZ();
-        double d = 0.0625D;
         BlockPos.Mutable mutable = new BlockPos.Mutable();
 
         for(int m = 0; m < 16; ++m) {
@@ -391,7 +381,6 @@ public final class LimboChunkGenerator extends ChunkGenerator {
         ChunkGeneratorSettings chunkGeneratorSettings = this.settings.get();
         int k = chunkGeneratorSettings.getBedrockFloorY();
         int l = this.worldHeight - 1 - chunkGeneratorSettings.getBedrockCeilingY();
-        int m = 1;
         boolean bl = l + 4 >= 0 && l < this.worldHeight;
         boolean bl2 = k + 4 >= 0 && k < this.worldHeight;
         if (bl || bl2) {
@@ -425,51 +414,44 @@ public final class LimboChunkGenerator extends ChunkGenerator {
     }
 
     public void populateNoise(WorldAccess world, StructureAccessor accessor, Chunk chunk) {
-        ObjectList<StructurePiece> objectList = new ObjectArrayList(10);
-        ObjectList<JigsawJunction> objectList2 = new ObjectArrayList(32);
+        ObjectList<StructurePiece> objectList = new ObjectArrayList<>(10);
+        ObjectList<JigsawJunction> objectList2 = new ObjectArrayList<>(32);
         ChunkPos chunkPos = chunk.getPos();
         int i = chunkPos.x;
         int j = chunkPos.z;
         int k = i << 4;
         int l = j << 4;
-        Iterator var11 = StructureFeature.JIGSAW_STRUCTURES.iterator();
 
-        while(var11.hasNext()) {
-            StructureFeature<?> structureFeature = (StructureFeature)var11.next();
+        for (StructureFeature<?> structureFeature : StructureFeature.JIGSAW_STRUCTURES) {
             accessor.getStructuresWithChildren(ChunkSectionPos.from(chunkPos, 0), structureFeature).forEach((start) -> {
-                Iterator var6 = start.getChildren().iterator();
+                Iterator<StructurePiece> var6 = start.getChildren().iterator();
 
-                while(true) {
-                    while(true) {
-                        StructurePiece structurePiece;
-                        do {
-                            if (!var6.hasNext()) {
-                                return;
-                            }
-
-                            structurePiece = (StructurePiece)var6.next();
-                        } while(!structurePiece.intersectsChunk(chunkPos, 12));
-
-                        if (structurePiece instanceof PoolStructurePiece) {
-                            PoolStructurePiece poolStructurePiece = (PoolStructurePiece)structurePiece;
-                            StructurePool.Projection projection = poolStructurePiece.getPoolElement().getProjection();
-                            if (projection == StructurePool.Projection.RIGID) {
-                                objectList.add(poolStructurePiece);
-                            }
-
-                            Iterator var10 = poolStructurePiece.getJunctions().iterator();
-
-                            while(var10.hasNext()) {
-                                JigsawJunction jigsawJunction = (JigsawJunction)var10.next();
-                                int kx = jigsawJunction.getSourceX();
-                                int lx = jigsawJunction.getSourceZ();
-                                if (kx > k - 12 && lx > l - 12 && kx < k + 15 + 12 && lx < l + 15 + 12) {
-                                    objectList2.add(jigsawJunction);
-                                }
-                            }
-                        } else {
-                            objectList.add(structurePiece);
+                while (true) {
+                    StructurePiece structurePiece;
+                    do {
+                        if (!var6.hasNext()) {
+                            return;
                         }
+
+                        structurePiece = var6.next();
+                    } while (!structurePiece.intersectsChunk(chunkPos, 12));
+
+                    if (structurePiece instanceof PoolStructurePiece) {
+                        PoolStructurePiece poolStructurePiece = (PoolStructurePiece) structurePiece;
+                        StructurePool.Projection projection = poolStructurePiece.getPoolElement().getProjection();
+                        if (projection == StructurePool.Projection.RIGID) {
+                            objectList.add(poolStructurePiece);
+                        }
+
+                        for (JigsawJunction jigsawJunction : poolStructurePiece.getJunctions()) {
+                            int kx = jigsawJunction.getSourceX();
+                            int lx = jigsawJunction.getSourceZ();
+                            if (kx > k - 12 && lx > l - 12 && kx < k + 15 + 12 && lx < l + 15 + 12) {
+                                objectList2.add(jigsawJunction);
+                            }
+                        }
+                    } else {
+                        objectList.add(structurePiece);
                     }
                 }
             });
