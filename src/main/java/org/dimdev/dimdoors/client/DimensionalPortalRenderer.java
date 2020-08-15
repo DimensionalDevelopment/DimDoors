@@ -15,7 +15,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.mixin.DirectionMixin;
+import org.dimdev.dimdoors.mixin.DirectionAccessor;
 import org.dimdev.dimdoors.util.RGBA;
 import org.lwjgl.opengl.GL11;
 
@@ -55,7 +55,7 @@ public final class DimensionalPortalRenderer {
     private static final Identifier warpPath = new Identifier("dimdoors:textures/other/warp.png");
     private static final BooleanProperty openProperty = BooleanProperty.of("open");
     private static final EnumProperty<DoorHinge> hingeProperty = EnumProperty.of("hinge", DoorHinge.class);
-    private static final DirectionProperty facingProperty = DirectionProperty.of("facing", Arrays.asList(DirectionMixin.getHorizontal()));
+    private static final DirectionProperty facingProperty = DirectionProperty.of("facing", Arrays.asList(DirectionAccessor.getHorizontal()));
 
     private static final TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
     private static final BlockModels blockModelShapes = MinecraftClient.getInstance().getBlockRenderManager().getModels();

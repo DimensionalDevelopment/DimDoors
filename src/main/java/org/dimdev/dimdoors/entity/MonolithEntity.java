@@ -95,15 +95,15 @@ public class MonolithEntity extends MobEntity {
         return 10;
     }
 
-    @Override
-    public Box getCollisionBox() {
-        return null;
-    }
-
-    @Override
-    public Box getHardCollisionBox(Entity entity) {
-        return null;
-    }
+//    @Override
+//    public Box getCollisionBox() {
+//        return null;
+//    }
+//
+//    @Override
+//    public Box getHardCollisionBox(Entity entity) {
+//        return null;
+//    }
 
     @Override
     public boolean cannotDespawn() {

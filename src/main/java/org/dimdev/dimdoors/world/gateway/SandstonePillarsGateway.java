@@ -8,8 +8,8 @@ public class SandstonePillarsGateway extends BaseSchematicGateway {
         super("sandstone_pillars");
     }
 
-    @Override
-    public Biome[] getBiomes() {
-        return new Biome[]{Biomes.DESERT, Biomes.DESERT_HILLS, Biomes.DESERT_LAKES};
-    }
+//    @Override
+//    public Biome[] getBiomes() {
+//        return new Biome[]{Biomes.DESERT, Biomes.DESERT_HILLS, Biomes.DESERT_LAKES};
+//    }
 }

@@ -2,16 +2,16 @@
   "type": "dimdoors:limbo",
   "generator": {
     "type": "minecraft:noise",
-    "seed": 341873128753,
+    "seed": 341873128713,
     "biome_source": {
       "type": "minecraft:multi_noise",
-      "seed": 341873128753,
+      "seed": 1677777251,
       "biomes": [
         {
           "parameters": {
-            "altitude": 0.20,
-            "weirdness": 0.20,
-            "offset": 0.00,
+            "altitude": 0.00,
+            "weirdness": -0.5,
+            "offset": 1.00,
             "temperature": 0.00,
             "humidity": 0.00
           },
@@ -30,7 +30,7 @@
       "noise": {
         "density_factor": 1,
         "density_offset": -0.26875,
-        "simplex_surface_noise": false,
+        "simplex_surface_noise": true,
         "random_density_offset": true,
         "island_noise_override": false,
         "amplified": true,
@@ -58,7 +58,7 @@
         "Name": "dimdoors:unravelled_fabric"
       },
       "default_fluid": {
-        "Name": "minecraft:water",
+        "Name": "dimdoors:eternal_fluid",
         "Properties": {
           "level": "0"
         }

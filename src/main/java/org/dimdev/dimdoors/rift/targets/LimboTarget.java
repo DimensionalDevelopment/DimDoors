@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.rift.targets;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import static org.dimdev.dimdoors.world.ModDimensions.LIMBO;
 
 public class LimboTarget extends VirtualTarget implements EntityTarget {
@@ -23,7 +22,7 @@ public class LimboTarget extends VirtualTarget implements EntityTarget {
 
     @Override
     public boolean receiveEntity(Entity entity, float yawOffset) {
-        FabricDimensions.teleport(entity, entity.getServer().getWorld(LIMBO));
+        //FabricDimensions.teleport(entity, entity.getServer().getWorld(LIMBO));
         return true;
     }
 }

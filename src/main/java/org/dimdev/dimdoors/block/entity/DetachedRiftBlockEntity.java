@@ -44,16 +44,22 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
 
     @Override
     public void tick() {
+        if(world == null) {
+            return;
+        }
+
         if (world.getBlockState(pos).getBlock() != ModBlocks.DETACHED_RIFT) {
             markInvalid();
             return;
         }
 
-        if (!world.isClient && random.nextDouble() < ModConfig.GENERAL.endermanSpawnChance) {
-            EndermanEntity enderman = EntityType.ENDERMAN.spawn(world, null, null, null, pos, SpawnReason.STRUCTURE, false, false);
+        if (!world.isClient() && random.nextDouble() < ModConfig.GENERAL.endermanSpawnChance) {
+            EndermanEntity enderman = EntityType.ENDERMAN.spawn((ServerWorld) world, null, null, null, pos, SpawnReason.STRUCTURE, false, false);
 
             if (random.nextDouble() < ModConfig.GENERAL.endermanAggressiveChance) {
-                enderman.setTarget(world.getClosestPlayer(enderman, 50));
+                if (enderman != null) {
+                    enderman.setTarget(world.getClosestPlayer(enderman, 50));
+                }
             }
         }
 

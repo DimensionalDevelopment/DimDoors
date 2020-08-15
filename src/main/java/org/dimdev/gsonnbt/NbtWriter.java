@@ -13,7 +13,7 @@ import net.minecraft.nbt.EndTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 
-import static net.minecraft.datafixer.NbtOps.INSTANCE;
+import static net.minecraft.nbt.NbtOps.INSTANCE;
 
 public final class NbtWriter extends JsonWriter {
     private static final Writer UNWRITABLE_WRITER = new Writer() {

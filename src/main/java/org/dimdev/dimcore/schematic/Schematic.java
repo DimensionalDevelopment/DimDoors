@@ -327,7 +327,7 @@ public class Schematic implements BlockView {
             }
         }
 
-        for (Entity entity : world.getEntities((Entity) null, getBoundingBox(from, to), entity -> !(entity instanceof PlayerEntity))) {
+        for (Entity entity : world.getOtherEntities((Entity) null, getBoundingBox(from, to), entity -> !(entity instanceof PlayerEntity))) {
             CompoundTag entityTag = entity.toTag(new CompoundTag());
 
             ListTag posTag = (ListTag) entityTag.get("Pos");
