@@ -1,23 +1,11 @@
 {
   "type": "dimdoors:limbo",
   "generator": {
-    "type": "dimdoors:limbo",
-    "seed": 341873128713,
+    "type": "minecraft:noise",
+    "seed": 23123456787659,
     "biome_source": {
-      "type": "minecraft:multi_noise",
-      "seed": 1677777251,
-      "biomes": [
-        {
-          "parameters": {
-            "altitude": 0.00,
-            "weirdness": 2.5,
-            "offset": 1.00,
-            "temperature": 0.00,
-            "humidity": 0.00
-          },
-          "biome": "dimdoors:limbo"
-        }
-      ]
+      "type": "minecraft:fixed",
+      "biome": "dimdoors:limbo"
     },
     "settings": {
       "bedrock_floor_position": 0,
@@ -29,18 +17,18 @@
       },
       "noise": {
         "density_factor": 1,
-        "density_offset": -0.26875,
+        "density_offset": -0.16875,
         "simplex_surface_noise": true,
         "random_density_offset": true,
         "island_noise_override": false,
         "amplified": true,
         "size_horizontal": 1,
         "size_vertical": 4,
-        "height": 178,
+        "height": 192,
         "sampling": {
-          "xz_scale": 1,
-          "y_scale": 3,
-          "xz_factor": 60,
+          "xz_scale": 0.9999999814507745,
+          "y_scale": 0.632539814507745,
+          "xz_factor": 80,
           "y_factor": 240
         },
         "bottom_slide": {

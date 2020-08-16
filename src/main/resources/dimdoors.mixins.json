@@ -4,11 +4,10 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BuiltinBiomesAccessor",
-    "ChunkGeneratorSettingsAccessor",
     "DirectionAccessor"
   ],
   "client": [
-    "InGameHudMixin"
+    "client.InGameHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

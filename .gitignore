@@ -28,3 +28,4 @@ run
 Thumbs.db
 remappedSrc
 logs
+*.hprof

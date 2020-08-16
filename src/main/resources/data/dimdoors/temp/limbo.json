@@ -1,0 +1,111 @@
+{
+  "effects": {
+    "mood_sound": {
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000,
+      "block_search_extent": 8,
+      "offset": 2.0
+    },
+    "sky_color": 4210752,
+    "fog_color": 0,
+    "water_color": 0,
+    "water_fog_color": 0
+  },
+  "surface_builder": {
+    "config": {
+      "top_material": {
+        "Name": "dimdoors:unravelled_fabric"
+      },
+      "under_material": {
+        "Name": "dimdoors:unravelled_fabric"
+      },
+      "underwater_material": {
+        "Name": "dimdoors:eternal_fluid"
+      }
+    },
+    "type": "minecraft:default"
+  },
+  "carvers": {
+    "air": []
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      {
+        "config": {
+          "feature": {
+            "config": {
+              "feature": {
+                "config": {
+                  "feature": {
+                    "config": {
+                      "target": {
+                        "block": "minecraft:bedrock",
+                        "predicate_type": "minecraft:block_match"
+                      },
+                      "state": {
+                        "Name": "dimdoors:eternal_fluid"
+                      },
+                      "size": 3
+                    },
+                    "type": "minecraft:ore"
+                  },
+                  "decorator": {
+                    "config": {
+                      "bottom_offset": 0,
+                      "top_offset": 5,
+                      "maximum": 9
+                    },
+                    "type": "minecraft:range"
+                  }
+                },
+                "type": "minecraft:decorated"
+              },
+              "decorator": {
+                "config": {},
+                "type": "minecraft:square"
+              }
+            },
+            "type": "minecraft:decorated"
+          },
+          "decorator": {
+            "config": {
+              "count": 2
+            },
+            "type": "minecraft:count"
+          }
+        },
+        "type": "minecraft:decorated"
+      }
+    ]
+  ],
+  "starts": [],
+  "spawners": {
+    "monster": [
+      {
+        "type": "dimdoors:monolith",
+        "weight": 50,
+        "minCount": 1,
+        "maxCount": 4
+      }
+    ],
+    "creature": [],
+    "ambient": [],
+    "water_creature": [],
+    "water_ambient": [],
+    "misc": []
+  },
+  "spawn_costs": {},
+  "precipitation": "none",
+  "temperature": 2.0,
+  "downfall": 0.0,
+  "category": "none",
+  "depth": 0.8,
+  "scale": 0.9
+}

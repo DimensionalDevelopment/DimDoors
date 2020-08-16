@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -13,12 +12,11 @@ import java.util.stream.IntStream;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.dimdoors.mixin.ChunkGeneratorSettingsAccessor;
+import org.dimdev.dimdoors.block.ModBlocks;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.SpawnGroup;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructurePiece;
@@ -41,7 +39,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.chunk.Chunk;
@@ -58,9 +55,17 @@ import net.minecraft.world.gen.feature.StructureFeature;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-@SuppressWarnings("deprecated")
 public class LimboChunkGenerator extends ChunkGenerator {
-    public static final Codec<LimboChunkGenerator> CODEC = RecordCodecBuilder.create((instance) -> instance.group(BiomeSource.CODEC.fieldOf("biome_source").forGetter((noiseChunkGenerator) -> noiseChunkGenerator.biomeSource), Codec.LONG.fieldOf("seed").stable().forGetter((noiseChunkGenerator) -> new Random().nextLong()), ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter((noiseChunkGenerator) -> noiseChunkGenerator.settings)).apply(instance, instance.stable(LimboChunkGenerator::new)));
+    public static final Codec<LimboChunkGenerator> CODEC = RecordCodecBuilder.create((instance) -> {
+        return instance.group(BiomeSource.CODEC.fieldOf("biome_source").forGetter((limboChunkGenerator) -> {
+            return limboChunkGenerator.biomeSource;
+        }), Codec.LONG.fieldOf("seed").stable().forGetter((limboChunkGenerator) -> {
+            return limboChunkGenerator.worldSeed;
+        }), ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter((limboChunkGenerator) -> {
+            return limboChunkGenerator.settings;
+        })).apply(instance, instance.stable(LimboChunkGenerator::new));
+    });
+
     private static final float[] NOISE_WEIGHT_TABLE = Util.make(new float[13824], (array) -> {
         for (int i = 0; i < 24; ++i) {
             for (int j = 0; j < 24; ++j) {
@@ -69,8 +74,8 @@ public class LimboChunkGenerator extends ChunkGenerator {
                 }
             }
         }
-
     });
+
     private static final float[] BIOME_WEIGHT_TABLE = Util.make(new float[25], (fs) -> {
         for (int i = -2; i <= 2; ++i) {
             for (int j = -2; j <= 2; ++j) {
@@ -78,9 +83,9 @@ public class LimboChunkGenerator extends ChunkGenerator {
                 fs[i + 2 + (j + 2) * 5] = f;
             }
         }
-
     });
-    private static final BlockState AIR;
+
+    private static final BlockState AIR = Blocks.AIR.getDefaultState();;
     private final int verticalNoiseResolution;
     private final int horizontalNoiseResolution;
     private final int noiseSizeX;
@@ -105,8 +110,8 @@ public class LimboChunkGenerator extends ChunkGenerator {
     }
 
     private LimboChunkGenerator(BiomeSource biomeSource, BiomeSource biomeSource2, long seed, Supplier<ChunkGeneratorSettings> supplier) {
-        super(biomeSource, biomeSource2, supplier.get().getStructuresConfig(), seed);
-        this.worldSeed = seed;
+        super(biomeSource, biomeSource2, supplier.get().getStructuresConfig(), new Random().nextLong());
+        this.worldSeed = new Random().nextLong();
         ChunkGeneratorSettings chunkGeneratorSettings = supplier.get();
         this.settings = supplier;
         GenerationShapeConfig generationShapeConfig = chunkGeneratorSettings.getGenerationShapeConfig();
@@ -118,7 +123,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
         this.noiseSizeX = 16 / this.horizontalNoiseResolution;
         this.noiseSizeY = generationShapeConfig.getHeight() / this.verticalNoiseResolution;
         this.noiseSizeZ = 16 / this.horizontalNoiseResolution;
-        this.random = new ChunkRandom(seed);
+        this.random = new ChunkRandom(this.worldSeed);
         this.lowerInterpolatedNoise = new OctavePerlinNoiseSampler(this.random, IntStream.rangeClosed(-15, 0));
         this.upperInterpolatedNoise = new OctavePerlinNoiseSampler(this.random, IntStream.rangeClosed(-15, 0));
         this.interpolationNoise = new OctavePerlinNoiseSampler(this.random, IntStream.rangeClosed(-7, 0));
@@ -126,7 +131,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
         this.random.consume(2620);
         this.densityNoise = new OctavePerlinNoiseSampler(this.random, IntStream.rangeClosed(-15, 0));
         if (generationShapeConfig.hasIslandNoiseOverride()) {
-            ChunkRandom chunkRandom = new ChunkRandom(seed);
+            ChunkRandom chunkRandom = new ChunkRandom(this.worldSeed);
             chunkRandom.consume(17292);
             this.islandNoise = new SimplexNoiseSampler(chunkRandom);
         } else {
@@ -135,7 +140,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
 
     }
 
-    protected Codec<? extends ChunkGenerator> getCodec() {
+    public Codec<? extends ChunkGenerator> getCodec() {
         return CODEC;
     }
 
@@ -374,10 +379,10 @@ public class LimboChunkGenerator extends ChunkGenerator {
             }
         }
 
-        this.buildBedrock(chunk, chunkRandom);
+        this.buildEternalFluidFloor(chunk, chunkRandom);
     }
 
-    private void buildBedrock(Chunk chunk, Random random) {
+    private void buildEternalFluidFloor(Chunk chunk, Random random) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         int i = chunk.getPos().getStartX();
         int j = chunk.getPos().getStartZ();
@@ -387,21 +392,21 @@ public class LimboChunkGenerator extends ChunkGenerator {
         boolean bl = l + 4 >= 0 && l < this.worldHeight;
         boolean bl2 = k + 4 >= 0 && k < this.worldHeight;
         if (bl || bl2) {
-            Iterator var12 = BlockPos.iterate(i, 0, j, i + 15, 0, j + 15).iterator();
+            Iterator<BlockPos> iterator = BlockPos.iterate(i, 0, j, i + 15, 0, j + 15).iterator();
 
             while (true) {
                 BlockPos blockPos;
                 int o;
                 do {
-                    if (!var12.hasNext()) {
+                    if (!iterator.hasNext()) {
                         return;
                     }
 
-                    blockPos = (BlockPos) var12.next();
+                    blockPos = iterator.next();
                     if (bl) {
                         for (o = 0; o < 5; ++o) {
                             if (o <= random.nextInt(5)) {
-                                chunk.setBlockState(mutable.set(blockPos.getX(), l - o, blockPos.getZ()), Blocks.BEDROCK.getDefaultState(), false);
+                                chunk.setBlockState(mutable.set(blockPos.getX(), l - o, blockPos.getZ()), ModBlocks.ETERNAL_FLUID.getDefaultState(), false);
                             }
                         }
                     }
@@ -409,7 +414,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
 
                 for (o = 4; o >= 0; --o) {
                     if (o <= random.nextInt(5)) {
-                        chunk.setBlockState(mutable.set(blockPos.getX(), k + o, blockPos.getZ()), Blocks.BEDROCK.getDefaultState(), false);
+                        chunk.setBlockState(mutable.set(blockPos.getX(), k + o, blockPos.getZ()), ModBlocks.ETERNAL_FLUID.getDefaultState(), false);
                     }
                 }
             }
@@ -427,16 +432,16 @@ public class LimboChunkGenerator extends ChunkGenerator {
 
         for (StructureFeature<?> structureFeature : StructureFeature.JIGSAW_STRUCTURES) {
             accessor.getStructuresWithChildren(ChunkSectionPos.from(chunkPos, 0), structureFeature).forEach((start) -> {
-                Iterator<StructurePiece> var6 = start.getChildren().iterator();
+                Iterator<StructurePiece> iterator = start.getChildren().iterator();
 
                 while (true) {
                     StructurePiece structurePiece;
                     do {
-                        if (!var6.hasNext()) {
+                        if (!iterator.hasNext()) {
                             return;
                         }
 
-                        structurePiece = var6.next();
+                        structurePiece = iterator.next();
                     } while (!structurePiece.intersectsChunk(chunkPos, 12));
 
                     if (structurePiece instanceof PoolStructurePiece) {
@@ -605,46 +610,12 @@ public class LimboChunkGenerator extends ChunkGenerator {
         return this.settings.get().getSeaLevel();
     }
 
-    public List<SpawnSettings.SpawnEntry> getEntitySpawnList(Biome biome, StructureAccessor accessor, SpawnGroup group, BlockPos pos) {
-        if (accessor.getStructureAt(pos, true, StructureFeature.SWAMP_HUT).hasChildren()) {
-            if (group == SpawnGroup.MONSTER) {
-                return StructureFeature.SWAMP_HUT.getMonsterSpawns();
-            }
-
-            if (group == SpawnGroup.CREATURE) {
-                return StructureFeature.SWAMP_HUT.getCreatureSpawns();
-            }
-        }
-
-        if (group == SpawnGroup.MONSTER) {
-            if (accessor.getStructureAt(pos, false, StructureFeature.PILLAGER_OUTPOST).hasChildren()) {
-                return StructureFeature.PILLAGER_OUTPOST.getMonsterSpawns();
-            }
-
-            if (accessor.getStructureAt(pos, false, StructureFeature.MONUMENT).hasChildren()) {
-                return StructureFeature.MONUMENT.getMonsterSpawns();
-            }
-
-            if (accessor.getStructureAt(pos, true, StructureFeature.FORTRESS).hasChildren()) {
-                return StructureFeature.FORTRESS.getMonsterSpawns();
-            }
-        }
-
-        return super.getEntitySpawnList(biome, accessor, group, pos);
-    }
-
     public void populateEntities(ChunkRegion region) {
-        if (!((ChunkGeneratorSettingsAccessor) (Object) this.settings.get()).isMobGenerationDisabled()) {
-            int i = region.getCenterChunkX();
-            int j = region.getCenterChunkZ();
-            Biome biome = region.getBiome((new ChunkPos(i, j)).getCenterBlockPos());
-            ChunkRandom chunkRandom = new ChunkRandom();
-            chunkRandom.setPopulationSeed(region.getSeed(), i << 4, j << 4);
-            SpawnHelper.populateEntities(region, biome, i, j, chunkRandom);
-        }
-    }
-
-    static {
-        AIR = Blocks.AIR.getDefaultState();
+        int i = region.getCenterChunkX();
+        int j = region.getCenterChunkZ();
+        Biome biome = region.getBiome((new ChunkPos(i, j)).getCenterBlockPos());
+        ChunkRandom chunkRandom = new ChunkRandom();
+        chunkRandom.setPopulationSeed(region.getSeed(), i << 4, j << 4);
+        SpawnHelper.populateEntities(region, biome, i, j, chunkRandom);
     }
 }

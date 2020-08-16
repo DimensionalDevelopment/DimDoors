@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.mixin;
+package org.dimdev.dimdoors.mixin.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.dimdev.dimdoors.world.ModBiomes;
