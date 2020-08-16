@@ -15,9 +15,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
-import net.minecraft.world.gen.surfacebuilder.DefaultSurfaceBuilder;
+import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
 
 public final class ModBiomes {
@@ -35,10 +33,10 @@ public final class ModBiomes {
         for (Biome ignored : BuiltinRegistries.BIOME) {
             id++;
         }
-        BuiltinBiomesAccessor.invokeRegister(id, LIMBO_KEY, LIMBO_BIOME);
-        BuiltinBiomesAccessor.invokeRegister(id + 1, PERSONAL_WHITE_VOID_KEY, WHITE_VOID_BIOME);
-        BuiltinBiomesAccessor.invokeRegister(id + 2, PUBLIC_BLACK_VOID_KEY, BLACK_VOID_BIOME);
-        BuiltinBiomesAccessor.invokeRegister(id + 3, DUNGEON_DANGEROUS_BLACK_VOID_KEY, DANGEROUS_BLACK_VOID_BIOME);
+        BuiltinBiomesAccessor.invokeRegister(id + 1, LIMBO_KEY, LIMBO_BIOME);
+        BuiltinBiomesAccessor.invokeRegister(id + 2, PERSONAL_WHITE_VOID_KEY, WHITE_VOID_BIOME);
+        BuiltinBiomesAccessor.invokeRegister(id + 3, PUBLIC_BLACK_VOID_KEY, BLACK_VOID_BIOME);
+        BuiltinBiomesAccessor.invokeRegister(id + 4, DUNGEON_DANGEROUS_BLACK_VOID_KEY, DANGEROUS_BLACK_VOID_BIOME);
     }
 
     static {
@@ -46,9 +44,9 @@ public final class ModBiomes {
         PUBLIC_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:black_void"));
         DUNGEON_DANGEROUS_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:dangerous_black_void"));
         LIMBO_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors", "limbo"));
-        WHITE_VOID_BIOME = new BlankBiomeBuilder(true, false).spawnSettings(new SpawnSettings.Builder().build()).build();
-        BLACK_VOID_BIOME = new BlankBiomeBuilder(false, false).spawnSettings(new SpawnSettings.Builder().build()).build();
-        DANGEROUS_BLACK_VOID_BIOME = new BlankBiomeBuilder(false, true).spawnSettings(new SpawnSettings.Builder().build()).build();
+        WHITE_VOID_BIOME = new BlankBiomeBuilder(true, false).build();
+        BLACK_VOID_BIOME = new BlankBiomeBuilder(false, false).build();
+        DANGEROUS_BLACK_VOID_BIOME = new BlankBiomeBuilder(false, true).build();
         LIMBO_BIOME = new Biome.Builder()
                 .category(Biome.Category.NONE)
                 .depth(0.1f)
@@ -64,7 +62,7 @@ public final class ModBiomes {
                         .grassColor(0)
                         .build())
                 .generationSettings(new GenerationSettings.Builder()
-                        .surfaceBuilder(new ConfiguredSurfaceBuilder<>(new DefaultSurfaceBuilder(TernarySurfaceConfig.CODEC), new TernarySurfaceConfig(ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.ETERNAL_FLUID.getDefaultState())))
+                        .surfaceBuilder(SurfaceBuilder.DEFAULT.method_30478(new TernarySurfaceConfig(ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.ETERNAL_FLUID.getDefaultState())))
                         .build())
                 .precipitation(Biome.Precipitation.NONE)
                 .scale(0.9f)
