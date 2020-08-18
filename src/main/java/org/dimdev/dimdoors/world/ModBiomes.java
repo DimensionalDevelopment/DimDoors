@@ -30,9 +30,7 @@ public final class ModBiomes {
 
     public static void init() {
         int id = 1;
-        for (Biome ignored : BuiltinRegistries.BIOME) {
-            id++;
-        }
+        id += BuiltinRegistries.BIOME.stream().count();
         BuiltinBiomesAccessor.invokeRegister(id + 1, LIMBO_KEY, LIMBO_BIOME);
         BuiltinBiomesAccessor.invokeRegister(id + 2, PERSONAL_WHITE_VOID_KEY, WHITE_VOID_BIOME);
         BuiltinBiomesAccessor.invokeRegister(id + 3, PUBLIC_BLACK_VOID_KEY, BLACK_VOID_BIOME);
@@ -58,11 +56,9 @@ public final class ModBiomes {
                         .waterFogColor(0)
                         .moodSound(new BiomeMoodSound(ModSoundEvents.CREEPY, 6000, 8, 2.0))
                         .skyColor(0x404040)
-                        .grassColorModifier(BiomeEffects.GrassColorModifier.NONE)
-                        .grassColor(0)
                         .build())
                 .generationSettings(new GenerationSettings.Builder()
-                        .surfaceBuilder(SurfaceBuilder.DEFAULT.method_30478(new TernarySurfaceConfig(ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.ETERNAL_FLUID.getDefaultState())))
+                        .surfaceBuilder(SurfaceBuilder.NETHER.method_30478(new TernarySurfaceConfig(ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.ETERNAL_FLUID.getDefaultState())))
                         .build())
                 .precipitation(Biome.Precipitation.NONE)
                 .scale(0.9f)

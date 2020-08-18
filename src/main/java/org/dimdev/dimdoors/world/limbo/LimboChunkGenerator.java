@@ -59,8 +59,6 @@ public class LimboChunkGenerator extends ChunkGenerator {
     public static final Codec<LimboChunkGenerator> CODEC = RecordCodecBuilder.create((instance) -> {
         return instance.group(BiomeSource.CODEC.fieldOf("biome_source").forGetter((limboChunkGenerator) -> {
             return limboChunkGenerator.biomeSource;
-        }), Codec.LONG.fieldOf("seed").stable().forGetter((limboChunkGenerator) -> {
-            return limboChunkGenerator.worldSeed;
         }), ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter((limboChunkGenerator) -> {
             return limboChunkGenerator.settings;
         })).apply(instance, instance.stable(LimboChunkGenerator::new));
@@ -105,11 +103,11 @@ public class LimboChunkGenerator extends ChunkGenerator {
     protected final Supplier<ChunkGeneratorSettings> settings;
     private final int worldHeight;
 
-    public LimboChunkGenerator(BiomeSource biomeSource, long seed, Supplier<ChunkGeneratorSettings> supplier) {
-        this(biomeSource, biomeSource, seed, supplier);
+    public LimboChunkGenerator(BiomeSource biomeSource, Supplier<ChunkGeneratorSettings> supplier) {
+        this(biomeSource, biomeSource, supplier);
     }
 
-    private LimboChunkGenerator(BiomeSource biomeSource, BiomeSource biomeSource2, long seed, Supplier<ChunkGeneratorSettings> supplier) {
+    private LimboChunkGenerator(BiomeSource biomeSource, BiomeSource biomeSource2, Supplier<ChunkGeneratorSettings> supplier) {
         super(biomeSource, biomeSource2, supplier.get().getStructuresConfig(), new Random().nextLong());
         this.worldSeed = new Random().nextLong();
         ChunkGeneratorSettings chunkGeneratorSettings = supplier.get();
@@ -146,7 +144,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
 
     @Environment(EnvType.CLIENT)
     public ChunkGenerator withSeed(long seed) {
-        return new LimboChunkGenerator(this.biomeSource.withSeed(seed), seed, this.settings);
+        return new LimboChunkGenerator(this.biomeSource.withSeed(seed), this.settings);
     }
 
     public boolean equals(long l, RegistryKey<ChunkGeneratorSettings> registryKey) {

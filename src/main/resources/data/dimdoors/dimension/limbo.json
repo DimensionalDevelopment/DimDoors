@@ -1,11 +1,9 @@
 {
   "type": "dimdoors:limbo",
   "generator": {
-    "type": "minecraft:noise",
-    "seed": 23123456787659,
+    "type": "dimdoors:limbo_chunk_generator",
     "biome_source": {
-      "type": "minecraft:fixed",
-      "biome": "dimdoors:limbo"
+      "type": "dimdoors:limbo_biome_source"
     },
     "settings": {
       "bedrock_floor_position": 0,
