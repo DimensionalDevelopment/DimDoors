@@ -20,24 +20,24 @@ public class BlankBiomeBuilder extends Biome.Builder {
         this.generationSettings(new GenerationSettings.Builder().surfaceBuilder(SurfaceBuilder.DEFAULT.method_30478(new TernarySurfaceConfig(Blocks.AIR.getDefaultState(), Blocks.AIR.getDefaultState(), Blocks.VOID_AIR.getDefaultState()))).build())
                 .precipitation(Biome.Precipitation.NONE)
                 .category(Biome.Category.NONE)
-                .depth(0)
+                .depth(0.0F)
                 .temperatureModifier(Biome.TemperatureModifier.NONE)
-                .downfall(0)
-                .effects(this.createEffect(this.white))
+                .downfall(0.0F)
+                .effects(this.createEffect())
                 .scale(0)
                 .temperature(0.8f)
                 .temperatureModifier(null)
                 .spawnSettings(new SpawnSettings.Builder().build());
     }
 
-    private BiomeEffects createEffect(boolean white) {
+    private BiomeEffects createEffect() {
         BiomeEffects.Builder builder = new BiomeEffects.Builder()
-                .waterColor(white ? 0xFFFFFF : 0x000000)
-                .waterFogColor(white ? 0xFFFFFF : 0x000000)
-                .fogColor(white ? 0xFFFFFF : 0x000000)
-                .skyColor(white ? 0xFFFFFF : 0x808080)
+                .waterColor(this.white ? 0xFFFFFF : 0x000000)
+                .waterFogColor(this.white ? 0xFFFFFF : 0x000000)
+                .fogColor(this.white ? 0xFFFFFF : 0x000000)
+                .skyColor(this.white ? 0xFFFFFF : 0x808080)
                 .grassColorModifier(BiomeEffects.GrassColorModifier.NONE);
-        if (white) builder.loopSound(ModSoundEvents.WHITE_VOID);
+//        if (this.white) builder.loopSound(ModSoundEvents.WHITE_VOID);
         return builder.build();
     }
 }
