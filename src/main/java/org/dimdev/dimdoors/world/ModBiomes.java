@@ -4,8 +4,8 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.mixin.BuiltinBiomesAccessor;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.util.BlankBiomeBuilder;
 
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -50,21 +50,22 @@ public final class ModBiomes {
                 .depth(0.1f)
                 .downfall(0.0f)
                 .effects(new BiomeEffects.Builder()
-                        .fogColor(0)
+                        .fogColor(0x222222)
                         .waterColor(0)
                         .foliageColor(0)
                         .waterFogColor(0)
                         .moodSound(new BiomeMoodSound(ModSoundEvents.CREEPY, 6000, 8, 2.0))
-                        .skyColor(0x404040)
+                        .skyColor(0x222222)
+                        .grassColor(0)
                         .build())
                 .generationSettings(new GenerationSettings.Builder()
                         .surfaceBuilder(SurfaceBuilder.NETHER.method_30478(new TernarySurfaceConfig(ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.ETERNAL_FLUID.getDefaultState())))
                         .build())
                 .precipitation(Biome.Precipitation.NONE)
-                .scale(0.9f)
+                .scale(2F)
                 .spawnSettings(new SpawnSettings.Builder()
                         .creatureSpawnProbability(0.2f)
-                        .spawnCost(ModEntityTypes.MONOLITH, 5, 5)
+                        .spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(ModEntityTypes.MONOLITH, 1, 1, 1))
                         .build())
                 .temperature(0.2f)
                 .temperatureModifier(Biome.TemperatureModifier.NONE)

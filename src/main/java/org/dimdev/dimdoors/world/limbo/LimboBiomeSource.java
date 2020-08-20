@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors.world.limbo;
 
 import java.util.Collections;
+import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Encoder;
@@ -26,6 +28,11 @@ public class LimboBiomeSource extends BiomeSource {
     @Override
     public BiomeSource withSeed(long seed) {
         return this;
+    }
+
+    @Override
+    public Set<Biome> getBiomesInArea(int x, int y, int z, int radius) {
+        return ImmutableSet.of(ModBiomes.LIMBO_BIOME);
     }
 
     @Override
