@@ -1,11 +1,8 @@
 package org.dimdev.dimdoors.client;
 
-import io.github.waterpicker.openworlds.OpenWorlds;
-
 import java.util.function.Function;
 
 import org.dimdev.dimdoors.fluid.ModFluids;
-import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
@@ -16,7 +13,6 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockRenderView;
 
@@ -31,10 +27,10 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 @Environment(EnvType.CLIENT)
 public class ModRendering {
     public static void initClient() {
-        OpenWorlds.registerSkyRenderer(ModDimensions.POCKET_TYPE, new CustomSkyProvider(null, null, new Vec3i(0, 0, 0)));
-        OpenWorlds.registerSkyRenderer(ModDimensions.LIMBO_TYPE, new LimboSkyProvider());
-        OpenWorlds.registerCloudRenderer(ModDimensions.LIMBO_TYPE, (minecraftClient, matrixStack, v, v1, v2, v3) -> {
-        });
+//        OpenWorlds.registerSkyRenderer(ModDimensions.POCKET_TYPE, new CustomSkyProvider(null, null, new Vec3i(0, 0, 0)));
+//        OpenWorlds.registerSkyRenderer(ModDimensions.LIMBO_TYPE, new LimboSkyProvider());
+//        OpenWorlds.registerCloudRenderer(ModDimensions.LIMBO_TYPE, (minecraftClient, matrixStack, v, v1, v2, v3) -> {
+//        });
 
         setupFluidRendering(ModFluids.ETERNAL_FLUID, ModFluids.FLOWING_ETERNAL_FLUID, new Identifier("dimdoors:eternal_fluid"));
     }

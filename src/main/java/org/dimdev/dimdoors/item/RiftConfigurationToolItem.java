@@ -28,7 +28,7 @@ public class RiftConfigurationToolItem extends Item {
     public static final String ID = "rift_configuration_tool";
 
     RiftConfigurationToolItem() {
-        super(new Item.Settings().group(ModItemGroups.DIMENSIONAL_DOORS).maxCount(1).maxDamage(16));
+        super(new Item.Settings().group(ModItems.DIMENSIONAL_DOORS).maxCount(1).maxDamage(16));
     }
 
     @Override

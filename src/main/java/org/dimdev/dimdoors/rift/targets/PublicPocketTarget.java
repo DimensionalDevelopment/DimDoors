@@ -2,9 +2,9 @@ package org.dimdev.dimdoors.rift.targets;
 
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.dimdoors.util.Location;
 
 import net.minecraft.nbt.CompoundTag;
 

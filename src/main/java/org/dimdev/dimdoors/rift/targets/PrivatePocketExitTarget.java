@@ -4,18 +4,18 @@ import java.util.UUID;
 
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.util.EntityUtils;
+import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
-import org.dimdev.dimdoors.util.EntityUtils;
-import org.dimdev.dimdoors.util.Location;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
 
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
+//import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 
 public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarget {
     public PrivatePocketExitTarget() {
@@ -49,7 +49,7 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
                 } else {
                     EntityUtils.chat(entity, new TranslatableText("rifts.destinations.private_pocket_exit.rift_has_closed"));
                 }
-                FabricDimensions.teleport(entity, entity.getServer().getWorld(ModDimensions.LIMBO));
+                //FabricDimensions.teleport(entity, entity.getServer().getWorld(ModDimensions.LIMBO));
                 return false;
             } else {
                 ((EntityTarget) destLoc.getBlockEntity()).receiveEntity(entity, yawOffset);

@@ -7,21 +7,36 @@ import java.util.HashSet;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.rift.targets.*;
+import org.dimdev.dimdoors.rift.targets.EscapeTarget;
+import org.dimdev.dimdoors.rift.targets.PrivatePocketExitTarget;
+import org.dimdev.dimdoors.rift.targets.PrivatePocketTarget;
+import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
+import org.dimdev.dimdoors.rift.targets.RandomTarget;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.*;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.BucketItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import static org.dimdev.dimdoors.item.ModItemGroups.DIMENSIONAL_DOORS;
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 
 @SuppressWarnings("unused")
 public final class ModItems {
+    public static final ItemGroup DIMENSIONAL_DOORS = FabricItemGroupBuilder
+            .create(new Identifier("dimdoors", "dimensional_doors"))
+            .icon(() -> new ItemStack(ModItems.IRON_DIMENSIONAL_DOOR))
+            .build();
+
     public static final Item QUARTZ_DOOR = register(ModBlocks.QUARTZ_DOOR);
     public static final Item QUARTZ_DIMENSIONAL_DOOR = register(new DimensionalDoorItem(
             ModBlocks.QUARTZ_DIMENSIONAL_DOOR,

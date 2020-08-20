@@ -107,7 +107,7 @@
         },
         {
           "type": "item",
-          "name": "dimdoors:fabric",
+          "name": "dimdoors:lime_fabric",
           "functions": [
             {
               "function": "set_count",
@@ -115,10 +115,6 @@
                 "min": 16,
                 "max": 64
               }
-            },
-            {
-              "function": "set_data",
-              "data": 15
             }
           ],
           "weight": 2

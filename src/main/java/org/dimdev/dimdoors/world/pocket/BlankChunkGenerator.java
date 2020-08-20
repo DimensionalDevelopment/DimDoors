@@ -8,9 +8,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.structure.StructureManager;
+import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
@@ -22,7 +24,7 @@ import net.minecraft.world.gen.chunk.VerticalBlockSample;
 public class BlankChunkGenerator extends ChunkGenerator {
     public static final Codec<BlankChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
             instance.group(
-                    BiomeSource.field_24713.fieldOf("biome_source")
+                    BiomeSource.CODEC.fieldOf("biome_source")
                             .forGetter((generator) -> generator.biomeSource)
             ).apply(instance, instance.stable(BlankChunkGenerator::new))
     );
@@ -32,7 +34,7 @@ public class BlankChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    protected Codec<? extends ChunkGenerator> method_28506() {
+    public Codec<? extends ChunkGenerator> getCodec() {
         return CODEC;
     }
 
@@ -50,13 +52,11 @@ public class BlankChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void setStructureStarts(StructureAccessor structureAccessor, Chunk chunk, StructureManager structureManager, long l) {
-
+    public void setStructureStarts(DynamicRegistryManager dynamicRegistryManager, StructureAccessor structureAccessor, Chunk chunk, StructureManager structureManager, long worldSeed) {
     }
 
     @Override
-    public void addStructureReferences(WorldAccess world, StructureAccessor accessor, Chunk chunk) {
-
+    public void addStructureReferences(StructureWorldAccess structureWorldAccess, StructureAccessor accessor, Chunk chunk) {
     }
 
     @Override

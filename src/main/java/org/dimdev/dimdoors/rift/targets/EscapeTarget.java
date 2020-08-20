@@ -4,17 +4,16 @@ import java.util.UUID;
 
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.TeleportUtil;
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import static org.dimdev.dimdoors.util.EntityUtils.chat;
 
 public class EscapeTarget extends VirtualTarget implements EntityTarget { // TODO: createRift option
@@ -59,7 +58,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
                 } else {
                     chat(entity, new TranslatableText("rifts.destinations.escape.rift_has_closed"));
                 }
-                FabricDimensions.teleport(entity, entity.getServer().getWorld(ModDimensions.LIMBO));
+                //FabricDimensions.teleport(entity, entity.getServer().getWorld(ModDimensions.LIMBO));
                 return true;
             }
         } else {

@@ -11,10 +11,14 @@ import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.dimdoors.rift.targets.*;
-import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.rift.targets.EntityTarget;
+import org.dimdev.dimdoors.rift.targets.MessageTarget;
+import org.dimdev.dimdoors.rift.targets.Target;
+import org.dimdev.dimdoors.rift.targets.Targets;
+import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
