@@ -2,9 +2,9 @@ package org.dimdev.dimdoors.world;
 
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
-import org.dimdev.dimdoors.mixin.BuiltinBiomesAccessor;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.util.Identifier;
@@ -19,32 +19,44 @@ import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
 
 public final class ModBiomes {
-//    public static final RegistryKey<Biome> PERSONAL_WHITE_VOID_KEY;
-//    public static final RegistryKey<Biome> PUBLIC_BLACK_VOID_KEY;
-//    public static final RegistryKey<Biome> DUNGEON_DANGEROUS_BLACK_VOID_KEY;
+    public static final RegistryKey<Biome> PERSONAL_WHITE_VOID_KEY;
+    public static final RegistryKey<Biome> PUBLIC_BLACK_VOID_KEY;
+    public static final RegistryKey<Biome> DUNGEON_DANGEROUS_BLACK_VOID_KEY;
     public static final RegistryKey<Biome> LIMBO_KEY;
-//    public static final Biome WHITE_VOID_BIOME;
-//    public static final Biome BLACK_VOID_BIOME;
-//    public static final Biome DANGEROUS_BLACK_VOID_BIOME;
+    public static final Biome WHITE_VOID_BIOME;
+    public static final Biome BLACK_VOID_BIOME;
+    public static final Biome DANGEROUS_BLACK_VOID_BIOME;
     public static final Biome LIMBO_BIOME;
 
     public static void init() {
-        int id = 1;
-        id += BuiltinRegistries.BIOME.stream().count();
-        BuiltinBiomesAccessor.invokeRegister(id + 1, LIMBO_KEY, LIMBO_BIOME);
-//        BuiltinBiomesAccessor.invokeRegister(id + 2, PERSONAL_WHITE_VOID_KEY, WHITE_VOID_BIOME);
-//        BuiltinBiomesAccessor.invokeRegister(id + 3, PUBLIC_BLACK_VOID_KEY, BLACK_VOID_BIOME);
-//        BuiltinBiomesAccessor.invokeRegister(id + 4, DUNGEON_DANGEROUS_BLACK_VOID_KEY, DANGEROUS_BLACK_VOID_BIOME);
+        Registry.register(BuiltinRegistries.BIOME, LIMBO_KEY.getValue(), LIMBO_BIOME);
+        Registry.register(BuiltinRegistries.BIOME, PERSONAL_WHITE_VOID_KEY.getValue(), WHITE_VOID_BIOME);
+        Registry.register(BuiltinRegistries.BIOME, PUBLIC_BLACK_VOID_KEY.getValue(), BLACK_VOID_BIOME);
+        Registry.register(BuiltinRegistries.BIOME, DUNGEON_DANGEROUS_BLACK_VOID_KEY.getValue(), DANGEROUS_BLACK_VOID_BIOME);
+    }
+
+    private static BiomeEffects createEffect(boolean white) {
+        BiomeEffects.Builder builder = new BiomeEffects.Builder()
+                .waterColor(white ? 0xFFFFFF : 0x000000)
+                .waterFogColor(white ? 0xFFFFFF : 0x000000)
+                .fogColor(white ? 0xFFFFFF : 0x000000)
+                .skyColor(white ? 0xFFFFFF : 0x808080)
+                .grassColorModifier(BiomeEffects.GrassColorModifier.NONE);
+        if (white) {
+            builder.loopSound(ModSoundEvents.WHITE_VOID);
+        }
+        return builder.build();
     }
 
     static {
-//        PERSONAL_WHITE_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:white_void"));
-//        PUBLIC_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:black_void"));
-//        DUNGEON_DANGEROUS_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:dangerous_black_void"));
+        Biome.Builder voidBiomeBuilder = new Biome.Builder().category(Biome.Category.NONE).depth(0).downfall(0).generationSettings(new GenerationSettings.Builder().surfaceBuilder(SurfaceBuilder.DEFAULT.method_30478(new TernarySurfaceConfig(Blocks.AIR.getDefaultState(), Blocks.AIR.getDefaultState(), Blocks.VOID_AIR.getDefaultState()))).build()).precipitation(Biome.Precipitation.NONE).scale(0).spawnSettings(new SpawnSettings.Builder().build()).temperature(0.8f).temperatureModifier(Biome.TemperatureModifier.NONE);
+        PERSONAL_WHITE_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:white_void"));
+        PUBLIC_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:black_void"));
+        DUNGEON_DANGEROUS_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:dangerous_black_void"));
         LIMBO_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors", "limbo"));
-//        WHITE_VOID_BIOME = new BlankBiomeBuilder(true, false).build();
-//        BLACK_VOID_BIOME = new BlankBiomeBuilder(false, false).build();
-//        DANGEROUS_BLACK_VOID_BIOME = new BlankBiomeBuilder(false, true).build();
+        WHITE_VOID_BIOME = voidBiomeBuilder.effects(createEffect(true)).build();
+        BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
+        DANGEROUS_BLACK_VOID_BIOME =voidBiomeBuilder.effects(createEffect(false)).build();
         LIMBO_BIOME = new Biome.Builder()
                 .category(Biome.Category.NONE)
                 .depth(0.1f)
