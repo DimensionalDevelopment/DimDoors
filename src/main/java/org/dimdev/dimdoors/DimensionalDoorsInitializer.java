@@ -21,6 +21,7 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.feature.ModFeatures;
 
 import net.minecraft.util.Identifier;
 
@@ -40,6 +41,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModBlockEntityTypes.init();
         ModCommands.init();
         ModSoundEvents.init();
+        ModFeatures.init();
 
         VirtualTarget.registry.put("available_link", RandomTarget.class);
         VirtualTarget.registry.put("escape", EscapeTarget.class);

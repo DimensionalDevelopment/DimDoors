@@ -3,6 +3,8 @@
   "package": "org.dimdev.dimdoors.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BuiltinBiomesAccessor",
+    "DefaultBiomeFeaturesMixin",
     "DirectionAccessor"
   ],
   "client": [
