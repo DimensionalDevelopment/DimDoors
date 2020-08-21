@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.gateway;
+package org.dimdev.dimdoors.world.feature.gateway;
 
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.world.ModDimensions;

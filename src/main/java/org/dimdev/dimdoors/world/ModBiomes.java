@@ -3,6 +3,9 @@ package org.dimdev.dimdoors.world;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.world.feature.gateway.SandstonePillarsGateway;
+import org.dimdev.dimdoors.world.feature.gateway.SchematicGateway;
+import org.dimdev.dimdoors.world.feature.gateway.TwoPillarsGateway;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.SpawnGroup;
@@ -27,6 +30,8 @@ public final class ModBiomes {
     public static final Biome BLACK_VOID_BIOME;
     public static final Biome DANGEROUS_BLACK_VOID_BIOME;
     public static final Biome LIMBO_BIOME;
+    public static final SchematicGateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsGateway();
+    public static final SchematicGateway TWO_PILLARS_GATEWAY =  new TwoPillarsGateway();
 
     public static void init() {
         Registry.register(BuiltinRegistries.BIOME, LIMBO_KEY.getValue(), LIMBO_BIOME);

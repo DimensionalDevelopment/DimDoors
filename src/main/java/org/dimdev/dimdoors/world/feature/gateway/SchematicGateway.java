@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.gateway;
+package org.dimdev.dimdoors.world.feature.gateway;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -11,13 +11,14 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.World;
 
-public abstract class BaseSchematicGateway extends BaseGateway {
+public abstract class SchematicGateway extends BaseGateway {
     private static final Logger LOGGER = LogManager.getLogger();
     private Schematic schematic;
 
-    public BaseSchematicGateway(String id) {
+    public SchematicGateway(String id) {
         String schematicJarDirectory = "/data/dimdoors/gateways/";
 
         //Initialising the possible locations/formats for the schematic file
@@ -54,7 +55,7 @@ public abstract class BaseSchematicGateway extends BaseGateway {
     }
 
     @Override
-    public void generate(World world, int x, int y, int z) {
+    public void generate(StructureWorldAccess world, int x, int y, int z) {
         schematic.place(world, x, y, z);
         generateRandomBits(world, x, y, z);
     }
@@ -67,6 +68,6 @@ public abstract class BaseSchematicGateway extends BaseGateway {
      * @param y     - the y-coordinate of the block on which the gateway may be built
      * @param z     - the z-coordinate at which to center the gateway; usually where the door is placed
      */
-    protected void generateRandomBits(World world, int x, int y, int z) {
+    protected void generateRandomBits(StructureWorldAccess world, int x, int y, int z) {
     }
 }

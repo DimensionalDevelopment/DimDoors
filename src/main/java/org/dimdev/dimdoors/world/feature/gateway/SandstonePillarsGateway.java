@@ -1,6 +1,6 @@
-package org.dimdev.dimdoors.world.gateway;
+package org.dimdev.dimdoors.world.feature.gateway;
 
-public class SandstonePillarsGateway extends BaseSchematicGateway {
+public class SandstonePillarsGateway extends SchematicGateway {
     public SandstonePillarsGateway() {
         super("sandstone_pillars");
     }
