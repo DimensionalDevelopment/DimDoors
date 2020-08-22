@@ -6,9 +6,6 @@ public class RGBA {
     float blue;
     float alpha;
 
-    public RGBA() {
-    }
-
     public RGBA(float red, float green, float blue, float alpha) {
         this.red = red;
         this.green = green;
@@ -38,10 +35,9 @@ public class RGBA {
 
     public static RGBA[] fromFloatArray(float[][] f) {
         RGBA[] arr = new RGBA[4];
-        arr[0] = fromFloatArray(f[0]);
-        arr[1] = fromFloatArray(f[1]);
-        arr[2] = fromFloatArray(f[2]);
-        arr[3] = fromFloatArray(f[3]);
+        for (int a = 0; a < 4; a++) {
+            arr[a] = fromFloatArray(f[a]);
+        }
         return arr;
     }
 }

@@ -3,7 +3,7 @@
     "type": "dimdoors:blank",
     "biome_source": {
       "type": "minecraft:fixed",
-      "biome": "dimdoors:limbo"
+      "biome": "dimdoors:black_void"
     }
   },
   "type": "dimdoors:pocket"

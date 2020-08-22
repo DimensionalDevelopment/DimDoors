@@ -1,18 +1,16 @@
-package org.dimdev.dimdoors.world.gateway;
+package org.dimdev.dimdoors.world.feature.gateway;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 public abstract class BaseGateway {
-    public BaseGateway() {
-    }
-
-    public abstract void generate(World world, int x, int y, int z);
+    public abstract void generate(StructureWorldAccess world, int x, int y, int z);
 
     protected boolean isBiomeValid(Biome biome) {
-        Biome[] biomes = getBiomes();
-        if (biomes != null) {
+        Biome[] biomes = this.getBiomes();
+        if (biomes.length != 0) {
             for (Biome b : biomes) {
                 if (b.equals(biome)) {
                     return true;
@@ -28,6 +26,6 @@ public abstract class BaseGateway {
     }
 
     public Biome[] getBiomes() {
-        return null;
+        return new Biome[]{};
     }
 }

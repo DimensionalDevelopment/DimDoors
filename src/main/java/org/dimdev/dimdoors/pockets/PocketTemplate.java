@@ -34,6 +34,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.World;
 
 /**
@@ -173,7 +174,7 @@ public class PocketTemplate {
     public void place(Pocket pocket, boolean setup) {
         pocket.setSize(size * 16, size * 16, size * 16);
         int gridSize = PocketRegistry.instance(pocket.world).getGridSize();
-        World world = pocket.world;
+        ServerWorld world = pocket.world;
         int xBase = pocket.box.minX;
         int yBase = pocket.box.minY;
         int zBase = pocket.box.minZ;

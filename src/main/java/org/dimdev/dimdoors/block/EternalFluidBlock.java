@@ -26,4 +26,9 @@ public class EternalFluidBlock extends FluidBlock {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void onSteppedOn(World world, BlockPos pos, Entity entity) {
+        super.onSteppedOn(world, pos, entity);
+    }
 }

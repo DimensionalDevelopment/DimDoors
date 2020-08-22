@@ -23,7 +23,6 @@ import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
@@ -33,6 +32,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
@@ -336,7 +336,7 @@ public class Schematic implements BlockView {
             }
         }
 
-        for (Entity entity : world.getOtherEntities((Entity) null, getBoundingBox(from, to), entity -> !(entity instanceof PlayerEntity))) {
+        for (Entity entity : world.getOtherEntities(null, getBoundingBox(from, to), entity -> !(entity instanceof PlayerEntity))) {
             CompoundTag entityTag = entity.toTag(new CompoundTag());
 
             ListTag posTag = (ListTag) entityTag.get("Pos");
@@ -359,9 +359,9 @@ public class Schematic implements BlockView {
         return new Box(new BlockPos(from.getX(), from.getY(), from.getZ()), new BlockPos(to.getX(), to.getY(), to.getZ()));
     }
 
-    public void place(World world, int xBase, int yBase, int zBase) {
+    public void place(StructureWorldAccess world, int xBase, int yBase, int zBase) {
         // Place the schematic's blocks
-        setBlocks(world, xBase, yBase, zBase);
+        this.setBlocks(world, xBase, yBase, zBase);
 
         // Set BlockEntity data
 //        for (CompoundTag BlockEntityNBT : tileEntities) {
@@ -418,10 +418,8 @@ public class Schematic implements BlockView {
         }
     }
 
-    private void setBlocks(World world, int originX, int originY, int originZ) {
+    private void setBlocks(StructureWorldAccess world, int originX, int originY, int originZ) {
         LOGGER.debug("Setting chunk blockstates");
-        ServerWorld serverWorld = ((ServerWorld) world);
-
         long setTime = 0;
         long relightTime = 0;
 
@@ -456,7 +454,7 @@ public class Schematic implements BlockView {
 //                                        BlockPos pos = new BlockPos(originX + x, originY + y, originZ + z);
 //                                        serverWorld.getChunkManager().markForUpdate(pos);
 //                                        serverWorld.getLightingProvider().checkBlock(pos);
-                                        if (y < 0 || y > 255) {
+                                        if (y > 255) {
                                             System.out.println();
                                         }
 
@@ -465,8 +463,8 @@ public class Schematic implements BlockView {
                                         chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR).trackUpdate(lx, y, lz, state);
                                         chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE).trackUpdate(lx, y, lz, state);
 
-                                        serverWorld.getChunkManager().markForUpdate(new BlockPos(originX + x, originY + y, originZ + z));
-                                        serverWorld.getLightingProvider().checkBlock(new BlockPos(originX + x, originY + y, originZ + z));
+                                        world.toServerWorld().getChunkManager().markForUpdate(new BlockPos(originX + x, originY + y, originZ + z));
+                                        world.toServerWorld().getLightingProvider().checkBlock(new BlockPos(originX + x, originY + y, originZ + z));
                                     }
                                 }
                             }

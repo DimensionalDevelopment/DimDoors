@@ -4,7 +4,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BuiltinBiomesAccessor",
-    "DirectionAccessor"
+    "DefaultBiomeFeaturesMixin",
+    "DirectionAccessor",
+    "PlayerEntityMixin"
   ],
   "client": [
     "client.InGameHudMixin"
