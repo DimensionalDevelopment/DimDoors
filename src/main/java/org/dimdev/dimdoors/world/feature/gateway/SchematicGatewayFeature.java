@@ -11,13 +11,13 @@ import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 
-public class GatewayFeature extends Feature<GatewayFeatureConfig> {
-    public GatewayFeature(Codec<GatewayFeatureConfig> codec) {
+public class SchematicGatewayFeature extends Feature<SchematicGatewayFeatureConfig> {
+    public SchematicGatewayFeature(Codec<SchematicGatewayFeatureConfig> codec) {
         super(codec);
     }
 
     @Override
-    public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos, GatewayFeatureConfig config) {
+    public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos, SchematicGatewayFeatureConfig config) {
         if (world.getBlockState(blockPos).getBlock() instanceof AirBlock && world.getBlockState(blockPos.down()).getBlock() instanceof FallingBlock) {
             config.getGateway().generate(world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
             return true;
