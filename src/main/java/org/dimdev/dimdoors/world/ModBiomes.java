@@ -61,7 +61,7 @@ public final class ModBiomes {
         LIMBO_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors", "limbo"));
         WHITE_VOID_BIOME = voidBiomeBuilder.effects(createEffect(true)).build();
         BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
-        DANGEROUS_BLACK_VOID_BIOME =voidBiomeBuilder.effects(createEffect(false)).build();
+        DANGEROUS_BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
         LIMBO_BIOME = new Biome.Builder()
                 .category(Biome.Category.NONE)
                 .depth(0.1f)
@@ -81,7 +81,7 @@ public final class ModBiomes {
                 .precipitation(Biome.Precipitation.NONE)
                 .scale(2F)
                 .spawnSettings(new SpawnSettings.Builder()
-                        .creatureSpawnProbability(0.2f)
+                        .creatureSpawnProbability(0.02f)
                         .spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(ModEntityTypes.MONOLITH, 1, 1, 1))
                         .build())
                 .temperature(0.2f)

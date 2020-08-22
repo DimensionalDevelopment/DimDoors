@@ -5,7 +5,8 @@
   "mixins": [
     "BuiltinBiomesAccessor",
     "DefaultBiomeFeaturesMixin",
-    "DirectionAccessor"
+    "DirectionAccessor",
+    "PlayerEntityMixin"
   ],
   "client": [
     "client.InGameHudMixin"

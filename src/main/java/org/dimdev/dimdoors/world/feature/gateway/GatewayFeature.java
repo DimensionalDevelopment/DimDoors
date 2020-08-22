@@ -10,12 +10,13 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 
 public class GatewayFeature extends Feature<GatewayFeatureConfig> {
-    public GatewayFeature(Codec<GatewayFeatureConfig> configCodec) {
-        super(configCodec);
+    public GatewayFeature(Codec<GatewayFeatureConfig> codec) {
+        super(codec);
     }
 
     @Override
     public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos, GatewayFeatureConfig config) {
+        System.out.println("Generated");
         config.gateway.generate(world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
         return true;
     }

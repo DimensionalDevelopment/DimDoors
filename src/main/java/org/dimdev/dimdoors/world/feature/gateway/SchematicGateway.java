@@ -12,7 +12,6 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.World;
 
 public abstract class SchematicGateway extends BaseGateway {
     private static final Logger LOGGER = LogManager.getLogger();

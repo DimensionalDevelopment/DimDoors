@@ -51,16 +51,20 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
             if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || canEscapeLimbo) {
                 Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos())).projectToWorld(false);
                 TeleportUtil.teleport(entity, location.world, location.pos, 0);
-                return true;
             } else {
                 if (destLoc == null) {
                     chat(entity, new TranslatableText("rifts.destinations.escape.did_not_use_rift"));
                 } else {
                     chat(entity, new TranslatableText("rifts.destinations.escape.rift_has_closed"));
                 }
-                //FabricDimensions.teleport(entity, entity.getServer().getWorld(ModDimensions.LIMBO));
-                return true;
+                if (!entity.getEntityWorld().isClient) {
+                    if (ModDimensions.limboDimension != null) {
+                        entity.moveToWorld(ModDimensions.limboDimension);
+                        entity.setPos(location.getX(), location.getY(), location.getZ());
+                    }
+                }
             }
+            return true;
         } else {
             return false; // No escape info for that entity
         }

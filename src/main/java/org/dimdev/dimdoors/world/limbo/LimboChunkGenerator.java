@@ -4,9 +4,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -15,12 +13,10 @@ import java.util.stream.IntStream;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.SpawnGroup;
 import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructurePiece;
@@ -43,7 +39,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.chunk.Chunk;
@@ -88,7 +83,8 @@ public class LimboChunkGenerator extends ChunkGenerator {
         }
     });
 
-    private static final BlockState AIR = Blocks.AIR.getDefaultState();;
+    private static final BlockState AIR = Blocks.AIR.getDefaultState();
+    ;
     private final int verticalNoiseResolution;
     private final int horizontalNoiseResolution;
     private final int noiseSizeX;

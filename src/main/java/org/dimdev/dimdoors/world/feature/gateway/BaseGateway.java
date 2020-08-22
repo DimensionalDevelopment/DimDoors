@@ -6,13 +6,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 public abstract class BaseGateway {
-    public BaseGateway() {
-    }
-
     public abstract void generate(StructureWorldAccess world, int x, int y, int z);
 
     protected boolean isBiomeValid(Biome biome) {
-        Biome[] biomes = getBiomes();
+        Biome[] biomes = this.getBiomes();
         if (biomes != null) {
             for (Biome b : biomes) {
                 if (b.equals(biome)) {
@@ -29,6 +26,6 @@ public abstract class BaseGateway {
     }
 
     public Biome[] getBiomes() {
-        return null;
+        return new Biome[]{};
     }
 }
