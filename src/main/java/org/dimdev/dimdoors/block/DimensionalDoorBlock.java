@@ -80,7 +80,7 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 
         // TODO: Also notify player in case of error, don't crash
         if (bottomEntity instanceof EntranceRiftBlockEntity && topEntity instanceof EntranceRiftBlockEntity) {
-            LOGGER.error("Dimensional door at " + pos + " in world " + world + " contained two rifts, please report this. Defaulting to bottom.");
+            LOGGER.warn("Dimensional door at " + pos + " in world " + world + " contained two rifts, please report this. Defaulting to bottom.");
             return (EntranceRiftBlockEntity) bottomEntity;
         } else if (bottomEntity instanceof EntranceRiftBlockEntity) {
             return (EntranceRiftBlockEntity) bottomEntity;

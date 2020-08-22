@@ -50,24 +50,27 @@ import static org.lwjgl.opengl.GL11.*;
 
 @Environment(EnvType.CLIENT)
 public final class DimensionalPortalRenderer {
+    private static final FloatBuffer BUFFER = GlAllocationUtils.allocateFloatBuffer(16);
+    private static final Identifier WARP_PATH = new Identifier("dimdoors:textures/other/warp.png");
+    private static final BooleanProperty OPEN_PROPERTY = BooleanProperty.of("open");
+    private static final EnumProperty<DoorHinge> HINGE_PROPERTY = EnumProperty.of("hinge", DoorHinge.class);
+    private static final DirectionProperty FACING_PROPERTY = DirectionProperty.of("facing", Arrays.asList(DirectionAccessor.getHorizontal()));
 
-    private static final FloatBuffer buffer = GlAllocationUtils.allocateFloatBuffer(16);
-    private static final Identifier warpPath = new Identifier("dimdoors:textures/other/warp.png");
-    private static final BooleanProperty openProperty = BooleanProperty.of("open");
-    private static final EnumProperty<DoorHinge> hingeProperty = EnumProperty.of("hinge", DoorHinge.class);
-    private static final DirectionProperty facingProperty = DirectionProperty.of("facing", Arrays.asList(DirectionAccessor.getHorizontal()));
-
-    private static final TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
-    private static final BlockModels blockModelShapes = MinecraftClient.getInstance().getBlockRenderManager().getModels();
-    private static final BakedModelManager modelManager = blockModelShapes.getModelManager();
+    private static final TextureManager TEXTURE_MANAGER = MinecraftClient.getInstance().getTextureManager();
+    private static final BlockModels BLOCK_MODELS = MinecraftClient.getInstance().getBlockRenderManager().getModels();
+    private static final BakedModelManager MODEL_MANAGER = BLOCK_MODELS.getModelManager();
 
     private static final VectorNi COLORLESS = new VectorNi(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
+
+    public static Identifier getWarpPath() {
+        return WARP_PATH;
+    }
 
     // TODO: any render angle
 
     /**
      * Renders a dimensional portal, for use in various situations. Code is mostly based
-     * on vanilla's TileEntityEndGatewayRenderer.
+     * on vanilla's EndGatewayBlockEntityRenderer.
      *
      * @param x           The x coordinate of the wall's center.
      * @param y           The y coordinate of the wall's center.
@@ -90,7 +93,7 @@ public final class DimensionalPortalRenderer {
             float scale = 0.2625F;
             float colorMultiplier = 1.0F / (translationScale + .80F);
 
-            MinecraftClient.getInstance().getTextureManager().bindTexture(warpPath);
+            MinecraftClient.getInstance().getTextureManager().bindTexture(WARP_PATH);
             RenderSystem.enableBlend();
 
             if (pass == 0) {
@@ -389,7 +392,7 @@ public final class DimensionalPortalRenderer {
 
         RenderSystem.enableTexture();
         //RenderSystem.disableDepth();
-        textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+        TEXTURE_MANAGER.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
         Block stonebrick = Blocks.STONE_BRICKS;
         BlockState stonebrickState = stonebrick.getDefaultState();
         Map<BlockState, ModelIdentifier> stonebrickMap = Maps.newHashMap();
@@ -448,7 +451,7 @@ public final class DimensionalPortalRenderer {
 
             RenderSystem.translated(pos.getX(), pos.getY(), pos.getZ());
 
-            textureManager.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+            TEXTURE_MANAGER.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 
 
             Map<BlockState, ModelIdentifier> doorMap = Maps.newHashMap();
@@ -459,13 +462,13 @@ public final class DimensionalPortalRenderer {
             BlockState doorBottomState = blockEntity.getWorld().getBlockState(blockEntity.getPos());
             BlockState doorTopState = blockEntity.getWorld().getBlockState(blockEntity.getPos().up());
             if (doorBottomState.getBlock() instanceof DoorBlock && doorTopState.getBlock() instanceof DoorBlock) {
-                doorBottomState = doorBottomState.with(hingeProperty, doorTopState.get(hingeProperty));
+                doorBottomState = doorBottomState.with(HINGE_PROPERTY, doorTopState.get(HINGE_PROPERTY));
 //                System.out.println();
 //                System.out.println("---------------------------------------------");
 //                System.out.println(doorBottomState.getProperties());
 //                System.out.println("---------------------------------------------");
-                doorTopState = doorTopState.with(openProperty, doorBottomState.get(openProperty))
-                        .with(facingProperty, doorBottomState.get(facingProperty));
+                doorTopState = doorTopState.with(OPEN_PROPERTY, doorBottomState.get(OPEN_PROPERTY))
+                        .with(FACING_PROPERTY, doorBottomState.get(FACING_PROPERTY));
                 //System.out.println(doorTopState);
                 //System.out.println(doorBottomState);
                 //System.out.println(doorBottomState.getProperties());
@@ -474,7 +477,7 @@ public final class DimensionalPortalRenderer {
                 //System.out.println(doorBottomState.getValue(PropertyEnum.create("hinge", BlockDoor.EnumHingePosition.class)));
                 //RenderSystem.activeTexture(OpenGlHelper.defaultTexUnit);
                 RenderSystem.enableTexture();
-                if (doorBottomState.get(openProperty)) {
+                if (doorBottomState.get(OPEN_PROPERTY)) {
                     //RenderSystem.activeTexture(OpenGlHelper.lightmapTexUnit);
 //                    if (!personal) {
 //                        RenderSystem.enableTexture2D();
@@ -493,9 +496,9 @@ public final class DimensionalPortalRenderer {
 
                 Vector3d doorDepth = depth.mul(doorDistanceMul);
                 RenderSystem.translated(doorDepth.getX(), doorDepth.getY(), doorDepth.getZ());
-                drawState(tessellator, worldRenderer, doorMap, doorBottomState.with(openProperty, false), orientation);
+                drawState(tessellator, worldRenderer, doorMap, doorBottomState.with(OPEN_PROPERTY, false), orientation);
                 RenderSystem.translated(0, 1, 0);
-                drawState(tessellator, worldRenderer, doorMap, doorTopState.with(openProperty, false), orientation);
+                drawState(tessellator, worldRenderer, doorMap, doorTopState.with(OPEN_PROPERTY, false), orientation);
 
             }
 
@@ -532,7 +535,7 @@ public final class DimensionalPortalRenderer {
         BakedModel model;
         List<BakedQuad> quads;
         location = map.get(blockState);
-        model = modelManager.getModel(location);
+        model = MODEL_MANAGER.getModel(location);
         quads = model.getQuads(null, side, new Random(1));
         if (!quads.isEmpty()) {
             bufferBuilder.begin(GL_QUADS, VertexFormats.POSITION);
@@ -595,9 +598,9 @@ public final class DimensionalPortalRenderer {
     }
 
     private static FloatBuffer getBuffer(float f1, float f2, float f3, float f4) {
-        buffer.clear();
-        buffer.put(f1).put(f2).put(f3).put(f4);
-        buffer.flip();
-        return buffer;
+        BUFFER.clear();
+        BUFFER.put(f1).put(f2).put(f3).put(f4);
+        BUFFER.flip();
+        return BUFFER;
     }
 }

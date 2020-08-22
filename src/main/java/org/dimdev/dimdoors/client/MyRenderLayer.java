@@ -35,4 +35,9 @@ public class MyRenderLayer extends RenderLayer {
             .lightmap(RenderPhase.DISABLE_LIGHTMAP)
             .texture(new Texture(new Identifier("dimdoors:textures/other/tesseract.png"), false, false))
             .build(false));
+
+    public static RenderLayer getDimensionalPortal(int phase) {
+        Texture tex = new Texture(DimensionalPortalRenderer.getWarpPath(), false, false);
+        return of("dimensional_portal", VertexFormats.POSITION_COLOR, 7, 256, false, true, RenderLayer.MultiPhaseParameters.builder().transparency(TRANSLUCENT_TRANSPARENCY).texture(tex).texturing(new RenderPhase.PortalTexturing(phase)).fog(FOG).build(false));
+    }
 }
