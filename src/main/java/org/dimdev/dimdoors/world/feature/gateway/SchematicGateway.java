@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimcore.schematic.Schematic;
@@ -16,9 +18,13 @@ import net.minecraft.world.StructureWorldAccess;
 public abstract class SchematicGateway extends BaseGateway {
     private static final Logger LOGGER = LogManager.getLogger();
     private Schematic schematic;
+    public static final BiMap<SchematicGateway, String> SCHEMATIC_ID_MAP = HashBiMap.create();
+    public static final BiMap<String, SchematicGateway> ID_SCHEMATIC_MAP = HashBiMap.create();
 
     public SchematicGateway(String id) {
         String schematicJarDirectory = "/data/dimdoors/gateways/";
+        SCHEMATIC_ID_MAP.putIfAbsent(this, id);
+        ID_SCHEMATIC_MAP.putIfAbsent(id, this);
 
         //Initialising the possible locations/formats for the schematic file
         InputStream schematicStream = DimensionalDoorsInitializer.class.getResourceAsStream(schematicJarDirectory + id + ".schem");

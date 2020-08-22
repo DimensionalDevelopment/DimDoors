@@ -4,6 +4,8 @@ import java.util.Random;
 
 import com.mojang.serialization.Codec;
 
+import net.minecraft.block.AirBlock;
+import net.minecraft.block.FallingBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -16,8 +18,10 @@ public class GatewayFeature extends Feature<GatewayFeatureConfig> {
 
     @Override
     public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos, GatewayFeatureConfig config) {
-        System.out.println("Generated");
-        config.gateway.generate(world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
-        return true;
+        if (world.getBlockState(blockPos).getBlock() instanceof AirBlock && world.getBlockState(blockPos.down()).getBlock() instanceof FallingBlock) {
+            config.getGateway().generate(world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+            return true;
+        }
+        return false;
     }
 }

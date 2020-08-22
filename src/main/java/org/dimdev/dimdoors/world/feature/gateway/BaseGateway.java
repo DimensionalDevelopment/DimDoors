@@ -10,7 +10,7 @@ public abstract class BaseGateway {
 
     protected boolean isBiomeValid(Biome biome) {
         Biome[] biomes = this.getBiomes();
-        if (biomes != null) {
+        if (biomes.length != 0) {
             for (Biome b : biomes) {
                 if (b.equals(biome)) {
                     return true;

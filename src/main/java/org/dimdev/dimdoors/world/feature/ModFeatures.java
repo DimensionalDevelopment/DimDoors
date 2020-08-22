@@ -10,20 +10,28 @@ import org.dimdev.dimdoors.world.feature.gateway.TwoPillarsGateway;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.decorator.ChanceDecoratorConfig;
-import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.Feature;
 
 public final class ModFeatures {
     public static final Feature<GatewayFeatureConfig> GATEWAY_FEATURE = Registry.register(Registry.FEATURE, new Identifier("dimdoors", "gateway"), new GatewayFeature(GatewayFeatureConfig.CODEC));
     public static final SchematicGateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsGateway();
     public static final SchematicGateway TWO_PILLARS_GATEWAY = new TwoPillarsGateway();
-    public static final ConfiguredFeature<?, ?> SANDSTONE_PILLARS_FEATURE = GATEWAY_FEATURE.configure(GatewayFeatureConfig.SANDSTONE_PILLARS_CONFIG).decorate(Decorator.CHANCE.configure(new ChanceDecoratorConfig(ModConfig.WORLD.gatewayGenChance + 20)));
-    public static final ConfiguredFeature<?, ?> TWO_PILLARS_FEATURE = GATEWAY_FEATURE.configure(GatewayFeatureConfig.TWO_PILLARS_CONFIG).decorate(Decorator.CHANCE.configure(new ChanceDecoratorConfig(ModConfig.WORLD.gatewayGenChance + 20)));
+    public static final ConfiguredFeature<?, ?> SANDSTONE_PILLARS_FEATURE;
+    public static final ConfiguredFeature<?, ?> TWO_PILLARS_FEATURE;
 
     public static void init() {
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "sandstone_pillars"), SANDSTONE_PILLARS_FEATURE);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "two_pillars"), TWO_PILLARS_FEATURE);
+    }
+
+    static {
+        SANDSTONE_PILLARS_FEATURE = GATEWAY_FEATURE.configure(new GatewayFeatureConfig(SchematicGateway.SCHEMATIC_ID_MAP.get(SANDSTONE_PILLARS_GATEWAY)))
+                .decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP
+                        .applyChance(ModConfig.WORLD.gatewayGenChance + 20));
+        TWO_PILLARS_FEATURE = GATEWAY_FEATURE.configure(new GatewayFeatureConfig(SchematicGateway.SCHEMATIC_ID_MAP.get(TWO_PILLARS_GATEWAY)))
+                .decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP
+                        .applyChance(ModConfig.WORLD.gatewayGenChance + 20));
     }
 }

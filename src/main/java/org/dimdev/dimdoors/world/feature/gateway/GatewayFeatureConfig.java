@@ -1,17 +1,25 @@
 package org.dimdev.dimdoors.world.feature.gateway;
 
 import com.mojang.serialization.Codec;
-import org.dimdev.dimdoors.world.feature.ModFeatures;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.world.gen.feature.FeatureConfig;
 
 public class GatewayFeatureConfig implements FeatureConfig {
-    public static final GatewayFeatureConfig SANDSTONE_PILLARS_CONFIG = new GatewayFeatureConfig(ModFeatures.SANDSTONE_PILLARS_GATEWAY);
-    public static final GatewayFeatureConfig TWO_PILLARS_CONFIG = new GatewayFeatureConfig(ModFeatures.TWO_PILLARS_GATEWAY);
-    public static final Codec<GatewayFeatureConfig> CODEC = Codec.unit(SANDSTONE_PILLARS_CONFIG);
-    public final SchematicGateway gateway;
+    public static final Codec<GatewayFeatureConfig> CODEC = RecordCodecBuilder.create((instance) -> {
+       return instance.group(Codec.STRING.fieldOf("id").forGetter((config) -> {
+           return config.gatewayId;
+       })).apply(instance, GatewayFeatureConfig::new);
+    });
+    private final SchematicGateway gateway;
+    private final String gatewayId;
 
-    private GatewayFeatureConfig(SchematicGateway gateway) {
-        this.gateway = gateway;
+    public SchematicGateway getGateway() {
+        return gateway;
+    }
+
+    public GatewayFeatureConfig(String gatewayId) {
+        this.gatewayId = gatewayId;
+        this.gateway = SchematicGateway.ID_SCHEMATIC_MAP.get(gatewayId);
     }
 }
