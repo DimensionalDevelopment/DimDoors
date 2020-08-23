@@ -15,8 +15,11 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
@@ -38,24 +41,22 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
     }
 
     @Override
-    public void render(EntranceRiftBlockEntity entrance, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay) {
+    public void render(EntranceRiftBlockEntity entrance, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        matrices.push();
+        MinecraftClient.getInstance().getItemRenderer().renderItem(new ItemStack(Items.DIRT), ModelTransformation.Mode.THIRD_PERSON_RIGHT_HAND, light, overlay, matrices, vertexConsumers);
         if (MinecraftClient.getInstance().world == null
                 || !MinecraftClient.getInstance().world.isChunkLoaded(entrance.getPos().getX() >> 4, entrance.getPos().getZ() >> 4)) {
             return;
         }
         Direction orientation = entrance.getOrientation();
         Vector3f vec = orientation.getOpposite().getUnitVector();
-//        New Rendering code
         if (MinecraftClient.getInstance().world.getBlockState(entrance.getPos()).getBlock() instanceof DimensionalPortalBlock) {
-            vec.add(0 ,1 , 0);
-            this.renderVertices(entrance, matrixStack, vertexConsumerProvider, orientation, vec);
+            Vector3f ve2c = orientation.getOpposite().getUnitVector();
+            ve2c.add(0,1, 0);
+            this.renderVertices(entrance, matrices, vertexConsumers, orientation, ve2c);
         }
+        this.renderVertices(entrance, matrices, vertexConsumers, orientation, vec);
 
-        this.renderVertices(entrance, matrixStack, vertexConsumerProvider, orientation, vec);
-
-/* ************************************************************************************************************************************* */
-
-//        Old Rendering code
 //        Vec3d offset = new Vec3d(vec);
 //        DimensionalPortalRenderer.renderDimensionalPortal(
 //                entrance.getPos().getX() + offset.x,
@@ -67,20 +68,21 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
 //                16,
 //                16,
 //                entrance.getColors(16),
-//                matrixStack,
-//                vertexConsumerProvider.getBuffer(LAYERS.get(0)));
+//                matrices,
+//                vertexConsumers.getBuffer(LAYERS.get(0)));
+        matrices.pop();
     }
 
-    private void renderVertices(EntranceRiftBlockEntity entrance, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, Direction orientation, Vector3f vec) {
+    private void renderVertices(EntranceRiftBlockEntity entrance, MatrixStack matrices, VertexConsumerProvider vertexConsumers, Direction orientation, Vector3f vec) {
         vec.scale((float) (orientation == Direction.NORTH || orientation == Direction.WEST || orientation == Direction.UP ? 0.01 : 0.01 - 1));
         double d = entrance.getPos().getSquaredDistance(this.dispatcher.camera.getPos(), true);
         int k = this.getOffset(d);
         float g = 0.75F;
-        Matrix4f matrix4f = matrixStack.peek().getModel();
-        this.drawAllVertices(entrance, g, 0.15F, matrix4f, vertexConsumerProvider.getBuffer(LAYERS.get(0)), orientation);
+        Matrix4f matrix4f = matrices.peek().getModel();
+        this.drawAllVertices(entrance, g, 0.15F, matrix4f, vertexConsumers.getBuffer(LAYERS.get(1)), orientation);
 
         for(int l = 1; l < k; ++l) {
-            this.drawAllVertices(entrance, g, 2.0F / (float)(18 - l), matrix4f, vertexConsumerProvider.getBuffer(LAYERS.get(l)), orientation);
+            this.drawAllVertices(entrance, g, 2.0F / (float)(18 - l), matrix4f, vertexConsumers.getBuffer(LAYERS.get(l)), orientation);
         }
     }
 

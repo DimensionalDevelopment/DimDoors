@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.command;
 
-
 import java.io.InputStream;
 
 import com.mojang.brigadier.CommandDispatcher;

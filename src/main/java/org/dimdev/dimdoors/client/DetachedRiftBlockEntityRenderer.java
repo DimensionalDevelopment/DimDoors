@@ -18,9 +18,9 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<DetachedRiftBlockEntity> {
-    public static final Identifier tesseract_path = new Identifier("dimdoors:textures/other/tesseract.png");
+    public static final Identifier TESSERACT_PATH = new Identifier("dimdoors:textures/other/tesseract.png");
 
-    private static final Tesseract tesseract = new Tesseract();
+    private static final Tesseract TESSERACT = new Tesseract();
     private static final RiftCurves.PolygonInfo CURVE = RiftCurves.CURVES.get(0);
     public static long showRiftCoreUntil = 0;
 
@@ -42,11 +42,11 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
         renderCrack(vcs.getBuffer(MyRenderLayer.CRACK), matrices, rift);
     }
 
-    private void renderCrack(VertexConsumer vc, MatrixStack matricees, DetachedRiftBlockEntity rift) {
-        matricees.push();
-        matricees.translate(0.5, 0.5, 0.5);
+    private void renderCrack(VertexConsumer vc, MatrixStack matrices, DetachedRiftBlockEntity rift) {
+        matrices.push();
+        matrices.translate(0.5, 0.5, 0.5);
         RiftCrackRenderer.drawCrack(vc, 0, CURVE, ModConfig.GRAPHICS.riftSize * rift.size, 0xF1234568L * rift.getPos().hashCode());
-        matricees.pop();
+        matrices.pop();
     }
 
     private void renderTesseract(VertexConsumer vc, DetachedRiftBlockEntity rift, MatrixStack matrices, float tickDelta) {
@@ -59,7 +59,7 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
         matrices.translate(0.5, 0.5, 0.5);
         matrices.scale(0.25f, 0.25f, 0.25f);
 
-        tesseract.draw(vc, color, radian);
+        TESSERACT.draw(vc, color, radian);
 
         matrices.pop();
     }

@@ -33,7 +33,7 @@ public class MyRenderLayer extends RenderLayer {
     public static RenderLayer TESSERACT = RenderLayer.of("tesseract", VertexFormats.POSITION_COLOR_TEXTURE, GL11.GL_QUADS, 256, MultiPhaseParameters.builder()
             .cull(DISABLE_CULLING)
             .lightmap(RenderPhase.DISABLE_LIGHTMAP)
-            .texture(new Texture(new Identifier("dimdoors:textures/other/tesseract.png"), false, false))
+            .texture(new Texture(DetachedRiftBlockEntityRenderer.TESSERACT_PATH, false, false))
             .build(false));
 
     public static RenderLayer getDimensionalPortal(int phase) {
