@@ -49,25 +49,37 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
         alwaysDelete = false;
     }
 
-
     // NBT
     @Override
     public void fromTag(BlockState state, CompoundTag nbt) {
         super.fromTag(state, nbt);
+        if (this.world != null && !this.world.isClient()) {
+            this.sync();
+        }
         AnnotatedNbt.load(this, nbt);
-        destination = nbt.contains("destination") ? VirtualTarget.readVirtualTargetNBT(nbt.getCompound("destination")) : null;
+        this.destination = nbt.contains("destination") ? VirtualTarget.readVirtualTargetNBT(nbt.getCompound("destination")) : null;
     }
 
 
     @Override
     public void fromClientTag(CompoundTag tag) {
-        fromTag(world.getBlockState(pos), tag);
+        fromTag(this.world.getBlockState(this.pos), tag);
+    }
+
+    @Override
+    public CompoundTag toTag(CompoundTag tag) {
+        if (this.world != null && !this.world.isClient()) {
+            this.sync();
+        }
+        return super.toTag(tag);
     }
 
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
         save(tag);
-        if (destination != null) tag.put("destination", destination.toTag(new CompoundTag()));
+        if (destination != null) {
+            tag.put("destination", destination.toTag(new CompoundTag()));
+        }
         return tag;
     }
 

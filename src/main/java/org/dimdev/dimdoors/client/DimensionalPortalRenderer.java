@@ -27,6 +27,7 @@ import net.minecraft.block.enums.DoorHinge;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.BakedModel;
@@ -36,12 +37,14 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.GlAllocationUtils;
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
@@ -82,12 +85,12 @@ public final class DimensionalPortalRenderer {
      * @param height      The height of the wall.
      * @param colors      An array containing the color to use on each pass. Its length determines the number of passes to do.
      */
-    public static void renderDimensionalPortal(double x, double y, double z, Direction orientation, double width, double height, RGBA[] colors) { // TODO: Make this work at any angle
+    public static void renderDimensionalPortal(double x, double y, double z, Direction orientation, double width, double height, RGBA[] colors, MatrixStack matrices, VertexConsumer consumer) { // TODO: Make this work at any angle
         RenderSystem.disableLighting();
         RenderSystem.disableCull();
 
         for (int pass = 0; pass < 4; pass++) {
-            RenderSystem.pushMatrix();
+            matrices.push();
 
             float translationScale = 16 - pass;
             float scale = 0.2625F;
@@ -110,7 +113,7 @@ public final class DimensionalPortalRenderer {
             }
 
             double offset = Util.getMeasuringTimeNano() % 200000L / 200000.0F;
-            RenderSystem.translated(offset, offset, offset);
+            matrices.translate(offset, offset, offset);
 
             GlStateManager.texGenMode(GlStateManager.TexCoord.S, GL_OBJECT_LINEAR);
             GlStateManager.texGenMode(GlStateManager.TexCoord.T, GL_OBJECT_LINEAR);
@@ -167,23 +170,23 @@ public final class DimensionalPortalRenderer {
             GlStateManager.enableTexGen(GlStateManager.TexCoord.R);
             GlStateManager.enableTexGen(GlStateManager.TexCoord.Q);
 
-            RenderSystem.popMatrix();
+            matrices.pop();
 
             RenderSystem.matrixMode(GL_TEXTURE);
-            RenderSystem.pushMatrix();
+            matrices.push();
             RenderSystem.loadIdentity();
-            RenderSystem.translated(0.0F, offset * translationScale, 0.0F);
-            RenderSystem.scaled(scale, scale, scale);
-            RenderSystem.translatef(0.5F, 0.5F, 0.5F);
-            RenderSystem.rotatef((pass * pass * 4321 + pass * 9) * 2.0F, 0.0F, 0.0F, 1.0F);
-            RenderSystem.translatef(0.5F, 0.5F, 0.5F);
+            matrices.translate(0.0F, offset * translationScale, 0.0F);
+            matrices.scale(scale, scale, scale);
+            matrices.translate(0.5F, 0.5F, 0.5F);
+            matrices.multiply(new Quaternion((pass * pass * 4321 + pass) * 9 * 2.0F, 0.0F, 0.0F, 1.0F));
+            matrices.translate(0.5F, 0.5F, 0.5F);
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder worldRenderer = tessellator.getBuffer();
             worldRenderer.begin(GL_QUADS, VertexFormats.POSITION);
 
             RGBA color = colors[pass];
-            RenderSystem.color4f(color.getRed() * colorMultiplier, color.getGreen() * colorMultiplier, color.getBlue() * colorMultiplier, color.getAlpha());
+            consumer.color(color.getRed() * colorMultiplier, color.getGreen() * colorMultiplier, color.getBlue() * colorMultiplier, color.getAlpha());
 
             switch (orientation) {
                 case NORTH:
@@ -226,7 +229,7 @@ public final class DimensionalPortalRenderer {
 
             tessellator.draw();
 
-            RenderSystem.popMatrix();
+            matrices.pop();
             RenderSystem.matrixMode(GL_MODELVIEW);
         }
 
@@ -531,16 +534,13 @@ public final class DimensionalPortalRenderer {
     private static void drawState(Tessellator tessellator, BufferBuilder bufferBuilder, Map<BlockState, ModelIdentifier> map,
                                   BlockState blockState, Direction side, VectorNi colors) {
         if (colors.size() < 16) colors = COLORLESS;
-        ModelIdentifier location;
-        BakedModel model;
-        List<BakedQuad> quads;
-        location = map.get(blockState);
-        model = MODEL_MANAGER.getModel(location);
-        quads = model.getQuads(null, side, new Random(1));
+        ModelIdentifier location = map.get(blockState);
+        BakedModel model = MODEL_MANAGER.getModel(location);
+        List<BakedQuad> quads = model.getQuads(null, side, new Random(1));
         if (!quads.isEmpty()) {
             bufferBuilder.begin(GL_QUADS, VertexFormats.POSITION);
             //System.out.println(quads.size());
-            for (BakedQuad quad : quads) {
+            for (BakedQuad ignored : quads) {
                 //worldRenderer.(quad.getVertexData());
                 /*for (int i = 1; i <5 ; i++) {
                     worldRenderer.putColorMultiplier(1, 0, 0, i);

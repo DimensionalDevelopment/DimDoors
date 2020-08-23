@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
     public EntranceRiftBlockEntity() {

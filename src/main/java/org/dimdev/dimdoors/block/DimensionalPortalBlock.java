@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.block;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
@@ -22,5 +23,10 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
     @Override
     public BlockEntity createBlockEntity(BlockView world) {
         return new EntranceRiftBlockEntity();
+    }
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 }
