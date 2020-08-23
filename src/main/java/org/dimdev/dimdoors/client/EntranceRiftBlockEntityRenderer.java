@@ -6,7 +6,6 @@ import java.util.stream.IntStream;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
-import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 import net.minecraft.client.MinecraftClient;
@@ -50,11 +49,6 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
         }
         Direction orientation = entrance.getOrientation();
         Vector3f vec = orientation.getOpposite().getUnitVector();
-        if (MinecraftClient.getInstance().world.getBlockState(entrance.getPos()).getBlock() instanceof DimensionalPortalBlock) {
-            Vector3f ve2c = orientation.getOpposite().getUnitVector();
-            ve2c.add(0,1, 0);
-            this.renderVertices(entrance, matrices, vertexConsumers, orientation, ve2c);
-        }
         this.renderVertices(entrance, matrices, vertexConsumers, orientation, vec);
 
 //        Vec3d offset = new Vec3d(vec);
@@ -79,7 +73,8 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
         int k = this.getOffset(d);
         float g = 0.75F;
         Matrix4f matrix4f = matrices.peek().getModel();
-        this.drawAllVertices(entrance, g, 0.15F, matrix4f, vertexConsumers.getBuffer(LAYERS.get(1)), orientation);
+        this.drawAllVertices(entrance, g, 0.15F, matrix4f, vertexConsumers.getBuffer(LAYERS.get(0)), orientation);
+        matrices.scale(0.99F, 0.99F, 0.99F);
 
         for(int l = 1; l < k; ++l) {
             this.drawAllVertices(entrance, g, 2.0F / (float)(18 - l), matrix4f, vertexConsumers.getBuffer(LAYERS.get(l)), orientation);
@@ -120,9 +115,15 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
 
     private void drawVertices(EntranceRiftBlockEntity endPortalBlockEntity, Matrix4f matrix4f, VertexConsumer vertexConsumer, float x1, float x2, float y1, float y2, float z1, float z2, float z3, float z4, float red, float green, float blue, Direction direction) {
         RenderSystem.clearTexGen();
-        vertexConsumer.vertex(matrix4f, x1, y1, z1).color(red, green, blue, 1.0F).next();
-        vertexConsumer.vertex(matrix4f, x2, y1, z2).color(red, green, blue, 1.0F).next();
-        vertexConsumer.vertex(matrix4f, x2, y2, z3).color(red, green, blue, 1.0F).next();
-        vertexConsumer.vertex(matrix4f, x1, y2, z4).color(red, green, blue, 1.0F).next();
+//        vertexConsumer.vertex(matrix4f, x1, y1, z1).color(red, green, blue, 1.0F).next();
+//        vertexConsumer.vertex(matrix4f, x2, y1, z2).color(red, green, blue, 1.0F).next();
+//        vertexConsumer.vertex(matrix4f, x2, y2, z3).color(red, green, blue, 1.0F).next();
+//        vertexConsumer.vertex(matrix4f, x1, y2, z4).color(red, green, blue, 1.0F).next();
+        if (direction == endPortalBlockEntity.getOrientation()) {
+            vertexConsumer.vertex(matrix4f, x1, y1, z1 + 0.5F).color(red, green, blue, 1.0F).next();
+            vertexConsumer.vertex(matrix4f, x2, y1, z2 + 0.5F).color(red, green, blue, 1.0F).next();
+            vertexConsumer.vertex(matrix4f, x2, y2, z3 + 0.5F).color(red, green, blue, 1.0F).next();
+            vertexConsumer.vertex(matrix4f, x1, y2, z4 + 0.5F).color(red, green, blue, 1.0F).next();
+        }
     }
 }

@@ -85,6 +85,7 @@ public final class DimensionalPortalRenderer {
      * @param height      The height of the wall.
      * @param colors      An array containing the color to use on each pass. Its length determines the number of passes to do.
      */
+    @Deprecated()
     public static void renderDimensionalPortal(double x, double y, double z, Direction orientation, double width, double height, RGBA[] colors, MatrixStack matrices, VertexConsumer consumer) { // TODO: Make this work at any angle
         RenderSystem.disableLighting();
         RenderSystem.disableCull();
