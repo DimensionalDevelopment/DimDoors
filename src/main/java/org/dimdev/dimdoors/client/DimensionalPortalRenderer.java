@@ -33,11 +33,11 @@ import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.GlAllocationUtils;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
@@ -85,7 +85,7 @@ public final class DimensionalPortalRenderer {
      * @param height      The height of the wall.
      * @param colors      An array containing the color to use on each pass. Its length determines the number of passes to do.
      */
-    @Deprecated()
+    @Deprecated
     public static void renderDimensionalPortal(double x, double y, double z, Direction orientation, double width, double height, RGBA[] colors, MatrixStack matrices, VertexConsumer consumer) { // TODO: Make this work at any angle
         RenderSystem.disableLighting();
         RenderSystem.disableCull();
@@ -245,7 +245,7 @@ public final class DimensionalPortalRenderer {
 
     //TODO Check to make sure block type is valid (and not air)
     @SuppressWarnings("Duplicates")
-    public static void renderFoxWallAxis(RiftBlockEntity blockEntity, Vector3d pos, Vector3d offset, Direction orientation, double width, double height, RGBA[] colors) {
+    public static void renderFoxWallAxis(RiftBlockEntity blockEntity, Vector3d pos, Vector3d offset, Direction orientation, double width, double height, MatrixStack matrices, VertexConsumer consumer) {
         //System.out.println(orientation);
         if (orientation == null) return;
         switch (orientation) {
@@ -280,15 +280,15 @@ public final class DimensionalPortalRenderer {
         //System.out.println("RENDER");
         //System.out.println(height);
         RenderSystem.disableLighting();
-        //RenderSystem.activeTexture(OpenGlHelper.lightmapTexUnit);
+        RenderSystem.activeTexture(33985);
         RenderSystem.disableTexture();
-        //RenderSystem.activeTexture(OpenGlHelper.defaultTexUnit);
+        RenderSystem.activeTexture(33984);
         RenderSystem.disableTexture();
 
         GlStateManager.genFramebuffers();
 
-        //RenderSystem.disableCull();
-        //RenderSystem.disableDepth();
+        RenderSystem.disableCull();
+        RenderSystem.disableDepthTest();
 
 
         glEnable(GL_STENCIL_TEST);
@@ -353,14 +353,14 @@ public final class DimensionalPortalRenderer {
 //        }
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder worldRenderer = tessellator.getBuffer();
-        RenderSystem.color4f(voidColor.getX(), voidColor.getY(), voidColor.getZ(), 1f);
+        BufferBuilder builder = tessellator.getBuffer();
+        consumer.color(voidColor.getX(), voidColor.getY(), voidColor.getZ(), 1f);
 
-        worldRenderer.begin(GL_QUADS, VertexFormats.POSITION);
-        worldRenderer.vertex(left.getX(), left.getY(), left.getZ());
-        worldRenderer.vertex(right.getX(), right.getY(), right.getZ());
-        worldRenderer.vertex(rightTop.getX(), rightTop.getY(), rightTop.getZ());
-        worldRenderer.vertex(leftTop.getX(), leftTop.getY(), leftTop.getZ());
+        builder.begin(GL_QUADS, VertexFormats.POSITION);
+        builder.vertex(left.getX(), left.getY(), left.getZ());
+        builder.vertex(right.getX(), right.getY(), right.getZ());
+        builder.vertex(rightTop.getX(), rightTop.getY(), rightTop.getZ());
+        builder.vertex(leftTop.getX(), leftTop.getY(), leftTop.getZ());
         tessellator.draw();
 
         glStencilMask(0);
@@ -375,28 +375,28 @@ public final class DimensionalPortalRenderer {
         RenderSystem.shadeModel(GL_SMOOTH);
 
         RenderSystem.disableAlphaTest();
-        /*worldRenderer.begin(GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        worldRenderer.pos(left.getX(), left.getY(), left.getZ())
+        /*builder.begin(GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        builder.pos(left.getX(), left.getY(), left.getZ())
                 .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 127)
                 .endVertex();
-        worldRenderer.pos(right.getX(), right.getY(), right.getZ())
+        builder.pos(right.getX(), right.getY(), right.getZ())
                 .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 127)
                 .endVertex();
-        worldRenderer.pos(rightBack.getX(), rightBack.getY(), rightBack.getZ())
+        builder.pos(rightBack.getX(), rightBack.getY(), rightBack.getZ())
                 .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity)
                 .endVertex();
-        worldRenderer.pos(leftBack.getX(), leftBack.getY(), leftBack.getZ())
+        builder.pos(leftBack.getX(), leftBack.getY(), leftBack.getZ())
                 .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity)
                 .endVertex();
         tessellator.draw();*/
 
         // Modelled path ===============================================================================================
 
-        // RenderSystem.blendFunc();
+        RenderSystem.defaultBlendFunc();
 
         RenderSystem.enableTexture();
-        //RenderSystem.disableDepth();
-        TEXTURE_MANAGER.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+        RenderSystem.disableDepthTest();
+        TEXTURE_MANAGER.bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
         Block stonebrick = Blocks.STONE_BRICKS;
         BlockState stonebrickState = stonebrick.getDefaultState();
         Map<BlockState, ModelIdentifier> stonebrickMap = Maps.newHashMap();
@@ -404,8 +404,8 @@ public final class DimensionalPortalRenderer {
         stonebrickMap.put(Blocks.CRACKED_STONE_BRICKS.getDefaultState(), new ModelIdentifier(Registry.BLOCK.getId(Blocks.CRACKED_STONE_BRICKS).toString()));
         stonebrickMap.put(Blocks.CHISELED_STONE_BRICKS.getDefaultState(), new ModelIdentifier(Registry.BLOCK.getId(Blocks.CHISELED_STONE_BRICKS).toString()));
         RenderSystem.matrixMode(GL_MODELVIEW);
-        RenderSystem.pushMatrix();
-        RenderSystem.translated(pos.getX(), pos.getY() - 1, pos.getZ());
+        matrices.push();
+        matrices.translate(pos.getX(), pos.getY() - 1, pos.getZ());
         VectorNi pathColorVec = createColorVec(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255);
         int numPathTiles = 10;
         float deltaOp = 255f / numPathTiles;
@@ -415,31 +415,30 @@ public final class DimensionalPortalRenderer {
             VectorNi colorVec = new VectorNi(pathColorVec);
             setOpacity(colorVec, nearOp, nearOp, farOp, farOp);
             pathColorVec = rotateTopFaceColor(colorVec, orientation);
-            drawState(tessellator, worldRenderer, stonebrickMap, stonebrickState, Direction.UP, pathColorVec);
-            RenderSystem.translated(back.getX(), 0, back.getZ());
+            drawState(tessellator, builder, stonebrickMap, stonebrickState, Direction.UP, pathColorVec);
+            matrices.translate(back.getX(), 0, back.getZ());
         }
 
-
-        RenderSystem.popMatrix();
+        matrices.pop();
         RenderSystem.disableTexture();
 
-        worldRenderer.begin(GL_LINES, VertexFormats.POSITION_COLOR);
-        worldRenderer.vertex(leftTop.getX(), leftTop.getY(), leftTop.getZ())
+        builder.begin(GL_LINES, VertexFormats.POSITION_COLOR);
+        builder.vertex(leftTop.getX(), leftTop.getY(), leftTop.getZ())
                 .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255);
-        worldRenderer.vertex(leftTopBack.getX(), leftTopBack.getY(), leftTopBack.getZ())
+        builder.vertex(leftTopBack.getX(), leftTopBack.getY(), leftTopBack.getZ())
                 .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity);
-        worldRenderer.vertex(rightTop.getX(), rightTop.getY(), rightTop.getZ())
+        builder.vertex(rightTop.getX(), rightTop.getY(), rightTop.getZ())
                 .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255);
-        worldRenderer.vertex(rightTopBack.getX(), rightTopBack.getY(), rightTopBack.getZ())
+        builder.vertex(rightTopBack.getX(), rightTopBack.getY(), rightTopBack.getZ())
                 .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity);
 
-        worldRenderer.vertex(left.getX(), left.getY(), left.getZ())
+        builder.vertex(left.getX(), left.getY(), left.getZ())
                 .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255);
-        worldRenderer.vertex(leftBack.getX(), leftBack.getY(), leftBack.getZ())
+        builder.vertex(leftBack.getX(), leftBack.getY(), leftBack.getZ())
                 .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity);
-        worldRenderer.vertex(right.getX(), right.getY(), right.getZ())
+        builder.vertex(right.getX(), right.getY(), right.getZ())
                 .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255);
-        worldRenderer.vertex(rightBack.getX(), rightBack.getY(), rightBack.getZ())
+        builder.vertex(rightBack.getX(), rightBack.getY(), rightBack.getZ())
                 .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity);
         tessellator.draw();
 
@@ -448,15 +447,14 @@ public final class DimensionalPortalRenderer {
         RenderSystem.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         {
-            //RenderSystem.disableDepth();
+            RenderSystem.disableDepthTest();
             //glDisable(GL_STENCIL_TEST);
-            //RenderSystem.matrixMode(GL_MODELVIEW);
-            RenderSystem.pushMatrix();
+            RenderSystem.matrixMode(GL_MODELVIEW);
+            matrices.push();
 
-            RenderSystem.translated(pos.getX(), pos.getY(), pos.getZ());
+            matrices.translate(pos.getX(), pos.getY(), pos.getZ());
 
-            TEXTURE_MANAGER.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-
+            TEXTURE_MANAGER.bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
 
             Map<BlockState, ModelIdentifier> doorMap = Maps.newHashMap();
             doorMap.put(ModBlocks.GOLD_DIMENSIONAL_DOOR.getDefaultState(), new ModelIdentifier(Registry.BLOCK.getId(ModBlocks.GOLD_DIMENSIONAL_DOOR).toString()));
@@ -479,34 +477,30 @@ public final class DimensionalPortalRenderer {
 
                 //System.out.println();
                 //System.out.println(doorBottomState.getValue(PropertyEnum.create("hinge", BlockDoor.EnumHingePosition.class)));
-                //RenderSystem.activeTexture(OpenGlHelper.defaultTexUnit);
+                RenderSystem.activeTexture(33984);
                 RenderSystem.enableTexture();
                 if (doorBottomState.get(OPEN_PROPERTY)) {
-                    //RenderSystem.activeTexture(OpenGlHelper.lightmapTexUnit);
-//                    if (!personal) {
-//                        RenderSystem.enableTexture2D();
-//                        RenderSystem.enableLighting();
-//                    }
+                    RenderSystem.activeTexture(33985);
 
-                    drawState(tessellator, worldRenderer, doorMap, doorBottomState, null);
-                    RenderSystem.translatef(0, 1, 0);
-                    drawState(tessellator, worldRenderer, doorMap, doorTopState, null);
-                    RenderSystem.translatef(0, -1, 0);
+                    drawState(tessellator, builder, doorMap, doorBottomState, null);
+                    matrices.translate(0, 1, 0);
+                    drawState(tessellator, builder, doorMap, doorTopState, null);
+                    matrices.translate(0, -1, 0);
 
                     RenderSystem.disableTexture();
-                    //RenderSystem.activeTexture(OpenGlHelper.defaultTexUnit);
+                    RenderSystem.activeTexture(33984);
                     RenderSystem.disableLighting();
                 }
 
                 Vector3d doorDepth = depth.mul(doorDistanceMul);
-                RenderSystem.translated(doorDepth.getX(), doorDepth.getY(), doorDepth.getZ());
-                drawState(tessellator, worldRenderer, doorMap, doorBottomState.with(OPEN_PROPERTY, false), orientation);
-                RenderSystem.translated(0, 1, 0);
-                drawState(tessellator, worldRenderer, doorMap, doorTopState.with(OPEN_PROPERTY, false), orientation);
+                matrices.translate(doorDepth.getX(), doorDepth.getY(), doorDepth.getZ());
+                drawState(tessellator, builder, doorMap, doorBottomState.with(OPEN_PROPERTY, false), orientation);
+                matrices.translate(0, 1, 0);
+                drawState(tessellator, builder, doorMap, doorTopState.with(OPEN_PROPERTY, false), orientation);
 
             }
 
-            RenderSystem.popMatrix();
+            matrices.pop();
 
 
         }
