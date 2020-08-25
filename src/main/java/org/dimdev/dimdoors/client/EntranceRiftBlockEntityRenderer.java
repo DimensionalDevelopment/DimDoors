@@ -119,7 +119,7 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
 //        vertexConsumer.vertex(matrix4f, x2, y1, z2).color(red, green, blue, 1.0F).next();
 //        vertexConsumer.vertex(matrix4f, x2, y2, z3).color(red, green, blue, 1.0F).next();
 //        vertexConsumer.vertex(matrix4f, x1, y2, z4).color(red, green, blue, 1.0F).next();
-        if (direction == endPortalBlockEntity.getOrientation()) {
+        if (direction == endPortalBlockEntity.getOrientation() || direction.getOpposite() == endPortalBlockEntity.getOrientation()) {
             vertexConsumer.vertex(matrix4f, x1, y1, z1 + 0.5F).color(red, green, blue, 1.0F).next();
             vertexConsumer.vertex(matrix4f, x2, y1, z2 + 0.5F).color(red, green, blue, 1.0F).next();
             vertexConsumer.vertex(matrix4f, x2, y2, z3 + 0.5F).color(red, green, blue, 1.0F).next();

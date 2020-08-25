@@ -5,6 +5,7 @@
   "mixins": [
     "BuiltinBiomesAccessor",
     "DefaultBiomeFeaturesMixin",
+    "DimensionTypeAccessor",
     "DirectionAccessor",
     "PlayerEntityMixin"
   ],
