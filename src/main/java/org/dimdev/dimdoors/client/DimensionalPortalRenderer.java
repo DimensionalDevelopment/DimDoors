@@ -2,27 +2,14 @@ package org.dimdev.dimdoors.client;
 
 import java.nio.FloatBuffer;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
-import com.flowpowered.math.vector.Vector3d;
-import com.flowpowered.math.vector.Vector3f;
-import com.flowpowered.math.vector.Vector3i;
 import com.flowpowered.math.vector.VectorNi;
-import com.google.common.collect.Maps;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.mixin.DirectionAccessor;
 import org.dimdev.dimdoors.util.RGBA;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.DoorBlock;
 import net.minecraft.block.enums.DoorHinge;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
@@ -30,14 +17,10 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.BlockModels;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.GlAllocationUtils;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
@@ -45,7 +28,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -91,7 +73,7 @@ public final class DimensionalPortalRenderer {
         RenderSystem.disableCull();
 
         for (int pass = 0; pass < 4; pass++) {
-            matrices.push();
+            RenderSystem.pushMatrix();
 
             float translationScale = 16 - pass;
             float scale = 0.2625F;
@@ -114,7 +96,7 @@ public final class DimensionalPortalRenderer {
             }
 
             double offset = Util.getMeasuringTimeNano() % 200000L / 200000.0F;
-            matrices.translate(offset, offset, offset);
+            RenderSystem.translated(offset, offset, offset);
 
             GlStateManager.texGenMode(GlStateManager.TexCoord.S, GL_OBJECT_LINEAR);
             GlStateManager.texGenMode(GlStateManager.TexCoord.T, GL_OBJECT_LINEAR);
@@ -171,16 +153,16 @@ public final class DimensionalPortalRenderer {
             GlStateManager.enableTexGen(GlStateManager.TexCoord.R);
             GlStateManager.enableTexGen(GlStateManager.TexCoord.Q);
 
-            matrices.pop();
+            RenderSystem.popMatrix();
 
             RenderSystem.matrixMode(GL_TEXTURE);
-            matrices.push();
+            RenderSystem.pushMatrix();
             RenderSystem.loadIdentity();
-            matrices.translate(0.0F, offset * translationScale, 0.0F);
-            matrices.scale(scale, scale, scale);
-            matrices.translate(0.5F, 0.5F, 0.5F);
-            matrices.multiply(new Quaternion((pass * pass * 4321 + pass) * 9 * 2.0F, 0.0F, 0.0F, 1.0F));
-            matrices.translate(0.5F, 0.5F, 0.5F);
+            RenderSystem.translated(0.0F, offset * translationScale, 0.0F);
+            RenderSystem.scalef(scale, scale, scale);
+            RenderSystem.translatef(0.5F, 0.5F, 0.5F);
+            RenderSystem.rotatef((pass * pass * 4321 + pass) * 9 * 2.0F, 0.0F, 0.0F, 1.0F);
+            RenderSystem.translated(0.5F, 0.5F, 0.5F);
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder worldRenderer = tessellator.getBuffer();
@@ -230,7 +212,7 @@ public final class DimensionalPortalRenderer {
 
             tessellator.draw();
 
-            matrices.pop();
+            RenderSystem.popMatrix();
             RenderSystem.matrixMode(GL_MODELVIEW);
         }
 
@@ -243,356 +225,7 @@ public final class DimensionalPortalRenderer {
         RenderSystem.enableLighting();
     }
 
-    //TODO Check to make sure block type is valid (and not air)
-    @SuppressWarnings("Duplicates")
-    public static void renderFoxWallAxis(RiftBlockEntity blockEntity, Vector3d pos, Vector3d offset, Direction orientation, double width, double height, MatrixStack matrices, VertexConsumer consumer) {
-        //System.out.println(orientation);
-        if (orientation == null) return;
-        switch (orientation) {
-            case UP:
-            case DOWN:
-                return;
-        }
-
-        final float pathLength = 10;
-        final float doorDistanceMul = 1.5f;
-        final int endOpacity = 0;
-
-        // incoming depth function is GL_LEQUAL
-        // this means that you can redraw geometry multiple times as long as you don't translate.
-
-        /*int glDepthFunc = glGetInteger(GL_DEPTH_FUNC);
-        switch (glDepthFunc) {
-            case GL_LESS:
-                System.out.println("less");
-                break;
-            case GL_LEQUAL:
-                System.out.println("lequal");
-                break;
-            case GL_GREATER:
-                System.out.println("greater");
-                break;
-            case GL_GEQUAL:
-                System.out.println("gequal");
-                break;
-        }*/
-
-        //System.out.println("RENDER");
-        //System.out.println(height);
-        RenderSystem.disableLighting();
-        RenderSystem.activeTexture(33985);
-        RenderSystem.disableTexture();
-        RenderSystem.activeTexture(33984);
-        RenderSystem.disableTexture();
-
-        GlStateManager.genFramebuffers();
-
-        RenderSystem.disableCull();
-        RenderSystem.disableDepthTest();
-
-
-        glEnable(GL_STENCIL_TEST);
-        glStencilFunc(GL_ALWAYS, 1, 0xff);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        glStencilMask(0xFF);
-        glClearStencil(0);
-        glClear(GL_STENCIL_BUFFER_BIT);
-
-        //System.out.println(glGetInteger(GL_STENCIL_BITS));
-
-        final Vector3d merged = pos.add(offset);
-        final Vector3d left, right, back, depth, up;
-        switch (orientation) {
-            case NORTH:
-                left = merged.add(width, 0, 0);//new Vector3d(x + width, y, z);
-                right = merged;
-                back = new Vector3d(0, 0, 1);
-                break;
-            case SOUTH:
-                left = merged;
-                right = merged.add(width, 0, 0);
-                back = new Vector3d(0, 0, -1);
-                break;
-            case WEST:
-                left = merged;
-                right = merged.add(0, 0, width);
-                back = new Vector3d(1, 0, 0);
-                break;
-            case EAST:
-                left = merged.add(0, 0, width);
-                right = merged;
-                back = new Vector3d(-1, 0, 0);
-                break;
-            default:
-                return;
-        }
-        depth = back.mul(pathLength);
-
-        up = new Vector3d(0, height, 0);
-
-        Vector3d leftTop = left.add(up),
-                rightTop = right.add(up),
-                leftBack = left.add(depth),
-                rightBack = right.add(depth),
-                leftTopBack = leftTop.add(depth),
-                rightTopBack = rightTop.add(depth);
-
-        Vector3f voidColor;
-        Vector3i pathColor;
-//        boolean personal = blockType instanceof BlockDimensionalDoorQuartz;
-
-
-        final float brightness = 0.99f;
-        voidColor = new Vector3f(brightness, brightness, brightness);
-        pathColor = new Vector3i(255, 210, 0);
-
-//        if (personal) {
-//        } else {
-//            voidColor = new Vector3f(0, 0, 0);
-//            pathColor = new Vector3i(50, 255, 255);
-//        }
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder builder = tessellator.getBuffer();
-        consumer.color(voidColor.getX(), voidColor.getY(), voidColor.getZ(), 1f);
-
-        builder.begin(GL_QUADS, VertexFormats.POSITION);
-        builder.vertex(left.getX(), left.getY(), left.getZ());
-        builder.vertex(right.getX(), right.getY(), right.getZ());
-        builder.vertex(rightTop.getX(), rightTop.getY(), rightTop.getZ());
-        builder.vertex(leftTop.getX(), leftTop.getY(), leftTop.getZ());
-        tessellator.draw();
-
-        glStencilMask(0);
-        glStencilFunc(GL_EQUAL, 1, 0xff);
-        RenderSystem.disableDepthTest();
-
-        RenderSystem.enableBlend();
-        //TODO put blendfunc back to original state
-        RenderSystem.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        int oldShadeModel = GlStateManager.getInteger(GL_SHADE_MODEL);
-        RenderSystem.shadeModel(GL_SMOOTH);
-
-        RenderSystem.disableAlphaTest();
-        /*builder.begin(GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        builder.pos(left.getX(), left.getY(), left.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 127)
-                .endVertex();
-        builder.pos(right.getX(), right.getY(), right.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 127)
-                .endVertex();
-        builder.pos(rightBack.getX(), rightBack.getY(), rightBack.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity)
-                .endVertex();
-        builder.pos(leftBack.getX(), leftBack.getY(), leftBack.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity)
-                .endVertex();
-        tessellator.draw();*/
-
-        // Modelled path ===============================================================================================
-
-        RenderSystem.defaultBlendFunc();
-
-        RenderSystem.enableTexture();
-        RenderSystem.disableDepthTest();
-        TEXTURE_MANAGER.bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
-        Block stonebrick = Blocks.STONE_BRICKS;
-        BlockState stonebrickState = stonebrick.getDefaultState();
-        Map<BlockState, ModelIdentifier> stonebrickMap = Maps.newHashMap();
-        stonebrickMap.put(Blocks.STONE_BRICKS.getDefaultState(), new ModelIdentifier(Registry.BLOCK.getId(Blocks.STONE_BRICKS).toString()));
-        stonebrickMap.put(Blocks.CRACKED_STONE_BRICKS.getDefaultState(), new ModelIdentifier(Registry.BLOCK.getId(Blocks.CRACKED_STONE_BRICKS).toString()));
-        stonebrickMap.put(Blocks.CHISELED_STONE_BRICKS.getDefaultState(), new ModelIdentifier(Registry.BLOCK.getId(Blocks.CHISELED_STONE_BRICKS).toString()));
-        RenderSystem.matrixMode(GL_MODELVIEW);
-        matrices.push();
-        matrices.translate(pos.getX(), pos.getY() - 1, pos.getZ());
-        VectorNi pathColorVec = createColorVec(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255);
-        int numPathTiles = 10;
-        float deltaOp = 255f / numPathTiles;
-        for (int i = 0; i < numPathTiles; i++) {
-            int nearOp = 255 - (int) (i * deltaOp);
-            int farOp = (int) (nearOp - deltaOp);
-            VectorNi colorVec = new VectorNi(pathColorVec);
-            setOpacity(colorVec, nearOp, nearOp, farOp, farOp);
-            pathColorVec = rotateTopFaceColor(colorVec, orientation);
-            drawState(tessellator, builder, stonebrickMap, stonebrickState, Direction.UP, pathColorVec);
-            matrices.translate(back.getX(), 0, back.getZ());
-        }
-
-        matrices.pop();
-        RenderSystem.disableTexture();
-
-        builder.begin(GL_LINES, VertexFormats.POSITION_COLOR);
-        builder.vertex(leftTop.getX(), leftTop.getY(), leftTop.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255);
-        builder.vertex(leftTopBack.getX(), leftTopBack.getY(), leftTopBack.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity);
-        builder.vertex(rightTop.getX(), rightTop.getY(), rightTop.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255);
-        builder.vertex(rightTopBack.getX(), rightTopBack.getY(), rightTopBack.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity);
-
-        builder.vertex(left.getX(), left.getY(), left.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255);
-        builder.vertex(leftBack.getX(), leftBack.getY(), leftBack.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity);
-        builder.vertex(right.getX(), right.getY(), right.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), 255);
-        builder.vertex(rightBack.getX(), rightBack.getY(), rightBack.getZ())
-                .color(pathColor.getX(), pathColor.getY(), pathColor.getZ(), endOpacity);
-        tessellator.draw();
-
-        RenderSystem.enableAlphaTest();
-        RenderSystem.disableBlend();
-        RenderSystem.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        {
-            RenderSystem.disableDepthTest();
-            //glDisable(GL_STENCIL_TEST);
-            RenderSystem.matrixMode(GL_MODELVIEW);
-            matrices.push();
-
-            matrices.translate(pos.getX(), pos.getY(), pos.getZ());
-
-            TEXTURE_MANAGER.bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
-
-            Map<BlockState, ModelIdentifier> doorMap = Maps.newHashMap();
-            doorMap.put(ModBlocks.GOLD_DIMENSIONAL_DOOR.getDefaultState(), new ModelIdentifier(Registry.BLOCK.getId(ModBlocks.GOLD_DIMENSIONAL_DOOR).toString()));
-            doorMap.put(ModBlocks.QUARTZ_DIMENSIONAL_DOOR.getDefaultState(), new ModelIdentifier(Registry.BLOCK.getId(ModBlocks.QUARTZ_DIMENSIONAL_DOOR).toString()));
-            doorMap.put(ModBlocks.OAK_DIMENSIONAL_DOOR.getDefaultState(), new ModelIdentifier(Registry.BLOCK.getId(ModBlocks.OAK_DIMENSIONAL_DOOR).toString()));
-            doorMap.put(ModBlocks.GOLD_DIMENSIONAL_DOOR.getDefaultState(), new ModelIdentifier(Registry.BLOCK.getId(ModBlocks.GOLD_DIMENSIONAL_DOOR).toString()));
-            BlockState doorBottomState = blockEntity.getWorld().getBlockState(blockEntity.getPos());
-            BlockState doorTopState = blockEntity.getWorld().getBlockState(blockEntity.getPos().up());
-            if (doorBottomState.getBlock() instanceof DoorBlock && doorTopState.getBlock() instanceof DoorBlock) {
-                doorBottomState = doorBottomState.with(HINGE_PROPERTY, doorTopState.get(HINGE_PROPERTY));
-//                System.out.println();
-//                System.out.println("---------------------------------------------");
-//                System.out.println(doorBottomState.getProperties());
-//                System.out.println("---------------------------------------------");
-                doorTopState = doorTopState.with(OPEN_PROPERTY, doorBottomState.get(OPEN_PROPERTY))
-                        .with(FACING_PROPERTY, doorBottomState.get(FACING_PROPERTY));
-                //System.out.println(doorTopState);
-                //System.out.println(doorBottomState);
-                //System.out.println(doorBottomState.getProperties());
-
-                //System.out.println();
-                //System.out.println(doorBottomState.getValue(PropertyEnum.create("hinge", BlockDoor.EnumHingePosition.class)));
-                RenderSystem.activeTexture(33984);
-                RenderSystem.enableTexture();
-                if (doorBottomState.get(OPEN_PROPERTY)) {
-                    RenderSystem.activeTexture(33985);
-
-                    drawState(tessellator, builder, doorMap, doorBottomState, null);
-                    matrices.translate(0, 1, 0);
-                    drawState(tessellator, builder, doorMap, doorTopState, null);
-                    matrices.translate(0, -1, 0);
-
-                    RenderSystem.disableTexture();
-                    RenderSystem.activeTexture(33984);
-                    RenderSystem.disableLighting();
-                }
-
-                Vector3d doorDepth = depth.mul(doorDistanceMul);
-                matrices.translate(doorDepth.getX(), doorDepth.getY(), doorDepth.getZ());
-                drawState(tessellator, builder, doorMap, doorBottomState.with(OPEN_PROPERTY, false), orientation);
-                matrices.translate(0, 1, 0);
-                drawState(tessellator, builder, doorMap, doorTopState.with(OPEN_PROPERTY, false), orientation);
-
-            }
-
-            matrices.pop();
-
-
-        }
-
-        //RenderSystem.rotate(Quaternion);
-
-        glStencilMask(0xff);
-        glDisable(GL_STENCIL_TEST);
-
-        RenderSystem.shadeModel(oldShadeModel);
-        RenderSystem.disableBlend();
-        //RenderSystem.activeTexture(OpenGlHelper.defaultTexUnit);
-        RenderSystem.enableTexture();
-        //RenderSystem.activeTexture(OpenGlHelper.lightmapTexUnit);
-        RenderSystem.enableTexture();
-        RenderSystem.enableCull();
-        RenderSystem.enableLighting();
-        RenderSystem.enableDepthTest();
-    }
-
-    private static void drawState(Tessellator tessellator, BufferBuilder worldRenderer, Map<BlockState, ModelIdentifier> map,
-                                  BlockState blockState, Direction side) {
-        drawState(tessellator, worldRenderer, map, blockState, side, COLORLESS);
-    }
-
-    private static void drawState(Tessellator tessellator, BufferBuilder bufferBuilder, Map<BlockState, ModelIdentifier> map,
-                                  BlockState blockState, Direction side, VectorNi colors) {
-        if (colors.size() < 16) colors = COLORLESS;
-        ModelIdentifier location = map.get(blockState);
-        BakedModel model = MODEL_MANAGER.getModel(location);
-        List<BakedQuad> quads = model.getQuads(null, side, new Random(1));
-        if (!quads.isEmpty()) {
-            bufferBuilder.begin(GL_QUADS, VertexFormats.POSITION);
-            //System.out.println(quads.size());
-            for (BakedQuad ignored : quads) {
-                //worldRenderer.(quad.getVertexData());
-                /*for (int i = 1; i <5 ; i++) {
-                    worldRenderer.putColorMultiplier(1, 0, 0, i);
-                }*/
-                /*worldRenderer.putColorRGB_F(1, 0, 0, 4);
-                worldRenderer.putColorRGB_F(1, 1, 0, 3);
-                worldRenderer.putColorRGB_F(0, 1, 0, 2);
-                worldRenderer.putColorRGB_F(0, 0.3f, 1, 1);*/
-
-                for (int i = 0, j = 4; i < 16; i += 4, j--) {
-                    bufferBuilder.color(colors.get(i), colors.get(i + 1), colors.get(i + 2), colors.get(i + 3));
-                }
-            }
-            tessellator.draw();
-        }
-    }
-
-
-    private static VectorNi rotateTopFaceColor(VectorNi vec, Direction facing) {
-        VectorNi ret = new VectorNi(vec);
-        if (facing == null) return ret;
-        int shiftAmount;
-        switch (facing) {
-            case NORTH:
-                shiftAmount = 4;
-                break;
-            case EAST:
-                shiftAmount = 8;
-                break;
-            case SOUTH:
-                shiftAmount = 12;
-                break;
-            case WEST:
-                shiftAmount = 0;
-                break;
-            default:
-                return ret;
-        }
-        for (int i = 0; i < 16; i++) {
-            ret.set(i, vec.get((i + shiftAmount) & 15));
-        }
-        return ret;
-    }
-
-    private static void setOpacity(VectorNi vec, int op1, int op2, int op3, int op4) {
-        if (vec.size() < 16) return;
-        vec.set(3, op1);
-        vec.set(7, op2);
-        vec.set(11, op3);
-        vec.set(15, op4);
-    }
-
-    private static VectorNi createColorVec(int red, int green, int blue, int alpha) {
-        return new VectorNi(red, green, blue, alpha, red, green, blue, alpha, red, green, blue, alpha, red, green, blue, alpha);
-    }
-
-    private static FloatBuffer getBuffer(float f1, float f2, float f3, float f4) {
+    static FloatBuffer getBuffer(float f1, float f2, float f3, float f4) {
         BUFFER.clear();
         BUFFER.put(f1).put(f2).put(f3).put(f4);
         BUFFER.flip();

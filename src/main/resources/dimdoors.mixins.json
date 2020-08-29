@@ -10,6 +10,7 @@
     "PlayerEntityMixin"
   ],
   "client": [
+    "client.GlStateManagerAccessor",
     "client.InGameHudMixin"
   ],
   "injectors": {
