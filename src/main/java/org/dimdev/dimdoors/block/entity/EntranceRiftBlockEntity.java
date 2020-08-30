@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
     public EntranceRiftBlockEntity() {
@@ -67,7 +66,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
             colors[i] = getEntranceRenderColor(rand);
         }
 
-        return RGBA.fromFloatArray(colors);
+        return RGBA.fromFloatArrays(colors);
     }
 
     @Environment(EnvType.CLIENT)

@@ -33,7 +33,7 @@ public class RGBA implements Cloneable {
         return new RGBA(f[0], f[1], f[2], f[3]);
     }
 
-    public static RGBA[] fromFloatArray(float[][] f) {
+    public static RGBA[] fromFloatArrays(float[][] f) {
         RGBA[] arr = new RGBA[f.length];
         for (int a = 0; a < f.length; a++) {
             arr[a] = fromFloatArray(f[a]);
@@ -42,9 +42,9 @@ public class RGBA implements Cloneable {
     }
 
     @Override
-    public Object clone() {
+    public RGBA clone() {
         try {
-            return super.clone();
+            return (RGBA) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
