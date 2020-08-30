@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.util;
 
-public class RGBA {
+public class RGBA implements Cloneable {
     float red;
     float green;
     float blue;
@@ -34,10 +34,19 @@ public class RGBA {
     }
 
     public static RGBA[] fromFloatArray(float[][] f) {
-        RGBA[] arr = new RGBA[4];
-        for (int a = 0; a < 4; a++) {
+        RGBA[] arr = new RGBA[f.length];
+        for (int a = 0; a < f.length; a++) {
             arr[a] = fromFloatArray(f[a]);
         }
         return arr;
+    }
+
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
