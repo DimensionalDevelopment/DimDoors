@@ -33,14 +33,10 @@ import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
 import static org.lwjgl.opengl.GL11.GL_ZERO;
 
 public class MyRenderLayer extends RenderLayer {
-    public static final FloatBuffer BUFFER = GlAllocationUtils.allocateFloatBuffer(16);
     public static final Identifier WARP_PATH = new Identifier("dimdoors:textures/other/warp.png");
     public static final BooleanProperty OPEN_PROPERTY = BooleanProperty.of("open");
     public static final EnumProperty<DoorHinge> HINGE_PROPERTY = EnumProperty.of("hinge", DoorHinge.class);
     public static final DirectionProperty FACING_PROPERTY = DirectionProperty.of("facing", Arrays.asList(DirectionAccessor.getHorizontal()));
-    public static final TextureManager TEXTURE_MANAGER = MinecraftClient.getInstance().getTextureManager();
-    public static final BlockModels BLOCK_MODELS = MinecraftClient.getInstance().getBlockRenderManager().getModels();
-    public static final BakedModelManager MODEL_MANAGER = BLOCK_MODELS.getModelManager();
     public static final VectorNi COLORLESS = new VectorNi(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
     private static final Identifier KEY_PATH = new Identifier("dimdoors:textures/other/keyhole.png");
     private static final Identifier KEYHOLE_LIGHT = new Identifier("dimdoors:textures/other/keyhole_light.png");
@@ -79,14 +75,14 @@ public class MyRenderLayer extends RenderLayer {
                 false,
                 true,
                 RenderLayer.MultiPhaseParameters.builder()
-                        .transparency(TRANSLUCENT_TRANSPARENCY)
+                        .transparency(ADDITIVE_TRANSPARENCY)
                         .texture(tex)
                         .texturing(new DimensionalPortalTexturing(phase,
                                 blockEntity,
                                 blockEntity.getPos().getX() + offset.x,
                                 blockEntity.getPos().getY() + offset.y,
                                 blockEntity.getPos().getZ() + offset.z))
-                        .fog(FOG).build(false));
+                        .fog(BLACK_FOG).build(false));
     }
 
     public static RGBA[] getColors(int count) {
@@ -110,7 +106,6 @@ public class MyRenderLayer extends RenderLayer {
                     translationScale = 25.0F;
                     scale = 0.125F;
                 }
-
                 if (layer == 1) {
                     scale = 0.5F;
                 }
@@ -121,7 +116,7 @@ public class MyRenderLayer extends RenderLayer {
                 RenderSystem.scalef(scale, scale, scale);
                 RenderSystem.translatef(0.5F, 0.5F, 0.5F);
                 RenderSystem.rotatef((layer * layer * 4321 + layer) * 9 * 2.0F, 0.0F, 0.0F, 1.0F);
-                RenderSystem.translatef(17.0F / (float)layer, (2.0F + (float)layer / 1.5F) * ((float)(Util.getMeasuringTimeMs() % 800000L) / 800000.0F), 0.0F);
+                RenderSystem.scalef(4.5F - (float)layer / 4.0F, 4.5F - (float)layer / 4.0F, 1.0F);
                 RenderSystem.mulTextureByProjModelView();
                 RenderSystem.matrixMode(GL11.GL_MODELVIEW);
                 RenderSystem.setupEndPortalTexGen();
