@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.block;
 
+import io.github.boogiemonster1o1.libcbe.api.ConditionalBlockEntityProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
@@ -19,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
+public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<EntranceRiftBlockEntity>, ConditionalBlockEntityProvider {
     public DimensionalDoorBlock(Settings settings) {
         super(settings);
     }
@@ -55,6 +56,11 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
     @Override
     public BlockEntity createBlockEntity(BlockView world) {
         return new EntranceRiftBlockEntity();
+    }
+
+    @Override
+    public boolean hasBlockEntity(BlockState blockState) {
+        return blockState.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER;
     }
 
     @Override
