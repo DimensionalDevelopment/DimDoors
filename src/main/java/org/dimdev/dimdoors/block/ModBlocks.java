@@ -21,7 +21,7 @@ public final class ModBlocks {
     public static final Block QUARTZ_DIMENSIONAL_DOOR = register("dimdoors:quartz_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.QUARTZ).nonOpaque()));
     public static final Block OAK_DIMENSIONAL_TRAPDOOR = register("dimdoors:wood_dimensional_trapdoor", new DimensionalTrapdoorBlock(FabricBlockSettings.of(Material.WOOD, MaterialColor.WOOD).nonOpaque()));
 
-    public static final Block DIMENSIONAL_PORTAL = register("dimdoors:dimensional_portal", new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).dropsNothing()));
+    public static final Block DIMENSIONAL_PORTAL = register("dimdoors:dimensional_portal", new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).nonOpaque().dropsNothing()));
     public static final Block DETACHED_RIFT = register("dimdoors:detached_rift", new DetachedRiftBlock(FabricBlockSettings.of(Material.AIR).nonOpaque()));
 
     public static final Block WHITE_FABRIC = registerFabric("dimdoors:white_fabric", DyeColor.WHITE);
@@ -61,7 +61,7 @@ public final class ModBlocks {
     public static final Block ETERNAL_FLUID = register("dimdoors:eternal_fluid", new EternalFluidBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.RED).lightLevel(15)));
     public static final Block UNRAVELLED_FABRIC = register("dimdoors:unravelled_fabric", new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.BLACK).lightLevel(15)));
 
-    public static final Block MARKING_PLATE = register("dimdoors:marking_plate", new MarkingPlateBlock(FabricBlockSettings.of(Material.METAL, DyeColor.BLACK)));
+    public static final Block MARKING_PLATE = register("dimdoors:marking_plate", new MarkingPlateBlock(FabricBlockSettings.of(Material.METAL, DyeColor.BLACK).nonOpaque()));
 
     private static Block register(String string, Block block) {
         return Registry.register(Registry.BLOCK, string, block);
@@ -81,20 +81,10 @@ public final class ModBlocks {
 
     @Environment(EnvType.CLIENT)
     public static void initClient() {
-        putCutout(ModBlocks.OAK_DIMENSIONAL_DOOR);
-        putCutout(ModBlocks.GOLD_DIMENSIONAL_DOOR);
-        putCutout(ModBlocks.IRON_DIMENSIONAL_DOOR);
-        putCutout(ModBlocks.OAK_DIMENSIONAL_TRAPDOOR);
-        putCutout(ModBlocks.QUARTZ_DIMENSIONAL_DOOR);
-        putCutout(ModBlocks.QUARTZ_DOOR);
+        BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ModBlocks.OAK_DIMENSIONAL_DOOR, ModBlocks.GOLD_DIMENSIONAL_DOOR, ModBlocks.IRON_DIMENSIONAL_DOOR, ModBlocks.OAK_DIMENSIONAL_TRAPDOOR, ModBlocks.QUARTZ_DIMENSIONAL_DOOR, ModBlocks.QUARTZ_DOOR);
     }
 
-    @Environment(EnvType.CLIENT)
-    private static void putCutout(Block block) {
-        BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());
-    }
-
-    private static class DoorBlock extends net.minecraft.block.DoorBlock { // TODO: use access widener instead
+    private static class DoorBlock extends net.minecraft.block.DoorBlock {
         public DoorBlock(Settings settings) {
             super(settings);
         }

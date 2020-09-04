@@ -198,6 +198,7 @@ public class MonolithEntity extends MobEntity {
         }
     }
 
+    @Environment(EnvType.CLIENT)
     public int getTextureState() {
         // Determine texture state from aggro progress
         return MathHelper.clamp(MAX_TEXTURE_STATE * dataTracker.get(AGGRO) / MAX_AGGRO, 0, MAX_TEXTURE_STATE);

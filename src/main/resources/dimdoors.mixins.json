@@ -5,10 +5,12 @@
   "mixins": [
     "BuiltinBiomesAccessor",
     "DefaultBiomeFeaturesMixin",
+    "DimensionTypeAccessor",
     "DirectionAccessor",
     "PlayerEntityMixin"
   ],
   "client": [
+    "client.GlStateManagerAccessor",
     "client.InGameHudMixin"
   ],
   "injectors": {

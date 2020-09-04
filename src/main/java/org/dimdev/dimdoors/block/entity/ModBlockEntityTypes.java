@@ -20,16 +20,14 @@ public class ModBlockEntityTypes {
     public static final BlockEntityType<DetachedRiftBlockEntity> DETACHED_RIFT = register(
             "dimdoors:detached_rift",
             DetachedRiftBlockEntity::new,
-            new Block[]{ModBlocks.DETACHED_RIFT}
-    );
+            ModBlocks.DETACHED_RIFT);
 
     public static final BlockEntityType<EntranceRiftBlockEntity> ENTRANCE_RIFT = register(
             "dimdoors:entrance_rift",
             EntranceRiftBlockEntity::new,
-            new Block[]{ModBlocks.OAK_DIMENSIONAL_DOOR, ModBlocks.IRON_DIMENSIONAL_DOOR, ModBlocks.GOLD_DIMENSIONAL_DOOR, ModBlocks.QUARTZ_DIMENSIONAL_DOOR}
-    );
+            ModBlocks.OAK_DIMENSIONAL_DOOR, ModBlocks.IRON_DIMENSIONAL_DOOR, ModBlocks.GOLD_DIMENSIONAL_DOOR, ModBlocks.QUARTZ_DIMENSIONAL_DOOR, ModBlocks.DIMENSIONAL_PORTAL);
 
-    private static <E extends BlockEntity> BlockEntityType<E> register(String id, Supplier<? extends E> supplier, Block[] blocks) {
+    private static <E extends BlockEntity> BlockEntityType<E> register(String id, Supplier<? extends E> supplier, Block... blocks) {
         return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, new BlockEntityType<>(supplier, Sets.newHashSet(blocks), null));
     }
 

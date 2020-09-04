@@ -29,9 +29,9 @@ public final class ModFeatures {
     static {
         SANDSTONE_PILLARS_FEATURE = GATEWAY_FEATURE.configure(new SchematicGatewayFeatureConfig(SchematicGateway.SCHEMATIC_ID_MAP.get(SANDSTONE_PILLARS_GATEWAY)))
                 .decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP
-                        .applyChance(ModConfig.WORLD.gatewayGenChance + 20));
+                        .applyChance(ModConfig.WORLD.gatewayGenChance));
         TWO_PILLARS_FEATURE = GATEWAY_FEATURE.configure(new SchematicGatewayFeatureConfig(SchematicGateway.SCHEMATIC_ID_MAP.get(TWO_PILLARS_GATEWAY)))
                 .decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP
-                        .applyChance(ModConfig.WORLD.gatewayGenChance + 20));
+                        .applyChance(ModConfig.WORLD.gatewayGenChance));
     }
 }

@@ -66,7 +66,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
             colors[i] = getEntranceRenderColor(rand);
         }
 
-        return RGBA.fromFloatArray(colors);
+        return RGBA.fromFloatArrays(colors);
     }
 
     @Environment(EnvType.CLIENT)

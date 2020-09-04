@@ -35,7 +35,7 @@ public final class ModConfig {
 
     public static class World {
         public double clusterGenChance = 0.0002;
-        public int gatewayGenChance = 4;
+        public int gatewayGenChance = 80;
         public Set<Integer> clusterDimBlacklist = new LinkedHashSet<>();
         public Set<Integer> gatewayDimBlacklist = new LinkedHashSet<>();
     }

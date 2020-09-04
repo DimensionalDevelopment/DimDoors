@@ -8,11 +8,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 public class Tesseract {
-    private final Plane[] planes;
+    private final Plane[] planes = new Plane[24];
 
     public Tesseract() {
-        planes = new Plane[24];
-
         planes[0] = new Plane(
                 new Vector4f(-0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, -0.5f, -0.5f, -0.5f),
