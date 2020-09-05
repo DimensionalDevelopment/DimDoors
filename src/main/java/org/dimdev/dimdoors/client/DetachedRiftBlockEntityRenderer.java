@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.client;
 
 import com.flowpowered.math.TrigMath;
+import net.minecraft.util.math.Matrix4f;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.client.tesseract.Tesseract;
@@ -32,6 +33,8 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
 
     @Override
     public void render(DetachedRiftBlockEntity rift, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcs, int breakProgress, int alpha) {
+        Matrix4f model = matrices.peek().getModel();
+
         if (ModConfig.GRAPHICS.showRiftCore) {
             renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
         } else {
@@ -41,17 +44,17 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
             }
         }
 
-        renderCrack(vcs.getBuffer(RenderLayer.getLightning()), matrices, rift);
+        renderCrack(vcs.getBuffer(MyRenderLayer.CRACK), matrices, rift);
     }
 
     private void renderCrack(VertexConsumer vc, MatrixStack matrices, DetachedRiftBlockEntity rift) {
         matrices.push();
         matrices.translate(0.5, 0.5, 0.5);
-        RiftCrackRenderer.drawCrack(vc, 0, CURVE, ModConfig.GRAPHICS.riftSize * rift.size, 0xF1234568L * rift.getPos().hashCode());
+        RiftCrackRenderer.drawCrack(matrices.peek().getModel(), vc, 0, CURVE, ModConfig.GRAPHICS.riftSize * rift.size, 0xF1234568L * rift.getPos().hashCode());
         matrices.pop();
     }
 
-    private void renderTesseract(VertexConsumer vc, DetachedRiftBlockEntity rift, MatrixStack matrices, float tickDelta) {
+    private void renderTesseract( VertexConsumer vc, DetachedRiftBlockEntity rift, MatrixStack matrices, float tickDelta) {
         double radian = nextAngle(rift, tickDelta) * TrigMath.DEG_TO_RAD;
         RGBA color = rift.getColor();
         if (color == null) color = COLOR;
@@ -61,7 +64,7 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
         matrices.translate(0.5, 0.5, 0.5);
         matrices.scale(0.25f, 0.25f, 0.25f);
 
-        TESSERACT.draw(vc, color, radian);
+        TESSERACT.draw(matrices.peek().getModel(), vc, color, radian);
 
         matrices.pop();
     }

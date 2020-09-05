@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.client;
 
+import net.minecraft.util.math.Matrix4f;
 import org.dimdev.dimdoors.ModConfig;
 
 import net.minecraft.client.render.VertexConsumer;
@@ -9,7 +10,7 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public final class RiftCrackRenderer {
-    public static void drawCrack(VertexConsumer vc, float riftRotation, RiftCurves.PolygonInfo poly, double size, long riftRandom) {
+    public static void drawCrack(Matrix4f model, VertexConsumer vc, float riftRotation, RiftCurves.PolygonInfo poly, double size, long riftRandom) {
         // Calculate the proper size for the rift render
         double scale = size / (poly.maxX - poly.minX);
 
@@ -55,7 +56,7 @@ public final class RiftCrackRenderer {
             y *= scale;
             z *= scale;
 
-            vc.vertex(x,y,z).color(0.08f, 0.08f, 0.08f, .3f).next();
+            vc.vertex(model, (float) x, (float) y, (float) z).color(0.08f, 0.08f, 0.08f, .3f).next();
         }
     }
 }
