@@ -39,7 +39,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
     public double renderAngle;
 
     public DetachedRiftBlockEntity() {
-        super(ModBlockEntityTypes.ENTRANCE_RIFT);
+        super(ModBlockEntityTypes.DETACHED_RIFT);
     }
 
     @Override

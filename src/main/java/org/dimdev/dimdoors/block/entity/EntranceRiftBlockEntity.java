@@ -25,13 +25,11 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     @Override
     public void fromTag(BlockState state, CompoundTag nbt) {
         super.fromTag(state, nbt);
-        AnnotatedNbt.load(this, nbt);
     }
 
     @Override
     public CompoundTag toTag(CompoundTag nbt) {
         nbt = super.toTag(nbt);
-        AnnotatedNbt.save(this, nbt);
         return nbt;
     }
 

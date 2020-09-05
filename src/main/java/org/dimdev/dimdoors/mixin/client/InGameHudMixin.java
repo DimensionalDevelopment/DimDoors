@@ -16,7 +16,7 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getTextureManager()Lnet/minecraft/client/texture/TextureManager;"), method = "renderVignetteOverlay(Lnet/minecraft/entity/Entity;)V")
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getTextureManager()Lnet/minecraft/client/texture/TextureManager;"), method = "renderVignetteOverlay(Lnet/minecraft/entity/Entity;)V", remap = false)
     public void renderVignetteOverlay(Entity entity, CallbackInfo info) {
         if (entity.world.getBiome(entity.getBlockPos()) == ModBiomes.LIMBO_BIOME) {
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);

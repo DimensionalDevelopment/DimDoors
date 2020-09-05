@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.block.entity;
 import java.util.Arrays;
 import java.util.Objects;
 
+import com.mojang.serialization.Codec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.annotatednbt.AnnotatedNbt;
@@ -34,6 +35,7 @@ import net.minecraft.text.LiteralText;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 
 public abstract class RiftBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Target, EntityTarget, AutoSerializable {
+    private static Codec<RiftData> CODEC = RiftData.CODEC.orElseGet(RiftData::new);
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected RiftData data = new RiftData();
@@ -61,7 +63,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
         if (this.world != null && !this.world.isClient()) {
             this.sync();
         }
-
+        tag.put("data", NbtUtil.serialize(data, RiftData.CODEC));
         return super.toTag(tag);
     }
 

@@ -19,7 +19,7 @@ public final class RiftCrackRenderer {
         double offsetZ = 0;
 
         // Jitters that make rifts shake
-        float jitterSpeed = 0.014f; // Changes how quickly the rift jitters
+        float jitterSpeed = 0f; // Changes how quickly the rift jitters
 
         // Calculate jitter like for monoliths, depending x, y and z coordinates to avoid all rifts syncing
         float time = (System.currentTimeMillis() + riftRandom) % 2000000;
@@ -55,7 +55,7 @@ public final class RiftCrackRenderer {
             y *= scale;
             z *= scale;
 
-            vc.vertex(x + xJitter, y + yJitter, z + zJitter).color(0.08f, 0.08f, 0.08f, .3f).next();
+            vc.vertex(x,y,z).color(0.08f, 0.08f, 0.08f, .3f).next();
         }
     }
 }

@@ -32,7 +32,7 @@ public final class AnnotatedNbt {
 
     }
 
-    public static CompoundTag toTag(Object playerRiftPointer, CompoundTag nbt) {
+    public static CompoundTag toTag(Object object, CompoundTag nbt) {
         return null;
     }
 

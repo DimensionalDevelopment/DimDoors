@@ -33,15 +33,15 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
     @Override
     public void render(DetachedRiftBlockEntity rift, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcs, int breakProgress, int alpha) {
         if (ModConfig.GRAPHICS.showRiftCore) {
-            renderTesseract(vcs.getBuffer(RenderLayer.getTranslucent()), rift, matrices, tickDelta);
+            renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
         } else {
             long timeLeft = showRiftCoreUntil - System.currentTimeMillis();
             if (timeLeft >= 0) {
-                renderTesseract(vcs.getBuffer(RenderLayer.getTranslucent()), rift, matrices, tickDelta);
+                renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
             }
         }
 
-        renderCrack(vcs.getBuffer(MyRenderLayer.CRACK), matrices, rift);
+        renderCrack(vcs.getBuffer(RenderLayer.getLightning()), matrices, rift);
     }
 
     private void renderCrack(VertexConsumer vc, MatrixStack matrices, DetachedRiftBlockEntity rift) {
