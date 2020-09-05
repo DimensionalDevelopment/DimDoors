@@ -1,41 +1,33 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import org.dimdev.dimdoors.util.Location;
-
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.NbtUtil;
+import org.dimdev.dimdoors.util.RGBA;
+
+import java.util.function.Function;
 
 /**
  * A target that is not an actual object in the game such as a block or a tile
  * entity. Only virtual targets can be saved to NBT.
  */
 public abstract class VirtualTarget implements Target {
+    public static final Registry<VirtualTargetType> registry = FabricRegistryBuilder.createSimple(VirtualTargetType.class, new Identifier("dimdoors", "virtual_type")).attribute(RegistryAttribute.MODDED).buildAndRegister();
+    public static final RGBA COLOR = new RGBA(1, 0, 0, 1);
 
-    public static final BiMap<String, Class<? extends VirtualTarget>> registry = HashBiMap.create();
+    public static Codec<VirtualTarget> CODEC = registry.dispatch(VirtualTarget::getType, VirtualTargetType::codec);
+
     protected Location location;
 
     public static VirtualTarget readVirtualTargetNBT(CompoundTag nbt) {
-        String type = nbt.getString("type");
-        Class<? extends VirtualTarget> destinationClass = registry.get(type);
-        if (destinationClass == null) throw new RuntimeException("Unknown type '" + type + "'.");
-        try {
-            VirtualTarget destination = destinationClass.newInstance();
-            destination.fromTag(nbt);
-            return destination;
-        } catch (IllegalAccessException | InstantiationException e) {
-            throw new RuntimeException("The class registered for virtual target " + type + " must have a public no-args constructor and must not be abstract", e);
-        }
-    }
-
-    public void fromTag(CompoundTag nbt) {
-    }
-
-    public CompoundTag toTag(CompoundTag nbt) {
-        String type = registry.inverse().get(getClass());
-        if (type == null) throw new RuntimeException("No type has been registered for class" + getClass().getName());
-        nbt.putString("type", type);
-        return nbt;
+        return NbtUtil.deserialize(nbt, CODEC);
     }
 
     public void register() {
@@ -44,12 +36,14 @@ public abstract class VirtualTarget implements Target {
     public void unregister() {
     }
 
+    public abstract VirtualTargetType<? extends VirtualTarget> getType();
+
     public boolean shouldInvalidate(Location riftDeleted) {
         return false;
     }
 
-    public float[] getColor() {
-        return new float[]{1, 0, 0, 1};
+    public RGBA getColor() {
+        return getType().getColor();
     }
 
     public boolean equals(Object o) {
@@ -68,5 +62,37 @@ public abstract class VirtualTarget implements Target {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public interface VirtualTargetType<T extends VirtualTarget> {
+        public VirtualTargetType<RandomTarget> AVAILABLE_LINK = register("available_link", RandomTarget.CODEC, VirtualTarget.COLOR);
+        public VirtualTargetType<EscapeTarget> ESCAPE = register("escape", EscapeTarget.CODEC, VirtualTarget.COLOR);
+        public VirtualTargetType<GlobalReference> GLOBAL = register("global", GlobalReference.CODEC, VirtualTarget.COLOR);
+        public VirtualTargetType<LimboTarget> LIMBO = register("limbo", LimboTarget.CODEC, VirtualTarget.COLOR);
+        public VirtualTargetType<LocalReference> LOCAL = register("local", LocalReference.CODEC, VirtualTarget.COLOR);
+        public VirtualTargetType<PublicPocketTarget> PUBLIC_POCKET = register("public_pocket", PublicPocketTarget.CODEC, VirtualTarget.COLOR);
+        public VirtualTargetType<PocketEntranceMarker> POCKET_ENTRANCE = register("pocket_entrance", PocketEntranceMarker.CODEC, VirtualTarget.COLOR);
+        public VirtualTargetType<PocketExitMarker> POCKET_EXIT = register("pocket_exit", PocketExitMarker.CODEC, VirtualTarget.COLOR);
+        public VirtualTargetType<PrivatePocketTarget> PRIVATE = register("private", PrivatePocketTarget.CODEC, PrivatePocketExitTarget.COLOR);
+        public VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("private_pocket_exit", PrivatePocketExitTarget.CODEC, PrivatePocketExitTarget.COLOR);
+        public VirtualTargetType<RelativeReference> RELATIVE = register("relative", RelativeReference.CODEC, VirtualTarget.COLOR);
+
+        Codec<T> codec();
+
+        RGBA getColor();
+
+        static <T extends VirtualTarget> VirtualTargetType<T> register(String id, Codec<T> codec, RGBA color) {
+            return Registry.register(registry, (String) id, new VirtualTargetType<T>() {
+                @Override
+                public Codec<T> codec() {
+                    return codec;
+                }
+
+                @Override
+                public RGBA getColor() {
+                    return color;
+                }
+            });
+        }
     }
 }

@@ -15,10 +15,12 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import org.dimdev.dimdoors.util.RGBA;
 
 @Environment(EnvType.CLIENT)
 public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<DetachedRiftBlockEntity> {
     public static final Identifier TESSERACT_PATH = new Identifier("dimdoors:textures/other/tesseract.png");
+    private RGBA COLOR = new RGBA(1, 0.5f, 1, 1);
 
     private static final Tesseract TESSERACT = new Tesseract();
     private static final RiftCurves.PolygonInfo CURVE = RiftCurves.CURVES.get(0);
@@ -51,8 +53,8 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
 
     private void renderTesseract(VertexConsumer vc, DetachedRiftBlockEntity rift, MatrixStack matrices, float tickDelta) {
         double radian = nextAngle(rift, tickDelta) * TrigMath.DEG_TO_RAD;
-        float[] color = rift.getColor();
-        if (color == null) color = new float[]{1, 0.5f, 1, 1};
+        RGBA color = rift.getColor();
+        if (color == null) color = COLOR;
 
         matrices.push();
 

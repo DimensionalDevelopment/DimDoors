@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.util.Location;
@@ -8,24 +10,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Vec3i;
 
 public class RelativeReference extends RiftReference {
-    @Saved
-    protected Vec3i offset;
+
+    private Vec3i offset;
+
+    public static Codec<RelativeReference> CODEC = Vec3i.field_25123.xmap(RelativeReference::new, RelativeReference::getOffset).fieldOf("offset").codec();
 
     public RelativeReference(Vec3i offset) {
         this.offset = offset;
-    }
-
-    @Override
-    public void fromTag(CompoundTag nbt) {
-        super.fromTag(nbt);
-        AnnotatedNbt.load(this, nbt);
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        tag = super.toTag(tag);
-        AnnotatedNbt.save(this, tag);
-        return tag;
     }
 
     @Override
@@ -35,5 +26,10 @@ public class RelativeReference extends RiftReference {
 
     public Vec3i getOffset() {
         return offset;
+    }
+
+    @Override
+    public VirtualTargetType<? extends VirtualTarget> getType() {
+        return VirtualTargetType.RELATIVE;
     }
 }

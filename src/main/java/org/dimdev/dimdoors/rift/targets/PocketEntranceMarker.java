@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.util.EntityUtils;
@@ -10,10 +12,17 @@ import net.minecraft.text.TranslatableText;
 
 
 public class PocketEntranceMarker extends VirtualTarget implements EntityTarget {
-    @Saved
+    public static final Codec<PocketEntranceMarker> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+                Codec.FLOAT.fieldOf("weight").forGetter(target -> target.weight),
+                VirtualTarget.CODEC.fieldOf("ifDestination").forGetter(target -> target.ifDestination),
+                VirtualTarget.CODEC.fieldOf("otherwiseDestination").forGetter(target -> target.otherwiseDestination)
+        ).apply(instance, PocketEntranceMarker::new);
+    });
+
     protected float weight = 1;
-    /*@Saved*/ protected VirtualTarget ifDestination;
-    /*@Saved*/ protected VirtualTarget otherwiseDestination;
+    protected VirtualTarget ifDestination;
+    protected VirtualTarget otherwiseDestination;
 
     public PocketEntranceMarker() {
     }
@@ -26,24 +35,6 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 
     public static PocketEntranceMarkerBuilder builder() {
         return new PocketEntranceMarkerBuilder();
-    }
-
-    @Override
-    public void fromTag(CompoundTag nbt) {
-        super.fromTag(nbt);
-        ifDestination = nbt.contains("ifDestination") ? VirtualTarget.readVirtualTargetNBT(nbt.getCompound("ifDestination")) : null;
-        otherwiseDestination = nbt.contains("otherwiseDestination") ? VirtualTarget.readVirtualTargetNBT(nbt.getCompound("otherwiseDestination")) : null;
-        AnnotatedNbt.load(this, nbt);
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag nbt) {
-        nbt = super.toTag(nbt);
-        if (ifDestination != null) nbt.put("ifDestination", ifDestination.toTag(new CompoundTag()));
-        if (otherwiseDestination != null)
-            nbt.put("otherwiseDestination", otherwiseDestination.toTag(new CompoundTag()));
-        AnnotatedNbt.save(this, nbt);
-        return nbt;
     }
 
     @Override
@@ -70,6 +61,11 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 
     public PocketEntranceMarkerBuilder toBuilder() {
         return new PocketEntranceMarkerBuilder().weight(weight).ifDestination(ifDestination).otherwiseDestination(otherwiseDestination);
+    }
+
+    @Override
+    public VirtualTargetType<? extends VirtualTarget> getType() {
+        return VirtualTargetType.POCKET_ENTRANCE;
     }
 
     public static class PocketEntranceMarkerBuilder {

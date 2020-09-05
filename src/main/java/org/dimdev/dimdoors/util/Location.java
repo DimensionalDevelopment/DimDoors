@@ -1,5 +1,15 @@
 package org.dimdev.dimdoors.util;
 
+import com.mojang.datafixers.kinds.App;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.placer.ColumnPlacer;
+import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.AutoSerializable;
 import org.dimdev.annotatednbt.Saved;
 
@@ -10,20 +20,34 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 public class Location implements AutoSerializable {
-    @Saved
-    public final ServerWorld world;
-    @Saved
+    public static final Codec<Location> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(World.CODEC.fieldOf("world").forGetter(location -> {
+            return location.world;
+        }), BlockPos.field_25064.fieldOf("pos").forGetter(location -> {
+            return location.pos;
+        })).apply(instance, Location::new);
+    });
+
+    public final RegistryKey<World> world;
     public final BlockPos pos;
 
-    public Location(ServerWorld world, BlockPos pos) {
+    public Location(RegistryKey<World> world, BlockPos pos) {
         this.world = world;
         this.pos = pos;
     }
 
     public Location(ServerWorld world, int x, int y, int z) {
         this(world, new BlockPos(x, y, z));
+    }
+
+    public Location(ServerWorld world, BlockPos pos) {
+        this(world.getRegistryKey(), pos);
     }
 
     public int getX() {
@@ -39,15 +63,15 @@ public class Location implements AutoSerializable {
     }
 
     public BlockState getBlockState() {
-        return world.getBlockState(pos);
+        return getWorld().getBlockState(pos);
     }
 
     public FluidState getFluidState() {
-        return world.getFluidState(pos);
+        return getWorld().getFluidState(pos);
     }
 
     public BlockEntity getBlockEntity() {
-        return world.getBlockEntity(pos);
+        return getWorld().getBlockEntity(pos);
     }
 
     public BlockPos getBlockPos() {
@@ -67,6 +91,10 @@ public class Location implements AutoSerializable {
     }
 
     public RegistryKey<World> getWorldId() {
-        return world.getRegistryKey();
+        return world;
+    }
+
+    public ServerWorld getWorld() {
+        return DimensionalDoorsInitializer.getServer().getWorld(world);
     }
 }

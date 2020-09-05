@@ -27,7 +27,7 @@ public class SaveSchemCommand {
                                 throw new CommandException(new TranslatableText("commands.generic.dimdoors.not_in_pocket"));
                             }
 
-                            Pocket pocket = PocketRegistry.instance(player.getServerWorld()).getPocketAt(player.getBlockPos());
+                            Pocket pocket = PocketRegistry.instance(player.getServerWorld().getRegistryKey()).getPocketAt(player.getBlockPos());
                             if (pocket == null)
                                 throw new CommandException(new TranslatableText("commands.generic.dimdoors.not_in_pocket"));
 

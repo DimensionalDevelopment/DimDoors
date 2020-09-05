@@ -1,9 +1,15 @@
 package org.dimdev.dimdoors.world.pocket;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.WorldUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.nbt.CompoundTag;
@@ -14,8 +20,17 @@ import net.minecraft.world.Heightmap;
 import static net.minecraft.world.World.OVERWORLD;
 
 public class VirtualLocation {
+    public static Codec<VirtualLocation> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    World.CODEC.fieldOf("world").forGetter(virtualLocation -> virtualLocation.world),
+                    Codec.INT.fieldOf("x").forGetter(virtualLocation -> virtualLocation.x),
+                    Codec.INT.fieldOf("z").forGetter(virtualLocation -> virtualLocation.z),
+                    Codec.INT.fieldOf("depth").forGetter(virtualLocation -> virtualLocation.depth)
+            ).apply(instance, VirtualLocation::new)
+    );
+
     @Saved
-    public final ServerWorld world;
+    public final RegistryKey<World> world;
     @Saved
     public final int x;
     @Saved
@@ -23,7 +38,7 @@ public class VirtualLocation {
     @Saved
     public final int depth;
 
-    public VirtualLocation(ServerWorld world, int x, int z, int depth) {
+    public VirtualLocation(RegistryKey<World> world, int x, int z, int depth) {
         this.world = world;
         this.x = x;
         this.z = z;
@@ -49,19 +64,19 @@ public class VirtualLocation {
             } else {
                 virtualLocation = null; // TODO: door was placed in a pockets dim but outside of a pockets...
             }
-        } else if (ModDimensions.isLimboDimension(location.world)) { // TODO: convert to interface on worldprovider
+        } else if (ModDimensions.isLimboDimension(location.getWorld())) { // TODO: convert to interface on worldprovider
             virtualLocation = new VirtualLocation(location.world, location.getX(), location.getZ(), ModConfig.DUNGEONS.maxDungeonDepth);
         } // TODO: nether coordinate transform
 
         if (virtualLocation == null) {
-            return new VirtualLocation(location.world.getServer().getWorld(OVERWORLD), location.getX(), location.getZ(), 5);
+            return new VirtualLocation(OVERWORLD, location.getX(), location.getZ(), 5);
         }
 
         return virtualLocation;
     }
 
     public Location projectToWorld(boolean acceptLimbo) {
-        ServerWorld world = this.world;
+        ServerWorld world = DimensionalDoorsInitializer.getServer().getWorld(this.world);
 
         if (!acceptLimbo && ModDimensions.isLimboDimension(world)) {
             world = world.getServer().getWorld(OVERWORLD);

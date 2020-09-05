@@ -18,6 +18,7 @@ import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.WorldUtil;
 import org.dimdev.dimdoors.util.math.MathUtil;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
@@ -174,7 +175,7 @@ public class PocketTemplate {
     public void place(Pocket pocket, boolean setup) {
         pocket.setSize(size * 16, size * 16, size * 16);
         int gridSize = PocketRegistry.instance(pocket.world).getGridSize();
-        ServerWorld world = pocket.world;
+        ServerWorld world = WorldUtil.getWorld(pocket.world);
         int xBase = pocket.box.minX;
         int yBase = pocket.box.minY;
         int zBase = pocket.box.minZ;
@@ -199,7 +200,7 @@ public class PocketTemplate {
 
     public void setup(Pocket pocket, VirtualTarget linkTo, LinkProperties linkProperties) {
         int gridSize = PocketRegistry.instance(pocket.world).getGridSize();
-        ServerWorld world = pocket.world;
+        ServerWorld world = WorldUtil.getWorld(pocket.world);
         int xBase = pocket.box.minX;
         int yBase = pocket.box.minY;
         int zBase = pocket.box.minZ;
@@ -267,10 +268,10 @@ public class PocketTemplate {
             VirtualTarget dest = rift.getDestination();
             if (dest instanceof PocketEntranceMarker) {
                 if (rift == selectedEntrance) {
-                    PocketRegistry.instance(world).markDirty();
+                    PocketRegistry.instance(world.getRegistryKey()).markDirty();
                     rift.setDestination(((PocketEntranceMarker) dest).getIfDestination());
                     rift.register();
-                    RiftRegistry.instance(world).addPocketEntrance(pocket, new Location((ServerWorld) rift.getWorld(), rift.getPos()));
+                    RiftRegistry.instance().addPocketEntrance(pocket, new Location((ServerWorld) rift.getWorld(), rift.getPos()));
                 } else {
                     rift.setDestination(((PocketEntranceMarker) dest).getOtherwiseDestination());
                 }

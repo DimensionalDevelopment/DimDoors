@@ -39,7 +39,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     public boolean teleport(Entity entity) {
         boolean status = super.teleport(entity);
 
-        if (riftStateChanged && !alwaysDelete) {
+        if (riftStateChanged && !data.isAlwaysDelete()) {
             markDirty();
         }
 

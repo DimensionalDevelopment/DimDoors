@@ -25,6 +25,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.util.WorldUtil;
 
 public class StabilizedRiftSignatureItem extends Item { // TODO: common superclass with rift signature
     public static final String ID = "stabilized_rift_signature";
@@ -63,7 +64,7 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 
         if (target == null) {
             // The link signature has not been used. Store its current target as the first location.
-            setSource(stack, new RotatedLocation((ServerWorld) world, pos, player.yaw, 0));
+            setSource(stack, new RotatedLocation(world.getRegistryKey(), pos, player.yaw, 0));
             player.sendMessage(new TranslatableText(getTranslationKey() + ".stored"), true);
             world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
@@ -74,7 +75,7 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
                     // Don't clear source, stabilized signatures always stay bound
                     return ActionResult.FAIL;
                 }
-                World targetWorld = target.world;
+                World targetWorld = WorldUtil.getWorld(target.world);
                 targetWorld.setBlockState(target.getBlockPos(), ModBlocks.DETACHED_RIFT.getDefaultState());
                 DetachedRiftBlockEntity rift1 = (DetachedRiftBlockEntity) target.getBlockEntity();
                 rift1.register();
@@ -98,7 +99,7 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 
     public static void setSource(ItemStack itemStack, RotatedLocation destination) {
         if (!itemStack.hasTag()) itemStack.setTag(new CompoundTag());
-        itemStack.getTag().put("destination", destination.serialize());
+        itemStack.getTag().put("destination", RotatedLocation.serialize(destination));
     }
 
     public static void clearSource(ItemStack itemStack) {
@@ -109,8 +110,7 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 
     public static RotatedLocation getTarget(ItemStack itemStack) {
         if (itemStack.hasTag() && itemStack.getTag().contains("destination")) {
-            RotatedLocation transform = RotatedLocation.deserialize(itemStack.getTag().getCompound("destination"));
-            return transform;
+            return RotatedLocation.deserialize(itemStack.getTag().getCompound("destination"));
         } else {
             return null;
         }

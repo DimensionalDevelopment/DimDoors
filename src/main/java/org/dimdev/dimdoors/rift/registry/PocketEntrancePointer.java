@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import net.minecraft.util.registry.RegistryKey;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 
@@ -8,11 +9,11 @@ import net.minecraft.world.World;
 
 public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftPointer superclass?
     @Saved
-    public World pocketDim;
+    public RegistryKey<World> pocketDim;
     @Saved
     public int pocketId;
 
-    public PocketEntrancePointer(World pocketDim, int pocketId) {
+    public PocketEntrancePointer(RegistryKey<World> pocketDim, int pocketId) {
         this.pocketDim = pocketDim;
         this.pocketId = pocketId;
     }

@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.rift.targets;
 
 import java.util.UUID;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.Location;
@@ -10,28 +12,22 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 
 import static org.dimdev.dimdoors.util.EntityUtils.chat;
 
 public class EscapeTarget extends VirtualTarget implements EntityTarget { // TODO: createRift option
+    public static final Codec<EscapeTarget> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+                Codec.BOOL.fieldOf("canEscapeLimbo").forGetter(target -> target.canEscapeLimbo)
+        ).apply(instance, EscapeTarget::new);
+    });
+
     protected boolean canEscapeLimbo = false;
 
     public EscapeTarget(boolean canEscapeLimbo) {
         this.canEscapeLimbo = canEscapeLimbo;
-    }
-
-    @Override
-    public void fromTag(CompoundTag nbt) {
-        super.fromTag(nbt);
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag nbt) {
-        nbt = super.toTag(nbt);
-        return nbt;
     }
 
     @Override
@@ -47,10 +43,10 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 
         UUID uuid = entity.getUuid();
         if (uuid != null) {
-            Location destLoc = RiftRegistry.instance(entity.world).getOverworldRift(uuid);
+            Location destLoc = RiftRegistry.instance().getOverworldRift(uuid);
             if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || canEscapeLimbo) {
                 Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos())).projectToWorld(false);
-                TeleportUtil.teleport(entity, location.world, location.pos, 0);
+                TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), 0);
             } else {
                 if (destLoc == null) {
                     chat(entity, new TranslatableText("rifts.destinations.escape.did_not_use_rift"));
@@ -68,5 +64,10 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
         } else {
             return false; // No escape info for that entity
         }
+    }
+
+    @Override
+    public VirtualTargetType<? extends VirtualTarget> getType() {
+        return VirtualTargetType.ESCAPE;
     }
 }

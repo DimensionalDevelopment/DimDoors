@@ -5,6 +5,7 @@ import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector4f;
 
 import net.minecraft.client.render.VertexConsumer;
+import org.dimdev.dimdoors.util.RGBA;
 
 import static com.flowpowered.math.TrigMath.cos;
 import static com.flowpowered.math.TrigMath.sin;
@@ -16,20 +17,20 @@ public class Plane {
         vectors = new Vector4f[]{vec1, vec2, vec3, vec4};
     }
 
-    public void draw(VertexConsumer vc, float[] color, double radian) {
+    public void draw(VertexConsumer vc, RGBA color, double radian) {
         drawVertex(vc, rotYW(vectors[0], radian), 0, 0, color);
         drawVertex(vc, rotYW(vectors[1], radian), 0, 1, color);
         drawVertex(vc, rotYW(vectors[2], radian), 1, 1, color);
         drawVertex(vc, rotYW(vectors[3], radian), 1, 0, color);
     }
 
-    private static void drawVertex(VertexConsumer vc, Vector4f vector, int u, int v, float[] color) {
+    private static void drawVertex(VertexConsumer vc, Vector4f vector, int u, int v, RGBA color) {
         double scalar = 1d / (vector.getW() + 1);
         Vector3f scaled = vector.toVector3().mul(scalar);
 
         vc.vertex(scaled.getX(), scaled.getY(), scaled.getZ())
                 .texture(u, v)
-                .color(color[0], color[1], color[2], color[3])
+                .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
                 .next();
     }
 

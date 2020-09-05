@@ -2,14 +2,11 @@ package org.dimdev.dimdoors.block;
 
 import java.util.Random;
 
+import net.minecraft.block.*;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.client.RiftParticle;
 import org.dimdev.dimdoors.world.ModDimensions;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.MaterialColor;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
@@ -84,5 +81,10 @@ public class DetachedRiftBlock extends Block implements RiftProvider<DetachedRif
                 rand.nextGaussian() * speed, rand.nextGaussian() * speed, rand.nextGaussian() * speed,
                 outsidePocket ? 0.0f : 0.7f, 0.55f, rift.stabilized ? 750 : 2000, rift.stabilized ? 750 : 2000)
         );*/
+    }
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 }

@@ -1,6 +1,19 @@
 package org.dimdev.dimdoors.util;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.dimdev.dimdoors.rift.targets.EscapeTarget;
+
 public class RGBA implements Cloneable {
+    public static Codec<RGBA> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+                Codec.FLOAT.fieldOf("red").forGetter(RGBA::getRed),
+                Codec.FLOAT.fieldOf("green").forGetter(RGBA::getGreen),
+                Codec.FLOAT.fieldOf("blue").forGetter(RGBA::getBlue),
+                Codec.FLOAT.fieldOf("alpha").forGetter(RGBA::getAlpha)
+        ).apply(instance, RGBA::new);
+    });
+
     float red;
     float green;
     float blue;

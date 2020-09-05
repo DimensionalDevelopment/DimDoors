@@ -3,8 +3,14 @@ package org.dimdev.dimdoors.rift.targets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -15,6 +21,7 @@ import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.WorldUtil;
 import org.dimdev.dimdoors.util.math.MathUtil;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
@@ -26,6 +33,19 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 
 public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTarget subclass
+    public static final Codec<RandomTarget> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+                Codec.FLOAT.fieldOf("newRiftWeight").forGetter(target -> target.newRiftWeight),
+                Codec.DOUBLE.fieldOf("weightMaximum").forGetter(location -> location.weightMaximum),
+                Codec.DOUBLE.fieldOf("coordFactor").forGetter(location -> location.coordFactor),
+                Codec.DOUBLE.fieldOf("positiveDepthFactor").forGetter(location -> location.positiveDepthFactor),
+                Codec.DOUBLE.fieldOf("negativeDepthFactor").forGetter(location -> location.negativeDepthFactor),
+                Codec.INT_STREAM.<Set<Integer>>comapFlatMap(a -> DataResult.success(a.boxed().collect(Collectors.toSet())), a -> a.stream().mapToInt(Integer::intValue)).fieldOf("acceptedGroups").forGetter(target -> target.acceptedGroups),
+                Codec.BOOL.fieldOf("noLink").forGetter(target -> target.noLink),
+                Codec.BOOL.fieldOf("noLinkBack").forGetter(target -> target.noLinkBack)
+        ).apply(instance, RandomTarget::new);
+    });
+
     @Saved
     protected float newRiftWeight;
     @Saved
@@ -59,26 +79,13 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
     }
 
     @Override
-    public void fromTag(CompoundTag nbt) {
-        super.fromTag(nbt);
-        AnnotatedNbt.load(this, nbt);
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag nbt) {
-        nbt = super.toTag(nbt);
-        AnnotatedNbt.save(this, nbt);
-        return nbt;
-    }
-
-    @Override
     public Target receiveOther() { // TODO: Wrap rather than replace
         VirtualLocation virtualLocationHere = VirtualLocation.fromLocation(location);
 
         Map<Location, Float> riftWeights = new HashMap<>();
         if (newRiftWeight > 0) riftWeights.put(null, newRiftWeight);
 
-        for (Rift otherRift : RiftRegistry.instance(location.world).getRifts()) {
+        for (Rift otherRift : RiftRegistry.instance().getRifts()) {
             VirtualLocation otherVirtualLocation = VirtualLocation.fromLocation(otherRift.location);
             if (otherRift.properties == null) continue;
             double otherWeight = otherRift.isDetached ? otherRift.properties.floatingWeight : otherRift.properties.entranceWeight;
@@ -153,7 +160,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 
             if (virtualLocation.depth <= 0) {
                 // This will lead to the overworld
-                World world = virtualLocation.world;
+                World world = WorldUtil.getWorld(virtualLocation.world);
                 BlockPos pos = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.x, 0, virtualLocation.z));
                 if (pos.getY() == -1) {
                     // No blocks at that XZ (hole in bedrock)
@@ -177,8 +184,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
                 Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation, new GlobalReference(!noLinkBack ? location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
 
                 // Link the rift if necessary and teleport the entity
-                if (!noLink) linkRifts(location, RiftRegistry.instance(location.world).getPocketEntrance(pocket));
-                return (Target) RiftRegistry.instance(location.world).getPocketEntrance(pocket).getBlockEntity();
+                if (!noLink) linkRifts(location, RiftRegistry.instance().getPocketEntrance(pocket));
+                return (Target) RiftRegistry.instance().getPocketEntrance(pocket).getBlockEntity();
             }
         } else {
             // An existing rift was selected
@@ -237,6 +244,11 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 
     public boolean isNoLinkBack() {
         return this.noLinkBack;
+    }
+
+    @Override
+    public VirtualTargetType<? extends VirtualTarget> getType() {
+        return VirtualTargetType.AVAILABLE_LINK;
     }
 
     public static class RandomTargetBuilder {

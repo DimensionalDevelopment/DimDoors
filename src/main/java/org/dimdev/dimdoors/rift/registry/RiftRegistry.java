@@ -21,11 +21,11 @@ import org.jgrapht.graph.DefaultEdge;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 
 import static net.minecraft.world.World.OVERWORLD;
+import static org.dimdev.dimdoors.DimensionalDoorsInitializer.*;
 
 public class RiftRegistry extends PersistentState {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -46,12 +46,8 @@ public class RiftRegistry extends PersistentState {
         this.overworld = overworld;
     }
 
-    public static RiftRegistry instance(World world) {
-        return instance(world.getServer());
-    }
-
-    private static RiftRegistry instance(MinecraftServer server) {
-        return server.getWorld(OVERWORLD).getPersistentStateManager().getOrCreate(() -> new RiftRegistry(server.getWorld(OVERWORLD)), DATA_NAME);
+    public static RiftRegistry instance() {
+        return getWorld(OVERWORLD).getPersistentStateManager().getOrCreate(() -> new RiftRegistry(getWorld(OVERWORLD)), DATA_NAME);
     }
 
     @Override
@@ -318,7 +314,7 @@ public class RiftRegistry extends PersistentState {
         if (entrance != null) return entrance.location;
 
         // If there was no last used private entrance, get the first player's private pocket entrance
-        return getPocketEntrance(PrivatePocketData.instance(overworld).getPrivatePocket(playerUUID));
+        return getPocketEntrance(PrivatePocketData.instance().getPrivatePocket(playerUUID));
     }
 
     private void setPlayerRiftPointer(UUID playerUUID, Location rift, Map<UUID, PlayerRiftPointer> map) {

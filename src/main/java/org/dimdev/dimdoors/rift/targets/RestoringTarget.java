@@ -1,45 +1,33 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.dimdev.dimdoors.util.Location;
 
 import net.minecraft.nbt.CompoundTag;
+import org.dimdev.dimdoors.util.RGBA;
 
 public abstract class RestoringTarget extends VirtualTarget {
-
-    private VirtualTarget wrappedDestination;
 
     public RestoringTarget() {
     }
 
-    ;
-
-    @Override
-    public void fromTag(CompoundTag nbt) {
-        super.fromTag(nbt);
-        wrappedDestination = nbt.contains("wrappedDestination") ? VirtualTarget.readVirtualTargetNBT(nbt.getCompound("wrappedDestination")) : null;
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag nbt) {
-        nbt = super.toTag(nbt);
-        if (wrappedDestination != null) nbt.put("wrappedDestination", wrappedDestination.toTag(new CompoundTag()));
-        return nbt;
-    }
-
     @Override
     public Target receiveOther() {
-        if (wrappedDestination != null) {
-            wrappedDestination.location = location;
-            return wrappedDestination;
+        if (getTarget() != null) {
+            getTarget().location = location;
+            return getTarget();
         }
 
         Location linkTarget = makeLinkTarget();
         if (linkTarget != null) {
-            wrappedDestination = RiftReference.tryMakeLocal(location, linkTarget);
-            wrappedDestination.setLocation(location);
-            wrappedDestination.register();
+            setTarget(RiftReference.tryMakeLocal(location, linkTarget));
+            getTarget().setLocation(location);
+            getTarget().register();
 
-            return wrappedDestination;
+            return getTarget();
         } else {
             return null;
         }
@@ -47,8 +35,8 @@ public abstract class RestoringTarget extends VirtualTarget {
 
     @Override
     public boolean shouldInvalidate(Location deletedRift) {
-        if (wrappedDestination.shouldInvalidate(deletedRift)) {
-            wrappedDestination.unregister();
+        if (getTarget().shouldInvalidate(deletedRift)) {
+            getTarget().unregister();
         }
         return false;
     }
@@ -56,28 +44,32 @@ public abstract class RestoringTarget extends VirtualTarget {
     @Override
     public void setLocation(Location location) {
         super.setLocation(location);
-        if (wrappedDestination != null) {
-            wrappedDestination.setLocation(location);
+        if (getTarget() != null) {
+            getTarget().setLocation(location);
         }
     }
 
     @Override
     public void unregister() {
-        if (wrappedDestination != null) wrappedDestination.unregister();
+        if (getTarget() != null) getTarget().unregister();
     }
 
+    protected abstract VirtualTarget getTarget();
+
+    protected abstract void setTarget(VirtualTarget target);
+
     @Override
-    public float[] getColor() {
-        if (wrappedDestination != null) {
-            wrappedDestination.location = location;
-            return wrappedDestination.getColor();
+    public RGBA getColor() {
+        if (getTarget() != null) {
+            getTarget().location = location;
+            return getTarget().getColor();
         } else {
             return getUnlinkedColor(location);
         }
     }
 
-    protected float[] getUnlinkedColor(Location location) {
-        return new float[]{0, 1, 1, 1};
+    protected RGBA getUnlinkedColor(Location location) {
+        return new RGBA(0, 1, 1, 1);
     }
 
     public abstract Location makeLinkTarget();

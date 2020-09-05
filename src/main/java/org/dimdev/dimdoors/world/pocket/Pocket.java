@@ -1,7 +1,12 @@
 package org.dimdev.dimdoors.world.pocket;
 
 import com.flowpowered.math.vector.Vector3i;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import org.dimdev.annotatednbt.Saved;
+import org.dimdev.dimdoors.util.Codecs;
 import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
@@ -13,7 +18,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
 public final class Pocket {
+    public static final Codec<Pocket> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+                Codec.INT.fieldOf("id").forGetter(a -> a.id),
+                Codecs.BLOCK_BOX.fieldOf("box").forGetter(a -> a.box),
+                VirtualLocation.CODEC.fieldOf("virtualLocation").forGetter(a -> a.virtualLocation),
+                Codecs.DYE_COLOR.fieldOf("dyeColor").forGetter(a -> a.dyeColor),
+                Codecs.DYE_COLOR.optionalFieldOf("nextDyeColor", null).forGetter(a -> a.nextDyeColor),
+                Codec.INT.fieldOf("count").forGetter(a -> a.count)
+        ).apply(instance, Pocket::new);
+    });
     private static final int BLOCKS_PAINTED_PER_DYE = 1106;
+
     @Saved
     public final int id;
     @Saved
@@ -26,9 +42,19 @@ public final class Pocket {
     public DyeColor nextDyeColor = null;
     @Saved
     public int count = 0;
-    public ServerWorld world;
 
-    public Pocket(int id, ServerWorld world, int x, int z) {
+    public RegistryKey<World> world;
+
+    private Pocket(int id, BlockBox box, VirtualLocation virtualLocation, DyeColor dyeColor, DyeColor nextDyeColor, int count) {
+        this.id = id;
+        this.box = box;
+        this.virtualLocation = virtualLocation;
+        this.dyeColor = dyeColor;
+        this.nextDyeColor = nextDyeColor;
+        this.count = count;
+    }
+
+    public Pocket(int id, RegistryKey<World> world, int x, int z) {
         this.id = id;
         this.world = world;
         box = new BlockBox(x * 16, 0, z * 16, (x + 1) * 16, 0, (z + 1) * 16);

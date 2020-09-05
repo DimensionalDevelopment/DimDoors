@@ -4,25 +4,25 @@ import java.util.UUID;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import net.minecraft.util.registry.RegistryKey;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.util.WorldUtil;
 
 import static net.minecraft.world.World.OVERWORLD;
 
 public class PrivatePocketData extends PersistentState {
     protected static class PocketInfo {
         @Saved
-        public final ServerWorld world;
+        public final RegistryKey<World> world;
         @Saved
         public final int id;
 
-        public PocketInfo(ServerWorld world, int id) {
+        public PocketInfo(RegistryKey<World> world, int id) {
             this.world = world;
             this.id = id;
         }
@@ -40,12 +40,8 @@ public class PrivatePocketData extends PersistentState {
         super(DATA_NAME);
     }
 
-    public static PrivatePocketData instance(World world) {
-        return instance(world.getServer());
-    }
-
-    private static PrivatePocketData instance(MinecraftServer server) {
-        return server.getWorld(OVERWORLD).getPersistentStateManager().getOrCreate(PrivatePocketData::new, DATA_NAME);
+    public static PrivatePocketData instance() {
+        return WorldUtil.getWorld(OVERWORLD).getPersistentStateManager().getOrCreate(PrivatePocketData::new, DATA_NAME);
     }
 
     @Override

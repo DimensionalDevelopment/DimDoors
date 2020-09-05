@@ -1,18 +1,44 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import org.dimdev.annotatednbt.Saved;
+import org.dimdev.dimdoors.util.Codecs;
 
 
 public class LinkProperties {
+    public static Codec<LinkProperties> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+                Codec.FLOAT
+                        .fieldOf("floatingWeight")
+                        .forGetter(
+                                properties ->
+                                        properties.
+                                                floatingWeight),
+                Codec.FLOAT
+                        .fieldOf("entranceWeight")
+                        .forGetter(properties -> properties.entranceWeight),
+                Codecs.INT_SET
+                        .fieldOf("groups")
+                        .forGetter(properties -> properties.groups),
+                Codec.INT
+                        .fieldOf("linksRemaining")
+                        .forGetter(properties -> properties.linksRemaining),
+                Codec.BOOL
+                        .fieldOf("oneWay")
+                        .forGetter(properties -> properties.oneWay)
+        ).apply(instance, LinkProperties::new);
+    });
+
     @Saved
     public float floatingWeight; // TODO: depend on rift properties (ex. size, stability, or maybe a getWeightFactor method) rather than rift type
     @Saved
     public float entranceWeight;
     @Saved
-    public Set<Integer> groups;
+    public Set<Integer> groups = new HashSet<>();
     @Saved
     public int linksRemaining;
     @Saved

@@ -6,6 +6,7 @@ import net.minecraft.client.render.VertexConsumer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import org.dimdev.dimdoors.util.RGBA;
 
 public class Tesseract {
     private final Plane[] planes = new Plane[24];
@@ -181,7 +182,7 @@ public class Tesseract {
     }
 
     @Environment(EnvType.CLIENT)
-    public void draw(VertexConsumer vc, float[] color, double radian) {
+    public void draw(VertexConsumer vc, RGBA color, double radian) {
         for (Plane plane : planes) {
             plane.draw(vc, color, radian);
         }

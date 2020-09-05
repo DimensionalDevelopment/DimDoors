@@ -1,5 +1,11 @@
 package org.dimdev.dimdoors;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
@@ -31,8 +37,20 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 
     public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
 
+    private static MinecraftServer server;
+
+    public static MinecraftServer getServer() {
+        return server;
+    }
+
+    public static ServerWorld getWorld(RegistryKey<World> key) {
+        return getServer().getWorld(key);
+    }
+
     @Override
     public void onInitialize() {
+        ServerLifecycleEvents.SERVER_STARTED.register(DimensionalDoorsInitializer::setServer);
+
         ModBlocks.init();
         ModItems.init();
         ModDimensions.init();
@@ -43,18 +61,10 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModSoundEvents.init();
         ModFeatures.init();
 
-        VirtualTarget.registry.put("available_link", RandomTarget.class);
-        VirtualTarget.registry.put("escape", EscapeTarget.class);
-        VirtualTarget.registry.put("global", GlobalReference.class);
-        VirtualTarget.registry.put("limbo", LimboTarget.class);
-        VirtualTarget.registry.put("local", LocalReference.class);
-        VirtualTarget.registry.put("public_pocket", PublicPocketTarget.class);
-        VirtualTarget.registry.put("pocket_entrance", PocketEntranceMarker.class);
-        VirtualTarget.registry.put("pocket_exit", PocketExitMarker.class);
-        VirtualTarget.registry.put("private", PrivatePocketTarget.class);
-        VirtualTarget.registry.put("private_pocket_exit", PrivatePocketExitTarget.class);
-        VirtualTarget.registry.put("relative", RelativeReference.class);
-
         Targets.registerDefaultTargets();
+    }
+
+    private static void setServer(MinecraftServer server) {
+        DimensionalDoorsInitializer.server = server;
     }
 }

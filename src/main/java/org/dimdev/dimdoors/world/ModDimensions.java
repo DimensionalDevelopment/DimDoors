@@ -35,7 +35,10 @@ public final class ModDimensions {
     public static ServerWorld dungeonPocketDimension;
 
     public static boolean isDimDoorsPocketDimension(World world) {
-        RegistryKey<World> type = world.getRegistryKey();
+        return isDimDoorsPocketDimension(world.getRegistryKey());
+    }
+
+    public static boolean isDimDoorsPocketDimension(RegistryKey<World> type) {
         return type == PERSONAL || type == PUBLIC || type == DUNGEON;
     }
 

@@ -29,10 +29,10 @@ public final class TeleportUtil {
     }
 
     public static void teleport(ServerPlayerEntity player, Location location) {
-        teleport(player, location.world, location.pos, 0);
+        teleport(player, WorldUtil.getWorld(location.world), location.pos, 0);
     }
 
     public static void teleport(ServerPlayerEntity player, RotatedLocation location) {
-        teleport(player, location.world, location.pos, (int) location.yaw);
+        teleport(player, WorldUtil.getWorld(location.world), location.pos, (int) location.yaw);
     }
 }

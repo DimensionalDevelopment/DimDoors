@@ -61,8 +61,8 @@ public class PocketCommand {
             Pocket pocket = PocketGenerator.generatePocketFromTemplate(player.getServerWorld(), template, null, setup);
 
             // Teleport the player there
-            if (RiftRegistry.instance(player.world).getPocketEntrance(pocket) != null) {
-                EntityTarget entrance = (EntityTarget) player.world.getBlockEntity(RiftRegistry.instance(player.world).getPocketEntrance(pocket).pos);
+            if (RiftRegistry.instance().getPocketEntrance(pocket) != null) {
+                EntityTarget entrance = (EntityTarget) player.world.getBlockEntity(RiftRegistry.instance().getPocketEntrance(pocket).pos);
                 if (entrance != null) {
                     entrance.receiveEntity(player, 0);
                 }

@@ -6,6 +6,7 @@ import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.Location;
 
 import net.minecraft.util.math.Vec3i;
+import org.dimdev.dimdoors.util.RGBA;
 
 /**
  * Allows rifts and targets to reference another rift without having to
@@ -47,12 +48,12 @@ public abstract class RiftReference extends VirtualTarget {
 
     @Override
     public void register() {
-        RiftRegistry.instance(location.world).addLink(location, getReferencedLocation());
+        RiftRegistry.instance().addLink(location, getReferencedLocation());
     }
 
     @Override
     public void unregister() {
-        RiftRegistry.instance(location.world).removeLink(location, getReferencedLocation());
+        RiftRegistry.instance().removeLink(location, getReferencedLocation());
     }
 
     @Override
@@ -67,14 +68,14 @@ public abstract class RiftReference extends VirtualTarget {
     }
 
     @Override
-    public float[] getColor() {
+    public RGBA getColor() {
         Location target = getReferencedLocation();
-        if (target != null && RiftRegistry.instance(target.world).isRiftAt(target)) {
-            Set<Location> otherRiftTargets = RiftRegistry.instance(target.world).getTargets(target);
+        if (target != null && RiftRegistry.instance().isRiftAt(target)) {
+            Set<Location> otherRiftTargets = RiftRegistry.instance().getTargets(target);
             if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(location)) {
-                return new float[]{0, 1, 0, 1};
+                return new RGBA(0, 1, 0, 1);
             }
         }
-        return new float[]{1, 0, 0, 1};
+        return new RGBA(1, 0, 0, 1);
     }
 }

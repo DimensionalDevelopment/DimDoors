@@ -28,6 +28,8 @@ import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import org.dimdev.dimdoors.util.WorldUtil;
+import org.jetbrains.annotations.NotNull;
 
 public class RiftSignatureItem extends Item {
     public static final String ID = "rift_signature";
@@ -42,7 +44,7 @@ public class RiftSignatureItem extends Item {
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext itemUsageContext) {
+    public ActionResult useOnBlock(@NotNull ItemUsageContext itemUsageContext) {
         PlayerEntity player = itemUsageContext.getPlayer();
         World world = itemUsageContext.getWorld();
         BlockPos pos = itemUsageContext.getBlockPos();
@@ -67,7 +69,7 @@ public class RiftSignatureItem extends Item {
 
         if (target == null) {
             // The link signature has not been used. Store its current target as the first location.
-            setSource(stack, new RotatedLocation((ServerWorld) world, pos, player.yaw, 0));
+            setSource(stack, new RotatedLocation(world.getRegistryKey(), pos, player.yaw, 0));
             player.sendMessage(new TranslatableText(getTranslationKey() + ".stored"), true);
             world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
@@ -78,7 +80,7 @@ public class RiftSignatureItem extends Item {
                     clearSource(stack); // TODO: But is this fair? It's a rather hidden way of unbinding your signature!
                     return ActionResult.FAIL;
                 }
-                World sourceWorld = target.world;
+                World sourceWorld = WorldUtil.getWorld(target.world);
                 sourceWorld.setBlockState(target.getBlockPos(), ModBlocks.DETACHED_RIFT.getDefaultState());
                 DetachedRiftBlockEntity rift1 = (DetachedRiftBlockEntity) target.getBlockEntity();
                 rift1.setDestination(RiftReference.tryMakeRelative(target, new Location((ServerWorld) world, pos)));
@@ -105,7 +107,7 @@ public class RiftSignatureItem extends Item {
 
     public static void setSource(ItemStack itemStack, RotatedLocation destination) {
         if (!itemStack.hasTag()) itemStack.setTag(new CompoundTag());
-        itemStack.getTag().put("destination", destination.serialize());
+        itemStack.getTag().put("destination", RotatedLocation.serialize(destination));
     }
 
     public static void clearSource(ItemStack itemStack) {

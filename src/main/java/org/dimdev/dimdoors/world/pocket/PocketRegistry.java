@@ -3,9 +3,14 @@ package org.dimdev.dimdoors.world.pocket;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mojang.serialization.Codec;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.util.NbtUtil;
+import org.dimdev.dimdoors.util.WorldUtil;
 import org.dimdev.dimdoors.util.math.GridUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 
@@ -15,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.PersistentState;
 
 public class PocketRegistry extends PersistentState {
+    private Codec<Map<Integer, Pocket>> pocketsCodec = Codec.unboundedMap(Codec.INT, Pocket.CODEC);
 
     private static final String DATA_NAME = "pocketlib_pockets";
 
@@ -40,16 +46,26 @@ public class PocketRegistry extends PersistentState {
 
     @Override
     public void fromTag(CompoundTag tag) {
-        AnnotatedNbt.load(this, tag);
+        gridSize = tag.getInt("gridSize");
+        privatePocketSize = tag.getInt("privatePocketSize");
+        publicPocketSize = tag.getInt("publicPocketSize");
+        pockets = NbtUtil.deserialize(tag.get("pockets"), pocketsCodec);
+        nextID = tag.getInt("nextID");
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        AnnotatedNbt.save(this, tag);
+        tag.putInt("gridSize", gridSize);
+        tag.putInt("privatePocketSize", privatePocketSize);
+        tag.putInt("publicPocketSize", publicPocketSize);
+        tag.put("pockets", NbtUtil.serialize(pockets, pocketsCodec));
+        tag.putInt("nextID", nextID);
         return tag;
     }
 
-    public static PocketRegistry instance(ServerWorld world) {
+    public static PocketRegistry instance(RegistryKey<World> key) {
+        ServerWorld world = WorldUtil.getWorld(key);
+
         if (!(ModDimensions.isDimDoorsPocketDimension(world))) {
             throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
         }
@@ -58,7 +74,7 @@ public class PocketRegistry extends PersistentState {
 
         instance.world = world;
         for (Pocket pocket : instance.pockets.values()) {
-            pocket.world = world;
+            pocket.world = key;
         }
 
         return instance;
@@ -83,7 +99,7 @@ public class PocketRegistry extends PersistentState {
     public Pocket newPocket(int id) {
         if (pockets.get(id) != null) return null;
         GridUtil.GridPos pos = idToGridPos(id);
-        Pocket pocket = new Pocket(id, world, pos.x, pos.z);
+        Pocket pocket = new Pocket(id, world.getRegistryKey(), pos.x, pos.z);
         pockets.put(id, pocket);
         if (id >= nextID) nextID = id + 1;
         markDirty();
