@@ -46,7 +46,7 @@ public class MyRenderLayer extends RenderLayer {
         super(string, vertexFormat, i, j, bl, bl2, runnable, runnable2);
     }
 
-    public static RenderLayer CRACK = RenderLayer.of("crack", VertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256, MultiPhaseParameters.builder()
+    public static RenderLayer CRACK = RenderLayer.of("crack", VertexFormats.POSITION_COLOR, GL11.GL_TRIANGLES, 256, MultiPhaseParameters.builder()
             .cull(DISABLE_CULLING)
             .lightmap(RenderPhase.DISABLE_LIGHTMAP)
             .texture(NO_TEXTURE)
@@ -63,6 +63,7 @@ public class MyRenderLayer extends RenderLayer {
             .cull(DISABLE_CULLING)
             .lightmap(RenderPhase.DISABLE_LIGHTMAP)
             .texture(new Texture(DetachedRiftBlockEntityRenderer.TESSERACT_PATH, false, false))
+            .alpha(Alpha.HALF_ALPHA)
             .build(false));
 
     public static RenderLayer getDimensionalPortal(int phase, EntranceRiftBlockEntity blockEntity) {
