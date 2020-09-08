@@ -6,6 +6,7 @@ import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.client.RiftCurves;
 import org.dimdev.dimdoors.util.TeleportUtil;
 
 import net.minecraft.block.BlockState;
@@ -19,6 +20,7 @@ import net.minecraft.util.Tickable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import org.lwjgl.system.macosx.LibSystem;
 
 
 public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable {
@@ -85,16 +87,22 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
-        AnnotatedNbt.load(this, tag);
+    protected CompoundTag serialize(CompoundTag tag) {
+        super.serialize(tag);
+        tag.putBoolean("closing", closing);
+        tag.putBoolean("stablized", stabilized);
+        tag.putInt("spawnedEnderManId", spawnedEndermanId);
+        tag.putFloat("size", size);
+        return tag;
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        tag = super.toTag(tag);
-        AnnotatedNbt.save(this, tag);
-        return tag;
+    protected void deserialize(CompoundTag tag) {
+        super.deserialize(tag);
+        closing = tag.getBoolean("closing");
+        stabilized = tag.getBoolean("stablized");
+        spawnedEndermanId = tag.getInt("spawnedEnderManId");
+        size = tag.getFloat("size");
     }
 
     @Override

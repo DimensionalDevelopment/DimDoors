@@ -15,7 +15,7 @@ public final class Targets {
 
     public static void registerDefaultTargets() {
         DefaultTargets.registerDefaultTarget(ENTITY, (entity, relativeYaw) -> {
-            EntityUtils.chat(entity, new TranslatableText("rifts.unlinked"));
+            EntityUtils.chat(entity, new TranslatableText("rifts.unlinked2"));
             return false;
         });
         DefaultTargets.registerDefaultTarget(ITEM, stack -> false);

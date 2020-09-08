@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,10 +33,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 
@@ -359,32 +358,33 @@ public class Schematic implements BlockView {
         return new Box(new BlockPos(from.getX(), from.getY(), from.getZ()), new BlockPos(to.getX(), to.getY(), to.getZ()));
     }
 
-    public void place(StructureWorldAccess world, int xBase, int yBase, int zBase) {
+    public void place(WorldAccess world, int xBase, int yBase, int zBase) {
         // Place the schematic's blocks
         this.setBlocks(world, xBase, yBase, zBase);
 
-        // Set BlockEntity data
-//        for (CompoundTag BlockEntityNBT : tileEntities) {
-//            Vec3i schematicPos = new BlockPos(BlockEntityNBT.getInt("x"), BlockEntityNBT.getInt("y"), BlockEntityNBT.getInt("z"));
-//            BlockPos pos = new BlockPos(xBase, yBase, zBase).add(schematicPos);
-//            BlockEntity blockEntity = world.getBlockEntity(pos);
-//            if (blockEntity != null) {
-//                String id = BlockEntityNBT.getString("id");
-//                String blockBlockEntityId = BlockEntityType.getId(blockEntity.getType()).toString();
-//                if (id.equals(blockBlockEntityId)) {
-//                    blockEntity.fromTag(BlockEntityNBT);
-//
-//                    // Correct the position
-//                    blockEntity.setLocation(world, pos);
-//                    blockEntity.markDirty();
-//                } else {
-//                    System.err.println("Schematic contained BlockEntity " + id + " at " + pos + " but the BlockEntity of that block (" + world.getBlockState(pos) + ") must be " + blockBlockEntityId);
-//                }
-//            } else {
-//                System.err.println("Schematic contained BlockEntity info at " + pos + " but the block there (" + world.getBlockState(pos) + ") has no BlockEntity.");
-//            }
-//        }
-//
+       // Set BlockEntity data
+        for (CompoundTag BlockEntityNBT : tileEntities) {
+            Vec3i schematicPos = new BlockPos(BlockEntityNBT.getInt("x"), BlockEntityNBT.getInt("y"), BlockEntityNBT.getInt("z"));
+            BlockPos pos = new BlockPos(xBase, yBase, zBase).add(schematicPos);
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity != null) {
+                String id = BlockEntityNBT.getString("id");
+                String blockBlockEntityId = BlockEntityType.getId(blockEntity.getType()).toString();
+                if (id.equals(blockBlockEntityId)) {
+                    blockEntity.fromTag(world.getBlockState(pos), BlockEntityNBT);
+                    blockEntity.setPos(pos);
+
+                    // Correct the position
+                    blockEntity.setLocation((World) world, pos);
+                    blockEntity.markDirty();
+                } else {
+                    System.err.println("Schematic contained BlockEntity " + id + " at " + pos + " but the BlockEntity of that block (" + world.getBlockState(pos) + ") must be " + blockBlockEntityId);
+                }
+            } else {
+                System.err.println("Schematic contained BlockEntity info at " + pos + " but the block there (" + world.getBlockState(pos) + ") has no BlockEntity.");
+            }
+        }
+
 //        // Spawn entities
 //        for (CompoundTag entityNBT : entities) {
 //            // Correct the position and UUID
@@ -418,7 +418,7 @@ public class Schematic implements BlockView {
         }
     }
 
-    private void setBlocks(StructureWorldAccess world, int originX, int originY, int originZ) {
+    private void setBlocks(WorldAccess world, int originX, int originY, int originZ) {
         LOGGER.debug("Setting chunk blockstates");
         long setTime = 0;
         long relightTime = 0;
@@ -463,8 +463,16 @@ public class Schematic implements BlockView {
                                         chunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR).trackUpdate(lx, y, lz, state);
                                         chunk.getHeightmap(Heightmap.Type.WORLD_SURFACE).trackUpdate(lx, y, lz, state);
 
-                                        world.toServerWorld().getChunkManager().markForUpdate(new BlockPos(originX + x, originY + y, originZ + z));
-                                        world.toServerWorld().getLightingProvider().checkBlock(new BlockPos(originX + x, originY + y, originZ + z));
+                                        ServerWorld w;
+
+                                        if(world instanceof ServerWorldAccess) {
+                                            w = ((ServerWorldAccess) world).toServerWorld();
+                                        } else {
+                                            w = (ServerWorld) world;
+                                        }
+
+                                        w.getChunkManager().markForUpdate(new BlockPos(originX + x, originY + y, originZ + z));
+                                        w.getLightingProvider().checkBlock(new BlockPos(originX + x, originY + y, originZ + z));
                                     }
                                 }
                             }

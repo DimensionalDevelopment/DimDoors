@@ -63,7 +63,7 @@ public class DimensionalDoorItem extends TallBlockItem {
         }
 
         ActionResult result = super.place(context);
-        if (result == ActionResult.SUCCESS) {
+        if (result == ActionResult.SUCCESS || result == ActionResult.CONSUME) {
             BlockState state = context.getWorld().getBlockState(pos);
             if (rift == null) {
                 // Get the rift entity (not hard coded, works with any door size)

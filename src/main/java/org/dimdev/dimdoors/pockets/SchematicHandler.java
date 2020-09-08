@@ -126,7 +126,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     }
 
     private static List<PocketTemplate> loadTemplatesFromJson(String jsonString) {
-        String schematicJarDirectory = "/assets/dimdoors/pockets/schematic/";
+        String schematicJarDirectory = "/data/dimdoors/pockets/schematic/";
         File schematicFolder = new File(getFolder(), "/schematics");
 
         JsonParser parser = new JsonParser();
@@ -298,7 +298,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         // TODO: cache this for faster calls:
         Map<PocketTemplate, Float> weightedTemplates = new HashMap<>();
         int largestSize = 0;
-        for (PocketTemplate template : templates) {
+         for (PocketTemplate template : templates) {
             if (template.getGroup().equals(group) && (maxSize == -1 || template.getSize() <= maxSize)) {
                 if (getLargest && template.getSize() > largestSize) {
                     weightedTemplates = new HashMap<>();

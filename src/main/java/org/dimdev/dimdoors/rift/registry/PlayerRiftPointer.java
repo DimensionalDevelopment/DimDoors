@@ -2,12 +2,27 @@ package org.dimdev.dimdoors.rift.registry;
 
 import java.util.UUID;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 
 import net.minecraft.nbt.CompoundTag;
+import org.dimdev.dimdoors.util.NbtUtil;
 
 public class PlayerRiftPointer extends RegistryVertex {
+    public static final Codec<PlayerRiftPointer> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+                DynamicSerializableUuid.field_25122.fieldOf("id").forGetter(a -> a.id),
+                DynamicSerializableUuid.field_25122.fieldOf("player").forGetter(a -> a.player)
+        ).apply(instance, (id, player) -> {
+            PlayerRiftPointer pointer = new PlayerRiftPointer(player);
+            pointer.id = id;
+            return pointer;
+        });
+    });
+
     @Saved
     public UUID player;
 
@@ -16,15 +31,8 @@ public class PlayerRiftPointer extends RegistryVertex {
     }
 
     @Override
-    public void fromTag(CompoundTag nbt) {
-        super.fromTag(nbt);
-        AnnotatedNbt.fromTag(this, nbt);
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag nbt) {
-        nbt = super.toTag(nbt);
-        return AnnotatedNbt.toTag(this, nbt);
+    public RegistryVertexType<? extends RegistryVertex> getType() {
+        return RegistryVertexType.PLAYER;
     }
 
     public String toString() {

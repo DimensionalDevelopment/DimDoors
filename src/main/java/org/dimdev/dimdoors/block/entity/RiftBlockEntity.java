@@ -1,14 +1,13 @@
 package org.dimdev.dimdoors.block.entity;
 
-import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.nbt.Tag;
+import net.minecraft.util.Language;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.annotatednbt.AutoSerializable;
-import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
@@ -34,8 +33,8 @@ import net.minecraft.text.LiteralText;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 
-public abstract class RiftBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Target, EntityTarget, AutoSerializable {
-    private static Codec<RiftData> CODEC = RiftData.CODEC.orElseGet(RiftData::new);
+public abstract class RiftBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Target, EntityTarget {
+    private static Codec<RiftData> CODEC = RiftData.CODEC;
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected RiftData data = new RiftData();
@@ -49,36 +48,38 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
     // NBT
     @Override
     public void fromTag(BlockState state, CompoundTag nbt) {
-        super.fromTag(state, nbt);
-        if (this.world != null && !this.world.isClient()) {
-            this.sync();
-        }
-
-        this.data = NbtUtil.deserialize(nbt.get("data"), RiftData.CODEC);
+        deserialize(nbt);
     }
 
+    protected void deserialize(CompoundTag nbt) {
+        this.data = NbtUtil.deserialize(nbt.get("data"), CODEC);
+    }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        if (this.world != null && !this.world.isClient()) {
-            this.sync();
-        }
-        tag.put("data", NbtUtil.serialize(data, RiftData.CODEC));
+        serialize(tag);
+
         return super.toTag(tag);
+    }
+
+    protected CompoundTag serialize(CompoundTag tag) {
+        if(data != null) tag.put("data", NbtUtil.serialize(data, CODEC));
+        return tag;
     }
 
     @Override
     public void fromClientTag(CompoundTag tag) {
-        tag.put("data", NbtUtil.serialize(data, RiftData.CODEC));
+        deserialize(tag);
     }
 
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
-        tag.put("data", NbtUtil.serialize(data, RiftData.CODEC));
-        return tag;
+        return serialize(tag);
     }
 
     public void setDestination(VirtualTarget destination) {
+        System.out.println("setting Destination " + destination);
+
         if (this.getDestination() != null && isRegistered()) {
             this.getDestination().unregister();
         }
@@ -121,7 +122,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 
         Location loc = new Location((ServerWorld) world, pos);
         RiftRegistry.instance().addRift(loc);
-        if (data.getDestination() != null) data.getDestination().register();
+        if (data.getDestination() != VirtualTarget.NoneTarget.DUMMY) data.getDestination().register();
         updateProperties();
         updateColor();
     }
@@ -159,8 +160,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
     }
 
     public Target getTarget() {
-        if (data.getDestination() == null) {
-            return new MessageTarget("rifts.unlinked");
+        if (data.getDestination() == VirtualTarget.NoneTarget.DUMMY) {
+            return new MessageTarget("rifts.unlinked1");
         } else {
             data.getDestination().setLocation(new Location((ServerWorld) world, pos));
             return data.getDestination();
@@ -191,12 +192,12 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
         if (data.isForcedColor()) return;
         if (!isRegistered()) {
             data.setColor(new RGBA(0, 0, 0, 1));
-        } else if (data.getDestination() == null) {
+        } else if (data.getDestination() == VirtualTarget.NoneTarget.DUMMY) {
             data.setColor(new RGBA(0.7f, 0.7f, 0.7f, 1));
         } else {
             data.getDestination().setLocation(new Location((ServerWorld) world, pos));
             RGBA newColor = data.getDestination().getColor();
-            if (data.getColor() == null && newColor != null || !Objects.equals(data.getColor(), newColor)) {
+            if (data.getColor() == RGBA.NONE && newColor != RGBA.NONE || !Objects.equals(data.getColor(), newColor)) {
                 data.setColor(newColor);
                 markDirty();
             }
@@ -231,5 +232,13 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 
     public RGBA getColor() {
         return data.getColor();
+    }
+
+    public void setData(RiftData data) {
+        this.data = data;
+    }
+
+    public RiftData getData() {
+        return data;
     }
 }

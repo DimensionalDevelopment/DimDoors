@@ -10,19 +10,19 @@ import org.dimdev.dimdoors.util.RGBA;
 public class RiftData {
     public static Codec<RiftData> CODEC = RecordCodecBuilder.create(instance -> {
        return instance.group(
-               VirtualTarget.CODEC.optionalFieldOf("destination", null).forGetter(RiftData::getDestination),
-               LinkProperties.CODEC.optionalFieldOf("properties", null).forGetter(RiftData::getProperties),
+               VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.DUMMY).forGetter(RiftData::getDestination),
+               LinkProperties.CODEC.optionalFieldOf("properties", LinkProperties.NONE).forGetter(RiftData::getProperties),
                Codec.BOOL.fieldOf("alwaysDelete").forGetter(RiftData::isAlwaysDelete),
                Codec.BOOL.fieldOf("forcedColor").forGetter(RiftData::isForcedColor),
-               RGBA.CODEC.optionalFieldOf("color", null).forGetter(RiftData::getColor)
+               RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor)
        ).apply(instance, RiftData::new);
     });
 
-    private VirtualTarget destination; // How the rift acts as a source
-    private LinkProperties properties;
+    private VirtualTarget destination = VirtualTarget.NoneTarget.DUMMY; // How the rift acts as a source
+    private LinkProperties properties = LinkProperties.NONE;
     private boolean alwaysDelete;
     private boolean forcedColor;
-    private RGBA color = null;
+    private RGBA color = RGBA.NONE;
 
     public RiftData() {}
 

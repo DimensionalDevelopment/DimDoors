@@ -29,13 +29,13 @@ public class VirtualLocation {
             ).apply(instance, VirtualLocation::new)
     );
 
-    @Saved
+
     public final RegistryKey<World> world;
-    @Saved
+
     public final int x;
-    @Saved
+
     public final int z;
-    @Saved
+
     public final int depth;
 
     public VirtualLocation(RegistryKey<World> world, int x, int z, int depth) {

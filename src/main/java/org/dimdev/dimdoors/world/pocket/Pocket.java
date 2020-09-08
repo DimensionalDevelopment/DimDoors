@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.world.pocket;
 import com.flowpowered.math.vector.Vector3i;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.block.MaterialColor;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.dimdev.annotatednbt.Saved;
@@ -17,14 +18,16 @@ import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
+import java.util.stream.Stream;
+
 public final class Pocket {
     public static final Codec<Pocket> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
                 Codec.INT.fieldOf("id").forGetter(a -> a.id),
                 Codecs.BLOCK_BOX.fieldOf("box").forGetter(a -> a.box),
                 VirtualLocation.CODEC.fieldOf("virtualLocation").forGetter(a -> a.virtualLocation),
-                Codecs.DYE_COLOR.fieldOf("dyeColor").forGetter(a -> a.dyeColor),
-                Codecs.DYE_COLOR.optionalFieldOf("nextDyeColor", null).forGetter(a -> a.nextDyeColor),
+                PocketColor.CODEC.fieldOf("dyeColor").forGetter(a -> a.dyeColor),
+                PocketColor.CODEC.optionalFieldOf("nextDyeColor", PocketColor.NONE).forGetter(a -> a.nextDyeColor),
                 Codec.INT.fieldOf("count").forGetter(a -> a.count)
         ).apply(instance, Pocket::new);
     });
@@ -37,15 +40,15 @@ public final class Pocket {
     @Saved
     public VirtualLocation virtualLocation;
     @Saved
-    public DyeColor dyeColor = DyeColor.WHITE;
+    public PocketColor dyeColor = PocketColor.WHITE;
     @Saved
-    public DyeColor nextDyeColor = null;
+    public PocketColor nextDyeColor = PocketColor.NONE;
     @Saved
     public int count = 0;
 
     public RegistryKey<World> world;
 
-    private Pocket(int id, BlockBox box, VirtualLocation virtualLocation, DyeColor dyeColor, DyeColor nextDyeColor, int count) {
+    private Pocket(int id, BlockBox box, VirtualLocation virtualLocation, PocketColor dyeColor, PocketColor nextDyeColor, int count) {
         this.id = id;
         this.box = box;
         this.virtualLocation = virtualLocation;
@@ -68,32 +71,32 @@ public final class Pocket {
         return new BlockPos(box.minX, box.minY, box.minZ);
     }
 
-    public boolean addDye(Entity entity, DyeColor color) {
+    public boolean addDye(Entity entity, DyeColor dyeColor) {
+        PocketColor color = PocketColor.from(dyeColor);
+
         int maxDye = amountOfDyeRequiredToColor(this);
 
-        if (dyeColor == color) {
+        if (this.dyeColor == color) {
             EntityUtils.chat(entity, new TranslatableText("dimdoors.pockets.dyeAlreadyAbsorbed"));
             return false;
         }
 
         if (this.nextDyeColor != null && this.nextDyeColor == color) {
             if (count + 1 > amountOfDyeRequiredToColor(this)) {
-                dyeColor = color;
-                this.nextDyeColor = null;
+                this.dyeColor = color;
+                this.nextDyeColor = PocketColor.NONE;
                 count = 0;
                 EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.pocketHasBeenDyed", dyeColor));
-                return true;
             } else {
                 count++;
                 EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.remainingNeededDyes", count, maxDye, color));
-                return true;
             }
         } else {
             this.nextDyeColor = color;
             count = 1;
             EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.remainingNeededDyes", count, maxDye, color));
-            return true;
         }
+        return true;
     }
 
 //    private void repaint(DyeColor dyeColor) {
@@ -136,5 +139,63 @@ public final class Pocket {
     public Vector3i getSize() {
         Vec3i dimensions = box.getDimensions();
         return new Vector3i(dimensions.getX(), dimensions.getY(), dimensions.getZ());
+    }
+
+    public enum PocketColor {
+        WHITE(0, DyeColor.WHITE),
+        ORANGE(1, DyeColor.ORANGE),
+        MAGENTA(2, DyeColor.MAGENTA),
+        LIGHT_BLUE(3, DyeColor.LIGHT_BLUE),
+        YELLOW(4, DyeColor.YELLOW),
+        LIME(5, DyeColor.LIME),
+        PINK(6, DyeColor.PINK),
+        GRAY(7, DyeColor.GRAY),
+        LIGHT_GRAY(8, DyeColor.LIGHT_GRAY),
+        CYAN(9, DyeColor.CYAN),
+        PURPLE(10, DyeColor.PURPLE),
+        BLUE(11, DyeColor.BLUE),
+        BROWN(12, DyeColor.BROWN),
+        GREEN(13, DyeColor.GREEN),
+        RED(14, DyeColor.RED),
+        BLACK(15, DyeColor.BLACK),
+        NONE(16, null);
+
+        private final int id;
+        private final DyeColor color;
+
+        public static Codec<PocketColor> CODEC = Codec.INT.xmap(PocketColor::from, PocketColor::getId);
+
+        PocketColor(int id, DyeColor color) {
+            this.id = id;
+            this.color = color;
+        }
+
+        public DyeColor getColor() {
+            return color;
+        }
+
+        public Integer getId() {
+            return id;
+        }
+
+        public static PocketColor from(DyeColor color) {
+            for (PocketColor a : PocketColor.values()) {
+                if (color == a.color) {
+                    return a;
+                }
+            }
+
+            return NONE;
+        }
+
+        public static PocketColor from(int id) {
+            for (PocketColor a : PocketColor.values()) {
+                if (id == a.id) {
+                    return a;
+                }
+            }
+
+            return NONE;
+        }
     }
 }

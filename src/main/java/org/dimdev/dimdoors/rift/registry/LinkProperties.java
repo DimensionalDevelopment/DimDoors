@@ -33,9 +33,10 @@ public class LinkProperties {
         ).apply(instance, LinkProperties::new);
     });
 
-    @Saved
+    public static final LinkProperties NONE = new LinkProperties();
+
     public float floatingWeight; // TODO: depend on rift properties (ex. size, stability, or maybe a getWeightFactor method) rather than rift type
-    @Saved
+
     public float entranceWeight;
     @Saved
     public Set<Integer> groups = new HashSet<>();
@@ -50,6 +51,9 @@ public class LinkProperties {
         this.groups = groups;
         this.linksRemaining = linksRemaining;
         this.oneWay = oneWay;
+    }
+
+    private LinkProperties() {
     }
 
     public static LinkPropertiesBuilder builder() {

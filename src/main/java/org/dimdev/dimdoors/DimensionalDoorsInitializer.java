@@ -11,6 +11,7 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.rift.targets.GlobalReference;
 import org.dimdev.dimdoors.rift.targets.LimboTarget;
@@ -62,6 +63,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModFeatures.init();
 
         Targets.registerDefaultTargets();
+
+        SchematicHandler.INSTANCE.loadSchematics();
     }
 
     private static void setServer(MinecraftServer server) {

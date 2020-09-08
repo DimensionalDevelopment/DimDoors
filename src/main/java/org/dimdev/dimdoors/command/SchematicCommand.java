@@ -23,7 +23,7 @@ public class SchematicCommand {
                                             ServerPlayerEntity player = ctx.getSource().getPlayer();
                                             String id = StringArgumentType.getString(ctx, "schematic_name");
 
-                                            try (InputStream in = SchematicCommand.class.getResourceAsStream("/data/dimdoors/schematic/ruins/" + id + ".schem")) {
+                                            try (InputStream in = SchematicCommand.class.getResourceAsStream("/data/dimdoors/pockets/schematic/ruins/" + id + ".schem")) {
                                                 Schematic.fromTag(NbtIo.readCompressed(in))
                                                         .place(
                                                                 (ServerWorld) player.world,

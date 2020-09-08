@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.util.GraphUtils;
 import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
@@ -56,8 +57,7 @@ public class RiftRegistry extends PersistentState {
 
         ListTag riftsNBT = (ListTag) nbt.get("rifts");
         for (Tag riftNBT : riftsNBT) {
-            Rift rift = new Rift();
-            rift.fromTag((CompoundTag) riftNBT);
+            Rift rift = NbtUtil.deserialize(riftNBT, Rift.CODEC);
             graph.addVertex(rift);
             uuidMap.put(rift.id, rift);
             locationMap.put(rift.location, rift);
@@ -65,8 +65,7 @@ public class RiftRegistry extends PersistentState {
 
         ListTag pocketsNBT = (ListTag) nbt.get("pockets");
         for (Tag pocketNBT : pocketsNBT) {
-            PocketEntrancePointer pocket = new PocketEntrancePointer();
-            pocket.fromTag((CompoundTag) pocketNBT);
+            PocketEntrancePointer pocket = NbtUtil.deserialize(pocketNBT, PocketEntrancePointer.CODEC);
             graph.addVertex(pocket);
             uuidMap.put(pocket.id, pocket);
             pocketEntranceMap.put(PocketRegistry.instance(pocket.world).getPocket(pocket.pocketId), pocket);
@@ -96,7 +95,7 @@ public class RiftRegistry extends PersistentState {
         ListTag riftsNBT = new ListTag();
         ListTag pocketsNBT = new ListTag();
         for (RegistryVertex vertex : graph.vertexSet()) {
-            CompoundTag vertexNBT = vertex.toTag(new CompoundTag());
+            CompoundTag vertexNBT = (CompoundTag) NbtUtil.serialize(vertex, RegistryVertex.CODEC);
             if (vertex instanceof Rift) {
                 riftsNBT.add(vertexNBT);
             } else if (vertex instanceof PocketEntrancePointer) {

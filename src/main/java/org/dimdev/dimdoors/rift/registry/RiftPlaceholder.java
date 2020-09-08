@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import com.mojang.serialization.Codec;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -7,6 +9,12 @@ import net.minecraft.nbt.CompoundTag;
 
 public class RiftPlaceholder extends Rift { // TODO: don't extend rift
     private static final Logger LOGGER = LogManager.getLogger();
+
+    public static Codec<RiftPlaceholder> CODEC = DynamicSerializableUuid.field_25122.xmap(a -> {
+        RiftPlaceholder placeholder = new RiftPlaceholder();
+        placeholder.id = a;
+        return placeholder;
+    }, a -> a.id);
 
     @Override
     public void sourceGone(RegistryVertex source) {
@@ -34,14 +42,7 @@ public class RiftPlaceholder extends Rift { // TODO: don't extend rift
     }
 
     @Override
-    public void fromTag(CompoundTag nbt) {
-        LOGGER.error("Reading a rift placeholder from NBT!");
-        super.fromTag(nbt);
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag nbt) {
-        LOGGER.error("Writing a rift placeholder from NBT!");
-        return super.toTag(nbt);
+    public RegistryVertexType<? extends RegistryVertex> getType() {
+        return RegistryVertexType.RIFT_PLACEHOLDER;
     }
 }

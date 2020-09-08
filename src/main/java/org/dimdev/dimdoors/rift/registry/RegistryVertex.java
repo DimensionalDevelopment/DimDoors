@@ -2,6 +2,13 @@ package org.dimdev.dimdoors.rift.registry;
 
 import java.util.UUID;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.dimdev.annotatednbt.AnnotatedNbt;
@@ -9,9 +16,17 @@ import org.dimdev.annotatednbt.Saved;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
+import org.dimdev.dimdoors.rift.targets.*;
+import org.dimdev.dimdoors.util.NbtUtil;
+import org.dimdev.dimdoors.util.RGBA;
 
 public abstract class RegistryVertex {
+    public static final Registry<RegistryVertexType> registry = FabricRegistryBuilder.createSimple(RegistryVertex.RegistryVertexType.class, new Identifier("dimdoors", "registry_vertex")).attribute(RegistryAttribute.MODDED).buildAndRegister();
+
     public RegistryKey<World> world; // The dimension to store this object in. Links are stored in both registries.
+
+    public static final Codec<RegistryVertex> CODEC = registry.dispatch(RegistryVertex::getType, RegistryVertexType::codec);
+
     @Saved
     public UUID id = UUID.randomUUID(); // Used to create pointers to registry vertices. Should not be used for anything other than saving.
 
@@ -27,15 +42,22 @@ public abstract class RegistryVertex {
     public void targetAdded(RegistryVertex target) {
     }
 
-    public void fromTag(CompoundTag nbt) {
-        AnnotatedNbt.fromTag(this, nbt);
-    }
-
-    public CompoundTag toTag(CompoundTag nbt) {
-        return AnnotatedNbt.toTag(this, nbt);
-    }
+    public abstract RegistryVertexType<? extends RegistryVertex> getType();
 
     public String toString() {
         return "RegistryVertex(dim=" + this.world + ", id=" + this.id + ")";
+    }
+
+    public interface RegistryVertexType<T extends RegistryVertex> {
+        public RegistryVertexType<PlayerRiftPointer> PLAYER = register("player", PlayerRiftPointer.CODEC);
+        public RegistryVertexType<Rift> RIFT = register("rift", Rift.CODEC);
+        public RegistryVertexType<PocketEntrancePointer> ENTRANCE = register("entrance", PocketEntrancePointer.CODEC);
+        RegistryVertexType<RiftPlaceholder> RIFT_PLACEHOLDER = register("rift_placeholder", RiftPlaceholder.CODEC);
+
+        Codec<T> codec();
+
+        static <T extends RegistryVertex> RegistryVertex.RegistryVertexType<T> register(String id, Codec<T> codec) {
+            return Registry.register(registry, id, () -> codec);
+        }
     }
 }

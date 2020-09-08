@@ -68,7 +68,7 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
     public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState blockState, BlockEntity entity, ItemStack stack) {
         if (entity instanceof EntranceRiftBlockEntity) {
             world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
-            ((DetachedRiftBlockEntity) world.getBlockEntity(pos)).load(((EntranceRiftBlockEntity) entity).serialize());
+            ((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(((EntranceRiftBlockEntity) entity).getData());
         }
     }
 

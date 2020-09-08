@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.annotatednbt.AnnotatedNbt;
@@ -10,6 +13,20 @@ import org.dimdev.dimdoors.util.Location;
 import net.minecraft.nbt.CompoundTag;
 
 public class Rift extends RegistryVertex {
+    public static final Codec<Rift> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+                DynamicSerializableUuid.field_25122.fieldOf("id").forGetter(a -> a.id),
+                Location.CODEC.fieldOf("location").forGetter(a -> a.location),
+                Codec.BOOL.fieldOf("isDetached").forGetter(a -> a.isDetached),
+                LinkProperties.CODEC.fieldOf("properties").forGetter(a -> a.properties)
+        ).apply(instance, (id, location, isDetached, properties) -> {
+            Rift pointer = new Rift(location, isDetached, properties);
+            pointer.id = id;
+            return pointer;
+        });
+    });
+
+
     private static final Logger LOGGER = LogManager.getLogger();
     @Saved
     public Location location;
@@ -63,15 +80,7 @@ public class Rift extends RegistryVertex {
     }
 
     @Override
-    public void fromTag(CompoundTag nbt) {
-        super.fromTag(nbt);
-        AnnotatedNbt.load(this, nbt);
-    }
-
-    @Override
-    public CompoundTag toTag(CompoundTag nbt) {
-        nbt = super.toTag(nbt);
-        AnnotatedNbt.save(this, nbt);
-        return nbt;
+    public RegistryVertexType<? extends RegistryVertex> getType() {
+        return RegistryVertexType.RIFT;
     }
 }

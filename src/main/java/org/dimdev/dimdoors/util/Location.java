@@ -1,17 +1,7 @@
 package org.dimdev.dimdoors.util;
 
-import com.mojang.datafixers.kinds.App;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.gen.placer.ColumnPlacer;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.annotatednbt.AutoSerializable;
-import org.dimdev.annotatednbt.Saved;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -22,10 +12,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
-import java.util.Optional;
-import java.util.function.Function;
-
-public class Location implements AutoSerializable {
+public class Location {
     public static final Codec<Location> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(World.CODEC.fieldOf("world").forGetter(location -> {
             return location.world;

@@ -13,7 +13,7 @@ import net.minecraft.nbt.CompoundTag;
 public class PublicPocketTarget extends RestoringTarget {
     public final static Codec<PublicPocketTarget> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
-                VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", null).forGetter(RestoringTarget::getTarget)
+                VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", NoneTarget.DUMMY).forGetter(RestoringTarget::getTarget)
         ).apply(instance, PublicPocketTarget::new);
     });
 

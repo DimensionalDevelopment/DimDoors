@@ -64,6 +64,10 @@ public abstract class VirtualTarget implements Target {
         this.location = location;
     }
 
+    public boolean isDummy() {
+        return false;
+    }
+
     public interface VirtualTargetType<T extends VirtualTarget> {
         public VirtualTargetType<RandomTarget> AVAILABLE_LINK = register("available_link", RandomTarget.CODEC, VirtualTarget.COLOR);
         public VirtualTargetType<EscapeTarget> ESCAPE = register("escape", EscapeTarget.CODEC, VirtualTarget.COLOR);
@@ -76,6 +80,7 @@ public abstract class VirtualTarget implements Target {
         public VirtualTargetType<PrivatePocketTarget> PRIVATE = register("private", PrivatePocketTarget.CODEC, PrivatePocketExitTarget.COLOR);
         public VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("private_pocket_exit", PrivatePocketExitTarget.CODEC, PrivatePocketExitTarget.COLOR);
         public VirtualTargetType<RelativeReference> RELATIVE = register("relative", RelativeReference.CODEC, VirtualTarget.COLOR);
+        public VirtualTargetType<NoneTarget> NONE = register("none", NoneTarget.CODEC, COLOR);
 
         Codec<T> codec();
 
@@ -93,6 +98,17 @@ public abstract class VirtualTarget implements Target {
                     return color;
                 }
             });
+        }
+    }
+
+    public static class NoneTarget extends VirtualTarget {
+        public static NoneTarget DUMMY = new NoneTarget();
+
+        public static Codec<NoneTarget> CODEC = Codec.unit(DUMMY);
+
+        @Override
+        public VirtualTargetType<? extends VirtualTarget> getType() {
+            return VirtualTargetType.NONE;
         }
     }
 }
