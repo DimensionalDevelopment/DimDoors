@@ -4,51 +4,6 @@
     "type": "dimdoors:limbo_chunk_generator",
     "biome_source": {
       "type": "dimdoors:limbo_biome_source"
-    },
-    "settings": {
-      "bedrock_floor_position": 0,
-      "bedrock_roof_position": -1,
-      "disable_mob_generation": false,
-      "sea_level": 8,
-      "structures": {
-        "structures": {}
-      },
-      "noise": {
-        "density_factor": 1,
-        "density_offset": -0.16875,
-        "simplex_surface_noise": true,
-        "random_density_offset": true,
-        "island_noise_override": false,
-        "amplified": true,
-        "size_horizontal": 2,
-        "size_vertical": 4,
-        "height": 128,
-        "sampling": {
-          "xz_scale": 0.94213419649817745,
-          "y_scale": 1.102539814507745,
-          "xz_factor": 80,
-          "y_factor": 120
-        },
-        "bottom_slide": {
-          "target": 60,
-          "size": 2,
-          "offset": 2
-        },
-        "top_slide": {
-          "target": -1,
-          "size": 3,
-          "offset": 0
-        }
-      },
-      "default_block": {
-        "Name": "dimdoors:unravelled_fabric"
-      },
-      "default_fluid": {
-        "Name": "dimdoors:eternal_fluid",
-        "Properties": {
-          "level": "0"
-        }
-      }
     }
   }
 }

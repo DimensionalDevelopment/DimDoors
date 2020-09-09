@@ -72,8 +72,45 @@ public final class ModDimensions {
     }
 
     static {
-        StructuresConfig limboStructuresConfig = new StructuresConfig(Optional.of(StructuresConfig.DEFAULT_STRONGHOLD), ImmutableMap.of());
-        GenerationShapeConfig limboShapeConfig = new GenerationShapeConfig(128, new NoiseSamplingConfig(0.94213419649817745, 1.102539814507745, 80, 120), new SlideConfig(-1, 3, 0), new SlideConfig(60, 2, 2), 2, 4, 1, -0.16875, true, true, true, true);
-        LIMBO_CHUNK_GENERATOR_SETTINGS = ChunkGeneratorSettingsAccessor.invokeInit(limboStructuresConfig, limboShapeConfig, ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.ETERNAL_FLUID.getDefaultState(), 5, -1, 8, false);
+        // TODO: Remove all settings from json dimensions
+        StructuresConfig limboStructuresConfig = new StructuresConfig(
+                Optional.of(StructuresConfig.DEFAULT_STRONGHOLD),
+                ImmutableMap.of()
+        );
+        GenerationShapeConfig limboShapeConfig = new GenerationShapeConfig(
+                128,
+                new NoiseSamplingConfig(
+                        0.94213419649817745,
+                        1.102539814507745,
+                        80, 120
+                ),
+                new SlideConfig(
+                        -1,
+                        3,
+                        0
+                ),
+                new SlideConfig(
+                        60,
+                        2,
+                        2
+                ), 2,
+                4,
+                1,
+                -0.16875,
+                true,
+                true,
+                true,
+                true
+        );
+        LIMBO_CHUNK_GENERATOR_SETTINGS = ChunkGeneratorSettingsAccessor.invokeInit(
+                limboStructuresConfig,
+                limboShapeConfig,
+                ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
+                ModBlocks.ETERNAL_FLUID.getDefaultState(),
+                -1,
+                5,
+                8,
+                false
+        );
     }
 }
