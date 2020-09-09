@@ -1,12 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.dimdev.dimdoors.util.Location;
-
-import net.minecraft.nbt.CompoundTag;
 import org.dimdev.dimdoors.util.RGBA;
 
 public abstract class RestoringTarget extends VirtualTarget {

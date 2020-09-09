@@ -15,8 +15,7 @@ public final class GridUtil {
             if (!(o instanceof GridPos)) return false;
             GridPos other = (GridPos) o;
             if (this.x != other.x) return false;
-            if (this.z != other.z) return false;
-            return true;
+            return this.z == other.z;
         }
 
         public int hashCode() {
@@ -44,7 +43,7 @@ public final class GridUtil {
         int layerNumber = num - layer * layer; // The number of the spot on that layer
         //                           | First Side   |  Second Side                     |
         int x = layerNumber <= layer ? layer : layer - (layerNumber - layer);
-        int z = layerNumber <= layer ? layerNumber : layer;
+        int z = Math.min(layerNumber, layer);
 
         return new GridPos(x, z);
     }

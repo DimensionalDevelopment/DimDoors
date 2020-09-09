@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
 
 public class PocketExitMarker extends VirtualTarget implements EntityTarget {

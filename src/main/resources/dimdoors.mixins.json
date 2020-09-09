@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BuiltinBiomesAccessor",
+    "ChunkGeneratorAccessor",
     "DefaultBiomeFeaturesMixin",
     "DimensionTypeAccessor",
     "DirectionAccessor",

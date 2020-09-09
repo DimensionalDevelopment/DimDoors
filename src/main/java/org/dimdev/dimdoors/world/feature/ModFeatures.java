@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.world.feature;
 
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.world.feature.gateway.SchematicGatewayFeature;
-import org.dimdev.dimdoors.world.feature.gateway.SchematicGatewayFeatureConfig;
 import org.dimdev.dimdoors.world.feature.gateway.SandstonePillarsGateway;
 import org.dimdev.dimdoors.world.feature.gateway.SchematicGateway;
+import org.dimdev.dimdoors.world.feature.gateway.SchematicGatewayFeature;
+import org.dimdev.dimdoors.world.feature.gateway.SchematicGatewayFeatureConfig;
 import org.dimdev.dimdoors.world.feature.gateway.TwoPillarsGateway;
 
 import net.minecraft.util.Identifier;

@@ -4,12 +4,9 @@ import java.util.UUID;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.dynamic.DynamicSerializableUuid;
-import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 
-import net.minecraft.nbt.CompoundTag;
-import org.dimdev.dimdoors.util.NbtUtil;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
 
 public class PlayerRiftPointer extends RegistryVertex {
     public static final Codec<PlayerRiftPointer> CODEC = RecordCodecBuilder.create(instance -> {

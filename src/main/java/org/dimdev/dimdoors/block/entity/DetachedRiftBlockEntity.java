@@ -2,14 +2,11 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Random;
 
-import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.client.RiftCurves;
 import org.dimdev.dimdoors.util.TeleportUtil;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -20,7 +17,6 @@ import net.minecraft.util.Tickable;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import org.lwjgl.system.macosx.LibSystem;
 
 
 public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable {

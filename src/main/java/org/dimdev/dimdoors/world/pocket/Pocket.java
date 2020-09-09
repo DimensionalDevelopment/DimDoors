@@ -3,22 +3,18 @@ package org.dimdev.dimdoors.world.pocket;
 import com.flowpowered.math.vector.Vector3i;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.MaterialColor;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.util.Codecs;
 import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-
-import java.util.stream.Stream;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 
 public final class Pocket {
     public static final Codec<Pocket> CODEC = RecordCodecBuilder.create(instance -> {

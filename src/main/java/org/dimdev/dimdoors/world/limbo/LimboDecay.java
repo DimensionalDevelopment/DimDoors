@@ -14,7 +14,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import static net.minecraft.block.Blocks.*;
-import static org.dimdev.dimdoors.block.ModBlocks.*;
+import static org.dimdev.dimdoors.block.ModBlocks.DETACHED_RIFT;
+import static org.dimdev.dimdoors.block.ModBlocks.DIMENSIONAL_PORTAL;
+import static org.dimdev.dimdoors.block.ModBlocks.ETERNAL_FLUID;
+import static org.dimdev.dimdoors.block.ModBlocks.GOLD_DIMENSIONAL_DOOR;
+import static org.dimdev.dimdoors.block.ModBlocks.GOLD_DOOR;
+import static org.dimdev.dimdoors.block.ModBlocks.IRON_DIMENSIONAL_DOOR;
+import static org.dimdev.dimdoors.block.ModBlocks.OAK_DIMENSIONAL_DOOR;
+import static org.dimdev.dimdoors.block.ModBlocks.QUARTZ_DOOR;
+import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_FABRIC;
 
 /**
  * Provides methods for applying Limbo decay. Limbo decay refers to the effect that most blocks placed in Limbo

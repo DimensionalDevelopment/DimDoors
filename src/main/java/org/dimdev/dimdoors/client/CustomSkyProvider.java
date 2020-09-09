@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.client;
 
 import io.github.waterpicker.openworlds.renderer.SkyRenderer;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;

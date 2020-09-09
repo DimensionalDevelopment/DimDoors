@@ -1,9 +1,8 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
+
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
-import org.dimdev.dimdoors.util.TeleportUtil;
 
 public class LimboTarget extends VirtualTarget implements EntityTarget {
     public static final Codec<LimboTarget> CODEC = Codec.unit(LimboTarget::new);

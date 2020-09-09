@@ -2,15 +2,13 @@ package org.dimdev.dimdoors.rift.registry;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.util.Location;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
 
 public class Rift extends RegistryVertex {
     public static final Codec<Rift> CODEC = RecordCodecBuilder.create(instance -> {
@@ -25,7 +23,6 @@ public class Rift extends RegistryVertex {
             return pointer;
         });
     });
-
 
     private static final Logger LOGGER = LogManager.getLogger();
     @Saved

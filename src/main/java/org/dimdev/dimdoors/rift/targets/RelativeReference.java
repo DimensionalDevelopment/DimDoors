@@ -1,12 +1,8 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.util.Location;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Vec3i;
 
 public class RelativeReference extends RiftReference {

@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.client;
 
-import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -12,15 +11,10 @@ import org.dimdev.dimdoors.util.RGBA;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.enums.DoorHinge;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.block.BlockModels;
-import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.util.GlAllocationUtils;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;

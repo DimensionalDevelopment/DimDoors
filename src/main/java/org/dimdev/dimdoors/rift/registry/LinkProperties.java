@@ -1,10 +1,11 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.util.Codecs;
 

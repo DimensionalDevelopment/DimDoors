@@ -1,11 +1,10 @@
 package org.dimdev.dimdoors.rift.registry;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
 
 public class RiftPlaceholder extends Rift { // TODO: don't extend rift
     private static final Logger LOGGER = LogManager.getLogger();

@@ -2,11 +2,15 @@ package org.dimdev.dimdoors.block;
 
 import java.util.Random;
 
-import net.minecraft.block.*;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.client.RiftParticle;
 import org.dimdev.dimdoors.world.ModDimensions;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.MaterialColor;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;

@@ -4,9 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
-import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.NbtUtil;
@@ -17,7 +14,9 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.PersistentState;
+import net.minecraft.world.World;
 
 public class PocketRegistry extends PersistentState {
     private Codec<Map<Integer, Pocket>> pocketsCodec = Codec.unboundedMap(Codec.INT, Pocket.CODEC);

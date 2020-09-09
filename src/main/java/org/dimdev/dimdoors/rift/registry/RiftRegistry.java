@@ -26,7 +26,7 @@ import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 
 import static net.minecraft.world.World.OVERWORLD;
-import static org.dimdev.dimdoors.DimensionalDoorsInitializer.*;
+import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getWorld;
 
 public class RiftRegistry extends PersistentState {
     private static final Logger LOGGER = LogManager.getLogger();

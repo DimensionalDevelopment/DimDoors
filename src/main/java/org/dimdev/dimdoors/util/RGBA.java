@@ -1,10 +1,9 @@
 package org.dimdev.dimdoors.util;
 
+import java.util.Objects;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.dimdoors.rift.targets.EscapeTarget;
-
-import java.util.Objects;
 
 public class RGBA implements Cloneable {
     public static final RGBA NONE = new RGBA(-1, -1, -1, -1);

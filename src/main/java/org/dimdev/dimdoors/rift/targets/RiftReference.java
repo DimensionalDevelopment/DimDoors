@@ -4,9 +4,9 @@ import java.util.Set;
 
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.RGBA;
 
 import net.minecraft.util.math.Vec3i;
-import org.dimdev.dimdoors.util.RGBA;
 
 /**
  * Allows rifts and targets to reference another rift without having to

@@ -1,10 +1,9 @@
 package org.dimdev.dimdoors.entity.ai;
 
-import io.netty.buffer.Unpooled;
-
 import java.util.EnumSet;
 import java.util.Random;
 
+import io.netty.buffer.Unpooled;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.entity.MonolithEntity;

@@ -6,16 +6,15 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.dynamic.DynamicSerializableUuid;
-import net.minecraft.util.registry.RegistryKey;
-import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.annotatednbt.Saved;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.World;
 import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.util.WorldUtil;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.PersistentState;
+import net.minecraft.world.World;
 
 import static net.minecraft.world.World.OVERWORLD;
 

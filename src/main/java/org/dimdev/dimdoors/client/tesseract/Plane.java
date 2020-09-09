@@ -3,9 +3,9 @@ package org.dimdev.dimdoors.client.tesseract;
 import com.flowpowered.math.matrix.Matrix4f;
 import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector4f;
+import org.dimdev.dimdoors.util.RGBA;
 
 import net.minecraft.client.render.VertexConsumer;
-import org.dimdev.dimdoors.util.RGBA;
 
 import static com.flowpowered.math.TrigMath.cos;
 import static com.flowpowered.math.TrigMath.sin;

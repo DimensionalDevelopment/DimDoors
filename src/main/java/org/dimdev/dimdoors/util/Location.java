@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.util;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -10,7 +11,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
 public class Location {
     public static final Codec<Location> CODEC = RecordCodecBuilder.create(instance -> {

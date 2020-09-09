@@ -1,9 +1,8 @@
 package org.dimdev.dimdoors.client;
 
-import io.github.waterpicker.openworlds.OpenWorlds;
-
 import java.util.function.Function;
 
+import io.github.waterpicker.openworlds.OpenWorlds;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.world.ModDimensions;
 

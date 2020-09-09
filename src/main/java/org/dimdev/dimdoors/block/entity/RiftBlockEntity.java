@@ -1,11 +1,8 @@
 package org.dimdev.dimdoors.block.entity;
 
 import java.util.Objects;
-import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.nbt.Tag;
-import net.minecraft.util.Language;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.PocketTemplate;

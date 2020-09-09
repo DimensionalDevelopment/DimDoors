@@ -1,18 +1,16 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.util.RGBA;
 
-import java.util.function.Function;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 
 /**
  * A target that is not an actual object in the game such as a block or a tile

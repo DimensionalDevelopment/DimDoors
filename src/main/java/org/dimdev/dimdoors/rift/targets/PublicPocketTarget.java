@@ -8,8 +8,6 @@ import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
-import net.minecraft.nbt.CompoundTag;
-
 public class PublicPocketTarget extends RestoringTarget {
     public final static Codec<PublicPocketTarget> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(

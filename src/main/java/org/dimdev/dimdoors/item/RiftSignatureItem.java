@@ -8,6 +8,8 @@ import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RotatedLocation;
+import org.dimdev.dimdoors.util.WorldUtil;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,8 +30,6 @@ import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import org.dimdev.dimdoors.util.WorldUtil;
-import org.jetbrains.annotations.NotNull;
 
 public class RiftSignatureItem extends Item {
     public static final String ID = "rift_signature";

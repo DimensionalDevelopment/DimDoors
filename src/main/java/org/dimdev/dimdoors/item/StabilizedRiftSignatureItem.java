@@ -8,6 +8,7 @@ import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RotatedLocation;
+import org.dimdev.dimdoors.util.WorldUtil;
 
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,7 +26,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.util.WorldUtil;
 
 public class StabilizedRiftSignatureItem extends Item { // TODO: common superclass with rift signature
     public static final String ID = "stabilized_rift_signature";
