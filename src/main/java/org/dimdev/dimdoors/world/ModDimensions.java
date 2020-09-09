@@ -107,7 +107,7 @@ public final class ModDimensions {
                 limboShapeConfig,
                 ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
                 ModBlocks.ETERNAL_FLUID.getDefaultState(),
-                -1,
+                -10,
                 5,
                 8,
                 false

@@ -11,6 +11,7 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
@@ -22,13 +23,16 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class DimensionalDoorsInitializer implements ModInitializer {
-
     public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
 
     private static MinecraftServer server;
 
+    @NotNull
     public static MinecraftServer getServer() {
-        return server;
+        if (server != null) {
+            return server;
+        }
+        throw new IllegalStateException("Accessed server too early!");
     }
 
     public static ServerWorld getWorld(RegistryKey<World> key) {
@@ -37,7 +41,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ServerLifecycleEvents.SERVER_STARTED.register(DimensionalDoorsInitializer::setServer);
+        ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> server = minecraftServer);
 
         ModBlocks.init();
         ModItems.init();
@@ -52,9 +56,5 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         Targets.registerDefaultTargets();
 
         SchematicHandler.INSTANCE.loadSchematics();
-    }
-
-    private static void setServer(MinecraftServer server) {
-        DimensionalDoorsInitializer.server = server;
     }
 }

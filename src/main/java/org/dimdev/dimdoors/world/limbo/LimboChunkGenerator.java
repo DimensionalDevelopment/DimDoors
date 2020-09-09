@@ -10,7 +10,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.mixin.ChunkGeneratorAccessor;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -56,11 +55,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 public class LimboChunkGenerator extends ChunkGenerator {
-    public static final Codec<LimboChunkGenerator> CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(BiomeSource.CODEC.fieldOf("biome_source").forGetter((chunkGenerator) -> {
-            return chunkGenerator.biomeSource;
-        })).apply(instance, instance.stable(LimboChunkGenerator::new));
-    });
+    public static final LimboChunkGenerator INSTANCE = new LimboChunkGenerator(LimboBiomeSource.INSTANCE, LimboBiomeSource.INSTANCE);
+    public static final Codec<LimboChunkGenerator> CODEC = Codec.unit(INSTANCE);
     private static final float[] NOISE_WEIGHT_TABLE = Util.make(new float[13824], (array) -> {
         for (int i = 0; i < 24; ++i) {
             for (int j = 0; j < 24; ++j) {
@@ -97,10 +93,6 @@ public class LimboChunkGenerator extends ChunkGenerator {
     private final SimplexNoiseSampler islandNoise;
     private final long worldSeed;
     private final int worldHeight;
-
-    public LimboChunkGenerator(BiomeSource biomeSource) {
-        this(biomeSource, biomeSource);
-    }
 
     private LimboChunkGenerator(BiomeSource biomeSource, BiomeSource biomeSource2) {
         super(biomeSource, biomeSource2, ModDimensions.LIMBO_CHUNK_GENERATOR_SETTINGS.getStructuresConfig(), new Random().nextLong());
@@ -163,7 +155,8 @@ public class LimboChunkGenerator extends ChunkGenerator {
 
     @Environment(EnvType.CLIENT)
     public ChunkGenerator withSeed(long seed) {
-        return new LimboChunkGenerator(this.biomeSource.withSeed(seed));
+        BiomeSource source = this.biomeSource.withSeed(seed);
+        return new LimboChunkGenerator(source, source);
     }
 
     private double sampleNoise(int x, int y, int z, double horizontalScale, double verticalScale, double horizontalStretch, double verticalStretch) {

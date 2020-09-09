@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.world;
 
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
-import org.dimdev.dimdoors.mixin.BuiltinBiomesAccessor;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 import net.minecraft.block.Blocks;
@@ -34,10 +33,6 @@ public final class ModBiomes {
         Registry.register(BuiltinRegistries.BIOME, PERSONAL_WHITE_VOID_KEY.getValue(), WHITE_VOID_BIOME);
         Registry.register(BuiltinRegistries.BIOME, PUBLIC_BLACK_VOID_KEY.getValue(), BLACK_VOID_BIOME);
         Registry.register(BuiltinRegistries.BIOME, DUNGEON_DANGEROUS_BLACK_VOID_KEY.getValue(), DANGEROUS_BLACK_VOID_BIOME);
-        BuiltinBiomesAccessor.getIdMap().put(BuiltinRegistries.BIOME.getRawId(LIMBO_BIOME), LIMBO_KEY);
-        BuiltinBiomesAccessor.getIdMap().put(BuiltinRegistries.BIOME.getRawId(DANGEROUS_BLACK_VOID_BIOME), DUNGEON_DANGEROUS_BLACK_VOID_KEY);
-        BuiltinBiomesAccessor.getIdMap().put(BuiltinRegistries.BIOME.getRawId(BLACK_VOID_BIOME), PUBLIC_BLACK_VOID_KEY);
-        BuiltinBiomesAccessor.getIdMap().put(BuiltinRegistries.BIOME.getRawId(WHITE_VOID_BIOME), PERSONAL_WHITE_VOID_KEY);
     }
 
     private static BiomeEffects createEffect(boolean white) {
@@ -67,12 +62,12 @@ public final class ModBiomes {
                 .depth(0.1f)
                 .downfall(0.0f)
                 .effects(new BiomeEffects.Builder()
-                        .fogColor(0x111111)
+                        .fogColor(0x000000)
                         .waterColor(0)
                         .foliageColor(0)
                         .waterFogColor(0)
                         .moodSound(new BiomeMoodSound(ModSoundEvents.CREEPY, 6000, 8, 2.0))
-                        .skyColor(0x111111)
+                        .skyColor(0x000000)
                         .grassColor(0)
                         .build())
                 .generationSettings(new GenerationSettings.Builder()

@@ -1,23 +1,21 @@
 package org.dimdev.dimdoors.world.limbo;
 
-import java.util.Collections;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Decoder;
-import com.mojang.serialization.Encoder;
-import com.mojang.serialization.MapCodec;
 import org.dimdev.dimdoors.world.ModBiomes;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 
 public class LimboBiomeSource extends BiomeSource {
-    public static final Codec<LimboBiomeSource> CODEC = MapCodec.of(Encoder.empty(), Decoder.unit(LimboBiomeSource::new)).stable().codec();
+    public static final LimboBiomeSource INSTANCE = new LimboBiomeSource();
+    public static final Codec<LimboBiomeSource> CODEC = Codec.unit(INSTANCE);
 
-    public LimboBiomeSource() {
-        super(Collections.singletonList(ModBiomes.LIMBO_BIOME));
+    private LimboBiomeSource() {
+        super(ImmutableList.of(ModBiomes.LIMBO_BIOME));
     }
 
     @Override

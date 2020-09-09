@@ -35,6 +35,7 @@ public class ModRendering {
         OpenWorlds.registerSkyRenderer(ModDimensions.LIMBO_TYPE, new LimboSkyProvider());
         OpenWorlds.registerCloudRenderer(ModDimensions.LIMBO_TYPE, (minecraftClient, matrixStack, v, v1, v2, v3) -> {
         });
+        OpenWorlds.registerSkyProperty(ModDimensions.LIMBO_TYPE, LimboSkyProperties.INSTANCE);
 
         setupFluidRendering(ModFluids.ETERNAL_FLUID, ModFluids.FLOWING_ETERNAL_FLUID, new Identifier("dimdoors:eternal_fluid"));
     }

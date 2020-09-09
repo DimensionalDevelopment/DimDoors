@@ -1,9 +1,6 @@
 {
   "type": "dimdoors:limbo",
   "generator": {
-    "type": "dimdoors:limbo_chunk_generator",
-    "biome_source": {
-      "type": "dimdoors:limbo_biome_source"
-    }
+    "type": "dimdoors:limbo_chunk_generator"
   }
 }
