@@ -5,6 +5,7 @@
   "mixins": [
     "BuiltinBiomesAccessor",
     "ChunkGeneratorAccessor",
+    "ChunkGeneratorSettingsAccessor",
     "DefaultBiomeFeaturesMixin",
     "DimensionTypeAccessor",
     "DirectionAccessor",

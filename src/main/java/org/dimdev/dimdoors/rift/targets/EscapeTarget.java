@@ -54,8 +54,8 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
                     chat(entity, new TranslatableText("rifts.destinations.escape.rift_has_closed"));
                 }
                 if (!entity.getEntityWorld().isClient) {
-                    if (ModDimensions.limboDimension != null) {
-                        entity.moveToWorld(ModDimensions.limboDimension);
+                    if (ModDimensions.LIMBO_DIMENSION != null) {
+                        entity.moveToWorld(ModDimensions.LIMBO_DIMENSION);
                         entity.setPos(location.getX(), location.getY(), location.getZ());
                     }
                 }

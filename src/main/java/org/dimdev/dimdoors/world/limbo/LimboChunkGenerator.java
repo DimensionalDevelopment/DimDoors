@@ -13,6 +13,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.mixin.ChunkGeneratorAccessor;
+import org.dimdev.dimdoors.world.ModDimensions;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -58,8 +59,6 @@ public class LimboChunkGenerator extends ChunkGenerator {
     public static final Codec<LimboChunkGenerator> CODEC = RecordCodecBuilder.create((instance) -> {
         return instance.group(BiomeSource.CODEC.fieldOf("biome_source").forGetter((chunkGenerator) -> {
             return chunkGenerator.biomeSource;
-        }), ChunkGeneratorSettings.REGISTRY_CODEC.fieldOf("settings").forGetter((chunkGenerator) -> {
-            return chunkGenerator.settings;
         })).apply(instance, instance.stable(LimboChunkGenerator::new));
     });
     private static final float[] NOISE_WEIGHT_TABLE = Util.make(new float[13824], (array) -> {
@@ -99,15 +98,15 @@ public class LimboChunkGenerator extends ChunkGenerator {
     private final long worldSeed;
     private final int worldHeight;
 
-    public LimboChunkGenerator(BiomeSource biomeSource, Supplier<ChunkGeneratorSettings> supplier) {
-        this(biomeSource, biomeSource, supplier);
+    public LimboChunkGenerator(BiomeSource biomeSource) {
+        this(biomeSource, biomeSource);
     }
 
-    private LimboChunkGenerator(BiomeSource biomeSource, BiomeSource biomeSource2, Supplier<ChunkGeneratorSettings> supplier) {
-        super(biomeSource, biomeSource2, supplier.get().getStructuresConfig(), new Random().nextLong());
+    private LimboChunkGenerator(BiomeSource biomeSource, BiomeSource biomeSource2) {
+        super(biomeSource, biomeSource2, ModDimensions.LIMBO_CHUNK_GENERATOR_SETTINGS.getStructuresConfig(), new Random().nextLong());
         this.worldSeed = ((ChunkGeneratorAccessor) this).getWorldSeed();
-        ChunkGeneratorSettings chunkGeneratorSettings = supplier.get();
-        this.settings = supplier;
+        ChunkGeneratorSettings chunkGeneratorSettings = ModDimensions.LIMBO_CHUNK_GENERATOR_SETTINGS;
+        this.settings = () -> ModDimensions.LIMBO_CHUNK_GENERATOR_SETTINGS;
         GenerationShapeConfig generationShapeConfig = chunkGeneratorSettings.getGenerationShapeConfig();
         this.worldHeight = generationShapeConfig.getHeight();
         this.verticalNoiseResolution = generationShapeConfig.getSizeVertical() * 4;
@@ -164,7 +163,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
 
     @Environment(EnvType.CLIENT)
     public ChunkGenerator withSeed(long seed) {
-        return new LimboChunkGenerator(this.biomeSource.withSeed(seed), this.settings);
+        return new LimboChunkGenerator(this.biomeSource.withSeed(seed));
     }
 
     private double sampleNoise(int x, int y, int z, double horizontalScale, double verticalScale, double horizontalStretch, double verticalStretch) {
