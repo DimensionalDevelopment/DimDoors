@@ -23,16 +23,16 @@ public final class ModBiomes {
     public static final RegistryKey<Biome> PUBLIC_BLACK_VOID_KEY;
     public static final RegistryKey<Biome> DUNGEON_DANGEROUS_BLACK_VOID_KEY;
     public static final RegistryKey<Biome> LIMBO_KEY;
-    public static final Biome WHITE_VOID_BIOME;
-    public static final Biome BLACK_VOID_BIOME;
-    public static final Biome DANGEROUS_BLACK_VOID_BIOME;
+    public static final Biome PERSONAL_WHITE_VOID_BIOME;
+    public static final Biome PUBLIC_BLACK_VOID_BIOME;
+    public static final Biome DUNGEON_DANGEROUS_BLACK_VOID_BIOME;
     public static final Biome LIMBO_BIOME;
 
     public static void init() {
         Registry.register(BuiltinRegistries.BIOME, LIMBO_KEY.getValue(), LIMBO_BIOME);
-        Registry.register(BuiltinRegistries.BIOME, PERSONAL_WHITE_VOID_KEY.getValue(), WHITE_VOID_BIOME);
-        Registry.register(BuiltinRegistries.BIOME, PUBLIC_BLACK_VOID_KEY.getValue(), BLACK_VOID_BIOME);
-        Registry.register(BuiltinRegistries.BIOME, DUNGEON_DANGEROUS_BLACK_VOID_KEY.getValue(), DANGEROUS_BLACK_VOID_BIOME);
+        Registry.register(BuiltinRegistries.BIOME, PERSONAL_WHITE_VOID_KEY.getValue(), PERSONAL_WHITE_VOID_BIOME);
+        Registry.register(BuiltinRegistries.BIOME, PUBLIC_BLACK_VOID_KEY.getValue(), PUBLIC_BLACK_VOID_BIOME);
+        Registry.register(BuiltinRegistries.BIOME, DUNGEON_DANGEROUS_BLACK_VOID_KEY.getValue(), DUNGEON_DANGEROUS_BLACK_VOID_BIOME);
     }
 
     private static BiomeEffects createEffect(boolean white) {
@@ -54,9 +54,9 @@ public final class ModBiomes {
         PUBLIC_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:black_void"));
         DUNGEON_DANGEROUS_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:dangerous_black_void"));
         LIMBO_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors", "limbo"));
-        WHITE_VOID_BIOME = voidBiomeBuilder.effects(createEffect(true)).build();
-        BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
-        DANGEROUS_BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
+        PERSONAL_WHITE_VOID_BIOME = voidBiomeBuilder.effects(createEffect(true)).build();
+        PUBLIC_BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
+        DUNGEON_DANGEROUS_BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
         LIMBO_BIOME = new Biome.Builder()
                 .category(Biome.Category.NONE)
                 .depth(0.1f)

@@ -17,6 +17,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
@@ -39,6 +41,10 @@ public final class ModDimensions {
     public static DimensionType POCKET_DIMENSION_TYPE = DimensionTypeAccessor.invokeInit(OptionalLong.empty(), true, false, false, false, 4.0, false, false, true, false, 256, BlockTags.INFINIBURN_OVERWORLD.getId(), DimensionType.THE_END_ID, 0.1F);
 
     public static final ChunkGeneratorSettings LIMBO_CHUNK_GENERATOR_SETTINGS;
+
+    public static final BiomeSource PERSONAL_BIOME_SOURCE = new FixedBiomeSource(() -> ModBiomes.PERSONAL_WHITE_VOID_BIOME);
+    public static final BiomeSource PUBLIC_BIOME_SOURCE = new FixedBiomeSource(() -> ModBiomes.PUBLIC_BLACK_VOID_BIOME);
+    public static final BiomeSource DUNGEON_BIOME_SOURCE = new FixedBiomeSource(() -> ModBiomes.DUNGEON_DANGEROUS_BLACK_VOID_BIOME);
 
     public static ServerWorld LIMBO_DIMENSION;
     public static ServerWorld PERSONAL_POCKET_DIMENSION;

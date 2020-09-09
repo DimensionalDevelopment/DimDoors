@@ -26,10 +26,14 @@ public class BlankChunkGenerator extends ChunkGenerator {
             instance.group(
                     BiomeSource.CODEC.fieldOf("biome_source")
                             .forGetter((generator) -> generator.biomeSource)
-            ).apply(instance, instance.stable(BlankChunkGenerator::new))
+            ).apply(instance, instance.stable(BlankChunkGenerator::of))
     );
 
-    public BlankChunkGenerator(BiomeSource biomeSource) {
+    public static BlankChunkGenerator of(BiomeSource biomeSource) {
+        return new BlankChunkGenerator(biomeSource);
+    }
+
+    private BlankChunkGenerator(BiomeSource biomeSource) {
         super(biomeSource, new StructuresConfig(Optional.empty(), Collections.emptyMap()));
     }
 
