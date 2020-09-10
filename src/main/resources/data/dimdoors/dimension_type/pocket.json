@@ -1,7 +1,6 @@
 {
   "ultrawarm": false,
   "natural": false,
-  "shrunk": false,
   "ambient_light": 0.1,
   "has_skylight": true,
   "has_ceiling": false,

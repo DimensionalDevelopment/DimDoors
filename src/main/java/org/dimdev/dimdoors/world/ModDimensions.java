@@ -34,11 +34,11 @@ public final class ModDimensions {
     public static final RegistryKey<World> PUBLIC = RegistryKey.of(Registry.DIMENSION, new Identifier("dimdoors:public_pockets"));
     public static final RegistryKey<World> DUNGEON = RegistryKey.of(Registry.DIMENSION, new Identifier("dimdoors:dungeon_pockets"));
 
-    public static final RegistryKey<DimensionType> LIMBO_TYPE = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier("dimdoors:limbo"));
-    public static final RegistryKey<DimensionType> POCKET_TYPE = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier("dimdoors:personal_pockets"));
+    public static final RegistryKey<DimensionType> LIMBO_TYPE_KEY = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier("dimdoors:limbo"));
+    public static final RegistryKey<DimensionType> POCKET_TYPE_KEY = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier("dimdoors:personal_pockets"));
 
-    public static DimensionType LIMBO_DIMENSION_TYPE = DimensionTypeAccessor.invokeInit(OptionalLong.of(6000), false, false, false, false, 4.0, false, false, true, false, 256, BlockTags.INFINIBURN_OVERWORLD.getId(), DimensionType.THE_END_ID, 0.1F);
-    public static DimensionType POCKET_DIMENSION_TYPE = DimensionTypeAccessor.invokeInit(OptionalLong.empty(), true, false, false, false, 4.0, false, false, true, false, 256, BlockTags.INFINIBURN_OVERWORLD.getId(), DimensionType.THE_END_ID, 0.1F);
+    public static DimensionType LIMBO_TYPE = DimensionTypeAccessor.invokeInit(OptionalLong.of(6000), false, false, false, false, 4.0, false, false, true, false, 256, BlockTags.INFINIBURN_OVERWORLD.getId(), DimensionType.THE_END_ID, 0.1F);
+    public static DimensionType POCKET_TYPE = DimensionTypeAccessor.invokeInit(OptionalLong.empty(), true, false, false, false, 4.0, false, false, true, false, 256, BlockTags.INFINIBURN_OVERWORLD.getId(), DimensionType.THE_END_ID, 0.1F);
 
     public static final ChunkGeneratorSettings LIMBO_CHUNK_GENERATOR_SETTINGS;
 
@@ -60,13 +60,13 @@ public final class ModDimensions {
     }
 
     public static boolean isLimboDimension(World world) {
-        return world.getRegistryKey() == LIMBO || world.getDimension() == LIMBO_DIMENSION_TYPE || world == LIMBO_DIMENSION;
+        return world.getRegistryKey() == LIMBO || world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION;
     }
 
     public static void init() {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            ModDimensions.LIMBO_DIMENSION_TYPE = server.getRegistryManager().getDimensionTypes().get(LIMBO_TYPE);
-            ModDimensions.POCKET_DIMENSION_TYPE = server.getRegistryManager().getDimensionTypes().get(POCKET_TYPE);
+            ModDimensions.LIMBO_TYPE = server.getRegistryManager().getDimensionTypes().get(LIMBO_TYPE_KEY);
+            ModDimensions.POCKET_TYPE = server.getRegistryManager().getDimensionTypes().get(POCKET_TYPE_KEY);
             ModDimensions.LIMBO_DIMENSION = server.getWorld(LIMBO);
             ModDimensions.PERSONAL_POCKET_DIMENSION = server.getWorld(PERSONAL);
             ModDimensions.PUBLIC_POCKET_DIMENSION = server.getWorld(PUBLIC);
@@ -78,7 +78,6 @@ public final class ModDimensions {
     }
 
     static {
-        // TODO: Remove all settings from json dimensions
         StructuresConfig limboStructuresConfig = new StructuresConfig(
                 Optional.of(StructuresConfig.DEFAULT_STRONGHOLD),
                 ImmutableMap.of()
@@ -91,7 +90,7 @@ public final class ModDimensions {
                         80, 120
                 ),
                 new SlideConfig(
-                        -1,
+                        20,
                         3,
                         0
                 ),

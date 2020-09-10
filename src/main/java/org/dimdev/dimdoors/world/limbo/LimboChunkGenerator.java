@@ -91,7 +91,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
     private final OctavePerlinNoiseSampler densityNoise;
     @Nullable
     private final SimplexNoiseSampler islandNoise;
-    private final long worldSeed;
+    public final long worldSeed;
     private final int worldHeight;
 
     private LimboChunkGenerator(BiomeSource biomeSource, BiomeSource biomeSource2) {
@@ -364,7 +364,6 @@ public class LimboChunkGenerator extends ChunkGenerator {
         ChunkPos chunkPos2 = chunk.getPos();
         int k = chunkPos2.getStartX();
         int l = chunkPos2.getStartZ();
-        double d = 0.0625D;
         BlockPos.Mutable mutable = new BlockPos.Mutable();
 
         for (int m = 0; m < 16; ++m) {
@@ -377,35 +376,26 @@ public class LimboChunkGenerator extends ChunkGenerator {
             }
         }
 
-        this.buildBedrock(chunk, chunkRandom);
+        this.buildFluid(chunk, chunkRandom);
     }
 
-    private void buildBedrock(Chunk chunk, Random random) {
+    private void buildFluid(Chunk chunk, Random random) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         int i = chunk.getPos().getStartX();
         int j = chunk.getPos().getStartZ();
         ChunkGeneratorSettings chunkGeneratorSettings = this.settings.get();
         int k = chunkGeneratorSettings.getBedrockFloorY();
-        int l = this.worldHeight - 1 - chunkGeneratorSettings.getBedrockCeilingY();
-        boolean bl = l + 4 >= 0 && l < this.worldHeight;
         boolean bl2 = k + 4 >= 0 && k < this.worldHeight;
-        if (bl || bl2) {
-            Iterator<BlockPos> var12 = BlockPos.iterate(i, 0, j, i + 15, 0, j + 15).iterator();
-
+        if (bl2) {
+            Iterator<BlockPos> iterator = BlockPos.iterate(i, 0, j, i + 15, 0, j + 15).iterator();
             while (true) {
                 BlockPos blockPos;
                 int o;
-                if (!var12.hasNext()) {
+                if (!iterator.hasNext()) {
                     return;
                 }
 
-                blockPos = var12.next();
-                for (o = 0; o < 5; ++o) {
-                    if (o <= random.nextInt(5)) {
-                        chunk.setBlockState(mutable.set(blockPos.getX(), l - o, blockPos.getZ()), ModBlocks.ETERNAL_FLUID.getDefaultState(), false);
-                    }
-                }
-
+                blockPos = iterator.next();
                 for (o = 4; o >= 0; --o) {
                     if (o <= random.nextInt(5)) {
                         chunk.setBlockState(mutable.set(blockPos.getX(), k + o, blockPos.getZ()), ModBlocks.ETERNAL_FLUID.getDefaultState(), false);
@@ -416,8 +406,8 @@ public class LimboChunkGenerator extends ChunkGenerator {
     }
 
     public void populateNoise(WorldAccess world, StructureAccessor accessor, Chunk chunk) {
-        ObjectList<StructurePiece> objectList = new ObjectArrayList<StructurePiece>(10);
-        ObjectList<JigsawJunction> objectList2 = new ObjectArrayList<JigsawJunction>(32);
+        ObjectList<StructurePiece> objectList = new ObjectArrayList<>(10);
+        ObjectList<JigsawJunction> objectList2 = new ObjectArrayList<>(32);
         ChunkPos chunkPos = chunk.getPos();
         int posX = chunkPos.x;
         int posZ = chunkPos.z;
@@ -434,7 +424,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
                             return;
                         }
 
-                        structurePiece = (StructurePiece) var6.next();
+                        structurePiece = var6.next();
                     } while (!structurePiece.intersectsChunk(chunkPos, 12));
 
                     if (structurePiece instanceof PoolStructurePiece) {
