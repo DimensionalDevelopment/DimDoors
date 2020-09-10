@@ -13,7 +13,7 @@ import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class SchematicBlockPallete {
+public class SchematicBlockPalette {
     public static final UnboundedMapCodec<BlockState, Integer> CODEC = Codec.unboundedMap(Entry.CODEC, Codec.INT);
 
     private static <T extends Comparable<T>> void process(Property<T> property, String value, BlockState state) {

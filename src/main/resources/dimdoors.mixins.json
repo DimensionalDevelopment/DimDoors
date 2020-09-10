@@ -9,6 +9,7 @@
     "DefaultBiomeFeaturesMixin",
     "DimensionTypeAccessor",
     "DirectionAccessor",
+    "ListTagAccessor",
     "PlayerEntityMixin"
   ],
   "client": [

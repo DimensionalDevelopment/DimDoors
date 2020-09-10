@@ -47,7 +47,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
     public void onInitialize() {
         ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> {
             server = minecraftServer;
-            if (FabricLoader.getInstance().isDevelopmentEnvironment()){
+            if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
                 try {
                     SchematicTest.test();
                 } catch (IOException e) {

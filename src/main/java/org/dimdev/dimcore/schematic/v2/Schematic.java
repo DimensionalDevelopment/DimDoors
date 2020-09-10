@@ -22,8 +22,8 @@ public class Schematic {
                 Codec.SHORT.fieldOf("Height").forGetter(Schematic::getHeight),
                 Codec.SHORT.fieldOf("Length").forGetter(Schematic::getLength),
                 Vec3i.field_25123.fieldOf("Offset").forGetter(Schematic::getOffset),
-                Codec.INT.fieldOf("PalleteMax").forGetter(Schematic::getPalleteMax),
-                SchematicBlockPallete.CODEC.fieldOf("Palette").forGetter(Schematic::getBlockPallete),
+                Codec.INT.fieldOf("PaletteMax").forGetter(Schematic::getPaletteMax),
+                SchematicBlockPalette.CODEC.fieldOf("Palette").forGetter(Schematic::getBlockPalette),
                 Codec.INT_STREAM.fieldOf("BlockData").forGetter(Schematic::getBlockData),
                 Codec.list(CompoundTag.field_25128).fieldOf("BlockEntities").forGetter(Schematic::getBlockEntities),
                 Codec.list(CompoundTag.field_25128).fieldOf("Entities").forGetter(Schematic::getEntities)
@@ -37,13 +37,13 @@ public class Schematic {
     private final short height;
     private final short length;
     private final Vec3i offset;
-    private final int palleteMax;
-    private final Map<BlockState, Integer> blockPallete;
+    private final int paletteMax;
+    private final Map<BlockState, Integer> blockPalette;
     private final IntStream blockData;
     private final List<CompoundTag> blockEntities;
     private final List<CompoundTag> entities;
 
-    public Schematic(int version, int dataVersion, SchematicMetadata metadata, short width, short height, short length, Vec3i offset, int palleteMax, Map<BlockState, Integer> blockPallete, IntStream blockData, List<CompoundTag> blockEntities, List<CompoundTag> entities) {
+    public Schematic(int version, int dataVersion, SchematicMetadata metadata, short width, short height, short length, Vec3i offset, int paletteMax, Map<BlockState, Integer> blockPalette, IntStream blockData, List<CompoundTag> blockEntities, List<CompoundTag> entities) {
         this.version = version;
         this.dataVersion = dataVersion;
         this.metadata = metadata;
@@ -51,8 +51,8 @@ public class Schematic {
         this.height = height;
         this.length = length;
         this.offset = offset;
-        this.palleteMax = palleteMax;
-        this.blockPallete = blockPallete;
+        this.paletteMax = paletteMax;
+        this.blockPalette = blockPalette;
         this.blockData = blockData;
         this.blockEntities = blockEntities;
         this.entities = entities;
@@ -86,12 +86,12 @@ public class Schematic {
         return this.offset;
     }
 
-    public int getPalleteMax() {
-        return this.palleteMax;
+    public int getPaletteMax() {
+        return this.paletteMax;
     }
 
-    public Map<BlockState, Integer> getBlockPallete() {
-        return this.blockPallete;
+    public Map<BlockState, Integer> getBlockPalette() {
+        return this.blockPalette;
     }
 
     public IntStream getBlockData() {

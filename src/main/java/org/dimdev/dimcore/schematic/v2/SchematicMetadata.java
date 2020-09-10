@@ -7,7 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 @SuppressWarnings("CodeBlock2Expr")
-public class SchematicMetadata {
+public final class SchematicMetadata {
     public static final SchematicMetadata EMPTY = new SchematicMetadata("", "", 0L, ImmutableList.of());
     public static final Codec<SchematicMetadata> CODEC = RecordCodecBuilder.create((instance) -> {
         return instance.group(
@@ -22,7 +22,7 @@ public class SchematicMetadata {
     private final long date;
     private final List<String> requiredMods;
 
-    SchematicMetadata(String name, String author, long date, List<String> requiredMods) {
+    protected SchematicMetadata(String name, String author, long date, List<String> requiredMods) {
         this.name = name;
         this.author = author;
         this.date = date;
