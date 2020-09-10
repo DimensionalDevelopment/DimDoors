@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class DimensionalDoorsInitializer implements ModInitializer {
     public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
@@ -44,15 +45,16 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        try {
-            SchematicTest.test();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (true) {
-            return;
-        }
-        ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> server = minecraftServer);
+        ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> {
+            server = minecraftServer;
+            if (FabricLoader.getInstance().isDevelopmentEnvironment()){
+                try {
+                    SchematicTest.test();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         ModBlocks.init();
         ModItems.init();

@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -23,12 +21,12 @@ public class Schematic {
                 Codec.SHORT.fieldOf("Width").forGetter(Schematic::getWidth),
                 Codec.SHORT.fieldOf("Height").forGetter(Schematic::getHeight),
                 Codec.SHORT.fieldOf("Length").forGetter(Schematic::getLength),
-                Vec3i.field_25123.optionalFieldOf("Offset", Vec3i.ZERO).forGetter(Schematic::getOffset),
+                Vec3i.field_25123.fieldOf("Offset").forGetter(Schematic::getOffset),
                 Codec.INT.fieldOf("PalleteMax").forGetter(Schematic::getPalleteMax),
-                SchematicBlockPallete.CODEC.optionalFieldOf("Palette", ImmutableMap.of()).forGetter(Schematic::getBlockPallete),
+                SchematicBlockPallete.CODEC.fieldOf("Palette").forGetter(Schematic::getBlockPallete),
                 Codec.INT_STREAM.fieldOf("BlockData").forGetter(Schematic::getBlockData),
-                Codec.list(CompoundTag.field_25128).optionalFieldOf("BlockEntities", ImmutableList.of()).forGetter(Schematic::getBlockEntities),
-                Codec.list(CompoundTag.field_25128).optionalFieldOf("Entities", ImmutableList.of()).forGetter(Schematic::getEntities)
+                Codec.list(CompoundTag.field_25128).fieldOf("BlockEntities").forGetter(Schematic::getBlockEntities),
+                Codec.list(CompoundTag.field_25128).fieldOf("Entities").forGetter(Schematic::getEntities)
                 ).apply(instance, Schematic::new);
     });
 
