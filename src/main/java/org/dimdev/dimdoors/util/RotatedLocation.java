@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.annotatednbt.Saved;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
@@ -20,9 +19,7 @@ public class RotatedLocation extends Location {
         ).apply(instance, RotatedLocation::new);
     });
 
-    @Saved
     public final float yaw;
-    @Saved
     public final float pitch;
 
     public RotatedLocation(RegistryKey<World> world, BlockPos pos, float yaw, float pitch) {

@@ -4,8 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.Location;
@@ -43,15 +41,6 @@ public class VirtualLocation {
         this.x = x;
         this.z = z;
         this.depth = depth;
-    }
-
-    public void fromTag(CompoundTag nbt) {
-        AnnotatedNbt.load(this, nbt);
-    }
-
-    public CompoundTag toTag(CompoundTag nbt) {
-        AnnotatedNbt.save(this, nbt);
-        return nbt;
     }
 
     public static VirtualLocation fromLocation(Location location) {

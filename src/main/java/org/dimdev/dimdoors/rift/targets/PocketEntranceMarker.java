@@ -2,14 +2,10 @@ package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
-
 
 public class PocketEntranceMarker extends VirtualTarget implements EntityTarget {
     public static final Codec<PocketEntranceMarker> CODEC = RecordCodecBuilder.create(instance -> {

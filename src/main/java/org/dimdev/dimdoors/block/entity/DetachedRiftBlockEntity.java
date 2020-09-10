@@ -2,8 +2,6 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Random;
 
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.client.RiftCurves;
@@ -22,17 +20,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.lwjgl.system.macosx.LibSystem;
 
-
 public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable {
     private static final Random random = new Random();
 
-    @Saved
     public boolean closing = false;
-    @Saved
     public boolean stabilized = false;
-    @Saved
     public int spawnedEndermanId = 0;
-    @Saved
     public float size = 0;
 
     private boolean unregisterDisabled = false;

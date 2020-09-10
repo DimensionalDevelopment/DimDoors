@@ -4,11 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.gen.surfacebuilder.SurfaceConfig;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.annotatednbt.Saved;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.World;
 
 public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftPointer superclass?
@@ -24,9 +20,7 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
         });
     });
 
-    @Saved
     public RegistryKey<World> pocketDim;
-    @Saved
     public int pocketId;
 
     public PocketEntrancePointer(RegistryKey<World> pocketDim, int pocketId) {

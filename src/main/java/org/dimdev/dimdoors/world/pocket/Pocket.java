@@ -3,22 +3,17 @@ package org.dimdev.dimdoors.world.pocket;
 import com.flowpowered.math.vector.Vector3i;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.MaterialColor;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.util.Codecs;
 import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-
-import java.util.stream.Stream;
 
 public final class Pocket {
     public static final Codec<Pocket> CODEC = RecordCodecBuilder.create(instance -> {
@@ -33,17 +28,11 @@ public final class Pocket {
     });
     private static final int BLOCKS_PAINTED_PER_DYE = 1106;
 
-    @Saved
     public final int id;
-    @Saved
     public BlockBox box;
-    @Saved
     public VirtualLocation virtualLocation;
-    @Saved
     public PocketColor dyeColor = PocketColor.WHITE;
-    @Saved
     public PocketColor nextDyeColor = PocketColor.NONE;
-    @Saved
     public int count = 0;
 
     public RegistryKey<World> world;

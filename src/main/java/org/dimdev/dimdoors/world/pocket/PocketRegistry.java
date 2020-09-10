@@ -6,8 +6,6 @@ import java.util.Map;
 import com.mojang.serialization.Codec;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.util.WorldUtil;
@@ -24,11 +22,11 @@ public class PocketRegistry extends PersistentState {
 
     private static final String DATA_NAME = "pocketlib_pockets";
 
-    @Saved /*package-private*/ int gridSize; // Determines how much pockets in their dimension are spaced
-    @Saved /*package-private*/ int privatePocketSize;
-    @Saved /*package-private*/ int publicPocketSize;
-    @Saved /*package-private*/ Map<Integer, Pocket> pockets;
-    @Saved /*package-private*/ int nextID;
+    /*package-private*/ int gridSize; // Determines how much pockets in their dimension are spaced
+    /*package-private*/ int privatePocketSize;
+    /*package-private*/ int publicPocketSize;
+    /*package-private*/ Map<Integer, Pocket> pockets;
+    /*package-private*/ int nextID;
 
     private ServerWorld world;
 

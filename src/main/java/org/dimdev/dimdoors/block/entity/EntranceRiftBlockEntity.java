@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Random;
 
-import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.RGBA;
 import org.dimdev.dimdoors.util.TeleportUtil;

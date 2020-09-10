@@ -8,8 +8,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import net.minecraft.util.registry.RegistryKey;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.annotatednbt.Saved;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.PersistentState;
@@ -28,9 +26,7 @@ public class PrivatePocketData extends PersistentState {
             ).apply(instance, PocketInfo::new);
         });
 
-        @Saved
         public final RegistryKey<World> world;
-        @Saved
         public final int id;
 
         public PocketInfo(RegistryKey<World> world, int id) {
@@ -43,7 +39,6 @@ public class PrivatePocketData extends PersistentState {
 
     private static final String DATA_NAME = "dimdoors_private_pockets";
 
-    @Saved
     protected BiMap<UUID, PocketInfo> privatePocketMap = HashBiMap.create(); // Player UUID -> Pocket Info TODO: fix AnnotatedNBT and use UUID rather than String
 
     public PrivatePocketData(String name) {

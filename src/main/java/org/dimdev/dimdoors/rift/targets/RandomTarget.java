@@ -11,8 +11,6 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import org.dimdev.annotatednbt.AnnotatedNbt;
-import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -46,21 +44,13 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
         ).apply(instance, RandomTarget::new);
     });
 
-    @Saved
     protected float newRiftWeight;
-    @Saved
     protected double weightMaximum;
-    @Saved
     protected double coordFactor;
-    @Saved
     protected double positiveDepthFactor;
-    @Saved
     protected double negativeDepthFactor;
-    @Saved
     protected Set<Integer> acceptedGroups;
-    @Saved
     protected boolean noLink;
-    @Saved
     protected boolean noLinkBack;
 
     public RandomTarget(float newRiftWeight, double weightMaximum, double coordFactor, double positiveDepthFactor, double negativeDepthFactor, Set<Integer> acceptedGroups, boolean noLink, boolean noLinkBack) {
