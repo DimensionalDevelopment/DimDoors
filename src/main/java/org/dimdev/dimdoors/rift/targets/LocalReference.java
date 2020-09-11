@@ -7,7 +7,7 @@ import org.dimdev.dimdoors.util.Location;
 import net.minecraft.util.math.BlockPos;
 
 public class LocalReference extends RiftReference {
-    public static final Codec<LocalReference> CODEC = BlockPos.field_25064.xmap(LocalReference::new, LocalReference::getTarget).fieldOf("target").codec();
+    public static final Codec<LocalReference> CODEC = BlockPos.CODEC.xmap(LocalReference::new, LocalReference::getTarget).fieldOf("target").codec();
 
     @Saved
     protected BlockPos target;
@@ -18,11 +18,11 @@ public class LocalReference extends RiftReference {
 
     @Override
     public Location getReferencedLocation() {
-        return new Location(location.world, target);
+        return new Location(this.location.world, this.target);
     }
 
     public BlockPos getTarget() {
-        return target;
+        return this.target;
     }
 
     @Override

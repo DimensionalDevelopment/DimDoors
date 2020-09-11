@@ -4,11 +4,14 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.StructureWorldAccess;
 
@@ -113,5 +116,21 @@ public class Schematic {
 
     public static SchematicBlockSample blockSample(Schematic schem, StructureWorldAccess world) {
         return blockSample(schem).withWorld(world);
+    }
+
+    public static Schematic fromTag(CompoundTag tag) {
+        return CODEC.decode(NbtOps.INSTANCE, tag).getOrThrow(false, System.err::println).getFirst();
+    }
+
+    public static CompoundTag toTag(Schematic schem) {
+        return (CompoundTag) CODEC.encodeStart(NbtOps.INSTANCE, schem).getOrThrow(false, System.err::println);
+    }
+
+    public static Schematic fromJson(JsonObject json) {
+        return CODEC.decode(JsonOps.INSTANCE, json).getOrThrow(false, System.err::println).getFirst();
+    }
+
+    public static JsonObject toJson(Schematic schem) {
+        return (JsonObject) CODEC.encodeStart(JsonOps.INSTANCE, schem).getOrThrow(false, System.err::println);
     }
 }

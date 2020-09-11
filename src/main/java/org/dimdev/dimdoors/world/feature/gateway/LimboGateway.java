@@ -24,7 +24,7 @@ public class LimboGateway extends BaseGateway {
         world.setBlockState(new BlockPos(x, y + 1, z - 1), unravelledFabric, 2);
         world.setBlockState(new BlockPos(x, y + 1, z + 1), unravelledFabric, 2);
 
-        placePortal(world, new BlockPos(x, y + 1, z), Direction.NORTH);
+        this.placePortal(world, new BlockPos(x, y + 1, z), Direction.NORTH);
     }
 
     private void placePortal(StructureWorldAccess world, BlockPos pos, Direction facing) {

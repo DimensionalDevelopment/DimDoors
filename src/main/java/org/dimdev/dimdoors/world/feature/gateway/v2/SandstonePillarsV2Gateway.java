@@ -1,16 +1,15 @@
-package org.dimdev.dimdoors.world.feature.gateway;
+package org.dimdev.dimdoors.world.feature.gateway.v2;
 
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
-public class SandstonePillarsGateway extends SchematicGateway {
-    public SandstonePillarsGateway() {
+public class SandstonePillarsV2Gateway extends SchematicV2Gateway {
+    public SandstonePillarsV2Gateway() {
         super("sandstone_pillars");
     }
 

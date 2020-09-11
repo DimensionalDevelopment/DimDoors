@@ -38,22 +38,22 @@ public class RiftBladeItem extends SwordItem {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
-        HitResult hit = player.rayTrace(16, 1.0F, false); //TODO: make the range of the Rift Blade configurable
+        HitResult hit = player.raycast(16, 1.0F, false); //TODO: make the range of the Rift Blade configurable
         if (hit == null) {
-            hit = player.rayTrace(RayTraceHelper.REACH_DISTANCE, 0, false);
+            hit = player.raycast(RaycastHelper.REACH_DISTANCE, 0, false);
         }
 
         if (world.isClient) {
-            if (RayTraceHelper.hitsLivingEntity(hit) || RayTraceHelper.hitsRift(hit, world)) {
+            if (RaycastHelper.hitsLivingEntity(hit) || RaycastHelper.hitsRift(hit, world)) {
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {
-                player.sendMessage(new TranslatableText(getTranslationKey() + ".rift_miss"), true);
+                player.sendMessage(new TranslatableText(this.getTranslationKey() + ".rift_miss"), true);
                 DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
                 return new TypedActionResult<>(ActionResult.FAIL, stack);
             }
         }
 
-        if (RayTraceHelper.hitsLivingEntity(hit)) {
+        if (RaycastHelper.hitsLivingEntity(hit)) {
             double damageMultiplier = (double) stack.getDamage() / (double) stack.getMaxDamage();
             // TODO: gaussian, instead or random
             double offsetDistance = Math.random() * damageMultiplier * 7 + 2; //TODO: make these offset distances configurable
@@ -73,7 +73,7 @@ public class RiftBladeItem extends SwordItem {
             stack.damage(1, player, a -> {
             });
             return new TypedActionResult<>(ActionResult.SUCCESS, stack);
-        } else if (RayTraceHelper.hitsRift(hit, world)) {
+        } else if (RaycastHelper.hitsRift(hit, world)) {
             RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
             rift.teleport(player);
 

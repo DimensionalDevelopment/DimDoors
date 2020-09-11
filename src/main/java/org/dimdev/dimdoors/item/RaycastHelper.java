@@ -9,7 +9,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.BlockView;
 
-public final class RayTraceHelper {
+public final class RaycastHelper {
     public static final int REACH_DISTANCE = 5;
 
     public static boolean hitsDetachedRift(HitResult hit, BlockView world) {

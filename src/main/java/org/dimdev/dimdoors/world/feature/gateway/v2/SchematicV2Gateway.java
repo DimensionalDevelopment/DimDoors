@@ -1,35 +1,36 @@
-package org.dimdev.dimdoors.world.feature.gateway;
+package org.dimdev.dimdoors.world.feature.gateway.v2;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimcore.schematic.Schematic;
+import org.dimdev.dimcore.schematic.v2.Schematic;
+import org.dimdev.dimcore.schematic.v2.SchematicPlacer;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.world.feature.gateway.BaseGateway;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 
-public abstract class SchematicGateway extends BaseGateway {
+public class SchematicV2Gateway extends BaseGateway {
     private static final Logger LOGGER = LogManager.getLogger();
     private Schematic schematic;
-    public static final BiMap<SchematicGateway, String> SCHEMATIC_ID_MAP = HashBiMap.create();
-    public static final BiMap<String, SchematicGateway> ID_SCHEMATIC_MAP = HashBiMap.create();
+    public static final BiMap<SchematicV2Gateway, String> SCHEMATIC_ID_MAP = HashBiMap.create();
+    public static final BiMap<String, SchematicV2Gateway> ID_SCHEMATIC_MAP = HashBiMap.create();
 
-    public SchematicGateway(String id) {
-        String schematicJarDirectory = "/data/dimdoors/gateways/";
+    public SchematicV2Gateway(String id) {
+        String schematicJarDirectory = "/data/dimdoors/gateways/v2/";
         SCHEMATIC_ID_MAP.putIfAbsent(this, id);
         ID_SCHEMATIC_MAP.putIfAbsent(id, this);
 
-        //Initialising the possible locations/formats for the schematic file
         InputStream schematicStream = DimensionalDoorsInitializer.class.getResourceAsStream(schematicJarDirectory + id + ".schem");
 
-        //determine which location to load the schematic file from (and what format)
         DataInputStream schematicDataStream = null;
         boolean streamOpened = false;
         if (schematicStream != null) {
@@ -39,13 +40,12 @@ public abstract class SchematicGateway extends BaseGateway {
             LOGGER.warn("Schematic '" + id + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
         }
 
-        CompoundTag schematicNBT;
+        CompoundTag tag;
         this.schematic = null;
         if (streamOpened) {
             try {
-                schematicNBT = NbtIo.readCompressed(schematicDataStream);
-                this.schematic = Schematic.fromTag(schematicNBT);
-                //PocketTemplate.replacePlaceholders(schematic);
+                tag = NbtIo.readCompressed(schematicDataStream);
+                this.schematic = Schematic.fromTag(tag);
                 schematicDataStream.close();
             } catch (IOException ex) {
                 LOGGER.error("Schematic file for " + id + " could not be read as a valid schematic NBT file.", ex);
@@ -61,8 +61,11 @@ public abstract class SchematicGateway extends BaseGateway {
 
     @Override
     public void generate(StructureWorldAccess world, int x, int y, int z) {
-        this.schematic.place(world, x, y, z);
-        this.generateRandomBits(world, x, y, z);
+        SchematicPlacer.place(this.schematic, world, new BlockPos(x, y, z));
+    }
+
+    public void generate(StructureWorldAccess world, BlockPos pos) {
+        SchematicPlacer.place(this.schematic, world, pos);
     }
 
     /**

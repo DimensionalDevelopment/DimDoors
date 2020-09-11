@@ -14,7 +14,7 @@ public class RotatedLocation extends Location {
     static Codec<RotatedLocation> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
                 World.CODEC.fieldOf("world").forGetter(location -> location.world),
-                BlockPos.field_25064.fieldOf("pos").forGetter(location -> location.pos),
+                BlockPos.CODEC.fieldOf("pos").forGetter(location -> location.pos),
                 Codec.FLOAT.fieldOf("yaw").forGetter(a -> a.yaw),
                 Codec.FLOAT.fieldOf("pitch").forGetter(a -> a.pitch)
         ).apply(instance, RotatedLocation::new);

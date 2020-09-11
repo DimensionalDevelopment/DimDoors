@@ -34,17 +34,17 @@ public class RiftConfigurationToolItem extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
-        HitResult hit = player.rayTrace(RayTraceHelper.REACH_DISTANCE, 0, false);
+        HitResult hit = player.raycast(RaycastHelper.REACH_DISTANCE, 0, false);
 
         if (world.isClient) {
-            if (!RayTraceHelper.hitsRift(hit, world)) {
+            if (!RaycastHelper.hitsRift(hit, world)) {
                 player.sendMessage(new TranslatableText("tools.rift_miss"), true);
                 DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
             }
             return new TypedActionResult<>(ActionResult.FAIL, stack);
         }
 
-        if (RayTraceHelper.hitsRift(hit, world)) {
+        if (RaycastHelper.hitsRift(hit, world)) {
             RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
 
             System.out.println(rift);

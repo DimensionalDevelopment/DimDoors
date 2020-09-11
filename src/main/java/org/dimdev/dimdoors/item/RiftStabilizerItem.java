@@ -34,10 +34,10 @@ public class RiftStabilizerItem extends Item {
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
-        HitResult hit = player.rayTrace(RayTraceHelper.REACH_DISTANCE, 0, false);
+        HitResult hit = player.raycast(RaycastHelper.REACH_DISTANCE, 0, false);
 
         if (world.isClient) {
-            if (RayTraceHelper.hitsDetachedRift(hit, world)) {
+            if (RaycastHelper.hitsDetachedRift(hit, world)) {
                 // TODO: not necessarily success, fix this and all other similar cases to make arm swing correct
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {
@@ -47,7 +47,7 @@ public class RiftStabilizerItem extends Item {
             }
         }
 
-        if (RayTraceHelper.hitsDetachedRift(hit, world)) {
+        if (RaycastHelper.hitsDetachedRift(hit, world)) {
             DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
             if (!rift.stabilized && !rift.closing) {
                 rift.setStabilized(true);

@@ -15,7 +15,7 @@ public class SchematicGatewayFeatureConfig implements FeatureConfig {
     private final String gatewayId;
 
     public SchematicGateway getGateway() {
-        return gateway;
+        return this.gateway;
     }
 
     public SchematicGatewayFeatureConfig(String gatewayId) {

@@ -16,7 +16,7 @@ public class Location {
     public static final Codec<Location> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(World.CODEC.fieldOf("world").forGetter(location -> {
             return location.world;
-        }), BlockPos.field_25064.fieldOf("pos").forGetter(location -> {
+        }), BlockPos.CODEC.fieldOf("pos").forGetter(location -> {
             return location.pos;
         })).apply(instance, Location::new);
     });

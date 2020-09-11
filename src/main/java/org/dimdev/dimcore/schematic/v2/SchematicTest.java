@@ -1,6 +1,7 @@
 package org.dimdev.dimcore.schematic.v2;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.IntStream;
@@ -36,12 +37,12 @@ public class SchematicTest {
         e.setPos(1, 1, 1);
         CompoundTag eTag = new CompoundTag();
         e.saveSelfToTag(eTag);
-        Schematic schematic = new Schematic(2, 2543, meta, (short) 5, (short) 5, (short) 5, Vec3i.ZERO, -1, ImmutableBiMap.of(Blocks.AIR.getDefaultState(), 0, Blocks.NETHERRACK.getDefaultState(), 1), IntStream.of(1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0), ImmutableList.of(beTag), ImmutableList.of(eTag));
+        Schematic schematic = new Schematic(2, 2543, meta, (short) 5, (short) 5, (short) 5, Vec3i.ZERO, -1, ImmutableBiMap.of(Blocks.AIR.getDefaultState(), 0, Blocks.NETHERRACK.getDefaultState(), 1), ByteBuffer.wrap(new byte[]{1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0}), ImmutableList.of(beTag), ImmutableList.of(eTag));
         DataResult<Tag> result = Schematic.CODEC.encodeStart(NbtOps.INSTANCE, schematic);
         Path path = FabricLoader.getInstance().getConfigDir().resolve("schematic.schem");
         if (!Files.exists(path)) {
             Files.createFile(path);
         }
-        NbtIo.method_30614((CompoundTag) result.getOrThrow(false, System.err::println), path.toFile());
+        NbtIo.writeCompressed((CompoundTag) result.getOrThrow(false, System.err::println), path.toFile());
     }
 }
