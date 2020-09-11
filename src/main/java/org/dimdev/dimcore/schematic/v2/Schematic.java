@@ -1,5 +1,6 @@
 package org.dimdev.dimcore.schematic.v2;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -10,6 +11,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.StructureWorldAccess;
 
 @SuppressWarnings("CodeBlock2Expr")
 public class Schematic {
@@ -24,9 +26,9 @@ public class Schematic {
                 Vec3i.field_25123.fieldOf("Offset").forGetter(Schematic::getOffset),
                 Codec.INT.fieldOf("PaletteMax").forGetter(Schematic::getPaletteMax),
                 SchematicBlockPalette.CODEC.fieldOf("Palette").forGetter(Schematic::getBlockPalette),
-                Codec.INT_STREAM.fieldOf("BlockData").forGetter(Schematic::getBlockData),
-                Codec.list(CompoundTag.field_25128).fieldOf("BlockEntities").forGetter(Schematic::getBlockEntities),
-                Codec.list(CompoundTag.field_25128).fieldOf("Entities").forGetter(Schematic::getEntities)
+                Codec.BYTE_BUFFER.fieldOf("BlockData").forGetter(Schematic::getBlockData),
+                Codec.list(CompoundTag.CODEC).fieldOf("BlockEntities").forGetter(Schematic::getBlockEntities),
+                Codec.list(CompoundTag.CODEC).fieldOf("Entities").forGetter(Schematic::getEntities)
                 ).apply(instance, Schematic::new);
     });
 
@@ -39,11 +41,11 @@ public class Schematic {
     private final Vec3i offset;
     private final int paletteMax;
     private final Map<BlockState, Integer> blockPalette;
-    private final IntStream blockData;
+    private final ByteBuffer blockData;
     private final List<CompoundTag> blockEntities;
     private final List<CompoundTag> entities;
 
-    public Schematic(int version, int dataVersion, SchematicMetadata metadata, short width, short height, short length, Vec3i offset, int paletteMax, Map<BlockState, Integer> blockPalette, IntStream blockData, List<CompoundTag> blockEntities, List<CompoundTag> entities) {
+    public Schematic(int version, int dataVersion, SchematicMetadata metadata, short width, short height, short length, Vec3i offset, int paletteMax, Map<BlockState, Integer> blockPalette, ByteBuffer blockData, List<CompoundTag> blockEntities, List<CompoundTag> entities) {
         this.version = version;
         this.dataVersion = dataVersion;
         this.metadata = metadata;
@@ -94,7 +96,7 @@ public class Schematic {
         return this.blockPalette;
     }
 
-    public IntStream getBlockData() {
+    public ByteBuffer getBlockData() {
         return this.blockData;
     }
 
@@ -104,5 +106,13 @@ public class Schematic {
 
     public List<CompoundTag> getEntities() {
         return this.entities;
+    }
+
+    public static SchematicBlockSample blockSample(Schematic schem) {
+        return new SchematicBlockSample(schem);
+    }
+
+    public static SchematicBlockSample blockSample(Schematic schem, StructureWorldAccess world) {
+        return blockSample(schem).withWorld(world);
     }
 }

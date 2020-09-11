@@ -42,16 +42,15 @@ public final class SchematicPlacer {
         int originY = origin.getY();
         int originZ = origin.getZ();
         int[][][] blockData = SchematicPlacer.getBlockData(schematic, width, height, length);
-        SchematicBlockSample blockSample = new SchematicBlockSample(schematic, world);
+        SchematicBlockSample blockSample = Schematic.blockSample(schematic, world);
         BiMap<BlockState, Integer> palette = ImmutableBiMap.copyOf(schematic.getBlockPalette());
-//        SchematicPlacer.placeBlocks(width, height, length, originX, originY, originZ, blockData);
         blockSample.place(origin);
         SchematicPlacer.placeEntities(originX, originY, originZ, schematic, world);
         SchematicPlacer.placeBlockEntities(originX, originY, originZ, schematic, blockSample);
     }
 
     static int[][][] getBlockData(Schematic schematic, int width, int height, int length) {
-        int[] blockDataIntArray = schematic.getBlockData().toArray();
+        byte[] blockDataIntArray = schematic.getBlockData().array();
         int[][][] blockData = new int[width][height][length];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -103,7 +102,7 @@ public final class SchematicPlacer {
             BlockEntity blockEntity = blockSample.getBlockEntity(pos);
             // TODO: fail with an exception
             if (blockEntity != null) {
-                blockEntity.fromTag(blockSample.getBlockState(pos), tag);
+                blockEntity.fromTag(blockSample.getWorld().getBlockState(pos), tag);
                 blockSample.getWorld().getChunk(pos).setBlockEntity(pos, blockEntity);
             }
         }

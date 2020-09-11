@@ -22,11 +22,10 @@ public class SchematicBlockSample implements BlockView {
     private final int[][][] blockData;
     private final BiMap<BlockState, Integer> palette;
     private final Map<BlockPos, BlockState> container;
-    private final StructureWorldAccess world;
+    private StructureWorldAccess world;
 
-    public SchematicBlockSample(Schematic schematic, StructureWorldAccess world) {
+    public SchematicBlockSample(Schematic schematic) {
         this.schematic = schematic;
-        this.world = world;
         this.blockData = SchematicPlacer.getBlockData(schematic, schematic.getWidth(), schematic.getHeight(), schematic.getLength());
         this.palette = ImmutableBiMap.copyOf(schematic.getBlockPalette());
         this.container = Maps.newHashMap();
@@ -66,6 +65,9 @@ public class SchematicBlockSample implements BlockView {
     }
 
     public void place(BlockPos origin) {
+        if (this.world == null) {
+            throw new UnsupportedOperationException("Can not place in a null world!");
+        }
         for (Map.Entry<BlockPos, BlockState> entry : this.container.entrySet()) {
             BlockPos pos = entry.getKey();
             BlockState state = entry.getValue();
@@ -90,5 +92,10 @@ public class SchematicBlockSample implements BlockView {
 
     public StructureWorldAccess getWorld() {
         return this.world;
+    }
+
+    public SchematicBlockSample withWorld(StructureWorldAccess world) {
+        this.world = world;
+        return this;
     }
 }
