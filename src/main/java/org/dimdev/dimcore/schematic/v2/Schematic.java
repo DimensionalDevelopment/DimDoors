@@ -3,7 +3,6 @@ package org.dimdev.dimcore.schematic.v2;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
