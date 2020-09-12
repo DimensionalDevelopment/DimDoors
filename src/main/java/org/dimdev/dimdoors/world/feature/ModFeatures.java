@@ -20,7 +20,7 @@ import net.minecraft.world.gen.feature.Feature;
 
 public final class ModFeatures {
     public static final Feature<SchematicGatewayFeatureConfig> GATEWAY_FEATURE = Registry.register(Registry.FEATURE, new Identifier("dimdoors", "gateway"), new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
-    public static final Feature<SchematicV2GatewayFeatureConfig> GATEWAY_FEATURE_V2 = Registry.register(Registry.FEATURE, new Identifier("dimdoors", "gateway"), new SchematicV2GatewayFeature(SchematicV2GatewayFeatureConfig.CODEC));
+    public static final Feature<SchematicV2GatewayFeatureConfig> GATEWAY_FEATURE_V2 = Registry.register(Registry.FEATURE, new Identifier("dimdoors", "gateway_v2"), new SchematicV2GatewayFeature(SchematicV2GatewayFeatureConfig.CODEC));
     public static final SchematicGateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsGateway();
     public static final SchematicGateway TWO_PILLARS_GATEWAY = new TwoPillarsGateway();
     public static final SchematicV2Gateway SANDSTONE_PILLARS_GATEWAY_V2 = new SandstonePillarsV2Gateway();
@@ -35,7 +35,7 @@ public final class ModFeatures {
     }
 
     static {
-        SANDSTONE_PILLARS_FEATURE_V2 = GATEWAY_FEATURE_V2.configure(new SchematicV2GatewayFeatureConfig(SchematicGateway.SCHEMATIC_ID_MAP.get(SANDSTONE_PILLARS_GATEWAY)))
+        SANDSTONE_PILLARS_FEATURE_V2 = GATEWAY_FEATURE_V2.configure(new SchematicV2GatewayFeatureConfig(SchematicV2Gateway.SCHEMATIC_ID_MAP.get(SANDSTONE_PILLARS_GATEWAY_V2)))
                 .decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP
                         .applyChance(ModConfig.WORLD.gatewayGenChance));
         SANDSTONE_PILLARS_FEATURE = GATEWAY_FEATURE.configure(new SchematicGatewayFeatureConfig(SchematicGateway.SCHEMATIC_ID_MAP.get(SANDSTONE_PILLARS_GATEWAY)))

@@ -23,7 +23,7 @@ public class SchematicBlockPalette {
     public interface Entry {
         Codec<BlockState> CODEC = Codec.STRING.comapFlatMap(Entry::to, Entry::from);
 
-        static <T extends Comparable<T>> DataResult<BlockState> to(String string) {
+        static DataResult<BlockState> to(String string) {
             if (!string.contains("[") && !string.contains("]")) {
                 BlockState state =  Registry.BLOCK.get(new Identifier(string)).getDefaultState();
                 return DataResult.success(state);
