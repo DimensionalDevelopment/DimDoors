@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
+import net.minecraft.nbt.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.mixin.ListTagAccessor;
@@ -16,11 +17,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 
@@ -132,9 +128,9 @@ public final class SchematicPlacer {
                     (byte) 6
             ));
         } else if (tag.contains("Pos") && !tag.contains("x") && !tag.contains("y") && !tag.contains("z")) {
-            tag.put("x", DoubleTag.of(((ListTag) Objects.requireNonNull(tag.get("Pos"))).getDouble(0)));
-            tag.put("y", DoubleTag.of(((ListTag) Objects.requireNonNull(tag.get("Pos"))).getDouble(1)));
-            tag.put("z", DoubleTag.of(((ListTag) Objects.requireNonNull(tag.get("Pos"))).getDouble(2)));
+            tag.put("x", ((IntArrayTag) Objects.requireNonNull(tag.get("Pos"))).get(0));
+            tag.put("y", ((IntArrayTag) Objects.requireNonNull(tag.get("Pos"))).get(1));
+            tag.put("z", ((IntArrayTag) Objects.requireNonNull(tag.get("Pos"))).get(2));
         }
         return !tag.contains("Pos") || !(tag.contains("x") && tag.contains("y") && tag.contains("z"));
     }

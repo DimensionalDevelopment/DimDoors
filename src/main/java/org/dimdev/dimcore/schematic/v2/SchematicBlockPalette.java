@@ -7,6 +7,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.world.block.BaseBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.property.Property;
@@ -16,8 +18,8 @@ import net.minecraft.util.registry.Registry;
 public class SchematicBlockPalette {
     public static final UnboundedMapCodec<BlockState, Integer> CODEC = Codec.unboundedMap(Entry.CODEC, Codec.INT);
 
-    private static <T extends Comparable<T>> void process(Property<T> property, String value, BlockState state) {
-        state.with(property, property.parse(value).orElseThrow(NullPointerException::new));
+    private static <T extends Comparable<T>> BlockState process(Property<T> property, String value, BlockState state) {
+        return state.with(property, property.parse(value).orElseThrow(NullPointerException::new));
     }
 
     public interface Entry {
@@ -30,11 +32,17 @@ public class SchematicBlockPalette {
             } else {
                 Block block = Objects.requireNonNull(Registry.BLOCK.get(new Identifier(string.substring(0, string.indexOf("[")))));
                 BlockState state = block.getDefaultState();
+
+                System.out.println(state);
+
                 String[] stateArray = string.substring(string.indexOf("[") + 1, string.length() - 1).split(",");
                 for (String stateString : stateArray) {
                     Property<?> property = Objects.requireNonNull(block.getStateManager().getProperty(stateString.split("=")[0]));
-                    process(property,stateString.split("=")[1], state);
+                    state = process(property,stateString.split("=")[1], state);
                 }
+
+                System.out.println(state);
+
                 return DataResult.success(state);
             }
         }

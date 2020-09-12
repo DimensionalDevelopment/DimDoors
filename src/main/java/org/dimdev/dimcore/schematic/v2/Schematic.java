@@ -4,11 +4,13 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -20,7 +22,7 @@ public class Schematic {
     public static final Codec<Schematic> CODEC = RecordCodecBuilder.create((instance) -> {
         return instance.group(
                 Codec.INT.fieldOf("Version").forGetter(Schematic::getVersion),
-                Codec.INT.fieldOf("Data Version").forGetter(Schematic::getDataVersion),
+                Codec.INT.optionalFieldOf("Data Version", SharedConstants.getGameVersion().getWorldVersion()).forGetter(Schematic::getDataVersion),
                 SchematicMetadata.CODEC.optionalFieldOf("Metadata", SchematicMetadata.EMPTY).forGetter(Schematic::getMetadata),
                 Codec.SHORT.fieldOf("Width").forGetter(Schematic::getWidth),
                 Codec.SHORT.fieldOf("Height").forGetter(Schematic::getHeight),
@@ -29,8 +31,8 @@ public class Schematic {
                 Codec.INT.fieldOf("PaletteMax").forGetter(Schematic::getPaletteMax),
                 SchematicBlockPalette.CODEC.fieldOf("Palette").forGetter(Schematic::getBlockPalette),
                 Codec.BYTE_BUFFER.fieldOf("BlockData").forGetter(Schematic::getBlockData),
-                Codec.list(CompoundTag.CODEC).fieldOf("BlockEntities").forGetter(Schematic::getBlockEntities),
-                Codec.list(CompoundTag.CODEC).fieldOf("Entities").forGetter(Schematic::getEntities)
+                Codec.list(CompoundTag.CODEC).optionalFieldOf("BlockEntities", ImmutableList.of()).forGetter(Schematic::getBlockEntities),
+                Codec.list(CompoundTag.CODEC).optionalFieldOf("Entities", ImmutableList.of()).forGetter(Schematic::getEntities)
                 ).apply(instance, Schematic::new);
     });
 
