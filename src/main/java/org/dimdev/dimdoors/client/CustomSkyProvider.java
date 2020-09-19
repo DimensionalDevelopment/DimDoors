@@ -43,7 +43,7 @@ public class CustomSkyProvider implements SkyRenderer {
         Matrix4f matrix4f2 = matrices.peek().getModel();
 
         float s = 30.0F;
-        client.getTextureManager().bindTexture(sun);
+        client.getTextureManager().bindTexture(this.sun);
         bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE);
         bufferBuilder.vertex(matrix4f2, -s, 100.0F, -s).texture(0.0F, 0.0F).next();
         bufferBuilder.vertex(matrix4f2, s, 100.0F, -s).texture(1.0F, 0.0F).next();
@@ -52,7 +52,7 @@ public class CustomSkyProvider implements SkyRenderer {
         bufferBuilder.end();
         BufferRenderer.draw(bufferBuilder);
 
-        client.getTextureManager().bindTexture(moon);
+        client.getTextureManager().bindTexture(this.moon);
         bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE);
         bufferBuilder.vertex(matrix4f2, -s, -100.0F, s).texture(0f, 0f).next();
         bufferBuilder.vertex(matrix4f2, s, -100.0F, s).texture(1f, 0f).next();
@@ -68,7 +68,7 @@ public class CustomSkyProvider implements SkyRenderer {
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
 
-        renderSkyBox(matrices);
+        this.renderSkyBox(matrices);
     }
 
     private void renderSkyBox(MatrixStack matrices) {
@@ -103,10 +103,10 @@ public class CustomSkyProvider implements SkyRenderer {
 
             Matrix4f matrix4f = matrices.peek().getModel();
             bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
-            bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, -100.0F).color(color.getX(), color.getY(), color.getZ(), 255).next();
-            bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, 100.0F).color(color.getX(), color.getY(), color.getZ(), 255).next();
-            bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, 100.0F).color(color.getX(), color.getY(), color.getZ(), 255).next();
-            bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, -100.0F).color(color.getX(), color.getY(), color.getZ(), 255).next();
+            bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, -100.0F).color(this.color.getX(), this.color.getY(), this.color.getZ(), 255).next();
+            bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, 100.0F).color(this.color.getX(), this.color.getY(), this.color.getZ(), 255).next();
+            bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, 100.0F).color(this.color.getX(), this.color.getY(), this.color.getZ(), 255).next();
+            bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, -100.0F).color(this.color.getX(), this.color.getY(), this.color.getZ(), 255).next();
             tessellator.draw();
             matrices.pop();
         }

@@ -42,6 +42,7 @@ public final class ModDimensions {
 
     public static final ChunkGeneratorSettings LIMBO_CHUNK_GENERATOR_SETTINGS;
 
+    // TODO: move pocket dimension generation settings to code
     public static final BiomeSource PERSONAL_BIOME_SOURCE = new FixedBiomeSource(() -> ModBiomes.PERSONAL_WHITE_VOID_BIOME);
     public static final BiomeSource PUBLIC_BIOME_SOURCE = new FixedBiomeSource(() -> ModBiomes.PUBLIC_BLACK_VOID_BIOME);
     public static final BiomeSource DUNGEON_BIOME_SOURCE = new FixedBiomeSource(() -> ModBiomes.DUNGEON_DANGEROUS_BLACK_VOID_BIOME);
@@ -83,29 +84,31 @@ public final class ModDimensions {
                 ImmutableMap.of()
         );
         GenerationShapeConfig limboShapeConfig = new GenerationShapeConfig(
-                128,
+                178,
                 new NoiseSamplingConfig(
-                        0.94213419649817745,
-                        1.102539814507745,
-                        80, 120
+                        1.000009876543,
+                        2.9999876545678,
+                        60,
+                        240
                 ),
                 new SlideConfig(
-                        20,
+                        -10,
                         3,
                         0
                 ),
                 new SlideConfig(
-                        60,
-                        2,
-                        2
-                ), 2,
+                        -30,
+                        0,
+                        0
+                ),
+                1,
                 4,
                 1,
-                -0.16875,
+                -0.26875,
+                false,
                 true,
-                true,
-                true,
-                true
+                false,
+                false
         );
         LIMBO_CHUNK_GENERATOR_SETTINGS = ChunkGeneratorSettingsAccessor.invokeInit(
                 limboStructuresConfig,

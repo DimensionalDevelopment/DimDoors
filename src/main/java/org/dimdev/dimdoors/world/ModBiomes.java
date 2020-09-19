@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.world;
 
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.mixin.BuiltinBiomesAccessor;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 import net.minecraft.block.Blocks;
@@ -33,6 +34,10 @@ public final class ModBiomes {
         Registry.register(BuiltinRegistries.BIOME, PERSONAL_WHITE_VOID_KEY.getValue(), PERSONAL_WHITE_VOID_BIOME);
         Registry.register(BuiltinRegistries.BIOME, PUBLIC_BLACK_VOID_KEY.getValue(), PUBLIC_BLACK_VOID_BIOME);
         Registry.register(BuiltinRegistries.BIOME, DUNGEON_DANGEROUS_BLACK_VOID_KEY.getValue(), DUNGEON_DANGEROUS_BLACK_VOID_BIOME);
+        BuiltinBiomesAccessor.getIdMap().put(BuiltinRegistries.BIOME.getRawId(LIMBO_BIOME), LIMBO_KEY);
+        BuiltinBiomesAccessor.getIdMap().put(BuiltinRegistries.BIOME.getRawId(PERSONAL_WHITE_VOID_BIOME), PERSONAL_WHITE_VOID_KEY);
+        BuiltinBiomesAccessor.getIdMap().put(BuiltinRegistries.BIOME.getRawId(PUBLIC_BLACK_VOID_BIOME), PUBLIC_BLACK_VOID_KEY);
+        BuiltinBiomesAccessor.getIdMap().put(BuiltinRegistries.BIOME.getRawId(DUNGEON_DANGEROUS_BLACK_VOID_BIOME), DUNGEON_DANGEROUS_BLACK_VOID_KEY);
     }
 
     private static BiomeEffects createEffect(boolean white) {
@@ -40,7 +45,7 @@ public final class ModBiomes {
                 .waterColor(white ? 0xFFFFFF : 0x000000)
                 .waterFogColor(white ? 0xFFFFFF : 0x000000)
                 .fogColor(white ? 0xFFFFFF : 0x000000)
-                .skyColor(white ? 0xFFFFFF : 0x808080)
+                .skyColor(white ? 0xFFFFFF : 0x000000)
                 .grassColorModifier(BiomeEffects.GrassColorModifier.NONE);
         if (white) {
             builder.loopSound(ModSoundEvents.WHITE_VOID);
