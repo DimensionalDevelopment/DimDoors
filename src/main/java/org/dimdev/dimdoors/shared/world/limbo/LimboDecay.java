@@ -56,7 +56,8 @@ public final class LimboDecay {
                     RIFT,
                     GOLD_DOOR,
                     QUARTZ_DOOR,
-                    GOLD_DIMENSIONAL_DOOR
+                    GOLD_DIMENSIONAL_DOOR,
+                    BLOCK_SOLID_STATIC
             };
         }
 

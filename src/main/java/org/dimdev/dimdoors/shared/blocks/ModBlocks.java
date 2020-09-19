@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.shared.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -25,10 +26,13 @@ public final class ModBlocks {
     public static final BlockFabricUnravelled UNRAVELLED_FABRIC = new BlockFabricUnravelled();
     public static final BlockFloatingRift RIFT = new BlockFloatingRift();
     public static final BlockMarkingPlate MARKING_PLATE = new BlockMarkingPlate();
+    public static final BlockSolidStatic BLOCK_SOLID_STATIC = new BlockSolidStatic(Material.IRON);
+
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll(
+                BLOCK_SOLID_STATIC,
                 GOLD_DOOR,
                 QUARTZ_DOOR,
                 IRON_DIMENSIONAL_DOOR,

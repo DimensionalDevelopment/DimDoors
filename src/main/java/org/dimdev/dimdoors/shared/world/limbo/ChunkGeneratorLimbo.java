@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.shared.world.limbo;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ChunkProviderClient;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -7,6 +9,7 @@ import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
+import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
@@ -36,6 +39,7 @@ public class ChunkGeneratorLimbo implements IChunkGenerator {
     private Biome[] biomesForGeneration = {ModBiomes.LIMBO};
 
     double[] depthRegion;
+    private LimboOreGen limboOreGen;
 
     public ChunkGeneratorLimbo(World world, long seed) {
         this.world = world;
@@ -44,7 +48,6 @@ public class ChunkGeneratorLimbo implements IChunkGenerator {
         maxLimitPerlinNoise = new NoiseGeneratorOctaves(rand, 16); //hillyness
         mainPerlinNoise = new NoiseGeneratorOctaves(rand, 80);  //seems to adjust the size of features, how stretched things are -default 8
         depthNoise = new NoiseGeneratorOctaves(rand, 16);
-
         this.world = world;
     }
 
@@ -55,10 +58,6 @@ public class ChunkGeneratorLimbo implements IChunkGenerator {
         setBlocksInChunk(x, z, primer);
         Chunk chunk = new Chunk(world, primer, x, z);
         chunk.generateSkylightMap();
-
-        if (!chunk.isTerrainPopulated()) {
-            chunk.setTerrainPopulated(true);
-        }
 
         return chunk;
     }

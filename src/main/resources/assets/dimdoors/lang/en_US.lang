@@ -51,7 +51,9 @@ tile.ancient_fabric.red.name=Red Altered Ancient Fabric
 
 tile.eternal_fabric.name=Eternal Fabric
 tile.unravelled_fabric.name=Unraveled Fabric
+tile.solid_static.name=Solid Static
 tile.rift.name=Rift Scar
+tile.marking_plate.name=Marking Plate
 
 item.gold_door.name=Gold Door
 item.quartz_door.name=Quartz Door
