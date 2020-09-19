@@ -45,7 +45,6 @@ public class LimboOreGen implements IWorldGenerator {
     }
 
     private void generateLimbo(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
-    {
         runGenerator(ModBlocks.BLOCK_SOLID_STATIC.getDefaultState(), world, random, chunkX * 16, chunkZ * 16, 5, 254, random.nextInt(5) + 3,  65);
 
     }
