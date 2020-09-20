@@ -119,13 +119,12 @@ public final class SchematicPlacer {
 
     private static boolean fixPos(CompoundTag tag) {
         if (!tag.contains("Pos") && tag.contains("x") && tag.contains("y") && tag.contains("z")) {
-            tag.put("Pos", ListTagAccessor.of(
+            tag.put("Pos", new IntArrayTag(
                     ImmutableList.of(
-                            DoubleTag.of(tag.getDouble("x")),
-                            DoubleTag.of(tag.getDouble("y")),
-                            DoubleTag.of(tag.getDouble("z"))
-                    ),
-                    (byte) 6
+                            ((Number) tag.getDouble("x")).intValue(),
+                            ((Number) tag.getDouble("y")).intValue(),
+                            ((Number) tag.getDouble("z")).intValue()
+                    )
             ));
         } else if (tag.contains("Pos") && !tag.contains("x") && !tag.contains("y") && !tag.contains("z")) {
             tag.put("x", ((IntArrayTag) Objects.requireNonNull(tag.get("Pos"))).get(0));
