@@ -13,15 +13,18 @@ import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.ModifiableWorld;
 import net.minecraft.world.StructureWorldAccess;
 
-public class RelativeBlockSample implements BlockView {
+public class RelativeBlockSample implements BlockView, ModifiableWorld {
     public final Schematic schematic;
     private final int[][][] blockData;
     private final BiMap<BlockState, Integer> blockPalette;
@@ -41,6 +44,7 @@ public class RelativeBlockSample implements BlockView {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 for (int z = 0; z < length; z++) {
+                    this.setBlockState(new BlockPos(x, y, z), this.blockPalette.inverse().get(this.blockData[x][y][z]), 2);
                     this.blockContainer.put(new BlockPos(x, y, z), this.blockPalette.inverse().get(this.blockData[x][y][z]));
                 }
             }
@@ -130,5 +134,21 @@ public class RelativeBlockSample implements BlockView {
     public RelativeBlockSample setWorld(StructureWorldAccess world) {
         this.world = world;
         return this;
+    }
+
+    @Override
+    public boolean setBlockState(BlockPos pos, BlockState state, int flags, int maxUpdateDepth) {
+        this.blockContainer.put(pos, state);
+        return true;
+    }
+
+    @Override
+    public boolean removeBlock(BlockPos pos, boolean move) {
+        return this.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+    }
+
+    @Override
+    public boolean breakBlock(BlockPos pos, boolean drop, @Nullable Entity breakingEntity, int maxUpdateDepth) {
+        return this.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
     }
 }
