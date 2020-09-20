@@ -1,22 +1,18 @@
 package org.dimdev.dimcore.schematic.v2;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
-import net.minecraft.nbt.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.mixin.ListTagAccessor;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 
@@ -35,18 +31,12 @@ public final class SchematicPlacer {
                 LOGGER.warn("Schematic \"" + schematic.getMetadata().getName() + "\" depends on mod \"" + id + "\", which is missing!");
             }
         }
-        int width = schematic.getWidth();
-        int height = schematic.getHeight();
-        int length = schematic.getLength();
         int originX = origin.getX();
         int originY = origin.getY();
         int originZ = origin.getZ();
-        int[][][] blockData = SchematicPlacer.getBlockData(schematic, width, height, length);
-        SchematicBlockSample blockSample = Schematic.blockSample(schematic, world);
-        BiMap<BlockState, Integer> palette = ImmutableBiMap.copyOf(schematic.getBlockPalette());
+        RelativeBlockSample blockSample = Schematic.getBlockSample(schematic, world);
         blockSample.place(origin);
         SchematicPlacer.placeEntities(originX, originY, originZ, schematic, world);
-        SchematicPlacer.placeBlockEntities(originX, originY, originZ, schematic, blockSample);
     }
 
     static int[][][] getBlockData(Schematic schematic, int width, int height, int length) {
@@ -84,30 +74,6 @@ public final class SchematicPlacer {
         }
     }
 
-    private static void placeBlockEntities(int originX, int originY, int originZ, Schematic schematic, SchematicBlockSample blockSample) {
-        List<CompoundTag> blockEntityTags = schematic.getBlockEntities();
-        for (CompoundTag tag : blockEntityTags) {
-            if (SchematicPlacer.fixId(tag)) {
-                System.err.println("An unexpected error occurred parsing this block entity");
-                System.err.println(tag.toString());
-                throw new IllegalStateException("Block Entity in schematic  \"" + schematic.getMetadata().getName() + "\" did not have an Id tag, nor an id tag!");
-            }
-            if (fixPos(tag)) {
-                throw new IllegalStateException("Block Entity in schematic  \"" + schematic.getMetadata().getName() + "\" did not have a Pos tag, nor x, y and z tags!");
-            }
-            ListTag listTag = Objects.requireNonNull(tag.getList("Pos", 6));
-            SchematicPlacer.processPos(listTag, originX, originY, originZ, tag);
-
-            BlockPos pos = new BlockPos(tag.getInt("x"),tag.getInt("y"),tag.getInt("z"));
-            BlockEntity blockEntity = blockSample.getBlockEntity(pos);
-            // TODO: fail with an exception
-            if (blockEntity != null) {
-                blockEntity.fromTag(blockSample.getWorld().getBlockState(pos), tag);
-                blockSample.getWorld().getChunk(pos).setBlockEntity(pos, blockEntity);
-            }
-        }
-    }
-
     private static boolean fixId(CompoundTag tag) {
         if (!tag.contains("Id") && tag.contains("id")) {
             tag.putString("Id", tag.getString("id"));
@@ -115,23 +81,6 @@ public final class SchematicPlacer {
             tag.putString("id", tag.getString("Id"));
         }
         return !tag.contains("Id") || !tag.contains("id");
-    }
-
-    private static boolean fixPos(CompoundTag tag) {
-        if (!tag.contains("Pos") && tag.contains("x") && tag.contains("y") && tag.contains("z")) {
-            tag.put("Pos", new IntArrayTag(
-                    ImmutableList.of(
-                            ((Number) tag.getDouble("x")).intValue(),
-                            ((Number) tag.getDouble("y")).intValue(),
-                            ((Number) tag.getDouble("z")).intValue()
-                    )
-            ));
-        } else if (tag.contains("Pos") && !tag.contains("x") && !tag.contains("y") && !tag.contains("z")) {
-            tag.put("x", ((IntArrayTag) Objects.requireNonNull(tag.get("Pos"))).get(0));
-            tag.put("y", ((IntArrayTag) Objects.requireNonNull(tag.get("Pos"))).get(1));
-            tag.put("z", ((IntArrayTag) Objects.requireNonNull(tag.get("Pos"))).get(2));
-        }
-        return !tag.contains("Pos") || !(tag.contains("x") && tag.contains("y") && tag.contains("z"));
     }
 
     private static void processPos(ListTag listTag, int originX, int originY, int originZ, CompoundTag tag) {

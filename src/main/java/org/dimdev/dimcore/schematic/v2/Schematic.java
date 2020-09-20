@@ -3,6 +3,7 @@ package org.dimdev.dimcore.schematic.v2;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
@@ -19,6 +20,7 @@ import net.minecraft.world.StructureWorldAccess;
 
 @SuppressWarnings("CodeBlock2Expr")
 public class Schematic {
+    private static final Consumer<String> PRINT_TO_STDERR = System.err::println;
     public static final Codec<Schematic> CODEC = RecordCodecBuilder.create((instance) -> {
         return instance.group(
                 Codec.INT.fieldOf("Version").forGetter(Schematic::getVersion),
@@ -112,27 +114,27 @@ public class Schematic {
         return this.entities;
     }
 
-    public static SchematicBlockSample blockSample(Schematic schem) {
-        return new SchematicBlockSample(schem);
+    public static RelativeBlockSample getBlockSample(Schematic schem) {
+        return new RelativeBlockSample(schem);
     }
 
-    public static SchematicBlockSample blockSample(Schematic schem, StructureWorldAccess world) {
-        return blockSample(schem).withWorld(world);
+    public static RelativeBlockSample getBlockSample(Schematic schem, StructureWorldAccess world) {
+        return getBlockSample(schem).setWorld(world);
     }
 
     public static Schematic fromTag(CompoundTag tag) {
-        return CODEC.decode(NbtOps.INSTANCE, tag).getOrThrow(false, System.err::println).getFirst();
+        return CODEC.decode(NbtOps.INSTANCE, tag).getOrThrow(false, PRINT_TO_STDERR).getFirst();
     }
 
     public static CompoundTag toTag(Schematic schem) {
-        return (CompoundTag) CODEC.encodeStart(NbtOps.INSTANCE, schem).getOrThrow(false, System.err::println);
+        return (CompoundTag) CODEC.encodeStart(NbtOps.INSTANCE, schem).getOrThrow(false, PRINT_TO_STDERR);
     }
 
     public static Schematic fromJson(JsonObject json) {
-        return CODEC.decode(JsonOps.INSTANCE, json).getOrThrow(false, System.err::println).getFirst();
+        return CODEC.decode(JsonOps.INSTANCE, json).getOrThrow(false, PRINT_TO_STDERR).getFirst();
     }
 
     public static JsonObject toJson(Schematic schem) {
-        return (JsonObject) CODEC.encodeStart(JsonOps.INSTANCE, schem).getOrThrow(false, System.err::println);
+        return (JsonObject) CODEC.encodeStart(JsonOps.INSTANCE, schem).getOrThrow(false, PRINT_TO_STDERR);
     }
 }
