@@ -31,7 +31,7 @@ import net.minecraft.text.LiteralText;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 
 public abstract class RiftBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Target, EntityTarget {
-    private static Codec<RiftData> CODEC = RiftData.CODEC;
+    private static final Codec<RiftData> CODEC = RiftData.CODEC;
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected RiftData data = new RiftData();
@@ -45,7 +45,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
     // NBT
     @Override
     public void fromTag(BlockState state, CompoundTag nbt) {
-        deserialize(nbt);
+        this.deserialize(nbt);
     }
 
     protected void deserialize(CompoundTag nbt) {
@@ -54,123 +54,123 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        serialize(tag);
+        this.serialize(tag);
 
         return super.toTag(tag);
     }
 
     protected CompoundTag serialize(CompoundTag tag) {
-        if(data != null) tag.put("data", NbtUtil.serialize(data, CODEC));
+        if(this.data != null) tag.put("data", NbtUtil.serialize(this.data, CODEC));
         return tag;
     }
 
     @Override
     public void fromClientTag(CompoundTag tag) {
-        deserialize(tag);
+        this.deserialize(tag);
     }
 
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
-        return serialize(tag);
+        return this.serialize(tag);
     }
 
     public void setDestination(VirtualTarget destination) {
         System.out.println("setting Destination " + destination);
 
-        if (this.getDestination() != null && isRegistered()) {
+        if (this.getDestination() != null && this.isRegistered()) {
             this.getDestination().unregister();
         }
         this.data.setDestination(destination);
         if (destination != null) {
-            if (world != null && pos != null) {
-                destination.setLocation(new Location((ServerWorld) world, pos));
+            if (this.world != null && this.pos != null) {
+                destination.setLocation(new Location((ServerWorld) this.world, this.pos));
             }
-            if (isRegistered()) destination.register();
+            if (this.isRegistered()) destination.register();
         }
-        riftStateChanged = true;
-        markDirty();
-        updateColor();
+        this.riftStateChanged = true;
+        this.markDirty();
+        this.updateColor();
     }
 
     public void setColor(RGBA color) {
-        data.setColor(color);
-        markDirty();
+        this.data.setColor(color);
+        this.markDirty();
     }
 
     public void setProperties(LinkProperties properties) {
-        data.setProperties(properties);
-        updateProperties();
-        markDirty();
+        this.data.setProperties(properties);
+        this.updateProperties();
+        this.markDirty();
     }
 
     public void markStateChanged() {
-        riftStateChanged = true;
-        markDirty();
+        this.riftStateChanged = true;
+        this.markDirty();
     }
 
     public boolean isRegistered() {
-        return !PocketTemplate.isReplacingPlaceholders() && RiftRegistry.instance().isRiftAt(new Location((ServerWorld) world, pos));
+        return !PocketTemplate.isReplacingPlaceholders() && RiftRegistry.instance().isRiftAt(new Location((ServerWorld) this.world, this.pos));
     }
 
     public void register() {
-        if (isRegistered()) {
+        if (this.isRegistered()) {
             return;
         }
 
-        Location loc = new Location((ServerWorld) world, pos);
+        Location loc = new Location((ServerWorld) this.world, this.pos);
         RiftRegistry.instance().addRift(loc);
-        if (data.getDestination() != VirtualTarget.NoneTarget.DUMMY) data.getDestination().register();
-        updateProperties();
-        updateColor();
+        if (this.data.getDestination() != VirtualTarget.NoneTarget.DUMMY) this.data.getDestination().register();
+        this.updateProperties();
+        this.updateColor();
     }
 
     public void updateProperties() {
-        if (isRegistered())
-            RiftRegistry.instance().setProperties(new Location((ServerWorld) world, pos), data.getProperties());
-        markDirty();
+        if (this.isRegistered())
+            RiftRegistry.instance().setProperties(new Location((ServerWorld) this.world, this.pos), this.data.getProperties());
+        this.markDirty();
     }
 
     public void unregister() {
-        if (isRegistered()) {
-            RiftRegistry.instance().removeRift(new Location((ServerWorld) world, pos));
+        if (this.isRegistered()) {
+            RiftRegistry.instance().removeRift(new Location((ServerWorld) this.world, this.pos));
         }
     }
 
     public void updateType() {
-        if (!isRegistered()) return;
-        Rift rift = RiftRegistry.instance().getRift(new Location((ServerWorld) world, pos));
-        rift.isDetached = isDetached();
+        if (!this.isRegistered()) return;
+        Rift rift = RiftRegistry.instance().getRift(new Location((ServerWorld) this.world, this.pos));
+        rift.isDetached = this.isDetached();
         rift.markDirty();
     }
 
     public void handleTargetGone(Location location) {
-        if (data.getDestination().shouldInvalidate(location)) {
-            data.setDestination(null);
-            markDirty();
+        if (this.data.getDestination().shouldInvalidate(location)) {
+            this.data.setDestination(null);
+            this.markDirty();
         }
 
-        updateColor();
+        this.updateColor();
     }
 
     public void handleSourceGone(Location location) {
-        updateColor();
+        this.updateColor();
     }
 
     public Target getTarget() {
-        if (data.getDestination() == VirtualTarget.NoneTarget.DUMMY) {
+        if (this.data.getDestination() == VirtualTarget.NoneTarget.DUMMY) {
             return new MessageTarget("rifts.unlinked1");
         } else {
-            data.getDestination().setLocation(new Location((ServerWorld) world, pos));
-            return data.getDestination();
+            this.data.getDestination().setLocation(new Location((ServerWorld) this.world, this.pos));
+            return this.data.getDestination();
         }
     }
 
     public boolean teleport(Entity entity) {
-        riftStateChanged = false;
+        this.riftStateChanged = false;
 
         // Attempt a teleport
         try {
-            EntityTarget target = getTarget().as(Targets.ENTITY);
+            EntityTarget target = this.getTarget().as(Targets.ENTITY);
 
             if (target.receiveEntity(entity, entity.yaw)) {
                 VirtualLocation vloc = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos()));
@@ -186,17 +186,17 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
     }
 
     public void updateColor() {
-        if (data.isForcedColor()) return;
-        if (!isRegistered()) {
-            data.setColor(new RGBA(0, 0, 0, 1));
-        } else if (data.getDestination() == VirtualTarget.NoneTarget.DUMMY) {
-            data.setColor(new RGBA(0.7f, 0.7f, 0.7f, 1));
+        if (this.data.isForcedColor()) return;
+        if (!this.isRegistered()) {
+            this.data.setColor(new RGBA(0, 0, 0, 1));
+        } else if (this.data.getDestination() == VirtualTarget.NoneTarget.DUMMY) {
+            this.data.setColor(new RGBA(0.7f, 0.7f, 0.7f, 1));
         } else {
-            data.getDestination().setLocation(new Location((ServerWorld) world, pos));
-            RGBA newColor = data.getDestination().getColor();
-            if (data.getColor() == RGBA.NONE && newColor != RGBA.NONE || !Objects.equals(data.getColor(), newColor)) {
-                data.setColor(newColor);
-                markDirty();
+            this.data.getDestination().setLocation(new Location((ServerWorld) this.world, this.pos));
+            RGBA newColor = this.data.getDestination().getColor();
+            if (this.data.getColor() == RGBA.NONE && newColor != RGBA.NONE || !Objects.equals(this.data.getColor(), newColor)) {
+                this.data.setColor(newColor);
+                this.markDirty();
             }
         }
     }
@@ -205,30 +205,30 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 
     public void copyFrom(DetachedRiftBlockEntity rift) {
 
-        data.setDestination(rift.data.getDestination());
-        data.setProperties(rift.data.getProperties());
-        data.setAlwaysDelete(rift.data.isAlwaysDelete());
-        data.setForcedColor(rift.data.isForcedColor());
+        this.data.setDestination(rift.data.getDestination());
+        this.data.setProperties(rift.data.getProperties());
+        this.data.setAlwaysDelete(rift.data.isAlwaysDelete());
+        this.data.setForcedColor(rift.data.isForcedColor());
     }
 
     public VirtualTarget getDestination() {
-        return data.getDestination();
+        return this.data.getDestination();
     }
 
     public LinkProperties getProperties() {
-        return data.getProperties();
+        return this.data.getProperties();
     }
 
     public boolean isAlwaysDelete() {
-        return data.isAlwaysDelete();
+        return this.data.isAlwaysDelete();
     }
 
     public boolean isForcedColor() {
-        return data.isForcedColor();
+        return this.data.isForcedColor();
     }
 
     public RGBA getColor() {
-        return data.getColor();
+        return this.data.getColor();
     }
 
     public void setData(RiftData data) {
@@ -236,6 +236,6 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
     }
 
     public RiftData getData() {
-        return data;
+        return this.data;
     }
 }
