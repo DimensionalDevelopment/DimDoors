@@ -9,6 +9,7 @@ public final class ModCommands {
             SchematicCommand.register(dispatcher);
             PocketCommand.register(dispatcher);
             SaveSchemCommand.register(dispatcher);
+            SchematicV2Command.register(dispatcher);
         });
     }
 }

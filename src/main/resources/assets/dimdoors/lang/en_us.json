@@ -184,5 +184,7 @@
   "dimdoors.graphics.riftSize": "Rift Size",
   "dimdoors.graphics.riftSize.tooltip": "Multiplier affecting how large rifts should be rendered, 1 being the default size.",
   "dimdoors.graphics.riftJitter": "Rift Jitter",
-  "dimdoors.graphics.riftJitter.tooltip": "Multiplier affecting how much rifts should jitter, 1 being the default size."
+  "dimdoors.graphics.riftJitter.tooltip": "Multiplier affecting how much rifts should jitter, 1 being the default size.",
+  "argument.dimdoors.schematic.invalidNamespace": "Invalid schematic namespace. Expected one of %s, found %s.",
+  "command.dimdoors.schematicv2.unknownSchematic": "Unknown schematic \"%s\" in namespace \"%s\" "
 }
