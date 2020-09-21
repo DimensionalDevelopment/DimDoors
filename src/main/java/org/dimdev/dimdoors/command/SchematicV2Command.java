@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimcore.schematic.v2.Schematic;
 import org.dimdev.dimcore.schematic.v2.SchematicPlacer;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.command.arguments.SchematicNamespaceArgumentType;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -40,7 +41,7 @@ public class SchematicV2Command {
         String id = StringArgumentType.getString(ctx, "schematic_name");
         String ns = SchematicNamespaceArgumentType.getValue(ctx, "namespace");
 
-        try (InputStream in = SchematicCommand.class.getResourceAsStream("/data/dimdoors/pockets/schematic/v2/" + ns + "/" + id + ".schem")) {
+        try (InputStream in = DimensionalDoorsInitializer.class.getResourceAsStream("/data/dimdoors/pockets/schematic/v2/" + ns + "/" + id + ".schem")) {
             SchematicPlacer.place(
                     Schematic.fromTag(NbtIo.readCompressed(in)),
                     ctx.getSource().getWorld(),
