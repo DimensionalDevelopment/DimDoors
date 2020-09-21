@@ -8,6 +8,7 @@ public final class ModCommands {
             DimTeleportCommand.register(dispatcher);
             PocketCommand.register(dispatcher);
             SchematicV2Command.register(dispatcher);
+            SchematicCommand.register(dispatcher);
         });
     }
 }
