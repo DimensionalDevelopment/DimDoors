@@ -22,7 +22,7 @@ public final class SchematicMetadata {
     private final long date;
     private final List<String> requiredMods;
 
-    protected SchematicMetadata(String name, String author, long date, List<String> requiredMods) {
+    public SchematicMetadata(String name, String author, long date, List<String> requiredMods) {
         this.name = name;
         this.author = author;
         this.date = date;
