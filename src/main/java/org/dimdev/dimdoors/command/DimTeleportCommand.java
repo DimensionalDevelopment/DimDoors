@@ -17,6 +17,10 @@ public class DimTeleportCommand {
         dispatcher.register(CommandManager.literal("dimteleport")
                 .then(CommandManager
                         .argument("dimension", DimensionArgumentType.dimension())
+                        .executes(ctx -> {
+                            ServerPlayerEntity player = ctx.getSource().getPlayer();
+                            return teleport(player, DimensionArgumentType.getDimensionArgument(ctx, "dimension"), player.getPos());
+                        })
                         .then(CommandManager
                                 .argument("coordinates", Vec3ArgumentType.vec3())
                                 .executes(ctx -> {

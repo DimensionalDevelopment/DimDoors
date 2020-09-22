@@ -13,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.registry.Registry;
 
 public class SchematicBlockPalette {
@@ -65,7 +66,7 @@ public class SchematicBlockPalette {
 
                 if (state.get(property) instanceof Enum<?>) {
                     // Enum might have override toString
-                    builder.append(((Enum<?>) state.get(property)).name());
+                    builder.append(((StringIdentifiable) state.get(property)).asString());
                 } else {
                     builder.append(state.get(property).toString());
                 }

@@ -1,6 +1,5 @@
 plugins {
     id 'fabric-loom' version '0.5-SNAPSHOT'
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
 }
 
 apply plugin: "java"
@@ -12,7 +11,6 @@ repositories {
     maven { url = 'https://maven.fabricmc.net/' }
     maven { url 'https://jitpack.io' }
     mavenCentral()
-    maven { url = 'https://dl.bintray.com/boogiemonster1o1/cool-mods/' }
     maven { url = 'https://www.cursemaven.com' }
 }
 
@@ -22,11 +20,11 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     implementation 'com.flowpowered:flow-math:1.0.3'
-    shadow 'com.flowpowered:flow-math:1.0.3'
+    include 'com.flowpowered:flow-math:1.0.3'
     implementation 'org.jgrapht:jgrapht-core:1.1.0'
-    shadow 'org.jgrapht:jgrapht-core:1.1.0'
+    include 'org.jgrapht:jgrapht-core:1.1.0'
     implementation 'com.github.DimensionalDevelopment:poly2tri.java:0.1.1'
-    shadow 'com.github.DimensionalDevelopment:poly2tri.java:0.1.1'
+    include 'com.github.DimensionalDevelopment:poly2tri.java:0.1.1'
     modApi("com.github.Waterpicker:OpenWorlds:c5a1ced") {
         exclude module: "fabric-api"
     }
@@ -35,6 +33,7 @@ dependencies {
     modImplementation("io.github.boogiemonster1o1:libcbe:${libcbe_version}")
     include("io.github.boogiemonster1o1:libcbe:${libcbe_version}") // Includes LibCBE as a Jar-in-Jar embedded dependency
     modImplementation("curse.maven:worldedit:3039223") // For saving schematics
+    modImplementation("curse.maven:wecui:2995033") // Cos why not
 }
 
 version "4.0.0+alpha.3"
