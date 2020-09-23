@@ -17,7 +17,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         super(entityType, world);
     }
 
-    @Inject(method = "handleFallDamage", at = @At("HEAD"), cancellable = true, remap = false)
+    @Inject(method = "handleFallDamage", at = @At("HEAD"), cancellable = true)
     public void handleLimboFallDamage(float fallDistance, float damageMultiplier, CallbackInfoReturnable<Boolean> cir) {
         if (this.world.getBiome(this.getBlockPos()) == ModBiomes.LIMBO_BIOME) {
             cir.setReturnValue(false);
