@@ -21,15 +21,19 @@ import net.minecraft.world.StructureWorldAccess;
 public class SchematicV2Gateway extends BaseGateway {
     private static final Logger LOGGER = LogManager.getLogger();
     private Schematic schematic;
+    private final String id;
     public static final BiMap<SchematicV2Gateway, String> SCHEMATIC_ID_MAP = HashBiMap.create();
     public static final BiMap<String, SchematicV2Gateway> ID_SCHEMATIC_MAP = HashBiMap.create();
 
     public SchematicV2Gateway(String id) {
-        String schematicJarDirectory = "/data/dimdoors/gateways/v2/";
         SCHEMATIC_ID_MAP.putIfAbsent(this, id);
         ID_SCHEMATIC_MAP.putIfAbsent(id, this);
+        this.id = id;
+    }
 
-        InputStream schematicStream = DimensionalDoorsInitializer.class.getResourceAsStream(schematicJarDirectory + id + ".schem");
+    public void init() {
+        String schematicJarDirectory = "/data/dimdoors/gateways/v2/";
+        InputStream schematicStream = DimensionalDoorsInitializer.class.getResourceAsStream(schematicJarDirectory + this.id + ".schem");
 
         DataInputStream schematicDataStream = null;
         boolean streamOpened = false;
@@ -37,7 +41,7 @@ public class SchematicV2Gateway extends BaseGateway {
             schematicDataStream = new DataInputStream(schematicStream);
             streamOpened = true;
         } else {
-            LOGGER.warn("Schematic '" + id + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
+            LOGGER.warn("Schematic '" + this.id + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
         }
 
         CompoundTag tag;
@@ -48,7 +52,7 @@ public class SchematicV2Gateway extends BaseGateway {
                 this.schematic = Schematic.fromTag(tag);
                 schematicDataStream.close();
             } catch (IOException ex) {
-                LOGGER.error("Schematic file for " + id + " could not be read as a valid schematic NBT file.", ex);
+                LOGGER.error("Schematic file for " + this.id + " could not be read as a valid schematic NBT file.", ex);
             } finally {
                 try {
                     schematicDataStream.close();

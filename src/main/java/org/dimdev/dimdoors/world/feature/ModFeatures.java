@@ -1,12 +1,6 @@
 package org.dimdev.dimdoors.world.feature;
 
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.world.feature.gateway.SandstonePillarsGateway;
-import org.dimdev.dimdoors.world.feature.gateway.SchematicGateway;
-import org.dimdev.dimdoors.world.feature.gateway.SchematicGatewayFeature;
-import org.dimdev.dimdoors.world.feature.gateway.SchematicGatewayFeatureConfig;
-import org.dimdev.dimdoors.world.feature.gateway.TwoPillarsGateway;
 import org.dimdev.dimdoors.world.feature.gateway.v2.SandstonePillarsV2Gateway;
 import org.dimdev.dimdoors.world.feature.gateway.v2.SchematicV2Gateway;
 import org.dimdev.dimdoors.world.feature.gateway.v2.SchematicV2GatewayFeature;
@@ -27,11 +21,11 @@ public final class ModFeatures {
     public static final ConfiguredFeature<?, ?> SANDSTONE_PILLARS_FEATURE_V2;
 
     public static void init() {
+        SANDSTONE_PILLARS_GATEWAY_V2.init();
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "sandstone_pillars_v2"), SANDSTONE_PILLARS_FEATURE_V2);
     }
 
     static {
-        ModBlocks.init();
         SANDSTONE_PILLARS_GATEWAY_V2 = new SandstonePillarsV2Gateway();
 
         int gatewayChance = FabricLoader.getInstance().isDevelopmentEnvironment() ? 20 : ModConfig.INSTANCE.getWorldConfig().gatewayGenChance;

@@ -66,6 +66,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModSoundEvents.init();
         ModFeatures.init();
 
+        ModConfig.deserialize();
+
         Targets.registerDefaultTargets();
 
         SchematicHandler.INSTANCE.loadSchematics();
