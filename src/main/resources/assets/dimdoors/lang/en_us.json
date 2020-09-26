@@ -1,5 +1,5 @@
 {
-  "itemGroup.dimdoors.dimensional_doors": "Dimensional Doors Items",
+  "itemGroup.dimdoors.dimensional_doors": "Dimensional Doors",
   "block.dimdoors.gold_door": "Gold Door",
   "block.dimdoors.quartz_door": "Quartz Door",
   "block.dimdoors.iron_dimensional_door": "Iron Dimensional Door",
@@ -186,5 +186,6 @@
   "dimdoors.graphics.riftJitter": "Rift Jitter",
   "dimdoors.graphics.riftJitter.tooltip": "Multiplier affecting how much rifts should jitter, 1 being the default size.",
   "argument.dimdoors.schematic.invalidNamespace": "Invalid schematic namespace. Expected one of %s, found %s.",
-  "command.dimdoors.schematicv2.unknownSchematic": "Unknown schematic \"%s\" in namespace \"%s\" "
+  "command.dimdoors.schematicv2.unknownSchematic": "Unknown schematic \"%s\" in namespace \"%s\" ",
+  "dimdoors.config.screen.reload": "Reload Config"
 }

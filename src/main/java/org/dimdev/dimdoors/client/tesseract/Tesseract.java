@@ -9,172 +9,173 @@ import net.minecraft.util.math.Matrix4f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+@Environment(EnvType.CLIENT)
 public class Tesseract {
     private final Plane[] planes = new Plane[24];
 
     public Tesseract() {
-        planes[0] = new Plane(
+        this.planes[0] = new Plane(
                 new Vector4f(-0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, -0.5f, 0.5f, -0.5f),
                 new Vector4f(-0.5f, -0.5f, 0.5f, -0.5f)
         );
 
-        planes[1] = new Plane(
+        this.planes[1] = new Plane(
                 new Vector4f(-0.5f, 0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, 0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, 0.5f, -0.5f)
         );
 
-        planes[2] = new Plane(
+        this.planes[2] = new Plane(
                 new Vector4f(-0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, -0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, -0.5f, -0.5f)
         );
 
-        planes[3] = new Plane(
+        this.planes[3] = new Plane(
                 new Vector4f(-0.5f, -0.5f, 0.5f, -0.5f),
                 new Vector4f(0.5f, -0.5f, 0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, 0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, 0.5f, -0.5f)
         );
 
-        planes[4] = new Plane(
+        this.planes[4] = new Plane(
                 new Vector4f(-0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, -0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, 0.5f, -0.5f),
                 new Vector4f(-0.5f, -0.5f, 0.5f, -0.5f)
         );
 
-        planes[5] = new Plane(
+        this.planes[5] = new Plane(
                 new Vector4f(0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, 0.5f, -0.5f),
                 new Vector4f(0.5f, -0.5f, 0.5f, -0.5f)
         );
 
-        planes[6] = new Plane(
+        this.planes[6] = new Plane(
                 new Vector4f(-0.5f, -0.5f, -0.5f, 0.5f),
                 new Vector4f(0.5f, -0.5f, -0.5f, 0.5f),
                 new Vector4f(0.5f, -0.5f, 0.5f, 0.5f),
                 new Vector4f(-0.5f, -0.5f, 0.5f, 0.5f)
         );
 
-        planes[7] = new Plane(
+        this.planes[7] = new Plane(
                 new Vector4f(-0.5f, 0.5f, -0.5f, 0.5f),
                 new Vector4f(0.5f, 0.5f, -0.5f, 0.5f),
                 new Vector4f(0.5f, 0.5f, 0.5f, 0.5f),
                 new Vector4f(-0.5f, 0.5f, 0.5f, 0.5f)
         );
 
-        planes[8] = new Plane(
+        this.planes[8] = new Plane(
                 new Vector4f(-0.5f, -0.5f, -0.5f, 0.5f),
                 new Vector4f(0.5f, -0.5f, -0.5f, 0.5f),
                 new Vector4f(0.5f, 0.5f, -0.5f, 0.5f),
                 new Vector4f(-0.5f, 0.5f, -0.5f, 0.5f)
         );
 
-        planes[9] = new Plane(
+        this.planes[9] = new Plane(
                 new Vector4f(-0.5f, -0.5f, 0.5f, 0.5f),
                 new Vector4f(0.5f, -0.5f, 0.5f, 0.5f),
                 new Vector4f(0.5f, 0.5f, 0.5f, 0.5f),
                 new Vector4f(-0.5f, 0.5f, 0.5f, 0.5f)
         );
 
-        planes[10] = new Plane(
+        this.planes[10] = new Plane(
                 new Vector4f(-0.5f, -0.5f, -0.5f, 0.5f),
                 new Vector4f(-0.5f, 0.5f, -0.5f, 0.5f),
                 new Vector4f(-0.5f, 0.5f, 0.5f, 0.5f),
                 new Vector4f(-0.5f, -0.5f, 0.5f, 0.5f)
         );
 
-        planes[11] = new Plane(
+        this.planes[11] = new Plane(
                 new Vector4f(0.5f, -0.5f, -0.5f, 0.5f),
                 new Vector4f(0.5f, 0.5f, -0.5f, 0.5f),
                 new Vector4f(0.5f, 0.5f, 0.5f, 0.5f),
                 new Vector4f(0.5f, -0.5f, 0.5f, 0.5f)
         );
 
-        planes[12] = new Plane(
+        this.planes[12] = new Plane(
                 new Vector4f(-0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, -0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, -0.5f, 0.5f),
                 new Vector4f(-0.5f, -0.5f, -0.5f, 0.5f)
         );
 
-        planes[13] = new Plane(
+        this.planes[13] = new Plane(
                 new Vector4f(-0.5f, -0.5f, 0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, 0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, 0.5f, 0.5f),
                 new Vector4f(-0.5f, -0.5f, 0.5f, 0.5f)
         );
 
-        planes[14] = new Plane(
+        this.planes[14] = new Plane(
                 new Vector4f(-0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, -0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, 0.5f, -0.5f),
                 new Vector4f(-0.5f, -0.5f, 0.5f, -0.5f)
         );
 
-        planes[15] = new Plane(
+        this.planes[15] = new Plane(
                 new Vector4f(-0.5f, -0.5f, -0.5f, 0.5f),
                 new Vector4f(-0.5f, 0.5f, -0.5f, 0.5f),
                 new Vector4f(-0.5f, 0.5f, 0.5f, 0.5f),
                 new Vector4f(-0.5f, -0.5f, 0.5f, 0.5f)
         );
 
-        planes[16] = new Plane(
+        this.planes[16] = new Plane(
                 new Vector4f(-0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(-0.5f, -0.5f, 0.5f, -0.5f),
                 new Vector4f(-0.5f, -0.5f, 0.5f, 0.5f),
                 new Vector4f(-0.5f, -0.5f, -0.5f, 0.5f)
         );
 
-        planes[17] = new Plane(
+        this.planes[17] = new Plane(
                 new Vector4f(-0.5f, 0.5f, -0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, 0.5f, -0.5f),
                 new Vector4f(-0.5f, 0.5f, 0.5f, 0.5f),
                 new Vector4f(-0.5f, 0.5f, -0.5f, 0.5f)
         );
 
-        planes[18] = new Plane(
+        this.planes[18] = new Plane(
                 new Vector4f(0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, -0.5f, 0.5f),
                 new Vector4f(0.5f, -0.5f, -0.5f, 0.5f)
         );
 
-        planes[19] = new Plane(
+        this.planes[19] = new Plane(
                 new Vector4f(0.5f, -0.5f, 0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, 0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, 0.5f, 0.5f),
                 new Vector4f(0.5f, -0.5f, 0.5f, 0.5f)
         );
 
-        planes[20] = new Plane(
+        this.planes[20] = new Plane(
                 new Vector4f(0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, 0.5f, -0.5f),
                 new Vector4f(0.5f, -0.5f, 0.5f, -0.5f)
         );
 
-        planes[21] = new Plane(
+        this.planes[21] = new Plane(
                 new Vector4f(0.5f, -0.5f, -0.5f, 0.5f),
                 new Vector4f(0.5f, 0.5f, -0.5f, 0.5f),
                 new Vector4f(0.5f, 0.5f, 0.5f, 0.5f),
                 new Vector4f(0.5f, -0.5f, 0.5f, 0.5f)
         );
 
-        planes[22] = new Plane(
+        this.planes[22] = new Plane(
                 new Vector4f(0.5f, -0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, -0.5f, 0.5f, -0.5f),
                 new Vector4f(0.5f, -0.5f, 0.5f, 0.5f),
                 new Vector4f(0.5f, -0.5f, -0.5f, 0.5f)
         );
 
-        planes[23] = new Plane(
+        this.planes[23] = new Plane(
                 new Vector4f(0.5f, 0.5f, -0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, 0.5f, -0.5f),
                 new Vector4f(0.5f, 0.5f, 0.5f, 0.5f),
@@ -184,7 +185,7 @@ public class Tesseract {
 
     @Environment(EnvType.CLIENT)
     public void draw(Matrix4f model, VertexConsumer vc, RGBA color, double radian) {
-        for (Plane plane : planes) {
+        for (Plane plane : this.planes) {
             plane.draw(model, vc, color, radian);
         }
     }
