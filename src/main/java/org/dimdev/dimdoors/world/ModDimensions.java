@@ -16,6 +16,7 @@ import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.FixedBiomeSource;
@@ -60,8 +61,8 @@ public final class ModDimensions {
         return type == PERSONAL || type == PUBLIC || type == DUNGEON;
     }
 
-    public static boolean isLimboDimension(World world) {
-        return world.getRegistryKey() == LIMBO || world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION;
+    public static boolean isLimboDimension(StructureWorldAccess world) {
+        return world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION;
     }
 
     public static void init() {

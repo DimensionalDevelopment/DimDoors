@@ -18,11 +18,9 @@ public interface Gateway {
         return this.getBiomes().contains(biome);
     }
 
-    default boolean isLocationValid(World world, BlockPos pos) {
+    default boolean isLocationValid(StructureWorldAccess world, BlockPos pos) {
         return this.isBiomeValid(BuiltinRegistries.BIOME.getKey(world.getBiome(pos)).orElseThrow(NullPointerException::new));
     }
 
-    default Set<RegistryKey<Biome>> getBiomes() {
-        return ImmutableSet.of();
-    }
+    Set<RegistryKey<Biome>> getBiomes();
 }

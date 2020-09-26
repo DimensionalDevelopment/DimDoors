@@ -18,7 +18,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 
-public class SchematicV2Gateway implements Gateway {
+public abstract class SchematicV2Gateway implements Gateway {
     private static final Logger LOGGER = LogManager.getLogger();
     private Schematic schematic;
     private final String id;
@@ -75,6 +75,6 @@ public class SchematicV2Gateway implements Gateway {
      * @param y     - the y-coordinate of the block on which the gateway may be built
      * @param z     - the z-coordinate at which to center the gateway; usually where the door is placed
      */
-    protected void generateRandomBits(StructureWorldAccess world, int x, int y, int z) {
+    protected void generateRandomBits(StructureWorldAccess world, BlockPos pos) {
     }
 }
