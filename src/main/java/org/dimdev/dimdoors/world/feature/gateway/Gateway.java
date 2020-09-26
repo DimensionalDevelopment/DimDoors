@@ -11,19 +11,18 @@ import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
-public abstract class BaseGateway {
-    public void generate(StructureWorldAccess world, int x, int y, int z) {
-    }
+public interface Gateway {
+    void generate(StructureWorldAccess world, BlockPos pos);
 
-    protected boolean isBiomeValid(RegistryKey<Biome> biome) {
+    default boolean isBiomeValid(RegistryKey<Biome> biome) {
         return this.getBiomes().contains(biome);
     }
 
-    public boolean isLocationValid(World world, int x, int y, int z) {
-        return this.isBiomeValid(BuiltinRegistries.BIOME.getKey(world.getBiome(new BlockPos(x, y, z))).orElseThrow(NullPointerException::new));
+    default boolean isLocationValid(World world, BlockPos pos) {
+        return this.isBiomeValid(BuiltinRegistries.BIOME.getKey(world.getBiome(pos)).orElseThrow(NullPointerException::new));
     }
 
-    public Set<RegistryKey<Biome>> getBiomes() {
+    default Set<RegistryKey<Biome>> getBiomes() {
         return ImmutableSet.of();
     }
 }

@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.feature.gateway.v2;
+package org.dimdev.dimdoors.world.feature.gateway.schematic;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
