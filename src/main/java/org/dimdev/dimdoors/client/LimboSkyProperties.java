@@ -19,9 +19,4 @@ public class LimboSkyProperties extends SkyProperties {
     public boolean useThickFog(int camX, int camY) {
         return true;
     }
-
-    @Override
-    public float[] getSkyColor(float skyAngle, float tickDelta) {
-        return new float[]{0, 0, 0, 0};
-    }
 }

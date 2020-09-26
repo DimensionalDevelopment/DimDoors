@@ -9,6 +9,6 @@ public class ModFluids {
     public static final FlowableFluid FLOWING_ETERNAL_FLUID = register("dimdoors:flowing_eternal_fluid", new EternalFluid.Flowing());
 
     private static <T extends Fluid> T register(String string, T fluid) {
-        return (T) Registry.register(Registry.FLUID, string, fluid);
+        return Registry.register(Registry.FLUID, string, fluid);
     }
 }

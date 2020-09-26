@@ -16,6 +16,7 @@ import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.FixedBiomeSource;
@@ -60,6 +61,10 @@ public final class ModDimensions {
         return type == PERSONAL || type == PUBLIC || type == DUNGEON;
     }
 
+    public static boolean isLimbo(StructureWorldAccess world) {
+        return world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION;
+    }
+
     public static boolean isLimboDimension(World world) {
         return world.getRegistryKey() == LIMBO || world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION;
     }
@@ -83,39 +88,38 @@ public final class ModDimensions {
                 Optional.of(StructuresConfig.DEFAULT_STRONGHOLD),
                 ImmutableMap.of()
         );
-//        GenerationShapeConfig limboShapeConfig = new GenerationShapeConfig(
-//                178,
-//                new NoiseSamplingConfig(
-//                        1.000009876543,
-//                        2.9999876545678,
-//                        60,
-//                        240
-//                ),
-//                new SlideConfig(
-//                        -10,
-//                        3,
-//                        0
-//                ),
-//                new SlideConfig(
-//                        -30,
-//                        0,
-//                        0
-//                ),
-//                1,
-//                4,
-//                1,
-//                -0.26875,
-//                false,
-//                true,
-//                false,
-//                false
-//        );
-        GenerationShapeConfig limboShapeConfig = new GenerationShapeConfig(256, new NoiseSamplingConfig(0.9999999814507745D, 0.9999999814507745D, 80.0D, 160.0D), new SlideConfig(-10, 3, 0), new SlideConfig(-30, 0, 0), 1, 2, 1.0D, -0.46875D, true, true, false, true);
+        GenerationShapeConfig limboShapeConfig = new GenerationShapeConfig(
+                178,
+                new NoiseSamplingConfig(
+                        1.000009876543,
+                        2.9999876545678,
+                        60,
+                        240
+                ),
+                new SlideConfig(
+                        -10,
+                        3,
+                        0
+                ),
+                new SlideConfig(
+                        -30,
+                        0,
+                        0
+                ),
+                1,
+                4,
+                1,
+                -0.26875,
+                false,
+                true,
+                false,
+                false
+        );
         LIMBO_CHUNK_GENERATOR_SETTINGS = ChunkGeneratorSettingsAccessor.invokeInit(
                 limboStructuresConfig,
                 limboShapeConfig,
                 ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
-                ModBlocks.ETERNAL_FLUID.getDefaultState(),
+                ModBlocks.BLACK_ANCIENT_FABRIC.getDefaultState(),
                 -10,
                 5,
                 8,

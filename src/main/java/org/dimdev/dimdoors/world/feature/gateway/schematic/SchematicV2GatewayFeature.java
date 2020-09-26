@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.feature.gateway;
+package org.dimdev.dimdoors.world.feature.gateway.schematic;
 
 import java.util.Random;
 
@@ -11,15 +11,15 @@ import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 
-public class SchematicGatewayFeature extends Feature<SchematicGatewayFeatureConfig> {
-    public SchematicGatewayFeature(Codec<SchematicGatewayFeatureConfig> codec) {
+public class SchematicV2GatewayFeature extends Feature<SchematicV2GatewayFeatureConfig> {
+    public SchematicV2GatewayFeature(Codec<SchematicV2GatewayFeatureConfig> codec) {
         super(codec);
     }
 
     @Override
-    public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos, SchematicGatewayFeatureConfig config) {
+    public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos blockPos, SchematicV2GatewayFeatureConfig featureConfig) {
         if (world.getBlockState(blockPos).getBlock() instanceof AirBlock && world.getBlockState(blockPos.down()).getBlock() instanceof FallingBlock) {
-            config.getGateway().generate(world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+            featureConfig.getGateway().generate(world, blockPos);
             return true;
         }
         return false;
