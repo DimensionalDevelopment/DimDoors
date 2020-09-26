@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.command;
 
-
 import com.mojang.brigadier.CommandDispatcher;
 import org.dimdev.dimdoors.util.TeleportUtil;
 
@@ -11,6 +10,8 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 
 public class DimTeleportCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -33,7 +34,8 @@ public class DimTeleportCommand {
     }
 
     private static int teleport(ServerPlayerEntity player, ServerWorld dimension, Vec3d pos) {
-        TeleportUtil.teleport(player, dimension, pos, 0);
+        player.moveToWorld(dimension);
+        player.setPos(pos.x, pos.y, pos.z);
         return 1;
     }
 }
