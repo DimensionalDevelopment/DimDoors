@@ -1,66 +1,74 @@
 package org.dimdev.dimdoors;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.util.Codecs;
+import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.fabricmc.loader.api.FabricLoader;
 
 public final class ModConfig {
     public static ModConfig INSTANCE;
-    public static final General GENERAL = new General();
-    public static final Pockets POCKETS = new Pockets();
-    public static final World WORLD = new World();
-    public static final Dungeons DUNGEONS = new Dungeons();
-    public static final Monoliths MONOLITHS = new Monoliths();
-    public static final Limbo LIMBO = new Limbo();
-    public static final Graphics GRAPHICS = new Graphics();
+    private static final Path CONFIG_PATH;
+    private static final Codec<ModConfig> CODEC;
+    private static final String DEFAULT;
+    private static final ModConfig FALLBACK;
+    private static final Logger LOGGER;
+    private final General general;
+    private final Pockets pockets;
+    private final World world;
+    private final Dungeons dungeons;
+    private final Monoliths monoliths;
+    private final Limbo limbo;
+    private final Graphics graphics;
 
-    private final General generalConfig;
-    private final Pockets pocketsConfig;
-    private final World worldConfig;
-    private final Dungeons dungeonsConfig;
-    private final Monoliths monolithsConfig;
-    private final Limbo limboConfig;
-    private final Graphics graphicsConfig;
-
-    protected ModConfig(General generalConfig, Pockets pocketsConfig, World worldConfig, Dungeons dungeonsConfig, Monoliths monolithsConfig, Limbo limboConfig, Graphics graphicsConfig) {
-        this.generalConfig = generalConfig;
-        this.pocketsConfig = pocketsConfig;
-        this.worldConfig = worldConfig;
-        this.dungeonsConfig = dungeonsConfig;
-        this.monolithsConfig = monolithsConfig;
-        this.limboConfig = limboConfig;
-        this.graphicsConfig = graphicsConfig;
+    protected ModConfig(General general, Pockets pockets, World world, Dungeons dungeons, Monoliths monoliths, Limbo limbo, Graphics graphics) {
+        this.general = general;
+        this.pockets = pockets;
+        this.world = world;
+        this.dungeons = dungeons;
+        this.monoliths = monoliths;
+        this.limbo = limbo;
+        this.graphics = graphics;
     }
 
     public General getGeneralConfig() {
-        return this.generalConfig;
+        return this.general;
     }
 
     public Pockets getPocketsConfig() {
-        return this.pocketsConfig;
+        return this.pockets;
     }
 
     public World getWorldConfig() {
-        return this.worldConfig;
+        return this.world;
     }
 
     public Dungeons getDungeonsConfig() {
-        return this.dungeonsConfig;
+        return this.dungeons;
     }
 
     public Monoliths getMonolithsConfig() {
-        return this.monolithsConfig;
+        return this.monoliths;
     }
 
     public Limbo getLimboConfig() {
-        return this.limboConfig;
+        return this.limbo;
     }
 
     public Graphics getGraphicsConfig() {
-        return this.graphicsConfig;
+        return this.graphics;
     }
 
     public static class General {
@@ -221,8 +229,43 @@ public final class ModConfig {
         }
     }
 
+    public static int deserialize() {
+        try {
+            if (Files.isDirectory(CONFIG_PATH)) {
+                Files.delete(CONFIG_PATH);
+            }
+            if (!Files.exists(CONFIG_PATH)) {
+                Files.createFile(CONFIG_PATH);
+                Files.write(CONFIG_PATH, DEFAULT.getBytes(StandardCharsets.UTF_8));
+            }
+            INSTANCE = CODEC.decode(
+                    JsonOps.INSTANCE, new JsonParser().parse(
+                            new InputStreamReader(
+                                    Files.newInputStream(CONFIG_PATH)
+                            )
+                    ).getAsJsonObject()
+            ).getOrThrow(false, System.err::println).getFirst();
+            return 1;
+        } catch (IOException e) {
+            System.err.println("An Unexpected error occured when deserializing the Config. Using default values for now.");
+            e.printStackTrace();
+            INSTANCE = FALLBACK;
+            return -1;
+        }
+    }
+
     static {
-        INSTANCE = new ModConfig(
+        CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                General.CODEC.fieldOf("general").forGetter(ModConfig::getGeneralConfig),
+                Pockets.CODEC.fieldOf("pockets").forGetter(ModConfig::getPocketsConfig),
+                World.CODEC.fieldOf("world").forGetter(ModConfig::getWorldConfig),
+                Dungeons.CODEC.fieldOf("dungeons").forGetter(ModConfig::getDungeonsConfig),
+                Monoliths.CODEC.fieldOf("monoliths").forGetter(ModConfig::getMonolithsConfig),
+                Limbo.CODEC.fieldOf("limbo").forGetter(ModConfig::getLimboConfig),
+                Graphics.CODEC.fieldOf("graphics").forGetter(ModConfig::getGraphicsConfig)
+        ).apply(instance, ModConfig::new));
+        CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("dimensional_doors.json");
+        FALLBACK = new ModConfig(
                 new General(),
                 new Pockets(),
                 new World(),
@@ -231,5 +274,10 @@ public final class ModConfig {
                 new Limbo(),
                 new Graphics()
         );
+        INSTANCE = FALLBACK;
+        DEFAULT = CODEC.encodeStart(JsonOps.INSTANCE, INSTANCE)
+                .getOrThrow(false, System.err::println)
+                .toString();
+        LOGGER = LogManager.getLogger();
     }
 }

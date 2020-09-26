@@ -26,6 +26,9 @@
     ],
     "client": [
       "org.dimdev.dimdoors.DimensionalDoorsClientInitializer"
+    ],
+    "modmenu": [
+      "org.dimdev.dimdoors.client.config.ModMenuImpl"
     ]
   },
   "mixins": [
