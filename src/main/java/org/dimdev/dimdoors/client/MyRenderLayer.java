@@ -86,10 +86,10 @@ public class MyRenderLayer extends RenderLayer {
         RenderPhase.Texture texture;
         if (layer <= 1) {
             transparency = TRANSLUCENT_TRANSPARENCY;
-            texture = new RenderPhase.Texture(WARP_PATH, false, false);
+            texture = new RenderPhase.Texture(EndPortalBlockEntityRenderer.PORTAL_TEXTURE, false, false);
         } else {
             transparency = ADDITIVE_TRANSPARENCY;
-            texture = new RenderPhase.Texture(EndPortalBlockEntityRenderer.PORTAL_TEXTURE, false, false);
+            texture = new RenderPhase.Texture(WARP_PATH, false, false);
         }
 
         return of("dimensional_portal", VertexFormats.POSITION_COLOR, 7, 256, false, true, RenderLayer.MultiPhaseParameters.builder().transparency(transparency).texture(texture).texturing(new RenderPhase.PortalTexturing(layer)).fog(BLACK_FOG).build(false));

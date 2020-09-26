@@ -19,6 +19,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
 import net.fabricmc.api.EnvType;
@@ -64,14 +65,14 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
 
     private void renderVertices(EntranceRiftBlockEntity entrance, MatrixStack matrices, VertexConsumerProvider vertexConsumers, Direction orientation, Vector3f vec, List<RenderLayer> layers) {
         vec.scale((float) (orientation == Direction.NORTH || orientation == Direction.WEST || orientation == Direction.UP ? 0.01 : 0.01 - 1));
-        double d = entrance.getPos().getSquaredDistance(this.dispatcher.camera.getPos(), true);
-        int k = this.getOffset(d);
-        float g = 0.75F;
+        double squaredDistance = entrance.getPos().getSquaredDistance(this.dispatcher.camera.getPos(), true);
+        int offset = this.getOffset(squaredDistance);
+        float u = 0.75F;
         Matrix4f matrix4f = matrices.peek().getModel();
-        this.drawAllVertices(entrance, g, 0.15F, matrix4f, vertexConsumers.getBuffer(layers.get(0)), orientation);
+        this.drawAllVertices(entrance, u, 0.15F, matrix4f, vertexConsumers.getBuffer(layers.get(0)), orientation);
 
-        for(int l = 1; l < k; ++l) {
-            this.drawAllVertices(entrance, g, 2.0F / (float)(18 - l), matrix4f, vertexConsumers.getBuffer(layers.get(l)), orientation);
+        for(int i = 1; i < offset; ++i) {
+            this.drawAllVertices(entrance, u, 2.0F / (float)(18 - i), matrix4f, vertexConsumers.getBuffer(layers.get(i)), orientation);
         }
     }
 
@@ -96,9 +97,9 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
     }
 
     private void drawAllVertices(EntranceRiftBlockEntity blockEntity, float u, float v, Matrix4f matrix4f, VertexConsumer vertexConsumer, Direction dir) {
-        float r = (RANDOM.nextFloat() * 0.5F + 0.1F) * v;
-        float g = (RANDOM.nextFloat() * 0.5F + 0.4F) * v;
-        float b = (RANDOM.nextFloat() * 0.5F + 0.5F) * v;
+        float r = MathHelper.clamp((RANDOM.nextFloat() * 0.3F + 0.1F) * v, 0, 1);
+        float g = MathHelper.clamp((RANDOM.nextFloat() * 0.4F + 0.1F) * v, 0, 1);
+        float b = MathHelper.clamp((RANDOM.nextFloat() * 0.5F + 0.6F) * v, 0, 1);
         this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b, Direction.SOUTH);
         this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b, Direction.NORTH);
         this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b, Direction.EAST);
