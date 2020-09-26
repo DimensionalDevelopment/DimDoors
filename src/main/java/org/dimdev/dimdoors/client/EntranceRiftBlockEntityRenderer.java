@@ -1,9 +1,12 @@
 package org.dimdev.dimdoors.client;
 
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collector;
 import java.util.stream.IntStream;
 
 import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.ints.AbstractInt2FloatMap;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.util.RGBA;
 
@@ -23,15 +26,18 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<EntranceRiftBlockEntity> {
+    private static final Random RANDOM = new Random(31100L);
+
     public EntranceRiftBlockEntityRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
         super(blockEntityRenderDispatcher);
     }
 
     @Override
     public void render(EntranceRiftBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        List<RenderLayer> layers = IntStream.range(0, 16).mapToObj((i) -> {
-            return MyRenderLayer.getDimensionalPortal(i + 1, blockEntity);
-        }).collect(ImmutableList.toImmutableList());
+//        List<RenderLayer> layers = IntStream.range(0, 16).mapToObj((i) -> {
+//            return MyRenderLayer.getDimensionalPortal(i + 1, blockEntity);
+//        }).collect(ImmutableList.toImmutableList());
+        List<RenderLayer> layers = IntStream.range(0, 16).mapToObj(MyRenderLayer::getPortal).collect(ImmutableList.toImmutableList());
         matrices.push();
         if (MinecraftClient.getInstance().world == null) {
             return;
@@ -90,18 +96,15 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
     }
 
     private void drawAllVertices(EntranceRiftBlockEntity blockEntity, float u, float v, Matrix4f matrix4f, VertexConsumer vertexConsumer, Direction dir) {
-        RGBA[] colors = MyRenderLayer.getColors(6);
-        for (RGBA color : colors) {
-            float red = color.getRed();
-            float green = color.getGreen();
-            float blue = color.getBlue();
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, red, green, blue, Direction.SOUTH);
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, red, green, blue, Direction.NORTH);
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, red, green, blue, Direction.EAST);
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, red, green, blue, Direction.WEST);
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, red, green, blue, Direction.DOWN);
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, red, green, blue, Direction.UP);
-        }
+        float r = (RANDOM.nextFloat() * 0.5F + 0.1F) * v;
+        float g = (RANDOM.nextFloat() * 0.5F + 0.4F) * v;
+        float b = (RANDOM.nextFloat() * 0.5F + 0.5F) * v;
+        this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b, Direction.SOUTH);
+        this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b, Direction.NORTH);
+        this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b, Direction.EAST);
+        this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b, Direction.WEST);
+        this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, r, g, b, Direction.DOWN);
+        this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, r, g, b, Direction.UP);
     }
 
     private void drawVertices(EntranceRiftBlockEntity endPortalBlockEntity, Matrix4f matrix4f, VertexConsumer vertexConsumer, float x1, float x2, float y1, float y2, float z1, float z2, float z3, float z4, float red, float green, float blue, Direction direction) {

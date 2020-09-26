@@ -15,6 +15,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
@@ -80,13 +81,18 @@ public class MyRenderLayer extends RenderLayer {
                         .fog(BLACK_FOG).build(false));
     }
 
-    public static RGBA[] getColors(int count) {
-        Random rand = new Random(31100L);
-        float[][] colors = new float[count][];
-        for (int i = 0; i < count; i++) {
-            colors[i] = new float[]{rand.nextFloat() * 0.4F + 0.1F, rand.nextFloat() * 0.3F + 0.4F, rand.nextFloat() * 0.5F + 0.3F, 1};
+    public static RenderLayer getPortal(int layer) {
+        RenderPhase.Transparency transparency;
+        RenderPhase.Texture texture;
+        if (layer <= 1) {
+            transparency = TRANSLUCENT_TRANSPARENCY;
+            texture = new RenderPhase.Texture(WARP_PATH, false, false);
+        } else {
+            transparency = ADDITIVE_TRANSPARENCY;
+            texture = new RenderPhase.Texture(EndPortalBlockEntityRenderer.PORTAL_TEXTURE, false, false);
         }
-        return RGBA.fromFloatArrays(colors);
+
+        return of("dimensional_portal", VertexFormats.POSITION_COLOR, 7, 256, false, true, RenderLayer.MultiPhaseParameters.builder().transparency(transparency).texture(texture).texturing(new RenderPhase.PortalTexturing(layer)).fog(BLACK_FOG).build(false));
     }
 
     public static class DimensionalPortalTexturing extends RenderPhase.Texturing {
