@@ -34,7 +34,7 @@ public final class ModFeatures {
         ModBlocks.init();
         SANDSTONE_PILLARS_GATEWAY_V2 = new SandstonePillarsV2Gateway();
 
-        int gatewayChance = FabricLoader.getInstance().isDevelopmentEnvironment() ? 20 : ModConfig.WORLD.gatewayGenChance;
+        int gatewayChance = FabricLoader.getInstance().isDevelopmentEnvironment() ? 20 : ModConfig.INSTANCE.getWorldConfig().gatewayGenChance;
         SANDSTONE_PILLARS_FEATURE_V2 = GATEWAY_FEATURE_V2.configure(new SchematicV2GatewayFeatureConfig(SchematicV2Gateway.SCHEMATIC_ID_MAP.get(SANDSTONE_PILLARS_GATEWAY_V2)))
                 .decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP
                         .applyChance(gatewayChance));

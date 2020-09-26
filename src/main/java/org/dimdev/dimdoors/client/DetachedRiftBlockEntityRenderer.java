@@ -20,7 +20,7 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<DetachedRiftBlockEntity> {
     public static final Identifier TESSERACT_PATH = new Identifier("dimdoors:textures/other/tesseract.png");
-    private RGBA COLOR = new RGBA(1, 0.5f, 1, 1);
+    private final RGBA COLOR = new RGBA(1, 0.5f, 1, 1);
 
     private static final Tesseract TESSERACT = new Tesseract();
     private static final RiftCurves.PolygonInfo CURVE = RiftCurves.CURVES.get(0);
@@ -34,29 +34,29 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
     public void render(DetachedRiftBlockEntity rift, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcs, int breakProgress, int alpha) {
         Matrix4f model = matrices.peek().getModel();
 
-        if (ModConfig.GRAPHICS.showRiftCore) {
-            renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
+        if (ModConfig.INSTANCE.getGraphicsConfig().showRiftCore) {
+            this.renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
         } else {
             long timeLeft = showRiftCoreUntil - System.currentTimeMillis();
             if (timeLeft >= 0) {
-                renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
+                this.renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
             }
         }
 
-        renderCrack(vcs.getBuffer(MyRenderLayer.CRACK), matrices, rift);
+        this.renderCrack(vcs.getBuffer(MyRenderLayer.CRACK), matrices, rift);
     }
 
     private void renderCrack(VertexConsumer vc, MatrixStack matrices, DetachedRiftBlockEntity rift) {
         matrices.push();
         matrices.translate(0.5, 0.5, 0.5);
-        RiftCrackRenderer.drawCrack(matrices.peek().getModel(), vc, 0, CURVE, ModConfig.GRAPHICS.riftSize * rift.size, 0xF1234568L * rift.getPos().hashCode());
+        RiftCrackRenderer.drawCrack(matrices.peek().getModel(), vc, 0, CURVE, ModConfig.INSTANCE.getGraphicsConfig().riftSize * rift.size, 0xF1234568L * rift.getPos().hashCode());
         matrices.pop();
     }
 
     private void renderTesseract( VertexConsumer vc, DetachedRiftBlockEntity rift, MatrixStack matrices, float tickDelta) {
-        double radian = nextAngle(rift, tickDelta) * TrigMath.DEG_TO_RAD;
+        double radian = this.nextAngle(rift, tickDelta) * TrigMath.DEG_TO_RAD;
         RGBA color = rift.getColor();
-        if (color == RGBA.NONE) color = COLOR;
+        if (color == RGBA.NONE) color = this.COLOR;
 
         matrices.push();
 

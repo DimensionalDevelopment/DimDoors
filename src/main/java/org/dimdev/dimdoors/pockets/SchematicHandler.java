@@ -64,19 +64,19 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     private List<PocketTemplate> templates;
     private Map<String, Map<String, Integer>> nameMap; // group -> name -> index in templates
     private List<Entry<PocketTemplate, Integer>> usageList = new ArrayList<>(); //template and nr of usages
-    private Map<PocketTemplate, Integer> usageMap = new HashMap<>(); //template -> index in usageList
+    private final Map<PocketTemplate, Integer> usageMap = new HashMap<>(); //template -> index in usageList
 
     public void loadSchematics() {
         long startTime = System.currentTimeMillis();
 
-        templates = new ArrayList<>();
+        this.templates = new ArrayList<>();
 
         String[] names = {"default_dungeon_nether", "default_dungeon_normal", "default_private", "default_public", "default_blank"}; // TODO: don't hardcode
         for (String name : names) {
             try {
                 URL resource = DimensionalDoorsInitializer.class.getResource("/data/dimdoors/pockets/json/" + name + ".json");
                 String jsonString = IOUtils.toString(resource, StandardCharsets.UTF_8);
-                templates.addAll(loadTemplatesFromJson(jsonString));
+                this.templates.addAll(loadTemplatesFromJson(jsonString));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -98,7 +98,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             if (file.isDirectory() || !file.getName().endsWith(".json")) continue;
             try {
                 String jsonString = IOUtils.toString(file.toURI(), StandardCharsets.UTF_8);
-                templates.addAll(loadTemplatesFromJson(jsonString));
+                this.templates.addAll(loadTemplatesFromJson(jsonString));
             } catch (IOException e) {
                 LOGGER.error("Error reading file " + file.toURI() + ". The following exception occured: ", e);
             }
@@ -113,16 +113,16 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                     byte[] schematicBytecode = IOUtils.toByteArray(new FileInputStream(file));
                     Schematic.fromTag(NbtIo.readCompressed(new ByteArrayInputStream(schematicBytecode)));
                     PocketTemplate template = new PocketTemplate(SAVED_POCKETS_GROUP_NAME, file.getName(), null, null, null, null, schematicBytecode, -1, 0);
-                    templates.add(template);
+                    this.templates.add(template);
                 } catch (IOException e) {
                     LOGGER.error("Error reading schematic " + file.getName() + ": " + e);
                 }
             }
         }
 
-        constructNameMap();
+        this.constructNameMap();
 
-        LOGGER.info("Loaded " + templates.size() + " templates in " + (System.currentTimeMillis() - startTime) + " ms.");
+        LOGGER.info("Loaded " + this.templates.size() + " templates in " + (System.currentTimeMillis() - startTime) + " ms.");
     }
 
     private static List<PocketTemplate> loadTemplatesFromJson(String jsonString) {
@@ -218,7 +218,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         for (JsonElement pocketElement : pockets) {
             JsonObject pocket = pocketElement.getAsJsonObject();
             int size = pocket.get("size").getAsInt();
-            if (!ModConfig.POCKETS.loadAllSchematics && size > ModConfig.POCKETS.maxPocketSize) continue;
+            if (!ModConfig.INSTANCE.getPocketsConfig().loadAllSchematics && size > ModConfig.INSTANCE.getPocketsConfig().maxPocketSize) continue;
             String id = pocket.get("id").getAsString();
             String type = pocket.has("type") ? pocket.get("type").getAsString() : null;
             String name = pocket.has("name") ? pocket.get("name").getAsString() : null;
@@ -231,36 +231,36 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     }
 
     private void constructNameMap() {
-        nameMap = new HashMap<>();
+        this.nameMap = new HashMap<>();
         //to prevent having to use too many getters
         String bufferedDirectory = null;
         Map<String, Integer> bufferedMap = null;
 
-        for (PocketTemplate template : templates) {
+        for (PocketTemplate template : this.templates) {
             String dirName = template.getGroup();
             if (dirName != null && dirName.equals(bufferedDirectory)) { //null check not needed
-                bufferedMap.put(template.getId(), templates.indexOf(template));
+                bufferedMap.put(template.getId(), this.templates.indexOf(template));
             } else {
                 bufferedDirectory = dirName;
-                if (nameMap.containsKey(dirName)) { //this will only happen if you have two json files referring to the same directory being loaded non-consecutively
-                    bufferedMap = nameMap.get(dirName);
-                    bufferedMap.put(template.getId(), templates.indexOf(template));
+                if (this.nameMap.containsKey(dirName)) { //this will only happen if you have two json files referring to the same directory being loaded non-consecutively
+                    bufferedMap = this.nameMap.get(dirName);
+                    bufferedMap.put(template.getId(), this.templates.indexOf(template));
                 } else {
                     bufferedMap = new HashMap<>();
-                    bufferedMap.put(template.getId(), templates.indexOf(template));
-                    nameMap.put(dirName, bufferedMap);
+                    bufferedMap.put(template.getId(), this.templates.indexOf(template));
+                    this.nameMap.put(dirName, bufferedMap);
                 }
             }
         }
     }
 
     public Set<String> getTemplateGroups() {
-        return nameMap.keySet();
+        return this.nameMap.keySet();
     }
 
     public Set<String> getTemplateNames(String group) {
-        if (nameMap.containsKey(group)) {
-            return nameMap.get(group).keySet();
+        if (this.nameMap.containsKey(group)) {
+            return this.nameMap.get(group).keySet();
         } else {
             return new HashSet<>();
         }
@@ -274,7 +274,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
      * @return The dungeon template with that group and name, or null if it wasn't found
      */
     public PocketTemplate getTemplate(String group, String name) {
-        Map<String, Integer> groupMap = nameMap.get(group);
+        Map<String, Integer> groupMap = this.nameMap.get(group);
         if (groupMap == null) {
             return null;
         }
@@ -282,7 +282,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         if (index == null) {
             return null;
         }
-        return templates.get(index);
+        return this.templates.get(index);
     }
 
     /**
@@ -298,7 +298,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         // TODO: cache this for faster calls:
         Map<PocketTemplate, Float> weightedTemplates = new HashMap<>();
         int largestSize = 0;
-         for (PocketTemplate template : templates) {
+         for (PocketTemplate template : this.templates) {
             if (template.getGroup().equals(group) && (maxSize == -1 || template.getSize() <= maxSize)) {
                 if (getLargest && template.getSize() > largestSize) {
                     weightedTemplates = new HashMap<>();
@@ -316,11 +316,11 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     }
 
     public PocketTemplate getPersonalPocketTemplate() {
-        return getRandomTemplate("private", -1, ModConfig.POCKETS.privatePocketSize, true);
+        return this.getRandomTemplate("private", -1, ModConfig.INSTANCE.getPocketsConfig().privatePocketSize, true);
     }
 
     public PocketTemplate getPublicPocketTemplate() {
-        return getRandomTemplate("public", -1, ModConfig.POCKETS.publicPocketSize, true);
+        return this.getRandomTemplate("public", -1, ModConfig.INSTANCE.getPocketsConfig().publicPocketSize, true);
     }
 
     public static void saveSchematic(Schematic schematic, String id) {
@@ -346,13 +346,13 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     public void saveSchematicForEditing(Schematic schematic, String id) {
         saveSchematic(schematic, id);
 
-        if (!nameMap.containsKey(SAVED_POCKETS_GROUP_NAME)) {
-            nameMap.put(SAVED_POCKETS_GROUP_NAME, new HashMap<>());
+        if (!this.nameMap.containsKey(SAVED_POCKETS_GROUP_NAME)) {
+            this.nameMap.put(SAVED_POCKETS_GROUP_NAME, new HashMap<>());
         }
 
-        Map<String, Integer> savedDungeons = nameMap.get(SAVED_POCKETS_GROUP_NAME);
+        Map<String, Integer> savedDungeons = this.nameMap.get(SAVED_POCKETS_GROUP_NAME);
         if (savedDungeons.containsKey(id)) {
-            templates.remove((int) savedDungeons.remove(id));
+            this.templates.remove((int) savedDungeons.remove(id));
         }
 
         //create byte array
@@ -367,59 +367,59 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         }
 
         if (schematicBytecode != null) {
-            templates.add(new PocketTemplate(SAVED_POCKETS_GROUP_NAME, id, null, null, null, schematic, schematicBytecode, -1, 0));
-            nameMap.get(SAVED_POCKETS_GROUP_NAME).put(id, templates.size() - 1);
+            this.templates.add(new PocketTemplate(SAVED_POCKETS_GROUP_NAME, id, null, null, null, schematic, schematicBytecode, -1, 0));
+            this.nameMap.get(SAVED_POCKETS_GROUP_NAME).put(id, this.templates.size() - 1);
         }
     }
 
     private int getUsage(PocketTemplate template) {
-        if (!usageMap.containsKey(template)) return -1;
-        int index = usageMap.get(template);
-        if (usageList.size() <= index) return -1;
-        PocketTemplate listTemplate = usageList.get(index).getKey();
+        if (!this.usageMap.containsKey(template)) return -1;
+        int index = this.usageMap.get(template);
+        if (this.usageList.size() <= index) return -1;
+        PocketTemplate listTemplate = this.usageList.get(index).getKey();
         if (listTemplate == template) {
-            int usage = usageList.get(index).getValue();
+            int usage = this.usageList.get(index).getValue();
             return usage;
         } else {//should never happen, but you never really know.
             LOGGER.warn("Pocket Template usage list is desynched from the usage map, re-sorting and synching now.");
-            reSortUsages();
-            return getUsage(template);
+            this.reSortUsages();
+            return this.getUsage(template);
         }
     }
 
     public boolean isUsedOftenEnough(PocketTemplate template) {
-        int maxNrOfCachedSchematics = ModConfig.POCKETS.cachedSchematics;
-        int usageRank = usageMap.get(template);
+        int maxNrOfCachedSchematics = ModConfig.INSTANCE.getPocketsConfig().cachedSchematics;
+        int usageRank = this.usageMap.get(template);
         return usageRank < maxNrOfCachedSchematics;
     }
 
     public void incrementUsage(PocketTemplate template) {
         int startIndex;
         int newUsage;
-        if (!usageMap.containsKey(template)) {
-            usageList.add(new SimpleEntry<>(null, 0)); //add a dummy entry at the end
-            startIndex = usageList.size() - 1;
+        if (!this.usageMap.containsKey(template)) {
+            this.usageList.add(new SimpleEntry<>(null, 0)); //add a dummy entry at the end
+            startIndex = this.usageList.size() - 1;
             newUsage = 1;
         } else {
-            startIndex = usageMap.get(template);
-            newUsage = usageList.get(startIndex).getValue() + 1;
+            startIndex = this.usageMap.get(template);
+            newUsage = this.usageList.get(startIndex).getValue() + 1;
         }
 
-        int insertionIndex = findFirstEqualOrLessUsage(newUsage, 0, startIndex);
+        int insertionIndex = this.findFirstEqualOrLessUsage(newUsage, 0, startIndex);
         //shift all entries inbetween the insertionIndex and the currentIndex to the right
         PocketTemplate currentTemplate;
         for (int i = startIndex; i > insertionIndex; i--) {
-            usageList.set(i, usageList.get(i - 1));
-            currentTemplate = usageList.get(i).getKey();
-            usageMap.put(currentTemplate, i);
+            this.usageList.set(i, this.usageList.get(i - 1));
+            currentTemplate = this.usageList.get(i).getKey();
+            this.usageMap.put(currentTemplate, i);
         }
         //insert the incremented entry at the correct place
-        usageList.set(insertionIndex, new SimpleEntry(template, newUsage));
-        usageMap.put(template, insertionIndex);
+        this.usageList.set(insertionIndex, new SimpleEntry(template, newUsage));
+        this.usageMap.put(template, insertionIndex);
 
-        if (insertionIndex < ModConfig.POCKETS.cachedSchematics) { //if the schematic of this template is supposed to get cached
-            if (usageList.size() > ModConfig.POCKETS.cachedSchematics) { //if there are more used templates than there are schematics allowed to be cached
-                usageList.get(ModConfig.POCKETS.cachedSchematics).getKey().setSchematic(null); //make sure that the number of cached schematics is limited
+        if (insertionIndex < ModConfig.INSTANCE.getPocketsConfig().cachedSchematics) { //if the schematic of this template is supposed to get cached
+            if (this.usageList.size() > ModConfig.INSTANCE.getPocketsConfig().cachedSchematics) { //if there are more used templates than there are schematics allowed to be cached
+                this.usageList.get(ModConfig.INSTANCE.getPocketsConfig().cachedSchematics).getKey().setSchematic(null); //make sure that the number of cached schematics is limited
             }
         }
     }
@@ -427,33 +427,33 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     //uses binary search
     private int findFirstEqualOrLessUsage(int usage, int indexMin, int indexMax) {
 
-        if (usageList.get(indexMin).getValue() <= usage) {
+        if (this.usageList.get(indexMin).getValue() <= usage) {
             return indexMin;
         }
         int halfwayIndex = (indexMin + indexMax) / 2;
-        if (usageList.get(halfwayIndex).getValue() > usage) {
-            return findFirstEqualOrLessUsage(usage, halfwayIndex + 1, indexMax);
+        if (this.usageList.get(halfwayIndex).getValue() > usage) {
+            return this.findFirstEqualOrLessUsage(usage, halfwayIndex + 1, indexMax);
         } else {
-            return findFirstEqualOrLessUsage(usage, indexMin, halfwayIndex);
+            return this.findFirstEqualOrLessUsage(usage, indexMin, halfwayIndex);
         }
     }
 
     private void reSortUsages() {
         //sort the usageList
-        usageList = mergeSortPairArrayByPairValue(usageList);
+        this.usageList = this.mergeSortPairArrayByPairValue(this.usageList);
         //make sure that everything in the usageList is actually in the usageMap
-        for (Entry<PocketTemplate, Integer> pair : usageList) {
-            usageMap.put(pair.getKey(), pair.getValue());
+        for (Entry<PocketTemplate, Integer> pair : this.usageList) {
+            this.usageMap.put(pair.getKey(), pair.getValue());
         }
 
         //make sure that everything in the usageMap is actually in the usageList
-        for (Entry<PocketTemplate, Integer> entry : usageMap.entrySet()) {
+        for (Entry<PocketTemplate, Integer> entry : this.usageMap.entrySet()) {
             PocketTemplate template = entry.getKey();
             int index = entry.getValue();
-            PocketTemplate template2 = usageList.get(index).getKey();
-            if (index >= usageList.size() || template != template2) {
-                entry.setValue(usageList.size());
-                usageList.add(new SimpleEntry(template, 1));
+            PocketTemplate template2 = this.usageList.get(index).getKey();
+            if (index >= this.usageList.size() || template != template2) {
+                entry.setValue(this.usageList.size());
+                this.usageList.add(new SimpleEntry(template, 1));
             }
         }
     }
@@ -463,9 +463,9 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         if (input.size() < 2) {
             return input;
         } else {
-            List<Entry<PocketTemplate, Integer>> a = mergeSortPairArrayByPairValue(input.subList(0, input.size() / 2));
-            List<Entry<PocketTemplate, Integer>> b = mergeSortPairArrayByPairValue(input.subList(input.size() / 2, input.size()));
-            return mergePairArraysByPairValue(a, b);
+            List<Entry<PocketTemplate, Integer>> a = this.mergeSortPairArrayByPairValue(input.subList(0, input.size() / 2));
+            List<Entry<PocketTemplate, Integer>> b = this.mergeSortPairArrayByPairValue(input.subList(input.size() / 2, input.size()));
+            return this.mergePairArraysByPairValue(a, b);
         }
     }
 

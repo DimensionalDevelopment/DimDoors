@@ -19,7 +19,7 @@ import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 
 public class PocketRegistry extends PersistentState {
-    private Codec<Map<Integer, Pocket>> pocketsCodec = Codec.unboundedMap(Codec.INT, Pocket.CODEC);
+    private final Codec<Map<Integer, Pocket>> pocketsCodec = Codec.unboundedMap(Codec.INT, Pocket.CODEC);
 
     private static final String DATA_NAME = "pocketlib_pockets";
 
@@ -33,10 +33,10 @@ public class PocketRegistry extends PersistentState {
 
     public PocketRegistry() {
         super(DATA_NAME);
-        gridSize = ModConfig.POCKETS.pocketGridSize;
+        this.gridSize = ModConfig.INSTANCE.getPocketsConfig().pocketGridSize;
 
-        nextID = 0;
-        pockets = new HashMap<>();
+        this.nextID = 0;
+        this.pockets = new HashMap<>();
     }
 
     public PocketRegistry(String s) {
@@ -45,20 +45,20 @@ public class PocketRegistry extends PersistentState {
 
     @Override
     public void fromTag(CompoundTag tag) {
-        gridSize = tag.getInt("gridSize");
-        privatePocketSize = tag.getInt("privatePocketSize");
-        publicPocketSize = tag.getInt("publicPocketSize");
-        pockets = NbtUtil.deserialize(tag.get("pockets"), pocketsCodec);
-        nextID = tag.getInt("nextID");
+        this.gridSize = tag.getInt("gridSize");
+        this.privatePocketSize = tag.getInt("privatePocketSize");
+        this.publicPocketSize = tag.getInt("publicPocketSize");
+        this.pockets = NbtUtil.deserialize(tag.get("pockets"), this.pocketsCodec);
+        this.nextID = tag.getInt("nextID");
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        tag.putInt("gridSize", gridSize);
-        tag.putInt("privatePocketSize", privatePocketSize);
-        tag.putInt("publicPocketSize", publicPocketSize);
-        tag.put("pockets", NbtUtil.serialize(pockets, pocketsCodec));
-        tag.putInt("nextID", nextID);
+        tag.putInt("gridSize", this.gridSize);
+        tag.putInt("privatePocketSize", this.privatePocketSize);
+        tag.putInt("publicPocketSize", this.publicPocketSize);
+        tag.put("pockets", NbtUtil.serialize(this.pockets, this.pocketsCodec));
+        tag.putInt("nextID", this.nextID);
         return tag;
     }
 
@@ -86,7 +86,7 @@ public class PocketRegistry extends PersistentState {
      */
     public Pocket newPocket() {
         Pocket pocket = null;
-        while (pocket == null) pocket = newPocket(nextID++);
+        while (pocket == null) pocket = this.newPocket(this.nextID++);
         return pocket;
     }
 
@@ -96,18 +96,18 @@ public class PocketRegistry extends PersistentState {
      * @return The newly created Pocket, or null if that ID is already taken.
      */
     public Pocket newPocket(int id) {
-        if (pockets.get(id) != null) return null;
-        GridUtil.GridPos pos = idToGridPos(id);
-        Pocket pocket = new Pocket(id, world.getRegistryKey(), pos.x, pos.z);
-        pockets.put(id, pocket);
-        if (id >= nextID) nextID = id + 1;
-        markDirty();
+        if (this.pockets.get(id) != null) return null;
+        GridUtil.GridPos pos = this.idToGridPos(id);
+        Pocket pocket = new Pocket(id, this.world.getRegistryKey(), pos.x, pos.z);
+        this.pockets.put(id, pocket);
+        if (id >= this.nextID) this.nextID = id + 1;
+        this.markDirty();
         return pocket;
     }
 
     public void removePocket(int id) {
-        pockets.remove(id);
-        markDirty();
+        this.pockets.remove(id);
+        this.markDirty();
     }
 
     /**
@@ -116,7 +116,7 @@ public class PocketRegistry extends PersistentState {
      * @return The pocket with that ID, or null if there was no pocket with that ID.
      */
     public Pocket getPocket(int id) {
-        return pockets.get(id);
+        return this.pockets.get(id);
     }
 
     public GridUtil.GridPos idToGridPos(int id) {
@@ -135,8 +135,8 @@ public class PocketRegistry extends PersistentState {
      * @return The BlockPos of the pocket
      */
     public BlockPos idToPos(int id) {
-        GridUtil.GridPos pos = idToGridPos(id);
-        return new BlockPos(pos.x * gridSize * 16, 0, pos.z * gridSize * 16);
+        GridUtil.GridPos pos = this.idToGridPos(id);
+        return new BlockPos(pos.x * this.gridSize * 16, 0, pos.z * this.gridSize * 16);
     }
 
     /**
@@ -146,35 +146,35 @@ public class PocketRegistry extends PersistentState {
      * @return The ID of the pocket, or -1 if there is no pocket at that location
      */
     public int posToID(BlockPos pos) {
-        return gridPosToID(new GridUtil.GridPos(pos.getX() / (gridSize * 16), pos.getZ() / (gridSize * 16)));
+        return this.gridPosToID(new GridUtil.GridPos(pos.getX() / (this.gridSize * 16), pos.getZ() / (this.gridSize * 16)));
     }
 
     public Pocket getPocketAt(BlockPos pos) { // TODO: use BlockPos
-        return getPocket(posToID(pos));
+        return this.getPocket(this.posToID(pos));
     }
 
     public boolean isWithinPocketBounds(BlockPos pos) {
-        Pocket pocket = getPocketAt(pos);
+        Pocket pocket = this.getPocketAt(pos);
         return pocket != null && pocket.isInBounds(pos);
     }
 
     public int getGridSize() {
-        return gridSize;
+        return this.gridSize;
     }
 
     public int getPrivatePocketSize() {
-        return privatePocketSize;
+        return this.privatePocketSize;
     }
 
     public int getPublicPocketSize() {
-        return publicPocketSize;
+        return this.publicPocketSize;
     }
 
     public Map<Integer, Pocket> getPockets() {
-        return pockets;
+        return this.pockets;
     }
 
     public int getNextID() {
-        return nextID;
+        return this.nextID;
     }
 }

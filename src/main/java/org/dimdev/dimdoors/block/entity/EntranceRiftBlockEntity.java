@@ -36,8 +36,8 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     public boolean teleport(Entity entity) {
         boolean status = super.teleport(entity);
 
-        if (riftStateChanged && !data.isAlwaysDelete()) {
-            markDirty();
+        if (this.riftStateChanged && !this.data.isAlwaysDelete()) {
+            this.markDirty();
         }
 
         return status;
@@ -45,8 +45,8 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
     @Override
     public boolean receiveEntity(Entity entity, float yawOffset) {
-        Vec3d targetPos = Vec3d.ofCenter(pos).add(Vec3d.of(getOrientation().getVector()).multiply(ModConfig.GENERAL.teleportOffset + 0.5));
-        TeleportUtil.teleport(entity, world, targetPos, yawOffset);
+        Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getVector()).multiply(ModConfig.INSTANCE.getGeneralConfig().teleportOffset + 0.5));
+        TeleportUtil.teleport(entity, this.world, targetPos, yawOffset);
         return true;
     }
 
@@ -60,7 +60,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
         float[][] colors = new float[count][];
 
         for (int i = 0; i < count; i++) {
-            colors[i] = getEntranceRenderColor(rand);
+            colors[i] = this.getEntranceRenderColor(rand);
         }
 
         return RGBA.fromFloatArrays(colors);
@@ -70,7 +70,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     protected float[] getEntranceRenderColor(Random rand) {
         float red, green, blue;
 
-        if (world.getRegistryKey() == World.NETHER) {
+        if (this.world.getRegistryKey() == World.NETHER) {
             red = rand.nextFloat() * 0.5F + 0.4F;
             green = rand.nextFloat() * 0.05F;
             blue = rand.nextFloat() * 0.05F;

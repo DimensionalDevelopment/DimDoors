@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.entity;
 import java.util.Random;
 
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.entity.ai.MonolithTask;
+import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -59,31 +59,31 @@ public class MonolithEntity extends MobEntity {
     public MonolithEntity(EntityType<? extends MonolithEntity> type, World world) {
         super(ModEntityTypes.MONOLITH, world);
         random = this.getRandom();
-        noClip = true;
-        aggroCap = MathHelper.nextInt(getRandom(), MIN_AGGRO_CAP, MAX_AGGRO_CAP);
+        this.noClip = true;
+        this.aggroCap = MathHelper.nextInt(this.getRandom(), MIN_AGGRO_CAP, MAX_AGGRO_CAP);
         this.setNoGravity(true);
-        lookControl = new LookControl(this) {
+        this.lookControl = new LookControl(this) {
             @Override
             protected boolean shouldStayHorizontal() {
                 return false;
             }
         };
 
-        setInvulnerable(true);
+        this.setInvulnerable(true);
     }
 
     public EntityDimensions getDimensions(EntityPose entityPose) {
-        return DIMENSIONS;
+        return this.DIMENSIONS;
     }
 
     public boolean isDangerous() {
-        return ModConfig.MONOLITHS.monolithTeleportation && (ModDimensions.isLimboDimension(world) || ModConfig.MONOLITHS.dangerousLimboMonoliths);
+        return ModConfig.INSTANCE.getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.world) || ModConfig.INSTANCE.getMonolithsConfig().dangerousLimboMonoliths);
     }
 
     @Override
     public boolean damage(DamageSource source, float amount) {
         if (source != DamageSource.IN_WALL) {
-            aggro = MAX_AGGRO;
+            this.aggro = MAX_AGGRO;
         }
         return false;
     }
@@ -122,7 +122,7 @@ public class MonolithEntity extends MobEntity {
     protected void initDataTracker() {
         super.initDataTracker();
         // Add a short for the aggro level
-        dataTracker.startTracking(AGGRO, 0);
+        this.dataTracker.startTracking(AGGRO, 0);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class MonolithEntity extends MobEntity {
     @Override
     protected void mobTick() {
         // Remove this Monolith if it's not in Limbo or in a pocket dungeon
-        if (!(ModDimensions.isLimboDimension(world) || ModDimensions.isDimDoorsPocketDimension(world))) {
+        if (!(ModDimensions.isLimboDimension(this.world) || ModDimensions.isDimDoorsPocketDimension(this.world))) {
             this.remove();
             super.mobTick();
             return;
@@ -159,17 +159,17 @@ public class MonolithEntity extends MobEntity {
             return;
         }
 
-        if (!world.isClient) {
+        if (!this.world.isClient) {
             if (player.distanceTo(this) > 70) {
                 return;
             }
 
-            int aggro = dataTracker.get(AGGRO);
+            int aggro = this.dataTracker.get(AGGRO);
             // Server side...
             // Rapidly increase the aggro level if this Monolith can see the player
             if (visibility) {
-                if (ModDimensions.isLimboDimension(world)) {
-                    if (isDangerous()) {
+                if (ModDimensions.isLimboDimension(this.world)) {
+                    if (this.isDangerous()) {
                         aggro++;
                     } else {
                         aggro += 36;
@@ -179,11 +179,11 @@ public class MonolithEntity extends MobEntity {
                     aggro += 3;
                 }
             } else {
-                if (isDangerous()) {
-                    if (aggro > aggroCap) {
+                if (this.isDangerous()) {
+                    if (aggro > this.aggroCap) {
                         // Decrease aggro over time
                         aggro--;
-                    } else if (aggro < aggroCap) {
+                    } else if (aggro < this.aggroCap) {
                         // Increase aggro if a player is within range and aggro < aggroCap
                         aggro++;
                     }
@@ -192,16 +192,16 @@ public class MonolithEntity extends MobEntity {
                 }
             }
             // Clamp the aggro level
-            int maxAggro = isDangerous() ? MAX_AGGRO : 180;
+            int maxAggro = this.isDangerous() ? MAX_AGGRO : 180;
             aggro = (short) MathHelper.clamp(aggro, 0, maxAggro);
-            dataTracker.set(AGGRO, aggro);
+            this.dataTracker.set(AGGRO, aggro);
         }
     }
 
     @Environment(EnvType.CLIENT)
     public int getTextureState() {
         // Determine texture state from aggro progress
-        return MathHelper.clamp(MAX_TEXTURE_STATE * dataTracker.get(AGGRO) / MAX_AGGRO, 0, MAX_TEXTURE_STATE);
+        return MathHelper.clamp(MAX_TEXTURE_STATE * this.dataTracker.get(AGGRO) / MAX_AGGRO, 0, MAX_TEXTURE_STATE);
     }
 
     /**
@@ -210,20 +210,20 @@ public class MonolithEntity extends MobEntity {
      * @param pos The position to play the sounds at
      */
     public void playSounds(Vec3d pos) {
-        float aggroPercent = getAggroProgress();
-        if (soundTime <= 0) {
-            playSound(ModSoundEvents.MONK, 1F, 1F);
-            soundTime = 100;
+        float aggroPercent = this.getAggroProgress();
+        if (this.soundTime <= 0) {
+            this.playSound(ModSoundEvents.MONK, 1F, 1F);
+            this.soundTime = 100;
         }
-        if (aggroPercent > 0.70 && soundTime < 100) {
-            world.playSound(null, new BlockPos(pos), ModSoundEvents.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + getRandom().nextGaussian()));
-            soundTime = 100 + getRandom().nextInt(75);
+        if (aggroPercent > 0.70 && this.soundTime < 100) {
+            this.world.playSound(null, new BlockPos(pos), ModSoundEvents.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + this.getRandom().nextGaussian()));
+            this.soundTime = 100 + this.getRandom().nextInt(75);
         }
-        if (aggroPercent > 0.80 && soundTime < MAX_SOUND_COOLDOWN) {
-            world.playSound(null, new BlockPos(pos), ModSoundEvents.TEARING, SoundCategory.HOSTILE, 7, 1F);
-            soundTime = 250;
+        if (aggroPercent > 0.80 && this.soundTime < MAX_SOUND_COOLDOWN) {
+            this.world.playSound(null, new BlockPos(pos), ModSoundEvents.TEARING, SoundCategory.HOSTILE, 7, 1F);
+            this.soundTime = 250;
         }
-        soundTime--;
+        this.soundTime--;
     }
 
     @Override
@@ -252,38 +252,38 @@ public class MonolithEntity extends MobEntity {
     }
 
     public float getAggroProgress() {
-        return (float) aggro / MAX_AGGRO;
+        return (float) this.aggro / MAX_AGGRO;
     }
 
     @Override
     protected void initGoals() {
         super.initGoals();
-        goalSelector.add(0, new MonolithTask(this, MAX_AGGRO_RANGE));
+        this.goalSelector.add(0, new MonolithAggroGoal(this, MAX_AGGRO_RANGE));
     }
 
     public void facePlayer(PlayerEntity player) {
-        lookControl.lookAt(player, 1.0f, 1.0f);
+        this.lookControl.lookAt(player, 1.0f, 1.0f);
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
-        tag.putInt("Aggro", aggro);
+        tag.putInt("Aggro", this.aggro);
         return tag;
     }
 
     @Override
     public void fromTag(CompoundTag nbt) {
         super.fromTag(nbt);
-        aggro = nbt.getInt("Aggro");
+        this.aggro = nbt.getInt("Aggro");
     }
 
     public int getAggro() {
-        return dataTracker.get(AGGRO);
+        return this.dataTracker.get(AGGRO);
     }
 
     public void setAggro(int aggro) {
-        dataTracker.set(AGGRO, aggro);
+        this.dataTracker.set(AGGRO, aggro);
     }
 
     @Override

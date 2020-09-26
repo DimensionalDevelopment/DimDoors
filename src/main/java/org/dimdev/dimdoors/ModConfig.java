@@ -7,8 +7,6 @@ import org.dimdev.dimdoors.util.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.network.PacketByteBuf;
-
 public final class ModConfig {
     public static ModConfig INSTANCE;
     public static final General GENERAL = new General();
