@@ -3,6 +3,12 @@ package org.dimdev.dimdoors;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.dimdev.dimdoors.util.Codecs;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.network.PacketByteBuf;
+
 public final class ModConfig {
     public static ModConfig INSTANCE;
     public static final General GENERAL = new General();
@@ -60,6 +66,18 @@ public final class ModConfig {
     }
 
     public static class General {
+        public static final Codec<General> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+                Codec.BOOL.fieldOf("closeDoorBehind").forGetter((general) -> general.closeDoorBehind),
+                Codec.DOUBLE.fieldOf("teleportOffset").forGetter((general) -> general.teleportOffset),
+                Codec.BOOL.fieldOf("riftBoundingBoxInCreative").forGetter((general) -> general.riftBoundingBoxInCreative),
+                Codec.DOUBLE.fieldOf("riftCloseSpeed").forGetter((general) -> general.riftCloseSpeed),
+                Codec.DOUBLE.fieldOf("riftGrowthSpeed").forGetter((general) -> general.riftGrowthSpeed),
+                Codec.INT.fieldOf("depthSpreadFactor").forGetter((general) -> general.depthSpreadFactor),
+                Codec.BOOL.fieldOf("useEnderPearlsInCrafting").forGetter((general) -> general.useEnderPearlsInCrafting),
+                Codec.DOUBLE.fieldOf("endermanSpawnChance").forGetter((general) -> general.endermanSpawnChance),
+                Codec.DOUBLE.fieldOf("endermanAggressiveChance").forGetter((general) -> general.endermanAggressiveChance)
+        ).apply(instance, General::create));
+
         public boolean closeDoorBehind = false;
         public double teleportOffset = 0.5;
         public boolean riftBoundingBoxInCreative;
@@ -86,6 +104,14 @@ public final class ModConfig {
     }
 
     public static class Pockets {
+        public static final Codec<Pockets> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+                Codec.INT.fieldOf("pocketGridSize").forGetter((pockets) -> pockets.pocketGridSize),
+                Codec.INT.fieldOf("maxPocketSize").forGetter((pockets) -> pockets.maxPocketSize),
+                Codec.INT.fieldOf("privatePocketSize").forGetter((pockets) -> pockets.privatePocketSize),
+                Codec.INT.fieldOf("publicPocketSize").forGetter((pockets) -> pockets.publicPocketSize),
+                Codec.BOOL.fieldOf("loadAllSchematics").forGetter((pockets) -> pockets.loadAllSchematics),
+                Codec.INT.fieldOf("cachedSchematics").forGetter((pockets) -> pockets.cachedSchematics)
+        ).apply(instance, Pockets::create));
         public int pocketGridSize = 32;
         public int maxPocketSize = 15;
         public int privatePocketSize = 2;
@@ -106,6 +132,12 @@ public final class ModConfig {
     }
 
     public static class World {
+        public static final Codec<World> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.DOUBLE.fieldOf("clusterGenChance").forGetter((world) -> world.clusterGenChance),
+                Codec.INT.fieldOf("gatewayGenChance").forGetter((world) -> world.gatewayGenChance),
+                Codecs.INT_SET.fieldOf("clusterDimBlacklist").forGetter((world) -> world.clusterDimBlacklist),
+                Codecs.INT_SET.fieldOf("gatewayDimBlacklist").forGetter((world) -> world.gatewayDimBlacklist)
+        ).apply(instance, World::create));
         public double clusterGenChance = 0.0002;
         public int gatewayGenChance = 80;
         public Set<Integer> clusterDimBlacklist = new LinkedHashSet<>();
@@ -122,6 +154,9 @@ public final class ModConfig {
     }
 
     public static class Dungeons {
+        public static final Codec<Dungeons> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.INT.fieldOf("maxDungeonDepth").forGetter((dungeons) -> dungeons.maxDungeonDepth)
+        ).apply(instance, Dungeons::create));
         public int maxDungeonDepth = 50;
 
         public static Dungeons create(int maxDungeonDepth) {
@@ -132,6 +167,10 @@ public final class ModConfig {
     }
 
     public static class Monoliths {
+        public static final Codec<Monoliths> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.BOOL.fieldOf("dangerousLimboMonoliths").forGetter((monoliths) -> monoliths.dangerousLimboMonoliths),
+                Codec.BOOL.fieldOf("monolithTeleportation").forGetter((monoliths) -> monoliths.monolithTeleportation)
+        ).apply(instance, Monoliths::create));
         public boolean dangerousLimboMonoliths = false;
         public boolean monolithTeleportation = true;
 
@@ -144,6 +183,11 @@ public final class ModConfig {
     }
 
     public static class Limbo {
+        public static final Codec<Limbo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.BOOL.fieldOf("universalLimbo").forGetter((limbo) -> limbo.universalLimbo),
+                Codec.BOOL.fieldOf("hardcoreLimbo").forGetter((limbo) -> limbo.hardcoreLimbo),
+                Codec.DOUBLE.fieldOf("decaySpreadChance").forGetter((limbo) -> limbo.decaySpreadChance)
+        ).apply(instance, Limbo::create));
         public boolean universalLimbo = false;
         public boolean hardcoreLimbo = false;
         public double decaySpreadChance = 0.5;
@@ -158,6 +202,12 @@ public final class ModConfig {
     }
 
     public static class Graphics {
+        public static final Codec<Graphics> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.BOOL.fieldOf("showRiftCore").forGetter((graphics) -> graphics.showRiftCore),
+                Codec.INT.fieldOf("highlightRiftCoreFor").forGetter((graphics) -> graphics.highlightRiftCoreFor),
+                Codec.DOUBLE.fieldOf("riftSize").forGetter((graphics) -> graphics.riftSize),
+                Codec.DOUBLE.fieldOf("riftJitter").forGetter((graphics) -> graphics.riftJitter)
+        ).apply(instance, Graphics::create));
         public boolean showRiftCore = false;
         public int highlightRiftCoreFor = 15000;
         public double riftSize = 1;
