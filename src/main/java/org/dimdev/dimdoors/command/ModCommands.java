@@ -9,6 +9,7 @@ public final class ModCommands {
             PocketCommand.register(dispatcher);
             SchematicV2Command.register(dispatcher);
             SchematicCommand.register(dispatcher);
+            DimdoorsConfigCommand.register(dispatcher);
         });
     }
 }

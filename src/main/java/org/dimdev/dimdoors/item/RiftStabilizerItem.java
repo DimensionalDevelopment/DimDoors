@@ -25,8 +25,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 public class RiftStabilizerItem extends Item {
-    public static final String ID = "rift_stabilizer";
-
     public RiftStabilizerItem(Settings settings) {
         super(settings);
     }
@@ -42,7 +40,7 @@ public class RiftStabilizerItem extends Item {
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {
                 player.sendMessage(new TranslatableText("tools.rift_miss"), true);
-                DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.GRAPHICS.highlightRiftCoreFor;
+                DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
                 return new TypedActionResult<>(ActionResult.FAIL, stack);
             }
         }
@@ -54,10 +52,10 @@ public class RiftStabilizerItem extends Item {
                 world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1); // TODO: different sound
                 stack.damage(1, player, a -> {
                 });
-                player.sendMessage(new TranslatableText(getTranslationKey() + ".stabilized"), true);
+                player.sendMessage(new TranslatableText(this.getTranslationKey() + ".stabilized"), true);
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {
-                player.sendMessage(new TranslatableText(getTranslationKey() + ".already_stabilized"), true);
+                player.sendMessage(new TranslatableText(this.getTranslationKey() + ".already_stabilized"), true);
             }
         }
         return new TypedActionResult<>(ActionResult.FAIL, stack);
@@ -66,6 +64,6 @@ public class RiftStabilizerItem extends Item {
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
-        list.add(new TranslatableText(getTranslationKey() + ".info"));
+        list.add(new TranslatableText(this.getTranslationKey() + ".info"));
     }
 }

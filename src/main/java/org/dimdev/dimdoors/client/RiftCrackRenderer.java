@@ -25,7 +25,7 @@ public final class RiftCrackRenderer {
         // Calculate jitter like for monoliths, depending x, y and z coordinates to avoid all rifts syncing
         float time = (System.currentTimeMillis() + riftRandom) % 2000000;
 
-        double jitterScale = ModConfig.GRAPHICS.riftJitter * size * size * size / 2000f;
+        double jitterScale = ModConfig.INSTANCE.getGraphicsConfig().riftJitter * size * size * size / 2000f;
         // We use random constants here on purpose just to get different wave forms
         double xJitter = jitterScale * Math.sin(1.1f * time * size * jitterSpeed) * Math.sin(0.8f * time * jitterSpeed);
         double yJitter = jitterScale * Math.sin(1.2f * time * size * jitterSpeed) * Math.sin(0.9f * time * jitterSpeed);

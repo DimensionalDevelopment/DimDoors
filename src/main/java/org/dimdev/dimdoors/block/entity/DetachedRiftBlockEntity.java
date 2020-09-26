@@ -42,63 +42,63 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
 
     @Override
     public void tick() {
-        if (world == null) {
+        if (this.world == null) {
             return;
         }
 
-        if (world.getBlockState(pos).getBlock() != ModBlocks.DETACHED_RIFT) {
-            markInvalid();
+        if (this.world.getBlockState(this.pos).getBlock() != ModBlocks.DETACHED_RIFT) {
+            this.markInvalid();
             return;
         }
 
-        if (!world.isClient() && random.nextDouble() < ModConfig.GENERAL.endermanSpawnChance) {
-            EndermanEntity enderman = EntityType.ENDERMAN.spawn((ServerWorld) world, null, null, null, pos, SpawnReason.STRUCTURE, false, false);
+        if (!this.world.isClient() && random.nextDouble() < ModConfig.INSTANCE.getGeneralConfig().endermanSpawnChance) {
+            EndermanEntity enderman = EntityType.ENDERMAN.spawn((ServerWorld) this.world, null, null, null, this.pos, SpawnReason.STRUCTURE, false, false);
 
-            if (random.nextDouble() < ModConfig.GENERAL.endermanAggressiveChance) {
+            if (random.nextDouble() < ModConfig.INSTANCE.getGeneralConfig().endermanAggressiveChance) {
                 if (enderman != null) {
-                    enderman.setTarget(world.getClosestPlayer(enderman, 50));
+                    enderman.setTarget(this.world.getClosestPlayer(enderman, 50));
                 }
             }
         }
 
-        if (closing) {
-            if (size > 0) {
-                size -= ModConfig.GENERAL.riftCloseSpeed;
+        if (this.closing) {
+            if (this.size > 0) {
+                this.size -= ModConfig.INSTANCE.getGeneralConfig().riftCloseSpeed;
             } else {
-                world.removeBlock(pos, false);
+                this.world.removeBlock(this.pos, false);
             }
-        } else if (!stabilized) {
-            size += ModConfig.GENERAL.riftGrowthSpeed / (size + 1);
+        } else if (!this.stabilized) {
+            this.size += ModConfig.INSTANCE.getGeneralConfig().riftGrowthSpeed / (this.size + 1);
         }
     }
 
     public void setClosing(boolean closing) {
         this.closing = closing;
-        markDirty();
+        this.markDirty();
     }
 
     public void setStabilized(boolean stabilized) {
         this.stabilized = stabilized;
-        markDirty();
+        this.markDirty();
     }
 
     @Override
     protected CompoundTag serialize(CompoundTag tag) {
         super.serialize(tag);
-        tag.putBoolean("closing", closing);
-        tag.putBoolean("stablized", stabilized);
-        tag.putInt("spawnedEnderManId", spawnedEndermanId);
-        tag.putFloat("size", size);
+        tag.putBoolean("closing", this.closing);
+        tag.putBoolean("stablized", this.stabilized);
+        tag.putInt("spawnedEnderManId", this.spawnedEndermanId);
+        tag.putFloat("size", this.size);
         return tag;
     }
 
     @Override
     protected void deserialize(CompoundTag tag) {
         super.deserialize(tag);
-        closing = tag.getBoolean("closing");
-        stabilized = tag.getBoolean("stablized");
-        spawnedEndermanId = tag.getInt("spawnedEnderManId");
-        size = tag.getFloat("size");
+        this.closing = tag.getBoolean("closing");
+        this.stabilized = tag.getBoolean("stablized");
+        this.spawnedEndermanId = tag.getInt("spawnedEnderManId");
+        this.size = tag.getFloat("size");
     }
 
     @Override
@@ -108,15 +108,15 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
 
     @Override
     public void unregister() {
-        if (!unregisterDisabled) {
+        if (!this.unregisterDisabled) {
             super.unregister();
         }
     }
 
     @Override
     public boolean receiveEntity(Entity entity, float yawOffset) {
-        if (world instanceof ServerWorld)
-            TeleportUtil.teleport(entity, world, pos, 0);
+        if (this.world instanceof ServerWorld)
+            TeleportUtil.teleport(entity, this.world, this.pos, 0);
         return true;
     }
 

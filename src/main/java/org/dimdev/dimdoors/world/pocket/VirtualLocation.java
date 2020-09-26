@@ -63,7 +63,7 @@ public class VirtualLocation {
                 virtualLocation = null; // TODO: door was placed in a pockets dim but outside of a pockets...
             }
         } else if (ModDimensions.isLimboDimension(location.getWorld())) { // TODO: convert to interface on worldprovider
-            virtualLocation = new VirtualLocation(location.world, location.getX(), location.getZ(), ModConfig.DUNGEONS.maxDungeonDepth);
+            virtualLocation = new VirtualLocation(location.world, location.getX(), location.getZ(), ModConfig.INSTANCE.getDungeonsConfig().maxDungeonDepth);
         } // TODO: nether coordinate transform
 
         if (virtualLocation == null) {
@@ -80,9 +80,9 @@ public class VirtualLocation {
             world = world.getServer().getWorld(OVERWORLD);
         }
 
-        float spread = ModConfig.GENERAL.depthSpreadFactor * depth;
-        int newX = (int) (x + spread * 2 * (Math.random() - 0.5));
-        int newZ = (int) (z + spread * 2 * (Math.random() - 0.5));
+        float spread = ModConfig.INSTANCE.getGeneralConfig().depthSpreadFactor * this.depth;
+        int newX = (int) (this.x + spread * 2 * (Math.random() - 0.5));
+        int newZ = (int) (this.z + spread * 2 * (Math.random() - 0.5));
         BlockPos pos = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, new BlockPos(newX, 0, newZ));
         return new Location(world, pos);
     }
