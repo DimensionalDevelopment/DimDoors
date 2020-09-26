@@ -61,8 +61,12 @@ public final class ModDimensions {
         return type == PERSONAL || type == PUBLIC || type == DUNGEON;
     }
 
-    public static boolean isLimboDimension(StructureWorldAccess world) {
+    public static boolean isLimbo(StructureWorldAccess world) {
         return world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION;
+    }
+
+    public static boolean isLimboDimension(World world) {
+        return world.getRegistryKey() == LIMBO || world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION;
     }
 
     public static void init() {
