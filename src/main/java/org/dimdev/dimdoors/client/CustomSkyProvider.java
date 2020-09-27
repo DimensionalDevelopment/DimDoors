@@ -71,7 +71,7 @@ public class CustomSkyProvider implements SkyRenderer {
         this.renderSkyBox(matrices);
     }
 
-    private void renderSkyBox(MatrixStack matrices) {
+    protected void renderSkyBox(MatrixStack matrices) {
         RenderSystem.disableAlphaTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -81,26 +81,7 @@ public class CustomSkyProvider implements SkyRenderer {
 
         for (int i = 0; i < 6; ++i) {
             matrices.push();
-            if (i == 1) {
-                matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90.0F));
-            }
-
-            if (i == 2) {
-                matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(-90.0F));
-            }
-
-            if (i == 3) {
-                matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(180.0F));
-            }
-
-            if (i == 4) {
-                matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(90.0F));
-            }
-
-            if (i == 5) {
-                matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(-90.0F));
-            }
-
+            this.multiply(matrices, i);
             Matrix4f matrix4f = matrices.peek().getModel();
             bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
             bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, -100.0F).color(this.color.getX(), this.color.getY(), this.color.getZ(), 255).next();
@@ -117,4 +98,25 @@ public class CustomSkyProvider implements SkyRenderer {
         RenderSystem.enableAlphaTest();
     }
 
+    protected void multiply(MatrixStack matrices, int i) {
+        if (i == 1) {
+            matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90.0F));
+        }
+
+        if (i == 2) {
+            matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(-90.0F));
+        }
+
+        if (i == 3) {
+            matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(180.0F));
+        }
+
+        if (i == 4) {
+            matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(90.0F));
+        }
+
+        if (i == 5) {
+            matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(-90.0F));
+        }
+    }
 }
