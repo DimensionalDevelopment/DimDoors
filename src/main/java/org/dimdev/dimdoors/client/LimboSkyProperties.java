@@ -4,15 +4,13 @@ import net.minecraft.client.render.SkyProperties;
 import net.minecraft.util.math.Vec3d;
 
 public class LimboSkyProperties extends SkyProperties {
-    public static final LimboSkyProperties INSTANCE = new LimboSkyProperties();
-
-    private LimboSkyProperties() {
-        super(Float.NaN, false, SkyProperties.SkyType.NORMAL, true, true);
+    public LimboSkyProperties() {
+        super(Float.NaN, true, SkyType.NORMAL, true, true);
     }
 
     @Override
     public Vec3d adjustSkyColor(Vec3d color, float sunHeight) {
-        return color.multiply(0.15000000596046448D);
+        return color;
     }
 
     @Override

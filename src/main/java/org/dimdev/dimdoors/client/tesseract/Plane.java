@@ -7,21 +7,24 @@ import org.dimdev.dimdoors.util.RGBA;
 
 import net.minecraft.client.render.VertexConsumer;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import static com.flowpowered.math.TrigMath.cos;
 import static com.flowpowered.math.TrigMath.sin;
 
+@Environment(EnvType.CLIENT)
 public class Plane {
     Vector4f[] vectors;
 
     public Plane(Vector4f vec1, Vector4f vec2, Vector4f vec3, Vector4f vec4) {
-        vectors = new Vector4f[]{vec1, vec2, vec3, vec4};
+        this.vectors = new Vector4f[]{vec1, vec2, vec3, vec4};
     }
 
     public void draw(net.minecraft.util.math.Matrix4f model, VertexConsumer vc, RGBA color, double radian) {
-        drawVertex(model, vc, rotYW(vectors[0], radian), 0, 0, color);
-        drawVertex(model, vc, rotYW(vectors[1], radian), 0, 1, color);
-        drawVertex(model, vc, rotYW(vectors[2], radian), 1, 1, color);
-        drawVertex(model, vc, rotYW(vectors[3], radian), 1, 0, color);
+        drawVertex(model, vc, rotYW(this.vectors[0], radian), 0, 0, color);
+        drawVertex(model, vc, rotYW(this.vectors[1], radian), 0, 1, color);
+        drawVertex(model, vc, rotYW(this.vectors[2], radian), 1, 1, color);
+        drawVertex(model, vc, rotYW(this.vectors[3], radian), 1, 0, color);
     }
 
     private static void drawVertex(net.minecraft.util.math.Matrix4f model, VertexConsumer vc, Vector4f vector, int u, int v, RGBA color) {

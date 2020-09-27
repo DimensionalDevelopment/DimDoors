@@ -9,9 +9,9 @@ targetCompatibility = 1.8
 
 repositories {
     maven { url = 'https://maven.fabricmc.net/' }
-    maven { url 'https://jitpack.io' }
     mavenCentral()
     maven { url = 'https://www.cursemaven.com' }
+    maven { url = 'https://jitpack.io' }
 }
 
 dependencies {
@@ -29,6 +29,7 @@ dependencies {
         exclude module: "fabric-api"
     }
     include 'com.github.Waterpicker:OpenWorlds:c5a1ced'
+    modImplementation 'com.github.AMereBagatelle:fabricskyboxes:0.3.0'
     compileOnly 'com.google.code.findbugs:jsr305:+'
     modImplementation("io.github.boogiemonster1o1:libcbe:${libcbe_version}")
     include("io.github.boogiemonster1o1:libcbe:${libcbe_version}") // Includes LibCBE as a Jar-in-Jar embedded dependency

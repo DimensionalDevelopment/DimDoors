@@ -92,8 +92,7 @@ public final class ModItems {
             ModBlocks.OAK_DIMENSIONAL_DOOR,
             new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
             rift -> rift.setDestination(
-                    RandomTarget
-                            .builder()
+                    RandomTarget.builder()
                             .acceptedGroups(Collections.singleton(0))
                             .coordFactor(1)
                             .negativeDepthFactor(80)
@@ -164,8 +163,6 @@ public final class ModItems {
     public static final Item MARKING_PLATE = register(ModBlocks.MARKING_PLATE);
     public static final Item ETERNAL_FLUID = register(ModBlocks.ETERNAL_FLUID);
     public static final Item ETERNAL_FLUID_BUCKET = register(new Identifier("dimdoors:eternal_fluid_bucket"), new BucketItem(ModFluids.ETERNAL_FLUID, new Item.Settings().group(DIMENSIONAL_DOORS).recipeRemainder(Items.BUCKET).maxCount(1)));
-
-    // Dimensional doors
 
     private static Item register(Block block) {
         return register(new BlockItem(block, (new Item.Settings()).group(DIMENSIONAL_DOORS)));

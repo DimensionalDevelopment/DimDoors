@@ -15,6 +15,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
@@ -59,69 +60,74 @@ public class MyRenderLayer extends RenderLayer {
             .texture(new Texture(DetachedRiftBlockEntityRenderer.TESSERACT_PATH, false, false))
             .alpha(Alpha.HALF_ALPHA)
             .build(false));
+//
+//    public static RenderLayer getDimensionalPortal(int phase, EntranceRiftBlockEntity blockEntity) {
+//        Direction orientation = blockEntity.getOrientation();
+//        Texture tex = new Texture(WARP_PATH, false, false);
+//        Vec3d offset = new Vec3d(orientation.getOpposite().getUnitVector());
+//        return of("dimensional_portal",
+//                VertexFormats.POSITION_COLOR,
+//                7, 256,
+//                false,
+//                true,
+//                RenderLayer.MultiPhaseParameters.builder()
+//                        .transparency(ADDITIVE_TRANSPARENCY)
+//                        .texture(tex)
+//                        .texturing(new DimensionalPortalTexturing(phase,
+//                                blockEntity,
+//                                blockEntity.getPos().getX() + offset.x,
+//                                blockEntity.getPos().getY() + offset.y,
+//                                blockEntity.getPos().getZ() + offset.z))
+//                        .fog(BLACK_FOG).build(false));
+//    }
 
-    public static RenderLayer getDimensionalPortal(int phase, EntranceRiftBlockEntity blockEntity) {
-        Direction orientation = blockEntity.getOrientation();
-        Texture tex = new Texture(WARP_PATH, false, false);
-        Vec3d offset = new Vec3d(orientation.getOpposite().getUnitVector());
-        return of("dimensional_portal",
-                VertexFormats.POSITION_COLOR,
-                7, 256,
-                false,
-                true,
-                RenderLayer.MultiPhaseParameters.builder()
-                        .transparency(ADDITIVE_TRANSPARENCY)
-                        .texture(tex)
-                        .texturing(new DimensionalPortalTexturing(phase,
-                                blockEntity,
-                                blockEntity.getPos().getX() + offset.x,
-                                blockEntity.getPos().getY() + offset.y,
-                                blockEntity.getPos().getZ() + offset.z))
-                        .fog(BLACK_FOG).build(false));
-    }
-
-    public static RGBA[] getColors(int count) {
-        Random rand = new Random(31100L);
-        float[][] colors = new float[count][];
-        for (int i = 0; i < count; i++) {
-            colors[i] = new float[]{rand.nextFloat() * 0.4F + 0.1F, rand.nextFloat() * 0.3F + 0.4F, rand.nextFloat() * 0.5F + 0.3F, 1};
+    public static RenderLayer getPortal(int layer) {
+        RenderPhase.Transparency transparency;
+        RenderPhase.Texture texture;
+        if (layer <= 1) {
+            transparency = TRANSLUCENT_TRANSPARENCY;
+            texture = new RenderPhase.Texture(EndPortalBlockEntityRenderer.PORTAL_TEXTURE, false, false);
+        } else {
+            transparency = ADDITIVE_TRANSPARENCY;
+            texture = new RenderPhase.Texture(WARP_PATH, false, false);
         }
-        return RGBA.fromFloatArrays(colors);
+
+        return of("dimensional_portal", VertexFormats.POSITION_COLOR, 7, 256, false, true, RenderLayer.MultiPhaseParameters.builder().transparency(transparency).texture(texture).texturing(new RenderPhase.PortalTexturing(layer)).fog(BLACK_FOG).build(false));
     }
 
-    public static class DimensionalPortalTexturing extends RenderPhase.Texturing {
-        public final int layer;
-
-        public DimensionalPortalTexturing(int layer, EntranceRiftBlockEntity blockEntity, double x, double y, double z) {
-            super("dimensional_portal_texturing", () -> {
-                float translationScale = 16 - layer;
-                float scale = 0.3625F;
-                float offset = Util.getMeasuringTimeNano() % 200000L / 200000.0F;
-                if (layer == 0) {
-                    translationScale = 25.0F;
-                    scale = 0.125F;
-                }
-                if (layer == 1) {
-                    scale = 0.5F;
-                }
-                RenderSystem.matrixMode(GL11.GL_TEXTURE);
-                RenderSystem.pushMatrix();
-                RenderSystem.loadIdentity();
-                RenderSystem.translatef(0.1F, offset * translationScale, 0.1F);
-                RenderSystem.scalef(scale, scale, scale);
-                RenderSystem.translatef(0.5F, 0.5F, 0.5F);
-                RenderSystem.rotatef((layer * layer * 4321 + layer) * 9 * 2.0F, 0.0F, 0.0F, 1.0F);
-                RenderSystem.scalef(4.5F - (float)layer / 4.0F, 4.5F - (float)layer / 4.0F, 1.0F);
-                RenderSystem.mulTextureByProjModelView();
-                RenderSystem.matrixMode(GL11.GL_MODELVIEW);
-                RenderSystem.setupEndPortalTexGen();
-            }, () -> {
-                RenderSystem.matrixMode(GL11.GL_TEXTURE);
-                RenderSystem.popMatrix();
-                RenderSystem.matrixMode(GL11.GL_MODELVIEW);
-                RenderSystem.clearTexGen();
-            });
-            this.layer = layer;
-        }
-    }
+//    public static class DimensionalPortalTexturing extends RenderPhase.Texturing {
+//        public final int layer;
+//
+//        public DimensionalPortalTexturing(int layer, EntranceRiftBlockEntity blockEntity, double x, double y, double z) {
+//            super("dimensional_portal_texturing", () -> {
+//                float translationScale = 16 - layer;
+//                float scale = 0.3625F;
+//                float offset = Util.getMeasuringTimeNano() % 200000L / 200000.0F;
+//                if (layer == 0) {
+//                    translationScale = 25.0F;
+//                    scale = 0.125F;
+//                }
+//                if (layer == 1) {
+//                    scale = 0.5F;
+//                }
+//                RenderSystem.matrixMode(GL11.GL_TEXTURE);
+//                RenderSystem.pushMatrix();
+//                RenderSystem.loadIdentity();
+//                RenderSystem.translatef(0.1F, offset * translationScale, 0.1F);
+//                RenderSystem.scalef(scale, scale, scale);
+//                RenderSystem.translatef(0.5F, 0.5F, 0.5F);
+//                RenderSystem.rotatef((layer * layer * 4321 + layer) * 9 * 2.0F, 0.0F, 0.0F, 1.0F);
+//                RenderSystem.scalef(4.5F - (float)layer / 4.0F, 4.5F - (float)layer / 4.0F, 1.0F);
+//                RenderSystem.mulTextureByProjModelView();
+//                RenderSystem.matrixMode(GL11.GL_MODELVIEW);
+//                RenderSystem.setupEndPortalTexGen();
+//            }, () -> {
+//                RenderSystem.matrixMode(GL11.GL_TEXTURE);
+//                RenderSystem.popMatrix();
+//                RenderSystem.matrixMode(GL11.GL_MODELVIEW);
+//                RenderSystem.clearTexGen();
+//            });
+//            this.layer = layer;
+//        }
+//    }
 }
