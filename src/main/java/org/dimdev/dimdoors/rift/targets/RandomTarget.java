@@ -35,7 +35,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
                 Codec.DOUBLE.fieldOf("coordFactor").forGetter(location -> location.coordFactor),
                 Codec.DOUBLE.fieldOf("positiveDepthFactor").forGetter(location -> location.positiveDepthFactor),
                 Codec.DOUBLE.fieldOf("negativeDepthFactor").forGetter(location -> location.negativeDepthFactor),
-                Codec.INT_STREAM.<Set<Integer>>comapFlatMap(a -> DataResult.success(a.boxed().collect(Collectors.toSet())), a -> a.stream().mapToInt(Integer::intValue)).fieldOf("acceptedGroups").forGetter(target -> target.acceptedGroups),
+                Codec.INT_STREAM.comapFlatMap(a -> DataResult.success(a.boxed().collect(Collectors.toSet())), a -> a.stream().mapToInt(Integer::intValue)).fieldOf("acceptedGroups").forGetter(target -> target.acceptedGroups),
                 Codec.BOOL.fieldOf("noLink").forGetter(target -> target.noLink),
                 Codec.BOOL.fieldOf("noLinkBack").forGetter(target -> target.noLinkBack)
         ).apply(instance, RandomTarget::new);
@@ -67,24 +67,24 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 
     @Override
     public Target receiveOther() { // TODO: Wrap rather than replace
-        VirtualLocation virtualLocationHere = VirtualLocation.fromLocation(location);
+        VirtualLocation virtualLocationHere = VirtualLocation.fromLocation(this.location);
 
         Map<Location, Float> riftWeights = new HashMap<>();
-        if (newRiftWeight > 0) riftWeights.put(null, newRiftWeight);
+        if (this.newRiftWeight > 0) riftWeights.put(null, this.newRiftWeight);
 
         for (Rift otherRift : RiftRegistry.instance().getRifts()) {
             VirtualLocation otherVirtualLocation = VirtualLocation.fromLocation(otherRift.location);
             if (otherRift.properties == null) continue;
             double otherWeight = otherRift.isDetached ? otherRift.properties.floatingWeight : otherRift.properties.entranceWeight;
-            if (otherWeight == 0 || Sets.intersection(acceptedGroups, otherRift.properties.groups).isEmpty()) continue;
+            if (otherWeight == 0 || Sets.intersection(this.acceptedGroups, otherRift.properties.groups).isEmpty()) continue;
 
             // Calculate the distance as sqrt((coordFactor * coordDistance)^2 + (depthFactor * depthDifference)^2)
-            if (otherVirtualLocation == null || otherRift.properties.linksRemaining == 0) continue;
-            double depthDifference = otherVirtualLocation.depth - virtualLocationHere.depth;
-            double coordDistance = Math.sqrt(sq(otherVirtualLocation.x - virtualLocationHere.x)
-                    + sq(otherVirtualLocation.z - virtualLocationHere.z));
-            double depthFactor = depthDifference > 0 ? positiveDepthFactor : negativeDepthFactor;
-            double distance = Math.sqrt(sq(coordFactor * coordDistance) + sq(depthFactor * depthDifference));
+            if (otherRift.properties.linksRemaining == 0) continue;
+            double depthDifference = otherVirtualLocation.getDepth() - virtualLocationHere.getDepth();
+            double coordDistance = Math.sqrt(this.sq(otherVirtualLocation.getX() - virtualLocationHere.getX())
+                    + this.sq(otherVirtualLocation.getZ() - virtualLocationHere.getZ()));
+            double depthFactor = depthDifference > 0 ? this.positiveDepthFactor : this.negativeDepthFactor;
+            double distance = Math.sqrt(this.sq(this.coordFactor * coordDistance) + this.sq(depthFactor * depthDifference));
 
             // Calculate the weight as 4m/pi w/(m^2/d + d)^2. This is similar to how gravitational/electromagnetic attraction
             // works in physics (G m1 m2/d^2 and k_e m1 m2/d^2). Even though we add a depth dimension to the world, we keep
@@ -94,13 +94,13 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
             // of f((m^(a+1)/a)/d^a). m is the location of f's maximum. The constant 4m/pi makes it such that a newRiftWeight
             // of 1 is equivalent to having a total link weight of 1 distributed equally across all layers.
             // TODO: We might want an a larger than 1 to make the function closer to 1/d^2
-            double weight = 4 * weightMaximum / Math.PI * otherWeight / sq(sq(weightMaximum) / distance + distance);
+            double weight = 4 * this.weightMaximum / Math.PI * otherWeight / this.sq(this.sq(this.weightMaximum) / distance + distance);
             riftWeights.put(otherRift.location, (float) weight);
         }
 
         Location selectedLink;
         if (riftWeights.size() == 0) {
-            if (newRiftWeight == -1) {
+            if (this.newRiftWeight == -1) {
                 selectedLink = null;
             } else {
                 return null;
@@ -130,48 +130,48 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 //             Clear[m];
 //             inverseCummulativeNormalizedDistribution = Normal[fit]
             double r = Math.random();
-            double distance = weightMaximum * (2 * Math.tan(Math.PI / 2 * r) - 0.5578284481138029 * Math.sqrt(r) * Math.log(r));
+            double distance = this.weightMaximum * (2 * Math.tan(Math.PI / 2 * r) - 0.5578284481138029 * Math.sqrt(r) * Math.log(r));
 
             // Randomly split the vector into depth, x, and z components
             // TODO: Two random angles isn't a uniformly random direction! Use random vector, normalize, add depth offset, scale xz, scale depth.
             double theta = Math.random() * Math.PI; // Angle between vector and xz plane
             double phi = Math.random() * Math.PI;  // Angle of the vector on the xz plane relative to the x axis
             double depth = distance * Math.sin(theta);
-            depth /= depth > 0 ? positiveDepthFactor : negativeDepthFactor;
-            double x = Math.cos(theta) * Math.cos(phi) * distance / coordFactor;
-            double z = Math.cos(theta) * Math.sin(phi) * distance / coordFactor;
-            VirtualLocation virtualLocation = new VirtualLocation(virtualLocationHere.world,
-                    virtualLocationHere.x + (int) Math.round(x),
-                    virtualLocationHere.z + (int) Math.round(z),
-                    virtualLocationHere.depth + (int) Math.round(depth));
+            depth /= depth > 0 ? this.positiveDepthFactor : this.negativeDepthFactor;
+            double x = Math.cos(theta) * Math.cos(phi) * distance / this.coordFactor;
+            double z = Math.cos(theta) * Math.sin(phi) * distance / this.coordFactor;
+            VirtualLocation virtualLocation = new VirtualLocation(virtualLocationHere.getWorld(),
+                    virtualLocationHere.getX() + (int) Math.round(x),
+                    virtualLocationHere.getZ() + (int) Math.round(z),
+                    virtualLocationHere.getDepth() + (int) Math.round(depth));
 
-            if (virtualLocation.depth <= 0) {
+            if (virtualLocation.getDepth() <= 0) {
                 // This will lead to the overworld
-                World world = WorldUtil.getWorld(virtualLocation.world);
-                BlockPos pos = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.x, 0, virtualLocation.z));
+                ServerWorld world = WorldUtil.getWorld(virtualLocation.getWorld());
+                BlockPos pos = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
                 if (pos.getY() == -1) {
                     // No blocks at that XZ (hole in bedrock)
-                    pos = new BlockPos(virtualLocation.x, 0, virtualLocation.z);
+                    pos = new BlockPos(virtualLocation.getX(), 0, virtualLocation.getX());
                 }
                 world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
 
-                RiftBlockEntity thisRift = (RiftBlockEntity) location.getBlockEntity();
+                RiftBlockEntity thisRift = (RiftBlockEntity) this.location.getBlockEntity();
                 DetachedRiftBlockEntity riftEntity = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
                 // TODO: Should the rift not be configured like the other link
                 riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).build());
 
-                if (!noLinkBack && !riftEntity.getProperties().oneWay)
-                    linkRifts(new Location((ServerWorld) world, pos), location);
-                if (!noLink) linkRifts(location, new Location((ServerWorld) world, pos));
+                if (!this.noLinkBack && !riftEntity.getProperties().oneWay)
+                    linkRifts(new Location(world, pos), this.location);
+                if (!this.noLink) linkRifts(this.location, new Location(world, pos));
                 return riftEntity.as(Targets.ENTITY);
             } else {
                 // Make a new dungeon pocket
-                RiftBlockEntity thisRift = (RiftBlockEntity) location.getBlockEntity();
+                RiftBlockEntity thisRift = (RiftBlockEntity) this.location.getBlockEntity();
                 LinkProperties newLink = thisRift.getProperties() != null ? thisRift.getProperties().toBuilder().linksRemaining(0).build() : null;
-                Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation, new GlobalReference(!noLinkBack ? location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
+                Pocket pocket = PocketGenerator.generateDungeonPocket(virtualLocation, new GlobalReference(!this.noLinkBack ? this.location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
 
                 // Link the rift if necessary and teleport the entity
-                if (!noLink) linkRifts(location, RiftRegistry.instance().getPocketEntrance(pocket));
+                if (!this.noLink) linkRifts(this.location, RiftRegistry.instance().getPocketEntrance(pocket));
                 return (Target) RiftRegistry.instance().getPocketEntrance(pocket).getBlockEntity();
             }
         } else {
@@ -179,8 +179,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
             RiftBlockEntity riftEntity = (RiftBlockEntity) selectedLink.getBlockEntity();
 
             // Link the rifts if necessary and teleport the entity
-            if (!noLink) linkRifts(location, selectedLink);
-            if (!noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(selectedLink, location);
+            if (!this.noLink) linkRifts(this.location, selectedLink);
+            if (!this.noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(selectedLink, this.location);
             return riftEntity;
         }
     }
@@ -292,7 +292,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
         }
 
         public RandomTarget build() {
-            return new RandomTarget(newRiftWeight, weightMaximum, coordFactor, positiveDepthFactor, negativeDepthFactor, acceptedGroups, noLink, noLinkBack);
+            return new RandomTarget(this.newRiftWeight, this.weightMaximum, this.coordFactor, this.positiveDepthFactor, this.negativeDepthFactor, this.acceptedGroups, this.noLink, this.noLinkBack);
         }
     }
 }

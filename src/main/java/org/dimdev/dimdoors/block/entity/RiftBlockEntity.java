@@ -173,8 +173,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
             EntityTarget target = this.getTarget().as(Targets.ENTITY);
 
             if (target.receiveEntity(entity, entity.yaw)) {
-                VirtualLocation vloc = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos()));
-                EntityUtils.chat(entity, new LiteralText("You are at x = " + vloc.x + ", y = ?, z = " + vloc.z + ", w = " + vloc.depth));
+                VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos()));
+                EntityUtils.chat(entity, new LiteralText("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
                 return true;
             }
         } catch (Exception e) {
