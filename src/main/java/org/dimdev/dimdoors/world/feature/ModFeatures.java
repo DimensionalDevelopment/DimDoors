@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.world.feature;
 
 import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.world.feature.gateway.LimboGatewayFeature;
 import org.dimdev.dimdoors.world.feature.gateway.schematic.SandstonePillarsV2Gateway;
 import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicV2Gateway;
@@ -10,10 +11,13 @@ import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicV2GatewayFea
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.gen.decorator.Decorator;
+import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.SingleStateFeatureConfig;
 
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -23,6 +27,7 @@ public final class ModFeatures {
     public static final SchematicV2Gateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsV2Gateway();
     public static final ConfiguredFeature<?, ?> SANDSTONE_PILLARS_FEATURE;
     public static final ConfiguredFeature<?, ?> LIMBO_GATEWAY_CONFIGURED_FEATURE;
+    public static final ConfiguredFeature<?, ?> ETERNAL_FLUID_LAKE;
 
     public static void init() {
         SANDSTONE_PILLARS_GATEWAY.init();
@@ -36,5 +41,6 @@ public final class ModFeatures {
                 .decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP
                         .applyChance(gatewayChance));
         LIMBO_GATEWAY_CONFIGURED_FEATURE = LIMBO_GATEWAY_FEATURE.configure(DefaultFeatureConfig.INSTANCE).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
+        ETERNAL_FLUID_LAKE = Feature.LAKE.configure(new SingleStateFeatureConfig(ModBlocks.ETERNAL_FLUID.getDefaultState())).decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(5, 17, 128)).applyChance(20));
     }
 }
