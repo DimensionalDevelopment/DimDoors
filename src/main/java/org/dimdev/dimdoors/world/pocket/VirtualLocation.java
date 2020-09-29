@@ -1,14 +1,14 @@
 package org.dimdev.dimdoors.world.pocket;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.annotatednbt.AnnotatedNbt;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.world.ModDimensions;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
@@ -27,14 +27,10 @@ public class VirtualLocation {
             ).apply(instance, VirtualLocation::new)
     );
 
-
-    public final RegistryKey<World> world;
-
-    public final int x;
-
-    public final int z;
-
-    public final int depth;
+    private RegistryKey<World> world;
+    private int x;
+    private int z;
+    private int depth;
 
     public VirtualLocation(RegistryKey<World> world, int x, int z, int depth) {
         this.world = world;
@@ -43,13 +39,20 @@ public class VirtualLocation {
         this.depth = depth;
     }
 
-    public void fromTag(CompoundTag nbt) {
-        AnnotatedNbt.load(this, nbt);
+    public void fromTag(CompoundTag tag) {
+        VirtualLocation location = CODEC.decode(NbtOps.INSTANCE, tag).getOrThrow(false, System.err::println).getFirst();
+        this.x = location.x;
+        this.z = location.z;
+        this.depth = location.depth;
+        this.world = location.world;
     }
 
-    public CompoundTag toTag(CompoundTag nbt) {
-        AnnotatedNbt.save(this, nbt);
-        return nbt;
+    public CompoundTag toTag(CompoundTag tag) {
+        CompoundTag encodedTag = (CompoundTag) CODEC.encodeStart(NbtOps.INSTANCE, this).getOrThrow(false, System.err::println);
+        for (String key : encodedTag.getKeys()) {
+            tag.put(key, encodedTag.get(key));
+        }
+        return tag;
     }
 
     public static VirtualLocation fromLocation(Location location) {
@@ -85,5 +88,21 @@ public class VirtualLocation {
         int newZ = (int) (this.z + spread * 2 * (Math.random() - 0.5));
         BlockPos pos = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, new BlockPos(newX, 0, newZ));
         return new Location(world, pos);
+    }
+
+    public RegistryKey<World> getWorld() {
+        return this.world;
+    }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public int getZ() {
+        return this.z;
+    }
+
+    public int getDepth() {
+        return this.depth;
     }
 }

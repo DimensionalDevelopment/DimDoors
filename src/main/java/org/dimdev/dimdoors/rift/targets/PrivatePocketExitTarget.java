@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.rift.targets;
 
 import java.util.UUID;
 
-import com.mojang.serialization.Codec;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.EntityUtils;
@@ -12,6 +11,7 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;

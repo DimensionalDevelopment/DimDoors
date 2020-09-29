@@ -58,13 +58,13 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 
         ModBlocks.init();
         ModItems.init();
+        ModFeatures.init();
+        ModBiomes.init();
         ModDimensions.init();
         ModEntityTypes.init();
-        ModBiomes.init();
         ModBlockEntityTypes.init();
         ModCommands.init();
         ModSoundEvents.init();
-        ModFeatures.init();
 
         ModConfig.deserialize();
 

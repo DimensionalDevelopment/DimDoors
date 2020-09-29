@@ -2,8 +2,8 @@ package org.dimdev.dimdoors.client;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import org.dimdev.dimdoors.entity.MonolithEntity;
+import com.google.common.collect.Lists;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.LivingEntityRenderer;

@@ -2,13 +2,12 @@ package org.dimdev.dimdoors.world.pocket;
 
 import java.util.UUID;
 
+import org.dimdev.dimdoors.util.NbtUtil;
+import org.dimdev.dimdoors.util.WorldUtil;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.dimdoors.util.NbtUtil;
-import org.dimdev.dimdoors.util.WorldUtil;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.dynamic.DynamicSerializableUuid;
@@ -27,9 +26,7 @@ public class PrivatePocketData extends PersistentState {
             ).apply(instance, PocketInfo::new);
         });
 
-        @Saved
         public final RegistryKey<World> world;
-        @Saved
         public final int id;
 
         public PocketInfo(RegistryKey<World> world, int id) {
@@ -42,7 +39,6 @@ public class PrivatePocketData extends PersistentState {
 
     private static final String DATA_NAME = "dimdoors_private_pockets";
 
-    @Saved
     protected BiMap<UUID, PocketInfo> privatePocketMap = HashBiMap.create(); // Player UUID -> Pocket Info TODO: fix AnnotatedNBT and use UUID rather than String
 
     public PrivatePocketData(String name) {

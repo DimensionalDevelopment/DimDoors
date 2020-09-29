@@ -2,10 +2,10 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.function.Supplier;
 
-import com.google.common.collect.Sets;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
 import org.dimdev.dimdoors.client.EntranceRiftBlockEntityRenderer;
+import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;

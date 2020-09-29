@@ -27,12 +27,13 @@ public final class ModFeatures {
     public static final SchematicV2Gateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsV2Gateway();
     public static final ConfiguredFeature<?, ?> SANDSTONE_PILLARS_FEATURE;
     public static final ConfiguredFeature<?, ?> LIMBO_GATEWAY_CONFIGURED_FEATURE;
-    public static final ConfiguredFeature<?, ?> ETERNAL_FLUID_LAKE;
+    public static ConfiguredFeature<?, ?> ETERNAL_FLUID_LAKE;
 
     public static void init() {
         SANDSTONE_PILLARS_GATEWAY.init();
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "sandstone_pillars"), SANDSTONE_PILLARS_FEATURE);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "limbo_gateway"), LIMBO_GATEWAY_CONFIGURED_FEATURE);
+        ETERNAL_FLUID_LAKE = Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "eternal_fluid_lake"), Feature.LAKE.configure(new SingleStateFeatureConfig(ModBlocks.ETERNAL_FLUID.getDefaultState())).decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(5, 17, 128)).applyChance(20)));
     }
 
     static {
@@ -41,6 +42,5 @@ public final class ModFeatures {
                 .decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP
                         .applyChance(gatewayChance));
         LIMBO_GATEWAY_CONFIGURED_FEATURE = LIMBO_GATEWAY_FEATURE.configure(DefaultFeatureConfig.INSTANCE).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
-        ETERNAL_FLUID_LAKE = Feature.LAKE.configure(new SingleStateFeatureConfig(ModBlocks.ETERNAL_FLUID.getDefaultState())).decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(5, 17, 128)).applyChance(20));
     }
 }

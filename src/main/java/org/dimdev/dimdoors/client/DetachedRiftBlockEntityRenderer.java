@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.client;
 
-import com.flowpowered.math.TrigMath;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.client.tesseract.Tesseract;
 import org.dimdev.dimdoors.util.RGBA;
+import com.flowpowered.math.TrigMath;
 
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;

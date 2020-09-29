@@ -5,11 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Sets;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -22,6 +17,10 @@ import org.dimdev.dimdoors.util.WorldUtil;
 import org.dimdev.dimdoors.util.math.MathUtil;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import com.google.common.collect.Sets;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -42,21 +41,13 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
         ).apply(instance, RandomTarget::new);
     });
 
-    @Saved
     protected float newRiftWeight;
-    @Saved
     protected double weightMaximum;
-    @Saved
     protected double coordFactor;
-    @Saved
     protected double positiveDepthFactor;
-    @Saved
     protected double negativeDepthFactor;
-    @Saved
     protected Set<Integer> acceptedGroups;
-    @Saved
     protected boolean noLink;
-    @Saved
     protected boolean noLinkBack;
 
     public RandomTarget(float newRiftWeight, double weightMaximum, double coordFactor, double positiveDepthFactor, double negativeDepthFactor, Set<Integer> acceptedGroups, boolean noLink, boolean noLinkBack) {

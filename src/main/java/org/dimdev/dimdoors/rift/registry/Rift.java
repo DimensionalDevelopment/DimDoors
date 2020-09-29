@@ -1,12 +1,11 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.util.Location;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.dynamic.DynamicSerializableUuid;
 
@@ -25,11 +24,8 @@ public class Rift extends RegistryVertex {
     });
 
     private static final Logger LOGGER = LogManager.getLogger();
-    @Saved
     public Location location;
-    @Saved
     public boolean isDetached;
-    @Saved
     public LinkProperties properties;
 
     public Rift(Location location) {

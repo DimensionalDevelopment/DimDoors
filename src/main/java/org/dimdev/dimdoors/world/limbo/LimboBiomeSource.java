@@ -2,10 +2,10 @@ package org.dimdev.dimdoors.world.limbo;
 
 import java.util.Set;
 
+import org.dimdev.dimdoors.world.ModBiomes;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
-import org.dimdev.dimdoors.world.ModBiomes;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;

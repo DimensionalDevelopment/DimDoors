@@ -3,13 +3,12 @@ package org.dimdev.dimdoors.world.pocket;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mojang.serialization.Codec;
-import org.dimdev.annotatednbt.Saved;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.util.WorldUtil;
 import org.dimdev.dimdoors.util.math.GridUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
@@ -23,11 +22,11 @@ public class PocketRegistry extends PersistentState {
 
     private static final String DATA_NAME = "pocketlib_pockets";
 
-    @Saved /*package-private*/ int gridSize; // Determines how much pockets in their dimension are spaced
-    @Saved /*package-private*/ int privatePocketSize;
-    @Saved /*package-private*/ int publicPocketSize;
-    @Saved /*package-private*/ Map<Integer, Pocket> pockets;
-    @Saved /*package-private*/ int nextID;
+    /*package-private*/ int gridSize; // Determines how much pockets in their dimension are spaced
+    /*package-private*/ int privatePocketSize;
+    /*package-private*/ int publicPocketSize;
+    /*package-private*/ Map<Integer, Pocket> pockets;
+    /*package-private*/ int nextID;
 
     private ServerWorld world;
 
