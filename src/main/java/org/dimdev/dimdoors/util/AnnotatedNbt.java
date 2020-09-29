@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.util;
 
-import org.dimdev.dimdoors.util.RotatedLocation;
 import com.google.gson.Gson;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;

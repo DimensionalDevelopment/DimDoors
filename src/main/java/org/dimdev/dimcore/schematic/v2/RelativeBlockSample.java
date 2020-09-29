@@ -76,7 +76,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
             if (block instanceof ConditionalBlockEntityProvider && ((ConditionalBlockEntityProvider) block).hasBlockEntity(this.getBlockState(pos)) && ((ConditionalBlockEntityProvider) block).hasBlockEntity(pos, this)) {
                 return ((ConditionalBlockEntityProvider) block).createBlockEntity(this.world);
             } else {
-                return ((BlockEntityProvider)block).createBlockEntity(this.world);
+                return ((BlockEntityProvider) block).createBlockEntity(this.world);
             }
         }
         return null;

@@ -35,7 +35,7 @@ public class Schematic {
                 Codec.BYTE_BUFFER.fieldOf("BlockData").forGetter(Schematic::getBlockData),
                 Codec.list(CompoundTag.CODEC).optionalFieldOf("BlockEntities", ImmutableList.of()).forGetter(Schematic::getBlockEntities),
                 Codec.list(CompoundTag.CODEC).optionalFieldOf("Entities", ImmutableList.of()).forGetter(Schematic::getEntities)
-                ).apply(instance, Schematic::new);
+        ).apply(instance, Schematic::new);
     });
 
     private final int version;

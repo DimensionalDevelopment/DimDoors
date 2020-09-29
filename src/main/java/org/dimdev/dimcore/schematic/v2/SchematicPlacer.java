@@ -56,7 +56,7 @@ public final class SchematicPlacer {
         List<CompoundTag> entityTags = schematic.getEntities();
         for (CompoundTag tag : entityTags) {
             // Ensures compatibility with worldedit schematics
-            if (SchematicPlacer.fixId(tag)){
+            if (SchematicPlacer.fixId(tag)) {
                 System.err.println("An unexpected error occurred parsing this entity");
                 System.err.println(tag.toString());
                 throw new IllegalStateException("Entity in schematic  \"" + schematic.getMetadata().getName() + "\" did not have an Id tag, nor an id tag!");
@@ -93,7 +93,7 @@ public final class SchematicPlacer {
                         DoubleTag.of(x + originX),
                         DoubleTag.of(y + originY),
                         DoubleTag.of(z + originZ)
-                    ),
+                ),
                 (byte) 6
                 )
         );
