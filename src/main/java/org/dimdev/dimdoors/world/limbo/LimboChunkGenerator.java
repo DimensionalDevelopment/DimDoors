@@ -376,29 +376,21 @@ public class LimboChunkGenerator extends ChunkGenerator {
             }
         }
 
-        this.buildFluid(chunk, chunkRandom);
+        this.buildAncientFabricFloor(chunk, chunkRandom);
     }
 
-    private void buildFluid(Chunk chunk, Random random) {
+    private void buildAncientFabricFloor(Chunk chunk, Random random) {
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        int i = chunk.getPos().getStartX();
-        int j = chunk.getPos().getStartZ();
-        ChunkGeneratorSettings chunkGeneratorSettings = this.settings.get();
-        int k = chunkGeneratorSettings.getBedrockFloorY();
-        boolean bl2 = k + 4 >= 0 && k < this.worldHeight;
+        int startX = chunk.getPos().getStartX();
+        int startZ = chunk.getPos().getStartZ();
+        ChunkGeneratorSettings settings = this.settings.get();
+        int bedrockFloorY = settings.getBedrockFloorY();
+        boolean bl2 = bedrockFloorY + 4 >= 0 && bedrockFloorY < this.worldHeight;
         if (bl2) {
-            Iterator<BlockPos> iterator = BlockPos.iterate(i, 0, j, i + 15, 0, j + 15).iterator();
-            while (true) {
-                BlockPos blockPos;
-                int o;
-                if (!iterator.hasNext()) {
-                    return;
-                }
-
-                blockPos = iterator.next();
-                for (o = 4; o >= 0; --o) {
+            for (BlockPos blockPos : BlockPos.iterate(startX, 0, startZ, startX + 15, 0, startZ + 15)) {
+                for (int o = 4; o >= 0; --o) {
                     if (o <= random.nextInt(5)) {
-                        chunk.setBlockState(mutable.set(blockPos.getX(), k + o, blockPos.getZ()), ModBlocks.ETERNAL_FLUID.getDefaultState(), false);
+                        chunk.setBlockState(mutable.set(blockPos.getX(), bedrockFloorY + o, blockPos.getZ()), ModBlocks.BLACK_ANCIENT_FABRIC.getDefaultState(), false);
                     }
                 }
             }
@@ -406,8 +398,8 @@ public class LimboChunkGenerator extends ChunkGenerator {
     }
 
     public void populateNoise(WorldAccess world, StructureAccessor accessor, Chunk chunk) {
-        ObjectList<StructurePiece> objectList = new ObjectArrayList<>(10);
-        ObjectList<JigsawJunction> objectList2 = new ObjectArrayList<>(32);
+        ObjectList<StructurePiece> structurePieces = new ObjectArrayList<>(10);
+        ObjectList<JigsawJunction> jigsawJunctions = new ObjectArrayList<>(32);
         ChunkPos chunkPos = chunk.getPos();
         int posX = chunkPos.x;
         int posZ = chunkPos.z;
@@ -431,18 +423,18 @@ public class LimboChunkGenerator extends ChunkGenerator {
                         PoolStructurePiece poolStructurePiece = (PoolStructurePiece) structurePiece;
                         StructurePool.Projection projection = poolStructurePiece.getPoolElement().getProjection();
                         if (projection == StructurePool.Projection.RIGID) {
-                            objectList.add(poolStructurePiece);
+                            structurePieces.add(poolStructurePiece);
                         }
 
                         for (JigsawJunction jigsawJunction : poolStructurePiece.getJunctions()) {
                             int kx = jigsawJunction.getSourceX();
                             int lx = jigsawJunction.getSourceZ();
                             if (kx > k - 12 && lx > l - 12 && kx < k + 15 + 12 && lx < l + 15 + 12) {
-                                objectList2.add(jigsawJunction);
+                                jigsawJunctions.add(jigsawJunction);
                             }
                         }
                     } else {
-                        objectList.add(structurePiece);
+                        structurePieces.add(structurePiece);
                     }
                 }
             });
@@ -460,8 +452,8 @@ public class LimboChunkGenerator extends ChunkGenerator {
         Heightmap heightmap = protoChunk.getHeightmap(Heightmap.Type.OCEAN_FLOOR_WG);
         Heightmap heightmap2 = protoChunk.getHeightmap(Heightmap.Type.WORLD_SURFACE_WG);
         BlockPos.Mutable mutable = new BlockPos.Mutable();
-        ObjectListIterator<StructurePiece> objectListIterator = objectList.iterator();
-        ObjectListIterator<JigsawJunction> objectListIterator2 = objectList2.iterator();
+        ObjectListIterator<StructurePiece> objectListIterator = structurePieces.iterator();
+        ObjectListIterator<JigsawJunction> objectListIterator2 = jigsawJunctions.iterator();
 
         for (int n = 0; n < this.noiseSizeX; ++n) {
             int p;
@@ -524,7 +516,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
                                     ar = Math.max(0, Math.max(blockBox.minZ - ak, ak - blockBox.maxZ));
                                 }
 
-                                objectListIterator.back(objectList.size());
+                                objectListIterator.back(structurePieces.size());
 
                                 while (objectListIterator2.hasNext()) {
                                     JigsawJunction jigsawJunction = objectListIterator2.next();
@@ -534,7 +526,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
                                     ao += getNoiseWeight(as, at, au) * 0.4D;
                                 }
 
-                                objectListIterator2.back(objectList2.size());
+                                objectListIterator2.back(jigsawJunctions.size());
                                 BlockState blockState = this.getBlockState(ao, v);
                                 if (blockState != Blocks.AIR.getDefaultState()) {
                                     if (blockState.getLuminance() != 0) {
