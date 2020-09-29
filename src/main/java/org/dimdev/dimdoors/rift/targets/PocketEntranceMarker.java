@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import org.dimdev.dimdoors.util.EntityUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;

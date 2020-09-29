@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Objects;
 
-import com.mojang.serialization.Codec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
@@ -19,6 +18,7 @@ import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.util.RGBA;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -173,8 +173,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
             EntityTarget target = this.getTarget().as(Targets.ENTITY);
 
             if (target.receiveEntity(entity, entity.yaw)) {
-                VirtualLocation vloc = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos()));
-                EntityUtils.chat(entity, new LiteralText("You are at x = " + vloc.x + ", y = ?, z = " + vloc.z + ", w = " + vloc.depth));
+                VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos()));
+                EntityUtils.chat(entity, new LiteralText("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
                 return true;
             }
         } catch (Exception e) {

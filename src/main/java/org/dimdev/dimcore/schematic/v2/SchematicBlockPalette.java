@@ -7,8 +7,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.world.block.BaseBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.property.Property;
@@ -28,7 +26,7 @@ public class SchematicBlockPalette {
 
         static DataResult<BlockState> to(String string) {
             if (!string.contains("[") && !string.contains("]")) {
-                BlockState state =  Registry.BLOCK.get(new Identifier(string)).getDefaultState();
+                BlockState state = Registry.BLOCK.get(new Identifier(string)).getDefaultState();
                 return DataResult.success(state);
             } else {
                 Block block = Objects.requireNonNull(Registry.BLOCK.get(new Identifier(string.substring(0, string.indexOf("[")))));
@@ -39,7 +37,7 @@ public class SchematicBlockPalette {
                 String[] stateArray = string.substring(string.indexOf("[") + 1, string.length() - 1).split(",");
                 for (String stateString : stateArray) {
                     Property<?> property = Objects.requireNonNull(block.getStateManager().getProperty(stateString.split("=")[0]));
-                    state = process(property,stateString.split("=")[1], state);
+                    state = process(property, stateString.split("=")[1], state);
                 }
 
                 System.out.println(state);
@@ -54,7 +52,7 @@ public class SchematicBlockPalette {
             // Ensures that [ and ] are only added when properties are present
             boolean flag = true;
             Iterator<Property<?>> iterator = state.getProperties().iterator();
-            while(iterator.hasNext()) {
+            while (iterator.hasNext()) {
                 if (flag) {
                     builder.append("[");
                     flag = false;

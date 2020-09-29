@@ -4,10 +4,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.dimdev.dimdoors.util.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.dimdoors.util.Codecs;
 
 
 public class LinkProperties {
@@ -39,11 +38,8 @@ public class LinkProperties {
     public float floatingWeight; // TODO: depend on rift properties (ex. size, stability, or maybe a getWeightFactor method) rather than rift type
 
     public float entranceWeight;
-    @Saved
     public Set<Integer> groups = new HashSet<>();
-    @Saved
     public int linksRemaining;
-    @Saved
     public boolean oneWay;
 
     public LinkProperties(float floatingWeight, float entranceWeight, Set<Integer> groups, int linksRemaining, boolean oneWay) {

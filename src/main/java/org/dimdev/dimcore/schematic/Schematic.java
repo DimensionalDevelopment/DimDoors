@@ -366,7 +366,7 @@ public class Schematic implements BlockView {
         // Place the schematic's blocks
         this.setBlocks(world, xBase, yBase, zBase);
 
-       // Set BlockEntity data
+        // Set BlockEntity data
         for (CompoundTag BlockEntityNBT : tileEntities) {
             Vec3i schematicPos = new BlockPos(BlockEntityNBT.getInt("x"), BlockEntityNBT.getInt("y"), BlockEntityNBT.getInt("z"));
             BlockPos pos = new BlockPos(xBase, yBase, zBase).add(schematicPos);
@@ -469,7 +469,7 @@ public class Schematic implements BlockView {
 
                                         ServerWorld w;
 
-                                        if(world instanceof ServerWorldAccess) {
+                                        if (world instanceof ServerWorldAccess) {
                                             w = ((ServerWorldAccess) world).toServerWorld();
                                         } else {
                                             w = (ServerWorld) world;

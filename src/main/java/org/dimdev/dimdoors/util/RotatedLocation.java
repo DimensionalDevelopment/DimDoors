@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.util;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.annotatednbt.Saved;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -20,9 +19,7 @@ public class RotatedLocation extends Location {
         ).apply(instance, RotatedLocation::new);
     });
 
-    @Saved
     public final float yaw;
-    @Saved
     public final float pitch;
 
     public RotatedLocation(RegistryKey<World> world, BlockPos pos, float yaw, float pitch) {

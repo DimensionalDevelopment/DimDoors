@@ -1,10 +1,5 @@
 package org.dimdev.dimdoors.command;
 
-import com.flowpowered.math.vector.Vector3i;
-import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.dimdev.dimdoors.command.arguments.GroupArugmentType;
 import org.dimdev.dimdoors.command.arguments.NameArugmentType;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
@@ -16,6 +11,11 @@ import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
+import com.flowpowered.math.vector.Vector3i;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.server.command.CommandManager;

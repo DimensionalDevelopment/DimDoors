@@ -18,6 +18,7 @@ import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getWorld;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -26,7 +27,6 @@ import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 
 import static net.minecraft.world.World.OVERWORLD;
-import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getWorld;
 
 public class RiftRegistry extends PersistentState {
     private static final Logger LOGGER = LogManager.getLogger();

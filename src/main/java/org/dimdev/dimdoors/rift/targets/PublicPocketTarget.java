@@ -1,12 +1,12 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class PublicPocketTarget extends RestoringTarget {
     public final static Codec<PublicPocketTarget> CODEC = RecordCodecBuilder.create(instance -> {
@@ -27,7 +27,7 @@ public class PublicPocketTarget extends RestoringTarget {
 
     @Override
     protected VirtualTarget getTarget() {
-        return wrappedDestination;
+        return this.wrappedDestination;
     }
 
     @Override
@@ -37,11 +37,11 @@ public class PublicPocketTarget extends RestoringTarget {
 
     @Override
     public Location makeLinkTarget() {
-        VirtualLocation riftVirtualLocation = VirtualLocation.fromLocation(location);
+        VirtualLocation riftVirtualLocation = VirtualLocation.fromLocation(this.location);
         VirtualLocation newVirtualLocation;
-        int depth = Math.max(riftVirtualLocation.depth, 1);
-        newVirtualLocation = new VirtualLocation(riftVirtualLocation.world, riftVirtualLocation.x, riftVirtualLocation.z, depth);
-        Pocket pocket = PocketGenerator.generatePublicPocket(newVirtualLocation, new GlobalReference(location), null);
+        int depth = Math.max(riftVirtualLocation.getDepth(), 1);
+        newVirtualLocation = new VirtualLocation(riftVirtualLocation.getWorld(), riftVirtualLocation.getX(), riftVirtualLocation.getZ(), depth);
+        Pocket pocket = PocketGenerator.generatePublicPocket(newVirtualLocation, new GlobalReference(this.location), null);
 
         return RiftRegistry.instance().getPocketEntrance(pocket);
     }

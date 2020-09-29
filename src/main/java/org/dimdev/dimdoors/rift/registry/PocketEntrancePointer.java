@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.rift.registry;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.annotatednbt.Saved;
 
 import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import net.minecraft.util.registry.RegistryKey;
@@ -21,9 +20,7 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
         });
     });
 
-    @Saved
     public RegistryKey<World> pocketDim;
-    @Saved
     public int pocketId;
 
     public PocketEntrancePointer(RegistryKey<World> pocketDim, int pocketId) {

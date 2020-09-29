@@ -1,11 +1,10 @@
 package org.dimdev.dimdoors.world.pocket;
 
+import org.dimdev.dimdoors.util.Codecs;
+import org.dimdev.dimdoors.util.EntityUtils;
 import com.flowpowered.math.vector.Vector3i;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.annotatednbt.Saved;
-import org.dimdev.dimdoors.util.Codecs;
-import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;
@@ -29,17 +28,11 @@ public final class Pocket {
     });
     private static final int BLOCKS_PAINTED_PER_DYE = 1106;
 
-    @Saved
     public final int id;
-    @Saved
     public BlockBox box;
-    @Saved
     public VirtualLocation virtualLocation;
-    @Saved
     public PocketColor dyeColor = PocketColor.WHITE;
-    @Saved
     public PocketColor nextDyeColor = PocketColor.NONE;
-    @Saved
     public int count = 0;
 
     public RegistryKey<World> world;

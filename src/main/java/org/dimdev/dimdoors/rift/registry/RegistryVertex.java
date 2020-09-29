@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.rift.registry;
 import java.util.UUID;
 
 import com.mojang.serialization.Codec;
-import org.dimdev.annotatednbt.Saved;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -20,7 +19,6 @@ public abstract class RegistryVertex {
 
     public static final Codec<RegistryVertex> CODEC = registry.dispatch(RegistryVertex::getType, RegistryVertexType::codec);
 
-    @Saved
     public UUID id = UUID.randomUUID(); // Used to create pointers to registry vertices. Should not be used for anything other than saving.
 
     public void sourceGone(RegistryVertex source) {

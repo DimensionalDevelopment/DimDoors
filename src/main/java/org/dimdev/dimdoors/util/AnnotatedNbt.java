@@ -1,9 +1,8 @@
-package org.dimdev.annotatednbt;
+package org.dimdev.dimdoors.util;
 
 import com.google.gson.Gson;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.JsonOps;
-import org.dimdev.dimdoors.util.RotatedLocation;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;

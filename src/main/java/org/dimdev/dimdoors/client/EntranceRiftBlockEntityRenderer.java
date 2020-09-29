@@ -2,13 +2,10 @@ package org.dimdev.dimdoors.client;
 
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collector;
 import java.util.stream.IntStream;
 
-import com.google.common.collect.ImmutableList;
-import it.unimi.dsi.fastutil.ints.AbstractInt2FloatMap;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.util.RGBA;
+import com.google.common.collect.ImmutableList;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;

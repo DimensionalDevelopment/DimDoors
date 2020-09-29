@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.annotatednbt.Saved;
 
 import net.minecraft.util.dynamic.DynamicSerializableUuid;
 
@@ -20,7 +19,6 @@ public class PlayerRiftPointer extends RegistryVertex {
         });
     });
 
-    @Saved
     public UUID player;
 
     public PlayerRiftPointer(UUID player) {

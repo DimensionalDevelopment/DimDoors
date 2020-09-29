@@ -80,6 +80,7 @@ public final class ModBiomes {
                         .build())
                 .generationSettings(new GenerationSettings.Builder()
                         .feature(GenerationStep.Feature.SURFACE_STRUCTURES, ModFeatures.LIMBO_GATEWAY_CONFIGURED_FEATURE)
+                        .feature(GenerationStep.Feature.LAKES, ModFeatures.ETERNAL_FLUID_LAKE)
                         .surfaceBuilder(SurfaceBuilder.NETHER.method_30478(new TernarySurfaceConfig(ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.ETERNAL_FLUID.getDefaultState())))
                         .build())
                 .precipitation(Biome.Precipitation.NONE)

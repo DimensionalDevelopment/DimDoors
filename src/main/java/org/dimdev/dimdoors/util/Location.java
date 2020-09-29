@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.util;
 
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;

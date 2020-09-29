@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import com.mojang.serialization.Codec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.util.dynamic.DynamicSerializableUuid;
 
