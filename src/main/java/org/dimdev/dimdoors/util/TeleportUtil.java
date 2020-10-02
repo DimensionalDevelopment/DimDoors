@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.util;
 
 import java.util.Objects;
 
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -33,10 +35,10 @@ public final class TeleportUtil {
     }
 
     public static void teleport(ServerPlayerEntity player, Location location) {
-        teleport(player, WorldUtil.getWorld(location.world), location.pos, 0);
+        teleport(player, DimensionalDoorsInitializer.getWorld(location.world), location.pos, 0);
     }
 
     public static void teleport(ServerPlayerEntity player, RotatedLocation location) {
-        teleport(player, WorldUtil.getWorld(location.world), location.pos, (int) location.yaw);
+        teleport(player, DimensionalDoorsInitializer.getWorld(location.world), location.pos, (int) location.yaw);
     }
 }

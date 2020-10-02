@@ -35,7 +35,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
             chat(entity, new TranslatableText("rifts.destinations.escape.not_in_pocket_dim"));
             return false;
         }
-        if (ModDimensions.isLimboDimension(entity.world) && !canEscapeLimbo) {
+        if (ModDimensions.isLimboDimension(entity.world) && !this.canEscapeLimbo) {
             chat(entity, new TranslatableText("rifts.destinations.escape.cannot_escape_limbo"));
             return false;
         }
@@ -43,7 +43,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
         UUID uuid = entity.getUuid();
         if (uuid != null) {
             Location destLoc = RiftRegistry.instance().getOverworldRift(uuid);
-            if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || canEscapeLimbo) {
+            if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || this.canEscapeLimbo) {
                 Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos())).projectToWorld(false);
                 TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), 0);
             } else {
@@ -54,8 +54,8 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
                 }
                 if (!entity.getEntityWorld().isClient) {
                     if (ModDimensions.LIMBO_DIMENSION != null) {
-                        entity.moveToWorld(ModDimensions.LIMBO_DIMENSION);
-                        entity.setPos(location.getX(), location.getY(), location.getZ());
+                        Entity newEntity = entity.moveToWorld(ModDimensions.LIMBO_DIMENSION);
+                        newEntity.setPos(this.location.getX(), this.location.getY(), this.location.getZ());
                     }
                 }
             }
