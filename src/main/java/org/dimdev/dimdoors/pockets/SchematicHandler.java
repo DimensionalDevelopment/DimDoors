@@ -46,6 +46,9 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     private static final String SAVED_POCKETS_GROUP_NAME = "saved_pockets";
     public static final SchematicHandler INSTANCE = new SchematicHandler();
 
+    private SchematicHandler() {
+    }
+
     private static String getFolder() {
         return "config"; // TODO
     }
@@ -453,7 +456,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             PocketTemplate template2 = this.usageList.get(index).getKey();
             if (index >= this.usageList.size() || template != template2) {
                 entry.setValue(this.usageList.size());
-                this.usageList.add(new SimpleEntry(template, 1));
+                this.usageList.add(new SimpleEntry<>(template, 1));
             }
         }
     }
