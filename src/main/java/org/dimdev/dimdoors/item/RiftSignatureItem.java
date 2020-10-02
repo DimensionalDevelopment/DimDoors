@@ -2,13 +2,13 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RotatedLocation;
-import org.dimdev.dimdoors.util.WorldUtil;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.item.TooltipContext;
@@ -80,7 +80,7 @@ public class RiftSignatureItem extends Item {
                     clearSource(stack); // TODO: But is this fair? It's a rather hidden way of unbinding your signature!
                     return ActionResult.FAIL;
                 }
-                World sourceWorld = WorldUtil.getWorld(target.world);
+                World sourceWorld = DimensionalDoorsInitializer.getWorld(target.world);
                 sourceWorld.setBlockState(target.getBlockPos(), ModBlocks.DETACHED_RIFT.getDefaultState());
                 DetachedRiftBlockEntity rift1 = (DetachedRiftBlockEntity) target.getBlockEntity();
                 rift1.setDestination(RiftReference.tryMakeRelative(target, new Location((ServerWorld) world, pos)));

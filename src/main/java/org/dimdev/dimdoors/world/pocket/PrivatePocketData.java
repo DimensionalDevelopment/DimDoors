@@ -2,8 +2,8 @@ package org.dimdev.dimdoors.world.pocket;
 
 import java.util.UUID;
 
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.util.NbtUtil;
-import org.dimdev.dimdoors.util.WorldUtil;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
@@ -50,7 +50,7 @@ public class PrivatePocketData extends PersistentState {
     }
 
     public static PrivatePocketData instance() {
-        return WorldUtil.getWorld(OVERWORLD).getPersistentStateManager().getOrCreate(PrivatePocketData::new, DATA_NAME);
+        return DimensionalDoorsInitializer.getWorld(OVERWORLD).getPersistentStateManager().getOrCreate(PrivatePocketData::new, DATA_NAME);
     }
 
     @Override

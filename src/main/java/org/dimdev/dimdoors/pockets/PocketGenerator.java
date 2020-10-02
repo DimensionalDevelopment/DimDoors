@@ -4,10 +4,10 @@ import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.util.WorldUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
@@ -41,13 +41,13 @@ public final class PocketGenerator {
 
     public static Pocket generatePrivatePocket(VirtualLocation virtualLocation) {
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getPersonalPocketTemplate();
-        return generatePocketFromTemplate(WorldUtil.getWorld(ModDimensions.PERSONAL), pocketTemplate, virtualLocation, true);
+        return generatePocketFromTemplate(DimensionalDoorsInitializer.getWorld(ModDimensions.PERSONAL), pocketTemplate, virtualLocation, true);
     }
 
     // TODO: size of public pockets should increase with depth
     public static Pocket generatePublicPocket(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getPublicPocketTemplate();
-        return generatePocketFromTemplate(WorldUtil.getWorld(ModDimensions.PUBLIC), pocketTemplate, virtualLocation, linkTo, linkProperties);
+        return generatePocketFromTemplate(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), pocketTemplate, virtualLocation, linkTo, linkProperties);
     }
 
     /**
@@ -58,11 +58,11 @@ public final class PocketGenerator {
      */
     public static Pocket generateDungeonPocket(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
         int depth = virtualLocation.getDepth();
-        float netherProbability = WorldUtil.getWorld(virtualLocation.getWorld()).getDimension().isUltrawarm() ? 1 : (float) depth / 200; // TODO: improve nether probability
+        float netherProbability = DimensionalDoorsInitializer.getWorld(virtualLocation.getWorld()).getDimension().isUltrawarm() ? 1 : (float) depth / 200; // TODO: improve nether probability
         Random random = new Random();
         String group = random.nextFloat() < netherProbability ? "nether" : "ruins";
         PocketTemplate pocketTemplate = SchematicHandler.INSTANCE.getRandomTemplate(group, depth, ModConfig.INSTANCE.getPocketsConfig().maxPocketSize, false);
 
-        return generatePocketFromTemplate(WorldUtil.getWorld(ModDimensions.DUNGEON), pocketTemplate, virtualLocation, linkTo, linkProperties);
+        return generatePocketFromTemplate(DimensionalDoorsInitializer.getWorld(ModDimensions.DUNGEON), pocketTemplate, virtualLocation, linkTo, linkProperties);
     }
 }

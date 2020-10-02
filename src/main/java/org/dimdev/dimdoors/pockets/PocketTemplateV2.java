@@ -15,7 +15,6 @@ import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.WorldUtil;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
 import net.minecraft.block.entity.BlockEntity;

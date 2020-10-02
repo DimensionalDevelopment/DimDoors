@@ -1,22 +1,18 @@
 package org.dimdev.dimdoors.pockets;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimcore.schematic.Schematic;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.WorldUtil;
-import org.dimdev.dimdoors.util.math.MathUtil;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 
@@ -143,7 +139,7 @@ public class PocketTemplate {
     public void place(Pocket pocket, boolean setup) {
         pocket.setSize(this.size * 16, this.size * 16, this.size * 16);
         int gridSize = PocketRegistry.instance(pocket.world).getGridSize();
-        ServerWorld world = WorldUtil.getWorld(pocket.world);
+        ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
         int xBase = pocket.box.minX;
         int yBase = pocket.box.minY;
         int zBase = pocket.box.minZ;
@@ -168,7 +164,7 @@ public class PocketTemplate {
 
     public void setup(Pocket pocket, VirtualTarget linkTo, LinkProperties linkProperties) {
         int gridSize = PocketRegistry.instance(pocket.world).getGridSize();
-        ServerWorld world = WorldUtil.getWorld(pocket.world);
+        ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
         int xBase = pocket.box.minX;
         int yBase = pocket.box.minY;
         int zBase = pocket.box.minZ;
