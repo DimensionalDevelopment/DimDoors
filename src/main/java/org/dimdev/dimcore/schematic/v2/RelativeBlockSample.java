@@ -34,7 +34,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 
     public RelativeBlockSample(Schematic schematic) {
         this.schematic = schematic;
-        this.blockData = SchematicPlacer.getBlockData(schematic, schematic.getWidth(), schematic.getHeight(), schematic.getLength());
+        this.blockData = SchematicPlacer.getBlockData(schematic);
         this.blockPalette = ImmutableBiMap.copyOf(schematic.getBlockPalette());
         this.blockContainer = Maps.newHashMap();
         this.blockEntityContainer = Maps.newHashMap();

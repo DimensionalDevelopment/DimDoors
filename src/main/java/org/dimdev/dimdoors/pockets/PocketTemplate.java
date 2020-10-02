@@ -10,12 +10,9 @@ import org.dimdev.dimcore.schematic.Schematic;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.entity.ModEntityTypes;
-import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
-import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.WorldUtil;
@@ -28,12 +25,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -78,9 +71,9 @@ public class PocketTemplate {
 
     public float getWeight(int depth) {
         if (depth == -1) {
-            return baseWeight;
+            return this.baseWeight;
         } else {
-            return baseWeight; // TODO: make this actually dependend on the depth
+            return this.baseWeight; // TODO: make this actually dependend on the depth
         }
     }
 
@@ -101,32 +94,32 @@ public class PocketTemplate {
                 switch (tileEntityNBT.getString("placeholder")) {
                     case "deeper_depth_door":
                         rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
-                        rift.setDestination(DefaultDungeonDestinations.deeperDungeonDestination);
+                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+                        rift.setDestination(DefaultDungeonDestinations.DEEPER_DUNGEON_DESTINATION);
                         newNBT = rift.toTag(newNBT);
                         break;
                     case "less_deep_depth_door":
                         rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
-                        rift.setDestination(DefaultDungeonDestinations.shallowerDungeonDestination);
+                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+                        rift.setDestination(DefaultDungeonDestinations.SHALLOWER_DUNGEON_DESTINATION);
                         newNBT = rift.toTag(newNBT);
                         break;
                     case "overworld_door":
                         rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
-                        rift.setDestination(DefaultDungeonDestinations.overworldDestination);
+                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+                        rift.setDestination(DefaultDungeonDestinations.OVERWORLD_DESTINATION);
                         newNBT = rift.toTag(newNBT);
                         break;
                     case "entrance_door":
                         rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.pocketLinkProperties);
-                        rift.setDestination(DefaultDungeonDestinations.twoWayPocketEntrance);
+                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+                        rift.setDestination(DefaultDungeonDestinations.TWO_WAY_POCKET_ENTRANCE);
                         newNBT = rift.toTag(newNBT);
                         break;
                     case "gateway_portal":
                         rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.overworldLinkProperties);
-                        rift.setDestination(DefaultDungeonDestinations.gatewayDestination);
+                        rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
+                        rift.setDestination(DefaultDungeonDestinations.GATEWAY_DESTINATION);
                         newNBT = rift.toTag(newNBT);
                         break;
                     default:
@@ -139,39 +132,16 @@ public class PocketTemplate {
             }
         }
         schematic.tileEntities = tileEntities;
-
-
         List<CompoundTag> entities = new ArrayList<>();
         for (CompoundTag entitiesNBT : schematic.entities) {
-            if (entitiesNBT.contains("placeholder")) {
-                double x = entitiesNBT.getDouble("x");
-                double y = entitiesNBT.getDouble("y");
-                double z = entitiesNBT.getDouble("z");
-                float yaw = entitiesNBT.getFloat("yaw");
-                float pitch = entitiesNBT.getFloat("pitch");
-
-                CompoundTag newNBT;
-                if ("monolith".equals(entitiesNBT.getString("placeholder"))) {
-                    MonolithEntity monolith = ModEntityTypes.MONOLITH.create(null);
-                    monolith.setPos(x, y, z);
-                    monolith.yaw = yaw;
-                    monolith.pitch = pitch;
-                    newNBT = monolith.toTag(new CompoundTag());
-                } else {
-                    throw new RuntimeException("Unknown entity placeholder: " + entitiesNBT.getString("placeholder"));
-                }
-                // TODO: allow overriding some placeholder properties by copying other properties (not placeholder and x/y/z) to the new nbt
-                entities.add(newNBT);
-            } else {
-                entities.add(entitiesNBT);
-            }
+            TemplateUtils.setupEntityPlaceholders(entities, entitiesNBT);
         }
         schematic.entities = entities;
         isReplacingPlaceholders = false;
     }
 
     public void place(Pocket pocket, boolean setup) {
-        pocket.setSize(size * 16, size * 16, size * 16);
+        pocket.setSize(this.size * 16, this.size * 16, this.size * 16);
         int gridSize = PocketRegistry.instance(pocket.world).getGridSize();
         ServerWorld world = WorldUtil.getWorld(pocket.world);
         int xBase = pocket.box.minX;
@@ -179,20 +149,20 @@ public class PocketTemplate {
         int zBase = pocket.box.minZ;
 
         //Converting the schematic from bytearray if needed
-        if (schematic == null) {
+        if (this.schematic == null) {
             LOGGER.debug("Schematic is null, trying to reload from byteArray.");
-            schematic = SchematicHandler.INSTANCE.loadSchematicFromByteArray(schematicBytecode);
-            replacePlaceholders(schematic);
+            this.schematic = SchematicHandler.INSTANCE.loadSchematicFromByteArray(this.schematicBytecode);
+            replacePlaceholders(this.schematic);
         }
 
         //Place the schematic
-        LOGGER.info("Placing new pocket using schematic " + id + " at x = " + xBase + ", z = " + zBase);
-        schematic.place(world, xBase, yBase, zBase);
+        LOGGER.info("Placing new pocket using schematic " + this.id + " at x = " + xBase + ", z = " + zBase);
+        this.schematic.place(world, xBase, yBase, zBase);
 
         SchematicHandler.INSTANCE.incrementUsage(this);
         if (!setup && !SchematicHandler.INSTANCE.isUsedOftenEnough(this)) {
             //remove schematic from "cache"
-            schematic = null;
+            this.schematic = null;
         }
     }
 
@@ -205,7 +175,7 @@ public class PocketTemplate {
 
         // Fill chests and make rift list
         List<RiftBlockEntity> rifts = new ArrayList<>();
-        for (CompoundTag tileEntityNBT : schematic.tileEntities) {
+        for (CompoundTag tileEntityNBT : this.schematic.tileEntities) {
             BlockPos pos = new BlockPos(
                     xBase + tileEntityNBT.getInt("x"),
                     yBase + tileEntityNBT.getInt("y"),
@@ -226,16 +196,7 @@ public class PocketTemplate {
                 Inventory inventory = (Inventory) tile;
                 if (inventory.isEmpty()) {
                     if (tile instanceof ChestBlockEntity || tile instanceof DispenserBlockEntity) {
-                        LootTable table;
-                        if (tile instanceof ChestBlockEntity) {
-                            LOGGER.debug("Now populating chest.");
-                            table = world.getServer().getLootManager().getTable(new Identifier("dimdoors:dungeon_chest"));
-                        } else { //(tile instanceof TileEntityDispenser)
-                            LOGGER.debug("Now populating dispenser.");
-                            table = world.getServer().getLootManager().getTable(new Identifier("dimdoors:dispenser_projectiles"));
-                        }
-                        LootContext ctx = new LootContext.Builder(world).random(world.random).build(LootContextTypes.CHEST);
-                        table.supplyInventory(inventory, ctx);
+                        TemplateUtils.setupLootTable(world, tile, inventory, LOGGER);
                         LOGGER.debug("Inventory should be populated now. Chest is: " + (inventory.isEmpty() ? "empty." : "filled."));
                         if (inventory.isEmpty()) {
                             LOGGER.error(", however Inventory is: empty!");
@@ -244,89 +205,45 @@ public class PocketTemplate {
                 }
             }
         }
-
-        // Find an entrance
-
-        HashMap<RiftBlockEntity, Float> entranceWeights = new HashMap<>();
-
-        for (RiftBlockEntity rift : rifts) { // Find an entrance
-            if (rift.getDestination() instanceof PocketEntranceMarker) {
-                entranceWeights.put(rift, ((PocketEntranceMarker) rift.getDestination()).getWeight());
-            }
-        }
-
-        if (entranceWeights.size() == 0) {
-            LOGGER.warn("Pocket had no possible entrance in schematic!");
-            return;
-        }
-        RiftBlockEntity selectedEntrance = MathUtil.weightedRandom(entranceWeights);
-
-        // Replace entrances with appropriate destinations
-        for (RiftBlockEntity rift : rifts) {
-            VirtualTarget dest = rift.getDestination();
-            if (dest instanceof PocketEntranceMarker) {
-                if (rift == selectedEntrance) {
-                    PocketRegistry.instance(world.getRegistryKey()).markDirty();
-                    rift.setDestination(((PocketEntranceMarker) dest).getIfDestination());
-                    rift.register();
-                    RiftRegistry.instance().addPocketEntrance(pocket, new Location((ServerWorld) rift.getWorld(), rift.getPos()));
-                } else {
-                    rift.setDestination(((PocketEntranceMarker) dest).getOtherwiseDestination());
-                }
-            }
-        }
-
         // Link pocket exits back
-        for (RiftBlockEntity rift : rifts) {
-            VirtualTarget dest = rift.getDestination();
-            if (dest instanceof PocketExitMarker) {
-                if (linkProperties != null) rift.setProperties(linkProperties);
-                rift.setDestination(rift.getProperties() == null || !rift.getProperties().oneWay ? linkTo : null);
-            }
-        }
-
-        // register the rifts
-        for (RiftBlockEntity rift : rifts) {
-            rift.register();
-            rift.markDirty();
-        }
+        TemplateUtils.registerRifts(rifts, linkTo, linkProperties, pocket);
 
         if (!SchematicHandler.INSTANCE.isUsedOftenEnough(this)) {
             //remove schematic from "cache"
-            schematic = null;
+            this.schematic = null;
         }
     }
 
     public String getGroup() {
-        return group;
+        return this.group;
     }
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public String getType() {
-        return type;
+        return this.type;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getAuthor() {
-        return author;
+        return this.author;
     }
 
     public Schematic getSchematic() {
-        return schematic;
+        return this.schematic;
     }
 
     public int getSize() {
-        return size;
+        return this.size;
     }
 
     public int getBaseWeight() {
-        return baseWeight;
+        return this.baseWeight;
     }
 
     public void setSchematic(Schematic schematic) {

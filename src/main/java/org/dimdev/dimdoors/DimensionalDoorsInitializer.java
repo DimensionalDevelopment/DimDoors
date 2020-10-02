@@ -36,7 +36,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         if (server != null) {
             return server;
         }
-        throw new IllegalStateException("Accessed server too early!");
+        throw new UnsupportedOperationException("Accessed server too early!");
     }
 
     public static ServerWorld getWorld(RegistryKey<World> key) {

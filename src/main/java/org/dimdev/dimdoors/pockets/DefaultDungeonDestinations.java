@@ -10,18 +10,18 @@ import org.dimdev.dimdoors.rift.targets.RandomTarget;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
 public final class DefaultDungeonDestinations { // TODO: lower weights?
-    public static final LinkProperties pocketLinkProperties = LinkProperties
+    public static final LinkProperties POCKET_LINK_PROPERTIES = LinkProperties
             .builder()
             .groups(new HashSet<>(Arrays.asList(0, 1)))
             .linksRemaining(1).build();
 
-    public static final LinkProperties overworldLinkProperties = LinkProperties
+    public static final LinkProperties OVERWORLD_LINK_PROPERTIES = LinkProperties
             .builder()
             .groups(new HashSet<>(Arrays.asList(0, 1)))
             .entranceWeight(50)
             .linksRemaining(1).build();
 
-    public static final VirtualTarget deeperDungeonDestination = RandomTarget
+    public static final VirtualTarget DEEPER_DUNGEON_DESTINATION = RandomTarget
             .builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1)
@@ -30,7 +30,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
             .weightMaximum(100)
             .newRiftWeight(1).build();
 
-    public static final VirtualTarget shallowerDungeonDestination = RandomTarget
+    public static final VirtualTarget SHALLOWER_DUNGEON_DESTINATION = RandomTarget
             .builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1)
@@ -39,7 +39,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
             .weightMaximum(100)
             .newRiftWeight(1).build();
 
-    public static final VirtualTarget overworldDestination = RandomTarget
+    public static final VirtualTarget OVERWORLD_DESTINATION = RandomTarget
             .builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1)
@@ -48,7 +48,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
             .weightMaximum(100)
             .newRiftWeight(1).build();
 
-    public static final VirtualTarget twoWayPocketEntrance = PocketEntranceMarker
+    public static final VirtualTarget TWO_WAY_POCKET_ENTRANCE = PocketEntranceMarker
             .builder()
             .weight(1)
             .ifDestination(new PocketEntranceMarker())
@@ -61,7 +61,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
                     .weightMaximum(100)
                     .newRiftWeight(1).build()).build();
 
-    public static final VirtualTarget gatewayDestination = RandomTarget
+    public static final VirtualTarget GATEWAY_DESTINATION = RandomTarget
             .builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1) // TODO: lower value?

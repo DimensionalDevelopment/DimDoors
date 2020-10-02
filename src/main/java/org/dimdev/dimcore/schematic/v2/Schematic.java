@@ -1,9 +1,11 @@
 package org.dimdev.dimcore.schematic.v2;
 
 import java.nio.ByteBuffer;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
@@ -13,12 +15,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.StructureWorldAccess;
 
-@SuppressWarnings("CodeBlock2Expr")
 public class Schematic {
     private static final Consumer<String> PRINT_TO_STDERR = System.err::println;
     public static final Codec<Schematic> CODEC = RecordCodecBuilder.create((instance) -> {
@@ -48,8 +50,8 @@ public class Schematic {
     private final int paletteMax;
     private final Map<BlockState, Integer> blockPalette;
     private final ByteBuffer blockData;
-    private final List<CompoundTag> blockEntities;
-    private final List<CompoundTag> entities;
+    private List<CompoundTag> blockEntities;
+    private List<CompoundTag> entities;
 
     public Schematic(int version, int dataVersion, SchematicMetadata metadata, short width, short height, short length, Vec3i offset, int paletteMax, Map<BlockState, Integer> blockPalette, ByteBuffer blockData, List<CompoundTag> blockEntities, List<CompoundTag> entities) {
         this.version = version;
@@ -110,8 +112,24 @@ public class Schematic {
         return this.blockEntities;
     }
 
+    public void setBlockEntities(List<CompoundTag> blockEntities) {
+        this.blockEntities = blockEntities.stream().map(SchematicPlacer::fixEntityId).collect(Collectors.toList());
+    }
+
+    public void setEntities(Collection<? extends Entity> entities) {
+        this.setEntities(entities.stream().map((e) -> {
+            CompoundTag tag = new CompoundTag();
+            e.saveSelfToTag(tag);
+            return tag;
+        }).collect(Collectors.toList()));
+    }
+
     public List<CompoundTag> getEntities() {
         return this.entities;
+    }
+
+    public void setEntities(List<CompoundTag> entities) {
+        this.entities = entities;
     }
 
     public static RelativeBlockSample getBlockSample(Schematic schem) {

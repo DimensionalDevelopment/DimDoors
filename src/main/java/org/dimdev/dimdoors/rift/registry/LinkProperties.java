@@ -8,7 +8,6 @@ import org.dimdev.dimdoors.util.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-
 public class LinkProperties {
     public static Codec<LinkProperties> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(

@@ -62,11 +62,11 @@ public final class ModDimensions {
     }
 
     public static boolean isLimbo(StructureWorldAccess world) {
-        return world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION;
+        return world != null && (world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION);
     }
 
     public static boolean isLimboDimension(World world) {
-        return world.getRegistryKey() == LIMBO || world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION;
+        return world != null && (world.getRegistryKey() == LIMBO || world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION);
     }
 
     public static void init() {
