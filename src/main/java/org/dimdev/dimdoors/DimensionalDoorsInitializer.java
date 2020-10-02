@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
+import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModBiomes;
@@ -70,6 +71,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 
         Targets.registerDefaultTargets();
 
+        SchematicV2Handler.getInstance().load();
         SchematicHandler.INSTANCE.loadSchematics();
     }
 }
