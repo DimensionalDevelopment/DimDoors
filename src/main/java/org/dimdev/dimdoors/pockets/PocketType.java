@@ -52,7 +52,7 @@ public final class PocketType {
     public static final class PocketEntry {
         public static final Codec<PocketEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.INT.fieldOf("size").forGetter(PocketEntry::getSize),
-                Codec.STRING.fieldOf("name").forGetter(PocketEntry::getName)
+                Codec.STRING.fieldOf("id").forGetter(PocketEntry::getName)
         ).apply(instance, PocketEntry::new));
         private final int size;
         private final String name;
