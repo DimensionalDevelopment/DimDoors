@@ -1,4 +1,4 @@
-package org.dimdev.dimcore.schematic.v2;
+package org.dimdev.dimdoors.util.schematic.v2;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -48,7 +50,7 @@ public class Schematic {
     private final short length;
     private final Vec3i offset;
     private final int paletteMax;
-    private final Map<BlockState, Integer> blockPalette;
+    private final BiMap<BlockState, Integer> blockPalette;
     private final ByteBuffer blockData;
     private List<CompoundTag> blockEntities;
     private List<CompoundTag> entities;
@@ -62,7 +64,7 @@ public class Schematic {
         this.length = length;
         this.offset = offset;
         this.paletteMax = paletteMax;
-        this.blockPalette = blockPalette;
+        this.blockPalette = HashBiMap.create(blockPalette);
         this.blockData = blockData;
         this.blockEntities = blockEntities;
         this.entities = entities;

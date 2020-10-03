@@ -1,4 +1,4 @@
-package org.dimdev.dimcore.schematic.v2;
+package org.dimdev.dimdoors.util.schematic.v2;
 
 import java.util.Map;
 import java.util.Objects;

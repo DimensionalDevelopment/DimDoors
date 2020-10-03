@@ -6,8 +6,8 @@ import java.io.InputStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimcore.schematic.v2.Schematic;
-import org.dimdev.dimcore.schematic.v2.SchematicPlacer;
+import org.dimdev.dimdoors.util.schematic.v2.Schematic;
+import org.dimdev.dimdoors.util.schematic.v2.SchematicPlacer;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.feature.gateway.Gateway;
 import com.google.common.collect.BiMap;

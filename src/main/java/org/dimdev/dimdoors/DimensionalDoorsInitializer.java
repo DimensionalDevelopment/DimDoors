@@ -2,7 +2,7 @@ package org.dimdev.dimdoors;
 
 import java.io.IOException;
 
-import org.dimdev.dimcore.schematic.v2.SchematicTest;
+import org.dimdev.dimdoors.util.schematic.v2.SchematicTest;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;

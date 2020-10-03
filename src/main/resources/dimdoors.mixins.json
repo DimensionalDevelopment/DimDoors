@@ -11,7 +11,8 @@
     "DirectionAccessor",
     "EntityMixin",
     "ListTagAccessor",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "RedstoneWireBlockAccessor"
   ],
   "client": [
     "client.GlStateManagerAccessor",
