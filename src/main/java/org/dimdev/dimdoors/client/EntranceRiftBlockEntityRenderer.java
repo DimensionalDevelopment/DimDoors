@@ -108,8 +108,8 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
     private void drawVertices(EntranceRiftBlockEntity endPortalBlockEntity, Matrix4f matrix4f, VertexConsumer vertexConsumer, float x1, float x2, float y1, float y2, float z1, float z2, float z3, float z4, float red, float green, float blue, Direction direction) {
         vertexConsumer.vertex(matrix4f, x1, y1, z1).color(red, green, blue, 1.0F).next();
         vertexConsumer.vertex(matrix4f, x2, y1, z2).color(red, green, blue, 1.0F).next();
-        vertexConsumer.vertex(matrix4f, x2, y2, z3).color(red, green, blue, 1.0F).next();
-        vertexConsumer.vertex(matrix4f, x1, y2, z4).color(red, green, blue, 1.0F).next();
+        vertexConsumer.vertex(matrix4f, x2, y2 + 1.0F, z3).color(red, green, blue, 1.0F).next();
+        vertexConsumer.vertex(matrix4f, x1, y2 + 1.0F, z4).color(red, green, blue, 1.0F).next();
 //        if (direction == endPortalBlockEntity.getOrientation() || direction.getOpposite() == endPortalBlockEntity.getOrientation()) {
 //            float offset = direction == endPortalBlockEntity.getOrientation() ? 0.5F : -0.5F;
 //            vertexConsumer.vertex(matrix4f, x1, y1, z1 + offset).color(red, green, blue, 1.0F).next();
