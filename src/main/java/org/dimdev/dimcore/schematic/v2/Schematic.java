@@ -31,7 +31,7 @@ public class Schematic {
                 Codec.SHORT.fieldOf("Width").forGetter(Schematic::getWidth),
                 Codec.SHORT.fieldOf("Height").forGetter(Schematic::getHeight),
                 Codec.SHORT.fieldOf("Length").forGetter(Schematic::getLength),
-                Vec3i.field_25123.fieldOf("Offset").forGetter(Schematic::getOffset),
+                Vec3i.CODEC.fieldOf("Offset").forGetter(Schematic::getOffset),
                 Codec.INT.fieldOf("PaletteMax").forGetter(Schematic::getPaletteMax),
                 SchematicBlockPalette.CODEC.fieldOf("Palette").forGetter(Schematic::getBlockPalette),
                 Codec.BYTE_BUFFER.fieldOf("BlockData").forGetter(Schematic::getBlockData),

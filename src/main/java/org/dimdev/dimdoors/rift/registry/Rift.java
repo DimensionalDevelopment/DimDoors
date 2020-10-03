@@ -14,7 +14,7 @@ import net.minecraft.util.dynamic.DynamicSerializableUuid;
 public class Rift extends RegistryVertex {
     public static final Codec<Rift> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
-                DynamicSerializableUuid.field_25122.fieldOf("id").forGetter(a -> a.id),
+                DynamicSerializableUuid.CODEC.fieldOf("id").forGetter(a -> a.id),
                 Location.CODEC.fieldOf("location").forGetter(a -> a.location),
                 Codec.BOOL.fieldOf("isDetached").forGetter(a -> a.isDetached),
                 LinkProperties.CODEC.fieldOf("properties").forGetter(a -> a.properties)

@@ -65,7 +65,7 @@ public class ModRendering {
              */
             @Override
             public void apply(ResourceManager resourceManager) {
-                final Function<Identifier, Sprite> atlas = MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+                final Function<Identifier, Sprite> atlas = MinecraftClient.getInstance().getSpriteAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
                 fluidSprites[0] = atlas.apply(stillSpriteId);
                 fluidSprites[1] = atlas.apply(flowingSpriteId);
             }
