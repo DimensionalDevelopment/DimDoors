@@ -1,11 +1,27 @@
 package org.dimdev.dimdoors.world.limbo;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.ModConfig;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.UnboundedMapCodec;
 import static org.dimdev.dimdoors.block.ModBlocks.DETACHED_RIFT;
 import static org.dimdev.dimdoors.block.ModBlocks.DIMENSIONAL_PORTAL;
 import static org.dimdev.dimdoors.block.ModBlocks.ETERNAL_FLUID;
@@ -19,9 +35,12 @@ import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_FABRIC;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
+import net.fabricmc.loader.api.FabricLoader;
 import static net.minecraft.block.Blocks.ACACIA_LOG;
 import static net.minecraft.block.Blocks.ACACIA_PLANKS;
 import static net.minecraft.block.Blocks.ACACIA_WOOD;
@@ -82,10 +101,131 @@ import static net.minecraft.block.Blocks.STONE_BRICKS;
  * naturally change into stone, then cobble, then gravel, and finally Unraveled Fabric as time passes.
  */
 public final class LimboDecay {
+    private static final Logger LOGGER = LogManager.getLogger();
+    private static final UnboundedMapCodec<Block, Block> CODEC = Codec.unboundedMap(Identifier.CODEC.xmap(Registry.BLOCK::get, Registry.BLOCK::getId), Registry.BLOCK);
+    private static final Consumer<String> STDERR = System.err::println;
     private static final Map<Block, Block> DECAY_SEQUENCE = new HashMap<>();
+    private static final Map<Block, Block> DEFAULT_VALUES;
+    private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
+    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("dimdoors_limbo_decay.json");
+
+    public static void init() {
+        try {
+            JsonObject configObject = null;
+            if (Files.isDirectory(CONFIG_PATH)) {
+                Files.delete(CONFIG_PATH);
+            }
+            if (!Files.exists(CONFIG_PATH)) {
+                Files.createFile(CONFIG_PATH);
+                JsonObject jsonObject = CODEC.encodeStart(JsonOps.INSTANCE, DEFAULT_VALUES).getOrThrow(false, STDERR).getAsJsonObject();
+                configObject = jsonObject;
+                String json = GSON.toJson(jsonObject);
+                Files.write(CONFIG_PATH, json.getBytes());
+                DECAY_SEQUENCE.clear();
+                DECAY_SEQUENCE.putAll(DEFAULT_VALUES);
+            }
+            if (configObject == null) {
+                try (BufferedReader reader = Files.newBufferedReader(CONFIG_PATH)) {
+                    configObject = GSON.fromJson(reader, JsonObject.class);
+                    Map<Block, Block> blocks = CODEC.decode(JsonOps.INSTANCE, configObject).getOrThrow(false, STDERR).getFirst();
+                    DECAY_SEQUENCE.clear();
+                    DEFAULT_VALUES.putAll(blocks);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static final Random random = new Random();
+    private static Block[] blocksImmuneToDecay = null;
+
+    public static Map<Block, Block> getDecaySequence() {
+        return DECAY_SEQUENCE;
+    }
+
+    public static Block[] getBlocksImmuneToDecay() {
+        if (blocksImmuneToDecay == null) {
+            blocksImmuneToDecay = new Block[]{
+                    UNRAVELLED_FABRIC,
+                    ETERNAL_FLUID,
+                    DIMENSIONAL_PORTAL,
+                    IRON_DIMENSIONAL_DOOR,
+                    OAK_DIMENSIONAL_DOOR,
+                    DETACHED_RIFT,
+                    GOLD_DOOR,
+                    QUARTZ_DOOR,
+                    GOLD_DIMENSIONAL_DOOR
+            };
+        }
+
+        return blocksImmuneToDecay;
+    }
+
+    /**
+     * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
+     * and applies Limbo decay to them. This gives the impression that decay spreads outward from Unraveled Fabric.
+     */
+    public static void applySpreadDecay(World world, BlockPos pos) {
+        //Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
+        //full spread decay checks, which can also shift its performance impact on the game.
+        if (random.nextDouble() < ModConfig.INSTANCE.getLimboConfig().decaySpreadChance) {
+            //Apply decay to the blocks above, below, and on all four sides.
+            //World.getBlockId() implements bounds checking, so we don't have to worry about reaching out of the world
+            boolean flag = decayBlock(world, pos.up());
+            flag = flag && decayBlock(world, pos.down());
+            flag = flag && decayBlock(world, pos.north());
+            flag = flag && decayBlock(world, pos.south());
+            flag = flag && decayBlock(world, pos.west());
+            flag = flag && decayBlock(world, pos.east());
+            if (flag) {
+                LOGGER.debug("Applied limbo decay to block at all six sides at position {} in dimension {}", pos, world.getRegistryKey().getValue());
+            }
+        }
+    }
+
+    /**
+     * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
+     */
+    private static boolean decayBlock(World world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+
+        if (canDecayBlock(state, world, pos)) {
+            //Loop over the block IDs that decay can go through.
+            //Find an index matching the current blockID, if any.
+
+            if (getDecaySequence().containsKey(state.getBlock())) {
+                Block decay = getDecaySequence().get(state.getBlock());
+                world.setBlockState(pos, decay.getDefaultState());
+            } else if (!state.isFullCube(world, pos)) {
+                world.setBlockState(pos, AIR.getDefaultState());
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if a block can decay. We will not decay air, certain DD blocks, or containers.
+     */
+    private static boolean canDecayBlock(BlockState state, World world, BlockPos pos) {
+        if (world.isAir(pos)) {
+            return false;
+        }
+
+        for (int k = 0; k < getBlocksImmuneToDecay().length; k++) {
+            if (state.getBlock().equals(getBlocksImmuneToDecay()[k])) {
+                return false;
+            }
+        }
+
+        return !(state.getBlock() instanceof BlockWithEntity);
+    }
 
     static {
-        BiConsumer<Block, Block> blockBiConsumer = DECAY_SEQUENCE::putIfAbsent;
+        ImmutableMap.Builder<Block, Block> builder = ImmutableMap.builder();
+        BiConsumer<Block, Block> blockBiConsumer = builder::put;
 
         blockBiConsumer.accept(STONE, COBBLESTONE);
         blockBiConsumer.accept(COBBLESTONE, END_STONE);
@@ -135,88 +275,8 @@ public final class LimboDecay {
         blockBiConsumer.accept(JUNGLE_WOOD, JUNGLE_LOG);
         blockBiConsumer.accept(ACACIA_WOOD, ACACIA_LOG);
         blockBiConsumer.accept(DARK_OAK_WOOD, DARK_OAK_LOG);
+
+        DEFAULT_VALUES = builder.build();
     }
 
-    private static final Random random = new Random();
-    private static Block[] blocksImmuneToDecay = null;
-
-    public static Map<Block, Block> getDecaySequence() {
-        return DECAY_SEQUENCE;
-    }
-
-    public static Block[] getBlocksImmuneToDecay() {
-        if (blocksImmuneToDecay == null) {
-            blocksImmuneToDecay = new Block[]{
-                    UNRAVELLED_FABRIC,
-                    ETERNAL_FLUID,
-                    DIMENSIONAL_PORTAL,
-                    IRON_DIMENSIONAL_DOOR,
-                    OAK_DIMENSIONAL_DOOR,
-                    DETACHED_RIFT,
-                    GOLD_DOOR,
-                    QUARTZ_DOOR,
-                    GOLD_DIMENSIONAL_DOOR
-            };
-        }
-
-        return blocksImmuneToDecay;
-    }
-
-    /**
-     * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
-     * and applies Limbo decay to them. This gives the impression that decay spreads outward from Unraveled Fabric.
-     */
-    public static void applySpreadDecay(World world, BlockPos pos) {
-        //Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
-        //full spread decay checks, which can also shift its performance impact on the game.
-        if (random.nextDouble() < ModConfig.INSTANCE.getLimboConfig().decaySpreadChance) {
-            //Apply decay to the blocks above, below, and on all four sides.
-            //World.getBlockId() implements bounds checking, so we don't have to worry about reaching out of the world
-            decayBlock(world, pos.up());
-            decayBlock(world, pos.down());
-            decayBlock(world, pos.north());
-            decayBlock(world, pos.south());
-            decayBlock(world, pos.west());
-            decayBlock(world, pos.east());
-        }
-    }
-
-    /**
-     * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
-     */
-    private static boolean decayBlock(World world, BlockPos pos) {
-        BlockState state = world.getBlockState(pos);
-
-        if (canDecayBlock(state, world, pos)) {
-            //Loop over the block IDs that decay can go through.
-            //Find an index matching the current blockID, if any.
-
-            if (getDecaySequence().containsKey(state.getBlock())) {
-                Block decay = getDecaySequence().get(state.getBlock());
-                world.setBlockState(pos, decay.getDefaultState());
-            } else if (!state.isFullCube(world, pos)) {
-                world.setBlockState(pos, AIR.getDefaultState());
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Checks if a block can decay. We will not decay air, certain DD blocks, or containers.
-     */
-    private static boolean canDecayBlock(BlockState state, World world, BlockPos pos) {
-        if (world.isAir(pos)) {
-            return false;
-        }
-
-        for (int k = 0; k < getBlocksImmuneToDecay().length; k++) {
-            if (state.getBlock().equals(getBlocksImmuneToDecay()[k])) {
-                return false;
-            }
-        }
-
-        return !(state.getBlock() instanceof BlockWithEntity);
-    }
 }
