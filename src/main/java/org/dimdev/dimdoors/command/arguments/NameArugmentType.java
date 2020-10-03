@@ -10,7 +10,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import net.minecraft.server.command.CommandSource;
+import net.minecraft.command.CommandSource;
 
 public class NameArugmentType implements ArgumentType<String> {
     @Override

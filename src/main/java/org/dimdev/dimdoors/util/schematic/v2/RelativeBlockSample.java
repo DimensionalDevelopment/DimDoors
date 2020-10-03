@@ -1,4 +1,4 @@
-package org.dimdev.dimcore.schematic.v2;
+package org.dimdev.dimdoors.util.schematic.v2;
 
 import java.util.Map;
 import java.util.Objects;
@@ -34,7 +34,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 
     public RelativeBlockSample(Schematic schematic) {
         this.schematic = schematic;
-        this.blockData = SchematicPlacer.getBlockData(schematic, schematic.getWidth(), schematic.getHeight(), schematic.getLength());
+        this.blockData = SchematicPlacer.getBlockData(schematic);
         this.blockPalette = ImmutableBiMap.copyOf(schematic.getBlockPalette());
         this.blockContainer = Maps.newHashMap();
         this.blockEntityContainer = Maps.newHashMap();

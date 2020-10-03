@@ -35,7 +35,7 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
         BlockState doorState = world.getBlockState(state.get(HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos);
 
         if (doorState.getBlock() == this && doorState.get(DoorBlock.OPEN)) { // '== this' to check if not half-broken
-            getRift(world, pos, state).teleport(entity);
+            this.getRift(world, pos, state).teleport(entity);
         }
     }
 
@@ -43,7 +43,7 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
         state = state.cycle(OPEN);
         world.setBlockState(pos, state, 10);
-        world.syncWorldEvent(player, state.get(OPEN) ? material == Material.METAL ? 1005 : 1006 : material == Material.METAL ? 1011 : 1012, pos, 0);
+        world.syncWorldEvent(player, state.get(OPEN) ? this.material == Material.METAL ? 1005 : 1006 : this.material == Material.METAL ? 1011 : 1012, pos, 0);
         return ActionResult.SUCCESS;
     }
 

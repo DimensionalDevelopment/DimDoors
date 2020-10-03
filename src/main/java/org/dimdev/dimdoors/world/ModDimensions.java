@@ -6,7 +6,6 @@ import java.util.OptionalLong;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.mixin.ChunkGeneratorSettingsAccessor;
 import org.dimdev.dimdoors.mixin.DimensionTypeAccessor;
-import org.dimdev.dimdoors.world.limbo.LimboBiomeSource;
 import org.dimdev.dimdoors.world.limbo.LimboChunkGenerator;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
 import com.google.common.collect.ImmutableMap;
@@ -18,8 +17,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.chunk.GenerationShapeConfig;
@@ -43,11 +40,6 @@ public final class ModDimensions {
 
     public static final ChunkGeneratorSettings LIMBO_CHUNK_GENERATOR_SETTINGS;
 
-    // TODO: move pocket dimension generation settings to code
-    public static final BiomeSource PERSONAL_BIOME_SOURCE = new FixedBiomeSource(() -> ModBiomes.PERSONAL_WHITE_VOID_BIOME);
-    public static final BiomeSource PUBLIC_BIOME_SOURCE = new FixedBiomeSource(() -> ModBiomes.PUBLIC_BLACK_VOID_BIOME);
-    public static final BiomeSource DUNGEON_BIOME_SOURCE = new FixedBiomeSource(() -> ModBiomes.DUNGEON_DANGEROUS_BLACK_VOID_BIOME);
-
     public static ServerWorld LIMBO_DIMENSION;
     public static ServerWorld PERSONAL_POCKET_DIMENSION;
     public static ServerWorld PUBLIC_POCKET_DIMENSION;
@@ -62,11 +54,11 @@ public final class ModDimensions {
     }
 
     public static boolean isLimbo(StructureWorldAccess world) {
-        return world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION;
+        return world != null && (world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION);
     }
 
     public static boolean isLimboDimension(World world) {
-        return world.getRegistryKey() == LIMBO || world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION;
+        return world != null && (world.getRegistryKey() == LIMBO || world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION);
     }
 
     public static void init() {
@@ -80,7 +72,6 @@ public final class ModDimensions {
         });
         Registry.register(Registry.CHUNK_GENERATOR, new Identifier("dimdoors", "blank"), BlankChunkGenerator.CODEC);
         Registry.register(Registry.CHUNK_GENERATOR, new Identifier("dimdoors", "limbo_chunk_generator"), LimboChunkGenerator.CODEC);
-        Registry.register(Registry.BIOME_SOURCE, new Identifier("dimdoors", "limbo_biome_source"), LimboBiomeSource.CODEC);
     }
 
     static {

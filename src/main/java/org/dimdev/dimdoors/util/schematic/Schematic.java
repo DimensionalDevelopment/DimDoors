@@ -1,4 +1,4 @@
-package org.dimdev.dimcore.schematic;
+package org.dimdev.dimdoors.util.schematic;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -10,8 +10,8 @@ import net.minecraft.util.dynamic.DynamicSerializableUuid;
 public class PlayerRiftPointer extends RegistryVertex {
     public static final Codec<PlayerRiftPointer> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
-                DynamicSerializableUuid.field_25122.fieldOf("id").forGetter(a -> a.id),
-                DynamicSerializableUuid.field_25122.fieldOf("player").forGetter(a -> a.player)
+                DynamicSerializableUuid.CODEC.fieldOf("id").forGetter(a -> a.id),
+                DynamicSerializableUuid.CODEC.fieldOf("player").forGetter(a -> a.player)
         ).apply(instance, (id, player) -> {
             PlayerRiftPointer pointer = new PlayerRiftPointer(player);
             pointer.id = id;

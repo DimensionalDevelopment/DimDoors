@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimcore.schematic.Schematic;
+import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.math.MathUtil;
@@ -45,6 +45,9 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String SAVED_POCKETS_GROUP_NAME = "saved_pockets";
     public static final SchematicHandler INSTANCE = new SchematicHandler();
+
+    private SchematicHandler() {
+    }
 
     private static String getFolder() {
         return "config"; // TODO
@@ -453,7 +456,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             PocketTemplate template2 = this.usageList.get(index).getKey();
             if (index >= this.usageList.size() || template != template2) {
                 entry.setValue(this.usageList.size());
-                this.usageList.add(new SimpleEntry(template, 1));
+                this.usageList.add(new SimpleEntry<>(template, 1));
             }
         }
     }

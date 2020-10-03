@@ -68,7 +68,7 @@ public class RiftRegistry extends PersistentState {
             PocketEntrancePointer pocket = NbtUtil.deserialize(pocketNBT, PocketEntrancePointer.CODEC);
             graph.addVertex(pocket);
             uuidMap.put(pocket.id, pocket);
-            pocketEntranceMap.put(PocketRegistry.instance(pocket.world).getPocket(pocket.pocketId), pocket);
+            pocketEntranceMap.put(PocketRegistry.getInstance(pocket.world).getPocket(pocket.pocketId), pocket);
         }
 
         // Read the connections between links that have a source or destination in this dimension

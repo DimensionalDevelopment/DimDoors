@@ -9,7 +9,7 @@ import net.minecraft.util.dynamic.DynamicSerializableUuid;
 public class RiftPlaceholder extends Rift { // TODO: don't extend rift
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static Codec<RiftPlaceholder> CODEC = DynamicSerializableUuid.field_25122.xmap(a -> {
+    public static Codec<RiftPlaceholder> CODEC = DynamicSerializableUuid.CODEC.xmap(a -> {
         RiftPlaceholder placeholder = new RiftPlaceholder();
         placeholder.id = a;
         return placeholder;

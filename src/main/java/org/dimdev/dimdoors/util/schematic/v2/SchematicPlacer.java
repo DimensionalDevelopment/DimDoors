@@ -1,4 +1,4 @@
-package org.dimdev.dimcore.schematic.v2;
+package org.dimdev.dimdoors.util.schematic.v2;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,15 +31,14 @@ public final class SchematicPlacer {
                 LOGGER.warn("Schematic \"" + schematic.getMetadata().getName() + "\" depends on mod \"" + id + "\", which is missing!");
             }
         }
-        int originX = origin.getX();
-        int originY = origin.getY();
-        int originZ = origin.getZ();
         RelativeBlockSample blockSample = Schematic.getBlockSample(schematic, world);
         blockSample.place(origin);
-        SchematicPlacer.placeEntities(originX, originY, originZ, schematic, world);
     }
 
-    static int[][][] getBlockData(Schematic schematic, int width, int height, int length) {
+    public static int[][][] getBlockData(Schematic schematic) {
+        int width = schematic.getWidth();
+        int height = schematic.getHeight();
+        int length = schematic.getLength();
         byte[] blockDataIntArray = schematic.getBlockData().array();
         int[][][] blockData = new int[width][height][length];
         for (int x = 0; x < width; x++) {
@@ -55,12 +54,6 @@ public final class SchematicPlacer {
     private static void placeEntities(int originX, int originY, int originZ, Schematic schematic, StructureWorldAccess world) {
         List<CompoundTag> entityTags = schematic.getEntities();
         for (CompoundTag tag : entityTags) {
-            // Ensures compatibility with worldedit schematics
-            if (SchematicPlacer.fixId(tag)) {
-                System.err.println("An unexpected error occurred parsing this entity");
-                System.err.println(tag.toString());
-                throw new IllegalStateException("Entity in schematic  \"" + schematic.getMetadata().getName() + "\" did not have an Id tag, nor an id tag!");
-            }
             ListTag listTag = Objects.requireNonNull(tag.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().getName() + "\" did not have a Pos tag!");
             SchematicPlacer.processPos(listTag, originX, originY, originZ, tag);
 
@@ -74,13 +67,18 @@ public final class SchematicPlacer {
         }
     }
 
-    private static boolean fixId(CompoundTag tag) {
+    public static CompoundTag fixEntityId(CompoundTag tag) {
         if (!tag.contains("Id") && tag.contains("id")) {
             tag.putString("Id", tag.getString("id"));
         } else if (tag.contains("Id") && !tag.contains("id")) {
             tag.putString("id", tag.getString("Id"));
         }
-        return !tag.contains("Id") || !tag.contains("id");
+        if (!tag.contains("Id") || !tag.contains("id")) {
+            System.err.println("An unexpected error occurred parsing this entity");
+            System.err.println(tag.toString());
+            throw new IllegalStateException("Entity did not have an 'Id' tag, nor an 'id' tag!");
+        }
+        return tag;
     }
 
     private static void processPos(ListTag listTag, int originX, int originY, int originZ, CompoundTag tag) {

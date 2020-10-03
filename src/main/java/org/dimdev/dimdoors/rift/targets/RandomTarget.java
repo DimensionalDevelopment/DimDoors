@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -13,7 +14,6 @@ import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.WorldUtil;
 import org.dimdev.dimdoors.util.math.MathUtil;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
@@ -25,7 +25,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
 
 public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTarget subclass
     public static final Codec<RandomTarget> CODEC = RecordCodecBuilder.create(instance -> {
@@ -147,7 +146,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 
             if (virtualLocation.getDepth() <= 0) {
                 // This will lead to the overworld
-                ServerWorld world = WorldUtil.getWorld(virtualLocation.getWorld());
+                ServerWorld world = DimensionalDoorsInitializer.getWorld(virtualLocation.getWorld());
                 BlockPos pos = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
                 if (pos.getY() == -1) {
                     // No blocks at that XZ (hole in bedrock)

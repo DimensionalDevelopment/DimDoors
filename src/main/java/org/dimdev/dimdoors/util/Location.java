@@ -38,50 +38,50 @@ public class Location {
     }
 
     public int getX() {
-        return pos.getX();
+        return this.pos.getX();
     }
 
     public int getY() {
-        return pos.getY();
+        return this.pos.getY();
     }
 
     public int getZ() {
-        return pos.getZ();
+        return this.pos.getZ();
     }
 
     public BlockState getBlockState() {
-        return getWorld().getBlockState(pos);
+        return this.getWorld().getBlockState(this.pos);
     }
 
     public FluidState getFluidState() {
-        return getWorld().getFluidState(pos);
+        return this.getWorld().getFluidState(this.pos);
     }
 
     public BlockEntity getBlockEntity() {
-        return getWorld().getBlockEntity(pos);
+        return this.getWorld().getBlockEntity(this.pos);
     }
 
     public BlockPos getBlockPos() {
-        return pos;
+        return this.pos;
     }
 
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Location &&
-                ((Location) obj).world.equals(world) &&
-                ((Location) obj).pos.equals(pos);
+                ((Location) obj).world.equals(this.world) &&
+                ((Location) obj).pos.equals(this.pos);
     }
 
     @Override
     public int hashCode() {
-        return world.hashCode() * 31 + pos.hashCode();
+        return this.world.hashCode() * 31 + this.pos.hashCode();
     }
 
     public RegistryKey<World> getWorldId() {
-        return world;
+        return this.world;
     }
 
     public ServerWorld getWorld() {
-        return DimensionalDoorsInitializer.getServer().getWorld(world);
+        return DimensionalDoorsInitializer.getServer().getWorld(this.world);
     }
 }

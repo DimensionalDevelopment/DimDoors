@@ -27,7 +27,7 @@ public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvi
     @SuppressWarnings("deprecation")
     public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
         if (!world.isClient && state.get(TrapdoorBlock.OPEN)) {
-            getRift(world, pos, state).teleport(entity);
+            this.getRift(world, pos, state).teleport(entity);
         }
     }
 
@@ -46,7 +46,7 @@ public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvi
             world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
 
-        playToggleSound(player, world, pos, state.get(OPEN));
+        this.playToggleSound(player, world, pos, state.get(OPEN));
         return ActionResult.SUCCESS;
     }
 

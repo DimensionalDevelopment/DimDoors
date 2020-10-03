@@ -3,9 +3,9 @@ package org.dimdev.dimdoors.world.pocket;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.NbtUtil;
-import org.dimdev.dimdoors.util.WorldUtil;
 import org.dimdev.dimdoors.util.math.GridUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 import com.mojang.serialization.Codec;
@@ -61,8 +61,8 @@ public class PocketRegistry extends PersistentState {
         return tag;
     }
 
-    public static PocketRegistry instance(RegistryKey<World> key) {
-        ServerWorld world = WorldUtil.getWorld(key);
+    public static PocketRegistry getInstance(RegistryKey<World> key) {
+        ServerWorld world = DimensionalDoorsInitializer.getWorld(key);
 
         if (!(ModDimensions.isDimDoorsPocketDimension(world))) {
             throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");

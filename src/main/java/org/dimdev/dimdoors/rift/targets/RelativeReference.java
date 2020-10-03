@@ -7,9 +7,9 @@ import net.minecraft.util.math.Vec3i;
 
 public class RelativeReference extends RiftReference {
 
-    private Vec3i offset;
+    private final Vec3i offset;
 
-    public static Codec<RelativeReference> CODEC = Vec3i.field_25123.xmap(RelativeReference::new, RelativeReference::getOffset).fieldOf("offset").codec();
+    public static Codec<RelativeReference> CODEC = Vec3i.CODEC.xmap(RelativeReference::new, RelativeReference::getOffset).fieldOf("offset").codec();
 
     public RelativeReference(Vec3i offset) {
         this.offset = offset;
@@ -17,11 +17,11 @@ public class RelativeReference extends RiftReference {
 
     @Override
     public Location getReferencedLocation() {
-        return new Location(location.world, location.pos.add(offset));
+        return new Location(this.location.world, this.location.pos.add(this.offset));
     }
 
     public Vec3i getOffset() {
-        return offset;
+        return this.offset;
     }
 
     @Override

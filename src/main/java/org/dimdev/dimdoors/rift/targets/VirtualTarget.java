@@ -41,13 +41,13 @@ public abstract class VirtualTarget implements Target {
     }
 
     public RGBA getColor() {
-        return getType().getColor();
+        return this.getType().getColor();
     }
 
     public boolean equals(Object o) {
         return o instanceof VirtualTarget &&
                 ((VirtualTarget) o).canEqual(this) &&
-                (location == null ? ((VirtualTarget) o).location == null : ((Object) location).equals(((VirtualTarget) o).location));
+                (this.location == null ? ((VirtualTarget) o).location == null : ((Object) this.location).equals(((VirtualTarget) o).location));
     }
 
     protected boolean canEqual(Object other) {
@@ -55,7 +55,7 @@ public abstract class VirtualTarget implements Target {
     }
 
     public int hashCode() {
-        return 59 + (location == null ? 43 : location.hashCode());
+        return 59 + (this.location == null ? 43 : this.location.hashCode());
     }
 
     public void setLocation(Location location) {
@@ -67,18 +67,18 @@ public abstract class VirtualTarget implements Target {
     }
 
     public interface VirtualTargetType<T extends VirtualTarget> {
-        public VirtualTargetType<RandomTarget> AVAILABLE_LINK = register("available_link", RandomTarget.CODEC, VirtualTarget.COLOR);
-        public VirtualTargetType<EscapeTarget> ESCAPE = register("escape", EscapeTarget.CODEC, VirtualTarget.COLOR);
-        public VirtualTargetType<GlobalReference> GLOBAL = register("global", GlobalReference.CODEC, VirtualTarget.COLOR);
-        public VirtualTargetType<LimboTarget> LIMBO = register("limbo", LimboTarget.CODEC, VirtualTarget.COLOR);
-        public VirtualTargetType<LocalReference> LOCAL = register("local", LocalReference.CODEC, VirtualTarget.COLOR);
-        public VirtualTargetType<PublicPocketTarget> PUBLIC_POCKET = register("public_pocket", PublicPocketTarget.CODEC, VirtualTarget.COLOR);
-        public VirtualTargetType<PocketEntranceMarker> POCKET_ENTRANCE = register("pocket_entrance", PocketEntranceMarker.CODEC, VirtualTarget.COLOR);
-        public VirtualTargetType<PocketExitMarker> POCKET_EXIT = register("pocket_exit", PocketExitMarker.CODEC, VirtualTarget.COLOR);
-        public VirtualTargetType<PrivatePocketTarget> PRIVATE = register("private", PrivatePocketTarget.CODEC, PrivatePocketExitTarget.COLOR);
-        public VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("private_pocket_exit", PrivatePocketExitTarget.CODEC, PrivatePocketExitTarget.COLOR);
-        public VirtualTargetType<RelativeReference> RELATIVE = register("relative", RelativeReference.CODEC, VirtualTarget.COLOR);
-        public VirtualTargetType<NoneTarget> NONE = register("none", NoneTarget.CODEC, COLOR);
+        VirtualTargetType<RandomTarget> AVAILABLE_LINK = register("available_link", RandomTarget.CODEC, VirtualTarget.COLOR);
+        VirtualTargetType<EscapeTarget> ESCAPE = register("escape", EscapeTarget.CODEC, VirtualTarget.COLOR);
+        VirtualTargetType<GlobalReference> GLOBAL = register("global", GlobalReference.CODEC, VirtualTarget.COLOR);
+        VirtualTargetType<LimboTarget> LIMBO = register("limbo", LimboTarget.CODEC, VirtualTarget.COLOR);
+        VirtualTargetType<LocalReference> LOCAL = register("local", LocalReference.CODEC, VirtualTarget.COLOR);
+        VirtualTargetType<PublicPocketTarget> PUBLIC_POCKET = register("public_pocket", PublicPocketTarget.CODEC, VirtualTarget.COLOR);
+        VirtualTargetType<PocketEntranceMarker> POCKET_ENTRANCE = register("pocket_entrance", PocketEntranceMarker.CODEC, VirtualTarget.COLOR);
+        VirtualTargetType<PocketExitMarker> POCKET_EXIT = register("pocket_exit", PocketExitMarker.CODEC, VirtualTarget.COLOR);
+        VirtualTargetType<PrivatePocketTarget> PRIVATE = register("private", PrivatePocketTarget.CODEC, PrivatePocketExitTarget.COLOR);
+        VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("private_pocket_exit", PrivatePocketExitTarget.CODEC, PrivatePocketExitTarget.COLOR);
+        VirtualTargetType<RelativeReference> RELATIVE = register("relative", RelativeReference.CODEC, VirtualTarget.COLOR);
+        VirtualTargetType<NoneTarget> NONE = register("none", NoneTarget.CODEC, COLOR);
 
         Codec<T> codec();
 

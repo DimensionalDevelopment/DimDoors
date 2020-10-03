@@ -39,7 +39,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
             Pocket pocket = PrivatePocketData.instance().getPrivatePocket(uuid);
             if (pocket == null) { // generate the private pocket and get its entrances
                 // set to where the pocket was first created
-                pocket = PocketGenerator.generatePrivatePocket(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
+                pocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
 
                 PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
                 this.processEntity(pocket, RiftRegistry.instance().getPocketEntrance(pocket).getBlockEntity(), entity, uuid, yawOffset);
@@ -50,7 +50,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
                     destLoc = RiftRegistry.instance().getPocketEntrance(pocket); // if there's none, then set the target to the main entrances
                 if (destLoc == null) { // if the pocket entrances is gone, then create a new private pocket
                     LOGGER.info("All entrances are gone, creating a new private pocket!");
-                    pocket = PocketGenerator.generatePrivatePocket(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
+                    pocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
 
                     PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
                     destLoc = RiftRegistry.instance().getPocketEntrance(pocket);
