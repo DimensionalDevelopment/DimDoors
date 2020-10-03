@@ -79,9 +79,9 @@ public final class PocketGenerator {
         return generatePocketFromTemplate(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), pocketTemplate, virtualLocation, linkTo, linkProperties);
     }
 
-    public static Pocket generatePublicPocketV2(VirtualLocation virtualLocation) {
+    public static Pocket generatePublicPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
         PocketTemplateV2 pocketTemplate = SchematicV2Handler.getInstance().getRandomPublicPocket();
-        return generateV2PocketFromTemplate(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), pocketTemplate, virtualLocation, true);
+        return generateV2PocketFromTemplate(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), pocketTemplate, virtualLocation, linkTo, linkProperties);
     }
 
     /**
