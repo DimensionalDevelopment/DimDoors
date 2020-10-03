@@ -36,7 +36,7 @@ public final class ModConfig {
     private final Limbo limbo;
     private final Graphics graphics;
 
-    protected ModConfig(General general, Pockets pockets, World world, Dungeons dungeons, Monoliths monoliths, Limbo limbo, Graphics graphics) {
+    private ModConfig(General general, Pockets pockets, World world, Dungeons dungeons, Monoliths monoliths, Limbo limbo, Graphics graphics) {
         this.general = general;
         this.pockets = pockets;
         this.world = world;
