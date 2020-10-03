@@ -7,14 +7,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimcore.schematic.v2.Schematic;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -28,7 +33,9 @@ public class SchematicV2Handler {
     private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
     private static final SchematicV2Handler INSTANCE = new SchematicV2Handler();
     private final List<PocketTemplateV2> templates = Lists.newArrayList();
+    private final Multimap<String, PocketTemplateV2> templateMap = HashMultimap.create();
     private final List<PocketType> pocketTypes = Lists.newArrayList();
+    private static final Random RANDOM = new Random(new Random().nextLong());
     private boolean loaded = false;
 
     private SchematicV2Handler() {
@@ -70,8 +77,22 @@ public class SchematicV2Handler {
             Path schemPath = basePath.resolve(entry.getName() + ".schem");
             CompoundTag schemTag = NbtIo.readCompressed(Files.newInputStream(schemPath));
             Schematic schematic = Schematic.fromTag(schemTag);
-            this.templates.add(new PocketTemplateV2(schematic, group, entry.getSize(), entry.getName()));
+            for (int i = 0; i < entry.getWeight(); i++) {
+                this.templateMap.put(group, new PocketTemplateV2(schematic, group, entry.getSize(), entry.getName(), entry.getWeight()));
+            }
         }
+    }
+
+    public PocketTemplateV2 getRandomPublicPocket() {
+        Collection<PocketTemplateV2> publicPockets = this.templateMap.get("public");
+        int index = RANDOM.nextInt(publicPockets.size());
+        return Lists.newArrayList(publicPockets).get(index);
+    }
+
+    public PocketTemplateV2 getRandomPrivatePocket() {
+        Collection<PocketTemplateV2> publicPockets = this.templateMap.get("private");
+        int index = RANDOM.nextInt(publicPockets.size());
+        return Lists.newArrayList(publicPockets).get(index);
     }
 
     public static SchematicV2Handler getInstance() {

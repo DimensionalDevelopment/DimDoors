@@ -17,7 +17,8 @@ import net.minecraft.world.World;
 
 @Mixin(Entity.class)
 public class EntityMixin implements EntityExtensions {
-    @Shadow public World world;
+    @Shadow
+    public World world;
     @Unique
     private boolean dimdoors_readyToTeleport = false;
     private TeleportTarget dimdoors_teleportTarget = null;
@@ -32,7 +33,7 @@ public class EntityMixin implements EntityExtensions {
     }
 
     @Inject(at = @At("TAIL"), method = "moveToWorld")
-    public void nullify(ServerWorld destination, CallbackInfoReturnable<TeleportTarget> cir) {
+    public void cleanup(ServerWorld destination, CallbackInfoReturnable<TeleportTarget> cir) {
         this.dimdoors_teleportTarget = null;
         this.dimdoors_setReadyToTeleport(false);
     }

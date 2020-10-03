@@ -138,7 +138,7 @@ public class PocketTemplate {
 
     public void place(Pocket pocket, boolean setup) {
         pocket.setSize(this.size * 16, this.size * 16, this.size * 16);
-        int gridSize = PocketRegistry.instance(pocket.world).getGridSize();
+        int gridSize = PocketRegistry.getInstance(pocket.world).getGridSize();
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
         int xBase = pocket.box.minX;
         int yBase = pocket.box.minY;
@@ -163,7 +163,7 @@ public class PocketTemplate {
     }
 
     public void setup(Pocket pocket, VirtualTarget linkTo, LinkProperties linkProperties) {
-        int gridSize = PocketRegistry.instance(pocket.world).getGridSize();
+        int gridSize = PocketRegistry.getInstance(pocket.world).getGridSize();
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
         int xBase = pocket.box.minX;
         int yBase = pocket.box.minY;

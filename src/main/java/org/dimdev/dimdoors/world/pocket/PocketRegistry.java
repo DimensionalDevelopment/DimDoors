@@ -61,7 +61,7 @@ public class PocketRegistry extends PersistentState {
         return tag;
     }
 
-    public static PocketRegistry instance(RegistryKey<World> key) {
+    public static PocketRegistry getInstance(RegistryKey<World> key) {
         ServerWorld world = DimensionalDoorsInitializer.getWorld(key);
 
         if (!(ModDimensions.isDimDoorsPocketDimension(world))) {

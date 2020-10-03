@@ -33,7 +33,7 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
         if (uuid != null) {
             destLoc = RiftRegistry.instance().getPrivatePocketExit(uuid);
             Pocket pocket = PrivatePocketData.instance().getPrivatePocket(uuid);
-            if (ModDimensions.isDimDoorsPocketDimension(location.getWorld()) && pocket != null && PocketRegistry.instance(pocket.world).getPocketAt(location.pos).equals(pocket)) {
+            if (ModDimensions.isDimDoorsPocketDimension(location.getWorld()) && pocket != null && PocketRegistry.getInstance(pocket.world).getPocketAt(location.pos).equals(pocket)) {
                 RiftRegistry.instance().setLastPrivatePocketEntrance(uuid, location); // Remember which exit was used for next time the pocket is entered
             }
             if (destLoc == null || !(destLoc.getBlockEntity() instanceof RiftBlockEntity)) {
@@ -56,7 +56,7 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
     @Override
     public void register() {
         super.register();
-        PocketRegistry privatePocketRegistry = PocketRegistry.instance(location.world);
+        PocketRegistry privatePocketRegistry = PocketRegistry.getInstance(location.world);
         Pocket pocket = privatePocketRegistry.getPocketAt(location.pos);
         RiftRegistry.instance().addPocketEntrance(pocket, location);
     }

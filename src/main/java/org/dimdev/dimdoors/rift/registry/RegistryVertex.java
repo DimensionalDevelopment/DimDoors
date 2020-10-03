@@ -40,9 +40,9 @@ public abstract class RegistryVertex {
     }
 
     public interface RegistryVertexType<T extends RegistryVertex> {
-        public RegistryVertexType<PlayerRiftPointer> PLAYER = register("player", PlayerRiftPointer.CODEC);
-        public RegistryVertexType<Rift> RIFT = register("rift", Rift.CODEC);
-        public RegistryVertexType<PocketEntrancePointer> ENTRANCE = register("entrance", PocketEntrancePointer.CODEC);
+        RegistryVertexType<PlayerRiftPointer> PLAYER = register("player", PlayerRiftPointer.CODEC);
+        RegistryVertexType<Rift> RIFT = register("rift", Rift.CODEC);
+        RegistryVertexType<PocketEntrancePointer> ENTRANCE = register("entrance", PocketEntrancePointer.CODEC);
         RegistryVertexType<RiftPlaceholder> RIFT_PLACEHOLDER = register("rift_placeholder", RiftPlaceholder.CODEC);
 
         Codec<T> codec();

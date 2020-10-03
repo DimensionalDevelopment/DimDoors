@@ -52,14 +52,17 @@ public final class PocketType {
     public static final class PocketEntry {
         public static final Codec<PocketEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.INT.fieldOf("size").forGetter(PocketEntry::getSize),
-                Codec.STRING.fieldOf("id").forGetter(PocketEntry::getName)
+                Codec.STRING.fieldOf("id").forGetter(PocketEntry::getName),
+                Codec.INT.optionalFieldOf("weight", 5).forGetter(PocketEntry::getWeight)
         ).apply(instance, PocketEntry::new));
         private final int size;
         private final String name;
+        private final int weight;
 
-        PocketEntry(int size, String name) {
+        PocketEntry(int size, String name, int weight) {
             this.size = size;
             this.name = name;
+            this.weight = weight;
         }
 
         public int getSize() {
@@ -70,25 +73,31 @@ public final class PocketType {
             return this.name;
         }
 
+        public int getWeight() {
+            return this.weight;
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || this.getClass() != o.getClass()) return false;
             PocketEntry that = (PocketEntry) o;
             return this.size == that.size &&
-                    Objects.equals(this.name, that.name);
+                    Float.compare(that.weight, this.weight) == 0 &&
+                    this.name.equals(that.name);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(this.size, this.name);
+            return Objects.hash(this.size, this.name, this.weight);
         }
 
         @Override
         public String toString() {
             return "PocketEntry{" +
                     "size=" + this.size +
-                    ", name=" + this.name +
+                    ", name='" + this.name + '\'' +
+                    ", weight=" + this.weight +
                     '}';
         }
     }

@@ -11,6 +11,8 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.util.Codecs;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -21,6 +23,7 @@ import net.fabricmc.loader.api.FabricLoader;
 public final class ModConfig {
     public static ModConfig INSTANCE;
     private static final Path CONFIG_PATH;
+    private static final Gson GSON;
     private static final Codec<ModConfig> CODEC;
     private static final String DEFAULT;
     private static final ModConfig FALLBACK;
@@ -247,7 +250,7 @@ public final class ModConfig {
             ).getOrThrow(false, System.err::println).getFirst();
             return 1;
         } catch (IOException e) {
-            System.err.println("An Unexpected error occured when deserializing the Config. Using default values for now.");
+            LOGGER.error("An Unexpected error occured when deserializing the Config. Using default values for now.");
             e.printStackTrace();
             INSTANCE = FALLBACK;
             return -1;
@@ -265,6 +268,7 @@ public final class ModConfig {
                 Graphics.CODEC.fieldOf("graphics").forGetter(ModConfig::getGraphicsConfig)
         ).apply(instance, ModConfig::new));
         CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("dimensional_doors.json");
+        GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
         FALLBACK = new ModConfig(
                 new General(),
                 new Pockets(),
@@ -275,9 +279,7 @@ public final class ModConfig {
                 new Graphics()
         );
         INSTANCE = FALLBACK;
-        DEFAULT = CODEC.encodeStart(JsonOps.INSTANCE, INSTANCE)
-                .getOrThrow(false, System.err::println)
-                .toString();
-        LOGGER = LogManager.getLogger();
+        DEFAULT = GSON.toJson(CODEC.encodeStart(JsonOps.INSTANCE, INSTANCE).getOrThrow(false, System.err::println));
+        LOGGER = LogManager.getLogger(ModConfig.class);
     }
 }

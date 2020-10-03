@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.mixin.ChunkGeneratorAccessor;
+import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.jetbrains.annotations.Nullable;
 import com.mojang.serialization.Codec;
@@ -39,6 +40,7 @@ import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
@@ -55,7 +57,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 public class LimboChunkGenerator extends ChunkGenerator {
-    public static final LimboChunkGenerator INSTANCE = new LimboChunkGenerator(LimboBiomeSource.INSTANCE, LimboBiomeSource.INSTANCE);
+    public static final LimboChunkGenerator INSTANCE = new LimboChunkGenerator(new FixedBiomeSource(() -> ModBiomes.LIMBO_BIOME), new FixedBiomeSource(() -> ModBiomes.LIMBO_BIOME));
     public static final Codec<LimboChunkGenerator> CODEC = Codec.unit(INSTANCE);
     private static final float[] NOISE_WEIGHT_TABLE = Util.make(new float[13824], (array) -> {
         for (int i = 0; i < 24; ++i) {

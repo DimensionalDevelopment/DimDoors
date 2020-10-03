@@ -33,7 +33,7 @@ public class PocketTemplateV2 {
     private final int size;
     private final String id;
 
-    public PocketTemplateV2(Schematic schematic, String group, int size, String id) {
+    public PocketTemplateV2(Schematic schematic, String group, int size, String id, float weight) {
         this.schematic = schematic;
         this.group = group;
         this.size = size;
@@ -104,16 +104,13 @@ public class PocketTemplateV2 {
 
     public void setup(Pocket pocket, VirtualTarget linkTo, LinkProperties linkProperties) {
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
-        int xBase = pocket.box.minX;
-        int yBase = pocket.box.minY;
-        int zBase = pocket.box.minZ;
 
         List<RiftBlockEntity> rifts = new ArrayList<>();
         for (CompoundTag blockEntityTag : this.schematic.getBlockEntities()) {
             BlockPos pos = new BlockPos(
-                    xBase + blockEntityTag.getInt("x"),
-                    yBase + blockEntityTag.getInt("y"),
-                    zBase + blockEntityTag.getInt("z")
+                    pocket.box.minX + blockEntityTag.getInt("x"),
+                    pocket.box.minY + blockEntityTag.getInt("y"),
+                    pocket.box.minZ + blockEntityTag.getInt("z")
             );
             BlockEntity tile = world.getBlockEntity(pos);
 
@@ -156,5 +153,9 @@ public class PocketTemplateV2 {
 
     public Schematic getSchematic() {
         return this.schematic;
+    }
+
+    public String getId() {
+        return this.id;
     }
 }

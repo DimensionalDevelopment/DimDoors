@@ -67,7 +67,7 @@ public class PrivatePocketData extends PersistentState {
     public Pocket getPrivatePocket(UUID playerUUID) {
         PocketInfo pocket = privatePocketMap.get(playerUUID);
         if (pocket == null) return null;
-        return PocketRegistry.instance(pocket.world).getPocket(pocket.id);
+        return PocketRegistry.getInstance(pocket.world).getPocket(pocket.id);
     }
 
     public void setPrivatePocketID(UUID playerUUID, Pocket pocket) {
