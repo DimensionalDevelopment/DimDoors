@@ -43,7 +43,7 @@ dependencies {
     }
 }
 
-version "4.0.0+alpha.3"
+version "4.0.0+alpha.4"
 archivesBaseName = "dimensional-doors"
 
 processResources {
