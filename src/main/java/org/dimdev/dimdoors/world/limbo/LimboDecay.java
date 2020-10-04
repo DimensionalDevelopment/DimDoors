@@ -127,7 +127,7 @@ public final class LimboDecay {
                     configObject = GSON.fromJson(reader, JsonObject.class);
                     Map<Block, Block> blocks = CODEC.decode(JsonOps.INSTANCE, configObject).getOrThrow(false, STDERR).getFirst();
                     DECAY_SEQUENCE.clear();
-                    DEFAULT_VALUES.putAll(blocks);
+                    DECAY_SEQUENCE.putAll(blocks);
                 }
             }
         } catch (IOException e) {

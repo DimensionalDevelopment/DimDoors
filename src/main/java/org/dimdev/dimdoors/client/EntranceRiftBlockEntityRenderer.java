@@ -133,17 +133,17 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
             }
         } else {
             // South
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
+            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
             // North
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
+            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F + 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
             // East
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F + 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
             // West
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
             // Down
             this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, r, g, b);
             // Up
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, r, g, b);
+            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F + 1.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, r, g, b);
         }
     }
 
