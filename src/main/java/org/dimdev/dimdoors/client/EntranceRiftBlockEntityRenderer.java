@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.client;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
@@ -35,10 +36,7 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
 
     @Override
     public void render(EntranceRiftBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-//        List<RenderLayer> layers = IntStream.range(0, 16).mapToObj((i) -> {
-//            return MyRenderLayer.getDimensionalPortal(i + 1, blockEntity);
-//        }).collect(ImmutableList.toImmutableList());
-        List<RenderLayer> layers = IntStream.range(0, 16).mapToObj(MyRenderLayer::getPortal).collect(ImmutableList.toImmutableList());
+        List<RenderLayer> layers = ImmutableList.copyOf(IntStream.range(0, 16).mapToObj(MyRenderLayer::getPortal).collect(Collectors.toList()));
         matrices.push();
         if (MinecraftClient.getInstance().world == null) {
             return;
@@ -106,27 +104,27 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
             switch (doorDir) {
                 case NORTH:
                     // South
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
                     // North
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F + 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
                     break;
                 case SOUTH:
                     // South
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
                     // North
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F + 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
                     break;
                 case EAST:
                     // East
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 1.0F, 0.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
                     // West
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
                     break;
                 case WEST:
                     // East
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F, 0.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
                     // West
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 0.0F, 1.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
                     break;
                 default:
                     throw new AssertionError();
@@ -143,7 +141,7 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
             // Down
             this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, r, g, b);
             // Up
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F + 1.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, r, g, b);
+            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F + 1.0F, 1.0F + 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, r, g, b);
         }
     }
 
