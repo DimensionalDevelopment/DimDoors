@@ -105,26 +105,26 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
                 case NORTH:
                     // South
                     this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
-                    // North
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F + 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
+
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
                     break;
                 case SOUTH:
                     // South
                     this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
-                    // North
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F + 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
+
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
                     break;
                 case EAST:
                     // East
                     this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 1.0F, 0.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
-                    // West
+
                     this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
                     break;
                 case WEST:
-                    // East
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F, 0.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
                     // West
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 0.0F, 1.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 1.0F, 0.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
                     break;
                 default:
                     throw new AssertionError();
@@ -150,12 +150,5 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
         vertexConsumer.vertex(matrix4f, x2, y1, z2).color(red, green, blue, 1.0F).next();
         vertexConsumer.vertex(matrix4f, x2, y2, z3).color(red, green, blue, 1.0F).next();
         vertexConsumer.vertex(matrix4f, x1, y2, z4).color(red, green, blue, 1.0F).next();
-//        if (direction == endPortalBlockEntity.getOrientation() || direction.getOpposite() == endPortalBlockEntity.getOrientation()) {
-//            float offset = direction == endPortalBlockEntity.getOrientation() ? 0.5F : -0.5F;
-//            vertexConsumer.vertex(matrix4f, x1, y1, z1 + offset).color(red, green, blue, 1.0F).next();
-//            vertexConsumer.vertex(matrix4f, x2, y1, z2 + offset).color(red, green, blue, 1.0F).next();
-//            vertexConsumer.vertex(matrix4f, x2, y2, z3 + offset).color(red, green, blue, 1.0F).next();
-//            vertexConsumer.vertex(matrix4f, x1, y2, z4 + offset).color(red, green, blue, 1.0F).next();
-//        }
     }
 }
