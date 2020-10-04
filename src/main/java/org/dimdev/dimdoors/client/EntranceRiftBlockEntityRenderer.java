@@ -103,28 +103,16 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
             Direction doorDir = state.get(HorizontalFacingBlock.FACING);
             switch (doorDir) {
                 case NORTH:
-                    // South
                     this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
-
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
                     break;
                 case SOUTH:
-                    // South
                     this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
-
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
                     break;
                 case EAST:
-                    // East
                     this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 1.0F, 0.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
-
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
                     break;
                 case WEST:
-                    // West
                     this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
-
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 1.0F, 0.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
                     break;
                 default:
                     throw new AssertionError();
