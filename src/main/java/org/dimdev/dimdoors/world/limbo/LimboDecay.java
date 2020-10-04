@@ -248,7 +248,6 @@ public final class LimboDecay {
         blockBiConsumer.accept(END_STONE_BRICKS, END_STONE);
         blockBiConsumer.accept(GRASS_PATH, DIRT);
         blockBiConsumer.accept(POLISHED_GRANITE, GRANITE);
-        blockBiConsumer.accept(GRANITE, DIORITE);
         blockBiConsumer.accept(POLISHED_ANDESITE, ANDESITE);
         blockBiConsumer.accept(ANDESITE, DIORITE);
         blockBiConsumer.accept(POLISHED_DIORITE, DIORITE);

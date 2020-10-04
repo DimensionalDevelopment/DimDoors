@@ -7,6 +7,9 @@ import java.util.stream.IntStream;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -66,10 +69,10 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
         int offset = this.getOffset(squaredDistance);
         float u = 0.75F;
         Matrix4f matrix4f = matrices.peek().getModel();
-        this.drawAllVertices(entrance, u, 0.15F, matrix4f, vertexConsumers.getBuffer(layers.get(0)), orientation);
+        this.drawAllVertices(entrance, u, 0.15F, matrix4f, vertexConsumers.getBuffer(layers.get(0)));
 
         for(int i = 1; i < offset; ++i) {
-            this.drawAllVertices(entrance, u, 2.0F / (float)(18 - i), matrix4f, vertexConsumers.getBuffer(layers.get(i)), orientation);
+            this.drawAllVertices(entrance, u, 2.0F / (float)(18 - i), matrix4f, vertexConsumers.getBuffer(layers.get(i)));
         }
     }
 
@@ -93,23 +96,62 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
         }
     }
 
-    private void drawAllVertices(EntranceRiftBlockEntity blockEntity, float u, float v, Matrix4f matrix4f, VertexConsumer vertexConsumer, Direction dir) {
+    private void drawAllVertices(EntranceRiftBlockEntity blockEntity, float u, float v, Matrix4f matrix4f, VertexConsumer vertexConsumer) {
         float r = MathHelper.clamp((RANDOM.nextFloat() * 0.3F + 0.1F) * v, 0, 1);
         float g = MathHelper.clamp((RANDOM.nextFloat() * 0.4F + 0.1F) * v, 0, 1);
         float b = MathHelper.clamp((RANDOM.nextFloat() * 0.5F + 0.6F) * v, 0, 1);
-        this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b, Direction.SOUTH);
-        this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b, Direction.NORTH);
-        this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b, Direction.EAST);
-        this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b, Direction.WEST);
-        this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, r, g, b, Direction.DOWN);
-        this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, r, g, b, Direction.UP);
+        BlockState state = blockEntity.getCachedState();
+        if (state.getBlock() instanceof DoorBlock) {
+            Direction doorDir = state.get(HorizontalFacingBlock.FACING);
+            switch (doorDir) {
+                case NORTH:
+                    // South
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
+                    // North
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
+                    break;
+                case SOUTH:
+                    // South
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
+                    // North
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
+                    break;
+                case EAST:
+                    // East
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+                    // West
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+                    break;
+                case WEST:
+                    // East
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+                    // West
+                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+        } else {
+            // South
+            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
+            // North
+            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
+            // East
+            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+            // West
+            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+            // Down
+            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, r, g, b);
+            // Up
+            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, r, g, b);
+        }
     }
 
-    private void drawVertices(EntranceRiftBlockEntity endPortalBlockEntity, Matrix4f matrix4f, VertexConsumer vertexConsumer, float x1, float x2, float y1, float y2, float z1, float z2, float z3, float z4, float red, float green, float blue, Direction direction) {
+    private void drawVertices(EntranceRiftBlockEntity endPortalBlockEntity, Matrix4f matrix4f, VertexConsumer vertexConsumer, float x1, float x2, float y1, float y2, float z1, float z2, float z3, float z4, float red, float green, float blue) {
         vertexConsumer.vertex(matrix4f, x1, y1, z1).color(red, green, blue, 1.0F).next();
         vertexConsumer.vertex(matrix4f, x2, y1, z2).color(red, green, blue, 1.0F).next();
-        vertexConsumer.vertex(matrix4f, x2, y2 + 1.0F, z3).color(red, green, blue, 1.0F).next();
-        vertexConsumer.vertex(matrix4f, x1, y2 + 1.0F, z4).color(red, green, blue, 1.0F).next();
+        vertexConsumer.vertex(matrix4f, x2, y2, z3).color(red, green, blue, 1.0F).next();
+        vertexConsumer.vertex(matrix4f, x1, y2, z4).color(red, green, blue, 1.0F).next();
 //        if (direction == endPortalBlockEntity.getOrientation() || direction.getOpposite() == endPortalBlockEntity.getOrientation()) {
 //            float offset = direction == endPortalBlockEntity.getOrientation() ? 0.5F : -0.5F;
 //            vertexConsumer.vertex(matrix4f, x1, y1, z1 + offset).color(red, green, blue, 1.0F).next();
