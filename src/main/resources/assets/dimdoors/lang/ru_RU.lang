@@ -5,17 +5,50 @@ itemGroup.dimensional_doors_creative_tab=Dimensional Doors: Предметы
 tile.gold_door.name=Золотая дверь
 tile.quartz_door.name=Кварцевая дверь
 
-tile.iron_dimensional_door.name=Пространственная дверь
+tile.iron_dimensional_door.name=Железная пространственная дверь
 tile.gold_dimensional_door.name=Золотая пространственная дверь
-tile.quartz_dimensional_door.name=Личная пространственная дверь
-tile.unstable_dimensional_door.name=Нестабильная дверь
-tile.oak_dimensional_door.name=Дверь искажения
-tile.dimensional_trapdoor.name=Межпространственный люк
-tile.dimensional_portal.name=Временная дверь
+tile.quartz_dimensional_door.name=Кварцевая пространственная дверь
+tile.unstable_dimensional_door.name=Нестабильная пространственная дверь
+tile.oak_dimensional_door.name=Дубовая пространственная дверь
+tile.dimensional_trapdoor.name=Дубовый пространственный люк
+tile.dimensional_portal.name=Пространственный портал
 
-tile.fabric.black.name=Ткань Мироздания
-tile.fabric.white.name=Изменённая ткань
-tile.ancient_fabric.black.name=Древняя ткань
+tile.fabric.black.name=Ткань реальности
+tile.fabric.white.name=Измененная ткань
+
+tile.fabric.orange.name=Оранжевая измененная ткань
+tile.fabric.magenta.name=Сиреневая измененная ткань
+tile.fabric.lightBlue.name=Светло-синяя измененная ткань
+tile.fabric.yellow.name=Желтая измененная ткань
+tile.fabric.lime.name=Лаймовая измененная ткань
+tile.fabric.pink.name=Розовая измененная ткань
+tile.fabric.gray.name=Серая измененная ткань
+tile.fabric.silver.name=Светло-серая измененная ткань
+tile.fabric.cyan.name=Бирюзовая измененная ткань
+tile.fabric.purple.name=Фиолетовая измененная ткань
+tile.fabric.blue.name=Синяя измененная ткань
+tile.fabric.brown.name=Коричневая измененная ткань
+tile.fabric.green.name=Зеленая измененная ткань
+tile.fabric.red.name=Красная измененная ткань
+
+tile.ancient_fabric.black.name=Измененная ткань
+tile.ancient_fabric.white.name=Измененная древняя ткань
+
+tile.ancient_fabric.orange.name=Оранжевая измененная древняя ткань
+tile.ancient_fabric.magenta.name=Сиреневая измененная древняя ткань
+tile.ancient_fabric.lightBlue.name=Светло-синяя измененная древняя ткань
+tile.ancient_fabric.yellow.name=Желтая измененная древняя ткань
+tile.ancient_fabric.lime.name=Лаймовая измененная древняя ткань
+tile.ancient_fabric.pink.name=Розовая измененная древняя ткань
+tile.ancient_fabric.gray.name=Серая измененная древняя ткань
+tile.ancient_fabric.silver.name=Светло-серая измененная древняя ткань
+tile.ancient_fabric.cyan.name=Бирюзовая измененная древняя ткань
+tile.ancient_fabric.purple.name=Фиолетовая измененная древняя ткань
+tile.ancient_fabric.blue.name=Синяя измененная древняя ткань
+tile.ancient_fabric.brown.name=Коричневая измененная древняя ткань
+tile.ancient_fabric.green.name=Зеленая измененная древняя ткань
+tile.ancient_fabric.red.name=Красная измененная древняя ткань
+
 tile.eternal_fabric.name=Вечная ткань
 tile.unravelled_fabric.name=Распутанная ткань
 tile.rift.name=Разлом
@@ -23,34 +56,148 @@ tile.rift.name=Разлом
 item.gold_door.name=Золотая дверь
 item.quartz_door.name=Кварцевая дверь
 
-item.iron_dimensional_door.name=Пространственная дверь
+item.iron_dimensional_door.name=Железная пространственная дверь
 item.gold_dimensional_door.name=Золотая пространственная дверь
-item.quartz_dimensional_door.name=Личная пространственная дверь
-item.unstable_dimensional_door.name=Нестабильная дверь
-item.oak_dimensional_door.name=Дверь искажения
+item.quartz_dimensional_door.name=Кварцевая пространственная дверь
+item.unstable_dimensional_door.name=Нестабильная пространственная дверь
+item.oak_dimensional_door.name=Дубовая пространственная дверь
 
 item.rift_key=Ключ разлома
-item.rift_signature.name=Подписыватель разлома
-item.stabilized_rift_signature.name=Стабилизированный подписыватель разлома
-item.rift_configuration_tool.name=Rift Configuration Tool
+item.rift_signature.name=Подпись разлома
+item.rift_signature.stored=Местоположение сохранено
+item.rift_signature.created=Разлом создан
+item.stabilized_rift_signature.name=Стабилизированная подпись разлома
+item.stabilized_rift_signature.stored=Местоположение сохранено
+item.stabilized_rift_signature.created=Разлом создан
+item.rift_configuration_tool.name=Инструмент настройки разлома
 item.rift_remover.name=Уничтожитель разломов
+item.rift_remover.closing=Разлом скоро закроется
+item.rift_remover.already_closing=Этот разлом уже закрывается
+item.rift_stabilizer.name=Стабилизатор разлома
+item.rift_stabilizer.info=Используйте на ядре разлома, чтобы остановить его рост.
+item.rift_stabilizer.stabilized=Разлом стабилизировался и перестает расти
+item.rift_stabilizer.already_stabilized=Этот разлом уже стабилен
 item.rift_blade.name=Клинок разлома
+item.rift_blade.rift_miss=Вы можете использовать этот предмет только на ядре разлома
 
 item.world_thread.name=Мировая нить
 item.stable_fabric.name=Стабильная ткань
+
+item.woven_world_thread_boots.name=Ботинки из тканой мировой нити
+item.woven_world_thread_helmet.name=Шлем из тканой мировой нити
+item.woven_world_thread_leggings.name=Поножи из тканой мировой нити
+item.woven_world_thread_chestplate.name=Нагрудник из тканой мировой нити
 
 item.rift_key.bound.info=Связан
 item.rift_key.unbound.info=Не связан
 
 item.iron_dimensional_door.info=Поставьте на блок под разломом, \nчтобы активировать этот разлом или \nпоставьте куда угодно, чтобы создать \nкарманное измерение.
 item.gold_dimensional_door.info=Схожа с пространственной дверью, \nно она также держит карманное измерение \nзагруженным, если она размещена внутри его.
-item.quartz_dimensional_door.info=Создает путь к \nВашему карману
+item.quartz_dimensional_door.info=Создает путь к вашему личному карману.
 item.rift_blade.info=Открывает временные двери на разломах \nи наносит урон при телепортации.
 item.rift_remover.info=Используйте рядом с разломом, \nчтобы убрать его и \nдругие ближайшие разломы.
-item.rift_signature.bound.info=Ведёт в (%d, %d, %d) в измерение #%d
+item.rift_signature.bound.info=Ведет к (%d, %d, %d) в измерении #%d
 item.rift_signature.unbound.info=Первое нажатие сохраняет расположение; \nвторое нажатие создаёт пару \nразломов, соединяющих два расположения.
-item.stabilized_rift_signature.bound.info=Ведёт в (%d, %d, %d) в измерение #%d
+item.stabilized_rift_signature.bound.info=Ведет к (%d, %d, %d) в измерении #%d
 item.stabilized_rift_signature.unbound.info=Первое нажатие сохраняет расположение, \nостальные нажатия создают разломы, соединяющие \nпервое и последнее расположения вместе.
-item.unstable_dimensional_door.info=Внимание: Ведёт неизвестно куда
+item.unstable_dimensional_door.info=Осторожно: Ведет к случайному месту назначения
 item.oak_dimensional_door.info=Поставьте на блок под \nразломом, чтобы создать портал \nили поставьте куда угодно в \nкарманном измерении, чтобы выйти из него.
+
+item.record.creepy.desc=Creepy - The sound of Limbo
+
 entity.dimdoors.monolith.name=Монолит
+
+commands.dimteleport.usage=/dimteleport <dimension> <x> <y> <z> [yaw] [pitch]
+commands.fabricconvert.usage=/fabricconvert
+commands.fabricconvert.success=All fabric of reality has been converted to black.
+commands.pocket.usage=/pocket <group> <name> [setup]
+commands.pocket.group_not_found=Group %s not found
+commands.pocket.template_not_found=Template %s not found
+commands.saveschem.usage=/saveschem <name>
+commands.saveschem.success=Pocket %s has been successfully saved
+commands.generic.dimdoors.not_in_pocket_dim=You must be in a pocket dimension to use this command.
+commands.generic.dimdoors.not_in_pocket=You must be in a pocket to use this command.
+
+rifts.unlinked=Этот разлом никуда не ведет
+rifts.destinations.escape.cannot_escape_limbo=Хорошая попытка, но тебе придется либо умереть, либо найти какую-нибудь вечную ткань, чтобы выбраться из Лимбо.
+rifts.destinations.escape.not_in_pocket_dim=Вы можете использовать это только для того, чтобы вырваться из карманного измерения!
+rifts.destinations.escape.did_not_use_rift=Вы не использовали разлом, чтобы войти в карманное измерение, поэтому ты оказался в Лимбо!
+rifts.destinations.escape.rift_has_closed=Разлом, который вы использовали для входа в карманное измерение, закрылся, и вы оказались в Лимбо!
+rifts.destinations.private_pocket_exit.did_not_use_rift=Вы не использовали разлом, чтобы войти в карманное измерение, и вы оказались в Лимбо!
+rifts.destinations.private_pocket_exit.rift_has_closed=Разлом, который вы использовали для входа в карманное измерение, закрылся, и вы оказались в Лимбо!
+rifts.entrances.rift_too_close=Было бы опасно размещать дверь так близко к разрыву в мире. Shift+ПКМ, чтобы все равно разместить, или поместите его в ядро ​​разлома (тессеракт), чтобы привязать его к разлому.
+rifts.entrances.cannot_be_placed_on_rift=Этот тип двери не может быть размещен на разломе.
+
+tools.rift_miss=Вы можете использовать этот предмет только на ядре разлома
+tools.target_became_block=Не удалось, теперь есть блок в сохраненном месте
+
+dimdoors.general=General Settings
+dimdoors.general.tooltip=General configuration settings for the mod
+dimdoors.general.baseDimensionID=Base Dimension ID
+dimdoors.general.baseDimensionID.tooltip=Dimension ID of the first Dimensional Doors dimension. Other dimensions will use consecutive IDs. It is strongly recommended to leave this to the default value.
+dimdoors.general.useStatusBar=Status Bar Messages
+dimdoors.general.useStatusBar.tooltip=Whether to use the status bar to send messages rather than the chat.
+dimdoors.general.closeDoorBehind=Close Door Behind
+dimdoors.general.closeDoorBehind.tooltip=When true, Dimensional Doors will automatically close when the player enters their portal.
+dimdoors.general.depthSpreadFactor=Depth Spread Factor
+dimdoors.general.depthSpreadFactor.tooltip=The scale of the dispersion when escaping from a pocket or limbo, in blocks/depth. It is important to remember that by default, limbo is treated as depth 50.
+dimdoors.general.riftCloseSpeed=Rift Close Speed
+dimdoors.general.riftCloseSpeed.tooltip=The speed at which rifts close when using the rift remover, in units of rift size per tick.
+dimdoors.general.teleportOffset=Teleport Offset
+dimdoors.general.teleportOffset.tooltip=Distance in blocks to teleport the player in front of the dimensional door.
+dimdoors.general.riftBoundingBoxInCreative=Rift Bounding Box in Creative
+dimdoors.general.riftBoundingBoxInCreative.tooltip=When true, shows the bounding boxes of floating rifts when the player is in creative.
+
+dimdoors.pockets=Pocket Dimension Settings
+dimdoors.pockets.tooltip=Settings that determine the spacing and maximum size of pockets in the pocket world
+dimdoors.pockets.pocketGridSize=Pocket Grid Size
+dimdoors.pockets.pocketGridSize.tooltip=Sets how many chunks apart all pockets in any pocket dimensions should be placed.
+dimdoors.pockets.maxPocketSize=Maximum Pocket Size
+dimdoors.pockets.maxPocketSize.tooltip=Sets the maximum size of any pocket. A size of x will allow for pockets up to (x + 1) * (x + 1) chunks. If this is set to any value bigger than pocketGridSize / 2, the value of pocketGridSize / 2 will be used instead.
+dimdoors.pockets.privatePocketSize=Private Pocket Size
+dimdoors.pockets.privatePocketSize.tooltip=Sets the minimum size of a newly created Private Pocket. If this is set to any value bigger than maxPocketSize, the value of maxPocketSize will be used instead.
+dimdoors.pockets.publicPocketSize=Public Pocket Size
+dimdoors.pockets.publicPocketSize.tooltip=Sets the minimum size of a newly created Public Pocket. If this is set to any value bigger than privatePocketSize, the value of privatePocketSize will be used instead.
+dimdoors.pockets.loadAllSchematics=Load All Schematics
+dimdoors.pockets.loadAllSchematics.tooltip= When true, all available Pocket Schematics will be loaded on game-start, even if the gridSize and pocketSize configuration fields would exclude these schematics from being used in 'naturally generated' pockets. The /pocket command can be used to force-generate these pockets for dungeon building or testing purposes.
+
+dimdoors.world=World Generation Settings
+dimdoors.world.tooltip=Settings that determine where dimensional gateways and rift clusters can be generated and at what frequency
+dimdoors.world.clusterGenChance=Cluster Generation Chance
+dimdoors.world.clusterGenChance.tooltip=Sets the chance (out of 1) that a cluster of rifts will generate in a given chunk.
+dimdoors.world.gatewayGenChance=Gateway Generation Chance
+dimdoors.world.gatewayGenChance.tooltip=Sets the chance (out of 1) that a dimensional gateway will generate in a given chunk.
+dimdoors.world.clusterDimBlacklist=Cluster Dimension Blacklist
+dimdoors.world.clusterDimBlacklist.tooltip=Dimension Blacklist for the generation of Rift Scar clusters. Add a dimension ID here to prevent generation in certain dimensions.
+dimdoors.world.gatewayDimBlacklist=Gateway Dimension Blacklist
+dimdoors.world.gatewayDimBlacklist.tooltip=Dimension Blacklist for the generation of Dimensional Portal gateways. Add a dimension ID here to prevent generation in certain dimensions.
+
+dimdoors.dungeons=Dungeon Settings
+dimdoors.dungeons.tooltip=Settings that affect the generation of pocket dungeons
+dimdoors.dungeons.maxDungeonDepth=Maximum Dungeon Depth
+dimdoors.dungeons.maxDungeonDepth.tooltip=The depth at which limbo is located. If a Rift reaches any deeper than this while searching for a new destination, the player trying to enter the Rift will be sent straight to Limbo.
+
+dimdoors.monoliths=Monolith Settings
+dimdoors.monoliths.tooltip=Settings that determine how dangerous monoliths are
+dimdoors.monoliths.dangerousLimboMonoliths=Dangerous Limbo Monoliths
+dimdoors.monoliths.dangerousLimboMonoliths.tooltip=When true, Monoliths in Limbo attack the player and deal damage.
+dimdoors.monoliths.monolithTeleportation=Monolith Teleportation
+dimdoors.monoliths.monolithTeleportation.tooltip=When true, being exposed to the gaze of Monoliths for too long, will cause the player to be teleported to the void above Limbo.
+
+dimdoors.limbo=Limbo Settings
+dimdoors.limbo.tooltip=Settings that control various aspects of the Limbo dimension
+dimdoors.limbo.universalLimbo=Universal Limbo
+dimdoors.limbo.universalLimbo.tooltip=When true, players are also teleported to Limbo when they die in any non-Pocket Dimension (except Limbo itself). Otherwise, players only go to Limbo if they die in a Pocket Dimension.
+dimdoors.limbo.hardcoreLimbo=Hardcore Limbo
+dimdoors.limbo.hardcoreLimbo.tooltip=When true, a player dying in Limbo will respawn in Limbo, making Eternal Fluid or Golden Dimensional Doors the only way to escape Limbo.
+
+dimdoors.graphics=Graphics Settings
+dimdoors.graphics.tooltip=Settings that control the appearance of dimdoors, such as the rift animation.
+dimdoors.graphics.highlightRiftCoreFor=Time to Highlight Rift Core
+dimdoors.graphics.highlightRiftCoreFor.tooltip=How long, in milliseconds, the rift's core (tesseract animation) should be shown for when attempting to place a door near a large rift but not directly on it. Set to -1 to disable.
+dimdoors.graphics.showRiftCore=Always Show Rift Cores
+dimdoors.graphics.showRiftCore.tooltip=Set this to true to always show rifts' cores (tesseract animation).
+dimdoors.graphics.riftSize=Rift Size
+dimdoors.graphics.riftSize.tooltip=Multiplier affecting how large rifts should be rendered, 1 being the default size.
+dimdoors.graphics.riftJitter=Rift Jitter
+dimdoors.graphics.riftJitter.tooltip=Multiplier affecting how much rifts should jitter, 1 being the default size.
