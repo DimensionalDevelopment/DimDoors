@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.tesseract.Tesseract;
 import org.dimdev.dimdoors.util.RGBA;
 import com.flowpowered.math.TrigMath;
@@ -26,7 +27,6 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
 
     private static final Tesseract TESSERACT = new Tesseract();
     private static final RiftCurves.PolygonInfo CURVE = RiftCurves.CURVES.get(0);
-    public static long showRiftCoreUntil = 0;
 
     public DetachedRiftBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher) {
         super(dispatcher);
@@ -39,7 +39,7 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
         if (ModConfig.INSTANCE.getGraphicsConfig().showRiftCore) {
             this.renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
         } else {
-            long timeLeft = showRiftCoreUntil - System.currentTimeMillis();
+            long timeLeft = RiftBlockEntity.showRiftCoreUntil - System.currentTimeMillis();
             if (timeLeft >= 0) {
                 this.renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
             }
@@ -72,8 +72,8 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
         matrices.pop();
     }
 
-    private double nextAngle(DetachedRiftBlockEntity rift, float partialTicks) {
-        rift.renderAngle = (rift.renderAngle + 5 * partialTicks) % 360;
+    private double nextAngle(DetachedRiftBlockEntity rift, float tickDelta) {
+        rift.renderAngle = (rift.renderAngle + 5 * tickDelta) % 360;
         return rift.renderAngle;
     }
 }

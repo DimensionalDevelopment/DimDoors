@@ -17,7 +17,6 @@ import net.minecraft.util.Tickable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-
 public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable {
     private static final Random random = new Random();
 

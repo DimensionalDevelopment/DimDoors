@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 import net.minecraft.client.item.TooltipContext;
@@ -40,7 +40,7 @@ public class RiftStabilizerItem extends Item {
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {
                 player.sendMessage(new TranslatableText("tools.rift_miss"), true);
-                DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
+                RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
                 return new TypedActionResult<>(ActionResult.FAIL, stack);
             }
         }

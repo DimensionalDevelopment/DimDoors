@@ -33,6 +33,7 @@ import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 public abstract class RiftBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Target, EntityTarget {
     private static final Codec<RiftData> CODEC = RiftData.CODEC;
     private static final Logger LOGGER = LogManager.getLogger();
+    public static long showRiftCoreUntil = 0;
 
     protected RiftData data = new RiftData();
 
@@ -204,7 +205,6 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
     protected abstract boolean isDetached();
 
     public void copyFrom(DetachedRiftBlockEntity rift) {
-
         this.data.setDestination(rift.data.getDestination());
         this.data.setProperties(rift.data.getProperties());
         this.data.setAlwaysDelete(rift.data.isAlwaysDelete());

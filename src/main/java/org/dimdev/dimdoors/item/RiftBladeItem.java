@@ -1,8 +1,9 @@
 package org.dimdev.dimdoors.item;
 
+import java.util.Objects;
+
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -32,7 +33,7 @@ public class RiftBladeItem extends SwordItem {
 
     @Override
     public boolean canRepair(ItemStack item, ItemStack repairingItem) {
-        return ModItems.STABLE_FABRIC == repairingItem.getItem();
+        return Objects.equals(ModItems.STABLE_FABRIC, repairingItem.getItem());
     }
 
     @Override
@@ -48,7 +49,7 @@ public class RiftBladeItem extends SwordItem {
                 return new TypedActionResult<>(ActionResult.SUCCESS, stack);
             } else {
                 player.sendMessage(new TranslatableText(this.getTranslationKey() + ".rift_miss"), true);
-                DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
+                RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
                 return new TypedActionResult<>(ActionResult.FAIL, stack);
             }
         }

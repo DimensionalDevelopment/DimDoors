@@ -22,7 +22,7 @@ public class LoadConfigScreen extends Screen {
 
     @Override
     public void onClose() {
-        MinecraftClient.getInstance().openScreen(this.parent);
+        MinecraftClient.getInstance().openScreen(this.getParent());
     }
 
     public Screen getParent() {
@@ -39,7 +39,7 @@ public class LoadConfigScreen extends Screen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        this.renderBackgroundTexture(0);
         super.render(matrices, mouseX, mouseY, delta);
-        this.renderBackground(matrices);
     }
 }

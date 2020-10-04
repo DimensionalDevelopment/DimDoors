@@ -7,15 +7,13 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class RiftData {
-    public static Codec<RiftData> CODEC = RecordCodecBuilder.create(instance -> {
-       return instance.group(
-               VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.DUMMY).forGetter(RiftData::getDestination),
-               LinkProperties.CODEC.optionalFieldOf("properties", LinkProperties.NONE).forGetter(RiftData::getProperties),
-               Codec.BOOL.fieldOf("alwaysDelete").forGetter(RiftData::isAlwaysDelete),
-               Codec.BOOL.fieldOf("forcedColor").forGetter(RiftData::isForcedColor),
-               RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor)
-       ).apply(instance, RiftData::new);
-    });
+    public static Codec<RiftData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.DUMMY).forGetter(RiftData::getDestination),
+            LinkProperties.CODEC.optionalFieldOf("properties", LinkProperties.NONE).forGetter(RiftData::getProperties),
+            Codec.BOOL.fieldOf("alwaysDelete").forGetter(RiftData::isAlwaysDelete),
+            Codec.BOOL.fieldOf("forcedColor").forGetter(RiftData::isForcedColor),
+            RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor)
+    ).apply(instance, RiftData::new));
 
     private VirtualTarget destination = VirtualTarget.NoneTarget.DUMMY; // How the rift acts as a source
     private LinkProperties properties = LinkProperties.NONE;
@@ -34,7 +32,7 @@ public class RiftData {
     }
 
     public VirtualTarget getDestination() {
-        return destination;
+        return this.destination;
     }
 
     public void setDestination(VirtualTarget destination) {
@@ -42,7 +40,7 @@ public class RiftData {
     }
 
     public LinkProperties getProperties() {
-        return properties;
+        return this.properties;
     }
 
     public void setProperties(LinkProperties properties) {
@@ -50,7 +48,7 @@ public class RiftData {
     }
 
     public boolean isAlwaysDelete() {
-        return alwaysDelete;
+        return this.alwaysDelete;
     }
 
     public void setAlwaysDelete(boolean alwaysDelete) {
@@ -58,7 +56,7 @@ public class RiftData {
     }
 
     public boolean isForcedColor() {
-        return forcedColor;
+        return this.forcedColor;
     }
 
     public void setForcedColor(boolean forcedColor) {
@@ -66,11 +64,11 @@ public class RiftData {
     }
 
     public RGBA getColor() {
-        return color;
+        return this.color;
     }
 
     public void setColor(RGBA color) {
-        forcedColor = color != null;
+        this.forcedColor = color != null;
         this.color = color;
     }
 }

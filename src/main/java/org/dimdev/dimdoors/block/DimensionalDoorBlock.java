@@ -93,7 +93,7 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
         } else if (topEntity instanceof EntranceRiftBlockEntity) {
             return (EntranceRiftBlockEntity) topEntity;
         } else {
-            throw new RuntimeException("Dimensional door at " + pos + " in world " + world + " contained no rift.");
+            throw new IllegalStateException("Dimensional door at " + pos + " in world " + world + " contained no rift.");
         }
     }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
 
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.resource.language.I18n;
@@ -39,7 +38,7 @@ public class RiftConfigurationToolItem extends Item {
         if (world.isClient) {
             if (!RaycastHelper.hitsRift(hit, world)) {
                 player.sendMessage(new TranslatableText("tools.rift_miss"), true);
-                DetachedRiftBlockEntityRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
+                RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
             }
             return new TypedActionResult<>(ActionResult.FAIL, stack);
         }

@@ -42,16 +42,6 @@ public class UnravelledFabricBlock extends Block {
         return state;
     }
 
-//    @Override
-//    public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
-//        this.getStateForNeighborUpdate(state, null, null, world, null, null);
-//    }
-//
-//    @Override
-//    public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-//        this.getStateForNeighborUpdate(state, null, null, world, null, null);
-//    }
-
     @Override
     public boolean hasRandomTicks(BlockState state) {
         return true;
