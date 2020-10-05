@@ -38,6 +38,11 @@ public final class ModConfig {
         @RangeDouble(min = 0, max = 3)
         public double teleportOffset = 0.5;
 
+        @Name("KillFallHeightForPocketPublicAndDungeonCConly")
+        @LangKey("dimdoors.general.KillFallHeightForPocketPublicAndDungeon")
+        @RangeInt(min = -1000000000, max = -60)
+        public int KillFallHeightForPocketPublicAndDungeon = -60;
+
         @Name("riftBoundingBoxInCreative")
         @LangKey("dimdoors.general.riftBoundingBoxInCreative")
         public boolean riftBoundingBoxInCreative;

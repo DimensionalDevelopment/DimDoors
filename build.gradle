@@ -43,11 +43,11 @@ dependencies {
 // Minecraft, MCP, Forge, and Java versions
 sourceCompatibility = targetCompatibility = "1.8"
 ext.mcversion = "1.12.2"
-ext.forgeversion = "14.23.4.2707"
+ext.forgeversion = "14.23.5.2847"
 String mcpversion = "stable_39"
 
 // Mod version
-version = "3.1.2"
+version = "3.1.6"
 boolean isBeta = false
 group = "org.dimdev.dimdoors"
 archivesBaseName = "DimensionalDoors"

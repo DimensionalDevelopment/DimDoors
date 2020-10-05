@@ -1,13 +1,16 @@
 package org.dimdev.dimdoors;
 
 import lombok.Getter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -35,6 +38,7 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import org.dimdev.dimdoors.shared.world.ModBiomes;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.gateways.GatewayGenerator;
+import org.dimdev.dimdoors.shared.world.limbo.LimboOreGen;
 
 import java.io.File;
 
@@ -48,6 +52,7 @@ public class DimDoors {
     public static final String MCVERSIONS = "[1.12,1.13)";
     public static final String VERSION = "${version}";
     public static final String DEPENDENCIES = "required-after:forge@[14.21.0.2320,)";
+
 
     @Mod.Instance(DimDoors.MODID)
     public static DimDoors instance;
@@ -64,7 +69,7 @@ public class DimDoors {
     @Mod.EventHandler
     public void onPreInitialization(FMLPreInitializationEvent event) {
         log = event.getModLog();
-
+        GameRegistry.registerWorldGenerator(new LimboOreGen(), 10);
         // Register event handlers
         MinecraftForge.EVENT_BUS.register(EventHandler.class);
         MinecraftForge.EVENT_BUS.register(ModBlocks.class);
