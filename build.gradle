@@ -47,7 +47,7 @@ ext.forgeversion = "14.23.5.2847"
 String mcpversion = "stable_39"
 
 // Mod version
-version = "3.1.6"
+version = "3.1.7"
 boolean isBeta = false
 group = "org.dimdev.dimdoors"
 archivesBaseName = "DimensionalDoors"
