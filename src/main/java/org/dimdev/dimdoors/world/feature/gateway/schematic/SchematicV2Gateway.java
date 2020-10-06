@@ -63,17 +63,16 @@ public abstract class SchematicV2Gateway implements Gateway {
         }
     }
 
-    public void generate(StructureWorldAccess world, BlockPos pos) {
+    public final void generate(StructureWorldAccess world, BlockPos pos) {
         SchematicPlacer.place(this.schematic, world, pos);
+        this.generateRandomBits(world, pos);
     }
 
     /**
      * Generates randomized portions of the gateway structure (e.g. rubble, foliage)
      *
      * @param world - the world in which to generate the gateway
-     * @param x     - the x-coordinate at which to center the gateway; usually where the door is placed
-     * @param y     - the y-coordinate of the block on which the gateway may be built
-     * @param z     - the z-coordinate at which to center the gateway; usually where the door is placed
+     * @param pos - the position at which the schematic is placed
      */
     protected void generateRandomBits(StructureWorldAccess world, BlockPos pos) {
     }
