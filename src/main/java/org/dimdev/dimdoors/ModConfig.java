@@ -149,7 +149,7 @@ public final class ModConfig {
                 Codecs.INT_SET.fieldOf("gatewayDimBlacklist").forGetter((world) -> world.gatewayDimBlacklist)
         ).apply(instance, World::create));
         public double clusterGenChance = 0.0002;
-        public int gatewayGenChance = 80;
+        public int gatewayGenChance = 200;
         public Set<Integer> clusterDimBlacklist = new LinkedHashSet<>();
         public Set<Integer> gatewayDimBlacklist = new LinkedHashSet<>();
 

@@ -10,6 +10,7 @@
     "DimensionTypeAccessor",
     "DirectionAccessor",
     "EntityMixin",
+    "GenerationSettingsAccessor",
     "ListTagAccessor",
     "PlayerEntityMixin",
     "RedstoneWireBlockAccessor"

@@ -22,11 +22,9 @@ public abstract class SchematicV2Gateway implements Gateway {
     private static final Logger LOGGER = LogManager.getLogger();
     private Schematic schematic;
     private final String id;
-    public static final BiMap<SchematicV2Gateway, String> SCHEMATIC_ID_MAP = HashBiMap.create();
     public static final BiMap<String, SchematicV2Gateway> ID_SCHEMATIC_MAP = HashBiMap.create();
 
     public SchematicV2Gateway(String id) {
-        SCHEMATIC_ID_MAP.putIfAbsent(this, id);
         ID_SCHEMATIC_MAP.putIfAbsent(id, this);
         this.id = id;
     }
