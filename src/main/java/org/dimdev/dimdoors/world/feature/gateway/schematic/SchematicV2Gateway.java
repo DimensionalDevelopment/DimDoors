@@ -1,27 +1,24 @@
 package org.dimdev.dimdoors.world.feature.gateway.schematic;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 import org.dimdev.dimdoors.util.schematic.v2.SchematicPlacer;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.feature.gateway.Gateway;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 
 public abstract class SchematicV2Gateway implements Gateway {
-    private static final Logger LOGGER = LogManager.getLogger();
     private Schematic schematic;
     private final String id;
     public static final BiMap<String, SchematicV2Gateway> ID_SCHEMATIC_MAP = HashBiMap.create();
