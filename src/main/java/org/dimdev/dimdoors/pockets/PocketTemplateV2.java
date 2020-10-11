@@ -40,67 +40,6 @@ public class PocketTemplateV2 {
         this.id = id;
     }
 
-    public static void replacePlaceholders(Schematic schematic) {
-        // Replace placeholders (some schematics will contain them)
-        replacingPlaceholders = true;
-        List<CompoundTag> blockEntities = new ArrayList<>();
-        for (CompoundTag blockEntityTag : schematic.getBlockEntities()) {
-            if (blockEntityTag.contains("placeholder")) {
-                int x = blockEntityTag.getInt("x");
-                int y = blockEntityTag.getInt("y");
-                int z = blockEntityTag.getInt("z");
-
-                CompoundTag newTag = new CompoundTag();
-                EntranceRiftBlockEntity rift = Objects.requireNonNull(ModBlockEntityTypes.ENTRANCE_RIFT.instantiate());
-                switch (blockEntityTag.getString("placeholder")) {
-                    case "deeper_depth_door":
-                        rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.DEEPER_DUNGEON_DESTINATION);
-                        newTag = rift.toTag(newTag);
-                        break;
-                    case "less_deep_depth_door":
-                        rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.SHALLOWER_DUNGEON_DESTINATION);
-                        newTag = rift.toTag(newTag);
-                        break;
-                    case "overworld_door":
-                        rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.OVERWORLD_DESTINATION);
-                        newTag = rift.toTag(newTag);
-                        break;
-                    case "entrance_door":
-                        rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.TWO_WAY_POCKET_ENTRANCE);
-                        newTag = rift.toTag(newTag);
-                        break;
-                    case "gateway_portal":
-                        rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.GATEWAY_DESTINATION);
-                        newTag = rift.toTag(newTag);
-                        break;
-                    default:
-                        throw new RuntimeException("Unknown block entity placeholder: " + blockEntityTag.getString("placeholder"));
-                }
-                blockEntities.add(newTag);
-            } else {
-                blockEntities.add(blockEntityTag);
-            }
-        }
-        schematic.setBlockEntities(blockEntities);
-
-//        List<CompoundTag> entities = new ArrayList<>();
-//        for (CompoundTag entityTag : schematic.getEntities()) {
-//            TemplateUtils.setupEntityPlaceholders(entities, entityTag);
-//        }
-//        schematic.setEntities(entities);
-        replacingPlaceholders = false;
-    }
-
     public void setup(Pocket pocket, VirtualTarget linkTo, LinkProperties linkProperties) {
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
 
