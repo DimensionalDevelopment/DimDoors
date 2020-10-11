@@ -9,19 +9,19 @@ import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.RandomTarget;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
-public final class DefaultDungeonDestinations { // TODO: lower weights?
-    public static final LinkProperties POCKET_LINK_PROPERTIES = LinkProperties.builder()
+public interface DefaultDungeonDestinations { // TODO: lower weights?
+    LinkProperties POCKET_LINK_PROPERTIES = LinkProperties.builder()
             .groups(new HashSet<>(Arrays.asList(0, 1)))
             .linksRemaining(1)
             .build();
 
-    public static final LinkProperties OVERWORLD_LINK_PROPERTIES = LinkProperties.builder()
+    LinkProperties OVERWORLD_LINK_PROPERTIES = LinkProperties.builder()
             .groups(new HashSet<>(Arrays.asList(0, 1)))
             .entranceWeight(50)
             .linksRemaining(1)
             .build();
 
-    public static final VirtualTarget DEEPER_DUNGEON_DESTINATION = RandomTarget.builder()
+    VirtualTarget DEEPER_DUNGEON_DESTINATION = RandomTarget.builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1)
             .negativeDepthFactor(10000)
@@ -30,7 +30,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
             .newRiftWeight(1)
             .build();
 
-    public static final VirtualTarget SHALLOWER_DUNGEON_DESTINATION = RandomTarget.builder()
+    VirtualTarget SHALLOWER_DUNGEON_DESTINATION = RandomTarget.builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1)
             .negativeDepthFactor(160)
@@ -39,7 +39,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
             .newRiftWeight(1)
             .build();
 
-    public static final VirtualTarget OVERWORLD_DESTINATION = RandomTarget.builder()
+    VirtualTarget OVERWORLD_DESTINATION = RandomTarget.builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1)
             .negativeDepthFactor(0.00000000001) // The division result is cast to an int, so Double.MIN_VALUE would cause an overflow
@@ -48,7 +48,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
             .newRiftWeight(1)
             .build();
 
-    public static final VirtualTarget TWO_WAY_POCKET_ENTRANCE = PocketEntranceMarker.builder()
+    VirtualTarget TWO_WAY_POCKET_ENTRANCE = PocketEntranceMarker.builder()
             .weight(1)
             .ifDestination(new PocketEntranceMarker())
             .otherwiseDestination(RandomTarget.builder()
@@ -61,7 +61,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
                     .build())
             .build();
 
-    public static final VirtualTarget GATEWAY_DESTINATION = RandomTarget.builder()
+    VirtualTarget GATEWAY_DESTINATION = RandomTarget.builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1) // TODO: lower value?
             .negativeDepthFactor(Double.POSITIVE_INFINITY)

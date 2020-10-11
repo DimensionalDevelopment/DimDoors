@@ -93,12 +93,11 @@ public class PocketTemplateV2 {
         }
         schematic.setBlockEntities(blockEntities);
 
-
-        List<CompoundTag> entities = new ArrayList<>();
-        for (CompoundTag entityTag : schematic.getEntities()) {
-            TemplateUtils.setupEntityPlaceholders(entities, entityTag);
-        }
-        schematic.setEntities(entities);
+//        List<CompoundTag> entities = new ArrayList<>();
+//        for (CompoundTag entityTag : schematic.getEntities()) {
+//            TemplateUtils.setupEntityPlaceholders(entities, entityTag);
+//        }
+//        schematic.setEntities(entities);
         replacingPlaceholders = false;
     }
 
