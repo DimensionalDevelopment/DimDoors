@@ -6,15 +6,13 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.util.schematic.v2.Schematic;
-import org.dimdev.dimdoors.util.schematic.v2.SchematicPlacer;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.schematic.v2.Schematic;
+import org.dimdev.dimdoors.util.schematic.v2.SchematicPlacer;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -27,7 +25,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class PocketTemplateV2 {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static boolean replacingPlaceholders = false;
+    private static final boolean replacingPlaceholders = false;
     private final Schematic schematic;
     private final String group;
     private final int size;
@@ -76,7 +74,7 @@ public class PocketTemplateV2 {
     public void place(Pocket pocket) {
         pocket.setSize(this.size * 16, this.size * 16, this.size * 16);
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
-        BlockPos origin = new BlockPos(pocket.box.minX,  pocket.box.minY, pocket.box.minZ);
+        BlockPos origin = new BlockPos(pocket.box.minX, pocket.box.minY, pocket.box.minZ);
         LOGGER.info("Placing new pocket using schematic " + this.id + " at x = " + origin.getX() + ", z = " + origin.getZ());
         SchematicPlacer.place(this.schematic, world, origin);
     }

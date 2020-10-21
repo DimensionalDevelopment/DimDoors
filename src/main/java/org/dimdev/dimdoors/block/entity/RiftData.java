@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.block.entity;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.RGBA;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class RiftData {
     public static Codec<RiftData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -21,7 +21,8 @@ public class RiftData {
     private boolean forcedColor;
     private RGBA color = RGBA.NONE;
 
-    public RiftData() {}
+    public RiftData() {
+    }
 
     private RiftData(VirtualTarget destination, LinkProperties properties, boolean alwaysDelete, boolean forcedColor, RGBA color) {
         this.destination = destination;

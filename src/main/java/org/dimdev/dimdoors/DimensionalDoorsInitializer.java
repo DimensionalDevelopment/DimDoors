@@ -2,7 +2,6 @@ package org.dimdev.dimdoors;
 
 import java.io.IOException;
 
-import org.dimdev.dimdoors.util.schematic.v2.SchematicTest;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
@@ -12,6 +11,7 @@ import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.util.schematic.v2.SchematicTest;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.feature.ModFeatures;

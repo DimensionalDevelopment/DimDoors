@@ -338,12 +338,12 @@ public final class RiftCurves {
 
         @Override
         public boolean equals(Object o) {
-            return o instanceof Point && ((Point) o).x == x && ((Point) o).y == y;
+            return o instanceof Point && ((Point) o).x == this.x && ((Point) o).y == this.y;
         }
 
         @Override
         public int hashCode() {
-            return x * 31 + y;
+            return this.x * 31 + this.y;
         }
     }
 }

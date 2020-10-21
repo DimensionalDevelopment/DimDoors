@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import java.util.UUID;
 
+import com.mojang.serialization.Codec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
@@ -12,7 +13,6 @@ import org.dimdev.dimdoors.util.RGBA;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import com.mojang.serialization.Codec;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;

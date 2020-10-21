@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import org.dimdev.dimdoors.util.Location;
 import com.mojang.serialization.Codec;
+import org.dimdev.dimdoors.util.Location;
 
 public class GlobalReference extends RiftReference {
     public static Codec<GlobalReference> CODEC = Location.CODEC.fieldOf("location").xmap(GlobalReference::new, GlobalReference::getReferencedLocation).codec();
@@ -14,7 +14,7 @@ public class GlobalReference extends RiftReference {
 
     @Override
     public Location getReferencedLocation() {
-        return target;
+        return this.target;
     }
 
     @Override

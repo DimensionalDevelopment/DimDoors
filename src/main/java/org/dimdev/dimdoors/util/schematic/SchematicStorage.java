@@ -20,8 +20,8 @@ public class SchematicStorage {
 
     public Schematic get(Identifier id) {
         try {
-            return cache.get(id, () -> {
-                        try (InputStream in = resourceManager.getResource(id).getInputStream()) {
+            return this.cache.get(id, () -> {
+                        try (InputStream in = this.resourceManager.getResource(id).getInputStream()) {
                             return Schematic.fromTag(NbtIo.readCompressed(in));
                         }
                     }

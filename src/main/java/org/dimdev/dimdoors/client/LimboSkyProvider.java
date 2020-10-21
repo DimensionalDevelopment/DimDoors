@@ -29,7 +29,7 @@ public class LimboSkyProvider extends CustomSkyProvider {
         MinecraftClient.getInstance().getTextureManager().bindTexture(EndPortalBlockEntityRenderer.SKY_TEXTURE);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
-        for(int i = 0; i < 6; ++i) {
+        for (int i = 0; i < 6; ++i) {
             matrices.push();
             this.multiply(matrices, i);
             Matrix4f matrix4f = matrices.peek().getModel();

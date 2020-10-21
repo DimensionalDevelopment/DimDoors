@@ -25,13 +25,13 @@ public class RiftParticle extends AnimatedParticle {
         this.velocityZ = velocityZ;
 
         scale *= scale;
-        maxAge = averageAge - ageSpread / 2 + random.nextInt(ageSpread);
+        this.maxAge = averageAge - ageSpread / 2 + this.random.nextInt(ageSpread);
 
-        setColor(color, color, color);
+        this.setColor(color, color, color);
     }
 
     @Override
     public void tick() {
-        setColorAlpha(1 - (float) age / maxAge);
+        this.setColorAlpha(1 - (float) this.age / this.maxAge);
     }
 }

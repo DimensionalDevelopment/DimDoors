@@ -44,7 +44,7 @@ public class DimensionalTrapdoorItem extends BlockItem {
             EntranceRiftBlockEntity entranceRift = ((RiftProvider<EntranceRiftBlockEntity>) state.getBlock()).getRift(world, pos, state);
 
             // Configure the rift to its default functionality
-            setupRift(entranceRift);
+            this.setupRift(entranceRift);
 
             // Register the rift in the registry
             entranceRift.markDirty();
@@ -55,6 +55,6 @@ public class DimensionalTrapdoorItem extends BlockItem {
     }
 
     protected void setupRift(EntranceRiftBlockEntity entranceRift) {
-        setupFunction.accept(entranceRift);
+        this.setupFunction.accept(entranceRift);
     }
 }

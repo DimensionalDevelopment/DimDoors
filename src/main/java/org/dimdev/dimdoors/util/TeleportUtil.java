@@ -25,8 +25,7 @@ public final class TeleportUtil {
 
         if (entity instanceof ServerPlayerEntity) {
             ((ServerPlayerEntity) entity).teleport((ServerWorld) world, pos.x, pos.y, pos.z, entity.getYaw(1.0F) + yawOffset, entity.getPitch(1.0F));
-        }
-        else if (entity.world.getRegistryKey().equals(world.getRegistryKey())) {
+        } else if (entity.world.getRegistryKey().equals(world.getRegistryKey())) {
             entity.setPos(pos.x, pos.y, pos.z);
             entity.setYaw(entity.yaw + yawOffset);
         } else {

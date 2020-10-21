@@ -5,8 +5,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import com.google.common.collect.ImmutableList;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DoorBlock;
@@ -69,8 +69,8 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
         Matrix4f matrix4f = matrices.peek().getModel();
         this.drawAllVertices(entrance, u, 0.15F, matrix4f, vertexConsumers.getBuffer(layers.get(0)));
 
-        for(int i = 1; i < offset; ++i) {
-            this.drawAllVertices(entrance, u, 2.0F / (float)(18 - i), matrix4f, vertexConsumers.getBuffer(layers.get(i)));
+        for (int i = 1; i < offset; ++i) {
+            this.drawAllVertices(entrance, u, 2.0F / (float) (18 - i), matrix4f, vertexConsumers.getBuffer(layers.get(i)));
         }
     }
 

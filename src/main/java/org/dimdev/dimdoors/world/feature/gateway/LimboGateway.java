@@ -2,10 +2,10 @@ package org.dimdev.dimdoors.world.feature.gateway;
 
 import java.util.Set;
 
+import com.google.common.collect.ImmutableSet;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
-import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;

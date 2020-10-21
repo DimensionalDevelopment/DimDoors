@@ -10,9 +10,6 @@ import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.ModConfig;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,15 +17,9 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
-import static org.dimdev.dimdoors.block.ModBlocks.DETACHED_RIFT;
-import static org.dimdev.dimdoors.block.ModBlocks.DIMENSIONAL_PORTAL;
-import static org.dimdev.dimdoors.block.ModBlocks.ETERNAL_FLUID;
-import static org.dimdev.dimdoors.block.ModBlocks.GOLD_DIMENSIONAL_DOOR;
-import static org.dimdev.dimdoors.block.ModBlocks.GOLD_DOOR;
-import static org.dimdev.dimdoors.block.ModBlocks.IRON_DIMENSIONAL_DOOR;
-import static org.dimdev.dimdoors.block.ModBlocks.OAK_DIMENSIONAL_DOOR;
-import static org.dimdev.dimdoors.block.ModBlocks.QUARTZ_DOOR;
-import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_FABRIC;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.ModConfig;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -93,6 +84,15 @@ import static net.minecraft.block.Blocks.SPRUCE_PLANKS;
 import static net.minecraft.block.Blocks.SPRUCE_WOOD;
 import static net.minecraft.block.Blocks.STONE;
 import static net.minecraft.block.Blocks.STONE_BRICKS;
+import static org.dimdev.dimdoors.block.ModBlocks.DETACHED_RIFT;
+import static org.dimdev.dimdoors.block.ModBlocks.DIMENSIONAL_PORTAL;
+import static org.dimdev.dimdoors.block.ModBlocks.ETERNAL_FLUID;
+import static org.dimdev.dimdoors.block.ModBlocks.GOLD_DIMENSIONAL_DOOR;
+import static org.dimdev.dimdoors.block.ModBlocks.GOLD_DOOR;
+import static org.dimdev.dimdoors.block.ModBlocks.IRON_DIMENSIONAL_DOOR;
+import static org.dimdev.dimdoors.block.ModBlocks.OAK_DIMENSIONAL_DOOR;
+import static org.dimdev.dimdoors.block.ModBlocks.QUARTZ_DOOR;
+import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_FABRIC;
 
 /**
  * Provides methods for applying Limbo decay. Limbo decay refers to the effect that most blocks placed in Limbo

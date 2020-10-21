@@ -23,17 +23,17 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.util.schematic.Schematic;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.util.math.MathUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.util.math.MathUtil;
+import org.dimdev.dimdoors.util.schematic.Schematic;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -221,7 +221,8 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         for (JsonElement pocketElement : pockets) {
             JsonObject pocket = pocketElement.getAsJsonObject();
             int size = pocket.get("size").getAsInt();
-            if (!ModConfig.INSTANCE.getPocketsConfig().loadAllSchematics && size > ModConfig.INSTANCE.getPocketsConfig().maxPocketSize) continue;
+            if (!ModConfig.INSTANCE.getPocketsConfig().loadAllSchematics && size > ModConfig.INSTANCE.getPocketsConfig().maxPocketSize)
+                continue;
             String id = pocket.get("id").getAsString();
             String type = pocket.has("type") ? pocket.get("type").getAsString() : null;
             String name = pocket.has("name") ? pocket.get("name").getAsString() : null;
@@ -301,7 +302,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         // TODO: cache this for faster calls:
         Map<PocketTemplate, Float> weightedTemplates = new HashMap<>();
         int largestSize = 0;
-         for (PocketTemplate template : this.templates) {
+        for (PocketTemplate template : this.templates) {
             if (template.getGroup().equals(group) && (maxSize == -1 || template.getSize() <= maxSize)) {
                 if (getLargest && template.getSize() > largestSize) {
                     weightedTemplates = new HashMap<>();

@@ -3,17 +3,17 @@ package org.dimdev.dimdoors.command;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.util.schematic.v2.Schematic;
-import org.dimdev.dimdoors.util.schematic.v2.SchematicPlacer;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.command.arguments.SchematicNamespaceArgumentType;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.command.arguments.SchematicNamespaceArgumentType;
+import org.dimdev.dimdoors.util.schematic.v2.Schematic;
+import org.dimdev.dimdoors.util.schematic.v2.SchematicPlacer;
 
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.command.ServerCommandSource;

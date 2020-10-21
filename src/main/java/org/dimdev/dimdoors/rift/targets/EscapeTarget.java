@@ -2,19 +2,20 @@ package org.dimdev.dimdoors.rift.targets;
 
 import java.util.UUID;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import static org.dimdev.dimdoors.util.EntityUtils.chat;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
+
+import static org.dimdev.dimdoors.util.EntityUtils.chat;
 
 public class EscapeTarget extends VirtualTarget implements EntityTarget { // TODO: createRift option
     public static final Codec<EscapeTarget> CODEC = RecordCodecBuilder.create(instance -> {

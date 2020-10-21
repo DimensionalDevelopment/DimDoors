@@ -67,10 +67,10 @@ public class DimensionalDoorItem extends TallBlockItem {
             if (rift == null) {
                 // Get the rift entity (not hard coded, works with any door size)
                 @SuppressWarnings("unchecked") // Guaranteed to be IRiftProvider<TileEntityEntranceRift> because of constructor
-                        EntranceRiftBlockEntity entranceRift = ((RiftProvider<EntranceRiftBlockEntity>) state.getBlock()).getRift(context.getWorld(), pos, state);
+                EntranceRiftBlockEntity entranceRift = ((RiftProvider<EntranceRiftBlockEntity>) state.getBlock()).getRift(context.getWorld(), pos, state);
 
                 // Configure the rift to its default functionality
-                setupRift(entranceRift);
+                this.setupRift(entranceRift);
 
                 // Register the rift in the registry
                 entranceRift.markDirty();
@@ -107,6 +107,6 @@ public class DimensionalDoorItem extends TallBlockItem {
     }
 
     public void setupRift(EntranceRiftBlockEntity entranceRift) {
-        setupFunction.accept(entranceRift);
+        this.setupFunction.accept(entranceRift);
     }
 }

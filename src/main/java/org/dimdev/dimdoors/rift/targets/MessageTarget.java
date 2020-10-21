@@ -8,8 +8,8 @@ import net.minecraft.text.TranslatableText;
 @SuppressWarnings("OverloadedVarargsMethod")
 public class MessageTarget implements EntityTarget {
     private Target forwardTo;
-    private String message;
-    private Object[] messageParams;
+    private final String message;
+    private final Object[] messageParams;
 
     public MessageTarget(Target forwardTo, String message, Object... messageParams) {
         this.forwardTo = forwardTo;
@@ -24,10 +24,10 @@ public class MessageTarget implements EntityTarget {
 
     @Override
     public boolean receiveEntity(Entity entity, float yawOffset) {
-        EntityUtils.chat(entity, new TranslatableText(message, messageParams));
+        EntityUtils.chat(entity, new TranslatableText(this.message, this.messageParams));
 
-        if (forwardTo != null) {
-            forwardTo.as(Targets.ENTITY).receiveEntity(entity, yawOffset);
+        if (this.forwardTo != null) {
+            this.forwardTo.as(Targets.ENTITY).receiveEntity(entity, yawOffset);
             return true;
         } else {
             return false;

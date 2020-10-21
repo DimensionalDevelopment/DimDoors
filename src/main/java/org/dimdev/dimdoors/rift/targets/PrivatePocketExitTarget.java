@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import java.util.UUID;
 
+import com.mojang.serialization.Codec;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.EntityUtils;
@@ -11,7 +12,6 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
-import com.mojang.serialization.Codec;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;
@@ -33,8 +33,8 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
         if (uuid != null) {
             destLoc = RiftRegistry.instance().getPrivatePocketExit(uuid);
             Pocket pocket = PrivatePocketData.instance().getPrivatePocket(uuid);
-            if (ModDimensions.isDimDoorsPocketDimension(location.getWorld()) && pocket != null && PocketRegistry.getInstance(pocket.world).getPocketAt(location.pos).equals(pocket)) {
-                RiftRegistry.instance().setLastPrivatePocketEntrance(uuid, location); // Remember which exit was used for next time the pocket is entered
+            if (ModDimensions.isDimDoorsPocketDimension(this.location.getWorld()) && pocket != null && PocketRegistry.getInstance(pocket.world).getPocketAt(this.location.pos).equals(pocket)) {
+                RiftRegistry.instance().setLastPrivatePocketEntrance(uuid, this.location); // Remember which exit was used for next time the pocket is entered
             }
             if (destLoc == null || !(destLoc.getBlockEntity() instanceof RiftBlockEntity)) {
                 if (destLoc == null) {
@@ -56,9 +56,9 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
     @Override
     public void register() {
         super.register();
-        PocketRegistry privatePocketRegistry = PocketRegistry.getInstance(location.world);
-        Pocket pocket = privatePocketRegistry.getPocketAt(location.pos);
-        RiftRegistry.instance().addPocketEntrance(pocket, location);
+        PocketRegistry privatePocketRegistry = PocketRegistry.getInstance(this.location.world);
+        Pocket pocket = privatePocketRegistry.getPocketAt(this.location.pos);
+        RiftRegistry.instance().addPocketEntrance(pocket, this.location);
     }
 
     @Override

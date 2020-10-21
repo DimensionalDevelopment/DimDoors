@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Objects;
 
+import com.mojang.serialization.Codec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
@@ -18,7 +19,6 @@ import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.util.RGBA;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import com.mojang.serialization.Codec;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -61,7 +61,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
     }
 
     protected CompoundTag serialize(CompoundTag tag) {
-        if(this.data != null) tag.put("data", NbtUtil.serialize(this.data, CODEC));
+        if (this.data != null) tag.put("data", NbtUtil.serialize(this.data, CODEC));
         return tag;
     }
 

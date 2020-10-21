@@ -4,9 +4,9 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import org.jetbrains.annotations.NotNull;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jetbrains.annotations.NotNull;
 
 public final class RGBA implements Cloneable, Comparable<RGBA>, Iterable<Float> {
     public static final RGBA NONE = new RGBA(-1, -1, -1, -1);

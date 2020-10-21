@@ -87,7 +87,7 @@ public abstract class EternalFluid extends FlowableFluid {
 
     @Override
     public int getNextTickDelay(World world, BlockPos blockPos, FluidState fluidState, FluidState fluidState2) {
-        int tickDelay = getTickRate(world);
+        int tickDelay = this.getTickRate(world);
 
         if (!fluidState.isEmpty() && !fluidState2.isEmpty() && !fluidState.get(FALLING) && !fluidState2.get(FALLING) && fluidState2.getHeight(world, blockPos) > fluidState.getHeight(world, blockPos) && world.getRandom().nextInt(4) != 0) {
             tickDelay *= 4;

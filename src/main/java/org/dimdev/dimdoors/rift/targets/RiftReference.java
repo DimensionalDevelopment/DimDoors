@@ -43,23 +43,23 @@ public abstract class RiftReference extends VirtualTarget {
 
     @Override
     public Target receiveOther() {
-        return (Target) getReferencedLocation().getBlockEntity();
+        return (Target) this.getReferencedLocation().getBlockEntity();
     }
 
     @Override
     public void register() {
-        RiftRegistry.instance().addLink(location, getReferencedLocation());
+        RiftRegistry.instance().addLink(this.location, this.getReferencedLocation());
     }
 
     @Override
     public void unregister() {
-        RiftRegistry.instance().removeLink(location, getReferencedLocation());
+        RiftRegistry.instance().removeLink(this.location, this.getReferencedLocation());
     }
 
     @Override
     public boolean shouldInvalidate(Location deletedRift) {
         // A rift we may have asked the registry to notify us about was deleted
-        return deletedRift.equals(getReferencedLocation());
+        return deletedRift.equals(this.getReferencedLocation());
     }
 
     @Override
@@ -69,10 +69,10 @@ public abstract class RiftReference extends VirtualTarget {
 
     @Override
     public RGBA getColor() {
-        Location target = getReferencedLocation();
+        Location target = this.getReferencedLocation();
         if (target != null && RiftRegistry.instance().isRiftAt(target)) {
             Set<Location> otherRiftTargets = RiftRegistry.instance().getTargets(target);
-            if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(location)) {
+            if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(this.location)) {
                 return new RGBA(0, 1, 0, 1);
             }
         }

@@ -2,12 +2,12 @@ package org.dimdev.dimdoors.client;
 
 import java.util.Objects;
 
+import com.flowpowered.math.TrigMath;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.tesseract.Tesseract;
 import org.dimdev.dimdoors.util.RGBA;
-import com.flowpowered.math.TrigMath;
 
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -55,7 +55,7 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
         matrices.pop();
     }
 
-    private void renderTesseract( VertexConsumer vc, DetachedRiftBlockEntity rift, MatrixStack matrices, float tickDelta) {
+    private void renderTesseract(VertexConsumer vc, DetachedRiftBlockEntity rift, MatrixStack matrices, float tickDelta) {
         double radian = this.nextAngle(rift, tickDelta) * TrigMath.DEG_TO_RAD;
         RGBA color = rift.getColor();
         if (Objects.equals(color, RGBA.NONE)) {

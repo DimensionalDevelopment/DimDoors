@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.command;
 
-import org.dimdev.dimdoors.ModConfig;
 import com.mojang.brigadier.CommandDispatcher;
+import org.dimdev.dimdoors.ModConfig;
 
 import net.minecraft.server.command.ServerCommandSource;
 

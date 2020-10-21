@@ -15,6 +15,6 @@ public class SandstonePillarsV2Gateway extends SchematicV2Gateway {
 
     @Override
     public Set<RegistryKey<Biome>> getBiomes() {
-        return ImmutableSet.of( BiomeKeys.DESERT, BiomeKeys.DESERT_LAKES, BiomeKeys.DESERT_HILLS);
+        return ImmutableSet.of(BiomeKeys.DESERT, BiomeKeys.DESERT_LAKES, BiomeKeys.DESERT_HILLS);
     }
 }

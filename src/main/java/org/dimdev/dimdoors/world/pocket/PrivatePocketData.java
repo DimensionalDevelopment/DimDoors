@@ -2,12 +2,12 @@ package org.dimdev.dimdoors.world.pocket;
 
 import java.util.UUID;
 
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.util.NbtUtil;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.util.NbtUtil;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.dynamic.DynamicSerializableUuid;

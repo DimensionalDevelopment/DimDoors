@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.world.pocket;
 
-import org.dimdev.dimdoors.util.Codecs;
-import org.dimdev.dimdoors.util.EntityUtils;
 import com.flowpowered.math.vector.Vector3i;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.dimdev.dimdoors.util.Codecs;
+import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;
@@ -49,15 +49,15 @@ public final class Pocket {
     public Pocket(int id, RegistryKey<World> world, int x, int z) {
         this.id = id;
         this.world = world;
-        box = new BlockBox(x * 16, 0, z * 16, (x + 1) * 16, 0, (z + 1) * 16);
+        this.box = new BlockBox(x * 16, 0, z * 16, (x + 1) * 16, 0, (z + 1) * 16);
     }
 
     boolean isInBounds(BlockPos pos) {
-        return box.contains(pos);
+        return this.box.contains(pos);
     }
 
     public BlockPos getOrigin() {
-        return new BlockPos(box.minX, box.minY, box.minZ);
+        return new BlockPos(this.box.minX, this.box.minY, this.box.minZ);
     }
 
     public boolean addDye(Entity entity, DyeColor dyeColor) {
@@ -71,19 +71,19 @@ public final class Pocket {
         }
 
         if (this.nextDyeColor != null && this.nextDyeColor == color) {
-            if (count + 1 > amountOfDyeRequiredToColor(this)) {
+            if (this.count + 1 > amountOfDyeRequiredToColor(this)) {
                 this.dyeColor = color;
                 this.nextDyeColor = PocketColor.NONE;
-                count = 0;
+                this.count = 0;
                 EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.pocketHasBeenDyed", dyeColor));
             } else {
-                count++;
-                EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.remainingNeededDyes", count, maxDye, color));
+                this.count++;
+                EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color));
             }
         } else {
             this.nextDyeColor = color;
-            count = 1;
-            EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.remainingNeededDyes", count, maxDye, color));
+            this.count = 1;
+            EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color));
         }
         return true;
     }
@@ -122,11 +122,11 @@ public final class Pocket {
     }
 
     public void setSize(int x, int y, int z) {
-        box = new BlockBox(box.minX, box.minY, box.minZ, box.minX + x, box.minY + y, box.minZ + z);
+        this.box = new BlockBox(this.box.minX, this.box.minY, this.box.minZ, this.box.minX + x, this.box.minY + y, this.box.minZ + z);
     }
 
     public Vector3i getSize() {
-        Vec3i dimensions = box.getDimensions();
+        Vec3i dimensions = this.box.getDimensions();
         return new Vector3i(dimensions.getX(), dimensions.getY(), dimensions.getZ());
     }
 
@@ -160,11 +160,11 @@ public final class Pocket {
         }
 
         public DyeColor getColor() {
-            return color;
+            return this.color;
         }
 
         public Integer getId() {
-            return id;
+            return this.id;
         }
 
         public static PocketColor from(DyeColor color) {

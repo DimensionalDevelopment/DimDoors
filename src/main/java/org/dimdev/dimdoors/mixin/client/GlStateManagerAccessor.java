@@ -2,9 +2,9 @@ package org.dimdev.dimdoors.mixin.client;
 
 import java.nio.FloatBuffer;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

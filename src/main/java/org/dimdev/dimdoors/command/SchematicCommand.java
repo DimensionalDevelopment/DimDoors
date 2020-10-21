@@ -3,11 +3,11 @@ package org.dimdev.dimdoors.command;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.dimdev.dimdoors.util.schematic.Schematic;
-import org.dimdev.dimdoors.util.schematic.SchematicConverter;
-import org.dimdev.dimdoors.command.arguments.SchematicNamespaceArgumentType;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import org.dimdev.dimdoors.command.arguments.SchematicNamespaceArgumentType;
+import org.dimdev.dimdoors.util.schematic.Schematic;
+import org.dimdev.dimdoors.util.schematic.SchematicConverter;
 
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.command.ServerCommandSource;

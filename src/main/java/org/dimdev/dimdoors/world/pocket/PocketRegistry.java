@@ -3,12 +3,12 @@ package org.dimdev.dimdoors.world.pocket;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mojang.serialization.Codec;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.util.math.GridUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
-import com.mojang.serialization.Codec;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;

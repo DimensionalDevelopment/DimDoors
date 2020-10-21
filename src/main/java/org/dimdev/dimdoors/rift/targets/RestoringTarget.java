@@ -10,18 +10,18 @@ public abstract class RestoringTarget extends VirtualTarget {
 
     @Override
     public Target receiveOther() {
-        if (getTarget() != null) {
-            getTarget().location = location;
-            return getTarget();
+        if (this.getTarget() != null) {
+            this.getTarget().location = this.location;
+            return this.getTarget();
         }
 
-        Location linkTarget = makeLinkTarget();
+        Location linkTarget = this.makeLinkTarget();
         if (linkTarget != null) {
-            setTarget(RiftReference.tryMakeLocal(location, linkTarget));
-            getTarget().setLocation(location);
-            getTarget().register();
+            this.setTarget(RiftReference.tryMakeLocal(this.location, linkTarget));
+            this.getTarget().setLocation(this.location);
+            this.getTarget().register();
 
-            return getTarget();
+            return this.getTarget();
         } else {
             return null;
         }
@@ -29,8 +29,8 @@ public abstract class RestoringTarget extends VirtualTarget {
 
     @Override
     public boolean shouldInvalidate(Location deletedRift) {
-        if (getTarget().shouldInvalidate(deletedRift)) {
-            getTarget().unregister();
+        if (this.getTarget().shouldInvalidate(deletedRift)) {
+            this.getTarget().unregister();
         }
         return false;
     }
@@ -38,14 +38,14 @@ public abstract class RestoringTarget extends VirtualTarget {
     @Override
     public void setLocation(Location location) {
         super.setLocation(location);
-        if (getTarget() != null) {
-            getTarget().setLocation(location);
+        if (this.getTarget() != null) {
+            this.getTarget().setLocation(location);
         }
     }
 
     @Override
     public void unregister() {
-        if (getTarget() != null) getTarget().unregister();
+        if (this.getTarget() != null) this.getTarget().unregister();
     }
 
     protected abstract VirtualTarget getTarget();
@@ -54,11 +54,11 @@ public abstract class RestoringTarget extends VirtualTarget {
 
     @Override
     public RGBA getColor() {
-        if (getTarget() != null) {
-            getTarget().location = location;
-            return getTarget().getColor();
+        if (this.getTarget() != null) {
+            this.getTarget().location = this.location;
+            return this.getTarget().getColor();
         } else {
-            return getUnlinkedColor(location);
+            return this.getUnlinkedColor(this.location);
         }
     }
 

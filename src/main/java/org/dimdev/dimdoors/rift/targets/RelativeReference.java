@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import org.dimdev.dimdoors.util.Location;
 import com.mojang.serialization.Codec;
+import org.dimdev.dimdoors.util.Location;
 
 import net.minecraft.util.math.Vec3i;
 

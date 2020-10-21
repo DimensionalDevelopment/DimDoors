@@ -10,10 +10,10 @@ public interface Target {
     }
 
     default <T extends Target> T as(Class<T> type) {
-        if (type.isAssignableFrom(getClass())) {
+        if (type.isAssignableFrom(this.getClass())) {
             return type.cast(this);
         } else {
-            Target forwardTo = receiveOther();
+            Target forwardTo = this.receiveOther();
             if (forwardTo != null) {
                 return forwardTo.as(type);
             } else {

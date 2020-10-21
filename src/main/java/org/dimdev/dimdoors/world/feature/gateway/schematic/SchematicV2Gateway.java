@@ -6,8 +6,6 @@ import java.io.UncheckedIOException;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
@@ -22,6 +20,7 @@ public abstract class SchematicV2Gateway implements Gateway {
     private Schematic schematic;
     private final String id;
     public static final BiMap<String, SchematicV2Gateway> ID_SCHEMATIC_MAP = HashBiMap.create();
+    private boolean replaced;
 
     public SchematicV2Gateway(String id) {
         ID_SCHEMATIC_MAP.putIfAbsent(id, this);
@@ -40,13 +39,16 @@ public abstract class SchematicV2Gateway implements Gateway {
             } catch (IOException ex) {
                 throw new RuntimeException("Schematic file for " + this.id + " could not be read as a valid schematic NBT file.", ex);
             }
-            TemplateUtils.replacePlaceholders(this.schematic);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
     public final void generate(StructureWorldAccess world, BlockPos pos) {
+        if (!this.replaced) {
+            TemplateUtils.replacePlaceholders(this.schematic);
+            this.replaced = true;
+        }
         SchematicPlacer.place(this.schematic, world, pos);
         this.generateRandomBits(world, pos);
     }
@@ -55,7 +57,7 @@ public abstract class SchematicV2Gateway implements Gateway {
      * Generates randomized portions of the gateway structure (e.g. rubble, foliage)
      *
      * @param world - the world in which to generate the gateway
-     * @param pos - the position at which the schematic is placed
+     * @param pos   - the position at which the schematic is placed
      */
     protected void generateRandomBits(StructureWorldAccess world, BlockPos pos) {
     }

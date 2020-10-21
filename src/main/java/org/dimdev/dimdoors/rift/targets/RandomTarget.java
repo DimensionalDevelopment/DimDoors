@@ -5,6 +5,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Sets;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
@@ -17,10 +21,6 @@ import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.math.MathUtil;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import com.google.common.collect.Sets;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -75,7 +75,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
             VirtualLocation otherVirtualLocation = VirtualLocation.fromLocation(otherRift.location);
             if (otherRift.properties == null) continue;
             double otherWeight = otherRift.isDetached ? otherRift.properties.floatingWeight : otherRift.properties.entranceWeight;
-            if (otherWeight == 0 || Sets.intersection(this.acceptedGroups, otherRift.properties.groups).isEmpty()) continue;
+            if (otherWeight == 0 || Sets.intersection(this.acceptedGroups, otherRift.properties.groups).isEmpty())
+                continue;
 
             // Calculate the distance as sqrt((coordFactor * coordDistance)^2 + (depthFactor * depthDifference)^2)
             if (otherRift.properties.linksRemaining == 0) continue;

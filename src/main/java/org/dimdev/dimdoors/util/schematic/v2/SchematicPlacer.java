@@ -3,10 +3,10 @@ package org.dimdev.dimdoors.util.schematic.v2;
 import java.util.List;
 import java.util.Objects;
 
+import com.google.common.collect.ImmutableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.mixin.ListTagAccessor;
-import com.google.common.collect.ImmutableList;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

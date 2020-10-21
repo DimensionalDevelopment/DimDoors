@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import org.dimdev.dimdoors.util.Codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.dimdev.dimdoors.util.Codecs;
 
 public class LinkProperties {
     public static Codec<LinkProperties> CODEC = RecordCodecBuilder.create(instance -> {
@@ -60,15 +60,14 @@ public class LinkProperties {
         if (o == this) return true;
         if (!(o instanceof LinkProperties)) return false;
         final LinkProperties other = (LinkProperties) o;
-        if (!other.canEqual((Object) this)) return false;
+        if (!other.canEqual(this)) return false;
         if (Float.compare(this.floatingWeight, other.floatingWeight) != 0) return false;
         if (Float.compare(this.entranceWeight, other.entranceWeight) != 0) return false;
         final Object this$groups = this.groups;
         final Object other$groups = other.groups;
         if (!Objects.equals(this$groups, other$groups)) return false;
         if (this.linksRemaining != other.linksRemaining) return false;
-        if (this.oneWay != other.oneWay) return false;
-        return true;
+        return this.oneWay == other.oneWay;
     }
 
     protected boolean canEqual(final Object other) {
@@ -131,7 +130,7 @@ public class LinkProperties {
         }
 
         public LinkProperties build() {
-            return new LinkProperties(floatingWeight, entranceWeight, groups, linksRemaining, oneWay);
+            return new LinkProperties(this.floatingWeight, this.entranceWeight, this.groups, this.linksRemaining, this.oneWay);
         }
 
         public String toString() {

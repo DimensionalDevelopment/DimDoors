@@ -65,7 +65,7 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
         if (target == null) {
             // The link signature has not been used. Store its current target as the first location.
             setSource(stack, new RotatedLocation(world.getRegistryKey(), pos, player.yaw, 0));
-            player.sendMessage(new TranslatableText(getTranslationKey() + ".stored"), true);
+            player.sendMessage(new TranslatableText(this.getTranslationKey() + ".stored"), true);
             world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
             // Place a rift at the target point
@@ -90,7 +90,7 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
             stack.damage(1, player, playerEntity -> {
             });
 
-            player.sendMessage(new TranslatableText(getTranslationKey() + ".created"), true);
+            player.sendMessage(new TranslatableText(this.getTranslationKey() + ".created"), true);
             world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         }
 
@@ -121,9 +121,9 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
         RotatedLocation transform = getTarget(itemStack);
 
         if (transform != null) {
-            list.add(new TranslatableText(getTranslationKey() + ".bound.info", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId()));
+            list.add(new TranslatableText(this.getTranslationKey() + ".bound.info", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId()));
         } else {
-            list.add(new TranslatableText(getTranslationKey() + ".unbound.info"));
+            list.add(new TranslatableText(this.getTranslationKey() + ".unbound.info"));
         }
     }
 }

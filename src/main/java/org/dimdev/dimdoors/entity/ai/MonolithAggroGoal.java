@@ -9,7 +9,6 @@ import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
 
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
@@ -21,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import static net.minecraft.predicate.entity.EntityPredicates.EXCEPT_SPECTATOR;
+import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
 
 public class MonolithAggroGoal extends Goal {
     protected final MonolithEntity mob;

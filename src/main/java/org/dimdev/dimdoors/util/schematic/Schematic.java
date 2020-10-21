@@ -58,7 +58,7 @@ public class Schematic implements BlockView {
     public List<CompoundTag> entities = new ArrayList<>();
 
     public Schematic() {
-        paletteMax = -1;
+        this.paletteMax = -1;
     }
 
     public Schematic(short width, short height, short length) {
@@ -66,10 +66,10 @@ public class Schematic implements BlockView {
         this.sizeX = width;
         this.sizeY = height;
         this.sizeZ = length;
-        blockData = new short[width][height][length];
-        palette.add(Blocks.AIR.getDefaultState());
-        paletteMax++;
-        creationDate = System.currentTimeMillis();
+        this.blockData = new short[width][height][length];
+        this.palette.add(Blocks.AIR.getDefaultState());
+        this.paletteMax++;
+        this.creationDate = System.currentTimeMillis();
     }
 
     public Schematic(String name, String author, short width, short height, short length) {
@@ -191,46 +191,46 @@ public class Schematic implements BlockView {
     public CompoundTag saveToNBT() {
         CompoundTag nbt = new CompoundTag();
 
-        nbt.putInt("Version", version);
+        nbt.putInt("Version", this.version);
         CompoundTag metadataCompound = new CompoundTag();
 
-        if (author != null) {
-            metadataCompound.putString("Author", author);
+        if (this.author != null) {
+            metadataCompound.putString("Author", this.author);
         }
 
-        metadataCompound.putString("Name", name);
-        if (creationDate != -1) metadataCompound.putLong("Date", creationDate);
+        metadataCompound.putString("Name", this.name);
+        if (this.creationDate != -1) metadataCompound.putLong("Date", this.creationDate);
         ListTag requiredModsTagList = new ListTag();
 
-        for (String requiredMod : requiredMods) {
+        for (String requiredMod : this.requiredMods) {
             requiredModsTagList.add(StringTag.of(requiredMod));
         }
 
         metadataCompound.put("RequiredMods", requiredModsTagList);
         nbt.put("Metadata", metadataCompound);
 
-        nbt.putShort("Width", sizeX);
-        nbt.putShort("Height", sizeY);
-        nbt.putShort("Length", sizeZ);
-        nbt.putIntArray("Offset", offset);
-        nbt.putInt("PaletteMax", paletteMax);
+        nbt.putShort("Width", this.sizeX);
+        nbt.putShort("Height", this.sizeY);
+        nbt.putShort("Length", this.sizeZ);
+        nbt.putIntArray("Offset", this.offset);
+        nbt.putInt("PaletteMax", this.paletteMax);
 
         CompoundTag paletteNBT = new CompoundTag();
 
-        for (int i = 0; i < palette.size(); i++) {
-            BlockState state = palette.get(i);
+        for (int i = 0; i < this.palette.size(); i++) {
+            BlockState state = this.palette.get(i);
             String blockStateString = getBlockStateStringFromState(state);
             paletteNBT.putInt(blockStateString, i);
         }
 
         nbt.put("Palette", paletteNBT);
 
-        byte[] blockDataIntArray = new byte[sizeX * sizeY * sizeZ];
+        byte[] blockDataIntArray = new byte[this.sizeX * this.sizeY * this.sizeZ];
 
-        for (int x = 0; x < sizeX; x++) {
-            for (int y = 0; y < sizeY; y++) {
-                for (int z = 0; z < sizeZ; z++) {
-                    blockDataIntArray[x + z * sizeX + y * sizeX * sizeZ] = (byte) blockData[x][y][z]; //according to the documentation on https://github.com/SpongePowered/Schematic-Specification/blob/master/versions/schematic-1.md
+        for (int x = 0; x < this.sizeX; x++) {
+            for (int y = 0; y < this.sizeY; y++) {
+                for (int z = 0; z < this.sizeZ; z++) {
+                    blockDataIntArray[x + z * this.sizeX + y * this.sizeX * this.sizeZ] = (byte) this.blockData[x][y][z]; //according to the documentation on https://github.com/SpongePowered/Schematic-Specification/blob/master/versions/schematic-1.md
                 }
             }
         }
@@ -238,11 +238,11 @@ public class Schematic implements BlockView {
         nbt.putByteArray("BlockData", blockDataIntArray);
 
         ListTag tileEntitiesTagList = new ListTag();
-        tileEntitiesTagList.addAll(tileEntities);
+        tileEntitiesTagList.addAll(this.tileEntities);
         nbt.put("TileEntities", tileEntitiesTagList);
 
         ListTag entitiesTagList = new ListTag();
-        entitiesTagList.addAll(entities);
+        entitiesTagList.addAll(this.entities);
         nbt.put("Entities", entitiesTagList);
 
         return nbt;
@@ -367,7 +367,7 @@ public class Schematic implements BlockView {
         this.setBlocks(world, xBase, yBase, zBase);
 
         // Set BlockEntity data
-        for (CompoundTag BlockEntityNBT : tileEntities) {
+        for (CompoundTag BlockEntityNBT : this.tileEntities) {
             Vec3i schematicPos = new BlockPos(BlockEntityNBT.getInt("x"), BlockEntityNBT.getInt("y"), BlockEntityNBT.getInt("z"));
             BlockPos pos = new BlockPos(xBase, yBase, zBase).add(schematicPos);
             BlockEntity blockEntity = world.getBlockEntity(pos);
@@ -406,19 +406,19 @@ public class Schematic implements BlockView {
     }
 
     public BlockState getBlockState(int x, int y, int z) {
-        if (x < 0 || x >= sizeX || y < 0 || y >= sizeY || z < 0 || z >= sizeZ) {
+        if (x < 0 || x >= this.sizeX || y < 0 || y >= this.sizeY || z < 0 || z >= this.sizeZ) {
             return Blocks.AIR.getDefaultState();
         }
 
-        return palette.get(blockData[x][y][z]);
+        return this.palette.get(this.blockData[x][y][z]);
     }
 
     public void setBlockState(int x, int y, int z, BlockState state) {
-        if (palette.contains(state)) {
-            blockData[x][y][z] = (short) palette.indexOf(state); // TODO: optimize this (there must be some efficient list implementations)
+        if (this.palette.contains(state)) {
+            this.blockData[x][y][z] = (short) this.palette.indexOf(state); // TODO: optimize this (there must be some efficient list implementations)
         } else {
-            palette.add(state);
-            blockData[x][y][z] = (short) ++paletteMax;
+            this.palette.add(state);
+            this.blockData[x][y][z] = (short) ++this.paletteMax;
         }
     }
 
@@ -427,13 +427,13 @@ public class Schematic implements BlockView {
         long setTime = 0;
         long relightTime = 0;
 
-        for (int cx = 0; cx <= (sizeX >> 4) + 1; cx++) {
-            for (int cz = 0; cz <= (sizeZ >> 4) + 1; cz++) {
+        for (int cx = 0; cx <= (this.sizeX >> 4) + 1; cx++) {
+            for (int cz = 0; cz <= (this.sizeZ >> 4) + 1; cz++) {
                 long setStart = System.nanoTime();
                 Chunk chunk = world.getChunk((originX >> 4) + cx, (originZ >> 4) + cz);
                 ChunkSection[] sections = chunk.getSectionArray();
 
-                for (int cy = 0; cy <= (sizeY >> 4) + 1; cy++) {
+                for (int cy = 0; cy <= (this.sizeY >> 4) + 1; cy++) {
                     ChunkSection section = sections[(originY >> 4) + cy];
 
                     boolean setAir = true;
@@ -450,8 +450,8 @@ public class Schematic implements BlockView {
                                 int y = (cy << 4) + ly - (originY & 0x0F);
                                 int z = (cz << 4) + lz - (originZ & 0x0F);
 
-                                if (x >= 0 && y >= 0 && z >= 0 && x < sizeX && y < sizeY && z < sizeZ) {
-                                    BlockState state = palette.get(blockData[x][y][z]);
+                                if (x >= 0 && y >= 0 && z >= 0 && x < this.sizeX && y < this.sizeY && z < this.sizeZ) {
+                                    BlockState state = this.palette.get(this.blockData[x][y][z]);
                                     if (setAir || !state.getBlock().equals(Blocks.AIR)) {
                                         section.setBlockState(lx, ly, lz, state);
 
@@ -503,7 +503,7 @@ public class Schematic implements BlockView {
 
     @Override
     public BlockState getBlockState(BlockPos blockPos) {
-        return getBlockState(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        return this.getBlockState(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
 
     @Override

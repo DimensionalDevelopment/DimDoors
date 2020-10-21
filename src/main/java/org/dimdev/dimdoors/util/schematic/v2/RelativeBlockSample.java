@@ -4,11 +4,11 @@ import java.util.Map;
 import java.util.Objects;
 
 import io.github.boogiemonster1o1.libcbe.api.ConditionalBlockEntityProvider;
-import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;

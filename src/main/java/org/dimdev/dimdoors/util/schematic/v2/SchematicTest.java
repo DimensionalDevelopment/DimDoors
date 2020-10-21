@@ -5,10 +5,10 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.DataResult;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlastFurnaceBlockEntity;

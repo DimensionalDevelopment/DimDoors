@@ -12,9 +12,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -23,6 +20,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -41,7 +41,7 @@ public class SchematicV2Handler {
     }
 
     public void load() {
-        if (this.loaded){
+        if (this.loaded) {
             throw new UnsupportedOperationException("Attempted to load schematics twice!");
         }
         this.loaded = true;
@@ -50,7 +50,7 @@ public class SchematicV2Handler {
         for (String name : names) {
             try (BufferedReader reader = Files.newBufferedReader(Paths.get(SchematicV2Handler.class.getResource(String.format("/data/dimdoors/pockets/json/v2/%s.json", name)).toURI()))) {
                 List<String> result = new ArrayList<>();
-                while(true) {
+                while (true) {
                     String line = reader.readLine();
                     if (line == null) {
                         break;

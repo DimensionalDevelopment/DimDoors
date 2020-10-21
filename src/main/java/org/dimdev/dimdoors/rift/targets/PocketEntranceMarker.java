@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import org.dimdev.dimdoors.util.EntityUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;
@@ -41,23 +41,23 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
     }
 
     public float getWeight() {
-        return weight;
+        return this.weight;
     }
 
     public VirtualTarget getIfDestination() {
-        return ifDestination;
+        return this.ifDestination;
     }
 
     public VirtualTarget getOtherwiseDestination() {
-        return otherwiseDestination;
+        return this.otherwiseDestination;
     }
 
     public String toString() {
-        return "PocketEntranceMarker(weight=" + getWeight() + ", ifDestination=" + getIfDestination() + ", otherwiseDestination=" + getOtherwiseDestination() + ")";
+        return "PocketEntranceMarker(weight=" + this.getWeight() + ", ifDestination=" + this.getIfDestination() + ", otherwiseDestination=" + this.getOtherwiseDestination() + ")";
     }
 
     public PocketEntranceMarkerBuilder toBuilder() {
-        return new PocketEntranceMarkerBuilder().weight(weight).ifDestination(ifDestination).otherwiseDestination(otherwiseDestination);
+        return new PocketEntranceMarkerBuilder().weight(this.weight).ifDestination(this.ifDestination).otherwiseDestination(this.otherwiseDestination);
     }
 
     @Override
@@ -89,11 +89,11 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
         }
 
         public PocketEntranceMarker build() {
-            return new PocketEntranceMarker(weight, ifDestination, otherwiseDestination);
+            return new PocketEntranceMarker(this.weight, this.ifDestination, this.otherwiseDestination);
         }
 
         public String toString() {
-            return "PocketEntranceMarker.PocketEntranceMarkerBuilder(weight=" + weight + ", ifDestination=" + ifDestination + ", otherwiseDestination=" + otherwiseDestination + ")";
+            return "PocketEntranceMarker.PocketEntranceMarkerBuilder(weight=" + this.weight + ", ifDestination=" + this.ifDestination + ", otherwiseDestination=" + this.otherwiseDestination + ")";
         }
     }
 }
