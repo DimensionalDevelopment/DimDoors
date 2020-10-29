@@ -15,6 +15,7 @@ import net.minecraft.util.math.Vec3i;
 public class LimboSkyProvider extends CustomSkyProvider {
     private static final Identifier MOON_RENDER_PATH = new Identifier("dimdoors:textures/other/limbo_moon.png");
     private static final Identifier SUN_RENDER_PATH = new Identifier("dimdoors:textures/other/limbo_sun.png");
+    private static final Identifier GREY_TEX = new Identifier("dimdoors:textures/other/grey.png");
 
     public LimboSkyProvider() {
         super(MOON_RENDER_PATH, SUN_RENDER_PATH, new Vec3i(0, 0, 0));
@@ -26,7 +27,7 @@ public class LimboSkyProvider extends CustomSkyProvider {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(false);
-        MinecraftClient.getInstance().getTextureManager().bindTexture(EndPortalBlockEntityRenderer.SKY_TEXTURE);
+        MinecraftClient.getInstance().getTextureManager().bindTexture(GREY_TEX);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
         for (int i = 0; i < 6; ++i) {

@@ -15,6 +15,6 @@ public class LimboSkyProperties extends SkyProperties {
 
     @Override
     public boolean useThickFog(int camX, int camY) {
-        return true;
+        return false;
     }
 }
