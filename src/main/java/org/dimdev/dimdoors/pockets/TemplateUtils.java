@@ -33,6 +33,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.StructureWorldAccess;
 
 public class TemplateUtils {
     static void setupEntityPlaceholders(List<CompoundTag> entities, CompoundTag entityTag) {
@@ -117,7 +118,7 @@ public class TemplateUtils {
         }
     }
 
-    public static void replacePlaceholders(Schematic schematic) {
+    public static void replacePlaceholders(Schematic schematic, StructureWorldAccess world) {
         // Replace placeholders (some schematics will contain them)
         List<CompoundTag> blockEntities = new ArrayList<>();
         for (CompoundTag blockEntityTag : schematic.getBlockEntities()) {
@@ -128,6 +129,7 @@ public class TemplateUtils {
 
                 CompoundTag newTag = new CompoundTag();
                 EntranceRiftBlockEntity rift = Objects.requireNonNull(ModBlockEntityTypes.ENTRANCE_RIFT.instantiate());
+                rift.setWorld(world.toServerWorld());
                 switch (blockEntityTag.getString("placeholder")) {
                     case "deeper_depth_door":
                         rift.setPos(new BlockPos(x, y, z));
@@ -169,10 +171,10 @@ public class TemplateUtils {
         }
         schematic.setBlockEntities(blockEntities);
 
-//        List<CompoundTag> entities = new ArrayList<>();
-//        for (CompoundTag entityTag : schematic.getEntities()) {
-//            TemplateUtils.setupEntityPlaceholders(entities, entityTag);
-//        }
-//        schematic.setEntities(entities);
+        List<CompoundTag> entities = new ArrayList<>();
+        for (CompoundTag entityTag : schematic.getEntities()) {
+            TemplateUtils.setupEntityPlaceholders(entities, entityTag);
+        }
+        schematic.setEntities(entities);
     }
 }

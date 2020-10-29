@@ -27,6 +27,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 
@@ -237,5 +238,9 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 
     public RiftData getData() {
         return this.data;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
     }
 }

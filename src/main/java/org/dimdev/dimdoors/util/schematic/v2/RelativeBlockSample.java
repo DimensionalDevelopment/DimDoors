@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors.util.schematic.v2;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import com.google.common.collect.HashBiMap;
 import io.github.boogiemonster1o1.libcbe.api.ConditionalBlockEntityProvider;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -16,13 +18,19 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ModifiableWorld;
 import net.minecraft.world.StructureWorldAccess;
+
+import net.fabricmc.fabric.api.util.NbtType;
 
 public class RelativeBlockSample implements BlockView, ModifiableWorld {
     public final Schematic schematic;
@@ -30,6 +38,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
     private final BiMap<BlockState, Integer> blockPalette;
     private final Map<BlockPos, BlockState> blockContainer;
     private final Map<BlockPos, CompoundTag> blockEntityContainer;
+    private final BiMap<CompoundTag, Vec3d> entityContainer;
     private StructureWorldAccess world;
 
     public RelativeBlockSample(Schematic schematic) {
@@ -66,6 +75,12 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
             int[] arr = blockEntityTag.getIntArray("Pos");
             BlockPos position = new BlockPos(arr[0], arr[1], arr[2]);
             this.blockEntityContainer.put(position, blockEntityTag);
+        }
+
+        this.entityContainer = HashBiMap.create();
+        for (CompoundTag entityTag : schematic.getEntities()) {
+            ListTag doubles = entityTag.getList("Pos", NbtType.DOUBLE);
+            this.entityContainer.put(entityTag, new Vec3d(doubles.getDouble(0), doubles.getDouble(1), doubles.getDouble(2)));
         }
     }
 
@@ -108,6 +123,17 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
             if (blockEntity != null) {
                 this.world.toServerWorld().setBlockEntity(blockEntity.getPos(), blockEntity);
             }
+        }
+        for (Map.Entry<CompoundTag, Vec3d> entry : this.entityContainer.entrySet()) {
+            CompoundTag tag = entry.getKey();
+            ListTag doubles = tag.getList("Pos", NbtType.DOUBLE);
+            Vec3d vec = entry.getValue().add(origin.getX(), origin.getY(), origin.getZ());
+            doubles.set(0, NbtOps.INSTANCE.createDouble(vec.x));
+            doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
+            doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));
+            tag.put("Pos", doubles);
+            Entity entity = EntityType.getEntityFromTag(tag, this.world.toServerWorld()).orElseThrow(NoSuchElementException::new);
+            this.world.spawnEntity(entity);
         }
     }
 

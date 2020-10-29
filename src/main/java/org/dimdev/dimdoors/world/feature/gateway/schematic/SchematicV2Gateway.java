@@ -46,7 +46,7 @@ public abstract class SchematicV2Gateway implements Gateway {
 
     public final void generate(StructureWorldAccess world, BlockPos pos) {
         if (!this.replaced) {
-            TemplateUtils.replacePlaceholders(this.schematic);
+            TemplateUtils.replacePlaceholders(this.schematic, world);
             this.replaced = true;
         }
         SchematicPlacer.place(this.schematic, world, pos);
