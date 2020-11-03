@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import java.util.Objects;
+
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.Lifecycle;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.util.RGBA;
@@ -8,19 +11,20 @@ import org.dimdev.dimdoors.util.RGBA;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 
 /**
  * A target that is not an actual object in the game such as a block or a tile
  * entity. Only virtual targets can be saved to NBT.
  */
 public abstract class VirtualTarget implements Target {
-    public static final Registry<VirtualTargetType> registry = FabricRegistryBuilder.createSimple(VirtualTargetType.class, new Identifier("dimdoors", "virtual_type")).attribute(RegistryAttribute.MODDED).buildAndRegister();
+    public static final Registry<VirtualTargetType<?>> REGISTRY = FabricRegistryBuilder.<VirtualTargetType<?>, SimpleRegistry<VirtualTargetType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_type")), Lifecycle.stable())).buildAndRegister();
     public static final RGBA COLOR = new RGBA(1, 0, 0, 1);
 
-    public static Codec<VirtualTarget> CODEC = registry.dispatch(VirtualTarget::getType, VirtualTargetType::codec);
+    public static Codec<VirtualTarget> CODEC = REGISTRY.dispatch(VirtualTarget::getType, VirtualTargetType::codec);
 
     protected Location location;
 
@@ -44,18 +48,17 @@ public abstract class VirtualTarget implements Target {
         return this.getType().getColor();
     }
 
+    @Override
     public boolean equals(Object o) {
-        return o instanceof VirtualTarget &&
-                ((VirtualTarget) o).canEqual(this) &&
-                (this.location == null ? ((VirtualTarget) o).location == null : ((Object) this.location).equals(((VirtualTarget) o).location));
+        if (this == o) return true;
+        if (o == null || this.getClass() != o.getClass()) return false;
+        VirtualTarget that = (VirtualTarget) o;
+        return Objects.equals(this.location, that.location);
     }
 
-    protected boolean canEqual(Object other) {
-        return other instanceof VirtualTarget;
-    }
-
+    @Override
     public int hashCode() {
-        return 59 + (this.location == null ? 43 : this.location.hashCode());
+        return Objects.hash(this.location);
     }
 
     public void setLocation(Location location) {
@@ -85,7 +88,7 @@ public abstract class VirtualTarget implements Target {
         RGBA getColor();
 
         static <T extends VirtualTarget> VirtualTargetType<T> register(String id, Codec<T> codec, RGBA color) {
-            return Registry.register(registry, (String) id, new VirtualTargetType<T>() {
+            return Registry.register(REGISTRY, (String) id, new VirtualTargetType<T>() {
                 @Override
                 public Codec<T> codec() {
                     return codec;

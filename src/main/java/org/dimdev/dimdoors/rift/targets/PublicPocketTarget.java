@@ -9,11 +9,9 @@ import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 public class PublicPocketTarget extends RestoringTarget {
-    public final static Codec<PublicPocketTarget> CODEC = RecordCodecBuilder.create(instance -> {
-        return instance.group(
-                VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", NoneTarget.DUMMY).forGetter(RestoringTarget::getTarget)
-        ).apply(instance, PublicPocketTarget::new);
-    });
+    public final static Codec<PublicPocketTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", NoneTarget.DUMMY).forGetter(RestoringTarget::getTarget)
+    ).apply(instance, PublicPocketTarget::new));
 
     private VirtualTarget wrappedDestination;
 

@@ -18,13 +18,11 @@ import net.minecraft.text.TranslatableText;
 import static org.dimdev.dimdoors.util.EntityUtils.chat;
 
 public class EscapeTarget extends VirtualTarget implements EntityTarget { // TODO: createRift option
-    public static final Codec<EscapeTarget> CODEC = RecordCodecBuilder.create(instance -> {
-        return instance.group(
-                Codec.BOOL.fieldOf("canEscapeLimbo").forGetter(target -> target.canEscapeLimbo)
-        ).apply(instance, EscapeTarget::new);
-    });
+    public static final Codec<EscapeTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.BOOL.fieldOf("canEscapeLimbo").forGetter(target -> target.canEscapeLimbo)
+    ).apply(instance, EscapeTarget::new));
 
-    protected boolean canEscapeLimbo = false;
+    protected boolean canEscapeLimbo;
 
     public EscapeTarget(boolean canEscapeLimbo) {
         this.canEscapeLimbo = canEscapeLimbo;

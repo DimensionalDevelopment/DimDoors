@@ -5,9 +5,10 @@ import com.mojang.serialization.Codec;
 import net.minecraft.entity.Entity;
 
 public class LimboTarget extends VirtualTarget implements EntityTarget {
-    public static final Codec<LimboTarget> CODEC = Codec.unit(LimboTarget::new);
+    public static final LimboTarget INSTANCE = new LimboTarget();
+    public static final Codec<LimboTarget> CODEC = Codec.unit(INSTANCE);
 
-    public LimboTarget() {
+    private LimboTarget() {
     }
 
     @Override
