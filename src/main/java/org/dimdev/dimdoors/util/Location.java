@@ -13,13 +13,10 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
 public class Location {
-    public static final Codec<Location> CODEC = RecordCodecBuilder.create(instance -> {
-        return instance.group(World.CODEC.fieldOf("world").forGetter(location -> {
-            return location.world;
-        }), BlockPos.CODEC.fieldOf("pos").forGetter(location -> {
-            return location.pos;
-        })).apply(instance, Location::new);
-    });
+    public static final Codec<Location> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            World.CODEC.fieldOf("world").forGetter(location -> location.world),
+            BlockPos.CODEC.fieldOf("pos").forGetter(location -> location.pos)
+    ).apply(instance, Location::new));
 
     public final RegistryKey<World> world;
     public final BlockPos pos;

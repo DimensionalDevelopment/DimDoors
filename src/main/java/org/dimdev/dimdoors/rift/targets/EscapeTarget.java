@@ -53,8 +53,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
                 }
                 if (!entity.getEntityWorld().isClient) {
                     if (ModDimensions.LIMBO_DIMENSION != null) {
-                        Entity newEntity = entity.moveToWorld(ModDimensions.LIMBO_DIMENSION);
-                        newEntity.setPos(this.location.getX(), this.location.getY(), this.location.getZ());
+                        TeleportUtil.teleportToLimbo(entity);
                     }
                 }
             }
