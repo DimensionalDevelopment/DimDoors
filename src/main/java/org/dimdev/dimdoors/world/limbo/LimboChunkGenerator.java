@@ -58,7 +58,7 @@ import net.fabricmc.api.Environment;
 
 public class LimboChunkGenerator extends ChunkGenerator {
     public static final LimboChunkGenerator INSTANCE = new LimboChunkGenerator(new FixedBiomeSource(() -> ModBiomes.LIMBO_BIOME), new FixedBiomeSource(() -> ModBiomes.LIMBO_BIOME));
-    public static final Codec<LimboChunkGenerator> CODEC = Codec.unit(INSTANCE);
+    public static final Codec<LimboChunkGenerator> CODEC = Codec.unit(INSTANCE).stable();
     private static final float[] NOISE_WEIGHT_TABLE = NoiseChunkGeneratorAccessor.getNOISE_WEIGHT_TABLE();
     private static final float[] BIOME_WEIGHT_TABLE = NoiseChunkGeneratorAccessor.getBIOME_WEIGHT_TABLE();
 
