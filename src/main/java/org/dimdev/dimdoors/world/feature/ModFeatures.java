@@ -1,12 +1,6 @@
 package org.dimdev.dimdoors.world.feature;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
-import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.mixin.GenerationSettingsAccessor;
+import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.feature.gateway.LimboGatewayFeature;
 import org.dimdev.dimdoors.world.feature.gateway.schematic.SandstonePillarsV2Gateway;
 import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicV2Gateway;
@@ -15,60 +9,38 @@ import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicV2GatewayFea
 import org.dimdev.dimdoors.world.feature.gateway.schematic.TwoPillarsV2Gateway;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.decorator.Decorator;
-import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.SingleStateFeatureConfig;
 
-import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 
+@SuppressWarnings("deprecation")
 public final class ModFeatures {
     public static final Feature<SchematicV2GatewayFeatureConfig> SCHEMATIC_GATEWAY_FEATURE = Registry.register(Registry.FEATURE, new Identifier("dimdoors", "schematic_gateway"), new SchematicV2GatewayFeature(SchematicV2GatewayFeatureConfig.CODEC));
     public static final Feature<DefaultFeatureConfig> LIMBO_GATEWAY_FEATURE = Registry.register(Registry.FEATURE, new Identifier("dimdoors", "limbo_gateway"), new LimboGatewayFeature());
     public static final SchematicV2Gateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsV2Gateway();
     public static final SchematicV2Gateway TWO_PILLARS_GATEWAY = new TwoPillarsV2Gateway();
-    public static final ConfiguredFeature<?, ?> SANDSTONE_PILLARS_FEATURE;
-    public static final ConfiguredFeature<?, ?> TWO_PILLARS_FEATURE;
-    public static final ConfiguredFeature<?, ?> LIMBO_GATEWAY_CONFIGURED_FEATURE;
-    public static ConfiguredFeature<?, ?> ETERNAL_FLUID_LAKE;
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SANDSTONE_PILLARS = RegistryKey.of(Registry.CONFIGURED_FEATURE_WORLDGEN, new Identifier("dimdoors", "sandstone_pillars"));
+    public static final RegistryKey<ConfiguredFeature<?, ?>> TWO_PILLARS = RegistryKey.of(Registry.CONFIGURED_FEATURE_WORLDGEN, new Identifier("dimdoors", "two_pillars"));
+    public static final RegistryKey<ConfiguredFeature<?, ?>> LIMBO_GATEWAY = RegistryKey.of(Registry.CONFIGURED_FEATURE_WORLDGEN, new Identifier("dimdoors", "limbo_gateway"));
 
     public static void init() {
         SANDSTONE_PILLARS_GATEWAY.init();
         TWO_PILLARS_GATEWAY.init();
-        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "sandstone_pillars"), SANDSTONE_PILLARS_FEATURE);
-        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "limbo_gateway"), LIMBO_GATEWAY_CONFIGURED_FEATURE);
-        ETERNAL_FLUID_LAKE = Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "eternal_fluid_lake"), Feature.LAKE.configure(new SingleStateFeatureConfig(ModBlocks.ETERNAL_FLUID.getDefaultState())).decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(5, 70, 128)).applyChance(20)));
-        synchronized (BuiltinRegistries.BIOME) {
-            BuiltinRegistries.BIOME.stream()
-                    .filter(biome ->
-                            biome.getCategory() != Biome.Category.NONE &&
-                                    biome.getCategory() != Biome.Category.THEEND &&
-                                    biome.getCategory() != Biome.Category.NETHER &&
-                                    biome.getCategory() != Biome.Category.OCEAN &&
-                                    biome.getCategory() != Biome.Category.MUSHROOM
-                    )
-                    .forEach(biome -> {
-                        int index = GenerationStep.Feature.SURFACE_STRUCTURES.ordinal();
-                        List<List<Supplier<ConfiguredFeature<?, ?>>>> features = new ArrayList<>(biome.getGenerationSettings().getFeatures());
-                        List<Supplier<ConfiguredFeature<?, ?>>> surfaceStructures = new ArrayList<>(features.get(index));
-                        surfaceStructures.add(() -> TWO_PILLARS_FEATURE);
-                        features.set(index, surfaceStructures);
-                        ((GenerationSettingsAccessor) biome.getGenerationSettings()).setFeatures(features);
-                    });
-        }
-    }
-
-    static {
-        int gatewayChance = FabricLoader.getInstance().isDevelopmentEnvironment() ? 20 : ModConfig.INSTANCE.getWorldConfig().gatewayGenChance;
-        SANDSTONE_PILLARS_FEATURE = SCHEMATIC_GATEWAY_FEATURE.configure(new SchematicV2GatewayFeatureConfig(SchematicV2Gateway.ID_SCHEMATIC_MAP.inverse().get(SANDSTONE_PILLARS_GATEWAY))).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
-        TWO_PILLARS_FEATURE = SCHEMATIC_GATEWAY_FEATURE.configure(new SchematicV2GatewayFeatureConfig(SchematicV2Gateway.ID_SCHEMATIC_MAP.inverse().get(TWO_PILLARS_GATEWAY))).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
-        LIMBO_GATEWAY_CONFIGURED_FEATURE = LIMBO_GATEWAY_FEATURE.configure(DefaultFeatureConfig.INSTANCE).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
+        BiomeModifications.addFeature(ctx -> {
+            Biome biome = ctx.getBiome();
+            return biome.getCategory() != Biome.Category.NONE &&
+                    biome.getCategory() != Biome.Category.THEEND &&
+                    biome.getCategory() != Biome.Category.NETHER &&
+                    biome.getCategory() != Biome.Category.OCEAN &&
+                    biome.getCategory() != Biome.Category.MUSHROOM;
+        }, GenerationStep.Feature.SURFACE_STRUCTURES, TWO_PILLARS);
+        BiomeModifications.addFeature(ctx -> ctx.getBiome().getCategory() == Biome.Category.DESERT, GenerationStep.Feature.SURFACE_STRUCTURES, SANDSTONE_PILLARS);
+        BiomeModifications.addFeature(ctx -> ctx.getBiomeKey().getValue().equals(ModBiomes.LIMBO_KEY.getValue()), GenerationStep.Feature.SURFACE_STRUCTURES, LIMBO_GATEWAY);
     }
 }

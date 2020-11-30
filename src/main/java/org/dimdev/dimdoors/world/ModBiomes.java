@@ -79,8 +79,6 @@ public final class ModBiomes {
                         .grassColor(0)
                         .build())
                 .generationSettings(new GenerationSettings.Builder()
-                        .feature(GenerationStep.Feature.SURFACE_STRUCTURES, ModFeatures.LIMBO_GATEWAY_CONFIGURED_FEATURE)
-                        .feature(GenerationStep.Feature.LAKES, ModFeatures.ETERNAL_FLUID_LAKE)
                         .surfaceBuilder(SurfaceBuilder.NETHER.withConfig(new TernarySurfaceConfig(ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.ETERNAL_FLUID.getDefaultState())))
                         .build())
                 .precipitation(Biome.Precipitation.NONE)

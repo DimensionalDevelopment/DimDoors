@@ -32,13 +32,19 @@ dependencies {
     modImplementation("io.github.boogiemonster1o1:libcbe:${libcbe_version}")
     include("io.github.boogiemonster1o1:libcbe:${libcbe_version}") // Includes LibCBE as a Jar-in-Jar embedded dependency
     modImplementation("curse.maven:worldedit:3039223") // For saving schematics
-    modImplementation("curse.maven:wecui:2995033") // Cos why not
+//    modImplementation("curse.maven:wecui:2995033") // Cos why not
     modCompileOnly("io.github.prospector:modmenu:1.14.6+build.31") {
         exclude module: "fabric-api"
     }
     modRuntime("io.github.prospector:modmenu:1.14.6+build.31") {
         exclude module: "fabric-api"
     }
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 version "4.0.0+alpha.4"

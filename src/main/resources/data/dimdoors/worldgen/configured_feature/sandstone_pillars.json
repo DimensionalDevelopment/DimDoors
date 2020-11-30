@@ -1,0 +1,35 @@
+{
+  "config": {
+    "feature": {
+      "config": {
+        "gatewayId": "sandstone_pillars"
+      },
+      "type": "dimdoors:schematic_gateway"
+    },
+    "decorator": {
+      "config": {
+        "outer": {
+          "config": {
+            "chance": 20
+          },
+          "type": "minecraft:chance"
+        },
+        "inner": {
+          "config": {
+            "outer": {
+              "config": {},
+              "type": "minecraft:square"
+            },
+            "inner": {
+              "config": {},
+              "type": "minecraft:top_solid_heightmap"
+            }
+          },
+          "type": "minecraft:decorated"
+        }
+      },
+      "type": "minecraft:decorated"
+    }
+  },
+  "type": "minecraft:decorated"
+}

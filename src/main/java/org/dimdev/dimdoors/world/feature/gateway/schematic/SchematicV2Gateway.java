@@ -32,7 +32,7 @@ public abstract class SchematicV2Gateway implements Gateway {
 
         try (InputStream stream = DimensionalDoorsInitializer.class.getResourceAsStream(schematicJarDirectory + this.id + ".schem")) {
             if (stream == null) {
-                throw new RuntimeException("Schematic '" + this.id + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
+                throw new RuntimeException("Schematic '" + this.id + "' was not found in the jar");
             }
             try {
                 this.schematic = Schematic.fromTag(NbtIo.readCompressed(stream));

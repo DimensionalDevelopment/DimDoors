@@ -14,6 +14,6 @@ import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 public class DefaultBiomeFeaturesMixin {
     @Inject(method = "addDesertLakes", at = @At("RETURN"))
     private static void addGateway(GenerationSettings.Builder builder, CallbackInfo ci) {
-        builder.feature(GenerationStep.Feature.TOP_LAYER_MODIFICATION, ModFeatures.SANDSTONE_PILLARS_FEATURE);
+//        builder.feature(GenerationStep.Feature.TOP_LAYER_MODIFICATION, ModFeatures.SANDSTONE_PILLARS_FEATURE);
     }
 }
