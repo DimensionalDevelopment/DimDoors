@@ -19,9 +19,9 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class CustomSkyProvider implements SkyRenderer {
-    private final Identifier moon;
-    private final Identifier sun;
-    private final Vec3i color;
+    protected final Identifier moon;
+    protected final Identifier sun;
+    protected final Vec3i color;
 
     public CustomSkyProvider(Identifier moon, Identifier sun, Vec3i color) {
         this.moon = moon;
@@ -68,10 +68,10 @@ public class CustomSkyProvider implements SkyRenderer {
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
 
-        this.renderSkyBox(matrices);
+        this.renderSkyBox(matrices, tickDelta);
     }
 
-    protected void renderSkyBox(MatrixStack matrices) {
+    protected void renderSkyBox(MatrixStack matrices, float tickDelta) {
         RenderSystem.disableAlphaTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -98,24 +98,24 @@ public class CustomSkyProvider implements SkyRenderer {
         RenderSystem.enableAlphaTest();
     }
 
-    protected void multiply(MatrixStack matrices, int i) {
-        if (i == 1) {
+    protected void multiply(MatrixStack matrices, int direction) {
+        if (direction == 1) {
             matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90.0F));
         }
 
-        if (i == 2) {
+        if (direction == 2) {
             matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(-90.0F));
         }
 
-        if (i == 3) {
+        if (direction == 3) {
             matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(180.0F));
         }
 
-        if (i == 4) {
+        if (direction == 4) {
             matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(90.0F));
         }
 
-        if (i == 5) {
+        if (direction == 5) {
             matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(-90.0F));
         }
     }

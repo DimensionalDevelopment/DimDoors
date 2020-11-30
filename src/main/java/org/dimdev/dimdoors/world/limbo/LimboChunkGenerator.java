@@ -6,12 +6,13 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
-import com.mojang.serialization.Codec;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.mixin.ChunkGeneratorAccessor;
+import org.dimdev.dimdoors.mixin.NoiseChunkGeneratorAccessor;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +23,6 @@ import net.minecraft.structure.JigsawJunction;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -59,23 +59,8 @@ import net.fabricmc.api.Environment;
 public class LimboChunkGenerator extends ChunkGenerator {
     public static final LimboChunkGenerator INSTANCE = new LimboChunkGenerator(new FixedBiomeSource(() -> ModBiomes.LIMBO_BIOME), new FixedBiomeSource(() -> ModBiomes.LIMBO_BIOME));
     public static final Codec<LimboChunkGenerator> CODEC = Codec.unit(INSTANCE);
-    private static final float[] NOISE_WEIGHT_TABLE = Util.make(new float[13824], (array) -> {
-        for (int i = 0; i < 24; ++i) {
-            for (int j = 0; j < 24; ++j) {
-                for (int k = 0; k < 24; ++k) {
-                    array[i * 24 * 24 + j * 24 + k] = (float) calculateNoiseWeight(j - 12, k - 12, i - 12);
-                }
-            }
-        }
-    });
-    private static final float[] BIOME_WEIGHT_TABLE = Util.make(new float[25], (fs) -> {
-        for (int i = -2; i <= 2; ++i) {
-            for (int j = -2; j <= 2; ++j) {
-                float f = 10.0F / MathHelper.sqrt((float) (i * i + j * j) + 0.2F);
-                fs[i + 2 + (j + 2) * 5] = f;
-            }
-        }
-    });
+    private static final float[] NOISE_WEIGHT_TABLE = NoiseChunkGeneratorAccessor.getNOISE_WEIGHT_TABLE();
+    private static final float[] BIOME_WEIGHT_TABLE = NoiseChunkGeneratorAccessor.getBIOME_WEIGHT_TABLE();
 
     protected final ChunkRandom random;
     protected final BlockState defaultBlock;
@@ -124,30 +109,6 @@ public class LimboChunkGenerator extends ChunkGenerator {
         } else {
             this.islandNoise = null;
         }
-    }
-
-    private static double getNoiseWeight(int x, int y, int z) {
-        int i = x + 12;
-        int j = y + 12;
-        int k = z + 12;
-        if (i >= 0 && i < 24) {
-            if (j >= 0 && j < 24) {
-                return k >= 0 && k < 24 ? (double) NOISE_WEIGHT_TABLE[k * 24 * 24 + i * 24 + j] : 0.0D;
-            } else {
-                return 0.0D;
-            }
-        } else {
-            return 0.0D;
-        }
-    }
-
-    private static double calculateNoiseWeight(int x, int y, int z) {
-        double d = x * x + z * z;
-        double e = (double) y + 0.5D;
-        double f = e * e;
-        double g = Math.pow(2.718281828459045D, -(f / 16.0D + d / 16.0D));
-        double h = -e * MathHelper.fastInverseSqrt(f / 2.0D + d / 2.0D) / 2.0D;
-        return h * g;
     }
 
     @Override
@@ -510,7 +471,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
                                 int at;
                                 int au;
                                 int ar;
-                                for (ao = ao / 2.0D - ao * ao * ao / 24.0D; objectListIterator.hasNext(); ao += getNoiseWeight(at, au, ar) * 0.8D) {
+                                for (ao = ao / 2.0D - ao * ao * ao / 24.0D; objectListIterator.hasNext(); ao += NoiseChunkGeneratorAccessor.callGetNoiseWeight(at, au, ar) * 0.8D) {
                                     StructurePiece structurePiece = objectListIterator.next();
                                     BlockBox blockBox = structurePiece.getBoundingBox();
                                     at = Math.max(0, Math.max(blockBox.minX - ae, ae - blockBox.maxX));
@@ -525,7 +486,7 @@ public class LimboChunkGenerator extends ChunkGenerator {
                                     int as = ae - jigsawJunction.getSourceX();
                                     at = v - jigsawJunction.getSourceGroundY();
                                     au = ak - jigsawJunction.getSourceZ();
-                                    ao += getNoiseWeight(as, at, au) * 0.4D;
+                                    ao += NoiseChunkGeneratorAccessor.callGetNoiseWeight(as, at, au) * 0.4D;
                                 }
 
                                 objectListIterator2.back(jigsawJunctions.size());

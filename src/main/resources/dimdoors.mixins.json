@@ -12,6 +12,7 @@
     "EntityMixin",
     "GenerationSettingsAccessor",
     "ListTagAccessor",
+    "NoiseChunkGeneratorAccessor",
     "PlayerEntityMixin",
     "RedstoneWireBlockAccessor"
   ],
