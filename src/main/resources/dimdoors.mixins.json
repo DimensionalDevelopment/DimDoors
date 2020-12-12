@@ -9,7 +9,6 @@
     "DefaultBiomeFeaturesMixin",
     "DimensionTypeAccessor",
     "DirectionAccessor",
-    "EntityMixin",
     "GenerationSettingsAccessor",
     "ListTagAccessor",
     "PlayerEntityMixin",
