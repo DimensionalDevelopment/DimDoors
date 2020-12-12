@@ -64,7 +64,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
         }
     }
 
-    private void processEntity(Pocket pocket, BlockEntity BlockEntity, Entity entity, UUID uuid, float relativeYaw) {
+    private void processEntity(Pocket pocket, BlockEntity blockEntity, Entity entity, UUID uuid, float relativeYaw) {
         if (entity instanceof ItemEntity) {
             Item item = ((ItemEntity) entity).getStack().getItem();
 
@@ -72,10 +72,10 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
                 pocket.addDye(EntityUtils.getOwner(entity), ((DyeItem) item).getColor());
                 entity.remove();
             } else {
-                ((EntityTarget) BlockEntity).receiveEntity(entity, relativeYaw);
+                ((EntityTarget) blockEntity).receiveEntity(entity, relativeYaw);
             }
         } else {
-            ((EntityTarget) BlockEntity).receiveEntity(entity, relativeYaw);
+            ((EntityTarget) blockEntity).receiveEntity(entity, relativeYaw);
             RiftRegistry.instance().setLastPrivatePocketExit(uuid, this.location);
         }
     }

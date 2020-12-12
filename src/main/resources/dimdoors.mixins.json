@@ -12,7 +12,8 @@
     "GenerationSettingsAccessor",
     "ListTagAccessor",
     "PlayerEntityMixin",
-    "RedstoneWireBlockAccessor"
+    "RedstoneWireBlockAccessor",
+    "RegistryKeyMixin"
   ],
   "client": [
     "client.GlStateManagerAccessor",

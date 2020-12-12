@@ -9,7 +9,7 @@ public class LimboSkyProperties extends SkyProperties {
     }
 
     @Override
-    public Vec3d adjustSkyColor(Vec3d color, float sunHeight) {
+    public Vec3d adjustFogColor(Vec3d color, float sunHeight) {
         return color;
     }
 
