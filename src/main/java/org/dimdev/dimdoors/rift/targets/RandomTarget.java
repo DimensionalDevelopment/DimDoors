@@ -27,16 +27,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 
 public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTarget subclass
-    public static final Codec<RandomTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.FLOAT.fieldOf("newRiftWeight").forGetter(target -> target.newRiftWeight),
-            Codec.DOUBLE.fieldOf("weightMaximum").forGetter(location -> location.weightMaximum),
-            Codec.DOUBLE.fieldOf("coordFactor").forGetter(location -> location.coordFactor),
-            Codec.DOUBLE.fieldOf("positiveDepthFactor").forGetter(location -> location.positiveDepthFactor),
-            Codec.DOUBLE.fieldOf("negativeDepthFactor").forGetter(location -> location.negativeDepthFactor),
-            Codec.INT_STREAM.comapFlatMap(a -> DataResult.success(a.boxed().collect(Collectors.toSet())), a -> a.stream().mapToInt(Integer::intValue)).fieldOf("acceptedGroups").forGetter(target -> target.acceptedGroups),
-            Codec.BOOL.fieldOf("noLink").forGetter(target -> target.noLink),
-            Codec.BOOL.fieldOf("noLinkBack").forGetter(target -> target.noLinkBack)
-    ).apply(instance, RandomTarget::new));
+    public static final Codec<RandomTarget> CODEC = RecordCodecBuilder.create(instance -> {
+        return instance.group(
+                Codec.FLOAT.fieldOf("newRiftWeight").forGetter(target -> target.newRiftWeight),
+                Codec.DOUBLE.fieldOf("weightMaximum").forGetter(location -> location.weightMaximum),
+                Codec.DOUBLE.fieldOf("coordFactor").forGetter(location -> location.coordFactor),
+                Codec.DOUBLE.fieldOf("positiveDepthFactor").forGetter(location -> location.positiveDepthFactor),
+                Codec.DOUBLE.fieldOf("negativeDepthFactor").forGetter(location -> location.negativeDepthFactor),
+                Codec.INT_STREAM.comapFlatMap(a -> DataResult.success(a.boxed().collect(Collectors.toSet())), a -> a.stream().mapToInt(Integer::intValue)).fieldOf("acceptedGroups").forGetter(target -> target.acceptedGroups),
+                Codec.BOOL.fieldOf("noLink").forGetter(target -> target.noLink),
+                Codec.BOOL.fieldOf("noLinkBack").forGetter(target -> target.noLinkBack)
+        ).apply(instance, RandomTarget::new);
+    });
 
     protected float newRiftWeight;
     protected double weightMaximum;

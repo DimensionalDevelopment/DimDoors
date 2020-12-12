@@ -3,13 +3,11 @@ package org.dimdev.dimdoors.rift.targets;
 import java.util.UUID;
 
 import com.mojang.serialization.Codec;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RGBA;
-import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
@@ -18,11 +16,8 @@ import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;
 
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-
 //import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 
-@SuppressWarnings("deprecation")
 public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarget {
     public static final Codec<PrivatePocketExitTarget> CODEC = Codec.unit(PrivatePocketExitTarget::new);
     public static final RGBA COLOR = new RGBA(0, 1, 0, 1);
@@ -47,7 +42,7 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
                 } else {
                     EntityUtils.chat(entity, new TranslatableText("rifts.destinations.private_pocket_exit.rift_has_closed"));
                 }
-                TeleportUtil.teleportToLimbo(entity);
+                //FabricDimensions.teleport(entity, entity.getServer().getWorld(ModDimensions.LIMBO));
                 return false;
             } else {
                 ((EntityTarget) destLoc.getBlockEntity()).receiveEntity(entity, yawOffset);

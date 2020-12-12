@@ -16,6 +16,7 @@ public class LimboTarget extends VirtualTarget implements EntityTarget {
     @Override
     public boolean receiveEntity(Entity entity, float yawOffset) {
         TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, entity.getPos(), yawOffset);
+        //FabricDimensions.teleport(entity, entity.getServer().getWorld(LIMBO));
         return true;
     }
 

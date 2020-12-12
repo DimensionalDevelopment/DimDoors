@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import org.dimdev.dimdoors.util.TeleportUtil;
 
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
@@ -32,7 +31,7 @@ public class DimTeleportCommand {
     }
 
     private static int teleport(ServerPlayerEntity player, ServerWorld dimension, Vec3d pos) {
-        TeleportUtil.teleport(player, dimension, pos, 0);
+        player.moveToWorld(dimension);
         player.setPos(pos.x, pos.y, pos.z);
         return 1;
     }
