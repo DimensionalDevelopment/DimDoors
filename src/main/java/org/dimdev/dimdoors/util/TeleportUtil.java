@@ -7,7 +7,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
+
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 
 public final class TeleportUtil {
     public static void teleport(Entity entity, World world, BlockPos pos, int yawOffset) {
@@ -23,15 +26,7 @@ public final class TeleportUtil {
             throw new UnsupportedOperationException("Only supported on ServerWorld");
         }
 
-        if (entity instanceof ServerPlayerEntity) {
-            ((ServerPlayerEntity) entity).teleport((ServerWorld) world, pos.x, pos.y, pos.z, entity.getYaw(1.0F) + yawOffset, entity.getPitch(1.0F));
-        } else if (entity.world.getRegistryKey().equals(world.getRegistryKey())) {
-            entity.setPos(pos.x, pos.y, pos.z);
-            entity.setYaw(entity.yaw + yawOffset);
-        } else {
-            EntityUtils.prepareTeleportation(entity, pos, yawOffset);
-            entity.moveToWorld((ServerWorld) world);
-        }
+        FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, entity.getVelocity(), entity.getYaw(1.0F) + yawOffset, entity.getPitch(1.0F)));
     }
 
     public static void teleport(ServerPlayerEntity player, Location location) {
