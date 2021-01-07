@@ -20,6 +20,10 @@ public class EternalFluidBlock extends FluidBlock {
 
     @Override
     public void onEntityCollision(BlockState blockState, World world, BlockPos blockPos, Entity entity) {
+        if (world.isClient) {
+            return;
+        }
+
         try {
             TARGET.receiveEntity(entity, entity.yaw);
         } catch (Throwable e) {

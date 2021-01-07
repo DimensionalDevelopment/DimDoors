@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.mixin.GenerationSettingsAccessor;
+import org.dimdev.dimdoors.world.feature.decorator.EternalFluidLakeDecorator;
 import org.dimdev.dimdoors.world.feature.gateway.LimboGatewayFeature;
 import org.dimdev.dimdoors.world.feature.gateway.schematic.SandstonePillarsV2Gateway;
 import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicV2Gateway;
@@ -19,6 +20,7 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.decorator.ChanceDecoratorConfig;
 import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -30,21 +32,24 @@ import net.minecraft.world.gen.feature.SingleStateFeatureConfig;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class ModFeatures {
-    public static final Feature<SchematicV2GatewayFeatureConfig> SCHEMATIC_GATEWAY_FEATURE = Registry.register(Registry.FEATURE, new Identifier("dimdoors", "schematic_gateway"), new SchematicV2GatewayFeature(SchematicV2GatewayFeatureConfig.CODEC));
+    public static final Feature<SchematicV2GatewayFeatureConfig> SCHEMATIC_GATEWAY_FEATURE = new SchematicV2GatewayFeature(SchematicV2GatewayFeatureConfig.CODEC);
     public static final Feature<DefaultFeatureConfig> LIMBO_GATEWAY_FEATURE = Registry.register(Registry.FEATURE, new Identifier("dimdoors", "limbo_gateway"), new LimboGatewayFeature());
     public static final SchematicV2Gateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsV2Gateway();
     public static final SchematicV2Gateway TWO_PILLARS_GATEWAY = new TwoPillarsV2Gateway();
+    public static final Decorator<ChanceDecoratorConfig> ETERNAL_FLUID_LAKE_DECORATOR = new EternalFluidLakeDecorator(ChanceDecoratorConfig.CODEC);
     public static final ConfiguredFeature<?, ?> SANDSTONE_PILLARS_FEATURE;
     public static final ConfiguredFeature<?, ?> TWO_PILLARS_FEATURE;
     public static final ConfiguredFeature<?, ?> LIMBO_GATEWAY_CONFIGURED_FEATURE;
-    public static ConfiguredFeature<?, ?> ETERNAL_FLUID_LAKE;
+    public static final ConfiguredFeature<?, ?> ETERNAL_FLUID_LAKE = Feature.LAKE.configure(new SingleStateFeatureConfig(ModBlocks.ETERNAL_FLUID.getDefaultState())).decorate(ETERNAL_FLUID_LAKE_DECORATOR.configure(new ChanceDecoratorConfig(20)));
 
     public static void init() {
         SANDSTONE_PILLARS_GATEWAY.init();
         TWO_PILLARS_GATEWAY.init();
+        Registry.register(Registry.FEATURE, new Identifier("dimdoors", "schematic_gateway"), SCHEMATIC_GATEWAY_FEATURE);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "sandstone_pillars"), SANDSTONE_PILLARS_FEATURE);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "limbo_gateway"), LIMBO_GATEWAY_CONFIGURED_FEATURE);
-        ETERNAL_FLUID_LAKE = Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "eternal_fluid_lake"), Feature.LAKE.configure(new SingleStateFeatureConfig(ModBlocks.ETERNAL_FLUID.getDefaultState())).decorate(Decorator.RANGE.configure(new RangeDecoratorConfig(5, 70, 128)).applyChance(20)));
+        Registry.register(Registry.DECORATOR, new Identifier("dimdoors", "eternal_fluid_lake"), ETERNAL_FLUID_LAKE_DECORATOR);
+        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "eternal_fluid_lake"), ETERNAL_FLUID_LAKE);
         synchronized (BuiltinRegistries.BIOME) {
             BuiltinRegistries.BIOME.stream()
                     .filter(biome ->
